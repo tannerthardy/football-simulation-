@@ -19,6 +19,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
+import { asCarrierPursuit } from '../coverage-space.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
 import { traits } from '../engagement.js';
@@ -137,7 +138,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
-      return chase(sim, a, target);
+      return asCarrierPursuit(chase(sim, a, target));
     }
   }
   // CATCH_CARRY: the ball reached a receiver he is on (he drove on the catch,
@@ -156,7 +157,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (!refuted && on) {
         a.tags.add('catch-carry');
         const f = seen.facing;
-        return runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+        return asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 }));
       }
       if (refuted) catchDrive.delete(a);
     }
