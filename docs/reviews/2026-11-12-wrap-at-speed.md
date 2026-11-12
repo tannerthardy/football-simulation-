@@ -132,3 +132,43 @@ Proposed repair (not built): the holder's post-grasp intent, as coached ("sink a
 - No new force, no outcome cap.
 - Gates: Coverage's fast cells against the NFL's 0.9–2.5 yd in 0.7–0.8 s; the slow cells stay matched; the run-game
   fixed set is the control.
+
+## HOLD_SINK: two attempts, not repaired (2026-11-12): stopped for re-diagnosis
+
+Flag `HOLD_SINK`, off. With it off the engine is bit-identical. Read: `finish-trace.mts`, seed 101, 8 games, fast cells.
+
+| | off | attempt 1 | attempt 2 |
+|---|---|---|---|
+| what he asks for along the path, first 0.3 s (share of the carrier's speed) | 0.55 | 0.67 | 0.54 |
+| his feet, first 0.3 s (kg·yd/s²) | +209 | +205 | +203 |
+| his feet, 0.3–0.8 s | −121 | −193 | −198 |
+| pair force, first 0.3 s | +207 | +288 | +325 |
+| grips torn within 0.5 s | 2 / 34 | 5 / 38 | 8 / 38 |
+| second holder before the end | 18 / 34 | 17 / 38 | 17 / 38 |
+| wrap to end, p50 | 1.42 s | 0.90 s | 1.17 s |
+| yards after the wrap, p50 | 3.8 | 3.4 | 4.0 |
+
+The two attempts:
+1. Once his hands have held for his reaction time × (1.5 − tackling), he commits max(0.6 + 0.4 tackling, grip
+   security).
+2. Sunk, he asks along the path for at most his own speed less his commitment, never to keep up.
+
+An earlier version ramped commitment from 0 and committed less than HOLD_FINISH early on. It was replaced before
+attempt 1 was read.
+
+Why neither repairs it: the forward drive happens in the first 0.15–0.25 s.
+- A debug trace of the first side wrap shows HOLD_FINISH's request: the carrier's speed × (1 − grip security).
+- For a holder who grabbed from rest beside the runner, that is a request to accelerate forward to about 1.3–2.2
+  yd/s.
+- His legs deliver it while the grip also pulls him forward.
+- The "knows he has him" delay covers that window, so the old request still rules exactly when the load arrives.
+- Later he brakes harder, and more grips tear.
+
+The bench's "stop" holder plants from the grasp: no delay, and no request to run.
+
+Re-diagnosis question for Integration:
+- Is not running with the man part of the hold itself? A man who has his arms on someone does not sprint to keep up
+  with him; that needs no decision.
+- Is only the full sink a decision that waits on knowing he has him?
+- If yes: the first part has no delay, and only the commitment depth waits.
+- This would be a third design, so it is not built without a yes.

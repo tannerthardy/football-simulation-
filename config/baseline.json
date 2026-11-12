@@ -42,6 +42,7 @@
     "DEFLECT_BALL": "0",
     "DL_SNAP_TIME": "0",
     "HOLD_FINISH": "0",
+    "HOLD_SINK": "0",
     "HOLD_FACING": "0",
     "SEEN_EYES": "0",
     "JUDGE_SEEN_BALL": "0",

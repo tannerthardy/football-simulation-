@@ -99,6 +99,7 @@
     "HIP_STRENGTH": "on",
     "HOLD_FACING": "on",
     "HOLD_FINISH": "on",
+    "HOLD_SINK": "off",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
