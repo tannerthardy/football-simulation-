@@ -253,6 +253,11 @@ const HOT_LOOK = process.env.HOT_LOOK === '1';
 const DEF_BELIEF = process.env.DEF_BELIEF === '1';
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
+/** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
+ * window, 0.12-0.45 s): his belief of that window and of how often such a defender gets it out (the receiver's hands
+ * and contested-catch skill set how well he holds on; the window's grip strengthens as it goes, hence 0.65). */
+const SECURE_T = 0.3;
+const DISLODGE = 0.5;
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
 
@@ -1225,8 +1230,10 @@ export class QBPass implements Behavior {
       const age = Math.max(0, sim.t - (pic ? pic.sampledAt : this.snapAt)), A = r.profile.vmax / Math.max(r.profile.tau, 1e-3);
       spreadR = Math.min(0.5 * A * age * age, (pic ? pic.speed : r.profile.vmax) * age);
     }
+    // DEF_BELIEF: how readily his receiver loses a ball a late defender reaches.
+    const dislodge = DEF_BELIEF ? clamp((DISLODGE + (1 - know) * 0.15 * a.mind.judgment('def-dislodge')) * (1.15 - 0.3 * r.r('hands') - 0.3 * r.r('contestedCatch')) * 0.65, 0, 0.9) : 0;
     const at = (pt: Vec3) => {
-      let pOpen = 1, pClear = 1, intRisk = 0;
+      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1;
       const v0 = dragFreeLaunch(from, pt, T);
       for (const { d, blind, mover, react, leap, spreadD, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
@@ -1237,6 +1244,11 @@ export class QBPass implements Behavior {
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
         pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
+        // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
+        if (DEF_BELIEF) {
+          const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
+          pSecure *= 1 - late * dislodge;
+        }
         // Undercut risk along the flight path: a hand on the ball kills the
         // completion, and some of those become picks.
         let touch = 0;
@@ -1253,7 +1265,7 @@ export class QBPass implements Behavior {
         // At the catch point: jumped routes are picks; contested balls sometimes.
         intRisk += first * (0.15 + 0.35 * d.r('ballSkills')) + Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
       }
-      return { pOpen, pClear, intRisk };
+      return { pOpen: pOpen * pSecure, pClear, intRisk };
     };
     const aimed = at(point);
     const { pOpen, pClear } = aimed;

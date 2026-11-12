@@ -4,7 +4,7 @@
  * - aimMiss: the ball at its planned arrival against the point he aimed at as it left his hand (the throw's miss:
  *   missSigma, the flick and the consistency draw), with its components along / across the receiver's run;
  * - lead: the receiver at the planned arrival against that point (the forecast's error);
- * - offset: the true closest approach of the ball in flight to the receiver's centre (the same tick for both), along /
+ * - offset: the true closest approach of the ball in free flight (not in a receiver's hands) to the receiver's centre (the same tick for both), along /
  *   across his run there; it does not depend on the catch event, which since engine-39 (CATCH_SECURE) fires at the end
  *   of the securing window;
  * - tags: the QB at release (set / moving over 2.2 yd/s / hit, his urgency), the receiver at arrival (settled under
@@ -50,13 +50,13 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
     const wasAir = sim.ball.kind === 'air';
     tick();
     if (!cur) return;
-    if (sim.ball.kind === 'air') {
+    if (sim.ball.kind === 'air' && !sim.ball.securing) {
       const b = sim.ballPos(), r = cur.r, dd = Math.hypot(b.x - r.pos.x, b.y - r.pos.y);
       if (!close || dd < close.d) close = { d: dd, off: { x: b.x - r.pos.x, y: b.y - r.pos.y }, vel: { x: r.vel.x, y: r.vel.y }, t: sim.t };
     }
     if (!planned && sim.t >= cur.arr - 1e-9) {
       const b = sim.ballPos(), r = cur.r;
-      planned = { inAir: sim.ball.kind === 'air', ball: { x: b.x, y: b.y }, rec: { x: r.pos.x, y: r.pos.y }, vel: { x: r.vel.x, y: r.vel.y } };
+      planned = { inAir: sim.ball.kind === 'air' && !sim.ball.securing, ball: { x: b.x, y: b.y }, rec: { x: r.pos.x, y: r.pos.y }, vel: { x: r.vel.x, y: r.vel.y } };
     }
 
   };
