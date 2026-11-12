@@ -8,7 +8,7 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 /** LINE_START (off; LINE_START=1; see behaviors/receiver.ts): the get-off, shared by the receiver, the quarterback's
  * forecast of him and his expected break time, so all three move together; and his approach into a break on his
  * cutting ability. */
-export const LINE_START = process.env.LINE_START === '1';
+export const LINE_START = process.env.LINE_START !== '0';
 
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
 export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean }
