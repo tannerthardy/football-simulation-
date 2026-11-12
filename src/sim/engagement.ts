@@ -480,10 +480,14 @@ export function gripFor(sim: PlaySim, joint: HandJoint, holder: Agent, man: Agen
   const bear = Math.atan2(holder.pos.y - seen.pos.y, holder.pos.x - seen.pos.x);
   const off = Math.abs(((bear - seen.facing) * 180 / Math.PI + 540) % 360 - 180);
   let left = off > 90;
-  if (!left && !OPEN_HANDS_BACK_ONLY && PAST_ALONG_PATH) {
+  const seenSpeed = Math.hypot(seen.vel.x, seen.vel.y);
+  // PAST_ALONG_PATH: past along his path when he is moving; below 1 yd/s his path is undefined and the leverage
+  // decides, as pastAlongPath does (the φ branch below). Without that fallback a slow man never left the frame, the
+  // grip stayed on, and the holding detector -- on φ -- called it: run holding 2.8 a team-game.
+  if (!left && !OPEN_HANDS_BACK_ONLY && PAST_ALONG_PATH && seenSpeed >= 1) {
     // Past along his path, as he feels it, carried forward by how fast he is going by (the same lead).
-    const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1), sp = Math.hypot(seen.vel.x, seen.vel.y);
-    if (sp >= 1) {
+    const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1), sp = seenSpeed;
+    {
       const rx = holder.pos.x - seen.pos.x, ry = holder.pos.y - seen.pos.y;
       const along = (rx * seen.vel.x + ry * seen.vel.y) / sp;
       const rate = -(seen.vel.x * seen.vel.x + seen.vel.y * seen.vel.y - holder.vel.x * seen.vel.x - holder.vel.y * seen.vel.y) / sp;

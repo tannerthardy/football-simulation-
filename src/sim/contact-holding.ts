@@ -14,7 +14,7 @@ import { OPEN_HANDS, type HandJoint, type Joint, type StepReport } from '../phys
 import type { Agent, Engagement, TeamSide } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { FoulRecord } from './types.js';
-import { axisOf } from './engagement.js';
+import { axisOf, PAST_ALONG_PATH, pastAlongPath } from './engagement.js';
 
 /** 12-1-3(c) restricts grabbing an opponent, not blocking one. While the
  * blocker is still between the defender and where he is going (|phi| < 1 on
@@ -361,7 +361,11 @@ export function observeHolding(sim: PlaySim, report: StepReport,
     const alreadyFalling = h.victim.body.support?.state !== 'up'
       && !report.falls.includes(h.victim.idx) && !tookFeet;
     const phi = offense && HOLD_LEVERAGE && !tookFeet ? holderPhi(sim, h) : null;
-    const stillInFront = phi !== null && Math.abs(phi) < 1;
+    // PAST_ALONG_PATH: the officials' 'beaten' is the same definition as the rep's and the grip's -- past along the
+    // man's own path of travel (the leverage when he is barely moving).
+    const stillInFront = phi !== null && (PAST_ALONG_PATH
+      ? !pastAlongPath(h.actorStart, { pos: h.victimStart.pos, vel: h.victimStart.vel }, Math.abs(phi))
+      : Math.abs(phi) < 1);
     const exemption = runnerException ? 'runner' : groundLooseException ? 'personal_ground_loose_ball_attempt'
       : offense && simultaneous ? 'simultaneous_runner_tackle_or_boundary'
         : offense && start.passBeyondLine ? 'after_downfield_forward_release'
