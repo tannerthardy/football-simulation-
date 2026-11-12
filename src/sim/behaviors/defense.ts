@@ -744,6 +744,13 @@ const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
  * to the passer (body facing vs the ball's origin), shortened by ball skills;
  * otherwise he plays this flight without the look. */
 const LOOK_ONCE = process.env.LOOK_ONCE === '1';
+/** DRIVE_CATCH (off; DRIVE_CATCH=1 turns it on; C14, with CATCH_SECURE): while
+ * a ball is in a receiver's hands but not yet a catch (the securing window), a
+ * defender within 4 yd of him drives through his hands and body (as he sees
+ * them) at full effort, instead of steering to the ball's last point. Off, the
+ * near defender's requested velocity turned off the man during the window
+ * (toward him 4.7 -> 0.5 yd/s in 0.3 s; NFL defenders keep 4.5-5.0). */
+const DRIVE_CATCH = process.env.DRIVE_CATCH === '1';
 const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
 function findsBall(a: Agent, sim: PlaySim): boolean {
   const ball = sim.ball;
@@ -1703,6 +1710,16 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
   if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
   else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
+  // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
+  // through his hands and body to play the catch, at full effort.
+  if (DRIVE_CATCH && sim.ball.kind === 'air' && sim.ball.securing) {
+    const R = sim.ball.securing.receiver, seen = sim.see(a, R);
+    if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
+      const f = R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
+      a.tags.add('drive-catch');
+      return runThrough(a, hands, { speed: 1 });
+    }
+  }
   // A defender already carrying the visible catcher must not brake out of
   // phase toward a stationary point on the flight. Keep his feet with the
   // receiver unless he can play the ball before that receiver's window.
