@@ -36,11 +36,14 @@ async function panel(hotLook: string) {
 }
 
 describe('HOT_LOOK', () => {
-  it('off: he never looks first, and on his alarm throws to men well away from his eyes', async () => {
+  it('off: he never looks first, and on his alarm throws to men outside his clear look', async () => {
     const r = await panel('0');
     expect(r.filter((x) => x.alarmed).length).toBeGreaterThanOrEqual(6);
     expect(r.every((x) => x.looks === 0)).toBe(true);
-    expect(r.filter((x) => x.pick && x.pick.gaze > 60).length).toBeGreaterThanOrEqual(1);
+    // Outside his clear look (its half-angle is about 19-31 deg by vision and focus): picked without his eyes there.
+    // Under ACC_BELIEF (engine-46) the two picks beyond 60 deg on engine-45 are gone (a rushed far throw priced at
+    // the release's urgency no longer clears the hot bar; the other now goes to a man 10 deg off), not a HOT_LOOK change.
+    expect(r.filter((x) => x.pick && x.pick.gaze > 30).length).toBeGreaterThanOrEqual(1);
   });
 
   it('on: he looks first; no hot throw goes more than 60 deg from his eyes, and a throw after a look is on them, later', async () => {
