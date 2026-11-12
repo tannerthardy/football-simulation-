@@ -489,3 +489,47 @@ Ball to seam / go / back, time to throw p50, and the share of plays with a seam 
    - sacks 118 → 98.
 
 These are diagnostic flags to look at, not targets.
+
+### The outside go: why ours rarely throws it (four-verts follow-up)
+
+**NFL** (`nfl.py`, GO targets from the widest alignment on 3+ GO drop-backs, n 69):
+
+| | p25 / p50 / p75 |
+|---|---|
+| Time to throw | 2.30 / 2.74 / 3.30 s (Cover 1: 2.30) |
+| Air yards | 16 / 25 / 31 |
+| Separation at the throw | 1.32 / 1.75 / 3.04 yd (Cover 1: 1.25) |
+
+Completion is .232 and INT .043. These are contested deep balls thrown on purpose.
+
+**Ours** (`go-eval.ts`, READ_PLAN off, engine-34): the QB's evaluation of each outside go every 0.1 s, split into its
+terms. At NFL-like moments (2.3–3.0 s, separation 1.0–2.5 yd, n 658):
+
+| | p25 / p50 / p75 |
+|---|---|
+| Receiver depth | 6.7 / 7.4 / 11.1 yd |
+| Ahead of his nearest defender | −1.71 / −1.23 / −0.90 yd (trailing; 5 of 658 samples even or ahead) |
+| P | .10 / .14 / .24 |
+| pAcc | .26 / .52 / .66 |
+| pOpen | .22 / .30 / .94 |
+| pClear | 1.00 |
+| Interception risk | .01 / .18 / .36 (cap about .04) |
+
+P = pAcc × pOpen × pClear × hands. Only .03 of samples clear both his bar (about .56) and the risk cap, yet his own
+value is positive on .35.
+
+By coverage, 2.3–3.0 s:
+
+| Coverage | Depth | Ahead | pAcc | pOpen | Interception risk | Value > 0 |
+|---|---|---|---|---|---|---|
+| Cover 1 | 6.8 yd | −0.9 yd | .60 | .25 | .30 | .21 |
+| Cover 3 | 12.7 yd | −4.6 yd | .25 | .69 | | .49 |
+| Cover 4 | 12.3 yd | −3.2 yd | .27 | .83 | .03 | .76 |
+
+**Two separable causes, neither READ_PLAN's:**
+
+1. **In man, the go route is not even with the corner** at throw time (6.8 yd deep, trailing by 0.9 yd): a release
+   and stem question for ROUTE_CRAFT and PRESS_RELEASE.
+2. **The throw gate (P ≥ about .56) excludes a contested deep shot by design.** His deep accuracy alone caps a
+   25-yard go near .25, and he does not throw even when his own value formula is positive. That belongs to the risk
+   work: a value-judged deep shot. First check `missSigma` at 35–40 yd against NFL deep-ball accuracy.
