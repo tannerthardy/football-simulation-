@@ -102,6 +102,20 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
  * defender who has read run plays his fit — he doesn't abandon his gap to
  * chase, including against a designed QB run.
  */
+/** ARRIVE_LEAD (experimental, off; ARRIVE_LEAD=1 turns it on): on a short
+ * throw he cannot beat to the catch, an underneath zone defender drives to the
+ * catcher's upfield shoulder. NFL nearest defenders on catches 0-10 yd past the
+ * line run on a line that crosses the catcher's lateral line 1.4-1.7 yd
+ * upfield of him (1.9 when the catcher is running across, 1.4 when moving
+ * away); ours 0.3-0.6 (BDB 2025 dropbacks vs engine-34; aimside.py). Leading
+ * along the route instead (attempt 1) aimed behind settling catchers. */
+const ARRIVE_LEAD = process.env.ARRIVE_LEAD === '1';
+/** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
+function underneathZone(a: Agent): boolean {
+  const b = a.behavior as { plastersScramble?: boolean; zoneEyes?: boolean } | undefined;
+  return (a.behavior instanceof ZoneCoverage && !b?.plastersScramble) || b?.zoneEyes === true;
+}
+
 export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const read = observedHolder(a, sim);
   const preserveEdge = a.runFit?.kind === 'edge' || a.runFit?.kind === 'force' || a.runFit?.kind === 'cutback';
@@ -1764,7 +1778,21 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
     // keeps a late defender outside the hands even when he can recover.
-    const tgt = land;
+    // ARRIVE_LEAD: an underneath zone defender who cannot beat the ball there
+    // drives to the catcher's upfield shoulder, not the catch point: the catch
+    // point carried upfield by both bodies and his reach, and across by the
+    // catcher's seen lateral run over the time he will be late (scaled by his
+    // pursuit; never along the route's downfield component, which turns at the
+    // catch). It takes away the upfield run and makes him go east-west; a
+    // catcher who cuts back underneath can still beat it.
+    let tgt = land;
+    if (ARRIVE_LEAD && window && underneathZone(a)) {
+      const late = Math.max(0, timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, land, a.profile.reach)
+        - (window.t - sim.t));
+      const upfield = a.profile.radius + window.receiver.profile.radius + a.profile.reach;
+      const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
+      tgt = { x: land.x + upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
+    }
     const dx = tgt.x - a.pos.x;
     const dy = tgt.y - a.pos.y;
     const d = Math.hypot(dx, dy) || 1;
