@@ -2,13 +2,13 @@
 // 2026-11-12: a free DE read as still blocked). Each 0.1 s from 1.5 s: every defender within 4 yd -- true distance,
 // whether the sim has him engaged, the engaged blocker's distance from him, the nearest offensive body's, held(), the
 // QB's estimate for him (felt picture + held) and the true time (true state, no hold); the QB's pressure() time.
-// usage: [flags] node --import tsx scripts/diag/effective-mass/feel-trace.mts [concept] [coverage] [seed] [flip 0/1] [formation]
+// usage: [flags] node --import tsx scripts/diag/effective-mass/feel-trace.mts [concept] [coverage] [seed] [flip 0/1] [formation] [roster]
 const W = process.cwd();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { timeToReach } = await import(`${W}/src/physics/reach.ts`);
-const [concept = 'hitches', coverage = 'cover2', seed = '2', flip = '1', formation = 'gun_doubles_11'] = process.argv.slice(2);
-const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed: Number(seed), roster: 7, formation, flip: flip === '1' }));
+const [concept = 'hitches', coverage = 'cover2', seed = '2', flip = '1', formation = 'gun_doubles_11', roster = '7'] = process.argv.slice(2);
+const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed: Number(seed), roster: Number(roster), formation, flip: flip === '1' }));
 const r2 = (x: number) => Number.isFinite(x) ? +x.toFixed(2) : null;
 let next = 1.5;
 while (sim.phase === 'live' && sim.t < 7) {
