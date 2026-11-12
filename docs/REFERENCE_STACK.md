@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-47`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-48`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,25 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-48: `INT_BELIEF` on, his interception risk combines as a probability and weighs the catch point (2026-11-12)
+
+Rules + Coaching #644, calibrated on the engine-47 flags. His interception belief had the right total and a compressed ranking: on 2,639 natural league throws, throws he rated under 0.5% were picked 0.88% of the time and those over 5%, 3.83%. Two causes. His path term summed every nearby defender's risk (capped only at 1), so it exploded in the tail; and his catch-point terms expected about 13 picks where 32 happened (58% of picks are at the catch point). Now defenders combine as 1 − Π(1 − p), the path term is weighted 0.2 (an in-flight touch that ends in a pick a fraction of the time) and the catch-point term 1.75, fitted on seeds 101 / 201 and checked on 301 / 401 (the halves disagree on the level, 15 against 31 picks, and agree that the catch point is worth 7–9 times the path); scaled by his knowledge with two-sided error.
+
+Reliability on natural throws with it on (32 games), believed / observed by his band: 0.15 / 0.45%, 1.17 / 1.56%, 3.16 / 3.10%, 6.36 / 5.07%. Lane read, 32 games an arm: sacks 131 → 121, yards a play 8.05 → 8.23, picks 46 → 49.
+
+Withdrawn evidence, recorded so it is not quoted again: an earlier table said he passes up throws that complete 53% for 8.7 yd. That probe forced throws his window then pulled down at the plant, so it measured the rest of the play. Committed declines (reads he looked at and passed) complete about 0.3 and are picked about 10%: he is right to decline them and overstates how bad they are. A facing split of the pick fraction (in front of a defender facing him against behind an underneath defender) was tested and not supported. His earlier beliefs were re-read on engine-47 and need no refit (defended 0.14 / 0.14; off target at urgency 0.5–1, 0.25 / 0.27); drops are believed 0.05 against 0.08 observed, a one-constant follow-up.
+
+Checks on the candidate (`e5d5e81e`): full suite 4347 pass; besides the two known research failures, the `read-plan` covered-first-read fixture failed on a real change at the margin (an aggressive passer's rhythm gate is risk ≤ 6.04%; the covered #1 was priced 7.07% off and 5.88% on, so on one more seed of sixteen he throws it). Restated over seeds 1–16 as shares (he moves on in at least 12, #1 thrown at most 5 times). Fixed run set 3.87 → 3.86. Paired league scorecards, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | INT rate | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.65 → 8.20 | 64.3 → 63.3% | 5.4 → 4.3% | 1.7 → 2.0% | 7.00 → 6.92 | 31.3 → 31.8 |
+| 23 | 7.93 → 8.13 | 63.9 → 63.5% | 5.3 → 5.3% | 2.0 → 1.4% | 6.13 → 6.81 | 27.7 → 26.7 |
+
+Nothing resolved on either seed. It lands on the reliability table.
+
+`FREE_BOUND` on top, 16 games an arm: sack rate 4.3 → 2.5% (moved) and 5.3 → 2.1% (moved); points 31.8 → 34.3 and 26.7 → 32.9 (moved). Still held.
 
 ## engine-47: `CATCH_CARRY`, `HANDS_CUE`, `CATCH_SPEED` and `CATCH_CHOICE` on (2026-11-12)
 
