@@ -14,7 +14,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 
-import { routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
+import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
@@ -147,6 +147,15 @@ const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
  * four_verts/cover1 fixture. The release itself (its step, width and clearance
  * at the line) is unchanged. */
 const RELEASE_THROUGH = process.env.RELEASE_THROUGH !== '0';
+/** LINE_START (off; LINE_START=1 turns it on; estimated, C14 release): a receiver's first steps are a get-off, not a
+ * sprint start. Out of a two-point stance, eyes on the defender over him and his release plan in mind, he does not
+ * push off with his full start force: until he has declared his stem (out of his stance, his first step, and with time
+ * to have seen the defender's leverage: his own observation delay) he drives at a share of it, sharper for a better
+ * route runner. Estimated: that share (0.5 + 0.2 x route running), standing in for stance mechanics and a release
+ * read the engine does not model step by step. The body is unchanged (MoveCommand.drive). The quarterback's forecast
+ * of him and his expected break time use the same get-off (route-motion.ts), so his timing moves with the receiver's. Off, every receiver left
+ * the line at a full start: 2.2-2.5 yd/s at 0.5 s on every route against the NFL's 1.3-2.0 (1.7 on an off-coverage
+ * go), 0.3-0.5 s acceleration about 7.5 yd/s^2 against 4.5, and level with a press corner at 1.5 s against 2.2. */
 
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
@@ -196,7 +205,9 @@ export class RouteRunner implements Behavior {
       if (route.points[i].s !== undefined) breakDist = dist;
     }
     if (breakDist === 0) breakDist = Math.min(dist, 8);
-    this.breakTime = startDelay + 0.25 + breakDist / (0.85 * this.effort * a.profile.vmax);
+    this.breakTime = startDelay + 0.25 + breakDist / (0.85 * this.effort * a.profile.vmax)
+      + (LINE_START ? getOffLoss(a.profile, a.r('routeRunning'), this.effort, a.profile.reactionTime, Math.min(breakDist, 8),
+        firstBreakDepth(this.start, sim.los, this.path), nearestDefender(a, sim)) : 0);
   }
 
   private buildPath(start: Vec2, pts: readonly RoutePoint[], extend: boolean): PathPoint[] {
@@ -204,6 +215,35 @@ export class RouteRunner implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = this.routeCommand(a, sim);
+    return LINE_START ? this.getOff(a, sim, cmd) : cmd;
+  }
+
+  /** LINE_START: whether he has declared his stem yet. */
+  private stemDeclared = false;
+  /** LINE_START: how deep his route first breaks. */
+  private get breakDepth(): number { return firstBreakDepth(this.start, this.sim.los, this.path); }
+
+  /** LINE_START: how far off him the nearest defender he sees in front of him is (yd). */
+  private defenderAhead(a: Agent, sim: PlaySim): number {
+    let best = 12;
+    for (const d of sim.defense) {
+      const seen = sim.see(a, d).pos, ahead = (seen.x - a.pos.x) * sim.attackDir(a.team);
+      if (ahead < -0.5) continue;
+      best = Math.min(best, Math.hypot(seen.x - a.pos.x, seen.y - a.pos.y));
+    }
+    return best;
+  }
+
+  /** LINE_START: until he has declared his stem, he pushes with a share of his start force. */
+  private getOff(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (this.stemDeclared) return cmd;
+    if (!inGetOff(Math.hypot(a.pos.x - this.start.x, a.pos.y - this.start.y), sim.t - this.startDelay,
+      a.mind.observationDelay(a.profile.reactionTime))) { this.stemDeclared = true; return cmd; }
+    return { ...cmd, drive: getOffDrive(a.r('routeRunning'), this.breakDepth, this.defenderAhead(a, sim)) };
+  }
+
+  private routeCommand(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.startDelay) return stand(0);
     const rr = a.r('routeRunning');
     const cutSkill = 0.8 + 0.4 * rr;
@@ -488,6 +528,11 @@ export class RouteRunner implements Behavior {
       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
   }
 
+}
+
+/** LINE_START: the nearest defender to him at installation (yd), for his expected get-off. */
+function nearestDefender(a: Agent, sim: PlaySim): number {
+  return sim.defense.reduce((m, d) => Math.min(m, Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y)), 12);
 }
 
 /** Each agent's first installed route on this play (family:id), for replay labels only; no behavior reads it. */

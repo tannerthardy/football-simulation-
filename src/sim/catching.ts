@@ -264,6 +264,8 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
       if (!sim.touchPass(R)) return;
       const secureT = clamp((0.22 + 0.3 * Math.min(1, diff)) * (1.25 - 0.5 * hands), 0.12, 0.45);
       ball.securing = { receiver: R, start: sim.t, until: sim.t + secureT, tried: new Set() };
+      // The ball's arrival at his hands (the catch event, if he keeps it, comes at the end of the window).
+      sim.event('secure', R);
       pinToHands(sim, R);
       return;
     }
