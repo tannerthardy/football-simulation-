@@ -1312,3 +1312,56 @@ at air), tackle.ts and TACKLE_RESET write it. Over 4,152 substeps:
    about the target gap. That is a different mechanism from the one built.
 6. **The press's direction is a second question.** Only about 40% of the rusher's load acts along the tackle's
    retreat. The rest is across him.
+
+## The engaged pair's geometry (`pair-geometry.py`; NFL against ours, same code)
+
+Frames from 1.0 s, ball in, with the edge rusher within 1.2 yd of his tackle. Ours: seed 201 x 8 on this head, off, with
+RUSH_INTENT, and set A. No body orientation in the format, so "square" uses the tackle's own retreat: the rusher within
+30° of the direction opposite his motion.
+
+| | 1.5-2.0 s | 2.0-2.5 s | 2.5-3.0 s | 3.0-4.0 s |
+|---|---|---|---|---|
+| **square / beside (> 60°)** | | | | |
+| NFL | 16 / 58% | 16 / 63% | 16 / 67% | 9 / 81% |
+| off | 11 / 52% | 9 / 59% | 9 / 58% | 17 / 36% |
+| RUSH_INTENT | 28 / 35% | 22 / 46% | 14 / 54% | 13 / 53% |
+| A | 14 / 50% | 21 / 49% | 22 / 56% | 24 / 48% |
+| **rusher in front (QB frame) dx / outside** | | | | |
+| NFL | +0.70 / +0.70 | +0.55 / +0.60 | +0.50 / +0.50 | +0.37 / +0.40 |
+| off | +0.77 / +0.70 | +0.85 / +0.80 | +0.81 / +0.80 | +0.54 / +0.80 |
+| RUSH_INTENT | +0.76 / +0.60 | +0.85 / +0.70 | +0.85 / +0.70 | +0.64 / +0.70 |
+| A | +0.75 / +0.70 | +0.63 / +0.60 | +0.64 / +0.60 | +0.31 / +0.40 |
+| **pair heading against the line to the QB** | | | | |
+| NFL | 45° | 41° | 43° | 58° |
+| off | 63° | 71° | 88° | 93° |
+| RUSH_INTENT | 48° | 50° | 65° | 77° |
+| A | 63° | 59° | 64° | 54° |
+| **pair speed / rusher speed** | | | | |
+| NFL | 3.50 / 3.95 | 3.09 / 3.26 | 2.50 / 2.66 | 2.02 / 2.26 |
+| off | 3.63 / 3.64 | 3.28 / 3.29 | 3.00 / 3.01 | 2.24 / 2.26 |
+| RUSH_INTENT | 3.04 / 3.01 | 2.78 / 2.76 | 2.51 / 2.51 | 1.67 / 1.68 |
+| A | 3.45 / 3.48 | 3.19 / 3.16 | 2.86 / 3.01 | 1.95 / 2.46 |
+
+Tackle x-velocity (tackle-retreat.py) at 1.0-1.5 / 1.5-2.0 / 2.0-2.5 / 2.5-3.0 s:
+- NFL: −2.50 / −2.75 / −2.25 / −1.50
+- off: −3.00 / −3.50 / −3.25 / −3.00
+- RUSH_INTENT: −2.75 / −3.00 / −2.75 / −2.50
+
+RUSH_INTENT's in-front share is 28.8% of pressure (off 34.3%), converting at 5.0% (off 2.3%). Its pressure is 40.3%
+(off 37.0%).
+
+**Reading.**
+1. **The NFL pair is not square: it is beside, as ours is.** The rusher is beyond 60° of the tackle's retreat on 58-81%
+   of NFL frames, against 36-70% of ours, and he sits in the same place in the QB frame within 0.1-0.3 yd. The
+   hypothesis (NFL square with the load through the chest, ours beside with the load across) does not hold. A
+   kick-slide geometry item under TACKLE_SET is not indicated by this.
+2. **What differs is where the pair goes and how fast.**
+   - The NFL pair heads 41-45° off the line to the QB from 1.5 to 3.0 s. Ours off heads 63-88° off it: across and
+     away, the tackle carried deep and wide.
+   - The NFL pair slows from 3.5 to 2.5 yd/s by 2.5-3.0 s. Ours off is still at 3.0.
+3. **The rusher's request moves both toward the NFL's.** With RUSH_INTENT the pair's speed matches the NFL's within
+   about 0.1-0.4 yd/s, its heading comes to 48-65°, and the tackle's retreat comes within 0.25-1.0 yd/s of the NFL's.
+   Our rusher between moves drives the pair across and away at full pace; that, not the anchor's size, is most of the
+   walk-back.
+4. RUSH_INTENT is parked waiting on the anchor because pressure overshoots (40.3% against 32.9%). This reverses the
+   order: the rusher's request is the larger part of the retreat, and the anchor is second.
