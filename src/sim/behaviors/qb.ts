@@ -36,12 +36,26 @@ import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runti
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
 
-/** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick. */
+/** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
+ * the throw decision and the no-throw behaviour). Guarantees:
+ * - `pressure`: the rusher he feels most urgently, as his own picture has him (QBPass.pressure).
+ * - `u`: his urgency this tick, 0..1 (rush and his clock); the alarm is pressure.time < 0.45.
+ * - `best`: the best throw he evaluated this tick on his own pictures, rejected (below his bar at this urgency, or
+ *   not yet looked at); null when nobody was worth evaluating. Its P and intRisk say a bad window from nobody near.
+ *   During a look it is the option chosen when the look began (not re-evaluated until his eyes arrive).
+ * - `eyes`: whom his eyes are on this tick (a look's target, else his current read); null when on no receiver.
+ * - `reason`: which decision returned no throw: 'alarm' (the hot path), 'urgency' (the read logic under rising
+ *   urgency), 'clock' (his internal clock).
+ * - `since`: the sim time this no-throw spell began (the first of consecutive no-throw ticks, a look's included).
+ * Called every such tick; the throw decision runs first each tick, from wherever the no-throw behaviour has put him,
+ * and a started throw ends the spell. */
 export interface NoThrowContext {
   pressure: { time: number; agent: Agent | null; dist: number };
   u: number;
   best: ThrowEval | null;
+  eyes: Agent | null;
   reason: 'alarm' | 'urgency' | 'clock';
+  since: number;
 }
 
 interface ThrowEval {
@@ -250,6 +264,8 @@ export class QBPass implements Behavior {
   throwRec: Record<string, unknown> | null = null;
   /** The hot path's best option this tick, below the bar or not (for the no-throw hook). */
   private lastHotBest: ThrowEval | null = null;
+  private noThrowSince = -1;
+  private noThrowLast = -99;
   private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
   hotPick: { t: number; slot: string; alarmAt: number | null; looked: number; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
   private readStart = -1;
@@ -741,7 +757,7 @@ export class QBPass implements Behavior {
         return p ? +(sim.t - p.sampledAt).toFixed(2) : null;
       });
       const hot = HOT_LOOK ? this.hotLook(a, sim) : this.hotThrow(a, sim);
-      if (hot === 'look') return this.whileLooking(a, sim, { pressure, u, best: this.lastHotBest, reason: 'alarm' });
+      if (hot === 'look') return this.whileLooking(a, sim, this.noThrowContext(sim, pressure, u, 'alarm'));
       if (hot === null) this.hotNone++;
       if (hot) {
         // Diagnostic record (no effect): the hot throw's source, whether it went to the read he was on, and how far
@@ -752,7 +768,7 @@ export class QBPass implements Behavior {
           facingOff: off(a.body.facing), gazeOff: off(Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x)), P: hot.P, intRisk: hot.intRisk };
         return this.startThrow(a, sim, hot);
       }
-      return this.noThrow(a, sim, { pressure, u, best: this.lastHotBest, reason: 'alarm' });
+      return this.noThrow(a, sim, this.noThrowContext(sim, pressure, u, 'alarm'));
     }
 
     // Internal clock expired: receivers go to the scramble drill, and he has to
@@ -821,6 +837,13 @@ export class QBPass implements Behavior {
     // Veterans throw it away (or at a back's feet) rather than eat a sack.
     if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
     return this.evade(a, sim, ctx.pressure.agent);
+  }
+
+  /** The seam's context this tick; consecutive calls share one `since`. */
+  private noThrowContext(sim: PlaySim, pressure: NoThrowContext['pressure'], u: number, reason: NoThrowContext['reason']): NoThrowContext {
+    if (this.noThrowLast < sim.t - sim.dt - 1e-6) this.noThrowSince = sim.t;
+    this.noThrowLast = sim.t;
+    return { pressure, u, best: this.lastHotBest, eyes: this.look?.target ?? this.reads[this.readIdx] ?? null, reason, since: this.noThrowSince };
   }
 
   /** HOT_LOOK: his eyes are on the way to a hot target (busy, not giving up); his feet do this meanwhile. Today: evade. */
