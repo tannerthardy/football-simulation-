@@ -869,6 +869,30 @@ const RIDE_LEAD = 0.3;
  * docs/reviews/2026-11-12-edge-rush.md). No strength or anchoring capacity
  * is added: the physics decides whether the anchor holds. */
 export const TACKLE_SET = process.env.TACKLE_SET === '1';
+/** TACKLE_BRAKE (experimental, off; TACKLE_BRAKE=1 with TACKLE_SET): the
+ * tackle brakes the pair into his set, not only himself. NFL tracking
+ * (hip-gain.py): engaged with the rusher in front, the tackle slows by depth
+ * -- from about 1.5 yd short of the QB's depth, nearly stopped at it --
+ * whatever the rusher's gain on his hip; ours carried kick speed past it.
+ * The depth is TACKLE_SET's floor (the called launch point less a body width,
+ * from what he knows). His depth speed toward it is at most sqrt(2 a d), with
+ * a his braking force (0.8 of his brake, the law movement uses, times his
+ * mass) over his mass plus the load he carries: the measured press of the
+ * rusher through his hands along his retreat, as the mass it amounts to at his
+ * braking, at most the rusher's own. The harder he is pressed the earlier he
+ * must start (fully pressed, about 1.8x the distance). And he anchors before he mirrors: pressed, his lateral
+ * request changes by no more than the traction left after holding the press
+ * allows in a step. No timer and no capacity added: the body brakes. */
+export const TACKLE_BRAKE = process.env.TACKLE_BRAKE === '1';
+
+/** TACKLE_BRAKE: the rusher's press on the blocker along -x (toward his own
+ * goal), kg*yd/s^2, from the hands joint's last-step force (0 without one). */
+export function pressOnBlocker(b: Agent, joint: HandJoint | undefined): number {
+  if (!joint?.normalForceOnB) return 0;
+  const onB = { x: joint.normalForceOnB.x + (joint.tangentForceOnB?.x ?? 0), y: joint.normalForceOnB.y + (joint.tangentForceOnB?.y ?? 0) };
+  const fx = joint.b === b.body ? onB.x : joint.a === b.body ? -onB.x : 0;
+  return Math.max(0, -fx);
+}
 
 /** PAST_ALONG_PATH (experimental, off; PAST_ALONG_PATH=1 turns it on): a
  * blocker is beaten when the man is past him along the man's own path of
@@ -1407,8 +1431,21 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const line = tackleSetLine(sim, b, d), room = (line.y - b.pos.y) * line.out;
     if (vy * line.out > 0) vy = line.out * Math.min(vy * line.out, Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, room)));
   }
+  // TACKLE_BRAKE: brake the pair (his braking less the measured press), and anchor before the mirror.
+  let brakeA = 0.8 * b.profile.brake;
+  if (TACKLE_BRAKE && floor !== null) {
+    const press = pressOnBlocker(b, e.hands);
+    // The press is load he must stop with him: the mass it amounts to at his braking (at most the rusher's own).
+    const carried = Math.min(d.profile.massKg, press / Math.max(1e-6, brakeA));
+    brakeA = brakeA * b.profile.massKg / (b.profile.massKg + carried);
+    if (press > 0) {
+      const T = supportParams(b.profile).traction;
+      const room = Math.sqrt(Math.max(0, T * T - press * press)) / b.profile.massKg * sim.dt;
+      vy = clamp(vy, b.vel.y - room, b.vel.y + room);
+    }
+  }
   intents[b.idx] = {
-    vel: { x: anchorRep ? Math.max(vx, 0) : floor !== null ? Math.max(vx, -Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, b.pos.x - floor))) : vx, y: vy },
+    vel: { x: anchorRep ? Math.max(vx, 0) : floor !== null ? Math.max(vx, -Math.sqrt(2 * brakeA * Math.max(0, b.pos.x - floor))) : vx, y: vy },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     growth,
