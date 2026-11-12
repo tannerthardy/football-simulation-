@@ -45,6 +45,7 @@ import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import { OPEN_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -398,6 +399,40 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
 }
 
+/** PUNCH (experimental, off; PUNCH=1 turns it on): a blocker's hands go to
+ * the man. The hand law above works at elbows-bent extension (bodies + 0.3 arm
+ * x (0.5 + 0.5 control), a quarter of his arm), so a man standing off at
+ * arm's length -- inside his reach but beyond his bent elbows -- is touched
+ * and not pressed: an anchored tackle's hands carried no compression 58% of
+ * engaged ticks and none as an edge rusher crossed his face (hands-band.mts,
+ * inside-probe.mts). With PUNCH he works his hands to where he feels the man
+ * (PASS_FEEL's touch latency), out to lockout (0.9 of his arm), no faster
+ * than arms move (ARM_SPEED): late, the man is into his chest before the arms
+ * are out; at air (the man beyond his lockout) he is overextended for his
+ * reaction time, his push down to a third, while the man goes by. The arm's
+ * force is the joint's (push from his press, the World's limits); only where
+ * the hands work is his. The same joint serves run and pass blocks. */
+export const PUNCH = process.env.PUNCH === '1';
+/** Lockout: the share of his arm the hands reach with the elbows locked. */
+const LOCKOUT = 0.9;
+const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
+
+function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
+  const bodies = b.profile.radius + d.profile.radius, arm = b.player.measurables.armIn / 36;
+  const base = joint.extension - bodies, lock = LOCKOUT * arm;
+  let st = punchState.get(joint);
+  if (!st) { st = { ext: base, over: -Infinity }; punchState.set(joint, st); }
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  const felt = sim.see(b, d, 0.06 / rt);
+  const gap = Math.hypot(felt.pos.x - b.pos.x, felt.pos.y - b.pos.y) - bodies;
+  if (sim.t < st.over) { joint.extension = bodies + lock; joint.push *= 1 / 3; return; }
+  // At air: the man is past his lockout and his hands are already out there.
+  if (gap > lock + 0.05 && st.ext >= lock - 0.02) { st.over = sim.t + rt; joint.extension = bodies + lock; joint.push *= 1 / 3; return; }
+  const want = clamp(gap - 0.02, base, lock), step = ARM_SPEED * sim.dt;
+  st.ext = clamp(want, st.ext - step, st.ext + step);
+  joint.extension = bodies + Math.max(base, st.ext);
+}
+
 /** OPEN_HANDS: the rep's leverage at which the man has left the blocker's
  * frame -- at or past his hip, the blocker no longer between him and where
  * he is going (Integration, 2026-11-12; the holding detector's own measure). */
@@ -482,6 +517,7 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
+  if (PUNCH && state.control >= 0) punch(sim, joint, h, e.defender);
   if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e, false);
 }
 
@@ -527,6 +563,8 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // Latched hands can hold and steer; a defender in control steers the
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
+  // PUNCH: the blocker's hands go to the man, out to lockout.
+  if (PUNCH && e.control >= 0) punch(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
   // A landed finesse move has the hands off for its window.

@@ -136,6 +136,7 @@
     "OPEN_HANDS": "off",
     "OPEN_HANDS_BACK_ONLY": "off",
     "PAST_ALONG_PATH": "off",
+    "PUNCH": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_START": "on",
