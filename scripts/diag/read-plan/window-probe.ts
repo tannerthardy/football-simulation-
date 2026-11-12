@@ -43,7 +43,10 @@ P.startThrow = function (a: any, sim: any, ev: any) {
       const runCarry = timeToReach(carry, pt, d.profile.reach + 0.3);
       const dist0 = Math.hypot(pt.x - seen.pos.x, pt.y - seen.pos.y), distCarry = Math.hypot(pt.x - carry.pos.x, pt.y - carry.pos.y);
       return { d, slot: d.slot, facingQB, onTarget, blind: +blind.toFixed(2), react: +react.toFixed(2), run: +run.toFixed(2), tt: +(blind + run + react).toFixed(2),
-        dTarget0: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(2), seen0: { x: seen.pos.x, y: seen.pos.y },
+        dTarget0: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(2),
+        lane: +(() => { const ax = a.pos.x, ay = a.pos.y, lx = pt.x - ax, ly = pt.y - ay, LL = lx * lx + ly * ly || 1;
+          const k = Math.max(0, Math.min(1, ((seen.pos.x - ax) * lx + (seen.pos.y - ay) * ly) / LL));
+          return Math.hypot(seen.pos.x - (ax + k * lx), seen.pos.y - (ay + k * ly)); })().toFixed(2), seen0: { x: seen.pos.x, y: seen.pos.y },
         margin: +(blind + run + react - total).toFixed(2), runCarry: +runCarry.toFixed(2), closeCarry: +(dist0 - distCarry).toFixed(2), closeAct: null as number | null, dist0, seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
         speed0: +Math.hypot(d.vel.x, d.vel.y).toFixed(2), vmax: +d.profile.vmax.toFixed(2), distPt: +Math.hypot(d.pos.x - pt.x, d.pos.y - pt.y).toFixed(2),
         brk: null as number | null, reached: null as number | null, path: 0, prev: { x: d.pos.x, y: d.pos.y },
@@ -53,15 +56,28 @@ P.startThrow = function (a: any, sim: any, ev: any) {
     rec.decision = { t: sim.t, wind: +wind.toFixed(2), T: +ev.T.toFixed(2), total: +total.toFixed(2), pt: { x: pt.x, y: pt.y }, P: +ev.P.toFixed(3), intRisk: +ev.intRisk.toFixed(3), target: ev.target.slot };
     rec.defs = defs;
     rec.tgt = ev.target; rec.tgt0 = { x: ev.target.pos.x, y: ev.target.pos.y };
+    // How long his body had faced within 20 deg of the target before the decision.
+    let since = 0;
+    for (let i = rec.hist.length - 1; i >= 0; i--) {
+      const h = rec.hist[i], tp = h.off[ev.target.idx];
+      if (!tp || Math.abs(Math.atan2(Math.sin(h.facing - Math.atan2(tp.y - h.q.y, tp.x - h.q.x)), Math.cos(h.facing - Math.atan2(tp.y - h.q.y, tp.x - h.q.x)))) > 20 * Math.PI / 180) break;
+      since = sim.t - h.t;
+    }
+    rec.decision.faceFor = +since.toFixed(2);
   }
   return st0.call(this, a, sim, ev);
 };
 for (const c of concepts) for (const formation of forms) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (const seed of seeds) for (const flip of [false, true]) {
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: c.id, seed, roster: seed, formation, flip }));
-  rec = { decision: null, defs: [] };
+  rec = { decision: null, defs: [], hist: [] };
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     tick();
+    if (!rec.decision) {
+      const off: any = {}; for (const o of sim.offense) off[o.idx] = { x: o.pos.x, y: o.pos.y };
+      rec.hist.push({ t: sim.t, facing: sim.qb.body.facing, q: { x: sim.qb.pos.x, y: sim.qb.pos.y }, off });
+      if (rec.hist.length > 40) rec.hist.shift();
+    }
     const D = rec.decision;
     if (!D) return;
     const since = sim.t - D.t;

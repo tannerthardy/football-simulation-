@@ -242,6 +242,15 @@ const READ_PLAN = process.env.READ_PLAN !== '0';
  * to the back, a vertical peek or triangle is closed and an unread key is no longer watched, so his eyes are where
  * his read is. Off: the instant best of every receiver on the alarm tick, wherever he is looking. */
 const HOT_LOOK = process.env.HOT_LOOK === '1';
+/** DEF_BELIEF (experimental, off; DEF_BELIEF=1 turns it on): his belief about how defenders close on a throw, in the
+ * window. Off, every defender keeps his course until his start (docs/reviews/2026-11-12-window-defenders.md: on
+ * engine-40 that under-rates the closing of a man in coverage on the target by 0.3-0.7 yd). On: a defender within
+ * 4 yd of the target (by his pictures) moves partly with the target over that time, as coverage on a man does; his
+ * belief of how much is right on average and spread both ways by inexperience (decision-making and experience).
+ * Calibrated on engine-40's defense (ARRIVE_LEAD, CUSHION_BREAK on): re-read when the defense changes. */
+const DEF_BELIEF = process.env.DEF_BELIEF === '1';
+/** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
+const PHASE_MEAN = 0.5;
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
 
@@ -1161,6 +1170,8 @@ export class QBPass implements Behavior {
 
   private window(a: Agent, sim: PlaySim, r: Agent, from: Vec3, point: Vec3, T: number, wind: number, urgency: number): ThrowEval {
     const noise = 0.22 * (1 - a.r('decisionMaking')) + 0.05;
+    // DEF_BELIEF: how well he knows defenders (decision-making and experience), 0..1.
+    const know = clamp(0.25 + 0.45 * a.r('decisionMaking') + 0.3 * Math.min(1, a.player.experience / 8), 0, 1);
     const total = wind + T;
     const forecast = this.receiverForecasts.get(r);
     const target = forecast?.predict(sim.t, 0) ?? r.pos;
@@ -1183,7 +1194,15 @@ export class QBPass implements Behavior {
       const pMan = this.mind.pMan();
       const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - d.profile.reactionTime) : 0;
       const blind = facingQB ? facingBlind : onTarget ? Math.min(untilBreak, wind) : wind;
-      const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      // DEF_BELIEF: the man on the target goes partly where the target goes.
+      if (DEF_BELIEF && Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 4) {
+        const k = clamp(PHASE_MEAN + (1 - know) * 0.35 * a.mind.judgment('def-phase'), 0, 1);
+        const tb = forecast?.predict(sim.t, blind) ?? target, tv = forecast?.predict(sim.t, blind + 0.1) ?? tb;
+        const rv = { x: (tv.x - tb.x) / 0.1, y: (tv.y - tb.y) / 0.1 };
+        mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
+          vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
+      }
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
       // PICTURE_AGE: how far he could be from where the QB has him, in time.
