@@ -833,3 +833,23 @@ of the rusher's hands and body on the blocker's hands joint, succeeding or faili
 - **Dip / speed:** feet and bend around the corner. Already physical apart from the roll's control change.
 Each needs the contact point(s) of the blocker's hands on the rusher (the World's `contact` patch), and each fails
 against hands that stay fitted, pressed and inside. That is why hands, feet and leverage come first.
+
+## PUNCH run control (npm run ref:report -- --flag PUNCH=1; fixed set, 1,321 runs)
+
+Paired against the reference, yards under 20:
+- all −0.30 (SE 0.10);
+- outside zone −0.34 (0.18), inside zone −0.48 (0.28), gap −0.13 (0.17), duo −0.59 (0.28), toss −1.01 (0.73),
+  draw +0.37 (0.40);
+- runs ≤ 0: 9.9 → 11.6%; 10+: 7.7 → 6.3%.
+
+hitblk, zone OU: DL blocked 51 → 42%, DL shed 4-5 → 10%.
+
+punch-run.mts (seeds 101-103):
+- run blockers' hands at lockout on 4% of engaged ticks, but 9% of sheds;
+- sheds a run 0.77 → 0.63 (different games).
+
+**Reading.** Arm's length is the defender's run technique: a blocker extended to lockout gives the defender the
+separation to shed and make the play. A run blocker's technique is to close and fit tight, inside hands, and drive.
+PUNCH as built is a pass-protection technique applied to every block. The joint and the physics are shared; which
+technique a blocker chooses depends on his job. Proposal: PUNCH is the pass blocker's choice; run blockers keep the
+existing fit.
