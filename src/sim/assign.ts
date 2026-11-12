@@ -77,7 +77,7 @@ const DEF_STANCE = process.env.DEF_STANCE === '1';
  * NFL backs on dropbacks run FLAT 48%, ANGLE 20%, OUT 10% of their routes
  * (BDB 2025 routeRan); 84% of released backs are wide of the box at the
  * throw, 15% over the middle (back_release_reference.py). */
-const BACK_RELEASE = process.env.BACK_RELEASE === '1';
+const BACK_RELEASE = process.env.BACK_RELEASE !== '0';
 /** The check-releasing back's read: how long before he trusts that no one is coming (s). */
 const CHECK_READ = 0.55;
 const STAND_GETOFF = 0.04;

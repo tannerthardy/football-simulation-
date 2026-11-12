@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-33`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-34`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,22 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-34: `ROUTE_CRAFT` and `BACK_RELEASE` on (2026-11-12)
+
+- **`ROUTE_CRAFT`** (Coverage #599). A receiver who sees a defender in his lane ahead (his perceived picture, 0.25–0.45 s out by route running) works to a shoulder: toward his next break, else the defender's open shoulder; radii plus 0.15–0.4 yd wide by route running; he eases 2–6% through it; landmark and timing kept; leaning into the defender stays allowed. 16 games an arm, unpaired, engine-31: goes around a defender in his lane within 5 yd of the line 22–24 → 45–46% (NFL 52); bodies touching there 36–40 → 22–24% (11); contact before the throw 5+ yd downfield 31–33 → 27–29% (13). Not moved: bending around a retreating defender downfield (5–10% against 24), and the defender closing into the receiver in man.
+- **`BACK_RELEASE`** (Run Game, read by Rules + Coaching on engine-32). The check-release back leaves by the protection count and his own read, into the flat on his side or an angle. It was held at run-ref-26 because the quarterback then threw to him early less often; `FORECAST_BREAK` (engine-32) removed the cause. 16 league-sampled games: release p50 2.40 → 1.65 s (NFL 1.60); releases after 2.0 s 43 → 13% of dropbacks; free first pressures 7.8 → 9.6%. His share of attempts does not move (12.5 → 12.4%): he is now out and open at 2.6 s and never read on 26% of dropbacks, which is the read's to fix (`READ_PLAN`, in work).
+
+Checks on the candidate (`b4cb3d9d`, on engine-33): full suite 4275 pass; the two known research failures, plus two fixtures that assumed the old defaults and are corrected here (`test/back-release.test.ts` now sets the off arm to `0` explicitly; `test/forecast-break.test.ts` runs on the live stack, and with the back released two of its six seeds go to W2 instead of the flat, so it now asks for the flat on at least four). Fixed run set unchanged (3.92 mean under 20). Paired league scorecards, 16 games an arm, one flag at a time with the other on:
+
+| flag, seed | sack rate | time to throw | INT rate | YAC a reception | separation at the catch | points a team-game |
+|---|---|---|---|---|---|---|
+| `ROUTE_CRAFT`, 11 | 2.4 → 3.5% (moved) | 2.67 → 2.72 (moved) | 2.0 → 3.3% (moved) | 8.59 → 8.45 | 3.78 → 3.53 (moved) | 38.7 → 37.1 |
+| `ROUTE_CRAFT`, 23 | 2.7 → 3.9% (moved) | 2.66 → 2.70 (moved) | 2.6 → 2.6% | 7.90 → 8.19 | 3.64 → 3.81 (moved) | 40.3 → 35.8 (moved) |
+| `BACK_RELEASE`, 11 | 3.7 → 3.5% | 2.76 → 2.72 | 2.8 → 3.3% | 7.81 → 8.45 | 3.47 → 3.53 | 37.7 → 37.1 |
+| `BACK_RELEASE`, 23 | 3.0 → 3.9% | 2.75 → 2.70 (moved) | 2.9 → 2.6% | 7.40 → 8.19 | 3.46 → 3.81 (moved) | 39.6 → 35.8 |
+
+`ROUTE_CRAFT`: sacks rise about a point on both seeds, toward the NFL band (4.61–9.36%), with the throw 0.04–0.05 s later: receivers work around a body at the release and ease through it. `BACK_RELEASE`: the throw 0.04–0.05 s sooner; YAC up 0.6–0.8 on both seeds (neither resolved), consistent with more balls to a back in space.
 
 ## engine-33: `PEDAL_CAP` on, the backpedal is the slowest way to go backward (2026-11-12)
 

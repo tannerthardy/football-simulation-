@@ -109,7 +109,7 @@ export function commonPlay(p: PlayLog, id: string) {
       interception: ev.some(e => e.type === 'interception'),
       ballEvents: throwEv ? ev.filter(e => e.t >= throwEv.t && LABEL_BALL.has(e.type)).map(e => e.type) : [] },
     cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null, front: p.plan?.front ?? null,
-      defPersonnel: p.plan?.defPersonnel ?? null, formation: p.plan?.formation ?? null },
+      defPersonnel: p.plan?.defPersonnel ?? null, formation: p.plan?.formation ?? null, down: p.down, toGo: p.distance },
   };
 }
 
