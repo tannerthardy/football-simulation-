@@ -215,10 +215,15 @@ export class RouteRunner implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    this.releaseWorking = false;
     const cmd = this.routeCommand(a, sim);
-    return LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    // Working a release against a pressing corner is the declared move, not a read step: he releases with his
+    // whole start force.
+    return LINE_START && !this.releaseWorking ? this.getOff(a, sim, cmd) : cmd;
   }
 
+  /** LINE_START: this tick's command is his release against a pressing corner (no get-off throttle). */
+  private releaseWorking = false;
   /** LINE_START: whether he has declared his stem yet. */
   private stemDeclared = false;
   /** LINE_START: how deep his route first breaks. */
@@ -249,7 +254,7 @@ export class RouteRunner implements Behavior {
     const cutSkill = 0.8 + 0.4 * rr;
 
     const release = this.handleRelease(a, sim);
-    if (release) return release;
+    if (release) { this.releaseWorking = true; return release; }
     if (RELEASE_THROUGH && this.releaseSide !== 0) this.skipReleasedStem(a, this.releaseSide);
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
     // Keep the installed route's pace and progress. Private throw attribution
