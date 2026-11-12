@@ -50,7 +50,7 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
   };
   const res = sim.run();
   const pumps = res.events.filter((e: any) => e.type === 'pump').length;
-  return { pumps, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
+  return { seed: opts.seed, pumps, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
 }
 
 describe('READ_PLAN', () => {
@@ -76,9 +76,11 @@ describe('READ_PLAN', () => {
       if ((r.rushIn ?? 9) >= 1.0) {
         clean++;
         expect(r.target, JSON.stringify(r)).toBe('S2');
-        // On rhythm; or, when the plant's re-check finds the window closing (a pump), one motion later. With LINE_START's
-        // slower get-off, seed 2's flat window flickers shut at the plant (an underneath defender in the lane at 1.8 s).
-        expect(r.throwAt, JSON.stringify(r)).toBeLessThan(r.pumps ? 2.9 : 2.4);
+        // On rhythm. Seed 2 only: with LINE_START's slower get-off its flat window flickers shut for one tick at the
+        // plant's re-check (1.80 s), he pumps and throws the flat one motion later (2.75 s); a known sensitivity under
+        // diagnosis (docs/reviews/2026-11-12-window-defenders.md), not a rhythm break: his read never leaves the flat.
+        if (r.seed === 2 && r.pumps) expect(r.throwAt, JSON.stringify(r)).toBeLessThan(2.9);
+        else expect(r.throwAt, JSON.stringify(r)).toBeLessThan(2.4);
       } else {
         expect(r.target, JSON.stringify(r)).not.toBeNull();
         expect(r.target, JSON.stringify(r)).not.toBe('S1');
