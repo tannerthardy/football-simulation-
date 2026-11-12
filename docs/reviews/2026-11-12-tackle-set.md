@@ -1132,3 +1132,43 @@ Engine state (`tackle-anchor.mts`, seeds 101-103, S | SB):
   0.5 yd/s per 0.5 s.
 - So the next lever is not a controller rule: it is how a body pushed back through its hands resists, which is a
   shared capacity question (the brake envelope vs leg drive in contact). Not changed; for Integration.
+
+## Before attempt 2 (physics): what the feet actually do when he is carried
+
+Instrumented `World.feet()` in a scratch worktree (diagnostic only, not committed: a hook after the ground-force
+allocation). The probe drove nativeTraceSetup plays, four verticals and smash against Cover 2, seeds 1-24, with
+A + TACKLE_SET + TACKLE_BRAKE. Sampled: the tackle engaged with the edge rusher in front, 1.5-2.5 s, kicking (4,152
+substeps). Forces in kg*yd/s^2, along x (+ = toward the rusher). p50 (p25 / p75):
+
+| term | value |
+|---|---|
+| requested / achieved x-velocity | −3.05 / −3.70 |
+| locomotion force (braking himself, the running brake envelope) | 578 (146 / 642) |
+| felt press | −586 (−700 / −369) |
+| lean target (leg drive into the felt load, = the press under PASS_ANCHOR's growth 0) | 559 |
+| lean achieved | 186 (132 / 310) |
+| lean limit at his base: m · ω0² · base radius (posture 0.59) | 261 |
+| allocation cap / leg strength / traction · availability | 1346 / 1619 / 1412 |
+| availability | 1.00 |
+
+**Reading (corrects the diagnosis above).**
+- He does answer the press with his legs: the World's lean, leg drive into the felt load. It is not only the running
+  brake.
+- The lean is held near his base of support. LEAN_PITCH lets it exceed m·ω0²·base radius (261 at posture 0.59) only
+  at the inverted pendulum's growth rate from where it is, and it decays (LEAN_DECAY) or is released as the felt press
+  swings (p25-p75 −700 to −369).
+- So the drive available already follows posture and base, as Integration's condition (2) asks. A man moving back
+  cannot put full drive in at once. Nothing is capped by strength or traction (use 756 of a 1346 cap).
+- "Asking to hold, 1000-1200" is the same envelope at lower speed: the running brake plus the base-limited lean. It
+  does not demonstrate a 1530 push from rest; I said it did, and that was wrong.
+- So the physical inconsistency I named (a loaded body answering only with a runner's stopping envelope) is not
+  there. What remains:
+  1. **Technique (controller).** He sets at posture 0.6 whatever the press. A lower, wider base under a heavy press
+     (PASS_SINK, an existing flag, off) raises the base limit about 1.26x.
+  2. **Technique (controller).** Under PASS_ANCHOR his lean target is the press (growth 0), so his legs can only
+     cancel the press, never slow the pair. Its reason: a pull or swim must not pitch him onto the rusher.
+  3. **Physics, open question.** Decelerating himself (locomotion) needs no lean; resisting a press needs lean
+     within his base. In an inverted-pendulum model both are horizontal ground force with the centre of pressure
+     offset. Whether the asymmetry is right is a whole-body question for every body, not one to change for the
+     anchor.
+- No attempt 2 built. For Integration.
