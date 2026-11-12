@@ -575,7 +575,7 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   // EDGE_ARC: an edge's cue for it is the tackle he sees oversetting.
   const arcOut = e.blocker.passSet?.outside ?? 0;
   const edgeArc = EDGE_ARC && e.type === 'pass' && arcOut !== 0 && Math.abs(d.pos.y - sim.ballY) > 3;
-  const overset = edgeArc ? seenOverset(sim.see(d, e.blocker).pos, d.pos, arcOut)
+  const overset = edgeArc ? seenOverset(sim.see(d, e.blocker).pos, d.pos, arcLandmark(sim, e.blocker, d))
     : e.phi * e.side < -0.15 || (e.type === 'pass' && e.blocker.vel.x < -2 && e.phi * e.side < 0.1);
   if (overset) w.push(['spin', 0.4 + fin * 1.2], ['swim', 0.4 + fin * 0.6]);
   return sim.dice('rep', e.blocker, d).weighted(
@@ -776,9 +776,24 @@ export const ARC_ROOM = 0.45;
 /** Past the tackle's hips: deeper than him by this much (yd). */
 export const ARC_PAST = 0.3;
 
-/** EDGE_ARC: the tackle seen oversetting -- his body level with or outside the rusher's, and close enough to matter. */
-export function seenOverset(seen: Vec2, rusher: Vec2, out: number): boolean {
-  return (seen.y - rusher.y) * out > -0.1 && Math.abs(seen.x - rusher.x) < 1.5;
+/** The width a tackle's kick takes from his alignment (the set point in behaviors/blocking.ts): coached, so both sides know it. */
+export const KICK_WIDTH = 0.8;
+
+/** EDGE_ARC (attempt 2): the rusher's arc from what he saw at the snap -- the
+ * tackle's alignment and the width a kick takes from it. `out` is the
+ * tackle's outside, `setY` where his set should be, `y` the landmark outside
+ * it (bodies + ARC_ROOM). Off his live shoulder instead (attempt 1) a tackle
+ * who widened dragged the landmark out with him (tackle +1.6 yd wide at 3.0 s,
+ * NFL -0.6). */
+export function arcLandmark(sim: PlaySim, tackle: Agent, rusher: Agent): { out: number; setY: number; y: number } {
+  const home = sim.offAlign.spots[tackle.slot]?.pos.y ?? tackle.pos.y, out = Math.sign(home - sim.ballY) || 1;
+  const setY = home + out * KICK_WIDTH;
+  return { out, setY, y: setY + out * (tackle.profile.radius + rusher.profile.radius + ARC_ROOM) };
+}
+
+/** EDGE_ARC: the tackle seen oversetting -- wider than his set by more than the room the arc leaves, close enough to matter. */
+export function seenOverset(seen: Vec2, rusher: Vec2, arc: { out: number; setY: number }): boolean {
+  return (seen.y - arc.setY) * arc.out > ARC_ROOM && Math.abs(seen.x - rusher.x) < 1.5;
 }
 /** A body width and a step: how far short of the launch point the tackle sets. */
 export const TACKLE_SET_SHORT = 1.0;
@@ -1053,7 +1068,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const arcOut = b.passSet?.outside ?? 0;
   if (EDGE_ARC && !power && arcOut !== 0 && Math.abs(d.pos.y - sim.ballY) > 3 && lat.y * e.side * arcOut > 0) {
     const qbSeen = sim.see(d, sim.qb, 0.5).pos;
-    aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: b.pos.y + arcOut * (sep + ARC_ROOM) };
+    aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: arcLandmark(sim, b, d).y };
   }
   const toAim = norm(sub(aim, d.pos));
   const rush = d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);

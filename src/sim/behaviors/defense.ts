@@ -20,7 +20,7 @@ import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
-import { ARC_PAST, ARC_ROOM, EDGE_ARC, seenOverset, traits } from '../engagement.js';
+import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '../run-fits.js';
@@ -471,11 +471,10 @@ export class PassRusher implements Behavior {
     // depth; past the key's hips he turns for the QB; a key he sees oversetting
     // opens the inside, and he takes it.
     if (EDGE_ARC && edge && this.keyed) {
-      const tk = sim.see(a, this.keyed).pos, out = Math.sign(tk.y - sim.ballY) || 1;
-      if (a.pos.x >= tk.x - ARC_PAST && !seenOverset(tk, a.pos, out)) {
+      const tk = sim.see(a, this.keyed).pos, arc = arcLandmark(sim, this.keyed, a);
+      if (a.pos.x >= tk.x - ARC_PAST && !seenOverset(tk, a.pos, arc)) {
         a.tags.add('edge-arc');
-        const room = this.keyed.profile.radius + a.profile.radius + ARC_ROOM;
-        return runThrough(a, { x: Math.min(qbSeen.x, tk.x - ARC_PAST - 0.2), y: tk.y + out * room }, { speed: 1, cutSkill: bend });
+        return runThrough(a, { x: Math.min(qbSeen.x, tk.x - ARC_PAST - 0.2), y: arc.y }, { speed: 1, cutSkill: bend });
       }
       return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
     }
