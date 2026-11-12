@@ -1206,7 +1206,17 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // PASS_KICK: match the rusher's upfield speed as well as close the gap
   // (closing alone trails a moving rusher by his speed x 0.55 s).
   const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -known.vel.x) : 0;
-  const kick = depth < setDepth ? Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), (setDepth - depth) / 0.55 + follow) : 0;
+  let kick = depth < setDepth ? Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), (setDepth - depth) / 0.55 + follow) : 0;
+  // TACKLE_SET (stage 3, attempt 2): while the rusher threatens the corner he
+  // kicks to his set, timed to get there when the rusher's seen path reaches
+  // that depth -- meeting the arc at the set -- not matching the rusher's
+  // depth speed (PASS_KICK's follow kept him as fast as the rusher, -3.0 to
+  // -3.5 yd/s engaged at 1.0-2.5 s against the NFL's -2.25 to -2.75).
+  if (floor !== null && !sitting) {
+    const toSet = Math.max(0, b.pos.x - floor), rusherToSet = Math.max(0, known.pos.x - floor);
+    const arrive = rusherToSet / Math.max(0.5, -known.vel.x);
+    kick = Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), toSet / Math.max(0.3, arrive));
+  }
   // PASS_SINK (experimental, off): under a heavy load he sinks his hips
   // rather than leaning his chest over his feet: a lower centre of mass
   // carries the same push with less forward lean (more balance margin), at
