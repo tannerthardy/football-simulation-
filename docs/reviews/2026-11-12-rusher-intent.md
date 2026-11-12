@@ -62,3 +62,44 @@ is the GAPS item). Gates:
 - inside-cross.py's crossing speed and reach-the-QB after an across-the-face crossing;
 - pressure-source, edge win, sacks;
 - the run report as control (run reps do not use this path).
+
+# RUSH_INTENT: two attempts
+
+## Attempt 1 (b6f2a8d1)
+
+Edge with leverage; power with momentum and a blocker giving ground; stall (1.2 yd/s) otherwise.
+- Commitment: 0.25 intent switches/s, 3% reversed within 0.6 s.
+- But stall took 77% of engaged time: it was self-locking, because stalling killed the momentum that power required.
+- Engaged edge speed 3.26 / 2.37 / 1.27 (NFL 3.58 / 3.48 / 2.36); toward the QB 1.90 / 1.06 / 0.42, worse than off.
+- Pressure 32.4% looked NFL-like, but for the wrong reason: the rushers walked.
+
+## Attempt 2 (d5af34e3)
+
+With no leverage he presses through the blocker at the QB (0.55 vmax, push 0.75-1.0 by power and mass). He stalls
+only while being driven back.
+- Commitment: 0.10 switches/s, 5% reversed. Press 87%, edge 12%, stall 0%.
+
+Engaged edge rusher (rusher-engaged.py), toward the QB / across:
+
+| | 0.5-1.5 s | 1.5-2.5 s | 2.5-4.0 s |
+|---|---|---|---|
+| NFL | 2.53 / 2.20 | 2.46 / 2.06 | 1.37 / 1.35 |
+| off | 2.34 / 3.23 | 1.37 / 2.96 | 0.20 / 2.50 |
+| RUSH_INTENT 2 | 2.44 / 2.40 | 1.81 / 1.86 | 0.68 / 1.79 |
+| RUSH_INTENT 2 + PAST + TACKLE_SET + OPEN_HANDS + PUNCH | 3.10 / 1.38 | 2.40 / 1.86 | 1.31 / 1.32 |
+
+| seed 201 x 8 | pressured | in front | inside (free) | past outside | at the win | edge win | across-face crossers reach the QB | sacked | tackle retreat 1.5-2.0 s |
+|---|---|---|---|---|---|---|---|---|---|
+| off | 36.5% | 12.6% | 6.5% (96%) | 2.2% | 10/57/33 | 13% | 38% | 4.5% | −3.50 |
+| RUSH_INTENT 2 | 42.6% | 14.0% | 9.1% (97%) | 4.0% | 13/52/35 | 18% | 39% | 6.2% | −3.00 |
+| PAST + SET + OPEN + PUNCH | 37.2% | 8.7% | 4.8% (94%) | 4.5% | 25/47/28 | 12% | 30% | 3.8% | −3.50 |
+| + RUSH_INTENT 2 | 39.6% | 10.0% | 5.1% (89%) | 6.3% | 26/51/23 | 14% | 58% (n small) | 4.6% | −3.00 |
+| NFL | 32.9% | 3.0% | 6.4% (48%) | 3.8% | 26/27/47 | 13% | 20% | 6.7% | −2.75 |
+
+**Reading.**
+- The direct measurement the item was for (an engaged rusher's drive at the QB against his sideways scrape) moves
+  most of the way to the NFL's, with the other flags almost all the way.
+- But a pressing rusher walks the tackle back: pressure and the in-front share go up. That is the tackle's anchor
+  (the walk-back diagnosed earlier), now loaded by a rusher who pushes, not the rusher's intent.
+- Two attempts. The mechanism (his request) is repaired in the direct measurement; the outcome waits on the tackle's
+  side.
