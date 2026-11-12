@@ -20,7 +20,7 @@ for (let s = first; s < first + games; s++) {
     if (kind !== 'scrimmage' || !sim.isPass) return undefined;
     const dir = sim.attackDir('O');
     const X = (x: number) => (x - sim.los) * dir;
-    let pairs: any[] | null = null; const recs: any[] = [];
+    let pairs: any = null;
     const tick = sim.tick.bind(sim);
     sim.tick = () => { tick();
       const qb = sim.qb; if (!qb) return;
