@@ -168,3 +168,33 @@ pass 2 x 16 for A is re-run on it before the PR.
   'past' now requires the man to be out of the tackle's way. That leaves the ride for genuine corners only.
 - A worse statistic is not a veto. The explanation is the mechanism: A removes the free restraint-and-chase the
   engine had, and does not yet add what lets a rusher win (the anchor and the moves are physical next).
+
+# HOLD_CALL (off, parked): committed / material / called (90f87a6f)
+
+The offence's hold is judged in stages, not by which exemption fires first (`src/sim/contact-holding.ts`, `holdStage`).
+Committed is a clear restraint of a man past the blocker's frame (PAST's test, now ahead of the point-of-attack and
+double no-calls) or whose feet the grip took. Material is the man at the point of attack, or the next defender to the
+ball (distance over top speed against every unblocked standing defender), asking toward it, not inside a double.
+Called is material and seen: OFFICIATE's ramp on the act's accumulated opposing Δv (0 at 0.3 yd/s, 0.6 at 1.8 yd/s),
+divided by 1 + the other bodies within 1.5 yd of the man, one draw per pair per play. Not fitted. Off is bit-identical.
+
+Set A + HOLD_CALL, seeds 101-108 (16 team-games), per team-game (`holds-probe.mts`):
+
+| | committed | material | called |
+|---|---|---|---|
+| run | 1.69 (27) | 0.69 (11) | 0.06 (1) |
+| pass | 0.06 (1) | 0 | 0 |
+
+NFL 2022: about 1.1 accepted offensive holds per team-game in all.
+
+- Pass: 3,145 pass-pro restraint records, all with the blocker still in front by PAST's frame. Our rushers almost never
+  get by a tackle who still has hands on them, so the hold has nothing to act on. The frame is not to be loosened to
+  make pass holds; they should appear when edge rushers win the corner at the NFL's rate (the anchor, the rusher's work).
+- Run: material holds deliver Δv 0.16-0.73 yd/s, mostly with 1-5 bodies near; the chance seen is 0-0.17. The one call
+  was 2.2 yd/s in the clear. Not material: 13 not next to the ball, 3 not going toward it.
+
+Notes for when edge rushers win (Integration, 2026-11-12):
+
+- (a) PI's visibility ramp was fitted on unoccluded downfield contact. It is probably too hard on line play, where the
+  umpire and referee are positioned to watch exactly this; holding's visibility needs its own basis.
+- (b) "Material" as next to the ball and going toward it looks right.
