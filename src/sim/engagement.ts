@@ -427,7 +427,17 @@ export function gripFor(sim: PlaySim, joint: HandJoint, holder: Agent, man: Agen
   const bear = Math.atan2(holder.pos.y - seen.pos.y, holder.pos.x - seen.pos.x);
   const off = Math.abs(((bear - seen.facing) * 180 / Math.PI + 540) % 360 - 180);
   let left = off > 90;
-  if (!left && !OPEN_HANDS_BACK_ONLY && e) {
+  if (!left && !OPEN_HANDS_BACK_ONLY && PAST_ALONG_PATH) {
+    // Past along his path, as he feels it, carried forward by how fast he is going by (the same lead).
+    const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1), sp = Math.hypot(seen.vel.x, seen.vel.y);
+    if (sp >= 1) {
+      const rx = holder.pos.x - seen.pos.x, ry = holder.pos.y - seen.pos.y;
+      const along = (rx * seen.vel.x + ry * seen.vel.y) / sp;
+      const rate = -(seen.vel.x * seen.vel.x + seen.vel.y * seen.vel.y - holder.vel.x * seen.vel.x - holder.vel.y * seen.vel.y) / sp;
+      left = along + rate * lead < -PAST_MARGIN;
+    }
+  }
+  else if (!left && !OPEN_HANDS_BACK_ONLY && e) {
     const axis = axisOf(sim, e), lat = latOf(axis);
     const phiAt = (p: Vec2): number => {
       const bd = norm(sub(holder.pos, p));
@@ -806,6 +816,32 @@ const RIDE_LEAD = 0.3;
  * is added: the physics decides whether the anchor holds. */
 export const TACKLE_SET = process.env.TACKLE_SET === '1';
 
+/** PAST_ALONG_PATH (experimental, off; PAST_ALONG_PATH=1 turns it on): a
+ * blocker is beaten when the man is past him along the man's own path of
+ * travel (hips past hips: the blocker more than PAST_MARGIN behind him along
+ * his velocity), the football meaning and the officials'. Off, the pass rep's
+ * beat is |phi| >= 1 against the man's line to the QB: with a kicking tackle
+ * 47% of corner beats fired while the rusher was still level along his path,
+ * and with an anchored tackle the beat fired with the man past but still
+ * within reach and hands on, freeing him 4-5 yd from the QB to bend inside
+ * (beat-probe.mts; docs/reviews/2026-11-12-tackle-set.md). Past but within
+ * reach, the rep goes on as a ride: the blocker turns with him and pushes him
+ * on past the QB; it ends when the man is out of reach. OPEN_HANDS's frame
+ * uses the same test (`gripFor`): the grip lapses when the ride starts. */
+export const PAST_ALONG_PATH = process.env.PAST_ALONG_PATH === '1';
+/** Hips past hips: how far behind the man, along his path, the blocker must be (yd). */
+export const PAST_MARGIN = 0.3;
+/** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
+const RIDE_PUSH = 1.0;
+
+/** PAST_ALONG_PATH: is the man past the blocker along his own path of travel?
+ * Below a walk, his path is not defined; the leverage (phi) decides. */
+export function pastAlongPath(b: { pos: Vec2 }, d: { pos: Vec2; vel: Vec2 }, phi: number): boolean {
+  const sp = Math.hypot(d.vel.x, d.vel.y);
+  if (sp < 1) return phi >= 1;
+  return ((b.pos.x - d.pos.x) * d.vel.x + (b.pos.y - d.pos.y) * d.vel.y) / sp < -PAST_MARGIN;
+}
+
 /** EDGE_ARC (experimental, off; EDGE_ARC=1 turns it on): an edge rusher runs
  * the arc as it is taught. His landmark is outside the tackle's outside
  * shoulder at the depth he sees the QB set: he gets level with the tackle
@@ -1100,7 +1136,22 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Leverage is where the bodies are, relative to the QB, every tick.
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
-  if (Math.abs(e.phi) >= 1 && !canRidePassContact(e, t)) {
+  // PAST_ALONG_PATH: beaten means past the blocker along the man's own path
+  // of travel; past but still within reach, the rep goes on as a ride.
+  let riding = false;
+  if (PAST_ALONG_PATH) {
+    const past = pastAlongPath(b, d, Math.abs(e.phi));
+    if (past) {
+      const reach = b.profile.radius + d.profile.radius + b.player.measurables.armIn / 36;
+      if (Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) > reach && !canRidePassContact(e, t)) {
+        if (tryHold(sim, e)) return;
+        beat(sim, e, axis, lat, false, 'past him');
+        return;
+      }
+      riding = true;
+    }
+  }
+  else if (Math.abs(e.phi) >= 1 && !canRidePassContact(e, t)) {
     if (tryHold(sim, e)) return;
     beat(sim, e, axis, lat, false, 'turned the corner');
     return;
@@ -1210,6 +1261,14 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: PASS_SINK && heavy ? 0.95 : 0.6,
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
+  if (riding) {
+    // PAST_ALONG_PATH: the ride. He has been beaten along the man's path but
+    // is still within reach: he turns with him, keeps up, and pushes him on
+    // past -- away from the QB -- with his hands on the man's side.
+    const away = norm(sub(d.pos, qb));
+    intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
+      facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
+  }
   helperIntents(sim, e, intents, axis);
 }
 
