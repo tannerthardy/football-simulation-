@@ -85,6 +85,7 @@
     "LOOK_ONCE": "on",
     "FLOW_INTERCEPT": "off",
     "FORECAST_BREAK": "on",
+    "FORECAST_HOLD": "off",
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRAB_CONNECT": "off",
