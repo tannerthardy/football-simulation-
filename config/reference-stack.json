@@ -29,6 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
+    "BACK_FRONT": "off",
     "BACK_RELEASE": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
