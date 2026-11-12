@@ -1172,3 +1172,50 @@ substeps). Forces in kg*yd/s^2, along x (+ = toward the rusher). p50 (p25 / p75)
      offset. Whether the asymmetry is right is a whole-body question for every body, not one to change for the
      anchor.
 - No attempt 2 built. For Integration.
+
+## The owner's anchor shape (re-set the base) against the sources, and what the body model has
+
+**Sources: `docs/references/offensive_line_protection_textbook.pdf`.**
+- §7.6, anchoring power: "keep feet under the body, sink through hips/knees, reestablish inside leverage, and absorb
+  force through a braced trunk and foot repositioning … replace ground with short, coordinated steps. A guard can cede
+  a controlled yard."
+- §7.6, the anchor progression: "widen/replace support foot without crossing → lower center of mass with spine
+  controlled → absorb and steer, not simply lean back → prepare for spin or late counter when rusher feels the
+  anchor."
+- §7.7: against speed-to-power, "Stop retreat, bring feet under hips, anchor." The red flag is "recoil into QB at five
+  yards". Against bull and long arm, "refit inside hand, brace, replace feet". The red flag is "hips driven backward".
+- §8.4: "turn a deepening set into an anchor without getting his outside foot stuck behind him … anchored by foot
+  leverage rather than falling forward."
+- §20.5, the anchor-and-reset drill: "blocker absorbs, resets feet, then reacts to spin." The re-set is a window a
+  counter attacks.
+- §1.1: giving up two yards to absorb a bull rush can be a successful rep.
+
+The sources support (a) drive needs the base under the hips, (b) re-setting it is a coached technique with a cost and a
+counter window, and (c) the set stance's push applies after. They describe it as short replacement steps (widen or
+replace the support foot); "hop" is not their word. Modelled as base replacement, of which a hop is one form.
+
+**What the body model already represents.**
+- **The base under him, against the load's direction:** `support.lean`, his centre of mass held toward a felt load.
+  The legs' drive into the load is the lean. It is limited by `baseRadiusAt(posture)` (a lower, wider stance is a
+  bigger base) and, under LEAN_PITCH, grows past the base only at the inverted pendulum's rate. `support.xi`
+  (capture-point deviation) and `availability` (from xi against the base) represent losing balance. Posture moves
+  at POSTURE_RATE.
+- **(a) is already there:** carried back under a swinging press, his lean is about 186 of a 559 target (base limit
+  261). Little drive, because his base is not under him.
+- **The re-set's speed:** `profile.stepSpeed`, the recovery stepping speed that already moves the base under a
+  displaced centre of mass, scaled by fatigue and feet held.
+
+**What is missing.**
+- **The choice.** A controller action, the tackle's: from the press he feels and being carried past his request, he
+  re-sets. Cue: felt press with achieved retreat beyond requested. How often and how early comes from his
+  pass-block technique; how fast from stepSpeed and balance. No timer.
+- **Its effect.** When the step completes, his feet are under his hips toward the load: his lean may be set at once to
+  the base limit at the sunk posture (PASS_SINK's lower posture). Today it can only grow toward that at the pendulum
+  rate. From there it grows to the press as now, and his push capacity (sp.pushForce, unchanged) applies through
+  it. No new capacity.
+- **Its cost.** Duration = step length / stepSpeed. Ground given = the step, his retreat continuing through it.
+- **Lightness.** During the step his feet are unweighted, so traction and availability fall: a pull or push in that
+  window moves him more, and a rusher's move landing in it finds him light. The model has no per-foot normal load. A
+  stand-in is needed (traction x availability scaled down for the step's duration), recorded as debt. Today's pass
+  move resolution is the rating roll (GAPS); the window's physical effect comes through traction until moves are
+  resolved physically.
