@@ -15,6 +15,8 @@ import type { PlaySim } from './playsim.js';
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
 export const TRACKING_REACH_BONUS = .3;
+/** Half the football's width across its short axis (about 0.1 yd); a ball this close to a body touches it. */
+const BALL_HALF_WIDTH = 0.1;
 /** Default on (TIP_AWAY=0 turns it off): a defender who breaks up or bats a pass
  * has sent it away from his own hands. He cannot also catch that deflection;
  * teammates and the receiver still can. Without it he may play his own tip
@@ -447,11 +449,26 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     }
     return false;
   }
+  if (!sees) {
+    // A defender who does not see the ball cannot play it with his hands; it
+    // can only hit him. If its path crosses his body (his radius plus the
+    // ball's half-width, below his height) it comes off him: a deflection off
+    // a body, not a play on the ball, and not a pass defensed. Before this, a
+    // blind defender broke up 12% of balls that merely passed within his
+    // arm's reach of his centre.
+    if (o.dh <= D.profile.radius + BALL_HALF_WIDTH && o.z <= D.profile.heightYd) {
+      sim.event('deflection', D, ball.target, 'off his body');
+      D.noCatchUntil = touchedUntil(sim, 0.25);
+      deflect(sim, 0.3, 'tip', D);
+      return true;
+    }
+    return false;
+  }
   const stretch = o.dh / (D.profile.reach + 0.3);
   const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;
-  let pInt = sees ? clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45) : 0;
+  let pInt = clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45);
   if (ball.deflected) pInt *= 0.35;
-  const pDefl = sees ? clamp(0.35 + 0.3 * D.r('ballSkills') - 0.2 * stretch, 0.15, 0.75) : 0.12;
+  const pDefl = clamp(0.35 + 0.3 * D.r('ballSkills') - 0.2 * stretch, 0.15, 0.75);
   const roll = rng.next();
   if (roll < pInt && inBounds(D)) {
     sim.possess(D, 'interception');
