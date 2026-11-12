@@ -85,6 +85,8 @@
     "GAZE": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
+    "CATCH_CHOICE": "0",
+    "CATCH_SPEED": "0",
     "IN_STRIDE_CATCH": "0",
     "HANDS_CUE": "0",
     "KEEPER_TORSO": "1",

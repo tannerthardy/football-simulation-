@@ -14,6 +14,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
+import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -572,6 +573,10 @@ export class TrackBall implements Behavior {
   readonly kind = 'track';
   private readonly reactAt: number;
   private readonly err: Vec2;
+  /** CATCH_CHOICE: his read of the margins over the defender (s), one error per throw; and his current choice. */
+  private readonly judge: number = 0;
+  private choice: CatchChoice | null = null;
+  private choseAt = -1;
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -581,6 +586,7 @@ export class TrackBall implements Behavior {
     this.reactAt = sim.t + 0.08 + 0.25 * (1 - tr);
     const dice = sim.dice('track', a);
     this.err = { x: dice.normal(0, 0.5 * (1 - tr)), y: dice.normal(0, 0.5 * (1 - tr)) };
+    if (CATCH_CHOICE) this.judge = sim.dice('catch-choice', a).normal(0, 0.1 + 0.2 * (1 - tr));
     a.tags.add('onBall');
   }
 
@@ -606,7 +612,15 @@ export class TrackBall implements Behavior {
       return { vel: { x: vx, y: vy }, facing: near
         ? angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y }) : undefined };
     }
-    const spot = catchSpot(a, sim);
+    let spot: { p: Vec2; t: number } | null = null;
+    if (CATCH_CHOICE) {
+      // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
+      if (!this.choice || (sim.t - this.choseAt >= 0.1 - 1e-9 && this.choice.t - sim.t > 0.3)) {
+        this.choice = chooseCatchPoint(a, sim, this.judge) ?? this.choice; this.choseAt = sim.t;
+      }
+      spot = this.choice;
+    }
+    spot ??= catchSpot(a, sim);
     if (!spot) return this.fallback.update(a, sim);
     const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
     if (HANDS_CUE) noteHands(a, sim.t, spot.t);

@@ -110,6 +110,8 @@
     "HOLD_FINISH": "on",
     "HOLD_SINK": "off",
     "HANG_AIRBORNE": "off",
+    "CATCH_CHOICE": "off",
+    "CATCH_SPEED": "off",
     "IN_STRIDE_CATCH": "off",
     "HANDS_CUE": "off",
     "IZ_FLAT": "on",

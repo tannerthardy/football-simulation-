@@ -21,7 +21,7 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
   let qb: any = null, forced = false, T: any = null, meet: any = null;
   const tb = sim.throwBall.bind(sim);
   sim.throwBall = (q: any, r: any, v0: any, pt: any, arr: number) => {
-    if (forced && !T) T = { t: sim.t, pt: { x: pt.x, y: pt.y }, from: { x: q.pos.x, y: q.pos.y }, arr, r, rpos: { x: r.pos.x, y: r.pos.y }, rvel: { x: r.vel.x, y: r.vel.y } };
+    if (forced && !T && r) T = { t: sim.t, pt: { x: pt.x, y: pt.y }, from: { x: q.pos.x, y: q.pos.y }, arr, r, rpos: { x: r.pos.x, y: r.pos.y }, rvel: { x: r.vel.x, y: r.vel.y } };
     return tb(q, r, v0, pt, arr);
   };
   const ev0 = sim.event.bind(sim);
