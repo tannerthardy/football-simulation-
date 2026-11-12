@@ -735,6 +735,46 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
+/** OPEN_CARRY (experimental, off; OPEN_CARRY=1 turns it on): an underneath
+ * zone or match defender carrying a route keeps his hips as square to the QB
+ * as his run allows, instead of turning his back to run with it. His facing
+ * is the CUSHION_BREAK rule (`openTo`): the smallest opening off the line to
+ * the QB, toward the receiver, at which his body's facing speed cap reaches
+ * the speed his own carry request asks for. A defender with poorer hips or
+ * speed is opened further, sooner, by the same curve. On a vertical, if his
+ * own picture shows a deep teammate over the receiver, he opens no further
+ * than side-on: he gives ground and the route goes to the help. With no help
+ * in his picture (none there, or it rotated away before he saw it go) he
+ * opens as far as the speed needs, back to the QB if he must.
+ * Why: NFL zone defenders running with a route from 3-6 yd face the QB within
+ * 90 deg 91% of the time at release - 0.3 s; ours 62%, through man-open,
+ * carry-run-past and lane-carry, which dropped the QB facing outright (BDB
+ * 2025 weeks 1-2 vs sim, nfleyes.py / eyesprobe.mts by nearest receiver). */
+export const OPEN_CARRY = process.env.OPEN_CARRY === '1';
+/** OPEN_CARRY: does his own picture show a deep teammate over this receiver
+ * (3+ yd deeper than the receiver, within 12 yd of his line)? */
+function seesDeepHelp(a: Agent, sim: PlaySim, receiver: Vec2): boolean {
+  const up = sim.attackDir('O');
+  for (const t of sim.defense) {
+    if (t === a) continue;
+    const s = sim.see(a, t).pos;
+    if ((s.x - receiver.x) * up >= 3 && Math.abs(s.y - receiver.y) <= 12) return true;
+  }
+  return false;
+}
+/** OPEN_CARRY: his facing while he carries `receiver` with request `req`. */
+export function openCarryFacing(a: Agent, sim: PlaySim, receiver: Agent, req: MoveCommand, vertical: boolean): number {
+  const qb = sim.see(a, sim.qb).pos, r = sim.see(a, receiver).pos;
+  const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  const need = Math.hypot(req.vel.x, req.vel.y);
+  const facing = openTo(a, qb, r, Math.atan2(req.vel.y, req.vel.x), need);
+  const off = angleDiff(facing, toQB);
+  if (vertical && Math.abs(off) > Math.PI / 2 && seesDeepHelp(a, sim, r)) {
+    a.tags.add('open-carry-help');
+    return toQB + Math.sign(off) * Math.PI / 2;
+  }
+  return facing;
+}
 /** CUSHION_NEED (on since engine-27; CUSHION_NEED=0 restores): before his
  * hips open, a man defender's cushion on a released receiver is the one the
  * receiver's observed vertical threat requires (his own hip-turn threshold:
@@ -1040,9 +1080,15 @@ export class ManCoverage implements Behavior {
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     const cs = 0.85 + 0.35 * a.r('manCoverage');
-    const command = this.hipsOpen
-      ? withFacingTechnique(track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }),
-        { label: 'man-open', key: seen.vel })
+    const openReq = this.hipsOpen ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }) : null;
+    // OPEN_CARRY: an underneath match carry inside a zone call runs as square
+    // to the QB as his request allows (pure man and deep carries unchanged).
+    const underCarry = OPEN_CARRY && openReq && !sim.defCall.coverage.man && !o.protectDepth;
+    if (underCarry) a.tags.add('open-carry');
+    const command = openReq
+      ? underCarry
+        ? withFacingTechnique({ ...openReq, facing: openCarryFacing(a, sim, R, openReq, vx > 3) }, { label: 'open-carry', key: seen.vel })
+        : withFacingTechnique(openReq, { label: 'man-open', key: seen.vel })
       : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
         { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
@@ -1414,9 +1460,14 @@ export class ZoneCoverage implements Behavior {
       // then turn and run with him.
       const tgt = { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
       const runPast = th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
-      return withFacingTechnique(track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB,
-        speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 }),
-        { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
+      const carry = track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB,
+        speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
+      // OPEN_CARRY: run with the seam as square to the QB as the run allows.
+      if (OPEN_CARRY && runPast) {
+        a.tags.add('open-carry');
+        return withFacingTechnique({ ...carry, facing: openCarryFacing(a, sim, th.r, carry, true) }, { label: 'open-carry-seam', key: th.vel });
+      }
+      return withFacingTechnique(carry, { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;
@@ -1500,8 +1551,14 @@ export class ZoneCoverage implements Behavior {
     if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
     const settledLane = this.settledAt >= 0 && !carryingAcross;
     if (settledLane) tgt = settle(tgt);
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
-      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
+    const laneReq = track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
+    // OPEN_CARRY: carry the crosser as square to the QB as the run allows.
+    if (OPEN_CARRY && carryingAcross) {
+      a.tags.add('open-carry');
+      return withFacingTechnique({ ...laneReq, facing: openCarryFacing(a, sim, best.r, laneReq, false) }, { label: 'open-carry-cross', key: best.vel });
+    }
+    return withFacingTechnique(laneReq,
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
   }
 
