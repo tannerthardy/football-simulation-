@@ -325,3 +325,61 @@ Proposal (not built; Integration decides): its own flag, off. While a holder is 
 landed) and still holding, his hanging share is 1 (all of his weight on the hold). On landing it is HANG_SHARE as now.
 The rest stays the same: the stride comparison against hip torque, SWING_STRIP, LEGS_HELD. A leg hold then binds the
 stride for the airborne window; a hip hold may not.
+
+## HANG_AIRBORNE: three-arm read (2026-11-12)
+
+Arms: off; HANG_AIRBORNE; HANG_AIRBORNE + HOLD_SINK. Engine-35 (develop a702f0cd merged), sim-export seeds 201 and
+301, 16 games each.
+
+The HANG_AIRBORNE-only arm on seed 201 crashed in game 3 in the rules code: "Unsupported NFL 8-7-6: end-zone recovery
+impetus/momentum" (playsim.ts possess). The different play flow reached a rule the code does not support yet, which
+is for Rules + Coaching. So seed 201 has off and both flags only.
+
+Completions, `finish_split.py` against the NFL (n 4934):
+
+| | NFL | off 201 / 301 | HANG_AIRBORNE — / 301 | both 201 / 301 |
+|---|---|---|---|---|
+| standardised mean yards after contact (NFL on our mix about 2.0) | 2.18 | 3.13 / 3.09 | — / 2.81 | 3.17 / 2.66 |
+| play over within 1 s | 61% | 50 / 50% | — / 56% | 57 / 56% |
+| side, holder 4–6 | 1.5 yd, 0.8 s | 3.0 yd, 1.1 s / 2.4, 1.0 | — / 2.4, 1.2 | 2.2, 0.9 / 2.5, 1.1 |
+| behind, holder > 6 | 1.8, 0.7 | 3.2, 0.9 / 3.0, 0.9 | — / 3.0, 0.9 | 4.1, 0.9 / 3.0, 0.9 |
+| behind, holder 4–6 | 0.9, 0.8 | 1.7, 0.9 / 1.3, 0.9 | — / 1.5, 0.8 | 1.7, 0.8 / 1.1, 0.8 |
+| side, holder > 6 | 1.9, 0.8 | 4.9, 1.1 / 4.6, 1.2 | — / 4.2, 0.9 | 5.1, 1.3 / 4.2, 0.9 |
+| slow cells (holder < 4): front / side / behind | 1.6 / 1.5 / 0.9 | 1.4 / 2.0 / 1.3, 1.2 / 2.1 / 0.0 | — / 1.2 / 2.3 / 0.4 | 1.3 / 2.0 / 1.2, 1.2 / 2.3 / 0.7 |
+| ended by a second defender | — | 46 / 46% | — / 44% | 46 / 48% |
+| broke | — | 9 / 7% | — / 9% | 9 / 5% |
+| missed | — | 6 / 6% | — / 6% | 7 / 6% |
+
+Runs at the second level, standardised mean after contact: off 4.14 / 4.55; HANG_AIRBORNE — / 4.18; both 3.97 / 4.41.
+NFL on our mix 3.97–4.14; NFL own 4.41.
+
+The holder's fall, `finish-trace.mts` seed 101, 8 games, fast wraps where the holder fell while holding. Grip at the
+start of his fall:
+
+| arm | grip | n | stride bound in the fall | tore in the fall | yards after the wrap p50 | wrap to end |
+|---|---|---|---|---|---|---|
+| off | two arms, unlocked (lock < 0.5) | 13 | 3 | 5 | 9.2 | 1.70 s |
+| off | two arms, locked | 24 | 5 | 0 | 3.8 | 1.35 s |
+| HANG_AIRBORNE | unlocked | 10 | 8 | 7 | 16.0 | 2.65 s |
+| HANG_AIRBORNE | locked | 16 | 4 | 0 | 4.1 | 1.27 s |
+| both | unlocked | 11 | 10 | 3 | 4.0 | 0.70 s |
+| both | locked | 18 | 3 | 0 | 4.5 | 1.43 s |
+
+No one-arm holds reached a fall in this sample.
+
+Reading:
+- In the games the flag moves little: play over within 1 s 50 → 56–57%, standardised yards down 0.3–0.4 on seed 301,
+  flat on seed 201.
+- No cell overshoots below the NFL. The slow cells and second-defender involvement are about unchanged.
+- **The flag is too blunt in the way Integration asked about.** Unlocked holds bind the stride in the fall as often as
+  or more often than locked wraps (8–10 of 10–11 against 3–4 of 16–18). When they hold, they get the full benefit
+  (with HOLD_SINK: 0.70 s, 4.0 yd).
+- The hanging load acts through the stride comparison and never stresses the grip. A loose hold tears in the fall only
+  for other reasons (3–7 of 10–11), so a weak grab is as good as a locked wrap the moment the tackler leaves his feet.
+
+HANG_AIRBORNE waits. The next piece is routing the hanging weight through the grip's capacity: the hanging moment is
+transmitted only up to what the hold can carry, and the excess slides the grip and can tear it. That uses the same
+kind of reference: an unlocked hold's capacity against the holder's weight at the hold.
+
+Locked wraps also bind the stride less than expected (3–5 of 16–24). Many are hip holds (leg share < 0.65), where the
+statics says a hanging holder cannot stop the stride. That is the honest high-tackle case, not a defect.
