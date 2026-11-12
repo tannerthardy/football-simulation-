@@ -211,6 +211,13 @@ const TURN_RATE = 190 * Math.PI / 180;
  * - vertical peek: the verticals as one picture, one look, then the back.
  * Pressure and his clock still end any plan (QB_RHYTHM's outlet). Off: `concept.progression`. */
 const READ_PLAN = process.env.READ_PLAN !== '0';
+/** HOT_PLAN (experimental, off; HOT_PLAN=1 turns it on): under pressure his hot answer is the plan's answer when it
+ * is ready and clears his bar at that urgency (after the key read, the key's answer), the instant best of
+ * everything otherwise; and QB_RHYTHM's pressure jump to the back waits while the plan's answer is there. Off,
+ * the hot throw is the instant best (a back at P .6 over the key's open flat at .78) and, coming off a pump, he
+ * goes back to the back he pumped on (docs/reviews/2026-11-11-read-compiler-phase1.md). Read with BLOCK_SEEN, which
+ * lets him see the pressure that triggers it. */
+const HOT_PLAN = process.env.HOT_PLAN === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -602,7 +609,10 @@ export class QBPass implements Behavior {
 
     // QB_RHYTHM: with the rush or his clock telling him time is up, his eyes go
     // to the outlet (the last read) instead of finishing the order.
-    if (QB_RHYTHM && u > 0.5 && this.reads.length > 1 && this.readIdx < this.reads.length - 1) {
+    // HOT_PLAN: the plan's current answer, if it is there now at his pressure bar, is kept rather than left for the
+    // back (coming off a pump he re-evaluates instead of finishing the original thought).
+    const keepAnswer = HOT_PLAN && READ_PLAN && !!this.plan && u > 0.5 && this.planAnswer(a, sim, u) !== null;
+    if (QB_RHYTHM && u > 0.5 && !keepAnswer && this.reads.length > 1 && this.readIdx < this.reads.length - 1) {
       // READ_PLAN: coming off the plan under pressure, his eyes go to the back, wherever the plan read him.
       const back = READ_PLAN && this.plan?.outlet ? this.reads.indexOf(this.plan.outlet) : -1;
       if (back < 0 || back > this.readIdx) {
@@ -734,11 +744,27 @@ export class QBPass implements Behavior {
   /** The read logic's hot throw under imminent pressure: anything with P > 0.3
    * and an interception risk under 0.18 (Coverage owns its contents). */
   private hotThrow(a: Agent, sim: PlaySim): ThrowEval | null {
+    // HOT_PLAN: the hot answer is the plan's answer when it is ready and clears the hot bar (after a key read, the
+    // key's answer); the instant best of everything otherwise. FREE_BOUND's free-rusher count will feed the trigger.
+    if (HOT_PLAN && READ_PLAN && this.plan) {
+      const ans = this.planAnswer(a, sim, 1);
+      if (ans && ans.P > 0.3 && ans.intRisk < 0.18) return ans;
+    }
     const best = this.bestOption(a, sim, 1);
     return best && best.P > 0.3 && best.intRisk < 0.18 ? best : null;
   }
 
 
+
+  /** HOT_PLAN: the plan's current answer (the read he is on; after the key, the key's answer) evaluated at this
+   * urgency, if he is ready to throw it and it clears his bar at that urgency; null otherwise. */
+  private planAnswer(a: Agent, sim: PlaySim, u: number): ThrowEval | null {
+    const r = this.reads[this.readIdx];
+    if (!r || r === this.plan?.outlet || !this.ready(r, sim)) return null;
+    const ev = this.evaluate(a, sim, r, u);
+    const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
+    return ev && ev.P >= 0.6 - 0.12 * aggression - 0.32 * u && ev.intRisk <= 0.025 + 0.05 * aggression + 0.08 * u ? ev : null;
+  }
 
   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
    * clears his ordinary bar now; null otherwise. */
