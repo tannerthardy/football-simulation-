@@ -102,6 +102,20 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
  * defender who has read run plays his fit — he doesn't abandon his gap to
  * chase, including against a designed QB run.
  */
+/** ARRIVE_LEAD (experimental, off; ARRIVE_LEAD=1 turns it on): on a short
+ * throw he cannot beat to the catch, an underneath zone defender drives to the
+ * catcher's upfield shoulder. NFL nearest defenders on catches 0-10 yd past the
+ * line run on a line that crosses the catcher's lateral line 1.4-1.7 yd
+ * upfield of him (1.9 when the catcher is running across, 1.4 when moving
+ * away); ours 0.3-0.6 (BDB 2025 dropbacks vs engine-34; aimside.py). Leading
+ * along the route instead (attempt 1) aimed behind settling catchers. */
+const ARRIVE_LEAD = process.env.ARRIVE_LEAD !== '0';
+/** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
+function underneathZone(a: Agent): boolean {
+  const b = a.behavior as { plastersScramble?: boolean; zoneEyes?: boolean } | undefined;
+  return (a.behavior instanceof ZoneCoverage && !b?.plastersScramble) || b?.zoneEyes === true;
+}
+
 export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const read = observedHolder(a, sim);
   const preserveEdge = a.runFit?.kind === 'edge' || a.runFit?.kind === 'force' || a.runFit?.kind === 'cutback';
@@ -1125,6 +1139,9 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
+    // SHOULDER_READ: an underneath defender reading the QB breaks on the
+    // throwing motion toward the receiver the QB's shoulders point at.
+    if (SHOULDER_READ && !this.deep) { const lean = shoulderLean(a, sim); if (lean) return lean; }
     // A deep defender who reads run executes his cap/force contract. Alley
     // fits retain depth through the mesh; certainty about the hidden call is
     // not required, and a mistaken read can still expose play action.
@@ -1624,6 +1641,34 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 }
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
+/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): from the
+ * throwing motion, before the ball is out, an underneath zone defender with
+ * his eyes held on the QB breaks toward the receiver the QB's front shoulder
+ * and eyes point at, in his own delayed picture (seenQbEyes). How hard he
+ * commits is his read: more with anticipation, less with discipline (a
+ * disciplined defender waits for the ball). It costs what it costs: a pump or
+ * a look-off moves him the wrong way, and he recovers at his body's rates. NFL
+ * underneath zone defenders begin turning toward the eventual catcher about
+ * 0.3 s before the release (zone LB toward-catcher 0.0 at -0.3 s, +1.1 at the
+ * release); ours start about 0.1 s later at half the rate (+0.4 at the release),
+ * because the motion tells them when but not where (underarrival.py). */
+const SHOULDER_READ = process.env.SHOULDER_READ === '1';
+/** SHOULDER_READ: the windup-keyed lean, or null. */
+function shoulderLean(a: Agent, sim: PlaySim): MoveCommand | null {
+  // From his own pictures: he sees the QB holding it and has seen no ball in flight.
+  if (sim.windupAt < 0 || hasObservedFlight(a) || observedHolder(a, sim)?.target !== sim.qb) return null;
+  const qb = sim.see(a, sim.qb).pos;
+  if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) <= -0.2) return null;
+  const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
+  if (sim.t - sim.windupAt < react || !eyesHeldOnQB(a, sim, react, -0.2)) return null;
+  const target = seenQbEyes(a, sim);
+  if (!target) return null;
+  a.tags.add('shoulder-read');
+  const commit = clamp(0.3 + 0.4 * a.r('anticipation') + 0.3 * (1 - a.r('discipline')), 0.2, 1);
+  const c = chase(sim, a, target);
+  return withFacingTechnique({ ...c, vel: { x: c.vel.x * commit, y: c.vel.y * commit } }, { label: 'shoulder-lean', key: target.vel });
+}
+
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
 export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const ball = sim.ball;
@@ -1751,7 +1796,21 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
     // keeps a late defender outside the hands even when he can recover.
-    const tgt = land;
+    // ARRIVE_LEAD: an underneath zone defender who cannot beat the ball there
+    // drives to the catcher's upfield shoulder, not the catch point: the catch
+    // point carried upfield by both bodies and his reach, and across by the
+    // catcher's seen lateral run over the time he will be late (scaled by his
+    // pursuit; never along the route's downfield component, which turns at the
+    // catch). It takes away the upfield run and makes him go east-west; a
+    // catcher who cuts back underneath can still beat it.
+    let tgt = land;
+    if (ARRIVE_LEAD && window && underneathZone(a)) {
+      const late = Math.max(0, timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, land, a.profile.reach)
+        - (window.t - sim.t));
+      const upfield = a.profile.radius + window.receiver.profile.radius + a.profile.reach;
+      const across = window.seen.vel.y * late * (0.6 + 0.4 * a.r('pursuit'));
+      tgt = { x: land.x + upfield, y: clamp(land.y + across, 0.5, FIELD_WIDTH - 0.5) };
+    }
     const dx = tgt.x - a.pos.x;
     const dy = tgt.y - a.pos.y;
     const d = Math.hypot(dx, dy) || 1;
