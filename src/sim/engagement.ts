@@ -572,7 +572,12 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   // Even with the blocker on the working side: finish with dip-and-bend.
   if (e.phi * e.side > 0.4) w.push(['dip', 1.0 + td.bend * 1.5]);
   // Blocker over-set (rusher is inside his leverage): inside counter.
-  if (e.phi * e.side < -0.15 || (e.type === 'pass' && e.blocker.vel.x < -2 && e.phi * e.side < 0.1)) w.push(['spin', 0.4 + fin * 1.2], ['swim', 0.4 + fin * 0.6]);
+  // EDGE_ARC: an edge's cue for it is the tackle he sees oversetting.
+  const arcOut = e.blocker.passSet?.outside ?? 0;
+  const edgeArc = EDGE_ARC && e.type === 'pass' && arcOut !== 0 && Math.abs(d.pos.y - sim.ballY) > 3;
+  const overset = edgeArc ? seenOverset(sim.see(d, e.blocker).pos, d.pos, arcOut)
+    : e.phi * e.side < -0.15 || (e.type === 'pass' && e.blocker.vel.x < -2 && e.phi * e.side < 0.1);
+  if (overset) w.push(['spin', 0.4 + fin * 1.2], ['swim', 0.4 + fin * 0.6]);
   return sim.dice('rep', e.blocker, d).weighted(
     w.map((x) => x[0]),
     w.map((x) => Math.max(0.01, x[1])),
@@ -752,6 +757,29 @@ const RIDE_LEAD = 0.3;
  * docs/reviews/2026-11-12-edge-rush.md). No strength or anchoring capacity
  * is added: the physics decides whether the anchor holds. */
 export const TACKLE_SET = process.env.TACKLE_SET === '1';
+
+/** EDGE_ARC (experimental, off; EDGE_ARC=1 turns it on): an edge rusher runs
+ * the arc as it is taught. His landmark is outside the tackle's outside
+ * shoulder at the depth he sees the QB set: he gets level with the tackle
+ * there, turns for the QB once his hips are past the tackle's, and counters
+ * inside when he sees the tackle overset -- the tackle's body level with or
+ * outside his own, from his picture of the tackle, not the tackle's
+ * assignment. His bend (speed and cut) sets how well he runs it, his
+ * reaction how soon he reads the overset; nothing sets whether he wins. Off,
+ * his rush point in the rep is a corner beside the blocker measured along
+ * the line to the QB, which once level sits behind the tackle: he requested
+ * -2.6 to -3.1 yd/s across, achieved about 0, and won in front of the tackle
+ * (55-57% vs NFL 27%; docs/reviews/2026-11-12-edge-rush.md). */
+export const EDGE_ARC = process.env.EDGE_ARC === '1';
+/** Room outside the tackle's shoulder the arc's landmark leaves (yd): the corner's existing offset. */
+export const ARC_ROOM = 0.45;
+/** Past the tackle's hips: deeper than him by this much (yd). */
+export const ARC_PAST = 0.3;
+
+/** EDGE_ARC: the tackle seen oversetting -- his body level with or outside the rusher's, and close enough to matter. */
+export function seenOverset(seen: Vec2, rusher: Vec2, out: number): boolean {
+  return (seen.y - rusher.y) * out > -0.1 && Math.abs(seen.x - rusher.x) < 1.5;
+}
 /** A body width and a step: how far short of the launch point the tackle sets. */
 export const TACKLE_SET_SHORT = 1.0;
 
@@ -1019,7 +1047,14 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const bend = inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip');
   const turned = e.phi * e.side > 0.5;
   const corner = { x: b.pos.x + lat.x * e.side * (sep + 0.45) + axis.x * 0.35, y: b.pos.y + lat.y * e.side * (sep + 0.45) + axis.y * 0.35 };
-  const aim = power || turned ? qb : corner;
+  let aim = power || turned ? qb : corner;
+  // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
+  // the QB's depth outside the tackle's shoulder; past the hips he turns.
+  const arcOut = b.passSet?.outside ?? 0;
+  if (EDGE_ARC && !power && arcOut !== 0 && Math.abs(d.pos.y - sim.ballY) > 3 && lat.y * e.side * arcOut > 0) {
+    const qbSeen = sim.see(d, sim.qb, 0.5).pos;
+    aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: b.pos.y + arcOut * (sep + ARC_ROOM) };
+  }
   const toAim = norm(sub(aim, d.pos));
   const rush = d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
   intents[d.idx] = {
