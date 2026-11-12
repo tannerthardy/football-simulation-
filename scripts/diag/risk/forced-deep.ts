@@ -23,7 +23,7 @@ P.release = function (a: any, sim: any, ev: any) {
   const tb = sim.throwBall;
   sim.throwBall = (q: any, r: any, v0: any, pt: any, arr: number) => {
     sim.throwBall = tb;
-    if (cur && cur.forced && !cur.thrown) cur.thrown = { pt: { x: pt.x, y: pt.y }, from: { x: q.pos.x, y: q.pos.y }, arr, r, moving: Math.hypot(q.vel.x, q.vel.y) > 1, flick: +this.flick.toFixed(2),
+    if (cur && cur.forced && !cur.thrown) cur.thrown = { relT: sim.t, pt: { x: pt.x, y: pt.y }, from: { x: q.pos.x, y: q.pos.y }, arr, r, moving: Math.hypot(q.vel.x, q.vel.y) > 1, flick: +this.flick.toFixed(2),
       sigma: +this.missSigma(a, sim, Math.hypot(pt.x - q.pos.x, pt.y - q.pos.y), 0).toFixed(2) };
     return tb.call(sim, q, r, v0, pt, arr);
   };
@@ -36,7 +36,7 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
   const runners = sim.offense.filter((o: any) => o.behavior instanceof RouteRunner && ['go', 'seam'].includes(o.behavior.route?.id));
   const gos = runners.filter((r: any) => { const side = Math.sign(r.pos.y - by) || 1;
     return !runners.some((o: any) => o !== r && (Math.sign(o.pos.y - by) || 1) === side && Math.abs(o.pos.y - by) > Math.abs(r.pos.y - by) + 0.5); });
-  cur = { forced: false, thrown: null, at: null, arrive: null, contest: null };
+  cur = { forced: false, thrown: null, at: null, arrive: null, contest: null, land: null, recHist: [] };
   let qb: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -53,6 +53,22 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
       }
     }
     const T = cur.thrown;
+    // Coverage's deep_trail operator: where the ball comes down (descending through 1.6 yd) against where the receiver
+    // would be had he held his speed from 1.0 s before; and the actual flight time against the planned.
+    if (T) {
+      cur.recHist.push({ t: sim.t, x: T.r.pos.x, y: T.r.pos.y, vx: T.r.vel.x, vy: T.r.vel.y });
+      if (!cur.land && sim.ball.kind === 'air' && !sim.ball.securing) {
+        const b = sim.ballPos(), vz = sim.ball.flight?.vel?.z ?? 0;
+        if (b.z <= 1.6 && vz < 0 && sim.t > (T.relT ?? 0) + 0.3) {
+          const h = cur.recHist.reduce((p: any, q: any) => Math.abs(q.t - (sim.t - 1.0)) < Math.abs(p.t - (sim.t - 1.0)) ? q : p);
+          const held = { x: h.x + h.vx * (sim.t - h.t), y: h.y + h.vy * (sim.t - h.t) };
+          const ux = T.pt.x - T.from.x, uy = T.pt.y - T.from.y, L = Math.hypot(ux, uy) || 1;
+          const along = (p: any, o: any) => +(((p.x - o.x) * ux + (p.y - o.y) * uy) / L).toFixed(2);
+          cur.land = { t: +sim.t.toFixed(2), flight: +(sim.t - (T.relT ?? sim.t)).toFixed(2), planned: +(T.arr - (T.relT ?? T.arr)).toFixed(2),
+            vsHeld: along(b, held), vsAim: along(b, T.pt), heldVsAim: along(held, T.pt), recVsAim: along(T.r.pos, T.pt), deflected: !!sim.ball.deflected };
+        }
+      }
+    }
     if (T && !cur.at && sim.t >= T.arr - 1e-9) {
       const b = sim.ballPos(), ux = T.pt.x - T.from.x, uy = T.pt.y - T.from.y, L = Math.hypot(ux, uy) || 1;
       const split = (p: any) => { const dx = p.x - T.pt.x, dy = p.y - T.pt.y; return { along: +((dx * ux + dy * uy) / L).toFixed(2), across: +((dy * ux - dx * uy) / L).toFixed(2), dist: +Math.hypot(dx, dy).toFixed(2) }; };
@@ -76,5 +92,5 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
   }
   if (!T || !cur.at) continue;
   process.stdout.write(JSON.stringify({ coverage, formation, seed, flip, dist: +Math.hypot(T.pt.x - T.from.x, T.pt.y - T.from.y).toFixed(1), sigma: T.sigma, moving: T.moving, flick: T.flick,
-    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, ev: cur.ev, cmp: !!s.completed, int: !!s.interceptedBy, yards: +res.yards.toFixed(2) }) + '\n');
+    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, ev: cur.ev, land: cur.land, cmp: !!s.completed, int: !!s.interceptedBy, yards: +res.yards.toFixed(2) }) + '\n');
 }
