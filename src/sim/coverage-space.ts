@@ -16,10 +16,10 @@ import type { Agent } from './agent.js';
 export const PURSUIT_FIELD = process.env.PURSUIT_FIELD === '1';
 const carrierPursuit = Symbol('pursuit of a seen ball carrier');
 
-/** Mark a request as the pursuit of a ball carrier this player has seen.
- * The mark is inert unless PURSUIT_FIELD is on. */
+/** Mark a request as the pursuit of a ball carrier this player has seen
+ * (only with PURSUIT_FIELD on: off, the command is returned untouched). */
 export function asCarrierPursuit<T extends MoveCommand>(command: T): T {
-  return { ...command, [carrierPursuit]: true };
+  return PURSUIT_FIELD ? { ...command, [carrierPursuit]: true } : command;
 }
 
 export function isCarrierPursuit(command: MoveCommand): boolean {
