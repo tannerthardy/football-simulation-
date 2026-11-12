@@ -140,7 +140,7 @@ const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
  * come off holds nothing. QB_FEEL's pocket move is not part of it. Off (and
  * QB_FEEL off), held() credits any engaged rusher 0.35-1.75 s from
  * engagement.win, which rises as the win score falls while he closes. */
-const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
+const BLOCK_SEEN = process.env.BLOCK_SEEN !== '0';
 /** Experimental (FREE_BOUND=1, off): a free man near him is a hit soon,
  * whatever he looks to be doing. For a rusher he sees unblocked (no offensive
  * body within arm's length of him) within FREE_NEAR, the QB's felt time is at
@@ -902,19 +902,37 @@ export class QBPass implements Behavior {
    * length: centres within the blocker's reach + the rusher's radius) and on his
    * path to the QB. Neither the sim's engagement record nor its win score: a
    * blocker who has come off (or never was there) holds nothing, and a rusher
-   * level with or past the blocker's edge is as near as he looks. */
+   * level with or past the blocker's edge is as near as he looks. A rusher in
+   * contact (any blocker within arm's length) is also paced: he closes no
+   * faster than the QB sees him closing while the contact lasts. */
   private seenHold(a: Agent, d: Agent, sim: PlaySim): number {
-    const r = this.felt(a, sim, d).pos;
+    const seen = this.felt(a, sim, d), r = seen.pos;
     const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
-    let hold = 0;
+    let hold = 0, contact = false;
     for (const o of sim.offense) {
       if (o === a || o.isDown(sim.t)) continue;
       const b = this.felt(a, sim, o).pos, width = d.profile.radius + o.profile.radius;
       if (Math.hypot(b.x - r.x, b.y - r.y) > o.profile.reach + d.profile.radius) continue;
+      contact = true;
       const along = ((b.x - r.x) * px + (b.y - r.y) * py) / L;
       const off = Math.abs((b.x - r.x) * py - (b.y - r.y) * px) / L;
       if (along <= 0 || along >= L || off >= width) continue;
       hold = Math.max(hold, (0.2 + (width - off) / 2) * (0.6 + 0.4 * (1 - a.r('pocketPresence'))));
+    }
+    if (contact) {
+      // A rusher still in a blocker's hands -- driving him back, or ridden from
+      // beside -- cannot burst at the QB as a free man would: while the contact
+      // lasts he closes at the pace the QB sees him closing. The felt time is at
+      // least that pace over the distance (2026-11-12: a bull rush and an edge
+      // ride each read about 0.35-0.6 s short as a fresh sprint at a QB
+      // standing still).
+      // Closing on him: the rusher's seen velocity toward him less his own
+      // (he knows how he is moving; a drift away is distance the rusher must
+      // still make up).
+      const closing = ((seen.vel.x - a.vel.x) * px + (seen.vel.y - a.vel.y) * py) / L;
+      const paced = Math.min(3, Math.max(0, L - 0.8) / Math.max(closing, 0.5));
+      const sprint = timeToReach({ pos: r, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8);
+      hold = Math.max(hold, paced - sprint);
     }
     return hold;
   }

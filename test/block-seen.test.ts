@@ -56,4 +56,30 @@ describe('BLOCK_SEEN', () => {
     expect(d.engagement).toBeTruthy();                           // the sim still has them engaged
     expect(b.held(qb, d, sim)).toBe(0);
   });
+
+  it('a bull rush: a rusher driving his blocker back at 3 yd/s is paced at that rate, not read as a fresh sprint', async () => {
+    const sim = await repro('1');
+    while (sim.phase === 'live' && sim.t < 3 && sim.qb.behavior.phase !== 'set') sim.tick();
+    const qb = sim.qb, b = qb.behavior;
+    const d = sim.defense.find((x: any) => x.slot === 'DE_S') ?? sim.defense[0];
+    const o = sim.offense.find((x: any) => x !== qb && x.profile.reach > 0.8) ?? sim.offense[1];
+    const f = qb.body.facing + Math.PI * 0.75, u = { x: Math.cos(f), y: Math.sin(f) };    // the rush comes from here
+    const at = 3.6, gap = 0.6;
+    const rp = { x: qb.pos.x + u.x * at, y: qb.pos.y + u.y * at }, bp = { x: qb.pos.x + u.x * (at - gap), y: qb.pos.y + u.y * (at - gap) };
+    const vel = { x: -u.x * 3, y: -u.y * 3 };
+    const felt = b.felt.bind(b);
+    b.felt = (a: any, s: any, x: any) => x === d ? { pos: rp, vel, age: 0.2, facing: f + Math.PI, stance: null }
+      : x === o ? { pos: bp, vel, age: 0.2, facing: f, stance: null }
+      : { pos: { x: 999, y: 999 }, vel: { x: 0, y: 0 }, age: 0.2, facing: 0, stance: null };
+    const { timeToReach } = await import('../src/physics/reach.js');
+    const sprint = timeToReach({ pos: rp, vel, profile: d.profile, speedScale: d.speedScale }, qb.pos, 0.8);
+    const moving = { x: qb.vel.x, y: qb.vel.y }; qb.body.vel = { x: 0, y: 0 };
+    const est = sprint + b.held(qb, d, sim);
+    qb.body.vel = moving;
+    const paced = (at - 0.8) / 3;
+    expect(sprint).toBeLessThan(paced - 0.15);                    // a fresh sprint reads him early
+    expect(est).toBeGreaterThanOrEqual(paced - 1e-9);              // paced at the rate he drives the blocker
+    expect(est).toBeLessThan(paced + 0.6);                         // plus at most the way round the blocker's body
+  });
 });
+
