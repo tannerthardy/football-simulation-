@@ -23,6 +23,7 @@ const GROUP: Record<string, string> = {
   QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL',
   EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB',
 };
+const CARRIER_CONTACT = new Set(['carrier_contact', 'hit', 'tackle_wrap', 'missed_tackle', 'broken_tackle']);
 const END = new Set(['tackle', 'out_of_bounds', 'touchdown', 'sack', 'incomplete', 'interception', 'safety', 'slide']);
 // 'miss': the ball reached a receiver who could not catch it (catching.ts) -- the arrival, as NFL pass_arrived is.
 const ARRIVE = new Set(['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss']);
@@ -90,6 +91,8 @@ export function commonPlay(p: PlayLog, id: string) {
       || ((e.type === 'tackle_wrap' || e.type === 'hit' || e.type === 'tackle') && e.b === receiver)));
     if (contact !== undefined) events.first_contact = r2(contact);
   }
+  const holder = receiver ?? carrier ?? null;
+  const holderT = caught ? caught.t : handoff?.t ?? 0;
   const pairs = new Map<string, [number, number]>();
   for (const e of ev) {
     if (e.type === 'block_contact' && e.a !== undefined && e.b !== undefined) pairs.set(`${e.a}:${e.b}`, [e.a, e.b]);
@@ -107,7 +110,12 @@ export function commonPlay(p: PlayLog, id: string) {
     // The sim's own calls, for cross-checking geometric operators (as nfl_bdb2025_ball.py does with the NFL's labels).
     labels: { throwaway: throwEv?.type === 'throwaway', grounding: ev.some(e => e.type === 'intentional_grounding'),
       interception: ev.some(e => e.type === 'interception'),
-      ballEvents: throwEv ? ev.filter(e => e.t >= throwEv.t && LABEL_BALL.has(e.type)).map(e => e.type) : [] },
+      ballEvents: throwEv ? ev.filter(e => e.t >= throwEv.t && LABEL_BALL.has(e.type)).map(e => e.type) : [],
+      // After the ball carrier gets the ball (catch, else handoff/pitch): the sim's own contact calls on him (defender
+      // index first), so an operator can name how the play ended after first contact (tackled, broke, missed, second
+      // defender). Sim-only; the NFL has no such calls.
+      carrierContacts: holder === null ? [] : ev.filter(e => e.t >= holderT && CARRIER_CONTACT.has(e.type)
+        && (e.a === holder || e.b === holder)).map(e => ({ t: r2(e.t), type: e.type, d: e.a === holder ? e.b ?? null : e.a ?? null })) },
     cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null, front: p.plan?.front ?? null,
       defPersonnel: p.plan?.defPersonnel ?? null, formation: p.plan?.formation ?? null, down: p.down, toGo: p.distance },
   };

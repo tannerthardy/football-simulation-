@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-34`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-35`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-35: `READ_PLAN` on, the quarterback runs a compiled read plan (2026-11-12)
+
+Rules + Coaching #592, from the owner's [read-compiler design](research/2026-11-11-qb-read-compiler-design.md). Each called play is compiled into one read plan from its route geometry and timing: pure progression by default; a key read off one defender where a high-low is live on rhythm (corner-flat, curl-flat, sail, smash, dagger and drive as clear-and-void); a triangle read; an alert glance; quick game starting on the breaking route, not the settling one; one side finished before the other; the back placed in the order by his window and side, first when he is the earliest answer; and on verticals one look that lasts until every vertical is 12 yd deep plus his processing time, then the back if nothing is winning. The quarterback executes the plan from what he sees of the key defender in his own delayed picture; pressure still takes his eyes to the outlet. Checked against 187 reads paraphrased from the playbook library ([Phase 0](reviews/2026-11-11-read-compiler-phase0.md), [Phase 1](reviews/2026-11-11-read-compiler-phase1.md)).
+
+Forced-concept panel, paired, 1,536 plays an arm, `BACK_RELEASE` on: sacks 74 → 68, INT 45 → 43, yards a play 9.67 → 9.96. The sheets' intended answer: dagger against Cover 2 .33 → .58, sail against Cover 3 .50 → .91, curl-flat against Cover 3 .75 → 1.00. Four verticals (1,600 plays an arm, NFL 3+ go routes in brackets): to a seam .420 → .449 (.109), to an outside go .073 → .102 (.327), to the back .503 → .446 (.322).
+
+It also removes a defect of engine-34: with the back released, the old rhythm outlet ("the last read") could be a deep backside route, because the back sits inside the hand-written order.
+
+Checks on the candidate (`077e8c9c`, on engine-34): full suite 4284 pass with the two known research failures; fixed run set unchanged (3.92 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | INT rate | sack rate | time to throw | scramble rate | completion | yards an attempt | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 3.3 → 2.0% (moved) | 3.5 → 3.4% | 2.72 → 2.67 (moved) | 1.5 → 2.8% (moved) | 64.3 → 65.9% | 10.24 → 10.41 | 37.1 → 39.3 |
+| 23 | 2.6 → 2.6% | 3.9 → 3.1% | 2.70 → 2.69 | 2.6 → 1.6% | 67.7 → 68.5% | 10.47 → 10.59 | 35.8 → 40.8 (moved) |
+
+Known and accepted: the back is out, open and unread on about a quarter of dropbacks; no second key or triangle yet for flood, comebacks and pa_post_dig (about half the keyed interceptions looked at were picks by an unread defender); the corner against Cover 2 is rarely thrown (the half safety and the slot corner's stem, outside the flag); the outside go is rarely thrown (the release against press, and a completion bar that cannot take a contested deep shot: the risk work); hot answers wait on the quarterback seeing a free rusher (`BLOCK_SEEN`, `FREE_BOUND`, in candidacy).
 
 ## engine-34: `ROUTE_CRAFT` and `BACK_RELEASE` on (2026-11-12)
 
