@@ -4,7 +4,7 @@
  * he is made to throw it (his own evaluation of that throw, his own release). Per throw, at the planned arrival:
  * the ball against the point he aimed at as it left his hand, split along the throw (+ long, - short) and across
  * it; the receiver against that point, split the same way (+ past the spot, - short of it); the ball to the
- * catcher when it arrives; whether he was moving (speed > 1 yd/s) or held/hit (flick) at the release; completion.
+ * catcher when it arrives, and the nearest defender to the receiver and to the ball then (the contest); whether he was moving (speed > 1 yd/s) or held/hit (flick) at the release; completion.
  * Arms by environment (e.g. IN_STRIDE_CATCH=1).
  *   [IN_STRIDE_CATCH=1] node --import tsx scripts/diag/risk/forced-deep.ts [--n 60] > out/risk/forced-<arm>.jsonl
  */
@@ -34,7 +34,7 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
   const runners = sim.offense.filter((o: any) => o.behavior instanceof RouteRunner && ['go', 'seam'].includes(o.behavior.route?.id));
   const gos = runners.filter((r: any) => { const side = Math.sign(r.pos.y - by) || 1;
     return !runners.some((o: any) => o !== r && (Math.sign(o.pos.y - by) || 1) === side && Math.abs(o.pos.y - by) > Math.abs(r.pos.y - by) + 0.5); });
-  cur = { forced: false, thrown: null, at: null, arrive: null };
+  cur = { forced: false, thrown: null, at: null, arrive: null, contest: null };
   let qb: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -52,11 +52,17 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
       const split = (p: any) => { const dx = p.x - T.pt.x, dy = p.y - T.pt.y; return { along: +((dx * ux + dy * uy) / L).toFixed(2), across: +((dy * ux - dx * uy) / L).toFixed(2), dist: +Math.hypot(dx, dy).toFixed(2) }; };
       cur.at = { inAir: sim.ball.kind === 'air', ball: split(b), rec: split(T.r.pos) };
     }
-    if (T && air && sim.ball.kind !== 'air' && !cur.arrive && b0) cur.arrive = +Math.hypot(b0.x - T.r.pos.x, b0.y - T.r.pos.y).toFixed(2);
+    if (T && air && sim.ball.kind !== 'air' && !cur.arrive && b0) {
+      cur.arrive = +Math.hypot(b0.x - T.r.pos.x, b0.y - T.r.pos.y).toFixed(2);
+      // The contest at the catch: the nearest defender to the receiver (and to the ball) as the ball arrives.
+      let nd = Infinity, nb = Infinity, who = null;
+      for (const d of sim.defense) { const x = Math.hypot(d.pos.x - T.r.pos.x, d.pos.y - T.r.pos.y); if (x < nd) { nd = x; who = d.slot; } nb = Math.min(nb, Math.hypot(d.pos.x - b0.x, d.pos.y - b0.y)); }
+      cur.contest = { defToRec: +nd.toFixed(2), defToBall: +nb.toFixed(2), who };
+    }
   };
   sim.run();
   const T = cur.thrown, s = sim.stats;
   if (!T || !cur.at) continue;
   process.stdout.write(JSON.stringify({ coverage, formation, seed, flip, dist: +Math.hypot(T.pt.x - T.from.x, T.pt.y - T.from.y).toFixed(1), sigma: T.sigma, moving: T.moving, flick: T.flick,
-    ...cur.at, ballToCatcher: cur.arrive, cmp: !!s.completed, int: !!s.interceptedBy }) + '\n');
+    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, cmp: !!s.completed, int: !!s.interceptedBy }) + '\n');
 }
