@@ -853,3 +853,51 @@ separation to shed and make the play. A run blocker's technique is to close and 
 PUNCH as built is a pass-protection technique applied to every block. The joint and the physics are shared; which
 technique a blocker chooses depends on his job. Proposal: PUNCH is the pass blocker's choice; run blockers keep the
 existing fit.
+
+# Layer (ii), attempt 1: TACKLE_ANCHOR, and what the crossing really is
+
+- **PUNCH as technique (16af1798).** Only a pass set punches: not an interior lineman's run look on play-action, and
+  a draw blocker only while he is still selling pass. Run report control: all +0.01 (SE 0.02); outside zone +0.02
+  (0.04); others +0.00; draw +0.06 (0.30). DL shed at the hit is back to 4%. Unchanged.
+- **TACKLE_ANCHOR (1b800758, off; with TACKLE_SET).** Once engaged with an edge rusher he asks for no more depth and
+  plays from inside half (front point 0.33 yd inside the man's line to the QB, by his feet).
+
+| seed 201 x 8 | retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0+ s | pressured | in front | inside (free) | past outside | at the win | edge win | crossings / reach QB | sacked |
+|---|---|---|---|---|---|---|---|---|---|
+| A2 + PAST (counterfactual) | −2.50 / −2.25 / −1.75 / −0.75 | 49.0% | 7.5% | 18.8% (97%) | 10.6% | 28/23/49 | 25% | 34.6% / 66% | 6.3% |
+| ANCHOR + PAST + SET | −2.50 / −2.75 / −2.25 / −1.00 | 43.8% | 10.7% | 18.6% (94%) | 4.3% | 16/32/52 | 22% | 36.4% / 56% | 5.3% |
+| ANCHOR + PAST + SET + OPEN + PUNCH | −2.50 / −2.50 / −2.00 / −1.00 | 42.5% | 7.5% | 17.2% (95%) | 4.2% | 16/29/55 | 18% | 25.8% / 54% | 6.1% |
+| NFL | −2.75 / −2.25 / −1.50 / −0.50 | 32.9% | 3.0% | 6.4% (48%) | 3.8% | 26/27/47 | 13% | 39.7% / 26% | 6.7% |
+
+inside-probe, ANCHOR + PAST + SET + PUNCH:
+- leverage 0.3 s before the crossing: rusher 0.24 yd outside him p50, unchanged from 0.10-0.26;
+- the tackle asks for 2.53 yd/s laterally and gets 1.28;
+- the hands joint is on 67%, N p50 0 (compression 29%).
+
+The inside-half request is not achieved. The anchor is achieved (an NFL-like retreat curve), and past-outside is
+NFL-like (4.2% vs 3.8%).
+
+## What differs after the crossing (inside-cross.py, extended; seed 201 x 8 against NFL)
+
+| | crossings | tackle within 1.2 yd at +0.3 / +0.5 s | tackle lateral speed toward the ball | rusher speed at the crossing / 0.3 s later | reaches the QB |
+|---|---|---|---|---|---|
+| NFL | 39.7% | 56% / 47% | 1.33 | 3.81 / 3.69 | 26% |
+| ours off | 21.8% | 34% / 29% | 0.50 | 4.03 / 4.26 | 41% |
+| ANCHOR + PAST + SET + OPEN + PUNCH | 25.8% | 10% / 9% | 1.33 | 4.78 / 4.81 | 54% |
+| PAST + SET + OPEN + PUNCH | 15.3% | 25% / 25% | 1.00 | — | 36% |
+
+**Reading.**
+- NFL rushers cross inside their tackle often (on 40% of dropbacks). What differs is the crossing itself:
+  - the NFL crosser is slowed by the contact (3.8 to 3.7 yd/s) and the tackle stays on him (47% at +0.5 s);
+  - ours cross about 1 yd/s faster and are not slowed (4.8 to 4.8). The anchored tackle, moving across as fast as
+    the NFL's (1.33 yd/s), keeps him only 9% of the time.
+- The man crosses the tackle's face nearly free: his hands carry no push at the crossing and his body is not in the
+  path.
+- The crossing speed (about 1 yd/s over the NFL's) comes before the contact. That points back at the rusher's
+  between-moves request (0.8-0.95 vmax at push 0.75, recorded earlier) as much as at the tackle.
+- Attempt 2 for (ii) should not be more lateral request (he already gets the NFL's lateral speed). It should be
+  what makes the crossing a contact:
+  - the tackle's inside hand meeting the man as he comes across: a punch aimed at the near shoulder, inside the
+    line, so the joint compresses across his path;
+  - and the rusher's crossing speed, which in football comes off the move (a swim or rip trades speed for
+    clearance).
