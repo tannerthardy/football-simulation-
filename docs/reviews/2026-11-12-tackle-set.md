@@ -684,3 +684,80 @@ remains):
 - What is left is the inside move against an anchored tackle: the rep's move resolution (spin/swim/club against his
   hands and feet when he is not retreating), and no help inside him. That is the next question. The walk-back was
   hiding it.
+
+# How the inside move beats a tackle (diagnostic, 2026-11-12)
+
+Tools:
+- `scripts/diag/effective-mass/inside-probe.mts`: engine state at each edge rusher's crossing of his tackle's face.
+- `scripts/diag/pass-operators/inside-cross.py`: the same code on NFL and sim.
+Arms: off; A2 + PAST_ALONG_PATH (anchored counterfactual, uncommitted); the same + OPEN_HANDS. Seeds 101-103 for the
+probe, seed 201 x 8 for the crossing table.
+
+## How a pass-rush move is resolved today (resolveMove)
+
+By a rating-weighted roll:
+- p = logistic(−2.1 + 3.4 (skill − counter) + bonus − 0.6 control), then `rng.chance(p)`;
+- skill: the rusher's finesse, power, bend, strength (and three-cone for the spin) ratings;
+- counter: 0.45 hands + 0.25 read + 0.3 feet of the blocker;
+- bonus: some geometry and bodies (phi x side, mass, arm and height differences, pad level, base) and −1.4 when
+  doubled.
+On success the effect is applied by fiat:
+- bull, long-arm, club and snatch: a strike impulse;
+- spin: flips the working side;
+- swim and spin: take the hands off for 0.3 s (steer x 0.1, push x 0.2);
+- control is reset.
+So whether a move lands is awarded by ratings, not by where hands and bodies end up. That is against the model rule.
+
+**But it is not what loses the inside.** At the crossing the rusher's last move had lost its roll in most cases.
+Anchored + PAST: won and live 7%, won earlier 10%, lost about 70%, the rep just ended 12%. He crosses through body
+motion, not a granted move.
+
+## The tackle at the crossing (inside-probe.mts)
+
+| | off | A2 + PAST | A2 + PAST + OPEN_HANDS |
+|---|---|---|---|
+| crossings inside the tackle within 2 yd, % of dropbacks | 20% | 33% | 43% |
+| tackle lateral toward the ball, requested / achieved | 2.27 / 0.00 | 2.22 / 1.53 | 2.44 / 1.29 yd/s |
+| his inside leverage 0.3 s before (rusher's width outside him) p25/50/75 | 0.11/0.26/0.32 | −0.04/0.10/0.25 | 0.15/0.27/0.38 |
+| hands joint on | 42% | 79% | 77% |
+| normal force p25/50/75 (compression > 50) | 68/603/1059 (78%) | −91/0/0 (21%) | 0/0/0 (5%) |
+| tangential force p50 / grip | 280 / — | 299 / — | 0 / 26% |
+| control p50 | 0.01 | 0.14 | 0.58 |
+
+- The anchored tackle's hands are on but carry no compression when the man crosses his face (N p50 0). The joint
+  sits in its slack band: the bodies are farther apart than the hands' working extension and nearer than the slack
+  limit, so only the steer acts.
+- With a grip that steer is about 300; with open hands it is nothing. That is why OPEN_HANDS loses more inside: the
+  hand is not punched into the man, so there is no push for friction to act on.
+- His feet do not get there either: he asks for 2.2-2.4 yd/s toward the ball and gets 1.3-1.5. He was nearly head-up
+  0.3 s before, not inside-half: the rusher only 0.10 yd outside him at the median.
+
+## Help (both sides)
+
+inside-cross.py, seed 201 x 8 against NFL. A crossing is the rusher's width outside his tackle going below
+−0.3 yd within 2 yd; help is in the next 0.5 s.
+
+| | crossings per dropback | met by another blocker (within 1 yd) | one within 2 yd | none | reached 2 yd of the QB (met / not met) |
+|---|---|---|---|---|---|
+| NFL | 39.7% | 34% | 63% | 37% | 26% (18% / 30%) |
+| ours off | 21.8% | 19% | 46% | 54% | 41% (39% / 41%) |
+| A2 + PAST | 34.6% | 8% | 39% | 61% | 66% (40% / 68%) |
+| A2 + PAST + OPEN_HANDS | 50.7% | 9% | 34% | 66% | 66% (53% / 67%) |
+
+Engine side (inside-probe.mts): another blocker came within 2 yd of the crosser in 33-36% of crossings.
+- engaged him: 2-5%;
+- free and did nothing: 9-13%;
+- busy with another man only: 18-22%.
+
+## Reading
+
+1. The NFL rusher crosses inside his tackle often (on 40% of dropbacks) but reaches the QB only 26% of the time
+   after. A second blocker meets him a third of the time, and the tackle stays on him. Ours, anchored, reach the QB
+   66% of the time.
+2. Three layers, in order of what the data supports:
+   - **The tackle's hands carry no push when the man crosses** (the joint slack, N about 0): the punch, his inside
+     hand into the man, is missing.
+   - **His feet and leverage:** nearly head-up, achieving about 60% of his lateral request.
+   - **Nobody inside meets him:** met 8-9% against 34%; a free blocker within 2 yd does nothing 9-13% of the time.
+3. The rating roll is against the model rule and should be replaced by a physical resolution in its own time, but it
+   is not the cause here: most crossings come after a lost roll.
