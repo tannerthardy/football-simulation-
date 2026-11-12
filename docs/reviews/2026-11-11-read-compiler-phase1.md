@@ -292,3 +292,56 @@ own adjustment to the ball, so it is not the same operator as #567's forecast er
    The grammar can express this as a "vertical peek": the verticals read as one picture (the triangle's group
    read), one look, then the back. It is not built: the same blocker applies, since there is no back at 2.5 s to
    check down to.
+
+## Addendum: protection-pressure answers (HonestNFL, 6 sheets) — for the hot answer, not built
+
+This is for the plan's hot/sight answer, to be built once the QB can see a free rusher as free (Integration is
+splitting QB_FEEL's perception half for the QB lane). Everything here is paraphrased; the sheet ids are in brackets.
+
+**When the QB is "hot."** He is responsible for a free rusher whom the called 5- or 6-man protection does not
+account for. The protection is split into a call (strong) side and an away (weak) side, each owning three or four
+rushers [353].
+
+- **Standard count:** one extra rusher to a side makes him hot (+1). In some protections it takes two (+2): when a
+  guard is uncovered, when the extra man comes to the dual side, or in "Rip/Liz" against a weak Mike [353, 299].
+- **Not hot:** quick (3-digit) protections, where the ball is out on time anyway, and 7- or 8-man protections
+  [353, 344].
+- **Known vs unknown rushers:** known rushers are picked up by the line or the backs. Hot is the secondary answer
+  for unknown ones. The first goal is to block it and make the defense pay downfield [353].
+- **The QB's job:** get the ball to the built-in hot route before the free man arrives, "like a hot potato" [344].
+- **Where it applies:** the hot system is mainly for man pressure, such as Cover 0 or Cover 1 overloads [344].
+
+**The hot route.** Most hot routes cut the stem by 1–3 yd so the receiver is ready on hot timing [353]. If the
+called play has no hot route, or a poor one for the look, the audible system checks to a concept that has one
+[344, 353].
+
+**Sight adjustment.** A route converts by alignment and by where the pressure comes from, into the void the
+blitzer left [343, 344]:
+
+- against zone-replacement pressure and soft or free-access Cover 0: seam, flat leverage, filling the void against
+  8+ yd of cushion, "find the QB's eyes";
+- only against the right look, or when the pressure comes as inferred from context clues; otherwise the route is
+  run as called [343].
+
+**Peek rule.** If the defender aligned over a receiver blitzes, the receiver looks back to the QB within 4 yd.
+A "Q" call alerts the innermost eligible receiver to a quick throw [344].
+
+**Protection rules relevant to the back** [299, 128]:
+
+- In 6-man dual protection the line takes four down plus the Mike.
+- The strong back checks "Buck" (the spot) to the strong perimeter, and releases if neither rushes.
+- "Squeeze" applies if his man is in the A gap (under center only).
+- The tight end may have a "scat" hot release to the weak side.
+- Who becomes hot changes with Rip/Liz/Base and the front alerts ("5 down", "Fan" against a two look).
+
+**Pre-snap pressure communication.** The detached innermost receiver points out a slot ("Cat") blitzer and
+confirms it with a call. Against zone pressure or loose Cover 0 he sight-adjusts and sits in the void [004].
+
+**What this means for the plan's answer** (a design note, not built):
+
+- Hot is a protection count: the free man the called protection cannot account for. It is not "any rusher close
+  to the QB."
+- The answer is pre-wired: the designated hot route (often the inside receiver on a cut-down stem, or the back's
+  release into the vacated area). It is thrown when he sees the free man, not after the order runs out.
+- The QB must see the free man. That is the perception half Integration is splitting out of QB_FEEL; a hot rule
+  on top of a QB who reads a free end as blocked would be designing around the blind spot.
