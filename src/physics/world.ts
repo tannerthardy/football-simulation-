@@ -93,6 +93,9 @@ export interface HandJoint {
   hold: number;
   /** Max tangential (steering) force, kg·yd/s². */
   steer: number;
+  /** OPEN_HANDS: the actor has chosen to grab (cloth). Without it the hands
+   * push and slide only: no tension, steer bounded by friction on the push. */
+  grab?: boolean;
   /** Height of the hand contact, yd; defaults to the lower player's pads. */
   height?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
@@ -328,6 +331,23 @@ const FOLLOW_MARGIN = 1.1;
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 /** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
+/** OPEN_HANDS (experimental, off; OPEN_HANDS=1 turns it on): open hands push
+ * and slide; they do not pull or drag. A hands joint the blocker has not
+ * declared a grab (`HandJoint.grab`) carries no tension, and its tangential
+ * (steering) force is bounded by friction on the compression it carries:
+ * |T| <= HAND_MU * max(0, N). A grab keeps its push, hold and steer limits.
+ * Off, steering was bounded only by the arms (armForce x (0.15 + 0.55 control)
+ * in engagement.ts), with or without anything pressing: behind an edge
+ * rusher's hip 250-600 N dragged along his path with no compression under it,
+ * and about 40% of run-rep and 30% of pass-rep steering force exceeded mu*N
+ * (open-hands-share.mts; docs/reviews/2026-11-12-tackle-set.md). */
+export const OPEN_HANDS = process.env.OPEN_HANDS === '1';
+/** Friction of an open hand on a jersey: 0.42, dynamic, natural dry skin on a
+ * cotton-polyester fabric at about 15 N (Gerhardt et al. 2008, J R Soc
+ * Interface 5:1317, PMC2607440; normally moist skin 0.53-0.61, wet fabric
+ * 0.91). No glove-on-jersey measurement was found. A sourced constant, not
+ * a setting: sensitivity reads edit it, they do not tune it. */
+export const HAND_MU = 0.42;
 /** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
  * A push runs from the pusher's pads to the other man's; when one man's pads
  * are lower, the line of action tilts up into the higher man. Its vertical
@@ -2652,7 +2672,7 @@ export class World {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
         row.pushLim = Math.max(0, jt.push) * h * scale;
-        row.holdLim = Math.max(0, jt.hold) * h * this.armScale[holder];
+        row.holdLim = OPEN_HANDS && !jt.grab ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }
@@ -2748,7 +2768,8 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
-    const slipLim = r.steerLim;
+    // OPEN_HANDS: an open hand's steer is friction on the push it carries.
+    const slipLim = OPEN_HANDS && !(r.joint as HandJoint).grab ? Math.min(r.steerLim, HAND_MU * Math.max(0, r.ln)) : r.steerLim;
     if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
   }
 

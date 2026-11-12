@@ -44,7 +44,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import type { HandJoint, Intent } from '../physics/world.js';
+import { OPEN_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -396,6 +396,9 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   joint.push = (c >= 0 ? pressForce(b) : pressForce(d)) * (0.35 + 0.65 * Math.abs(c));
   joint.hold = holding ? armForce(b) * 1.2 : c > 0.3 ? armForce(b) * 0.25 * c : 0;
   joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
+  // OPEN_HANDS: holding is the blocker's choice to grab (tryHold); without it
+  // the World lets his hands push and slide only.
+  if (OPEN_HANDS) joint.grab = holding;
 }
 
 function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoint): void {

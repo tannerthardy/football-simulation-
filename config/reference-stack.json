@@ -131,6 +131,7 @@
     "SHOULDERS_SET": "off",
     "TACKLE_SET": "off",
     "EDGE_ARC": "off",
+    "OPEN_HANDS": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_START": "on",

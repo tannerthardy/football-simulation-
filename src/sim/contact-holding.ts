@@ -10,7 +10,7 @@
  */
 import type { Vec2 } from '../core/vec.js';
 import type { Body } from '../physics/kinematics.js';
-import type { HandJoint, Joint, StepReport } from '../physics/world.js';
+import { OPEN_HANDS, type HandJoint, type Joint, type StepReport } from '../physics/world.js';
 import type { Agent, Engagement, TeamSide } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { FoulRecord } from './types.js';
@@ -226,7 +226,10 @@ export function holdingRestriction(joint: Joint, actor: Agent, victim: Agent,
     force = { x: joint.normalForceOnB.x + joint.tangentForceOnB.x,
       y: joint.normalForceOnB.y + joint.tangentForceOnB.y };
   }
-  if (!(normalForce < -1e-6)) return null;
+  // OPEN_HANDS: a declared grab can restrain by dragging along his path as
+  // well as by pulling; the same achieved-restraint margins judge it. Open
+  // hands cannot drag (the World bounds them by friction on their push).
+  if (!(normalForce < -1e-6) && !(OPEN_HANDS && joint.kind === 'hands' && joint.grab)) return null;
   const endRelative = minus(victim.vel, actor.vel);
   const observedSlowdown = escapeSpeed - dot(endRelative, travel);
   if (!(observedSlowdown > 1e-6)) return null;
