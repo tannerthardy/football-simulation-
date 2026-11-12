@@ -130,3 +130,22 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | Flag | What it does | Where | Status |
 |---|---|---|---|
 | `GRIP_BREAK` | A defender breaks a blocker's grip with a hand strike (knock-down, swim, rip): his hand speed and arm force against the blocker's grip capacity, so the hands' sideways coupling holds until it is broken and not by a fixed limit. Two-sided; shared with Run Game and Defense. | Not built (proposal) | Proposed by Flex after `HANDS_FRICTION` (removed 2026-11-10) overshot. Evidence: the hands' tangential load is at the steer limit on 67% of engaged run ticks, where the DL slips across (p75 1.12 yd/s). Friction on the pressing load (0.35) overshoots: rotation 56 → 27° (NFL 43), DL depth at 2.0 s +0.69 → +0.47 (NFL +0.70). Steer alone under-couples, friction alone over-couples, and what is missing is the grip being broken. Needs its own plan and Tanner's go-ahead. See `docs/reviews/effective-mass.md`. Related: `HAND_FRICTION` (G5, run-game-v3), friction-only steering, pressure 32 → 41%. |
+
+## Edge rush, hands and the pocket (Flex, 2026-11-12, `claude/quirky-franklin-9lbwbp`, PR #520)
+
+All off and bit-identical to develop when off (seed 999 export hash). Set A (PAST_ALONG_PATH, OPEN_HANDS, PUNCH) is
+proposed to land. The rest stay here with their state. Evidence is in `docs/reviews/2026-11-12-tackle-set.md` and
+`docs/reviews/2026-11-12-rusher-intent.md`.
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `PAST_ALONG_PATH` | Beaten = behind him along his path AND no longer between him and where he is going; past but within reach the rep is a ride. One test for the rep's beat, the grip frame and the holding detector. | `src/sim/engagement.ts` (`pastAlongPath`) | Set A: proposed to land. |
+| `OPEN_HANDS` | Open hands vs grip in the World (open: no tension, steer ≤ 0.42 μ·N, Gerhardt 2008); a grip inside the frame is legal; the blocker lets go as the man goes by (anticipated by discipline and awareness) or hangs on (a hold, judged). | `src/physics/world.ts`, `src/sim/engagement.ts` (`gripFor`), `src/sim/contact-holding.ts` | Set A: proposed to land. Run cost with A −0.24 yd a carry (SE 0.07). |
+| `PUNCH` | Pass-set technique: the hands press out to lockout at arm speed (0.1 yd into the man); at air he is overextended. Play-action run look ends on contact, depth, the man's rush or patience (`pa-look.ts`), not 0.35 s. | `src/sim/engagement.ts` (`punch`, `passSetTechnique`), `src/sim/pa-look.ts` | Set A: proposed to land. Run report unchanged alone. |
+| `TACKLE_SET` | The tackle's set to a spot: depth from the called launch point less a body width, width from his alignment (0.3-1.0 yd, inside half, no chasing wide). | `src/sim/engagement.ts`, `src/sim/behaviors/blocking.ts` | Built, read, waiting on the anchor: his kick still follows the rusher, so he arrives at the set at kick speed with traction split by the mirror. |
+| `RUSH_INTENT` | Between moves the rusher chooses edge / press / stall from what he feels, kept at least his reaction time; power no longer sticks. | `src/sim/engagement.ts` (`rushIntent`) | Built (two attempts), read, waiting on the anchor: it moves the engaged rusher's drive and scrape to the NFL's, but a pressing rusher walks the tackle back (pressure overshoots). |
+| `EDGE_ARC` | Edge rusher's landmark outside the tackle's set at the QB's depth; turn past the hips; counter on a seen overset. | `src/sim/engagement.ts`, `src/sim/behaviors/defense.ts` | Not a candidate (two attempts): he gets around but does not win around; superseded by PAST_ALONG_PATH's ride and RUSH_INTENT. |
+| `TACKLE_ANCHOR` | Anchored once engaged with an edge rusher, from inside half. | `src/sim/engagement.ts` | Not a candidate: 93% of its inside losses are rushers who went around him and turned in behind; waits on the anchor's decision to stop kicking against speed. |
+| `OPEN_HANDS_BACK_ONLY` | Sensitivity cut for OPEN_HANDS's frame (back only). | `src/sim/engagement.ts` | Diagnostic only. |
+| `EXTEND` | The QB with no throw in time extends the play (noThrow body). | `src/sim/behaviors/qb.ts` | As it stood: built, no measurable effect; waits on Rules+Coaching's window repair. |
+| `HANG_GRIP` | A hanging grip slides down to the ankles and holds or tears. | `src/physics/world.ts` | Parked: the grip law under a hanging load is the open question. |

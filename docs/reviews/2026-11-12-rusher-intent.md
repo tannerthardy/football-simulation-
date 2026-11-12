@@ -152,3 +152,19 @@ alone: −0.17. Zone hitter classes unchanged (OU DL blocked 50%, DL shed 5%).
 The single definition, as Integration suggested: past = behind him along his path AND no longer between him and
 where he is going (|phi| >= 1 against his line to the ball carrier or QB); below 1 yd/s, the leverage alone. The
 pass 2 x 16 for A is re-run on it before the PR.
+
+## Set A on the final definition: the pass 2 x 16 (q201-A, q301-A; off arms reused, same base)
+
+| | pressured (pooled) | sacked (pooled) | in front at pressure | inside (free) | at the win past/front/inside | edge win | across-face crossers reach the QB |
+|---|---|---|---|---|---|---|---|
+| off | 38.4% | 6.8% | 11.8 / 15.0% | 6.5 / 9.5% | 7/59/34, 9/54/37 | 13 / 17% | 36 / 39% |
+| A (37463008) | 31.3% | 4.1% | 8.3 / 10.9% | 5.4 / 7.2% (92-96%) | 9/54/37, 11/50/38 | 9 / 13% | 25 / 27% |
+| NFL | 32.9% | 6.7% | 3.0% | 6.4% (48%) | 26/27/47 | 13% | 20% |
+
+**Reading.**
+- Pressure lands on the NFL's (31.3 vs 32.9%), the walked-back tackle's in-front share falls, and across-face crossers
+  get home about as rarely as the NFL's (25-27 vs 20%).
+- **Sacks fall below the NFL's (4.1 vs 6.7%).** The corner win at the win shrinks back toward off (9-11%), because
+  'past' now requires the man to be out of the tackle's way. That leaves the ride for genuine corners only.
+- A worse statistic is not a veto. The explanation is the mechanism: A removes the free restraint-and-chase the
+  engine had, and does not yet add what lets a rusher win (the anchor and the moves are physical next).
