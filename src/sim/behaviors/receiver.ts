@@ -13,6 +13,8 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
+import { HANDS_CUE, noteHands } from '../hands-cue.js';
+import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -132,6 +134,13 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
 const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
+/** RELEASE_SEEN (off; RELEASE_SEEN=1 turns it on): a receiver releases around any defender he saw tight over him at
+ * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
+ * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
+ * clears are the existing PRESS_RELEASE technique, on the defender's position as he sees it. */
+export const RELEASE_SEEN = process.env.RELEASE_SEEN !== '0';
+/** RELEASE_SEEN: "tight over him" at the snap; the NFL press population's 2.5 yd, and over him rather than beside. */
+const RELEASE_TIGHT_DEPTH = 2.5, RELEASE_TIGHT_WIDTH = 1.5;
 /** RELEASE_THROUGH (off; RELEASE_THROUGH=1 turns it on; estimated, C14): the
  * release is a way to his stem, not a place to stay. Once he has made a press
  * release, stem points just ahead of him (under 1.5 yd) or already level with
@@ -219,6 +228,8 @@ export class RouteRunner implements Behavior {
     return LINE_START ? this.getOff(a, sim, cmd) : cmd;
   }
 
+  /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
+  private tightAtSnap: Agent[] | null = null;
   /** LINE_START: whether he has declared his stem yet. */
   private stemDeclared = false;
   /** LINE_START: how deep his route first breaks. */
@@ -486,10 +497,23 @@ export class RouteRunner implements Behavior {
       // in his way: he releases around the corner on his route's side
       // before the hands meet, not up through him.
       if (!PRESS_MIRROR) return null;
-      for (const d of sim.defense) {
-        const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
-        if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || usable(d) === 0) continue;
-        const ahead = d.pos.x - a.pos.x, lateral = d.pos.y - a.pos.y;
+      // RELEASE_SEEN: the defenders he releases around are the ones he saw tight over him at the snap, whoever
+      // they are and whatever they were called to do; their positions are as he sees them.
+      if (RELEASE_SEEN && this.tightAtSnap === null) {
+        this.tightAtSnap = sim.defense.filter((d) => {
+          const s = sim.see(a, d).pos, ahead = s.x - a.pos.x;
+          return ahead >= 0 && ahead <= RELEASE_TIGHT_DEPTH && Math.abs(s.y - a.pos.y) <= RELEASE_TIGHT_WIDTH;
+        });
+      }
+      const candidates = RELEASE_SEEN ? this.tightAtSnap ?? [] : sim.defense;
+      for (const d of candidates) {
+        if (!RELEASE_SEEN) {
+          const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
+          if (!spot?.press || spot.manTarget !== a.slot) continue;
+        }
+        if (this.releasedCorners.has(d) || usable(d) === 0) continue;
+        const dp = RELEASE_SEEN ? sim.see(a, d).pos : d.pos;
+        const ahead = dp.x - a.pos.x, lateral = dp.y - a.pos.y;
         // PRESS_RELEASE: from the snap he works around the corner's body and
         // reach, on the side his route goes (outside on a vertical) and away
         // from the corner's shade; the release costs what its width costs.
@@ -505,10 +529,10 @@ export class RouteRunner implements Behavior {
           if (Math.sign(-lateral) !== side && Math.abs(lateral) > 0.3) side = Math.sign(-lateral);
         } else {
           const desired = this.path[this.idx]?.p.y ?? a.pos.y;
-          side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
+          side = Math.sign(desired - dp.y) || -Math.sign(lateral) || this.outside;
         }
         this.releaseSide = side;
-        return runThrough(a, { x: d.pos.x, y: d.pos.y + side * clearance },
+        return runThrough(a, { x: dp.x, y: dp.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }
       return null;
@@ -549,6 +573,10 @@ export class TrackBall implements Behavior {
   readonly kind = 'track';
   private readonly reactAt: number;
   private readonly err: Vec2;
+  /** CATCH_CHOICE: his read of the margins over the defender (s), one error per throw; and his current choice. */
+  private readonly judge: number = 0;
+  private choice: CatchChoice | null = null;
+  private choseAt = -1;
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -558,6 +586,7 @@ export class TrackBall implements Behavior {
     this.reactAt = sim.t + 0.08 + 0.25 * (1 - tr);
     const dice = sim.dice('track', a);
     this.err = { x: dice.normal(0, 0.5 * (1 - tr)), y: dice.normal(0, 0.5 * (1 - tr)) };
+    if (CATCH_CHOICE) this.judge = sim.dice('catch-choice', a).normal(0, 0.1 + 0.2 * (1 - tr));
     a.tags.add('onBall');
   }
 
@@ -572,6 +601,7 @@ export class TrackBall implements Behavior {
     if (IN_STRIDE_CATCH) {
       const spot = strideCatchSpot(a, sim) ?? catchSpot(a, sim);
       if (!spot) return this.fallback.update(a, sim);
+      if (HANDS_CUE) noteHands(a, sim.t, spot.t);
       const tx = spot.p.x + this.err.x, ty = spot.p.y + this.err.y;
       const left = Math.max(.15, spot.t - sim.t);
       let vx = a.vel.x + (tx - a.pos.x - a.vel.x * left) / left;
@@ -582,9 +612,18 @@ export class TrackBall implements Behavior {
       return { vel: { x: vx, y: vy }, facing: near
         ? angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y }) : undefined };
     }
-    const spot = catchSpot(a, sim);
+    let spot: { p: Vec2; t: number } | null = null;
+    if (CATCH_CHOICE) {
+      // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
+      if (!this.choice || (sim.t - this.choseAt >= 0.1 - 1e-9 && this.choice.t - sim.t > 0.3)) {
+        this.choice = chooseCatchPoint(a, sim, this.judge) ?? this.choice; this.choseAt = sim.t;
+      }
+      spot = this.choice;
+    }
+    spot ??= catchSpot(a, sim);
     if (!spot) return this.fallback.update(a, sim);
     const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
+    if (HANDS_CUE) noteHands(a, sim.t, spot.t);
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
     // Arrive on time, keep running through if the ball is leading him.
