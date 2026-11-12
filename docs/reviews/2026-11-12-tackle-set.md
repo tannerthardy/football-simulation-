@@ -761,3 +761,75 @@ Engine side (inside-probe.mts): another blocker came within 2 yd of the crosser 
    - **Nobody inside meets him:** met 8-9% against 34%; a free blocker within 2 yd does nothing 9-13% of the time.
 3. The rating roll is against the model rule and should be replaced by a physical resolution in its own time, but it
    is not the cause here: most crossings come after a lost roll.
+
+# PUNCH (hands to the man), first read, and a spec for physical move resolution
+
+## The slack band (hands-band.mts, seeds 101-102)
+
+An engaged rep's hands joint against its working extension. c = distance − extension: below 0 the joint compresses;
+0-0.06 is slack; beyond is tension, with no force without a grip.
+
+| ticks | compression | slack | beyond | gap between bodies / his arm p50 | extension / his arm p50 |
+|---|---|---|---|---|---|
+| run (off) | 50% | 15% | 35% | 0.26 | 0.22 |
+| pass, tackle-edge (off) | 42% | 33% | 25% | 0.29 | 0.27 |
+| pass, tackle-edge (anchored + PAST) | 27% | 14% | 58% | 0.37 | 0.25 |
+| pass, tackle-edge (anchored + PAST + PUNCH) | 28% | 36% | 36% | 0.55 | 0.46 |
+| run (anchored + PAST + PUNCH) | 55% | 24% | 20% | 0.26 | 0.24 |
+
+The hand law works at elbows-bent extension, about a quarter of the arm. The man is almost never beyond full arm
+(0-3%), but an anchored tackle stands him off past the bent elbows more than half the time.
+
+## PUNCH (b68eab4a, off; off bit-identical to engine-44)
+
+A blocker's own hands work to where he feels the man, out to lockout (0.9 of his arm), no faster than ARM_SPEED. At
+air he is overextended for his reaction time with a third of his push. Pass and run reps through the same joint.
+
+| seed 201 x 8 | retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0+ s | pressured | in front | inside (free) | past outside | at the win | edge win | crossings / reach the QB after | sacked |
+|---|---|---|---|---|---|---|---|---|---|
+| off | −3.50 / −3.25 / −2.75 / −2.00 | 36.5% | 12.6% | 6.5% (96%) | 2.2% | 10/57/33 | 13% | 21.8% / 41% | 4.5% |
+| anchored + PAST | −2.50 / −2.25 / −1.75 / −0.75 | 49.0% | 7.5% | 18.8% (97%) | 10.6% | 28/23/49 | 25% | 34.6% / 66% | 6.3% |
+| anchored + PAST + PUNCH | −2.25 / −2.00 / −1.50 / −1.00 | 45.0% | 8.2% | 15.8% (95%) | 6.7% | 21/32/48 | 22% | 25.8% / 61% | 7.0% |
+| PAST + TACKLE_SET + OPEN_HANDS | −3.50 / −3.25 / … | 37.7% | 9.7% | 7.1% (94%) | 5.1% | 21/46/33 | 14% | — | 4.7% |
+| PAST + TACKLE_SET + OPEN_HANDS + PUNCH | −3.50 / −3.00 / −2.25 / −0.75 | 34.5% | 8.6% | 4.7% (82%) | 3.2% | 19/48/33 | 11% | 15.3% / 36% | 4.0% |
+| NFL | −2.75 / −2.25 / −1.50 / −0.50 | 32.9% | 3.0% | 6.4% (48%) | 3.8% | 26/27/47 | 13% | 39.7% / 26% | 6.7% |
+
+Inside-probe, anchored + PAST + PUNCH (seeds 101-103):
+- crossings: 33 → 28% of dropbacks;
+- at the crossing the hands joint is on 63%, N p50 still 0 (compression 26%);
+- the tackle asks for 2.32 yd/s toward the ball and gets 1.22;
+- help within 2 yd 43%; it engaged him 4%; free and idle 9%.
+
+**Reading.**
+- PUNCH gets the hands out to the man (extension 0.25 → 0.46 of the arm against an anchored tackle). It takes a
+  little of the inside away from the anchored tackle (crossings 34.6 → 25.8%, inside 18.8 → 15.8%).
+- It does not make the crossing a contest of hands. At the moment the man crosses, the joint is still unloaded: he
+  goes across the face faster than the tackle's feet follow (1.2 of 2.3 yd/s), so the hand ends up behind him.
+- With all four flags the edge rush is the closest yet (pressured 34.5 vs 32.9%, edge win 11 vs 13%, inside 4.7 vs
+  6.4%). But it keeps the walk-back (the kick still follows the rusher) and still wins in front too often (48 vs 27%
+  at the win). Sacks are now under the NFL (4.0 vs 6.7%).
+- Run control: the run report with PUNCH is pending.
+
+## Spec for resolving pass-rush moves physically (GAPS item; built after hands, feet and leverage)
+
+Today a move lands by a rating roll and its effect is applied. A physical resolution needs each move to be an action
+of the rusher's hands and body on the blocker's hands joint, succeeding or failing by where they end up:
+- **Swim:** his near arm goes over the blocker's hand or arm on the working side. It succeeds when his arm passes
+  over the contact before the blocker's hand re-fits: the joint's contact point is released on that side (the hand
+  is knocked down and he is past it), within his arm speed and reach, against the blocker's grip or press holding the
+  contact.
+- **Rip:** his arm comes up under the blocker's hand and armpit. It succeeds when his shoulder drops under the
+  contact height (pad level, bend) and his upward arm force exceeds the hand's hold on that side; the contact point
+  slides off up and over.
+- **Spin:** he rotates his torso so the hand contact point on him rotates off. It succeeds when his yaw rate carries
+  the contact point outside the blocker's hand reach on the far side before the blocker re-fits. It fails into the
+  blocker's chest if the blocker is square and close (a spin against a pressed, anchored blocker gives up his back).
+- **Club:** an impulse on the blocker's arm at the contact. It succeeds when the impulse exceeds what the blocker's
+  arm and grip resist, knocking the hand off (the World's strike, aimed at the arm, not the torso).
+- **Bull / long-arm:** already mostly physical (push through the joint). The roll only adds the strike: it should be
+  the rusher's push through his hands and legs against the blocker's anchor, as the World resolves now.
+- **Snatch:** a pull on the blocker's extended arm. It succeeds against an overextended blocker (PUNCH's state) when
+  his pull exceeds the blocker's balance margin.
+- **Dip / speed:** feet and bend around the corner. Already physical apart from the roll's control change.
+Each needs the contact point(s) of the blocker's hands on the rusher (the World's `contact` patch), and each fails
+against hands that stay fitted, pressed and inside. That is why hands, feet and leverage come first.
