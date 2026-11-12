@@ -555,7 +555,7 @@ export class QBPass implements Behavior {
         if (pin > 0) {
           if (sim.dice('throw', a).chance(pin)) {
             this.phase = 'set'; this.pending = null; this.readStart = t;
-            sim.windupAt = -1; sim.deliveryAt = -1;
+            sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
             return stand();
           }
         }
@@ -572,6 +572,7 @@ export class QBPass implements Behavior {
           this.readStart = t;
           sim.windupAt = -1;
           sim.deliveryAt = -1;
+          sim.windupEndAt = t;
           sim.event('pump', a);
           return stand();
         }

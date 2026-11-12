@@ -1223,9 +1223,14 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
-    // SHOULDER_READ: an underneath defender reading the QB breaks on the
-    // throwing motion toward the receiver the QB's shoulders point at.
-    if (SHOULDER_READ && !this.deep) { const lean = shoulderLean(a, sim); if (lean) return lean; }
+    // SHOULDER_READ: an underneath defender reading the QB stops his drop on
+    // the throwing motion he has seen; the rest of his zone play goes on.
+    if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
+    return this.zonePlay(a, sim);
+  }
+
+  /** His zone play with the ball in the QB's hands (no throw seen). */
+  private zonePlay(a: Agent, sim: PlaySim): MoveCommand {
     // A deep defender who reads run executes his cap/force contract. Alley
     // fits retain depth through the mesh; certainty about the hidden call is
     // not required, and a mistaken read can still expose play action.
@@ -1736,32 +1741,49 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 }
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
-/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): from the
- * throwing motion, before the ball is out, an underneath zone defender with
- * his eyes held on the QB breaks toward the receiver the QB's front shoulder
- * and eyes point at, in his own delayed picture (seenQbEyes). How hard he
- * commits is his read: more with anticipation, less with discipline (a
- * disciplined defender waits for the ball). It costs what it costs: a pump or
- * a look-off moves him the wrong way, and he recovers at his body's rates. NFL
- * underneath zone defenders begin turning toward the eventual catcher about
- * 0.3 s before the release (zone LB toward-catcher 0.0 at -0.3 s, +1.1 at the
- * release); ours start about 0.1 s later at half the rate (+0.4 at the release),
- * because the motion tells them when but not where (underarrival.py). */
+/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): the
+ * underneath plant. An underneath zone defender who keys the quarterback as
+ * keysQB does (facing him, eyes held on him through his observation delay)
+ * stops his drop once he has seen the throwing motion: he brakes it at his own
+ * rates, break-ready ("feet stop when the ball comes off
+ * his front hand"). The motion tells him when, not where, so he gets no
+ * direction; at the release keysQB hands him to playBall from the plant rather
+ * than from a backpedal. Without it the cue matures about 0.2 s before the
+ * release but cannot act until the ball is out (sawThrow), and he is still
+ * dropping away from the catch (docs/reviews/2026-11-12-underneath-plant.md).
+ * Only the drop stops: his lateral and downhill zone play go on (a full stop
+ * also cancelled his movement toward threats; attempt 1, reverted).
+ * Its costs are physical: a quick release gives him little time planted, a
+ * long one a lot; a pump is a windup, so he plants on it and restarts his drop
+ * only once he sees the ball pulled down (after his observation delay); a
+ * planted defender gives up depth to a route behind him. Replaces the earlier
+ * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ === '1';
-/** SHOULDER_READ: the windup-keyed lean, or null. */
-function shoulderLean(a: Agent, sim: PlaySim): MoveCommand | null {
-  // From his own pictures: he sees the QB holding it and has seen no ball in flight.
-  if (sim.windupAt < 0 || hasObservedFlight(a) || observedHolder(a, sim)?.target !== sim.qb) return null;
-  const qb = sim.see(a, sim.qb).pos;
-  if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) <= -0.2) return null;
+/** SHOULDER_READ: the throwing motion each defender planted on (by its windupAt), per play. */
+const plants = new WeakMap<Agent, { sim: PlaySim; windup: number }>();
+/** SHOULDER_READ: whether he is planted on a throwing motion he has seen. */
+function underneathPlant(a: Agent, sim: PlaySim): boolean {
+  if (hasObservedFlight(a) || observedHolder(a, sim)?.target !== sim.qb) return false;
   const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
-  if (sim.t - sim.windupAt < react || !eyesHeldOnQB(a, sim, react, -0.2)) return null;
-  const target = seenQbEyes(a, sim);
-  if (!target) return null;
-  a.tags.add('shoulder-read');
-  const commit = clamp(0.3 + 0.4 * a.r('anticipation') + 0.3 * (1 - a.r('discipline')), 0.2, 1);
-  const c = chase(sim, a, target);
-  return withFacingTechnique({ ...c, vel: { x: c.vel.x * commit, y: c.vel.y * commit } }, { label: 'shoulder-lean', key: target.vel });
+  let p = plants.get(a);
+  if (p && p.sim !== sim) { plants.delete(a); p = undefined; }
+  // The motion he planted on was pulled down: once he has seen that, he restarts his drop.
+  if (p && sim.windupAt !== p.windup && sim.windupEndAt >= p.windup && sim.t - sim.windupEndAt >= react) {
+    plants.delete(a); p = undefined; a.tags.add('plant-restart');
+  }
+  if (sim.windupAt >= 0 && p?.windup !== sim.windupAt && sim.t - sim.windupAt >= react) {
+    const qb = sim.see(a, sim.qb).pos;
+    if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) > -0.2 && eyesHeldOnQB(a, sim, react, -0.2)) {
+      p = { sim, windup: sim.windupAt }; plants.set(a, p); a.tags.add('plant');
+    }
+  }
+  return !!p;
+}
+/** SHOULDER_READ: his zone command without its drop: no velocity away from the line (he brakes it at his own
+ * rates); his lateral and downhill play and his facing are unchanged. */
+function stopDrop(sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const deeper = sim.attackDir(sim.offense[0].team), away = cmd.vel.x * deeper;
+  return away > 0 ? { ...cmd, vel: { x: 0, y: cmd.vel.y } } : cmd;
 }
 
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
