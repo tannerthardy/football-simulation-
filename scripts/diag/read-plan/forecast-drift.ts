@@ -6,7 +6,7 @@
  *   node --import tsx scripts/diag/read-plan/forecast-drift.ts [--seeds 1,2] > out/read-plan/forecast-drift.jsonl
  */
 import { MENU_CONCEPTS, PASS_BY_ID } from '../../../src/playbook/concepts.js';
-import { ReceiverForecast } from '../../../src/sim/receiver-forecast.js';
+import { pathBreak, ReceiverForecast } from '../../../src/sim/receiver-forecast.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { nativeTraceSetup } from '../command-trace.js';
 
@@ -19,16 +19,18 @@ F.acquire = function (p: any) {
   const out = acq.call(this, p);
   const prior = this.prior;
   if (prior?.path?.length && simNow) {
-    let prev = prior.start, best = Infinity, along = false;
+    let prev = prior.start, best = Infinity, along = false, idx = -1, beyond = false, k = 0;
     for (const seg of prior.path) {
       const n = seg.p, dx = n.x - prev.x, dy = n.y - prev.y, L2 = dx * dx + dy * dy;
       const u = L2 ? Math.max(0, Math.min(1, ((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / L2)) : 0;
       const e = Math.hypot(p.pos.x - prev.x - u * dx, p.pos.y - prev.y - u * dy);
-      if (e < best) { best = e; along = p.vel.x * dx + p.vel.y * dy > 0; }
-      prev = n;
+      if (e < best) { best = e; along = p.vel.x * dx + p.vel.y * dy > 0; idx = k; beyond = k === prior.path.length - 1 && u >= 1; }
+      prev = n; k++;
     }
+    const brk = pathBreak(prior.path, prior.end);
+    const phase = beyond ? 'past end' : brk === null ? 'no break' : idx <= brk ? 'stem' : 'after break';
     const est = this.estimate ?? null;
-    rows.push({ t: +simNow.t.toFixed(2), off: +best.toFixed(2), along, speed: +Math.hypot(p.vel.x, p.vel.y).toFixed(1), radius: +prior.profile.radius.toFixed(2),
+    rows.push({ t: +simNow.t.toFixed(2), phase, off: +best.toFixed(2), along, speed: +Math.hypot(p.vel.x, p.vel.y).toFixed(1), radius: +prior.profile.radius.toFixed(2),
       placed: est ? est.motion === 'installed-route' : null });
   }
   return out;
