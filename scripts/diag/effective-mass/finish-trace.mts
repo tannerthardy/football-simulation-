@@ -21,6 +21,7 @@ const { Rng } = await import(`${W}/src/core/rng.ts`);
 const seed = Number(process.argv[2] ?? 101), games = Number(process.argv[3] ?? 4), maxPlays = Number(process.argv[4] ?? 10);
 const f = (x: number, d = 2) => Number.isFinite(x) ? x.toFixed(d) : '-';
 const SUMMARY = process.env.SUMMARY === '1';
+const k2 = (x: number) => Number.isFinite(x) ? +x.toFixed(2) : null;
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 let shown = 0;
@@ -84,6 +85,13 @@ for (let g = 0; g < games && shown < maxPlays; g++) {
       const com = (sim.world as any).comHeight?.[i];
       const holders = new Set(sim.world.joints.filter((x: any) => x.kind === 'grasp' && !x.broken && x.b === c.body).map((x: any) => x.a)).size;
       rec.holdersMax = Math.max(rec.holdersMax, holders);
+      // Census snapshots at the grasp, +0.3 and +0.6 s: where and how he holds, what his body does, what the carrier carries.
+      for (const T of [0, 0.3, 0.6]) if (!(rec.snap ??= {})[T] && el >= T - 1e-6) {
+        const sh = sim.world.indexOf(c.body), bonded = sim.bond?.oneArm?.has?.(t) ?? false;
+        rec.snap[T] = { legs: k2(j.legs), lock: k2(j.lock ?? 0), height: k2(j.height ?? NaN), oneArm: bonded, broken: !!j.broken,
+          hState: t.body.support?.state, hRatio: k2(vc > 0.5 ? vt / vc : NaN), hGround: k2(gT), drag: k2(fb), cGround: k2(gC),
+          stride: k2(sim.world.strideHolds?.[sh] ?? 0), cXi: k2(Math.hypot(s?.xi?.x ?? 0, s?.xi?.y ?? 0)), cState: s?.state, holders };
+      }
       lines.push(`  +${f(sim.t - rec.t0)} gained ${f(along(c.pos) - rec.x0)} | v ${f(vc)} (asks ${f(reqC)}) vt ${f(vt)} (asks ${f(reqT)}) | grip ${f(fb, 0)} cap ${f(j.capacity, 0)} | ground C ${f(gC, 0)} T ${f(gT, 0)} | legs ${f(j.legs)} lock ${f(j.lock ?? 0)} slip ${j.slipping ? 1 : 0} stride ${f(j.strideForce ?? 0, 0)} ${j.broken ? 'BROKEN' : ''} | holders ${holders} | sup ${s?.state} xi ${f(Math.hypot(s?.xi?.x ?? 0, s?.xi?.y ?? 0))} com ${f(com)} | holder ${ts?.state} xi ${f(Math.hypot(ts?.xi?.x ?? 0, ts?.xi?.y ?? 0))} xi-along ${f(ts?.xi ? along(ts.xi) : NaN)} posture ${f(ts?.posture ?? NaN)}`);
     };
     const res = sim.run();
@@ -94,7 +102,7 @@ for (let g = 0; g < games && shown < maxPlays; g++) {
       if (SUMMARY) { const { j, t, h, ...r } = rec; const k = (x: number) => Number.isFinite(x) ? +x.toFixed(2) : null;
         console.log(JSON.stringify({ g, side: r.side, cpos: r.carrierPos, hpos: r.holderPos, mc: k(r.mc), mt: k(r.mt), pc: k(rec.j.b.profile.power ?? NaN), pt: k(rec.j.a.profile.power ?? NaN), tackling: k(rec.t.r?.('tackling') ?? NaN), vc0: k(r.vc0), vt0: k(r.vt0), vtAlong: k(r.vtAlong), share: k(r.share), v25: k(r.v25), v50: k(r.v50),
           legs0: k(r.legs0), lock0: k(r.lock0), cap0: k(r.cap0), origin: r.origin, atCap30: k(r.atCap / Math.max(1, r.n30)), brokeAt: r.brokeAt === null ? null : k(r.brokeAt), stride: k(r.stride),
-          Fc30: k(r.Fc30 / Math.max(1, r.nF)), Ft30: k(r.Ft30 / Math.max(1, r.nF)), xiT30: k(rec.xiT30 ?? NaN), postureAsked: k(rec.postT ?? NaN), holderFell30: rec.tFall ?? null, groundC30: k((rec.gC ?? NaN) / (rec.nG ?? 1)), groundT30: k((rec.gT ?? NaN) / (rec.nG ?? 1)), groundC80: k((rec.gC2 ?? NaN) / (rec.nG2 ?? 1)), groundT80: k((rec.gT2 ?? NaN) / (rec.nG2 ?? 1)), lungeShare30: k((rec.lungeTicks ?? 0) / Math.max(1, rec.nL ?? 0)), lungeAlong30: k((rec.lungeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), strikeAlong30: k((rec.strikeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), pairForce30: k(rec.P30 !== undefined ? (rec.P30 - rec.P0) / 0.3 : NaN), vc30: k(rec.vc30 ?? NaN), vtA30: k(rec.vtA30 ?? NaN), h30: rec.h30 ?? null, c30: rec.c30 ?? null, reqT30: k((r.reqT30 ?? NaN) / (r.nReq ?? 1)), vt30: k((r.vt30 ?? NaN) / (r.nReq ?? 1)), holder10: r.holder10, xiMax: k(r.xiMax), holdersMax: r.holdersMax, dur: k(sim.t - r.t0), after: k(after), outcome: res?.outcome ?? null })); }
+          Fc30: k(r.Fc30 / Math.max(1, r.nF)), Ft30: k(r.Ft30 / Math.max(1, r.nF)), snap: rec.snap ?? null, xiT30: k(rec.xiT30 ?? NaN), postureAsked: k(rec.postT ?? NaN), holderFell30: rec.tFall ?? null, groundC30: k((rec.gC ?? NaN) / (rec.nG ?? 1)), groundT30: k((rec.gT ?? NaN) / (rec.nG ?? 1)), groundC80: k((rec.gC2 ?? NaN) / (rec.nG2 ?? 1)), groundT80: k((rec.gT2 ?? NaN) / (rec.nG2 ?? 1)), lungeShare30: k((rec.lungeTicks ?? 0) / Math.max(1, rec.nL ?? 0)), lungeAlong30: k((rec.lungeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), strikeAlong30: k((rec.strikeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), pairForce30: k(rec.P30 !== undefined ? (rec.P30 - rec.P0) / 0.3 : NaN), vc30: k(rec.vc30 ?? NaN), vtA30: k(rec.vtA30 ?? NaN), h30: rec.h30 ?? null, c30: rec.c30 ?? null, reqT30: k((r.reqT30 ?? NaN) / (r.nReq ?? 1)), vt30: k((r.vt30 ?? NaN) / (r.nReq ?? 1)), holder10: r.holder10, xiMax: k(r.xiMax), holdersMax: r.holdersMax, dur: k(sim.t - r.t0), after: k(after), outcome: res?.outcome ?? null })); }
       else { console.log(lines.join('\n')); console.log(`  end ${res?.outcome ?? ''} after ${f(sim.t - rec.t0)} s, yards after the wrap ${f(after)}\n`); } }
     return res; } } });
 }
