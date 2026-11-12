@@ -11,7 +11,7 @@ pressure-time.py). The presser is classed by who he is and where he started:
   - 'other': everyone else (DBs, second-level backers, wide men not paired).
 Also whether he was free then (no offensive non-QB within 1.0 yd), the time, and whether the dropback ended in a sack
 (no pass_forward and the QB behind the line at the end, as pressure-time.py): sacks per pressure by presser class.
-Per dropback rates and shares.
+Per dropback rates and shares, and the rate of each class's pressure arriving before 2.5 s.
 """
 import sys, os, json, gzip, collections as C
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
@@ -70,5 +70,5 @@ for path in sys.argv[1:]:
     tot = sum(cnt.values())
     print(f"== {os.path.basename(path)}: dropbacks {n} | pressured {pct(tot, n)}")
     for cls in ('edge rusher: past outside', 'edge rusher: level/in front', 'edge rusher: inside', 'interior DL/LB', 'other'):
-        print(f"   {cls:28s} {pct(cnt[cls], n)} of dropbacks ({pct(cnt[cls], tot)} of pressure) | free then {pct(free[cls], cnt[cls])} | time p50 {q(times[cls]):.2f} s | sacked per pressure {pct(sk[cls], cnt[cls])}")
+        print(f"   {cls:28s} {pct(cnt[cls], n)} of dropbacks ({pct(cnt[cls], tot)} of pressure) | free then {pct(free[cls], cnt[cls])} | time p50 {q(times[cls]):.2f} s | by 2.5 s {pct(sum(t < 2.5 for t in times[cls]), n)} of dropbacks | sacked per pressure {pct(sk[cls], cnt[cls])}")
     print(f"   all pressure: sacked per pressure {pct(sum(sk.values()), tot)}")
