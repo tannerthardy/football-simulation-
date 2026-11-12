@@ -142,3 +142,44 @@ together. The overset cue (the tackle level with or outside the rusher's body) a
 rather than his live shoulder. A tackle who widens past that width is then oversetting by the rusher's own picture,
 and the cue becomes the tackle's width gained past the landmark. The tackle side is protection's: his mirror chasing
 the rusher outward (the rep's lane term) is the next candidate there.
+
+# EDGE_ARC, attempt 2: landmark from the snap (stopped, re-diagnose)
+
+## Change
+
+- **Landmark.** The landmark is now outside the tackle's *set*: his alignment as seen at the snap, plus the 0.8 yd a
+  kick takes (`KICK_WIDTH`, the set point in `blocking.ts`), plus bodies and 0.45 yd (`arcLandmark`). It no longer
+  follows his live shoulder.
+- **Overset.** The overset cue is the tackle seen wider than that set by more than 0.45 yd, within 1.5 yd in depth.
+- Off is bit-identical (seed 999 hash). Fixture: `test/edge-arc.test.ts`.
+
+## Read (seed 201, 8 games; same off and TACKLE_SET arms as above)
+
+| gate | off | EDGE_ARC 1 | EDGE_ARC 2 | both (1) | both (2) | NFL |
+|---|---|---|---|---|---|---|
+| states at 2.0 s | 61/27/6/6 | 37/41/15/7 | 41/35/17/7 | 37/37/19/7 | 43/32/17/8 | 31/30/23/15 |
+| states at 2.5 s | 59/24/6/11 | 38/36/14/12 | 42/30/15/13 | 35/28/24/13 | 42/24/18/15 | 28/24/26/22 |
+| at the win: past / front / inside | 13/50/37 | 6/58/36 | 8/56/37 | 10/41/48 | 4/44/52 | 26/27/47 |
+| edge win | 11% | 9% | 11% | 10% | 10% | 13% |
+| tackle width at 3.0 s | +0.8 | +1.2 | +0.9 | +1.6 | +1.3 | −0.6 |
+| tackle depth at 3.0 s | −8.2 | −8.6 | −8.6 | −7.3 | −7.6 | −6.8 |
+| free at 2 yd from the edge | 3% | 3% | 3% | 6% | 2% | 23% |
+| sacked | 3.4% | 3.4% | 5.2% | 4.6% | 4.4% | 6.7% |
+| time to pressure p50 | 2.6 | 2.5 | 2.6 | 2.6 | 2.6 | 2.7 |
+
+## Re-diagnosis
+
+Both attempts move where the rusher *is*: getting level and past roughly triples by 2.0 s. Neither moves where he
+*wins*: past outside at the win stays at 4-13% (NFL 26%), and the edge share of free rushers stays at 2-6% (NFL 23%).
+
+The rusher gets around the tackle and still doesn't get to the QB. At the win the tackle is within 1.2 yd half the time
+or more, and a rusher past outside at 3.0 s is 5 yd from the QB. So the open question is not his path. It is what
+happens after he turns, while the tackle's hands are still on him: in the rep a rider keeps a loaded outside hand
+(`canRidePassContact`), and the beat only triggers at |phi| ≥ 1 against the rusher-to-QB axis.
+
+Next diagnostic, before any third mechanism. Follow rushers past outside at 2.0 s through the next second:
+- whether they are still in a hands joint, and its force;
+- their requested vs achieved turn toward the QB;
+- distance to the QB;
+- the same measures on NFL tracking for those who came free: separation from the tackle against time after getting
+  past.
