@@ -38,8 +38,12 @@ P.startThrow = function (a: any, sim: any, ev: any) {
       const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const run = timeToReach(mover, pt, d.profile.reach + 0.3);
+      // The body keeps its course through the reaction too (not frozen while he reacts).
+      const carry = { ...mover, pos: { x: seen.pos.x + seen.vel.x * (blind + react), y: seen.pos.y + seen.vel.y * (blind + react) } };
+      const runCarry = timeToReach(carry, pt, d.profile.reach + 0.3);
+      const dist0 = Math.hypot(pt.x - seen.pos.x, pt.y - seen.pos.y), distCarry = Math.hypot(pt.x - carry.pos.x, pt.y - carry.pos.y);
       return { d, slot: d.slot, facingQB, onTarget, blind: +blind.toFixed(2), react: +react.toFixed(2), run: +run.toFixed(2), tt: +(blind + run + react).toFixed(2),
-        margin: +(blind + run + react - total).toFixed(2), seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
+        margin: +(blind + run + react - total).toFixed(2), runCarry: +runCarry.toFixed(2), closeCarry: +(dist0 - distCarry).toFixed(2), closeAct: null as number | null, dist0, seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
         speed0: +Math.hypot(d.vel.x, d.vel.y).toFixed(2), vmax: +d.profile.vmax.toFixed(2), distPt: +Math.hypot(d.pos.x - pt.x, d.pos.y - pt.y).toFixed(2),
         brk: null as number | null, reached: null as number | null, path: 0, prev: { x: d.pos.x, y: d.pos.y },
         runAtBlind: null as number | null, runAtStart: null as number | null, posErrAtBlind: null as number | null,
@@ -70,7 +74,10 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
         x.runAtBlind = +timeToReach(now, D.pt, d.profile.reach + 0.3).toFixed(2);
         x.posErrAtBlind = +Math.hypot(d.pos.x - x.predAt.x, d.pos.y - x.predAt.y).toFixed(2);
       }
-      if (x.runAtStart === null && since >= x.blind + x.react - 1e-6) x.runAtStart = +timeToReach(now, D.pt, d.profile.reach + 0.3).toFixed(2);
+      if (x.runAtStart === null && since >= x.blind + x.react - 1e-6) {
+        x.runAtStart = +timeToReach(now, D.pt, d.profile.reach + 0.3).toFixed(2);
+        x.closeAct = +(x.dist0 - dist).toFixed(2);
+      }
     }
   };
   const res = sim.run(), s = sim.stats;
