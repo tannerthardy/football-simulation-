@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-41",
+  "id": "engine-42",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -129,6 +129,7 @@
     "SHOULDERS_SET": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
+    "LINE_START": "on",
     "LINE_STEP": "on",
     "MAN_PHASE": "off",
     "MESH_GUN_SIDE": "on",
