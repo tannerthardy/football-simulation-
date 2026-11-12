@@ -155,6 +155,21 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
   if (sim.ball.kind !== 'air' && path) return playObservedFlight(a, sim, path);
   const area = sim.ball.kind !== 'air' ? unresolvedBallArea(a) : null;
+  // CATCH_CARRY: he was driving on a receiver making this catch; the outcome
+  // is not yet in his picture. He keeps driving on that receiver as he last
+  // saw him, not on the spot the ball landed. A newer picture of him without
+  // the ball refutes it (dropped); a ball back in the air is played as flight.
+  const drive = CATCH_CARRY && area ? catchDrive.get(a) : undefined;
+  if (drive) {
+    const seen = sim.see(a, drive.receiver);
+    const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > drive.t;
+    if (!refuted) {
+      a.tags.add('catch-carry');
+      const f = seen.facing;
+      return runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+    }
+    catchDrive.delete(a);
+  }
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
@@ -765,6 +780,20 @@ const LOOK_ONCE = process.env.LOOK_ONCE !== '0';
  * near defender's requested velocity turned off the man during the window
  * (toward him 4.7 -> 0.5 yd/s in 0.3 s; NFL defenders keep 4.5-5.0). */
 const DRIVE_CATCH = process.env.DRIVE_CATCH !== '0';
+/** CATCH_CARRY (experimental, off; CATCH_CARRY=1 turns it on): a defender who
+ * was driving through a receiver's hands while he secured the ball (DRIVE_CATCH)
+ * keeps driving on that receiver, as he last saw him, until his own picture
+ * resolves the outcome: a holder (pursuit, as now), a newer picture of the
+ * receiver without the ball (dropped), or the ball back in the air (broken
+ * up). He gets no earlier knowledge of the catch than observedHolder gives.
+ * Before, between the catch and his picture of it (0.15-0.35 s) he went to the
+ * ball's acquired landing area, a fixed spot the catcher was leaving: his
+ * request turned 99 deg off his run and his speed toward the catcher fell
+ * 3.5 -> 2.0 yd/s just as the catcher started to move (settled catches 3-10 yd,
+ * engine-42, settletrace.mts; NFL defenders hold +3.5 at +0.4 s). */
+const CATCH_CARRY = process.env.CATCH_CARRY === '1';
+/** CATCH_CARRY: the receiver each defender was driving on, and when. */
+const catchDrive = new WeakMap<Agent, { receiver: Agent; t: number }>();
 const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
 function findsBall(a: Agent, sim: PlaySim): boolean {
   const ball = sim.ball;
@@ -1762,6 +1791,7 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
     if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
       const f = R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
       a.tags.add('drive-catch');
+      if (CATCH_CARRY) catchDrive.set(a, { receiver: R, t: sim.t });
       return runThrough(a, hands, { speed: 1 });
     }
   }
