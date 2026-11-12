@@ -56,7 +56,7 @@ const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
  * not; in front of the receiver 15-19%); ours 57-59% (catchpoint.py, BDB 2025
  * weeks 1-3 vs develop 3506343d). Constants are estimates fitted to those
  * behaviours, not to yards. */
-const CATCH_HANDS = process.env.CATCH_HANDS === '1';
+const CATCH_HANDS = process.env.CATCH_HANDS !== '0';
 /** PLAY_HANDS (off; PLAY_HANDS=1 turns it on; with CATCH_HANDS and CATCH_SECURE; estimated, C14): a defender
  * plays the receiver's hands, not only the ball. The hands are where the catch is being made: the ball at the
  * catch, then carried to the tuck over the securing window, so a ball caught reaching back toward a trailing
@@ -106,7 +106,7 @@ const HANDS_SCALE = 1.2;
  * defender frozen there: NFL tight throws on target with the nearest defender
  * 0.75-1.5 yd away at arrival complete 28%, ours 46-59% (catchpoint.py, same
  * operator). */
-const CATCH_SECURE = process.env.CATCH_SECURE === '1';
+const CATCH_SECURE = process.env.CATCH_SECURE !== '0';
 /** CATCH_POINT (off; CATCH_POINT=1 turns it on; C14 open end): a receiver
  * tracking the ball catches it where it comes to his hands, not where it first
  * crosses the edge of his reach. Off, the catch resolved on the first tick the

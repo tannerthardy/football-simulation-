@@ -365,6 +365,17 @@ const HIP_REF_POWER_PER_KG = 0.55 + 0.75 * 0.5;
  * resting on the ground at one end and held at the other carries half its
  * weight at each end. */
 const HANG_SHARE = 0.5;
+/** Experimental (HANG_AIRBORNE=1, off): a holder off his feet and not yet
+ * landed (the World's 'falling' state) who still holds has all of his weight
+ * on the hold, none on the turf; on landing ('down') half rests on the ground
+ * (HANG_SHARE) as before. A grip broken mid-fall loads nothing from that tick.
+ * Off, a falling holder hangs HANG_SHARE like a grounded one, so a rear leg
+ * wrap by a diving chaser leaves the runner's stride free through the fall
+ * (hang-bench.mts: legs 0.8, moment 225 against hip torque 368; whole weight
+ * 450). docs/reviews/2026-11-12-wrap-at-speed.md (ii). */
+const HANG_AIRBORNE = process.env.HANG_AIRBORNE === '1';
+/** The share of a holder's weight hanging on his hold, by his support state. */
+const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HANG_AIRBORNE && state === 'falling' ? 1 : HANG_SHARE;
 /** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
  * its grip whether or not the holder is on his feet, and the strides it binds
  * leave the runner's base behind his body (see the stride holds and
@@ -1469,7 +1480,7 @@ export class World {
       // One hip budget: what bracing the hold's pull on his thighs used is
       // not there to swing the leg.
       const hip = this.hipTorque(ib) * Math.max(0, 1 - this.hipUsed[ib]);
-      const bound = hip > 1e-9 ? clamp(HANG_SHARE * this.mass[ia] * G * lever / hip, 0, 1) : 1;
+      const bound = hip > 1e-9 ? clamp(hangShare(jt.a.support!.state) * this.mass[ia] * G * lever / hip, 0, 1) : 1;
       jt.strideForce = bound;
       this.strideHolds[ib] = 1 - (1 - this.strideHolds[ib]) * (1 - bound);
     }
@@ -2165,7 +2176,7 @@ export class World {
       if (jt.broken || jt.legs <= 0) continue;
       const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
       const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
-      const hang = jt.a.support!.state === 'up' ? 0 : HANG_SHARE * this.mass[ia] * G * lever;
+      const hang = hangShare(jt.a.support!.state) * this.mass[ia] * G * lever;
       // Copies of one hold share his grip (gripCapacity), so their grip
       // moments add up to one hold's; his hanging weight hangs once.
       const grip = this.gripCapacity(jt) * clamp(jt.legs, 0, 1) * lever;

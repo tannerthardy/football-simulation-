@@ -31,6 +31,11 @@ const refKey = (r: RouteDescriptor) => r.ref;
  *   one that settles (295, 224, 143, 142: the settling route is the reset, not the start).
  */
 export const BEAT = 0.4;
+/** BACK_FRONT (experimental, off; BACK_FRONT=1 turns it on): the back is read with the start (front) side at his
+ * window, the reset after the front side's reads, instead of on the side he releases to. Off, a back releasing to
+ * the other side is read after the whole start side (often fourth or fifth), out and open but unread on about a
+ * quarter of drop-backs (docs/reviews/2026-11-11-read-compiler-phase1.md). */
+const BACK_FRONT = process.env.BACK_FRONT !== '0';
 function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxReads: number): { order: ReadStep[]; outlet: ReceiverRef | null; warnings: string[]; score: number } {
   const warnings: string[] = [];
   const clearers = new Set(motifs.filter((m) => m.kind === 'clearout').map((m) => m.refs[0]));
@@ -40,7 +45,9 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
   const sideOf = new Map<RouteDescriptor, 'S' | 'W' | 'B'>(routes.map((r) => [r, r.side]));
   if (outletR) {
     const at = outletR.trajectory.reduce((b, p) => Math.abs(p.t - outletR.window.ready) < Math.abs(b.t - outletR.window.ready) ? p : b);
-    sideOf.set(outletR, at.y >= 0 ? 'S' : 'W');
+    // BACK_FRONT: he is read with the front side, the reset after its reads, before the eyes cross (HonestNFL 133,
+    // 166, 172, 173: shallow or basic, then the back; 107: post or deep cross, shallow, then the back).
+    sideOf.set(outletR, BACK_FRONT ? startSideOf(routes) : at.y >= 0 ? 'S' : 'W');
   }
   const side = (r: RouteDescriptor) => sideOf.get(r)!;
   const field = [...routes.filter((r) => !r.isBack), ...(outletR ? [outletR] : [])]

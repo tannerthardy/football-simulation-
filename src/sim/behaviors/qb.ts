@@ -15,7 +15,7 @@
  * margins; accuracy turns into a miss distance on the actual throw.
  */
 import { FIELD_WIDTH } from '../../core/field.js';
-import { clamp, logistic, type Vec2, type Vec3 } from '../../core/vec.js';
+import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -118,6 +118,86 @@ const THROW_BODY = process.env.THROW_BODY !== '0';
  * looked at is valued as the gamble it is. Off, an aged picture is
  * extrapolated and scored as if certain. */
 const PICTURE_AGE = process.env.PICTURE_AGE === '1';
+/** Experimental (POCKET_CLIMB=1, off): pocket movement is buying time. When
+ * set and unable to finish what he still needs (the rest of his current read,
+ * then a throwing motion) before a rusher he feels could reach him where he
+ * stands, he weighs standing against moving, in eight
+ * directions at
+ * 2.2 yd/s (the pace this model already treats as the edge of a set throw,
+ * missSigma), and takes whatever leaves him the most felt time to contact (his
+ * felt() picture of each rusher, plus held() for one still in a block) at the
+ * end of that time. He stays 2.5 yd behind the line and
+ * keeps his eyes on his read; standing wins whenever moving buys nothing.
+ * Edge rushers past his depth leave the space in front (he climbs), interior
+ * push leaves it to the side (he slides). Escape is what the same movement
+ * becomes when the existing scramble check finds a lane. Off, he walks toward a
+ * set point nudged by rushers within 3.5 yd at 0.45-0.6 of his speed. */
+const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
+/** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
+ * The QB reads a rusher as held only from what he sees: an offensive body in
+ * contact with the rusher and on his path to the QB (seenHold), never from the
+ * sim's engagement record or the rep's private win score, so a blocker who has
+ * come off holds nothing. QB_FEEL's pocket move is not part of it. Off (and
+ * QB_FEEL off), held() credits any engaged rusher 0.35-1.75 s from
+ * engagement.win, which rises as the win score falls while he closes. */
+const BLOCK_SEEN = process.env.BLOCK_SEEN !== '0';
+/** Experimental (FREE_BOUND=1, off): a free man near him is a hit soon,
+ * whatever he looks to be doing. For a rusher he sees unblocked (no offensive
+ * body within arm's length of him) within FREE_NEAR, the QB's felt time is at
+ * most how soon that man COULD hit him: from where he sees him, a typical
+ * rusher's burst straight at him to within a hand of his body, with any speed
+ * already toward him as a head start and none of his picture's speed away or
+ * across counted against him (the picture is 0.25-0.3 s old; a free man that
+ * near can have turned in it, and one going by can still reach in). A QB's-eye
+ * estimate from typical constants, not the rusher's ratings. Out of his field
+ * of view (felt's blind side) poor pocket presence applies it late. Off, a free man drifting past at 1.6 yd, seen on a 0.3 s old
+ * picture moving away, read 1-2 s off (Rules + Coaching repro, hitches vs
+ * Cover 2, seed 2 flipped, READ_PLAN). */
+const FREE_BOUND = process.env.FREE_BOUND === '1';
+/** Estimated (FREE_BOUND), a QB's-eye typical rusher: burst toward the QB,
+ * yd/s^2; reach from his centre, yd; the range where a hand-and-burst hit is
+ * the question (beyond it his ordinary estimate, velocity and all, is what he
+ * reads), yd; how much later a poor pocket presence applies the bound to a man
+ * behind his shoulder, s. Not fitted to sacks or yards. */
+const FREE_BURST = 5;
+const FREE_REACH = 1.0;
+const FREE_NEAR = 3;
+const FREE_BLIND_LAG = 0.5;
+/** Experimental (SET_DECIDE=1, off): one decision under pressure. When where
+ * he stands he no longer has the time he still needs (the rest of his current
+ * read, then a throwing motion) before a rusher he feels can reach him, he
+ * moves first: to whichever reachable spot (climb, slide, or out of the box,
+ * at 2.2 yd/s, the edge of a set throw in missSigma) leaves him the most felt
+ * time to contact at the end of that time, holding the direction for one
+ * reaction time and reading as he goes. A lane past the line from where the
+ * movement has taken him is an escape (the existing scramble check). Only when
+ * no spot buys him time is he trapped, and the existing hot path (throw to
+ * anyone with P > 0.3, throw away, evade) decides. With nobody near, nothing
+ * here runs. Off, the hot path pre-empts movement whenever he feels a hit
+ * within 0.45 s, and he walks toward a set point. */
+const SET_DECIDE = process.env.SET_DECIDE === '1';
+/** Experimental (SHOULDERS_SET=1, off): his body is not his eyes. After the
+ * drop his front shoulder sets to his first read; his eyes move through the
+ * progression, and his feet follow a read only once he has held it for a
+ * reset (SHOULDER_SETTLE), so a throw decided on a read his feet have not
+ * reached, or to a man he was not reading (outlet, hot), starts square to
+ * somewhere else. The throw then requests the turn: the shoulders close on the
+ * target through the motion, and a bigger turn needs a longer motion (the step
+ * and hip turn of a throwing turn, not the body's free yaw, which the World
+ * does in ~0.15 s for 30 deg). Off, the body faces whatever his eyes are on,
+ * and no throw needs a turn. sim.qbEyes stays gaze. */
+const SHOULDERS_SET = process.env.SHOULDERS_SET === '1';
+/** Estimated (SHOULDERS_SET): how long he holds a read before his feet reset
+ * to it, s: a reaction time, not fitted. Its check is the NFL shoulder angle to
+ * the target at his last settled frame and the turn-angle mix (qb-release.py),
+ * never yards or completions. */
+const SHOULDER_SETTLE = 0.3;
+/** Estimated (SHOULDERS_SET): a throwing turn of A deg takes TURN_BASE +
+ * A / TURN_RATE s. Fitted to the NFL turn into the throw by angle turned
+ * (qb-release.py, BDB 2025 pocket dropbacks: 15-45 deg 0.3 s, 45-90 0.5 s,
+ * 90-180 0.7 s), not to yards or completions. */
+const TURN_BASE = 0.12;
+const TURN_RATE = 190 * Math.PI / 180;
 /** READ_PLAN (experimental, off; READ_PLAN=1 turns it on): he runs the read plan compiled from the routes
  * (src/playbook/read-compiler, docs/reviews/2026-11-11-read-compiler-phase0.md) instead of the concept's
  * hand-written progression. The plan is his intent; he executes it from what he sees:
@@ -149,8 +229,19 @@ export class QBPass implements Behavior {
   private plannedLoad = -1;
   /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
   private flick = 0;
+  /** SET_DECIDE: throws the read logic offered that he could not finish (diagnostic count). */
+  noFinish = 0;
+  /** SET_DECIDE: the direction he is moving in, held until moveUntil. */
+  private moveDir: Vec2 | null = null;
+  private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
   private pinRolled = false;
+  /** SHOULDERS_SET: the read his feet are set to, the read his eyes are on and since when, and the throw's turn. */
+  private shoulderRead: Agent | null = null;
+  private eyesRead: Agent | null = null;
+  private eyesAt = 0;
+  private turnFrom = 0;
+  private turnT = 0;
   private motionAt = -1;
   /** Whether the throw in progress has had its last look at the plant. */
   private rechecked = false;
@@ -417,7 +508,7 @@ export class QBPass implements Behavior {
         this.pending = null;
         return stand();
       }
-      const facing = this.pending ? angleTo(a.pos, this.pending.point) : facingDown;
+      const facing = this.pending ? this.motionFacing(a, sim, this.pending) : facingDown;
       // Weight transfer: his weight starts toward the target with the load and
       // reaches stride speed as the front foot plants for the delivery.
       if (this.pending) {
@@ -552,7 +643,7 @@ export class QBPass implements Behavior {
         const ev = this.evaluate(a, sim, r, u);
         if (ev && ev.P >= need && ev.intRisk <= risk && (!pick || ev.value > pick.value)) pick = ev;
       }
-      if (pick) return this.startThrow(a, sim, pick);
+      if (pick) { const go = this.startIfFinish(a, sim, pick); if (go) return go; }
       const held = t - this.readStart;
       // A vertical peek lasts until the deep defenders' squeeze can show: every vertical 12 yd or more downfield,
       // then his processing time; while a vertical is close to his bar (winning, or about to) he stays on it, to
@@ -574,7 +665,7 @@ export class QBPass implements Behavior {
       }
     } else if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);
-      if (ev && ev.P >= need && ev.intRisk <= risk) return this.startThrow(a, sim, ev);
+      if (ev && ev.P >= need && ev.intRisk <= risk) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
       const forecast = this.receiverForecasts.get(read);
@@ -586,23 +677,29 @@ export class QBPass implements Behavior {
         // 107, 133), not a rhythm outlet taken on the first move-off; pressure still sends him there (below).
         const outletOpen = !READ_PLAN || !this.plan;
         const outlet = QB_RHYTHM && outletOpen ? this.outletThrow(a, sim, u, need, risk) : null;
-        if (outlet) return this.startThrow(a, sim, outlet);
+        if (outlet) { const go = this.startIfFinish(a, sim, outlet); if (go) return go; }
         this.readIdx++;
         this.readStart = t;
       }
     } else if (!read) {
       // Out of reads: take the best available.
       const best = this.bestOption(a, sim, u);
-      if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) return this.startThrow(a, sim, best);
+      if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) { const go = this.startIfFinish(a, sim, best); if (go) return go; }
     } else if (t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
     }
 
+    // SET_DECIDE: under pressure he moves first; the hot path is for when he is trapped.
+    if (SET_DECIDE) {
+      const move = this.setDecide(a, sim, read);
+      if (move) return move;
+    }
+
     // Hot / panic: under imminent pressure, find anything.
     if (pressure.time < 0.45) {
-      const best = this.bestOption(a, sim, 1);
-      if (best && best.P > 0.3 && best.intRisk < 0.18) return this.startThrow(a, sim, best);
+      const hot = this.hotThrow(a, sim);
+      if (hot) return this.startThrow(a, sim, hot);
       if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
       // Veterans throw it away (or at a back's feet) rather than eat a sack.
       if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
@@ -625,6 +722,23 @@ export class QBPass implements Behavior {
 
     return this.pocketMove(a, sim, read);
   }
+
+  /** SET_DECIDE: a throw he cannot finish before the rusher he sees arrives is
+   * not started (null: the decision below, move, escape or trapped, answers
+   * instead). Off: the throw starts. */
+  private startIfFinish(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand | null {
+    if (SET_DECIDE && !this.canFinish(a, sim)) { this.noFinish++; return null; }
+    return this.startThrow(a, sim, ev);
+  }
+
+  /** The read logic's hot throw under imminent pressure: anything with P > 0.3
+   * and an interception risk under 0.18 (Coverage owns its contents). */
+  private hotThrow(a: Agent, sim: PlaySim): ThrowEval | null {
+    const best = this.bestOption(a, sim, 1);
+    return best && best.P > 0.3 && best.intRisk < 0.18 ? best : null;
+  }
+
+
 
   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
    * clears his ordinary bar now; null otherwise. */
@@ -739,6 +853,7 @@ export class QBPass implements Behavior {
    * the block is. Good pocket presence reads a rep being lost before the
    * rusher is free; poor pocket presence only notices when he's loose. */
   private held(a: Agent, d: Agent, sim?: PlaySim): number {
+    if (BLOCK_SEEN && sim) return this.seenHold(a, d, sim);
     if (!d.engagement) return 0;
     if (QB_FEEL && sim) {
       // What he sees: the rusher's path to him and the blocker's body on it.
@@ -756,6 +871,67 @@ export class QBPass implements Behavior {
     return 0.35 + 1.4 * (1 - feltWin);
   }
 
+  /** BLOCK_SEEN: the hold he sees on a rusher -- an offensive body in contact
+   * with him (as he sees them, the rusher's body within the blocker's arm's
+   * length: centres within the blocker's reach + the rusher's radius) and on his
+   * path to the QB. Neither the sim's engagement record nor its win score: a
+   * blocker who has come off (or never was there) holds nothing, and a rusher
+   * level with or past the blocker's edge is as near as he looks. A rusher in
+   * contact (any blocker within arm's length) is also paced: he closes no
+   * faster than the QB sees him closing while the contact lasts. */
+  private seenHold(a: Agent, d: Agent, sim: PlaySim): number {
+    const seen = this.felt(a, sim, d), r = seen.pos;
+    const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
+    let hold = 0, contact = false;
+    for (const o of sim.offense) {
+      if (o === a || o.isDown(sim.t)) continue;
+      const b = this.felt(a, sim, o).pos, width = d.profile.radius + o.profile.radius;
+      if (Math.hypot(b.x - r.x, b.y - r.y) > o.profile.reach + d.profile.radius) continue;
+      contact = true;
+      const along = ((b.x - r.x) * px + (b.y - r.y) * py) / L;
+      const off = Math.abs((b.x - r.x) * py - (b.y - r.y) * px) / L;
+      if (along <= 0 || along >= L || off >= width) continue;
+      hold = Math.max(hold, (0.2 + (width - off) / 2) * (0.6 + 0.4 * (1 - a.r('pocketPresence'))));
+    }
+    if (contact) {
+      // A rusher still in a blocker's hands -- driving him back, or ridden from
+      // beside -- cannot burst at the QB as a free man would: while the contact
+      // lasts he closes at the pace the QB sees him closing. The felt time is at
+      // least that pace over the distance (2026-11-12: a bull rush and an edge
+      // ride each read about 0.35-0.6 s short as a fresh sprint at a QB
+      // standing still).
+      // Closing on him: the rusher's seen velocity toward him less his own
+      // (he knows how he is moving; a drift away is distance the rusher must
+      // still make up).
+      const closing = ((seen.vel.x - a.vel.x) * px + (seen.vel.y - a.vel.y) * py) / L;
+      const paced = Math.min(3, Math.max(0, L - 0.8) / Math.max(closing, 0.5));
+      const sprint = timeToReach({ pos: r, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8);
+      hold = Math.max(hold, paced - sprint);
+    }
+    return hold;
+  }
+
+  /** FREE_BOUND: how soon a man he sees unblocked within FREE_NEAR could hit
+   * him (Infinity for one he sees in a block, or farther). */
+  private freeBound(a: Agent, sim: PlaySim, d: Agent, seen: Perceived): number {
+    for (const o of sim.offense) {
+      if (o === a || o.isDown(sim.t)) continue;
+      const b = this.felt(a, sim, o).pos;
+      if (Math.hypot(b.x - seen.pos.x, b.y - seen.pos.y) <= o.profile.reach + d.profile.radius) return Infinity;
+    }
+    const dx = a.pos.x - seen.pos.x, dy = a.pos.y - seen.pos.y, R = Math.hypot(dx, dy) || 1;
+    if (R > FREE_NEAR) return Infinity;
+    const D = R - FREE_REACH - a.profile.radius;
+    let t = 0;
+    if (D > 0) {
+      const v = Math.max(0, (seen.vel.x * dx + seen.vel.y * dy) / R);
+      t = (-v + Math.sqrt(v * v + 2 * FREE_BURST * D)) / FREE_BURST;
+    }
+    const raw = Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing;
+    const blind = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
+    return t + (blind ? FREE_BLIND_LAG * (1 - a.r('pocketPresence')) : 0);
+  }
+
   private pressure(a: Agent, sim: PlaySim): { time: number; agent: Agent | null; dist: number } {
     let best = Infinity;
     let who: Agent | null = null;
@@ -763,7 +939,8 @@ export class QBPass implements Behavior {
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
       const seen = this.felt(a, sim, d);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim);
+      let tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim);
+      if (FREE_BOUND) tt = Math.min(tt, this.freeBound(a, sim, d, seen));
       if (tt < best) {
         best = tt;
         who = d;
@@ -775,7 +952,8 @@ export class QBPass implements Behavior {
 
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     if (r.isDown(sim.t) || r.engagement) return null;
-    const wind = this.windup(a);
+    // SHOULDERS_SET: his motion to this man includes the turn to him (as startThrow will make it).
+    const wind = SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     const forecast = this.receiverForecasts.get(r);
     const current = forecast?.predict(sim.t, 0);
@@ -985,16 +1163,51 @@ export class QBPass implements Behavior {
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
     this.pending = ev;
-    this.releaseAt = sim.t + this.windup(a);
+    const base = this.windup(a);
+    // SHOULDERS_SET: the motion lasts at least the turn it has to make.
+    this.turnFrom = a.body.facing;
+    this.turnT = SHOULDERS_SET ? this.turnTime(a, ev.point) : 0;
+    const plain = sim.t + base;
+    this.releaseAt = this.turnT > base ? sim.t + this.turnT : plain;
     this.motionAt = sim.t;
     this.rechecked = false;
     this.pinRolled = false;
-    this.flick = 1 - (this.releaseAt - sim.t - this.delivery(a)) / this.load(a);
+    // The arm's load is the base motion's; time spent turning does not add to it.
+    this.flick = 1 - (plain - sim.t - this.delivery(a)) / this.load(a);
     // The load gives the throw away to defenders reading him: front hand off
     // the ball, front shoulder to the target.
     sim.windupAt = sim.t;
     sim.deliveryAt = this.releaseAt - this.delivery(a);
-    return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: angleTo(a.pos, ev.point) };
+    return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: this.motionFacing(a, sim, ev) };
+  }
+
+  /** SHOULDERS_SET: how long a throwing turn from his current facing to `p` takes. */
+  private turnTime(a: Agent, p: Vec2): number {
+    return TURN_BASE + Math.abs(wrapAngle(angleTo(a.pos, p) - a.body.facing)) / TURN_RATE;
+  }
+
+  /** The facing his throwing motion asks for: square to the target, or with
+   * SHOULDERS_SET the shoulders closing on it through the motion. */
+  private motionFacing(a: Agent, sim: PlaySim, ev: ThrowEval): number {
+    const to = angleTo(a.pos, ev.point);
+    if (!SHOULDERS_SET || this.turnT <= 0) return to;
+    // The turn ends at the release: the step and hip and shoulder rotation are
+    // the motion's last turnT seconds, after the load (NFL: shoulders closing on
+    // the target up to the release, ~0.3 s for 30 deg).
+    const f = clamp((sim.t + sim.dt - (this.releaseAt - this.turnT)) / this.turnT, 0, 1);
+    return this.turnFrom + wrapAngle(to - this.turnFrom) * f;
+  }
+
+  /** SHOULDERS_SET: the facing his feet hold while he reads. His shoulders go
+   * to a read once his eyes have held it for SHOULDER_SETTLE; until then they
+   * stay where they were set. Off: square to the read. */
+  private bodyFacing(a: Agent, sim: PlaySim, read: Agent | null | undefined): number {
+    if (!SHOULDERS_SET) return read ? angleTo(a.pos, read.pos) : 0;
+    const eyes = read ?? null;
+    if (eyes !== this.eyesRead) { this.eyesRead = eyes; this.eyesAt = sim.t; }
+    if (!this.shoulderRead) this.shoulderRead = this.reads[0] ?? eyes;
+    if (eyes && eyes !== this.shoulderRead && sim.t - this.eyesAt >= SHOULDER_SETTLE) this.shoulderRead = eyes;
+    return this.shoulderRead ? angleTo(a.pos, this.shoulderRead.pos) : a.body.facing;
   }
 
   /** Whether the committed throw, re-aimed as it would now leave his hand, is
@@ -1125,7 +1338,7 @@ export class QBPass implements Behavior {
     const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
-    const facing = read ? angleTo(a.pos, read.pos) : 0;
+    const facing = this.bodyFacing(a, sim, read);
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a
     // pace he can still throw from, eyes still on his read.
@@ -1145,7 +1358,142 @@ export class QBPass implements Behavior {
         return { vel: { x: room > 0 ? vx : Math.min(0, vx), y: vy }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
       }
     }
+    if (POCKET_CLIMB) {
+      const climb = this.climb(a, sim, facing);
+      if (climb) return climb;
+    }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
+  }
+
+  /** SET_DECIDE: a rusher as he sees him closing. His delayed picture is carried
+   * forward with the acceleration he has seen it gaining (two samples of the
+   * same delayed picture one tick apart), not at constant velocity: a rusher
+   * coming off a block is speeding up, and the constant-velocity picture puts
+   * him about 0.15 s later than he arrives. Capped at the rusher's top speed. */
+  private feltClosing(a: Agent, sim: PlaySim, d: Agent): { pos: Vec2; vel: Vec2 } {
+    const seen = this.felt(a, sim, d), age = seen.age ?? 0;
+    if (age <= 0) return seen;
+    const older = sim.perception.perceive(d.idx, age + sim.dt);
+    const ax = (seen.vel.x - older.vel.x) / sim.dt, ay = (seen.vel.y - older.vel.y) / sim.dt;
+    let vx = seen.vel.x + ax * age, vy = seen.vel.y + ay * age;
+    const v = Math.hypot(vx, vy), cap = d.profile.vmax * (d.speedScale ?? 1);
+    if (v > cap) { vx *= cap / v; vy *= cap / v; }
+    return { pos: { x: seen.pos.x + 0.5 * ax * age * age, y: seen.pos.y + 0.5 * ay * age * age }, vel: { x: vx, y: vy } };
+  }
+
+  /** SET_DECIDE: whether he can finish a throwing motion here before the
+   * nearest rusher he sees closing could reach him. */
+  private canFinish(a: Agent, sim: PlaySim): boolean {
+    const need = this.windup(a);
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const seen = this.feltClosing(a, sim, d);
+      if (timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim) < need) return false;
+    }
+    return true;
+  }
+
+  /** SET_DECIDE: null when he still has the time he needs where he stands
+   * (nothing changes) or when no spot buys him time (trapped: the existing
+   * logic decides); otherwise the move, or the escape it has opened. */
+  private setDecide(a: Agent, sim: PlaySim, read: Agent | undefined, needOverride?: number): MoveCommand | null {
+    const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
+    // PERCEPTION: the rushers as he sees them closing, and his own blockers'
+    // bodies as he sees them (a teammate's position reaches him quickly).
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => ({ d, seen: this.feltClosing(a, sim, d) }));
+    const mates = sim.offense.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ o, pos: sim.see(a, o).pos }));
+    // ABILITY: where his body can get in the time, at the pace he can still
+    // throw from (missSigma's 2.2 yd/s edge of a set throw).
+    const pace = 2.2;
+    // The time he still needs here: the rest of this read, or (if it is done) a
+    // full look at the next, then a throw; in the drop, the rest of the drop and
+    // a throw (so an on-time throw keeps its chance).
+    const rest = this.readStart + dwell - sim.t;
+    const need = needOverride ?? ((rest > 0 ? rest : dwell) + this.windup(a));
+    // A rusher's time to a spot, around any of his blockers standing on the line
+    // between them (the perceived block read's geometry: around the blocker's
+    // body at a held rusher's pace, plus getting off his hands), so a walled-off
+    // rusher counts late and a free or winning one counts in full.
+    const detour = (from: Vec2, q: Vec2, rd: number) => {
+      const px = q.x - from.x, py = q.y - from.y, L = Math.hypot(px, py) || 1;
+      let worst = 0;
+      for (const { o, pos } of mates) {
+        const along = ((pos.x - from.x) * px + (pos.y - from.y) * py) / L;
+        const off = Math.abs((pos.x - from.x) * py - (pos.y - from.y) * px) / L, width = rd + o.profile.radius;
+        if (along <= 0 || along >= L || off >= width) continue;
+        worst = Math.max(worst, 0.2 + (width - off) / 2);
+      }
+      return worst;
+    };
+    const ttc = (q: Vec2) => {
+      let best = Infinity;
+      for (const { d, seen } of threats) best = Math.min(best,
+        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + detour(seen.pos, q, d.profile.radius));
+      return best - need;
+    };
+    // A spot with a teammate standing in it is not his to take.
+    const taken = (q: Vec2) => mates.some(({ o, pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) < o.profile.radius + a.profile.radius);
+    // DISPOSITION (the league-average hook for per-QB traits): how much felt time
+    // a move must buy before he gives up his spot. 0: any gain moves him.
+    const MOVE_FOR = 0;
+    // A direction he has committed to runs for one reaction time before he decides again.
+    let dir: Vec2 | null = this.moveDir && sim.t < this.moveUntil ? this.moveDir : null;
+    const stay = ttc(a.pos);
+    if (!dir && stay >= 0) { this.moveDir = null; return null; }
+    if (!dir) {
+      let bestT = stay;
+      for (let k = 0; k < 8; k++) {
+        const th = k * Math.PI / 4, c = { x: Math.cos(th), y: Math.sin(th) };
+        const q = { x: a.pos.x + c.x * pace * need, y: clamp(a.pos.y + c.y * pace * need, 1, FIELD_WIDTH - 1) };
+        if (q.x > sim.los - 2.5 && c.x > 0) continue;
+        // No retreat past his set depth: deeper takes him into the edge rushers'
+        // arcs and off his throwing base (NFL pressured QBs retreat ~0%; the
+        // straight-line time to reach here does not see his blockers walling
+        // off the front).
+        if (c.x < -0.1 && a.pos.x <= this.drop.x + 0.1) continue;
+        if (taken(q)) continue;
+        const v = ttc(q);
+        if (v > bestT + MOVE_FOR) { bestT = v; dir = c; }
+      }
+      if (!dir) { this.moveDir = null; return null; }
+      this.moveDir = dir; this.moveUntil = sim.t + a.profile.reactionTime;
+    }
+    // Escape: the movement has opened a lane and the read logic has offered nothing.
+    if (this.shouldScramble(a, sim, false)) { this.moveDir = null; return this.scramble(a, sim); }
+    const facing = this.bodyFacing(a, sim, read);
+    const vx = a.pos.x >= sim.los - 2.5 ? Math.min(0, dir.x * pace) : dir.x * pace;
+    return { vel: { x: vx, y: dir.y * pace }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
+  }
+
+  /** POCKET_CLIMB: the move (or none) that leaves the most felt time to contact
+   * one throwing motion from now. Null when standing is best. */
+  private climb(a: Agent, sim: PlaySim, facing: number): MoveCommand | null {
+    // The time he still needs here: the rest of his current read, then a throw.
+    const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
+    const horizon = Math.max(0, this.readStart + dwell - sim.t) + this.windup(a), pace = 2.2;
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
+      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
+    const ttc = (q: Vec2) => {
+      let best = Infinity;
+      for (const { d, seen, held } of threats) best = Math.min(best,
+        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + held - horizon);
+      return best;
+    };
+    const stay = ttc(a.pos);
+    // Where he stands he can still finish a throw before contact: no need to move.
+    if (stay >= 0) return null;
+    let bestT = stay, bestDir: Vec2 | null = null;
+    for (let k = 0; k < 8; k++) {
+      const th = k * Math.PI / 4, dir = { x: Math.cos(th), y: Math.sin(th) };
+      const q = { x: a.pos.x + dir.x * pace * horizon, y: clamp(a.pos.y + dir.y * pace * horizon, 1, FIELD_WIDTH - 1) };
+      if (q.x > sim.los - 2.5 && dir.x > 0) continue;
+      const t = ttc(q);
+      if (t > bestT) { bestT = t; bestDir = dir; }
+    }
+    if (!bestDir) return null;
+    return { vel: { x: bestDir.x * pace, y: bestDir.y * pace }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
 }
 

@@ -17,6 +17,8 @@ const st = Q.startThrow; Q.startThrow = function (a: any, sim: any, ev: any) {
   const path = this.phase === 'drop' ? 'rhythm (drop)' : fromBest ? (lastBest.u >= 1 && pr.time < 0.45 ? 'hot/panic' : 'out of reads') : ev.target === read ? 'current read' : 'outlet';
   sim.__start = { path, felt: r2(Math.min(pr.time, 9)), onRead: ev.target === read, ready: !!this.ready?.(ev.target, sim), P: r2(ev.P), t: sim.t };
   return st.call(this, a, sim, ev); };
+// FINISH_CHECK / SET_DECIDE: throws he was offered and could not finish, per play.
+const cf = Q.canFinish; if (typeof cf === 'function') Q.canFinish = function (a: any, sim: any) { const ok = cf.call(this, a, sim); if (!ok) sim.__noFinish = (sim.__noFinish ?? 0) + 1; return ok; };
 const first = Number(process.argv[2] ?? 101), games = Number(process.argv[3] ?? 2);
 for (let s = first; s < first + games; s++) {
   const rng = new Rng(s);
@@ -27,7 +29,9 @@ for (let s = first; s < first + games; s++) {
     sim.tick = () => { tick(); if (qb && contactAt === null && sim.throwAt < 0) for (const d of sim.defense) if (Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) <= 1.0) { contactAt = sim.t; break; } };
     const res = sim.run();
     const s0 = sim.__start; const ev = sim.events.map((e: any) => e.type);
+    const noFinish = sim.__noFinish ?? 0;
     if (s0 && sim.throwAt >= 0) console.log(JSON.stringify({ ...s0, t: undefined, contactBeforeOut: contactAt !== null && contactAt <= sim.throwAt, contactAfterStart: contactAt !== null ? r2(contactAt - s0.t) : null,
-      result: ev.includes('interception') ? 'int' : ev.includes('catch') ? 'complete' : 'incomplete', yards: r2(res?.yards ?? NaN) }));
+      result: ev.includes('interception') ? 'int' : ev.includes('catch') ? 'complete' : 'incomplete', yards: r2(res?.yards ?? NaN), noFinish, throwaway: !!sim.ball?.throwaway }));
+    else console.log(JSON.stringify({ path: null, noFinish, contactBeforeOut: contactAt !== null, result: ev.includes('sack') ? 'sack' : sim.scrambled ? 'scramble' : 'other', yards: r2(res?.yards ?? NaN) }));
     return res; } } });
 }

@@ -68,5 +68,6 @@ for w in weeks:
     t = tgt.get(k); pr = plays[k]
     tc = None if not t else cls.get(t) or ('back' if pos.get(t) in ('RB', 'FB') else 'other')
     print(json.dumps({'target': tc, 'ttt': float(pr['timeToThrow']) if pr['timeToThrow'] not in ('', 'NA') else None, 'att': t is not None,
+      'air': float(pr['passLength']) if pr.get('passLength') not in (None, '', 'NA') else None, 'key': list(k),
       'cmp': pr['passResult'] == 'C', 'int': pr['passResult'] == 'IN', 'sack': pr['passResult'] == 'S', 'coverage': pr['pff_passCoverage'],
       'atThrow': atThrow, 'firstOpen': first, 'verts': [{'cls': cls[v], 'at12': st[v]['at12'], 'at18': st[v]['at18']} for v in verts]}))
