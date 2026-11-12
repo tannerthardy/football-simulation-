@@ -863,6 +863,23 @@ export function tackleSetLine(sim: PlaySim, tackle: Agent, rusher: Agent): { out
 /** Inside-half leverage: where his centre sits inside the rusher's. */
 export const INSIDE_HALF = 0.3;
 
+const setReadBias = new WeakMap<Engagement, number>();
+/** TACKLE_SET (stage 3): the rusher threatens the corner -- he reads him
+ * outside his outside shoulder (beyond half their bodies, give or take his
+ * misread, drawn once a rep from his read (awareness and hand technique):
+ * sd 0.25 yd for the poorest, clamped at +-0.5) and still gaining depth faster than a jog (1.5 yd/s). */
+function cornerThreat(sim: PlaySim, e: Engagement, known: { pos: Vec2; vel: Vec2 }, sep: number): boolean {
+  const b = e.blocker, out = b.passSet?.outside ?? 0;
+  if (!out) return false;
+  let bias = setReadBias.get(e);
+  if (bias === undefined) {
+    bias = clamp(sim.dice('set-read', b, e.defender).normal(0, 0.25 * (1 - traits(b).read)), -0.5, 0.5);
+    setReadBias.set(e, bias);
+  }
+  const width = (known.pos.y - b.pos.y) * out + bias;
+  return width > 0.5 * sep && -known.vel.x > 1.5;
+}
+
 /** The deepest x a tackle sets to under TACKLE_SET (null without a called drop). */
 export function tackleFloor(sim: PlaySim): number | null {
   const launch = calledLaunchX(sim);
@@ -1175,6 +1192,17 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // depth) and the rep is the hands and feet against the rusher's path.
   const floor = TACKLE_SET && b.passSet?.outside ? tackleFloor(sim) : null;
   if (floor !== null) setDepth = Math.min(setDepth, sim.los - floor);
+  // TACKLE_SET (stage 3): he gives ground only while the rusher threatens the
+  // corner -- outside his outside shoulder and still gaining depth, as he
+  // reads it by touch (his read misjudges the width by up to half a yard when
+  // poor). Otherwise he sits down where he is: no further kick, braking to a
+  // stop, so he is settled when the load comes rather than at kick speed (the
+  // pair, ~260 kg at ~3 yd/s, took ~1 s of his whole traction to stop; NFL
+  // tackles engaged with the man in front slow from 2.0 s and are nearly
+  // stopped by 3.0 s). Settling against a speed rusher who then turns the
+  // corner is the cost, and it is his to pay.
+  const sitting = floor !== null && !cornerThreat(sim, e, known, sep);
+  if (sitting) setDepth = Math.min(setDepth, depth);
   // PASS_KICK: match the rusher's upfield speed as well as close the gap
   // (closing alone trails a moving rusher by his speed x 0.55 s).
   const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -known.vel.x) : 0;
@@ -1195,9 +1223,13 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // is wide and deep that line is mostly lateral and mirroring along it is a
   // retreat. He asks for no more depth than he can brake off before the set
   // (the braking law movement uses, kinematics.ts), and none at it.
-  const vx = lat.x * vLat - kick;
+  // TACKLE_SET (stage 3): sitting with the man in front, his feet go to the
+  // anchor first: the mirror only matches the man's sideways speed (no
+  // catch-up), so less of his traction goes sideways.
+  const vLatSet = sitting ? clamp(dLat, -mirror, mirror) : vLat;
+  const vx = sitting ? Math.max(0, lat.x * vLatSet) : lat.x * vLatSet - kick;
   // TACKLE_SET: and no wider than his set line than he can brake off before it.
-  let vy = lat.y * vLat;
+  let vy = lat.y * vLatSet;
   if (floor !== null) {
     const line = tackleSetLine(sim, b, d), room = (line.y - b.pos.y) * line.out;
     if (vy * line.out > 0) vy = line.out * Math.min(vy * line.out, Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, room)));
