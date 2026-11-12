@@ -1,0 +1,228 @@
+# The wrap at speed: what our physics does after a side or rear wrap (2026-11-12)
+
+Status: a diagnosis. Nothing is built.
+
+Question (Integration, from Coverage's `2026-11-12-finish-after-contact.md`): in the fast cells our completions give
+up about 2× the NFL's yards after first contact and stay up about 1.4× as long. Which of the three things a real wrap
+does does our physics do?
+1. Add the tackler's mass to the carrier at once.
+2. Take away his stride.
+3. Pull his base out from under him.
+
+## Tools
+
+- `scripts/diag/effective-mass/finish-trace.mts`. Every completion's first grasp on the catcher, kept when it is
+  from the side or behind with the carrier or the holder at 4+ yd/s. It traces, from the grasp:
+  - the carrier's speed along his heading;
+  - what momentum sharing alone would leave the pair at;
+  - the grip force;
+  - each body's ground force (the World's step report);
+  - the pair's momentum change;
+  - the holder's request and his balance deviation;
+  - the stride bound and support states.
+- Sample: develop 61fe0c99 (engine-34), seed 101, 8 games. 60 wraps kept; 34 are in Coverage's fast cells:
+  - behind, holder > 6: 13;
+  - side, carrier > 6: 13;
+  - side, holder 4–6: 7;
+  - behind, carrier > 6: 1.
+- `scripts/diag/effective-mass/drag-bench.mts`: the World alone, a rear wrap at 6.5 yd/s. It now takes
+  `HOLDER_POSTURE`.
+
+## Findings, fast cells (n = 34, medians)
+
+**1. Mass added at once: partly, and not where it should be.**
+- Where it works: in a side form wrap the momentum share happens at contact. One example went 6.2 → 3.2 yd/s in
+  0.3 s against a share of 2.9.
+- Over all 34: by +0.25 s the carrier has lost 0.93 yd/s, against the 1.41 a momentum share predicts (two-thirds).
+- **Over the first 0.3 s the pair's momentum along his heading rises.** The ground force on the pair is +207
+  kg·yd/s², about +0.11 g.
+- The cause is the holder. His own ground force over the first 0.3 s is +209: +256 from the side, +74 from behind.
+  He asks to plant: his request is a median 2.8 yd/s while he moves at 5.5, and he asks below his speed on 22/34.
+- In 15/34 the grip pulls his centre of mass 0.3+ yd ahead of his base along the carrier's path (peak deviation p75
+  0.51 yd).
+  - His recovery steps then drive him forward at +449 for 0.3 s, then only −95 over the next 0.5 s.
+  - Traces show +1,000 for the first 0.15–0.25 s.
+  - Some fall at about 0.45 s and slide along without traction.
+- The other 19 brake: −44, then −468, about 0.5 g of the holder's weight. That is still a gentle stop for a
+  190 kg pair.
+- His requested posture is 0.6 in every hold.
+- **A low, wide base is not the repair.** On the World bench a rear wrap ends the same with the holder at posture
+  0.6 or 1.0: trips at 0.55 / 0.90 s and 3.95–5.44 yd, in both.
+
+**2. Stride taken away: no, not by one holder.**
+- The carrier's own ground force stays positive: +78 over the first 0.3 s, +31 over 0.3–0.8 s. He keeps asking for
+  his full speed (7–10 yd/s).
+- Under SWING_STRIP the stride is bound only when the hold's moment (grip capacity × leg share × lever) reaches his
+  hip torque. One holder's grip (capacity p50 990) rarely does.
+- The stride bound appears in 20/34 plays, usually once a second holder or a hanging leg hold arrives.
+- On the World bench (rear wrap, legs 0.8, lock 0.56): grip −0.62 g, holder's feet −0.57 g, runner still +0.15 g,
+  stride bound 0 throughout.
+
+**3. Base pulled out: late.**
+- The carrier is still up 0.3 s after the wrap in 26/34.
+- 18/34 have a second holder before the end; most go down then.
+- On the bench a rear wrap trips him at 0.55–0.90 s. He then keeps 4.3–4.5 yd/s through the fall, with no ground
+  force on him while falling, so the fall itself carries him about 2 yd.
+
+Time from the wrap to the end: 1.2–1.55 s. Yards after the wrap: 2.3–5.0 by cell. Against the NFL's 0.7–0.8 s and
+1.5–2.5 yd.
+
+## What our physics does and doesn't do
+
+| A real side or rear wrap | Ours |
+|---|---|
+| shares momentum at once (speed drops by the mass ratio) | at the moment of contact in a form wrap, yes. A trailing or reaching holder doesn't anchor: in 15/34 the pull tips him forward and his recovery steps run him along with the carrier, so the pair speeds up for 0.3 s |
+| takes away the stride | no. One holder's moment is below the carrier's hip torque, so the bound is 0 and he drives at +0.1 g |
+| pulls the base out | late: when a second man arrives, or on the bench at 0.55–0.9 s, after which the fall carries about 2 yd at full pace |
+
+## Proposals (none built; diagnosis first per the rule, one at a time)
+
+1. **Why the holder is tipped forward rather than braced.**
+   - Bench a holder at rest grabbed from the side by a 90 kg runner at 6 yd/s, in the World alone.
+   - Trace where the grip's pull acts on him (arm height against his centre of mass) and what his support does: lean,
+     recovery step, fall.
+   - Posture alone doesn't change it, so the question is the pull's line and the support model's response.
+   - Done right, it makes momentum sharing happen at once in all wraps.
+2. **The stride under a closed wrap of both legs.**
+   - Today the stride is bound by a torque comparison only.
+   - Arms locked around both thighs constrain the legs' separation geometrically, however strong the hip is: a
+     kinematic constraint, not a "tackle succeeds" roll. The carrier can still tear it by breaking the grip.
+   - Needs a bench first, and an NFL check on legs-wrapped finishes.
+3. **The fall's carry.** Check that a tripped carrier's forward travel during the fall is the physics of a pitching
+   body: centre of mass moving on, then pad and turf friction. On the bench he carries about 2 yd at full pace.
+
+Coverage's cells say both duration and yards per second are too high. (1) addresses the early speed; (2) and (3)
+address the duration.
+
+## Proposal 1, diagnosed: what the holder asks for after the grasp
+
+Tool: `scripts/diag/effective-mass/side-wrap-bench.mts`, the World alone. A 92 kg runner at 6 yd/s; an 84 kg holder
+beside him at rest; grasp legs 0.5, lock 0.75 (games' capacity law, 999).
+
+| holder asks | his feet, first 0.3 s | his balance deviation along the path | runner at 0.3 s | runner trips | runner travel |
+|---|---|---|---|---|---|
+| stop (vel 0, push 1, posture 0.6) | −0.5 to −0.7 g | −0.02 to −0.14 yd: he leans back into the load | 3.9 yd/s | 0.50 s | 2.5 yd |
+| the runner's velocity (run with him) | +0.4 to +0.8 g | +0.17 yd | 4.3 yd/s | 0.85 s, still 2.8 yd/s falling | 3.7 yd |
+
+The physics anchors him when he asks to stop. A side wrap then ends in 2.5 yd and 0.5 s (NFL side cells: 1.5–2.5 yd in
+0.8 s). The grip's pull acts at his hands' height on the carrier, below his centre of mass, so it does not pitch him
+forward. What tips him is the linear pull on a body whose feet are still running.
+
+In games (34 fast wraps), over the first 0.3 s he asks for a median 55% of the carrier's speed along the carrier's
+path (p25 0.36, p75 0.71):
+
+| request | n | his feet | pair force | yards after the wrap |
+|---|---|---|---|---|
+| ≥ 70% (runs with him) | 9 | +328 | +489 | 6.1 |
+| 35–70% | 18 | −42 | −10 | 3.1 |
+| < 35% | 7 | +227 (already pulled 0.31 yd off his base) | +181 | 3.9 |
+
+The source is in `src/sim/tackle.ts` (`updateBond`, HOLD_FINISH): his request along the runner's path is
+speed × (1 − commit). `commit` is his grip security, `next`, which ramps from the acquired quality, and it is 0 while
+the grip slips. So early in the wrap, when the load arrives, he mostly keeps running with the man. He anchors only as
+the grip firms, by which time the pull has often taken him off his base.
+
+Proposed repair (not built): the holder's post-grasp intent, as coached ("sink and drag").
+- Once he has a hold that is not slipping, he stops running with the man. He asks to stop along the runner's path and
+  leans against the load. His execution comes from his own tackling skill (how fast he commits) and strength, not
+  from the grip-security ramp.
+- While the grip slips he still gives with it (the existing rule).
+- The World decides whether the grip survives the load. A weak grip that anchors is torn off: a broken tackle, the
+  carrier free to drive through.
+- No new force, no outcome cap.
+- Gates: Coverage's fast cells against the NFL's 0.9–2.5 yd in 0.7–0.8 s; the slow cells stay matched; the run-game
+  fixed set is the control.
+
+## HOLD_SINK: two attempts, not repaired (2026-11-12): stopped for re-diagnosis
+
+Flag `HOLD_SINK`, off. With it off the engine is bit-identical. Read: `finish-trace.mts`, seed 101, 8 games, fast cells.
+
+| | off | attempt 1 | attempt 2 |
+|---|---|---|---|
+| what he asks for along the path, first 0.3 s (share of the carrier's speed) | 0.55 | 0.67 | 0.54 |
+| his feet, first 0.3 s (kg·yd/s²) | +209 | +205 | +203 |
+| his feet, 0.3–0.8 s | −121 | −193 | −198 |
+| pair force, first 0.3 s | +207 | +288 | +325 |
+| grips torn within 0.5 s | 2 / 34 | 5 / 38 | 8 / 38 |
+| second holder before the end | 18 / 34 | 17 / 38 | 17 / 38 |
+| wrap to end, p50 | 1.42 s | 0.90 s | 1.17 s |
+| yards after the wrap, p50 | 3.8 | 3.4 | 4.0 |
+
+The two attempts:
+1. Once his hands have held for his reaction time × (1.5 − tackling), he commits max(0.6 + 0.4 tackling, grip
+   security).
+2. Sunk, he asks along the path for at most his own speed less his commitment, never to keep up.
+
+An earlier version ramped commitment from 0 and committed less than HOLD_FINISH early on. It was replaced before
+attempt 1 was read.
+
+Why neither repairs it: the forward drive happens in the first 0.15–0.25 s.
+- A debug trace of the first side wrap shows HOLD_FINISH's request: the carrier's speed × (1 − grip security).
+- For a holder who grabbed from rest beside the runner, that is a request to accelerate forward to about 1.3–2.2
+  yd/s.
+- His legs deliver it while the grip also pulls him forward.
+- The "knows he has him" delay covers that window, so the old request still rules exactly when the load arrives.
+- Later he brakes harder, and more grips tear.
+
+The bench's "stop" holder plants from the grasp: no delay, and no request to run.
+
+Re-diagnosis question for Integration:
+- Is not running with the man part of the hold itself? A man who has his arms on someone does not sprint to keep up
+  with him; that needs no decision.
+- Is only the full sink a decision that waits on knowing he has him?
+- If yes: the first part has no delay, and only the commitment depth waits.
+- This would be a third design, so it is not built without a yes.
+
+## HOLD_SINK, third design (2026-11-12): fixtures pass, games do not move
+
+**Design.** From the grasp, his request along the runner's path is min(his own speed, HOLD_FINISH's target). After
+his recognition delay it is his own speed × (1 − commitment). Side and rear wraps only.
+
+**Fixtures** (`test/hold-sink.test.ts`):
+- A holder at a standstill asks for 0 along the path.
+- A matched rear chase gets HOLD_FINISH's request unchanged.
+- Stepped, a tight side wrap from a standstill: down at 0.45 s, 3.2 yd (HOLD_FINISH: 0.55 s, 4.1 yd).
+
+**Games.** Engine-35 (develop a702f0cd merged), sim-export seeds 201 and 301, 16 games each, Coverage's
+`finish_split.py` against the NFL (BDB 2025).
+
+| completions | off 201 / 301 | on 201 / 301 | NFL |
+|---|---|---|---|
+| standardised mean after contact (NFL on our mix) | 3.13 / 3.09 (2.07 / 1.99) | 3.37 / 2.92 (2.14 / 2.04) | 2.18 |
+| side, holder 4–6: yd p50, contact to end | 3.0, 1.1 s / 2.4, 1.0 s | 2.9, 1.1 s / 2.6, 1.1 s | 1.5, 0.8 s |
+| behind, holder > 6 | 3.2, 0.9 s / 3.0, 0.9 s | 3.5, 0.9 s / 2.7, 0.9 s | 1.8, 0.7 s |
+| side, carrier > 6 | 5.0, 1.1 s / 6.6, 1.4 s | 5.3, 1.3 s / 3.9, 0.8 s | 2.5, 0.8 s |
+| second defender | 46 / 46% | 47 / 46% | — |
+| broke | 9 / 7% | 8 / 7% | — |
+
+Runs at the second level (`--runs`), standardised mean after contact: 4.14 / 4.55 off, 3.89 / 4.53 on. The NFL on our
+mix is 3.97 / 3.99, and the NFL's own is 4.41.
+
+`finish-trace.mts`, seed 101, 8 games: 56 fast wraps off, 63 on.
+- The request barely changes: 0.58 → 0.55 of the carrier's speed.
+- His feet over the first 0.3 s: +170 → +124. Over 0.3–0.8 s: −201 → −237.
+- Pair force, first 0.3 s: +191 → +140.
+- Yards after the wrap: 3.66 → 3.13.
+- Wrap to end: 1.23 → 1.05 s.
+
+Tears within 0.5 s, by grip at acquisition (lock < 0.5 = weak) and the mass mismatch (carrier more than 10% heavier),
+off → on:
+- secure wrap, heavier carrier: 0/10 → 0/14;
+- secure wrap, matched or lighter: 1/23 → 1/25;
+- weak grip, heavier carrier: 5/13 → 3/9;
+- weak grip, matched or lighter: 3/10 → 5/15.
+
+Secure wraps don't tear and weak grips do, about a third of the time on both sides. Attempt 2's 8/38 was not this
+design.
+
+**Reading.** The fast cells are dominated by chasers who grab a carrier at speed and are already moving along his
+path. For them, "never ask to accelerate" changes nothing: they are already faster than HOLD_FINISH's target. What
+the plant changes in the traces (about −0.5 yd) does not show above noise in the cells. The holder's intent is not
+the main excess in these cells.
+
+What remains for the chaser is the carrier's own stride. One holder never binds it, so the carrier keeps driving
+(+0.1 g) until a second man arrives. That is proposal 2 (the closed two-leg wrap as a geometric constraint on the
+stride), and it is the next question.
+
+HOLD_SINK stays off. It is not a promotion candidate on its own. It can be re-read together with proposal 2,
+because it is what keeps the holder's mass against the runner once the stride is bound.
