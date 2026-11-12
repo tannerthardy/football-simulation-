@@ -290,3 +290,66 @@ along his velocity (negative: retarding his motion) and along his line to the QB
 This matches Integration's part (1): open hands can't pull or drag. Off compression, the tangential force of an
 open hand should be bounded by friction on the push it has. Dragging beyond that is a grab: the blocker's choice,
 with a holding foul through OFFICIATE.
+
+# TACKLE_SET attempt 2 (width) and EDGE_ARC attempt 2: the 2 x 16 read
+
+The base is 207770fa + e902285f (develop af9d7bd1). Seeds are 201-216 and 301-316 (16 games each); arms are off /
+TACKLE_SET / EDGE_ARC / both. Gates: `scripts/diag/pass-operators/{edge-rush,edge-past,pressure-time,free-rush,sack-room}.py`,
+the same code on NFL tracking. Cells give seed 201 | seed 301.
+
+| gate | off | TACKLE_SET | EDGE_ARC | both | NFL |
+|---|---|---|---|---|---|
+| states at 2.0 s (not level/level/past/inside) | 61/27/7/6 \| 53/33/7/6 | 36/51/9/5 \| 31/51/13/4 | 42/34/17/7 \| 38/34/18/10 | 24/33/36/8 \| 22/28/41/9 | 31/30/23/15 |
+| states at 2.5 s | 59/23/7/11 \| 56/25/7/13 | 32/48/10/10 \| 31/40/15/13 | 43/29/14/13 \| 40/27/13/19 | 22/21/36/22 \| 21/18/33/29 | 28/24/26/22 |
+| tackle width at 1.5 / 3.0 s | +1.2/+0.9 (201) | +0.6/−0.4 (201); 3.0 s −0.4 (301) | +1.4/+0.9 (201) | +0.8/+0.4 (201) | +0.7/−0.6 |
+| tackle depth at 3.0 s | −8.2 \| −8.1 | −8.0 \| −7.8 | −8.5 \| −8.5 | −7.7 \| −7.8 | −6.8 |
+| edge win (within 2 yd before the ball is out) | 11 \| 15% | 15 \| 18% | 10 \| 13% | 16 \| 19% | 13% |
+| at the win: past/front/inside | 12/49/39 \| 9/53/38 | 17/47/36 \| 20/42/38 | 7/55/38 \| 5/53/42 | 10/40/50 \| 10/35/56 | 26/27/47 |
+| get past the tackle | 14 \| 16% | 23 \| 31% | 25 \| 30% | 58 \| 61% | 39% |
+| to the QB at past | 5.9 \| 6.1 | 4.7 \| 4.4 | 6.1 \| 6.1 | 5.6 \| 5.7 | 5.1 |
+| speed toward the QB after past | 2.6 \| 2.3 | 2.3 \| 2.4 | 1.9 \| 2.1 | 2.6 \| 2.7 | 2.6 |
+| closed within 2 yd after past | 32 \| 33% | 33 \| 32% | 14 \| 16% | 16 \| 21% | 21% |
+| free rushers at 2 yd from the edge | 2 \| 2% | 2 \| 3% | 3 \| 1% | 1 \| 1% | 23% |
+| sacks, pooled (± 1 se) | 5.8% ± 0.5 | 6.9% ± 0.5 | 6.0% ± 0.5 | 6.9% ± 0.5 | 6.7% |
+| sacks by seed | 4.7 \| 6.8 | 6.9 \| 6.8 | 4.8 \| 7.3 | 6.3 \| 7.6 | |
+| pressured, pooled | 35.2% | 40.2% | 32.5% | 39.8% | 32.9% |
+| pressured by 2.5 s | 16.0 \| 20.0% | 21.7 \| 22.8% | 12.5 \| 16.6% | 21.1 \| 20.5% | 13.2% |
+| time to pressure p50 | 2.5 \| 2.5 | 2.5 \| 2.5 | 2.6 \| 2.6 | 2.5 \| 2.6 | 2.7 |
+
+## Sacks
+
+The seed-to-seed spread of the off arm alone (4.7 vs 6.8%) is as large as any arm effect, so one 8-game set could not
+size the move, as Integration said. Pooled, TACKLE_SET moves sacks 5.8 → 6.9% (+1.1, about 1.6 standard errors of
+the difference) and EDGE_ARC moves them 5.8 → 6.0%.
+
+**The "less room behind the QB" link is not supported** (sack-room.py).
+- On sacked plays the tackle is deeper than the QB at pressure 40 → 27% (201) and 29 → 22% (301): the tackle no
+  longer drifts.
+- But the QB's retreat after pressure does not shrink consistently: p50 +0.5 → +0.5 on 201, +0.5 → +0.2 on 301.
+- What does move is pressure: pressured 35 → 40%, by 2.5 s 16-20 → 22-23%.
+- With TACKLE_SET the edge rusher wins more often (edge win 11-15 → 15-18%), and from closer: 4.4-4.7 yd at past,
+  against 5.9-6.1 off and 5.1 NFL.
+
+So the sacks follow the pressure. The tackle that no longer widens or drifts leaves the rusher a shorter corner, and
+that is now past the NFL's (pressure 40 vs 33%, edge win 15-18 vs 13%).
+
+## Reading
+
+**TACKLE_SET (attempt 2).** The tackle's width is now the NFL's in shape (+0.6 → −0.4 against +0.7 → −0.6). The
+win moves around the corner (past outside at the win 17-20%, NFL 26%; in front 42-47%, NFL 27%), and closing after
+past is NFL-like. But:
+- he is still about a yard too deep at 3.0 s (−7.8 to −8.0, NFL −6.8): driven back while asking to hold, as
+  attempt 1 found;
+- pressure and edge wins overshoot.
+In football terms the overshoot is expected while the post-past drag (the joint behind the hip) is unchanged:
+OPEN_HANDS changes it next.
+
+**EDGE_ARC (attempt 2).** Alone it does little: it gets the rusher level, but the tackle widens with him. With
+TACKLE_SET it overshoots getting past (58-61% vs 39%) while the win is still mostly inside (50-56%, NFL 47) and
+seldom around (10%, NFL 26).
+
+**Neither moves the edge share of free rushers at 2 yd** (1-3% vs 23%). The operator classes the rusher's side by
+where he is when he is within 2 yd. NFL edge rushers that close are still outside the OL's snap span 23% of the
+time; ours have come inside it. Not yet explained.
+
+Not promotion candidates. Next is OPEN_HANDS (Integration: all hands joints, off), then this read again.
