@@ -172,3 +172,57 @@ Re-diagnosis question for Integration:
 - Is only the full sink a decision that waits on knowing he has him?
 - If yes: the first part has no delay, and only the commitment depth waits.
 - This would be a third design, so it is not built without a yes.
+
+## HOLD_SINK, third design (2026-11-12): fixtures pass, games do not move
+
+**Design.** From the grasp, his request along the runner's path is min(his own speed, HOLD_FINISH's target). After
+his recognition delay it is his own speed × (1 − commitment). Side and rear wraps only.
+
+**Fixtures** (`test/hold-sink.test.ts`):
+- A holder at a standstill asks for 0 along the path.
+- A matched rear chase gets HOLD_FINISH's request unchanged.
+- Stepped, a tight side wrap from a standstill: down at 0.45 s, 3.2 yd (HOLD_FINISH: 0.55 s, 4.1 yd).
+
+**Games.** Engine-35 (develop a702f0cd merged), sim-export seeds 201 and 301, 16 games each, Coverage's
+`finish_split.py` against the NFL (BDB 2025).
+
+| completions | off 201 / 301 | on 201 / 301 | NFL |
+|---|---|---|---|
+| standardised mean after contact (NFL on our mix) | 3.13 / 3.09 (2.07 / 1.99) | 3.37 / 2.92 (2.14 / 2.04) | 2.18 |
+| side, holder 4–6: yd p50, contact to end | 3.0, 1.1 s / 2.4, 1.0 s | 2.9, 1.1 s / 2.6, 1.1 s | 1.5, 0.8 s |
+| behind, holder > 6 | 3.2, 0.9 s / 3.0, 0.9 s | 3.5, 0.9 s / 2.7, 0.9 s | 1.8, 0.7 s |
+| side, carrier > 6 | 5.0, 1.1 s / 6.6, 1.4 s | 5.3, 1.3 s / 3.9, 0.8 s | 2.5, 0.8 s |
+| second defender | 46 / 46% | 47 / 46% | — |
+| broke | 9 / 7% | 8 / 7% | — |
+
+Runs at the second level (`--runs`), standardised mean after contact: 4.14 / 4.55 off, 3.89 / 4.53 on. The NFL on our
+mix is 3.97 / 3.99, and the NFL's own is 4.41.
+
+`finish-trace.mts`, seed 101, 8 games: 56 fast wraps off, 63 on.
+- The request barely changes: 0.58 → 0.55 of the carrier's speed.
+- His feet over the first 0.3 s: +170 → +124. Over 0.3–0.8 s: −201 → −237.
+- Pair force, first 0.3 s: +191 → +140.
+- Yards after the wrap: 3.66 → 3.13.
+- Wrap to end: 1.23 → 1.05 s.
+
+Tears within 0.5 s, by grip at acquisition (lock < 0.5 = weak) and the mass mismatch (carrier more than 10% heavier),
+off → on:
+- secure wrap, heavier carrier: 0/10 → 0/14;
+- secure wrap, matched or lighter: 1/23 → 1/25;
+- weak grip, heavier carrier: 5/13 → 3/9;
+- weak grip, matched or lighter: 3/10 → 5/15.
+
+Secure wraps don't tear and weak grips do, about a third of the time on both sides. Attempt 2's 8/38 was not this
+design.
+
+**Reading.** The fast cells are dominated by chasers who grab a carrier at speed and are already moving along his
+path. For them, "never ask to accelerate" changes nothing: they are already faster than HOLD_FINISH's target. What
+the plant changes in the traces (about −0.5 yd) does not show above noise in the cells. The holder's intent is not
+the main excess in these cells.
+
+What remains for the chaser is the carrier's own stride. One holder never binds it, so the carrier keeps driving
+(+0.1 g) until a second man arrives. That is proposal 2 (the closed two-leg wrap as a geometric constraint on the
+stride), and it is the next question.
+
+HOLD_SINK stays off. It is not a promotion candidate on its own. It can be re-read together with proposal 2,
+because it is what keeps the holder's mass against the runner once the stride is bound.
