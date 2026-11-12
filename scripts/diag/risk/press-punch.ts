@@ -23,7 +23,7 @@ for (const concept of ['four_verts', 'slant_flat']) for (const coverage of ['cov
 }
 const pct = (n: number, d: number) => (100 * n / Math.max(1, d)).toFixed(0) + '%';
 const q = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.floor((s.length - 1) / 2)].toFixed(2) : '  - '; };
-console.log(`PRESS_JAM=${process.env.PRESS_JAM ?? '0'} LINE_START=${process.env.LINE_START ?? '0'}  pressed pairs ${rows.length}`);
+console.log(`PRESS_JAM=${process.env.PRESS_JAM ?? '0'} LINE_START=${process.env.LINE_START ?? 'default'}  pressed pairs ${rows.length}`);
 const line = (lab: string, v: any[]) => console.log(`  ${lab.padEnd(18)} n ${String(v.length).padStart(3)} | joint ${pct(v.filter(r => r.joint > 0).length, v.length).padStart(4)} p50 ${q(v.filter(r => r.joint > 0).map(r => r.joint))} s | level p50 ${q(v.map(r => r.level))} s | depth@3.0 ${q(v.map(r => r.depth))} | corner down ${pct(v.filter(r => r.down).length, v.length)}`);
 for (const k of ['landed', 'missed', 'none']) { const v = rows.filter(r => r.punch === k); if (v.length) line(k, v); }
 line('all', rows);
