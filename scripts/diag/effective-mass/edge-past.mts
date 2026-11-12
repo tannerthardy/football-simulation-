@@ -66,7 +66,17 @@ for (let s = first; s < first + games; s++) {
           const hipOff = Math.abs(((tk.body.facing - down) * 180 / Math.PI + 540) % 360 - 180);
           const ux = qb.pos.x - d.pos.x, uy = qb.pos.y - d.pos.y, L = Math.hypot(ux, uy) || 1;
           const di = sim.intents?.[d.idx]?.vel;
-          snaps[a].push({ joint: !!j, tackleHands: j ? (j.actor ?? j.a) === tk.body : null, force: j?.normalForce ?? 0,
+          // The joint's force on the rusher (world frame): compression (normal > 0, pushing apart) or tension, and
+          // its component along his velocity (negative: retarding his motion) and along his line to the QB.
+          let fv = NaN, fq = NaN, fn = NaN, fvn = NaN, fvt = NaN;
+          if (j && j.normalForceOnB) {
+            const sgn = j.b === d.body ? 1 : -1, t = j.tangentForceOnB ?? { x: 0, y: 0 };
+            const F = { x: sgn * (j.normalForceOnB.x + t.x), y: sgn * (j.normalForceOnB.y + t.y) };
+            const sp = Math.hypot(d.vel.x, d.vel.y) || 1;
+            fv = (F.x * d.vel.x + F.y * d.vel.y) / sp; fq = (F.x * ux + F.y * uy) / L; fn = j.normalForce ?? NaN;
+            fvn = sgn * (j.normalForceOnB.x * d.vel.x + j.normalForceOnB.y * d.vel.y) / sp; fvt = fv - fvn;
+          }
+          snaps[a].push({ fv, fq, fn, fvn, fvt, grab: j ? (j.hold ?? 0) > 0 : false, joint: !!j, tackleHands: j ? (j.actor ?? j.a) === tk.body : null, force: j?.normalForce ?? 0,
             engaged: !!e, move: e?.move ?? null, live: e ? sim.t < e.moveUntil && e.moveOk : false, holding: !!e?.holding,
             hips: hipOff > 45 ? 'turned' : 'square', behind: X(tk.pos.x) > X(d.pos.x) + 0.3,
             req: di ? (di.x * ux + di.y * uy) / L : NaN, ach: (d.vel.x * ux + d.vel.y * uy) / L, toQB: L });
@@ -86,6 +96,10 @@ for (const a of AFTER) {
     + ` | tackle hips turned ${pc(S.filter((s) => s.hips === 'turned').length, S.length)} | tackle behind his hip ${pc(B.length, S.length)}, of those still joined ${pc(BJ.length, B.length)} (force p50 ${q(BJ.map((s) => s.force)).toFixed(0)} N)`
     + ` | toward the QB requested ${q(S.map((s) => s.req)).toFixed(1)} achieved ${q(S.map((s) => s.ach)).toFixed(1)} yd/s | to QB ${q(S.map((s) => s.toQB)).toFixed(1)}`
     + ` | moves (engaged; * live) ${JSON.stringify(moves)}`);
+  const F = J.filter((s) => Number.isFinite(s.fn));
+  if (F.length) console.log(`   joint force on the rusher (n ${F.length}): compression ${pc(F.filter((s) => s.fn > 0).length, F.length)}, tension ${pc(F.filter((s) => s.fn < 0).length, F.length)}`
+    + ` | along his velocity p25/50/75 ${q(F.map((s) => s.fv), .25).toFixed(0)}/${q(F.map((s) => s.fv)).toFixed(0)}/${q(F.map((s) => s.fv), .75).toFixed(0)} N (retarding ${pc(F.filter((s) => s.fv < -50).length, F.length)}; of it from the normal p50 ${q(F.map((s) => s.fvn)).toFixed(0)} N, from the tangent (steer) p50 ${q(F.map((s) => s.fvt)).toFixed(0)} N; retarding normal force by compression ${pc(F.filter((s) => s.fvn < -50 && s.fn > 0).length, F.length)}, by tension ${pc(F.filter((s) => s.fvn < -50 && s.fn < 0).length, F.length)})`
+    + ` | toward the QB p50 ${q(F.map((s) => s.fq)).toFixed(0)} N (away from the QB ${pc(F.filter((s) => s.fq < -50).length, F.length)}) | joint allows a grab (hold > 0) ${pc(F.filter((s) => s.grab).length, F.length)}`);
 }
 const tot = Object.values(carried).reduce((a, c) => a + c.n, 0);
 console.log(`carried back (asking 0, achieved < -1 yd/s), ticks ${tot}: ` + Object.entries(carried).sort((a, b) => b[1].n - a[1].n)

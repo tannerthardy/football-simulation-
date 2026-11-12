@@ -260,3 +260,33 @@ A live move accounts for under 2% of ticks. Both flags: 1092 ticks, the same pat
 Next, as Integration ordered: TACKLE_SET attempt 2, the set's width (a spot, inside-half leverage, the long way
 round, no chasing wide). It addresses point 3's lateral half. The joint persisting behind the hip (the other half) is
 recorded for a later, separate decision.
+
+## The joint behind the hip: push or hold? (edge-past.mts, both flags with TACKLE_SET attempt 2, seeds 101-103)
+
+The force is the joint's achieved world force on the rusher (`normalForceOnB` + `tangentForceOnB`). It is measured
+along his velocity (negative: retarding his motion) and along his line to the QB.
+
+| after past | +0 s | +0.3 s | +0.6 s | +0.9 s |
+|---|---|---|---|---|
+| joints measured | 199 | 200 | 126 | 68 |
+| normal force: compression / tension / zero | 28 / 20 / 52% | 50 / 7 / 43% | 54 / 12 / 34% | 47 / 25 / 28% |
+| force along his velocity, p50 | −347 N | −251 | −259 | −503 |
+| retarding (< −50 N) | 78% | 79% | 78% | 81% |
+| of it from the normal, p50 | 0 N | 0 | 4 | 0 |
+| of it from the tangent (steer), p50 | −357 N | −336 | −424 | −587 |
+| retarding by compression / by tension | 5 / 2% | 2 / 3% | 2 / 6% | 7 / 12% |
+| force away from the QB | 76% | 93% | 97% | 94% |
+| joint has grab capacity (`hold` > 0) | 44% | 50% | 61% | 76% |
+| rep flagged holding | 0% | 0% | 0% | 1% |
+
+**Reading.**
+- From behind the hip the tackle is not pushing the rusher wide: the normal force does almost no work along the
+  rusher's motion.
+- The retarding force is the hands' tangential "steer" force: 250-600 N dragging back along his path, mostly with no
+  compression underneath it to be friction.
+- In football terms that is a hold. The rep never records one, and the joint carries grab capacity half the time or
+  more.
+
+This matches Integration's part (1): open hands can't pull or drag. Off compression, the tangential force of an
+open hand should be bounded by friction on the push it has. Dragging beyond that is a grab: the blocker's choice,
+with a holding foul through OFFICIATE.
