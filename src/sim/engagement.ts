@@ -896,6 +896,67 @@ export const PAST_ALONG_PATH = process.env.PAST_ALONG_PATH === '1';
 export const TACKLE_ANCHOR = process.env.TACKLE_ANCHOR === '1';
 /** Inside-half leverage: how far inside the man's line to the QB the anchored tackle's body sits (yd). */
 const INSIDE_LEVERAGE = 0.33;
+/** RUSH_INTENT (experimental, off; RUSH_INTENT=1 turns it on): between
+ * moves a pass rusher's request is an intent he chose, not a default. Off,
+ * every rusher with no live move asked for 0.8 + 0.15 bend of his vmax at
+ * push 0.75 toward a corner beside the blocker (measured along his line to
+ * the QB, so a third of it ran sideways along the tackle), and 'power' stuck
+ * to a bull or long-arm after its window: half an edge rusher's engaged time,
+ * scraping sideways at 3.0 yd/s (NFL 2.1) and driving at the QB 1.4 (NFL 2.5)
+ * (docs/reviews/2026-11-12-rusher-intent.md). With it, from what he feels and
+ * sees -- his leverage (phi x side), his own speed, the blocker giving ground,
+ * the hands -- he chooses:
+ *   edge: with leverage, he works the blocker's outside hip at the pace he can
+ *     bend (0.6 + 0.25 bend of vmax), push 0.5;
+ *   power: with momentum and a blocker giving ground, through his chest at the
+ *     QB (0.55 vmax, push 1);
+ *   stall: with neither, he fights the hands at a walking pace in front of
+ *     him (1.2 yd/s, push 0.6) until his next move, and may lose the rep.
+ * Which he prefers is the player's (edge: finesse and bend; power: power and
+ * mass); he keeps an intent at least his reaction time and changes it only
+ * when his leverage or the blocker's ground changes past a margin. */
+export const RUSH_INTENT = process.env.RUSH_INTENT === '1';
+const RUSH_STALL_PACE = 1.2;
+type RushIntent = 'edge' | 'power' | 'stall';
+const rushIntents = new WeakMap<Engagement, { intent: RushIntent; since: number; lev: number; ground: boolean; switches: number; reversals: number; prev: RushIntent | null; at: number }>();
+
+/** RUSH_INTENT: his intent between moves, kept until a perceived change clears a margin. */
+function rushIntent(sim: PlaySim, e: Engagement, axis: Vec2, sep: number): RushIntent {
+  void sep;
+  const d = e.defender, b = e.blocker, td = traits(d);
+  const lev = e.phi * e.side;
+  const ground = b.vel.x * axis.x + b.vel.y * axis.y > 1.0;   // the blocker giving ground along the man's line to the QB
+  const moving = Math.hypot(d.vel.x, d.vel.y) > 2.5;
+  const edgePref = 0.5 * d.r('passRushFinesse') + 0.5 * td.bend;
+  const powPref = 0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1);
+  const choose = (): RushIntent => {
+    if (lev > 0.3 && !(moving && ground && powPref > edgePref + 0.15)) return 'edge';
+    if (moving && ground && powPref >= edgePref - 0.15) return 'power';
+    if (lev > 0.15 && edgePref > powPref) return 'edge';
+    return 'stall';
+  };
+  let st = rushIntents.get(e);
+  if (!st) { const intent = choose(); st = { intent, since: sim.t, lev, ground, switches: 0, reversals: 0, prev: null, at: sim.t }; rushIntents.set(e, st); return intent; }
+  const rt = Math.max(0.1, d.profile.reactionTime);
+  if (sim.t - st.since >= rt && (Math.abs(lev - st.lev) > 0.2 || ground !== st.ground)) {
+    const next = choose();
+    if (next !== st.intent) {
+      st.switches++;
+      if (next === st.prev && sim.t - st.since < 0.6) st.reversals++;
+      st.prev = st.intent; st.intent = next; st.since = sim.t;
+    }
+    st.lev = lev; st.ground = ground;
+  }
+  st.at = sim.t;
+  return st.intent;
+}
+
+/** RUSH_INTENT diagnostics: the rep's current intent and its switch counts (for probes). */
+export function rushIntentOf(e: Engagement): { intent: RushIntent; switches: number; reversals: number } | null {
+  const st = rushIntents.get(e);
+  return st ? { intent: st.intent, switches: st.switches, reversals: st.reversals } : null;
+}
+
 /** Hips past hips: how far behind the man, along his path, the blocker must be (yd). */
 export const PAST_MARGIN = 0.3;
 /** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
@@ -1241,11 +1302,17 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const sep = b.profile.radius + d.profile.radius;
   const qb = sim.qb.pos;
   // ---- the rusher: to the QB, around the working side or through the man.
-  const power = e.move === 'bull' || e.move === 'longarm';
-  const bend = inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip');
   const turned = e.phi * e.side > 0.5;
+  // RUSH_INTENT: between moves his request is an intent he chose (edge, power or stall), not a default.
+  const between = RUSH_INTENT && !(t < e.moveUntil) && !turned ? rushIntent(sim, e, axis, sep) : null;
+  const power = between ? between === 'power' : RUSH_INTENT ? (t < e.moveUntil && (e.move === 'bull' || e.move === 'longarm')) : e.move === 'bull' || e.move === 'longarm';
+  const bend = inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip');
   const corner = { x: b.pos.x + lat.x * e.side * (sep + 0.45) + axis.x * 0.35, y: b.pos.y + lat.y * e.side * (sep + 0.45) + axis.y * 0.35 };
   let aim = power || turned ? qb : corner;
+  if (between === 'edge') {
+    // Work the edge: at the blocker's hip on his working side, a step past it toward the QB.
+    aim = { x: b.pos.x + lat.x * e.side * (sep + 0.2) + axis.x * 0.5, y: b.pos.y + lat.y * e.side * (sep + 0.2) + axis.y * 0.5 };
+  } else if (between === 'stall') aim = { x: b.pos.x, y: b.pos.y };
   // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
   // the QB's depth outside the tackle's shoulder; past the hips he turns.
   const arcOut = b.passSet?.outside ?? 0;
@@ -1254,11 +1321,12 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: arcLandmark(sim, b, d).y };
   }
   const toAim = norm(sub(aim, d.pos));
-  const rush = d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
+  const rush = between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
+    : d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
   intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
     facing: Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
-    push: power ? 1 : inMove ? 0.35 : 0.75,
+    push: between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : power ? 1 : inMove ? 0.35 : 0.75,
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
