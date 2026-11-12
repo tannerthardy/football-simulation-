@@ -1226,6 +1226,8 @@ export class ZoneCoverage implements Behavior {
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
+    // WINDUP_READ: he breaks toward where the motion he sees points.
+    if (WINDUP_READ && !this.deep) { const brk = windupBreak(a, sim); if (brk) return brk; }
     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
     return this.zonePlay(a, sim);
   }
@@ -1785,6 +1787,68 @@ function underneathPlant(a: Agent, sim: PlaySim): boolean {
 function stopDrop(sim: PlaySim, cmd: MoveCommand): MoveCommand {
   const deeper = sim.attackDir(sim.offense[0].team), away = cmd.vel.x * deeper;
   return away > 0 ? { ...cmd, vel: { x: 0, y: cmd.vel.y } } : cmd;
+}
+
+/** WINDUP_READ (experimental, off; WINDUP_READ=1 turns it on): the direction
+ * of the throwing motion. An underneath zone defender keyed on a motion he has
+ * seen (the plant's gate: facing the QB, eyes held on him through his
+ * observation delay) reads where the QB's body points as it turns into the
+ * throw, in his own delayed picture of the QB, with one judgment error per
+ * motion (sd WINDUP_ERR_BASE + WINDUP_ERR_RECOG x (1 - recognition) deg;
+ * estimated, stand-in debt). He gets a direction, not a receiver: the motion
+ * points at the receiver he sees nearest that line anywhere on the field
+ * (within WINDUP_TOL of it); he breaks only if that man is within WINDUP_REACH
+ * of him (attempt 1 broke on any man of his near the line: mostly the wrong one), re-reading while he still faces the QB, so an early read
+ * on a QB still turning is coarse and sharpens toward the release. He keeps his
+ * receiver unless another is clearly nearer the line (WINDUP_SWITCH). Nobody
+ * there: no break (the plant, if on). A pump is a motion: he bites on it and
+ * keeps his break until he sees the ball pulled down, then restarts his zone
+ * play. NFL underneath zone defenders close on the eventual catcher by +0.9 to
+ * +1.1 yd/s over the last 0.5 s before the release even when the catcher makes
+ * no break (ours +0.01), whatever the QB's orientation 0.3 s earlier; route
+ * breaks they and we read alike (pre_release.py, BDB 2025 weeks 1-3). */
+const WINDUP_READ = process.env.WINDUP_READ === '1';
+const WINDUP_ERR_BASE = 6, WINDUP_ERR_RECOG = 14;
+const WINDUP_TOL = 25 * Math.PI / 180, WINDUP_SWITCH = 10 * Math.PI / 180, WINDUP_REACH = 10;
+/** WINDUP_READ: his read of each motion (diagnostics may read `target`). */
+export const windupReads = new WeakMap<Agent, { sim: PlaySim; windup: number; err: number; target: Agent | null; first: Agent | null }>();
+function windupBreak(a: Agent, sim: PlaySim): MoveCommand | null {
+  if (!underneathPlant(a, sim)) return null;
+  const p = plants.get(a)!;
+  let r = windupReads.get(a);
+  if (!r || r.sim !== sim || r.windup !== p.windup) {
+    const recog = clamp(0.65 * a.r('playRecognition') + 0.35 * a.r('awareness'), 0, 1);
+    const sd = (WINDUP_ERR_BASE + WINDUP_ERR_RECOG * (1 - recog)) * Math.PI / 180;
+    r = { sim, windup: p.windup, err: sim.dice('windup-read', a).normal(0, sd), target: null, first: null };
+    windupReads.set(a, r);
+  }
+  const q = sim.see(a, sim.qb);
+  const facingQB = Math.cos(a.body.facing - Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x)) > -0.2;
+  // While the motion is on and he faces the QB, he reads it; otherwise he holds his last read.
+  if (facingQB && sim.windupAt === p.windup && q.facing !== undefined) {
+    const ray = q.facing + r.err;
+    // How far off the seen line each receiver is (angle from the QB), and whether he is within this defender's reach.
+    const off = (o: Agent): number => {
+      const s = sim.see(a, o).pos, d = Math.atan2(s.y - q.pos.y, s.x - q.pos.x) - ray;
+      return Math.abs(Math.atan2(Math.sin(d), Math.cos(d)));
+    };
+    const mine = (o: Agent): boolean => { const s = sim.see(a, o).pos; return Math.hypot(s.x - a.pos.x, s.y - a.pos.y) <= WINDUP_REACH; };
+    // The motion points at whoever is nearest the line, anywhere on the field; he breaks only if that man is his.
+    let best: Agent | null = null, bestOff = WINDUP_TOL;
+    for (const o of sim.offense) {
+      if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
+      const v = off(o);
+      if (v <= bestOff) { best = o; bestOff = v; }
+    }
+    if (best && !mine(best)) best = null;
+    const keep = r.target && mine(r.target) ? off(r.target) : Infinity;
+    if (!best) r.target = null;
+    else if (!r.target || keep > WINDUP_TOL || (best !== r.target && bestOff < keep - WINDUP_SWITCH)) r.target = best;
+    r.first ??= r.target;
+  }
+  if (!r.target) return null;
+  a.tags.add('windup-read');
+  return chase(sim, a, r.target);
 }
 
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */

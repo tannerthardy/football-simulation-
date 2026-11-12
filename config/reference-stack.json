@@ -197,6 +197,7 @@
     "SHED_ROUTE": "on",
     "SHORT_BASE": "on",
     "SHOULDER_READ": "off",
+    "WINDUP_READ": "off",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",
     "STANCE_TELL": "on",
