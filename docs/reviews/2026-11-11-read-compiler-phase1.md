@@ -345,3 +345,72 @@ confirms it with a call. Against zone pressure or loose Cover 0 he sight-adjusts
   release into the vacated area). It is thrown when he sees the free man, not after the order runs out.
 - The QB must see the free man. That is the perception half Integration is splitting out of QB_FEEL; a hot rule
   on top of a QB who reads a free end as blocked would be designing around the blind spot.
+
+## Update: BACK_RELEASE, the back first, the vertical peek (engine-32)
+
+### BACK_RELEASE (Run Game's flag, off), as read by back-probe.ts in 16 league games
+
+| | engine-32 | + BACK_RELEASE | NFL |
+|---|---|---|---|
+| Release p25 / p50 / p75 | 1.80 / 2.40 / 2.80 s | 1.45 / 1.65 / 1.90 s | 1.30 / 1.60 / 2.10 s |
+| (b) releases after 2.0 s | .432 | .133 | |
+| (c) out and open at 2.6 s, never read | .102 | .260 | |
+| Back share of attempts | .125 | .124 | .193 |
+| Sacks per drop-back | .012 | .015 | |
+| Free first pressure per drop-back | .078 | .096 | |
+
+With BACK_RELEASE the back leaves on NFL timing, but he is mostly not read: what was (b) becomes (c).
+
+**Cause (a) is not a gap.**
+
+| | NFL | Sim |
+|---|---|---|
+| Empty formation / no back in the backfield | .160 | .16 |
+| Back on the field who stays in, or called to block | .229 | .16–.18 called to block, plus .02–.05 that check and never leave |
+
+The NFL's back share counts RBs by position, so it includes backs split out in empty sets.
+
+### The back as a read
+
+Two changes:
+
+- **(a) Back-first:** the back may now be the first read, when his window is the start side's earliest.
+- **(b) Vertical peek:** two or more verticals on the start side and a released back are read as one picture,
+  with one look, then the back (HonestNFL 001, 112, 150, 327).
+
+**Forced-concept panel, `BACK_RELEASE` on:**
+
+| Arm | Back share | Back time p50 | Sacks | INT | Yards a play |
+|---|---|---|---|---|---|
+| alone | .141 | 3.00 s | 74 | 45 | 9.67 |
+| + READ_PLAN, attempt 3 | .096 | 3.40 s | 79 | 43 | 9.73 |
+| + READ_PLAN with (a) and (b) | .137 | 3.05 s | 61 | 41 | 10.06 |
+
+On the 168 vertical-peek plays: back share .26 → .58, sacks 20 → 7, yards a play 9.52 → 10.72. .58 to the back may
+be too ready a check-down, since the look is a single dwell; it needs checking on film.
+
+**16 league games:**
+
+| Arm | Back share | Back time p50 | Sacks per drop-back | Free first pressure | (c) out, open, never read |
+|---|---|---|---|---|---|
+| alone | .124 | 2.70 s | .015 | .096 | .260 |
+| + READ_PLAN with (a) and (b) | .165 | 2.65 s | .019 | .089 | .249 |
+| NFL | .193 | 2.57 s | | | |
+
+**Gate** (back share .193 at 2.57 s; sacks no higher than `BACK_RELEASE` alone): close on the back's share and
+timing. Sacks are better than `BACK_RELEASE` alone on the paired panel, but slightly worse in unpaired league
+games.
+
+### The sacks traced
+
+Of 38 new sacks with `BACK_RELEASE` + `READ_PLAN` (attempt 3), 10 were looked at:
+
+- In 9 of them, a free defensive end is within 2 yd of the QB at 2.5 s, and the QB keeps reading for another
+  0.9–1.2 s.
+- The QB's own pressure estimate has the end 0.76 s away and rising to 1.95 s while he stands 1.6 yd from him: he
+  reads the end as held by a blocker who is not there. With his urgency under 0.5, QB_RHYTHM's pressure jump never
+  fires.
+- Without a plan, QB_RHYTHM's rhythm outlet had been taking the open back incidentally.
+
+This is a perception defect, the "blocked rusher" half of QB_FEEL. Integration has handed the fixture to the QB
+lane: hitches from 2x2 against Cover 2, seed 2, roster 2, flipped.
