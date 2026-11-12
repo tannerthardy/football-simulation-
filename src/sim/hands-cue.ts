@@ -8,8 +8,10 @@
  *
  * Here, while he tracks a ball coming to him, his hands come up a lead time before it reaches his spot; his running
  * facing and speed are untouched (the model has no separate head/hands channel, so this is a state, not a pose). How
- * late he shows them is his craft: 0.55 - 0.35 x route running (s), estimated; late hands is coached exactly against
- * this read. A defender within 3 yd of him sees it like any picture, from when it became visible, with his own
+ * late he shows them is his craft: 0.55 - 0.35 x route running (s), a stand-in (hands are not in tracking): it is
+ * bounded by the observable end of the trailer's recognition, his break, which in the NFL begins at p50 0.40 s before
+ * arrival on trail catches (trail_break.py); recognition through this cue lands about 0.1 s after it. Late hands is
+ * coached exactly against this read. A defender within 3 yd of him sees it like any picture, from when it became visible, with his own
  * reaction delay. No receiver shows hands without a ball coming (no decoy hands are modelled yet: the seam for that is
  * this state). */
 import type { Agent } from './agent.js';
