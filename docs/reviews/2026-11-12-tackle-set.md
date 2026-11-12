@@ -1041,3 +1041,55 @@ On NFL tracking and sim A, over frames with the tackle engaged and the rusher in
 
 If NFL tackles retreat with the rusher's gain and stop when it is near zero, rule 1 is the football. If they retreat
 regardless, the signal is something else (the QB's depth or the drop's timing), and I report before building.
+
+## The diagnostic: rule 1 is wrong; the NFL tackle stops by depth (`hip-gain.py`)
+
+Frames from 1.0 s with the tackle engaged and the rusher in front. NFL 94,688 frames; A 201 10,828 and 301 15,697.
+
+| rusher gaining on the hip (along-rate, yd/s) | NFL tackle x-vel p50 | A (201 \| 301) |
+|---|---|---|
+| faster than 1.5 | −2.25 | −2.75 \| −2.50 |
+| 0.75-1.5 | −2.50 | −3.25 \| −3.00 |
+| 0.25-0.75 | −2.50 | −3.25 \| −3.25 |
+| not gaining (±0.25) | −2.25 | −3.25 \| −3.50 |
+| losing ground | −2.25 | −3.25 \| −3.25 |
+| rusher slower than 1 yd/s (share of frames) | −0.50 (6.4%) | −0.25 \| −0.50 (2.0%) |
+
+NFL tackles retreat at the same speed whether or not the rusher is gaining on the hip. Ours run about 0.75-1 yd/s
+faster in every bin. Gaining on the hip is not the signal.
+
+| tackle minus QB depth | NFL | A (201 \| 301) |
+|---|---|---|
+| +3 or more | −2.00 | −3.00 \| −3.00 |
+| +2 to +3 | −2.75 | −3.25 \| −3.25 |
+| +1.5 to +2 | −2.75 | −3.25 \| −3.25 |
+| +1 to +1.5 | −2.50 | −3.25 \| −3.50 |
+| 0 to +1 | −1.75 | −3.00 \| −3.50 |
+| deeper than the QB | −0.25 | −0.75 \| −2.25 |
+
+| tackle depth behind the line | NFL | A (201 \| 301) |
+|---|---|---|
+| 3-4 yd | −2.50 | −3.25 \| −3.25 |
+| 4-5 yd | −2.75 | −3.50 \| −3.25 |
+| 5-6 yd | −2.50 | −3.25 \| −3.25 |
+| 6-7 yd | −2.00 | −3.00 \| −3.50 |
+| beyond 7 yd | −1.25 | −2.50 \| −2.75 |
+
+**Reading.**
+- The NFL tackle brakes by depth. He slows from about 1.5 yd short of the QB's depth (6-7 yd behind the line on these
+  drops) and is nearly stopped at it. The rusher slows with him.
+- Ours carries kick speed to and past the QB's depth: −3.0 to −3.5 at 0 to +1 yd, where the NFL tackle is at −1.75.
+- So the anchor is TACKLE_SET's floor (the called launch point less a body width), reached by braking early enough,
+  not a decision taken from the rusher's gain.
+- This also explains why TACKLE_ANCHOR was run around while the NFL tackle is not. TACKLE_ANCHOR stopped as soon as
+  engaged, about 3-4 yd deep, where the corner is still open. Stopping at the QB's depth leaves the rusher no corner
+  short of the QB; a man past along his path there is PAST's ride.
+
+**Revised rule 1.** Under TACKLE_SET his depth request toward the floor follows a braking profile:
+- the speed is at most √(2 · a · distance to the floor), with `a` his own brake capacity derated by the load on his
+  hands (he must stop the pair, not only himself: his mass over the pair's);
+- rules 2 (no timer: the body brakes) and 3 (the anchor before the mirror) stand.
+
+TACKLE_SET's existing braking clamp uses his unloaded brake. The read of TACKLE_SET attempt 2 (achieved −2.95 asking 0
+at 1.5-2.5 s) is the pair's momentum arriving at the floor; the derate starts the stop before the floor, where the
+NFL's does. Gates unchanged.
