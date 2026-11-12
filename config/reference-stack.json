@@ -129,6 +129,7 @@
     "OZ_HIP_READ": "on",
     "PASS_ANCHOR": "on",
     "PASS_SINK": "off",
+    "PEDAL_CAP": "off",
     "PICTURE_AGE": "off",
     "PRESS_MIRROR": "on",
     "PRESS_RELEASE": "on",
