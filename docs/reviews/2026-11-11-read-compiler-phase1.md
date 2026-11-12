@@ -575,3 +575,73 @@ paired panel and level in games.
 lower.
 
 **Fixture:** `test/back-front.test.ts`.
+
+## The throw window against what happened: the risk-model diagnosis (engine-35)
+
+`scripts/diag/read-plan/window-probe.ts` is diagnosis only; the fix belongs to the risk work.
+
+**Setup.** At the moment he decides to throw, the probe recomputes the window's terms for every defender exactly as
+`window()` does:
+
+- where the QB thinks the man is;
+- **blind:** the time the window assumes a defender keeps his course before reacting;
+- **reaction:** his reaction time, ×1.8 for a defender not facing the QB;
+- **run:** the defender's time to reach the catch point (`timeToReach`);
+- the ball's arrival.
+
+It then records what each defender did: when he broke toward the catch point, and when he got within reach of it.
+The run covers the forced-concept panel, seeds 1–4: 2,048 plays and 1,903 throws, of which 1,748 left the hand on
+the decision, with no pump. There were 43 interceptions; every interceptor was among the four defenders the window
+rated closest.
+
+**Comparison.** The interceptor against the closest defender on 1,187 non-intercepted throws whose predicted margin
+lay in the interceptors' p10–p90 band (+0.11 to +0.76 s). Values are p25 / p50 / p75; "actual − predicted" is
+negative when the defender was early.
+
+| | Interceptor (n 43) | Matched, no INT (n 1,187) |
+|---|---|---|
+| Predicted margin (his arrival − the ball's) | +0.23 / +0.36 / +0.59 s | +0.31 / +0.45 / +0.59 s |
+| The QB's picture of him: error | 0.11 yd | 0.16 yd |
+| Facing the QB | .74 | .68 |
+| **Start:** predicted (blind + reaction) | 0.38 / 0.43 / 0.60 s | 0.37 / 0.38 / 0.58 s |
+| Start: actual break | 0.05 / 0.20 / 0.60 s | 0.05 / 0.45 / 1.05 s |
+| **Start: actual − predicted** | **−0.38 / −0.32 / +0.23 s** | −0.34 / +0.07 / +0.66 s |
+| **Run: actual − predicted** | **−0.88 / −0.44 / −0.01 s** | −0.55 / −0.24 / +0.17 s |
+| Total: actual reach − predicted | −0.70 / −0.56 / −0.34 s | −0.59 / −0.26 / +0.16 s |
+| Reached the catch point by the ball's arrival | .35 | .12 |
+| Achieved speed on the run (vmax about 9.7) | 4.2 yd/s | 5.0 yd/s |
+
+**Split by where the ball was picked:**
+
+| | At the catch point (n 22) | On the path, before the catch point (n 21) |
+|---|---|---|
+| Start error p50 | −0.23 s | −0.33 s |
+| Facing the QB | .86 | .62 |
+| The QB's P / intRisk | .69 / .03 | .70 / .03 |
+
+**Which term carries the error:**
+
+1. **The start, about −0.3 s.** Interceptors break about 0.20 s after his decision, inside the 0.37 s windup. The
+   window has them start at 0.43 s: blind plus reaction, which for a defender facing him is the THROW_REACT
+   assumption (zone keys the motion start plus a reaction, man waits for the release).
+   - On the matched clean throws the start is right on average (+0.07 s), so the window is calibrated for a typical
+     defender.
+   - It is wrong for the ones who jump the throw: they read him (engine-35's defenders read the QB they see) and
+     go during the motion.
+   - This matches Defense's question of whether NFL defenders move off the throwing motion before the release.
+2. **The run, −0.44 s for interceptors against −0.24 s for matched throws.** `timeToReach` is conservative for
+   everyone, by about 0.24 s. For an interceptor the error doubles, partly because a man who broke early already
+   has speed when the window's model has him starting.
+   - Measuring to within reach + 0.3 yd of the catch point understates the defenders who undercut the path (21 of
+     43 never reached the point).
+3. **Not the picture.** He sees the interceptor within 0.11 yd. Facing or not changes little: three quarters
+   were facing him.
+
+**For the risk work.** The window's reaction model treats every facing defender alike. The defenders who intercept
+are the ones who start during the windup, about 0.3 s early, and arrive about 0.5 s sooner than the window says.
+The candidate fix is a reaction term that reflects defenders reading the QB's eyes and shoulders. A blanket
+reduction would mis-price every throw, since the window is calibrated for the typical defender. Two things should
+be checked first:
+
+- Defense's NFL measurement (do defenders move before the release?), which decides how early is real;
+- the 0.24 s conservative run, which is common to all throws.
