@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-32",
+  "id": "engine-34",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -29,7 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
-    "BACK_RELEASE": "off",
+    "BACK_RELEASE": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "BRACE_EVIDENCE": "off",
@@ -72,6 +72,7 @@
     "FIT_BLITZ_SLIDE": "on",
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
+    "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "off",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "off",
@@ -134,6 +135,7 @@
     "OZ_HIP_READ": "on",
     "PASS_ANCHOR": "on",
     "PASS_SINK": "off",
+    "PEDAL_CAP": "on",
     "PRESS_MIRROR": "on",
     "PRESS_RELEASE": "on",
     "PRO_CALL": "on",
