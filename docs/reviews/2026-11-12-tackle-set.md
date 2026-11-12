@@ -664,3 +664,23 @@ remains):
 - The walk-back is not fixed by any of these. The retreat stays −3.0 to −3.5 at 1.5-2.0 s whenever the tackle still
   moves with the rusher: his kick, or, with the kick off, his mirror's along-axis component. Only the earlier A2 (no x
   retreat at all) matched the NFL's retreat curve.
+
+## A2 proper with PAST_ALONG_PATH (diagnostic, uncommitted: no x retreat once engaged under TACKLE_SET, full mirror)
+
+| seed 201 x 8 | retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0+ s | in front | inside (free) | past outside | at the win past/front/inside | edge win | closed after past | sacked / pressured |
+|---|---|---|---|---|---|---|---|---|
+| A2 + PAST_ALONG_PATH | −2.50 / −2.25 / −1.75 / −0.75 | 7.5% | 18.8% (97%) | 10.6% | 28/23/49 | 25% | 37% | 6.3 / 49.0% |
+| A2 + PAST_ALONG_PATH + OPEN_HANDS | −2.50 / −2.25 / −1.75 / −1.00 | 6.5% | 29.8% (97%) | 10.5% | 23/15/62 | 32% | 48% | 7.5 / 57.1% |
+| A2, no PAST (earlier) | −2.50 / −2.25 / −1.75 / −0.75 | 5.7% | 30.9% (98%) | 7.6% | 18/14/69 | 33% | — | 13.7 / 57.9% |
+| NFL | −2.75 / −2.25 / −1.50 / −0.50 | 3.0% | 6.4% (48%) | 3.8% | 26/27/47 | 13% | 21% | 6.7 / 32.9% |
+
+**Reading.**
+- An anchored tackle with PAST_ALONG_PATH reproduces the NFL's engaged retreat curve, and the in-front excess falls
+  from 12.6% to 7.5%.
+- PAST_ALONG_PATH alone takes the anchored tackle's inside losses from 30.9% to 18.8% and its sacks from 13.7% to
+  6.3%.
+- But he is still beaten three times the NFL rate inside, free 97%, and twice around (past outside 10.6% vs 3.8%).
+- Open hands give the inside back (29.8%): without a grip, an anchored tackle cannot keep a man who crosses his face.
+- What is left is the inside move against an anchored tackle: the rep's move resolution (spin/swim/club against his
+  hands and feet when he is not retreating), and no help inside him. That is the next question. The walk-back was
+  hiding it.
