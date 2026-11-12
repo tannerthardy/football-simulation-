@@ -260,6 +260,19 @@ const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
  * presence stays on his bar), and expects a flick when the rush arrives before the release; how well he anticipates it
  * is set by his knowledge (decision-making and experience), with error both ways. */
 const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
+/** INT_BELIEF (experimental, off; INT_BELIEF=1 turns it on): his interception belief, shaped like how picks happen.
+ * Off, each defender's path undercut adds to the risk (a sum, capped at 1), so a ball thrown past several defenders
+ * reads as near-certain trouble; and a contested catch point is priced lightly. On engine-46 natural throws the total
+ * was right (1.7% vs 1.8%) but: picks came 32 at the catch point, 20 off a tipped ball, 3 on the path; his path terms
+ * summed to about 18 picks and his catch-point terms to about 13 (2.5x short); and the throws he declined at a priced
+ * 28% risk completed 53% with 3.4% INT when forced (docs/reviews/2026-11-12-int-belief.md). On: a pick in flight is
+ * the chance that some defender touches it and it ends a pick (combined as probabilities, not summed), and the catch
+ * point's jumped and contested picks are weighted as they happen (CATCH_PICK). His knowledge sets how well he knows
+ * it, with error both ways. Calibrated on engine-46's catch model: re-read when the catch or tip rules change. */
+const INT_BELIEF = process.env.INT_BELIEF === '1';
+/** INT_BELIEF: in-flight touches that end in a pick (path and tipped), and the catch point's weight (engine-46 fit). */
+const PATH_PICK = 1.25;
+const CATCH_PICK = 2.5;
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
@@ -1242,8 +1255,10 @@ export class QBPass implements Behavior {
     }
     // DEF_BELIEF: how readily his receiver loses a ball a late defender reaches.
     const dislodge = DEF_BELIEF ? clamp((DISLODGE + (1 - know) * 0.15 * a.mind.judgment('def-dislodge')) * (1.15 - 0.3 * r.r('hands') - 0.3 * r.r('contestedCatch')) * 0.65, 0, 0.9) : 0;
+    // INT_BELIEF: how well he knows where picks come from, an error both ways for the less experienced.
+    const intBelief = INT_BELIEF ? Math.exp((1 - know) * 0.3 * a.mind.judgment('int-belief')) : 1;
     const at = (pt: Vec3) => {
-      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0;
+      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
       for (const { d, blind, mover, react, leap, spreadD, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
@@ -1276,7 +1291,13 @@ export class QBPass implements Behavior {
         const iJump = first * (0.15 + 0.35 * d.r('ballSkills')), iContest = Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
         intRisk += iPath + iJump + iContest;
         intPath += iPath; intJump += iJump; intContest += iContest;
+        if (INT_BELIEF) {
+          noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
+          noCatchPick *= 1 - clamp((iJump + iContest) * CATCH_PICK * intBelief, 0, 0.95);
+        }
       }
+      // INT_BELIEF: the chance of a pick is one minus the chance that nobody picks it, in flight or at the catch.
+      if (INT_BELIEF) intRisk = 1 - noPathPick * noCatchPick;
       return { pOpen: pOpen * pSecure, pClear, intRisk, intPath, intJump, intContest };
     };
     const aimed = at(point);
