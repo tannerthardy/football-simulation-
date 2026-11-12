@@ -268,7 +268,7 @@ const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
  * time (PATH_PICK) and the catch point's jumped and contested picks are weighted up (CATCH_PICK), defenders combined as
  * probabilities. His knowledge sets how well he knows it, with error both ways. Calibrated against the engine-47
  * candidate's catch flags and engine-46's defense: re-read when the catch, tip or coverage rules change. */
-const INT_BELIEF = process.env.INT_BELIEF === '1';
+const INT_BELIEF = process.env.INT_BELIEF !== '0';
 /** INT_BELIEF weights, fitted by likelihood on natural throws (seeds 101/201) and checked on 301/401. */
 const PATH_PICK = 0.2;
 const CATCH_PICK = 1.75;
