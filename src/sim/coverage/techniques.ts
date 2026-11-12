@@ -13,7 +13,7 @@ import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
-import { believesRun, ManCoverage, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
 
@@ -97,8 +97,13 @@ export class Wall extends Technique {
     const turnTime = Math.PI / a.profile.turnRate;
     if (rd.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - rd.pos.x < 1.2 + closing * turnTime) this.opened = true;
     const speed = this.opened ? 0.92 + 0.08 * a.r('zoneCoverage') : (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
-    return withFacingTechnique(track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, sim.qb.pos), speed, gain: 2 }),
-      { label: this.opened ? 'wall-open' : 'wall', key: rd.vel });
+    const req = track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, sim.qb.pos), speed, gain: 2 });
+    // OPEN_CARRY: an opened wall rides the vertical as square to the QB as the run allows.
+    if (OPEN_CARRY && this.opened) {
+      a.tags.add('open-carry');
+      return withFacingTechnique({ ...req, facing: openCarryFacing(a, sim, this.target, req, true) }, { label: 'open-carry-wall', key: rd.vel });
+    }
+    return withFacingTechnique(req, { label: this.opened ? 'wall-open' : 'wall', key: rd.vel });
   }
 }
 
