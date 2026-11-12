@@ -285,3 +285,43 @@ Our final falls do not carry farther than the NFL's. The excess yards after cont
 
 That points to (ii): the hanging holder's weight acting low on the held legs. (i) as a falling-friction change is
 not supported by the physics or the measurement. Not built; Integration decides.
+
+### (ii) The hanging holder: `scripts/diag/effective-mass/hang-bench.mts`
+
+Setup: the World alone. A 92 kg WR at v0 asks to keep running. An 84 kg CB behind him is just off his feet (falling,
+at 0.9 v0) with a rear grasp on the legs.
+
+| v0, legs, lock | runner | travel | stride bound | airborne hang moment: World / reference / hip torque |
+|---|---|---|---|---|
+| 5, 0.5, 0.56 / 0.9 | up at 1.5 s | 7.3 / 6.9 yd | 0 | 141 / 281 / 368 |
+| 5, 0.8, 0.56 / 0.9 | down 0.90 s | 5.5 / 5.3 yd | 0 | 225 / 450 / 368 |
+| 7, 0.5, 0.56 / 0.9 | up at 1.5 s | 9.4 / 9.3 yd | 0 | 141 / 281 / 368 |
+| 7, 0.8, 0.56 / 0.9 | down 0.8 / 0.9 s | 6.7 / 7.2 yd | 0 | 225 / 450 / 368 |
+
+The load over time, reference against World:
+
+- **While the holder is airborne** (his fall, 0.40 s here): none of his weight is on the turf, so all of it hangs on
+  the hold.
+  - World: half (HANG_SHARE 0.5, the same as a grounded holder).
+  - The runner's stride stays free. He accelerates (5.0 → 5.4 yd/s, own ground force +230 to +340) while the grip
+    drags only −150.
+  - Reference: the whole weight hangs. On a leg hold (legs 0.8) that is 450 against his hip torque of 368, which binds
+    the stride. On a hip hold (0.5) it is 281, which does not.
+- **After he lands:** half his weight rests on the turf, and the rest of his load is his sliding friction through the
+  grip.
+  - World: grip drag −450 to −480 while the runner still drives +270. The stride is free (half-weight moment 225 < 368).
+  - Reference drag: −675 (0.75 × his weight).
+- **The grip's own moment** uses 0.7 of capacity once the holder is off his feet. A locked wrap (lock 0.9, legs 0.8)
+  lands at 366, just under 368, so it never binds either.
+
+What is missing, in order:
+1. The airborne holder's whole weight on the hold: the hang share during his fall.
+2. Then the post-landing drag against a stride that is still free. That is grip capacity and friction, and the
+   runner's drive.
+3. No vertical load on the carrier's base exists in the World, which is horizontal only. The hanging weight acts only
+   through the stride comparison.
+
+Proposal (not built; Integration decides): its own flag, off. While a holder is falling (off his feet, not yet
+landed) and still holding, his hanging share is 1 (all of his weight on the hold). On landing it is HANG_SHARE as now.
+The rest stays the same: the stride comparison against hip torque, SWING_STRIP, LEGS_HELD. A leg hold then binds the
+stride for the airborne window; a hip hold may not.
