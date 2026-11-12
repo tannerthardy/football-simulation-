@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-36",
+  "id": "engine-37",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -29,6 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
+    "BACK_FRONT": "on",
     "BACK_RELEASE": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
@@ -119,7 +120,7 @@
     "PICTURE_AGE": "off",
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "off",
-    "FREE_BOUND": "off",
+    "FREE_BOUND": "on",
     "SET_DECIDE": "off",
     "SHOULDERS_SET": "off",
     "LEG_ALLOMETRY": "on",
