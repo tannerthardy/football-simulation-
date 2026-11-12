@@ -225,6 +225,7 @@
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
     "PURSUIT_FIELD": "on",
-    "CARRIER_COMMIT": "off"
+    "CARRIER_COMMIT": "off",
+    "SPACING_SMOOTH": "off"
   }
 }

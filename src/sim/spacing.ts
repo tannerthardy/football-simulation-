@@ -17,7 +17,7 @@ import type { Agent } from './agent.js';
 import type { Vec2 } from '../core/vec.js';
 import type {Perceived} from './perception.js';
 import { movementObjective } from './movement-objective.js';
-import { containCoverage } from './coverage-space.js';
+import { containCoverage, isCarrierPursuit } from './coverage-space.js';
 import { localTrafficRoute } from './traffic-route.js';
 
 /** RB_STEER (default off): a ball carrier (or a lead back) whose held
@@ -50,6 +50,15 @@ const TURN_MARGIN = .05;
  * went to this selector whenever anything near him changed (dither guard). */
 const CARRIER_COMMIT = process.env.CARRIER_COMMIT === '1', COMMIT_MARGIN = .15;
 const heldBend = new WeakMap<Agent, number>();
+/** SPACING_SMOOTH (experimental, off): the teammate closing limit fades in
+ * over SPACING_RAMP yd inside the awareness and touch gates instead of
+ * switching fully on or off at them. As a step it
+ * made the request turn, the turn moved the gate, and the next tick turned
+ * back: the radial cut made 83% of spacing's re-aims, 46-52% of them undone
+ * within 0.3 s (dither-core attribution, the guard's 60-play panel). The
+ * limit itself (headway the body can brake out of) is unchanged. */
+const SPACING_SMOOTH = process.env.SPACING_SMOOTH === '1';
+const SPACING_RAMP = .3;
 
 export interface SpacingContext {
   now: number;
@@ -333,6 +342,13 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     const ia = intents[i];
     if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') { passingFrames.delete(a); continue; }
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
+    // SPACING_SMOOTH: a player chasing the ball (the carrier, a pursuer, a
+    // coverage player on a seen carrier) runs past teammates fast; a weighted
+    // limit changes with his swept miss every tick, so he keeps the gate.
+    // A carrier is smoothed only when his bend is committed (CARRIER_COMMIT):
+    // without it a softer cut hands the conflict to the bend ladder.
+    const smooth=SPACING_SMOOTH&&!((a.behavior.kind==='carrier'&&!CARRIER_COMMIT)||a.behavior.kind==='pursuit'
+      ||a.behavior.kind==='track'||isCarrierPursuit(ia));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
     const limits:ClosingLimit[]=[];
@@ -352,7 +368,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const decel=Math.max(.1,-brake.x*nx-brake.y*ny);
       const current=Math.max(0,(a.vel.x-seen.vel.x)*nx+(a.vel.y-seen.vel.y)*ny);
       const stopping=current*CLOSE_HORIZON+current*current/(2*decel);
-      if(gap>Math.max(AWARE_GAP,stopping))continue;
+      const aware=Math.max(AWARE_GAP,stopping);
+      if(gap>aware)continue;
       // Closing he plans, relative to where the teammate is going now
       // (LINE_STEP: where the teammate's announced step takes him).
       const goes=(LINE_STEP?context?.calledAhead?.(a,b,CLOSE_HORIZON):null)??seen.vel;
@@ -363,14 +380,21 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // narrow, passable crease from becoming a radial repulsion field.
       const speed2=rx*rx+ry*ry;
       const closest=speed2>1e-9?Math.max(0,(dx*rx+dy*ry)/speed2):0;
-      if(gap>0&&hypot2(dx-rx*closest,dy-ry*closest)>touch)continue;
+      const miss=hypot2(dx-rx*closest,dy-ry*closest);
+      if(gap>0&&miss>touch)continue;
+      // SPACING_SMOOTH: how much of the limit applies, 0 at either gate rising
+      // to all of it SPACING_RAMP inside both (all of it when touching). The
+      // limit never reaches past the gates it had; it only stops switching.
+      const weight=!smooth||gap<=0?1
+        :Math.min(1,(aware-gap)/SPACING_RAMP)*Math.min(1,(touch-miss)/SPACING_RAMP);
       // Budget headway plus the distance this body needs to remove relative
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
-      limits.push({key:b.idx,nx,ny,speed:allowed+goes.x*nx+goes.y*ny});
-      if (closing > allowed) {
-        const cut = closing - allowed;
+      const limited=allowed+(1-weight)*Math.max(0,closing-allowed);
+      limits.push({key:b.idx,nx,ny,speed:limited+goes.x*nx+goes.y*ny});
+      if (closing > limited) {
+        const cut = closing - limited;
         vx -= nx * cut; vy -= ny * cut;
       }
     }
