@@ -10,6 +10,7 @@
  * Arms by environment (e.g. IN_STRIDE_CATCH=1).
  *   [IN_STRIDE_CATCH=1] node --import tsx scripts/diag/risk/forced-deep.ts [--n 60] [--natural] > out/risk/forced-<arm>.jsonl
  */
+import { DRAG_SPIRAL, simulateTo } from '../../../src/physics/ball.js';
 import { QBPass } from '../../../src/sim/behaviors/qb.js';
 import { RouteRunner } from '../../../src/sim/behaviors/receiver.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
@@ -23,7 +24,10 @@ P.release = function (a: any, sim: any, ev: any) {
   const tb = sim.throwBall;
   sim.throwBall = (q: any, r: any, v0: any, pt: any, arr: number) => {
     sim.throwBall = tb;
-    if (cur && cur.forced && !cur.thrown) cur.thrown = { relT: sim.t, pt: { x: pt.x, y: pt.y }, from: { x: q.pos.x, y: q.pos.y }, arr, r, moving: Math.hypot(q.vel.x, q.vel.y) > 1, flick: +this.flick.toFixed(2),
+    // The launched flight, untouched: where it comes down at its planned arrival (the release point as throwBall makes it).
+    const relPos = { x: q.pos.x + Math.cos(q.body.facing) * 0.3, y: q.pos.y + Math.sin(q.body.facing) * 0.3, z: 2.2 };
+    const launched = simulateTo(relPos, v0, arr - sim.t, DRAG_SPIRAL, sim.wind);
+    if (cur && cur.forced && !cur.thrown) cur.thrown = { relT: sim.t, launched: { x: launched.x, y: launched.y }, pt: { x: pt.x, y: pt.y }, from: { x: q.pos.x, y: q.pos.y }, arr, r, moving: Math.hypot(q.vel.x, q.vel.y) > 1, flick: +this.flick.toFixed(2),
       sigma: +this.missSigma(a, sim, Math.hypot(pt.x - q.pos.x, pt.y - q.pos.y), 0).toFixed(2) };
     return tb.call(sim, q, r, v0, pt, arr);
   };
@@ -65,9 +69,22 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
           const ux = T.pt.x - T.from.x, uy = T.pt.y - T.from.y, L = Math.hypot(ux, uy) || 1;
           const along = (p: any, o: any) => +(((p.x - o.x) * ux + (p.y - o.y) * uy) / L).toFixed(2);
           cur.land = { t: +sim.t.toFixed(2), flight: +(sim.t - (T.relT ?? sim.t)).toFixed(2), planned: +(T.arr - (T.relT ?? T.arr)).toFixed(2),
-            vsHeld: along(b, held), vsAim: along(b, T.pt), heldVsAim: along(held, T.pt), recVsAim: along(T.r.pos, T.pt), deflected: !!sim.ball.deflected };
+            vsHeld: along(b, held), vsAim: along(b, T.pt), heldVsAim: along(held, T.pt), recVsAim: along(T.r.pos, T.pt), deflected: !!sim.ball.deflected,
+            // Coverage's strict cut: the ball against where the receiver actually is, along and across the throw;
+            // and his own adjustment (actual against held speed).
+            ballVsRec: along(b, T.r.pos), ballVsRecAcross: +Math.abs(((b.y - T.r.pos.y) * ux - (b.x - T.r.pos.x) * uy) / L).toFixed(2),
+            adjust: along(T.r.pos, held), adjustAcross: +Math.abs(((T.r.pos.y - held.y) * ux - (T.r.pos.x - held.x) * uy) / L).toFixed(2) };
         }
       }
+    }
+    // At the planned arrival: the launched (untouched) flight against the aim, the held-speed receiver and the actual one.
+    if (T && !cur.flightSplit && sim.t >= T.arr - 1e-9 && cur.recHist.length) {
+      const h = cur.recHist.reduce((p: any, q: any) => Math.abs(q.t - (T.arr - 1.0)) < Math.abs(p.t - (T.arr - 1.0)) ? q : p);
+      const held = { x: h.x + h.vx * (T.arr - h.t), y: h.y + h.vy * (T.arr - h.t) }, act = { x: T.r.pos.x, y: T.r.pos.y };
+      const ux = T.pt.x - T.from.x, uy = T.pt.y - T.from.y, L = Math.hypot(ux, uy) || 1, B = T.launched;
+      const al = (p: any, o: any) => +(((p.x - o.x) * ux + (p.y - o.y) * uy) / L).toFixed(2), ac = (p: any, o: any) => +Math.abs(((p.y - o.y) * ux - (p.x - o.x) * uy) / L).toFixed(2);
+      cur.flightSplit = { dispAlong: al(B, T.pt), dispAcross: ac(B, T.pt), leadAlong: al(T.pt, held), adjustAlong: al(act, held), adjustAcross: ac(act, held),
+        vsActualAlong: al(B, act), vsActualAcross: ac(B, act), vsHeldAlong: al(B, held) };
     }
     if (T && !cur.at && sim.t >= T.arr - 1e-9) {
       const b = sim.ballPos(), ux = T.pt.x - T.from.x, uy = T.pt.y - T.from.y, L = Math.hypot(ux, uy) || 1;
@@ -92,5 +109,5 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
   }
   if (!T || !cur.at) continue;
   process.stdout.write(JSON.stringify({ coverage, formation, seed, flip, dist: +Math.hypot(T.pt.x - T.from.x, T.pt.y - T.from.y).toFixed(1), sigma: T.sigma, moving: T.moving, flick: T.flick,
-    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, ev: cur.ev, land: cur.land, cmp: !!s.completed, int: !!s.interceptedBy, yards: +res.yards.toFixed(2) }) + '\n');
+    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, ev: cur.ev, land: cur.land, flightSplit: cur.flightSplit ?? null, cmp: !!s.completed, int: !!s.interceptedBy, yards: +res.yards.toFixed(2) }) + '\n');
 }
