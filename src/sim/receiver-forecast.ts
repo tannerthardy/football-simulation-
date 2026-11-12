@@ -28,7 +28,7 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
   startDelay: number | null, profile: PhysicalProfile, routeRunning: number): InstalledReceiverRoute {
   const path = routePath(start, los, outside, route.points, route.end === 'continue', route.family);
   const read = installedRead(route);
-  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s })));
+  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s, ...(p.ext ? { ext: true } : {}) })));
   const copiedRead = read ? Object.freeze({ ...read, answers: Object.freeze(read.answers.map(a => Object.freeze({ ...a,
     points: Object.freeze(a.points.map(p => Object.freeze({ ...p }))) }))) }) : undefined;
   return Object.freeze({ start: Object.freeze({ ...start }),
@@ -60,13 +60,23 @@ export interface ReceiverEstimate {
   readonly answerSource?: 'own-key-picture' | 'receiver-motion' | 'installed-default';
 }
 
+/** FORECAST_BREAK (experimental, off; FORECAST_BREAK=1 turns it on): the break the quarterback expects is on
+ * the installed route, not on the continuation the path adds past it. Off, a flat, arrow, swing or back's flat
+ * (their installed cut s 0.9) takes its break from the continuation's turn at the sideline margin (s 0.75 or
+ * 0.6), so the QB expects it about 6 s after the snap and treats the receiver as not ready (a flat open at
+ * 0.77 completion was never thrown: docs/reviews/2026-11-11-forecast-break.md). */
+const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
+
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
  * path with no slowed waypoint (a go or seam). */
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
   const last = end === 'settle' ? path.length - 1 : path.length;
-  for (let i = 0; i < last; i++) if (path[i].s < 1 && (b === null || path[i].s < path[b].s)) b = i;
+  for (let i = 0; i < last; i++) {
+    if (FORECAST_BREAK && path[i].ext) continue;
+    if (path[i].s < 1 && (b === null || path[i].s < path[b].s)) b = i;
+  }
   return b;
 }
 
