@@ -458,3 +458,83 @@ against the line to the QB. That definition decides whether the drag at the corn
 
 - The standing excess (all arms): the tackle is walked back into the QB.
 - The flags' excess: an inside counter that nobody inside picks up.
+
+# Excess (1): the tackle walked back into the QB, diagnosis (report only)
+
+Tools:
+- `scripts/diag/effective-mass/tackle-anchor.mts`: engine state, both sides of the contact, by the tackle's phase.
+- `scripts/diag/pass-operators/tackle-retreat.py`: geometric, the same code on NFL and sim.
+Engine-42 + this branch, seeds 101-103, ball in the QB's hands, edge rusher in front of his tackle (not past, not
+inside). Forces in kg*yd/s^2 (1 N = 1.094).
+
+## The gate: tackle retreat while engaged, rusher in front (tackle-retreat.py)
+
+| time since snap | NFL tackle x-velocity p50 (retreating > 1 yd/s) | ours (off, 201 \| 301) | tackle minus QB depth, NFL / ours |
+|---|---|---|---|
+| 1.0-1.5 s | −2.50 (88%) | −3.00 \| −3.00 (98%) | +2.7 / +2.8 |
+| 1.5-2.0 s | −2.75 (95%) | −3.50 \| −3.50 (99%) | +2.4 / +2.7 |
+| 2.0-2.5 s | −2.25 (91%) | −3.25 \| −3.25 (99%) | +2.1 / +1.7 |
+| 2.5-3.0 s | −1.50 (67%) | −3.00 \| −2.75 (96%) | +1.6 / +0.4 |
+| 3.0-4.0 s | −0.50 (33%) | −2.00 \| −2.25 (75-77%) | +1.0 / −1.4 |
+
+Rusher x-velocity is about the same: NFL −3.5 / −2.25 / −1.25 / −0.25; ours −3.5 / −3.25 / −2.75 / −2.0. The NFL pair
+decelerates from 2.0 s and has nearly stopped by 3.0 s. Ours keeps going about 2 yd/s faster late, through the QB's
+depth.
+
+## Requested vs achieved, by the tackle's phase (tackle-anchor.mts)
+
+Capacity references (p50):
+- tackle 142 kg: traction μmg 1680 (pad lift reduces it to about 1450-1520 in contact), push min(leg drive,
+  traction) 1530;
+- rusher 117 kg: traction 1375, push 1246.
+
+Off (PASS_KICK):
+
+| phase | ticks | tackle requested / achieved x | his ground force toward the rusher / friction limit | utilisation p50 (≥ 0.95) | hands N | rusher push, asks of vmax, ground force toward the tackle (utilisation) |
+|---|---|---|---|---|---|---|
+| kicking, 0-1.5 s | 1796 | −2.69 / −2.81 | 58 / 1636 | 0.46 (5%) | 668 | 0.75, 0.90, 386 (0.41) |
+| kicking, 1.5-2.5 s | 4797 | −2.73 / −3.38 | 596 / 1453 | 0.83 (33%) | 997 | 0.75, 0.85, 472 (0.63) |
+| kicking, 2.5 s+ | 1390 | −2.62 / −2.72 | 585 / 1493 | 0.66 (23%) | 911 | 0.75, 0.55, 404 (0.68) |
+| asking to hold (rare off), 2.5 s+ | 53 | −0.08 / −1.13 | 1054 / 1461 | 1.00 (70%) | 1066 | 1.00, 0.55, 181 |
+
+TACKLE_SET:
+
+| phase | ticks | requested / achieved | ground force / limit | utilisation (≥ 0.95) | hands N | rusher |
+|---|---|---|---|---|---|---|
+| kicking, 1.5-2.5 s | 3266 | −3.07 / −3.57 | 293 / 1476 | 0.77 (28%) | 978 | 0.75, 0.88, 309 |
+| asking to hold, 1.5-2.5 s | 236 | 0.00 / −2.95 | 1009 / 1501 | 0.98 (56%) | 951 | 0.75, 0.56, 340 (0.65) |
+| asking to hold, 2.5 s+ | 678 | 0.00 / −1.63 | 1120 / 1506 | 0.99 (63%) | 888 | 0.75, 0.55, 367 (0.66) |
+
+Moves in these ticks are almost never live (0-7% after 1.5 s): the rusher is between moves.
+
+## Reading
+
+1. **Off, the tackle is not driven: he retreats because he asks to.**
+   - Through 2.5 s off, nearly all engaged ticks are the tackle kicking (−2.6 to −2.7 yd/s requested), and he
+     achieves about that (−2.7 to −3.4).
+   - His feet are well below their friction limit (utilisation 0.46-0.83).
+   - The NFL tackle with the man in front slows from about 2.0 s and has nearly stopped by 3.0 s. Ours keeps asking
+     for −2.6 at 2.5 s+. That is the PASS_KICK rep's follow (it tracks the rusher's depth to half a yard short of the
+     live QB), not a capacity limit.
+2. **Asking to hold (TACKLE_SET), he is at his capacity, and two things beyond strength explain why the lighter man
+   still moves him.**
+   - **Momentum.** He reaches his set still moving at kick speed (−3 to −3.5 yd/s) with the rusher on him. The pair
+     (about 259 kg at about 3 yd/s, about 780 kg*yd/s) must be stopped by his net ground force: about 1000-1120
+     toward the rusher, less the rusher's own drive of about 340. That takes about 1 s. The rusher's force through
+     the hands (about 950) is mostly his own momentum being stopped, not his legs (ground force 300-370, utilisation
+     0.65).
+   - **Friction shared with the mirror.** His friction limit in contact is 1450-1520, and utilisation sits at 0.98,
+     yet only about 1000-1120 of it points at the rusher. The rest goes to the lateral mirror (the rep's sideways
+     request).
+   So the 315-lb man braced would win (his push capacity of 1530 is above the rusher's 1246) if he were set and
+   still. He loses because he arrives moving and splits his traction. That is a timing and controller question (when
+   he stops the kick, how he decelerates into the set), not strength.
+3. **Rusher between moves.** stepPassRep asks for push 0.75 and 0.8 + 0.15 x bend of vmax toward the corner whenever
+   no move is live. `power` (push 1.0, 0.55 vmax, aimed at the QB) follows `e.move`, the last move chosen, so a bull or
+   long-arm keeps "power" after its window ends. These are defaults nobody chose by situation; a finesse rusher with a
+   spent move leans at 0.75. In these contacts, though, his legs supply only 300-470 (utilisation 0.4-0.7). The ~1000
+   through the hands comes from the pair's momentum, not his drive. Fixing his intent alone would not stop the tackle;
+   the tackle's kick speed at contact would.
+4. **No capacity change is indicated.** The capacity references favour the tackle. The gap is the tackle's request:
+   a kick that never decelerates off, and arriving at the set at full kick speed under TACKLE_SET. TURF_MU 1.1 remains
+   unsourced, but nothing here turns on it.
