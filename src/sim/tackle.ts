@@ -534,10 +534,16 @@ const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
  * his hold is not slipping he stops running with the man: he asks to stop
  * along the runner's path and leans against the load (push), so his weight and
  * his feet's friction act against the runner instead of his legs adding to the
- * pair's momentum. Executed by skill: he commits once his hands have held for
- * his reaction time (longer for a poor tackler: he has to know he has him),
- * and only as fully as his tackling lets him (a poor one keeps half running);
- * until then, and while his grip slips, as before. He reads it from his own hands (not slipping). The World
+ * pair's momentum. Holding is not running with him: from the grasp his
+ * request along the runner's path never exceeds the speed he already has there
+ * (no delay: it is what his body does when it grabs, not a read of the
+ * carrier). The committed sink is executed by skill: once his hands have held
+ * (not slipping, read from his own hands) for his reaction time, longer for a
+ * poor tackler (he has to know he has him), he commits as fully as his
+ * tackling lets him (a poor one keeps half running). Until then, and while his
+ * grip slips, HOLD_FINISH's request under that cap. Third design (2026-11-12):
+ * attempts 1-2 left HOLD_FINISH's target, a speed to accelerate to, in charge
+ * during the recognition delay. The World
  * decides the rest: a grip too weak for the anchor is torn off (a broken
  * tackle), and a holder already off his base regains it or hangs as the
  * physics has him; nothing forces a stance. Off, HOLD_FINISH commits his
@@ -688,22 +694,23 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
         // Sink and drag: once his hands have held (not slipping) for as long
         // as it takes him to know he has the man -- his reaction time, longer
         // for a poor tackler -- he commits as fully as his tackling lets him
-        // sink. Until then, as before: his weight by his grip's security. While
-        // the grip slips he gives with it.
+        // sink. Until then: his weight by his grip's security; while the grip
+        // slips he gives with it (commitment 0).
         const since = (bond.sink ??= new Map());
         if (joint.slipping) since.delete(d); else if (!since.has(d)) since.set(d, t);
         const knows = since.has(d) && t - since.get(d)! >= d.profile.reactionTime * (1.5 - d.r('tackling'));
         const full = 0.6 + 0.4 * d.r('tackling');
         const commit = joint.slipping ? 0 : knows ? Math.max(full, clamp(next, 0, 1)) : clamp(next, 0, 1);
         const ux = c.vel.x / cs, uy = c.vel.y / cs;
-        if (knows && !joint.slipping) {
-          // Sunk: along the runner's path he asks for no more than his own
-          // speed there, less what he commits -- he never runs to keep up with
-          // the man (from beside or a slower trail that is a request to
-          // accelerate into the pull). Across it he stays tight to the hold.
-          const own = d.vel.x * ux + d.vel.y * uy, along = Math.max(0, Math.min(own, cs)) * (1 - commit);
-          vel = { x: ux * along + tx * close, y: uy * along + ty * close };
-        } else vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
+        // Holding is not running with him: from the grasp his request along
+        // the runner's path never exceeds the speed he already has there.
+        // (HOLD_FINISH's request, the runner's speed x (1 - grip security), is
+        // a target he would accelerate to after a grab from beside or from a
+        // slower trail.) Across the path he stays tight to the hold.
+        const own = Math.max(0, d.vel.x * ux + d.vel.y * uy);
+        // Sunk (he knows he has him): his own speed less what he commits.
+        const along = knows && !joint.slipping ? Math.min(own, cs) * (1 - commit) : Math.min(own, cs * (1 - commit));
+        vel = { x: ux * along + tx * close, y: uy * along + ty * close };
       } else if (HOLD_FINISH && cs > 0.5) {
         const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
         vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
