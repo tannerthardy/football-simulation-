@@ -908,10 +908,10 @@ const INSIDE_LEVERAGE = 0.33;
  * the hands -- he chooses:
  *   edge: with leverage, he works the blocker's outside hip at the pace he can
  *     bend (0.6 + 0.25 bend of vmax), push 0.5;
- *   power: with momentum and a blocker giving ground, through his chest at the
- *     QB (0.55 vmax, push 1);
- *   stall: with neither, he fights the hands at a walking pace in front of
- *     him (1.2 yd/s, push 0.6) until his next move, and may lose the rep.
+ *   power (press): otherwise, through the blocker at the QB, collapsing the
+ *     pocket (0.55 vmax, push 0.75-1.0 by his power and mass);
+ *   stall: while the blocker is driving him back, he fights the hands at a
+ *     walking pace (1.2 yd/s, push 0.6) until his next move, and may lose.
  * Which he prefers is the player's (edge: finesse and bend; power: power and
  * mass); he keeps an intent at least his reaction time and changes it only
  * when his leverage or the blocker's ground changes past a margin. */
@@ -929,12 +929,17 @@ function rushIntent(sim: PlaySim, e: Engagement, axis: Vec2, sep: number): RushI
   const moving = Math.hypot(d.vel.x, d.vel.y) > 2.5;
   const edgePref = 0.5 * d.r('passRushFinesse') + 0.5 * td.bend;
   const powPref = 0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1);
+  // Attempt 2: with no leverage he presses through the blocker at the QB (collapsing the pocket: NFL engaged edge
+  // rushers drive at the QB about 2.5 yd/s), not a walk; he stalls only while the blocker is driving him back.
+  // (Attempt 1 required momentum to press, so a stall killed the momentum that would end it: 77% of engaged time
+  // stalled, engaged edge speed 2.4 vs NFL 3.5 yd/s.)
+  const drivenBack = d.vel.x * axis.x + d.vel.y * axis.y < -0.5;
   const choose = (): RushIntent => {
-    if (lev > 0.3 && !(moving && ground && powPref > edgePref + 0.15)) return 'edge';
-    if (moving && ground && powPref >= edgePref - 0.15) return 'power';
-    if (lev > 0.15 && edgePref > powPref) return 'edge';
-    return 'stall';
+    if (lev > 0.3 && !(ground && powPref > edgePref + 0.15)) return 'edge';
+    if (lev > 0.15 && edgePref > powPref + 0.15) return 'edge';
+    return drivenBack ? 'stall' : 'power';
   };
+  void moving;
   let st = rushIntents.get(e);
   if (!st) { const intent = choose(); st = { intent, since: sim.t, lev, ground, switches: 0, reversals: 0, prev: null, at: sim.t }; rushIntents.set(e, st); return intent; }
   const rt = Math.max(0.1, d.profile.reactionTime);
@@ -1326,7 +1331,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
     facing: Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
-    push: between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : power ? 1 : inMove ? 0.35 : 0.75,
+    push: between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
