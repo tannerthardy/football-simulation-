@@ -4,7 +4,7 @@ import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
-import { routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
+import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
@@ -208,6 +208,10 @@ export class ReceiverForecast {
       else {
         cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill);
         if (!cmd) { done = true; cmd = { vel: active.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
+        // LINE_START: the same get-off the receiver runs, read time from his profile (his mind is not visible).
+        else if (LINE_START && inGetOff(Math.hypot(body.pos.x - prior.start.x, body.pos.y - prior.start.y),
+          c.estimate.sampledAt + i * this.dt - (prior.startDelay ?? 0), prior.profile.reactionTime))
+          cmd = { ...cmd, drive: getOffDrive(prior.routeRunning, firstBreakDepth(prior.start, prior.readContext?.los ?? prior.start.x, prior.path), 4.5) };
       }
       stepBody(body, cmd, this.dt);
       pts.push({ ...body.pos });
