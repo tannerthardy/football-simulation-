@@ -15,6 +15,8 @@ import type { PlaySim } from './playsim.js';
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
 export const TRACKING_REACH_BONUS = .3;
+/** Half the football's width across its short axis (about 0.1 yd); a ball this close to a body touches it. */
+const BALL_HALF_WIDTH = 0.1;
 /** Default on (TIP_AWAY=0 turns it off): a defender who breaks up or bats a pass
  * has sent it away from his own hands. He cannot also catch that deflection;
  * teammates and the receiver still can. Without it he may play his own tip
@@ -56,7 +58,7 @@ const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
  * not; in front of the receiver 15-19%); ours 57-59% (catchpoint.py, BDB 2025
  * weeks 1-3 vs develop 3506343d). Constants are estimates fitted to those
  * behaviours, not to yards. */
-const CATCH_HANDS = process.env.CATCH_HANDS === '1';
+const CATCH_HANDS = process.env.CATCH_HANDS !== '0';
 /** CATCH_HANDS: scale of a hand through the receiver's arms (estimated; to be
  * fitted on the panel against NFL completion by the defender's closeness). */
 const HANDS_SCALE = 1.2;
@@ -73,7 +75,7 @@ const HANDS_SCALE = 1.2;
  * defender frozen there: NFL tight throws on target with the nearest defender
  * 0.75-1.5 yd away at arrival complete 28%, ours 46-59% (catchpoint.py, same
  * operator). */
-const CATCH_SECURE = process.env.CATCH_SECURE === '1';
+const CATCH_SECURE = process.env.CATCH_SECURE !== '0';
 /** CATCH_POINT (off; CATCH_POINT=1 turns it on; C14 open end): a receiver
  * tracking the ball catches it where it comes to his hands, not where it first
  * crosses the edge of his reach. Off, the catch resolved on the first tick the
@@ -447,11 +449,26 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     }
     return false;
   }
+  if (!sees) {
+    // A defender who does not see the ball cannot play it with his hands; it
+    // can only hit him. If its path crosses his body (his radius plus the
+    // ball's half-width, below his height) it comes off him: a deflection off
+    // a body, not a play on the ball, and not a pass defensed. Before this, a
+    // blind defender broke up 12% of balls that merely passed within his
+    // arm's reach of his centre.
+    if (o.dh <= D.profile.radius + BALL_HALF_WIDTH && o.z <= D.profile.heightYd) {
+      sim.event('deflection', D, ball.target, 'off his body');
+      D.noCatchUntil = touchedUntil(sim, 0.25);
+      deflect(sim, 0.3, 'tip', D);
+      return true;
+    }
+    return false;
+  }
   const stretch = o.dh / (D.profile.reach + 0.3);
   const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;
-  let pInt = sees ? clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45) : 0;
+  let pInt = clamp(0.03 + 0.3 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.28 * stretch - high, 0.02, 0.45);
   if (ball.deflected) pInt *= 0.35;
-  const pDefl = sees ? clamp(0.35 + 0.3 * D.r('ballSkills') - 0.2 * stretch, 0.15, 0.75) : 0.12;
+  const pDefl = clamp(0.35 + 0.3 * D.r('ballSkills') - 0.2 * stretch, 0.15, 0.75);
   const roll = rng.next();
   if (roll < pInt && inBounds(D)) {
     sim.possess(D, 'interception');

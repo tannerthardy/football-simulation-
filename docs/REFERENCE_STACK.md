@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-38`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-40`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,48 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-40: `ARRIVE_LEAD` on, and a touchdown is checked before the tackle step (2026-11-12)
+
+- **`ARRIVE_LEAD`** (Defense #615). An underneath zone defender who cannot beat the ball to the catch drives to the catcher's upfield shoulder (the catch point offset toward the defense's goal by his body, the catcher's body and his reach, about 1.6 yd), not at the catch point. NFL tracking: the nearest defender's line of travel at a short catch crosses 1.4–1.7 yd upfield of the catcher in every group; ours crossed at 0.3–0.5. Defense, engine-37, two seeds × 16 games: the crossing point on catchers moving across 0.3 → 1.1 yd (NFL 1.9), toward 0.2 → 1.6 (1.7), away −0.1 → 0.9 (1.4); catch to first contact 2.8 → 1.6 yd; short-catch YAC 7.67 → 7.27, all of it upfield yards, no cutback opened. Zone only; man shows the same gap (1.5 against 0.4) and is a later decision. `SHOULDER_READ` (a zone defender leaning toward the receiver the quarterback's shoulders point at from the windup) rides along off: its effect was inside noise, its cost side does not exist until the quarterback can pump or look a defender off, and 26–45% of the defenders it needs are not facing the quarterback.
+- **Rules correction, no flag** (Rules + Coaching #612). The touchdown check ran after the tackle step in the same tick, so a player who gained possession in the end zone and was stripped in that tick was not ruled to have scored; one such play then reached an unsupported end-zone recovery ruling and threw. The check now runs first (possession in the attacked end zone is a touchdown at once), and the restricted-recovery path resolves to the nearest supported ruling with a recorded limitation instead of throwing. Any play with a same-tick goal-line crossing and tackle now resolves differently.
+
+Checks on the candidate (`7974ecb4`, on engine-39): full suite 4317 pass with the two known research failures (this run covers the rules correction's changed outputs); fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm, `ARRIVE_LEAD` 0 against 1:
+
+| seed | YAC a reception | 20+ completions an attempt | yards an attempt | INT rate | completion | sack rate | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 9.07 → 7.26 (moved) | 16.8 → 14.0% (moved) | 9.99 → 9.18 | 2.1 → 1.3% (moved) | 60.1 → 64.7% (moved) | 4.4 → 3.7% | 37.9 → 35.8 |
+| 23 | 8.10 → 7.65 | 15.2 → 14.4% | 9.59 → 9.09 | 2.1 → 1.7% | 63.8 → 62.5% | 2.7 → 3.7% (moved) | 38.6 → 35.6 |
+
+YAC, long completions, yards an attempt and points fall on both seeds. Completion and sacks disagree between seeds; interceptions fall on both (a defender driving to the shoulder is not playing the ball).
+
+Recorded miss, not landed: `FRONT_ANGLE` (a defender with the runner in front forecasting the runner's upfield line) made every pass-side measure worse (yards a dropback 9.29 → 10.55): the forecast sent him to a point ten yards downfield. Most "outrun wide" plays are geometry at the catch (the defender 1.4–2.1 yd deeper and about 5 yd wide), which is where underneath defenders are and what they are looking at when the ball is thrown.
+
+Correction after engine-40, no flag (Coverage #617): a defender facing away from the ball was given a flat 12% pass breakup whenever it passed within arm's reach of his centre. He can now only be hit by it: a ball whose path crosses his body comes off it and is recorded as a deflection off his body, not a play on the ball. Per 100 targets (two seeds × 8 games, engine-38): PBU 13.9 → 11.6, deflections 3.5 → 4.4; completion and yards an attempt within noise. Full suite on develop + #617: 4320 pass with the two known research failures.
+
+## engine-39: the catch contest on: `CATCH_HANDS`, `LOOK_ONCE`, `CATCH_SECURE`, `DRIVE_CATCH` (2026-11-12)
+
+Coverage #590 (C14 in [GAPS](GAPS.md): completion barely depended on how open the receiver was). Built at engine-30 and parked until defenders arrived in phase, which `CUSHION_BREAK` (engine-36) gave them.
+
+- **`CATCH_HANDS`**: the catch is a contest of both players' hands. A defender within reach of the receiver's arm (shoulder to ball) with his own hand to the ball, seeing it, plays it; the receiver no longer has first claim.
+- **`LOOK_ONCE`**: whether a defender finds the ball is settled once per look, not re-rolled every tick.
+- **`CATCH_SECURE`**: a won catch opens a securing window whose length comes from the receiver (hands, the difficulty of the catch); the ball is pinned to his hands and each defender arriving in the window gets one resolution from what he delivers, a hand to the ball or a hit; a dislodged ball is live.
+- **`DRIVE_CATCH`**: once the ball is in the receiver's hands, a defender who has found it drives at the man, not at the ball's old path.
+
+Coverage, engine-36. Forced outside go at about 41 yd (268 throws paired to the release), completion by the nearest defender at arrival, off → on (NFL go balls 15+ yd): under 1 yd 0.39 → 0.17 (0.16); 1–2 yd 0.50 → 0.52 (0.28); 2–3 yd 0.61 → 0.65 (0.37); 3+ yd 0.59 → 0.60 (0.49). Against Cover 1 0.67 → 0.51. Securing windows with a defender's try: 32 of 149, 15 knocked loose (6 of 244 before the hip-turn work). Games, completion by openness at the release (NFL): tight 58 → 53% (28); mid 64 → 53% (53); open 73 → 71% (76).
+
+Watch: mid-openness passes defended 18 → 28% (NFL 15%). `scripts/diag/risk/mid-pbu.ts` shows the added ones are `CATCH_HANDS` / `CATCH_SECURE` hand plays by the nearest defender 0.4–0.9 yd from the target with the ball within his reach on 16 of 17; `LOOK_ONCE` adds none. Part of the gap is the NFL's narrower label.
+
+Checks on the candidate (`34d4d38c`, on engine-38): full suite 4311 pass with the two known research failures; fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm, all four `0` against all four `1`:
+
+| seed | completion | INT rate | 3rd-down conversion | punts a team-game | yards an attempt | YAC a reception | sack rate | points a team-game |
+|---|---|---|---|---|---|---|---|---|
+| 11 | 65.6 → 60.1% (moved) | 3.0 → 2.1% (moved) | 41.4 → 34.8% (moved) | 3.97 → 5.28 (moved) | 9.72 → 9.99 | 7.86 → 9.07 (moved) | 3.0 → 4.4% (moved) | 36.6 → 37.9 |
+| 23 | 68.2 → 63.8% (moved) | 2.6 → 2.1% | 40.4 → 36.4% | 4.69 → 5.00 | 10.01 → 9.59 | 7.79 → 8.10 | 4.0 → 2.7% (moved) | 34.5 → 38.6 |
+
+Completion falls four to five points on both seeds, into the NFL band (60.59–68.09%), with third downs and punts following. Points do not fall (neither seed resolved): yards an attempt hold because the completions that remain are the open ones, which is also why YAC a reception rises (a composition effect: the contested short catches that used to count are now incompletions). The two seeds disagree on sacks. Holding calls rose on seed 11 (1.16 → 1.69 a team-game).
+
+Still open at the catch: the trailing defender at 1–2 yd changes nothing (0.50 → 0.52 against 0.28), because he can only play a ball that reaches his own envelope, not the receiver's hands ("play the hands", in work); and tight throws overall still complete about twice as often as the NFL's.
 
 ## engine-38: `BLOCK_SEEN` and `RELEASE_THROUGH` on (2026-11-12)
 
