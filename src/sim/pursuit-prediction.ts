@@ -13,7 +13,7 @@ export type PursuitPredictionRecord = {
     capacity: { vmax: number; tau: number; brake: number; lateral: number } };
   observed: Perceived;
   older: Perceived;
-  forecast: { model: 'fixed-observed-heading-relaxing-speed'; heading: Vec2; initialSpeed: number;
+  forecast: { model: 'fixed-observed-heading-relaxing-speed' | 'front-upfield-line'; heading: Vec2; initialSpeed: number;
     acceleration: number; speedLimit: number; targetBrake: number; targetSprintTau: number;
     relaxedSpeed: number; relaxationTime: number; lateralBoundary: [number, number] };
   timeBias: number;

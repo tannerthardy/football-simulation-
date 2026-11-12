@@ -107,11 +107,35 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // speed throughout the horizon. Reassess as new motion becomes visible.
   const tau = 0.3 + 0.3 * a.r('anticipation');
   const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
-  const path = (t: number): Vec2 => {
+  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+  let path = (t: number): Vec2 => {
     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
-  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+  let model: 'fixed-observed-heading-relaxing-speed' | 'front-upfield-line' = 'fixed-observed-heading-relaxing-speed';
+  if (FRONT_ANGLE) {
+    // A pursuer with the runner in front of him keeps him there: he cuts off
+    // the runner's best upfield line, inside-out, and leaves him the boundary.
+    // That line, from the runner's seen position and motion: his crossing
+    // motion carries only as long as he needs to brake it, then he runs
+    // upfield, building from his seen upfield speed. Re-aimed with every new
+    // picture, so a runner who declares or cuts back is followed at the
+    // pursuer's own delay.
+    const up = sim.attackDir(target.team);
+    const ahead = (a.pos.x - seen.pos.x) * up;
+    const upSpeed = seen.vel.x * up;
+    if (ahead > reach && upSpeed > -1) {
+      const vy = seen.vel.y, stop = Math.abs(vy) / Math.max(0.5, target.profile.brake);
+      const U = clamp(Math.max(V, upSpeed), 0, target.profile.vmax);
+      model = 'front-upfield-line';
+      path = (t: number): Vec2 => {
+        const tl = Math.min(t, stop);
+        const lateral = vy * tl - Math.sign(vy) * 0.5 * target.profile.brake * tl * tl;
+        const d = U * t - (U - Math.max(0, upSpeed)) * tau * (1 - Math.exp(-t / tau));
+        return { x: seen.pos.x + up * d, y: clamp(seen.pos.y + lateral, 0, FIELD_WIDTH) };
+      };
+    }
+  }
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
   const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
@@ -134,7 +158,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     estimateAppliesTo: 'sampled-point-before-bias-and-leverage', steeringPointEstimate: 'not-evaluated',
     pursuer: { position: mover.pos, velocity: mover.vel, speedScale: mover.speedScale,
       capacity: { vmax: a.profile.vmax, tau: a.profile.tau, brake: a.profile.brake, lateral: a.profile.lateral } }, observed: seen, older,
-    forecast: { model: 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
+    forecast: { model, heading, initialSpeed: sp, acceleration,
       speedLimit: target.profile.vmax, targetBrake: target.profile.brake, targetSprintTau: target.profile.tau,
       relaxedSpeed: V, relaxationTime: tau, lateralBoundary: [0, FIELD_WIDTH] },
     timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
@@ -142,6 +166,9 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 }
 
 const angleBias = new WeakMap<Agent, number>();
+/** Experimental, off: a pursuer with the runner in front of him cuts off his
+ * upfield line (see pursuitPoint). */
+const FRONT_ANGLE = process.env.FRONT_ANGLE === '1';
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
