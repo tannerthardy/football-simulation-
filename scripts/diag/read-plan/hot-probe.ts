@@ -16,7 +16,7 @@ for (const key of ['sink', 'jump'] as const) for (let seed = 1; seed <= 6; seed+
   const cb = sim.defense.find((d: any) => d.slot === 'CB_S'), orig = cb.behavior;
   cb.behavior = { kind: orig.kind, update: (a: any, s: any) => s.t < 0.6 ? orig.update(a, s)
     : goTo(a, key === 'sink' ? { x: s.los + 15 * dir, y: s1.pos.y } : { x: s.los + 3 * dir, y: s2.pos.y + 3 * ss }, { speed: 0.95 }) };
-  let qb: any = null, target: any = null, rushIn: number | null = null;
+  let qb: any = null, target: any = null, rushIn: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const air = sim.ball.kind === 'air';

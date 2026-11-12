@@ -49,7 +49,8 @@ for (const c of concepts) for (const formation of ['gun_doubles_11', 'gun_trips_
       int: !!s.interceptedBy || r.events.some((e: any) => e.type === 'interception'), yards: +r.yards.toFixed(2), air: s.airYards ?? null,
       intBy: s.interceptedBy ? sim.defense.find((d: any) => d.player.id === s.interceptedBy)?.slot ?? s.interceptedBy : null,
       keyRead: qb?.keyRead ?? null, keyT, keyDefSlot: qb?.keyRead?.defender ? sim.defense.find((d: any) => d.player.id === qb.keyRead.defender)?.slot ?? null : null,
-      reads: qb?.reads?.map((a: any) => sim.offAlign.refOf[a.slot] ?? a.slot) ?? null, arr, sackAt, pressured: !!s.pressured }));
+      reads: qb?.reads?.map((a: any) => sim.offAlign.refOf[a.slot] ?? a.slot) ?? null, arr, sackAt, pressured: !!s.pressured,
+      alarmAt: qb?.alarmAt ?? null, hot: qb?.hotPick ? { ...qb.hotPick, ref: sim.offAlign.refOf[qb.hotPick.slot] ?? qb.hotPick.slot } : null }));
   }
 writeFileSync(`out/read-plan/panel-${arm}.jsonl`, rows.join('\n') + '\n');
 console.log(`${arm}: ${rows.length} plays`);

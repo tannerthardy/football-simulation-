@@ -227,6 +227,10 @@ export class QBPass implements Behavior {
   private readonly dropY: number;
   private reads: Agent[] = [];
   private readIdx = 0;
+  /** Diagnostics only (no effect on play): the first hot alarm, the hot path's source and its pick. */
+  alarmAt: number | null = null;
+  private hotSrc: 'plan' | 'best' = 'best';
+  hotPick: { t: number; slot: string; alarmAt: number | null; src: 'plan' | 'best'; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
   private readStart = -1;
   private setAt = -1;
   private pending: ThrowEval | null = null;
@@ -708,8 +712,17 @@ export class QBPass implements Behavior {
 
     // Hot / panic: under imminent pressure, find anything.
     if (pressure.time < 0.45) {
+      this.alarmAt ??= sim.t;
       const hot = this.hotThrow(a, sim);
-      if (hot) return this.startThrow(a, sim, hot);
+      if (hot) {
+        // Diagnostic record (no effect): the hot throw's source, whether it went to the read he was on, and how far
+        // his facing and his gaze were from it.
+        const bearing = Math.atan2(hot.point.y - a.pos.y, hot.point.x - a.pos.x), gaze = this.gazePoint(sim);
+        const off = (ang: number) => Math.abs(Math.atan2(Math.sin(ang - bearing), Math.cos(ang - bearing))) * 180 / Math.PI;
+        this.hotPick = { t: sim.t, slot: hot.target.slot, alarmAt: this.alarmAt, src: this.hotSrc, onRead: hot.target === this.reads[this.readIdx],
+          facingOff: off(a.body.facing), gazeOff: off(Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x)), P: hot.P, intRisk: hot.intRisk };
+        return this.startThrow(a, sim, hot);
+      }
       if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
       // Veterans throw it away (or at a back's feet) rather than eat a sack.
       if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
@@ -748,8 +761,9 @@ export class QBPass implements Behavior {
     // key's answer); the instant best of everything otherwise. FREE_BOUND's free-rusher count will feed the trigger.
     if (HOT_PLAN && READ_PLAN && this.plan) {
       const ans = this.planAnswer(a, sim, 1);
-      if (ans && ans.P > 0.3 && ans.intRisk < 0.18) return ans;
+      if (ans && ans.P > 0.3 && ans.intRisk < 0.18) { this.hotSrc = 'plan'; return ans; }
     }
+    this.hotSrc = 'best';
     const best = this.bestOption(a, sim, 1);
     return best && best.P > 0.3 && best.intRisk < 0.18 ? best : null;
   }
