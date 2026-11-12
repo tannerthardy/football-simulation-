@@ -489,3 +489,159 @@ Ball to seam / go / back, time to throw p50, and the share of plays with a seam 
    - sacks 118 → 98.
 
 These are diagnostic flags to look at, not targets.
+
+### The outside go: why ours rarely throws it (four-verts follow-up)
+
+**NFL** (`nfl.py`, GO targets from the widest alignment on 3+ GO drop-backs, n 69):
+
+| | p25 / p50 / p75 |
+|---|---|
+| Time to throw | 2.30 / 2.74 / 3.30 s (Cover 1: 2.30) |
+| Air yards | 16 / 25 / 31 |
+| Separation at the throw | 1.32 / 1.75 / 3.04 yd (Cover 1: 1.25) |
+
+Completion is .232 and INT .043. These are contested deep balls thrown on purpose.
+
+**Ours** (`go-eval.ts`, READ_PLAN off, engine-34): the QB's evaluation of each outside go every 0.1 s, split into its
+terms. At NFL-like moments (2.3–3.0 s, separation 1.0–2.5 yd, n 658):
+
+| | p25 / p50 / p75 |
+|---|---|
+| Receiver depth | 6.7 / 7.4 / 11.1 yd |
+| Ahead of his nearest defender | −1.71 / −1.23 / −0.90 yd (trailing; 5 of 658 samples even or ahead) |
+| P | .10 / .14 / .24 |
+| pAcc | .26 / .52 / .66 |
+| pOpen | .22 / .30 / .94 |
+| pClear | 1.00 |
+| Interception risk | .01 / .18 / .36 (cap about .04) |
+
+P = pAcc × pOpen × pClear × hands. Only .03 of samples clear both his bar (about .56) and the risk cap, yet his own
+value is positive on .35.
+
+By coverage, 2.3–3.0 s:
+
+| Coverage | Depth | Ahead | pAcc | pOpen | Interception risk | Value > 0 |
+|---|---|---|---|---|---|---|
+| Cover 1 | 6.8 yd | −0.9 yd | .60 | .25 | .30 | .21 |
+| Cover 3 | 12.7 yd | −4.6 yd | .25 | .69 | | .49 |
+| Cover 4 | 12.3 yd | −3.2 yd | .27 | .83 | .03 | .76 |
+
+**Two separable causes, neither READ_PLAN's:**
+
+1. **In man, the go route is not even with the corner** at throw time (6.8 yd deep, trailing by 0.9 yd): a release
+   and stem question for ROUTE_CRAFT and PRESS_RELEASE.
+2. **The throw gate (P ≥ about .56) excludes a contested deep shot by design.** His deep accuracy alone caps a
+   25-yard go near .25, and he does not throw even when his own value formula is positive. That belongs to the risk
+   work: a value-judged deep shot. First check `missSigma` at 35–40 yd against NFL deep-ball accuracy.
+
+## BACK_FRONT (off): the back read with the front side (engine-35)
+
+**Sheets:** where a HonestNFL order lists the back at all (10 of 54 orders with 2+ reads), he comes after the front
+side's 2–3 reads (drive 133/166/172/173, post-cross 107, y-cross 039/134, four verts 001). He is a reset, not a read
+after the other side too.
+
+**NFL:** on drop-backs with fewer than 2 GO and the back running a route, the back gets .221 of targets, thrown at
+2.13 / 2.60 / 3.06 s (p25 / p50 / p75). That is in rhythm: all throws on those plays leave at 2.57 s.
+
+**Change:** in `pure()` the back's side for reading is the start side, so he is read within the front side at his
+window, before the eyes cross.
+
+**Paired forced-concept panel** (engine-35, 1,536 plays a side):
+
+| | engine-35 | BACK_FRONT |
+|---|---|---|
+| Back share, all concepts | .122 at 3.35 s | .241 at 2.90 s |
+| Back share, non-vertical concepts | .098 at 3.40 s | .240 at 2.80 s |
+| Sacks | 74 | 61 |
+| INT | 37 | 33 |
+| Yards a play | 9.46 | 9.30 |
+| Completion | .655 | .632 |
+
+**16 league games** (`back-probe.ts`):
+
+| | engine-35 | BACK_FRONT |
+|---|---|---|
+| Back share | .163 at 2.85 s | .230 at 2.70 s |
+| In-rhythm back throws | 234 at 2.80 s | 332 at 2.60 s |
+| Sacks per drop-back | .018 (29) | .019 (30) |
+| Free first pressure | .108 | .106 |
+| (c) out, open and unread | .253 | .182 |
+
+**Gate** (.221 at 2.60 s on these concepts; sacks no higher than engine-35): met. The panel's non-vertical back
+share is .240 at 2.80 s, and in league games the in-rhythm throws to him leave at 2.60 s. Sacks are lower on the
+paired panel and level in games.
+
+**Cost:** 0.16 yards a play on the panel. The checkdown replaces some longer throws, and completion is a little
+lower.
+
+**Fixture:** `test/back-front.test.ts`.
+
+## The throw window against what happened: the risk-model diagnosis (engine-35)
+
+`scripts/diag/read-plan/window-probe.ts` is diagnosis only; the fix belongs to the risk work.
+
+**Setup.** At the moment he decides to throw, the probe recomputes the window's terms for every defender exactly as
+`window()` does:
+
+- where the QB thinks the man is;
+- **blind:** the time the window assumes a defender keeps his course before reacting;
+- **reaction:** his reaction time, ×1.8 for a defender not facing the QB;
+- **run:** the defender's time to reach the catch point (`timeToReach`);
+- the ball's arrival.
+
+It then records what each defender did: when he broke toward the catch point, and when he got within reach of it.
+The run covers the forced-concept panel, seeds 1–4: 2,048 plays and 1,903 throws, of which 1,748 left the hand on
+the decision, with no pump. There were 43 interceptions; every interceptor was among the four defenders the window
+rated closest.
+
+**Comparison.** The interceptor against the closest defender on 1,187 non-intercepted throws whose predicted margin
+lay in the interceptors' p10–p90 band (+0.11 to +0.76 s). Values are p25 / p50 / p75; "actual − predicted" is
+negative when the defender was early.
+
+| | Interceptor (n 43) | Matched, no INT (n 1,187) |
+|---|---|---|
+| Predicted margin (his arrival − the ball's) | +0.23 / +0.36 / +0.59 s | +0.31 / +0.45 / +0.59 s |
+| The QB's picture of him: error | 0.11 yd | 0.16 yd |
+| Facing the QB | .74 | .68 |
+| **Start:** predicted (blind + reaction) | 0.38 / 0.43 / 0.60 s | 0.37 / 0.38 / 0.58 s |
+| Start: actual break | 0.05 / 0.20 / 0.60 s | 0.05 / 0.45 / 1.05 s |
+| **Start: actual − predicted** | **−0.38 / −0.32 / +0.23 s** | −0.34 / +0.07 / +0.66 s |
+| **Run: actual − predicted** | **−0.88 / −0.44 / −0.01 s** | −0.55 / −0.24 / +0.17 s |
+| Total: actual reach − predicted | −0.70 / −0.56 / −0.34 s | −0.59 / −0.26 / +0.16 s |
+| Reached the catch point by the ball's arrival | .35 | .12 |
+| Achieved speed on the run (vmax about 9.7) | 4.2 yd/s | 5.0 yd/s |
+
+**Split by where the ball was picked:**
+
+| | At the catch point (n 22) | On the path, before the catch point (n 21) |
+|---|---|---|
+| Start error p50 | −0.23 s | −0.33 s |
+| Facing the QB | .86 | .62 |
+| The QB's P / intRisk | .69 / .03 | .70 / .03 |
+
+**Which term carries the error:**
+
+1. **The start, about −0.3 s.** Interceptors break about 0.20 s after his decision, inside the 0.37 s windup. The
+   window has them start at 0.43 s: blind plus reaction, which for a defender facing him is the THROW_REACT
+   assumption (zone keys the motion start plus a reaction, man waits for the release).
+   - On the matched clean throws the start is right on average (+0.07 s), so the window is calibrated for a typical
+     defender.
+   - It is wrong for the ones who jump the throw: they read him (engine-35's defenders read the QB they see) and
+     go during the motion.
+   - This matches Defense's question of whether NFL defenders move off the throwing motion before the release.
+2. **The run, −0.44 s for interceptors against −0.24 s for matched throws.** `timeToReach` is conservative for
+   everyone, by about 0.24 s. For an interceptor the error doubles, partly because a man who broke early already
+   has speed when the window's model has him starting.
+   - Measuring to within reach + 0.3 yd of the catch point understates the defenders who undercut the path (21 of
+     43 never reached the point).
+3. **Not the picture.** He sees the interceptor within 0.11 yd. Facing or not changes little: three quarters
+   were facing him.
+
+**For the risk work.** The window's reaction model treats every facing defender alike. The defenders who intercept
+are the ones who start during the windup, about 0.3 s early, and arrive about 0.5 s sooner than the window says.
+The candidate fix is a reaction term that reflects defenders reading the QB's eyes and shoulders. A blanket
+reduction would mis-price every throw, since the window is calibrated for the typical defender. Two things should
+be checked first:
+
+- Defense's NFL measurement (do defenders move before the release?), which decides how early is real;
+- the 0.24 s conservative run, which is common to all throws.

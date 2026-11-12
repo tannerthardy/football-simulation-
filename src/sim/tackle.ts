@@ -50,6 +50,8 @@ export interface TackleBond {
   holds?: Map<Agent, GraspJoint>;
   /** Execution draw for each hold (median 1): technique and footing on this rep. */
   execution?: Map<Agent, number>;
+  /** HOLD_SINK: since when each tackler's hold has held without slipping, s. */
+  sink?: Map<Agent, number>;
   /** Tacklers holding with one arm (ONE_ARM_HOLD): a grab with the arm a
    * blocker did not control. One hand on the man, no locked wrap, until his
    * body closes on the carrier and the second arm can come around. */
@@ -527,6 +529,29 @@ export function gripReach(rng: { normal(m: number, s: number): number }, engaged
  * travel in proportion to his grip, and an upper grip sits at the height his
  * hands hold (shoulder line to waist). */
 const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
+/** Experimental (HOLD_SINK=1, off): sink and drag. Beside or behind the runner
+ * (the existing side/rear branch: the runner is not running into him), once
+ * his hold is not slipping he stops running with the man: he asks to stop
+ * along the runner's path and leans against the load (push), so his weight and
+ * his feet's friction act against the runner instead of his legs adding to the
+ * pair's momentum. Holding is not running with him: from the grasp his
+ * request along the runner's path never exceeds the speed he already has there
+ * (no delay: it is what his body does when it grabs, not a read of the
+ * carrier). The committed sink is executed by skill: once his hands have held
+ * (not slipping, read from his own hands) for his reaction time, longer for a
+ * poor tackler (he has to know he has him), he commits as fully as his
+ * tackling lets him (a poor one keeps half running). Until then, and while his
+ * grip slips, HOLD_FINISH's request under that cap. Third design (2026-11-12):
+ * attempts 1-2 left HOLD_FINISH's target, a speed to accelerate to, in charge
+ * during the recognition delay. The World
+ * decides the rest: a grip too weak for the anchor is torn off (a broken
+ * tackle), and a holder already off his base regains it or hangs as the
+ * physics has him; nothing forces a stance. Off, HOLD_FINISH commits his
+ * weight by grip security, which ramps from the hold's quality, so when the
+ * load arrives he still runs with the man at about half his speed (34 fast
+ * game wraps: median 55% over the first 0.3 s; side-wrap-bench.mts: asking to
+ * stop ends a side wrap in 2.5 yd and 0.5 s, running with him 3.7 yd). */
+const HOLD_SINK = process.env.HOLD_SINK === '1';
 /** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
  * the way he is being carried, not square to the runner every tick. */
 const HOLD_FACING = process.env.HOLD_FACING !== '0';
@@ -665,7 +690,28 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // gives with it and keeps his feet with the runner instead of sitting:
       // a trailing man who grabs a runner going by would otherwise sit while
       // being ripped through his hands. He sits again once it holds.
-      if (HOLD_FINISH && cs > 0.5) {
+      if (HOLD_SINK && cs > 0.5) {
+        // Sink and drag: once his hands have held (not slipping) for as long
+        // as it takes him to know he has the man -- his reaction time, longer
+        // for a poor tackler -- he commits as fully as his tackling lets him
+        // sink. Until then: his weight by his grip's security; while the grip
+        // slips he gives with it (commitment 0).
+        const since = (bond.sink ??= new Map());
+        if (joint.slipping) since.delete(d); else if (!since.has(d)) since.set(d, t);
+        const knows = since.has(d) && t - since.get(d)! >= d.profile.reactionTime * (1.5 - d.r('tackling'));
+        const full = 0.6 + 0.4 * d.r('tackling');
+        const commit = joint.slipping ? 0 : knows ? Math.max(full, clamp(next, 0, 1)) : clamp(next, 0, 1);
+        const ux = c.vel.x / cs, uy = c.vel.y / cs;
+        // Holding is not running with him: from the grasp his request along
+        // the runner's path never exceeds the speed he already has there.
+        // (HOLD_FINISH's request, the runner's speed x (1 - grip security), is
+        // a target he would accelerate to after a grab from beside or from a
+        // slower trail.) Across the path he stays tight to the hold.
+        const own = Math.max(0, d.vel.x * ux + d.vel.y * uy);
+        // Sunk (he knows he has him): his own speed less what he commits.
+        const along = knows && !joint.slipping ? Math.min(own, cs) * (1 - commit) : Math.min(own, cs * (1 - commit));
+        vel = { x: ux * along + tx * close, y: uy * along + ty * close };
+      } else if (HOLD_FINISH && cs > 0.5) {
         const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
         vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
       }

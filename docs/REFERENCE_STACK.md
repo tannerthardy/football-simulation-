@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-36`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-37`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-37: `BACK_FRONT` on, the back is read with the front side (2026-11-12)
+
+Rules + Coaching #605, a follow-up inside `READ_PLAN`. In a pure progression the back is read with the start side at his window, before the quarterback's eyes cross the field, as the playbook sheets list him (a reset to the back after the front side's two or three reads) and as NFL tracking shows (on dropbacks without two go routes where the back runs a route he gets 22.1% of targets at a median 2.60 s, the same time as other throws on those plays).
+
+Rules + Coaching, paired forced-concept panel on engine-35, 1,536 plays an arm: back share on non-vertical concepts 9.8% at 3.40 s → 24.0% at 2.80 s; sacks 74 → 61; INT 37 → 33; yards a play 9.46 → 9.30 (a checkdown taken on time replaces some longer throws). 16 league-sampled games: back share 16.3% at 2.85 s → 23.0% at 2.70 s; back out, open and never read 25.3 → 18.2% of dropbacks; sacks a dropback 1.8 → 1.9%.
+
+Checks on the candidate (`0fc0c534`, on engine-36, run together with `FREE_BOUND`): full suite 4306 pass with the two known research failures; fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm, `BACK_FRONT` 0 against 1 with `FREE_BOUND` on in both arms:
+
+| seed | yards an attempt | pass TD rate | INT rate | YAC a reception | time to throw | sack rate | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 9.36 → 9.89 | 8.5 → 8.1% | 2.2 → 2.9% (moved) | 7.51 → 8.43 (moved) | 2.61 → 2.55 (moved) | 1.5 → 0.9% (moved) | 37.9 → 36.7 |
+| 23 | 10.24 → 9.41 (moved) | 9.6 → 7.9% (moved) | 2.7 → 2.5% | 8.11 → 7.66 | 2.60 → 2.59 | 1.1 → 0.8% | 38.1 → 34.5 |
+
+The two seeds disagree on yards, YAC and interceptions; points fall on both. Those cards were not run with `FREE_BOUND` off, the configuration promoted here; the lane's engine-35 reads above are that configuration.
+
+**`FREE_BOUND` held** (Flex; the quarterback's felt time for an unblocked rusher within 3 yd is bounded by how soon that man could hit him). Same run, `FREE_BOUND` 0 against 1 with `BACK_FRONT` on: sack rate 4.2 → 0.9% and 3.5 → 0.8% (both moved), time to throw 2.70 → 2.55 and 2.71 → 2.59 s (both moved), completion and yards an attempt not resolved. The perception is right, but a sack rate under one percent says nothing else in the engine produces sacks: the rush wins late and a pressured throw costs too little. Held until that is diagnosed. `BLOCK_SEEN` (the same lane's blocked-rusher perception) is also still off.
 
 ## engine-36: `CUSHION_BREAK` on, deep zone defenders carry a vertical instead of turning and running (2026-11-12)
 
