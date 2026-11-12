@@ -838,7 +838,7 @@ const DRIVE_CATCH = process.env.DRIVE_CATCH !== '0';
  * request turned 99 deg off his run and his speed toward the catcher fell
  * 3.5 -> 2.0 yd/s just as the catcher started to move (settled catches 3-10 yd,
  * engine-42, settletrace.mts; NFL defenders hold +3.5 at +0.4 s). */
-const CATCH_CARRY = process.env.CATCH_CARRY === '1';
+const CATCH_CARRY = process.env.CATCH_CARRY !== '0';
 /** CATCH_CARRY: the receiver each defender was driving on, and when. */
 const catchDrive = new WeakMap<Agent, { receiver: Agent; t: number }>();
 /** CATCH_CARRY: how near the receiver (as he sees him) a defender must be to be "on" him (yd). */

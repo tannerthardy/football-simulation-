@@ -18,7 +18,7 @@ import type { PlaySim } from './playsim.js';
 import type { Vec2 } from '../core/vec.js';
 import { FIELD_WIDTH } from '../core/field.js';
 
-export const CATCH_CHOICE = process.env.CATCH_CHOICE === '1';
+export const CATCH_CHOICE = process.env.CATCH_CHOICE !== '0';
 /** He wants the ball to beat the defender to the point by this much (s) before he trusts a later point. */
 export const CHOICE_CUSHION = 0.1;
 /** The lowest ball he plans to catch in stride, as a share of his height: his hands carried at his shoulders while

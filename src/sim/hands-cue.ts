@@ -16,7 +16,7 @@
  * this state). */
 import type { Agent } from './agent.js';
 
-export const HANDS_CUE = process.env.HANDS_CUE === '1';
+export const HANDS_CUE = process.env.HANDS_CUE !== '0';
 /** When each receiver's hands came up for the ball in flight to him (sim time). */
 const handsUp = new WeakMap<Agent, number>();
 

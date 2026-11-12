@@ -66,7 +66,7 @@ const CATCH_HANDS = process.env.CATCH_HANDS !== '0';
  * running than a flat ball across his face). Ball tracking softens it; it enters the difficulty through hands like the
  * other terms. Estimated stand-in, calibrated to the NFL's fall in completion with speed on well-placed balls with no
  * defender within 2 yd (catch_speed.py); what replaces it is a physical model of hands and eyes at speed. */
-export const CATCH_SPEED = process.env.CATCH_SPEED === '1';
+export const CATCH_SPEED = process.env.CATCH_SPEED !== '0';
 /** Estimated: the NFL's loss from a slow to a running catch on balls from behind with no defender within 2 yd. */
 export const CATCH_SPEED_K = 0.37;
 /** Estimated second constant: a ball straight across his line, against one from behind. The NFL's pooled loss from a slow
