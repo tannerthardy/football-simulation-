@@ -41,7 +41,7 @@ def intercept_angle(dx, dy, cvx, cvy, s):
 
 for arg in sys.argv[1:]:
     name, paths = arg.split('=')
-    A = C.defaultdict(list); reach = C.defaultdict(list); rally = C.defaultdict(list)
+    A = C.defaultdict(list); reach = C.defaultdict(list); rally = C.defaultdict(list); approach = C.defaultdict(list)
     for path in paths.split(','):
         for line in gzip.open(path, 'rt'):
             raw = json.loads(line); raw = raw.get('common', raw); ev = raw.get('events', {})
@@ -82,6 +82,15 @@ for arg in sys.argv[1:]:
                     ia = math.degrees(ia) * side if ia is not None else None
                     A[(kind, g, geo, band)].append((aim, ia, s, (ia - aim) if ia is not None else None))
                 if first: reach[(kind, g, first[1], '2-5' if first[0] < 5 else '5-10' if first[0] < 10 else '10-25')].append(hit)
+                if hit is not None:
+                    # approach-speed curve of a defender who reached him: speed and closing at each distance before contact
+                    kh = k0 + round(hit / p.dt)
+                    for k in range(k0, kh + 1):
+                        (x, y), (cx, cy) = p.pos(d, k), p.pos(c, k)
+                        if x is None or cx is None: continue
+                        dist = math.hypot(cx - x, cy - y); vx, vy = p.velocity(d, k)
+                        b = next((lab for lab, lo, hi in (('1-2', 1, 2), ('2-3', 2, 3), ('3-5', 3, 5), ('5-8', 5, 8)) if lo <= dist < hi), None)
+                        if b: approach[(kind, b)].append(math.hypot(vx, vy))
             for m in (1.0, 2.0):
                 k = k0 + round(m / p.dt)
                 if k > kl or p.pos(c, k)[0] is None: continue
@@ -118,6 +127,9 @@ for arg in sys.argv[1:]:
                 if len(R) < 30: continue
                 got = [r for r in R if r is not None]
                 print(f"    {kind:4} {geo:8} {band:5} n {len(R):5}: {len(got) / len(R):4.0%}  {q(got, '{:.1f}')} s")
+    print('  approach speed of defenders who reached him, by distance to the carrier (yd/s, p25/p50/p75)')
+    for kind in ('run', 'pass'):
+        print(f"    {kind:4} " + ' | '.join(f"{b} yd {q(approach[(kind, b)], '{:.1f}')}" for b in ('5-8', '3-5', '2-3', '1-2')))
     print('  rally: defenders within 5 / 2 yd (mean), leverage of those within 5 yd (share), bearing spread p50')
     for kind in ('run', 'pass'):
         for m in (1.0, 2.0):
