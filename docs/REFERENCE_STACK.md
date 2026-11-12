@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-45`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-46`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-46: `ACC_BELIEF` on, he prices the throw he will actually release (2026-11-12)
+
+Rules + Coaching #638. Under heavy urgency (0.5–1) the quarterback believed he would be off target 0.22 of the time; the release's own sigma implied 0.41 and 0.34 was observed. He decided on the urgency he felt at the decision (0.56) and released under 0.99, with a flick on 21%. His accuracy belief now uses the rush's urgency at the release (not scaled by pocket presence, which stays on his bar) and anticipates a flick when his own picture of the nearest rusher's time to contact, less the windup, is under 0.15 s; the priced urgency is off both ways by (1 − know) × 0.25 × judgment.
+
+Rules + Coaching, 16 league games an arm on engine-45: off target at urgency 0.5–1, predicted / observed 0.23 / 0.37 → 0.25 / 0.31; with a free rusher at 2 yd he throws 64 → 60% (NFL 57), is sacked 23 → 20% (25), scrambles 10 → 14% (17). The game totals swing within noise by base; the calibration row and the paired panel (165 plays change, interceptions 34 → 34) agree on every base. A smaller high-urgency gap remains (0.25 against 0.31).
+
+Checks on the candidate (`1b13d1d0`): full suite 4335 pass; besides the two known research failures, the `hot-look` panel's "off" case failed because with `ACC_BELIEF` on he no longer makes the two hot throws more than 60° from his eyes (one no longer clears his bar, one goes to a man 10° off); restated to "outside his clear look" (over 30°) in #641. Fixed run set unchanged (3.88). Paired league scorecards, 16 games an arm:
+
+| seed | points a team-game | yards an attempt | completion | sack rate | INT rate |
+|---|---|---|---|---|---|
+| 11 | 35.4 → 31.9 | 9.42 → 8.80 | 66.0 → 64.7% | 4.5 → 5.4% | 1.5 → 2.3% |
+| 23 | 30.5 → 26.9 (moved) | 8.63 → 8.22 | 66.2 → 64.4% | 5.3 → 5.0% | 1.6 → 2.4% |
+
+Points fall about 3.5 and yards an attempt 0.4–0.6 on both seeds; interceptions rise 0.8 on both (neither resolved alone). The interception side is the next item in the same lane: his interception belief has the right total and a flat-to-inverted ranking (throws he rates under 0.5% risk are picked 1.2% of the time; those he rates over 5%, 1.1%).
+
+`FREE_BOUND` on top, 16 games an arm: seed 11 sack rate 5.4 → 2.1% (moved), points 31.9 → 37.9 (moved); seed 23 sack rate 5.0 → 2.4% (moved), INT 2.4 → 1.4% (moved), points 26.9 → 29.7. Still held: it halves sacks on both seeds. What it lacks is the no-throw branch (`EXTEND`) and a pass rush whose free rushers arrive as the NFL's do (the edge work in Flex's lane).
 
 ## engine-45: `RELEASE_SEEN` on, a receiver releases around whoever he sees (2026-11-12)
 

@@ -251,6 +251,15 @@ const HOT_LOOK = process.env.HOT_LOOK !== '0';
  * belief of how much is right on average and spread both ways by inexperience (decision-making and experience).
  * Calibrated on engine-40's defense (ARRIVE_LEAD, CUSHION_BREAK on): re-read when the defense changes. */
 const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
+/** ACC_BELIEF (experimental, off; ACC_BELIEF=1 turns it on): his belief of his own accuracy prices the throw he will
+ * release. Off, the window's miss (missSigma) uses his decision's urgency, which is scaled down by pocket presence
+ * and taken from the rush as it is now; the release uses the rush as it is at the release, unscaled, and a throw the
+ * rush reaches is a flick. Under pressure (u 0.5-1 at the decision) that put his believed off-target at 0.22 against
+ * the release's own 0.41 and 0.34 observed (docs/reviews/2026-11-12-accuracy-belief.md). On: the window's miss uses
+ * the urgency the rush will have when the ball leaves (his picture of it, closed over the windup), unscaled (pocket
+ * presence stays on his bar), and expects a flick when the rush arrives before the release; how well he anticipates it
+ * is set by his knowledge (decision-making and experience), with error both ways. */
+const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
@@ -1271,7 +1280,13 @@ export class QBPass implements Behavior {
     const aimed = at(point);
     const { pOpen, pClear } = aimed;
     const dist = Math.hypot(point.x - from.x, point.y - from.y);
-    const sigma = this.missSigma(a, sim, dist, urgency);
+    let sigma: number;
+    if (ACC_BELIEF) {
+      // The rush as it will be when the ball leaves his hand, and a flick if it is on him by then.
+      const pr = this.pressure(a, sim), atRelease = pr.time - wind;
+      const uRel = clamp(clamp((0.9 - atRelease) / 0.7, 0, 1) + (1 - know) * 0.25 * a.mind.judgment('acc-urgency'), 0, 1);
+      sigma = this.missSigma(a, sim, dist, uRel) * (1 + 0.8 * clamp((0.15 - atRelease) / 0.3, 0, 1));
+    } else sigma = this.missSigma(a, sim, dist, urgency);
     const pAcc = Math.exp(-(sigma * sigma) / (2 * 1.35 * 1.35));
     // He knows his own accuracy: the ball can land anywhere in his miss, and an
     // errant ball is the one a defender can pick. Its risk is averaged over the
