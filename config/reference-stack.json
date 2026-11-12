@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-35",
+  "id": "engine-37",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -29,6 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
+    "BACK_FRONT": "on",
     "BACK_RELEASE": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
@@ -98,6 +99,7 @@
     "HIP_BRACE": "on",
     "HIP_STRENGTH": "on",
     "HOLD_FACING": "on",
+    "CUSHION_BREAK": "on",
     "HOLD_FINISH": "on",
     "HOLD_SINK": "off",
     "HANG_AIRBORNE": "off",

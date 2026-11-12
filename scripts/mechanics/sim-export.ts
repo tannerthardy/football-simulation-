@@ -102,7 +102,7 @@ export function commonPlay(p: PlayLog, id: string) {
   return {
     id, source: 'sim', kind: p.kind, yards: r2(p.yards),
     // slot: the play's job (FS, SS, NB, ...), not the roster position; operators choose deep defenders by it.
-    players: rp.players.map(a => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER', slot: a.slot })),
+    players: rp.players.map((a, i) => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER', slot: a.slot, route: p.routes?.[i] ?? null })),
     dt: 0.1, xy, bxy, ball_y: r2(Y(ball[1])), events, carrier,
     target: throwEv?.b ?? null,
     receiver,
