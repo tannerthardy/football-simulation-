@@ -169,6 +169,8 @@ export class QBPass implements Behavior {
    * put him between the low (0) and high (1) routes, and the throw it gave. */
   keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
   private triDone = false;
+  /** READ_PLAN vertical peek: when every vertical was 12 yd deep (the squeeze can show), -1 before. */
+  private peekDeclared = -1;
 
   /** Existing private state only; never evaluates a fresh throw window. */
   recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
@@ -552,8 +554,18 @@ export class QBPass implements Behavior {
       }
       if (pick) return this.startThrow(a, sim, pick);
       const held = t - this.readStart;
-      // A vertical peek is one look at the verticals; a triangle is held until its three have shown.
-      const done = this.plan!.peek ? held > dwell : (held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell;
+      // A vertical peek lasts until the deep defenders' squeeze can show: every vertical 12 yd or more downfield,
+      // then his processing time; while a vertical is close to his bar (winning, or about to) he stays on it, to
+      // two and a half looks. Nothing winning by then, he checks it down. A triangle is held until its three have
+      // shown.
+      let done: boolean;
+      if (this.plan!.peek) {
+        const dir = sim.attackDir(a.team);
+        if (this.peekDeclared < 0 && tri.every((r) => (r.pos.x - sim.los) * dir >= 12)) this.peekDeclared = t;
+        const processed = this.peekDeclared >= 0 && t - this.peekDeclared > 0.15 + 0.25 * (1 - a.r('decisionMaking'));
+        const close = tri.some((r) => { const e = this.ready(r, sim) ? this.evaluate(a, sim, r, u) : null; return !!e && e.P >= 0.85 * need && e.intRisk <= risk; });
+        done = (processed && !close) || held > 2.5 * dwell;
+      } else done = (held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell;
       if (done) {
         this.triDone = true;
         const after = this.reads.findIndex((r) => !tri.includes(r));
