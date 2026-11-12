@@ -942,3 +942,31 @@ inside-probe, anchored, all flags with the press:
 - The NFL crosser goes about 1 yd/s slower and is slowed further by the contact. Ours crosses as a free runner and
   outruns the tackle's feet.
 - So the next item is the one Integration ordered before help: the rusher's between-moves intent.
+
+## Re-diagnosis: what "inside" is (inside-cross.py with depth at the crossing; inside-probe.mts with the working side)
+
+| inside crossings, seed 201 x 8 | depth vs the tackle p25/50/75 | across his face (level or in front) → reaches the QB | behind him (around, then in) → reaches the QB |
+|---|---|---|---|
+| NFL | −0.60 / +0.60 / +1.00 | 66% → 20% | 34% → 39% |
+| ours off | −0.80 / +0.70 / +1.00 | 66% → 38% | 34% → 46% |
+| anchored, all flags | −1.70 / −1.50 / −1.20 | 7% → 58% | 93% → 65% |
+| kicking, all flags | −1.30 / −1.00 / +1.00 | 37% → 30% | 63% → 41% |
+
+The rusher's working side at the crossing (engaged), anchored with all flags:
+- inside 19%; never inside when the rep began; in 'power' 32%.
+- Yet 89% of his request points across toward the ball: after drawing level or past he aims at the QB.
+
+Off: inside 55%, inside at the rep's start 18%, power 64%.
+
+**Reading.**
+1. **Under TACKLE_ANCHOR, "inside" is mostly the corner.** 93% of the anchored tackle's inside losses come with the
+   rusher 1.5 yd deeper than him: beaten around, then turning in behind him. This is the cost Integration warned of
+   (settle against a speed rusher and you are run around). PAST_ALONG_PATH's ride does not keep him: the tackle is
+   within 1.2 yd at +0.5 s only 9% of the time. So the anchor is not yet a candidate. Its open questions are the
+   decision to stop kicking against speed and the ride's ability to stay on the hip.
+2. **Off, our crossings split like the NFL's** (66% across the face, 34% around). But across-the-face crossers reach
+   the QB 38% of the time against the NFL's 20%. They cross faster (about 4.0 against 3.8 yd/s) and are not slowed.
+   That is the rusher's between-moves request (0.8-1.0 of vmax at push 0.75 toward a corner or the QB), the item
+   ordered next.
+3. **Layer (ii) is closed** after two attempts. Neither the inside-half request nor the press changes the crossing,
+   because the crossings that matter under the anchor are not across the face.

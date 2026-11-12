@@ -47,6 +47,10 @@ for (let s = first; s < first + games; s++) {
       for (const pr of pairs) {
         const { tk, d, out } = pr;
         const width = out * (d.pos.y - tk.pos.y);
+        if (pr.startSideIn === undefined && d.engagement && d.engagement.blocker === tk) {
+          const ax = { x: qb.pos.x - d.pos.x, y: qb.pos.y - d.pos.y }, L = Math.hypot(ax.x, ax.y) || 1;
+          pr.startSideIn = (ax.x / L) * d.engagement.side * (Math.sign(sim.ballY - tk.pos.y) || -out) > 0;
+        }
         const h = hist.get(pr) ?? []; h.push({ t: sim.t, lev: out * (d.pos.y - tk.pos.y) }); hist.set(pr, h);
         if (!pr.done && pr.was >= -0.3 && width < -0.3 && Math.hypot(d.pos.x - tk.pos.x, d.pos.y - tk.pos.y) < 2) {
           pr.done = true;
@@ -58,7 +62,10 @@ for (let s = first; s < first + games; s++) {
           const before = h.find((x) => x.t >= sim.t - 0.3) ?? h[0];
           const di = sim.intents[d.idx], ds = di ? Math.hypot(di.vel.x, di.vel.y) : NaN;
           const cross = di ? (di.vel.y * toBall) / Math.max(1e-6, ds) : NaN;   // share of his request toward the ball (across the tackle)
-          const row: any = { rReq: ds / d.profile.vmax, rPush: di?.push ?? NaN, rCross: cross, rAch: Math.hypot(d.vel.x, d.vel.y), t: sim.t, engaged: !!e, move: e?.move ?? null, ok: e ? e.moveOk : null, live: e ? sim.t < e.moveUntil && e.moveOk : false,
+          // His working side: inside (toward the ball, across the tackle) or outside, and whether he was in power.
+          const lat = (() => { const ax = { x: qb.pos.x - d.pos.x, y: qb.pos.y - d.pos.y }, L = Math.hypot(ax.x, ax.y) || 1; return { x: -ax.y / L, y: ax.x / L }; })();
+          const sideIn = e ? (lat.y * e.side * toBall > 0) : null;
+          const row: any = { sideIn, startIn: pr.startSideIn ?? null, power: e ? (e.move === 'bull' || e.move === 'longarm') : null, rReq: ds / d.profile.vmax, rPush: di?.push ?? NaN, rCross: cross, rAch: Math.hypot(d.vel.x, d.vel.y), t: sim.t, engaged: !!e, move: e?.move ?? null, ok: e ? e.moveOk : null, live: e ? sim.t < e.moveUntil && e.moveOk : false,
             control: e?.control ?? NaN, ended: end && sim.t - end.t <= 0.3 ? end.why : null,
             latReq: (it?.vel.y ?? 0) * toBall, latAch: tk.vel.y * toBall, levBefore: before.lev,
             hands: !!j, N: j?.normalForce ?? 0, T: j?.tangentForce ?? 0, grip: j ? !!j.grip : null, help: null as any };
@@ -93,5 +100,7 @@ console.log(`  tackle lateral toward the ball: requested p50 ${q(R.map((r) => r.
 const J = R.filter((r) => r.hands);
 console.log(`  hands joint on ${pc(J.length, R.length)}: normal N p25/50/75 ${q(J.map((r) => r.N), .25).toFixed(0)}/${q(J.map((r) => r.N)).toFixed(0)}/${q(J.map((r) => r.N), .75).toFixed(0)} (compression > 50: ${pc(J.filter((r) => r.N > 50).length, J.length)}) | |T| p50 ${q(J.map((r) => Math.abs(r.T))).toFixed(0)} | grip ${pc(J.filter((r) => r.grip).length, J.length)} | control p50 ${q(R.filter((r) => r.engaged).map((r) => r.control)).toFixed(2)}`);
 console.log(`  rusher at the crossing: requests ${q(R.map((r) => r.rReq)).toFixed(2)} of his vmax (p25/75 ${q(R.map((r) => r.rReq), .25).toFixed(2)}/${q(R.map((r) => r.rReq), .75).toFixed(2)}), push ${q(R.map((r) => r.rPush)).toFixed(2)}, across the tackle (toward the ball) ${q(R.map((r) => r.rCross)).toFixed(2)} of it | achieved speed p50 ${q(R.map((r) => r.rAch)).toFixed(2)} yd/s`);
+const E = R.filter((r) => r.sideIn !== null);
+console.log(`  his working side at the crossing (engaged): inside ${pc(E.filter((r) => r.sideIn).length, E.length)} | it was inside when the rep began ${pc(R.filter((r) => r.startIn).length, R.filter((r) => r.startIn !== null).length)} | in 'power' (last move bull/longarm) ${pc(E.filter((r) => r.power).length, E.length)}`);
 const Hh = R.filter((r) => r.help);
 console.log(`  help within 2 yd in the next 0.5 s: ${pc(Hh.length, R.length)} (first p50 ${q(Hh.map((r) => r.help.first)).toFixed(2)} s) | engaged him ${pc(Hh.filter((r) => r.help.engaged !== null).length, R.length)} (p50 at ${q(Hh.filter((r) => r.help.engaged !== null).map((r) => r.help.engaged)).toFixed(2)} s) | within 2 yd, free and did nothing: ${pc(Hh.filter((r) => r.help.engaged === null && r.help.free > 0).length, R.length)} | within 2 yd but busy with another man only: ${pc(Hh.filter((r) => r.help.engaged === null && r.help.free === 0).length, R.length)}`);

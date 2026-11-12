@@ -54,7 +54,7 @@ for path in sys.argv[1:]:
                     k3, k5 = min(kend, k + p.k(0.3)), min(kend, k + p.k(0.5))
                     on3 = p.dist(d, tk, k3) <= 1.2; on5 = p.dist(d, tk, k5) <= 1.2
                     ty3 = p.pos(tk, k3)[1]; lat = (side * (ty - ty3)) / max(p.dt, (k3 - k) * p.dt) if ty3 is not None and k3 > k else float('nan')
-                    X.append((k * p.dt, met, near, win, on3, on5, lat, p.speed(d, k), p.speed(d, k3))); break
+                    X.append((k * p.dt, met, near, win, on3, on5, lat, p.speed(d, k), p.speed(d, k3), rx - tx)); break
                 prev = w
     c = len(X)
     print(f"== {os.path.basename(path)}: dropbacks {n} | edge crossings inside the tackle: {c} ({100 * c / max(1, n):.1f}% of dropbacks), at p50 {q([x[0] for x in X]):.2f} s")
@@ -63,5 +63,7 @@ for path in sys.argv[1:]:
               f" || reached 2 yd of the QB before the ball was out: {100 * sum(x[3] for x in X) / c:.0f}% (met {100 * sum(x[3] for x in X if x[1]) / max(1, sum(x[1] for x in X)):.0f}%, not met {100 * sum(x[3] for x in X if not x[1]) / max(1, sum(not x[1] for x in X)):.0f}%)")
         L = [x[6] for x in X if x[6] == x[6]]
         print(f"   the rusher: speed at the crossing p50 {q([x[7] for x in X]):.2f}, 0.3 s later {q([x[8] for x in X]):.2f} yd/s")
+        dep = [x[9] for x in X]; fr = [x for x in X if x[9] >= -0.3]; bh = [x for x in X if x[9] < -0.3]
+        print(f"   where he crosses: depth vs the tackle p25/50/75 {q(dep, .25):+.2f}/{q(dep):+.2f}/{q(dep, .75):+.2f} | across his face (level or in front, >= -0.3) {100 * len(fr) / c:.0f}%, reaches the QB {100 * sum(x[3] for x in fr) / max(1, len(fr)):.0f}% | behind him (around, then in) {100 * len(bh) / c:.0f}%, reaches the QB {100 * sum(x[3] for x in bh) / max(1, len(bh)):.0f}%")
         print(f"   the tackle after it: still within 1.2 yd at +0.3 s {100 * sum(x[4] for x in X) / c:.0f}%, at +0.5 s {100 * sum(x[5] for x in X) / c:.0f}% | his lateral speed toward the ball over 0.3 s p50 {q(L):.2f} yd/s"
               f" | reached the QB when the tackle stayed on at +0.5 s {100 * sum(x[3] for x in X if x[5]) / max(1, sum(x[5] for x in X)):.0f}%, when not {100 * sum(x[3] for x in X if not x[5]) / max(1, sum(not x[5] for x in X)):.0f}%")
