@@ -66,6 +66,8 @@ interface ThrowEval {
   intRisk: number;
   value: number;
   depth: number;
+  /** Diagnostics: the window's factors (P = pOpen * pClear * pAcc * hands). */
+  parts?: { pOpen: number; pClear: number; pAcc: number; hands: number };
 }
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
@@ -1274,7 +1276,7 @@ export class QBPass implements Behavior {
     const sticksBonus = depth >= toSticks ? 3 : 0;
     // An incompletion costs a down (~3 yards of value); a pick costs ~45.
     const value = P * (gain + sticksBonus + 2) - (1 - P) * 3 - intRisk * 45;
-    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth };
+    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands: 0.88 + 0.1 * r.r('hands') } };
   }
 
   private bestOption(a: Agent, sim: PlaySim, urgency: number): ThrowEval | null {
@@ -1303,7 +1305,7 @@ export class QBPass implements Behavior {
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
-    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth,
+    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null,
       u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
       clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
     this.pending = ev;
