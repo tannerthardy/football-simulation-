@@ -23,7 +23,7 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, TACKLE_SET, tackleFloor, traits } from '../engagement.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -408,6 +408,8 @@ export class PassProtector implements Behavior {
       const floor = TACKLE_SET ? tackleFloor(sim) : null;
       const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
+      // TACKLE_SET: the inside half of the rusher, but never outside his set line.
+      if (TACKLE_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
@@ -426,7 +428,10 @@ export class PassProtector implements Behavior {
       // TACKLE_SET: at the called set he stops kicking; the rusher comes to him.
       const floor = TACKLE_SET ? tackleFloor(sim) : null;
       const anchored = floor !== null && a.pos.x <= floor + 0.1;
-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
+      // TACKLE_SET: at his set line he does not match the rusher's widening.
+      const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
+      const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
+      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: wide ? 0 : r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed

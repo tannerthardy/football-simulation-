@@ -798,6 +798,23 @@ export function seenOverset(seen: Vec2, rusher: Vec2, arc: { out: number; setY: 
 /** A body width and a step: how far short of the launch point the tackle sets. */
 export const TACKLE_SET_SHORT = 1.0;
 
+/** TACKLE_SET (attempt 2): the set is a spot, with a width as well as a
+ * depth. He kicks back along a line from his own alignment, wider for a wider
+ * rusher (his alignment outside the tackle at the snap, 0.4 of it, 0.3-1.0 yd:
+ * enough to keep the inside half of a man who has to come round), and he never
+ * chases the rusher outside that line: a rusher who goes wider than it is
+ * taking the long way round, which is the point. Inward he mirrors freely.
+ * Off (and in attempt 1) the kick and the rep follow the rusher's width:
+ * tackles ended +1.3-1.6 yd outside their alignment at 3.0 s against an arc
+ * (NFL -0.6), and the rusher's corner sat 0.7-1.2 yd further from the QB. */
+export function tackleSetLine(sim: PlaySim, tackle: Agent, rusher: Agent): { out: number; y: number } {
+  const home = sim.offAlign.spots[tackle.slot]?.pos.y ?? tackle.pos.y, out = Math.sign(home - sim.ballY) || 1;
+  const rHome = sim.defAlign.spots[rusher.slot as keyof typeof sim.defAlign.spots]?.pos.y ?? rusher.pos.y;
+  return { out, y: home + out * clamp(0.4 * (rHome - home) * out, 0.3, 1.0) };
+}
+/** Inside-half leverage: where his centre sits inside the rusher's. */
+export const INSIDE_HALF = 0.3;
+
 /** The deepest x a tackle sets to under TACKLE_SET (null without a called drop). */
 export function tackleFloor(sim: PlaySim): number | null {
   const launch = calledLaunchX(sim);
@@ -1131,8 +1148,14 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // retreat. He asks for no more depth than he can brake off before the set
   // (the braking law movement uses, kinematics.ts), and none at it.
   const vx = lat.x * vLat - kick;
+  // TACKLE_SET: and no wider than his set line than he can brake off before it.
+  let vy = lat.y * vLat;
+  if (floor !== null) {
+    const line = tackleSetLine(sim, b, d), room = (line.y - b.pos.y) * line.out;
+    if (vy * line.out > 0) vy = line.out * Math.min(vy * line.out, Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, room)));
+  }
   intents[b.idx] = {
-    vel: { x: floor !== null ? Math.max(vx, -Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, b.pos.x - floor))) : vx, y: lat.y * vLat },
+    vel: { x: floor !== null ? Math.max(vx, -Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, b.pos.x - floor))) : vx, y: vy },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     growth,
