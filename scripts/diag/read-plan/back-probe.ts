@@ -2,11 +2,12 @@
  * Why the back is (not) thrown to, on league-sampled games (the population of call-mix/collect.ts): one row per
  * called drop-back pass (no screen, no play action). Passive: wraps QBPass methods and reads state; the game is the
  * same as an unprobed one. The causes are checked in order:
- *   (a) no route: no back, or he never runs a route (blocks, or checks and stays in);
+ *   (a) no route: no back; called to block (the concept's install); or a check that never leaves;
  *   (b) late: he runs one but leaves the backfield (past the line or 3 yd lateral, nfl_back.py's operator) after 2.0 s;
  *   (c) never read: out and open at 2.6 s (nearest defender 3 yd or more) but the QB's read never reaches him;
  *   (d) read, not thrown: the read reaches him (or he is evaluated) and another throw, a sack or a scramble follows;
- * plus targeted (and when, pressured or not).
+ * plus targeted (and when, pressured or not), and the free first pressure (freepass.mts's rule: the first defender
+ * within 2 yd of the QB from 0.3 s, before the throw, with no offensive player within 1.2 yd of him).
  *   [READ_PLAN=1] [FORECAST_BREAK=1] node --import tsx scripts/diag/read-plan/back-probe.ts [--seed 101] [--games 16] > out/read-plan/back-<arm>.jsonl
  */
 import { Rng } from '../../../src/core/rng.js';
@@ -40,7 +41,7 @@ PlaySim.prototype.run = function (this: any) {
   const sim = this;
   const pass = sim.offCall?.kind === 'pass' ? sim.offCall.pass : null;
   if (!pass || pass.family === 'screen' || pass.fake || pass.family === 'playaction') return run.call(this);
-  const st: any = { back: null, reachedAt: null, evaluated: false, bestP: null, released: null, routeAt: null, openAt26: null };
+  const st: any = { back: null, reachedAt: null, evaluated: false, bestP: null, released: null, routeAt: null, openAt26: null, press: null };
   cur.set(sim, st);
   const dir = () => sim.attackDir(sim.offense[0].team);
   let start: any = null;
@@ -48,6 +49,10 @@ PlaySim.prototype.run = function (this: any) {
   sim.tick = () => {
     tick();
     if (!st.back) st.back = sim.offense.find((o: any) => sim.offAlign.refOf[o.slot] === 'B') ?? null;
+    if (!st.press && sim.t >= 0.3 && sim.throwAt < 0 && sim.carrier === sim.qb) {
+      const d = sim.defense.find((e: any) => Math.hypot(e.pos.x - sim.qb.pos.x, e.pos.y - sim.qb.pos.y) <= 2);
+      if (d) st.press = { t: +sim.t.toFixed(2), free: !sim.offense.some((o: any) => o !== sim.qb && Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) <= 1.2) };
+    }
     const b = st.back;
     if (!b) return;
     start ??= { ...b.pos };
@@ -60,10 +65,10 @@ PlaySim.prototype.run = function (this: any) {
   };
   const r = run.call(this);
   const s = sim.stats, tgtB = !!st.back && s.target === st.back.player.id;
-  const cause = !st.back || st.routeAt === null ? 'a_no_route' : (st.released ?? 99) > 2.0 ? 'b_late' : tgtB ? 'targeted'
+  const cause = !st.back ? 'a_no_back' : st.routeAt === null ? (pass.back === 'check' ? 'a_check_stays' : 'a_called_block') : (st.released ?? 99) > 2.0 ? 'b_late' : tgtB ? 'targeted'
     : st.reachedAt === null && !st.evaluated ? (st.openAt26 ? 'c_never_read_open' : 'c_never_read') : 'd_read_not_thrown';
   process.stdout.write(JSON.stringify({ concept: pass.id, family: pass.family, back: pass.back, cause, tgtB, released: st.released, routeAt: st.routeAt, reachedAt: st.reachedAt,
-    evaluated: st.evaluated, bestP: st.bestP, open26: st.openAt26, att: !!s.attempted, sack: !!s.sacked, ttt: s.timeToThrow ?? null, pressured: !!s.pressured }) + '\n');
+    evaluated: st.evaluated, bestP: st.bestP, open26: st.openAt26, press: st.press, att: !!s.attempted, sack: !!s.sacked, ttt: s.timeToThrow ?? null, pressured: !!s.pressured }) + '\n');
   return r;
 };
 const rng = new Rng(seed);

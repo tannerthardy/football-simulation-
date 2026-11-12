@@ -256,6 +256,7 @@ export class QBPass implements Behavior {
     // second on, so a route that has not yet broken is placed where it is headed, not on its stem.
     const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
     const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+    const dir = sim.attackDir(a.team);
     let found: { id: string; s: number; d: number } | null = null;
     if (lo && hi) {
       const sx = hi.x - lo.x, sy = hi.y - lo.y, L2 = Math.max(1, sx * sx + sy * sy);
@@ -264,7 +265,10 @@ export class QBPass implements Behavior {
         const q = { x: p.pos.x + p.vel.x * 0.3, y: p.pos.y + p.vel.y * 0.3 };
         const s = clamp(((q.x - lo.x) * sx + (q.y - lo.y) * sy) / L2, -0.25, 1.75);
         const d = Math.hypot(q.x - (lo.x + s * sx), q.y - (lo.y + s * sy));
-        // A deep key (the defender over a vertical) is over the top of the high route, past its end of the line.
+        // A deep key (the defender over a vertical) is over the top of the high route, past its end of the line,
+        // and deeper than the low route: an underneath defender there is not the key (a linebacker taken for it at
+        // the low end, then carrying the in-breaker, was a misread that gave interceptions on drive).
+        if (k.deep && (q.x - lo.x) * dir < 2) continue;
         if (d < (k.deep ? 5 : 4) && s <= (k.deep ? 1.6 : 1) && (!found || d < found.d)) found = { id: p.id, s, d };
       }
     }
