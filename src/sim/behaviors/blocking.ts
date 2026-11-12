@@ -96,6 +96,8 @@ export class ProtectionCoordinator {
   readonly called = new Set<Agent>();
   /** PRO_CALL: backs the call counts in the protection (decided at install). */
   readonly backsIn = new Set<Agent>();
+  /** PA_BOOT naked: the boot-side end the call leaves unblocked (the QB's read). No protector is assigned to him. */
+  leaveFree: Agent | null = null;
 
   private isRusher(sim: PlaySim, d: Agent): boolean {
     if (PRO_READ) return this.seenRusher(sim, d);
@@ -190,7 +192,7 @@ export class ProtectionCoordinator {
     // Pre-snap, the line counts the men aligned on it; that is visible.
     if (PRO_READ && !this.declared) for (const d of sim.defense) if (sim.snapX[d.idx] < sim.los + 1.5) this.declaredOn.add(d);
     if (PRO_CALL && !this.declared) for (const d of boxThreats(sim)) if (!this.declaredOn.has(d)) this.called.add(d);
-    const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && this.isRusher(sim, d));
+    const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && d !== this.leaveFree && this.isRusher(sim, d));
     let front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
     // PRO_CALL: the call's threats are in the declaration before they move.
     if (PRO_CALL && !this.declared) front = [...front, ...[...this.called].filter((d) => !front.includes(d) && !this.dropped.has(d))];

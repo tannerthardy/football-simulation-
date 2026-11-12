@@ -201,7 +201,23 @@ export const MENU_CONCEPTS: PassConcept[] = [
   },
 ];
 
-export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
+/**
+ * PA_BOOT (experimental, off; PA_BOOT=1): play action as a moving launch point (docs/football-handbook/
+ * play-action-protections.md). Naked, off outside-zone action: the line blocks toward the fake, the back fakes that
+ * way and releases to the boot-side flat, and the QB boots away from the fake with the boot-side end left to him
+ * (FootballXOs spread playbook pp. 99, 126: the flat, the sail, the backside crosser; read sail, crosser, flat:
+ * Evely 2023). NFL designed rollouts are 5.8% of drop-backs, 80% of them with play action (BDB 2025).
+ */
+export const PA_BOOT = process.env.PA_BOOT === '1';
+export const BOOT_CONCEPTS: PassConcept[] = [
+  {
+    id: 'naked', name: 'Naked', family: 'playaction', drop: 'boot', fake: 'outsideZone', protection: 'naked', bootSide: 'strong',
+    strong: { 1: 'go', 2: 'deep_out' }, weak: { 1: 'cross', 2: 'post' }, back: 'swing',
+    progression: ['S2', 'W1', 'B'], beats: ['cover3', 'cover1', 'run-heavy'],
+    read: 'the boot-side end: he crashes: the flat; he contains: pull up and throw back to the crosser; sail, crosser, flat',
+  },
+];
+export const PASS_CONCEPTS: PassConcept[] = [...(CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS), ...(PA_BOOT ? BOOT_CONCEPTS : [])];
 
 export const RUN_CONCEPTS: RunConcept[] = [
   // Mesh times follow tracking: handoffs land ~1.3 s after the snap (zone a
@@ -281,7 +297,7 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
 ];
 export const SCREEN_BY_ID: Record<string, PassConcept> = Object.fromEntries(SCREEN_CONCEPTS.map((c) => [c.id, c]));
 
-export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries([...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS].map((c) => [c.id, c]));
+export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries([...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS, ...(PA_BOOT ? BOOT_CONCEPTS : [])].map((c) => [c.id, c]));
 export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
 
 /** Explicit Counter installations; GH requires an off-ball H.

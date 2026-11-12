@@ -108,6 +108,12 @@ export interface PassConcept {
   minReceivers?: number;
   /** Play-action fake attached. */
   fake?: string;
+  /** PA_BOOT: the play-action protection as part of the call (docs/football-handbook/play-action-protections.md).
+   * 'naked': the line blocks toward the fake and the boot-side end is left to the QB; 'boot' adds a protector to the
+   * boot side. Absent: the current play-action (a fake, then the drop-back protection). */
+  protection?: 'naked' | 'boot';
+  /** PA_BOOT: the side the QB boots to (the fake goes the other way). */
+  bootSide?: 'strong' | 'weak';
   /** A screen: who catches it and who releases to block for him. */
   screen?: ScreenSpec;
   /** A plain-text note of the intended key and rule ("flat defender: sinks → #2 flat, widens → #1 corner").

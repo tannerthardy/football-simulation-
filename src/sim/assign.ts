@@ -10,7 +10,7 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
-import { CONCEPT_MENU } from '../playbook/concepts.js';
+import { CONCEPT_MENU, PA_BOOT } from '../playbook/concepts.js';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
@@ -152,6 +152,12 @@ export function assignBehaviors(sim: PlaySim): void {
   if (call.kind === 'pass' && call.pass) {
     const concept = call.pass;
     const coord = new ProtectionCoordinator();
+    // PA_BOOT: the side the QB boots to; on a naked the end there is left to him (the line blocks toward the fake).
+    const bootSign = PA_BOOT && concept.protection ? (concept.bootSide === 'weak' ? -1 : 1) * off.strongSign : 0;
+    if (bootSign && concept.protection === 'naked') {
+      const onLine = sim.defense.filter((d) => Math.abs(d.pos.x - sim.los) < 1.5 && Math.sign(d.pos.y - sim.ballY) === bootSign && Math.abs(d.pos.y - sim.ballY) <= 7);
+      coord.leaveFree = onLine.sort((p, q) => bootSign * (q.pos.y - p.pos.y))[0] ?? null;
+    }
     const receiverPriors = new Map<Agent, InstalledReceiverRoute>();
     // A thrown run-pass option: the line blocks the run (call.run).
     const lineRun = call.run ? planRunBlocking(sim, call.run) : null;
@@ -184,7 +190,8 @@ export function assignBehaviors(sim: PlaySim): void {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
       const spot = off.spots[a.slot];
-      const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+      // PA_BOOT: the back fakes away and releases to the boot side.
+      const outside = bootSign && ref === 'B' ? bootSign : Math.sign(a.pos.y - sim.ballY) || off.strongSign;
       const blockLook = call.receiverBlockLook?.[a.slot as SkillSlot];
       const mkRoute = (id: string, delay = 0, conditional = false) => {
         const route = getRoute(id);
@@ -254,7 +261,9 @@ export function assignBehaviors(sim: PlaySim): void {
     const back = sim.slot('RB');
     if ((concept.fake || lineRun) && back && back.behavior.kind !== 'idle') {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
-      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
+      // PA_BOOT: the fake goes away from the boot, across the QB's face if the back is aligned on the boot side.
+      const fakeY = bootSign ? qb.pos.y - bootSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, 0.7);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;

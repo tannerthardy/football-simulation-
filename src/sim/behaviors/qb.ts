@@ -32,6 +32,7 @@ import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
+import { PA_BOOT } from '../../playbook/concepts.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -84,12 +85,26 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
     case 'seven':
       return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
     case 'pa':
-    case 'boot':
       return { x: los - 8.3, time: 1.95 };
+    case 'boot':
+      // PA_BOOT: the boot's launch depth (NFL designed rollouts with play action: 8.7 yd behind the snap at the
+      // release, p25-p75 7.4-9.6; BDB 2025 weeks 1-3, nfl_boot_launch.py). Off: the play-action drop.
+      return PA_BOOT ? { x: los - 8.6, time: 1.9 } : { x: los - 8.3, time: 1.95 };
   }
   void qbStartX;
 }
 
+
+/** PA_BOOT path: the widest he runs it (yd from the ball),
+ * how far back toward the line he attacks once set (yd), his speed on it (fraction of his top speed; NFL boots
+ * release at 4.8 yd/s) and the look after the fake before he reads the end (s). */
+const BOOT_MAX_WIDTH = 9, BOOT_ATTACK = 1.0, BOOT_SPEED = 0.8, BOOT_LOOK = 0.2;
+/** PA_BOOT read: the end is one of the box (on the line within this many yd of the ball); he is coming at the QB
+ * when he is closing on him faster than BOOT_AT yd/s from within BOOT_AT_DIST yd. */
+const BOOT_BOX = 7, BOOT_AT = 1.5, BOOT_AT_DIST = 9;
+/** PA_BOOT read: the picture of the end he decides on is at most this old (s), unless the deadline after the fake
+ * comes first (s). */
+const BOOT_FRESH = 0.15, BOOT_LOOK_MAX = 0.6;
 
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
@@ -288,6 +303,12 @@ export class QBPass implements Behavior {
   private readonly snapAt: number;
   private readonly drop: { x: number; time: number };
   private readonly dropY: number;
+  /** PA_BOOT: the side he boots to (+1 / -1 in y; 0 on any other play), the boot-side end he reads, what he read
+   * him doing (once: crash, contain, or at him) and, on contain, where he pulled up. */
+  private readonly bootSign: number = 0;
+  private bootEnd: Agent | null = null;
+  bootCall: 'crash' | 'contain' | 'at' | null = null;
+  private pullUpY: number | null = null;
   private reads: Agent[] = [];
   private readIdx = 0;
   /** Diagnostics only (no effect on play): set by a probe, the window records each defender's believed arrival margin. */
@@ -370,6 +391,7 @@ export class QBPass implements Behavior {
     this.snapAt = gun ? (GUN_SNAP ? snapSecured(a.pos, { x: sim.los, y: sim.ballY }) : 0.3) : 0.1;
     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
     this.dropY = a.pos.y;
+    if (PA_BOOT && concept.protection) this.bootSign = (concept.bootSide === 'weak' ? -1 : 1) * sim.offAlign.strongSign;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
     if (concept.family === 'playaction') this.fakeUntil = 0.7;
@@ -379,7 +401,7 @@ export class QBPass implements Behavior {
 
   /** Called after all behaviors are assigned (receivers exist). */
   init(sim: PlaySim): void {
-    if (READ_PLAN && !compilingPlan() && this.initPlan(sim)) {
+    if (READ_PLAN && !this.bootSign && !compilingPlan() && this.initPlan(sim)) {
       this.reads = this.orderReads(sim, this.reads);
       return;
     }
@@ -617,8 +639,10 @@ export class QBPass implements Behavior {
       }
     }
 
+    if (this.bootSign) this.bootLook(a, sim);
     if (this.phase === 'drop') {
-      const target = { x: this.drop.x, y: this.dropY };
+      // PA_BOOT: after the fake his path runs away from it, roughly parallel to the line, with depth.
+      const target = { x: this.drop.x, y: this.bootSign ? clamp(sim.ballY + this.bootSign * BOOT_MAX_WIDTH, 4, FIELD_WIDTH - 4) : this.dropY };
       const d = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
       // Play-action: sell the fake first.
       if (t < this.fakeUntil) {
@@ -650,7 +674,8 @@ export class QBPass implements Behavior {
         // QBs who lock onto their first read give it away during the drop.
         if (a.r('decisionMaking') < 0.45) sim.qbEyes = this.reads[0] ?? null;
         const gun = sim.offCall.formation.qb !== 'under';
-        // Drop: backpedal from gun, turn-and-drop from under center.
+        // Drop: backpedal from gun, turn-and-drop from under center. A boot runs at the boot side, half turned.
+        if (this.bootSign) return goTo(a, target, { facing: this.bootSign * Math.PI / 4, through: 1, speed: BOOT_SPEED });
         const facing = gun ? 0 : Math.PI / 2.4;
         return goTo(a, target, { facing, through: 0 });
       }
@@ -916,6 +941,8 @@ export class QBPass implements Behavior {
     };
     if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
     if (this.phase === 'windup' && this.pending) return this.pending.point;
+    // PA_BOOT: coming out of the fake, his eyes find the boot-side end until he has read him.
+    if (this.bootSign && this.bootEnd && !this.bootCall && sim.t >= this.snapAt + this.fakeUntil) return this.mind.estimate(this.bootEnd).pos;
     // HOT_LOOK: on the way to a hot target his eyes leave where they were at the head's turn.
     if (this.look) return sim.t < this.look.eyesAt ? this.look.from : heldPoint(this.look.target);
     // READ_PLAN: a key is watched from the drop until it is read (HonestNFL 135: the corner during the drop);
@@ -1518,7 +1545,56 @@ export class QBPass implements Behavior {
     return { vel: { x: dir.x * a.profile.vmax * 0.7 * elus, y: dir.y * a.profile.vmax * 0.7 * elus }, facing: 0, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
 
+  /**
+   * PA_BOOT: his boot path once he is set: still moving at the boot side, attacking the line a little, to the width
+   * he can reach before the sideline (NFL boots are released at a median 4.4 yd wide of the snap, still moving at
+   * 4.8 yd/s). Pulled up (he read the end containing), he sets where he stopped and the pocket logic holds him there.
+   */
+  private bootMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
+    const y = clamp(sim.ballY + this.bootSign * BOOT_MAX_WIDTH, 4, FIELD_WIDTH - 4);
+    const facing = read ? angleTo(a.pos, read.pos) : this.bootSign * Math.PI / 6;
+    return goTo(a, { x: this.drop.x + BOOT_ATTACK, y }, { speed: BOOT_SPEED, facing, through: 0 });
+  }
+
+  /**
+   * PA_BOOT: the boot-side end is his read (naked: no one blocks him). Once the fake is done and he has had a look,
+   * he decides from his own picture of the end, once, and keeps it (Evely 2023; Grabowski after Evashevski; Coiner
+   * 2022):
+   * - at him (closing to reach him within about a second): the quickest throw, the flat first;
+   * - crashing (moving down the line after the fake, or already inside his path): the flat is there, flat first;
+   * - containing (staying outside, upfield): he pulls up where he is and throws back: the crosser, the sail, the flat.
+   * The throw on the move, and a late throw back across the field, carry their own costs through the release.
+   */
+  private bootLook(a: Agent, sim: PlaySim): void {
+    if (!this.bootEnd) {
+      const dir = sim.attackDir(a.team);
+      const line = sim.defense.filter((d) => Math.abs((d.pos.x - sim.los) * dir) < 1.5 && Math.sign(d.pos.y - sim.ballY) === this.bootSign
+        && Math.abs(d.pos.y - sim.ballY) <= BOOT_BOX);
+      this.bootEnd = line.sort((p, q) => this.bootSign * (q.pos.y - p.pos.y))[0] ?? null;
+      if (!this.bootEnd) { this.bootCall = 'contain'; return; }
+    }
+    if (this.bootCall || sim.t < this.snapAt + this.fakeUntil + BOOT_LOOK) return;
+    // He reads the end on a fresh picture of him (his eyes went there out of the fake), or as he is by the deadline.
+    if (this.mind.pictureAge(this.bootEnd) > BOOT_FRESH && sim.t < this.snapAt + this.fakeUntil + BOOT_LOOK_MAX) return;
+    const seen = this.mind.estimate(this.bootEnd);
+    const dx = a.pos.x - seen.pos.x, dy = a.pos.y - seen.pos.y, dist = Math.hypot(dx, dy);
+    const closing = (seen.vel.x * dx + seen.vel.y * dy) / Math.max(dist, 1e-3);
+    // Crashing: down the line toward the fake at least as fast as he comes upfield, or already inside his path.
+    const towardFake = -this.bootSign * seen.vel.y, upfield = -sim.attackDir(a.team) * seen.vel.x;
+    if ((towardFake > 1.0 && towardFake >= upfield) || this.bootSign * (seen.pos.y - a.pos.y) < -1) this.bootCall = 'crash';
+    else if (dist < 3.5 || (closing > BOOT_AT && dist < BOOT_AT_DIST)) this.bootCall = 'at';
+    else this.bootCall = 'contain';
+    const ref = (r: Agent) => sim.offAlign.refOf[r.slot as keyof typeof sim.offAlign.refOf] ?? r.slot;
+    const order = this.bootCall === 'contain' ? ['W1', 'S2', 'B'] : ['B', 'S2', 'W1'];
+    const rank = (r: Agent) => { const i = order.indexOf(ref(r)); return i < 0 ? order.length : i; };
+    this.reads = [...this.reads].sort((p, q) => rank(p) - rank(q));
+    this.readIdx = 0;
+    this.readStart = sim.t;
+    if (this.bootCall === 'contain') this.pullUpY = a.pos.y;
+  }
+
   private pocketMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
+    if (this.bootSign && this.pullUpY === null) return this.bootMove(a, sim, read);
     // Hold the set point, sliding away from nearby rushers. When an edge rusher
     // gets to his depth outside him — the tackle riding him past — he climbs
     // into the pocket before the rusher can turn the corner. He reacts to what
@@ -1541,7 +1617,7 @@ export class QBPass implements Behavior {
       fx += (dx / dd) * w;
       fy += (dy / dd) * w;
     }
-    const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
+    const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.pullUpY ?? this.dropY };
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
     const facing = this.bodyFacing(a, sim, read);
