@@ -607,6 +607,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-42: `LINE_START` on, a receiver's first steps are a get-off (2026-11-12)
+
+Coverage #624 (part A of the release work; part B, the press jam and release move, follows under its own flag). Until he declares his stem (his first step and his observation delay on the defender) a receiver pushes with a chosen share of his start force, 0.4 + 0.03 × the depth of his first break (to 10 yd), ± 0.05 for a defender well off or in his face, + 0.15 × (route running − 0.5), range 0.3–0.85; into a break he slows on his cutting ability rather than 0.8 of his braking. The quarterback's forecast and expected break time use the same get-off. `MoveCommand.drive` is the interface (default 1, physics unchanged for every other caller).
+
+Debt, stated: the drive share is a fitted stand-in, adjusted twice against the NFL speed table and not to be adjusted again. What it stands in for is the controller valuing lateral authority while he reads (a full forward push spends the whole friction ellipse); that is what replaces it.
+
+Coverage, speed at 0.5 s, off → on (NFL): go 2.5 → 1.8 (1.7), post / corner 2.5 → 1.8 (2.0), in 2.5 → 1.8 (1.8), out 2.3 → 1.5 (1.8), hitch 2.2 → 1.5 (1.7), slant 2.2 → 1.2 (1.5), cross 2.3 → 1.3 (1.8), flat 2.3 → 1.4 (1.3); the go at 0.8 / 1.0 s 3.4 / 4.3 (3.4 / 4.4). Early-breaking routes now run a little slow. Pressed go against man: level with the corner 1.6 → 1.9 s (2.2), depth at 3.0 s 13.8 → 12.5 (11.6).
+
+Checks on the candidate (`41b9a6a5`): full suite 4321 pass; besides the two known research failures, three scenario fixtures failed because their plays moved under the new route timing (`hot-look` ×2, the `read-plan` key case). Rules + Coaching traced and restated them (#626): the hot-look play is re-found; the read-plan flat still goes on rhythm on five seeds (2.15 s, as before), and on seed 2 a one-tick swing in the window pumps the throw (2.75 s), which is a quarterback sensitivity recorded for its own trace, not a get-off defect. Fixed run set unchanged (3.88). Paired league scorecards, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | INT rate | YAC | time to throw | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 8.30 → 8.64 | 61.2 → 61.0% | 3.7 → 4.6% | 2.7 → 2.0% | 6.88 → 7.26 | 2.68 → 2.68 | 32.1 → 29.3 |
+| 23 | 9.02 → 8.97 | 62.4 → 63.1% | 4.0 → 3.4% | 2.0 → 2.9% (moved) | 7.55 → 7.84 | 2.69 → 2.70 | 33.5 → 31.9 |
+
+Nothing agrees between the seeds except points a little lower (neither resolved) and YAC a little higher (neither resolved). It lands on the direct measurement, not on the cards.
+
 ## engine-41: `HOT_LOOK` on, a hot throw costs the look (2026-11-12)
 
 Rules + Coaching #610 (it replaces the unlanded `HOT_PLAN`, whose plan-answer rule fired on none of 1,536 panel plays). Under an alarm the quarterback chose the best throw over every receiver on the tick of the alarm, wherever his eyes were, and released after only the windup (0.30–0.40 s, no tail; four in five such throws went to a receiver other than the one he was reading). Now the hot target is chosen from his pictures: one in his clear look is thrown after the windup; anyone else needs his eyes there first (a head turn at 400°/s, assumed, then a glance of 0.15 + 0.2 × (1 − decision-making) + 0.1 × (1 − awareness) s), and is judged again on the fresh picture; if it has gone he chooses again or has no throw. It also fixes a gaze defect (his eyes stayed on the verticals after the pressure jump moved his read to the back) and carries the `noThrow` seam that the evade / throw-away / sack behaviour (`EXTEND`, Flex, built, off) enters through.
