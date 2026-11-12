@@ -70,9 +70,10 @@ describe('CUSHION_BREAK: a deep defender stays square until the receiver breaks 
 });
 
 /** Shoulder offset: in a live Cover 3 match play, the boundary corner carrying #1 on four verts plays a shoulder
- * (both bodies plus a reach) off the receiver's line, so when the receiver comes level he passes the shoulder
- * without body contact. */
-async function carry(flag: string) {
+ * (both bodies plus a reach) off the receiver's line, so a receiver who comes level passes the shoulder without
+ * body contact. Planned speed: against a receiver much faster than his position's prior the same corner is
+ * under-planned and loses his cushion sooner. */
+async function carry(flag: string, receiverSpeed = 1) {
   vi.resetModules(); vi.stubEnv('CUSHION_BREAK', flag);
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
@@ -87,21 +88,30 @@ async function carry(flag: string) {
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3_match,
       pressure: null, zoneStyle: 'match', label: 'carry' }, los: 40, ballY: 26, firstDownX: 50, seed: 3 });
   const a = sim.slot('CB_S')!, r = sim.slot(sim.offAlign.numbering.S1!)!;
-  let min = Infinity, lateral = NaN;
+  if (receiverSpeed !== 1) {
+    r.body.profile = { ...r.body.profile, vmax: r.body.profile.vmax * receiverSpeed };
+    (r as { profile: unknown }).profile = r.body.profile;
+  }
+  let min = Infinity, lateral = NaN, cushionAt2 = NaN;
   while (sim.t < 3.2 && sim.ball.kind !== 'air') {
     sim.tick();
     if (sim.t < 1) continue;
     min = Math.min(min, Math.hypot(a.pos.x - r.pos.x, a.pos.y - r.pos.y));
     if (Number.isNaN(lateral) && r.pos.x >= a.pos.x) lateral = Math.abs(a.pos.y - r.pos.y);
+    if (Number.isNaN(cushionAt2) && sim.t >= 2.0) cushionAt2 = a.pos.x - r.pos.x;
   }
-  return { min, lateral, radii: a.profile.radius + r.profile.radius };
+  return { min, lateral, cushionAt2, radii: a.profile.radius + r.profile.radius };
 }
 
 describe('CUSHION_BREAK: a carry plays a shoulder off the receiver\'s line', () => {
-  it('a receiver who comes level passes the shoulder without body contact', async () => {
+  it('no body contact: a receiver who comes level passes the shoulder', async () => {
     const on = await carry('1');
-    expect(on.lateral).toBeGreaterThan(on.radii + 0.3);
+    if (!Number.isNaN(on.lateral)) expect(on.lateral).toBeGreaterThan(on.radii + 0.3);
     expect(on.min).toBeGreaterThan(on.radii + 0.3);
+  });
+  it('a receiver much faster than his position\'s prior is under-planned and eats the cushion sooner', async () => {
+    const typical = await carry('1'), fast = await carry('1', 1.15);
+    expect(fast.cushionAt2).toBeLessThan(typical.cushionAt2);
   });
 });
 

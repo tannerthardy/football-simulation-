@@ -721,6 +721,20 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
+/** CUSHION_BREAK: a receiver's top speed as a defender can believe it from
+ * his position alone (BDB 2025 weeks 1-2, dropbacks, peak speed snap to
+ * release + 1 s, p75: what he could reach; nflrecspeed.py). Not his rating. */
+const RECEIVER_SPEED_PRIOR: Partial<Record<string, number>> = { WR: 7.6, TE: 6.8, RB: 6.5, FB: 6.0 };
+/** CUSHION_BREAK: the cushion a deep carry with no help holds: his turn
+ * threshold plus the cushion he burns closing from his speed to the speed the
+ * receiver could reach, at the acceleration his legs give at his facing
+ * (v_plan^2 - v^2) / 2a. */
+function carryBudget(a: Agent, vPlan: number, receiverVx: number, help: boolean, receiverRadius: number): number {
+  const p = a.profile, v = Math.max(0, a.vel.x);
+  const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
+  const accel = Math.max(0.1, (1 - v / Math.max(cap, 0.1)) * p.vmax / p.tau);
+  return cushionThreshold(a, receiverVx, help, receiverRadius) + Math.max(0, vPlan * vPlan - v * v) / (2 * accel);
+}
 /** CUSHION_NEED (on since engine-27; CUSHION_NEED=0 restores): before his
  * hips open, a man defender's cushion on a released receiver is the one the
  * receiver's observed vertical threat requires (his own hip-turn threshold:
@@ -769,6 +783,18 @@ export class ManCoverage implements Behavior {
   private readonly initialCushion: number;
   private hipsOpen = false;
   private releaseObserved = false;
+  /** CUSHION_BREAK: the fastest downfield speed seen on this stem and when it last rose. */
+  private stemPeak = 0;
+  private stemRose = 0;
+  /** CUSHION_BREAK: the speed he plans the receiver could reach: his
+   * positional prior while the stem is still accelerating; once the receiver
+   * has held his speed for 0.4 s, the speed seen. A receiver faster than the
+   * prior is under-planned until it shows, and can run by. */
+  private plannedSpeed(t: number, vx: number, position: string): number {
+    if (vx > this.stemPeak + 0.2) { this.stemPeak = vx; this.stemRose = t; }
+    const settled = vx > 3 && t - this.stemRose > 0.4;
+    return settled ? Math.max(0, vx) : Math.max(vx, RECEIVER_SPEED_PRIOR[position] ?? 6.5);
+  }
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
@@ -1012,6 +1038,14 @@ export class ManCoverage implements Behavior {
       tx = seen.pos.x + top;
     }
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
+    // CUSHION_BREAK: a carry with installed depth (no help behind him) holds
+    // the cushion his own budget needs against the speed the receiver could
+    // reach, not the speed he shows now (CUSHION_NEED's squeeze, sized on the
+    // early stem, pulled a deep carry toward the receiver at 0.25-0.75 s).
+    if (breakOn && o.protectDepth && !this.hipsOpen && this.releaseObserved) {
+      const vPlan = this.plannedSpeed(sim.t, vx, R.player.position);
+      tx = seen.pos.x + carryBudget(a, vPlan, vx, help, R.profile.radius);
+    }
     if (o.protectDepth) {
       if (!this.releaseObserved) tx = Math.max(tx, a.pos.x - .2);
       tx = Math.min(tx, END_LINE_X - a.profile.radius);
