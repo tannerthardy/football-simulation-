@@ -21,7 +21,7 @@ for (let s = first; s < first + games; s++) {
       if (!qb) return;
       const b = qb.behavior;
       if (alarm && alarm.arrived === null && sim.t - alarm.t <= 1.0) {
-        const d = sim.defense[alarm.d];
+        const d = sim.agents[alarm.d];
         if (Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) <= 1.3) alarm.arrived = r2(sim.t - alarm.t);
       }
       if (alarm || sim.carrier !== qb || sim.throwAt >= 0 || typeof b?.pressure !== 'function' || sim.t + 1e-9 < next || sim.t < 0.3) return;
