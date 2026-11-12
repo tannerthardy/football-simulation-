@@ -43,6 +43,7 @@
     "DL_SNAP_TIME": "0",
     "HOLD_FINISH": "0",
     "HOLD_SINK": "0",
+    "HANG_AIRBORNE": "0",
     "HOLD_FACING": "0",
     "CUSHION_BREAK": "0",
     "SEEN_EYES": "0",

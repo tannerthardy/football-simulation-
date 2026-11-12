@@ -84,3 +84,33 @@ Reading:
    movement question, which stays parked.
 5. **The back's share of targets falls** by 1.6–1.8 points, probably because he throws earlier, before the back's
    release. Completion and interceptions move within noise.
+
+## Pacing a rusher in contact (2026-11-12)
+
+Found by Rules + Coaching's READ_PLAN key-read fixture (`test/read-plan.test.ts`, corner_flat vs Cover 2, seed 3):
+- DE_W is in his blocker's hands, ridden from beside (0.7–1.35 yd off, not on his path) and driving.
+- BLOCK_SEEN read him as a fresh sprint at a standing QB: 0.56–0.63 s, where his actual arrival was about 0.9–1.3 s.
+- QB_RHYTHM's pressure jump then took the QB's eyes off a ready, open flat, and he threw at 2.85 s instead of 2.15 s.
+
+The gap the rusher closes is smaller than his speed toward the QB, because the QB drifts back.
+
+Rule: a rusher with any blocker within arm's length is paced. His felt time is at least (distance − 0.8) ÷ his closing
+speed (his seen velocity toward the QB less the QB's own, floor 0.5 yd/s, capped at 3 s). The path geometry's "way
+round the body" still applies on top.
+
+Results:
+- The fixture's flat comes on rhythm at 2.15 s, and `read-plan.test.ts` passes with BLOCK_SEEN off and on.
+- New bull-rush fixture in `test/block-seen.test.ts`: a rusher driving his blocker back at 3 yd/s is paced at that
+  rate, not read as a sprint.
+
+`feel-games.mts`, seed 201, 8 games. Estimate − realized arrival (centre within 1.3 yd while he holds the ball;
+rushers who arrived within 2 s), p25/p50/p75, by rush type as the QB sees it:
+
+| rush type | off | on |
+|---|---|---|
+| through a blocker on his path | 1.02 / 1.39 / 1.62 (n 169) | 0.15 / 0.43 / 0.79 (n 286) |
+| ridden beside a blocker | 0.27 / 0.45 / 1.02 (n 262) | 0.26 / 0.39 / 1.19 (n 296) |
+| free | 0.23 / 0.39 / 0.85 (n 491) | 0.19 / 0.30 / 0.53 (n 479) |
+
+All medians are positive by construction: the estimate is to 0.8 yd, the arrival to 1.3 yd. No rush type now reads
+early. Sacks in these 8 games: 34 off, 25 on.
