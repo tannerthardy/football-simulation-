@@ -1,17 +1,15 @@
 /** Underneath arrival (defense.ts; experimental, off).
- * SHOULDER_READ: from the throwing motion, an underneath zone defender with his eyes on the QB leans toward the
- * receiver the QB's shoulders point at, before the ball is out. A look-off (the shoulders pointed at another
- * receiver) moves him the wrong way; a disciplined defender commits less.
+ * SHOULDER_READ: an underneath zone defender keying the QB plants on the throwing motion he has seen (stops his
+ * drop, squares, no direction); a pump plants him too, and he restarts once he sees the ball pulled down.
  * ARRIVE_LEAD: on a ball he cannot beat to the catch, he aims where the catcher will be when he can arrive, not
  * at the catch point. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function windup(flag: string, pointAt: 'left' | 'right', discipline?: number) {
+async function windup(flag: string, opts: { ago?: number; pulledAgo?: number; away?: boolean } = {}) {
   vi.resetModules();
   vi.stubEnv('SHOULDER_READ', flag);
-  vi.stubEnv('SEEN_EYES', '1'); // the QB's look as the defender sees it
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
@@ -27,45 +25,53 @@ async function windup(flag: string, pointAt: 'left' | 'right', discipline?: numb
       pressure: null, zoneStyle: 'spot', label: 'read' }, los: 40, ballY: 26, firstDownX: 50, seed: 5 });
   // Let the play develop with the ball in the QB's hands, so the defender has a held picture of the QB.
   sim.qb.behavior = { kind: 'qb', update: () => ({ vel: { x: 0, y: 0 } }) } as never;
-  while (sim.t < 2.0) sim.tick();
-  // An underneath zone defender with his eyes on the QB.
-  const a = sim.defense.find(d => d.behavior instanceof ZoneCoverage && !(d.behavior as { plastersScramble?: boolean }).plastersScramble
-    && Math.cos(d.body.facing - Math.atan2(sim.qb.pos.y - d.pos.y, sim.qb.pos.x - d.pos.x)) > 0.5)!;
-  if (discipline !== undefined) {
-    const ratings = { ...a.player.ratings, discipline };
-    (a as { player: unknown }).player = { ...a.player, ratings };
+  while (sim.t < 0.7) sim.tick();
+  const deeper = sim.attackDir(sim.offense[0].team);
+  // An underneath zone defender with his eyes on the QB, still dropping (his zone play takes him away from the line).
+  const cands = sim.defense.filter(d => d.behavior instanceof ZoneCoverage && !(d.behavior as unknown as { deep?: boolean }).deep
+    && !(d.behavior as { plastersScramble?: boolean }).plastersScramble
+    && Math.cos(d.body.facing - Math.atan2(sim.qb.pos.y - d.pos.y, sim.qb.pos.x - d.pos.x)) > 0.5);
+  const a = cands.find(d => d.behavior.update(d, sim).vel.x * deeper > 0.3)!;
+  if (opts.away) a.body.facing += Math.PI; // turned away from the QB: no view of the motion
+  const free = a.behavior.update(a, sim); // his zone play, before any motion
+  sim.windupAt = sim.t - (opts.ago ?? 0.4);
+  const planted = a.behavior.update(a, sim);
+  let after = planted;
+  if (opts.pulledAgo !== undefined) {
+    // The motion is pulled down (a pump) `pulledAgo` s ago.
+    sim.windupAt = -1; sim.windupEndAt = sim.t - opts.pulledAgo;
+    sim.t += 1e-6;
+    after = a.behavior.update(a, sim);
   }
-  // The two nearest eligible receivers, one each side of him.
-  const recs = sim.offense.filter(o => o !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot) && o.pos.x > sim.los + 3);
-  const left = recs.filter(r => r.pos.y < a.pos.y).sort((p, q) => Math.abs(p.pos.y - a.pos.y) - Math.abs(q.pos.y - a.pos.y))[0];
-  const right = recs.filter(r => r.pos.y >= a.pos.y).sort((p, q) => Math.abs(p.pos.y - a.pos.y) - Math.abs(q.pos.y - a.pos.y))[0];
-  const target = pointAt === 'left' ? left : right;
-  // The QB in his throwing motion, shoulders to `target` (what the defender sees).
-  sim.windupAt = sim.t - 0.4;
-  const see = sim.see.bind(sim);
-  sim.see = (who, t, delay) => {
-    const s = see(who, t, delay);
-    return t === sim.qb ? { ...s, facing: Math.atan2(target.pos.y - sim.qb.pos.y, target.pos.x - sim.qb.pos.x) } : s;
-  };
-  sim.t += 1e-6; // a fresh look (the eyes read is cached per instant)
-  const command = a.behavior.update(a, sim);
-  return { command, side: Math.sign(target.pos.y - a.pos.y), speed: Math.hypot(command.vel.x, command.vel.y), tags: a.tags };
+  const away = (c: { vel: { x: number; y: number } }) => c.vel.x * deeper;
+  return { a, free, planted, after, away, tags: a.tags };
 }
 
-describe('SHOULDER_READ: an underneath defender reading the QB breaks on the motion toward his shoulders', () => {
-  it('off: no lean before the ball is out; on: he moves toward the receiver the QB faces', async () => {
-    const off = await windup('0', 'right'), on = await windup('1', 'right');
-    expect(off.tags.has('shoulder-read')).toBe(false);
-    expect(on.tags.has('shoulder-read')).toBe(true);
-    expect(Math.sign(on.command.vel.y)).toBe(on.side);
+describe('SHOULDER_READ: the underneath plant on the throwing motion', () => {
+  it('off: he keeps dropping; on: he stops his drop and keeps his lateral zone play', async () => {
+    const off = await windup('0'), on = await windup('1');
+    expect(off.tags.has('plant')).toBe(false);
+    expect(off.away(off.planted)).toBeGreaterThan(0.3);
+    expect(on.tags.has('plant')).toBe(true);
+    expect(on.away(on.free)).toBeGreaterThan(0.3);
+    expect(on.away(on.planted)).toBe(0);
+    expect(on.planted.vel.y).toBeCloseTo(on.free.vel.y, 6);
   });
-  it('a look-off moves him the wrong way', async () => {
-    const lookLeft = await windup('1', 'left');
-    expect(lookLeft.tags.has('shoulder-read')).toBe(true);
-    expect(Math.sign(lookLeft.command.vel.y)).toBe(lookLeft.side);
+  it('a quick motion he has not yet seen (under his observation delay) gives him nothing', async () => {
+    const quick = await windup('1', { ago: 0.02 });
+    expect(quick.tags.has('plant')).toBe(false);
+    expect(quick.away(quick.planted)).toBeGreaterThan(0.3);
   });
-  it('a disciplined defender commits less of his break before the ball is out', async () => {
-    const loose = await windup('1', 'right', 10), disciplined = await windup('1', 'right', 95);
-    expect(disciplined.speed).toBeLessThan(loose.speed);
+  it('turned away from the QB he does not see the motion', async () => {
+    const away = await windup('1', { away: true });
+    expect(away.tags.has('plant')).toBe(false);
+  });
+  it('a pump plants him; he restarts his drop only after seeing the ball pulled down', async () => {
+    const justPulled = await windup('1', { pulledAgo: 0.01 });
+    expect(justPulled.tags.has('plant-restart')).toBe(false);
+    expect(justPulled.away(justPulled.after)).toBe(0);
+    const seenPulled = await windup('1', { ago: 0.6, pulledAgo: 0.45 });
+    expect(seenPulled.tags.has('plant-restart')).toBe(true);
+    expect(seenPulled.away(seenPulled.after)).toBeGreaterThan(0.3);
   });
 });

@@ -267,6 +267,15 @@ const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
  * presence stays on his bar), and expects a flick when the rush arrives before the release; how well he anticipates it
  * is set by his knowledge (decision-making and experience), with error both ways. */
 const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
+/** DROP_BELIEF (experimental, off; DROP_BELIEF=1 turns it on): his belief of how often a ball that reaches his
+ * receiver untouched is dropped, by the receiver's hands. Off: 0.12 - 0.1·hands. On natural league throws on engine-47
+ * (CATCH_CARRY, HANDS_CUE, CATCH_SPEED, CATCH_CHOICE on; 3,872 reached and not defended, 290 drops) the observed rate
+ * was 0.165 - 0.13·hands (fitted on one half of the games, within 0.004 on the other), about 0.025 above his belief at
+ * every hands level (docs/reviews/2026-11-12-drop-belief.md). On: the fitted rate. His knowledge (decision-making and
+ * experience) sets how well he knows it, with error both ways. Re-read when the catch rules change. */
+const DROP_BELIEF = process.env.DROP_BELIEF === '1';
+const DROP_BASE = 0.165;
+const DROP_HANDS = 0.13;
 /** INT_BELIEF (experimental, off; INT_BELIEF=1 turns it on): his interception belief, shaped like how picks happen.
  * Off, each defender's path undercut (a touch on the ball in flight) adds to the risk as if every touch were a pick,
  * and a contested catch point is priced lightly. On natural league throws (engine-47 candidate: CATCH_CARRY,
@@ -577,7 +586,7 @@ export class QBPass implements Behavior {
         if (pin > 0) {
           if (sim.dice('throw', a).chance(pin)) {
             this.phase = 'set'; this.pending = null; this.readStart = t;
-            sim.windupAt = -1; sim.deliveryAt = -1;
+            sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
             return stand();
           }
         }
@@ -594,6 +603,7 @@ export class QBPass implements Behavior {
           this.readStart = t;
           sim.windupAt = -1;
           sim.deliveryAt = -1;
+          sim.windupEndAt = t;
           sim.event('pump', a);
           return stand();
         }
@@ -1342,14 +1352,19 @@ export class QBPass implements Behavior {
     for (const [dx, dy] of [[0.8 * k, 0], [-0.8 * k, 0], [0, k], [0, -k]]) {
       intRisk += 0.25 * at({ x: point.x + dx, y: clamp(point.y + dy, 0, FIELD_WIDTH), z: point.z }).intRisk;
     }
-    const P = pOpen * pClear * pAcc * (0.88 + 0.1 * r.r('hands'));
+    // DROP_BELIEF: how often a ball that reaches his receiver untouched is dropped, by the receiver's hands, as he
+    // knows it; an error both ways for the less experienced.
+    const hands = DROP_BELIEF
+      ? 1 - clamp((DROP_BASE - DROP_HANDS * r.r('hands')) * Math.exp((1 - know) * 0.3 * a.mind.judgment('drop-belief')), 0.005, 0.5)
+      : 0.88 + 0.1 * r.r('hands');
+    const P = pOpen * pClear * pAcc * hands;
     const depth = point.x - sim.los;
     const gain = depth + 1.5 + 3.5 * pOpen;
     const toSticks = sim.firstDownX - sim.los;
     const sticksBonus = depth >= toSticks ? 3 : 0;
     // An incompletion costs a down (~3 yards of value); a pick costs ~45.
     const value = P * (gain + sticksBonus + 2) - (1 - P) * 3 - intRisk * 45;
-    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands: 0.88 + 0.1 * r.r('hands'),
+    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands,
       intPath: aimed.intPath, intJump: aimed.intJump, intContest: aimed.intContest } };
   }
 
