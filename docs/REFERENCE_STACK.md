@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-32`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-33`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,19 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-33: `PEDAL_CAP` on, the backpedal is the slowest way to go backward (2026-11-12)
+
+Defense #597. A physics repair found while building the deep defender's carry (C17). The facing cap fell from forward to side-on and then rose again to the backpedal (CB 0.63 side-on, 0.75 backpedal), so a defender never needed the angles between square and turned. NFL tracking (BDB 2025, defensive backs and linebackers before the throw, p95 speed by the angle between body and travel, as a share of the player's own top speed in the sample) falls all the way: CB .97 / .90 / .82 / .74 / .65 / .59 / .56 from forward to backpedal. For CB, S and LB the backpedal cap is now his side-on cap times the position's tracked ratio (CB 0.76, S 0.84, LB 0.79), spread ±0.06 by coverage skill and always below side-on: a CB pedals at about 4.9 yd/s (was 7.3; NFL p95 about 4.5). The ratio is used because the NFL shares are of pre-throw speed, not true top speed, and a within-group ratio cancels that. Forward, side-on and offensive players are unchanged. The NFL figures are speeds players chose; the shape is the evidence and the level is estimated.
+
+Checks (`8bb6e506` on engine-32): full suite 4274 pass with the two known research failures. Fixed run set, stack against stack + `PEDAL_CAP=1`, 1,321 runs paired: mean under 20 3.88 → 3.92 (paired +0.05, SE 0.05), 10+ 7.3 → 7.8%, missed 0.253 → 0.260, broken 0.120 → 0.131 a run; no family beyond its SE. Offensive-line pass-set depth and speed identical (Defense). Paired league scorecards, 16 games an arm:
+
+| seed | pass TD rate | yards an attempt | INT rate | YAC a reception | sack rate |
+|---|---|---|---|---|---|
+| 11 | 7.9 → 9.0% (moved) | 9.87 → 9.92 | 2.0 → 2.9% | 7.62 → 7.27 | 2.5 → 3.0% |
+| 23 | 9.4 → 8.6% | 10.49 → 9.79 (moved) | 2.3 → 2.5% | 7.39 → 6.68 | 2.4 → 3.1% |
+
+The two seeds point opposite ways on scoring; read as divergence. Alone it changes coverage little, because the old turn rule opens the hips early anyway; it is the base the progressive opening in `CUSHION_BREAK` needs. Linebacker drop depth barely moves (3.50 → 3.45 yd at 1.5 s against the NFL's 2.31): our drops are too deep for another reason, logged.
 
 ## engine-32: `FORECAST_BREAK` on, the quarterback expects a flat to break when it does (2026-11-12)
 
