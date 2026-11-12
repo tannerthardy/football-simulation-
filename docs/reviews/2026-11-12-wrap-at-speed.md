@@ -383,3 +383,40 @@ kind of reference: an unlocked hold's capacity against the holder's weight at th
 
 Locked wraps also bind the stride less than expected (3–5 of 16–24). Many are hip holds (leg share < 0.65), where the
 statics says a hanging holder cannot stop the stride. That is the honest high-tackle case, not a defect.
+
+## HANG_AIRBORNE + HANG_GRIP: game read, adverse, explained (2026-11-12)
+
+Engine-38 (develop 814192c6 merged), sim-export seeds 201 and 301, 16 games each, off against both flags.
+`finish_split.py` against the NFL.
+
+| | off 201 / 301 | on 201 / 301 | NFL |
+|---|---|---|---|
+| standardised mean after contact (NFL on our mix about 2.1) | 3.28 / 2.72 | 3.87 / 3.56 | 2.18 |
+| play over within 1 s | 49 / 53% | 47 / 48% | 61% |
+| broke | 7 / 6% | **24 / 24%** | — |
+| second defender | 49 / 49% | 36 / 37% | — |
+| missed | 8 / 6% | 9 / 6% | — |
+| behind, holder 4–6 (yd p50) | 1.1 / 1.0 | 2.1 / 2.0 | 0.9 |
+| side, holder > 6 | 4.4 / 3.8 | 6.6 / 3.8 | 1.9 |
+
+`finish-trace.mts` (seed 101, 8 games, 80 wraps):
+- Grips broken: 6 off, 28 on, of which 17 within 0.5 s.
+- With both flags, 23 of 51 holders who fell while holding tore their grip during the fall. Off: 1 of 45.
+
+**Cause: the rule's tear at the ankles.**
+- In games a grip's capacity is max(wrap law, two hands on the jersey), about 650 for a CB, × 0.7 off his feet ≈ 450.
+- An airborne holder's whole weight is about 900. So almost every diving holder's hands slide down to the ankles and come
+  off, including tackles that held before.
+- That is wrong for a closed wrap round the legs. Locked arms around a leg carry the hanging weight by geometry: they
+  can slide down the leg, but at the ankles the foot arrests them. That is the shoestring tackle, with the longest lever
+  on the stride.
+- Only an open grip (hands on cloth, one arm, an unclosed wrap) slips off over the foot.
+
+Not a candidate as it stands.
+
+Proposed second attempt (not built):
+- A locked wrap of the legs (lock ≥ 0.5, two arms) slides under overload to the ankles and holds there, carrying its
+  capacity at the ankle lever.
+- An open grip (lock < 0.5, or one arm) slides and comes off at the ankles, as now.
+- The stride comparison applies throughout the slide at the current hold height. That is already so; Integration asked
+  to confirm it.
