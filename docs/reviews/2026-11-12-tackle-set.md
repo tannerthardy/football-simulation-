@@ -970,3 +970,74 @@ Off: inside 55%, inside at the rep's start 18%, power 64%.
    ordered next.
 3. **Layer (ii) is closed** after two attempts. Neither the inside-half request nor the press changes the crossing,
    because the crossings that matter under the anchor are not across the face.
+
+# The anchor: proposal (Flex, 2026-11-12, after set A)
+
+## Gates
+
+All on set A's 2 x 16 pass read (seeds 201-216 and 301-316, about 2,700 dropbacks per arm), with the same code run
+on NFL 2022 tracking (9,713 dropbacks). Tools: `pressure-source.py` (now with sacks per pressure), `tackle-retreat.py`.
+
+1. **The edge rusher still in front of his tackle when he comes within 2 yd of the QB.**
+   - Share of all pressure: 31% with A (off 35%), against the NFL's 9%.
+   - Converted to a sack: 3% with A (off 6%), against the NFL's 20%.
+   - These are tackles carried back into the QB's space with the rusher still on them. Every other presser
+     converts about as the NFL's do (A about 18% against 19%).
+2. **Real pressure** (all pressure except that class): 21.6% of dropbacks with A, against the NFL's 29.9%.
+3. **The retreat curve** (tackle engaged, rusher in front; x-velocity p50, yd/s; tackle minus QB depth):
+
+| time since snap | NFL | A (201 \| 301) | NFL depth over the QB | A |
+|---|---|---|---|---|
+| 1.5-2.0 s | −2.75 | −3.25 \| −3.25 | +2.4 | +2.8 |
+| 2.0-2.5 s | −2.25 | −3.25 \| −3.25 | +2.1 | +2.0 |
+| 2.5-3.0 s | −1.50 | −2.75 \| −2.75 | +1.6 | +0.9 |
+| 3.0-4.0 s | −0.50 | −1.50 \| −1.50 | +1.0 | −0.1 / −0.4 |
+
+The NFL rusher slows with his tackle (−3.5 / −2.25 / −1.25 / −0.25); ours keeps the tackle's pace (−3.25 / −3.0 /
+−2.75 / −1.75).
+
+Guards, the costs the anchored counterfactuals showed: edge win (NFL 13%), inside at pressure (6.4%, free 48%), past
+outside (3.8%), inside crossings that come around behind him (34%), sacked (6.7%), pressured (32.9%). Run report
+unchanged: the anchor is a pass set only.
+
+## What is known
+
+- **The pair moves at the speed the tackle asks for** (stage 3 re-diagnosis). Stop his kick once engaged (A2) and the
+  retreat curve matches the NFL's. Take the lean off the rusher (B) and it barely moves. When asked to hold he is at
+  capacity, but he arrives moving at kick speed. Only about two-thirds of his traction points at the rusher; the rest
+  goes to the mirror. No strength change is indicated.
+- **A tackle who simply stops is run around.** TACKLE_ANCHOR: 93% of its inside losses are rushers 1.5 yd deeper than
+  him, beaten around and turning in behind (Integration's warning: settle against speed and you are run around).
+  Edge win 18-25% against 13%.
+- **The beat's measure is settled.** PAST_ALONG_PATH (in A) makes "beaten" behind him along the man's own path, so
+  the retreat is no longer needed to keep phi below 1. Its ride keeps a man past him within reach.
+
+## Proposal: kick while he is gaining on your hip, sit when he is not
+
+The coached rule: kick-slide to keep your outside shoulder on his inside shoulder, and when he stops gaining on you
+or converts to power, sit and anchor. Built from what the tackle sees, behind a flag on top of A (with TACKLE_SET's
+floor and width).
+
+1. **The signal is the rusher's progress past him along the rusher's own path**: `along` in PAST_ALONG_PATH's frame.
+   It is seen with the tackle's reaction delay, and its rate is taken over his reaction time.
+   - While the rusher is gaining on his hip (along falling faster than the tackle's own error band), he kicks at the
+     rusher's depth speed, as now.
+   - When the rusher is not gaining (along steady, or he is pressing into the tackle), he stops kicking.
+   - Attempt 1's threat rule (outside his shoulder and gaining depth) was nearly always true. Depth speed is not the
+     threat; gaining on the hip is.
+2. **Brake into the set.** The stop is a request for zero depth speed. His body's brake capacity sets the
+   deceleration, and the floor and width stay TACKLE_SET's. No timer.
+3. **Anchor before the mirror.** Sitting and pressed (hands in compression), his lateral request is what is left once
+   he holds the press: the mirror matches the man's lateral speed only up to the friction remaining after the press.
+   This is a technique choice in the controller, not a World change: the World still clips the total.
+4. **The ride.** If the rusher starts gaining again, rule 1 has him kick again. Past along the path, PAST's ride takes
+   over as now.
+
+## Before building: one diagnostic (decides rule 1)
+
+On NFL tracking and sim A, over frames with the tackle engaged and the rusher in front:
+- the rusher's along-path progress rate against the tackle, binned;
+- the tackle's x-velocity in each bin.
+
+If NFL tackles retreat with the rusher's gain and stop when it is near zero, rule 1 is the football. If they retreat
+regardless, the signal is something else (the QB's depth or the drop's timing), and I report before building.
