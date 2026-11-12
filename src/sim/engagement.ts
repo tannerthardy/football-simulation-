@@ -417,6 +417,21 @@ export const PUNCH = process.env.PUNCH === '1';
 const LOCKOUT = 0.9;
 const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
 
+/** PUNCH is pass-set technique, the blocker's choice from what his job is
+ * showing: pressing a man at arm's length is how a pass blocker keeps him off
+ * his body, and how a defender sheds a run block, so a run blocker fits tight
+ * and drives instead (with it on every block, the run report lost 0.30 yd a
+ * carry and outside-zone DL sheds at the hit doubled). A pass rep sets --
+ * except an interior lineman's run look on play-action; a draw blocker shows
+ * pass while he is still selling it. */
+function passSetTechnique(sim: PlaySim, b: Agent, e: Engagement): boolean {
+  if (e.type === 'pass') {
+    const interior = b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG';
+    return !(interior && sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake);
+  }
+  return (b.behavior as { presentingDraw?: (t: number) => boolean }).presentingDraw?.(sim.t) === true;
+}
+
 function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
   const bodies = b.profile.radius + d.profile.radius, arm = b.player.measurables.armIn / 36;
   const base = joint.extension - bodies, lock = LOCKOUT * arm;
@@ -517,7 +532,7 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
-  if (PUNCH && state.control >= 0) punch(sim, joint, h, e.defender);
+  if (PUNCH && state.control >= 0 && passSetTechnique(sim, h, e)) punch(sim, joint, h, e.defender);
   if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e, false);
 }
 
@@ -564,7 +579,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
   // PUNCH: the blocker's hands go to the man, out to lockout.
-  if (PUNCH && e.control >= 0) punch(sim, hands, b, d);
+  if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
   // A landed finesse move has the hands off for its window.

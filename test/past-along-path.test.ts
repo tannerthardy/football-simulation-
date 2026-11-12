@@ -48,3 +48,31 @@ describe('PUNCH', () => {
     expect(far.filter((r) => r.ext > 0.35 * r.arm).length / far.length).toBeGreaterThan(0.5);   // working out at him
   });
 });
+
+describe('PUNCH is pass-set technique', () => {
+  async function maxExt(concept: string, pick: (sim: any, b: any, e: any) => boolean) {
+    vi.stubEnv('PUNCH', '1'); vi.resetModules();
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    let best = 0;
+    for (const seed of [1, 2, 3, 4]) {
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover2', concept, seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
+      while (sim.phase === 'live' && sim.t < 2.5) {
+        sim.tick();
+        for (const e of sim.engagements) if (e.hands && e.control >= 0 && pick(sim, e.blocker, e)) {
+          const b = e.blocker, bodies = b.profile.radius + e.defender.profile.radius;
+          best = Math.max(best, (e.hands.extension - bodies) / (b.player.measurables.armIn / 36));
+        }
+      }
+    }
+    return best;
+  }
+  it('a run fit never extends (inside zone); a draw blocker selling pass may', async () => {
+    expect(await maxExt('iz_strong', (_s, _b, e) => e.type === 'run')).toBeLessThan(0.31);
+    expect(await maxExt('draw', (s, b, e) => e.type === 'run' && b.behavior?.presentingDraw?.(s.t))).toBeGreaterThan(0.31);
+  });
+  it('on play-action an interior lineman fits for his run look; after it he sets', async () => {
+    const interior = (b: any) => b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG';
+    expect(await maxExt('pa_post_dig', (s, b) => interior(b) && s.t < 0.35)).toBeLessThan(0.31);
+  });
+});
