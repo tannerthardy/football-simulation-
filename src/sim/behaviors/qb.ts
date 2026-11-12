@@ -241,7 +241,7 @@ const READ_PLAN = process.env.READ_PLAN !== '0';
  * extend / throw away / take the sack). Nothing is barred. Also fixes the plan's gaze: when pressure sends his eyes
  * to the back, a vertical peek or triangle is closed and an unread key is no longer watched, so his eyes are where
  * his read is. Off: the instant best of every receiver on the alarm tick, wherever he is looking. */
-const HOT_LOOK = process.env.HOT_LOOK === '1';
+const HOT_LOOK = process.env.HOT_LOOK !== '0';
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
 

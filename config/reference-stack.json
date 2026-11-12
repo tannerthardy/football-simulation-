@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-40",
+  "id": "engine-41",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -74,7 +74,7 @@
     "FIT_BLITZ_SLIDE": "on",
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
-    "HOT_LOOK": "off",
+    "HOT_LOOK": "on",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
