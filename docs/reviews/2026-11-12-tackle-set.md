@@ -1093,3 +1093,42 @@ faster in every bin. Gaining on the hip is not the signal.
 TACKLE_SET's existing braking clamp uses his unloaded brake. The read of TACKLE_SET attempt 2 (achieved −2.95 asking 0
 at 1.5-2.5 s) is the pair's momentum arriving at the floor; the derate starts the stop before the floor, where the
 NFL's does. Gates unchanged.
+
+## TACKLE_BRAKE, attempt 1 (de1e5119, off): read and diagnosis
+
+Seed 201 x 8, same base. A = PAST_ALONG_PATH + OPEN_HANDS + PUNCH; S = A + TACKLE_SET; SB = S + TACKLE_BRAKE.
+
+| | A | S | SB | NFL |
+|---|---|---|---|---|
+| dropbacks | 717 | 649 | 694 | |
+| pressured | 25.4% | 36.4% | 36.3% | 32.9% |
+| in front at pressure: share of pressure / sacked per pressure | 31.3% / 3.5% | 33.5% / 5.1% | 29.8% / 2.7% | 9% / 20% |
+| real pressure (all but in front), of dropbacks | 17.5% | 24.2% | 25.5% | 29.9% |
+| past outside | 1.7% | 2.6% | 4.9% | 3.8% |
+| inside (free then) | 4.6% (82%) | 5.7% (92%) | 5.2% (92%) | 6.4% (48%) |
+| sacked | 2.8% | 5.1% | 5.0% | 6.7% |
+| retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0+ s | −3.25 / −3.00 / −2.75 / −1.25 | −3.50 / −3.25 / −2.50 / −1.00 | −3.25 / −3.00 / −2.00 / −0.75 | −2.75 / −2.25 / −1.50 / −0.50 |
+
+TACKLE_BRAKE's own step (S → SB) is small: the late retreat moves toward the NFL's (2.5-3.0 s −2.50 → −2.00), the
+in-front share 33.5 → 29.8%. The 1.5-2.5 s retreat barely moves.
+
+Engine state (`tackle-anchor.mts`, seeds 101-103, S | SB):
+
+| phase | ticks | requested / achieved x | his ground force toward the rusher / limit (utilisation) | hands N |
+|---|---|---|---|---|
+| kicking, 1.5-2.5 s | 3150 \| 3429 | −2.62 / −3.49 \| −2.53 / −3.11 | 441 / 1526 (0.77) \| 686 / 1529 (0.79) | 1121 \| 1015 |
+| kicking, 2.5 s+ | 427 \| 561 | −1.81 / −2.53 \| −1.52 / −2.19 | 863 (0.98) \| 887 (0.99) | 1104 \| 1133 |
+| asking to hold, 1.5-2.5 s | 280 \| 144 | 0 / −2.83 \| 0 / −1.67 | 1004 (0.96) \| 1197 (0.97) | 1046 \| 845 |
+
+**Reading.**
+- In the bulk of the rep (kicking, 1.5-2.5 s) the clamp does not bind. He asks for about −2.5 and is still 1-2 yd
+  above his floor, where √(2ad) allows more. The NFL tackle achieves about what we request (−2.75 at 1.5-2.0 s).
+  Ours is carried 0.6-0.9 yd/s past his request.
+- Carried, he resists with the running-brake envelope (`kinematics.ts`: At = brake x (0.85 + 0.15 fat)). His ground
+  force toward the rusher, 686-887, is about brake x mass (6 x 142 = 852), well under his push (1530) and traction
+  (1520-1610); utilisation 0.79. A backpedalling tackle pushed back faster than he asks can only brake like a runner
+  stopping, not drive his legs into the man.
+- The NFL pair decelerates from about 2.0 s (rusher −3.5 → −2.25 in 0.5 s, about 2.5 yd/s²). Ours loses about
+  0.5 yd/s per 0.5 s.
+- So the next lever is not a controller rule: it is how a body pushed back through its hands resists, which is a
+  shared capacity question (the brake envelope vs leg drive in contact). Not changed; for Integration.
