@@ -109,7 +109,7 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
  * upfield of him (1.9 when the catcher is running across, 1.4 when moving
  * away); ours 0.3-0.6 (BDB 2025 dropbacks vs engine-34; aimside.py). Leading
  * along the route instead (attempt 1) aimed behind settling catchers. */
-const ARRIVE_LEAD = process.env.ARRIVE_LEAD === '1';
+const ARRIVE_LEAD = process.env.ARRIVE_LEAD !== '0';
 /** An underneath zone player: a zone seat or zone-eyed match defender without deep responsibility. */
 function underneathZone(a: Agent): boolean {
   const b = a.behavior as { plastersScramble?: boolean; zoneEyes?: boolean } | undefined;

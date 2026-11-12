@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-39",
+  "id": "engine-40",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -23,7 +23,7 @@
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
-    "ARRIVE_LEAD": "off",
+    "ARRIVE_LEAD": "on",
     "ATTACK_LANDMARK": "off",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
