@@ -420,3 +420,51 @@ Proposed second attempt (not built):
 - An open grip (lock < 0.5, or one arm) slides and comes off at the ankles, as now.
 - The stride comparison applies throughout the slide at the current hold height. That is already so; Integration asked
   to confirm it.
+
+## HANG_GRIP attempt 2: not repaired; stopped for re-diagnosis (2026-11-12)
+
+The rule: at the ankles the foot arrests the closed share of the wrap (capacity + lock × the hanging weight); an open
+grip slips off.
+
+Bench (hang-bench): lock 0.25 tears; lock 0.56 slides to the ankles and holds (the runner is down at 0.25–0.30 s,
+2.6–3.3 yd); lock 0.9 does not slide (a leg wrap binds, a hip hold does not).
+
+HANG_SLIDE at 0.75 / 1.5 / 3 yd/s gives identical outcomes. The World's own horizontal slip, from a holder slower than
+the runner, carries the hold to the ankles within the first 0.05 s. The slide rate only matters for holds that are
+overloaded high on the leg without slipping horizontally first.
+
+Games (engine-38, seeds 201 and 301, 16 games each, off against both flags):
+
+| | off | attempt 1 | attempt 2 |
+|---|---|---|---|
+| broke | 7 / 6% | 24 / 24% | 10 / 11% |
+| second defender | 49 / 49% | 36 / 37% | 44 / 41% |
+| standardised after contact (NFL on our mix about 2.1) | 3.28 / 2.72 | 3.87 / 3.56 | 3.39 / 3.12 |
+| runs, standardised (NFL on our mix about 4.0) | 4.40 / 4.33 | — | 4.63 / 3.76 |
+
+Traces (seed 101, 80 wraps): holders who fell while holding, by grip at the start of the fall, as tore / bound out of n:
+
+| | off | attempt 1 | attempt 2 |
+|---|---|---|---|
+| open (lock < 0.5) | 1 / 4 of 10 | 12 / 2 of 12 | 15 / 5 of 19 |
+| locked | 0 / 9 of 35 | 11 / 17 of 39 | 0 / 16 of 32 |
+
+Yards after the wrap p50: 2.62 off, 3.58 attempt 1, 3.61 attempt 2.
+
+**Re-diagnosis.** Locked wraps now behave as the statics says: they never tear and bind twice as often. The adverse
+result is the open grips: 15 of 19 tear under an airborne holder, where off they held and the play ended with the
+second defender.
+
+That comes down to the grip capacity law, not to this rule:
+- The two-hands-on-the-jersey capacity is about 0.75 of the holder's body weight (handHold: per hand
+  m × (0.42 + 0.16 strength) × g, × 0.75 for a slick jersey).
+- × 0.7 off his feet, that leaves about half his weight.
+- A fit athlete can dead-hang his own body weight from two hands.
+- The law was set for a holder on his feet pulling horizontally (a runner tearing through hands). Under a hanging load
+  it understates what hands on cloth or a leg can carry.
+
+Routing the full weight through it therefore tears what should hold. That is shared grip physics, outside these flags.
+Both flags stay off.
+
+Next question (not built): the grip capacity against a hanging (vertical, sustained) load versus a horizontal tear.
+Reference: dead-hang grip as a fraction of body weight, by grip on cloth or round a limb.
