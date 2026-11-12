@@ -10,7 +10,7 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import type { MoveCommand } from '../../physics/kinematics.js';
+import { directionalSpeedFactor, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -662,12 +662,26 @@ const MAN_PHASE = process.env.MAN_PHASE === '1';
  * help; ours 51-91% (BDB 2025 weeks 1-2 vs leagueSample games, nflcue.py /
  * simcue.mts). Pure man (Cover 0/1, 2-Man) keeps its own trigger. */
 const CUSHION_BREAK = process.env.CUSHION_BREAK === '1';
-/** CUSHION_BREAK: side-on to the quarterback (90 deg off the line to him), opened toward the receiver: the
- * QB stays in view while the hips run with the stem. */
-function sideOn(a: Agent, qb: Vec2, receiver: Vec2): number {
+/** CUSHION_BREAK: how far he opens his hips off the quarterback while he
+ * carries a vertical, as the output of the speed match: the smallest angle off
+ * the line to the QB (opened toward the receiver) at which his body's facing
+ * cap in the direction he runs reaches the receiver's downfield speed. A
+ * receiver his pedal can match leaves him square; a faster one opens him
+ * progressively, and he comes back toward square as the receiver throttles.
+ * The full turn (losing the QB) stays the cushion-break trigger. NFL deep
+ * defenders over a climber open 33 deg at 1.5 s to 62 deg at 3.0 s as their
+ * speed rises 3.3 -> 4.9 yd/s, turned at most 11% (BDB 2025, nflcarry.py).
+ * With today's facing curve (backpedal cap above side-on) this stays square up
+ * to the pedal cap and then jumps; it is continuous with PEDAL_CAP. */
+function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number): number {
   const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(receiver.y - a.pos.y, receiver.x - a.pos.x);
-  const f1 = toQB + Math.PI / 2, f2 = toQB - Math.PI / 2;
-  return Math.cos(f1 - toR) >= Math.cos(f2 - toR) ? f1 : f2;
+  const side = Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1;
+  const p = a.profile;
+  for (let deg = 0; deg <= 180; deg += 5) {
+    const facing = toQB + side * deg * Math.PI / 180;
+    if (p.vmax * directionalSpeedFactor(p, angleDiff(facing, heading)) >= need) return facing;
+  }
+  return toQB + side * Math.PI;
 }
 /** CUSHION_BREAK: has the receiver broken the cushion of a defender over him?
  * He opens to run when the cushion left is less than what the receiver closes
@@ -997,9 +1011,13 @@ export class ManCoverage implements Behavior {
     // in view) at the speed the depth check asks for.
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
     if (breakOn && !this.hipsOpen && !broken()) {
-      if (selected === command || selected.facing !== undefined) return command;
-      a.tags.add('side-on-carry');
-      return withFacingTechnique({ ...selected, facing: sideOn(a, sim.see(a, sim.qb).pos, seen.pos) }, { label: 'man-side-on', key: seen.vel });
+      const req = selected.facing === undefined ? selected : command;
+      const qbSeen = sim.see(a, sim.qb).pos;
+      const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x), Math.max(0, vx));
+      const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
+      if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
+      a.tags.add('open-carry');
+      return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
     }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
@@ -1284,9 +1302,13 @@ export class ZoneCoverage implements Behavior {
       // when the pedal cannot keep it.
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
       if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
-        if (selected === command || selected.facing !== undefined) return command;
-        a.tags.add('side-on-carry');
-        return withFacingTechnique({ ...selected, facing: sideOn(a, sim.see(a, sim.qb).pos, deepest.pos) }, { label: 'deep-side-on', key: deepest.vel });
+        const req = selected.facing === undefined ? selected : command;
+        const qbSeen = sim.see(a, sim.qb).pos;
+        const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x), Math.max(0, deepest.vel.x));
+        const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
+        if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
+        a.tags.add('open-carry');
+        return withFacingTechnique({ ...req, facing }, { label: 'deep-open-carry', key: deepest.vel });
       }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined

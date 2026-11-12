@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function step(flag: string, cushion: number, receiverVx = 6.5, protectDepth = true) {
+async function step(flag: string, cushion: number, receiverVx = 6.5, protectDepth = true, backpedal?: number) {
   vi.resetModules();
   vi.stubEnv('CUSHION_BREAK', flag);
   const { Rng } = await import('../src/core/rng.js');
@@ -29,6 +29,7 @@ async function step(flag: string, cushion: number, receiverVx = 6.5, protectDept
   r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: receiverVx, y: 0 };
   a.body.pos = { x: r.pos.x + cushion, y: r.pos.y - .7 }; a.body.vel = { x: 5, y: 0 }; a.body.facing = Math.PI;
   a.recog!.read = 'pass';
+  if (backpedal !== undefined) a.body.profile = { ...a.body.profile, backpedal };
   const see = sim.see.bind(sim);
   sim.see = (who, target, delay) => target === r
     ? { pos: { ...r.pos }, vel: { ...r.vel }, facing: 0, stance: null, pose: 'up', carrying: false, age: .2 }
@@ -101,5 +102,22 @@ describe('CUSHION_BREAK: a carry plays a shoulder off the receiver\'s line', () 
     const on = await carry('1');
     expect(on.lateral).toBeGreaterThan(on.radii + 0.3);
     expect(on.min).toBeGreaterThan(on.radii + 0.3);
+  });
+});
+
+describe('CUSHION_BREAK: he opens off the QB as far as the speed match needs', () => {
+  // A body whose backpedal is the slowest way back (as under PEDAL_CAP): the
+  // opening is continuous in the receiver's speed and stays near square for a
+  // receiver his pedal can match.
+  const angle = async (vx: number) => {
+    const r = await step('1', 4, vx, true, 0.48);
+    return r.command.facing === undefined ? 180 : Math.abs(Math.atan2(Math.sin(r.command.facing - Math.PI), Math.cos(r.command.facing - Math.PI))) * 180 / Math.PI;
+  };
+  it('opens more as the receiver gets faster, and a slow one never takes him past 45 deg', async () => {
+    const slow = await angle(3), mid = await angle(6), fast = await angle(8);
+    expect(slow).toBeLessThanOrEqual(45);
+    expect(mid).toBeGreaterThan(slow);
+    expect(fast).toBeGreaterThan(mid);
+    expect(fast).toBeLessThan(180);
   });
 });
