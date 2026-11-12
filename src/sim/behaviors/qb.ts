@@ -132,11 +132,13 @@ const PICTURE_AGE = process.env.PICTURE_AGE === '1';
  * becomes when the existing scramble check finds a lane. Off, he walks toward a
  * set point nudged by rushers within 3.5 yd at 0.45-0.6 of his speed. */
 const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
-/** Experimental (BLOCK_SEEN=1, off): the QB reads a rusher still in a block
- * from what he sees of it (the blocker's body in the rusher's path to him:
- * QB_FEEL's geometry), never from the rep's private win score. QB_FEEL's
- * pocket move is not part of it. Off (and QB_FEEL off), held() credits any
- * engaged rusher 0.35-1.75 s from engagement.win. */
+/** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
+ * The QB reads a rusher as held only from what he sees: an offensive body in
+ * contact with the rusher and on his path to the QB (seenHold), never from the
+ * sim's engagement record or the rep's private win score, so a blocker who has
+ * come off holds nothing. QB_FEEL's pocket move is not part of it. Off (and
+ * QB_FEEL off), held() credits any engaged rusher 0.35-1.75 s from
+ * engagement.win, which rises as the win score falls while he closes. */
 const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
 /** Experimental (SET_DECIDE=1, off): one decision under pressure. When where
  * he stands he no longer has the time he still needs (the rest of his current
@@ -695,8 +697,9 @@ export class QBPass implements Behavior {
    * the block is. Good pocket presence reads a rep being lost before the
    * rusher is free; poor pocket presence only notices when he's loose. */
   private held(a: Agent, d: Agent, sim?: PlaySim): number {
+    if (BLOCK_SEEN && sim) return this.seenHold(a, d, sim);
     if (!d.engagement) return 0;
-    if ((QB_FEEL || BLOCK_SEEN) && sim) {
+    if (QB_FEEL && sim) {
       // What he sees: the rusher's path to him and the blocker's body on it.
       const r = this.felt(a, sim, d).pos, b = this.felt(a, sim, d.engagement.blocker).pos;
       const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
@@ -710,6 +713,28 @@ export class QBPass implements Behavior {
     }
     const feltWin = Math.min(1, d.engagement.win) * (0.35 + 0.65 * a.r('pocketPresence'));
     return 0.35 + 1.4 * (1 - feltWin);
+  }
+
+  /** BLOCK_SEEN: the hold he sees on a rusher -- an offensive body in contact
+   * with him (as he sees them, the rusher's body within the blocker's arm's
+   * length: centres within the blocker's reach + the rusher's radius) and on his
+   * path to the QB. Neither the sim's engagement record nor its win score: a
+   * blocker who has come off (or never was there) holds nothing, and a rusher
+   * level with or past the blocker's edge is as near as he looks. */
+  private seenHold(a: Agent, d: Agent, sim: PlaySim): number {
+    const r = this.felt(a, sim, d).pos;
+    const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
+    let hold = 0;
+    for (const o of sim.offense) {
+      if (o === a || o.isDown(sim.t)) continue;
+      const b = this.felt(a, sim, o).pos, width = d.profile.radius + o.profile.radius;
+      if (Math.hypot(b.x - r.x, b.y - r.y) > o.profile.reach + d.profile.radius) continue;
+      const along = ((b.x - r.x) * px + (b.y - r.y) * py) / L;
+      const off = Math.abs((b.x - r.x) * py - (b.y - r.y) * px) / L;
+      if (along <= 0 || along >= L || off >= width) continue;
+      hold = Math.max(hold, (0.2 + (width - off) / 2) * (0.6 + 0.4 * (1 - a.r('pocketPresence'))));
+    }
+    return hold;
   }
 
   private pressure(a: Agent, sim: PlaySim): { time: number; agent: Agent | null; dist: number } {
