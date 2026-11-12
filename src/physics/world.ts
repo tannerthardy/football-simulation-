@@ -380,8 +380,13 @@ const HANG_AIRBORNE = process.env.HANG_AIRBORNE === '1';
  * up to its grip capacity (gripCapacity, off-feet factor included); the
  * moment it passes to the runner's legs is that carried load times the lever.
  * Overloaded, his hands slide down the legs (the hold's leg share grows, a
- * lower hold) at HANG_SLIDE times the overloaded fraction; overloaded at the
- * ankles, they come off (a torn grip). Off, the hanging weight binds the
+ * lower hold) at HANG_SLIDE times the overloaded fraction, carrying their
+ * capacity as they slide. At the ankles the foot arrests the closed share of
+ * the wrap (capacity + lock x the hanging weight): a closed wrap holds there
+ * with the longest lever on the stride (the shoestring); an open grip slips off
+ * over the foot (a torn grip). The runner still tears any hold horizontally
+ * by the grip's own slip. Attempt 1 tore every overloaded hold at the ankles
+ * and broke 24% of tackles (off 6-7%). Off, the hanging weight binds the
  * stride whatever the grip, so a loose one-arm grab hangs as well as a locked
  * wrap (three-arm read: unlocked holds bound the stride in the fall 8-10 of
  * 10-11, locked 3-4 of 16-18). */
@@ -2195,10 +2200,20 @@ export class World {
         // HANG_GRIP: what the hold cannot carry slides his hands down the legs.
         const cap = this.gripCapacity(jt);
         if (hangForce > cap) {
-          const over = (hangForce - cap) / hangForce;
-          if (jt.legs >= 1) { jt.broken = true; continue; }
-          jt.legs = Math.min(1, jt.legs + HANG_SLIDE * over * h / (0.55 * this.comHeight[ib]));
-          hangForce = cap;
+          if (jt.legs >= 1) {
+            // At the ankles the foot arrests the closed share of the wrap: arms
+            // locked round the leg carry the rest of the weight by geometry
+            // (lock: how closed the wrap is, the same lock by which LEGS_HELD
+            // counts 1 + lock legs held). An open grip (lock 0) slips off over
+            // the foot; a closed one holds there (the shoestring), until the
+            // runner tears it horizontally as any hold (the grip's own slip).
+            const carried = cap + clamp(jt.lock ?? 0, 0, 1) * hangForce;
+            if (hangForce > carried) { jt.broken = true; continue; }
+          } else {
+            const over = (hangForce - cap) / hangForce;
+            jt.legs = Math.min(1, jt.legs + HANG_SLIDE * over * h / (0.55 * this.comHeight[ib]));
+            hangForce = cap;
+          }
         }
       }
       const hang = hangForce * lever;

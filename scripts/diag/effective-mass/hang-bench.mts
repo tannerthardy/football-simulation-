@@ -42,7 +42,7 @@ for (const v0 of [5, 7]) for (const legs of [0.5, 0.8]) for (const lock of [0.25
     const refDrag = landed < 0 ? 0 : 0.75 * mh * G;
     const bound = w.strideHolds?.[0] ?? 0; boundEver = Math.max(boundEver, bound);
     const drag = ((jt.normalForceOnB?.x ?? 0) + (jt.tangentForceOnB?.x ?? 0));
-    lines.push(`  ${f(t)}s v ${f(r.vel.x)} ${r.support.state} | holder ${h.support.state} | grip drag ${f(drag, 0)} (ref after landing ${f(-refDrag, 0)}) | runner ground ${f(rep.groundImpulse[0].x / 0.05, 0)} | hang moment World ${f(worldHang, 0)} ref ${f(refHang, 0)} vs hip ${f(hip, 0)} | stride bound ${f(bound)}${jt.broken ? ' BROKEN' : ''}`);
+    lines.push(`  ${f(t)}s v ${f(r.vel.x)} ${r.support.state} | holder ${h.support.state} | grip drag ${f(drag, 0)} (ref after landing ${f(-refDrag, 0)}) | runner ground ${f(rep.groundImpulse[0].x / 0.05, 0)} | hang moment World ${f(worldHang, 0)} ref ${f(refHang, 0)} vs hip ${f(hip, 0)} | stride bound ${f(bound)} | legs ${f(jt.legs)}${jt.broken ? ' BROKEN' : ''}`);
     if (fell > 0 && t > fell + 0.2) break;
   }
   const hip = w.hipTorque ? w.hipTorque(0) : NaN;
