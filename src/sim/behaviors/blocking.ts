@@ -23,7 +23,8 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
+import { paRunLook } from '../pa-look.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, PUNCH, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -307,7 +308,8 @@ export class PassProtector implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     // Play action: everyone shows a low, aggressive pad level at first.
-    a.stance = isOL(a) && sim.t < 0.35 && sim.offCall.kind === 'pass' && sim.offCall.pass?.fake ? 'low' : 'high';
+    a.stance = isOL(a) && (PUNCH ? paRunLook(a, sim, a.engagement?.defender ?? this.coord.assigned.get(a) ?? null)
+      : sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake) ? 'low' : 'high';
     const home = this.coord.homeY.get(a) ?? a.pos.y;
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
@@ -536,6 +538,8 @@ function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null
  */
 function runLook(a: Agent, sim: PlaySim): boolean {
   const interior = a.slot === 'LG' || a.slot === 'C' || a.slot === 'RG';
+  // PUNCH: the look ends on contact, depth, his man's declared rush or his patience (pa-look.ts), not a clock.
+  if (PUNCH) return interior && a.stance === 'low';
   return interior && sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake;
 }
 

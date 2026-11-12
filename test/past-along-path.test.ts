@@ -71,8 +71,45 @@ describe('PUNCH is pass-set technique', () => {
     expect(await maxExt('iz_strong', (_s, _b, e) => e.type === 'run')).toBeLessThan(0.31);
     expect(await maxExt('draw', (s, b, e) => e.type === 'run' && b.behavior?.presentingDraw?.(s.t))).toBeGreaterThan(0.31);
   });
-  it('on play-action an interior lineman fits for his run look; after it he sets', async () => {
-    const interior = (b: any) => b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG';
-    expect(await maxExt('pa_post_dig', (s, b) => interior(b) && s.t < 0.35)).toBeLessThan(0.31);
+  it('on play-action the run look ends on contact, depth, the man\'s declared rush or the lineman\'s patience -- not a clock', async () => {
+    vi.stubEnv('PUNCH', '1'); vi.resetModules();
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    const { paRunLook } = await import('../src/sim/pa-look.js');
+    const make = (concept: string) => new PlaySim(nativeTraceSetup({ coverage: 'cover2', concept, seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false })) as any;
+    let sim = make('four_verts');
+    expect(paRunLook(sim.slot('LG'), sim, null)).toBe(false);                 // no fake, no look
+    sim = make('pa_post_dig'); const lg = sim.slot('LG'), dir = sim.attackDir('O');
+    sim.t = 0.5; expect(paRunLook(lg, sim, null)).toBe(true);                 // past the old 0.35 s clock, still selling
+    lg.body.pos = { x: sim.los + dir * 1.2, y: lg.pos.y };
+    expect(paRunLook(lg, sim, null)).toBe(false);                             // a yard past the line: over, and stays over
+    lg.body.pos = { x: sim.los - dir * 0.5, y: lg.pos.y }; expect(paRunLook(lg, sim, null)).toBe(false);
+    const rg = sim.slot('RG'); sim.t = 0.36 + 0.65 * rg.r('discipline');
+    expect(paRunLook(rg, sim, null)).toBe(false);                              // his patience is his discipline
   });
+
+  it('play-action, played out: every interior lineman engaged in the look ends it, and the look is not a fixed 0.35 s', async () => {
+    vi.stubEnv('PUNCH', '1'); vi.resetModules();
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    let engagedLow = 0, engaged = 0; const ends: number[] = [];
+    for (const seed of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover2', concept: 'pa_post_dig', seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
+      const was = new Map<any, boolean>(), wasEngaged = new Map<any, boolean>();
+      while (sim.phase === 'live' && sim.t < 1.5) {
+        sim.tick();
+        for (const a of sim.offense.filter((x: any) => x.slot === 'LG' || x.slot === 'C' || x.slot === 'RG')) {
+          // Engaged since the last tick (stance is set before this tick's engagement forms).
+          if (a.engagement && wasEngaged.get(a)) { engaged++; if (a.stance === 'low') engagedLow++; }
+          wasEngaged.set(a, !!a.engagement);
+          if (was.get(a) && a.stance !== 'low') ends.push(sim.t);
+          was.set(a, a.stance === 'low');
+        }
+      }
+    }
+    expect(engaged).toBeGreaterThan(50);                                         // real engagements, not a vacuous pass
+    expect(engagedLow).toBe(0);                                                  // contact ends the look
+    expect(new Set(ends.map((t) => t.toFixed(2))).size).toBeGreaterThan(3);      // ends vary: no common clock
+  });
+
 });

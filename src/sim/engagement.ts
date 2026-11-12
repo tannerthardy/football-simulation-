@@ -421,14 +421,12 @@ const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
  * showing: pressing a man at arm's length is how a pass blocker keeps him off
  * his body, and how a defender sheds a run block, so a run blocker fits tight
  * and drives instead (with it on every block, the run report lost 0.30 yd a
- * carry and outside-zone DL sheds at the hit doubled). A pass rep sets --
- * except an interior lineman's run look on play-action; a draw blocker shows
+ * carry and outside-zone DL sheds at the hit doubled). A pass rep sets (a
+ * play-action run look ends at contact: pa-look.ts); a draw blocker shows
  * pass while he is still selling it. */
 function passSetTechnique(sim: PlaySim, b: Agent, e: Engagement): boolean {
-  if (e.type === 'pass') {
-    const interior = b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG';
-    return !(interior && sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake);
-  }
+  // Engaged on a pass rep, his play-action look (if any) has ended at the contact (pa-look.ts).
+  if (e.type === 'pass') return true;
   return (b.behavior as { presentingDraw?: (t: number) => boolean }).presentingDraw?.(sim.t) === true;
 }
 
