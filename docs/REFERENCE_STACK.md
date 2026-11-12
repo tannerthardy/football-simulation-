@@ -607,6 +607,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-35: `READ_PLAN` on, the quarterback runs a compiled read plan (2026-11-12)
+
+Rules + Coaching #592, from the owner's [read-compiler design](research/2026-11-11-qb-read-compiler-design.md). Each called play is compiled into one read plan from its route geometry and timing: pure progression by default; a key read off one defender where a high-low is live on rhythm (corner-flat, curl-flat, sail, smash, dagger and drive as clear-and-void); a triangle read; an alert glance; quick game starting on the breaking route, not the settling one; one side finished before the other; the back placed in the order by his window and side, first when he is the earliest answer; and on verticals one look that lasts until every vertical is 12 yd deep plus his processing time, then the back if nothing is winning. The quarterback executes the plan from what he sees of the key defender in his own delayed picture; pressure still takes his eyes to the outlet. Checked against 187 reads paraphrased from the playbook library ([Phase 0](reviews/2026-11-11-read-compiler-phase0.md), [Phase 1](reviews/2026-11-11-read-compiler-phase1.md)).
+
+Forced-concept panel, paired, 1,536 plays an arm, `BACK_RELEASE` on: sacks 74 → 68, INT 45 → 43, yards a play 9.67 → 9.96. The sheets' intended answer: dagger against Cover 2 .33 → .58, sail against Cover 3 .50 → .91, curl-flat against Cover 3 .75 → 1.00. Four verticals (1,600 plays an arm, NFL 3+ go routes in brackets): to a seam .420 → .449 (.109), to an outside go .073 → .102 (.327), to the back .503 → .446 (.322).
+
+It also removes a defect of engine-34: with the back released, the old rhythm outlet ("the last read") could be a deep backside route, because the back sits inside the hand-written order.
+
+Checks on the candidate (`077e8c9c`, on engine-34): full suite 4284 pass with the two known research failures; fixed run set unchanged (3.92 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | INT rate | sack rate | time to throw | scramble rate | completion | yards an attempt | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 3.3 → 2.0% (moved) | 3.5 → 3.4% | 2.72 → 2.67 (moved) | 1.5 → 2.8% (moved) | 64.3 → 65.9% | 10.24 → 10.41 | 37.1 → 39.3 |
+| 23 | 2.6 → 2.6% | 3.9 → 3.1% | 2.70 → 2.69 | 2.6 → 1.6% | 67.7 → 68.5% | 10.47 → 10.59 | 35.8 → 40.8 (moved) |
+
+Known and accepted: the back is out, open and unread on about a quarter of dropbacks; no second key or triangle yet for flood, comebacks and pa_post_dig (about half the keyed interceptions looked at were picks by an unread defender); the corner against Cover 2 is rarely thrown (the half safety and the slot corner's stem, outside the flag); the outside go is rarely thrown (the release against press, and a completion bar that cannot take a contested deep shot: the risk work); hot answers wait on the quarterback seeing a free rusher (`BLOCK_SEEN`, `FREE_BOUND`, in candidacy).
+
 ## engine-34: `ROUTE_CRAFT` and `BACK_RELEASE` on (2026-11-12)
 
 - **`ROUTE_CRAFT`** (Coverage #599). A receiver who sees a defender in his lane ahead (his perceived picture, 0.25–0.45 s out by route running) works to a shoulder: toward his next break, else the defender's open shoulder; radii plus 0.15–0.4 yd wide by route running; he eases 2–6% through it; landmark and timing kept; leaning into the defender stays allowed. 16 games an arm, unpaired, engine-31: goes around a defender in his lane within 5 yd of the line 22–24 → 45–46% (NFL 52); bodies touching there 36–40 → 22–24% (11); contact before the throw 5+ yd downfield 31–33 → 27–29% (13). Not moved: bending around a retreating defender downfield (5–10% against 24), and the defender closing into the receiver in man.
