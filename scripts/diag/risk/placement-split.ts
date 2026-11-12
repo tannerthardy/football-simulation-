@@ -4,9 +4,9 @@
  * - aimMiss: the ball at its planned arrival against the point he aimed at as it left his hand (the throw's miss:
  *   missSigma, the flick and the consistency draw), with its components along / across the receiver's run;
  * - lead: the receiver at the planned arrival against that point (the forecast's error);
- * - offset: placement.py's operator, the incoming flight line (the ball 0.3 s and 0.1 s before arrival) at its
- *   closest approach to the receiver at arrival, along / across his run; arrival is the tick the ball stops being in
- *   the air, else the planned arrival;
+ * - offset: the true closest approach of the ball in flight to the receiver's centre (the same tick for both), along /
+ *   across his run there; it does not depend on the catch event, which since engine-39 (CATCH_SECURE) fires at the end
+ *   of the securing window;
  * - tags: the QB at release (set / moving over 2.2 yd/s / hit, his urgency), the receiver at arrival (settled under
  *   2 yd/s, vertical within 35 deg of downfield, crossing otherwise), tight (nearest defender to the target < 1.5 yd at
  *   the release), the aimed distance, his sigma belief at urgency 0 and at the release's urgency.
@@ -44,40 +44,33 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: c.id, seed, roster: seed, formation, flip }));
   cur = null;
   let planned: any = null, arrival: any = null;
-  const trail: { t: number; b: { x: number; y: number } }[] = [];
+  let close: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const wasAir = sim.ball.kind === 'air';
     tick();
-    if (!cur || arrival) return;
-    if (sim.ball.kind === 'air') { const b = sim.ballPos(); trail.push({ t: sim.t, b: { x: b.x, y: b.y } }); }
+    if (!cur) return;
+    if (sim.ball.kind === 'air') {
+      const b = sim.ballPos(), r = cur.r, dd = Math.hypot(b.x - r.pos.x, b.y - r.pos.y);
+      if (!close || dd < close.d) close = { d: dd, off: { x: b.x - r.pos.x, y: b.y - r.pos.y }, vel: { x: r.vel.x, y: r.vel.y }, t: sim.t };
+    }
     if (!planned && sim.t >= cur.arr - 1e-9) {
       const b = sim.ballPos(), r = cur.r;
       planned = { inAir: sim.ball.kind === 'air', ball: { x: b.x, y: b.y }, rec: { x: r.pos.x, y: r.pos.y }, vel: { x: r.vel.x, y: r.vel.y } };
     }
-    if ((wasAir && sim.ball.kind !== 'air') || (planned && sim.ball.kind !== 'air')) {
-      const r = cur.r;
-      arrival = { t: sim.t, rec: { x: r.pos.x, y: r.pos.y }, vel: { x: r.vel.x, y: r.vel.y } };
-    }
+
   };
   sim.run();
-  if (!cur || !trail.length) continue;
-  arrival ??= planned && { t: cur.arr, rec: planned.rec, vel: planned.vel };
-  if (!arrival) continue;
-  // Flight line 0.3 s and 0.1 s before arrival, closest approach to the receiver at arrival (placement.py).
-  const at = (t: number) => trail.reduce((p, q) => (Math.abs(q.t - t) < Math.abs(p.t - t) ? q : p)).b;
-  const A = at(arrival.t - 0.3), E = at(arrival.t - 0.1), R = arrival.rec;
-  const L = { x: E.x - A.x, y: E.y - A.y }, LL = L.x * L.x + L.y * L.y;
-  if (LL < 0.01) continue;
-  const k = ((R.x - A.x) * L.x + (R.y - A.y) * L.y) / LL, C = { x: A.x + k * L.x, y: A.y + k * L.y };
-  const u2 = unit(arrival.vel), off = { x: C.x - R.x, y: C.y - R.y };
+  if (!cur || !close) continue;
+  const u2 = unit(close.vel), off = close.off;
+  arrival = close;
   const sp = Math.hypot(arrival.vel.x, arrival.vel.y), dir = sim.attackDir(sim.offense[0].team);
   const heading = Math.abs(Math.atan2(arrival.vel.y, arrival.vel.x * dir)) * 180 / Math.PI;
   const motion = sp < 2 ? 'settled' : heading < 35 ? 'vertical' : 'crossing';
   const row: any = { concept: c.id, formation, coverage, seed, flip, dist: +cur.dist.toFixed(1), u: +cur.u.toFixed(2), tight: cur.tight,
     qb: cur.hit ? 'hit' : cur.qbSpeed > 2.2 ? 'moving' : 'set', flick: +cur.flick.toFixed(2), sigma0: +cur.sigma0.toFixed(2), sigmaU: +cur.sigmaU.toFixed(2),
     motion, recSpeed: +sp.toFixed(1),
-    offset: +Math.hypot(off.x, off.y).toFixed(2), offAlong: +(off.x * u2.x + off.y * u2.y).toFixed(2), offAcross: +Math.abs(-off.x * u2.y + off.y * u2.x).toFixed(2),
+    offset: +close.d.toFixed(2), offAlong: +(off.x * u2.x + off.y * u2.y).toFixed(2), offAcross: +Math.abs(-off.x * u2.y + off.y * u2.x).toFixed(2),
     cmp: !!sim.stats.completed };
   if (planned) {
     const m = { x: planned.ball.x - cur.pt.x, y: planned.ball.y - cur.pt.y }, u1 = unit(planned.vel);
