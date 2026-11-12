@@ -607,6 +607,35 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-47: `CATCH_CARRY`, `HANDS_CUE`, `CATCH_SPEED` and `CATCH_CHOICE` on (2026-11-12)
+
+Four changes at and after the catch, from two lanes, read together because each is what the others' costs depend on.
+
+**`CATCH_CARRY`** (Defense #642). Between the ball being secured and a defender's own picture showing who has it (0.15–0.35 s), a defender who was driving on the catch fell back to his coverage job: his request swung about 100° off his velocity and his speed toward the catcher fell 3.5 → 2.0 → 1.4 yd/s as the catcher started to move. Now a defender driving on the catch, or whose flight read named the catch opportunity, keeps driving on that receiver as he last saw him until his own picture ends it (a drop, or the ball back in the air). A branch that gave the drive from `ball.securing`, ahead of his picture, is removed. Defense, 2 × 16 games on engine-45: settled catches reached within 1.0 s 57 / 60 → 66 / 64%, YAC 6.5 / 5.2 → 4.9 / 4.9. Stated limit: a trailing man defender at top speed cannot close on a faster crosser whatever he knows.
+
+**`HANDS_CUE`** (Coverage #639). About a quarter of trailing man defenders never acquired the ball's flight and their only other cue (the receiver looking back over his shoulder) fired on 2 of 62 catches. While a receiver tracks a ball to him his hands come up a lead before it arrives (0.55 − 0.35 × route running s; a stand-in, since hands are not in tracking, bounded by the NFL trailer's break timing), a state a trailer within 3 yd reads with his usual delay; his running is untouched. Trailers recognising the throw by the catch 48 / 62 → 56 / 60.
+
+**`CATCH_SPEED`** (Coverage #640). The NFL catch gets harder with the receiver's speed on a ball he is not facing; ours was flat (the old step acted only above 6.5 yd/s from behind). A continuous term, K × speed × angle × air time × (0.7 + 0.6 × (1 − ball tracking)), K 0.37 from the with-room cells, balls across his line weighted 0.46 of from-behind (the NFL's pooled ratio). Both constants are fitted to measured slopes and recorded as stand-ins for a physical hands model. Coverage, pooled 2 × 16: with room at speed, short 93 → 87% (NFL 88), deep 89 → 80% (72); defender within 2 yd, short 73 → 65% (57), deep 65 → 53% (52). Residue: deep balls across his line stay easy.
+
+**`CATCH_CHOICE`** (Coverage #640). `TrackBall` played the earliest reachable point on the ball's path and paced to arrive on time, so the receiver braked and took the ball early and high whether or not a defender could play the catch point (on forced go balls he could reach the aim in stride 96% of the time and met the ball 1.6 yd short of it). Now he plays the latest point on the reachable segment that the two nearest defenders, as he sees them, cannot reach before the ball, with one judgment error a throw by ball tracking. Agreed table (Coverage and Rules + Coaching, natural deep throws 15+ yd, caught, untouched): met against his held-from-release spot p50 −1.85 → −0.59 yd (NFL −0.47), short by more than 1 yd 77 → 40% (39), past 3 → 16% (24). The natural deep throw is not short; there is no throw-side placement item. Supersedes the held `IN_STRIDE_CATCH`, which is to be retired.
+
+Checks on the candidate (`f97b93b8`): full suite 4346 pass; besides the two known research failures, the man-trail carry fixture failed on one case with all four flags on and was restated by its lanes. Fixed run set 3.88 → 3.87. Paired league scorecards, 16 games an arm, one flag at a time with the other three on:
+
+| flag, seed | yards an attempt | YAC | completion | points a team-game |
+|---|---|---|---|---|
+| `CATCH_CARRY`, 11 | 8.78 → 8.65 | 7.90 → 7.00 (moved) | 62.7 → 64.3% | 29.7 → 31.3 |
+| `CATCH_CARRY`, 23 | 8.82 → 7.93 (moved) | 7.17 → 6.13 | 65.6 → 63.9% | 32.1 → 27.7 (moved) |
+| `CATCH_SPEED`, 11 | 9.23 → 8.65 (moved) | 7.54 → 7.00 | 67.5 → 64.3% (moved) | 34.8 → 31.3 |
+| `CATCH_SPEED`, 23 | 9.35 → 7.93 (moved) | 7.51 → 6.13 (moved) | 68.2 → 63.9% (moved) | 29.9 → 27.7 |
+| `CATCH_CHOICE`, 11 | 8.64 → 8.65 | 7.38 → 7.00 | 64.2 → 64.3% | 30.3 → 31.3 |
+| `CATCH_CHOICE`, 23 | 8.61 → 7.93 (moved) | 6.99 → 6.13 (moved) | 66.4 → 63.9% | 30.3 → 27.7 |
+| `HANDS_CUE`, 11 | 9.26 → 8.65 (moved) | 7.97 → 7.00 (moved) | 65.1 → 64.3% | 30.1 → 31.3 |
+| `HANDS_CUE`, 23 | 8.32 → 7.93 (moved) | 6.89 → 6.13 (moved) | 64.7 → 63.9% | 28.2 → 27.7 |
+
+No flag has a resolved adverse row. Sack and interception rates do not move for any of them. With all four on: yards an attempt 8.65 / 7.93, YAC 7.00 / 6.13, completion 64.3 / 63.9%, points 31.3 / 27.7 a team-game on seeds 11 / 23. `CATCH_CHOICE`, feared as an offensive gain, is neutral to favourable with the other three on.
+
+Interceptions, read from these pooled seeds and not from any one arm: 1.7 / 2.0%. A lane read showing picks falling with `CATCH_CARRY` was game divergence (identical forced throws show no change in any pass outcome). Tipped-ball picks: about 30% of picks come through the receiver, as in the NFL (31%); ours are more often short pop-ups beside him, a small noted item.
+
 ## engine-46: `ACC_BELIEF` on, he prices the throw he will actually release (2026-11-12)
 
 Rules + Coaching #638. Under heavy urgency (0.5–1) the quarterback believed he would be off target 0.22 of the time; the release's own sigma implied 0.41 and 0.34 was observed. He decided on the urgency he felt at the decision (0.56) and released under 0.99, with a flick on 21%. His accuracy belief now uses the rush's urgency at the release (not scaled by pocket presence, which stays on his bar) and anticipates a flick when his own picture of the nearest rusher's time to contact, less the windup, is under 0.15 s; the priced urgency is off both ways by (1 − know) × 0.25 × judgment.
