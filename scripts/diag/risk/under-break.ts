@@ -9,6 +9,7 @@ import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { seenQbEyes } from '../../../src/sim/behaviors/defense.js';
 const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 8);
 const P: any = PlaySim.prototype, tick0 = P.tick, ev0 = P.event;
 const rows: any[] = [];
@@ -18,7 +19,7 @@ P.event = function (type: string, a: any, b: any, note?: string) {
     const D = this.defense.filter((d: any) => d.behavior?.kind === 'zone' && !d.behavior?.deep
       && (d.pos.x - this.los) * dir >= 1 && (d.pos.x - this.los) * dir <= 12 && Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) > 3);
     this.__ub = { t0: this.t, windup: this.windupAt, R: b, D: D.map((d: any) => ({ d, readArm: d.tags.has('readArm') ? this.t : null, onBall: d.tags.has('onBall') ? this.t : null,
-      faceQB: null as number | null, path: [] as any[] })) };
+      faceQB: null as number | null, path: [] as any[], react: d.mind.observationDelay(d.profile.reactionTime * (1 - 0.4 * d.r('anticipation'))), rt: d.profile.reactionTime, leaned: d.tags.has('shoulder-read'), eyesOnR: seenQbEyes(d, this) === b })) };
     // facing toward the QB at the windup: from the recorded body (perception record), if the windup is in the past
     for (const u of this.__ub.D) {
       const back = Math.max(0, this.t - this.windupAt);
@@ -47,7 +48,9 @@ P.tick = function () {
           return sp >= 1.5 && (s.vx * (cx - s.x) + s.vy * (cy - s.y)) / (L * sp) >= Math.cos(Math.PI / 4); });
         rows.push({ role: Math.abs(u.path[0].y - this.ballY) < 6 ? 'hook' : 'curl/flat', windup: U.windup >= 0 ? U.windup - U.t0 : null,
           readArm: u.readArm === null ? null : u.readArm - U.t0, onBall: u.onBall === null ? null : u.onBall - U.t0, faceQB: u.faceQB,
-          brk: brk ? brk.t - U.t0 : null });
+          brk: brk ? brk.t - U.t0 : null, react: u.react, rt: u.rt, leaned: u.leaned, eyesOnR: u.eyesOnR,
+          vTo0: (() => { const s0 = u.path[0], L = Math.hypot(cx - s0.x, cy - s0.y) || 1; return (s0.vx * (cx - s0.x) + s0.vy * (cy - s0.y)) / L; })(),
+          vTo2: (() => { const s0 = u.path.find((s: any) => s.t - U.t0 >= 0.2) ?? u.path.at(-1), L = Math.hypot(cx - s0.x, cy - s0.y) || 1; return (s0.vx * (cx - s0.x) + s0.vy * (cy - s0.y)) / L; })() });
       }
     }
   }
@@ -64,6 +67,9 @@ for (const role of ['hook', 'curl/flat']) {
   console.log(`  ${role.padEnd(9)} n ${v.length} | windup p50 ${q(v.map(r => r.windup))} s | keysQB (readArm) fired ${pct(v.filter(r => r.readArm !== null).length, v.length)}, at p50 ${q(v.map(r => r.readArm))} s`
     + ` | onBall p50 ${q(v.map(r => r.onBall))} s | facing the QB at the windup (cos > -0.2) ${pct(v.filter(r => r.faceQB !== null && r.faceQB > -0.2).length, v.length)}, cos p50 ${q(v.map(r => r.faceQB))}`
     + ` | break at or before the release ${pct(v.filter(r => r.brk !== null && r.brk <= 0.05).length, v.length)}, break p50 ${q(v.map(r => r.brk))} s`);
+  console.log(`     react (observationDelay(reactionTime x (1 - 0.4 anticipation))) p10/p50/p90 ${q(v.map(r => r.react), .1)}/${q(v.map(r => r.react))}/${q(v.map(r => r.react), .9)} s; reactionTime p50 ${q(v.map(r => r.rt))}; windup + react matured before the release ${pct(v.filter(r => r.windup !== null && r.windup + r.react <= 0).length, v.length)}, at p50 ${q(v.map(r => r.windup === null ? null : r.windup + r.react))} s`);
+  console.log(`     at the release: speed toward the catch point p25/p50/p75 ${q(v.map(r => r.vTo0), .25)}/${q(v.map(r => r.vTo0))}/${q(v.map(r => r.vTo0), .75)} yd/s; at +0.2 s ${q(v.map(r => r.vTo2), .25)}/${q(v.map(r => r.vTo2))}/${q(v.map(r => r.vTo2), .75)}; shoulder-read tagged ${pct(v.filter(r => r.leaned).length, v.length)}; QB's eyes (as he sees them) on the catcher ${pct(v.filter(r => r.eyesOnR).length, v.length)}`);
+  const lv = v.filter(r => r.leaned); if (lv.length) console.log(`     leaned: n ${lv.length} | eyes on the catcher ${pct(lv.filter(r => r.eyesOnR).length, lv.length)} | toward the catch point at the release p50 ${q(lv.map(r => r.vTo0))} | break at/before ${pct(lv.filter(r => r.brk !== null && r.brk <= 0.05).length, lv.length)}, p50 ${q(lv.map(r => r.brk))}`);
   const nf = v.filter(r => r.readArm === null);
   console.log(`     no keysQB: n ${nf.length} | facing the QB at the windup ${pct(nf.filter(r => r.faceQB !== null && r.faceQB > -0.2).length, nf.length)} | onBall p50 ${q(nf.map(r => r.onBall))} s, break p50 ${q(nf.map(r => r.brk))} s`);
   const kf = v.filter(r => r.readArm !== null);
