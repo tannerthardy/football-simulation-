@@ -44,16 +44,25 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: c.id, seed, roster: seed, formation, flip }));
   cur = null;
   let planned: any = null, arrival: any = null;
-  let close: any = null;
+  let close: any = null, prevRel: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const wasAir = sim.ball.kind === 'air';
     tick();
     if (!cur) return;
     if (sim.ball.kind === 'air' && !sim.ball.securing) {
-      const b = sim.ballPos(), r = cur.r, dd = Math.hypot(b.x - r.pos.x, b.y - r.pos.y);
-      if (!close || dd < close.d) close = { d: dd, off: { x: b.x - r.pos.x, y: b.y - r.pos.y }, vel: { x: r.vel.x, y: r.vel.y }, t: sim.t };
-    }
+      // The ball relative to the receiver, linear between ticks: its closest approach within the tick.
+      const b = sim.ballPos(), r = cur.r, rel = { x: b.x - r.pos.x, y: b.y - r.pos.y };
+      let best = rel;
+      if (prevRel) {
+        const dx = rel.x - prevRel.x, dy = rel.y - prevRel.y, LL = dx * dx + dy * dy;
+        const k = LL > 1e-9 ? Math.max(0, Math.min(1, -(prevRel.x * dx + prevRel.y * dy) / LL)) : 1;
+        best = { x: prevRel.x + k * dx, y: prevRel.y + k * dy };
+      }
+      const dd = Math.hypot(best.x, best.y);
+      if (!close || dd < close.d) close = { d: dd, off: best, vel: { x: r.vel.x, y: r.vel.y }, t: sim.t };
+      prevRel = rel;
+    } else prevRel = null;
     if (!planned && sim.t >= cur.arr - 1e-9) {
       const b = sim.ballPos(), r = cur.r;
       planned = { inAir: sim.ball.kind === 'air' && !sim.ball.securing, ball: { x: b.x, y: b.y }, rec: { x: r.pos.x, y: r.pos.y }, vel: { x: r.vel.x, y: r.vel.y } };
