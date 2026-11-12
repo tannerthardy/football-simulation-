@@ -223,6 +223,7 @@
     "ZONE_ONBALL": "on",
     "ZONE_RUN": "on",
     "ZONE_SCOOP": "on",
-    "ZONE_WINGS": "on"
+    "ZONE_WINGS": "on",
+    "PURSUIT_FIELD": "off"
   }
 }
