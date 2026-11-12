@@ -607,6 +607,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-43: `DEF_BELIEF` on, the window prices the defender it was missing (2026-11-12)
+
+Rules + Coaching #625. Each factor of the quarterback's window was set against how throws actually failed: over 1,055 throws he predicted 0.08 defended and 0.19 were. Two causes. Since engine-39 a won catch sits in the hands for the securing window and a defender arriving then still gets a try at it, which the window counted as beaten; and a defender within 4 yd of the target closes partly with the receiver's motion, where the window kept him on his course. His belief now carries both (the man on the target moves partly with him, 0.5; the catch must survive a defender arriving within 0.3 s, dislodged 0.5 scaled by the receiver's hands and contested-catch skill), right on average and spread both ways by (1 − know), know from decision-making and experience. These are his beliefs about our defense and catch model: re-read them when `CATCH_SECURE`, `SHOULDER_READ`, the match carry (`OPEN_CARRY`) or the dislodge law change.
+
+Rules + Coaching, 16 league games an arm with `LINE_START` on: P accepted / completion 0.70 / 0.63 → 0.66 / 0.63; defended predicted / observed 0.08 / 0.17 → 0.15 / 0.18. Paired panel (1,536 plays): 638 change, interceptions 33 → 30, sacks 71 → 94.
+
+Checks on the candidate (`a4d29054`): full suite 4325 pass; besides the two known research failures, the `hot-look` "on" fixture's play moved under the new window and was restated by its lane. Fixed run set 3.88 → 3.90 mean under 20. Paired league scorecards, 16 games an arm:
+
+| seed | completion | sack rate | INT rate | time to throw | yards an attempt | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 61.0 → 63.9% | 4.6 → 5.4% | 2.0 → 2.0% | 2.68 → 2.79 (moved) | 8.64 → 8.27 | 29.3 → 26.8 |
+| 23 | 63.1 → 67.4% (moved) | 3.4 → 5.1% (moved) | 2.9 → 1.4% (moved) | 2.70 → 2.81 (moved) | 8.97 → 9.10 | 31.9 → 33.4 |
+
+Both seeds: he holds the ball a tenth longer, completes more of what he throws and is sacked more (the sack rate enters the NFL team band, 4.6–9.4%, for the first time). Known cost and next work: more plays end with no throw he accepts, and that branch today is only evade or sack (`EXTEND`, Flex, built, off). Separately found and in work: he pumps on 14% of dropbacks because his receiver forecast flips from the installed route to straight-line motion when the receiver is more than a body radius off the drawn path.
+
+`FREE_BOUND` on top, seed 11: sack rate 5.4 → 2.5% (moved), points 26.8 → 34.7 (moved), pass TD 6.4 → 8.2% (moved), YAC 7.13 → 7.86 (moved). Still held: with a free rusher at 2 yd he throws 73–78% against the NFL's 57%.
+
 ## engine-42: `LINE_START` on, a receiver's first steps are a get-off (2026-11-12)
 
 Coverage #624 (part A of the release work; part B, the press jam and release move, follows under its own flag). Until he declares his stem (his first step and his observation delay on the defender) a receiver pushes with a chosen share of his start force, 0.4 + 0.03 × the depth of his first break (to 10 yd), ± 0.05 for a defender well off or in his face, + 0.15 × (route running − 0.5), range 0.3–0.85; into a break he slows on his cutting ability rather than 0.8 of his braking. The quarterback's forecast and expected break time use the same get-off. `MoveCommand.drive` is the interface (default 1, physics unchanged for every other caller).
