@@ -40,6 +40,16 @@ const TURN_STEPS = 12;
 const TURN_HORIZON = TURN_STEPS * .05;
 /** Avoid changing requests for a negligible forecast difference, yd. */
 const TURN_MARGIN = .05;
+/** CARRIER_COMMIT (experimental, off): a ball carrier's (or lead back's) bend
+ * around a teammate is a decision that persists. The held bend is kept while
+ * it still clears every teammate to within COMMIT_MARGIN of overlap (so a
+ * bend into a closing gap runs into it rather than escaping at the last
+ * tick), and dropped only when his straight request clears by COMMIT_MARGIN
+ * (the exit on the far side of the entry). Re-chosen every tick, the bend
+ * ladder flipped with the traffic around him: the carrier's spacing re-aims
+ * went to this selector whenever anything near him changed (dither guard). */
+const CARRIER_COMMIT = process.env.CARRIER_COMMIT === '1', COMMIT_MARGIN = .15;
+const heldBend = new WeakMap<Agent, number>();
 
 export interface SpacingContext {
   now: number;
@@ -167,19 +177,32 @@ function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], c
 
 function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
   const near=forecastPeers(a,original,peers,context);
-  if(!near.length)return original;
+  if(!near.length){heldBend.delete(a);return original;}
   const samples=forecast(original);
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
+  const steers=RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead');
+  const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x);
+  const bend=(off:number):Intent=>({...original,vel:{x:Math.cos(h0+off)*sp,y:Math.sin(h0+off)*sp}});
+  if(CARRIER_COMMIT&&steers&&heldBend.has(a)){
+    // CARRIER_COMMIT: hold the bend until the straight line clears by the margin,
+    // or until the held bend itself no longer clears to within it.
+    if(worst>=COMMIT_MARGIN){heldBend.delete(a);return original;}
+    const held=bend(heldBend.get(a)!),path=forecast(held);
+    if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=-COMMIT_MARGIN))return held;
+    heldBend.delete(a);
+  }
   if(worst>=0)return original;
-  if(RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead')){
+  if(steers){
     // Bend around the teammate at the requested pace: the smallest bend
     // that clears every peer and still makes progress along the request.
-    const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x);
     for(const off of [.2,-.2,.4,-.4,.6,-.6,.8,-.8]){
-      const h=h0+off,bent:Intent={...original,vel:{x:Math.cos(h)*sp,y:Math.sin(h)*sp}};
+      const bent=bend(off);
       const path=forecast(bent);
-      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0))return bent;
+      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0)){
+        if(CARRIER_COMMIT)heldBend.set(a,off);
+        return bent;
+      }
     }
   }
   // Yield speed while continuing the turn when that already clears traffic.
