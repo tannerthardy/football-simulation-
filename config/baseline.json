@@ -275,7 +275,8 @@
     "DB_SLOTS": "0",
     "COVER_LONG": "0",
     "PRO_CALL": "0",
-    "CONCEPT_MENU": "0"
+    "CONCEPT_MENU": "0",
+    "OPEN_CARRY": "0"
   },
   "worldDefaults": {
     "handContact": "center",
