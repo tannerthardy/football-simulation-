@@ -146,7 +146,7 @@ const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
  * gos vs man stood 6.8-7.0 yd deep at 3.0 s (NFL 11.6); 8.2 yd on the
  * four_verts/cover1 fixture. The release itself (its step, width and clearance
  * at the line) is unchanged. */
-const RELEASE_THROUGH = process.env.RELEASE_THROUGH === '1';
+const RELEASE_THROUGH = process.env.RELEASE_THROUGH !== '0';
 
 export class RouteRunner implements Behavior {
   readonly kind = 'route';

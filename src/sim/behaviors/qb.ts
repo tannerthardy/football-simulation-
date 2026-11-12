@@ -140,7 +140,7 @@ const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
  * come off holds nothing. QB_FEEL's pocket move is not part of it. Off (and
  * QB_FEEL off), held() credits any engaged rusher 0.35-1.75 s from
  * engagement.win, which rises as the win score falls while he closes. */
-const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
+const BLOCK_SEEN = process.env.BLOCK_SEEN !== '0';
 /** Experimental (FREE_BOUND=1, off): a free man near him is a hit soon,
  * whatever he looks to be doing. For a rusher he sees unblocked (no offensive
  * body within arm's length of him) within FREE_NEAR, the QB's felt time is at
