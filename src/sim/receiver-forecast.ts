@@ -64,8 +64,8 @@ export interface ReceiverEstimate {
  * the installed route, not on the continuation the path adds past it. Off, a flat, arrow, swing or back's flat
  * (their installed cut s 0.9) takes its break from the continuation's turn at the sideline margin (s 0.75 or
  * 0.6), so the QB expects it about 6 s after the snap and treats the receiver as not ready (a flat open at
- * 0.77 completion was never thrown: docs/reviews/2026-11-11-read-compiler-phase1.md). */
-const FORECAST_BREAK = process.env.FORECAST_BREAK === '1';
+ * 0.77 completion was never thrown: docs/reviews/2026-11-11-forecast-break.md). */
+const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
 
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
