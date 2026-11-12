@@ -1118,6 +1118,9 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
+    // SHOULDER_READ: an underneath defender reading the QB breaks on the
+    // throwing motion toward the receiver the QB's shoulders point at.
+    if (SHOULDER_READ && !this.deep) { const lean = shoulderLean(a, sim); if (lean) return lean; }
     // A deep defender who reads run executes his cap/force contract. Alley
     // fits retain depth through the mesh; certainty about the hidden call is
     // not required, and a mistaken read can still expose play action.
@@ -1617,6 +1620,33 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 }
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
+/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): from the
+ * throwing motion, before the ball is out, an underneath zone defender with
+ * his eyes held on the QB breaks toward the receiver the QB's front shoulder
+ * and eyes point at, in his own delayed picture (seenQbEyes). How hard he
+ * commits is his read: more with anticipation, less with discipline (a
+ * disciplined defender waits for the ball). It costs what it costs: a pump or
+ * a look-off moves him the wrong way, and he recovers at his body's rates. NFL
+ * underneath zone defenders begin turning toward the eventual catcher about
+ * 0.3 s before the release (zone LB toward-catcher 0.0 at -0.3 s, +1.1 at the
+ * release); ours start about 0.1 s later at half the rate (+0.4 at the release),
+ * because the motion tells them when but not where (underarrival.py). */
+const SHOULDER_READ = process.env.SHOULDER_READ === '1';
+/** SHOULDER_READ: the windup-keyed lean, or null. */
+function shoulderLean(a: Agent, sim: PlaySim): MoveCommand | null {
+  if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || sim.windupAt < 0) return null;
+  const qb = sim.see(a, sim.qb).pos;
+  if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) <= -0.2) return null;
+  const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
+  if (sim.t - sim.windupAt < react || !eyesHeldOnQB(a, sim, react, -0.2)) return null;
+  const target = seenQbEyes(a, sim);
+  if (!target) return null;
+  a.tags.add('shoulder-read');
+  const commit = clamp(0.3 + 0.4 * a.r('anticipation') + 0.3 * (1 - a.r('discipline')), 0.2, 1);
+  const c = chase(sim, a, target);
+  return withFacingTechnique({ ...c, vel: { x: c.vel.x * commit, y: c.vel.y * commit } }, { label: 'shoulder-lean', key: target.vel });
+}
+
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
 export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   const ball = sim.ball;
