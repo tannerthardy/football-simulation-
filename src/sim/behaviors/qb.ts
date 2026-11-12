@@ -765,6 +765,8 @@ export class QBPass implements Behavior {
    * not started (null: the decision below, move, escape or trapped, answers
    * instead). Off: the throw starts. */
   private startIfFinish(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand | null {
+    // HOT_LOOK: while his eyes are on the way to a hot target, a read they have left is not thrown blind.
+    if (HOT_LOOK && this.look && !this.inClearLook(a, sim, ev.target)) return null;
     if (SET_DECIDE && !this.canFinish(a, sim)) { this.noFinish++; return null; }
     return this.startThrow(a, sim, ev);
   }
