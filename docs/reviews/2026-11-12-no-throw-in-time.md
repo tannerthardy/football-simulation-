@@ -68,3 +68,50 @@ Gates:
 - the share of false-alarm evasions from a clean pocket;
 - grounding calls;
 - sacks, scrambles, throwaways and the run game unaffected.
+
+## EXTEND: built and read (2026-11-12)
+
+Flag `EXTEND`, off. It is the body of Rules + Coaching's `noThrow` hook (rules/hot-plan f4fb6de9, merged), whose
+contract is the `NoThrowContext` doc comment. With the flag off the body is theirs, unchanged; the export is identical
+to f4fb6de9 with FREE_BOUND and HOT_LOOK on.
+
+With the flag on:
+- He evades to the spot with the most felt time. That is SET_DECIDE's spot choice, judged with the same felt time as
+  his alarm (FREE_BOUND's bound at each spot), at his mobility's pace 2.2 + 2.8 × mobility yd/s.
+- From there, a lane past the line is a scramble.
+- With nobody open (`ctx.best` P < 0.15), a sound decision maker (≥ 0.3) throws it away: beyond the sideline from
+  outside the box, or, trapped inside, at an eligible's feet.
+- A poor decision maker throws it away regardless, and the rules call grounding.
+- Otherwise he protects the ball (evade).
+- `whileLooking` continues an evasion already under way; a look never starts one.
+- No strip chance was added.
+
+Fixtures: `test/extend.test.ts`, 4 tests.
+
+### How often the hook is reached today
+
+`no-throw-reach.mts`, FREE_BOUND + HOT_LOOK, seed 201, 8 games, 744 dropbacks. The branch reaches a scramble on 12
+plays, a throwaway on 5 and evade on 72. Most of those evade calls are HOT_LOOK's while-looking sidestep, and 57 of the
+72 plays end in a throw. The no-throw hook itself is reached only on alarmed ticks with neither a hot throw nor a look.
+
+### Paired read
+
+FREE_BOUND + HOT_LOOK, EXTEND off against on, sim-export seeds 201 and 301, 16 games each.
+
+| | off 201 / 301 | on 201 / 301 |
+|---|---|---|
+| sacks | 3.0 / 3.6% | 2.5 / 3.8% |
+| scrambles | 1.7 / 2.0% | 1.5 / 1.6% |
+| throwaways | 0.9 / 0.7% | 0.7 / 0.3% |
+| grounding | 0 / 0 | 0 / 0 |
+| free rusher at 2 yd: thrown / sacked / scramble | 81 / 13 / 6%, 79 / 15 / 6% | 84 / 11 / 6%, 79 / 15 / 6% |
+
+No measurable effect, as expected. The population that reaches the hook today is small. The larger one (read-logic
+throws under rising urgency that should not clear his bar) enters only through Rules + Coaching's urgency-bar repair.
+Read EXTEND again once that lands.
+
+### A finding for Defense: our free rushers come from inside
+
+NFL free rushers at 2 yd come from the edge 23% of the time (511 of 2249). Ours do 3% of the time (9–12 of 311–349).
+NFL edge free rushers end in a scramble 40% of the time and a sack 15%; interior ones 11% and 29%. So the outcome mix
+starts from the rush. Our free men at the QB are almost all interior.

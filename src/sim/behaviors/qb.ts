@@ -36,6 +36,28 @@ import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runti
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
 
+/** What the no-throw behaviour is told when the throw decision has nothing acceptable this tick (the seam between
+ * the throw decision and the no-throw behaviour). Guarantees:
+ * - `pressure`: the rusher he feels most urgently, as his own picture has him (QBPass.pressure).
+ * - `u`: his urgency this tick, 0..1 (rush and his clock); the alarm is pressure.time < 0.45.
+ * - `best`: the best throw he evaluated this tick on his own pictures, rejected (below his bar at this urgency, or
+ *   not yet looked at); null when nobody was worth evaluating. Its P and intRisk say a bad window from nobody near.
+ *   During a look it is the option chosen when the look began (not re-evaluated until his eyes arrive).
+ * - `eyes`: whom his eyes are on this tick (a look's target, else his current read); null when on no receiver.
+ * - `reason`: which decision returned no throw: 'alarm' (the hot path), 'urgency' (the read logic under rising
+ *   urgency), 'clock' (his internal clock).
+ * - `since`: the sim time this no-throw spell began (the first of consecutive no-throw ticks, a look's included).
+ * Called every such tick; the throw decision runs first each tick, from wherever the no-throw behaviour has put him,
+ * and a started throw ends the spell. */
+export interface NoThrowContext {
+  pressure: { time: number; agent: Agent | null; dist: number };
+  u: number;
+  best: ThrowEval | null;
+  eyes: Agent | null;
+  reason: 'alarm' | 'urgency' | 'clock';
+  since: number;
+}
+
 interface ThrowEval {
   target: Agent;
   point: Vec3;
@@ -254,6 +276,13 @@ export class QBPass implements Behavior {
   hotLooks = 0;
   hotNone = 0;
   /** HOT_LOOK: the look under way to a hot target: eyes arrive at eyesAt, the man is taken in at seenAt. */
+  /** Diagnostics only: his bar this tick, and the throw as started. */
+  private barNow: { t: number; u: number; urgency: number; clock: number; thr: number; maxInt: number; thr0: number; max0: number } | null = null;
+  throwRec: Record<string, unknown> | null = null;
+  /** The hot path's best option this tick, below the bar or not (for the no-throw hook). */
+  private lastHotBest: ThrowEval | null = null;
+  private noThrowSince = -1;
+  private noThrowLast = -99;
   private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
   hotPick: { t: number; slot: string; alarmAt: number | null; looked: number; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
   private readStart = -1;
@@ -653,6 +682,7 @@ export class QBPass implements Behavior {
     const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
+    this.barNow = { t, u, urgency, clock: clockUrgency, thr, maxInt, thr0: 0.6 - 0.12 * aggression, max0: 0.025 + 0.05 * aggression };
 
     // A called screen is decided before the snap, so it is not held for an
     // ordinary low-risk window: with that gate the QB held slip and TE screens
@@ -744,7 +774,7 @@ export class QBPass implements Behavior {
         return p ? +(sim.t - p.sampledAt).toFixed(2) : null;
       });
       const hot = HOT_LOOK ? this.hotLook(a, sim) : this.hotThrow(a, sim);
-      if (hot === 'look') return this.evade(a, sim, pressure.agent);
+      if (hot === 'look') return this.whileLooking(a, sim, this.noThrowContext(sim, pressure, u, 'alarm'));
       if (hot === null) this.hotNone++;
       if (hot) {
         // Diagnostic record (no effect): the hot throw's source, whether it went to the read he was on, and how far
@@ -755,7 +785,7 @@ export class QBPass implements Behavior {
           facingOff: off(a.body.facing), gazeOff: off(Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x)), P: hot.P, intRisk: hot.intRisk };
         return this.startThrow(a, sim, hot);
       }
-      return this.noThrow(a, sim, { pressure, u, read, reason: 'alarm' });
+      return this.noThrow(a, sim, this.noThrowContext(sim, pressure, u, 'alarm'));
     }
 
     // Internal clock expired: receivers go to the scramble drill, and he has to
@@ -788,7 +818,7 @@ export class QBPass implements Behavior {
   /** The read logic's hot throw under imminent pressure: anything with P > 0.3
    * and an interception risk under 0.18 (Coverage owns its contents). */
   private hotThrow(a: Agent, sim: PlaySim): ThrowEval | null {
-    const best = this.bestOption(a, sim, 1);
+    const best = this.lastHotBest = this.bestOption(a, sim, 1);
     return best && best.P > 0.3 && best.intRisk < 0.18 ? best : null;
   }
 
@@ -813,6 +843,36 @@ export class QBPass implements Behavior {
     this.look = { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
     this.hotLooks++;
     return 'look';
+  }
+
+  /** The decision has no acceptable throw this tick and the situation calls for an answer (the interface with the
+   * no-throw behaviour, Flex's: evade, throw it away, scramble, protect the ball). Called every such tick; the throw
+   * decision runs first each tick, from wherever this has put him. `best` is his best option on his pictures, even
+   * below the bar (null when none). Today: the existing branch. */
+  private noThrow(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
+    if (EXTEND) return this.extend(a, sim, ctx);
+    if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
+    // Veterans throw it away (or at a back's feet) rather than eat a sack.
+    if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
+    return this.evade(a, sim, ctx.pressure.agent);
+  }
+
+  /** The seam's context this tick; consecutive calls share one `since`. */
+  private noThrowContext(sim: PlaySim, pressure: NoThrowContext['pressure'], u: number, reason: NoThrowContext['reason']): NoThrowContext {
+    if (this.noThrowLast < sim.t - sim.dt - 1e-6) this.noThrowSince = sim.t;
+    this.noThrowLast = sim.t;
+    return { pressure, u, best: this.lastHotBest, eyes: this.look?.target ?? this.reads[this.readIdx] ?? null, reason, since: this.noThrowSince };
+  }
+
+  /** HOT_LOOK: his eyes are on the way to a hot target (busy, not giving up); his feet do this meanwhile. Today: evade. */
+  private whileLooking(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
+    // EXTEND: an evasion already under way goes on while his head turns; a look never starts one.
+    if (EXTEND && this.moveDir && sim.t < this.moveUntil) {
+      const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
+      const move = this.setDecide(a, sim, ctx.eyes ?? undefined, this.windup(a), 2.2 + 2.8 * mobility);
+      if (move) return move;
+    }
+    return this.evade(a, sim, ctx.pressure.agent);
   }
 
   /** Whether his picture of `r` sits inside his clear look now (qbmind's clear sector). */
@@ -1246,6 +1306,11 @@ export class QBPass implements Behavior {
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
     this.look = null;
+    // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
+    const bar = this.barNow?.t === sim.t ? this.barNow : null;
+    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth,
+      u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
+      clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
     this.pending = ev;
     const base = this.windup(a);
     // SHOULDERS_SET: the motion lasts at least the turn it has to make.
@@ -1337,27 +1402,19 @@ export class QBPass implements Behavior {
     sim.throwBall(a, r, v0, point, sim.t + T);
   }
 
-  /** No acceptable throw and a rusher he feels (the hook Rules + Coaching's throw
-   * decision falls through to): what he does then. Off (EXTEND off): the hot
-   * path's branch as it was. */
-  private noThrow(a: Agent, sim: PlaySim, ctx: { pressure: { time: number; agent: Agent | null; dist: number }; u: number; read: Agent | undefined; reason: 'alarm' | 'urgency' | 'clock' }): MoveCommand {
-    if (!EXTEND) {
-      if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
-      // Veterans throw it away (or at a back's feet) rather than eat a sack.
-      if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
-      return this.evade(a, sim, ctx.pressure.agent);
-    }
+  /** EXTEND: no acceptable throw and a rusher he feels (noThrow's body with the flag on). */
+  private extend(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
     const dm = a.r('decisionMaking');
-    // What he could still throw, on his pictures, even below his bar: nobody near
-    // a throw is the giving-up case; a bad window is not.
-    const best = this.bestOption(a, sim, 1);
+    // What he could still throw, on his pictures, even below his bar (the decision's own
+    // best, else his own look round): nobody near a throw is the giving-up case; a bad window is not.
+    const best = ctx.best ?? this.bestOption(a, sim, 1);
     const nobody = !best || best.P < 0.15;
     const outside = this.outsidePocket(a, sim);
     // Giving up from outside the box, the throw beyond the sideline past the line is legal.
     if (nobody && outside && dm >= 0.3) return this.throwAway(a, sim);
     // Evade: the spot with the most felt time, at his mobility's pace.
     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
-    const move = this.setDecide(a, sim, ctx.read, this.windup(a), 2.2 + 2.8 * mobility);
+    const move = this.setDecide(a, sim, ctx.eyes ?? undefined, this.windup(a), 2.2 + 2.8 * mobility);
     if (move) return move;
     // Trapped (no spot buys time): a legal throw-away if he has one, else protect the ball.
     if (nobody && dm >= 0.3) {
