@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-40`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-41`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-41: `HOT_LOOK` on, a hot throw costs the look (2026-11-12)
+
+Rules + Coaching #610 (it replaces the unlanded `HOT_PLAN`, whose plan-answer rule fired on none of 1,536 panel plays). Under an alarm the quarterback chose the best throw over every receiver on the tick of the alarm, wherever his eyes were, and released after only the windup (0.30–0.40 s, no tail; four in five such throws went to a receiver other than the one he was reading). Now the hot target is chosen from his pictures: one in his clear look is thrown after the windup; anyone else needs his eyes there first (a head turn at 400°/s, assumed, then a glance of 0.15 + 0.2 × (1 − decision-making) + 0.1 × (1 − awareness) s), and is judged again on the fresh picture; if it has gone he chooses again or has no throw. It also fixes a gaze defect (his eyes stayed on the verticals after the pressure jump moved his read to the back) and carries the `noThrow` seam that the evade / throw-away / sack behaviour (`EXTEND`, Flex, built, off) enters through.
+
+Rules + Coaching, 16 league games an arm, two seeds: alarm → release p50 / p75 / p90 0.40 / 0.40 / 0.55 → 0.45 / 0.70 / 1.20 s (NFL p75 1.10 with a free rusher at 2 yd); no throw in time on 20 of 68 alarmed plays. Paired panel (the same 1,536 plays): interceptions 35 off, 34 gaze fix alone, 35 look alone, 34 both; no play gains one from either part.
+
+Checks on the candidate (`5bd6ac0a`, on engine-40 plus the blind-defender correction): full suite 4322 pass with the two known research failures; fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | yards an attempt | time to throw | sack rate | INT rate | completion | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.87 → 8.30 (moved) | 2.63 → 2.68 (moved) | 3.1 → 3.7% | 1.9 → 2.7% | 62.9 → 61.2% | 33.0 → 32.1 |
+| 23 | 9.33 → 9.02 | 2.66 → 2.69 | 3.5 → 4.0% | 2.2 → 2.0% | 63.7 → 62.4% | 31.8 → 33.5 |
+
+Yards an attempt and completion fall and sacks rise half a point on both seeds; interceptions and points disagree between seeds.
+
+`FREE_BOUND` on top of it, seed 11 (`HOT_LOOK` on in both arms): sack rate 3.7 → 1.5% (moved), yards an attempt 8.30 → 9.56 (moved), YAC 6.88 → 8.46 (moved), time to throw 2.68 → 2.60 (moved). Better than the 0.9% it gave on engine-36, and still held: the larger share of throws with a free rusher near never touch the alarm (ordinary reads on a belief about 0.13 too optimistic), which is the window's defender model, in work.
+
 ## engine-40: `ARRIVE_LEAD` on, and a touchdown is checked before the tackle step (2026-11-12)
 
 - **`ARRIVE_LEAD`** (Defense #615). An underneath zone defender who cannot beat the ball to the catch drives to the catcher's upfield shoulder (the catch point offset toward the defense's goal by his body, the catcher's body and his reach, about 1.6 yd), not at the catch point. NFL tracking: the nearest defender's line of travel at a short catch crosses 1.4–1.7 yd upfield of the catcher in every group; ours crossed at 0.3–0.5. Defense, engine-37, two seeds × 16 games: the crossing point on catchers moving across 0.3 → 1.1 yd (NFL 1.9), toward 0.2 → 1.6 (1.7), away −0.1 → 0.9 (1.4); catch to first contact 2.8 → 1.6 yd; short-catch YAC 7.67 → 7.27, all of it upfield yards, no cutback opened. Zone only; man shows the same gap (1.5 against 0.4) and is a later decision. `SHOULDER_READ` (a zone defender leaning toward the receiver the quarterback's shoulders point at from the windup) rides along off: its effect was inside noise, its cost side does not exist until the quarterback can pump or look a defender off, and 26–45% of the defenders it needs are not facing the quarterback.
@@ -646,6 +663,8 @@ Checks on the candidate (`34d4d38c`, on engine-38): full suite 4311 pass with th
 | 23 | 68.2 → 63.8% (moved) | 2.6 → 2.1% | 40.4 → 36.4% | 4.69 → 5.00 | 10.01 → 9.59 | 7.79 → 8.10 | 4.0 → 2.7% (moved) | 34.5 → 38.6 |
 
 Completion falls four to five points on both seeds, into the NFL band (60.59–68.09%), with third downs and punts following. Points do not fall (neither seed resolved): yards an attempt hold because the completions that remain are the open ones, which is also why YAC a reception rises (a composition effect: the contested short catches that used to count are now incompletions). The two seeds disagree on sacks. Holding calls rose on seed 11 (1.16 → 1.69 a team-game).
+
+Measurement note (Coverage, 2026-11-12): from engine-39 the `catch` event fires at the end of the securing window, so `pass_arrived` in sim exports was late by 0.12–0.45 s on catches and not on misses. Rows that sampled the ball or players at arrival on our side with `CATCH_SECURE` on are biased and should not be quoted: catchpoint's on-target and arrival-distance rows, every `trail.py` reading before the fix (including first contact "0.1–0.2 s"; corrected 0.3 s), the first `placement.py` table, and the go-ball game table's on arm. The forced-go table and the openness table above are unaffected. Fixed by a `secure` event at the start of the window (#621). Corrected: completion by the ball's offset from the receiver's centre, all throws, NFL 74 / 53 / 20% at 0–0.5 / 0.5–1 / 1–1.5 yd, ours 75 / 59 / 28%; tight throws about 20 points above the NFL at every offset (62 / 45 / 24 against 42 / 22 / 2); trailing defender at 1–2 yd, on target, 67 against 52%.
 
 Still open at the catch: the trailing defender at 1–2 yd changes nothing (0.50 → 0.52 against 0.28), because he can only play a ball that reaches his own envelope, not the receiver's hands ("play the hands", in work); and tight throws overall still complete about twice as often as the NFL's.
 
