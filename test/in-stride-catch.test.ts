@@ -59,6 +59,15 @@ describe('default-off preservation of the in-stride catch experiment', () => {
     expect(f.behavior.update(f.receiver, f.sim).vel.x).toBeLessThan(0);
   });
 
+  it('a ball clearly behind his running line makes him slow for it, not run through it', async () => {
+    const f = await tracking(true);
+    // His running line puts him at x 52.4 by 2.9 s; the ball comes down 1.2 yd short of that.
+    f.sim.ballPath = [{ t: 2.9, x: 51.2, y: CENTER_Y, z: 1.5 }];
+    const v = f.behavior.update(f.receiver, f.sim).vel.x;
+    expect(v).toBeLessThan(6);
+    expect(v).toBeGreaterThan(0);
+  });
+
   it('does not select an in-stride point above the existing catch envelope', async () => {
     const old = await tracking(false), next = await tracking(true);
     for (const f of [old, next]) f.sim.ballPath[1].z = f.receiver.profile.maxCatchHeight + 1;
