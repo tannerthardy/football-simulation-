@@ -114,7 +114,7 @@ export function solveSprint(tenSplit: number, forty: number): SprintParams {
  * side-on, 0.75 backpedal (S 0.61 / 0.70, LB 0.59 / 0.61). Chosen speeds,
  * envelope by p95, relative to pre-throw top speed: the shape is the
  * evidence, the level is estimated. Offensive players are unchanged. */
-const PEDAL_CAP = process.env.PEDAL_CAP === '1';
+const PEDAL_CAP = process.env.PEDAL_CAP !== '0';
 /** PEDAL_CAP: backpedal / side-on cap by position (NFL p95 ratio, nflgait.py). */
 const PEDAL_RATIO: Partial<Record<Position, number>> = { CB: 0.76, S: 0.84, LB: 0.79 };
 
