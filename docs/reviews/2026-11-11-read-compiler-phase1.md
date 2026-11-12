@@ -178,3 +178,117 @@ Running now: `scripts/diag/call-mix/collect.ts --seed 101 --games 16`, four arms
 - Telling fade_flat's high route from stick's go (that needs the coverage).
 - Read direction as a coached choice.
 - Footwork tied to the plan's rhythm.
+
+---
+
+## Update 2026-11-12: engine-31/32, the back, attempt 3
+
+**Rebase.** The branch is merged with develop at engine-32, where `FORECAST_BREAK` is on (from #593) and
+CATCH_POINT is in. The panel arms below are on engine-31 with `FORECAST_BREAK` set explicitly, so the
+`FORECAST_BREAK` arm is engine-32's default.
+
+### Why the back is not thrown to
+
+**NFL** (`scripts/diag/read-plan/nfl_back.py`, BDB 2025 drop-back population):
+
+- The back runs a route on 0.769 of drop-backs.
+- He gets 0.193 of targets, thrown at 2.16 / 2.57 / 3.00 s (p25 / p50 / p75).
+- He leaves the backfield (past the line or 3 yd lateral) at 1.30 / 1.60 / 2.10 s (week 1, n 596).
+
+His routes, as share of routes run / share of back targets:
+
+| Route | Share of routes / of targets |
+|---|---|
+| flat | .50 / .52 |
+| angle | .21 / .24 |
+| out | .11 / .12 |
+| go | .06 / .02 |
+| hitch | .04 / .03 |
+| wheel | .03 / .04 |
+
+**Sim** (`back-probe.ts`): 16 league-sampled games, one drop-back per row, each row assigned the first cause that
+applies:
+
+| Cause | off | FORECAST_BREAK | both (attempt 3) |
+|---|---|---|---|
+| (a) no route (blocks, or checks and stays in) | .391 | .381 | .377 |
+| (b) runs a route but releases after 2.0 s | .431 | .425 | .430 |
+| (c) never read, though out and open at 2.6 s | .093 | .106 | .100 |
+| (c) never read, not open | .053 | .056 | .039 |
+| (d) read, not thrown | .010 | .012 | .018 |
+| The back runs a route (NFL .769) | .609 | .619 | .623 |
+| His release p50 (NFL 1.60 s) | 2.45 s | 2.40 s | 2.40 s |
+
+His assignments across drop-backs: check 54%, block 19%, back_out 11%, angle 9%, wheel 5%, swing 4%.
+
+The back's missing targets are mostly (a) and (b): he does not release, or he releases 0.8 s later than an NFL
+back, mostly off a check. A read plan cannot put him at 2.5 s while he leaves the backfield at 2.4 s. That is the
+check-release / BACK_RELEASE work, outside this flag.
+
+### Attempt 3: the back as a read
+
+The back is placed in the order by his window, on the side he releases to. The separate rhythm outlet is off;
+pressure still jumps the eyes to him.
+
+Panel, engine-31, `FORECAST_BREAK` on in every arm:
+
+| Arm | Back share | Back time p50 | In rhythm | Pressured | Sacks | INT | Yards a play |
+|---|---|---|---|---|---|---|---|
+| FORECAST_BREAK only | .146 | 3.00 s | 209 at 3.00 s | 7 at 3.95 s | 37 | 43 | 9.03 |
+| + READ_PLAN, attempt 2 | .064 | 4.05 s | 78 at 4.05 s | 15 at 4.20 s | 46 | 53 | 9.61 |
+| + READ_PLAN, attempt 3 | .099 | 3.65 s | 130 at 3.60 s | 16 at 4.20 s | 40 | 53 | 9.61 |
+
+In 16 league games, attempt 3's back share is .120 at 3.05 s, against .133 at 2.80 s with `FORECAST_BREAK` only;
+sacks are 31 against 25.
+
+**Gate:** back share .181 at 2.50 s, and sacks no higher than `FORECAST_BREAK` alone. **Not met**, for the reason
+in the table above.
+
+Attempt 3 matches what the sheets say. It brought pure-plan sacks back down: 25 under attempt 2, 21 under attempt
+3, against 17 with `FORECAST_BREAK` only. It stays as the branch's state.
+
+### Looks at plays
+
+**Pure-plan sacks** (attempt 2, 12 plays):
+
+- 7 came at the back read, after the four field reads, at 3.35–5.3 s: the outlet arriving late, which attempt 3
+  addresses.
+- 4 were sacks in both arms.
+
+**Keyed interceptions** (13 plays):
+
+| What happened | Plays | Examples | Fix it points to |
+|---|---|---|---|
+| Correct read, picked by a defender he was not reading | ~6 | A safety or robber on the dig or hook: flood (SS), comebacks (SS), pa_post_dig (FS, LB_M, SS); a W1 hitch picked by CB_W | A second key, or a triangle |
+| Misread: the key defender himself picks it | 3 | drive ×2 (a linebacker placed at the low end who then carried), comebacks (SS) | The key read |
+| No key defender in the stretch | 3 | dagger, pa_shot ×2 | An ordinary progression interception |
+
+Several of these were also late, at 4.0 s or later.
+
+### The flat throw on engine-31
+
+| | n | Completion | Air yards p50 | Ball vs runner along: p25 / p50 / p75 | Across p50 | Distance p50 |
+|---|---|---|---|---|---|---|
+| FORECAST_BREAK only | 130 | .769 | 5.8 | −0.38 / −0.06 / +0.19 yd | 0.28 yd | 0.65 yd |
+| Both flags | 220 | .745 | 5.9 | −0.37 / −0.08 / +0.17 yd | 0.24 yd | 0.51 yd |
+
+"Along" is where the ball passes him at its closest approach, ahead (+) or behind (−) along his motion. Completion
+was .55 on engine-30. Of 30 incomplete flats, 1 was more than a yard behind.
+
+On this measure the ball is not 1.7 yd behind the runner, as Coverage's #567 reports. Closest approach includes his
+own adjustment to the ball, so it is not the same operator as #567's forecast error.
+
+### The owner's points
+
+1. **The back as the first read.** The rule allows it once he is the earliest answer on the start side in a
+   stretch. He is held out of the first read today because, with a 2.4 s release, he never is the earliest. One
+   line lifts that once his release is NFL-like.
+2. **Verticals, then the back.** The sheets read the verticals inside-out off the deep defenders' squeeze, then the
+   back:
+   - 001: the seam away from the rotation, then the go, then reset to the back;
+   - 112: the verticals, or check down to the back against man;
+   - 150, 327: inside-out off the squeeze.
+
+   The grammar can express this as a "vertical peek": the verticals read as one picture (the triangle's group
+   read), one look, then the back. It is not built: the same blocker applies, since there is no back at 2.5 s to
+   check down to.
