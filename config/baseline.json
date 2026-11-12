@@ -46,6 +46,7 @@
     "HOLD_SINK": "0",
     "HANG_AIRBORNE": "0",
     "HANG_GRIP": "0",
+    "EXTEND": "0",
     "HOLD_FACING": "0",
     "CUSHION_BREAK": "0",
     "SEEN_EYES": "0",
