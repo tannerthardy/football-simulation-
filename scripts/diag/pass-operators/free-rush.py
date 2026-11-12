@@ -54,6 +54,12 @@ def report(path, ball):
         ys = [p.pos(o, 0)[1] for o in OL]
         r['outside'] = bool(OL) and (qy1 < min(ys) - 0.5 or qy1 > max(ys) + 0.5)
         r['rushSide'] = 'edge' if OL and (ry < min(ys) or ry > max(ys)) else 'inside'
+        # Blind side (where the record has the QB's orientation, NFL 'o'): the rusher's bearing more than 100 deg off
+        # the way his body faces at the moment.
+        o = raw.get('o'); r['blind'] = None
+        if o and k < len(o) and o[k][qb] is not None:
+            b = math.degrees(math.atan2(ry - qy0, rx - qx0)); dlt = abs((b - o[k][qb] + 180) % 360 - 180)
+            r['blind'] = dlt > 100
         if fw is not None:
             r['out'] = 'thrown'; r['dt'] = fw - t0
             r['thrownAway'] = (not side['namedReceiver']) if side is not None else bool(labels.get('throwaway'))
@@ -76,6 +82,12 @@ def report(path, ball):
     sk = [r for r in rows if r['out'] == 'sack']
     if sk: print(f"   sacked: time from the moment to the end p50 {q([r['dt'] for r in sk]):.2f} s")
     # What each outcome looks like: his move from the moment, its direction against the rusher, outside the tackles.
+    for name, key, vals in (('rusher from', 'rushSide', ('edge', 'inside')), ('blind side', 'blind', (True, False))):
+        for v in vals:
+            g = [r for r in rows if r.get(key) == v]
+            if not g: continue
+            c2 = collections.Counter(r['out'] for r in g); th2 = [r for r in g if r['out'] == 'thrown']
+            print(f"   {name} {str(v):6s} n {len(g):4d}: thrown {pct(c2['thrown'], len(g))} (away {pct(sum(r['thrownAway'] for r in th2), len(th2))}) | sacked {pct(c2['sack'], len(g))} | scramble {pct(c2['scramble'], len(g))}")
     groups = [('thrown away', [r for r in th if r['thrownAway']]), ('thrown, targeted', tg), ('scramble', [r for r in rows if r['out'] == 'scramble']), ('sacked', sk)]
     for name, g in groups:
         if not g: continue
