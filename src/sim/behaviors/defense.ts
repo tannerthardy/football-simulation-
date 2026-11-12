@@ -1759,7 +1759,7 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * only once he sees the ball pulled down (after his observation delay); a
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
-const SHOULDER_READ = process.env.SHOULDER_READ === '1';
+const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
 /** SHOULDER_READ: the throwing motion each defender planted on (by its windupAt), per play. */
 const plants = new WeakMap<Agent, { sim: PlaySim; windup: number }>();
 /** SHOULDER_READ: whether he is planted on a throwing motion he has seen. */

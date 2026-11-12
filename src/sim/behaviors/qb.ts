@@ -266,7 +266,7 @@ const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
  * was 0.165 - 0.13·hands (fitted on one half of the games, within 0.004 on the other), about 0.025 above his belief at
  * every hands level (docs/reviews/2026-11-12-drop-belief.md). On: the fitted rate. His knowledge (decision-making and
  * experience) sets how well he knows it, with error both ways. Re-read when the catch rules change. */
-const DROP_BELIEF = process.env.DROP_BELIEF === '1';
+const DROP_BELIEF = process.env.DROP_BELIEF !== '0';
 const DROP_BASE = 0.165;
 const DROP_HANDS = 0.13;
 /** INT_BELIEF (experimental, off; INT_BELIEF=1 turns it on): his interception belief, shaped like how picks happen.
