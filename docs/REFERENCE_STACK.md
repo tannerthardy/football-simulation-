@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-44`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-45`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-45: `RELEASE_SEEN` on, a receiver releases around whoever he sees (2026-11-12)
+
+Coverage #633. `RouteRunner.handleRelease` released around a defender only when the defense's own alignment said that defender was pressing him as his man: the receiver read the defense's private assignment. Against anyone else close at the line he ran his route through the body. Now the "tight over me" judgment and the defender's position come from his own (delayed) picture, and he releases around whoever is in his path at the line; reading the corner's shade and his route side is unchanged. It lands as the repair of a model-rule breach.
+
+Coverage, 8 games, seed 11, off → on (NFL): stalled at the line 10 → 7% (3); with a lineman nearest 31 → 12% (5); off-ball tight receivers stalled 21 → 13% (5); pressed time to 5 yd within 0.1 s on every route. What remains is alignment, measured and routed: our off-ball wings sit 0.7 yd off the line (NFL 1.4; Rules + Coaching's formation queue) and against a wing with no attached end our widest lineman sets +1.5 to +2.3 yd outside the tackle (NFL +0.6; Defense, `WING_EDGE`, in work). In-line tight ends were never the gap (stalled 4–5% against the NFL's 15%). Parked from the same work, with write-ups on their branches: the press punch (`PRESS_JAM`: every punch landed whatever the skill, because the release never clears the corner's reach) and exempting the press release from the get-off (#629: the get-off against press already sits at the NFL's 1.5 yd/s).
+
+Checks on the candidate (`ae311d19`): full suite 4333 pass; besides the two known research failures, three single-play quarterback fixtures moved again (`hot-look` ×2, `def-belief` off). Rules + Coaching replaced them with mechanism assertions over small named panels (#636), so a timing change elsewhere no longer breaks them. Fixed run set unchanged (3.88). Paired league scorecards, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | INT rate | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 9.10 → 9.42 | 65.7 → 66.0% | 5.4 → 4.5% | 1.6 → 1.5% | 7.66 → 8.02 | 33.4 → 35.4 |
+| 23 | 8.99 → 8.63 | 67.2 → 66.2% | 4.3 → 5.3% | 1.8 → 1.6% | 7.36 → 7.19 | 28.4 → 30.5 |
+
+Nothing resolved on either seed; yards and sacks disagree in sign.
 
 ## engine-44: `OPEN_CARRY` and `FORECAST_HOLD` on (2026-11-12)
 

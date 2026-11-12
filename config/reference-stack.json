@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-44",
+  "id": "engine-45",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -175,6 +175,7 @@
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
+    "RELEASE_SEEN": "on",
     "RELEASE_THROUGH": "on",
     "RUN_BLITZ": "on",
     "RUN_CONFIRM": "on",
