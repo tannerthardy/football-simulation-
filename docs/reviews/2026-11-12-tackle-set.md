@@ -1264,3 +1264,51 @@ re-sets in 90 of 95 tackle pass reps, about 4 steps a rep, the first at 1.95 s (
 **Stop.** The open question is the World's: under a sustained press, while he moves backward, why does his lean stay
 at the base limit when its target and the load would support twice that? That needs the support/World owner, or a
 targeted read of `feet()`'s lean state across ticks, before a third mechanism.
+
+## The lean trace: what holds a carried tackle's drive into the man (diagnostic; `scripts/diag/effective-mass/lean-trace/`)
+
+The fixture was four verticals and smash against Cover 2, seeds 1-24, with A + TACKLE_SET + TACKLE_BRAKE. Each stage
+of `World.feet()`'s lean was hooked for the tackle engaged with an edge rusher in front, 1.5-2.5 s.
+
+**Writers.** In the World only `feet()` writes the lean, plus the fall and get-up resets. In the sim, `lunge` (a reach
+at air), tackle.ts and TACKLE_RESET write it. Over 4,152 substeps:
+- release before the blend (`unsupportedLean`): acted on 0%;
+- the blend toward the target: k = 0.099 a substep (LEAN_RISE 0.04 s), rising 94%;
+- LEAN_PITCH: clamped 86%;
+- release after: 0%;
+- nothing changes the lean between ticks.
+
+**One tick** (seed 1, four verticals, RT, t 1.95), x-components:
+- the lean enters at 183 and the blend takes it to 227;
+- LEAN_PITCH clamps the vector's magnitude to its pendulum growth (406 → 469 over the tick);
+- it leaves at 185 → 212: +16% a tick, about e^(ω0 t) with ω0 ≈ 3.1 /s, doubling in about 0.22 s.
+
+**One rep** (seed 23, four verticals, RT), the full vectors:
+- the press felt is about (−200 to −500, ±1000 to 1700): mostly lateral;
+- |lean| grows 232 → 1035 from 1.80 to 2.25 s under the clamp, then holds the press with no clamp from 2.30 s;
+- he slows from −3.7 to −1.9 yd/s by 2.5 s and stops by 3.1 s.
+
+**Aggregate** (346 ticks, 1.5-2.5 s):
+- press |F| p50 1381 (p25-p75 1170-1499); the share along his retreat axis, |Fx|/|F|, is p50 0.42;
+- the rusher is beside him: dx +0.16, |dy| 1.01 yd;
+- |lean| / |target| p50 0.45 (p25-p75 0.32-0.78); |lean| p50 630 against a target of 1361.
+
+**Reading.**
+1. **A correction.** The "186 held at the base limit" above was the x-component only. The press on an edge tackle is
+   mostly across him: the hands' load acts along the line between the bodies and the rusher is beside him. His lean is
+   not held at the base limit. It grows at the pendulum rate and reaches the press in about 0.45 s when the press is
+   steady.
+2. **The limiting writer is LEAN_PITCH**, and only through its growth rate. Within 1.5-2.5 s the lean reaches about
+   45% of its target because it grows from small at the pendulum's rate while the press direction turns and swings.
+   The release (`unsupportedLean`) never acts.
+3. **Is LEAN_PITCH doing what it was built for?** Yes. A lean cannot appear instantly: the centre of mass must get
+   ahead of the base, and with the feet planted that happens only by falling, at the inverted pendulum's rate. It has
+   no route for the other way he gets his centre of mass ahead of his feet: moving his feet back, a replacement step.
+   That is a case it does not cover, not an error.
+4. **Why TACKLE_RESET did nothing useful.** On landing it set the lean to the base limit, about 262. That is below the
+   630 he already had: it cost braking and gave nothing.
+5. **What a step would physically buy.** Moving the base back by the step's length moves the lean by stiffness x
+   length (m·ω0² ≈ 1380 per yd for this tackle), bounded by the press. A 0.3-0.5 yd replacement is about 400-700:
+   about the target gap. That is a different mechanism from the one built.
+6. **The press's direction is a second question.** Only about 40% of the rusher's load acts along the tackle's
+   retreat. The rest is across him.
