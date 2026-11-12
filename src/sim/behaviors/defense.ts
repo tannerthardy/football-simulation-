@@ -1648,7 +1648,8 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 const SHOULDER_READ = process.env.SHOULDER_READ === '1';
 /** SHOULDER_READ: the windup-keyed lean, or null. */
 function shoulderLean(a: Agent, sim: PlaySim): MoveCommand | null {
-  if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || sim.windupAt < 0) return null;
+  // From his own pictures: he sees the QB holding it and has seen no ball in flight.
+  if (sim.windupAt < 0 || hasObservedFlight(a) || observedHolder(a, sim)?.target !== sim.qb) return null;
   const qb = sim.see(a, sim.qb).pos;
   if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) <= -0.2) return null;
   const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
