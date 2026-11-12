@@ -1,5 +1,51 @@
 # The wrap at speed: what our physics does after a side or rear wrap (2026-11-12)
 
+## Parked (2026-11-12): read this first
+
+**Status: parked by Integration.** None of HOLD_SINK, HANG_AIRBORNE or HANG_GRIP is a candidate. All three are off on
+develop and on this branch. The benches and tools are kept for picking this up later.
+
+**Why parked.** Defense decomposed the short-catch YAC excess (3.9 yd over the NFL):
+- about 2.0 yd from plays where no defender ever gets within 1.5 yd;
+- 1.0 yd before the first arrival;
+- 0.9 yd after a defender is on him.
+
+The finish is under a quarter of it. Pursuit angle (FRONT_ANGLE) is the larger lever, so the grip question waits until
+that lands.
+
+**Established:**
+- Fast side and rear wraps give up about twice the NFL's yards after contact (Coverage's `finish_split.py` cells).
+- The holder does commit and go to the ground (census).
+- While airborne, his weight was only half-counted on the hold. HANG_AIRBORNE (all of it while airborne) is right in
+  physics.
+- A closed leg wrap arrests at the ankle and binds the stride (HANG_GRIP attempt 2), as statics says.
+- The fall itself is fine: the toppling bench (`fall-bench.mts`) and the tracking measure (`fall-end.py`) both say so.
+- The holder's post-grasp intent (HOLD_SINK) changes nothing for chasers already at speed, who are most of the fast
+  cells.
+
+**What blocks it: the grip capacity law.**
+- It was set for a horizontal tear by a standing holder. Off his feet it gives about half the holder's body weight
+  (two hands on the jersey ≈ 0.75 W, × 0.7 off his feet).
+- A fit athlete can dead-hang his own body weight.
+- So routing a hanging load through it tears open grips that used to hold until help arrived: broke 6–7% → 10–11%
+  (attempt 1: 24%), with after-contact yards no better.
+
+**The next question (diagnosis only, when picked up):** dead-hang and tear capacity by grip type (cloth, round a
+limb, locked wrap) against body weight; what the current law gives; every place the law is used.
+
+**Why each flag is not a candidate:**
+- HOLD_SINK (the holder's post-grasp intent): the fixtures pass, but the game cells do not move, because chasers are
+  already above the target it caps.
+- HANG_AIRBORNE (all of an airborne holder's weight on the hold): correct physics, but the load bypasses the grip, so
+  a loose grab binds as well as a locked wrap.
+- HANG_GRIP (the hanging load through the grip; attempt 2, ankle arrest for closed wraps): it tears open grips, for
+  the capacity reason above.
+
+**Benches and tools:**
+- `side-wrap-bench.mts`, `fall-bench.mts`, `hang-bench.mts`;
+- `finish-trace.mts` (census, the holder's fall, tears);
+- `pass-operators/fall-end.py`.
+
 Status: a diagnosis. Nothing is built.
 
 Question (Integration, from Coverage's `2026-11-12-finish-after-contact.md`): in the fast cells our completions give
@@ -325,3 +371,146 @@ Proposal (not built; Integration decides): its own flag, off. While a holder is 
 landed) and still holding, his hanging share is 1 (all of his weight on the hold). On landing it is HANG_SHARE as now.
 The rest stays the same: the stride comparison against hip torque, SWING_STRIP, LEGS_HELD. A leg hold then binds the
 stride for the airborne window; a hip hold may not.
+
+## HANG_AIRBORNE: three-arm read (2026-11-12)
+
+Arms: off; HANG_AIRBORNE; HANG_AIRBORNE + HOLD_SINK. Engine-35 (develop a702f0cd merged), sim-export seeds 201 and
+301, 16 games each.
+
+The HANG_AIRBORNE-only arm on seed 201 crashed in game 3 in the rules code: "Unsupported NFL 8-7-6: end-zone recovery
+impetus/momentum" (playsim.ts possess). The different play flow reached a rule the code does not support yet, which
+is for Rules + Coaching. So seed 201 has off and both flags only.
+
+Completions, `finish_split.py` against the NFL (n 4934):
+
+| | NFL | off 201 / 301 | HANG_AIRBORNE — / 301 | both 201 / 301 |
+|---|---|---|---|---|
+| standardised mean yards after contact (NFL on our mix about 2.0) | 2.18 | 3.13 / 3.09 | — / 2.81 | 3.17 / 2.66 |
+| play over within 1 s | 61% | 50 / 50% | — / 56% | 57 / 56% |
+| side, holder 4–6 | 1.5 yd, 0.8 s | 3.0 yd, 1.1 s / 2.4, 1.0 | — / 2.4, 1.2 | 2.2, 0.9 / 2.5, 1.1 |
+| behind, holder > 6 | 1.8, 0.7 | 3.2, 0.9 / 3.0, 0.9 | — / 3.0, 0.9 | 4.1, 0.9 / 3.0, 0.9 |
+| behind, holder 4–6 | 0.9, 0.8 | 1.7, 0.9 / 1.3, 0.9 | — / 1.5, 0.8 | 1.7, 0.8 / 1.1, 0.8 |
+| side, holder > 6 | 1.9, 0.8 | 4.9, 1.1 / 4.6, 1.2 | — / 4.2, 0.9 | 5.1, 1.3 / 4.2, 0.9 |
+| slow cells (holder < 4): front / side / behind | 1.6 / 1.5 / 0.9 | 1.4 / 2.0 / 1.3, 1.2 / 2.1 / 0.0 | — / 1.2 / 2.3 / 0.4 | 1.3 / 2.0 / 1.2, 1.2 / 2.3 / 0.7 |
+| ended by a second defender | — | 46 / 46% | — / 44% | 46 / 48% |
+| broke | — | 9 / 7% | — / 9% | 9 / 5% |
+| missed | — | 6 / 6% | — / 6% | 7 / 6% |
+
+Runs at the second level, standardised mean after contact: off 4.14 / 4.55; HANG_AIRBORNE — / 4.18; both 3.97 / 4.41.
+NFL on our mix 3.97–4.14; NFL own 4.41.
+
+The holder's fall, `finish-trace.mts` seed 101, 8 games, fast wraps where the holder fell while holding. Grip at the
+start of his fall:
+
+| arm | grip | n | stride bound in the fall | tore in the fall | yards after the wrap p50 | wrap to end |
+|---|---|---|---|---|---|---|
+| off | two arms, unlocked (lock < 0.5) | 13 | 3 | 5 | 9.2 | 1.70 s |
+| off | two arms, locked | 24 | 5 | 0 | 3.8 | 1.35 s |
+| HANG_AIRBORNE | unlocked | 10 | 8 | 7 | 16.0 | 2.65 s |
+| HANG_AIRBORNE | locked | 16 | 4 | 0 | 4.1 | 1.27 s |
+| both | unlocked | 11 | 10 | 3 | 4.0 | 0.70 s |
+| both | locked | 18 | 3 | 0 | 4.5 | 1.43 s |
+
+No one-arm holds reached a fall in this sample.
+
+Reading:
+- In the games the flag moves little: play over within 1 s 50 → 56–57%, standardised yards down 0.3–0.4 on seed 301,
+  flat on seed 201.
+- No cell overshoots below the NFL. The slow cells and second-defender involvement are about unchanged.
+- **The flag is too blunt in the way Integration asked about.** Unlocked holds bind the stride in the fall as often as
+  or more often than locked wraps (8–10 of 10–11 against 3–4 of 16–18). When they hold, they get the full benefit
+  (with HOLD_SINK: 0.70 s, 4.0 yd).
+- The hanging load acts through the stride comparison and never stresses the grip. A loose hold tears in the fall only
+  for other reasons (3–7 of 10–11), so a weak grab is as good as a locked wrap the moment the tackler leaves his feet.
+
+HANG_AIRBORNE waits. The next piece is routing the hanging weight through the grip's capacity: the hanging moment is
+transmitted only up to what the hold can carry, and the excess slides the grip and can tear it. That uses the same
+kind of reference: an unlocked hold's capacity against the holder's weight at the hold.
+
+Locked wraps also bind the stride less than expected (3–5 of 16–24). Many are hip holds (leg share < 0.65), where the
+statics says a hanging holder cannot stop the stride. That is the honest high-tackle case, not a defect.
+
+## HANG_AIRBORNE + HANG_GRIP: game read, adverse, explained (2026-11-12)
+
+Engine-38 (develop 814192c6 merged), sim-export seeds 201 and 301, 16 games each, off against both flags.
+`finish_split.py` against the NFL.
+
+| | off 201 / 301 | on 201 / 301 | NFL |
+|---|---|---|---|
+| standardised mean after contact (NFL on our mix about 2.1) | 3.28 / 2.72 | 3.87 / 3.56 | 2.18 |
+| play over within 1 s | 49 / 53% | 47 / 48% | 61% |
+| broke | 7 / 6% | **24 / 24%** | — |
+| second defender | 49 / 49% | 36 / 37% | — |
+| missed | 8 / 6% | 9 / 6% | — |
+| behind, holder 4–6 (yd p50) | 1.1 / 1.0 | 2.1 / 2.0 | 0.9 |
+| side, holder > 6 | 4.4 / 3.8 | 6.6 / 3.8 | 1.9 |
+
+`finish-trace.mts` (seed 101, 8 games, 80 wraps):
+- Grips broken: 6 off, 28 on, of which 17 within 0.5 s.
+- With both flags, 23 of 51 holders who fell while holding tore their grip during the fall. Off: 1 of 45.
+
+**Cause: the rule's tear at the ankles.**
+- In games a grip's capacity is max(wrap law, two hands on the jersey), about 650 for a CB, × 0.7 off his feet ≈ 450.
+- An airborne holder's whole weight is about 900. So almost every diving holder's hands slide down to the ankles and come
+  off, including tackles that held before.
+- That is wrong for a closed wrap round the legs. Locked arms around a leg carry the hanging weight by geometry: they
+  can slide down the leg, but at the ankles the foot arrests them. That is the shoestring tackle, with the longest lever
+  on the stride.
+- Only an open grip (hands on cloth, one arm, an unclosed wrap) slips off over the foot.
+
+Not a candidate as it stands.
+
+Proposed second attempt (not built):
+- A locked wrap of the legs (lock ≥ 0.5, two arms) slides under overload to the ankles and holds there, carrying its
+  capacity at the ankle lever.
+- An open grip (lock < 0.5, or one arm) slides and comes off at the ankles, as now.
+- The stride comparison applies throughout the slide at the current hold height. That is already so; Integration asked
+  to confirm it.
+
+## HANG_GRIP attempt 2: not repaired; stopped for re-diagnosis (2026-11-12)
+
+The rule: at the ankles the foot arrests the closed share of the wrap (capacity + lock × the hanging weight); an open
+grip slips off.
+
+Bench (hang-bench): lock 0.25 tears; lock 0.56 slides to the ankles and holds (the runner is down at 0.25–0.30 s,
+2.6–3.3 yd); lock 0.9 does not slide (a leg wrap binds, a hip hold does not).
+
+HANG_SLIDE at 0.75 / 1.5 / 3 yd/s gives identical outcomes. The World's own horizontal slip, from a holder slower than
+the runner, carries the hold to the ankles within the first 0.05 s. The slide rate only matters for holds that are
+overloaded high on the leg without slipping horizontally first.
+
+Games (engine-38, seeds 201 and 301, 16 games each, off against both flags):
+
+| | off | attempt 1 | attempt 2 |
+|---|---|---|---|
+| broke | 7 / 6% | 24 / 24% | 10 / 11% |
+| second defender | 49 / 49% | 36 / 37% | 44 / 41% |
+| standardised after contact (NFL on our mix about 2.1) | 3.28 / 2.72 | 3.87 / 3.56 | 3.39 / 3.12 |
+| runs, standardised (NFL on our mix about 4.0) | 4.40 / 4.33 | — | 4.63 / 3.76 |
+
+Traces (seed 101, 80 wraps): holders who fell while holding, by grip at the start of the fall, as tore / bound out of n:
+
+| | off | attempt 1 | attempt 2 |
+|---|---|---|---|
+| open (lock < 0.5) | 1 / 4 of 10 | 12 / 2 of 12 | 15 / 5 of 19 |
+| locked | 0 / 9 of 35 | 11 / 17 of 39 | 0 / 16 of 32 |
+
+Yards after the wrap p50: 2.62 off, 3.58 attempt 1, 3.61 attempt 2.
+
+**Re-diagnosis.** Locked wraps now behave as the statics says: they never tear and bind twice as often. The adverse
+result is the open grips: 15 of 19 tear under an airborne holder, where off they held and the play ended with the
+second defender.
+
+That comes down to the grip capacity law, not to this rule:
+- The two-hands-on-the-jersey capacity is about 0.75 of the holder's body weight (handHold: per hand
+  m × (0.42 + 0.16 strength) × g, × 0.75 for a slick jersey).
+- × 0.7 off his feet, that leaves about half his weight.
+- A fit athlete can dead-hang his own body weight from two hands.
+- The law was set for a holder on his feet pulling horizontally (a runner tearing through hands). Under a hanging load
+  it understates what hands on cloth or a leg can carry.
+
+Routing the full weight through it therefore tears what should hold. That is shared grip physics, outside these flags.
+Both flags stay off.
+
+Next question (not built): the grip capacity against a hanging (vertical, sustained) load versus a horizontal tear.
+Reference: dead-hang grip as a fraction of body weight, by grip on cloth or round a limb.

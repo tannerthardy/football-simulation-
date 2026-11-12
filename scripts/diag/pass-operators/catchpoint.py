@@ -5,7 +5,8 @@ usage: python3 -I scripts/diag/pass-operators/catchpoint.py [--ball out/mechanic
 Throws: forward passes with a target, not thrown away (the source's own call, as hit-throws.py). Openness at the
 release = the target's separation from the nearest defender: tight < 1.5, mid 1.5-3, open >= 3 (hit-throws.py bins).
 Arrival frame ka and landing point B: hit-throws.py's rule (pass_arrived, nearest of it and its +-0.1 s neighbours,
-else the ball's nearest approach to the target). On target = B within 1.5 yd of the target.
+else the ball's nearest approach to the target). On target = the incoming flight line (the ball 0.3 s and 0.1 s before
+arrival) passes within 1.5 yd of the target at arrival (not B, which a catcher already holds).
 At arrival, the defender nearest the target: his distance to the target (dR) and to B (dB), and where he is along
 the ball's incoming direction (ball 0.2 s before arrival -> B), relative to the target: 'front' (> 0.5 yd toward the
 ball: between it and the receiver), 'behind' (< -0.5 yd: trailing / over the top on the far side), else 'level'.
@@ -50,7 +51,16 @@ def rows(path, ball):
         ts = min(p.dist(t, d, kf) for d in D)
         o = {'open': 'tight' if ts < 1.5 else 'mid' if ts < 3 else 'open', 'tsep': ts}
         B = bxy[ka]; tx, ty = p.pos(t, ka)
-        o['miss'] = math.hypot(B[0] - tx, B[1] - ty)
+        # On target from the incoming flight line (the ball 0.3 s and 0.1 s before arrival) at closest approach to the
+        # target, not the ball at the arrival frame: a caught ball is in the catcher's hands there and a missed one is
+        # not, which sorts the measure by the outcome.
+        k1, k0 = max(kf, ka - 3), max(kf, ka - 1)
+        (ax_, ay_), (ex_, ey_) = bxy[k1], bxy[k0]; lx, ly = ex_ - ax_, ey_ - ay_; LL = lx * lx + ly * ly
+        if k0 > k1 and LL >= 0.01:
+            u = ((tx - ax_) * lx + (ty - ay_) * ly) / LL
+            o['miss'] = math.hypot(ax_ + u * lx - tx, ay_ + u * ly - ty)
+        else:
+            o['miss'] = math.hypot(B[0] - tx, B[1] - ty)
         d = min(Da, key=lambda d: p.dist(t, d, ka)); dx, dy = p.pos(d, ka)
         o['dR'] = p.dist(t, d, ka); o['dB'] = math.hypot(dx - B[0], dy - B[1])
         k2 = max(kf, ka - int(round(0.2 / p.dt))); P0 = bxy[k2]

@@ -135,7 +135,9 @@ export type PlayEventType =
   | 'dpi'
   | 'touchback'
   | 'slide'
-  | 'fall';
+  | 'fall'
+  /** CATCH_SECURE: the ball reached the receiver's hands; the securing window opens (the catch, if any, follows). */
+  | 'secure';
 
 export interface PlayEvent {
   t: number;
