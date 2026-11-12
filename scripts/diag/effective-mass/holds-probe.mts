@@ -37,6 +37,7 @@ for (let s = first; s < first + games; s++) {
           if (f.holdStage !== 'committed') add(`${type} HOLD_CALL material`);
           if (f.holdStage === 'called') add(`${type} HOLD_CALL called`);
           if (f.holdStage !== 'committed') add(`${type} HOLD_CALL material: ${f.holdPointOfAttack ? 'at the point of attack' : 'next to the ball'}`);
+          if (f.holdStage !== 'committed') console.log(`  ${type} material: effect ${Number(f.holdEffectYdPerS).toFixed(2)} yd/s, traffic ${f.holdTraffic}, pSeen ${Number(f.holdPSeen).toFixed(2)}, ${f.holdStage}`);
           else add(`${type} HOLD_CALL not material: ${!f.holdTowardBall ? 'not going to the ball' : !f.holdOutsideDouble ? 'inside a double' : 'not next to the ball'}`);
         }
       }
