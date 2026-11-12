@@ -59,7 +59,7 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
       if (n.seq.includes(r)) continue;
       const prev = n.seq[n.seq.length - 1];
       // Finish the side: start there, and once the eyes leave a side they do not come back to it.
-      if (!prev && startRoutes.length && (side(r) !== startSide || r.isBack)) continue;
+      if (!prev && startRoutes.length && side(r) !== startSide) continue;
       if (prev && side(prev) !== side(r) && n.seq.some((x) => side(x) === side(r))) continue;
       if (prev && side(prev) !== side(r) && startRoutes.some((x) => !n.seq.includes(x) && side(x) === side(prev) && x.window.last > n.t + LOOK)) continue;
       const across = prev && side(prev) !== side(r) ? 0.6 : 0;
@@ -154,7 +154,9 @@ const live = (a: RouteDescriptor, b: RouteDescriptor) => Math.min(a.window.last,
  *    clear-out, not a straight vertical), the two live together 0.4 s or more: by rhythm the QB would throw the low
  *    route before the high one had declared, so only a key on the defender between them keeps the high route an
  *    option. Or a clear-and-void pair (the vertical takes the deep defender, the in-breaker comes under him).
- * 2. Triangle: three routes on the start side read as one picture (HonestNFL 123, 340, the Tampa family, mesh).
+ * 2. Vertical peek: two or more verticals on the start side and a released back: one look at the verticals as a
+ *    picture, then the back (001, 112).
+ * 2b. Triangle: three routes on the start side read as one picture (HonestNFL 123, 340, the Tampa family, mesh).
  * 3. Alert: an isolated vertical on the other side, a yes/no look at the set before the start side (307, 141).
  * 4. Pure progression otherwise.
  */
@@ -197,7 +199,18 @@ export function select(routes: RouteDescriptor[], motifs: Motif[], qbSet: number
     c.key = { role: k.role, onCue: k.hi.ref, otherwise: k.lo.ref, cueBy: k.cueBy, low: k.lo.ref, high: k.hi.ref };
     return c;
   }
-  // 2. Triangle on the start side, all three answers early enough to be one picture.
+  // 2. Vertical peek: two or more verticals on the start side and a released back. The verticals are read as one
+  // picture, inside-out off the deep defenders' squeeze, one look; then the back (HonestNFL 001: the seam away from
+  // the rotation, the go, reset to the back; 112: verticals, else the back; 150, 327).
+  const back = routes.find((r) => r.isBack && r.window.ready < 3.5);
+  const verts = routes.filter((r) => !r.isBack && r.side === side && isVertical(r) && r.depthAtReady >= 10 && !r.settles)
+    .sort((a, b) => Math.abs(a.startWidth) - Math.abs(b.startWidth) || refKey(a).localeCompare(refKey(b)));
+  if (back && verts.length >= 2) {
+    const c = lead(plan('vertical_peek', `verticals ${verts.map((r) => r.ref).join('-')} as one look, inside-out, then the back ${back.ref}`), [...verts.map((r) => r.ref), back.ref]);
+    c.triangle = verts.map((r) => r.ref);
+    return c;
+  }
+  // 3. Triangle on the start side, all three answers early enough to be one picture.
   const tri = motifs.filter((m) => m.kind === 'triangle').map((m) => m.refs.map((ref) => R.get(ref)!))
     .filter((T) => T.filter((r) => r.side === side).length >= 2 && T.every((r) => r.window.ready <= qbSet + 0.9 && !r.isBack))
     .sort((a, b) => Math.max(...a.map((r) => r.window.ready)) - Math.max(...b.map((r) => r.window.ready)) || a.map(refKey).join().localeCompare(b.map(refKey).join()));

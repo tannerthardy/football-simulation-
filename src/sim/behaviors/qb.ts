@@ -127,7 +127,8 @@ const PICTURE_AGE = process.env.PICTURE_AGE === '1';
  *   from his own delayed picture, if that defender is playing the high route he throws the low one, if the low
  *   one the high, read as well and as fast as his decision-making and awareness allow; no defender there (man,
  *   or nobody in the stretch) leaves the order as it is;
- * - triangle: three routes read as one picture (eyes on its middle), the best open one taken.
+ * - triangle: three routes read as one picture (eyes on its middle), the best open one taken;
+ * - vertical peek: the verticals as one picture, one look, then the back.
  * Pressure and his clock still end any plan (QB_RHYTHM's outlet). Off: `concept.progression`. */
 const READ_PLAN = process.env.READ_PLAN === '1';
 
@@ -163,7 +164,7 @@ export class QBPass implements Behavior {
   private lookOffChecked = false;
   private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
   /** READ_PLAN: the installed plan this play runs (null: the hand-written progression). */
-  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null } | null = null;
+  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
   /** READ_PLAN: the key read once made (diagnostic): the defender he read (null: none in the stretch), where he
    * put him between the low (0) and high (1) routes, and the throw it gave. */
   keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
@@ -241,8 +242,9 @@ export class QBPass implements Behavior {
     this.reads = reads;
     const low = ag(p.key?.low ?? null), high = ag(p.key?.high ?? null);
     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
+    const peek = p.style === 'vertical_peek';
     this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep') } : null,
-      triangle: tri && tri.length === 3 ? tri : null, alert, outlet };
+      triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
   }
 
@@ -550,7 +552,9 @@ export class QBPass implements Behavior {
       }
       if (pick) return this.startThrow(a, sim, pick);
       const held = t - this.readStart;
-      if ((held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell) {
+      // A vertical peek is one look at the verticals; a triangle is held until its three have shown.
+      const done = this.plan!.peek ? held > dwell : (held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell;
+      if (done) {
         this.triDone = true;
         const after = this.reads.findIndex((r) => !tri.includes(r));
         this.readIdx = after < 0 ? this.reads.length : after;

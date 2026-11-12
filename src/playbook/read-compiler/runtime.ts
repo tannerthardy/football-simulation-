@@ -20,7 +20,7 @@ export interface InstalledPlan {
   alert: ReceiverRef | null;
   /** Defender key: read the defender between `low` and `high` at `cueBy` s after the snap. */
   key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number } | null;
-  /** Triangle: three routes read as one picture, top-down. */
+  /** Triangle: three routes read as one picture, top-down; vertical peek: the verticals as one look, then the back. */
   triangle: ReceiverRef[] | null;
 }
 
