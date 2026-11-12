@@ -23,7 +23,7 @@ P.startThrow = function (a: any, sim: any, ev: any) {
     for (const r of this.reads) {
       if (r === ev.target || !this.ready(r, sim)) continue;
       const e = this.evaluate(a, sim, r, 0);
-      if (e && e.intRisk > 0.02) alts.push({ slot: r.slot, P: +e.P.toFixed(3), intRisk: +e.intRisk.toFixed(3) });
+      if (e && e.intRisk > 0.02) alts.push({ slot: r.slot, P: +e.P.toFixed(3), intRisk: +e.intRisk.toFixed(3), path: +(e.parts?.intPath ?? 0).toFixed(4), jump: +(e.parts?.intJump ?? 0).toFixed(4), contest: +(e.parts?.intContest ?? 0).toFixed(4), depth: +e.depth.toFixed(1) });
     }
     decision = { t: sim.t, slot: ev.target.slot, P: +ev.P.toFixed(3), intRisk: +ev.intRisk.toFixed(3), alts };
   }
