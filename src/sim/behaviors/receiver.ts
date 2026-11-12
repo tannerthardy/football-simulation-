@@ -136,7 +136,7 @@ const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
  * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
  * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
  * clears are the existing PRESS_RELEASE technique, on the defender's position as he sees it. */
-export const RELEASE_SEEN = process.env.RELEASE_SEEN === '1';
+export const RELEASE_SEEN = process.env.RELEASE_SEEN !== '0';
 /** RELEASE_SEEN: "tight over him" at the snap; the NFL press population's 2.5 yd, and over him rather than beside. */
 const RELEASE_TIGHT_DEPTH = 2.5, RELEASE_TIGHT_WIDTH = 1.5;
 /** RELEASE_THROUGH (off; RELEASE_THROUGH=1 turns it on; estimated, C14): the
