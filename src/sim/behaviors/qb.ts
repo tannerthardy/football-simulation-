@@ -153,7 +153,7 @@ const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
  * of view (felt's blind side) poor pocket presence applies it late. Off, a free man drifting past at 1.6 yd, seen on a 0.3 s old
  * picture moving away, read 1-2 s off (Rules + Coaching repro, hitches vs
  * Cover 2, seed 2 flipped, READ_PLAN). */
-const FREE_BOUND = process.env.FREE_BOUND !== '0';
+const FREE_BOUND = process.env.FREE_BOUND === '1';
 /** Estimated (FREE_BOUND), a QB's-eye typical rusher: burst toward the QB,
  * yd/s^2; reach from his centre, yd; the range where a hand-and-burst hit is
  * the question (beyond it his ordinary estimate, velocity and all, is what he
