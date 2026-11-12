@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-49`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-50`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,25 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-50: `SHOULDER_READ` on as the underneath plant; the dither guard (2026-11-12)
+
+**`SHOULDER_READ`** (Coverage #652; the flag's earlier eyes lean is replaced, with Defense's agreement). An underneath zone defender keyed the quarterback's windup correctly (facing him 86–97% of the time, his reaction about 0.18 s) but `sawThrow` could not act until the ball was in the air, so the cue was ready about 0.2 s before the release and thrown away; at the release about half of these defenders were still dropping, and the 0.25–0.35 s to their break was the time to stop and reverse. Now, when his read of the windup matures, his drop stops (no velocity away from the line) while his lateral and downhill zone play continue. A first attempt, a full stop squared to the quarterback, cancelled his movement toward threats and was reverted. Coverage, seeds 11 / 23: hook break p50 0.50 → 0.35–0.40 s, curl / flat 0.40 → 0.30–0.35 s; breaking at the release 10–13 → 10–16%; wrong plants per pump 0.07–0.12; no added re-aiming. It does not close the NFL gap (32–41% breaking at the release), which is direction before the release: NFL underneath defenders facing the quarterback close on the eventual catcher over the last 0.5 s even when he has not broken (+1.10 yd/s; ours +0.11), starting before a windup could be read, and our quarterback's eyes reach his target only with his motion (on him 20% at −0.5 s, 83% at −0.3 s). That is a quarterback item (Rules + Coaching). Parked from the same work: `WINDUP_READ` (reading the direction of the windup; first read on the right receiver 20–27%, two attempts) and an earlier head-turn cue for trailing man defenders (not supported: the NFL trailer's closing begins no earlier than ours).
+
+**The dither guard** (Defense #653): `test/dither-budget.test.ts`, 135 fixed plays, reversed re-aims over 20° a second by controller and by post-decision stage against a budget of the recorded value × 1.10 plus a statistical slack, ratcheted down by any change that lowers it; and the model rule "commit to a decision" in CLAUDE.md. It measures requests, never outcomes. Recorded on engine-49.
+
+**Held out: `DROP_BELIEF`** (Rules + Coaching #651; his believed drop rate 0.05 → the observed 0.08). In the tree, off. Cards 0 → 1: seed 11 points 25.4 → 29.0 (moved), INT 1.6 → 2.4% (moved); seed 23 completion 65.7 → 62.9% (moved), INT 1.9 → 1.5%. With the lane's four seeds the interception rate rises on five of six (pooled about +0.6 points, p ≈ 0.06) while the paired panel is flat; the extra picks are on intermediate throws that cleared his bar. Not explained, so not landed.
+
+Checks on the candidate (`19ec65f6`, both flags on): full suite 4349 pass with only the two known research failures. On the final tree (`DROP_BELIEF` off, the guard merged): core suite 4085 of 4085; a first run of it showed three 60 s timeouts under machine load, which passed alone and did not recur. Fixed run set unchanged (3.84). Paired league scorecards for `SHOULDER_READ`, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | YAC | points a team-game |
+|---|---|---|---|---|---|
+| 11 | 8.29 → 8.65 | 64.0 → 64.8% | 4.6 → 5.8% (moved) | 6.92 → 7.01 | 27.3 → 29.0 |
+| 23 | 8.42 → 8.17 | 65.3 → 62.9% | 6.0 → 4.5% | 6.62 → 7.00 | 26.8 → 28.3 |
+
+Nothing agrees between the seeds; it lands as the use of a cue he already had.
+
+Found by these cards: a scorecard with `FREE_BOUND` on aborted on "Loose-ball boundary contact lacks its actual outward crossing" (a carrier in bounds by his support holding the ball beyond the plane, fumbling; fixed by Rules + Coaching in #657, next tree). On the seed that completed, `FREE_BOUND` still takes sacks 5.8 → 3.0%; held.
 
 ## engine-49: `PURSUIT_FIELD` on, a pursuer of a seen carrier is not held in the field; `IN_STRIDE_CATCH` retired (2026-11-12)
 

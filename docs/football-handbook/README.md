@@ -36,6 +36,7 @@ and proposed mechanisms are identified separately.
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
+| [Play-action protections](play-action-protections.md) | Naked, boot, run-action and gap fakes as call structure: who blocks the edge, the QB's path and his read of an unblocked end, with sources; what the engine would need. |
 
 Chapter check catalogs are proposed options, not mandatory test suites. Choose
 the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
