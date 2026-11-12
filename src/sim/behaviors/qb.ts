@@ -259,7 +259,7 @@ const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
  * the urgency the rush will have when the ball leaves (his picture of it, closed over the windup), unscaled (pocket
  * presence stays on his bar), and expects a flick when the rush arrives before the release; how well he anticipates it
  * is set by his knowledge (decision-making and experience), with error both ways. */
-const ACC_BELIEF = process.env.ACC_BELIEF === '1';
+const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
