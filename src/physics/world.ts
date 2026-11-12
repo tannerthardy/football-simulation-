@@ -299,7 +299,7 @@ const HANDS_SLACK = 0.06;
 const GRASP_HZ = 6;
 const GRASP_ZETA = 0.8;
 /** A lean can grow past the felt load by this fraction (force development). */
-const PUSH_GROWTH = 0.25;
+export const PUSH_GROWTH = 0.25;
 /** Time constant of the sensed load, s. */
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;

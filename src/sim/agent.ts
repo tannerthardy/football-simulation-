@@ -67,6 +67,9 @@ export interface RunContactSurface {
  * the intended contact surface on runs (normally against the drive).
  */
 export interface Engagement {
+  /** TACKLE_RESET: the blocker's base re-set (cue onset, step end, done) and his last depth request. */
+  baseReset?: { cueAt?: number; until?: number; done?: boolean };
+  lastReqX?: number;
   /** Emitted once when the physical hands/torso actually carry load. */
   contactReported?: boolean;
   blocker: Agent;

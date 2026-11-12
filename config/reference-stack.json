@@ -144,6 +144,7 @@
     "PUNCH": "off",
     "HOLD_CALL": "off",
     "TACKLE_BRAKE": "off",
+    "TACKLE_RESET": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",

@@ -33,7 +33,7 @@ import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
-import { availability, baseRadiusAt, supportParams } from '../physics/support.js';
+import { availability, baseRadiusAt, omega0, recoverySpeed, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
@@ -44,7 +44,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { OPEN_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+import { OPEN_HANDS, PUSH_GROWTH, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -885,6 +885,67 @@ export const TACKLE_SET = process.env.TACKLE_SET === '1';
  * allows in a step. No timer and no capacity added: the body brakes. */
 export const TACKLE_BRAKE = process.env.TACKLE_BRAKE === '1';
 
+/** TACKLE_RESET (experimental, off; with TACKLE_SET and TACKLE_BRAKE): the
+ * anchor's base re-set. A man can only drive into a load with his base under
+ * his hips (OL protection textbook §7.6-7.7, §8.4, §20.5: "stop retreat,
+ * bring feet under hips, anchor"; "replace ground with short, coordinated
+ * steps"; "absorbs, resets feet, then reacts to spin"). Carried back, the
+ * World's lean -- his drive into the load -- is held near his base limit and
+ * grows past it only at the pendulum's rate (feet() probe: 186 of a 559
+ * press). The cue is what he feels: the press beyond what his base holds at
+ * his stance (m w0^2 x base radius) while he is carried faster than he asked
+ * to retreat. He acts on it after a delay by his pass-block technique (0.5-1.5
+ * reaction times). The step (a short replacement, of which a hop is one
+ * form) takes the sunk stance's base radius over his recovery stepping speed;
+ * during it his feet are light -- no braking and no drive into the man, his
+ * retreat going on (a stand-in: the model has no per-foot normal load; debt)
+ * -- and he sinks (PASS_SINK's posture). On landing his lean is set to his
+ * base limit at the posture he has reached (scaled by balance: 0.5-1), no
+ * more than the press, and grows from there as the World allows. He stays
+ * sunk while pressed; his lean may exceed the press (PUSH_GROWTH) only while
+ * he is still carried, and not once the pair has stopped, so a pull or swim
+ * cannot pitch him onto the rusher. No capacity added. */
+export const TACKLE_RESET = process.env.TACKLE_RESET === '1';
+const SINK_POSTURE = 0.95;
+
+/** TACKLE_RESET: the blocker's base re-set (see the flag). Edits his intent in place. */
+function baseReset(sim: PlaySim, e: Engagement, intent: Intent): void {
+  const b = e.blocker, sup = b.body.support;
+  if (!sup || sup.state !== 'up') return;
+  const sp = supportParams(b.profile), m = b.profile.massKg;
+  const st = e.baseReset ?? (e.baseReset = {});
+  const L = Math.hypot(sup.felt.x, sup.felt.y);
+  const carried = (e.lastReqX ?? b.vel.x) - b.vel.x > 0;
+  if (st.until !== undefined && !st.done) {
+    if (sim.t < st.until) {
+      // In the step: light feet -- no braking, no drive into him; he sinks.
+      intent.vel = { x: b.vel.x, y: b.vel.y }; intent.push = 0; intent.posture = SINK_POSTURE;
+      return;
+    }
+    // Landed: the base under his hips, toward the load.
+    st.done = true; st.cueAt = undefined;
+    if (L > 1e-6) {
+      const w = omega0(sp, sup.posture);
+      const limit = m * w * w * baseRadiusAt(sp, sup.posture) * (0.5 + 0.5 * b.r('balance'));
+      const mag = Math.min(L, Math.max(Math.hypot(sup.lean.x, sup.lean.y), limit));
+      sup.lean = { x: -sup.felt.x / L * mag, y: -sup.felt.y / L * mag };
+    }
+  }
+  if (st.done) {
+    if (L > 0.3 * m * G) intent.posture = SINK_POSTURE;
+    intent.growth = carried ? PUSH_GROWTH : 0;
+  }
+  // The cue (again after a landing: a step or two, as the press needs).
+  const w = omega0(sp, sup.posture);
+  const cue = L > m * w * w * baseRadiusAt(sp, sup.posture) && carried;
+  if (!cue) { st.cueAt = undefined; return; }
+  if (st.cueAt === undefined) st.cueAt = sim.t;
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  if (sim.t - st.cueAt < rt * (1.5 - b.r('passBlock'))) return;
+  const speed = Math.max(0.5, recoverySpeed(sp, 0, fatigueFactor(b.body.energy)));
+  st.until = sim.t + baseRadiusAt(sp, SINK_POSTURE) / speed; st.done = false;
+}
+
 /** TACKLE_BRAKE: the rusher's press on the blocker along -x (toward his own
  * goal), kg*yd/s^2, from the hands joint's last-step force (0 without one). */
 export function pressOnBlocker(b: Agent, joint: HandJoint | undefined): number {
@@ -1452,6 +1513,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: PASS_SINK && heavy ? 0.95 : 0.6,
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
+  if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
+  e.lastReqX = intents[b.idx].vel.x;
   if (riding) {
     // PAST_ALONG_PATH: the ride. He has been beaten along the man's path but
     // is still within reach: he turns with him, keeps up, and pushes him on
