@@ -1,7 +1,7 @@
 /**
  * HOT_PLAN fixture probe: corner-flat vs Cover 2 with the strong corner sinking (test/read-plan.test.ts's key
  * fixture), seeds 1-6, on the current engine. Prints the key read, the true time to the nearest rusher at the cue,
- * whether the QB's hot path fired, the target and the time to throw. Arms by the environment.
+ * the target and the time to throw. Arms by the environment.
  *   [HOT_PLAN=1] [FREE_BOUND=1] node --import tsx scripts/diag/read-plan/hot-probe.ts
  */
 import { PlaySim } from '../../../src/sim/playsim.js';
