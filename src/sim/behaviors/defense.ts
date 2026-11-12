@@ -31,7 +31,7 @@ import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -139,6 +139,27 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       return chase(sim, a, target);
     }
   }
+  // CATCH_CARRY: the ball reached a receiver he is on (he drove on the catch,
+  // or his own flight picture had it arriving at that man) and the outcome is
+  // not yet in his picture. He attacks that receiver as he last saw him,
+  // through the hands, instead of station-keeping, steering on the flight's
+  // end or rallying to where the ball landed. A newer picture of him without
+  // the ball refutes it (dropped); a ball back in the air is played as flight;
+  // an acquired holder is pursued above.
+  if (CATCH_CARRY && sim.ball.kind !== 'air') {
+    const drive = catchDrive.get(a) ?? catchOpportunity(a);
+    if (drive) {
+      const seen = sim.see(a, drive.receiver);
+      const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > drive.t;
+      const on = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= CATCH_CARRY_RANGE;
+      if (!refuted && on) {
+        a.tags.add('catch-carry');
+        const f = seen.facing;
+        return runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+      }
+      if (refuted) catchDrive.delete(a);
+    }
+  }
   // Continue the acquired flight estimate while possession is unresolved.
   // Disappearance of the authoritative air state does not announce a catch,
   // or reopen coverage. A receiver can still miss this predicted opportunity.
@@ -155,21 +176,6 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
   if (sim.ball.kind !== 'air' && path) return playObservedFlight(a, sim, path);
   const area = sim.ball.kind !== 'air' ? unresolvedBallArea(a) : null;
-  // CATCH_CARRY: he was driving on a receiver making this catch; the outcome
-  // is not yet in his picture. He keeps driving on that receiver as he last
-  // saw him, not on the spot the ball landed. A newer picture of him without
-  // the ball refutes it (dropped); a ball back in the air is played as flight.
-  const drive = CATCH_CARRY && area ? catchDrive.get(a) : undefined;
-  if (drive) {
-    const seen = sim.see(a, drive.receiver);
-    const refuted = seen.carrying === false && seen.age !== undefined && sim.t - seen.age > drive.t;
-    if (!refuted) {
-      a.tags.add('catch-carry');
-      const f = seen.facing;
-      return runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
-    }
-    catchDrive.delete(a);
-  }
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
@@ -794,6 +800,8 @@ const DRIVE_CATCH = process.env.DRIVE_CATCH !== '0';
 const CATCH_CARRY = process.env.CATCH_CARRY === '1';
 /** CATCH_CARRY: the receiver each defender was driving on, and when. */
 const catchDrive = new WeakMap<Agent, { receiver: Agent; t: number }>();
+/** CATCH_CARRY: how near the receiver (as he sees him) a defender must be to be "on" him (yd). */
+const CATCH_CARRY_RANGE = 5;
 const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
 function findsBall(a: Agent, sim: PlaySim): boolean {
   const ball = sim.ball;
