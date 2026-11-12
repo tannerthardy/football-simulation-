@@ -93,3 +93,42 @@ Time from the wrap to the end: 1.2–1.55 s. Yards after the wrap: 2.3–5.0 by 
 
 Coverage's cells say both duration and yards per second are too high. (1) addresses the early speed; (2) and (3)
 address the duration.
+
+## Proposal 1, diagnosed: what the holder asks for after the grasp
+
+Tool: `scripts/diag/effective-mass/side-wrap-bench.mts`, the World alone. A 92 kg runner at 6 yd/s; an 84 kg holder
+beside him at rest; grasp legs 0.5, lock 0.75 (games' capacity law, 999).
+
+| holder asks | his feet, first 0.3 s | his balance deviation along the path | runner at 0.3 s | runner trips | runner travel |
+|---|---|---|---|---|---|
+| stop (vel 0, push 1, posture 0.6) | −0.5 to −0.7 g | −0.02 to −0.14 yd: he leans back into the load | 3.9 yd/s | 0.50 s | 2.5 yd |
+| the runner's velocity (run with him) | +0.4 to +0.8 g | +0.17 yd | 4.3 yd/s | 0.85 s, still 2.8 yd/s falling | 3.7 yd |
+
+The physics anchors him when he asks to stop. A side wrap then ends in 2.5 yd and 0.5 s (NFL side cells: 1.5–2.5 yd in
+0.8 s). The grip's pull acts at his hands' height on the carrier, below his centre of mass, so it does not pitch him
+forward. What tips him is the linear pull on a body whose feet are still running.
+
+In games (34 fast wraps), over the first 0.3 s he asks for a median 55% of the carrier's speed along the carrier's
+path (p25 0.36, p75 0.71):
+
+| request | n | his feet | pair force | yards after the wrap |
+|---|---|---|---|---|
+| ≥ 70% (runs with him) | 9 | +328 | +489 | 6.1 |
+| 35–70% | 18 | −42 | −10 | 3.1 |
+| < 35% | 7 | +227 (already pulled 0.31 yd off his base) | +181 | 3.9 |
+
+The source is in `src/sim/tackle.ts` (`updateBond`, HOLD_FINISH): his request along the runner's path is
+speed × (1 − commit). `commit` is his grip security, `next`, which ramps from the acquired quality, and it is 0 while
+the grip slips. So early in the wrap, when the load arrives, he mostly keeps running with the man. He anchors only as
+the grip firms, by which time the pull has often taken him off his base.
+
+Proposed repair (not built): the holder's post-grasp intent, as coached ("sink and drag").
+- Once he has a hold that is not slipping, he stops running with the man. He asks to stop along the runner's path and
+  leans against the load. His execution comes from his own tackling skill (how fast he commits) and strength, not
+  from the grip-security ramp.
+- While the grip slips he still gives with it (the existing rule).
+- The World decides whether the grip survives the load. A weak grip that anchors is torn off: a broken tackle, the
+  carrier free to drive through.
+- No new force, no outcome cap.
+- Gates: Coverage's fast cells against the NFL's 0.9–2.5 yd in 0.7–0.8 s; the slow cells stay matched; the run-game
+  fixed set is the control.
