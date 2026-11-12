@@ -159,6 +159,7 @@
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
+    "RELEASE_THROUGH": "off",
     "RUN_BLITZ": "on",
     "RUN_CONFIRM": "on",
     "RUN_CONTACT_TRACK": "off",
