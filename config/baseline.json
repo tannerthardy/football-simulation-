@@ -85,7 +85,10 @@
     "GAZE": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
+    "CATCH_CHOICE": "0",
+    "CATCH_SPEED": "0",
     "IN_STRIDE_CATCH": "0",
+    "HANDS_CUE": "0",
     "KEEPER_TORSO": "1",
     "LB_PLAN": "1",
     "LEVER_FACING": "1",
@@ -283,7 +286,8 @@
     "COVER_LONG": "0",
     "PRO_CALL": "0",
     "CONCEPT_MENU": "0",
-    "OPEN_CARRY": "0"
+    "OPEN_CARRY": "0",
+    "CATCH_CARRY": "0"
   },
   "worldDefaults": {
     "handContact": "center",

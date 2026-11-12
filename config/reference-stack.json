@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-46",
+  "id": "engine-47",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -86,6 +86,7 @@
     "OFFICIATE": "on",
     "LOOK_ONCE": "on",
     "FLOW_INTERCEPT": "off",
+    "CATCH_CARRY": "on",
     "FORECAST_BREAK": "on",
     "FORECAST_HOLD": "on",
     "GAP_CLIMB": "on",
@@ -110,7 +111,10 @@
     "HOLD_FINISH": "on",
     "HOLD_SINK": "off",
     "HANG_AIRBORNE": "off",
+    "CATCH_CHOICE": "on",
+    "CATCH_SPEED": "on",
     "IN_STRIDE_CATCH": "off",
+    "HANDS_CUE": "on",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
     "IZ_OFFSET": "on",
