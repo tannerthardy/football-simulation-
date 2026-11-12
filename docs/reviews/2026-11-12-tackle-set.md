@@ -183,3 +183,80 @@ Next diagnostic, before any third mechanism. Follow rushers past outside at 2.0 
 - distance to the QB;
 - the same measures on NFL tracking for those who came free: separation from the tackle against time after getting
   past.
+
+# After the turn (diagnostic, Integration 2026-11-12)
+
+Tools:
+- `scripts/diag/pass-operators/edge-past.py`: geometric, the same code on NFL and sim. "Past" is the first frame
+  from 0.5 s with the rusher more than 0.3 yd deeper than the tackle and not inside him.
+- `scripts/diag/effective-mass/edge-past.mts`: the engine's state. Hands joint, rep, move, hips, requested vs
+  achieved, and the move live while a tackle asking to hold is carried back.
+
+## Geometry (edge-past.py; sim seed 201, 8 games)
+
+| | off | both (attempt 1) | both (attempt 2) | NFL |
+|---|---|---|---|---|
+| edge rushes that get past before the ball is out | 13% | 41% | 33% | 39% |
+| when, p50 | 1.40 s | 1.60 s | 1.50 s | 1.80 s |
+| rusher depth vs the QB at past, p25/50/75 | +1.6/+2.4/+3.0 | +0.7/+1.9/+2.6 | +1.0/+2.1/+2.7 | +1.2/+2.0/+3.1 |
+| at or beyond the QB's depth at past | 6% | 13% | 10% | 5% |
+| to the QB at past | 5.9 | 6.3 | 5.8 | 5.1 |
+| separation from the tackle at past / +0.3 / +0.6 / +0.9 s | 0.85/1.00/1.12/1.68 | 1.03/1.00/1.04/1.06 | 0.98/1.00/1.08/1.25 | 0.89/1.00/1.12/1.30 |
+| tackle within 1.2 yd at +0.3 / +0.6 / +0.9 s | 70/56/41% | 81/72/61% | 80/63/47% | 63/54/46% |
+| turn over 0.5 s: heading rate / radius | 21 deg/s / 14.0 yd | 37 / 6.7 | 39 / 7.1 | 35 / 7.0 |
+| speed toward the QB in that turn | 2.7 | 1.1 | 1.5 | 2.6 yd/s |
+| closed within 2 yd after past / time | 31% / 1.00 s | 13% / 1.30 | 13% / 1.40 | 21% / 0.90 |
+| NFL tackle's hips turned at past (orientation) | | | | 81% |
+
+## Engine state (edge-past.mts, seeds 101-104)
+
+Rushers past the tackle under both flags (n 206 at past):
+
+| | past | +0.3 s | +0.6 s | +0.9 s |
+|---|---|---|---|---|
+| hands joint between them | 88% | 79% | 50% | 35% |
+| tackle's hands (of joints) | 63% | 71% | 86% | 95% |
+| joint force p50 | 604 N | 674 | 572 | 698 |
+| tackle hips turned (> 45 deg off downfield) | 96% | 97% | 95% | 93% |
+| rusher toward the QB: requested / achieved | 4.8 / 1.7 | 7.0 / 1.7 | 8.0 / 2.1 | 8.3 / 2.5 yd/s |
+
+Off: joint 70/56/34/24%, achieved toward the QB 2.8/2.9/3.1/4.5. The tackle is behind the rusher's hip at past by
+the definition of past, and stays there (96-100%).
+
+### Carried back while asking to hold
+
+These are ticks with the tackle in the rep, requesting |x| < 0.05 and achieving < −1 yd/s, keyed by the rusher's
+current or last move; "live" means landed and inside its window. Under TACKLE_SET there are 1387 ticks:
+
+| move | share | force p50 |
+|---|---|---|
+| bull | 22% | 1151 N |
+| swim | 17% | 1064 N |
+| club | 15% | 966 N |
+| rip | 15% | 932 N |
+| spin | 11% | 1054 N |
+| longarm | 9% | 1094 N |
+
+A live move accounts for under 2% of ticks. Both flags: 1092 ticks, the same pattern.
+
+## Reading
+
+1. **He is not run by the pocket.** At past he is about 2 yd short of the QB's depth, as in the NFL (+1.9-2.1 vs
+   +2.0; at or beyond the QB 10-13% vs 5%). The QB's depth and the arc's aiming depth are not the gap.
+2. **The turn is the NFL's.** Heading rate and radius match (37-39 deg/s, about 7 yd, vs 35 deg/s, 7.0 yd), and so
+   does separation from the tackle. Bend is not the gap.
+3. **What differs is the closing.**
+   - Ours start 0.7-1.2 yd further from the QB (5.8-6.3 vs 5.1). That is lateral: the tackle and the rusher have
+     drifted wide together (tackle width +1.3-1.6 vs −0.6). This is TACKLE_SET's width, seen from the rusher's side.
+   - After past, ours close at 1.1-1.5 yd/s against 2.6, while still in a hands joint 79% of the time at +0.3 s.
+     That joint is mostly the tackle's hands, with his hips turned and him behind the rusher's hip.
+   - The NFL tackle stays within 1.2 yd somewhat less often (63/54/46% vs 81/72/61%) at the same median separation.
+     An NFL tackle beaten at the hip still rides him, as in ours, but the rusher keeps his speed toward the QB.
+4. **The carried-back load is the rush between moves, not a move.** A rusher not in a move asks for 0.8-0.95 of his
+   top speed at push 0.75. A finesse rusher whose move has ended leans on the tackle as hard as a bull rusher
+   (900-1060 N vs 1150 N). Whether a rusher between moves should drive through the hands like that is a separate
+   rusher-intent / contact question from anchor capacity. Not touched.
+
+Next, as Integration ordered: TACKLE_SET attempt 2, the set's width (a spot, inside-half leverage, the long way
+round, no chasing wide). It addresses point 3's lateral half. The joint persisting behind the hip (the other half) is
+recorded for a later, separate decision.
