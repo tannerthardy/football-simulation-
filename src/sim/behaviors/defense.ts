@@ -665,9 +665,10 @@ const CUSHION_BREAK = process.env.CUSHION_BREAK === '1';
 /** CUSHION_BREAK: how far he opens his hips off the quarterback while he
  * carries a vertical, as the output of the speed match: the smallest angle off
  * the line to the QB (opened toward the receiver) at which his body's facing
- * cap in the direction he runs reaches the receiver's downfield speed. A
- * receiver his pedal can match leaves him square; a faster one opens him
- * progressively, and he comes back toward square as the receiver throttles.
+ * cap in the direction he runs reaches the speed he needs (carrySpeedNeed: he
+ * spends spare cushion rather than matching the receiver). Far over the top
+ * he stays square; as the spare cushion goes he opens progressively, and he
+ * comes back toward square as the receiver throttles.
  * The full turn (losing the QB) stays the cushion-break trigger. NFL deep
  * defenders over a climber open 33 deg at 1.5 s to 62 deg at 3.0 s as their
  * speed rises 3.3 -> 4.9 yd/s, turned at most 11% (BDB 2025, nflcarry.py).
@@ -694,11 +695,31 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * defenders over a climbing receiver who have not turned by the release keep a
  * median 1.4 yd with no deep help (below 1 yd 17-20%) and -0.9 to +0.8 yd with
  * help (BDB 2025 weeks 1-2, nflcue.py). */
-function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): boolean {
+function cushionThreshold(a: Agent, receiverVx: number, help: boolean, receiverRadius: number): number {
   const closing = Math.max(0, receiverVx - Math.max(0, a.vel.x));
   const flip = roundedTurnTime(a, angleDiff(a.body.facing, 0)) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
   const overlap = (a.profile.radius + receiverRadius) * (help ? -1 : 1);
-  return cushion < overlap + closing * flip;
+  return overlap + closing * flip;
+}
+function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): boolean {
+  return cushion < cushionThreshold(a, receiverVx, help, receiverRadius);
+}
+/** CUSHION_BREAK: the slowest downfield speed he may carry now. He must be at
+ * the receiver's speed by the time the cushion has shrunk to his break
+ * threshold; closing a gap c at the acceleration a his legs give at his
+ * current facing burns c^2 / 2a of cushion (a braking distance), so
+ * need = vx - sqrt(2 a (cushion - threshold)), floored at 0. Far over the top
+ * he may pedal slowly and spend cushion; as the spare cushion goes he must be
+ * matched; if no angle that keeps the QB in view gives that speed, the
+ * cushion breaks and he turns. a is his own: the propulsion his legs give
+ * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
+ * tau, so a slow-footed defender has to start earlier. */
+function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): number {
+  const vx = Math.max(0, receiverVx), p = a.profile;
+  const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
+  const accel = Math.max(0.1, (1 - Math.max(0, a.vel.x) / cap) * p.vmax / p.tau);
+  const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+  return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
 /** CUSHION_NEED (on since engine-27; CUSHION_NEED=0 restores): before his
  * hips open, a man defender's cushion on a released receiver is the one the
@@ -1013,7 +1034,8 @@ export class ManCoverage implements Behavior {
     if (breakOn && !this.hipsOpen && !broken()) {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
-      const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x), Math.max(0, vx));
+      const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
+        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius));
       const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
       if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
       a.tags.add('open-carry');
@@ -1304,7 +1326,8 @@ export class ZoneCoverage implements Behavior {
       if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
-        const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x), Math.max(0, deepest.vel.x));
+        const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
+          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
         if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
         a.tags.add('open-carry');

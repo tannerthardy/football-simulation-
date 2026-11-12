@@ -29,7 +29,7 @@ async function step(flag: string, cushion: number, receiverVx = 6.5, protectDept
   r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: receiverVx, y: 0 };
   a.body.pos = { x: r.pos.x + cushion, y: r.pos.y - .7 }; a.body.vel = { x: 5, y: 0 }; a.body.facing = Math.PI;
   a.recog!.read = 'pass';
-  if (backpedal !== undefined) a.body.profile = { ...a.body.profile, backpedal };
+  if (backpedal !== undefined) { a.body.profile = { ...a.body.profile, backpedal }; (a as { profile: unknown }).profile = a.body.profile; }
   const see = sim.see.bind(sim);
   sim.see = (who, target, delay) => target === r
     ? { pos: { ...r.pos }, vel: { ...r.vel }, facing: 0, stance: null, pose: 'up', carrying: false, age: .2 }
@@ -39,7 +39,7 @@ async function step(flag: string, cushion: number, receiverVx = 6.5, protectDept
     { lev: 'outside', overTop: protectDepth, protectDepth, initialPosition: { x: sim.los - 1, y: r.pos.y } });
   behavior.update(a, sim);
   const command = behavior.update(a, sim);
-  return { command, hipsOpen: behavior.recordedTechnique().hipsOpen };
+  return { command, hipsOpen: behavior.recordedTechnique().hipsOpen, toQB: Math.atan2(sim.qb.pos.y - a.pos.y, sim.qb.pos.x - a.pos.x) };
 }
 
 describe('CUSHION_BREAK: a deep defender stays square until the receiver breaks his cushion', () => {
@@ -105,19 +105,20 @@ describe('CUSHION_BREAK: a carry plays a shoulder off the receiver\'s line', () 
   });
 });
 
-describe('CUSHION_BREAK: he opens off the QB as far as the speed match needs', () => {
-  // A body whose backpedal is the slowest way back (as under PEDAL_CAP): the
-  // opening is continuous in the receiver's speed and stays near square for a
-  // receiver his pedal can match.
-  const angle = async (vx: number) => {
-    const r = await step('1', 4, vx, true, 0.48);
-    return r.command.facing === undefined ? 180 : Math.abs(Math.atan2(Math.sin(r.command.facing - Math.PI), Math.cos(r.command.facing - Math.PI))) * 180 / Math.PI;
+describe('CUSHION_BREAK: he opens off the QB only as far as spending his cushion allows', () => {
+  // A body whose backpedal is the slowest way back (as under PEDAL_CAP). He
+  // spends spare cushion rather than matching the receiver: far over the top
+  // he stays near square; as the cushion runs down he opens; a faster receiver
+  // opens him sooner; a slow one never takes him past 45 deg.
+  const angle = async (vx: number, cushion: number) => {
+    const r = await step('1', cushion, vx, true, 0.48);
+    if (r.command.facing === undefined) return 180;
+    return Math.abs(Math.atan2(Math.sin(r.command.facing - r.toQB), Math.cos(r.command.facing - r.toQB))) * 180 / Math.PI;
   };
-  it('opens more as the receiver gets faster, and a slow one never takes him past 45 deg', async () => {
-    const slow = await angle(3), mid = await angle(6), fast = await angle(8);
-    expect(slow).toBeLessThanOrEqual(45);
-    expect(mid).toBeGreaterThan(slow);
-    expect(fast).toBeGreaterThan(mid);
-    expect(fast).toBeLessThan(180);
+  it('opens as the cushion runs down and sooner for a faster receiver; a slow one stays under 45 deg', async () => {
+    expect(await angle(3, 3)).toBeLessThanOrEqual(45);
+    const far = await angle(7, 6), near = await angle(7, 2.5);
+    expect(near).toBeGreaterThan(far);
+    expect(await angle(8, 4)).toBeGreaterThan(await angle(5, 4));
   });
 });
