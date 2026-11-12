@@ -1219,3 +1219,48 @@ replace the support foot); "hop" is not their word. Modelled as base replacement
   stand-in is needed (traction x availability scaled down for the step's duration), recorded as debt. Today's pass
   move resolution is the rating roll (GAPS); the window's physical effect comes through traction until moves are
   resolved physically.
+
+## TACKLE_RESET, attempt 2 of the re-diagnosed mechanism (285860f7, off): read, then stop
+
+Seed 201 x 8, same base (SB = A + TACKLE_SET + TACKLE_BRAKE; SBR = SB + TACKLE_RESET):
+
+| | SB | SBR | NFL |
+|---|---|---|---|
+| dropbacks | 694 | 662 | |
+| pressured | 36.3% | 31.9% | 32.9% |
+| in front at pressure: share of pressure / sacked per pressure | 29.8% / 2.7% | 38.9% / 3.7% | 9% / 20% |
+| real pressure, of dropbacks | 25.5% | 19.5% | 29.9% |
+| past outside / inside | 4.9% / 5.2% | 3.3% / 4.7% (free 100%) | 3.8% / 6.4% |
+| sacked | 5.0% | 4.1% | 6.7% |
+| edge win | 14% | 14% | 13% |
+| retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0+ s | −3.25 / −3.00 / −2.00 / −0.75 | −3.25 / −3.00 / −2.25 / −1.50 | −2.75 / −2.25 / −1.50 / −0.50 |
+
+Worse on the first two gates; the retreat curve is unchanged.
+
+**The re-set fires** (`reset-probe.mts`, nativeTraceSetup four verticals and smash against Cover 2, seeds 1-24):
+re-sets in 90 of 95 tackle pass reps, about 4 steps a rep, the first at 1.95 s (p25-p75 1.80-2.05).
+- Each step is about 0.02 s: the sunk stance's base radius over a stepping speed of about 3.2 yd/s. So in practice
+  it lasts one 0.05 s tick.
+- x-velocity −2.08 at the step, −1.41 0.25 s after landing.
+
+**Why it does not move the gates.**
+- Engine state (`tackle-anchor.mts`, seeds 101-103), kicking at 1.5-2.5 s: his ground force toward the rusher falls
+  from 686 (SB) to 579. The steps take away his braking, and he is carried at −3.20 against a request of −2.64.
+- `feet()` instrumented again (scratch worktree, same fixture), kicking at 1.5-2.5 s, SB | SBR:
+  - lean before the step: 184 | 167;
+  - lean target: 559 | 510;
+  - felt press: −586 | −525;
+  - base limit: 261 | 262;
+  - posture: 0.59 | 0.59 (p75 0.75);
+  - xi: 0.03 | 0.04;
+  - availability: 1.0 | 1.0.
+- The lean set on landing does not persist into the kicking window. It is back near the base limit by the next
+  sample, though its target is twice that and the press supports it (`unsupportedLean` releases only past
+  1.25 x the press).
+- So what holds the lean down while he moves backward under a press is in the World (lean blending, LEAN_PITCH, or
+  another writer between ticks), not in his choice of technique. Two controller attempts at this mechanism
+  (TACKLE_BRAKE, TACKLE_RESET) have not moved it.
+
+**Stop.** The open question is the World's: under a sustained press, while he moves backward, why does his lean stay
+at the base limit when its target and the load would support twice that? That needs the support/World owner, or a
+targeted read of `feet()`'s lean state across ticks, before a third mechanism.
