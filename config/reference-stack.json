@@ -153,6 +153,7 @@
     "RUSH_HANDS": "off",
     "PASS_RIDE": "off",
     "RUSH_ONE_HAND": "off",
+    "HAND_SITE": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",

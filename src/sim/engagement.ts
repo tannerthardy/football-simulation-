@@ -451,6 +451,56 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
   joint.extension = bodies + Math.max(base, st.ext);
 }
 
+/** HAND_SITE (experimental, off): a hand's working length follows where it is on the man (Integration, 2026-11-13,
+ * torso-contact diagnosis). The hands joint is a strut from the holder's chest to the man's centre; its length so far
+ * was the arm's extension to a man's chest in front of him, wherever the man was. Beside him, the hand still on is on
+ * the man's side or back plate with the elbow bent: its working length is a forearm, so the bodies can meet and the
+ * torso contact (normal across his path, friction along it, his balance carrying the side load) carries the ride.
+ *
+ * Continuous in the man's bearing off the holder's chest, beta (0 = square in front):
+ *   - |beta| <= SITE_FRONT (45 deg): nothing changes (every joint force identical to off);
+ *   - to SITE_ABREAST (100 deg): the length goes smoothly (smoothstep) from the arm's to bodies + FOREARM;
+ *   - the length moves at ARM_SPEED (the arm bends and straightens no faster than arms move).
+ * What the hand can do there, also continuous, with w the same smoothstep (1 in front, 0 abreast):
+ *   - push (press along the joint, holder to man): the arm's press scaled by the man's own bearing, gamma (0 = the
+ *     holder at his chest, 90 = at his side, 180 = at his back): full to gamma 90 deg (a hand on his side presses
+ *     him across his path), to 0 at gamma 150 deg (a hand on his back cannot push him away from the QB: it would push
+ *     him on toward him). push *= w + (1 - w) * pressAt(gamma);
+ *   - steer (along the man's chest): a bent arm on his side steers a little: steer *= w + (1 - w) * 0.5 * pressAt(gamma);
+ *   - hold: unchanged (a grab from behind stays the holding detector's).
+ * No threshold switches anything: length, push and steer are smooth functions of the two bearings. */
+export const HAND_SITE = process.env.HAND_SITE === '1';
+const SITE_FRONT = 45 * Math.PI / 180, SITE_ABREAST = 100 * Math.PI / 180;
+const siteState = new WeakMap<HandJoint, { len: number }>();
+const smooth01 = (x: number) => { const u = clamp(x, 0, 1); return u * u * (3 - 2 * u); };
+/** The hand's place on the man, by bearing: 1 on the holder's chest frame, 0 abreast or behind. */
+function siteWeight(holder: Agent, man: Agent): number {
+  const beta = Math.abs(Math.atan2(Math.sin(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing),
+    Math.cos(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing)));
+  return 1 - smooth01((beta - SITE_FRONT) / (SITE_ABREAST - SITE_FRONT));
+}
+/** The press a hand can put on the man at his own bearing gamma (the holder's direction off his facing). */
+function pressAt(holder: Agent, man: Agent): number {
+  const a = Math.atan2(holder.pos.y - man.pos.y, holder.pos.x - man.pos.x) - man.body.facing;
+  const gamma = Math.abs(Math.atan2(Math.sin(a), Math.cos(a)));
+  return 1 - smooth01((gamma - Math.PI / 2) / (Math.PI * 60 / 180));
+}
+export function handSite(sim: Pick<PlaySim, "dt">, joint: HandJoint, b: Agent, d: Agent): void {
+  const holder = joint.actor === d.body ? d : b, man = holder === b ? d : b;
+  const w = siteWeight(holder, man);
+  let st = siteState.get(joint);
+  if (w >= 1 && !st) return;
+  const full = joint.extension, bent = Math.min(full, holder.profile.radius + man.profile.radius + FOREARM);
+  const target = bent + (full - bent) * w, step = ARM_SPEED * sim.dt;
+  if (!st) { st = { len: full }; siteState.set(joint, st); }
+  st.len = clamp(target, st.len - step, st.len + step);
+  if (w >= 1 && Math.abs(st.len - full) < 1e-9) { siteState.delete(joint); return; }
+  joint.extension = st.len;
+  const p = pressAt(holder, man);
+  joint.push *= w + (1 - w) * p;
+  joint.steer *= w + (1 - w) * 0.5 * p;
+}
+
 /** OPEN_HANDS: the rep's leverage at which the man has left the blocker's
  * frame -- at or past his hip, the blocker no longer between him and where
  * he is going (Integration, 2026-11-12; the holding detector's own measure). */
@@ -534,6 +584,7 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
   if (PUNCH && state.control >= 0 && passSetTechnique(sim, h, e)) punch(sim, joint, h, e.defender);
+  if (HAND_SITE) handSite(sim, joint, h, e.defender);
   if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e, false);
 }
 
@@ -581,6 +632,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   setContactHands(hands, b, d, e.type, e.control, e.holding);
   // PUNCH: the blocker's hands go to the man, out to lockout.
   if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
+  if (HAND_SITE) handSite(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
   // RUSH_HANDS: a hand knocked off re-fits by reach and touch: after his reaction to the loss (felt), it travels
@@ -613,6 +665,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.push = pressForce(h) * 0.8 * support;
     j.steer = armForce(h) * 0.4 * support;
     j.hold = 0;
+    if (HAND_SITE) handSite(sim, j, h, d);
     if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e, false);
   }
   if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
