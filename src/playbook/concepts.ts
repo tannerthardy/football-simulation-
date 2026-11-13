@@ -233,14 +233,14 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     progression: ['B'], beats: ['pass-rush', 'blitz'],
     // The back gets lost in the line and drifts out before the linemen release:
     // NFL slip backs are 1 yd wide of their start by 1.1 s (screen_back_reference.py).
-    screen: { receiver: 'B', tempo: 'slow', count: 1.0, receiverRelease: 0.6, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+    screen: { receiver: 'B', tempo: 'slow', count: 1.0, receiverRelease: 0.6, lineSet: { maxDepth: 2.4 }, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
   },
   {
     // TE screen: the inline TE blocks, then slides out behind the line.
     id: 'te_screen', name: 'TE Screen', family: 'screen', drop: 'gun5',
     strong: { 1: 'go', 2: 'go', 3: 'te_screen' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
     progression: ['S3', 'S2'], beats: ['pass-rush'],
-    screen: { receiver: 'S3', tempo: 'slow', count: 1.0, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+    screen: { receiver: 'S3', tempo: 'slow', count: 1.0, lineSet: { maxDepth: 1.8 }, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
   },
   {
     // Bubble to the trips slot: #1 stalks, #3 blocks inside-out on the next man.
