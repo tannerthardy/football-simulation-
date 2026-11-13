@@ -307,7 +307,12 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
  *   lateral 1.0 yd on throws held 1.5 s+).
  * - POCKET_SLIDE_PACE, yd/s: its top pace. Chosen from the same rows (1+ yd in 0.5 s from rest needs about 3).
  * - POCKET_RENEW, yd: the same body moves him again only when this much nearer than at his last slide. Chosen.
- * - POCKET_MAX_T, s: a slide not reached by then is dropped. Chosen (1.25 yd at 3 yd/s from rest is about 0.6 s). */
+ * - POCKET_MAX_T, s: a slide not reached by then is dropped. Chosen (1.25 yd at 3 yd/s from rest is about 0.6 s).
+ * - POCKET_CLOSING, yd/s: a body in a blocker's hands moves him only when he feels it closing on him at least this fast.
+ *   Chosen: a walk-back, well under a free rush (4-6 yd/s).
+ * Known free action: a slide rarely reaches the 2.2 yd/s where missSigma charges a moving throw, so throws during or just
+ * after one cost him nothing today (72-78% complete against 69%); that is not evidence the slide is right. The price
+ * belongs to the on-the-move throw mechanics in the out-of-pocket work. */
 const POCKET_NEAR0 = 2.2;
 const POCKET_NEAR_PP = 1.2;
 const POCKET_EDGE_WIDE = 1.5;
@@ -318,6 +323,7 @@ const POCKET_SLIDE = 1.25;
 const POCKET_SLIDE_PACE = 3;
 const POCKET_RENEW = 0.5;
 const POCKET_MAX_T = 0.8;
+const POCKET_CLOSING = 1.0;
 /** Estimated (SHOULDERS_SET): how long he holds a read before his feet reset
  * to it, s: a reaction time, not fitted. Its check is the NFL shoulder angle to
  * the target at his last settled frame and the turn-angle mix (qb-release.py),
@@ -2026,7 +2032,7 @@ export class QBPass implements Behavior {
    * destination while a slide is decided or under way. */
   private pocketDecide(a: Agent, sim: PlaySim, read: Agent | undefined): { edge: boolean; slide: Vec2 | null } {
     const t = sim.t;
-    const felt = sim.defense.filter((d) => !d.isDown(t)).map((d) => ({ d, pos: this.felt(a, sim, d).pos }));
+    const felt = sim.defense.filter((d) => !d.isDown(t)).map((d) => { const f = this.felt(a, sim, d); return { d, pos: f.pos, vel: f.vel }; });
     const clearOf = (q: Vec2) => felt.every(({ pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) >= POCKET_CLEAR);
     if (this.slide) {
       const s = this.slide, left = Math.hypot(s.to.x - a.pos.x, s.to.y - a.pos.y);
@@ -2036,7 +2042,7 @@ export class QBPass implements Behavior {
       this.slide = null;
     }
     const near = POCKET_NEAR0 + POCKET_NEAR_PP * a.r('pocketPresence');
-    let by: { d: Agent; pos: Vec2 } | null = null, bd = near;
+    let by: { d: Agent; pos: Vec2; vel: Vec2 } | null = null, bd = near;
     for (const f of felt) {
       const dd = Math.hypot(f.pos.x - a.pos.x, f.pos.y - a.pos.y);
       if (dd <= bd) { by = f; bd = dd; }
@@ -2046,7 +2052,11 @@ export class QBPass implements Behavior {
     const inHands = this.held(a, by.d, sim) > 0;
     this.pocketFirst ??= { t, where: edge ? 'edge' : 'front', inHands, dist: bd };
     if (edge) return { edge: true, slide: null };
-    // In front or inside: one slide per body until it is clearly nearer.
+    // In front or inside, a body moves him only if nobody has it, or a blocker has it and it is still coming at him
+    // (the pocket being pushed into his lap). A rusher held where he is does not.
+    const closing = -((by.vel.x * (by.pos.x - a.pos.x) + by.vel.y * (by.pos.y - a.pos.y)) / Math.max(bd, 1e-6));
+    if (inHands && closing < POCKET_CLOSING) return { edge: false, slide: null };
+    // One slide per body until it is clearly nearer.
     const last = this.slidAt.get(by.d);
     if (last !== undefined && bd > last - POCKET_RENEW) return { edge: false, slide: null };
     this.slidAt.set(by.d, bd);
