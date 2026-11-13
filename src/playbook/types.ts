@@ -149,8 +149,15 @@ export interface ScreenSpec {
   receiverSell?: number;
   /** Installed kill: the QB checks out of the screen at the line when he sees
    * this look on the screen receiver ('press': a defender pressed over him,
-   * so there is no cushion to catch and turn in). */
-  kill?: 'press';
+   * so there is no cushion to catch and turn in; 'numbers': more defenders outside the box to the screen's side
+   * than receivers there, the coached count for a bubble, as the run-pass option reads it). */
+  kill?: 'press' | 'numbers';
+  /** Slow screens: the released linemen's screen set, the assignment as it is coached. They show pass pro and give
+   * ground under control, taking the rusher's charge rather than kicking to a launch point, no deeper than maxDepth
+   * (yards behind the line); then they release on their own count (the called count is the earliest) and let the
+   * rusher go. maxDepth is the NFL linemen's median depth at the throw on these screens (BDB 2025,
+   * screen_line_depth_backs.py: RB 2.4, TE 1.8). Data only until the line's screen set reads it (Flex). */
+  lineSet?: { maxDepth: number };
   blocks: ScreenBlock[];
 }
 

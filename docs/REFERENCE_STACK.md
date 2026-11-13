@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-54`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-55`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-55: `CURL_FLAT_BACK` on: the curl-flat defender widens to a back in his flat (2026-11-13)
+
+**`CURL_FLAT_BACK`** (Coverage #667). The curl-flat defender's expansion to the flat existed only for No. 2 and was switched off when a back released fast to his side, so he played the threat nearest his curl landmark and a back in the flat lost to a curl every time (on 42 of 44 wide catches with nobody in front he was present, about 10 yd inside the catcher). Now he sinks to his curl window and widens toward a back in his flat by what the quarterback shows him (his seen eyes, with his delay): most when the eyes are on the flat, hanging when they are on a receiver in his curl window, moderately once the back has crossed his face; a back already settled wide counts as well as one still releasing. He breaks on the throw. The widening weights are estimates and recorded as stand-in debt. A first version that ran to the back as he showed, and one that widened by a fixed fraction, were dropped: the second opened the throw behind him (80% against the NFL's 69%).
+
+The lane's reads, paired on one tree (NFL): the back's wide-flat YAC a catch, median 13.0 → 6.8 and 11.2 → 8.4 across two runs (5.0); completion on throws behind him 68 → 66% and 72 → 64% (69). **Not this rule's, and recorded as open:** wide back catches with nobody in front stay at 42 to 48% (12) after three looks; they are the calls with no curl-flat player to that side (the Cover 2 family, stubbie, book: the corner beaten to the edge or the flat defender sinking under No. 1) and late check-downs thrown 0.8 s after the NFL's.
+
+Checks on the candidate (`9a6b3d2b`): full suite 4394 pass with only the two known research failures; fixed run set 3.59, unchanged. Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | completion | INT | YAC | sack rate | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.06 → 7.91 | 67.1 → 65.8% | 1.6 → 1.6% | 6.40 → 6.80 | 2.5 → 2.7% | 29.4 → 28.6 |
+| 23 | 7.78 → 7.83 | 66.9 → 65.2% | 1.6 → 2.3% | 6.32 → 6.82 | 2.4 → 3.0% | 28.0 → 27.9 |
+| 31 | 8.29 → 8.29 | 64.5 → 66.3% | 1.4 → 1.4% | 7.58 → 7.27 | 2.4 → 2.6% | 30.0 → 26.2 |
+
+Nothing moved outside its range. It lands as the coached rule; the whole-game YAC does not see it because the back's flat with this defender present is a small share of catches.
+
+**With it:** Defense's findings record (#673, docs and diagnostic scripts only): pursuit lead, arrival speed and the finish match the NFL in aggregate; safety lead is role; the corners' within-role lead trait tracks nothing measurable; acceleration and redirect are not player traits in our motion; the tackling rating slows the approach with no NFL support (left as is, parked); the run-specific grip frame for `OPEN_HANDS`.
+
+**Not landed: the commitment candidate** (`PURSUIT_COMMIT`, `CARRIER_COMMIT`, `SPACING_SMOOTH`, `PURSUIT_SPACING_SMOOTH`; `b7f14572`, kept as `held/e55-commit`). Three fixtures that pass on develop failed with the four on. `tackle-set` and `hold-facing` fail only with `SPACING_SMOOTH` on, and by scene divergence, not through the mechanisms they test (corrected 2026-11-13; an earlier version of this note blamed the flag for reaching engaged bodies, which Defense's tick trace refuted). In `tackle-set` the tackle's own decision honours his floor in both arms; the depth read after spacing is the long-standing teammate limit when his guard is driven back into him, at full gate weight, in a scene the off arm never produces. Exempting engaged bodies from spacing was tried and set aside: it exposed the set controller asking outward past its own set line, which spacing had been hiding (logged as PRO-7 and PRO-8). In `hold-facing` the reproducer's back makes a different cut and a different tackle makes the hold. Flex restates `tackle-set` on the decided command and re-pins `hold-facing`. `PURSUIT_COMMIT` re-measured on engine-54 still acts (dither guard pursuit reversals 0.369 → 0.288 a second on the fixed panel); its test now asserts that. Cards on two seeds agreed on nothing for any of the four; fixed run set 3.59 → 3.48 with all four on, unattributed.
 
 ## engine-54: the blocker's hands (`PAST_ALONG_PATH`, `OPEN_HANDS`, `PUNCH`), landed with a stated cost (2026-11-13)
 

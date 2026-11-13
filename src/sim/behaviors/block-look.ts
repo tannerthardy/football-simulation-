@@ -13,6 +13,8 @@ export class ReceiverBlockLook implements Behavior {
     readonly until: number,
     readonly passOption: boolean,
     private readonly continuation: () => Behavior,
+    /** The presentation landmark's depth past the line (yd). */
+    private readonly landmark = 0.5,
   ) {
     if (!Number.isFinite(until) || until <= 0) throw new Error('Block look requires a positive called release time');
   }
@@ -29,7 +31,7 @@ export class ReceiverBlockLook implements Behavior {
     // No strike, engagement, target-position truth or artificial translation.
     // Keeping this look shallow also avoids designing a downfield block into
     // a pass. Actual contacts and pass legality must still be inspected.
-    const point = { x: Math.max(a.pos.x, Math.min(sim.los + .5, seen.pos.x - 2)), y: seen.pos.y };
+    const point = { x: Math.max(a.pos.x, Math.min(sim.los + this.landmark, seen.pos.x - 2)), y: seen.pos.y };
     return { ...goTo(a, point, { speed: .85, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) }),
       posture: .7 };
   }
