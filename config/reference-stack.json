@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-51",
+  "id": "engine-52",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -201,6 +201,7 @@
     "SHORT_BASE": "on",
     "SHOULDER_READ": "on",
     "CURL_FLAT_BACK": "off",
+    "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",
     "STANCE_TELL": "on",
