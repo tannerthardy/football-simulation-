@@ -8,7 +8,8 @@ the engine lacks. It is not a feature list or a promise to build any of it.
 
 **Source.** The Reamon Report, "Advance Scouting: Opponent Defense" (46 questions, tips
 and alerts; @ReamonReport; copyright 2026 The Reamon Report, all rights reserved).
-The sheet was supplied by the user as an image. This file keeps only its 46 topic
+The sheet was supplied by the user as an image, preserved unchanged in
+[`docs/references/reamon-report/`](../references/reamon-report/README.md). This file keeps only its 46 topic
 names, in short form, and its section order; the sheet's tip text and layout are
 not reproduced, and every description below is written for this project. Its closing
 advice is worth keeping as a rule for any scouting feature we build: **verify the tell.**

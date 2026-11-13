@@ -25,6 +25,19 @@ user-supplied 46-question opponent-defense checklist, with its original JPEG,
 attribution and checksum. It is filed beside HonestNFL for future scouting and
 game-planning work, but is **a separate source, not an HonestNFL document**.
 
+## "Playing Quarterback" (LaFleur)
+
+[lafleur-playing-quarterback.pdf](lafleur-playing-quarterback.pdf) is a three-part
+coaching article by Matt LaFleur (then offensive coordinator, Ashland University)
+on recruiting, evaluating and coaching a quarterback: progression and key reads,
+protection and blitz identification, game management, fundamentals. The user
+supplied it as a resource for the quarterback decision-making work. SHA-256
+`f82ec74272ce1fcefdfb6b4ea9a3abe9967a25b24affd6491a789ebeea21c105`. It is one
+college coach's teaching, not measured NFL football, and its rights are the
+author's or publisher's: it is kept for project reference. The
+[engine comparison and gap candidates](../football-handbook/qb-playing-quarterback-lafleur.md)
+are in the handbook.
+
 ## External playbook sources
 
 [nfl-playbook-sources.md](nfl-playbook-sources.md) maps the user's NFL playbook

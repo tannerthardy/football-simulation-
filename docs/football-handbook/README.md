@@ -38,6 +38,7 @@ and proposed mechanisms are identified separately.
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
 | [Play-action protections](play-action-protections.md) | Naked, boot, run-action and gap fakes as call structure: who blocks the edge, the QB's path and his read of an unblocked end, with sources; what the engine would need. |
 | [Advance scouting checklist](advance-scouting-checklist.md) | A 46-question opponent-defense scouting sheet (The Reamon Report) mapped to what the engine simulates, recognizes and charts, for the later scouting and prep layer. |
+| [Playing Quarterback (LaFleur)](qb-playing-quarterback-lafleur.md) | A coaching article on quarterback reads, protection, fundamentals and evaluation, compared with the current quarterback model to list candidate gaps. |
 
 Chapter check catalogs are proposed options, not mandatory test suites. Choose
 the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
