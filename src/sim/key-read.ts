@@ -1,5 +1,5 @@
 /**
- * KEY_REACT (experimental, off): a lineman's read of the man in front of him.
+ * KEY_REACT (on since run-ref-4, 2026-11-09; `KEY_REACT=0` restores the old read): a lineman's read of the man in front of him.
  * The key is one man an arm's length straight ahead, watched from the stance
  * on purpose, so the lineman reacts to the first movement of his feet and
  * hands rather than waiting for the body's speed to build (the sim has no feet
