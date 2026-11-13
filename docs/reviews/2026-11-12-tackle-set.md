@@ -1711,3 +1711,36 @@ Controls: the fixed run set (run reps keep their hands), holds (committed / mate
 2. The moves, each replacing its branch of `resolveMove` behind RUSH_HANDS: swipe/club, rip and snatch first (they
    answer the extended arm); then long-arm, dip and spin. Fixtures 1-5.
 3. The rusher's keys from what he sees (extension, set, lean) into `chooseMove`. That is intent, not outcome.
+
+## RUSH_HANDS stage 2: the reads (A against A + RUSH_HANDS; engine-54 tree at 2b4d6346, seeds 11 / 23, 16 games)
+
+| | A 11 \| 23 | A + RUSH_HANDS 11 \| 23 | NFL |
+|---|---|---|---|
+| native sacked (review stats) | 2.1 \| 2.4% | 3.0 \| 2.9% | 4.6-9.4% band |
+| native pressured | 16.5 \| 12.1% | 16.1 \| 14.7% | |
+| sacked (operator) | 2.6 \| 3.1% | 3.9 \| 3.9% | 6.7% |
+| pressured | 32.1 \| 26.9% | 32.9 \| 29.8% | 32.9% |
+| time to pressure p50; by 2.5 s | 2.6 s; 14.1 \| 12.3% | 2.7 \| 2.6 s; 13.0 \| 13.4% | 2.6-2.7 s |
+| sacks per pressure | 8.2 \| 11.5% | 11.7 \| 13.1% | 19.1% |
+| edge in front, of dropbacks (share of pressure) | 12.9 \| 10.0% (40 \| 37%) | 11.9 \| 9.8% (36 \| 33%) | 3.0% (9%) |
+| edge past outside | 1.4 \| 1.5% | 2.5 \| 1.9% | 3.8% |
+| edge inside | 4.2 \| 3.5% | 4.6 \| 3.8% | 6.4% |
+| interior | 7.1 \| 6.2% | 9.1 \| 6.1% | 9.8% |
+| rushers reaching the hip per 100 dropbacks | 24.2 \| 23.0 | 26.6 \| 25.5 | 58 |
+| retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 s | −3.0 / −3.0 / −2.75 (both) | the same | −2.75 / −2.25 / −1.50 |
+| native scrambles; completion | 1.5 \| 1.9%; 68.0 \| 65.5% | 1.5 \| 2.3%; 66.3 \| 65.0% | |
+
+Club success by the rusher's finesse (`club-probe.mts`, seed 11 x 2): below 0.4: 9%; 0.4-0.7: 17%; 0.7 and above: 15%.
+
+**Reading.**
+- Two physical moves move sacks toward the NFL on both seeds: native about +0.7 points, operator +1.3 / +0.8. Sacks per
+  pressure go up (8.2 → 11.7, 11.5 → 13.1). The in-front share of pressure falls 4 points, past outside rises.
+- Pressure by class and time to pressure barely move: the class composition and the walk-back are as with A. Rushers
+  reach the tackle's hip a quarter as often as the NFL's: 24-27 against 58 per 100 dropbacks.
+- Why so little: the moves now resolve physically, but they are chosen by the old weights. A club succeeds against an
+  unpressed hand (about 50-70%) and almost never against a pressed one (3-12%), and the rusher does not choose it by
+  seeing an exposed hand. The corner itself (speed, dip) is still a roll. The between-player spread is small and not
+  monotone in finesse.
+- By Integration's rule ("if pressure by class and time to pressure come back toward the NFL with two moves, add the
+  rest one at a time; if not, re-diagnose"), this is "not". Re-diagnosis points to the choice (item 4: keys from what
+  he sees) before more moves. Rip, snatch, dip and spin wait.
