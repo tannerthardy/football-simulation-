@@ -124,6 +124,17 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
+/** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
+ * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
+ * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
+ * uses: online corrections of a movement to a moved target come at about 100-150 ms (Brenner and Smeets 1997; Aivar et
+ * al. 2015), and acceleration is not perceived directly over such windows (Brouwer, Brenner and Smeets 2002), so it adds
+ * no acceleration term. Step 0: the entry point `track()` only; off, it is exactly `see()`. No consumer calls it yet;
+ * each group moves to it in its own step with its own restage. */
+export const PERCEIVE_TRACK = process.env.PERCEIVE_TRACK === '1';
+/** PERCEIVE_TRACK: the tracking loop's latency (s). Chosen inside the evidence's 0.1-0.15 s; set from the restage of the
+ * first group that uses it, not imported as a constant. */
+const TRACK_LATENCY = 0.12;
 const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
 const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
 const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
@@ -814,6 +825,19 @@ export class PlaySim {
       }
       else seen = this.remembered(observer, target, seen);
     }
+    this.trace.observe(observer, target, seen, this.t);
+    this.commandTrace?.observe(observer, target, seen, this.t);
+    return seen;
+  }
+
+  /** What `observer` perceives of `target` he is tracking: a continuous, attended read (the man he mirrors, the carrier
+   * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
+   * short correcting loop at TRACK_LATENCY, with no focus, stress or attention terms stacked on it (those belong to
+   * recognition) and no acceleration term; teammates as in `see()`. */
+  track(observer: Agent, target: Agent, delayScale = 1, group = false): Perceived {
+    // `group`: the consumer group's own flag (each step is measured alone); PERCEIVE_TRACK turns on every group.
+    if (!(PERCEIVE_TRACK || group) || observer.team === target.team) return this.see(observer, target, delayScale);
+    const seen = this.perception.perceive(target.idx, TRACK_LATENCY);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
