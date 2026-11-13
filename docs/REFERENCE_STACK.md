@@ -607,6 +607,24 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-52: `SAFETY_DEPTH` on: deep safeties stay over the top (2026-11-13)
+
+**`SAFETY_DEPTH`** (Coverage #663). Two halves of one coached rule, "deeper than the deepest". First, a deep or quarter-field zone landmark is never shallower than the safety's alignment: a quarter of our safeties were installed with a landmark 1.3 to 1.5 yd under where they lined up and walked down to it in the first second (91 to 95% of the safeties who came downhill had one; 1 to 2% of the rest did; none believed run). Second, the landmark is a floor, not a stop: he stays deeper than the deepest route he sees in his band by a cushion taken from the NFL medians (scaled by his speed and play recognition; the scaling is an estimate and recorded as stand-in debt), a route that stops climbing no longer pulls him deeper, and facing the quarterback he asks for no more than his own pedal before opening to run. Calls that send a safety down (robber, buzz, invert) are unchanged.
+
+The lane's measurement, same operator on NFL tracking and ours, off → on (NFL): stepping downhill in the first second 22 → 10% (12), Cover 4 30 → 5% (6); depth at the throw 15.8 → 17.6 yd (18.3); depth over the deepest route 6.2 → 8.4 (8.5); Cover 2 / 3 / 4 depth 17.0 / 15.6 / 13.9 → 18.9 / 17.4 / 16.4 (20.4 / 18.0 / 16.5). Not moved, and recorded as the outside defenders' item: 20+ yd catches with nobody deeper 40 → 36% (15).
+
+Checks on the candidate (`38412c98`): full suite 4364 pass with only the two known research failures; fixed run set 3.87 a carry (3.84). Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | completion | INT | 20+ completions an attempt | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.76 → 8.74 | 65.1 → 63.2% | 1.7 → 1.8% | 12.7 → 12.4% | 7.32 → 7.66 | 30.1 → 30.4 |
+| 23 | 8.38 → 8.32 | 62.5 → 64.9% | 2.4 → 1.8% | 11.4 → 11.0% | 6.67 → 6.26 | 30.6 → 27.7 |
+| 31 | 8.15 → 8.13 | 63.3 → 64.0% | 1.0 → 0.8% | 11.4 → 10.5% | 6.69 → 6.51 | 27.4 → 28.6 |
+
+Nothing moved outside its range on any seed. It lands as the safety playing his rule; the scoreboard does not see it because the deep ball was not where the excess yards are.
+
+**Held out: Flex's edge set** (`PAST_ALONG_PATH` + `OPEN_HANDS` + `PUNCH`, candidate `7e207f9b`, kept as `held/e52-setA`). Carded together 0 → 1 on four seeds, the sack rate fell on every one: 4.9 → 3.8, 4.5 → 3.8, 4.0 → 3.0, 3.4 → 2.5% (pooled 4.2 → 3.3; NFL band 4.61 to 9.36), completion +2 to +4 points on three, fixed run set 3.84 → 3.62. The lane's earlier "the set lands on the NFL's sacks" compared a different engine and seeds with the NFL and had no off arm; its reconcile on the candidate agrees with the cards: pressures fall 36 → 31% and come later, conversion per pressure unchanged at 12 to 13%, the loss mostly interior and inside-edge pressures. Held until the lane attributes the fall by flag and says whether it is an honest consequence of better hands or a defect.
+
 ## engine-51: play action as a call (`PA_DROP`, `PA_CALL`); `DROP_BELIEF` released (2026-11-13)
 
 **`PA_DROP`** (Rules + Coaching #656). The play-action drop by alignment, depth against time taken from tracking the way the ordinary drops were, in place of one shared fake-then-drop. Read in `qb.ts` and `assign.ts`.
