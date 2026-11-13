@@ -11,7 +11,7 @@ import { COVERAGE_BY_ID } from './coverages.js';
 import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefPersonnelId, type DefSlot, type Front, type Pressure, type UnderSeat } from './types.js';
 
 /** RUSH_PROMISE (experimental, off; RUSH_PROMISE=1 turns it on): a pressure's maxRushers bounds its rush behind a coverage family. */
-const RUSH_PROMISE = process.env.RUSH_PROMISE === '1';
+const RUSH_PROMISE = process.env.RUSH_PROMISE !== '0';
 const FRONT_RUSHERS: readonly DefSlot[] = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'];
 
 /** A coverage variant needs the players it explicitly assigns deep help to. */

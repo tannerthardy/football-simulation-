@@ -468,7 +468,7 @@ const PRO_READ = process.env.PRO_READ !== '0';
  * lands), not the rusher's true position and velocity. The set point, the kick, the mirror, the cut-off, his overset
  * fear and his reach for a man going by are his decisions; only the contact itself (the bodies' true distance at
  * engage) is the World's. Found by the perception census (2026-11-13): the pre-contact set read the true state. */
-export const PASS_SET_SEEN = process.env.PASS_SET_SEEN === '1';
+export const PASS_SET_SEEN = process.env.PASS_SET_SEEN !== '0';
 /** PASS_SET_SEEN: the rusher as this blocker sees him, shaped like the Agent fields the set reads. */
 function seenRusherView(sim: PlaySim, a: Agent, r: Agent): Agent {
   const s = sim.see(a, r);
