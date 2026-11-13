@@ -12,6 +12,8 @@ import type { Perceived } from './perception.js';
 export class DeepCoverage {
   private previous: { stamp: number; vx: number } | null = null;
   private acceleration = 0;
+  /** The receiver's upfield acceleration in this defender's picture (the last estimate choose made). */
+  get seenAcceleration(): number { return this.acceleration; }
 
   choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
     cushion: number, original: MoveCommand, now: number,
