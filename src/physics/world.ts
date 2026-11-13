@@ -93,6 +93,9 @@ export interface HandJoint {
   hold: number;
   /** Max tangential (steering) force, kg·yd/s². */
   steer: number;
+  /** OPEN_HANDS: fingers on cloth. Without it the hands push and slide
+   * only: no tension, steer bounded by friction on the push. */
+  grip?: boolean;
   /** Height of the hand contact, yd; defaults to the lower player's pads. */
   height?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
@@ -296,7 +299,7 @@ const HANDS_SLACK = 0.06;
 const GRASP_HZ = 6;
 const GRASP_ZETA = 0.8;
 /** A lean can grow past the felt load by this fraction (force development). */
-const PUSH_GROWTH = 0.25;
+export const PUSH_GROWTH = 0.25;
 /** Time constant of the sensed load, s. */
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;
@@ -328,6 +331,26 @@ const FOLLOW_MARGIN = 1.1;
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 /** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
+/** OPEN_HANDS (experimental, off; OPEN_HANDS=1 turns it on): two hand
+ * states. Fingers on cloth (`HandJoint.grip`) keep the joint's push, hold and
+ * steer limits: a grip inside the frame is ordinary, legal blocking. Open
+ * hands push and slide; they do not pull or drag: no tension, and the
+ * tangential (steering) force is bounded by friction on the compression they
+ * carry, |T| <= HAND_MU * max(0, N). Who grips is the controller's
+ * (engagement.ts `gripFor`): inside the frame, yes; once the man has left it,
+ * the blocker lets go or hangs on.
+ * Off, steering was bounded only by the arms (armForce x (0.15 + 0.55 control)
+ * in engagement.ts), with or without anything pressing: behind an edge
+ * rusher's hip 250-600 N dragged along his path with no compression under it,
+ * and about 40% of run-rep and 30% of pass-rep steering force exceeded mu*N
+ * (open-hands-share.mts; docs/reviews/2026-11-12-tackle-set.md). */
+export const OPEN_HANDS = process.env.OPEN_HANDS !== '0';
+/** Friction of an open hand on a jersey: 0.42, dynamic, natural dry skin on a
+ * cotton-polyester fabric at about 15 N (Gerhardt et al. 2008, J R Soc
+ * Interface 5:1317, PMC2607440; normally moist skin 0.53-0.61, wet fabric
+ * 0.91). No glove-on-jersey measurement was found. A sourced constant, not
+ * a setting: sensitivity reads edit it, they do not tune it. */
+export const HAND_MU = 0.42;
 /** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
  * A push runs from the pusher's pads to the other man's; when one man's pads
  * are lower, the line of action tilts up into the higher man. Its vertical
@@ -375,6 +398,25 @@ const HANG_SHARE = 0.5;
  * 450). docs/reviews/2026-11-12-wrap-at-speed.md (ii). */
 const HANG_AIRBORNE = process.env.HANG_AIRBORNE === '1';
 /** The share of a holder's weight hanging on his hold, by his support state. */
+/** Experimental (HANG_GRIP=1, off; read with HANG_AIRBORNE): the hanging
+ * weight goes through the hold. A hold carries a hanging holder's weight only
+ * up to its grip capacity (gripCapacity, off-feet factor included); the
+ * moment it passes to the runner's legs is that carried load times the lever.
+ * Overloaded, his hands slide down the legs (the hold's leg share grows, a
+ * lower hold) at HANG_SLIDE times the overloaded fraction, carrying their
+ * capacity as they slide. At the ankles the foot arrests the closed share of
+ * the wrap (capacity + lock x the hanging weight): a closed wrap holds there
+ * with the longest lever on the stride (the shoestring); an open grip slips off
+ * over the foot (a torn grip). The runner still tears any hold horizontally
+ * by the grip's own slip. Attempt 1 tore every overloaded hold at the ankles
+ * and broke 24% of tackles (off 6-7%). Off, the hanging weight binds the
+ * stride whatever the grip, so a loose one-arm grab hangs as well as a locked
+ * wrap (three-arm read: unlocked holds bound the stride in the fall 8-10 of
+ * 10-11, locked 3-4 of 16-18). */
+const HANG_GRIP = process.env.HANG_GRIP === '1';
+/** Estimated (HANG_GRIP): how fast overloaded hands slide down a leg, yd/s
+ * at full overload. Not fitted. */
+const HANG_SLIDE = 1.5;
 const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HANG_AIRBORNE && state === 'falling' ? 1 : HANG_SHARE;
 /** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
  * its grip whether or not the holder is on his feet, and the strides it binds
@@ -1470,7 +1512,7 @@ export class World {
     // his own weight and binds nothing this way.
     this.strideHolds.fill(0);
     if (LEGS_HELD) this.baseHolds.fill(0);
-    if (HELD_SWING) this.heldSwing();
+    if (HELD_SWING) this.heldSwing(h);
     else for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
       jt.strideForce = 0;
@@ -2168,7 +2210,7 @@ export class World {
     return HIP_TORQUE_PER_KG * this.mass[i] * this.fat[i] * k;
   }
 
-  private heldSwing(): void {
+  private heldSwing(h = 0): void {
     const moments = new Map<number, Map<number, { m: number; hang: number; grip: number; joints: GraspJoint[]; lock: number }>>();
     for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
@@ -2176,7 +2218,28 @@ export class World {
       if (jt.broken || jt.legs <= 0) continue;
       const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
       const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
-      const hang = hangShare(jt.a.support!.state) * this.mass[ia] * G * lever;
+      let hangForce = hangShare(jt.a.support!.state) * this.mass[ia] * G;
+      if (HANG_GRIP && hangForce > 0) {
+        // HANG_GRIP: what the hold cannot carry slides his hands down the legs.
+        const cap = this.gripCapacity(jt);
+        if (hangForce > cap) {
+          if (jt.legs >= 1) {
+            // At the ankles the foot arrests the closed share of the wrap: arms
+            // locked round the leg carry the rest of the weight by geometry
+            // (lock: how closed the wrap is, the same lock by which LEGS_HELD
+            // counts 1 + lock legs held). An open grip (lock 0) slips off over
+            // the foot; a closed one holds there (the shoestring), until the
+            // runner tears it horizontally as any hold (the grip's own slip).
+            const carried = cap + clamp(jt.lock ?? 0, 0, 1) * hangForce;
+            if (hangForce > carried) { jt.broken = true; continue; }
+          } else {
+            const over = (hangForce - cap) / hangForce;
+            jt.legs = Math.min(1, jt.legs + HANG_SLIDE * over * h / (0.55 * this.comHeight[ib]));
+            hangForce = cap;
+          }
+        }
+      }
+      const hang = hangForce * lever;
       // Copies of one hold share his grip (gripCapacity), so their grip
       // moments add up to one hold's; his hanging weight hangs once.
       const grip = this.gripCapacity(jt) * clamp(jt.legs, 0, 1) * lever;
@@ -2612,7 +2675,7 @@ export class World {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
         row.pushLim = Math.max(0, jt.push) * h * scale;
-        row.holdLim = Math.max(0, jt.hold) * h * this.armScale[holder];
+        row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }
@@ -2708,7 +2771,8 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
-    const slipLim = r.steerLim;
+    // OPEN_HANDS: an open hand's steer is friction on the push it carries.
+    const slipLim = OPEN_HANDS && !(r.joint as HandJoint).grip ? Math.min(r.steerLim, HAND_MU * Math.max(0, r.ln)) : r.steerLim;
     if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
   }
 

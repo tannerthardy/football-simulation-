@@ -200,7 +200,7 @@ export class RouteRunner implements Behavior {
     this.start = { ...a.pos };
     if (!routeOfAgent.has(a)) routeOfAgent.set(a, `${route.family}:${route.id}`);
     this.fromBackfield = sim.los - a.pos.x > 2;
-    this.effort = routeEffort(route.family, a.r('routeRunning'));
+    this.effort = route.pace !== undefined ? route.pace + 0.04 * (a.r('routeRunning') - 0.5) : routeEffort(route.family, a.r('routeRunning'));
     this.routeEnd = route.end;
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
