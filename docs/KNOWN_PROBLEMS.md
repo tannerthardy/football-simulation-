@@ -3388,21 +3388,26 @@ From the issue register:
 
 From the perception census (Rules + Coaching, 2026-11-13,
 `docs/reviews/2026-11-13-perception-census.md`; line numbers at develop
-`d90dcb96`). These are information-rule debts. Each is fixed in its group's
-`PERCEIVE_TRACK` step, where the change is measured; none is fixed in place:
+`d90dcb96`). The user's standing rule: every information cheat found is
+removed by its owner, with the honest replacement (`see()` / `track()` /
+`felt()` / touch) built behind a flag only for the time it takes to measure,
+intended on. Integration assigns each; a full sweep of decisions reading an
+opponent's true state is in progress:
 - **The pre-contact pass set reads the rusher's true state** (*confirmed*).
   `blocking.ts` ~340-443 and `cutOffPoint` ~508-530 use the rusher's real
   position, velocity and speed, while the same blocker identifies the rusher on
-  his visual delay (`seenRusher` ~82-93). Fixed with step 1d (Flex; it interacts
+  his visual delay (`seenRusher` ~82-93). Being removed: Flex (it interacts
   with `ANCHOR_BASE` and `PUNCH_STRIKE`).
 - **The QB's blind-side test and pressure distance read true position**
   (*confirmed*). `felt()` (`qb.ts` ~1299) and the free-rusher lag (~1391) take
   the bearing that decides whether a rusher is behind his shoulder from `d.pos`;
-  `pressure()`'s `dist` (~1408) is the true distance. Fixed with step 1b (QB
-  lane).
+  `pressure()`'s `dist` (~1408) is the true distance; `evade()` steps away from
+  the threat's true position; `tackle.ts` `seesIt` takes the rusher's true
+  bearing off the pocket QB's facing. Being removed: the QB lane.
 - **The QB's slide check reads the defenders' true state** (`carrier.ts`
-  ~439, `timeToReach(d.pos, d.vel)`), and **the post-catch blocker picks a
-  defender on true state** (`receiver.ts` ~682).
+  ~439, `timeToReach(d.pos, d.vel)`; the QB lane), and **the post-catch
+  blocker picks a defender on true state** (`receiver.ts` ~682; Rules +
+  Coaching).
 - **Scaled delays are not short** (*confirmed*). `see()` scales only the
   reaction time; `observationDelay` (`mind.ts` ~60) then adds
   `0.12·(1 − focus) + 0.06·stress·(1 − composure)`. So the reads documented as
