@@ -177,6 +177,7 @@
     "HAND_SITE": "off",
     "PUNCH_STRIKE": "off",
     "ANCHOR_BASE": "off",
+    "RUSH_ARM_BALANCE": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
