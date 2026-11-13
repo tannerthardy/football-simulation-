@@ -24,10 +24,12 @@ PlaySim.prototype.run = function (this: any) {
   const sim = this;
   if (sim.offCall?.kind !== 'pass') return run.call(this);
   let rec: any = null;
+  const routes = new Map<any, string>();
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const was = sim.ball.kind;
     tick();
+    for (const o of sim.offense) if (o.behavior?.route?.id) routes.set(o, o.behavior.route.id);
     if (!rec && was !== 'air' && sim.ball.kind === 'air' && !sim.ball.throwaway && sim.ball.target && sim.ball.flight) {
       const b = sim.ball, T = b.arrivalT - sim.t;
       const land = simulateTo(b.flight.pos, b.flight.vel, T, b.flight.drag, sim.wind);
@@ -35,7 +37,7 @@ PlaySim.prototype.run = function (this: any) {
       rec = { T: +T.toFixed(2), miss: +Math.hypot(land.x - b.intended.x, land.y - b.intended.y).toFixed(2), missZ: +(land.z - b.intended.z).toFixed(2),
         rcvToAim: +Math.hypot(r.pos.x - b.intended.x, r.pos.y - b.intended.y).toFixed(2), skills: +r.r('ballSkills').toFixed(2), hands: +r.r('hands').toFixed(2), r,
         arrT: b.arrivalT, land, sepThrow: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - r.pos.x, d.pos.y - r.pos.y))).toFixed(2),
-        depth: +((r.pos.x - sim.los) * sim.attackDir('O')).toFixed(1), route: r.behavior?.route?.id ?? null, thrT: sim.t };
+        depth: +((r.pos.x - sim.los) * sim.attackDir('O')).toFixed(1), route: routes.get(r) ?? r.behavior?.route?.id ?? null, thrT: sim.t };
     }
     // At the designed arrival: the receiver's distance from where the ball comes down, and the nearest defender's.
     if (rec && rec.atArr === undefined && sim.t >= rec.arrT - 1e-9) {
