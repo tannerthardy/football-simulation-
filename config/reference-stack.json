@@ -117,6 +117,8 @@
     "FORECAST_HOLD": "on",
     "GAP_CLIMB": "on",
     "GAZE": "off",
+    "PERCEIVE_TRACK": "off",
+    "QB_BODY_SEEN": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
