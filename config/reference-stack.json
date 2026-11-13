@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-50",
+  "id": "engine-51",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -78,7 +78,9 @@
     "DEF_BELIEF": "on",
     "ACC_BELIEF": "on",
     "INT_BELIEF": "on",
-    "DROP_BELIEF": "off",
+    "DROP_BELIEF": "on",
+    "PA_DROP": "on",
+    "PA_CALL": "on",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",

@@ -11,6 +11,8 @@ import { gapY, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import { CONCEPT_MENU } from '../playbook/concepts.js';
+/** PA_DROP (qb.ts): the play-action back's fake track beside the QB, not on his drop line. */
+const PA_DROP_FAKE = process.env.PA_DROP !== '0';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
@@ -254,7 +256,11 @@ export function assignBehaviors(sim: PlaySim): void {
     const back = sim.slot('RB');
     if ((concept.fake || lineRun) && back && back.behavior.kind !== 'idle') {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
-      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
+      // PA_DROP: a back aligned behind the QB runs his fake on a track beside him (a zone track to the B gap, strong),
+      // not on the QB's drop line; off, the fake point sat 0.4 yd off it and the QB dropped into him.
+      const behind = Math.abs(back.pos.y - qb.pos.y) < 1;
+      const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, 0.7);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;

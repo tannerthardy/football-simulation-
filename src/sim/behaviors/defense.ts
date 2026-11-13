@@ -52,10 +52,10 @@ const DB_SLOWPLAY = process.env.DB_SLOWPLAY !== '0', SLOW_GIVE = 0.3, SLOW_MIN =
 /** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
 const LB_READ_STEP = process.env.LB_READ_STEP !== '0', READ_STEP = 0.3;
 
-/** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
-export function believesRun(sim: PlaySim, a: Agent): boolean {
-  if (a.recog) return a.recog.read === 'run';
-  return !sim.isPass && sim.t >= a.readAt;
+/** Has this defender read run? (His own read from what he's seen — see recognition.ts.)
+ * Without a recognition he is unsure: never the offense's play type. */
+export function believesRun(_sim: PlaySim, a: Agent): boolean {
+  return a.recog?.read === 'run';
 }
 /** ZONE_SETTLE (default on; ZONE_SETTLE=0 turns it off): underneath zone
  * droppers stop gaining depth once they see the QB set ("drop until his back
@@ -93,9 +93,9 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   return r;
 }
 
-export function knowsPass(sim: PlaySim, a: Agent): boolean {
-  if (a.recog) return a.recog.read === 'pass';
-  return sim.isPass && sim.t >= a.readAt;
+/** Has this defender read pass? His own read; without a recognition he is unsure. */
+export function knowsPass(_sim: PlaySim, a: Agent): boolean {
+  return a.recog?.read === 'pass';
 }
 
 /**
