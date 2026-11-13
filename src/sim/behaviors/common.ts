@@ -1,5 +1,6 @@
 /** Steering helpers shared by behaviors. */
 import { FIELD_WIDTH } from '../../core/field.js';
+import { Rng } from '../../core/rng.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
@@ -121,6 +122,10 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     // can miss a cut, but straight motion is dead-reckoned forward. Do not
     // subtract another skill-based time offset from every interception.
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
+    // PURSUIT_TENDENCY: part of his misjudgment of the race is his own and
+    // carries from play to play (a player who habitually takes a flat or a
+    // steep angle), not redrawn every snap; its size falls with pursuit.
+    if (PURSUIT_TENDENCY) bias += pursuitTendency(a);
     angleBias.set(a, bias);
   }
   const biasedTime = clamp(ip.t - bias, 0, horizon);
@@ -142,6 +147,28 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** PURSUIT_TENDENCY (experimental, off): a pursuer's habitual misjudgment of
+ * the meeting time, fixed per player (seeded by his id, so the same player
+ * carries it from play to play and game to game), zero-mean, and larger the
+ * lower his pursuit rating. It shifts the meeting he aims for the same way the
+ * per-play timing error does: early (a flatter angle, behind the carrier) or
+ * late (a steeper one, ahead of him); nothing is awarded and a wrong tendency
+ * misses for real. Measured: NFL open-field lead shortfall is a stable player
+ * trait for DBs (split-half r, corrected, CB 0.42, S 0.43; between-player
+ * p10-p90 CB -5..16 deg, S 6..17), while ours is not (CB -0.01, S -0.35):
+ * the rating only drew a fresh error each play (skill_spread.py,
+ * player-spread.mts). TENDENCY_SIGMA is ESTIMATED, sized so our DB
+ * between-player spread lands near the NFL's. */
+export const PURSUIT_TENDENCY = process.env.PURSUIT_TENDENCY === '1';
+const TENDENCY_SIGMA = Number(process.env.PURSUIT_TENDENCY_SIGMA ?? 0.12);
+const tendencies = new Map<string, number>();
+function pursuitTendency(a: Agent): number {
+  const id = a.player.id;
+  let base = tendencies.get(id);
+  if (base === undefined) { base = new Rng(`pursuit-tendency:${id}`).normal(0, 1); tendencies.set(id, base); }
+  return base * TENDENCY_SIGMA * (1.2 - a.r('pursuit'));
+}
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
