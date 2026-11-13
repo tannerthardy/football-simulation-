@@ -1772,3 +1772,20 @@ Clubs with the keys (`club-probe.mts`, seed 11 x 2):
 - The defect is on the blocker's side: interior pass sets without press under the hands. It existed before RUSH_HANDS;
   nothing exploited it. Next diagnostic: why the guard's hands are unloaded (PUNCH's extension against the seen gap,
   control, the hands joint's mode).
+
+## RUSH_HANDS attempt 2 (two hands, 95fbbb16): the read, then stop
+
+| | keys (attempt 1) | two hands (attempt 2) | NFL |
+|---|---|---|---|
+| native sacked | 5.1 / 3.7% | 4.9 / 4.9% | band 4.6-9.4% |
+| operator sacked; pressured | 5.9 / 4.3%; 43.4 / 37.0% | 6.2 / 5.9%; 40.1 / 39.5% | 6.7%; 32.9% |
+| sacks per pressure | 13.6 / 11.8% | 15.5 / 14.9% | 19.1% |
+| time to pressure p50 | 2.5 s | 2.5-2.6 s | 2.6-2.7 s |
+| edge in front (share of pressure) | 10.9 / 7.5% (25 / 20%) | 10.6 / 9.4% (26 / 24%) | 3.0% (9%) |
+| edge past outside | 4.0 / 4.1% | 4.0 / 3.8% | 3.8% |
+| interior; free then; before 2.5 s | 19.4 / 15.7%; 79 / 67%; 10.7 / 7.6% | 16.9 / 16.6%; 70 / 69%; 6.5 / 7.4% | 9.8%; 46%; 3.8% |
+| hip reach per 100 | 33 / 32 | 37 / 32 | 58 |
+
+The two-hand count leaves sacks in the band and conversion higher, but the interior row barely moves. The interior
+rusher is still free at pressure 70% of the time and early. Two attempts at stage 2's outcome: stop and re-diagnose
+how the interior rusher gets free (the rep's end, the guard's recovery), not the club's size.
