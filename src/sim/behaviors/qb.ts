@@ -740,12 +740,24 @@ export class QBPass implements Behavior {
     const need = quick ? Math.min(thr, 0.2) : called && SCREEN_QB ? Math.min(thr, 0.3) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // READ_PLAN triangle: the three routes as one picture; the best one open that clears his bar is the throw.
     // The picture is held until all three have shown (or two and a half looks), then the order goes on.
-    // SCREEN_QB: a called quick screen is decided before the snap. Once its timing has passed (half a second after his
-    // drop, after the receiver's sell if he has one) and it still isn't there (a man sitting on it), he doesn't hold
-    // the ball for it: he throws it away.
-    if (SCREEN_QB && quick && t > this.snapAt + this.drop.time + (this.concept.screen?.receiverSell ?? 0) + 0.5) {
-      const r = this.reads[0], ev = r ? this.evaluate(a, sim, r, u) : null;
-      if (!ev || ev.P < need || ev.intRisk > risk) { this.screenThrownAway = true; return this.throwAway(a, sim); }
+    // SCREEN_QB: a called quick screen is decided before the snap. From the moment it should be thrown (after his drop
+    // and the receiver's sell), he reads whether it is dead from what he sees: the catcher covered (a free defender on
+    // him or on the spot) or the lane filled (a rusher in the throw's first yards). A picture that stays dead for his
+    // patience (his processing time; aggressive passers hang on longer) is thrown away, not held. A catcher who is
+    // only late, with no one on him, is not dead; the clock is only the outer bound, a second past the timing.
+    if (SCREEN_QB && quick && this.reads[0]) {
+      const due = this.snapAt + this.drop.time + (this.concept.screen?.receiverSell ?? 0);
+      if (t >= due) {
+        const r = this.reads[0], ev = this.evaluate(a, sim, r, u);
+        const throwable = !!ev && ev.P >= need && ev.intRisk <= risk;
+        const dead = this.screenDead(a, sim, r);
+        if (!dead) this.deadSince = -1; else if (this.deadSince < 0) this.deadSince = t;
+        const patience = 0.15 + 0.25 * (1 - a.r('decisionMaking')) + 0.3 * aggression;
+        const seenDead = this.deadSince >= 0 && t - this.deadSince >= patience;
+        if (!throwable && (seenDead || t > due + 1.0)) {
+          this.screenThrownAway = seenDead ? 'dead' : 'bound'; return this.throwAway(a, sim);
+        }
+      }
     }
     const tri = READ_PLAN && !this.triDone ? this.plan?.triangle ?? null : null;
     // READ_PLAN alert: a yes/no glance, not a full read.
@@ -995,8 +1007,31 @@ export class QBPass implements Behavior {
 
   /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
   private screenLane = false;
-  /** SCREEN_QB diagnostics: a dead quick screen thrown away. */
-  screenThrownAway = false;
+  /** SCREEN_QB diagnostics: a quick screen thrown away, on his read of it as dead or at the outer bound. */
+  screenThrownAway: false | 'dead' | 'bound' = false;
+  /** SCREEN_QB: when his picture of the quick screen went dead (-1: not dead). */
+  private deadSince = -1;
+  /**
+   * SCREEN_QB: the quick screen is dead in his picture: a defender not in a block within 1.5 yd of the catcher (where
+   * he sees him) or of the spot it is thrown to, or a rusher in the first yards of the throw's lane. Everything is
+   * his own delayed, error-laden picture (mind.estimate, see).
+   */
+  private screenDead(a: Agent, sim: PlaySim, r: Agent): boolean {
+    const rc = sim.see(a, r).pos;
+    const sp = this.spotCache && this.spotCache.receiver === r && !this.spotDone ? this.spotCache.spot : null;
+    const pt = sp ?? rc;
+    const dx = pt.x - a.pos.x, dy = pt.y - a.pos.y, len = Math.hypot(dx, dy) || 1;
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const seen = this.mind.estimate(d).pos;
+      const along = ((seen.x - a.pos.x) * dx + (seen.y - a.pos.y) * dy) / len;
+      const off = Math.abs((seen.x - a.pos.x) * dy - (seen.y - a.pos.y) * dx) / len;
+      if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) return true;
+      if (d.engagement) continue;
+      if (Math.hypot(seen.x - rc.x, seen.y - rc.y) < 1.5 || (sp && Math.hypot(seen.x - sp.x, seen.y - sp.y) < 1.5)) return true;
+    }
+    return false;
+  }
   private spotCache: ScreenSpot | null | undefined;
   private spotDone = false;
   /**

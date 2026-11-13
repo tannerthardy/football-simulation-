@@ -106,7 +106,7 @@ for (const call of CALLS) {
       dt: 0.1, xy, ball_y: r2(sim.ballY), events, target: thr?.b ?? null, carrier: cat?.a ?? null,
       screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id, rpo: call.run ? call.id : undefined,
         passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers,
-        penalties: sim.penalties.map((p: any) => p.kind) },
+        penalties: sim.penalties.map((p: any) => p.kind), thrownAway: sim.agents.find((a: any) => a.slot === 'QB')?.behavior?.screenThrownAway || false, throwawayAt: ev.find(e => e.type === 'throwaway')?.t ?? null },
     };
     lines.push(JSON.stringify(play));
     s.n++; if (cat) s.caught++; s.yards.push(res.yards); if (thr) s.ttt.push(thr.t);
