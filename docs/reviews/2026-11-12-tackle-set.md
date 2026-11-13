@@ -2582,3 +2582,32 @@ Candidate for attempt 3, for review: in a long-arm, his own arm is the strut, so
 by what he can recover from losing the strut. That means growth 0 and the protector's margin while he holds a long-arm,
 because a lean against his own locked arm buys no movement that the arm's push does not already give. Approval needed
 before a third attempt.
+
+# RUSH_ARM_BALANCE (97a8b95c, off; attempt 3 on rusher falls, approved after the re-diagnosis)
+
+While a rusher holds a long-arm, his own arm is the strut, so he commits behind it as a protector does: growth 0 and
+leanCap = (1.05 - 0.55 x technique) m w0^2 critDev, with technique = balance and power rush. A bull keeps its
+commitment.
+
+Fixtures (`test/rush-arm-balance.test.ts`, four verticals):
+- roster 1, Cover 2, seed 5: DT_S falls in a held long-arm at 1.4 s with the flag off, and does not with it on;
+- roster 8, Cover 1, seed 6: DT_S still falls in a bull with the flag on.
+
+Native-play search (7 rosters x 2 concepts x 3 coverages x 6 seeds): DL falls before the throw 250 → 18.
+
+Quick read (seed 11 x 3, RUSH_HANDS + PUNCH_STRIKE + ANCHOR_BASE): DL falls 17.3 → **5.5 per 100 dropbacks**, the
+level without RUSH_HANDS (5.7); OL falls 4.2 → 3.8. Off is bit-identical (seed 999 f95d494b on engine-57). 16-game
+reads follow.
+
+**The stacked joints (Integration's question).** Two hands joints between the same pair summed to 1600-1900 while one
+saturates near 1014:
+- Each joint is bounded by its own actor's arm press: the guard's hands by his, the rusher's long-arm by the rusher's.
+- Two contacts each transmit force, so the sum is real: two men pressing palms on each other's chests feel both
+  contacts.
+- It is not free. The only external forces on either body are ground forces, which the World bounds by one budget per
+  body: leg drive and lean share traction and leg strength, with traction capping the net. When the joints' sum
+  exceeds what one man's ground force can resist, he is driven back. That is what happened to the long-arming rusher
+  (+0.47 yd/s the way he was pushed).
+- So the pair's total is bounded by the two men's legs and ground, and stacking joints does not exceed it. The defect
+  was only that his lean was sized to the sum, his own arm's share included. Nothing for the stance/base proposal from
+  this, beyond noting that a felt load can include a man's own strut.
