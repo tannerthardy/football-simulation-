@@ -312,12 +312,15 @@ const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
 /** THROW_PLATFORM constants. PLATFORM_STRIDE, yd/s: NFL quarterbacks release moving at 0.7 / 1.1 / 1.9 yd/s (p25/50/75,
  * BDB 2026); ours at 0.4 (STRIDE_SPEED). PLATFORM_QUIET, yd/s: chosen, above a planted body's sway. PLATFORM_RESID0 /
  * PLATFORM_RESID_SKILL: chosen (the best mover leaves a twelfth of his motion in the ball, the worst a third).
- * PLATFORM_BASE, yd/s: chosen (a run at about two thirds of a quarterback's top speed leaves no base at all). */
+ * PLATFORM_BASE, yd/s: chosen (a run at about two thirds of a quarterback's top speed leaves no base at all).
+ * PLATFORM_ALONG: chosen; motion along the target line changes the ball's length, motion across it its direction, and a
+ * ball long or short by a yard is nearer a moving receiver than one a yard wide of him. */
 const PLATFORM_STRIDE = 1.2;
 const PLATFORM_QUIET = 0.3;
 const PLATFORM_RESID0 = 0.08;
 const PLATFORM_RESID_SKILL = 0.25;
 const PLATFORM_BASE = 6;
+const PLATFORM_ALONG = 0.6;
 /** QB_POCKET, named so a reader can tell a measurement from a choice.
  * - POCKET_NEAR0 / POCKET_NEAR_PP, yd: the felt distance inside which the nearest body decides his feet,
  *   NEAR0 + NEAR_PP x pocketPresence. Chosen, bracketing the operator's 3 yd; the rating acts on how far out he
@@ -1761,7 +1764,10 @@ export class QBPass implements Behavior {
     const par = (a.vel.x * ux + a.vel.y * uy) / ul;
     // His velocity less the stride into the throw.
     const free = clamp(par, 0, PLATFORM_STRIDE);
-    const ex = a.vel.x - free * ux / ul, ey = a.vel.y - free * uy / ul, e = Math.hypot(ex, ey);
+    // What the ball carries: his motion across the target line in full (it moves the ball off the line), his motion
+    // along it at PLATFORM_ALONG (it changes the throw's length, which costs less than its direction).
+    const rest = par - free, cx = (a.vel.x - par * ux / ul), cy = (a.vel.y - par * uy / ul);
+    const ex = cx + PLATFORM_ALONG * rest * ux / ul, ey = cy + PLATFORM_ALONG * rest * uy / ul, e = Math.hypot(ex, ey);
     const lost = Math.max(0, e - PLATFORM_QUIET);
     if (lost <= 0) return { sigma: 0, dir: { x: 0, y: 0 }, flick: 0 };
     const skill = 1 - a.r('throwOnRun');
