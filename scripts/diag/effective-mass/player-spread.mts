@@ -50,7 +50,12 @@ PlaySim.prototype.tick = function (this: any) {
       const bear = Math.acos(Math.max(-1, Math.min(1, (-dx * c.vel.x - dy * c.vel.y) / (dist * cs)))) * 180 / Math.PI;
       if (bear >= 60 && bear <= 120) { const side = (-c.vel.x * dy + c.vel.y * dx) / dist >= 0 ? 1 : -1;
         const aim = Math.atan2((-d.vel.x * dy + d.vel.y * dx) / dist, (d.vel.x * dx + d.vel.y * dy) / dist) * 180 / Math.PI * side;
-        const ia = iang(dx, dy, c.vel.x, c.vel.y, sp); if (ia !== null) out({ id: d.player.id, pos: d.slot, half, m: 'lead', v: ia * 180 / Math.PI * side - aim, r: d.r('pursuit'), tb: new Rng(`pursuit-tendency:${d.player.id}`).normal(0, 1) * (1.2 - d.r('pursuit')), src: fired.get(d) ? 'planner' : (d.behavior?.kind ?? '?') + ((d as any).tags?.has?.('onBall') ? '+onBall' : '') }); }
+        const ia = iang(dx, dy, c.vel.x, c.vel.y, sp);
+        const it = sim.intents?.[d.idx]; const rq = it ? Math.hypot(it.vel.x, it.vel.y) : 0;
+        if (ia !== null && rq > 1) { const raim = Math.atan2((-it.vel.x * dy + it.vel.y * dx) / dist, (it.vel.x * dx + it.vel.y * dy) / dist) * 180 / Math.PI * side;
+          out({ id: d.player.id, pos: d.slot, half, m: 'leadreq', v: ia * 180 / Math.PI * side - raim, tb: new Rng(`pursuit-tendency:${d.player.id}`).normal(0, 1) * (1.2 - d.r('pursuit')) }); }
+        if (ia !== null && sim.t - s.t0 >= 1) out({ id: d.player.id, pos: d.slot, half, m: 'leadlate', v: ia * 180 / Math.PI * side - aim, tb: new Rng(`pursuit-tendency:${d.player.id}`).normal(0, 1) * (1.2 - d.r('pursuit')) });
+        if (ia !== null) out({ id: d.player.id, pos: d.slot, half, m: 'lead', v: ia * 180 / Math.PI * side - aim, r: d.r('pursuit'), tb: new Rng(`pursuit-tendency:${d.player.id}`).normal(0, 1) * (1.2 - d.r('pursuit')), src: fired.get(d) ? 'planner' : (d.behavior?.kind ?? '?') + ((d as any).tags?.has?.('onBall') ? '+onBall' : '') }); }
     }
   }
 };
