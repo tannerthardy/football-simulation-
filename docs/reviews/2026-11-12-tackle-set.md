@@ -2401,3 +2401,19 @@ Fixtures (`test/punch-strike.test.ts`, four verticals against Cover 2, seed 5):
   because the reps survive to show it.
 - The hands rows that made PUNCH worth having hold. The gate holds (91% against 92% loaded), and the QB misread can
   only fall (2% → 1%). Price: with the hands holding the touch, the man sits closer (gap 0.62 → 0.46 of the arm).
+
+## After PUNCH_STRIKE: the remainder
+
+- **HANDS_CHEST no longer matters.** On top of PUNCH_STRIKE (seed 11 x 3): off 16.8% of dropbacks, 17.5 OL falls /100;
+  on 14.8%, 18.6 /100. That is within noise. Its 13.6% share earlier came through PUNCH's standing drive.
+- **The remaining falls** (`fall-trace.mts`, PUNCH_STRIKE=1, seed 11 x 3: 25 interior, 18 tackles) have the same
+  shape: forward onto the man (24/25, 16/18), the lean grown to the press (interior 1404 against 1344 at 0.1 s;
+  tackles 1093 against 1057), unloaded by a bull's pull, a club, rip, swim or spin.
+- Now the press is the rusher's own drive. This is the commitment question (Integration's (i)): the lean a protector
+  is willing to put against a sustained press is the whole press, where a coached protector commits only what he
+  can recover from and answers the rest by giving ground at his anchor's limit.
+
+Next proposal (for review, not built): the lean he commits against a press is bounded by what he could recover from if
+it vanished, a function of his base and his balance/technique. The rest of the press is answered by giving ground.
+A propped, poorly balanced lineman who is swum still falls; a good technician rarely does. Then the staged check of
+(ii), whether a protector leaning only what he can recover from still topples on a one-tick unload.
