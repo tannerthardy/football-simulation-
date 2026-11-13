@@ -1871,3 +1871,35 @@ follow. In football a club wins a hand; the blocker's body is still in front and
 hand is on him. The open question is what the body does (torso contact, the ride's push with one hand, how much path a
 club buys), not the club's size. Recommendation: PASS_RIDE stands on its own (it improves set A's interior on both
 seeds). RUSH_HANDS is parked with that question named.
+
+# RUSH_ONE_HAND (46a73129, off): RUSH_HANDS attempt 3, a miss
+
+**Change:** one cleared hand no longer gives the landed-move request. The rusher works to the side the hand guarded,
+through the body and the remaining hand. Only both hands gone is a landed move, and PAST declares the win.
+
+**Prediction, before the read:** interior engaged-then-free 9.4 / 6.6% → 2-3% of dropbacks, sacks near 4-5%.
+
+**Read** (engine-55 merge, RUSH_HANDS + PASS_RIDE, seeds 11 / 23, 16 games each, same head; arms are without → with RUSH_ONE_HAND):
+
+| | without | with | NFL |
+|---|---|---|---|
+| native sacked | 3.9 / 4.0% | 3.6 / 3.3% | band 4.6-9.4% |
+| pressured (pressure-source) | 39.3 / 35.7% | 40.1 / 36.4% | 32.9% |
+| interior | 16.3 / 12.9% | 15.8 / 13.4% | 9.8% |
+| interior engaged-then-free | 9.1 / 7.2% | 9.7 / 7.3% | 2.2% |
+| ... last within 1.2 yd before pressure | 0.4 / 0.3 s | 0.2 / 0.3 s | 0.1 s |
+
+**Missed.** The interior count does not move.
+
+`ride-probe.mts` (seed 11 x 3), guards/center, without → with:
+- reps ending "past him": 63 → 34;
+- while ridden: rusher 4.57 → 4.93 yd/s, blocker 2.78 → 3.21;
+- press N under the hands 0.00 in both, and for tackles too.
+
+**What the miss tells us.** Removing the one-hand landed request halves the reps that end "past him", but the man
+still comes free as often: by another route, and still faster than the ride once he is beside the blocker. The
+remaining hand's press is 0 because of the ride's geometry, not the club's slack moment. Once the pair is side by
+side and moving the same way, the joint's normal (blocker to man) carries nothing, and the only thing between the man
+and the QB is the blocker's body. That body offers no resistance to a man running along it. Per the agreed stop, the
+next step is torso contact (what a blocker's body does to a man going past it at his hip), not a fourth attempt at the
+hands.
