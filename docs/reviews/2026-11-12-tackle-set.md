@@ -2791,3 +2791,34 @@ bodies' true distance at engage) is the World's. Off is bit-identical (seed 999 
   points.
 - Recommendation: on, with PUNCH_STRIKE and ANCHOR_BASE. The sack finish (THROW_HOLD) and the outside arc are the
   next questions.
+
+## The finish: THROW_HOLD + POCKET_REACH (16 games, engine-58 + PASS_SET_SEEN)
+
+Flex, 2026-11-13. F0 = both off, F1 = both on; seeds 11 and 23, 16 games each arm; operators finish.py and
+pass-rep-report.py (sack funnel), the same code as on NFL tracking.
+
+| | s11 F0 | s11 F1 | s23 F0 | s23 F1 | NFL |
+|---|---|---|---|---|---|
+| first contact, % of dropbacks | 13.6% | 13.9% | 12.6% | 12.4% | |
+| after contact: sacked | 19% | 27% | 15% | 27% | 47% |
+| after contact: threw | 72% (+0.10 s) | 65% (+0.05 s) | 76% (+0.10 s) | 62% (+0.05 s) | 30% |
+| after contact: escaped | 9% | 7% | 9% | 11% | 22% |
+| from the front: sacked | 11% | 17% | 10% | 19% | |
+| sacked given contact (funnel) | 18% | 30% | 17% | 30% | |
+| a rusher within 2 yd before the ball is out (control) | 21.6% | 22.1% | 21.6% | 20.9% | |
+| native sacked, % of dropbacks | 3.1% | 4.4% | 2.5% | 3.7% | |
+| INT / fumbles | 30 / 24 | 22 / 19 | 17 / 13 | 20 / 18 | |
+| throw_held events | 0 | 31 | 0 | 38 | |
+
+Read:
+- The arrival control does not move: within 2 yd 21-22% in all four arms, first contact 12-14%. The change sits
+  after contact, where it was aimed.
+- Sacked given contact goes 17-18% to 30% on both seeds. About a third of the gap to the NFL's 47-53% closes.
+- The thrown bucket shrinks (72-76% to 62-65%). The throws that remain still leave within 0.05 s of contact. These
+  are the windups already past the hold, or deliveries where no grasp formed in time. The hold stops a motion only
+  when the grasp exists; the QB lane's decision half (when to start, aborting under a closing rusher) is the remaining
+  share.
+- Escapes stay 7-11% against the NFL's 22%. That belongs to the QB lane's evade/step-up decision, not to the physics.
+- INT and fumbles move both ways between seeds; there is no consistent direction at this sample size.
+- Not computed yet: completion and air yards inside the thrown bucket, and the pre-windup finish split
+  (finish-trace.mts on the F1 flags).
