@@ -274,3 +274,31 @@ What RUSH_INTENT adds on top of A, pooled, in points of dropbacks:
   NFL's 48%. Interior and other are roughly unchanged.
 - A caveat: every arm carries PUNCH's QB misread (BLOCK_SEEN treats about 42% of engaged ticks as free rushers;
   previous section). It is common to A and A + RUSH_INTENT, but it may raise sacks and cut scrambles in both.
+
+## Re-read on ba4b9866 (PUNCH's QB contact fix): A and A + RUSH_INTENT, 2 x 16 (seeds 201-216, 301-316)
+
+| | A 201 \| 301 (pooled) | A + RUSH_INTENT 201 \| 301 (pooled) | NFL |
+|---|---|---|---|
+| dropbacks | 1279 \| 1354 (2633) | 1375 \| 1357 (2732) | 9713 |
+| pressured | 29.9 \| 36.6% (33.3%) | 36.6 \| 43.5% (40.0%) | 32.9% |
+| sacked | 5.3 \| 7.0% (6.2%) | 5.2 \| 8.2% (6.7%) | 6.7% |
+| sacked per pressure | 17.8 \| 19.2% | 14.1 \| 18.8% | 19.1% |
+| edge win | 11 \| 13% | 14 \| 19% | 13% |
+| in front, of dropbacks (share of pressure; sacked per pressure) | 8.4 \| 10.4% (28%; 3.7 \| 7.1%) | 11.3 \| 13.9% (31-32%; 3.8 \| 5.9%) | 3.0% (9%; 19.9%) |
+| in front before 2.5 s | 1.9 \| 3.1% | 4.0 \| 6.3% | 0.5% |
+| real pressure (all but in front) | 21.5 \| 26.2% (23.9%) | 25.3 \| 29.6% (27.4%) | 29.9% |
+| past outside | 1.8 \| 2.3% | 2.8 \| 4.6% | 3.8% |
+| inside (free then) | 6.1 \| 7.9% (90 \| 86%) | 7.3 \| 10.2% (90%) | 6.4% (48%) |
+| interior (sacked per pressure) | 7.3 \| 8.6% (27 \| 25%) | 8.8 \| 8.9% (16 \| 29%) | 9.8% (17%) |
+| retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0-4.0 s | −3.25 / −3.25 / −3.00 \| −2.75 / −1.25 \| −1.50 | −3.00 / −2.75 \| −3.00 / −2.50 / −1.00 | −2.75 / −2.25 / −1.50 / −0.50 |
+
+Against the pre-fix A (q201-A, q301-A): pressure 31.3 → 33.3%, sacks 4.1 → 6.2%, sacked per pressure about 13 → 18.6%.
+
+**Reading.**
+- With the QB reading locked-out blocks correctly, A alone lands on the NFL's pressure (33.3 against 32.9%) and sacks
+  (6.2 against 6.7%), with sacks per pressure at the NFL's (18.6 against 19.1%). The sack fall in A's cards came from
+  PUNCH's misread, not from A's mechanisms.
+- RUSH_INTENT on top now overshoots pressure by 7 points (40.0%), all edge (in front +2.6, inside +1.7, past +1.6).
+  Sacks stay at 6.7%. The reason to land it with A (putting the pass rush back in range) is gone.
+- Still open with A: the in-front class (9.4% of dropbacks against 3.0%, converting about 5% against 20%), real
+  pressure 23.9% against 29.9%, inside pressure free 86-90% against 48%, and the retreat curve.
