@@ -1820,3 +1820,35 @@ pressure):
   done, and the rusher runs about 0.4 s free to the QB. The NFL guard stays on him until the QB.
 - Next look, per Integration: the doubles (22% of interior reps, the helper's hands untouched by RUSH_HANDS), and the
   interior ride (staying on a man who has won the hip, as the tackle does).
+
+# PASS_RIDE (908ab8ad, off): the block becomes a ride
+
+**Diagnosis** (`ride-probe.mts`, develop's set A, seed 11 x 3): reps ending "past him" spend about 0.3-0.45 s riding
+before the man gets beyond the blocker's arm. While riding, guards move 1.9 yd/s against the rusher's 3.4. The ride's
+request was the man's velocity less 1 yd/s toward the QB (`RIDE_PUSH`, written as "push him past"), so the blocker fell
+behind by design; facing the rusher, he also shuffled sideways at the directional cap.
+
+**Build:** one rule for every pass blocker (`rideIntent`):
+- he runs with the man on his QB side (a body's width across his path), matching his velocity and closing on that spot;
+- hips open (facing where he goes);
+- he pushes through his hands (the joint's push flattens the man away from the QB);
+- once riding he stays on him until the man is clearly back in front (along his path by more than PAST_MARGIN);
+- the rep still ends when the man is beyond his arm, so whether he keeps up is his body's.
+
+The tackles' ride is the same code path and changes too: tackles ride at 1.8 yd/s, up from 1.3. Guards ride at 2.9 yd/s
+(was 1.9) against rushers at 4.1-4.2. They still lose about 0.8 yd over about 0.45 s: a man with a running start
+against a blocker accelerating out of his set.
+
+**Read on set A** (seeds 11 / 23, 16 games, engine-54 tree):
+
+| | A | A + PASS_RIDE | NFL |
+|---|---|---|---|
+| native sacked | 2.1 / 2.4% | 3.0 / 2.2% | band 4.6-9.4% |
+| pressured; sacks per pressure | 32.1 / 26.9%; 8.2 / 11.5% | 30.3 / 28.2%; 10.2 / 11.0% | 32.9%; 19.1% |
+| edge in front (share of pressure) | 12.9 / 10.0% (40 / 37%) | 10.1 / 9.6% (34 / 34%) | 3.0% (9%) |
+| interior; free at pressure | 7.1 / 6.2%; 73 / 59% | 6.7 / 5.2%; 53 / 57% | 9.8%; 46% |
+| interior engaged-then-free (of dropbacks) | 3.6 / 3.1% | 2.4 / 2.7% | 2.2% |
+| ... last within 1.2 yd of a blocker before pressure | 0.4 / 0.4 s | 0.2 / 0.3 s | 0.1 s |
+
+The ride moves the interior wins onto the NFL's count and closer to its timing, and the walked-back class shrinks.
+Pressure and sacks barely move on set A. Next: the read with RUSH_HANDS on.
