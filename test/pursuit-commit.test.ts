@@ -4,8 +4,10 @@
  *    before teammate spacing; off: some defenders within 8 yd of the catch decide zero speed on that tick; on: none
  *    do). Teammate spacing can still stop a defender who is running straight at a teammate converging on the same
  *    catch; that is spacing's limit, not this decision;
- *  - an open-field pursuer keeps the meeting he chose: the bearing to his planned meeting point turns by more than
- *    10 deg in a tick less often than with the flag off. Requests only; no outcome is asserted. */
+ *  - committing adds no jitter: the bearing to an open-field pursuer's planned meeting point turns by more than 10 deg
+ *    in a tick no more often than with the flag off (within two standard errors). On engine-52 it turned less often
+ *    (0.0244 vs 0.0272, about 1.5 SE); on engine-54 the rates are equal (0.0230 vs 0.0223), so no reduction is
+ *    claimed. Requests only; no outcome is asserted. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -51,7 +53,7 @@ async function run(flag: string) {
     }
   }
   if (process.env.PC_PRINT) console.log('PC', flagName, zeroAtCatch, nearAtCatch, jumps, ticks);
-  return { zeroAtCatch, nearAtCatch, jumpRate: jumps / Math.max(1, ticks), ticks };
+  return { zeroAtCatch, nearAtCatch, jumpRate: jumps / Math.max(1, ticks), ticks: Math.max(1, ticks) };
 }
 
 describe('PURSUIT_COMMIT: pursuers commit to their meeting and keep their approach through the catch', () => {
@@ -60,10 +62,11 @@ describe('PURSUIT_COMMIT: pursuers commit to their meeting and keep their approa
     expect(r.nearAtCatch).toBeGreaterThan(20); // measured 1 of 27 asking for a stop
     expect(r.zeroAtCatch).toBeGreaterThan(0);
   }, 240_000);
-  it('on: none do, and the bearing to his planned meeting turns in a step less often', async () => {
+  it('on: none do, and the bearing to his planned meeting turns in a step no more often', async () => {
     const off = await run('0'), on = await run('1');
     expect(on.zeroAtCatch).toBe(0);
     expect(on.ticks).toBeGreaterThan(200);
-    expect(on.jumpRate).toBeLessThan(off.jumpRate); // measured 0.0244 vs 0.0272 per pursuer-tick
+    const se = Math.sqrt(on.jumpRate * (1 - on.jumpRate) / on.ticks + off.jumpRate * (1 - off.jumpRate) / off.ticks);
+    expect(on.jumpRate).toBeLessThan(off.jumpRate + 2 * se); // engine-54: 137/5945 vs 151/6783 per pursuer-tick
   }, 480_000);
 });
