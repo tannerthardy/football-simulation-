@@ -88,6 +88,7 @@
     "WRAP_FOOT": "0",
     "LEG_ALLOMETRY": "0",
     "GAZE": "0",
+    "PERCEIVE_TRACK": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",

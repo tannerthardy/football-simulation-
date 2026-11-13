@@ -774,7 +774,7 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
-/** CARRY_READ (experimental, off; CARRY_READ=1 turns it on): a deep carry
+/** CARRY_READ (on since engine-57; `CARRY_READ=0` restores the old carry): a deep carry
  * plays off what the receiver can still become, read from what he shows: his
  * seen upfield speed vx and the acceleration in the defender's picture
  * (DeepCoverage's seen-velocity change), continued as a burst that fades over

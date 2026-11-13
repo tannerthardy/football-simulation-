@@ -3386,6 +3386,36 @@ From the issue register:
 - **STALK-001:** a far stalk request reads the defender's hidden position. An
   isolated fix is prepared.
 
+From the perception census (Rules + Coaching, 2026-11-13,
+`docs/reviews/2026-11-13-perception-census.md`; line numbers at develop
+`d90dcb96`). These are information-rule debts. Each is fixed in its group's
+`PERCEIVE_TRACK` step, where the change is measured; none is fixed in place:
+- **The pre-contact pass set reads the rusher's true state** (*confirmed*).
+  `blocking.ts` ~340-443 and `cutOffPoint` ~508-530 use the rusher's real
+  position, velocity and speed, while the same blocker identifies the rusher on
+  his visual delay (`seenRusher` ~82-93). Fixed with step 1d (Flex; it interacts
+  with `ANCHOR_BASE` and `PUNCH_STRIKE`).
+- **The QB's blind-side test and pressure distance read true position**
+  (*confirmed*). `felt()` (`qb.ts` ~1299) and the free-rusher lag (~1391) take
+  the bearing that decides whether a rusher is behind his shoulder from `d.pos`;
+  `pressure()`'s `dist` (~1408) is the true distance. Fixed with step 1b (QB
+  lane).
+- **The QB's slide check reads the defenders' true state** (`carrier.ts`
+  ~439, `timeToReach(d.pos, d.vel)`), and **the post-catch blocker picks a
+  defender on true state** (`receiver.ts` ~682).
+- **Scaled delays are not short** (*confirmed*). `see()` scales only the
+  reaction time; `observationDelay` (`mind.ts` ~60) then adds
+  `0.12·(1 − focus) + 0.06·stress·(1 − composure)`. So the reads documented as
+  short (touch at 0.06 s in `engagement.ts`; pursuit's 0.12-0.24 s in
+  `common.ts` ~95 and `tackle.ts` ~195; KEY_REACT's 0.1 s floor) are
+  0.06-0.24 s staler than their comments. Not fixed in place, since that would
+  silently change pursuit, touch and KEY_REACT: each group's tracking step
+  takes its own latency and is measured there.
+- **Hidden delays on tracking reads.** The run-read attention penalty (+0.15 s
+  on anyone outside a run-reading defender's blocking view, `playsim.ts`
+  ~798-803) also slows his pursuit of a WR or TE carrier; `eyes.peripheral`
+  (+0.08-0.25 s, ~785) applies to the carrier's view of all but his keys.
+
 From the outside audit (`audit`):
 - **Two routes to true possession** (*confirmed*). `onBallCaught`
   (`src/sim/assign.ts`) gives all 11 defenders `Pursuit` at the catch, which
