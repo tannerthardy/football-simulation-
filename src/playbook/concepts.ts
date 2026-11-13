@@ -233,21 +233,22 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     progression: ['B'], beats: ['pass-rush', 'blitz'],
     // The back gets lost in the line and drifts out before the linemen release:
     // NFL slip backs are 1 yd wide of their start by 1.1 s (screen_back_reference.py).
-    screen: { receiver: 'B', tempo: 'slow', count: 1.0, receiverRelease: 0.6, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+    screen: { receiver: 'B', tempo: 'slow', count: 1.0, receiverRelease: 0.6, lineSet: { maxDepth: 2.4 }, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
   },
   {
     // TE screen: the inline TE blocks, then slides out behind the line.
     id: 'te_screen', name: 'TE Screen', family: 'screen', drop: 'gun5',
     strong: { 1: 'go', 2: 'go', 3: 'te_screen' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
     progression: ['S3', 'S2'], beats: ['pass-rush'],
-    screen: { receiver: 'S3', tempo: 'slow', count: 1.0, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+    screen: { receiver: 'S3', tempo: 'slow', count: 1.0, lineSet: { maxDepth: 1.8 }, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
   },
   {
     // Bubble to the trips slot: #1 stalks, #3 blocks inside-out on the next man.
     id: 'bubble_screen', name: 'Trips Bubble', family: 'screen', drop: 'quick',
     strong: { 1: 'go', 2: 'bubble', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
     progression: ['S2'], beats: ['off-coverage', 'light-box'],
-    screen: { receiver: 'S2', tempo: 'quick', count: 0, blocks: [{ who: 'S1', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
+    // The bubble is thrown when the numbers outside are ours (SCREEN_QB: checked at the line, as the RPO reads it).
+    screen: { receiver: 'S2', tempo: 'quick', count: 0, kill: 'numbers', blocks: [{ who: 'S1', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
   },
   {
     // Bunch now screen to the point man... caught by #1 coming back; #2/#3 block.
