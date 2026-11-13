@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-57",
+  "id": "engine-58",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -175,8 +175,8 @@
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
-    "PUNCH_STRIKE": "off",
-    "ANCHOR_BASE": "off",
+    "PUNCH_STRIKE": "on",
+    "ANCHOR_BASE": "on",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
@@ -272,6 +272,6 @@
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
     "PURSUIT_FIELD": "on",
-    "PURSUIT_COMMIT": "off"
+    "PURSUIT_COMMIT": "on"
   }
 }

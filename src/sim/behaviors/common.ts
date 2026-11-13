@@ -158,7 +158,7 @@ const angleBias = new WeakMap<Agent, number>();
  *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
  * The exit is on the far side of the entry. Also: a defender playing the
  * ball holds his last approach on the flight's final tick (defense.ts). */
-export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT === '1';
+export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
 
