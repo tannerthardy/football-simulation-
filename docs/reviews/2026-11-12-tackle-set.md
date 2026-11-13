@@ -1558,3 +1558,28 @@ yard ours gives less ground (104-137%).
   tackle reaches him.
 - There is no single "close to contact" fix here. The candidates are the head-up retreat speed (small: 3-5% of pairs)
   and late depth (the tackle keeps going down to the QB's level while the QB has stopped).
+
+## Sizing the untouched tackle's stop (`untouched-depth.py`; measurement for the design after the re-card)
+
+Non-play-action dropbacks thrown at 2.0 s or later. The launch point is the QB's depth at the throw (the NFL set has no
+called drop). A tackle is untouched while no defender has come within 1.2 yd of him since the snap. Frames 2.0-3.0 s,
+his depth over the launch point (+ = shallower), p10 / 25 / 50 / 75 / 90:
+
+| | NFL | A 201 | A 301 |
+|---|---|---|---|
+| launch depth p50 | 7.5 yd | 7.8 | 7.8 |
+| untouched tackle frames | 8915 | 3788 | 2558 |
+| over the launch point | +0.5 / +1.8 / +3.2 / +4.9 / +6.9 | −0.3 / +1.0 / +1.9 / +2.6 / +3.4 | −0.1 / +1.1 / +1.8 / +2.5 / +3.2 |
+| giving ground faster than 1 yd/s | 70% (x-vel p50 −1.75) | 91% (−2.50) | 91% (−2.50) |
+| settled (x-vel ≥ −1): over the launch point | +1.4 / +2.9 / +4.6 / +6.5 / +8.1 (n 2637) | +0.4 / +1.0 / +1.6 / +2.2 / +2.9 (n 324) | +0.2 / +1.1 / +1.7 / +2.2 / +2.9 (n 233) |
+
+**Reading.**
+- The NFL's untouched tackle sits much higher over the launch point than ours: p50 +3.2 against +1.8-1.9.
+- He has settled on 30% of frames against our 9%. When settled he is at +4.6 p50, with a wide spread (p10 +1.4, p90
+  +8.1). Ours, when settled, is at +1.6-1.7 with a narrow spread.
+- Caveat: "untouched at 2-3 s" includes tackles whose man dropped or went elsewhere (helping inside, no rusher). The
+  very high NFL settled depths are probably those. For sizing the stop against a rusher still coming, the
+  still-giving-ground row is the cleaner reference: NFL +0.3 / +1.5 / +2.8 / +4.2 / +5.9, ours about −0.2 / +1.0 /
+  +1.9 / +2.6 / +3.3.
+- So the stop sits around +2 to +3 yd over the launch point with a spread of about ±1.5 yd. Integration's "≈ 2 yd" is
+  the lower end of the NFL's middle half.
