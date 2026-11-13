@@ -42,6 +42,7 @@ and proposed mechanisms are identified separately.
 | [Quarterback decision-making research](qb-decision-research-review.md) | Review of four outside sources (PFF decision vs execution, an NFL combine cognitive study, a high-school video-training study, a qualitative training study) and what to think about for the quarterback model and a management game. |
 | [Pass protection: base, anchor and bull rush sources](pass-protection-base-anchor-sources.md) | Coaching sources and biomechanics for the pass set, anchor hop, stance geometry and falls, read against the engine's capture-point support model, with candidates and what not to do. |
 | [Coverage ownership and pressure rules: sources](coverage-ownership-and-pressure-sources.md) | Quarters, Cover 3 and Tampa flat ownership and exchanges, fire-zone, simulated and green-dog pressures, and protection and hot rules (Patriots 2004, Iske), read against the engine's coverage rules, pressures and protection. |
+| [Ball in the air and player perception: sources](ball-in-air-perception-sources.md) | In-phase and out-of-phase DB technique, perception science (peripheral vision, looming, cue reading) and the 2026 Big Data Bowl data, read against how the engine lets defenders see, find and track the ball. |
 
 Chapter check catalogs are proposed options, not mandatory test suites. Choose
 the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
