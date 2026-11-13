@@ -12,7 +12,7 @@ import { restoreSetup } from './saved-play.js';
 const [arm, ...seedArgs] = process.argv.slice(2);
 const seeds = seedArgs.length ? seedArgs.map(Number) : [7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29];
 const rows: string[] = [];
-const placebo = process.env.REF_PLACEBO ? (() => { const [slot, sign] = process.env.REF_PLACEBO!.split(':'); return { slot, d: (sign === '-1' ? -1 : 1) * 1e-3 }; })() : null;
+const placebo = process.env.REF_PLACEBO ? (() => { const [slot, sign] = process.env.REF_PLACEBO!.split(':'); return { slot, d: (sign === '-1' ? -1 : 1) * Number(process.env.REF_PLACEBO_SIZE ?? 1e-3) }; })() : null;
 const nudge = (sim: any) => {
   if (!placebo) return;
   const tick0 = sim.tick.bind(sim); let done = false;

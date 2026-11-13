@@ -5,9 +5,11 @@
  *   npm run ref:report -- --flag REACH_CLOSE=0 --flag GAP_CLIMB=0   # adds a "candidate" arm: the stack with these changes
  *   npm run ref:report -- --skip-operators   # yards and tackles only (about 4 minutes)
  *   npm run ref:report -- --reuse            # rebuild the tables from the arms already in out/ref (same commit and flags only)
- *   npm run ref:report -- --placebo 4        # adds N placebo arms: the reference stack with one body nudged 1e-3 yd after
- *                                            # the first tick (no mechanism changed); their paired deltas against `ref`
- *                                            # are the noise floor any candidate's paired delta must clear
+ *   npm run ref:report -- --placebo 4        # adds N placebo arms: the reference stack with one body nudged
+ *                                            # (--placebo-size yd, default 0.05) after the first tick, no mechanism
+ *                                            # changed; their paired deltas against `ref` are the floor (bias and
+ *                                            # spread) a candidate's paired delta must clear. Match the size to the
+ *                                            # candidate's share of changed plays (printed by ref-placebo.py)
  *
  * The play set is fixed: config/reference-stack.json `runSet` names the commit
  * that captured it and a digest of its play list. If out/matched-restage does not hold that
@@ -26,9 +28,10 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const stack = JSON.parse(readFileSync(join(root, 'config/reference-stack.json'), 'utf8'));
 const { commit: setCommit, seeds, digest: setSha } = stack.runSet;
-const args = process.argv.slice(2), flags = []; let operators = true, reuse = false, placebos = 0;
+const args = process.argv.slice(2), flags = []; let operators = true, reuse = false, placebos = 0, placeboSize = '0.05';
 while (args.length) { const a = args.shift(); if (a === '--flag' && args.length) flags.push(args.shift()); else if (a === '--skip-operators') operators = false; else if (a === '--reuse') reuse = true;
-  else if (a === '--placebo' && args.length) placebos = Number(args.shift()); else throw new Error(`Unknown argument: ${a}`); }
+  else if (a === '--placebo' && args.length) placebos = Number(args.shift()); else if (a === '--placebo-size' && args.length) placeboSize = args.shift();
+  else throw new Error(`Unknown argument: ${a}`); }
 /** Placebo nudges, in order: offensive line first steps, then a linebacker, each sign. */
 const PLACEBO = ['C:1', 'LG:1', 'RG:-1', 'LB:1', 'C:-1', 'RT:1', 'LT:-1', 'LB:-1'];
 const git = (a, cwd = root) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim();
@@ -78,15 +81,15 @@ async function main() {
   if (flags.length) arms.push(['candidate', flags.flatMap(f => ['--flag', f])]);
   if (!reuse) for (const [name, a] of arms) { console.error(`[ref:report] arm ${name}`); await arm(name, a); }
   const placeboArms = PLACEBO.slice(0, placebos).map((p, k) => [`placebo${k + 1}`, p]);
-  if (!reuse) for (const [name, p] of placeboArms) { console.error(`[ref:report] arm ${name} (${p})`); await arm(name, [], { REF_PLACEBO: p }, false); }
+  if (!reuse) for (const [name, p] of placeboArms) { console.error(`[ref:report] arm ${name} (${p})`); await arm(name, [], { REF_PLACEBO: p, REF_PLACEBO_SIZE: placeboSize }, false); }
   const py = (script, ...a) => run('python3', ['-I', script, ...a]);
   const md = [`# Run-game report: ${stack.id} @ ${git(['rev-parse', '--short', 'HEAD'])}${git(['status', '--porcelain', '--', 'src']) ? ' (src modified)' : ''}`, '',
     `Run set ${setSha.slice(0, 12)} (${seeds.length} run-only games captured at ${setCommit.slice(0, 8)}). Yards capped at 20 for means.`,
     ...(flags.length ? [`Candidate = ${stack.id} with ${flags.join(' ')}.`] : []), '', '## Yards and tackles', '', '```',
     (await py('scripts/diag/ref-compare.py', 'off', 'ref')).trimEnd(), ...(flags.length ? ['', (await py('scripts/diag/ref-compare.py', 'ref', 'candidate')).trimEnd()] : []), '```'];
   if (placeboArms.length) md.push('', '## Placebo floor', '',
-    'Each placebo arm is the reference stack with one body nudged 1e-3 yd after the first tick; nothing else changes. Its paired',
-    'delta against `ref` is divergence alone. A candidate delta inside the placebo spread is not distinguishable on this set.', '', '```',
+    `Each placebo arm is the reference stack with one body nudged ${placeboSize} yd after the first tick; nothing else changes. Its paired`,
+    'delta against `ref` is divergence alone. Read a candidate against the placebo mean (bias) and RMS (spread), with similar shares', 'of changed plays.', '', '```',
     (await py('scripts/diag/ref-placebo.py', 'ref', ...placeboArms.map(([n]) => n), ...(flags.length ? ['--candidate', 'candidate'] : []))).trimEnd(), '```');
   if (operators) {
     const nfl = Object.fromEntries(readFileSync(join(root, 'scripts/diag/run-operators/nfl-2022.txt'), 'utf8').split(/^=== /m).filter(Boolean).map(b => [b.slice(0, b.indexOf('\n')), b.slice(b.indexOf('\n') + 1).trimEnd()]));

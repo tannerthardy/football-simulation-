@@ -45,30 +45,33 @@ selection alone misses CLI children and dynamic source/fixture reads.
 ### Noise floor of the fixed run set (`ref:report --placebo N`)
 
 A paired run-set delta is only as good as its floor. Each placebo arm replays the
-1,321 fixed runs on the reference stack with one body nudged 1e-3 yd after the
-first tick and nothing else changed (`REF_PLACEBO=<slot>:<sign>` in
-`scripts/diag/ref-replay.mts`); its paired delta against `ref` is what play
-divergence alone does. `npm run ref:report -- --skip-operators --placebo 6`
-(about 25 minutes; add `--flag X=1` to print a candidate beside the floor).
+1,321 fixed runs on the reference stack with one body nudged sideways after the
+first tick and nothing else changed (`REF_PLACEBO=<slot>:<sign>`,
+`REF_PLACEBO_SIZE=<yd>` in `scripts/diag/ref-replay.mts`); its paired delta
+against `ref` is what play divergence alone does.
+`npm run ref:report -- --skip-operators --placebo 4 [--placebo-size 0.05] [--flag X=1]`
+(about 20 minutes) prints the arms, their mean (bias), RMS (spread) and mean
+paired SE per family, the candidate beside them, and each arm's share of plays
+whose yards change.
 
-Measured on engine-55 (develop 2478e998, 2026-11-13; six arms: C+, LG+, a
-linebacker+, C-, RT+, LT-; 46-69% of plays' yards change in each), paired delta
-in yards a run (capped at 20), RMS across arms vs the mean paired SE:
+**The floor depends on how hard plays diverge, and it is biased.** Measured on
+engine-55 (develop 2478e998, 2026-11-13), paired yards a run (capped at 20):
 
-| family | placebo RMS | mean paired SE |
-| --- | --- | --- |
-| all | 0.04 | 0.03 |
-| OZ | 0.08 | 0.07 |
-| IZ | 0.08 | 0.08 |
-| gap | 0.06 | 0.06 |
-| duo | 0.16 | 0.12 |
-| toss | 0.21 | 0.18 |
-| draw | 0.06 | 0.07 |
+| nudge | plays changed | all: mean / RMS / SE | IZ: mean / RMS / SE |
+| --- | --- | --- | --- |
+| 1e-3 yd, six arms (C+, LG+, LB+, C-, RT+, LT-) | 46-69% | -0.01 / 0.04 / 0.03 | -0.06 / 0.08 / 0.08 |
+| 0.05 yd, four arms (C+, LB+, LG-, RT+) | 77-95% | -0.10 / 0.11 / 0.08 | -0.14 / 0.15 / 0.19 |
 
-So on this set the paired SE is close to the divergence floor (RMS about 1.0-1.3
-x SE): a paired delta of about 3 SE or more is outside the floor. Duo and toss
-are small families; read them only with this column beside them. Re-run the
-placebo arms when the run set or the reference stack changes materially.
+- Every 0.05 yd arm loses yards overall (-0.05 to -0.17) and on IZ (-0.08 to
+  -0.20): perturbing this set hard lowers its yards whatever the mechanism. A
+  candidate that diverges most plays starts from that bias, not from zero.
+- Match the placebo to the candidate: compare its share of changed plays with
+  the arms' and pick the size that matches (a mechanism change usually diverges
+  90%+ of plays, like the 0.05 yd arms). Read the candidate's delta against the
+  placebo mean and RMS, not against zero and its own paired SE.
+- Duo, toss and draw are small families with a wide floor (toss RMS 0.59 at
+  0.05 yd); read them only beside it.
+- Re-run the arms when the run set or the reference stack changes materially.
 
 ## Suite cost review — F2, 2026-10-29
 

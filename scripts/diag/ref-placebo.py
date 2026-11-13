@@ -21,15 +21,16 @@ def delta(D, g):
     d = [min(D[i]["yards"], 20) - min(B[i]["yards"], 20) for i in ids]; m = sum(d) / len(d)
     se = math.sqrt(sum((x - m) ** 2 for x in d) / max(1, len(d) - 1) / len(d))
     return m, se, sum(1 for x in d if x != 0) / len(d)
-print(f"{'family':6s}" + "".join(f"{a:>16s}" for a in arms) + f"{'placebo RMS':>14s}{'mean |SE|':>11s}" + (f"{cand:>16s}" if cand else ""))
+print(f"{'family':6s}" + "".join(f"{a:>16s}" for a in arms) + f"{'mean':>8s}{'RMS':>7s}{'mean SE':>9s}" + (f"{cand:>16s}" if cand else ""))
 for g in FAM:
     rows = [delta(load(a), g) for a in arms]
     vals = [m for m, _, _ in rows if m is not None]
     if not vals: continue
     rms = math.sqrt(sum(v * v for v in vals) / len(vals)); mse = sum(se for _, se, _ in rows) / len(rows)
-    line = f"{g:6s}" + "".join(f"  {m:+6.2f} ({se:.2f})" for m, se, _ in rows) + f"{rms:14.2f}{mse:11.2f}"
+    line = f"{g:6s}" + "".join(f"  {m:+6.2f} ({se:.2f})" for m, se, _ in rows) + f"{sum(vals)/len(vals):+8.2f}{rms:7.2f}{mse:9.2f}"
     if cand:
         m, se, _ = delta(load(cand), g); line += f"  {m:+6.2f} ({se:.2f})"
     print(line)
 moved = [delta(load(a), "all")[2] for a in arms]
-print(f"share of plays whose yards change, per placebo arm: " + ", ".join(f"{100*x:.0f}%" for x in moved))
+print(f"share of plays whose yards change, per placebo arm: " + ", ".join(f"{100*x:.0f}%" for x in moved)
+      + (f"; candidate {100*delta(load(cand), 'all')[2]:.0f}%" if cand else ""))
