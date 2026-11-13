@@ -176,6 +176,10 @@ const QB_GATHER = process.env.QB_GATHER === '1';
  * the receiver's ball skills (1.6 + 0.9 T yd), as our receivers' catches by the aim miss show, instead of a fixed
  * 1.35 yd: the fixed radius priced a 2 s ball at a fifth of what our receivers catch. docs/reviews/2026-11-13-qb-gather.md. */
 const ACC_RADIUS = process.env.ACC_RADIUS === '1';
+/** QB_PEEK (experimental, off; QB_PEEK=1): the vertical peek (verticals as one look, then the back; READ_PLAN) is taken at
+ * the top of the drop: declared once he is set and the inside verticals have shown their stems (10 yd), instead of when
+ * every vertical is 12 yd downfield. docs/reviews/2026-11-13-qb-gather.md. */
+const QB_PEEK = process.env.QB_PEEK === '1';
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -782,7 +786,12 @@ export class QBPass implements Behavior {
       let done: boolean;
       if (this.plan!.peek) {
         const dir = sim.attackDir(a.team);
-        if (this.peekDeclared < 0 && tri.every((r) => (r.pos.x - sim.los) * dir >= 12)) this.peekDeclared = t;
+        // QB_PEEK: the peek is his look at the top of the drop: once he is set and the inside verticals (the peek reads
+        // inside-out) have shown their stems, not when the slowest vertical reaches 12 yd (a rerouted one held it to
+        // 3.1 s and the capped check-down to 3.65 s, against the NFL's ~2.44 s to the back).
+        const shown = QB_PEEK ? tri.slice(0, 2).every((r) => (r.pos.x - sim.los) * dir >= 10)
+          : tri.every((r) => (r.pos.x - sim.los) * dir >= 12);
+        if (this.peekDeclared < 0 && shown) this.peekDeclared = t;
         const processed = this.peekDeclared >= 0 && t - this.peekDeclared > 0.15 + 0.25 * (1 - a.r('decisionMaking'));
         const close = tri.some((r) => { const e = this.ready(r, sim) ? this.evaluate(a, sim, r, u) : null; return !!e && e.P >= 0.85 * need && e.intRisk <= risk; });
         done = (processed && !close) || held > 2.5 * dwell;
