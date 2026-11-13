@@ -1131,6 +1131,11 @@ What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
 
+## Deferred (2026-11-13)
+
+WR-screen line releases are deferred as cosmetic. NFL linemen on WR screens release at about the throw, but they
+are 10–12 yd from the catcher and in the convoy on only 16–21% of snaps (docs/reviews/2026-11-13-screen-qb.md).
+
 ## Tests
 
 `test/screen-install.test.ts` covers two contracts:

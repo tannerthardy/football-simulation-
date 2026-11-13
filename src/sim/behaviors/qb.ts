@@ -19,7 +19,9 @@ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
-import type { DropType, PassConcept, ReceiverRef } from '../../playbook/types.js';
+import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
+import { dropSpec } from '../called-drop.js';
+import { PUNCH } from '../engagement.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
@@ -70,33 +72,13 @@ interface ThrowEval {
   parts?: { pOpen: number; pClear: number; pAcc: number; hands: number; intPath?: number; intJump?: number; intContest?: number };
 }
 
-function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
-  switch (drop) {
-    // Depths at the throw match tracking (median 7.9 yd behind the line).
-    case 'quick':
-      return gun ? { x: los - 6.6, time: 0.75 } : { x: los - 5.0, time: 1.05 };
-    case 'gun3':
-      return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
-    case 'gun5':
-      return gun ? { x: los - 8.0, time: 1.4 } : { x: los - 8.0, time: 1.75 };
-    case 'five':
-      return { x: los - 8.0, time: gun ? 1.4 : 1.8 };
-    case 'seven':
-      return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
-    case 'pa':
-    case 'boot':
-      // PA_DROP: play action by alignment, from tracking (BDB 2025 traditional drop-backs with play action, weeks 1-3,
-      // nfl_pa_drop.py): from the gun a mesh and a shallow set (deepest 6.0 yd behind the snap at 2.1 s, the pass at
-      // 2.3 s); under center the fake and the full drop (8.1 yd at 2.6 s, the pass at 3.2 s). Off: one drop for both.
-      if (PA_DROP) return gun ? { x: los - 6.0, time: 1.8 } : { x: los - 8.1, time: 2.1 };
-      return { x: los - 8.3, time: 1.95 };
-  }
-  void qbStartX;
-}
 
 
 /** PA_DROP (experimental, off; PA_DROP=1 turns it on): the play-action drop by the QB's alignment (see dropSpec). */
 const PA_DROP = process.env.PA_DROP !== '0';
+/** SCREEN_QB (experimental, off; SCREEN_QB=1): screens thrown as NFL quarterbacks throw them: a slow screen on its
+ * timing once the receiver is ready, and firm (docs/reviews/2026-11-13-screens.md). */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
 
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
@@ -246,6 +228,23 @@ const SET_DECIDE = process.env.SET_DECIDE === '1';
  * does in ~0.15 s for 30 deg). Off, the body faces whatever his eyes are on,
  * and no throw needs a turn. sim.qbEyes stays gaze. */
 const SHOULDERS_SET = process.env.SHOULDERS_SET === '1';
+/** Experimental (EXTEND=1, off): when there is no throw in time and he feels a
+ * rusher, he moves first. With no acceptable throw (today: under the alarm, no
+ * hot throw; later whatever Rules + Coaching's decision says), his answer is
+ * his own, by his traits and what he sees: evade to the reachable spot that
+ * leaves him the most felt time (SET_DECIDE's spot choice, at his mobility's
+ * pace, so a statue finds fewer spots that buy time than a mobile QB); from
+ * there a lane past the line is a scramble (the existing check). When nobody
+ * is open, he gives the play up as his decision-making lets him: from outside
+ * the tackle box he throws it beyond the sideline past the line; inside, at an
+ * eligible receiver's feet if one is near enough (a ball into his area); a poor
+ * decision maker with neither throws it away anyway and the rules call
+ * grounding. With no spot that buys time and no throw-away, he protects the ball
+ * (the existing evade) and is caught. Off, the hot path's no-throw branch:
+ * scramble check, the veteran throw-away dice, evade (NFL with a free rusher at 2
+ * yd: the QB with no throw moves 3 yd before a sack, 2.4 before a throwaway, 10
+ * in a scramble; ours 0.8-1.0, inside the tackles; no-throw-in-time review). */
+const EXTEND = process.env.EXTEND === '1';
 /** Estimated (SHOULDERS_SET): how long he holds a read before his feet reset
  * to it, s: a reaction time, not fitted. Its check is the NFL shoulder angle to
  * the target at his last settled frame and the turn-angle mix (qb-release.py),
@@ -619,7 +618,7 @@ export class QBPass implements Behavior {
         const pin = throwInterference(a, sim);
         if (pin > 0) {
           if (sim.dice('throw', a).chance(pin)) {
-            this.phase = 'set'; this.pending = null; this.readStart = t;
+            this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.readStart = t;
             sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
             return stand();
           }
@@ -785,9 +784,31 @@ export class QBPass implements Behavior {
     //   nearest DL at the throw, NFL 5.7; 5 picks, 19 bats in 80 reps).
     const called = this.concept.family === 'screen';
     const quick = called && this.concept.screen?.tempo === 'quick';
-    const need = quick ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
+    // SCREEN_QB: a slow screen is thrown on its timing too, once the receiver is ready (settled behind his blockers),
+    // at a low bar: NFL slow screens leave at 2.2-2.4 s and almost never end in a sack; waiting for the ordinary bar
+    // had him hit before the throw on a quarter to a third of called slow screens (screen-outcomes.mts).
+    const need = quick ? Math.min(thr, 0.2) : called && SCREEN_QB ? Math.min(thr, 0.3) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // READ_PLAN triangle: the three routes as one picture; the best one open that clears his bar is the throw.
     // The picture is held until all three have shown (or two and a half looks), then the order goes on.
+    // SCREEN_QB: a called quick screen is decided before the snap. From the moment it should be thrown (after his drop
+    // and the receiver's sell), he reads whether it is dead from what he sees: the catcher covered (a free defender on
+    // him or on the spot) or the lane filled (a rusher in the throw's first yards). A picture that stays dead for his
+    // patience (his processing time; aggressive passers hang on longer) is thrown away, not held. A catcher who is
+    // only late, with no one on him, is not dead; the clock is only the outer bound, a second past the timing.
+    if (SCREEN_QB && quick && this.reads[0]) {
+      const due = this.snapAt + this.drop.time + (this.concept.screen?.receiverSell ?? 0);
+      if (t >= due) {
+        const r = this.reads[0], ev = this.evaluate(a, sim, r, u);
+        const throwable = !!ev && ev.P >= need && ev.intRisk <= risk;
+        const dead = this.screenDead(a, sim, r);
+        if (!dead) this.deadSince = -1; else if (this.deadSince < 0) this.deadSince = t;
+        const patience = 0.15 + 0.25 * (1 - a.r('decisionMaking')) + 0.3 * aggression;
+        const seenDead = this.deadSince >= 0 && t - this.deadSince >= patience;
+        if (!throwable && (seenDead || t > due + 1.0)) {
+          this.screenThrownAway = seenDead ? 'dead' : 'bound'; return this.throwAway(a, sim);
+        }
+      }
+    }
     const tri = READ_PLAN && !this.triDone ? this.plan?.triangle ?? null : null;
     // READ_PLAN alert: a yes/no glance, not a full read.
     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
@@ -826,6 +847,15 @@ export class QBPass implements Behavior {
       }
     } else if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);
+      // SCREEN_QB: a quick screen thrown to its spot goes on its timing (it is ready: the ball and the receiver get
+      // there together) unless a defender is already sitting on the spot in his picture. Its window is not judged
+      // like a route's: the defender near the spot is the one a blocker in the call is assigned to (NFL tunnel screens
+      // leave at 1.6 s, before the receiver turns; ours priced that defender as a 40%+ pick and held to 3.0 s).
+      const toSpotNow = SCREEN_QB && quick && ev ? this.toSpot(a, sim, read) : null;
+      if (toSpotNow && ev && !this.spotSatOn(sim, toSpotNow.spot)) {
+        const go = this.startIfFinish(a, sim, ev);
+        if (go) { this.pendingSpot = toSpotNow.spot; return go; }
+      }
       if (ev && ev.P >= need && ev.intRisk <= risk) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
@@ -955,6 +985,7 @@ export class QBPass implements Behavior {
    * decision runs first each tick, from wherever this has put him. `best` is his best option on his pictures, even
    * below the bar (null when none). Today: the existing branch. */
   private noThrow(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
+    if (EXTEND) return this.extend(a, sim, ctx);
     if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
     // Veterans throw it away (or at a back's feet) rather than eat a sack.
     if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
@@ -970,6 +1001,12 @@ export class QBPass implements Behavior {
 
   /** HOT_LOOK: his eyes are on the way to a hot target (busy, not giving up); his feet do this meanwhile. Today: evade. */
   private whileLooking(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
+    // EXTEND: an evasion already under way goes on while his head turns; a look never starts one.
+    if (EXTEND && this.moveDir && sim.t < this.moveUntil) {
+      const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
+      const move = this.setDecide(a, sim, ctx.eyes ?? undefined, this.windup(a), 2.2 + 2.8 * mobility);
+      if (move) return move;
+    }
     return this.evade(a, sim, ctx.pressure.agent);
   }
 
@@ -1042,6 +1079,39 @@ export class QBPass implements Behavior {
     return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
   }
 
+  /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
+  private screenLane = false;
+  /** SCREEN_QB diagnostics: a quick screen thrown away, on his read of it as dead or at the outer bound. */
+  screenThrownAway: false | 'dead' | 'bound' = false;
+  /** SCREEN_QB: the spot of a quick screen whose throw he has started to its spot (null otherwise). */
+  private pendingSpot: Vec2 | null = null;
+  /** SCREEN_QB: a defender sits on the spot in his picture (within 2 yd of it). */
+  private spotSatOn(sim: PlaySim, spot: Vec2): boolean {
+    return sim.defense.some((d) => { if (d.isDown(sim.t)) return false; const e = this.mind.estimate(d).pos; return Math.hypot(e.x - spot.x, e.y - spot.y) < 2; });
+  }
+  /** SCREEN_QB: when his picture of the quick screen went dead (-1: not dead). */
+  private deadSince = -1;
+  /**
+   * SCREEN_QB: the quick screen is dead in his picture: a defender not in a block within 1.5 yd of the catcher (where
+   * he sees him) or of the spot it is thrown to, or a rusher in the first yards of the throw's lane. Everything is
+   * his own delayed, error-laden picture (mind.estimate, see).
+   */
+  private screenDead(a: Agent, sim: PlaySim, r: Agent): boolean {
+    const rc = sim.see(a, r).pos;
+    const sp = this.spotCache && this.spotCache.receiver === r && !this.spotDone ? this.spotCache.spot : null;
+    const pt = sp ?? rc;
+    const dx = pt.x - a.pos.x, dy = pt.y - a.pos.y, len = Math.hypot(dx, dy) || 1;
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const seen = this.mind.estimate(d).pos;
+      const along = ((seen.x - a.pos.x) * dx + (seen.y - a.pos.y) * dy) / len;
+      const off = Math.abs((seen.x - a.pos.x) * dy - (seen.y - a.pos.y) * dx) / len;
+      if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) return true;
+      if (d.engagement) continue;
+      if (Math.hypot(seen.x - rc.x, seen.y - rc.y) < 1.5 || (sp && Math.hypot(seen.x - sp.x, seen.y - sp.y) < 1.5)) return true;
+    }
+    return false;
+  }
   private spotCache: ScreenSpot | null | undefined;
   private spotDone = false;
   /**
@@ -1067,12 +1137,16 @@ export class QBPass implements Behavior {
     return { spot: sp.spot, lead: tR - this.windup(a), natural, float: 1.8 * natural };
   }
 
-  /** The flight time real QBs use at this distance (2023 tracking: ~0.6 s
-   * under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35, 2.5 s at 45), never
-   * faster than his arm allows. Stronger arms get there a little sooner. */
+  /** The flight time real QBs use at this distance, never faster than his arm allows. Stronger arms get there a
+   * little sooner. Its one consumer is the quick screen thrown to its spot (toSpot).
+   * Off: the 2023 fit (BDB 2026 output frames over all targeted passes, to the pass's end rather than its arrival:
+   * ~0.6 s under 10 yd, 0.8 at 15, 1.2 at 25, 1.8 at 35, 2.5 at 45; the fit itself runs 0.06-0.2 s above those).
+   * SCREEN_QB: refit to BDB 2025 completions, pass_forward to pass_arrived (the ball at the hands; p50 0.5 s at 8 yd,
+   * 0.7 at 15, 1.1 at 25, 1.6 at 35, 2.2 at 45; scripts/diag/flight/), least squares on 3-yd bins. */
   private naturalFlight(d: number): number {
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
-    return (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
+    const base = SCREEN_QB ? 0.27 + 0.0173 * d + 0.00062 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
+    return base * (1 - 0.12 * armEdge);
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
@@ -1120,6 +1194,14 @@ export class QBPass implements Behavior {
    * level with or past the blocker's edge is as near as he looks. A rusher in
    * contact (any blocker within arm's length) is also paced: he closes no
    * faster than the QB sees him closing while the contact lasts. */
+  /** BLOCK_SEEN's "in contact": the rusher's body within the blocker's arm's length. With elbows bent that is his
+   * reach (0.25 + 0.85 arm from his centre). PUNCH puts the hands out to lockout (the bodies plus 0.9 arm, about
+   * 0.1 yd beyond that), so under PUNCH the arm is measured from the body surfaces: radii + his arm. Off, 46% of
+   * engaged pass ticks under PUNCH read as a free rusher sprinting at him (4% truly at air). */
+  private inArm(o: Agent, d: Agent, dist: number): boolean {
+    return dist <= (PUNCH ? o.profile.radius + d.profile.radius + o.player.measurables.armIn / 36 : o.profile.reach + d.profile.radius);
+  }
+
   private seenHold(a: Agent, d: Agent, sim: PlaySim): number {
     const seen = this.felt(a, sim, d), r = seen.pos;
     const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
@@ -1127,7 +1209,7 @@ export class QBPass implements Behavior {
     for (const o of sim.offense) {
       if (o === a || o.isDown(sim.t)) continue;
       const b = this.felt(a, sim, o).pos, width = d.profile.radius + o.profile.radius;
-      if (Math.hypot(b.x - r.x, b.y - r.y) > o.profile.reach + d.profile.radius) continue;
+      if (!this.inArm(o, d, Math.hypot(b.x - r.x, b.y - r.y))) continue;
       contact = true;
       const along = ((b.x - r.x) * px + (b.y - r.y) * py) / L;
       const off = Math.abs((b.x - r.x) * py - (b.y - r.y) * px) / L;
@@ -1154,13 +1236,13 @@ export class QBPass implements Behavior {
 
   /** FREE_BOUND: how soon a man he sees unblocked within FREE_NEAR could hit
    * him (Infinity for one he sees in a block, or farther). */
-  private freeBound(a: Agent, sim: PlaySim, d: Agent, seen: Perceived): number {
+  private freeBound(a: Agent, sim: PlaySim, d: Agent, seen: { pos: Vec2; vel: Vec2 }, at: Vec2 = a.pos): number {
     for (const o of sim.offense) {
       if (o === a || o.isDown(sim.t)) continue;
       const b = this.felt(a, sim, o).pos;
-      if (Math.hypot(b.x - seen.pos.x, b.y - seen.pos.y) <= o.profile.reach + d.profile.radius) return Infinity;
+      if (this.inArm(o, d, Math.hypot(b.x - seen.pos.x, b.y - seen.pos.y))) return Infinity;
     }
-    const dx = a.pos.x - seen.pos.x, dy = a.pos.y - seen.pos.y, R = Math.hypot(dx, dy) || 1;
+    const dx = at.x - seen.pos.x, dy = at.y - seen.pos.y, R = Math.hypot(dx, dy) || 1;
     if (R > FREE_NEAR) return Infinity;
     const D = R - FREE_REACH - a.profile.radius;
     let t = 0;
@@ -1243,7 +1325,11 @@ export class QBPass implements Behavior {
     }
     if (this.concept.family === 'screen' && this.concept.screen?.tempo === 'slow') {
       options.length = 0;
-      options.push(this.screenTouch(a, sim, r, pt, T) === 'float' ? Math.max(T * 1.5, T + 0.25) : T);
+      // SCREEN_QB: NFL screens are thrown firm: 0.5 s over 6-10 yd and 0.6 s over 10-14 to the ball's arrival (BDB
+      // 2025 screens, pass_forward -> pass_arrived). The 0.8 s this float was set to was measured to the catch event
+      // (pass_outcome_caught), about 0.3 s after the arrival. Over a rusher in his lane only a little air.
+      const touch = this.screenTouch(a, sim, r, pt, T);
+      options.push(touch !== 'float' ? T : SCREEN_QB ? (this.screenLane ? T * 1.2 : T) : Math.max(T * 1.5, T + 0.25));
       fastball = null;
     }
 
@@ -1278,6 +1364,7 @@ export class QBPass implements Behavior {
     }
     const seenR = this.mind.estimate(r);
     const away = (seenR.vel.x * dx + seenR.vel.y * dy) / len;
+    this.screenLane = inLane;
     if (inLane) return 'float';
     if (closing) return 'firm';
     return away > 1.5 ? 'float' : 'firm';
@@ -1454,6 +1541,7 @@ export class QBPass implements Behavior {
 
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
+    this.pendingSpot = null;
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
@@ -1514,6 +1602,13 @@ export class QBPass implements Behavior {
     const left = this.releaseAt - sim.t;
     const pressure = this.pressure(a, sim);
     if (heldBy(a, sim) > 0 || pressure.time < left + 0.3) return false;
+    // SCREEN_QB: a quick screen thrown to its spot is rechecked by the rule it was thrown on (a defender now sitting on
+    // the spot in his picture), not re-priced as a route's window: that pumped tunnel screens every look to 2.7-3.0 s.
+    if (this.pendingSpot) {
+      const pull = this.spotSatOn(sim, this.pendingSpot);
+      if (pull) this.pendingSpot = null;
+      return pull;
+    }
     const p = this.receiverForecasts.get(ev.target)?.predict(sim.t, left + ev.T);
     if (!p) return false;
     const point: Vec3 = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
@@ -1531,7 +1626,9 @@ export class QBPass implements Behavior {
     // Re-aim at release with the latest prediction.
     const r = ev.target;
     let point = ev.point;
-    const p = this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    // SCREEN_QB: a throw to the spot goes to the spot; his forecast of a receiver still selling points the wrong way.
+    const p = this.pendingSpot ? null : this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    this.pendingSpot = null;
     if (p) {
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }
@@ -1556,10 +1653,46 @@ export class QBPass implements Behavior {
     sim.throwBall(a, r, v0, point, sim.t + T);
   }
 
-  private throwAway(a: Agent, sim: PlaySim): MoveCommand {
+  /** EXTEND: no acceptable throw and a rusher he feels (noThrow's body with the flag on). */
+  private extend(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
+    const dm = a.r('decisionMaking');
+    // What he could still throw, on his pictures, even below his bar (the decision's own
+    // best, else his own look round): nobody near a throw is the giving-up case; a bad window is not.
+    const best = ctx.best ?? this.bestOption(a, sim, 1);
+    const nobody = !best || best.P < 0.15;
+    const outside = this.outsidePocket(a, sim);
+    // Giving up from outside the box, the throw beyond the sideline past the line is legal.
+    if (nobody && outside && dm >= 0.3) return this.throwAway(a, sim);
+    // Evade: the spot with the most felt time, at his mobility's pace.
+    const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
+    const move = this.setDecide(a, sim, ctx.eyes ?? undefined, this.windup(a), 2.2 + 2.8 * mobility);
+    if (move) return move;
+    // Trapped (no spot buys time): a legal throw-away if he has one, else protect the ball.
+    if (nobody && dm >= 0.3) {
+      const feet = this.feetTarget(a, sim);
+      if (outside) return this.throwAway(a, sim);
+      if (feet) return this.throwAway(a, sim, feet);
+    }
+    // A poor decision maker throws it away from inside with nobody near: grounding.
+    if (nobody && dm < 0.3) return this.throwAway(a, sim);
+    return this.evade(a, sim, ctx.pressure.agent);
+  }
+
+  /** EXTEND: an eligible receiver near enough for a ball into his area (at his feet), as the QB sees him. */
+  private feetTarget(a: Agent, sim: PlaySim): Vec3 | null {
+    let best: Vec3 | null = null, bd = Infinity;
+    for (const r of this.reads) {
+      if (r.isDown(sim.t)) continue;
+      const p = sim.see(a, r).pos, d = Math.hypot(p.x - a.pos.x, p.y - a.pos.y);
+      if (d < bd && d <= 20) { bd = d; best = { x: p.x, y: p.y, z: 0 }; }
+    }
+    return best;
+  }
+
+  private throwAway(a: Agent, sim: PlaySim, at?: Vec3): MoveCommand {
     const side = a.pos.y < sim.ballY ? -1 : 1;
     const y = side > 0 ? FIELD_WIDTH + 3 : -3;
-    const target: Vec3 = { x: a.pos.x + 8, y, z: 1.5 };
+    const target: Vec3 = at ?? { x: a.pos.x + 8, y, z: 1.5 };
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     const T = minFlightTime(from, target, this.armSpeed) * 1.2;
     const v0 = solveLaunch(from, target, T, DRAG_SPIRAL, sim.wind);
@@ -1712,7 +1845,7 @@ export class QBPass implements Behavior {
   /** SET_DECIDE: null when he still has the time he needs where he stands
    * (nothing changes) or when no spot buys him time (trapped: the existing
    * logic decides); otherwise the move, or the escape it has opened. */
-  private setDecide(a: Agent, sim: PlaySim, read: Agent | undefined, needOverride?: number): MoveCommand | null {
+  private setDecide(a: Agent, sim: PlaySim, read: Agent | undefined, needOverride?: number, paceOverride?: number): MoveCommand | null {
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
     const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
     // PERCEPTION: the rushers as he sees them closing, and his own blockers'
@@ -1720,8 +1853,9 @@ export class QBPass implements Behavior {
     const threats = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => ({ d, seen: this.feltClosing(a, sim, d) }));
     const mates = sim.offense.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ o, pos: sim.see(a, o).pos }));
     // ABILITY: where his body can get in the time, at the pace he can still
-    // throw from (missSigma's 2.2 yd/s edge of a set throw).
-    const pace = 2.2;
+    // throw from (missSigma's 2.2 yd/s edge of a set throw). EXTEND: his
+    // mobility's pace when he is escaping rather than resetting.
+    const pace = paceOverride ?? 2.2;
     // The time he still needs here: the rest of this read, or (if it is done) a
     // full look at the next, then a throw; in the drop, the rest of the drop and
     // a throw (so an on-time throw keeps its chance).
@@ -1742,10 +1876,15 @@ export class QBPass implements Behavior {
       }
       return worst;
     };
+    // EXTEND: the same felt time his alarm uses (FREE_BOUND's bound on a free man, at that spot).
+    const bounded = EXTEND && FREE_BOUND && paceOverride !== undefined;
     const ttc = (q: Vec2) => {
       let best = Infinity;
-      for (const { d, seen } of threats) best = Math.min(best,
-        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + detour(seen.pos, q, d.profile.radius));
+      for (const { d, seen } of threats) {
+        best = Math.min(best,
+          timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + detour(seen.pos, q, d.profile.radius));
+        if (bounded) best = Math.min(best, this.freeBound(a, sim, d, seen, q));
+      }
       return best - need;
     };
     // A spot with a teammate standing in it is not his to take.

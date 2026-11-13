@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-52`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-55`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,61 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-55: `CURL_FLAT_BACK` on: the curl-flat defender widens to a back in his flat (2026-11-13)
+
+**`CURL_FLAT_BACK`** (Coverage #667). The curl-flat defender's expansion to the flat existed only for No. 2 and was switched off when a back released fast to his side, so he played the threat nearest his curl landmark and a back in the flat lost to a curl every time (on 42 of 44 wide catches with nobody in front he was present, about 10 yd inside the catcher). Now he sinks to his curl window and widens toward a back in his flat by what the quarterback shows him (his seen eyes, with his delay): most when the eyes are on the flat, hanging when they are on a receiver in his curl window, moderately once the back has crossed his face; a back already settled wide counts as well as one still releasing. He breaks on the throw. The widening weights are estimates and recorded as stand-in debt. A first version that ran to the back as he showed, and one that widened by a fixed fraction, were dropped: the second opened the throw behind him (80% against the NFL's 69%).
+
+The lane's reads, paired on one tree (NFL): the back's wide-flat YAC a catch, median 13.0 → 6.8 and 11.2 → 8.4 across two runs (5.0); completion on throws behind him 68 → 66% and 72 → 64% (69). **Not this rule's, and recorded as open:** wide back catches with nobody in front stay at 42 to 48% (12) after three looks; they are the calls with no curl-flat player to that side (the Cover 2 family, stubbie, book: the corner beaten to the edge or the flat defender sinking under No. 1) and late check-downs thrown 0.8 s after the NFL's.
+
+Checks on the candidate (`9a6b3d2b`): full suite 4394 pass with only the two known research failures; fixed run set 3.59, unchanged. Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | completion | INT | YAC | sack rate | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.06 → 7.91 | 67.1 → 65.8% | 1.6 → 1.6% | 6.40 → 6.80 | 2.5 → 2.7% | 29.4 → 28.6 |
+| 23 | 7.78 → 7.83 | 66.9 → 65.2% | 1.6 → 2.3% | 6.32 → 6.82 | 2.4 → 3.0% | 28.0 → 27.9 |
+| 31 | 8.29 → 8.29 | 64.5 → 66.3% | 1.4 → 1.4% | 7.58 → 7.27 | 2.4 → 2.6% | 30.0 → 26.2 |
+
+Nothing moved outside its range. It lands as the coached rule; the whole-game YAC does not see it because the back's flat with this defender present is a small share of catches.
+
+**With it:** Defense's findings record (#673, docs and diagnostic scripts only): pursuit lead, arrival speed and the finish match the NFL in aggregate; safety lead is role; the corners' within-role lead trait tracks nothing measurable; acceleration and redirect are not player traits in our motion; the tackling rating slows the approach with no NFL support (left as is, parked); the run-specific grip frame for `OPEN_HANDS`.
+
+**Not landed: the commitment candidate** (`PURSUIT_COMMIT`, `CARRIER_COMMIT`, `SPACING_SMOOTH`, `PURSUIT_SPACING_SMOOTH`; `b7f14572`, kept as `held/e55-commit`). Three fixtures that pass on develop failed with the four on. `tackle-set` and `hold-facing` fail only with `SPACING_SMOOTH` on, and by scene divergence, not through the mechanisms they test (corrected 2026-11-13; an earlier version of this note blamed the flag for reaching engaged bodies, which Defense's tick trace refuted). In `tackle-set` the tackle's own decision honours his floor in both arms; the depth read after spacing is the long-standing teammate limit when his guard is driven back into him, at full gate weight, in a scene the off arm never produces. Exempting engaged bodies from spacing was tried and set aside: it exposed the set controller asking outward past its own set line, which spacing had been hiding (logged as PRO-7 and PRO-8). In `hold-facing` the reproducer's back makes a different cut and a different tackle makes the hold. Flex restates `tackle-set` on the decided command and re-pins `hold-facing`. `PURSUIT_COMMIT` re-measured on engine-54 still acts (dither guard pursuit reversals 0.369 → 0.288 a second on the fixed panel); its test now asserts that. Cards on two seeds agreed on nothing for any of the four; fixed run set 3.59 → 3.48 with all four on, unattributed.
+
+## engine-54: the blocker's hands (`PAST_ALONG_PATH`, `OPEN_HANDS`, `PUNCH`), landed with a stated cost (2026-11-13)
+
+**The set** (Flex #520 at `a1e611ce`). `PAST_ALONG_PATH`: a rusher has beaten his blocker when he is past him along his own path and the blocker is no longer between him and where he is going, in place of a fixed line. `OPEN_HANDS`: open hands, a legal inside grip and a hold are different contacts with different limits. `PUNCH`: a blocker's hands work to where he feels the man and extend to lockout; with it the quarterback's `BLOCK_SEEN` contact read measures the blocker's arm from the body surfaces, so a locked-out block no longer reads as a free rusher (`ba4b9866`). Everything else on that branch is in the tree off (`RUSH_INTENT`, `TACKLE_SET`, `TACKLE_BRAKE`, `TACKLE_RESET`, `TACKLE_ANCHOR`, `EDGE_ARC`, `EXTEND`, `HANG_GRIP`, `HOLD_CALL`). `dropSpec` moves to `src/sim/called-drop.ts`; `PA_DROP` is read there as well.
+
+**What it costs, and why it lands anyway.** Held at engine-52 because the sack rate fell on four of four seeds against the lane's first read, which had compared a different engine and seeds with the NFL and had no off arm. The lane's reconcile on the candidate agrees with the cards: pressure 36 → 31% of drop-backs (its operator) and later (by 2.5 s 16.4 → 13.1%), conversion per pressure unchanged at 12 to 13%. Leave-one-out: `PUNCH` takes about 4.5 points of pressure; in the rep the rusher makes the same moves at the same success (15% edge, 17% interior) and is held 0.2 to 0.4 yd farther off by an arm at lockout. `PAST_ALONG_PATH` takes about a point of sacks at about two standard errors, not localised to a class (rushers who reach the hip finish at 8.1 / 4.3% against the NFL's 9.0%); `OPEN_HANDS` adds about 0.6. The hands are inside physics. What is missing is the rusher's answer to an extended arm: move success is still a rating roll with no term for the blocker's extension (a recorded model-rule breach). The rule is to repair the missing mechanism, not to hold back the technique, so the set is on and the rush is the debt: `RUSH_HANDS` (Flex, building: moves as forces on a one-degree-of-freedom hand, fit continuous in extension, swipe/club and long-arm first), then the untouched tackle's stop and inside help.
+
+**Until `RUSH_HANDS` lands, every pass-game measurement is taken behind a pass rush at about half the NFL's sack rate.** Lanes should read time to throw, scrambles and completion with that in mind.
+
+Checks. On the first candidate (`7e207f9b`, develop engine-51): full suite clean but for `test/hot-look.test.ts`, whose engine-45 panel of alarmed rushes no longer alarmed (4 of 11); Rules + Coaching re-surveyed the panel on the set (#665, 9 of 96 plays) and verified the alarm itself is unchanged (it fires whenever his pressure read says so; rushers close without alarm 5 against 7). On the stacked candidate (`1855940c`, engine-53 tree + the set): full suite 4388 pass with the two known research failures and the `catch-choice` fixture restated in engine-53; fixed run set 3.86 → 3.59 a carry. On the final tree: typecheck, registry tests, `hot-look` and `catch-choice` pass. Set cards, 16 games a side, the three flags 0 → 1 together:
+
+| tree, seed | sack rate | completion | yards an attempt | rush yards a carry | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| engine-51, 11 | 4.9 → 3.8% | 65.1 → 67.3% | 8.76 → 9.10 | 4.47 → 4.17 | 7.32 → 7.13 | 30.1 → 34.0 |
+| engine-51, 23 | 4.5 → 3.8% | 62.5 → 66.2% (moved) | 8.38 → 8.20 | 4.05 → 3.98 | 6.67 → 6.36 | 30.6 → 29.7 |
+| engine-51, 31 | 4.0 → 3.0% (moved) | 63.3 → 63.0% | 8.15 → 8.66 | 4.38 → 3.74 (moved) | 6.69 → 7.31 | 27.4 → 28.4 |
+| engine-51, 47 | 3.4 → 2.5% | 65.0 → 67.3% | 8.87 → 8.73 | 4.42 → 4.29 | 7.04 → 6.59 | 30.5 → 31.8 |
+| engine-53, 11 | 3.4 → 2.5% | 63.9 → 67.1% (moved) | 7.81 → 8.06 | 4.41 → 3.81 (moved) | 7.17 → 6.40 | 26.6 → 29.4 |
+| engine-53, 23 | 4.6 → 2.4% (moved) | 66.0 → 66.9% | 7.85 → 7.78 | 4.04 → 3.77 | 6.86 → 6.32 | 26.2 → 28.0 |
+
+Per flag on engine-51 (others on, seeds 11 / 23): `PAST_ALONG_PATH` completion +4.8 / +3.2 (both moved), sacks −0.5 / +0.8; `OPEN_HANDS` completion +4.0 / +4.1 (both moved), scrambles 1.8 → 3.1% (moved, seed 11); `PUNCH` sacks −0.3 / −0.3. Where the engine stands: sacks about 2.5% (NFL 4.61 to 9.36), yards an attempt 7.8 to 8.1, completion 67%, fixed run set 3.59.
+
+## engine-53: `BACK_PATHS` on: the back's routes drawn and paced from tracking (2026-11-13)
+
+**`BACK_PATHS`** (Rules + Coaching #661). The back's release paths redrawn from route-labelled tracking, and a route can carry a pace (`RouteDef.pace`, a fraction of top speed between its points, still adjusted by his route running); only the back's flat uses it, at 0.55. The flat is coached as run under control and timed to the drop. Before, the back was at the right depth but widened at about 6 yd/s against the NFL back's steady 4.2. Checked at equal time after the snap against NFL `routeRan` FLAT (n 916): within 0.4 yd in depth and 1 yd in width through 3.0 s; the ball arrives 12.1 yd from the sideline (11.7). An earlier version of this claim used a proxy that selected on width and was withdrawn by the lane.
+
+Checks on the candidate (`5ea96305`): full suite 4364 pass apart from the two known research failures and `test/catch-choice.test.ts`, which Coverage restated: on 4 of its 8 forced go balls the quarterback now pulls the ball down and checks to the back, and the fixture counted the first thrown receiver. It is now a paired panel (four verticals against four shells, 16 seeds, only balls that go to the forced go, each play against itself across arms); the mechanism holds on both stacks (11 pairs, 7 choosing later, all 7 faster). Fixed run set 3.86 a carry. Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | aDOT | time to throw | completion | INT | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.74 → 7.81 (moved) | 6.53 → 5.65 (moved) | 2.76 → 2.71 (moved) | 63.2 → 63.9% | 1.8 → 1.8% | 30.4 → 26.6 (moved) |
+| 23 | 8.32 → 7.85 | 6.85 → 5.59 (moved) | 2.80 → 2.71 (moved) | 64.9 → 66.0% | 1.8 → 2.2% | 27.7 → 26.2 |
+| 31 | 8.13 → 7.90 | 6.66 → 5.49 (moved) | 2.79 → 2.73 (moved) | 64.0 → 66.3% | 0.8 → 2.6% (moved) | 28.6 → 30.0 |
+
+Yards an attempt fall on all three seeds to the top of the NFL's band. aDOT falls a yard, further under the NFL's: the back's flat is caught behind the line as the NFL's is, and it is 18% of our targets against the NFL's 7.9% (backs take 32% of targets against 20%). That share is the read compiler placing a check-release back third in the progression (#669, `BACK_CHECKDOWN`, drafted; it waits on the deep-window belief re-read because it turns check-downs into scrambles). The interception rise on seed 31 is from an off arm of 0.8%.
 
 ## engine-52: `SAFETY_DEPTH` on: deep safeties stay over the top (2026-11-13)
 

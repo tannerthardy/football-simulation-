@@ -33,17 +33,19 @@ import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
-import { availability, baseRadiusAt, supportParams } from '../physics/support.js';
+import { availability, baseRadiusAt, omega0, recoverySpeed, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
+import { calledLaunchX } from './called-drop.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import type { HandJoint, Intent } from '../physics/world.js';
+import { OPEN_HANDS, PUSH_GROWTH, type HandJoint, type Intent } from '../physics/world.js';
+import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -397,6 +399,110 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
 }
 
+/** PUNCH (experimental, off; PUNCH=1 turns it on): a blocker's hands go to
+ * the man. The hand law above works at elbows-bent extension (bodies + 0.3 arm
+ * x (0.5 + 0.5 control), a quarter of his arm), so a man standing off at
+ * arm's length -- inside his reach but beyond his bent elbows -- is touched
+ * and not pressed: an anchored tackle's hands carried no compression 58% of
+ * engaged ticks and none as an edge rusher crossed his face (hands-band.mts,
+ * inside-probe.mts). With PUNCH he works his hands to where he feels the man
+ * (PASS_FEEL's touch latency), out to lockout (0.9 of his arm), no faster
+ * than arms move (ARM_SPEED): late, the man is into his chest before the arms
+ * are out; at air (the man beyond his lockout) he is overextended for his
+ * reaction time, his push down to a third, while the man goes by. The arm's
+ * force is the joint's (push from his press, the World's limits); only where
+ * the hands work is his. The same joint serves run and pass blocks. */
+export const PUNCH = process.env.PUNCH !== '0';
+/** Lockout: the share of his arm the hands reach with the elbows locked. */
+const LOCKOUT = 0.9;
+/** How far the punch drives the hands into the man (yd): a press, not a touch. */
+const PRESS_INTO = 0.1;
+const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
+
+/** PUNCH is pass-set technique, the blocker's choice from what his job is
+ * showing: pressing a man at arm's length is how a pass blocker keeps him off
+ * his body, and how a defender sheds a run block, so a run blocker fits tight
+ * and drives instead (with it on every block, the run report lost 0.30 yd a
+ * carry and outside-zone DL sheds at the hit doubled). A pass rep sets (a
+ * play-action run look ends at contact: pa-look.ts); a draw blocker shows
+ * pass while he is still selling it. */
+function passSetTechnique(sim: PlaySim, b: Agent, e: Engagement): boolean {
+  // Engaged on a pass rep, his play-action look (if any) has ended at the contact (pa-look.ts).
+  if (e.type === 'pass') return true;
+  return (b.behavior as { presentingDraw?: (t: number) => boolean }).presentingDraw?.(sim.t) === true;
+}
+
+function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
+  const bodies = b.profile.radius + d.profile.radius, arm = b.player.measurables.armIn / 36;
+  const base = joint.extension - bodies, lock = LOCKOUT * arm;
+  let st = punchState.get(joint);
+  if (!st) { st = { ext: base, over: -Infinity }; punchState.set(joint, st); }
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  const felt = sim.see(b, d, 0.06 / rt);
+  const gap = Math.hypot(felt.pos.x - b.pos.x, felt.pos.y - b.pos.y) - bodies;
+  if (sim.t < st.over) { joint.extension = bodies + lock; joint.push *= 1 / 3; return; }
+  // At air: the man is past his lockout and his hands are already out there.
+  if (gap > lock + 0.05 && st.ext >= lock - 0.02) { st.over = sim.t + rt; joint.extension = bodies + lock; joint.push *= 1 / 3; return; }
+  // A punch presses: the hands go a little into the man (PRESS_INTO), so the joint compresses against him -- across
+  // his path when he comes across the blocker's face -- rather than resting at the touch (attempt 1 aimed at the
+  // gap less 0.02 yd: as the man crossed, N p50 stayed 0).
+  const want = clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
+  st.ext = clamp(want, st.ext - step, st.ext + step);
+  joint.extension = bodies + Math.max(base, st.ext);
+}
+
+/** OPEN_HANDS: the rep's leverage at which the man has left the blocker's
+ * frame -- at or past his hip, the blocker no longer between him and where
+ * he is going (Integration, 2026-11-12; the holding detector's own measure). */
+export const FRAME_PHI = 1;
+/** OPEN_HANDS diagnostic cut (OPEN_HANDS_BACK_ONLY=1): the frame is left only
+ * when the blocker is on the man's back, not when he is past the hip. */
+const OPEN_HANDS_BACK_ONLY = process.env.OPEN_HANDS_BACK_ONLY === '1';
+/** OPEN_HANDS: does the holder have fingers on the man's cloth? Inside the
+ * man's frame (the holder on his front or side, by the man's own facing, and
+ * the man not past him: |phi| < FRAME_PHI) a grip is the block itself. Letting
+ * go is the holder's decision from what he feels and sees of the man going by
+ * (the man's position and motion through his hands, PASS_FEEL's touch
+ * latency): he opens his hands when the man's leverage, carried forward by
+ * how fast it is rising, reaches the frame's edge. How far forward is his
+ * discipline and awareness: a disciplined, aware blocker lets go at or just
+ * before the man is past him (up to his reaction time ahead), a poor one late
+ * (up to his reaction time behind). Hanging on regardless is the existing
+ * choice (`declared`, tryHold), a hold for the officials to judge. The hand
+ * fight and the grip's capacity still break any grip, by the World. No timer:
+ * an earlier version let go a fixed reaction x (2 - discipline) after the man
+ * left the frame, which kept the grip through the rusher's turn and gave 4.9
+ * holding calls a team-game (instant release: 0.3; NFL about 1.1 accepted). */
+export function gripFor(sim: PlaySim, joint: HandJoint, holder: Agent, man: Agent, e: Engagement | null, declared: boolean): boolean {
+  void joint;
+  const rt = Math.max(0.1, holder.profile.reactionTime);
+  const seen = sim.see(holder, man, 0.06 / rt);
+  const bear = Math.atan2(holder.pos.y - seen.pos.y, holder.pos.x - seen.pos.x);
+  const off = Math.abs(((bear - seen.facing) * 180 / Math.PI + 540) % 360 - 180);
+  let left = off > 90;
+  const seenSpeed = Math.hypot(seen.vel.x, seen.vel.y);
+  const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1);
+  if (!left && !OPEN_HANDS_BACK_ONLY && e) {
+    // His leverage against the man's line to where he is going, as he feels it, carried forward by its rate.
+    const axis = axisOf(sim, e), lat = latOf(axis);
+    const phiAt = (p: Vec2): number => {
+      const bd = norm(sub(holder.pos, p));
+      return Math.abs(Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2));
+    };
+    const h = 0.1, now = phiAt(seen.pos);
+    const ahead = phiAt({ x: seen.pos.x + (seen.vel.x - holder.vel.x) * h, y: seen.pos.y + (seen.vel.y - holder.vel.y) * h });
+    left = now + (ahead - now) / h * lead >= FRAME_PHI;
+    // PAST_ALONG_PATH: and past him along his path too (the same definition as the rep's beat and the officials').
+    if (left && PAST_ALONG_PATH && seenSpeed >= 1) {
+      const rx = holder.pos.x - seen.pos.x, ry = holder.pos.y - seen.pos.y;
+      const along = (rx * seen.vel.x + ry * seen.vel.y) / seenSpeed;
+      const rate = -(seen.vel.x * seen.vel.x + seen.vel.y * seen.vel.y - holder.vel.x * seen.vel.x - holder.vel.y * seen.vel.y) / seenSpeed;
+      left = along + rate * lead < -PAST_MARGIN;
+    }
+  }
+  return !left || declared;
+}
+
 function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoint): void {
   if (h.isDown(sim.t) || !inBlockReach(h, e.defender, 'run')) {
     runHands.delete(joint);
@@ -427,6 +533,8 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
+  if (PUNCH && state.control >= 0 && passSetTechnique(sim, h, e)) punch(sim, joint, h, e.defender);
+  if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e, false);
 }
 
 function advanceRunHelperHands(sim: PlaySim, e: Engagement): void {
@@ -471,6 +579,10 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // Latched hands can hold and steer; a defender in control steers the
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
+  // PUNCH: the blocker's hands go to the man, out to lockout.
+  if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
+  // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
+  if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
   // A landed finesse move has the hands off for its window.
   if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
     hands.steer *= 0.1;
@@ -485,6 +597,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.push = pressForce(h) * 0.8 * support;
     j.steer = armForce(h) * 0.4 * support;
     j.hold = 0;
+    if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e, false);
   }
 }
 
@@ -571,7 +684,12 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   // Even with the blocker on the working side: finish with dip-and-bend.
   if (e.phi * e.side > 0.4) w.push(['dip', 1.0 + td.bend * 1.5]);
   // Blocker over-set (rusher is inside his leverage): inside counter.
-  if (e.phi * e.side < -0.15 || (e.type === 'pass' && e.blocker.vel.x < -2 && e.phi * e.side < 0.1)) w.push(['spin', 0.4 + fin * 1.2], ['swim', 0.4 + fin * 0.6]);
+  // EDGE_ARC: an edge's cue for it is the tackle he sees oversetting.
+  const arcOut = e.blocker.passSet?.outside ?? 0;
+  const edgeArc = EDGE_ARC && e.type === 'pass' && arcOut !== 0 && Math.abs(d.pos.y - sim.ballY) > 3;
+  const overset = edgeArc ? seenOverset(sim.see(d, e.blocker).pos, d.pos, arcLandmark(sim, e.blocker, d))
+    : e.phi * e.side < -0.15 || (e.type === 'pass' && e.blocker.vel.x < -2 && e.phi * e.side < 0.1);
+  if (overset) w.push(['spin', 0.4 + fin * 1.2], ['swim', 0.4 + fin * 0.6]);
   return sim.dice('rep', e.blocker, d).weighted(
     w.map((x) => x[0]),
     w.map((x) => Math.max(0.01, x[1])),
@@ -739,6 +857,274 @@ const RUN_FEEL = process.env.RUN_FEEL !== '0';
 const PASS_KICK = process.env.PASS_KICK !== '0';
 /** How far deeper than the rusher the kick in the rep aims (yd). */
 const RIDE_LEAD = 0.3;
+
+/** TACKLE_SET (experimental, off; TACKLE_SET=1 turns it on): a tackle sets
+ * against an edge rusher to a depth from the call, not the QB's live spot or
+ * the rusher's depth. He knows the called drop, so he knows where the QB will
+ * launch; he kicks with the rusher as before (what he sees of his path), but
+ * never deeper than a body width short of that launch point, and there he
+ * anchors. Off, the kick follows the rusher's depth down to half a yard short
+ * of wherever the QB is, and a QB who drifts takes the tackle with him: at
+ * 3.0 s ours stood deeper than the QB (-8.2 vs -7.8; NFL tackle -6.8, QB -7.8;
+ * docs/reviews/2026-11-12-edge-rush.md). No strength or anchoring capacity
+ * is added: the physics decides whether the anchor holds. */
+export const TACKLE_SET = process.env.TACKLE_SET === '1';
+/** TACKLE_BRAKE (experimental, off; TACKLE_BRAKE=1 with TACKLE_SET): the
+ * tackle brakes the pair into his set, not only himself. NFL tracking
+ * (hip-gain.py): engaged with the rusher in front, the tackle slows by depth
+ * -- from about 1.5 yd short of the QB's depth, nearly stopped at it --
+ * whatever the rusher's gain on his hip; ours carried kick speed past it.
+ * The depth is TACKLE_SET's floor (the called launch point less a body width,
+ * from what he knows). His depth speed toward it is at most sqrt(2 a d), with
+ * a his braking force (0.8 of his brake, the law movement uses, times his
+ * mass) over his mass plus the load he carries: the measured press of the
+ * rusher through his hands along his retreat, as the mass it amounts to at his
+ * braking, at most the rusher's own. The harder he is pressed the earlier he
+ * must start (fully pressed, about 1.8x the distance). And he anchors before he mirrors: pressed, his lateral
+ * request changes by no more than the traction left after holding the press
+ * allows in a step. No timer and no capacity added: the body brakes. */
+export const TACKLE_BRAKE = process.env.TACKLE_BRAKE === '1';
+
+/** TACKLE_RESET (experimental, off; with TACKLE_SET and TACKLE_BRAKE): the
+ * anchor's base re-set. A man can only drive into a load with his base under
+ * his hips (OL protection textbook §7.6-7.7, §8.4, §20.5: "stop retreat,
+ * bring feet under hips, anchor"; "replace ground with short, coordinated
+ * steps"; "absorbs, resets feet, then reacts to spin"). Carried back, the
+ * World's lean -- his drive into the load -- is held near his base limit and
+ * grows past it only at the pendulum's rate (feet() probe: 186 of a 559
+ * press). The cue is what he feels: the press beyond what his base holds at
+ * his stance (m w0^2 x base radius) while he is carried faster than he asked
+ * to retreat. He acts on it after a delay by his pass-block technique (0.5-1.5
+ * reaction times). The step (a short replacement, of which a hop is one
+ * form) takes the sunk stance's base radius over his recovery stepping speed;
+ * during it his feet are light -- no braking and no drive into the man, his
+ * retreat going on (a stand-in: the model has no per-foot normal load; debt)
+ * -- and he sinks (PASS_SINK's posture). On landing his lean is set to his
+ * base limit at the posture he has reached (scaled by balance: 0.5-1), no
+ * more than the press, and grows from there as the World allows. He stays
+ * sunk while pressed; his lean may exceed the press (PUSH_GROWTH) only while
+ * he is still carried, and not once the pair has stopped, so a pull or swim
+ * cannot pitch him onto the rusher. No capacity added. */
+export const TACKLE_RESET = process.env.TACKLE_RESET === '1';
+const SINK_POSTURE = 0.95;
+
+/** TACKLE_RESET: the blocker's base re-set (see the flag). Edits his intent in place. */
+function baseReset(sim: PlaySim, e: Engagement, intent: Intent): void {
+  const b = e.blocker, sup = b.body.support;
+  if (!sup || sup.state !== 'up') return;
+  const sp = supportParams(b.profile), m = b.profile.massKg;
+  const st = e.baseReset ?? (e.baseReset = {});
+  const L = Math.hypot(sup.felt.x, sup.felt.y);
+  const carried = (e.lastReqX ?? b.vel.x) - b.vel.x > 0;
+  if (st.until !== undefined && !st.done) {
+    if (sim.t < st.until) {
+      // In the step: light feet -- no braking, no drive into him; he sinks.
+      intent.vel = { x: b.vel.x, y: b.vel.y }; intent.push = 0; intent.posture = SINK_POSTURE;
+      return;
+    }
+    // Landed: the base under his hips, toward the load.
+    st.done = true; st.cueAt = undefined;
+    if (L > 1e-6) {
+      const w = omega0(sp, sup.posture);
+      const limit = m * w * w * baseRadiusAt(sp, sup.posture) * (0.5 + 0.5 * b.r('balance'));
+      const mag = Math.min(L, Math.max(Math.hypot(sup.lean.x, sup.lean.y), limit));
+      sup.lean = { x: -sup.felt.x / L * mag, y: -sup.felt.y / L * mag };
+    }
+  }
+  if (st.done) {
+    if (L > 0.3 * m * G) intent.posture = SINK_POSTURE;
+    intent.growth = carried ? PUSH_GROWTH : 0;
+  }
+  // The cue (again after a landing: a step or two, as the press needs).
+  const w = omega0(sp, sup.posture);
+  const cue = L > m * w * w * baseRadiusAt(sp, sup.posture) && carried;
+  if (!cue) { st.cueAt = undefined; return; }
+  if (st.cueAt === undefined) st.cueAt = sim.t;
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  if (sim.t - st.cueAt < rt * (1.5 - b.r('passBlock'))) return;
+  const speed = Math.max(0.5, recoverySpeed(sp, 0, fatigueFactor(b.body.energy)));
+  st.until = sim.t + baseRadiusAt(sp, SINK_POSTURE) / speed; st.done = false;
+}
+
+/** TACKLE_BRAKE: the rusher's press on the blocker along -x (toward his own
+ * goal), kg*yd/s^2, from the hands joint's last-step force (0 without one). */
+export function pressOnBlocker(b: Agent, joint: HandJoint | undefined): number {
+  if (!joint?.normalForceOnB) return 0;
+  const onB = { x: joint.normalForceOnB.x + (joint.tangentForceOnB?.x ?? 0), y: joint.normalForceOnB.y + (joint.tangentForceOnB?.y ?? 0) };
+  const fx = joint.b === b.body ? onB.x : joint.a === b.body ? -onB.x : 0;
+  return Math.max(0, -fx);
+}
+
+/** PAST_ALONG_PATH (experimental, off; PAST_ALONG_PATH=1 turns it on): a
+ * blocker is beaten when the man is past him along the man's own path of
+ * travel (hips past hips: the blocker more than PAST_MARGIN behind him along
+ * his velocity), the football meaning and the officials'. Off, the pass rep's
+ * beat is |phi| >= 1 against the man's line to the QB: with a kicking tackle
+ * 47% of corner beats fired while the rusher was still level along his path,
+ * and with an anchored tackle the beat fired with the man past but still
+ * within reach and hands on, freeing him 4-5 yd from the QB to bend inside
+ * (beat-probe.mts; docs/reviews/2026-11-12-tackle-set.md). Past but within
+ * reach, the rep goes on as a ride: the blocker turns with him and pushes him
+ * on past the QB; it ends when the man is out of reach. OPEN_HANDS's frame
+ * uses the same test (`gripFor`): the grip lapses when the ride starts. */
+export const PAST_ALONG_PATH = process.env.PAST_ALONG_PATH !== '0';
+/** TACKLE_ANCHOR (experimental, off; TACKLE_ANCHOR=1 with TACKLE_SET): once
+ * engaged with an edge rusher the tackle gives no more ground -- he anchors
+ * and plays him from inside half. Retried on top of PAST_ALONG_PATH's ride:
+ * without it, an anchored tackle was beaten the moment the man drew level
+ * (edge win 33%, inside 31% free 98%); with it, the anchored counterfactual
+ * matched the NFL's engaged retreat curve (-2.5/-2.25/-1.75/-0.75 yd/s at
+ * 1.5-3.0+ s; NFL -2.75/-2.25/-1.5/-0.5) but lost inside 18.8% (NFL 6.4%):
+ * nearly head-up when the man crossed his face (docs/reviews/2026-11-12-tackle-set.md). */
+export const TACKLE_ANCHOR = process.env.TACKLE_ANCHOR === '1';
+/** Inside-half leverage: how far inside the man's line to the QB the anchored tackle's body sits (yd). */
+const INSIDE_LEVERAGE = 0.33;
+/** RUSH_INTENT (experimental, off; RUSH_INTENT=1 turns it on): between
+ * moves a pass rusher's request is an intent he chose, not a default. Off,
+ * every rusher with no live move asked for 0.8 + 0.15 bend of his vmax at
+ * push 0.75 toward a corner beside the blocker (measured along his line to
+ * the QB, so a third of it ran sideways along the tackle), and 'power' stuck
+ * to a bull or long-arm after its window: half an edge rusher's engaged time,
+ * scraping sideways at 3.0 yd/s (NFL 2.1) and driving at the QB 1.4 (NFL 2.5)
+ * (docs/reviews/2026-11-12-rusher-intent.md). With it, from what he feels and
+ * sees -- his leverage (phi x side), his own speed, the blocker giving ground,
+ * the hands -- he chooses:
+ *   edge: with leverage, he works the blocker's outside hip at the pace he can
+ *     bend (0.6 + 0.25 bend of vmax), push 0.5;
+ *   power (press): otherwise, through the blocker at the QB, collapsing the
+ *     pocket (0.55 vmax, push 0.75-1.0 by his power and mass);
+ *   stall: while the blocker is driving him back, he fights the hands at a
+ *     walking pace (1.2 yd/s, push 0.6) until his next move, and may lose.
+ * Which he prefers is the player's (edge: finesse and bend; power: power and
+ * mass); he keeps an intent at least his reaction time and changes it only
+ * when his leverage or the blocker's ground changes past a margin. */
+export const RUSH_INTENT = process.env.RUSH_INTENT === '1';
+const RUSH_STALL_PACE = 1.2;
+type RushIntent = 'edge' | 'power' | 'stall';
+const rushIntents = new WeakMap<Engagement, { intent: RushIntent; since: number; lev: number; ground: boolean; switches: number; reversals: number; prev: RushIntent | null; at: number }>();
+
+/** RUSH_INTENT: his intent between moves, kept until a perceived change clears a margin. */
+function rushIntent(sim: PlaySim, e: Engagement, axis: Vec2, sep: number): RushIntent {
+  void sep;
+  const d = e.defender, b = e.blocker, td = traits(d);
+  const lev = e.phi * e.side;
+  const ground = b.vel.x * axis.x + b.vel.y * axis.y > 1.0;   // the blocker giving ground along the man's line to the QB
+  const moving = Math.hypot(d.vel.x, d.vel.y) > 2.5;
+  const edgePref = 0.5 * d.r('passRushFinesse') + 0.5 * td.bend;
+  const powPref = 0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1);
+  // Attempt 2: with no leverage he presses through the blocker at the QB (collapsing the pocket: NFL engaged edge
+  // rushers drive at the QB about 2.5 yd/s), not a walk; he stalls only while the blocker is driving him back.
+  // (Attempt 1 required momentum to press, so a stall killed the momentum that would end it: 77% of engaged time
+  // stalled, engaged edge speed 2.4 vs NFL 3.5 yd/s.)
+  const drivenBack = d.vel.x * axis.x + d.vel.y * axis.y < -0.5;
+  const choose = (): RushIntent => {
+    if (lev > 0.3 && !(ground && powPref > edgePref + 0.15)) return 'edge';
+    if (lev > 0.15 && edgePref > powPref + 0.15) return 'edge';
+    return drivenBack ? 'stall' : 'power';
+  };
+  void moving;
+  let st = rushIntents.get(e);
+  if (!st) { const intent = choose(); st = { intent, since: sim.t, lev, ground, switches: 0, reversals: 0, prev: null, at: sim.t }; rushIntents.set(e, st); return intent; }
+  const rt = Math.max(0.1, d.profile.reactionTime);
+  if (sim.t - st.since >= rt && (Math.abs(lev - st.lev) > 0.2 || ground !== st.ground)) {
+    const next = choose();
+    if (next !== st.intent) {
+      st.switches++;
+      if (next === st.prev && sim.t - st.since < 0.6) st.reversals++;
+      st.prev = st.intent; st.intent = next; st.since = sim.t;
+    }
+    st.lev = lev; st.ground = ground;
+  }
+  st.at = sim.t;
+  return st.intent;
+}
+
+/** RUSH_INTENT diagnostics: the rep's current intent and its switch counts (for probes). */
+export function rushIntentOf(e: Engagement): { intent: RushIntent; switches: number; reversals: number } | null {
+  const st = rushIntents.get(e);
+  return st ? { intent: st.intent, switches: st.switches, reversals: st.reversals } : null;
+}
+
+/** Hips past hips: how far behind the man, along his path, the blocker must be (yd). */
+export const PAST_MARGIN = 0.3;
+/** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
+const RIDE_PUSH = 1.0;
+
+/** PAST_ALONG_PATH: is the man past the blocker along his own path of travel?
+ * Below a walk, his path is not defined; the leverage (phi) decides. */
+export function pastAlongPath(b: { pos: Vec2 }, d: { pos: Vec2; vel: Vec2 }, phi: number): boolean {
+  // Past means both: behind him along where he is running, and no longer between him and where he is going (the
+  // leverage against his line to the ball or QB, |phi| >= 1). Along the path alone counted a blocker sealing a man
+  // who runs down the line -- behind him along his path, still in his way -- as beaten: run holding calls rose to
+  // 8 a team-game (holds-detail.mts: 93% behind along the path, 91% with |phi| < 1).
+  if (phi < 1) return false;
+  const sp = Math.hypot(d.vel.x, d.vel.y);
+  if (sp < 1) return true;
+  return ((b.pos.x - d.pos.x) * d.vel.x + (b.pos.y - d.pos.y) * d.vel.y) / sp < -PAST_MARGIN;
+}
+
+/** EDGE_ARC (experimental, off; EDGE_ARC=1 turns it on): an edge rusher runs
+ * the arc as it is taught. His landmark is outside the tackle's outside
+ * shoulder at the depth he sees the QB set: he gets level with the tackle
+ * there, turns for the QB once his hips are past the tackle's, and counters
+ * inside when he sees the tackle overset -- the tackle's body level with or
+ * outside his own, from his picture of the tackle, not the tackle's
+ * assignment. His bend (speed and cut) sets how well he runs it, his
+ * reaction how soon he reads the overset; nothing sets whether he wins. Off,
+ * his rush point in the rep is a corner beside the blocker measured along
+ * the line to the QB, which once level sits behind the tackle: he requested
+ * -2.6 to -3.1 yd/s across, achieved about 0, and won in front of the tackle
+ * (55-57% vs NFL 27%; docs/reviews/2026-11-12-edge-rush.md). */
+export const EDGE_ARC = process.env.EDGE_ARC === '1';
+/** Room outside the tackle's shoulder the arc's landmark leaves (yd): the corner's existing offset. */
+export const ARC_ROOM = 0.45;
+/** Past the tackle's hips: deeper than him by this much (yd). */
+export const ARC_PAST = 0.3;
+
+/** The width a tackle's kick takes from his alignment (the set point in behaviors/blocking.ts): coached, so both sides know it. */
+export const KICK_WIDTH = 0.8;
+
+/** EDGE_ARC (attempt 2): the rusher's arc from what he saw at the snap -- the
+ * tackle's alignment and the width a kick takes from it. `out` is the
+ * tackle's outside, `setY` where his set should be, `y` the landmark outside
+ * it (bodies + ARC_ROOM). Off his live shoulder instead (attempt 1) a tackle
+ * who widened dragged the landmark out with him (tackle +1.6 yd wide at 3.0 s,
+ * NFL -0.6). */
+export function arcLandmark(sim: PlaySim, tackle: Agent, rusher: Agent): { out: number; setY: number; y: number } {
+  const home = sim.offAlign.spots[tackle.slot]?.pos.y ?? tackle.pos.y, out = Math.sign(home - sim.ballY) || 1;
+  const setY = home + out * KICK_WIDTH;
+  return { out, setY, y: setY + out * (tackle.profile.radius + rusher.profile.radius + ARC_ROOM) };
+}
+
+/** EDGE_ARC: the tackle seen oversetting -- wider than his set by more than the room the arc leaves, close enough to matter. */
+export function seenOverset(seen: Vec2, rusher: Vec2, arc: { out: number; setY: number }): boolean {
+  return (seen.y - arc.setY) * arc.out > ARC_ROOM && Math.abs(seen.x - rusher.x) < 1.5;
+}
+/** A body width and a step: how far short of the launch point the tackle sets. */
+export const TACKLE_SET_SHORT = 1.0;
+
+/** TACKLE_SET (attempt 2): the set is a spot, with a width as well as a
+ * depth. He kicks back along a line from his own alignment, wider for a wider
+ * rusher (his alignment outside the tackle at the snap, 0.4 of it, 0.3-1.0 yd:
+ * enough to keep the inside half of a man who has to come round), and he never
+ * chases the rusher outside that line: a rusher who goes wider than it is
+ * taking the long way round, which is the point. Inward he mirrors freely.
+ * Off (and in attempt 1) the kick and the rep follow the rusher's width:
+ * tackles ended +1.3-1.6 yd outside their alignment at 3.0 s against an arc
+ * (NFL -0.6), and the rusher's corner sat 0.7-1.2 yd further from the QB. */
+export function tackleSetLine(sim: PlaySim, tackle: Agent, rusher: Agent): { out: number; y: number } {
+  const home = sim.offAlign.spots[tackle.slot]?.pos.y ?? tackle.pos.y, out = Math.sign(home - sim.ballY) || 1;
+  const rHome = sim.defAlign.spots[rusher.slot as keyof typeof sim.defAlign.spots]?.pos.y ?? rusher.pos.y;
+  return { out, y: home + out * clamp(0.4 * (rHome - home) * out, 0.3, 1.0) };
+}
+/** Inside-half leverage: where his centre sits inside the rusher's. */
+export const INSIDE_HALF = 0.3;
+
+/** The deepest x a tackle sets to under TACKLE_SET (null without a called drop). */
+export function tackleFloor(sim: PlaySim): number | null {
+  const launch = calledLaunchX(sim);
+  return launch === null ? null : launch + TACKLE_SET_SHORT;
+}
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 /** An edge widens with a reach only as far as containing the runner needs
@@ -971,7 +1357,22 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Leverage is where the bodies are, relative to the QB, every tick.
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
-  if (Math.abs(e.phi) >= 1 && !canRidePassContact(e, t)) {
+  // PAST_ALONG_PATH: beaten means past the blocker along the man's own path
+  // of travel; past but still within reach, the rep goes on as a ride.
+  let riding = false;
+  if (PAST_ALONG_PATH) {
+    const past = pastAlongPath(b, d, Math.abs(e.phi));
+    if (past) {
+      const reach = b.profile.radius + d.profile.radius + b.player.measurables.armIn / 36;
+      if (Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) > reach && !canRidePassContact(e, t)) {
+        if (tryHold(sim, e)) return;
+        beat(sim, e, axis, lat, false, 'past him');
+        return;
+      }
+      riding = true;
+    }
+  }
+  else if (Math.abs(e.phi) >= 1 && !canRidePassContact(e, t)) {
     if (tryHold(sim, e)) return;
     beat(sim, e, axis, lat, false, 'turned the corner');
     return;
@@ -994,17 +1395,31 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const sep = b.profile.radius + d.profile.radius;
   const qb = sim.qb.pos;
   // ---- the rusher: to the QB, around the working side or through the man.
-  const power = e.move === 'bull' || e.move === 'longarm';
-  const bend = inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip');
   const turned = e.phi * e.side > 0.5;
+  // RUSH_INTENT: between moves his request is an intent he chose (edge, power or stall), not a default.
+  const between = RUSH_INTENT && !(t < e.moveUntil) && !turned ? rushIntent(sim, e, axis, sep) : null;
+  const power = between ? between === 'power' : RUSH_INTENT ? (t < e.moveUntil && (e.move === 'bull' || e.move === 'longarm')) : e.move === 'bull' || e.move === 'longarm';
+  const bend = inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip');
   const corner = { x: b.pos.x + lat.x * e.side * (sep + 0.45) + axis.x * 0.35, y: b.pos.y + lat.y * e.side * (sep + 0.45) + axis.y * 0.35 };
-  const aim = power || turned ? qb : corner;
+  let aim = power || turned ? qb : corner;
+  if (between === 'edge') {
+    // Work the edge: at the blocker's hip on his working side, a step past it toward the QB.
+    aim = { x: b.pos.x + lat.x * e.side * (sep + 0.2) + axis.x * 0.5, y: b.pos.y + lat.y * e.side * (sep + 0.2) + axis.y * 0.5 };
+  } else if (between === 'stall') aim = { x: b.pos.x, y: b.pos.y };
+  // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
+  // the QB's depth outside the tackle's shoulder; past the hips he turns.
+  const arcOut = b.passSet?.outside ?? 0;
+  if (EDGE_ARC && !power && arcOut !== 0 && Math.abs(d.pos.y - sim.ballY) > 3 && lat.y * e.side * arcOut > 0) {
+    const qbSeen = sim.see(d, sim.qb, 0.5).pos;
+    aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: arcLandmark(sim, b, d).y };
+  }
   const toAim = norm(sub(aim, d.pos));
-  const rush = d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
+  const rush = between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
+    : d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
   intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
     facing: Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
-    push: power ? 1 : inMove ? 0.35 : 0.75,
+    push: between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
@@ -1013,7 +1428,18 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // then anchor. Mirror with the feet; the hands steer what they control.
   const front = { x: d.pos.x + axis.x * (sep + 0.15), y: d.pos.y + axis.y * (sep + 0.15) };
   const intent = b.passSet;
-  if (intent && intent.outside !== 0 && (d.pos.y - b.pos.y) * intent.outside > 0.15) {
+  // TACKLE_ANCHOR: anchored against an edge rusher he plays him from inside
+  // half -- his body on the man's inside shoulder, a third of a yard inside
+  // the man's line to the QB, better feet holding it nearer -- so an inside
+  // move runs into him, not across his face. Otherwise (and off) he works an
+  // outside rush wide of the launch lane.
+  const anchorRep = TACKLE_ANCHOR && TACKLE_SET && !!intent?.outside && Math.abs(d.pos.y - sim.ballY) > 3;
+  if (anchorRep) {
+    // Across the man's line to the QB, on its inside (the ball's side of it).
+    const sgn = lat.y * -intent!.outside >= 0 ? 1 : -1, k = sgn * INSIDE_LEVERAGE * (0.6 + 0.4 * tb.feet);
+    front.x += lat.x * k; front.y += lat.y * k;
+  }
+  else if (intent && intent.outside !== 0 && (d.pos.y - b.pos.y) * intent.outside > 0.15) {
     // Work an outside rush wide of the launch lane.
     front.y += clamp((intent.laneY - front.y) * 0.5, -0.4, 0.4);
   }
@@ -1034,6 +1460,11 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // of stopping at the set spot while the rusher runs on to his hip.
   if (PASS_KICK && Math.abs(known.pos.y - sim.ballY) > Math.abs(b.pos.y - sim.ballY))
     setDepth = Math.max(setDepth, Math.min(sim.los - known.pos.x + RIDE_LEAD, sim.los - sim.qb.pos.x - 0.5));
+  // TACKLE_SET: no deeper than the set the called drop gives him, short of
+  // the launch point; there he anchors (no kick, no following the rusher's
+  // depth) and the rep is the hands and feet against the rusher's path.
+  const floor = TACKLE_SET && b.passSet?.outside ? tackleFloor(sim) : null;
+  if (floor !== null) setDepth = Math.min(setDepth, sim.los - floor);
   // PASS_KICK: match the rusher's upfield speed as well as close the gap
   // (closing alone trails a moving rusher by his speed x 0.55 s).
   const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -known.vel.x) : 0;
@@ -1050,14 +1481,48 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // still meets the whole load (as far as his legs can), so he is walked back,
   // not knocked over.
   const growth = PASS_ANCHOR ? 0 : undefined;
+  // TACKLE_SET: the mirror runs across the rusher's line to the QB; once he
+  // is wide and deep that line is mostly lateral and mirroring along it is a
+  // retreat. He asks for no more depth than he can brake off before the set
+  // (the braking law movement uses, kinematics.ts), and none at it.
+  const vx = lat.x * vLat - kick;
+  // TACKLE_SET: and no wider than his set line than he can brake off before it.
+  let vy = lat.y * vLat;
+  if (floor !== null) {
+    const line = tackleSetLine(sim, b, d), room = (line.y - b.pos.y) * line.out;
+    if (vy * line.out > 0) vy = line.out * Math.min(vy * line.out, Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, room)));
+  }
+  // TACKLE_BRAKE: brake the pair (his braking less the measured press), and anchor before the mirror.
+  let brakeA = 0.8 * b.profile.brake;
+  if (TACKLE_BRAKE && floor !== null) {
+    const press = pressOnBlocker(b, e.hands);
+    // The press is load he must stop with him: the mass it amounts to at his braking (at most the rusher's own).
+    const carried = Math.min(d.profile.massKg, press / Math.max(1e-6, brakeA));
+    brakeA = brakeA * b.profile.massKg / (b.profile.massKg + carried);
+    if (press > 0) {
+      const T = supportParams(b.profile).traction;
+      const room = Math.sqrt(Math.max(0, T * T - press * press)) / b.profile.massKg * sim.dt;
+      vy = clamp(vy, b.vel.y - room, b.vel.y + room);
+    }
+  }
   intents[b.idx] = {
-    vel: { x: lat.x * vLat - kick, y: lat.y * vLat },
+    vel: { x: anchorRep ? Math.max(vx, 0) : floor !== null ? Math.max(vx, -Math.sqrt(2 * brakeA * Math.max(0, b.pos.x - floor))) : vx, y: vy },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     growth,
     posture: PASS_SINK && heavy ? 0.95 : 0.6,
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
+  if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
+  e.lastReqX = intents[b.idx].vel.x;
+  if (riding) {
+    // PAST_ALONG_PATH: the ride. He has been beaten along the man's path but
+    // is still within reach: he turns with him, keeps up, and pushes him on
+    // past -- away from the QB -- with his hands on the man's side.
+    const away = norm(sub(d.pos, qb));
+    intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
+      facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
+  }
   helperIntents(sim, e, intents, axis);
 }
 
