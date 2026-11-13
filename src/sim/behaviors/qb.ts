@@ -185,6 +185,13 @@ const QB_PEEK = process.env.QB_PEEK === '1';
  * re-priced value below zero pumped it, so on contested verticals he started and pumped repeatedly.
  * docs/reviews/2026-11-13-qb-gather.md. */
 const QB_COMMIT = process.env.QB_COMMIT === '1';
+/** QB_EYES (experimental, off; QB_EYES=1): the processing gate. A throw goes only to the man his eyes have been on for
+ * his processing time (0.15 + 0.25 (1 - decisionMaking) s); a throw he wants to a man his eyes are not on moves them
+ * there first. The window is priced at the release that follows (the gate's remaining time, then the windup). His eyes
+ * (what defenders read) are on the man he is about to throw to. NFL defenders facing the QB close on the catch point
+ * before the release (+1.5/+2.5 yd/s zone/man) where ours did not (+0.3/+0.6): his eyes were on the eventual target
+ * 21% of the time at -0.5 s, 85% at -0.3 s (the windup). docs/reviews/2026-11-13-qb-gather.md. */
+const QB_EYES = process.env.QB_EYES === '1';
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -390,6 +397,9 @@ export class QBPass implements Behavior {
   private triDone = false;
   /** READ_PLAN vertical peek: when every vertical was 12 yd deep (the squeeze can show), -1 before. */
   private peekDeclared = -1;
+  /** QB_EYES: the man his eyes are on, and since when. */
+  private eyesOn: Agent | null = null;
+  private eyesOnAt = 0;
 
   /** Existing private state only; never evaluates a fresh throw window. */
   recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
@@ -749,7 +759,14 @@ export class QBPass implements Behavior {
       }
     }
     const read = this.reads[this.readIdx];
-    sim.qbEyes = read ?? null;
+    // QB_EYES: his eyes are on the man he is gating a throw to; otherwise on his read (from when they got there).
+    if (QB_EYES) {
+      // His first read is the one he looks at through his drop (the decision is made at or before the back foot), so
+      // his eyes count on it from halfway through the drop; a later read counts from when they get there.
+      if (!this.eyesOn) { this.eyesOn = read ?? null; this.eyesOnAt = Math.min(t, this.snapAt + 0.5 * this.drop.time); }
+      else if (this.eyesOn !== read && this.gateFor !== this.eyesOn) { this.eyesOn = read ?? null; this.eyesOnAt = t; }
+      sim.qbEyes = this.eyesOn;
+    } else sim.qbEyes = read ?? null;
     const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
@@ -884,7 +901,18 @@ export class QBPass implements Behavior {
   /** SET_DECIDE: a throw he cannot finish before the rusher he sees arrives is
    * not started (null: the decision below, move, escape or trapped, answers
    * instead). Off: the throw starts. */
+  /** QB_EYES: the man he is gating a throw to (his eyes went there for it), or null. */
+  private gateFor: Agent | null = null;
+  /** QB_EYES: his processing time on a man his eyes have just reached. */
+  private processing(a: Agent): number { return 0.15 + 0.25 * (1 - a.r('decisionMaking')); }
+
   private startIfFinish(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand | null {
+    // QB_EYES: the ball goes only to the man his eyes have been on for his processing time; otherwise they go there.
+    if (QB_EYES) {
+      if (this.eyesOn !== ev.target) { this.eyesOn = ev.target; this.eyesOnAt = sim.t; this.gateFor = ev.target; sim.qbEyes = ev.target; return null; }
+      if (sim.t - this.eyesOnAt < this.processing(a)) { this.gateFor = ev.target; return null; }
+      this.gateFor = null;
+    }
     // HOT_LOOK: while his eyes are on the way to a hot target, a read they have left is not thrown blind.
     if (HOT_LOOK && this.look && !this.inClearLook(a, sim, ev.target)) return null;
     if (SET_DECIDE && !this.canFinish(a, sim)) { this.noFinish++; return null; }
@@ -1166,7 +1194,9 @@ export class QBPass implements Behavior {
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     if (r.isDown(sim.t) || r.engagement) return null;
     // SHOULDERS_SET: his motion to this man includes the turn to him (as startThrow will make it).
-    const wind = SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a);
+    const wind = (SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a))
+      // QB_EYES: priced at the release after the rest of his processing on this man.
+      + (QB_EYES ? Math.max(0, this.processing(a) - (this.eyesOn === r ? sim.t - this.eyesOnAt : 0)) : 0);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     const forecast = this.receiverForecasts.get(r);
     const current = forecast?.predict(sim.t, 0);
@@ -1611,7 +1641,7 @@ export class QBPass implements Behavior {
     const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
-    const facing = this.bodyFacing(a, sim, read);
+    const facing = this.bodyFacing(a, sim, (QB_EYES && this.eyesOn) || read);
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a
     // pace he can still throw from, eyes still on his read.
@@ -1747,7 +1777,7 @@ export class QBPass implements Behavior {
     }
     // Escape: the movement has opened a lane and the read logic has offered nothing.
     if (this.shouldScramble(a, sim, false)) { this.moveDir = null; return this.scramble(a, sim); }
-    const facing = this.bodyFacing(a, sim, read);
+    const facing = this.bodyFacing(a, sim, (QB_EYES && this.eyesOn) || read);
     const vx = a.pos.x >= sim.los - 2.5 ? Math.min(0, dir.x * pace) : dir.x * pace;
     return { vel: { x: vx, y: dir.y * pace }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }

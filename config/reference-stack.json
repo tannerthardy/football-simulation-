@@ -166,6 +166,7 @@
     "ACC_RADIUS": "off",
     "QB_PEEK": "off",
     "QB_COMMIT": "off",
+    "QB_EYES": "off",
     "QB_RHYTHM": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",
