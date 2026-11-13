@@ -8,7 +8,7 @@ describe('seen contact', () => {
     const { seenEngaged, seenEngagedWith, seenTaken, seenPartners } = await import('../src/sim/seen-contact.js');
     const f = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
     const { sim, defender: d } = f;
-    const blocker = sim.engagements.find((e: any) => e.defender === d)?.blocker;
+    const blocker = sim.engagements.find((e: any) => e.defender === d)?.blocker as any;
     expect(blocker).toBeTruthy();
     // A third man on the blocker's team, and one on the defender's team.
     const mate = sim.offense.find((o: any) => o !== blocker && o !== sim.qb)!;
