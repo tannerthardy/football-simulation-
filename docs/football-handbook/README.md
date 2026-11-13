@@ -40,6 +40,7 @@ and proposed mechanisms are identified separately.
 | [Advance scouting checklist](advance-scouting-checklist.md) | A 46-question opponent-defense scouting sheet (The Reamon Report) mapped to what the engine simulates, recognizes and charts, for the later scouting and prep layer. |
 | [Playing Quarterback (LaFleur)](qb-playing-quarterback-lafleur.md) | A coaching article on quarterback reads, protection, fundamentals and evaluation, compared with the current quarterback model to list candidate gaps. |
 | [Quarterback decision-making research](qb-decision-research-review.md) | Review of four outside sources (PFF decision vs execution, an NFL combine cognitive study, a high-school video-training study, a qualitative training study) and what to think about for the quarterback model and a management game. |
+| [Pass protection: base, anchor and bull rush sources](pass-protection-base-anchor-sources.md) | Coaching sources and biomechanics for the pass set, anchor hop, stance geometry and falls, read against the engine's capture-point support model, with candidates and what not to do. |
 
 Chapter check catalogs are proposed options, not mandatory test suites. Choose
 the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
