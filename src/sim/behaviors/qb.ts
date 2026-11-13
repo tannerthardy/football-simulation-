@@ -273,31 +273,51 @@ const SHOULDERS_SET = process.env.SHOULDERS_SET === '1';
  * yd: the QB with no throw moves 3 yd before a sack, 2.4 before a throwaway, 10
  * in a scramble; ours 0.8-1.0, inside the tackles; no-throw-in-time review). */
 const EXTEND = process.env.EXTEND === '1';
-/** QB_POCKET (experimental, off; QB_POCKET=1; needs QB_GATHER): the hitch's direction takes the coached rule. QB_GATHER's
- * hitch is up and toward the read whatever is around him. With this on, when he feels a body in front of him (not at
- * the edge) within POCKET_NEAR of where he stands, the hitch for the read he is on goes to the side instead: toward the
- * read's side when the read is to a side, away from the body when it is straight ahead; same length, same pace. With
- * nobody inside POCKET_NEAR it is QB_GATHER's hitch, unchanged; with a body at the edge the existing climb is unchanged.
- * A hitch already decided for a read becomes a side hitch once, when a body first comes inside POCKET_NEAR, and does not
- * change back. NFL (BDB 2025 wk 1-9, scripts/diag/escape/qb-pocket.py, first DL/LB within 3 yd after the drop, he moves
- * 1+ yd): body in front -> lateral 56-58%, up 23%; body at the edge -> up 59-67%; ours up 50-100% either way. Throws
- * from the pocket held 1.5 s+: NFL lateral 1.0 yd, ours with QB_GATHER 0.1-0.2 (shape.py). Attempt 1 (a separate reset
- * decision; docs/reviews/patches/2026-11-13-qb-pocket-attempt1.patch) fired into the throw and changed nothing. */
+/** QB_POCKET (experimental, off; QB_POCKET=1): his feet in the pocket follow one decision, made on the nearest body he
+ * feels. Off, pocketMove climbs whenever ANY felt defender is wide of him within 4-5.5 yd (a defensive end on most
+ * snaps), whatever is in front of him, and otherwise drifts off bodies within 3.5 yd a little each tick. On, the
+ * nearest body he feels inside POCKET_NEAR decides:
+ * - at the edge (wide of him, at or behind his depth): the existing climb, same destination and pace;
+ * - in front of him or inside: a slide to the side, toward the read his eyes are on when it is to a side, else away
+ *   from the body; POCKET_SLIDE yd at up to POCKET_SLIDE_PACE, which is above missSigma's set-throw edge, so a throw
+ *   started mid-slide pays the existing moving cost. Held until he is there, a felt body closes on the spot, or it
+ *   lapses; the same body does not move him again until it is POCKET_RENEW nearer;
+ * - nobody inside POCKET_NEAR: QB_GATHER's hitch if it is on, else he holds his set point. No drift.
+ * NFL (BDB 2025 wk 1-9, scripts/diag/escape/qb-pocket.py; first DL/LB within 3 yd after the drop, he moves 1+ yd):
+ * body at the edge -> up 59-67%; body in front -> lateral 56-58%, up 23%; ours up 50-100% either way. Third build:
+ * attempt 1 (a reset on a time cause) and attempt 2 (a side hitch) are docs/reviews/patches/2026-11-13-qb-pocket-attempt{1,2}.patch;
+ * neither touched the climb that actually moves him. */
 const QB_POCKET = process.env.QB_POCKET === '1';
+/** QB_HONEST_FEEL (experimental, off; QB_HONEST_FEEL=1; intended on once read): his pressure picture reads only what he
+ * has perceived. Off, four things use a rusher's TRUE position: which side of his shoulder the man is on (felt(), and
+ * FREE_BOUND's lag), which decides whether he is seen at 1x or late; the distance pressure() reports beside its felt
+ * time; and where evade() steps away from. On: the shoulder test uses his plain picture of the man (see() at 1x), the
+ * distance is to the felt position, and he evades the felt position. Expect him to feel pressure a little later and
+ * less exactly; a loss is repaired by better perception (PERCEIVE_TRACK step 1b), not by the leak. */
+const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
 /** QB_POCKET, named so a reader can tell a measurement from a choice.
- * - POCKET_NEAR0 / POCKET_NEAR_PP, yd: the felt distance inside which a body in front of him turns the hitch,
+ * - POCKET_NEAR0 / POCKET_NEAR_PP, yd: the felt distance inside which the nearest body decides his feet,
  *   NEAR0 + NEAR_PP x pocketPresence. Chosen, bracketing the operator's 3 yd; the rating acts on how far out he
  *   notices, not on an outcome.
  * - POCKET_EDGE_WIDE / POCKET_EDGE_DEPTH, yd: "at the edge" is wide of him by this much and no more than this far in
  *   front of his depth. The operator's definition (1.5, 1.0), which the NFL rows are split by.
  * - POCKET_READ_SIDE, yd: his read is "to a side" when it is this far off his own y. The operator's 3 yd.
- * - POCKET_CLEAR, yd: a side spot with a felt defender within this is not taken. Chosen. */
+ * - POCKET_CLEAR, yd: a slide spot with a felt defender within this is not taken (and ends a slide under way). Chosen.
+ * - POCKET_SLIDE, yd: one slide. Chosen inside the NFL's displacement on these events (p50 0.85-1.12 yd in 0.5 s;
+ *   lateral 1.0 yd on throws held 1.5 s+).
+ * - POCKET_SLIDE_PACE, yd/s: its top pace. Chosen from the same rows (1+ yd in 0.5 s from rest needs about 3).
+ * - POCKET_RENEW, yd: the same body moves him again only when this much nearer than at his last slide. Chosen.
+ * - POCKET_MAX_T, s: a slide not reached by then is dropped. Chosen (1.25 yd at 3 yd/s from rest is about 0.6 s). */
 const POCKET_NEAR0 = 2.2;
 const POCKET_NEAR_PP = 1.2;
 const POCKET_EDGE_WIDE = 1.5;
 const POCKET_EDGE_DEPTH = 1.0;
 const POCKET_READ_SIDE = 3;
 const POCKET_CLEAR = 1.5;
+const POCKET_SLIDE = 1.25;
+const POCKET_SLIDE_PACE = 3;
+const POCKET_RENEW = 0.5;
+const POCKET_MAX_T = 0.8;
 /** Estimated (SHOULDERS_SET): how long he holds a read before his feet reset
  * to it, s: a reaction time, not fitted. Its check is the NFL shoulder angle to
  * the target at his last settled frame and the turn-angle mix (qb-release.py),
@@ -419,9 +439,12 @@ export class QBPass implements Behavior {
   private moveDir: Vec2 | null = null;
   /** QB_GATHER: the read his current hitch is to, and where it takes his feet. */
   private hitchFor: Agent | null = null;
-  /** QB_POCKET: the hitch for this read has been turned to the side (once); diagnostics: each turn. */
-  private hitchSide = false;
-  readonly sideLog: Array<{ t: number; dist: number; toRead: boolean; by: string }> = [];
+  /** QB_POCKET: the slide under way, the felt distance of each body at his last slide off it, and diagnostics (no
+   * effect): the first classification of the nearest body inside POCKET_NEAR on this dropback, and each slide. */
+  private slide: { to: Vec2; until: number } | null = null;
+  private slidAt = new Map<Agent, number>();
+  pocketFirst: { t: number; where: 'edge' | 'front'; inHands: boolean; dist: number } | null = null;
+  readonly slideLog: Array<{ t: number; dist: number; toRead: boolean; inHands: boolean; by: string; from: Vec2; end?: { t: number; why: 'there' | 'lapsed' | 'closed'; moved: number } }> = [];
   private hitchTo: Vec2 | null = null;
   private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
@@ -1324,7 +1347,10 @@ export class QBPass implements Behavior {
   private felt(a: Agent, sim: PlaySim, d: Agent): Perceived {
     // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
     // beyond 1.8 rad (about 103 deg) either side.
-    const raw = Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing;
+    // QB_HONEST_FEEL: which side of his shoulder the man is on comes from his own plain picture of him, not from where
+    // the man truly is.
+    const at = QB_HONEST_FEEL ? sim.see(a, d).pos : d.pos;
+    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
     const ang = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
     const blind = ang > 1.8;
     return sim.see(a, d, blind ? 2.2 - 1.4 * a.r('pocketPresence') : 1);
@@ -1416,7 +1442,8 @@ export class QBPass implements Behavior {
       const v = Math.max(0, (seen.vel.x * dx + seen.vel.y * dy) / R);
       t = (-v + Math.sqrt(v * v + 2 * FREE_BURST * D)) / FREE_BURST;
     }
-    const raw = Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing;
+    const at0 = QB_HONEST_FEEL ? sim.see(a, d).pos : d.pos;
+    const raw = Math.atan2(at0.y - a.pos.y, at0.x - a.pos.x) - a.body.facing;
     const blind = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
     return t + (blind ? FREE_BLIND_LAG * (1 - a.r('pocketPresence')) : 0);
   }
@@ -1433,7 +1460,8 @@ export class QBPass implements Behavior {
       if (tt < best) {
         best = tt;
         who = d;
-        dist = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
+        const dp = QB_HONEST_FEEL ? seen.pos : d.pos;
+        dist = Math.hypot(dp.x - a.pos.x, dp.y - a.pos.y);
       }
     }
     return { time: best, agent: who, dist };
@@ -1907,9 +1935,11 @@ export class QBPass implements Behavior {
   private evade(a: Agent, sim: PlaySim, threat: Agent | null): MoveCommand {
     if (!threat) return stand();
     // Step away from the rusher, climbing if he comes from the edge.
-    const away = { x: a.pos.x - threat.pos.x, y: a.pos.y - threat.pos.y };
+    // QB_HONEST_FEEL: he steps away from where he feels the man, not from where the man truly is.
+    const tp = QB_HONEST_FEEL ? this.felt(a, sim, threat).pos : threat.pos;
+    const away = { x: a.pos.x - tp.x, y: a.pos.y - tp.y };
     const l = Math.hypot(away.x, away.y) || 1;
-    const fromEdge = Math.abs(threat.pos.y - a.pos.y) > 1.5 && threat.pos.x < a.pos.x + 1;
+    const fromEdge = Math.abs(tp.y - a.pos.y) > 1.5 && tp.x < a.pos.x + 1;
     const dir = fromEdge ? { x: 0.8, y: (away.y / l) * 0.6 } : { x: away.x / l, y: away.y / l };
     const elus = 0.5 + 0.5 * a.r('elusiveness');
     return { vel: { x: dir.x * a.profile.vmax * 0.7 * elus, y: dir.y * a.profile.vmax * 0.7 * elus }, facing: 0, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
@@ -1932,16 +1962,26 @@ export class QBPass implements Behavior {
       const dy = a.pos.y - seen.y;
       const dd = Math.hypot(dx, dy);
       if (dd < 1e-3) continue;
+      if (QB_POCKET) continue; // the nearest body decides, below; no drift
       if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
       if (dd > 3.5) continue;
       const w = (3.5 - dd) / 3.5;
       fx += (dx / dd) * w;
       fy += (dy / dd) * w;
     }
+    // QB_POCKET: the nearest body he feels inside POCKET_NEAR decides. At the edge: the climb below, unchanged. In
+    // front or inside: a slide (returned here while it lasts).
+    let slideMove: Vec2 | null = null;
+    if (QB_POCKET) {
+      const d = this.pocketDecide(a, sim, read);
+      edge = d.edge;
+      slideMove = d.slide;
+    }
     const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
     const facing = this.bodyFacing(a, sim, (QB_EYES && this.eyesOn) || read);
+    if (slideMove) return goTo(a, slideMove, { speed: Math.min(1, POCKET_SLIDE_PACE / a.profile.vmax), facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') });
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a
     // pace he can still throw from, eyes still on his read.
@@ -1970,51 +2010,59 @@ export class QBPass implements Behavior {
     if (QB_GATHER && read && !edge) {
       if (this.hitchFor !== read) {
         this.hitchFor = read;
-        this.hitchSide = false;
         const seen = sim.see(a, read).pos, dx = seen.x - a.pos.x, dy = seen.y - a.pos.y, L = Math.hypot(dx, dy) || 1;
         const len = 0.5 + 0.3 * (1 - a.r('release')) + 0.2 * (1 - Math.min(1, a.player.experience / 8));
         // The hitch is up and toward him, never back: the pocket's floor is where he stands.
         const ux = Math.max(0.35, dx / L), uy = dy / L, n = Math.hypot(ux, uy);
         this.hitchTo = { x: Math.min(a.pos.x + ux / n * len, sim.los - 2.5, this.drop.x + 2.5), y: a.pos.y + uy / n * len };
       }
-      // QB_POCKET: a body he feels in front of him inside POCKET_NEAR turns this read's hitch to the side, once.
-      if (QB_POCKET && !this.hitchSide) {
-        const side = this.sideHitch(a, sim, read);
-        if (side) { this.hitchSide = true; this.hitchTo = side; }
-      }
       return goTo(a, this.hitchTo!, { speed: 0.35, facing });
     }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
   }
 
-  /** QB_POCKET: where the hitch goes when a body he feels is in front of him inside POCKET_NEAR: the same length, to
-   * the side (toward the read when it is to a side, else away from the body), at a spot no teammate or felt defender
-   * has; null when nobody is there (QB_GATHER's hitch stands) or neither side is free. On his pictures: felt() for
-   * defenders, see() for teammates and the read. */
-  private sideHitch(a: Agent, sim: PlaySim, read: Agent): Vec2 | null {
+  /** QB_POCKET: the one decision for his feet, on his pictures (felt() for defenders, see() for teammates and the
+   * read). Returns whether the nearest body inside POCKET_NEAR is at the edge (the caller climbs), and the slide
+   * destination while a slide is decided or under way. */
+  private pocketDecide(a: Agent, sim: PlaySim, read: Agent | undefined): { edge: boolean; slide: Vec2 | null } {
+    const t = sim.t;
+    const felt = sim.defense.filter((d) => !d.isDown(t)).map((d) => ({ d, pos: this.felt(a, sim, d).pos }));
+    const clearOf = (q: Vec2) => felt.every(({ pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) >= POCKET_CLEAR);
+    if (this.slide) {
+      const s = this.slide, left = Math.hypot(s.to.x - a.pos.x, s.to.y - a.pos.y);
+      if (left > 0.25 && t < s.until && clearOf(s.to)) return { edge: false, slide: s.to };
+      const rec = this.slideLog[this.slideLog.length - 1];
+      if (rec && !rec.end) rec.end = { t, why: left <= 0.25 ? 'there' : t >= s.until ? 'lapsed' : 'closed', moved: Math.hypot(a.pos.x - rec.from.x, a.pos.y - rec.from.y) };
+      this.slide = null;
+    }
     const near = POCKET_NEAR0 + POCKET_NEAR_PP * a.r('pocketPresence');
-    const felt = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => ({ d, pos: this.felt(a, sim, d).pos }));
     let by: { d: Agent; pos: Vec2 } | null = null, bd = near;
     for (const f of felt) {
       const dd = Math.hypot(f.pos.x - a.pos.x, f.pos.y - a.pos.y);
-      const edge = Math.abs(f.pos.y - a.pos.y) > POCKET_EDGE_WIDE && f.pos.x <= a.pos.x + POCKET_EDGE_DEPTH;
-      if (dd <= bd && !edge) { by = f; bd = dd; }
+      if (dd <= bd) { by = f; bd = dd; }
     }
-    if (!by) return null;
-    const len = 0.5 + 0.3 * (1 - a.r('release')) + 0.2 * (1 - Math.min(1, a.player.experience / 8));
-    const rp = sim.see(a, read).pos;
-    const toRead = Math.abs(rp.y - a.pos.y) >= POCKET_READ_SIDE;
-    const first = toRead ? Math.sign(rp.y - a.pos.y) : Math.sign(a.pos.y - by.pos.y) || Math.sign(a.pos.y - sim.ballY) || 1;
-    const mates = sim.offense.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ o, pos: sim.see(a, o).pos }));
+    if (!by) return { edge: false, slide: null };
+    const edge = Math.abs(by.pos.y - a.pos.y) > POCKET_EDGE_WIDE && by.pos.x <= a.pos.x + POCKET_EDGE_DEPTH;
+    const inHands = this.held(a, by.d, sim) > 0;
+    this.pocketFirst ??= { t, where: edge ? 'edge' : 'front', inHands, dist: bd };
+    if (edge) return { edge: true, slide: null };
+    // In front or inside: one slide per body until it is clearly nearer.
+    const last = this.slidAt.get(by.d);
+    if (last !== undefined && bd > last - POCKET_RENEW) return { edge: false, slide: null };
+    this.slidAt.set(by.d, bd);
+    const rp = read ? sim.see(a, read).pos : null;
+    const toRead = !!rp && Math.abs(rp.y - a.pos.y) >= POCKET_READ_SIDE;
+    const first = toRead ? Math.sign(rp!.y - a.pos.y) : Math.sign(a.pos.y - by.pos.y) || Math.sign(a.pos.y - sim.ballY) || 1;
+    const mates = sim.offense.filter((o) => o !== a && !o.isDown(t)).map((o) => ({ o, pos: sim.see(a, o).pos }));
     for (const sg of [first, -first]) {
-      const q = { x: a.pos.x, y: a.pos.y + sg * len };
-      if (q.y < 1 || q.y > FIELD_WIDTH - 1) continue;
-      if (felt.some(({ pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) < POCKET_CLEAR)) continue;
+      const q = { x: a.pos.x, y: a.pos.y + sg * POCKET_SLIDE };
+      if (q.y < 1 || q.y > FIELD_WIDTH - 1 || !clearOf(q)) continue;
       if (mates.some(({ o, pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) < o.profile.radius + a.profile.radius)) continue;
-      this.sideLog.push({ t: sim.t, dist: bd, toRead: toRead && sg === first, by: by.d.slot });
-      return q;
+      this.slide = { to: q, until: t + POCKET_MAX_T };
+      this.slideLog.push({ t, dist: bd, toRead: toRead && sg === first, inHands, by: by.d.slot, from: { x: a.pos.x, y: a.pos.y } });
+      return { edge: false, slide: q };
     }
-    return null;
+    return { edge: false, slide: null };
   }
 
   /** SET_DECIDE: a rusher as he sees him closing. His delayed picture is carried
