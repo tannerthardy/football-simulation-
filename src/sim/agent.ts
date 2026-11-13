@@ -169,6 +169,12 @@ export class Agent {
    * shown (not holding, or not modelled). Set by its owner's controller (the QB lane's out-of-pocket work); opponents
    * read it only through perception. */
   carryPosture: 'up' | 'tucked' | null = null;
+  /** Seen contact: the opponents his body is in physical contact with this tick (a block, a hand fight, a grip or a
+   * tackle hold), strongest first, at most two (a double); and whether an opponent is holding him. Written from
+   * physics in `PlaySim.tick`; others read it only through perception (`src/sim/seen-contact.ts`). The two men in
+   * contact feel it directly (touch); this is what everyone else sees. */
+  contactWith: number[] = [];
+  held = false;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */
