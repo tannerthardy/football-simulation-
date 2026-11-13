@@ -1,0 +1,57 @@
+{
+  "schema": "run-fit-recovery-final-checks-v1",
+  "source": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "sourceStillFrozen": true,
+  "fullTests": {
+    "passed": 1074,
+    "files": 93,
+    "failed": 0,
+    "scope": "Full suite before type-only recovery fixture narrowing fix; final identical-runtime fixture rerun15/15 afterward. New saved-only exporter independently verified by compiler and actual browser."
+  },
+  "finalRecoveryFixture": {
+    "sha256": "2d043225faf9fcca35fe8db1a6aec8bea2828ba56dbbeacc9d520c697713a049",
+    "pass": 15,
+    "baselinePass": 13,
+    "baselineExpectedFeatureFailures": 2
+  },
+  "pythonTests": {
+    "passed": 66,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "build": "passed",
+  "browser": {
+    "checksPassed": 38,
+    "javascriptErrors": 0,
+    "clips": 48,
+    "decodedVideoFrames": 43
+  },
+  "retainedFailures": [
+    "Initial recovery test TS narrowing issue; fixed without changing runtime guard/assertions.",
+    "New exporter excess metadata typing issue; fixed before final exporter/typecheck/build/browser checks."
+  ],
+  "cost": {
+    "node": "v22.23.3",
+    "sequentialGamesPerPhase": 2,
+    "seed": 9,
+    "plays": [
+      390,
+      382
+    ],
+    "cpuMsPerPlay": [
+      105.49004102564102,
+      96.72748691099477
+    ],
+    "cpuPercentChange": -8.3065226152641,
+    "limits": "Coarse guard; trajectories/play counts differ, no repeats, no general speedup claim."
+  },
+  "checkedByteHashes": {
+    "out/run-fit-follow-up/tests-final.log": "d6c5a6179f7af2bcbea7d678d5d6973eddb93760118b2645d04f42876a8b52e8",
+    "out/run-fit-follow-up/tests-final.json": "e475793a67c896af089f3113617dec0be31eabf13f717cbe2ed3a9469c20dca1",
+    "out/run-fit-follow-up/typecheck-pass.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "out/run-fit-follow-up/build-pass.log": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d",
+    "out/run-fit-follow-up/python-final.log": "d813505dac2b9aad77448585545df854eee5afa171f672c2c826e23957ec9c69",
+    "out/run-fit-follow-up/cost-baseline.json": "cc92128580da187e5e4328fa5eaf9a9757599fb4b087707810676987f5907e6f",
+    "out/run-fit-follow-up/cost-final.json": "0a0d35d397a73c7ce3551b55221da39195e710406f50de3f5c694348c1c472d5"
+  }
+}

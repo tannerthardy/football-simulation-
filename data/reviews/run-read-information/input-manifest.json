@@ -1,0 +1,878 @@
+{
+  "inputs": [
+    {
+      "id": "oz_strong s3 31/32 over",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s3 31/32 over flip",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s3 31/32 under",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s3 31/32 under flip",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s3 41/42 over",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s3 41/42 over flip",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s3 41/42 under",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s3 41/42 under flip",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s3 51/52 over",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s3 51/52 over flip",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s3 51/52 under",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s3 51/52 under flip",
+      "run": "oz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s7 31/32 over",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s7 31/32 over flip",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s7 31/32 under",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s7 31/32 under flip",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s7 41/42 over",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s7 41/42 over flip",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s7 41/42 under",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s7 41/42 under flip",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s7 51/52 over",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s7 51/52 over flip",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s7 51/52 under",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s7 51/52 under flip",
+      "run": "oz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s3 31/32 over",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s3 31/32 over flip",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s3 31/32 under",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s3 31/32 under flip",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s3 41/42 over",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s3 41/42 over flip",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s3 41/42 under",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s3 41/42 under flip",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s3 51/52 over",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s3 51/52 over flip",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s3 51/52 under",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s3 51/52 under flip",
+      "run": "wz_strong",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s7 31/32 over",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s7 31/32 over flip",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s7 31/32 under",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s7 31/32 under flip",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s7 41/42 over",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s7 41/42 over flip",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s7 41/42 under",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s7 41/42 under flip",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s7 51/52 over",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s7 51/52 over flip",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s7 51/52 under",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s7 51/52 under flip",
+      "run": "wz_strong",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s3 31/32 over",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s3 31/32 over flip",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s3 31/32 under",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s3 31/32 under flip",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s3 41/42 over",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s3 41/42 over flip",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s3 41/42 under",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s3 41/42 under flip",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s3 51/52 over",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s3 51/52 over flip",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s3 51/52 under",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s3 51/52 under flip",
+      "run": "oz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s7 31/32 over",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s7 31/32 over flip",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s7 31/32 under",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s7 31/32 under flip",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s7 41/42 over",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s7 41/42 over flip",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s7 41/42 under",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s7 41/42 under flip",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s7 51/52 over",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s7 51/52 over flip",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s7 51/52 under",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s7 51/52 under flip",
+      "run": "oz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s3 31/32 over",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s3 31/32 over flip",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s3 31/32 under",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s3 31/32 under flip",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s3 41/42 over",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s3 41/42 over flip",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s3 41/42 under",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s3 41/42 under flip",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s3 51/52 over",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s3 51/52 over flip",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s3 51/52 under",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s3 51/52 under flip",
+      "run": "wz_weak",
+      "seed": 3,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s7 31/32 over",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s7 31/32 over flip",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s7 31/32 under",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s7 31/32 under flip",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 31,
+      "d": 32,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s7 41/42 over",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s7 41/42 over flip",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s7 41/42 under",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s7 41/42 under flip",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 41,
+      "d": 42,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s7 51/52 over",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s7 51/52 over flip",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s7 51/52 under",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s7 51/52 under flip",
+      "run": "wz_weak",
+      "seed": 7,
+      "o": 51,
+      "d": 52,
+      "front": "under",
+      "flip": true
+    }
+  ],
+  "flowArms": [
+    "current",
+    "hold",
+    "over"
+  ],
+  "readArms": [
+    "off",
+    "on"
+  ],
+  "originalStop": 8
+}

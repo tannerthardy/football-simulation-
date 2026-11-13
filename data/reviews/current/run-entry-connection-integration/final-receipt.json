@@ -1,0 +1,233 @@
+{
+  "schema": "run-entry-connection-integration-final-v1",
+  "pr": 112,
+  "previousAcceptedDevelop": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+  "testedCommit": "df900af6960988dc2eca4bb2ba220ce4ac126cc1",
+  "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "validationSha256": "accb9a7506f05b82578ff2bb4cdf848123e23a40f90de60af58b178f2cb9c638",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1906,
+    "typescriptFiles": 164,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 110,
+      "head": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+      "branch": "codex/acquired-run-crease",
+      "implementation": "d157356379ec387a8548e95775d8377e317b7e89",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/110#issuecomment-6226203965",
+          "body": "Independent Do-It-All review: **ACCEPT #110's runner-only extraction** at d157356379ec387a8548e95775d8377e317b7e89/heada32bdfb4645c87947dc46089d1e7a9cab11a227d, accepted c3264b0bad72bd2c208602e0ecf0461c00d9669f. **Recommend it together with independently accepted final #111** for Integration verification, preserving separate scope/history. [Pinned adjudication and exact extraction](https://github.com/tannerthardy/football-simulation-/blob/de3de0c3503aac9a6415a9e1ab28ed4e68c7b879/docs/reviews/pr110-111-independent-review.md), review commit de3de0c3503aac9a6415a9e1ab28ed4e68c7b879, branch codex/pr110-111-review. Standalone110.patch is carrier.ts + carrier-crease test + corrected opponent-information test; combined scope is three runtime/three test files.\n\nThe entry reader uses acquired position/motion/pose, includes occupied endpoints, retains down defenders' future risk and honors positive/null press cadence. A passing teammate cannot create phantom retention. Current own momentum enters the existing reach estimate; the dogleg's second leg remains approximate. The .7-radius obstruction term is a soft scoring heuristic, not a body/profile/World shrink or guaranteed clear path. Existing general-carrier, lead/kick and command information shortcuts remain outside this correction. No new perception, memory, unknown-motion transport or whole-route admission guarantee.\n\nThe old exact-y assertion replacement is defensible: both old/new routes must clear acquired bodies using full radii in the same corridor. Preserve original failed receipts. Preserve #110's Duo SS contact3.45\u21923.25s despite useful RT/Mike load through3.50; no terminal claim. Fresh IZ/Under3 final4.35\u21923.67 remains adverse despite later/deeper entry. Strong ending requires #111 interaction and small score margins; do not attribute later execution yards to reader alone. CLIMB_EXIT/other original experimental scopes remain held.\n\nReused source-qualified65 focused/typecheck, native controls and #111 interaction; no new tests/simulations or shared-suite repeat. Report explicitly qualifies the reused three-case all-off experimental source6753 versus literal accepted4658; its44 shared settings match and candidate branches are disabled. Exact reader/source811cd00 and combinedbed3c36 fingerprints independently reconstructed. Integration owns combined verification/adoption, no merge."
+        }
+      ]
+    },
+    {
+      "pr": 111,
+      "head": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+      "branch": "codex/stretch-protection-access",
+      "implementation": "bc02b22fa8ed4c985bbf7863eb58c914a4f53675",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/111#issuecomment-6226203344",
+          "body": "Independent Do-It-All review: **ACCEPT final #111 and ACCEPT its minimal #110 composition for Integration's exact combined verification.** Final code bc02b22fa8ed4c985bbf7863eb58c914a4f53675/head411639c75734e9f75d8313f6d769318e46c9d1e0. #110 code d157356379ec387a8548e95775d8377e317b7e89/heada32bdfb4645c87947dc46089d1e7a9cab11a227d. Accepted develop c3264b0bad72bd2c208602e0ecf0461c00d9669f and both heads rechecked unchanged before publication.\n\n[Immutable review](https://github.com/tannerthardy/football-simulation-/blob/de3de0c3503aac9a6415a9e1ab28ed4e68c7b879/docs/reviews/pr110-111-independent-review.md); review/extraction branch codex/pr110-111-review, commit **de3de0c3503aac9a6415a9e1ab28ed4e68c7b879**. [Six-file portable composition](https://github.com/tannerthardy/football-simulation-/blob/de3de0c3503aac9a6415a9e1ab28ed4e68c7b879/data/reviews/current/pr110-111-review/110-111.patch), SHA256 **1b736ee49ae6cca863c38a6ec30e9ba660e1b62b0d5590919abd39f571e703c7**. Three runtime files/three tests; exact blobs match final authors and runtime source equals3015ed71e3005536bf9f6aac37c74d6c73e7bfc8/bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616. Add both proper #110 tests missing from that diagnostic host. No diagnostic ancestry, flags, departure or Physics retention change.\n\nThe final gap is normal travel to torso clearance holding perpendicular offset/current side, rather than radial distance or a radial-gradient attenuation. It uses the emitted component while preserving original vector magnitude, feed-forward, gain/clamps, lateral work, anchor and physical budgets. Original contactMotion composition remains unchanged. Reuse mirrored real-hook, aligned/oblique, component/rotated-frame and through-block tackle controls. Reject df8a2a8; its failed oblique controls and weak protection loss remain.\n\nReacting strong evidence is useful achieved access: first changed acquired route choice1.95s, own runner body still equal; peer pictures legitimately differ after blocking movement. Body first differs2.00s, so no instantaneous turn is assumed. RB clears outside the loaded Y/end before CB contact3.30s/+.83yd. Neither isolated patch rescues this witness. Margins remain small: inside/outside .050796 before/.101615 after, nearest final competing outside entry .018063. No guaranteed route or robust league-gain claim.\n\nPreserve closure-only weak\u2212.03\u2192\u2212.14; reader+closure weak contact .05s earlier/.26yd nearerLOS despite4.96\u21925.34 gain; fresh WZ Under3 contact .10s earlier/.11yd nearerLOS despite2.62\u21923.04. Duo exactness means closure versus corresponding arm: #110 itself brings SS contact .20s earlier; both are censored3.50. Seven final windows have zero positive offensive teammate impulses. Solved hand-load magnitude is not automatically blocker-owned retention; Physics's ownership/tackle boundary remains separate.\n\nProvenance qualification: old three-case reference uses source6753fa98/all five experimental flags0, not literal accepted4658 source. Shared44 settings match; inactive-branch/pure-read audit supports behavior-equivalent reuse without relabeling its source. Strong reader\u2192both comparison is exact811cd00\u2192bed3c36. Published65/66 focused checks/typechecks reused; final source/validation pairs match. Zero new behavioral tests/typechecks/native continuations/games, no Integration suite repeated. Source/patch audit0.313s, initial reviewer receipt-selector failure retained. Integration owns one exact combined verification and adoption; no merge performed."
+        }
+      ]
+    }
+  ],
+  "reviewCommit": "de3de0c3503aac9a6415a9e1ab28ed4e68c7b879",
+  "exactReviewedBlobs": {
+    "src/sim/behaviors/carrier.ts": "04cf8dc3e32f535fc5bb088e3be2c73590283e25",
+    "test/carrier-crease.test.ts": "6164ffbf33af3be1d43aecd6eb89e17ed263477e",
+    "test/run-entry-opponent-information.test.ts": "8edfbf85bf41a7e292bbbcc66c540628342371ad",
+    "src/sim/contact-motion.ts": "0c2e8a9c95583781fd9a6a08274a2a41ef65c29e",
+    "src/sim/engagement.ts": "7f880da93024f127f77866962b63b2d311b4c314",
+    "test/stretch-closure.test.ts": "9a7ff748e12b5b447a8869fb59ce9e601bd41ead"
+  },
+  "reusedFocusedEvidence": [
+    {
+      "pr": 110,
+      "focusedAssertions": 65,
+      "source": "811cd00e20ea564a12d446f5d79bf280386c5c07774d32015c8ec7b43a95d4d7",
+      "validation": "441f93f8c4cccaa7be5b00876d5fa31b6c533b29434168fe8bbcdf8082738a42",
+      "focusedReceiptPaths": [
+        "out/baseline/run-1792188365087-329418.json",
+        "out/acquired-crease/focused-receipt.json"
+      ],
+      "typecheckReceiptPaths": [
+        "out/acquired-crease/typecheck-receipt.json"
+      ],
+      "retainedReceipts": 14,
+      "qualification": "Counts overlap; not131 unique checks. Historical failures and native sources remain as recorded; this is evidence reuse, not new execution."
+    },
+    {
+      "pr": 111,
+      "focusedAssertions": 66,
+      "source": "626836315cccc12ad1e5ab438f7a4e5a25a0b2db3b24c23396f3af4ea02d7fcf",
+      "validation": "bebac90a9367483b591a82cd3aa33daff891012b22e3b86417e9e49673a11763",
+      "focusedReceiptPaths": [
+        "out/stretch-access/final-focused-receipt.json"
+      ],
+      "typecheckReceiptPaths": [
+        "out/stretch-access/final-typecheck-receipt.json"
+      ],
+      "retainedReceipts": 16,
+      "qualification": "Counts overlap; not131 unique checks. Historical failures and native sources remain as recorded; this is evidence reuse, not new execution."
+    }
+  ],
+  "adverseEvidence": [
+    "Strong achieved access requires both patches and has small score margins; no robust league claim.",
+    "Combined weak contact is0.05s earlier/0.26yd nearer LOS; closure-only weak gain is0.11yd worse.",
+    "#110 fresh IZ gain4.35\u21923.67 is adverse despite later/deeper first contact.",
+    "Duo identity applies only to adding111 to corresponding arm;110 itself advances SS contact3.45\u21923.25s; both prefix-censored3.50s.",
+    "Fresh closure-only WZ contact0.10s earlier/0.11yd nearer LOS despite gain2.62\u21923.04."
+  ],
+  "scopeLimits": [
+    "Acquired entry is heuristic scoring, not whole-route certification; soft .7 radius obstruction term does not change body/World radius.",
+    "Dogleg second-leg timing approximate; inherited general-carrier/lead/kick/information shortcuts remain.",
+    "#111 changes controller foot requests only; contactMotion composition, gain/clamps/feed-forward/anchor/capacities/laws unchanged.",
+    "Old three-case reference is all-off experimental source6753fa98, not literal accepted4658. Preserve provenance; strongest reader\u2192both comparison is811cd00\u2192bed3c36.",
+    "Full tapes remain local; compact source/input/settings/requests/poses/load and bounded collectors are fetchable; no release asset claimed."
+  ],
+  "excluded": [
+    "rejected df8a2a8 gradient",
+    "CLIMB_EXIT and other departure/release experiments",
+    "original experimental bundle and diagnostic ancestry",
+    "Physics hand-retention/tackle ownership or force-law changes",
+    "101 tooling repair and panel/game evaluation"
+  ],
+  "verification": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.056835647
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.801126864
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 190.623817526
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.8391344680000038
+      }
+    ],
+    "combinedRuns": 1,
+    "combinedCommandSeconds": 213.32091450500002,
+    "newFocusedExecutions": 0,
+    "additionalStandaloneNativeExecutions": 0,
+    "additionalEvaluationGames": 0,
+    "additionalPanels": 0,
+    "qualification": "Existing integration/game assertions remain part of the required preserved full suite. Focused author checks and historical reacting evidence are reused, not re-executed or relabeled current-source outcomes."
+  },
+  "artifacts": {
+    "extraction-audit.json": {
+      "bytes": 4955,
+      "sha256": "7ba032e0fbaf006ad5ef6dbba9e99b4efe49864eeb936b1d19512e3b7a4863b1"
+    },
+    "final-combined.json": {
+      "bytes": 2625,
+      "sha256": "b91a703bcd841461b0912da4580d0776db4a3522388ea633d973f27e3c3e4c9b"
+    },
+    "final-combined.log": {
+      "bytes": 16242,
+      "sha256": "2d3a332b203d57d720db58c59cfea4c66b709d973d0bf7bf28ba8fb3bc1a41ce"
+    },
+    "intake.json": {
+      "bytes": 9222,
+      "sha256": "18e1240a966065691c548e56207c68484a8320ce93b33bd24ee98393d44be5fa"
+    }
+  }
+}

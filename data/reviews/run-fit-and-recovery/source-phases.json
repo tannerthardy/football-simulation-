@@ -1,0 +1,14 @@
+{
+  "parentCommit": "9c3c809af5506fa6882831b1f36602ed07684d02",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "finalSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "archive": "out/run-fit-follow-up/final-source",
+  "hashConvention": "scripts/source-version.ts: full relative filename lexical order, filename NUL bytes NUL",
+  "components": {
+    "possessionFoundation": "dc9590708bf18de096e5e4ae62ff43b2a7fbdbc95113bb1470ef407011482f2d",
+    "drawOnly": "fe93ba60a2fd18f7721386db9c2862edcdeb0a4c0d6cac835ba30bcbb60e11be",
+    "recoveryOnly": "0863dc038fd1f5046cf47bb6ff49096dc554807cbdcf1f50039b94e011c6e74c",
+    "selectedDuo": "Baseline Game and World; only selected-snap ManCoverage/keyedRunFit methods and delayed possession channel from final source. Explicit counterfactual, not final native engine."
+  }
+}

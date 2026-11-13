@@ -1,0 +1,2320 @@
+{
+  "schema": "run-sequence-completion-summary-v1",
+  "source_result_sha256": "0ffa01542282b81451f0ac6ca9ea6aa594e8120ebb48ecd087495cdd4f34c8d3",
+  "status": "complete",
+  "requested": 12,
+  "measured": 12,
+  "exclusions": {},
+  "tracking_groups_attempted": 12,
+  "operator_sha256": "a317bc1faa905f14e9c8b861a7753a12560e25349e15c2ca2a639621c96ffacf",
+  "selection_sha256": "2a51aa93e2f29d2fdb09c4e27c21f3385ceeba78765380ecaa75da5b5585ff63",
+  "sample_validity_issues": {},
+  "phase_availability": {
+    "available": 129,
+    "anchor_not_observed": 3
+  },
+  "ending_types": {
+    "tackle": 10,
+    "out_of_bounds": 2
+  },
+  "defender_arrival_states": {
+    "not_reached_known_terminal": 57,
+    "observed_crossing": 75
+  },
+  "alignment_exposure": {
+    "other": {
+      "defenders": 73,
+      "arrivals": 31,
+      "arrivals_at_or_before_first_contact": 19,
+      "interposed_arrivals": 14,
+      "interposed_with_continuous_prearrival_nearness": 11,
+      "interposed_at_or_before_first_contact": 8,
+      "arrivals_after_first_contact": 12,
+      "interposed_after_first_contact": 6
+    },
+    "front_alignment_proxy": {
+      "defenders": 35,
+      "arrivals": 30,
+      "arrivals_at_or_before_first_contact": 13,
+      "interposed_arrivals": 11,
+      "interposed_with_continuous_prearrival_nearness": 10,
+      "interposed_at_or_before_first_contact": 2,
+      "arrivals_after_first_contact": 17,
+      "interposed_after_first_contact": 9
+    },
+    "second_level_alignment_proxy": {
+      "defenders": 24,
+      "arrivals": 14,
+      "arrivals_after_first_contact": 12,
+      "interposed_arrivals": 3,
+      "interposed_with_continuous_prearrival_nearness": 3,
+      "interposed_after_first_contact": 2,
+      "arrivals_at_or_before_first_contact": 2,
+      "interposed_at_or_before_first_contact": 1
+    }
+  },
+  "by_provider_concept": {
+    "COUNTER": {
+      "plays": 1,
+      "knownEndings": 1,
+      "firstLOSObserved": 1,
+      "firstContactObserved": 1,
+      "playMeanFrontSignedLateralDisplacementAtLOS": {
+        "n": 1,
+        "mean": -5.873,
+        "p10": -5.873,
+        "p50": -5.873,
+        "p90": -5.873
+      },
+      "playMeanFrontAbsoluteLateralDisplacementAtLOS": {
+        "n": 1,
+        "mean": 5.873,
+        "p10": 5.873,
+        "p50": 5.873,
+        "p90": 5.873
+      },
+      "arrivalGeometryExposure": {
+        "arrivedDefenders": 3,
+        "fullyObservedDefenderArrivals": 3
+      },
+      "playFractionFullyObservedArrivalDefendersWithAnyGeometricInterposition": {
+        "n": 1,
+        "mean": 0.0,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    },
+    "INSIDE ZONE": {
+      "plays": 2,
+      "knownEndings": 2,
+      "firstLOSObserved": 2,
+      "firstContactObserved": 2,
+      "playMeanFrontSignedLateralDisplacementAtLOS": {
+        "n": 2,
+        "mean": 0.028,
+        "p10": -3.83,
+        "p50": -3.83,
+        "p90": -3.83
+      },
+      "playMeanFrontAbsoluteLateralDisplacementAtLOS": {
+        "n": 2,
+        "mean": 3.858,
+        "p10": 3.83,
+        "p50": 3.83,
+        "p90": 3.83
+      },
+      "arrivalGeometryExposure": {
+        "arrivedDefenders": 13,
+        "fullyObservedDefenderArrivals": 13
+      },
+      "playFractionFullyObservedArrivalDefendersWithAnyGeometricInterposition": {
+        "n": 2,
+        "mean": 0.163,
+        "p10": 0.125,
+        "p50": 0.125,
+        "p90": 0.125
+      }
+    },
+    "MAN": {
+      "plays": 2,
+      "knownEndings": 2,
+      "firstLOSObserved": 2,
+      "firstContactObserved": 2,
+      "playMeanFrontSignedLateralDisplacementAtLOS": {
+        "n": 2,
+        "mean": 0.459,
+        "p10": 0.365,
+        "p50": 0.365,
+        "p90": 0.365
+      },
+      "playMeanFrontAbsoluteLateralDisplacementAtLOS": {
+        "n": 2,
+        "mean": 1.443,
+        "p10": 0.365,
+        "p50": 0.365,
+        "p90": 0.365
+      },
+      "arrivalGeometryExposure": {
+        "arrivedDefenders": 12,
+        "fullyObservedDefenderArrivals": 12
+      },
+      "playFractionFullyObservedArrivalDefendersWithAnyGeometricInterposition": {
+        "n": 2,
+        "mean": 0.314,
+        "p10": 0.2,
+        "p50": 0.2,
+        "p90": 0.2
+      }
+    },
+    "OUTSIDE ZONE": {
+      "plays": 5,
+      "knownEndings": 5,
+      "firstLOSObserved": 5,
+      "firstContactObserved": 5,
+      "playMeanFrontSignedLateralDisplacementAtLOS": {
+        "n": 5,
+        "mean": -4.739,
+        "p10": -13.617,
+        "p50": -7.633,
+        "p90": 4.38
+      },
+      "playMeanFrontAbsoluteLateralDisplacementAtLOS": {
+        "n": 5,
+        "mean": 8.515,
+        "p10": 4.38,
+        "p50": 7.633,
+        "p90": 11.887
+      },
+      "arrivalGeometryExposure": {
+        "arrivedDefenders": 35,
+        "fullyObservedDefenderArrivals": 35
+      },
+      "playFractionFullyObservedArrivalDefendersWithAnyGeometricInterposition": {
+        "n": 5,
+        "mean": 0.396,
+        "p10": 0.2,
+        "p50": 0.333,
+        "p90": 0.556
+      }
+    },
+    "POWER": {
+      "plays": 1,
+      "knownEndings": 1,
+      "firstLOSObserved": 1,
+      "firstContactObserved": 1,
+      "playMeanFrontSignedLateralDisplacementAtLOS": {
+        "n": 1,
+        "mean": 0.12,
+        "p10": 0.12,
+        "p50": 0.12,
+        "p90": 0.12
+      },
+      "playMeanFrontAbsoluteLateralDisplacementAtLOS": {
+        "n": 1,
+        "mean": 0.6,
+        "p10": 0.6,
+        "p50": 0.6,
+        "p90": 0.6
+      },
+      "arrivalGeometryExposure": {
+        "arrivedDefenders": 6,
+        "fullyObservedDefenderArrivals": 6
+      },
+      "playFractionFullyObservedArrivalDefendersWithAnyGeometricInterposition": {
+        "n": 1,
+        "mean": 0.333,
+        "p10": 0.333,
+        "p50": 0.333,
+        "p90": 0.333
+      }
+    },
+    "SNEAK": {
+      "plays": 1,
+      "knownEndings": 1,
+      "firstLOSObserved": 1,
+      "firstContactObserved": 1,
+      "playMeanFrontSignedLateralDisplacementAtLOS": {
+        "n": 1,
+        "mean": -2.172,
+        "p10": -2.172,
+        "p50": -2.172,
+        "p90": -2.172
+      },
+      "playMeanFrontAbsoluteLateralDisplacementAtLOS": {
+        "n": 1,
+        "mean": 2.172,
+        "p10": 2.172,
+        "p50": 2.172,
+        "p90": 2.172
+      },
+      "arrivalGeometryExposure": {
+        "arrivedDefenders": 6,
+        "fullyObservedDefenderArrivals": 6
+      },
+      "playFractionFullyObservedArrivalDefendersWithAnyGeometricInterposition": {
+        "n": 1,
+        "mean": 0.833,
+        "p10": 0.833,
+        "p50": 0.833,
+        "p90": 0.833
+      }
+    }
+  },
+  "plays": [
+    {
+      "game_id": "2022091200",
+      "play_id": "64",
+      "provider_concept": "OUTSIDE ZONE",
+      "front_proxy": "Other_or_ambiguous",
+      "official_yards": 0.0,
+      "carrier_id": "46096",
+      "first_los_seconds": 3.3,
+      "first_contact_seconds": 3.5,
+      "known_end_seconds": 4.5,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 13.616666666666667,
+      "arrival_geometry": {
+        "arrivals": 3,
+        "arrivals_at_or_before_first_contact": 2,
+        "interposed_arrivals": 1,
+        "interposed_with_continuous_prearrival_nearness": 1,
+        "interposed_at_or_before_first_contact": 1,
+        "arrivals_after_first_contact": 1,
+        "interposed_after_first_contact": 0
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 148,
+          "state": "valid",
+          "speed": 6.34
+        },
+        "post0p3": {
+          "frameId": 152,
+          "state": "valid",
+          "speed": 5.37
+        },
+        "post0p5": {
+          "frameId": 154,
+          "state": "valid",
+          "speed": 4.33
+        },
+        "contactToKnownEndingSeconds": 1.0,
+        "physicalNetProgressAfterLabel": 0.990000000000002,
+        "creditedProgressAfterLabel": -0.36000122070309715
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35459",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42393",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42403",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42826",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.4,
+          "interposed_candidate_ids": [
+            "41310"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "41310"
+          ]
+        },
+        {
+          "nfl_id": "42929",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.8,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43387",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "45011",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46074",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47854",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52706",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53438",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "180",
+      "provider_concept": "INSIDE ZONE",
+      "front_proxy": "Other_or_ambiguous",
+      "official_yards": 4.0,
+      "carrier_id": "46096",
+      "first_los_seconds": 2.3,
+      "first_contact_seconds": 2.4,
+      "known_end_seconds": 4.1,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 3.886666666666668,
+      "arrival_geometry": {
+        "arrivals": 5,
+        "arrivals_after_first_contact": 2,
+        "interposed_arrivals": 1,
+        "interposed_with_continuous_prearrival_nearness": 1,
+        "interposed_after_first_contact": 0,
+        "arrivals_at_or_before_first_contact": 3,
+        "interposed_at_or_before_first_contact": 1
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 77,
+          "state": "valid",
+          "speed": 5.46
+        },
+        "post0p3": {
+          "frameId": 81,
+          "state": "valid",
+          "speed": 3.67
+        },
+        "post0p5": {
+          "frameId": 83,
+          "state": "valid",
+          "speed": 2.95
+        },
+        "contactToKnownEndingSeconds": 1.7,
+        "physicalNetProgressAfterLabel": 2.8299999999999983,
+        "creditedProgressAfterLabel": 3.0999984741210938
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35459",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "40347",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.6,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42393",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42826",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42929",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43387",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46074",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.4,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47854",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 1.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52706",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.5,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53438",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53534",
+          "position": "ILB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.2,
+          "interposed_candidate_ids": [
+            "47803"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "47803"
+          ]
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "315",
+      "provider_concept": "OUTSIDE ZONE",
+      "front_proxy": "Odd_or_reduced_proxy",
+      "official_yards": 9.0,
+      "carrier_id": "53464",
+      "first_los_seconds": 3.4,
+      "first_contact_seconds": 4.3,
+      "known_end_seconds": 4.8,
+      "ending_types": [
+        "out_of_bounds"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 11.886666666666665,
+      "arrival_geometry": {
+        "arrivals": 9,
+        "arrivals_after_first_contact": 4,
+        "interposed_arrivals": 3,
+        "interposed_with_continuous_prearrival_nearness": 2,
+        "interposed_after_first_contact": 2,
+        "arrivals_at_or_before_first_contact": 5,
+        "interposed_at_or_before_first_contact": 1
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 249,
+          "state": "valid",
+          "speed": 8.63
+        },
+        "post0p3": {
+          "frameId": 253,
+          "state": "valid",
+          "speed": 8.36
+        },
+        "post0p5": {
+          "frameId": 255,
+          "state": "valid",
+          "speed": 8.43
+        },
+        "contactToKnownEndingSeconds": 0.5,
+        "physicalNetProgressAfterLabel": 3.7900000000000063,
+        "creditedProgressAfterLabel": 2.789996948242205
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35562",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.6,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "41464",
+          "position": "DT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42543",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.4,
+          "interposed_candidate_ids": [
+            "48096"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "44818",
+          "position": "SS",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46117",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.2,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46487",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.7,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47871",
+          "position": "MLB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.7,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47941",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.4,
+          "interposed_candidate_ids": [
+            "48096"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "48096"
+          ]
+        },
+        {
+          "nfl_id": "52435",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52456",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.8,
+          "interposed_candidate_ids": [
+            "46109"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "46109"
+          ]
+        },
+        {
+          "nfl_id": "54618",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "375",
+      "provider_concept": "MAN",
+      "front_proxy": "Other_or_ambiguous",
+      "official_yards": 10.0,
+      "carrier_id": "53464",
+      "first_los_seconds": 3.4,
+      "first_contact_seconds": 5.1,
+      "known_end_seconds": 5.7,
+      "ending_types": [
+        "out_of_bounds"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 2.5199999999999996,
+      "arrival_geometry": {
+        "arrivals": 5,
+        "arrivals_at_or_before_first_contact": 5,
+        "interposed_arrivals": 1,
+        "interposed_with_continuous_prearrival_nearness": 0,
+        "interposed_at_or_before_first_contact": 1
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 144,
+          "state": "valid",
+          "speed": 8.63
+        },
+        "post0p3": {
+          "frameId": 148,
+          "state": "valid",
+          "speed": 7.61
+        },
+        "post0p5": {
+          "frameId": 150,
+          "state": "valid",
+          "speed": 7.19
+        },
+        "contactToKnownEndingSeconds": 0.6,
+        "physicalNetProgressAfterLabel": 3.260000000000005,
+        "creditedProgressAfterLabel": 1.5400015258789068
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "42543",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43436",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 5.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "44818",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46117",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46487",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.3,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47871",
+          "position": "MLB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47941",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.3,
+          "interposed_candidate_ids": [
+            "52660"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "48198",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52435",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52456",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "54618",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "446",
+      "provider_concept": "MAN",
+      "front_proxy": "Over_proxy",
+      "official_yards": 5.0,
+      "carrier_id": "42358",
+      "first_los_seconds": 2.4,
+      "first_contact_seconds": 3.0,
+      "known_end_seconds": 4.7,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 0.365000000000002,
+      "arrival_geometry": {
+        "arrivals": 7,
+        "arrivals_at_or_before_first_contact": 4,
+        "interposed_arrivals": 3,
+        "interposed_with_continuous_prearrival_nearness": 2,
+        "interposed_at_or_before_first_contact": 2,
+        "arrivals_after_first_contact": 3,
+        "interposed_after_first_contact": 1
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 135,
+          "state": "valid",
+          "speed": 2.94
+        },
+        "post0p3": {
+          "frameId": 139,
+          "state": "valid",
+          "speed": 1.92
+        },
+        "post0p5": {
+          "frameId": 141,
+          "state": "valid",
+          "speed": 1.69
+        },
+        "contactToKnownEndingSeconds": 1.7,
+        "physicalNetProgressAfterLabel": 3.0,
+        "creditedProgressAfterLabel": 2.9300012207031045
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "41464",
+          "position": "DT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 1.9,
+          "interposed_candidate_ids": [
+            "52491"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "52491"
+          ]
+        },
+        {
+          "nfl_id": "42543",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42827",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.1,
+          "interposed_candidate_ids": [
+            "52454"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43436",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.4,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "44818",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46117",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.6,
+          "interposed_candidate_ids": [
+            "44832"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "44832"
+          ]
+        },
+        {
+          "nfl_id": "47871",
+          "position": "MLB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47941",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52435",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52456",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "54618",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "601",
+      "provider_concept": "COUNTER",
+      "front_proxy": "Other_or_ambiguous",
+      "official_yards": 2.0,
+      "carrier_id": "47987",
+      "first_los_seconds": 2.9,
+      "first_contact_seconds": 2.6,
+      "known_end_seconds": 3.5,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 5.873333333333332,
+      "arrival_geometry": {
+        "arrivals": 3,
+        "arrivals_at_or_before_first_contact": 1,
+        "interposed_arrivals": 0,
+        "interposed_with_continuous_prearrival_nearness": 0,
+        "interposed_at_or_before_first_contact": 0,
+        "arrivals_after_first_contact": 2,
+        "interposed_after_first_contact": 0
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 112,
+          "state": "valid",
+          "speed": 4.14
+        },
+        "post0p3": {
+          "frameId": 116,
+          "state": "valid",
+          "speed": 3.0
+        },
+        "post0p5": {
+          "frameId": 118,
+          "state": "valid",
+          "speed": 2.94
+        },
+        "contactToKnownEndingSeconds": 0.9,
+        "physicalNetProgressAfterLabel": 1.8599999999999994,
+        "creditedProgressAfterLabel": 2.6199984741210898
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35459",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42393",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42826",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42929",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.8,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43387",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "45011",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.7,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46074",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47854",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52706",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53438",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53534",
+          "position": "ILB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "622",
+      "provider_concept": "OUTSIDE ZONE",
+      "front_proxy": "Under_proxy",
+      "official_yards": 12.0,
+      "carrier_id": "46096",
+      "first_los_seconds": 2.8,
+      "first_contact_seconds": 2.2,
+      "known_end_seconds": 5.4,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 4.38,
+      "arrival_geometry": {
+        "arrivals": 9,
+        "arrivals_after_first_contact": 9,
+        "interposed_arrivals": 5,
+        "interposed_with_continuous_prearrival_nearness": 5,
+        "interposed_after_first_contact": 5
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 189,
+          "state": "valid",
+          "speed": 5.08
+        },
+        "post0p3": {
+          "frameId": 193,
+          "state": "valid",
+          "speed": 3.77
+        },
+        "post0p5": {
+          "frameId": 195,
+          "state": "valid",
+          "speed": 3.35
+        },
+        "contactToKnownEndingSeconds": 3.2,
+        "physicalNetProgressAfterLabel": 14.870000000000005,
+        "creditedProgressAfterLabel": 14.000002441406195
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35459",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 5.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42393",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42403",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.5,
+          "interposed_candidate_ids": [
+            "54474"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "54474"
+          ]
+        },
+        {
+          "nfl_id": "42826",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.3,
+          "interposed_candidate_ids": [
+            "46189"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "46189"
+          ]
+        },
+        {
+          "nfl_id": "42929",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43387",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.7,
+          "interposed_candidate_ids": [
+            "52541"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "52541"
+          ]
+        },
+        {
+          "nfl_id": "45011",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.3,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46074",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47854",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.6,
+          "interposed_candidate_ids": [
+            "47907",
+            "54474"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "47907",
+            "54474"
+          ]
+        },
+        {
+          "nfl_id": "52706",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.8,
+          "interposed_candidate_ids": [
+            "43537"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "43537"
+          ]
+        },
+        {
+          "nfl_id": "53438",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "643",
+      "provider_concept": "OUTSIDE ZONE",
+      "front_proxy": "Tite_proxy",
+      "official_yards": 4.0,
+      "carrier_id": "46096",
+      "first_los_seconds": 2.8,
+      "first_contact_seconds": 2.8,
+      "known_end_seconds": 4.7,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 5.059999999999998,
+      "arrival_geometry": {
+        "arrivals": 5,
+        "arrivals_at_or_before_first_contact": 1,
+        "interposed_arrivals": 1,
+        "interposed_with_continuous_prearrival_nearness": 1,
+        "interposed_at_or_before_first_contact": 0,
+        "arrivals_after_first_contact": 4,
+        "interposed_after_first_contact": 1
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 170,
+          "state": "valid",
+          "speed": 4.31
+        },
+        "post0p3": {
+          "frameId": 174,
+          "state": "valid",
+          "speed": 3.21
+        },
+        "post0p5": {
+          "frameId": 176,
+          "state": "valid",
+          "speed": 2.34
+        },
+        "contactToKnownEndingSeconds": 1.9,
+        "physicalNetProgressAfterLabel": 2.9599999999999937,
+        "creditedProgressAfterLabel": 3.699998474121088
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35459",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42030",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42393",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42403",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 1.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42826",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.0,
+          "interposed_candidate_ids": [
+            "54537"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "54537"
+          ]
+        },
+        {
+          "nfl_id": "42929",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.5,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43387",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "45011",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46074",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.2,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47854",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53438",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "716",
+      "provider_concept": "SNEAK",
+      "front_proxy": "Under_proxy",
+      "official_yards": 0.0,
+      "carrier_id": "39987",
+      "first_los_seconds": 2.7,
+      "first_contact_seconds": 1.1,
+      "known_end_seconds": 3.3,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 2.1720000000000006,
+      "arrival_geometry": {
+        "arrivals": 6,
+        "arrivals_after_first_contact": 6,
+        "interposed_arrivals": 5,
+        "interposed_with_continuous_prearrival_nearness": 5,
+        "interposed_after_first_contact": 5
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 163,
+          "state": "valid",
+          "speed": 0.51
+        },
+        "post0p3": {
+          "frameId": 167,
+          "state": "valid",
+          "speed": 0.76
+        },
+        "post0p5": {
+          "frameId": 169,
+          "state": "valid",
+          "speed": 1.04
+        },
+        "contactToKnownEndingSeconds": 2.2,
+        "physicalNetProgressAfterLabel": 1.9500000000000028,
+        "creditedProgressAfterLabel": 1.2600003051759927
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35459",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "40347",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42393",
+          "position": "CB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42403",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42826",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.5,
+          "interposed_candidate_ids": [
+            "47907",
+            "54537"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "47907",
+            "54537"
+          ]
+        },
+        {
+          "nfl_id": "42929",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.8,
+          "interposed_candidate_ids": [
+            "43537",
+            "47907",
+            "54537"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "43537",
+            "47907",
+            "54537"
+          ]
+        },
+        {
+          "nfl_id": "43387",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.2,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "45011",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.1,
+          "interposed_candidate_ids": [
+            "43537",
+            "46189",
+            "54537"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "43537",
+            "46189",
+            "54537"
+          ]
+        },
+        {
+          "nfl_id": "47854",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.1,
+          "interposed_candidate_ids": [
+            "43537",
+            "54537"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "43537",
+            "54537"
+          ]
+        },
+        {
+          "nfl_id": "53438",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "53534",
+          "position": "ILB",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.7,
+          "interposed_candidate_ids": [
+            "47803",
+            "54474"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "47803",
+            "54474"
+          ]
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "741",
+      "provider_concept": "OUTSIDE ZONE",
+      "front_proxy": "Tite_proxy",
+      "official_yards": 13.0,
+      "carrier_id": "53464",
+      "first_los_seconds": 3.0,
+      "first_contact_seconds": 3.3,
+      "known_end_seconds": 5.3,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 7.633333333333332,
+      "arrival_geometry": {
+        "arrivals": 9,
+        "arrivals_at_or_before_first_contact": 5,
+        "interposed_arrivals": 5,
+        "interposed_with_continuous_prearrival_nearness": 5,
+        "interposed_at_or_before_first_contact": 4,
+        "arrivals_after_first_contact": 4,
+        "interposed_after_first_contact": 1
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 70,
+          "state": "valid",
+          "speed": 8.01
+        },
+        "post0p3": {
+          "frameId": 74,
+          "state": "valid",
+          "speed": 7.5
+        },
+        "post0p5": {
+          "frameId": 76,
+          "state": "valid",
+          "speed": 7.23
+        },
+        "contactToKnownEndingSeconds": 2.0,
+        "physicalNetProgressAfterLabel": 11.370000000000005,
+        "creditedProgressAfterLabel": 10.559996337890993
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35562",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "41464",
+          "position": "DT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.4,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42543",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.2,
+          "interposed_candidate_ids": [
+            "48096"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "48096"
+          ]
+        },
+        {
+          "nfl_id": "44818",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46117",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [
+            "44832"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "44832"
+          ]
+        },
+        {
+          "nfl_id": "46487",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.5,
+          "interposed_candidate_ids": [
+            "53527"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "53527"
+          ]
+        },
+        {
+          "nfl_id": "47871",
+          "position": "MLB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.6,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47941",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52435",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.3,
+          "interposed_candidate_ids": [
+            "53527"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "53527"
+          ]
+        },
+        {
+          "nfl_id": "52456",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [
+            "44987"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "44987"
+          ]
+        },
+        {
+          "nfl_id": "54618",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "810",
+      "provider_concept": "INSIDE ZONE",
+      "front_proxy": "Other_or_ambiguous",
+      "official_yards": 8.0,
+      "carrier_id": "42358",
+      "first_los_seconds": 2.6,
+      "first_contact_seconds": 3.3,
+      "known_end_seconds": 4.7,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 3.83,
+      "arrival_geometry": {
+        "arrivals": 8,
+        "arrivals_at_or_before_first_contact": 6,
+        "interposed_arrivals": 1,
+        "interposed_with_continuous_prearrival_nearness": 1,
+        "interposed_at_or_before_first_contact": 1,
+        "arrivals_after_first_contact": 2,
+        "interposed_after_first_contact": 0
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 222,
+          "state": "valid",
+          "speed": 6.06
+        },
+        "post0p3": {
+          "frameId": 226,
+          "state": "valid",
+          "speed": 4.14
+        },
+        "post0p5": {
+          "frameId": 228,
+          "state": "valid",
+          "speed": 3.02
+        },
+        "contactToKnownEndingSeconds": 1.4,
+        "physicalNetProgressAfterLabel": 3.6000000000000014,
+        "creditedProgressAfterLabel": 3.820003356933597
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35562",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.7,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42543",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 4.1,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42827",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "43436",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "44818",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46117",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.6,
+          "interposed_candidate_ids": [
+            "42721"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "42721"
+          ]
+        },
+        {
+          "nfl_id": "47871",
+          "position": "MLB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47941",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52435",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.6,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52456",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.0,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "54618",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 1.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        }
+      ]
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "910",
+      "provider_concept": "POWER",
+      "front_proxy": "Over_proxy",
+      "official_yards": 5.0,
+      "carrier_id": "42358",
+      "first_los_seconds": 2.5,
+      "first_contact_seconds": 2.4,
+      "known_end_seconds": 3.8,
+      "ending_types": [
+        "tackle"
+      ],
+      "front_mean_absolute_lateral_at_los_yards": 0.5999999999999996,
+      "arrival_geometry": {
+        "arrivals": 6,
+        "arrivals_after_first_contact": 4,
+        "interposed_arrivals": 2,
+        "interposed_with_continuous_prearrival_nearness": 1,
+        "interposed_after_first_contact": 2,
+        "arrivals_at_or_before_first_contact": 2,
+        "interposed_at_or_before_first_contact": 0
+      },
+      "contact": {
+        "label": "NFL annotated first_contact; initiator and continuous hold unknown",
+        "strictlyPreContact": {
+          "frameId": 132,
+          "state": "valid",
+          "speed": 5.29
+        },
+        "post0p3": {
+          "frameId": 136,
+          "state": "valid",
+          "speed": 4.75
+        },
+        "post0p5": {
+          "frameId": 138,
+          "state": "valid",
+          "speed": 4.13
+        },
+        "contactToKnownEndingSeconds": 1.4,
+        "physicalNetProgressAfterLabel": 5.149999999999999,
+        "creditedProgressAfterLabel": 5.419998168945298
+      },
+      "fixed_defender_ledger": [
+        {
+          "nfl_id": "35562",
+          "position": "NT",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.0,
+          "interposed_candidate_ids": [
+            "44832"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42543",
+          "position": "FS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "42827",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "44818",
+          "position": "SS",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46117",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 1.9,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "46487",
+          "position": "DE",
+          "alignment": "front_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.6,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47871",
+          "position": "MLB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 3.4,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "47941",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52435",
+          "position": "ILB",
+          "alignment": "second_level_alignment_proxy",
+          "arrival_state": "not_reached_known_terminal",
+          "arrival_seconds": null,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "52456",
+          "position": "OLB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 1.7,
+          "interposed_candidate_ids": [],
+          "interposed_with_continuous_prearrival_nearness_ids": []
+        },
+        {
+          "nfl_id": "54618",
+          "position": "CB",
+          "alignment": "other",
+          "arrival_state": "observed_crossing",
+          "arrival_seconds": 2.9,
+          "interposed_candidate_ids": [
+            "52454"
+          ],
+          "interposed_with_continuous_prearrival_nearness_ids": [
+            "52454"
+          ]
+        }
+      ]
+    }
+  ],
+  "timing_definition": "At/before annotated first_contact includes its exact 10Hz sample; later plane crossings cannot establish prevention of first contact. They may still describe continued play.",
+  "limits": [
+    "Selected plays establish geometry/timing examples, not NFL population rates or causal technique grades.",
+    "Run assignment, hand/grip force, keeper security, gaze and continuous hold are not observable.",
+    "Longitudinal plane crossing is a local timing anchor, not a legal contact or successful protection label.",
+    "Known ending or recording cutoff bounds a proximity episode; it does not prove physical release.",
+    "Candidate pair interposition and sustained proximity are geometric proxies; offensive and defensive wins require witness review.",
+    "Tracking is streamed in source play-group order until exact selected IDs are found; later noncontiguous duplicates outside the scan are not assessed.",
+    "Same-game selected witness sample; no matched NFL-versus-native rate or technique calibration.",
+    "Interposition or nearness does not identify assignments, contactor, grip, useful force, or causal protection."
+  ],
+  "named_pair_witnesses": [
+    {
+      "game_id": "2022091200",
+      "play_id": "741",
+      "blockerId": "53527",
+      "defenderId": "52435",
+      "defenderAlignment": "second_level_alignment_proxy",
+      "episodes": [
+        {
+          "startFrameId": 69,
+          "confirmedFrameId": 70,
+          "lastObservedFrameId": 75,
+          "endReason": "observed_separation",
+          "firstOutsideFrameId": 76,
+          "observedDurationSeconds": 0.6
+        }
+      ],
+      "firstProximityVersusArrival": "before_arrival",
+      "atRunnerArrival": {
+        "state": "geometrically_interposed",
+        "pairDistance": 0.6239390995922598,
+        "runnerDistance": 0.880227243386618,
+        "along": 0.24311903728024872,
+        "offAxis": 0.5746243413848084,
+        "frameId": 71,
+        "seconds": 3.3,
+        "blockerPosition": [
+          3.000003662109009,
+          16.393333333333338
+        ],
+        "defenderPosition": [
+          2.4200036621090106,
+          16.163333333333334
+        ],
+        "runnerPosition": [
+          2.4400036621090067,
+          17.043333333333337
+        ],
+        "blockerVelocity": [
+          1.6547205743302122,
+          -3.2757899537192996
+        ],
+        "defenderVelocity": [
+          0.6080180128891433,
+          0.16496695427368974
+        ],
+        "runnerVelocity": [
+          6.935572563679023,
+          -3.803410734320286
+        ],
+        "blockerDisplacementFromSnap": [
+          3.969999999999999,
+          -11.669999999999998
+        ],
+        "defenderDisplacementFromSnap": [
+          -2.8799999999999955,
+          -10.940000000000001
+        ],
+        "preWindowExpectedFrames": 4,
+        "preWindowObservedFrames": 4,
+        "preWindowNearFrames": 4,
+        "preWindowObservationFraction": 1.0,
+        "preWindowNearFractionOfObserved": 1.0,
+        "continuousObservedNear": true
+      }
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "622",
+      "blockerId": "43537",
+      "defenderId": "52706",
+      "defenderAlignment": "second_level_alignment_proxy",
+      "episodes": [
+        {
+          "startFrameId": 188,
+          "confirmedFrameId": 189,
+          "lastObservedFrameId": 213,
+          "endReason": "observed_separation",
+          "firstOutsideFrameId": 214,
+          "observedDurationSeconds": 2.5
+        }
+      ],
+      "firstProximityVersusArrival": "before_arrival",
+      "atRunnerArrival": {
+        "state": "geometrically_interposed",
+        "pairDistance": 0.8200609733428408,
+        "runnerDistance": 2.035534327885434,
+        "along": 0.5465395423498944,
+        "offAxis": 0.6113873801837714,
+        "frameId": 196,
+        "seconds": 2.8,
+        "blockerPosition": [
+          0.7299975585938085,
+          29.84
+        ],
+        "defenderPosition": [
+          0.07999755859380286,
+          30.34
+        ],
+        "runnerPosition": [
+          0.22999755859380855,
+          28.31
+        ],
+        "blockerVelocity": [
+          -0.30810920151185067,
+          2.0469413083778756
+        ],
+        "defenderVelocity": [
+          0.1733946015585373,
+          2.2031873075502126
+        ],
+        "runnerVelocity": [
+          3.1793773009671735,
+          0.8459668894789508
+        ],
+        "blockerDisplacementFromSnap": [
+          0.980000000000004,
+          5.73
+        ],
+        "defenderDisplacementFromSnap": [
+          -5.25,
+          5.59
+        ],
+        "preWindowExpectedFrames": 4,
+        "preWindowObservedFrames": 4,
+        "preWindowNearFrames": 4,
+        "preWindowObservationFraction": 1.0,
+        "preWindowNearFractionOfObserved": 1.0,
+        "continuousObservedNear": true
+      }
+    },
+    {
+      "game_id": "2022091200",
+      "play_id": "643",
+      "blockerId": "54537",
+      "defenderId": "42929",
+      "defenderAlignment": "second_level_alignment_proxy",
+      "episodes": [
+        {
+          "startFrameId": 177,
+          "confirmedFrameId": 178,
+          "lastObservedFrameId": 190,
+          "endReason": "known_terminal",
+          "firstOutsideFrameId": null,
+          "observedDurationSeconds": 1.3
+        }
+      ],
+      "firstProximityVersusArrival": "before_arrival",
+      "atRunnerArrival": {
+        "state": "near_not_interposed",
+        "pairDistance": 0.8229823813423951,
+        "runnerDistance": 0.33060550509632886,
+        "along": 0.8142635130094462,
+        "offAxis": 0.11947774429371713,
+        "frameId": 178,
+        "seconds": 3.5,
+        "blockerPosition": [
+          2.1900015258789125,
+          29.11
+        ],
+        "defenderPosition": [
+          2.2600015258789057,
+          29.93
+        ],
+        "runnerPosition": [
+          2.2800015258789017,
+          29.6
+        ],
+        "blockerVelocity": [
+          1.0361952883212462,
+          -0.6439715245729809
+        ],
+        "defenderVelocity": [
+          -0.21319927783001053,
+          -1.5150729579570623
+        ],
+        "runnerVelocity": [
+          1.1798701515908923,
+          -0.017505010279483202
+        ],
+        "blockerDisplacementFromSnap": [
+          3.2700000000000102,
+          5.390000000000001
+        ],
+        "defenderDisplacementFromSnap": [
+          -2.3799999999999955,
+          0.9299999999999997
+        ],
+        "preWindowExpectedFrames": 4,
+        "preWindowObservedFrames": 4,
+        "preWindowNearFrames": 4,
+        "preWindowObservationFraction": 1.0,
+        "preWindowNearFractionOfObserved": 1.0,
+        "continuousObservedNear": true
+      }
+    }
+  ]
+}

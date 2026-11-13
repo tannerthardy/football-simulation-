@@ -1,0 +1,2079 @@
+{
+  "schema": "loaded-grip-refinement-v1",
+  "date": "2026-10-12 UTC",
+  "engineCommit": "db9c74d",
+  "engineSource": "f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb",
+  "productionChange": false,
+  "originalCollectorCommit": "417900a",
+  "originalCollectorSha256": "91ce411aff852d8b44a5810341028ef07b11015f6f8b6119fdba6fb9cbff0afc",
+  "currentCollector": {
+    "path": "scripts/diag/tackle/grip-refinement.ts",
+    "bytes": 18481,
+    "sha256": "079570d3eea777f9af7d189617382bfa1dd32431611e15829e92435aead38b5a"
+  },
+  "inputs": {
+    "seed": 3001,
+    "teamSeeds": [
+      61,
+      62
+    ],
+    "strength": 0.55,
+    "cases": [
+      {
+        "mode": "center",
+        "angle": 180,
+        "speed": 6
+      },
+      {
+        "mode": "patch",
+        "angle": 45,
+        "speed": 8
+      }
+    ],
+    "mirrors": [
+      1,
+      -1
+    ],
+    "substeps": [
+      12,
+      24,
+      48,
+      96
+    ],
+    "nativeRuns": 16,
+    "frozenAndIsolationRuns": 192,
+    "proposalRuns": 16,
+    "controls": "One 96-step decision/RNG/acquisition/capacity tape and one acquisition-state body/profile input per case/mirror, reused exactly. No new World RNG or controller calls during replay. Hold geometry, slip, legs and balance evolve physically.",
+    "thresholds": {
+      "position": 0.01,
+      "support": 0.002,
+      "spin": 0.05,
+      "facing": 0.01
+    }
+  },
+  "firstDivergence": {
+    "rear": {
+      "variable": "tackler support state at start of last launch interval",
+      "coarseTime": 2.0958333333333354,
+      "fineTime": 2.0994791666666637,
+      "physicalTickEnd": 2.1,
+      "endpointDeviationError": 0.009292126059879321,
+      "sameIntervalNormalImpulseCoarse": -1.5049696302841884,
+      "sameIntervalNormalImpulseFine": -2.0693332416407593,
+      "rootScope": "Confirmed early dive transition; correcting it alone does not repair the long hold."
+    },
+    "angled": {
+      "firstTransientVariable": "tackler angular velocity",
+      "firstTransientTime": 2.654166666666667,
+      "firstTransientError": 0.13250911505020913,
+      "errorAtFirstTickEnd": 0.016251452595972715,
+      "firstContinuingVariable": "carrier support deviation",
+      "firstContinuingTime": 2.7291666666666683,
+      "firstContinuingError": 0.002227396007903856,
+      "rootScope": "Grip/support feedback. The first angular interval is passive; no reel work. Actual-support substitution sharply reduces path error but is not a universal repair."
+    }
+  },
+  "native": [
+    {
+      "mode": "center",
+      "side": 1,
+      "results": [
+        {
+          "n": 12,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.556729004913606
+        },
+        {
+          "n": 24,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.636820758855308
+        },
+        {
+          "n": 48,
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 16.806329390996908
+        },
+        {
+          "n": 96,
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 15.201405434550082
+        }
+      ],
+      "refinement": [
+        {
+          "n": 12,
+          "firstThreshold": {
+            "support": {
+              "t": 2.1000000000000023,
+              "difference": 0.009292126059879321
+            },
+            "position": {
+              "t": 2.9208333333333343,
+              "difference": 0.010102962106429914
+            }
+          },
+          "maxError": {
+            "position": 2.0657373560430585,
+            "support": 1.0624438142205936,
+            "spin": 0.0,
+            "facing": 0.0
+          },
+          "lastCommonError": {
+            "position": 2.0657373560430585,
+            "support": 1.0624438142205936,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "firstThreshold": {
+            "support": {
+              "t": 2.099999999999997,
+              "difference": 0.003996808911666622
+            },
+            "position": {
+              "t": 2.968749999999999,
+              "difference": 0.010080195438263218
+            }
+          },
+          "maxError": {
+            "position": 2.0099263652361117,
+            "support": 1.0201478709265528,
+            "spin": 0.0,
+            "facing": 0.0
+          },
+          "lastCommonError": {
+            "position": 2.0099263652361117,
+            "support": 1.0201478709265528,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "firstThreshold": {
+            "support": {
+              "t": 2.358333333333333,
+              "difference": 0.002007840225869306
+            },
+            "position": {
+              "t": 3.002083333333333,
+              "difference": 0.010003971550290203
+            }
+          },
+          "maxError": {
+            "position": 1.0541762045562422,
+            "support": 0.38523759797826873,
+            "spin": 0.0,
+            "facing": 0.0
+          },
+          "lastCommonError": {
+            "position": 1.0541762045562422,
+            "support": 0.0013344961437429526,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "results": [
+        {
+          "n": 12,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.556729004913606
+        },
+        {
+          "n": 24,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.636820758855308
+        },
+        {
+          "n": 48,
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 16.806329390996908
+        },
+        {
+          "n": 96,
+          "ending": "tackled",
+          "finish": "physical fall",
+          "advanceAfterGrip": 15.201405434550082
+        }
+      ],
+      "refinement": [
+        {
+          "n": 12,
+          "firstThreshold": {
+            "support": {
+              "t": 2.1000000000000023,
+              "difference": 0.009292126059879321
+            },
+            "position": {
+              "t": 2.9208333333333343,
+              "difference": 0.010102962106429914
+            }
+          },
+          "maxError": {
+            "position": 2.0657373560430585,
+            "support": 1.0624438142205936,
+            "spin": 0.0,
+            "facing": 0.0
+          },
+          "lastCommonError": {
+            "position": 2.0657373560430585,
+            "support": 1.0624438142205936,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "firstThreshold": {
+            "support": {
+              "t": 2.099999999999997,
+              "difference": 0.003996808911666622
+            },
+            "position": {
+              "t": 2.968749999999999,
+              "difference": 0.010080195438263218
+            }
+          },
+          "maxError": {
+            "position": 2.0099263652361117,
+            "support": 1.0201478709265528,
+            "spin": 0.0,
+            "facing": 0.0
+          },
+          "lastCommonError": {
+            "position": 2.0099263652361117,
+            "support": 1.0201478709265528,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "firstThreshold": {
+            "support": {
+              "t": 2.358333333333333,
+              "difference": 0.002007840225869306
+            },
+            "position": {
+              "t": 3.002083333333333,
+              "difference": 0.010003971550290203
+            }
+          },
+          "maxError": {
+            "position": 1.0541762045562422,
+            "support": 0.38523759797826873,
+            "spin": 0.0,
+            "facing": 0.0
+          },
+          "lastCommonError": {
+            "position": 1.0541762045562422,
+            "support": 0.0013344961437429526,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "results": [
+        {
+          "n": 12,
+          "ending": "escaped",
+          "finish": "escaped",
+          "advanceAfterGrip": 21.49652848153923
+        },
+        {
+          "n": 24,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 21.804952751658206
+        },
+        {
+          "n": 48,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 21.822575860912607
+        },
+        {
+          "n": 96,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.274863595064915
+        }
+      ],
+      "refinement": [
+        {
+          "n": 12,
+          "firstThreshold": {
+            "spin": {
+              "t": 2.654166666666667,
+              "difference": 0.13250911505020913
+            },
+            "support": {
+              "t": 2.7291666666666683,
+              "difference": 0.002227396007903856
+            },
+            "facing": {
+              "t": 3.0458333333333356,
+              "difference": 0.010087816553030649
+            },
+            "position": {
+              "t": 3.237500000000002,
+              "difference": 0.010075883042845438
+            }
+          },
+          "maxError": {
+            "position": 2.1718079572975455,
+            "support": 0.2900306132293524,
+            "spin": 8.429683239751421,
+            "facing": 3.136844735355763
+          },
+          "lastCommonError": {
+            "position": 2.1718079572975455,
+            "support": 0.1473190471641012,
+            "spin": 2.594046547530218,
+            "facing": 2.661077927984948
+          }
+        },
+        {
+          "n": 24,
+          "firstThreshold": {
+            "support": {
+              "t": 2.789583333333331,
+              "difference": 0.002059755078661952
+            },
+            "spin": {
+              "t": 2.9062499999999996,
+              "difference": 0.21165629536429842
+            },
+            "facing": {
+              "t": 3.0937499999999973,
+              "difference": 0.010001329405174869
+            },
+            "position": {
+              "t": 3.320833333333332,
+              "difference": 0.010120834149643855
+            }
+          },
+          "maxError": {
+            "position": 0.8157725587313812,
+            "support": 0.40702992020500695,
+            "spin": 12.800457572129107,
+            "facing": 3.1413739051315313
+          },
+          "lastCommonError": {
+            "position": 0.7632200614038863,
+            "support": 0.40702992020500695,
+            "spin": 2.4279738303245715,
+            "facing": 1.3884741798103537
+          }
+        },
+        {
+          "n": 48,
+          "firstThreshold": {
+            "support": {
+              "t": 2.8427083333333307,
+              "difference": 0.002026701706063886
+            },
+            "spin": {
+              "t": 2.905208333333333,
+              "difference": 0.10436811506789967
+            },
+            "position": {
+              "t": 3.539583333333331,
+              "difference": 0.010028910508988412
+            },
+            "facing": {
+              "t": 3.7937499999999975,
+              "difference": 0.010008910637121282
+            }
+          },
+          "maxError": {
+            "position": 0.6224564851329938,
+            "support": 0.24435947618646495,
+            "spin": 1.771536672274176,
+            "facing": 1.0054020306169278
+          },
+          "lastCommonError": {
+            "position": 0.4684444292613955,
+            "support": 0.13116811531534506,
+            "spin": 1.5492348908388598,
+            "facing": 1.0042847517183855
+          }
+        }
+      ]
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "results": [
+        {
+          "n": 12,
+          "ending": "escaped",
+          "finish": "escaped",
+          "advanceAfterGrip": 21.49652848153923
+        },
+        {
+          "n": 24,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 21.804952751658206
+        },
+        {
+          "n": 48,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 21.822575860912508
+        },
+        {
+          "n": 96,
+          "ending": "censored",
+          "finish": "censored",
+          "advanceAfterGrip": 22.2748635950649
+        }
+      ],
+      "refinement": [
+        {
+          "n": 12,
+          "firstThreshold": {
+            "spin": {
+              "t": 2.654166666666667,
+              "difference": 0.13250911505020913
+            },
+            "support": {
+              "t": 2.7291666666666683,
+              "difference": 0.002227396007903856
+            },
+            "facing": {
+              "t": 3.0458333333333356,
+              "difference": 0.010087816553030649
+            },
+            "position": {
+              "t": 3.237500000000002,
+              "difference": 0.010075883042845438
+            }
+          },
+          "maxError": {
+            "position": 2.1718079572975455,
+            "support": 0.29003061322936985,
+            "spin": 8.429683239751288,
+            "facing": 3.1368447353557585
+          },
+          "lastCommonError": {
+            "position": 2.1718079572975455,
+            "support": 0.14731904716413036,
+            "spin": 2.5940465475302394,
+            "facing": 2.661077927984964
+          }
+        },
+        {
+          "n": 24,
+          "firstThreshold": {
+            "support": {
+              "t": 2.789583333333331,
+              "difference": 0.002059755078661952
+            },
+            "spin": {
+              "t": 2.9062499999999996,
+              "difference": 0.21165629536429842
+            },
+            "facing": {
+              "t": 3.0937499999999973,
+              "difference": 0.010001329405174869
+            },
+            "position": {
+              "t": 3.320833333333332,
+              "difference": 0.010120834149643855
+            }
+          },
+          "maxError": {
+            "position": 0.815772558731367,
+            "support": 0.40702992020505285,
+            "spin": 12.800457572129197,
+            "facing": 3.1413739051315277
+          },
+          "lastCommonError": {
+            "position": 0.7632200614038863,
+            "support": 0.40702992020505285,
+            "spin": 2.4279738303245115,
+            "facing": 1.388474179810368
+          }
+        },
+        {
+          "n": 48,
+          "firstThreshold": {
+            "support": {
+              "t": 2.8427083333333307,
+              "difference": 0.002026701706063886
+            },
+            "spin": {
+              "t": 2.905208333333333,
+              "difference": 0.10436811506789967
+            },
+            "position": {
+              "t": 3.539583333333331,
+              "difference": 0.010028910508988412
+            },
+            "facing": {
+              "t": 3.7937499999999975,
+              "difference": 0.010008910637121282
+            }
+          },
+          "maxError": {
+            "position": 0.6224564851329368,
+            "support": 0.24435947618648798,
+            "spin": 1.7715366722741517,
+            "facing": 1.0054020306169242
+          },
+          "lastCommonError": {
+            "position": 0.46844442926145025,
+            "support": 0.1311681153151148,
+            "spin": 1.5492348908313631,
+            "facing": 1.0042847517180613
+          }
+        }
+      ]
+    }
+  ],
+  "fixedDecisionMatrix": [
+    {
+      "mode": "center",
+      "variant": "full",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 2.0657373560430585,
+            "support": 1.0624438142205936,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.0099263652361117,
+            "support": 1.0201478709265528,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 1.0541762045562422,
+            "support": 0.3851901936982859,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.6552982035354944e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "no-grip",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.018737859973718685,
+            "support": 0.0086402034381442,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.008031050914311777,
+            "support": 0.0037208282907538054,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.0026771068874040793,
+            "support": 0.001243105728595123,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 1.665867443989555e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "passive",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 3.3342552761172684,
+            "support": 1.0633889212992607,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.3300162778354334,
+            "support": 0.5942872615173626,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.6759310115975055,
+            "support": 0.181938307156289,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.5337953957205173e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "no-balance",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.03736709425437823,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.016476829276712124,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.0053980238524076185,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.2354562645432452e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "passive-no-balance",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.008767708138051944,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.006888847860921032,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.0005251294072934343,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.852118541341042e-11,
+        "maxArmExcess": -115.32661212197019,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "active-no-balance",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.0006375008077696975,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.00025448912158765324,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 8.632671929120761e-05,
+            "support": 0.0,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 3.9562990461054444e-11,
+        "maxArmExcess": -110.86808362978147,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "support-no-fall",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 2.026545378248855,
+            "support": 1.5921589926133393,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 1.970734387441908,
+            "support": 1.5498630493192986,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 1.01536831555714,
+            "support": 0.5075887916656305,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.6552982035354944e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "fixed-movement",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 2.0657373560430585,
+            "support": 1.0624438142205936,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.0099263652361117,
+            "support": 1.0201478709265528,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 1.0541762045562422,
+            "support": 0.3851901936982859,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.6552982035354944e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "free",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.05028401292525331,
+            "support": 1.342740465414862,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.009791915672622054,
+            "support": 0.02129382824231829,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.0041248145192724905,
+            "support": 0.009350692897823976,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.850697455869522e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "integrated-follow",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 2.0657462325669513,
+            "support": 1.0624454636760023,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.009934012443523,
+            "support": 1.0201454356363935,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 1.0541821773114037,
+            "support": 0.3851912850679897,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.6492585902815335e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "no-launch",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.05390258819191018,
+            "support": 0.13201650914907206,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.056768739231308984,
+            "support": 0.17153054627444922,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.05956047742269277,
+            "support": 0.1779289559051899,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 4.8832049515112885e-11,
+        "maxArmExcess": -93.86086549319948,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "center",
+      "variant": "extra-iterations",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 2.0657373560439396,
+            "support": 1.0624438142207668,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.0099263652369928,
+            "support": 1.020147870926726,
+            "spin": 0,
+            "facing": 0.0
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 1.0541762045571232,
+            "support": 0.3851901936984855,
+            "spin": 0,
+            "facing": 0.0
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.6552982035354944e-11,
+        "maxArmExcess": -80.72862848537912,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "full",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 4.089681209939719,
+            "support": 0.5870786470119542,
+            "spin": 11.113337829271453,
+            "facing": 3.0925177300903566
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.8376902430793995,
+            "support": 0.3465840039068293,
+            "spin": 4.324672109728124,
+            "facing": 3.1034836749913377
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.0885898067126978,
+            "support": 0.1300790424367385,
+            "spin": 0.5937246469726328,
+            "facing": 0.058923121883041746
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.7747248942944225e-11,
+        "maxArmExcess": -80.70428812884658,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "no-grip",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.00040906217785186927,
+            "support": 0.0033409807700618393,
+            "spin": 0.02080235616085835,
+            "facing": 0.0017486079804382992
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 5.05041458986988e-05,
+            "support": 0.0012454542228430416,
+            "spin": 0.014413885265664561,
+            "facing": 0.0012178916167198128
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 3.399447423662506e-05,
+            "support": 0.0006413254077916006,
+            "spin": 0.006864597436728737,
+            "facing": 0.0005583029458889888
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.1256552074078172e-11,
+        "maxArmExcess": -115.19077086039438,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "passive",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 2.970355765966204,
+            "support": 0.34530121437348693,
+            "spin": 4.4956776550506135,
+            "facing": 3.12676068404529
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.11441751297644409,
+            "support": 0.10348017294735734,
+            "spin": 0.6513046395035396,
+            "facing": 0.06171684064994398
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.04295107786994756,
+            "support": 0.06435626877513538,
+            "spin": 0.6344551360974244,
+            "facing": 0.03094191074791046
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 3.435773887616733e-11,
+        "maxArmExcess": -80.70617868549519,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "no-balance",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.2482121533302761,
+            "support": 0.10105334659237367,
+            "spin": 0.1275197376572048,
+            "facing": 0.00842553604441204
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.11740934423587165,
+            "support": 0.044913533708147615,
+            "spin": 0.14367270458094383,
+            "facing": 0.005731990990073821
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.11799170416781614,
+            "support": 0.2513691175769064,
+            "spin": 0.339505428674007,
+            "facing": 0.02983220331614051
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.87161405765346e-11,
+        "maxArmExcess": -67.05965465946859,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "passive-no-balance",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.11140681993167176,
+            "support": 0.0,
+            "spin": 0.04066446160357717,
+            "facing": 0.1648772898402946
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.06628650566175842,
+            "support": 0.0,
+            "spin": 0.023943056726086986,
+            "facing": 0.09746608894424824
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.015049938124969211,
+            "support": 0.0,
+            "spin": 0.005662841779376038,
+            "facing": 0.022106439892329632
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 9.793621953193348e-12,
+        "maxArmExcess": -115.3200256158933,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "active-no-balance",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 1.0462621768141989,
+            "support": 0.0,
+            "spin": 0.7560728439209701,
+            "facing": 1.6857521311787274
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.47061887121558915,
+            "support": 0.0,
+            "spin": 0.33432840012857934,
+            "facing": 0.702179270853204
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.16913607063562225,
+            "support": 0.0,
+            "spin": 0.11793078892965614,
+            "facing": 0.24991980850294127
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 8.381295657500232e-12,
+        "maxArmExcess": -84.46793036735399,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "support-no-fall",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.11271112893406188,
+            "support": 20295.543389646435,
+            "spin": 1.8400171712006563,
+            "facing": 0.5895304701856087
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.0870674627624347,
+            "support": 11283.196671043876,
+            "spin": 2.354410054756362,
+            "facing": 0.6875997491645967
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.06649396431132622,
+            "support": 4063.0680319415524,
+            "spin": 1.987335319488539,
+            "facing": 0.583707368968291
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 7.44435624255857e-11,
+        "maxArmExcess": -65.74648740627293,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "fixed-movement",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.20407569187605454,
+            "support": 1.322398627931029,
+            "spin": 5.041843991870762,
+            "facing": 0.6045040202616598
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.1585965081716431,
+            "support": 1.2624640531056819,
+            "spin": 5.595509294689548,
+            "facing": 0.8814894714206287
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.16787807455174503,
+            "support": 0.2985533009631178,
+            "spin": 5.627663925091444,
+            "facing": 0.6899929288376283
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.192201975503849e-11,
+        "maxArmExcess": -70.11398746821258,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "free",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 0.023980593005825137,
+            "support": 0.3685002894884207,
+            "spin": 0.05585209450219786,
+            "facing": 0.03590198396874156
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.010133864498377968,
+            "support": 0.2767422927593238,
+            "spin": 0.006313790667864971,
+            "facing": 0.004159812423299103
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.013660809489821282,
+            "support": 0.03597125031609406,
+            "spin": 0.012402754187039955,
+            "facing": 0.007984054672931507
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 6.494360604847316e-12,
+        "maxArmExcess": -67.31338270212916,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "integrated-follow",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 4.088899460175072,
+            "support": 0.5988797247631129,
+            "spin": 11.03844701743292,
+            "facing": 3.0923239265919986
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.837632004049935,
+            "support": 0.34657169140753735,
+            "spin": 4.324578287954066,
+            "facing": 3.1035355256662367
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.08861305531926576,
+            "support": 0.13008790753183375,
+            "spin": 0.5936648038634371,
+            "facing": 0.058927008216187175
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.3065105381192552e-11,
+        "maxArmExcess": -80.70428812723654,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "no-launch",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 5.38672204628941,
+            "support": 1.7800695140703369,
+            "spin": 5.031723810428903,
+            "facing": 3.0159835339805827
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 0.6063519957568272,
+            "support": 0.7049991014482384,
+            "spin": 3.0365916815860228,
+            "facing": 0.7296932525188318
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 1.0416217387665359,
+            "support": 0.6991652100062185,
+            "spin": 5.471470083513042,
+            "facing": 3.1381830718487684
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 3.5424108091319795e-11,
+        "maxArmExcess": -66.63184074833832,
+        "maxSupportWorkExcess": 0
+      }
+    },
+    {
+      "mode": "patch",
+      "variant": "extra-iterations",
+      "refinement": [
+        {
+          "n": 12,
+          "maxError": {
+            "position": 4.089681209890022,
+            "support": 0.5870786469989614,
+            "spin": 11.11333782908868,
+            "facing": 3.0925177300801745
+          }
+        },
+        {
+          "n": 24,
+          "maxError": {
+            "position": 2.8376902428460773,
+            "support": 0.34658400390320476,
+            "spin": 4.324672109188393,
+            "facing": 3.1034836751432913
+          }
+        },
+        {
+          "n": 48,
+          "maxError": {
+            "position": 0.08858980650292439,
+            "support": 0.1300790423668398,
+            "spin": 0.5937246472957718,
+            "facing": 0.058923121850397824
+          }
+        }
+      ],
+      "budgets": {
+        "maxResidual": 2.6838198330381147e-11,
+        "maxArmExcess": -80.70428812884661,
+        "maxSupportWorkExcess": 0
+      }
+    }
+  ],
+  "proposal": {
+    "name": "held balance follows achieved corrective motion",
+    "diagnosticOnly": true,
+    "results": [
+      {
+        "mode": "center",
+        "side": 1,
+        "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+        "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf",
+        "refinement": [
+          {
+            "n": 12,
+            "maxPosition": 1.948517939987056,
+            "maxSupportDeviation": 1.082182592693549,
+            "maxSpin": 0.0
+          },
+          {
+            "n": 24,
+            "maxPosition": 1.883142751998804,
+            "maxSupportDeviation": 1.0871020610020465,
+            "maxSpin": 0.0
+          },
+          {
+            "n": 48,
+            "maxPosition": 1.1860721075209,
+            "maxSupportDeviation": 0.4930894706929294,
+            "maxSpin": 0.0
+          }
+        ],
+        "budgets": {
+          "residual": 2.453148795211746e-11,
+          "armExcess": -80.72862848537912,
+          "supportExcess": 0
+        }
+      },
+      {
+        "mode": "center",
+        "side": -1,
+        "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+        "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf",
+        "refinement": [
+          {
+            "n": 12,
+            "maxPosition": 1.948517939987056,
+            "maxSupportDeviation": 1.082182592693549,
+            "maxSpin": 0.0
+          },
+          {
+            "n": 24,
+            "maxPosition": 1.883142751998804,
+            "maxSupportDeviation": 1.0871020610020465,
+            "maxSpin": 0.0
+          },
+          {
+            "n": 48,
+            "maxPosition": 1.1860721075209,
+            "maxSupportDeviation": 0.4930894706929294,
+            "maxSpin": 0.0
+          }
+        ],
+        "budgets": {
+          "residual": 2.453148795211746e-11,
+          "armExcess": -80.72862848537912,
+          "supportExcess": 0
+        }
+      },
+      {
+        "mode": "patch",
+        "side": 1,
+        "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+        "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89",
+        "refinement": [
+          {
+            "n": 12,
+            "maxPosition": 0.1777459274380538,
+            "maxSupportDeviation": 0.24966436820202167,
+            "maxSpin": 0.5350533035610081
+          },
+          {
+            "n": 24,
+            "maxPosition": 0.1099827822838192,
+            "maxSupportDeviation": 0.15448688326091653,
+            "maxSpin": 0.4838784599373154
+          },
+          {
+            "n": 48,
+            "maxPosition": 0.04062760666669646,
+            "maxSupportDeviation": 0.05598648452906687,
+            "maxSpin": 0.7422714615684252
+          }
+        ],
+        "budgets": {
+          "residual": 2.4659385644554277e-11,
+          "armExcess": -80.7043309738977,
+          "supportExcess": 0
+        }
+      },
+      {
+        "mode": "patch",
+        "side": -1,
+        "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+        "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90",
+        "refinement": [
+          {
+            "n": 12,
+            "maxPosition": 0.1777459274380538,
+            "maxSupportDeviation": 0.24966436820202167,
+            "maxSpin": 0.5350533035610081
+          },
+          {
+            "n": 24,
+            "maxPosition": 0.1099827822838192,
+            "maxSupportDeviation": 0.15448688326091653,
+            "maxSpin": 0.4838784599373154
+          },
+          {
+            "n": 48,
+            "maxPosition": 0.04062760666669646,
+            "maxSupportDeviation": 0.05598648452906687,
+            "maxSpin": 0.7422714615684252
+          }
+        ],
+        "budgets": {
+          "residual": 2.4659385644554277e-11,
+          "armExcess": -80.7043309738977,
+          "supportExcess": 0
+        }
+      }
+    ],
+    "falsifiableOracle": "Outside the base with frozen outward achieved support u, e_next = rb+(e-rb-u/w)*exp(w*h)+u/w. No bonus from unused free recovery capacity. Unheld parity must remain exact. Halve angled pre-transition errors before a World trial; rear convergence is separately required and currently fails."
+  },
+  "phaseCrossings": [
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 24,
+      "crossing": {
+        "substepStart": 2.1249999999999982,
+        "body": 1,
+        "input": {
+          "e": 0.15640251764098118,
+          "rb": 0.156825723580213,
+          "w": 3.2176255623447974,
+          "speed": 3.405748587555509,
+          "outsideFor": 0,
+          "latency": 0.12,
+          "h": 0.0020833333333333333,
+          "loadVelocity": -0.7958763803587866
+        },
+        "current": 0.1570101280951265,
+        "eventAware": 0.1573249222208672,
+        "error": 0.00031479412574070276,
+        "crossingAfter": 0.0014495823676222391,
+        "remainsOutside": true
+      }
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 24,
+      "crossing": {
+        "substepStart": 2.1249999999999982,
+        "body": 1,
+        "input": {
+          "e": 0.15640251764098118,
+          "rb": 0.156825723580213,
+          "w": 3.2176255623447974,
+          "speed": 3.405748587555509,
+          "outsideFor": 0,
+          "latency": 0.12,
+          "h": 0.0020833333333333333,
+          "loadVelocity": -0.7958763803587866
+        },
+        "current": 0.1570101280951265,
+        "eventAware": 0.1573249222208672,
+        "error": 0.00031479412574070276,
+        "crossingAfter": 0.0014495823676222391,
+        "remainsOutside": true
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 12,
+      "crossing": {
+        "substepStart": 2.7833333333333345,
+        "body": 1,
+        "input": {
+          "e": 0.16474470743576214,
+          "rb": 0.1655333470557414,
+          "w": 3.2517918039081684,
+          "speed": 2.523156207214108,
+          "outsideFor": 0,
+          "latency": 0.12,
+          "h": 0.004166666666666667,
+          "loadVelocity": -1.1600233013800079
+        },
+        "current": 0.16732844674605668,
+        "eventAware": 0.1688255674441869,
+        "error": 0.001497120698130211,
+        "crossingAfter": 0.0012658240310153067,
+        "remainsOutside": true
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 48,
+      "crossing": {
+        "substepStart": 4.2062499999999945,
+        "body": 1,
+        "input": {
+          "e": 0.1647113676107807,
+          "rb": 0.1648843105423573,
+          "w": 3.249207547258124,
+          "speed": 2.593174534358677,
+          "outsideFor": 0,
+          "latency": 0.12,
+          "h": 0.0010416666666666667,
+          "loadVelocity": -0.7342990396566741
+        },
+        "current": 0.1649184311887658,
+        "eventAware": 0.1650102467660607,
+        "error": 9.181557729487366e-05,
+        "crossingAfter": 0.0008697744628830888,
+        "remainsOutside": true
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 12,
+      "crossing": {
+        "substepStart": 2.7833333333333345,
+        "body": 1,
+        "input": {
+          "e": 0.16474470743576214,
+          "rb": 0.1655333470557414,
+          "w": 3.2517918039081684,
+          "speed": 2.523156207214108,
+          "outsideFor": 0,
+          "latency": 0.12,
+          "h": 0.004166666666666667,
+          "loadVelocity": -1.1600233013800079
+        },
+        "current": 0.16732844674605668,
+        "eventAware": 0.1688255674441869,
+        "error": 0.001497120698130211,
+        "crossingAfter": 0.0012658240310153067,
+        "remainsOutside": true
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 48,
+      "crossing": {
+        "substepStart": 4.2062499999999945,
+        "body": 1,
+        "input": {
+          "e": 0.1647113676107807,
+          "rb": 0.1648843105423573,
+          "w": 3.249207547258124,
+          "speed": 2.593174534358677,
+          "outsideFor": 0,
+          "latency": 0.12,
+          "h": 0.0010416666666666667,
+          "loadVelocity": -0.7342990396566741
+        },
+        "current": 0.1649184311887658,
+        "eventAware": 0.1650102467660607,
+        "error": 9.181557729487366e-05,
+        "crossingAfter": 0.0008697744628830888,
+        "remainsOutside": true
+      }
+    }
+  ],
+  "freeGripLaws": [
+    {
+      "mode": "center",
+      "variant": "passive-no-balance",
+      "maxAngularError": 8.731149137020111e-11,
+      "maxMomentumError": 3.410605131648481e-12
+    },
+    {
+      "mode": "center",
+      "variant": "active-no-balance",
+      "maxAngularError": 2.4010660126805305e-10,
+      "maxMomentumError": 8.86757334228605e-12
+    },
+    {
+      "mode": "patch",
+      "variant": "passive-no-balance",
+      "maxAngularError": 4.511093720793724e-10,
+      "maxMomentumError": 5.949037884822385e-12
+    },
+    {
+      "mode": "patch",
+      "variant": "active-no-balance",
+      "maxAngularError": 5.748006515204906e-10,
+      "maxMomentumError": 7.276845738399633e-12
+    }
+  ],
+  "diveBoundaryExperiment": {
+    "path": "out/grip-refinement/dive-trial.json.gz",
+    "bytes": 1112,
+    "sha256": "ed773e058d48550389f9a27e0bdf6040a7d10559cb61b5ae1748182b1b8f8304"
+  },
+  "ruledOut": [
+    "Source/input/profile/RNG/extra-controller drift:16 native observer endpoint controls are exact; replay input pins match.",
+    "Angular loss as rear cause: rear has zero yaw. Free patch passive and active grips preserve achieved total momentum.",
+    "Active reeling as necessary trigger: passive/full-balance cases diverge.",
+    "Insufficient grip iterations:32 repeats leave both paths unchanged.",
+    "Integrated nonlinear filtered following as primary cause:almost identical position errors.",
+    "Pure outcome-label thresholds:continuous support/path and actual hold/fall states diverge before censor/escape labels."
+  ],
+  "artifacts": {
+    "canonicalManifest": {
+      "path": "out/grip-refinement/final/manifest.json.gz",
+      "bytes": 12533,
+      "sha256": "812ca767b842f9cd5d9d43a6db43cb41831a51be40f92566a1a49303e1d6bcc5"
+    },
+    "canonicalSummary": {
+      "path": "out/grip-refinement/final/summary.json",
+      "bytes": 222729,
+      "sha256": "23faf1d76f75f9c54ed6446c5ff911c3b17a07e33e8f2ace2f321428d03715f9"
+    },
+    "proposalManifest": {
+      "path": "out/grip-refinement/proposal/manifest.json.gz",
+      "bytes": 1242,
+      "sha256": "0c6228ea25ef846ed3154e65d4f96b2090cd438dc7bfb0591257ba2f08115ac5"
+    },
+    "reportReducer": {
+      "path": "scripts/diag/tackle/grip-refinement-report.py",
+      "bytes": 5666,
+      "sha256": "765bd4e813007894bfbdd344c70449dc4826cd5a9342f097f4fde3cec46d3700"
+    }
+  },
+  "checks": {
+    "observerProposalTests": {
+      "passed": 5,
+      "log": {
+        "path": "out/grip-refinement/observer-test.log",
+        "bytes": 965,
+        "sha256": "eb92927fa89589063cb6174c8338d2091fae1c5ea7abaaa76ca9629fd56ab5ce"
+      }
+    },
+    "retainedContracts": {
+      "passed": 146,
+      "log": {
+        "path": "out/grip-refinement/contracts.log",
+        "bytes": 493,
+        "sha256": "bde9cdee0a5fc8fbc1cf6c76c000daae78e7f5cc5a8634a5776bacd396eb9541"
+      }
+    },
+    "lowerGripLaws": {
+      "passed": 48,
+      "log": {
+        "path": "out/grip-refinement/laws.log",
+        "bytes": 377,
+        "sha256": "0c8e75d618a5919269d50c9ad38a69d1a7e6f5d16998ee05aa46742a87e9b3a7"
+      }
+    },
+    "promotion": {
+      "passed": 42,
+      "failed": 8,
+      "unchangedFailureSet": true,
+      "log": {
+        "path": "out/grip-refinement/promotion.log",
+        "bytes": 27179,
+        "sha256": "1b567b3becb133b6d35e139c25a59e8b2c6e404af87883e014b2b07193833c62"
+      }
+    },
+    "typecheck": {
+      "passed": true,
+      "log": {
+        "path": "out/grip-refinement/typecheck.log",
+        "bytes": 68,
+        "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+      }
+    },
+    "build": {
+      "passed": true,
+      "log": {
+        "path": "out/grip-refinement/build.log",
+        "bytes": 55,
+        "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+      }
+    },
+    "fullGames": "Not run; src unchanged and this is a diagnostic task."
+  },
+  "limits": [
+    "Two selected adverse cases,not frequency or NFL realism estimates.",
+    "96 steps is a reference,not proved truth.",
+    "Full 20 Hz native decisions diverge after physics; the controlled comparison uses the same recorded tape.",
+    "No-grip replay explicitly partitions alone bodies using one frozen gait plan.",
+    "No-balance disables the continuous update; explicit dive/passive ground lifecycle remains. No-fall ablation is intentionally not a viable upright athlete.",
+    "The proposal improves angled refinement but does not fix rear sustained support. No promotion or distributed wrap.",
+    "Raw traces stay gzip-compressed in ignored out/. Recreate original collection from417900a for byte-pinned operator; latest runner adds proposal path and extra observer fields only."
+  ],
+  "mirrorInputs": [
+    {
+      "mode": "center",
+      "side": 1,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    }
+  ],
+  "mirrorScalarRefinementParity": {
+    "verified": true,
+    "tolerance": 1e-07,
+    "scope": "All twelve isolation variants at all three comparisons, both modes. Every raw mirrored case remains in the canonical manifest."
+  },
+  "research": {
+    "checkedAtUtc": "2026-10-12",
+    "productionUse": false,
+    "notebooks": [
+      {
+        "url": "https://www.kaggle.com/code/matthewpchang/uncovering-missed-tackle-opportunities",
+        "id": 48889309,
+        "version": 14,
+        "language": "python",
+        "api": "https://www.kaggle.com/api/v1/kernels/pull/matthewpchang/uncovering-missed-tackle-opportunities",
+        "sourceSha256": "91b8e9f77a27f1e4de86286b2ba49c029f6733552673ba0bab3a06d416d2259f",
+        "retrieval": {
+          "path": "out/grip-refinement/research/opportunities-code.body",
+          "bytes": 90591,
+          "sha256": "54c6426d1b4b992142c27589d708dae538e3f062f0df28bb601845b6d93dad92"
+        }
+      },
+      {
+        "url": "https://www.kaggle.com/code/devinbasley26/no-edge-no-chance",
+        "id": 48935488,
+        "version": 67,
+        "language": "r",
+        "api": "https://www.kaggle.com/api/v1/kernels/pull/devinbasley26/no-edge-no-chance",
+        "sourceSha256": "6e4588b4e08fb341e28b8cdc1c0bfb6305d36de79cb69060e20a643da8b13d94",
+        "retrieval": {
+          "path": "out/grip-refinement/research/edge-code.body",
+          "bytes": 40275,
+          "sha256": "83dfa3c00fd3dd078ab94adede6a3041150b92fae70292b8520c5c87b6e12436"
+        }
+      },
+      {
+        "url": "https://www.kaggle.com/code/stevenpatton97/the-components-of-a-tackle-a-physics-driven-study",
+        "id": 47650127,
+        "version": 12,
+        "language": "r",
+        "api": "https://www.kaggle.com/api/v1/kernels/pull/stevenpatton97/the-components-of-a-tackle-a-physics-driven-study",
+        "sourceSha256": "2225655aa77f189c61f275de3016b828a7ed930fe3a403a5ece836e81e56952c",
+        "retrieval": {
+          "path": "out/grip-refinement/research/tackle-physics-code.body",
+          "bytes": 62161,
+          "sha256": "0030c23d6df055ad347b751f932bb15316bf57db245c02062de673c2b108e20d"
+        }
+      }
+    ],
+    "fractionalTackles": {
+      "url": "https://www.nature.com/articles/s41598-025-85993-1",
+      "doi": "10.1038/s41598-025-85993-1",
+      "retrieval": {
+        "path": "out/grip-refinement/research/nature.html",
+        "bytes": 316254,
+        "sha256": "c2c92074eeba4ec5916479d8402fb80c8947203df7e8dfdc407bcab6d1de7b1e"
+      },
+      "uses": "Contact-window speed reduction and help/context diagnostics; not grip force calibration."
+    },
+    "recovery": {
+      "doi": "10.4121/19307225.v2",
+      "url": "https://doi.org/10.4121/19307225.v2",
+      "downloadUrl": "https://data.4tu.nl/file/89bc5790-0933-49e1-bbce-c8dc51ee02cb/d736f8ef-bd9d-4da9-8043-024c787b8289",
+      "license": "CC-BY-4.0",
+      "retrieval": {
+        "path": "out/grip-refinement/research/recovery-data.zip",
+        "bytes": 1833722,
+        "sha256": "c0ca969c5fea9ba04dac1dc325b8ec8b3491fc464491043db301ade993c3b5d1"
+      },
+      "md5": "480aaf8ad4c54c30e14715bc41fbc330",
+      "files": [
+        {
+          "name": "Data/CoMVelocity.csv",
+          "bytes": 381641,
+          "sha256": "c4e931872ab6535b68bf4a4ea459e8c77be0864e85fc73b2ce44365483ec3e98",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/CoPPosition.csv",
+          "bytes": 427560,
+          "sha256": "b74ad8c73a76a1d6cddee70d82577ef4edd32c72ea84b6ce92ca932d2227d342",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/HorizontalGRF.csv",
+          "bytes": 393048,
+          "sha256": "dbe975ff82952611ee532b06c51fff952fd339b7a7234b2c68172c930e851c96",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/InteractionForcePelvis.csv",
+          "bytes": 399291,
+          "sha256": "35fcaee48d5daebeab220ccb6ff260d5012bee6260a84936f5926efb1479b68b",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/InteractionForceUpperBody.csv",
+          "bytes": 402286,
+          "sha256": "6f9ba4954a8ff3d40a78d6194e2d53c6e8bd3e8d477784754b60884ecec224fc",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/JointMomentAnkle.csv",
+          "bytes": 401332,
+          "sha256": "def6b48ba432b339c3db54016e61616f963142c89ce587e63c9d808bfd041414",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/JointMomentHip.csv",
+          "bytes": 392997,
+          "sha256": "23f1f236f3f3d2e87b24a44a50a8e957be68ac59d0c8c875210ca4cbc6387489",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/JointMomentKnee.csv",
+          "bytes": 398972,
+          "sha256": "13b29c1da5534fb1171bd9e78d7c6acb70ba42ed2057b5912759282c81971bf8",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/MomentArmGRF.csv",
+          "bytes": 435282,
+          "sha256": "003157c7ab0cfe571044cb01e7df0b43d0f31cfd30ebba391672724481c9f578",
+          "samples": 250,
+          "columns": 91
+        },
+        {
+          "name": "Data/README.md",
+          "bytes": 2629,
+          "sha256": "ec8c02ae8e8967414948c2c47916bb3d626d6b5ae6c7f8158c7d812b2caa94b1"
+        },
+        {
+          "name": "Data/WholeBodyAngularMomentum.csv",
+          "bytes": 402038,
+          "sha256": "d1844beff7882de29b5535064aa12773cb342fab30daf2e1f3066aac074104d7",
+          "samples": 250,
+          "columns": 91
+        }
+      ],
+      "subjects": 10,
+      "repetitionsAveraged": 6,
+      "phases": [
+        "TOR-EndP",
+        "EndP-HSR",
+        "HSR-TOL",
+        "TOL-HSL",
+        "HSL-TOR"
+      ],
+      "samplesPerPhase": 50,
+      "plane": "sagittal",
+      "hasAbsoluteUniformTime": false,
+      "limitations": "Walking, averaged and phase-normalized; not football wraps, axial yaw, grip capacity or cleat traction. No recovery timing/rating calibrated."
+    },
+    "bdb2024": {
+      "api": "https://www.kaggle.com/api/v1/competitions/data/list/nfl-big-data-bowl-2024",
+      "authenticated": true,
+      "httpStatus": 200,
+      "fileListing": {
+        "path": "out/grip-refinement/research/bdb2024-files.json",
+        "bytes": 267,
+        "sha256": "c74d33b3327714a2e71aaa04c38f9cf0080b5a58386cd3f7fa1d3409cede46f3"
+      },
+      "listedFiles": [
+        {
+          "name": "README",
+          "bytes": 78
+        }
+      ],
+      "hostMessage": "The dataset for this competition has been removed at the request of the host.",
+      "readme": {
+        "path": "out/grip-refinement/research/bdb2024-README.body",
+        "bytes": 78,
+        "sha256": "3efc61eb709752cbb3974a7a6632be7057ade4f402c3487c359c05f065756c7e"
+      },
+      "trackingOrLabelsAcquired": false
+    }
+  }
+}

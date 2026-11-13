@@ -1,0 +1,371 @@
+diff --git a/scripts/diag/saved-exchange.ts b/scripts/diag/saved-exchange.ts
+new file mode 100644
+index 0000000..12c6a59
+--- /dev/null
++++ b/scripts/diag/saved-exchange.ts
+@@ -0,0 +1,22 @@
++/** Portable, full-context snap inputs from PR #54. No game/prefix replay. */
++import {readFileSync} from 'node:fs';
++import {gunzipSync} from 'node:zlib';
++import assert from 'node:assert/strict';
++import {PlaySim, type PlaySetup} from '../../src/sim/playsim.js';
++import {CoverageScouting} from '../../src/sim/qbmind.js';
++import {ScoutingReport} from '../../src/sim/recognition.js';
++
++export const savedExchanges = JSON.parse(gunzipSync(readFileSync(
++  'test/fixtures/shotgun-exchange.json.gz')).toString());
++
++export function savedExchange(id: string): PlaySim {
++  const row = savedExchanges.inputs.find((r: {id: string}) => r.id === id);
++  assert(row, `Unknown saved exchange ${id}`);
++  const s = structuredClone(row.setup);
++  const setup: PlaySetup = {...s, energy: new Map(s.energy),
++    scouting: Object.assign(new ScoutingReport(), {...s.scouting, cells: new Map(s.scouting.cells)}),
++    coverageScouting: Object.assign(new CoverageScouting(), s.coverageScouting)};
++  const sim = new PlaySim(setup);
++  assert.deepEqual({...sim.rng}, row.expectedInitialRng, 'Saved native initialization changed');
++  return sim;
++}
+diff --git a/src/sim/assign.ts b/src/sim/assign.ts
+index a412b15..67af325 100644
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -254,9 +254,11 @@ export class RunnerToMesh implements Behavior {
+     // until the QB actually gives him the ball; onHandoff installs the run.
+     // Running through an expired landmark used to strand him yards away.
+     if (this.ride) {
+-      // A stretch back takes the ball on the move: arrive running, then keep
+-      // riding the track toward the aiming point until the QB puts it in.
+-      if (d < .7) this.passed = true;
++      // Being close to the landmark is not permission to leave before the
++      // installed exchange window. Gun backs can start almost on the mesh.
++      // Keep approaching it until the QB can actually put the ball in, then
++      // ride through at the existing tempo (possession still comes from him).
++      if (d < .7 && sim.t >= this.meshTime - .15) this.passed = true;
+       if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
+       return goTo(a, this.mesh, { speed, through: a.profile.vmax * .55 });
+     }
+diff --git a/test/fixtures/shotgun-exchange.json.gz b/test/fixtures/shotgun-exchange.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..9ff7b144cb7b32c1bd6eb905b13923ab63876039
+GIT binary patch
+literal 12557
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/test/shotgun-exchange.test.ts b/test/shotgun-exchange.test.ts
+new file mode 100644
+index 0000000..3f5161b
+--- /dev/null
++++ b/test/shotgun-exchange.test.ts
+@@ -0,0 +1,67 @@
++import {describe, expect, it} from 'vitest';
++import {savedExchange} from '../scripts/diag/saved-exchange.js';
++import {handoffReach} from '../src/sim/ball-transfer.js';
++import {RunnerToMesh} from '../src/sim/assign.js';
++import {goTo} from '../src/sim/behaviors/common.js';
++import {QBHandoff} from '../src/sim/behaviors/qb.js';
++import {PlaySim} from '../src/sim/playsim.js';
++
++describe('saved shotgun exchange coordination', () => {
++  it('P038 transfers in real reach when its installed window opens', () => {
++    const sim = savedExchange('spread-air'), rb = sim.slot('RB')!;
++    let actualDistance = Infinity;
++    while (sim.t < 2 && sim.handoffAt < 0 && sim.phase === 'live') {
++      const before = Math.hypot(rb.pos.x-sim.qb.pos.x, rb.pos.y-sim.qb.pos.y);
++      sim.tick();
++      if (sim.handoffAt >= 0) actualDistance = before;
++    }
++    expect(sim.handoffAt).toBe(1.05);
++    expect(actualDistance).toBeLessThanOrEqual(handoffReach(sim.qb, rb));
++    expect(sim.carrier).toBe(rb);
++  });
++
++  it('P069 preserves its complete current-source trajectory against only the cadence rollback', () => {
++    const sim = savedExchange('west-spread');
++    const control = savedExchange('west-spread'), mesh = control.slot('RB')!.behavior;
++    if (!(mesh instanceof RunnerToMesh)) throw Error('Expected installed riding mesh');
++    const update = mesh.update.bind(mesh);
++    // Restore just the previous proximity-only transition from #57's parent.
++    // Its historical experimental trajectory stays in the original fixture;
++    // other controllers on accepted/current source are intentionally different.
++    mesh.update = (a, current) => {
++      if (Math.hypot(mesh.mesh.x-a.pos.x, mesh.mesh.y-a.pos.y) < .7) Object.assign(mesh,{passed:true});
++      return update(a,current);
++    };
++    const result = sim.run(), old = control.run();
++    expect(sim.handoffAt).toBe(1.05);
++    expect(control.handoffAt).toBe(1.05);
++    expect(result.frames).toEqual(old.frames);
++    expect(result.events).toEqual(old.events);
++    expect(result.outcome).toBe(old.outcome);
++    expect(result.duration).toBe(old.duration);
++    expect(result.stats).toEqual(old.stats);
++  });
++
++  it.each([-1, 1])('being near a riding landmark does not authorize early departure, side %s', side => {
++    const sim = savedExchange('spread-air'), rb = sim.slot('RB')!;
++    const mesh = {x: rb.pos.x + .2, y: rb.pos.y - side*.2};
++    const aim = {x: rb.pos.x + 6, y: rb.pos.y + side*5};
++    rb.behavior = new RunnerToMesh(mesh, 1.2, aim, true);
++    sim.t = .5;
++    expect(rb.behavior.update(rb, sim)).toEqual(goTo(rb, mesh, {speed: .3, through: rb.profile.vmax*.55}));
++    sim.t = 1.05;
++    expect(rb.behavior.update(rb, sim)).toEqual(goTo(rb, aim, {speed: .55, through: rb.profile.vmax*.55}));
++    expect(sim.carrier).toBe(sim.qb);
++  });
++
++  it('preserves a declared QB keeper instead of recovering toward a back', () => {
++    const sim: PlaySim = savedExchange('spread-air'), qb=sim.qb;
++    qb.behavior=new QBHandoff({...qb.pos},1,null,0,true);sim.t=1;
++    // The experimental parent declares this API; accepted develop does not.
++    // Install the same tripwire without importing that parent's awareness code.
++    Object.assign(sim,{teammateInformation:()=>{throw Error('Keeper has no exchange to recover');}});
++    qb.behavior.update(qb,sim);
++    expect(sim.stats.rusher).toBe(qb.player.id);expect(sim.carrier).toBe(qb);
++    expect(qb.behavior.kind).toBe('carrier');expect(sim.handoffAt).toBe(-1);
++  });
++});

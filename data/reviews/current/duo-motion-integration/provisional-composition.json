@@ -1,0 +1,18 @@
+{
+  "schema": "provisional-combined-portability-v1",
+  "approved": false,
+  "acceptedBase": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "bothPatchOrdersSameTree": "e8cfb46bb5fa47de359385c529e50c2fbb5897fc",
+  "protectedChanges": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/spacing.ts",
+    "test/combo-transfer.test.ts",
+    "test/fixtures/spacing-residual-motion.json.gz",
+    "test/spacing-residual-motion.test.ts"
+  ],
+  "prospectiveSourceSha256": "544fea1cc8cd60649d438613e575c914a66424d9357288f8c92a110d73238162",
+  "prospectiveValidationSha256": "0b5dd3290a86c07a431deb457525efb1dbd70d96dee19a17af2c58a07a11a5b6",
+  "sourceAppliedToWorkingTree": false,
+  "runtimeTests": 0,
+  "scope": "Temporary Git indices only; exact source/test composition portable, independent football reviews still pending. No semantic approval inferred from commutative patches."
+}

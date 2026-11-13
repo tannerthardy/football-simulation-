@@ -1,0 +1,367 @@
+{
+  "source": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "qualification": "Original selected players/energies and exact matched-reproduction endpoints. Staged caller contracts, not simulator restore checkpoints. All three constructors match original RNG/call/player energy; zero World ticks in fixture preparation.",
+  "cases": [
+    {
+      "id": "G1-P020",
+      "t": 4.55,
+      "actor": 18,
+      "slot": "NB",
+      "body0": {
+        "x": 41.405963364334546,
+        "y": 45.717232347093045
+      },
+      "body1": {
+        "x": 41.44325094010842,
+        "y": 45.93717259225044
+      },
+      "ball0": {
+        "x": 41.562036602962266,
+        "y": 47.223850396599666,
+        "z": 0.15873048437398246
+      },
+      "ball1": {
+        "x": 41.61874854056257,
+        "y": 47.39672669224791,
+        "z": -0.2563998454498727
+      },
+      "envelope": {
+        "reach": 1.3173611111111112,
+        "low": 0.1,
+        "top": 3.1975000000000002
+      },
+      "old": {
+        "s": 0,
+        "dh": 1.2921492970646113,
+        "z": 0.15873048437398246
+      },
+      "player": {
+        "id": "H1-CB3",
+        "firstName": "Calvin",
+        "lastName": "Butler",
+        "jersey": 21,
+        "position": "CB",
+        "age": 32,
+        "experience": 10,
+        "measurables": {
+          "heightIn": 71,
+          "weightLb": 201,
+          "armIn": 32.5,
+          "handIn": 8.7,
+          "forty": 4.5,
+          "tenSplit": 1.56,
+          "shuttle": 4.15,
+          "threeCone": 6.9,
+          "vertical": 37.6,
+          "broad": 121,
+          "bench": 14
+        },
+        "ratings": {
+          "strength": 40,
+          "stamina": 57,
+          "balance": 37,
+          "toughness": 63,
+          "throwPower": 18,
+          "accShort": 37,
+          "accMid": 36,
+          "accDeep": 48,
+          "release": 16,
+          "throwOnRun": 12,
+          "touch": 43,
+          "pocketPresence": 37,
+          "vision": 31,
+          "elusiveness": 46,
+          "breakTackle": 22,
+          "ballSecurity": 21,
+          "patience": 20,
+          "routeRunning": 39,
+          "releaseVsPress": 28,
+          "hands": 44,
+          "contestedCatch": 27,
+          "ballTracking": 29,
+          "passBlock": 29,
+          "runBlock": 26,
+          "handTechnique": 32,
+          "leadBlock": 22,
+          "passRushPower": 23,
+          "passRushFinesse": 26,
+          "blockShedding": 16,
+          "tackling": 44,
+          "hitPower": 33,
+          "pursuit": 46,
+          "manCoverage": 58,
+          "zoneCoverage": 75,
+          "press": 58,
+          "ballSkills": 70,
+          "kickPower": 21,
+          "kickAccuracy": 43,
+          "puntPower": 30,
+          "puntAccuracy": 22,
+          "awareness": 52,
+          "playRecognition": 82,
+          "decisionMaking": 75,
+          "composure": 68,
+          "discipline": 40,
+          "anticipation": 73,
+          "consistency": 40,
+          "workRate": 56
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Zone Corner"
+      },
+      "energy": 0.9905285952151649,
+      "tracking": true,
+      "deflected": true,
+      "ballVel": {
+        "x": 1.1330049095105799,
+        "y": 3.45376476268403,
+        "z": -8.50806731640441
+      },
+      "retry": 0,
+      "releaseT": 2.55
+    },
+    {
+      "id": "G2-P107",
+      "t": 3.25,
+      "actor": 19,
+      "slot": "NB",
+      "body0": {
+        "x": 83.89184971268037,
+        "y": 24.906341759584713
+      },
+      "body1": {
+        "x": 83.84170555673856,
+        "y": 24.839221420285458
+      },
+      "ball0": {
+        "x": 82.57785901400901,
+        "y": 24.339162814837675,
+        "z": 0.5269532165498483
+      },
+      "ball1": {
+        "x": 82.71854082131648,
+        "y": 24.266488285080566,
+        "z": 0.24773972814720918
+      },
+      "envelope": {
+        "reach": 1.274861111111111,
+        "low": 0.1,
+        "top": 3.1604722222222223
+      },
+      "old": {
+        "s": 1,
+        "dh": 1.2607625736265236,
+        "z": 0.24773972814720918
+      },
+      "player": {
+        "id": "H2-CB1",
+        "firstName": "Rodney",
+        "lastName": "Jenkins",
+        "jersey": 20,
+        "position": "CB",
+        "age": 21,
+        "experience": 0,
+        "measurables": {
+          "heightIn": 71.9,
+          "weightLb": 197,
+          "armIn": 30.7,
+          "handIn": 9.2,
+          "forty": 4.54,
+          "tenSplit": 1.6,
+          "shuttle": 4.09,
+          "threeCone": 6.87,
+          "vertical": 33,
+          "broad": 117,
+          "bench": 13
+        },
+        "ratings": {
+          "strength": 33,
+          "stamina": 78,
+          "balance": 34,
+          "toughness": 55,
+          "throwPower": 34,
+          "accShort": 38,
+          "accMid": 27,
+          "accDeep": 29,
+          "release": 28,
+          "throwOnRun": 36,
+          "touch": 24,
+          "pocketPresence": 36,
+          "vision": 33,
+          "elusiveness": 28,
+          "breakTackle": 24,
+          "ballSecurity": 24,
+          "patience": 27,
+          "routeRunning": 28,
+          "releaseVsPress": 28,
+          "hands": 55,
+          "contestedCatch": 24,
+          "ballTracking": 26,
+          "passBlock": 30,
+          "runBlock": 29,
+          "handTechnique": 34,
+          "leadBlock": 27,
+          "passRushPower": 31,
+          "passRushFinesse": 34,
+          "blockShedding": 17,
+          "tackling": 51,
+          "hitPower": 26,
+          "pursuit": 64,
+          "manCoverage": 69,
+          "zoneCoverage": 78,
+          "press": 64,
+          "ballSkills": 64,
+          "kickPower": 25,
+          "kickAccuracy": 22,
+          "puntPower": 32,
+          "puntAccuracy": 34,
+          "awareness": 66,
+          "playRecognition": 74,
+          "decisionMaking": 70,
+          "composure": 82,
+          "discipline": 47,
+          "anticipation": 67,
+          "consistency": 52,
+          "workRate": 64
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Slot Corner"
+      },
+      "energy": 0.988154576808862,
+      "tracking": true,
+      "deflected": true,
+      "ballVel": {
+        "x": 2.8114685235051637,
+        "y": -1.4523708273527858,
+        "z": -5.794460125062297
+      },
+      "retry": 0,
+      "releaseT": 2.05
+    },
+    {
+      "id": "G2-P143",
+      "t": 2.5,
+      "actor": 10,
+      "slot": "H",
+      "body0": {
+        "x": 67.6041642956579,
+        "y": 31.56378961940091
+      },
+      "body1": {
+        "x": 67.80419961621524,
+        "y": 31.3254621942537
+      },
+      "ball0": {
+        "x": 66.71067740693202,
+        "y": 30.0475183298822,
+        "z": 1.6355886400875783
+      },
+      "ball1": {
+        "x": 67.70893732088334,
+        "y": 30.07107253422345,
+        "z": 1.4164131651597718
+      },
+      "envelope": {
+        "reach": 1.291388888888889,
+        "low": 0.1,
+        "top": 3.30175
+      },
+      "old": {
+        "s": 1,
+        "dh": 1.2580017186406014,
+        "z": 1.4164131651597718
+      },
+      "player": {
+        "id": "H2-WR1",
+        "firstName": "Connor",
+        "lastName": "Phillips",
+        "jersey": 15,
+        "position": "WR",
+        "age": 21,
+        "experience": 0,
+        "measurables": {
+          "heightIn": 69.1,
+          "weightLb": 196,
+          "armIn": 31.4,
+          "handIn": 9.1,
+          "forty": 4.52,
+          "tenSplit": 1.55,
+          "shuttle": 4.03,
+          "threeCone": 6.76,
+          "vertical": 33.7,
+          "broad": 122,
+          "bench": 8
+        },
+        "ratings": {
+          "strength": 41,
+          "stamina": 59,
+          "balance": 46,
+          "toughness": 58,
+          "throwPower": 25,
+          "accShort": 29,
+          "accMid": 31,
+          "accDeep": 26,
+          "release": 22,
+          "throwOnRun": 40,
+          "touch": 31,
+          "pocketPresence": 24,
+          "vision": 41,
+          "elusiveness": 60,
+          "breakTackle": 39,
+          "ballSecurity": 43,
+          "patience": 18,
+          "routeRunning": 70,
+          "releaseVsPress": 47,
+          "hands": 59,
+          "contestedCatch": 47,
+          "ballTracking": 56,
+          "passBlock": 18,
+          "runBlock": 19,
+          "handTechnique": 29,
+          "leadBlock": 31,
+          "passRushPower": 27,
+          "passRushFinesse": 34,
+          "blockShedding": 12,
+          "tackling": 20,
+          "hitPower": 17,
+          "pursuit": 1,
+          "manCoverage": 39,
+          "zoneCoverage": 35,
+          "press": 30,
+          "ballSkills": 14,
+          "kickPower": 30,
+          "kickAccuracy": 28,
+          "puntPower": 26,
+          "puntAccuracy": 26,
+          "awareness": 48,
+          "playRecognition": 55,
+          "decisionMaking": 49,
+          "composure": 44,
+          "discipline": 49,
+          "anticipation": 13,
+          "consistency": 52,
+          "workRate": 57
+        },
+        "familiarity": {
+          "RB": 0.3,
+          "TE": 0.25
+        },
+        "archetype": "Slot"
+      },
+      "energy": 0.9914791443035254,
+      "tracking": true,
+      "deflected": false,
+      "ballVel": {
+        "x": 19.94048480009426,
+        "y": 0.47050096581153045,
+        "z": -4.592577018092114
+      },
+      "retry": 0,
+      "releaseT": 1.9
+    }
+  ]
+}

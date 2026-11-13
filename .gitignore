@@ -3,6 +3,36 @@ dist/
 out/
 data/raw/
 .venv-kaggle/
+.venv-movement/
 *.log
-!data/reviews/**/*.log
 .DS_Store
+
+# Python extraction/test bytecode
+__pycache__/
+
+# Generate films and evidence under out/. Recover old bytes with restore-evidence.py.
+viewer/*
+!viewer/replay.template.html
+data/reviews/**/*.gz
+data/reviews/**/*.zip
+data/reviews/**/*.html
+data/reviews/**/*.png
+data/reviews/**/*.webm
+data/reviews/**/*.jsonl
+data/reviews/**/*.json
+data/reviews/**/*.txt
+!data/reviews/**/*.ts.txt
+!data/reviews/**/fit-exchanges-reconstructed-tool.txt
+
+# New compact summaries and provenance have explicit homes. Existing tracked
+# references remain tracked; fresh detailed JSON traces belong in out/.
+!data/reviews/current/*.json
+!data/reviews/**/input-manifest*.json
+!data/reviews/**/source-manifest*.json
+!data/reviews/**/summary.json
+# Compact NFL/sim mechanism aggregates read by `npm run mech:report`.
+!data/reviews/mechanics/*.json
+
+# Keep these bounded aggregate references available to current diagnostics.
+!data/reviews/rushing-benchmark/reference/nfl-benchmark.json.gz
+!data/reviews/rushing-benchmark/concepts/report.json.gz

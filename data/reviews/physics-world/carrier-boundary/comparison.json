@@ -1,0 +1,419 @@
+{
+  "schema": "carrier-boundary-comparison-v1",
+  "fixture": {
+    "id": "RC-R3-counter-under-L-S3",
+    "rosterSeeds": [
+      51,
+      52
+    ],
+    "strength": 0.55,
+    "formation": "ace_11",
+    "run": "counter",
+    "front": "under",
+    "coverage": "cover3",
+    "pressure": null,
+    "flip": true,
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "firstDownX": 50,
+    "down": 1,
+    "seed": 3
+  },
+  "fixtureSha256": "7ce51eb7c7ceae73d3edf79700483b6f397b329adfc7a208518c8b2a2f2780ba",
+  "profilesSha256": "e3652150b7584494df5cfcc9ffa82c78dc4be7718a5be148fdb4e49d49a09b75",
+  "sameFixtureProfiles": true,
+  "identicalPreRepairCarrierUpdates": 88,
+  "firstDifference": {
+    "t": 5.85,
+    "position": {
+      "x": 47.95514460255338,
+      "y": 7.0562478716946035
+    },
+    "velocity": {
+      "x": 3.682624438069142,
+      "y": -8.046860239200065
+    },
+    "samePosition": true,
+    "sameVelocity": true,
+    "parentCommand": {
+      "vel": {
+        "x": 6.9333897957252395,
+        "y": 1
+      },
+      "cutSkill": 1.0607142857142857,
+      "squeeze": 0
+    },
+    "carrierOnlyCommand": {
+      "vel": {
+        "x": 3.682624438069142,
+        "y": 8.046860239200065
+      },
+      "cutSkill": 1.0607142857142857,
+      "squeeze": 0
+    }
+  },
+  "modes": {
+    "parent": {
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "carrierSha256": "6f8dd527388775f165512ebc571136ce0c8d0782f22c0f325d1a6bbc3c0a0ef0",
+      "scriptSha256": "8e0677f1c47ce8584bb690aa60c094c655dfd83cd0f881a16813eba375affc3c",
+      "observerVerified": true,
+      "signature": "9f70196c685a98f015eee7a956c19e54770a1acd645adca447bc286c5fe7c580",
+      "outcome": "oob",
+      "yards": 15.65,
+      "duration": 7.5,
+      "everPlannedExit": false,
+      "minimumRecordedCarrierRoom": 0.014863266727278612,
+      "lastUpdate": {
+        "t": 7.45,
+        "pos": {
+          "x": 55.31963524214777,
+          "y": 0.014863266727278612
+        },
+        "vel": {
+          "x": 6.567605017249559,
+          "y": -1.6452978927626083
+        },
+        "facing": 0.1003652788307953,
+        "command": {
+          "vel": {
+            "x": 9.70490714188915,
+            "y": 1
+          },
+          "cutSkill": 1.0607142857142857,
+          "squeeze": 0
+        },
+        "plannedExit": false,
+        "boundaryRecovery": null,
+        "heading": 0,
+        "tags": [
+          "paced-lead",
+          "run-crease-read"
+        ],
+        "opponents": [
+          {
+            "slot": "DE_W",
+            "pos": {
+              "x": 51.65860481981131,
+              "y": 4.172526956960872
+            },
+            "vel": {
+              "x": 6.800678590619285,
+              "y": -5.34497512463019
+            },
+            "distance": 5.539793418022001,
+            "engaged": false
+          },
+          {
+            "slot": "DE_S",
+            "pos": {
+              "x": 50.42712926192328,
+              "y": 15.954621331578904
+            },
+            "vel": {
+              "x": 6.364240713119962,
+              "y": -3.569929664813717
+            },
+            "distance": 16.673706904360976,
+            "engaged": false
+          },
+          {
+            "slot": "DT_S",
+            "pos": {
+              "x": 45.58789080870334,
+              "y": 18.880085952920908
+            },
+            "vel": {
+              "x": 4.713975124174631,
+              "y": -2.7945921756709966
+            },
+            "distance": 21.227422752598848,
+            "engaged": false
+          },
+          {
+            "slot": "DT_W",
+            "pos": {
+              "x": 43.00164473018137,
+              "y": 22.92348366927036
+            },
+            "vel": {
+              "x": 3.427041894741028,
+              "y": -2.3525453210457887
+            },
+            "distance": 26.01033984785104,
+            "engaged": false
+          },
+          {
+            "slot": "LB_M",
+            "pos": {
+              "x": 53.75860324344105,
+              "y": 5.099941199156077
+            },
+            "vel": {
+              "x": 5.063104241714969,
+              "y": -5.193703916623924
+            },
+            "distance": 5.319289283340457,
+            "engaged": false
+          },
+          {
+            "slot": "LB_W",
+            "pos": {
+              "x": 51.56131229228855,
+              "y": 7.3340473538174775
+            },
+            "vel": {
+              "x": 6.355251591383859,
+              "y": -4.843997712613757
+            },
+            "distance": 8.22772429631383,
+            "engaged": false
+          },
+          {
+            "slot": "LB_S",
+            "pos": {
+              "x": 50.112704097859556,
+              "y": 18.16900029002096
+            },
+            "vel": {
+              "x": 5.635154160463323,
+              "y": -3.7539585337649393
+            },
+            "distance": 18.886101318214962,
+            "engaged": false
+          },
+          {
+            "slot": "CB_S",
+            "pos": {
+              "x": 54.29549537905891,
+              "y": 6.521224899109902
+            },
+            "vel": {
+              "x": 3.524371530170231,
+              "y": -6.1241078335784955
+            },
+            "distance": 6.586471297326691,
+            "engaged": false
+          },
+          {
+            "slot": "CB_W",
+            "pos": {
+              "x": 49.393733349228455,
+              "y": 4.765864885365221
+            },
+            "vel": {
+              "x": 6.3376594442595025,
+              "y": -4.947098704707711
+            },
+            "distance": 7.595283380151463,
+            "engaged": false
+          },
+          {
+            "slot": "FS",
+            "pos": {
+              "x": 42.72044832888898,
+              "y": 10.951365478415656
+            },
+            "vel": {
+              "x": 3.3160356151793784,
+              "y": -0.9796572367653898
+            },
+            "distance": 16.683722351486683,
+            "engaged": false
+          },
+          {
+            "slot": "SS",
+            "pos": {
+              "x": 51.5112194888537,
+              "y": 14.206967751742718
+            },
+            "vel": {
+              "x": 6.008515617017144,
+              "y": -4.282074117835963
+            },
+            "distance": 14.694211794565023,
+            "engaged": false
+          }
+        ]
+      }
+    },
+    "carrier-only": {
+      "sourceSha256": "d2c2a24b486194d455568ba814207aa4a659ef09cbdf680dd859da29ac4e59f0",
+      "carrierSha256": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66",
+      "scriptSha256": "8e0677f1c47ce8584bb690aa60c094c655dfd83cd0f881a16813eba375affc3c",
+      "observerVerified": true,
+      "signature": "138ca1184958b749f7ad932a2b19c64deee7b0c217a94195188916d7947a7134",
+      "outcome": "tackle",
+      "yards": 23.51,
+      "duration": 9,
+      "everPlannedExit": false,
+      "minimumRecordedCarrierRoom": 0.7390218389282429,
+      "lastUpdate": {
+        "t": 8.95,
+        "pos": {
+          "x": 63.055165118847896,
+          "y": 0.7390218389282429
+        },
+        "vel": {
+          "x": 6.00763246652332,
+          "y": -0.936610100327124
+        },
+        "facing": -0.6754702661962733,
+        "command": {
+          "vel": {
+            "x": 9.589071480813407,
+            "y": -1.4949684841300137
+          },
+          "cutSkill": 1.0607142857142857,
+          "squeeze": 0
+        },
+        "plannedExit": false,
+        "boundaryRecovery": false,
+        "heading": -0.1546583473835108,
+        "tags": [
+          "paced-lead",
+          "run-crease-read",
+          "fell"
+        ],
+        "opponents": [
+          {
+            "slot": "DE_W",
+            "pos": {
+              "x": 62.54031216908271,
+              "y": 0.11444707988929945
+            },
+            "vel": {
+              "x": 7.478186081865581,
+              "y": 0.8475242080401517
+            },
+            "distance": 0.8094239862460627,
+            "engaged": false
+          },
+          {
+            "slot": "DE_S",
+            "pos": {
+              "x": 59.74611353164646,
+              "y": 10.054370176881354
+            },
+            "vel": {
+              "x": 7.597129407874242,
+              "y": -3.166420179395854
+            },
+            "distance": 9.885622745389696,
+            "engaged": false
+          },
+          {
+            "slot": "DT_S",
+            "pos": {
+              "x": 52.87458985811413,
+              "y": 14.497868838363946
+            },
+            "vel": {
+              "x": 5.550133406563756,
+              "y": -2.321297565863079
+            },
+            "distance": 17.11578170558813,
+            "engaged": false
+          },
+          {
+            "slot": "DT_W",
+            "pos": {
+              "x": 49.31095195289547,
+              "y": 18.73270034564309
+            },
+            "vel": {
+              "x": 5.116398073686574,
+              "y": -2.6592298806906673
+            },
+            "distance": 22.642346648573152,
+            "engaged": false
+          },
+          {
+            "slot": "LB_W",
+            "pos": {
+              "x": 61.83911833307608,
+              "y": 1.4798768098363646
+            },
+            "vel": {
+              "x": 7.493921015437918,
+              "y": -1.3945870426481561
+            },
+            "distance": 1.423950797290847,
+            "engaged": false
+          },
+          {
+            "slot": "LB_S",
+            "pos": {
+              "x": 58.3539950428982,
+              "y": 12.490787245269285
+            },
+            "vel": {
+              "x": 6.455586261417437,
+              "y": -2.7764495750030176
+            },
+            "distance": 12.65721099803108,
+            "engaged": false
+          },
+          {
+            "slot": "CB_S",
+            "pos": {
+              "x": 62.107060718808015,
+              "y": 0.9404430810312765
+            },
+            "vel": {
+              "x": 7.45193320497621,
+              "y": -1.7912460698128565
+            },
+            "distance": 0.969263880553336,
+            "engaged": false
+          },
+          {
+            "slot": "CB_W",
+            "pos": {
+              "x": 61.20106824593913,
+              "y": 0.6971857846642928
+            },
+            "vel": {
+              "x": 8.280562559278005,
+              "y": -0.8681996153075163
+            },
+            "distance": 1.8545688096068116,
+            "engaged": false
+          },
+          {
+            "slot": "FS",
+            "pos": {
+              "x": 50.92419801052682,
+              "y": 8.88993514247339
+            },
+            "vel": {
+              "x": 6.917105258860522,
+              "y": -1.5177009417631622
+            },
+            "distance": 14.61498377231658,
+            "engaged": false
+          },
+          {
+            "slot": "SS",
+            "pos": {
+              "x": 60.35433144856647,
+              "y": 6.3913157991541985
+            },
+            "vel": {
+              "x": 7.744771745987677,
+              "y": -4.106300359417684
+            },
+            "distance": 6.264417732505764,
+            "engaged": false
+          }
+        ]
+      }
+    }
+  },
+  "limits": [
+    "One retrospectively selected Counter controller failure; larger yardage is not itself proof of realism.",
+    "Carrier-only tree is parent c02a3b9 src with exactly src/sim/behaviors/carrier.ts replaced; later combined source must be reported separately.",
+    "Parent physical signature exactly matches historical RC-R3-counter-under-L-S3 panel.",
+    "Identical command/state prefix covers carrier updates, not a generalized replay/restart framework."
+  ]
+}

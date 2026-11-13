@@ -1,0 +1,276 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index ba3c1bd..25de38a 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -28,6 +28,7 @@ import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
+ import { interceptPoint } from '../../physics/reach.js';
+ import type { Perceived } from '../perception.js';
+ import { goTo, runThrough, stand, track } from './common.js';
++import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
+ 
+ /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
+ const PULL_STEP = process.env.PULL_STEP === '1';
+@@ -731,6 +732,7 @@ export class RunBlocker implements Behavior {
+   zoneRead: ZoneReachRead | null = null;
+   /** Held climb plan from one acquired picture of the backer. */
+   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
++  private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
+   /** The called track he is running this tick (known to teammates). */
+   private track: Vec2 | null = null;
+   constructor(public plan: RunBlockPlan) {}
+@@ -1100,6 +1102,25 @@ export class RunBlocker implements Behavior {
+         return stand();
+       }
+     }
++    // An unjoined helper collecting the original first-level responsibility
++    // may find its old half occupied by the former owner. Use acquired body
++    // pictures to choose a free strike surface, never the defender's private
++    // engagement flag. Real hands still require separate physical eligibility.
++    const combo=plan.kind==='combo'&&plan.combination?.helpPolicy?.kind==='check'?plan.combination:null;
++    if(combo&&!combo.released&&combo.members[1]===a&&combo.defender===target
++      && !sim.world.joints.some(j=>j.a===a.body||j.b===a.body)){
++      const partner=combo.members[0],read=this.collectionRead;
++      if(!read||read.target!==target||read.partner!==partner||sim.t>=read.nextRead){
++        const covered={seen:sim.see(a,partner),radius:partner.profile.radius};
++        const others=sim.offense.filter(p=>p!==a&&p!==partner).map(p=>({seen:sim.see(a,p),radius:p.profile.radius}));
++        const choice=readCollectionApproach(a,seen,covered,others,contact,sim.attackDir(a.team),
++          a.mind.placementError*(1-.5*a.r('runBlock')),a.mind.decisionInterval);
++        this.collectionRead={target,partner,at:sim.t,nextRead:sim.t+a.mind.decisionInterval,
++          down:structuredClone(seen),choice};
++      }
++      const current=this.collectionRead!;
++      if(current.choice)return collectionCommand(a,current.choice,sim.t-current.at,current.down);
++    }else this.collectionRead=null;
+     // Aiming point: reach blocks work to the playside shoulder.
+     let aim = seen.pos;
+     if (contactFit) {
+diff --git a/src/sim/collection-approach.ts b/src/sim/collection-approach.ts
+new file mode 100644
+index 0000000..4ea9121
+--- /dev/null
++++ b/src/sim/collection-approach.ts
+@@ -0,0 +1,68 @@
++/** Find a free first-level strike surface when a former owner occupies the
++ * helper's half. This selects feet, not contact, release or force capacity. */
++import {FIELD_WIDTH} from '../core/field.js';
++import type {Vec2} from '../core/vec.js';
++import type {Intent} from '../physics/world.js';
++import type {Agent} from './agent.js';
++import type {Perceived} from './perception.js';
++import {goTo} from './behaviors/common.js';
++
++export interface CollectionObstacle { seen: Perceived; radius: number }
++export interface CollectionApproach { goal: Vec2 | null; flow: Vec2 }
++
++function distanceToSegment(point: Vec2, start: Vec2, end: Vec2): number {
++  const x=end.x-start.x,y=end.y-start.y;
++  const u=Math.max(0,Math.min(1,((point.x-start.x)*x+(point.y-start.y)*y)/Math.max(1e-12,x*x+y*y)));
++  return Math.hypot(point.x-start.x-u*x,point.y-start.y-u*y);
++}
++
++/** Pictures are already extrapolated to their delivery time. Only project
++ * forward to the next ordinary read; never read another body's live state. */
++export function readCollectionApproach(a: Agent, down: Perceived,
++  partner: CollectionObstacle, others: CollectionObstacle[], contact: number,
++  direction: number, placementError: number, horizon: number): CollectionApproach | null {
++  const bearing=Math.atan2(down.pos.y-partner.seen.pos.y,down.pos.x-partner.seen.pos.x);
++  const off=Math.abs(Math.atan2(Math.sin(bearing-partner.seen.facing),Math.cos(bearing-partner.seen.facing)));
++  // This correction concerns a visibly lost surface, not a covered player
++  // still squaring his first strike. Use the existing run-loss torso boundary.
++  if(off/(Math.PI/2)<1.1)return null;
++  const side=Math.sign(a.pos.y-partner.seen.pos.y)||1;
++  const half={x:down.pos.x-direction*.35,y:down.pos.y+side*.55+placementError};
++  // The half-man landmark lies beyond first strike. A teammate behind that
++  // entry need not obstruct collection: don't demand travel through the whole
++  // landmark when the ordinary controller can acquire hands beforehand.
++  const ray={x:half.x-a.pos.x,y:half.y-a.pos.y},length2=ray.x*ray.x+ray.y*ray.y;
++  const relative={x:down.pos.x-a.pos.x,y:down.pos.y-a.pos.y};
++  const along=relative.x*ray.x+relative.y*ray.y;
++  const discriminant=along*along-length2*(relative.x*relative.x+relative.y*relative.y-contact*contact);
++  const entry=length2>1e-12&&discriminant>=0?Math.max(0,(along-Math.sqrt(discriminant))/length2):1;
++  const strike=entry<1?{x:a.pos.x+entry*ray.x,y:a.pos.y+entry*ray.y}:half;
++  const clear=(goal:Vec2,obstacle:CollectionObstacle)=>[0,horizon].every(dt=>{
++    const point={x:obstacle.seen.pos.x+obstacle.seen.vel.x*dt,y:obstacle.seen.pos.y+obstacle.seen.vel.y*dt};
++    const end={x:goal.x+down.vel.x*dt,y:goal.y+down.vel.y*dt};
++    const initial=Math.hypot(point.x-a.pos.x,point.y-a.pos.y),radius=a.profile.radius+obstacle.radius;
++    return distanceToSegment(point,a.pos,end)>=Math.min(initial,radius)-1e-9
++      && (initial>=radius||Math.hypot(end.x-point.x,end.y-point.y)>initial);
++  });
++  if(clear(strike,partner))return null;
++  // The first strike already permits this extension. Search only the near,
++  // backfield half of that existing envelope, never an upfield shortcut.
++  const dx=a.pos.x-down.pos.x,dy=a.pos.y-down.pos.y,n=Math.hypot(dx,dy)||1;
++  const directions=[{x:dx/n,y:dy/n},{x:-direction,y:0},
++    {x:-direction/Math.SQRT2,y:side/Math.SQRT2},
++    {x:-direction/Math.SQRT2,y:-side/Math.SQRT2},{x:0,y:side},{x:0,y:-side}];
++  const candidates=directions.filter(v=>v.x*direction<=0).map(v=>({
++    x:down.pos.x+v.x*(contact-.1),y:down.pos.y+v.y*(contact-.1)+placementError
++  })).filter(goal=>goal.y>=.5&&goal.y<=FIELD_WIDTH-.5
++    && [partner,...others].every(peer=>clear(goal,peer)));
++  candidates.sort((aGoal,bGoal)=>Math.hypot(aGoal.x-a.pos.x,aGoal.y-a.pos.y)-Math.hypot(bGoal.x-a.pos.x,bGoal.y-a.pos.y));
++  return {goal:candidates[0]??null,flow:{...down.vel}};
++}
++
++export function collectionCommand(a:Agent,read:CollectionApproach,elapsed:number,down:Perceived):Intent {
++  const facing=Math.atan2(down.pos.y-a.pos.y,down.pos.x-a.pos.x);
++  // No admitted route means brake with ordinary feet; it does not stop the
++  // body or clear the teammate. World and global spacing remain authoritative.
++  if(!read.goal)return {vel:{x:0,y:0},facing};
++  return goTo(a,{x:read.goal.x+read.flow.x*elapsed,y:read.goal.y+read.flow.y*elapsed},{speed:1,facing});
++}
+diff --git a/test/collection-approach.test.ts b/test/collection-approach.test.ts
+new file mode 100644
+index 0000000..5ec19c8
+--- /dev/null
++++ b/test/collection-approach.test.ts
+@@ -0,0 +1,125 @@
++import {describe,expect,it,vi} from 'vitest';
++import {CENTER_Y} from '../src/core/field.js';
++import {Rng} from '../src/core/rng.js';
++import {generateTeam,pickOffense,pickDefense} from '../src/league/team.js';
++import {FORMATION_BY_ID} from '../src/playbook/formations.js';
++import {RUN_BY_ID} from '../src/playbook/concepts.js';
++import {FRONT_BY_ID,COVERAGE_BY_ID} from '../src/playbook/defense.js';
++import {PlaySim} from '../src/sim/playsim.js';
++import {RunBlocker,type Combination} from '../src/sim/behaviors/blocking.js';
++import {readCollectionApproach,collectionCommand} from '../src/sim/collection-approach.js';
++import {updateEngagements} from '../src/sim/engagement.js';
++import {supportParams} from '../src/physics/support.js';
++import type {Intent} from '../src/physics/world.js';
++
++/** Opposing control declared before candidate results: C and RT are distinct,
++ * nonoverlapping upright bodies closing the two near collection approaches.
++ * No contact/release timing or strength manipulation supplies an exit. */
++function obstruction(){
++ const formation=FORMATION_BY_ID.ace_11,sim=new PlaySim({
++  offense:pickOffense(generateTeam(new Rng(31),'Panel offense 1','O1',{strength:.55}),formation.personnel),
++  defense:pickDefense(generateTeam(new Rng(32),'Panel defense 1','D1',{strength:.55}),'base43'),
++  offCall:{formation,flip:false,kind:'run',run:RUN_BY_ID.iz_strong,label:'Obstructed collection'},
++  defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Over'},
++  los:40,ballY:CENTER_Y,firstDownX:50,seed:11});
++ for(const a of sim.agents){a.body.pos={x:70+a.idx%5*3,y:3+Math.floor(a.idx/5)*3};a.body.vel={x:0,y:0};
++  a.behavior={kind:'idle',update:()=>({vel:{x:0,y:0},facing:a.facing})};}
++ sim.t=sim.world.time=1.35;
++ const helper=sim.slot('LG')!,owner=sim.slot('C')!,defender=sim.slot('DT_W')!,wall=sim.slot('RT')!;
++ helper.body.pos={x:40,y:CENTER_Y+1.333333333333332};helper.body.facing=-.7;
++ owner.body.pos={x:41.3,y:CENTER_Y+.6};owner.body.facing=Math.PI;
++ defender.body.pos={x:42.2,y:CENTER_Y};defender.body.facing=Math.PI;
++ wall.body.pos={x:40.8,y:CENTER_Y-.166666666666668};
++ sim.slot('RB')!.body.pos={x:34,y:CENTER_Y};
++ const combo:Combination={members:[owner,helper],defender,backer:sim.slot('LB_W')!,released:false,secureSince:-1,nextRead:0,
++  soloKind:'drive',helpPolicy:{kind:'check',homeY:helper.pos.y,side:1}};
++ owner.behavior=new RunBlocker({kind:'drive',target:defender,drive:{x:1,y:0},combination:combo});
++ helper.behavior=new RunBlocker({kind:'combo',target:defender,drive:{x:1,y:0},combination:combo});
++ for(let k=0;k<24;k++)sim.perception.record(sim.agents);
++ const contact=helper.profile.radius+defender.profile.radius+.1+helper.player.measurables.armIn/36*.45;
++ return {sim,helper,owner,defender,wall,combo,contact};
++}
++
++describe('free collection respects observed teammate obstruction',()=>{
++ it('brakes through ordinary movement when its near strike surfaces are genuinely blocked',()=>{
++  const f=obstruction(),{sim,helper,owner,wall}=f;
++  expect(Math.hypot(owner.pos.x-wall.pos.x,owner.pos.y-wall.pos.y)).toBeGreaterThan(owner.profile.radius+wall.profile.radius);
++  const choice=readCollectionApproach(helper,sim.see(helper,f.defender),
++   {seen:sim.see(helper,owner),radius:owner.profile.radius},[{seen:sim.see(helper,wall),radius:wall.profile.radius}],f.contact,1,0,helper.mind.decisionInterval);
++  expect(choice).not.toBeNull();expect(choice!.goal).toBeNull();
++  helper.body.vel={x:.7,y:-.7};const before={...helper.pos},speed=Math.hypot(helper.vel.x,helper.vel.y);
++  let impacts=0;
++  for(let k=0;k<8;k++){
++   const intents:Intent[]=sim.agents.map(a=>({vel:{x:0,y:0},facing:a.facing}));
++   intents[helper.idx]=helper.behavior.update(helper,sim);updateEngagements(sim,intents);
++   expect(intents[helper.idx].vel).toEqual({x:0,y:0});
++   const report=sim.world.step(intents,.05);
++   expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++   expect(Math.hypot(report.groundImpulse[helper.idx].x,report.groundImpulse[helper.idx].y))
++    .toBeLessThanOrEqual(supportParams(helper.profile).traction*.05+1e-8);
++   impacts+=report.contacts.filter(c=>c.i===helper.idx||c.j===helper.idx).length;
++   sim.t+=.05;sim.perception.record(sim.agents);
++  }
++  expect(Math.hypot(helper.pos.x-before.x,helper.pos.y-before.y)).toBeGreaterThan(0);
++  expect(Math.hypot(helper.vel.x,helper.vel.y)).toBeLessThan(speed);
++  expect(impacts).toBe(0);expect(helper.engagement).toBeNull();expect(f.combo.released).toBe(false);
++  expect(sim.events.some(e=>e.type==='block_climb')).toBe(false);
++ });
++
++ it('keeps the production approach and held read when only a remote engagement flag changes',()=>{
++  const {sim,helper,owner,defender,combo}=obstruction();
++  // Retain a real former rep as the private-state poison, with no current
++  // joint, new picture or helper contact. Only the remote flag varies below.
++  const oldRep=sim.engage(owner,defender,'run',{x:1,y:0});
++  expect(oldRep).not.toBeNull();sim.disengage(oldRep!);
++  const controller=helper.behavior as RunBlocker;
++  const attack=vi.spyOn(controller as unknown as {attack: (...args:unknown[])=>Intent},'attack');
++  const physical=structuredClone(helper.body),rng=JSON.stringify(sim.rng);
++  const ownerPicture=sim.see(helper,owner),downPicture=sim.see(helper,defender);
++  const request=controller.update(helper,sim);
++  expect(attack).toHaveBeenCalledWith(helper,sim,defender);
++  expect(request.vel).toEqual({x:0,y:0});
++  const held=Reflect.get(controller,'collectionRead');
++  expect(held.choice.goal).toBeNull();
++
++  defender.engagement=oldRep;
++  expect(controller.update(helper,sim)).toEqual(request);
++  expect(Reflect.get(controller,'collectionRead')).toBe(held);
++  // A first read must also be independent of the remote flag, rather than
++  // only retaining a previously admitted choice across a private transition.
++  const fresh=new RunBlocker({kind:'combo',target:defender,drive:{x:1,y:0},combination:combo});
++  helper.behavior=fresh;
++  expect(fresh.update(helper,sim)).toEqual(request);
++  expect(Reflect.get(fresh,'collectionRead').choice).toEqual(held.choice);
++  expect(sim.see(helper,owner)).toEqual(ownerPicture);
++  expect(sim.see(helper,defender)).toEqual(downPicture);
++  expect(helper.body).toEqual(physical);expect(JSON.stringify(sim.rng)).toBe(rng);
++  expect(helper.engagement).toBeNull();expect(sim.world.joints).toHaveLength(0);
++  expect(combo.released).toBe(false);expect(fresh.target).toBe(defender);
++
++  // A genuinely acquired facing change is allowed to change the route on
++  // the next ordinary read; this is not an unconditional stop policy.
++  owner.body.facing=Math.atan2(downPicture.pos.y-owner.pos.y,downPicture.pos.x-owner.pos.x);
++  for(let k=0;k<24;k++)sim.perception.record(sim.agents);
++  sim.t+=helper.mind.decisionInterval;
++  expect(Math.hypot(...Object.values(fresh.update(helper,sim).vel))).toBeGreaterThan(0);
++  expect(Reflect.get(fresh,'collectionRead').choice).toBeNull();
++  attack.mockRestore();
++ });
++
++ it('keeps a still-facing owner outside lost-contact collection and consumes no hidden peer state',()=>{
++  const {sim,helper,owner,defender,wall,contact}=obstruction();
++  const covered=sim.see(helper,owner),down=sim.see(helper,defender),other=sim.see(helper,wall);
++  const before=sim.agents.map(a=>structuredClone(a.body)),rng=JSON.stringify(sim.rng);
++  const random=vi.spyOn(sim.rng,'next');
++  const peers=[{seen:other,radius:wall.profile.radius}],partner={seen:covered,radius:owner.profile.radius};
++  const a=readCollectionApproach(helper,down,partner,peers,contact,1,.1,.2);
++  owner.body.pos={x:70,y:10};owner.body.facing=0;wall.body.vel={x:9,y:9};
++  expect(readCollectionApproach(helper,down,partner,peers,contact,1,.1,.2)).toEqual(a);
++  expect(readCollectionApproach(helper,down,{...partner,seen:{...covered,facing:Math.atan2(down.pos.y-covered.pos.y,down.pos.x-covered.pos.x)}},
++   peers,contact,1,.1,.2)).toBeNull();
++  expect(JSON.stringify(sim.rng)).toBe(rng);expect(random).not.toHaveBeenCalled();random.mockRestore();
++  expect(helper.body).toEqual(before[helper.idx]);expect(defender.body).toEqual(before[defender.idx]);
++  expect(collectionCommand(helper,{goal:null,flow:{x:9,y:9}},.1,down).vel).toEqual({x:0,y:0});
++ });
++});
+diff --git a/test/zone-helper-check.test.ts b/test/zone-helper-check.test.ts
+index b6e092a..d34e35f 100644
+--- a/test/zone-helper-check.test.ts
++++ b/test/zone-helper-check.test.ts
+@@ -200,7 +200,19 @@ describe('a check does not bypass a physical or near-level responsibility', () =
+     expect(collected?.blocker).toBe(f.helper); expect(collected?.defender).toBe(f.defender);
+     for (let k = 0; k < 4; k++) step(f, true);
+     expect(f.sim.world.joints).toContain(collected!.hands);
+-    expect(collected!.hands!.normalForce).toBeGreaterThan(0);
++    // A real collected connection can carry lateral force without compression.
++    // Require current usable reach/torso and the installed first-level side,
++    // rather than treating either a joint label or a force alone as protection.
++    const handsNow = collected!.hands!;
++    expect(Math.hypot(handsNow.normalForce ?? 0, handsNow.tangentForce ?? 0)).toBeGreaterThan(0);
++    const distance = Math.hypot(f.helper.pos.x-f.defender.pos.x, f.helper.pos.y-f.defender.pos.y);
++    expect(distance).toBeLessThanOrEqual(f.helper.profile.radius+f.defender.profile.radius
++      + .3*f.helper.player.measurables.armIn/36);
++    const bearing = Math.atan2(f.defender.pos.y-f.helper.pos.y, f.defender.pos.x-f.helper.pos.x);
++    expect(Math.abs(Math.atan2(Math.sin(bearing-f.helper.facing),Math.cos(bearing-f.helper.facing)))/(Math.PI/2)).toBeLessThan(.65);
++    expect((f.defender.pos.x-f.helper.pos.x)*f.engagement.drive!.x
++      +(f.defender.pos.y-f.helper.pos.y)*f.engagement.drive!.y).toBeGreaterThan(0);
++    expect(f.helper.body.support!.state).toBe('up');
+     expect(f.combination.released).toBe(false); expect(checked(f)).toBe(false);
+     expect(f.sim.events.some(e => e.type === 'block_climb')).toBe(false);
+   });

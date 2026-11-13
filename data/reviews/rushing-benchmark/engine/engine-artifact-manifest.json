@@ -1,0 +1,59 @@
+{
+  "schema": "engine-rushing-artifact-manifest-v1",
+  "adapterSha256": "b0067b156fd2b185e23ca673efb893f44141ca723bc52b8922f2fe467bbe5c19",
+  "sharedModuleSha256": "0b5d645953c303fcb5804643a2829de83418c135952c25c122f69bb28a4df238",
+  "nflReportSha256": "4f624c55eee5495b15bc2d53ffade7f7b591b02c582bc9912a280d6a7e7745c3",
+  "engineQuerySha256": "f122ce05a4a6241169761644f53400ac561a6775988e4c5e1b452e337984e4ce",
+  "artifacts": [
+    {
+      "path": "out/rushing-benchmark/baseline601-engine-benchmark.json.gz",
+      "bytes": 300117,
+      "sha256": "8f7003b0257a65af3eb655d04a676b50b28846274243e1e3b1c8cbacb1298248"
+    },
+    {
+      "path": "out/rushing-benchmark/baseline601-engine-query.json",
+      "bytes": 3367,
+      "sha256": "de1e699fed2f089097026e05c2e2d8783b647840f4ba061e8f90d7bf2329cdf1"
+    },
+    {
+      "path": "out/rushing-benchmark/current3cb-engine-benchmark.json.gz",
+      "bytes": 286183,
+      "sha256": "72a608287ed56c363186310020dc62891d0135c43ea2ec963ccdcc54e948f165"
+    },
+    {
+      "path": "out/rushing-benchmark/current3cb-engine-query.json",
+      "bytes": 3366,
+      "sha256": "ab5969752b80447a1b3343fb8df1307330aa6b4fa9a9786fa44222666aff3e9d"
+    },
+    {
+      "path": "out/rushing-benchmark/withheldQuarter8d27-engine-benchmark.json.gz",
+      "bytes": 289741,
+      "sha256": "b3b5ba26a5264d806ab41d76762b9546bce46622a348b1620f43165bb92042db"
+    },
+    {
+      "path": "out/rushing-benchmark/withheldQuarter8d27-engine-query.json",
+      "bytes": 3375,
+      "sha256": "5bdb1d535a32e67ee0dca095247db98c1ea981a535f9921210cda6c10b6565f6"
+    },
+    {
+      "path": "out/rushing-benchmark/engine-comparison.json",
+      "bytes": 392702,
+      "sha256": "c60c2fd6e49922ed4193e78af638a0b85a19e07d92d44c1c13c1c2ab291e1ef4"
+    },
+    {
+      "path": "out/rushing-benchmark/engine-commands.json",
+      "bytes": 3235,
+      "sha256": "108dfb57336c3a2854125ab61c32a6cc4c5a14d36348c877e572725bf7ad3714"
+    },
+    {
+      "path": "out/rushing-benchmark/engine-review.md",
+      "bytes": 3693,
+      "sha256": "c981fb63f0ff293c86847decc1698d0b8ce3a38a8f91f72d91f90b9a4ea9cdc3"
+    }
+  ],
+  "operatorTests": {
+    "file": "test/test_engine_rushing_benchmark.py",
+    "passed": 16,
+    "sha256": "6943f876a538527e020ed60f2e3378d82584fbd8f928f36f203d8838b6e22f02"
+  }
+}

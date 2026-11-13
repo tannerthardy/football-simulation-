@@ -1,0 +1,60 @@
+{
+  "generatedAtUTC": "2026-10-10T05:11:49.540948+00:00",
+  "branch": "claude/engine-priorities",
+  "baseCommit": "26940f9f0564d0834d3fe88397a4cd0bd1e2ba42",
+  "sourceSha256": "3b328c7bddc6354e7559d5d491e8a7d579bb2865adf257e2aa58385dade872df",
+  "runtime": "v22.23.3",
+  "worldUsesNewKernel": false,
+  "hashMethod": "scripts/source-version.ts sorted src paths/NUL/bytes/NUL; inertial scripts pin src and their own script at start/end",
+  "files": {
+    "src/physics/finite-support.ts": "8848e2343659f74d34a795608d61cfec140e64649f8685060158c145d3673662",
+    "src/physics/inertial-support.ts": "a44871b69c8573d45b98a4f3976ff6a4b058b4fee27da2f0f727aeaea8533199",
+    "src/physics/inertial-gait.ts": "272906b4e12bd575990e62bd25a5b5fc2cd746310a044f365cc86ad800d29e22",
+    "scripts/diag/finite-support.ts": "80d4fbbf074598b1e94b4ba4b52fe6bd14046192bf958a5acb27f8207345346e",
+    "scripts/diag/finite-support-stress.ts": "d320ab6d567e5d9e0ca775795648b2d55a0eae265af0a41b0f3349ca01a7ab74",
+    "scripts/diag/inertial-support-stress.ts": "6dc5031b948e22f8ebd5d36671e032a876b4c04eefe5a34360fc7dfce79a7682",
+    "scripts/diag/inertial-gait.ts": "a60090a89fc5e51fa956eb64244f0f3beedbc596c92d3f9b4380cb13ebfcd34d",
+    "scripts/data/biomechanics-inertial-priors.py": "1264b3fb5a55ea104b4ff3a289efb17092d111ddb93eea352d0c8032b3799a7f",
+    "test/inertial-support.test.ts": "d029deb3d86df96fa749fda9364c80adda4ed3a0759d8e5770eee39fc803da9b",
+    "test/inertial-gait.test.ts": "009e099655cbee97cc25a305331c62de5bb578b621a786edbd31cfa1f3fddf03"
+  },
+  "rawDiagnostics": {
+    "gait-final.json": {
+      "bytes": 2371090,
+      "sha256": "3255bfb7817f621fcee12b645921109341b3610cfdba6bdc78c3791f091d8724"
+    },
+    "stress-final.json": {
+      "bytes": 20423661,
+      "sha256": "414e90e208af9d77b213c7c864203a93c6ef9783c149498b26f3b799aeefeb48"
+    },
+    "finite-lifecycle.json": {
+      "bytes": 292062,
+      "sha256": "03850deddf2466b3404dfeadd593c551c777f576760ace2e9b9248092bd47923"
+    },
+    "finite-stress.json": {
+      "bytes": 2755,
+      "sha256": "85c33b332184c0ffbb2b6e1989ba929e1ab093daa9165587e58912a3988517a6"
+    },
+    "finite-stress-seed1001.json": {
+      "bytes": 27767,
+      "sha256": "bed9e363ca82c7acf39dba0f9b2d65ea8d3c1b70b2ed7612992c530c83bf5042"
+    },
+    "finite-stress-seed2002.json": {
+      "bytes": 52633,
+      "sha256": "f8cf253e2fa8b70d0a44727d9951d1d655466212a98fd78209a79ce1e5e6b28e"
+    },
+    "stress-multigrip.json": {
+      "bytes": 22077063,
+      "sha256": "0fecd2b0f8a867f6d895f23515d81752b0d0c64fe50f8b3756214a2d843dc12e"
+    }
+  },
+  "verification": {
+    "typescriptTests": 351,
+    "typescriptFiles": 35,
+    "pythonDataTests": 22,
+    "fullSuiteExitCode": 0,
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "status": "Not ready: unused planar research model; prescribed normals, no vertical contact/falls, remaining loaded slip and coarse/fine gait sensitivity. No production or NFL outcome fitting."
+}

@@ -1,0 +1,86 @@
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { CENTER_Y } from '../../src/core/field.js';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam, pickOffense, pickDefense } from '../../src/league/team.js';
+import { RUN_BY_ID } from '../../src/playbook/concepts.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { BallCarrier } from '../../src/sim/behaviors/carrier.js';
+import { sourceVersion } from '../../scripts/source-version.js';
+const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
+const sourceBefore = sourceVersion();
+const proto = BallCarrier.prototype as any, originalEval = proto.evaluate;
+const rows: any[] = [];
+function allowance(seen:any, profile:any, dt:number) {
+ if(seen?.pose!== 'down' && seen?.pose!=='rising') return 0;
+ const raw=profile.getUp??.9, getUp=Number.isFinite(raw)?Math.max(.2,Math.min(2,raw)):.9;
+ const estimate=seen.pose==='down'?getUp:getUp/2;
+ return Math.max(Math.min(dt,getUp),Math.min(getUp,estimate-Math.max(0,seen.age??0)));
+}
+
+const inputs = ['iz_strong', 'oz_strong'].flatMap(run => ['over', 'under'].flatMap(front => [false,true].map(flip => ({run,front,flip,seed:3,roster:[31,32]}))));
+inputs.push({run:'oz_strong',front:'over',flip:true,seed:11,roster:[41,42]});
+function signature(sim: any, result: any) {
+ return hash({result:{...result,frames:undefined,telemetry:undefined},bodies:sim.agents.map((a:any)=>a.body),events:sim.events,intents:sim.intents,
+ minds:sim.agents.map((a:any)=>a.mind),perception:sim.perception,ball:sim.ball,
+ joints:sim.world.joints.map((j:any)=>({...j,a:sim.agents.find((a:any)=>a.body===j.a)?.idx,b:sim.agents.find((a:any)=>a.body===j.b)?.idx,actor:j.actor?sim.agents.find((a:any)=>a.body===j.actor)?.idx:null})),nextRng:sim.rng.nextU32()});
+}
+for (const c of inputs) {
+ const offense=generateTeam(new Rng(c.roster[0]),'Panel offense '+(c.roster[0]===31?1:2),'O'+(c.roster[0]===31?1:2),{strength:.55});
+ const defense=generateTeam(new Rng(c.roster[1]),'Panel defense '+(c.roster[1]===32?1:2),'D'+(c.roster[1]===32?1:2),{strength:.55});
+ const formation=FORMATION_BY_ID.ace_11,front=FRONT_BY_ID[c.front],personnel=front.personnel[0];
+ const setup:any={offense:pickOffense(offense,formation.personnel),defense:pickDefense(defense,personnel),offCall:{formation,flip:c.flip,kind:'run',run:RUN_BY_ID[c.run],label:'Audit '+c.run},defCall:{personnel,front,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Audit '+c.front},los:40,ballY:CENTER_Y,firstDownX:50,seed:c.seed,record:false};
+ const sim=new PlaySim(setup), evaluations:any[]=[], transfers:any[]=[], contacts:any[]=[];
+ let active:any=null;
+ const see=sim.see;
+ sim.see=function(a:any,b:any,...rest:any[]){const seen=(see as any).call(this,a,b,...rest);if(active && a===active.runner) active.allReads.set(b.idx,structuredClone(seen));if(active && a===active.runner && b.team!==a.team){
+  active.cues.push({target:b.slot,t:sim.t,seen:structuredClone(seen),physicalDown:b.isDown(sim.t),physicalPose:b.body.support?.state,downUntil:b.downUntil,
+   currentEngagement:!!b.engagement,engagementWin:b.engagement?.win??null,
+   sourceExtra:b.isDown(sim.t)?b.downUntil-sim.t+.2:0,runnerDistance:Math.hypot(b.pos.x-a.pos.x,b.pos.y-a.pos.y)});
+ }return seen;};
+ proto.evaluate=function(a:any,s:any,dir:any,designed:any){
+  if(s!==sim)return originalEval.call(this,a,s,dir,designed);
+  const row:any={t:s.t,designed,runnerPos:structuredClone(a.pos),runnerVel:structuredClone(a.vel),opts:structuredClone({aim:this.opts.aim,aimUntil:this.opts.aimUntil}),cues:[]};
+  const reads=new Map<number,any>();
+  active={runner:a,cues:row.cues,allReads:reads};try{row.choice=originalEval.call(this,a,s,dir,designed);}finally{active=null;}
+  if(row.cues.some((cue:any)=>cue.sourceExtra<0)) {
+    row.counterfactuals=['nonnegative-only','delayed-pose-recovery'].map(policy=>{
+      const runner=Object.create(a);runner.body=structuredClone(a.body);runner.tags=new Set(a.tags);
+      const enemies=s.opponents(a).map((enemy:any)=>{
+        const clone=Object.create(enemy),seen=reads.get(enemy.idx);
+        let extra=0;
+        if(policy==='nonnegative-only') { extra=enemy.isDown(s.t)?Math.max(0,enemy.downUntil-s.t+.2):0;clone.isDown=()=>enemy.isDown(s.t); }
+        else { extra=allowance(seen,enemy.profile,s.dt);clone.isDown=()=>extra>0; }
+        clone.downUntil=s.t+extra-.2;
+        return clone;
+      });
+      const facade=Object.create(s);facade.opponents=()=>enemies;facade.teammates=()=>s.teammates(a).map((mate:any)=>mate===a?runner:mate);
+      facade.see=(_actor:any,target:any)=>{if(!reads.has(target.idx))throw new Error('Counterfactual requested unconsumed observation');return structuredClone(reads.get(target.idx));};
+      const controller=Object.create(this);const choice=originalEval.call(controller,runner,facade,dir,designed);
+      return {policy,choice,headingDifference:choice&&row.choice?Math.abs(Math.atan2(Math.sin(choice.heading-row.choice.heading),Math.cos(choice.heading-row.choice.heading))):null,
+        revisedAllowances:row.cues.map((cue:any)=>({target:cue.target,observedPose:cue.seen.pose,age:cue.seen.age,sourceExtra:cue.sourceExtra,allowance:policy==='nonnegative-only'?Math.max(0,cue.sourceExtra):allowance(cue.seen,s.bySlot.get(cue.target)?.profile,s.dt)}))};
+    });
+  }
+  evaluations.push(row);return row.choice;
+ };
+ const step=sim.world.step;
+ sim.world.step=function(intents:any,dt:any){const carrier=sim.carrier,rb=sim.slot('RB')!,t=sim.t;const result=step.call(this,intents,dt);if(carrier===rb){
+  for(const contact of result.contacts)if(contact.i===rb.idx||contact.j===rb.idx)contacts.push({t,...contact,other:sim.agents[contact.i===rb.idx?contact.j:contact.i].slot});
+ }return result;};
+ const result=sim.run(),observedSignature=signature(sim,result);
+ proto.evaluate=originalEval;
+ const plain=new PlaySim(setup),plainResult=plain.run(),plainSignature=signature(plain,plainResult);
+ if(observedSignature!==plainSignature)throw new Error('Observer mismatch '+JSON.stringify(c));
+ const negative=evaluations.flatMap(e=>e.cues.filter((v:any)=>v.sourceExtra<0).map((cue:any)=>({t:e.t,designed:e.designed,runnerPos:e.runnerPos,choice:e.choice,...cue})));
+ rows.push({id:'RBA-R'+(c.roster[0]===31?1:2)+'-'+c.run+'-'+c.front+'-'+(c.flip?'L':'R')+'-S'+c.seed,input:c,initialSha256:hash(setup),observerVerified:true,observedSignature,plainSignature,naturalEnd:result.outcome!=='timeout',result:{...result,frames:undefined,telemetry:undefined},evaluations,negativeCues:negative,carrierContacts:contacts});
+ console.log(JSON.stringify({id:rows.at(-1).id,evals:evaluations.length,negativeCueCount:negative.length,firstNegative:negative[0]??null,outcome:result.outcome,yards:result.offenseYards,t:sim.t}));
+}
+proto.evaluate=originalEval;
+const sourceAfter=sourceVersion();if(sourceAfter!==sourceBefore)throw new Error('Source changed during diagnosis');
+const output='out/run-carrier-audit/pose-counterfactual.json';
+const packet={schema:'rb-offfeet-counterfactual-audit-v1',sourceBefore,sourceAfter,toolSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),node:process.version,
+ method:'Nine predeclared native 11v11 calls. Wrap only actually invoked carrier.evaluate and consumed sim.see; no extra reads, controller updates or RNG. Natural whistle or standard physical timeout. True support fields diagnostic only. Restore original evaluate for each plain full-run guard. Only on an actual negative-cue evaluation, replay the original evaluator on scratch agent/controller facades with exactly its consumed pictures, changing only recovery allowances. These are forecast counterfactuals, not executed candidate football or validated get-up calibration. down=getUp, rising=getUp/2, subtract nonnegative picture age, clamp effective allowance between dt and public getUp; unknown/up=0.',rows};
+writeFileSync(output,JSON.stringify(packet,null,2)+'\n');
+console.log(JSON.stringify({output,sourceBefore,sourceAfter,cases:rows.length,negativeCases:rows.filter(r=>r.negativeCues.length).length,totalNegativeCues:rows.reduce((n,r)=>n+r.negativeCues.length,0),allObserverVerified:rows.every(r=>r.observerVerified)}));

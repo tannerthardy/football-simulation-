@@ -1,0 +1,108 @@
+{
+  "schema": "motion-contact-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "MC-S7-wideSurface-R-V0-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V2.5-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-wideSurface-R-V4-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V0-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V2.5-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-penetratingEdge-R-V4-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V0-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V2.5-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-wideSurface-L-V4-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V0-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V2.5-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-penetratingEdge-L-V4-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-initialReachNegative-R-V8-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    },
+    {
+      "id": "MC-S7-initialReachNegative-L-V8-P12",
+      "fullTelemetry": true,
+      "participantInspectionAndLayers": true,
+      "actualScrubTime": 2.0,
+      "noFootballResult": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "stuffFilterRejectsInspectionWindows": true,
+  "specificIdSearch": true,
+  "mobileNoHorizontalOverflow": true
+}

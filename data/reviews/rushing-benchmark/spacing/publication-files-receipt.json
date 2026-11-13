@@ -1,0 +1,96 @@
+{
+  "schema": "spacing-adverse-publication-files-v1",
+  "newSimulationsForReceipt": 0,
+  "sources": {
+    "baseline": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+    "candidate": "8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006"
+  },
+  "files": [
+    {
+      "filename": "six-tail-selected-proof.json.gz",
+      "bytes": 1036450,
+      "sha256": "2f2eedff4c4240d212c17bc6d16da61dfa50d6a92794367cd91f5a15fe9b20f0"
+    },
+    {
+      "filename": "six-tail-selected-proof-receipt.json",
+      "bytes": 4995,
+      "sha256": "0f0e476dfb78111e1b801da762fcc00b85bd60e261059c99f0324e1aa8c4b75e"
+    },
+    {
+      "filename": "six-tail-comparison.json.gz",
+      "bytes": 21071,
+      "sha256": "aebf520e2840cedc8b8a2575d3613cebebf653d1a9d48c0aac23a81810ee449b"
+    },
+    {
+      "filename": "compare-six-tails.mjs",
+      "bytes": 9792,
+      "sha256": "0d8278971f77245462f4a771a4b90565bf2f9773e7c9922e0cedb804a02c7a43"
+    },
+    {
+      "filename": "reduce-six-tail-proof.mjs",
+      "bytes": 9306,
+      "sha256": "3f9c239883f98e4f89296e6320b170b18b6a72fd34492b044f7e8933b84df6ba"
+    },
+    {
+      "filename": "native-tail-commands.ts",
+      "bytes": 15280,
+      "sha256": "1f07443691c88cf552b96b0344e653e0c393b52326b2d812c2202671afe259eb"
+    },
+    {
+      "filename": "native-body-codec.mjs",
+      "bytes": 882,
+      "sha256": "4b397d4bb65ca5626c0214bb2db8e850f9879a419c8b6f6a2214f5b70e8dcf55"
+    },
+    {
+      "filename": "adverse-run-commands.ts",
+      "bytes": 17614,
+      "sha256": "deb476ccb2cfb28f070f4fd224f04db7085ba0c3a52a3fa963ad09c0b683a468"
+    },
+    {
+      "filename": "compare-adverse-run.mjs",
+      "bytes": 6478,
+      "sha256": "b5f88de34aa1b3abfcecf2387f7d31a1004d7b60e22c962b142349a4ce411f69"
+    },
+    {
+      "filename": "diagnose-adverse-run.ts",
+      "bytes": 13734,
+      "sha256": "fa40b7d9b12d6ad2e33a94e4a5e68f02222d3cee82b315b8c5264e607061c88c"
+    },
+    {
+      "filename": "split-zone-baseline-3cb.json.gz",
+      "bytes": 3394260,
+      "sha256": "90bec5593e8e3c90525e0f9e6772b85cc1e3359c1b0a506513788d9bdf2c80e2"
+    },
+    {
+      "filename": "split-zone-candidate-8d2.json.gz",
+      "bytes": 9116348,
+      "sha256": "b4cdcf6e33f406ab1b4020a1672da52cb6ef200a3e4f88bf2c8937099bb28055"
+    },
+    {
+      "filename": "split-zone-native-comparison.json.gz",
+      "bytes": 96177,
+      "sha256": "2dfd2de021a74b697d65138503ed947c89f30035beb1ac60100ba86e591d93c4"
+    },
+    {
+      "filename": "split-zone-spacing-diagnosis-v2.json.gz",
+      "bytes": 57847,
+      "sha256": "7f32c5cb26de35eef1665044ddf9d672df2b4cffe082c90a6fb76a8cc0cf4496"
+    },
+    {
+      "filename": "adverse-split-zone-review.md",
+      "bytes": 7201,
+      "sha256": "3b41834386269071c7fca7d877236474b5fa4ca2ac9eb34edf55a64198aebd7d"
+    }
+  ],
+  "fullSixRawPublished": false,
+  "singleAdverseFullRawPublished": true,
+  "toolMatching": {
+    "singleAdverseCollectorSameBothPackets": true,
+    "v2DiagnosticMatchesExecutedTool": true,
+    "sixTailCollectorExactOriginal": true
+  },
+  "limits": [
+    "Full six-tail raw commands remain ignored; compact selected proof and explicit raw hashes/reproduction commands are published.",
+    "No production edits by this diagnostic agent. Quarter candidate is withheld; source pins describe frozen experimental and baseline archives, not the later metadata-only source."
+  ]
+}

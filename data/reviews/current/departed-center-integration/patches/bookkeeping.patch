@@ -1,0 +1,277 @@
+diff --git a/scripts/replay-data.ts b/scripts/replay-data.ts
+index a64e41d..55c2b3a 100644
+--- a/scripts/replay-data.ts
++++ b/scripts/replay-data.ts
+@@ -60,6 +60,8 @@ export function packReplayPlay(p: PlayLog, game: number) {
+     call: p.call, def: p.defense, text: p.text, yds: r2(p.yards), score: p.score, kindLabel: KIND_LABEL[p.kind],
+     read: p.stats?.qbRead, plan: p.plan, concept: replayConcept(p), outcome: p.outcome,
+     nullified: !!p.nullified, firstDown: !!p.firstDown,
++    targetId: p.stats?.target, receiverId: p.stats?.receiver, rusherId: p.stats?.rusher,
++    retainedSnap: p.stats?.retainedSnap, segments: p.segments,
+     flags: {
+       td: !p.nullified && p.outcome === 'touchdown',
+       to: !p.nullified && !!(p.stats?.interceptedBy || p.stats?.fumbleLost),
+@@ -79,6 +81,7 @@ export function packReplayPlay(p: PlayLog, game: number) {
+   const stats: Record<string, number | boolean> = {};
+   if (s?.timeToThrow !== undefined) stats.ttt = r2(s.timeToThrow);
+   if (s?.airYards !== undefined) stats.air = r2(s.airYards);
++  if (s?.completedAirYards !== undefined && s.completed) stats.completedAir = r2(s.completedAirYards);
+   if (s?.yac !== undefined && s.completed) stats.yac = r2(s.yac);
+   if (s?.separation !== undefined && s.completed) stats.sep = r2(s.separation);
+   if (s?.yardsBeforeContact !== undefined && s.rusher) stats.ybc = r2(s.yardsBeforeContact);
+diff --git a/src/game/game.ts b/src/game/game.ts
+index 101fdb5..a14499a 100644
+--- a/src/game/game.ts
++++ b/src/game/game.ts
+@@ -39,6 +39,8 @@ export interface PlayLog {
+   kind: 'run' | 'pass' | 'punt' | 'fg' | 'xp' | 'kickoff' | 'kneel' | 'penalty' | 'two';
+   /** Raw play stats for scrimmage plays (analysis/calibration). */
+   stats?: PlayResult['stats'];
++  /** Actual possession history; optional for older recordings. */
++  segments?: PlayResult['segments'];
+   /**
+    * An accepted foul wiped the play out. `stats` then describe what physically
+    * happened; nothing from the play enters the box score, and official
+@@ -578,6 +580,7 @@ export class Game {
+     const text = describe(sim, r, offTeam, defTeam);
+     const logEntry = this.entry(r.kind, text, r.turnover ? r.offenseYards : r.yards, ranCall.label, defCall.label);
+     logEntry.stats = r.stats;
++    logEntry.segments = r.segments;
+     logEntry.outcome = r.outcome;
+     logEntry.duration = r.duration;
+     logEntry.firstDown = converted;
+@@ -753,8 +756,9 @@ export class Game {
+    * score of its own, declines when the play already stopped a third or
+    * fourth down short, and otherwise takes the penalty unless the play lost
+    * nearly as much. Pass plays enforce from the previous spot; running plays
+-   * from the spot of the foul when it was behind the end of the run (beyond
+-   * the line, the end of the run is the basic spot). A hold in the offense's
++   * from the spot of the foul when it was behind the end of the run. The
++   * previous spot is the enforcement floor (NFL 14-3-6, exceptions 1/3),
++   * including a sack without a forward pass. A hold in the offense's
+    * own end zone is a safety.
+    */
+   private holdingDecision(r: PlayResult, los: number, down: number, dist: number): { playerId: string; yards: number; accepted: boolean; safety: boolean; newYard: number } | null {
+@@ -764,7 +768,7 @@ export class Game {
+     const foulX = p.spotX ?? los;
+     const passPlay = r.stats.attempted;
+     const basicX = passPlay ? los : Math.max(los, r.endX);
+-    const fromX = passPlay ? los : Math.min(basicX, foulX);
++    const fromX = passPlay ? los : Math.max(los, Math.min(basicX, foulX));
+     const safety = foulX <= OWN_GOAL_X;
+     const yards = safety ? 0 : Math.min(10, (fromX - OWN_GOAL_X) / 2);
+     const newYard = Math.max(0.5, fromX - yards - 10);
+@@ -1119,13 +1123,18 @@ function describe(sim: PlaySim, r: PlayResult, off: Team, def: Team): string {
+     const qb = name(st.passer ?? sim.qb.player.id);
+     if (st.throwaway) t = `${qb} throws it away`;
+     else if (st.interceptedBy) t = `${qb} pass INTERCEPTED by ${name(st.interceptedBy)}${st.returnYards ? `, returned ${yds(st.returnYards)}` : ''}`;
+-    else if (st.completed) t = `${qb} pass complete to ${name(st.receiver)} for ${yds(r.yards)} (${Math.round(st.airYards ?? 0)} air, ${Math.round(st.yac ?? 0)} YAC)${tk}`;
++    else if (st.completed) {
++      const air = st.completedAirYards;
++      const depth = air === undefined ? `${Math.round(st.airYards ?? 0)} intended air` : `${Math.round(air)} air`;
++      t = `${qb} pass complete to ${name(st.receiver)} for ${yds(r.yards)} (${depth}, ${Math.round(st.yac ?? 0)} YAC)${tk}`;
++    }
+     else if (st.dropped) t = `${qb} pass to ${name(st.target)} DROPPED`;
+     else if (st.passDefendedBy) t = `${qb} pass to ${name(st.target)} broken up by ${name(st.passDefendedBy)}`;
+     else if (!st.attempted) t = `${qb} pass play — ${r.outcome}`;
+     else t = `${qb} pass to ${name(st.target)} incomplete`;
+   } else {
+     t = `${name(st.rusher)} runs for ${yds(r.yards)}${tk}`;
++    if (st.retainedSnap) t += ' (snap retained; no exchange)';
+     if (st.brokenTackles) t += `, breaks ${st.brokenTackles} tackle${st.brokenTackles > 1 ? 's' : ''}`;
+   }
+   if (st.fumbledBy) t += `, FUMBLE by ${name(st.fumbledBy)}${st.fumbleLost ? ` recovered by ${def.abbr}` : ', recovered by offense'}`;
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 6603176..85a8237 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -838,6 +838,7 @@ export class PlaySim {
+     if (s.completed && this.catchAt >= 0) {
+       const caught = segs.find((g) => g.how === 'catch');
+       const catchX = caught?.startX ?? this.catchX;
++      s.completedAirYards = catchX - this.los;
+       const endX = offTD ? OPP_GOAL_X : turnover ? (caught?.endX ?? catchX) : spot.x;
+       s.yac = endX - catchX;
+     }
+@@ -846,6 +847,13 @@ export class PlaySim {
+       s.returnYards = this.scoreKind === 'TD' ? takeaway.startX - OWN_GOAL_X : takeaway.startX - spot.x;
+     }
+     if (!this.isPass || this.scrambled) {
++      // An unexchanged snap is still an actual rush by its possessor. Do not
++      // infer a handoff, fumble, scramble, or a successful keeper decision.
++      const snap = segs.length === 1 ? segs[0] : undefined;
++      if (!s.rusher && !this.isPass && snap?.team === 'O' && snap.how === 'snap' && snap.end === 'dead') {
++        s.rusher = snap.carrier;
++        s.retainedSnap = true;
++      }
+       if (this.firstContactX !== null) s.yardsBeforeContact = this.firstContactX - this.los;
+     }
+     const clockStops = this.outcome === 'incomplete' || this.outcome === 'oob' || this.outcome === 'touchdown' || this.outcome === 'safety' || this.outcome === 'touchback' || turnover;
+diff --git a/src/sim/types.ts b/src/sim/types.ts
+index 1525586..c7cea2f 100644
+--- a/src/sim/types.ts
++++ b/src/sim/types.ts
+@@ -205,6 +205,8 @@ export interface PlayStats {
+   target?: string;
+   receiver?: string;
+   rusher?: string;
++  /** A called run ended with only its snap possession; not a fumble or proof of an intended keeper. */
++  retainedSnap?: boolean;
+   interceptedBy?: string;
+   sackedBy?: string[];
+   tacklers: string[];
+@@ -216,7 +218,10 @@ export interface PlayStats {
+   sacked: boolean;
+   scramble: boolean;
+   throwaway: boolean;
++  /** Intended LOS-to-aim-point depth; may differ from the actual catch depth or receiver. */
+   airYards?: number;
++  /** Achieved LOS-to-catch depth of the actual receiver, separate from intended airYards. */
++  completedAirYards?: number;
+   yac?: number;
+   timeToThrow?: number;
+   pressured: boolean;
+diff --git a/test/game-rules.test.ts b/test/game-rules.test.ts
+index 6624489..d39be54 100644
+--- a/test/game-rules.test.ts
++++ b/test/game-rules.test.ts
+@@ -268,6 +268,32 @@ describe('holding during a play', () => {
+     expect(g.state.possession).toBe('away');
+   });
+ 
++  it('declines the P022-style sack after enforcing a behind-line hold from the previous spot', () => {
++    let qb = '';
++    const { g } = run({
++      state: { yardline: 35 },
++      play: (sim) => {
++        qb = id(sim, 'QB');
++        return { kind: 'pass', yards: -8, stats: { sacked: true, sackedBy: [defender(sim, 'DE').player.id] },
++          penalty: { kind: 'holding', against: 'O', playerId: id(sim, 'LG'), yards: 10, autoFirst: false, spotX: sim.los - 4.04966946421048 } };
++      },
++    });
++    expect(scrimmageLog(g)[0].foul?.accepted).toBe(false);
++    expect(g.state).toMatchObject({ down: 2, distance: 18, yardline: 27 });
++    expect(line(g, qb)).toMatchObject({ att: 0, sacked: 1, sackYds: 8 });
++    expect(box(g, home)).toMatchObject({ passYds: -8, totalYds: -8, penalties: 0 });
++  });
++
++  it('uses the previous spot for a run hold behind the line, with half-distance at that spot', () => {
++    const { g } = run({
++      state: { yardline: 6 },
++      play: (sim) => ({ yards: 3, stats: { rusher: id(sim, 'RB') },
++        penalty: { kind: 'holding', against: 'O', playerId: id(sim, 'LG'), yards: 10, autoFirst: false, spotX: sim.los - 2 } }),
++    });
++    expect(g.state).toMatchObject({ down: 1, distance: 13, yardline: 3 });
++    expect(box(g, home)).toMatchObject({ penaltyYds: 3, penalties: 1, totalYds: 0 });
++  });
++
+   it('is declined when the play stopped a third down short', () => {
+     const { g } = run({
+       state: { down: 3, distance: 10 },
+@@ -377,3 +403,34 @@ describe('fumble after a catch', () => {
+     ]);
+   });
+ });
++
++describe('actual possession credit', () => {
++  it('credits a retained-snap loss to the QB while keeping the failed exchange visible', () => {
++    let qb = '';
++    const { g } = run({ play: (sim) => {
++      qb = id(sim, 'QB');
++      return { yards: -5, outcome: 'timeout', duration: 25,
++        segments: [{ team: 'O', carrier: qb, how: 'snap', startX: sim.los - 5, endX: sim.los - 5, end: 'dead' }],
++        stats: { rusher: qb, retainedSnap: true } };
++    } });
++    expect(line(g, qb)).toMatchObject({ rushAtt: 1, rushYds: -5, sacked: 0, fumbles: 0 });
++    expect(box(g, home)).toMatchObject({ rushYds: -5, totalYds: -5 });
++    expect(scrimmageLog(g)[0]).toMatchObject({ segments: [{ carrier: qb, how: 'snap' }], stats: { retainedSnap: true } });
++    expect(scrimmageLog(g)[0].text).toContain('(snap retained; no exchange)');
++    expect(scrimmageLog(g)[0].text).not.toContain('?');
++  });
++
++  it('keeps intended target separate while crediting an incidental completion to its actual receiver', () => {
++    let qb = '', target = '', receiver = '';
++    const { g } = run({ play: (sim) => {
++      qb = id(sim, 'QB'); target = id(sim, 'X'); receiver = id(sim, 'RB');
++      return { kind: 'pass', yards: 11,
++        stats: { passer: qb, target, receiver, attempted: true, completed: true, airYards: 7, completedAirYards: -4, yac: 15 } };
++    } });
++    expect(line(g, qb)).toMatchObject({ att: 1, cmp: 1, passYds: 11 });
++    expect(line(g, target)).toMatchObject({ targets: 1, rec: 0 });
++    expect(line(g, receiver)).toMatchObject({ targets: 0, rec: 1, recYds: 11, yac: 15 });
++    expect(scrimmageLog(g)[0].stats).toMatchObject({ target, receiver, airYards: 7, completedAirYards: -4 });
++    expect(scrimmageLog(g)[0].text).toContain('(-4 air, 15 YAC)');
++  });
++});
+diff --git a/test/qb-rusher-recording.test.ts b/test/qb-rusher-recording.test.ts
+index 76e5231..65b6b32 100644
+--- a/test/qb-rusher-recording.test.ts
++++ b/test/qb-rusher-recording.test.ts
+@@ -43,6 +43,36 @@ function observedRun(sim: PlaySim) {
+ }
+ 
+ describe('recording the actual rushing player', () => {
++  it('attributes an unexchanged snap from its actual segment without inventing a fumble or scramble', () => {
++    const sim = fixture(0, true);
++    sim.qb.body.pos.x = sim.los - 5;
++    sim.t = 25;
++    sim.whistle('timeout', sim.qb.pos);
++    const rng = { ...sim.rng }, events = structuredClone(sim.events);
++    const result = sim.buildResult();
++    expect(result).toMatchObject({ kind: 'run', yards: -5, offenseYards: -5, outcome: 'timeout', duration: 25,
++      stats: { rusher: sim.qb.player.id, retainedSnap: true, attempted: false, scramble: false, sacked: false } });
++    expect(result.stats.fumbledBy).toBeUndefined();
++    expect(result.segments).toEqual([expect.objectContaining({ team: 'O', carrier: sim.qb.player.id, how: 'snap', end: 'dead' })]);
++    expect(sim.rng).toEqual(rng);
++    expect(result.events).toEqual(events);
++  });
++
++  it('records achieved catch depth without replacing the intended target or aim depth', () => {
++    const sim = fixture(1), qb = sim.qb, target = sim.slot('X')!, catcher = sim.slot('RB')!;
++    sim.t = 1;
++    sim.throwBall(qb, target, { x: 15, y: 0, z: 0 }, { x: sim.los + 7, y: 26, z: 1 }, 2);
++    catcher.body.pos.x = sim.los - 4;
++    sim.t = 1.2;
++    sim.possess(catcher, 'catch');
++    catcher.body.pos.x = sim.los + 11;
++    sim.whistle('tackle', catcher.pos);
++    const result = sim.buildResult();
++    expect(result.stats).toMatchObject({ target: target.player.id, receiver: catcher.player.id, airYards: 7, completedAirYards: -4, yac: 15 });
++    expect(result.stats.rusher).toBeUndefined();
++    expect(result.offenseYards).toBe(11);
++  });
++
+   it('records a native pass-call scramble without changing movement, observations or randomness', () => {
+     // This unmodified 11-on-11 fixture naturally scrambles. No forced QB
+     // phase, private transition invocation or mocked football decision.
+@@ -84,5 +114,6 @@ describe('recording the actual rushing player', () => {
+     expect(result.stats.scramble).toBe(false);
+     expect(result.stats.rusher).toBe(back.player.id);
+     expect(result.stats.rusher).not.toBe(sim.qb.player.id);
++    expect(result.stats.retainedSnap).toBeUndefined();
+   });
+ });
+diff --git a/test/replay-export.test.ts b/test/replay-export.test.ts
+index 772a0da..0fa4cd2 100644
+--- a/test/replay-export.test.ts
++++ b/test/replay-export.test.ts
+@@ -98,4 +98,19 @@ describe('replay export', () => {
+       frames: [{ t: 0, agents: [], ball: [35, 26, 1], carrier: -1 }],
+     } }), 0)).not.toHaveProperty('frames');
+   });
++
++  it('exports distinct intended/achieved air depth and recipient identities', () => {
++    const replay: NonNullable<PlayLog['replay']> = {
++      los: 35, firstDownX: 45, flip: false, players: [], events: [],
++      frames: [{ t: 0, agents: [], ball: [35, 26, 1], carrier: -1 }, { t: 1, agents: [], ball: [31, 26, 1], carrier: -1 }],
++    };
++    const p = packReplayPlay(play({ kind: 'pass', stats: {
++      target: 'intended-X', receiver: 'actual-RB', attempted: true, completed: true,
++      airYards: 7, completedAirYards: -4, yac: 15,
++    } as NonNullable<PlayLog['stats']>, replay }), 0);
++    expect(p).toMatchObject({ targetId: 'intended-X', receiverId: 'actual-RB', stats: { air: 7, completedAir: -4, yac: 15 } });
++    const legacy = packReplayPlay(play({ stats: { airYards: 7, completed: true } as NonNullable<PlayLog['stats']>, replay }), 0);
++    expect(legacy).toMatchObject({ stats: { air: 7 } });
++    expect('stats' in legacy && legacy.stats).not.toHaveProperty('completedAir');
++  });
+ });

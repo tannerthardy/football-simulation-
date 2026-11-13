@@ -1,0 +1,26 @@
+{
+  "schema": "tackle-approach-game-receipt-v1",
+  "sourceSha256": "66b5ce3e6ed1cbab4372cfe39e0ed19049fac26e586eae1007dfbd4c98801635",
+  "archive": "out/tackle-breakthrough/candidate-v2-source",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "scripts/calibrate.ts",
+    "8",
+    "7",
+    "2"
+  ],
+  "node": "v22.23.3",
+  "toolSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "logSha256": "91dc2e7b76e295122f2041c2bddbe15f873384ac0a7d7cfed726350f79cefef2",
+  "games": 8,
+  "scrimmagePlays": 1024,
+  "reportedWallSeconds": 108.0,
+  "receiptKind": "retrospective archive/log receipt; frozen source independently retained",
+  "limits": [
+    "Starting inputs match; trajectories, calls and subsequent populations diverge. Not paired snaps or NFL prevalence.",
+    "Two generated leagues only; no uncertainty or calibration conclusion.",
+    "Concurrent collectors were running; wall seconds are not a matched engine performance benchmark."
+  ]
+}

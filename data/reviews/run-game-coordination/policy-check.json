@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "baseline": "6bf0c80 + logging-only game.ts/tendencies.ts from 3c00ca0",
+  "after": {
+    "source": "simulation, 8 games over 2 leagues",
+    "plays": 1064,
+    "offensePersonnel": {
+      "league": {
+        "10": 7.4,
+        "11": 58.8,
+        "12": 20.2,
+        "13": 0.8,
+        "21": 9.7,
+        "22": 3
+      },
+      "passRate": {
+        "10": 77.2,
+        "11": 70.6,
+        "12": 54.4,
+        "13": 0,
+        "21": 50.5,
+        "22": 62.5
+      },
+      "teamRange": {
+        "10": {
+          "min": 1.5,
+          "max": 15.5,
+          "sd": 3.9
+        },
+        "11": {
+          "min": 51.4,
+          "max": 68.2,
+          "sd": 5.9
+        },
+        "12": {
+          "min": 13.8,
+          "max": 23.5,
+          "sd": 2.8
+        },
+        "13": {
+          "min": 0,
+          "max": 4.5,
+          "sd": 1.4
+        },
+        "21": {
+          "min": 1.7,
+          "max": 13.4,
+          "sd": 3.6
+        },
+        "22": {
+          "min": 0,
+          "max": 6.9,
+          "sd": 2.6
+        }
+      }
+    },
+    "defensePersonnelVs": {
+      "11": {
+        "league": {
+          "base": 8.1,
+          "nickel": 84.8,
+          "dime+": 7
+        },
+        "baseTeamRange": {
+          "min": 0,
+          "max": 15.8,
+          "sd": 6
+        }
+      },
+      "12": {
+        "league": {
+          "base": 52.1,
+          "nickel": 47.9,
+          "dime+": 0
+        },
+        "baseTeamRange": {
+          "min": 46.5,
+          "max": 59.6,
+          "sd": 5
+        }
+      },
+      "21": {
+        "league": {
+          "base": 100,
+          "nickel": 0,
+          "dime+": 0
+        },
+        "baseTeamRange": {
+          "min": 100,
+          "max": 100,
+          "sd": 0
+        }
+      }
+    },
+    "runConcepts": {
+      "league": {
+        "insideZone": 15.3,
+        "trap": 14,
+        "power": 13.2,
+        "duo": 12.9,
+        "outsideZone": 12.9,
+        "wideZone": 12.6,
+        "counter": 10.2,
+        "draw": 4.6,
+        "toss": 2.7,
+        "splitZone": 1.6
+      },
+      "teamRange": {
+        "insideZone": {
+          "min": 9.8,
+          "max": 25
+        },
+        "trap": {
+          "min": 0,
+          "max": 23.5
+        },
+        "power": {
+          "min": 4.1,
+          "max": 21.4
+        },
+        "duo": {
+          "min": 10.6,
+          "max": 21.6
+        },
+        "outsideZone": {
+          "min": 0,
+          "max": 22.9
+        },
+        "wideZone": {
+          "min": 2,
+          "max": 22.7
+        },
+        "counter": {
+          "min": 5.7,
+          "max": 12.1
+        },
+        "draw": {
+          "min": 0,
+          "max": 11.4
+        },
+        "toss": {
+          "min": 1,
+          "max": 5.7
+        },
+        "splitZone": {
+          "min": 0,
+          "max": 6.8
+        }
+      },
+      "topConceptShareMedian": 22.9
+    },
+    "runConceptSelection": {
+      "teamConceptCells": 15,
+      "corrRelUsageVsRelYards": 0.38
+    },
+    "playAction": {
+      "min": 6.8,
+      "max": 16.1,
+      "median": 10.6
+    },
+    "singleHigh": {
+      "min": 38.4,
+      "max": 57.3,
+      "sd": 5.7
+    },
+    "runConceptOutcomes": {
+      "insideZone": {
+        "carries": 57,
+        "ypc": 8.93,
+        "stuff": 15.8
+      },
+      "trap": {
+        "carries": 52,
+        "ypc": 1.44,
+        "stuff": 44.2
+      },
+      "power": {
+        "carries": 49,
+        "ypc": 7.98,
+        "stuff": 26.5
+      },
+      "duo": {
+        "carries": 48,
+        "ypc": 4.52,
+        "stuff": 16.7
+      },
+      "outsideZone": {
+        "carries": 48,
+        "ypc": 9.66,
+        "stuff": 10.4
+      },
+      "wideZone": {
+        "carries": 47,
+        "ypc": 12.26,
+        "stuff": 10.6
+      },
+      "counter": {
+        "carries": 38,
+        "ypc": 5.17,
+        "stuff": 23.7
+      },
+      "draw": {
+        "carries": 17,
+        "ypc": 2.95,
+        "stuff": 35.3
+      },
+      "toss": {
+        "carries": 10,
+        "ypc": 11.77,
+        "stuff": 10
+      },
+      "splitZone": {
+        "carries": 6,
+        "ypc": 1.57,
+        "stuff": 16.7
+      }
+    },
+    "nflMixAdjusted": {
+      "use": "Approximate concept-mix sensitivity, not validation: MAN-to-Duo is unverified; outsideZone pools wideZone/toss and insideZone pools splitZone.",
+      "stuff": 17.3,
+      "ypc": 7.84,
+      "raw": {
+        "stuff": 21.5,
+        "ypc": 7
+      }
+    },
+    "teamSpread": {
+      "ypc": {
+        "sd": 4.249,
+        "sdTrue": 3.157,
+        "min": 0.667,
+        "max": 15.611
+      },
+      "stuffPct": {
+        "sd": 11.158,
+        "sdTrue": 7.824,
+        "min": 10.526,
+        "max": 47.368
+      },
+      "sackPct": {
+        "sd": 5.99,
+        "sdTrue": 3.954,
+        "min": 4.255,
+        "max": 20.513
+      },
+      "passRatePct": {
+        "sd": 8.858,
+        "sdTrue": 7.396,
+        "min": 46.97,
+        "max": 82.609
+      },
+      "carriesPerTeam": 41
+    },
+    "runsBySituation": {
+      "1st & 10": {
+        "carries": 184,
+        "ypc": 6.35,
+        "stuff": 21.2
+      },
+      "2nd/3rd & 1-2": {
+        "carries": 33,
+        "ypc": 2.38,
+        "stuff": 24.2
+      },
+      "3rd & 7+": {
+        "carries": 16,
+        "ypc": 11.71,
+        "stuff": 12.5
+      }
+    }
+  },
+  "cohort": "Eight games, seed 7, two generated leagues. Exploratory policy check; not reliable team dispersion or causal execution estimates.",
+  "mappingNotes": "New wideZone/toss and splitZone groups are pooled only in approximate mix sensitivity. MAN-to-Duo unverified. NFL usage-relative EPA and simulator usage-relative yards differ.",
+  "before": {
+    "source": "simulation, 8 games over 2 leagues",
+    "plays": 1096,
+    "offensePersonnel": {
+      "league": {
+        "10": 7.2,
+        "11": 58.9,
+        "12": 20.3,
+        "13": 0.6,
+        "21": 9.8,
+        "22": 3.2
+      },
+      "passRate": {
+        "10": 84.8,
+        "11": 74.3,
+        "12": 63.7,
+        "13": 0,
+        "21": 57.9,
+        "22": 54.3
+      },
+      "teamRange": {
+        "10": {
+          "min": 1.6,
+          "max": 19.4,
+          "sd": 4.7
+        },
+        "11": {
+          "min": 45.8,
+          "max": 65.8,
+          "sd": 7.2
+        },
+        "12": {
+          "min": 13.9,
+          "max": 25.5,
+          "sd": 4.2
+        },
+        "13": {
+          "min": 0,
+          "max": 1.6,
+          "sd": 0.7
+        },
+        "21": {
+          "min": 2.8,
+          "max": 12.5,
+          "sd": 3
+        },
+        "22": {
+          "min": 0,
+          "max": 10.4,
+          "sd": 3.9
+        }
+      }
+    },
+    "defensePersonnelVs": {
+      "11": {
+        "league": {
+          "base": 10.1,
+          "nickel": 81.9,
+          "dime+": 8.1
+        },
+        "baseTeamRange": {
+          "min": 0,
+          "max": 21.4,
+          "sd": 7.4
+        }
+      },
+      "12": {
+        "league": {
+          "base": 55.6,
+          "nickel": 44.4,
+          "dime+": 0
+        },
+        "baseTeamRange": {
+          "min": 25,
+          "max": 73.6,
+          "sd": 18.9
+        }
+      },
+      "21": {
+        "league": {
+          "base": 100,
+          "nickel": 0,
+          "dime+": 0
+        },
+        "baseTeamRange": {
+          "min": 100,
+          "max": 100,
+          "sd": 0
+        }
+      }
+    },
+    "runConcepts": {
+      "league": {
+        "insideZone": 18.3,
+        "outsideZone": 17.4,
+        "power": 17.1,
+        "trap": 13.8,
+        "counter": 13.5,
+        "draw": 8.3,
+        "duo": 7.3,
+        "toss": 4.3
+      },
+      "teamRange": {
+        "insideZone": {
+          "min": 9.1,
+          "max": 23.3
+        },
+        "outsideZone": {
+          "min": 5.9,
+          "max": 33.3
+        },
+        "power": {
+          "min": 11.1,
+          "max": 23.5
+        },
+        "trap": {
+          "min": 6.8,
+          "max": 26.5
+        },
+        "counter": {
+          "min": 8.3,
+          "max": 20.6
+        },
+        "draw": {
+          "min": 3.3,
+          "max": 13.6
+        },
+        "duo": {
+          "min": 0,
+          "max": 11.4
+        },
+        "toss": {
+          "min": 2.6,
+          "max": 9.1
+        }
+      },
+      "topConceptShareMedian": 25
+    },
+    "runConceptSelection": {
+      "teamConceptCells": 14,
+      "corrRelUsageVsRelYards": 0.04
+    },
+    "playAction": {
+      "min": 6.2,
+      "max": 20.7,
+      "median": 10.6
+    },
+    "singleHigh": {
+      "min": 40.7,
+      "max": 57.5,
+      "sd": 4.8
+    },
+    "runConceptOutcomes": {
+      "insideZone": {
+        "carries": 60,
+        "ypc": 10.52,
+        "stuff": 25
+      },
+      "outsideZone": {
+        "carries": 57,
+        "ypc": 11.08,
+        "stuff": 19.3
+      },
+      "power": {
+        "carries": 56,
+        "ypc": 5,
+        "stuff": 53.6
+      },
+      "trap": {
+        "carries": 45,
+        "ypc": 3.73,
+        "stuff": 37.8
+      },
+      "counter": {
+        "carries": 44,
+        "ypc": 2.16,
+        "stuff": 43.2
+      },
+      "draw": {
+        "carries": 27,
+        "ypc": 7.85,
+        "stuff": 37
+      },
+      "duo": {
+        "carries": 24,
+        "ypc": 5.27,
+        "stuff": 37.5
+      },
+      "toss": {
+        "carries": 14,
+        "ypc": 16.09,
+        "stuff": 14.3
+      }
+    },
+    "nflMixAdjusted": {
+      "stuff": 30.2,
+      "ypc": 8.61,
+      "raw": {
+        "stuff": 34.6,
+        "ypc": 7.24
+      }
+    },
+    "teamSpread": {
+      "ypc": {
+        "sd": 3.001,
+        "sdTrue": 0,
+        "min": 1.908,
+        "max": 10.789
+      },
+      "stuffPct": {
+        "sd": 12.964,
+        "sdTrue": 8.875,
+        "min": 22.727,
+        "max": 61.111
+      },
+      "sackPct": {
+        "sd": 6.423,
+        "sdTrue": 5.157,
+        "min": 2.381,
+        "max": 19.78
+      },
+      "passRatePct": {
+        "sd": 10.939,
+        "sdTrue": 9.826,
+        "min": 44.615,
+        "max": 83.333
+      },
+      "carriesPerTeam": 36
+    },
+    "runsBySituation": {
+      "1st & 10": {
+        "carries": 154,
+        "ypc": 6.95,
+        "stuff": 36.4
+      },
+      "2nd/3rd & 1-2": {
+        "carries": 28,
+        "ypc": 4.05,
+        "stuff": 39.3
+      },
+      "3rd & 7+": {
+        "carries": 14,
+        "ypc": 15.13,
+        "stuff": 28.6
+      }
+    }
+  }
+}

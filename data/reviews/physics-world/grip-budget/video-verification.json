@@ -1,0 +1,62 @@
+{
+  "film": {
+    "path": "out/viewer-ui/compressed-standard-clip.webm",
+    "sha256": "e3991e25d6d95cae4e932a9675145050b37529239a8a826993b992a489360931",
+    "bytes": 336657,
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "width": 1280,
+          "height": 840,
+          "nb_read_frames": "43"
+        }
+      ],
+      "format": {
+        "size": "336657"
+      }
+    }
+  },
+  "inspection": {
+    "path": "out/grip-budget-final/inspection-clip.webm",
+    "sha256": "00126e9bd48a5b4dd0775f3f288dd63b5e02d1058c428f6cc50dfda426cd8a7b",
+    "bytes": 270958,
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "width": 1280,
+          "height": 840,
+          "nb_read_frames": "36"
+        }
+      ],
+      "format": {
+        "size": "270958"
+      }
+    }
+  },
+  "legacy": {
+    "path": "out/grip-budget-final/legacy-clip.webm",
+    "sha256": "29dfbc4f45b2e4a030f8d7fd26b3c230c9330d91a6faf9b47922b15f0e129db9",
+    "bytes": 286353,
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "width": 1280,
+          "height": 840,
+          "nb_read_frames": "40"
+        }
+      ],
+      "format": {
+        "size": "286353"
+      }
+    }
+  }
+}

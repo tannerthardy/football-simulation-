@@ -1,0 +1,333 @@
+{
+  "schema": "tackle-brake-comparison-v1",
+  "sourceBefore": "2b405d9a79bbb09c21e5e1146a32632c62263fb9e67f319091196f45d8a80ef4",
+  "sourceAfter": "bbfaf460a9962459702dc5702b62b5b5e5933eac7c7e5ab1986095690d1759db",
+  "pins": {
+    "scriptSha256": "5ea30449c54f24b5c197bdfd758ae0ced43b1bcbfeccb79d33c4b3adce81b2ae",
+    "inputSha256": "4e837a6d7b498f2856903d34aa0d3c673493aa8201f5c38b160213e697f54ab3",
+    "cohortSha256": "fdcf15163fdcb19ddb89b8476ab9f653e786702d9e08ec085e479655ccd9d278",
+    "profilesSha256": "d36918bf170135176465df0b3544a7eab12911a7b645d28a1ba277e7efc2e40c"
+  },
+  "artifacts": [
+    {
+      "path": "out/tackle-timing-review/baseline-brake-witness.json",
+      "sha256": "9c14d83b1f929dd8cbb2389b5282055979550d2b960a45c241cb41278d0394ca",
+      "retainedGzip": {
+        "path": "data/reviews/physics-world/tackle-timing/baseline-brake-witness.json.gz",
+        "sha256": "7b35fd92c89f6a6a7c235f9cae8b99d80d1768524eebc5e2cecb2e462853f281"
+      }
+    },
+    {
+      "path": "out/tackle-timing-review/candidate-brake-witness.json",
+      "sha256": "1a07c07220b6f8cbf7c7b1f12d0ed34eda9aa995213bc38905445798bae963ae",
+      "retainedGzip": {
+        "path": "data/reviews/physics-world/tackle-timing/candidate-brake-witness.json.gz",
+        "sha256": "ac09b50d39c170311ba200d00cc7fe0e5217398a134ea5205da626ad244b58db"
+      }
+    }
+  ],
+  "selection": "Separate retrospective plant/brake command-consistency witness; one generated roster pair, two play seeds and both mirrors. Mirrors are repeatability checks, not four independent samples.",
+  "recording": {
+    "beforeMatchesUnrecorded": 4,
+    "afterMatchesUnrecorded": 4
+  },
+  "interpretation": "Earlier actual attempt follows already-requested braking instead of extrapolating current momentum. Contact quality and hold capacity are slightly lower at the earlier reach. Both sources naturally tackle both seeds; credited endpoint benefit is mixed. No tackle-rate/NFL calibration or stronger-grip claim.",
+  "rows": [
+    {
+      "id": "TB-W-S83-L",
+      "seed": 83,
+      "side": -1,
+      "before": {
+        "firstAttempt": {
+          "tickLabel": 0.04999999999999982,
+          "tickEnd": 0.10000000000000009,
+          "geometry": {
+            "distance": 1.2312700995763146,
+            "quality": 0.3345660025604399,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.21341298658358696,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.421977196725418
+          },
+          "grip": 0.42765394186611033,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2312700995763146,
+            "reach": 1.3812700995763145,
+            "capacity": 488.10010862275885,
+            "legs": 0.4085398638070765,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 58.26316517504472,
+          "y": 26.86407630757029
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "firstAttempt": {
+          "tickLabel": 0,
+          "tickEnd": 0.04999999999999982,
+          "geometry": {
+            "distance": 1.2488647191724054,
+            "quality": 0.31005337464018967,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.4917364352054134,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.5060287064839917
+          },
+          "grip": 0.41097954296621714,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2488647191724054,
+            "reach": 1.3988647191724053,
+            "capacity": 465.5655334793015,
+            "legs": 0.40042318241919783,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 57.909088430852435,
+          "y": 26.83771228327471
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "firstAttemptTimeChange": -0.04999999999999982,
+      "firstAttemptQualityChange": -0.02451262792025022,
+      "creditedSpotChange": -0.35407674419228385
+    },
+    {
+      "id": "TB-W-S83-R",
+      "seed": 83,
+      "side": 1,
+      "before": {
+        "firstAttempt": {
+          "tickLabel": 0.04999999999999982,
+          "tickEnd": 0.10000000000000009,
+          "geometry": {
+            "distance": 1.2312700995763146,
+            "quality": 0.3345660025604399,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.21341298658358696,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.421977196725418
+          },
+          "grip": 0.42765394186611033,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2312700995763146,
+            "reach": 1.3812700995763145,
+            "capacity": 488.10010862275885,
+            "legs": 0.4085398638070765,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 58.26316517504472,
+          "y": 26.469257025763046
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "firstAttempt": {
+          "tickLabel": 0,
+          "tickEnd": 0.04999999999999982,
+          "geometry": {
+            "distance": 1.2488647191724054,
+            "quality": 0.31005337464018967,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.4917364352054134,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.5060287064839917
+          },
+          "grip": 0.41097954296621714,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2488647191724054,
+            "reach": 1.3988647191724053,
+            "capacity": 465.5655334793015,
+            "legs": 0.40042318241919783,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 57.909088430852435,
+          "y": 26.495621050058627
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "firstAttemptTimeChange": -0.04999999999999982,
+      "firstAttemptQualityChange": -0.02451262792025022,
+      "creditedSpotChange": -0.35407674419228385
+    },
+    {
+      "id": "TB-W-S131-L",
+      "seed": 131,
+      "side": -1,
+      "before": {
+        "firstAttempt": {
+          "tickLabel": 0.04999999999999982,
+          "tickEnd": 0.10000000000000009,
+          "geometry": {
+            "distance": 1.2312700995763146,
+            "quality": 0.3345660025604399,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.21341298658358696,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.421977196725418
+          },
+          "grip": 0.37918854596872165,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2312700995763146,
+            "reach": 1.3812700995763145,
+            "capacity": 425.08459023192694,
+            "legs": 0.46365009597113854,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 57.94693621473982,
+          "y": 26.90665664773006
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "firstAttempt": {
+          "tickLabel": 0,
+          "tickEnd": 0.04999999999999982,
+          "geometry": {
+            "distance": 1.2488647191724054,
+            "quality": 0.31005337464018967,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.4917364352054134,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.5060287064839917
+          },
+          "grip": 0.364403832314118,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2488647191724054,
+            "reach": 1.3988647191724053,
+            "capacity": 407.36821638440153,
+            "legs": 0.4555334145832598,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 58.305072860757626,
+          "y": 26.748832455114414
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "firstAttemptTimeChange": -0.04999999999999982,
+      "firstAttemptQualityChange": -0.02451262792025022,
+      "creditedSpotChange": 0.3581366460178046
+    },
+    {
+      "id": "TB-W-S131-R",
+      "seed": 131,
+      "side": 1,
+      "before": {
+        "firstAttempt": {
+          "tickLabel": 0.04999999999999982,
+          "tickEnd": 0.10000000000000009,
+          "geometry": {
+            "distance": 1.2312700995763146,
+            "quality": 0.3345660025604399,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.21341298658358696,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.421977196725418
+          },
+          "grip": 0.37918854596872165,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2312700995763146,
+            "reach": 1.3812700995763145,
+            "capacity": 425.08459023192694,
+            "legs": 0.46365009597113854,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 57.94693621473982,
+          "y": 26.426676685603276
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "firstAttempt": {
+          "tickLabel": 0,
+          "tickEnd": 0.04999999999999982,
+          "geometry": {
+            "distance": 1.2488647191724054,
+            "quality": 0.31005337464018967,
+            "body": 0.5036363636363637,
+            "arms": 1.4714141414141415,
+            "normalClosing": 0.4917364352054134,
+            "constantVelocityClosestAt": 0.3,
+            "constantVelocityQuality": 0.5060287064839917
+          },
+          "grip": 0.364403832314118,
+          "hold": {
+            "origin": "reach+behind",
+            "hold": 1.2488647191724054,
+            "reach": 1.3988647191724053,
+            "capacity": 407.36821638440153,
+            "legs": 0.4555334145832598,
+            "force": null,
+            "slipping": false,
+            "broken": false
+          }
+        },
+        "outcome": "tackle",
+        "endSpot": {
+          "x": 58.305072860757626,
+          "y": 26.584500878218922
+        },
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "firstAttemptTimeChange": -0.04999999999999982,
+      "firstAttemptQualityChange": -0.02451262792025022,
+      "creditedSpotChange": 0.3581366460178046
+    }
+  ]
+}

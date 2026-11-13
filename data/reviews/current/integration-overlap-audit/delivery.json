@@ -1,0 +1,64 @@
+{
+  "schema": "integration-overlap-owner-delivery-v1",
+  "reportCommit": "689edd20fb9819885c8da68fb2b6a4ef9a7bd9de",
+  "auditPr": 187,
+  "delivery": "Eight owner-addressed PR comments created and exact body read-back verified. Owner acknowledgment and technical acceptance are not established by delivery.",
+  "comments": [
+    {
+      "pr": 168,
+      "id": 6301766563,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/168#issuecomment-6301766563",
+      "readBackVerified": true
+    },
+    {
+      "pr": 174,
+      "id": 6301767959,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/174#issuecomment-6301767959",
+      "readBackVerified": true
+    },
+    {
+      "pr": 182,
+      "id": 6301768815,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/182#issuecomment-6301768815",
+      "readBackVerified": true
+    },
+    {
+      "pr": 186,
+      "id": 6301769656,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/186#issuecomment-6301769656",
+      "readBackVerified": true
+    },
+    {
+      "pr": 180,
+      "id": 6301770519,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/180#issuecomment-6301770519",
+      "readBackVerified": true
+    },
+    {
+      "pr": 178,
+      "id": 6301771495,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/178#issuecomment-6301771495",
+      "readBackVerified": true
+    },
+    {
+      "pr": 179,
+      "id": 6301772311,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/179#issuecomment-6301772311",
+      "readBackVerified": true
+    },
+    {
+      "pr": 153,
+      "id": 6301773464,
+      "ok": true,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6301773464",
+      "readBackVerified": true
+    }
+  ]
+}

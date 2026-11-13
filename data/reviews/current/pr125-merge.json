@@ -1,0 +1,246 @@
+{
+  "schema": "accepted-develop-merge-v1",
+  "pr": 125,
+  "previousAcceptedDevelop": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "reviewedPublication": "df603380eabc535597c8a6434fd790761589445c",
+  "testedCommit": "910c0588307ee443e24af9852e564c84a7e932d7",
+  "mergePreview": "2018e4d7ad2aeb6f12ecbacec91a9da29740e54d",
+  "mergeParents": [
+    "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+    "df603380eabc535597c8a6434fd790761589445c"
+  ],
+  "actualTree": "b431d15400bb78755b1106a086926c47846f2153",
+  "publicationTree": "b431d15400bb78755b1106a086926c47846f2153",
+  "entireTreeEqualsPublication": true,
+  "protectedTreeEqualsPassingFreeze": true,
+  "sourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "validationSha256": "dfbff86ef7dbaaf59d308a90383bde5a6d32381c1b2e1fc64079978713a5474e",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "protectedFiles": [
+    "scripts/diag/physics/directional-brace.ts",
+    "src/game/game.ts",
+    "src/physics/kinematics.ts",
+    "src/physics/world.ts",
+    "src/sim/coverage/rules.ts",
+    "src/sim/engagement.ts",
+    "src/sim/run-fits.ts",
+    "src/sim/spacing.ts",
+    "test/action-effort.test.ts",
+    "test/directional-brace.test.ts",
+    "test/dive-yaw.test.ts",
+    "test/fall-cause-history.test.ts",
+    "test/fixtures/directional-brace-control.json",
+    "test/fixtures/run-pace-gather.json.gz",
+    "test/fixtures/spacing-forecast-paced-reference.json",
+    "test/match-block-release.test.ts",
+    "test/quarters-flat-wheel.test.ts",
+    "test/release-cushion.test.ts",
+    "test/run-pace-gather.test.ts",
+    "test/second-level-handover.test.ts",
+    "test/spacing-forecast-reuse.test.ts",
+    "test/stretch-anchor-footwork.test.ts",
+    "test/stretch-normal-follow.test.ts",
+    "test/two-point-energy.test.ts"
+  ],
+  "included": [
+    {
+      "pr": 117,
+      "head": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "branch": "codex/zone-anchor-protection",
+      "reviewTask": "Independent run-controller reviewer: independently review #117 at fae0a3585419704f385de02e6bfbf8b69ac4cfb1.\n\nReview normal following and retained shoulder footwork under the existing lost-depth anchor. Check geometry versus emitted components, original upfield request/clamps/budgets and mirrored bull/cross-face controls. Explicitly adjudicate strong useful access against weak5.34\u21922.93 and0.33/0.11yd depth concessions. Reuse65 focused/typecheck and isolated/composed saved traces. Report docs/reviews/zone-contact-execution/README.md at the exact head; minimal engagement.ts + stretch-normal-follow.test.ts + stretch-anchor-footwork.test.ts. Exclude #113 diagnostic ancestor and held #116/#119. Separately review compatibility with #122 without assuming its interaction is a dependency.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    },
+    {
+      "pr": 122,
+      "head": "cf827df7b59f133d25eea91052aa3c243899f8f8",
+      "branch": "codex/run-pace-gather",
+      "reviewTask": "Independent run-controller reviewer: independently review #122 at cf827df7b59f133d25eea91052aa3c243899f8f8.\n\nReview gatherForMotion's bounded gentler scales against the retained verified fallback, all-peer/upright/achieved-progress requirements and forecast cost. Check all five minimal files including both fixtures and the three changed cache-golden commands without weakening original cache/reference contracts. Reuse49 focused/typecheck and5 saved situations. Report docs/reviews/run-pace-gather/README.md. Keep weak5.34\u21925.21 and strong tackle-sensitive ending explicit. Review the source-qualified #117 interaction; exclude loaded-RG priority, #116 runoff floor, #119 reader and failed departure trials. Existing LG departure/initial-surface diagnosis is a separate next mechanism, not a ready dependency.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    },
+    {
+      "pr": 123,
+      "head": "5da02125075de0baf2ffae5c4a8b28bcae8ef77f",
+      "branch": "codex/second-level-handover",
+      "reviewTask": "Independent defensive-contract reviewer: independently review #123 at 5da02125075de0baf2ffae5c4a8b28bcae8ef77f.\n\nReview observed-possession/declaration-surface/assigned-side handover. Preserve deep mesh, away-side, unknown/negative possession, cutback/lag, existing coverage support and recognized-ball priorities; original away-side assertion must remain. Minimal run-fits.ts + second-level-handover.test.ts; docs/reviews/second-level-handover.md and data/reviews/current/second-level-handover/summary.json. Reuse62 focused/typecheck and four2.8s matched prefixes with observer controls. Closing-distance improvement is not a completed tackle/gain claim. Broader moving tracker, Counter misdirection/PA bump and #116 remain held.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    },
+    {
+      "pr": 124,
+      "head": "9f2206a3fd22aab83b19a0431346c7569ed19f7b",
+      "branch": "codex/honest-coverage-teaching",
+      "reviewTask": "Independent defensive-contract reviewer: independently review #124 at 9f2206a3fd22aab83b19a0431346c7569ed19f7b.\n\nReview Quarters acquired2 flat/wheel continuity against Palms installed trap/replacement/apex-curl exchange, using exact teaching images from108 only where needed. Preserve97/100/95 acquired entry/provisional block, real shallow/depth exchanges, installed support and reachable recognized-ball priority. Minimal rules.ts + three contract files; verify actual fixture dependencies rather than trusting file count. Report docs/reviews/honest-nfl-coverage-teaching.md, review/portablepatch in data/reviews/current/honest-quarter-flat/. Reuse88 compatible unique focused passes/typecheck qualification and seven matched prefixes; preserve failed contact-depth stimuli and changed QB/target/censored evidence. Explicitly decide if compressed flat cushion/late wheel depth blocks the narrow responsibility correction; don't claim complete top-down technique or population YAC repair.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    },
+    {
+      "pr": 118,
+      "head": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+      "branch": "codex/directional-load-bracing",
+      "reviewTask": "Independent mechanical-accounting reviewer: independently review #118 at 3b426fb1b82639d99bb6384276cc315a3e266c42.\n\nReview transverse brace algebra and one aggregate attained-lean/ankle budget; aligned/opposing/rotated and unequal-substep controls must remain. Reuse37 focused/finaltypecheck and saved postcontact-only native changes, late .013220 load delta and exact mass-response negative controls. Report docs/reviews/directional-load-bracing.md and data/reviews/current/directional-load-bracing.json. Identify minimum world.ts/test/control-fixture extraction, excluding115 force seam/diagnostics. Explicitly classify existing intended-law repair versus a new physical assumption requiring user approval. Check ordered overlap with120 before composition; do not assume shared World changes are automatically compatible.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    },
+    {
+      "pr": 120,
+      "head": "35f87c90c5e39bf2fa9c9c513aae7ae5e82c8e41",
+      "branch": "codex/physics-state-audit",
+      "reviewTask": "Independent mechanical-accounting reviewer: independently review #120 at 35f87c90c5e39bf2fa9c9c513aae7ae5e82c8e41.\n\nReview the three separate yaw/effort/fall-history commits, preserving ordinary gait, existing exposure/work proxy and one-per-tick delivered positive work across substeps/unequal impacts. Check active\u2192fall/dive transitions, passive intervals, lunge reversal/traction-limited work and history decay; reject double counting or dropped work. Minimal world/kinematics + three tests; docs/reviews/physics-action-state-audit.md. Reuse94 unique compatible focused/typecheck controls,133 executions with failures retained. Explicitly classify accounting/transport repair versus physical-law/capability/default change. Keep118 independent, inspect actual World overlap, and preserve fatigue/NFL calibration limits.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    },
+    {
+      "pr": 121,
+      "head": "1dc41611d82a7cb5e81db259e0e6f185ac2abcb5",
+      "branch": "codex/two-point-effort",
+      "reviewTask": "Independent mechanical-accounting reviewer: independently review #121 at 1dc41611d82a7cb5e81db259e0e6f185ac2abcb5.\n\nReview one-line game.ts all-participant energy writeback after two-point conversion plus two-point-energy.test.ts. Match ordinary scrimmage ownership, both teams/try outcomes, participants versus bench, recovery, scoring and ending; no fatigue retune. Reuse3 focused hook checks and both expected baseline failures in docs/reviews/two-point-energy.md; no live simulation needed. Explicitly confirm independence from120 so blocked mechanical scope cannot delay this routine bookkeeping correction.\n\nAccepted base d682b1f474cb6ba260a7b8b1119a62919c5a2159; fetch/recheck origin/develop before handoff. Source bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616, Node22.23.3,44 accepted flags/RUN_CONTACT_COMPONENTS=1/CF_FLOW unset, native World defaults. Root Integration owns one exact combined verification; contributors/reviewers must not duplicate the shared suite, run new games/panels or expand experiments. Reuse compatible focused/native evidence. Before any extra tiny check name the unresolved decision it could change. Return pinned ACCEPT/HOLD, minimal portable scope, actual dependencies, adverse-evidence disposition, exact reviewed source/test/settings and any material user-approval boundary. Preserve branches, failed trials and original provenance; no merge/default/baseline/deletion authority for reviewers. If you authored a scope, recuse from its independent approval.",
+      "decision": "Independent ACCEPT for exact combined verification"
+    }
+  ],
+  "reviews": [
+    {
+      "scope": [
+        117,
+        122
+      ],
+      "commit": "9ea078226d7737c99402d269c40f7fe4935152c3",
+      "report": "docs/reviews/independent-run-117-122/README.md",
+      "receipt": "data/reviews/current/independent-run-117-122/receipt.json"
+    },
+    {
+      "scope": [
+        123,
+        124
+      ],
+      "commit": "d01d020f77a29abee9b7316540573c29d5441872",
+      "report": "docs/reviews/independent-defense-123-124.md",
+      "receipt": "data/reviews/current/independent-defense-123-124/receipt.json"
+    },
+    {
+      "scope": [
+        118,
+        120,
+        121
+      ],
+      "commit": "4b2664dfc935daa1102ab23b0fe4d9fd13a90ba3",
+      "report": "docs/reviews/pr118-120-121-independent-review.md",
+      "receipt": "data/reviews/current/pr118-120-121-independent-review/portability.json"
+    }
+  ],
+  "lawClassification": "Independent mechanical reviewer explicitly classifies118/120 as existing directional-support, motion/effort and diagnostic accounting repairs using unchanged budgets/coefficients, not new laws/capabilities/defaults; no new user approval required for these exact deltas. Legacy aligned support, gait proxy and off-feet metabolic gaps remain. Experimental solvers/capabilities require separate approval.",
+  "outcome": {
+    "typescriptPassed": 1980,
+    "typescriptFiles": 174,
+    "pythonPassed": 145,
+    "typecheck": "pass",
+    "build": "pass",
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "verification": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.594735658
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.303075734
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 197.843144623
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7799738399999915
+      }
+    ],
+    "combinedRuns": 1,
+    "combinedCommandSeconds": 219.520929855,
+    "additionalFocusedBehavioralTests": 0,
+    "additionalStandaloneNativeExecutions": 0,
+    "additionalPanels": 0,
+    "additionalEvaluationGames": 0,
+    "reviewerExecution": "Source/receipt/patch/emission checks; mechanical algebra and failure-path tooling stub only, zero engine/native steps. Author focused/native evidence is reused with its original costs, sources and qualifications.",
+    "qualification": "Existing game/integration/research assertions run within the preserved full suite. No unchanged rerun to publish/merge."
+  },
+  "receipt": "data/reviews/current/reviewed-maintenance-integration/final-receipt.json",
+  "dispositions": "data/reviews/current/reviewed-maintenance-integration/dispositions.json",
+  "agentTasks": "data/reviews/current/reviewed-maintenance-integration/agent-tasks.json",
+  "handoff": "https://github.com/tannerthardy/football-simulation-/pull/125#issuecomment-6228298079",
+  "guards": {
+    "incomingHeadsRecheckedAndUnchanged": true,
+    "baseAndPublicationRechecked": true,
+    "freshExactMergePreview": true,
+    "formalChangeRequests": [],
+    "reviewThreads": [],
+    "remoteStatuses": [],
+    "publishedArtifactHashesVerified": true,
+    "newDocumentationLinksChecked": 36
+  },
+  "preservation": {
+    "allOriginalBranchesAndEvidenceRetained": true,
+    "noNewForceLawCapabilityDefault": true,
+    "noExperimentalActivation": true,
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "githubDefaultUnchanged": true,
+    "noUnchangedVerificationRepeat": true,
+    "noAdditionalNativePanelEvaluationGame": true
+  },
+  "remainingFootballRisks": [
+    "117 mirrored depth concessions and weak5.34\u21922.93 traffic cost remain;122 pacing interaction does not certify second-level LG protection.",
+    "122 strong ending is tackle-sensitive and weak5.34\u21925.21 remains adverse; collision-free observed windows are not universal guarantees.",
+    "1232.8s prefixes support closing, not completed tackles/ending; broader Counter/PA tracker stays held.",
+    "124 preserves explained flat-cushion/depth cost; complete top-down wheel technique and populationYAC remain unresolved.",
+    "118 native reuse references optional-force-seam source0a5e365a with undefined fallback, not literal accepted source; no seam imported.",
+    "120 completed effort can change later energy/fatigue under existing mapping; fatigue proxy, off-feet laws and game-level calibration are not certified.",
+    "Original raw evidence retention limitations/failed mutable-input117 red receipt remain explicitly qualified; no historical native source relabeled combined proof."
+  ],
+  "nextTasks": [
+    {
+      "owner": "Catching author \u2192 Measurement independent reviewer",
+      "pr": 106,
+      "head": "706a10cc22e87a5fced54641f00a5db2df249b4b",
+      "prompt": "Current accepted develop 70b4db6a3ef53acc1a0e90cd055f1087205daa30. Fetch/recheck it before new implementation or handoff. Keep the existing PR/objective, publish an exact fetchable commit/receipt, and preserve historical evidence. No full study, game, panel or shared-suite rerun; use tiny stubs or documentation checks. Root Integration owns any exact combined verification. Do not change runtime/defaults/capacities or merge anything during this task. Repair same-output resume of failed/wall-censored caches: preserve prior blocked index or carry its attempted/error/censor row and partial trace forward before rejecting reuse. Preserve no-retry and untouched-tail separation. Add zero-engine stub controls for initial and resumed failure/wall censor and valid completed-cache reuse. Reuse pinned682f47c reproducer/report; preserve historicalcda44ed/18-case cue-cap evidence and its actual observer-neutrality limit. Publish minimal tooling pin, then Measurement returns pinned ACCEPT/HOLD. Shared PA full-input identity mapping is offline work, not another3198-case campaign."
+    },
+    {
+      "owner": "Run author \u2192 Measurement independent reviewer",
+      "pr": 101,
+      "head": "ed2fed9e204c0e916ea8f788afadb4805016ff05",
+      "prompt": "Current accepted develop 70b4db6a3ef53acc1a0e90cd055f1087205daa30. Fetch/recheck it before new implementation or handoff. Keep the existing PR/objective, publish an exact fetchable commit/receipt, and preserve historical evidence. No full study, game, panel or shared-suite rerun; use tiny stubs or documentation checks. Root Integration owns any exact combined verification. Do not change runtime/defaults/capacities or merge anything during this task. Finish existing wall-censor/index/partial-exception trace repair. Keep attempted cases in the index and correct censor/error denominators, preserve partial trace when available and list only truly unstarted tail as skipped. Use mocked timeout/error/partial/completed/sim-censor/tail controls. Preserve completed1848-case caches and all source/settings/input/prototype separation; no recollection or reserve reveals. Publish exact minimal tooling patch and focused receipt, then Measurement independently reviews."
+    },
+    {
+      "owner": "Nonauthor reference reviewer",
+      "pr": 108,
+      "head": "5cade6a5e05bc6ff4232623b22be565ec462c15c",
+      "prompt": "Current accepted develop 70b4db6a3ef53acc1a0e90cd055f1087205daa30. Fetch/recheck it before new implementation or handoff. Keep the existing PR/objective, publish an exact fetchable commit/receipt, and preserve historical evidence. No full study, game, panel or shared-suite rerun; use tiny stubs or documentation checks. Root Integration owns any exact combined verification. Do not change runtime/defaults/capacities or merge anything during this task. Review docs/references/honest-nfl at exact108 head using library.py --check and existing five semantic-validator negative controls. Verify385 image/OCR/ID/path/hash preservation and403 original-name mappings, provenance/link/fragment/deterministic pages. Inspect original images for disputed aliases; preserve source-stated/diagram-supported/description-only distinctions and overloaded terms. Do not certify complete385-scheme installation or replace source images with OCR. Return docs-only ACCEPT/HOLD and minimal reference/navigation extraction preserving newer tracking. Original author must recuse; runtime batch does not wait."
+    },
+    {
+      "owner": "Measurement",
+      "pr": "106 and101",
+      "prompt": "Current accepted develop 70b4db6a3ef53acc1a0e90cd055f1087205daa30. Fetch/recheck it before new implementation or handoff. Keep the existing PR/objective, publish an exact fetchable commit/receipt, and preserve historical evidence. No full study, game, panel or shared-suite rerun; use tiny stubs or documentation checks. Root Integration owns any exact combined verification. Do not change runtime/defaults/capacities or merge anything during this task. Independently verify each author repair at its published exact pin, not at an assumed newer tree. Reuse zero-engine repros to check original attempt, resumed blocked cache, pre/post-partial exception, sim-time censor, valid completed reuse and genuinely skipped tail. Confirm no automatic retry, correct denominators/provenance and cache settings keys; map shared PA identity offline. Record ACCEPT/HOLD with cost/remaining limits. Carry forward the already-budgeted shared football checkpoint rather than launching a second one for this merge."
+    }
+  ]
+}

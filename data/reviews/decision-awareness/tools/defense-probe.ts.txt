@@ -1,0 +1,81 @@
+import {createHash} from 'node:crypto';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {CENTER_Y} from '../../../src/core/field.js';
+import {Rng} from '../../../src/core/rng.js';
+import {generateTeam,pickOffense,pickDefense} from '../../../src/league/team.js';
+import {RUN_BY_ID,PASS_BY_ID} from '../../../src/playbook/concepts.js';
+import {FRONT_BY_ID,COVERAGE_BY_ID} from '../../../src/playbook/defense.js';
+import {FORMATION_BY_ID} from '../../../src/playbook/formations.js';
+import {PlaySim} from '../../../src/sim/playsim.js';
+import {contactFixture,contactCommands} from '../../../scripts/diag/run-contact-technique.js';
+import {sourceVersion} from '../../../scripts/source-version.js';
+const sourceBefore=sourceVersion();
+const reduced=[];
+for(const read of ['unsure','pass','run'] as const) for(const privatePass of [false,true]) {
+ const f=contactFixture({type:'run',runBlock:60,passBlock:60,seed:11});
+ f.defender.recog!.read=read;f.sim.isPass=privatePass;
+ const command=contactCommands(f)[f.defender.idx];
+ reduced.push({test:'private-play-type',read,privatePass,command,side:f.engagement.side,nextRng:f.sim.rng.nextU32()});
+}
+for(const actualY of [CENTER_Y-8,CENTER_Y+8]) {
+ const f=contactFixture({type:'run',runBlock:60,passBlock:60,seed:11});
+ f.defender.recog!.read='run';
+ const delayed=f.sim.see(f.defender,f.sim.qb);
+ f.sim.qb.body.pos={x:35,y:actualY};
+ const command=contactCommands(f)[f.defender.idx];
+ reduced.push({test:'private-current-carrier',actualY,delayed,command,side:f.engagement.side,nextRng:f.sim.rng.nextU32()});
+}
+const teamO=generateTeam(new Rng(31),'Audit O','AO',{strength:.55});
+const teamD=generateTeam(new Rng(32),'Audit D','AD',{strength:.55});
+const specs=[
+ ['iz_strong','under','cover3','ace_11',false,3],['power','under','cover3','ace_11',false,3],
+ ['oz_strong','over','cover3','ace_11',true,11],['split_zone','tite','cover3','gun_wing_12',false,3],
+ ['four_verts','over','cover0','gun_doubles_11',false,3],['four_verts','over','cover1','gun_doubles_11',false,3],
+ ['four_verts','over','cover4_palms','gun_doubles_11',false,3],['pa_post_dig','over','cover3','ace_12',false,3],
+] as const;
+const native=[];
+function trial(spec: typeof specs[number],observe:boolean) {
+ const [play,front,cov,form,flip,seed]=spec,formation=FORMATION_BY_ID[form],f=FRONT_BY_ID[front];
+ if(!formation||!f||!COVERAGE_BY_ID[cov]) throw new Error('Unknown fixture '+spec.join(' '));
+ const run=RUN_BY_ID[play];
+ const sim=new PlaySim({offense:pickOffense(teamO,formation.personnel),defense:pickDefense(teamD,f.personnel[0]),
+ offCall:run?{formation,flip,kind:'run',run,label:play}:{formation,flip,kind:'pass',pass:PASS_BY_ID[play],label:play},
+ defCall:{personnel:f.personnel[0],front:f,coverage:COVERAGE_BY_ID[cov],pressure:null,label:cov},los:40,ballY:CENTER_Y,firstDownX:50,seed});
+ const reads:any[]=[], contacts:any[]=[];
+ if(observe) {
+  for(const d of sim.defense) {
+   const orig=d.recog!.update;
+   d.recog!.update=function(a,s) {
+    const seen:any[]=[],see=s.see;
+    s.see=function(observer,target,...rest) {const image=see.call(this,observer,target,...rest);if(observer===a)seen.push({slot:target.slot,image:structuredClone(image)});return image};
+    try {orig.call(this,a,s);}finally{s.see=see;}
+    const eligible=seen.filter(v=>!['QB','RB','LT','LG','C','RG','RT'].includes(v.slot));
+    const chosen=eligible.length?eligible.at(-1).slot:null;
+    const target=(a.behavior as any).target?.slot??null;
+    if(chosen&&target&&chosen!==target) reads.push({t:s.t,slot:a.slot,kind:a.behavior.kind,target,chosen,read:this.read,pPass:this.pPass(),seen});
+   }
+  }
+  const tick=sim.tick;
+  sim.tick=function() {
+   const before=this.defense.filter(d=>d.engagement?.type==='run').map(d=>({slot:d.slot,read:d.recog?.read??null,job:structuredClone(d.runFit),side:d.engagement!.side,actualCarrier:this.carrier?{slot:this.carrier.slot,pos:{...this.carrier.pos}}:null,engagement:d.engagement,body:{...d.pos}}));
+   tick.call(this);
+   for(const row of before) {
+    const {engagement,...data}=row;
+    if(engagement.defender.engagement===engagement) contacts.push({...data,sideAfter:engagement.side,command:structuredClone(this.intents[engagement.defender.idx])});
+   }
+  }
+ }
+ const result=sim.run();
+ const final=sim.agents.map(a=>({slot:a.slot,body:structuredClone(a.body),intent:sim.intents[a.idx]}));
+ const rngNext=sim.rng.nextU32();
+ return {result,final,rngNext,reads,contacts};
+}
+for(const spec of specs) {
+ const observed=trial(spec,true),plain=trial(spec,false);
+ const neutral=JSON.stringify({result:observed.result,final:observed.final,rngNext:observed.rngNext})===JSON.stringify({result:plain.result,final:plain.final,rngNext:plain.rngNext});
+ native.push({spec,neutral,result:observed.result,reads:observed.reads,contacts:observed.contacts});
+ console.log(JSON.stringify({spec,neutral,wrongReceiverKeyTicks:observed.reads.length,engagedRunTicks:observed.contacts.length,unsureEngaged:observed.contacts.filter(v=>v.read!=='run').length}));
+}
+const sourceAfter=sourceVersion();
+writeFileSync('out/decision-awareness/defense/baseline.json',JSON.stringify({sourceBefore,sourceAfter,collectorSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),reduced,native}));
+console.log(JSON.stringify({sourceBefore,sourceAfter,reduced}));

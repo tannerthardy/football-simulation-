@@ -1,0 +1,22 @@
+{
+  "schema": "rushing-benchmark-publication-checks-v1",
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "publishedReadmeAdapterCommandsExecuted": true,
+  "allFreshAndPublishedMeasurementSectionsExact": true,
+  "allowedReproductionDifferences": [
+    "collectedAtUtc",
+    "declaredAtUtc",
+    "provenance"
+  ],
+  "tsTestsPassed": 1108,
+  "pythonTestsPassed": 118,
+  "typecheckPassed": true,
+  "buildPassed": true,
+  "quarterGatherWithheld": true,
+  "onlyProductionChange": "Record actual QB rusher ID at existing scramble transition",
+  "historicalEngineReportsPreserved": true,
+  "allJsonParse": true,
+  "entrypointLinksExist": true,
+  "stagedDiffCheckPassed": true,
+  "pinnedGeneratedWhitespacePreserved": true
+}

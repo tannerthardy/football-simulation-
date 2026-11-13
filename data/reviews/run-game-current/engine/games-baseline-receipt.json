@@ -1,0 +1,14 @@
+{
+  "sourceBefore": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "sourceAfter": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "sourceCapture": "Captured during execution in unchanged frozen archive; preceding pass guard independently pinned the same archive source before/after. Final source equality rechecked.",
+  "collectorSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "sharedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "command": "node --import tsx scripts/calibrate.ts 2 7 1",
+  "cwd": "/tmp/run-current-d087104",
+  "receiptCreatedAt": "2026-10-11T11:50:37.965108+00:00",
+  "scope": "Two generated full games in one generated league, seed7; regression guard only. Later calls and RNG populations can diverge. Not paired snaps or NFL prevalence. Existing calibrate collector excludes game-level nullified plays.",
+  "finishedAt": "2026-10-11T11:51:32.247926+00:00",
+  "outputSha256": "404274621c1ddcff56d1251895180d49cd916cc57f661641fac820af1a210b16",
+  "wrapperNote": "The full game collector completed. A wrapper postcheck initially compared path-component sorting with the engine lexical path-string hash and failed; corrected independent source check confirms equality. Collector output is unchanged."
+}

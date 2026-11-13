@@ -1,0 +1,163 @@
+{
+  "schema": "defensive-installation-observations-v1",
+  "sourceSha256": "a2c377083c41c5fe6fd5e692599e003149b9f9e4b4efdb9a09188ff96161e360",
+  "expectedSourcePrefix": "a2c377",
+  "toolSha256": "f3a2cab856475ea30534bf0af865404a132ac5d180b579f62ee6b19fc94d4be8",
+  "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+  "packageLockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+  "nodeVersion": "v22.23.3",
+  "cohort": {
+    "offenseSeed": 901,
+    "strength": 0.55,
+    "defensiveSchemes": [
+      "4-3",
+      "3-4",
+      "nickel-heavy"
+    ],
+    "coachingTrees": [
+      "single-high",
+      "quarters",
+      "two-high",
+      "tampa",
+      "pressure-man"
+    ],
+    "formations": [
+      "gun_doubles_11",
+      "gun_trips_11",
+      "gun_trey_11",
+      "gun_bunch_11",
+      "gun_empty_11",
+      "ace_11",
+      "pistol_11",
+      "ace_trips_11",
+      "gun_spread_10",
+      "gun_trips_10",
+      "ace_12",
+      "gun_wing_12",
+      "pistol_12",
+      "i_pro_21",
+      "i_twins_21",
+      "offset_i_21",
+      "i_jumbo_22",
+      "heavy_13"
+    ],
+    "drawSeeds": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "seedRule": "scheme:tree:formation.id:situation.yardline:drawSeed",
+    "defenseSeedRule": "defense:scheme",
+    "forcedCoach": {
+      "blitzRate": 0.8,
+      "disguise": 0.9,
+      "shadow": true
+    },
+    "situations": [
+      {
+        "id": "ordinary-1st10",
+        "down": 1,
+        "distance": 10,
+        "yardline": 35,
+        "quarter": 1,
+        "clock": 600,
+        "scoreDiff": 0,
+        "ballY": 23.583333333333332,
+        "hurry": false
+      },
+      {
+        "id": "hurry-3rd27",
+        "down": 3,
+        "distance": 27,
+        "yardline": 20,
+        "quarter": 2,
+        "clock": 30,
+        "scoreDiff": -14,
+        "ballY": 29.750000000000004,
+        "hurry": true
+      },
+      {
+        "id": "redzone-3rd5",
+        "down": 3,
+        "distance": 5,
+        "yardline": 85,
+        "quarter": 4,
+        "clock": 100,
+        "scoreDiff": 10,
+        "ballY": 23.583333333333332,
+        "hurry": false
+      },
+      {
+        "id": "goal-1st1",
+        "down": 1,
+        "distance": 1,
+        "yardline": 99,
+        "quarter": 4,
+        "clock": 45,
+        "scoreDiff": -7,
+        "ballY": 29.750000000000004,
+        "hurry": true
+      }
+    ]
+  },
+  "cohortSha256": "c628d6a5e4adcddfdc4612fac86dc45385e087d2cd5e6728519cf1b16d1ac3bf",
+  "scope": "4320 deterministic automatic-caller selections and static role installations; no play is run.",
+  "limitations": [
+    "Equal designed case counts are not NFL call frequencies or an empirical coach distribution.",
+    "Flipped formation cases compare role coverage; they do not assert exact physical mirroring.",
+    "Roof and named participant integrity does not certify full underneath, matching, check communication or scheme legality.",
+    "Absent named nondeep zone players are recorded separately as debt, even when another player fills the same zone.",
+    "Formation declarations may differ across source versions; input hashes expose those differences."
+  ],
+  "summary": {
+    "calls": 4320,
+    "defectCalls": 0,
+    "flags": {},
+    "missingPlayedDeepJobCalls": 0,
+    "absentNamedDeepPlayerCalls": 0,
+    "missingShownDeepJobCalls": 0,
+    "absentPressureParticipantCalls": 0,
+    "unmarkedManReceiverCalls": 0,
+    "fireZoneCalls": 101,
+    "fireZoneRushCounts": {
+      "5": 101
+    },
+    "stockFireZoneWrongRushCountCalls": 0,
+    "personnel": {
+      "base34": 526,
+      "base43": 949,
+      "dime": 404,
+      "goalline": 300,
+      "nickel": 2141
+    },
+    "goalLineCoverage": {
+      "cover0": 158,
+      "cover2_invert": 52,
+      "cover9": 90
+    },
+    "namedUnderneathPlayerDebtCalls": 142,
+    "unfilledNamedUnderneathDebtCalls": 142,
+    "goalLineFSUnderneathDebtCalls": 142,
+    "namedUnderneathDebtByCall": {
+      "goalline/cover2_invert/FS/flat_w": 52,
+      "goalline/cover9/FS/curl_flat_w": 90
+    },
+    "resolvedChecks": 229,
+    "zeusCalls": 138
+  },
+  "artifacts": {
+    "all-calls": {
+      "file": "/workspace/football-simulation-/out/scheme-audit/defense-candidate.all-calls.json.gz",
+      "sha256": "cebf34ffd25a02af61e4defffc09e4a4ca195ff41e0f066766299c3f9e15abe4",
+      "bytes": 266677,
+      "records": 4320
+    },
+    "violations": {
+      "file": "/workspace/football-simulation-/out/scheme-audit/defense-candidate.violations.json.gz",
+      "sha256": "d15254cd9d142b950433cb8d1c0efb328352fa04db90c0f4d6eb2a68dead445f",
+      "bytes": 22,
+      "records": 0
+    }
+  }
+}

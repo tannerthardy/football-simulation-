@@ -1,0 +1,10 @@
+{
+  "scope": "focused three-mode boundary film smoke; not complete generic viewer/video suite",
+  "checks": [
+    "All three saved modes load; exact IDs, separate source labels and controlled context",
+    "All modes retain full telemetry, RB weight/speed inspection, movement/contact layers, events and scrubbing",
+    "Only the recorded parent is OOB; exact current-ID search selects current recording",
+    "Offline load, mobile layout and no JavaScript errors"
+  ],
+  "pageErrors": []
+}

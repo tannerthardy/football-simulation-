@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit ba7007842e6857b875595af2aca1ea1e2f052985, source 889bbd59981b680afb915d96108acbbe8f3ebe5fc395446f82d83b8dfe655f6a
+Running node node_modules/vitest/vitest.mjs run test/zone-helper-check.test.ts --maxWorkers=1
+
+ RUN  v3.2.4 /workspace/football-big-tite-contract
+
+ ✓ |core| test/zone-helper-check.test.ts (24 tests) 972ms
+
+ Test Files  1 passed (1)
+      Tests  24 passed (24)
+   Start at  22:21:16
+   Duration  2.12s (transform 738ms, setup 0ms, collect 970ms, tests 972ms, environment 0ms, prepare 52ms)
+
+Validation receipt: out/big-tite/focused-receipt.json; exit 0

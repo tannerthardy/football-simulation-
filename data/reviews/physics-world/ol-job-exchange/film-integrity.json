@@ -1,0 +1,173 @@
+{
+  "schema": "ol-work-exchange-film-integrity-v1",
+  "clips": 8,
+  "predeterminedClips": 8,
+  "naturalFinishes": 8,
+  "sourceComparison": [
+    {
+      "label": "Baseline: previous work exchange",
+      "sourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+      "collectorSha256": "600cd84d6ad36142bf52f47a19a8482d5600b3c0446b67bf84e9b6f90c67cd63",
+      "cohortSha256": "8a27dade5e474aedf1a066d7b14b1b54c259e480906c6c72105813fea19f7383",
+      "inputRawSha256": "58f64c89f0bd6af301fd863a4550fa4e1b7407873cc30b6f764d7fa0511cc40c",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "65a88253937a1ca6d438472f6eb84f339b03df4676ff9413fc78b6f6f435a56c",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+      },
+      "observerChecks": [
+        {
+          "id": "WX-R1-duo-odd-R-S3",
+          "initialSha256": "6fe52d8ef84a15abefdf69a189265592650fda050e242657d541871086a6e3cf",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "253d261b39c29503bc6a55c9c6f8482df547e75a0381fa4afe21a37addf5f887",
+          "plainSignature": "253d261b39c29503bc6a55c9c6f8482df547e75a0381fa4afe21a37addf5f887"
+        },
+        {
+          "id": "WX-R1-duo-odd-L-S3",
+          "initialSha256": "13b8ac194c4736735fe4b7d1669e00ec45d48d5f4c6e21652cbdda869b82f712",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "258233b8a59b4603948a019c230c8b6d19355de2e378da458cead034a0974f8b",
+          "plainSignature": "258233b8a59b4603948a019c230c8b6d19355de2e378da458cead034a0974f8b"
+        },
+        {
+          "id": "WX-R1-power-under-R-S3",
+          "initialSha256": "0f74b09429c850c48d72affeb0296f3b60758eceabec45fb8c786fdfd3d84121",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4d637f007811cd4c48dff11e74af091ccee1848541a5b1dc21e0a152cbb8d6b5",
+          "plainSignature": "4d637f007811cd4c48dff11e74af091ccee1848541a5b1dc21e0a152cbb8d6b5"
+        },
+        {
+          "id": "WX-R1-power-under-L-S3",
+          "initialSha256": "3b38d401857390d77e27e60060327c2cd0ecb71ba4f4b31279a777901c0b1c84",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0e02b37fbf2bb75fef637f14b216ef8a5ff625e920febeb04705d336cc040c41",
+          "plainSignature": "0e02b37fbf2bb75fef637f14b216ef8a5ff625e920febeb04705d336cc040c41"
+        }
+      ]
+    },
+    {
+      "label": "Candidate: each player reads his new work",
+      "sourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+      "collectorSha256": "600cd84d6ad36142bf52f47a19a8482d5600b3c0446b67bf84e9b6f90c67cd63",
+      "cohortSha256": "8a27dade5e474aedf1a066d7b14b1b54c259e480906c6c72105813fea19f7383",
+      "inputRawSha256": "0df73f71110bce06f8328c959150266d235d8050e02e1abb2860d44cff3c4c4c",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "8fdde78ebf5b604fbeac2a6e55f5f359506919e5c4d94cd03cf18a4bc66316f6",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+      },
+      "observerChecks": [
+        {
+          "id": "WX-R1-duo-odd-R-S3",
+          "initialSha256": "6fe52d8ef84a15abefdf69a189265592650fda050e242657d541871086a6e3cf",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "1b6411f7ad19b082921f7514853784c0ecf9fae615ffc02eaf2bd919f1dc09c4",
+          "plainSignature": "1b6411f7ad19b082921f7514853784c0ecf9fae615ffc02eaf2bd919f1dc09c4"
+        },
+        {
+          "id": "WX-R1-duo-odd-L-S3",
+          "initialSha256": "13b8ac194c4736735fe4b7d1669e00ec45d48d5f4c6e21652cbdda869b82f712",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "258233b8a59b4603948a019c230c8b6d19355de2e378da458cead034a0974f8b",
+          "plainSignature": "258233b8a59b4603948a019c230c8b6d19355de2e378da458cead034a0974f8b"
+        },
+        {
+          "id": "WX-R1-power-under-R-S3",
+          "initialSha256": "0f74b09429c850c48d72affeb0296f3b60758eceabec45fb8c786fdfd3d84121",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "4d637f007811cd4c48dff11e74af091ccee1848541a5b1dc21e0a152cbb8d6b5",
+          "plainSignature": "4d637f007811cd4c48dff11e74af091ccee1848541a5b1dc21e0a152cbb8d6b5"
+        },
+        {
+          "id": "WX-R1-power-under-L-S3",
+          "initialSha256": "3b38d401857390d77e27e60060327c2cd0ecb71ba4f4b31279a777901c0b1c84",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "0e02b37fbf2bb75fef637f14b216ef8a5ff625e920febeb04705d336cc040c41",
+          "plainSignature": "0e02b37fbf2bb75fef637f14b216ef8a5ff625e920febeb04705d336cc040c41"
+        }
+      ]
+    }
+  ],
+  "eightObserverControlsNeutral": true,
+  "exactFullTelemetry": true,
+  "exactEventsPlayersProfilesRatingsWeights": true,
+  "exactNativeExchangeAndCompletedStepRecords": true,
+  "crossSourceProfilesInitialStatesAndPositionsMatch": true,
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "actualObserverRecords": [
+    {
+      "source": 0,
+      "fixture": "WX-R1-duo-odd-R-S3",
+      "t": 2.2,
+      "initiator": "RT",
+      "participants": [
+        "RT",
+        "RG"
+      ],
+      "actualObservers": [
+        "RT"
+      ],
+      "bodyStateUnchangedAtDecision": true,
+      "physicalJointsUnchangedAtDecision": true
+    },
+    {
+      "source": 0,
+      "fixture": "WX-R1-duo-odd-R-S3",
+      "t": 3.1,
+      "initiator": "LT",
+      "participants": [
+        "LT",
+        "LG"
+      ],
+      "actualObservers": [
+        "LT"
+      ],
+      "bodyStateUnchangedAtDecision": true,
+      "physicalJointsUnchangedAtDecision": true
+    },
+    {
+      "source": 1,
+      "fixture": "WX-R1-duo-odd-R-S3",
+      "t": 2.2,
+      "initiator": "RT",
+      "participants": [
+        "RT",
+        "RG"
+      ],
+      "actualObservers": [
+        "RG",
+        "RT"
+      ],
+      "bodyStateUnchangedAtDecision": true,
+      "physicalJointsUnchangedAtDecision": true
+    },
+    {
+      "source": 1,
+      "fixture": "WX-R1-duo-odd-R-S3",
+      "t": 3.1,
+      "initiator": "LT",
+      "participants": [
+        "LT",
+        "LG"
+      ],
+      "actualObservers": [
+        "LG",
+        "LT"
+      ],
+      "bodyStateUnchangedAtDecision": true,
+      "physicalJointsUnchangedAtDecision": true
+    }
+  ],
+  "zipHtmlByteExact": true,
+  "htmlSha256": "456aa58b48ce9abb63f5e99b3c02e708dd03e193bc1546e3c0a27195e8b3a5e2",
+  "zipSha256": "68b4395884eeced1a6a1686d8e8c8fd62241d1bf1ba14e5dc6b9bb481c3096b6",
+  "checkerSha256": "679249b576d3af4d8296906daa918aa660f1dbb71cd2236c1b38ec893aa36212",
+  "toolSha256": {
+    "scripts/diag/ol-exchange-witness.ts": "600cd84d6ad36142bf52f47a19a8482d5600b3c0446b67bf84e9b6f90c67cd63",
+    "scripts/export-ol-exchange.ts": "70e187da5af8655aaf79b0b64a89dd092ff5f5913fd182c61fced23d28698d8d",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4"
+  }
+}

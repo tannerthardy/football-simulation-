@@ -1,0 +1,41 @@
+{
+  "schema": "football-handbook-release-verification-v1",
+  "localHandbookLinksChecked": 9,
+  "linkErrors": [],
+  "unchangedPhysicalAndPerceptionFiles": [
+    "src/physics/spatial-sole-compliance.ts",
+    "src/physics/material-plane.ts",
+    "src/physics/inertial-support.ts",
+    "src/physics/finite-support.ts",
+    "src/physics/bodyshape.ts",
+    "src/physics/support.ts",
+    "src/physics/sole-shear.ts",
+    "src/physics/virtual-foot.ts",
+    "src/physics/leg-compliance.ts",
+    "src/physics/vertical-support.ts",
+    "src/physics/material-rigid.ts",
+    "src/physics/inertial-gait.ts",
+    "src/physics/spatial-support.ts",
+    "src/physics/world.ts",
+    "src/physics/ball.ts",
+    "src/physics/bounded-attachment.ts",
+    "src/physics/kinematics.ts",
+    "src/physics/spatial-ground.ts",
+    "src/physics/contact.ts",
+    "src/physics/sole-contact.ts",
+    "src/physics/actuation.ts",
+    "src/physics/filtered-follow.ts",
+    "src/physics/movement-preview.ts",
+    "src/physics/reach.ts",
+    "src/players/physical.ts",
+    "src/sim/perception.ts"
+  ],
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "finalGameBoxReportsMatchPreliminaryIgnoringElapsedMs": true,
+  "fullEngineTests": 841,
+  "pythonDataTests": 29,
+  "limits": [
+    "Unchanged force laws do not prove NFL physical calibration.",
+    "Native signatures/control proofs apply to retained inputs, not allpossible future states."
+  ]
+}

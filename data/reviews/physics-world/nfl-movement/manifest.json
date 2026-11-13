@@ -1,0 +1,18 @@
+{
+  "inputManifest": "data/sources/kaggle-bdb2027-files.json",
+  "inputHashesMatchSnapshot": true,
+  "extractor": "scripts/data/bdb2027_movement.py",
+  "extractorSha256": "6f68795e3e441d7de5acb039473a2d6668d464d794e476543208afb1c0dc2925",
+  "dependencies": {
+    "python": "3.11+",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3"
+  },
+  "dependencyPinsSha256": "6979eeaed30ec7f45ff725f33240136e49c396fdf8a5ef12964fb2960c8a5d1e",
+  "measurementTestsSha256": "c2a4b0b776ccdb6e48a2854048b1a287ac5b2c453d3dfbe12769d527e600e750",
+  "summarySha256": "c0d94ac3861e23ef2c29c87206592db19a822ec0e2010c0184283e4f395ab02f",
+  "tests": "Three measurement checks pass: resampling/units, athlete weighting, nonnegative acceleration/braking demand.",
+  "fittedEngineParameters": false,
+  "heldOutValidation": false,
+  "command": "python3 scripts/data/bdb2027_movement.py data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027 out/bdb2027-movement.json"
+}

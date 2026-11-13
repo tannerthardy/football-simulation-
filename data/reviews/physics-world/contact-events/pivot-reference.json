@@ -1,0 +1,834 @@
+{
+  "sourceSha256Start": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+  "sourceSha256End": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+  "scriptSha256Start": "20ae678bcbd862cb8e4447cc4ed438c0718282b3a8dca4d64ecdf91cde58539b",
+  "scriptSha256End": "20ae678bcbd862cb8e4447cc4ed438c0718282b3a8dca4d64ecdf91cde58539b",
+  "node": "v22.23.3",
+  "input": {
+    "mass": 1,
+    "inertia": 1,
+    "localPoint": {
+      "x": 0.3,
+      "y": 0,
+      "z": -1
+    },
+    "theta": 0,
+    "omega": 2,
+    "comPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    "comVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0.6
+    },
+    "gravity": 10,
+    "horizon": 0.2,
+    "planeHeight": 0,
+    "friction": 0,
+    "units": "kg, yd, s; positive theta and omega about world +y"
+  },
+  "initial": {
+    "theta": 0,
+    "omega": 2,
+    "rx": 0.3,
+    "rz": -1,
+    "normal": 5.504587155963303,
+    "comPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    "comVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0.6
+    },
+    "materialPointPosition": {
+      "x": 0.3,
+      "y": 0,
+      "z": 0
+    },
+    "materialPointVelocity": {
+      "x": -2,
+      "y": 0,
+      "z": 0
+    },
+    "linearMomentum": {
+      "x": 0,
+      "y": 0,
+      "z": 0.6
+    },
+    "angularMomentumAboutWorldOrigin": {
+      "x": 0,
+      "y": 2,
+      "z": 0
+    },
+    "kineticEnergy": 2.18,
+    "gravityEnergy": 10,
+    "energy": 12.18
+  },
+  "normalSignCertificate": {
+    "radiusSquared": 1.09,
+    "conservedEnergy": 12.18,
+    "quadraticMinimum": 6.06476,
+    "exactNormalLowerBound": 1.3884205947666035,
+    "strictlyPositive": true,
+    "scope": "Exact continuous constrained-energy orbit only; does not certify a different numerical integrator or body collision geometry."
+  },
+  "rows": [
+    {
+      "h": 0.04,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 5,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.38031552766811955,
+        "omega": 1.879217067425076,
+        "rx": -0.09264920422710748,
+        "rz": -1.0399115947791349,
+        "normal": 6.273744105793775,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399115947791349
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.1741079658669319
+        },
+        "materialPointPosition": {
+          "x": -0.09264920422710748,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.95421961752218,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.1741079658669319
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.879217067425076,
+          "z": 0
+        },
+        "kineticEnergy": 1.780885185140012,
+        "gravityEnergy": 10.399115947791348,
+        "energy": 12.180001132931359
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258927290424544,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078383538794261,
+        "worldTorqueImpulse": -0.12078383538794261,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 0.0000011329313593932966,
+        "energyWorkResidual": 0.0000011329313593932966,
+        "maximumEndpointEnergyDrift": 0.0000012247247074270717,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -6.949093860342259e-7
+        },
+        "spinAngularMomentumResidual": 9.028130187188621e-7,
+        "worldAngularMomentumResidual": 9.028130187188621e-7
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.370422162485308,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.02,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 10,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.38031543245615035,
+        "omega": 1.879216473594008,
+        "rx": -0.09264910521507635,
+        "rz": -1.0399116036004434,
+        "normal": 6.273746490229241,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116036004434
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.174107724783916
+        },
+        "materialPointPosition": {
+          "x": -0.09264910521507635,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542190165675153,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.174107724783916
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.879216473594008,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808840272282653,
+        "gravityEnergy": 10.399116036004434,
+        "energy": 12.1800000632327
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258923180510062,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078357856060042,
+        "worldTorqueImpulse": -0.12078357856060042,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 6.323270085317745e-8,
+        "energyWorkResidual": 6.323270085317745e-8,
+        "maximumEndpointEnergyDrift": 7.064692830738295e-8,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -4.283492227585839e-8
+        },
+        "spinAngularMomentumResidual": 5.2154608423671256e-8,
+        "worldAngularMomentumResidual": 5.2154608423671256e-8
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.369565606103978,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.01,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 20,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.38031542670235235,
+        "omega": 1.879216440414246,
+        "rx": -0.09264909923163506,
+        "rz": -1.0399116041335275,
+        "normal": 6.273746623836689,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116041335275
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410771046565948
+        },
+        "materialPointPosition": {
+          "x": -0.09264909923163506,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189830652759,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410771046565948
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.879216440414246,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808839623833914,
+        "gravityEnergy": 10.399116041335274,
+        "energy": 12.180000003718666
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922921990094,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356271524315,
+        "worldTorqueImpulse": -0.12078356271524315,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 3.7186662638077905e-9,
+        "energyWorkResidual": 3.7186662638077905e-9,
+        "maximumEndpointEnergyDrift": 4.2349075357606125e-9,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -2.6646689299525406e-9
+        },
+        "spinAngularMomentumResidual": 3.129489112296824e-9,
+        "worldAngularMomentumResidual": 3.129489112296824e-9
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.3677506293327015,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.005,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 40,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.3803154263501053,
+        "omega": 1.8792164384620968,
+        "rx": -0.09264909886532924,
+        "rz": -1.039911604166163,
+        "normal": 6.273746631709548,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.039911604166163
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.1741077095964267
+        },
+        "materialPointPosition": {
+          "x": -0.09264909886532924,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189810965425,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.1741077095964267
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.8792164384620968,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808839585635408,
+        "gravityEnergy": 10.399116041661628,
+        "energy": 12.180000000225169
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922905698189,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356172947817,
+        "worldTorqueImpulse": -0.12078356172947817,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 2.2516921660553635e-10,
+        "energyWorkResidual": 2.2516921660553635e-10,
+        "maximumEndpointEnergyDrift": 2.597246862023894e-10,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -1.6624568388579064e-10
+        },
+        "spinAngularMomentumResidual": 1.9157501973676716e-10,
+        "worldAngularMomentumResidual": 1.9157501973676716e-10
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.367564247422606,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.0025,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 80,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.38031542632833953,
+        "omega": 1.8792164383438696,
+        "rx": -0.09264909884269473,
+        "rz": -1.0399116041681795,
+        "normal": 6.273746632186728,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116041681795
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770954293794
+        },
+        "materialPointPosition": {
+          "x": -0.09264909884269473,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189809773862,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770954293794
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.8792164383438696,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808839583320535,
+        "gravityEnergy": 10.399116041681795,
+        "energy": 12.180000000013848
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922904674423,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356166797993,
+        "worldTorqueImpulse": -0.12078356166797993,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 1.3848477919964353e-11,
+        "energyWorkResidual": 1.3848477919964353e-11,
+        "maximumEndpointEnergyDrift": 1.6070700326054066e-11,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -1.0380141191035364e-11
+        },
+        "spinAngularMomentumResidual": 1.184957687527799e-11,
+        "worldAngularMomentumResidual": 1.184957687527799e-11
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.367413331407833,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.00125,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 160,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.3803154263269874,
+        "omega": 1.8792164383365968,
+        "rx": -0.09264909884128869,
+        "rz": -1.0399116041683047,
+        "normal": 6.273746632216093,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116041683047
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953962185
+        },
+        "materialPointPosition": {
+          "x": -0.09264909884128869,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189809700585,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953962185
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.8792164383365968,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808839583178089,
+        "gravityEnergy": 10.399116041683047,
+        "energy": 12.180000000000856
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922904610279,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356166413924,
+        "worldTorqueImpulse": -0.12078356166413924,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 8.562039965909207e-13,
+        "energyWorkResidual": 8.562039965909207e-13,
+        "maximumEndpointEnergyDrift": 1.000088900582341e-12,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -6.497025140106416e-13
+        },
+        "spinAngularMomentumResidual": 7.360362319630553e-13,
+        "worldAngularMomentumResidual": 7.360362319630553e-13
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.367413329245126,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.000625,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 321,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.38031542632690607,
+        "omega": 1.8792164383361478,
+        "rx": -0.09264909884120409,
+        "rz": -1.0399116041683123,
+        "normal": 6.273746632217903,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116041683123
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953942128
+        },
+        "materialPointPosition": {
+          "x": -0.09264909884120409,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189809696058,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953942128
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.8792164383361478,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808839583169302,
+        "gravityEnergy": 10.399116041683122,
+        "energy": 12.180000000000053
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922904606337,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356166389816,
+        "worldTorqueImpulse": -0.12078356166389816,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 5.3290705182007514e-14,
+        "energyWorkResidual": 5.3290705182007514e-14,
+        "maximumEndpointEnergyDrift": 6.217248937900877e-14,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -5.5067062021407764e-14
+        },
+        "spinAngularMomentumResidual": 4.5977111007289295e-14,
+        "worldAngularMomentumResidual": 4.5977111007289295e-14
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.367413329111365,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.0003125,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 641,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.38031542632690335,
+        "omega": 1.8792164383361185,
+        "rx": -0.09264909884120126,
+        "rz": -1.0399116041683125,
+        "normal": 6.27374663221802,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116041683125
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953941324
+        },
+        "materialPointPosition": {
+          "x": -0.09264909884120126,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189809695758,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953941324
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.8792164383361185,
+          "z": 0
+        },
+        "kineticEnergy": 1.7808839583168736,
+        "gravityEnergy": 10.399116041683126,
+        "energy": 12.18
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922904606193,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356166388264,
+        "worldTorqueImpulse": -0.12078356166388264,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": 0,
+        "energyWorkResidual": 0,
+        "maximumEndpointEnergyDrift": 3.552713678800501e-15,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -3.241851231905457e-14
+        },
+        "spinAngularMomentumResidual": 1.1518563880486e-15,
+        "worldAngularMomentumResidual": 1.1518563880486e-15
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.3674133291031865,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    },
+    {
+      "h": 0.00015625,
+      "completed": true,
+      "advancedTime": 0.2,
+      "steps": 1281,
+      "negativeNormal": null,
+      "endpoint": {
+        "theta": 0.3803154263269035,
+        "omega": 1.879216438336116,
+        "rx": -0.09264909884120143,
+        "rz": -1.0399116041683127,
+        "normal": 6.273746632218029,
+        "comPosition": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0399116041683127
+        },
+        "comVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953941332
+        },
+        "materialPointPosition": {
+          "x": -0.09264909884120143,
+          "y": 0,
+          "z": 0
+        },
+        "materialPointVelocity": {
+          "x": -1.9542189809695736,
+          "y": 0,
+          "z": 0
+        },
+        "linearMomentum": {
+          "x": 0,
+          "y": 0,
+          "z": -0.17410770953941332
+        },
+        "angularMomentumAboutWorldOrigin": {
+          "x": 0,
+          "y": 1.879216438336116,
+          "z": 0
+        },
+        "kineticEnergy": 1.780883958316869,
+        "gravityEnergy": 10.399116041683127,
+        "energy": 12.179999999999996
+      },
+      "quadrature": {
+        "method": "Per-interval Simpson with separately integrated RK4 half-step state",
+        "normalImpulse": 1.2258922904606235,
+        "gravityImpulse": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "spinTorqueImpulse": -0.12078356166388177,
+        "worldTorqueImpulse": -0.12078356166388177,
+        "groundWork": 0
+      },
+      "budgets": {
+        "energyChange": -3.552713678800501e-15,
+        "energyWorkResidual": -3.552713678800501e-15,
+        "maximumEndpointEnergyDrift": 8.881784197001252e-15,
+        "linearMomentumResidual": {
+          "x": 0,
+          "y": 0,
+          "z": -3.68594044175552e-14
+        },
+        "spinAngularMomentumResidual": -2.1649348980190553e-15,
+        "worldAngularMomentumResidual": -2.1649348980190553e-15
+      },
+      "minNormal": 5.504587155963303,
+      "maxNormal": 6.367413345057342,
+      "maxActualMaterialNormalVelocity": 0,
+      "maxActualMaterialPlaneGap": 0
+    }
+  ],
+  "convergence": [
+    {
+      "h": 0.04,
+      "endpointDifferenceVersusFinest": 6.29088960035773e-7,
+      "energyWorkResidual": 0.0000011329313593932966,
+      "normalImpulseMomentumResidual": -6.949093860342259e-7,
+      "angularQuadratureResidual": 9.028130187188621e-7,
+      "observedOrderVersusFinest": 4.157245920364484
+    },
+    {
+      "h": 0.02,
+      "endpointDifferenceVersusFinest": 3.525789193936646e-8,
+      "energyWorkResidual": 6.323270085317745e-8,
+      "normalImpulseMomentumResidual": -4.283492227585839e-8,
+      "angularQuadratureResidual": 5.2154608423671256e-8,
+      "observedOrderVersusFinest": 4.084588483194015
+    },
+    {
+      "h": 0.01,
+      "endpointDifferenceVersusFinest": 2.078129890392688e-9,
+      "energyWorkResidual": 3.7186662638077905e-9,
+      "normalImpulseMomentumResidual": -2.6646689299525406e-9,
+      "angularQuadratureResidual": 3.129489112296824e-9,
+      "observedOrderVersusFinest": 4.0440102611395945
+    },
+    {
+      "h": 0.005,
+      "endpointDifferenceVersusFinest": 1.2598078136250024e-10,
+      "energyWorkResidual": 2.2516921660553635e-10,
+      "normalImpulseMomentumResidual": -1.6624568388579064e-10,
+      "angularQuadratureResidual": 1.9157501973676716e-10,
+      "observedOrderVersusFinest": 4.022198091790448
+    },
+    {
+      "h": 0.0025,
+      "endpointDifferenceVersusFinest": 7.753575559377168e-12,
+      "energyWorkResidual": 1.3848477919964353e-11,
+      "normalImpulseMomentumResidual": -1.0380141191035364e-11,
+      "angularQuadratureResidual": 1.184957687527799e-11,
+      "observedOrderVersusFinest": 4.011573314020171
+    },
+    {
+      "h": 0.00125,
+      "endpointDifferenceVersusFinest": 4.807265696626928e-13,
+      "energyWorkResidual": 8.562039965909207e-13,
+      "normalImpulseMomentumResidual": -6.497025140106416e-13,
+      "angularQuadratureResidual": 7.360362319630553e-13,
+      "observedOrderVersusFinest": 3.920279972835698
+    },
+    {
+      "h": 0.000625,
+      "endpointDifferenceVersusFinest": 3.175237850427948e-14,
+      "energyWorkResidual": 5.3290705182007514e-14,
+      "normalImpulseMomentumResidual": -5.5067062021407764e-14,
+      "angularQuadratureResidual": 4.5977111007289295e-14,
+      "observedOrderVersusFinest": 3.700439718141092
+    },
+    {
+      "h": 0.0003125,
+      "endpointDifferenceVersusFinest": 2.4424906541753444e-15,
+      "energyWorkResidual": 0,
+      "normalImpulseMomentumResidual": -3.241851231905457e-14,
+      "angularQuadratureResidual": 1.1518563880486e-15,
+      "observedOrderVersusFinest": null
+    }
+  ],
+  "checks": {
+    "allCompleted": true,
+    "allRecordedNormalsNonnegative": true,
+    "materialNormalVelocityExactlyZero": true,
+    "materialPointRemainsOnPlane": true,
+    "positiveExactNormalCertificate": true,
+    "finestIndependentBudgetResidualBelow1eMinus8": true,
+    "finestPairEndpointDifferenceBelow1eMinus8": true
+  },
+  "scope": "Independent continuous one-point frictionless planar support reference on its analytic constraint manifold. No production pose projection, engine candidate ledger, gait calibration, finite sole, strength capacity, body collision or football readiness claim."
+}

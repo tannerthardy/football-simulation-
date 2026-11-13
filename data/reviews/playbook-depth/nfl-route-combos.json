@@ -1,0 +1,6380 @@
+{
+ "source": "Big Data Bowl 2025 (NFL 2022): plays/player_play weeks 1-9, tracking week(s) [1, 2] for alignment at the snap",
+ "method": {
+  "cohort": "isDropback TRUE, not nullified, no spike or kneel, at least one route runner, every route runner and the football present at the snap frame",
+  "snap": "frameType SNAP; lateral offset from the football's y, sign flipped for playDirection 'left' so positive is the QB's left",
+  "back": "route runner more than 2.0 yd behind the ball and within 3.0 yd laterally, or RB/FB within 8.0 yd laterally",
+  "numbering": "side receivers numbered #1 (widest) inward by lateral distance from the ball",
+  "strong": "side with more route runners; equal sides (e.g. 2x2) ordered alphabetically by route tuple, so pairings are order-free",
+  "alignment": "computed alignment counts route runners only; PFF receiverAlignment also counts non-route eligibles"
+ },
+ "cohort": {
+  "dropbacksInTrackingWeeks": 2321,
+  "plays": 2225,
+  "excluded": {
+   "noRouteRunners": 96
+  },
+  "classificationChecks": {
+   "rbFbClassedAsSideReceiver": 322,
+   "routeRunners": 10215,
+   "routeRunnersInMotionAtSnap": 559,
+   "nonRbFbClassedAsBack": 146,
+   "sideReceiverWithin1ydOfBall": 1
+  },
+  "playActionShare": 0.2526,
+  "strongSide": {
+   "right": 752,
+   "left": 672,
+   "equal sides": 801
+  },
+  "computedAlignment": {
+   "2x2": {
+    "n": 728,
+    "share": 0.3272
+   },
+   "3x1": {
+    "n": 722,
+    "share": 0.3245
+   },
+   "2x1": {
+    "n": 364,
+    "share": 0.1636
+   },
+   "3x2": {
+    "n": 226,
+    "share": 0.1016
+   },
+   "1x1": {
+    "n": 73,
+    "share": 0.0328
+   },
+   "2x0": {
+    "n": 53,
+    "share": 0.0238
+   },
+   "3x0": {
+    "n": 27,
+    "share": 0.0121
+   },
+   "1x0": {
+    "n": 16,
+    "share": 0.0072
+   },
+   "4x1": {
+    "n": 13,
+    "share": 0.0058
+   },
+   "4x0": {
+    "n": 2,
+    "share": 0.0009
+   },
+   "5x0": {
+    "n": 1,
+    "share": 0.0004
+   }
+  },
+  "pffReceiverAlignment": {
+   "2x2": {
+    "n": 913,
+    "share": 0.4103
+   },
+   "3x1": {
+    "n": 849,
+    "share": 0.3816
+   },
+   "3x2": {
+    "n": 272,
+    "share": 0.1222
+   },
+   "2x1": {
+    "n": 146,
+    "share": 0.0656
+   },
+   "4x1": {
+    "n": 33,
+    "share": 0.0148
+   },
+   "1x1": {
+    "n": 7,
+    "share": 0.0031
+   },
+   "2x0": {
+    "n": 4,
+    "share": 0.0018
+   },
+   "1x0": {
+    "n": 1,
+    "share": 0.0004
+   }
+  },
+  "computedMatchesPffAlignment": 0.7582,
+  "offenseFormation": {
+   "SHOTGUN": {
+    "n": 1467,
+    "share": 0.6593
+   },
+   "SINGLEBACK": {
+    "n": 315,
+    "share": 0.1416
+   },
+   "EMPTY": {
+    "n": 305,
+    "share": 0.1371
+   },
+   "I_FORM": {
+    "n": 75,
+    "share": 0.0337
+   },
+   "PISTOL": {
+    "n": 58,
+    "share": 0.0261
+   },
+   "JUMBO": {
+    "n": 3,
+    "share": 0.0013
+   },
+   "WILDCAT": {
+    "n": 2,
+    "share": 0.0009
+   }
+  }
+ },
+ "routeVocabulary": {
+  "labels": [
+   "ANGLE",
+   "CORNER",
+   "CROSS",
+   "FLAT",
+   "GO",
+   "HITCH",
+   "IN",
+   "OUT",
+   "POST",
+   "SCREEN",
+   "SLANT",
+   "WHEEL"
+  ],
+  "allWeeksDropbackRoutes": {
+   "GO": {
+    "n": 7806,
+    "share": 0.1825
+   },
+   "HITCH": {
+    "n": 6296,
+    "share": 0.1472
+   },
+   "FLAT": {
+    "n": 6208,
+    "share": 0.1451
+   },
+   "OUT": {
+    "n": 4293,
+    "share": 0.1004
+   },
+   "CROSS": {
+    "n": 4219,
+    "share": 0.0986
+   },
+   "IN": {
+    "n": 3373,
+    "share": 0.0788
+   },
+   "POST": {
+    "n": 2701,
+    "share": 0.0631
+   },
+   "SLANT": {
+    "n": 2295,
+    "share": 0.0536
+   },
+   "CORNER": {
+    "n": 1841,
+    "share": 0.043
+   },
+   "SCREEN": {
+    "n": 1802,
+    "share": 0.0421
+   },
+   "ANGLE": {
+    "n": 1725,
+    "share": 0.0403
+   },
+   "WHEEL": {
+    "n": 220,
+    "share": 0.0051
+   }
+  },
+  "trackingWeeksShare": {
+   "GO": 0.1791,
+   "HITCH": 0.1568,
+   "FLAT": 0.1419,
+   "OUT": 0.1061,
+   "CROSS": 0.0971,
+   "IN": 0.0763,
+   "POST": 0.0619,
+   "SLANT": 0.053,
+   "CORNER": 0.044,
+   "SCREEN": 0.038,
+   "ANGLE": 0.0402,
+   "WHEEL": 0.0058
+  },
+  "otherWeeksShare": {
+   "GO": 0.1835,
+   "HITCH": 0.1441,
+   "FLAT": 0.1461,
+   "OUT": 0.0985,
+   "CROSS": 0.0991,
+   "IN": 0.0797,
+   "POST": 0.0635,
+   "SLANT": 0.0539,
+   "CORNER": 0.0427,
+   "SCREEN": 0.0434,
+   "ANGLE": 0.0404,
+   "WHEEL": 0.0049
+  },
+  "routeMixTotalVariationTrackingVsOther": 0.0223,
+  "routeRunnersPerDropback": {
+   "trackingWeeksMean": 4.591,
+   "otherWeeksMean": 4.594
+  },
+  "notes": "HITCH stands for hitch/curl/stick, IN for dig/square-in, CROSS for shallow/drag/over (BDB labels; no depth)."
+ },
+ "sideTuplesBySize": {
+  "1": {
+   "sides": 1261,
+   "shareOfSides": 0.2898,
+   "distinct": 10,
+   "top": [
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 286,
+     "share": 0.2268,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 242,
+     "share": 0.1919,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 168,
+     "share": 0.1332,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "OUT"
+     ],
+     "n": 124,
+     "share": 0.0983,
+     "concept": "Iso out"
+    },
+    {
+     "routes": [
+      "SLANT"
+     ],
+     "n": 100,
+     "share": 0.0793,
+     "concept": "Iso slant"
+    },
+    {
+     "routes": [
+      "IN"
+     ],
+     "n": 97,
+     "share": 0.0769,
+     "concept": "Iso in"
+    },
+    {
+     "routes": [
+      "POST"
+     ],
+     "n": 96,
+     "share": 0.0761,
+     "concept": "Iso post"
+    },
+    {
+     "routes": [
+      "CORNER"
+     ],
+     "n": 92,
+     "share": 0.073,
+     "concept": "Iso corner"
+    },
+    {
+     "routes": [
+      "SCREEN"
+     ],
+     "n": 38,
+     "share": 0.0301,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "FLAT"
+     ],
+     "n": 18,
+     "share": 0.0143,
+     "concept": "Iso flat"
+    }
+   ]
+  },
+  "2": {
+   "sides": 2099,
+   "shareOfSides": 0.4824,
+   "distinct": 103,
+   "top": [
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 136,
+     "share": 0.0648,
+     "concept": "Go-out (2-man Sail family)"
+    },
+    {
+     "routes": [
+      "GO",
+      "GO"
+     ],
+     "n": 106,
+     "share": 0.0505,
+     "concept": "Double go (verticals)"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 101,
+     "share": 0.0481,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 97,
+     "share": 0.0462,
+     "concept": "Double hitch (Spacing family)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 75,
+     "share": 0.0357,
+     "concept": "Curl-flat"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "GO"
+     ],
+     "n": 68,
+     "share": 0.0324,
+     "concept": "Hitch-seam (Hoss)"
+    },
+    {
+     "routes": [
+      "GO",
+      "POST"
+     ],
+     "n": 63,
+     "share": 0.03,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 60,
+     "share": 0.0286,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS"
+     ],
+     "n": 58,
+     "share": 0.0276,
+     "concept": "Dig-shallow (Drive family)"
+    },
+    {
+     "routes": [
+      "GO",
+      "CROSS"
+     ],
+     "n": 53,
+     "share": 0.0253,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "HITCH"
+     ],
+     "n": 46,
+     "share": 0.0219,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "OUT"
+     ],
+     "n": 43,
+     "share": 0.0205,
+     "concept": "Double out"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "CROSS"
+     ],
+     "n": 42,
+     "share": 0.02,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "SLANT"
+     ],
+     "n": 42,
+     "share": 0.02,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "SLANT"
+     ],
+     "n": 37,
+     "share": 0.0176,
+     "concept": "Double slant"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "CORNER"
+     ],
+     "n": 36,
+     "share": 0.0172,
+     "concept": "Smash"
+    },
+    {
+     "routes": [
+      "GO",
+      "IN"
+     ],
+     "n": 34,
+     "share": 0.0162,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "FLAT"
+     ],
+     "n": 34,
+     "share": 0.0162,
+     "concept": "Go-flat"
+    },
+    {
+     "routes": [
+      "CORNER",
+      "OUT"
+     ],
+     "n": 34,
+     "share": 0.0162,
+     "concept": null
+    },
+    {
+     "routes": [
+      "POST",
+      "CROSS"
+     ],
+     "n": 33,
+     "share": 0.0157,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "FLAT"
+     ],
+     "n": 33,
+     "share": 0.0157,
+     "concept": "Slant-flat"
+    },
+    {
+     "routes": [
+      "IN",
+      "HITCH"
+     ],
+     "n": 32,
+     "share": 0.0152,
+     "concept": null
+    },
+    {
+     "routes": [
+      "POST",
+      "GO"
+     ],
+     "n": 32,
+     "share": 0.0152,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CORNER",
+      "FLAT"
+     ],
+     "n": 31,
+     "share": 0.0148,
+     "concept": "Corner-flat"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "OUT"
+     ],
+     "n": 30,
+     "share": 0.0143,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "POST"
+     ],
+     "n": 30,
+     "share": 0.0143,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "GO"
+     ],
+     "n": 28,
+     "share": 0.0133,
+     "concept": "Dagger (dig under seam)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "IN"
+     ],
+     "n": 28,
+     "share": 0.0133,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "FLAT"
+     ],
+     "n": 27,
+     "share": 0.0129,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "CORNER"
+     ],
+     "n": 26,
+     "share": 0.0124,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "FLAT"
+     ],
+     "n": 24,
+     "share": 0.0114,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CROSS",
+      "IN"
+     ],
+     "n": 24,
+     "share": 0.0114,
+     "concept": "Dig-shallow (Drive family)"
+    },
+    {
+     "routes": [
+      "IN",
+      "POST"
+     ],
+     "n": 23,
+     "share": 0.011,
+     "concept": "Post-dig (Mills family)"
+    },
+    {
+     "routes": [
+      "POST",
+      "HITCH"
+     ],
+     "n": 20,
+     "share": 0.0095,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "CROSS"
+     ],
+     "n": 19,
+     "share": 0.0091,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CORNER",
+      "CROSS"
+     ],
+     "n": 18,
+     "share": 0.0086,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "HITCH"
+     ],
+     "n": 18,
+     "share": 0.0086,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "IN"
+     ],
+     "n": 18,
+     "share": 0.0086,
+     "concept": "Double in (Levels family)"
+    },
+    {
+     "routes": [
+      "SLANT",
+      "CROSS"
+     ],
+     "n": 18,
+     "share": 0.0086,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "IN"
+     ],
+     "n": 17,
+     "share": 0.0081,
+     "concept": null
+    }
+   ]
+  },
+  "3": {
+   "sides": 975,
+   "shareOfSides": 0.2241,
+   "distinct": 364,
+   "top": [
+    {
+     "routes": [
+      "HITCH",
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 19,
+     "share": 0.0195,
+     "concept": "Spacing (hitch, hitch, flat)"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "HITCH"
+     ],
+     "n": 18,
+     "share": 0.0185,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "GO",
+      "OUT"
+     ],
+     "n": 16,
+     "share": 0.0164,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "GO",
+      "HITCH"
+     ],
+     "n": 16,
+     "share": 0.0164,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 15,
+     "share": 0.0154,
+     "concept": "Spacing (triple hitch)"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "OUT"
+     ],
+     "n": 14,
+     "share": 0.0144,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "FLAT",
+      "HITCH"
+     ],
+     "n": 13,
+     "share": 0.0133,
+     "concept": "Stick (go, flat, stick)"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 13,
+     "share": 0.0133,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "OUT"
+     ],
+     "n": 11,
+     "share": 0.0113,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 11,
+     "share": 0.0113,
+     "concept": "Stick (go, stick, flat)"
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "FLAT",
+      "FLAT"
+     ],
+     "n": 10,
+     "share": 0.0103,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "GO"
+     ],
+     "n": 10,
+     "share": 0.0103,
+     "concept": "Trips verticals"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "POST",
+      "FLAT"
+     ],
+     "n": 10,
+     "share": 0.0103,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "IN",
+      "POST"
+     ],
+     "n": 10,
+     "share": 0.0103,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "FLAT"
+     ],
+     "n": 9,
+     "share": 0.0092,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "CROSS"
+     ],
+     "n": 9,
+     "share": 0.0092,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "GO",
+      "FLAT"
+     ],
+     "n": 9,
+     "share": 0.0092,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "SLANT",
+      "SLANT",
+      "SLANT"
+     ],
+     "n": 9,
+     "share": 0.0092,
+     "concept": "Triple slant"
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "HITCH"
+     ],
+     "n": 9,
+     "share": 0.0092,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "IN",
+      "CROSS"
+     ],
+     "n": 9,
+     "share": 0.0092,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "IN",
+      "OUT"
+     ],
+     "n": 8,
+     "share": 0.0082,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH",
+      "GO"
+     ],
+     "n": 8,
+     "share": 0.0082,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "CORNER",
+      "FLAT"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": "Smash-flat (trips)"
+    },
+    {
+     "routes": [
+      "GO",
+      "POST",
+      "FLAT"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "GO",
+      "GO"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "POST"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH",
+      "POST"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "IN"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH",
+      "IN"
+     ],
+     "n": 7,
+     "share": 0.0072,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH",
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS",
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "IN",
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "POST",
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "SCREEN",
+      "FLAT"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "FLAT"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": "Sail/Flood (go-out-flat)"
+    },
+    {
+     "routes": [
+      "IN",
+      "GO",
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "POST",
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "IN",
+      "GO"
+     ],
+     "n": 6,
+     "share": 0.0062,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "FLAT",
+      "OUT"
+     ],
+     "n": 5,
+     "share": 0.0051,
+     "concept": null
+    }
+   ]
+  },
+  "4": {
+   "sides": 15,
+   "shareOfSides": 0.0034,
+   "distinct": 15,
+   "top": [
+    {
+     "routes": [
+      "IN",
+      "GO",
+      "SLANT",
+      "CROSS"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "POST",
+      "CROSS",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "FLAT",
+      "FLAT",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "SLANT",
+      "SCREEN",
+      "GO",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "GO",
+      "POST",
+      "CROSS",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "SCREEN",
+      "HITCH",
+      "GO"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "POST",
+      "HITCH",
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "POST",
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "POST",
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CORNER",
+      "FLAT",
+      "HITCH",
+      "CROSS"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "POST",
+      "OUT",
+      "CROSS",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "GO",
+      "SLANT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "SCREEN",
+      "FLAT",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "POST",
+      "CROSS",
+      "CROSS",
+      "WHEEL"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO",
+      "GO",
+      "FLAT"
+     ],
+     "n": 1,
+     "share": 0.0667,
+     "concept": null
+    }
+   ]
+  },
+  "5": {
+   "sides": 1,
+   "shareOfSides": 0.0002,
+   "distinct": 1,
+   "top": [
+    {
+     "routes": [
+      "CROSS",
+      "GO",
+      "HITCH",
+      "FLAT",
+      "GO"
+     ],
+     "n": 1,
+     "share": 1.0,
+     "concept": null
+    }
+   ]
+  }
+ },
+ "pairings": {
+  "note": "strong | weak side tuples, back routes ignored",
+  "top": [
+   {
+    "strong": [
+     "HITCH",
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 11,
+    "share": 0.0049,
+    "cumShare": 0.0049,
+    "strongConcept": "Spacing (hitch, hitch, flat)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "CORNER"
+    ],
+    "n": 11,
+    "share": 0.0049,
+    "cumShare": 0.0099,
+    "strongConcept": null,
+    "weakConcept": "Iso corner"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH",
+     "HITCH"
+    ],
+    "n": 10,
+    "share": 0.0045,
+    "cumShare": 0.0144,
+    "strongConcept": "Curl-flat",
+    "weakConcept": "Double hitch (Spacing family)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH",
+     "HITCH"
+    ],
+    "n": 9,
+    "share": 0.004,
+    "cumShare": 0.0184,
+    "strongConcept": "Double hitch (Spacing family)",
+    "weakConcept": "Double hitch (Spacing family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "GO",
+     "GO"
+    ],
+    "n": 9,
+    "share": 0.004,
+    "cumShare": 0.0225,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": "Double go (verticals)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO"
+    ],
+    "weak": [
+     "HITCH",
+     "GO"
+    ],
+    "n": 9,
+    "share": 0.004,
+    "cumShare": 0.0265,
+    "strongConcept": "Hitch-seam (Hoss)",
+    "weakConcept": "Hitch-seam (Hoss)"
+   },
+   {
+    "strong": [
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 9,
+    "share": 0.004,
+    "cumShare": 0.0306,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "GO",
+     "POST"
+    ],
+    "n": 9,
+    "share": 0.004,
+    "cumShare": 0.0346,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CORNER",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS",
+     "CROSS"
+    ],
+    "n": 8,
+    "share": 0.0036,
+    "cumShare": 0.0382,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT",
+     "HITCH"
+    ],
+    "weak": [
+     "SLANT"
+    ],
+    "n": 7,
+    "share": 0.0031,
+    "cumShare": 0.0413,
+    "strongConcept": null,
+    "weakConcept": "Iso slant"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 7,
+    "share": 0.0031,
+    "cumShare": 0.0445,
+    "strongConcept": "Spacing (triple hitch)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "OUT",
+     "CORNER"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 7,
+    "share": 0.0031,
+    "cumShare": 0.0476,
+    "strongConcept": null,
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "IN"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "n": 7,
+    "share": 0.0031,
+    "cumShare": 0.0508,
+    "strongConcept": "Dig-shallow (Drive family)",
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0535,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0562,
+    "strongConcept": "Double hitch (Spacing family)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "CORNER"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0589,
+    "strongConcept": "Iso corner",
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "HITCH"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0616,
+    "strongConcept": null,
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0643,
+    "strongConcept": "Go-out (2-man Sail family)",
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "GO"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.067,
+    "strongConcept": "Iso go",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "POST"
+    ],
+    "weak": [
+     "GO",
+     "POST"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0697,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "SLANT",
+     "FLAT"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0724,
+    "strongConcept": "Slant-flat",
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "OUT",
+     "HITCH"
+    ],
+    "weak": [
+     "OUT",
+     "HITCH"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0751,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CORNER",
+     "FLAT"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0778,
+    "strongConcept": "Corner-flat",
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH",
+     "OUT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0804,
+    "strongConcept": "Double hitch (Spacing family)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0831,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "HITCH"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0858,
+    "strongConcept": "Iso hitch",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0885,
+    "strongConcept": "Iso cross",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH",
+     "FLAT"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0908,
+    "strongConcept": "Curl-flat",
+    "weakConcept": "Curl-flat"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.093,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "SLANT",
+     "IN"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0953,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0975,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0998,
+    "strongConcept": "Double hitch (Spacing family)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "HITCH",
+     "GO"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.102,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": "Hitch-seam (Hoss)"
+   },
+   {
+    "strong": [
+     "CROSS"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.1043,
+    "strongConcept": "Iso cross",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO",
+     "HITCH"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.1065,
+    "strongConcept": null,
+    "weakConcept": "Go-stick (clear + hitch/stick)"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "HITCH",
+     "IN"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.1088,
+    "strongConcept": "Go-out (2-man Sail family)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.111,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "POST",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.1133,
+    "strongConcept": null,
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.1155,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.1178,
+    "strongConcept": "Trips verticals",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1196,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO",
+     "FLAT"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1213,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "CORNER",
+     "OUT"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1231,
+    "strongConcept": null,
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "SLANT"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1249,
+    "strongConcept": "Double slant",
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1267,
+    "strongConcept": "Curl-flat",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "IN",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1285,
+    "strongConcept": "Dig-shallow (Drive family)",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1303,
+    "strongConcept": null,
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "IN",
+     "CROSS"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1321,
+    "strongConcept": "Dig-shallow (Drive family)",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "POST",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1339,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1357,
+    "strongConcept": null,
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "IN"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1375,
+    "strongConcept": null,
+    "weakConcept": "Iso in"
+   },
+   {
+    "strong": [
+     "CROSS"
+    ],
+    "weak": [
+     "OUT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1393,
+    "strongConcept": "Iso cross",
+    "weakConcept": "Iso out"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "IN",
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1411,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Dig-shallow (Drive family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "IN",
+     "HITCH"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1429,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "CORNER",
+     "FLAT"
+    ],
+    "weak": [
+     "CROSS",
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1447,
+    "strongConcept": "Corner-flat",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1465,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "HITCH",
+     "FLAT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1483,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": "Curl-flat"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1501,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "CORNER"
+    ],
+    "weak": [
+     "IN",
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1519,
+    "strongConcept": null,
+    "weakConcept": "Dig-shallow (Drive family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "GO",
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1537,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Go-stick (clear + hitch/stick)"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH",
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1555,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Double hitch (Spacing family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "IN",
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1573,
+    "strongConcept": "Go-out (2-man Sail family)",
+    "weakConcept": "Dig-shallow (Drive family)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "CROSS"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1591,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "FLAT",
+     "HITCH"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1609,
+    "strongConcept": "Stick (go, flat, stick)",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "SCREEN",
+     "OUT"
+    ],
+    "weak": [],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1627,
+    "strongConcept": "Screen side",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "GO",
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1645,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1663,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "GO",
+     "SLANT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1681,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "POST"
+    ],
+    "weak": [],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.1699,
+    "strongConcept": "Iso post",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "IN",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1712,
+    "strongConcept": "Dig-shallow (Drive family)",
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "CORNER"
+    ],
+    "weak": [
+     "SLANT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1726,
+    "strongConcept": "Iso corner",
+    "weakConcept": "Iso slant"
+   },
+   {
+    "strong": [
+     "GO",
+     "FLAT",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1739,
+    "strongConcept": "Stick (go, flat, stick)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "FLAT"
+    ],
+    "weak": [
+     "GO",
+     "GO"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1753,
+    "strongConcept": "Go-flat",
+    "weakConcept": "Double go (verticals)"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT",
+     "OUT"
+    ],
+    "weak": [
+     "IN"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1766,
+    "strongConcept": null,
+    "weakConcept": "Iso in"
+   },
+   {
+    "strong": [
+     "GO"
+    ],
+    "weak": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.178,
+    "strongConcept": "Iso go",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH",
+     "CORNER"
+    ],
+    "weak": [
+     "SLANT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1793,
+    "strongConcept": null,
+    "weakConcept": "Iso slant"
+   },
+   {
+    "strong": [
+     "POST"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1807,
+    "strongConcept": "Iso post",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "SCREEN",
+     "GO",
+     "FLAT"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.182,
+    "strongConcept": "Screen side",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "POST",
+     "CROSS"
+    ],
+    "weak": [
+     "OUT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1834,
+    "strongConcept": null,
+    "weakConcept": "Iso out"
+   },
+   {
+    "strong": [
+     "GO",
+     "SCREEN"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.1847,
+    "strongConcept": "Screen side",
+    "weakConcept": "Iso go"
+   }
+  ]
+ },
+ "pairingsWithBack": {
+  "note": "strong | weak | back route(s)",
+  "top": [
+   {
+    "strong": [
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH",
+     "HITCH"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 8,
+    "share": 0.0036,
+    "cumShare": 0.0036,
+    "strongConcept": "Curl-flat",
+    "weakConcept": "Double hitch (Spacing family)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 8,
+    "share": 0.0036,
+    "cumShare": 0.0072,
+    "strongConcept": "Spacing (hitch, hitch, flat)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "CORNER",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS",
+     "CROSS"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 7,
+    "share": 0.0031,
+    "cumShare": 0.0103,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "CORNER"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.013,
+    "strongConcept": null,
+    "weakConcept": "Iso corner"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT",
+     "HITCH"
+    ],
+    "weak": [
+     "SLANT"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 6,
+    "share": 0.0027,
+    "cumShare": 0.0157,
+    "strongConcept": null,
+    "weakConcept": "Iso slant"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO"
+    ],
+    "weak": [
+     "HITCH",
+     "GO"
+    ],
+    "back": [
+     "ANGLE"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.018,
+    "strongConcept": "Hitch-seam (Hoss)",
+    "weakConcept": "Hitch-seam (Hoss)"
+   },
+   {
+    "strong": [
+     "GO",
+     "POST"
+    ],
+    "weak": [
+     "GO",
+     "POST"
+    ],
+    "back": [
+     "ANGLE"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0202,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "OUT",
+     "HITCH"
+    ],
+    "weak": [
+     "OUT",
+     "HITCH"
+    ],
+    "back": [],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0225,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO",
+     "HITCH"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 5,
+    "share": 0.0022,
+    "cumShare": 0.0247,
+    "strongConcept": null,
+    "weakConcept": "Go-stick (clear + hitch/stick)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH",
+     "HITCH"
+    ],
+    "back": [],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0265,
+    "strongConcept": "Double hitch (Spacing family)",
+    "weakConcept": "Double hitch (Spacing family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0283,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "HITCH"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0301,
+    "strongConcept": null,
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0319,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0337,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "GO",
+     "POST"
+    ],
+    "back": [],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0355,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 4,
+    "share": 0.0018,
+    "cumShare": 0.0373,
+    "strongConcept": "Spacing (triple hitch)",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "FLAT"
+    ],
+    "weak": [
+     "HITCH",
+     "FLAT"
+    ],
+    "back": [
+     "ANGLE"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0387,
+    "strongConcept": "Curl-flat",
+    "weakConcept": "Curl-flat"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO",
+     "FLAT"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.04,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "SLANT"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "back": [
+     "ANGLE"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0413,
+    "strongConcept": "Double slant",
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "SLANT",
+     "IN"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0427,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "IN",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.044,
+    "strongConcept": "Dig-shallow (Drive family)",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "FLAT"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "back": [
+     "ANGLE"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0454,
+    "strongConcept": "Slant-flat",
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "IN",
+     "CROSS"
+    ],
+    "back": [
+     "OUT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0467,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Dig-shallow (Drive family)"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "SLANT",
+     "HITCH"
+    ],
+    "weak": [
+     "SLANT"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0481,
+    "strongConcept": null,
+    "weakConcept": "Iso slant"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "HITCH",
+     "IN"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0494,
+    "strongConcept": "Go-out (2-man Sail family)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "GO",
+     "SCREEN"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0508,
+    "strongConcept": "Go-stick (clear + hitch/stick)",
+    "weakConcept": "Screen side"
+   },
+   {
+    "strong": [
+     "SLANT",
+     "FLAT"
+    ],
+    "weak": [
+     "SLANT",
+     "SLANT"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0521,
+    "strongConcept": "Slant-flat",
+    "weakConcept": "Double slant"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "OUT",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0535,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "HITCH",
+     "GO"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0548,
+    "strongConcept": null,
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO",
+     "HITCH"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0562,
+    "strongConcept": null,
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "GO",
+     "FLAT",
+     "FLAT"
+    ],
+    "weak": [],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0575,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "IN",
+     "IN",
+     "POST"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0589,
+    "strongConcept": null,
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "back": [
+     "ANGLE"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0602,
+    "strongConcept": "Go-out (2-man Sail family)",
+    "weakConcept": "Go-out (2-man Sail family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "OUT"
+    ],
+    "weak": [
+     "IN",
+     "CROSS"
+    ],
+    "back": [
+     "FLAT"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0616,
+    "strongConcept": "Go-out (2-man Sail family)",
+    "weakConcept": "Dig-shallow (Drive family)"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "GO",
+     "GO"
+    ],
+    "back": [
+     "SCREEN"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0629,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": "Double go (verticals)"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0643,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "GO"
+    ],
+    "weak": [
+     "GO",
+     "GO"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0656,
+    "strongConcept": "Double go (verticals)",
+    "weakConcept": "Double go (verticals)"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "GO"
+    ],
+    "weak": [
+     "HITCH",
+     "GO"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.067,
+    "strongConcept": "Hitch-seam (Hoss)",
+    "weakConcept": "Hitch-seam (Hoss)"
+   },
+   {
+    "strong": [
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "back": [
+     "SCREEN"
+    ],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0683,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "IN"
+    ],
+    "weak": [
+     "GO",
+     "OUT"
+    ],
+    "back": [],
+    "n": 3,
+    "share": 0.0013,
+    "cumShare": 0.0697,
+    "strongConcept": "Dig-shallow (Drive family)",
+    "weakConcept": "Go-out (2-man Sail family)"
+   }
+  ]
+ },
+ "backRoutes": {
+  "playsWithBackRoute": {
+   "n": 1575,
+   "share": 0.7079
+  },
+  "perBackRunner": {
+   "FLAT": {
+    "n": 901,
+    "share": 0.5102
+   },
+   "ANGLE": {
+    "n": 406,
+    "share": 0.2299
+   },
+   "OUT": {
+    "n": 193,
+    "share": 0.1093
+   },
+   "SCREEN": {
+    "n": 117,
+    "share": 0.0663
+   },
+   "WHEEL": {
+    "n": 55,
+    "share": 0.0311
+   },
+   "CROSS": {
+    "n": 54,
+    "share": 0.0306
+   },
+   "GO": {
+    "n": 29,
+    "share": 0.0164
+   },
+   "HITCH": {
+    "n": 4,
+    "share": 0.0023
+   },
+   "IN": {
+    "n": 3,
+    "share": 0.0017
+   },
+   "CORNER": {
+    "n": 2,
+    "share": 0.0011
+   },
+   "POST": {
+    "n": 1,
+    "share": 0.0006
+   },
+   "SLANT": {
+    "n": 1,
+    "share": 0.0006
+   }
+  },
+  "perPlayCombination": {
+   "FLAT": {
+    "n": 728,
+    "share": 0.3272
+   },
+   "(none)": {
+    "n": 650,
+    "share": 0.2921
+   },
+   "ANGLE": {
+    "n": 347,
+    "share": 0.156
+   },
+   "OUT": {
+    "n": 162,
+    "share": 0.0728
+   },
+   "SCREEN": {
+    "n": 86,
+    "share": 0.0387
+   },
+   "WHEEL": {
+    "n": 40,
+    "share": 0.018
+   },
+   "FLAT-FLAT": {
+    "n": 35,
+    "share": 0.0157
+   },
+   "ANGLE-FLAT": {
+    "n": 27,
+    "share": 0.0121
+   },
+   "CROSS-FLAT": {
+    "n": 22,
+    "share": 0.0099
+   },
+   "CROSS": {
+    "n": 17,
+    "share": 0.0076
+   },
+   "FLAT-GO": {
+    "n": 15,
+    "share": 0.0067
+   },
+   "FLAT-SCREEN": {
+    "n": 12,
+    "share": 0.0054
+   },
+   "ANGLE-OUT": {
+    "n": 9,
+    "share": 0.004
+   },
+   "FLAT-OUT": {
+    "n": 9,
+    "share": 0.004
+   },
+   "GO": {
+    "n": 7,
+    "share": 0.0031
+   }
+  },
+  "allWeeksRbFbByRosterPosition": {
+   "note": "players.csv RB/FB running routes in every week, including those split out",
+   "routes": {
+    "FLAT": {
+     "n": 3893,
+     "share": 0.4803
+    },
+    "ANGLE": {
+     "n": 1651,
+     "share": 0.2037
+    },
+    "OUT": {
+     "n": 792,
+     "share": 0.0977
+    },
+    "SCREEN": {
+     "n": 613,
+     "share": 0.0756
+    },
+    "GO": {
+     "n": 360,
+     "share": 0.0444
+    },
+    "HITCH": {
+     "n": 242,
+     "share": 0.0299
+    },
+    "WHEEL": {
+     "n": 188,
+     "share": 0.0232
+    },
+    "CROSS": {
+     "n": 185,
+     "share": 0.0228
+    },
+    "SLANT": {
+     "n": 94,
+     "share": 0.0116
+    },
+    "IN": {
+     "n": 61,
+     "share": 0.0075
+    },
+    "POST": {
+     "n": 18,
+     "share": 0.0022
+    },
+    "CORNER": {
+     "n": 9,
+     "share": 0.0011
+    }
+   }
+  }
+ },
+ "oppositeSide": [
+  {
+   "routes": [
+    "GO"
+   ],
+   "concept": "Iso go",
+   "n": 286,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "CROSS"
+     ],
+     "n": 9,
+     "share": 0.0315,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.021,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.021,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.021,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 6,
+     "share": 0.021,
+     "concept": "Iso go"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "HITCH"
+   ],
+   "concept": "Iso hitch",
+   "n": 242,
+   "opposite": [
+    {
+     "routes": [
+      "HITCH",
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 11,
+     "share": 0.0455,
+     "concept": "Spacing (hitch, hitch, flat)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 7,
+     "share": 0.0289,
+     "concept": "Spacing (triple hitch)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0248,
+     "concept": "Double hitch (Spacing family)"
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 6,
+     "share": 0.0248,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0248,
+     "concept": "Iso hitch"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "CROSS"
+   ],
+   "concept": "Iso cross",
+   "n": 168,
+   "opposite": [
+    {
+     "routes": [
+      "OUT",
+      "CORNER"
+     ],
+     "n": 7,
+     "share": 0.0417,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CORNER"
+     ],
+     "n": 6,
+     "share": 0.0357,
+     "concept": "Iso corner"
+    },
+    {
+     "routes": [
+      "CORNER",
+      "FLAT"
+     ],
+     "n": 6,
+     "share": 0.0357,
+     "concept": "Corner-flat"
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 6,
+     "share": 0.0357,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "POST"
+     ],
+     "n": 5,
+     "share": 0.0298,
+     "concept": "Iso post"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "GO",
+    "OUT"
+   ],
+   "concept": "Go-out (2-man Sail family)",
+   "n": 136,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 12,
+     "share": 0.0882,
+     "concept": "Go-out (2-man Sail family)"
+    },
+    {
+     "routes": [
+      "CROSS",
+      "IN"
+     ],
+     "n": 7,
+     "share": 0.0515,
+     "concept": "Dig-shallow (Drive family)"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0441,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "IN"
+     ],
+     "n": 5,
+     "share": 0.0368,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0294,
+     "concept": "Dig-shallow (Drive family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "OUT"
+   ],
+   "concept": "Iso out",
+   "n": 124,
+   "opposite": [
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0323,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "POST",
+      "CROSS"
+     ],
+     "n": 3,
+     "share": 0.0242,
+     "concept": null
+    },
+    {
+     "routes": [
+      "OUT",
+      "HITCH"
+     ],
+     "n": 3,
+     "share": 0.0242,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS"
+     ],
+     "n": 3,
+     "share": 0.0242,
+     "concept": "Dig-shallow (Drive family)"
+    },
+    {
+     "routes": [
+      "IN",
+      "POST",
+      "IN"
+     ],
+     "n": 2,
+     "share": 0.0161,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "GO",
+    "GO"
+   ],
+   "concept": "Double go (verticals)",
+   "n": 106,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "GO"
+     ],
+     "n": 18,
+     "share": 0.1698,
+     "concept": "Double go (verticals)"
+    },
+    {
+     "routes": [
+      "GO",
+      "POST"
+     ],
+     "n": 9,
+     "share": 0.0849,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "IN"
+     ],
+     "n": 5,
+     "share": 0.0472,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "GO"
+     ],
+     "n": 5,
+     "share": 0.0472,
+     "concept": "Hitch-seam (Hoss)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 4,
+     "share": 0.0377,
+     "concept": "Curl-flat"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "GO",
+    "HITCH"
+   ],
+   "concept": "Go-stick (clear + hitch/stick)",
+   "n": 101,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 8,
+     "share": 0.0792,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 6,
+     "share": 0.0594,
+     "concept": "Go-out (2-man Sail family)"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 5,
+     "share": 0.0495,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "GO",
+      "CROSS"
+     ],
+     "n": 5,
+     "share": 0.0495,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0396,
+     "concept": "Dig-shallow (Drive family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "SLANT"
+   ],
+   "concept": "Iso slant",
+   "n": 100,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "HITCH"
+     ],
+     "n": 7,
+     "share": 0.07,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CORNER"
+     ],
+     "n": 3,
+     "share": 0.03,
+     "concept": "Iso corner"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH",
+      "CORNER"
+     ],
+     "n": 3,
+     "share": 0.03,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "SLANT",
+      "HITCH"
+     ],
+     "n": 3,
+     "share": 0.03,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 3,
+     "share": 0.03,
+     "concept": "Go-out (2-man Sail family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "HITCH",
+    "HITCH"
+   ],
+   "concept": "Double hitch (Spacing family)",
+   "n": 97,
+   "opposite": [
+    {
+     "routes": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 18,
+     "share": 0.1856,
+     "concept": "Double hitch (Spacing family)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 10,
+     "share": 0.1031,
+     "concept": "Curl-flat"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0619,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "OUT"
+     ],
+     "n": 6,
+     "share": 0.0619,
+     "concept": null
+    },
+    {
+     "routes": [],
+     "n": 5,
+     "share": 0.0515,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "IN"
+   ],
+   "concept": "Iso in",
+   "n": 97,
+   "opposite": [
+    {
+     "routes": [
+      "HITCH",
+      "GO",
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.0412,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "OUT"
+     ],
+     "n": 3,
+     "share": 0.0309,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 3,
+     "share": 0.0309,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "FLAT"
+     ],
+     "n": 3,
+     "share": 0.0309,
+     "concept": "Sail/Flood (go-out-flat)"
+    },
+    {
+     "routes": [
+      "POST",
+      "GO"
+     ],
+     "n": 3,
+     "share": 0.0309,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "POST"
+   ],
+   "concept": "Iso post",
+   "n": 96,
+   "opposite": [
+    {
+     "routes": [
+      "POST"
+     ],
+     "n": 6,
+     "share": 0.0625,
+     "concept": "Iso post"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0625,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 5,
+     "share": 0.0521,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0417,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0417,
+     "concept": "Dig-shallow (Drive family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "CORNER"
+   ],
+   "concept": "Iso corner",
+   "n": 92,
+   "opposite": [
+    {
+     "routes": [
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 11,
+     "share": 0.1196,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.0652,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "SLANT"
+     ],
+     "n": 3,
+     "share": 0.0326,
+     "concept": "Iso slant"
+    },
+    {
+     "routes": [
+      "IN",
+      "CROSS"
+     ],
+     "n": 3,
+     "share": 0.0326,
+     "concept": "Dig-shallow (Drive family)"
+    },
+    {
+     "routes": [
+      "IN",
+      "GO",
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0217,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "HITCH",
+    "FLAT"
+   ],
+   "concept": "Curl-flat",
+   "n": 75,
+   "opposite": [
+    {
+     "routes": [
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 10,
+     "share": 0.1333,
+     "concept": "Curl-flat"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 10,
+     "share": 0.1333,
+     "concept": "Double hitch (Spacing family)"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.0533,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "GO",
+      "GO"
+     ],
+     "n": 4,
+     "share": 0.0533,
+     "concept": "Double go (verticals)"
+    },
+    {
+     "routes": [
+      "GO",
+      "SLANT"
+     ],
+     "n": 3,
+     "share": 0.04,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "HITCH",
+    "GO"
+   ],
+   "concept": "Hitch-seam (Hoss)",
+   "n": 68,
+   "opposite": [
+    {
+     "routes": [
+      "HITCH",
+      "GO"
+     ],
+     "n": 18,
+     "share": 0.2647,
+     "concept": "Hitch-seam (Hoss)"
+    },
+    {
+     "routes": [
+      "GO",
+      "GO"
+     ],
+     "n": 5,
+     "share": 0.0735,
+     "concept": "Double go (verticals)"
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 3,
+     "share": 0.0441,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0294,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "GO",
+      "OUT"
+     ],
+     "n": 2,
+     "share": 0.0294,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "GO",
+    "POST"
+   ],
+   "concept": null,
+   "n": 63,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "POST"
+     ],
+     "n": 12,
+     "share": 0.1905,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "GO"
+     ],
+     "n": 9,
+     "share": 0.1429,
+     "concept": "Double go (verticals)"
+    },
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 3,
+     "share": 0.0476,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "GO",
+      "GO"
+     ],
+     "n": 2,
+     "share": 0.0317,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 2,
+     "share": 0.0317,
+     "concept": "Iso cross"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "CROSS",
+    "CROSS"
+   ],
+   "concept": null,
+   "n": 60,
+   "opposite": [
+    {
+     "routes": [
+      "CORNER"
+     ],
+     "n": 11,
+     "share": 0.1833,
+     "concept": "Iso corner"
+    },
+    {
+     "routes": [
+      "CORNER",
+      "CROSS"
+     ],
+     "n": 8,
+     "share": 0.1333,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 6,
+     "share": 0.1,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "POST"
+     ],
+     "n": 4,
+     "share": 0.0667,
+     "concept": "Iso post"
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0667,
+     "concept": "Iso cross"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "IN",
+    "CROSS"
+   ],
+   "concept": "Dig-shallow (Drive family)",
+   "n": 58,
+   "opposite": [
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 4,
+     "share": 0.069,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "POST"
+     ],
+     "n": 4,
+     "share": 0.069,
+     "concept": "Iso post"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.069,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "GO",
+      "CORNER"
+     ],
+     "n": 4,
+     "share": 0.069,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 4,
+     "share": 0.069,
+     "concept": "Go-out (2-man Sail family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "GO",
+    "CROSS"
+   ],
+   "concept": null,
+   "n": 53,
+   "opposite": [
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 9,
+     "share": 0.1698,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 5,
+     "share": 0.0943,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.0755,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 2,
+     "share": 0.0377,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 2,
+     "share": 0.0377,
+     "concept": "Go-out (2-man Sail family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "OUT",
+    "HITCH"
+   ],
+   "concept": null,
+   "n": 46,
+   "opposite": [
+    {
+     "routes": [
+      "OUT",
+      "HITCH"
+     ],
+     "n": 12,
+     "share": 0.2609,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "FLAT"
+     ],
+     "n": 3,
+     "share": 0.0652,
+     "concept": "Slant-flat"
+    },
+    {
+     "routes": [
+      "OUT",
+      "OUT"
+     ],
+     "n": 3,
+     "share": 0.0652,
+     "concept": "Double out"
+    },
+    {
+     "routes": [
+      "OUT"
+     ],
+     "n": 3,
+     "share": 0.0652,
+     "concept": "Iso out"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0435,
+     "concept": "Go-stick (clear + hitch/stick)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "OUT",
+    "OUT"
+   ],
+   "concept": "Double out",
+   "n": 43,
+   "opposite": [
+    {
+     "routes": [
+      "SLANT",
+      "FLAT"
+     ],
+     "n": 3,
+     "share": 0.0698,
+     "concept": "Slant-flat"
+    },
+    {
+     "routes": [
+      "OUT",
+      "HITCH"
+     ],
+     "n": 3,
+     "share": 0.0698,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CROSS"
+     ],
+     "n": 3,
+     "share": 0.0698,
+     "concept": "Iso cross"
+    },
+    {
+     "routes": [
+      "OUT",
+      "FLAT"
+     ],
+     "n": 2,
+     "share": 0.0465,
+     "concept": null
+    },
+    {
+     "routes": [
+      "IN",
+      "IN"
+     ],
+     "n": 2,
+     "share": 0.0465,
+     "concept": "Double in (Levels family)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "HITCH",
+    "CROSS"
+   ],
+   "concept": null,
+   "n": 42,
+   "opposite": [
+    {
+     "routes": [
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.0952,
+     "concept": "Iso hitch"
+    },
+    {
+     "routes": [
+      "OUT",
+      "CROSS"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "CROSS"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "GO",
+    "SLANT"
+   ],
+   "concept": null,
+   "n": 42,
+   "opposite": [
+    {
+     "routes": [
+      "GO",
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.0952,
+     "concept": "Go-stick (clear + hitch/stick)"
+    },
+    {
+     "routes": [
+      "HITCH",
+      "FLAT"
+     ],
+     "n": 3,
+     "share": 0.0714,
+     "concept": "Curl-flat"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": "Go-out (2-man Sail family)"
+    },
+    {
+     "routes": [
+      "GO",
+      "IN"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": null
+    },
+    {
+     "routes": [
+      "HITCH",
+      "GO"
+     ],
+     "n": 2,
+     "share": 0.0476,
+     "concept": "Hitch-seam (Hoss)"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "SCREEN"
+   ],
+   "concept": "Screen side",
+   "n": 38,
+   "opposite": [
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 2,
+     "share": 0.0526,
+     "concept": "Iso go"
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "SCREEN"
+     ],
+     "n": 2,
+     "share": 0.0526,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "SCREEN"
+     ],
+     "n": 2,
+     "share": 0.0526,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "SCREEN",
+      "FLAT"
+     ],
+     "n": 2,
+     "share": 0.0526,
+     "concept": "Screen side"
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT",
+      "HITCH"
+     ],
+     "n": 1,
+     "share": 0.0263,
+     "concept": null
+    }
+   ]
+  },
+  {
+   "routes": [
+    "SLANT",
+    "SLANT"
+   ],
+   "concept": "Double slant",
+   "n": 37,
+   "opposite": [
+    {
+     "routes": [
+      "SLANT",
+      "SLANT"
+     ],
+     "n": 8,
+     "share": 0.2162,
+     "concept": "Double slant"
+    },
+    {
+     "routes": [
+      "SLANT",
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.1622,
+     "concept": null
+    },
+    {
+     "routes": [
+      "SLANT",
+      "FLAT"
+     ],
+     "n": 6,
+     "share": 0.1622,
+     "concept": "Slant-flat"
+    },
+    {
+     "routes": [
+      "IN",
+      "SLANT"
+     ],
+     "n": 2,
+     "share": 0.0541,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO"
+     ],
+     "n": 2,
+     "share": 0.0541,
+     "concept": "Iso go"
+    }
+   ]
+  },
+  {
+   "routes": [
+    "HITCH",
+    "CORNER"
+   ],
+   "concept": "Smash",
+   "n": 36,
+   "opposite": [
+    {
+     "routes": [
+      "POST",
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0556,
+     "concept": null
+    },
+    {
+     "routes": [
+      "CORNER",
+      "OUT"
+     ],
+     "n": 2,
+     "share": 0.0556,
+     "concept": null
+    },
+    {
+     "routes": [],
+     "n": 2,
+     "share": 0.0556,
+     "concept": null
+    },
+    {
+     "routes": [
+      "GO",
+      "OUT"
+     ],
+     "n": 2,
+     "share": 0.0556,
+     "concept": "Go-out (2-man Sail family)"
+    },
+    {
+     "routes": [
+      "GO",
+      "CROSS"
+     ],
+     "n": 2,
+     "share": 0.0556,
+     "concept": null
+    }
+   ]
+  }
+ ],
+ "concentration": {
+  "pairings": {
+   "plays": 2225,
+   "distinct": 1575,
+   "top20Share": 0.0697,
+   "top50Share": 0.1357,
+   "top100Share": 0.2117,
+   "singletonCombos": 1227,
+   "singletonPlayShare": 0.5515
+  },
+  "pairingsWithBack": {
+   "plays": 2225,
+   "distinct": 1950,
+   "top20Share": 0.0427,
+   "top50Share": 0.0796,
+   "top100Share": 0.1245,
+   "singletonCombos": 1752,
+   "singletonPlayShare": 0.7874
+  },
+  "sideTuples": {
+   "plays": 4351,
+   "distinct": 493,
+   "top20Share": 0.4852,
+   "top50Share": 0.6796,
+   "top100Share": 0.804,
+   "singletonCombos": 203,
+   "singletonPlayShare": 0.0467
+  }
+ },
+ "mirrored": {
+  "playsWithBothSides": 2126,
+  "exactSameTupleShareOfBothSides": 0.0395,
+  "exactSameTupleShareOfAllPlays": 0.0378,
+  "equalSizePlays": 801,
+  "exactSameTupleShareOfEqualSize": 0.1049,
+  "expectedShareOfEqualSizeIfSidesIndependent": 0.0343,
+  "sameNamedConceptShareOfBothSides": 0.0452,
+  "sameOutsideReceiverRouteShareOfBothSides": 0.2455
+ },
+ "routesByReceiverNumber": {
+  "#1": {
+   "n": 4351,
+   "routes": {
+    "GO": 0.2717,
+    "HITCH": 0.1997,
+    "IN": 0.1062,
+    "OUT": 0.0894,
+    "CROSS": 0.085,
+    "SLANT": 0.0784,
+    "POST": 0.0694,
+    "CORNER": 0.0545,
+    "SCREEN": 0.0363,
+    "FLAT": 0.0094
+   },
+   "positions": {
+    "WR": 0.821,
+    "TE": 0.1335,
+    "RB": 0.0402,
+    "FB": 0.0046,
+    "QB": 0.0007
+   }
+  },
+  "#2": {
+   "n": 3090,
+   "routes": {
+    "HITCH": 0.1702,
+    "GO": 0.1638,
+    "CROSS": 0.134,
+    "OUT": 0.1262,
+    "FLAT": 0.1039,
+    "POST": 0.0816,
+    "IN": 0.0806,
+    "CORNER": 0.0557,
+    "SLANT": 0.0544,
+    "SCREEN": 0.0278,
+    "ANGLE": 0.001,
+    "WHEEL": 0.001
+   },
+   "positions": {
+    "WR": 0.6243,
+    "TE": 0.3469,
+    "RB": 0.0207,
+    "FB": 0.0071,
+    "QB": 0.001
+   }
+  },
+  "#3": {
+   "n": 991,
+   "routes": {
+    "HITCH": 0.2048,
+    "FLAT": 0.1776,
+    "CROSS": 0.1524,
+    "OUT": 0.113,
+    "GO": 0.111,
+    "POST": 0.0777,
+    "IN": 0.0656,
+    "CORNER": 0.0383,
+    "SLANT": 0.0303,
+    "SCREEN": 0.0272,
+    "ANGLE": 0.002
+   },
+   "positions": {
+    "TE": 0.5742,
+    "WR": 0.3946,
+    "RB": 0.0262,
+    "FB": 0.005
+   }
+  },
+  "#4": {
+   "n": 16,
+   "routes": {
+    "FLAT": 0.625,
+    "CROSS": 0.1875,
+    "GO": 0.0625,
+    "SLANT": 0.0625,
+    "WHEEL": 0.0625
+   },
+   "positions": {
+    "RB": 0.625,
+    "WR": 0.3125,
+    "TE": 0.0625
+   }
+  },
+  "#5": {
+   "n": 1,
+   "routes": {
+    "GO": 1.0
+   },
+   "positions": {
+    "TE": 1.0
+   }
+  },
+  "B": {
+   "n": 1766,
+   "routes": {
+    "FLAT": 0.5102,
+    "ANGLE": 0.2299,
+    "OUT": 0.1093,
+    "SCREEN": 0.0663,
+    "WHEEL": 0.0311,
+    "CROSS": 0.0306,
+    "GO": 0.0164,
+    "HITCH": 0.0023,
+    "IN": 0.0017,
+    "CORNER": 0.0011,
+    "POST": 0.0006,
+    "SLANT": 0.0006
+   },
+   "positions": {
+    "RB": 0.8743,
+    "WR": 0.0589,
+    "FB": 0.043,
+    "TE": 0.0232,
+    "QB": 0.0006
+   }
+  }
+ },
+ "byComputedAlignment": {
+  "2x2": {
+   "n": 728,
+   "share": 0.3272,
+   "top": [
+    {
+     "strong": [
+      "HITCH",
+      "FLAT"
+     ],
+     "weak": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 10,
+     "share": 0.0137,
+     "cumShare": 0.0137,
+     "strongConcept": "Curl-flat",
+     "weakConcept": "Double hitch (Spacing family)"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "HITCH"
+     ],
+     "weak": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 9,
+     "share": 0.0124,
+     "cumShare": 0.0261,
+     "strongConcept": "Double hitch (Spacing family)",
+     "weakConcept": "Double hitch (Spacing family)"
+    },
+    {
+     "strong": [
+      "GO",
+      "GO"
+     ],
+     "weak": [
+      "GO",
+      "GO"
+     ],
+     "n": 9,
+     "share": 0.0124,
+     "cumShare": 0.0385,
+     "strongConcept": "Double go (verticals)",
+     "weakConcept": "Double go (verticals)"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "GO"
+     ],
+     "weak": [
+      "HITCH",
+      "GO"
+     ],
+     "n": 9,
+     "share": 0.0124,
+     "cumShare": 0.0508,
+     "strongConcept": "Hitch-seam (Hoss)",
+     "weakConcept": "Hitch-seam (Hoss)"
+    },
+    {
+     "strong": [
+      "GO",
+      "GO"
+     ],
+     "weak": [
+      "GO",
+      "POST"
+     ],
+     "n": 9,
+     "share": 0.0124,
+     "cumShare": 0.0632,
+     "strongConcept": "Double go (verticals)",
+     "weakConcept": null
+    },
+    {
+     "strong": [
+      "CORNER",
+      "CROSS"
+     ],
+     "weak": [
+      "CROSS",
+      "CROSS"
+     ],
+     "n": 8,
+     "share": 0.011,
+     "cumShare": 0.0742,
+     "strongConcept": null,
+     "weakConcept": null
+    },
+    {
+     "strong": [
+      "CROSS",
+      "IN"
+     ],
+     "weak": [
+      "GO",
+      "OUT"
+     ],
+     "n": 7,
+     "share": 0.0096,
+     "cumShare": 0.0838,
+     "strongConcept": "Dig-shallow (Drive family)",
+     "weakConcept": "Go-out (2-man Sail family)"
+    },
+    {
+     "strong": [
+      "GO",
+      "HITCH"
+     ],
+     "weak": [
+      "GO",
+      "OUT"
+     ],
+     "n": 6,
+     "share": 0.0082,
+     "cumShare": 0.092,
+     "strongConcept": "Go-stick (clear + hitch/stick)",
+     "weakConcept": "Go-out (2-man Sail family)"
+    },
+    {
+     "strong": [
+      "SLANT",
+      "HITCH"
+     ],
+     "weak": [
+      "SLANT",
+      "SLANT"
+     ],
+     "n": 6,
+     "share": 0.0082,
+     "cumShare": 0.1003,
+     "strongConcept": null,
+     "weakConcept": "Double slant"
+    },
+    {
+     "strong": [
+      "GO",
+      "OUT"
+     ],
+     "weak": [
+      "GO",
+      "OUT"
+     ],
+     "n": 6,
+     "share": 0.0082,
+     "cumShare": 0.1085,
+     "strongConcept": "Go-out (2-man Sail family)",
+     "weakConcept": "Go-out (2-man Sail family)"
+    }
+   ]
+  },
+  "3x1": {
+   "n": 722,
+   "share": 0.3245,
+   "top": [
+    {
+     "strong": [
+      "HITCH",
+      "HITCH",
+      "FLAT"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 11,
+     "share": 0.0152,
+     "cumShare": 0.0152,
+     "strongConcept": "Spacing (hitch, hitch, flat)",
+     "weakConcept": "Iso hitch"
+    },
+    {
+     "strong": [
+      "GO",
+      "OUT",
+      "HITCH"
+     ],
+     "weak": [
+      "SLANT"
+     ],
+     "n": 7,
+     "share": 0.0097,
+     "cumShare": 0.0249,
+     "strongConcept": null,
+     "weakConcept": "Iso slant"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "HITCH",
+      "HITCH"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 7,
+     "share": 0.0097,
+     "cumShare": 0.0346,
+     "strongConcept": "Spacing (triple hitch)",
+     "weakConcept": "Iso hitch"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "GO",
+      "OUT"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 5,
+     "share": 0.0069,
+     "cumShare": 0.0416,
+     "strongConcept": null,
+     "weakConcept": "Iso hitch"
+    },
+    {
+     "strong": [
+      "GO",
+      "HITCH",
+      "HITCH"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 5,
+     "share": 0.0069,
+     "cumShare": 0.0485,
+     "strongConcept": null,
+     "weakConcept": "Iso hitch"
+    },
+    {
+     "strong": [
+      "GO",
+      "GO",
+      "CROSS"
+     ],
+     "weak": [
+      "GO"
+     ],
+     "n": 5,
+     "share": 0.0069,
+     "cumShare": 0.0554,
+     "strongConcept": null,
+     "weakConcept": "Iso go"
+    },
+    {
+     "strong": [
+      "GO",
+      "GO",
+      "GO"
+     ],
+     "weak": [
+      "GO"
+     ],
+     "n": 5,
+     "share": 0.0069,
+     "cumShare": 0.0623,
+     "strongConcept": "Trips verticals",
+     "weakConcept": "Iso go"
+    },
+    {
+     "strong": [
+      "GO",
+      "GO",
+      "OUT"
+     ],
+     "weak": [
+      "GO"
+     ],
+     "n": 4,
+     "share": 0.0055,
+     "cumShare": 0.0679,
+     "strongConcept": null,
+     "weakConcept": "Iso go"
+    },
+    {
+     "strong": [
+      "GO",
+      "GO",
+      "FLAT"
+     ],
+     "weak": [
+      "GO"
+     ],
+     "n": 4,
+     "share": 0.0055,
+     "cumShare": 0.0734,
+     "strongConcept": null,
+     "weakConcept": "Iso go"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "POST",
+      "FLAT"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.0055,
+     "cumShare": 0.0789,
+     "strongConcept": null,
+     "weakConcept": "Iso hitch"
+    }
+   ]
+  },
+  "2x1": {
+   "n": 364,
+   "share": 0.1636,
+   "top": [
+    {
+     "strong": [
+      "CROSS",
+      "CROSS"
+     ],
+     "weak": [
+      "CORNER"
+     ],
+     "n": 11,
+     "share": 0.0302,
+     "cumShare": 0.0302,
+     "strongConcept": null,
+     "weakConcept": "Iso corner"
+    },
+    {
+     "strong": [
+      "GO",
+      "CROSS"
+     ],
+     "weak": [
+      "GO"
+     ],
+     "n": 9,
+     "share": 0.0247,
+     "cumShare": 0.0549,
+     "strongConcept": null,
+     "weakConcept": "Iso go"
+    },
+    {
+     "strong": [
+      "OUT",
+      "CORNER"
+     ],
+     "weak": [
+      "CROSS"
+     ],
+     "n": 7,
+     "share": 0.0192,
+     "cumShare": 0.0742,
+     "strongConcept": null,
+     "weakConcept": "Iso cross"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "HITCH"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 6,
+     "share": 0.0165,
+     "cumShare": 0.0907,
+     "strongConcept": "Double hitch (Spacing family)",
+     "weakConcept": "Iso hitch"
+    },
+    {
+     "strong": [
+      "CORNER",
+      "FLAT"
+     ],
+     "weak": [
+      "CROSS"
+     ],
+     "n": 6,
+     "share": 0.0165,
+     "cumShare": 0.1071,
+     "strongConcept": "Corner-flat",
+     "weakConcept": "Iso cross"
+    },
+    {
+     "strong": [
+      "CROSS",
+      "CROSS"
+     ],
+     "weak": [
+      "GO"
+     ],
+     "n": 6,
+     "share": 0.0165,
+     "cumShare": 0.1236,
+     "strongConcept": null,
+     "weakConcept": "Iso go"
+    },
+    {
+     "strong": [
+      "GO",
+      "HITCH"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 5,
+     "share": 0.0137,
+     "cumShare": 0.1374,
+     "strongConcept": "Go-stick (clear + hitch/stick)",
+     "weakConcept": "Iso hitch"
+    },
+    {
+     "strong": [
+      "POST",
+      "CROSS"
+     ],
+     "weak": [
+      "CROSS"
+     ],
+     "n": 5,
+     "share": 0.0137,
+     "cumShare": 0.1511,
+     "strongConcept": null,
+     "weakConcept": "Iso cross"
+    },
+    {
+     "strong": [
+      "CORNER",
+      "OUT"
+     ],
+     "weak": [
+      "CROSS"
+     ],
+     "n": 4,
+     "share": 0.011,
+     "cumShare": 0.1621,
+     "strongConcept": null,
+     "weakConcept": "Iso cross"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "FLAT"
+     ],
+     "weak": [
+      "HITCH"
+     ],
+     "n": 4,
+     "share": 0.011,
+     "cumShare": 0.1731,
+     "strongConcept": "Curl-flat",
+     "weakConcept": "Iso hitch"
+    }
+   ]
+  },
+  "3x2": {
+   "n": 226,
+   "share": 0.1016,
+   "top": [
+    {
+     "strong": [
+      "GO",
+      "HITCH",
+      "GO"
+     ],
+     "weak": [
+      "GO",
+      "OUT"
+     ],
+     "n": 3,
+     "share": 0.0133,
+     "cumShare": 0.0133,
+     "strongConcept": null,
+     "weakConcept": "Go-out (2-man Sail family)"
+    },
+    {
+     "strong": [
+      "IN",
+      "IN",
+      "POST"
+     ],
+     "weak": [
+      "GO",
+      "OUT"
+     ],
+     "n": 3,
+     "share": 0.0133,
+     "cumShare": 0.0265,
+     "strongConcept": null,
+     "weakConcept": "Go-out (2-man Sail family)"
+    },
+    {
+     "strong": [
+      "CROSS",
+      "GO",
+      "HITCH"
+     ],
+     "weak": [
+      "GO",
+      "OUT"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0354,
+     "strongConcept": null,
+     "weakConcept": "Go-out (2-man Sail family)"
+    },
+    {
+     "strong": [
+      "GO",
+      "IN",
+      "HITCH"
+     ],
+     "weak": [
+      "HITCH",
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0442,
+     "strongConcept": null,
+     "weakConcept": "Double hitch (Spacing family)"
+    },
+    {
+     "strong": [
+      "SCREEN",
+      "GO",
+      "GO"
+     ],
+     "weak": [
+      "GO",
+      "POST"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0531,
+     "strongConcept": "Screen side",
+     "weakConcept": null
+    },
+    {
+     "strong": [
+      "SCREEN",
+      "HITCH",
+      "HITCH"
+     ],
+     "weak": [
+      "SCREEN",
+      "HITCH"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0619,
+     "strongConcept": "Screen side",
+     "weakConcept": "Screen side"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "GO",
+      "OUT"
+     ],
+     "weak": [
+      "HITCH",
+      "GO"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0708,
+     "strongConcept": null,
+     "weakConcept": "Hitch-seam (Hoss)"
+    },
+    {
+     "strong": [
+      "HITCH",
+      "POST",
+      "FLAT"
+     ],
+     "weak": [
+      "GO",
+      "IN"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0796,
+     "strongConcept": null,
+     "weakConcept": null
+    },
+    {
+     "strong": [
+      "GO",
+      "FLAT",
+      "HITCH"
+     ],
+     "weak": [
+      "SLANT",
+      "FLAT"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0885,
+     "strongConcept": "Stick (go, flat, stick)",
+     "weakConcept": "Slant-flat"
+    },
+    {
+     "strong": [
+      "GO",
+      "OUT",
+      "HITCH"
+     ],
+     "weak": [
+      "SLANT",
+      "FLAT"
+     ],
+     "n": 2,
+     "share": 0.0088,
+     "cumShare": 0.0973,
+     "strongConcept": null,
+     "weakConcept": "Slant-flat"
+    }
+   ]
+  }
+ },
+ "playAction": {
+  "plays": 562,
+  "topSideTuplesPlayAction": [
+   {
+    "routes": [
+     "CROSS"
+    ],
+    "n": 94,
+    "share": 0.0888,
+    "concept": "Iso cross"
+   },
+   {
+    "routes": [
+     "GO"
+    ],
+    "n": 81,
+    "share": 0.0765,
+    "concept": "Iso go"
+   },
+   {
+    "routes": [
+     "HITCH"
+    ],
+    "n": 55,
+    "share": 0.0519,
+    "concept": "Iso hitch"
+   },
+   {
+    "routes": [
+     "POST"
+    ],
+    "n": 52,
+    "share": 0.0491,
+    "concept": "Iso post"
+   },
+   {
+    "routes": [
+     "CROSS",
+     "CROSS"
+    ],
+    "n": 47,
+    "share": 0.0444,
+    "concept": null
+   },
+   {
+    "routes": [
+     "CORNER"
+    ],
+    "n": 43,
+    "share": 0.0406,
+    "concept": "Iso corner"
+   },
+   {
+    "routes": [
+     "OUT"
+    ],
+    "n": 39,
+    "share": 0.0368,
+    "concept": "Iso out"
+   },
+   {
+    "routes": [
+     "IN",
+     "CROSS"
+    ],
+    "n": 27,
+    "share": 0.0255,
+    "concept": "Dig-shallow (Drive family)"
+   },
+   {
+    "routes": [
+     "GO",
+     "GO"
+    ],
+    "n": 27,
+    "share": 0.0255,
+    "concept": "Double go (verticals)"
+   },
+   {
+    "routes": [
+     "SLANT"
+    ],
+    "n": 26,
+    "share": 0.0246,
+    "concept": "Iso slant"
+   },
+   {
+    "routes": [
+     "POST",
+     "CROSS"
+    ],
+    "n": 24,
+    "share": 0.0227,
+    "concept": null
+   },
+   {
+    "routes": [
+     "IN"
+    ],
+    "n": 23,
+    "share": 0.0217,
+    "concept": "Iso in"
+   },
+   {
+    "routes": [
+     "HITCH",
+     "FLAT"
+    ],
+    "n": 19,
+    "share": 0.0179,
+    "concept": "Curl-flat"
+   },
+   {
+    "routes": [
+     "HITCH",
+     "CROSS"
+    ],
+    "n": 19,
+    "share": 0.0179,
+    "concept": null
+   },
+   {
+    "routes": [
+     "GO",
+     "POST"
+    ],
+    "n": 16,
+    "share": 0.0151,
+    "concept": null
+   }
+  ],
+  "topSideTuplesNoPlayAction": [
+   {
+    "routes": [
+     "GO"
+    ],
+    "n": 205,
+    "share": 0.0623,
+    "concept": "Iso go"
+   },
+   {
+    "routes": [
+     "HITCH"
+    ],
+    "n": 187,
+    "share": 0.0568,
+    "concept": "Iso hitch"
+   },
+   {
+    "routes": [
+     "GO",
+     "OUT"
+    ],
+    "n": 126,
+    "share": 0.0383,
+    "concept": "Go-out (2-man Sail family)"
+   },
+   {
+    "routes": [
+     "GO",
+     "HITCH"
+    ],
+    "n": 90,
+    "share": 0.0273,
+    "concept": "Go-stick (clear + hitch/stick)"
+   },
+   {
+    "routes": [
+     "OUT"
+    ],
+    "n": 85,
+    "share": 0.0258,
+    "concept": "Iso out"
+   },
+   {
+    "routes": [
+     "HITCH",
+     "HITCH"
+    ],
+    "n": 83,
+    "share": 0.0252,
+    "concept": "Double hitch (Spacing family)"
+   },
+   {
+    "routes": [
+     "GO",
+     "GO"
+    ],
+    "n": 79,
+    "share": 0.024,
+    "concept": "Double go (verticals)"
+   },
+   {
+    "routes": [
+     "SLANT"
+    ],
+    "n": 74,
+    "share": 0.0225,
+    "concept": "Iso slant"
+   },
+   {
+    "routes": [
+     "IN"
+    ],
+    "n": 74,
+    "share": 0.0225,
+    "concept": "Iso in"
+   },
+   {
+    "routes": [
+     "CROSS"
+    ],
+    "n": 74,
+    "share": 0.0225,
+    "concept": "Iso cross"
+   },
+   {
+    "routes": [
+     "HITCH",
+     "GO"
+    ],
+    "n": 58,
+    "share": 0.0176,
+    "concept": "Hitch-seam (Hoss)"
+   },
+   {
+    "routes": [
+     "HITCH",
+     "FLAT"
+    ],
+    "n": 56,
+    "share": 0.017,
+    "concept": "Curl-flat"
+   },
+   {
+    "routes": [
+     "CORNER"
+    ],
+    "n": 49,
+    "share": 0.0149,
+    "concept": "Iso corner"
+   },
+   {
+    "routes": [
+     "GO",
+     "POST"
+    ],
+    "n": 47,
+    "share": 0.0143,
+    "concept": null
+   },
+   {
+    "routes": [
+     "POST"
+    ],
+    "n": 44,
+    "share": 0.0134,
+    "concept": "Iso post"
+   }
+  ],
+  "topPairingsPlayAction": [
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "CORNER"
+    ],
+    "n": 10,
+    "share": 0.0178,
+    "cumShare": 0.0178,
+    "strongConcept": null,
+    "weakConcept": "Iso corner"
+   },
+   {
+    "strong": [
+     "CORNER",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS",
+     "CROSS"
+    ],
+    "n": 7,
+    "share": 0.0125,
+    "cumShare": 0.0302,
+    "strongConcept": null,
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CORNER"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 6,
+    "share": 0.0107,
+    "cumShare": 0.0409,
+    "strongConcept": "Iso corner",
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "CORNER",
+     "FLAT"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 6,
+    "share": 0.0107,
+    "cumShare": 0.0516,
+    "strongConcept": "Corner-flat",
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "HITCH"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 6,
+    "share": 0.0107,
+    "cumShare": 0.0623,
+    "strongConcept": "Iso hitch",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "OUT",
+     "CORNER"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 6,
+    "share": 0.0107,
+    "cumShare": 0.073,
+    "strongConcept": null,
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 6,
+    "share": 0.0107,
+    "cumShare": 0.0836,
+    "strongConcept": "Iso cross",
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "HITCH",
+     "HITCH"
+    ],
+    "weak": [],
+    "n": 5,
+    "share": 0.0089,
+    "cumShare": 0.0925,
+    "strongConcept": "Double hitch (Spacing family)",
+    "weakConcept": null
+   },
+   {
+    "strong": [
+     "CROSS"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 5,
+    "share": 0.0089,
+    "cumShare": 0.1014,
+    "strongConcept": "Iso cross",
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 5,
+    "share": 0.0089,
+    "cumShare": 0.1103,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "GO",
+     "CROSS"
+    ],
+    "weak": [
+     "GO"
+    ],
+    "n": 5,
+    "share": 0.0089,
+    "cumShare": 0.1192,
+    "strongConcept": null,
+    "weakConcept": "Iso go"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "POST"
+    ],
+    "n": 4,
+    "share": 0.0071,
+    "cumShare": 0.1263,
+    "strongConcept": null,
+    "weakConcept": "Iso post"
+   },
+   {
+    "strong": [
+     "GO"
+    ],
+    "weak": [
+     "HITCH"
+    ],
+    "n": 4,
+    "share": 0.0071,
+    "cumShare": 0.1335,
+    "strongConcept": "Iso go",
+    "weakConcept": "Iso hitch"
+   },
+   {
+    "strong": [
+     "CROSS",
+     "CROSS"
+    ],
+    "weak": [
+     "CROSS"
+    ],
+    "n": 4,
+    "share": 0.0071,
+    "cumShare": 0.1406,
+    "strongConcept": null,
+    "weakConcept": "Iso cross"
+   },
+   {
+    "strong": [
+     "CROSS"
+    ],
+    "weak": [
+     "OUT"
+    ],
+    "n": 4,
+    "share": 0.0071,
+    "cumShare": 0.1477,
+    "strongConcept": "Iso cross",
+    "weakConcept": "Iso out"
+   }
+  ]
+ },
+ "conceptNames": {
+  "rules": [
+   "Names apply to exact side tuples ordered from #1 (widest) inward; any other tuple is unnamed (null).",
+   "Size 1 sides are named 'Iso <route>' (a label, not a concept). Any side containing SCREEN is 'Screen side'.",
+   "HITCH stands for hitch/curl/stick, IN for dig/square-in, CROSS for shallow/drag/over (BDB labels; no depth).",
+   "HITCH-CORNER: Smash",
+   "HITCH-FLAT: Curl-flat",
+   "SLANT-FLAT: Slant-flat",
+   "CORNER-FLAT: Corner-flat",
+   "GO-FLAT: Go-flat",
+   "GO-OUT: Go-out (2-man Sail family)",
+   "GO-GO: Double go (verticals)",
+   "HITCH-GO: Hitch-seam (Hoss)",
+   "GO-HITCH: Go-stick (clear + hitch/stick)",
+   "IN-GO: Dagger (dig under seam)",
+   "POST-IN: Post-dig (Mills family)",
+   "IN-POST: Post-dig (Mills family)",
+   "IN-CROSS: Dig-shallow (Drive family)",
+   "CROSS-IN: Dig-shallow (Drive family)",
+   "HITCH-HITCH: Double hitch (Spacing family)",
+   "SLANT-SLANT: Double slant",
+   "OUT-OUT: Double out",
+   "IN-IN: Double in (Levels family)",
+   "GO-OUT-FLAT: Sail/Flood (go-out-flat)",
+   "GO-CORNER-FLAT: Flood (go-corner-flat)",
+   "HITCH-CORNER-FLAT: Smash-flat (trips)",
+   "GO-HITCH-FLAT: Stick (go, stick, flat)",
+   "GO-FLAT-HITCH: Stick (go, flat, stick)",
+   "HITCH-HITCH-FLAT: Spacing (hitch, hitch, flat)",
+   "HITCH-HITCH-HITCH: Spacing (triple hitch)",
+   "SLANT-SLANT-SLANT: Triple slant",
+   "GO-GO-GO: Trips verticals",
+   "GO-GO-GO-GO: Quads verticals"
+  ],
+  "sideShareByConcept": {
+   "unnamed": {
+    "n": 1828,
+    "share": 0.4201
+   },
+   "Iso go": {
+    "n": 286,
+    "share": 0.0657
+   },
+   "Screen side": {
+    "n": 253,
+    "share": 0.0581
+   },
+   "Iso hitch": {
+    "n": 242,
+    "share": 0.0556
+   },
+   "Iso cross": {
+    "n": 168,
+    "share": 0.0386
+   },
+   "Go-out (2-man Sail family)": {
+    "n": 136,
+    "share": 0.0313
+   },
+   "Iso out": {
+    "n": 124,
+    "share": 0.0285
+   },
+   "Double go (verticals)": {
+    "n": 106,
+    "share": 0.0244
+   },
+   "Go-stick (clear + hitch/stick)": {
+    "n": 101,
+    "share": 0.0232
+   },
+   "Iso slant": {
+    "n": 100,
+    "share": 0.023
+   },
+   "Double hitch (Spacing family)": {
+    "n": 97,
+    "share": 0.0223
+   },
+   "Iso in": {
+    "n": 97,
+    "share": 0.0223
+   },
+   "Iso post": {
+    "n": 96,
+    "share": 0.0221
+   },
+   "Iso corner": {
+    "n": 92,
+    "share": 0.0211
+   },
+   "Dig-shallow (Drive family)": {
+    "n": 82,
+    "share": 0.0188
+   },
+   "Curl-flat": {
+    "n": 75,
+    "share": 0.0172
+   },
+   "Hitch-seam (Hoss)": {
+    "n": 68,
+    "share": 0.0156
+   },
+   "Double out": {
+    "n": 43,
+    "share": 0.0099
+   },
+   "Double slant": {
+    "n": 37,
+    "share": 0.0085
+   },
+   "Smash": {
+    "n": 36,
+    "share": 0.0083
+   },
+   "Go-flat": {
+    "n": 34,
+    "share": 0.0078
+   },
+   "Slant-flat": {
+    "n": 33,
+    "share": 0.0076
+   },
+   "Corner-flat": {
+    "n": 31,
+    "share": 0.0071
+   },
+   "Post-dig (Mills family)": {
+    "n": 29,
+    "share": 0.0067
+   },
+   "Dagger (dig under seam)": {
+    "n": 28,
+    "share": 0.0064
+   },
+   "Spacing (hitch, hitch, flat)": {
+    "n": 19,
+    "share": 0.0044
+   },
+   "Iso flat": {
+    "n": 18,
+    "share": 0.0041
+   },
+   "Double in (Levels family)": {
+    "n": 18,
+    "share": 0.0041
+   },
+   "Spacing (triple hitch)": {
+    "n": 15,
+    "share": 0.0034
+   },
+   "Stick (go, flat, stick)": {
+    "n": 13,
+    "share": 0.003
+   },
+   "Stick (go, stick, flat)": {
+    "n": 11,
+    "share": 0.0025
+   },
+   "Trips verticals": {
+    "n": 10,
+    "share": 0.0023
+   },
+   "Triple slant": {
+    "n": 9,
+    "share": 0.0021
+   },
+   "Smash-flat (trips)": {
+    "n": 7,
+    "share": 0.0016
+   },
+   "Sail/Flood (go-out-flat)": {
+    "n": 6,
+    "share": 0.0014
+   },
+   "Flood (go-corner-flat)": {
+    "n": 3,
+    "share": 0.0007
+   }
+  },
+  "namedSidesPerPlay": {
+   "one side named": {
+    "n": 1255,
+    "share": 0.564
+   },
+   "both sides named": {
+    "n": 609,
+    "share": 0.2737
+   },
+   "neither named": {
+    "n": 262,
+    "share": 0.1178
+   },
+   "one-sided play, named": {
+    "n": 50,
+    "share": 0.0225
+   },
+   "one-sided play, unnamed": {
+    "n": 49,
+    "share": 0.022
+   }
+  },
+  "namedShareOfSidesBySize": {
+   "2": 0.4545,
+   "3": 0.0954,
+   "4": 0.0,
+   "5": 0.0
+  },
+  "topConceptPairings": [
+   {
+    "strong": "unnamed",
+    "weak": "unnamed",
+    "n": 262,
+    "share": 0.1178
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso go",
+    "n": 185,
+    "share": 0.0831
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso hitch",
+    "n": 149,
+    "share": 0.067
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso cross",
+    "n": 111,
+    "share": 0.0499
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso out",
+    "n": 93,
+    "share": 0.0418
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso in",
+    "n": 74,
+    "share": 0.0333
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso corner",
+    "n": 63,
+    "share": 0.0283
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso slant",
+    "n": 61,
+    "share": 0.0274
+   },
+   {
+    "strong": "unnamed",
+    "weak": "(none)",
+    "n": 49,
+    "share": 0.022
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Iso post",
+    "n": 45,
+    "share": 0.0202
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Go-out (2-man Sail family)",
+    "n": 44,
+    "share": 0.0198
+   },
+   {
+    "strong": "Screen side",
+    "weak": "Iso go",
+    "n": 35,
+    "share": 0.0157
+   },
+   {
+    "strong": "Screen side",
+    "weak": "Screen side",
+    "n": 33,
+    "share": 0.0148
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Screen side",
+    "n": 31,
+    "share": 0.0139
+   },
+   {
+    "strong": "Double go (verticals)",
+    "weak": "unnamed",
+    "n": 30,
+    "share": 0.0135
+   },
+   {
+    "strong": "Go-stick (clear + hitch/stick)",
+    "weak": "unnamed",
+    "n": 28,
+    "share": 0.0126
+   },
+   {
+    "strong": "Go-out (2-man Sail family)",
+    "weak": "unnamed",
+    "n": 28,
+    "share": 0.0126
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Go-stick (clear + hitch/stick)",
+    "n": 23,
+    "share": 0.0103
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Double hitch (Spacing family)",
+    "n": 20,
+    "share": 0.009
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Curl-flat",
+    "n": 19,
+    "share": 0.0085
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Hitch-seam (Hoss)",
+    "n": 19,
+    "share": 0.0085
+   },
+   {
+    "strong": "Double hitch (Spacing family)",
+    "weak": "unnamed",
+    "n": 17,
+    "share": 0.0076
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Double slant",
+    "n": 17,
+    "share": 0.0076
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Double out",
+    "n": 16,
+    "share": 0.0072
+   },
+   {
+    "strong": "Screen side",
+    "weak": "Iso slant",
+    "n": 15,
+    "share": 0.0067
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Dig-shallow (Drive family)",
+    "n": 14,
+    "share": 0.0063
+   },
+   {
+    "strong": "Screen side",
+    "weak": "unnamed",
+    "n": 14,
+    "share": 0.0063
+   },
+   {
+    "strong": "Curl-flat",
+    "weak": "unnamed",
+    "n": 13,
+    "share": 0.0058
+   },
+   {
+    "strong": "Corner-flat",
+    "weak": "unnamed",
+    "n": 12,
+    "share": 0.0054
+   },
+   {
+    "strong": "Spacing (hitch, hitch, flat)",
+    "weak": "Iso hitch",
+    "n": 11,
+    "share": 0.0049
+   },
+   {
+    "strong": "Screen side",
+    "weak": "Iso hitch",
+    "n": 11,
+    "share": 0.0049
+   },
+   {
+    "strong": "Smash",
+    "weak": "unnamed",
+    "n": 11,
+    "share": 0.0049
+   },
+   {
+    "strong": "Dig-shallow (Drive family)",
+    "weak": "unnamed",
+    "n": 11,
+    "share": 0.0049
+   },
+   {
+    "strong": "unnamed",
+    "weak": "Smash",
+    "n": 11,
+    "share": 0.0049
+   },
+   {
+    "strong": "Screen side",
+    "weak": "Iso out",
+    "n": 10,
+    "share": 0.0045
+   },
+   {
+    "strong": "Curl-flat",
+    "weak": "Double hitch (Spacing family)",
+    "n": 10,
+    "share": 0.0045
+   },
+   {
+    "strong": "Go-flat",
+    "weak": "unnamed",
+    "n": 9,
+    "share": 0.004
+   },
+   {
+    "strong": "Double hitch (Spacing family)",
+    "weak": "Double hitch (Spacing family)",
+    "n": 9,
+    "share": 0.004
+   },
+   {
+    "strong": "Double go (verticals)",
+    "weak": "Double go (verticals)",
+    "n": 9,
+    "share": 0.004
+   },
+   {
+    "strong": "Hitch-seam (Hoss)",
+    "weak": "Hitch-seam (Hoss)",
+    "n": 9,
+    "share": 0.004
+   }
+  ]
+ },
+ "playLevelTags": {
+  "crossersFromBothSides (Mesh/Drive-like)": {
+   "n": 108,
+   "share": 0.0485
+  },
+  "3+ GO among side receivers (verticals family)": {
+   "n": 107,
+   "share": 0.0481
+  },
+  "any SCREEN (incl. back)": {
+   "n": 326,
+   "share": 0.1465
+  },
+  "back runs a route": {
+   "n": 1575,
+   "share": 0.7079
+  },
+  "only quick routes (HITCH/SLANT/FLAT/SCREEN/ANGLE/OUT)": {
+   "n": 212,
+   "share": 0.0953
+  }
+ }
+}

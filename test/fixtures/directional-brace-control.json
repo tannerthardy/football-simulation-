@@ -1,0 +1,675 @@
+{
+  "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "testedRevision": "342173ca6ea534afdfbe3888b96057ca047fb156",
+  "toolSha256": "961eb9a7ef65d0a1be23f47a1ce65691296a6f5adaa5a41f8971d26722754e6a",
+  "input": {
+    "id": "collinear-with-lean",
+    "xLoad": 400,
+    "coupleForce": 500,
+    "plane": "parallel"
+  },
+  "after": [
+    {
+      "pos": {
+        "x": -0.00031315951869390253,
+        "y": 0
+      },
+      "vel": {
+        "x": -0.01490658019424561,
+        "y": 0
+      },
+      "facing": 0,
+      "energy": 0.9986174259479381,
+      "profile": {
+        "massKg": 130,
+        "radius": 0.3,
+        "reach": 1,
+        "heightYd": 2.05,
+        "vmax": 9,
+        "tau": 1.3,
+        "brake": 6,
+        "lateral": 6,
+        "turnRate": 8,
+        "backpedal": 0.6,
+        "shuffle": 0.55,
+        "maxCatchHeight": 3,
+        "reactReach": 2.6,
+        "reactionTime": 0.25,
+        "power": 130,
+        "balance": 0.5,
+        "bend": 0.5,
+        "stepSpeed": 3.4,
+        "getUp": 0.9
+      },
+      "support": {
+        "xi": {
+          "x": 0.0047652101300379975,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6,
+        "lean": {
+          "x": 361.9854271557952,
+          "y": 0
+        },
+        "load": {
+          "x": -399.99999999999994,
+          "y": 0
+        },
+        "felt": {
+          "x": -400,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0.003929476586791707,
+        "out": 0,
+        "feltTip": {
+          "x": 8.209297477590164,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0.004793046567574799,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -0.23046298667059575,
+          "y": 0
+        },
+        "tipAccel": {
+          "x": 0.6529526583388193,
+          "y": 0
+        }
+      },
+      "spin": 0,
+      "squeeze": 0,
+      "sprintLoad": 0
+    },
+    {
+      "pos": {
+        "x": 0.9038461538461545,
+        "y": 0
+      },
+      "vel": {
+        "x": 0.15384615384615385,
+        "y": 0
+      },
+      "facing": 0,
+      "energy": 1,
+      "profile": {
+        "massKg": 130,
+        "radius": 0.3,
+        "reach": 1,
+        "heightYd": 2.05,
+        "vmax": 9,
+        "tau": 1.3,
+        "brake": 6,
+        "lateral": 6,
+        "turnRate": 8,
+        "backpedal": 0.6,
+        "shuffle": 0.55,
+        "maxCatchHeight": 3,
+        "reactReach": 2.6,
+        "reactionTime": 0.25,
+        "power": 130,
+        "balance": 0.5,
+        "bend": 0.5,
+        "stepSpeed": 3.4,
+        "getUp": 0.9
+      },
+      "support": {
+        "xi": {
+          "x": 0,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 399.99999999999994,
+          "y": 0
+        },
+        "felt": {
+          "x": 285.3980812559239,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0,
+        "out": 0,
+        "feltTip": {
+          "x": 0,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 2.1953698558148003,
+          "y": 0
+        },
+        "tipAccel": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "spin": 0
+    },
+    {
+      "pos": {
+        "x": -0.9048076923076923,
+        "y": 0.6
+      },
+      "vel": {
+        "x": -0.1923076923076923,
+        "y": 0
+      },
+      "facing": 0,
+      "energy": 1,
+      "profile": {
+        "massKg": 130,
+        "radius": 0.3,
+        "reach": 1,
+        "heightYd": 2.05,
+        "vmax": 9,
+        "tau": 1.3,
+        "brake": 6,
+        "lateral": 6,
+        "turnRate": 8,
+        "backpedal": 0.6,
+        "shuffle": 0.55,
+        "maxCatchHeight": 3,
+        "reactReach": 2.6,
+        "reactionTime": 0.25,
+        "power": 130,
+        "balance": 0.5,
+        "bend": 0.5,
+        "stepSpeed": 3.4,
+        "getUp": 0.9
+      },
+      "support": {
+        "xi": {
+          "x": -0.02547621161495546,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": -499.99999999999994,
+          "y": 0
+        },
+        "felt": {
+          "x": -356.74760156990493,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0.021008134862736925,
+        "out": 0,
+        "feltTip": {
+          "x": -2.9286471857041603,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0.025619686896192578,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": -2.7442123197684998,
+          "y": 0
+        },
+        "tipAccel": {
+          "x": -2.9286471857041603,
+          "y": 0
+        }
+      },
+      "spin": 0
+    },
+    {
+      "pos": {
+        "x": 0.9048076923076923,
+        "y": 0.6
+      },
+      "vel": {
+        "x": 0.1923076923076923,
+        "y": 0
+      },
+      "facing": 0,
+      "energy": 1,
+      "profile": {
+        "massKg": 130,
+        "radius": 0.3,
+        "reach": 1,
+        "heightYd": 2.05,
+        "vmax": 9,
+        "tau": 1.3,
+        "brake": 6,
+        "lateral": 6,
+        "turnRate": 8,
+        "backpedal": 0.6,
+        "shuffle": 0.55,
+        "maxCatchHeight": 3,
+        "reactReach": 2.6,
+        "reactionTime": 0.25,
+        "power": 130,
+        "balance": 0.5,
+        "bend": 0.5,
+        "stepSpeed": 3.4,
+        "getUp": 0.9
+      },
+      "support": {
+        "xi": {
+          "x": -0.025476211614955467,
+          "y": 0
+        },
+        "state": "up",
+        "since": null,
+        "posture": 0.6,
+        "lean": {
+          "x": 0,
+          "y": 0
+        },
+        "load": {
+          "x": 499.99999999999994,
+          "y": 0
+        },
+        "felt": {
+          "x": 356.74760156990493,
+          "y": 0
+        },
+        "feetLock": 0,
+        "feetVel": {
+          "x": 0,
+          "y": 0
+        },
+        "fall": {
+          "x": 0,
+          "y": 0
+        },
+        "peak": 0.02100813486273693,
+        "out": 0,
+        "feltTip": {
+          "x": -2.928647185704161,
+          "y": 0
+        },
+        "causes": {
+          "contact": 0.025619686896192588,
+          "legs": 0,
+          "overspeed": 0
+        },
+        "accel": {
+          "x": 2.7442123197684998,
+          "y": 0
+        },
+        "tipAccel": {
+          "x": -2.928647185704161,
+          "y": 0
+        }
+      },
+      "spin": 0
+    }
+  ],
+  "records": [
+    {
+      "t": 0,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 10.174697198988191,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 389.8253028010117,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 389.8253028010118,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 389.8253028010117,
+      "remainingAlongCouple": 10.174697198988191
+    },
+    {
+      "t": 0.004166666666666667,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 19.863140457575607,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 380.1368595424243,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 380.1368595424243,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 380.1368595424243,
+      "remainingAlongCouple": 19.863140457575607
+    },
+    {
+      "t": 0.008333333333333333,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 28.81323098771634,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 371.18676901228355,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 371.1867690122836,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 371.18676901228355,
+      "remainingAlongCouple": 28.81323098771634
+    },
+    {
+      "t": 0.0125,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 36.80000393854937,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 363.1999960614505,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 363.1999960614506,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 363.1999960614505,
+      "remainingAlongCouple": 36.80000393854937
+    },
+    {
+      "t": 0.016666666666666666,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 43.63104807772192,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 356.368951922278,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 356.3689519222781,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 356.368951922278,
+      "remainingAlongCouple": 43.63104807772192
+    },
+    {
+      "t": 0.020833333333333332,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 49.150885174306985,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 350.8491148256929,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 350.849114825693,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 350.8491148256929,
+      "remainingAlongCouple": 49.150885174306985
+    },
+    {
+      "t": 0.024999999999999998,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 53.24421760735156,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 346.7557823926483,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 346.75578239264837,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 346.7557823926483,
+      "remainingAlongCouple": 53.24421760735156
+    },
+    {
+      "t": 0.029166666666666664,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 55.83798623566948,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 344.1620137643304,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 344.1620137643305,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 344.1620137643304,
+      "remainingAlongCouple": 55.83798623566948
+    },
+    {
+      "t": 0.03333333333333333,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 56.90221474597654,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 343.09778525402334,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 343.0977852540234,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 343.09778525402334,
+      "remainingAlongCouple": 56.90221474597654
+    },
+    {
+      "t": 0.0375,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 55.268011187578374,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 344.7319888124215,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 344.73198881242155,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 344.7319888124215,
+      "remainingAlongCouple": 55.268011187578374
+    },
+    {
+      "t": 0.041666666666666664,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 48.58529360482361,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 351.41470639517627,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 351.4147063951763,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 351.41470639517627,
+      "remainingAlongCouple": 48.58529360482361
+    },
+    {
+      "t": 0.04583333333333333,
+      "h": 0.004166666666666667,
+      "incomingMoment": {
+        "x": 399.9999999999999,
+        "y": 0
+      },
+      "remainingMoment": {
+        "x": 38.01457284420476,
+        "y": 0
+      },
+      "canceledMoment": {
+        "x": 361.98542715579515,
+        "y": 0
+      },
+      "oldTip": {
+        "x": 8.209297477590164,
+        "y": 0
+      },
+      "achievedBrace": {
+        "x": 361.9854271557952,
+        "y": 0
+      },
+      "ankleMomentBudget": 236.6669388396763,
+      "canceledAlongCouple": 361.98542715579515,
+      "remainingAlongCouple": 38.01457284420476
+    }
+  ],
+  "tip": 0.6529526583388193,
+  "xi": 0.0047652101300379975
+}

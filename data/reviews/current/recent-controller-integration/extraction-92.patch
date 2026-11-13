@@ -1,0 +1,369 @@
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 66cfd12..8566e13 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -35,6 +35,8 @@ export interface SpacingContext {
+   constrained?: ReadonlySet<Body>;
+ }
+ 
++type MotionForecast = (command: Intent) => MovementSample[];
++
+ interface PeerPicture {
+   key: number;
+   age?: number;
+@@ -103,10 +105,10 @@ function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], c
+   return near;
+ }
+ 
+-function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
+   const near=forecastPeers(a,original,peers,context);
+   if(!near.length)return original;
+-  const samples=previewFreeMovement(a.body,original,context!.now,TURN_STEPS);
++  const samples=forecast(original);
+   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
+   const worst=Math.min(...clearances);
+   if(worst>=0)return original;
+@@ -115,11 +117,11 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+   // safely follows the same observed peers. Keep posture/facing/skill and let
+   // ordinary movement decide whether this request is actually achievable.
+   const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
+-  const slower=previewFreeMovement(a.body,slowed,context!.now,TURN_STEPS);
++  const slower=forecast(slowed);
+   if(slower.every(sample=>sample.support==='up')
+     &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
+   const gather:Intent={...original,vel:{x:0,y:0}};
+-  const gathered=previewFreeMovement(a.body,gather,context!.now,TURN_STEPS);
++  const gathered=forecast(gather);
+   if(gathered.some(sample=>sample.support!=='up'))return original;
+   const alternative=near.map(peer=>sweptClearance(a,gathered,peer));
+   // Do not cure one overlap by creating another in a previously clear lane.
+@@ -137,7 +139,7 @@ const passingFrames=new WeakMap<Agent,PassingFrame>();
+  * obstructing teammate's acquired transverse motion. This is not a new route
+  * or assignment. Full/half/gather alone can all intersect the same teammate.
+  */
+-function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
+   const goal=movementObjective(raw),speed=Math.hypot(raw.vel.x,raw.vel.y);
+   const clear=()=>{passingFrames.delete(a);return chosen;};
+   if((a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<1e-9
+@@ -146,13 +148,13 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
+     ||peers.some(p=>!Number.isFinite(p.age)||p.age! < 0
+       ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
+     ||!forecastPeers(a,raw,peers,context).length)return clear();
+-  const now=context!.now,flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
++  const flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
+   const forward={x:raw.vel.x/speed,y:raw.vel.y/speed};
+   const dot=(x:number,y:number,v:{x:number;y:number})=>x*v.x+y*v.y;
+   const gaps=(path:readonly MovementSample[])=>peers.map(p=>sweptClearance(a,path,p));
+-  const originalPath=previewFreeMovement(a.body,raw,now,TURN_STEPS);
++  const originalPath=forecast(raw);
+   const originalGaps=gaps(originalPath);
+-  const residual=previewFreeMovement(a.body,{...raw,vel:{...a.vel}},now,TURN_STEPS);
++  const residual=forecast({...raw,vel:{...a.vel}});
+   const residualGaps=gaps(residual);
+   let passing=passingFrames.get(a);
+   if(passing){
+@@ -171,7 +173,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
+   }
+   passingFrames.set(a,passing);
+   const peer=peers.find(p=>p.key===passing!.peer)!,normal=passing.normal;
+-  const oldPath=chosen===raw?originalPath:previewFreeMovement(a.body,chosen,now,TURN_STEPS);
++  const oldPath=chosen===raw?originalPath:forecast(chosen);
+   const oldGaps=gaps(oldPath),previous=Math.min(...oldGaps);
+   const error=(path:readonly MovementSample[])=>{
+     const end=path[path.length-1];
+@@ -185,7 +187,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
+     const scale=Math.min(1,speed/Math.max(1e-9,Math.hypot(vx,vy)));
+     // Preserve field containment, facing, posture and all other modifiers.
+     const command:Intent={...base,vel:containCoverage(a,{...base,vel:{x:vx*scale,y:vy*scale}}).vel};
+-    const path=previewFreeMovement(a.body,command,now,TURN_STEPS),next=gaps(path),end=path[path.length-1];
++    const path=forecast(command),next=gaps(path),end=path[path.length-1];
+     if(path.some(s=>s.support!=='up')||dot(end.pos.x-a.pos.x,end.pos.y-a.pos.y,forward)<=0
+       ||next.some((g,i)=>oldGaps[i]>=0&&g<0))return;
+     // An unsafe unloaded sprint's endpoint is not an achievable-contact
+@@ -256,7 +258,18 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
+       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
+     }
+-    const gathered=gatherForMotion(a,spaced,peers,context);
+-    intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
++    // Both selectors may ask about the same request. The body/time are fixed
++    // throughout this call and previews return detached samples. Share only
++    // exact request objects here; the next actor/decision gets a fresh cache.
++    let forecasts:Map<Intent,MovementSample[]>|undefined;
++    const forecast:MotionForecast=command=>{
++      const cached=forecasts?.get(command);
++      if(cached)return cached;
++      const samples=previewFreeMovement(a.body,command,context!.now,TURN_STEPS);
++      (forecasts??=new Map()).set(command,samples);
++      return samples;
++    };
++    const gathered=gatherForMotion(a,spaced,peers,forecast,context);
++    intents[i]=stepAroundTraffic(a,ia,gathered,peers,forecast,context);
+   }
+ }
+diff --git a/test/fixtures/spacing-forecast-reference.json b/test/fixtures/spacing-forecast-reference.json
+new file mode 100644
+index 0000000..7683175
+--- /dev/null
++++ b/test/fixtures/spacing-forecast-reference.json
+@@ -0,0 +1,188 @@
++{
++  "rows": [
++    {
++      "t": 2.05,
++      "command": {
++        "vel": {
++          "x": -1.6687360063055903,
++          "y": -8.320910406078104
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 39.95868188304838,
++          "y": 29.849313138312585
++        },
++        "velocity": {
++          "x": 2.3924601235778327,
++          "y": -5.339039800365324
++        }
++      }
++    },
++    {
++      "t": 2.1,
++      "command": {
++        "vel": {
++          "x": -1.921131431330565,
++          "y": -8.7220157463295
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.04074733823493,
++          "y": 29.537282686538987
++        },
++        "velocity": {
++          "x": 1.9894364891728997,
++          "y": -5.6209217993938685
++        }
++      }
++    },
++    {
++      "t": 2.15,
++      "command": {
++        "vel": {
++          "x": -2.158322836292483,
++          "y": -9.100712246082091
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.10753451516308,
++          "y": 29.21779946540795
++        },
++        "velocity": {
++          "x": 1.5440951136495964,
++          "y": -5.870135292019657
++        }
++      }
++    },
++    {
++      "t": 2.2,
++      "command": {
++        "vel": {
++          "x": -1.6101193207248223,
++          "y": -4.520026245392639
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.171505498494604,
++          "y": 28.8944824982167
++        },
++        "velocity": {
++          "x": 1.2955045476595848,
++          "y": -6.034955577551234
++        }
++      }
++    },
++    {
++      "t": 2.25,
++      "command": {
++        "vel": {
++          "x": -1.7629906634584245,
++          "y": -4.491976872775272
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.220744974616096,
++          "y": 28.564369379480297
++        },
++        "velocity": {
++          "x": 1.0354392671368675,
++          "y": -6.184584812610782
++        }
++      }
++    },
++    {
++      "t": 2.3,
++      "command": {
++        "vel": {
++          "x": -1.9040589177242533,
++          "y": -4.465252707513917
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.254832336846356,
++          "y": 28.228325688458234
++        },
++        "velocity": {
++          "x": 0.7649977816950915,
++          "y": -6.318541114577203
++        }
++      }
++    },
++    {
++      "t": 2.35,
++      "command": {
++        "vel": {
++          "x": -2.036336623411597,
++          "y": -4.45621999219746
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.29743212963818,
++          "y": 27.889873572838795
++        },
++        "velocity": {
++          "x": 0.9259010343984628,
++          "y": -6.387926462569558
++        }
++      }
++    }
++  ],
++  "costs": [
++    {
++      "t": 2.05,
++      "calls": 4,
++      "unique": 3
++    },
++    {
++      "t": 2.1,
++      "calls": 4,
++      "unique": 3
++    },
++    {
++      "t": 2.15,
++      "calls": 4,
++      "unique": 3
++    },
++    {
++      "t": 2.2,
++      "calls": 6,
++      "unique": 4
++    },
++    {
++      "t": 2.25,
++      "calls": 6,
++      "unique": 4
++    },
++    {
++      "t": 2.3,
++      "calls": 6,
++      "unique": 4
++    },
++    {
++      "t": 2.35,
++      "calls": 7,
++      "unique": 6
++    }
++  ]
++}
+diff --git a/test/spacing-forecast-reuse.test.ts b/test/spacing-forecast-reuse.test.ts
+new file mode 100644
+index 0000000..49ec228
+--- /dev/null
++++ b/test/spacing-forecast-reuse.test.ts
+@@ -0,0 +1,64 @@
++import {existsSync,readFileSync,writeFileSync} from 'node:fs';
++import {gunzipSync} from 'node:zlib';
++import {describe,expect,it,vi} from 'vitest';
++import * as Preview from '../src/physics/movement-preview.js';
++import type {Intent} from '../src/physics/world.js';
++import {Agent} from '../src/sim/agent.js';
++import {movementObjective,withMovementObjective} from '../src/sim/movement-objective.js';
++import {spaceTeammates} from '../src/sim/spacing.js';
++
++const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/traffic-step.json.gz',import.meta.url))).toString());
++const reference=new URL('./fixtures/spacing-forecast-reference.json',import.meta.url);
++function scene(row:any){
++ const body=structuredClone(row.body);
++ const a=new Agent(fixture.actor,'D','SS',fixture.player,body.profile,body,{kind:'man',update(){throw Error('No new decision');}});
++ const pictures=new Map<number,any>(row.peers.map((p:any)=>[p.idx,p.seen]));
++ const peers=row.peers.map((p:any)=>({idx:p.idx,team:'D',profile:p.profile,
++  get pos(){throw Error('Private peer position');},get vel(){throw Error('Private peer velocity');}} as unknown as Agent));
++ const raw:Intent=withMovementObjective(structuredClone(row.command),row.goal);
++ const run=()=>{
++  const source=structuredClone(a.body);
++  const intents:Intent[]=[raw,...peers.map(()=>({vel:{x:0,y:0},free:true}))];
++  spaceTeammates([a,...peers],intents,(_a,p)=>pictures.get(p.idx),{now:row.t});
++  expect(a.body).toEqual(source);
++  return {command:structuredClone(intents[0]),goal:movementObjective(intents[0])};
++ };
++ return {a,raw,run};
++}
++
++describe('spacing forecasts are shared only within one physical decision',()=>{
++ it('retains the accepted requests while evaluating an identical request object once',()=>{
++  const spy=vi.spyOn(Preview,'previewFreeMovement');
++  const rows=[];let duplicate=0;
++  try{
++   // Keep the same actor's passing frame across this saved encounter.
++   const first=scene(fixture.rows[0]),a=first.a;
++   for(const row of fixture.rows){
++    const s=scene(row);Object.assign(a.body,structuredClone(s.a.body));
++    const peers=row.peers.map((p:any)=>({idx:p.idx,team:'D',profile:p.profile} as Agent));
++    const pictures=new Map<number,any>(row.peers.map((p:any)=>[p.idx,p.seen]));
++    const intents:Intent[]=[s.raw,...peers.map(()=>({vel:{x:0,y:0},free:true}))];
++    const begin=spy.mock.calls.length;
++    spaceTeammates([a,...peers],intents,(_a,p)=>pictures.get(p.idx),{now:row.t});
++    const calls=spy.mock.calls.slice(begin),unique=new Set(calls.map(c=>c[1])).size;
++    duplicate+=calls.length-unique;
++    rows.push({t:row.t,command:structuredClone(intents[0]),goal:movementObjective(intents[0]),calls:calls.length,unique});
++   }
++   const physical=rows.map(({calls,unique,...r})=>r);
++   if(existsSync(reference))expect(physical).toEqual(JSON.parse(readFileSync(reference,'utf8')).rows);
++   if(process.env.SPACING_FORECAST_RECORD)writeFileSync(process.env.SPACING_FORECAST_RECORD,JSON.stringify({rows:physical,costs:rows.map(({command,goal,...r})=>r)},null,2)+'\n');
++   expect(duplicate).toBe(0);
++  }finally{spy.mockRestore();}
++ });
++ it('recomputes after the same command object meets a changed own body on the next call',()=>{
++  const s=scene(fixture.rows.at(-1)),spy=vi.spyOn(Preview,'previewFreeMovement');
++  try{
++   s.run();const first=spy.mock.calls.length,position=spy.mock.results[0].value[0].pos;
++   expect(first).toBeGreaterThan(0);
++   s.a.body.pos.x+=.1;s.a.body.vel.y*=.95;
++   s.run();expect(spy.mock.calls.length).toBeGreaterThan(first);
++   expect(spy.mock.calls[first][1]).toBe(s.raw);
++   expect(spy.mock.results[first].value[0].pos).not.toEqual(position);
++  }finally{spy.mockRestore();}
++ });
++});

@@ -1,0 +1,106 @@
+{
+  "baselineCommit": "3a5d86b2fa979bfa54495158be07e5cbfae9642f",
+  "baselineSourceSha256": "6368ce73ec217e52860d34533d9de102b028725b23688735c5f0b58aace472c5",
+  "finalSourceSha256": "622c45f18386aad28e724d8745933626a1f4e49adf1410fc687cfddb517a1218",
+  "node": "v22.23.3",
+  "branch": "claude/engine-priorities",
+  "physicsReady": false,
+  "cohorts": {
+    "film": {
+      "games": 6,
+      "seeds": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "clips": 862,
+      "concepts": 27,
+      "rosters": "equal-strength .55 Ironmen/Comets, one fixed pair"
+    },
+    "tracking": {
+      "games": 4,
+      "seed": 5,
+      "generation": "same generated equal-strength team pairs at both revisions; not film rosters"
+    },
+    "calibration": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2,
+      "teamsPerLeague": 8,
+      "baselineScrimmagePlays": 2055,
+      "finalScrimmagePlays": 1998
+    },
+    "fixedFilmProbes": "Five captured setups from baseline film; omit game scouting/audibles; compare only as isolated pairs"
+  },
+  "validation": {
+    "engineTestsPassed": 256,
+    "pythonTestsPassed": 12,
+    "pythonMovementTestsIncluded": 3,
+    "typecheck": "pass",
+    "build": "pass",
+    "viewerChecksPassed": 20
+  },
+  "commands": [
+    "npm test",
+    "npm run typecheck",
+    "npm run build",
+    "python3 -m unittest discover -s test -p 'test_*.py'",
+    "node --import tsx scripts/diag/film-observations.ts out/fixed-film.json --reps data/reviews/physics-world/film-feedback/fixed-setups.json",
+    "node --import tsx scripts/scenario-pack.ts out/pack.json",
+    "node --import tsx scripts/diag/hand-convergence.ts out/convergence.json",
+    "node --import tsx scripts/kinematics-compare.ts 4 5",
+    "node --import tsx scripts/calibrate.ts 16 7 2",
+    "node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc",
+    "python3 scripts/check-replay-viewer.py viewer/film-room.html"
+  ],
+  "notes": [
+    "Baseline recreated with git archive, no worktree or branch changes. Same measurement scripts and reference summaries copied into archive.",
+    "NFL extraction is descriptive, no parameters fitted; no AddBiomechanics subject files downloaded.",
+    "Final checks use the final source after teammate-spacing response correction. Earlier development panels are superseded.",
+    "Timing depends on concurrent load; before/after game runtime is not a CPU performance comparison.",
+    "First block event identifies a load/contact within the 20 Hz interval, stamped at its end. Other event/frame timestamps retain legacy tick-start convention.",
+    "Global solver resolution unchanged; one seed-3/power-1 QB/rusher fall disagreement remains.",
+    "ZIP contains byte-identical final HTML and README. PR #1 was not modified.",
+    "Reviewed text logs normalize trailing whitespace and extra EOF blanks; measurements are unchanged."
+  ],
+  "scripts": {
+    "scripts/diag/film-observations.ts": "b8f9a752568fe8c6eb7266aeec867970db1994dd675da37ea91c10c2aee7b6a9",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/scenario-pack.ts": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/replay-data.ts": "2f41af5aad0124730fb04714b0602f26e21a97985daefa258288e3cfda0fd741",
+    "scripts/check-replay-viewer.py": "53e9ea5cd642331444c4279a791c0e75e04d5320ca63b7a18cdd0aa0fa7de2f0"
+  },
+  "references": {
+    "data/bdb2023-summary.json": "cbade5fb94d33af434c3a3f52511c9d97d744c79755d7869249904d4d62c165c",
+    "data/bdb2025-summary.json": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba",
+    "data/reviews/physics-world/nfl-movement/manifest.json": "fad82ff6d4209880d3018a9cc3d53661ab2f79411b4f74b3e423fce672a3d5f8"
+  },
+  "artifacts": {
+    "data/reviews/physics-world/film-feedback/after-calibration-16.txt": "a6d3db6fcaa6c98aa16c053d5cb180f2362a1cfbc74b03398dbb3e694d920689",
+    "data/reviews/physics-world/film-feedback/after-kinematics.txt": "afdb71e96c2f5ce9b39fd3287f9a1ba97a765fb51fb75b687147c40f126250ad",
+    "data/reviews/physics-world/film-feedback/before-calibration-16.txt": "9fbb27d695c3217cf16f52621407a7948a68b3eb711a27d58a87e19795b5f7d7",
+    "data/reviews/physics-world/film-feedback/before-kinematics.txt": "64e3dc3fa64b955ea63d9a30bbc490eb05c515dc8e4e8090180056343aa6dc15",
+    "data/reviews/physics-world/film-feedback/build.txt": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529",
+    "data/reviews/physics-world/film-feedback/data-tests.txt": "aa20a2cbd4b495b721d271e618f4947b6f3d248ae4d791571f591ce4cc5a7919",
+    "data/reviews/physics-world/film-feedback/film-export.txt": "2ea2961d198cf262e0b81aaf0f98fc2904d2320549a76266b32f72799849a0b1",
+    "data/reviews/physics-world/film-feedback/film-observations.json": "d157f3a6d0315e7716d35816ec706fb206b4a357ae6f22f8a1014a9cfea06c57",
+    "data/reviews/physics-world/film-feedback/fixed-setups.json": "d631fa71df04609ed100b32099aca6f0880e2b2076f9cf57271f7f98720b6a17",
+    "data/reviews/physics-world/film-feedback/hand-convergence.json": "6d36470a7cbf2dc7111e18ebd0fd140c64b01a16d49a9d1f014b98f6843e25f9",
+    "data/reviews/physics-world/film-feedback/scenarios.json": "fd7e512404a071318fbfbea07b73f258bc58ec8ae2410908c276aec4a8612dfc",
+    "data/reviews/physics-world/film-feedback/tests.txt": "8ab91d24ba20572a9e535a91176fa7cf0f2a84c391d7472a6072fc30271d99b1",
+    "data/reviews/physics-world/film-feedback/typecheck.txt": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d",
+    "data/reviews/physics-world/film-feedback/viewer-check.json": "6e28e79c0fd2969e455ac69bb4da122f0122c920ed5ec1ff479d029e756d0dac"
+  },
+  "filmArtifacts": {
+    "viewer/film-room.html": "bc489cd6c868207d184becf9efef661cc99469304b111ed94fe2dc15441cd4f4",
+    "viewer/film-room.zip": "b1b152e4fcc277df77365532ab130cfc086162439f3db6824748f72153758044",
+    "viewer/replay.template.html": "1152caf83f4983e24410f2c5b5939dc4dee62a6735b96f6a2ad1ccfb876b4e1b"
+  }
+}

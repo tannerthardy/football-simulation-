@@ -1,0 +1,234 @@
+{
+  "branch": "claude/engine-priorities",
+  "baselineCommit": "16e87d83ad02b262f02e237c62f2084d7299b185",
+  "baselineSourceSha256": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "candidateSourceSha256": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "node": "v22.23.3",
+  "checks": {
+    "typescriptTests": {
+      "passed": 501,
+      "files": 49,
+      "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --minWorkers=1"
+    },
+    "pythonTests": {
+      "passed": 22,
+      "command": "python3 -m unittest discover -s test -p 'test_*.py'"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit"
+    },
+    "build": {
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json"
+    },
+    "pairedBrowser": {
+      "clips": 26,
+      "checks": 31,
+      "exitCode": 0,
+      "scriptSha256": "7044cde8ab0ebe28fb66b08089703eed21e821abc3067fc1e83aaf9fa6c264bb"
+    },
+    "inspectionBrowser": {
+      "clips": 6,
+      "checks": 34,
+      "exitCode": 0,
+      "includesDecodedWebMExport": true,
+      "scriptSha256": "3c5df680a87e4144461333e3dac1ab986d6261d69725026e65db6dac238dd12b",
+      "note": "Ran before adding source-group assertions to the multi-group controlled-cohort browser check; single-group inspection path unchanged."
+    }
+  },
+  "scripts": {
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/diag/recovery-allocation.ts": "6493c300d813a8ce9cf9e4dc078f9908e68b1e26efc4615f90836f0f4b97df53",
+    "scripts/diag/run-contact-review.ts": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+    "scripts/diag/compare-run-contact.py": "098ad7e8edf1a1fd44fe05d59d2456457aa91633becbe789ec4c20a7c52ed9d2",
+    "scripts/export-run-contact-review.ts": "fc2f7a5da8d70ca0f064d18b035b1ac27d88be20609f305c34c3ae55639cd3fb",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/shared-capabilities.ts": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505",
+    "scripts/scenario-pack.ts": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94",
+    "scripts/diag/held-recovery-football.ts": "96dc922e52ab3db4cc180ab9c0155e525af9cfb143fd28de246c982cc2dd8010",
+    "scripts/export-inspection.ts": "6a478eda8715c8f5b160acb3bdbdc03a690b4023ba4787ac4aaefdf0b16c438b",
+    "scripts/check-replay-viewer.py": "7044cde8ab0ebe28fb66b08089703eed21e821abc3067fc1e83aaf9fa6c264bb",
+    "scripts/contact-anatomy.ts": "224f92c9811548ea91dd751b11cbee00b53aa499561b55c87c00df0e1153fb62",
+    "scripts/contact-anatomy-measures.ts": "273cd713194f34d4ad74c49c1fcf4bda9b11b3d7f82f288ed9ed1ac53885b60a",
+    "viewer/replay.template.html": "79981288c4253003e0e8d379e68dfc1f120c9bb952cd05474e7d79c5c2838ec2"
+  },
+  "historicalDirectionalWitness": {
+    "sourceSha256": "33ba890110f54b22988f98bec519862deda5eb6e32d9e55ffff811bdece0511e",
+    "producingTemporaryScriptSha256": "b5d07acef53d8c36c7fa90a51140a342bac41ad3f61ce44925d1de5ab7c652af",
+    "status": "Historical unshipped candidate trace; source hash retained, not a rerun of the final engine."
+  },
+  "artifacts": [
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/README.md",
+      "sha256": "02422fceee4950197abedef72cd4f9bf2418108b005c31ca489e78eccf8db401",
+      "bytes": 6516
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-cost-repeat.json",
+      "sha256": "4ffbc859a4821b6001b431397404f5f2ccdae33bd6889612efaf99c2195d5a24",
+      "bytes": 7331
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-cost.json",
+      "sha256": "68457a12099ccb261f3d2f55be481fd8f7183c90834446f4bf543a58132bac50",
+      "bytes": 7297
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-games-seed17.json",
+      "sha256": "d3e9db53a558fe8b33558eedb5dedfc0588310178e499f7d1c7938306e5d4332",
+      "bytes": 11285
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-games-seed9.json",
+      "sha256": "b180c948d83c9a05cadcd78efc0b430126dbf3ad2d17be3e3079ba225aef4a59",
+      "bytes": 11226
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-hand.json",
+      "sha256": "1230cecea52972e285c9941c5539ac22d72726a53694cb084d413f4cc4563ed5",
+      "bytes": 29168
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-moving.json.gz",
+      "sha256": "4b6d9668604724c251da5837a1a796435e16f3d27ef3881747fcd9bd132b6e92",
+      "bytes": 976346
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-runs.json.gz",
+      "sha256": "3578b5ed4d0352869cf82fa520456dc11e7c9951173ebf33824deb19ef4f41f5",
+      "bytes": 169163
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-scenarios.json",
+      "sha256": "9e52845e19c706e583dcbc9c404950a75d17b2d8b3e4bb8471fdf0bab7bd9f10",
+      "bytes": 19890
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/baseline-shared.json",
+      "sha256": "8f8169b08602b4df3eba009c46a062d71a8c10f84577d0303e3a58ffeed3796e",
+      "bytes": 136742
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-cost-repeat.json",
+      "sha256": "1fc402135f5a1bad60bb4b84e4a1a17aa00221f13c9b5463bf8ddaef19c1f10c",
+      "bytes": 7300
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-cost.json",
+      "sha256": "584de8feb3fcdc2b779a5fea1b66cfc4b07ce7d986b403cbc036a3e2b880bd2b",
+      "bytes": 7303
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-games-seed17.json",
+      "sha256": "0bd9da9e58012b374623ea9ae6ecefc67c67ff1ca14aac1afdeaf71b3bde9aa7",
+      "bytes": 11249
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-games-seed9.json",
+      "sha256": "4c1fc0268830ee13396658cc54d2cdc26638c0f4430456a66770b91f66be30f9",
+      "bytes": 11212
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-hand.json",
+      "sha256": "4da60ab8fdcc673a0bbcfa108fc3dc11177b544b4c2b2c5846d2fdbf2fba8d0c",
+      "bytes": 29108
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-moving.json.gz",
+      "sha256": "a0ebdf925db0543170a08ac2be969e5c93578e00aa672b607ff793c926032c5b",
+      "bytes": 948545
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-runs.json.gz",
+      "sha256": "cd07634af5c0f0b6d21e05822922c0d92d9b415bcf7482ae3077d5fc669344ca",
+      "bytes": 161414
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-scenarios.json",
+      "sha256": "f0d833bffee108c221d3b9b41e89dc3c4f7f5ccdec31770c1cf3986d492eab80",
+      "bytes": 19925
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/candidate-shared.json",
+      "sha256": "253d850a05d8c6b4272ffc91432e6881b1fd261bb75bf14b90091139bd0c7ae5",
+      "bytes": 136816
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/cost-comparison.json",
+      "sha256": "4498188599327ace51832d914c12e429ffc253a6258e43e5239796efc209b7e9",
+      "bytes": 2091
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/data-tests.log",
+      "sha256": "084be0b897fc080ce8a21f517058490226856a5e50e6ac80365344d8d3872bf6",
+      "bytes": 121
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/football-comparison.json",
+      "sha256": "f72043ac89b9cbd205315fdb5f94f99384dd38b201b440623ad4c0efc291474d",
+      "bytes": 1588
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/inspection-viewer-check.json",
+      "sha256": "7ab92f6cd29e3d097a7384eec74efdf0d9eac14a1aef38cb2af314b170545706",
+      "bytes": 2705
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/moving-comparison.json",
+      "sha256": "14d67cc0b8e9e27bfea49dda119cf9c53910f221c0352773acd84fcf5d6e4eea",
+      "bytes": 8377
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/paired-viewer-check.json",
+      "sha256": "50ff8e72ea4a43eb3f23ab8a1fa774318f00dc57f24bd2451bedb6908b1d10d7",
+      "bytes": 2430
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/rejected-allocation-witness.json",
+      "sha256": "a5624bb2996cd40610242ed440f0982eee17731f68e5b69048d004e26cb7c535",
+      "bytes": 72737
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/rejected-directional-allocation-witness.jsonl",
+      "sha256": "61bc592b2883bc379ff28e03ce2342a6cb1237790cdf4a3dcec6faf345eebb76",
+      "bytes": 83249
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/run-comparison.json",
+      "sha256": "4dbd4e0b96a16865f3cb4ac8e5120f11dbbabcc8e857d099618b323be3120c9a",
+      "bytes": 200225
+    },
+    {
+      "path": "data/reviews/physics-world/recovery-allocation/tests.log",
+      "sha256": "cb128e43786fc3be4d217a12329d5376b80b7761cd2038963d321a480cfb32e5",
+      "bytes": 3675
+    },
+    {
+      "path": "viewer/run-contact-review.html",
+      "sha256": "ec4031d738c797d07080c8862dbae36999315e678f9bd3eee74ed3586e1ec601",
+      "bytes": 6163352
+    },
+    {
+      "path": "viewer/run-contact-review.zip",
+      "sha256": "3ac8c8bba188f86011298f4e03fdc1fb49e12d2a8095f63972f59ffb68715b64",
+      "bytes": 4104708
+    },
+    {
+      "path": "viewer/inspection-room.html",
+      "sha256": "f6053490ceafb0e6dc28dfa167052d74a539575ddbca1e8ec870c519eb7b076a",
+      "bytes": 1362345
+    },
+    {
+      "path": "viewer/inspection-room.zip",
+      "sha256": "eafd40e2425bce2cbd6e98afb987f46935d3a0481bf33ad7bd5fb0ef5e570752",
+      "bytes": 882821
+    }
+  ],
+  "limits": [
+    "SourceVersion pins src separately from diagnostic scripts and exported artifacts.",
+    "Physics accounting and finite-state checks do not prove football realism.",
+    "Four fixed games and balanced controlled run calls are regression guards; different generated rosters are not required to match exact NFL averages.",
+    "Dedicated repeat benchmarks have substantial JIT/GC/host variation; no precise overhead claim."
+  ]
+}

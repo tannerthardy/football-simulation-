@@ -1,0 +1,101 @@
+{
+  "DB": {
+    "n": 63,
+    "weightLb": 199,
+    "forty": 4.46,
+    "tenSplit": 1.52,
+    "shuttle": 4.16,
+    "threeCone": 6.94,
+    "initialFreeDrive": 7.777,
+    "brake": 6.697,
+    "lateral": 6.673
+  },
+  "DL": {
+    "n": 66,
+    "weightLb": 273.5,
+    "forty": 4.82,
+    "tenSplit": 1.635,
+    "shuttle": 4.445,
+    "threeCone": 7.26,
+    "initialFreeDrive": 6.634,
+    "brake": 5.992,
+    "lateral": 6.184
+  },
+  "FB": {
+    "n": 1,
+    "weightLb": 259,
+    "forty": 4.78,
+    "tenSplit": 1.61,
+    "shuttle": 4.43,
+    "threeCone": 7.39,
+    "initialFreeDrive": 7.127,
+    "brake": 6.013,
+    "lateral": 5.907
+  },
+  "LB": {
+    "n": 47,
+    "weightLb": 237,
+    "forty": 4.59,
+    "tenSplit": 1.56,
+    "shuttle": 4.2,
+    "threeCone": 7.02,
+    "initialFreeDrive": 7.486,
+    "brake": 6.649,
+    "lateral": 6.565
+  },
+  "OL": {
+    "n": 80,
+    "weightLb": 315.5,
+    "forty": 5.22,
+    "tenSplit": 1.785,
+    "shuttle": 4.7,
+    "threeCone": 7.74,
+    "initialFreeDrive": 5.627,
+    "brake": 5.289,
+    "lateral": 5.249
+  },
+  "QB": {
+    "n": 16,
+    "weightLb": 219.0,
+    "forty": 4.8,
+    "tenSplit": 1.64,
+    "shuttle": 4.31,
+    "threeCone": 6.99,
+    "initialFreeDrive": 6.534,
+    "brake": 6.255,
+    "lateral": 6.531
+  },
+  "RB": {
+    "n": 16,
+    "weightLb": 210.5,
+    "forty": 4.54,
+    "tenSplit": 1.54,
+    "shuttle": 4.19,
+    "threeCone": 6.915,
+    "initialFreeDrive": 7.68,
+    "brake": 6.883,
+    "lateral": 7.108
+  },
+  "TE": {
+    "n": 15,
+    "weightLb": 250,
+    "forty": 4.64,
+    "tenSplit": 1.59,
+    "shuttle": 4.31,
+    "threeCone": 7.05,
+    "initialFreeDrive": 7.156,
+    "brake": 6.319,
+    "lateral": 6.474
+  },
+  "WR": {
+    "n": 48,
+    "weightLb": 195.5,
+    "forty": 4.44,
+    "tenSplit": 1.51,
+    "shuttle": 4.14,
+    "threeCone": 6.845,
+    "initialFreeDrive": 7.93,
+    "brake": 6.95,
+    "lateral": 7.106
+  }
+}

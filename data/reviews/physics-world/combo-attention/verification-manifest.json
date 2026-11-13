@@ -1,0 +1,515 @@
+{
+  "addedEngineFiles": [],
+  "baselineCommit": "4e2abafa398676cacc24f5ae22ae04fe9c38956e",
+  "beforeSourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+  "changedEngineFiles": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/playsim.ts"
+  ],
+  "checks": {
+    "attentionTests": {
+      "baselineControlPasses": 1,
+      "baselineFeatureFailures": 19,
+      "baselineLog": "tests-before.log",
+      "candidateLog": "tests-after.log",
+      "exitCode": 0,
+      "passed": 20,
+      "source": "controlled-tests.ts"
+    },
+    "baselineCommit": "4e2abaf",
+    "baselineSourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+    "build": {
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    "finalDiagnosticExportCompile": {
+      "build": true,
+      "exitCode": 0,
+      "note": "Compiler and build repeated after new witness/adverse/export tools froze; source/tests unchanged.",
+      "typecheck": true
+    },
+    "fullTypeScriptTests": {
+      "durationSeconds": 92.47,
+      "exitCode": 0,
+      "files": 72,
+      "log": "full-tests.log",
+      "passed": 812
+    },
+    "measurementPolicy": "Whole-play block_climb events; old command-local counts omit the new prepass. Detailed own-cue/contact proofs cover six predeclared neutral witnesses. Post-hoc adverse investigations remain separate.",
+    "migrationReview": "test-migration-review.md",
+    "node": "v22.23.3",
+    "optionalHelperControls": {
+      "baselineLog": "optional-controls-before.log",
+      "candidatePassed": 19,
+      "existingControlsPassedOnBaseline": 18,
+      "newRecoveryFailureOnBaseline": 1
+    },
+    "pythonTests": {
+      "exitCode": 0,
+      "log": "python.log",
+      "passed": 22
+    },
+    "sourceFilesChanged": [
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/playsim.ts"
+    ],
+    "sourceFrozen": true,
+    "sourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+    "typecheck": {
+      "exitCode": 0,
+      "log": "typecheck.log"
+    }
+  },
+  "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+  "comparisonSha256": "f9561f577a06593aeb8c416aca65a77e927283ec4fcce226d1ab0ec54192b226",
+  "currentCodeFiles": {
+    "CLAUDE.md": "1a2e3af1900b7b48e49a5e6bc7c0f687832d19f8ee43aa32c37d0dee0a628310",
+    "data/README.md": "e82b7ac4856937f483432bf6c9c96a8618a99b917eab2cf504067fe256cbade8",
+    "docs/PHYSICS_DEVELOPMENT.md": "0455723bb6b1259262ea413b5920ec13b534240ff0c99aebcacfa3a782f281dd",
+    "docs/reviews/practical-validation-and-stable-physics.md": "9679419b0baf090ec6fff8aaa8320fa079f89b7443dc7af0b1f60d713bfb33a8",
+    "docs/reviews/universal-ol-controller.md": "0007295ca835011e1550cb5271681f8b45307a1c5db6a708d8e71275d4681ecb",
+    "scripts/diag/combo-attention-adverse-witness.ts": "78f02656390e01960c1a0662ea06c2a8f3e83e6bbbbd7c12b617b8868d09710b",
+    "scripts/diag/combo-attention-compare.py": "f9561f577a06593aeb8c416aca65a77e927283ec4fcce226d1ab0ec54192b226",
+    "scripts/diag/combo-attention-witness.ts": "46e3be84d1e29f81f4d2be60b94e7ae6759587ceef266a16d0581d1a82149ccb",
+    "scripts/diag/combo-transfer-review.ts": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+    "scripts/diag/compare-combo-transfer.py": "fed54abaf570205301bd588b0066dadee653c6712b34dc250d7e1aa6138475ea",
+    "scripts/diag/ol-exchange-compare.py": "1c59e6f0861f7f597ff6fd0010d779bc58dbb4b2f0db7b965ede98c129941d15",
+    "scripts/export-combo-attention.ts": "27ee3df33c664cfa93117a37fb8944bbd20839dcb97756e5f38ee3ff53c3dc84",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+    "src/sim/agent.ts": "e9cb4f775ad823225cbf1c53a7d1a2fad0704c47845280aa354ec995dc2e6ebc",
+    "src/sim/behaviors/blocking.ts": "881d4364e39ed7ac7790e9bab8aaac84f7a030afd742c97a26947ca110a73e1d",
+    "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+    "src/sim/playsim.ts": "7c38c9bde204d18969e9d6effe047e61d94cb79a39ae89b1f2551c59a334446d",
+    "test/combination-ownership.test.ts": "af272ed60dab92443cc66e084ec1ca8f3dffc9ab0f73b88f4f9f711b5fe44b19",
+    "test/combo-attention.test.ts": "b07a599cca3073680d5854e130b4abab47b5e1c7f2f66c52d82cbca9da997862",
+    "test/combo-transfer.test.ts": "6dd6518cd4a91dec8893f49e269a0e7f1a8c98ae693972a30214ba8bbc496135",
+    "test/zone-helper-check.test.ts": "44c9977070afdea10d39b0c33c5186b81026b304f9cf81d785dd621ed6d9ca12",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4"
+  },
+  "files": {
+    "data/reviews/physics-world/combo-attention/README.md": "bb28d25903691d4cfc6bc0ea17aaf44824e61b3f41aa3e298eada3eb6394ebd1",
+    "data/reviews/physics-world/combo-attention/adverse-after.json.gz": "675f45e1a1362fb8e75db28fd8d5eafb23850e30f97c46d021669c748838ca5f",
+    "data/reviews/physics-world/combo-attention/adverse-before.json.gz": "dd8418458ca7881cd7bae920a9db40ec6b7747caf33f565ea701cbab3ed0b29d",
+    "data/reviews/physics-world/combo-attention/adverse-review.md": "0f76704d3a7b22a9d544fd45daaf4c30890da26a740d78fa78e55f372263edfe",
+    "data/reviews/physics-world/combo-attention/build.log": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d",
+    "data/reviews/physics-world/combo-attention/candidate-film.json.gz": "e61b9766c55e944f783eaaa9ac946c81938f1980d08e413c6caa7218bbca6cc1",
+    "data/reviews/physics-world/combo-attention/candidate.json.gz": "86a8ad208396df8b96b3be10b598d6b671d7ea6d8bb784655074a86156080b8e",
+    "data/reviews/physics-world/combo-attention/candidate.log": "75b8bfbd748e75e92b5cd2ef0bcf55d984fe7728d54f34a7f3b26cbc3410ba3f",
+    "data/reviews/physics-world/combo-attention/checks.json": "d1a47b27fcc7445d260e0ff750a5081cf5c2349309348efa00b8d4423ce744e2",
+    "data/reviews/physics-world/combo-attention/comparison.json": "3214460b08c7775ecc1b32be2d447049accaaed96ea12ea966cc1a5a8b421247",
+    "data/reviews/physics-world/combo-attention/controlled-tests.ts": "b07a599cca3073680d5854e130b4abab47b5e1c7f2f66c52d82cbca9da997862",
+    "data/reviews/physics-world/combo-attention/cutoff-implementation-design.md": "313b7674a123966098e8375a72de425b0fad35a138e24d140d2bbd7789864e64",
+    "data/reviews/physics-world/combo-attention/cutoff-next-witness.md": "1d695de26d2a1b5af2410416d467468bf1bd4b31e39f551a8468f975f2302792",
+    "data/reviews/physics-world/combo-attention/engine.patch": "cfefdee9e4039758894a5351b535d517068d5248c7e121ca37ade63fa655afa3",
+    "data/reviews/physics-world/combo-attention/film-check.py": "11afa95088b88ddefe74e39f40a7548d582555fb85514e5b445e4166ef407eb5",
+    "data/reviews/physics-world/combo-attention/film/BEFORE-CA-R1-iz_strong-over-R-S3_d6dfa190412d_0.00-1.00s.webm": "30bc558d68243ac5d18faf2feb5565043b95fe92dedbb736488a74863c3ab0e9",
+    "data/reviews/physics-world/combo-attention/film/FINAL-CA-R1-iz_strong-over-R-S3_246931590ef7_0.00-1.00s.webm": "d075f9ef4751c0170ec3b5e37fd56c2efddc600a17d85757d08e5fc5f341dd62",
+    "data/reviews/physics-world/combo-attention/film/browser-check.json": "a043fb335550c655d2e7204a270864913be48a915103c84a72ba430dec3e959d",
+    "data/reviews/physics-world/combo-attention/film/film-integrity.json": "ddee9ab16c819a8adbbb41e685f1c730d11e01b9724719b624b15c4671ac6913",
+    "data/reviews/physics-world/combo-attention/film/film-room-desktop.png": "0800e614f13b773f1664b5fafbd2d3c9caec5ba53c86069680e262abbfb06c5e",
+    "data/reviews/physics-world/combo-attention/film/film-room-mobile.png": "ff37336b75e56c43aad5ef74f3c5c9ed36a21db4b7f2ebf08aabfd7e86a0a85c",
+    "data/reviews/physics-world/combo-attention/full-tests.log": "3b56fea90497b45d023a2ea8870b6481b06745dfc8680133021576c28cfb7177",
+    "data/reviews/physics-world/combo-attention/optional-controls-before.log": "59e4055233fcd08fbb8387d3904b61852fe95ca606e4e30928e031f1624ff905",
+    "data/reviews/physics-world/combo-attention/python.log": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524",
+    "data/reviews/physics-world/combo-attention/test-migration-review.md": "5f2e7feeb23b61f7f784b26536e7d1390929917e8e2a81c2d594ce8666de0e60",
+    "data/reviews/physics-world/combo-attention/test-migrations.patch": "5403883c4a2cfb0396e6cccc10850ffd6520e412f358c54b121e2c45c0cbe2ba",
+    "data/reviews/physics-world/combo-attention/tests-after.log": "53a2af63edc9f5b3c4e359864e7268880a6d33b3912989587a126031b4de15af",
+    "data/reviews/physics-world/combo-attention/tests-before.log": "5df961fe70edf79a647cad5af8a0d00f58ae407e20fa0a4f9afa66bd487aa4e1",
+    "data/reviews/physics-world/combo-attention/typecheck.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "data/reviews/physics-world/combo-attention/verify-evidence.py": "89b52f28773454681f7d5cdba5dc5c338a667b3219457f75d429fe4f56dd7479",
+    "data/reviews/physics-world/combo-attention/witness-after.json.gz": "4e3bb3ddb8ef884fdebe97be57661d7e01699584ff48acbf0fcf1a008f76bbbb",
+    "data/reviews/physics-world/combo-attention/witness-before.json.gz": "4bf654ada82cf007793464fb04e2a127d0d8b8ac69b1666bfc1870e5e586a18c",
+    "data/reviews/physics-world/zone-helper-check/candidate.json.gz": "287ffd1b25e230ff7055b565084a823908163da8b1eca92124e4ebe39b58874d",
+    "docs/reviews/joined-combination-attention.md": "25ceef92c4102c31dc68e6780a3bf10f313f604ec375e0c85d96fe6d4c0fe06d",
+    "viewer/combo-attention.html": "96d54ef9c4854b88ac18c02a2b562847ded6e6d44fdb854878c83471f94e8b3e",
+    "viewer/combo-attention.zip": "0c913110b8ecd9315d80116f095b9c4d0cbb907c28f55e8425ee325fb581b5a2"
+  },
+  "finalSourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "independentChecks": {
+    "allAdversePairs": [
+      {
+        "afterYards": -0.85,
+        "beforeYards": -0.84,
+        "id": "CT-R1-iz_strong-over-L-S11",
+        "yardsDelta": -0.010000000000000009
+      },
+      {
+        "afterYards": 2.1,
+        "beforeYards": 2.11,
+        "id": "CT-R1-iz_strong-under-L-S3",
+        "yardsDelta": -0.009999999999999787
+      },
+      {
+        "afterYards": -0.93,
+        "beforeYards": -0.85,
+        "id": "CT-R1-iz_strong-tite-L-S11",
+        "yardsDelta": -0.08000000000000007
+      },
+      {
+        "afterYards": 0.01,
+        "beforeYards": 1.03,
+        "id": "CT-R1-oz_strong-under-R-S3",
+        "yardsDelta": -1.02
+      },
+      {
+        "afterYards": 0.38,
+        "beforeYards": 0.5,
+        "id": "CT-R1-oz_strong-under-R-S11",
+        "yardsDelta": -0.12
+      },
+      {
+        "afterYards": 1.09,
+        "beforeYards": 1.58,
+        "id": "CT-R1-oz_strong-under-L-S11",
+        "yardsDelta": -0.49
+      },
+      {
+        "afterYards": 1.85,
+        "beforeYards": 10.73,
+        "id": "CT-R1-oz_strong-odd-L-S3",
+        "yardsDelta": -8.88
+      },
+      {
+        "afterYards": -1.13,
+        "beforeYards": -0.18,
+        "id": "CT-R1-oz_strong-bear-R-S11",
+        "yardsDelta": -0.95
+      },
+      {
+        "afterYards": 0.61,
+        "beforeYards": 2.31,
+        "id": "CT-R1-oz_strong-bear-L-S3",
+        "yardsDelta": -1.7000000000000002
+      },
+      {
+        "afterYards": -0.59,
+        "beforeYards": 1.27,
+        "id": "CT-R1-wz_strong-over-R-S3",
+        "yardsDelta": -1.8599999999999999
+      },
+      {
+        "afterYards": 6.15,
+        "beforeYards": 6.37,
+        "id": "CT-R1-wz_strong-under-L-S3",
+        "yardsDelta": -0.21999999999999975
+      },
+      {
+        "afterYards": 2.7,
+        "beforeYards": 4.01,
+        "id": "CT-R1-wz_strong-odd-L-S3",
+        "yardsDelta": -1.3099999999999996
+      },
+      {
+        "afterYards": -1.1,
+        "beforeYards": 0.83,
+        "id": "CT-R1-wz_strong-tite-L-S3",
+        "yardsDelta": -1.9300000000000002
+      },
+      {
+        "afterYards": 3.15,
+        "beforeYards": 3.56,
+        "id": "CT-R1-wz_strong-bear-L-S11",
+        "yardsDelta": -0.41000000000000014
+      },
+      {
+        "afterYards": 1.02,
+        "beforeYards": 1.88,
+        "id": "CT-R1-power-over-L-S3",
+        "yardsDelta": -0.8599999999999999
+      },
+      {
+        "afterYards": 4.7,
+        "beforeYards": 7.11,
+        "id": "CT-R1-power-under-R-S3",
+        "yardsDelta": -2.41
+      },
+      {
+        "afterYards": 0.59,
+        "beforeYards": 0.63,
+        "id": "CT-R1-power-under-R-S11",
+        "yardsDelta": -0.040000000000000036
+      },
+      {
+        "afterYards": 2,
+        "beforeYards": 3.86,
+        "id": "CT-R1-power-under-L-S3",
+        "yardsDelta": -1.8599999999999999
+      },
+      {
+        "afterYards": -0.4,
+        "beforeYards": 4.98,
+        "id": "CT-R1-power-under-L-S11",
+        "yardsDelta": -5.380000000000001
+      },
+      {
+        "afterYards": -0.67,
+        "beforeYards": -0.49,
+        "id": "CT-R1-power-odd-R-S11",
+        "yardsDelta": -0.18000000000000005
+      },
+      {
+        "afterYards": 1.54,
+        "beforeYards": 1.68,
+        "id": "CT-R1-power-tite-L-S11",
+        "yardsDelta": -0.1399999999999999
+      },
+      {
+        "afterYards": 1.58,
+        "beforeYards": 1.9,
+        "id": "CT-R1-power-bear-L-S3",
+        "yardsDelta": -0.31999999999999984
+      },
+      {
+        "afterYards": -0.48,
+        "beforeYards": -0.42,
+        "id": "CT-R1-counter-over-L-S11",
+        "yardsDelta": -0.06
+      },
+      {
+        "afterYards": 0.98,
+        "beforeYards": 3.84,
+        "id": "CT-R1-counter-under-R-S3",
+        "yardsDelta": -2.86
+      },
+      {
+        "afterYards": 1.11,
+        "beforeYards": 1.39,
+        "id": "CT-R1-counter-under-R-S11",
+        "yardsDelta": -0.2799999999999998
+      },
+      {
+        "afterYards": -1.17,
+        "beforeYards": -1.04,
+        "id": "CT-R1-counter-under-L-S3",
+        "yardsDelta": -0.1299999999999999
+      },
+      {
+        "afterYards": 2.19,
+        "beforeYards": 2.32,
+        "id": "CT-R1-trap-over-L-S3",
+        "yardsDelta": -0.1299999999999999
+      },
+      {
+        "afterYards": 3.54,
+        "beforeYards": 3.94,
+        "id": "CT-R1-trap-under-R-S11",
+        "yardsDelta": -0.3999999999999999
+      },
+      {
+        "afterYards": 0.73,
+        "beforeYards": 0.84,
+        "id": "CT-R1-duo-under-L-S11",
+        "yardsDelta": -0.10999999999999999
+      },
+      {
+        "afterYards": 1.98,
+        "beforeYards": 2.73,
+        "id": "CT-R1-duo-odd-R-S3",
+        "yardsDelta": -0.75
+      },
+      {
+        "afterYards": 3.61,
+        "beforeYards": 5.79,
+        "id": "CT-R1-duo-odd-R-S11",
+        "yardsDelta": -2.18
+      },
+      {
+        "afterYards": 0.95,
+        "beforeYards": 2.9,
+        "id": "CT-R1-duo-tite-L-S3",
+        "yardsDelta": -1.95
+      },
+      {
+        "afterYards": 1.21,
+        "beforeYards": 2.97,
+        "id": "CT-R1-duo-bear-R-S11",
+        "yardsDelta": -1.7600000000000002
+      },
+      {
+        "afterYards": 2.97,
+        "beforeYards": 4.35,
+        "id": "CT-R1-duo-bear-L-S3",
+        "yardsDelta": -1.3799999999999994
+      },
+      {
+        "afterYards": -0.17,
+        "beforeYards": -0.12,
+        "id": "CT-R1-split_zone-over-R-S3",
+        "yardsDelta": -0.05000000000000002
+      },
+      {
+        "afterYards": 2.07,
+        "beforeYards": 2.14,
+        "id": "CT-R1-split_zone-over-L-S11",
+        "yardsDelta": -0.07000000000000028
+      },
+      {
+        "afterYards": 1.05,
+        "beforeYards": 2.4,
+        "id": "CT-R1-split_zone-under-R-S3",
+        "yardsDelta": -1.3499999999999999
+      },
+      {
+        "afterYards": 0.67,
+        "beforeYards": 1.27,
+        "id": "CT-R1-split_zone-under-L-S3",
+        "yardsDelta": -0.6
+      },
+      {
+        "afterYards": 1.4,
+        "beforeYards": 1.71,
+        "id": "CT-R1-split_zone-under-L-S11",
+        "yardsDelta": -0.31000000000000005
+      },
+      {
+        "afterYards": 4.88,
+        "beforeYards": 4.94,
+        "id": "CT-R1-split_zone-tite-L-S11",
+        "yardsDelta": -0.0600000000000005
+      },
+      {
+        "afterYards": 2.37,
+        "beforeYards": 5.12,
+        "id": "CT-R1-split_zone-bear-R-S11",
+        "yardsDelta": -2.75
+      },
+      {
+        "afterYards": 2.7,
+        "beforeYards": 2.78,
+        "id": "CT-R1-split_zone-bear-L-S3",
+        "yardsDelta": -0.07999999999999963
+      },
+      {
+        "afterYards": 2.44,
+        "beforeYards": 28.49,
+        "id": "CT-R2-oz_strong-over-L-S11",
+        "yardsDelta": -26.049999999999997
+      }
+    ],
+    "attentionAttemptsStoppedByPhysicalKeeperGate": 54,
+    "focusedTests": 66,
+    "fullTypeScriptTests": 812,
+    "joinedPairsBothAttentionAttempts": 7,
+    "joinedPairsBothVisualSurfaceReads": 0,
+    "matchedCommonWitnessInputs": 6,
+    "matchedFullInitialProjections": 162,
+    "naturalShippedFilmClips": 12,
+    "ordinaryExactCompletePublicResults": 69,
+    "ordinaryExactCompleteSignatures": 18,
+    "ordinaryMetrics": [
+      {
+        "actualCheckClimbs": 5,
+        "actualWholePlayClimbs": 119,
+        "commandLocalClimbsReportedByOldCollector": 119,
+        "meanYards": 1.402625,
+        "olFalls": 14,
+        "snaps": 160,
+        "stuffs": 37
+      },
+      {
+        "actualCheckClimbs": 5,
+        "actualWholePlayClimbs": 116,
+        "commandLocalClimbsReportedByOldCollector": 5,
+        "meanYards": 1.386,
+        "olFalls": 17,
+        "snaps": 160,
+        "stuffs": 37
+      }
+    ],
+    "ownBackerRunnerReads": 8,
+    "ownSurfaceVisualReads": 15,
+    "panelObservedPlainControls": 324,
+    "personalAttentionAttempts": 69,
+    "posthocAdverseInputs": 4,
+    "posthocContinuousLoadedKeeperJoints": [
+      6,
+      6
+    ],
+    "posthocFirstBodyIntentJobChangesAtRelease": [
+      {
+        "firstChangedTick": {
+          "afterAllAssignmentsSha256": 1.35,
+          "afterAllBodiesSha256": 1.35,
+          "completedIntentSha256": 1.35
+        },
+        "id": "CAP-R1-oz_strong-odd-L-S3"
+      },
+      {
+        "firstChangedTick": {
+          "afterAllAssignmentsSha256": 1.3,
+          "afterAllBodiesSha256": 1.3,
+          "completedIntentSha256": 1.3
+        },
+        "id": "CAP-R1-power-under-L-S11"
+      },
+      {
+        "firstChangedTick": {
+          "afterAllAssignmentsSha256": 1.65,
+          "afterAllBodiesSha256": 1.65,
+          "completedIntentSha256": 1.65
+        },
+        "id": "CAP-R1-split_zone-bear-R-S11"
+      },
+      {
+        "firstChangedTick": {
+          "afterAllAssignmentsSha256": 2.05,
+          "afterAllBodiesSha256": 2.05,
+          "completedIntentSha256": 2.05
+        },
+        "id": "CAP-R2-oz_strong-over-L-S11"
+      }
+    ],
+    "posthocHistoricalRemoteDepartures": [
+      4,
+      0
+    ],
+    "posthocObservedPlainControls": 8,
+    "posthocSelfDeparturesWithOwnFourCues": [
+      0,
+      6
+    ],
+    "pythonTests": 22,
+    "retainedOLControllerLoadsChecked": [
+      16335,
+      10180
+    ],
+    "witnessClimbProof": [
+      {
+        "climbs": 5,
+        "historicalRemoteDepartures": 2,
+        "keeperContinuity": 5,
+        "laterLoadedBackerContact": 5,
+        "positiveKeeperForce": 5,
+        "selfCurrentProposalsWithOwnFourCues": 0
+      },
+      {
+        "climbs": 5,
+        "historicalRemoteDepartures": 0,
+        "keeperContinuity": 5,
+        "laterLoadedBackerContact": 4,
+        "positiveKeeperForce": 5,
+        "selfCurrentProposalsWithOwnFourCues": 5
+      }
+    ],
+    "witnessObservedPlainControls": 12
+  },
+  "posthocWitnessSha256": "78f02656390e01960c1a0662ea06c2a8f3e83e6bbbbd7c12b617b8868d09710b",
+  "schema": "combo-attention-verification-v1",
+  "scope": [
+    "All 162 recorded full initial projections, native outcomes/events, observer/plain/RNG controls and global residuals.",
+    "Detailed personal attention and native keeper continuity are independently checked only in the six fixed common witnesses.",
+    "Four post-hoc adverse investigations are separate: exact cached native results, neutral controls, own departure cues, keeper continuity and first changed body/intent/job ticks.",
+    "The old panel omits C prepass decisions and private reads. Retained OL loads are not every native participant or every controller boundary.",
+    "Recorded browser evidence is bound to the exact twelve shipped clips, full telemetry/events/native choices and two source-stamped video files.",
+    "Default checks immutable saved history. --engine additionally pins current files and reconstructs B by reversing the exact two-file patch.",
+    "No NFL calibration, runtime speed, optimal football choice or universal physics-readiness claim."
+  ],
+  "witnessSha256": "46e3be84d1e29f81f4d2be60b94e7ae6759587ceef266a16d0581d1a82149ccb",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+}

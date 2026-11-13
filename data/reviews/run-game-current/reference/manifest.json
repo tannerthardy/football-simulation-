@@ -1,0 +1,289 @@
+{
+  "schema": "run-reference-current-manifest-v1",
+  "createdAtUtc": "2026-10-11T11:48:46.579850+00:00",
+  "scope": "Source-verified conditional NFL outcomes, BDB labels and exact old contact-operator audit. No engine edits or physical calibration. Existing source/reference manifests unchanged.",
+  "pbpProvenance": {
+    "sources": [
+      {
+        "name": "play_by_play_2022.csv.gz",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.csv.gz",
+        "bytes": 19093961,
+        "sha256": "0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4",
+        "assetId": 354728863,
+        "updatedAt": "2026-02-12T10:25:24Z",
+        "publishedDigest": "sha256:0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4",
+        "verifiedLocalSizeAndSha256": true
+      },
+      {
+        "name": "play_by_play_2023.csv.gz",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.csv.gz",
+        "bytes": 19169807,
+        "sha256": "4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8",
+        "assetId": 354728691,
+        "updatedAt": "2026-02-12T10:24:52Z",
+        "publishedDigest": "sha256:4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8",
+        "verifiedLocalSizeAndSha256": true
+      },
+      {
+        "name": "roster_2022.csv",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2022.csv",
+        "bytes": 980115,
+        "sha256": "864719595d14909c73bd14110adcdcfc304c6621de9ba34feafb83666fac43c9",
+        "assetId": 125776585,
+        "updatedAt": "2023-09-13T01:16:11Z",
+        "publishedDigest": null,
+        "verifiedLocalSizeAndSha256": true
+      },
+      {
+        "name": "roster_2023.csv",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2023.csv",
+        "bytes": 967354,
+        "sha256": "f98283e6ef420babc597092b5483109a4570f9b5f63b7bfcce69643290960b6c",
+        "assetId": 156614734,
+        "updatedAt": "2024-03-14T07:18:12Z",
+        "publishedDigest": null,
+        "verifiedLocalSizeAndSha256": true
+      },
+      {
+        "name": "ftn_charting_2022.csv",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2022.csv",
+        "bytes": 7089615,
+        "sha256": "80e13831525f726cb3befb7eb62aa6ea8bf55d36080fcf09fdddd7c578f3b200",
+        "assetId": 198051731,
+        "updatedAt": "2024-10-10T01:13:45Z",
+        "publishedDigest": null,
+        "verifiedLocalSizeAndSha256": true
+      }
+    ],
+    "acquisitionManifest": "data/reviews/nflverse/input-manifest.json",
+    "acquisitionManifestSha256": "01ddf9862d082d4d8ec79781ec8215de9c04f9ac044fa288551376b5384b47a6",
+    "python": "3.12.14",
+    "query": {
+      "schema": "run-outcome-context-query-v1",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "selection": "Same REG/live pass-run and kneel/spike/two-point exclusions as schematic_context_audit. Designed runs exclude scrambles; scramble means qb_scramble=true, rush_attempt=true and observed dropback. Retain all runner positions and touchdowns/fumbles; do not infer the original RPO call.",
+      "outcomes": "Require penalty=false and finite yards_gained. Live flagged/missing-flag runs are counted separately. This is an explicit penalty-flag filter, not reconstructed acceptance/enforcement.",
+      "gains": "Whole-play yards_gained, not individual rushing_yards. Report interpolated p10/p25/p50/p75/p90/p95/p99, mean/max, disjoint bins below0/zero/positiveUnder4/4toUnder7/7toUnder10/10toUnder20/20plus, negative<0, stuff<=0,10plus,20plus.",
+      "success": "Known positive ydstogo and down1-4: gain>=40% on first,60% on second,100% on third/fourth. Separately report gain>=ydstogo, recorded first_down_rush or rush_touchdown, and positive model-derived EPA. Turnovers retain their gain but have separate recorded fumble_lost and distance-gain-without-turnover counts.",
+      "explosiveGeometry": "10+/20+ all-run rates plus eligible-field rates where yardline_100>=10/>=20 respectively. Excludes no touchdowns; geometry-conditioned rates are still selected mixtures, not NFL targets.",
+      "carrier": "Exact season+rusher_player_id match to season roster gsis_id; QB, RB/FB, other or unknown. Roster position is not snap role. Conflicting listed positions for an identity remain ambiguous/unknown rather than guessed.",
+      "context": "Reuse schematic pilot down,distance1to3/4to7/8to10/11to19/20plus, field0to20/21to50/51to100, scoretrailing9plus/within8/leading9plus, regulation-last600s vs earlier/overtime/unknown. Retain all thin cells and actual n.",
+      "jointCells": [
+        "season",
+        "kind",
+        "down",
+        "distance",
+        "field"
+      ],
+      "margins": [
+        "down",
+        "distance",
+        "field",
+        "score",
+        "period",
+        "carrier",
+        "run_location",
+        "run_gap"
+      ],
+      "chart2022": "Exact FTN game/play join. Separate known boolean QB sneak,motion,RPO strata and known integer0-11 n_defense_box strata<=5/6/7/8plus. Box count is charted presentation, never a called Over/Under/Odd/Tite/Bear front. Missing2023 charting is unavailable, not false/zero.",
+      "boxContextCells": [
+        "kind",
+        "carrier",
+        "down",
+        "distance",
+        "field",
+        "box"
+      ],
+      "witnesses": "Third and20plus; exact third-and27; ordinary RB/FB designed runs on down1/2,distance8to10,outside redzone,within8,earlier regulation. Declared before outcomes; witnesses never imply identified concepts/fronts.",
+      "variation": "Describe 64 team-season designed-run distributions and their metric percentiles. Observed roster/opponent/game-script mixture, not confidence intervals, independent trials or generated-roster limits.",
+      "limitations": "PBP has no blocking concept, all-22 front, contact force, tackle control or yards-before-contact field. Run_location/run_gap describe observed direction/location, not blocking scheme. No causal score/box effects, significance test or physical calibration."
+    },
+    "querySha256": "608a6699ab910b6cfe14ff307bbdefb055a149aa01499ba03f206470074a02d5",
+    "collectorSha256": "43af2d0bcd7255c7dbec94423dc0e4b38faac645d4e097c8ce5fd40a900909c8",
+    "helperSha256": "1b4e2b7b7e2cfe30495b2887a9e950d74a636a32b16b9867130fad7d86c90582",
+    "contextHelperSha256": "fca850cdac0e1837f68ae449ae94c2826b1f1cd5a802166e88074f0e6a365a9b"
+  },
+  "bdbSources": [
+    {
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    {
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    }
+  ],
+  "contactSources": [
+    {
+      "file": "tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    },
+    {
+      "file": "tracking_week_2.csv",
+      "bytes": 916177128,
+      "sha256": "d735b37f04bdf324132b9cb0f084a4ca583fadbbf02653e1873dad39c36924aa"
+    },
+    {
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    {
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    }
+  ],
+  "legacyReferences": [
+    {
+      "file": "data/reviews/run-game-coordination/nfl-reference.json",
+      "sha256": "b80d6dc4ae65916c51b00001993a5b95ab707722960be581b50add17f09c9201"
+    },
+    {
+      "file": "data/reviews/error-budget/nfl-contact.json",
+      "sha256": "1b91ddc7052171c59314dba9399cf0b1666e8dda0e93694445b832ea36738f76"
+    }
+  ],
+  "verification": {
+    "reportAndReceiptOperatorPins": "pass",
+    "rawInputSizeAndSha256Checks": "pass (collector checks preserved in reports)",
+    "pbpIndependentAndPartitionChecks": "pass; see pbp-verification.json",
+    "bdbIndependentAndPartitionChecks": "pass; see bdb-verification.json",
+    "measurementTests": {
+      "pbp": 10,
+      "bdb": 9
+    },
+    "sourceReview": "Independent BDB collector author inspected PBP source and found no material population/denominator error.",
+    "publicationReview": "Independent final read-only review: numerical/cohort/source/denominator agreement; one ambiguous QB-run sentence corrected before final freeze.",
+    "rootOwnedLinksAtFreeze": [
+      {
+        "doc": "docs/reviews/run-reference-current.md",
+        "target": "run-game-current-diagnosis.md",
+        "exists": false
+      },
+      {
+        "doc": "data/reviews/run-game-current/reference/README.md",
+        "target": "../engine/README.md",
+        "exists": false
+      },
+      {
+        "doc": "data/reviews/run-game-current/reference/README.md",
+        "target": "../../../../docs/reviews/run-game-current-diagnosis.md",
+        "exists": false
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "data/reviews/run-game-current/reference/README.md",
+      "bytes": 5997,
+      "sha256": "856ddbabaf96f06a05780711ef9a0f255c65f30d55cb016408d847c8be6791b2"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/bdb-collection.log",
+      "bytes": 426,
+      "sha256": "496bc601acfe806b5af1e738037e35ce8c61e1806ecaf2c5ffe916a29da93a5f"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/bdb-labels.json.gz",
+      "bytes": 95257,
+      "sha256": "ab8a8f23ff458abf81ad714bd4032854ae72a0bfc7bd0bd9fd5c95688391842f"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/bdb-query-plan.json",
+      "bytes": 4267,
+      "sha256": "c64abd73176bcb441e9cb8797fc34a8b23d14a0052dc895e87618a50c231786c"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/bdb-tests.log",
+      "bytes": 107,
+      "sha256": "55df81c03b1fc09a739803668e8b10b1a1cd87ac7e716666dddb1c968f87bb76"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/bdb-verification.json",
+      "bytes": 657,
+      "sha256": "92bbbccbbf60e697543b1e3e1bfe00b67e33b52e490ab486611f014e0e0047fc"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/collection-receipt.json",
+      "bytes": 1531,
+      "sha256": "a2127516a81ca510d4d6da618742aa7bffed3c52623e849217c55bafff28e0ab"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/contact-operator-audit.json",
+      "bytes": 3307,
+      "sha256": "3b3e2d8657955f673ecb8e8894ec7084b94d9869c88c32916e66c28495098e0f"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/contact-operator-probe.log",
+      "bytes": 344,
+      "sha256": "15d2c1c2c638f7be70e709b123d8aa28581523c3f3671d948316b2fa8f8c1819"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/contact-operator-probe.py",
+      "bytes": 7550,
+      "sha256": "0e7ef91ba1e5a0a51b3853e75fb5ae8d43833855aba3df4ac8f2add6295b4b55"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/pbp-query-plan.json",
+      "bytes": 3688,
+      "sha256": "51d8d9edf14ea41b31c63adfba267d9046fc15826105a55d6f59bc38a2781672"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/pbp-report.json.gz",
+      "bytes": 294984,
+      "sha256": "0d6aa99d9a3b9a4d2364e8a83b059b24e918b6fc6694badc8e11b8655877b486"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/pbp-tests.log",
+      "bytes": 109,
+      "sha256": "643c7cfc3921e5830e047bed28578bc933677c101c9c5a9f6610b6207052d03c"
+    },
+    {
+      "path": "data/reviews/run-game-current/reference/pbp-verification.json",
+      "bytes": 2326,
+      "sha256": "9e822e0d38d80b66f347d221ffb6f20f9d04e74bec0609520519664950e2253c"
+    },
+    {
+      "path": "scripts/data/run_outcome_context.py",
+      "bytes": 17543,
+      "sha256": "43af2d0bcd7255c7dbec94423dc0e4b38faac645d4e097c8ce5fd40a900909c8"
+    },
+    {
+      "path": "test/test_run_outcome_context.py",
+      "bytes": 6863,
+      "sha256": "72dd97515cb23559eb311adcb9df5bf41fb2ab629b1a8874b870ef0fca890e55"
+    },
+    {
+      "path": "scripts/data/bdb_run_outcome_context.py",
+      "bytes": 18286,
+      "sha256": "c7350b591efc10f33988abb794998a9ac1889063841f984c5c5d097f16f4eab6"
+    },
+    {
+      "path": "test/test_bdb_run_outcome_context.py",
+      "bytes": 7624,
+      "sha256": "6651d587646ca0bd79806a72f440a1b961e357f1a55c1528f6c08fba311336fc"
+    },
+    {
+      "path": "docs/reviews/run-reference-current.md",
+      "bytes": 22350,
+      "sha256": "2b6fae73c32865171df29234f544d5328f62bb9931c534f67fd6bd3c205e3b6f"
+    }
+  ]
+}

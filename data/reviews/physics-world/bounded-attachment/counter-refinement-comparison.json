@@ -1,0 +1,1661 @@
+{
+  "schema": "bounded-counter-refinement-v1",
+  "caseId": "RC-R2-counter-under-R-S11",
+  "selection": "Retrospective largest absolute credited-gain delta in the fixed 144-run panel; one interaction, not an independent prevalence estimate.",
+  "engineSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+  "measurementScriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+  "boundedPreloadSha256": "2d80e990ba999138881ba63ecd51651ab8ee3c4888f5d55c86536f9bf3712cbe",
+  "ownBodyLimitYd": 1.0709722222222222,
+  "artifacts": [
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-linear-12.json.gz",
+      "sha256": "2dac9faa1e25efa932b98e0fd19b6440ae03049fb573553951718994b67d11cf",
+      "uncompressedSha256": "a5fb2723407f864766e29cc9a8b2f0ff77adee9326607792de7a620ef0711710",
+      "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "scriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+      "command": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/scripts/diag/trace-run-approach.mts",
+        "out/bounded-attachment-review/counter-linear-12.json",
+        "2",
+        "counter",
+        "under",
+        "R",
+        "11",
+        "12"
+      ],
+      "boundedAttachment": false,
+      "substeps": 12
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-linear-24.json.gz",
+      "sha256": "f039a0987680c2efd74d13762247a09f63242da1111468300d9a138fb978d871",
+      "uncompressedSha256": "4ed4b7645f8d1384c9722649cf8f4f048e599eee8ec4189bad5dc426829d53d2",
+      "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "scriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+      "command": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/scripts/diag/trace-run-approach.mts",
+        "out/bounded-attachment-review/counter-linear-24.json",
+        "2",
+        "counter",
+        "under",
+        "R",
+        "11",
+        "24"
+      ],
+      "boundedAttachment": false,
+      "substeps": 24
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-linear-48.json.gz",
+      "sha256": "3b4dc684e4898d7150487dac31d68971575d092f6f483cca1993c42e76ec8e76",
+      "uncompressedSha256": "53baf78a52b529728ff0ce21bede06e2632499a5b946ea91efd2b329892d4fa0",
+      "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "scriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+      "command": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/scripts/diag/trace-run-approach.mts",
+        "out/bounded-attachment-review/counter-linear-48.json",
+        "2",
+        "counter",
+        "under",
+        "R",
+        "11",
+        "48"
+      ],
+      "boundedAttachment": false,
+      "substeps": 48
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-bounded-12.json.gz",
+      "sha256": "99c8831b0c40a0dc95a14273ed8e847cee4aa3c4cf5844708e4bd2b975454ab5",
+      "uncompressedSha256": "24055d8b4d2b19630b17c3ba3ac9126ff42c641a33484de253cfab4fdff59368",
+      "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "scriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+      "command": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "/workspace/football-simulation-/scripts/diag/trace-run-approach.mts",
+        "out/bounded-attachment-review/counter-bounded-12.json",
+        "2",
+        "counter",
+        "under",
+        "R",
+        "11",
+        "12"
+      ],
+      "boundedAttachment": true,
+      "substeps": 12
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-bounded-24.json.gz",
+      "sha256": "de5902c319baa6ef58f2428e0e4e56ddcbf817a5f2f8515c40e99858d80c2121",
+      "uncompressedSha256": "9737cc9616c09d9fdcbeaecabcef3e041362f903231e17db3a413f4a3317efa9",
+      "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "scriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+      "command": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "/workspace/football-simulation-/scripts/diag/trace-run-approach.mts",
+        "out/bounded-attachment-review/counter-bounded-24.json",
+        "2",
+        "counter",
+        "under",
+        "R",
+        "11",
+        "24"
+      ],
+      "boundedAttachment": true,
+      "substeps": 24
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-bounded-48.json.gz",
+      "sha256": "2da95e8442f1083d2f6b49a68958d4983cc2c1edb571730fa9c723f9f91f9896",
+      "uncompressedSha256": "d9dd107dab03dec858f2f63f5d4673cc18fbd66ab0cc08ed55230baa4725ab2c",
+      "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "scriptSha256": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+      "command": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "/workspace/football-simulation-/scripts/diag/trace-run-approach.mts",
+        "out/bounded-attachment-review/counter-bounded-48.json",
+        "2",
+        "counter",
+        "under",
+        "R",
+        "11",
+        "48"
+      ],
+      "boundedAttachment": true,
+      "substeps": 48
+    }
+  ],
+  "nativeSignaturesMatchPanel": [
+    {
+      "mode": "linear",
+      "traceSignature": "ae9249b8032e57f6959770c4c5887e2e60862acd1ce92afa4439ba1bdafb6494",
+      "compactPanelSignature": "ae9249b8032e57f6959770c4c5887e2e60862acd1ce92afa4439ba1bdafb6494",
+      "exact": true,
+      "panelPath": "out/bounded-attachment-review/linear-runs-compact.json",
+      "panelSha256": "af4b27cbd31959570e26f9a62fbe3ee921f9b0aa457e2e71dd402bc9593e8c1a"
+    },
+    {
+      "mode": "bounded",
+      "traceSignature": "287f0d99d1508cd92aabc6309c1e74b67d1840d1b5f869d86abb55910ddfdd25",
+      "compactPanelSignature": "287f0d99d1508cd92aabc6309c1e74b67d1840d1b5f869d86abb55910ddfdd25",
+      "exact": true,
+      "panelPath": "out/bounded-attachment-review/bounded-runs-compact.json",
+      "panelSha256": "a035615bb90affacf35b009b03af0ff497250b51c49054ae8557edcf9c7577d3"
+    }
+  ],
+  "runs": [
+    {
+      "mode": "linear",
+      "substeps": 12,
+      "gain": 28.89,
+      "duration": 8.2,
+      "outcome": "tackle",
+      "signature": "ae9249b8032e57f6959770c4c5887e2e60862acd1ce92afa4439ba1bdafb6494",
+      "lowerBodyBoundReleases": 0,
+      "maxWorkResidual": 2.502315021857271e-11,
+      "maxMotorWorkExcess": 0,
+      "carrierEvents": [
+        {
+          "t": 4.45,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 4.6,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 19,
+          "note": "hold slipped"
+        },
+        {
+          "t": 7.2,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 7.75,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "t": 8.15,
+          "type": "tackle",
+          "a": 18,
+          "b": 6,
+          "note": null
+        }
+      ],
+      "maximumRetainedExtension": {
+        "tickLabel": 7.85,
+        "tickEnd": 7.8999999999999995,
+        "holder": "CB_S",
+        "bodyDistanceYd": 0.5602276155564787,
+        "legs": 0.9480800103312327,
+        "meanForceDuringTick": 385.3209584376761,
+        "capacityAtTickEnd": 477.97355778030123,
+        "rawGripCapacity": 682.8193682575733,
+        "slipping": false,
+        "mapped": false,
+        "jacobian": {
+          "xx": 0.9480800103312327,
+          "xy": 0,
+          "yy": 0.9480800103312327
+        },
+        "supportState": "falling",
+        "captureDeviationYd": 1.3015777244420812,
+        "feetLock": 0
+      }
+    },
+    {
+      "mode": "linear",
+      "substeps": 24,
+      "gain": 7.56,
+      "duration": 5.35,
+      "outcome": "tackle",
+      "signature": "181adcf6aa849bee322a3425df73498fefb8cab109d95683357da75d9d32cba9",
+      "lowerBodyBoundReleases": 0,
+      "maxWorkResidual": 7.625899911545275e-12,
+      "maxMotorWorkExcess": 0,
+      "carrierEvents": [
+        {
+          "t": 4.3,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 4.35,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "t": 4.5,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 20,
+          "note": "hold slipped"
+        },
+        {
+          "t": 4.85,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "t": 5.05,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 19,
+          "note": "hold slipped"
+        },
+        {
+          "t": 5.3,
+          "type": "tackle",
+          "a": null,
+          "b": 6,
+          "note": null
+        }
+      ],
+      "maximumRetainedExtension": {
+        "tickLabel": 4.9,
+        "tickEnd": 4.95,
+        "holder": "CB_W",
+        "bodyDistanceYd": 0.2620821892161936,
+        "legs": 0.8693674632943513,
+        "meanForceDuringTick": 736.8575624286851,
+        "capacityAtTickEnd": 736.8575624286857,
+        "rawGripCapacity": 1052.6536606124082,
+        "slipping": true,
+        "mapped": false,
+        "jacobian": {
+          "xx": 0.8693674632943513,
+          "xy": 0,
+          "yy": 0.8693674632943513
+        },
+        "supportState": "falling",
+        "captureDeviationYd": 1.3058794299379894,
+        "feetLock": 0
+      }
+    },
+    {
+      "mode": "linear",
+      "substeps": 48,
+      "gain": 6.74,
+      "duration": 5.25,
+      "outcome": "tackle",
+      "signature": "663002d2e87ffcd9d5d1430cf320418bfbefaceef3c73c076a0a1f587c093180",
+      "lowerBodyBoundReleases": 0,
+      "maxWorkResidual": 1.4454215602199838e-11,
+      "maxMotorWorkExcess": 0,
+      "carrierEvents": [
+        {
+          "t": 4.3,
+          "type": "missed_tackle",
+          "a": 20,
+          "b": 6,
+          "note": "dive"
+        },
+        {
+          "t": 4.4,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 4.75,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "t": 5.15,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 19,
+          "note": "hold slipped"
+        },
+        {
+          "t": 5.2,
+          "type": "tackle",
+          "a": null,
+          "b": 6,
+          "note": null
+        }
+      ],
+      "maximumRetainedExtension": {
+        "tickLabel": 4.75,
+        "tickEnd": 4.8,
+        "holder": "CB_W",
+        "bodyDistanceYd": 0.10207084460953991,
+        "legs": 0.8024625760836565,
+        "meanForceDuringTick": 773.5640169847355,
+        "capacityAtTickEnd": 773.5640169847358,
+        "rawGripCapacity": 1105.091452835337,
+        "slipping": true,
+        "mapped": false,
+        "jacobian": {
+          "xx": 0.8024625760836565,
+          "xy": 0,
+          "yy": 0.8024625760836565
+        },
+        "supportState": "falling",
+        "captureDeviationYd": 1.3039177522396015,
+        "feetLock": 0
+      }
+    },
+    {
+      "mode": "bounded",
+      "substeps": 12,
+      "gain": 31.28,
+      "duration": 8.55,
+      "outcome": "tackle",
+      "signature": "287f0d99d1508cd92aabc6309c1e74b67d1840d1b5f869d86abb55910ddfdd25",
+      "lowerBodyBoundReleases": 0,
+      "maxWorkResidual": 3.7470471170308883e-11,
+      "maxMotorWorkExcess": 0,
+      "carrierEvents": [
+        {
+          "t": 4.45,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 4.6,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 19,
+          "note": "hold slipped"
+        },
+        {
+          "t": 7.2,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 8.1,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "t": 8.5,
+          "type": "tackle",
+          "a": 18,
+          "b": 6,
+          "note": null
+        }
+      ],
+      "maximumRetainedExtension": {
+        "tickLabel": 8.1,
+        "tickEnd": 8.15,
+        "holder": "CB_S",
+        "bodyDistanceYd": 0.9802957978881683,
+        "legs": 0.9722092321588242,
+        "meanForceDuringTick": 485.073923780688,
+        "capacityAtTickEnd": 485.073923780688,
+        "rawGripCapacity": 692.9627482581258,
+        "slipping": true,
+        "mapped": true,
+        "jacobian": {
+          "xx": 0.4334684106671164,
+          "xy": 0.19451003577312323,
+          "yy": 0.29483472985586695
+        },
+        "supportState": "falling",
+        "captureDeviationYd": 1.2979906873691942,
+        "feetLock": 0
+      }
+    },
+    {
+      "mode": "bounded",
+      "substeps": 24,
+      "gain": 7.57,
+      "duration": 5.35,
+      "outcome": "tackle",
+      "signature": "135a003464bf24c7ca2954cf68509efd14fd489b6cb6cacac0d301b39fc73a08",
+      "lowerBodyBoundReleases": 0,
+      "maxWorkResidual": 6.445954880973659e-12,
+      "maxMotorWorkExcess": 0,
+      "carrierEvents": [
+        {
+          "t": 4.3,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 4.35,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "assist"
+        },
+        {
+          "t": 4.5,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 20,
+          "note": "hold slipped"
+        },
+        {
+          "t": 4.85,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "t": 5.05,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 19,
+          "note": "hold slipped"
+        },
+        {
+          "t": 5.3,
+          "type": "tackle",
+          "a": null,
+          "b": 6,
+          "note": null
+        }
+      ],
+      "maximumRetainedExtension": {
+        "tickLabel": 4.85,
+        "tickEnd": 4.8999999999999995,
+        "holder": "CB_W",
+        "bodyDistanceYd": 0.26677314319451556,
+        "legs": 0.8456758925027035,
+        "meanForceDuringTick": 735.033254546313,
+        "capacityAtTickEnd": 735.0332545463131,
+        "rawGripCapacity": 1050.047506494733,
+        "slipping": true,
+        "mapped": true,
+        "jacobian": {
+          "xx": 0.7948136136300391,
+          "xy": -0.007297505447843503,
+          "yy": 0.8262756312527515
+        },
+        "supportState": "falling",
+        "captureDeviationYd": 1.3012824382097299,
+        "feetLock": 0
+      }
+    },
+    {
+      "mode": "bounded",
+      "substeps": 48,
+      "gain": 6.74,
+      "duration": 5.25,
+      "outcome": "tackle",
+      "signature": "544cdf99411c82e2e84c590e09112aa0daa9f54bfb0e39f78c97324954bc3ffe",
+      "lowerBodyBoundReleases": 0,
+      "maxWorkResidual": 1.4454215602199838e-11,
+      "maxMotorWorkExcess": 0,
+      "carrierEvents": [
+        {
+          "t": 4.3,
+          "type": "missed_tackle",
+          "a": 20,
+          "b": 6,
+          "note": "dive"
+        },
+        {
+          "t": 4.4,
+          "type": "tackle_wrap",
+          "a": 19,
+          "b": 6,
+          "note": "initial"
+        },
+        {
+          "t": 4.75,
+          "type": "fall",
+          "a": 6,
+          "b": null,
+          "note": "legs"
+        },
+        {
+          "t": 5.15,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 19,
+          "note": "hold slipped"
+        },
+        {
+          "t": 5.2,
+          "type": "tackle",
+          "a": null,
+          "b": 6,
+          "note": null
+        }
+      ],
+      "maximumRetainedExtension": {
+        "tickLabel": 4.75,
+        "tickEnd": 4.8,
+        "holder": "CB_W",
+        "bodyDistanceYd": 0.1024282068650283,
+        "legs": 0.8024625760836565,
+        "meanForceDuringTick": 773.5640169847355,
+        "capacityAtTickEnd": 773.5640169847358,
+        "rawGripCapacity": 1105.091452835337,
+        "slipping": true,
+        "mapped": true,
+        "jacobian": {
+          "xx": 0.7964909337442319,
+          "xy": 0.0021944964116397733,
+          "yy": 0.7986412967493054
+        },
+        "supportState": "falling",
+        "captureDeviationYd": 1.302342469430168,
+        "feetLock": 0
+      }
+    }
+  ],
+  "modePairs": [
+    {
+      "substeps": 12,
+      "baselineGain": 28.89,
+      "boundedGain": 31.28,
+      "firstExactBodyDifference": {
+        "tickLabel": 4.5,
+        "tickEnd": 4.55,
+        "carrier": "RB"
+      }
+    },
+    {
+      "substeps": 24,
+      "baselineGain": 7.56,
+      "boundedGain": 7.57,
+      "firstExactBodyDifference": {
+        "tickLabel": 4.35,
+        "tickEnd": 4.3999999999999995,
+        "carrier": "RB"
+      }
+    },
+    {
+      "substeps": 48,
+      "baselineGain": 6.74,
+      "boundedGain": 6.74,
+      "firstExactBodyDifference": {
+        "tickLabel": 4.45,
+        "tickEnd": 4.5,
+        "carrier": "RB"
+      }
+    }
+  ],
+  "fullPlayRefinement": [
+    {
+      "mode": "linear",
+      "compareSteps": [
+        12,
+        24
+      ],
+      "firstExactBodyStateDifference": {
+        "tickLabel": 0.1,
+        "tickEnd": 0.15000000000000002,
+        "carrier": "QB",
+        "jointsBefore": 0
+      },
+      "firstPositionThresholdCrossings": {
+        "1e-06": {
+          "tickEnd": 0.5,
+          "maxBodyPositionErrorYd": 0.00013102609568597248,
+          "player": "Y",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.001": {
+          "tickEnd": 0.8,
+          "maxBodyPositionErrorYd": 0.0016278496271727103,
+          "player": "DT_W",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.01": {
+          "tickEnd": 1.25,
+          "maxBodyPositionErrorYd": 0.021364084616823785,
+          "player": "RT",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.1": {
+          "tickEnd": 1.55,
+          "maxBodyPositionErrorYd": 0.10555793417354108,
+          "player": "RT",
+          "carrier": "RB",
+          "graspsBefore": 0
+        }
+      }
+    },
+    {
+      "mode": "linear",
+      "compareSteps": [
+        12,
+        48
+      ],
+      "firstExactBodyStateDifference": {
+        "tickLabel": 0.1,
+        "tickEnd": 0.15000000000000002,
+        "carrier": "QB",
+        "jointsBefore": 0
+      },
+      "firstPositionThresholdCrossings": {
+        "1e-06": {
+          "tickEnd": 0.5,
+          "maxBodyPositionErrorYd": 0.00019653062484456345,
+          "player": "Y",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.001": {
+          "tickEnd": 0.6000000000000001,
+          "maxBodyPositionErrorYd": 0.0018015167102967552,
+          "player": "DE_S",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.01": {
+          "tickEnd": 1.25,
+          "maxBodyPositionErrorYd": 0.021526797236523194,
+          "player": "RT",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.1": {
+          "tickEnd": 1.55,
+          "maxBodyPositionErrorYd": 0.10613425759627529,
+          "player": "RT",
+          "carrier": "RB",
+          "graspsBefore": 0
+        }
+      }
+    },
+    {
+      "mode": "bounded",
+      "compareSteps": [
+        12,
+        24
+      ],
+      "firstExactBodyStateDifference": {
+        "tickLabel": 0.1,
+        "tickEnd": 0.15000000000000002,
+        "carrier": "QB",
+        "jointsBefore": 0
+      },
+      "firstPositionThresholdCrossings": {
+        "1e-06": {
+          "tickEnd": 0.5,
+          "maxBodyPositionErrorYd": 0.00013102609568597248,
+          "player": "Y",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.001": {
+          "tickEnd": 0.8,
+          "maxBodyPositionErrorYd": 0.0016278496271727103,
+          "player": "DT_W",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.01": {
+          "tickEnd": 1.25,
+          "maxBodyPositionErrorYd": 0.021364084616823785,
+          "player": "RT",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.1": {
+          "tickEnd": 1.55,
+          "maxBodyPositionErrorYd": 0.10555793417354108,
+          "player": "RT",
+          "carrier": "RB",
+          "graspsBefore": 0
+        }
+      }
+    },
+    {
+      "mode": "bounded",
+      "compareSteps": [
+        12,
+        48
+      ],
+      "firstExactBodyStateDifference": {
+        "tickLabel": 0.1,
+        "tickEnd": 0.15000000000000002,
+        "carrier": "QB",
+        "jointsBefore": 0
+      },
+      "firstPositionThresholdCrossings": {
+        "1e-06": {
+          "tickEnd": 0.5,
+          "maxBodyPositionErrorYd": 0.00019653062484456345,
+          "player": "Y",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.001": {
+          "tickEnd": 0.6000000000000001,
+          "maxBodyPositionErrorYd": 0.0018015167102967552,
+          "player": "DE_S",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.01": {
+          "tickEnd": 1.25,
+          "maxBodyPositionErrorYd": 0.021526797236523194,
+          "player": "RT",
+          "carrier": "QB",
+          "graspsBefore": 0
+        },
+        "0.1": {
+          "tickEnd": 1.55,
+          "maxBodyPositionErrorYd": 0.10613425759627529,
+          "player": "RT",
+          "carrier": "RB",
+          "graspsBefore": 0
+        }
+      }
+    }
+  ],
+  "nativeExtensionTimeline": [
+    {
+      "mode": "linear",
+      "tickLabel": 7.25,
+      "tickEnd": 7.3,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 61.42930909424362,
+        "y": 44.2968915742292
+      },
+      "captureDeviation": {
+        "x": 0.15216841921122487,
+        "y": -0.08408688802272074
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 61.36138946663215,
+          "y": 44.3341238306371
+        },
+        "offset": {
+          "x": -0.06791962761147265,
+          "y": 0.03723225640789882
+        },
+        "target": {
+          "x": 61.35175766762298,
+          "y": 44.30703092484372
+        },
+        "desired": {
+          "x": 0.2920722714340101,
+          "y": -0.1448494378434817
+        },
+        "achieved": {
+          "x": -0.15937970837155158,
+          "y": 0.990359938155341
+        },
+        "force": {
+          "x": -103.14945952153488,
+          "y": 259.3769411056526
+        },
+        "capacity": 858.1221570271988,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.04781316050672502,
+          "legs": 0.6519028347851853,
+          "rawGripCapacity": 616.2947672450348,
+          "capacityAtTickEnd": 431.4063370715243,
+          "meanForceDuringTick": 600.8873980639088,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.6519028347851853,
+            "xy": 0,
+            "yy": 0.6519028347851853
+          }
+        }
+      ]
+    },
+    {
+      "mode": "linear",
+      "tickLabel": 7.4,
+      "tickEnd": 7.45,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 62.67911945032138,
+        "y": 44.71076852187935
+      },
+      "captureDeviation": {
+        "x": 0.19601712881181835,
+        "y": -0.27525627941702624
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 62.71730024827866,
+          "y": 44.68960431825527
+        },
+        "offset": {
+          "x": 0.03818079795728479,
+          "y": -0.02116420362408248
+        },
+        "target": {
+          "x": 62.7842434751427,
+          "y": 44.53513425880284
+        },
+        "desired": {
+          "x": 1.82188148851656,
+          "y": -2.5655695962943534
+        },
+        "achieved": {
+          "x": 0.8867690435686163,
+          "y": -1.3355570044989227
+        },
+        "force": {
+          "x": -213.65803585529682,
+          "y": 281.0379391912857
+        },
+        "capacity": 718.9582753621279,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.043468536973408196,
+          "legs": 0.7888683967381606,
+          "rawGripCapacity": 641.713234656768,
+          "capacityAtTickEnd": 449.19926425973756,
+          "meanForceDuringTick": 449.19926425973756,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.7888683967381606,
+            "xy": 0,
+            "yy": 0.7888683967381606
+          }
+        }
+      ]
+    },
+    {
+      "mode": "linear",
+      "tickLabel": 7.6,
+      "tickEnd": 7.6499999999999995,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 64.33006467740984,
+        "y": 45.26023538874454
+      },
+      "captureDeviation": {
+        "x": 0.36946044399522066,
+        "y": -0.44203547586374403
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 64.58086012523123,
+          "y": 44.97543383636955
+        },
+        "offset": {
+          "x": 0.2507954478213924,
+          "y": -0.28480155237499677
+        },
+        "target": {
+          "x": 64.80992168248981,
+          "y": 44.650319812815354
+        },
+        "desired": {
+          "x": 2.1813774032582143,
+          "y": -2.575758618934491
+        },
+        "achieved": {
+          "x": 1.3585194172344797,
+          "y": -0.959719516594272
+        },
+        "force": {
+          "x": -188.00971159298763,
+          "y": 369.2387395085833
+        },
+        "capacity": 771.2111445692065,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.32738143341805004,
+          "legs": 0.8916014205165739,
+          "rawGripCapacity": 665.022500820965,
+          "capacityAtTickEnd": 465.51575057467545,
+          "meanForceDuringTick": 465.5157505746755,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.8916014205165739,
+            "xy": 0,
+            "yy": 0.8916014205165739
+          }
+        }
+      ]
+    },
+    {
+      "mode": "linear",
+      "tickLabel": 7.75,
+      "tickEnd": 7.8,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 65.5783389447527,
+        "y": 45.69168804080494
+      },
+      "captureDeviation": {
+        "x": 0.8027305095121509,
+        "y": -1.0245624929023065
+      },
+      "supportState": "falling",
+      "foot": {
+        "anchor": {
+          "x": 65.99538439441326,
+          "y": 45.213846807984346
+        },
+        "offset": {
+          "x": 0.4170454496605698,
+          "y": -0.477841232820595
+        },
+        "target": {
+          "x": 65.95953316042893,
+          "y": 45.20181791358121
+        },
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "achieved": {
+          "x": 0,
+          "y": 0
+        },
+        "force": {
+          "x": -186.46993272113394,
+          "y": -400.9811778548787
+        },
+        "capacity": 0,
+        "mobility": 0,
+        "state": "unloaded"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.5602276155564734,
+          "legs": 0.9342529380740051,
+          "rawGripCapacity": 676.8645412040598,
+          "capacityAtTickEnd": 473.8051788428418,
+          "meanForceDuringTick": 473.80517884284166,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.9342529380740051,
+            "xy": 0,
+            "yy": 0.9342529380740051
+          }
+        }
+      ]
+    },
+    {
+      "mode": "linear",
+      "tickLabel": 7.8,
+      "tickEnd": 7.85,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 66.00455744594404,
+        "y": 45.82520285456674
+      },
+      "captureDeviation": {
+        "x": 0.8027305095121509,
+        "y": -1.0245624929023065
+      },
+      "supportState": "falling",
+      "foot": {
+        "anchor": {
+          "x": 66.42160289560461,
+          "y": 45.347361621746145
+        },
+        "offset": {
+          "x": 0.4170454496605698,
+          "y": -0.477841232820595
+        },
+        "target": {
+          "x": 66.38635658698648,
+          "y": 45.336999528985594
+        },
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "achieved": {
+          "x": 0,
+          "y": 0
+        },
+        "force": {
+          "x": -178.8737058103011,
+          "y": -411.9887626898746
+        },
+        "capacity": 0,
+        "mobility": 0,
+        "state": "unloaded"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.5602276155564734,
+          "legs": 0.9443463136143938,
+          "rawGripCapacity": 680.0089155385792,
+          "capacityAtTickEnd": 476.00624087700544,
+          "meanForceDuringTick": 476.00624087700544,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.9443463136143938,
+            "xy": 0,
+            "yy": 0.9443463136143938
+          }
+        }
+      ]
+    },
+    {
+      "mode": "linear",
+      "tickLabel": 8.05,
+      "tickEnd": 8.100000000000001,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 67.98469908024175,
+        "y": 46.33948292730025
+      },
+      "captureDeviation": {
+        "x": 0.8027305095121509,
+        "y": -1.0245624929023065
+      },
+      "supportState": "falling",
+      "foot": {
+        "anchor": {
+          "x": 68.40174452990232,
+          "y": 45.86164169447966
+        },
+        "offset": {
+          "x": 0.4170454496605698,
+          "y": -0.477841232820595
+        },
+        "target": {
+          "x": 68.3709028459096,
+          "y": 45.85435792626935
+        },
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "achieved": {
+          "x": 0,
+          "y": 0
+        },
+        "force": {
+          "x": -288.6335552157143,
+          "y": 45.48614539268077
+        },
+        "capacity": 0,
+        "mobility": 0,
+        "state": "unloaded"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.5602276155564787,
+          "legs": 0.9480800103312327,
+          "rawGripCapacity": 691.3659244095912,
+          "capacityAtTickEnd": 483.9561470867138,
+          "meanForceDuringTick": 307.811420618295,
+          "slipping": false,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.9480800103312327,
+            "xy": 0,
+            "yy": 0.9480800103312327
+          }
+        }
+      ]
+    },
+    {
+      "mode": "linear",
+      "tickLabel": 8.1,
+      "tickEnd": 8.15,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 68.3491731391175,
+        "y": 46.423609007958966
+      },
+      "captureDeviation": {
+        "x": 0.8027305095121509,
+        "y": -1.0245624929023065
+      },
+      "supportState": "falling",
+      "foot": {
+        "anchor": {
+          "x": 68.76621858877806,
+          "y": 45.94576777513837
+        },
+        "offset": {
+          "x": 0.4170454496605698,
+          "y": -0.477841232820595
+        },
+        "target": {
+          "x": 68.73624290848538,
+          "y": 45.938986915191805
+        },
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "achieved": {
+          "x": 0,
+          "y": 0
+        },
+        "force": {
+          "x": -289.33426005948303,
+          "y": 47.58495848600904
+        },
+        "capacity": 0,
+        "mobility": 0,
+        "state": "unloaded"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.5602276155564787,
+          "legs": 0.9480800103312327,
+          "rawGripCapacity": 692.96274827637,
+          "capacityAtTickEnd": 485.07392379345896,
+          "meanForceDuringTick": 308.7947154099829,
+          "slipping": false,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.9480800103312327,
+            "xy": 0,
+            "yy": 0.9480800103312327
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 7.25,
+      "tickEnd": 7.3,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 61.42930826777052,
+        "y": 44.29689024922952
+      },
+      "captureDeviation": {
+        "x": 0.15215040303266414,
+        "y": -0.08402193509876724
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 61.361419723223904,
+          "y": 44.334081508064074
+        },
+        "offset": {
+          "x": -0.06788854454661636,
+          "y": 0.037191258834555874
+        },
+        "target": {
+          "x": 61.351752726433425,
+          "y": 44.30701693293119
+        },
+        "desired": {
+          "x": 0.29211789576396424,
+          "y": -0.14476499206010585
+        },
+        "achieved": {
+          "x": -0.1579813177315773,
+          "y": 0.9892695163052033
+        },
+        "force": {
+          "x": -102.8403743475201,
+          "y": 259.10850289555003
+        },
+        "capacity": 858.1310240730224,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.047751650835023744,
+          "legs": 0.6519028347553713,
+          "rawGripCapacity": 616.2947671253955,
+          "capacityAtTickEnd": 431.40633698777685,
+          "meanForceDuringTick": 600.8873979472605,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.6508096770475725,
+            "xy": 0.0003661435745414488,
+            "yy": 0.651267770227488
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 7.4,
+      "tickEnd": 7.45,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 62.67911419825178,
+        "y": 44.71076177160429
+      },
+      "captureDeviation": {
+        "x": 0.1957649486165517,
+        "y": -0.27487086665530747
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 62.7174780629672,
+          "y": 44.68935621440381
+        },
+        "offset": {
+          "x": 0.03836386471542326,
+          "y": -0.021405557200483823
+        },
+        "target": {
+          "x": 62.784165357068524,
+          "y": 44.53526144345004
+        },
+        "desired": {
+          "x": 1.8220008417985893,
+          "y": -2.5653221739148084
+        },
+        "achieved": {
+          "x": 0.8888221002436364,
+          "y": -1.3361393682009475
+        },
+        "force": {
+          "x": -213.2162159745913,
+          "y": 280.8483465221622
+        },
+        "capacity": 718.9279742571889,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.043641098858069535,
+          "legs": 0.7888683967200774,
+          "rawGripCapacity": 641.7132345698012,
+          "capacityAtTickEnd": 449.1992641988608,
+          "meanForceDuringTick": 449.1992641988608,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.787816433843911,
+            "xy": 0.00039833225500231147,
+            "yy": 0.7881736272969857
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 7.6,
+      "tickEnd": 7.6499999999999995,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 64.33151621075822,
+        "y": 45.26116485237201
+      },
+      "captureDeviation": {
+        "x": 0.34402576940612195,
+        "y": -0.44354957837827214
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 64.59303992439833,
+          "y": 44.97027750539979
+        },
+        "offset": {
+          "x": 0.2615237136400972,
+          "y": -0.290887346972218
+        },
+        "target": {
+          "x": 64.8016545493697,
+          "y": 44.64725757583897
+        },
+        "desired": {
+          "x": 2.0728956539759475,
+          "y": -2.628172594119577
+        },
+        "achieved": {
+          "x": 1.4865739907561386,
+          "y": -1.0711275335345412
+        },
+        "force": {
+          "x": -133.96499599567292,
+          "y": 355.75955723839166
+        },
+        "capacity": 764.7959514929107,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.3267369619979125,
+          "legs": 0.8916014205072897,
+          "rawGripCapacity": 665.0225007648049,
+          "capacityAtTickEnd": 465.5157505353634,
+          "meanForceDuringTick": 465.5157505353634,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.8386699111204509,
+            "xy": 0.027161970955259372,
+            "yy": 0.8331611583889164
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 7.75,
+      "tickEnd": 7.8,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 65.57764957430054,
+        "y": 45.69836822001915
+      },
+      "captureDeviation": {
+        "x": 0.38253164495701225,
+        "y": -0.7239219323609499
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 66.05766515904655,
+          "y": 45.1955974881804
+        },
+        "offset": {
+          "x": 0.4800155847460141,
+          "y": -0.5027707318387492
+        },
+        "target": {
+          "x": 66.3211369842137,
+          "y": 44.60923319951864
+        },
+        "desired": {
+          "x": 1.6645243798527107,
+          "y": -3.1939571879200708
+        },
+        "achieved": {
+          "x": 1.0819737855060705,
+          "y": -1.8598861828979392
+        },
+        "force": {
+          "x": -133.1033678857389,
+          "y": 304.81359986648226
+        },
+        "capacity": 822.9224882215168,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.5556238135524345,
+          "legs": 0.9342529380683741,
+          "rawGripCapacity": 676.8645411638429,
+          "capacityAtTickEnd": 473.80517881469,
+          "meanForceDuringTick": 473.8051788146899,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.7665188024229931,
+            "xy": 0.0802224174844158,
+            "yy": 0.7596575642872623
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 7.8,
+      "tickEnd": 7.85,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 66.00093281881176,
+        "y": 45.848901480860654
+      },
+      "captureDeviation": {
+        "x": 0.5898439072730586,
+        "y": -0.7966165604901753
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 66.5139636218371,
+          "y": 45.20849545513376
+        },
+        "offset": {
+          "x": 0.5130308030253395,
+          "y": -0.6404060257268961
+        },
+        "target": {
+          "x": 66.96404674950197,
+          "y": 44.53555476555984
+        },
+        "desired": {
+          "x": 2.2286715087674547,
+          "y": -3.0616875799855743
+        },
+        "achieved": {
+          "x": 0.9031514870606769,
+          "y": -2.6596973887078454
+        },
+        "force": {
+          "x": -302.85983878709504,
+          "y": 91.84824259961157
+        },
+        "capacity": 865.2541930081903,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.6367899059283159,
+          "legs": 0.9443463136096273,
+          "rawGripCapacity": 680.008915502627,
+          "capacityAtTickEnd": 476.00624085183887,
+          "meanForceDuringTick": 476.0062408518388,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.7387020403939601,
+            "xy": 0.10211082112380954,
+            "yy": 0.6918036723775677
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 8.05,
+      "tickEnd": 8.100000000000001,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 67.97214960698636,
+        "y": 46.57966478237443
+      },
+      "captureDeviation": {
+        "x": 1.0932376373396249,
+        "y": -0.6152603774048719
+      },
+      "supportState": "up",
+      "foot": {
+        "anchor": {
+          "x": 68.27665251092674,
+          "y": 46.105362389868
+        },
+        "offset": {
+          "x": 0.30450290394037616,
+          "y": -0.4743023925064277
+        },
+        "target": {
+          "x": 69.19061899575277,
+          "y": 45.55869378428032
+        },
+        "desired": {
+          "x": 3.3050531327931707,
+          "y": -1.8939943660681857
+        },
+        "achieved": {
+          "x": 2.3110214105795213,
+          "y": -2.6781432809439547
+        },
+        "force": {
+          "x": -227.1201356515466,
+          "y": -179.16531629492516
+        },
+        "capacity": 874.4927590269626,
+        "mobility": 0.004376678093124768,
+        "state": "placing"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.9525770660456074,
+          "legs": 0.9671690870292952,
+          "rawGripCapacity": 691.3659243891523,
+          "capacityAtTickEnd": 483.95614707240657,
+          "meanForceDuringTick": 483.9561470724064,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.4784876375928207,
+            "xy": 0.18784070074180279,
+            "yy": 0.32964436406449643
+          }
+        }
+      ]
+    },
+    {
+      "mode": "bounded",
+      "tickLabel": 8.1,
+      "tickEnd": 8.15,
+      "phase": "after World.step before football choices",
+      "bodyPosition": {
+        "x": 68.33919239577159,
+        "y": 46.7053043471999
+      },
+      "captureDeviation": {
+        "x": 1.1709933170528188,
+        "y": -0.5599593520201176
+      },
+      "supportState": "falling",
+      "foot": {
+        "anchor": {
+          "x": 68.75543468035654,
+          "y": 46.120010090482495
+        },
+        "offset": {
+          "x": 0.4162422845849477,
+          "y": -0.585294256717402
+        },
+        "target": {
+          "x": 68.72516100484106,
+          "y": 46.10986908483166
+        },
+        "desired": {
+          "x": 0,
+          "y": 0
+        },
+        "achieved": {
+          "x": 0,
+          "y": 0
+        },
+        "force": {
+          "x": -152.07730768355015,
+          "y": -164.40819365736044
+        },
+        "capacity": 0,
+        "mobility": 0,
+        "state": "unloaded"
+      },
+      "joints": [
+        {
+          "holder": "CB_S",
+          "bodyDistanceYd": 0.9802957978881683,
+          "legs": 0.9722092321588242,
+          "rawGripCapacity": 692.9627482581258,
+          "capacityAtTickEnd": 485.073923780688,
+          "meanForceDuringTick": 485.073923780688,
+          "slipping": true,
+          "broken": false,
+          "jacobian": {
+            "xx": 0.4334684106671164,
+            "xy": 0.19451003577312323,
+            "yy": 0.29483472985586695
+          }
+        }
+      ]
+    }
+  ],
+  "conclusion": "Native bounded geometry delays this carrier fall by 0.35 seconds without added force capacity, unexplained work or boundary release. Full-play refinement varies before any lower hold, so it cannot isolate convergence of the new attachment law.",
+  "limits": [
+    "At 0.15 seconds the first exact baseline body-state difference is floating-point scale. More meaningful position error exceeds 1e-6 yd by 0.50 seconds while QB carries and no grasps exist, before first tackle acquisition.",
+    "Linear full-play refinement already changes gain from 28.89 yd at12 subdivisions to7.56 at24 and6.74 at48; bounded gives31.28,7.57,6.74 respectively. Controllers see the earlier changed physical paths and subsequently execute different tackle acquisitions and execution draws.",
+    "These six complete plays are not local restarts from identical established-contact state. Sustained near-extension stability is supported separately by the controlled restart and World integration tests; this panel does not establish it anew.",
+    "Recorded joint.force is a completed-tick mean. capacityAtTickEnd is an instantaneous end-state capacity and may be lower after the holder falls during the tick; their ratio is not a substep force-bound audit.",
+    "This inspection does not establish NFL limb laws, limb energy closure, league rushing fidelity or mean performance cost."
+  ]
+}

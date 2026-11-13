@@ -1,0 +1,731 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 7535fc6652b03b319b10cdf22606fa6439b8d913..5db25b81168130fbb6e6e34cb4049b9ec48fcfa6 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -177,6 +177,8 @@ export interface ManOptions {
+   lev?: 'inside' | 'outside' | 'head';
+   trail?: boolean;
+   overTop?: boolean;
++  /** Acquired entry picture; used only to initialize cushion. */
++  initialPosition?: Vec2;
+ }
+ 
+ /** Man coverage with press/off technique, leverage and hip turn. */
+@@ -208,7 +210,7 @@ export class ManCoverage implements Behavior {
+     readonly opts: ManOptions = {},
+   ) {
+     this.press = press;
+-    this.initialCushion = Math.max(0.8, a.pos.x - target.pos.x);
++    this.initialCushion = Math.max(0.8, a.pos.x - (opts.initialPosition ?? target.pos).x);
+     void sim;
+   }
+ 
+@@ -249,6 +251,14 @@ export class ManCoverage implements Behavior {
+     const blockingLook = showsBlock(a, sim, R, receiverCue);
+     if (believesRun(sim, a) && blockingLook) return runFit(a, sim, this.gap, this.gapSign);
+ 
++    return this.trackReceiver(a, sim);
++  }
++
++  /** Release movement only; provisional zone readers retain their own
++   * support and recognized-flight priorities before using this technique. */
++  trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
++    const R = this.target;
++
+     // Anticipate a stable observed stem, then lose that confidence on a break.
+     // No route identity or once-per-play "knows the route" coin flip.
+     const cue = sim.see(a, R);
+diff --git a/src/sim/coverage/defender.ts b/src/sim/coverage/defender.ts
+index ee0685d1d97c4e1c58ee36df168df27f6ac21093..2269cfdde655cd8a3330ab73b84b62817767f6c1 100644
+--- a/src/sim/coverage/defender.ts
++++ b/src/sim/coverage/defender.ts
+@@ -12,7 +12,7 @@ import { believesRun, ManCoverage, runFit, sawThrow, ZoneCoverage } from '../beh
+ import type { PlaySim } from '../playsim.js';
+ import { ReleaseReader } from './reads.js';
+ import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
+-import { Rob, Trap, Wall } from './techniques.js';
++import { ReadRelease, Rob, Trap, Wall } from './techniques.js';
+ import { isDeepZone } from '../../playbook/alignment.js';
+ import { CoverageJudgment } from './judgment.js';
+ 
+@@ -65,7 +65,7 @@ export class CoverageDefender implements Behavior {
+   }
+   recordedZone(): string | undefined { return this.sub instanceof ZoneCoverage ? this.sub.zone : undefined; }
+   recordedMan(): import('../types.js').ReplayAgentState['man'] {
+-    return this.sub instanceof ManCoverage ? this.sub.recordedTechnique() : undefined;
++    return this.sub instanceof ManCoverage || this.sub instanceof ReadRelease ? this.sub.recordedTechnique() : undefined;
+   }
+ 
+   /** Current rule branch plus keys actually consumed at `readTick`.
+@@ -124,7 +124,11 @@ export class CoverageDefender implements Behavior {
+   private make(a: Agent, d: Directive): Behavior {
+     switch (d.t) {
+       case 'zone': return new ZoneCoverage(a, this.sim, d.zone, this.gap, this.gapSign, d.style);
+-      case 'man': return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign, d.opts);
++      case 'man':
++        if (this.sub instanceof ReadRelease && this.sub.target === d.r
++          && (d.opts.lev ?? 'inside') === 'inside' && !d.opts.trail && !d.opts.overTop) return this.sub.match();
++        return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign, d.opts);
++      case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
+       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
+       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign);
+       case 'rob': return new Rob(d.r, this.reader, this.gap, this.gapSign);
+diff --git a/src/sim/coverage/rules.ts b/src/sim/coverage/rules.ts
+index 99e7f241684c6ca9aea73d7663c1ba9e3c280759..1c6114559ec86c81093b64024fec1470e23c08f2 100644
+--- a/src/sim/coverage/rules.ts
++++ b/src/sim/coverage/rules.ts
+@@ -13,14 +13,17 @@
+  */
+ import type { ZoneId, ZoneStyle, MatchRule } from '../../playbook/types.js';
+ import type { Agent } from '../agent.js';
++import type { Vec2 } from '../../core/vec.js';
+ import type { ManOptions } from '../behaviors/defense.js';
+ import { knowsPass } from '../behaviors/defense.js';
+ import type { PlaySim } from '../playsim.js';
+ import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
++import { hasVisibleCap } from './judgment.js';
+ 
+ export type Directive =
+   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
+   | { t: 'man'; r: Agent; opts: ManOptions }
++  | { t: 'read'; r: Agent; initialPosition: Vec2 }
+   | { t: 'trap'; r: Agent }
+   | { t: 'wall'; r: Agent }
+   | { t: 'rob'; r: Agent };
+@@ -48,7 +51,10 @@ export interface RuleCtx {
+ // ------------------------------------------------------------ helpers
+ 
+ const zoneOf = (c: RuleCtx, zone: ZoneId = c.zone): Directive => ({ t: 'zone', zone, style: c.style });
+-const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive => ({ t: 'man', r: rd.r, opts });
++const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive =>
++  ({ t: 'man', r: rd.r, opts: { ...opts, initialPosition: { ...rd.pos } } });
++const readRelease = (rd: ReceiverRead): Directive =>
++  ({ t: 'read', r: rd.r, initialPosition: { ...rd.pos } });
+ 
+ function ref(c: RuleCtx, n: 1 | 2 | 3, side: 'S' | 'W' = c.side): ReceiverRead | null {
+   return c.reader.readRef(c.sim, `${side}${n}`);
+@@ -91,17 +97,24 @@ function c3Corner(c: RuleCtx): Directive {
+ }
+ 
+ /** Rip/Liz curl-flat (seam) player: match #2 vertical to `carry` yards; anything else declares the curl-flat zone. */
+-function seamCurlFlat(c: RuleCtx, carry: number): Directive {
++function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
+   const two = ref(c, 2);
+   if (!two || c.state.mode === 'zoned') return zoneOf(c);
++  // Reading #2 is already an installed duty. Do not spend the release
++  // cushion driving at a shallow lane before the route earns its match.
++  if (two.release === 'none' || (two.release === 'vertical' && two.depth < 3)) return readRelease(two);
+   if (vertical(two, 3)) {
+     if (two.depth > carry) {
++      // Installed depth permits delivery; it does not establish replacement.
++      // Keep the acquired vertical when the existing observed roof estimate
++      // cannot sustain help. No hidden flight or teammate assignment enters.
++      if (deliver && !hasVisibleCap(c.a, c.sim, two)) return man(two, { lev: 'inside' });
+       c.state.mode = 'zoned';
+       return zoneOf(c);
+     }
+     return man(two, { lev: 'inside' });
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
++  if (two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
+   return zoneOf(c);
+ }
+ 
+@@ -181,7 +194,8 @@ function qSafety(c: RuleCtx): Directive {
+     c.state.mode = 'two';
+     return man(two, { overTop: true, lev: 'inside' });
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical' && (two.release !== 'block' || knowsPass(c.sim, c.a))) {
++  if (two.release === 'block') return knowsPass(c.sim, c.a) ? helpOne(c, one) : zoneOf(c);
++  if (two.release !== 'none' && two.release !== 'vertical') {
+     c.state.mode = 'one';
+     return helpOne(c, one);
+   }
+@@ -189,15 +203,17 @@ function qSafety(c: RuleCtx): Directive {
+ }
+ 
+ /** Apex (nickel/Sam/curl-flat) next to a #2 read: wall #2's vertical to 10 yards for the safety, otherwise play curl-flat. */
+-function wallTwo(c: RuleCtx, handoff: number): Directive {
++function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
+   const two = ref(c, 2);
+   if (!two || c.state.mode === 'zoned') return zoneOf(c);
++  // Other wall callers have their own cut/deep-help contracts.
++  if (readStem && (two.release === 'none' || (two.release === 'vertical' && two.depth < 2))) return readRelease(two);
+   if (vertical(two, 2)) {
+     if (two.depth < handoff) return { t: 'wall', r: two.r };
+     c.state.mode = 'zoned';
+     return zoneOf(c);
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
++  if (two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
+   return zoneOf(c);
+ }
+ 
+@@ -301,14 +317,14 @@ function invertSafety(c: RuleCtx): Directive {
+ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
+   switch (rule) {
+     case 'c3_corner': return c3Corner(c);
+-    case 'c3_curl_flat': return seamCurlFlat(c, 12);
++    case 'c3_curl_flat': return seamCurlFlat(c, 12, true);
+     case 'c3_seam': return seamCurlFlat(c, 99);
+     case 'c3_hook': return c3Hook(c);
+     case 'mike_3': return mike3(c);
+     case 'q_corner_mod': return qCorner(c, false);
+     case 'q_corner_meg': return qCorner(c, true);
+     case 'q_safety': return qSafety(c);
+-    case 'q_apex': return wallTwo(c, 10);
++    case 'q_apex': return wallTwo(c, 10, true);
+     case 'palms_corner': return palmsCorner(c);
+     case 'palms_safety': return palmsSafety(c);
+     case 'cloud_corner': return cloudCorner(c, false);
+diff --git a/src/sim/coverage/techniques.ts b/src/sim/coverage/techniques.ts
+index 998e83e02893ffa770187e093fa78bf8b8cc8f21..e9f3f83ee5bae2cf63242b6aabd7eceb443f4b9f 100644
+--- a/src/sim/coverage/techniques.ts
++++ b/src/sim/coverage/techniques.ts
+@@ -9,10 +9,11 @@ import { FIELD_WIDTH } from '../../core/field.js';
+ import { clamp, lerp } from '../../core/vec.js';
+ import type { MoveCommand } from '../../physics/kinematics.js';
+ import type { Gap } from '../../playbook/types.js';
++import type { Vec2 } from '../../core/vec.js';
+ import type { Agent, Behavior } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import { angleTo, track } from '../behaviors/common.js';
+-import { believesRun, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
++import { believesRun, ManCoverage, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
+ import type { ReleaseReader } from './reads.js';
+ 
+ abstract class Technique implements Behavior {
+@@ -37,6 +38,30 @@ abstract class Technique implements Behavior {
+   protected abstract move(a: Agent, sim: PlaySim): MoveCommand;
+ }
+ 
++/** Preserve release cushion on the installed #2 while his route declares.
++ * This remains a zone read, with ordinary support/ball priority. It is not
++ * knowledge of a vertical or permission to carry a declared shallow forever. */
++export class ReadRelease extends Technique {
++  private readonly movement: ManCoverage;
++
++  constructor(a: Agent, sim: PlaySim, target: Agent, reader: ReleaseReader,
++    gap: Gap, gapSign: number, initialPosition: Vec2) {
++    super(target, reader, gap, gapSign);
++    this.movement = new ManCoverage(a, sim, target, false, gap, gapSign,
++      { lev: 'inside', initialPosition: { ...initialPosition } });
++  }
++
++  recordedTechnique() { return this.movement.recordedTechnique(); }
++
++  /** Completing the same inside match does not restart the release picture,
++   * cushion, hip turn or stem confidence at an arbitrary depth boundary. */
++  match(): ManCoverage { return this.movement; }
++
++  protected move(a: Agent, sim: PlaySim): MoveCommand {
++    return this.movement.trackReceiver(a, sim);
++  }
++}
++
+ /**
+  * Trap: drive downhill on a quick out or flat (the Palms/cloud corner on #2,
+  * the trap corner under #1). He attacks the catch point from outside-in so the
+diff --git a/test/coverage-run-support.test.ts b/test/coverage-run-support.test.ts
+index cfd1121b4d144dec7de3972795632f894b821d70..4473de16e79836c948338b5dda5a68e9e5eb82d3 100644
+--- a/test/coverage-run-support.test.ts
++++ b/test/coverage-run-support.test.ts
+@@ -95,7 +95,13 @@ describe('installed support survives a coverage target replacement', () => {
+ 
+   it.each([-1, 1])('retains the acquired insertion after zone becomes man on another receiver, side=%s', side => {
+     const f = stage(false, side), expected = stage(false, side);
+-    f.update(); expect(f.behavior.job.startsWith('zone:')).toBe(true); f.reassign();
++    const first = f.update();
++    // The initial zone-kind technique now reads its installed #2 while
++    // preserving the same run fit; it has not completed a man assignment.
++    expect(f.behavior.kind).toBe('zone');
++    expect(f.behavior.job.startsWith('read:')).toBe(true);
++    expect(first).toEqual(runFit(expected.a, expected.sim, 'B', side));
++    f.reassign();
+     expect(f.update()).toEqual(runFit(expected.a, expected.sim, 'B', side, { target: expected.rb, cue: expected.picture() }));
+     expect(f.behavior.job).toBe('man:H');
+     expect(f.behavior.target).toBe(f.receiver);
+diff --git a/test/match-block-release.test.ts b/test/match-block-release.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..3b3efe32d8332bdfa6e565d418bbc35e42f415f3
+--- /dev/null
++++ b/test/match-block-release.test.ts
+@@ -0,0 +1,90 @@
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { MatchRule, ZoneId } from '../src/playbook/types.js';
++import { CoverageDefender } from '../src/sim/coverage/defender.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++function stage(rule: MatchRule, zone: ZoneId) {
++  const sim = new PlaySim({
++    offense: pickOffense(generateTeam(new Rng(101), 'O', 'PO1'), '11'),
++    defense: pickDefense(generateTeam(new Rng(102), 'D', 'PD1'), 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover4, pressure: null, label: '' },
++    los: 40, ballY: 26, firstDownX: 50, seed: 8101,
++  });
++  const a = sim.slot(rule === 'q_safety' ? 'SS' : 'LB_M')!, r = sim.slot(sim.offAlign.numbering.S2!)!;
++  const b = new CoverageDefender(a, sim, rule, zone, 'match', 'B', sim.offAlign.strongSign);
++  a.behavior = b; a.recog!.read = 'pass'; a.body.pos = { x: rule === 'q_safety' ? 52 : 46, y: r.pos.y+1 };
++  let picture: Perceived = { pos: { x: 41, y: r.pos.y }, vel: { x: .8, y: 0 },
++    stance: 'low', facing: 0, age: .2, carrying: false };
++  const see = sim.see.bind(sim);
++  sim.see = (observer,target,scale) => target === r ? picture : see(observer,target,scale);
++  const update = (t: number) => { sim.t=t; return b.update(a,sim); };
++  const block = () => { update(.6); update(.7); return update(.8); };
++  const release = () => {
++    picture = { ...picture, pos: { x: 48, y: r.pos.y }, vel: { x: 6.5, y: 0 }, stance: null };
++    update(1); update(1.1); return update(1.2);
++  };
++  return { sim,a,r,b,update,block,release,setPicture:(p: Perceived)=>{picture=p;},picture:()=>picture };
++}
++const roles = [
++  ['q_safety','quarter_s_in','man'],
++  ['c3_curl_flat','curl_flat_s','man'],
++  ['q_apex','hook_s','wall'],
++] as const;
++
++describe('acquired entry into a rule-based man technique', () => {
++  it('does not initialize from hidden live receiver positions', () => {
++    const one=stage('c3_curl_flat','curl_flat_s'), two=stage('c3_curl_flat','curl_flat_s');
++    for (const f of [one,two]) f.setPicture({ ...f.picture(),pos:{x:45,y:f.r.pos.y},vel:{x:6,y:0},stance:null });
++    for(const t of [1,1.1,1.2,1.25]) {
++      two.r.body.pos={x:85,y:2};two.r.body.vel={x:-9,y:8};
++      for(const f of [one,two]) f.sim.perception.record(f.sim.agents);
++      expect(two.update(t)).toEqual(one.update(t));
++      expect(two.b.recordedMan()).toEqual(one.b.recordedMan());
++      expect(two.sim.rng).toEqual(one.sim.rng);
++    }
++    expect(one.b.job).toBe(`man:${one.r.slot}`);
++    expect(one.b.recordedMan()?.initialCushion).toBe(1);
++    const before=one.update(1.3);
++    one.setPicture({ ...one.picture(),pos:{x:46,y:one.picture().pos.y} });
++    const fresh=one.update(1.4);
++    expect(fresh.vel.x).toBeGreaterThan(before.vel.x);
++    expect(one.b.recordedMan()?.initialCushion).toBe(1); // Entry only; do not restart a continuing technique.
++  });
++});
++
++describe('blocking is provisional evidence for an uncommitted match key', () => {
++  it.each(roles)('%s restores its installed #2 duty after an acquired vertical release', (rule,zone,technique) => {
++    const f=stage(rule,zone);f.block();
++    expect(f.b.recordedRule(.8).reads.find(rd=>rd.target===f.r.idx)?.release).toBe('block');
++    f.release();
++    expect(f.b.recordedRule(1.2).reads.find(rd=>rd.target===f.r.idx)?.release).toBe('vertical');
++    expect(f.b.job).toBe(`${technique}:${f.r.slot}`);
++    if(rule==='q_safety') expect(f.b.recordedRule(1.2).mode).toBe('two');
++  });
++
++  it.each(roles)('%s retains its block response while no release has been acquired', (rule,zone) => {
++    const f=stage(rule,zone);const command=f.block();
++    f.r.body.pos={x:85,y:2}; f.r.body.vel={x:9,y:0};
++    f.sim.perception.record(f.sim.agents);
++    expect(f.update(.9)).toEqual(command);
++    expect(f.b.job).not.toBe(`man:${f.r.slot}`);
++    expect(f.b.job).not.toBe(`wall:${f.r.slot}`);
++  });
++
++  it.each(roles)('%s preserves a genuine acquired flat/under exchange', (rule,zone) => {
++    const f=stage(rule,zone);
++    f.setPicture({ ...f.picture(),vel:{x:0,y:f.sim.offAlign.strongSign*5},facing:f.sim.offAlign.strongSign*Math.PI/2,stance:null });
++    f.block();const job=f.b.job;f.release();
++    // Deep judgment can legitimately rescue an uncovered observed vertical;
++    // the installed exchange itself must remain in its earned branch.
++    if(rule!=='q_safety') expect(f.b.job).toBe(job);
++    expect(f.b.recordedRule(1.2).mode).toBe(rule==='q_safety'?'one':'zoned');
++  });
++});
+diff --git a/test/release-cushion.test.ts b/test/release-cushion.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..5ba5335311c8b8fa2cdb734fb9c91926d76ed729
+--- /dev/null
++++ b/test/release-cushion.test.ts
+@@ -0,0 +1,197 @@
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { stepBody } from '../src/physics/kinematics.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { MatchRule } from '../src/playbook/types.js';
++import { playBall, runFit, sawThrow } from '../src/sim/behaviors/defense.js';
++import { CoverageDefender } from '../src/sim/coverage/defender.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++const offense = generateTeam(new Rng(401), 'Release offense', 'RCO', { strength: .6 });
++const defense = generateTeam(new Rng(402), 'Release defense', 'RCD', { strength: .6 });
++const readRules = ['c3_curl_flat', 'c3_seam', 'q_apex'] as const;
++
++/** Reduced installed #2 conflict. Only observations supplied here are
++ * acquired; tests can independently advance/change the underlying reality.
++ * No receiver route is executed and no catch/tackle outcome is imposed. */
++function stage(rule: MatchRule = 'c3_curl_flat', flip = false) {
++  const sim = new PlaySim({
++    offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'), seed: 41,
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'release read' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3_match,
++      pressure: null, zoneStyle: 'match', label: 'release read' },
++    los: 40, ballY: 26, firstDownX: 50, audibles: false,
++  });
++  const a = sim.slot('NB')!, r = sim.slot(sim.offAlign.numbering.W2!)!;
++  const out = Math.sign(r.pos.y - sim.ballY) || 1;
++  const startY = r.pos.y;
++  a.body.pos = { x: 46, y: startY - out * .7 };
++  a.body.vel = { x: 0, y: 0 }; a.body.facing = Math.PI;
++  a.recog!.read = 'pass'; sim.t = .4;
++  const pictures = new Map<number, Perceived>();
++  for (const body of sim.agents) pictures.set(body.idx, {
++    pos: { x: 32, y: 2 + body.idx * 2 }, vel: { x: 0, y: 0 },
++    facing: 0, stance: null, pose: 'up', carrying: false, age: .2,
++  });
++  pictures.set(sim.qb.idx, { ...pictures.get(sim.qb.idx)!, pos: { ...sim.qb.pos } });
++  pictures.set(r.idx, { pos: { x: 40, y: startY }, vel: { x: 0, y: 0 },
++    facing: 0, stance: null, pose: 'up', carrying: false, age: .2 });
++  sim.see = (_observer, target) => pictures.get(target.idx)!;
++  const behavior = new CoverageDefender(a, sim, rule, rule === 'q_apex' ? 'hook_w' : 'curl_flat_w', 'match', 'B', -sim.offAlign.strongSign);
++  a.behavior = behavior;
++  const picture = (change: Partial<Perceived>) => pictures.set(r.idx, { ...pictures.get(r.idx)!, ...change });
++  const update = (t = sim.t) => { sim.t = t; return behavior.update(a, sim); };
++  return { sim, a, r, out, startY, pictures, behavior, picture, update };
++}
++
++function flight(f: ReturnType<typeof stage>, recognized: boolean) {
++  f.sim.throwAt = recognized ? .01 : f.sim.t;
++  f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: f.a.pos.y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
++    thrower: f.sim.qb, target: f.r, releaseT: f.sim.throwAt, releaseX: 35,
++    intended: { x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }, arrivalT: f.sim.t + .1,
++    deflected: false, throwaway: false };
++  f.sim.ballPath = [{ t: f.sim.t + .1, x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }];
++}
++
++describe('installed release reads preserve cushion without claiming a declared route', () => {
++  it.each(readRules)('%s holds its off-man cushion against a waiting upright #2', rule => {
++    const f = stage(rule), command = f.update();
++    expect(f.behavior.job).toBe(`read:${f.r.slot}`);
++    expect(f.behavior.kind).toBe('zone');
++    expect(f.behavior.zoneEyes).toBe(true);
++    expect(f.behavior.recordedRule(f.sim.t).reads.find(rd => rd.target === f.r.idx)?.release).toBe('none');
++    // Permit the ordinary small read step; exclude charging the shallow lane.
++    expect(command.vel.x).toBeGreaterThanOrEqual(-.4);
++    expect(command.facing).toBe(Math.PI);
++    stepBody(f.a.body, command, .05);
++    expect(f.a.pos.x - 40).toBeGreaterThan(5.9);
++    expect(f.behavior.recordedMan()?.initialCushion).toBe(6);
++  });
++
++  it.each(readRules)('%s carries a seen forward stem before its matching depth', rule => {
++    const f = stage(rule);
++    f.picture({ pos: { x: 41, y: f.startY }, vel: { x: 6, y: 0 } });
++    f.update(.4); // First evidence starts the ordinary confirmation period.
++    const command = f.update(.6);
++    expect(f.behavior.recordedRule(.6).reads.find(rd => rd.target === f.r.idx)?.release).toBe('vertical');
++    expect(f.behavior.job).toBe(`read:${f.r.slot}`);
++    expect(command.vel.x).toBeGreaterThan(0);
++    stepBody(f.a.body, command, .05);
++    expect(f.a.vel.x).toBeGreaterThan(0);
++    expect(f.behavior.kind).toBe('zone');
++  });
++
++  it.each([false, true])('uses the acquired picture despite hidden route/body changes and advancing snapshots, mirror=%s', flip => {
++    const reference = stage('c3_curl_flat', flip), changed = stage('c3_curl_flat', flip);
++    changed.sim.offCall.pass = PASS_BY_ID.mesh;
++    changed.r.behavior = { kind: 'receiver', update: () => ({ vel: { x: -8, y: 9 } }) };
++    for (let k = 0; k < 8; k++) {
++      changed.r.body.pos = { x: 70 + k, y: 4 + k };
++      changed.r.body.vel = { x: -8, y: 9 - k };
++      changed.r.body.facing = k * .5;
++      reference.sim.perception.record(reference.sim.agents);
++      changed.sim.perception.record(changed.sim.agents);
++      const before = structuredClone(changed.sim.perception);
++      const t = .4 + k * .05;
++      expect(changed.update(t)).toEqual(reference.update(t));
++      expect(changed.behavior.recordedMan()).toEqual(reference.behavior.recordedMan());
++      expect(changed.behavior.recordedRule(t)).toEqual(reference.behavior.recordedRule(t));
++      expect(changed.sim.perception).toEqual(before);
++      expect(changed.sim.rng).toEqual(reference.sim.rng);
++    }
++  });
++
++  it('responds to a newly acquired lateral release rather than its hidden continuation', () => {
++    const inside = stage(), outside = stage();
++    inside.update(); outside.update();
++    inside.picture({ vel: { x: 1, y: -inside.out * 5 } });
++    outside.picture({ vel: { x: 1, y: outside.out * 5 } });
++    const inRequest = inside.update(.45), outRequest = outside.update(.45);
++    // Both releases are still unconfirmed. Movement nevertheless responds to
++    // the actual picture rather than waiting on a fixed persistence timer.
++    expect(inside.behavior.job).toBe(`read:${inside.r.slot}`);
++    expect(outside.behavior.job).toBe(`read:${outside.r.slot}`);
++    expect(inRequest.vel.y * inside.out).toBeLessThan(0);
++    expect(outRequest.vel.y * outside.out).toBeGreaterThan(0);
++  });
++
++  it.each(readRules)('%s returns to its installed zone after acquired under, flat or blocking evidence', rule => {
++    for (const declaration of ['under', 'flat', 'block'] as const) {
++      const f = stage(rule);
++      f.update();
++      f.picture(declaration === 'block'
++        ? { pos: { x: 40.5, y: f.startY }, vel: { x: 1, y: 0 }, stance: 'low' }
++        : { pos: { x: 42, y: f.startY + (declaration === 'flat' ? f.out : -f.out) * 2 },
++          vel: { x: 1, y: (declaration === 'flat' ? f.out : -f.out) * 5 } });
++      f.update(.6); f.update(.8);
++      expect(f.behavior.recordedRule(.8).reads.find(rd => rd.target === f.r.idx)?.release).toBe(declaration);
++      expect(f.behavior.job.startsWith('zone:')).toBe(true);
++      expect(f.behavior.recordedMan()).toBeUndefined();
++    }
++  });
++
++  it.each(['c3_curl_flat', 'c3_seam'] as const)('%s completes the same inside technique without resetting cushion or stem confidence', rule => {
++    const f = stage(rule);
++    f.update(.4);
++    f.picture({ pos: { x: 41, y: f.startY }, vel: { x: 6, y: 0 } });
++    f.update(.6); f.update(.8); f.update(1.4);
++    const read = f.behavior.recordedMan()!;
++    expect(f.behavior.job).toBe(`read:${f.r.slot}`);
++    expect(read.initialCushion).toBe(6);
++    expect(read.routeRead).toBe(true);
++    f.picture({ pos: { x: 44, y: f.startY }, vel: { x: 6, y: 0 } });
++    f.update(1.45);
++    expect(f.behavior.job).toBe(`man:${f.r.slot}`);
++    expect(f.behavior.kind).toBe('man');
++    expect(f.behavior.recordedMan()?.initialCushion).toBe(read.initialCushion);
++    expect(f.behavior.recordedMan()?.routeRead).toBe(true);
++  });
++
++  it.each(['c2_hook', 'invert_safety'] as const)('does not broaden the provisional read to %s', rule => {
++    const f = stage(rule);
++    f.update();
++    expect(f.behavior.job.startsWith('zone:')).toBe(true);
++    expect(f.behavior.recordedMan()).toBeUndefined();
++  });
++});
++
++describe('release movement retains the existing zone/wall priority contract', () => {
++  it.each(['insert', 'alley'] as const)('preserves installed %s support and releases it when run belief changes', kind => {
++    const f = stage('q_apex'), expected = stage('q_apex');
++    for (const x of [f, expected]) {
++      x.a.runFit = { gap: 'B', side: -x.sim.offAlign.strongSign, kind, technique: 'attack', edge: 'box', pace: 'stack' };
++      x.a.recog!.read = 'run';
++    }
++    expect(f.update()).toEqual(runFit(expected.a, expected.sim, 'B', -expected.sim.offAlign.strongSign));
++    expect(f.behavior.kind).toBe('zone');
++    expect(f.behavior.job).toBe(`read:${f.r.slot}`);
++    const pass = stage('q_apex');
++    f.a.recog!.read = 'pass';
++    expect(f.update(.45)).toEqual(pass.update(.45));
++    expect(f.a.runFit!.kind).toBe(kind);
++  });
++
++  it('keeps acquired release movement through unrecognized flight, then honors a reachable recognized ball contest', () => {
++    const held = stage(), unrecognized = stage(), recognized = stage(), expected = stage();
++    flight(unrecognized, false); flight(recognized, true); flight(expected, true);
++    expect(sawThrow(unrecognized.a, unrecognized.sim, null)).toBe(false);
++    expect(unrecognized.update()).toEqual(held.update());
++    expect(unrecognized.behavior.kind).toBe('zone');
++    expect(sawThrow(recognized.a, recognized.sim, null)).toBe(true);
++    expect(recognized.update()).toEqual(playBall(expected.a, expected.sim, null));
++    expect(recognized.a.tags.has('onBall')).toBe(true);
++    expect(recognized.behavior.kind).toBe('zone');
++  });
++
++  it('gives a recognized throw priority over the established run belief', () => {
++    const f = stage('q_apex'), expected = stage('q_apex');
++    for (const x of [f, expected]) { x.a.recog!.read = 'run'; flight(x, true); }
++    expect(sawThrow(f.a, f.sim, null)).toBe(true);
++    expect(f.update()).toEqual(playBall(expected.a, expected.sim, null));
++    expect(f.a.tags.has('onBall')).toBe(true);
++  });
++});
+diff --git a/test/seam-delivery.test.ts b/test/seam-delivery.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..7576540ace3864a11d50b05e3106f4ebe9042d3c
+--- /dev/null
++++ b/test/seam-delivery.test.ts
+@@ -0,0 +1,179 @@
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { MatchRule } from '../src/playbook/types.js';
++import { playBall, sawThrow } from '../src/sim/behaviors/defense.js';
++import { catchSpot } from '../src/sim/behaviors/receiver.js';
++import { CoverageDefender } from '../src/sim/coverage/defender.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++const offense = generateTeam(new Rng(501), 'Delivery offense', 'SDO', { strength: .6 });
++const defense = generateTeam(new Rng(502), 'Delivery defense', 'SDD', { strength: .6 });
++
++/** A continuous acquired vertical crossing the installed delivery depth.
++ * Teammate pictures are independent of current bodies and private jobs. The
++ * roof is the existing geometric estimate, never a confirmed assignment. */
++function stage(rule: MatchRule = 'c3_curl_flat', flip = false) {
++  const sim = new PlaySim({
++    offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'), seed: 51,
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'seam delivery' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3_match,
++      pressure: null, zoneStyle: 'match', label: 'seam delivery' },
++    los: 40, ballY: 26, firstDownX: 50, audibles: false,
++  });
++  const a = sim.slot('NB')!, r = sim.slot(sim.offAlign.numbering.W2!)!, helper = sim.slot('FS')!;
++  const y = r.pos.y, out = Math.sign(y - sim.ballY) || 1;
++  a.body.pos = { x: 52, y: y - out * .7 }; a.body.vel = { x: 6, y: 0 }; a.body.facing = 0;
++  a.recog!.read = 'pass';
++  const pictures = new Map<number, Perceived>();
++  for (const body of sim.agents) pictures.set(body.idx, { pos: { x: 32, y: 2 + body.idx * 2 },
++    vel: { x: 0, y: 0 }, facing: 0, stance: null, age: .1, pose: 'up', carrying: false });
++  pictures.set(sim.qb.idx, { ...pictures.get(sim.qb.idx)!, pos: { ...sim.qb.pos } });
++  pictures.set(r.idx, { pos: { x: 48, y }, vel: { x: 6, y: 0 }, facing: 0,
++    stance: null, age: .1, pose: 'up', carrying: false });
++  sim.see = (_observer, target) => pictures.get(target.idx)!;
++  const behavior = new CoverageDefender(a, sim, rule, 'curl_flat_w', 'match', 'B', -sim.offAlign.strongSign);
++  a.behavior = behavior;
++  const update = (t: number) => { sim.t = t; return behavior.update(a, sim); };
++  const roof = (change: Partial<Perceived> = {}) => pictures.set(helper.idx, {
++    pos: { x: 56, y }, vel: { x: 6, y: 0 }, facing: 0,
++    stance: null, age: .1, pose: 'up', carrying: false, ...change,
++  });
++  const establish = () => { update(.5); update(.7); };
++  const beyond = () => pictures.set(r.idx, { ...pictures.get(r.idx)!, pos: { x: 54, y } });
++  return { sim, a, r, helper, y, out, pictures, behavior, update, roof, establish, beyond };
++}
++
++function retained(f: ReturnType<typeof stage>, t = .75) {
++  f.beyond();
++  const command = f.update(t);
++  expect(f.behavior.job).toBe(`man:${f.r.slot}`);
++  expect(f.behavior.kind).toBe('man');
++  expect(f.behavior.recordedRule(t).mode).toBeNull();
++  expect(command.vel.x).toBeGreaterThan(0);
++  return command;
++}
++
++describe('an installed seam delivery needs a sustainable acquired roof', () => {
++  it.each([false, true])('delivers to a co-moving visible roof after the installed depth, mirror=%s', flip => {
++    const f = stage('c3_curl_flat', flip);
++    f.roof(); f.establish();
++    expect(f.behavior.job).toBe(`man:${f.r.slot}`);
++    f.beyond(); f.update(.75);
++    expect(f.behavior.recordedRule(.75).reads.find(rd => rd.target === f.r.idx)?.release).toBe('vertical');
++    expect(f.behavior.recordedRule(.75).mode).toBe('zoned');
++    expect(f.behavior.job).toBe('zone:curl_flat_w');
++    expect(f.behavior.kind).toBe('zone');
++  });
++
++  it.each(['departing', 'down', 'rising', 'retreating'] as const)('retains the acquired seam when the apparent helper is %s', condition => {
++    const f = stage();
++    if (condition === 'departing') f.roof({ pos: { x: 56, y: f.y + f.out * 2 }, vel: { x: 6, y: f.out * 6 } });
++    else if (condition === 'retreating') f.roof({ vel: { x: -2, y: 0 } });
++    else f.roof({ pose: condition });
++    f.establish();
++    retained(f);
++  });
++
++  it('requires more reserve from an older closing picture than the same fresh geometry', () => {
++    const fresh = stage(), old = stage();
++    fresh.roof({ pos: { x: 57, y: fresh.y }, vel: { x: 1, y: 0 }, age: 0 });
++    old.roof({ pos: { x: 57, y: old.y }, vel: { x: 1, y: 0 }, age: .65 });
++    for (const f of [fresh, old]) { f.establish(); f.beyond(); }
++    fresh.update(.75);
++    expect(fresh.behavior.job).toBe('zone:curl_flat_w');
++    retained(old);
++  });
++
++  it('keeps carrying without acquired help, then delivers when a fresh helpful picture arrives', () => {
++    const f = stage();
++    // A live helper happens to be in position. That is not an observation.
++    f.helper.body.pos = { x: 56, y: f.y }; f.helper.body.vel = { x: 6, y: 0 };
++    f.establish(); retained(f);
++    f.roof(); f.update(.8);
++    expect(f.behavior.job).toBe('zone:curl_flat_w');
++    expect(f.behavior.recordedRule(.8).mode).toBe('zoned');
++  });
++
++  it.each([false, true])('keeps the same carry under hidden helper motion/jobs and advancing reality snapshots, mirror=%s', flip => {
++    const reference = stage('c3_curl_flat', flip), changed = stage('c3_curl_flat', flip);
++    for (const f of [reference, changed]) { f.establish(); f.beyond(); }
++    for (let k = 0; k < 5; k++) {
++      changed.helper.body.pos = { x: 56 + k, y: changed.y + k };
++      changed.helper.body.vel = { x: 8 - k, y: -6 + k };
++      changed.helper.behavior = { kind: k % 2 ? 'man' : 'rush', update: () => ({ vel: { x: -8, y: 5 } }) };
++      reference.sim.perception.record(reference.sim.agents);
++      changed.sim.perception.record(changed.sim.agents);
++      const before = structuredClone(changed.sim.perception), t = .75 + k * .05;
++      expect(changed.update(t)).toEqual(reference.update(t));
++      expect(changed.behavior.job).toBe(`man:${changed.r.slot}`);
++      expect(changed.behavior.recordedRule(t)).toEqual(reference.behavior.recordedRule(t));
++      expect(changed.sim.perception).toEqual(before);
++      expect(changed.sim.rng).toEqual(reference.sim.rng);
++    }
++  });
++
++  it('does not consult a hidden private assignment to accept an otherwise valid acquired roof', () => {
++    const reference = stage(), changed = stage();
++    for (const f of [reference, changed]) { f.roof(); f.establish(); f.beyond(); }
++    changed.helper.body.pos = { x: 31, y: 2 };
++    changed.helper.body.vel = { x: -7, y: 4 };
++    changed.helper.behavior = { kind: 'rush', update: () => ({ vel: { x: -7, y: 4 } }) };
++    reference.sim.perception.record(reference.sim.agents);
++    changed.sim.perception.record(changed.sim.agents);
++    expect(changed.update(.75)).toEqual(reference.update(.75));
++    expect(changed.behavior.job).toBe('zone:curl_flat_w');
++    // The estimate may be mistaken. This contract asserts available geometry,
++    // not that the teammate actually owns or will execute the assignment.
++  });
++
++  it.each(['under', 'flat'] as const)('keeps the existing zone-off decision for a genuinely acquired %s release', release => {
++    const f = stage();
++    f.pictures.set(f.r.idx, { ...f.pictures.get(f.r.idx)!, pos: { x: 42, y: f.y },
++      vel: { x: 1, y: (release === 'flat' ? f.out : -f.out) * 5 } });
++    f.establish();
++    expect(f.behavior.recordedRule(.7).reads.find(rd => rd.target === f.r.idx)?.release).toBe(release);
++    expect(f.behavior.job).toBe('zone:curl_flat_w');
++    expect(f.behavior.recordedRule(.7).mode).toBe('zoned');
++  });
++
++  it('keeps the existing terminal delivery contract when acquired help later leaves', () => {
++    const f = stage();
++    f.roof(); f.establish(); f.beyond(); f.update(.75);
++    f.roof({ pos: { x: 40, y: f.y + 10 }, vel: { x: -4, y: 5 }, pose: 'down' });
++    f.update(1);
++    expect(f.behavior.job).toBe('zone:curl_flat_w');
++    expect(f.behavior.recordedRule(1).mode).toBe('zoned');
++    expect(f.behavior.history.filter(h => h.job.startsWith('man:'))).toHaveLength(1);
++  });
++
++  it.each(['c3_seam', 'q_apex', 'c2_hook', 'invert_safety'] as const)('does not add the delivery condition to %s', rule => {
++    const f = stage(rule);
++    f.establish(); f.beyond(); f.update(.75);
++    expect(f.behavior.job).toBe(rule === 'c3_seam' ? `man:${f.r.slot}` : 'zone:curl_flat_w');
++    expect(f.behavior.recordedRule(.75).mode).toBe(rule === 'c3_seam' ? null : 'zoned');
++  });
++
++  it('preserves a reachable recognized ball contest even while the uncapped seam remains assigned', () => {
++    const actual = stage(), expected = stage();
++    for (const f of [actual, expected]) {
++      f.establish(); retained(f);
++      f.sim.t = 1.4; f.sim.throwAt = .1; f.a.tags.add('looking');
++      f.sim.ball = { kind: 'air', flight: { pos: { x: f.a.pos.x, y: f.a.pos.y, z: 2 },
++        vel: { x: 12, y: 0, z: -1 }, drag: 0 }, thrower: f.sim.qb, target: f.r,
++        releaseT: .1, releaseX: 35, intended: { x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 },
++        arrivalT: 1.5, deflected: false, throwaway: false };
++      f.sim.ballPath = [{ t: 1.5, x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 }];
++    }
++    expect(sawThrow(actual.a, actual.sim, actual.r)).toBe(true);
++    expect(catchSpot(actual.a, actual.sim)?.p).toEqual({ x: actual.a.pos.x + .2, y: actual.a.pos.y });
++    expect(actual.update(1.4)).toEqual(playBall(expected.a, expected.sim, expected.r));
++    expect(actual.a.tags.has('onBall')).toBe(true);
++    expect(actual.behavior.job).toBe(`man:${actual.r.slot}`);
++    expect(actual.behavior.recordedRule(1.4).mode).toBeNull();
++  });
++});

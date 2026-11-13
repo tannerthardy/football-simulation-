@@ -1,0 +1,63 @@
+{
+  "schema": "integration-queue-documentation-check-v1",
+  "checkedAt": "2026-10-15T19:09:36.033987+00:00",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "acceptedSourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+  "runtimeTestsToolingSettingsDependenciesUnchanged": true,
+  "existingCommittedEvidenceUnchanged": true,
+  "historicalIntegrationStatusBodiesPreserved": true,
+  "localDestinationsChecked": 174,
+  "brokenLocalPaths": [],
+  "newCanonicalAnchorsResolve": true,
+  "preexistingAnchorWarnings": [],
+  "remoteRefs": {
+    "refs/heads/codex/departed-center-gap": "132c27a8f1d9ce9a4366b92f0ede0df42a0dac52",
+    "refs/heads/codex/run-entry-cues": "f5618d09f8a25e230217a5a0661098d15eeb5e9b",
+    "refs/heads/develop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "refs/pull/62/head": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+    "refs/pull/63/head": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+    "refs/pull/64/head": "db77674b0e2493017d8778c5cdc5dd1420e68002"
+  },
+  "newRuntimeTests": 0,
+  "newSimulations": 0,
+  "newFullSuiteRuns": 0,
+  "elapsedSeconds": 0.7106698759889696,
+  "artifacts": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "a5b9467b6e3254b93521a5c39cfd5e73b6de0a2c6f3acc58e88276bde7d1aa59"
+    },
+    {
+      "path": "CLAUDE.md",
+      "sha256": "3d888b177668704430af84eb9cd02b3a6c28116ce6353625fbde0a30e1eb7bf1"
+    },
+    {
+      "path": "README.md",
+      "sha256": "dc8b9062c7c47af1153b73e3e15974888726ef3db6f0a966a01368ebade326f3"
+    },
+    {
+      "path": "docs/INTEGRATION.md",
+      "sha256": "42403e889c9a700e0bd5c0a20ce8e429dacb9626748aef3297afd47e0260f8d6"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "sha256": "77a8b38937149ed31dd7a0691907cd9d22d709ea09b28eb2be112b2618f9bc9a"
+    },
+    {
+      "path": "docs/TESTING_COSTS.md",
+      "sha256": "a0469b94edb7578bdc304dd0aee895197382d5f0db03ccdf1d1563ac3120cd92"
+    },
+    {
+      "path": "docs/WORKBOARD.md",
+      "sha256": "199364ea3b957373b31366f36631fe31fc3cf532cbd7b5f5ec6f68638115d245"
+    },
+    {
+      "path": "docs/BRANCHES.md",
+      "sha256": "ddfcaf03101edef9438f1e2f0ae2e89026cfe85f923f5efb89ff68750250a967"
+    },
+    {
+      "path": "data/reviews/current/integration-queue.json",
+      "sha256": "48f6e100cc75798c390efe56e73fdb402d30bf735e6f1928d88ac3bc8b6f4701"
+    }
+  ]
+}

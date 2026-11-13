@@ -1,0 +1,815 @@
+{
+  "schema": "bounded-attachment-verification-v1",
+  "sources": {
+    "parentCommit": "931289d7976cae4cdfad71cbf52ef824425bf4aa",
+    "experimentCommit": "0edf1d6",
+    "uncachedEngineSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+    "cachedControlledEngineSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+    "productionEngineSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+  },
+  "productionEnabled": true,
+  "researchBackendDefaultUnchanged": true,
+  "node": "v22.23.3",
+  "runtimeModeProvenance": "Old guard schemas omit preload/expose-gc from their generated command field. Declared invocations below preserve executed selection; filenames/source hash alone do not prove runtime mode. Targeted Counter/natural reports record modes directly.",
+  "declaredInvocations": [
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "linear.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/lower-attachment-review.ts",
+        "out/bounded-attachment-review/cached-linear.json"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "linear-tackles.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/tackle-timing-review.ts",
+        "out/bounded-attachment-review/cached-linear-tackles.json.gz"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "linear-runs-compact.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/run-contact-review.ts",
+        "out/bounded-attachment-review/cached-linear-runs.json"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-linear-shared.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/shared-capabilities.ts",
+        "out/bounded-attachment-review/linear-shared.json"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-linear-hands.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/hand-convergence.ts",
+        "out/bounded-attachment-review/linear-hands.json"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-linear-games9.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/linear-games9.json",
+        "9",
+        "--games-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-linear-games17.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/linear-games17.json",
+        "17",
+        "--games-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "bounded.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/lower-attachment-review.ts",
+        "out/bounded-attachment-review/cached-bounded.json",
+        "--bounded-attachment"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "bounded-tackles.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/tackle-timing-review.ts",
+        "out/bounded-attachment-review/cached-bounded-tackles.json.gz"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "bounded-runs-compact.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/run-contact-review.ts",
+        "out/bounded-attachment-review/cached-bounded-runs.json"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-bounded-shared.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/shared-capabilities.ts",
+        "out/bounded-attachment-review/bounded-shared.json"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-bounded-hands.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/hand-convergence.ts",
+        "out/bounded-attachment-review/bounded-hands.json"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-bounded-games9.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/bounded-games9.json",
+        "9",
+        "--games-only"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-bounded-games17.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/bounded-games17.json",
+        "17",
+        "--games-only"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "cost-linear-a.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cached-cost-linear-a.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "cost-bounded.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cached-cost-bounded.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "cost-linear-b.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cached-cost-linear-b.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "cost-bounded-repeat.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cached-cost-bounded-repeat.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "artifact": "cost-linear-repeat.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cached-cost-linear-repeat.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-cost-linear-a.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cost-linear-a.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-cost-bounded.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/enable-bounded-attachment.ts",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cost-bounded.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+      "artifact": "uncached-cost-linear-b.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/cost-linear-b.json",
+        "9",
+        "--benchmark-only"
+      ],
+      "boundedAttachment": false
+    },
+    {
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "artifact": "production-tackles.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/tackle-timing-review.ts",
+        "out/bounded-attachment-review/production-tackles.json.gz"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "artifact": "production-runs-compact.json.gz",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/run-contact-review.ts",
+        "out/bounded-attachment-review/production-runs.json"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "artifact": "production-games9.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/production-games9.json",
+        "9",
+        "--games-only"
+      ],
+      "boundedAttachment": true
+    },
+    {
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "artifact": "production-games17.json",
+      "declaredActualInvocation": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/bounded-attachment-review/production-games17.json",
+        "17",
+        "--games-only"
+      ],
+      "boundedAttachment": true
+    }
+  ],
+  "currentToolHashes": {
+    "scripts/diag/lower-attachment-review.ts": "35f5fbe51bf3ba165f2174380673c328b6ebeb2f867a3ec4ec3b2eb6781e4583",
+    "scripts/diag/enable-bounded-attachment.ts": "2d80e990ba999138881ba63ecd51651ab8ee3c4888f5d55c86536f9bf3712cbe",
+    "scripts/diag/disable-bounded-attachment.ts": "268b9a4f4d330db1ce7b4644c03c68a17868a4e16a33c4796b02b60be6f55640",
+    "scripts/diag/tackle-timing-review.ts": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91",
+    "scripts/diag/run-contact-review.ts": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+    "scripts/diag/shared-capabilities.ts": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/held-recovery-football.ts": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+    "scripts/diag/trace-run-approach.mts": "0c84f7fca6f34d4eb6429b416be128432b8963b641ae9755f532f7b692f70ae6",
+    "scripts/diag/natural-lower-attachment.ts": "b8c3a6085a30a26a7271f4762fe00ccb1344909dba37fb314becb844757ee5b6",
+    "scripts/export-tackle-timing.ts": "d27ba293bba4f7527f057fcadb16702a0f094b249a99cec675b762ca41ab7bcc",
+    "scripts/export-run-contact-review.ts": "8fef27f21bd4ee9c3a809221bb214545a273bebfcb7b6051ed30d8037c10e994",
+    "scripts/export-natural-lower-attachment.ts": "5ab8085b7a269578722c7c01e5994450baadfc02b13d379b73d4dec573768412",
+    "scripts/check-replay-viewer.py": "ecaefcffc61087c736fe7f6c7ad6b4626d7c4db544559d61ff29306b5395f589",
+    "viewer/replay.template.html": "47481b07b447a2c4a8530c64c2bf98ab919464d8568dfcf5ef5f5671e7915239"
+  },
+  "validation": {
+    "typescriptTests": 568,
+    "testFiles": 54,
+    "pythonDataTests": 22,
+    "typecheck": "passed",
+    "build": "passed",
+    "cacheEquivalentPerMode": {
+      "reducedRestarts": 48,
+      "ordinaryTackleEncounters": 64,
+      "matchedRuns": 144
+    },
+    "promotedDefaultEquivalent": {
+      "ordinaryTackleEncounters": 64,
+      "matchedRuns": 144,
+      "fourGameOfficialSummaries": true
+    },
+    "naturalWitness": {
+      "priorPlaysIdentical": 30,
+      "completeSelectedPrestateAndRngIdentical": true,
+      "trueUnobservedBaselineEqualsDetailedBaseline": true,
+      "oldGainYd": 77.5,
+      "newGainYd": 75.88,
+      "oldOutcome": "td",
+      "newOutcome": "tackle"
+    },
+    "fullGameTimeouts": 0,
+    "fullGameLowerBoundReleases": 0,
+    "fullGameMotorWorkExcess": 0,
+    "viewer": "44 controlled clips passed offline browser checks and short WebM decode; two natural clips pass custom offline smoke/integrity; detailed scopes pinned separately"
+  },
+  "limits": [
+    "No NFL averages, force capacities, player skills or global resolution fitted.",
+    "Reduced restart is one historical interaction with disclosed missing optional state and exogenous commands; not 48 independent NFL samples.",
+    "Controlled same-source comparison is pre-promotion; production equivalents are separately pinned.",
+    "Natural field witness is retrospective first release with fixed linear prior history; not league improvement estimate.",
+    "Existing hand/contact refinement and longer Counter carries retained as unresolved physics debt.",
+    "Cost fixtures are near-zero fresh one-tick graphs; noisy process retained, stable reversed repeat does not establish portable speedup or full-game overhead.",
+    "Planar work closure does not validate unrepresented anatomical/vertical work or empirical force magnitudes.",
+    "Physics final readiness has not been claimed."
+  ],
+  "artifacts": [
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/bounded-runs-compact.json.gz",
+      "bytes": 161085,
+      "sha256": "0a387d2f215be19b786447bed5f1afee75ebdd7048396b0385b5a9931a730a7b",
+      "uncompressedSha256": "4d13365f4705c034635fc7ed78a789bd859b21cbb612f9bacab75224ed4c94f6",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/bounded-tackles.json.gz",
+      "bytes": 1598933,
+      "sha256": "25c7e3698b1fcd258ba58f547e68cceb768485a0a2776bb73d409aeeb5820ede",
+      "uncompressedSha256": "ac273f1e3ef217aa65ce410b955d138bab8dbc39263d99045d4dbaf2dfa22699",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/bounded.json.gz",
+      "bytes": 558273,
+      "sha256": "cf4b49fef2bea2618fcbab9227c9c7f01331dbf91c2cbdb9d70306fbaed688ae",
+      "uncompressedSha256": "c5704f87b88d4e14d025c98a21dd9bc0b9bc4957327bc23dedde48ec439b9781",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/browser-runs-published.log",
+      "bytes": 2448,
+      "sha256": "bb630a6685da313e767a8844674f37fdc043b48aa914e6c0570b1cefe4c86095"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/browser-tackles-published.log",
+      "bytes": 2911,
+      "sha256": "761b89c484b4d28467c3438015fc5c8a77c64d0d6162baa30742e471138ddd87"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/build-production-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cache-equivalence.json",
+      "bytes": 1200,
+      "sha256": "eb87ee3d82a86e78a8f58b6621c46f86eb3053e18543f35f41354bcf32a7c7ce",
+      "recordedSource": null
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cached-focused-tests.log",
+      "bytes": 393,
+      "sha256": "f9b0acf99ce4504d221407c6bf6ef9131e1cb6593b4161a9cc0393c4038e621e"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/constraint-work-recheck.log",
+      "bytes": 278,
+      "sha256": "9eedf0bc4ac2c17206cecf8e1a3873e4932dc3f4d4629543378b2c3b3536c3ee"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cost-bounded-repeat.json",
+      "bytes": 7470,
+      "sha256": "67fc8cb78fe477368a75ba91c7bdb850d029df5e84200cdcb3bc5a951af1da38",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cost-bounded.json",
+      "bytes": 7442,
+      "sha256": "1b02ff17e337597a5aa2f757c0c404c00f098fdc93f68c2295c7e920ffc68038",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cost-comparison.json",
+      "bytes": 1693,
+      "sha256": "baa385be40eba723817d4543d64345ddc84700793137cd0e470c6e957cfb7b78",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cost-linear-a.json",
+      "bytes": 7452,
+      "sha256": "d2383c9c21d1e960d6f94e639986b9a3eb4225a3a89372ef52f4270924d3a11e",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cost-linear-b.json",
+      "bytes": 7457,
+      "sha256": "2d069220512626b80b0adb0a769cbd2318e653ad2992b1955e0bd625241abc0d",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/cost-linear-repeat.json",
+      "bytes": 7451,
+      "sha256": "66f51b1520ba8d0df70bd3febeda7fdee9caa31ef7909a2f8ee2f27b4758938a",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-bounded-12.json.gz",
+      "bytes": 1456267,
+      "sha256": "99c8831b0c40a0dc95a14273ed8e847cee4aa3c4cf5844708e4bd2b975454ab5",
+      "uncompressedSha256": "24055d8b4d2b19630b17c3ba3ac9126ff42c641a33484de253cfab4fdff59368",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-bounded-24.json.gz",
+      "bytes": 902565,
+      "sha256": "de5902c319baa6ef58f2428e0e4e56ddcbf817a5f2f8515c40e99858d80c2121",
+      "uncompressedSha256": "9737cc9616c09d9fdcbeaecabcef3e041362f903231e17db3a413f4a3317efa9",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-bounded-48.json.gz",
+      "bytes": 878298,
+      "sha256": "2da95e8442f1083d2f6b49a68958d4983cc2c1edb571730fa9c723f9f91f9896",
+      "uncompressedSha256": "d9dd107dab03dec858f2f63f5d4673cc18fbd66ab0cc08ed55230baa4725ab2c",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-linear-12.json.gz",
+      "bytes": 1394380,
+      "sha256": "2dac9faa1e25efa932b98e0fd19b6440ae03049fb573553951718994b67d11cf",
+      "uncompressedSha256": "a5fb2723407f864766e29cc9a8b2f0ff77adee9326607792de7a620ef0711710",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-linear-24.json.gz",
+      "bytes": 901936,
+      "sha256": "f039a0987680c2efd74d13762247a09f63242da1111468300d9a138fb978d871",
+      "uncompressedSha256": "4ed4b7645f8d1384c9722649cf8f4f048e599eee8ec4189bad5dc426829d53d2",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-linear-48.json.gz",
+      "bytes": 877831,
+      "sha256": "3b4dc684e4898d7150487dac31d68971575d092f6f483cca1993c42e76ec8e76",
+      "uncompressedSha256": "53baf78a52b529728ff0ce21bede06e2632499a5b946ea91efd2b329892d4fa0",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/counter-refinement-comparison.json",
+      "bytes": 46054,
+      "sha256": "4db08e462d8b17953ecfd2f93c59861edb09d0d59b90e883f18b1393e2e7d1a7",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/film-integrity.json",
+      "bytes": 18025,
+      "sha256": "50d123189e57179de82bcfbe69d3db831e3af66d14607dae6ddeaf2c0a2bc465",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/linear-runs-compact.json.gz",
+      "bytes": 160097,
+      "sha256": "a34a5f4acb6dc2f02053c3c9e377ea86fcfb982cb887bd4ee2f061dc76d5b053",
+      "uncompressedSha256": "e97f580d952a3edb87ea9c5e2e959dbbddefdc1f9b134dfc788f4214924f89eb",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/linear-tackles.json.gz",
+      "bytes": 1600533,
+      "sha256": "10e524874c62e6e63950b6c02f13d7b451df38907a1bb94040e066dc1fbeceaf",
+      "uncompressedSha256": "e5a163fbe841cd0faee0a3643624a9133d90602e1d4c482d2a84bf911d4728dc",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/linear.json.gz",
+      "bytes": 381366,
+      "sha256": "05879bcfc22da64cc84ba5c8776682bacf33aef4788bda058b36cb7858ecc51a",
+      "uncompressedSha256": "d5cdcfba240a3367cbebc081e2073982c78ba3a2ea0842a35ff094591401b3c0",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/natural-film-validation.json",
+      "bytes": 4077,
+      "sha256": "f9998e764084bf71ae533938940e71a1264861ec6fb1cb56e367d1716b7cbf6f",
+      "recordedSource": null
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/natural-witness-comparison.json",
+      "bytes": 6926,
+      "sha256": "bee8863de338f8fc4aad9821ba7fafe6762c6e3e00a6a2b8dc8542d40df5c30f",
+      "recordedSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/natural-witness.json.gz",
+      "bytes": 4648289,
+      "sha256": "bb8a623a393a6338c8ff5320620828cec59871ce59ccb9ab4ed83b942008ac86",
+      "uncompressedSha256": "d355cbb117c43b27af812a8387dc5b25c4302752e001e0857adbdbced825083b",
+      "recordedSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/pre-promotion-natural-witness-comparison.json",
+      "bytes": 5591,
+      "sha256": "00c8dbc71c5dc929ca1de8698e7162cb1266db7b3305257ebfa31417cfb35db8",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/pre-promotion-natural-witness.json.gz",
+      "bytes": 4648295,
+      "sha256": "517e7feca6b91eac6d57cce145dd38a75b6dcc8280bf701e066aa98a5e6764a2",
+      "uncompressedSha256": "52e4de3da66cdeb1929a2f8e3619c8554faf4f18645ab3c5fbdbae7504be5c0f",
+      "recordedSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/production-equivalence.json",
+      "bytes": 1276,
+      "sha256": "63468289459efdc4a347312fcaf690049f83530036a8e8843aab50c809c1fea9",
+      "recordedSource": null
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/production-games17.json",
+      "bytes": 6272,
+      "sha256": "6649a06d29638fe9d1fc684f6d882400a9b4fb26b645bff878ec39e375876415",
+      "recordedSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/production-games9.json",
+      "bytes": 6289,
+      "sha256": "3352a8be6fc03d13d55183baa7709d5bc1b786d11bd78d23c9508f2df8c15d95",
+      "recordedSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/production-runs-compact.json.gz",
+      "bytes": 161090,
+      "sha256": "a37cd6e9e55cc6d7495e49106ba09d8b2066062fe5328ea82f35132717c0297c",
+      "uncompressedSha256": "59cb7326e0564f31d2aedb1d112f024c4a4a65c3d66c05af9c986909d9f08d7e",
+      "recordedSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/production-tackles.json.gz",
+      "bytes": 1598931,
+      "sha256": "3f874a9e61a7cd5939097f4aaef60be17dff27d8364520f6f518584a8863db6e",
+      "uncompressedSha256": "e660b9b6a9acd78e4e9a49757d2ded69b6ea94c49d78190558bd21b0638742de",
+      "recordedSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/promoted-focused-tests.log",
+      "bytes": 389,
+      "sha256": "1d673829282e50f6f1843d058296a28adb98f43b95860e9f37cb550d81662608"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/python-tests-production.log",
+      "bytes": 121,
+      "sha256": "cc016bd25e556621a6f8f98570de5022b65da43e4b9f099773a47226c14c92e5"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/python-tests.log",
+      "bytes": 121,
+      "sha256": "1489e904ef101e3a2e1243edde3d21f247e7808a06eccdc95a774afa7272e29d"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/run-comparison.json.gz",
+      "bytes": 13755,
+      "sha256": "87de8840d679948c248ace1b412058b79452735bcc3f06123c57542e4500308b",
+      "uncompressedSha256": "649f58148534404d4cd65731b7ed836e7794a6e6756ed615c44b0a84dea2c3cd",
+      "recordedSource": null
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/tackle-comparison.json.gz",
+      "bytes": 66797,
+      "sha256": "2c3af1f50bb94ebf01a65d8d794a2983b90bf5907c1e897a3635510a6ebbd073",
+      "uncompressedSha256": "d23e5d1ad67a547ae753d33fef8180c558ec74d04ecd68e64efb118d0a182c5b",
+      "recordedSource": null
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/tests-final.log",
+      "bytes": 4079,
+      "sha256": "1a36db0bc58ff4461b744a9cefc38033f6ace28f60cd6fe1adcaaf978cdc7511"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/tests-production.log",
+      "bytes": 4080,
+      "sha256": "fb99388f917679a0af5cb305af8b8151b3ccaed3e130a6e859b7963c6da79bce"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/tests-recheck.log",
+      "bytes": 4080,
+      "sha256": "ec02ef66d1731c87597ffe8584e8cf714bec988f7bf2aebd1b9353551f4c682a"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/tests.log",
+      "bytes": 7254,
+      "sha256": "b1fccfb1be6ea4a0a164ef696ac197106fddca626474fdff36ebb359429043a1"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/typecheck-production-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-bounded-games17.json",
+      "bytes": 6269,
+      "sha256": "5de0face8a4ba534d8d4025e03827b77d649703b7c6c464f8186e6572bf25553",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-bounded-games9.json",
+      "bytes": 6284,
+      "sha256": "ca21e06abea4011c458df5e3336f0db34dd5b2c8724db673c07620d1f0022cb0",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-bounded-hands.json.gz",
+      "bytes": 4446,
+      "sha256": "e98ca310239f5e4a6fd19918730393d73fe25021e709ad5621823f6d2787273d",
+      "uncompressedSha256": "7196baae464b1f288674c435ac32cbdd1b48ee3db4096cf807384fcc7cfbfa39",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-bounded-shared.json.gz",
+      "bytes": 10015,
+      "sha256": "0c804649382d284f10c846836246fae9443d6a1fac97dbfada1dfeb87207322f",
+      "uncompressedSha256": "ab92712c3b72f2e48fea6fa41a18b15917b4fe816457cd57d960482fbb75e664",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-cost-bounded.json",
+      "bytes": 7413,
+      "sha256": "b48f300b10b8811dff56428251130fc6eed1cf5464ee60ccd9bcc6bb4cb79a3a",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-cost-comparison.json",
+      "bytes": 1286,
+      "sha256": "04e5fd2fa91a5b52a6fd4373c53537832271c7bb14993da1278ca68adf68c394",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-cost-linear-a.json",
+      "bytes": 7460,
+      "sha256": "654372d733e832f78500a895a69b3cb92ea24b1aead45f441653aa853b9693c3",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-cost-linear-b.json",
+      "bytes": 7456,
+      "sha256": "efe4b8db59c653ced8d2b90ec9052dc5076f524cd6e045110495bef8fb2333b5",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-linear-games17.json",
+      "bytes": 6335,
+      "sha256": "78d019e6a3f1b2f8f292db07dac74070e378a9274d092699a53ff417787f0c14",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-linear-games9.json",
+      "bytes": 6254,
+      "sha256": "5acf9ba0a6733b0de97bf1f67b1cc9bf7be3ef707ca381956fa43f21c83f87af",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-linear-hands.json.gz",
+      "bytes": 4442,
+      "sha256": "d79f62760ee2623b23c92ff29911291e4641553762450f0068cc0d3dd0396190",
+      "uncompressedSha256": "2efb1090490ff55ee0a061380af0d8b236c9a04f3747d75452c39dca460ab1f1",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/uncached-linear-shared.json.gz",
+      "bytes": 10015,
+      "sha256": "0c804649382d284f10c846836246fae9443d6a1fac97dbfada1dfeb87207322f",
+      "uncompressedSha256": "ab92712c3b72f2e48fea6fa41a18b15917b4fe816457cd57d960482fbb75e664",
+      "recordedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9"
+    }
+  ]
+}

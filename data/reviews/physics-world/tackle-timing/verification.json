@@ -1,0 +1,356 @@
+{
+  "schema": "tackle-timing-verification-v1",
+  "baselineCommit": "b7db9d8b6c5606aadee29a763de87327d01e1dcf",
+  "baselineSourceSha256": "2b405d9a79bbb09c21e5e1146a32632c62263fb9e67f319091196f45d8a80ef4",
+  "candidateSourceSha256": "bbfaf460a9962459702dc5702b62b5b5e5933eac7c7e5ab1986095690d1759db",
+  "runtime": {
+    "node": "v22.23.3",
+    "executable": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node"
+  },
+  "validation": {
+    "typescriptSuite": {
+      "passed": 549,
+      "files": 52,
+      "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --minWorkers=1",
+      "engineSourceStable": true
+    },
+    "pythonSuite": {
+      "passed": 22,
+      "command": "python3 -m unittest discover -s test -p 'test_*.py'"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit"
+    },
+    "build": {
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json"
+    },
+    "comparisonRejectionChecks": 8,
+    "controlledPrimaryRows": 56,
+    "separateCrossingWitnessRows": 8,
+    "separateBrakeWitnessRows": 4,
+    "observerMatchesPerSource": 64,
+    "panelRecordedMatchesPerSource": 9,
+    "brakeRecordedMatchesPerSource": 4,
+    "matchedRunRowsPerSource": 144,
+    "runObserverMatchesPerSource": 7,
+    "startingRosterSeedMatchedGameGuards": 4,
+    "zipBytesMatchHtml": true,
+    "isolatedHelperCost": {
+      "passed": true,
+      "concurrentHeavyWorkloads": false,
+      "legacyComparison": false,
+      "fullGameOverheadEstimate": false
+    },
+    "browser": {
+      "tackles": {
+        "passedChecks": 36,
+        "clips": 26,
+        "concepts": 9,
+        "report": "data/reviews/physics-world/tackle-timing/viewer-check.json"
+      },
+      "runs": {
+        "passedChecks": 31,
+        "clips": 26,
+        "concepts": 6,
+        "report": "data/reviews/physics-world/tackle-timing/runs-viewer-check.json"
+      },
+      "externalFontsBlocked": true,
+      "errors": 0,
+      "video": {
+        "fixtureId": "BASE-TT-R1-trafficCrossing-S83-L",
+        "rangeSeconds": [
+          0,
+          1.2
+        ],
+        "codec": "vp9",
+        "width": 1280,
+        "height": 840,
+        "decodedFrames": 43,
+        "generatedIgnoredPath": "out/tackle-timing-review/tackle-timing.webm",
+        "bytes": 311139,
+        "sha256": "8d8eb995859aaf5dcfb0336c6820fc8bd610e80c1153a08c2506be3be8c4954b",
+        "note": "Actual browser-generated verification clip; raw video remains optional ignored output. Self-contained viewers can reproduce exports."
+      }
+    }
+  },
+  "limits": [
+    "No physical parameters, force capacities, solver resolution, generated traits, execution rolls or NFL targets were retuned.",
+    "Primary/crossing physical outcomes remain unchanged; brake witnesses establish command-consistent timing, with mixed natural endpoints.",
+    "Lower attachment release is diagnosed and unfixed; four game guards show two baseline and seven current releases.",
+    "Game and raw run aggregates are not league calibration; raw run gains precede game-level penalty enforcement.",
+    "Trap first-difference is selected retrospectively and includes baseline holding plus different later RNG draw order.",
+    "Bounded attachment is a proposed default-off experiment, not implemented or promoted.",
+    "Full anatomical/spatial foot research remains paused; PR #1 and main were untouched."
+  ],
+  "sourceAndFilmFiles": [
+    {
+      "path": "src/sim/tackle.ts",
+      "bytes": 22361,
+      "sha256": "33e9e60eea085fcb77d1b1f4420bd3e71b2fc3d8c687c7e2c7351850a5653475"
+    },
+    {
+      "path": "src/sim/tackle-window.ts",
+      "bytes": 2478,
+      "sha256": "f4f3028307293bc1fb85b1076c0d938358c623ee4100204dd1956f5521f08b6c"
+    },
+    {
+      "path": "test/tackle-window.test.ts",
+      "bytes": 10992,
+      "sha256": "38dca7d0d439f32d71457cfec1a7d7e9905679b1e76bec3c0808a2ff74447986"
+    },
+    {
+      "path": "scripts/diag/tackle-timing-review.ts",
+      "bytes": 22011,
+      "sha256": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91"
+    },
+    {
+      "path": "scripts/diag/tackle-brake-witness.ts",
+      "bytes": 9740,
+      "sha256": "5ea30449c54f24b5c197bdfd758ae0ced43b1bcbfeccb79d33c4b3adce81b2ae"
+    },
+    {
+      "path": "scripts/diag/lower-attachment-review.ts",
+      "bytes": 14325,
+      "sha256": "ddac9c79e135369f1a352bd57d7d044e54ff805df0002a69bee368edac3e9aa0"
+    },
+    {
+      "path": "scripts/diag/compare-tackle-timing.py",
+      "bytes": 6293,
+      "sha256": "94b4fd0cddad28bbdd1a9f0f40da5884bf7e511fa111dbca58ec21eed6ecb3b6"
+    },
+    {
+      "path": "scripts/diag/tackle-window-cost.ts",
+      "bytes": 10662,
+      "sha256": "8bb184bb0d41451e90dbdff7c848da6d2123074d158b7b4b2c9ccd5da6b9b839"
+    },
+    {
+      "path": "scripts/export-tackle-timing.ts",
+      "bytes": 16893,
+      "sha256": "ae03279eec7962e068944da31b2597fefd04a49843d1018aead9daf9c2db077a"
+    },
+    {
+      "path": "scripts/check-replay-viewer.py",
+      "bytes": 32692,
+      "sha256": "ecaefcffc61087c736fe7f6c7ad6b4626d7c4db544559d61ff29306b5395f589"
+    },
+    {
+      "path": "scripts/diag/run-contact-review.ts",
+      "bytes": 19652,
+      "sha256": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971"
+    },
+    {
+      "path": "scripts/diag/trace-run-approach.mts",
+      "bytes": 4828,
+      "sha256": "7eacd2ae40dd8fc10d6ed524baa1e548e6a2bb76ff842bdf5f19c153d06c976d"
+    },
+    {
+      "path": "scripts/diag/held-recovery-football.ts",
+      "bytes": 13066,
+      "sha256": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91"
+    },
+    {
+      "path": "scripts/export-run-contact-review.ts",
+      "bytes": 6091,
+      "sha256": "fc2f7a5da8d70ca0f064d18b035b1ac27d88be20609f305c34c3ae55639cd3fb"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "viewer/replay.template.html",
+      "bytes": 78701,
+      "sha256": "79981288c4253003e0e8d379e68dfc1f120c9bb952cd05474e7d79c5c2838ec2"
+    },
+    {
+      "path": "viewer/tackle-timing-review.html",
+      "bytes": 3273358,
+      "sha256": "a71e1e14390a4199863658e38afaa85b8e3a1847526893882bd9fa875589b5de"
+    },
+    {
+      "path": "viewer/tackle-timing-review.zip",
+      "bytes": 1750581,
+      "sha256": "e0d6fee424f8a75d397aaa497cabe1ebdc4fb23def34f98263d0ff2148ce78ad"
+    },
+    {
+      "path": "viewer/tackle-timing-runs.html",
+      "bytes": 5894894,
+      "sha256": "bbc93800b44a1b11aee7ddcf9078f977c15f172763406239781ff510226faafa"
+    },
+    {
+      "path": "viewer/tackle-timing-runs.zip",
+      "bytes": 3919796,
+      "sha256": "a75aa5d6b254f81c1e770fbb1cb4af2aa738d89adcbd8d8227db3a679e21733f"
+    },
+    {
+      "path": "CLAUDE.md",
+      "bytes": 27234,
+      "sha256": "89860da8274d2fd345d5679058ac4061cb3617ff264bdae8c4aa0805ee351510"
+    },
+    {
+      "path": "docs/PHYSICS_DEVELOPMENT.md",
+      "bytes": 29351,
+      "sha256": "6306d62fa650ea43da63a38bba5163bbeaaaf891423f647f531ca67cecc44cfc"
+    },
+    {
+      "path": "docs/reviews/tackle-timing-and-lower-attachment.md",
+      "bytes": 10380,
+      "sha256": "ac2cdb5db264d1c01cc2f3f6ebd0d4b2267701ed8949c3c3fbaa9be0fbcaa32d"
+    },
+    {
+      "path": "docs/reviews/lower-attachment-bound.md",
+      "bytes": 7961,
+      "sha256": "51ed3b784c6dc8f8358433cb01ea01181ad163e50eff3585a340104dba96ea2b"
+    },
+    {
+      "path": "data/README.md",
+      "bytes": 49883,
+      "sha256": "77992e3744c4c6d7188672edccad7221284e42af24f5ffa6e1b1d2b42339adbe"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "data/reviews/physics-world/tackle-timing/README.md",
+      "bytes": 7197,
+      "sha256": "26f8c181db2d48ee9b236762016a4e46e01dc567a34185be8f02b50187cbab1a"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/baseline-brake-witness.json.gz",
+      "bytes": 75258,
+      "sha256": "7b35fd92c89f6a6a7c235f9cae8b99d80d1768524eebc5e2cecb2e462853f281"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/baseline-games-seed17.json",
+      "bytes": 6250,
+      "sha256": "7ac76ef24cd450f3659e5b9545279265e684672d8d3141e049068777cbc3e58b"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/baseline-games-seed9.json",
+      "bytes": 6288,
+      "sha256": "2807d75e347936d6c7d48942ac03059a7175bc7a7923a21cbf6575266d9611f4"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/baseline-panel.json.gz",
+      "bytes": 1599291,
+      "sha256": "9213110fcce0b378d29fef9427d439664862b64daff6af2aea8d5f030c9655e8"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/baseline-runs.json.gz",
+      "bytes": 161311,
+      "sha256": "a2a0af0eb477c42f8d35171e6ec3a24795f9236ab62564b6abad3906e78ab87f"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/brake-comparison.json",
+      "bytes": 11272,
+      "sha256": "fcb5d023f9a09f8b0ec003f9a27f01937949a4ff828816c64005001cc88fb728"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/candidate-brake-witness.json.gz",
+      "bytes": 80094,
+      "sha256": "ac09b50d39c170311ba200d00cc7fe0e5217398a134ea5205da626ad244b58db"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/candidate-games-seed17.json",
+      "bytes": 6332,
+      "sha256": "d3cdada6a3b00a4e828bbc925470bbf0fb426ce20480df778b4191a108620c93"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/candidate-games-seed9.json",
+      "bytes": 6260,
+      "sha256": "74e617fe8b53bbc0ad7b6c24a764516f19dca31a6796bd32b27ec20e0088e03e"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/candidate-panel.json.gz",
+      "bytes": 1600530,
+      "sha256": "29454e6b00ad1f880f7efae3c9ef16740906e7911b6bbb30ffc6f63e3bbf132b"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/candidate-runs.json.gz",
+      "bytes": 160090,
+      "sha256": "2dd7ec6545bc0ab58a6b1d4e49fe1f01a3fe4120b560e031b266c04a054b1537"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/comparison-rejection-checks.log",
+      "bytes": 296,
+      "sha256": "eac6f034014862de4b08a6a31ea3304c8b7887597a364fdb91d7ba7306e031ac"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/export-integrity.json",
+      "bytes": 726,
+      "sha256": "e6799ad5c26837a9cb1b1bf6973632668ff209370908e787beb8d6744bd706bb"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/games-comparison.json",
+      "bytes": 22256,
+      "sha256": "2049aaab2b946544404583b77418dee24f35d15ef535264ae41d31a131da237c"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/helper-cost.json",
+      "bytes": 43154,
+      "sha256": "47f313f2227bf3bd67d7cd6774d7f1e3aeda3d5f3baab740f0e73a3f1ff2e459"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/lower-attachment-baseline.json.gz",
+      "bytes": 381353,
+      "sha256": "67e4e79a4b148d5ae3528ed4c83a6196db41083cd944041ccdc25301c3e5444a"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/panel-comparison.json",
+      "bytes": 304239,
+      "sha256": "e17c9e02cb70c46fadb5dd1ab4b771c7043ba147a7bde05c1209892749753076"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/python-tests.log",
+      "bytes": 121,
+      "sha256": "59f87ba0f5e71a648e205f8252b220c9d7700584a9de48bc291cb0dc04805142"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/run-comparison.json",
+      "bytes": 197591,
+      "sha256": "de30cdef39f6f2ce3e99356b380926f5bd0f4391f2a594ccc8a2ac76dbdf4fda"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/runs-viewer-check.json",
+      "bytes": 2448,
+      "sha256": "0e21d9f96422ca01d185fda4f8b3e57f729d3d7d573ab9f26095ce91fe7a9a27"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/tests.log",
+      "bytes": 3969,
+      "sha256": "b01441c6bee594919c30863d3bd2dd14853e8f1614d66fcbf7e66b800be0f371"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/trap-baseline.json.gz",
+      "bytes": 1399505,
+      "sha256": "adfa41a560f5e621b5dfece10efcae77282e25180b35bd703b3fa46f1ddcf43c"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/trap-candidate.json.gz",
+      "bytes": 702841,
+      "sha256": "093012491214d4c897943097e04f82d21b3f9358d6bb64c625f7dcf879c171d0"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/trap-first-difference.json",
+      "bytes": 4567,
+      "sha256": "190c59abd3932bd076e4d63df1ebced7372cd9994df21252b541caf2830c3128"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/tackle-timing/viewer-check.json",
+      "bytes": 2911,
+      "sha256": "e09f7ea6cbcc9af04c2401406c65b842679758a02d2ce5aa0cf7281f242c03f2"
+    }
+  ]
+}

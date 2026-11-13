@@ -1,0 +1,200 @@
+{
+  "schema": "zone-reach-verification-v1",
+  "baselineCommit": "1c9a693bbf6b976a2a00e8291033e49dab21eef8",
+  "beforeSourceSha256": "a629d4d04485ade21e4354b8078ed6cd0bf56b155aa92b83dad7f97cc2d8172f",
+  "finalSourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "collectorSha256": "0d6141eb834575aa889f839d8e3308804338137e8a1fcbe148203b6db946221d",
+  "comparisonToolSha256": "66dcf4aeaa441445394fe19aac4f444f05bffd276bdb7111d589cbd05c1b9ee1",
+  "changedEngineFiles": [
+    "src/sim/agent.ts",
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/engagement.ts",
+    "src/sim/zone-reach.ts"
+  ],
+  "addedEngineFiles": [
+    "src/sim/zone-reach.ts"
+  ],
+  "retainedPhases": [
+    {
+      "label": "prototype",
+      "panel": "data/reviews/physics-world/zone-reach/prototype.json.gz",
+      "film": "data/reviews/physics-world/zone-reach/prototype-film.json.gz",
+      "enginePatch": "data/reviews/physics-world/zone-reach/prototype.patch",
+      "sourceSha256": "c0f71ae6e433ef105645015c19679a80210204a97cb48a7a7f402d3a5c75f56e",
+      "scope": "First prototype, retained independently; all48 complete physical executions equal the pre-transition phase."
+    },
+    {
+      "label": "pre-transition",
+      "panel": "data/reviews/physics-world/zone-reach/pre-transition.json.gz",
+      "film": "data/reviews/physics-world/zone-reach/pre-transition-film.json.gz",
+      "enginePatch": "data/reviews/physics-world/zone-reach/pre-transition.patch",
+      "sourceSha256": "4cd9284ee74221fafc126f5ef4c186b3ca0f5df4f4d78554bd63ff019fb4d7e4",
+      "scope": "Vertical loss-angle-consistent phase label; final also preserves legacy acquired contact frames and bounds estimated traction by support availability."
+    }
+  ],
+  "files": {
+    "data/reviews/physics-world/ol-technique/after-film.json.gz": "91b6d7ff5ee84c4295c1b2b92807441470bf0d50626191a5c624fec6434128cc",
+    "data/reviews/physics-world/ol-technique/after.json.gz": "f1e4193a646201004ef600d86d64ed450438af99a8d8537423ff4706931d6aae",
+    "data/reviews/physics-world/ol-technique/current-games9.json": "1c30015ba227d842e1096a82c8b080edd8bd4bb18af81f45268a957bd5317688",
+    "data/reviews/physics-world/ol-technique/current-runs.json.gz": "74b2b95b05ff1fc522661febcc54f8c9ca773fed964c9a4b5d531df61f9a16af",
+    "data/reviews/physics-world/ol-technique/current-tackles.json.gz": "763b1e964a3e4e125eb1f78ceb0232d892f106e85c5e804ab68cda017c3a7323",
+    "data/reviews/physics-world/zone-reach/README.md": "ebf87925a4a5fd3c902b0dc4b53330ea609ab28e4a346f22399551c89afe85a0",
+    "data/reviews/physics-world/zone-reach/after-film.json.gz": "035784041428bc93825482e1e32801e7c873998903a159d78ecd0f609a0f02f3",
+    "data/reviews/physics-world/zone-reach/after.json.gz": "a99c49cf70c6fa028b856f1171dcb8d074b15dfe55e355099c0699b6d7330379",
+    "data/reviews/physics-world/zone-reach/after.log": "e7bdc582c48dd454afc4afd926ce73feafaa9335a251f2c0b518ad43d2d11776",
+    "data/reviews/physics-world/zone-reach/before-film.json.gz": "30d01eaab7d7ff51b65b0eba43f9f2859b7a1ee8068be0c8bca6ebffd5847a2e",
+    "data/reviews/physics-world/zone-reach/before.json.gz": "3d8ea0ef911248d633c3b483ae896a7a0650f5ba52c5977ca185bb68cfce8e4c",
+    "data/reviews/physics-world/zone-reach/before.log": "ec740a7437a5a72d7e7baf95cd5784a8819b77c13fda174a5083e558032ee991",
+    "data/reviews/physics-world/zone-reach/browser-check.json": "3724c78ce1d6e027bcd0fee3200e5beef4e209cbdfd99e6e9b6399f80f1c6573",
+    "data/reviews/physics-world/zone-reach/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/zone-reach/checks.json": "8045554ae30cb29ba499380f3ffefef17c254a43d2f4d86d639ed81face074e5",
+    "data/reviews/physics-world/zone-reach/comparison.json": "3daf3e1312628e71af5a43fb8ec2e861d1a1964a048cf5f43b331d11dcc6454e",
+    "data/reviews/physics-world/zone-reach/current-games9.json": "b837b1b2bb8c7e9c8176d34384373f060f33fe4c5d16a8adb91ca9f37c430ffe",
+    "data/reviews/physics-world/zone-reach/current-games9.log": "d55216d9de5ed7c46a7fda597dbdd41c7d976f6e5d0e303aae8299bf0f9f62eb",
+    "data/reviews/physics-world/zone-reach/current-runs.json.gz": "a9bc7a8b4ab603ffbd0d06513f106a52fcb2ee8464b2ddb4621ed04e57db66c0",
+    "data/reviews/physics-world/zone-reach/current-runs.log": "a7aee041752935138f267d91d7a4638dfcd2bc2eca86dd446515da038e325ef1",
+    "data/reviews/physics-world/zone-reach/current-tackles.json.gz": "0ee045159cf74fd33dc4bbe522e512dd12bbfa828ffc96aeee6b52c02c071af8",
+    "data/reviews/physics-world/zone-reach/current-tackles.log": "306775e0600ce7553239e0d325212488c0792ce61f5a4b215729b96876256fb7",
+    "data/reviews/physics-world/zone-reach/engine.patch": "a7278cb761eb7beef49d361ab693e615f80eaec6257bdf0bd75af8ac42df2fcd",
+    "data/reviews/physics-world/zone-reach/film-check.py": "0705a39582ba61a3f76b149f5ef90d9f481446c82eb6d54e834a42e0b002273e",
+    "data/reviews/physics-world/zone-reach/film-integrity.json": "0fe248b6f036b7835964d868fed0a26694aad93db6351153cbe065c066c4de0a",
+    "data/reviews/physics-world/zone-reach/focused-tests-after.log": "905e6bbafe9da6253c7839def8e69f3ebbfac1a25e886e1bd952488061c88132",
+    "data/reviews/physics-world/zone-reach/focused-tests-before.log": "287bf4b85d85f0cd2397d2824b4baac1350b78baaaa4daa8ccf08a9edd979d13",
+    "data/reviews/physics-world/zone-reach/pre-transition-comparison.json": "56e82baab05b096d1e1741906878a24352f4cb8d16b3a207a369f4412205cdda",
+    "data/reviews/physics-world/zone-reach/pre-transition-film.json.gz": "e4b655745ac74d41d152da3a1f8e30c413b8217729bcefd369a1e81e96826ce3",
+    "data/reviews/physics-world/zone-reach/pre-transition.json.gz": "35379cc6f6878f442a622f288c775d4a1dc2ac879ff3f6972b8e6955054ee657",
+    "data/reviews/physics-world/zone-reach/pre-transition.log": "42513a8c20e830d418fac70dd345a5e8da9f22e6e4a357d97f32d3336796a2d4",
+    "data/reviews/physics-world/zone-reach/pre-transition.patch": "a855a8ec2ecfc092d328f1af5644c24669817e4a19e51eab852bb7abb451cb42",
+    "data/reviews/physics-world/zone-reach/prototype-comparison.json": "060a6e159ce9f9d06f74311d99eaa30f3d49f5ea1afdd4b933daa3034e51dcd9",
+    "data/reviews/physics-world/zone-reach/prototype-film.json.gz": "2cb4e45ee3818c7573055f24f6367f95c12d6177b13a1a7a552e7516d502f443",
+    "data/reviews/physics-world/zone-reach/prototype.json.gz": "7d5a1a2d0d8dd4f3c04dc32b4b07f946bca643e43bb641a2dc689def2ac999af",
+    "data/reviews/physics-world/zone-reach/prototype.log": "874fc7d69be840583eff113bbbb479196e4caa2b346aa10b619f421262513fbd",
+    "data/reviews/physics-world/zone-reach/prototype.patch": "a17b3a4e7deb81d450be8985efc7441959f7709f1ffb9ac5e80f0491f09f9132",
+    "data/reviews/physics-world/zone-reach/python.log": "6911b42399b43e37b097888660a5f386fc6294d23088649fcbc03dc453e5bb06",
+    "data/reviews/physics-world/zone-reach/saved-audit.json": "c6bfb1a48104e9f54c32256e9f8d30ccb6f777bb325e006a436624b8e8d39d85",
+    "data/reviews/physics-world/zone-reach/saved-audit.log": "f098f512d05e4bacf00793635cd85e85a98f4510228ccbc3b42bb1261b8e4fd1",
+    "data/reviews/physics-world/zone-reach/tests.log": "d0d8270e4eab6b0aba68e8e04d69bfa6f60b2b104d81aa7407ca0c989dfdd4ff",
+    "data/reviews/physics-world/zone-reach/transition-audit.json": "f5ccf2e53bd6b730bacb83423214c9d53ec499bcda479d2ed7068a80d701fcb3",
+    "data/reviews/physics-world/zone-reach/transition-audit.log": "35f5989f3107d7506c5d97d751d1899350b2b7b6e81dd64f970061fb579d2ba3",
+    "data/reviews/physics-world/zone-reach/transition-to-final.json": "5249b2620df9399895f8e37e2348a09dceb8981f749e7f20576897df074dbc51",
+    "data/reviews/physics-world/zone-reach/typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/zone-reach/verify-evidence.py": "71fb38aeec0ed14348cef7b3ae24dbe4930f4b1afcb4618bf1966d6e8f561084",
+    "docs/reviews/offensive-line-run-technique.md": "4b353c4e2bdd5fe390746b8b8888e6d5d6d78d9fd400ba7f3f20b1de60123aa8",
+    "docs/reviews/zone-reach-and-displacement.md": "5f7d61d6adeb2613385dfc19a789ca13cd8060ad407ec47dd55f9ebb6d8da7df",
+    "viewer/zone-reach.html": "5cafb78248abec78fed27ee0d9c9ed3f5a4cafd6e61eaaac0844401b470d3e86",
+    "viewer/zone-reach.zip": "ad851e3cf3ffce62b4169a864ce94c9e3ffd506b30cd1beee3edc39db8b523c2"
+  },
+  "currentCodeFiles": {
+    "src/sim/agent.ts": "e9cb4f775ad823225cbf1c53a7d1a2fad0704c47845280aa354ec995dc2e6ebc",
+    "src/sim/behaviors/blocking.ts": "da775f98acf1e414874955aad252dee8cd3edde61a72467661aeb82963060611",
+    "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+    "src/sim/zone-reach.ts": "3a4f02d2b9d3e274a39d1fc45f60286d3d80f1109987fa9957fb80a7e54852c2",
+    "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "scripts/diag/zone-reach-review.ts": "0d6141eb834575aa889f839d8e3308804338137e8a1fcbe148203b6db946221d",
+    "scripts/diag/zone-fit-compare.py": "66dcf4aeaa441445394fe19aac4f444f05bffd276bdb7111d589cbd05c1b9ee1",
+    "scripts/diag/zone-fit-audit.py": "544408928a19c70c67f0a5a6a1f399bd85243c34e02f763b44b74c4e752e36ea",
+    "scripts/diag/zone-fit-transition-audit.py": "a846d09c78ebf79f84031bfe9a85d47987382de6d6cdd186cba13aee1a735b10",
+    "scripts/diag/run-contact-review.ts": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+    "scripts/diag/tackle-timing-review.ts": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91",
+    "scripts/diag/held-recovery-football.ts": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/export-zone-reach.ts": "6a8ad4b3033a6aa30904d0aa835cffdaa6b1acbb8df2279d384f963bb1ebc01b",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4",
+    "test/zone-reach.test.ts": "2d447bbb78d032e34c64db7971b7e5ff469856a6f6d782e2a4b1dffd1b4b9e4a",
+    "CLAUDE.md": "ad295850d7268c97d53e3ea361257c9940ad9ab26a97be88fd68fe87253a0241",
+    "docs/PHYSICS_DEVELOPMENT.md": "133fdfbe8fb7ee276d1410711b21e049872fccd1a97bf7c1d3db81807eaf282a",
+    "data/README.md": "86b34978f2947c17feb8ce7cdbe5abf70d77867b882557c769c2e57364d4305b"
+  },
+  "checks": {
+    "testsPassed": 732,
+    "testsFilesPassed": 68,
+    "testsExitCode": 0,
+    "focusedTestsPassed": 18,
+    "focusedExitCode": 0,
+    "beforeFeatureFailures": 13,
+    "beforeControlsPassed": 5,
+    "pythonTestsPassed": 22,
+    "pythonExitCode": 0,
+    "typecheckExitCode": 0,
+    "buildExitCode": 0,
+    "panelExitCode": 0,
+    "comparisonExitCode": 0,
+    "runGuardExitCode": 0,
+    "tackleGuardExitCode": 0,
+    "gameGuardExitCode": 0,
+    "filmCheckExitCode": 0
+  },
+  "independentChecks": {
+    "fixedInputProfilePairs": 48,
+    "observedPlainControls": 96,
+    "installedControlsExecutionExact": 8,
+    "recordedInitialProjectionMatches": 48,
+    "freshSoloReads": {
+      "reach": 565,
+      "seal": 346,
+      "runoff": 473
+    },
+    "existingContactControllerStatePreservedReads": 787,
+    "earnedContactTransfersGeometricallyChecked": 9,
+    "originalInstalledReachFirstHands": {
+      "oz_strong": {
+        "before": {
+          "originalInstalledSoloReachPairs": 39,
+          "pairsWithSurvivingHands": 39,
+          "pairsWithoutSurvivingHands": 0,
+          "playsideCenterAtFirstHands": 18,
+          "firstHandsWithLoadedJoint": 39,
+          "playsideCenterAndLoadedJoint": 18,
+          "playsideCenterAndLoadedJointAndTickArmImpulse": 15
+        },
+        "after": {
+          "originalInstalledSoloReachPairs": 39,
+          "pairsWithSurvivingHands": 39,
+          "pairsWithoutSurvivingHands": 0,
+          "playsideCenterAtFirstHands": 30,
+          "firstHandsWithLoadedJoint": 39,
+          "playsideCenterAndLoadedJoint": 30,
+          "playsideCenterAndLoadedJointAndTickArmImpulse": 25
+        }
+      },
+      "wz_strong": {
+        "before": {
+          "originalInstalledSoloReachPairs": 39,
+          "pairsWithSurvivingHands": 39,
+          "pairsWithoutSurvivingHands": 0,
+          "playsideCenterAtFirstHands": 19,
+          "firstHandsWithLoadedJoint": 38,
+          "playsideCenterAndLoadedJoint": 18,
+          "playsideCenterAndLoadedJointAndTickArmImpulse": 14
+        },
+        "after": {
+          "originalInstalledSoloReachPairs": 39,
+          "pairsWithSurvivingHands": 39,
+          "pairsWithoutSurvivingHands": 0,
+          "playsideCenterAtFirstHands": 30,
+          "firstHandsWithLoadedJoint": 39,
+          "playsideCenterAndLoadedJoint": 30,
+          "playsideCenterAndLoadedJointAndTickArmImpulse": 23
+        }
+      }
+    },
+    "loadedSurvivingHandEntries": [
+      2281,
+      2333
+    ],
+    "broaderCompleteRunRowsExact": 96,
+    "unchangedTackleRows": 64,
+    "naturalFilmClips": 24,
+    "storedFilmReadOrigins": 67,
+    "storedFilmReadSnapshots": 337,
+    "transitionExecutionChanges": 13,
+    "newNativeFallTicks": 1
+  },
+  "scope": "Solo OZ/WZ OL reach acquisition, run-off and stable acquired contact frames. Intended phase/aim/drive are checked separately from unchanged controller-boundary bodies and native delivered loads; contact force/work capabilities and World remain unchanged. The short current-envelope lateral read is approximate, not an exact loaded rollout or future reachability certificate. Forty zone inputs and eight installed controls on one generated roster are matched diagnostics, not NFL rates. All adverse plays and the RB-on-LT collision fall remain retained. No improved league rushing efficiency or solver performance is inferred; two game guards match initial roster/seeds only and then diverge.",
+  "historicalVerification": "files pins immutable saved evidence, phase patches, reports and this phase README. Mutable source/tools and latest documentation pointers are pinned by currentCodeFiles and checked only with --engine. Full src content identity reconstructs both retained prototypes and baseline including the added module."
+}

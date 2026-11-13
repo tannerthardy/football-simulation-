@@ -1,0 +1,366 @@
+{
+  "sourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+  "note": "Instrumentation sums active reel and passive grip vectors at each solver substep. The existing per-holder structural/passive capacity is the budget reference; force magnitudes are not NFL-calibrated. Independent active muscle work remains bounded separately. Instrumentation does not change draws or control.",
+  "isolated": [
+    {
+      "capacity": 50,
+      "substeps": 12,
+      "momentumError": 1.7053025658242404e-13,
+      "workError": 9.183764859699295e-13,
+      "samples": 36,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 50
+    },
+    {
+      "capacity": 50,
+      "substeps": 48,
+      "momentumError": 2.0463630789890885e-12,
+      "workError": 1.0025758001575014e-11,
+      "samples": 144,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 50
+    },
+    {
+      "capacity": 50,
+      "substeps": 192,
+      "momentumError": 2.3305801732931286e-12,
+      "workError": 1.1395329124752607e-11,
+      "samples": 576,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 50
+    },
+    {
+      "capacity": 300,
+      "substeps": 12,
+      "momentumError": 2.8421709430404007e-13,
+      "workError": 1.1937117960769683e-12,
+      "samples": 36,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 300
+    },
+    {
+      "capacity": 300,
+      "substeps": 48,
+      "momentumError": 9.094947017729282e-13,
+      "workError": 4.092726157978177e-12,
+      "samples": 144,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 300
+    },
+    {
+      "capacity": 300,
+      "substeps": 192,
+      "momentumError": 3.353761712787673e-12,
+      "workError": 1.6626700016786344e-11,
+      "samples": 576,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 300
+    },
+    {
+      "capacity": 900,
+      "substeps": 12,
+      "momentumError": 4.547473508864641e-13,
+      "workError": 2.1316282072803006e-12,
+      "samples": 36,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 900
+    },
+    {
+      "capacity": 900,
+      "substeps": 48,
+      "momentumError": 2.5579538487363607e-12,
+      "workError": 1.2079226507921703e-11,
+      "samples": 144,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 900
+    },
+    {
+      "capacity": 900,
+      "substeps": 192,
+      "momentumError": 8.242295734817162e-12,
+      "workError": 3.254285729781259e-11,
+      "samples": 576,
+      "overBudget": 0,
+      "maxRatio": 1,
+      "maxForce": 900
+    }
+  ],
+  "football": [
+    {
+      "seed": 3,
+      "power": 0.7,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2740.7917269980444,
+      "closest": 0.6453200383811705,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 0.7,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000002,
+      "maxForce": 2740.791726998044,
+      "closest": 0.6455171151051803,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 0.7,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000002,
+      "maxForce": 2740.791726998044,
+      "closest": 0.6441924934682942,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2128.633859914441,
+      "closest": 0.6603134648867572,
+      "falls": []
+    },
+    {
+      "seed": 3,
+      "power": 1,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2166.022319582584,
+      "closest": 0.6553126360845752,
+      "falls": [
+        "QB"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2167.793015461226,
+      "closest": 0.6565842566768951,
+      "falls": [
+        "QB"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1.4,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2378.125558343322,
+      "closest": 1.0260682331580429,
+      "falls": []
+    },
+    {
+      "seed": 3,
+      "power": 1.4,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000002,
+      "maxForce": 4783.027850395438,
+      "closest": 1.0248132162320773,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 3,
+      "power": 1.4,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 4683.143987387144,
+      "closest": 1.0459150912971704,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 7,
+      "power": 0.7,
+      "substeps": 12,
+      "closest": 4.961662703291516,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 0.7,
+      "substeps": 48,
+      "closest": 5.093109797215619,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 0.7,
+      "substeps": 192,
+      "closest": 5.109288936652576,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1,
+      "substeps": 12,
+      "closest": 4.353278628530291,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1,
+      "substeps": 48,
+      "closest": 3.64137693446449,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1,
+      "substeps": 192,
+      "closest": 3.5312387271882257,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1.4,
+      "substeps": 12,
+      "closest": 4.353278628530291,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1.4,
+      "substeps": 48,
+      "closest": 3.64137693446449,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "power": 1.4,
+      "substeps": 192,
+      "closest": 3.5312387271882257,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 0.7,
+      "substeps": 12,
+      "closest": 4.8184441695387354,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 0.7,
+      "substeps": 48,
+      "closest": 4.817754007551977,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 0.7,
+      "substeps": 192,
+      "closest": 4.818045976897325,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000002,
+      "maxForce": 2642.5890426921956,
+      "closest": 0.7894562111019854,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2302.2978630225216,
+      "closest": 0.8054905567916796,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2307.946796580092,
+      "closest": 0.806721370149571,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1.4,
+      "substeps": 12,
+      "samples": 48,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000002,
+      "maxForce": 3502.9897606128766,
+      "closest": 0.7658225543551377,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "power": 1.4,
+      "substeps": 48,
+      "samples": 192,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000002,
+      "maxForce": 3023.813201333608,
+      "closest": 0.8017650772725707,
+      "falls": [
+        "DE_S"
+      ]
+    },
+    {
+      "seed": 11,
+      "power": 1.4,
+      "substeps": 192,
+      "samples": 768,
+      "overBudget": 0,
+      "maxRatio": 1.0000000000000004,
+      "maxForce": 2990.34855812153,
+      "closest": 0.807287723967565,
+      "falls": [
+        "DE_S"
+      ]
+    }
+  ],
+  "samples": []
+}

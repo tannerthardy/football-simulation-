@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit 8928b9f66f59eaa1477971ac94b9f7a17d752968, source 12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9
+Running /workspace/.football-tools/node-v22.23.3-linux-x64/bin/node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/redirect-protection.test.ts
+
+ RUN  v3.2.4 /workspace/football-big-motion-diagnostic
+
+ ✓ |core| test/redirect-protection.test.ts (2 tests) 484ms
+   ✓ redirect mirrors the installed protection after the original contact ends > preserves post-shed targets and requests with center hands  320ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  22:28:56
+   Duration  1.65s (transform 755ms, setup 0ms, collect 975ms, tests 484ms, environment 0ms, prepare 56ms)
+
+Validation receipt: out/big-motion/redirect-geometric-receipt.json; exit 0

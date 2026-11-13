@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-08",
+  "updatedAt": "2026-10-23",
   "rawDirectory": "data/raw",
   "sources": [
     {
@@ -198,12 +198,133 @@
       "extractor": "scripts/data/bdb2027.py",
       "summary": "data/bdb2027-summary.json",
       "inputDirectory": "data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027",
-      "trackingScope": "Selected cohort trajectories, not all-22. All combine tracking counted; only 2023 game trajectories audited.",
+      "trackingScope": "Selected draft-cohort trajectories, not all-22. All combine drill trajectories and all three downloaded game seasons processed for descriptive movement; eligible game metrics use the documented pre-throw window.",
       "reviewedGameTrackingSeasons": [
-        2023
+        2023,
+        2024,
+        2025
       ],
       "review": "docs/reviews/bdb2027-data-review.md",
-      "reusePermission": "Kaggle authentication and applicable competition access/terms are required; a private repo does not automatically grant another user access."
+      "reusePermission": "Kaggle authentication and applicable competition access/terms are required; a private repo does not automatically grant another user access.",
+      "movementExtractor": "scripts/data/bdb2027_movement.py",
+      "movementSummary": "data/reviews/physics-world/nfl-movement/bdb2027-movement.json",
+      "movementReview": "docs/reviews/bdb2027-movement-transfer.md",
+      "movementStatus": "Descriptive observations only; no fitted engine constants or held-out accuracy claim."
+    },
+    {
+      "id": "addbiomechanics-core-1.0",
+      "kind": "biomechanics-dataset",
+      "version": "1.0",
+      "sourceUrl": "https://addbiomechanics.org/download_data.html",
+      "paperUrl": "https://doi.org/10.1007/978-3-031-73223-2_27",
+      "termsUrl": "https://addbiomechanics.org/tos.html",
+      "license": "CC BY 4.0; retain actual selected-file attribution and LICENSE.txt",
+      "reviewedAt": "2026-10-09",
+      "status": "Catalog and documentation reviewed only; no subject files downloaded or engine constants validated.",
+      "inputDirectory": "data/raw/addbiomechanics",
+      "participants": 273,
+      "catalogMotionHours": 71.47,
+      "catalogGroundReactionForceHours": 57.55,
+      "formats": [
+        "b3d",
+        "OpenSim export"
+      ],
+      "readerDocumentation": "https://nimblephysics.org/docs/working-with-addbiomechanics-data.html",
+      "proposedUse": [
+        "COM/posture and segment inertia",
+        "support geometry and foot placement",
+        "measured ground-force movement envelopes",
+        "perturbation recovery"
+      ],
+      "proposedSourceSubsets": [
+        {
+          "source": "Hamner and Delp (2013)",
+          "paperUrl": "https://doi.org/10.1016/j.jbiomech.2012.11.024",
+          "purpose": "Running posture, support timing and impulses at 2\u20135 m/s; proposed two subjects."
+        },
+        {
+          "source": "Moore et al. (2015)",
+          "paperUrl": "https://doi.org/10.7717/peerj.918",
+          "purpose": "Longitudinal treadmill perturbation and recovery foot placement; proposed two subjects."
+        }
+      ],
+      "measurementLimits": "Exclude missing/invalid GRF and inspect trial residuals and processing passes. COM and joint torques are derived. No football collision/grip forces or maximum cleat friction established.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "capture-point-hof-2005",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.1016/j.jbiomech.2004.03.025",
+      "reviewedAt": "2026-10-09",
+      "evidence": "Extrapolated COM and support-base stability; football thresholds not validated.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "football-grip-otterson-2020",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.31459/turkjkin.675067",
+      "reviewedAt": "2026-10-09",
+      "evidence": "16 DII players: grip/squat correlation r=.09, nonsignificant; not a wrap or jersey grip measurement.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "football-cleat-villwock-2009",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.1177/0363546508328108",
+      "reviewedAt": "2026-10-09",
+      "evidence": "Rotational cleat-surface resistance; no universal translational friction coefficient established.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "segment-inertia-deleva-1996",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.1016/0021-9290(95)00178-6",
+      "reviewedAt": "2026-10-09",
+      "evidence": "Segment inertia reference; current whole-body pitch inertia remains an assumption.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "nflverse-2022-2023-reference",
+      "kind": "public-football-reference",
+      "sourceUrl": "https://github.com/nflverse/nflverse-data/releases",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "inputDirectory": "data/raw/nflverse",
+      "extractor": "scripts/nflverse-reference.py",
+      "summary": "data/reviews/nflverse/reference.json",
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "review": "docs/reviews/nfl-reference-and-support-integration.md",
+      "coverage": "Complete REG PBP, conditional outcomes and 64 team-seasons; 2022 FTN charting, snap counts and Chiefs/Eagles anonymous profile benchmarks; roster snapshots, exact GSIS/PFR crosswalk and historical combine.",
+      "status": "Downloaded, checksummed and extracted; no engine parameters, ratings or playcalling policy fitted.",
+      "attribution": "FTN Data via nflverse; FTN charting and derived charting aggregates CC-BY-SA-4.0. Upstream data lineage differs by release.",
+      "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
+    },
+    {
+      "id": "nflverse-2022-2023-game-layer",
+      "kind": "public-football-reference",
+      "sourceUrl": "https://github.com/nflverse/nflverse-data/releases/tag/pbp",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "inputDirectory": "data/raw/nflverse",
+      "extractor": "scripts/data/nflverse_game_layer.py",
+      "summary": "data/reviews/nflverse/game-layer.json",
+      "inputManifest": "data/reviews/nflverse/game-layer-input-manifest.json",
+      "review": "data/reviews/nflverse/README.md#game-layer-reference-m1",
+      "coverage": "REG kicking, punts, kickoffs, fourth-down choices, two-point tries, accepted penalty clauses, drive outcomes, row-flag turnovers, spikes/kneels and regulation timeout inventory; per-season and pooled team-season percentiles.",
+      "status": "Reproducible descriptive reference; no engine parameters, defaults, scorecard bands or policy fitted.",
+      "attribution": "NFL/nflfastR PBP via nflverse. Source CC-BY-4.0; this adapted aggregate CC-BY-SA-4.0. No FTN charting used.",
+      "termsUrl": "https://github.com/nflverse/nflverse-data/blob/master/LICENSE.md",
+      "derivedAggregateTerms": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "limitations": "Punt return involvement includes muffs; net is not penalty-adjusted official punter accounting. Turnovers are provider row flags, not a complete multi-turnover ledger; ambiguous team attributions stay unavailable. Read per-metric definitions and denominators.",
+      "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
     }
   ]
 }

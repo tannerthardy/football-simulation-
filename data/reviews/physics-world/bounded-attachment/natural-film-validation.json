@@ -1,0 +1,96 @@
+{
+  "schema": "natural-film-validation-v1",
+  "engineSourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+  "exportScope": "Two retained full natural recordings; no resimulation, outcome forcing or new viewer feature.",
+  "checks": [
+    {
+      "id": "NAT-P031-LIN",
+      "mode": "linear",
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "physicalSha256": "ab21f7afe785c6cd5ab34a939bbc9b192c4ee1b24220520142d898d6531153d6",
+      "fullAgentPathsDecodeExact": true,
+      "ballPathsDecodeExact": true,
+      "frameTimesAndPossessionExact": true,
+      "telemetryDecodeExact": true,
+      "allEventDetailsExact": true,
+      "carrierPostureStandardTenthPackingMatched": true,
+      "maxCarrierPosturePackingError": 0.04999999999999999,
+      "frames": 216,
+      "telemetryFrames": 216,
+      "firstFrameTime": 0,
+      "lastFrameTime": 10.75,
+      "naturalOutcome": "touchdown",
+      "creditedOffenseYards": 77.5,
+      "down": 2,
+      "distance": 13,
+      "yardline": 22.5
+    },
+    {
+      "id": "NAT-P031-BND",
+      "mode": "bounded",
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "physicalSha256": "a5cb870bb880833528a8a11f3a7552982858e9beb40528e4242337b5529d1da0",
+      "fullAgentPathsDecodeExact": true,
+      "ballPathsDecodeExact": true,
+      "frameTimesAndPossessionExact": true,
+      "telemetryDecodeExact": true,
+      "allEventDetailsExact": true,
+      "carrierPostureStandardTenthPackingMatched": true,
+      "maxCarrierPosturePackingError": 0.04999999999999999,
+      "frames": 214,
+      "telemetryFrames": 214,
+      "firstFrameTime": 0,
+      "lastFrameTime": 10.65,
+      "naturalOutcome": "tackle",
+      "creditedOffenseYards": 75.88,
+      "down": 2,
+      "distance": 13,
+      "yardline": 22.5
+    }
+  ],
+  "zipContainsIdenticalHtml": true,
+  "packingLimit": "Existing replay packer rounds the two carrier-posture display values to tenths (at most 0.05 difference); all retained full telemetry remains lossless.",
+  "browserScope": "Custom offline Chromium smoke for the two natural clips, not the complete generic check-replay-viewer.py suite whose controlled-fixture labels are hardcoded.",
+  "browser": {
+    "schema": "natural-witness-browser-smoke-v1",
+    "checks": [
+      "Two paired natural clips load offline with correct down/distance and no invented game clock/score",
+      "linear: full telemetry/contact and movement layers render; TE/corner/safety inspection succeeds; natural endpoint, selected seed and scrub caption timestamps retained",
+      "bounded: full telemetry/contact and movement layers render; TE/corner/safety inspection succeeds; natural endpoint, selected seed and scrub caption timestamps retained",
+      "Touchdown filter selects only linear reference; bounded ID search selects the comparison clip"
+    ],
+    "pageErrors": []
+  },
+  "artifacts": [
+    {
+      "path": "scripts/export-natural-lower-attachment.ts",
+      "bytes": 10844,
+      "sha256": "5ab8085b7a269578722c7c01e5994450baadfc02b13d379b73d4dec573768412"
+    },
+    {
+      "path": "scripts/diag/natural-lower-attachment.ts",
+      "bytes": 16769,
+      "sha256": "b8c3a6085a30a26a7271f4762fe00ccb1344909dba37fb314becb844757ee5b6"
+    },
+    {
+      "path": "viewer/bounded-attachment-natural.html",
+      "bytes": 1959030,
+      "sha256": "46975e2eb05d1543113aebbc829d2ae7e954ff14e344a397d5b7455220c32d72"
+    },
+    {
+      "path": "viewer/bounded-attachment-natural.zip",
+      "bytes": 1328016,
+      "sha256": "6b98fbcb54360ff7872b42caedc718998950b844d80a3e4cba8f10466ae7e306"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/natural-witness.json.gz",
+      "bytes": 4648289,
+      "sha256": "bb8a623a393a6338c8ff5320620828cec59871ce59ccb9ab4ed83b942008ac86"
+    },
+    {
+      "path": "data/reviews/physics-world/bounded-attachment/natural-witness-comparison.json",
+      "bytes": 6926,
+      "sha256": "bee8863de338f8fc4aad9821ba7fafe6762c6e3e00a6a2b8dc8542d40df5c30f"
+    }
+  ]
+}

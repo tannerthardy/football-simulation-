@@ -1,0 +1,92 @@
+{
+  "branch": "claude/engine-priorities",
+  "baselineCommit": "dfa803d19a6fcfc05825a557ae54bff84ab669cb",
+  "baselineSourceSha256": "e6f1cea4f7c3d2d1a5660c00b31d12cef68a8e1c73d6574931053e7937b5ab57",
+  "finalSourceSha256": "92eb1ea66cfffd94732d7eb2dc8132212a135fdf8a2cf17a595f7d1674632e63",
+  "commands": [
+    "python3 scripts/data/movement_task_fixtures.py data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027 out/movement-inputs.json",
+    "node --import tsx scripts/diag/movement-tasks.ts out/movement-inputs.json out/movement-trials.json",
+    "python3 scripts/data/movement_task_report.py out/movement-inputs.json out/movement-trials.json out/movement-report.json",
+    "npm test",
+    "npm run test:data",
+    "npm run typecheck",
+    "npm run build",
+    "node --import tsx scripts/diag/hand-convergence.ts out/foot-motion-final-convergence.json",
+    "node --import tsx scripts/diag/shared-capabilities.ts out/held-foot-shared.json",
+    "node --import tsx scripts/scenario-pack.ts out/held-foot-scenarios.json",
+    "node --import tsx scripts/kinematics-compare.ts 4 5",
+    "node --import tsx scripts/calibrate.ts 16 7 2",
+    "node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc",
+    "python3 scripts/film-outcomes.py viewer/film-room.html --out out/held-foot-film-outcomes.json",
+    "python3 scripts/check-replay-viewer.py viewer/film-room.html"
+  ],
+  "movementInputs": {
+    "combine_results.csv": {
+      "bytes": 41020,
+      "sha256": "e4773ef68167d508f3916d446cd411dfd77a87e5765d3babcb986201fb143b86"
+    },
+    "combine_tracking.csv": {
+      "bytes": 83788174,
+      "sha256": "541c69f6629f5f803b08033c5c386735582120973562134b2c1e7ec6553fb0d3"
+    }
+  },
+  "ignoredFixturesSha256": "0a8d7a34dfaf58762fb9d6bd3921ac8a848dc0c75a6fc1b3909f6aff830ac621",
+  "notes": [
+    "Physics NOT READY. Same-moment foot displacement repair does not resolve native-12 real-technique convergence.",
+    "No physical constants or global solver floor changed. No NFL fitting or holdout predictive accuracy claim.",
+    "888 paths, 420 athletes, 3552 paired fully informed controller trials. Facing follows command; OL contact unknown.",
+    "Game guard results are mixed and passing worsens; no statistical fitting. Runtime under concurrent load is not a benchmark.",
+    "266 engine tests, 20 data tests, typecheck/build, all 20 browser checks pass.",
+    "920 filmed clips with four pitches; ZIP contains identical HTML. Old G/P references need old source version.",
+    "Raw input/trial paths ignored; only aggregates committed. Reduced support/potential energy and physical magnitudes remain unvalidated.",
+    "Fetched remote points at an ancestor of this checkout; publication uses normal fast-forward push, never force. PR #1 unchanged."
+  ],
+  "scripts": {
+    "scripts/data/movement_task_fixtures.py": "8ebdd21504989132a4ab3bf759fe823844b5ebbf8a138e5ac7471bcd9b0edb42",
+    "scripts/data/movement_task_report.py": "ad903efe49292b6e4fa183486c0ae0c222e975a89859b6233ac8655efcfb9605",
+    "scripts/diag/movement-tasks.ts": "f945412b4fafb62f222dbdd973d28f2e49f0cc312324b587b6efe9130e535845",
+    "scripts/data/bdb2027_movement.py": "6f68795e3e441d7de5acb039473a2d6668d464d794e476543208afb1c0dc2925",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/shared-capabilities.ts": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505",
+    "scripts/scenario-pack.ts": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/replay-data.ts": "2f41af5aad0124730fb04714b0602f26e21a97985daefa258288e3cfda0fd741",
+    "scripts/check-replay-viewer.py": "8c07c3f24278e043abc70c036dd003e49ba3e9720491567798939d93af3097fa",
+    "scripts/film-outcomes.py": "883e24923149066b81917578dc18b47bbc2f7f8e7ecc20b2fd7be8007dc862f2"
+  },
+  "references": {
+    "data/reviews/physics-world/support-integration/manifest.json": "cabf8f7f09da9371b8fafc518533e982673085696e9947d32564e97dbc6c3805",
+    "data/reviews/physics-world/support-integration/hand-convergence.json": "10ec7a6aa125c4ed4c512770567e8892c0b162eec81888e533f844c261790a88",
+    "data/reviews/physics-world/support-integration/calibration-16.txt": "a1d3e3f7bfb00b325ee2fe639157fa030479fa3fe75d62be807784e996805588",
+    "data/reviews/physics-world/support-integration/kinematics.txt": "64c53cd12ca2d23e978c191d1e7b54c7ec5e3f16687a9cc17c584d327e61aa92",
+    "data/reviews/physics-world/nfl-movement/manifest.json": "fad82ff6d4209880d3018a9cc3d53661ab2f79411b4f74b3e423fce672a3d5f8",
+    "data/reviews/nflverse/reference.json": "ef13f27b292dab73d0d4aedf6128b9b3364d326446b03c5dd49567f65889caff",
+    "data/bdb2025-summary.json": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba",
+    "data/bdb2026-summary.json": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+  },
+  "artifacts": {
+    "data/reviews/physics-world/held-foot-and-movement-tasks/README.md": "f6657207257994656f7bef84e678420e424d3554f22fbac83600ef17cb4ed373",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/browser-tests.json": "3cd58b031e75058fbfcf85bea0d84efbe2e24af6f412c9915601c345d462d4e2",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/build.txt": "31332ab7887258443be380e6c1625535b3d7d264ea650945cd8804c31347a7d7",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/calibration-16.txt": "805231528547b6cd743955dff705065b185c52c0ca4a8ee5905de25bea8ecaee",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/data-tests.txt": "db447dc79173cef1920b0506a90df08eaa732883973d46c94b257b2333a236ba",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/film-export.txt": "97d641efca5c15292f03606348d0c7c2ea860ee07d23c36589dea7402d3a7182",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/film-outcomes.json": "e13fa6c5e28611662ede4f580d2c3e8c8b74b2be77131c5402a39187c5b5f5e3",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/hand-convergence.json": "8944ab4fc5f36e78be08022831449d10d52fe67364fd33b86bbcc2c9f6f06713",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/kinematics.txt": "7b66aea2f7ab06239595c6f935fb417d378afc826a26c1172a181136cf25ca65",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/movement-fixtures.txt": "c4dad04057815fd768f85176750c6dbf30b8a290c808f0fe10b48c4413cd92cb",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/movement-tasks.json": "27000cacf3f5d333d3341e522c18e812f6a9123626a320ba142fe61be772f3d7",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/movement-trials.txt": "e8f4e2777f5be31c8a4e7243e8a7eb251e0044331515d06b6018e0d77b77addd",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/scenarios.json": "e5e603f12907e81945154ac23bfff6d92bfb1cbf4dcb7b10d4b5ed83b98cfbef",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/shared-capabilities.json": "5282f9f362081a71de59c9c0a88a27526663203d931f8ab6ed1bb3a8eb9b13a7",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/tests.txt": "bf4ba8d4fa2383277f9e808836d63a209a31996bd8597dbe2e2669a99778b5c8",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/typecheck.txt": "da261241a3139ef6606e87edd53392ca08b8ac6355e004628743c15bad96e2b9"
+  },
+  "film": {
+    "viewer/film-room.html": "c660001500d2e7847be65a787efb28faa38b81e05a10b862f16fc2019b3f4d56",
+    "viewer/film-room.zip": "fb31d78af740a1e7d31a2042edb4c92a54bd478313326fcace8f364167850c65"
+  }
+}

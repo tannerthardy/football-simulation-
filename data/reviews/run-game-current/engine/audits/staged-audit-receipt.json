@@ -1,0 +1,125 @@
+{
+  "schema": "run-defense-staged-audit-receipt-v1",
+  "engineGit": "d08710461be2c905ccf0b1813536c082d849f790",
+  "engineSourceBefore": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "engineSourceAfter": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "sourceIdentityDefinition": "scripts/source-version.ts hashes every sorted src path, NUL, exact file bytes, NUL; excludes tools and tests.",
+  "node": "v22.23.3",
+  "reproductionArchive": "out/run-defense-current/d087-repro",
+  "isolation": "git archive of d087104 src + original pursuit tool + source-version helper + package.json + tsconfig.json; node_modules symlink to installed locked dependencies. Shared candidate source was not imported.",
+  "sourceVersionTool": {
+    "path": "out/run-defense-current/source-version-original-tool.txt",
+    "bytes": 607,
+    "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "moduleSha256": {
+    "src/sim/run-fits.ts": "1e95c4211021cae601f2c6fe7151bf76936c012b610d79354760c79099cc6917",
+    "src/sim/engagement.ts": "e0dc19f5cf13b74bdd63a9eb01a44b8fbf9042f4c63e5c22915aaf64b624cb09",
+    "src/sim/behaviors/common.ts": "08690f3e7f339ecd941e87df41eb19715e76da454e890df2b70603a8f6e8986d",
+    "src/sim/approach-control.ts": "a38253b365ee337820e0f9478dd9cb8a709a53ae77bd62d31180c92a2dd3c40a",
+    "src/sim/tackle.ts": "33e9e60eea085fcb77d1b1f4420bd3e71b2fc3d8c687c7e2c7351850a5653475",
+    "src/sim/tackle-window.ts": "f4f3028307293bc1fb85b1076c0d938358c623ee4100204dd1956f5521f08b6c",
+    "src/sim/agent.ts": "0da9a08265ce78e27c1cbab47f8a6c69d8d1a6e41803b8b5ab4f27c2fc80c9c0",
+    "src/sim/playsim.ts": "bb3e510026d63d0cc6f20142da122b5e71b7a837a5ac3d119f74bc16ff57fecb",
+    "src/sim/spacing.ts": "22d6f15bc9387229ac1f5e0f139e48c191efad4b6bd8b94fea7bf933d13b392f",
+    "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "src/playbook/alignment.ts": "c4752a58b2b1b549e9a64efdfa1127610c275ee988cdc6e3c4b41afba1e57d10",
+    "src/playbook/defense.ts": "c7ace4c288906b2bb718909050c7348d6a7df5e6ffb296f07ab0553f522cc262",
+    "src/playbook/formations.ts": "990e05c58e996b2c05fec70cff73ac12883a525ff528efe7f5a5e11af9b00b35",
+    "src/league/team.ts": "21af83a256f892329eadbba2a4a3a9922d5085815b77ec30d034acfee7cd423c"
+  },
+  "artifacts": [
+    {
+      "path": "out/run-defense-current/pursuit-baseline.json",
+      "bytes": 36063,
+      "sha256": "6cf0b26d207f6c20a54cc4ee4caf578e7e3b61d93266b9665840f33e55dfcbf9",
+      "originalToolPath": "scripts/diag/pursuit-technique-probe.ts",
+      "originalToolSha256": "11f48c842c1aeeff575d481c569da7d86d71b75b9b18a47f6247785e63116e7e",
+      "preservedTool": {
+        "path": "out/run-defense-current/pursuit-original-tool.txt",
+        "bytes": 6497,
+        "sha256": "11f48c842c1aeeff575d481c569da7d86d71b75b9b18a47f6247785e63116e7e"
+      },
+      "toolOrigin": "Original tracked collector bytes; same SHA embedded in original report.",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "scripts/diag/pursuit-technique-probe.ts",
+        "--expected-source=11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+        "--output=out/pursuit-reproduced.json"
+      ],
+      "reproduced": {
+        "path": "out/run-defense-current/d087-repro/out/pursuit-reproduced.json",
+        "bytes": 36063,
+        "sha256": "6cf0b26d207f6c20a54cc4ee4caf578e7e3b61d93266b9665840f33e55dfcbf9"
+      },
+      "reproductionByteEqual": true,
+      "includedSections": [
+        "cone",
+        "role",
+        "rear"
+      ],
+      "excludedSections": [
+        "traffic"
+      ],
+      "exclusionReason": "traffic calls spaceTeammates([a,b],commands) without the production spacing context and therefore exercises the legacy/headway path. Preserve raw bytes as provenance, but exclude it from conclusions about current production traffic/turning.",
+      "scope": "Cone/role inspect a single ordinary chase command; rear stages the existing tackle selector at a stationary physical boundary. They are deterministic counterexamples, not rates, full plays, gaze observations or proof of physically achieved approach."
+    },
+    {
+      "path": "out/run-defense-current/fit-exchanges.json",
+      "bytes": 37932,
+      "sha256": "426a8280574cfe6e7955e8148f49e18795e7cd322136a7cb4bd04a57d26a052b",
+      "originalToolPath": null,
+      "originalToolSha256": null,
+      "toolOrigin": "Original report was collected by an inline one-off inspection. Original inline program bytes were not retained; no original tool identity is claimed.",
+      "reconstructedTool": {
+        "path": "out/run-defense-current/fit-exchanges-reconstructed-tool.txt",
+        "bytes": 2554,
+        "sha256": "03ad0e352b715ed13264e6b568c7b258d4a0ea9a9693582f421cffe1a966ed16"
+      },
+      "reconstructedToolInstallPath": "scripts/diag/fit-exchanges-reconstructed.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "scripts/diag/fit-exchanges-reconstructed.ts",
+        "out/fit-exchanges-reproduced.json"
+      ],
+      "reproduced": {
+        "path": "out/run-defense-current/d087-repro/out/fit-exchanges-reproduced.json",
+        "bytes": 37932,
+        "sha256": "426a8280574cfe6e7955e8148f49e18795e7cd322136a7cb4bd04a57d26a052b"
+      },
+      "reproductionByteEqual": true,
+      "reconstructionEvidence": "The explicitly reconstructed collector reproduced all 37,932 original bytes, including every static body position, coverage role and fit, in the pinned d087 archive.",
+      "scope": "Eight static manually requested Over/Under/Odd/Tite installs, with and without DE_W/LB_W gapExchange. No World step, player read, NFL data, rushing outcome or game incidence is measured. Current automatic caller does not select gapExchange.",
+      "cohort": {
+        "offenseSeed": 11,
+        "defenseSeed": 12,
+        "strength": 0.55,
+        "playSeed": 77,
+        "formation": "ace_11",
+        "run": "iz_strong",
+        "flip": false,
+        "coverage": "cover2",
+        "pressure": null,
+        "los": 40,
+        "ballY": 26.666666666666668,
+        "firstDownX": 50,
+        "frontPersonnel": {
+          "over": "base43",
+          "under": "base43",
+          "odd": "base34",
+          "tite": "base34"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Neither report is part of the representative native panel or provides outcome rates.",
+    "No production or prior published artifact was changed.",
+    "The original pursuit report method text says production World for traffic; that names the executor only and does not make its missing-context spacing invocation a production-controller test.",
+    "Future collector ports must preserve the original bytes/tool SHA or declare themselves new collectors; do not rewrite original report provenance."
+  ]
+}

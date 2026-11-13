@@ -1,0 +1,47 @@
+{
+  "sourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+  "sourceFrozen": true,
+  "fullTypeScript": {
+    "passed": 773,
+    "files": 70,
+    "exitCode": 0,
+    "log": "full-tests.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "typecheck.log"
+  },
+  "build": {
+    "exitCode": 0,
+    "log": "build.log"
+  },
+  "python": {
+    "passed": 22,
+    "exitCode": 0,
+    "log": "python.log"
+  },
+  "focused": {
+    "passed": 24,
+    "exitCode": 0,
+    "log": "tests-after.log"
+  },
+  "baselineFeatureControl": {
+    "featureFailures": 17,
+    "controlPasses": 7,
+    "exitCode": 1,
+    "log": "tests-before.log"
+  },
+  "panel": {
+    "matchedInputs": 162,
+    "naturalEndsPerPhase": 162,
+    "observedPlainControls": 324,
+    "ordinaryInputs": 160,
+    "supplementalInputs": 2
+  },
+  "witnessFilm": {
+    "fixedInputs": 4,
+    "clips": 8,
+    "observedPlainControls": 8
+  },
+  "limits": "Controller-only increment. No fresh full-game rate, NFL-force calibration or speed claim. Existing World and capacity contracts retained."
+}

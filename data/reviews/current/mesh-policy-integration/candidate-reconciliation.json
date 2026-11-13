@@ -1,0 +1,23 @@
+{
+  "schema": "mesh-policy-verification-reconciliation-v1",
+  "originalIntake": "intake.json",
+  "failedReceipt": "failed-receipt.json",
+  "failedFreeze": "b3caeb84c4fe72b603dbf68ef48b2628889d24ce",
+  "runtimeSourceUnchanged": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "additionalProtectedFile": {
+    "path": "test/pull-fit-plan.test.ts",
+    "sha256": "1d4e465dd0faf642d710dcab853d3a0c8cd9a35ec6edd2b072eff848b3dc65e7",
+    "purpose": "Module-local symbol identity normalization in test-only off/on comparison; entire physical and own-objective semantic equality preserved.",
+    "independentReview": "pull-fit-contract-review.json"
+  },
+  "focusedDiagnostic": {
+    "receipt": "pull-fit-contract.json",
+    "passed": 12,
+    "commandSeconds": 1.533428496,
+    "newNative": 0,
+    "newGames": 0
+  },
+  "whyAnotherVerification": "Original exact candidate failed6 existing comparison contracts. Independent review accepts the minimal test-harness correction, materially changing validation tree while preserving production source. Run required phases for this reconciled exact candidate once; no repeat merely to publish or merge.",
+  "allSevenAuthorBlobsRemainUnchanged": true,
+  "noFootballAssertionWaiver": true
+}

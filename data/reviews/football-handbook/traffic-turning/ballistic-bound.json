@@ -1,0 +1,42 @@
+{
+  "schema": "traffic-turning-ballistic-bound-v1",
+  "sourceBefore": "0d2387ee2350df36a6af9b881a6efeee586b61cb4a2967ef7722431cc8e921b2",
+  "sourceAfter": "0d2387ee2350df36a6af9b881a6efeee586b61cb4a2967ef7722431cc8e921b2",
+  "toolSha256": "c5ab0da482a67d4d63573a198f3a73afacee86499fcd2c2e033d5b7a0a93c52e",
+  "rosterSha256": "5617535bbfa5028acf69142b1a4ef961898c76f5fb876e1c7042898ed2160656",
+  "node": "v22.23.3",
+  "input": {
+    "rosterSeed": 71,
+    "speeds": [
+      2,
+      9,
+      15
+    ],
+    "disturbance": [
+      false,
+      true
+    ],
+    "turns": [
+      -1.5707963267948966,
+      1.5707963267948966,
+      3.141592653589793
+    ],
+    "steps": 12,
+    "dt": 0.05
+  },
+  "profiles": 53,
+  "forecasts": 954,
+  "samples": 11448,
+  "forecastsWithFall": 633,
+  "maximumTubeUse": 0.8861821182055355,
+  "maximumExcess": -0.0018511220729977764,
+  "definitelySafePictures": 35304,
+  "witness": {
+    "ballisticSeparation": 1.1,
+    "expandedTouch": 2.5931235683607734,
+    "gateSkips": false
+  },
+  "A": 11.797151137357831,
+  "H": 0.6,
+  "tube": 2.1234872047244098
+}

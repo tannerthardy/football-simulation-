@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "reviewer": "Integration subagent movement_composition; independent of motor/test implementation",
+  "dateUTC": "2026-10-20",
+  "decision": "ACCEPT this source-qualified test-only disposition if approved180 motor is included; does not adjudicate other failures",
+  "reviewedCommits": [
+    "bae5ebbe94b02b8a9ab03a4123339dec6c7c725b",
+    "84e22f7147efae585829eba30204fa1fcf3ebd67"
+  ],
+  "testedCombinedSource": "075e2148a8c94c80ba90743a324e4670091998c0",
+  "acceptedSource": "2c98bed94adad8087c65f381d4090444ad283985",
+  "isolatedMotorSource": "7869fb686148d5b3210b2e593c61ecea97c7f342",
+  "verifiedArtifactCount": 13,
+  "verifiedArtifacts": [
+    "motor-pass.json.gz",
+    "accepted-receipt.json",
+    "accepted.log",
+    "combined-pass.json.gz",
+    "combined.log",
+    "accepted-run.json.gz",
+    "combined-receipt.json",
+    "motor-run.json.gz",
+    "combined-run.json.gz",
+    "motor.log",
+    "motor-receipt.json",
+    "capture.test.ts.txt",
+    "accepted-pass.json.gz"
+  ],
+  "sourceReceiptMatches": {
+    "accepted": {
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    "motor": {
+      "commit": "7869fb686148d5b3210b2e593c61ecea97c7f342",
+      "sourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+      "exitCode": 1,
+      "inputsUnchanged": true
+    },
+    "combined": {
+      "commit": "075e2148a8c94c80ba90743a324e4670091998c0",
+      "sourceSha256": "889bbd59981b680afb915d96108acbbe8f3ebe5fc395446f82d83b8dfe655f6a",
+      "exitCode": 1,
+      "inputsUnchanged": true
+    }
+  },
+  "policyHashesRecomputedWithNodeJSON": {
+    "run": "82b6a93e956e652f136d93444a82bb718f209ddebf98f3bce86d18da8f0b12dc",
+    "pass": "a86cbcee799208e979666c327ebeaa9557ae41fd0e40297df933ec9f74e7a19d"
+  },
+  "findings": [
+    "All14 archive member SHA256 values match summary",
+    "Motor-only and combined full trace JSON exactly identical for run and pass",
+    "Allcommands/control/nextRNG exactly equal accepted across6ticks in each fixture",
+    "First physical difference tick6; pass yaw/work, run also body/support/contact/arm/ground loads",
+    "Source/flags/dependencies/tooling unchanged by repair",
+    "All per-step closure/force/work budget assertions and unrelated controls unchanged",
+    "Original oldphysical hashes and intentionally faileddiagnostics retained",
+    "Full currentphysical snapshot remains pinned to independently isolated180motor"
+  ],
+  "newEngineExecutions": 0,
+  "limitations": [
+    "Onlythese2historical snapshot failures adjudicated",
+    "If180excluded useoriginal acceptedmotorphysicalhashes",
+    "No waiver of motion-contact/helper/mirror/redirect/gameplay failures",
+    "RootIntegration mustverify exactfinalcandidate"
+  ]
+}

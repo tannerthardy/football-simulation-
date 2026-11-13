@@ -1,0 +1,224 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 4af0010..0605f96 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1173,7 +1173,15 @@ export class RunBlocker implements Behavior {
+     }
+     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
+       const fit = this.plannedClimb(a, sim, target, contact);
+-      if (fit) return fit;
++      if (fit) {
++        const bodyContact = a.profile.radius + target.profile.radius;
++        // Interception supplies the approach, not permission to run through
++        // the man. Use the same acquired near-strike fit as other climbs.
++        if (Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
++          return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
++            placementError, contact, bodyContact, fit, sim.t);
++        return fit;
++      }
+     }
+     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
+diff --git a/test/fixtures/planned-climb-fit.json.gz b/test/fixtures/planned-climb-fit.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..efc8ec0f5b3b02780615170d975e2e60c7232768
+GIT binary patch
+literal 6019
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/test/planned-climb-fit.test.ts b/test/planned-climb-fit.test.ts
+new file mode 100644
+index 0000000..2107b41
+--- /dev/null
++++ b/test/planned-climb-fit.test.ts
+@@ -0,0 +1,72 @@
++import {readFileSync} from 'node:fs';
++import {gunzipSync} from 'node:zlib';
++import {describe,expect,it,vi} from 'vitest';
++import {CENTER_Y} from '../src/core/field.js';
++import type {Intent} from '../src/physics/world.js';
++import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
++import {RunBlocker} from '../src/sim/behaviors/blocking.js';
++import type {Perceived} from '../src/sim/perception.js';
++
++const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/planned-climb-fit.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
++function stage(t:number){
++ const sim=new PlaySim(structuredClone(fixture.setup));
++ while(sim.phase==='live'&&sim.t<t)sim.tick();
++ const rt=sim.slot('RT')!,controller=rt.behavior as RunBlocker;
++ expect(controller.plan.kind).toBe('climb');expect(controller.target).toBe(sim.slot('LB_M'));
++ expect(controller.plan.departure).toBeUndefined();expect(rt.engagement).toBeNull();
++ return {sim,rt,controller};
++}
++function mirror(p:Perceived):Perceived{
++ return {...p,pos:{x:p.pos.x,y:2*CENTER_Y-p.pos.y},vel:{x:p.vel.x,y:-p.vel.y},facing:-p.facing};
++}
++
++describe('planned climb acquires a useful near strike without running through the backer',()=>{
++ it.each([false,true])('keeps the far forecast and gathers the near strike through the real hook, reflected=%s',reflect=>{
++  // Only the decision is mirrored, using a reflected acquired history. The
++  // native all22 continuation below owns physical-execution evidence.
++  for(const [at,near] of [[1.45,false],[1.5,true]] as const){
++   const {sim,rt,controller}=stage(at),update=controller.update,see=sim.see.bind(sim),stop=new Error('observed decision');
++   const planner=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>Intent},'plannedClimb');
++   const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
++    if(reflect){
++     for(const actor of s.agents){actor.body.pos.y=2*CENTER_Y-actor.pos.y;actor.body.vel.y=-actor.vel.y;actor.body.facing=-actor.facing;
++      if(actor.body.spin!==undefined)actor.body.spin=-actor.body.spin;
++      if(actor.body.support)for(const value of Object.values(actor.body.support))
++       if(value&&typeof value==='object'&&'x'in value&&'y'in value&&typeof value.y==='number')value.y=-value.y;
++     }
++     s.see=(observer,target,scale)=>mirror(see(observer,target,scale));
++     const held=Reflect.get(controller,'climbRead');held.meet.y=2*CENTER_Y-held.meet.y;held.seenVel.y=-held.seenVel.y;
++    }
++    const before=structuredClone(a.body),rng=JSON.stringify(s.rng),held=Reflect.get(controller,'climbRead');
++    const command=update.call(controller,a,s),forecast=planner.mock.results.at(-1)!.value as Intent;
++    expect(planner).toHaveBeenCalledTimes(1);expect(Reflect.get(controller,'climbRead')).toBe(held);
++    expect(a.body).toEqual(before);expect(JSON.stringify(s.rng)).toBe(rng);
++    expect(a.engagement).toBeNull();expect(controller.target).toBe(s.slot('LB_M'));
++    if(near){
++     expect(command.posture).toBe(.7);expect(command.vel.x).toBeLessThan(forecast.vel.x);
++     expect(command.vel.y*(reflect?-1:1)).toBeGreaterThan(0);
++    }else expect(command).toEqual(forecast);
++    throw stop;
++   });
++   let caught:unknown;try{sim.tick();}catch(e){caught=e;}finally{hook.mockRestore();planner.mockRestore();}
++   expect(caught).toBe(stop);
++  }
++ });
++
++ it('maintains acquired Mike load and the keeper through runner arrival with ordinary World limits',()=>{
++  const {sim,rt}=stage(1.45),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
++  expect(y.engagement?.defender).toBe(end);const keeperHands=y.engagement!.hands;
++  while(sim.phase==='live'&&sim.t<2.95){
++   sim.tick();const report=sim.lastStep!;
++   expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++   for(const actor of [rt,y,mike])expect(report.armImpulse[actor.idx]).toBeLessThanOrEqual(report.armImpulseLimit[actor.idx]+1e-8);
++  }
++  expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
++  expect(rt.engagement?.defender).toBe(mike);expect(rt.pos.x).toBeLessThan(mike.pos.x);
++  expect(sim.world.joints).toContain(rt.engagement!.hands);
++  expect(rt.engagement!.hands!.normalForce).toBeGreaterThan(0);
++  expect(y.engagement?.defender).toBe(end);expect(y.engagement!.hands).toBe(keeperHands);
++  expect(sim.world.joints).toContain(keeperHands);
++  expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
++ });
++});

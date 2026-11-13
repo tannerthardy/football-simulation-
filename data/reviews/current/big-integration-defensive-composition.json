@@ -1,0 +1,95 @@
+{
+  "kind": "portable-defensive-source-extraction",
+  "checked": "2026-10-20",
+  "base": "2c98bed94adad8087c65f381d4090444ad283985",
+  "ownerReference": "2302b48fb56298605ec17aaa39cc7950f62b6c08",
+  "ownerSourceSha256": "cfee04784b7f3ae7cd5050db641b4471361b8f3f892d679d24a6275a7a8b70f2",
+  "components": {
+    "169": "1004b818f2f7692df595a237ec9eec05a9ef2587",
+    "171": "6cbdcc4dc70e6ce5b644582c6ca14f77f5c28bbf",
+    "177": "2ebaaf11dcd6455875411423dcbb2910013d7903"
+  },
+  "exactOwnerBytes": true,
+  "files": [
+    {
+      "path": "src/sim/behaviors/defense.ts",
+      "sha256": "2c380109fc9fef7b5983e8bcc1fe236434008b347887392e6d30c7ef37d52403",
+      "gitBlob": "ee9955a200d81ea34f88fd8660bee41d8b4b8ddf"
+    },
+    {
+      "path": "src/sim/coverage-cues.ts",
+      "sha256": "d377a93413434b7770982870c5ec2e05f99f3fbdfdfa7b7aa7cc5d03cb7b56d4",
+      "gitBlob": "83fd7ec7d69da8d15fa69f1bc190510fddc85f54"
+    },
+    {
+      "path": "src/sim/coverage/reads.ts",
+      "sha256": "6cb4a403ac90c221460ada8bbf80d16e4597411a010a2ae48c009c44df574559",
+      "gitBlob": "056cbf19efcd04fad299d5d4dd5c8e62e70aeebb"
+    },
+    {
+      "path": "src/sim/engagement.ts",
+      "sha256": "150a765c47fdc9d8ecec8ce9df928adfd27c48a4bdfa4027ff6096aad2b03fab",
+      "gitBlob": "09cf7e3f3e31e36e3b3495a3d542ccf93801b22d"
+    },
+    {
+      "path": "src/sim/run-fits.ts",
+      "sha256": "4f79aded5e3fd60cff6edb8297e045166df7f91d689dd2d613b85469bc160033",
+      "gitBlob": "1abb8031733d6e8690d482764cfa54d8ae047b58"
+    },
+    {
+      "path": "test/man-run-continuity.test.ts",
+      "sha256": "ef5891c1f8cf09f357d97d8145649ec6cdda5350a21af850f3879bc58cc22ec4",
+      "gitBlob": "b114cf78aab37e1eb93c6b6d6f3754471e2ca242"
+    },
+    {
+      "path": "test/support-escape-objective.test.ts",
+      "sha256": "3528165a10e947adbe0bbec8e268a96f3d5b136d410b2b8e45b6c79fe404d02a",
+      "gitBlob": "3bc2cf2895d84791d199670c4fd89f1c545a6752"
+    },
+    {
+      "path": "test/support-work-off.test.ts",
+      "sha256": "41d7d976d88d2560021f0aa94c5475720083d76f2b4fe19bf433dce05946a012",
+      "gitBlob": "c236109b52c4443187df7b458ea458e5a2ecdb4e"
+    }
+  ],
+  "excluded": [
+    "174/172 offensive contact (separate reviewed increment)",
+    "185 pull clearance",
+    "experimental physics",
+    "all flag/default changes"
+  ],
+  "verification": {
+    "gitRefRefresh": true,
+    "ownerByteEquality": true,
+    "whitespace": true,
+    "newTestOrSimulationExecutions": 0,
+    "combinedVerificationOwner": "Integration"
+  },
+  "reuse": {
+    "focusedOverlap": 65,
+    "nativeInteractions": 3,
+    "results": {
+      "WZ7": [
+        5.87,
+        5.87
+      ],
+      "OZ4": [
+        17.04,
+        16.4
+      ],
+      "WZORD": [
+        2.89,
+        2.89
+      ]
+    },
+    "sourceQualification": "Reference2302b48 only; not final integrated behavior"
+  },
+  "contactReconciliation": {
+    "reference": "68e724179ce7d86308ee5d9f04328004ee73ece0",
+    "ownerDisposition": "https://github.com/tannerthardy/football-simulation-/pull/177#issuecomment-6302308712",
+    "includes172OnceThrough174": true,
+    "sharedChecksReused": 56,
+    "mirroredChecksReused": 4
+  },
+  "adoption": "Pending exact final combined verification and user-authorized game comparison"
+}

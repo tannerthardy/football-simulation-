@@ -1,0 +1,12 @@
+{
+  "snapshotPinsMatchOriginalManifest": true,
+  "toolHashMatchesReport": true,
+  "gzipRoundTrip": true,
+  "retainedPaths": 244,
+  "retainedPlayers": 15,
+  "retainedWindowFrames": 6751,
+  "sustainedMotionFrames": 5143,
+  "slowOrientationHalfSecondOpportunities": 121,
+  "slowOrientationMarkerTriggers": 0,
+  "noEngineRunOrRetuning": true
+}

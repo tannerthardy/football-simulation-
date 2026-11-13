@@ -1,0 +1,17 @@
+{
+ "about": "Mechanism metrics that sit within a quarter NFL interquartile range (median and 90th percentile) on two independent 8-game sim samples (seeds 101 and 202). compare.py --guard fails if any becomes 'off'. Add a metric only once it matches for an understood reason; never add one to lock in a wrong value.",
+ "metrics": [
+  "block.pass.still_engaged_2s",
+  "catch.depth",
+  "contact.catch.carrier_speed_at_contact",
+  "contact.catch.tackler_speed_at_contact",
+  "contact.run.carrier_speed_at_contact",
+  "move.max_speed.RB",
+  "move.max_speed.TE",
+  "move.max_speed.WR",
+  "pass.rushers",
+  "route.target_depth_at_throw",
+  "run.box_count",
+  "run.yards_before_contact"
+ ]
+}

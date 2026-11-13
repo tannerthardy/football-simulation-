@@ -1,0 +1,335 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index d077fcd..249c36d 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -16,9 +16,9 @@ import { FIELD_WIDTH } from '../../core/field.js';
+ import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
+ import { cornerSpeed, fatigueFactor, type MoveCommand } from '../../physics/kinematics.js';
+ import { availability, supportParams } from '../../physics/support.js';
+-import type { Intent } from '../../physics/world.js';
++import type { HandJoint, Intent } from '../../physics/world.js';
+ import type { RunConcept } from '../../playbook/types.js';
+-import type { Agent, Behavior } from '../agent.js';
++import type { Agent, Behavior, Engagement } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
+ import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
+@@ -340,13 +340,35 @@ function runLook(a: Agent, sim: PlaySim): boolean {
+ export type RunBlockKind = 'drive' | 'reach' | 'down' | 'combo' | 'climb' | 'pull' | 'cutoff' | 'lead' | 'stalk' | 'draw';
+ const RESERVED_RUN_KINDS = new Set<RunBlockKind>(['pull', 'lead', 'stalk', 'draw']);
+ 
++export interface CombinationProposal {
++  t: number;
++  climber: Agent;
++  keeper: Agent;
++  engagement: Engagement;
++  hands: HandJoint;
++  phi: number;
++  cost: number;
++}
++
++export interface CombinationRead {
++  nextRead: number;
++  secureSince: number;
++  /** Scheduled attention attempt; physical ineligibility can prevent visual reads. */
++  readAt: number;
++  proposal: CombinationProposal | null;
++}
++
+ export interface Combination {
+   members: [Agent, Agent];
+   defender: Agent;
+   backer: Agent | null;
+   released: boolean;
++  /** Legacy unjoined scheduling only; joined members use their own reads. */
+   secureSince: number;
++  /** Legacy unjoined scheduling only; joined members use their own reads. */
+   nextRead: number;
++  /** Independent confirmations and current-tick self-proposals, by member. */
++  reads?: [CombinationRead, CombinationRead];
+   /** Installed covered-player technique; either member may become keeper. */
+   soloKind?: RunBlockKind;
+   /** Optional check/post work is an installation, not a weaker double team. */
+@@ -1021,8 +1043,147 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
+   return clear(0) && clear(helper.mind.decisionInterval);
+ }
+ 
+-/** A double team releases from leverage and the filling backer, never a mesh timer. */
+-export function readCombination(observer: Agent, sim: PlaySim, combo: Combination): void {
++/** A shared physical fit is eligibility, not either member's perception. */
++function joinedEngagement(sim: PlaySim, combo: Combination): Engagement | null {
++  const e = combo.defender.engagement;
++  return !combo.released && e?.type === 'run' && combo.members.includes(e.blocker)
++    && !combo.defender.isDown(sim.t) && combo.members.every((a) => a.engagement === e
++      && !a.isDown(sim.t) && a.behavior instanceof RunBlocker
++      && a.behavior.plan.combination === combo && a.behavior.plan.target === combo.defender)
++    ? e : null;
++}
++
++/** Evaluate only this player's departure; the partner's hands already exist. */
++function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: Engagement): Omit<CombinationProposal, 't' | 'cost'> | null {
++  const keeper = combo.members.find((a) => a !== climber);
++  if (!keeper || keeper.isDown(sim.t) || combo.defender.isDown(sim.t)) return null;
++  const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
++  const lat = { x: -axis.y, y: axis.x }, bd = norm(sub(keeper.pos, combo.defender.pos));
++  const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
++  const hands = keeper === e.blocker ? e.hands : e.helperHands?.get(keeper);
++  const base = keeper.body.support
++    ? availability(keeper.body.support, supportParams(keeper.profile), fatigueFactor(keeper.body.energy)) : 1;
++  const contact = !!hands && hands.a === keeper.body && hands.b === combo.defender.body
++    && sim.world.joints.includes(hands);
++  const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
++  if (Math.abs(phi) >= .65 || base <= .60 || !contact || !useful) return null;
++  return { climber, keeper, engagement: e, hands: hands!, phi };
++}
++
++/** The reader's own delayed evidence that his partner can carry the surface. */
++function readJoinedSurface(observer: Agent, sim: PlaySim, keeper: Agent, e: Engagement): boolean {
++  const covered = sim.see(observer, keeper), down = sim.see(observer, e.defender);
++  const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
++  const lat = { x: -axis.y, y: axis.x }, bd = norm(sub(covered.pos, down.pos));
++  const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
++  const reach = keeper.profile.radius + e.defender.profile.radius + keeper.player.measurables.armIn / 36;
++  return covered.pose === 'up' && down.pose === 'up' && Math.abs(phi) < .55
++    && Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) <= reach;
++}
++
++function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination, e: Engagement, defer: boolean): void {
++  combo.reads ??= [
++    { nextRead: 0, secureSince: -1, readAt: -1, proposal: null },
++    { nextRead: 0, secureSince: -1, readAt: -1, proposal: null },
++  ];
++  const read = combo.reads[combo.members.indexOf(observer)];
++  if (sim.t < read.nextRead) return;
++  read.nextRead = sim.t + observer.mind.decisionInterval;
++  read.readAt = sim.t;
++  read.proposal = null;
++  const candidate = keeperCandidate(observer, sim, combo, e);
++  const secure = e.control > -.12 + .12 * (.5 - observer.mind.urgency)
++    && e.baseB > .60 && Math.abs(e.phi) < .55;
++  if (!candidate || !secure || !readJoinedSurface(observer, sim, candidate.keeper, e)) {
++    read.secureSince = -1;
++    observer.tags.add('combo-held');
++    return;
++  }
++  if (read.secureSince < 0) read.secureSince = sim.t;
++  if (sim.t - read.secureSince < .15) return;
++  const backer = sim.see(observer, combo.backer!);
++  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
++  const runner = sim.slot('RB');
++  const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
++  if (!filling && !arriving) return;
++  read.proposal = { ...candidate, t: sim.t,
++    cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) + (observer === e.blocker ? .30 : 0) };
++  if (!defer) {
++    const valid = revalidateJoinedProposal(read.proposal, sim, combo);
++    if (valid) applyCombinationRelease(valid, sim, combo, false);
++  }
++}
++
++function revalidateJoinedProposal(p: CombinationProposal, sim: PlaySim, combo: Combination): CombinationProposal | null {
++  const e = joinedEngagement(sim, combo);
++  if (!e || p.t !== sim.t || p.engagement !== e || sim.t < p.climber.snapReadyAt
++    || !combo.backer || combo.backer.isDown(sim.t)) return null;
++  const candidate = keeperCandidate(p.climber, sim, combo, e);
++  if (!candidate || candidate.keeper !== p.keeper || candidate.hands !== p.hands
++    || e.control <= -.12 + .12 * (.5 - p.climber.mind.urgency) || e.baseB <= .60 || Math.abs(e.phi) >= .55) return null;
++  return { ...p, phi: candidate.phi };
++}
++
++/** Resolve simultaneous self-proposals without letting update order pick a climber. */
++export function resolveJoinedCombination(sim: PlaySim, combo: Combination): void {
++  const valid: CombinationProposal[] = [];
++  for (const [index, read] of (combo.reads ?? []).entries()) {
++    const p = read.proposal;
++    if (!p || p.climber !== combo.members[index] || read.readAt !== sim.t) continue;
++    const current = revalidateJoinedProposal(p, sim, combo);
++    if (current) valid.push(current);
++  }
++  valid.sort((a, b) => {
++    const difference = a.cost - b.cost;
++    // Equal geometric costs can differ by a few arithmetic ulps; this is
++    // representation noise, not a football distance tolerance.
++    const roundoff = 4 * Number.EPSILON * Math.max(1, Math.abs(a.cost), Math.abs(b.cost));
++    return Math.abs(difference) > roundoff ? difference
++      : combo.members.indexOf(b.climber) - combo.members.indexOf(a.climber) || a.climber.idx - b.climber.idx;
++  });
++  if (valid[0]) applyCombinationRelease(valid[0], sim, combo, false);
++}
++
++/** Read both joined players before their ordinary movement commands. */
++export function prepareJoinedCombinations(sim: PlaySim): void {
++  const pairs = new Set<Combination>();
++  for (const a of sim.offense) if (a.behavior instanceof RunBlocker && a.behavior.plan.combination)
++    pairs.add(a.behavior.plan.combination);
++  const ordered = [...pairs].sort((a, b) => Math.min(...a.members.map((m) => m.idx)) - Math.min(...b.members.map((m) => m.idx))
++    || a.defender.idx - b.defender.idx);
++  for (const combo of ordered) {
++    if (!joinedEngagement(sim, combo)) continue;
++    for (const member of combo.members) readCombination(member, sim, combo, true);
++    resolveJoinedCombination(sim, combo);
++  }
++}
++
++/** A player may propose only his own departure from the double team. */
++export function readCombination(observer: Agent, sim: PlaySim, combo: Combination, deferJoined = false): void {
++  const index = combo.members.indexOf(observer);
++  if (index < 0 || combo.released || !combo.backer || combo.backer.isDown(sim.t)
++    || sim.t < observer.snapReadyAt) return;
++  if (observer.isDown(sim.t) || !combo.members.every((a) => a.behavior instanceof RunBlocker
++    && a.behavior.plan.combination === combo && a.behavior.plan.target === combo.defender)) {
++    const read = combo.reads?.[index];
++    if (read) { read.secureSince = -1; read.proposal = null; }
++    if (index === 1 && combo.helpPolicy) combo.checkSince = -1;
++    return;
++  }
++  const e = joinedEngagement(sim, combo);
++  if (e) {
++    if (combo.helpPolicy) combo.checkSince = -1;
++    readJoinedCombination(observer, sim, combo, e, deferJoined);
++  } else {
++    // Losing the common contact invalidates this member's own confirmation.
++    const read = combo.reads?.[index];
++    if (read) { read.secureSince = -1; read.proposal = null; }
++    readUnjoinedCombination(observer, sim, combo);
++  }
++}
++
++/** Preserve the original helper's optional check and unjoined schedule. */
++function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combination): void {
+   if (combo.released || !combo.backer || combo.backer.isDown(sim.t)) return;
+   const [owner, helper] = combo.members;
+   const e = combo.defender.engagement;
+@@ -1041,71 +1202,48 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+     if (combo.helpPolicy) combo.checkSince = -1;
+     if (sim.t < combo.nextRead) return;
+     combo.nextRead = sim.t + observer.mind.decisionInterval;
+-  }
+-  if (check) {
+-    const hands = e?.hands;
+-    const base = owner.body.support
+-      ? availability(owner.body.support, supportParams(owner.profile), fatigueFactor(owner.body.energy)) : 1;
+-    if (!e || e.type !== 'run' || e.blocker !== owner || owner.engagement !== e || e.helpers.length
+-      || owner.isDown(sim.t) || base <= .60 || helper.engagement || helper.isDown(sim.t) || combo.defender.isDown(sim.t)
+-      || !(helper.behavior instanceof RunBlocker) || helper.behavior.plan.combination !== combo || helper.behavior.plan.kind !== 'combo'
+-      || !(owner.behavior instanceof RunBlocker) || owner.behavior.plan.combination !== combo
+-      || !hands || hands.a !== owner.body || hands.b !== combo.defender.body || !sim.world.joints.includes(hands)
+-      || sim.world.joints.some((j) => j.a === helper.body || j.b === helper.body)) {
+-      combo.checkSince = -1;
+-      return;
+-    }
+-  } else if (!e || !combo.members.includes(e.blocker) || !combo.members.every((b) => b.engagement === e)) {
++    // A joined pair belongs exclusively to the personal read path. Legacy
++    // unjoined scheduling may never act as a release fallback.
+     combo.secureSince = -1;
+     return;
+   }
++  const hands = e?.hands;
++  const base = owner.body.support
++    ? availability(owner.body.support, supportParams(owner.profile), fatigueFactor(owner.body.energy)) : 1;
++  if (!e || e.type !== 'run' || e.blocker !== owner || owner.engagement !== e || e.helpers.length
++    || owner.isDown(sim.t) || base <= .60 || helper.engagement || helper.isDown(sim.t) || combo.defender.isDown(sim.t)
++    || !(helper.behavior instanceof RunBlocker) || helper.behavior.plan.combination !== combo || helper.behavior.plan.kind !== 'combo'
++    || !(owner.behavior instanceof RunBlocker) || owner.behavior.plan.combination !== combo
++    || !hands || hands.a !== owner.body || hands.b !== combo.defender.body || !sim.world.joints.includes(hands)
++    || sim.world.joints.some((j) => j.a === helper.body || j.b === helper.body)) {
++    combo.checkSince = -1;
++    return;
++  }
+   const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
+   if (!secure) {
+-    if (check) combo.checkSince = -1; else combo.secureSince = -1;
++    combo.checkSince = -1;
+     observer.tags.add('combo-held');
+     return;
+   }
+-  const surface = check ? readCheckSurface(observer, sim, combo) : null;
+-  if (check && !surface) { combo.checkSince = -1; return; }
+-  if (check) {
+-    if ((combo.checkSince ?? -1) < 0) combo.checkSince = sim.t;
+-    if (sim.t - combo.checkSince! < .15) return;
+-  } else {
+-    if (combo.secureSince < 0) combo.secureSince = sim.t;
+-    if (sim.t - combo.secureSince < 0.15) return;
+-  }
++  const surface = readCheckSurface(observer, sim, combo);
++  if (!surface) { combo.checkSince = -1; return; }
++  if ((combo.checkSince ?? -1) < 0) combo.checkSince = sim.t;
++  if (sim.t - combo.checkSince! < .15) return;
+   const backer = sim.see(observer, combo.backer);
+   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
+   const runner = sim.slot('RB');
+   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+   if (!filling && !arriving) return;
+-  if (check && !checkBackerCorridor(observer, combo.defender, surface!, backer)) return;
++  if (!checkBackerCorridor(observer, combo.defender, surface, backer)) return;
+ 
+-  // The defender's slant can change who stays and who climbs. Require the
+-  // remaining blocker to have his body on the drive side before transferring.
+-  const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
+-  const lat = { x: -axis.y, y: axis.x };
+-  const candidates = combo.members.map((climber) => {
+-    const keeper = combo.members.find((b) => b !== climber)!;
+-    const bd = norm(sub(keeper.pos, combo.defender.pos));
+-    const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
+-    const cost = Math.hypot(backer.pos.x - climber.pos.x, backer.pos.y - climber.pos.y) + (climber === e.blocker ? 0.30 : 0);
+-    const hands = keeper === e.blocker ? e.hands : e.helperHands?.get(keeper);
+-    const base = keeper.body.support
+-      ? availability(keeper.body.support, supportParams(keeper.profile), fatigueFactor(keeper.body.energy)) : 1;
+-    // The player staying must carry this first-level job. The player leaving
+-    // need not first make his redundant help useful. A promoted helper still
+-    // needs his own established fit, footing and genuine physical hands.
+-    const contact = !!hands && hands.a === keeper.body && hands.b === combo.defender.body
+-      && sim.world.joints.includes(hands);
+-    const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
+-    return { climber, keeper, phi, cost, hands, base, contact, useful };
+-  }).filter((c) => Math.abs(c.phi) < 0.65 && !c.keeper.isDown(sim.t)
+-    && c.base > .60 && c.contact && c.useful);
+-  candidates.sort((a, b) => a.cost - b.cost);
+-  const choice = candidates[0];
+-  if (!choice) return;
+-  const { climber, keeper, phi, hands } = choice;
++  const candidate = keeperCandidate(observer, sim, combo, e);
++  if (candidate) applyCombinationRelease({ ...candidate, t: sim.t,
++    cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) + (observer === e.blocker ? .30 : 0) }, sim, combo, true);
++}
++
++/** A release changes jobs/contact ownership, never a player's body or capacity. */
++function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, combo: Combination, check: boolean): void {
++  const { climber, keeper, phi, hands, engagement: e } = choice;
+   if (!(climber.behavior instanceof RunBlocker)) return;
+   const solo = combinationSoloKind(combo);
+   if (keeper !== e.blocker) {
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index f6d2403..cf8629b 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -27,6 +27,7 @@ import { resolveCatchOpportunities } from './catching.js';
+ import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
+ import { PerceptionBuffer, type Perceived } from './perception.js';
+ import { spaceTeammates } from './spacing.js';
++import { prepareJoinedCombinations } from './behaviors/blocking.js';
+ import { SnapMind } from './mind.js';
+ import { ReplayTrace } from './telemetry.js';
+ import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
+@@ -516,6 +517,11 @@ export class PlaySim {
+ 
+   // ------------------------------------------------------------ loop
+ 
++  /** Let both joined linemen make their own read before movement commands. */
++  prepareJoinedRunBlocks(): void {
++    prepareJoinedCombinations(this);
++  }
++
+   run(): PlayResult {
+     this.event('snap', this.slot('C') ?? this.qb);
+     while (this.phase === 'live' && this.t < MAX_PLAY_TIME) this.tick();
+@@ -539,6 +545,8 @@ export class PlaySim {
+     }
+     for (const d of this.defense) d.recog?.update(d, this);
+ 
++    this.prepareJoinedRunBlocks();
++
+     // Decide.
+     for (let i = 0; i < this.agents.length; i++) {
+       const a = this.agents[i];

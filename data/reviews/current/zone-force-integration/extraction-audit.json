@@ -1,0 +1,31 @@
+{
+  "base": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "metadata": "9a70bb5",
+  "exactBlobs": [
+    {
+      "path": "src/sim/coverage/defender.ts",
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "sha256": "cfaaf2a67ca155a6ae22e4da3dedacfccc0999c65ad5c9a665aec73e32b35173",
+      "exact": true
+    },
+    {
+      "path": "test/quarter-flat-force-support.test.ts",
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "sha256": "42cb7264ed2ac2a4e0e2b139292f0b155769c9023548ca4766a4e8f2dee05ef4",
+      "exact": true
+    }
+  ],
+  "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "overlappingRuntimeFiles": [],
+  "settingsToolingChanges": [],
+  "otherRuntimeChanges": [],
+  "authorAncestryImported": false,
+  "dataOnlyAuditHistoryImported": false,
+  "independentReviewComments": [
+    "https://github.com/tannerthardy/football-simulation-/pull/126#issuecomment-6229698160",
+    "https://github.com/tannerthardy/football-simulation-/pull/128#issuecomment-6229698539"
+  ],
+  "heldPr": 126,
+  "scope": "#128 only after preserved combined existing-contract failure; #126 awaits owner adjudication.",
+  "canonicalHashOrdering": "Sorted full path strings, NUL, bytes, NUL."
+}

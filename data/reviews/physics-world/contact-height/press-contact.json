@@ -1,0 +1,952 @@
+{
+  "sourceSha256": "6368ce73ec217e52860d34533d9de102b028725b23688735c5f0b58aace472c5",
+  "definitions": {
+    "fixture": "Vertical release against a stationary square corner 0.9 yd beyond the LOS, shading inside by 0.4 yd; 1.2 s; generated rosters held equal per pair.",
+    "control": "Press disabled on the same bodies/geometry. Ordinary torso contact remains possible; this isolates the arm jam, not all receiver/corner collisions.",
+    "loadedTime": "Duration of 20 Hz physics ticks carrying nonzero hand-joint force.",
+    "peakHandForce": "Largest mean force magnitude over a 20 Hz tick, not an instantaneous impulse peak.",
+    "scope": "Mechanical transfer fixture, not NFL calibration or a claim about man-coverage success rates."
+  },
+  "units": {
+    "depth": "yards",
+    "reroute": "yards outward",
+    "loadedTime": "seconds",
+    "peakHandForce": "kg yd/s^2",
+    "handImpulse": "kg yd/s",
+    "momentumError": "kg yd/s"
+  },
+  "mirrorError": 2.48121523327427e-11,
+  "convergenceError": 0.01588655688845364,
+  "pairs": [
+    {
+      "seed": 3,
+      "side": 1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.793680661615488e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.2562073819416497,
+        "rerouted": 0.5194317348794399,
+        "loadedTime": 0.3,
+        "peakHandForce": 313.4279939012271,
+        "handImpulse": 56.95908426005148
+      },
+      "noHands": {
+        "momentumError": 1.2707548915939854e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.5184306927318474,
+        "rerouted": 0.5371866120942244,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.2622233107901977,
+      "deltaReroute": -0.017754877214784415
+    },
+    {
+      "seed": 3,
+      "side": 1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 2.542611431278329e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.2579926984495557,
+        "rerouted": 0.518152838268918,
+        "loadedTime": 0.3,
+        "peakHandForce": 312.034521928076,
+        "handImpulse": 57.22454318249059
+      },
+      "noHands": {
+        "momentumError": 3.5440099710155136e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.5184306927318403,
+        "rerouted": 0.5371866120942244,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.26043799428228454,
+      "deltaReroute": -0.019033773825306355
+    },
+    {
+      "seed": 3,
+      "side": 1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 8.436778711241275e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.256942935588434,
+        "rerouted": 0.5185728338357833,
+        "loadedTime": 0.3,
+        "peakHandForce": 311.339682846071,
+        "handImpulse": 57.39896570234801
+      },
+      "noHands": {
+        "momentumError": 9.633769003914027e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.5184306927318403,
+        "rerouted": 0.5371866120942315,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.26148775714340644,
+      "deltaReroute": -0.01861377825844812
+    },
+    {
+      "seed": 3,
+      "side": -1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 2.273806142312601e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.256207381925975,
+        "rerouted": 0.5194317348843747,
+        "loadedTime": 0.3,
+        "peakHandForce": 313.4279939056538,
+        "handImpulse": 56.9590842618362
+      },
+      "noHands": {
+        "momentumError": 1.3876135697614362e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.518430692731691,
+        "rerouted": 0.5371866120950468,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.2622233108057159,
+      "deltaReroute": -0.01775487721067215
+    },
+    {
+      "seed": 3,
+      "side": -1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 2.8066473196141985e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.2579926984477154,
+        "rerouted": 0.5181528382661025,
+        "loadedTime": 0.3,
+        "peakHandForce": 312.0345219325067,
+        "handImpulse": 57.224543184276236
+      },
+      "noHands": {
+        "momentumError": 3.145133090419384e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.5184306927317053,
+        "rerouted": 0.5371866120950468,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.26043799428398984,
+      "deltaReroute": -0.019033773828944334
+    },
+    {
+      "seed": 3,
+      "side": -1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 7.148925975672742e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.2569429355775696,
+        "rerouted": 0.518572833827676,
+        "loadedTime": 0.3,
+        "peakHandForce": 311.3396828504762,
+        "handImpulse": 57.398965704125395
+      },
+      "noHands": {
+        "momentumError": 7.989836298151903e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.5184306927317266,
+        "rerouted": 0.5371866120950504,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.26148775715415695,
+      "deltaReroute": -0.018613778267374315
+    },
+    {
+      "seed": 5,
+      "side": 1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.5993378270956798e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1827449889913453,
+        "rerouted": 0.5113140029984393,
+        "loadedTime": 0.25,
+        "peakHandForce": 270.9161343129285,
+        "handImpulse": 46.242298553972795
+      },
+      "noHands": {
+        "momentumError": 1.96205025865255e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.3825390670317788,
+        "rerouted": 0.5194616174403137,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.19979407804043348,
+      "deltaReroute": -0.008147614441874396
+    },
+    {
+      "seed": 5,
+      "side": 1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 4.938303962293366e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.182833272828283,
+        "rerouted": 0.5094302505888706,
+        "loadedTime": 0.25,
+        "peakHandForce": 269.9044853389879,
+        "handImpulse": 46.43756054769074
+      },
+      "noHands": {
+        "momentumError": 5.293573185973798e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.382539067031736,
+        "rerouted": 0.5194616174402924,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.19970579420345302,
+      "deltaReroute": -0.010031366851421808
+    },
+    {
+      "seed": 5,
+      "side": 1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 1.0285090760246931e-12,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1838339933738524,
+        "rerouted": 0.5094476560035304,
+        "loadedTime": 0.25,
+        "peakHandForce": 269.4322031883668,
+        "handImpulse": 46.33878327939567
+      },
+      "noHands": {
+        "momentumError": 8.070156716166243e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.3825390670318143,
+        "rerouted": 0.5194616174402995,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.19870507365796186,
+      "deltaReroute": -0.010013961436769137
+    },
+    {
+      "seed": 5,
+      "side": -1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.6750818946489207e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1827449889999784,
+        "rerouted": 0.5113140029955314,
+        "loadedTime": 0.25,
+        "peakHandForce": 270.916134311119,
+        "handImpulse": 46.24229855351685
+      },
+      "noHands": {
+        "momentumError": 2.3478547559476534e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.3825390670319067,
+        "rerouted": 0.5194616174392355,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.19979407803192828,
+      "deltaReroute": -0.008147614443704043
+    },
+    {
+      "seed": 5,
+      "side": -1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 4.372761336898123e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1828332728205098,
+        "rerouted": 0.5094302505917572,
+        "loadedTime": 0.25,
+        "peakHandForce": 269.90448533718353,
+        "handImpulse": 46.43756054723825
+      },
+      "noHands": {
+        "momentumError": 4.770204459274374e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.3825390670318782,
+        "rerouted": 0.5194616174392319,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.19970579421136847,
+      "deltaReroute": -0.010031366847474743
+    },
+    {
+      "seed": 5,
+      "side": -1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 1.0165790817189247e-12,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1838339933796362,
+        "rerouted": 0.5094476559987378,
+        "loadedTime": 0.25,
+        "peakHandForce": 269.43220318661724,
+        "handImpulse": 46.33878327895204
+      },
+      "noHands": {
+        "momentumError": 6.218582648510982e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.382539067031921,
+        "rerouted": 0.5194616174392372,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.19870507365228463,
+      "deltaReroute": -0.010013961440499486
+    },
+    {
+      "seed": 7,
+      "side": 1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.3856721990817102e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.108024001754245,
+        "rerouted": 0.5060654712160755,
+        "loadedTime": 0.35,
+        "peakHandForce": 469.6749922936762,
+        "handImpulse": 96.47736012634117
+      },
+      "noHands": {
+        "momentumError": 1.3302825521979513e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.607754107719188,
+        "rerouted": 0.5488374923078965,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.49973010596494305,
+      "deltaReroute": -0.04277202109182099
+    },
+    {
+      "seed": 7,
+      "side": 1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 2.5248202277304724e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1054806678273295,
+        "rerouted": 0.5088852362761926,
+        "loadedTime": 0.3,
+        "peakHandForce": 466.62003107548117,
+        "handImpulse": 96.43696423397438
+      },
+      "noHands": {
+        "momentumError": 4.17459211124909e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.607754107719188,
+        "rerouted": 0.5488374923078894,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5022734398918587,
+      "deltaReroute": -0.03995225603169672
+    },
+    {
+      "seed": 7,
+      "side": 1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 6.788066272575945e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.104979383265224,
+        "rerouted": 0.5104320848751769,
+        "loadedTime": 0.3,
+        "peakHandForce": 465.09774560386137,
+        "handImpulse": 96.63146723330823
+      },
+      "noHands": {
+        "momentumError": 5.584815123558884e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.6077541077192166,
+        "rerouted": 0.5488374923078965,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5027747244539924,
+      "deltaReroute": -0.038405407432719585
+    },
+    {
+      "seed": 7,
+      "side": -1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.811971050411637e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.1080240017389187,
+        "rerouted": 0.5060654712024011,
+        "loadedTime": 0.35,
+        "peakHandForce": 469.67499230449755,
+        "handImpulse": 96.47736013305389
+      },
+      "noHands": {
+        "momentumError": 2.418003558032676e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.607754107718904,
+        "rerouted": 0.5488374923101489,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.49973010597998524,
+      "deltaReroute": -0.042772021107747804
+    },
+    {
+      "seed": 7,
+      "side": -1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 3.167947038102391e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.105480667808422,
+        "rerouted": 0.5088852362610208,
+        "loadedTime": 0.3,
+        "peakHandForce": 466.62003108627687,
+        "handImpulse": 96.43696423852737
+      },
+      "noHands": {
+        "momentumError": 4.4530346605938353e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.607754107718918,
+        "rerouted": 0.5488374923101489,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5022734399104962,
+      "deltaReroute": -0.03995225604912811
+    },
+    {
+      "seed": 7,
+      "side": -1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 3.928319873423425e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.104979383240412,
+        "rerouted": 0.5104320848594472,
+        "loadedTime": 0.3,
+        "peakHandForce": 465.097745614793,
+        "handImpulse": 96.63146723789018
+      },
+      "noHands": {
+        "momentumError": 8.126324127142848e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.607754107718918,
+        "rerouted": 0.5488374923101524,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5027747244785061,
+      "deltaReroute": -0.0384054074507052
+    },
+    {
+      "seed": 9,
+      "side": 1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.5991158527024962e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 2.3755203344179776,
+        "rerouted": 0.5060449656149331,
+        "loadedTime": 0.49999999999999994,
+        "peakHandForce": 525.1042250457542,
+        "handImpulse": 159.2693246768679
+      },
+      "noHands": {
+        "momentumError": 2.949504667617929e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 2.9419624922392273,
+        "rerouted": 0.4619951076949249,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5664421578212497,
+      "deltaReroute": 0.04404985792000815
+    },
+    {
+      "seed": 9,
+      "side": 1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 3.2482082499664316e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 2.3861793639550797,
+        "rerouted": 0.507998143688674,
+        "loadedTime": 0.49999999999999994,
+        "peakHandForce": 523.1161599015504,
+        "handImpulse": 157.1670817324627
+      },
+      "noHands": {
+        "momentumError": 4.0502494116105964e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 2.9419624922391847,
+        "rerouted": 0.4619951076949107,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.555783128284105,
+      "deltaReroute": 0.04600303599376332
+    },
+    {
+      "seed": 9,
+      "side": 1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 5.061533922048542e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 2.3914068913064312,
+        "rerouted": 0.5088856811458484,
+        "loadedTime": 0.49999999999999994,
+        "peakHandForce": 522.1235196151175,
+        "handImpulse": 156.1320483601928
+      },
+      "noHands": {
+        "momentumError": 6.468579710915012e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 2.941962492239192,
+        "rerouted": 0.4619951076949462,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5505556009327606,
+      "deltaReroute": 0.046890573450902195
+    },
+    {
+      "seed": 9,
+      "side": -1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.6377200852866892e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 2.375520334427783,
+        "rerouted": 0.5060449656396742,
+        "loadedTime": 0.49999999999999994,
+        "peakHandForce": 525.1042250423907,
+        "handImpulse": 159.26932467186722
+      },
+      "noHands": {
+        "momentumError": 2.102189047409416e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 2.941962492240961,
+        "rerouted": 0.4619951076814832,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.566442157813178,
+      "deltaReroute": 0.04404985795819094
+    },
+    {
+      "seed": 9,
+      "side": -1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 2.9652392229959117e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 2.386179363964537,
+        "rerouted": 0.5079981437090222,
+        "loadedTime": 0.49999999999999994,
+        "peakHandForce": 523.1161598982131,
+        "handImpulse": 157.16708172752575
+      },
+      "noHands": {
+        "momentumError": 5.389274608741627e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 2.9419624922409398,
+        "rerouted": 0.46199510768148677,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5557831282764027,
+      "deltaReroute": 0.046003036027535416
+    },
+    {
+      "seed": 9,
+      "side": -1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 6.073374165213778e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 2.3914068913158673,
+        "rerouted": 0.5088856811660332,
+        "loadedTime": 0.49999999999999994,
+        "peakHandForce": 522.1235196117069,
+        "handImpulse": 156.13204835522149
+      },
+      "noHands": {
+        "momentumError": 8.464280925709688e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 2.9419624922410534,
+        "rerouted": 0.4619951076814939,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.5505556009251862,
+      "deltaReroute": 0.04689057348453929
+    },
+    {
+      "seed": 11,
+      "side": 1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.5635976840162435e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.0555645005893552,
+        "rerouted": 0.5187760256213423,
+        "loadedTime": 0.35,
+        "peakHandForce": 542.6564104532471,
+        "handImpulse": 121.71567596473083
+      },
+      "noHands": {
+        "momentumError": 2.346153178793033e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.690961645689441,
+        "rerouted": 0.5596906494378047,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.6353971451000859,
+      "deltaReroute": -0.04091462381646238
+    },
+    {
+      "seed": 11,
+      "side": 1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 2.877752905134522e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.0687464102913964,
+        "rerouted": 0.5201854829482215,
+        "loadedTime": 0.35,
+        "peakHandForce": 539.0937862241199,
+        "handImpulse": 119.89303063851692
+      },
+      "noHands": {
+        "momentumError": 3.077727260759528e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.6909616456894128,
+        "rerouted": 0.5596906494377976,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.6222152353980164,
+      "deltaReroute": -0.03950516648957603
+    },
+    {
+      "seed": 11,
+      "side": 1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 4.720733054568282e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.0693992676463395,
+        "rerouted": 0.522945650924612,
+        "loadedTime": 0.35,
+        "peakHandForce": 537.0949023577847,
+        "handImpulse": 119.74394618988262
+      },
+      "noHands": {
+        "momentumError": 7.852503148338507e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.6909616456894483,
+        "rerouted": 0.5596906494378047,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.6215623780431088,
+      "deltaReroute": -0.036744998513192684
+    },
+    {
+      "seed": 11,
+      "side": -1,
+      "substeps": 6,
+      "hands": {
+        "momentumError": 1.8515910709685647e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.0555645005897034,
+        "rerouted": 0.5187760256215199,
+        "loadedTime": 0.35,
+        "peakHandForce": 542.6564104530961,
+        "handImpulse": 121.71567596464969
+      },
+      "noHands": {
+        "momentumError": 1.8219189440015173e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.690961645689427,
+        "rerouted": 0.559690649437794,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.6353971450997236,
+      "deltaReroute": -0.04091462381627409
+    },
+    {
+      "seed": 11,
+      "side": -1,
+      "substeps": 12,
+      "hands": {
+        "momentumError": 3.272404164554585e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.0687464102915243,
+        "rerouted": 0.5201854829483814,
+        "loadedTime": 0.35,
+        "peakHandForce": 539.0937862240737,
+        "handImpulse": 119.89303063846381
+      },
+      "noHands": {
+        "momentumError": 2.918125708228034e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.6909616456893986,
+        "rerouted": 0.5596906494377887,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.6222152353978743,
+      "deltaReroute": -0.03950516648940727
+    },
+    {
+      "seed": 11,
+      "side": -1,
+      "substeps": 24,
+      "hands": {
+        "momentumError": 3.5208181243345956e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": true,
+        "depth": 3.0693992676464745,
+        "rerouted": 0.5229456509247914,
+        "loadedTime": 0.35,
+        "peakHandForce": 537.0949023577595,
+        "handImpulse": 119.7439461898441
+      },
+      "noHands": {
+        "momentumError": 3.2021880763807924e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "jammed": false,
+        "depth": 3.690961645689434,
+        "rerouted": 0.5596906494377922,
+        "loadedTime": 0,
+        "peakHandForce": 0,
+        "handImpulse": 0
+      },
+      "deltaDepth": -0.6215623780429596,
+      "deltaReroute": -0.03674499851300084
+    }
+  ]
+}

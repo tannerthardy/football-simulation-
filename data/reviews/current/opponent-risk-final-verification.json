@@ -1,0 +1,97 @@
+{
+  "schema": "opponent-risk-final-queue-verification-v1",
+  "recordedAt": "2026-10-15T21:14:25.718627+00:00",
+  "acceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "pr": 74,
+  "publishedCandidate": "a8dabeca3030a9760aafb21bd4a4af6e9af303e3",
+  "testedCommit": "86a8816bb685a521f60400c6a3fe12e12d02e32f",
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "validationSha256": "b8f620521c5bb9f58bd2b75e359bb2bbf8e9dcc635a9fea9ea2bf94ac383e622",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "receipt": "https://github.com/tannerthardy/football-simulation-/blob/a8dabeca3030a9760aafb21bd4a4af6e9af303e3/data/reviews/current/run-entry-information-review/final-receipt.json",
+  "receiptSha256": "e620ff7db13bfb1219ede3ba13251afeb2853fe0b01caf45fa2b58912c1f2ad5",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1726,
+    "typescriptFiles": 145,
+    "pythonPassed": 145,
+    "skippedPhases": [],
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "exitCode": 0
+  },
+  "runtime": {
+    "finalCombinedCommandSeconds": 188.50406714500002,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.356333767
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.149784653000001
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 166.97469088
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 1.0232578450000147
+      }
+    ],
+    "priorScopeReviewCommandSeconds": 23.675058372000002,
+    "priorFailedPackagingRetained": true,
+    "allThisRiskReviewAndVerificationCommandSeconds": 212.17912551700002,
+    "standaloneExtraGames": 0,
+    "standaloneExtraReplays": 0,
+    "rosterCampaigns": 0,
+    "suiteGameAssertions": "Preserved full-suite game assertions ran; no additional game campaign."
+  },
+  "mergePreview": {
+    "pr": 74,
+    "head": "a8dabeca3030a9760aafb21bd4a4af6e9af303e3",
+    "base": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+    "mergePreview": "d30f66d5e162079c687fa018be72482b1a4bb67f",
+    "tree": "b06963d2cd0168fa4581d984a1b86ad794f700a1",
+    "entirePreviewTreeMatchesReviewedPublication": true
+  },
+  "decision": "User accepted risk-only scope. Exact combined verification passed; recommend explicit authorization to merge PR74 after compatibility recheck. No merge/default/baseline action occurred.",
+  "excluded": [
+    "observation-only transport",
+    "navigation/admission/ranking tuning",
+    "sampledVel/historical-motion research",
+    "#69 controller work",
+    "experimental physics",
+    "original research ancestry"
+  ],
+  "queueChecks": {
+    "protectedInputsIdenticalToAcceptedDevelop": true,
+    "existingCurrentReceiptsPreserved": 132,
+    "checkedLocalDocumentationPaths": 75,
+    "brokenLinks": [],
+    "additionalTestsOrSimulations": 0
+  },
+  "mergeAuthorized": false
+}

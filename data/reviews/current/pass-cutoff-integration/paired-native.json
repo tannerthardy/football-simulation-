@@ -1,0 +1,554 @@
+{
+  "schema": "accepted-pass-cutoff-paired-review-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "candidate": "b405a0e15efc5163bf9c435d50b35013e3e9883a",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "fixtureSha256": "a292426905a1d6962c2efc6d8c6a413ee9ab7e0fd9d60b20e936ddab5c1be45c",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "acceptedMethodSha256": "8ffe1576311932213253df4184f0a742960d36a457ad929596a56016e051b93e",
+  "candidateMethodSha256": "8dc31b57e51624d11b33b9b2cb06391548458ba6e70827de0ab37844c91af052",
+  "question": "Does the minimal free-cutoff action retain its primary/opposing contracts and how do the known RT/RG losses transfer to accepted develop?",
+  "rollbackQualification": "Exact accepted method compiled with unchanged current helpers; production candidate method unmodified. No retained execution draws.",
+  "summaries": [
+    {
+      "index": 39,
+      "play": 40,
+      "arm": "accepted",
+      "endTime": 3.05,
+      "phase": "dead",
+      "throwAt": -1,
+      "censoring": "Native dead-ball ending",
+      "contacts": [
+        {
+          "t": 0.1,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 80.84999496170798,
+            "y": 28.69915743319872
+          },
+          "note": "pass",
+          "phi": 0.25846492569106927
+        },
+        {
+          "t": 0.6,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 80.59330752243628,
+            "y": 26.159377052216133
+          },
+          "note": "pass",
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 1.25,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 79.35844900763777,
+            "y": 23.87577903854916
+          },
+          "note": "pass",
+          "phi": 0.48173577023762876
+        },
+        {
+          "t": 1.45,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 78.98693281210072,
+            "y": 31.653523683060918
+          },
+          "note": "pass",
+          "phi": -0.5837566965058237
+        }
+      ],
+      "events": [
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.13,
+            "y": 32.36
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.4,
+          "type": "pressure",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 73.81,
+            "y": 29.85
+          }
+        },
+        {
+          "t": 3,
+          "type": "sack",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 72,
+            "y": 26.67
+          }
+        }
+      ],
+      "teammateImpactCount": 19,
+      "teammateImpulseKgYdPerS": 951.334709366862,
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 2.4809986596939466,
+          "position": {
+            "x": 73.81341458871114,
+            "y": 29.85403914058359
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 5.509525959006087,
+          "position": {
+            "x": 75.36344580556987,
+            "y": 22.171700001965277
+          }
+        }
+      },
+      "edgesAtThrow": null,
+      "elapsedSeconds": 0.4483139680000002
+    },
+    {
+      "index": 39,
+      "play": 40,
+      "arm": "candidate",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3,
+      "censoring": "Live at 3.50; no ending inferred",
+      "contacts": [
+        {
+          "t": 0.1,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 80.84999496170798,
+            "y": 28.69915743319872
+          },
+          "note": "pass",
+          "phi": 0.25846492569106927
+        },
+        {
+          "t": 0.6,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 80.59330752243628,
+            "y": 26.159377052216133
+          },
+          "note": "pass",
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 0.95,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 80.33814081165782,
+            "y": 23.512811031414675
+          },
+          "note": "pass",
+          "phi": 0.3475846198446589
+        },
+        {
+          "t": 1.2,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 79.81730680251526,
+            "y": 31.75256673852913
+          },
+          "note": "pass",
+          "phi": -0.4360625139407246
+        }
+      ],
+      "events": [
+        {
+          "t": 1.55,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.84,
+            "y": 22.47
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.6,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 74.41,
+            "y": 33.38
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 74.51,
+            "y": 27.52
+          }
+        }
+      ],
+      "teammateImpactCount": 2,
+      "teammateImpulseKgYdPerS": 32.38171307479338,
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 6.248979241352243,
+          "position": {
+            "x": 75.10732152041675,
+            "y": 33.47089959381494
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 3.1548162265726467,
+          "position": {
+            "x": 73.69974189982096,
+            "y": 24.248478677660398
+          }
+        }
+      },
+      "edgesAtThrow": [
+        {
+          "slot": "LT",
+          "contact": false,
+          "support": "up"
+        },
+        {
+          "slot": "RT",
+          "contact": false,
+          "support": "up"
+        }
+      ],
+      "elapsedSeconds": 0.30894913700000004
+    },
+    {
+      "index": 18,
+      "play": 19,
+      "arm": "accepted",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3,
+      "censoring": "Live at 3.50; no ending inferred",
+      "contacts": [
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 32.29594098422414,
+            "y": 27.79876969346491
+          },
+          "note": "pass",
+          "phi": 0.2510259862280895
+        },
+        {
+          "t": 0.6,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 32.46988680033301,
+            "y": 29.489693152190544
+          },
+          "note": "pass",
+          "phi": -0.08437975536389605
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 32.01064409856198,
+            "y": 25.334032752037388
+          },
+          "note": "pass",
+          "phi": 0.0865694420918857
+        },
+        {
+          "t": 1.15,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 31.914811924862253,
+            "y": 22.87192881272173
+          },
+          "note": "pass",
+          "phi": 0.3881091671441024
+        }
+      ],
+      "events": [
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 25.1,
+            "y": 26.67
+          }
+        }
+      ],
+      "teammateImpactCount": 10,
+      "teammateImpulseKgYdPerS": 174.35127240734764,
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 6.2464253269505035,
+          "position": {
+            "x": 27.372718518902882,
+            "y": 32.48578722547545
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 6.228761296363498,
+          "position": {
+            "x": 27.044859684417702,
+            "y": 20.74862737706526
+          }
+        }
+      },
+      "edgesAtThrow": [
+        {
+          "slot": "LT",
+          "contact": false,
+          "support": "up"
+        },
+        {
+          "slot": "RT",
+          "contact": false,
+          "support": "up"
+        }
+      ],
+      "elapsedSeconds": 0.24459715599999982
+    },
+    {
+      "index": 18,
+      "play": 19,
+      "arm": "candidate",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3.15,
+      "censoring": "Live at 3.50; no ending inferred",
+      "contacts": [
+        {
+          "t": 0.45,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 32.68563118958471,
+            "y": 29.446816832641865
+          },
+          "note": "pass",
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 32.29885465584736,
+            "y": 27.802039604231656
+          },
+          "note": "pass",
+          "phi": 0.2541817539313696
+        },
+        {
+          "t": 0.55,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 32.6896539558596,
+            "y": 23.66777274940987
+          },
+          "note": "pass",
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 32.01064318942728,
+            "y": 25.33403090931787
+          },
+          "note": "pass",
+          "phi": 0.08656791995243276
+        }
+      ],
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3.15,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 25.07,
+            "y": 26.68
+          }
+        }
+      ],
+      "teammateImpactCount": 26,
+      "teammateImpulseKgYdPerS": 1268.9209265223162,
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 5.90087014801973,
+          "position": {
+            "x": 26.835192098593765,
+            "y": 32.30729546430638
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 6.169595399763899,
+          "position": {
+            "x": 28.967136049858375,
+            "y": 21.857771032958052
+          }
+        }
+      },
+      "edgesAtThrow": [
+        {
+          "slot": "LT",
+          "contact": true,
+          "support": "up"
+        },
+        {
+          "slot": "RT",
+          "contact": true,
+          "support": "up"
+        }
+      ],
+      "elapsedSeconds": 0.2126473000000001
+    }
+  ],
+  "comparison": [
+    {
+      "index": 39,
+      "play": 40,
+      "identicalInitialBodiesAndRng": true,
+      "identicalPriorWorldFrames": 1,
+      "firstWorldRequestDivergence": {
+        "t": 0.05,
+        "sameBodies": true,
+        "rawActors": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "index": 18,
+      "play": 19,
+      "identicalInitialBodiesAndRng": true,
+      "identicalPriorWorldFrames": 1,
+      "firstWorldRequestDivergence": {
+        "t": 0.05,
+        "sameBodies": true,
+        "rawActors": [
+          1,
+          2
+        ]
+      }
+    }
+  ],
+  "completedGames": 0,
+  "nativeSegments": 4,
+  "elapsedSeconds": 1.2498913590000003
+}

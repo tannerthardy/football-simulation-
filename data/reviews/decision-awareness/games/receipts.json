@@ -1,0 +1,47 @@
+{
+  "command": "node --import tsx scripts/calibrate.ts 2 7 1",
+  "node": "v22.23.3",
+  "collectorSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "baselineReceipt": "../run-game-current/engine/games-final-receipt.json",
+  "limitation": "Two games per phase; subsequent calls/populations diverge. Not paired snaps or calibrated rates.",
+  "phases": [
+    {
+      "phase": "qb-only",
+      "sourceBefore": "00b112f121d40824822c985f17fc51f6bd1bace5f3ec0b71beda7e7b56e87afa",
+      "sourceAfter": "00b112f121d40824822c985f17fc51f6bd1bace5f3ec0b71beda7e7b56e87afa",
+      "method": "Frozen source archive; baseline src plus retained component patch, no git worktree.",
+      "logSha256": "b40b6a745a3c2690bf934dbf81eef4e6f6f02ed4a419513f3893605ade8aa7ce",
+      "patchSha256": "9a07fc6d2582c463983631bbd7ea1ca1d4d9e8453f3763b4298553857344e0ba"
+    },
+    {
+      "phase": "carrier-only",
+      "sourceBefore": "242e0e83aad470d24b4934eee27cbb9cbd0368da8c97bf7040d0a7ee63ec7035",
+      "sourceAfter": "242e0e83aad470d24b4934eee27cbb9cbd0368da8c97bf7040d0a7ee63ec7035",
+      "method": "Frozen source archive; baseline src plus retained component patch, no git worktree.",
+      "logSha256": "37df219e31c5e63b3f715051b804f57710c77eb20283d2a5a47043fd97e36678",
+      "patchSha256": "52b9daddbf35d7610b37358a71ed4323987056f3314c02198570425107f0c928"
+    },
+    {
+      "phase": "defense-only",
+      "sourceBefore": "6769220881b46be7b735fbc39f61711ebaa6fb5c85c16eba8adbc68925af2839",
+      "sourceAfter": "6769220881b46be7b735fbc39f61711ebaa6fb5c85c16eba8adbc68925af2839",
+      "method": "Frozen source archive; baseline src plus retained component patch, no git worktree.",
+      "logSha256": "481de0ba643f0800dfab0e69e51a5617674c3c89651a8f92a4c32777aed933cb",
+      "patchSha256": "3d921539c2dc8d1b10466f9ce846f238c836103df6fc157e11e2c3459b72d5ec"
+    },
+    {
+      "phase": "initial-combined",
+      "sourceBefore": "8863cafc764390fb31f0675fb8eaf7756da8a53019dd0281a11d9482c26703f1",
+      "sourceAfter": "8863cafc764390fb31f0675fb8eaf7756da8a53019dd0281a11d9482c26703f1",
+      "logSha256": "15d638954c55373616c05b4dcd718ac2b563cc182018b83896c6c07b9d8cf7e5",
+      "method": "Same frozen src as corresponding native run/pass collectors; no production edits during calibration."
+    },
+    {
+      "phase": "final",
+      "sourceBefore": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "sourceAfter": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "logSha256": "d3e14ed0bba6edec9495283217e0b08bb25612ba18ffcecb14f7b05f354ee119",
+      "method": "Same frozen src as corresponding native run/pass collectors; no production edits during calibration."
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "schema": "pr85-adoption-v1",
+  "pr": 85,
+  "routineMergeAuthority": "Standing user routine-correction authority after independent review and exact required verification.",
+  "previousAcceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "acceptedDevelop": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "reviewedPublication": "b313013b6296707ae6780ff8f14485de3b07cd90",
+  "testedCommit": "572711032afeec75aaa83bb6edf8f288f2223db3",
+  "entireMergedTreeEqualsPublication": true,
+  "mergedTree": "3b5158c61b11f13cb4b032165cf80139df971364",
+  "protectedTreeMatchesPassingReceipt": true,
+  "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+  "validationSha256": "5b58b54b18873b3b8d40c52c47162c329fda57c6ed10c1299e3283576f2338dd",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1760,
+    "typescriptFiles": 148,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 84,
+      "head": "4af71ac8a8f320456e87a027579200469a0c1ee0",
+      "code": "aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173",
+      "evidence": "70ed238a2246cd89d3c4108d647245baf5ff70bb",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "test/combo-transfer.test.ts"
+      ],
+      "independentApproval": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204563280",
+      "independentReviewCommit": "7b550026e4e63543f9ff91b7912d69b908831c11",
+      "contract": "Duo own-proposal admission retains obstructed cross-surface work while acquired backer remains on partner half. Valid near-half/crossing/Under detours, keeper security, own-only proposals and physical joint/control ownership remain unchanged.",
+      "evidenceFor": "A030 simultaneous actual RT/DT and RG/LB loads before runner arrival, faster LOS speed/no offensive impacts. WZ and preselected Under complete histories/results exact.",
+      "risks": [
+        "A018 still misses RG/LB collection and linebacker wins later.",
+        "A030 changes C release and execution draws; final gain is not an isolated benefit estimate.",
+        "Some doubles stay longer; broader front/formation transfer unproved; rotated loaded-contact law limitations remain."
+      ]
+    }
+  ],
+  "held": [
+    {
+      "pr": 81,
+      "head": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
+      "independentSourceAccepted": true,
+      "integrationState": "HOLD: preserved no-preview cost contract failed in first combined run. No assertion edit/waiver.",
+      "owner": "Run consulting Do-It-All",
+      "questionUrl": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204704906",
+      "diagnostic": "All3 original lane commands/actual contact-free motion/budgets pass; previews15/0/14. Global cost is not certified. Original failed receipt remains failed.",
+      "excludedBy": "Normal revert bb07bee; source/test/fixture absent from final protected diff; original code/patch/evidence/history retained."
+    },
+    {
+      "pr": 76,
+      "head": "4cf253efead2cac450abe0bc74aa5e0db0306126",
+      "state": "parked/frozen; author closure/live-objective disposition outstanding; no dependency"
+    },
+    {
+      "item": "Lateral trial498b36e, observer, low-speed, transport/navigation, experimental Physics",
+      "state": "excluded; independent owner gates"
+    }
+  ],
+  "cost": {
+    "passingDuoOnlyCommandSeconds": 192.59768642799997,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.570574507
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.381116367999999
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 170.90699429999998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7390012529999949
+      }
+    ],
+    "priorFailedCombinedCommandSeconds": 202.275426376,
+    "oneTargetedDiagnosticCommandSeconds": 1.451017638,
+    "totalCommandSecondsThisIntegration": 396.324130442,
+    "whySecondVerification": "First combined source failed #81 contract; independent ready #84 was isolated by removing #81. Final two-file runtime/test tree materially differs and needs its own exact verification. No unchanged suite repeat.",
+    "newStandaloneNativeReplays": 0,
+    "newEvaluationGames": 0,
+    "newRosterScreens": 0,
+    "diagnosticMechanicalWorldSteps": 48,
+    "suiteGames": "Only existing preserved game/ensemble assertions within the required code suites.",
+    "noRepeatToPublishOrMergeIdenticalTree": true
+  },
+  "preservation": {
+    "protectedChanges": [
+      "src/sim/behaviors/blocking.ts",
+      "test/combo-transfer.test.ts"
+    ],
+    "everyIncludedBlobMatchesReviewed84Head": true,
+    "physicalLawsCapabilitiesDefaultsFlagsDependenciesToolingUnchanged": true,
+    "acceptedCoverageSupportSpacingCarrierCollectionPreserved": true,
+    "priorScientificReceiptsAndBranchesPreserved": true,
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "githubDefaultUnchanged": true
+  },
+  "mergePreview": {
+    "base": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+    "publication": "b313013b6296707ae6780ff8f14485de3b07cd90",
+    "preview": "b88ef78c93ecbe23e3962ac7886835aad554c883",
+    "parents": [
+      "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+      "b313013b6296707ae6780ff8f14485de3b07cd90"
+    ],
+    "tree": "3b5158c61b11f13cb4b032165cf80139df971364",
+    "entirePreviewEqualsPublication": true,
+    "protectedTreeEqualsPassingFreeze": true
+  },
+  "receiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/b313013b6296707ae6780ff8f14485de3b07cd90/data/reviews/current/duo-motion-integration/final-receipt.json",
+  "nextDecision": "Run resumes remaining A018 second-level collection after reconciling accepted pin. Run/Do-It-All adjudicate #81 forecast-cost contract using saved targeted diagnostic; no automatic test waiver/full suite/panel/game."
+}

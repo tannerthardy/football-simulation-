@@ -1,0 +1,209 @@
+{
+  "date": "2026-10-11",
+  "purpose": "Repair called run-support ownership and conditional inside obligations. No yardage or NFL average is an objective.",
+  "baselineCommit": "5cbb8e496b439878815a07a7f800786249e582d9",
+  "baselineSourceSha256": "850ea36e598d6cd252f701ce11b9b110ae06c834c7d6760922dd60b5b6f9acf3",
+  "candidateSourceSha256": "5735f707bd4bbfde97743a784b198fa3c9b3052a5f39b968238aa7c8a8bb8e91",
+  "changedEngineFiles": [
+    "src/sim/run-fits.ts"
+  ],
+  "unchanged": {
+    "physicsModulesByteIdentical": 24,
+    "physicalProfileMappingByteIdentical": "src/players/physical.ts",
+    "blockingAndOutsideZoneLateralLogicByteIdentical": true,
+    "ratingsForceSpeedOrPerceptionBoosts": false
+  },
+  "diagnosis": [
+    "A lateral-position cutoff can exclude the actual curl-flat owner, promoting a deep defender to force even without disguise.",
+    "An explicit DE pass drop was excluded from support by slot-based first-level classification. Its run-front gap must still be reserved.",
+    "Promoting a box backer cannot erase an interior gap or steal the primary inserter's sole bubble. An explicit gap exchange also spends its backer before force selection."
+  ],
+  "repair": [
+    "Select actual flat/curl-flat seats by their installed strength-relative side before grading presentation. Flat takes precedence over curl-flat; non-seat calls retain geometric fallback.",
+    "Keep deep/misaligned help from authorizing immediate spill. Preserve existing run-front contracts for converted man ends.",
+    "Reserve explicit dropper's run-front gap while making him eligible for outside support. Inside flow retains his boxed edge; he cannot spill to himself.",
+    "Allocate primary inside backers before conditional force backers, using remaining same-side bubbles only. Positive observed possession threatening the observed surface activates outside force; deep/unknown pictures retain insertion.",
+    "Reserve an explicit exchange backer; support allocation cannot silently cancel the installed edge/backer exchange."
+  ],
+  "scope": "Selected run-support installation, not universal NFL Cover3 doctrine. Conditional free-fit landmarks retain the primary outside shoulder during pursuit and engagement; no complete contact-policy rewrite.",
+  "coachingBasis": "docs/football-handbook/defense-and-perception.md: One defensive call spends eleven bodies; Run-support checks from the current film. Installed help differs from physically reachable help.",
+  "panel": {
+    "inputs": "24 fixed Ace11 InsideZone/Over/base43 native inputs; rosters7/8 with supplemental Buzz31/32; play seeds3/11; both flips; LOS40; at most4s. Buzz, Sky, shown Cover2, Inverted2, Cover6/8, fire_zone, weak exchange, Cover1/0.",
+    "collector": "scripts/diag/run-support-install.ts",
+    "collectorSha256": "3edf06568553ca7cf904f288d383c634decd5aa1bdff0574739c7082e649a5ec",
+    "cohortSha256": "34641123f099fa33eab6c88c15e51722bf769b0604bd0176febc332277a196f1",
+    "invariants": {
+      "casesPerSource": 24,
+      "sameCohort": true,
+      "sameScript": true,
+      "sameProfilesInitialBodiesAll24": true,
+      "observerPlainEqualAll24PerSource": true,
+      "all4ManControlsExactSignatures": true,
+      "exactSignatures": 10,
+      "exactEvents": 12,
+      "sameFirstCarrierContact": 19
+    },
+    "deepForceCases": {
+      "baseline": 7,
+      "candidate": 2,
+      "candidateOutsideExplicitExchangeCases": 0
+    },
+    "explicitDroppersDeniedSupport": {
+      "baseline": 2,
+      "candidate": 0
+    },
+    "conditionalInsideDuplicates": 0,
+    "crossSideConditionalInside": 0,
+    "baselineCensoredAt4s": 4,
+    "candidateCensoredAt4s": 2,
+    "packetPins": {
+      "baseline": {
+        "path": "out/run-support-install/baseline.json.gz",
+        "sha256": "d44016f6d71233476472f1e776b9c883fd2873f2d2cd35f53c9cfb1d903d181a",
+        "bytes": 2762644
+      },
+      "candidate": {
+        "path": "out/run-support-install/candidate.json.gz",
+        "sha256": "8c1452d8449de99052fa86ce1aac2949e1302ce81d67ffbfb46b6ed591f0f0f7",
+        "bytes": 2769326
+      }
+    },
+    "samePhysicalCarrierPathControls": [
+      "RSI-fire-zone-R-S3",
+      "RSI-fire-zone-L-S3"
+    ],
+    "firstRequestWitness": {
+      "id": "RSI-buzz-R-S3",
+      "t": 0.4,
+      "actor": "LB_S",
+      "baselineLateralRequest": -2.6036332744253996,
+      "candidateLateralRequest": 1.9683823160573293,
+      "meaning": "At a deep observed mesh, conditional same-side C insertion replaces immediate outside widening. Requests are not instant motion."
+    }
+  },
+  "withheldPrototypes": [
+    {
+      "sourceSha256": "962f6b59a6c6cae658d6e0ae8221a7d32fd632693b45535fb0f5d855ecd32bb3",
+      "failure": "Removing the dropping end's run-front claim makes FireL Sam take opposite-side C. At0.40s his strong-side force job requests lateral velocity -6.548yd/s across the box.",
+      "packet": {
+        "path": "out/run-support-install/attempt1.json.gz",
+        "sha256": "7b1e8d61e70ee9ed885d476722339daee1d6b3ade9e0355f786d2bd39601adfd",
+        "bytes": 2784578
+      }
+    },
+    {
+      "sourceSha256": "cfade0ad81ef14e927f7633665a58b11f0be672de37b58a4465ed40b1d1c7031",
+      "failure": "With the DE C claim restored, spatial ordering lets FireR Sam steal the only remaining A gap, duplicating Mike's default A job.",
+      "packet": {
+        "path": "out/run-support-install/attempt2.json.gz",
+        "sha256": "6315263878d1ffb973fa321392fccf9d0c99702856c311ec26c8b8cdedfcc2e3",
+        "bytes": 2771743
+      }
+    }
+  ],
+  "rediagnosis": "Both allocation prototypes were withheld. A complete front/blitz/drop/inside ownership inventory, rather than extra force or movement adjustments, established the primary-before-conditional allocation rule.",
+  "retainedAdverseCase": {
+    "id": "RSI-buzz-supplemental-L-S11",
+    "deltaPhysicalRbX": 0.3543736122691712,
+    "baselineFirstContact": {
+      "t": 2.9,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 15,
+      "pos": {
+        "x": 41.17,
+        "y": 29.3
+      },
+      "note": "grasp",
+      "defenderSlot": "LB_M"
+    },
+    "candidateFirstContact": {
+      "t": 3.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 13,
+      "pos": {
+        "x": 42.4,
+        "y": 30.19
+      },
+      "note": "grasp",
+      "defenderSlot": "DT_S"
+    }
+  },
+  "remaining": [
+    "Both explicit weak-exchange calls still fall back to deep FS for outside support. The caller needs an installed replacement/rotation; this patch does not invent one.",
+    "Six underneath safety/alley assignments remain unchanged; pass seat alone does not prove primary interior run duty.",
+    "No early outside-zone guard-flow anticipation, new pursuit capacities, complete tackling improvement, or empirical grip calibration.",
+    "Full games remain unrealistic; after-catch contact, deep coverage response and tackle approaches need diagnosis."
+  ],
+  "observationLimit": "QB/RB pictures and cached keys are existing requested observations, not a causal sequence of exact controller reads. Retrospective two-case cached-surface context matches final signatures, but can overwrite earlier calls. Held-picture tests prove branch independence; cache geometry alone does not.",
+  "validation": {
+    "focusedNewContracts": 36,
+    "pythonTestsPassed": 129,
+    "typecheckPassed": true,
+    "buildPassed": true,
+    "typeScriptTestsPassed": 1198,
+    "testGroups": {
+      "core": 1024,
+      "integration": 6,
+      "research": 168
+    },
+    "fullSuiteWallSeconds": 127.193,
+    "fullSuiteTimingLimit": "One complete run, with brief independent baseline reproduction; not an isolated speed benchmark.",
+    "baselineReproductionExact24Signatures": true,
+    "existingTestUpdates": "Three assertions checked only edge labels. They now require both called outside force and retained boxed C on the same dropping end; 11v11, three/eight, marker, physical geometry and observer assertions remain strict."
+  },
+  "widerCheck": {
+    "inputs": "Eight native games seed101..108, generated teams strength.55. Same input population as prior check; later calls/RNG diverge, so later plays are not matched counterfactuals.",
+    "sourceSha256": "5735f707bd4bbfde97743a784b198fa3c9b3052a5f39b968238aa7c8a8bb8e91",
+    "runs": 237,
+    "dropbacks": 814,
+    "guardedMechanismsPassing": 12,
+    "guardedMechanismsTotal": 12,
+    "pointsPerTeamGame": 63.6875,
+    "selectedDiagnosticMetrics": {
+      "contact.run.tackler_speed_at_contact": {
+        "n": 160,
+        "mean": 1.644,
+        "p50": 1.275,
+        "p90": 3.536
+      },
+      "contact.run.approach_headon": {
+        "n": 102,
+        "mean": 0.176,
+        "p50": 0.0,
+        "p90": 1.0
+      },
+      "contact.run.contact_to_whistle_s": {
+        "n": 160,
+        "mean": 0.973,
+        "p50": 0.7,
+        "p90": 1.25
+      },
+      "contact.catch.broke_contact": {
+        "n": 210,
+        "mean": 0.31,
+        "p50": 0.0,
+        "p90": 1.0
+      },
+      "catch.yards_after_catch": {
+        "n": 506,
+        "mean": 12.014,
+        "p50": 5.05,
+        "p90": 44.3
+      }
+    },
+    "definitions": "Same shared scripts/mechanics/metrics.py operator as NFL2017/2021/2022/2023 reports. Nearest-defender contact and broken-contact metrics are proxies, not actual tackle labels. Descriptive checks, not targets.",
+    "outputs": [
+      "out/run-support-install/mechanics.json",
+      "out/run-support-install/mechanics-report.md",
+      "out/run-support-install/games.log"
+    ],
+    "hashes": {
+      "mechanics.json": "a5cc6b3491bf6e249568548a25f1957da2e62eafdebfc144b1abc6e9ca8e429b",
+      "mechanics-report.md": "2f0492c29e222a9d2d138ce7a15101bc1fe4c6fa985a524e68128ec324ce230e",
+      "mechanics-plays.jsonl.gz": "8dfdb5c04181216662e0425f613645046e873979ca8c5388bb3b3aaec6ac6a05"
+    }
+  },
+  "candidateEngineCommit": "ed8abca"
+}

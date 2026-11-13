@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "foundationOnlySource": "dc9590708bf18de096e5e4ae62ff43b2a7fbdbc95113bb1470ef407011482f2d",
+  "bothFrozen": true,
+  "cohortSha256": "da8efe8daad67aa77383e1319ae8baf353ae5028a38509ddbb430e082af7d3aa",
+  "collectorSha256": "994ba9020e077f3fcc08249a04951e6041657094969f33ce762fe8fda5cadbd8",
+  "cases": [
+    {
+      "id": "FC-inside-zone",
+      "checks": {
+        "initialHash": true,
+        "result": true,
+        "resultHash": true,
+        "telemetryWithoutCarryingHash": true,
+        "finalBodiesHash": true,
+        "finalIntentsHash": true,
+        "finalMindsHash": true,
+        "ticks": true,
+        "ticksHash": true,
+        "nextRandom": true
+      },
+      "allExact": true,
+      "ticks": 71,
+      "outcome": "tackle",
+      "offenseYards": 2.91,
+      "transferEvents": [
+        "handoff"
+      ],
+      "knownCarryingEntriesBefore": 0,
+      "knownCarryingEntriesAfter": 23000
+    },
+    {
+      "id": "FC-play-action",
+      "checks": {
+        "initialHash": true,
+        "result": true,
+        "resultHash": true,
+        "telemetryWithoutCarryingHash": true,
+        "finalBodiesHash": true,
+        "finalIntentsHash": true,
+        "finalMindsHash": true,
+        "ticks": true,
+        "ticksHash": true,
+        "nextRandom": true
+      },
+      "allExact": true,
+      "ticks": 91,
+      "outcome": "tackle",
+      "offenseYards": 6.66,
+      "transferEvents": [
+        "throw",
+        "catch"
+      ],
+      "knownCarryingEntriesBefore": 0,
+      "knownCarryingEntriesAfter": 29637
+    },
+    {
+      "id": "FC-dropback",
+      "checks": {
+        "initialHash": true,
+        "result": true,
+        "resultHash": true,
+        "telemetryWithoutCarryingHash": true,
+        "finalBodiesHash": true,
+        "finalIntentsHash": true,
+        "finalMindsHash": true,
+        "ticks": true,
+        "ticksHash": true,
+        "nextRandom": true
+      },
+      "allExact": true,
+      "ticks": 80,
+      "outcome": "incomplete",
+      "offenseYards": 0,
+      "transferEvents": [
+        "throw"
+      ],
+      "knownCarryingEntriesBefore": 0,
+      "knownCarryingEntriesAfter": 26183
+    },
+    {
+      "id": "FC-pitch",
+      "checks": {
+        "initialHash": true,
+        "result": true,
+        "resultHash": true,
+        "telemetryWithoutCarryingHash": true,
+        "finalBodiesHash": true,
+        "finalIntentsHash": true,
+        "finalMindsHash": true,
+        "ticks": true,
+        "ticksHash": true,
+        "nextRandom": true
+      },
+      "allExact": true,
+      "ticks": 82,
+      "outcome": "tackle",
+      "offenseYards": 3.43,
+      "transferEvents": [
+        "pitch",
+        "pitch_catch"
+      ],
+      "knownCarryingEntriesBefore": 0,
+      "knownCarryingEntriesAfter": 26731
+    }
+  ],
+  "scope": "Four predeclared normal native cases. Exact complete result, all per-tick bodies/intents/SnapMind/RNG digests and final RNG. Added telemetry carrying is excluded only from telemetry comparison. Not NFL calibration or a broad statistical guard.",
+  "bytes": {
+    "native-baseline.json": "e3c93fd131064b173d4f50d22fb8769ef04fa81686f507f422d5e6a5dc1380d7",
+    "native-foundation.json": "0c99a0bb870edb416db65192abc6de892e5935b57f4b78d53c5145beb15d9eec",
+    "baseline-feature-tests.log": "4165afa55223f25d31fc6e4255d053e9137266d37e46d1c6f67952bc12060f79",
+    "candidate-tests.log": "d053180e1fe37a5fc8db2a3356dbea074ec18526798137e7ae5fd5dee6e99a12",
+    "typecheck.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "foundation-native-controls.ts": "994ba9020e077f3fcc08249a04951e6041657094969f33ce762fe8fda5cadbd8",
+    "delayed-possession.test.ts": "c1a7aa8124af0eb468d1e1908919a4b0af6bfc1aada62ddbf8319ad54a3b2963"
+  },
+  "foundationFiles": {
+    "src/sim/perception.ts": "c3ac1392222789fd8dd597b0f151588f3eda6b15c8e8841113af670216df232e",
+    "src/sim/playsim.ts": "4590a44df07338ac44b854d9675b2792e3db6bcddadaa4a2ecf8b79dc4c5f453",
+    "src/sim/telemetry.ts": "15d381abc1eda7fbf563d8345d32f280aca567717a83dbfc323a9ba1235d9691",
+    "src/sim/types.ts": "8fbd576cb75d8323d2747f99e057afb962f1fb4b06a81c2bb7c988a071c29f77"
+  },
+  "testResult": {
+    "baselineFeature": {
+      "failed": 13,
+      "passed": 1
+    },
+    "candidateFocused": {
+      "passed": 43,
+      "failed": 0
+    },
+    "typecheck": "pass"
+  }
+}

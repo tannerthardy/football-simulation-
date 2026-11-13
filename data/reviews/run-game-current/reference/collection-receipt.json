@@ -1,0 +1,45 @@
+{
+  "schema": "run-reference-collection-receipt-v1",
+  "pbp": {
+    "kind": "Receipt derived from actual report, not recreated terminal log",
+    "declaredAtUtc": "2026-10-11T11:34:37.111448+00:00",
+    "collectedAtUtc": "2026-10-11T11:34:52.365534+00:00",
+    "querySha256": "608a6699ab910b6cfe14ff307bbdefb055a149aa01499ba03f206470074a02d5",
+    "collectorSha256": "43af2d0bcd7255c7dbec94423dc0e4b38faac645d4e097c8ce5fd40a900909c8",
+    "audit": {
+      "callingPlays": 67488,
+      "designedRun": 26585,
+      "excluded_notLivePassRun": 26829,
+      "excluded_notRegularSeason": 4543,
+      "excluded_twoPointAttempt": 239,
+      "matched2022RunRows": 14347,
+      "otherObservedDropbacks": 38963,
+      "rawPbpRows": 99099,
+      "runRowsWithoutAvailableChartSeason": 14178,
+      "scramble": 1940
+    }
+  },
+  "bdb": {
+    "declaredAt": "2026-10-11T11:39:45.050966+00:00",
+    "startedAt": "2026-10-11T11:39:53.712692+00:00",
+    "finishedAt": "2026-10-11T11:39:56.530256+00:00",
+    "querySha256": "2d71ba444ce7a18739ae2ae3f5de0c07f231523144fd67311857387c58dc701b",
+    "collectorSha256": "c7350b591efc10f33988abb794998a9ac1889063841f984c5c5d097f16f4eab6",
+    "cohort": {
+      "metadataRows": 16124,
+      "selectedRuns": 6223,
+      "excluded": {
+        "dropbackOrUnknownDropback": 9736,
+        "kneel": 165
+      },
+      "sneakFlagPrimaryAgreement": {
+        "flagAndPrimaryAgree": 6223
+      },
+      "secondaryShapes": {
+        "single": 2166,
+        "missing": 3410,
+        "compound": 647
+      }
+    }
+  }
+}

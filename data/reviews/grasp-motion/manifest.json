@@ -1,0 +1,123 @@
+{
+  "baselineCommit": "08afbb934e06e5cc876031815d412ec85d56370a",
+  "baselineSourceSha256": "0bf4abc5bfdd385a7dd4231305adfab8fed4c6af5c9d64ad92cc4ac1f7bafd64",
+  "sourceSha256": "c9d21a3bba0ac0e3cc8c27925f4f5b8b27dde76ddd893a9b84fcad0f33e084ec",
+  "defaultModel": "Coupled pile with repaired momentum/position bookkeeping; graded sustained motion remains incomplete.",
+  "experimentalModel": "Explicit experimentalGrasps=true / --experimental-grasps; mechanically tested, rejected as default for football regressions.",
+  "baselineMethod": "git archive 08afbb9 src scripts package.json tsconfig.json test into out/grasp-motion/baseline. Updated interaction and solo-lab scripts copied unchanged into archive; Node 22.23.3.",
+  "reusedBaseline": {
+    "before-calibrate-32.log": {
+      "path": "data/reviews/contact-foundation/after-calibrate.log",
+      "sha256": "c7af8c899cc98732f01f1ff0333f8497a6a3a4cbd8ebb5957647ab704544a130",
+      "sourceSha256": "0bf4abc5bfdd385a7dd4231305adfab8fed4c6af5c9d64ad92cc4ac1f7bafd64",
+      "reason": "Identical baseline engine source to contact-foundation final run; unchanged default cohort/measurement definitions."
+    }
+  },
+  "setup": {
+    "interaction": {
+      "seeds": [
+        7,
+        19,
+        31,
+        43
+      ],
+      "nativeDt": 0.05,
+      "graspTicks": 1,
+      "crossingDuration": 0.05,
+      "graspModel": "default-coupled"
+    },
+    "soloTackle": {
+      "cases": 240,
+      "reps": 24,
+      "speeds": [
+        3,
+        6
+      ],
+      "bearings": [
+        0,
+        45,
+        90,
+        135,
+        180
+      ],
+      "rosters": [
+        7,
+        19,
+        31,
+        43
+      ]
+    },
+    "defaultGames": {
+      "games": 32,
+      "seed": 7,
+      "leagues": 4
+    },
+    "modelComparison": {
+      "games": 8,
+      "seed": 7,
+      "leagues": 1
+    },
+    "contactAnatomy": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2
+    },
+    "film": {
+      "seed": 7,
+      "games": 6,
+      "clips": 828,
+      "concepts": 27,
+      "experimentalGrasps": false
+    }
+  },
+  "validation": {
+    "tests": 222,
+    "typecheck": "pass",
+    "build": "pass",
+    "browserChecks": 18,
+    "zip": "Populated HTML verified byte-identical"
+  },
+  "scriptSha256": {
+    "scripts/interaction-readiness.ts": "9f5deb8b6044c389c065cf3c175d6868d610f3953ba4e0c6418fc8b2841f1c25",
+    "scripts/tackle-lab.ts": "22ce3ba74703e7ca02858954fac1454d45c3bc69643e8766f3ce2aa54f3b7850",
+    "scripts/calibrate.ts": "dd28d520913677054894128a38714f452b4499fe359bdf82a43d4fa09b7442db",
+    "scripts/contact-anatomy.ts": "3107f30aea2983d23ec9902a4dfe6e1fda761246188e946fae6f983331afe075",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/check-replay-viewer.py": "5952fa8098902eb0a8ff4e9ed5531ae1a1d4570305b26053f9c22e896ee3f0e9"
+  },
+  "references": {
+    "data/reviews/error-budget/nfl-contact.json": "1b91ddc7052171c59314dba9399cf0b1666e8dda0e93694445b832ea36738f76"
+  },
+  "limitations": [
+    "Counterfactual invariants are not NFL validation or game-frequency estimates.",
+    "Default graded velocity coupling, persistent body support and fast crossing collisions remain unfinished.",
+    "Experimental structural force mapping/ground controller/reach/strong external grouping are unvalidated; football checks fail.",
+    "Paired seeds do not freeze later plays or random draws. Solo and selected tackled-in-field cohorts differ from full-game metrics.",
+    "Contact anatomy includes missed attempts in first-contact event selection and uses recorded frames; baseline reference columns absent because archived root did not contain data references.",
+    "Text logs normalized for whitespace; numeric/test output retained. Baseline 32-game log reused exactly."
+  ],
+  "artifactsSha256": {
+    "before-anatomy.log": "5aa6259a5e52f78b729b723ded05907cd36b580fcdde6243295fe129d9cd3997",
+    "before-calibrate-32.log": "c7af8c899cc98732f01f1ff0333f8497a6a3a4cbd8ebb5957647ab704544a130",
+    "before-interaction.json": "b309f1337f70fdcf74ede25077c4c083115c594d4cc14a218b1fd6570addac87",
+    "before-tackle.log": "f2c739b74611b1400190609c7e1df783a71eaf9aed17acdd08ced0dae6c5062e",
+    "browser-check.json": "af75c2573d8dcf0868fdc997f48b077cc5f19353bef8cef15fd3bf4ab6b6d635",
+    "build.log": "31332ab7887258443be380e6c1625535b3d7d264ea650945cd8804c31347a7d7",
+    "default-anatomy.log": "7953a04460185f7099ba84c616c9fd2903c649eb114b42a26073f6809fb4e5f4",
+    "default-calibrate-32.log": "fa5f7b7f09743023d3d264feebdedff4d6e4553e7af91c1b51e62c8f0894bd0a",
+    "default-calibrate-8.log": "d0c092b92b129d0e3702eb45c217c980c6dca3dd363ab10ed92c3733d024ed42",
+    "default-interaction.json": "48dd2cb94a83362a69b9cfb684482d898fc0c7430866c06fae8800a187a20392",
+    "default-tackle.log": "b3859cdde564e77564317a0691dc90680f837a3699c4d78e5c38fbe3c59bc6ea",
+    "experimental-calibrate-8.log": "cf4ab5f3724ca43d2e33bde540b7f2f8289e12aa7b11c74ee799169c3c217034",
+    "experimental-interaction.json": "b3ee7d10dfda132975f9493e2fbc01159c141f310ff615c24cb15a8335cd30ba",
+    "experimental-tackle.log": "8ddce79c8bf2130b9b865376bace99d011ea7171521e62bb6794f51946ff99e2",
+    "film-export.log": "70cc14dff719eb11034f8d6176abf62c27ac9cc89b3baeb6d50682731a0604a3",
+    "tests.log": "284a49da41f26541f82430fdba8ff66f64eabcd0229b6881dfb9d7667ab1718f",
+    "typecheck.log": "da261241a3139ef6606e87edd53392ca08b8ac6355e004628743c15bad96e2b9"
+  },
+  "filmSha256": {
+    "viewer/film-room.html": "8d9f02d63a6d671356cf99f17b53703ee45754672ed0e9a75733ec30377f0d2d",
+    "viewer/film-room.zip": "799d7aecc8a365d116155ec93598fda060816a7ddc3decc66f9919b2645300b4"
+  }
+}

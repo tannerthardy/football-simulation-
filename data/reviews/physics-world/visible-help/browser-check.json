@@ -1,0 +1,68 @@
+{
+  "schema": "visible-help-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BEFORE-HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": false,
+      "rawEventCount": 32
+    },
+    {
+      "id": "BEFORE-HELP-R1-gun_doubles_11-dagger-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": false,
+      "rawEventCount": 27
+    },
+    {
+      "id": "BEFORE-HELP-R1-gun_bunch_11-mesh-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": false,
+      "rawEventCount": 31
+    },
+    {
+      "id": "BEFORE-HELP-R1-gun_trips_11-smash-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": false,
+      "rawEventCount": 26
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 32
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_doubles_11-dagger-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 27
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_bunch_11-mesh-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 31
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_trips_11-smash-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 26
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "completionFilterUsesRecordedStats": true,
+  "pairedFixtureSearch": true,
+  "recordedSourceFilter": true,
+  "conceptAndCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true
+}

@@ -1,0 +1,26 @@
+{
+ "source": "Big Data Bowl 2025 (2022 weeks 1-9); drives inferred from scrimmage plays",
+ "drivesPerTeamGame": 10.46,
+ "playsPerDrive": 5.67,
+ "avgStart": 28.1,
+ "pointsPerDrive": 2.0,
+ "pointsPerTeamGame": 20.87,
+ "byStart": {
+  "inside 20": {
+   "share": 22.3,
+   "pointsPerDrive": 1.47
+  },
+  "20-39": {
+   "share": 60.5,
+   "pointsPerDrive": 1.97
+  },
+  "40-59": {
+   "share": 12.3,
+   "pointsPerDrive": 2.35
+  },
+  "60+": {
+   "share": 5.0,
+   "pointsPerDrive": 3.79
+  }
+ }
+}

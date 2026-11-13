@@ -1,0 +1,183 @@
+{
+  "schema": "long-yardage-run-manifest-v1",
+  "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "sourceUnchanged": true,
+  "node": "v22.23.3",
+  "executable": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+  "execArgv": [
+    "--import",
+    "tsx"
+  ],
+  "scriptSha256": "6e28e9988e7a82013526acc6e8652287d502f43db9622e663e774248468dcb5f",
+  "declaredCommands": [
+    [
+      "node",
+      "--import",
+      "tsx",
+      "scripts/diag/long-yardage-run.ts",
+      "out/long-yardage-run/panel.json"
+    ],
+    [
+      "node",
+      "--import",
+      "tsx",
+      "scripts/export-long-yardage-run.ts",
+      "out/long-yardage-run/panel.json",
+      "out/long-yardage-run/panel-film.json.gz",
+      "viewer/long-yardage-runs.html"
+    ]
+  ],
+  "productionModesFromPinnedSource": {
+    "supportModel": "legacy",
+    "boundedAttachment": true,
+    "handIntegration": "centered",
+    "substeps": "stock adaptive/default",
+    "forceOrControllerOverrides": false
+  },
+  "cohort": {
+    "rosterSeeds": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ]
+    ],
+    "strength": 0.55,
+    "playSeed": 3,
+    "runs": [
+      "iz_strong",
+      "draw"
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "situations": [
+      "1st10",
+      "3rd27"
+    ],
+    "looks": [
+      "rush4",
+      "drop3"
+    ],
+    "formation": "gun_doubles_11",
+    "personnel": "dime",
+    "front": "over",
+    "coverage": "cover4",
+    "zoneStyle": "spot",
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "hurry": false,
+    "rosterSha256": "9bde8358fc08785be2ace3e747f37bec52e93a75d9d09b820c72c940c4c9067f",
+    "selectedProfilesSha256": "c7804d8846f603c43d0d40accff1bebe42354a6a203c17bcc80a0dd53853e7ad",
+    "pressureDrop": {
+      "id": "lab_weak_edge_drop",
+      "name": "Lab weak-edge drop (three rushers/eight cover)",
+      "blitzers": {},
+      "droppers": {
+        "DE_W": "curl_flat_w"
+      },
+      "coverages": [
+        "cover4"
+      ]
+    }
+  },
+  "snapAndFirstStepAudits": {
+    "plays": 32,
+    "rush4Coverage7": 16,
+    "rush3Coverage8": 16,
+    "snapSafetiesDepthYd": 12,
+    "profilesAndPhysicalGeometryIdenticalWithinFourCellPairs": true,
+    "initialReadsAllUnsure": true
+  },
+  "validation": {
+    "focusedTests": 5,
+    "observerAndRecordingControls": 4,
+    "allNaturalTackleFinishes": true,
+    "third27Conversions": 0,
+    "maxMomentumResidual": 3.4823626265062874e-12,
+    "maxWorkResidual": 1.283817496755546e-11,
+    "maxMotorWorkExcess": 0,
+    "fullTelemetryAndPackedFilmIntegrity": "film-integrity.json",
+    "offlineChromiumSmoke": "browser-checks.json",
+    "typecheck": "Passed after final exporter addition; parent retains repository-wide logs"
+  },
+  "currentToolSha256": {
+    "scripts/diag/long-yardage-run.ts": "6e28e9988e7a82013526acc6e8652287d502f43db9622e663e774248468dcb5f",
+    "scripts/export-long-yardage-run.ts": "8e413ec2b6cb29b79e6693f823d00975d3f5e3325bbc284332c1a382d3471add",
+    "test/long-yardage-run.test.ts": "bc6c7e3af19c85aa3ed6c0898b86af940ff8d1ba45696014c1c47eba3a996dfe",
+    "scripts/replay-data.ts": "09fbee60a1fdc46f9ddc83ceb83c278f2df12b7a0d61a2bf9b373f110752f5b6",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "47481b07b447a2c4a8530c64c2bf98ab919464d8568dfcf5ef5f5671e7915239",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "artifacts": [
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/README.md",
+      "bytes": 8374,
+      "sha256": "02005d63ca16c6487dc4b243a70104bd3673410b4f9926ec2cd502d8bf6326e0"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/browser-checks.json",
+      "bytes": 805,
+      "sha256": "0f05a7e40fd2f45cfd81b2dca68ab3457f102c4061f76d68909675b7544f04e9"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/browser-smoke.log",
+      "bytes": 805,
+      "sha256": "0f05a7e40fd2f45cfd81b2dca68ab3457f102c4061f76d68909675b7544f04e9"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/browser-smoke.py",
+      "bytes": 3588,
+      "sha256": "3f904f1d9f9f682214bd0fcc9b4a44965c37a4c9f0769a6ea260fdab4637cbde"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/film-integrity.json",
+      "bytes": 1811,
+      "sha256": "23cb158a22c638938e26b4701d90096329b8ad7bce6bb62da0a73e1dc80fe118"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/focused-tests.log",
+      "bytes": 279,
+      "sha256": "e13de989fd7f1beac0d2a854df552f1af9d2c51163a708cb1e6fe57ce7d95834"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/panel-film.json.gz",
+      "bytes": 1322236,
+      "sha256": "38e29b9835beb7490d4d1f043cd4c419167451bab256787191727a620190d1f3",
+      "decodedSha256": "7cd0f04bf0011e4112c99084e345220608a908369e3eb72c14431b12d3f75a02"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/panel.json.gz",
+      "bytes": 263429,
+      "sha256": "d873bd5041c2af4790ebd160b6ea56ec49617966678bc1b640c8fb85551c673b",
+      "decodedSha256": "ac4e34b653220618bb637f725e7547c3c35247762364f0a1700d3db65fdf4d66"
+    },
+    {
+      "path": "data/reviews/physics-world/long-yardage-run/summary.json",
+      "bytes": 30349,
+      "sha256": "d73b7dda0c37e46e49f994a6a29c979642ef8b52353c3ae992660034a9017393"
+    },
+    {
+      "path": "viewer/long-yardage-runs.html",
+      "bytes": 1830399,
+      "sha256": "98aacca68ceaf5772d508b6dfe37d1297e6f2af9bf2c588f71b586619508f580"
+    },
+    {
+      "path": "viewer/long-yardage-runs.zip",
+      "bytes": 1227622,
+      "sha256": "590637558196c950c21f6b6cd5568d6e65d976332ecb6260580a6c0c304065a1"
+    }
+  ],
+  "limitations": [
+    "No NFL gain/conversion-rate target or genuine prevent depth/personnel policy is claimed.",
+    "Matched whole-system comparison: changing an edge controller changes existing main RNG draw sequence.",
+    "Tiny sample: two roster pairs, one reused play seed, four snaps per concept/situation/look.",
+    "No cost claim: measurement included observation/recording and concurrent work.",
+    "Modes are declared from exact pinned production source and invocation with only tsx import, not a raw per-tick mode field."
+  ]
+}

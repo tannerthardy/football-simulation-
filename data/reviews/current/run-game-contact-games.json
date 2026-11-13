@@ -1,0 +1,366 @@
+{
+  "schema": "run-game-contact-games-v1",
+  "arms": {
+    "baseline": {
+      "source": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+      "sameSourceAtEnd": true,
+      "cohort": {
+        "seed": 101,
+        "games": 2,
+        "strength": 0.55,
+        "rosterSha256": "94f47259f970f8ab30e688661ef2cb3e30ac257403b10b05ba25dba84601e707",
+        "handContact": "center"
+      },
+      "flags": {
+        "RUN_CONTACT_TRACK": 0,
+        "PULL_PLAN": 0,
+        "RUN_READ": 0,
+        "RUN_READ_TURN": 0
+      },
+      "games": [
+        {
+          "seed": 101,
+          "score": {
+            "home": 51,
+            "away": 38
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 190
+        },
+        {
+          "seed": 102,
+          "score": {
+            "home": 67,
+            "away": 58
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 202
+        }
+      ],
+      "runN": 73,
+      "runYards": 227.42,
+      "ypc": 3.1153424657534248,
+      "negativeRate": 0.2465753424657534,
+      "rush10Rate": 0.0821917808219178,
+      "yardsBeforeContactMean": 0.5759138560780295,
+      "receipt": {
+        "path": "out/run-game-contact/games-baseline-review.json",
+        "sha256": "39261edc2f04667499254239211c1ee996c071ecda2ed777d14a74cd03667495"
+      },
+      "byConcept": {
+        "counter": {
+          "n": 10,
+          "ypc": 1.9729999999999999
+        },
+        "draw": {
+          "n": 3,
+          "ypc": -2.703333333333333
+        },
+        "duo": {
+          "n": 11,
+          "ypc": 3.4563636363636365
+        },
+        "insideZone": {
+          "n": 9,
+          "ypc": 3.464444444444444
+        },
+        "outsideZone": {
+          "n": 8,
+          "ypc": 6.404999999999999
+        },
+        "power": {
+          "n": 12,
+          "ypc": 6.001666666666667
+        },
+        "splitZone": {
+          "n": 1,
+          "ypc": 0.55
+        },
+        "toss": {
+          "n": 1,
+          "ypc": 2.54
+        },
+        "trap": {
+          "n": 11,
+          "ypc": 3.3927272727272726
+        },
+        "wideZone": {
+          "n": 7,
+          "ypc": -2.4385714285714286
+        }
+      }
+    },
+    "offense": {
+      "source": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+      "sameSourceAtEnd": true,
+      "cohort": {
+        "seed": 101,
+        "games": 2,
+        "strength": 0.55,
+        "rosterSha256": "94f47259f970f8ab30e688661ef2cb3e30ac257403b10b05ba25dba84601e707",
+        "handContact": "center"
+      },
+      "flags": {
+        "RUN_CONTACT_TRACK": 1,
+        "PULL_PLAN": 0,
+        "RUN_READ": 0,
+        "RUN_READ_TURN": 0
+      },
+      "games": [
+        {
+          "seed": 101,
+          "score": {
+            "home": 53,
+            "away": 48
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 183
+        },
+        {
+          "seed": 102,
+          "score": {
+            "home": 57,
+            "away": 64
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 215
+        }
+      ],
+      "runN": 75,
+      "runYards": 203.91,
+      "ypc": 2.7188,
+      "negativeRate": 0.22666666666666666,
+      "rush10Rate": 0.04,
+      "yardsBeforeContactMean": 0.6266511130146452,
+      "receipt": {
+        "path": "out/run-game-contact/games-offense-review.json",
+        "sha256": "8727d0ae30ec9ff979e195e3e7ba15cbb63aede1077ebb0baaa3e6b931829eb1"
+      },
+      "byConcept": {
+        "counter": {
+          "n": 10,
+          "ypc": 1.474
+        },
+        "draw": {
+          "n": 4,
+          "ypc": -2.7800000000000002
+        },
+        "duo": {
+          "n": 10,
+          "ypc": 3.076
+        },
+        "insideZone": {
+          "n": 11,
+          "ypc": 2.7609090909090908
+        },
+        "outsideZone": {
+          "n": 7,
+          "ypc": 4.425714285714286
+        },
+        "power": {
+          "n": 13,
+          "ypc": 6.373076923076923
+        },
+        "splitZone": {
+          "n": 1,
+          "ypc": 8.77
+        },
+        "toss": {
+          "n": 2,
+          "ypc": 1.19
+        },
+        "trap": {
+          "n": 10,
+          "ypc": 1.78
+        },
+        "wideZone": {
+          "n": 7,
+          "ypc": -0.5171428571428571
+        }
+      }
+    },
+    "defense": {
+      "source": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+      "sameSourceAtEnd": true,
+      "cohort": {
+        "seed": 101,
+        "games": 2,
+        "strength": 0.55,
+        "rosterSha256": "94f47259f970f8ab30e688661ef2cb3e30ac257403b10b05ba25dba84601e707",
+        "handContact": "center"
+      },
+      "flags": {
+        "RUN_CONTACT_TRACK": 0,
+        "PULL_PLAN": 1,
+        "RUN_READ": 0,
+        "RUN_READ_TURN": 0
+      },
+      "games": [
+        {
+          "seed": 101,
+          "score": {
+            "home": 66,
+            "away": 49
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 181
+        },
+        {
+          "seed": 102,
+          "score": {
+            "home": 51,
+            "away": 37
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 187
+        }
+      ],
+      "runN": 65,
+      "runYards": 136.32999999999998,
+      "ypc": 2.097384615384615,
+      "negativeRate": 0.36923076923076925,
+      "rush10Rate": 0.06153846153846154,
+      "yardsBeforeContactMean": 0.1414477357766437,
+      "receipt": {
+        "path": "out/run-game-contact/games-defense-review.json",
+        "sha256": "40c0cc6ae9273059f082a313c6d90c0a498f1632a38a4e306a3d28d886913306"
+      },
+      "byConcept": {
+        "counter": {
+          "n": 10,
+          "ypc": 0.423
+        },
+        "draw": {
+          "n": 4,
+          "ypc": -2.5949999999999998
+        },
+        "duo": {
+          "n": 14,
+          "ypc": 2.9514285714285715
+        },
+        "insideZone": {
+          "n": 10,
+          "ypc": 4.61
+        },
+        "outsideZone": {
+          "n": 4,
+          "ypc": 9.6975
+        },
+        "power": {
+          "n": 8,
+          "ypc": 2.25125
+        },
+        "splitZone": {
+          "n": 1,
+          "ypc": 0.59
+        },
+        "toss": {
+          "n": 1,
+          "ypc": -0.46
+        },
+        "trap": {
+          "n": 6,
+          "ypc": 3.3166666666666664
+        },
+        "wideZone": {
+          "n": 7,
+          "ypc": -3.11
+        }
+      }
+    },
+    "combined": {
+      "source": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+      "sameSourceAtEnd": true,
+      "cohort": {
+        "seed": 101,
+        "games": 2,
+        "strength": 0.55,
+        "rosterSha256": "94f47259f970f8ab30e688661ef2cb3e30ac257403b10b05ba25dba84601e707",
+        "handContact": "center"
+      },
+      "flags": {
+        "RUN_CONTACT_TRACK": 1,
+        "PULL_PLAN": 1,
+        "RUN_READ": 0,
+        "RUN_READ_TURN": 0
+      },
+      "games": [
+        {
+          "seed": 101,
+          "score": {
+            "home": 52,
+            "away": 45
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 179
+        },
+        {
+          "seed": 102,
+          "score": {
+            "home": 40,
+            "away": 79
+          },
+          "home": "IRN",
+          "away": "COM",
+          "plays": 198
+        }
+      ],
+      "runN": 69,
+      "runYards": 202.19000000000003,
+      "ypc": 2.9302898550724636,
+      "negativeRate": 0.391304347826087,
+      "rush10Rate": 0.10144927536231885,
+      "yardsBeforeContactMean": 0.5104421584181407,
+      "receipt": {
+        "path": "out/run-game-contact/games-combined-review.json",
+        "sha256": "700154cf81944f59d56f6ef281fc2eabbd3a8b7e191f93e86afd2090aa3bc883"
+      },
+      "byConcept": {
+        "counter": {
+          "n": 9,
+          "ypc": 4.863333333333333
+        },
+        "draw": {
+          "n": 3,
+          "ypc": -2.6566666666666667
+        },
+        "duo": {
+          "n": 12,
+          "ypc": 4.400833333333334
+        },
+        "insideZone": {
+          "n": 13,
+          "ypc": 7.424615384615385
+        },
+        "outsideZone": {
+          "n": 7,
+          "ypc": -0.7214285714285714
+        },
+        "power": {
+          "n": 10,
+          "ypc": 3.799
+        },
+        "toss": {
+          "n": 1,
+          "ypc": -0.97
+        },
+        "trap": {
+          "n": 7,
+          "ypc": 0.7257142857142859
+        },
+        "wideZone": {
+          "n": 7,
+          "ypc": -2.855714285714286
+        }
+      }
+    }
+  },
+  "limits": "Two games per arm, identical roster construction and game seeds 101/102; adaptive calls and later RNG diverge. Runs exclude nullified snaps. Diagnostic cohorts, not paired later plays or promotion evidence."
+}

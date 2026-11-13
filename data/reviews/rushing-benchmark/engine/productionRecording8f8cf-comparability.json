@@ -1,0 +1,35 @@
+{
+  "schema": "engine-rushing-source-comparability-v1",
+  "comparisonLabel": "productionRecording8f8cf",
+  "engineSourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "declaredAtUtc": "2026-10-11T18:17:49.612798+00:00",
+  "limits": [
+    "Exact native stats.rusher IDs identify the actual generated QB; they repair recording only, not action classification, decisions, movement or physics.",
+    "Engine finishCarry classifies a behind-LOS pass-call tackle as a sack only before the explicit scrambled/BallCarrier transition. A committed runner can therefore be tackled well behind the LOS and remain scramble=true/sacked=false. The engine failedEscapeSack audit is structurally zero for these committed runs.",
+    "NFL realized-action QB scramble/sack labels need not encode the same commitment distinction. All actual clean native committed scrambles remain included; negative gains are not silently converted to sacks or dropped.",
+    "The exact-QB NFL situational reference is observational and not an apples-to-apples physical calibration or proof that forces are wrong. Negative escape gains nominate QB escape decisions and classification audit first.",
+    "Eight games/two generated leagues remain descriptive. Historical3cb and WITHHELD quarter reports/receipts are unchanged."
+  ],
+  "sourceCodeCues": [
+    {
+      "path": "src/sim/playsim.ts",
+      "method": "finishCarry",
+      "cue": "sack requires !this.scrambled along with pass call, before throw, tackled behind LOS"
+    },
+    {
+      "path": "src/sim/behaviors/qb.ts",
+      "method": "scramble",
+      "cue": "actual QB player.id is recorded when changing to BallCarrier"
+    }
+  ],
+  "compatibilityReceipts": [
+    {
+      "path": "out/rushing-benchmark/validation/recording-compatibility.json",
+      "sha256": "a1a49a7d77ee246214df642eb542cf47522c00060a33ceacc0ad63c4e252a7e7"
+    },
+    {
+      "path": "out/rushing-benchmark/validation/recording-passing-compatibility.json",
+      "sha256": "22811e825b79eb92d07edcca2c35cea94003d59c0b158863dc6efb7f33e8e908"
+    }
+  ]
+}

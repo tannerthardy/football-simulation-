@@ -1,0 +1,10 @@
+{
+  "schema": "rushing-film-check-summary-v1",
+  "typecheck": "passed",
+  "nativeSimulationChanges": false,
+  "guidedBrowserCheck": "24 clips; filters, transport, exact IDs, recorded events, mobile and WebM export/cancellation/failure paths",
+  "videoDecoded": true,
+  "standaloneChecks": "24 guided and302 complete clips; external requests blocked; document-content method",
+  "publishedHtmlMatchesBrowserTestedBytes": true,
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d"
+}

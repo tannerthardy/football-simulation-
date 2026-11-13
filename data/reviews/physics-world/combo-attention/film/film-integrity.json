@@ -1,0 +1,334 @@
+{
+  "schema": "combo-attention-film-integrity-v1",
+  "clips": 12,
+  "predeterminedInputs": [
+    "CA-R1-iz_strong-over-R-S3",
+    "CA-R1-iz_strong-over-L-S3",
+    "CA-R1-duo-odd-R-S11",
+    "CA-R1-duo-odd-L-S11",
+    "CA-R1-power-under-R-S3",
+    "CA-R1-power-under-L-S3"
+  ],
+  "naturalFinishes": 12,
+  "sourceComparison": [
+    {
+      "label": "Baseline: shared joined attention",
+      "sourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+      "inputRawSha256": "4bf654ada82cf007793464fb04e2a127d0d8b8ac69b1666bfc1870e5e586a18c",
+      "collectorSha256": "46e3be84d1e29f81f4d2be60b94e7ae6759587ceef266a16d0581d1a82149ccb",
+      "cohortSha256": "993cc0fbe2036d1a55566688b83cfed440ea66c1aa57e2e58f41c5be9984fd74",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "4a249b7859cfc21f41052814ac0e288421180b4948c28c932dcc9eb1497cc5bd",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+        "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+        "src/sim/playsim.ts": "8e5c03f5cb82d0e49e526e9976a759556bbb38f7646f08ebc47b898250010b3b"
+      },
+      "observerChecks": [
+        {
+          "id": "CA-R1-iz_strong-over-R-S3",
+          "initialSha256": "3df21126ce3b381f712282480bac63cc852e7a1c20f1c1e778f0021d0fecb321",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "a9eeeb725b6535c20d47ed694457cea8e3cf591d258e4b5fe2ca7e32f75ef3be",
+          "plainSignature": "a9eeeb725b6535c20d47ed694457cea8e3cf591d258e4b5fe2ca7e32f75ef3be"
+        },
+        {
+          "id": "CA-R1-iz_strong-over-L-S3",
+          "initialSha256": "6248ba21d3d3fee93543f0c8af2a6136e3d2474daf7d557513724f84ffc0ea69",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "dc431c287b65588d85b42a85d65b8f777b0393ca204a12ef08737369fde13edd",
+          "plainSignature": "dc431c287b65588d85b42a85d65b8f777b0393ca204a12ef08737369fde13edd"
+        },
+        {
+          "id": "CA-R1-duo-odd-R-S11",
+          "initialSha256": "7673cc709eeb58e03adcfd151a5782fdf40cfacd01584b79a1120a72f29bba57",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "29b2c5df07608257e0e03f465c2be31b4ac0623305cfee64b2e74aab320a4c74",
+          "plainSignature": "29b2c5df07608257e0e03f465c2be31b4ac0623305cfee64b2e74aab320a4c74"
+        },
+        {
+          "id": "CA-R1-duo-odd-L-S11",
+          "initialSha256": "0524c3188831d0b7e551ddf051833311c8445b8f1df51c227c9500df1aba4236",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "1a568ca814b87b971f37ddb5e18e5414b57fc888ca49c073e7c22986e3ae8bd3",
+          "plainSignature": "1a568ca814b87b971f37ddb5e18e5414b57fc888ca49c073e7c22986e3ae8bd3"
+        },
+        {
+          "id": "CA-R1-power-under-R-S3",
+          "initialSha256": "e82d21dec8041d8457c80422942144693ae0a0dcb3b4ebeab6b0e1e5529f317e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f516a3344853a6734cc0659e5832dc6b97bc02bc366ae24b6010f5f46050c5b9",
+          "plainSignature": "f516a3344853a6734cc0659e5832dc6b97bc02bc366ae24b6010f5f46050c5b9"
+        },
+        {
+          "id": "CA-R1-power-under-L-S3",
+          "initialSha256": "09c8bdbba0f0ef265e09c7689a8b0c8157c7a4ab356e2959a5066c25e637bde8",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f82b43ccb18f32f2aeff5ac01d3228e8db77a260d8ef7a3e17e43ec14d21ee5e",
+          "plainSignature": "f82b43ccb18f32f2aeff5ac01d3228e8db77a260d8ef7a3e17e43ec14d21ee5e"
+        }
+      ]
+    },
+    {
+      "label": "Candidate: each joined member reads his own work",
+      "sourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "inputRawSha256": "4e3bb3ddb8ef884fdebe97be57661d7e01699584ff48acbf0fcf1a008f76bbbb",
+      "collectorSha256": "46e3be84d1e29f81f4d2be60b94e7ae6759587ceef266a16d0581d1a82149ccb",
+      "cohortSha256": "993cc0fbe2036d1a55566688b83cfed440ea66c1aa57e2e58f41c5be9984fd74",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "881d4364e39ed7ac7790e9bab8aaac84f7a030afd742c97a26947ca110a73e1d",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+        "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+        "src/sim/playsim.ts": "7c38c9bde204d18969e9d6effe047e61d94cb79a39ae89b1f2551c59a334446d"
+      },
+      "observerChecks": [
+        {
+          "id": "CA-R1-iz_strong-over-R-S3",
+          "initialSha256": "3df21126ce3b381f712282480bac63cc852e7a1c20f1c1e778f0021d0fecb321",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "6c87bbd93e9287ad8c4526018d70977115689a64e308eeac868af943e8ba7174",
+          "plainSignature": "6c87bbd93e9287ad8c4526018d70977115689a64e308eeac868af943e8ba7174"
+        },
+        {
+          "id": "CA-R1-iz_strong-over-L-S3",
+          "initialSha256": "6248ba21d3d3fee93543f0c8af2a6136e3d2474daf7d557513724f84ffc0ea69",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "2ffedfd0a65f07b366ebf0c66d13f7a16bd80039b6ae487ae729b1a61532603f",
+          "plainSignature": "2ffedfd0a65f07b366ebf0c66d13f7a16bd80039b6ae487ae729b1a61532603f"
+        },
+        {
+          "id": "CA-R1-duo-odd-R-S11",
+          "initialSha256": "7673cc709eeb58e03adcfd151a5782fdf40cfacd01584b79a1120a72f29bba57",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "6e36487f1b3c6b9006500c17d65a20e6e79606555eb985093b36377b52ef00d2",
+          "plainSignature": "6e36487f1b3c6b9006500c17d65a20e6e79606555eb985093b36377b52ef00d2"
+        },
+        {
+          "id": "CA-R1-duo-odd-L-S11",
+          "initialSha256": "0524c3188831d0b7e551ddf051833311c8445b8f1df51c227c9500df1aba4236",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "4f312e4a76c0431d6cab39c571c9d96077da58bbd691c5fca247b5a822350464",
+          "plainSignature": "4f312e4a76c0431d6cab39c571c9d96077da58bbd691c5fca247b5a822350464"
+        },
+        {
+          "id": "CA-R1-power-under-R-S3",
+          "initialSha256": "e82d21dec8041d8457c80422942144693ae0a0dcb3b4ebeab6b0e1e5529f317e",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "45dcc3394fa245c4a2c6e845de15cd76aaea5e30e9463eacab6c0a3abd62f68e",
+          "plainSignature": "45dcc3394fa245c4a2c6e845de15cd76aaea5e30e9463eacab6c0a3abd62f68e"
+        },
+        {
+          "id": "CA-R1-power-under-L-S3",
+          "initialSha256": "09c8bdbba0f0ef265e09c7689a8b0c8157c7a4ab356e2959a5066c25e637bde8",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "e5dd69950dbcccb4b730f79f63869ebd56e1dd56efbc03ef14878e332796bdd2",
+          "plainSignature": "e5dd69950dbcccb4b730f79f63869ebd56e1dd56efbc03ef14878e332796bdd2"
+        }
+      ]
+    }
+  ],
+  "allTwelveObserverControlsNeutral": true,
+  "exactFullTelemetryEventsProfilesRatings": true,
+  "exactNativeAttentionBoundariesClimbsLoadsAndBackerContacts": true,
+  "crossSourceFullInitialInputAndProfilesMatch": true,
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "historicalMissingPersonalReadStateExplicit": true,
+  "actualDecisionObserversAndNativeChoices": [
+    {
+      "source": 0,
+      "fixture": "CA-R1-iz_strong-over-R-S3",
+      "t": 1.05,
+      "phase": "run-block-command",
+      "climber": "C",
+      "backer": "LB_W",
+      "initiatingObserver": "C",
+      "actualDecisionObservers": [
+        "C"
+      ],
+      "ownCurrentNativeProposal": false,
+      "keeper": "LG",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 0,
+      "fixture": "CA-R1-duo-odd-R-S11",
+      "t": 1.25,
+      "phase": "run-block-command",
+      "climber": "RG",
+      "backer": "LB_M",
+      "initiatingObserver": "C",
+      "actualDecisionObservers": [
+        "C"
+      ],
+      "ownCurrentNativeProposal": false,
+      "keeper": "C",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 0,
+      "fixture": "CA-R1-duo-odd-L-S11",
+      "t": 1.05,
+      "phase": "run-block-command",
+      "climber": "LG",
+      "backer": "LB_M",
+      "initiatingObserver": "C",
+      "actualDecisionObservers": [
+        "C"
+      ],
+      "ownCurrentNativeProposal": false,
+      "keeper": "C",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 0,
+      "fixture": "CA-R1-power-under-R-S3",
+      "t": 1.25,
+      "phase": "run-block-command",
+      "climber": "RT",
+      "backer": "LB_M",
+      "initiatingObserver": "RT",
+      "actualDecisionObservers": [
+        "RT"
+      ],
+      "ownCurrentNativeProposal": false,
+      "keeper": "Y",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 0,
+      "fixture": "CA-R1-power-under-L-S3",
+      "t": 1.3,
+      "phase": "run-block-command",
+      "climber": "LT",
+      "backer": "LB_M",
+      "initiatingObserver": "LT",
+      "actualDecisionObservers": [
+        "LT"
+      ],
+      "ownCurrentNativeProposal": false,
+      "keeper": "Y",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 1,
+      "fixture": "CA-R1-iz_strong-over-R-S3",
+      "t": 1.05,
+      "phase": "joined-prepass",
+      "climber": "C",
+      "backer": "LB_W",
+      "initiatingObserver": null,
+      "actualDecisionObservers": [
+        "C"
+      ],
+      "ownCurrentNativeProposal": true,
+      "keeper": "LG",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 1,
+      "fixture": "CA-R1-duo-odd-R-S11",
+      "t": 0.9,
+      "phase": "joined-prepass",
+      "climber": "RG",
+      "backer": "LB_M",
+      "initiatingObserver": null,
+      "actualDecisionObservers": [
+        "RG"
+      ],
+      "ownCurrentNativeProposal": true,
+      "keeper": "C",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 1,
+      "fixture": "CA-R1-duo-odd-L-S11",
+      "t": 1.4,
+      "phase": "joined-prepass",
+      "climber": "LG",
+      "backer": "LB_M",
+      "initiatingObserver": null,
+      "actualDecisionObservers": [
+        "LG"
+      ],
+      "ownCurrentNativeProposal": true,
+      "keeper": "C",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": false
+    },
+    {
+      "source": 1,
+      "fixture": "CA-R1-power-under-R-S3",
+      "t": 1.2,
+      "phase": "joined-prepass",
+      "climber": "RT",
+      "backer": "LB_M",
+      "initiatingObserver": null,
+      "actualDecisionObservers": [
+        "RT"
+      ],
+      "ownCurrentNativeProposal": true,
+      "keeper": "Y",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    },
+    {
+      "source": 1,
+      "fixture": "CA-R1-power-under-L-S3",
+      "t": 1.15,
+      "phase": "joined-prepass",
+      "climber": "LT",
+      "backer": "LB_M",
+      "initiatingObserver": null,
+      "actualDecisionObservers": [
+        "LT"
+      ],
+      "ownCurrentNativeProposal": true,
+      "keeper": "Y",
+      "existingKeeperHandPreservedAtDecision": true,
+      "sameKeeperHandAfterNative": true,
+      "keeperHandsLoadedAfterNative": true,
+      "laterLoadedBackerContactRecorded": true
+    }
+  ],
+  "attentionAttemptsNotRelabeledVisualReads": true,
+  "preservedTickStartPostPhysicsFrameStamping": true,
+  "completionGateTrailsFrameStateOneTick": true,
+  "finalNativeSolveOutsideSeekRange": true,
+  "zipHtmlByteExact": true,
+  "htmlSha256": "96d54ef9c4854b88ac18c02a2b562847ded6e6d44fdb854878c83471f94e8b3e",
+  "zipSha256": "0c913110b8ecd9315d80116f095b9c4d0cbb907c28f55e8425ee325fb581b5a2",
+  "checkerSha256": "11afa95088b88ddefe74e39f40a7548d582555fb85514e5b445e4166ef407eb5",
+  "toolSha256": {
+    "scripts/diag/combo-attention-witness.ts": "46e3be84d1e29f81f4d2be60b94e7ae6759587ceef266a16d0581d1a82149ccb",
+    "scripts/export-combo-attention.ts": "27ee3df33c664cfa93117a37fb8944bbd20839dcb97756e5f38ee3ff53c3dc84",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4"
+  }
+}

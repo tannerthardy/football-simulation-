@@ -1,0 +1,109 @@
+{
+  "baseline": "run-game-2026-10-13",
+  "branch": "codex/zone-force-integration",
+  "commit": "7f98ad4b3c4c4ea67687de60d18f1b2acde09c5a",
+  "mode": "candidate",
+  "node": "v22.23.3",
+  "failFast": true,
+  "platform": "linux",
+  "arch": "x64",
+  "sourceSha256": "f63a7d7a49fa76859aaa78af2367e5b2031fb296287cbd2a6195447c83cfe202",
+  "validationSha256": "0dfe557e07993239c0abf3f7ab6063ad83bb0fb2d4d09c54bd8bf2161932f940",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "trackedChanges": [],
+  "startedAt": "2026-10-17T04:36:08.614Z",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 9.645277328
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 12.905749986
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 197.00188077299998
+    }
+  ],
+  "skippedCommands": [
+    [
+      "npm",
+      "run",
+      "test:data"
+    ]
+  ],
+  "finishedAt": "2026-10-17T04:39:48.170Z",
+  "inputsUnchanged": true,
+  "exitCode": 1
+}

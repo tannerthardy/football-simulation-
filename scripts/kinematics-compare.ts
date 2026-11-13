@@ -52,6 +52,8 @@ let pressured = 0;
 let dropbacks = 0;
 const pocket: number[] = [];
 const dl05: number[] = [];
+const dl10: number[] = [];
+const ybc: number[] = [];
 const toLos: number[] = [];
 const handoffT: number[] = [];
 const runMaxA: Record<string, number[]> = {};
@@ -151,9 +153,12 @@ for (let g = 0; g < Number(gamesStr); g++) {
         const ol = rp.players.map((pl, i) => [pl, i] as const).filter(([pl]) => GROUP[pl.slot] === 'OL');
         pocket.push(mean(ol.map(([, i]) => los - F[k].agents[i * 3])));
       }
-      const k05 = frameAt(0.5);
+      const k05 = frameAt(0.5), k10 = frameAt(1.0);
       rp.players.forEach((pl, i) => {
-        if (GROUP[pl.slot] === 'DL') dl05.push(speeds(i)[k05]);
+        if (GROUP[pl.slot] === 'DL') {
+          dl05.push(speeds(i)[k05]);
+          dl10.push(los - F[k10].agents[i * 3]);
+        }
       });
     }
     if (p.kind === 'run') {
@@ -170,6 +175,9 @@ for (let g = 0; g < Number(gamesStr); g++) {
       }
       const ho = ev.find((e) => e.type === 'handoff');
       if (ho) handoffT.push(ho.t);
+      // First contact on the carrier, located where he was (as tracking's first_contact).
+      const fc = ev.find((e) => e.type === 'carrier_contact' && e.pos);
+      if (fc?.pos) ybc.push(fc.pos.x - los);
       const ci = ho?.b ?? ho?.a;
       if (ho && ci !== undefined) {
         for (const f of F) if (f.t >= ho.t && f.agents[ci * 3] >= los) {
@@ -217,6 +225,7 @@ row('defender within 2 yd of QB', `${((100 * pressured) / dropbacks).toFixed(1)}
 row('time to that pressure p50', f2(quant(pressureT, 0.5)), `${t25.pressure.timeToPressure.p50}`);
 row('pocket depth at 2.5 s p50', f2(quant(pocket, 0.5)), `${t25.pocketDepthAt2_5s.p50}`);
 row('DL speed at 0.5 s p50 / p90', `${f2(quant(dl05, 0.5))} / ${f2(quant(dl05, 0.9))}`, `${t25.dlSpeedAt0_5s.p50} / ${t25.dlSpeedAt0_5s.p90}`);
+row('DL depth past LOS at 1.0 s p10/p50/p90', `${f2(quant(dl10, 0.1))} / ${f2(quant(dl10, 0.5))} / ${f2(quant(dl10, 0.9))}`, `${t25.dlDepthAt1_0s.p10} / ${t25.dlDepthAt1_0s.p50} / ${t25.dlDepthAt1_0s.p90}`);
 row('run: handoff time p50', f2(quant(handoffT, 0.5)), `${t25.runHandoffTime.p50}`);
 row('run: time to reach LOS p50', f2(quant(toLos, 0.5)), `${t25.runTimeToLos.p50}`);
 for (const g of ['RB', 'WR', 'CB', 'S', 'LB', 'DL', 'OL']) {
@@ -227,4 +236,5 @@ for (const g of ['RB', 'WR', 'CB', 'S', 'LB', 'DL', 'OL']) {
   row(`run-play max speed ${g} mph p50/p90`, `${mph(quant(s, 0.5))} / ${mph(quant(s, 0.9))}`, r ? `${r.p50mph} / ${r.p90mph}` : '—');
   row(`run-play max accel ${g} p50/p90`, `${f2(quant(a, 0.5))} / ${f2(quant(a, 0.9))}`, ra ? `${ra.p50} / ${ra.p90}` : '—');
 }
+row('run: yards before first contact p10/p50/p90 (mean)', `${f2(quant(ybc, 0.1))} / ${f2(quant(ybc, 0.5))} / ${f2(quant(ybc, 0.9))} (${f2(mean(ybc))})`, `${t25.runYardsBeforeContact.p10} / ${t25.runYardsBeforeContact.p50} / ${t25.runYardsBeforeContact.p90} (${t25.runYardsBeforeContact.mean})`);
 console.log(`\nNFL 2022 run game: ${L25.running.ypc} YPC, ${L25.running.stuffPct}% stuffed, ${L25.running.pct10plus}% 10+; YBC (first contact) mean ${t25.runYardsBeforeContact.mean}`);

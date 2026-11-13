@@ -1,0 +1,11 @@
+{
+  "input": "viewer/inspection-room.html",
+  "output": "viewer/inspection-room.html",
+  "source": "23fd4c510883618b454f75354cfafcd7540c0b6c08de0c4906358cb1e9769296",
+  "entries": 6,
+  "telemetryRoundtrips": 6,
+  "originalBytes": 10225663,
+  "compactBytes": 1394932,
+  "outerFieldsUnchanged": true,
+  "metadataUnchanged": true
+}

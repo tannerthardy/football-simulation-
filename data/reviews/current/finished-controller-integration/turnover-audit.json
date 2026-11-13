@@ -1,0 +1,713 @@
+{
+  "schema": "matched-game-possession-audit-v1",
+  "inputSha256": "fd67d00a40fbcf90ca78297946e415a7dd62185034dc4ed9894ff045da3e8c80",
+  "games": [
+    {
+      "game": "candidate/zone-reference",
+      "commit": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+      "expectedByPossessionHistory": {
+        "H1": 0,
+        "A1": 0
+      },
+      "boxTurnovers": {
+        "H1": 0,
+        "A1": 0
+      },
+      "playerInterceptionsPlusLostFumbles": {
+        "H1": 0,
+        "A1": 0
+      },
+      "historyMatchesBox": true,
+      "witnesses": []
+    },
+    {
+      "game": "baseline/zone-reference",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "expectedByPossessionHistory": {
+        "H1": 2,
+        "A1": 1
+      },
+      "boxTurnovers": {
+        "H1": 2,
+        "A1": 1
+      },
+      "playerInterceptionsPlusLostFumbles": {
+        "H1": 2,
+        "A1": 1
+      },
+      "historyMatchesBox": true,
+      "witnesses": [
+        {
+          "index": 128,
+          "call": "Gun Doubles \u2014 Smash",
+          "offense": "A1",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "A1",
+              "gainingPlayer": "H1-LB1",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "A1-QB1",
+              "how": "snap",
+              "startX": 36,
+              "endX": 33.12656389272738,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "H1-LB1",
+              "how": "interception",
+              "startX": 52.12296994613863,
+              "endX": 40.149330723342686,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "H1-LB1",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 144,
+          "call": "Gun Empty \u2014 Stick",
+          "offense": "H1",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H1",
+              "gainingPlayer": "A1-CB2",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H1-QB3",
+              "how": "snap",
+              "startX": 26.200000000000003,
+              "endX": 23.994456141136094,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A1-CB2",
+              "how": "interception",
+              "startX": 37.04733199487596,
+              "endX": 34.446569174720096,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A1-CB2",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 152,
+          "call": "Singleback Twin TE \u2014 Drive",
+          "offense": "H1",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H1",
+              "gainingPlayer": "A1-LB5",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H1-QB3",
+              "how": "snap",
+              "startX": 36.4,
+              "endX": 31.085289765507845,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A1-LB5",
+              "how": "interception",
+              "startX": 43.59930557112982,
+              "endX": 43.81904568082216,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A1-LB5",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        }
+      ]
+    },
+    {
+      "game": "baseline/spread-air",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "expectedByPossessionHistory": {
+        "H2": 5,
+        "A2": 2
+      },
+      "boxTurnovers": {
+        "H2": 4,
+        "A2": 1
+      },
+      "playerInterceptionsPlusLostFumbles": {
+        "H2": 5,
+        "A2": 1
+      },
+      "historyMatchesBox": false,
+      "witnesses": [
+        {
+          "index": 22,
+          "call": "Gun Spread \u2014 Slant-Flat",
+          "offense": "H2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H2",
+              "gainingPlayer": "A2-CB1",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            },
+            {
+              "from": "D",
+              "to": "O",
+              "losingTeam": "A2",
+              "gainingPlayer": "H2-WR6",
+              "how": "recovery",
+              "fumbler": "A2-CB1",
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H2-QB1",
+              "how": "snap",
+              "startX": 50.15,
+              "endX": 48.67800800827884,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A2-CB1",
+              "how": "interception",
+              "startX": 65.86407524901388,
+              "endX": 65.86407524901388,
+              "end": "fumble"
+            },
+            {
+              "team": "O",
+              "carrier": "H2-WR6",
+              "how": "recovery",
+              "startX": 66.51475056254655,
+              "endX": 66.51475056254655,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A2-CB1",
+            "fumbledBy": null,
+            "fumbleLost": true,
+            "fumbleRecoveredBy": "H2-WR6"
+          }
+        },
+        {
+          "index": 26,
+          "call": "Gun Doubles \u2014 Dagger",
+          "offense": "H2",
+          "rawOutcome": "touchdown",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H2",
+              "gainingPlayer": "A2-CB2",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H2-QB1",
+              "how": "snap",
+              "startX": 89.25,
+              "endX": 86.35197148370445,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A2-CB2",
+              "how": "interception",
+              "startX": 109.69285663956539,
+              "endX": 9.895508692139165,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A2-CB2",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 49,
+          "call": "Gun Wing \u2014 Mesh",
+          "offense": "H2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H2",
+              "gainingPlayer": "A2-LB5",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H2-QB1",
+              "how": "snap",
+              "startX": 75.8,
+              "endX": 72.98809594394855,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A2-LB5",
+              "how": "interception",
+              "startX": 87.2864258978378,
+              "endX": 80.64272364775631,
+              "end": "fumble"
+            },
+            {
+              "team": "D",
+              "carrier": "A2-EDGE2",
+              "how": "recovery",
+              "startX": 80.97752676658459,
+              "endX": 80.97752676658459,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A2-LB5",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": "A2-EDGE2"
+          }
+        },
+        {
+          "index": 50,
+          "call": "Gun Spread \u2014 Levels",
+          "offense": "A2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "A2",
+              "gainingPlayer": "H2-S1",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "A2-QB2",
+              "how": "snap",
+              "startX": 34.02247323341541,
+              "endX": 31.128666869205336,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "H2-S1",
+              "how": "interception",
+              "startX": 51.73835383538852,
+              "endX": 51.73835383538852,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "H2-S1",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 117,
+          "call": "Gun Empty \u2014 Dagger",
+          "offense": "H2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H2",
+              "gainingPlayer": "A2-CB3",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H2-QB1",
+              "how": "snap",
+              "startX": 20.5,
+              "endX": 17.49843522610038,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A2-CB3",
+              "how": "interception",
+              "startX": 40.17738169344888,
+              "endX": 40.17738169344888,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A2-CB3",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 145,
+          "call": "Gun Trey (TE attached) \u2014 Four Verticals",
+          "offense": "H2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "historical physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "H2",
+              "gainingPlayer": "A2-CB3",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "H2-QB1",
+              "how": "snap",
+              "startX": 70.1,
+              "endX": 67.28851084786581,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "A2-CB3",
+              "how": "interception",
+              "startX": 90.98403583344785,
+              "endX": 93.247992986173,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "A2-CB3",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        }
+      ]
+    },
+    {
+      "game": "candidate/spread-air",
+      "commit": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+      "expectedByPossessionHistory": {
+        "H2": 1,
+        "A2": 4
+      },
+      "boxTurnovers": {
+        "H2": 1,
+        "A2": 4
+      },
+      "playerInterceptionsPlusLostFumbles": {
+        "H2": 1,
+        "A2": 4
+      },
+      "historyMatchesBox": true,
+      "witnesses": [
+        {
+          "index": 20,
+          "call": "Pistol Doubles \u2014 Stick",
+          "offense": "A2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "A2",
+              "gainingPlayer": "H2-S1",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            },
+            {
+              "from": "D",
+              "to": "O",
+              "losingTeam": "H2",
+              "gainingPlayer": "A2-WR2",
+              "how": "recovery",
+              "fumbler": "H2-S1",
+              "matchedFumble": true
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "A2-QB2",
+              "how": "snap",
+              "startX": 57.7467234177851,
+              "endX": 54.54354826048938,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "H2-S1",
+              "how": "interception",
+              "startX": 70.31042683314959,
+              "endX": 70.31042683314959,
+              "end": "fumble"
+            },
+            {
+              "team": "O",
+              "carrier": "A2-WR2",
+              "how": "recovery",
+              "startX": 68.43691526602474,
+              "endX": 68.43691526602474,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "H2-S1",
+            "fumbledBy": null,
+            "fumbleLost": true,
+            "fumbleRecoveredBy": "A2-WR2"
+          }
+        },
+        {
+          "index": 22,
+          "call": "Gun Trips \u2014 Flood",
+          "offense": "A2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "A2",
+              "gainingPlayer": "H2-S2",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "A2-QB2",
+              "how": "snap",
+              "startX": 53.43691526602474,
+              "endX": 50.113532852145696,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "H2-S2",
+              "how": "interception",
+              "startX": 61.6251876932373,
+              "endX": 60.40143378885173,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "H2-S2",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 41,
+          "call": "Gun Trips \u2014 Slant-Flat",
+          "offense": "A2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "A2",
+              "gainingPlayer": "H2-CB3",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "A2-QB2",
+              "how": "snap",
+              "startX": 32.75469809402858,
+              "endX": 31.339871514128326,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "H2-CB3",
+              "how": "interception",
+              "startX": 44.92588455624055,
+              "endX": 44.92588455624055,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "H2-CB3",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        },
+        {
+          "index": 62,
+          "call": "Gun Trips \u2014 Speed Outs",
+          "offense": "A2",
+          "rawOutcome": "tackle",
+          "officialTreatment": "physical",
+          "transitions": [
+            {
+              "from": "O",
+              "to": "D",
+              "losingTeam": "A2",
+              "gainingPlayer": "H2-CB3",
+              "how": "interception",
+              "fumbler": null,
+              "matchedFumble": false
+            }
+          ],
+          "nativeLedgerExtras": [],
+          "segments": [
+            {
+              "team": "O",
+              "carrier": "A2-QB2",
+              "how": "snap",
+              "startX": 82.19999999999999,
+              "endX": 80.71896263863896,
+              "end": "pass"
+            },
+            {
+              "team": "D",
+              "carrier": "H2-CB3",
+              "how": "interception",
+              "startX": 94.41720892161909,
+              "endX": 93.24553863986552,
+              "end": "dead"
+            }
+          ],
+          "historicalSingular": {
+            "interceptedBy": "H2-CB3",
+            "fumbledBy": null,
+            "fumbleLost": null,
+            "fumbleRecoveredBy": null
+          }
+        }
+      ]
+    }
+  ],
+  "candidateFailures": [],
+  "historicalBaselineFailures": [
+    {
+      "game": "baseline/spread-air",
+      "reason": "Team turnover box omits achieved possession changes",
+      "expected": {
+        "H2": 5,
+        "A2": 2
+      },
+      "actual": {
+        "H2": 4,
+        "A2": 1
+      },
+      "delta": {
+        "H2": 1,
+        "A2": 1
+      },
+      "preservedOriginal": true
+    }
+  ],
+  "contract": "Count each achieved change of team possession after official enforcement, even when the original offense regains the ball. A final-possession Boolean cannot replace this history.",
+  "oldSource": "2c98bed94adad8087c65f381d4090444ad283985:src/game/game.ts:998 (if(r.turnover) team.turnovers++)",
+  "newSource": "PR188 src/game/possession-stats.ts deriveOfficialPossessionStats; src/game/game.ts recordStats applies O and D credits separately",
+  "limitations": [
+    "Only scrimmage box turnovers are reconciled; native generated kick possession changes do not carry equivalent player box statistics.",
+    "Historical missing return-fumbler singular fields are unavailable, not evidence that an achieved D\u2192O change did not occur.",
+    "Use explicit officialCredit segments/stats when supplied. An uncredited raw nullified ending never supplies an official takeaway."
+  ],
+  "candidatePassed": true,
+  "historicalBaselinePassed": false,
+  "status": "candidate-pass-with-historical-baseline-failures"
+}

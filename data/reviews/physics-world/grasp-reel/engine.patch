@@ -1,0 +1,29 @@
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 80de47a..8ed3a24 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -969,6 +969,15 @@ export class World {
+       const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i],this.gripCapacity(jt))*h;
+       const fraction=share>0?this.supportImpulse(jt,-nx*impulse,-ny*impulse,h,true)
+         :this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
++      // Reeling is a bounded force across h, like hands and strikes. Center
++      // its achieved body impulse after the shared force/work limits. A lower
++      // attachment also moves support through supportImpulse above; its chart,
++      // motor work and passive capture retain their own integration rules.
++      const x = -nx * impulse * fraction, y = -ny * impulse * fraction;
++      this.travelAdjustX[i] += .5 * x / this.mass[i];
++      this.travelAdjustY[i] += .5 * y / this.mass[i];
++      this.travelAdjustX[j] -= .5 * x / this.mass[j];
++      this.travelAdjustY[j] -= .5 * y / this.mass[j];
+       this.reels.set(jt,impulse*fraction);
+       report.armImpulse[i]+=impulse*fraction;
+       // Active reel and passive tension act through the same hand position.
+@@ -1034,7 +1043,7 @@ export class World {
+       }
+     }
+ 
+-    // ---- 3. integrate positions (ground and sustained hands use midpoint
++    // ---- 3. integrate positions (ground and sustained torso forces use midpoint
+     // velocity; instantaneous torso impacts keep their impulse timing)
+     for (const i of ids) {
+       const b = bs[i];

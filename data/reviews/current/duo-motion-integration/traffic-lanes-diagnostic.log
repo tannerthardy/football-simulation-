@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit ae063315d484ae67b033622155b0699e36fa35a3, source 544fea1cc8cd60649d438613e575c914a66424d9357288f8c92a110d73238162
+Running node node_modules/vitest/vitest.mjs run --config out/duo-motion-integration/traffic-lanes-diagnostic.config.ts
+
+ RUN  v3.2.4 /workspace/football-duo-motion-integration
+
+ ✓ out/duo-motion-integration/traffic-lanes-diagnostic.test.ts (1 test) 83ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:47:54
+   Duration  1.09s (transform 645ms, setup 0ms, collect 835ms, tests 83ms, environment 0ms, prepare 60ms)
+
+Validation receipt: out/duo-motion-integration/traffic-lanes-diagnostic-launcher.json; exit 0

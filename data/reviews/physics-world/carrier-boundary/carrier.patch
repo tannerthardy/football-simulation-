@@ -1,0 +1,40 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index 2253416..9f95674 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -87,6 +87,7 @@ export class BallCarrier implements Behavior {
+   private nextEval = 0;
+   private visionNoise: number;
+   private plannedExit = false;
++  private boundaryRecovery = false;
+ 
+   constructor(
+     private readonly opts: CarrierOptions = {},
+@@ -172,7 +173,8 @@ export class BallCarrier implements Behavior {
+       sim.event('squeeze', a, null, 'turn shoulders through a narrow opening');
+     }
+     const vel = { x: Math.cos(h) * speed, y: Math.sin(h) * speed };
+-    if (!this.plannedExit) {
++    if (this.plannedExit) this.boundaryRecovery = false;
++    else {
+       const inward = a.pos.y < FIELD_WIDTH / 2 ? 1 : -1;
+       const distance = Math.min(a.pos.y, FIELD_WIDTH - a.pos.y);
+       const outward = Math.max(0, -a.vel.y * inward);
+@@ -180,7 +182,16 @@ export class BallCarrier implements Behavior {
+       // Lane hysteresis must not drift across the boundary while intending
+       // to stay in bounds. Recover before lateral momentum consumes the room;
+       // the integrator still decides whether he can physically save it.
+-      if (distance < stopping + 0.35 && vel.y * inward < 1) vel.y = inward;
++      if (a.vel.y * inward >= 0) this.boundaryRecovery = false;
++      if (distance < stopping + 0.35 && vel.y * inward < 1) this.boundaryRecovery = true;
++      if (this.boundaryRecovery) {
++        // Finish cancelling outward momentum before choosing a new lane. A
++        // shrinking stopping estimate must not alternate braking and another
++        // sprint toward the boundary. Asking for more downfield acceleration
++        // at the same time also spends traction needed for this redirect.
++        vel.x = a.vel.x;
++        vel.y = inward * Math.max(1, outward);
++      }
+     }
+     return { vel, cutSkill, squeeze };
+   }

@@ -1,0 +1,638 @@
+{
+  "schema": "recent-controller-integration-final-v1",
+  "pr": 105,
+  "previousAcceptedDevelop": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "testedCommit": "75c76583e5cc5a3a4039f0626cd7c7d88df44573",
+  "sourceSha256": "cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318",
+  "validationSha256": "b64484633e311f9d5344bddc82cd0892fc99ccde1af27557d976970c5372183c",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1816,
+    "typescriptFiles": 156,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 92,
+      "title": "Reuse identical movement forecasts within one spacing decision",
+      "head": "8cd2cfe87c4cf2de82c2e79837fda2f5642f5eed",
+      "base": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "branch": "codex/movement-followthrough",
+      "state": "open",
+      "draft": true,
+      "discussion": [
+        {
+          "id": 6208919743,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/92#issuecomment-6208919743"
+        },
+        {
+          "id": 6208925061,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/92#issuecomment-6208925061"
+        },
+        {
+          "id": 6209164547,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/92#issuecomment-6209164547"
+        },
+        {
+          "id": 6209474961,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/92#issuecomment-6209474961"
+        },
+        {
+          "id": 6210054764,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/92#issuecomment-6210054764"
+        }
+      ],
+      "status": "included for exact verification",
+      "files": [
+        "src/sim/spacing.ts",
+        "test/spacing-forecast-reuse.test.ts",
+        "test/fixtures/spacing-forecast-reference.json"
+      ],
+      "authorSourceSha256": "1a88ed165b4289b721ab65c1ea5f78f1c1bd2f4c10f4e0dbd17a28d1bc9c30a1",
+      "review": {
+        "reviewer": "Integration, independent of contributor",
+        "decision": "ACCEPT",
+        "reason": "Exact Intent-object cache is allocated lazily inside each actor iteration after observations/projection, while own body/time remain fixed. Both selectors only read detached samples. No cross-call/body/actor lifetime or option/score change. All original seven requests and full own goals remain exact in composed ten-check screen.",
+        "limits": "No whole-engine speedup or additional avoidance claim; historical grazing fixture not rerun."
+      }
+    },
+    {
+      "pr": 94,
+      "title": "Keep neighboring teammate spacing requests consistent during free footwork",
+      "head": "4564a66c7b349975ad336ceb122a2aebba9863d1",
+      "base": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "branch": "codex/contact-approach-motion",
+      "state": "open",
+      "draft": true,
+      "discussion": [
+        {
+          "id": 6209871126,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6209871126"
+        },
+        {
+          "id": 6209951320,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6209951320"
+        },
+        {
+          "id": 6210001625,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210001625"
+        },
+        {
+          "id": 6210054221,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210054221"
+        },
+        {
+          "id": 6210211410,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210211410"
+        },
+        {
+          "id": 6210974101,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210974101"
+        },
+        {
+          "id": 6211659607,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6211659607"
+        }
+      ],
+      "status": "included for exact verification",
+      "files": [
+        "src/sim/spacing.ts",
+        "test/joint-spacing.test.ts",
+        "test/fixtures/joint-spacing.json"
+      ],
+      "authorSourceSha256": "cf081fb58fc54fe427a5e967e17cb283b55b7b0ac0ca5cf89b280719e65888df",
+      "review": {
+        "reviewer": "Run",
+        "decision": "ACCEPT",
+        "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210001625",
+        "reviewRef": "refs/review/94-run-review"
+      }
+    },
+    {
+      "pr": 96,
+      "title": "Fit planned second-level climbs on the acquired near strike",
+      "head": "e3fabe0c16e70358fb1bf527d490b8130d15cd0f",
+      "base": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "branch": "codex/planned-climb-fit",
+      "state": "open",
+      "draft": true,
+      "discussion": [
+        {
+          "id": 6210002316,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210002316"
+        },
+        {
+          "id": 6210032608,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210032608"
+        },
+        {
+          "id": 6210210423,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210210423"
+        },
+        {
+          "id": 6210590243,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210590243"
+        },
+        {
+          "id": 6210772910,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210772910"
+        },
+        {
+          "id": 6210969886,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210969886"
+        },
+        {
+          "id": 6211298193,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6211298193"
+        },
+        {
+          "id": 6211552474,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6211552474"
+        },
+        {
+          "id": 6211992132,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6211992132"
+        },
+        {
+          "id": 6212040491,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6212040491"
+        },
+        {
+          "id": 6212359502,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6212359502"
+        },
+        {
+          "id": 6212823240,
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6212823240"
+        }
+      ],
+      "status": "included for exact verification",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "test/planned-climb-fit.test.ts",
+        "test/fixtures/planned-climb-fit.json.gz"
+      ],
+      "authorSourceSha256": "6d16f77e41a5f02805b110da04cf09b767c0c2bf2b95e0cc66857db31cf5ccc7",
+      "review": {
+        "reviewer": "Do-It-All",
+        "decision": "ACCEPT",
+        "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210210423",
+        "reviewPin": "22b3bac3ba35ae3945faec53d45d69f519cee080"
+      }
+    },
+    {
+      "pr": 98,
+      "title": "Install a clear initial stance for pressed man defenders beside the front",
+      "head": "cf320b17a32be7c4925eac9a3e0ce7fa3bc450f2",
+      "base": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "branch": "codex/press-front-stance",
+      "state": "open",
+      "draft": true,
+      "discussion": [],
+      "status": "included for exact verification",
+      "files": [
+        "src/playbook/alignment.ts",
+        "src/sim/playsim.ts",
+        "test/press-front-stance.test.ts",
+        "test/fixtures/press-front-stance.json"
+      ],
+      "authorSourceSha256": "34375c7813ba221a589e50c63690f790958c9b8627431f6903a2526a1cb5b744",
+      "review": {
+        "reviewer": "Integration, independent of contributor; contributor root review also preserved",
+        "decision": "ACCEPT",
+        "reason": "Actual initial teammate circles define forbidden depth intervals at fixed shade. Nearest feasible endpoint/LOS boundary enumerates nearest legal starting stance; moved bodies remain clear of all others. Only assigned pressed DB roles, before history/World or finite presentation movement. No runtime teleport, radius/front/receiver/press change. Idempotence, clear/excluded roles and first acquired picture/idle-front controls are retained.",
+        "limits": "A002 earlier release loses Mike load and gives earlier DE tackle/-0.86yd. This is initial-state correctness, not an offensive benefit; full raw tapes remain local with published hashes/reproducer."
+      }
+    },
+    {
+      "pr": 103,
+      "title": "Keep live D-gap target outside the full acquired line surface",
+      "head": "3f1c546b4e4852b9f20bb5a9e622140cfe357186",
+      "base": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "branch": "codex/outer-d-gap",
+      "state": "open",
+      "draft": true,
+      "discussion": [],
+      "status": "included for exact verification",
+      "files": [
+        "src/sim/live-gaps.ts",
+        "test/outer-d-gap.test.ts",
+        "test/fixtures/outer-d-gap.json",
+        "test/fixtures/outer-d-gap-accepted.json"
+      ],
+      "authorSourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "review": {
+        "reviewer": "Integration, independent of contributor",
+        "decision": "ACCEPT",
+        "reason": "D is the outside gap; its existing width/velocity already use the last sorted outward boundary. Position now names that same boundary. A/B/C, n<=3/sparse formulas, center-departure information and #63 B identity remain. Consumed-picture mirrors/private getters/accepted A039 and preserved controls support identity correctness.",
+        "limits": "Contact is later but LOS entry slower in A039; A003 unfinished behind LOS. No new Mike block, rushing or yardage claim. Original invalidated collector receipt remains failed."
+      }
+    }
+  ],
+  "protectedFiles": {
+    "src/sim/spacing.ts": {
+      "sha256": "93917056462da553dc8bde5241a7cf15d0827681a67032fc8ecc79af0e988424",
+      "reviewedPRs": [
+        92,
+        94
+      ]
+    },
+    "test/spacing-forecast-reuse.test.ts": {
+      "sha256": "4e49d79a35a21b2e09926e87a85bff8eafac7dca788630886396b1b43fb4b139",
+      "reviewedPRs": [
+        92
+      ]
+    },
+    "test/fixtures/spacing-forecast-reference.json": {
+      "sha256": "00d23da84c536bc5bfff2bf0a4a30d66c3150275fb470260309828299a7fbc70",
+      "reviewedPRs": [
+        92
+      ]
+    },
+    "test/joint-spacing.test.ts": {
+      "sha256": "8613de9f8fb04f238cec34e11b52dde09cf06410d34edaf0bfa5fd78d83d3aa5",
+      "reviewedPRs": [
+        94
+      ]
+    },
+    "test/fixtures/joint-spacing.json": {
+      "sha256": "05afa9dd4b7402e9f0950aec543df6b2f5f60a7e25cdf89274959415873836d0",
+      "reviewedPRs": [
+        94
+      ]
+    },
+    "src/sim/behaviors/blocking.ts": {
+      "sha256": "f076b6c5bac4a5f9fe864da5184703a2a978f0dc1a375e6bbf2c87e1e606ada7",
+      "reviewedPRs": [
+        96
+      ]
+    },
+    "test/planned-climb-fit.test.ts": {
+      "sha256": "ff44aeddfdbc4e786e0a865f94e433f08ec98c0414b0679ff9e539b1522d7c70",
+      "reviewedPRs": [
+        96
+      ]
+    },
+    "test/fixtures/planned-climb-fit.json.gz": {
+      "sha256": "59be1a6ccc7bcf994c64c8275c6b46b5761f3fbdb8b271a0020ec306fbc8f67f",
+      "reviewedPRs": [
+        96
+      ]
+    },
+    "src/playbook/alignment.ts": {
+      "sha256": "15f6989125ceec6fd486dbbd6cfea539ab9a408e2070487f253b2cafbb1740b4",
+      "reviewedPRs": [
+        98
+      ]
+    },
+    "src/sim/playsim.ts": {
+      "sha256": "1891e71d17320965695ade98f367ee1c3bbf2f7b69225efa6feaf3dd07b68f16",
+      "reviewedPRs": [
+        98
+      ]
+    },
+    "test/press-front-stance.test.ts": {
+      "sha256": "6be6c96572acbada8fa30710e1e8c4ec9e6a1ebda64b4a20137751fa9a0ce85c",
+      "reviewedPRs": [
+        98
+      ]
+    },
+    "test/fixtures/press-front-stance.json": {
+      "sha256": "9fb96ae89b68928357a375f679a0b3e933505a4da085a585741cad00d939d2f5",
+      "reviewedPRs": [
+        98
+      ]
+    },
+    "src/sim/live-gaps.ts": {
+      "sha256": "76863170c839d161cb2c44da5a9d7ba5b3b25f181d57add99fed769d0c78ec1d",
+      "reviewedPRs": [
+        103
+      ]
+    },
+    "test/outer-d-gap.test.ts": {
+      "sha256": "3a547f00c1ae5da556f9aee4b41b2f36bf5f955bc3ebf7a62297b16989f8eab6",
+      "reviewedPRs": [
+        103
+      ]
+    },
+    "test/fixtures/outer-d-gap.json": {
+      "sha256": "46d80db785f699a6ce8f0712e51e7686d7d27926c59eb03fe01891bb495e73d0",
+      "reviewedPRs": [
+        103
+      ]
+    },
+    "test/fixtures/outer-d-gap-accepted.json": {
+      "sha256": "441468a22e362632cab93c8111a82bab0725cf1c6d7bba5fd0d555a107725838",
+      "reviewedPRs": [
+        103
+      ]
+    }
+  },
+  "independentReviews": {
+    "92": {
+      "reviewer": "Integration, independent of contributor",
+      "decision": "ACCEPT",
+      "reason": "Exact Intent-object cache is allocated lazily inside each actor iteration after observations/projection, while own body/time remain fixed. Both selectors only read detached samples. No cross-call/body/actor lifetime or option/score change. All original seven requests and full own goals remain exact in composed ten-check screen.",
+      "limits": "No whole-engine speedup or additional avoidance claim; historical grazing fixture not rerun."
+    },
+    "94": {
+      "reviewer": "Run",
+      "decision": "ACCEPT",
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/94#issuecomment-6210001625",
+      "reviewRef": "refs/review/94-run-review"
+    },
+    "96": {
+      "reviewer": "Do-It-All",
+      "decision": "ACCEPT",
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/96#issuecomment-6210210423",
+      "reviewPin": "22b3bac3ba35ae3945faec53d45d69f519cee080"
+    },
+    "98": {
+      "reviewer": "Integration, independent of contributor; contributor root review also preserved",
+      "decision": "ACCEPT",
+      "reason": "Actual initial teammate circles define forbidden depth intervals at fixed shade. Nearest feasible endpoint/LOS boundary enumerates nearest legal starting stance; moved bodies remain clear of all others. Only assigned pressed DB roles, before history/World or finite presentation movement. No runtime teleport, radius/front/receiver/press change. Idempotence, clear/excluded roles and first acquired picture/idle-front controls are retained.",
+      "limits": "A002 earlier release loses Mike load and gives earlier DE tackle/-0.86yd. This is initial-state correctness, not an offensive benefit; full raw tapes remain local with published hashes/reproducer."
+    },
+    "103": {
+      "reviewer": "Integration, independent of contributor",
+      "decision": "ACCEPT",
+      "reason": "D is the outside gap; its existing width/velocity already use the last sorted outward boundary. Position now names that same boundary. A/B/C, n<=3/sparse formulas, center-departure information and #63 B identity remain. Consumed-picture mirrors/private getters/accepted A039 and preserved controls support identity correctness.",
+      "limits": "Contact is later but LOS entry slower in A039; A003 unfinished behind LOS. No new Mike block, rushing or yardage claim. Original invalidated collector receipt remains failed."
+    }
+  },
+  "composition": {
+    "92and94": "Text overlap resolved only by threading exact92 forecast closure into exact94 main loop; selector bodies match92 and joint projection/main loop minus cache match94 byte-for-byte. Both new files remain exact author blobs.",
+    "94and96": "Existing two reacting Under/A030 prefixes remain reused as a qualified partial composition, sourceabeb4f8. They are not relabeled as the entire five-fix native candidate.",
+    "98and103": "Independent initial-state and acquired outside-objective corrections deliberately change some inputs/trajectories. Component native evidence stays source-qualified; no claim that all old trajectories survive the combined tree."
+  },
+  "checks": {
+    "only16ProtectedFilesDifferFromAcceptedBase": true,
+    "fiveRuntimeFilesOnly": true,
+    "unsharedBlobsEqualReviewedAuthors": true,
+    "shared92SelectorCacheAnd94ProjectionMainLoopVerified": true,
+    "all57AdvertisedPayloadsIndependentlyHashVerified": true,
+    "noProtectedInputDriftDuringVerification": true,
+    "physicsCapabilitiesDefaultsFlagsDependenciesToolingUnchanged": true,
+    "priorBranchesEvidenceAndReceiptsPreserved": true
+  },
+  "adverseEvidenceAndLimits": [
+    "#92 seven saved commands/full own goals exactly retained;10 fewer previews/120 scratch steps removed. No whole-engine speedup or additional avoidance claim.",
+    "#94 A02811 teammate impacts removed but runner progress.826yd slower at cutoff. Free-footwork consistency, not all blocking/runner-choice/ending improvement; loaded trial rejected.",
+    "#96 Under RT/Mike protection supported with later first load; A030 useful collection remains but old75yd TD becomes15.45yd tackle with changed third-wrap execution. A002 defensive edge win/A015 Mike miss remain.",
+    "#98 initial pressed DB nonoverlap is correct even though A002 loses Mike load, releases earlier, concedes earlier DE grasp/tackle and ends-.86yd; source-qualified reference was live2.80, not a completed0yd run.",
+    "#103 D goal is outside the same acquired surface as width/velocity. A039 contact later but LOS2.35\u21922.60; A003 unfinished just behindLOS. No new Mike block or rushing/yardage benefit.",
+    "Original native evidence and94+96 two-case interaction retain their source pins. No newly collected native five-fix panel; setup/D changes can alter initial states/trajectories. Full raw tapes not GitHub assets remain explicit with hashes/compact witnesses/reproduction.",
+    "Original expected-red, invalidated collector and rejected variants remain evidence. No whole-league realism, universal coverage/YAC or protection claim."
+  ],
+  "held": [
+    {
+      "pr": 93,
+      "title": "Diagnose coverage approach limits and the rat-role contract gap",
+      "head": "796fa888481c5a805e2b1a0c0ed12a3988bbc820",
+      "branch": "codex/coverage-approach-duty",
+      "status": "diagnosis only; source unchanged"
+    },
+    {
+      "pr": 95,
+      "title": "Cut acquired shallow crossers from installed rat coverage",
+      "head": "45c3308b82312dc9cfca86f4663507c17dc73aa2",
+      "branch": "codex/rat-crosser-duty",
+      "status": "independent review required"
+    },
+    {
+      "pr": 97,
+      "title": "Keep blocking observations provisional in match coverage",
+      "head": "1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6",
+      "branch": "codex/pass-defense-panel",
+      "status": "independent review required"
+    },
+    {
+      "pr": 99,
+      "title": "Add explicit Buck sweep, pin-pull and crack-toss development calls",
+      "head": "d212b414d3a9b6e0d85e185bd7bbaf1a2813b676",
+      "branch": "codex/perimeter-run-concepts",
+      "status": "held development prototype"
+    },
+    {
+      "pr": 100,
+      "title": "Preserve release cushion and qualify Cover3 seam delivery",
+      "head": "9f30428df552301ec25b51bade76ce4965d9fcda",
+      "branch": "codex/match-release-cushion",
+      "status": "independent review required"
+    },
+    {
+      "pr": 101,
+      "title": "Add extensive run and play-action stress suite with completed evidence",
+      "head": "4d224096739953406bcd25da9e3e8e5ddb0929d9",
+      "branch": "codex/run-playaction-stress",
+      "status": "independent review required"
+    },
+    {
+      "pr": 102,
+      "title": "End isolated run contact beyond full measured arm span",
+      "head": "7b09c65b770583d404d173972c50d7ee5ed87645",
+      "branch": "codex/run-contact-span",
+      "status": "Physics review and boundary classification required"
+    },
+    {
+      "pr": 104,
+      "title": "Use existing zone technique for installed inline blockers",
+      "head": "bcd0dc8eb5bcd26731934694b32fd068c03bfb56",
+      "branch": "codex/inline-zone-keeper",
+      "status": "independent review required"
+    }
+  ],
+  "cost": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 10.284151527
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 12.815197113999998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 198.624146947
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.8459123670000117
+      }
+    ],
+    "exactCombinedVerifications": 1,
+    "combinedCommandSeconds": 222.56940795500003,
+    "focusedSpacingOverlapChecks": 10,
+    "focusedSpacingOverlapCommandSeconds": 1.049971776,
+    "totalIntegrationCommandSeconds": 223.61937973100004,
+    "contributorsFocusedReused": [
+      25,
+      42,
+      62,
+      24,
+      20
+    ],
+    "newStandaloneNativeExecutions": 0,
+    "newPanels": 0,
+    "newEvaluationGames": 0,
+    "suiteGames": "Existing preserved game/ensemble assertions only.",
+    "noUnchangedRepeatForPublicationOrMerge": true
+  },
+  "artifacts": {
+    "extraction-94.patch": {
+      "bytes": 45624,
+      "sha256": "9b689ec3770b41742f27fd4fe7378f1233402bbeffb61e5921598674f2dab3ed"
+    },
+    "extraction-92.patch": {
+      "bytes": 14155,
+      "sha256": "efd2eb26aa917c2bc5a00e818e6ea0af9cab4b89430cead3e11b156da24281ce"
+    },
+    "extraction-103.patch": {
+      "bytes": 19911,
+      "sha256": "db76f22b0536531f985771108e8deb2fa81a41c2c1113588cdf99df9ce5163e7"
+    },
+    "final-combined.json": {
+      "bytes": 2628,
+      "sha256": "5664dffb5f9306eb7a9792b9109ab22e8fe8bdd2f632d0d5e6c383cf80959b93"
+    },
+    "pr98-comparison.json": {
+      "bytes": 106792,
+      "sha256": "2d0f175d39e0c8cbfaa1f9823f9ea5abca3fd1337aa7aa6cadd6e17209da3919"
+    },
+    "pr96-independent-review.json": {
+      "bytes": 1884,
+      "sha256": "3e31409f51b838d26b7265f2eb6bdfcef384e65db32e450e4af0062651bad121"
+    },
+    "intake.json": {
+      "bytes": 43157,
+      "sha256": "5b118b0515891b81e8e653aa3a946b65fd4c6a993340743f44e233898576afef"
+    },
+    "spacing-overlap.log": {
+      "bytes": 737,
+      "sha256": "9d098ad6eb9794ad98e16b28ef5a70f28ac94169c052c0d36f28bdc06fdbfdc2"
+    },
+    "pr103-evidence.json": {
+      "bytes": 31560,
+      "sha256": "7dc9dee448bdec63f3a69245eeba1d260b0db6b0bc0ba424521ff095646ebdcc"
+    },
+    "pr94-96-interaction.json": {
+      "bytes": 14795,
+      "sha256": "45095384d86af6a29e45ae4b91961621d0282c16388ec2e0452a8f6e0ac66d4c"
+    },
+    "final-combined.log": {
+      "bytes": 16519,
+      "sha256": "1d251adbef539b724e037fa9a926448ccfb595b211422e52a6c0c8f1cd09231c"
+    },
+    "review-requests.json": {
+      "bytes": 5406,
+      "sha256": "ddb8587857f073cf514c490398eb3919f76b08db8d578871fc0caa7d12f6fa4a"
+    },
+    "extraction-96.patch": {
+      "bytes": 13800,
+      "sha256": "d9c4f68cf5c4dcffd0dee1779783e8077ceac9848ddcbd6159071f2339856250"
+    },
+    "spacing-overlap.json": {
+      "bytes": 2469,
+      "sha256": "16fb04ccb3855f6e0cb9e4ff4fde6152dadbac645f44b77bc3cdd401b8686957"
+    },
+    "extraction-98.patch": {
+      "bytes": 14883,
+      "sha256": "ea4fb16bb7a1e90b090873981341c76b00f318909c4451f9620720cbd2c8cc75"
+    },
+    "independent-intake-review.json": {
+      "bytes": 2444,
+      "sha256": "747aefd795885e648daa9796688a10755e0c3c54635badeca462bc1b7cd9eae0"
+    }
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "decision": "Recommend routine adoption of this exact reviewed candidate after fresh refs/review/merge-tree checks. No historical/default/experimental/branch-deletion authority expansion.",
+  "nextDecision": "Held items need their named independent owner reviews; request links and prompts are recorded in existing integration queue. No waiting for them or repeated broad campaign."
+}

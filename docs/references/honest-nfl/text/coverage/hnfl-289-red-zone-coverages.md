@@ -1,0 +1,181 @@
+# HNFL-289 — RED ZONE COVERAGES
+
+[Original image](../../images/coverage/hnfl-289-red-zone-coverages.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Red Hercules, Fence and Blanket compressed-field coverages
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Hercules is vision three-deep, Fence is key-and-match, Blanket is pressure with fewer underneath defenders. Same red-zone context does not make them the same call.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [Pressures / simulated pressures / fire zones](../../CONCEPTS.md#pressure)
+
+Original archive path(s): `HonestNFL/HRxVRiqbsAEzI1B.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+RED ZONE COVERAGES
+
+THESE ARE THE COVERAGES WE EXPECT TO SEE FROM ABOUT THE +15 YARD LINE TO THE GOAL LINE THAT DIFFER
+
+FROM NORMAL FIELD COVERAGES DUE TO THE COMPRESSION OF SPACE TO WORK WITH. A “RED” TAG IN THE
+
+CALL NAME DENOTES THE RED ZONE VERSION OF THE COVERAGE (EX. “RED 2 WILD”).
+
+DROP 8 VISION & BREAK ZONE
+
+RED HERCULES
+
+“RED HERCULES” A 3 DEEP, 5 UNDER COVER 3 FAMILY RED
+
+ZONE COVERAGE FROM A SPLIT SAFETY SHELL THAT
+
+RED MIDDLE 1/3
+
+INVERTS BOTH SAFETIES WITH THE WILL BACKER AND IS
+
+RED CLUE 1/3
+
+RED CLUE 1/3
+
+PLAYED WITH “VISION & BREAK” PRINCIPLES.
+
+CORNERS ARE BOTH #2-TO-1 DEEP 1/3 TECHNIQUES
+
+CURL INSERT
+
+RESPONSIBLE FOR THE VERTICALS OF #1 & #2 TO THEIR
+
+SIDE.
+
+#3 REC.
+
+HOOK
+
+SAFETIES ARE INSERTING INTO THE UNDERCOVERAGE AS
+
+Cc
+
+CURL DEFENDERS BETWEEN #2 & #3 BY FORMATION
+
+BETWEEN #2/3
+
+ae
+
+a w23
+
+APEXES (NICKEL/DIME) ARE BUZZ FLAT TECHNIQUES IN
+
+jUZZ FLAT
+
+W “jE a
+
+UNDER #1
+
+WHICH THEY CAN REROUTE #2 BEFORE BUZZING
+
+I
+
+UNDERNEATH #1 WITH A CORNER-TO-FLAT MINDSET.
+
+THE BACKER OPPOSITE THE NICKEL WILL INVERT TO THE
+
+POST WITH A TOP-DOWN, INSIDE-OUT MINDSET.
+
+© e@ somoce .
+
+DEFENSES MAY HAVE SUBTLE NUANCES TO THIS THAT
+
+ACHIEVE THE SAME RESULT. ANY OF THEM WILL BE NOTED
+
+IN THE GAME PLAN.
+
+oO ®@
+
+RED FENCE
+
+KEY & MATCH ZONE
+
+OUTERMOST
+
+OUTERMOST
+
+“RED FENCE” IS ONE OF THE MOST BASIC COVERAGES
+
+ALLEY
+
+SEAM
+
+SEAM
+
+ALLEY
+
+INNERMOST
+
+THAT CAN TAKE VARIOUS FORMS, BUT THE MOST
+
+COMMON VERSION IS A 7-ACROSS ZONE CONCEPT IN
+
+WHICH DEFENDERS STAND AT OR NEAR THE GOAL
+
+Ni
+
+Di
+
+LINE AND SORT OUT ROUTES BASED ON FINAL #1-2-
+
+3-4.
+
+°® g@ ScneCce
+
+Oo @
+
+RED BLANKET
+
+RED ZONE PRESSURE COVERAGE
+
+Post
+
+“RED BLANKET” IS A 5 DEEP, 1 UNDER ZONE
+
+PRESSURE COVERAGE THAT UTILIZES MATCH
+
+ELEMENTS BASED ON THE FINAL #1-2-3-4 AFTER
+
+OUTERMOST
+
+ALLEY
+
+ALLEY
+
+OUTERMOST
+
+ROUTE DISTRIBUTION. IT IS SIMILAR TO “FENCE” IN
+
+HOW IT BECOMES A MATCH COVERAGE LATE IN THE
+
+HOLE
+
+DOWN BASED ON ZONE DISTRIBUTION
+
+THERE ARE 5 DEFENDERS AVAILABLE TO HANDLE
+
+Cc
+
+Cc
+
+VERTICAL THREATS AS THEY DEVELOP — 4 DROPPERS
+
+AND A POST SAFETY. THEY WILL MATCH
+
+ACCORDINGLY IF NO VERTICAL THREATS DEVELOP.
+
+© eq Coucee
+
+THE LONE UNDERNEATH DEFENDER IS A HOLE
+
+DROPPER
+
+Oo @
+```

@@ -1,0 +1,73 @@
+{
+  "schema": "pr74-merged-acceptance-v1",
+  "checkedAt": "2026-10-15T21:22:50.632034+00:00",
+  "base": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "reviewedPublication": "a8dabeca3030a9760aafb21bd4a4af6e9af303e3",
+  "testedCommit": "86a8816bb685a521f60400c6a3fe12e12d02e32f",
+  "preview": "d30f66d5e162079c687fa018be72482b1a4bb67f",
+  "previewTree": "b06963d2cd0168fa4581d984a1b86ad794f700a1",
+  "entirePreviewTreeEqualsReviewedPublication": true,
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "validationSha256": "b8f620521c5bb9f58bd2b75e359bb2bbf8e9dcc635a9fea9ea2bf94ac383e622",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "sourceTestsSettingsMatchPassingReceipt": true,
+  "artifactHashesVerified": true,
+  "existingAcceptedReceiptFilesPreserved": 129,
+  "priorScopeFailureAndAdverseArtifactsPreserved": true,
+  "protectedChanges": [
+    "src/sim/behaviors/carrier.ts",
+    "test/fixtures/run-entry-information.json.gz",
+    "test/run-entry-opponent-information.test.ts"
+  ],
+  "typecheck": "pass (reused)",
+  "build": "pass (reused)",
+  "typescriptPassed": 1726,
+  "pythonPassed": 145,
+  "flagsCount": 44,
+  "componentsEnabled": true,
+  "newVerificationRuns": 0,
+  "newSimulations": 0,
+  "authorization": "User explicitly authorizes merging PR74 at reviewed publication a8dabeca3030a9760aafb21bd4a4af6e9af303e3 if source/tests/settings match receipt and no substantive conflict appears.",
+  "reviewState": "GitHub mergeable; no new comments, submitted blocking reviews or inline review threads.",
+  "mergedAtVerified": "2026-10-15T21:23:47.217873+00:00",
+  "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "actualMergedTree": "b06963d2cd0168fa4581d984a1b86ad794f700a1",
+  "entireMergedTreeEqualsReviewedPublication": true,
+  "mergeAuthorizedAndPerformed": true,
+  "includedFix": "Only runReadAim opponent risk now uses acquired pose/motion and public physical capability with existing recovery estimator; remove private down/fatigue/engagement shortcuts.",
+  "scopeLimitations": [
+    "No RB navigation/pathing or new football-gain/collision-avoidance claim.",
+    "Broader legacy carrier evaluate/lead/private-information callers remain out of scope.",
+    "Original information-only69.81kg*yd/s collision and earlier packaging failure receipts remain unchanged.",
+    "Observation transport has no current production consumer and remains separately deferred.",
+    "Existing pass-cutoff protection tradeoffs,forecast optimism and center-hand limitations remain."
+  ],
+  "excluded": [
+    "observation-only transport",
+    "navigation/admission/ranking tuning",
+    "sampledVel/historical motion",
+    "#69",
+    "experimental physics"
+  ],
+  "ownerUpdates": {
+    "Do-It-All / carrier": "Use accepted carrier risk hunk when continuing investigations; navigation remains parked and broader legacy information debt is separate.",
+    "#69 independent review": "Continue independently; preserve accepted carrier risk and #72 PassProtector contracts when composing. No contributor shared-suite rerun.",
+    "Awareness": "Transport remains a separate approved patch until a reviewed consumer needs it; no new sensing or schema adoption.",
+    "Run Game / Physics": "Keep source-pinned focused evidence; no contact mechanics or capacities/defaults were promoted. Reconcile relevant interactions at clean checkpoints."
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "defaultUnchanged": true,
+  "noBranchesDeleted": true,
+  "publicationChecks": {
+    "checkedAt": "2026-10-15T21:25:28.226540+00:00",
+    "protectedSourceTestsToolingSettingsMatchAcceptedDevelop": true,
+    "preservedExistingCurrentReceiptFiles": {
+      "8598fe114684f562a6e42a3af2f557b4c20f58ae": 133,
+      "8ca8deebe4afa91c3021bdd119bed8976cf00e47": 150
+    },
+    "checkedLocalDocumentationPaths": 89,
+    "brokenLinks": [],
+    "newTestsOrSimulations": 0,
+    "metadataConflictResolution": "Three doc conflicts differed only in local versus immutable GitHub links/PR label; retained newer tracking content. No production/test/settings conflict."
+  }
+}

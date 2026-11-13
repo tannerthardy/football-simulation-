@@ -1,0 +1,220 @@
+{
+  "schema": "held-recovery-football-v1",
+  "node": "v22.23.3",
+  "executable": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+  "command": [
+    "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+    "--import",
+    "tsx",
+    "scripts/diag/held-recovery-football.ts",
+    "out/bounded-attachment-review/cached-cost-bounded-repeat.json",
+    "9",
+    "--benchmark-only"
+  ],
+  "seed": 9,
+  "benchmarkOnly": true,
+  "gamesOnly": false,
+  "allocationGcBeforeBenchmark": true,
+  "sourceBefore": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+  "sourceAfter": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+  "scriptSha256": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+  "rosterSha256": "098565226da110ea7c34c7a10202284dc2c03d29559ceea56475086570081413",
+  "excludedWarmGameSeed": 921247822,
+  "games": [],
+  "physics": {
+    "ticks": 0,
+    "lowerJointTicks": 0,
+    "maxHeldRecoveryExcursionYd": null,
+    "lowerHoldReleases": null,
+    "maxMomentumResidualKgYdS": 0,
+    "maxWorkResidualKgYd2S2": null,
+    "maxMotorWorkExcessKgYd2S2": null,
+    "maxPassiveGripPositiveWorkKgYd2S2": null,
+    "sampledLowerJointTickFraction": null,
+    "nativeWorldTickMedianMs": null,
+    "nativeWorldTickP95Ms": null
+  },
+  "benchmark": [
+    {
+      "fixture": "free",
+      "bodies": 22,
+      "warmBlocksExcluded": 3,
+      "measuredBlocks": 7,
+      "repsPerBlock": 400,
+      "ticksPerRep": 1,
+      "dt": 0.05,
+      "medianBlockCpuMs": 47.925,
+      "medianBlockWallMs": 27.46439399999997,
+      "medianWorldTickMs": 0.04956800000002204,
+      "medianBlockWorldTickP95Ms": 0.11848199999997178,
+      "blocks": [
+        {
+          "cpuMs": 47.925,
+          "wallMs": 25.805635000000052,
+          "worldTickMedianMs": 0.04887500000006639,
+          "worldTickP95Ms": 0.10485900000003312
+        },
+        {
+          "cpuMs": 50.206,
+          "wallMs": 28.833282000000054,
+          "worldTickMedianMs": 0.049055000000066684,
+          "worldTickP95Ms": 0.11848199999997178
+        },
+        {
+          "cpuMs": 47.252,
+          "wallMs": 27.46439399999997,
+          "worldTickMedianMs": 0.04956800000002204,
+          "worldTickP95Ms": 0.12227800000005118
+        },
+        {
+          "cpuMs": 46.704,
+          "wallMs": 27.317229999999995,
+          "worldTickMedianMs": 0.048796999999922264,
+          "worldTickP95Ms": 0.1138819999999896
+        },
+        {
+          "cpuMs": 78.226,
+          "wallMs": 42.22076800000002,
+          "worldTickMedianMs": 0.056922999999983404,
+          "worldTickP95Ms": 0.2172099999999091
+        },
+        {
+          "cpuMs": 236.062,
+          "wallMs": 90.87294299999996,
+          "worldTickMedianMs": 0.1308160000000953,
+          "worldTickP95Ms": 0.39955699999995886
+        },
+        {
+          "cpuMs": 47.885,
+          "wallMs": 27.214097000000038,
+          "worldTickMedianMs": 0.05001900000002024,
+          "worldTickP95Ms": 0.11466599999994287
+        }
+      ]
+    },
+    {
+      "fixture": "trench",
+      "bodies": 22,
+      "warmBlocksExcluded": 3,
+      "measuredBlocks": 7,
+      "repsPerBlock": 400,
+      "ticksPerRep": 1,
+      "dt": 0.05,
+      "medianBlockCpuMs": 177.576,
+      "medianBlockWallMs": 147.41463999999996,
+      "medianWorldTickMs": 0.3203760000001239,
+      "medianBlockWorldTickP95Ms": 0.6127390000001469,
+      "blocks": [
+        {
+          "cpuMs": 172.852,
+          "wallMs": 144.54437299999995,
+          "worldTickMedianMs": 0.3184769999998025,
+          "worldTickP95Ms": 0.6127390000001469
+        },
+        {
+          "cpuMs": 229.506,
+          "wallMs": 163.0866050000002,
+          "worldTickMedianMs": 0.3263839999999618,
+          "worldTickP95Ms": 0.9340100000001712
+        },
+        {
+          "cpuMs": 179.619,
+          "wallMs": 143.5605700000001,
+          "worldTickMedianMs": 0.3168799999998555,
+          "worldTickP95Ms": 0.573757999999998
+        },
+        {
+          "cpuMs": 177.576,
+          "wallMs": 149.99861099999998,
+          "worldTickMedianMs": 0.3203760000001239,
+          "worldTickP95Ms": 0.740788000000066
+        },
+        {
+          "cpuMs": 169.969,
+          "wallMs": 143.2753359999997,
+          "worldTickMedianMs": 0.31745299999965937,
+          "worldTickP95Ms": 0.4985990000000129
+        },
+        {
+          "cpuMs": 268.36,
+          "wallMs": 190.06243700000005,
+          "worldTickMedianMs": 0.3265510000001086,
+          "worldTickP95Ms": 1.0597490000000107
+        },
+        {
+          "cpuMs": 176.076,
+          "wallMs": 147.41463999999996,
+          "worldTickMedianMs": 0.32326899999998204,
+          "worldTickP95Ms": 0.6103120000002491
+        }
+      ]
+    },
+    {
+      "fixture": "multi-grip",
+      "bodies": 22,
+      "warmBlocksExcluded": 3,
+      "measuredBlocks": 7,
+      "repsPerBlock": 400,
+      "ticksPerRep": 1,
+      "dt": 0.05,
+      "medianBlockCpuMs": 400.15,
+      "medianBlockWallMs": 359.3156590000008,
+      "medianWorldTickMs": 0.8035360000003493,
+      "medianBlockWorldTickP95Ms": 1.4137599999994563,
+      "blocks": [
+        {
+          "cpuMs": 403.846,
+          "wallMs": 354.42323399999987,
+          "worldTickMedianMs": 0.8021140000000742,
+          "worldTickP95Ms": 1.3580679999995482
+        },
+        {
+          "cpuMs": 398.258,
+          "wallMs": 359.3156590000008,
+          "worldTickMedianMs": 0.8089890000001105,
+          "worldTickP95Ms": 1.3946020000003045
+        },
+        {
+          "cpuMs": 500.307,
+          "wallMs": 384.2033070000007,
+          "worldTickMedianMs": 0.8053239999999278,
+          "worldTickP95Ms": 1.5702099999998609
+        },
+        {
+          "cpuMs": 393.008,
+          "wallMs": 357.2627190000003,
+          "worldTickMedianMs": 0.8007049999996525,
+          "worldTickP95Ms": 1.4137599999994563
+        },
+        {
+          "cpuMs": 393.216,
+          "wallMs": 354.8735139999999,
+          "worldTickMedianMs": 0.7908049999996365,
+          "worldTickP95Ms": 1.411736000000019
+        },
+        {
+          "cpuMs": 501.627,
+          "wallMs": 389.3059629999998,
+          "worldTickMedianMs": 0.8110370000003968,
+          "worldTickP95Ms": 1.4892959999997402
+        },
+        {
+          "cpuMs": 400.15,
+          "wallMs": 362.0624799999996,
+          "worldTickMedianMs": 0.8035360000003493,
+          "worldTickP95Ms": 1.4737770000001547
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Two games and one fixed roster pair are regression guards, not league estimates or NFL calibration.",
+    "Game World timing excludes observer accounting; game wall/CPU includes it. Benchmark observer is disabled.",
+    "One-body controller previews contribute to game CPU/wall time, but are excluded from physical game tick/contact accounting.",
+    "Lower-grip occurrence samples pre/post ticks and can miss a hold acquired and released within one tick.",
+    "Run after-contact yards are final gain minus engine first-carrier-contact gain; pass YAC is a separate statistic.",
+    "Native tick timings include changing contact islands; matched benchmark uses one tick per fresh World, with identical initial bodies/commands/constraints across revisions.",
+    "Benchmark excludes fixture construction; with --expose-gc it collects before timed blocks. GC can still interrupt a step.",
+    "Sequential separate-process comparisons remain sensitive to CPU load; repeat with reversed order before claiming speedup."
+  ]
+}

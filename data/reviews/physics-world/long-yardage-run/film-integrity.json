@@ -1,0 +1,37 @@
+{
+  "schema": "long-yardage-film-integrity-v1",
+  "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "clips": [
+    {
+      "id": "LY-R1-iz_strong-3rd27-rush4-R",
+      "frames": 78,
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "checks": "time/position/ball/possession/full telemetry/player profiles/gain/context exact; positions use existing tenth-yard pack"
+    },
+    {
+      "id": "LY-R1-iz_strong-3rd27-drop3-R",
+      "frames": 75,
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "checks": "time/position/ball/possession/full telemetry/player profiles/gain/context exact; positions use existing tenth-yard pack"
+    },
+    {
+      "id": "LY-R1-draw-3rd27-rush4-R",
+      "frames": 91,
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "checks": "time/position/ball/possession/full telemetry/player profiles/gain/context exact; positions use existing tenth-yard pack"
+    },
+    {
+      "id": "LY-R1-draw-3rd27-drop3-R",
+      "frames": 91,
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "checks": "time/position/ball/possession/full telemetry/player profiles/gain/context exact; positions use existing tenth-yard pack"
+    }
+  ],
+  "zipMatchesHtml": true,
+  "htmlSha256": "98aacca68ceaf5772d508b6dfe37d1297e6f2af9bf2c588f71b586619508f580",
+  "zipSha256": "590637558196c950c21f6b6cd5568d6e65d976332ecb6260580a6c0c304065a1",
+  "limitations": [
+    "Position/ball/facing display uses existing tenth-yard packing; posture display uses existing tenth-unit packing. Full telemetry is lossless gzip.",
+    "Full recordings begin at snap; no game clock or quarter is invented."
+  ]
+}

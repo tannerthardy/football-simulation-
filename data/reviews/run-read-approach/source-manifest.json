@@ -1,0 +1,27 @@
+{
+  "baseline": "9e752b76e6053400f086cbcec7613c6ab1663e86",
+  "node": "22.23.3",
+  "defaultRead": "off",
+  "defaultTurnCandidate": "off",
+  "candidateEnvironment": {
+    "RUN_READ": "1",
+    "RUN_READ_TURN": "1"
+  },
+  "physicsCapacityChanges": false,
+  "fileSHA256": {
+    "src/sim/run-read.ts": "e9e835d790d771173656eef74daf23e9b5dd819db55bfe0e67bb59489e8e5bb9",
+    "src/sim/run-read-observer.ts": "7e6b36442c2231538d4bcf19fc85d581b76ecc947a7d9d1b8961b9743d73da2e",
+    "src/sim/behaviors/carrier.ts": "ad66762fd9b199f225c825f296dd48e0a23185aeda4e462c31fa6d8164f339f4",
+    "scripts/diag/zone/run-read-information.ts": "3a73b217c20023fbb90ad143044795ab36e91989bfc3a8b919d4cb24aef13b65",
+    "scripts/diag/zone/compare-run-read-approach.py": "d39c1aaf69c0af38da6f5c01e8291d2d4af7d971ad0d1d1c127307d57d3fb1bc",
+    "test/run-read-approach.test.ts": "93e233b4f42bb0c6862a70f86652789baeff24d0a56ef379e4e66453dc95638b"
+  },
+  "checks": {
+    "typeScriptPassed": 1505,
+    "typeScriptFailed": 1,
+    "preservedFailure": "zone-helper-check.test.ts:440 Tite witness",
+    "pythonPassed": 141,
+    "build": "pass",
+    "typecheck": "pass"
+  }
+}

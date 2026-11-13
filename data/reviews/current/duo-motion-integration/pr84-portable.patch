@@ -1,0 +1,113 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 2209ee4..2a025cd 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1535,6 +1535,23 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
+   if (!filling && !arriving) return;
+   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
+   if (!route) { observer.tags.add('combo-held'); return; }
++  if (sim.offCall.run?.scheme === 'duo' && route.exit) {
++    // A vertical double's acquired backer can still belong to the other
++    // half of the surface. Permission for the keeper to stay does not give
++    // this member useful access across that surface. Retain the double;
++    // either member can still earn his own release from the next picture.
++    const own = observer.pos.y - surface.down.pos.y;
++    const partner = surface.covered.pos.y - surface.down.pos.y;
++    const key = backer.pos.y - surface.down.pos.y;
++    const dt = observer.mind.decisionInterval;
++    const nextKey = key + (backer.vel.y - surface.down.vel.y) * dt;
++    const nextPartner = partner + (surface.covered.vel.y - surface.down.vel.y) * dt;
++    if (own * partner < 0 && own * key < 0 && partner * key > 0
++      && own * nextKey < 0 && nextPartner * nextKey > 0) {
++      observer.tags.add('combo-held');
++      return;
++    }
++  }
+   const cost = route.exit ? Math.hypot(route.exit.x-observer.pos.x,route.exit.y-observer.pos.y)
+     + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)
+     : Math.hypot(backer.pos.x-observer.pos.x,backer.pos.y-observer.pos.y);
+diff --git a/test/combo-transfer.test.ts b/test/combo-transfer.test.ts
+index 95d9977..4826183 100644
+--- a/test/combo-transfer.test.ts
++++ b/test/combo-transfer.test.ts
+@@ -18,7 +18,8 @@ const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
+ /** Fixed ordinary profiles and a legal two-blocker contact. Only positions
+  * and the installed jobs are controlled. First hands, control and support
+  * come from sim.engage and the real World, rather than a declared block win. */
+-function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed = 11, recognition?: number) {
++function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed = 11, recognition?: number,
++  run = RUN_BY_ID.iz_strong) {
+   const formation = FORMATION_BY_ID.ace_11;
+   const personnel = pickOffense(offense, formation.personnel);
+   if (recognition !== undefined) personnel.C = { ...personnel.C, ratings: {
+@@ -26,7 +27,7 @@ function fixture(side = 1, poorAngle = false, reverseInstallation = false, seed
+   } };
+   const sim = new PlaySim({
+     offense: personnel, defense: pickDefense(defense, 'base43'),
+-    offCall: { formation, flip: side > 0, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'combo transfer' },
++    offCall: { formation, flip: side > 0, kind: 'run', run, label: 'combo transfer' },
+     defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3,
+       pressure: null, label: 'Over' },
+     los: 40, ballY: CENTER_Y, firstDownX: 50, seed,
+@@ -381,3 +382,61 @@ describe('a combo responds to the filling backer that the observer actually saw'
+     expect(f.sim.events.filter(e => e.type === 'block_climb')).toHaveLength(1);
+   });
+ });
++
++describe('Duo keeps the surface while its acquired backer belongs to the other half', () => {
++  it.each([-1, 1])('retains the double instead of sending a climber across its covered half, side %s', side => {
++    const f = ready(fixture(side, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');
++    const hands = f.engagement.hands!, helperHands = f.engagement.helperHands!.get(f.helper)!;
++    const bodies = f.sim.agents.map(a => structuredClone(a.body)), rng = JSON.stringify(f.sim.rng);
++    readCombination(f.helper, f.sim, f.combination);
++    expect(f.combination.released).toBe(false);
++    expect(f.engagement.hands).toBe(hands);
++    expect(f.engagement.helperHands!.get(f.helper)).toBe(helperHands);
++    expect(f.sim.world.joints).toContain(hands);
++    expect(f.sim.world.joints).toContain(helperHands);
++    expect(f.sim.agents.map(a => a.body)).toEqual(bodies);
++    expect(JSON.stringify(f.sim.rng)).toBe(rng);
++    budget(f, step(f));
++  });
++
++  it.each([-1, 1])('still admits the near-half climber around a real down-body obstruction, side %s', side => {
++    const f = fixture(side, false, false, 11, undefined, RUN_BY_ID.duo);
++    f.backer.body.pos.y = CENTER_Y + side * 1.2; f.observe(); ready(f, 'helper');
++    const hands = f.engagement.hands!;
++    readCombination(f.helper, f.sim, f.combination);
++    expect(f.combination.released).toBe(true);
++    expect((f.helper.behavior as RunBlocker).plan.departure).toBeDefined();
++    expect((f.helper.behavior as RunBlocker).target).toBe(f.backer);
++    expect(f.engagement.hands).toBe(hands);
++    budget(f, step(f, true));
++  });
++
++  it('changes the admission only after the production hook acquires the changed backer half', () => {
++    const f = ready(fixture(1, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');
++    const seen = f.sim.see(f.helper, f.backer);
++    f.backer.body.pos.y = CENTER_Y + 1.2;
++    expect(f.sim.see(f.helper, f.backer)).toEqual(seen);
++    readCombination(f.helper, f.sim, f.combination);
++    expect(f.combination.released).toBe(false);
++    f.observe();
++    while (f.sim.t + 1e-9 < nextRead(f, f.helper)) step(f);
++    expect(f.sim.see(f.helper, f.backer).pos.y).toBeGreaterThan(CENTER_Y);
++    readCombination(f.helper, f.sim, f.combination);
++    expect(f.combination.released).toBe(true);
++  });
++
++  it.each([-1, 1])('admits an acquired backer crossing onto the climber half before the next read, side %s', side => {
++    const f = ready(fixture(side, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');
++    const down = f.sim.see(f.helper, f.defender);
++    const age = f.sim.see(f.helper, f.backer).age!;
++    f.backer.body.vel = { x: 0, y: side * 2 };
++    f.backer.body.pos.y = down.pos.y - side * .2 - f.backer.vel.y * age;
++    f.observe();
++    const backer = f.sim.see(f.helper, f.backer);
++    expect((backer.pos.y - down.pos.y) * side).toBeLessThan(0);
++    expect((backer.pos.y - down.pos.y + (backer.vel.y - down.vel.y) * f.helper.mind.decisionInterval) * side)
++      .toBeGreaterThan(0);
++    readCombination(f.helper, f.sim, f.combination);
++    expect(f.combination.released).toBe(true);
++  });
++});

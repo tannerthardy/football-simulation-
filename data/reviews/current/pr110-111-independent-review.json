@@ -1,0 +1,454 @@
+{
+  "schema": "pr110-111-independent-review-v1",
+  "acceptedBase": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+  "acceptedSource": "4658b9ce14e2ce73ae7784635dcface1e115ebdf9eba2ca1c70c2bec1ca89d8b",
+  "queue": "625f3b4f545cf0c7f414b672e3776f916928f158",
+  "decisions": {
+    "110": "ACCEPT narrow runner-only entry reader",
+    "111": "ACCEPT final normal-distance geometry; reject gradient predecessor",
+    "110-111": "ACCEPT six-file minimal composition for Integration exact verification"
+  },
+  "code": {
+    "110": "d157356379ec387a8548e95775d8377e317b7e89",
+    "111": "bc02b22fa8ed4c985bbf7863eb58c914a4f53675"
+  },
+  "heads": {
+    "110": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+    "111": "411639c75734e9f75d8313f6d769318e46c9d1e0"
+  },
+  "runtimeInteraction": {
+    "commit": "3015ed71e3005536bf9f6aac37c74d6c73e7bfc8",
+    "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "limit": "Historical diagnostic host lacks proper #110 tests; use the six-file patch instead of merging ancestry."
+  },
+  "patches": {
+    "110": {
+      "path": "data/reviews/current/pr110-111-review/110.patch",
+      "sha256": "589d57aa9a0865b4ef77020f01531b3f957e3156f9fc4194ba5922985f1e0d89",
+      "bytes": 21877,
+      "files": {
+        "src/sim/behaviors/carrier.ts": "04cf8dc3e32f535fc5bb088e3be2c73590283e25",
+        "test/carrier-crease.test.ts": "6164ffbf33af3be1d43aecd6eb89e17ed263477e",
+        "test/run-entry-opponent-information.test.ts": "8edfbf85bf41a7e292bbbcc66c540628342371ad"
+      },
+      "sourceSha256": "811cd00e20ea564a12d446f5d79bf280386c5c07774d32015c8ec7b43a95d4d7",
+      "resultTreeFingerprint": "4015e8fa49ea9b80c80fb5ca351067d80ed2c03e",
+      "cachedIndexApply": "PASS"
+    },
+    "111": {
+      "path": "data/reviews/current/pr110-111-review/111.patch",
+      "sha256": "850b01173156f1c3b1564e6a8c96dd377681a530050b81a0eab82fc49b45439d",
+      "bytes": 6219,
+      "files": {
+        "src/sim/contact-motion.ts": "0c2e8a9c95583781fd9a6a08274a2a41ef65c29e",
+        "src/sim/engagement.ts": "7f880da93024f127f77866962b63b2d311b4c314",
+        "test/stretch-closure.test.ts": "9a7ff748e12b5b447a8869fb59ce9e601bd41ead"
+      },
+      "sourceSha256": "626836315cccc12ad1e5ab438f7a4e5a25a0b2db3b24c23396f3af4ea02d7fcf",
+      "resultTreeFingerprint": "2966f56ec8afa8a2299aa95f136b05a553c8f474",
+      "cachedIndexApply": "PASS"
+    },
+    "110-111": {
+      "path": "data/reviews/current/pr110-111-review/110-111.patch",
+      "sha256": "1b736ee49ae6cca863c38a6ec30e9ba660e1b62b0d5590919abd39f571e703c7",
+      "bytes": 28096,
+      "files": {
+        "src/sim/behaviors/carrier.ts": "04cf8dc3e32f535fc5bb088e3be2c73590283e25",
+        "test/carrier-crease.test.ts": "6164ffbf33af3be1d43aecd6eb89e17ed263477e",
+        "test/run-entry-opponent-information.test.ts": "8edfbf85bf41a7e292bbbcc66c540628342371ad",
+        "src/sim/contact-motion.ts": "0c2e8a9c95583781fd9a6a08274a2a41ef65c29e",
+        "src/sim/engagement.ts": "7f880da93024f127f77866962b63b2d311b4c314",
+        "test/stretch-closure.test.ts": "9a7ff748e12b5b447a8869fb59ce9e601bd41ead"
+      },
+      "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+      "resultTreeFingerprint": "7c43f27a05291fea7ad192c1765150053be4d0b7",
+      "cachedIndexApply": "PASS"
+    }
+  },
+  "evidence": {
+    "110": {
+      "summary.json": {
+        "commit": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+        "path": "data/reviews/current/acquired-run-crease/summary.json",
+        "sha256": "55dd7a0db33ea3d830af59b66cc9be50f6f76d045449473a7824a9cf2c252e48",
+        "url": "https://github.com/tannerthardy/football-simulation-/blob/a32bdfb4645c87947dc46089d1e7a9cab11a227d/data/reviews/current/acquired-run-crease/summary.json"
+      },
+      "source-manifest.json": {
+        "commit": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+        "path": "data/reviews/current/acquired-run-crease/source-manifest.json",
+        "sha256": "9348c6a737f91ca1c88bc04076d9d555c046613ba22ee9094689ee4a554e7e0f",
+        "url": "https://github.com/tannerthardy/football-simulation-/blob/a32bdfb4645c87947dc46089d1e7a9cab11a227d/data/reviews/current/acquired-run-crease/source-manifest.json"
+      },
+      "input-manifest.json": {
+        "commit": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+        "path": "data/reviews/current/acquired-run-crease/input-manifest.json",
+        "sha256": "cc0df5bd27fb4005506573652bec85d51eaa9002588b5714105729a6c2c6601b",
+        "url": "https://github.com/tannerthardy/football-simulation-/blob/a32bdfb4645c87947dc46089d1e7a9cab11a227d/data/reviews/current/acquired-run-crease/input-manifest.json"
+      }
+    },
+    "111": {
+      "summary.json": {
+        "commit": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+        "path": "data/reviews/current/stretch-protection-access/summary.json",
+        "sha256": "a1cc393c7a855d993fa4755d314404afc1aa68275a74cb3ecaee303a379ddeb4",
+        "url": "https://github.com/tannerthardy/football-simulation-/blob/411639c75734e9f75d8313f6d769318e46c9d1e0/data/reviews/current/stretch-protection-access/summary.json"
+      },
+      "source-manifest.json": {
+        "commit": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+        "path": "data/reviews/current/stretch-protection-access/source-manifest.json",
+        "sha256": "289b4451d01cbdca101f0afe9aad2f8622ad60beb982ba0163127e4cd00b70ab",
+        "url": "https://github.com/tannerthardy/football-simulation-/blob/411639c75734e9f75d8313f6d769318e46c9d1e0/data/reviews/current/stretch-protection-access/source-manifest.json"
+      },
+      "input-manifest.json": {
+        "commit": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+        "path": "data/reviews/current/stretch-protection-access/input-manifest.json",
+        "sha256": "1d66c65cd1a865947eccf5f286e9b073c9235c0b6643e28500a233e9c3c3dc3a",
+        "url": "https://github.com/tannerthardy/football-simulation-/blob/411639c75734e9f75d8313f6d769318e46c9d1e0/data/reviews/current/stretch-protection-access/input-manifest.json"
+      }
+    }
+  },
+  "receiptAudit": {
+    "110": {
+      "entries": 14,
+      "allSharedSettingsAndInputsMatch": true,
+      "source": "811cd00e20ea564a12d446f5d79bf280386c5c07774d32015c8ec7b43a95d4d7",
+      "validation": "441f93f8c4cccaa7be5b00876d5fa31b6c533b29434168fe8bbcdf8082738a42",
+      "focusedAndTypecheckSameFingerprints": true,
+      "publishedCommandSeconds": 42.033664783
+    },
+    "111": {
+      "entries": 16,
+      "allSharedSettingsAndInputsMatch": true,
+      "source": "626836315cccc12ad1e5ab438f7a4e5a25a0b2db3b24c23396f3af4ea02d7fcf",
+      "validation": "bebac90a9367483b591a82cd3aa33daff891012b22e3b86417e9e49673a11763",
+      "focusedAndTypecheckSameFingerprints": true,
+      "publishedCommandSeconds": 35.884608446
+    }
+  },
+  "nativeComparisons": [
+    {
+      "id": "wz-strong-over3",
+      "arms": {
+        "accepted": {
+          "gain": -0.67,
+          "terminal": true,
+          "t": 3.1,
+          "firstDefender": "DE_S",
+          "firstContact": {
+            "t": 2.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 38.81,
+              "y": 20.82
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "readerOnly": {
+          "gain": 0.39,
+          "terminal": true,
+          "t": 2.95,
+          "firstDefender": "DE_S",
+          "firstContact": {
+            "t": 2.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 39.03,
+              "y": 21.08
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "closureOnly": {
+          "gain": -0.53,
+          "terminal": true,
+          "t": 3.05,
+          "firstDefender": "DE_S",
+          "firstContact": {
+            "t": 2.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 38.82,
+              "y": 20.8
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "both": {
+          "gain": 2.53,
+          "terminal": true,
+          "t": 4.15,
+          "firstDefender": "CB_S",
+          "firstContact": {
+            "t": 3.3,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 18,
+            "pos": {
+              "x": 40.83,
+              "y": 14.87
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        }
+      },
+      "closureComparedToAcceptedExact": null,
+      "compositionComparedToReaderExact": null
+    },
+    {
+      "id": "wz-weak-over3",
+      "arms": {
+        "accepted": {
+          "gain": -0.03,
+          "terminal": true,
+          "t": 3.45,
+          "firstDefender": "DE_W",
+          "firstContact": {
+            "t": 2.7,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 11,
+            "pos": {
+              "x": 39.52,
+              "y": 33.01
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "readerOnly": {
+          "gain": 4.96,
+          "terminal": true,
+          "t": 3.65,
+          "firstDefender": "LB_M",
+          "firstContact": {
+            "t": 2.85,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 41.57,
+              "y": 34.47
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "closureOnly": {
+          "gain": -0.14,
+          "terminal": true,
+          "t": 3.7,
+          "firstDefender": "LB_W",
+          "firstContact": {
+            "t": 2.75,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 16,
+            "pos": {
+              "x": 39.35,
+              "y": 33.02
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "both": {
+          "gain": 5.34,
+          "terminal": true,
+          "t": 4,
+          "firstDefender": "LB_M",
+          "firstContact": {
+            "t": 2.8,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 41.31,
+              "y": 34.31
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        }
+      },
+      "closureComparedToAcceptedExact": null,
+      "compositionComparedToReaderExact": null
+    },
+    {
+      "id": "useful-climb-opponent",
+      "arms": {
+        "accepted": {
+          "gain": null,
+          "terminal": false,
+          "t": 3.5,
+          "firstDefender": "SS",
+          "firstContact": {
+            "t": 3.45,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 40.06,
+              "y": 23.1
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "readerOnly": {
+          "gain": null,
+          "terminal": false,
+          "t": 3.5,
+          "firstDefender": "SS",
+          "firstContact": {
+            "t": 3.25,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 39.75,
+              "y": 21.91
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "closureOnly": {
+          "gain": null,
+          "terminal": false,
+          "t": 3.5,
+          "firstDefender": "SS",
+          "firstContact": {
+            "t": 3.45,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 40.06,
+              "y": 23.1
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "both": {
+          "gain": null,
+          "terminal": false,
+          "t": 3.5,
+          "firstDefender": "SS",
+          "firstContact": {
+            "t": 3.25,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 21,
+            "pos": {
+              "x": 39.75,
+              "y": 21.91
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        }
+      },
+      "closureComparedToAcceptedExact": true,
+      "compositionComparedToReaderExact": true
+    },
+    {
+      "id": "wz-strong-under3-transfer",
+      "arms": {
+        "accepted": {
+          "gain": 2.62,
+          "terminal": true,
+          "t": 3.6,
+          "firstDefender": "LB_M",
+          "firstContact": {
+            "t": 2.85,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.82,
+              "y": 20.67
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        },
+        "closureOnly": {
+          "gain": 3.04,
+          "terminal": true,
+          "t": 3.45,
+          "firstDefender": "LB_M",
+          "firstContact": {
+            "t": 2.75,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 15,
+            "pos": {
+              "x": 40.71,
+              "y": 20.86
+            },
+            "note": "grasp"
+          },
+          "peerImpacts": []
+        }
+      },
+      "closureComparedToAcceptedExact": null,
+      "compositionComparedToReaderExact": null
+    }
+  ],
+  "cachedReferenceQualification": {
+    "publication": "aa6090378a9368aa340583b4ffa6a945f9316d60",
+    "runtime": "50f6a080eacb8bf5d12fec8c9af53550ee8b4a96",
+    "source": "6753fa98966622ab758e4c4c56104dedf00b111c1429d7be66c5fad62531cd21",
+    "receiptPath": "data/reviews/current/claude-zone-independent-review/native-base-receipt.json",
+    "shared44FlagsMatch": true,
+    "extraFlags": {
+      "CLIMB_EXIT": "0",
+      "CLIMB_SPACE": "0",
+      "COMBO_SECURE": "0",
+      "RUN_LANE": "0",
+      "ZONE_COMBO": "0"
+    },
+    "interpretation": "Old three-case reference is the all-off experimental host, not literal accepted4658 source. Source audit finds disabled candidate branches plus a pure delayed backer read moved before settling; no changed active requests/RNG/capacity/physics. Preserve this qualification rather than relabeling its source."
+  },
+  "mechanicalLimits": [
+    "#110 body obstruction is a soft static line-surface cost, not whole-route admission or guaranteed clearance.",
+    "The .7 radius factor is a scoring heuristic; body profiles/World/bodyshape remain byte-identical and real contacts remain.",
+    "Dogleg second-leg timing is coarse; missing/full velocity transport semantics are not expanded.",
+    "Inherited general carrier, lead/kick and common squeeze information shortcuts remain outside this extraction.",
+    "#111 normal distance is a foot request with original component magnitude/gain/clamps/anchor, not a force or attachment change.",
+    "Positive hand-load magnitude does not by itself certify blocker-owned retention or guaranteed runner protection."
+  ],
+  "adverseAndUnproved": [
+    "Duo identity is closure-versus-corresponding-arm only; #110 brings SS contact .20s earlier versus baseline; both prefix-censored3.50.",
+    "#110 fresh IZ final gain4.35\u21923.67 despite later/deeper first contact.",
+    "#111 closure-only weak gain\u2212.03\u2192\u2212.14; fresh WZ Under3 contact .10s earlier/.11yd nearerLOS despite gain2.62\u21923.04.",
+    "Combined weak Mike contact .05s earlier/.26yd nearerLOS despite final4.96\u21925.34.",
+    "Strong inside/outside score margins .050796 before/.101615 after; final nearest competing outside candidate .018063 away.",
+    "Strong both0.39\u21922.53 compares reader-only811cd00 to combinedbed3c36, with changing acquired peer geometry, real later contact and execution draws.",
+    "Neither patch alone rescues strong; no league-wide gain, timing calibration, universal TE failure or matched-execution finishing claim.",
+    "CLIMB_EXIT, other Claude experiments and Physics contact-ownership/retention law stay separate."
+  ],
+  "newExecution": {
+    "tests": 0,
+    "typechecks": 0,
+    "nativeSimulations": 0,
+    "games": 0,
+    "integrationSuiteRepeated": false,
+    "initialArtifactAuditFailure": "Reviewer selector picked older gradient focused receipt; corrected to exact final-focused path. Source/validation assertions remain unchanged; no engine or test change.",
+    "initialArtifactAuditCommandSeconds": 0.201326097,
+    "staticArtifactAuditSeconds": 0.3132034160080366
+  },
+  "recommendation": "Advance both minimal reviewed patches together to Integration exact combined verification. No merge, physics promotion or additional behavior tuning."
+}

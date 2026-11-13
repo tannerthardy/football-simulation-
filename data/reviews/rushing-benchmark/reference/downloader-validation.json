@@ -1,0 +1,86 @@
+{
+  "testedUtc": "2026-10-11T17:58:45.066011+00:00",
+  "fetcherSha256": "818574e7eba0457a0c81aa1ada4bb64ccb6620003d2a859c24a01bc6754d6c7a",
+  "networkExecuted": false,
+  "verifiedRealPinnedFiles": 15,
+  "offlineControls": [
+    "downloadSuccess",
+    "existingPinNoRedownload",
+    "existingMismatchNoOverwrite",
+    "oversizedBodyRejected",
+    "shortBodyRejected",
+    "wrongShaRejected",
+    "failedTempCleanup",
+    "missingVerifyOnlyRejected",
+    "unsafeBasenamesRejected",
+    "unsafeUrlsRejected",
+    "identicalDuplicatePinsMerged",
+    "conflictingPinsRejected"
+  ],
+  "independentAdapterReview": {
+    "baseline": {
+      "officialNonNullified": 307,
+      "strictClean": 301,
+      "mean": 7.937142857142857,
+      "rates": {
+        "success4060100": {
+          "count": 104,
+          "denominator": 301,
+          "percent": 34.5514950166113
+        },
+        "touchdown": {
+          "count": 26,
+          "denominator": 301,
+          "percent": 8.637873754152825
+        },
+        "fumbleLost": {
+          "count": 2,
+          "denominator": 301,
+          "percent": 0.6644518272425249
+        },
+        "positiveEPA": {
+          "count": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "fieldEligibleExplosive20plus": {
+          "count": 30,
+          "denominator": 283,
+          "percent": 10.60070671378092
+        }
+      }
+    },
+    "candidate": {
+      "officialNonNullified": 309,
+      "strictClean": 302,
+      "mean": 6.261622516556291,
+      "rates": {
+        "success4060100": {
+          "count": 96,
+          "denominator": 302,
+          "percent": 31.788079470198674
+        },
+        "touchdown": {
+          "count": 16,
+          "denominator": 302,
+          "percent": 5.298013245033113
+        },
+        "fumbleLost": {
+          "count": 1,
+          "denominator": 302,
+          "percent": 0.33112582781456956
+        },
+        "positiveEPA": {
+          "count": 0,
+          "denominator": 0,
+          "percent": null
+        },
+        "fieldEligibleExplosive20plus": {
+          "count": 18,
+          "denominator": 287,
+          "percent": 6.2717770034843205
+        }
+      }
+    }
+  }
+}

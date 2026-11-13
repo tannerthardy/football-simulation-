@@ -1,0 +1,259 @@
+{
+  "schema": "run-entry-information-independent-review-v1",
+  "reviewedAt": "2026-10-15T21:03:14.924018+00:00",
+  "acceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "originalCandidate": "60223a863a8431e85d5027c879191f3527ed10b8",
+  "originalEvidence": "80c9fa4db36ebcd4b81edda110e9a451882d8291",
+  "originalBase": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "opponentRiskCandidate": "71d98fcddc3c76764f36f438f9f4921d365c9ad4",
+  "opponentRiskBranch": "codex/run-entry-opponent-information-review",
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "validationSha256": "b8f620521c5bb9f58bd2b75e359bb2bbf8e9dcc635a9fea9ea2bf94ac383e622",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "decision": {
+    "opponentRisk": "Recommend accepting the opponent-risk correction alone as the next integration scope. It removes active private opponent pose/fatigue/engagement shortcuts using existing acquired opponent APIs and the accepted recovery estimator.",
+    "observationTransport": "Owner-approved, byte-identical core is separately portable; defer runtime adoption until an approved production consumer needs it. No current production consumer uses its query; it adds per-tick sensing bookkeeping without supplying this opponent-risk correction. No correctness rejection or renewed owner-approval wait is asserted.",
+    "togetherOrSeparate": "Separate. Neither source extraction needs the other; both patches apply alone and sequentially on accepted4679a3c.",
+    "navigation": "Parked; helpers/admission/ranking, sampledVel and historical-motion research remain excluded.",
+    "nextAcceptanceDecision": "Accept risk-only scope at the exact candidate pin; then perform one exact combined verification before requesting its separate merge authorization. Do not reopen or append to #67/#72 verification."
+  },
+  "scope": {
+    "productionFiles": [
+      "src/sim/behaviors/carrier.ts"
+    ],
+    "tests": "The first two authored tests and the identical two-scene fixture are extracted without assertion changes; a missing it import in the initial split was corrected in a separate preserved commit.",
+    "activePath": "BallCarrier.update calls runReadAim near LOS outside the RUN_READ experimental branch; the fix is active under accepted flags. It is not a disabled experiment.",
+    "preserved": "Accepted PassProtector free cutoff, catch-readiness hooks, PlaySim, spacing, physics, flags, capabilities, gap identity and all existing accepted receipts unchanged."
+  },
+  "outcome": {
+    "focusedPassed": 3,
+    "focusedSelected": "Two extracted author contracts plus existing Duo declaration control",
+    "focusedSkippedByFilter": 25,
+    "typecheck": "pass",
+    "fullCombinedVerification": "Not run for this scope-selection review; still required before runtime merge.",
+    "worldStepsOrSnaps": 0,
+    "extraStandaloneGames": 0,
+    "rosterCampaigns": 0
+  },
+  "compatibleEvidence": {
+    "authorChecksumsVerified": 4,
+    "authorFocused": 4,
+    "authorTypecheck": true,
+    "authorLauncherSeconds": 15.085626648,
+    "ownerCoreSha256": "dac6f5bcf21a14b6022c5a233e499057758fcc44f001511cfb74e941a204d367",
+    "ownerApproval": "https://github.com/tannerthardy/football-simulation-/pull/36#issuecomment-6201016808",
+    "ownerContractIncludes": "Pure copied queries, delayed delivery,0.30s prediction cap,1.00s sample-age expiry,stale zero means unknown,empty installed calls,no tactile writer,no global spacing migration."
+  },
+  "adverseEvidenceAndLimitations": [
+    "Original information-only trial69.81kg*yd/s teammate collision remains immutable at4ee0e2cdc8480f271fc3d8e9178f6abd949b3f9e; no current-source yardage/collision-avoidance benefit is claimed.",
+    "Three selected checks/typecheck are not full-suite or game-wide approval.",
+    "Coarse recovery from acquired pose uses the existing estimator and public profile; this does not calibrate anticipation, opponent capabilities or threat ranking.",
+    "Legacy carrier evaluate/lead/other private-information callers remain out of scope and are not certified by this fix.",
+    "Transport assumptions do not model occlusion/head scans; stale zero velocity remains unknown motion, never a stationary-clearance certificate. No current consumer migrated.",
+    "Transport-only split tests retain original assertions but are not re-executed as a standalone branch in this review; original exact-candidate contract receipts are reused."
+  ],
+  "cost": {
+    "allNewLauncherSeconds": 23.675058372000002,
+    "finalPassingLauncherSeconds": 11.421143876,
+    "attempts": [
+      {
+        "receipt": "focused.json",
+        "commit": "0d0282ac896cd08b4b44378825ca1759cf55f0e2",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "node_modules/vitest/vitest.mjs",
+              "run",
+              "--project",
+              "core",
+              "--maxWorkers=1",
+              "test/run-entry-opponent-information.test.ts",
+              "test/run-system.test.ts",
+              "-t",
+              "does not use private opponent|preserves the saved contrasting entry|moves a Duo read away"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 1.694152441
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "typecheck.json",
+        "commit": "0d0282ac896cd08b4b44378825ca1759cf55f0e2",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 2,
+            "elapsedSeconds": 10.559762055
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "focused-final.json",
+        "commit": "71d98fcddc3c76764f36f438f9f4921d365c9ad4",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "node_modules/vitest/vitest.mjs",
+              "run",
+              "--project",
+              "core",
+              "--maxWorkers=1",
+              "test/run-entry-opponent-information.test.ts",
+              "test/run-system.test.ts",
+              "-t",
+              "does not use private opponent|preserves the saved contrasting entry|moves a Duo read away"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.7024006360000001
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      },
+      {
+        "receipt": "typecheck-final.json",
+        "commit": "71d98fcddc3c76764f36f438f9f4921d365c9ad4",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 9.71874324
+          }
+        ],
+        "skippedCommands": [],
+        "inputsUnchanged": true
+      }
+    ],
+    "packagingFailure": "Initial split omitted it import: focused suite collection and typecheck failed, while the selected existing Duo control passed. Both original failed receipts/logs retained. Only import repaired; no production/expectation change.",
+    "extraSharedSuiteRuns": 0,
+    "extraSimulations": 0
+  },
+  "preservation": {
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "acceptedDevelopUnchangedByInformationReview": true,
+    "originalAuthorBranchHistoryPreserved": true,
+    "experimentalPhysicsAnd69Excluded": true,
+    "mergeAuthorized": false
+  },
+  "artifacts": {
+    "focused-final.json": {
+      "bytes": 2478,
+      "sha256": "b20cb270944f9d498951b2f2260370abaf23c1462cd1f70d291409d4b9d07861"
+    },
+    "focused-final.log": {
+      "bytes": 861,
+      "sha256": "ba6253284b049017e5f6ff385d935308702ab638aee5d3a4c77fa75cb2a0f1be"
+    },
+    "focused.json": {
+      "bytes": 2471,
+      "sha256": "71728ecc2aec8ba4c271be5467c689f321a43b7ef2fafd3f4e41bf8a7b8c14a2"
+    },
+    "focused.log": {
+      "bytes": 1476,
+      "sha256": "7c59b4588273c2dd7d65be453877853950c46776f25cd15e648e5c65250a1dd5"
+    },
+    "observation-transport-only.patch": {
+      "bytes": 12508,
+      "sha256": "1157e80bf817d0251941f5cdc14d2666549bfc55e1f995208a1626888289e100"
+    },
+    "opponent-risk-only.patch": {
+      "bytes": 42870,
+      "sha256": "69312db6b13ea4f58f218285d27205c79b5a36e5b6dd2c27ac0ede27f5fe4bb3"
+    },
+    "preflight.json": {
+      "bytes": 2135,
+      "sha256": "c0bfd3e9f5bfa79f99706843f2835da6c8c9c0ed975c2cfb6ab8ba8e0771ee42"
+    },
+    "typecheck-final.json": {
+      "bytes": 2180,
+      "sha256": "90bbecd5cc7816f329c78babe5328be98327becf61a5b9e45f0937f0e7f6d6d1"
+    },
+    "typecheck-final.log": {
+      "bytes": 534,
+      "sha256": "39dfcb4451710b9fc12af5097c1d0fe9816ffbac19d619a2b24dea3c78d33fc4"
+    },
+    "typecheck.json": {
+      "bytes": 2182,
+      "sha256": "18398096e94a022dd3107ba09ba1cc4e3166ccec932daddcf0bd4ed2d16737fb"
+    },
+    "typecheck.log": {
+      "bytes": 1098,
+      "sha256": "3cfb6346d61947f2552eb1ccb95b7125f187090d49e6dbe15782d506923655d5"
+    }
+  }
+}

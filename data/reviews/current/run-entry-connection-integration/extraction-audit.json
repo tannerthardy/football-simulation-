@@ -1,0 +1,94 @@
+{
+  "review": "de3de0c3503aac9a6415a9e1ab28ed4e68c7b879",
+  "acceptedBase": "c3264b0bad72bd2c208602e0ecf0461c00d9669f",
+  "protectedFiles": [
+    "src/sim/behaviors/carrier.ts",
+    "src/sim/contact-motion.ts",
+    "src/sim/engagement.ts",
+    "test/carrier-crease.test.ts",
+    "test/run-entry-opponent-information.test.ts",
+    "test/stretch-closure.test.ts"
+  ],
+  "exactReviewedBlobs": {
+    "src/sim/behaviors/carrier.ts": "04cf8dc3e32f535fc5bb088e3be2c73590283e25",
+    "test/carrier-crease.test.ts": "6164ffbf33af3be1d43aecd6eb89e17ed263477e",
+    "test/run-entry-opponent-information.test.ts": "8edfbf85bf41a7e292bbbcc66c540628342371ad",
+    "src/sim/contact-motion.ts": "0c2e8a9c95583781fd9a6a08274a2a41ef65c29e",
+    "src/sim/engagement.ts": "7f880da93024f127f77866962b63b2d311b4c314",
+    "test/stretch-closure.test.ts": "9a7ff748e12b5b447a8869fb59ce9e601bd41ead"
+  },
+  "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "sourceEqualsReviewedInteraction": true,
+  "allOtherProtectedFilesUnchanged": true,
+  "flagsAndWorldDefaultsUnchanged": true,
+  "verifiedEvidence": [
+    {
+      "commit": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+      "path": "data/reviews/current/acquired-run-crease/summary.json",
+      "sha256": "55dd7a0db33ea3d830af59b66cc9be50f6f76d045449473a7824a9cf2c252e48",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/a32bdfb4645c87947dc46089d1e7a9cab11a227d/data/reviews/current/acquired-run-crease/summary.json"
+    },
+    {
+      "commit": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+      "path": "data/reviews/current/acquired-run-crease/source-manifest.json",
+      "sha256": "9348c6a737f91ca1c88bc04076d9d555c046613ba22ee9094689ee4a554e7e0f",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/a32bdfb4645c87947dc46089d1e7a9cab11a227d/data/reviews/current/acquired-run-crease/source-manifest.json"
+    },
+    {
+      "commit": "a32bdfb4645c87947dc46089d1e7a9cab11a227d",
+      "path": "data/reviews/current/acquired-run-crease/input-manifest.json",
+      "sha256": "cc0df5bd27fb4005506573652bec85d51eaa9002588b5714105729a6c2c6601b",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/a32bdfb4645c87947dc46089d1e7a9cab11a227d/data/reviews/current/acquired-run-crease/input-manifest.json"
+    },
+    {
+      "commit": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+      "path": "data/reviews/current/stretch-protection-access/summary.json",
+      "sha256": "a1cc393c7a855d993fa4755d314404afc1aa68275a74cb3ecaee303a379ddeb4",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/411639c75734e9f75d8313f6d769318e46c9d1e0/data/reviews/current/stretch-protection-access/summary.json"
+    },
+    {
+      "commit": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+      "path": "data/reviews/current/stretch-protection-access/source-manifest.json",
+      "sha256": "289b4451d01cbdca101f0afe9aad2f8622ad60beb982ba0163127e4cd00b70ab",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/411639c75734e9f75d8313f6d769318e46c9d1e0/data/reviews/current/stretch-protection-access/source-manifest.json"
+    },
+    {
+      "commit": "411639c75734e9f75d8313f6d769318e46c9d1e0",
+      "path": "data/reviews/current/stretch-protection-access/input-manifest.json",
+      "sha256": "1d66c65cd1a865947eccf5f286e9b073c9235c0b6643e28500a233e9c3c3dc3a",
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/411639c75734e9f75d8313f6d769318e46c9d1e0/data/reviews/current/stretch-protection-access/input-manifest.json"
+    }
+  ],
+  "reusedReceipts": [
+    {
+      "pr": 110,
+      "focusedAssertions": 65,
+      "source": "811cd00e20ea564a12d446f5d79bf280386c5c07774d32015c8ec7b43a95d4d7",
+      "validation": "441f93f8c4cccaa7be5b00876d5fa31b6c533b29434168fe8bbcdf8082738a42",
+      "focusedReceiptPaths": [
+        "out/baseline/run-1792188365087-329418.json",
+        "out/acquired-crease/focused-receipt.json"
+      ],
+      "typecheckReceiptPaths": [
+        "out/acquired-crease/typecheck-receipt.json"
+      ],
+      "retainedReceipts": 14,
+      "qualification": "Counts overlap; not131 unique checks. Historical failures and native sources remain as recorded; this is evidence reuse, not new execution."
+    },
+    {
+      "pr": 111,
+      "focusedAssertions": 66,
+      "source": "626836315cccc12ad1e5ab438f7a4e5a25a0b2db3b24c23396f3af4ea02d7fcf",
+      "validation": "bebac90a9367483b591a82cd3aa33daff891012b22e3b86417e9e49673a11763",
+      "focusedReceiptPaths": [
+        "out/stretch-access/final-focused-receipt.json"
+      ],
+      "typecheckReceiptPaths": [
+        "out/stretch-access/final-typecheck-receipt.json"
+      ],
+      "retainedReceipts": 16,
+      "qualification": "Counts overlap; not131 unique checks. Historical failures and native sources remain as recorded; this is evidence reuse, not new execution."
+    }
+  ],
+  "noNewFocusedTestsOrSimulations": true
+}

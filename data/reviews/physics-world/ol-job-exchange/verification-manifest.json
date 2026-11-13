@@ -1,0 +1,162 @@
+{
+  "schema": "ol-work-exchange-verification-v1",
+  "baselineCommit": "6b8c5669525165f6551d7954bafa883a2a39059d",
+  "beforeSourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+  "finalSourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "comparisonSha256": "1c59e6f0861f7f597ff6fd0010d779bc58dbb4b2f0db7b965ede98c129941d15",
+  "witnessCollectorSha256": "600cd84d6ad36142bf52f47a19a8482d5600b3c0446b67bf84e9b6f90c67cd63",
+  "changedEngineFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "addedEngineFiles": [],
+  "files": {
+    "data/reviews/physics-world/combo-transfer/after.json.gz": "516b283112b38d7617d626a300c50b2e91edec07e8c012991fd30cc0ad0c529b",
+    "data/reviews/physics-world/combo-transfer/verify-evidence.py": "8f39208fe17727df6579cb6cf32142de248a14ec8200e70905db1700902a0c5c",
+    "data/reviews/physics-world/ol-job-exchange/README.md": "7ff5997f2fbf63e3856ffaf4bf9151e7cc84dc558fee81ed3d5471c8302e7a5b",
+    "data/reviews/physics-world/ol-job-exchange/browser-check.json": "c09d3e0af7eca26f1e04a93172753ef549c1f36a2ceed21c3dcd5d0c66151252",
+    "data/reviews/physics-world/ol-job-exchange/build.log": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d",
+    "data/reviews/physics-world/ol-job-exchange/candidate-film.json.gz": "be923593b0badb2705f4251210b535a5ccf81d15e9e7b7eb33a2e5bcb66f3e72",
+    "data/reviews/physics-world/ol-job-exchange/candidate.json.gz": "5a934250515578a77e617843ce4cb6b41340f1934b0c0b9e35e07b939dd95668",
+    "data/reviews/physics-world/ol-job-exchange/candidate.log": "554955d1cd6d20bb397793d6313043475b823657585ea00677b49b0f438f4783",
+    "data/reviews/physics-world/ol-job-exchange/checks.json": "ae98542d2fadb3273e298d4cb165ceee1acfc257237e380569bb2a1fe41a73d2",
+    "data/reviews/physics-world/ol-job-exchange/comparison.json": "b9ff35422f60e6bd753466bad43e1f72e916fdc0d0cfda1fd2b57b96b06cc55a",
+    "data/reviews/physics-world/ol-job-exchange/comparison.log": "28377b6af7dc094b6a30cc6e6ab10b9c13fa5f26a0c7b328057f91e6009b220c",
+    "data/reviews/physics-world/ol-job-exchange/engine.patch": "931c949517955c849ae7cf7663ea87c4704713598ac38171d1047fab0ace0a98",
+    "data/reviews/physics-world/ol-job-exchange/film-check.py": "679249b576d3af4d8296906daa918aa660f1dbb71cd2236c1b38ec893aa36212",
+    "data/reviews/physics-world/ol-job-exchange/film-integrity.json": "120f54eb03d790afff7567a000d32e1320d9fbf07245f3369664c74e4901a0a1",
+    "data/reviews/physics-world/ol-job-exchange/full-tests.log": "7858adee7250855d5a26516684e76b907a3750eb5ce87e9eefbe8d6ce52e164d",
+    "data/reviews/physics-world/ol-job-exchange/python.log": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524",
+    "data/reviews/physics-world/ol-job-exchange/tests-after.log": "79d7f5dc2e7cc28d30d327c72caeaf1fb491b0f7834f93986356a9431d8cf0ac",
+    "data/reviews/physics-world/ol-job-exchange/tests-before.log": "30999103d5cfa97e5b6e7e3c63ade558894a69bb96769b53acf0e3af48a4d43d",
+    "data/reviews/physics-world/ol-job-exchange/typecheck.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "data/reviews/physics-world/ol-job-exchange/verify-evidence.py": "6e727279d75e8a7727e1cf007d72da72d4c95b27bd415d5fa7b6ca23c4ddd7e1",
+    "data/reviews/physics-world/ol-job-exchange/witness-after.json.gz": "0df73f71110bce06f8328c959150266d235d8050e02e1abb2860d44cff3c4c4c",
+    "data/reviews/physics-world/ol-job-exchange/witness-after.log": "9712d739726290018c74139ade3e091f5b14e95ae9ab9f30efedd4bca5f06d39",
+    "data/reviews/physics-world/ol-job-exchange/witness-before.json.gz": "58f64c89f0bd6af301fd863a4550fa4e1b7407873cc30b6f764d7fa0511cc40c",
+    "data/reviews/physics-world/ol-job-exchange/witness-before.log": "6f81efc56258dd3c6dbc911405f76baf01b9a390f6a77a0806f5e161724b597d",
+    "docs/reviews/ol-work-exchanges.md": "1acd163fc9a489c5ee83f4a291b4fd66cf253a434ceadd3a82a50bb612a3b3c8",
+    "viewer/ol-work-exchanges.html": "456aa58b48ce9abb63f5e99b3c02e708dd03e193bc1546e3c0a27195e8b3a5e2",
+    "viewer/ol-work-exchanges.zip": "68b4395884eeced1a6a1686d8e8c8fd62241d1bf1ba14e5dc6b9bb481c3096b6"
+  },
+  "currentCodeFiles": {
+    "src/sim/behaviors/blocking.ts": "8fdde78ebf5b604fbeac2a6e55f5f359506919e5c4d94cd03cf18a4bc66316f6",
+    "src/sim/agent.ts": "e9cb4f775ad823225cbf1c53a7d1a2fad0704c47845280aa354ec995dc2e6ebc",
+    "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+    "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "scripts/diag/combo-transfer-review.ts": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+    "scripts/diag/compare-combo-transfer.py": "fed54abaf570205301bd588b0066dadee653c6712b34dc250d7e1aa6138475ea",
+    "scripts/diag/ol-exchange-compare.py": "1c59e6f0861f7f597ff6fd0010d779bc58dbb4b2f0db7b965ede98c129941d15",
+    "scripts/diag/ol-exchange-witness.ts": "600cd84d6ad36142bf52f47a19a8482d5600b3c0446b67bf84e9b6f90c67cd63",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/export-ol-exchange.ts": "70e187da5af8655aaf79b0b64a89dd092ff5f5913fd182c61fced23d28698d8d",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4",
+    "test/run-job-exchange.test.ts": "cd845a8a7cb9641aff07c5b60d81dba7b39fc63aac70216a0ea8593bb8fb14f3",
+    "CLAUDE.md": "1cb657e85426809c92a8b0dbaa9d14e4faf51b7baec001be43be94906a728109",
+    "docs/PHYSICS_DEVELOPMENT.md": "34eb3248d77a3cfe543f4d486ed714d9c9391b011d41a783d1a42e5ab0ce5138",
+    "data/README.md": "c7ce47aa1f69b18f6f44a85214316c7d312fef276773fa9de83862de673268c3"
+  },
+  "checks": {
+    "sourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+    "sourceFrozen": true,
+    "fullTypeScript": {
+      "passed": 773,
+      "files": 70,
+      "exitCode": 0,
+      "log": "full-tests.log"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    "build": {
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    "python": {
+      "passed": 22,
+      "exitCode": 0,
+      "log": "python.log"
+    },
+    "focused": {
+      "passed": 24,
+      "exitCode": 0,
+      "log": "tests-after.log"
+    },
+    "baselineFeatureControl": {
+      "featureFailures": 17,
+      "controlPasses": 7,
+      "exitCode": 1,
+      "log": "tests-before.log"
+    },
+    "panel": {
+      "matchedInputs": 162,
+      "naturalEndsPerPhase": 162,
+      "observedPlainControls": 324,
+      "ordinaryInputs": 160,
+      "supplementalInputs": 2
+    },
+    "witnessFilm": {
+      "fixedInputs": 4,
+      "clips": 8,
+      "observedPlainControls": 8
+    },
+    "limits": "Controller-only increment. No fresh full-game rate, NFL-force calibration or speed claim. Existing World and capacity contracts retained."
+  },
+  "independentChecks": {
+    "fullInitialProjectionMatches": 162,
+    "panelObservedPlainMatches": 324,
+    "ordinaryCompleteExecutionsExact": 149,
+    "ordinaryExchangeEventsPerPhase": [
+      18,
+      18
+    ],
+    "recordedInitiatorKindMismatches": [
+      7,
+      0
+    ],
+    "exchangesChangingKind": [
+      0,
+      10
+    ],
+    "ordinaryNativeKeeperTransfersPerPhase": [
+      118,
+      118
+    ],
+    "supplementalNativeKeeperTransfersPerPhase": [
+      3,
+      3
+    ],
+    "everyKeeperJointContinuousAndLoaded": true,
+    "ordinaryStuffs": [
+      37,
+      37
+    ],
+    "ordinaryOLFalls": [
+      13,
+      13
+    ],
+    "retainedAdverseWZUnderRightSeed3": [
+      0.4,
+      0.38
+    ],
+    "filmNaturalClips": 8,
+    "filmObservedPlainMatches": 8,
+    "filmExchangeDecisionsPerPhase": [
+      2,
+      2
+    ],
+    "recipientOwnImagesAtDecision": [
+      0,
+      2
+    ],
+    "recipientRGReclassifiedSurfaceWork": true,
+    "videoExportsSourceVerified": 2
+  },
+  "scope": "Phase A repairs both members of an existing free-owner adjacent target exchange: reserved jobs remain protected, each newly assigned job is classified using that player's own delayed target picture, and installed solo technique/drive is remembered before recipient mutation. One balanced160-input generated-roster panel and two separately labelled witnesses use the cached prior baseline; all162 full projections/324 observer controls match. The original collector only records active-initiator images, so18 initiating depth-rule classifications and dedicated two-observer event-boundary witnesses remain separate claims. All121 candidate keeper joints stay continuous and loaded. Eight predeclared film clips preserve complete telemetry/events and actual next physics steps. Neither outcome-rate fitting, per-call training mastery nor a performance gain is claimed.",
+  "historicalVerification": "Default checks immutable panels, compact comparison, dedicated films, logs, phase review and verifier. Its reused native physics checker is the pinned immutable previous phase verifier. Mutable current source/tools/tests/latest pointers are checked only with --engine, including full src identity and exact patch reversal to reconstruct the cached baseline. No redundant prior-baseline resimulation or broad physics guard recollection is required for this controller-only contract change."
+}

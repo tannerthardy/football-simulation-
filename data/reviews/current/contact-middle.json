@@ -1,0 +1,2999 @@
+{
+  "decision": "ACCEPT diagnostic/measurement contract and three regression checks; HOLD a new generic slowdown or physics/default promotion",
+  "candidateCommit": "dc4b8f101d2a04e91be2ffd36b6bb051a36fdbc6",
+  "acceptedBase": "2c98bed94adad8087c65f381d4090444ad283985",
+  "acceptedQueue": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+  "researchReference": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+  "historicalNativeCommit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+  "productionDelta": {
+    "src": "identical to accepted base",
+    "baselineSettings": "identical to accepted base",
+    "dependencies": "identical to accepted base"
+  },
+  "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "historicalSourceSha256": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "packageLockSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true
+  },
+  "historicalFlags": {
+    "ANCHOR_SPLIT": "1",
+    "BACK_CHASE": "0",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DEEP_CAP": "0",
+    "DEF_GETOFF": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "GUN_MESH_SIDE": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_KEY": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "MESH_TEMPO": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_LATERAL": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "SHED_PURSUE": "0",
+    "STALK_CLAIM": "1",
+    "STRETCH_FLAT": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "UC_MESH": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1",
+    "ZONE_TE": "1"
+  },
+  "operators": {
+    "scripts/diag/physics/contact-middle-replay.ts": "fa53b2dd2ada14fe93eb20ff61234225185ae1c6160823a188d1d846d8d20b36",
+    "scripts/diag/physics/native-contact-middle.ts": "f4db0bac46d61ba043777f7e6984a6afe3bb6c5c2ad0cc7108bf90df782bc563",
+    "scripts/diag/physics/contact-middle-panel.ts": "3d037a69e362e19dabe05ac8dd25c6613db45cfb75220b5ef0f0d106c445a6c1",
+    "scripts/diag/physics/recoverable-contact.ts": "6c8ac3611c7d674e8abf36113f1fd31ce5e91f84bce8297003923d1f4dcee0b3",
+    "test/recoverable-contact.test.ts": "b3050497e259c05b600f7c960672a748bfe16f8737945fd12e96ee52ae6d18ac"
+  },
+  "mechanical": {
+    "geometry": {
+      "initialX": 0.9,
+      "glancingY": 0.45,
+      "missY": 0.7023636363636363,
+      "squareY": 0
+    },
+    "contactDistance": 0.5023636363636363,
+    "profiles": {
+      "runner": {
+        "seed": 61,
+        "position": "RB",
+        "id": "P1J74IPD",
+        "profile": {
+          "vmax": 9.694904572534723,
+          "tau": 1.3238511817080194,
+          "brake": 6.250544217687073,
+          "lateral": 6.685006802721089,
+          "turnRate": 8.526666666666667,
+          "backpedal": 0.5377551020408163,
+          "shuffle": 0.5292,
+          "massKg": 97.06876718000001,
+          "heightYd": 1.9888888888888887,
+          "radius": 0.2709090909090909,
+          "reach": 0.9630555555555556,
+          "maxCatchHeight": 3.445222222222222,
+          "reactReach": 2.945222222222222,
+          "reactionTime": 0.27779591836734696,
+          "power": 94.0675593784143,
+          "balance": 0.5816326530612245,
+          "bend": 0.6509931972789117,
+          "stepSpeed": 3.7236462585034014,
+          "getUp": 0.9133333333333333
+        }
+      },
+      "defender": {
+        "seed": 62,
+        "position": "LB",
+        "id": "PXPZIWE",
+        "profile": {
+          "vmax": 9.265485348466171,
+          "tau": 1.5144121936389316,
+          "brake": 6.374761904761904,
+          "lateral": 6.288857142857144,
+          "turnRate": 8.753333333333334,
+          "backpedal": 0.6163265306122448,
+          "shuffle": 0.5884,
+          "massKg": 105.23342984,
+          "heightYd": 2.088888888888889,
+          "radius": 0.28727272727272724,
+          "reach": 0.9961111111111111,
+          "maxCatchHeight": 3.513777777777778,
+          "reactReach": 3.0540555555555553,
+          "reactionTime": 0.21240816326530618,
+          "power": 103.10728503302857,
+          "balance": 0.21428571428571427,
+          "bend": 0.5388571428571429,
+          "stepSpeed": 3.5152380952380953,
+          "getUp": 0.9193333333333333
+        }
+      }
+    },
+    "commands": {
+      "runnerBeforeSplit": {
+        "vel": {
+          "x": 8,
+          "y": 0
+        },
+        "facing": 0
+      },
+      "runnerAfterSplitRun": {
+        "vel": {
+          "x": 8,
+          "y": 0
+        },
+        "facing": 0
+      },
+      "runnerAfterSplitFree": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "free": true
+      },
+      "defender": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "free": true
+      }
+    },
+    "dt": 0.05,
+    "horizon": 2,
+    "recoveryDefinition": {
+      "forwardSpeedFractionOfClear": 0.95,
+      "maxLateralSpeed": 0.1,
+      "maxFacingRadians": 0.05,
+      "minAvailability": 0.99,
+      "requireState": "up"
+    },
+    "identicalGlancingPrefixThroughTick": 2,
+    "runtime": {
+      "harnessWallMs": 67.40206,
+      "userCpuMs": 63.599,
+      "systemCpuMs": 6.637
+    },
+    "limitations": [
+      "Passive defender supplies no deliberate bracing or tackle wrap.",
+      "FREE removes active locomotion and recovery; this is a diagnostic separation, not an achievable football alternative.",
+      "Recovery criteria are descriptive landmarks, not NFL calibration or acceptance gates.",
+      "One fixed geometry cannot establish event frequencies or native football transfer."
+    ]
+  },
+  "mechanicalSummaries": [
+    {
+      "name": "glancing-run",
+      "contactAt": 0.1,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": 1.55,
+      "finalState": "up",
+      "minimumForwardSpeed": 6.5977154938174785,
+      "maximumXi": 0.6201778758247836,
+      "minimumAvailability": 0.7207168022593402,
+      "maximumAbsoluteSpin": 7.626617678645118,
+      "maximumAbsoluteFacing": 0.6425383999980133,
+      "finalForwardSpeed": 7.700302507035545,
+      "finalForwardDistanceDeficit": 1.3215759156770854,
+      "finalForwardSpeedDeficit": 0.29969749296445514,
+      "finalLateralDisplacement": -0.24689378431362194,
+      "summedInternalImpulse": {
+        "x": -136.11802825075358,
+        "y": -132.91031494655263
+      },
+      "maximumPairMomentumResidual": 5.074608780598287e-13,
+      "maximumAbsoluteWorkResidual": 4.1247005810873816e-12
+    },
+    {
+      "name": "glancing-free",
+      "contactAt": 0.1,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": null,
+      "finalState": "rising",
+      "minimumForwardSpeed": 0,
+      "maximumXi": 1.3354396025236823,
+      "minimumAvailability": 0,
+      "maximumAbsoluteSpin": 7.626617678645118,
+      "maximumAbsoluteFacing": 6.833538508072625,
+      "finalForwardSpeed": 0,
+      "finalForwardDistanceDeficit": 9.801805754272646,
+      "finalForwardSpeedDeficit": 8,
+      "finalLateralDisplacement": -1.6243135880822006,
+      "summedInternalImpulse": {
+        "x": -136.11802825075245,
+        "y": -132.9103149465526
+      },
+      "maximumPairMomentumResidual": 3.684201127851061e-14,
+      "maximumAbsoluteWorkResidual": 6.66577903984944e-13
+    },
+    {
+      "name": "clear-run",
+      "contactAt": null,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": null,
+      "finalState": "up",
+      "minimumForwardSpeed": 8,
+      "maximumXi": 0,
+      "minimumAvailability": 1,
+      "maximumAbsoluteSpin": 0,
+      "maximumAbsoluteFacing": 0,
+      "finalForwardSpeed": 8,
+      "finalForwardDistanceDeficit": 0,
+      "finalForwardSpeedDeficit": 0,
+      "finalLateralDisplacement": 0,
+      "summedInternalImpulse": {
+        "x": 0,
+        "y": 0
+      },
+      "maximumPairMomentumResidual": 0,
+      "maximumAbsoluteWorkResidual": 0
+    },
+    {
+      "name": "clear-free",
+      "contactAt": null,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": null,
+      "finalState": "up",
+      "minimumForwardSpeed": 8,
+      "maximumXi": 0,
+      "minimumAvailability": 1,
+      "maximumAbsoluteSpin": 0,
+      "maximumAbsoluteFacing": 0,
+      "finalForwardSpeed": 8,
+      "finalForwardDistanceDeficit": 0,
+      "finalForwardSpeedDeficit": 0,
+      "finalLateralDisplacement": 0,
+      "summedInternalImpulse": {
+        "x": 0,
+        "y": 0
+      },
+      "maximumPairMomentumResidual": 0,
+      "maximumAbsoluteWorkResidual": 0
+    },
+    {
+      "name": "square-front-run",
+      "contactAt": 0.05,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": null,
+      "finalState": "up",
+      "minimumForwardSpeed": -5.551115123125783e-17,
+      "maximumXi": 1.325607463865189,
+      "minimumAvailability": 0,
+      "maximumAbsoluteSpin": 0,
+      "maximumAbsoluteFacing": 0,
+      "finalForwardSpeed": 1.1418192972891372,
+      "finalForwardDistanceDeficit": 14.063242880546253,
+      "finalForwardSpeedDeficit": 6.858180702710863,
+      "finalLateralDisplacement": 0,
+      "summedInternalImpulse": {
+        "x": -408.6525657193879,
+        "y": 0
+      },
+      "maximumPairMomentumResidual": 1.8474111129762605e-13,
+      "maximumAbsoluteWorkResidual": 8.526512829121202e-13
+    },
+    {
+      "name": "glancing-run-48",
+      "contactAt": 0.1,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": 1.55,
+      "finalState": "up",
+      "minimumForwardSpeed": 6.597715493817479,
+      "maximumXi": 0.6245472064587442,
+      "minimumAvailability": 0.7170329873453328,
+      "maximumAbsoluteSpin": 7.469673084557061,
+      "maximumAbsoluteFacing": 0.6420984001257528,
+      "finalForwardSpeed": 7.700025478838291,
+      "finalForwardDistanceDeficit": 1.3238037236365017,
+      "finalForwardSpeedDeficit": 0.2999745211617091,
+      "finalLateralDisplacement": -0.24889386432418467,
+      "summedInternalImpulse": {
+        "x": -136.11802825075372,
+        "y": -132.91031494655297
+      },
+      "maximumPairMomentumResidual": 1.7780755213809336e-12,
+      "maximumAbsoluteWorkResidual": 1.2642331626011583e-11
+    },
+    {
+      "name": "square-front-run-48",
+      "contactAt": 0.05,
+      "splitAt": 0.1,
+      "recoveryTimeAfterContact": null,
+      "finalState": "up",
+      "minimumForwardSpeed": 0,
+      "maximumXi": 1.2978692536137832,
+      "minimumAvailability": 0,
+      "maximumAbsoluteSpin": 0,
+      "maximumAbsoluteFacing": 0,
+      "finalForwardSpeed": 1.1418196850612803,
+      "finalForwardDistanceDeficit": 14.065065065729685,
+      "finalForwardSpeedDeficit": 6.8581803149387195,
+      "finalLateralDisplacement": 0,
+      "summedInternalImpulse": {
+        "x": -409.5827179486193,
+        "y": 0
+      },
+      "maximumPairMomentumResidual": 1.5896173266582991e-12,
+      "maximumAbsoluteWorkResidual": 6.124878382252064e-12
+    }
+  ],
+  "mechanicalSampledCurves": [
+    {
+      "name": "glancing-run",
+      "samples": [
+        {
+          "t": 0.05,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.1,
+          "vel": {
+            "x": 6.5977154938174785,
+            "y": -1.3692387243374546
+          },
+          "speed": 6.738298332782875,
+          "xiMagnitude": 0.26097913021662,
+          "availability": 0.9589178710819997,
+          "state": "up",
+          "facing": 0.10141850367690411,
+          "spin": 7.626617678645118,
+          "normalContactImpulse": 179.5646044110468
+        },
+        {
+          "t": 0.15000000000000002,
+          "vel": {
+            "x": 6.693170472657307,
+            "y": -1.1341581781816727
+          },
+          "speed": 6.788582013144426,
+          "xiMagnitude": 0.6201778758247836,
+          "availability": 0.7207168022593402,
+          "state": "up",
+          "facing": 0.40896673078434054,
+          "spin": 4.870564834150736,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.2,
+          "vel": {
+            "x": 6.757141639135256,
+            "y": -0.9540081697796721
+          },
+          "speed": 6.824155238514277,
+          "xiMagnitude": 0.6109181258308276,
+          "availability": 0.7284636465608142,
+          "state": "up",
+          "facing": 0.5900321569543203,
+          "spin": 2.368015574544325,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.25,
+          "vel": {
+            "x": 6.815854848481372,
+            "y": -0.7695531621551144
+          },
+          "speed": 6.859160982580155,
+          "xiMagnitude": 0.5315243011032816,
+          "availability": 0.7918599733589455,
+          "state": "up",
+          "facing": 0.6425383999980133,
+          "spin": -0.3143469068032379,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.30000000000000004,
+          "vel": {
+            "x": 6.873096083637634,
+            "y": -0.566673942161052
+          },
+          "speed": 6.896417122799297,
+          "xiMagnitude": 0.4594718814523354,
+          "availability": 0.8443154047793043,
+          "state": "up",
+          "facing": 0.5556373866959676,
+          "spin": -3.19999441698912,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.35000000000000003,
+          "vel": {
+            "x": 6.926444265460806,
+            "y": -0.34788149920653133
+          },
+          "speed": 6.935174958140931,
+          "xiMagnitude": 0.3900451229290094,
+          "availability": 0.8898120836899973,
+          "state": "up",
+          "facing": 0.3216940971452772,
+          "spin": -6.157737165038498,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.4,
+          "vel": {
+            "x": 6.973976294736237,
+            "y": -0.11485246796311283
+          },
+          "speed": 6.974921967229468,
+          "xiMagnitude": 0.2545725148034231,
+          "availability": 0.9617065793508465,
+          "state": "up",
+          "facing": 0.007875668019314719,
+          "spin": -6.395,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.45,
+          "vel": {
+            "x": 7.013370425650658,
+            "y": 0.016248526922144207
+          },
+          "speed": 7.013389247861438,
+          "xiMagnitude": 0.21375548144781145,
+          "availability": 0.9779653042201393,
+          "state": "up",
+          "facing": -0.22024896598014732,
+          "spin": -2.729985359978482,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.5,
+          "vel": {
+            "x": 7.049851398923207,
+            "y": -0.0022012975484895572
+          },
+          "speed": 7.049851742597882,
+          "xiMagnitude": 0.1814361824577275,
+          "availability": 0.9885250201476484,
+          "state": "up",
+          "facing": -0.2609851447937623,
+          "spin": 1.1005382074338836,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.55,
+          "vel": {
+            "x": 7.085321971499379,
+            "y": 0.0002856058075356334
+          },
+          "speed": 7.085321977255693,
+          "xiMagnitude": 0.15697105944630943,
+          "availability": 0.9948320600344214,
+          "state": "up",
+          "facing": -0.10910516526388536,
+          "spin": 4.974660973761193,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.6000000000000001,
+          "vel": {
+            "x": 7.119684911964911,
+            "y": -3.54850637155814e-05
+          },
+          "speed": 7.119684912053341,
+          "xiMagnitude": 0.10814153972312827,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.0698139417120871,
+          "spin": 2.182103305277705,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.65,
+          "vel": {
+            "x": 7.15292808819933,
+            "y": 4.22187233474502e-06
+          },
+          "speed": 7.152928088200575,
+          "xiMagnitude": 0.09216621532698893,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.08945955348798629,
+          "spin": -1.3962788342417376,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.7000000000000001,
+          "vel": {
+            "x": 7.184915316007183,
+            "y": -4.810873862273006e-07
+          },
+          "speed": 7.184915316007199,
+          "xiMagnitude": 0.07855711979961266,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.009822805887949704,
+          "spin": -1.7891910697597257,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.75,
+          "vel": {
+            "x": 7.215694050336529,
+            "y": 5.251553883808411e-08
+          },
+          "speed": 7.215694050336529,
+          "xiMagnitude": 0.06695965379887735,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.0398183738000184,
+          "spin": -0.19645611775899852,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.8,
+          "vel": {
+            "x": 7.2453099546515745,
+            "y": -5.492604607503042e-09
+          },
+          "speed": 7.2453099546515745,
+          "xiMagnitude": 0.057075096948010565,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.024820589843984164,
+          "spin": 0.7963674760003681,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.8500000000000001,
+          "vel": {
+            "x": 7.273806968250017,
+            "y": 5.505204355771924e-10
+          },
+          "speed": 7.273806968250017,
+          "xiMagnitude": 0.048650002480229104,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.00749889197801723,
+          "spin": 0.49641179687968773,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.9,
+          "vel": {
+            "x": 7.301227370497174,
+            "y": -5.288683271943728e-11
+          },
+          "speed": 7.301227370497174,
+          "xiMagnitude": 0.041468724436880634,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.01615974091100081,
+          "spin": -0.1499778395603446,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.9500000000000001,
+          "vel": {
+            "x": 7.327611844237978,
+            "y": 4.870479730573779e-12
+          },
+          "speed": 7.327611844237978,
+          "xiMagnitude": 0.03534757795101783,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.004330424466491678,
+          "spin": -0.3231948182200206,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1,
+          "vel": {
+            "x": 7.352999535746678,
+            "y": -4.3004497424294606e-13
+          },
+          "speed": 7.352999535746678,
+          "xiMagnitude": 0.030130036744623223,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.005914658222254676,
+          "spin": -0.08660848932983356,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.05,
+          "vel": {
+            "x": 7.377428112064409,
+            "y": 3.6411522972366875e-14
+          },
+          "speed": 7.377428112064409,
+          "xiMagnitude": 0.02568269652909352,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.005122541344373177,
+          "spin": 0.11829316444509352,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.1,
+          "vel": {
+            "x": 7.400933817570114,
+            "y": -2.9567095378188784e-15
+          },
+          "speed": 7.400933817570114,
+          "xiMagnitude": 0.021891852624633935,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.0003960584389406385,
+          "spin": 0.1024508268874591,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.1500000000000001,
+          "vel": {
+            "x": 7.423551527393208,
+            "y": 2.302940060038552e-16
+          },
+          "speed": 7.423551527393208,
+          "xiMagnitude": 0.018660588685073344,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.002759299891656797,
+          "spin": -0.00792116877881277,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.2000000000000002,
+          "vel": {
+            "x": 7.445314798569845,
+            "y": -1.7207488442295728e-17
+          },
+          "speed": 7.445314798569845,
+          "xiMagnitude": 0.015906297107743116,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.0011816207263581902,
+          "spin": -0.055185997833131495,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.25,
+          "vel": {
+            "x": 7.466255920555238,
+            "y": 1.2335804901028097e-18
+          },
+          "speed": 7.466255920555238,
+          "xiMagnitude": 0.013558566139641836,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.0007888395826491923,
+          "spin": -0.023632414527163803,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.3,
+          "vel": {
+            "x": 7.486405962732483,
+            "y": -8.485639803239279e-20
+          },
+          "speed": 7.486405962732483,
+          "xiMagnitude": 0.011557379141628521,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.0009852301545036912,
+          "spin": 0.015776791652983846,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.35,
+          "vel": {
+            "x": 7.5057948200530005,
+            "y": 5.601682792519348e-21
+          },
+          "speed": 7.5057948200530005,
+          "xiMagnitude": 0.009851579795786063,
+          "availability": 1,
+          "state": "up",
+          "facing": -9.819528592736049e-05,
+          "spin": 0.019704603090069384,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.4000000000000001,
+          "vel": {
+            "x": 7.524451258151467,
+            "y": -3.5490887615261774e-22
+          },
+          "speed": 7.524451258151467,
+          "xiMagnitude": 0.008397563947311736,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.00044351743428805435,
+          "spin": 0.0019639057185472097,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.4500000000000002,
+          "vel": {
+            "x": 7.54240295551423,
+            "y": 2.1583667328998325e-23
+          },
+          "speed": 7.54240295551423,
+          "xiMagnitude": 0.007158164603411118,
+          "availability": 1,
+          "state": "up",
+          "facing": 0.0002708563601077074,
+          "spin": -0.008870348685761087,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.5,
+          "vel": {
+            "x": 7.559676544402983,
+            "y": -1.2600486925473526e-24
+          },
+          "speed": 7.559676544402983,
+          "xiMagnitude": 0.006101701564087145,
+          "availability": 1,
+          "state": "up",
+          "facing": -8.633053709017346e-05,
+          "spin": -0.005417127202154148,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.55,
+          "vel": {
+            "x": 7.576297650845475,
+            "y": 7.062280878626708e-26
+          },
+          "speed": 7.576297650845475,
+          "xiMagnitude": 0.005201171373935185,
+          "availability": 1,
+          "state": "up",
+          "facing": -0.00017859344859894044,
+          "spin": 0.0017266107418034693,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.6,
+          "vel": {
+            "x": 7.59229093224549,
+            "y": -3.800478922477499e-27
+          },
+          "speed": 7.59229093224549,
+          "xiMagnitude": 0.004433556874930262,
+          "availability": 1,
+          "state": "up",
+          "facing": -4.613145575449451e-05,
+          "spin": 0.003571868971974368,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.6500000000000001,
+          "vel": {
+            "x": 7.607680114035714,
+            "y": 1.963838676338849e-28
+          },
+          "speed": 7.607680114035714,
+          "xiMagnitude": 0.003779238700155391,
+          "availability": 1,
+          "state": "up",
+          "facing": 6.623099642211194e-05,
+          "spin": 0.0009226291150898902,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.7000000000000002,
+          "vel": {
+            "x": 7.622488025111087,
+            "y": -9.745055075332602e-30
+          },
+          "speed": 7.622488025111087,
+          "xiMagnitude": 0.0032214936563130206,
+          "availability": 1,
+          "state": "up",
+          "facing": 5.6181226088192204e-05,
+          "spin": -0.0013246199284466798,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.75,
+          "vel": {
+            "x": 7.636736631368185,
+            "y": 4.644181168282383e-31
+          },
+          "speed": 7.636736631368185,
+          "xiMagnitude": 0.0027460671655748594,
+          "availability": 1,
+          "state": "up",
+          "facing": -5.024885167070892e-06,
+          "spin": -0.001123624521763844,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.8,
+          "vel": {
+            "x": 7.650447068537733,
+            "y": -2.1257602821430844e-32
+          },
+          "speed": 7.650447068537733,
+          "xiMagnitude": 0.002340808831781127,
+          "availability": 1,
+          "state": "up",
+          "facing": -3.060305562763155e-05,
+          "spin": 0.00010049770334141783,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.85,
+          "vel": {
+            "x": 7.663639673569377,
+            "y": 9.34613906885794e-34
+          },
+          "speed": 7.663639673569377,
+          "xiMagnitude": 0.0019953618106884324,
+          "availability": 1,
+          "state": "up",
+          "facing": -1.278908523039135e-05,
+          "spin": 0.0006120611125481901,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.9000000000000001,
+          "vel": {
+            "x": 7.6763340145378525,
+            "y": -3.94724627049078e-35
+          },
+          "speed": 7.6763340145378525,
+          "xiMagnitude": 0.0017008980402063384,
+          "availability": 1,
+          "state": "up",
+          "facing": 8.906985198509076e-06,
+          "spin": 0.000255781704607827,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.9500000000000002,
+          "vel": {
+            "x": 7.688548920056228,
+            "y": 1.6015120126614242e-36
+          },
+          "speed": 7.688548920056228,
+          "xiMagnitude": 0.001449892559572084,
+          "availability": 1,
+          "state": "up",
+          "facing": 1.0848035214561236e-05,
+          "spin": -0.00017813970396574064,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 2,
+          "vel": {
+            "x": 7.700302507035545,
+            "y": -6.242649167452755e-38
+          },
+          "speed": 7.700302507035545,
+          "xiMagnitude": 0.0012359311462046686,
+          "availability": 1,
+          "state": "up",
+          "facing": 9.70525008137102e-07,
+          "spin": -0.00021696070429122472,
+          "normalContactImpulse": 0
+        }
+      ]
+    },
+    {
+      "name": "clear-run",
+      "samples": [
+        {
+          "t": 0.05,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.1,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.15000000000000002,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.2,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.25,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.30000000000000004,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.35000000000000003,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.4,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.45,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.5,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.55,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.6000000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.65,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.7000000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.75,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.8,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.8500000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.9,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.9500000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.05,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.1,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.1500000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.2000000000000002,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.25,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.3,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.35,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.4000000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.4500000000000002,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.5,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.55,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.6,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.6500000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.7000000000000002,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.75,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.8,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.85,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.9000000000000001,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.9500000000000002,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 2,
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "speed": 8,
+          "xiMagnitude": 0,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        }
+      ]
+    },
+    {
+      "name": "square-front-run",
+      "samples": [
+        {
+          "t": 0.05,
+          "vel": {
+            "x": 4.8386542195953455,
+            "y": 0
+          },
+          "speed": 4.8386542195953455,
+          "xiMagnitude": 0.06940311444814402,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 306.86793753357483
+        },
+        {
+          "t": 0.1,
+          "vel": {
+            "x": 3.8359529920243003,
+            "y": 0
+          },
+          "speed": 3.8359529920243003,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 101.78462818581346
+        },
+        {
+          "t": 0.15000000000000002,
+          "vel": {
+            "x": 3.5518944563725072,
+            "y": 0
+          },
+          "speed": 3.5518944563725072,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.2,
+          "vel": {
+            "x": 3.267835920720714,
+            "y": 0
+          },
+          "speed": 3.267835920720714,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.25,
+          "vel": {
+            "x": 2.983777385068921,
+            "y": 0
+          },
+          "speed": 2.983777385068921,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.30000000000000004,
+          "vel": {
+            "x": 2.699718849417128,
+            "y": 0
+          },
+          "speed": 2.699718849417128,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.35000000000000003,
+          "vel": {
+            "x": 2.415660313765335,
+            "y": 0
+          },
+          "speed": 2.415660313765335,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.4,
+          "vel": {
+            "x": 2.131601778113542,
+            "y": 0
+          },
+          "speed": 2.131601778113542,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.45,
+          "vel": {
+            "x": 1.8475432424617488,
+            "y": 0
+          },
+          "speed": 1.8475432424617488,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "falling",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.5,
+          "vel": {
+            "x": 1.5437985282593578,
+            "y": 0
+          },
+          "speed": 1.5437985282593578,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.55,
+          "vel": {
+            "x": 1.141622921303977,
+            "y": 0
+          },
+          "speed": 1.141622921303977,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.6000000000000001,
+          "vel": {
+            "x": 0.7394473143485965,
+            "y": 0
+          },
+          "speed": 0.7394473143485965,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.65,
+          "vel": {
+            "x": 0.3372717073932158,
+            "y": 0
+          },
+          "speed": 0.3372717073932158,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.7000000000000001,
+          "vel": {
+            "x": -5.551115123125783e-17,
+            "y": 0
+          },
+          "speed": 5.551115123125783e-17,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.75,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.8,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "down",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.8500000000000001,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.9,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 0.9500000000000001,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.05,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.1,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.1500000000000001,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.2000000000000002,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.25,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.3,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.35,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.4000000000000001,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.4500000000000002,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.5,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.55,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.6,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.6500000000000001,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.7000000000000002,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.75,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.325607463865189,
+          "availability": 0,
+          "state": "rising",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.8,
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "speed": 0,
+          "xiMagnitude": 1.7484018952640422e-19,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.85,
+          "vel": {
+            "x": 0.30214678340529455,
+            "y": 0
+          },
+          "speed": 0.30214678340529455,
+          "xiMagnitude": 2.256074055918485e-19,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.9000000000000001,
+          "vel": {
+            "x": 0.592881057522656,
+            "y": 0
+          },
+          "speed": 0.592881057522656,
+          "xiMagnitude": 2.4034321544487163e-19,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 1.9500000000000002,
+          "vel": {
+            "x": 0.8726336910854509,
+            "y": 0
+          },
+          "speed": 0.8726336910854509,
+          "xiMagnitude": 2.44565214648463e-19,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        },
+        {
+          "t": 2,
+          "vel": {
+            "x": 1.1418192972891372,
+            "y": 0
+          },
+          "speed": 1.1418192972891372,
+          "xiMagnitude": 2.4577484596152526e-19,
+          "availability": 1,
+          "state": "up",
+          "facing": 0,
+          "spin": 0,
+          "normalContactImpulse": 0
+        }
+      ]
+    }
+  ],
+  "acceptedConstructor": {
+    "input": {
+      "case": "power/strong/i_pro_21/wide9/pair11/77",
+      "rosterSeeds": [
+        11,
+        12
+      ],
+      "strength": 0.55,
+      "seed": 77,
+      "los": 40,
+      "ballY": 26.67,
+      "firstDownX": 50,
+      "down": 1,
+      "maximumTime": 7
+    },
+    "result": {
+      "phase": "dead",
+      "outcome": "tackle",
+      "t": 4.15,
+      "rbPos": {
+        "x": 41.58877075579831,
+        "y": 25.917872654229296
+      },
+      "gain": 1.5887707557983077
+    },
+    "runtime": {
+      "wallSeconds": 0.6650878370000001,
+      "cpuSeconds": 1.610534
+    },
+    "events": [
+      {
+        "t": 0.3,
+        "type": "read",
+        "a": 11,
+        "pos": {
+          "x": 40.9,
+          "y": 31.47
+        },
+        "note": "run; pPass=0.23 focus=0.97 urgency=0.66"
+      },
+      {
+        "t": 0.3,
+        "type": "read",
+        "a": 12,
+        "pos": {
+          "x": 40.87,
+          "y": 21.35
+        },
+        "note": "run; pPass=0.20 focus=0.97 urgency=0.75"
+      },
+      {
+        "t": 0.3,
+        "type": "read",
+        "a": 15,
+        "pos": {
+          "x": 44.91,
+          "y": 25.29
+        },
+        "note": "run; pPass=0.19 focus=0.91 urgency=0.86"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 13,
+        "pos": {
+          "x": 40.83,
+          "y": 24.6
+        },
+        "note": "run; pPass=0.18 focus=0.91 urgency=0.62"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 14,
+        "pos": {
+          "x": 40.84,
+          "y": 27.77
+        },
+        "note": "run; pPass=0.26 focus=0.85 urgency=0.70"
+      },
+      {
+        "t": 0.4,
+        "type": "read",
+        "a": 21,
+        "pos": {
+          "x": 47.45,
+          "y": 19.95
+        },
+        "note": "run; pPass=0.24 focus=0.96 urgency=0.72"
+      },
+      {
+        "t": 0.5,
+        "type": "read",
+        "a": 20,
+        "pos": {
+          "x": 53.12,
+          "y": 26.66
+        },
+        "note": "run; pPass=0.28 focus=0.95 urgency=0.82"
+      },
+      {
+        "t": 0.55,
+        "type": "block_contact",
+        "a": 2,
+        "b": 13,
+        "pos": {
+          "x": 39.70327523686034,
+          "y": 24.250241480744844
+        },
+        "note": "run"
+      },
+      {
+        "t": 0.65,
+        "type": "block_contact",
+        "a": 3,
+        "b": 14,
+        "pos": {
+          "x": 39.8796728839338,
+          "y": 27.084785212249578
+        },
+        "note": "run"
+      },
+      {
+        "t": 0.65,
+        "type": "read",
+        "a": 16,
+        "pos": {
+          "x": 44.55,
+          "y": 28.27
+        },
+        "note": "run; pPass=0.30 focus=0.44 urgency=0.83"
+      },
+      {
+        "t": 0.65,
+        "type": "read",
+        "a": 17,
+        "pos": {
+          "x": 47.53,
+          "y": 8.15
+        },
+        "note": "run; pPass=0.20 focus=0.95 urgency=0.68"
+      },
+      {
+        "t": 0.65,
+        "type": "read",
+        "a": 18,
+        "pos": {
+          "x": 47.43,
+          "y": 45.63
+        },
+        "note": "run; pPass=0.20 focus=0.85 urgency=0.79"
+      },
+      {
+        "t": 0.65,
+        "type": "read",
+        "a": 19,
+        "pos": {
+          "x": 45.27,
+          "y": 20.39
+        },
+        "note": "run; pPass=0.13 focus=0.97 urgency=0.69"
+      },
+      {
+        "t": 0.9,
+        "type": "block_climb",
+        "a": 5,
+        "b": 15,
+        "pos": {
+          "x": 40.04,
+          "y": 25.43
+        },
+        "note": "secured DT_S; RT stays"
+      },
+      {
+        "t": 1.25,
+        "type": "block_contact",
+        "a": 1,
+        "b": 11,
+        "pos": {
+          "x": 39.71446554086285,
+          "y": 30.178926533212508
+        },
+        "note": "run"
+      },
+      {
+        "t": 1.45,
+        "type": "handoff",
+        "a": 0,
+        "b": 6,
+        "pos": {
+          "x": 36.75,
+          "y": 26.22
+        }
+      },
+      {
+        "t": 1.9,
+        "type": "block_contact",
+        "a": 10,
+        "b": 12,
+        "pos": {
+          "x": 39.78700098318297,
+          "y": 23.572671581789233
+        },
+        "note": "run"
+      },
+      {
+        "t": 2,
+        "type": "block_contact",
+        "a": 7,
+        "b": 16,
+        "pos": {
+          "x": 42.69678958429884,
+          "y": 27.079418001116803
+        },
+        "note": "run"
+      },
+      {
+        "t": 2.1,
+        "type": "block_contact",
+        "a": 9,
+        "b": 17,
+        "pos": {
+          "x": 47.03677128318309,
+          "y": 12.255723052674306
+        },
+        "note": "run"
+      },
+      {
+        "t": 2.25,
+        "type": "block_contact",
+        "a": 8,
+        "b": 18,
+        "pos": {
+          "x": 47.4237991081474,
+          "y": 40.33192397506399
+        },
+        "note": "run"
+      },
+      {
+        "t": 3.1,
+        "type": "block_contact",
+        "a": 5,
+        "b": 15,
+        "pos": {
+          "x": 42.31850839858566,
+          "y": 27.069691660436135
+        },
+        "note": "run"
+      },
+      {
+        "t": 3.45,
+        "type": "block_log",
+        "a": 10,
+        "b": 12,
+        "pos": {
+          "x": 39.37,
+          "y": 20.36
+        },
+        "note": "kick target crossed inside shoulder"
+      },
+      {
+        "t": 3.5,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 15,
+        "pos": {
+          "x": 41.46,
+          "y": 25.48
+        },
+        "note": "grasp"
+      },
+      {
+        "t": 3.5,
+        "type": "tackle_wrap",
+        "a": 15,
+        "b": 6,
+        "pos": {
+          "x": 42.22,
+          "y": 26.01
+        },
+        "note": "initial"
+      },
+      {
+        "t": 3.5,
+        "type": "hit",
+        "a": 15,
+        "b": 6,
+        "pos": {
+          "x": 42.22,
+          "y": 26.01
+        }
+      },
+      {
+        "t": 3.5,
+        "type": "tackle_wrap",
+        "a": 19,
+        "b": 6,
+        "pos": {
+          "x": 42.76,
+          "y": 24.85
+        },
+        "note": "assist"
+      },
+      {
+        "t": 3.5,
+        "type": "hit",
+        "a": 19,
+        "b": 6,
+        "pos": {
+          "x": 42.76,
+          "y": 24.85
+        }
+      },
+      {
+        "t": 3.75,
+        "type": "fall",
+        "a": 6,
+        "pos": {
+          "x": 41.86,
+          "y": 25.7
+        },
+        "note": "contact"
+      },
+      {
+        "t": 3.95,
+        "type": "block_contact",
+        "a": 3,
+        "b": 14,
+        "pos": {
+          "x": 40.13032404014832,
+          "y": 28.72220051929162
+        },
+        "note": "run"
+      },
+      {
+        "t": 4,
+        "type": "block_contact",
+        "a": 1,
+        "b": 11,
+        "pos": {
+          "x": 38.98114343106996,
+          "y": 30.573121753135457
+        },
+        "note": "run"
+      },
+      {
+        "t": 4.1,
+        "type": "tackle",
+        "a": 15,
+        "b": 6,
+        "pos": {
+          "x": 41.89,
+          "y": 26.33
+        }
+      }
+    ]
+  },
+  "nativeApproachControls": {
+    "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "toolSha256": "3d037a69e362e19dabe05ac8dd25c6613db45cfb75220b5ef0f0d106c445a6c1",
+    "panelSha256": "d26bfcb123bed33fe40854bc442488db812e10cb91368af9d13b21f017d37459",
+    "node": "v22.23.3",
+    "inputs": [
+      {
+        "angle": 0,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      {
+        "angle": 90,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      },
+      {
+        "angle": 135,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult"
+      }
+    ],
+    "seed": 3000,
+    "side": 1,
+    "rosterSeeds": [
+      61,
+      62
+    ],
+    "world": "accepted defaults",
+    "limitations": [
+      "Fixed requested path; production pursuer and tackle controller.",
+      "Only three selected bearings, no NFL or tackle-frequency conclusion.",
+      "Panel contact marker includes missed attempts; actual grasp/torso impulse remain separate."
+    ],
+    "runtime": {
+      "wallSeconds": 0.126145324,
+      "cpuSeconds": 0.215316
+    },
+    "rows": [
+      {
+        "angle": 0,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 3000,
+        "ending": "tackled",
+        "endWhy": "down",
+        "attempts": [
+          {
+            "t": 2.6,
+            "kind": "grip",
+            "origin": "form",
+            "capacity": 1612.7887386022624,
+            "legs": 0.5810973388220533,
+            "peakForce": 907.2823770865654,
+            "heldFor": 0.6,
+            "broke": false,
+            "meanForce": 270.37737776864657
+          }
+        ],
+        "afterContact": 1.9868366930476213,
+        "contactToEnd": 0.6000000000000001,
+        "contactImpulse": 593.0106168093979,
+        "peakClosing": 9.516615301249548,
+        "tacklerDown": true,
+        "firstGrip": {
+          "t": 2.6,
+          "x": 54.79999999999996
+        },
+        "advanceAfterGrip": 1.9868366930476213,
+        "finish": "physical fall",
+        "carrierState": "down"
+      },
+      {
+        "angle": 90,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 3000,
+        "ending": "escaped",
+        "endWhy": "beat the tackler",
+        "attempts": [],
+        "afterContact": null,
+        "contactToEnd": null,
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "tacklerDown": false,
+        "firstGrip": null,
+        "advanceAfterGrip": null,
+        "finish": "escaped",
+        "carrierState": "up"
+      },
+      {
+        "angle": 135,
+        "speed": 8,
+        "cut": false,
+        "difficulty": "difficult",
+        "side": 1,
+        "seed": 3000,
+        "ending": "escaped",
+        "endWhy": "beat the tackler",
+        "attempts": [],
+        "afterContact": null,
+        "contactToEnd": null,
+        "contactImpulse": 0,
+        "peakClosing": 0,
+        "tacklerDown": false,
+        "firstGrip": null,
+        "advanceAfterGrip": null,
+        "finish": "escaped",
+        "carrierState": "up"
+      }
+    ]
+  },
+  "portableNativeInput": {
+    "path": "data/reviews/current/contact-middle-native.json",
+    "sha256": "c316612eac96cce94e17b4fc11514dbcf0a69f3ae79e66639e1060b4298dd418",
+    "bytes": 35933,
+    "extraction": "Complete incoming Body, native request tape and exactly consumed impulse/state fields retained without rounding; extraction equality asserted against full trace.",
+    "portableReplayEqualsFullTraceReplay": true
+  },
+  "fixedRequestReplay": {
+    "summary": {
+      "minimumNativeSpeed": 7.512243668020178,
+      "maximumNativeXi": 1.1042612698963068,
+      "minimumNativeAvailability": 0.23420526125337393,
+      "actualTorsoContactTicks": 0,
+      "nativeInternalAlong": -3.122866207207857,
+      "nativeGroundAlong": 3.9790136807983374,
+      "maximumSpeedDeficit": 0.5967701223582491,
+      "finalSpeedDeficit": 0.3964504214064384,
+      "finalDistanceDeficitAlongIncoming": 0.34786589435893905,
+      "finalDisplacementDifference": {
+        "x": 1.2298501221024836,
+        "y": 0.4663459465870803
+      },
+      "maximumAbsoluteReplayWorkResidual": 2.250975850891712e-12
+    },
+    "refinement": [
+      {
+        "substeps": 12,
+        "maximumPositionDifferenceVsIsolated": 0.0018170507485319185,
+        "maximumVelocityDifferenceVsIsolated": 0.002180177613901885,
+        "finalSpeedDeficit": 0.39599785118727304,
+        "finalDisplacementDifference": {
+          "x": 1.2280592972775395,
+          "y": 0.46665355001538433
+        }
+      },
+      {
+        "substeps": 16,
+        "maximumPositionDifferenceVsIsolated": 0.001822784435941472,
+        "maximumVelocityDifferenceVsIsolated": 0.0021871634802226045,
+        "finalSpeedDeficit": 0.39599640435695704,
+        "finalDisplacementDifference": {
+          "x": 1.22805364532703,
+          "y": 0.4666545147240724
+        }
+      }
+    ],
+    "window": [
+      2.85,
+      5.2
+    ],
+    "measurement": "Sum of each exact internal/ground impulse projected onto that tick incoming velocity, divided by mass. These moving-axis sums are not an exact scalar speed difference. No-contact replay holds the native commands fixed; it is not a reacting play or an achievable avoidance policy.",
+    "runtime": {
+      "wallSeconds": 0.06087526,
+      "cpuSeconds": 0.076917
+    }
+  },
+  "checks": {
+    "focusedAssertions": 3,
+    "focusedPass": true,
+    "typecheckPass": true,
+    "wholeSuite": "reuse accepted checkpoint, not repeated"
+  },
+  "independentReview": {
+    "evidence": "middle_evidence: ACCEPT with scalar-versus-forward, recovery-landmark, field-coordinate and counterfactual qualifications incorporated",
+    "physics": "middle_physics: no release-state erasure; existing recovery spectrum; no generic penalty justified"
+  },
+  "limitations": [
+    "Selected mechanical capability, not contact population validation or NFL calibration.",
+    "Historical source is experimental and does not reproduce on accepted controllers.",
+    "Fixed-request no-contact arm is a mechanical counterfactual, not a reacting play or avoidance policy.",
+    "Unbraced center grasp lacks acquired yaw lever; hanging-tackler vertical weight is unrepresented. Neither establishes causality for the inherited percentage."
+  ],
+  "launches": [
+    {
+      "path": "out/contact-middle/recoverable-contact-1s-launch.json",
+      "sha256": "5f4bd0bd6f25796fb27c9987dd32d8c8a2c5ee8d83dbde207a04e09b1dc9ec73",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/recoverable-contact.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.279158708
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/recoverable-contact-launch.json",
+      "sha256": "cd20880c4fbcd26961f280c7bacc9cc77d462f3403e6ecffdbbb00a69f35545b",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/recoverable-contact.ts",
+            "--seconds",
+            "2",
+            "--refine",
+            "48"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.32221298200000004
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/recoverable-contact-test-launch.json",
+      "sha256": "76fc5b6c73d3637d4dda697753afa721f50aba4766ab089c35d053fe4a428ed3",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/recoverable-contact.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.458286699
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/native-accepted-launch.json",
+      "sha256": "08d4150bbf1301daa10c5dbcbce76a7bd4038212112d00408653affe6fe8b1a9",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/native-contact-middle.ts",
+            "out/contact-middle/native-power77.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.028773307
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/historical-launch.json",
+      "sha256": "5db65b9f443577d742e79f4819c742492c11db03cf8405db6fd9cd7a7633eea2",
+      "commit": "b5577605bb10b6d1e35b618d9ba78d75e6f65106",
+      "sourceSha256": "cfc66cf54643e0d09a909ae23a0854591b9f7c67d3b51d41eb87b977a39d645c",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/native-contact-middle.ts",
+            "out/contact-middle/historical-power77.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.2882624489999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/replay-launch.json",
+      "sha256": "934527b62e56e76098283739e2ba8d263fa1fec025f515186a038bc4d5380258",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/contact-middle-replay.ts",
+            "/workspace/contact-middle-historical/out/contact-middle/historical-power77.json",
+            "out/contact-middle/request-tape-replay.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.30150651700000003
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/portable-replay-launch.json",
+      "sha256": "527e98c159068a0db15ac30a87da507aa85c99d02ebc3c9b8f307fabf7c0c69f",
+      "commit": "dc4b8f101d2a04e91be2ffd36b6bb051a36fdbc6",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/contact-middle-replay.ts",
+            "data/reviews/current/contact-middle-native.json",
+            "out/contact-middle/portable-request-tape-replay.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.25470219
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/typecheck-launch.json",
+      "sha256": "2626a26a2b59336c2dbf126dea83132ac61f381fd6d3ce4370d3ebff2d1845a0",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 19.941701596
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/contact-middle/typecheck-final-launch.json",
+      "sha256": "307b6ef297a4d849627983890ed4db60a1d0acbb75adb4823fd2f290620e7f3c",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 11.806662916999999
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/baseline/run-1792523932881-10183.json",
+      "sha256": "cd5e13e53ccbd3c38ba7468dbb07d295d684b5cf6736545b9aef7d5cc5319ada",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/native-contact-middle.ts",
+            "out/contact-middle/native-power77.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.827365699
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    {
+      "path": "out/baseline/run-1792524036144-10519.json",
+      "sha256": "599dbdc20d32085552d880a8e873391def9e6d9f9af6ea3e587154262e5220e0",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "sourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/physics/contact-middle-panel.ts",
+            "out/contact-middle/native-three.json"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.444359703
+        }
+      ],
+      "inputsUnchanged": true,
+      "exitCode": 0
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "out/contact-middle/recoverable-contact-1s-launch.json",
+      "sha256": "5f4bd0bd6f25796fb27c9987dd32d8c8a2c5ee8d83dbde207a04e09b1dc9ec73",
+      "bytes": 2240,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/portable-request-tape-replay.json",
+      "sha256": "0ce995de2672505be16a504d8e05b96713adf71bc96294152ef3ba7294dd1404",
+      "bytes": 105888,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/portable-replay-launch.json",
+      "sha256": "527e98c159068a0db15ac30a87da507aa85c99d02ebc3c9b8f307fabf7c0c69f",
+      "bytes": 2337,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/historical-launch.json",
+      "sha256": "5db65b9f443577d742e79f4819c742492c11db03cf8405db6fd9cd7a7633eea2",
+      "bytes": 2535,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/recoverable-contact-launch.json",
+      "sha256": "cd20880c4fbcd26961f280c7bacc9cc77d462f3403e6ecffdbbb00a69f35545b",
+      "bytes": 2316,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/replay-launch.json",
+      "sha256": "934527b62e56e76098283739e2ba8d263fa1fec025f515186a038bc4d5380258",
+      "bytes": 2396,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/typecheck-final-launch.json",
+      "sha256": "307b6ef297a4d849627983890ed4db60a1d0acbb75adb4823fd2f290620e7f3c",
+      "bytes": 2192,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/native-three.json",
+      "sha256": "b64a879004220b81d6a106923430cac7f641d6c1c9ec23817cba650ddb32cb9f",
+      "bytes": 2914,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/recoverable-contact-1s.json",
+      "sha256": "7ccf5e4f22095ec1188f1e586008113dc80faea74a379a1c2a2ddd61806bcc5a",
+      "bytes": 313630,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/native-accepted-launch.json",
+      "sha256": "08d4150bbf1301daa10c5dbcbce76a7bd4038212112d00408653affe6fe8b1a9",
+      "bytes": 2292,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/request-tape-replay.json",
+      "sha256": "e67531f1e6b22eeed20fdbfcda0e29e8580a773a94f87f2f8ede862ef87eb0a0",
+      "bytes": 105929,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/recoverable-contact.json",
+      "sha256": "8a9bbd09c0e076c484d429e4876ba8377c4f6ee4fc548e21203a6084bc11eeb0",
+      "bytes": 851836,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/native-power77.json",
+      "sha256": "71e64dbbb17cf2a58b47283257ab918b319808971e7ca71a6a776c7511039448",
+      "bytes": 765900,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/historical-power77.json",
+      "sha256": "42d2cff5fe86af83c30b87f003fe5092a66c965d9070d28157d16415e3c96257",
+      "bytes": 1316784,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/typecheck-launch.json",
+      "sha256": "2626a26a2b59336c2dbf126dea83132ac61f381fd6d3ce4370d3ebff2d1845a0",
+      "bytes": 2186,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/recoverable-contact-test-launch.json",
+      "sha256": "76fc5b6c73d3637d4dda697753afa721f50aba4766ab089c35d053fe4a428ed3",
+      "bytes": 2263,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    },
+    {
+      "path": "out/contact-middle/contact-middle.png",
+      "sha256": "30df22750f7c330ad7a8a128c0bdb09bbbbafdb4b1fcf0f18d41f227ce2ca40d",
+      "bytes": 217126,
+      "storage": "local ignored out; regenerate from pinned tools/inputs"
+    }
+  ],
+  "extraDebugCost": {
+    "initialHistoricalRecorderSimulationWallSeconds": 1.076208791,
+    "initialHistoricalWrapperElapsed": "not retained before same output path was replaced; no complete total claimed",
+    "initialReplayWrapperElapsedSeconds": 0.244068291,
+    "initialReplaySimulationWallSeconds": 0.015582105999999981,
+    "debugNote": "First recorder omitted fatigue argument for reported availability (null), then reran both constructors with full Body and finite availability. Exact events/endpoints retained. First-second output and its launch are preserved; old recorder full traces were replaced, launch metadata retained where available."
+  },
+  "nextDecision": "Use actual acquired force point, point motion, yaw and finite work before a grasp-law correction. Do not insert a scalar penalty to rescue proximity-based NFL labels."
+}

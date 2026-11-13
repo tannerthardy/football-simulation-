@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "parentCommit": "7c72039e52e4f5cf31077f3a1c8c9583196e8a7c",
+  "branch": "claude/engine-priorities",
+  "physicsReady": false,
+  "defaultSupportModel": "legacy",
+  "experimentalSelection": "World/PlaySetup/LabOptions supportModel: virtual-foot, or explicit diagnostic preload; no production default change",
+  "sourceDefinition": "scripts/source-version.ts: SHA-256 of lexical full relative path strings including src/, NUL, bytes, NUL; every src file",
+  "sourceVersions": {
+    "publishedProduction": {
+      "sourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+      "commit": "7c72039e52e4f5cf31077f3a1c8c9583196e8a7c"
+    },
+    "earlyGeometryMotorAudit": {
+      "sourceSha256": "fc95de97b53d80b942c213507075f4ad6f3e269dd7f0d41dff66f28716feeffc",
+      "mode": "explicit virtual-foot",
+      "scope": "additional read-only geometry/work observations before model-isolation repair"
+    },
+    "intermediateFullExperiment": {
+      "sourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+      "mode": "explicit virtual-foot",
+      "scope": "8 calibration games, 4 tracking games, scenario/telemetry; rejected legacy-isolation witness kept"
+    },
+    "final": {
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "scope": "recovery panel, hand, wraps, shared transfer, legacy4/8 isolation gates, tests/typecheck/build"
+    }
+  },
+  "runtime": {
+    "node": "22.23.3",
+    "loader": "node --import tsx",
+    "python": "3.12; native reader version/units/download hashes in biomechanics manifest"
+  },
+  "commands": {
+    "stationaryRecovery": "node --import tsx scripts/diag/virtual-foot-support.ts out/virtual-foot/support-final-source.json",
+    "hand": "node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/diag/hand-convergence.ts out/virtual-foot/hand.json",
+    "wrapFull": "node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/diag/wrap-feedback.ts out/virtual-foot/wrap-final-source.json",
+    "wrapSamePrepath": "node --import tsx --import ./scripts/diag/enable-virtual-foot-on-grasp.ts scripts/diag/wrap-feedback.ts out/virtual-foot/wrap-switch-final-source.json",
+    "shared": "SUPPORT_TELEMETRY_OUTPUT=out/virtual-foot/shared-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./scripts/diag/support-telemetry.ts scripts/diag/shared-capabilities.ts out/virtual-foot/shared.json",
+    "scenarios": "node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/scenario-pack.ts out/virtual-foot/scenarios.json",
+    "tracking": "SUPPORT_TELEMETRY_OUTPUT=out/virtual-foot/tracking-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./scripts/diag/support-telemetry.ts scripts/kinematics-compare.ts 4 5",
+    "games": "SUPPORT_TELEMETRY_OUTPUT=out/virtual-foot/games-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./scripts/diag/support-telemetry.ts scripts/calibrate.ts 8 7 2",
+    "defaultIsolation": [
+      "node --import tsx scripts/calibrate.ts 8 7 2",
+      "node --import tsx scripts/kinematics-compare.ts 4 5"
+    ],
+    "tests": "npm test -- --maxWorkers=2 --minWorkers=1",
+    "dataTests": "python3 -m unittest discover -s test -p 'test_*.py'",
+    "typecheck": "npm run typecheck",
+    "build": "npm run build"
+  },
+  "originalFrozenValidationCommands": {
+    "intermediate": {
+      "sourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+      "cwd": "out/virtual-foot-validation/snapshot",
+      "commands": {
+        "legacyShared": "node --import tsx scripts/diag/shared-capabilities.ts ../shared-legacy.json > ../shared-legacy.txt",
+        "experimentalShared": "SUPPORT_TELEMETRY_OUTPUT=../shared-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/diag/shared-capabilities.ts ../shared-experimental.json > ../shared-experimental.txt",
+        "legacyScenarios": "node --import tsx scripts/scenario-pack.ts ../scenarios-legacy.json > ../scenarios-legacy.txt",
+        "experimentalScenarios": "SUPPORT_TELEMETRY_OUTPUT=../scenario-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/scenario-pack.ts ../scenarios-experimental.json > ../scenarios-experimental.txt",
+        "experimentalTracking": "SUPPORT_TELEMETRY_OUTPUT=../tracking-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/kinematics-compare.ts 4 5 > ../tracking-experimental.txt",
+        "experimentalCalibration": "SUPPORT_TELEMETRY_OUTPUT=../calibration-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/calibrate.ts 8 7 2 > ../calibration-experimental.txt",
+        "currentLegacyTracking": "node --import tsx scripts/kinematics-compare.ts 4 5 > ../tracking-current-legacy.txt",
+        "currentLegacyCalibration": "node --import tsx scripts/calibrate.ts 8 7 2 > ../calibration-current-legacy.txt"
+      }
+    },
+    "final": {
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "cwd": "out/virtual-foot-final-validation/snapshot",
+      "commands": {
+        "finalLegacyTracking": "node --import tsx scripts/kinematics-compare.ts 4 5 > ../tracking-final-legacy.txt",
+        "finalLegacyCalibration": "node --import tsx scripts/calibrate.ts 8 7 2 > ../calibration-final-legacy.txt",
+        "finalExperimentalShared": "SUPPORT_TELEMETRY_OUTPUT=../shared-final-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./scripts/diag/support-telemetry.ts scripts/diag/shared-capabilities.ts ../shared-final-experimental.json > ../shared-final-experimental.txt",
+        "finalExperimentalHand": "node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/diag/hand-convergence.ts ../hand-final-experimental.json > ../hand-final-experimental.txt",
+        "intermediateExperimentalHand": "node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/diag/hand-convergence.ts ../hand-intermediate-experimental.json > ../hand-intermediate-experimental.txt (cwd out/virtual-foot-validation/snapshot)"
+      }
+    }
+  },
+  "aggregation": {
+    "recovery": "Preserve note/profile/syntheticDrift. Per row omit ticks/full bodies; keep scalar metrics and final pos/vel/xi/state/offset.",
+    "wrap": "Per trial retain after/wrapAt/result falls/closest/carriedPast, max QB peak across tick after actors, first tick before actor array (before model switch). All six legacy/on-grasp arrays match exactly.",
+    "validation": "Accepted published production comparisons; all physical regressions and explicitly named rejected default-off isolation witness; source scopes never relabeled."
+  },
+  "sourceAndScriptHashes": {
+    "src/physics/world.ts": {
+      "bytes": 70897,
+      "sha256": "6cbbba4fe8588f92532d344bf54e3affb2e8778a8805e5a79037c555fa47730b"
+    },
+    "src/physics/support.ts": {
+      "bytes": 8193,
+      "sha256": "8292a8d5738e349bef088d773dc6b3d7dedabc2adc5af70574d2b8dcc358ffe3"
+    },
+    "src/physics/virtual-foot.ts": {
+      "bytes": 3232,
+      "sha256": "ac1e522bbe28a45bbcb7494db115eea0b1266e2c133c936a60a5c06ac0c30c92"
+    },
+    "src/lab/scenarios.ts": {
+      "bytes": 19135,
+      "sha256": "5754b7a41fe1c6ff9696cc5c937231b34c21a97b49983b14aec10ad661f68972"
+    },
+    "src/sim/playsim.ts": {
+      "bytes": 37048,
+      "sha256": "57f71cc310b059152ae10f496a30aef2009767d0091438c1cfe23b60778ac651"
+    },
+    "test/virtual-foot.test.ts": {
+      "bytes": 5453,
+      "sha256": "cc78103c3a6cca4794a0989f520f58462a5eab8c88f3b087cef8719702c687f1"
+    },
+    "scripts/diag/virtual-foot-support.ts": {
+      "bytes": 6111,
+      "sha256": "6c5194bf226a92efc2ee1f1406215216ab75fe4df685f4e6ba6ee0c71621c92c"
+    },
+    "scripts/diag/enable-virtual-foot.ts": {
+      "bytes": 668,
+      "sha256": "e06d4114fd00b825c627d0cbaa85f82dfe95bf84eadd3b1031c74b02d1c77e8b"
+    },
+    "scripts/diag/enable-virtual-foot-on-grasp.ts": {
+      "bytes": 582,
+      "sha256": "424cad7d578b255a78dc9d7aee76a612b9c26040b1b0c6f7da76a47906107756"
+    },
+    "scripts/diag/support-telemetry.ts": {
+      "bytes": 3313,
+      "sha256": "0cd1a3a6ca5dbb921b202fe622ff90e88bb963629704eed9873a35ad361639da"
+    },
+    "scripts/diag/hand-convergence.ts": {
+      "bytes": 3169,
+      "sha256": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8"
+    },
+    "scripts/diag/wrap-feedback.ts": {
+      "bytes": 4939,
+      "sha256": "e8df5c9c5181997dde855b120b2d03a65d9bf778d4814a1d2d5bd08874e20103"
+    },
+    "scripts/diag/shared-capabilities.ts": {
+      "bytes": 6749,
+      "sha256": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505"
+    },
+    "scripts/scenario-pack.ts": {
+      "bytes": 2773,
+      "sha256": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94"
+    },
+    "scripts/kinematics-compare.ts": {
+      "bytes": 12263,
+      "sha256": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2"
+    },
+    "scripts/calibrate.ts": {
+      "bytes": 9382,
+      "sha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749"
+    },
+    "scripts/source-version.ts": {
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    "scripts/data/biomechanics-support.py": {
+      "bytes": 14054,
+      "sha256": "210b365bc652cfc97107e4b6c848e50271ccce2608b22f0a04644336c2e6a1fb"
+    },
+    "docs/reviews/virtual-foot-coupling-and-biomechanics.md": {
+      "bytes": 14645,
+      "sha256": "88f38f32ae8d96b5c186b411ab3e49fbe734bc83ca092fbaab9f28e329f6f9c0"
+    },
+    "docs/PHYSICS_DEVELOPMENT.md": {
+      "bytes": 19209,
+      "sha256": "19cf45a5a9cac3cb40fb3e02cfa4fb2485c284a172e8012da0a9c37878975eb9"
+    },
+    "CLAUDE.md": {
+      "bytes": 16988,
+      "sha256": "8de16367612348e61ce56ff61f51366e3765cf03e35c76d21cf0dd467e9494b7"
+    },
+    "data/README.md": {
+      "bytes": 42873,
+      "sha256": "0e315ab3d38b7ae9f2e4f9618d3f19bc20435bc64e4281c35b02419a108b8f36"
+    }
+  },
+  "inputHashes": {
+    "data/bdb2025-summary.json": {
+      "bytes": 17710,
+      "sha256": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba"
+    },
+    "data/bdb2026-summary.json": {
+      "bytes": 21089,
+      "sha256": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+    },
+    "data/reviews/physics-world/constraint-support/hand-after.json": {
+      "bytes": 29302,
+      "sha256": "b94b71375b06ecc2f4209b8bbe7ea08cc22ef51e57edb8c468779e07778f7971"
+    },
+    "data/reviews/physics-world/constraint-support/calibration-after-8.txt": {
+      "bytes": 2308,
+      "sha256": "a1d91b43c35d1aeb06ee28e703cdbd811b1732488ef6530c7b5448bf51a3073d"
+    },
+    "data/reviews/physics-world/constraint-support/tracking-after.txt": {
+      "bytes": 3913,
+      "sha256": "4a6d2184da1cd1c8979ed26bfa587307acd184c1a58440c7adba91e3466f2b93"
+    },
+    "data/reviews/biomechanics-support/manifest.json": {
+      "bytes": 10028,
+      "sha256": "db8e1d1859189b6154a2cca2938c0e7c95fd34cb03fe71247094db8f8cb00215"
+    },
+    "data/reviews/biomechanics-support/support-summary.json": {
+      "bytes": 86353,
+      "sha256": "f755677f5e210c464aba08c79fd2fc8c216c1b5ac6592573447700d5478eaba0"
+    }
+  },
+  "committedEvidence": {
+    "geometry-motor-initial.json": {
+      "bytes": 3621,
+      "sha256": "70feebf6bb93f75d01a83dbdd2ce9bf0cfe4ee4e2b6814fba2cb247c76f4c85b"
+    },
+    "hand-experimental.json": {
+      "bytes": 29073,
+      "sha256": "9607cc601c29b566dcbc37f28102aacd91964da6f53fdf4900ba327d7a941ef8"
+    },
+    "recovery-summary.json": {
+      "bytes": 67444,
+      "sha256": "b23d2314a40db0720eefd14ce1d1bde32b6f477b910d615b91af9bb666cc44bb"
+    },
+    "validation-summary.json": {
+      "bytes": 25688,
+      "sha256": "e3dad98600255b23b2d34af2af0a117cb971f7bb4f9765a46815f311d4f3a3f1"
+    },
+    "wrap-summary.json": {
+      "bytes": 107255,
+      "sha256": "19d254e30fd3e2a165412dc652e40162985ecad15e692073836faee1e421fa38"
+    }
+  },
+  "ignoredRawOutputIdentifiers": {
+    "out/virtual-foot/support-final-source.json": {
+      "bytes": 647562,
+      "sha256": "146cecd11b93dcd507063d85de3947b8e626a9294db7893894932890e8d76ca7"
+    },
+    "out/virtual-foot/wrap-final-source.json": {
+      "bytes": 31208331,
+      "sha256": "f1edff1b7abe86748642bd6dcc29bf13a08f682ca5b5e7a0867e8a8e638f48ff"
+    },
+    "out/virtual-foot/wrap-switch-final-source.json": {
+      "bytes": 31134774,
+      "sha256": "e305daaf95bcad60f28eb08dd07986cfc333b4fc52e540cdd99610348d5534a1"
+    },
+    "out/virtual-foot/wrap-baseline.json": {
+      "bytes": 21542733,
+      "sha256": "f5ecd640826f7a276e2373d7ccae3c3111bb2799d7ec7fa393b378ed8b45b419"
+    },
+    "out/virtual-foot-final-validation/hand-final-experimental.json": {
+      "bytes": 29073,
+      "sha256": "9607cc601c29b566dcbc37f28102aacd91964da6f53fdf4900ba327d7a941ef8"
+    },
+    "out/virtual-foot-final-validation/shared-final-experimental.json": {
+      "bytes": 136866,
+      "sha256": "41b9cbcced9c4b2092049f9a9715c3dbb671e6b666be71544808401770cae43d"
+    },
+    "out/virtual-foot-final-validation/shared-final-support.json": {
+      "bytes": 758,
+      "sha256": "cf25cdd4af9fe213e367d3800f4e5a8804f646ac1732a2ae713a2ebeac36d835"
+    },
+    "out/virtual-foot-final-validation/review-summary.json": {
+      "bytes": 14320,
+      "sha256": "000091e618ab4888357b293693c205aadfc37af5820c43d7337dba3eca8a2743"
+    },
+    "out/virtual-foot-final-validation/manifest.json": {
+      "bytes": 6259,
+      "sha256": "ba3f7e75b1d5a9d10a1b111d6c6cb5f7c3394a43d1ee4b1462a737a042084fda"
+    },
+    "out/virtual-foot-final-validation/calibration-final-legacy.txt": {
+      "bytes": 2311,
+      "sha256": "b46cc8e4f294f9906fc7ba1a13d634c53a80ad7a89b6003a614156c54db99df8"
+    },
+    "out/virtual-foot-final-validation/tracking-final-legacy.txt": {
+      "bytes": 3913,
+      "sha256": "4a6d2184da1cd1c8979ed26bfa587307acd184c1a58440c7adba91e3466f2b93"
+    },
+    "out/virtual-foot-validation/review-summary.json": {
+      "bytes": 21219,
+      "sha256": "764858d6b2283d2f1a38237d65f79f875f793b57190a0cb51c92811f4bcc7ea1"
+    },
+    "out/virtual-foot-validation/manifest.json": {
+      "bytes": 7463,
+      "sha256": "52ff1fba239c05efbaf37b34cc490858362fe4d95f757f17220f42b4c90e0e9e"
+    },
+    "out/virtual-foot-validation/calibration-experimental.txt": {
+      "bytes": 2310,
+      "sha256": "c27e7b97d4087ae043c6684d49b95bca8cc08edeffec70eff5bf26837a2ad179"
+    },
+    "out/virtual-foot-validation/tracking-experimental.txt": {
+      "bytes": 3913,
+      "sha256": "967eace0cf3be871b3d1a3b37f3491fee8a95960fa059cd0538ffeaf17b7bb84"
+    },
+    "out/virtual-foot-validation/scenarios-experimental.json": {
+      "bytes": 19906,
+      "sha256": "b75a75ae1e3cf27327897b4ce4d3a5d0d9d04bb77b9e51efb26ce6e7e6edd6a7"
+    },
+    "out/virtual-foot-validation/scenario-support.json": {
+      "bytes": 825,
+      "sha256": "be823b43299872d23ba4903e5d5899d1f5300491a2795a8bc723a60baa477f6d"
+    },
+    "out/virtual-foot-validation/tracking-support.json": {
+      "bytes": 829,
+      "sha256": "60089ddc8ba41f4f45c8d1c44244f48e6660feef6c8f09ca63e84916b70689da"
+    },
+    "out/virtual-foot-validation/calibration-support.json": {
+      "bytes": 831,
+      "sha256": "d7b36ea265fbe6fc94d3ddfa763495636ec4a6fe0c11e8256b553aa4d44d2aee"
+    },
+    "out/virtual-foot/tests-final.txt": {
+      "bytes": 2887,
+      "sha256": "6196599430df1589b5537d5bc89d719073b67b949fc46ce4fe18fde1efd96258"
+    },
+    "out/virtual-foot/python-tests-final.txt": {
+      "bytes": 121,
+      "sha256": "7c3fa6394cd976828d97baf839b93be0443d0ab08147f50871680f812e345d39"
+    },
+    "out/virtual-foot/typecheck-final.txt": {
+      "bytes": 68,
+      "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+    },
+    "out/virtual-foot/build-final.txt": {
+      "bytes": 55,
+      "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+    }
+  },
+  "validation": {
+    "typescript": {
+      "files": 29,
+      "tests": 296,
+      "status": "pass",
+      "workers": 2
+    },
+    "python": {
+      "tests": 22,
+      "status": "pass"
+    },
+    "typecheck": "pass",
+    "build": "pass"
+  },
+  "limits": [
+    "An averaged corrective motor is not a planted anatomical foot. Unreachable offset accumulation and worsened shared press/jam convergence block adoption. Default-off.",
+    "Final hand/shared physical states and telemetry equal earlier experiment exactly; full experimental games retain actual intermediate source ID and are not claimed as final-source reruns.",
+    "Final legacy printed8-game metrics/count match published; tracking text is byte-identical. Full-game trajectories were not all saved/compared.",
+    "Motor/passive planar work and equal/opposite momentum close within roundoff. Unrepresented vertical/pitch/limb energy and magnitudes are not calibrated.",
+    "Sampled offsets/loads are not continuous peaks. Synthetic drift resets capture point directly; it is not a real repeated-hit experiment.",
+    "No global substep increase, scenario strength bonus, fitted NFL force/roster change or PR #1 modification.",
+    "Raw traces/data stay ignored. Collaborators receive summaries, manifests and reproduction tools through Git. Sparse biomechanics reads require pinned byte coverage; Moore perturbation alignment remains unverified."
+  ]
+}

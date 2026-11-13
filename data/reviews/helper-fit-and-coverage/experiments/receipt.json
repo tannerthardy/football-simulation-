@@ -1,0 +1,57 @@
+{
+  "schema": "helper-coverage-source-phases-v1",
+  "parentCommit": "bf8a487794bf76505262a260572f2882f5190049",
+  "baselineSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "promotedSource": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "phases": [
+    {
+      "name": "rejected-visual-only",
+      "source": "d299a8970b93f956183106c87b9ed2d77be633701bf4fad2758ca95be36e7fc6",
+      "replaceOnParent": "src/sim/engagement.ts",
+      "replacement": {
+        "path": "data/reviews/helper-fit-and-coverage/experiments/visual-only-engagement.ts",
+        "bytes": 39471,
+        "sha256": "3d363dbdfe97ce871c794803317778ebeb8f1d9d39b56b7edf7e350f6707007f"
+      },
+      "reconstructedEngineHashVerified": true,
+      "limits": [
+        "All four original gains worsen; delayed visual extrapolation abandons working hand load.",
+        "Old mind Map/Set JSON is lossy. This raw packet is exploratory, not the final film input.",
+        "Original collector fingerprint is in the raw packet; its older bytes are not shipped as the promoted tool."
+      ]
+    },
+    {
+      "name": "initial-haptic-prototype",
+      "source": "718661eaa2771817c4b3a75d560d06d543b7288bdb9753374f1f0944b17f2329",
+      "replaceOnParent": "src/sim/engagement.ts",
+      "replacement": {
+        "path": "data/reviews/helper-fit-and-coverage/experiments/initial-haptic-engagement.ts",
+        "bytes": 40337,
+        "sha256": "5e9de18d1086907eba00d25355ea8db078de26b10638ddb01b6c979a00c8dae2"
+      },
+      "reconstructedEngineHashVerified": true,
+      "limits": [
+        "Fresh acquisition cue not yet limited to actual hand working extension.",
+        "Source and comparison are retained; this intermediate raw packet is not duplicated here.",
+        "Similar rounded gains do not establish final-source execution identity."
+      ]
+    },
+    {
+      "name": "coverage-only-prototype",
+      "source": "e5e9a122f7c76090e12b8eb57dc358e43ba9c59ee440232bf330cae5ddad0e4a",
+      "replaceOnParent": "src/sim/behaviors/defense.ts",
+      "replacement": {
+        "path": "data/reviews/helper-fit-and-coverage/experiments/coverage-component-defense.ts",
+        "bytes": 42372,
+        "sha256": "233bcb68c5dea7f7e28c39c4a1e9ba7e6b1a90f41c8c0e5ebd72c5aa56e8d1f9"
+      },
+      "reconstructedEngineHashVerified": true,
+      "limits": [
+        "Predates final nullable best && guard; historical typecheck failure retained.",
+        "Complete six native rows equal final; restore original headers with tools/restore-component.mjs."
+      ]
+    }
+  ],
+  "sourceRefresh": "comparisons/source-refresh.json",
+  "finalPromotion": "Run/passing panels recollected on final source. Complete rows equal the earlier d616 prototype; original source labels retained."
+}

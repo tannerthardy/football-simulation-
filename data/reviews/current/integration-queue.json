@@ -1,0 +1,135 @@
+{
+  "schema": "integration-queue-snapshot-v1",
+  "checkedAt": "2026-10-15T19:09:35.285944+00:00",
+  "canonicalRecord": "docs/INTEGRATION.md#accepted-development",
+  "owner": "Integration in this chat",
+  "acceptedDevelop": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runtimeChanged": false,
+  "testsOrSettingsChanged": false,
+  "newSimulations": 0,
+  "newSuiteRuns": 0,
+  "readyForReview": {
+    "pr": 63,
+    "head": "0f70bb2a4205497d7df8ed1ed59391d87084c603",
+    "tested": "a862a05713d0b8bbd22683ce8a70d5ac16eb18e2",
+    "base": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+    "draft": false,
+    "reviewsAtCheck": 0,
+    "commentsAtInitialCheck": 0,
+    "receipt": "https://github.com/tannerthardy/football-simulation-/blob/0f70bb2a4205497d7df8ed1ed59391d87084c603/data/reviews/current/departed-center-integration/receipt.json",
+    "sourceSha256": "2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad",
+    "validationSha256": "bd503123ac660bf6e07e061dd5d74e832309390187aa822b5d6289cb1dfbc495",
+    "remainingGate": "Required controller/recognition review of explicit zone-key contract and five-contribution acceptance under existing authority. Not a code verification failure.",
+    "integrationComment": "https://github.com/tannerthardy/football-simulation-/pull/63#issuecomment-6200018990"
+  },
+  "includedMinimalContributions": [
+    {
+      "name": "gap",
+      "head": "132c27a8f1d9ce9a4366b92f0ede0df42a0dac52",
+      "code": "d63bf4504e1a17e2f6a32738009a532838fc5e20",
+      "evidence": "92566b3b650bb2e855487cbf1eae6a2dbf60918b",
+      "originalCode": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+      "originalEvidence": "badddf495fa9ff7cfa6579709dec853dc449974e",
+      "dependency": "Identical original mapper on accepted tree; no earlier zone/Duo dependency."
+    },
+    {
+      "pr": 57,
+      "head": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+      "tested": "21d7763882b71028e4d257241b3ea45511a70293",
+      "dependency": "Existing RunnerToMesh riding window on develop suffices; parent #54 excluded."
+    },
+    {
+      "pr": 58,
+      "head": "f597cec3983e73ac5538f1f68a1ef7db4c49fa43",
+      "tested": "dc0f104a588a486cdb38d97d1e5770dce1a3de61",
+      "dependency": "Direct develop; independent of #61. Latest publication docs only."
+    },
+    {
+      "pr": 60,
+      "head": "987056fe5b6dec61d8377834c5b277600685cbcd",
+      "tested": "d3ea55c88ef4ea9d84c994abf1677fe507fb6540",
+      "dependency": "Independent cadence/stat correction; PlaySim final-stat hunks distinct from #61."
+    },
+    {
+      "pr": 61,
+      "head": "351dcff82b96713b5abbc7602d9a051567d1b00a",
+      "tested": "28018cf018a51c4212c034f90393ece7865bcc47",
+      "dependency": "Direct develop; independent #58; static fixture typing adapted in combined candidate."
+    }
+  ],
+  "held": [
+    {
+      "pr": 34,
+      "head": "306579fda9d496d45606445fd542239cf2f5acf4",
+      "tested": "cb240d236b3b5bbc13c855dab251fdf986a3ae77",
+      "owner": "Pass Game/Pursuit",
+      "blocker": "Coverage gap contract and native scramble fixture; two failed assertions, Python skipped."
+    },
+    {
+      "pr": 36,
+      "head": "68284671d062dfd4e7e879bcd037bc21dad3e3ac",
+      "tested": "98411ef025dcaa3d024e430e1215eec81b13af1e",
+      "owner": "Run Game and Awareness",
+      "blocker": "Real rear collision and bounded post-mesh coordination; experimental run stack dependencies remain separate."
+    }
+  ],
+  "rejected": {
+    "branch": "codex/run-entry-cues",
+    "head": "f5618d09f8a25e230217a5a0661098d15eeb5e9b",
+    "candidate": "7f9d9a4b2e40946129281ae382c8483f717e8c5d",
+    "evidence": "4ee0e2cdc8480f271fc3d8e9178f6abd949b3f9e",
+    "owner": "Do-It-All!",
+    "reason": "Original evidence: contact delay improves, but 69.81kgyd/s RB/RG impact and .005yd clearance against extrapolated useful-load teammate picture support holding complete navigation improvement; no claim every collision is a defect.",
+    "next": "Achievable self approach and uncertainty in acquired teammate picture; no physics/strength/vision/pass-pro changes.",
+    "currentAuthorDisposition": "Latest 3246009 clarification: hidden engagement/fatigue/down removal is independently justified; full navigation improvement held. Original 4ee0e2 rejection remains immutable. Collision alone does not establish bad football; fragile approach clearance needs diagnosis.",
+    "integrationDisposition": "Keep the full trial out under current scope; any separate information-only promotion needs explicit extraction/review. Do not delay independent gap fix.",
+    "latestTipChanges": "Workboard/report/checksum links only; no production change. Links a separate newer approach candidate, not a relabeling of the old trial.",
+    "previousClarification": "3246009b951b28912599bb6ef93b4141505c0fc8"
+  },
+  "diagnostic": {
+    "pr": 64,
+    "head": "db77674b0e2493017d8778c5cdc5dd1420e68002",
+    "evidence": "eba1b61756d7a85b3b8c39dc73196244e7eef719",
+    "testedBase": "1f11e4546bc75ed6c5d139d3ac75fd09d214eb51",
+    "sourceSha256": "1ee8610175f7f9e7ebafcbdddfe2c2aab2162e945a7668cbd54579e4d5fb6309",
+    "owner": "Run Game/pass protection",
+    "disposition": "No production change; replacements lose P019. Review loaded foot-objective contract separately."
+  },
+  "experimental": [
+    {
+      "pr": 54,
+      "head": "4ae667e29b3ce085f43c5cb911b294349cda2b8f",
+      "disposition": "Full experimental game stack; not adopted."
+    },
+    {
+      "name": "earlier zone/Duo",
+      "head": "6122fb03c7104c0f9d762591d737cf2cf6a49067",
+      "disposition": "Separately published experimental ancestry, absent from checked accepted/Integration/recorded references."
+    },
+    {
+      "pr": 62,
+      "head": "1f071b9568f3fcc790aff71ddf5ea032cca5cf16",
+      "disposition": "Parked historical patch-host turn-choice; current-develop contact-law extraction is separate future work owned by primary Physics."
+    }
+  ],
+  "authority": "Existing gap conditional integration authority preserved; no blanket merge, baseline/default switch, branch deletion, force rewrite or experimental-default authority added.",
+  "method": "Read-only GitHub metadata/reviews/comments and exact remote ref refresh. Existing focused/combined evidence reused. Git/link/source preservation checks only for this documentation change.",
+  "incomingApproach": {
+    "branch": "codex/run-entry-admission",
+    "head": "75dbf46b12a4d186a7da6ebc463b9fba228f0b50",
+    "informationExtraction": "f8ce858adf7a3859b10307520000f4eb3172d344",
+    "approachCode": "cfcb7db0ba17c978fd02fb179c61f4e8b1d66752",
+    "testedCode": "fd655f10ec67125e945aba473b952f08f67b71a9",
+    "nativeReceipt": "25c349e08221c3b4a983a3934479e16a79ae0587",
+    "sourceSha256": "ec8bdc6fda7c89b60f5e5efaa80c194a22bba9effa3c947800b9e7e5311db885",
+    "recordedHost": "f62511a513f2187884d74ae3b94435835e43309c",
+    "report": "https://github.com/tannerthardy/football-simulation-/blob/75dbf46b12a4d186a7da6ebc463b9fba228f0b50/docs/reviews/run-entry-admission/README.md",
+    "owner": "Do-It-All! for mechanism; Awareness/Run Game for interface host review; Integration for composition",
+    "status": "Focused candidate; real interface dependency held; excluded from #63. Information correction separately identifiable; not a broad navigation approval.",
+    "dependency": "Calls sim.teammateInformation and imports TeammatePicture; absent from accepted develop and #63. Need explicitly reviewed interface extraction/host, no private live-state fallback and no wholesale f625 ancestry.",
+    "focusedEvidence": "40 tests/typecheck and portable/tested source compatibility reported; reused, not rerun. P019 complete opposing result retained, P032 censored3s; no league/scheme claim.",
+    "newVerificationHere": 0,
+    "interfaceAbsenceAndDirectCallsChecked": true
+  }
+}

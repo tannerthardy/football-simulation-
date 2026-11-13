@@ -1,0 +1,177 @@
+{
+  "schema": "final-game-tail-and-native-first-controller-receipt-v1",
+  "sourceBefore": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "sourceAfter": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "archive": "out/tackle-breakthrough/final-source",
+  "node": "v22.23.3",
+  "calibrateToolSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "commands": [
+    {
+      "cwd": "out/tackle-breakthrough/final-source",
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/out/tackle-breakthrough/game-tail-audit.ts"
+      ]
+    },
+    {
+      "cwd": "/workspace/football-simulation-",
+      "argv": [
+        "python",
+        "out/tackle-breakthrough/game-tail-summary.py"
+      ]
+    },
+    {
+      "cwd": "out/tackle-breakthrough/final-source",
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/out/tackle-breakthrough/game2-duo-tail-witness.ts"
+      ]
+    },
+    {
+      "cwd": "/workspace/football-simulation-",
+      "argv": [
+        "python",
+        "out/tackle-breakthrough/game2-duo-tail-summary.py"
+      ]
+    }
+  ],
+  "fullGameConfig": {
+    "games": 8,
+    "seed": 7,
+    "leagues": 2,
+    "perLeagueGames": 4,
+    "names": [
+      "Ironmen",
+      "Comets",
+      "Wolves",
+      "Rangers",
+      "Pilots",
+      "Barons",
+      "Hornets",
+      "Mariners"
+    ]
+  },
+  "games": 8,
+  "wallSecondsAudit": 115.258807357,
+  "nativeWitness": {
+    "gameIndex": 2,
+    "gameSeed": 3627243488,
+    "targetSeed": 3438958840,
+    "completeGameLogMatches": true,
+    "rawTargetResultMatches": true,
+    "sourceBefore": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+    "sourceAfter": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942"
+  },
+  "files": [
+    {
+      "path": "out/tackle-breakthrough/game-tail-audit.ts",
+      "size": 4907,
+      "sha256": "d3fe392253c1b4ddb1698a02006855bd0a655139325802424132d559fa0388ef"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final-tail-audit.json.gz",
+      "size": 2454078,
+      "sha256": "a3c3e0888025962187d74613a87e62708714ae418ad5640cd8af0183efbf41db"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final-tail-audit.log",
+      "size": 1653,
+      "sha256": "e7d364638feba6cf6357c3d8347274dc4087ab85b127fe09efc22069631a458c"
+    },
+    {
+      "path": "out/tackle-breakthrough/game-tail-summary.py",
+      "size": 6438,
+      "sha256": "bfd5c86e93259e0c6fc07df13e5b76a1e5c3a6b6e7a0f088d95d23902bb391a7"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final-tail-summary.json",
+      "size": 197639,
+      "sha256": "fcc1ae2169a6f4dd0f70d1d414aa563b0759c6379a018ffe8e35c77f513f06c5"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final-tail-summary.log",
+      "size": 16647,
+      "sha256": "143c6425c50d54794ac271cd709e6167ddd074cdcc5569eeffac304a177006c2"
+    },
+    {
+      "path": "out/tackle-breakthrough/game2-duo-tail-witness.ts",
+      "size": 4526,
+      "sha256": "2a70e9d7abbb99625a998abdb6e2d0ca684d21012ff51e48841de59c416d6c63"
+    },
+    {
+      "path": "out/tackle-breakthrough/game2-duo-tail-witness.json.gz",
+      "size": 1532319,
+      "sha256": "ce7cac1140b56c81e6f38edcbccb46986c5eb820bd9ddae438a13008cc7a39c7"
+    },
+    {
+      "path": "out/tackle-breakthrough/game2-duo-tail-witness.log",
+      "size": 468,
+      "sha256": "98ff76005dbb956bce4baf1d363d880cec196a1dad5b18f6ade6b75677b7d357"
+    },
+    {
+      "path": "out/tackle-breakthrough/game2-duo-tail-summary.py",
+      "size": 4865,
+      "sha256": "54d150582b5a59d70d36597fc4b108d33d0b93923ab2c975316f61c10182a280"
+    },
+    {
+      "path": "out/tackle-breakthrough/game2-duo-tail-summary.json",
+      "size": 71631,
+      "sha256": "cc05d00eda32018de5ba58f3bfc797f29871ddc2950b70bf3ad02e3c9913ce15"
+    },
+    {
+      "path": "out/tackle-breakthrough/game2-duo-tail-summary.log",
+      "size": 2208,
+      "sha256": "47fefc1b914f84462ec481ff5999c63279ca61a903cd69cbb22f0924fe006de3"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final-tail-findings.md",
+      "size": 8249,
+      "sha256": "a7364a5c65ebc2e258b65f04fa0536d703e4b7a8a5da6fd3e9baa781562ec828"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final8.log",
+      "size": 2312,
+      "sha256": "b6a68dbae4d7f101eeb0eab349b9f2b8af7a37b9d0fe42a86233943287e81efe"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-final8-receipt.json",
+      "size": 975,
+      "sha256": "e453c1d6d4f45bb15538625f58b79d41a3688f9d381b472562a4cbcd75816d07"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-v4-8.log",
+      "size": 2313,
+      "sha256": "722335010539b5291d73a0e18b1c9def468c4ca7a4ddb52f4693ce3839ec2c7d"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-v4-8-receipt.json",
+      "size": 989,
+      "sha256": "9f66b4cd6984b1f86cd3aae8defaa511fc4cb902d9de8760b9e7cf85b6eeb670"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-baseline8.log",
+      "size": 2314,
+      "sha256": "5c1f2907e39487d0ca80c52efd4fffe9feef290e4e20fae2c8fc899de2ee3d06"
+    },
+    {
+      "path": "out/tackle-breakthrough/games-baseline8-receipt.json",
+      "size": 978,
+      "sha256": "8955367b73250547d862f6621eaeeaffe3b6050976ca8f8c9ea920f4c8d938cb"
+    }
+  ],
+  "limitations": [
+    "Exact calibration game/league/roster/seed selection; populations diverge across source phases and are not paired snaps.",
+    "Wrappers copy existing pre-run metadata and existing post-game logs; no extra see/RNG/behavior calls.",
+    "Native input metadata records effective calls/seed/energies, not complete original scouting or pre-audible constructor context; exact full-game replay uses game seed plus initial generated league.",
+    "Raw gain and official/nullified play-log yards differ; official stats follow existing calibrate filters.",
+    "Prior plain final aggregate will be checked to its printed precision; no duplicate eight-game full endpoint/RNG observer control.",
+    "Outcome-selected witness, not a football rate.",
+    "Only actually consumed QB/RB pictures copied; no extra cues or RNG requests.",
+    "Game-log/raw-result neutrality verified; full hidden final game RNG/body state not exported by GameResult.",
+    "No production changes or counterfactual repair; one selected first-controller reproduction is a next priority, not a fixed outcome or NFL bust rate."
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "run-contact-operator-probe-v1",
+  "probe": {
+    "file": "out/run-reference-current/contact-operator-probe.py",
+    "sha256": "0e7ef91ba1e5a0a51b3853e75fb5ae8d43833855aba3df4ac8f2add6295b4b55",
+    "startedAt": "2026-10-11T11:42:13.626257+00:00",
+    "finishedAt": "2026-10-11T11:42:24.622039+00:00"
+  },
+  "sources": [
+    {
+      "file": "tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    },
+    {
+      "file": "tracking_week_2.csv",
+      "bytes": 916177128,
+      "sha256": "d735b37f04bdf324132b9cb0f084a4ca583fadbbf02653e1873dad39c36924aa"
+    },
+    {
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    {
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    }
+  ],
+  "publishedReferences": [
+    {
+      "file": "data/reviews/run-game-coordination/nfl-reference.json",
+      "sha256": "b80d6dc4ae65916c51b00001993a5b95ab707722960be581b50add17f09c9201"
+    },
+    {
+      "file": "data/reviews/error-budget/nfl-contact.json",
+      "sha256": "1b91ddc7052171c59314dba9399cf0b1666e8dda0e93694445b832ea36738f76"
+    }
+  ],
+  "oldCohort": "Non-nullified non-dropback, no kneel/sneak; football rows with ordered snap<=handoff<=first_contact<=tackle. Same 1142 complete cases as old reference.",
+  "matchedOldCohortOperators": {
+    "footballMetadataLos": {
+      "n": 1142,
+      "mean": 0.37169878704117365
+    },
+    "footballSnapBallLos": {
+      "n": 1142,
+      "mean": 0.7458406321430309
+    },
+    "runnerSnapBallLos": {
+      "n": 1142,
+      "mean": 0.9970840517568482
+    }
+  },
+  "operatorDeltas": {
+    "snapBallLosMinusMetadataLos": 0.3741418451018572,
+    "runnerMinusFootballAtSameContact": 0.25124341961381735
+  },
+  "footballOnlyBroaderProbe": {
+    "runnerSnapBallLos": {
+      "n": 1303,
+      "mean": 1.1761012799723352
+    },
+    "oldIntersection": 1142,
+    "newOnly": 161,
+    "oldOnly": 0,
+    "newOnlyRunnerYbc": {
+      "n": 161,
+      "mean": 2.445900501227529
+    },
+    "newOnlyFirstRemovalReasons": {
+      "noTackle": 87,
+      "noHandoff": 74
+    }
+  },
+  "publishedAllRowReference": {
+    "n": 1310,
+    "mean": 1.164
+  },
+  "limitations": [
+    "Football-only event probe finds1303 contacts versus1310 published all-player-row contacts. It is NOT a complete broader-cohort decomposition; the seven-row difference is not classified by this probe.",
+    "The matched1142 operator contrast is exact for the reproduced old cohort. Broader samples also differ by ordered handoff/tackle requirements, runner positions and sneaks.",
+    "The new published reference requires22players and unique snap; this shortcut relies on the reviewed reference having no exclusions for this snapshot rather than rerunning its all-player completeness check.",
+    "Event frame resolution is10Hz; positions are tracking coordinates, not measured body-surface contact geometry. Neither operator directly measures physical grip, strike or tackle control."
+  ]
+}

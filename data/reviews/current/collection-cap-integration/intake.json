@@ -1,0 +1,300 @@
+{
+  "schema": "collection-cap-integration-intake-v1",
+  "acceptedDevelop": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "sourceDigestsVerified": {
+    "86250bb4f0c6f421878c204161864d523c3e30b6": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+    "d80dcd3015358e604f91cb026f562f6f4f4781e5": "840cd69373ef95924f60b3edebc229b77358dcb86993fe0591ae6c959636f9fd",
+    "6573521bc28ea09c2aa6c05770f20b2089cc9fe6": "bed54d7389957f713c4a8a61e899fff1ea707f2545bd275e1fb8ff814e65bf37",
+    "78a00645e4f821d45604a1ed68c35592de1f5926": "c284f5e9bb2144fd7fa55c6df374d22ecbc9cfeb0d9ad3c0208f44bf7a319aae"
+  },
+  "approvedScopes": [
+    {
+      "item": "#81 minimal admission + cost successor",
+      "ref": "d80dcd3015358e604f91cb026f562f6f4f4781e5",
+      "files": [
+        "src/sim/spacing.ts",
+        "test/traffic-turning.test.ts",
+        "test/spacing-residual-motion.test.ts",
+        "test/fixtures/spacing-residual-motion.json.gz"
+      ],
+      "approval": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6206768415",
+      "focusedChecksReused": 23
+    },
+    {
+      "item": "#88 collection",
+      "ref": "6573521bc28ea09c2aa6c05770f20b2089cc9fe6",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "test/combo-strike-access.test.ts",
+        "test/fixtures/combo-strike-access.json.gz"
+      ],
+      "approval": "https://github.com/tannerthardy/football-simulation-/pull/88#issuecomment-6206668974",
+      "focusedChecksReused": 71
+    },
+    {
+      "item": "#89 alley cap",
+      "ref": "78a00645e4f821d45604a1ed68c35592de1f5926",
+      "files": [
+        "src/sim/run-fits.ts",
+        "test/coverage-run-support.test.ts"
+      ],
+      "approval": "https://github.com/tannerthardy/football-simulation-/pull/89#issuecomment-6206768642",
+      "focusedChecksReused": 101
+    }
+  ],
+  "evidenceHashesVerified": {
+    "88": [
+      {
+        "path": "data/reviews/current/combo-strike-access/a018-first-difference.json",
+        "bytes": 172317,
+        "sha256": "ee3bd6ae887edd42a470bfba74b39d8fa687784bf7325422bf5dfe4ff427b7ae"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/a018-protection.png",
+        "bytes": 266612,
+        "sha256": "a885e04fd38cee085e0cfabed57a51a91730cdd61ed4e7bee58298e003942c99"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/d05-response.json",
+        "bytes": 30939,
+        "sha256": "2c3b02a3580f26dffd412a07e02066bc5e5630a35dcd21537ce2d98abb38403b"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/inputs.json",
+        "bytes": 833834,
+        "sha256": "42c00a9db6f57869387228f235e01eec2996f850d0832d2cb1a7a027e05bf476"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/native-integrity.json",
+        "bytes": 293,
+        "sha256": "f1c8f967e052ee46432e121442fef1bf42148cd2191a92522dbfa4052a0e5866"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/paired-tapes.json.gz",
+        "bytes": 2633411,
+        "sha256": "2390da472fa6938a0af81926fd4521230ea305f1d0a16a265e998b95e9668268"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/plan.json",
+        "bytes": 1199,
+        "sha256": "62cb37714576acff76210e4d09558b41948e79da9ccb95245d73f335aed0392e"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/controls-launcher.json",
+        "bytes": 2377,
+        "sha256": "44bc621e27571732575bd756a6dee13bdb08a75667989839fe65c847b415610e"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/final-local-tests.json",
+        "bytes": 2241,
+        "sha256": "7a07703a925f2376194ad2a9f9000b6c0b52c815bf9010a25b3d56b985d217fb"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/final-typecheck.json",
+        "bytes": 2164,
+        "sha256": "43b588695e7bd650cd1a40b9fa3f014352771d7ed85349b9a27fca57266ba3a6"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/focused-existing.json",
+        "bytes": 2319,
+        "sha256": "f0313509306f28995649e5732b8405afd476101a661af6763bf141acc7724ce7"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/initial-launcher.json",
+        "bytes": 2360,
+        "sha256": "f5a0492b116e0f07e8824d39b23cddd7d29b91efdaf7c1df466228fd75df06c9"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/local-tests.json",
+        "bytes": 2241,
+        "sha256": "f7dafcf41b23b8be32a3549db67d22b34bd54e85d77ff3cf02da68ed67c99713"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/power-transfer-launcher.json",
+        "bytes": 2364,
+        "sha256": "cc73202216e209cb0d710a3226275c70ace6ad4689ae35d55429b663eeca3e5f"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/reference-final-old-expected-red.json",
+        "bytes": 2244,
+        "sha256": "f7139347ebd6a0f784baec14514505045a54e2cdef239d45177731d142781245"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/reference-old-expected-red.json",
+        "bytes": 2250,
+        "sha256": "4dae246d496f24b77d09634dad979103b9cec56ae26f44d3e562df81e5cd7bae"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/reference-response-reference-launcher.json",
+        "bytes": 2370,
+        "sha256": "d71f7395929a89d1585b5422aa6606dfc6eff816e83f5be99deaf201246d48c0"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/response-candidate-launcher.json",
+        "bytes": 2367,
+        "sha256": "6d34a56045dc02dec4e2cfe61fd48c3f490d1f7209075864cbcd3500e3503cef"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/receipts/typecheck.json",
+        "bytes": 2164,
+        "sha256": "163e69886b03718e2c6c63849c774fee6c84d07e6fa2e319fbb4293146d831a7"
+      },
+      {
+        "path": "data/reviews/current/combo-strike-access/summary.json",
+        "bytes": 63968,
+        "sha256": "237a40333bc79943b95e1005d2a7e7b51f484bbcedf7286d50021bb5f07f0654"
+      }
+    ],
+    "cost": [
+      {
+        "path": "data/reviews/current/spacing-cost-adjudication/focused.json",
+        "bytes": 2443,
+        "sha256": "d4e171b446b12c6d02356dab6a6ad9992d44239616ebd1c431faa65d1c8e43e2"
+      },
+      {
+        "path": "data/reviews/current/spacing-cost-adjudication/review.json",
+        "bytes": 6366,
+        "sha256": "c60b90fd5ac8d2aaea78e8dfe7cce3d87a8aef9bd40641a145a2ced05ecbf6dc"
+      },
+      {
+        "path": "data/reviews/current/spacing-cost-adjudication/runtime-and-tests.patch",
+        "bytes": 13411,
+        "sha256": "b8d28cc1a1b23973b03d10bdbd6509735f4b8407160a2cca3aae578e8692b849"
+      },
+      {
+        "path": "data/reviews/current/spacing-cost-adjudication/typecheck.json",
+        "bytes": 2203,
+        "sha256": "c3365a37b7d1924c45c44cb3320749d1f86b17d29100e1cf8d29be7cc0b8dcd4"
+      }
+    ],
+    "89": [
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-A042.json.gz",
+        "sha256": "cf82c6ad149bf5f349e3ff770c48a42eb021e668d498d5dee2a29b3f0f99735c",
+        "bytes": 66573
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-A006.json.gz",
+        "sha256": "05c4486d928383b586885dc445c0c743ce04a5d8df8430ec539f036eb71a42b8",
+        "bytes": 86621
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-A003.json.gz",
+        "sha256": "0f1b3e89d7be3747a61048f1c265d834ff3169ef3c4b469d02e43c2aecd0bb11",
+        "bytes": 56553
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-A008.json.gz",
+        "sha256": "a86a29778364e2355ab236ff20083a97e0334a131cbe467005cc1af2334cc3a7",
+        "bytes": 63972
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-A020.json.gz",
+        "sha256": "09535f5cbfa3f756039f883d5becbc21743b7d1a127ed67dfe2449e36a24b5d0",
+        "bytes": 73900
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-early-A042.json.gz",
+        "sha256": "70e5c9879056217fc4b1358db9daf9f3e01dad2341791aa1fd53c31fb462af3d",
+        "bytes": 24500
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/moving-cap-reference-A006.json.gz",
+        "sha256": "34a11c044e8d09b6c68118c68fd24246c72b75c5d40b82898128a198c27ecf2a",
+        "bytes": 86763
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/A042-reference-extended.json.gz",
+        "sha256": "550cef4d22e3f35a87be8615d953044cc07cc65b22ead6ba97ce824b6baedf4f",
+        "bytes": 65511
+      },
+      {
+        "path": "data/reviews/current/alley-cap-motion/verdict.json.gz",
+        "sha256": "3f929ee636b2196cebc1ab8c92c1614067d7340fd95d3b175fc7e6f7ad353e04",
+        "bytes": 3804
+      }
+    ]
+  },
+  "oldZeroPreviewTestByteIdentical": true,
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "overlapReview": {
+    "immediateBatch": "Three disjoint production files. Existing post-release reach/keeper, free forecast/info/cost and fixed-longitudinal moving-alley contracts compose without new objective/steering behavior.",
+    "87": "Rewrites same spacing forecast gate and common track/catch producers;89 changes motion passed into its new objective metadata. Producer review alone is insufficient; full controller/interaction review requested6206932842. No87policy in immediate batch.",
+    "dependencyOrder": "Minimal admission+cost first.88/89 independent on86250bb. Later87 must retain accepted clear-line proof and89 acquired lateral flow."
+  },
+  "held": [
+    {
+      "pr": 87,
+      "head": "9760de031cae3bda7c926735f8edeb97fa4574e5",
+      "state": "Producer approved; full policy/interaction review pending"
+    },
+    {
+      "pr": 86,
+      "state": "Completed diagnostic, no feature dependency"
+    },
+    "old81head/observer/research ancestry",
+    "76 override",
+    "rejected common/gather/shoulder/lateral trials",
+    "experimental Physics"
+  ],
+  "metadataCheckCorrection": "Initial manifest reader expected a flat map; corrected to its published payloads wrapper before any extraction or tests.",
+  "newTests": 0,
+  "newNative": 0,
+  "newFullSuites": 0,
+  "nextDecision": "Freeze independently approved compatible scope and verify once."
+}

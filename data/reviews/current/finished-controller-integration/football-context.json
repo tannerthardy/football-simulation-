@@ -1,0 +1,394 @@
+{
+  "schema": "combined-checkpoint-football-context-v1",
+  "candidate": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+  "baseline": "2c98bed94adad8087c65f381d4090444ad283985",
+  "games": [
+    {
+      "arm": "baseline",
+      "game": "zone-reference",
+      "summarySha256": "d8ed8870536b334e2aad4baaed5da3ebf3a96b2c0b99876194a99ed6f384267a",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "score": {
+        "home": 46,
+        "away": 57
+      },
+      "collectionSeconds": 29.464861085,
+      "artifactSeconds": 15.384949301,
+      "worldSteps": 12569,
+      "physicalScrimmages": 135,
+      "secondsPer1000WorldSteps": 2.344248634338452,
+      "teams": [
+        {
+          "abbr": "H1",
+          "name": "Checkpoint Home 1",
+          "scheme": "wide-zone",
+          "defScheme": "4-3",
+          "coach": {
+            "aggression": 0.5568817426683381,
+            "passRate": 0.53,
+            "blitzRate": 0.19657749645411968,
+            "manRate": 0.5375131217064336,
+            "shadow": false,
+            "disguise": 0.10285725836874918,
+            "matchRate": 0.7797626656014474,
+            "coverageSystem": "pressure-man",
+            "checkPick": 0
+          },
+          "box": {
+            "firstDowns": 18,
+            "plays": 61,
+            "totalYds": 545.4200000000001,
+            "passYds": 397.68,
+            "rushYds": 147.74,
+            "turnovers": 2,
+            "penalties": 1,
+            "penaltyYds": 10,
+            "thirdAtt": 13,
+            "thirdConv": 3,
+            "fourthAtt": 0,
+            "fourthConv": 0,
+            "redZoneTrips": 2,
+            "redZoneTDs": 1,
+            "timeOfPossession": 1577.7467318387164,
+            "sacksAllowed": 3,
+            "explosivePlays": 10
+          }
+        },
+        {
+          "abbr": "A1",
+          "name": "Checkpoint Away 1",
+          "scheme": "west-coast",
+          "defScheme": "nickel-heavy",
+          "coach": {
+            "aggression": 0.6610619080020115,
+            "passRate": 0.58,
+            "blitzRate": 0.21702503183623775,
+            "manRate": 0.46442464336287237,
+            "shadow": true,
+            "disguise": 0.38604095205664635,
+            "matchRate": 0.6087990924250335,
+            "coverageSystem": "quarters",
+            "checkPick": 1
+          },
+          "box": {
+            "firstDowns": 19,
+            "plays": 67,
+            "totalYds": 546.2100000000002,
+            "passYds": 162.4,
+            "rushYds": 383.81,
+            "turnovers": 1,
+            "penalties": 5,
+            "penaltyYds": 45,
+            "thirdAtt": 15,
+            "thirdConv": 5,
+            "fourthAtt": 2,
+            "fourthConv": 2,
+            "redZoneTrips": 4,
+            "redZoneTDs": 2,
+            "timeOfPossession": 2022.2532681612834,
+            "sacksAllowed": 3,
+            "explosivePlays": 7
+          }
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "game": "spread-air",
+      "summarySha256": "ff5be7821a65639e83f041e7511792789faf5fba1076e3fab1ad42a0ac1f4998",
+      "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+      "commit": "2c98bed94adad8087c65f381d4090444ad283985",
+      "score": {
+        "home": 37,
+        "away": 34
+      },
+      "collectionSeconds": 30.774143061,
+      "artifactSeconds": 15.895925744,
+      "worldSteps": 13185,
+      "physicalScrimmages": 141,
+      "secondsPer1000WorldSteps": 2.334026777474403,
+      "teams": [
+        {
+          "abbr": "H2",
+          "name": "Checkpoint Home 2",
+          "scheme": "spread",
+          "defScheme": "3-4",
+          "coach": {
+            "aggression": 0.7108285764697939,
+            "passRate": 0.58,
+            "blitzRate": 0.38563596705207603,
+            "manRate": 0.43760187316220256,
+            "shadow": false,
+            "disguise": 0.32715865324717014,
+            "matchRate": 0.31444002958014605,
+            "coverageSystem": "pressure-man",
+            "checkPick": 1
+          },
+          "box": {
+            "firstDowns": 26,
+            "plays": 81,
+            "totalYds": 581.7900000000002,
+            "passYds": 401.5500000000002,
+            "rushYds": 180.23999999999998,
+            "turnovers": 4,
+            "penalties": 6,
+            "penaltyYds": 49.65,
+            "thirdAtt": 15,
+            "thirdConv": 5,
+            "fourthAtt": 1,
+            "fourthConv": 1,
+            "redZoneTrips": 4,
+            "redZoneTDs": 3,
+            "timeOfPossession": 2173.601206300525,
+            "sacksAllowed": 3,
+            "explosivePlays": 11
+          }
+        },
+        {
+          "abbr": "A2",
+          "name": "Checkpoint Away 2",
+          "scheme": "air-raid",
+          "defScheme": "nickel-heavy",
+          "coach": {
+            "aggression": 0.6106668410357088,
+            "passRate": 0.66,
+            "blitzRate": 0.1522905169171281,
+            "manRate": 0.4785761313745752,
+            "shadow": false,
+            "disguise": 0.11155958006856964,
+            "matchRate": 0.7419844189658762,
+            "coverageSystem": "quarters",
+            "checkPick": 0
+          },
+          "box": {
+            "firstDowns": 14,
+            "plays": 54,
+            "totalYds": 323.0799999999999,
+            "passYds": 293.05999999999995,
+            "rushYds": 30.020000000000003,
+            "turnovers": 1,
+            "penalties": 2,
+            "penaltyYds": 15,
+            "thirdAtt": 10,
+            "thirdConv": 1,
+            "fourthAtt": 0,
+            "fourthConv": 0,
+            "redZoneTrips": 1,
+            "redZoneTDs": 1,
+            "timeOfPossession": 1426.3987936994758,
+            "sacksAllowed": 4,
+            "explosivePlays": 3
+          }
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "game": "zone-reference",
+      "summarySha256": "4566b3b05bf97d66f02a59e00e44cd16cf152986e49793b5a07cd2f2f5e52495",
+      "source": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9",
+      "commit": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+      "score": {
+        "home": 27,
+        "away": 41
+      },
+      "collectionSeconds": 31.589251162,
+      "artifactSeconds": 15.580693226,
+      "worldSteps": 12264,
+      "physicalScrimmages": 138,
+      "secondsPer1000WorldSteps": 2.575770642694064,
+      "teams": [
+        {
+          "abbr": "H1",
+          "name": "Checkpoint Home 1",
+          "scheme": "wide-zone",
+          "defScheme": "4-3",
+          "coach": {
+            "aggression": 0.5568817426683381,
+            "passRate": 0.53,
+            "blitzRate": 0.19657749645411968,
+            "manRate": 0.5375131217064336,
+            "shadow": false,
+            "disguise": 0.10285725836874918,
+            "matchRate": 0.7797626656014474,
+            "coverageSystem": "pressure-man",
+            "checkPick": 0
+          },
+          "box": {
+            "firstDowns": 18,
+            "plays": 70,
+            "totalYds": 394.9399999999999,
+            "passYds": 205.56,
+            "rushYds": 189.38,
+            "turnovers": 0,
+            "penalties": 11,
+            "penaltyYds": 100,
+            "thirdAtt": 18,
+            "thirdConv": 6,
+            "fourthAtt": 2,
+            "fourthConv": 2,
+            "redZoneTrips": 2,
+            "redZoneTDs": 2,
+            "timeOfPossession": 1967.5892808724536,
+            "sacksAllowed": 6,
+            "explosivePlays": 5
+          }
+        },
+        {
+          "abbr": "A1",
+          "name": "Checkpoint Away 1",
+          "scheme": "west-coast",
+          "defScheme": "nickel-heavy",
+          "coach": {
+            "aggression": 0.6610619080020115,
+            "passRate": 0.58,
+            "blitzRate": 0.21702503183623775,
+            "manRate": 0.46442464336287237,
+            "shadow": true,
+            "disguise": 0.38604095205664635,
+            "matchRate": 0.6087990924250335,
+            "coverageSystem": "quarters",
+            "checkPick": 1
+          },
+          "box": {
+            "firstDowns": 16,
+            "plays": 58,
+            "totalYds": 430.2700000000001,
+            "passYds": 255.20000000000002,
+            "rushYds": 175.06999999999996,
+            "turnovers": 0,
+            "penalties": 3,
+            "penaltyYds": 22.196372722501803,
+            "thirdAtt": 15,
+            "thirdConv": 5,
+            "fourthAtt": 0,
+            "fourthConv": 0,
+            "redZoneTrips": 3,
+            "redZoneTDs": 2,
+            "timeOfPossession": 1632.4107191275461,
+            "sacksAllowed": 3,
+            "explosivePlays": 9
+          }
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "game": "spread-air",
+      "summarySha256": "b07351552d72fd830329bf9723cc6b6aafdca281040ddb05465b5e020f79e4ba",
+      "source": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9",
+      "commit": "7d5da0c79adea4d7c4b43b85c498876ffe6d8742",
+      "score": {
+        "home": 45,
+        "away": 35
+      },
+      "collectionSeconds": 33.556097482999995,
+      "artifactSeconds": 15.708296816000002,
+      "worldSteps": 12655,
+      "physicalScrimmages": 139,
+      "secondsPer1000WorldSteps": 2.651607861161596,
+      "teams": [
+        {
+          "abbr": "H2",
+          "name": "Checkpoint Home 2",
+          "scheme": "spread",
+          "defScheme": "3-4",
+          "coach": {
+            "aggression": 0.7108285764697939,
+            "passRate": 0.58,
+            "blitzRate": 0.38563596705207603,
+            "manRate": 0.43760187316220256,
+            "shadow": false,
+            "disguise": 0.32715865324717014,
+            "matchRate": 0.31444002958014605,
+            "coverageSystem": "pressure-man",
+            "checkPick": 1
+          },
+          "box": {
+            "firstDowns": 19,
+            "plays": 63,
+            "totalYds": 462.3900000000001,
+            "passYds": 196.29999999999995,
+            "rushYds": 266.09000000000003,
+            "turnovers": 1,
+            "penalties": 4,
+            "penaltyYds": 38.31875133092974,
+            "thirdAtt": 15,
+            "thirdConv": 6,
+            "fourthAtt": 1,
+            "fourthConv": 0,
+            "redZoneTrips": 2,
+            "redZoneTDs": 2,
+            "timeOfPossession": 2057.1023614932988,
+            "sacksAllowed": 4,
+            "explosivePlays": 8
+          }
+        },
+        {
+          "abbr": "A2",
+          "name": "Checkpoint Away 2",
+          "scheme": "air-raid",
+          "defScheme": "nickel-heavy",
+          "coach": {
+            "aggression": 0.6106668410357088,
+            "passRate": 0.66,
+            "blitzRate": 0.1522905169171281,
+            "manRate": 0.4785761313745752,
+            "shadow": false,
+            "disguise": 0.11155958006856964,
+            "matchRate": 0.7419844189658762,
+            "coverageSystem": "quarters",
+            "checkPick": 0
+          },
+          "box": {
+            "firstDowns": 21,
+            "plays": 66,
+            "totalYds": 534.06,
+            "passYds": 310.09999999999997,
+            "rushYds": 223.96000000000004,
+            "turnovers": 4,
+            "penalties": 8,
+            "penaltyYds": 80,
+            "thirdAtt": 12,
+            "thirdConv": 3,
+            "fourthAtt": 2,
+            "fourthConv": 0,
+            "redZoneTrips": 3,
+            "redZoneTDs": 2,
+            "timeOfPossession": 1542.8976385067,
+            "sacksAllowed": 5,
+            "explosivePlays": 10
+          }
+        }
+      ]
+    }
+  ],
+  "clipSelection": [
+    {
+      "game": "zone-reference",
+      "before": 10,
+      "after": 16,
+      "note": "Counter: same offense, call, front/coverage, 1st-and-10 at35. Different earlier histories; earlier defensive access is a real result, not automatically better blocking."
+    },
+    {
+      "game": "zone-reference",
+      "before": 7,
+      "after": 7,
+      "note": "Power: same called concept/front/coverage, but baseline1st-and20 at55.3 vs candidate2nd-and10 at64.2. Compare blocking/finish, not isolated causality."
+    },
+    {
+      "game": "spread-air",
+      "before": 1,
+      "after": 1,
+      "note": "PA Post-Dig opening control: same call/front/coverage, 1st-and10 at33.0/32.8. Edge sack remains; this is retained adverse behavior."
+    }
+  ],
+  "interpretation": [
+    "Two matched games support a bounded operational/football check, not universal realism.",
+    "Box explosive plays31\u219232; large-run/long-YAC tails remain. Lower total score is not the adoption criterion.",
+    "Candidate18sacks vs previous13; early pass-protection sack persists.",
+    "Same game seeds do not preserve later call/fatigue/execution history; matched clips are explicitly qualified.",
+    "Runtime collection ratios1.072/1.090 and per-World-step ratios1.099/1.136 are descriptive; no global performance gate inferred."
+  ]
+}

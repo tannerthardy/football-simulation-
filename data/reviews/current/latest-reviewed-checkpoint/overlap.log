@@ -1,0 +1,17 @@
+Profile candidate: run-game-2026-10-13, commit 8c2232d52f8d152e36982753f163dd5cabc72a1e, source 6a103581687193f53efcaf56de00ec2dc000c0f2f270d41d979b6600ed94f778
+Running node node_modules/vitest/vitest.mjs run --project core test/dl-acquired-flow.test.ts test/run-rep-lateral-arrival.test.ts test/run-contact-flow.test.ts test/climb-access.test.ts
+
+ RUN  v3.2.4 /workspace/football-latest-reviewed-checkpoint
+
+ ✓ |core| test/dl-acquired-flow.test.ts (18 tests) 258ms
+ ✓ |core| test/run-contact-flow.test.ts (23 tests) 418ms
+ ✓ |core| test/climb-access.test.ts (3 tests) 488ms
+   ✓ assigned climb clears acquired first-level traffic > reaches assigned-backer load without turning incidental traffic into another block  348ms
+ ✓ |core| test/run-rep-lateral-arrival.test.ts (10 tests) 59ms
+
+ Test Files  4 passed (4)
+      Tests  54 passed (54)
+   Start at  00:47:02
+   Duration  1.73s (transform 960ms, setup 0ms, collect 2.48s, tests 1.22s, environment 1ms, prepare 243ms)
+
+Validation receipt: out/latest-reviewed-checkpoint/overlap.json; exit 0

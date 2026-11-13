@@ -1,0 +1,42 @@
+{
+  "schema": "integration-documentation-boundary-check-v1",
+  "linksVerified": [
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/accepted-broad-audit-access.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/coverage-contract-integration/witness-access-validation.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/coverage-contract-integration/independent-review.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/coverage-contract-integration/extraction-review.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/accepted-broad-audit-access.json"
+    },
+    {
+      "from": "docs/ISSUES.md",
+      "target": "../data/reviews/current/coverage-contract-integration/independent-review.json"
+    }
+  ],
+  "protectedChanges": [
+    "src/sim/behaviors/defense.ts",
+    "src/sim/coverage/defender.ts",
+    "test/back-man-run-fit.test.ts",
+    "test/coverage-run-support.test.ts",
+    "test/man-throw-recognition.test.ts"
+  ],
+  "onlyExistingRecordChanged": [
+    "data/reviews/current/accepted-broad-audit-access.json"
+  ],
+  "priorScientificReceiptsUnchanged": true,
+  "initialCheckHarnessCorrection": "Initial checker counted new evidence as prior evidence; corrected to diff-filter M. No source/test change or scientific result affected.",
+  "newTestsOrSimulations": 0
+}

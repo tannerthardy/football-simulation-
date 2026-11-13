@@ -1,0 +1,20 @@
+{
+  "schema": "loose-recovery-feature-baseline-v1",
+  "source": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "sourceArchive": "out/tackle-breakthrough/final-source",
+  "test": "test/loose-ball-recovery.test.ts",
+  "testSha256": "2d043225faf9fcca35fe8db1a6aec8bea2828ba56dbbeacc9d520c697713a049",
+  "sameTestBytes": true,
+  "tests": 15,
+  "passed": 13,
+  "failed": 2,
+  "failures": [
+    "loose-ball possession is distinct from physical down an upright O recovery stays live even after a successful execution draw",
+    "loose-ball possession is distinct from physical down an upright D recovery stays live even after a successful execution draw"
+  ],
+  "candidateSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "candidatePassed": 15,
+  "candidateFailed": 0,
+  "typeFixtureFix": "Explicitly widen local ball after mutating fumble() call; same runtime loose-kind guard, state and assertions. Full1074 suite preceded this type-only fixture change; final15 contracts rerun.",
+  "controls": "Both upright scoops fail old shortcut; genuine recovery probability/maturity/reach/off-feet exclusion, natural later O/D physical tackles and defensive advances/fumble credit already pass."
+}

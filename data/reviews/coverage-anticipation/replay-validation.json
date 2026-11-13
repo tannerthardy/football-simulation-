@@ -1,0 +1,13 @@
+{
+  "seed": 7,
+  "entries": 181,
+  "filmedPlays": 138,
+  "fileSha256": "3856a01dbd717d1cc9407961508a94d5a1a2eaddc07e30455a76690384e15ed0",
+  "checks": [
+    "strict frame time order",
+    "roster and packed frame strides",
+    "finite coordinates",
+    "carrier/event indices"
+  ],
+  "browserInteractionTested": false
+}

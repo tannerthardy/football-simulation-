@@ -1,0 +1,103 @@
+{
+  "schema": "helper-coverage-checks-v1",
+  "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "node": "v22.23.3",
+  "final": [
+    {
+      "name": "TypeScript suite",
+      "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --pool=threads",
+      "exitCode": 0,
+      "files": 95,
+      "tests": 1099,
+      "log": {
+        "path": "data/reviews/helper-fit-and-coverage/checks/full-tests.log.gz",
+        "bytes": 2332,
+        "sha256": "db4ef8687165ba2827a5075e69625fc73403d6af0c347351c404de1bdc8718e6"
+      }
+    },
+    {
+      "name": "Python data suite",
+      "command": "npm run test:data",
+      "exitCode": 0,
+      "tests": 66,
+      "log": {
+        "path": "data/reviews/helper-fit-and-coverage/checks/python-tests.log.gz",
+        "bytes": 134,
+        "sha256": "4c2f9ecc8296e6c6d17233e74c52a4db339f3f7b1d46b1820eff27edaedc6245"
+      }
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": {
+        "path": "data/reviews/helper-fit-and-coverage/checks/typecheck.log.gz",
+        "bytes": 85,
+        "sha256": "24dbed7503c427c09b63a4fd38a37e19dd40e40d861be9267097d088053edd6f"
+      }
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": {
+        "path": "data/reviews/helper-fit-and-coverage/checks/build.log.gz",
+        "bytes": 72,
+        "sha256": "a7c926d29cd9b7852d4efb49467906ad31709f5dee37f0ab7624439a51bac572"
+      }
+    }
+  ],
+  "featureTests": [
+    {
+      "test": "test/helper-fit.test.ts",
+      "parentPassed": 6,
+      "parentFailed": 6,
+      "finalPassed": 12,
+      "sha256": "3a029cc7f848a94b4cdb79472d5fa47fbccadd6f86b9285b6b6a89da3d5a3854",
+      "limits": "Final all-suite verifies current source. Earlier focused controller receipt retains its own source phase."
+    },
+    {
+      "test": "test/coverage-flat-responsibility.test.ts",
+      "parentPassed": 9,
+      "parentFailed": 4,
+      "finalPassed": 13,
+      "sha256": "4ce16f30bb2ce109f60c4e9984d0ca2f0267b097bebc74edfe59012b3d801c4d",
+      "componentFocusedTests": 40
+    }
+  ],
+  "film": {
+    "browserChecks": 38,
+    "JavaScriptErrors": 0,
+    "realVideoExportDecoded": true,
+    "checks": "film/browser-checks.json",
+    "clip": "film/exported-clip.webm"
+  },
+  "historical": [
+    {
+      "log": "checks/full-tests-interrupted.log.gz",
+      "successfulVerification": false,
+      "reason": "Deliberately interrupted earlier d616 source when final nullable guard required refreeze."
+    },
+    {
+      "log": "checks/full-tests-rpc-timeout.log.gz",
+      "exitCode": 1,
+      "successfulVerification": false,
+      "assertionsPassed": 1099,
+      "reason": "Vitest onTaskUpdate 60-second RPC timeout; clean quiet thread run retained separately."
+    },
+    {
+      "log": "checks/coverage-fixture-failure.log.gz",
+      "successfulVerification": false,
+      "reason": "Original focused fixture did not include the retained native QB-eyes/default QB geometry conflict; corrected fixture retains those real inputs."
+    },
+    {
+      "log": "checks/coverage-initial-typecheck.log.gz",
+      "successfulVerification": false,
+      "reason": "Component nullable best guard; fixed before final source, full checks and promoted collections."
+    }
+  ],
+  "limits": [
+    "No timeout, assertion or unhandled-error reporting disabled.",
+    "Checks record observed tool exit status; logs are retained without source relabelling."
+  ]
+}

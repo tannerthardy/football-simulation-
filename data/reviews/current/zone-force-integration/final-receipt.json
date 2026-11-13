@@ -1,0 +1,246 @@
+{
+  "schema": "zone-force-integration-final-v2",
+  "pr": 130,
+  "previousAcceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "testedCommit": "82fdc799f2981f72089ae7908caa430685dfac18",
+  "sourceSha256": "5b710a1b8b2bdf9bb874aa9c788424cd3c71185df9993f9f6db7eb80cf6b4482",
+  "validationSha256": "98f5ba28cd1ccb0423d5d9dff960824d18af768ff50bf7ae696bfa805655348f",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "outcome": {
+    "typescriptPassed": 1988,
+    "typescriptFiles": 175,
+    "pythonPassed": 145,
+    "typecheck": "pass",
+    "build": "pass",
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 128,
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "code": "995effce77812177aa74fa9ec5aa695b4fd136cf",
+      "files": [
+        "src/sim/coverage/defender.ts",
+        "test/quarter-flat-force-support.test.ts"
+      ],
+      "decision": "ACCEPT for exact combined verification",
+      "dependencies": "Existing #124/#80 wrapper and keyed-fit contracts already accepted. No #127 cushion trial dependency.",
+      "reason": "Narrow force + q_apex + flat-mode gate retains the same installed body’s support through a match transition. Requires current run belief and personally consumed positive RB/FB carrying picture each tick; unchanged keyed executor preserves force/inside option. Changed belief/unknown evidence cancels. Existing recognized-flight priority remains. No fitter allocation, private possession oracle, capacity or law change.",
+      "risks": [
+        "Active force transfer is shown with supplied acquired pictures and generated bodies; four native controls show exact preservation, not new run stops.",
+        "Intentional PA exposure persists while acquired evidence still supports run; no permanent latch or timer.",
+        "Does not repair man-QB pursuit, unkeyed failed-mesh expectation, fast #3 takeover, wheel cushion or general explosive YAC."
+      ],
+      "focusedEvidence": "74 checks/typecheck reused; includes 8 new force contracts and 66 existing checks. Four uncensored native controls exactly match accepted signatures/cues/requests/bodies/outcomes."
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "src/sim/coverage/defender.ts",
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "sha256": "cfaaf2a67ca155a6ae22e4da3dedacfccc0999c65ad5c9a665aec73e32b35173",
+      "exact": true
+    },
+    {
+      "path": "test/quarter-flat-force-support.test.ts",
+      "publication": "ec2a2e933c2f1fe5912d8f84a35699d724a8a98c",
+      "sha256": "42cb7264ed2ac2a4e0e2b139292f0b155769c9023548ca4766a4e8f2dee05ef4",
+      "exact": true
+    }
+  ],
+  "scope": "Only #128 acquired force-support admission; two exact files/one runtime file. All other accepted source/tests/settings/tooling unchanged.",
+  "verification": {
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.530480368000001
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.352211209000002
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 190.507244428
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7903341729999811
+      }
+    ],
+    "exactCandidateCombinedRuns": 1,
+    "passingCandidateCommandSeconds": 212.180270178,
+    "priorFailedCandidateRuns": 1,
+    "priorFailedCandidateSeconds": 219.552908087,
+    "totalIntegrationCommandSeconds": 431.733178265,
+    "extraFocusedRuns": 0,
+    "extraNativeDiagnostics": 0,
+    "extraPanelRuns": 0,
+    "extraGameCampaigns": 0,
+    "qualification": "The prior combined candidate failed one existing #126 assertion and skipped Python explicitly. Changed #128-only candidate verified once; no unchanged rerun. Existing game/integration/research assertions run normally inside full code verification. Audit metadata receives data/ref/link checks only."
+  },
+  "held": [
+    {
+      "pr": 126,
+      "publication": "b3de4f5429ff36f31d15d76c55d065abbc749cf5",
+      "reason": "Existing zone-reach double exact ordinary-command contract conflicts with reviewed installed-half approach. Run/original nonauthor adjudication required; no assertion edit.",
+      "evidence": "initial-failure-disposition.json"
+    },
+    {
+      "pr": 127,
+      "publication": "f6a3c866622404965ee43551e2b9307de84b4db8",
+      "reason": "Wheel approach trials materially harm ordinary successful swing; not imported."
+    },
+    {
+      "scope": "#101/#106 tooling accounting pending exact repair/review"
+    },
+    {
+      "scope": "#108 reference-only review"
+    },
+    {
+      "scope": "#115 capacity seam, #116/#119 and experimental Physics"
+    },
+    {
+      "scope": "RUN-006/CTRL-001 native composed improvement claim pending independent ready implementations"
+    },
+    {
+      "scope": "INFO-002/003 receiver forecast and BALL-001 same-time query interface work not included"
+    }
+  ],
+  "audit": {
+    "publication": "94f25c64cf2c471220f6297cb7cddd86a1fc3d4e",
+    "dataOnlyEvidenceCommit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+    "dataHistoryMerged": false,
+    "ownerHandoff": "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789"
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "remainingFootballRisks": [
+    "Active force transfer is shown with supplied acquired pictures and generated bodies; four native controls show exact preservation, not new run stops.",
+    "Intentional PA exposure persists while acquired evidence still supports run; no permanent latch or timer.",
+    "Does not repair man-QB pursuit, unkeyed failed-mesh expectation, fast #3 takeover, wheel cushion or general explosive YAC."
+  ],
+  "artifacts": {
+    "audit-data-check.json": {
+      "bytes": 1740,
+      "sha256": "735cfa6b6dbf573a0c1c6641e3ed7c015880139b722e6149bba6a8a2bd16b9d8"
+    },
+    "doc-check.json": {
+      "bytes": 990,
+      "sha256": "6b45720ce751d787f41e2f84f995e6b7fb0c768e132b77e0728b7ec1551919b0"
+    },
+    "extraction-audit.json": {
+      "bytes": 1248,
+      "sha256": "c18e99473e62fccbf7a7c6afc726f5f3d45bcfb42db5fff8f005f8c9071c23f4"
+    },
+    "final-combined.json": {
+      "bytes": 2626,
+      "sha256": "bd9ef89cf07e7211bd7c4e1a9d318309db21764f61628a74e18dfa7ffff70827"
+    },
+    "final-combined.log": {
+      "bytes": 16849,
+      "sha256": "f6dc00a0f7a000d36564d33d87cf61c2dd6270e33d308e93f4235f44acdce6b7"
+    },
+    "initial-extraction-audit.json": {
+      "bytes": 1510,
+      "sha256": "a331dc28a58cc8355e8c54ef5e740fb97d75b3839c008ba7d22380bd030120b3"
+    },
+    "initial-failed-combined.json": {
+      "bytes": 2523,
+      "sha256": "2a970c825ac9fa2fde41b75c7729897f9c1a39a5d71384d879ca9212170a2c9c"
+    },
+    "initial-failed-combined.log": {
+      "bytes": 20115,
+      "sha256": "a9ba3f12f041ec57e057eeef824f18fbbc1bf7ae6b43d33fb283e905a8b34e03"
+    },
+    "initial-failure-disposition.json": {
+      "bytes": 1532,
+      "sha256": "dfb3963ba3f01f54fd286b4f13cb4d35b24bd42cba51f04e9b4c8159bb4f4c43"
+    },
+    "intake.json": {
+      "bytes": 6139,
+      "sha256": "4f1023fb486f286e6cace4dc651bec740cad2ecf1e8416caa31b06315e013c08"
+    }
+  }
+}

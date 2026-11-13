@@ -1,0 +1,19 @@
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -256,7 +256,15 @@
+       tx += this.initialCushion * (1 - developing) + 0.6 * developing;
+     }
+     else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
+-    else if (!this.hipsOpen) tx = Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
++    else if (!this.hipsOpen) {
++      // Before the release, hold the off-man cushion rather than charging a
++      // stationary back. Once his observed stem moves, close excess cushion:
++      // a late match must not inherit its current depth as a retreat floor.
++      // Feed-forward motion still lets a receiver consume the cushion, and
++      // the ordinary body limits determine whether the defender can close.
++      tx = Math.hypot(seen.vel.x, seen.vel.y) > 1.5
++        ? seen.pos.x + cushion : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
++    }
+     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
+     // low-hip under defender sits behind his hip with help over the top.
+     if (o.overTop) {

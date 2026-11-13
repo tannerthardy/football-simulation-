@@ -1,0 +1,113 @@
+{
+  "schema": "ol-base-publication-manifest-v1",
+  "createdAt": "2026-10-10T22:56:23.921311+00:00",
+  "parentCommit": "912b4b94b25b7abe370513ce246186e9c9cd5293",
+  "branch": "claude/engine-priorities",
+  "sources": {
+    "before": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+    "after": "ac876d5633b8172b7622ba65ec0579de56054df9a80c571a69e1da14b146e29c",
+    "onlyEngineFileChanged": "src/sim/behaviors/blocking.ts",
+    "WorldUnchanged": true,
+    "beforeReconstruction": "Replace only blocking.ts bytes with retained blocking-before.ts in this publication snapshot."
+  },
+  "node": "v22.23.3",
+  "measurementScopes": {
+    "panel": "24 ordinary production 11v11 inputs, same collector and all player profiles. Live 3s inspection endpoints; no scored gain. Six predetermined recordings per phase, six unobserved/unrecorded exact endpoint controls per phase. All 24 summaries/acquisitions/first delivered loads retained; full tick traces for fixed six only.",
+    "runs": "144 fixed production run inputs and recorded RB profiles; later trajectories/decisions/penalties may diverge. All current records and baseline archive retained.",
+    "tackles": "64 encounters exactly equal parent apart from time/source; 14 live primary censors.",
+    "games": "Two measured games, same initial rosters/seeds; one warm game excluded. Concurrent diagnostic timings are not cost benchmarks."
+  },
+  "checks": [
+    {
+      "command": "node node_modules/vitest/vitest.mjs run test/run-base.test.ts --maxWorkers=1 --minWorkers=1 (before source)",
+      "exitCode": 1,
+      "scope": "Intentional retained oracle: 7 fail,8 pass,15 total"
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run test/run-base.test.ts test/run-system.test.ts test/run-execution.test.ts test/combination-ownership.test.ts --maxWorkers=1 --minWorkers=1",
+      "exitCode": 0,
+      "passed": 68
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1 --minWorkers=1",
+      "exitCode": 0,
+      "passed": 621,
+      "files": 61
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s test -p 'test_*.py'",
+      "exitCode": 0,
+      "passed": 22
+    },
+    {
+      "command": "python3 data/reviews/physics-world/ol-base/transfer-validation.py",
+      "exitCode": 0
+    },
+    {
+      "command": "python3 film-check.py before-film.json.gz after-film.json.gz viewer/ol-base.html OUTPUT",
+      "exitCode": 0,
+      "scope": "Same retained checker bytes ran at original out path; 12 offline Chromium clips and exact telemetry/ZIP roundtrip"
+    }
+  ],
+  "noChanges": [
+    "Physical profiles",
+    "force/work/traction budgets",
+    "solver resolution",
+    "intended drive/velocity/facing",
+    "PR #1/main branch"
+  ],
+  "limits": [
+    "Reduced support and posture are model coordinates, not measured anatomical/3D energy states.",
+    "Plan-kind posture scope can follow stale drive retargets; assignment and approach control still need work.",
+    "Improved stance delivery is not proof of improved blocking win rate, outcome averages, or convergence.",
+    "Adverse Power RG fall and poorer run outcomes are retained.",
+    "Gzip byte hashes pin original recordings; container timestamp hashes need not match regenerated collection."
+  ],
+  "files": {
+    "CLAUDE.md": "63e444b1363111d603900263c7883aa672b4ff1cdb3a30892afc6ae21728625a",
+    "data/README.md": "615dba7b82be75f82a955c2a9373eed4d6b44e7af91ab432096c8ce8da5ba341",
+    "data/reviews/physics-world/ol-base/README.md": "f43431fbd46a4bf1c45322afc197a457d137883bfbec5188c0bd32b023b06f19",
+    "data/reviews/physics-world/ol-base/after-film.json.gz": "1af7517100c3a533cb1d0afd572ad4f0cb441f2a05392141964e5c921bedf195",
+    "data/reviews/physics-world/ol-base/after-traces.json.gz": "487e19c25bb5006868c90743c15d1bc6abd63b7f9d6c82f1e2d83fe09d2b6973",
+    "data/reviews/physics-world/ol-base/base-before-tests.log": "a0468ba55a63bf6a1ee267e152acecfb69200ae42e3d864166c5c7ddda6febe4",
+    "data/reviews/physics-world/ol-base/before-film.json.gz": "4df80dcd7240476eaf897d7a5f4ce9f9f9da5f124f380d4092d9de381b39b0e4",
+    "data/reviews/physics-world/ol-base/before-traces.json.gz": "27699dde658f7868648143b28d779f3fbe8098f155c3de778e440c4032289eff",
+    "data/reviews/physics-world/ol-base/blocking-before.ts": "440e82f0b1296bd768f59c3395510767e639c20f54ade8f4bccd29e72387f7c3",
+    "data/reviews/physics-world/ol-base/browser-check.json": "3eed41d42174b06d6fae731e87a9898306314e3e6dc7dde4c86f670da50b80b0",
+    "data/reviews/physics-world/ol-base/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/ol-base/compare-panel.py": "7d0c1653b5e1f3864f73429c8245a3c7c7512e3bb0942cb5101224ae703966b1",
+    "data/reviews/physics-world/ol-base/comparison-compact.json.gz": "41b44691e570d55d7088893edb55e16d99e5b7524e680df974be4a30d0d30690",
+    "data/reviews/physics-world/ol-base/current-games9.json": "42fb424654cdf14e95e5f84edb2bd8149a4f639f1450438df6f8f8f437978590",
+    "data/reviews/physics-world/ol-base/current-runs.json.gz": "3278430fe38389cd0866b03fc8b92f4bbb0c433386d34c54e802e77380d87b51",
+    "data/reviews/physics-world/ol-base/current-tackles.json.gz": "1e84898b19ddca252519b4b557f294e6646ccbac5c473a93e622663a5e196e26",
+    "data/reviews/physics-world/ol-base/film-check.py": "92e24685ff32245f3eab7930af7d63edd010abe530c56f1d045eb700e0d37d18",
+    "data/reviews/physics-world/ol-base/film-integrity.json": "41cbcbc756262176980875e14051fac58730f2e977d8e59101d848a6bd96eb2f",
+    "data/reviews/physics-world/ol-base/focused-tests.log": "36d1213d30f32a568186e090e19505d0a55ad8e82ea20ae47b5f395eb7a611c7",
+    "data/reviews/physics-world/ol-base/pack-traces.py": "78aa2166234ac35c60d32134c84061e31ff6f3d2379e01a53667d52e6682ab06",
+    "data/reviews/physics-world/ol-base/python.log": "0dad1294f3caeaf6de1371385ef8396ff4af5f8db9d699875dc9838510495d33",
+    "data/reviews/physics-world/ol-base/tests.log": "c613e967dc2be11fdf6e8286d010975098872ab16d593806bf035581f72c90c8",
+    "data/reviews/physics-world/ol-base/transfer-validation.json": "b70f43278d8ea4bf99b947b2e929ffb3360e84bc0ef11405d4ead2c2b6ec08a4",
+    "data/reviews/physics-world/ol-base/transfer-validation.py": "21f91ea218f74e0e2409bc865f49d1e5003535a0da0438eada372c7f7642353d",
+    "data/reviews/physics-world/ol-base/typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/ol-base/verify-evidence.py": "ec75bd1d0462cd3c93a9167cec0143078448e7bf708c6259a668f7c0aac82aff",
+    "docs/PHYSICS_DEVELOPMENT.md": "9a4eeca306d07f244b7675e853642568d0fd6c3bf19d835b20e5e975d31eff87",
+    "docs/reviews/ol-base-and-contact-approach.md": "ee56d8b698f72f7b50bb8c3828404faf433ef3e5df6f5e755a00c3723b4e4f66",
+    "scripts/diag/ol-base-review.ts": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+    "scripts/export-ol-base.ts": "65256f50e8995c0643dec34045c7921d80537c3d10903ebc0e6ea19258c78af9",
+    "src/sim/behaviors/blocking.ts": "9c7d009c98f928287e0d0c3f173bab7bc7dcba8515a54d8e95d069bb6a7aeb73",
+    "test/run-base.test.ts": "ceb275a76e00a091072e210b4781321c3fb17f24f2115113695b76a36a4da2ae",
+    "viewer/ol-base-validation.json": "2da87c093a312f6096453693e5285334b50d48b5e53298851ea67d51e527f268",
+    "viewer/ol-base.html": "d8ce4aa6cd11320873ea8ecda8b80d0efcb2d65040cb39a4c8a656d852d95179",
+    "viewer/ol-base.zip": "b4351483640474bbdf865ae9afd0df08b4673d5b2816872cc96757d0235491b8"
+  }
+}

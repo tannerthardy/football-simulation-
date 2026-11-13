@@ -1,0 +1,40 @@
+{
+  "source": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "files": [
+    {
+      "path": "data/reviews/pursuit-and-tackle/approach/final.json.gz",
+      "sha256": "3bfd7da4b4fb505e824e042f4b57e6b61f28c88df01650cd05249a35302af1e1",
+      "bytes": 2076110
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/games/final8.log",
+      "sha256": "b6a68dbae4d7f101eeb0eab349b9f2b8af7a37b9d0fe42a86233943287e81efe",
+      "bytes": 2312
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/passing/final-film.json.gz",
+      "sha256": "fed3a96126e25358ec3965c53d5d0a62a1ee565849f645ac4553cefaa8260bcf",
+      "bytes": 2153258
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/passing/final.json.gz",
+      "sha256": "ce9695394f4145814326bc01cb36d67285ea7fcace29cd1caf6e9b6e69ae5147",
+      "bytes": 900612
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/runs/final-film.json.gz",
+      "sha256": "378ea92e092b3bce66a6712ae80f5859ef73d075ca90bfdc28e28010d03a2f7e",
+      "bytes": 6790220
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/runs/final.json.gz",
+      "sha256": "e40f3bb57be5dbf1bf962fe7651d76d6baed99ee01c59d3a2b20c1ac02b0ac82",
+      "bytes": 6115995
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/witnesses/cue-boundary-final.json.gz",
+      "sha256": "9db26f4d39f16108c075274d8ceebd667047a3915ea7c14a58553b15a8ac8476",
+      "bytes": 1330171
+    }
+  ]
+}

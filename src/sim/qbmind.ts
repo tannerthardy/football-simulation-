@@ -31,13 +31,30 @@
  * are as noisy as the rest of his picture.
  */
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
+import type { ReceiverPicture } from './receiver-forecast.js';
+import type { RouteKeyPicture } from './route-read.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
-import { COVERAGES, PRESSURE_BY_ID } from '../playbook/defense.js';
+import { PRESSURE_BY_ID } from '../playbook/defense.js';
+import { COVERAGE_BY_ID, FAMILY_REPRESENTATIVE, familyOf } from '../playbook/coverages.js';
 import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConcept } from '../playbook/types.js';
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { screenSpot } from './screen-spot.js';
+import { isOL } from './behaviors/blocking.js';
+
+/** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
+
+/**
+ * The coverages a quarterback distinguishes: one canonical picture per family
+ * (Cover 3, quarters, ...). He doesn't identify Rip/Liz from Sky before the
+ * ball is out; he identifies the structure, and the variant shows up in how
+ * defenders move.
+ */
+const COVERAGES: Coverage[] = Object.values(FAMILY_REPRESENTATIVE).map((id) => COVERAGE_BY_ID[id]);
+const repOf = (c: Coverage): string => FAMILY_REPRESENTATIVE[familyOf(c)] ?? c.id;
 
 /** Rough league frequencies — the prior a QB brings from film study. */
 const PRIOR: Record<string, number> = {
@@ -57,9 +74,10 @@ export class CoverageScouting {
   constructor(private readonly strength = 12) {}
 
   observe(call: DefensivePlayCall): void {
-    this.counts[call.coverage.id] = (this.counts[call.coverage.id] ?? 0) + 1;
+    const rep = repOf(call.coverage);
+    this.counts[rep] = (this.counts[rep] ?? 0) + 1;
     this.n++;
-    if (call.shown && call.shown.id !== call.coverage.id) this.disguised++;
+    if (call.shown && call.shown.shell !== (call.coverage.look ?? call.coverage.shell)) this.disguised++;
   }
 
   /** Expected coverage frequencies for this defense. */
@@ -113,7 +131,9 @@ export interface QBReadReport {
 interface Memory {
   pos: Vec2;
   vel: Vec2;
+  facing: number;
   t: number;
+  latency?: number;
 }
 
 type Features = number[];
@@ -136,7 +156,9 @@ export class QBMind {
   readonly identifyAt: number;
   private readonly canon = new Map<string, DefenseAlignment>();
   private readonly memory = new Map<Agent, Memory>();
-  private readonly clearHalf: number;
+  /** Pictures already represented in the prior or a post-snap likelihood. */
+  private readonly classifiedAt = new Map<Agent, number>();
+  readonly clearHalf: number;
   /** Coverage frequencies he expects from this defense, and its disguise rate. */
   private readonly prior: Record<string, number> = {};
   private readonly disguiseRate: number;
@@ -151,7 +173,7 @@ export class QBMind {
     this.vision = r01(p.ratings.awareness);
     this.clearHalf = 0.33 + 0.22 * this.vision;
     this.periphHalf = this.clearHalf + 0.45 + 0.2 * this.vision;
-    this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.rng.normal(0, 0.08));
+    this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.dice('qb-mind').normal(0, 0.08));
     // What he expects from this defense: league habits, adjusted by what
     // he's seen of them today (the sharper QB uses more of it).
     const scout = sim.coverageScouting;
@@ -170,11 +192,12 @@ export class QBMind {
       this.canon.set(c.id, alignDefense({ ...sim.defCall, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
     }
     // Everyone is visible before the snap.
-    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, t: 0 });
+    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
     this.preSnapRead();
+    for (const [d, m] of this.memory) this.classifiedAt.set(d, m.t);
     this.report = {
       pre: this.top(),
-      actual: sim.defCall.coverage.id,
+      actual: repOf(sim.defCall.coverage),
       shown: sim.defCall.shown?.id,
     };
   }
@@ -214,7 +237,7 @@ export class QBMind {
     const sigPos = 0.3 + 1.0 * (1 - this.rec);
     const seen = new Map<DefSlot, Vec2>();
     for (const d of sim.defense) {
-      seen.set(d.slot as DefSlot, { x: d.pos.x + sim.rng.normal(0, sigPos), y: d.pos.y + sim.rng.normal(0, sigPos * 0.7) });
+      seen.set(d.slot as DefSlot, { x: d.pos.x + sim.dice('qb-mind').normal(0, sigPos), y: d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7) });
     }
     const obs = this.preFeatures(seen);
     const ns = this.noiseScale();
@@ -289,8 +312,10 @@ export class QBMind {
   }
 
   /**
-   * Post-snap picture: [defenders heading deep, middle closed, fraction of
-   * coverage players running with receivers].
+   * Post-snap picture from acquired memory: [defenders heading deep, middle
+   * closed, fraction of coverage players running with receivers]. Recognition
+   * cannot refresh defenders outside the current look. Do not use estimate()
+   * here: its coverage-prior drift would create circular confirmation.
    */
   postFeaturesObserved(): Features {
     const sim = this.sim;
@@ -302,7 +327,11 @@ export class QBMind {
     let turned = 0;
     let cov = 0;
     for (const d of sim.defense) {
-      const s = sim.see(qb, d, 1.2);
+      const m = this.memory.get(d);
+      if (!m) continue;
+      const coast = Math.min(0.5, Math.max(0, sim.t - m.t));
+      const s = { pos: { x: m.pos.x + m.vel.x * coast, y: m.pos.y + m.vel.y * coast },
+        vel: m.vel, facing: m.facing };
       const depth = s.pos.x - los;
       const proj = depth + Math.max(-1, s.vel.x) * 0.8;
       const projY = s.pos.y + s.vel.y * 0.8;
@@ -312,11 +341,10 @@ export class QBMind {
       // Rushers (coming at the QB) aren't part of the coverage picture.
       if (depth < 2 && s.vel.x < 0) continue;
       cov++;
-      // Eyes and hips: man defenders turn and run with their receiver; zone
-      // defenders keep their eyes on the quarterback.
+      // Body direction is a coarse man/zone cue, not measured eye direction.
       const sp = Math.hypot(s.vel.x, s.vel.y);
-      const toQB = Math.atan2(qb.pos.y - d.pos.y, qb.pos.x - d.pos.x);
-      if (sp > 2 && Math.cos(d.body.facing - toQB) < -0.2) turned++;
+      const toQB = Math.atan2(qb.pos.y - s.pos.y, qb.pos.x - s.pos.x);
+      if (sp > 2 && Math.cos(s.facing - toQB) < -0.2) turned++;
     }
     return [deep, mof, cov ? turned / cov : 0];
   }
@@ -331,7 +359,11 @@ export class QBMind {
     return sig[k].map((v, j) => v + (sig[k + 1][j] - v) * f);
   }
 
-  private postSnapRead(weight: number): void {
+  private postSnapRead(weight: number): boolean {
+    // Processing time cannot make an unchanged held picture into new evidence.
+    // The pre-snap likelihood already used the initial memory. A real new look
+    // permits another update, even if the observed motion itself is unchanged.
+    if (![...this.memory].some(([d, m]) => m.t > (this.classifiedAt.get(d) ?? 0))) return false;
     const obs = this.postFeaturesObserved();
     const ns = this.noiseScale();
     // Low-recognition QBs trust what they see after the snap less.
@@ -345,6 +377,8 @@ export class QBMind {
     }
     this.belief = normalize(logp);
     this.report.post = this.top();
+    for (const [d, m] of this.memory) this.classifiedAt.set(d, m.t);
+    return true;
   }
 
   // ------------------------------------------------------------ vision
@@ -354,49 +388,94 @@ export class QBMind {
     const sim = this.sim;
     const qb = this.qb;
     this.justIdentified = false;
-    // First look: the middle of the field during the drop. Second look, half a
-    // second later: the rotation has finished and the DBs' hips show man or zone.
-    if (!this.identified && sim.t >= this.identifyAt) {
-      this.identified = true;
-      this.justIdentified = true;
-      this.postSnapRead(0.6);
-    } else if (this.identified && !this.confirmed && sim.t >= this.identifyAt + 0.5) {
-      this.confirmed = true;
-      this.justIdentified = true;
-      this.postSnapRead(1);
-    }
     const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
     for (const d of sim.defense) {
-      const dx = d.pos.x - qb.pos.x;
-      const dy = d.pos.y - qb.pos.y;
+      // Sector membership uses the same delayed picture as the clear look.
+      // Current hidden position cannot decide whether that picture is acquired.
+      const clear = sim.see(qb, d);
+      const dx = clear.pos.x - qb.pos.x;
+      const dy = clear.pos.y - qb.pos.y;
       const dist = Math.hypot(dx, dy);
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
-      if (ang < this.clearHalf || dist < 3) {
-        const s = sim.see(qb, d);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, t: sim.t });
-      } else if (ang < this.periphHalf) {
+      if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
+        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0 });
+      } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
         const s = sim.see(qb, d, 1.7);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, t: sim.t - 0.1 });
+        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0 });
       }
+    }
+    // Existing recognition milestones summarize this acquired look and its
+    // memories. Elapsed time permits processing; it does not reveal a rotation.
+    if (!this.identified && sim.t >= this.identifyAt) {
+      this.justIdentified = this.postSnapRead(0.6);
+      this.identified = this.justIdentified;
+    } else if (this.identified && !this.confirmed && sim.t >= this.identifyAt + 0.5) {
+      this.justIdentified = this.postSnapRead(1);
+      this.confirmed = this.justIdentified;
     }
   }
 
+  /** Separate receiver acquisition; ordinary teammate see() is not a QB look.
+   * Reuses the existing visual sectors/latency without touching defender gates.
+   * No near-pocket automatic acquisition: that exception is defender feel. */
+  receiverLook(target: Agent, gaze: Vec2): ReceiverPicture | null {
+    const sim = this.sim, qb = this.qb;
+    const delay = (scale: number) => qb.mind.observationDelay(qb.profile.reactionTime * scale);
+    const clear = sim.perception.perceive(target.idx, delay(1));
+    const dir = Math.atan2(gaze.y - qb.pos.y, gaze.x - qb.pos.x);
+    const ang = Math.abs(angleDiff(Math.atan2(clear.pos.y - qb.pos.y, clear.pos.x - qb.pos.x), dir));
+    const seen = ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) ? clear
+      : ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus) ? sim.perception.perceive(target.idx, delay(1.7)) : null;
+    if (!seen) return null;
+    sim.trace.observe(qb, target, seen, sim.t);
+    const age = seen.age ?? 0;
+    return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
+      vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
+  }
+
+  /** Acquired route keys, with memory age plus the original sensing latency. */
+  routeKeyPictures(): RouteKeyPicture[] {
+    // Read-only view of observe()'s memory: querying this cannot see another
+    // defender, improve a picture, or consume a decision/random draw. Do not
+    // use estimate()'s expected-position fallback as acquired route evidence.
+    return [...this.memory].map(([d, m]) => {
+      const age = Math.max(0, this.sim.t - m.t), dt = Math.min(.5, age);
+      return { id: d.player.id, pos: { x: m.pos.x + m.vel.x * dt, y: m.pos.y + m.vel.y * dt },
+        vel: { ...m.vel }, age: age + (m.latency ?? 0) };
+    });
+  }
+
+  /** Age of his picture of a defender: memory age plus its sensing latency.
+   * Zero when he has no memory of him (the estimate is then a fresh look). */
+  pictureAge(d: Agent): number {
+    const m = this.memory.get(d);
+    return m ? Math.max(0, this.sim.t - m.t) + (m.latency ?? 0) : 0;
+  }
+
   /** Where the QB thinks a defender is (and how he's moving). */
-  estimate(d: Agent): { pos: Vec2; vel: Vec2 } {
+  estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {
     const sim = this.sim;
     const m = this.memory.get(d);
     if (!m) return sim.see(this.qb, d);
     const age = sim.t - m.t;
-    if (age < 0.12) return { pos: m.pos, vel: m.vel };
+    if (age < 0.12) return this.recordEstimate(d, { pos: m.pos, vel: m.vel, facing: m.facing }, age);
     const k = Math.min(age, 0.5);
     const dr = { x: m.pos.x + m.vel.x * k, y: m.pos.y + m.vel.y * k };
     const exp = this.expectedPos(d);
     const w = clamp((age - 0.2) / 1.0, 0, 1);
-    return {
+    return this.recordEstimate(d, {
       pos: { x: dr.x + (exp.x - dr.x) * w, y: dr.y + (exp.y - dr.y) * w },
       vel: { x: m.vel.x * (1 - w), y: m.vel.y * (1 - w) },
-    };
+      facing: m.facing,
+    }, age);
+  }
+
+  /** Capture the estimate actually returned, without advancing vision. Age is
+   * the age of QB memory, not total visual latency including PlaySim.see. */
+  private recordEstimate(d: Agent, p: { pos: Vec2; vel: Vec2; facing: number }, age: number): typeof p {
+    this.sim.trace.observe(this.qb, d, { ...p, stance: null, age }, this.sim.t, 'qb');
+    return p;
   }
 
   /** Belief-weighted position this defender "should" be at right now. */
@@ -442,7 +521,7 @@ export class QBMind {
     const p = this.qb.player;
     // How much freedom the staff gives him: veterans with good awareness get the keys.
     const authority = clamp(0.1 + 0.5 * this.vision + 0.035 * p.experience, 0, 0.85);
-    if (opts.hurry || !sim.rng.chance(authority)) return call;
+    if (opts.hurry || !sim.dice('qb-mind').chance(authority)) return call;
 
     const los = sim.los;
     const by = sim.ballY;
@@ -450,8 +529,8 @@ export class QBMind {
     let boxL = 0;
     let boxR = 0;
     for (const d of sim.defense) {
-      const x = d.pos.x + sim.rng.normal(0, sigPos) - los;
-      const y = d.pos.y + sim.rng.normal(0, sigPos * 0.7);
+      const x = d.pos.x + sim.dice('qb-mind').normal(0, sigPos) - los;
+      const y = d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7);
       if (x < 7.5 && Math.abs(y - by) < 6.5) {
         if (y >= by) boxL++;
         else boxR++;
@@ -459,12 +538,17 @@ export class QBMind {
     }
     const box = boxL + boxR;
     const blockersOn = (sign: number) =>
-      sim.offense.filter((o) => {
+      sim.offense.reduce((count, o) => {
         const sp = sim.offAlign.spots[o.slot];
-        if (!sp || o === sim.qb) return false;
-        if (['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) return Math.sign(sp.pos.y - by) === sign || o.slot === 'C';
-        return (sp.inline || o.slot === 'FB') && Math.sign(sp.pos.y - by) === sign;
-      }).length;
+        if (!sp || o === sim.qb) return count;
+        const side = Math.sign(sp.pos.y - by);
+        if (['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) return count + Number(side === sign || o.slot === 'C');
+        // The second back (a fullback, or a split back). A centered lead
+        // contributes half to either side, one total; his actual block still
+        // has to work.
+        if (o.slot === sim.offAlign.numbering.B2) return count + (side === 0 ? .5 : Number(side === sign));
+        return count + Number(!!sp.inline && side === sign);
+      }, 0);
     const blkL = blockersOn(1) - 0.5; // the center counts half to each side
     const blkR = blockersOn(-1) - 0.5;
     const blockers = blkL + blkR;
@@ -494,13 +578,76 @@ export class QBMind {
     if (call.kind === 'pass' && call.pass && call.pass.family !== 'playaction') {
       // Light box against two-high on a running down: run it.
       const runDown = opts.down <= 2 && opts.distance <= 7;
-      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.slot('RB') && sim.rng.chance(0.5)) {
+      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.slot('RB') && sim.dice('qb-mind').chance(0.5)) {
         const run = RUN_BY_ID[boxL <= boxR ? (sim.offAlign.strongSign > 0 ? 'iz_strong' : 'iz_weak') : sim.offAlign.strongSign > 0 ? 'iz_weak' : 'iz_strong'];
         this.report.audible = `check to ${run.name}`;
         return { ...call, kind: 'run', run, pass: undefined, label: `${call.formation.name} — ${run.name} (audible)` };
       }
     }
     return call;
+  }
+
+  /**
+   * Checks built into the call, made by every QB whatever his freedom to
+   * change plays: a screen's kill and a run-pass option's pre-snap read.
+   */
+  installedChecks(call: OffensivePlayCall): OffensivePlayCall {
+    return this.rpoRead(call) ?? this.screenKill(call) ?? call;
+  }
+
+  /** What the QB sees outside on a screen: press over the receiver, and the
+   * defenders and receivers outside the box to that side (defenders off the
+   * line and within 9 yd of it), each defender seen with his alignment noise. */
+  private screenLook(concept: PassConcept): { press: boolean; defenders: number; receivers: number } | null {
+    const sim = this.sim;
+    const designed = screenSpot(sim, concept);
+    if (!designed) return null;
+    const r = designed.receiver.pos, side = designed.side, by = sim.ballY;
+    const sig = 0.3 + 1.0 * (1 - this.rec);
+    let press = false, defenders = 0;
+    for (const d of sim.defense) {
+      const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
+      const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
+      if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
+      // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
+      if ((y - by) * side > 5 && x >= 1.5 && x < 9) defenders++;
+    }
+    const receivers = sim.offense.filter((o) => o !== sim.qb && !isOL(o) && !sim.offAlign.spots[o.slot]?.backfield
+      && (o.pos.y - by) * side > 5).length;
+    return { press, defenders, receivers };
+  }
+
+  /**
+   * Run-pass option, read before the snap: throw the tagged screen unless the
+   * receiver is pressed or the defense has more men outside than receivers
+   * there; otherwise hand off. Thrown, the line still blocks the run.
+   */
+  private rpoRead(call: OffensivePlayCall): OffensivePlayCall | null {
+    if (call.kind !== 'run' || !call.rpo || !call.run) return null;
+    const look = this.screenLook(call.rpo);
+    const throwIt = !!look && !look.press && look.defenders <= look.receivers;
+    this.report.audible = throwIt ? `rpo: ${call.rpo.name}` : `rpo: ${call.run.name}`;
+    if (!throwIt) return { ...call, rpo: undefined };
+    return { ...call, kind: 'pass', pass: call.rpo, rpo: undefined, label: `${call.formation.name} — ${call.run.name} / ${call.rpo.name} (thrown)` };
+  }
+
+  /**
+   * A called quick screen with a press kill: if he sees a defender pressed
+   * over the screen receiver (within ~2 yd of the line and over his
+   * alignment), check to the quick game. Seen with the same alignment noise
+   * as the box count.
+   */
+  private screenKill(call: OffensivePlayCall): OffensivePlayCall | null {
+    const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
+    if (!spec || !spec.kill) return null;
+    const look = this.screenLook(call.pass!);
+    if (spec.kill === 'press' && !look?.press) return null;
+    // SCREEN_QB: a numbers kill (the bubble): more of them outside than us there.
+    if (spec.kill === 'numbers' && (!SCREEN_QB || !look || look.defenders <= look.receivers)) return null;
+    const quick = this.quickCheck();
+    if (!quick) return null;
+    this.report.audible = `kill to ${quick.name}`;
+    return { ...call, pass: quick, label: `${call.formation.name} — ${quick.name} (kill)` };
   }
 
   /** Quick-game answer to the look: hitches vs. off corners, slants vs. press. */

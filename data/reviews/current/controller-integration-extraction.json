@@ -1,0 +1,247 @@
+{
+  "approvedBase": "c98c2fa0e8de760c980ad3852e0ec85abcfadc8f",
+  "catchOnlyCommit": "b3a55ac2a877a8610efda4f2560e0513c54932a0",
+  "combinedCommit": "46a833dd006850a2c83a937bd3444181d8b10588",
+  "exactExtraction": {
+    "src/sim/contact-motion.ts": {
+      "sha256": "42bd07b5eff20307b6fc24715f7e519b04bf81835f5ddd84fdb68d1b81a8b934",
+      "reviewedPin": "41bfb2c",
+      "exact": true
+    },
+    "src/sim/engagement.ts": {
+      "sha256": "fed6da0d5e6e5a8194a0d5377e6e23c6f88ed3e077a8b67503cf3d045e0335d9",
+      "reviewedPin": "41bfb2c",
+      "exact": true
+    },
+    "test/contact-motion.test.ts": {
+      "sha256": "708bc596469bffdc85407360b12c013c11df720c48bb26c79468180fe576726d",
+      "reviewedPin": "41bfb2c",
+      "exact": true
+    },
+    "src/sim/catch-approach.ts": {
+      "sha256": "ba554fb37cca48bdb57a1f4c504ea1e47ea7910073d50267bc45adfc3116d844",
+      "reviewedPin": "c0002355",
+      "exact": true
+    },
+    "src/sim/behaviors/defense.ts": {
+      "sha256": "a18c14daaf2ece7fde685aa42f55b3e1c76b623acfcb5dfa31a92ff777829222",
+      "reviewedPin": "c0002355",
+      "exact": true
+    },
+    "test/catch-phase-control.test.ts": {
+      "sha256": "e1f313f29f1e0db1b5b0cbbf4ce5fbae64595d2fc4cb3ef02765257127bb28ce",
+      "reviewedPin": "c0002355",
+      "exact": true
+    },
+    "scripts/diag/catch-approach-parity.ts": {
+      "sha256": "a6e9abd5892b235d8bd6a12f6e641da9ed3457b8b5c6d571bfe6af4b83b24811",
+      "reviewedPin": "0d50f26",
+      "exact": true
+    },
+    "config/roster-screen-reference.json": {
+      "sha256": "a86d084d372036dc1d5559ea02e026a7ff924521c8ea09afebaf98a1c0af47a7",
+      "reviewedPin": "41bfb2c",
+      "exact": true
+    },
+    "scripts/roster-review.ts": {
+      "sha256": "ba693a8bec749cc1da92f71687017ec143b15bff13ffbb828d1d97126ca711d0",
+      "reviewedPin": "41bfb2c",
+      "exact": true
+    },
+    "test/roster-review.test.ts": {
+      "sha256": "51288f521b7741c8ff3ca8bd9b79007432689648e341cb5d3e60558a4d57cdf7",
+      "reviewedPin": "41bfb2c",
+      "exact": true
+    }
+  },
+  "excludedAncestry": {
+    "8e36cce80e138133acd6afc7aba0befc21d5a746": "not imported as ancestor",
+    "b64910ee7975e679beca2590369714ff33994aa0": "not imported as ancestor",
+    "601c8be42145db0c239fedbe02c0de2c12cde65e": "not imported as ancestor",
+    "a4cd1e4": "not imported as ancestor",
+    "f867fa31aec3d128b1c548a177c5a84088696038": "not imported as ancestor",
+    "0d50f2611a56f740df246b9b24941bfc541d1b57": "not imported as ancestor"
+  },
+  "productionTouched": [
+    "src/sim/behaviors/defense.ts",
+    "src/sim/catch-approach.ts",
+    "src/sim/contact-motion.ts",
+    "src/sim/engagement.ts"
+  ],
+  "schemaVersion": 1,
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "runOnly": {
+    "testedCommit": "41bfb2c152e7ebdcda4cf1cd11eacefc2c186f6c",
+    "publicationCommit": "84490bd32b4bca48d4a4f36213a513794ad4a623",
+    "receiptSha256": "fd5fb89b20a987e3b0490440a3ba41495473ed6e80819a086346396269cc2b54",
+    "sourceSha256": "d6429131a16b1f79b2af05a458c647f105d4fabbad1af7c72816b5b4ed91640f",
+    "validationSha256": "b9809014ce561f63c914619fe09c3d325288269133dbb59f52830c17e0ec7f9a",
+    "exactSourceHarnessSettingsNodeWorldCompatibilityVerified": true,
+    "standaloneSuiteReruns": 0
+  },
+  "catchContribution": {
+    "reviewedCommit": "0d50f2611a56f740df246b9b24941bfc541d1b57",
+    "testedProductionCommit": "c0002355a6dbee610ba96e4dbf6bc9e205de13a2",
+    "exactRuntimeSha256": "cab57308d6166cbbbef8effbc1c89f592b6a1edb2b6586968ac5ef4490cbc108",
+    "focusedAssertions": 59,
+    "frozenCompletedFinalStatesMatched": 15,
+    "receiptSha256": "4e357f13a43cf20275e49b53aebe3cd799c2acff1199db99e0b2b25b1d185ba3",
+    "retainedExecutionMeasurementSha256": "16fd84c4c364e63eaa03a66085f55310b7845571968636f3a9d503036c30cac6",
+    "retainedExecutionRunnerSha256": "776fbb405cd7720f2c0ea83b7a4aa6b0ec55551acc49e06123cc1d80187f6825",
+    "baselineTransferRetainedDrawReuse": "Exact runtime, 43 settings, World defaults, Node 22.23.3, platform/arch, lock, frozen inputs and archived measurement hashes verified; original full global validation hash differs because excluded research tooling is not imported. Original receipts retain their original pins, not combined passes."
+  },
+  "combined": {
+    "sourceSha256": "e5c318a1082c3738b9782107fa9faec67ada38b02245d1a529af4adaf6825c54",
+    "validationSha256": "26134096d7b87dce2bbd346332c739dd286ffaa9460bc2cc0e4e53acfb74b71e",
+    "receiptSha256": "e6016ff3d8dd4c2e32b980b1cec600e5157be191a1f33638280bca523055b9c2",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "node": "v22.23.3",
+    "counts": {
+      "typescript": 1684,
+      "typescriptFiles": 140,
+      "python": 145,
+      "combinedFocused": 49,
+      "combinedFrozenSpotChecks": 3
+    },
+    "failed": 0,
+    "skipped": 0,
+    "inputsUnchanged": true,
+    "fullVerificationRuns": 1,
+    "phaseCommands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.418860165
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.49459286
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 158.840340153
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7737136179999797
+      }
+    ],
+    "startedAt": "2026-10-14T02:11:40.812Z",
+    "finishedAt": "2026-10-14T02:14:41.342Z",
+    "wallSeconds": 180.53,
+    "rawLogSha256": "c6fbf80a47951dc8b5a6f05ce7a60fb3570268b702a697f966619e06eb57b890"
+  },
+  "newChecks": {
+    "catch-focused.json": {
+      "commit": "b3a55ac2a877a8610efda4f2560e0513c54932a0",
+      "seconds": 2.42469036,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    "catch-parity-launcher.json": {
+      "commit": "b3a55ac2a877a8610efda4f2560e0513c54932a0",
+      "seconds": 2.950533627,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    "combined-focused.json": {
+      "commit": "46a833dd006850a2c83a937bd3444181d8b10588",
+      "seconds": 2.131401683,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    },
+    "combined-spot-launcher.json": {
+      "commit": "46a833dd006850a2c83a937bd3444181d8b10588",
+      "seconds": 1.154866958,
+      "exitCode": 0,
+      "inputsUnchanged": true
+    }
+  },
+  "standaloneCatchFullSuiteRuns": 0,
+  "newFullGamesOrRosterCollections": 0,
+  "savedCompletePlaysReplayedOutsideSuite": 18,
+  "preservedAdverseEvidence": [
+    "P4 natural tackle-to-TD; retained strong/weak execution distinction",
+    "P95 small gain loss",
+    "P16 changed interceptor/return",
+    "H11842/C4 inbounds/OOB gain/clock tradeoff",
+    "H11842/C1 failed whole-world identity expectation and observer-neutral explanatory evidence",
+    "P173 unchanged explosive escape",
+    "WZ lower-gain control and historical conservation/convergence defects"
+  ],
+  "publicationScope": "Documentation and data receipts only; verify source/harness/settings still equal tested commit. No merge/reference/baseline/default designation."
+}

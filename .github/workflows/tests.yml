@@ -1,0 +1,38 @@
+name: tests
+
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: core
+            script: test
+          - project: integration
+            script: test:integration
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+        if: matrix.project == 'core'
+      - run: npm run build
+        if: matrix.project == 'core'
+      # Matrix jobs use separate runners. The existing integration script
+      # keeps its CPU-heavy native games serial with --maxWorkers=1.
+      - run: npm run ${{ matrix.script }}

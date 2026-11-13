@@ -1,0 +1,12 @@
+{
+  "schema": "bdb-run-outcome-verification-v1",
+  "checks": {
+    "aggregateOperatorInvariants": 1000,
+    "completeCellPartitions": 7,
+    "independentRawDecimalPrimaryOperators": 26
+  },
+  "reportSha256": "2cb13fecb786d82fb7a516548e50070da94668075600a4d0b0a0dc3c0e3c9e79",
+  "querySha256": "2d71ba444ce7a18739ae2ae3f5de0c07f231523144fd67311857387c58dc701b",
+  "collectorSha256": "c7350b591efc10f33988abb794998a9ac1889063841f984c5c5d097f16f4eab6",
+  "limitation": "Descriptive audit after initial metadata inspection, not outcome-blind preregistration. Raw operator recomputation covers primary groups; hierarchical invariants cover all emitted cells."
+}

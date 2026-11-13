@@ -1,0 +1,19 @@
+{
+  "componentChangedFiles": [
+    "src/sim/behaviors/defense.ts"
+  ],
+  "featureTestSha256": "4ce16f30bb2ce109f60c4e9984d0ca2f0267b097bebc74edfe59012b3d801c4d",
+  "baselineFeatureTests": {
+    "passed": 9,
+    "failed": 4
+  },
+  "candidateFeatureTests": {
+    "passed": 13,
+    "failed": 0
+  },
+  "focusedCoverageTests": {
+    "passed": 40,
+    "failed": 0
+  },
+  "sharedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+}

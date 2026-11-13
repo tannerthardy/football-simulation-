@@ -1,0 +1,567 @@
+{
+  "schema": "independent-defense-review-v1",
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "acceptedSourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "intakeHeads": {
+    "123": "5da02125075de0baf2ffae5c4a8b28bcae8ef77f",
+    "124": "9f2206a3fd22aab83b19a0431346c7569ed19f7b"
+  },
+  "codePins": {
+    "123": "32120268d2ba8cef5622b6b0c5aedd9eb6c61b50",
+    "124": "43593eed5db501889d41bfa093a8be1772317205"
+  },
+  "decisions": {
+    "123Minimal": "ACCEPT",
+    "123BroaderTracker": "HOLD",
+    "124NarrowDuty": "ACCEPT"
+  },
+  "patches": {
+    "123": {
+      "file": "pr123.patch",
+      "sha256": "9597d858ec464949f379b4da5cf624ae155ff86726666ddefb61520c76f36969"
+    },
+    "124": {
+      "file": "pr124.patch",
+      "sha256": "c2526b04f1a65de271985dabf25c4d424c3174cb1d1e55eb860b7478f38df2a9"
+    }
+  },
+  "virtualIndexApply": {
+    "123": {
+      "tree": "7cc6d2052fef0368dc926532d17eb3290780ed3e",
+      "sourceSha256": "837d9f6a6d9cf3436d2bd598a7068f6515bd6d843e86c1d70d4244650f2bd7ec",
+      "changedFiles": [
+        "src/sim/run-fits.ts",
+        "test/second-level-handover.test.ts"
+      ]
+    },
+    "124": {
+      "tree": "29b1312fed8a2a4da6496f8a06a34cfafa0b6639",
+      "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+      "changedFiles": [
+        "src/sim/coverage/rules.ts",
+        "test/match-block-release.test.ts",
+        "test/quarters-flat-wheel.test.ts",
+        "test/release-cushion.test.ts"
+      ]
+    },
+    "123Then124": {
+      "tree": "a2c6861cb4533ffa79662318b756d66eeedc1a88",
+      "sourceSha256": "7e789471caaf38aedc4efb0ca6b8a52f705526deef38b0724f13ab0d659154b2",
+      "changedFiles": [
+        "src/sim/coverage/rules.ts",
+        "src/sim/run-fits.ts",
+        "test/match-block-release.test.ts",
+        "test/quarters-flat-wheel.test.ts",
+        "test/release-cushion.test.ts",
+        "test/second-level-handover.test.ts"
+      ]
+    },
+    "124Then123": {
+      "tree": "a2c6861cb4533ffa79662318b756d66eeedc1a88",
+      "sourceSha256": "7e789471caaf38aedc4efb0ca6b8a52f705526deef38b0724f13ab0d659154b2",
+      "changedFiles": [
+        "src/sim/coverage/rules.ts",
+        "src/sim/run-fits.ts",
+        "test/match-block-release.test.ts",
+        "test/quarters-flat-wheel.test.ts",
+        "test/release-cushion.test.ts",
+        "test/second-level-handover.test.ts"
+      ]
+    }
+  },
+  "exactBlobs": {
+    "src/sim/run-fits.ts": {
+      "pr": 123,
+      "mode": "100644",
+      "gitBlob": "8dea3c0fede012337a6160a7dbe1e9d20ca3b2dd",
+      "sha256": "c0847e748a6ba851c7dde0a45a4496299bb0bef854af3bc4c2ca9b5e25c1905d",
+      "baseGitBlob": "15136e64db2fd9d8a78976fd42ec975a25776f94"
+    },
+    "test/second-level-handover.test.ts": {
+      "pr": 123,
+      "mode": "100644",
+      "gitBlob": "66a24a7eac669570f9acca2103194d4e6b404e78",
+      "sha256": "c13b84bb36667d4322be6139236ce165b20b0fc84f3a91f1a56757bdb5180b07",
+      "baseGitBlob": null
+    },
+    "src/sim/coverage/rules.ts": {
+      "pr": 124,
+      "mode": "100644",
+      "gitBlob": "57da45e42880a6312fb4bfae81d126ee9524c718",
+      "sha256": "abdb69b54f990db10b636be95622968a2551b97616a3c54c88796409b7c75220",
+      "baseGitBlob": "7a56c509f02f1a8dc3ca7e762968b19d653c6650"
+    },
+    "test/match-block-release.test.ts": {
+      "pr": 124,
+      "mode": "100644",
+      "gitBlob": "6c6dc8e182d89820064864f970eb4cfbc24d2475",
+      "sha256": "669a865b4122c98cc49a861d038a1e0b0f45d7063faefe1dbe148ee902916668",
+      "baseGitBlob": "3b3efe32d8332bdfa6e565d418bbc35e42f415f3"
+    },
+    "test/quarters-flat-wheel.test.ts": {
+      "pr": 124,
+      "mode": "100644",
+      "gitBlob": "3bca956548fdaae258d43ff6026d71e092d5f70f",
+      "sha256": "63066b13403629f4d0ed69d16097397bdb5db14d95fb9ac0482bae6b8f07d8eb",
+      "baseGitBlob": null
+    },
+    "test/release-cushion.test.ts": {
+      "pr": 124,
+      "mode": "100644",
+      "gitBlob": "250f93f3a14dde0a57b00f9a988cd3be15337e27",
+      "sha256": "468eaf269fbfecff44104727c6a9469141948956a50f5091bcaa5f83154c7549",
+      "baseGitBlob": "5ba5335311c8b8fa2cdb734fb9c91926d76ed729"
+    }
+  },
+  "preservedBlobs": {
+    "test/back-man-run-fit.test.ts": {
+      "mode": "100644",
+      "gitBlob": "9264fa5d845807f1d1c8291013cf0d2b03c52d94",
+      "sha256": "3f4b7a0b89710f74f8e3dd45238015dad3132cf658ca149c1492b7a4d2b07e77"
+    },
+    "test/coverage-run-support.test.ts": {
+      "mode": "100644",
+      "gitBlob": "4473de16e79836c948338b5dda5a68e9e5eb82d3",
+      "sha256": "e08aff94ea5b13595453a4dad9f441d76fa76dc81f55b9d774c530091d76dab0"
+    },
+    "src/sim/coverage/defender.ts": {
+      "mode": "100644",
+      "gitBlob": "2269cfdde655cd8a3330ab73b84b62817767f6c1",
+      "sha256": "82be98eac0f3eea4640faa639cb75d2caabdbd79364da1da8401ca2d86462027"
+    },
+    "src/sim/coverage/reads.ts": {
+      "mode": "100644",
+      "gitBlob": "bca48d00f9d7f7059b17220978733b39b9298cba",
+      "sha256": "d0cdb7fc0eaee81f1f4c6e4093bc838a2f7a060ed3bac1329b13fb3378c991db"
+    },
+    "src/sim/coverage/techniques.ts": {
+      "mode": "100644",
+      "gitBlob": "e9f3f83ee5bae2cf63242b6aabd7eceb443f4b9f",
+      "sha256": "934c4feac3d9f18910c14abebe1c345b5386fc9c91770a949e2b05b7ab78e903"
+    },
+    "src/sim/coverage/judgment.ts": {
+      "mode": "100644",
+      "gitBlob": "8a36338fddf50463d32772fc074d7414cc074a83",
+      "sha256": "375f4c3853dbad824d88c448b79bd7a3ad8afe2080558449e8115de9977ec882"
+    },
+    "src/sim/behaviors/defense.ts": {
+      "mode": "100644",
+      "gitBlob": "5db25b81168130fbb6e6e34cb4049b9ec48fcfa6",
+      "sha256": "d61cb50271eb74c5507b40c35e5a0f2d2efb47fe60697b63d7acdddfed68769f"
+    },
+    "config/baseline.json": {
+      "mode": "100644",
+      "gitBlob": "0074124c34ce1c8148791cf76dddc1f7888b2f2c",
+      "sha256": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4"
+    },
+    "scripts/baseline.mjs": {
+      "mode": "100644",
+      "gitBlob": "7d7270bc1e3fe17eb155f2dd51ef33c55e47a9dd",
+      "sha256": "f8eb76b92e4e3e9ca980e2ed6e6c88947b91b95ee88e95efe9107ecbdf967c37"
+    },
+    "scripts/source-version.ts": {
+      "mode": "100644",
+      "gitBlob": "e7fb7070ed0ea2b798e0db73b9c92283c7b2e685",
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    "package-lock.json": {
+      "mode": "100644",
+      "gitBlob": "aa1bcaca6628a7ad82f810effaa87990d1e59dbb",
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+    }
+  },
+  "portableTestDependencies": {
+    "test/second-level-handover.test.ts": {
+      "selfContainedFixture": true,
+      "imports": [
+        "vitest",
+        "../src/core/field.js",
+        "../src/core/rng.js",
+        "../src/league/team.js",
+        "../src/playbook/concepts.js",
+        "../src/playbook/defense.js",
+        "../src/playbook/formations.js",
+        "../src/physics/world.js",
+        "../src/sim/live-gaps.js",
+        "../src/sim/perception.js",
+        "../src/sim/playsim.js",
+        "../src/sim/run-fits.js",
+        "../src/sim/behaviors/common.js"
+      ]
+    },
+    "test/match-block-release.test.ts": {
+      "selfContainedFixture": true,
+      "imports": [
+        "vitest",
+        "../src/core/rng.js",
+        "../src/league/team.js",
+        "../src/playbook/concepts.js",
+        "../src/playbook/defense.js",
+        "../src/playbook/formations.js",
+        "../src/playbook/types.js",
+        "../src/sim/coverage/defender.js",
+        "../src/sim/perception.js",
+        "../src/sim/playsim.js"
+      ]
+    },
+    "test/quarters-flat-wheel.test.ts": {
+      "selfContainedFixture": true,
+      "imports": [
+        "vitest",
+        "../src/core/rng.js",
+        "../src/physics/kinematics.js",
+        "../src/league/team.js",
+        "../src/playbook/concepts.js",
+        "../src/playbook/defense.js",
+        "../src/playbook/formations.js",
+        "../src/sim/coverage/defender.js",
+        "../src/sim/behaviors/defense.js",
+        "../src/sim/perception.js",
+        "../src/sim/playsim.js"
+      ]
+    },
+    "test/release-cushion.test.ts": {
+      "selfContainedFixture": true,
+      "imports": [
+        "vitest",
+        "../src/core/rng.js",
+        "../src/physics/kinematics.js",
+        "../src/league/team.js",
+        "../src/playbook/concepts.js",
+        "../src/playbook/defense.js",
+        "../src/playbook/formations.js",
+        "../src/playbook/types.js",
+        "../src/sim/behaviors/defense.js",
+        "../src/sim/coverage/defender.js",
+        "../src/sim/perception.js",
+        "../src/sim/playsim.js"
+      ]
+    }
+  },
+  "settings": {
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "evidence": {
+    "123": {
+      "summarySha256": "fc10252f6d73b68fcca18b2475e982028546014211f4125a237481ad7d7c9233",
+      "receiptsSha256": "32d7355e30808751b87279a3788c37c377e15dc5a4d7ce37784aab9c64391f05",
+      "embeddedReceiptsVerified": 19,
+      "operatorsVerified": 5,
+      "nativeTapes": "Raw tapes were retained only in author ignored out/. Summary/embedded receipts/operator and published hashes verified; no claim of independently re-reading unavailable raw frames.",
+      "reusedFocusedTests": 62,
+      "reusedTypecheck": "portable/portable-typecheck.json",
+      "authorCommandSeconds": {
+        "research": 54.329418657000005,
+        "portable": 18.409259377,
+        "total": 72.738678034
+      }
+    },
+    "124": {
+      "reviewSha256": "7a9a712f5b678a611668cc6138c2c523c4e68e959370a6f73f8f4076cc926281",
+      "verifiedFiles": 15,
+      "verifiedFileSha256Claims": 11,
+      "verifiedReferenceImageHashes": 11,
+      "manifestAndFullInputObjectsRehashedWithJavascript": {
+        "manifest": "bdc9adcff337d8a7fc873ce979c3afc52c7c4bc74b123e797fd88cc4ca26214d",
+        "cases": [
+          {
+            "id": "QW",
+            "sha": "81485eb8e5e4bd4707a3a6830a57a9d45ede59e051891e0ea1129ab3851193dd"
+          },
+          {
+            "id": "QM",
+            "sha": "772389794dd719cdd76242f09bd58b95c47f75a377b9e7cc2ae23426d2189543"
+          },
+          {
+            "id": "QF",
+            "sha": "ae92ae5f8a94f387c8f0dc6307515bdadd59b81f3c350e28cc0e89002f1e78e7"
+          },
+          {
+            "id": "PW",
+            "sha": "68936b9a69f811b44c2f53e31022c29e30db8bc0e8c24c1ce4db02f7176eb535"
+          },
+          {
+            "id": "QV",
+            "sha": "cf13d200bc22406e91972c6d96db22d806f496d1fdaa625c5ec4f8fbf14c43c9"
+          },
+          {
+            "id": "QU",
+            "sha": "167b609f9ef055acb5dfd695f69efa290243caf0a2fd6b73de3f47c4707b543f"
+          },
+          {
+            "id": "FRESH",
+            "sha": "c5376d8dadf73e48d89197b1e6ccdb8ce021bcf0de2ee3be74b11e75262d7aa0"
+          }
+        ]
+      },
+      "firstDivergenceEntryReadsPicturesAndQueryCountsVerified": [
+        "QW",
+        "QM",
+        "QF",
+        "FRESH"
+      ],
+      "originalImagesVisuallyInspected": [
+        "HNFL-051",
+        "HNFL-078",
+        "HNFL-196",
+        "HNFL-312"
+      ],
+      "nativeTapes": "Both seven-input compressed tapes re-read; source/provenance/settings/endpoints/geometry and observer-proof cross-checked. No new executions.",
+      "receipts": {
+        "baseline-receipt.json": {
+          "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+          "validationSha256": "501858a18f8266001e376a4cf5c15d357accc62c2d0c7e2afd0dccb2311781f9",
+          "exitCode": 0,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "--import",
+                "tsx",
+                "scripts/diag/honest-quarter-flat.ts",
+                "run",
+                "out/honest-coverage/inputs.json.gz",
+                "out/honest-coverage/baseline.json.gz",
+                "Bounded seven-case diagnosis of Quarters flat/wheel and opposing Palms ownership before any controller change"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 2.715273529
+            }
+          ]
+        },
+        "candidate-receipt.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "0878f754854ed24feba98bd2b675f4efa5985a85bcc1675ab6cdcd3a96102176",
+          "exitCode": 0,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "--import",
+                "tsx",
+                "scripts/diag/honest-quarter-flat.ts",
+                "run",
+                "out/honest-coverage/inputs.json.gz",
+                "out/honest-coverage/candidate.json.gz",
+                "Same seven frozen inputs: verify acquired Quarters #2 flat/wheel ownership and preserve Palms/seam/shallow controls"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 2.5880903870000003
+            }
+          ]
+        },
+        "focused-final.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "15657c01fe77f338e96c8ac24fdf1083484cd6c9b4d37070a8117b61120e23e8",
+          "exitCode": 1,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "node_modules/vitest/vitest.mjs",
+                "run",
+                "--project",
+                "core",
+                "test/quarters-flat-wheel.test.ts",
+                "test/release-cushion.test.ts",
+                "test/match-block-release.test.ts",
+                "test/seam-delivery.test.ts",
+                "test/coverage-run-support.test.ts",
+                "test/coverage-rules.test.ts"
+              ],
+              "exitCode": 1,
+              "elapsedSeconds": 5.111810306000001
+            }
+          ]
+        },
+        "focused-initial.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "0878f754854ed24feba98bd2b675f4efa5985a85bcc1675ab6cdcd3a96102176",
+          "exitCode": 1,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "node_modules/vitest/vitest.mjs",
+                "run",
+                "--project",
+                "core",
+                "test/quarters-flat-wheel.test.ts",
+                "test/release-cushion.test.ts",
+                "test/match-block-release.test.ts",
+                "test/seam-delivery.test.ts",
+                "test/coverage-run-support.test.ts"
+              ],
+              "exitCode": 1,
+              "elapsedSeconds": 2.49461431
+            }
+          ]
+        },
+        "installed-call-opposing-control.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "6a55e69211d62d20aba189e7fec82d6c751a3c43125c701722ebe1d225bc8244",
+          "exitCode": 0,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "node_modules/vitest/vitest.mjs",
+                "run",
+                "--project",
+                "core",
+                "test/quarters-flat-wheel.test.ts"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 1.597535032
+            }
+          ]
+        },
+        "observer-receipt.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "15657c01fe77f338e96c8ac24fdf1083484cd6c9b4d37070a8117b61120e23e8",
+          "exitCode": 0,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "--import",
+                "tsx",
+                "--input-type=module",
+                "-e",
+                "import {readFileSync,writeFileSync} from 'node:fs';import {gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';import {PlaySim} from './src/sim/playsim.ts';const read=p=>JSON.parse(gunzipSync(readFileSync(p)));const m=read('out/honest-coverage/inputs.json.gz');const observed=read('out/honest-coverage/candidate.json.gz').rows.find(r=>r.id==='QW');const sim=new PlaySim(structuredClone(m.cases.find(c=>c.id==='QW').setup));sim.event('snap',sim.slot('C')??sim.qb);let ticks=0;while(sim.phase==='live'&&sim.t<m.seconds){sim.tick();ticks++}const {frames,telemetry,...result}=sim.buildResult();const signature=createHash('sha256').update(JSON.stringify({t:sim.t,phase:sim.phase,result,bodies:sim.agents.map(a=>a.body),rng:sim.rng,minds:sim.agents.map(a=>a.mind),perception:sim.perception})).digest('hex');if(signature!==observed.physicalSignature)throw Error('Observer changed execution');const proof={id:'QW',inputSha256:observed.inputSha256,signature,ticks,matched:true};writeFileSync('out/honest-coverage/observer-proof.json',JSON.stringify(proof));console.log(proof);"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 0.743919792
+            }
+          ]
+        },
+        "red.json": {
+          "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+          "validationSha256": "df5e73518d11bd781ecdfc22f3354ac7ab797a1a2ac095d365ab87d9713c8b8f",
+          "exitCode": 1,
+          "commands": [
+            {
+              "command": [
+                "node",
+                "node_modules/vitest/vitest.mjs",
+                "run",
+                "--project",
+                "core",
+                "test/quarters-flat-wheel.test.ts"
+              ],
+              "exitCode": 1,
+              "elapsedSeconds": 1.773991186
+            }
+          ]
+        },
+        "typecheck.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "15657c01fe77f338e96c8ac24fdf1083484cd6c9b4d37070a8117b61120e23e8",
+          "exitCode": 0,
+          "commands": [
+            {
+              "command": [
+                "npm",
+                "run",
+                "typecheck"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 12.341519454
+            }
+          ]
+        },
+        "under-fixture-corrected.json": {
+          "sourceSha256": "0b3a96351ee6789baaea9bb0fbb989c0b8d86f449f4a931b3b02d7e121cbcb3a",
+          "validationSha256": "aabbc73d317aa2dda432eda2b1fe73cf29d025ef9b49d228ec7f38e1f4506e33",
+          "exitCode": 0,
+          "commands": [
+            {
+              "command": [
+                "npx",
+                "vitest",
+                "run",
+                "--project",
+                "core",
+                "test/match-block-release.test.ts"
+              ],
+              "exitCode": 0,
+              "elapsedSeconds": 1.781860807
+            }
+          ]
+        }
+      },
+      "reusedFocusedUniqueTests": 88,
+      "typecheckQualification": "Runtime/interfaces unchanged since passing typecheck; final shallow-contact-depth and hidden-corner stimulus corrections were not covered by that exact validation hash.",
+      "authorCommandSeconds": 31.148614803
+    }
+  },
+  "compositionContract": "Both extraction orders yield identical six-file tree. Installed support/ball/acquired-entry/provisional-block/rat controllers are byte-identical. Static and saved evidence review is not exact combined runtime verification; integration owner owns that once.",
+  "newWork": {
+    "simulatedPlays": 0,
+    "games": 0,
+    "tests": 0,
+    "typechecks": 0,
+    "fullSuites": 0,
+    "reason": "Source/evidence audit settles extraction and disclosed mechanism question; no new simulation would change this narrow review decision."
+  },
+  "auditElapsedSeconds": 0.7938487749779597,
+  "codePinsExactSelectedBlobsVerified": true
+}

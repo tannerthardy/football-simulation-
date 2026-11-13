@@ -1,0 +1,135 @@
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -565,7 +565,18 @@
+     this.lunges.clear();
+     updateEngagements(this, this.intents);
+     if (this.bond) updateBond(this, this.bond, this.intents);
+-    spaceTeammates(this.agents, this.intents, (a,b)=>this.see(a,b));
++    // Constraint ownership and last-step touch are felt by the actor. Free
++    // movement forecasts must not pretend these loads or joints are absent.
++    const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
++      .flatMap(j=>[j.a,j.b]));
++    if(this.bond){
++      constrained.add(this.bond.carrier.body);
++      for(const tackler of this.bond.tacklers)constrained.add(tackler.body);
++    }
++    for(const contact of this.lastStep?.contacts??[]){
++      constrained.add(this.agents[contact.i].body);constrained.add(this.agents[contact.j].body);
++    }
++    spaceTeammates(this.agents, this.intents, (a,b)=>this.see(a,b),{now:t,constrained});
+     // Contact/spacing controllers cannot wake leg drive before the snap cue.
+     for (const a of this.agents) if (t < a.snapReadyAt) {
+       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -9,7 +9,8 @@
+  * together or when a player is already moving too fast to stop.
+  */
+ import type { Intent } from '../physics/world.js';
+-import {fatigueFactor,followAccel} from '../physics/kinematics.js';
++import {fatigueFactor,followAccel,type Body} from '../physics/kinematics.js';
++import {previewFreeMovement,type MovementSample} from '../physics/movement-preview.js';
+ import {availability,supportParams} from '../physics/support.js';
+ import type { Agent } from './agent.js';
+ import type {Perceived} from './perception.js';
+@@ -20,9 +21,70 @@
+ const AWARE_GAP = 1.2;
+ /** Touch distance as a fraction of the torso radii (matches the world). */
+ const TOUCH = 0.9;
++/** A few running steps, through the existing 20 Hz free-movement law. */
++const TURN_STEPS = 12;
++const TURN_HORIZON = TURN_STEPS * .05;
++/** Avoid changing requests for a negligible forecast difference, yd. */
++const TURN_MARGIN = .05;
++
++export interface SpacingContext {
++  now: number;
++  /** Own tactile constraint state, never a teammate's unobserved intention. */
++  constrained?: ReadonlySet<Body>;
++}
++
++interface PeerPicture {
++  pos: {x:number;y:number};
++  vel: {x:number;y:number};
++  touch: number;
++}
++
++function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPicture):number {
++  let px=a.pos.x-peer.pos.x,py=a.pos.y-peer.pos.y;
++  let minimum=Math.hypot(px,py)-peer.touch;
++  for(const sample of samples){
++    const rx=sample.pos.x-peer.pos.x-peer.vel.x*sample.t;
++    const ry=sample.pos.y-peer.pos.y-peer.vel.y*sample.t;
++    const ex=rx-px,ey=ry-py;
++    const along=Math.max(0,Math.min(1,-(px*ex+py*ey)/Math.max(1e-12,ex*ex+ey*ey)));
++    minimum=Math.min(minimum,Math.hypot(px+along*ex,py+along*ey)-peer.touch);
++    px=rx;py=ry;
++  }
++  return minimum;
++}
++
++/** A gather request is evaluated with the same posture/facing as its execution.
++ * This is a held-command forecast against observed constant-velocity peers,
++ * not a contact solve or knowledge of their next decisions. Replan next tick.
++ */
++function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++  const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
++  if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
++    ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
++    ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
++    ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
++    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6
++    ||Math.abs(original.vel.x*a.vel.y-original.vel.y*a.vel.x)/speed<1)return original;
++  const near=peers.filter(peer=>Math.hypot(peer.pos.x-a.pos.x,peer.pos.y-a.pos.y)
++    <=peer.touch+AWARE_GAP+TURN_HORIZON*(Math.max(speed,a.profile.vmax)+Math.hypot(peer.vel.x,peer.vel.y)));
++  if(!near.length)return original;
++  const samples=previewFreeMovement(a.body,original,context.now,TURN_STEPS);
++  const clearances=near.map(peer=>sweptClearance(a,samples,peer));
++  const worst=Math.min(...clearances);
++  if(worst>=0)return original;
++  const gather:Intent={...original,vel:{x:0,y:0}};
++  const gathered=previewFreeMovement(a.body,gather,context.now,TURN_STEPS);
++  if(gathered.some(sample=>sample.support!=='up'))return original;
++  const alternative=near.map(peer=>sweptClearance(a,gathered,peer));
++  // Do not cure one overlap by creating another in a previously clear lane.
++  if(alternative.some((clearance,i)=>clearances[i]>=0&&clearance<0)
++    ||Math.min(...alternative)<=worst+TURN_MARGIN)return original;
++  return gather;
++}
+ 
+ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+-  observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> = (_a,b)=>b): void {
++  observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> = (_a,b)=>b,
++  context?:SpacingContext): void {
+   const n = agents.length;
+   for (let i = 0; i < n; i++) {
+     const a = agents[i];
+@@ -30,6 +92,7 @@
+     if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') continue;
+     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
+     let vx = ia.vel.x, vy = ia.vel.y;
++    const peers:PeerPicture[]=[];
+     for (let j = 0; j < n; j++) {
+       if (j === i) continue;
+       const b = agents[j];
+@@ -38,6 +101,7 @@
+       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
+       const d = Math.hypot(dx, dy);
+       const touch = TOUCH * (a.profile.radius + b.profile.radius);
++      peers.push({pos:seen.pos,vel:seen.vel,touch});
+       const gap = d - touch;
+       if (d < 1e-6) continue;
+       const nx = dx / d, ny = dy / d;
+@@ -64,9 +128,11 @@
+         vx -= nx * cut; vy -= ny * cut;
+       }
+     }
++    let spaced=ia;
+     if (vx !== ia.vel.x || vy !== ia.vel.y) {
+       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
+-      intents[i] = { ...ia, vel: { x: vx*scale, y: vy*scale } };
++      spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
+     }
++    intents[i]=gatherForTurn(a,spaced,peers,context);
+   }
+ }

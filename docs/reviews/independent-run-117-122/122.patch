@@ -1,0 +1,563 @@
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 79aec48bbe68a09042958fdeba9164c43959a827..61015e29ceb7725d9a95bad751c9d575ccb8d6ae 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -159,7 +159,31 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+   const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
+   const slower=forecast(slowed);
+   if(slower.every(sample=>sample.support==='up')
+-    &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
++    &&peers.every(peer=>sweptClearance(a,slower,peer)>=0)){
++    // Half speed is a verified fallback, not the only available pace. Keep
++    // more of the requested motion when the same acquired picture and actual
++    // free-movement law support it. Each trial must clear every peer; no
++    // monotonic clearance or optimal-speed claim is needed for this bounded
++    // search. Keep the fallback when a trial loses clearance or progress.
++    let chosen=slowed,lower=.5,upper=1;
++    const progress=(path:readonly MovementSample[])=>{
++      const end=path[path.length-1];
++      return(end.pos.x-a.pos.x)*original.vel.x+(end.pos.y-a.pos.y)*original.vel.y;
++    };
++    let achieved=progress(slower);
++    for(let k=0;k<3;k++){
++      const scale=(lower+upper)/2;
++      const command:Intent={...original,vel:{x:original.vel.x*scale,y:original.vel.y*scale}};
++      const path=forecast(command);
++      if(path.every(sample=>sample.support==='up')
++        &&peers.every(peer=>sweptClearance(a,path,peer)>=0)){
++        lower=scale;
++        const next=progress(path);
++        if(next>=achieved){chosen=command;achieved=next;}
++      }else upper=scale;
++    }
++    return chosen;
++  }
+   const gather:Intent={...original,vel:{x:0,y:0}};
+   const gathered=forecast(gather);
+   if(gathered.some(sample=>sample.support!=='up'))return original;
+diff --git a/test/fixtures/run-pace-gather.json.gz b/test/fixtures/run-pace-gather.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..950879273b29c1829ea720547c925c522d40d046
+GIT binary patch
+literal 4144
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/test/fixtures/spacing-forecast-paced-reference.json b/test/fixtures/spacing-forecast-paced-reference.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..07ca801ec51483dc933c577c938f112108b4c645
+--- /dev/null
++++ b/test/fixtures/spacing-forecast-paced-reference.json
+@@ -0,0 +1,167 @@
++{
++  "review": {
++    "originalReference": "spacing-forecast-reference.json",
++    "unchangedTimes": [
++      2.05,
++      2.1,
++      2.15,
++      2.35
++    ],
++    "changedTimes": [
++      2.2,
++      2.25,
++      2.3
++    ],
++    "reason": "Reviewed pace selection retains more achievable progress while all acquired teammate sweeps stay clear and the moving-goal error improves. Original commands remain preserved separately.",
++    "evidence": "Independent zero-native-tick production-hook replay: out/run-pace-gather/golden-review.json; source 96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5."
++  },
++  "rows": [
++    {
++      "t": 2.05,
++      "command": {
++        "vel": {
++          "x": -1.6687360063055903,
++          "y": -8.320910406078104
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 39.95868188304838,
++          "y": 29.849313138312585
++        },
++        "velocity": {
++          "x": 2.3924601235778327,
++          "y": -5.339039800365324
++        }
++      }
++    },
++    {
++      "t": 2.1,
++      "command": {
++        "vel": {
++          "x": -1.921131431330565,
++          "y": -8.7220157463295
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.04074733823493,
++          "y": 29.537282686538987
++        },
++        "velocity": {
++          "x": 1.9894364891728997,
++          "y": -5.6209217993938685
++        }
++      }
++    },
++    {
++      "t": 2.15,
++      "command": {
++        "vel": {
++          "x": -2.158322836292483,
++          "y": -9.100712246082091
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.10753451516308,
++          "y": 29.21779946540795
++        },
++        "velocity": {
++          "x": 1.5440951136495964,
++          "y": -5.870135292019657
++        }
++      }
++    },
++    {
++      "t": 2.2,
++      "command": {
++        "vel": {
++          "x": -2.247470259913217,
++          "y": -8.595696473364162
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.171505498494604,
++          "y": 28.8944824982167
++        },
++        "velocity": {
++          "x": 1.2955045476595848,
++          "y": -6.034955577551234
++        }
++      }
++    },
++    {
++      "t": 2.25,
++      "command": {
++        "vel": {
++          "x": -2.3997881810301185,
++          "y": -8.564108133644032
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.220744974616096,
++          "y": 28.564369379480297
++        },
++        "velocity": {
++          "x": 1.0354392671368675,
++          "y": -6.184584812610782
++        }
++      }
++    },
++    {
++      "t": 2.3,
++      "command": {
++        "vel": {
++          "x": -2.5402334856837165,
++          "y": -8.533400390369394
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.254832336846356,
++          "y": 28.228325688458234
++        },
++        "velocity": {
++          "x": 0.7649977816950915,
++          "y": -6.318541114577203
++        }
++      }
++    },
++    {
++      "t": 2.35,
++      "command": {
++        "vel": {
++          "x": -2.036336623411597,
++          "y": -4.45621999219746
++        },
++        "cutSkill": 1.1214285714285714
++      },
++      "goal": {
++        "kind": "moving",
++        "point": {
++          "x": 40.29743212963818,
++          "y": 27.889873572838795
++        },
++        "velocity": {
++          "x": 0.9259010343984628,
++          "y": -6.387926462569558
++        }
++      }
++    }
++  ]
++}
+diff --git a/test/run-pace-gather.test.ts b/test/run-pace-gather.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..acab52dcb498b712d472da1c8d3ea1fa73f8c150
+--- /dev/null
++++ b/test/run-pace-gather.test.ts
+@@ -0,0 +1,172 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { Rng } from '../src/core/rng.js';
++import type { Vec2 } from '../src/core/vec.js';
++import { generateTeam, pickDefense } from '../src/league/team.js';
++import type { Body } from '../src/physics/kinematics.js';
++import * as Preview from '../src/physics/movement-preview.js';
++import type { MovementSample } from '../src/physics/movement-preview.js';
++import { newSupport } from '../src/physics/support.js';
++import type { Intent } from '../src/physics/world.js';
++import { derivePhysical, type PhysicalProfile } from '../src/players/physical.js';
++import type { Player } from '../src/players/types.js';
++import { Agent, type Engagement } from '../src/sim/agent.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { spaceTeammates } from '../src/sim/spacing.js';
++
++interface Peer { idx: number; slot: string; profile: PhysicalProfile; seen: Perceived }
++interface Fixture {
++  actor: { idx: number; slot: string; player: Player };
++  t: number; body: Body; raw: Intent; acceptedHalf: Intent; peers: Peer[];
++}
++const fixture: Fixture = JSON.parse(gunzipSync(readFileSync(
++  new URL('./fixtures/run-pace-gather.json.gz', import.meta.url))).toString());
++
++function reflectVector(v: Vec2): void { v.y = -v.y; }
++function reflectBody(body: Body): void {
++  body.pos.y = 2 * CENTER_Y - body.pos.y;
++  reflectVector(body.vel); body.facing = -body.facing;
++  if (body.spin !== undefined) body.spin = -body.spin;
++  if (body.squeezeHeading !== undefined) body.squeezeHeading = -body.squeezeHeading;
++  const support = body.support;
++  if (support) {
++    for (const key of ['xi', 'lean', 'load', 'felt', 'feetVel', 'fall', 'feltTip', 'accel', 'tipAccel', 'strike'] as const) {
++      if (support[key]) reflectVector(support[key]!);
++    }
++    if (support.yaw !== undefined) support.yaw = -support.yaw;
++  }
++}
++
++function scene(mirror: number, input: Fixture = fixture) {
++  const row = structuredClone(input);
++  if (mirror < 0) {
++    reflectBody(row.body); reflectVector(row.raw.vel); reflectVector(row.acceptedHalf.vel);
++    if (row.raw.facing !== undefined) row.raw.facing = -row.raw.facing;
++    if (row.acceptedHalf.facing !== undefined) row.acceptedHalf.facing = -row.acceptedHalf.facing;
++    for (const peer of row.peers) {
++      peer.seen.pos.y = 2 * CENTER_Y - peer.seen.pos.y;
++      reflectVector(peer.seen.vel);
++      if (typeof peer.seen.facing === 'number') peer.seen.facing = -peer.seen.facing;
++    }
++  }
++  const a = new Agent(row.actor.idx, 'O', row.actor.slot, row.actor.player,
++    row.body.profile, row.body, { kind: 'carrier', update() { throw Error('No new decision'); } });
++  const peers = row.peers.map(p => ({ idx: p.idx, team: 'O', profile: p.profile,
++    get pos() { throw Error('Private teammate position'); },
++    get vel() { throw Error('Private teammate velocity'); },
++    get facing() { throw Error('Private teammate facing'); },
++    get body() { throw Error('Private teammate body'); },
++    get engagement() { throw Error('Private teammate engagement'); },
++  } as unknown as Agent));
++  const source = structuredClone(a.body), pictures = structuredClone(row.peers);
++  const run = (constrained = false) => {
++    const commands: Intent[] = [structuredClone(row.raw), ...peers.map(() => ({ vel: { x: 0, y: 0 }, free: true }))];
++    spaceTeammates([a, ...peers], commands,
++      (_observer, peer) => structuredClone(row.peers.find(p => p.idx === peer.idx)!.seen),
++      { now: row.t, constrained: constrained ? new Set([a.body]) : undefined });
++    expect(a.body).toEqual(source);
++    expect(row.peers).toEqual(pictures);
++    return commands[0];
++  };
++  return { row, a, run };
++}
++
++/** Same clear/curved-obstruction setup as spacing-yield.test.ts. This is a
++ * declared two-player movement control, not a reduced native football play. */
++function curvedScene(mirror: number) {
++  const defense = pickDefense(generateTeam(new Rng(20), 'D', 'DEF'), 'nickel');
++  const player = defense.FS!, peer = defense.NB!;
++  const raw: Intent = { vel: { x: 0, y: 9 }, facing: Math.PI / 2, cutSkill: 1 };
++  return scene(mirror, {
++    actor: { idx: 0, slot: 'FS', player }, t: 2,
++    body: { pos: { x: 50, y: CENTER_Y }, vel: { x: 9, y: 0 }, facing: 0,
++      energy: 1, profile: derivePhysical(player), support: newSupport() },
++    raw, acceptedHalf: { ...raw, vel: { x: 0, y: 4.5 } },
++    peers: [{ idx: 1, slot: 'NB', profile: derivePhysical(peer), seen: {
++      pos: { x: 54.3, y: CENTER_Y + 1.1 }, vel: { x: 0, y: 0 },
++      stance: null, facing: 0, age: 0, pose: 'up', carrying: false,
++    } }],
++  });
++}
++
++/** Continuous relative segments against the same consumed peer images. This
++ * checks achieved free-movement samples, not the requested velocity ray. */
++function clearance(body: Body, samples: readonly MovementSample[], peer: Peer): number {
++  const touch = .9 * (body.profile.radius + peer.profile.radius);
++  let px = body.pos.x - peer.seen.pos.x, py = body.pos.y - peer.seen.pos.y;
++  let minimum = Math.hypot(px, py) - touch;
++  for (const sample of samples) {
++    const rx = sample.pos.x - peer.seen.pos.x - peer.seen.vel.x * sample.t;
++    const ry = sample.pos.y - peer.seen.pos.y - peer.seen.vel.y * sample.t;
++    const dx = rx - px, dy = ry - py;
++    const q = Math.max(0, Math.min(1, -(px * dx + py * dy) / Math.max(1e-12, dx * dx + dy * dy)));
++    minimum = Math.min(minimum, Math.hypot(px + q * dx, py + q * dy) - touch);
++    px = rx; py = ry;
++  }
++  return minimum;
++}
++function evaluate(s: ReturnType<typeof scene>, command: Intent) {
++  const samples = Preview.previewFreeMovement(s.a.body, command, s.row.t, 12);
++  const minimum = Math.min(...s.row.peers.map(p => clearance(s.a.body, samples, p)));
++  const end = samples.at(-1)!;
++  const speed = Math.hypot(s.row.raw.vel.x, s.row.raw.vel.y);
++  const progress = ((end.pos.x - s.a.pos.x) * s.row.raw.vel.x
++    + (end.pos.y - s.a.pos.y) * s.row.raw.vel.y) / speed;
++  return { samples, minimum, progress };
++}
++function fraction(s: ReturnType<typeof scene>, scale: number): Intent {
++  return { ...s.row.raw, vel: { x: s.row.raw.vel.x * scale, y: s.row.raw.vel.y * scale } };
++}
++
++describe('a moving gather preserves achievable progress through teammate traffic', () => {
++  it.each([1, -1])('uses more of a verified clear pace in native mirror %s', mirror => {
++    const s = scene(mirror), before = structuredClone(s.a.body);
++    const full = evaluate(s, s.row.raw), half = evaluate(s, fraction(s, .5));
++    const threeQuarter = evaluate(s, fraction(s, .75));
++    expect(full.minimum).toBeLessThan(-.03);
++    expect(half.minimum).toBeGreaterThan(.50);
++    expect(threeQuarter.minimum).toBeGreaterThan(0);
++    const spy = vi.spyOn(Preview, 'previewFreeMovement');
++    let chosen: Intent;
++    try { chosen = s.run(); expect(spy.mock.calls.length).toBeLessThanOrEqual(5); }
++    finally { spy.mockRestore(); }
++    expect({ ...chosen!, vel: undefined }).toEqual({ ...s.row.raw, vel: undefined });
++    const achieved = evaluate(s, chosen!);
++    expect(achieved.minimum).toBeGreaterThanOrEqual(0);
++    expect(achieved.samples.every(sample => sample.support === 'up')).toBe(true);
++    expect(s.a.body).toEqual(before);
++    expect(Math.hypot(chosen!.vel.x, chosen!.vel.y)).toBeGreaterThan(Math.hypot(s.row.acceptedHalf.vel.x, s.row.acceptedHalf.vel.y) + 1e-6);
++    expect(achieved.progress).toBeGreaterThan(half.progress + .01);
++  });
++
++  it.each([1, -1])('verifies its moving pace against a genuine curved obstruction in mirror %s', mirror => {
++    const s = curvedScene(mirror), half = evaluate(s, fraction(s, .5));
++    expect(half.minimum).toBeGreaterThan(0);
++    expect(evaluate(s, s.row.raw).minimum).toBeLessThan(0);
++    const spy = vi.spyOn(Preview, 'previewFreeMovement');
++    let chosen: Intent;
++    try { chosen = s.run(); expect(spy.mock.calls.length).toBeLessThanOrEqual(5); }
++    finally { spy.mockRestore(); }
++    const achieved = evaluate(s, chosen!);
++    expect(achieved.minimum).toBeGreaterThanOrEqual(0);
++    expect(achieved.samples.every(sample => sample.support === 'up')).toBe(true);
++    expect(Math.hypot(chosen!.vel.x, chosen!.vel.y)).toBeLessThan(Math.hypot(s.row.raw.vel.x, s.row.raw.vel.y));
++  });
++
++  it.each(['engagement', 'tactile constraint'])('keeps %s outside the free-movement selector', kind => {
++    const s = scene(1);
++    if (kind === 'engagement') s.a.engagement = {} as Engagement;
++    const spy = vi.spyOn(Preview, 'previewFreeMovement');
++    try {
++      expect(s.run(kind === 'tactile constraint')).toEqual(s.row.raw);
++      expect(spy).not.toHaveBeenCalled();
++    } finally { spy.mockRestore(); }
++  });
++
++  it.each([1, -1])('never reads private teammate bodies through the production hook in mirror %s', mirror => {
++    const s = scene(mirror);
++    expect(() => s.run()).not.toThrow();
++  });
++});
+diff --git a/test/spacing-forecast-reuse.test.ts b/test/spacing-forecast-reuse.test.ts
+index 49ec228443c1531d07f27687c6084af738ead50e..d8ca52ae900763258631cfe44b13090fe1d631a5 100644
+--- a/test/spacing-forecast-reuse.test.ts
++++ b/test/spacing-forecast-reuse.test.ts
+@@ -1,6 +1,7 @@
+-import {existsSync,readFileSync,writeFileSync} from 'node:fs';
++import {readFileSync,writeFileSync} from 'node:fs';
+ import {gunzipSync} from 'node:zlib';
+ import {describe,expect,it,vi} from 'vitest';
++import type {Body} from '../src/physics/kinematics.js';
+ import * as Preview from '../src/physics/movement-preview.js';
+ import type {Intent} from '../src/physics/world.js';
+ import {Agent} from '../src/sim/agent.js';
+@@ -8,7 +9,30 @@ import {movementObjective,withMovementObjective} from '../src/sim/movement-objec
+ import {spaceTeammates} from '../src/sim/spacing.js';
+ 
+ const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/traffic-step.json.gz',import.meta.url))).toString());
+-const reference=new URL('./fixtures/spacing-forecast-reference.json',import.meta.url);
++const oldReference=JSON.parse(readFileSync(new URL('./fixtures/spacing-forecast-reference.json',import.meta.url),'utf8'));
++const reference=new URL('./fixtures/spacing-forecast-paced-reference.json',import.meta.url);
++const changedTimes=new Set([2.20,2.25,2.30]);
++
++/** Compare achieved free movement against the same acquired constant-velocity
++ * pictures used by the selector. This is not a forecast of future contact. */
++function achieved(body:Body,command:Intent,row:any){
++ const samples=Preview.previewFreeMovement(body,command,row.t,12),end=samples.at(-1)!;
++ const clearances=row.peers.map((p:any)=>{
++  const touch=.9*(body.profile.radius+p.profile.radius),seen=p.seen;
++  let px=body.pos.x-seen.pos.x,py=body.pos.y-seen.pos.y,minimum=Math.hypot(px,py)-touch;
++  for(const sample of samples){
++   const x=sample.pos.x-seen.pos.x-seen.vel.x*sample.t,y=sample.pos.y-seen.pos.y-seen.vel.y*sample.t;
++   const dx=x-px,dy=y-py,q=Math.max(0,Math.min(1,-(px*dx+py*dy)/Math.max(1e-12,dx*dx+dy*dy)));
++   minimum=Math.min(minimum,Math.hypot(px+q*dx,py+q*dy)-touch);px=x;py=y;
++  }
++  return minimum;
++ });
++ const speed=Math.hypot(row.command.vel.x,row.command.vel.y),flow=row.goal.velocity??{x:0,y:0};
++ return {clearances,up:samples.every(sample=>sample.support==='up'),
++  progress:((end.pos.x-body.pos.x)*row.command.vel.x+(end.pos.y-body.pos.y)*row.command.vel.y)/speed,
++  error:Math.hypot(end.pos.x-row.goal.point.x-flow.x*end.t,end.pos.y-row.goal.point.y-flow.y*end.t)};
++}
++
+ function scene(row:any){
+  const body=structuredClone(row.body);
+  const a=new Agent(fixture.actor,'D','SS',fixture.player,body.profile,body,{kind:'man',update(){throw Error('No new decision');}});
+@@ -27,9 +51,9 @@ function scene(row:any){
+ }
+ 
+ describe('spacing forecasts are shared only within one physical decision',()=>{
+- it('retains the accepted requests while evaluating an identical request object once',()=>{
++ it('retains reviewed requests and useful clear progress while evaluating an identical request object once',()=>{
+   const spy=vi.spyOn(Preview,'previewFreeMovement');
+-  const rows=[];let duplicate=0;
++  const rows=[],changed:{row:any;body:Body;command:Intent;previous:Intent}[]=[];let duplicate=0;
+   try{
+    // Keep the same actor's passing frame across this saved encounter.
+    const first=scene(fixture.rows[0]),a=first.a;
+@@ -43,12 +67,27 @@ describe('spacing forecasts are shared only within one physical decision',()=>{
+     const calls=spy.mock.calls.slice(begin),unique=new Set(calls.map(c=>c[1])).size;
+     duplicate+=calls.length-unique;
+     rows.push({t:row.t,command:structuredClone(intents[0]),goal:movementObjective(intents[0]),calls:calls.length,unique});
++    const previous=oldReference.rows.find((r:any)=>r.t===row.t);
++    if(changedTimes.has(row.t))changed.push({row,body:structuredClone(a.body),command:structuredClone(intents[0]),previous:previous.command});
++    else expect({t:row.t,command:structuredClone(intents[0]),goal:movementObjective(intents[0])}).toEqual(previous);
+    }
+    const physical=rows.map(({calls,unique,...r})=>r);
+-   if(existsSync(reference))expect(physical).toEqual(JSON.parse(readFileSync(reference,'utf8')).rows);
++   expect(physical).toEqual(JSON.parse(readFileSync(reference,'utf8')).rows);
+    if(process.env.SPACING_FORECAST_RECORD)writeFileSync(process.env.SPACING_FORECAST_RECORD,JSON.stringify({rows:physical,costs:rows.map(({command,goal,...r})=>r)},null,2)+'\n');
+    expect(duplicate).toBe(0);
+   }finally{spy.mockRestore();}
++  // These three half-speed decisions intentionally change. Keep the original
++  // reference intact, and justify the new requests by achieved movement rather
++  // than recording an unexplained new golden. Extra previews occur after the
++  // cache spy is restored and therefore cannot contaminate its reuse check.
++  expect(changed.map(c=>c.row.t)).toEqual([...changedTimes]);
++  for(const {row,body,command,previous} of changed){
++   const old=achieved(body,previous,row),next=achieved(body,command,row);
++   expect(next.up).toBe(true);
++   for(const clearance of next.clearances)expect(clearance).toBeGreaterThanOrEqual(0);
++   expect(next.progress).toBeGreaterThanOrEqual(old.progress);
++   expect(next.error).toBeLessThanOrEqual(old.error);
++  }
+  });
+  it('recomputes after the same command object meets a changed own body on the next call',()=>{
+   const s=scene(fixture.rows.at(-1)),spy=vi.spyOn(Preview,'previewFreeMovement');

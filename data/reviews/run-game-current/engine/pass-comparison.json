@@ -1,0 +1,3075 @@
+{
+  "beforeSource": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "afterSource": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+  "collectorSha256": "f6527cc608a7836b07467c6c2cba3a83fe3712c6909c7247adfc00c945241ad5",
+  "cohort": {
+    "rosterSeedPairs": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ]
+    ],
+    "strength": 0.55,
+    "playSeed": 3,
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "cases": [
+      {
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read"
+      },
+      {
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read"
+      },
+      {
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read"
+      },
+      {
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control"
+      },
+      {
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control"
+      },
+      {
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control"
+      }
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "declaration": "fixed before native outcomes"
+  },
+  "rostersSha256": "7149bb7a73676fbe2709428c25ac87e290135ab2f345c7c0676de0ea1d9f8578",
+  "selectedThrowReadFields": [
+    "attempted",
+    "completed",
+    "sacked",
+    "scramble",
+    "timeToThrow",
+    "throwaway",
+    "airYards",
+    "pressured",
+    "qbRead",
+    "separation",
+    "interceptedBy"
+  ],
+  "allPairs": [
+    {
+      "id": "0:gun_doubles_11:pa_shot:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_doubles_11:pa_shot:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 6,
+        "fieldGainBeforePenalties": 16.89,
+        "offenseYardsBeforePenalties": 16.89,
+        "stats": {
+          "tacklers": [
+            "PDF-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.7,
+          "target": "POF-WR1",
+          "airYards": 15.39455044611509,
+          "separation": 3.1,
+          "receiver": "POF-WR1",
+          "yac": 1.631724586812382
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "b1cf4d7f74ab69d24ef6460e3d099260f186630be4cf725efb10c3d4cf63466c",
+        "observerVerified": true
+      },
+      "after": {
+        "id": "0:gun_doubles_11:pa_shot:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 6,
+        "fieldGainBeforePenalties": 16.89,
+        "offenseYardsBeforePenalties": 16.89,
+        "stats": {
+          "tacklers": [
+            "PDF-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.7,
+          "target": "POF-WR1",
+          "airYards": 15.39455044611509,
+          "separation": 3.1,
+          "receiver": "POF-WR1",
+          "yac": 1.630041998148819
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "a70999ca2f62c515df44bff2427e1aa133bc01f667d37fdb61a79c1b450958c3",
+        "observerVerified": true
+      }
+    },
+    {
+      "id": "0:gun_doubles_11:pa_shot:true",
+      "sameCompleteExecution": true,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_doubles_11:pa_shot:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "incomplete",
+        "duration": 5.35,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.65,
+          "target": "POF-WR1",
+          "airYards": 15.411330679424758,
+          "separation": 2.6
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "6a34d6df028aec2d1d90c89c785b1f66159516580464b287c7fd582c699f814b",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:gun_doubles_11:pa_shot:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "incomplete",
+        "duration": 5.35,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.65,
+          "target": "POF-WR1",
+          "airYards": 15.411330679424758,
+          "separation": 2.6
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "6a34d6df028aec2d1d90c89c785b1f66159516580464b287c7fd582c699f814b",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:ace_12:pa_post_dig:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:ace_12:pa_post_dig:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "tackle",
+        "duration": 5.35,
+        "fieldGainBeforePenalties": 16.6,
+        "offenseYardsBeforePenalties": 16.6,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3",
+            "PDF-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-WR4",
+          "airYards": 13.954511005026909,
+          "separation": 1.3,
+          "receiver": "POF-WR4",
+          "yac": 1.9442493819194198
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "5b02cedba733e2bebb688577df4ca6db297789033e2ba29827369753011cee3a",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:ace_12:pa_post_dig:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "tackle",
+        "duration": 5.3,
+        "fieldGainBeforePenalties": 16.55,
+        "offenseYardsBeforePenalties": 16.55,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3",
+            "PDF-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-WR4",
+          "airYards": 13.954511005026909,
+          "separation": 1.3,
+          "receiver": "POF-WR4",
+          "yac": 1.8937497122739018
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "b76ee3acabe81a458f76efae72e1d8b1d17e05e75f28d95229b471761eed5c71",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:ace_12:pa_post_dig:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:ace_12:pa_post_dig:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "tackle",
+        "duration": 6.7,
+        "fieldGainBeforePenalties": 26.46,
+        "offenseYardsBeforePenalties": 26.46,
+        "stats": {
+          "tacklers": [
+            "PDF-S2",
+            "PDF-S1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-WR3",
+          "airYards": 13.857455692586377,
+          "separation": 2.2,
+          "receiver": "POF-WR3",
+          "yac": 12.051846504120434
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "2e60b7aa4776a89baac1e42f15b334a6f258f64f764cbbd1332b232e78bff55e",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:ace_12:pa_post_dig:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "tackle",
+        "duration": 6.5,
+        "fieldGainBeforePenalties": 25.5,
+        "offenseYardsBeforePenalties": 25.5,
+        "stats": {
+          "tacklers": [
+            "PDF-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-WR3",
+          "airYards": 13.857455692586377,
+          "separation": 2.2,
+          "receiver": "POF-WR3",
+          "yac": 11.089606215646796
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "52a47b31103772fa0384b6bffcb5d04856d70a9c8291b6b0421b3cf53d717f85",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:pistol_12:pa_shot:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:pistol_12:pa_shot:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "tackle",
+        "duration": 6.95,
+        "fieldGainBeforePenalties": 0.4,
+        "offenseYardsBeforePenalties": 0.4,
+        "stats": {
+          "tacklers": [
+            "PDF-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "yardsBeforeContact": -2.853435487820761
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "4bb4bbfb06510e924a9baaac0e673de91139dc5e472e3710473c0181432b2878",
+        "observerVerified": true
+      },
+      "after": {
+        "id": "0:pistol_12:pa_shot:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "tackle",
+        "duration": 7.05,
+        "fieldGainBeforePenalties": 0.79,
+        "offenseYardsBeforePenalties": 0.79,
+        "stats": {
+          "tacklers": [
+            "PDF-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "yardsBeforeContact": -2.852151533068323
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "c0267858e8f2141f6b313a53041bb2a8a553574e988db69c0a8124bae8f99a3f",
+        "observerVerified": true
+      }
+    },
+    {
+      "id": "0:pistol_12:pa_shot:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:pistol_12:pa_shot:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "slide",
+        "duration": 6.3,
+        "fieldGainBeforePenalties": 1.05,
+        "offenseYardsBeforePenalties": 1.05,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          }
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "560bc3535efb8f4bb4b6fe0ab471b0cbfcf7ae584a2eb297943fc1e5380edb3c",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:pistol_12:pa_shot:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "5b52c1e20e162e73c1a0e31a6cbb6224b25ac822ac5e1008c2575d87be00559a",
+        "outcome": "slide",
+        "duration": 6.3,
+        "fieldGainBeforePenalties": 1.05,
+        "offenseYardsBeforePenalties": 1.05,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          }
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "af86a43627feffaee360c48a96af82aa9183fe861453f60f563bb62ea1297100",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:gun_doubles_11:curl_flat:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_doubles_11:curl_flat:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 4.95,
+        "fieldGainBeforePenalties": 3.59,
+        "offenseYardsBeforePenalties": 3.59,
+        "stats": {
+          "tacklers": [
+            "PDF-CB2",
+            "PDF-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2.45,
+          "target": "POF-TE2",
+          "airYards": 0.36073951914983127,
+          "separation": 4.4,
+          "receiver": "POF-TE2",
+          "yac": 4.78066915396645
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "011e8b996f54a56bd1e5fcfd2d93110de1453a4fa796da1c250997d054d8fb78",
+        "observerVerified": true
+      },
+      "after": {
+        "id": "0:gun_doubles_11:curl_flat:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 4.95,
+        "fieldGainBeforePenalties": 3.6,
+        "offenseYardsBeforePenalties": 3.6,
+        "stats": {
+          "tacklers": [
+            "PDF-CB2",
+            "PDF-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2.45,
+          "target": "POF-TE2",
+          "airYards": 0.36073951914983127,
+          "separation": 4.4,
+          "receiver": "POF-TE2",
+          "yac": 4.786964730410752
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "c76f9c23368abd1466f38f356d7bb63f7e186b6a456e196f862fce7e2400c82d",
+        "observerVerified": true
+      }
+    },
+    {
+      "id": "0:gun_doubles_11:curl_flat:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_doubles_11:curl_flat:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 4.4,
+        "fieldGainBeforePenalties": 2.58,
+        "offenseYardsBeforePenalties": 2.58,
+        "stats": {
+          "tacklers": [
+            "PDF-CB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2.45,
+          "target": "POF-TE2",
+          "airYards": 3.0303820194626994,
+          "separation": 3.7,
+          "receiver": "POF-TE2",
+          "yac": 0.45358140744808395
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OT2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 34.42944130067241
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "f23121559895138889e547d5d2449384241e85e36de889600eb5f77f1f3a5a42",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:gun_doubles_11:curl_flat:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 4.4,
+        "fieldGainBeforePenalties": 2.58,
+        "offenseYardsBeforePenalties": 2.58,
+        "stats": {
+          "tacklers": [
+            "PDF-CB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2.45,
+          "target": "POF-TE2",
+          "airYards": 3.0303820194626994,
+          "separation": 3.7,
+          "receiver": "POF-TE2",
+          "yac": 0.45358140744808395
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OT2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 34.42944130067241
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "c6a620cdf7be542c375a60fd3bbf356e649ce1018d02e053073475755cdc5d1e",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:gun_trips_11:four_verts:false",
+      "sameCompleteExecution": true,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_trips_11:four_verts:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "incomplete",
+        "duration": 4.5,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-RB1",
+          "airYards": 4.7301146016925415,
+          "separation": 5.4
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "8bd6758d0c64caca92b6a3512d5675e1d6d4dfafc84052ce298c31fc76301845",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:gun_trips_11:four_verts:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "incomplete",
+        "duration": 4.5,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-RB1",
+          "airYards": 4.7301146016925415,
+          "separation": 5.4
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "8bd6758d0c64caca92b6a3512d5675e1d6d4dfafc84052ce298c31fc76301845",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:gun_trips_11:four_verts:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_trips_11:four_verts:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 12.8,
+        "fieldGainBeforePenalties": 59.73,
+        "offenseYardsBeforePenalties": 59.73,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3",
+            "PDF-CB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 3,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-RB1",
+          "airYards": 4.730131132815316,
+          "separation": 5.7,
+          "receiver": "POF-RB1",
+          "yac": 55.08259306726704
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "0becffc235d21ab3151fff7b531a43b0116d1463bce9ec735d206112209f7a9d",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:gun_trips_11:four_verts:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 7.55,
+        "fieldGainBeforePenalties": 19.31,
+        "offenseYardsBeforePenalties": 19.31,
+        "stats": {
+          "tacklers": [
+            "PDF-S2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 3.2,
+          "target": "POF-RB1",
+          "airYards": 4.730131132815316,
+          "separation": 5.7,
+          "receiver": "POF-RB1",
+          "yac": 14.667264814940658
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "8fb7ef2c781e24d356bfcc938107b4ee62c589cebc3c05fa60d3b3f2e5fb12ac",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:gun_bunch_11:mesh:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_bunch_11:mesh:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 4.25,
+        "fieldGainBeforePenalties": 7.05,
+        "offenseYardsBeforePenalties": 7.05,
+        "stats": {
+          "tacklers": [
+            "PDF-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2,
+          "target": "POF-TE2",
+          "airYards": 3.813352034577271,
+          "separation": 4.7,
+          "receiver": "POF-TE2",
+          "yac": 3.507223876701019
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "013788a7fd8c4c79e16f2a945db9f861212afec6176ea55578449cd4801564c0",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:gun_bunch_11:mesh:false",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 4.25,
+        "fieldGainBeforePenalties": 7.05,
+        "offenseYardsBeforePenalties": 7.05,
+        "stats": {
+          "tacklers": [
+            "PDF-LB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2,
+          "target": "POF-TE2",
+          "airYards": 3.813352034577271,
+          "separation": 4.7,
+          "receiver": "POF-TE2",
+          "yac": 3.507223876701019
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "5159126d2246f7c67b9163e739760195bbcf8f2490576d73df3874a905081700",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "0:gun_bunch_11:mesh:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "0:gun_bunch_11:mesh:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 3.7,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [
+            "POF-C1",
+            "POF-OG3"
+          ],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2,
+          "target": "POF-TE2",
+          "airYards": 3.358237754976834,
+          "passDefendedBy": "PDF-EDGE1",
+          "interceptedBy": "PDF-DT2",
+          "returnYards": 0.67915044060193
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "5d2b416f6bf458d12ec39dfce953b2b0c31fbb3641970797a0d9cfbb6e39a759",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "0:gun_bunch_11:mesh:true",
+        "rosterSeedPair": [
+          31,
+          32
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "4977641c6c563163e2c435cc0078dd54470b01e244a34531e760cc250d5a6815",
+        "outcome": "tackle",
+        "duration": 3.8,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [
+            "POF-C1",
+            "POF-OG3"
+          ],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB3",
+          "timeToThrow": 2,
+          "target": "POF-TE2",
+          "airYards": 3.358237754976834,
+          "passDefendedBy": "PDF-EDGE1",
+          "interceptedBy": "PDF-DT2",
+          "returnYards": 0.7352719504121339
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "63de73fdf5c734547b179a150252c9d0f2da590e75115a1e9877ec4a5a41aa6a",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:gun_doubles_11:pa_shot:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_doubles_11:pa_shot:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 7.55,
+        "fieldGainBeforePenalties": 27.87,
+        "offenseYardsBeforePenalties": 27.87,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.55,
+          "target": "POF-WR3",
+          "airYards": 15.285710223248273,
+          "separation": 4.5,
+          "receiver": "POF-WR3",
+          "yac": 10.981951883824905
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "6344df8b9c02fefdd786ff6c91b136980fb5fa93400182fdf9427bc4a8078d79",
+        "observerVerified": true
+      },
+      "after": {
+        "id": "1:gun_doubles_11:pa_shot:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 7.55,
+        "fieldGainBeforePenalties": 27.82,
+        "offenseYardsBeforePenalties": 27.82,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.55,
+          "target": "POF-WR3",
+          "airYards": 15.285710223248273,
+          "separation": 4.5,
+          "receiver": "POF-WR3",
+          "yac": 10.9295915620379
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "3525e48924787dacd6363cfea89a3ee955959d4ce00de2606e7986ed6802505a",
+        "observerVerified": true
+      }
+    },
+    {
+      "id": "1:gun_doubles_11:pa_shot:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_doubles_11:pa_shot:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 7.4,
+        "fieldGainBeforePenalties": 25.92,
+        "offenseYardsBeforePenalties": 25.92,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.55,
+          "target": "POF-WR3",
+          "airYards": 13.856222865513807,
+          "separation": 3,
+          "receiver": "POF-WR3",
+          "yac": 11.685363884716516
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OT2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 34.47419522785759
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "f2a2d97a3bc37792a30d67268e62557e372ec16b10f856ab1667b87c34e569c3",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:gun_doubles_11:pa_shot:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "pa_shot",
+        "treatment": "protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 7.7,
+        "fieldGainBeforePenalties": 26.91,
+        "offenseYardsBeforePenalties": 26.91,
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.55,
+          "target": "POF-WR3",
+          "airYards": 13.856222865513807,
+          "separation": 3,
+          "receiver": "POF-WR3",
+          "yac": 12.668230111791438
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OT2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 34.47419522785759
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "0834191a6d674270ec773542a10531f332f2bcd81e41ff29d5f8920b2dbd34c1",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:ace_12:pa_post_dig:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:ace_12:pa_post_dig:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "tackle",
+        "duration": 11.45,
+        "fieldGainBeforePenalties": 65.35,
+        "offenseYardsBeforePenalties": 65.35,
+        "stats": {
+          "tacklers": [
+            "PDF-S4"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.2,
+          "target": "POF-WR1",
+          "airYards": 13.722833475955596,
+          "separation": 1.8,
+          "receiver": "POF-WR1",
+          "yac": 49.29784879746258
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "ef0ede1be3832764bfbf717998fd67d8cd109048324ee5324812e98f8e648dc6",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:ace_12:pa_post_dig:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "touchdown",
+        "duration": 11.15,
+        "fieldGainBeforePenalties": 70,
+        "offenseYardsBeforePenalties": 70,
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.2,
+          "target": "POF-WR1",
+          "airYards": 13.722833475955596,
+          "separation": 1.8,
+          "receiver": "POF-WR1",
+          "yac": 53.95063928166901
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "874e1194aaed0f434ac4852fda4e44df12f5911e3f5188b34e336e2dc5f45dbb",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:ace_12:pa_post_dig:true",
+      "sameCompleteExecution": true,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:ace_12:pa_post_dig:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "tackle",
+        "duration": 7.5,
+        "fieldGainBeforePenalties": 39.02,
+        "offenseYardsBeforePenalties": 39.02,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.2,
+          "target": "POF-WR2",
+          "airYards": 13.939046776679838,
+          "separation": 1.4,
+          "receiver": "POF-WR2",
+          "yac": 21.12560807200184
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "45b88b71bc3b2dacdf852821c292ec675becfcfa6031bbb085d458f6c5ecb559",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:ace_12:pa_post_dig:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "ace_12",
+        "concept": "pa_post_dig",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "tackle",
+        "duration": 7.5,
+        "fieldGainBeforePenalties": 39.02,
+        "offenseYardsBeforePenalties": 39.02,
+        "stats": {
+          "tacklers": [
+            "PDF-CB3"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.2,
+          "target": "POF-WR2",
+          "airYards": 13.939046776679838,
+          "separation": 1.4,
+          "receiver": "POF-WR2",
+          "yac": 21.12560807200184
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "45b88b71bc3b2dacdf852821c292ec675becfcfa6031bbb085d458f6c5ecb559",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:pistol_12:pa_shot:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:pistol_12:pa_shot:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "tackle",
+        "duration": 7.15,
+        "fieldGainBeforePenalties": 3.91,
+        "offenseYardsBeforePenalties": 3.91,
+        "stats": {
+          "tacklers": [
+            "PDF-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "PDF-DT2",
+          "yardsBeforeContact": 1.1734571091002266
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "dcad42b810fd9aa705adc93d6119586a04e7972b4003a8b3d89e03796736c8d5",
+        "observerVerified": true
+      },
+      "after": {
+        "id": "1:pistol_12:pa_shot:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "tackle",
+        "duration": 7.15,
+        "fieldGainBeforePenalties": 3.87,
+        "offenseYardsBeforePenalties": 3.87,
+        "stats": {
+          "tacklers": [
+            "PDF-S1"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "PDF-DT2",
+          "yardsBeforeContact": 1.179547492417484
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "d260173fae8f8b17b76e7eaded21fa1dcb1061f1d0a785e027459aa4b15d4c0d",
+        "observerVerified": true
+      }
+    },
+    {
+      "id": "1:pistol_12:pa_shot:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:pistol_12:pa_shot:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "tackle",
+        "duration": 7.2,
+        "fieldGainBeforePenalties": -3.26,
+        "offenseYardsBeforePenalties": -3.26,
+        "stats": {
+          "tacklers": [
+            "PDF-S4"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "yardsBeforeContact": -4.719840737468111
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OT2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 37.573898854000866
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "9fabaa891a37fc23deb17c4ed9697e989f6e2d89b2c3cc56ff73ff9abbd94358",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:pistol_12:pa_shot:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "pistol_12",
+        "concept": "pa_shot",
+        "treatment": "formation-and-protector-read",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [
+            "RB",
+            "Y",
+            "H"
+          ],
+          "firstRead": "X",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "b1c960fa31280d81211e95032d3ac5a275aeef1d245373a8f0a08a16bb9bb5fc",
+        "outcome": "oob",
+        "duration": 7.75,
+        "fieldGainBeforePenalties": -5.94,
+        "offenseYardsBeforePenalties": -5.94,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "fumbledBy": "POF-QB2",
+          "yardsBeforeContact": -4.719840737468111
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OT2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 37.573898854000866
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "e94498df1ab52071e74252bf9ff50d243ca8e120009bc534db844646eb9b2eb2",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:gun_doubles_11:curl_flat:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_doubles_11:curl_flat:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "touchdown",
+        "duration": 12.3,
+        "fieldGainBeforePenalties": 70,
+        "offenseYardsBeforePenalties": 70,
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.8,
+          "target": "POF-WR3",
+          "airYards": 9.303759055193566,
+          "separation": 5.7,
+          "receiver": "POF-WR3",
+          "yac": 61.193928189570364
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OG1",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 37.398143859721884
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "47791226bcf71b358a5c57046c8bfb3e6255ea08f64ad55e0af4eadb1a2f7578",
+        "observerVerified": true
+      },
+      "after": {
+        "id": "1:gun_doubles_11:curl_flat:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "touchdown",
+        "duration": 12.3,
+        "fieldGainBeforePenalties": 70,
+        "offenseYardsBeforePenalties": 70,
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 3.8,
+          "target": "POF-WR3",
+          "airYards": 9.303759055193566,
+          "separation": 5.7,
+          "receiver": "POF-WR3",
+          "yac": 61.193928189570364
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OG1",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 37.398143859721884
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "634cf27ab56a283f6f9992e3c5121196dc3e9e83a34d10f66b3962b96e5e58a6",
+        "observerVerified": true
+      }
+    },
+    {
+      "id": "1:gun_doubles_11:curl_flat:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_doubles_11:curl_flat:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 5.95,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [
+            "POF-TE2"
+          ],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 2.85,
+          "target": "POF-TE2",
+          "airYards": 4.471686444007325,
+          "interceptedBy": "PDF-S4",
+          "returnYards": 11.08071465599788
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "7123f5ea5401da51875248d2415e3167012527de9730d5a32898ff1573fc3393",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:gun_doubles_11:curl_flat:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_doubles_11",
+        "concept": "curl_flat",
+        "treatment": "check-outlet-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Z",
+          "firstReadPermanent": false,
+          "missingProgression": [],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 5.95,
+        "fieldGainBeforePenalties": 0,
+        "offenseYardsBeforePenalties": 0,
+        "stats": {
+          "tacklers": [
+            "POF-TE2"
+          ],
+          "completed": false,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 2.85,
+          "target": "POF-TE2",
+          "airYards": 4.471686444007325,
+          "interceptedBy": "PDF-S4",
+          "returnYards": 11.085618827101328
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "5344b51866e658af71f8eea157df22e66a95e9e532bd56749d7aef840b80dec5",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:gun_trips_11:four_verts:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_trips_11:four_verts:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "slide",
+        "duration": 5.6,
+        "fieldGainBeforePenalties": 1.71,
+        "offenseYardsBeforePenalties": 1.71,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          }
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OG2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 34.598447619640666
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "44aaac88dea331970b0e92c7f7be2aa8e5f8d1c4e3bb937e788ca9d7e168513a",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:gun_trips_11:four_verts:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "slide",
+        "duration": 5.6,
+        "fieldGainBeforePenalties": 1.71,
+        "offenseYardsBeforePenalties": 1.71,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          }
+        },
+        "penalty": {
+          "kind": "holding",
+          "against": "O",
+          "playerId": "POF-OG2",
+          "yards": 10,
+          "autoFirst": false,
+          "spotX": 34.598447619640666
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "ee83180cad57d18631ece792e094b4b473cac0d852aac87629883803d6e3fcae",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:gun_trips_11:four_verts:true",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_trips_11:four_verts:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "slide",
+        "duration": 5.6,
+        "fieldGainBeforePenalties": 1.01,
+        "offenseYardsBeforePenalties": 1.01,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          }
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "256a1376cdda1c14c1ae1eda32f7c20f29c95077dc1d24685dff864620233395",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:gun_trips_11:four_verts:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_trips_11",
+        "concept": "four_verts",
+        "treatment": "vertical-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "H",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "slide",
+        "duration": 5.55,
+        "fieldGainBeforePenalties": 1.17,
+        "offenseYardsBeforePenalties": 1.17,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": true,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          }
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "402ed3e4b835aa34e858a1b08777e68625eab1f5bac4e0b2ed05fcdb717ed5fd",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:gun_bunch_11:mesh:false",
+      "sameCompleteExecution": false,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_bunch_11:mesh:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 4.25,
+        "fieldGainBeforePenalties": 4.34,
+        "offenseYardsBeforePenalties": 4.34,
+        "stats": {
+          "tacklers": [
+            "PDF-LB1",
+            "PDF-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 1.9,
+          "target": "POF-TE2",
+          "airYards": 4.355797457937506,
+          "separation": 4.7,
+          "receiver": "POF-TE2",
+          "yac": 0.43452782676600776
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "39feae76f9e41bdcc56e2a87a0e489d6a4ca0ba55fd4d2b2330177609536f26b",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:gun_bunch_11:mesh:false",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": false,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 4.25,
+        "fieldGainBeforePenalties": 4.34,
+        "offenseYardsBeforePenalties": 4.34,
+        "stats": {
+          "tacklers": [
+            "PDF-LB1",
+            "PDF-LB2"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 1.9,
+          "target": "POF-TE2",
+          "airYards": 4.355797457937506,
+          "separation": 4.7,
+          "receiver": "POF-TE2",
+          "yac": 0.43452782676600776
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "99cc3c02569bd4083aed1f8b0b1c189ef638ff8d37bc358ef0cd44f88d1cbe53",
+        "observerVerified": null
+      }
+    },
+    {
+      "id": "1:gun_bunch_11:mesh:true",
+      "sameCompleteExecution": true,
+      "changedThrowReadFields": [],
+      "before": {
+        "id": "1:gun_bunch_11:mesh:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 3.55,
+        "fieldGainBeforePenalties": 8.01,
+        "offenseYardsBeforePenalties": 8.01,
+        "stats": {
+          "tacklers": [
+            "PDF-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 1.95,
+          "target": "POF-TE2",
+          "airYards": 4.317954346090453,
+          "separation": 4.8,
+          "receiver": "POF-TE2",
+          "yac": 3.4464211896242816
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "a3def0dc54a91ede67797358cc1e9ebc50a4074042000f2cb927c9af1826a94b",
+        "observerVerified": null
+      },
+      "after": {
+        "id": "1:gun_bunch_11:mesh:true",
+        "rosterSeedPair": [
+          41,
+          42
+        ],
+        "formation": "gun_bunch_11",
+        "concept": "mesh",
+        "treatment": "degraded-install-control",
+        "flip": true,
+        "installed": {
+          "onLine": 7,
+          "coveredSkillSlots": [],
+          "coveredRouteSlots": [],
+          "permanentSlots": [],
+          "firstRead": "Y",
+          "firstReadPermanent": false,
+          "missingProgression": [
+            "W2"
+          ],
+          "backfieldRefs": {
+            "B": "RB",
+            "B2": null
+          }
+        },
+        "profilesSha256": "a7f1284cee546aae1aa5e8e419a0283e82717c891789d2b281b818a6238bbc51",
+        "outcome": "tackle",
+        "duration": 3.55,
+        "fieldGainBeforePenalties": 8.01,
+        "offenseYardsBeforePenalties": 8.01,
+        "stats": {
+          "tacklers": [
+            "PDF-LB1"
+          ],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "POF-QB2",
+          "timeToThrow": 1.95,
+          "target": "POF-TE2",
+          "airYards": 4.317954346090453,
+          "separation": 4.8,
+          "receiver": "POF-TE2",
+          "yac": 3.4464211896242816
+        },
+        "setWithPermanentReadTicks": 0,
+        "executionSha256": "a3def0dc54a91ede67797358cc1e9ebc50a4074042000f2cb927c9af1826a94b",
+        "observerVerified": null
+      }
+    }
+  ],
+  "sameCompleteExecutions": 4,
+  "limitations": "All24paired inputs retained;6 sampled observers per phase verified. Recorded selected throwing/read fields unchanged, not proof every pre-throw internal state is identical. Run contact and carrier changes can affect YAC, scrambles, returns and fumbles. This is a guard, not an NFL rate estimate."
+}

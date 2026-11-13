@@ -1,0 +1,365 @@
+{
+  "schema": "zone-helper-verification-v1",
+  "baselineCommit": "f641f31101c31b6bdf0a265c1d901879c33dfd2f",
+  "beforeSourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+  "finalSourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "comparisonSha256": "e06621fca25215045927a7f238fa43755e57a584077292412ee713d4c9675d80",
+  "changedEngineFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "addedEngineFiles": [],
+  "files": {
+    "data/reviews/physics-world/combo-transfer/verify-evidence.py": "8f39208fe17727df6579cb6cf32142de248a14ec8200e70905db1700902a0c5c",
+    "data/reviews/physics-world/ol-job-exchange/candidate-film.json.gz": "be923593b0badb2705f4251210b535a5ccf81d15e9e7b7eb33a2e5bcb66f3e72",
+    "data/reviews/physics-world/ol-job-exchange/candidate.json.gz": "5a934250515578a77e617843ce4cb6b41340f1934b0c0b9e35e07b939dd95668",
+    "data/reviews/physics-world/zone-helper-check/README.md": "33418e730416913d9d490862ad320094ebf5814fab2fb75508f98b7ce312cecc",
+    "data/reviews/physics-world/zone-helper-check/browser-check.json": "3815bf92f04c0b9b10f524af35f9324127d95800295ec63d77201ca84a424f77",
+    "data/reviews/physics-world/zone-helper-check/build.log": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d",
+    "data/reviews/physics-world/zone-helper-check/candidate-film.json.gz": "b6a1acfe872dffa56444114645770a2fb3da26b1a1f54a90406e53ca684f3944",
+    "data/reviews/physics-world/zone-helper-check/candidate.json.gz": "287ffd1b25e230ff7055b565084a823908163da8b1eca92124e4ebe39b58874d",
+    "data/reviews/physics-world/zone-helper-check/candidate.log": "f62705a8c9c80c647a3c4310ca97be826288b8177233b74a7b935de8a12f2e64",
+    "data/reviews/physics-world/zone-helper-check/checks.json": "46f7cdeaa215d4787097de0be5126e443c729145f1582c7267f67a6a375ed92a",
+    "data/reviews/physics-world/zone-helper-check/comparison.json": "ba90cc95a1a5ceb4dcc978608953abbb454cb9b7b66ee506028385fe19d30142",
+    "data/reviews/physics-world/zone-helper-check/comparison.log": "3d64a7fb80d13c7a9a29bcaa449d78ac8e6945de9c0c6c9af5984aa5d6ce5f43",
+    "data/reviews/physics-world/zone-helper-check/controlled-tests.ts": "5eeb342b776759d518f7bd16741e0f6f7866c74681e7dd6667915217be117f8a",
+    "data/reviews/physics-world/zone-helper-check/engine.patch": "6860bf8c6347814b8eac28e0a57a3ba416a1d140e90cad0f99660a7bb3a95a7e",
+    "data/reviews/physics-world/zone-helper-check/film-check.py": "460d028d7ffd4fec1829f3c34f91d9e30ca421e28c14e594e7809f888c322363",
+    "data/reviews/physics-world/zone-helper-check/film-integrity.json": "89502dd67f443b70fc84d68ee682e2081e2d47096e6487fee46be48980e5676f",
+    "data/reviews/physics-world/zone-helper-check/full-tests.log": "572b60718e37e42513f3dc90077a26b1c2297eb1ece39512f4772e830d3b596d",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/README.md": "13573fab1bec9bf59cc012c5032e8c8b01a22a46c0e92f74a86d6c15e2d2867e",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/adverse-review.md": "a1f1f8474bc65db2c5591e1dbdae183761a2ce6b583654376570f18cec2639ec",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/browser-check.json": "48fe1b94b3c71253d0e73ffcdea18ab740b7b2eea0ee32fde9f81a10b029156b",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/build.log": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/candidate-film.json.gz": "73d5f8a5e30f01d3a244f5187c09bc7926bd4b6d79bcbe3990c1a905a03f99d2",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/candidate.json.gz": "ece65eecd74eef16a193266cf51b91467d4e7ba7c2fa1fae1f7782d1451ad5d9",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/candidate.log": "91b32d015131ff0f0e940999d115a46f15ad3f9a15dfe9455c89dddbe43c6f07",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/checks.json": "0c69377797653cb9f8ef4f2073742773379fbd9bd34acc4019c1c7586a79f59a",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/comparison.json": "a7ff401ca403e01d612ba394646fd0662042677d021b64dc9af68254035dad50",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/comparison.log": "da64d160b89a8dcf221a86017f7690801843dc95058bbd539eb934ca3531c041",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/controlled-tests.ts": "33edf88b75aab5cecb9c812721609803d8b66f86460704f2ee46dd1405642700",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/engine.patch": "779fdf0a2d35261d319382c2e954407177ffec35d72aaa3c2608c2554feb7e17",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/export-zone-helper.ts": "783472cd9a56255a4d24948f4ae1721c6a04fac6f44e6aa798ca45bb67911669",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/film-check.py": "d2c03eb644ea8fc99b08042a176b519bbe651954e97443799f0fca31d959a65d",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/film-integrity.json": "8e8b90a3363b2ab72027c20bbda607f1e78a5e821c8e522dea975e139aebcdd3",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/full-tests.log": "bb6444e49fb5096aab990113e7edcf590bd22d072ff4f8e1345cc5af51ef833c",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/phase-b-design.md": "6eb59f8b427530735a7060e24dd8a100a7ed9403c733b4d3f29f01500356f558",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/python.log": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/tests-after.log": "b699db2c6ec2c17f3cfce00e3a3a62260d76451685a8eb5ff24650098bbc41ce",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/tests-before.log": "7a6087506bb6454b204d9a53b542542419dc51d80e55d78be24b5c214d588c55",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/typecheck.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/zone-helper-check.html": "a405583f3fb0facb46bdc75b7e9bbe75833767a63ad17c83b6e6b5c590d22764",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/zone-helper-check.zip": "ae8faea405bc694f9e9e70f320c56e731ace70d2b8396062953a8d1e22fe0ce6",
+    "data/reviews/physics-world/zone-helper-check/pre-cadence/zone-helper-compare.py": "9629e0ad63e552900d43e56fb9f5c5eba6c11bf6635b87f186b26cee2dbd0267",
+    "data/reviews/physics-world/zone-helper-check/python.log": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524",
+    "data/reviews/physics-world/zone-helper-check/tests-after.log": "27e1b18fcfc4bc599234b4da180891cd046f2de1d446bbd892561c4348a90ac1",
+    "data/reviews/physics-world/zone-helper-check/tests-before.log": "596fcf809f9a630a6f6b2a45326cf155d91073022de0c41539dc9f656a53b5f0",
+    "data/reviews/physics-world/zone-helper-check/tests-pre-cadence.log": "f45874b99837c7b3733d7ec4a83b41f29661c431c166f3172e5b243e66351c8e",
+    "data/reviews/physics-world/zone-helper-check/typecheck.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "data/reviews/physics-world/zone-helper-check/verify-evidence.py": "e5e6fbdde7687a2acab9cd476b79eb5d83aeb6e5c190295f801b0d2cff8a861e",
+    "docs/reviews/zone-helper-check-and-climb.md": "bd7f5329c6c6ddbea09a2ec41c421efc4d7e3d207475b6ab4727bf153b5c0799",
+    "viewer/zone-helper-check.html": "12713ff237e307a30047d92c9ecfef13dbd6be5926fab6543b0f29333750f42c",
+    "viewer/zone-helper-check.zip": "e12746b5693505da0807c87ec7939fbc809d247fa37fb5de0809a809ab1af77b"
+  },
+  "currentCodeFiles": {
+    "src/sim/behaviors/blocking.ts": "4a249b7859cfc21f41052814ac0e288421180b4948c28c932dcc9eb1497cc5bd",
+    "src/sim/agent.ts": "e9cb4f775ad823225cbf1c53a7d1a2fad0704c47845280aa354ec995dc2e6ebc",
+    "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+    "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+    "scripts/diag/combo-transfer-review.ts": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+    "scripts/diag/compare-combo-transfer.py": "fed54abaf570205301bd588b0066dadee653c6712b34dc250d7e1aa6138475ea",
+    "scripts/diag/ol-exchange-compare.py": "1c59e6f0861f7f597ff6fd0010d779bc58dbb4b2f0db7b965ede98c129941d15",
+    "scripts/diag/zone-helper-compare.py": "e06621fca25215045927a7f238fa43755e57a584077292412ee713d4c9675d80",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/export-zone-helper.ts": "4fc8a1077ad9a6148af54b7d09af08052390218e1879a2220911626f2b285b8a",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4",
+    "test/zone-helper-check.test.ts": "5eeb342b776759d518f7bd16741e0f6f7866c74681e7dd6667915217be117f8a",
+    "CLAUDE.md": "26c71e2b1dbcc52ddc2bb878c90708a93a4ac01634a965aee7b94564328ba5f8",
+    "docs/PHYSICS_DEVELOPMENT.md": "2bf220b13b903cf01c3dbbabc80eaecc4fba20f77ccae1fd6bfd7e37e52bb81c",
+    "data/README.md": "f6fffd9be24304e9b3284dfdb8fcec9fea659da6d3c445049919e9cb5db04292",
+    "docs/reviews/universal-ol-controller.md": "2bf2ad9484a032dda2da78d25bee20842b594fd2e2dbc85e9904a346aa267ad7"
+  },
+  "checks": {
+    "sourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+    "sourceFrozen": true,
+    "baselineCommit": "f641f31101c31b6bdf0a265c1d901879c33dfd2f",
+    "fullTypeScript": {
+      "passed": 791,
+      "files": 71,
+      "exitCode": 0,
+      "log": "full-tests.log"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    "build": {
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    "python": {
+      "passed": 22,
+      "exitCode": 0,
+      "log": "python.log"
+    },
+    "focused": {
+      "passed": 18,
+      "exitCode": 0,
+      "log": "tests-after.log"
+    },
+    "baselineFeatureControl": {
+      "featureFailures": 5,
+      "controlPasses": 13,
+      "exitCode": 1,
+      "log": "tests-before.log"
+    },
+    "rejectedCadenceControl": {
+      "cadenceFailures": 2,
+      "controlPasses": 16,
+      "exitCode": 1,
+      "log": "tests-pre-cadence.log"
+    },
+    "panel": {
+      "matchedRecordedInitialProjections": 162,
+      "naturalEndsPerPhase": 162,
+      "observedPlainControls": 324,
+      "ordinaryInputs": 160,
+      "supplementalInputs": 2
+    },
+    "film": {
+      "predeclaredInputs": 5,
+      "clips": 10,
+      "additionalSimulation": false
+    },
+    "omissions": [
+      "The unchanged collector omits newly installed helpPolicy and private checkNextRead/checkSince; controlled-tests.ts and exact source patch retain those controls.",
+      "It omits the full pre-update World joint list; foreign helper grip exclusion is controlled-test evidence.",
+      "TE keepers have genuine joint force but no OL-only body impulse row."
+    ],
+    "limits": "Controller-only increment. No new NFL observations, force fitting, full-game rate or speed claim. Existing World, capacities and resolution unchanged."
+  },
+  "independentChecks": {
+    "recordedFullInitialProjectionMatches": 162,
+    "panelObservedPlainMatches": 324,
+    "ordinaryCompleteExecutionsExact": 151,
+    "outOfScopeOrdinaryExecutionsExact": 120,
+    "supplementalExecutionsExact": 2,
+    "optionalCheckClimbsPerPhase": [
+      0,
+      5
+    ],
+    "ordinaryAttachedNativeTransfersPerPhase": [
+      118,
+      114
+    ],
+    "supplementalAttachedNativeTransfersPerPhase": [
+      3,
+      3
+    ],
+    "allClimbKeeperJointsContinuousAndLoaded": true,
+    "newCheckOwnersWithOLLoads": 3,
+    "newCheckOwnersWithoutOLLoadsY": 2,
+    "newChecksWithAccountedAdjacentNativeThreat": 1,
+    "checkRecords": [
+      {
+        "id": "CT-R1-iz_strong-odd-L-S3",
+        "t": 1.1,
+        "owner": "LT",
+        "helper": "LG",
+        "defender": "DT_S",
+        "backer": "LB_M",
+        "ownerJointId": 3,
+        "ownerContactByteValueUnchanged": true,
+        "continuousLoadedJoint": true,
+        "ownerHasOLDeliveredLoad": true,
+        "observedPhi": -0.03740552828491007,
+        "visibleBackerClearances": [
+          1.1475137816784193
+        ],
+        "heldLocalThreats": []
+      },
+      {
+        "id": "CT-R1-iz_strong-bear-R-S3",
+        "t": 0.75,
+        "owner": "Y",
+        "helper": "RT",
+        "defender": "DE_S",
+        "backer": "LB_S",
+        "ownerJointId": 2,
+        "ownerContactByteValueUnchanged": true,
+        "continuousLoadedJoint": true,
+        "ownerHasOLDeliveredLoad": false,
+        "observedPhi": 0.24035957234547958,
+        "visibleBackerClearances": [
+          0.7316348959221266
+        ],
+        "heldLocalThreats": []
+      },
+      {
+        "id": "CT-R1-split_zone-odd-R-S11",
+        "t": 1.05,
+        "owner": "RT",
+        "helper": "RG",
+        "defender": "DT_S",
+        "backer": "LB_M",
+        "ownerJointId": 2,
+        "ownerContactByteValueUnchanged": true,
+        "continuousLoadedJoint": true,
+        "ownerHasOLDeliveredLoad": true,
+        "observedPhi": 0.01294593274232109,
+        "visibleBackerClearances": [
+          1.3535623842696078
+        ],
+        "heldLocalThreats": []
+      },
+      {
+        "id": "CT-R1-split_zone-odd-L-S3",
+        "t": 1.1,
+        "owner": "LT",
+        "helper": "LG",
+        "defender": "DT_S",
+        "backer": "LB_M",
+        "ownerJointId": 4,
+        "ownerContactByteValueUnchanged": true,
+        "continuousLoadedJoint": true,
+        "ownerHasOLDeliveredLoad": true,
+        "observedPhi": -0.05274975370812239,
+        "visibleBackerClearances": [
+          1.1963288903134655
+        ],
+        "heldLocalThreats": []
+      },
+      {
+        "id": "CT-R1-split_zone-tite-R-S3",
+        "t": 1.25,
+        "owner": "Y",
+        "helper": "RT",
+        "defender": "DE_S",
+        "backer": "LB_M",
+        "ownerJointId": 4,
+        "ownerContactByteValueUnchanged": true,
+        "continuousLoadedJoint": true,
+        "ownerHasOLDeliveredLoad": false,
+        "observedPhi": 0.14300192772135292,
+        "visibleBackerClearances": [
+          1.304983568287548
+        ],
+        "heldLocalThreats": [
+          "DT_S"
+        ]
+      }
+    ],
+    "ordinaryStuffs": [
+      37,
+      37
+    ],
+    "ordinaryOLFalls": [
+      13,
+      14
+    ],
+    "adverseAnyGainPairs": 2,
+    "retainedAdverseYards": [
+      [
+        0.24,
+        0.22
+      ],
+      [
+        0.03,
+        0.01
+      ]
+    ],
+    "restoredSplitZoneBearRightSeed11": [
+      5.12,
+      5.12
+    ],
+    "restoredBearResultAndEventsExact": true,
+    "restoredBearStandardClimbTimes": [
+      1.65,
+      2.85
+    ],
+    "restoredBearWholeOLMetricsAndJoinedSnapshotsExact": true,
+    "beneficial2YardPairs": 0,
+    "checkFollowups": [
+      {
+        "id": "CT-R1-iz_strong-odd-L-S3",
+        "t": 1.1,
+        "hasRecordedNativeBackerHands": true,
+        "hasRecordedPositiveBackerHandForce": true,
+        "hasRecordedNativeBackerBodyContact": true,
+        "laterTargetChanges": false,
+        "laterHelperFalls": false
+      },
+      {
+        "id": "CT-R1-iz_strong-bear-R-S3",
+        "t": 0.75,
+        "hasRecordedNativeBackerHands": true,
+        "hasRecordedPositiveBackerHandForce": true,
+        "hasRecordedNativeBackerBodyContact": true,
+        "laterTargetChanges": false,
+        "laterHelperFalls": false
+      },
+      {
+        "id": "CT-R1-split_zone-odd-R-S11",
+        "t": 1.05,
+        "hasRecordedNativeBackerHands": true,
+        "hasRecordedPositiveBackerHandForce": true,
+        "hasRecordedNativeBackerBodyContact": true,
+        "laterTargetChanges": true,
+        "laterHelperFalls": false
+      },
+      {
+        "id": "CT-R1-split_zone-odd-L-S3",
+        "t": 1.1,
+        "hasRecordedNativeBackerHands": true,
+        "hasRecordedPositiveBackerHandForce": true,
+        "hasRecordedNativeBackerBodyContact": true,
+        "laterTargetChanges": false,
+        "laterHelperFalls": false
+      },
+      {
+        "id": "CT-R1-split_zone-tite-R-S3",
+        "t": 1.25,
+        "hasRecordedNativeBackerHands": true,
+        "hasRecordedPositiveBackerHandForce": true,
+        "hasRecordedNativeBackerBodyContact": false,
+        "laterTargetChanges": false,
+        "laterHelperFalls": false
+      }
+    ],
+    "collectorOmissions": [
+      "newHelpPolicy",
+      "privateCheckSince",
+      "privateCheckNextRead",
+      "completePreUpdateHelperWorldJoints"
+    ],
+    "filmNativeInputsPerPhase": 10,
+    "viewerPredeterminedPairedClips": 10,
+    "filmNaturalClips": 10,
+    "filmNegativeControlExact": true,
+    "filmOwnImageNativeLoadInspections": 10,
+    "videoExportsSourceVerified": 2,
+    "controlledFeatureTests": 5,
+    "baselineNegativeControls": 13,
+    "rejectedCandidateCadenceFailures": 2,
+    "archivedControlledTestSourceChecked": true,
+    "fullTypeScriptTests": 791,
+    "pythonTests": 22,
+    "rejectedPreCadenceSource": "512a8b2bd695a09f4f2bf0bf97a2e2e8133794f97afbc4b65462b38f661a0230",
+    "rejectedBearWitnessYards": [
+      5.12,
+      3
+    ],
+    "rejectedOrdinaryOLFalls": [
+      13,
+      14
+    ],
+    "rejectedCandidateKeptSeparate": true
+  },
+  "scope": "Phase B lets only the original, unjoined inside/split-zone helper check a genuinely supported owner and climb from its own delayed visible responsibility cues. Actual owner hands/contact state remain intact. Optional cadence is separate from the original sustained-double schedule. The cached Phase A baseline is reused for one balanced160-input generated-roster panel plus two separately labelled roster41/42 witnesses. All162 recorded initial projections and324 observer controls match; the collector omits new policy/private clocks and the complete helper joint list. Those omissions are certified through archived source and18 controlled tests, not inferred from public nextRead. Raw present corridor and recorded later native backer contact are independently checked. Every normal and optional keeper joint stays continuous and loaded. Two adverse yard pairs and an extra OL fall remain visible. Ten predeclared paired clips retain exact telemetry/events/native trace; unchanged World/capacity contracts are verified without a redundant broad physics guard recollection. No NFL rate fitting, per-call training mastery, performance or full physiological-model claim is made.",
+  "historicalVerification": "Default checks immutable saved panel/films/comparison, archived controlled source/logs, rejection provenance and the pinned previous native checker without resimulation. The rejected512a candidate remains separate from finald6df measurements. Mutable source/tools/current tests/latest guides are checked only with --engine, including the full src hash and reversal of the exact one-file patch to reconstruct the cached baseline."
+}

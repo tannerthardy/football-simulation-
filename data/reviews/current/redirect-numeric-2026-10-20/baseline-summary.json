@@ -1,0 +1,70 @@
+{
+  "sourceRoot": "/workspace/football-big-redirect-baseline",
+  "summaries": [
+    {
+      "handContact": "center",
+      "closestDifference": 0,
+      "requests": 28,
+      "mirrorRequests": 28,
+      "firstNumericDifference": {
+        "t": 1.15,
+        "pos": 0,
+        "vel": 4.440892098500626e-16,
+        "facing": 0,
+        "spin": 0,
+        "energy": 0,
+        "xi": 1.734723475976807e-18,
+        "lean": 0,
+        "command": 0
+      },
+      "maxErrors": {
+        "pos": 7.105427357601002e-15,
+        "vel": 2.6645352591003757e-15,
+        "facing": 2.531308496145357e-14,
+        "spin": 0,
+        "energy": 0,
+        "xi": 1.797173521111972e-15,
+        "lean": 6.934897101018578e-12,
+        "command": 8.43769498715119e-15
+      },
+      "requestMax": {
+        "x": 7.993605777301127e-15,
+        "y": 8.43769498715119e-15,
+        "facing": 2.4424906541753444e-15
+      }
+    },
+    {
+      "handContact": "patch",
+      "closestDifference": 0,
+      "requests": 35,
+      "mirrorRequests": 35,
+      "firstNumericDifference": {
+        "t": 1,
+        "pos": 0,
+        "vel": 8.326672684688674e-17,
+        "facing": 0,
+        "spin": 0,
+        "energy": 0,
+        "xi": 5.551115123125783e-16,
+        "lean": 2.2737367544323206e-13,
+        "command": 0
+      },
+      "maxErrors": {
+        "pos": 0,
+        "vel": 2.6645352591003757e-15,
+        "facing": 2.6645352591003757e-15,
+        "spin": 0,
+        "energy": 0,
+        "xi": 2.525757381022231e-15,
+        "lean": 1.8474111129762605e-12,
+        "command": 1.7763568394002505e-15
+      },
+      "requestMax": {
+        "x": 1.7763568394002505e-15,
+        "y": 1.7763568394002505e-15,
+        "facing": 0
+      }
+    }
+  ],
+  "nativeSeconds": 0.5982845799999998
+}

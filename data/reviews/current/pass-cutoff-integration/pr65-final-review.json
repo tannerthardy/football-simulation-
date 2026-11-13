@@ -1,0 +1,17 @@
+{
+  "schema": "pr65-final-adoption-review-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "reviewedHead": "df2c0304eb032d8865e3800ac0f3b9f8e4daa322",
+  "mergePreview": "3de943ef7df3429bead47c9dbb99ebf3105f6ff6",
+  "mergePreviewEqualsHeadTree": true,
+  "productionTestsToolingSettingsIdenticalToAccepted": true,
+  "existingReceiptFilesPreserved": 88,
+  "lastChange": "Only #67 review/hold rows in existing integration/status/workboard records; newer ownership/disposition/approval histories retained.",
+  "uniqueLocalDestinations": 95,
+  "uniqueMarkdownFragments": 38,
+  "brokenLinks": [],
+  "decision": "Recommend explicit documentation-only merge approval for this exact #65 head. No runtime candidate, new baseline/default, branch deletion or broad merge authority. #67 stays held independently.",
+  "newRuntimeChecks": 0,
+  "newSimulations": 0,
+  "elapsedSeconds": 0.4886309989960864
+}

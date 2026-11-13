@@ -1,0 +1,1919 @@
+{
+ "schema": "run-contact-and-movement-review-v1",
+ "date": "2026-10-11",
+ "engineSourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+ "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+ "scope": "Retrospective user-nominated mechanisms; not random frequencies, a football benchmark, or justification for tuning aggregate numbers. No engine changes.",
+ "nativeExecution": [
+  {
+   "id": "G1-P071",
+   "snapSeed": 2721723374,
+   "originalGameSeed": 1928073449,
+   "sourceBefore": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+   "sourceAfter": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+   "observerVerified": true,
+   "originalLightExecutionVerified": true,
+   "initialSha256": "8ccd7db3202dd3a8bac54ae419cfa7ba01d2dd8cdf623388c991d2ea7c7ad67c",
+   "resultSha256": "774b58b4cda78eac6a9bddde599b4250cf9190ac2a8bd4ddfcf559f166887ae3",
+   "finalSha256": "17f17f04cd242638f3371dc4e7666c0b583f2abdb7c5a5d02a95e001745e4cda",
+   "nextRng": 1455711606,
+   "fullStateAndWholeTickVerified": "a0fa334c8146fd85ab3f797d744c5bbf61911dad1733737f9d3594959bcf3393",
+   "packetPath": "out/run-coaching/contact-native/G1-P071.json.gz",
+   "packetSha256": "223453fae2e3fdb190ef9cffc8e07df4ceb7e6df1836f5d9c748b2e6ec2457c2",
+   "collectorSha256": "f09be9fee487f1fef6ee2d0228e91880451974c3395856316b39f1a86d502a2d",
+   "commonSha256": "17266132697681cf43e2686e0cfa42778b85685a3d97c6654289c8cce2261571",
+   "inputIndexSha256": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f"
+  },
+  {
+   "id": "G1-P169",
+   "snapSeed": 3679040486,
+   "originalGameSeed": 1928073449,
+   "sourceBefore": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+   "sourceAfter": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+   "observerVerified": true,
+   "originalLightExecutionVerified": true,
+   "initialSha256": "d35672acb1897286fe8d5717a83e02657c9c811081f9dde6d1efd6c758adcc16",
+   "resultSha256": "852d12375f79726b5c5a03295e201b715c0113f07340b089c29ff47da2518054",
+   "finalSha256": "4f01cc1b197d97068601072da08420311fe13a0c04ddd39e1f04211d63ab15dd",
+   "nextRng": 657945579,
+   "fullStateAndWholeTickVerified": "7823ae462d01ba4ce508c4953f80e37de1294918393b4f5b021b53f6bb77eb79",
+   "packetPath": "out/run-coaching/contact-native/G1-P169.json.gz",
+   "packetSha256": "c3fe7ba3d8ca7967cbbe1c48d9f747e8d2d5a8daac926702e8102e660cefebe8",
+   "collectorSha256": "f09be9fee487f1fef6ee2d0228e91880451974c3395856316b39f1a86d502a2d",
+   "commonSha256": "17266132697681cf43e2686e0cfa42778b85685a3d97c6654289c8cce2261571",
+   "inputIndexSha256": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f"
+  }
+ ],
+ "g1p071": {
+  "finding": "The runner slows under two loaded reaching/diving holds, then regains speed after both slip. Neither first tackler establishes a torso collision; first_contact/hit labels do not establish a body impact.",
+  "runnerMassKg": 100.69750614,
+  "runnerVmaxYdPerS": 9.420051221596077,
+  "carrierTorsoCollisionCountWholePlay": 2,
+  "firstLoadedHoldEntrySpeedYdPerS": 5.560046515183903,
+  "minimumSpeedThroughTwoSlippingHoldsYdPerS": 5.23832723806322,
+  "fractionalSpeedLossThroughTwoSlippingHolds": 0.057862695256613805,
+  "events": [
+   {
+    "t": 3.75,
+    "type": "carrier_contact",
+    "a": 6,
+    "b": 19,
+    "pos": {
+     "x": 49.06,
+     "y": 19.71
+    },
+    "note": "grasp"
+   },
+   {
+    "t": 3.75,
+    "type": "hit",
+    "a": 19,
+    "b": 6,
+    "pos": {
+     "x": 48.17,
+     "y": 21.52
+    },
+    "note": "diving tackle"
+   },
+   {
+    "t": 3.8,
+    "type": "fall",
+    "a": 19,
+    "pos": {
+     "x": 48.12,
+     "y": 21.37
+    },
+    "note": "dive"
+   },
+   {
+    "t": 3.8,
+    "type": "tackle_wrap",
+    "a": 17,
+    "b": 6,
+    "pos": {
+     "x": 49.51,
+     "y": 18.87
+    },
+    "note": "assist"
+   },
+   {
+    "t": 3.8,
+    "type": "hit",
+    "a": 17,
+    "b": 6,
+    "pos": {
+     "x": 49.51,
+     "y": 18.87
+    }
+   },
+   {
+    "t": 4,
+    "type": "broken_tackle",
+    "a": 6,
+    "b": 19,
+    "pos": {
+     "x": 50.09,
+     "y": 19.43
+    },
+    "note": "hold slipped"
+   },
+   {
+    "t": 4.15,
+    "type": "broken_tackle",
+    "a": 6,
+    "b": 17,
+    "pos": {
+     "x": 50.86,
+     "y": 19.23
+    },
+    "note": "hold slipped"
+   },
+   {
+    "t": 4.3,
+    "type": "tackle_wrap",
+    "a": 20,
+    "b": 6,
+    "pos": {
+     "x": 51.29,
+     "y": 20.01
+    },
+    "note": "initial"
+   },
+   {
+    "t": 4.4,
+    "type": "fall",
+    "a": 6,
+    "pos": {
+     "x": 52.48,
+     "y": 18.77
+    },
+    "note": "legs"
+   },
+   {
+    "t": 4.8,
+    "type": "tackle",
+    "a": 20,
+    "b": 6,
+    "pos": {
+     "x": 53.75,
+     "y": 18.15
+    }
+   }
+  ],
+  "loadSamples": [
+   {
+    "tickLabelS": 3.8,
+    "before": {
+     "positionYd": {
+      "x": 49.06249472861227,
+      "y": 19.70562438504274
+     },
+     "velocityYdPerS": {
+      "x": 5.27608719511652,
+      "y": -1.7541439965225658
+     },
+     "speedYdPerS": 5.560046515183903,
+     "support": "up"
+    },
+    "after": {
+     "positionYd": {
+      "x": 49.32630726712532,
+      "y": 19.630217058310325
+     },
+     "velocityYdPerS": {
+      "x": 5.275271611121051,
+      "y": -1.2685670808546807
+     },
+     "speedYdPerS": 5.425656919648334,
+     "support": "up"
+    },
+    "groundImpulseKgYdPerS": {
+     "x": 8.74060831609288,
+     "y": 33.65622961955405
+    },
+    "groundImpulseProjectedOnEntryVelocityYdPerS": -0.023079224975106248,
+    "nonGroundImpulseFromMomentumKgYdPerS": {
+     "x": -8.822735590484315,
+     "y": 15.24015482735507
+    },
+    "carrierTorsoContacts": [],
+    "holdsAfterStep": [
+     {
+      "defenderIdx": 19,
+      "capacityKgYdPerS2": 361.56425852762703,
+      "meanTransmittedForceKgYdPerS2": 352.5251520644363,
+      "slipping": true,
+      "origin": "dive"
+     }
+    ]
+   },
+   {
+    "tickLabelS": 3.85,
+    "before": {
+     "positionYd": {
+      "x": 49.32630726712532,
+      "y": 19.630217058310325
+     },
+     "velocityYdPerS": {
+      "x": 5.275271611121051,
+      "y": -1.2685670808546807
+     },
+     "speedYdPerS": 5.425656919648334,
+     "support": "up"
+    },
+    "after": {
+     "positionYd": {
+      "x": 49.584828997080315,
+      "y": 19.56713165594821
+     },
+     "velocityYdPerS": {
+      "x": 5.117635330893484,
+      "y": -1.2546964359063328
+     },
+     "speedYdPerS": 5.2691986607344115,
+     "support": "up"
+    },
+    "groundImpulseKgYdPerS": {
+     "x": 23.687084593394893,
+     "y": -8.615767799230175
+    },
+    "groundImpulseProjectedOnEntryVelocityYdPerS": 0.2487150255745413,
+    "nonGroundImpulseFromMomentumKgYdPerS": {
+     "x": -39.56066488949704,
+     "y": 10.012507154082197
+    },
+    "carrierTorsoContacts": [],
+    "holdsAfterStep": [
+     {
+      "defenderIdx": 19,
+      "capacityKgYdPerS2": 421.83800785557037,
+      "meanTransmittedForceKgYdPerS2": 295.2866054988992,
+      "slipping": true,
+      "origin": "dive"
+     },
+     {
+      "defenderIdx": 17,
+      "capacityKgYdPerS2": 613.6984822558005,
+      "meanTransmittedForceKgYdPerS2": 613.6984822558005,
+      "slipping": true,
+      "origin": "form+assist"
+     }
+    ]
+   },
+   {
+    "tickLabelS": 3.95,
+    "before": {
+     "positionYd": {
+      "x": 49.83869255234839,
+      "y": 19.502559743915196
+     },
+     "velocityYdPerS": {
+      "x": 5.075917610863491,
+      "y": -1.357019246889587
+     },
+     "speedYdPerS": 5.254183174262477,
+     "support": "up"
+    },
+    "after": {
+     "positionYd": {
+      "x": 50.09145605458641,
+      "y": 19.43380095550404
+     },
+     "velocityYdPerS": {
+      "x": 5.050888767537877,
+      "y": -1.3887386042717842
+     },
+     "speedYdPerS": 5.23832723806322,
+     "support": "up"
+    },
+    "groundImpulseKgYdPerS": {
+     "x": 33.79932130195221,
+     "y": 4.149260813115686
+    },
+    "groundImpulseProjectedOnEntryVelocityYdPerS": 0.3136216789659361,
+    "nonGroundImpulseFromMomentumKgYdPerS": {
+     "x": -36.319663406410285,
+     "y": -7.3433209978663445
+    },
+    "carrierTorsoContacts": [],
+    "holdsAfterStep": [
+     {
+      "defenderIdx": 19,
+      "capacityKgYdPerS2": 461.3116830850338,
+      "meanTransmittedForceKgYdPerS2": 269.09848179960306,
+      "slipping": true,
+      "origin": "dive"
+     },
+     {
+      "defenderIdx": 17,
+      "capacityKgYdPerS2": 613.6984822558005,
+      "meanTransmittedForceKgYdPerS2": 613.6984822558005,
+      "slipping": true,
+      "origin": "form+assist"
+     }
+    ]
+   },
+   {
+    "tickLabelS": 4.1,
+    "before": {
+     "positionYd": {
+      "x": 50.59920598845128,
+      "y": 19.2951111936495
+     },
+     "velocityYdPerS": {
+      "x": 5.128494993510522,
+      "y": -1.3461937991199722
+     },
+     "speedYdPerS": 5.302235249708518,
+     "support": "up"
+    },
+    "after": {
+     "positionYd": {
+      "x": 50.86011293182804,
+      "y": 19.227605059751625
+     },
+     "velocityYdPerS": {
+      "x": 5.3280500384395495,
+      "y": -1.3570176601073294
+     },
+     "speedYdPerS": 5.498146427839009,
+     "support": "up"
+    },
+    "groundImpulseKgYdPerS": {
+     "x": 23.637637407934847,
+     "y": -1.4252471190270466
+    },
+    "groundImpulseProjectedOnEntryVelocityYdPerS": 0.2306407952908576,
+    "nonGroundImpulseFromMomentumKgYdPerS": {
+     "x": -3.5429420459260967,
+     "y": 0.335311310794137
+    },
+    "carrierTorsoContacts": [],
+    "holdsAfterStep": [
+     {
+      "defenderIdx": 17,
+      "capacityKgYdPerS2": 284.7082399775792,
+      "meanTransmittedForceKgYdPerS2": 71.1770599943948,
+      "slipping": true,
+      "origin": "form+assist"
+     }
+    ]
+   },
+   {
+    "tickLabelS": 4.4,
+    "before": {
+     "positionYd": {
+      "x": 52.24126164634441,
+      "y": 18.860023612766195
+     },
+     "velocityYdPerS": {
+      "x": 5.180442269545655,
+      "y": -1.6126182407497698
+     },
+     "speedYdPerS": 5.425635418869777,
+     "support": "up"
+    },
+    "after": {
+     "positionYd": {
+      "x": 52.48443527402184,
+      "y": 18.774329548935718
+     },
+     "velocityYdPerS": {
+      "x": 4.588382041856985,
+      "y": -1.8025266743398423
+     },
+     "speedYdPerS": 4.9297415929987976,
+     "support": "falling"
+    },
+    "groundImpulseKgYdPerS": {
+     "x": 3.3850313537788743,
+     "y": 3.149820774877188
+    },
+    "groundImpulseProjectedOnEntryVelocityYdPerS": 0.022799574772013855,
+    "nonGroundImpulseFromMomentumKgYdPerS": {
+     "x": -63.00401976670858,
+     "y": -22.273126432351294
+    },
+    "carrierTorsoContacts": [],
+    "holdsAfterStep": [
+     {
+      "defenderIdx": 20,
+      "capacityKgYdPerS2": 1342.9207120658295,
+      "meanTransmittedForceKgYdPerS2": 1342.9207120658295,
+      "slipping": true,
+      "origin": "reach+behind"
+     }
+    ]
+   }
+  ],
+  "measurement": "Exact unrounded body states around World.step; \u0394p minus recorded external ground impulse gives non-ground body load. No carrier hand constraints or carrier torso contacts occur here, so this diagnoses aggregate grasp transfer. Per-hold vectors are not claimed: reduced supportImpulse bypasses ordinary pairImpulse observer.",
+  "caveat": "Grasp capacities and runner drive have limited measured NFL evidence. This proves load and slowing occur, not that 5.8% speed loss is the correct magnitude. Do not force every broken tackle to lose a fixed percentage of speed.",
+  "viewerGeometry": {
+   "template": "viewer/replay.template.html",
+   "templateSha256": "9ee7232840e1ef442e17c35e3bd43013d13551ff071c838c65701de5fb268ae0",
+   "markerRadiusRule": "max(5px, scalePixelsPerYard*0.55yd)",
+   "actualRunnerRadiusYd": 0.2781818181818182,
+   "actualCbRadiusYd": 0.24727272727272726,
+   "actualCombinedTorsoRadiiYd": 0.5254545454545454,
+   "centerDistanceAtCbAssistAcquisitionYd": 0.7797409826802413,
+   "implication": "Overlapping enlarged UI markers do not establish body collision. The carrier has zero actual World contact records in this play."
+  },
+  "playerContext": [
+   {
+    "idx": 6,
+    "slot": "RB",
+    "rosterPosition": "RB",
+    "weightLb": 222,
+    "ratings0to100": {
+     "strength": 58,
+     "balance": 72,
+     "breakTackle": 89,
+     "elusiveness": 73,
+     "tackling": 18,
+     "pursuit": 21,
+     "awareness": 55,
+     "discipline": 63
+    }
+   },
+   {
+    "idx": 17,
+    "slot": "CB_S",
+    "rosterPosition": "CB",
+    "weightLb": 188,
+    "ratings0to100": {
+     "strength": 30,
+     "balance": 19,
+     "breakTackle": 20,
+     "elusiveness": 33,
+     "tackling": 73,
+     "pursuit": 57,
+     "awareness": 56,
+     "discipline": 77
+    }
+   },
+   {
+    "idx": 19,
+    "slot": "NB",
+    "rosterPosition": "S",
+    "weightLb": 208,
+    "ratings0to100": {
+     "strength": 55,
+     "balance": 19,
+     "breakTackle": 40,
+     "elusiveness": 18,
+     "tackling": 81,
+     "pursuit": 60,
+     "awareness": 66,
+     "discipline": 58
+    }
+   },
+   {
+    "idx": 20,
+    "slot": "FS",
+    "rosterPosition": "CB",
+    "weightLb": 191,
+    "ratings0to100": {
+     "strength": 48,
+     "balance": 37,
+     "breakTackle": 40,
+     "elusiveness": 18,
+     "tackling": 65,
+     "pursuit": 35,
+     "awareness": 60,
+     "discipline": 60
+    }
+   }
+  ],
+  "playerContextCaution": "This runner has breakTackle89 and balance72; the first two defenders both have balance19. Ratings are generated model inputs, not measured NFL quality. Keep these same bodies in comparisons and do not infer population rates from this rep."
+ },
+ "g1p169": {
+  "finding": "Backside RG trap path is late to a penetrating 3-technique. LG is a combo helper, not the puller. This play does not establish universally excessive DL get-off.",
+  "getOffGateS": 0.2857239923680329,
+  "defender": {
+   "idx": 13,
+   "slot": "DT_S",
+   "rosterPosition": "EDGE",
+   "weightLb": 256
+  },
+  "puller": {
+   "idx": 5,
+   "slot": "RG",
+   "plan": {
+    "drive": {
+     "x": 0.37139067635410367,
+     "y": 0.9284766908852592
+    },
+    "kind": "pull",
+    "pullPath": [
+     {
+      "x": 38.858284829115824,
+      "y": 25.178286957158743
+     },
+     {
+      "x": 39.05828482911582,
+      "y": 27.69055418418601
+     },
+     {
+      "x": 39.80828482911582,
+      "y": 27.89055418418601
+     }
+    ],
+    "pullRole": "trap",
+    "target": {
+     "agent": 13
+    }
+   }
+  },
+  "sameContextMotion": [
+   {
+    "dt": {
+     "tickLabelS": 0.5,
+     "before": {
+      "positionYd": {
+       "x": 40.681656717726185,
+       "y": 28.34796047441835
+      },
+      "velocityYdPerS": {
+       "x": -1.2489936907387307,
+       "y": 0.07305178660930634
+      },
+      "speedYdPerS": 1.2511282120677991,
+      "support": "up"
+     },
+     "after": {
+      "positionYd": {
+       "x": 40.611943445164414,
+       "y": 28.35203790022825
+      },
+      "velocityYdPerS": {
+       "x": -1.5395372117321269,
+       "y": 0.09004524578664812
+      },
+      "speedYdPerS": 1.5421682698709338,
+      "support": "up"
+     }
+    },
+    "puller": {
+     "tickLabelS": 0.5,
+     "before": {
+      "positionYd": {
+       "x": 39.23188270832124,
+       "y": 25.325489011924944
+      },
+      "velocityYdPerS": {
+       "x": -0.5592102172328139,
+       "y": 0.45871667635761193
+      },
+      "speedYdPerS": 0.7232821415092073,
+      "support": "up"
+     },
+     "after": {
+      "positionYd": {
+       "x": 39.20368690935025,
+       "y": 25.35065698477964
+      },
+      "velocityYdPerS": {
+       "x": -0.5686217416065389,
+       "y": 0.5480022378299693
+      },
+      "speedYdPerS": 0.7897069948368873,
+      "support": "up"
+     }
+    }
+   },
+   {
+    "dt": {
+     "tickLabelS": 1,
+     "before": {
+      "positionYd": {
+       "x": 39.40335825617735,
+       "y": 28.422726253564004
+      },
+      "velocityYdPerS": {
+       "x": -3.7089866545994523,
+       "y": 0.21693312275147567
+      },
+      "speedYdPerS": 3.715325286397349,
+      "support": "up"
+     },
+     "after": {
+      "positionYd": {
+       "x": 39.21306162076866,
+       "y": 28.430964430607386
+      },
+      "velocityYdPerS": {
+       "x": -3.902878761747905,
+       "y": 0.11259395898382088
+      },
+      "speedYdPerS": 3.9045025327821867,
+      "support": "up"
+     }
+    },
+    "puller": {
+     "tickLabelS": 1,
+     "before": {
+      "positionYd": {
+       "x": 39.04198834121733,
+       "y": 26.002619184736822
+      },
+      "velocityYdPerS": {
+       "x": -0.4976484993537754,
+       "y": 2.0235641327019898
+      },
+      "speedYdPerS": 2.083858399236143,
+      "support": "up"
+     },
+     "after": {
+      "positionYd": {
+       "x": 39.02010463686452,
+       "y": 26.106637887362723
+      },
+      "velocityYdPerS": {
+       "x": -0.3776996747592013,
+       "y": 2.137183972333989
+      },
+      "speedYdPerS": 2.1703023696974797,
+      "support": "up"
+     }
+    }
+   },
+   {
+    "dt": {
+     "tickLabelS": 1.3,
+     "before": {
+      "positionYd": {
+       "x": 38.130487771308914,
+       "y": 28.384180586618527
+      },
+      "velocityYdPerS": {
+       "x": -4.697492322423318,
+       "y": -0.5776807593116371
+      },
+      "speedYdPerS": 4.732879586351726,
+      "support": "up"
+     },
+     "after": {
+      "positionYd": {
+       "x": 37.8931264881182,
+       "y": 28.349655888731952
+      },
+      "velocityYdPerS": {
+       "x": -4.7969590052051885,
+       "y": -0.8033071561513001
+      },
+      "speedYdPerS": 4.8637555535556105,
+      "support": "up"
+     }
+    },
+    "puller": {
+     "tickLabelS": 1.3,
+     "before": {
+      "positionYd": {
+       "x": 38.8749754303033,
+       "y": 26.671165982825702
+      },
+      "velocityYdPerS": {
+       "x": -0.7410402118147436,
+       "y": 2.3425675770370424
+      },
+      "speedYdPerS": 2.456982590193028,
+      "support": "up"
+     },
+     "after": {
+      "positionYd": {
+       "x": 38.84322817364972,
+       "y": 26.791038953675972
+      },
+      "velocityYdPerS": {
+       "x": -0.5288500543285306,
+       "y": 2.4523512569738273
+      },
+      "speedYdPerS": 2.5087265828592002,
+      "support": "up"
+     }
+    }
+   }
+  ],
+  "bdb2025SmallGeometryProbe": {
+   "scope": "BDB2025 2022week1 charted TRAP; non-nullified non-dropback; DL/OLB235\u2013290lb within4.5yd lateral/-.25..2yd depth at snap; not assigned trap-target labels",
+   "measurement": "0.2sec central differences at10Hz with both coordinates rounded0.1yd to match light engine; no provider s/a fields",
+   "limitations": [
+    "Not a DL get-off reaction measure; snap velocity/context/contact unknown.",
+    "Minimum OL proximity is geometric only, does not establish load.",
+    "Tiny retrospective group, not NFL population benchmark or solver calibration."
+   ],
+   "trapPlaysPresent": 13,
+   "allMatched": {
+    "n": 11,
+    "speed0p5": {
+     "median": 1.1180339887499107,
+     "range": [
+      0.707106781186545,
+      2.236067977499782
+     ]
+    },
+    "speed1p0": {
+     "median": 1.8027756377319906,
+     "range": [
+      1.1180339887498947,
+      3.6400549446402373
+     ]
+    }
+   },
+   "noOlCloserThan1p0First1p0": {
+    "n": 4,
+    "speed0p5": {
+     "median": 1.1180339887499027,
+     "range": [
+      0.7071067811865575,
+      2.236067977499782
+     ]
+    },
+    "speed1p0": {
+     "median": 1.8027756377319857,
+     "range": [
+      1.4999999999999858,
+      3.6400549446402373
+     ]
+    }
+   }
+  },
+  "referenceSourcePins": {
+   "trackingWeek1": {
+    "file": "tracking_week_1.csv",
+    "bytes": 971403802,
+    "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+   },
+   "metadata": [
+    {
+     "file": "plays.csv",
+     "bytes": 6892353,
+     "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+     "file": "players.csv",
+     "bytes": 104749,
+     "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    }
+   ],
+   "note": "Provider hashes carried from existing verified reference manifest; this small geometry probe checked current file sizes but did not rehash the gigabyte file. No new download."
+  },
+  "probePath": "out/run-coaching/trap-movement-probe.py",
+  "probeSha256": "4351e0b783ebd233c515d23bf3b4c22907580160c71d2e0cdb9da58db6840ea0",
+  "doNext": "Inspect puller clearing/interception and response to penetration before changing acceleration. Compare ordinary, penetrative and mirrored trap control paths with same players."
+ },
+ "controlledTackles": {
+  "collector": "scripts/diag/tackle-approach-review.ts",
+  "collectorSha256": "76f22c61b97c171040918cf6a6d5b9b5bd55f5a49848cdf2e02a77ac03c02e33",
+  "inputSha256": "46a1d3b8cbed9b54c62400e3a7f44c323863677eb57cbf97f5ae1d90b61f28c3",
+  "sourceBefore": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "sourceAfter": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "cases": [
+   {
+    "encounter": "frontal",
+    "mirroredOutcomeAgrees": true,
+    "outcome": "tackle",
+    "durationS": 0.8999999999999999,
+    "firstWrapTickLabelS": 2.2,
+    "speedAtAcquisitionYdPerS": 6,
+    "minimumAvailableCarrierSpeedFirst0p30sYdPerS": 2.5544706455809676,
+    "availableSamplesFirst0p30s": 3,
+    "samplingLimit": "Nearby-opponent samples cease when the defender falls; this is the minimum observed in the window, not a guaranteed complete minimum.",
+    "loadedHolds": 1,
+    "brokenHolds": 0,
+    "observerVerified": true
+   },
+   {
+    "encounter": "crossing",
+    "mirroredOutcomeAgrees": true,
+    "outcome": "tackle",
+    "durationS": 1.15,
+    "firstWrapTickLabelS": 2.4,
+    "speedAtAcquisitionYdPerS": 6,
+    "minimumAvailableCarrierSpeedFirst0p30sYdPerS": 4.086543296984728,
+    "availableSamplesFirst0p30s": 6,
+    "samplingLimit": "Nearby-opponent samples cease when the defender falls; this is the minimum observed in the window, not a guaranteed complete minimum.",
+    "loadedHolds": 1,
+    "brokenHolds": 0,
+    "observerVerified": true
+   },
+   {
+    "encounter": "glancingReach",
+    "mirroredOutcomeAgrees": true,
+    "outcome": "timeout",
+    "durationS": 6,
+    "firstWrapTickLabelS": 2,
+    "speedAtAcquisitionYdPerS": 6,
+    "minimumAvailableCarrierSpeedFirst0p30sYdPerS": 6,
+    "availableSamplesFirst0p30s": 1,
+    "samplingLimit": "Nearby-opponent samples cease when the defender falls; this is the minimum observed in the window, not a guaranteed complete minimum.",
+    "loadedHolds": 1,
+    "brokenHolds": 1,
+    "observerVerified": true
+   },
+   {
+    "encounter": "fasterCarrier",
+    "mirroredOutcomeAgrees": true,
+    "outcome": "timeout",
+    "durationS": 6,
+    "firstWrapTickLabelS": null,
+    "speedAtAcquisitionYdPerS": null,
+    "minimumAvailableCarrierSpeedFirst0p30sYdPerS": null,
+    "availableSamplesFirst0p30s": 0,
+    "samplingLimit": "Nearby-opponent samples cease when the defender falls; this is the minimum observed in the window, not a guaranteed complete minimum.",
+    "loadedHolds": 0,
+    "brokenHolds": 0,
+    "observerVerified": true
+   },
+   {
+    "encounter": "fatiguedCrossing",
+    "mirroredOutcomeAgrees": true,
+    "outcome": "tackle",
+    "durationS": 1.15,
+    "firstWrapTickLabelS": 2.4,
+    "speedAtAcquisitionYdPerS": 6,
+    "minimumAvailableCarrierSpeedFirst0p30sYdPerS": 4.330093752721337,
+    "availableSamplesFirst0p30s": 5,
+    "samplingLimit": "Nearby-opponent samples cease when the defender falls; this is the minimum observed in the window, not a guaranteed complete minimum.",
+    "loadedHolds": 1,
+    "brokenHolds": 0,
+    "observerVerified": true
+   },
+   {
+    "encounter": "trafficCrossing",
+    "mirroredOutcomeAgrees": true,
+    "outcome": "tackle",
+    "durationS": 1.4500000000000002,
+    "firstWrapTickLabelS": 2.65,
+    "speedAtAcquisitionYdPerS": 5.8152037177118325,
+    "minimumAvailableCarrierSpeedFirst0p30sYdPerS": 4.670298555807186,
+    "availableSamplesFirst0p30s": 6,
+    "samplingLimit": "Nearby-opponent samples cease when the defender falls; this is the minimum observed in the window, not a guaranteed complete minimum.",
+    "loadedHolds": 1,
+    "brokenHolds": 0,
+    "observerVerified": true
+   }
+  ],
+  "limits": "Fixed generated roster and one execution seed for isolated cases. Parked bystanders. Gain fields include fixed10yd LOS offset and must not be interpreted as tackle travel. These distinguish frontal/crossing/reaching mechanisms, not NFL tackle probabilities.",
+  "reuseFirst": [
+   "test/grasp-world.test.ts",
+   "test/world-physics.test.ts",
+   "test/physics.test.ts",
+   "scripts/diag/shared-capabilities.ts",
+   "scripts/scenario-pack.ts"
+  ]
+ },
+ "movement": {
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "inputSha256": "d6e1a492f11326a05b76d298ee86b9c753c6d4f21b6a3d57755fe20b907f2155",
+  "selection": "Audit subset, predeclared before current run: three deterministic lowest SHA256 athlete:event:drill keys per six task groups, 2025 draft and measured shuttle+threeCone required. Not population accuracy or calibrated holdout; original 888-fixture extraction unchanged.",
+  "fixtureCount": 18,
+  "trialCount": 72,
+  "measuredTaskGroups": [
+   {
+    "role": "DB",
+    "task": "BACK_PEDAL_AND_90_DEGREE_BREAK_TO_BALL",
+    "athletes": 3,
+    "trajectories": 3,
+    "referenceMedian": {
+     "peakSpeed": 8.673693051932526,
+     "peakAccel": 3.777867916645672,
+     "peakBrake": 0.8347914129373057,
+     "peakLateral": 6.809789081612322
+    },
+    "currentMappingMedian": {
+     "peakSpeed": 8.818252460188585,
+     "peakAccel": 3.3994824380702626,
+     "peakBrake": 1.257976257835649,
+     "peakLateral": 6.114594234338756
+    },
+    "currentTrackingErrors": {
+     "fallen": 0,
+     "medianPathRmseYd": 1.2263449979324195,
+     "medianMaximumPathErrorYd": 2.8838990988386737
+    }
+   },
+   {
+    "role": "OL",
+    "task": "FORTY_YARD_DASH",
+    "athletes": 3,
+    "trajectories": 3,
+    "referenceMedian": {
+     "peakSpeed": 9.096525953947246,
+     "peakAccel": 4.317383075890158,
+     "peakBrake": 0.2043039930664392,
+     "peakLateral": 1.2434022491745604
+    },
+    "currentMappingMedian": {
+     "peakSpeed": 7.475888801792493,
+     "peakAccel": 3.633712843529533,
+     "peakBrake": 0.0,
+     "peakLateral": 0.46700264073894054
+    },
+    "currentTrackingErrors": {
+     "fallen": 0,
+     "medianPathRmseYd": 4.832153237005266,
+     "medianMaximumPathErrorYd": 8.809708342688142
+    }
+   },
+   {
+    "role": "OL",
+    "task": "OL_PULL_DRILL_LONG_PULL_RIGHT",
+    "athletes": 3,
+    "trajectories": 3,
+    "referenceMedian": {
+     "peakSpeed": 6.51588926493298,
+     "peakAccel": 3.6604050281607226,
+     "peakBrake": 2.916362573083826,
+     "peakLateral": 6.358863953459379
+    },
+    "currentMappingMedian": {
+     "peakSpeed": 5.204086594521984,
+     "peakAccel": 3.227738606051229,
+     "peakBrake": 2.4547211904105737,
+     "peakLateral": 4.687390040629582
+    },
+    "currentTrackingErrors": {
+     "fallen": 0,
+     "medianPathRmseYd": 2.3569925655493447,
+     "medianMaximumPathErrorYd": 4.1224781852907615
+    }
+   },
+   {
+    "role": "OL",
+    "task": "SHORT_SHUTTLE",
+    "athletes": 3,
+    "trajectories": 3,
+    "referenceMedian": {
+     "peakSpeed": 5.721173789297987,
+     "peakAccel": 6.083839065069371,
+     "peakBrake": 7.255544933031612,
+     "peakLateral": 6.742144630623641
+    },
+    "currentMappingMedian": {
+     "peakSpeed": 5.840086350672069,
+     "peakAccel": 4.2729761760914515,
+     "peakBrake": 5.090549435354903,
+     "peakLateral": 4.299607102262286
+    },
+    "currentTrackingErrors": {
+     "fallen": 0,
+     "medianPathRmseYd": 2.3177702584353805,
+     "medianMaximumPathErrorYd": 5.488343311671512
+    }
+   },
+   {
+    "role": "OL",
+    "task": "THREE_CONE_DRILL",
+    "athletes": 3,
+    "trajectories": 3,
+    "referenceMedian": {
+     "peakSpeed": 6.282448537141379,
+     "peakAccel": 4.5130540977629,
+     "peakBrake": 4.278755008483302,
+     "peakLateral": 6.91223487340175
+    },
+    "currentMappingMedian": {
+     "peakSpeed": 5.164801357907689,
+     "peakAccel": 4.339580427940739,
+     "peakBrake": 5.187897182665966,
+     "peakLateral": 4.979880222875208
+    },
+    "currentTrackingErrors": {
+     "fallen": 0,
+     "medianPathRmseYd": 2.419165311317127,
+     "medianMaximumPathErrorYd": 5.182816832459154
+    }
+   },
+   {
+    "role": "WR",
+    "task": "FORTY_YARD_DASH",
+    "athletes": 3,
+    "trajectories": 3,
+    "referenceMedian": {
+     "peakSpeed": 10.967025268461736,
+     "peakAccel": 5.426468417818651,
+     "peakBrake": 0.0,
+     "peakLateral": 1.1124796563170185
+    },
+    "currentMappingMedian": {
+     "peakSpeed": 9.441336427186483,
+     "peakAccel": 4.874866035680627,
+     "peakBrake": 0.0,
+     "peakLateral": 0.5004681203825891
+    },
+    "currentTrackingErrors": {
+     "fallen": 0,
+     "medianPathRmseYd": 4.219892476910723,
+     "medianMaximumPathErrorYd": 7.4433367641720425
+    }
+   }
+  ],
+  "measurementSha256": "6f68795e3e441d7de5acb039473a2d6668d464d794e476543208afb1c0dc2925",
+  "reporterSha256": "ad903efe49292b6e4fa183486c0ae0c222e975a89859b6233ac8655efcfb9605",
+  "fixtureExtractorSha256": "8ebdd21504989132a4ab3bf759fe823844b5ebbf8a138e5ac7471bcd9b0edb42",
+  "inputProviderPins": {
+   "combine_results.csv": {
+    "bytes": 41020,
+    "sha256": "e4773ef68167d508f3916d446cd411dfd77a87e5765d3babcb986201fb143b86"
+   },
+   "combine_tracking.csv": {
+    "bytes": 83788174,
+    "sha256": "541c69f6629f5f803b08033c5c386735582120973562134b2c1e7ec6553fb0d3"
+   }
+  },
+  "limits": [
+   "Three retained paths per task, neutral ratings and measurable-matched capabilities.",
+   "This is an ideal desired-path follower in combine drills, not game awareness or same-effort football motion.",
+   "DB body orientation is unknown; it does not validate actual backpedal facing.",
+   "No RB/QB/LB groups or grip forces. Unknown contact in OL drills. Inspected historical split label holdout2025 is not a blind holdout.",
+   "No blanket too-fast diagnosis: current OL pull follower is slower and turns less tightly than these observed drill paths, while DB peak speed is close. Do not raise global agility to fix a late chosen pull path."
+  ]
+ },
+ "nflContactLimits": {
+  "existingTools": [
+   "scripts/data/bdb2025_contact.py",
+   "scripts/data/run-game-reference.py",
+   "data/reviews/run-game-current/reference/contact-operator-probe.py"
+  ],
+  "availableEvidence": "BDB2025 first_contact/tackle/ball_snap/handoff events and carrier/defender10Hz positions support contact-relative speed and travel windows. They do not label wrap quality, transmitted grip force, body-surface impact, or why a hold slipped.",
+  "operatorWitness": {
+   "footballMetadataLos": {
+    "n": 1142,
+    "mean": 0.37169878704117365
+   },
+   "footballSnapBallLos": {
+    "n": 1142,
+    "mean": 0.7458406321430309
+   },
+   "runnerSnapBallLos": {
+    "n": 1142,
+    "mean": 0.9970840517568482
+   }
+  },
+  "operatorCaution": "On the same1142plays, reported YBC varies from0.372 to0.997yd solely by football-vs-carrier point and metadata-vs-snap LOS. A speed-loss comparison must likewise use identical sampling, rounding, timing and contact definition; labels alone cannot establish physical grip performance.",
+  "mostUsefulNextComparison": "First-contact carrier entry-speed/mass bins with approach angle, nearest-defender geometry, subsequent crowding, first-contact vs tackle interval, and censoring. Independently classify body hit versus reaching contact in film; matching only first_contact mixes very different contacts."
+ },
+ "tossVersusOutsideZone": {
+  "hypothesisSource": "User-uploaded12-playfilm review nominated TossG3-P04864yd versus OutsideZoneG4-P074-.74yd. Outcome-selected mechanism contrast, not paired counterfactual, typical frequency or a candidate evaluation.",
+  "frozenBaselineRoot": "out/run-coaching/baseline-source",
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "collectorSha256": "f09be9fee487f1fef6ee2d0228e91880451974c3395856316b39f1a86d502a2d",
+  "commonSha256": "17266132697681cf43e2686e0cfa42778b85685a3d97c6654289c8cce2261571",
+  "finding": "In the Toss both safeties acquire carrying=true before reaching the runner, but neither establishes a torso hit: two weak reaching/diving holds slip. The FS maintains substantial transverse velocity near the tackle opportunity. In the defensive success, the edge defender closes the body gap and a torso impact sharply slows the runner. This isolates achievable approach/contact geometry before tackle-force calibration.",
+  "contrasts": [
+   "Toss: SS first hold at3.30s slips3.45s. FS misses4.15s, dives4.65s and slips4.95s. Zero recorded carrier torso impacts throughout10.05splay.",
+   "Toss FS at3.30s consumed0.20\u20130.25sold carrier carrying=true; seen velocity~(7.62,-2.21)yd/s. Actual velocity(0.47,-7.14), while requesting(-0.44,-9.59). At4.00 request(6.60,-6.55), achieved(3.37,-6.05). The change in requested direction outpaces actual redirection.",
+   "OZ success: first torso impact at2.60s, closing6.836yd/s, normal impulse387.554kg\u00b7yd/s. Carrier speed4.695\u21921.066yd/s that step, fall2.70s. Grasp quality grows while body gap closes."
+  ],
+  "doNext": "Compare top-down/leverage-preserving approach requests with an achievable gathered contact point using existing movement limits and delayed views. Keep same bodies/forces; retain an ordinary edge tackle and no-change control. Do not erase legitimate misses or award more strength because one play became a touchdown.",
+  "limits": [
+   "These are two different calls/rosters/snapcontexts, not matched treatment-control twins. No cause or frequency follows from gain difference.",
+   "Snapshot timestamps are tick labels; World before/after states bracket50ms. Contact events occur after World; do not infer sub-tick onset from light events.",
+   "Acquired cues establish information availability but not cognition beyond the recorded requests. Body-facing is not gaze.",
+   "Momentum-derived nonground load includes torso impact in the OZ case; do not call all of it grip.",
+   "The enlarged0.55yardviewer markers are not physical body radii. Zero body-contact records are retained despite apparent glyph overlap."
+  ],
+  "plays": [
+   {
+    "id": "G3-P048",
+    "engineSourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+    "sourceAfter": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+    "snapSeed": 3359344253,
+    "gameSeed": 3627243488,
+    "initialSha256": "d951b1e2c7b6d8b35cae0bdc3c6be524ed8b2cdaedd2898c3fc1ec3236702b8f",
+    "resultSha256": "6a7ed2c3f7f08549490b84f34b9f32541f4092c05483b5a7a15b4f524d20100a",
+    "finalSha256": "acb9863f81065d735440125e0ef5d4e0094c275f83b04e1ab120d476d44d266b",
+    "nextRng": 81637791,
+    "ticksSha256": "88407a13e59eb4ba9a97f3c6896b98188802c308ab2ae99a6914e8b6088e5e0a",
+    "observerPlainAndOriginalGameVerified": true,
+    "inputIndexSha256": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f",
+    "packetPath": "out/run-coaching/contact-native/G3-P048.json.gz",
+    "packetSha256": "4d9a4da3e297c4a056a5922cce8fff4f702fe9773e5d78fffd8ab6a76143a385",
+    "naturalResult": {
+     "outcome": "touchdown",
+     "offenseYards": 64.2
+    },
+    "carrierTorsoContactCount": 0,
+    "firstCarrierTorsoContact": null,
+    "contactEvents": [
+     {
+      "t": 3.3,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 21,
+      "pos": {
+       "x": 50.41,
+       "y": 18.43
+      },
+      "note": "grasp"
+     },
+     {
+      "t": 3.3,
+      "type": "tackle_wrap",
+      "a": 21,
+      "b": 6,
+      "pos": {
+       "x": 50.47,
+       "y": 19.81
+      },
+      "note": "initial"
+     },
+     {
+      "t": 3.45,
+      "type": "broken_tackle",
+      "a": 6,
+      "b": 21,
+      "pos": {
+       "x": 51.21,
+       "y": 18.2
+      },
+      "note": "hold slipped"
+     },
+     {
+      "t": 4.15,
+      "type": "missed_tackle",
+      "a": 20,
+      "b": 6,
+      "pos": {
+       "x": 57.25,
+       "y": 17.03
+      }
+     },
+     {
+      "t": 4.65,
+      "type": "tackle_wrap",
+      "a": 20,
+      "b": 6,
+      "pos": {
+       "x": 60.03,
+       "y": 14.62
+      },
+      "note": "initial"
+     },
+     {
+      "t": 4.7,
+      "type": "fall",
+      "a": 20,
+      "pos": {
+       "x": 60.37,
+       "y": 14.4
+      },
+      "note": "dive"
+     },
+     {
+      "t": 4.95,
+      "type": "broken_tackle",
+      "a": 6,
+      "b": 20,
+      "pos": {
+       "x": 64.11,
+       "y": 14.03
+      },
+      "note": "hold slipped"
+     }
+    ],
+    "loadSamples": [
+     {
+      "tickLabelS": 3.35,
+      "carrierBefore": {
+       "positionYd": {
+        "x": 50.413421797681394,
+        "y": 18.434398721847543
+       },
+       "velocityYdPerS": {
+        "x": 7.939155736971229,
+        "y": -2.442043066821177
+       },
+       "speedYdPerS": 8.306248741525417,
+       "support": "up"
+      },
+      "carrierAfter": {
+       "velocityYdPerS": {
+        "x": 7.980561559766151,
+        "y": -2.2818612570802728
+       },
+       "speedYdPerS": 8.300376714690792,
+       "support": "up"
+      },
+      "groundImpulseKgYdPerS": {
+       "x": 5.274323387957823,
+       "y": -4.844784355782079
+      },
+      "nongroundImpulseFromMomentumKgYdPerS": {
+       "x": -1.8748962698617735,
+       "y": 17.995746010521195
+      },
+      "carrierTorsoContacts": [],
+      "holdsAfterStep": [
+       {
+        "defenderIdx": 21,
+        "origin": "reach",
+        "capacityKgYdPerS2": 363.29591506449185,
+        "meanForceKgYdPerS2": 363.29591506449174,
+        "slipping": true,
+        "broken": false,
+        "legs": 0.19594414046710446
+       }
+      ]
+     },
+     {
+      "tickLabelS": 4.7,
+      "carrierBefore": {
+       "positionYd": {
+        "x": 61.90468893972219,
+        "y": 14.657017983944488
+       },
+       "velocityYdPerS": {
+        "x": 9.0488525926583,
+        "y": -2.513437192586166
+       },
+       "speedYdPerS": 9.391437577108963,
+       "support": "up"
+      },
+      "carrierAfter": {
+       "velocityYdPerS": {
+        "x": 8.923073165040948,
+        "y": -2.4913235063602417
+       },
+       "speedYdPerS": 9.264336323882945,
+       "support": "up"
+      },
+      "groundImpulseKgYdPerS": {
+       "x": 3.5804426038950616,
+       "y": 2.3863035501002443
+      },
+      "nongroundImpulseFromMomentumKgYdPerS": {
+       "x": -13.90696115320084,
+       "y": -0.5707650687179999
+      },
+      "carrierTorsoContacts": [],
+      "holdsAfterStep": [
+       {
+        "defenderIdx": 20,
+        "origin": "lunge+behind",
+        "capacityKgYdPerS2": 285.5336890546364,
+        "meanForceKgYdPerS2": 278.3953468282704,
+        "slipping": true,
+        "broken": false,
+        "legs": 0.8222796294971493
+       }
+      ]
+     },
+     {
+      "tickLabelS": 4.9,
+      "carrierBefore": {
+       "positionYd": {
+        "x": 63.676195627424754,
+        "y": 14.15770810291093
+       },
+       "velocityYdPerS": {
+        "x": 8.732001167766096,
+        "y": -2.476958231914507
+       },
+       "speedYdPerS": 9.07651730987814,
+       "support": "up"
+      },
+      "carrierAfter": {
+       "velocityYdPerS": {
+        "x": 8.820221322563674,
+        "y": -2.4378122892012195
+       },
+       "speedYdPerS": 9.150914322426331,
+       "support": "up"
+      },
+      "groundImpulseKgYdPerS": {
+       "x": 8.278805518363484,
+       "y": 3.3886319602412116
+      },
+      "nongroundImpulseFromMomentumKgYdPerS": {
+       "x": -1.035911491915103,
+       "y": -0.1747414916932386
+      },
+      "carrierTorsoContacts": [],
+      "holdsAfterStep": [
+       {
+        "defenderIdx": 20,
+        "origin": "lunge+behind",
+        "capacityKgYdPerS2": 360.18725056715397,
+        "meanForceKgYdPerS2": 21.010922949750643,
+        "slipping": true,
+        "broken": true,
+        "legs": 0.8936939206796007
+       }
+      ]
+     }
+    ],
+    "defenderContexts": [
+     {
+      "idx": 20,
+      "slot": "FS",
+      "installedRunFit": {
+       "edge": "box",
+       "gap": "A",
+       "kind": "alley",
+       "pace": "stack",
+       "side": 1,
+       "technique": "attack"
+      }
+     },
+     {
+      "idx": 21,
+      "slot": "SS",
+      "installedRunFit": {
+       "edge": "box",
+       "gap": "D",
+       "kind": "force",
+       "pace": "stack",
+       "side": -1,
+       "technique": "attack"
+      }
+     }
+    ],
+    "decisionSamples": [
+     {
+      "tickLabelS": 3.3,
+      "idx": 20,
+      "slot": "FS",
+      "actualPositionYd": {
+       "x": 55.39982519646778,
+       "y": 23.07584859617681
+      },
+      "actualVelocityYdPerS": {
+       "x": 0.47379953628873517,
+       "y": -7.140982038789294
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": -0.4358097940115219,
+        "y": -9.591892004224984
+       },
+       "effort": 1
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": -0.4358097940115219,
+        "y": -9.591892004224984
+       },
+       "effort": 1
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 49.86702094949815,
+        "y": 18.514300932772468
+       },
+       "vel": {
+        "x": 7.2192361283180935,
+        "y": -2.3594700875196013
+       },
+       "stance": null,
+       "facing": 0.05735719804676615,
+       "age": 0.4,
+       "pose": "up",
+       "carrying": true
+      }
+     },
+     {
+      "tickLabelS": 3.3,
+      "idx": 21,
+      "slot": "SS",
+      "actualPositionYd": {
+       "x": 50.5204623486095,
+       "y": 19.91185968436924
+      },
+      "actualVelocityYdPerS": {
+       "x": -1.2105799073547443,
+       "y": -2.04728637438338
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": 6.2441763734245175,
+        "y": -5.717973858702303
+       },
+       "facing": -1.9482111989264552,
+       "cutSkill": 1.0785714285714285,
+       "push": 1,
+       "posture": 0.563265306122449
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": 6.2441763734245175,
+        "y": -5.717973858702303
+       },
+       "facing": -1.9482111989264552,
+       "cutSkill": 1.0785714285714285,
+       "push": 1,
+       "posture": 0.563265306122449
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 49.99268427873299,
+        "y": 18.58049302653172
+       },
+       "vel": {
+        "x": 7.617484113916394,
+        "y": -2.211287095982423
+       },
+       "stance": null,
+       "facing": -0.3311492463927175,
+       "age": 0.2,
+       "pose": "up",
+       "carrying": true
+      }
+     },
+     {
+      "tickLabelS": 4.0,
+      "idx": 20,
+      "slot": "FS",
+      "actualPositionYd": {
+       "x": 56.47304430091301,
+       "y": 18.169785140389404
+      },
+      "actualVelocityYdPerS": {
+       "x": 3.365370245460961,
+       "y": -6.04654500962376
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": 6.603710106422843,
+        "y": -6.554395620179948
+       },
+       "facing": -2.014856642956113,
+       "cutSkill": 1.1357142857142857,
+       "posture": 0.6040816326530613
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": 6.603710106422843,
+        "y": -6.554395620179948
+       },
+       "facing": -2.014856642956113,
+       "cutSkill": 1.1357142857142857,
+       "posture": 0.6040816326530613
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 55.730491199550244,
+        "y": 16.608980787692172
+       },
+       "vel": {
+        "x": 8.320764229428258,
+        "y": -3.0371120838737418
+       },
+       "stance": null,
+       "facing": -0.35804367348025307,
+       "age": 0.2,
+       "pose": "up",
+       "carrying": true
+      }
+     },
+     {
+      "tickLabelS": 4.15,
+      "idx": 20,
+      "slot": "FS",
+      "actualPositionYd": {
+       "x": 57.03937935015506,
+       "y": 17.303235109799935
+      },
+      "actualVelocityYdPerS": {
+       "x": 4.174923008283982,
+       "y": -5.492186133713565
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": 8.40177726633933,
+        "y": -4.589000174697481
+       },
+       "facing": -1.5950536190942266,
+       "cutSkill": 1.1357142857142857,
+       "push": 1,
+       "posture": 0.6040816326530613
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": 8.40177726633933,
+        "y": -4.589000174697481
+       },
+       "facing": -1.5950536190942266,
+       "cutSkill": 1.1357142857142857,
+       "push": 1,
+       "posture": 0.6040816326530613
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 57.01108403900376,
+        "y": 16.136997725275734
+       },
+       "vel": {
+        "x": 8.43804833563472,
+        "y": -3.0956848735006623
+       },
+       "stance": null,
+       "facing": -0.3483251405820909,
+       "age": 0.2,
+       "pose": "up",
+       "carrying": true
+      }
+     }
+    ]
+   },
+   {
+    "id": "G4-P074",
+    "engineSourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+    "sourceAfter": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+    "snapSeed": 2221043786,
+    "gameSeed": 1397778264,
+    "initialSha256": "8234b74fe8febfbc558d3a0dcfab8b346b797cdf4bccd3e0995e0554dd3326dc",
+    "resultSha256": "7d4ca5a6689ce2d0370d88c482eab9725be0ed0f9d4a7a7e771beb0dd8c84bfe",
+    "finalSha256": "2ef88aa4835e71fd1cfb1c37472c648f961bafe417e8e8c3bce53adbc74b532d",
+    "nextRng": 876615467,
+    "ticksSha256": "84a76d54854c6558a0969b42740ff1d00a135fe2fe56827cac52723018e46e5b",
+    "observerPlainAndOriginalGameVerified": true,
+    "inputIndexSha256": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f",
+    "packetPath": "out/run-coaching/contact-native/G4-P074.json.gz",
+    "packetSha256": "748b60f6263d28e174d872f94cfd9a14ed8f8da8566bc26faa68c366e3ce8144",
+    "naturalResult": {
+     "outcome": "tackle",
+     "offenseYards": -0.74
+    },
+    "carrierTorsoContactCount": 10,
+    "firstCarrierTorsoContact": {
+     "tickLabelS": 2.6,
+     "closing": 6.835790723139875,
+     "i": 6,
+     "impulse": 387.5541143729039,
+     "j": 12
+    },
+    "contactEvents": [
+     {
+      "t": 2.4,
+      "type": "carrier_contact",
+      "a": 6,
+      "b": 12,
+      "pos": {
+       "x": 48.26,
+       "y": 26.31
+      },
+      "note": "grasp"
+     },
+     {
+      "t": 2.4,
+      "type": "tackle_wrap",
+      "a": 12,
+      "b": 6,
+      "pos": {
+       "x": 49.81,
+       "y": 25.89
+      },
+      "note": "initial"
+     },
+     {
+      "t": 2.7,
+      "type": "fall",
+      "a": 6,
+      "pos": {
+       "x": 49.15,
+       "y": 25.86
+      },
+      "note": "contact"
+     },
+     {
+      "t": 3.05,
+      "type": "tackle",
+      "a": 12,
+      "b": 6,
+      "pos": {
+       "x": 49.58,
+       "y": 25.6
+      }
+     }
+    ],
+    "loadSamples": [
+     {
+      "tickLabelS": 2.45,
+      "carrierBefore": {
+       "positionYd": {
+        "x": 48.25825135326804,
+        "y": 26.306298003048227
+       },
+       "velocityYdPerS": {
+        "x": 3.5043469598686716,
+        "y": -2.7770426889750213
+       },
+       "speedYdPerS": 4.471287701717529,
+       "support": "up"
+      },
+      "carrierAfter": {
+       "velocityYdPerS": {
+        "x": 3.8435278459893576,
+        "y": -2.35425707243952
+       },
+       "speedYdPerS": 4.507242246210768,
+       "support": "up"
+      },
+      "groundImpulseKgYdPerS": {
+       "x": 23.52611174135565,
+       "y": -1.0185943188137008
+      },
+      "nongroundImpulseFromMomentumKgYdPerS": {
+       "x": 10.628557621352769,
+       "y": 43.592051535801005
+      },
+      "carrierTorsoContacts": [],
+      "holdsAfterStep": [
+       {
+        "defenderIdx": 12,
+        "origin": "reach",
+        "capacityKgYdPerS2": 897.4917862619831,
+        "meanForceKgYdPerS2": 897.4917862619828,
+        "slipping": true,
+        "broken": false,
+        "legs": 0.33614250559720205
+       }
+      ]
+     },
+     {
+      "tickLabelS": 2.6,
+      "carrierBefore": {
+       "positionYd": {
+        "x": 48.85765739641387,
+        "y": 25.988338950232322
+       },
+       "velocityYdPerS": {
+        "x": 4.450829924475436,
+        "y": -1.4956978475472005
+       },
+       "speedYdPerS": 4.695423204330292,
+       "support": "up"
+      },
+      "carrierAfter": {
+       "velocityYdPerS": {
+        "x": 0.9130308308046379,
+        "y": -0.5499644619067434
+       },
+       "speedYdPerS": 1.0658734480979348,
+       "support": "up"
+      },
+      "groundImpulseKgYdPerS": {
+       "x": 21.11105320031921,
+       "y": 6.2893181245548915
+      },
+      "nongroundImpulseFromMomentumKgYdPerS": {
+       "x": -377.35859915732084,
+       "y": 88.94367528277802
+      },
+      "carrierTorsoContacts": [
+       {
+        "closing": 6.835790723139875,
+        "i": 6,
+        "impulse": 387.5541143729039,
+        "j": 12
+       }
+      ],
+      "holdsAfterStep": [
+       {
+        "defenderIdx": 12,
+        "origin": "reach",
+        "capacityKgYdPerS2": 1514.3783409557566,
+        "meanForceKgYdPerS2": 743.1172054742356,
+        "slipping": false,
+        "broken": false,
+        "legs": 0.40595421324650083
+       }
+      ]
+     },
+     {
+      "tickLabelS": 2.7,
+      "carrierBefore": {
+       "positionYd": {
+        "x": 49.122211839650625,
+        "y": 25.88832010649687
+       },
+       "velocityYdPerS": {
+        "x": 0.726863490894012,
+        "y": -0.5815254609041615
+       },
+       "speedYdPerS": 0.9308611046092897,
+       "support": "up"
+      },
+      "carrierAfter": {
+       "velocityYdPerS": {
+        "x": 0.36012625283410765,
+        "y": -0.5642712023583348
+       },
+       "speedYdPerS": 0.6693974214106718,
+       "support": "falling"
+      },
+      "groundImpulseKgYdPerS": {
+       "x": -15.961629260595053,
+       "y": 9.57224964406861
+      },
+      "nongroundImpulseFromMomentumKgYdPerS": {
+       "x": -20.967896020708807,
+       "y": -7.834788838209085
+      },
+      "carrierTorsoContacts": [
+       {
+        "closing": 0.13575977367144385,
+        "i": 6,
+        "impulse": 83.07555428696136,
+        "j": 12
+       }
+      ],
+      "holdsAfterStep": [
+       {
+        "defenderIdx": 12,
+        "origin": "reach",
+        "capacityKgYdPerS2": 2135.964549957048,
+        "meanForceKgYdPerS2": 1376.0781118711682,
+        "slipping": false,
+        "broken": false,
+        "legs": 0.4141478174319603
+       }
+      ]
+     }
+    ],
+    "defenderContexts": [
+     {
+      "idx": 12,
+      "slot": "DE_S",
+      "installedRunFit": {
+       "edge": "box",
+       "gap": "C",
+       "kind": "edge",
+       "pace": "stack",
+       "partner": "SS",
+       "side": -1,
+       "technique": "attack"
+      }
+     },
+     {
+      "idx": 20,
+      "slot": "FS",
+      "installedRunFit": {
+       "edge": "box",
+       "gap": "D",
+       "kind": "force",
+       "pace": "stack",
+       "side": 1,
+       "technique": "attack"
+      }
+     },
+     {
+      "idx": 21,
+      "slot": "SS",
+      "installedRunFit": {
+       "edge": "box",
+       "gap": "D",
+       "kind": "force",
+       "pace": "stack",
+       "side": -1,
+       "technique": "attack"
+      }
+     }
+    ],
+    "decisionSamples": [
+     {
+      "tickLabelS": 2.45,
+      "idx": 12,
+      "slot": "DE_S",
+      "actualPositionYd": {
+       "x": 49.80501636067184,
+       "y": 25.88527029807101
+      },
+      "actualVelocityYdPerS": {
+       "x": 0.29067945600559614,
+       "y": 0.47795090061160445
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": 1.1043907685035879,
+        "y": -4.74757965796359
+       },
+       "facing": 3.141592653589793
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": -3.9473396885786993,
+        "y": 0.39396424439904854
+       },
+       "facing": 2.875832480659585,
+       "push": 1,
+       "posture": 0.7,
+       "lunge": {
+        "x": -1.8400598387716622,
+        "y": -0.468081501461834
+       }
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 48.398570707945645,
+        "y": 26.381156411345117
+       },
+       "vel": {
+        "x": 3.7156189127252772,
+        "y": -3.0311449093705614
+       },
+       "stance": null,
+       "facing": -0.8204125619675429,
+       "age": 0.30000000000000004,
+       "pose": "up",
+       "carrying": true
+      }
+     },
+     {
+      "tickLabelS": 2.45,
+      "idx": 20,
+      "slot": "FS",
+      "actualPositionYd": {
+       "x": 57.070503639103585,
+       "y": 35.72545899209473
+      },
+      "actualVelocityYdPerS": {
+       "x": -3.573836995370851,
+       "y": -1.4887117279567506
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": -3.1112744180325627,
+        "y": -1.8370948535045268
+       },
+       "facing": 3.141592653589793
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": -3.1112744180325627,
+        "y": -1.8370948535045268
+       },
+       "facing": 3.141592653589793
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 48.3246330492627,
+        "y": 26.319226135395514
+       },
+       "vel": {
+        "x": 3.44675469933275,
+        "y": -3.2563459128236594
+       },
+       "stance": null,
+       "facing": -0.877180338428236,
+       "age": 0.25,
+       "pose": "up",
+       "carrying": true
+      }
+     },
+     {
+      "tickLabelS": 2.45,
+      "idx": 21,
+      "slot": "SS",
+      "actualPositionYd": {
+       "x": 56.788329231404944,
+       "y": 23.464097131794826
+      },
+      "actualVelocityYdPerS": {
+       "x": -3.5211277308324433,
+       "y": -0.5822006451143523
+      },
+      "support": "up",
+      "rawBehaviorRequest": {
+       "vel": {
+        "x": -2.6649876942148367,
+        "y": -1.7528550050712963
+       },
+       "facing": 3.141592653589793
+      },
+      "executedWorldIntent": {
+       "vel": {
+        "x": -2.6649876942148367,
+        "y": -1.7528550050712963
+       },
+       "facing": 3.141592653589793
+      },
+      "consumedCarrierCue": {
+       "pos": {
+        "x": 48.3246330492627,
+        "y": 26.319226135395514
+       },
+       "vel": {
+        "x": 3.44675469933275,
+        "y": -3.2563459128236594
+       },
+       "stance": null,
+       "facing": -0.877180338428236,
+       "age": 0.25,
+       "pose": "up",
+       "carrying": true
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

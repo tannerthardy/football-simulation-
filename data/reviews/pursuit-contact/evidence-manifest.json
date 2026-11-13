@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "baselineRevision": "62d0cb270f80cd43b4b999da9d36b7f7cb5d8b2e",
+  "integratedEvaluationCommit": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+  "sourceHashDefinition": "SHA256 over sorted src/**/*.ts: relative path bytes, NUL, file bytes, NUL. Docs/measurement scripts excluded.",
+  "variantSourceSha256": {
+    "before": "ca41d72dfd320f96589bdd165db13cb97d2b0cae41d079d98054a7bdb210fb0d",
+    "pursuit-only": "af0258ab5a14bcec3aa9c1ad35cbabf39e5123dc0f5445efb4fcc00533bff7b1",
+    "support-only": "404247ee675601c0c185d7d1653e5daae924c6610e374a11bdea6a34e7e44c6b",
+    "tackling-only": "c20f3bdbe6d416580110830d5d53d710b3f66c20a8b259a76135e0662b1e3425",
+    "after": "359843ba6feed5740c88a7037b220a5d70f586ca53a3dee57c520852dc2083dd"
+  },
+  "labScriptSha256": "3448e5913fb03db3153b36f5c3529082dc3b08b5f6b890519a75049b14267cc9",
+  "validation": {
+    "typescriptTests": 115,
+    "pythonFixtureTests": 6,
+    "typecheck": "pass",
+    "build": "pass",
+    "fullGameCheck": {
+      "gamesPerRevision": 8,
+      "seed": 7,
+      "leagues": 2
+    },
+    "holdBallTrench": {
+      "repsPerRoster": 250,
+      "seeds": [
+        7,
+        19
+      ]
+    },
+    "replay": {
+      "logged": 177,
+      "filmed": 129,
+      "preSnap": 3,
+      "newContactEvents": 157,
+      "checks": [
+        "strict frame timestamps",
+        "agent, ball, carrier, posture strides",
+        "embedded JavaScript syntax"
+      ],
+      "browserInteractionTested": false
+    }
+  },
+  "artifactSha256": {
+    "after-games.log": "59b594e5f2097d4d09fea32fdd61d58c9746160ac578a95f7e2d32564e0b89f4",
+    "after-trench.log": "95dcba074b2a3b5f39785bf53577b003035707e4724fa950ad03c5c780a855a4",
+    "before-games.log": "f420c7fff6f38c9bf58364a67ec660580436efc4dacefdcad77686193a721bcf",
+    "development-summary.json": "3055f6dc877de9948a1bf742b372952c492681cafa825a2beb3e8f41dc5bb05b",
+    "paired-open-diagnostics.json": "d30b811bc708538c8169712f2a09b0e46270c8aa99800a2bf6f6c011198a44e8",
+    "paired-run-diagnostics.json": "9eea7f72ce22893d9dfed59ce2eaf7f3ec42dd26958ed465d9d42f1e59ee8cb0",
+    "replay-validation.json": "9fe6b676cb4a233566c2d2bc5aa2e75325be50f718d59596aea7c08bb69e9d43",
+    "representative-traces.json": "d6a67fdd7d89d3f0c9245f234c42156f19bd1ac4eee7198133f1cd8aa8a2ee31"
+  },
+  "logNormalization": "Trailing whitespace stripped; numeric results unchanged."
+}

@@ -1,0 +1,60 @@
+{
+  "reviewedHead": "e3fabe0c16e70358fb1bf527d490b8130d15cd0f",
+  "codeBlob": "0605f96c9890d84a04cd88938fca0cfb5112c8a6",
+  "tests": [
+    {
+      "index": 0,
+      "blob": "2107b41c6269311c722651943d6f89c3840daaf7"
+    },
+    {
+      "index": 1,
+      "blob": "efc8ec0f5b3b02780615170d975e2e60c7232768"
+    },
+    {
+      "index": 2,
+      "blob": "2107b41c6269311c722651943d6f89c3840daaf7"
+    },
+    {
+      "index": 3,
+      "blob": "efc8ec0f5b3b02780615170d975e2e60c7232768"
+    }
+  ],
+  "evidencePin": "1ad0e7b08a693c57d93138b197728d1b54914b00",
+  "verifiedPayloads": {
+    "near-fit-controls.json.gz": {
+      "bytes": 842700,
+      "sha256": "67a5eab52edccddbe4833fd9a0ea1a02b73999adaab1773072c1cd174ec6acd3"
+    },
+    "under-reference.json.gz": {
+      "bytes": 297136,
+      "sha256": "aa8750b4da30e0a8ad44bcb530790ce019c547b80b86f4b4ef4e93d3b2c101ee"
+    },
+    "matched-candidate.json.gz": {
+      "bytes": 238511,
+      "sha256": "cabd8019bd95b857835fd33fc37947f709cc5d12fa5d84ca84846fb180d8f55c"
+    },
+    "matched-candidate-exchange.json": {
+      "bytes": 881,
+      "sha256": "cf8a489c1fed3512211933e326646802f25117a35ef519e4748a062ea2365d34"
+    },
+    "matched-reference-exchange.json": {
+      "bytes": 882,
+      "sha256": "aabb960c14af9125c44744974a87fa206cd112794d7743d61bd1d60f1e95e227"
+    },
+    "holds-candidate.json.gz": {
+      "bytes": 88101,
+      "sha256": "a968b369780bbab20b97f776fb74d890472708653f62e1b88852a8b09f8c6d51"
+    },
+    "holds-reference.json.gz": {
+      "bytes": 87943,
+      "sha256": "551bc8a4db7a62e074e32df2c3381715b1682af78a0f0e6ee8eeea5c051670ca"
+    },
+    "planned-fit.json.gz": {
+      "bytes": 701867,
+      "sha256": "16f9b3f8f40e43a4bf298daf1b6817b7cee0a0094a91ac9c9ba0dd82f698d07d"
+    }
+  },
+  "newNativeExecutions": 0,
+  "newOwnerTests": 0,
+  "verdict": "accept standalone near-fit; #94 composition remains unproved"
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "run-entry-information-queue-decision-v1",
+  "recordedAt": "2026-10-15T21:04:43.180459+00:00",
+  "acceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "originalCandidate": "60223a863a8431e85d5027c879191f3527ed10b8",
+  "originalEvidence": "80c9fa4db36ebcd4b81edda110e9a451882d8291",
+  "riskOnlyTested": "71d98fcddc3c76764f36f438f9f4921d365c9ad4",
+  "riskOnlyPublication": "cfcbf6b60325ff3fe4dd722f9310d135fae49576",
+  "riskOnlyBranch": "codex/run-entry-opponent-information-review",
+  "review": "https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/review.json",
+  "reviewSha256": "8bbd48ea65423ca54fadd148affbffe1b46005e185c46719b623000ed77e36b7",
+  "opponentRiskPatch": "https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/opponent-risk-only.patch",
+  "observationTransportPatch": "https://github.com/tannerthardy/football-simulation-/blob/cfcbf6b60325ff3fe4dd722f9310d135fae49576/data/reviews/current/run-entry-information-review/observation-transport-only.patch",
+  "decision": {
+    "opponentRisk": "Recommend accepting the opponent-risk correction alone as the next integration scope. It removes active private opponent pose/fatigue/engagement shortcuts using existing acquired opponent APIs and the accepted recovery estimator.",
+    "observationTransport": "Owner-approved, byte-identical core is separately portable; defer runtime adoption until an approved production consumer needs it. No current production consumer uses its query; it adds per-tick sensing bookkeeping without supplying this opponent-risk correction. No correctness rejection or renewed owner-approval wait is asserted.",
+    "togetherOrSeparate": "Separate. Neither source extraction needs the other; both patches apply alone and sequentially on accepted4679a3c.",
+    "navigation": "Parked; helpers/admission/ranking, sampledVel and historical-motion research remain excluded.",
+    "nextAcceptanceDecision": "Accept risk-only scope at the exact candidate pin; then perform one exact combined verification before requesting its separate merge authorization. Do not reopen or append to #67/#72 verification."
+  },
+  "outcome": {
+    "focusedPassed": 3,
+    "focusedSelected": "Two extracted author contracts plus existing Duo declaration control",
+    "focusedSkippedByFilter": 25,
+    "typecheck": "pass",
+    "fullCombinedVerification": "Not run for this scope-selection review; still required before runtime merge.",
+    "worldStepsOrSnaps": 0,
+    "extraStandaloneGames": 0,
+    "rosterCampaigns": 0
+  },
+  "newLauncherSeconds": 23.675058372000002,
+  "mergedPR72": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "merge72Comment": "https://github.com/tannerthardy/football-simulation-/pull/72#issuecomment-6202138165",
+  "informationMergeAuthorized": false,
+  "69Reviewer": "Do-It-All, per user; independent and not bundled",
+  "experimentalPhysicsSeparate": true,
+  "queueChecks": {
+    "protectedInputsIdenticalToAcceptedDevelop": true,
+    "priorCurrentReceiptFilesPreserved": 131,
+    "checkedLocalPaths": 101,
+    "brokenLinks": [],
+    "simulationsOrTests": 0
+  }
+}

@@ -1,0 +1,249 @@
+# HNFL-188 — ROUTE CONVERSIONS & ADJUSTMENTS
+
+[Original image](../../images/receiver-technique/hnfl-188-route-conversions-adjustments.jpeg) · [Topic](../../topics/receiver-technique.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Pre-snap route conversions and post-snap adjustments
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Distinguishes fade vs cloud, go vs press, smoke vs free access, hinge vs cap, and escape/clear rules. These are conditional changes rather than universal route aliases.
+
+**Browse:** [Route technique / leverage / conversions](../../CONCEPTS.md#route-technique)
+
+Original archive path(s): `HonestNFL/HONECIUWAAECoFR.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+ROUTE CONVERSIONS & ADJUSTMENTS
+
+ig
+
+THESE ARE SOME OF THE MOST IMPORTANT MECHANISMS WE HAVE BUILT INTO OUR PASS GAME SYSTEM THAT ALLOW US TO UTILIZE THE
+
+STRUCTURES, ALIGNMENTS, AND TECHNIQUES PRESENTED BY THE DEFENSE TO GIVE US THE BEST CHANCE TO ATTACK THE COVERAGE WE
+
+SEE RATHER THAN WHAT WE THINK WE’LL SEE. WE DEFINE A “CONVERSION” AS A PRE-SNAP ADJUSTMENT BASED ON OUR READ OF THEIR
+
+PRESENTATION (EX. “FADE VS. CLOUD”). AN “ADJUSTMENT” IS A POST-SNAP READ BASED ON THE FINAL COVERAGE AND/OR SPECIFIC
+
+TECHNIQUES PLAYED THAT WE CAN READ ON THE FLY (EX. “ESCAPE VS. WALL”).
+
+FADE VS. CLOUD
+
+GO (M.O.R.) VS. PRESS
+
+AGAINST CLOUD, WE
+
+FADE INTO
+
+IF THE CORNER PRESSES UP ON
+
+THE
+
+LE
+
+CONVERT TO A ‘FADE’
+
+$
+
+#1, THEIR ROUTE BECOMES FAR
+
+ROUTE TO FIND THE SOFT
+
+LESS EFFECTIVE. TO COMBAT
+
+SLIP OUT
+
+AND STACK
+
+HOLE BEHIND THE CB.
+
+THIS, WE CONVERT TO A ‘GO’
+
+THE CB.
+
+MUST RELEASE OUTSIDE
+
+8-10
+
+|
+
+ROUTE WITH A MANDATORY
+
+AND TAKE HIS EYES OFF
+
+OUTSIDE RELEASE. LOOK TO
+
+THE QUARTERBACK.
+
+STACK THE CORNER QUICKLY.
+
+A
+
+A
+
+(2)
+
+THUNDER
+
+00M009,
+
+POST
+
+SOUS
+
+THUNDER
+
+{FADE Vs. CLoub)
+
+H
+
+{M.0.R. GO VS. PRESS)
+
+IF WE RAN THE POST ROUTE INTO COVER 2,
+
+@
+
+IT’D SERVE AS NOTHING MORE THAN AN
+
+INFLUENCER FOR THE ‘BRANCH’
+
+“BRANCH”
+
+“TAMPA BAY ALL THUNDER”
+
+(ex. 22 WILD)
+
+(ex. 55 FIST)
+
+SMOKE VS. FREE ACCESS
+
+HINGE VS. CAPPED VERTICAL
+
+SELL'GO’
+
+ANYTIME WE GET FREE
+
+ON ANY VERTICAL ROUTE
+
+THAT GETS CAPPED BY
+
+ACCESS WITH THE
+
+CORNER 8+ YARDS OFF,
+
+THE CORNER, WE HAVE
+
+THE ABILITY TO ‘HINGE’
+
+WE CAN ALERT TOA
+
+AND SNAP OFF THE
+
+‘SMOKE’ ROUTE AND GET
+
+THE BALL THERE TO
+
+VERTICAL TO EXPLOIT THE
+
+LEVERAGE WE HAVE
+
+a
+
+EXPLOIT THE FREE SPACE.
+
+UNDERNEATH THE CB.
+
+e)
+
+CORNER
+
+BENDER
+
+GO
+
+H
+
+@SMoKt
+
+OOMOO
+
+H
+
+(@ HINGE)
+
+©)
+
+@
+
+“SMASH”
+
+“RAIDER”
+
+(ex. 44/66 QUADS)
+
+(ex. 44/66 QUADS)
+
+ESCAPE VS. WALL/FIST (HARD INSIDE LEVERAGE)
+
+7Z’ CALL VS. FIST (2-MAN)
+
+ON ROUTES THAT BREAK
+
+CLEAR THE CORNER AND
+
+INSIDE, WE HAVE THE
+
+ATTACK THE DEPTH & LEVERAGE
+
+OF THE SAFETY WITHIN THAT
+
+ABILITY TO ‘ESCAPE’ BY
+
+BREAKING BACK OUT
+
+VOID OF FIELD SPACE.
+
+10,
+
+NO DEEP EXCHANGE MEANS
+
+FAST & FLAT IF THERE IS
+
+ESCAPE IF THEY
+
+NO ROUTE IN THAT AREA
+
+DENY INSIDE
+
+THEY CAN’T JUST ZONE IT OFF.
+
+AND THE DEFENDER IS
+
+THROW ON TIME AND
+
+DENYING THE INSIDE.
+
+TO LEVERAGE!
+
+Bone
+
+(ESCAPE VS. WALL/FIST RATE
+
+Soo
+
+H
+
+{ESCAPE VS. WALL/FIST)
+
+©)
+
+“PIRATE”
+
+(ex. 55 FIST)
+
+“PRESSURE”
+
+(ex. 55 FIST)
+```

@@ -1,0 +1,105 @@
+{
+  "schema": "hand-force-game-guard-v1",
+  "modes": {
+    "end": {
+      "measuredGames": 2,
+      "excludedWarmGameSeed": 921247822,
+      "sourceBefore": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "sourceAfter": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "rosterSha256": "098565226da110ea7c34c7a10202284dc2c03d29559ceea56475086570081413",
+      "officialScrimmagePlays": 250,
+      "physicalTimeoutsIncludingNullified": 0,
+      "lowerHoldReleases": 0,
+      "maxMomentumResidualKgYdS": 9.11723519070849e-12,
+      "maxWorkResidualKgYd2S2": 4.2973513636468397e-11,
+      "maxMotorWorkExcessKgYd2S2": 0,
+      "gameSeeds": [
+        1085687574,
+        2979654235
+      ],
+      "gameOutcomes": [
+        {
+          "seed": 1085687574,
+          "score": {
+            "home": 39,
+            "away": 20
+          },
+          "rushes": 27,
+          "rushYards": 38.129999999999995,
+          "rushStuffs": 13,
+          "missedTackles": 10,
+          "brokenTackles": 11,
+          "completionExplosives20": 15,
+          "penalties": 29
+        },
+        {
+          "seed": 2979654235,
+          "score": {
+            "home": 24,
+            "away": 10
+          },
+          "rushes": 43,
+          "rushYards": 133.5,
+          "rushStuffs": 14,
+          "missedTackles": 13,
+          "brokenTackles": 15,
+          "completionExplosives20": 6,
+          "penalties": 21
+        }
+      ]
+    },
+    "centered": {
+      "measuredGames": 2,
+      "excludedWarmGameSeed": 921247822,
+      "sourceBefore": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "sourceAfter": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "rosterSha256": "098565226da110ea7c34c7a10202284dc2c03d29559ceea56475086570081413",
+      "officialScrimmagePlays": 249,
+      "physicalTimeoutsIncludingNullified": 0,
+      "lowerHoldReleases": 0,
+      "maxMomentumResidualKgYdS": 1.0904949745002692e-11,
+      "maxWorkResidualKgYd2S2": 5.7776894379912846e-11,
+      "maxMotorWorkExcessKgYd2S2": 0,
+      "gameSeeds": [
+        1085687574,
+        2979654235
+      ],
+      "gameOutcomes": [
+        {
+          "seed": 1085687574,
+          "score": {
+            "home": 24,
+            "away": 25
+          },
+          "rushes": 25,
+          "rushYards": 53.390000000000015,
+          "rushStuffs": 8,
+          "missedTackles": 9,
+          "brokenTackles": 17,
+          "completionExplosives20": 12,
+          "penalties": 32
+        },
+        {
+          "seed": 2979654235,
+          "score": {
+            "home": 20,
+            "away": 21
+          },
+          "rushes": 38,
+          "rushYards": 161.60999999999996,
+          "rushStuffs": 7,
+          "missedTackles": 11,
+          "brokenTackles": 21,
+          "completionExplosives20": 9,
+          "penalties": 9
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Four games and one roster pair are safety guards, not league estimates or a causal statistics comparison.",
+    "Game seeds/profile identities start equal; subsequent play calls, draw order, fatigue and histories diverge.",
+    "Concurrent machine load and changing contact histories prohibit interpreting recorded timings as a cost benchmark.",
+    "Warm-up games were excluded; no physical force, traction or profile was fitted to the games."
+  ]
+}

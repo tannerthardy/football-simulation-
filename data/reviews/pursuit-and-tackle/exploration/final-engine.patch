@@ -1,0 +1,250 @@
+diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
+index 315bdf8..6446f22 100644
+--- a/src/sim/behaviors/common.ts
++++ b/src/sim/behaviors/common.ts
+@@ -1,6 +1,6 @@
+ /** Steering helpers shared by behaviors. */
+ import { FIELD_WIDTH } from '../../core/field.js';
+-import { angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
++import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
+ import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
+ import { availability, supportParams } from '../../physics/support.js';
+ import { interceptPoint, timeToReach } from '../../physics/reach.js';
+@@ -137,49 +137,17 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
+   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+   const seen = sim.see(a, target, look);
+   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+-  // Open-field tackling: when the carrier is coming at you, break down,
+-  // mirror his lateral movement square-on and make him come to you.
+   const tackle = a.r('tackling');
++  const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
++  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
++  const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
++    * clamp((dist - contact) / 6, 0, 1);
++  let near: MoveCommand | null = null;
++  let gather = 0;
+   if (dist > 0.3) {
+     const ux = (seen.pos.x - a.pos.x) / dist;
+     const uy = (seen.pos.y - a.pos.y) / dist;
+     const incoming = -(seen.vel.x * ux + seen.vel.y * uy);
+-    const contact = a.profile.radius+target.profile.radius+a.profile.reach*.65;
+-    // He is coming at the tackler (not crossing his face or pulling away).
+-    // An oblique interceptor needs to run his angle instead: squaring up on
+-    // every closing carrier flattens that angle before he reaches the hip.
+-    if (incoming > 1.5 && incoming/Math.max(.1,Math.hypot(seen.vel.x,seen.vel.y)) > .7) {
+-      const nx = -uy, ny = ux;
+-      const across = seen.vel.x * nx + seen.vel.y * ny;
+-      const body = a.profile.radius + target.profile.radius;
+-      const toward = a.vel.x * ux + a.vel.y * uy;
+-      const closing = incoming + toward;
+-      const T = Math.max(0.15, (dist - body) / Math.max(1, closing));
+-      // Meet him from the inside, on the near hip: he arrives a little to
+-      // the tackler's outside, still inside the shoulders.
+-      const lev = leverage(a, seen.pos.y);
+-      const offset = -clamp(0.35 * lev, -0.3, 0.3) * ny;
+-      const lateralMax = a.profile.lateral * 0.6 + 2;
+-      const vn = clamp(across - offset / T, -lateralMax, lateralMax);
+-      // He is already closing the distance. Spend the feet on staying in
+-      // front of him and arrive under control (a poor tackler comes in too
+-      // fast), but keep them driving through the strike: a tackler standing
+-      // still is run over.
+-      const attack = 0.8 + 1.6 * tackle;
+-      const run = Math.sqrt(Math.max(0, a.profile.vmax ** 2 - vn * vn));
+-      const approach = clamp(Math.sqrt((2.5+2*(1-tackle))**2+2*a.profile.brake*Math.max(0,dist-contact))-incoming, Math.min(attack, run), run);
+-      const strike = dist < contact + 0.5;
+-      return { vel: { x: ux * approach + nx * vn, y: uy * approach + ny * vn }, facing: Math.atan2(uy, ux),
+-        cutSkill: 0.8 + 0.4 * tackle, push: strike ? 1 : undefined, posture: 0.4 + 0.25 * tackle } as MoveCommand;
+-    }
+-  }
+-  // Match the carrier across our bearing, but keep enough braking distance
+-  // to close under control. A crossing runner is not a stationary point to
+-  // sprint through. Poor execution still asks for a harder arrival, and the
+-  // world may be unable to make the requested correction in time.
+-  if (dist > 0.3) {
+-    const contact = a.profile.radius + target.profile.radius + a.profile.reach * 0.65;
+-    const ux=(seen.pos.x-a.pos.x)/dist,uy=(seen.pos.y-a.pos.y)/dist;
+     const cutSkill=.85+.35*tackle;
+     const capacity=a.body.support?availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy)):1;
+     const brake=followAccel(a.body,{x:-ux*1e3,y:-uy*1e3},cutSkill,capacity);
+@@ -187,26 +155,49 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
+     const closing=Math.max(0,(a.vel.x-seen.vel.x)*ux+(a.vel.y-seen.vel.y)*uy);
+     const through=2.5+2*(1-tackle);
+     const stopping=Math.max(0,(closing*closing-through*through)/(2*decel));
+-    if (dist < contact + Math.max(2.5,stopping)) {
+-      const vel=movingArrivalVelocity(a.body,seen.pos,seen.vel,a.profile.vmax*a.speedScale,
++    // One arrival budget across incoming and crossing approaches. A small
++    // heading change blends technique instead of selecting a new speed policy.
++    // Near gathers start from available braking; far oblique angles still run.
++    const carrierSpeed = Math.hypot(seen.vel.x, seen.vel.y);
++    // A runner merely moving in our direction may still pass several yards
++    // outside our reach. Gather early when his observed path actually enters
++    // the near-hip corridor; otherwise run the oblique interception angle.
++    const pathMiss = dist * Math.abs(ux * seen.vel.y - uy * seen.vel.x) / Math.max(.1, carrierSpeed);
++    const headOn = clamp((contact + .5 - pathMiss) / .75, 0, 1)
++      * clamp((incoming - 1.5) / 1.5, 0, 1);
++    const close = clamp((contact + Math.max(2.5, stopping) - dist) / .75, 0, 1);
++    gather = Math.max(headOn, close);
++    if (gather > 0) {
++      const goal = { x: seen.pos.x, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
++      const vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,
+         contact,through,cutSkill,capacity);
+-      // Square the shoulders for the strike.
+-      const square = dist < contact + 0.5 ? Math.atan2(uy, ux) : undefined;
+-      return {vel,facing:square,cutSkill,push:dist<contact+.5?1:undefined,
++      // A front tackler keeps driving through the near hip, rather than
++      // retreating forever to match an incoming runner's sprint. This is a
++      // technique request, bounded by the same speed and support envelope.
++      const toward = vel.x * ux + vel.y * uy;
++      const attack = (0.8 + 1.6 * tackle) * headOn;
++      if (toward < attack) {
++        vel.x += ux * (attack - toward); vel.y += uy * (attack - toward);
++        const speed = Math.hypot(vel.x, vel.y), cap = a.profile.vmax * a.speedScale;
++        if (speed > cap) { vel.x *= cap / speed; vel.y *= cap / speed; }
++      }
++      near = {vel,facing:Math.atan2(uy, ux),cutSkill,push:dist<contact+.5?1:undefined,
+         posture:.4+.25*tackle} as MoveCommand;
++      if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return near;
+     }
+   }
+   const p = pursuitPoint(sim, a, target, horizon);
+   // Away from the ball, pursuit runs below top speed (more so for low motors).
+   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
+   const original = { ...runThrough(a, p, { speed: effort }), effort };
+-  const reach = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+-  const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
+-  const offset = (force ? Math.abs(leverage(a, seen.pos.y)) * a.runFit!.side : leverage(a, seen.pos.y))
+-    * clamp((dist - reach) / 6, 0, 1);
+   // A new grip may exist before its first solved load reaches body support.
+   if (sim.bond?.tacklers.includes(a)) return original;
+-  return chooseApproach(a, seen, reach, offset, original, sim.t);
++  const far = chooseApproach(a, seen, contact, offset, original, sim.t);
++  if (!near || gather <= 0) return far;
++  const travel = far.facing ?? angleOf(far.vel);
++  return { ...near, vel: { x: far.vel.x + (near.vel.x - far.vel.x) * gather,
++    y: far.vel.y + (near.vel.y - far.vel.y) * gather },
++    facing: travel + angleDiff(near.facing!, travel) * gather };
+ }
+ 
+ export function ttr(a: Agent, p: Vec2, radius = 0): number {
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 010603c..06654a8 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -181,6 +181,7 @@ export class ManCoverage implements Behavior {
+   private readonly press: boolean;
+   private readonly initialCushion: number;
+   private hipsOpen = false;
++  private releaseObserved = false;
+   private routeRead = false;
+   private stemHeading: number | null = null;
+   private stableSince = 0;
+@@ -230,6 +231,7 @@ export class ManCoverage implements Behavior {
+     const delayScale = this.routeRead ? 0.65 : 1;
+     const seen = this.observation.read(sim.see(a, R, delayScale), sim.t, R.profile, a.profile.reactionTime,
+       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
++    if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
+     const o = this.opts;
+     const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+@@ -256,7 +258,16 @@ export class ManCoverage implements Behavior {
+       tx += this.initialCushion * (1 - developing) + 0.6 * developing;
+     }
+     else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
+-    else if (!this.hipsOpen) tx = Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
++    else if (!this.hipsOpen) {
++      // Before the release, hold the off-man cushion rather than charging a
++      // stationary back. Once his observed stem moves, close excess cushion:
++      // a late match must not inherit its current depth as a retreat floor.
++      // A later plant does not undo knowledge that this receiver released.
++      // Feed-forward motion still lets a receiver consume the cushion, and
++      // the ordinary body limits determine whether the defender can close.
++      tx = this.releaseObserved
++        ? seen.pos.x + cushion : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
++    }
+     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
+     // low-hip under defender sits behind his hip with help over the top.
+     if (o.overTop) {
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 8ce644a..91ff1de 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -81,6 +81,14 @@ function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], c
+   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
+   const worst=Math.min(...clearances);
+   if(worst>=0)return original;
++  // Yield speed while continuing the turn when that already clears traffic.
++  // Maximizing clearance alone favors a full stop even when a moving gather
++  // safely follows the same observed peers. Keep posture/facing/skill and let
++  // ordinary movement decide whether this request is actually achievable.
++  const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
++  const slower=previewFreeMovement(a.body,slowed,context.now,TURN_STEPS);
++  if(slower.every(sample=>sample.support==='up')
++    &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
+   const gather:Intent={...original,vel:{x:0,y:0}};
+   const gathered=previewFreeMovement(a.body,gather,context.now,TURN_STEPS);
+   if(gathered.some(sample=>sample.support!=='up'))return original;
+diff --git a/src/sim/tackle.ts b/src/sim/tackle.ts
+index 3fd8a6f..d5ec328 100644
+--- a/src/sim/tackle.ts
++++ b/src/sim/tackle.ts
+@@ -92,11 +92,11 @@ export function tryTackles(sim: PlaySim): void {
+       // away from him; otherwise he keeps running his feet. No opportunity
+       // forecast is needed when this attempt is already disallowed.
+       if (dd > arms && closing > -1.5) continue;
+-      const vx = c.vel.x - d.vel.x, vy = c.vel.y - d.vel.y;
+-      const closestAt = clamp(-(dx * vx + dy * vy) / Math.max(0.01, vx * vx + vy * vy), 0, 0.3);
+-      const closest = Math.hypot(dx + vx * closestAt, dy + vy * closestAt);
+-      let futureQuality = contactQuality(closest, body, arms);
+-      let waitingQuality = q;
++      // Waiting needs affirmative evidence from the picture and the command
++      // actually held. A joint, recent contact or recovering support makes a
++      // one-body forecast unavailable; ideal current-state motion cannot
++      // promise that those constraints will let us reach a better hip.
++      let waitForBetter = false;
+       const form = 0.85 - 0.15 * d.r('tackling');
+       if (!sim.bond && q < form && sim.intents[d.idx]
+         && !sim.world.joints.some(j => (j.a === d.body || j.b === d.body)
+@@ -113,19 +113,18 @@ export function tryTackles(sim: PlaySim): void {
+           y: seen.pos.y + seen.vel.y * elapsed } };
+         const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, arms, sim.world.time);
+         if (window) {
+-          futureQuality = window.futureQuality;
+           // Compare two estimates from the same observation. Actual reach and
+           // the resulting grip still use current physical geometry below.
+-          waitingQuality = window.currentQuality;
++          waitForBetter = window.futureQuality > window.currentQuality + .1;
+           if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx,
+             kind: 'tackle-opportunity',
+-            chose: futureQuality > waitingQuality + .1 ? 'keep feet moving' : 'attempt current opportunity',
++            chose: waitForBetter ? 'keep feet moving' : 'attempt current opportunity',
+             cue: 'delayed carrier motion and attainable movement',
+             options: ['keep feet moving', 'attempt current opportunity'],
+-            detail: `Observed wrap quality ${waitingQuality.toFixed(2)}; best attainable decision sample ${futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
++            detail: `Observed wrap quality ${window.currentQuality.toFixed(2)}; best attainable decision sample ${window.futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
+         }
+       }
+-      if (!sim.bond && q < form && futureQuality > waitingQuality + 0.1) continue;
++      if (waitForBetter) continue;
+       attempt(sim, d, c, q, engaged, dd > arms);
+       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
+       continue;
+@@ -368,14 +367,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
+       // staying tight to the hold.
+       intents[d.idx] = { vel: { x: -dir * 2.5 + tx * close, y: ty * close }, facing: Math.atan2(ty, tx), push: 1, posture: 0.7, dive: own?.dive, lunge: own?.lunge };
+     } else {
+-      // Beside or behind him: digging in against a runner's momentum only
+-      // tears the grip. Run with him and work up to a wrap; once the arms
+-      // are locked, drop the weight on him and let him carry it.
+-      // He lets his legs go where the runner pulls him: no launch.
+-      const locked = next >= 0.55 && cs > 2;
+-      const drop = locked ? { x: c.vel.x / cs * 0.01, y: c.vel.y / cs * 0.01 } : undefined;
++      // Beside or behind him: run the feet into the hip while the arms close.
++      // A secure grip does not require abandoning cleat support. Ground and
++      // grip loads decide whether he can stay upright or gets dragged down;
++      // preserve a dive/lunge already committed by the approach technique.
+       intents[d.idx] = { vel: { x: c.vel.x + tx * close, y: c.vel.y + ty * close }, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
+-        dive: own?.dive ?? drop, lunge: own?.lunge };
++        dive: own?.dive, lunge: own?.lunge };
+     }
+   }
+   // The carrier keeps his legs driving where his vision takes him.

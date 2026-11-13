@@ -1,0 +1,10 @@
+{
+  "sourceBefore": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+  "sourceAfter": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+  "sourceCapture": "Run from same frozen source as final native panel and pass guard; neither production file changed during these concurrent commands. Calibrate itself does not embed a source hash.",
+  "command": "node --import tsx scripts/calibrate.ts 2 7 1",
+  "collectorSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "sharedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "outputSha256": "0d226fbda942458f6ca70776432e50211180856dc4741c631a56a83d117fd5a8",
+  "scope": "Two generated full games, same seed7 league generator as baseline. Later call populations diverge; not paired snaps, frequency estimates or force calibration. Historical target column is not the newly harmonized conditional NFL reference."
+}

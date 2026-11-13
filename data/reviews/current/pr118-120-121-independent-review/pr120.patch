@@ -1,0 +1,446 @@
+diff --git a/src/physics/kinematics.ts b/src/physics/kinematics.ts
+index b1a7f7472496eeb9ec041324621b801c1f9c5cef..bd65a9e185fce1b1432497a95a44afb22f7965ce 100644
+--- a/src/physics/kinematics.ts
++++ b/src/physics/kinematics.ts
+@@ -236,15 +236,19 @@ export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Ve
+   return { x: (at * tx - an * ty) * s, y: (at * ty + an * tx) * s };
+ }
+ 
+-/** Metabolic cost of a step: base, mechanical work, speed, and isometric pushing. */
+-export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number): void {
++/** Metabolic proxy: base, planned work, speed, and isometric pushing.
++ * additionalWork is delivered positive action work per kg (yd²/s²), already
++ * integrated over the active interval; it must be charged only once. velocity
++ * may be the last active velocity when later passive motion ends the tick. */
++export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number, additionalWork = 0, velocity = body.vel): void {
+   const p = body.profile;
+-  const nspeed = Math.hypot(body.vel.x, body.vel.y);
++  const nspeed = Math.hypot(velocity.x, velocity.y);
+   const frac = nspeed / p.vmax;
+   body.sprintLoad = Math.max(0, (body.sprintLoad ?? 0) + (frac > 0.85 ? dt : frac < 0.7 ? -0.5 * dt : 0));
+-  const work = Math.max(0, accel.x * body.vel.x + accel.y * body.vel.y) / (p.vmax * (p.vmax / p.tau));
++  const work = Math.max(0, accel.x * velocity.x + accel.y * velocity.y) / (p.vmax * (p.vmax / p.tau));
+   const speedCost = (nspeed / p.vmax) ** 2;
+-  body.energy = clamp(body.energy - (0.0045 + 0.03 * work + 0.012 * speedCost + 0.03 * clamp(isometric, 0, 1.5)) * dt, 0, 1);
++  const cost = (0.0045 + 0.03 * work + 0.012 * speedCost + 0.03 * clamp(isometric, 0, 1.5)) * dt;
++  body.energy = clamp(body.energy - (cost + 0.03 * additionalWork / (p.vmax * (p.vmax / p.tau))), 0, 1);
+ }
+ 
+ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 3c54a3d7fcd2d64a3e124a4776dc58dad7729dfb..fc085466f650ccffdbf50d9d99bdf806bfb431e7 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -355,6 +355,14 @@ interface Plan {
+   dive: Vec2 | null;
+   /** 0–1 share of full leg drive behind a dive. */
+   launch: number;
++  /** Active-foot exposure and delivered action work for this controller tick. */
++  activeTime: number;
++  activeSteps: number;
++  hadPassive: boolean;
++  actionWork: number;
++  activeNow: boolean;
++  effortVx: number;
++  effortVy: number;
+ }
+ 
+ export class World {
+@@ -593,14 +601,17 @@ export class World {
+       for (let s = 0; s < steps; s++) this.substep(island, intents, plans, h, dt - s * h, report, pairs, true);
+     } else if (this.substeps) report.substeps = this.substeps;
+     this.time = t0 + dt;
+-    // Metabolic cost once per tick on the planned effort (as stepBody).
++    // Charge completed effort once, even if its action ended in a fall.
++    // Ordinary gait retains its controller-rate proxy; passive motion is free.
+     for (let i = 0; i < n; i++) {
+       const b = bs[i], plan = plans[i];
+-      if (plan.free || plan.dive || b.support!.state !== 'up') continue;
+-      const steps = near[i] ? report.substeps : 1;
+-      const divisor = this.impactTiming === 'local-sweep' ? dt : steps;
++      if (!plan.activeSteps) continue;
++      // Keep a fully active tick's exact dt instead of summation roundoff.
++      const activeTime = plan.hadPassive ? plan.activeTime : dt;
++      const divisor = this.impactTiming === 'local-sweep' ? activeTime : plan.activeSteps;
+       const lx = this.leanX[i] / divisor, ly = this.leanY[i] / divisor;
+-      spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), dt);
++      const velocity = plan.hadPassive ? { x: plan.effortVx, y: plan.effortVy } : b.vel;
++      spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), activeTime, plan.actionWork, velocity);
+     }
+     report.contacts = [...pairs.values()];
+     this.pending = [];
+@@ -930,7 +941,8 @@ export class World {
+ 
+   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
+     const sup = b.support!;
+-    const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0 };
++    const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0,
++      activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 };
+     if (sup.state !== 'up' || intent.free) return none;
+     if (intent.dive && Math.hypot(intent.dive.x, intent.dive.y) > 1e-9) {
+       const l = Math.hypot(intent.dive.x, intent.dive.y);
+@@ -949,7 +961,7 @@ export class World {
+     if (this.handContact === 'center') b.facing = facing;
+     const acc = locomotionAccel(b, cmd, dt, a);
+     b.facing = saved;
+-    return { ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1, free: false, dive: null, launch: 0 };
++    return { ...none, ax: acc.x, ay: acc.y, facing, cut: intent.cutSkill ?? 1 };
+   }
+ 
+   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
+@@ -1355,12 +1367,23 @@ export class World {
+         sup.accel = { x: acc.x + ((bs[i].vel.x - this.v0x[i]) / h - acc.x) * k,
+           y: acc.y + ((bs[i].vel.y - this.v0y[i]) / h - acc.y) * k };
+         sup.tipAccel = { x: tip.x + (this.tipX[i] / h - tip.x) * k, y: tip.y + (this.tipY[i] / h - tip.y) * k };
++        // Diagnostic source history is recent even while he is off his feet.
++        // Preserve its existing memory instead of freezing an old trip until
++        // the next unrelated fall after he gets up.
++        if (sup.causes) {
++          const decay = Math.exp(-h / .3);
++          sup.causes.contact *= decay; sup.causes.legs *= decay; sup.causes.overspeed *= decay;
++        }
+       }
+     }
+     // Consume this interval's achieved recovery before retiring a hold that
+     // just broke. Deleting its motor first would erase a transmitted load
+     // from balance while retaining that same impulse in velocity and work.
+     this.syncHeldSupport();
++    for (const i of ids) if (plans[i].activeNow) {
++      // Later passive sliding must not determine active sprint/work exposure.
++      plans[i].effortVx = bs[i].vel.x; plans[i].effortVy = bs[i].vel.y;
++    }
+     this.time += h;
+   }
+ 
+@@ -1375,6 +1398,10 @@ export class World {
+     const spinBefore=b.spin??0;
+     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
+     let fx = 0, fy = 0;
++    let actionX = 0, actionY = 0;
++    plan.activeNow = sup.state === 'up' && !plan.free;
++    if (plan.activeNow) { plan.activeTime += h; plan.activeSteps++; }
++    else plan.hadPassive = true;
+     if (sup.state === 'up') {
+       if (plan.free) {
+         this.alpha[i] = 1; this.cut[i] = 1;
+@@ -1384,6 +1411,9 @@ export class World {
+         // contact subdivision. He leaves his feet at the end of that plant.
+         const launch = Math.min(sp.traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
+         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
++        actionX = fx; actionY = fy;
++        // Launch supplies translation, not a torque that arrests acquired spin.
++        b.facing += (b.spin ?? 0) * h;
+         if (remaining<=h+1e-9) { this.startFall(sup, plan.dive, 'dive', report, i); plan.dive=null;plan.free=true; }
+         this.alpha[i] = 0; this.cut[i] = 1;
+       } else {
+@@ -1408,6 +1438,7 @@ export class World {
+           const disc = lu * lu - (lx * lx + ly * ly) + capT * capT;
+           const f = Math.min(disc > 0 ? Math.max(0, -lu + Math.sqrt(disc)) : 0, m * need / h);
+           lx += ux * f; ly += uy * f;
++          actionX = ux * f; actionY = uy * f;
+           const left = need - f * h / m;
+           sup.strike = f > 0 && left > 1e-3 ? { x: ux * left, y: uy * left } : undefined;
+         }
+@@ -1486,7 +1517,10 @@ export class World {
+           const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
+           const scale = qa > 1e-12 ? clamp((-qb + Math.sqrt(Math.max(0, qb * qb - qa * qc))) / qa, 0, 1) : 0;
+           px *= scale; py *= scale;
+-          if (qc > 0) { const r = cap / Math.max(1e-9, Math.hypot(lx, ly)); lx *= r; ly *= r; }
++          if (qc > 0) {
++            const r = cap / Math.max(1e-9, Math.hypot(lx, ly));
++            lx *= r; ly *= r; actionX *= r; actionY *= r;
++          }
+         }
+         fx += lx + px; fy += ly + py;
+         this.braceX[i] = px; this.braceY[i] = py;
+@@ -1549,6 +1583,16 @@ export class World {
+     const v0x = b.vel.x, v0y = b.vel.y;
+     b.vel.x = v0x + fx / m * h;
+     b.vel.y = v0y + fy / m * h;
++    if (actionX !== 0 || actionY !== 0) {
++      // Action power is linear during this constant ground-force piece.
++      // Split its positive part at a reversal; contact/fall work is excluded.
++      const p0 = (actionX * v0x + actionY * v0y) / m;
++      const p1 = (actionX * b.vel.x + actionY * b.vel.y) / m;
++      const positive = Math.max(p0, p1, 0);
++      plan.actionWork += p0 * p1 < 0
++        ? .5 * h * positive * positive / Math.abs(p1 - p0)
++        : .5 * h * (Math.max(0, p0) + Math.max(0, p1));
++    }
+     this.amx[i] = fx / m; this.amy[i] = fy / m;
+     const gi = report.groundImpulse[i];
+     gi.x += fx * h; gi.y += fy * h;
+diff --git a/test/action-effort.test.ts b/test/action-effort.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..af52bd72dd12999ba4d41c018344e52850a4ebf5
+--- /dev/null
++++ b/test/action-effort.test.ts
+@@ -0,0 +1,119 @@
++import { describe, expect, it } from 'vitest';
++import { spendEnergy, type Body } from '../src/physics/kinematics.js';
++import { newSupport } from '../src/physics/support.js';
++import { World, type Intent } from '../src/physics/world.js';
++
++const profile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05, vmax: 9,
++  tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55,
++  maxCatchHeight: 3, reactReach: 2.6, reactionTime: .25, power: 100, balance: .5 };
++const free: Intent = { vel: { x: 0, y: 0 }, free: true };
++const dt = .05;
++const workScale = profile.vmax * profile.vmax / profile.tau;
++function scene(substeps = 1, impactTiming: 'speculative' | 'local-sweep' = 'speculative') {
++  const b: Body = { pos: { x: 0, y: 0 }, vel: { x: 0, y: 0 }, facing: 0,
++    energy: 1, profile: { ...profile }, support: newSupport() };
++  const other = structuredClone(b); other.pos.x = 4;
++  const w = new World([b, other], { substeps, impactTiming });
++  w.joints.push({ kind: 'hands', a: b, b: other, extension: 4, push: 0, hold: 0, steer: 0 });
++  return { b, other, w };
++}
++const kineticPerKg = (b: Body) => .5 * (b.vel.x ** 2 + b.vel.y ** 2);
++const restingCost = (b: Body, elapsed: number) => (.0045 + .012 * (Math.hypot(b.vel.x, b.vel.y) / profile.vmax) ** 2) * elapsed;
++
++describe('completed action effort', () => {
++  it('charges delivered dive work once despite the terminal falling/free state', () => {
++    for (const impactTiming of ['speculative', 'local-sweep'] as const) for (const substeps of [1, 12, 48]) {
++      const { b, w } = scene(substeps, impactTiming);
++      const r = w.step([{ vel: { x: 0, y: 0 }, dive: { x: 1, y: 0 } }, free], dt);
++      expect(b.support!.state).toBe('falling');
++      expect(r.groundWork[0] / profile.massKg).toBeCloseTo(kineticPerKg(b), 12);
++      const expected = restingCost(b, dt) + .03 * kineticPerKg(b) / workScale;
++      expect(1 - b.energy).toBeCloseTo(expected, 14);
++      expect(r.groundWork[0]).toBeGreaterThan(0);
++      expect(Math.abs(r.work.residual)).toBeLessThan(1e-9);
++    }
++  });
++
++  it('is invariant to real physics subdivision for equal lunge work and elapsed time', () => {
++    const costs: number[] = [];
++    for (const substeps of [1, 12, 48]) {
++      const { b, w } = scene(substeps);
++      const r = w.step([{ vel: { x: 0, y: 0 }, lunge: { x: .1, y: 0 } }, free], dt);
++      expect(b.vel.x).toBeCloseTo(.1, 13);
++      expect(b.support!.state).toBe('up');
++      expect(r.groundWork[0]).toBeCloseTo(.5, 12);
++      costs.push(1 - b.energy);
++      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
++    }
++    expect(Math.max(...costs) - Math.min(...costs)).toBeLessThan(1e-15);
++  });
++
++  it('counts positive work after reversal, while excluding negative work', () => {
++    const { b, w } = scene(); b.vel.x = -.1;
++    // No planned gait: the lunge alone first brakes, then drives forward.
++    const r = w.step([{ vel: { ...b.vel }, facing: 0, lunge: { x: .2, y: 0 } }, free], dt);
++    expect(b.vel.x).toBeCloseTo(.1, 13);
++    expect(r.groundWork[0]).toBeCloseTo(0, 12);
++    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
++  });
++
++  it('charges achieved force rather than an unmet lunge request', () => {
++    const costs: number[] = [];
++    for (const request of [3, 30]) {
++      const { b, w } = scene();
++      const r = w.step([{ vel: { x: 0, y: 0 }, lunge: { x: request, y: 0 } }, free], dt);
++      expect(b.vel.x).toBeLessThan(request);
++      expect(r.groundWork[0] / profile.massKg).toBeCloseTo(kineticPerKg(b), 12);
++      costs.push(1 - b.energy);
++      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + .03 * kineticPerKg(b) / workScale, 14);
++    }
++    expect(costs[0]).toBe(costs[1]);
++  });
++
++  it('charges once over unequal local impact pieces, including an unrelated active body', () => {
++    const { b } = scene(); b.pos.y = .8;
++    const a = structuredClone(b), target = structuredClone(b);
++    a.pos = { x: 0, y: 0 }; a.vel.x = 8;
++    target.pos = { x: .85, y: 0 };
++    const w = new World([a, target, b], { substeps: 1, impactTiming: 'local-sweep' });
++    const r = w.step([free, free, { vel: { x: 0, y: 0 }, lunge: { x: .1, y: 0 } }], dt);
++    expect(r.impactSplits).toBeGreaterThan(0);
++    expect(r.impactSplitLimitHits).toBe(0);
++    expect(r.contacts.every(c => c.i !== 2 && c.j !== 2)).toBe(true);
++    expect(b.support!.state).toBe('up');
++    expect(b.vel.x).toBeCloseTo(.1, 13);
++    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
++    expect(a.energy).toBe(1); expect(target.energy).toBe(1);
++  });
++
++  it('retains work before falling and excludes the later passive portion', () => {
++    const { b, w } = scene(12);
++    b.support!.xi.x = 2; // Existing recovery limit: falls in the first piece.
++    const r = w.step([{ vel: { x: 0, y: 0 } }, free], dt);
++    expect(r.falls).toContain(0);
++    expect(b.support!.state).toBe('falling');
++    expect(b.vel.x).toBeGreaterThan(0); // Subsequent passive fall drive.
++    expect(1 - b.energy).toBeCloseTo(.0045 * dt / 12, 14);
++    expect(b.sprintLoad).toBe(0);
++  });
++
++  it('does not charge a wholly passive body for fall drive', () => {
++    const { b, other, w } = scene(12);
++    b.support!.state = 'falling'; b.support!.since = 0; b.support!.fall.x = 1;
++    const r = w.step([free, free], dt);
++    expect(Math.abs(r.groundImpulse[0].x)).toBeGreaterThan(0);
++    expect(b.energy).toBe(1); expect(other.energy).toBe(1);
++    expect(b.sprintLoad).toBeUndefined();
++  });
++
++  it('preserves the ordinary endpoint proxy exactly under actual subdivision', () => {
++    for (const substeps of [1, 12, 48]) {
++      const { b, w } = scene(substeps);
++      const r = w.step([{ vel: { x: .1, y: 0 } }, free], dt);
++      const expected = structuredClone(b); expected.energy = 1; delete expected.sprintLoad;
++      spendEnergy(expected, { x: r.groundImpulse[0].x / (profile.massKg * dt), y: 0 }, 0, dt);
++      expect(b.energy).toBe(expected.energy);
++      expect(b.sprintLoad).toBe(expected.sprintLoad);
++    }
++  });
++});
+diff --git a/test/dive-yaw.test.ts b/test/dive-yaw.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..e50ecb0d29cf101f2a62106991383d5357a58533
+--- /dev/null
++++ b/test/dive-yaw.test.ts
+@@ -0,0 +1,49 @@
++import { describe, expect, it } from 'vitest';
++import type { Body } from '../src/physics/kinematics.js';
++import type { PhysicalProfile } from '../src/players/physical.js';
++import { World, type Intent } from '../src/physics/world.js';
++
++const profile: PhysicalProfile = { massKg: 100, radius: .3, reach: 1, heightYd: 2.05,
++  vmax: 9, tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55,
++  maxCatchHeight: 3, reactReach: 2.6, reactionTime: .25, power: 100, balance: .5,
++  bend: .5, stepSpeed: 3.4, getUp: .9 };
++
++function run(speed: number, spin: number, angle: number, substeps: number, dive: boolean) {
++  const axis = { x: Math.cos(angle), y: Math.sin(angle) };
++  const body = (distance: number): Body => ({ pos: { x: distance * axis.x, y: distance * axis.y },
++    vel: { x: speed * axis.x, y: speed * axis.y }, facing: angle, spin, energy: 1, profile: { ...profile } });
++  const b = body(0), other = body(4), w = new World([b, other], { substeps });
++  // A zero-force joint selects real subdivision without applying a load.
++  w.joints.push({ kind: 'hands', a: b, b: other, extension: 4, push: 0, hold: 0, steer: 0 });
++  const cmd: Intent = { vel: { ...b.vel }, ...(dive ? { dive: axis } : { free: true }) };
++  const report = w.step([cmd, { vel: { x: 0, y: 0 }, free: true }], .05);
++  expect(report.contacts).toHaveLength(0);
++  expect(report.substeps).toBe(substeps);
++  return { b, report };
++}
++
++describe('planted dive yaw transport', () => {
++  it.each([1, 12, 48])('transports acquired spin without a yaw impulse at %i subdivisions', substeps => {
++    for (const speed of [4, 9]) for (const spin of [-2, 2]) for (const angle of [0, .7]) {
++      const { b, report } = run(speed, spin, angle, substeps, true);
++      expect(b.facing - angle).toBeCloseTo(spin * .05, 13);
++      expect(b.spin).toBe(spin);
++      expect(report.groundYawImpulse[0]).toBe(0);
++      expect(report.groundYawWork[0]).toBe(0);
++      expect(b.support!.state).toBe('falling');
++      if (speed === profile.vmax) {
++        expect(report.groundImpulse[0]).toEqual({ x: 0, y: 0 });
++        expect(report.groundWork[0]).toBe(0);
++      } else expect(report.groundWork[0]).toBeGreaterThan(0);
++      expect(Math.abs(report.work.residual)).toBeLessThan(1e-9);
++    }
++  });
++
++  it('agrees with torque-free motion when launch force is zero', () => {
++    const dive = run(profile.vmax, 2, .7, 12, true), free = run(profile.vmax, 2, .7, 12, false);
++    expect(dive.b.facing).toBe(free.b.facing);
++    expect(dive.b.vel).toEqual(free.b.vel);
++    expect(dive.b.pos).toEqual(free.b.pos);
++    expect(dive.b.spin).toBe(free.b.spin);
++  });
++});
+diff --git a/test/fall-cause-history.test.ts b/test/fall-cause-history.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..8e4f659010c3a0e3ec7343cff575bd3fbfe79c72
+--- /dev/null
++++ b/test/fall-cause-history.test.ts
+@@ -0,0 +1,88 @@
++import { describe, expect, it } from 'vitest';
++import type { PhysicalProfile } from '../src/players/physical.js';
++import type { Body } from '../src/physics/kinematics.js';
++import { newSupport, type SupportStateKind } from '../src/physics/support.js';
++import { World, type Intent } from '../src/physics/world.js';
++
++function body(mass: number, x = 0): Body {
++  const profile: PhysicalProfile = {
++    massKg: mass, radius: .24 + (mass * 2.20462 - 180) / 1100, reach: 1,
++    heightYd: 2.05, vmax: 9, tau: 1.3, brake: 6, lateral: 6, turnRate: 8,
++    backpedal: .6, shuffle: .55, maxCatchHeight: 3, reactReach: 2.6,
++    reactionTime: .25, power: mass, balance: .5, bend: .5, stepSpeed: 3.4, getUp: .9,
++  };
++  return { pos: { x, y: 0 }, vel: { x: 0, y: 0 }, facing: 0,
++    energy: 1, profile, support: newSupport() };
++}
++
++const stand: Intent = { vel: { x: 0, y: 0 } };
++const passive: Intent = { vel: { x: 0, y: 0 }, free: true };
++function physical(bodies: Body[]) {
++  return structuredClone(bodies).map(b => {
++    delete b.support!.causes;
++    delete b.support!.cause;
++    return b;
++  });
++}
++
++describe('recent fall-cause history', () => {
++  it('decays through each off-feet state over equal elapsed time', () => {
++    const initial = { contact: .4, legs: .7, overspeed: .2 };
++    for (const state of ['falling', 'down', 'rising'] as SupportStateKind[]) {
++      for (const dt of [.05, .1]) {
++        const a = body(90), world = new World([a]);
++        a.support!.state = state;
++        a.support!.since = 0;
++        a.support!.causes = { ...initial };
++        for (let k = 0; k < Math.round(.2 / dt); k++) world.step([stand], dt);
++        expect(a.support!.state).toBe(state);
++        for (const key of ['contact', 'legs', 'overspeed'] as const)
++          expect(a.support!.causes![key]).toBeCloseTo(initial[key] * Math.exp(-.2 / .3), 12);
++      }
++    }
++  });
++
++  it('does not attribute a new contact fall to a leg episode before normal recovery', () => {
++    const cases = [0, 2].map(legs => {
++      const source = body(100, -10), target = body(90);
++      target.support!.state = 'down';
++      target.support!.since = 0;
++      target.support!.causes = { contact: 0, legs, overspeed: 0 };
++      return { source, target, world: new World([source, target]) };
++    });
++    const states = new Set<SupportStateKind>(['down']);
++    let recoveryTicks = 0;
++    while (cases.some(c => c.target.support!.state !== 'up') && recoveryTicks++ < 60) {
++      for (const c of cases) {
++        c.world.step([stand, stand], .05);
++        states.add(c.target.support!.state);
++      }
++      expect(physical(cases[0].world.bodies)).toEqual(physical(cases[1].world.bodies));
++    }
++    expect([...states]).toEqual(expect.arrayContaining(['down', 'rising', 'up']));
++    for (const c of cases) expect(c.target.support!.state).toBe('up');
++
++    // Reuse the existing hard-contact control's bodies, speed and .62 yd
++    // separation. This identical new stimulus is prescribed after recovery;
++    // it is not a simulated football approach or another leg restraint.
++    for (const c of cases) {
++      c.source.pos = { x: c.target.pos.x - .62, y: c.target.pos.y };
++      c.source.vel = { x: 9, y: 0 };
++    }
++    let hitTicks = 0, actualContact = false;
++    while (cases.some(c => c.target.support!.state !== 'falling') && hitTicks++ < 20) {
++      for (const c of cases) {
++        const report = c.world.step([passive, stand], .05);
++        actualContact ||= report.contacts.some(p => p.impulse > 0);
++        expect(c.world.joints).toHaveLength(0);
++      }
++      expect(physical(cases[0].world.bodies)).toEqual(physical(cases[1].world.bodies));
++    }
++    expect(actualContact).toBe(true);
++    for (const c of cases) {
++      expect(c.target.support!.state).toBe('falling');
++      expect(c.target.support!.cause).toBe('contact');
++      expect(c.target.support!.causes!.contact).toBeGreaterThan(c.target.support!.causes!.legs);
++    }
++  });
++});

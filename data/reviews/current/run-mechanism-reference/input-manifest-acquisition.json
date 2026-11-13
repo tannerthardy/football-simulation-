@@ -1,0 +1,83 @@
+{
+  "source_snapshot": "/workspace/datasets/nfl/sources.snapshot.json",
+  "archives": [
+    {
+      "id": "bdb2019-2017",
+      "source_url": "https://drive.google.com/file/d/1x5Po8NAEgFfNQGHf0Dks-CToPxkoIU-I/view",
+      "path": "/workspace/datasets/nfl/archives/bdb2019-2017/Big-Data-Bowl-master.zip",
+      "bytes": 401360678,
+      "sha256": "4cc73c4c22443736b750e9a0cca8cf3e8a25a44ceb6a6e853ca98563269089ca",
+      "size_verified": true,
+      "sha256_verified": true,
+      "verified_at_utc": "2026-10-20T21:07:03.488094+00:00",
+      "elapsed_seconds": 23.884
+    },
+    {
+      "id": "bdb2023-2021",
+      "source_url": "https://drive.google.com/file/d/1hVJ-AJh1tpc0fvCvgcEksmOK3RKyPm16/view",
+      "path": "/workspace/datasets/nfl/archives/bdb2023-2021/nfl-big-data-bowl-2023.zip",
+      "bytes": 180535422,
+      "sha256": "129ad4fc656919ffb13fcc6f7670d15040add6c60a655e5dd9aa269e1aea72b3",
+      "size_verified": true,
+      "sha256_verified": true,
+      "verified_at_utc": "2026-10-20T21:06:53.029765+00:00",
+      "elapsed_seconds": 13.425
+    },
+    {
+      "id": "bdb2025-2022",
+      "source_url": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view",
+      "path": "/workspace/datasets/nfl/archives/bdb2025-2022/archive.zip",
+      "bytes": 1219840421,
+      "sha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+      "size_verified": true,
+      "sha256_verified": true,
+      "verified_at_utc": "2026-10-20T21:07:38.895175+00:00",
+      "elapsed_seconds": 59.29
+    },
+    {
+      "id": "bdb2026-2023",
+      "source_url": "https://drive.google.com/file/d/13Q5f54OG3FZOKA49Y6RO8k7jnAHweLmL/view",
+      "path": "/workspace/datasets/nfl/archives/bdb2026-2023/nfl-big-data-bowl-2026-analytics.zip",
+      "bytes": 107953117,
+      "sha256": "360a32614d528e69220cacb39f6beddc580bfd2b9818c22194f1c3c394ccc1a1",
+      "size_verified": true,
+      "sha256_verified": true,
+      "verified_at_utc": "2026-10-20T21:06:49.342521+00:00",
+      "elapsed_seconds": 9.737
+    }
+  ],
+  "total_verified_bytes": 1909689638,
+  "errors": [],
+  "source_catalog_read_commit": "3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f",
+  "archive_fields_verified_equal_at_publication": "066add740055c6ce7900a0a7fb9b822f3f673f33",
+  "archive_fields_compared": [
+    "sourceUrl",
+    "archiveName",
+    "archiveBytes",
+    "archiveSha256"
+  ],
+  "extracted_for_this_query": [
+    {
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    {
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    },
+    {
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+      "file": "tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    }
+  ],
+  "raw_cache": "/workspace/datasets/nfl/bdb2025/big-data-bowl-data",
+  "scope": "Four supplied archives cached externally; only four BDB2025 members extracted. No season conversion or simulation."
+}

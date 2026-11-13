@@ -1,0 +1,89 @@
+{
+  "schema": "pr87-run-policy-static-v1",
+  "base": "9adb7b3f730c5637e5a6547f9bc151a17ce301b2",
+  "reviewedHead": "9760de031cae3bda7c926735f8edeb97fa4574e5",
+  "executedOriginal": "52518bebea74e8668f6b3c0628f3a3a1e5253008",
+  "composedTree": "3c62931c71c3ae31c5b56e06f0446c84a8fc8f54",
+  "sources": {
+    "base": "6532e6d26190d7a42b970307c5699e7920dfd5302cd3712a03c707761e2e1259",
+    "original": "8ec3ac755d1ff2ca64eb3482244c25a96c1247dee0c4aa971d950601b6baf2b3",
+    "composed": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac"
+  },
+  "changedFiles": [
+    "src/sim/behaviors/common.ts",
+    "src/sim/behaviors/defense.ts",
+    "src/sim/catch-approach.ts",
+    "src/sim/movement-objective.ts",
+    "src/sim/spacing.ts",
+    "test/fixtures/traffic-step.json.gz",
+    "test/traffic-step.test.ts"
+  ],
+  "allSevenPayloadsMatchReviewedHead": true,
+  "acceptedRunFitsBlockingPreserved": true,
+  "acceptedCostProofExact": true,
+  "verifiedPacketFiles": [
+    "data/reviews/current/mesh-traffic-controller/before-after.png",
+    "data/reviews/current/mesh-traffic-controller/candidate/A008.json.gz",
+    "data/reviews/current/mesh-traffic-controller/candidate/A044.json.gz",
+    "data/reviews/current/mesh-traffic-controller/candidate/summary.json",
+    "data/reviews/current/mesh-traffic-controller/comparison.json",
+    "data/reviews/current/mesh-traffic-controller/full-runtime-and-tests.patch",
+    "data/reviews/current/mesh-traffic-controller/historical-compatibility.json",
+    "data/reviews/current/mesh-traffic-controller/input/flex-windows.json.gz",
+    "data/reviews/current/mesh-traffic-controller/receipts/candidate-native-v1.json",
+    "data/reviews/current/mesh-traffic-controller/receipts/focused-v1.json",
+    "data/reviews/current/mesh-traffic-controller/receipts/focused-v2.json",
+    "data/reviews/current/mesh-traffic-controller/receipts/focused-v3.json",
+    "data/reviews/current/mesh-traffic-controller/receipts/reference-native.json",
+    "data/reviews/current/mesh-traffic-controller/receipts/type-v1.json",
+    "data/reviews/current/mesh-traffic-controller/receipts/type-v2.json",
+    "data/reviews/current/mesh-traffic-controller/reduce.py",
+    "data/reviews/current/mesh-traffic-controller/reference/A008.json.gz",
+    "data/reviews/current/mesh-traffic-controller/reference/A044.json.gz",
+    "data/reviews/current/mesh-traffic-controller/reference/summary.json",
+    "data/reviews/current/mesh-traffic-controller/rng-attribution.json",
+    "data/reviews/current/mesh-traffic-controller/traffic-controller.patch"
+  ],
+  "savedComparisons": [
+    {
+      "case": "A044",
+      "firstRequestPhysicalDifference": 2.05,
+      "primaryExactThrough": 2.9,
+      "primaryBodiesCommandsExact": {
+        "10": true
+      },
+      "referenceContacts15or21": [
+        {
+          "t": 2.75,
+          "i": 15,
+          "j": 21,
+          "impulse": 139.00326883260303,
+          "closing": 2.71611805936524
+        }
+      ],
+      "candidateContacts15or21": [],
+      "eventsEqual": false,
+      "finalRngEqual": false,
+      "candidatePhase": "live",
+      "candidateStoppedAt": 3.55
+    },
+    {
+      "case": "A008",
+      "firstRequestPhysicalDifference": 2.15,
+      "primaryExactThrough": 3.4,
+      "primaryBodiesCommandsExact": {
+        "7": true,
+        "19": true
+      },
+      "referenceContacts15or21": [],
+      "candidateContacts15or21": [],
+      "eventsEqual": true,
+      "finalRngEqual": true,
+      "candidatePhase": "live",
+      "candidateStoppedAt": 3.4
+    }
+  ],
+  "scriptSha256": "7e8bfed649ee6a203be123f9d3da5378e73fa2df01c6b4902aeab2eb64aa6df4",
+  "newNativeExecutions": 0,
+  "seconds": 3.073549098975491
+}

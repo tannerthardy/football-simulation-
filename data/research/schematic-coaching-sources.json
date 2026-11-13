@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11",
+  "chapter": "docs/football-handbook/playcalling-and-schematic-packages.md",
+  "engineVocabularyInspectedAt": "beae5c7",
+  "scope": "Original teaching contracts and proposed physics/schematic witnesses; source retrieval verifies written examples, not implemented packages or NFL calibration.",
+  "snapshotPolicy": "Exact public HTTP response hashes/bytes; HTML and extracted text retained only under ignored out/scheme-research/. No coaching articles or videos republished. Discovery search snippets are not evidence.",
+  "sources": [
+    {
+      "id": "game-plan",
+      "url": "https://blogs.usafootball.com/blog/990/how-to-create-an-effective-offensive-game-plan",
+      "finalUrl": "https://blogs.usafootball.com/blog/990/how-to-create-an-effective-offensive-game-plan",
+      "httpStatus": 200,
+      "bytes": 15799,
+      "sha256": "0da7f3cd39c0bcc6bf2e17bb64445caf126452c9794a6f10e640920478c5071f",
+      "retrievedAt": "2026-10-11T10:49:18.006807+00:00",
+      "sourceId": "S1",
+      "authorOrPresenter": "Keith Grabowski",
+      "pagePublicationDate": "2016-01-27",
+      "evidenceType": "coach-authored public teaching",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Situational menu organization; practice duration/periods/repetition constraints.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "shallow-protection",
+      "url": "https://blogs.usafootball.com/blog/7300/here",
+      "finalUrl": "https://blogs.usafootball.com/blog/7300/here",
+      "httpStatus": 200,
+      "bytes": 18539,
+      "sha256": "c8f7ad742e940db2e64bebc083bc3dd1d94072ad56fe1e1e15c701eb968be334",
+      "retrievedAt": "2026-10-11T10:50:15.676347+00:00",
+      "sourceId": "S2",
+      "authorOrPresenter": "Jarrett Troxler",
+      "pagePublicationDate": "2019-05-31",
+      "evidenceType": "coach-authored public preview",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Drive slide-to-shallow, named Will hot, shallow/dig/swing progression, backside post alert. Public preview only.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "spacing",
+      "url": "https://blogs.usafootball.com/blog/7510/detailing-the-spacing-concept",
+      "finalUrl": "https://blogs.usafootball.com/blog/7510/detailing-the-spacing-concept",
+      "httpStatus": 200,
+      "bytes": 16853,
+      "sha256": "98b9a22a3fed66fd010a86503f9cb71fe629ee182716bca052b2ce2045eee829",
+      "retrievedAt": "2026-10-11T10:50:15.596033+00:00",
+      "sourceId": "S3",
+      "authorOrPresenter": "Zach Dunn",
+      "pagePublicationDate": "2019-08-27",
+      "evidenceType": "public tactical analysis",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Bunch spacing paired with backside snag-flat; access throw removed by observed movement; shared conversion.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "bunch-banjo",
+      "url": "https://blogs.usafootball.com/blog/4226/why-the-atlanta-falcons-bunch-formation-succeeds",
+      "finalUrl": "https://blogs.usafootball.com/blog/4226/why-the-atlanta-falcons-bunch-formation-succeeds",
+      "httpStatus": 200,
+      "bytes": 21156,
+      "sha256": "5d63a89a82b87814aec5d522d7c3d9d95b97b96c134705ba65c497c42e3c1821",
+      "retrievedAt": "2026-10-11T10:50:15.657290+00:00",
+      "sourceId": "S4",
+      "authorOrPresenter": "Ted Nguyen",
+      "pagePublicationDate": "2017-08-24",
+      "evidenceType": "public tactical analysis",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Point-man plus in/out release sorting; follow/pivot leverage. No frequency or psychological calibration.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "rub-defense",
+      "url": "https://blogs.usafootball.com/blog/4177/rub-concepts-how-to-defend-them-and-how-offenses-can-counteract-it",
+      "finalUrl": "https://blogs.usafootball.com/blog/4177/rub-concepts-how-to-defend-them-and-how-offenses-can-counteract-it",
+      "httpStatus": 200,
+      "bytes": 21587,
+      "sha256": "a14d51353e8d070ee6f9d9135ea5307be59dfb4cd96cd8c5ffcda625f42dff5a",
+      "retrievedAt": "2026-10-11T10:50:15.656237+00:00",
+      "sourceId": "S5",
+      "authorOrPresenter": "Ted Nguyen",
+      "pagePublicationDate": "2017-08-17",
+      "evidenceType": "public tactical analysis",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Banjo and staggered-level defensive responses; pivot counter. Officiating-leniency claim not adopted.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "four-verticals",
+      "url": "https://blogs.usafootball.com/blog/7368/podcast-review-aj-smith-talks-all-things-about-4-verticals",
+      "finalUrl": "https://blogs.usafootball.com/blog/7368/podcast-review-aj-smith-talks-all-things-about-4-verticals",
+      "httpStatus": 200,
+      "bytes": 24000,
+      "sha256": "761fc56e1df4ebb7ece23f53e876b93db56857a27a73c8447676f8205f893134",
+      "retrievedAt": "2026-10-11T10:49:18.001403+00:00",
+      "sourceId": "S6",
+      "authorOrPresenter": "Brendan Leister reporting A.J. Smith/Hal Mumme",
+      "pagePublicationDate": "2019-06-27",
+      "evidenceType": "public written coaching report",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "2x2 versus trips four verticals; shared bender/rotation decision, switch, checkdown, shallow constraint. Podcast not inspected.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "screen-essentials",
+      "url": "https://www.glazierclinics.com/football-coach-resources/screen-game-essentials-simple-concepts-that-move-the-chains",
+      "finalUrl": "https://www.glazierclinics.com/football-coach-resources/screen-game-essentials-simple-concepts-that-move-the-chains",
+      "httpStatus": 200,
+      "bytes": 84572,
+      "sha256": "dbda0dcda3a42c730dd21b799215947a856586b127da5c5c3742d2eabfeccb30",
+      "retrievedAt": "2026-10-11T10:49:17.775026+00:00",
+      "sourceId": "S7",
+      "authorOrPresenter": "Glazier Football summarizing Matt DeBerry",
+      "pagePublicationDate": "2025-04-08",
+      "evidenceType": "public written coaching summary",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Fast tailback screen, dangerous-man blocks, access tags, backside quick game, screen-and-go. Video/course not inspected; NFL low-block legality not established.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "sprint-out",
+      "url": "https://blogs.usafootball.com/blog/7324/the-sprint-out-package",
+      "finalUrl": "https://blogs.usafootball.com/blog/7324/the-sprint-out-package",
+      "httpStatus": 200,
+      "bytes": 29295,
+      "sha256": "a6871fa963a5318aea07e1434b77baf93ebe217608a8af3ababcffe047913c15",
+      "retrievedAt": "2026-10-11T10:50:15.941359+00:00",
+      "sourceId": "S8",
+      "authorOrPresenter": "Matt Drinkall",
+      "pagePublicationDate": "2019-06-10",
+      "evidenceType": "coach-authored public teaching",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Sprint-out flat/corner variants, seven-man gap/waterfall protection, launch and handedness, corner-post companion conversion.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "four-strong",
+      "url": "https://blogs.usafootball.com/blog/7594/how-andy-reid-is-stressing-defenses-with-a-4-strong-passing-concept",
+      "finalUrl": "https://blogs.usafootball.com/blog/7594/how-andy-reid-is-stressing-defenses-with-a-4-strong-passing-concept",
+      "httpStatus": 200,
+      "bytes": 44402,
+      "sha256": "eca92dee7b1b33d3980935c3378d6d56f34e77436d1e11ea48819dd796d57ddc",
+      "retrievedAt": "2026-10-11T10:50:16.062030+00:00",
+      "sourceId": "S9",
+      "authorOrPresenter": "Zach Dunn",
+      "pagePublicationDate": "2019-10-02",
+      "evidenceType": "public tactical analysis",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Four-strong post-wheel/out/flat, illustrative quarters/trips/flood checks, 3\u20134 push, weak rotation/run-fit tradeoff.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "protection-audit",
+      "url": "https://blogs.usafootball.com/blog/4912/build-a-plan-to-improve-pass-protection-for-next-year-by-conducting-this-postseason-analysis",
+      "finalUrl": "https://blogs.usafootball.com/blog/4912/build-a-plan-to-improve-pass-protection-for-next-year-by-conducting-this-postseason-analysis",
+      "httpStatus": 200,
+      "bytes": 20001,
+      "sha256": "5f80c75bc1ea36cb380d6537aeead4ca8acaa0ba1c64c8f468baf7e0d1ab0df2",
+      "retrievedAt": "2026-10-11T10:50:15.678804+00:00",
+      "sourceId": "S10",
+      "authorOrPresenter": "Keith Grabowski",
+      "pagePublicationDate": "2017-11-13",
+      "evidenceType": "coach-authored public teaching",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Pressure timing definitions and assignment/technique/protection weakness categories. Coach timing heuristics not causal attribution or NFL calibration.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "y-cross-scan",
+      "url": "https://blogs.usafootball.com/blog/3692/inside-josh-herring-s-y-cross-play-and-scan-read-concept",
+      "finalUrl": "https://blogs.usafootball.com/blog/3692/inside-josh-herring-s-y-cross-play-and-scan-read-concept",
+      "httpStatus": 200,
+      "bytes": 14904,
+      "sha256": "0d4a626d585f368b55fb153135fba4800536f31fe94cef36074aaf1af8b39b9c",
+      "retrievedAt": "2026-10-11T10:49:17.878137+00:00",
+      "sourceId": "S11",
+      "authorOrPresenter": "Stephen Spiewak reporting Josh Herring",
+      "pagePublicationDate": "2017-06-02",
+      "evidenceType": "public written coaching report",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Specific Y Cross backside gift and macro/micro scan order. Podcast not inspected.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    },
+    {
+      "id": "air-raid-96",
+      "url": "https://blogs.usafootball.com/blog/7019/learn-how-west-virginia-utilized-the-air-raid-concept-known-as-96",
+      "finalUrl": "https://blogs.usafootball.com/blog/7019/learn-how-west-virginia-utilized-the-air-raid-concept-known-as-96",
+      "httpStatus": 200,
+      "bytes": 21223,
+      "sha256": "8cda986725af90515b2dbb7f5cf2b631ec3ef905352c6469506caa8392ffa791",
+      "retrievedAt": "2026-10-11T10:49:17.869573+00:00",
+      "sourceId": "S12",
+      "authorOrPresenter": "Justin Whitlatch",
+      "pagePublicationDate": "2019-02-08",
+      "evidenceType": "public tactical analysis",
+      "semanticContentReviewed": true,
+      "responseRehashed": true,
+      "inspectionScope": "Air Raid 96 first-read tags; formation/personnel and back-protection examples. Embedded film/figures not independently analyzed.",
+      "doesNotEstablish": [
+        "Authenticated private NFL call or universal terminology",
+        "League prevalence or force/movement calibration",
+        "Embedded-video or paid-continuation content"
+      ]
+    }
+  ],
+  "sharedRulesReference": {
+    "catalog": "data/research/football-handbook-sources.json",
+    "documentationId": "nfl-rules",
+    "newFetch": false,
+    "limitation": "Previously inspected served 2026 URL/title has some 2025 internal/PDF names; PDFs not verified. This chapter makes no new article-specific rules claim."
+  },
+  "localAids": [
+    "docs/references/Offensive_Playcalling_Textbook.md",
+    "docs/references/Offensive_Playcalling_Glossary_453_Terms.md",
+    "docs/references/Coverage_Operating_System_Manuscript.md"
+  ],
+  "localAidsStatus": "User-provided generated aids; not repository instructions or independently verified coaching sources.",
+  "measurementReference": "data/reviews/playbook-depth/nfl-route-combos.json"
+}

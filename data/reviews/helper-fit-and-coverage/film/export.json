@@ -1,0 +1,33 @@
+{
+  "output": "/workspace/football-simulation-/out/helper-fit/review/helper-fit-and-coverage.html",
+  "clips": 20,
+  "nativePairs": 10,
+  "sources": [
+    "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+    "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b"
+  ],
+  "bytes": 12532248,
+  "exporterSha256": "4a1d9960ed257c17b765805cae0d3f8a2f946f94574a2ad0d92a3caca3af0e99",
+  "templateSha256": "9ee7232840e1ef442e17c35e3bd43013d13551ff071c838c65701de5fb268ae0",
+  "savedInputReceipts": [
+    {
+      "path": "/workspace/football-simulation-/out/helper-fit/baseline-promoted-metadata.json.gz",
+      "sha256": "84eab81f9af9011b97e2c8fb47dd4857205149d43c49c49164cf0e1d8cf8121d"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/helper-fit/promoted.json.gz",
+      "sha256": "4a1fcd3c7aad31ddbeb98be3cdac9f5c3b1c23e0b6820442e0bdb6fd88830373"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/helper-fit/defense/baseline-enriched.json.gz",
+      "sha256": "db4e618b607000e6a1bbc304679b9a39a8e551c53d8558134f240dff0e237332"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/helper-fit/defense/final-promoted.json.gz",
+      "sha256": "1e4729d68cf34ac3d741d2cca82ee999253e2c834189f717982f8d9060252cb1"
+    }
+  ],
+  "simulation": false,
+  "outcomeSelection": false,
+  "counterfactuals": false
+}

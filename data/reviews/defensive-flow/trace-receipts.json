@@ -1,0 +1,18 @@
+{
+  "baseline-held": {
+    "path": "out/defensive-flow/baseline-held.json",
+    "sha256": "130bd48e59db8bee74dc337ff4a356cf504b8841aef7b8d12c5bc88b2da52fb6"
+  },
+  "pull-plan": {
+    "path": "out/defensive-flow/pull-plan.json",
+    "sha256": "beb75a6463416a1cbde7904fc163e1d1058f9b4de4bcaf085335e840d7efbb7b"
+  },
+  "fresh-baseline": {
+    "path": "out/defensive-flow/fresh-baseline.json",
+    "sha256": "d3e835a8b9557e993b9f00bf2782724c5e650fcf905ce8507c5e1b432b2e9835"
+  },
+  "fresh-pull-plan": {
+    "path": "out/defensive-flow/fresh-pull-plan.json",
+    "sha256": "a0666b77823200a3db44c6a6e74eee729c61af0c96c61e0f78af2d223877d7f4"
+  }
+}

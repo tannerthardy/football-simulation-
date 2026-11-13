@@ -1,0 +1,589 @@
+Profile candidate: run-game-2026-10-13, commit bda8ee6a04bb0e4002d8cb61c8e8d2db7b0cb89f, source 6a103581687193f53efcaf56de00ec2dc000c0f2f270d41d979b6600ed94f778
+Running npm run typecheck
+
+> gridiron-engine@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Running npm run build
+
+> gridiron-engine@0.1.0 build
+> tsc -p tsconfig.json
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Running npm run test:all
+
+> gridiron-engine@0.1.0 test:all
+> vitest run --maxWorkers=1
+
+
+ RUN  v3.2.4 /workspace/football-latest-reviewed-checkpoint
+
+ ✓ |core| test/qb-carryout-direction.test.ts (5 tests) 30ms
+ ✓ |core| test/replay-recording-precision.test.ts (2 tests) 5ms
+ ✓ |integration| test/integration/game-record.test.ts (3 tests) 82800ms
+   ✓ official record of a full game > box-score plays and third downs agree with the official log, seed 21  22832ms
+   ✓ official record of a full game > box-score plays and third downs agree with the official log, seed 22  20003ms
+   ✓ official record of a full game > replay recording preserves the same full game > is reproducible, with or without replay recording  20226ms
+ ✓ |integration| test/integration/recognition-panel.test.ts (2 tests) 23395ms
+   ✓ reading run and pass > anticipates from the situation: pass reads come sooner on 3rd and long, run reads later  14523ms
+   ✓ reading run and pass > play action fools linebackers when they expect run, not on 3rd and long  8871ms
+ ✓ |research| test/research/grip-refinement-observer.test.ts (5 tests) 5551ms
+   ✓ loaded-grip diagnostic records without changing the simulation > tests the proposed held flow against the achieved-motion gravity solution  998ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'center', side 1  1412ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'center', side -1  1076ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'patch', side 1  1062ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'patch', side -1  1001ms
+ ✓ |integration| test/integration/coverage-panel.test.ts (1 test) 8573ms
+   ✓ zone technique > match hook defenders carry the seams; spot droppers sink to their landmark and watch the QB  8571ms
+ ✓ |integration| test/integration/protection-panel.test.ts (1 test) 3789ms
+   ✓ pass protection > blocks the edge rushers instead of shadowing their arc  3788ms
+ ✓ |research| test/research/recovery-phase-world.test.ts (20 tests) 2051ms
+   ✓ recovery candidate physical controls and rejected negative control > phase retains ordinary frontal physical tackles and mirrors  660ms
+   ✓ recovery candidate physical controls and rejected negative control > phase-timing retains ordinary frontal physical tackles and mirrors  408ms
+ ✓ |core| test/replay-telemetry.test.ts (6 tests) 2589ms
+   ✓ observational replay recording > light, standard and full preserve pass physics, results, event decisions and RNG  1361ms
+   ✓ observational replay recording > light, standard and full preserve run physics, results, event decisions and RNG  614ms
+   ✓ observational replay recording > coverage rule inspection copies consumed keys and preserves the play and RNG  467ms
+ ✓ |research| test/research/continued-recovery-world.test.ts (5 tests) 1799ms
+   ✓ continued response shares achieved World placement and physical budgets > retains an ordinary frontal physical tackle, side=1  698ms
+   ✓ continued response shares achieved World placement and physical budgets > retains an ordinary frontal physical tackle, side=-1  594ms
+ ✓ |core| test/combo-attention.test.ts (20 tests) 1938ms
+   ✓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift 0  701ms
+   ✓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift -0.5  765ms
+ ✓ |core| test/roster-screen.test.ts (7 tests) 1481ms
+   ✓ bounded roster screen and evidence reuse > enforces tick-boundary budgets without changing native execution or RNG  601ms
+   ✓ bounded roster screen and evidence reuse > reports the expensive audit bill without executing it  844ms
+ ✓ |core| test/export-comparison-metadata.test.ts (8 tests) 1247ms
+ ✓ |core| test/defensive-call-integrity.test.ts (9 tests) 1328ms
+   ✓ automatic defensive call installation guards > automatic callers preserve resolved deep jobs and actual pressure participants across situations and coaching trees  1286ms
+ ❯ |core| test/qb-rusher-recording.test.ts (5 tests | 1 failed) 1045ms
+   ✓ recording the actual rushing player > attributes an unexchanged snap from its actual segment without inventing a fumble or scramble 25ms
+   ✓ recording the actual rushing player > records achieved catch depth without replacing the intended target or aim depth 8ms
+   × recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness 634ms
+     → expected false to be true // Object.is equality
+   ✓ recording the actual rushing player > does not label an ordinary native pass as a rush 134ms
+   ✓ recording the actual rushing player > keeps an actual handoff credited to the receiving back 242ms
+ ✓ |core| test/schematic-stress.test.ts (9 tests) 1712ms
+   ✓ native schematic stress installation and measurement contracts > recording and consumed-read instrumentation preserve the complete native physical result and RNG  1598ms
+ ✓ |core| test/carrier-recovery-cue.test.ts (10 tests) 1308ms
+   ✓ carrier recovery is a bounded visible-pose estimate > observes finite decisions without changing either fixed native run  1250ms
+ ✓ |core| test/coverage-rules.test.ts (12 tests) 1418ms
+   ✓ Palms (2-Read) > corner traps #2 quick out; safety replaces him over #1  374ms
+ ✓ |core| test/shotgun-exchange.test.ts (5 tests) 686ms
+   ✓ saved shotgun exchange coordination > P069 preserves its complete current-source trajectory against only the cadence rollback  559ms
+ ❯ |core| test/zone-helper-check.test.ts (22 tests | 1 failed) 776ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side -1 62ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > uses no fictitious double or primary departure, side 1 31ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > keeps the helper reading independently of his supported owner's ordinary earlier update 26ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > requires a stable helper check instead of inheriting an owner's historical secure time 21ms
+   ✓ the original inside-zone helper may check a supported owner before climbing > an unjoined helper who loses his footing must confirm the owner again after recovering 31ms
+   ✓ a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side -1 44ms
+   ✓ a check does not bypass a physical or near-level responsibility > collects a genuinely lost loaded contact instead of climbing, side 1 47ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects down despite the owner's stale visible up pose 19ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects unbalanced despite the owner's stale visible up pose 20ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects missing-hands despite the owner's stale visible up pose 15ms
+   ✓ a check does not bypass a physical or near-level responsibility > rejects foreign-hands despite the owner's stale visible up pose 15ms
+   ✓ a check does not bypass a physical or near-level responsibility > retains assistance when the owned defender approaches the helper's near hip 13ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not ignore another unengaged near-level penetrator in the helper corridor 12ms
+   ✓ a check does not bypass a physical or near-level responsibility > keeps a physically restrained helper from being treated as a free climber 13ms
+   ✓ a check does not bypass a physical or near-level responsibility > does not send the installed covered owner uphill to manufacture optional help 7ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not climb through a near hip still in his picture merely because the hidden DL has moved away 12ms
+   ✓ helper decisions consume delayed visible responsibility cues > does not anticipate a filling backer whose delayed picture is still far from the helper 12ms
+   ✓ optional inside-zone help respects other concepts and real double teams > retains sustained help for Duo, gap schemes, stretch zone, Draw and Toss 28ms
+   ✓ optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path 17ms
+   ✓ a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands 111ms
+   × the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands 130ms
+     → expected 0 to be greater than 0
+   ✓ optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help 88ms
+ ✓ |core| test/held-recovery.test.ts (17 tests) 874ms
+ ✓ |core| test/run-shed.test.ts (2 tests) 796ms
+   ✓ a run shed is a decision the body executes > defenders try to get off blocks near the runner, and no roll frees them, flip=false  524ms
+ ✓ |core| test/run-system.test.ts (26 tests) 1644ms
+   ✓ functional contact and pre-snap motion > retains legal unfinished stem positions, momentum and negative replay frames  1555ms
+ ✓ |core| test/scenario-pack.test.ts (4 tests) 676ms
+ ❯ |core| test/combo-strike-access.test.ts (5 tests | 5 failed) 655ms
+   × earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=false 307ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=true 181ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=false 41ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=true 39ms
+     → expected 'drive' to be 'climb' // Object.is equality
+   × earned departure ends at achievable first strike rather than the backer center > develops real second-level load while the original keeper still protects the down surface 85ms
+     → expected 'drive' to be 'climb' // Object.is equality
+ ✓ |core| test/world-physics.test.ts (27 tests) 667ms
+ ✓ |core| test/redirect-protection.test.ts (2 tests) 425ms
+ ✓ |core| test/combo-transfer.test.ts (29 tests) 568ms
+ ✓ |core| test/roster-review.test.ts (5 tests) 478ms
+   ✓ saved-result behavioral review has no outcome promotion rule > CLI only reads saved results, recomputes comparisons and refuses to overwrite a filled review  456ms
+ ❯ |core| test/planned-climb-fit.test.ts (3 tests | 1 failed) 631ms
+   ✓ planned climb acquires a useful near strike without running through the backer > keeps the far forecast and gathers the near strike through the real hook, reflected=false  304ms
+   ✓ planned climb acquires a useful near strike without running through the backer > keeps the far forecast and gathers the near strike through the real hook, reflected=true 172ms
+   × planned climb acquires a useful near strike without running through the backer > maintains acquired Mike load and the keeper through runner arrival with ordinary World limits 152ms
+     → expected true to be false // Object.is equality
+ ✓ |core| test/bounded-attachment-world.test.ts (11 tests) 532ms
+ ✓ |core| test/lower-grip-angular-transfer.test.ts (61 tests) 438ms
+ ✓ |core| test/climb-access.test.ts (3 tests) 391ms
+ ❯ |core| test/pass-cutoff-approach.test.ts (4 tests | 1 failed) 529ms
+   ✓ edge cutoff approach execution > P040 obtains loaded contact on a better shoulder with the same bodies and normal traffic 175ms
+   × edge cutoff approach execution > P019 retains useful contact on both edges through the actual throw 347ms
+     → expected undefined to be 'pass' // Object.is equality
+   ✓ edge cutoff approach execution > the opening request executes with finite acceleration on either side, mirror=-1 3ms
+   ✓ edge cutoff approach execution > the opening request executes with finite acceleration on either side, mirror=1 2ms
+ ✓ |core| test/run-contact-flow.test.ts (23 tests) 278ms
+ ✓ |core| test/motion-contact.test.ts (9 tests) 405ms
+ ✓ |core| test/wrap-binding.test.ts (30 tests) 438ms
+ ✓ |research| test/research/spatial-ground.test.ts (9 tests) 374ms
+ ✓ |core| test/tackle-support-choice.test.ts (20 tests) 422ms
+ ✓ |core| test/grasp-angular-transfer.test.ts (51 tests) 366ms
+ ✓ |core| test/coverage-run-support.test.ts (15 tests) 379ms
+ ✓ |core| test/baseline-runner.test.ts (5 tests) 415ms
+ ✓ |core| test/run-contact-technique.test.ts (9 tests) 376ms
+ ✓ |core| test/snap-mesh-and-pull.test.ts (12 tests) 363ms
+ ✓ |core| test/pull-fit-plan.test.ts (12 tests) 313ms
+ ✓ |core| test/cutoff-surface.test.ts (17 tests) 321ms
+ ✓ |core| test/traffic-turning.test.ts (13 tests) 278ms
+ ✓ |core| test/reach-contact.test.ts (18 tests) 265ms
+ ✓ |research| test/research/spatial-sole-events.test.ts (11 tests) 420ms
+ ✓ |core| test/run-job-exchange.test.ts (24 tests) 352ms
+ ✓ |core| test/virtual-foot.test.ts (6 tests) 312ms
+ ❯ |core| test/back-man-run-fit.test.ts (38 tests | 1 failed) 355ms
+   ✓ inside man players insert from their acquired back possession > keeps fitting a visibly leading fullback as he accelerates, side=-1 27ms
+   ✓ inside man players insert from their acquired back possession > keeps fitting a visibly leading fullback as he accelerates, side=1 6ms
+   ✓ inside man players insert from their acquired back possession > does not treat an upright fullback release or a pass interpretation as confirmed lead work 5ms
+   ✓ inside man players insert from their acquired back possession > stops maintaining receiver cushion after run plus positive possession, side=-1 4ms
+   ✓ inside man players insert from their acquired back possession > stops maintaining receiver cushion after run plus positive possession, side=1 6ms
+   ✓ inside man players insert from their acquired back possession > cannot instantly reverse a late retreat and uses the unchanged World traction budget 7ms
+   ✓ inside man players insert from their acquired back possession > mirrors both the requested insertion and actual motor response 4ms
+   ✓ inside man players insert from their acquired back possession > uses its installed insertion gap rather than simply chasing the deep mesh 4ms
+   ✓ inside man players insert from their acquired back possession > supports an installed fullback key without relabeling a receiver as a back 4ms
+   ✓ inside man players insert from their acquired back possession > does not follow hidden current possession, handoff, scramble, call kind or body displacement 4ms
+   ✓ inside man players insert from their acquired back possession > negative/unknown carrying=false does not invent a run-fit transition 4ms
+   ✓ inside man players insert from their acquired back possession > negative/unknown carrying=null does not invent a run-fit transition 4ms
+   ✓ inside man players insert from their acquired back possession > negative/unknown carrying=undefined does not invent a run-fit transition 6ms
+   ✓ inside man players insert from their acquired back possession > positive possession does not overwrite a unsure interpretation 3ms
+   ✓ inside man players insert from their acquired back possession > positive possession does not overwrite a pass interpretation 3ms
+   ✓ inside man players insert from their acquired back possession > waits until a changed consumed picture actually carries the possession cue 1ms
+   ✓ inside man players insert from their acquired back possession > keeps an originally split-out back in ordinary man responsibility 3ms
+   ✓ inside man players insert from their acquired back possession > preserves outside receiver coverage even when an inside man player reads run 4ms
+   ✓ inside man players insert from their acquired back possession > keeps force/cutback contracts outside the keyed back insertion/alley rule 8ms
+   ✓ inside man players insert from their acquired back possession > a fooled man defender stays with a play-action fake absent positive carrying 8ms
+   ✓ inside man players insert from their acquired back possession > retains the old visible blocking transition without treating negative possession as a block 2ms
+   ✓ inside man players insert from their acquired back possession > only attacks a declared observed crease and retains an away-side gap 5ms
+   ✓ inside man players insert from their acquired back possession > preserves ordinary chase when the acquired marked runner is already past LOS 4ms
+   ✓ inside man players insert from their acquired back possession > retains acquired insertion until throw recognition then transfers to the ball, side=-1 4ms
+   ✓ inside man players insert from their acquired back possession > retains acquired insertion until throw recognition then transfers to the ball, side=1 4ms
+   ✓ inside man players insert from their acquired back possession > records first actual fit choice once at standard level without changing request or RNG 3ms
+   ✓ inside man players insert from their acquired back possession > records first actual fit choice once at full level without changing request or RNG 3ms
+   ✓ inside man players insert from their acquired back possession > does not record fit decisions when its actual positive cue is absent 4ms
+   × back man markers preserve their installed alley support instead of receiver cushion > uses the native FS alley cap at the deep mesh, preserving the last defensive level 9ms
+     → expected 10.5 to be close to 10.2, received difference is 0.3000000000000007, but expected 5e-11
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > pursues a declared observed crease and brakes a retreat through the same mirrored World limits 10ms
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > waits for personally consumed carrying rather than the hidden handoff or current runner position 4ms
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > preserves man responsibility for pass/unsure reads, absent possession, play action, and a split-out back 17ms
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > supports a known backfield FB without reading live possession 3ms
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > retains acquired alley support until throw recognition then transfers to the ball, side=-1 5ms
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > retains acquired alley support until throw recognition then transfers to the ball, side=1 6ms
+   ✓ back man markers preserve their installed alley support instead of receiver cushion > records the actual alley cue once without changing commands, body state, or the shared random stream 15ms
+   ✓ acquired back-man support has no private positive-picture latch > uses new sensing and contradictory belief after a positive insert choice 79ms
+   ✓ acquired back-man support has no private positive-picture latch > uses new sensing and contradictory belief after a positive alley choice 62ms
+ ✓ |core| test/deep-coverage-leverage.test.ts (13 tests) 227ms
+ ✓ |core| test/dl-acquired-flow.test.ts (18 tests) 201ms
+ ✓ |core| test/incidental-catch-readiness.test.ts (13 tests) 321ms
+ ✓ |core| test/zone-track.test.ts (5 tests) 309ms
+ ✓ |core| test/release-cushion.test.ts (20 tests) 271ms
+ ✓ |core| test/loose-ball-recovery.test.ts (15 tests) 294ms
+ ✓ |research| test/research/inertial-gait.test.ts (9 tests) 324ms
+ ✓ |core| test/stretch-normal-follow.test.ts (17 tests) 311ms
+ ✓ |core| test/counter-gh.test.ts (13 tests) 305ms
+ ✓ |core| test/pursuit-contact.test.ts (21 tests) 254ms
+ ✓ |core| test/hand-comoving.test.ts (11 tests) 208ms
+ ✓ |core| test/grasp-world.test.ts (13 tests) 193ms
+ ✓ |core| test/run-block-fit.test.ts (22 tests) 216ms
+ ✓ |core| test/contact-height.test.ts (4 tests) 194ms
+ ✓ |research| test/research/vertical-support.test.ts (11 tests) 229ms
+ ✓ |research| test/research/continued-recovery.test.ts (16 tests) 178ms
+ ✓ |research| test/research/spatial-sole-traction.test.ts (10 tests) 200ms
+ ✓ |core| test/run-contact-track.test.ts (6 tests) 172ms
+ ✓ |research| test/research/spatial-support.test.ts (8 tests) 160ms
+ ✓ |core| test/run-force-ownership.test.ts (36 tests) 176ms
+ ✓ |core| test/tackle-window.test.ts (28 tests) 181ms
+ ✓ |core| test/chase-arrival.test.ts (12 tests) 160ms
+ ✓ |core| test/quarters-flat-wheel.test.ts (13 tests) 176ms
+ ✓ |core| test/approach-control.test.ts (19 tests) 180ms
+ ✓ |core| test/seam-delivery.test.ts (19 tests) 162ms
+ ✓ |core| test/draw-presentation.test.ts (28 tests) 141ms
+ ✓ |core| test/helper-fit.test.ts (12 tests) 173ms
+ ✓ |core| test/catch-caller-interval.test.ts (13 tests) 112ms
+ ✓ |core| test/actuation.test.ts (9 tests) 170ms
+ ✓ |core| test/tackle-touch.test.ts (8 tests) 149ms
+ ✓ |core| test/run-base.test.ts (15 tests) 163ms
+ ✓ |core| test/contact-motion.test.ts (14 tests) 141ms
+ ✓ |core| test/run-hand-control.test.ts (14 tests) 160ms
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G4-P177' accepts pursuit despite retained pass belief
+{"id":"G4-P177","t":5.7,"actor":"LB_M","cueAge":0.35,"requested":{"x":-2.334446029607328,"y":8.765786519190351},"coveringRequest":{"x":7.689280151260645,"y":3.617609857804743},"before":{"x":-1.89,"y":1.15},"achieved":{"x":-1.8413853893274381,"y":1.4359890864520297},"coveringAchieved":{"x":-1.5865046405526309,"y":1.2281800019359246}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G1-P086' accepts pursuit despite retained pass belief
+{"id":"G1-P086","t":5.6,"actor":"LB_M","cueAge":0.15,"requested":{"x":-1.7416393810829758,"y":1.1476500754371588},"coveringRequest":{"x":7.65808640167392,"y":-4.708166099153356},"before":{"x":6.42,"y":-4.74},"achieved":{"x":6.15790266491727,"y":-4.5509280105846885},"coveringAchieved":{"x":6.536833074539623,"y":-4.632910402811297}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G1-P127' accepts pursuit despite retained pass belief
+{"id":"G1-P127","t":5.4,"actor":"LB_M","cueAge":0.15,"requested":{"x":-1.7220119773766573,"y":-1.1908774626047742},"coveringRequest":{"x":7.899765512948575,"y":4.290317027114459},"before":{"x":6.31,"y":5.77},"achieved":{"x":6.065717846165145,"y":5.558294870085469},"coveringAchieved":{"x":6.43731044562037,"y":5.648296173782028}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G2-P174' accepts pursuit despite retained pass belief
+{"id":"G2-P174","t":5.6,"actor":"CB_S","cueAge":0.35,"requested":{"x":-1.3983485674236824,"y":8.501905940910705},"coveringRequest":{"x":1.4802040816326278,"y":-3.387755102040814},"before":{"x":0.71,"y":-3.34},"achieved":{"x":0.650577047672453,"y":-3.011608657778906},"coveringAchieved":{"x":1.0679585918809005,"y":-3.273511299675316}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G3-P093' accepts pursuit despite retained pass belief
+{"id":"G3-P093","t":5.9,"actor":"FS","cueAge":0.4,"requested":{"x":-6.992915530374002,"y":-4.384390604240234},"coveringRequest":{"x":10.023062817324238,"y":0.0250607739945981},"before":{"x":5.52,"y":0.16},"achieved":{"x":5.210528126619622,"y":0.06427038147820988},"coveringAchieved":{"x":5.708020111298693,"y":0.1543284919478149}}
+
+stdout | test/acquired-qb-continuation.test.ts > man coverage accepts a personally acquired committed QB run > 'G4-P173' accepts pursuit despite retained pass belief
+{"id":"G4-P173","t":5.7,"actor":"LB_M","cueAge":0.4,"requested":{"x":2.0392831565616274,"y":-7.713841595658058},"coveringRequest":{"x":4.063851236151891,"y":7.72581867774614},"before":{"x":1.11,"y":8.25},"achieved":{"x":1.1138872624135037,"y":7.895385846153333},"coveringAchieved":{"x":1.433952561645116,"y":8.192512378405393}}
+
+ ✓ |core| test/acquired-qb-continuation.test.ts (13 tests) 126ms
+ ✓ |core| test/pass-contact.test.ts (6 tests) 161ms
+ ✓ |core| test/in-stride-catch.test.ts (4 tests) 138ms
+ ✓ |core| test/contact-choice.test.ts (6 tests) 157ms
+ ✓ |core| test/run-execution.test.ts (17 tests) 171ms
+ ✓ |core| test/defensive-awareness-contact.test.ts (20 tests) 133ms
+ ✓ |core| test/spacing-yield.test.ts (8 tests) 138ms
+ ✓ |core| test/quarter-flat-force-support.test.ts (8 tests) 134ms
+ ✓ |core| test/man-throw-recognition.test.ts (8 tests) 125ms
+ ✓ |core| test/press-contact.test.ts (15 tests) 120ms
+ ✓ |core| test/zone-reach.test.ts (18 tests) 110ms
+ ✓ |core| test/run-technique.test.ts (19 tests) 142ms
+ ✓ |research| test/research/spatial-sole-compliance.test.ts (7 tests) 100ms
+ ✓ |core| test/hand-force-point.test.ts (35 tests) 123ms
+ ✓ |core| test/support-work-off.test.ts (17 tests) 88ms
+ ✓ |core| test/run-combo-retarget.test.ts (17 tests) 132ms
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G3-P003' uses the acquired carrying QB after the empty back leaves
+{"id":"G3-P003","t":4,"actor":"CB_S","qb":{"pos":{"x":51.4,"y":21.47},"vel":{"x":0,"y":0},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":55.8,"y":19.52},"vel":{"x":1.94,"y":2.47},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":1.490714854756422,"y":-3.7754847376450957},"achieved":{"x":1.09252015140463,"y":-2.878737316275613}}
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G3-P087' uses the acquired carrying QB after the empty back leaves
+{"id":"G3-P087","t":2.9,"actor":"LB_M","qb":{"pos":{"x":40.67,"y":24.58},"vel":{"x":0,"y":0},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":45.06,"y":21.48},"vel":{"x":2.22,"y":-1.4},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":0.6000000000000085,"y":-9.144683714196729},"achieved":{"x":0.7980079084545988,"y":-1.58396492810135}}
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G3-P141' uses the acquired carrying QB after the empty back leaves
+{"id":"G3-P141","t":2.6,"actor":"LB_S","qb":{"pos":{"x":41.89,"y":21.53},"vel":{"x":-1.17,"y":0.72},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":46.51,"y":19.42},"vel":{"x":2.85,"y":-0.6},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":2.325210496164594,"y":-9.023320444445606},"achieved":{"x":-1.1945412158257265,"y":-1.5100049856761304}}
+
+stdout | test/acquired-mesh-contradiction.test.ts > retire an unkeyed mesh expectation from acquired contradiction > 'G4-P142' uses the acquired carrying QB after the empty back leaves
+{"id":"G4-P142","t":2.4,"actor":"LB_S","qb":{"pos":{"x":29.65,"y":24.17},"vel":{"x":-2.44,"y":-0.84},"facing":0,"stance":null,"pose":"up","carrying":true,"age":0.25},"back":{"pos":{"x":34.26,"y":22.03},"vel":{"x":4.82,"y":-1.05},"facing":0,"stance":null,"pose":"up","carrying":false,"age":0.25},"requested":{"x":0.22242285123996725,"y":-9.232692453066464},"achieved":{"x":-0.0703415058719048,"y":-3.944084151173852}}
+
+ ✓ |core| test/acquired-mesh-contradiction.test.ts (10 tests) 107ms
+ ✓ |core| test/visible-help.test.ts (13 tests) 103ms
+ ✓ |core| test/run-anchor.test.ts (1 test) 119ms
+ ✓ |core| test/game-rules.test.ts (30 tests) 109ms
+ ✓ |core| test/traffic-step.test.ts (8 tests) 124ms
+ ✓ |core| test/filtered-follow.test.ts (4 tests) 101ms
+ ✓ |core| test/tackle-wait-constraints.test.ts (13 tests) 93ms
+ ✓ |core| test/rat-coverage.test.ts (10 tests) 100ms
+ ✓ |research| test/research/vertical-series-support.test.ts (9 tests) 109ms
+ ✓ |core| test/match-block-release.test.ts (10 tests) 99ms
+ ✓ |core| test/delayed-possession.test.ts (14 tests) 94ms
+ ✓ |core| test/zone-combo-surface.test.ts (16 tests) 88ms
+ ✓ |core| test/runner-side-recovery.test.ts (11 tests) 52ms
+ ✓ |core| test/edge-fit-approach.test.ts (15 tests) 84ms
+ ✓ |research| test/research/finite-support.test.ts (14 tests) 76ms
+ ✓ |core| test/collection-approach.test.ts (3 tests) 74ms
+ ✓ |core| test/long-yardage-run.test.ts (5 tests) 68ms
+ ✓ |core| test/movement-preview.test.ts (18 tests) 66ms
+ ✓ |core| test/combination-ownership.test.ts (10 tests) 75ms
+ ✓ |core| test/carrier-boundary.test.ts (6 tests) 69ms
+ ✓ |core| test/coverage-judgment.test.ts (9 tests) 70ms
+ ✓ |core| test/hand-force-integration.test.ts (4 tests) 63ms
+ ❯ |core| test/gait-facing-contract.test.ts (12 tests | 2 failed) 72ms
+   ✓ held patch gait is planned from attained tick-entry facing > does not borrow a future sideways cap: posture 0.2, side -1 11ms
+   ✓ held patch gait is planned from attained tick-entry facing > does not borrow a future sideways cap: posture 0.2, side 1 2ms
+   ✓ held patch gait is planned from attained tick-entry facing > does not borrow a future sideways cap: posture 0.85, side -1 2ms
+   ✓ held patch gait is planned from attained tick-entry facing > does not borrow a future sideways cap: posture 0.85, side 1 3ms
+   × held patch gait is planned from attained tick-entry facing > preserves the historical center-mode prospective-face counterexample, side -1 6ms
+     → expected -0 to be close to 0.8884188959382183, received difference is 0.8884188959382183, but expected 5e-13
+   × held patch gait is planned from attained tick-entry facing > preserves the historical center-mode prospective-face counterexample, side 1 1ms
+     → expected +0 to be close to 0.8884188959382183, received difference is 0.8884188959382183, but expected 5e-13
+   ✓ held patch gait is planned from attained tick-entry facing > preserves the below-directional-cap held propulsion law, side -1 2ms
+   ✓ held patch gait is planned from attained tick-entry facing > preserves the below-directional-cap held propulsion law, side 1 2ms
+   ✓ held patch gait is planned from attained tick-entry facing > keeps the actual-pose plan held across refinement and loaded/unloaded controls at 1 steps 4ms
+   ✓ held patch gait is planned from attained tick-entry facing > keeps the actual-pose plan held across refinement and loaded/unloaded controls at 12 steps 10ms
+   ✓ held patch gait is planned from attained tick-entry facing > keeps the actual-pose plan held across refinement and loaded/unloaded controls at 48 steps 23ms
+   ✓ held patch gait is planned from attained tick-entry facing > preserves fixed-facing and FREE baseline translation 5ms
+ ✓ |core| test/catch-phase-control.test.ts (7 tests) 68ms
+ ✓ |core| test/run-rep-lateral-arrival.test.ts (10 tests) 61ms
+ ✓ |core| test/hand-angular-transfer.test.ts (8 tests) 60ms
+ ✓ |core| test/carrier-crease.test.ts (9 tests) 60ms
+ ✓ |core| test/coverage-mechanics.test.ts (16 tests) 81ms
+ ✓ |core| test/qb-receiver-forecast.test.ts (9 tests) 51ms
+ ✓ |core| test/inline-zone-keeper.test.ts (9 tests) 53ms
+ ✓ |core| test/coverage-flat-responsibility.test.ts (13 tests) 48ms
+ ✓ |core| test/man-cushion-compression.test.ts (10 tests) 52ms
+ ✓ |core| test/run-contact-span.test.ts (6 tests) 63ms
+ ✓ |core| test/projected-cap.test.ts (21 tests) 57ms
+ ✓ |core| test/puller-target-read.test.ts (10 tests) 55ms
+ ✓ |core| test/pass-installation.test.ts (6 tests) 38ms
+ ✓ |core| test/stalk-visual-request.test.ts (7 tests) 30ms
+ ✓ |core| test/carrier-decision-cadence.test.ts (6 tests) 39ms
+ ✓ |core| test/second-level-handover.test.ts (9 tests) 49ms
+ ✓ |core| test/failed-exchange-continuation.test.ts (9 tests) 61ms
+ ✓ |core| test/puller-route-progress.test.ts (9 tests) 41ms
+ ✓ |core| test/run-pace-gather.test.ts (8 tests) 48ms
+ ✓ |core| test/qb-memory-awareness.test.ts (14 tests) 52ms
+ ✓ |core| test/recognition.test.ts (10 tests) 40ms
+ ✓ |core| test/blocker-work-picture.test.ts (7 tests) 40ms
+ ✓ |core| test/grasp-reel-travel.test.ts (9 tests) 32ms
+ ✓ |research| test/research/sole-contact.test.ts (14 tests) 32ms
+ ✓ |core| test/spacing-forecast-reuse.test.ts (2 tests) 36ms
+ ✓ |core| test/qb-receiver-consumer.test.ts (2 tests) 38ms
+ ✓ |core| test/live-gaps.test.ts (6 tests) 40ms
+ ✓ |core| test/press-front-stance.test.ts (12 tests) 42ms
+ ✓ |core| test/roster-audit.test.ts (4 tests) 36ms
+ ✓ |research| test/research/inertial-support.test.ts (20 tests) 26ms
+ ✓ |core| test/gait-achieved-pose.test.ts (5 tests) 10ms
+ ✓ |core| test/downfield-contact-rejection.test.ts (2 tests) 33ms
+ ✓ |core| test/catch-reach.test.ts (2 tests) 44ms
+ ✓ |core| test/receiver-run-eligibility.test.ts (6 tests) 48ms
+ ✓ |core| test/mind.test.ts (8 tests) 31ms
+ ✓ |core| test/dive-yaw.test.ts (4 tests) 36ms
+ ✓ |core| test/protection.test.ts (1 test) 76ms
+ ✓ |core| test/contact-angular-transfer.test.ts (6 tests) 46ms
+ ✓ |core| test/action-effort.test.ts (8 tests) 33ms
+ ✓ |core| test/directional-brace.test.ts (7 tests) 33ms
+ ✓ |core| test/impact-timing.test.ts (3 tests) 20ms
+ ✓ |core| test/rise-yaw-budget.test.ts (8 tests) 22ms
+ ✓ |core| test/fall-cause-history.test.ts (2 tests) 24ms
+ ✓ |research| test/research/material-plane.test.ts (12 tests) 20ms
+ ✓ |core| test/puller-kick-transition.test.ts (2 tests) 19ms
+ ✓ |core| test/physics.test.ts (10 tests) 24ms
+ ✓ |research| test/research/recovery-phase.test.ts (11 tests) 17ms
+ ✓ |core| test/stalk-moving-surface.test.ts (8 tests) 48ms
+ ✓ |core| test/constraint-work.test.ts (5 tests) 16ms
+ ✓ |core| test/inside-stalk-access.test.ts (5 tests) 47ms
+ ✓ |research| test/research/material-rigid.test.ts (11 tests) 15ms
+ ✓ |core| test/alignment.test.ts (10 tests) 14ms
+ ✓ |core| test/game-scramble-pressure-credit.test.ts (10 tests) 16ms
+ ✓ |core| test/determinism.test.ts (2 tests) 13ms
+ ✓ |core| test/replay-export.test.ts (21 tests) 10ms
+ ✓ |research| test/research/sole-shear.test.ts (15 tests) 13ms
+ ✓ |core| test/bounded-attachment.test.ts (8 tests) 8ms
+ ✓ |core| test/catch-opportunity.test.ts (10 tests) 7ms
+ ✓ |core| test/game-safety-credit.test.ts (5 tests) 10ms
+ ✓ |core| test/joint-spacing.test.ts (8 tests) 7ms
+ ✓ |core| test/run-fit-crossover.test.ts (9 tests) 40ms
+ ✓ |core| test/stretch-anchor-footwork.test.ts (3 tests) 103ms
+ ✓ |core| test/strike-force-integration.test.ts (4 tests) 72ms
+ ✓ |core| test/stretch-closure.test.ts (7 tests) 42ms
+ ✓ |core| test/traffic-control.test.ts (3 tests) 50ms
+ ✓ |core| test/two-point-energy.test.ts (3 tests) 35ms
+ ✓ |core| test/run-read-approach.test.ts (3 tests) 48ms
+ ✓ |core| test/stalk-ledger.test.ts (8 tests) 33ms
+ ❯ |core| test/spacing-residual-motion.test.ts (2 tests | 1 failed) 14ms
+   × attainable spacing admission instead of requested-turn shortcuts > checks the exact #81 A044 state even though the requested turn is below one 11ms
+     → expected 0.013142184427536563 to be less than 0
+   ✓ attainable spacing admission instead of requested-turn shortcuts > keeps an actually clear route unchanged without a new forecast 3ms
+ ✓ |core| test/yaw-motor.test.ts (5 tests) 17ms
+ ✓ |core| test/yaw-response.test.ts (25 tests) 17ms
+ ✓ |core| test/run-entry-opponent-information.test.ts (2 tests) 12ms
+ ✓ |core| test/replay-telemetry-packing.test.ts (2 tests) 10ms
+ ✓ |core| test/outer-d-gap.test.ts (11 tests) 9ms
+ ✓ |core| test/receiver-route-effort.test.ts (4 tests) 75ms
+ ✓ |core| test/qb-installed-box-count.test.ts (8 tests) 45ms
+ ✓ |core| test/receiver-eligibility-gh.test.ts (2 tests) 17ms
+ ✓ |core| test/game-takeaway-credit.test.ts (3 tests) 6ms
+ ✓ |core| test/contact-anatomy.test.ts (8 tests) 9ms
+ ✓ |core| test/mechanics-export.test.ts (3 tests) 4ms
+ ✓ |research| test/research/leg-compliance.test.ts (8 tests) 5ms
+ ✓ |core| test/schematic-stress-export.test.ts (4 tests) 5ms
+ ✓ |core| test/shotgun-rb-alignment.test.ts (9 tests) 16ms
+ ✓ |core| test/departed-center-gap.test.ts (3 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/back-man-run-fit.test.ts > back man markers preserve their installed alley support instead of receiver cushion > uses the native FS alley cap at the deep mesh, preserving the last defensive level
+AssertionError: expected 10.5 to be close to 10.2, received difference is 0.3000000000000007, but expected 5e-11
+ ❯ test/back-man-run-fit.test.ts:296:61
+    294|     expect(fit.a.runFit!.kind).toBe('alley');
+    295|     expect(fit.sim.offAlign.spots.RB.backfield).toBe(true);
+    296|     expect(fit.behavior.recordedTechnique().initialCushion).toBeCloseT…
+       |                                                             ^
+    297|     const command = fit.update(), ordinary = man.update(), direct = ch…
+    298|     // A known runner at a deep mesh is not permission to collapse thi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=false
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > uses the clear near strike through the production hook, reflected=true
+AssertionError: expected 'drive' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "drive"
+
+ ❯ stage test/combo-strike-access.test.ts:15:31
+     13|  while(sim.phase==='live'&&sim.t<t)sim.tick();
+     14|  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
+     15|  expect(controller.plan.kind).toBe('climb');expect(controller.plan.dep…
+       |                               ^
+     16|  expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.s…
+     17|  return {sim,rg,controller};
+ ❯ decision test/combo-strike-access.test.ts:38:28
+ ❯ test/combo-strike-access.test.ts:63:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=false
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > keeps the departure when the down body obstructs even first strike, reflected=true
+AssertionError: expected 'drive' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "drive"
+
+ ❯ stage test/combo-strike-access.test.ts:15:31
+     13|  while(sim.phase==='live'&&sim.t<t)sim.tick();
+     14|  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
+     15|  expect(controller.plan.kind).toBe('climb');expect(controller.plan.dep…
+       |                               ^
+     16|  expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.s…
+     17|  return {sim,rg,controller};
+ ❯ decision test/combo-strike-access.test.ts:38:28
+ ❯ test/combo-strike-access.test.ts:66:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  |core| test/combo-strike-access.test.ts > earned departure ends at achievable first strike rather than the backer center > develops real second-level load while the original keeper still protects the down surface
+AssertionError: expected 'drive' to be 'climb' // Object.is equality
+
+Expected: "climb"
+Received: "drive"
+
+ ❯ stage test/combo-strike-access.test.ts:15:31
+     13|  while(sim.phase==='live'&&sim.t<t)sim.tick();
+     14|  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
+     15|  expect(controller.plan.kind).toBe('climb');expect(controller.plan.dep…
+       |                               ^
+     16|  expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.s…
+     17|  return {sim,rg,controller};
+ ❯ test/combo-strike-access.test.ts:69:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  |core| test/gait-facing-contract.test.ts > held patch gait is planned from attained tick-entry facing > preserves the historical center-mode prospective-face counterexample, side -1
+AssertionError: expected -0 to be close to 0.8884188959382183, received difference is 0.8884188959382183, but expected 5e-13
+ ❯ test/gait-facing-contract.test.ts:79:35
+     77|     const expected = (desired - 3.6) / 1.4;
+     78|     expect(expected).toBeCloseTo(.8884188959382183, 12);
+     79|     expect(record.plan.ay * side).toBeCloseTo(expected, 12);
+       |                                   ^
+     80|     for (const force of result.forces) expect(force.y * side).toBeClos…
+     81|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  |core| test/gait-facing-contract.test.ts > held patch gait is planned from attained tick-entry facing > preserves the historical center-mode prospective-face counterexample, side 1
+AssertionError: expected +0 to be close to 0.8884188959382183, received difference is 0.8884188959382183, but expected 5e-13
+ ❯ test/gait-facing-contract.test.ts:79:35
+     77|     const expected = (desired - 3.6) / 1.4;
+     78|     expect(expected).toBeCloseTo(.8884188959382183, 12);
+     79|     expect(record.plan.ay * side).toBeCloseTo(expected, 12);
+       |                                   ^
+     80|     for (const force of result.forces) expect(force.y * side).toBeClos…
+     81|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  |core| test/pass-cutoff-approach.test.ts > edge cutoff approach execution > P019 retains useful contact on both edges through the actual throw
+AssertionError: expected undefined to be 'pass' // Object.is equality
+
+- Expected: 
+"pass"
+
++ Received: 
+undefined
+
+ ❯ test/pass-cutoff-approach.test.ts:49:34
+     47|     for(const slot of ['LT','RT']){
+     48|       const b=sim.slot(slot)!;
+     49|       expect(b.engagement?.type).toBe('pass');
+       |                                  ^
+     50|       expect(b.engagement?.contactReported).toBe(true);
+     51|       expect(b.body.support!.state).toBe('up');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  |core| test/planned-climb-fit.test.ts > planned climb acquires a useful near strike without running through the backer > maintains acquired Mike load and the keeper through runner arrival with ordinary World limits
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/planned-climb-fit.test.ts:64:58
+     62|    for(const actor of [rt,y,mike])expect(report.armImpulse[actor.idx])…
+     63|   }
+     64|   expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
+       |                                                          ^
+     65|   expect(rt.engagement?.defender).toBe(mike);expect(rt.pos.x).toBeLess…
+     66|   expect(sim.world.joints).toContain(rt.engagement!.hands);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  |core| test/qb-rusher-recording.test.ts > recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/qb-rusher-recording.test.ts:85:42
+     83|     const actual = observedRun(recorded), control = observedRun(unreco…
+     84|     expect(actual.result.kind).toBe('pass');
+     85|     expect(actual.result.stats.scramble).toBe(true);
+       |                                          ^
+     86|     expect(actual.result.stats.attempted).toBe(false);
+     87|     expect(actual.result.stats.rusher).toBe(recorded.qb.player.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  |core| test/spacing-residual-motion.test.ts > attainable spacing admission instead of requested-turn shortcuts > checks the exact #81 A044 state even though the requested turn is below one
+AssertionError: expected 0.013142184427536563 to be less than 0
+ ❯ test/spacing-residual-motion.test.ts:35:59
+     33|     const touch = .9 * (a.profile.radius + fixture.peers.find((p: any)…
+     34|     expect(Math.min(...samples.map(s => Math.hypot(s.pos.x - peer.pos.…
+     35|       s.pos.y - peer.pos.y - peer.vel.y * s.t))) - touch).toBeLessThan…
+       |                                                           ^
+     36|     const preview = vi.spyOn(Preview, 'previewFreeMovement');
+     37|     try {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  |core| test/zone-helper-check.test.ts > the native Split Zone Tite helper reads useful first-level work > waits for arriving work, then climbs while the keeper retains achieved facing and loaded hands
+AssertionError: expected 0 to be greater than 0
+ ❯ test/zone-helper-check.test.ts:483:83
+    481|         expect(off / (Math.PI / 2)).toBeLessThan(1.1);
+    482|         expect(owner.body.support!.state).toBe('up');
+    483|         expect(sim.world.joints).toContain(e.hands); expect(e.hands!.n…
+       |                                                                                   ^
+    484|         expect(e.helpers).toEqual([]); retainedReach++;
+    485|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+
+ Test Files  8 failed | 200 passed (208)
+      Tests  13 failed | 2249 passed (2262)
+   Start at  00:50:02
+   Duration  228.10s (transform 3.75s, setup 0ms, collect 20.65s, tests 173.06s, environment 39ms, prepare 11.16s)
+
+npm notice
+npm notice New major version of npm available! 10.9.9 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/latest-reviewed-checkpoint/combined.json; exit 1

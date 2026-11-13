@@ -1,0 +1,1137 @@
+{
+  "sourceSha256": "3df434ef60f46d6e3422124d073df65b44a19a23045c67aa87164a40ae9b45b5",
+  "node": "v22.23.3",
+  "cohort": {
+    "seeds": [
+      3,
+      7,
+      11
+    ],
+    "rusherPowers": [
+      0.7,
+      1,
+      1.4
+    ],
+    "substeps": [
+      6,
+      12,
+      24,
+      48,
+      96,
+      192
+    ],
+    "referenceSteps": 192,
+    "controllerHz": 20
+  },
+  "note": "The refined solver is a convergence reference. These fixtures do not establish NFL fidelity.",
+  "elapsedSeconds": 1.216,
+  "summaries": [
+    {
+      "substeps": 6,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.19567438231215814,
+      "maxClosestErrorYd": 0.5750981842716314,
+      "meanCarriedPastErrorYd": 0.14666353366451743,
+      "maxCarriedPastErrorYd": 0.46689334199426824,
+      "cornerOutcomeDisagreements": 2,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 4.996112164774051e-13,
+      "maxOverlapYd": 0.0029640951086764566,
+      "allFinite": true
+    },
+    {
+      "substeps": 12,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.12724005808811498,
+      "maxClosestErrorYd": 0.32326361903278267,
+      "meanCarriedPastErrorYd": 0.0796673646160689,
+      "maxCarriedPastErrorYd": 0.18586499004356583,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 6.85112070754664e-13,
+      "maxOverlapYd": 0.003281077582208747,
+      "allFinite": true
+    },
+    {
+      "substeps": 24,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.06108281359222721,
+      "maxClosestErrorYd": 0.21931747859287887,
+      "meanCarriedPastErrorYd": 0.06520117086233768,
+      "maxCarriedPastErrorYd": 0.19214289638682303,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 9.633722943507164e-13,
+      "maxOverlapYd": 0.0017775998070432841,
+      "allFinite": true
+    },
+    {
+      "substeps": 48,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.06639384596437387,
+      "maxClosestErrorYd": 0.23057135344823498,
+      "meanCarriedPastErrorYd": 0.034957814208990357,
+      "maxCarriedPastErrorYd": 0.09507820604656203,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 1.6129476608205485e-12,
+      "maxOverlapYd": 0.0011570027954652673,
+      "allFinite": true
+    },
+    {
+      "substeps": 96,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.023468488402978535,
+      "maxClosestErrorYd": 0.07718005955172691,
+      "meanCarriedPastErrorYd": 0.0076025643940794575,
+      "maxCarriedPastErrorYd": 0.025286316325473734,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 2.828230099527401e-12,
+      "maxOverlapYd": 0.0006327287777341262,
+      "allFinite": true
+    }
+  ],
+  "redirects": [
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "substeps": 6,
+      "momentumError": 2.5934809855243657e-13,
+      "maxPenetration": 0.0029640951086764566,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6450861028732409,
+      "carriedPast": 0.5816620468114877,
+      "cornerTurned": true,
+      "peakNormal": 548.8781119976186,
+      "peakTangent": 278.3753461082434
+    },
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "substeps": 12,
+      "momentumError": 3.995026136889659e-13,
+      "maxPenetration": 0.003094039631540646,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6556737173122146,
+      "carriedPast": 0.5938283327220333,
+      "cornerTurned": true,
+      "peakNormal": 548.8781119976187,
+      "peakTangent": 278.3753461082434
+    },
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "substeps": 24,
+      "momentumError": 5.387605662981301e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6539608584184965,
+      "carriedPast": 0.5852147312170857,
+      "cornerTurned": true,
+      "peakNormal": 548.8781119976185,
+      "peakTangent": 278.37534610824355
+    },
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "substeps": 48,
+      "momentumError": 1.4683026519618947e-12,
+      "maxPenetration": 0.00020817780161963562,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6620177576569555,
+      "carriedPast": 0.601437175897324,
+      "cornerTurned": true,
+      "peakNormal": 548.8781119976184,
+      "peakTangent": 278.37534610824366
+    },
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "substeps": 96,
+      "momentumError": 1.2794702616765439e-12,
+      "maxPenetration": 0.0004965870279438622,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6628386562553844,
+      "carriedPast": 0.6026672652351266,
+      "cornerTurned": true,
+      "peakNormal": 548.8781119976196,
+      "peakTangent": 278.37534610824366
+    },
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "substeps": 192,
+      "momentumError": 4.229615676285824e-12,
+      "maxPenetration": 0.00024412308556198692,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6632338926882503,
+      "carriedPast": 0.6031843714397382,
+      "cornerTurned": true,
+      "peakNormal": 548.8781119976178,
+      "peakTangent": 278.3753461082437
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "substeps": 6,
+      "momentumError": 2.7084636475004115e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [
+        "QB"
+      ],
+      "closest": 0.5684809914376843,
+      "carriedPast": 0.48751379593855404,
+      "cornerTurned": true,
+      "peakNormal": 784.1115885680268,
+      "peakTangent": 397.67906586891917
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "substeps": 12,
+      "momentumError": 5.338536015034901e-13,
+      "maxPenetration": 0.003281077582208747,
+      "finite": true,
+      "falls": [
+        "QB"
+      ],
+      "closest": 0.5763813511660251,
+      "carriedPast": 0.5302156116709753,
+      "cornerTurned": true,
+      "peakNormal": 784.1115885680267,
+      "peakTangent": 397.6790658689191
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "substeps": 24,
+      "momentumError": 7.247535904753022e-13,
+      "maxPenetration": 0.0006359242108304741,
+      "finite": true,
+      "falls": [
+        "QB"
+      ],
+      "closest": 0.5987558804555199,
+      "carriedPast": 0.5312883481562238,
+      "cornerTurned": true,
+      "peakNormal": 784.1115885680267,
+      "peakTangent": 397.6790658689191
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "substeps": 48,
+      "momentumError": 7.144140841638399e-13,
+      "maxPenetration": 0.0006047906623306565,
+      "finite": true,
+      "falls": [
+        "QB"
+      ],
+      "closest": 0.6064772592174082,
+      "carriedPast": 0.5379866787905669,
+      "cornerTurned": true,
+      "peakNormal": 784.1115885680273,
+      "peakTangent": 397.6790658689194
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "substeps": 96,
+      "momentumError": 1.008995703579569e-12,
+      "maxPenetration": 0.00039485886935108905,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6680827175946243,
+      "carriedPast": 0.6291281907934874,
+      "cornerTurned": true,
+      "peakNormal": 784.1115885680263,
+      "peakTangent": 397.6790658689195
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "substeps": 192,
+      "momentumError": 2.197749716142229e-12,
+      "maxPenetration": 0.00020532042954324314,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.6690438640738928,
+      "carriedPast": 0.629795685088645,
+      "cornerTurned": true,
+      "peakNormal": 784.1115885680236,
+      "peakTangent": 397.67906586891957
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "substeps": 6,
+      "momentumError": 4.996112164774051e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9300493030698805,
+      "carriedPast": 0.9373991834304434,
+      "cornerTurned": true,
+      "peakNormal": 1097.7562239952372,
+      "peakTangent": 556.7506922164868
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "substeps": 12,
+      "momentumError": 4.2072290804888616e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9355110705240255,
+      "carriedPast": 0.9313148763742802,
+      "cornerTurned": true,
+      "peakNormal": 1097.7562239952374,
+      "peakTangent": 556.7506922164868
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "substeps": 24,
+      "momentumError": 9.633722943507164e-13,
+      "maxPenetration": 0.0006819545030394281,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.8998584279363046,
+      "carriedPast": 0.9579265327954474,
+      "cornerTurned": true,
+      "peakNormal": 1097.756223995237,
+      "peakTangent": 556.7506922164871
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "substeps": 48,
+      "momentumError": 6.893729417768764e-13,
+      "maxPenetration": 0.0011570027954652673,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9001929788111919,
+      "carriedPast": 0.9674856458616787,
+      "cornerTurned": true,
+      "peakNormal": 1097.7562239952367,
+      "peakTangent": 556.7506922164873
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "substeps": 96,
+      "momentumError": 1.2444695058153792e-12,
+      "maxPenetration": 0.0006327287777341262,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.8990712784041309,
+      "carriedPast": 0.9721268908753089,
+      "cornerTurned": true,
+      "peakNormal": 1097.7562239952392,
+      "peakTangent": 556.7506922164873
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "substeps": 192,
+      "momentumError": 2.943210476863517e-12,
+      "maxPenetration": 0.0003188440788478575,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9007857302337552,
+      "carriedPast": 0.9747525673134874,
+      "cornerTurned": true,
+      "peakNormal": 1097.7562239952356,
+      "peakTangent": 556.7506922164874
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "substeps": 6,
+      "momentumError": 2.985125254554078e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 4.796899641865994,
+      "carriedPast": 2.1446359893144233,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791056,
+      "peakTangent": 765.4349850044481
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "substeps": 12,
+      "momentumError": 4.623444307582485e-13,
+      "maxPenetration": 0.0011871671203507184,
+      "finite": true,
+      "falls": [],
+      "closest": 4.747659420571014,
+      "carriedPast": 2.414968103513168,
+      "cornerTurned": false,
+      "peakNormal": 1104.116052659047,
+      "peakTangent": 790.0998622797864
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "substeps": 24,
+      "momentumError": 5.887651606675091e-13,
+      "maxPenetration": 0.000884326019220727,
+      "finite": true,
+      "falls": [],
+      "closest": 4.461750297741997,
+      "carriedPast": 2.456466976606272,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791054,
+      "peakTangent": 790.0998622797864
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "substeps": 48,
+      "momentumError": 6.460177809457911e-13,
+      "maxPenetration": 0.00014036355864965877,
+      "finite": true,
+      "falls": [],
+      "closest": 4.516696818418599,
+      "carriedPast": 2.274098121393653,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791065,
+      "peakTangent": 780.4979742625776
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "substeps": 96,
+      "momentumError": 1.2297163002489586e-12,
+      "maxPenetration": 0.00006182688142852832,
+      "finite": true,
+      "falls": [],
+      "closest": 4.5059599852600645,
+      "carriedPast": 2.2571478273655323,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791072,
+      "peakTangent": 780.4979742625767
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "substeps": 192,
+      "momentumError": 4.533265786439023e-12,
+      "maxPenetration": 0.00009935524827231479,
+      "finite": true,
+      "falls": [],
+      "closest": 4.463857806733826,
+      "carriedPast": 2.264324080219449,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791077,
+      "peakTangent": 790.0998622797864
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "substeps": 6,
+      "momentumError": 3.6265533240040343e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 3.1835782173691975,
+      "carriedPast": 2.314902977601079,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791056,
+      "peakTangent": 790.0998622797865
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "substeps": 12,
+      "momentumError": 4.587955242392117e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 2.931743652130349,
+      "carriedPast": 2.033874625650377,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791059,
+      "peakTangent": 766.1922768943301
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "substeps": 24,
+      "momentumError": 7.176481631177012e-13,
+      "maxPenetration": 0.0012654372989169271,
+      "finite": true,
+      "falls": [],
+      "closest": 2.827797511690445,
+      "carriedPast": 1.9614048621271962,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791054,
+      "peakTangent": 766.1922768943302
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "substeps": 48,
+      "momentumError": 1.0119934691459855e-12,
+      "maxPenetration": 0.0006439166872947988,
+      "finite": true,
+      "falls": [],
+      "closest": 2.839051386545801,
+      "carriedPast": 1.943087841653373,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791065,
+      "peakTangent": 766.1922768943305
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "substeps": 96,
+      "momentumError": 1.8832407088772413e-12,
+      "maxPenetration": 0.000014990050574037461,
+      "finite": true,
+      "falls": [],
+      "closest": 2.685660092649293,
+      "carriedPast": 1.8732959519322847,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791072,
+      "peakTangent": 766.1922768943305
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "substeps": 192,
+      "momentumError": 3.136477310384793e-12,
+      "maxPenetration": 0.000032949020583150634,
+      "finite": true,
+      "falls": [],
+      "closest": 2.608480033097566,
+      "carriedPast": 1.848009635606811,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791077,
+      "peakTangent": 766.1922768943327
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "substeps": 6,
+      "momentumError": 3.6265533240040343e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 3.1835782173691975,
+      "carriedPast": 2.314902977601079,
+      "cornerTurned": false,
+      "peakNormal": 1093.3759508791056,
+      "peakTangent": 790.0998622797865
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "substeps": 12,
+      "momentumError": 4.587955242392117e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 2.931743652130349,
+      "carriedPast": 2.033874625650377,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791059,
+      "peakTangent": 766.1922768943301
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "substeps": 24,
+      "momentumError": 7.176481631177012e-13,
+      "maxPenetration": 0.0012654372989169271,
+      "finite": true,
+      "falls": [],
+      "closest": 2.827797511690445,
+      "carriedPast": 1.9614048621271962,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791054,
+      "peakTangent": 766.1922768943302
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "substeps": 48,
+      "momentumError": 1.0119934691459855e-12,
+      "maxPenetration": 0.0006439166872947988,
+      "finite": true,
+      "falls": [],
+      "closest": 2.839051386545801,
+      "carriedPast": 1.943087841653373,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791065,
+      "peakTangent": 766.1922768943305
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "substeps": 96,
+      "momentumError": 1.8832407088772413e-12,
+      "maxPenetration": 0.000014990050574037461,
+      "finite": true,
+      "falls": [],
+      "closest": 2.685660092649293,
+      "carriedPast": 1.8732959519322847,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791072,
+      "peakTangent": 766.1922768943305
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "substeps": 192,
+      "momentumError": 3.136477310384793e-12,
+      "maxPenetration": 0.000032949020583150634,
+      "finite": true,
+      "falls": [],
+      "closest": 2.608480033097566,
+      "carriedPast": 1.848009635606811,
+      "cornerTurned": true,
+      "peakNormal": 1093.3759508791077,
+      "peakTangent": 766.1922768943327
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "substeps": 6,
+      "momentumError": 3.838410785029632e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 1.0197587687011915,
+      "carriedPast": 1.2507010329134367,
+      "cornerTurned": true,
+      "peakNormal": 894.8332721320859,
+      "peakTangent": 568.2861544517122
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "substeps": 12,
+      "momentumError": 6.85112070754664e-13,
+      "maxPenetration": 0.002611055226640624,
+      "finite": true,
+      "falls": [],
+      "closest": 1.052510651370455,
+      "carriedPast": 1.2701502830312315,
+      "cornerTurned": true,
+      "peakNormal": 894.8332721320859,
+      "peakTangent": 568.286154451712
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "substeps": 24,
+      "momentumError": 5.82661967208964e-13,
+      "maxPenetration": 0.0017775998070432841,
+      "finite": true,
+      "falls": [],
+      "closest": 1.0696052055166774,
+      "carriedPast": 1.2849612763235463,
+      "cornerTurned": true,
+      "peakNormal": 894.8332721320855,
+      "peakTangent": 568.2861544517119
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "substeps": 48,
+      "momentumError": 7.105516174887867e-13,
+      "maxPenetration": 0.00016822724793208454,
+      "finite": true,
+      "falls": [],
+      "closest": 1.0729512365408214,
+      "carriedPast": 1.2965127123871092,
+      "cornerTurned": true,
+      "peakNormal": 894.833272132085,
+      "peakTangent": 568.2861544517118
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "substeps": 96,
+      "momentumError": 2.6739835289823568e-12,
+      "maxPenetration": 0.0004954602793185714,
+      "finite": true,
+      "falls": [],
+      "closest": 1.0794595417635948,
+      "carriedPast": 1.3016250885350082,
+      "cornerTurned": true,
+      "peakNormal": 894.8332721320867,
+      "peakTangent": 568.2861544517118
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "substeps": 192,
+      "momentumError": 5.443143528808603e-12,
+      "maxPenetration": 0.0001476564894472565,
+      "finite": true,
+      "falls": [],
+      "closest": 1.0810373171668457,
+      "carriedPast": 1.3031262444656733,
+      "cornerTurned": true,
+      "peakNormal": 894.833272132089,
+      "peakTangent": 568.2861544517118
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "substeps": 6,
+      "momentumError": 2.295902560799739e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 0.9599663384833755,
+      "carriedPast": 0.9587330225582456,
+      "cornerTurned": true,
+      "peakNormal": 885.8036710767842,
+      "peakTangent": 560.6457227895336
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "substeps": 12,
+      "momentumError": 4.281609604371941e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 0.9529857917546148,
+      "carriedPast": 0.9564991667295217,
+      "cornerTurned": true,
+      "peakNormal": 885.8036710767843,
+      "peakTangent": 560.6457227895336
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "substeps": 24,
+      "momentumError": 4.979505595227988e-13,
+      "maxPenetration": 0.0011018181399602422,
+      "finite": true,
+      "falls": [],
+      "closest": 0.9298950256006037,
+      "carriedPast": 0.9458056035241924,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360593,
+      "peakTangent": 547.9380114243049
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "substeps": 48,
+      "momentumError": 7.677170941999577e-13,
+      "maxPenetration": 0.0008818127410366028,
+      "finite": true,
+      "falls": [],
+      "closest": 0.9342304990166818,
+      "carriedPast": 0.9506511980532011,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360585,
+      "peakTangent": 547.9380114243052
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "substeps": 96,
+      "momentumError": 2.331273282653669e-12,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [],
+      "closest": 0.933838523431482,
+      "carriedPast": 0.9505740255374988,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360574,
+      "peakTangent": 547.9380114243052
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "substeps": 192,
+      "momentumError": 2.1168636588910195e-12,
+      "maxPenetration": 0.00019334588981367862,
+      "finite": true,
+      "falls": [],
+      "closest": 0.9377424774716266,
+      "carriedPast": 0.9545172015449452,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360604,
+      "peakTangent": 547.9380114243024
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "substeps": 6,
+      "momentumError": 2.8426704994990107e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9540135703632524,
+      "carriedPast": 0.9317743700131231,
+      "cornerTurned": true,
+      "peakNormal": 885.8036710767842,
+      "peakTangent": 560.6457227895336
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "substeps": 12,
+      "momentumError": 4.1608101886508015e-13,
+      "maxPenetration": 0,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9437726402307349,
+      "carriedPast": 0.9303765206231205,
+      "cornerTurned": true,
+      "peakNormal": 885.8036710767843,
+      "peakTangent": 560.6457227895336
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "substeps": 24,
+      "momentumError": 5.170022420046608e-13,
+      "maxPenetration": 0.0011472379588122195,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.8984240055483171,
+      "carriedPast": 0.9153783616554989,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360593,
+      "peakTangent": 547.9380114243049
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "substeps": 48,
+      "momentumError": 1.6129476608205485e-12,
+      "maxPenetration": 0.0009280278778925899,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9000696332871959,
+      "carriedPast": 0.9196887564019747,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360585,
+      "peakTangent": 547.9380114243052
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "substeps": 96,
+      "momentumError": 2.828230099527401e-12,
+      "maxPenetration": 0.000037576413122630825,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.9014574441820452,
+      "carriedPast": 0.9216563869871592,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360574,
+      "peakTangent": 547.9380114243052
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "substeps": 192,
+      "momentumError": 3.5385246717801845e-12,
+      "maxPenetration": 0.00023915763253368194,
+      "finite": true,
+      "falls": [
+        "DE_S"
+      ],
+      "closest": 0.907658977994006,
+      "carriedPast": 0.9230759721529509,
+      "cornerTurned": true,
+      "peakNormal": 870.7854667360604,
+      "peakTangent": 547.9380114243024
+    }
+  ],
+  "frontalApproaches": [
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 6,
+      "momentumError": 7.460698725481052e-14,
+      "maxPenetration": 0.010820769483537718,
+      "finite": true,
+      "falls": [
+        "Z"
+      ],
+      "tackled": true,
+      "time": 1.5499999999999998,
+      "afterContact": 0.49927166603463746,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 53.69927166603464,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 12,
+      "momentumError": 1.580957587066223e-13,
+      "maxPenetration": 0.0033586954099368294,
+      "finite": true,
+      "falls": [
+        "Z"
+      ],
+      "tackled": true,
+      "time": 1.65,
+      "afterContact": 0.5241400747729088,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 53.72414007477291,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 24,
+      "momentumError": 3.019806626980426e-13,
+      "maxPenetration": 0.008900768550099358,
+      "finite": true,
+      "falls": [
+        "Z"
+      ],
+      "tackled": true,
+      "time": 1.6,
+      "afterContact": 0.5166743747729399,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 53.71667437477294,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 48,
+      "momentumError": 4.511946372076636e-13,
+      "maxPenetration": 0.004549398794090664,
+      "finite": true,
+      "falls": [
+        "Z"
+      ],
+      "tackled": true,
+      "time": 1.65,
+      "afterContact": 0.5270481434268035,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 53.727048143426806,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 96,
+      "momentumError": 4.849454171562684e-13,
+      "maxPenetration": 0.0019731536945150063,
+      "finite": true,
+      "falls": [
+        "Z"
+      ],
+      "tackled": true,
+      "time": 1.65,
+      "afterContact": 0.5299018877304889,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 53.72990188773049,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 192,
+      "momentumError": 1.0453859999870474e-12,
+      "maxPenetration": 0.0008884844152922122,
+      "finite": true,
+      "falls": [
+        "Z"
+      ],
+      "tackled": true,
+      "time": 1.65,
+      "afterContact": 0.5296745349581897,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 53.72967453495819,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 6,
+      "momentumError": 3.126388037344441e-13,
+      "maxPenetration": 0.01296328806804381,
+      "finite": true,
+      "falls": [
+        "Z",
+        "FS"
+      ],
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.255812149715581,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 55.455812149715584,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 12,
+      "momentumError": 1.8474111129762605e-13,
+      "maxPenetration": 0.005636687915938965,
+      "finite": true,
+      "falls": [
+        "Z",
+        "FS"
+      ],
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2399413835117201,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 55.43994138351172,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 24,
+      "momentumError": 5.435651928564766e-13,
+      "maxPenetration": 0.0008843586552563787,
+      "finite": true,
+      "falls": [
+        "Z",
+        "FS"
+      ],
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2304630437793023,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 55.430463043779305,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 48,
+      "momentumError": 1.602273869139026e-12,
+      "maxPenetration": 0.0012615154983356414,
+      "finite": true,
+      "falls": [
+        "Z",
+        "FS"
+      ],
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2284972403309382,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 55.42849724033094,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 96,
+      "momentumError": 1.2896350654045818e-12,
+      "maxPenetration": 0.001960051232160809,
+      "finite": true,
+      "falls": [
+        "Z",
+        "FS"
+      ],
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2295524125294435,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 55.429552412529446,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 192,
+      "momentumError": 4.803268893738277e-12,
+      "maxPenetration": 0.002146633243996221,
+      "finite": true,
+      "falls": [
+        "Z",
+        "FS"
+      ],
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2292158821739392,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 55.42921588217394,
+      "endDy": 0
+    }
+  ]
+}

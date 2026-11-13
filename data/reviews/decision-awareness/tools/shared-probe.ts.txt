@@ -1,0 +1,119 @@
+import { writeFileSync } from 'node:fs';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
+import { PASS_BY_ID, RUN_BY_ID } from '../../src/playbook/concepts.js';
+import { angleDiff } from '../../src/core/vec.js';
+import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { createEngagement } from '../../src/sim/engagement.js';
+import { Recognition } from '../../src/sim/recognition.js';
+import { sourceVersion } from '../../scripts/source-version.js';
+
+const initialSource = sourceVersion();
+function setup() {
+  const home = generateTeam(new Rng(91), 'Home', 'HOM');
+  const away = generateTeam(new Rng(92), 'Away', 'AWY');
+  const formation = FORMATION_BY_ID.gun_doubles_11;
+  return new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 45,
+    offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'verts' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'match', label: 'c3' },
+    los: 40, ballY: 26, firstDownX: 50 });
+}
+function memory(sim: PlaySim, target: typeof sim.qb) {
+  const m = (sim.qbMind as unknown as { memory: Map<typeof target, unknown> }).memory.get(target);
+  return JSON.parse(JSON.stringify(m));
+}
+function gateCase(inside: boolean) {
+  const sim = setup(), d = sim.slot('CB_S')!;
+  sim.qb.body.pos = { x: 35, y: 26 };
+  d.body.pos = { x: 30, y: 46 }; d.body.vel = { x: 0, y: 0 };
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+  sim.t = .20;
+  const before = memory(sim, d), consumed = sim.see(sim.qb, d);
+  if (inside) d.body.pos = { x: 50, y: 26 };
+  sim.qbMind.observe({ x: 60, y: 26 });
+  return { liveChangedOnly: inside, consumed, before, after: memory(sim,d), estimate: sim.qbMind.estimate(d), nextRng: sim.rng.next() };
+}
+function featureCase(rotated: boolean) {
+  const sim = setup(), d = sim.slot('CB_S')!;
+  sim.qb.body.pos = { x: 35, y: 26 };
+  d.body.pos = rotated ? { x: 58, y: 50 } : { x: 41, y: 50 };
+  d.body.vel = rotated ? { x: 4, y: 0 } : { x: -4, y: 0 };
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+  sim.t = .20;
+  sim.qbMind.observe({ x: 60, y: 8 });
+  return { rotated, memory: memory(sim,d), estimate: sim.qbMind.estimate(d), postFeatures: sim.qbMind.postFeaturesObserved(), nextRng: sim.rng.next() };
+}
+function tactileCase(type: 'pass' | 'run', stance: 'high' | 'low' | null) {
+  const sim = setup(), d = sim.slot('DE_S')!, b = sim.slot('RT')!;
+  b.body.pos = { x: d.pos.x - .7, y: d.pos.y }; b.body.vel = { x: 0, y: 0 }; b.stance = stance;
+  const e = createEngagement(sim,b,d,'pass',null)!;
+  if (!e) throw new Error('Probe requires an initial adjacent engagement');
+  e.type = type;
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+  const r = new Recognition(d,sim,0);
+  const visual = (r as unknown as { cues(a: typeof d, s: PlaySim): number }).cues(d,sim);
+  for (let i = 0; i < 18; i++) { sim.t = .5 + i * sim.dt; r.update(d,sim); }
+  return { type, stance, visual, pPass: r.pPass(), read: r.read, readAt: r.readAt,
+    achievedHands: { normal: e.hands?.normalForce ?? 0, tangent: e.hands?.tangentForce ?? 0 }, nextRng: sim.rng.next() };
+}
+const nativeCases = [
+  { formation: 'gun_doubles_11', concept: 'four_verts', kind: 'pass' },
+  { formation: 'gun_doubles_11', concept: 'curl_flat', kind: 'pass' },
+  { formation: 'ace_12', concept: 'pa_post_dig', kind: 'pass' },
+  { formation: 'ace_12', concept: 'iz_strong', kind: 'run' },
+  { formation: 'ace_12', concept: 'oz_strong', kind: 'run' },
+  { formation: 'ace_12', concept: 'draw', kind: 'run' },
+];
+function native(c: typeof nativeCases[number], seed: number) {
+  function make() {
+    const home = generateTeam(new Rng(31),'Audit offense','AOF',{ strength: .55 });
+    const away = generateTeam(new Rng(32),'Audit defense','ADF',{ strength: .55 });
+    const formation = FORMATION_BY_ID[c.formation], personnel = c.kind === 'pass' ? 'nickel' : 'base43';
+    return new PlaySim({ offense: pickOffense(home,formation.personnel),defense: pickDefense(away,personnel),seed,
+      offCall: { formation,flip:false,kind:c.kind as 'pass'|'run',pass:c.kind === 'pass'? PASS_BY_ID[c.concept]:undefined,
+        run:c.kind === 'run'?RUN_BY_ID[c.concept]:undefined,label:c.concept },
+      defCall:{ personnel,front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,zoneStyle:'match',label:'Over Cover3' },
+      los:40,ballY:26,firstDownX:50,audibles:false });
+  }
+  const sim = make(), counters = { looks:0, mismatchedClearAcquisition:0, tactileTicks:0, blankStanceTactileTicks:0, unloadedTactileTicks:0, signatures:0 };
+  const first: unknown[] = [];
+  const q = sim.qbMind as unknown as { clearHalf: number; periphHalf: number };
+  const look = sim.qbMind.observe.bind(sim.qbMind);
+  sim.qbMind.observe = function(gaze) {
+    const dir = Math.atan2(gaze.y-sim.qb.pos.y,gaze.x-sim.qb.pos.x);
+    const h = q.clearHalf*(.65+.35*sim.qb.mind.focus);
+    for (const d of sim.defense) {
+      const delayed = sim.perception.perceive(d.idx,sim.qb.mind.observationDelay(sim.qb.profile.reactionTime));
+      const test = (p: typeof d.pos) => {const dx=p.x-sim.qb.pos.x,dy=p.y-sim.qb.pos.y;return Math.abs(angleDiff(Math.atan2(dy,dx),dir))<h||Math.hypot(dx,dy)<3;};
+      const live = test(d.pos), consumed = test(delayed.pos);
+      counters.looks++;
+      if(live!==consumed){counters.mismatchedClearAcquisition++;if(first.length<4)first.push({t:sim.t,slot:d.slot,live,consumed,delayed});}
+    }
+    return look(gaze);
+  };
+  const feature = sim.qbMind.postFeaturesObserved.bind(sim.qbMind);
+  sim.qbMind.postFeaturesObserved = function(){counters.signatures++;return feature();};
+  for(const d of sim.defense.filter(d=>['DE','DT','NT'].includes(d.slot.split('_')[0]))) {
+    const r = d.recog!, update = r.update.bind(r);
+    r.update = function(a,s) {
+      if(a.engagement){counters.tactileTicks++;if(a.engagement.blocker.stance===null)counters.blankStanceTactileTicks++;
+        const hands=a.engagement.hands;if(!hands||Math.hypot(hands.normalForce??0,hands.tangentForce??0)<=1e-9)counters.unloadedTactileTicks++;}
+      return update(a,s);
+    };
+  }
+  const observed = sim.run();
+  const sign = (s:PlaySim,r:typeof observed) => JSON.stringify({ result:r,bodies:s.agents.map(a=>a.body),intents:s.intents,nextRng:s.rng.next() });
+  const plain = make(), control = plain.run();
+  return { case:c,seed,counters,first,observerVerified:sign(sim,observed)===sign(plain,control),outcome:observed.outcome,yards:observed.offenseYards };
+}
+const result = { source: initialSource, endSource: sourceVersion(), head: '632fb02',
+  scope: 'Read-only synthetic cue-consumption probes. They establish information contracts, not native prevalence or football outcome effects.',
+  acquisitionGate: [gateCase(false),gateCase(true)],
+  ungazedSignature: [featureCase(false),featureCase(true)],
+  contactMetadata: ['pass','run'].flatMap(type => [null,'high','low'].map(stance => tactileCase(type as 'pass'|'run',stance as null|'high'|'low'))),
+  native: nativeCases.flatMap(c=>[3,11].map(seed=>native(c,seed))) };
+result.endSource = sourceVersion();
+writeFileSync('out/shared-decision-current/probe.json', JSON.stringify(result,null,2)+'\n');
+process.stdout.write(JSON.stringify(result,null,2)+'\n');

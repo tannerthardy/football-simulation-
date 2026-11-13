@@ -1,0 +1,97 @@
+{
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "integrationPr": 151,
+  "sourceDispositions": [
+    {
+      "pr": 126,
+      "head": "7f75b087e6f9221495fed1a810e63254666d4265",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245824458,
+      "branchRetained": true
+    },
+    {
+      "pr": 132,
+      "head": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245825370,
+      "branchRetained": true
+    },
+    {
+      "pr": 133,
+      "head": "60430be909997546f78c681891be8a350bbd447b",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245826197,
+      "branchRetained": true
+    },
+    {
+      "pr": 134,
+      "head": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245827018,
+      "branchRetained": true
+    },
+    {
+      "pr": 135,
+      "head": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245830336,
+      "branchRetained": true
+    },
+    {
+      "pr": 136,
+      "head": "97ba574a16034309db5dd5be8259feda6b378a57",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245831437,
+      "branchRetained": true
+    },
+    {
+      "pr": 138,
+      "head": "d398edf50af0101acd6d49de991e76d588d3450e",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245832320,
+      "branchRetained": true
+    },
+    {
+      "pr": 140,
+      "head": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245834870,
+      "branchRetained": true
+    },
+    {
+      "pr": 143,
+      "head": "572c07d53247da02d858768f654a900abe147ce8",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245835813,
+      "branchRetained": true
+    },
+    {
+      "pr": 146,
+      "head": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245836695,
+      "branchRetained": true
+    },
+    {
+      "pr": 147,
+      "head": "0319d2a9377b51ddde49ee1efd91c4edc5f28257",
+      "status": "closed",
+      "disposition": "incorporated by minimal extraction",
+      "commentId": 6245837721,
+      "branchRetained": true
+    }
+  ],
+  "branchesDeleted": [],
+  "dataOnlyEvidenceHistoriesMerged": [],
+  "handoff": "https://github.com/tannerthardy/football-simulation-/pull/151#issuecomment-6245821495"
+}

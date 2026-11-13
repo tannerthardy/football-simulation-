@@ -1,0 +1,205 @@
+{
+  "schema": "manifest-pinned-reference-fetch-v1",
+  "verifiedUtc": "2026-10-11T18:08:50.291855Z",
+  "manifestSources": [
+    {
+      "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+      "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+    }
+  ],
+  "verifyOnly": true,
+  "files": [
+    {
+      "name": "play_by_play_2022.csv.gz",
+      "bytes": 19093961,
+      "sha256": "0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.csv.gz",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/play_by_play_2022.csv.gz",
+      "verifiedUtc": "2026-10-11T18:08:50.184324Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "roster_2022.csv",
+      "bytes": 980115,
+      "sha256": "864719595d14909c73bd14110adcdcfc304c6621de9ba34feafb83666fac43c9",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2022.csv",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/roster_2022.csv",
+      "verifiedUtc": "2026-10-11T18:08:50.199895Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "ftn_charting_2022.csv",
+      "bytes": 7089615,
+      "sha256": "80e13831525f726cb3befb7eb62aa6ea8bf55d36080fcf09fdddd7c578f3b200",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2022.csv",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/ftn_charting_2022.csv",
+      "verifiedUtc": "2026-10-11T18:08:50.200947Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "play_by_play_2023.csv.gz",
+      "bytes": 19169807,
+      "sha256": "4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.csv.gz",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/play_by_play_2023.csv.gz",
+      "verifiedUtc": "2026-10-11T18:08:50.206959Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "roster_2023.csv",
+      "bytes": 967354,
+      "sha256": "f98283e6ef420babc597092b5483109a4570f9b5f63b7bfcce69643290960b6c",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2023.csv",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/roster_2023.csv",
+      "verifiedUtc": "2026-10-11T18:08:50.221931Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "ftn_charting_2023.csv",
+      "bytes": 8285822,
+      "sha256": "6045bbca32c1f61d32d9cf66e7cf6355f583b90c8ac2f5ed155d733ec335e8d7",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2023.csv",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/ftn_charting_2023.csv",
+      "verifiedUtc": "2026-10-11T18:08:50.222980Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "play_by_play_2024.csv.gz",
+      "bytes": 19362351,
+      "sha256": "23370d5d10f8104d80d46a1fc5e61f4f6f5a3263fe96fe2dd629913cfcb08c06",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2024.csv.gz",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/play_by_play_2024.csv.gz",
+      "verifiedUtc": "2026-10-11T18:08:50.230361Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "roster_2024.csv.gz",
+      "bytes": 384633,
+      "sha256": "5216d909f929d57de0a4db158a93e53f15a82df5bc3c464240c728849332939f",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2024.csv.gz",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/roster_2024.csv.gz",
+      "verifiedUtc": "2026-10-11T18:08:50.246969Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "ftn_charting_2024.csv",
+      "bytes": 8254908,
+      "sha256": "6faae8118cc13ce62589210d553733128ed35e558671009b4a7a8fc5c674c2cb",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2024.csv",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/ftn_charting_2024.csv",
+      "verifiedUtc": "2026-10-11T18:08:50.247394Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "play_by_play_2025.csv.gz",
+      "bytes": 19105296,
+      "sha256": "2f135887790a013fd004e609e37096bb4816d5cc80b9f19122e1bad478961978",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.csv.gz",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/play_by_play_2025.csv.gz",
+      "verifiedUtc": "2026-10-11T18:08:50.253884Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "roster_2025.csv.gz",
+      "bytes": 391832,
+      "sha256": "1b7c7d006dcc7297f6d30273d07461ac83a47fba77becf21d8a701664da6b53c",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2025.csv.gz",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/roster_2025.csv.gz",
+      "verifiedUtc": "2026-10-11T18:08:50.277121Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    },
+    {
+      "name": "ftn_charting_2025.csv",
+      "bytes": 8128926,
+      "sha256": "62a66416043ff08d43303bf5f3af5390e3fe0f29461a1fc6e295a15cac6ea994",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2025.csv",
+      "manifestSources": [
+        {
+          "manifest": "data/reviews/rushing-benchmark/reference/input-manifest.json",
+          "sha256": "d4ea9dfd8c527d9801e8339ba828141b39559ade1772cefd59df4ad7fe5210d4"
+        }
+      ],
+      "path": "out/rushing-benchmark/pinned-inputs/ftn_charting_2025.csv",
+      "verifiedUtc": "2026-10-11T18:08:50.277552Z",
+      "status": "verifiedExisting",
+      "downloaded": false
+    }
+  ]
+}

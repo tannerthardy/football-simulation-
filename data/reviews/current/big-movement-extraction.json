@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "reviewer": "Integration independent subagent movement_composition",
+  "acceptedBase": "2c98bed94adad8087c65f381d4090444ad283985",
+  "dateUTC": "2026-10-20",
+  "decisions": {
+    "175": "ACCEPT narrow installed-duty correction after fresh independent static source/evidence review; original missing-review hold preserved as historical",
+    "176": "ACCEPT narrow acquired-boundary/whole-action request contract after fresh independent static source/evidence review; no attribution to prior unpublished reviewer",
+    "182": "include181 once through canonical pair",
+    "183": "include once as186 dependency",
+    "186": "bounded182 activation reviewed by both owners; residual cost remains Integration decision",
+    "184": "announced target prediction correction; preserve flipped WZ climb regression"
+  },
+  "extractions": [
+    {
+      "pr": 182,
+      "publication": "8eaae7ff784e430d4c6027aaf75bac01d280f3ae",
+      "reviewedCode": "f7662569ba6c89e3b8796fe7da2702ca6ea93661",
+      "portableCommit": "5034e02a15f0cfd2f0fcff2a5042bebd3910c7b7",
+      "changedFiles": [
+        "src/sim/approach-control.ts",
+        "src/sim/behaviors/common.ts",
+        "src/sim/run-fits.ts",
+        "test/approach-composition.test.ts",
+        "test/pursuit-objective.test.ts"
+      ],
+      "originalSourceSha256": "12fb7db0a362bc6410367de560c71962bb9798ef9fb730030a737f1d09ce581d"
+    },
+    {
+      "pr": 183,
+      "publication": "d709ecd6d63951b6cdba9da3ff2e8c65af1c7615",
+      "reviewedCode": "0491f07b5728a149c3f4ac35008ceba14e392694",
+      "portableCommit": "1a03d6385175eb0407d6845b855f9b4c341847ad",
+      "changedFiles": [
+        "scripts/diag/navigation/joint-projection.ts",
+        "src/sim/spacing.ts",
+        "test/fixtures/navigation-A042-setup.json",
+        "test/joint-spacing-projection.test.ts"
+      ],
+      "originalSourceSha256": "253ddf49fe63d7f57a995b710da8b8c72f4828fee1e63d5b629d44a1647f1508"
+    },
+    {
+      "pr": 186,
+      "publication": "c9076442c130e6b26ef1e149a444941c53fbfec7",
+      "reviewedCode": "5248e884fd450b44045e753caaf782a306710e0c",
+      "portableCommit": "e5904d926d796117cdfa3b7f8fa690051fd08740",
+      "changedFiles": [
+        "scripts/diag/navigation/local-passage.ts",
+        "src/sim/spacing.ts",
+        "src/sim/traffic-distance.ts",
+        "src/sim/traffic-path.ts",
+        "src/sim/traffic-route.ts",
+        "test/fixtures/traffic-route-impact.json",
+        "test/local-traffic-route.test.ts",
+        "test/traffic-distance.test.ts",
+        "test/traffic-path.test.ts"
+      ],
+      "originalSourceSha256": "d291b00ad700e0d7b01823571803b22df9151348122aef5f62ad9ff11207ae12"
+    },
+    {
+      "pr": 184,
+      "publication": "0d13a208e233103fae11373ce67eca3d9b9c1d65",
+      "reviewedCode": "24ff632b142183d295068c3720b5990bf8c956f8",
+      "portableCommit": "cc5c946604db3102441ce4eced1e0fc9c90a0bb2",
+      "changedFiles": [
+        "src/sim/called-motion.ts",
+        "src/sim/playsim.ts",
+        "test/called-motion.test.ts",
+        "test/fixtures/announced-motion.json"
+      ],
+      "originalSourceSha256": "89dfe6ea4b1eb08754895b43e0c0dcadaa1ae38b1c7425cb9d1d70bd43224fea"
+    },
+    {
+      "pr": 175,
+      "publication": "628ae0c09f4854513bb87fb03b6e54a9116ecadb",
+      "reviewedCode": "4b1ea231f911e18e168eec36e689b6ec52a4a15c",
+      "portableCommit": "f20b6afdd5f84996ade354928efaa111fec8f9d5",
+      "changedFiles": [
+        "src/sim/behaviors/common.ts",
+        "test/pursuit-force-shoulder.test.ts"
+      ],
+      "originalSourceSha256": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0"
+    },
+    {
+      "pr": 176,
+      "publication": "0b2addbece94bc47f69ea729af27911398cf85fd",
+      "reviewedCode": "9ae5a7372049aca9f588e14d20a75908994cf5fb",
+      "portableCommit": "0fdb01dfca7130380ab8f132553744ac73c52860",
+      "changedFiles": [
+        "src/sim/force-track.ts",
+        "src/sim/run-fits.ts",
+        "test/force-track.test.ts",
+        "test/run-fit-crossover.test.ts"
+      ],
+      "originalSourceSha256": "de5629e6b5766c9d8a9fe1ce0b1da23806b6faceb48ce4874ef8db0c74a07b17"
+    }
+  ],
+  "canonical182183186Source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+  "expectedCanonical182183186Source": "7131384d24a5515a0f902bcaa2b6e92241cede0460809234872d2c8553ef7fae",
+  "preparedMovementSource": "f04c93dce62a71f7838c1fa0e031f749ad56be84ecfc1c152d00265e38fa81cf",
+  "staticDefenseMergeTree": "bc6e806c501d14cd9ed6b0a790aab5743d52f21a",
+  "staticDefenseMergeMeaning": "No text conflicts. Existing171 expected/keyed inputs and182/176 command-composition hunks remain separately owned; not combined behavior verification.",
+  "newEngineCommands": 0,
+  "reusedEvidence": {
+    "175": {
+      "focused": 44,
+      "typecheck": "pass",
+      "newOriginalCommandSeconds": 28.821769791,
+      "source": "f96483a2fac21599fd022733bffff2684719e66c60261177459259c9f26ebca0"
+    },
+    "176": {
+      "focused": 83,
+      "typecheck": "pass",
+      "newOriginalCommandSeconds": 60.374030382,
+      "source": "de5629e6b5766c9d8a9fe1ce0b1da23806b6faceb48ce4874ef8db0c74a07b17"
+    },
+    "182": {
+      "focused": 46,
+      "typecheck": "pass"
+    },
+    "183186182": {
+      "focused": 38,
+      "typecheck": "pass",
+      "nativeArms": 6,
+      "inputs": [
+        "OZ4",
+        "WZORD"
+      ]
+    },
+    "184": {
+      "focused": 32,
+      "typecheck": "pass"
+    }
+  },
+  "protectedUnchanged": [],
+  "limits": [
+    "No new independent native football claims",
+    "No complete combined candidate or suite here",
+    "No experimental flags, capabilities, contact law, gait activation, or data-only history merged",
+    "Root Integration owns exact combined verification, cost disposition and adoption"
+  ]
+}

@@ -1,0 +1,58 @@
+/** Held-picture controller checks work on both old/new sources without the new
+ * helper API. This stages decision states, not native trajectories/football wins.
+ * node --import tsx out/run-carrier-audit/recovery-mechanism-controls.ts \
+ *   ENGINE_ROOT EXPECTED_SOURCE OUTPUT.json [--require-fixed]
+ */
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const [engineArg,expected,outputArg,requireFixed]=process.argv.slice(2);
+if(!engineArg||!expected||!outputArg||requireFixed&&requireFixed!=='--require-fixed')throw new Error('Expected ENGINE_ROOT SOURCE OUTPUT.json [--require-fixed]');
+const engine=resolve(engineArg),output=resolve(outputArg);process.chdir(engine);
+const load=(path:string)=>import(pathToFileURL(resolve(engine,path)).href);
+const [{CENTER_Y},{Rng},{generateTeam,pickOffense,pickDefense},{RUN_BY_ID},{COVERAGE_BY_ID,FRONT_BY_ID},{FORMATION_BY_ID},{PlaySim},{BallCarrier},{sourceVersion}]=await Promise.all([
+ load('src/core/field.ts'),load('src/core/rng.ts'),load('src/league/team.ts'),load('src/playbook/concepts.ts'),load('src/playbook/defense.ts'),load('src/playbook/formations.ts'),load('src/sim/playsim.ts'),load('src/sim/behaviors/carrier.ts'),load('scripts/source-version.ts')]);
+const sourceBefore=sourceVersion();if(sourceBefore!==expected)throw new Error('Unexpected source '+sourceBefore);
+const hash=(x:unknown)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
+function stage(pose:any,side:number) {
+ const formation=FORMATION_BY_ID.ace_11;
+ const offense=generateTeam(new Rng(31),'Panel offense 1','O1',{strength:.55});
+ const defense=generateTeam(new Rng(32),'Panel defense 1','D1',{strength:.55});
+ const sim=new PlaySim({offense:pickOffense(offense,formation.personnel),defense:pickDefense(defense,'base43'),offCall:{formation,flip:false,kind:'run',run:RUN_BY_ID.iz_strong,label:'staged controller slice'},defCall:{personnel:'base43',front:FRONT_BY_ID.under,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'slice'},los:40,ballY:CENTER_Y,firstDownX:50,seed:3,record:false});
+ const rb=sim.slot('RB')!,threat=sim.slot('LB_M')!;sim.t=4;
+ // All irrelevant actors moved out of read range. This is a constructed
+ // evaluator slice, not a legal native 11v11 formation/motion installation.
+ for(const a of sim.agents){a.body.pos={x:100+a.idx,y:5};a.body.vel={x:0,y:0};}
+ rb.body.pos={x:55,y:CENTER_Y};rb.body.vel={x:4,y:0};threat.body.pos={x:58,y:CENTER_Y+side*.5};
+ const initial=hash(sim.agents.map((a:any)=>({slot:a.slot,body:a.body,ratings:a.player.ratings})));
+ const reads:any[]=[];
+ sim.see=(_a:any,target:any)=>{const picture={pos:{...target.pos},vel:{...target.vel},stance:null,facing:target.facing,age:.2,pose:target===threat?pose:'up'};reads.push({target:target.slot,picture});return picture;};
+ function forecast(state:string,deadline=-1){threat.body.support!.state=state;threat.body.support!.since=state==='up'?-Infinity:sim.t-.1;threat.downUntil=deadline;
+  reads.length=0;const choice=(new BallCarrier({},rb)as any).evaluate(rb,sim,1,false);
+  return{choice,consumedReads:structuredClone(reads),trueSupport:state,downUntil:deadline,legacyRecoveryExtra:threat.isDown(sim.t)?deadline-sim.t+.2:0};}
+ return{sim,rb,threat,initial,forecast};
+}
+const rows:any[]=[];
+for(const side of [-1,1]) {
+ const up=stage('up',side),upright=up.forecast('up'),hiddenFall=up.forecast('falling');
+ rows.push({id:'stale-up-hidden-fall-'+side,initialSha256:up.initial,visiblePose:'up',side,upright,hiddenFall,
+  consumedPicturesEqual:hash(upright.consumedReads)===hash(hiddenFall.consumedReads),passes:hash(upright.choice)===hash(hiddenFall.choice)});
+ const down=stage('down',side),stillDown=down.forecast('down'),hiddenRise=down.forecast('up');
+ rows.push({id:'stale-down-hidden-rise-'+side,initialSha256:down.initial,visiblePose:'down',side,stillDown,hiddenRise,
+  consumedPicturesEqual:hash(stillDown.consumedReads)===hash(hiddenRise.consumedReads),passes:hash(stillDown.choice)===hash(hiddenRise.choice)});
+ const unknown=stage(undefined,side),unknownUp=unknown.forecast('up'),unknownFall=unknown.forecast('falling');
+ rows.push({id:'unknown-pose-no-oracle-'+side,initialSha256:unknown.initial,visiblePose:null,side,unknownUp,unknownFall,
+  consumedPicturesEqual:hash(unknownUp.consumedReads)===hash(unknownFall.consumedReads),passes:hash(unknownUp.choice)===hash(unknownFall.choice)});
+ const parked=stage('up',side),available=parked.forecast('up'),scheduled=parked.forecast('up',parked.sim.t+5);
+ rows.push({id:'positive-scenario-parking-'+side,initialSha256:parked.initial,visiblePose:'up',side,available,scheduled,
+  consumedPicturesEqual:hash(available.consumedReads)===hash(scheduled.consumedReads),passes:scheduled.choice.score>available.choice.score&&Math.abs(scheduled.choice.heading)<1e-12});
+}
+const sourceAfter=sourceVersion();if(sourceAfter!==sourceBefore)throw new Error('Source changed');
+const packet={schema:'carrier-recovery-held-picture-controls-v1',sourceBefore,sourceAfter,node:process.version,
+ toolSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),
+ method:'Helper-independent existing BallCarrier.evaluate on staged held-picture decision states. Same profiles/positions/velocities and consumed images; only hidden support state changes for first three checks. Positive scenario parking separate. No World trajectory, native finish, new recovery API import or NFL prevalence claim.',
+ checks:rows.length,passes:rows.filter(r=>r.passes).length,failures:rows.filter(r=>!r.passes).map(r=>r.id),rows};
+mkdirSync(dirname(output),{recursive:true});writeFileSync(output,JSON.stringify(packet,null,2)+'\n');
+console.log(JSON.stringify({output,sourceBefore,sourceAfter,toolSha256:packet.toolSha256,checks:packet.checks,passes:packet.passes,failures:packet.failures,allPicturesEqual:rows.every(r=>r.consumedPicturesEqual)}));
+if(requireFixed&&packet.failures.length)throw new Error('Mechanism-specific invariant failures: '+packet.failures.join(', '));

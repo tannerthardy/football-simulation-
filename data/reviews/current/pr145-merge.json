@@ -1,0 +1,55 @@
+{
+  "schema": "handbook-documentation-adoption-v1",
+  "acceptedDevelop": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "runtimeUnchangedFrom": "0000e560e0dbe31905151465152d412ba838803d",
+  "reusedPassingRuntimeFreeze": "82fdc799f2981f72089ae7908caa430685dfac18",
+  "adoptions": [
+    {
+      "pr": 144,
+      "reviewedHead": "54154bfb6d5259357c45968da2b56bac33c818ff",
+      "mergedDevelop": "a32e6b13da3f7b6a34af09bcb936a8b4e238ab79",
+      "path": "docs/football-handbook/moving-run-footwork.md",
+      "check": {
+        "base": "0000e560e0dbe31905151465152d412ba838803d",
+        "head": "54154bfb6d5259357c45968da2b56bac33c818ff",
+        "files": [
+          "docs/football-handbook/README.md",
+          "docs/football-handbook/moving-run-footwork.md"
+        ],
+        "handbookChars": 128356,
+        "handbookBytes": 129221,
+        "handbookSha256": "33c3636f7216d4f45ce675c55dcb188f46ff6e547dfa1242e9a1a6de651cf50b",
+        "internalFragmentsChecked": 24,
+        "indexLink": "pass",
+        "protectedSourceTestsSettingsReceiptsChanged": false,
+        "mergePreviewEqualsReviewedTree": true,
+        "fullSuiteRuns": 0,
+        "games": 0
+      }
+    },
+    {
+      "pr": 145,
+      "reviewedHead": "6f9435f5c88a62125fbe6a597c61b1dba95fe8b9",
+      "mergedDevelop": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+      "sourcePr": 108,
+      "sourceHead": "5cade6a5e05bc6ff4232623b22be565ec462c15c",
+      "path": "docs/references/honest-nfl/",
+      "checkReceipt": "data/reviews/current/handbook-reference-integration.json"
+    }
+  ],
+  "sourceLibraryPayloadsByteEqual": 793,
+  "originalImagesAndOcrPreserved": 385,
+  "sourceMappingsPreserved": 403,
+  "internalFragmentsChecked": 1130,
+  "documentationChecksOnly": true,
+  "engineTestsSettingsToolingUnchanged": true,
+  "priorReceiptModifications": [],
+  "newEngineRuns": 0,
+  "suiteRuns": 0,
+  "games": 0,
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "experimentalOrDefaultChanges": false,
+  "source108Disposition": "Closed as incorporated by extraction; original branch/evidence retained.",
+  "testingPolicy": "Handbook318-check catalog and30-scenario matrix remain proposed reference options; docs/TESTING_COSTS.md governs actual test selection.",
+  "handoff": "https://github.com/tannerthardy/football-simulation-/pull/145#issuecomment-6243511938"
+}

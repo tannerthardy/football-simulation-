@@ -1,0 +1,54 @@
+# Scorecard: a diagnosis of where the football looks unrealistic and where a
+# change moved it. It never fails a PR; reviewers read it beside the
+# mechanism's own evidence (docs/PLAN.md).
+name: scorecard
+
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: quick, pr or full
+        default: pr
+
+jobs:
+  scorecard:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: head
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: head/.nvmrc
+          cache: npm
+          cache-dependency-path: head/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        working-directory: head
+      - uses: actions/checkout@v4
+        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+      - name: Base, on the same games
+        if: github.event_name == 'pull_request'
+        run: |
+          # The base may predate the scorecard; use this PR's copy of it.
+          rm -rf base/scripts/scorecard && cp -r head/scripts/scorecard base/scripts/
+          cd base && npm ci --no-audit --no-fund
+          node --import tsx scripts/scorecard/run.ts --tier pr --out ../out/base.json > /dev/null
+      - name: This change
+        working-directory: head
+        run: |
+          if [ -f ../out/base.json ]; then cmp="--compare ../out/base.json"; else cmp=""; fi
+          node --import tsx scripts/scorecard/run.ts --tier "${{ inputs.tier || 'pr' }}" $cmp --out ../out/head.json --md ../out/scorecard.md > /dev/null
+      - name: Publish
+        run: cat out/scorecard.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scorecard
+          path: out/

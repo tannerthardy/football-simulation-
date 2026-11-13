@@ -1,0 +1,3393 @@
+{
+  "sourceSha256": "4f30952b05e5f6962ab49c66aa4eb7df6d366728e0f5eb0b96e98b13e65e3bfc",
+  "node": "v22.23.3",
+  "seed": 4713,
+  "cases": 240,
+  "solverOptions": {
+    "maxIterations": 256,
+    "tolerance": 1e-09,
+    "coupledUpdates": true
+  },
+  "scope": "Planar massless-relative-coordinate candidate solve; failed candidates are not valid continuation states.",
+  "thresholds": {
+    "passiveWork": 1e-07,
+    "reach": 1e-07,
+    "closureAndBudget": 1e-08
+  },
+  "panels": {
+    "original24": {
+      "candidates": 24,
+      "converged": 24,
+      "nonconverged": 0,
+      "coupledUpdates": 232,
+      "maxima": {
+        "iterations": 64,
+        "converged_iterations": 64,
+        "coupledUpdates": 85,
+        "converged_coupledUpdates": 85,
+        "impulseChange": 9.903348331697634e-10,
+        "converged_impulseChange": 9.903348331697634e-10,
+        "passiveWork": 1.1335766653823418e-09,
+        "converged_passiveWork": 1.1335766653823418e-09,
+        "reachViolation": 0,
+        "converged_reachViolation": 0,
+        "workResidual": 3.268496584496461e-13,
+        "converged_workResidual": 3.268496584496461e-13,
+        "momentumResidual": 2.8421709430404007e-13,
+        "converged_momentumResidual": 2.8421709430404007e-13,
+        "speedExcess": 0,
+        "converged_speedExcess": 0,
+        "forceExcess": 0,
+        "converged_forceExcess": 0,
+        "motorWorkExcess": 0,
+        "converged_motorWorkExcess": 0,
+        "tractionExcess": 0,
+        "converged_tractionExcess": 0
+      }
+    },
+    "seeded240": {
+      "candidates": 240,
+      "converged": 229,
+      "nonconverged": 11,
+      "coupledUpdates": 31067,
+      "maxima": {
+        "iterations": 256,
+        "converged_iterations": 201,
+        "coupledUpdates": 1976,
+        "converged_coupledUpdates": 1056,
+        "impulseChange": 0.000290907131230554,
+        "converged_impulseChange": 9.960336040682066e-10,
+        "passiveWork": 1.1343808216102147e-06,
+        "converged_passiveWork": 3.7243735353108993e-09,
+        "reachViolation": 0,
+        "converged_reachViolation": 0,
+        "workResidual": 1.6058265828178264e-12,
+        "converged_workResidual": 1.6058265828178264e-12,
+        "momentumResidual": 6.363623280252965e-13,
+        "converged_momentumResidual": 5.691442878088761e-13,
+        "speedExcess": 1.7763568394002505e-15,
+        "converged_speedExcess": 1.7763568394002505e-15,
+        "forceExcess": 1.3642420526593924e-12,
+        "converged_forceExcess": 1.3642420526593924e-12,
+        "motorWorkExcess": 0,
+        "converged_motorWorkExcess": 0,
+        "tractionExcess": 2.220446049250313e-16,
+        "converged_tractionExcess": 2.220446049250313e-16
+      }
+    }
+  },
+  "contractViolations": [],
+  "nonconvergentCandidates": [
+    {
+      "panel": "seeded240",
+      "caseId": 1,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 14,
+        "impulseChange": 3.835887599687593e-07,
+        "passiveWork": 1.6111111982379253e-08,
+        "reachViolation": 0,
+        "workResidual": 4.0323300254385686e-13,
+        "momentumResidual": 2.9986250419269133e-13,
+        "speedExcess": 1.1102230246251565e-16,
+        "forceExcess": 5.684341886080802e-14,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": -0.03885907423682511
+            },
+            "velocity": {
+              "x": -1.8361831679940224,
+              "y": -1.4495807336643338
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.15927574090349178
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.0840710368938744,
+                "target": {
+                  "x": 0,
+                  "y": -0.15927574090349178
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.08155759242984155
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9159289631061256,
+                "target": {
+                  "x": 0,
+                  "y": 0.08155759242984155
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 2297.2225023914493,
+            "legForce": 175.332230305296,
+            "stepSpeed": 3.7053895378112793,
+            "mobility": 0.018262076309964195,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": -0.05333045674487949
+            },
+            "velocity": {
+              "x": 0.6300299931317568,
+              "y": -0.7185692898929119
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.17374712341154613
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6199320943560451,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.17374712341154613
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.06708620992178717
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.3800679056439549,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.06708620992178717
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1464.6283482665249,
+            "legForce": 444.3377990325274,
+            "stepSpeed": 4.482739076912403,
+            "mobility": 0.004712723567121013,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": -0.0312996759545058
+            },
+            "velocity": {
+              "x": 1.6434077508747578,
+              "y": -0.4124657055363059
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.15171634262117245
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6470486558973789,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.15171634262117245
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.08911699071216087
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.3529513441026211,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.08911699071216087
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 2083.8259993958495,
+            "legForce": 2083.7372810973975,
+            "stepSpeed": 0.8992283934354783,
+            "mobility": 0.016130489842618723,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.2771553252823651
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.20388360158540308
+            },
+            "capacity": 607.9969159141183,
+            "holdDistance": 1.0025299205910414,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.3521397761069238
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.6968923502136022
+            },
+            "capacity": 995.3072690218687,
+            "holdDistance": 0.7680365988519042,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.35577193880453706
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.5225065948907286
+            },
+            "capacity": 545.9284628555179,
+            "holdDistance": 0.5107025537174195,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.4042944605462253
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.4730086785275489
+            },
+            "capacity": 26.694041192531586,
+            "holdDistance": 0.8349839714821428,
+            "reach": 3
+          }
+        ],
+        "dt": 0.12620632207800855,
+        "commands": [
+          [
+            {
+              "x": 8.623985731974244,
+              "y": 4.571873885579407
+            },
+            {
+              "x": 3.1007535196840763,
+              "y": 6.473711594007909
+            }
+          ],
+          [
+            {
+              "x": -0.4876245278865099,
+              "y": 1.504079164005816
+            },
+            {
+              "x": 2.0918262377381325,
+              "y": 1.789730521850288
+            }
+          ],
+          [
+            {
+              "x": -4.081757692620158,
+              "y": -3.001949111931026
+            },
+            {
+              "x": 5.375822465866804,
+              "y": -4.388643600977957
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 103,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 31,
+        "impulseChange": 1.242424749036317e-05,
+        "passiveWork": 5.560115109939068e-07,
+        "reachViolation": 0,
+        "workResidual": 5.684341886080802e-14,
+        "momentumResidual": 7.944109290391273e-14,
+        "speedExcess": 2.220446049250313e-16,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.005944329360499979
+            },
+            "velocity": {
+              "x": -0.4210588149726391,
+              "y": 1.4822757253423333
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.11447233730616668
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.7999532446265221,
+                "target": {
+                  "x": 0,
+                  "y": -0.11447233730616668
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.12636099602716663
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.20004675537347794,
+                "target": {
+                  "x": 0,
+                  "y": 0.12636099602716663
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 385.5467450106525,
+            "legForce": 88.2327425417653,
+            "stepSpeed": 1.1180488938093187,
+            "mobility": 0.028039107746316214,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": -0.06795761920511723
+            },
+            "velocity": {
+              "x": -0.7153605241328478,
+              "y": 1.2060557771474123
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.1883742858717839
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.19037044350989163,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.1883742858717839
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.05245904746154943
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8096295564901084,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.05245904746154943
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1200.9439321564112,
+            "legForce": 231.18704711149178,
+            "stepSpeed": 2.103996843993664,
+            "mobility": 0.0008772625987982938,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.09110619681887329
+            },
+            "velocity": {
+              "x": 0.7884102016687393,
+              "y": 1.1897382205352187
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.02931046984779337
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5232241335324943,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.02931046984779337
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.21152286348553995
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4767758664675057,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.21152286348553995
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1353.035712371232,
+            "legForce": 1456.088974335295,
+            "stepSpeed": 1.2050114953517914,
+            "mobility": 0.028357612147358702,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.627701323479414
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.7815325444098562
+            },
+            "capacity": 714.5517887361348,
+            "holdDistance": 0.25221398756839336,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.7237252527847886
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.012459573103114963
+            },
+            "capacity": 526.9874352775514,
+            "holdDistance": 0.6967733391094952,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.8783492054790258
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.4473179483320564
+            },
+            "capacity": 164.01538902893662,
+            "holdDistance": 0.6514913635794073,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.8980299858376384
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.5982443678658456
+            },
+            "capacity": 962.4898694269359,
+            "holdDistance": 0.3859758433420211,
+            "reach": 3
+          }
+        ],
+        "dt": 0.11882348658108664,
+        "commands": [
+          [
+            {
+              "x": 3.534137010574341,
+              "y": 4.128885711543262
+            },
+            {
+              "x": -1.789633994922042,
+              "y": -5.804038154892623
+            }
+          ],
+          [
+            {
+              "x": -1.8884131871163845,
+              "y": -6.238925443030894
+            },
+            {
+              "x": -2.6517015416175127,
+              "y": 1.212798566557467
+            }
+          ],
+          [
+            {
+              "x": -1.744641475379467,
+              "y": 5.369553449563682
+            },
+            {
+              "x": 0.6769944448024035,
+              "y": -1.100405822508037
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 144,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 899,
+        "impulseChange": 7.644425777171271e-07,
+        "passiveWork": 3.5279954990871855e-09,
+        "reachViolation": 0,
+        "workResidual": 2.5579538487363607e-13,
+        "momentumResidual": 5.904883742358415e-14,
+        "speedExcess": 1.1102230246251565e-16,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": -0.007591786794364452
+            },
+            "velocity": {
+              "x": -3.40566492639482,
+              "y": 1.7384682223200798
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.12800845346103112
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.0650258872192353,
+                "target": {
+                  "x": 0,
+                  "y": -0.12800845346103112
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.1128248798723022
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9349741127807647,
+                "target": {
+                  "x": 0,
+                  "y": 0.1128248798723022
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 793.1986607876614,
+            "legForce": 1949.4124851254383,
+            "stepSpeed": 4.50089763790369,
+            "mobility": 0.007174309880125143,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": -0.07170029492117465
+            },
+            "velocity": {
+              "x": -0.39206743612885475,
+              "y": 1.9197107004001737
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.1921169615878413
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.29771090019494295,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.1921169615878413
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.04871637174549201
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.702289099805057,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.04871637174549201
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1274.3610225960144,
+            "legForce": 1262.566865717023,
+            "stepSpeed": 0.8959704095125199,
+            "mobility": 0.0014917404470649901,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": -0.08619007365778089
+            },
+            "velocity": {
+              "x": -0.22228031791746616,
+              "y": 1.3711811061948538
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.20660674032444754
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9640531579498202,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.20660674032444754
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.03422659300888577
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.03594684205017984,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.03422659300888577
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 427.30450908952224,
+            "legForce": 1156.2122366231624,
+            "stepSpeed": 1.6595511922240256,
+            "mobility": 0.00036500260190369937,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.6253967534285039
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.767068553250283
+            },
+            "capacity": 39.66690015979111,
+            "holdDistance": 0.48305644914507867,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.7720811848994344
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.6703627039678395
+            },
+            "capacity": 735.8900408539921,
+            "holdDistance": 0.30632046405225993,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.30649456079117954
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.09486891096457839
+            },
+            "capacity": 930.0912876892835,
+            "holdDistance": 1.13670897744596,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.7467512094881386
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.2930412166751921
+            },
+            "capacity": 687.2542470041662,
+            "holdDistance": 0.8115625826641917,
+            "reach": 3
+          }
+        ],
+        "dt": 0.0868238001120581,
+        "commands": [
+          [
+            {
+              "x": -1.1204582685604692,
+              "y": -6.078116158023477
+            },
+            {
+              "x": 8.42342542950064,
+              "y": 6.9343990087509155
+            }
+          ],
+          [
+            {
+              "x": 5.231400574557483,
+              "y": 1.7627247516065836
+            },
+            {
+              "x": 4.138527405448258,
+              "y": 7.050913218408823
+            }
+          ],
+          [
+            {
+              "x": 6.046231403015554,
+              "y": 8.047463921830058
+            },
+            {
+              "x": 9.605843634344637,
+              "y": -8.403183035552502
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 165,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 8,
+        "impulseChange": 1.3579629499065402e-09,
+        "passiveWork": 5.7269873242629183e-11,
+        "reachViolation": 0,
+        "workResidual": 7.247535904753022e-13,
+        "momentumResidual": 5.17282919736354e-14,
+        "speedExcess": 0,
+        "forceExcess": 4.121147867408581e-13,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.02108240923844278
+            },
+            "velocity": {
+              "x": -0.023811131715774536,
+              "y": -0.16773770842701197
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.09933425742822388
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.26156469946727157,
+                "target": {
+                  "x": 0,
+                  "y": -0.09933425742822388
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.14149907590510943
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.7384353005327284,
+                "target": {
+                  "x": 0,
+                  "y": 0.14149907590510943
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1915.9476742983795,
+            "legForce": 817.7466475494351,
+            "stepSpeed": 2.5996262514591217,
+            "mobility": 0.01387847443587105,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": 0.04445121353492141
+            },
+            "velocity": {
+              "x": -2.2604101356118917,
+              "y": -1.6462178006768227
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.07596545313174524
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5732090312521905,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.07596545313174524
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.16486788020158807
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.42679096874780953,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.16486788020158807
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 297.89090275910013,
+            "legForce": 74.45559018790703,
+            "stepSpeed": 4.839674560129643,
+            "mobility": 0.00040231448725263475,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.003422809625044465
+            },
+            "velocity": {
+              "x": 3.990504201501608,
+              "y": -0.052725876681506634
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.1169938570416222
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.16260528285056353,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.1169938570416222
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.12383947629171112
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8373947171494365,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.12383947629171112
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 956.9488771975957,
+            "legForce": 1549.495055121361,
+            "stepSpeed": 4.276245706677437,
+            "mobility": 0.015030029168119718,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.35010250052437186
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.6007533029187471
+            },
+            "capacity": 147.60880030691624,
+            "holdDistance": 0.474398842593655,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.9695361764170229
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.4401185179594904
+            },
+            "capacity": 532.1744936332107,
+            "holdDistance": 0.6850827928166836,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.6717811631970108
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.77673847717233
+            },
+            "capacity": 869.7832454741001,
+            "holdDistance": 0.8927407493349164,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.5318546746857464
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.6384492649231106
+            },
+            "capacity": 1018.764113523066,
+            "holdDistance": 0.27212995435111226,
+            "reach": 3
+          }
+        ],
+        "dt": 0.07763179175317997,
+        "commands": [
+          [
+            {
+              "x": -3.0333148408681154,
+              "y": -3.6641365429386497
+            },
+            {
+              "x": -2.1577754989266396,
+              "y": -6.540991407819092
+            }
+          ],
+          [
+            {
+              "x": 0.9982593823224306,
+              "y": -7.580280299298465
+            },
+            {
+              "x": -1.3438303209841251,
+              "y": 5.556323355995119
+            }
+          ],
+          [
+            {
+              "x": 3.855497231706977,
+              "y": -3.7490334874019027
+            },
+            {
+              "x": 4.7557418048381805,
+              "y": -4.150942270644009
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 166,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 20,
+        "impulseChange": 1.0907304108954236e-09,
+        "passiveWork": 7.766114699547536e-13,
+        "reachViolation": 0,
+        "workResidual": 1.3300471835009375e-13,
+        "momentumResidual": 2.2644076395159363e-14,
+        "speedExcess": 0,
+        "forceExcess": 2.8421709430404007e-13,
+        "motorWorkExcess": 0,
+        "tractionExcess": 2.220446049250313e-16
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": -0.02461684262380004
+            },
+            "velocity": {
+              "x": -3.53002124466002,
+              "y": 0.6381380315870047
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.1450335092904667
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6095834115985781,
+                "target": {
+                  "x": 0,
+                  "y": -0.1450335092904667
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.09579982404286662
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.3904165884014219,
+                "target": {
+                  "x": 0,
+                  "y": 0.09579982404286662
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 692.7738381443115,
+            "legForce": 2053.185687122328,
+            "stepSpeed": 2.120148611962795,
+            "mobility": 0.01997170512759444,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": 0.09724521380849183
+            },
+            "velocity": {
+              "x": -3.4859272316098213,
+              "y": -1.5683257775381207
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.023171452858174832
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.18997087376192212,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.023171452858174832
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.2176618804751585
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8100291262380779,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.2176618804751585
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 130.33434871369707,
+            "legForce": 329.70158318931794,
+            "stepSpeed": 7.034058871269227,
+            "mobility": 0.0016386007360308361,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": -0.06327182557433844
+            },
+            "velocity": {
+              "x": 0.03773229010403156,
+              "y": 0.11436459794640541
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.18368849224100509
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.06168716191314161,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.18368849224100509
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.057144841092328216
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9383128380868584,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.057144841092328216
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1872.7454477953336,
+            "legForce": 964.5202747351755,
+            "stepSpeed": 2.8873200276494027,
+            "mobility": 0.0020563632605067705,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.747356720501557
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.18126082699745893
+            },
+            "capacity": 434.1259181778878,
+            "holdDistance": 0.38002302153036,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.05598079529590905
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.6693578958511353
+            },
+            "capacity": 207.65958375297487,
+            "holdDistance": 0.5047143933363258,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.9616361206863075
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.5998533489182591
+            },
+            "capacity": 151.6761381458491,
+            "holdDistance": 0.6599151923321187,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.5715845928061754
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.08040867187082767
+            },
+            "capacity": 500.61376227997243,
+            "holdDistance": 1.0587270439602434,
+            "reach": 3
+          }
+        ],
+        "dt": 0.002627440472635224,
+        "commands": [
+          [
+            {
+              "x": 7.378317941911519,
+              "y": -0.6063802726566792
+            },
+            {
+              "x": 9.598015598021448,
+              "y": 1.6346561070531607
+            }
+          ],
+          [
+            {
+              "x": -9.322047880850732,
+              "y": 2.9724863916635513
+            },
+            {
+              "x": 2.6324432296678424,
+              "y": -7.711777677759528
+            }
+          ],
+          [
+            {
+              "x": -2.017713221721351,
+              "y": -9.379026275128126
+            },
+            {
+              "x": 1.0107518127188087,
+              "y": 6.382425231859088
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 183,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 972,
+        "impulseChange": 2.8007101743710037e-07,
+        "passiveWork": 6.107605993576547e-10,
+        "reachViolation": 0,
+        "workResidual": 5.717648576819556e-15,
+        "momentumResidual": 3.295848094936011e-14,
+        "speedExcess": 1.1102230246251565e-16,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": -0.08070990382693709
+            },
+            "velocity": {
+              "x": 3.4938111193478107,
+              "y": 0.920988098718226
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.20112657049360375
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5010001175105572,
+                "target": {
+                  "x": 0,
+                  "y": -0.20112657049360375
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.03970676283972957
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4989998824894428,
+                "target": {
+                  "x": 0,
+                  "y": 0.03970676283972957
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1862.8421405628937,
+            "legForce": 557.9182705550844,
+            "stepSpeed": 6.512022554278374,
+            "mobility": 0.006373983623942284,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": -0.005453937873244286
+            },
+            "velocity": {
+              "x": -0.3466621357947588,
+              "y": -0.9515199940651655
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.12587060453991095
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.34684026916511357,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.12587060453991095
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.11496272879342237
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6531597308348864,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.11496272879342237
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 508.39338955224844,
+            "legForce": 1997.3109634552084,
+            "stepSpeed": 0.8528866001963616,
+            "mobility": 0.0034501724741486015,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.03127513262443245
+            },
+            "velocity": {
+              "x": 0.2808002680540085,
+              "y": 0.47736319061368704
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.08914153404223421
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.33227745397016406,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.08914153404223421
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.1516917992910991
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6677225460298359,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.1516917992910991
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 492.1844897093,
+            "legForce": 246.39983666933267,
+            "stepSpeed": 5.36324430346489,
+            "mobility": 0.002687383148357353,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.9998748004436493
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.8382764381822199
+            },
+            "capacity": 344.3332323618233,
+            "holdDistance": 0.20966503680683674,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.9314588727429509
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.8162204332184047
+            },
+            "capacity": 572.6708378456533,
+            "holdDistance": 0.8624330088961869,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.5402008984237909
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.13651683344505727
+            },
+            "capacity": 938.2581068016589,
+            "holdDistance": 1.0112920040730387,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.059147647581994534
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.9741593922954053
+            },
+            "capacity": 918.528482299298,
+            "holdDistance": 0.558067211927846,
+            "reach": 3
+          }
+        ],
+        "dt": 0.010747447096659554,
+        "commands": [
+          [
+            {
+              "x": -8.7599565833807,
+              "y": -2.010592301376164
+            },
+            {
+              "x": 3.5709112975746393,
+              "y": -4.151045116595924
+            }
+          ],
+          [
+            {
+              "x": 6.348657626658678,
+              "y": 4.057373492978513
+            },
+            {
+              "x": 4.334759516641498,
+              "y": 0.30579714570194483
+            }
+          ],
+          [
+            {
+              "x": -8.284691013395786,
+              "y": 9.412286835722625
+            },
+            {
+              "x": -8.533409340307117,
+              "y": -8.460815246216953
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 189,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 871,
+        "impulseChange": 1.0180517795856122e-07,
+        "passiveWork": 7.077671781985373e-14,
+        "reachViolation": 0,
+        "workResidual": 2.984279490192421e-13,
+        "momentumResidual": 4.395074426442159e-13,
+        "speedExcess": 8.881784197001252e-16,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.01658794446848333
+            },
+            "velocity": {
+              "x": 1.4159473329782486,
+              "y": 0.811484701000154
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.10382872219818333
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9209379586391151,
+                "target": {
+                  "x": 0,
+                  "y": -0.10382872219818333
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.13700461113515
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.0790620413608849,
+                "target": {
+                  "x": 0,
+                  "y": 0.13700461113515
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1241.9668272803087,
+            "legForce": 1445.1032037606096,
+            "stepSpeed": 6.096706422567368,
+            "mobility": 0.017094941009987374,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": 0.09547999678179622
+            },
+            "velocity": {
+              "x": -0.0666260328143835,
+              "y": -1.404363289475441
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.024936669884870435
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.19240109319798648,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.024936669884870435
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.21589666344846287
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8075989068020135,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.21589666344846287
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1005.163070470964,
+            "legForce": 1458.8198839242182,
+            "stepSpeed": 2.8362116613984107,
+            "mobility": 0.0011083946264144383,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.08885681391693652
+            },
+            "velocity": {
+              "x": 1.3257868103682995,
+              "y": -0.4104639617726207
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.03155985274973014
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8969793198630214,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.03155985274973014
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.20927348058360318
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.10302068013697863,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.20927348058360318
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 545.8709124484658,
+            "legForce": 1401.3817173203618,
+            "stepSpeed": 6.233008437752724,
+            "mobility": 0.015272730210353427,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.30870478553697467
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.0692139056045562
+            },
+            "capacity": 532.2943967580795,
+            "holdDistance": 0.2668317151721567,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.29676490696147084
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.8428280150983483
+            },
+            "capacity": 557.8995509818196,
+            "holdDistance": 0.6861659861635416,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.6741868420504034
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.08933192049153149
+            },
+            "capacity": 471.02413929998875,
+            "holdDistance": 0.39153628661297263,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.1735424310900271
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.9511781001929194
+            },
+            "capacity": 983.2915919646621,
+            "holdDistance": 0.37318295198492707,
+            "reach": 3
+          }
+        ],
+        "dt": 0.05997302192583666,
+        "commands": [
+          [
+            {
+              "x": 1.7844136711210012,
+              "y": 5.88728214148432
+            },
+            {
+              "x": -6.972086355090141,
+              "y": -7.318846960552037
+            }
+          ],
+          [
+            {
+              "x": 0.9843465778976679,
+              "y": -5.791065427474678
+            },
+            {
+              "x": -8.459307830780745,
+              "y": -4.645670861937106
+            }
+          ],
+          [
+            {
+              "x": 9.429893596097827,
+              "y": -1.6405958076938987
+            },
+            {
+              "x": -8.015442229807377,
+              "y": 0.7437893329188228
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 210,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 524,
+        "impulseChange": 2.131494084151056e-08,
+        "passiveWork": 1.7992352069522022e-08,
+        "reachViolation": 0,
+        "workResidual": 5.044853423896711e-13,
+        "momentumResidual": 6.363623280252965e-13,
+        "speedExcess": 0,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.04956820150837302
+            },
+            "velocity": {
+              "x": -1.3410804886370897,
+              "y": 1.9440975654870272
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.07084846515829363
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5512122616637498,
+                "target": {
+                  "x": 0,
+                  "y": -0.07084846515829363
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.1699848681750397
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4487877383362502,
+                "target": {
+                  "x": 0,
+                  "y": 0.1699848681750397
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 881.6954361946591,
+            "legForce": 1175.5684094801843,
+            "stepSpeed": 0.8879492232203484,
+            "mobility": 0.002798965934218983,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": -0.04217068082652986
+            },
+            "velocity": {
+              "x": 2.6073106080293655,
+              "y": -0.21081306878477335
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.16258734749319653
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5370820718817413,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.16258734749319653
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.0782459858401368
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4629179281182587,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.0782459858401368
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1573.699033437614,
+            "legForce": 1124.8255283328688,
+            "stepSpeed": 2.433628066778183,
+            "mobility": 0.013653436611851085,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.09471081495285034
+            },
+            "velocity": {
+              "x": 2.1741354260593653,
+              "y": 0.3293026238679886
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.025705851713816313
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.10314566339366138,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.025705851713816313
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.215127481619517
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8968543366063386,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.215127481619517
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 2181.2982129648385,
+            "legForce": 616.801127612336,
+            "stepSpeed": 3.8596214571595193,
+            "mobility": 0.014855880512594991,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.9388648711610585
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.28573733381927013
+            },
+            "capacity": 191.6434934642166,
+            "holdDistance": 0.32202649796381594,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.39259119355119765
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.09251378010958433
+            },
+            "capacity": 755.9048787038773,
+            "holdDistance": 0.5042925442568957,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.7832971822936088
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.9784252420067787
+            },
+            "capacity": 532.0193061884493,
+            "holdDistance": 0.3717013013549149,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.3447057625744492
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.5955172078683972
+            },
+            "capacity": 536.4951167535037,
+            "holdDistance": 0.47028209855780007,
+            "reach": 3
+          }
+        ],
+        "dt": 0.06980501259182512,
+        "commands": [
+          [
+            {
+              "x": 0.9233978996053338,
+              "y": 3.610200025141239
+            },
+            {
+              "x": -7.08179232198745,
+              "y": 4.356603296473622
+            }
+          ],
+          [
+            {
+              "x": -0.17657778691500425,
+              "y": 6.580594759434462
+            },
+            {
+              "x": 9.213307104073465,
+              "y": 4.728767341002822
+            }
+          ],
+          [
+            {
+              "x": -3.8203578209504485,
+              "y": 3.6194419115781784
+            },
+            {
+              "x": -3.730770875699818,
+              "y": 3.3294852171093225
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 213,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 1976,
+        "impulseChange": 2.0367696457845056e-05,
+        "passiveWork": 1.1343808216102147e-06,
+        "reachViolation": 0,
+        "workResidual": 7.389644451905042e-13,
+        "momentumResidual": 2.481819080425819e-13,
+        "speedExcess": 0,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.0404904795344919
+            },
+            "velocity": {
+              "x": 3.2358580231666565,
+              "y": 0.23227763082832098
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.07992618713217475
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.32741663744673133,
+                "target": {
+                  "x": 0,
+                  "y": -0.07992618713217475
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.16090714620115856
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6725833625532687,
+                "target": {
+                  "x": 0,
+                  "y": 0.16090714620115856
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1383.5495181192111,
+            "legForce": 1734.2646252378918,
+            "stepSpeed": 3.3620502197742463,
+            "mobility": 0.008102680628757419,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": 0.06266074469313025
+            },
+            "velocity": {
+              "x": -0.6838880535215139,
+              "y": -1.4368720576167107
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.057755921973536406
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.0035697619896382093,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.057755921973536406
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.1830774113597969
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9964302380103618,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.1830774113597969
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 635.0971517788237,
+            "legForce": 1879.9203579053367,
+            "stepSpeed": 6.757550779879094,
+            "mobility": 0.0016445581645181519,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.02327392720617354
+            },
+            "velocity": {
+              "x": -2.446849796921015,
+              "y": -0.3848380846902728
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.09714273946049312
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.8640234852209687,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.09714273946049312
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.1436905938728402
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.13597651477903128,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.1436905938728402
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 2030.9883374669155,
+            "legForce": 2138.884117119352,
+            "stepSpeed": 3.067528813481331,
+            "mobility": 0.004369602463530649,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.5291715539060533
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.5168334462214261
+            },
+            "capacity": 448.1396921724081,
+            "holdDistance": 0.657181250443682,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.8569627427496016
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.1454432534519583
+            },
+            "capacity": 187.52009373158216,
+            "holdDistance": 0.820086534647271,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.7751517216674984
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.6555765655357391
+            },
+            "capacity": 838.8163489103317,
+            "holdDistance": 0.7192379427608102,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.7727419105358422
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.46470264554955065
+            },
+            "capacity": 427.15133864432573,
+            "holdDistance": 1.018024919135496,
+            "reach": 3
+          }
+        ],
+        "dt": 0.1434302671360749,
+        "commands": [
+          [
+            {
+              "x": -6.708160312846303,
+              "y": 4.176618964411318
+            },
+            {
+              "x": -8.596903793513775,
+              "y": 3.434460940770805
+            }
+          ],
+          [
+            {
+              "x": -9.181204019114375,
+              "y": 1.1014431016519666
+            },
+            {
+              "x": 4.30013669654727,
+              "y": 9.75617980118841
+            }
+          ],
+          [
+            {
+              "x": 9.904932593926787,
+              "y": -7.35273455735296
+            },
+            {
+              "x": -5.767718479037285,
+              "y": -6.879960079677403
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 221,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 924,
+        "impulseChange": 9.62053783725939e-08,
+        "passiveWork": 4.434731463349922e-10,
+        "reachViolation": 0,
+        "workResidual": 7.460698725481052e-14,
+        "momentumResidual": 4.4096962836115984e-14,
+        "speedExcess": 1.1102230246251565e-16,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.09557798220776022
+            },
+            "velocity": {
+              "x": -2.172781988978386,
+              "y": -0.02583023253828287
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.02483868445890644
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5584225165657699,
+                "target": {
+                  "x": 0,
+                  "y": -0.02483868445890644
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.21599464887442688
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4415774834342301,
+                "target": {
+                  "x": 0,
+                  "y": 0.21599464887442688
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 524.5912288294403,
+            "legForce": 1632.4293809474923,
+            "stepSpeed": 5.1294834935665135,
+            "mobility": 0.025881746142298604,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": -0.011952033359557392
+            },
+            "velocity": {
+              "x": -0.19636311195790768,
+              "y": -0.7101939767599106
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.13236870002622406
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.02460189606063068,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.13236870002622406
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.10846463330710926
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.9753981039393693,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.10846463330710926
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 2326.7272559226562,
+            "legForce": 587.2473901986992,
+            "stepSpeed": 0.9968056955933572,
+            "mobility": 0.013561830768872376,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": -0.011114222696051002
+            },
+            "velocity": {
+              "x": 1.6568663530051708,
+              "y": 0.6773898573592305
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.13153088936271767
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4439293695613742,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.13153088936271767
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.10930244397061566
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5560706304386258,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.10930244397061566
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 367.15444257305853,
+            "legForce": 1080.884558525578,
+            "stepSpeed": 6.8922270828485495,
+            "mobility": 0.013275836721293835,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.8194274301640689
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.6792618196923286
+            },
+            "capacity": 536.4913460612297,
+            "holdDistance": 1.1938705412205308,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.5986930769868195
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.8300394585821778
+            },
+            "capacity": 685.8644722774625,
+            "holdDistance": 0.49678561608307065,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.3136786459945142
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.18429199163801968
+            },
+            "capacity": 883.4492475539446,
+            "holdDistance": 0.29485270245932044,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.930629073176533
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.5940971414092928
+            },
+            "capacity": 800.3722759708762,
+            "holdDistance": 0.5987283955793827,
+            "reach": 3
+          }
+        ],
+        "dt": 0.0693272916136951,
+        "commands": [
+          [
+            {
+              "x": 2.3743948992341757,
+              "y": 4.391007223166525
+            },
+            {
+              "x": 6.019500717520714,
+              "y": -5.846809376962483
+            }
+          ],
+          [
+            {
+              "x": 4.343170979991555,
+              "y": 1.3968299003317952
+            },
+            {
+              "x": 3.011209238320589,
+              "y": -2.221224964596331
+            }
+          ],
+          [
+            {
+              "x": 0.23716474883258343,
+              "y": -8.625089987181127
+            },
+            {
+              "x": 6.8104467913508415,
+              "y": 3.6667327163740993
+            }
+          ]
+        ]
+      },
+      "issues": []
+    },
+    {
+      "panel": "seeded240",
+      "caseId": 235,
+      "metrics": {
+        "converged": false,
+        "iterations": 256,
+        "coupledUpdates": 1339,
+        "impulseChange": 0.000290907131230554,
+        "passiveWork": 1.199138720607183e-08,
+        "reachViolation": 0,
+        "workResidual": 1.0125233984581428e-13,
+        "momentumResidual": 2.4967926032229923e-14,
+        "speedExcess": 8.881784197001252e-16,
+        "forceExcess": 0,
+        "motorWorkExcess": 0,
+        "tractionExcess": 0
+      },
+      "input": {
+        "bodies": [
+          {
+            "mass": 100,
+            "position": {
+              "x": 0,
+              "y": 0.008403597073629499
+            },
+            "velocity": {
+              "x": -0.4987742640078068,
+              "y": 1.8283730940893292
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0,
+                  "y": -0.11201306959303715
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.6679241145029664,
+                "target": {
+                  "x": 0,
+                  "y": -0.11201306959303715
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0,
+                  "y": 0.12882026374029615
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.3320758854970336,
+                "target": {
+                  "x": 0,
+                  "y": 0.12882026374029615
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 448.5195064724096,
+            "legForce": 1077.0717861312817,
+            "stepSpeed": 1.7225621157884596,
+            "mobility": 0.02037609638007772,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 0.8,
+              "y": 0.044632577709853655
+            },
+            "velocity": {
+              "x": 0.9820881839841604,
+              "y": 0.11149500869214535
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 0.8,
+                  "y": -0.075784088956813
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.5611856805626303,
+                "target": {
+                  "x": 0.8,
+                  "y": -0.075784088956813
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 0.8,
+                  "y": 0.1650492443765203
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.4388143194373697,
+                "target": {
+                  "x": 0.8,
+                  "y": 0.1650492443765203
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 97.01701695762064,
+            "legForce": 407.23719240432285,
+            "stepSpeed": 4.427692676484585,
+            "mobility": 0.0011523200338163853,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          },
+          {
+            "mass": 100,
+            "position": {
+              "x": 1.6,
+              "y": 0.08862608871422709
+            },
+            "velocity": {
+              "x": 2.648051880300045,
+              "y": -0.7776998924091458
+            },
+            "slots": [
+              {
+                "id": 0,
+                "position": {
+                  "x": 1.6,
+                  "y": -0.03179057795243957
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": -0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.7815335062332451,
+                "target": {
+                  "x": 1.6,
+                  "y": -0.03179057795243957
+                },
+                "elapsed": 0,
+                "duration": 0
+              },
+              {
+                "id": 1,
+                "position": {
+                  "x": 1.6,
+                  "y": 0.20904275538089373
+                },
+                "restOffset": {
+                  "x": 0,
+                  "y": 0.12041666666666666
+                },
+                "mode": "plant",
+                "load": 0.21846649376675487,
+                "target": {
+                  "x": 1.6,
+                  "y": 0.20904275538089373
+                },
+                "elapsed": 0,
+                "duration": 0
+              }
+            ],
+            "reach": 1.025,
+            "traction": 1169.6879275076521,
+            "legForce": 777.4885394033405,
+            "stepSpeed": 7.0182078742980964,
+            "mobility": 0.0030916854285188136,
+            "minimumSwingTime": 0.12,
+            "transferTime": 0.12,
+            "responseTime": 0.12,
+            "transfer": null,
+            "queued": null
+          }
+        ],
+        "grips": [
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.7494678767398
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.2535982884000987
+            },
+            "capacity": 947.067147102207,
+            "holdDistance": 0.8790982738602906,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.29036527313292027
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.49232954694889486
+            },
+            "capacity": 95.20308205857873,
+            "holdDistance": 0.8462315286044031,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 0,
+              "slot": 0,
+              "share": 0.7712182169780135
+            },
+            "b": {
+              "body": 2,
+              "slot": 1,
+              "share": 0.23868330079130828
+            },
+            "capacity": 577.3176252655685,
+            "holdDistance": 0.5562631432432681,
+            "reach": 3
+          },
+          {
+            "a": {
+              "body": 1,
+              "slot": 1,
+              "share": 0.14457497373223305
+            },
+            "b": {
+              "body": 2,
+              "slot": 0,
+              "share": 0.8942196180578321
+            },
+            "capacity": 165.81568585708737,
+            "holdDistance": 0.29056924120523037,
+            "reach": 3
+          }
+        ],
+        "dt": 0.0077999483355502205,
+        "commands": [
+          [
+            {
+              "x": -9.954297821968794,
+              "y": 7.139246850274503
+            },
+            {
+              "x": -0.4151873756200075,
+              "y": -5.045044436119497
+            }
+          ],
+          [
+            {
+              "x": 2.1313276514410973,
+              "y": -7.119625550694764
+            },
+            {
+              "x": -9.998410744592547,
+              "y": 0.07671654690057039
+            }
+          ],
+          [
+            {
+              "x": 1.3315891288220882,
+              "y": 8.116012043319643
+            },
+            {
+              "x": 9.667766084894538,
+              "y": 3.063818537630141
+            }
+          ]
+        ]
+      },
+      "issues": []
+    }
+  ]
+}

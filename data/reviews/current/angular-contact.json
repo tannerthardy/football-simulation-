@@ -1,0 +1,232 @@
+{
+  "schema": "angular-contact-repair-v1",
+  "sourceSha256": "97612098c8fdcbde2a47905e461a8592595759db1e2c0922c68cc31af5d2e1da",
+  "default": "center retained; patch opt-in; no pass-rush-hands/load package merged",
+  "changes": [
+    "post-impact hand frame and same-interval torso yaw",
+    "persistent material torso point and shared normal/tangent moments",
+    "coincident half-cap hand compliance equivalence",
+    "attained patch force vector and yaw moment outputs"
+  ],
+  "operators": {
+    "src/physics/world.ts": "e9020e278531f6cab95bf7c9c8b9e51ef15091ac26cf303c264b639b92ba139e",
+    "test/contact-angular-transfer.test.ts": "ba430d5a8709e99b47a05fa311f1b532b30f019c45b5b8ae2e2955b4924ef411",
+    "test/hand-angular-transfer.test.ts": "1ec26e818a2219f9deee45ee9ebe165ace853d82bc4f153a44e045890e78f213",
+    "test/hand-force-point.test.ts": "a6075c33f003f4a24f28baf5ee0cb91b31d0e16af2714c7a52ac975ca6adb5e6",
+    "scripts/diag/hand-angular-law.ts": "7065eacc9aafe3a130410031da05821341f0b10098570392c09a1ea2aebbe85a",
+    "scripts/diag/hand-convergence.ts": "d2a903c4085083d2d628b65fb025ec1e874a87b9a8f35e1c5c51e58f06267ea4",
+    "scripts/diag/common-patch-vitest.config.ts": "924e733efed93dda5be06fa5fe7a27ef8c2d5d28544b2367f85723dfdd1d4fad",
+    "scripts/diag/common-patch-test.setup.ts": "c280a89c1f27e592107d8b58c1ee5bb10e8651f4d01960f173ef6f7b6ae64f27",
+    "docs/archive/research/contact-mechanics/material-hand-law.ts": "327101547ca3dbfa4ebbfead15bf229d98ce7f851cbed09705e52e19a97935fe"
+  },
+  "checks": {
+    "typescriptPassed": 1298,
+    "files": 111,
+    "fullSuiteSeconds": 140.15,
+    "scope": "core/integration/research; concurrent diagnostics",
+    "pythonPassed": 141,
+    "typecheck": "pass",
+    "build": "pass",
+    "frozenDefaultHashes": "both pass, assertions unchanged"
+  },
+  "handOracle": {
+    "cases": 144,
+    "lawConserved": true,
+    "summary": {
+      "normal": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          6.139089236967266e-11
+        ],
+        "maxMomentumError": 6.821210263296962e-12,
+        "maxEnergyResidual": 3.035349749325178e-13,
+        "handWorkRange": [
+          0.17999999999996377,
+          0.18000000000004993
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 7.105427357601002e-14
+      },
+      "tangent": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          4.092726157978177e-12
+        ],
+        "maxMomentumError": 2.2914314707516465e-13,
+        "maxEnergyResidual": 1.8912649224489542e-13,
+        "handWorkRange": [
+          -5.86475998415777,
+          -5.864649288182879
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 0
+      }
+    },
+    "maxParityError": 6.139089236967266e-11
+  },
+  "sharedBodyLaw": {
+    "cases": 36,
+    "maxAngularChange": 5.115907697472721e-12,
+    "maxLinearMomentumError": 3.011226127173514e-13,
+    "maxWorkResidual": 3.552713678800501e-13,
+    "fallCases": 0,
+    "scope": "free shared three-body graph; actual torso contacts, material points on either body, mirrors/order/coordinates, half-cap grouping, substeps1/12/48"
+  },
+  "redirectRefinement": {
+    "cohort": {
+      "seeds": [
+        3,
+        7,
+        11
+      ],
+      "rusherPowers": [
+        0.7,
+        1,
+        1.4
+      ],
+      "substeps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "referenceSteps": 192,
+      "controllerHz": 20,
+      "handContact": "patch"
+    },
+    "summary": [
+      {
+        "substeps": 6,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.019271554264558115,
+        "maxClosestErrorYd": 0.0566360685297449,
+        "meanCarriedPastErrorYd": 0.016479885607343665,
+        "maxCarriedPastErrorYd": 0.050717609282067144,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 4.446998567663869e-13,
+        "maxOverlapYd": 0,
+        "allFinite": true
+      },
+      {
+        "substeps": 12,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.01799166350811389,
+        "maxClosestErrorYd": 0.06615262566174063,
+        "meanCarriedPastErrorYd": 0.01565464720109154,
+        "maxCarriedPastErrorYd": 0.03593168861922891,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 7.318331481013217e-13,
+        "maxOverlapYd": 0,
+        "allFinite": true
+      },
+      {
+        "substeps": 24,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.007266592990561772,
+        "maxClosestErrorYd": 0.018668733069361343,
+        "meanCarriedPastErrorYd": 0.008849032998395975,
+        "maxCarriedPastErrorYd": 0.019229742123435756,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 1.4312324881435035e-12,
+        "maxOverlapYd": 0,
+        "allFinite": true
+      },
+      {
+        "substeps": 48,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.0028482669297284924,
+        "maxClosestErrorYd": 0.007676993697113166,
+        "meanCarriedPastErrorYd": 0.002897491734373937,
+        "maxCarriedPastErrorYd": 0.007073796559232903,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 2.7288171518998623e-12,
+        "maxOverlapYd": 0,
+        "allFinite": true
+      },
+      {
+        "substeps": 96,
+        "fixtures": 9,
+        "meanClosestErrorYd": 0.0005448151270504514,
+        "maxClosestErrorYd": 0.001445222196795215,
+        "meanCarriedPastErrorYd": 0.0007954447358863427,
+        "maxCarriedPastErrorYd": 0.0014339167538430786,
+        "cornerOutcomeDisagreements": 0,
+        "fallOutcomeDisagreements": 0,
+        "maxMomentumResidualKgYdPerS": 5.723363296204252e-12,
+        "maxOverlapYd": 0,
+        "allFinite": true
+      }
+    ],
+    "limit": "numerical reference, not NFL calibration or heavy-jam clearance"
+  },
+  "promotion": {
+    "passed": 43,
+    "total": 50,
+    "footballFailures": 5,
+    "preservedLegacyHashDifferences": 2,
+    "failedAssertions": [
+      "joined helpers replace unusable feet through bounded physical movement turns a wrong-side acquisition into actual useful contact, side 1",
+      "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+      "solo hand-fight execution with the preserved legacy policy is unchanged matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+      "the original inside-zone helper may check a supported owner before climbing an unjoined helper who loses his footing must confirm the owner again after recovering",
+      "a predeclared native Split Zone Under rep earns a supported check and climb lets RG use the supported RT block without first inventing a second pair of hands",
+      "the historic native Split Zone Tite witness retains unfinished first-level work stays when the backer is not arriving, then collects the end after keeper leverage is lost",
+      "optional checks preserve the later genuine double's decision phase keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help"
+    ],
+    "promoted": false
+  },
+  "helperDiagnosis": {
+    "firstCueFork": "tangent load resisting own/opponent yaw is read as lateral opponent velocity",
+    "noCueAblation": "short passes, sustained keeper fails; not a complete repair",
+    "pointGeometry": {
+      "implicitShedSeconds": 1.9,
+      "frontShedSeconds": 2.1,
+      "acquisitionFacingShedSeconds": 2.0,
+      "mirrors": "both material choices still lose keeper; no universal point promoted"
+    },
+    "scope": "selected controls, not population rates"
+  },
+  "branchAudit": {
+    "passRushHands": "724a94cf4cf821d22dd30d3ed8cf2bfeadc737b9",
+    "merged": false,
+    "findings": [
+      "stored angles never reach World",
+      "coincident half-cap springs add12.84% unsaturated force",
+      "primary-only haptic feedback",
+      "contact relocates each decision",
+      "chop lacks solved strike/work",
+      "inherits rejected load package"
+    ]
+  },
+  "localArtifactHashes": {
+    "out/angular-contact-next/final-tests.log": "6785e609a88502cb0d0bceea6611e3378328f240cb5c72177e63de83a7cfdf2e",
+    "out/angular-contact-next/python-tests.log": "41bfc1ffa0d2ff75dbc86b251f9ff80216266817ec846729dd599f6ea5cc0d94",
+    "out/angular-contact-next/final-law.json": "2d85b0652e1f0cdf5cff6ab46083f352693da7e868d8ad31b98bf66ba4027df6",
+    "out/angular-contact-next/graph-law.json": "aa09fa60061ac1bf68f9820031e7eb18519a1b92b18c368895b09895dd995fb4",
+    "out/angular-contact-next/final-promotion.json": "6c860c72d5cc0d8d80028144d069be8e358642aa3bc2d1a2834983c583cf7e60",
+    "out/angular-contact-next/refinement.json": "475c271893b7cbf9928704fde8475b87d22b3d8bf02fa1f357c72a95037acf31",
+    "out/material-hand-review/publication-receipt.json": "03265f7f4aff09c4ed9888dedc8f97297cb809d7af822f6730ec918c038d664b",
+    "out/patch-helper-review/first-fork-receipt.json": "ad74cb775119a15fb6087d15959b2377768163666a31bfb491955b5b35fa0d82",
+    "out/pass-rush-hands-audit/review.json": "4ea51716433848e2b62f3f2105010c786abea60bb1ccc70fae1e49155b0cdddb"
+  },
+  "limits": [
+    "default center angular defect remains until football promotion passes",
+    "no automatic hand acquisition, achieved chop or holding rule added",
+    "material-point orientation is a midpoint approximation",
+    "grasp/strike angular generalization not established",
+    "heavy-jam refinement remains separate",
+    "no new full-game improvement claimed"
+  ]
+}

@@ -1,0 +1,938 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11",
+  "chapter": "docs/football-handbook/data-and-measurement.md",
+  "scope": "Research documentation and measurement design; no engine calibration, new raw dataset or all-season orientation claim. Coaching records identify public text inspected by the handbook authors.",
+  "localCatalog": "data/sources.json",
+  "snapshotPolicy": "Documentation SHA-256 values identify bytes received on the recorded date. Fetched pages/text remain in ignored out/ or /tmp and are not archived in Git; not every original HTML response was retained. Verification fields distinguish response rehashes from receipt agreement and extracted-text hashes. Existing acquisition manifests pin actual NFL/biomechanics files.",
+  "documentation": [
+    {
+      "id": "nflreadr-ftn",
+      "url": "https://nflreadr.nflverse.com/articles/dictionary_ftn_charting.html",
+      "finalUrl": "https://nflreadr.nflverse.com/articles/dictionary_ftn_charting.html",
+      "bytes": 12446,
+      "sha256": "bf44be8377e470b51b7851c67b04fabdeb9f8d5b3acd903d563515254ffbcd6e",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "nflreadr-ngs",
+      "url": "https://nflreadr.nflverse.com/articles/dictionary_nextgen_stats.html",
+      "finalUrl": "https://nflreadr.nflverse.com/articles/dictionary_nextgen_stats.html",
+      "bytes": 16244,
+      "sha256": "25e9321375451e3d359c64b28d3242f7bff10d5b21f69bf97ee80df6a1739200",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "nflreadr-pbp",
+      "url": "https://nflreadr.nflverse.com/articles/dictionary_pbp.html",
+      "finalUrl": "https://nflreadr.nflverse.com/articles/dictionary_pbp.html",
+      "bytes": 47668,
+      "sha256": "6fa8d6c22a8a1b635322d8af9d7cb69fcb2d4c3b5acee0dbf2d94bf40d5e29cc",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "nflreadr-rosters",
+      "url": "https://nflreadr.nflverse.com/articles/dictionary_rosters.html",
+      "finalUrl": "https://nflreadr.nflverse.com/articles/dictionary_rosters.html",
+      "bytes": 11274,
+      "sha256": "007e75b449c53149b28d039d71f10286b68938b133bf194e456f428047dad3b5",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "nflreadr-combine",
+      "url": "https://nflreadr.nflverse.com/reference/load_combine.html",
+      "finalUrl": "https://nflreadr.nflverse.com/reference/load_combine.html",
+      "bytes": 14992,
+      "sha256": "eb16a5de221178e7f76702d5470327bfcb84ebd883856ff194a3c772f3723a7d",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "bdb2019-readme",
+      "url": "https://raw.githubusercontent.com/ryurko/Big-Data-Bowl/0dac66ce81e5fd22ca48f35ea6a637c523dda12b/README.md",
+      "finalUrl": "https://raw.githubusercontent.com/ryurko/Big-Data-Bowl/0dac66ce81e5fd22ca48f35ea6a637c523dda12b/README.md",
+      "bytes": 7453,
+      "sha256": "5aeb7c13a9430b031813c8662f95fce1166765e87c92ed1c276b602cab1f22d3",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true
+    },
+    {
+      "id": "nfl-rules",
+      "url": "https://operations.nfl.com/the-rules/nfl-rulebook/",
+      "finalUrl": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
+      "bytes": 1852559,
+      "sha256": "4b5493b0a3ff47bde3323a91c66f07d1db3daa378c2c3349e6d85749973dd064",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "2026 NFL Rulebook",
+      "chapterReferences": [
+        "docs/football-handbook/data-and-measurement.md",
+        "docs/football-handbook/offensive-skill-and-playcalling.md",
+        "docs/football-handbook/defense-and-perception.md",
+        "docs/football-handbook/shared-model-and-learning.md"
+      ],
+      "editionLimitation": "The generic URL serves a 2026 URL/title, while some internal/PDF assets name 2025. Those PDFs were not fetched or verified; chapter rule claims concern the actual served Rule 7/8 article prose, not a confirmed PDF/edition match.",
+      "verification": {
+        "originalResponseRehashed": true,
+        "sharedRuleReceiptDeduplicated": true,
+        "articlePayloadExtractBytes": 285057,
+        "articlePayloadExtractSha256": "a0062d21d047b085df9a0c5a9520bdc884d53f75771afe0cea8178f06336961a"
+      },
+      "additionalInspection": {
+        "sections": "Served Rule6 kickoff formation/landing zone excerpts and Rule10 fair-catch definition",
+        "scope": "Root inspected embeddedarticle text; limited motivation for future specialteams state-machine tests, not full ruleimplementation or confirmed PDFedition."
+      }
+    },
+    {
+      "id": "addbiomechanics",
+      "url": "https://addbiomechanics.org/download_data.html",
+      "finalUrl": "https://addbiomechanics.org/download_data.html",
+      "bytes": 14380,
+      "sha256": "7dcb3f2090465db82ccf8b668ae075fa23f4e1b7df6ae157f8926954327cc791",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true
+    },
+    {
+      "id": "ngs-intro",
+      "url": "https://nextgenstats.nfl.com/glossary",
+      "finalUrl": "https://nextgenstats.nfl.com/glossary",
+      "bytes": 31420,
+      "sha256": "c233d8ba27d50cd17439b3805cf5bc34febedbedadb735989da23fafdac21d34",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": false,
+      "limitation": "HTTP retrieval succeeded, but response is a client-rendered page shell; no field-definition verification claimed."
+    },
+    {
+      "id": "nflreadr-participation",
+      "url": "https://nflreadr.nflverse.com/reference/load_participation.html",
+      "finalUrl": "https://nflreadr.nflverse.com/reference/load_participation.html",
+      "bytes": 15875,
+      "sha256": "8417a5840a9f279ecf0f91f358e8c26c767f936d9eec071158886ed27220f1be",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "nflreadr-ftn-access",
+      "url": "https://nflreadr.nflverse.com/reference/load_ftn_charting.html",
+      "finalUrl": "https://nflreadr.nflverse.com/reference/load_ftn_charting.html",
+      "bytes": 16453,
+      "sha256": "749ecb84e2187684d986d6e8f3513e6f0fc4b262d3f3871ef609089603903f4f",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "bdb2019-schema",
+      "url": "https://raw.githubusercontent.com/ryurko/Big-Data-Bowl/0dac66ce81e5fd22ca48f35ea6a637c523dda12b/schema.md",
+      "finalUrl": "https://raw.githubusercontent.com/ryurko/Big-Data-Bowl/0dac66ce81e5fd22ca48f35ea6a637c523dda12b/schema.md",
+      "bytes": 5816,
+      "sha256": "b65a93f6daf67c879d73f8563dc5a32878bb7aee91a606883160dc9f7c274394",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true
+    },
+    {
+      "id": "participation-dictionary",
+      "url": "https://nflreadr.nflverse.com/articles/dictionary_participation.html",
+      "finalUrl": "https://nflreadr.nflverse.com/articles/dictionary_participation.html",
+      "bytes": 11516,
+      "sha256": "c9ca4df7e837534633c62c079f88e9463bb8051fb78efe48cc3313f4b24668db",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "bdb2027-data",
+      "url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2027/data",
+      "finalUrl": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2027/data",
+      "bytes": 5941,
+      "sha256": "3616de7afe504ac300fc3e315ec2589be10ce54299a90392a8a1ced99324705e",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": false,
+      "limitation": "HTTP retrieval succeeded, but response is a client-rendered page shell; no field-definition verification claimed."
+    },
+    {
+      "id": "bdb2025-data",
+      "url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2025/data",
+      "finalUrl": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2025/data",
+      "bytes": 5891,
+      "sha256": "6382148214048f16e18df5fda3e7078791ddb9bfb378d0d0294cc0f252a35dcd",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": false,
+      "limitation": "HTTP retrieval succeeded, but response is a client-rendered page shell; no field-definition verification claimed."
+    },
+    {
+      "id": "bdb2023-data",
+      "url": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2023/data",
+      "finalUrl": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2023/data",
+      "bytes": 5836,
+      "sha256": "5ac1cace9ea9d1f5a7b183c64afe58109f23f80f9006b61b16ce9ca5fbde5341",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": false,
+      "limitation": "HTTP retrieval succeeded, but response is a client-rendered page shell; no field-definition verification claimed."
+    },
+    {
+      "id": "nflreadr-ngs-access",
+      "url": "https://nflreadr.nflverse.com/reference/load_nextgen_stats.html",
+      "finalUrl": "https://nflreadr.nflverse.com/reference/load_nextgen_stats.html",
+      "bytes": 16339,
+      "sha256": "4e7cf8aae6670caf2ddae38cd511d29db08728ca734b74267717f4600792e28b",
+      "retrievedAt": "2026-10-11",
+      "semanticContentReviewed": true,
+      "observedDocumentationVersion": "nflreadr 1.5.1.9002"
+    },
+    {
+      "id": "coaching-kuchar-covered-zone",
+      "url": "https://blogs.usafootball.com/blog/590/strategies-for-blocking-covered-vs-uncovered-in-inside-zone-runs",
+      "finalUrl": "https://blogs.usafootball.com/blog/590/strategies-for-blocking-covered-vs-uncovered-in-inside-zone-runs",
+      "status": 200,
+      "bytes": 23211,
+      "sha256": "90324880c1780ef41f3d98a70aa917228d1da82cb18dd8deab131ea8c887286a",
+      "retrievedAt": "2026-10-11T10:10:31.756661+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Available public HTML/article text only; embedded clinic video and member continuation were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/trenches.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "responseHashAgreement": "Original HTML matches the retrieval receipt; the chapter cites the URL and inspection scope rather than printing a hash table.",
+        "extractedTextBytes": 5334,
+        "extractedTextSha256": "f8c270a2b4ace38d4088e9ae5e985ba692d931356916b8315350afe46ce2b83e"
+      }
+    },
+    {
+      "id": "coaching-grabowski-inside-zone",
+      "url": "https://blogs.usafootball.com/blog/1428/building-an-offensive-line-coaching-the-inside-zone",
+      "finalUrl": "https://blogs.usafootball.com/blog/1428/building-an-offensive-line-coaching-the-inside-zone",
+      "status": 200,
+      "bytes": 16662,
+      "sha256": "9d392ee0ac5379ee38f63417997a8d05fbd3998ec3274ed14bae47dd8bca69cc",
+      "retrievedAt": "2026-10-11T10:10:31.918350+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Available public HTML/article text only; embedded clinic video and member continuation were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/trenches.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "responseHashAgreement": "Original HTML matches the retrieval receipt; the chapter cites the URL and inspection scope rather than printing a hash table.",
+        "extractedTextBytes": 3650,
+        "extractedTextSha256": "f8d83153c1005eace6eff7223b3dbd823e0e4fe70efc042c8b869b2f7d912af1"
+      }
+    },
+    {
+      "id": "coaching-penree-zone-pod",
+      "url": "https://www.xandolabs.com/the-lab/position-groups/offensive-line/run-game-mechanics-offensive-line/pod-teaching-the-inside-and-outside-zone-schemes/",
+      "finalUrl": "https://www.xandolabs.com/the-lab/position-groups/offensive-line/run-game-mechanics-offensive-line/pod-teaching-the-inside-and-outside-zone-schemes/",
+      "status": 200,
+      "bytes": 177233,
+      "sha256": "6492c3cf4c5883b8b06a5357342c98c8a4a9968e5c12705bfa989ca2e5cac150",
+      "retrievedAt": "2026-10-11T10:10:32.162383+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Available public HTML/article text only; embedded clinic video and member continuation were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/trenches.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "responseHashAgreement": "Original HTML matches the retrieval receipt; the chapter cites the URL and inspection scope rather than printing a hash table.",
+        "extractedTextBytes": 14412,
+        "extractedTextSha256": "be1d117115a6a1709f5e278bcfa9bbe39cd43b1187920684abdf5300987758c6"
+      }
+    },
+    {
+      "id": "coaching-janak-duo",
+      "url": "https://www.xandolabs.com/the-lab/offense/run-game/tight-zone-run-concepts/the-duo-concept-power-without-a-puller/",
+      "finalUrl": "https://www.xandolabs.com/the-lab/offense/run-game/tight-zone-run-concepts/the-duo-concept-power-without-a-puller/",
+      "status": 200,
+      "bytes": 178077,
+      "sha256": "22720b33ffcffdf4827e96423eee9cce8867841f7c3b0b0ab7de89bb9dc07ae0",
+      "retrievedAt": "2026-10-11T10:10:33.796609+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Available public HTML/article text only; embedded clinic video and member continuation were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/trenches.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "responseHashAgreement": "Original HTML matches the retrieval receipt; the chapter cites the URL and inspection scope rather than printing a hash table.",
+        "extractedTextBytes": 15480,
+        "extractedTextSha256": "02a6380e6cb8ae29f5511442a47bd3f5719de25aa49c730d1073d6c05144368c"
+      }
+    },
+    {
+      "id": "coaching-parker-counter",
+      "url": "https://throwdeeppublishing.com/blogs/news/the-ferris-state-gt-counter-run-play",
+      "finalUrl": "https://throwdeeppublishing.com/blogs/news/the-ferris-state-gt-counter-run-play",
+      "status": 200,
+      "bytes": 555909,
+      "sha256": "ca593c4dc07cb07e957e944fbb105b158e490c55a90107811347c9282bdf6959",
+      "retrievedAt": "2026-10-11T10:10:35.537675+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Available public HTML/article text only; embedded clinic video and member continuation were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/trenches.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "responseHashAgreement": "Original HTML matches the retrieval receipt; the chapter cites the URL and inspection scope rather than printing a hash table.",
+        "extractedTextBytes": 7227,
+        "extractedTextSha256": "58f7aa419fda224b6a55fd4a7cf5aa0a5a8787e4136ece5bf030bc703e7860a1"
+      }
+    },
+    {
+      "id": "coaching-defense-press-eyes",
+      "url": "https://blogs.usafootball.com/blog/952/training-the-eyes-of-a-defensive-back-in-press-coverage",
+      "finalUrl": "https://blogs.usafootball.com/blog/952/training-the-eyes-of-a-defensive-back-in-press-coverage",
+      "status": 200,
+      "bytes": 21166,
+      "sha256": "62a57a1f789a6310b41008e9c8554917d11d19cedd12359b86b85dd185774a21",
+      "retrievedAt": "2026-10-11",
+      "retrievalTimePrecision": "Day recorded by chapter; access receipt does not retain a precise timestamp.",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Public HTML/article text only; embedded videos/images were not quantitatively analyzed.",
+      "chapterReferences": [
+        "docs/football-handbook/defense-and-perception.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "extractedTextBytes": 5420,
+        "extractedTextSha256": "492b348f17fc89da3a121be6b536fea56c2f4349531dec6a3b112cf88c81dd20"
+      }
+    },
+    {
+      "id": "coaching-defense-hips-man",
+      "url": "https://blogs.usafootball.com/blog/1047/reading-the-wide-receiver-s-hips-to-teach-man-coverage",
+      "finalUrl": "https://blogs.usafootball.com/blog/1047/reading-the-wide-receiver-s-hips-to-teach-man-coverage",
+      "status": 200,
+      "bytes": 23773,
+      "sha256": "c61dc1d54944101356bf1f213525a640bc90e9fb21fa9dfea5464a63d7513b21",
+      "retrievedAt": "2026-10-11",
+      "retrievalTimePrecision": "Day recorded by chapter; access receipt does not retain a precise timestamp.",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Public HTML/article text only; embedded videos/images were not quantitatively analyzed.",
+      "chapterReferences": [
+        "docs/football-handbook/defense-and-perception.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "extractedTextBytes": 6038,
+        "extractedTextSha256": "62b265e42a3e5b204d832b9f66d2388b3f4631109898c43481c0b6f87a839a0b"
+      }
+    },
+    {
+      "id": "coaching-defense-deep-ball",
+      "url": "https://blogs.usafootball.com/blog/5006/how-to-coach-defensive-backs-to-play-the-deep-ball",
+      "finalUrl": "https://blogs.usafootball.com/blog/5006/how-to-coach-defensive-backs-to-play-the-deep-ball",
+      "status": 200,
+      "bytes": 20190,
+      "sha256": "505fd8ece3879012351a241092d7fbad1ff222f01e9217c2befe90c16f859c58",
+      "retrievedAt": "2026-10-11",
+      "retrievalTimePrecision": "Day recorded by chapter; access receipt does not retain a precise timestamp.",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Public HTML/article text only; embedded videos/images were not quantitatively analyzed.",
+      "chapterReferences": [
+        "docs/football-handbook/defense-and-perception.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "extractedTextBytes": 4621,
+        "extractedTextSha256": "edf55836e77cea77cd37fcdf15b3a40bb4914a3a339c80188ab3a1d40d2b9085"
+      }
+    },
+    {
+      "id": "coaching-defense-ripliz",
+      "url": "https://blogs.usafootball.com/blog/7272/high-school-coordinator-explains-the-details-of-rip-liz-coverage",
+      "finalUrl": "https://blogs.usafootball.com/blog/7272/high-school-coordinator-explains-the-details-of-rip-liz-coverage",
+      "status": 200,
+      "bytes": 34319,
+      "sha256": "8282cf5028be096214be3b66bd9d8dfbb7b744ba9ae798d168b0bd795cf749dd",
+      "retrievedAt": "2026-10-11",
+      "retrievalTimePrecision": "Day recorded by chapter; access receipt does not retain a precise timestamp.",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Public HTML/article text only; embedded videos/images were not quantitatively analyzed.",
+      "chapterReferences": [
+        "docs/football-handbook/defense-and-perception.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "extractedTextBytes": 9087,
+        "extractedTextSha256": "ee6c63e9582bd64ec1df59f78c92414be7f4e9ddca3947c783a90ad32af83ce8"
+      }
+    },
+    {
+      "id": "coaching-defense-quarters",
+      "url": "https://blogs.usafootball.com/blog/7382/college-coach-details-quarters-coverage",
+      "finalUrl": "https://blogs.usafootball.com/blog/7382/college-coach-details-quarters-coverage",
+      "status": 200,
+      "bytes": 33804,
+      "sha256": "629492c35c4df81311ace53c71ecb8696c053f968c9e60e03797d2a5f864f443",
+      "retrievedAt": "2026-10-11",
+      "retrievalTimePrecision": "Day recorded by chapter; access receipt does not retain a precise timestamp.",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Public HTML/article text only; embedded videos/images were not quantitatively analyzed.",
+      "chapterReferences": [
+        "docs/football-handbook/defense-and-perception.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": true,
+        "extractedTextBytes": 8992,
+        "extractedTextSha256": "5dcddd8c2e7b9237c5a28b523ce56cdda9884c48fcdde83d6e16502bbbe6dfd7"
+      }
+    },
+    {
+      "id": "coaching-offense-alignment-landmarks-tempo",
+      "url": "https://www.glazierclinics.com/football-coach-resources/build-consistent-success-in-your-run-game-with-alignment-landmarks-and-tempo",
+      "finalUrl": "https://www.glazierclinics.com/football-coach-resources/build-consistent-success-in-your-run-game-with-alignment-landmarks-and-tempo",
+      "status": 200,
+      "bytes": 84087,
+      "sha256": "0cb1f571efbb79f35bd688f2b7610ae9bc1922d6f9def81d1ba070d2cc654bca",
+      "retrievedAt": "2026-10-11T10:10:44.602076+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Extracted public article text inspected; embedded clinic video, paid courses and linked articles were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/offensive-skill-and-playcalling.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": false,
+        "responseHashAgreement": "Fetch receipt and chapter HTML hash agree. Exact original HTML is not retained in the offense source folder; independently rehashed text is a different artifact.",
+        "extractedTextBytes": 4262,
+        "extractedTextSha256": "5851782a35bc97d2a95fb824223bd8f275d70d4a31e6898ced3b4a52adc28f89",
+        "receiptSha256": "8ccb7e27dc74e0f57613a17f469c858ae95478f3e172aeb1efa47ad6d165968e"
+      }
+    },
+    {
+      "id": "coaching-offense-ole-miss-inside-run-footwork",
+      "url": "https://www.glazierclinics.com/football-coach-resources/ole-miss-inside-run-footwork",
+      "finalUrl": "https://www.glazierclinics.com/football-coach-resources/ole-miss-inside-run-footwork",
+      "status": 200,
+      "bytes": 81361,
+      "sha256": "c210abe5d5edfcfab0c2aa079c9cfaa9e6493f00f3c8974db345c319d7091e07",
+      "retrievedAt": "2026-10-11T10:10:43.950119+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Extracted public article text inspected; embedded clinic video, paid courses and linked articles were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/offensive-skill-and-playcalling.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": false,
+        "responseHashAgreement": "Fetch receipt and chapter HTML hash agree. Exact original HTML is not retained in the offense source folder; independently rehashed text is a different artifact.",
+        "extractedTextBytes": 3998,
+        "extractedTextSha256": "b725f495ce643ff3c5d4a9417942ae674c13f195dc8f05de0addfee73f448fe4",
+        "receiptSha256": "6bd85bcf28a9f280996b5347904538cf7052b563809a00ee636a9aded31f3177"
+      }
+    },
+    {
+      "id": "coaching-offense-wr-press-release",
+      "url": "https://blogs.usafootball.com/blog/7121/coaching-the-wide-receiver-the-press-release",
+      "finalUrl": "https://blogs.usafootball.com/blog/7121/coaching-the-wide-receiver-the-press-release",
+      "status": 200,
+      "bytes": 32964,
+      "sha256": "f0e9b7022d84216f338e50c4d1bf3223e5f3dcca806c7a81956f3ca40a6e5d17",
+      "retrievedAt": "2026-10-11T10:10:45.203244+00:00",
+      "semanticContentReviewed": true,
+      "inspectedScope": "Extracted public article text inspected; embedded clinic video, paid courses and linked articles were not inspected.",
+      "chapterReferences": [
+        "docs/football-handbook/offensive-skill-and-playcalling.md"
+      ],
+      "verification": {
+        "originalResponseRehashed": false,
+        "responseHashAgreement": "Fetch receipt and chapter HTML hash agree. Exact original HTML is not retained in the offense source folder; independently rehashed text is a different artifact.",
+        "extractedTextBytes": 8836,
+        "extractedTextSha256": "95e21193a168318ac92be6415f102867d6e30977d638352a1142836f6f8ff364",
+        "receiptSha256": "4bc6d2510aabbe20a238aab15e89d1881ebb5fe7af1c1f3c2c90c1d810818138"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "bdb2019-2017",
+      "documentationIds": [
+        "bdb2019-readme",
+        "bdb2019-schema"
+      ],
+      "usefulFor": [
+        "Selected all-player field geometry",
+        "Long observed play paths",
+        "Motion/event identifiers and positions in yards"
+      ],
+      "doesNotEstablish": [
+        "Grip/contact/ground forces or gaze",
+        "Complete league coverage",
+        "Unrestricted redistribution"
+      ],
+      "acquisitionCatalogId": "bdb2019-2017",
+      "inputManifest": "data/sources/ryurko-bdb2019-files.json",
+      "sourceCommit": "0dac66ce81e5fd22ca48f35ea6a637c523dda12b",
+      "trackingUtilization": "One game in the summary; 91 acquired games in the pinned archive.",
+      "localRawStatus": "Archive absent in this workspace on 2026-10-11.",
+      "confirmedFields": {
+        "x": "Long field axis, 0\u2013120 yards.",
+        "y": "Short field axis, 0\u201353.3 yards.",
+        "s": "Speed in yards/second.",
+        "dir": "Motion angle in degrees, 0\u2013360.",
+        "event": "Tagged play details."
+      },
+      "termsStatus": "Pinned README contains contest-specific NGS restrictions; public URL/private repository do not establish team redistribution permission."
+    },
+    {
+      "id": "bdb2023-2021",
+      "documentationIds": [
+        "bdb2023-data"
+      ],
+      "usefulFor": [
+        "Pass-protection assignment/opponent labels",
+        "All-player rush/block/pocket geometry through release"
+      ],
+      "doesNotEstablish": [
+        "Post-catch/tackle trajectories for ordinary passes",
+        "Direct hand forces",
+        "All acquired tracking weeks already analyzed"
+      ],
+      "acquisitionCatalogId": "bdb2023-2021",
+      "review": "docs/reviews/bdb2023-data-review.md",
+      "trackingUtilization": "All eight weeks of scouting labels; separate week-1 tracking audit covers 1,175 plays. The summary extractor processes zero tracking rows.",
+      "localRawStatus": "Archive absent in this workspace on 2026-10-11.",
+      "fieldDefinitionsStatus": "Local labels/review inspected; the fresh Kaggle data page shell does not verify blocking-code semantics."
+    },
+    {
+      "id": "bdb2025-2022",
+      "documentationIds": [
+        "bdb2025-data"
+      ],
+      "usefulFor": [
+        "Concept/front-proxy conditional run geometry",
+        "Presnap movement",
+        "Longer all-player pursuit/contact and pocket sequences"
+      ],
+      "doesNotEstablish": [
+        "Geometric front proxy is called front",
+        "Proximity is hand contact/control",
+        "Provider a matches native acceleration without measurement alignment"
+      ],
+      "acquisitionCatalogId": "bdb2025-2022",
+      "review": "data/bdb2025-summary.json",
+      "trackingUtilization": "Weeks 1\u20132 in the main tracking summary; nine weeks of labels. Dedicated reference extractors have their own filters.",
+      "localRawStatus": "Archive absent in this workspace on 2026-10-11.",
+      "fieldDefinitionsStatus": "Local extractors and previous reviewed aggregates inspected; the fresh Kaggle data page shell contains no dictionary."
+    },
+    {
+      "id": "bdb2026-2023",
+      "documentationIds": [],
+      "usefulFor": [
+        "Selected-player pre-throw role demand"
+      ],
+      "doesNotEstablish": [
+        "All-22 pocket/contact geometry.",
+        "Movement of the full player population."
+      ],
+      "acquisitionCatalogId": "bdb2026-2023",
+      "summary": "data/bdb2026-summary.json",
+      "trackingUtilization": "Selected pass plays/players across weeks 1\u201318, as recorded by the local catalog; no new raw analysis in this handbook."
+    },
+    {
+      "id": "bdb2027-2023-2025",
+      "documentationIds": [
+        "bdb2027-data"
+      ],
+      "usefulFor": [
+        "Same-athlete combine/game movement demand",
+        "OL pull and reversal path geometry",
+        "Provisional orientation/travel relation pilot"
+      ],
+      "doesNotEstablish": [
+        "All-22 opponent geometry.",
+        "Eye/gaze direction.",
+        "NFL grip or maximum turf friction.",
+        "League representativeness.",
+        "Player mentality from career outcomes."
+      ],
+      "acquisitionCatalogId": "bdb2027-2023-2025",
+      "inputManifest": "data/sources/kaggle-bdb2027-files.json",
+      "review": "docs/reviews/bdb2027-movement-transfer.md",
+      "extractor": "scripts/data/bdb2027_movement.py",
+      "trackingUtilization": {
+        "combinePaths": 6310,
+        "gameRowsRead": 22654290,
+        "retainedGamePaths": 176707
+      },
+      "gameSelection": "Non-nullified pass label plus snap and release; the window ends at release, first contact or three seconds. Selected draft cohort, not all-22.",
+      "localRawStatus": "All nine original CSVs present.",
+      "confirmedLocalHeader": [
+        "game_id",
+        "play_id",
+        "nfl_id",
+        "time",
+        "x",
+        "y",
+        "s",
+        "a",
+        "dis",
+        "o",
+        "dir",
+        "event"
+      ],
+      "orientationSemanticsStatus": "o and dir exist in the local header; the current extractor ignores both. The 2019 schema independently verifies dir as a motion angle but does not include o. The 2027 o-to-body mapping remains provisional until the provider dictionary is confirmed.",
+      "orientationPilotReview": "docs/football-handbook/orientation-pilot.md",
+      "orientationPilotStatus": "A new selected-game pilot retains 244 pass windows and 6,751 frames from 2023/2025. It analyzes circular o/dir differences conditionally, without claiming verified body/gaze semantics or league prevalence."
+    },
+    {
+      "id": "nflverse-pbp",
+      "documentationIds": [
+        "nflreadr-pbp"
+      ],
+      "usefulFor": [
+        "Situation-conditional outcomes and calling",
+        "Designed-run/dropback/throw/scramble denominators",
+        "Success/explosive distribution and team-season variation"
+      ],
+      "doesNotEstablish": [
+        "Physical force or technique",
+        "Causal psychology",
+        "EPA/CP are observed mechanical truth"
+      ],
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "extractor": "scripts/nflverse-reference.py",
+      "downloadStatus": "2022/2023 REG PBP was downloaded, pinned and extracted before this handbook.",
+      "confirmedFields": {
+        "pass_attempt": "Includes sacks.",
+        "qb_dropback": "Includes pass attempts, sacks and scrambles.",
+        "qb_hit": "QB hit annotation, not all pressure.",
+        "air_yards": "Depth perpendicular to the LOS at the targeted catch/incompletion.",
+        "epa": "Modeled expected-points change.",
+        "cp": "Modeled completion probability."
+      }
+    },
+    {
+      "id": "ftn-charting",
+      "documentationIds": [
+        "nflreadr-ftn",
+        "nflreadr-ftn-access"
+      ],
+      "usefulFor": [
+        "Incomplete-pass attribution",
+        "Charted catchability/contestedness",
+        "Motion/screen/RPO,rush/blitz labels",
+        "Read-thrown reference with year-specific missingness"
+      ],
+      "doesNotEstablish": [
+        "Direct QB thought/footwork",
+        "Nonoverlapping outcome categories without an explicit hierarchy",
+        "Distance-defined pressure/contact"
+      ],
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "downloadStatus": "The 2022 snapshot is already downloaded/extracted; availability for 2023 onward is documented, but no new datasets were downloaded here.",
+      "documentedAvailability": "2022 onward.",
+      "license": "CC-BY-SA 4.0; attribution: FTN Data via nflverse.",
+      "confirmedFields": {
+        "read_thrown": "0 = primary from 2023; 2022 primary reads are NA. 1 = second, 2 = third or later, CHK = checkdown, DES = designed, SD = scramble drill.",
+        "is_catchable_ball": "Generally on-target throws that are not defended away.",
+        "is_contested_ball": "Receiver faces physical contact at the catch.",
+        "is_drop": "Charted receiver drop.",
+        "is_interception_worthy": "Charted interception-worthy pass."
+      }
+    },
+    {
+      "id": "nflverse-participation",
+      "documentationIds": [
+        "nflreadr-participation",
+        "participation-dictionary"
+      ],
+      "usefulFor": [
+        "Per-play pressure/time-to-throw cross-check.",
+        "Coverage/man-zone/target-route cohorts.",
+        "Formation/personnel/player participation."
+      ],
+      "doesNotEstablish": [
+        "All receiver route assignments.",
+        "Force transmitted through a blocked player.",
+        "Historical provider comparability without an audit."
+      ],
+      "downloadStatus": "Useful new documentation inspected; no additional dataset downloaded.",
+      "documentedAvailability": "Since 2016; participation from FTN for 2023 onward is provided after postseason completion.",
+      "providerBoundary": "Before 2023: NFL NGS. From 2023: FTN.",
+      "license": "The loader documents CC-BY-SA 4.0 and attribution to FTN Data via nflverse for 2023 onward, and NFL NextGenStats via nflverse for 2022 and earlier.",
+      "confirmedFields": {
+        "time_to_throw": "Snap to release of a pass attempt, in seconds.",
+        "was_pressure": "Boolean indicating whether the QB was pressured on a play.",
+        "defense_coverage_type": "COVER_0/1/2/3/4/6/9, 2_MAN, COMBO or BLOWN.",
+        "route": "Primary-receiver route category.",
+        "players_on_play": "GSIS player identifiers."
+      },
+      "pilot": "One completed 2023 season joined to existing PBP; check unique IDs, completeness and denominators before comparison."
+    },
+    {
+      "id": "ngs-weekly",
+      "documentationIds": [
+        "nflreadr-ngs",
+        "nflreadr-ngs-access",
+        "ngs-intro"
+      ],
+      "usefulFor": [
+        "Qualified player-week time-to-throw, separation, cushion, YAC and time-to-LOS checks."
+      ],
+      "doesNotEstablish": [
+        "All-22 raw tracking.",
+        "The distribution of unqualified backup players.",
+        "An all-player or all-dropback mean from a qualified target mean."
+      ],
+      "downloadStatus": "Documentation inspected; no new aggregate CSV downloaded.",
+      "documentedAvailability": "From 2016, passing/receiving/rushing; minimum attempt qualification. Season summary rows have week = 0.",
+      "confirmedFields": {
+        "avg_time_to_throw": "Snap-to-throw average, sacks excluded.",
+        "avg_separation": "Nearest defender at catch or incompletion.",
+        "avg_cushion": "WR/TE versus the lined-up defender at snap on all targets.",
+        "aggressiveness": "Attempt percentage with a defender within one yard at completion/incompletion.",
+        "avg_time_to_los": "Time before the carrier crosses the LOS on rushing plays."
+      }
+    },
+    {
+      "id": "nflverse-rosters",
+      "documentationIds": [
+        "nflreadr-rosters"
+      ],
+      "usefulFor": [
+        "Body composition, age and position.",
+        "Exact identifier crosswalks.",
+        "Anonymous roster composition conditional on participation."
+      ],
+      "doesNotEstablish": [
+        "NFL IQ, hand technique or grip strength.",
+        "One NFL team represents the league average."
+      ],
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "downloadStatus": "2022/2023 rosters, player crosswalk and 2022 snap counts are already downloaded.",
+      "existingBenchmarks": "Anonymous 2022 KC/PHI body profiles and participation; two strong selected teams, not the typical NFL population."
+    },
+    {
+      "id": "nflverse-combine",
+      "documentationIds": [
+        "nflreadr-combine"
+      ],
+      "usefulFor": [
+        "Historical body/drill distribution priors.",
+        "QB/RB/LB body/drill references absent from BDB2027 combine groups."
+      ],
+      "doesNotEstablish": [
+        "Present-day athletic capacity.",
+        "A missing drill means zero ability.",
+        "Bench repetitions identify football grip."
+      ],
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "downloadStatus": "The existing pinned PFR-derived combine CSV is present.",
+      "documentedAvailability": "From 2000, courtesy of Pro Football Reference."
+    },
+    {
+      "id": "addbiomechanics-core",
+      "documentationIds": [
+        "addbiomechanics"
+      ],
+      "usefulFor": [
+        "Support, foot-placement and recovery timing sanity checks.",
+        "Selected measured ground reaction force and center of pressure.",
+        "COM/segment-model reference with quality flags."
+      ],
+      "doesNotEstablish": [
+        "Football tackling/gripping forces.",
+        "NFL cleat maximum friction.",
+        "Force-fitted dynamics is independent validation."
+      ],
+      "acquisitionCatalogId": "addbiomechanics-core-1.0",
+      "selectedInputManifest": "data/reviews/biomechanics-support/manifest.json",
+      "review": "data/reviews/biomechanics-support/README.md",
+      "documentedVersion": "Core 1.0: 273 participants, 71.47 motion hours and 57.55 GRF hours.",
+      "downloadStatus": "Four selected Hamner/Moore subjects already acquired/audited: 12 windows, 5,892 frames and 5,431 force-valid frames. No new raw download here.",
+      "license": "CC BY 4.0; retain selected-file LICENSE.txt attribution.",
+      "derivedVersusMeasured": "Force-plate values are sensor-derived processed copies. COM and joint torques are model-derived; dynamics was fitted to forces."
+    },
+    {
+      "id": "nfl-rules-2026",
+      "documentationIds": [
+        "nfl-rules"
+      ],
+      "usefulFor": [
+        "Formation/motion/contact/penalty legality constraints.",
+        "Rules-season compatibility."
+      ],
+      "doesNotEstablish": [
+        "Observed penalty frequencies.",
+        "Contact force or officiating judgment calibration."
+      ],
+      "observedEdition": "2026",
+      "downloadStatus": "Full official HTML retrieved for source inspection; not committed as raw content.",
+      "editionLimitation": "The generic URL serves a 2026 URL/title, while some internal/PDF assets name 2025. Those PDFs were not fetched or verified; chapter rule claims concern the actual served Rule 7/8 article prose, not a confirmed PDF/edition match.",
+      "chapterReferences": [
+        "docs/football-handbook/data-and-measurement.md",
+        "docs/football-handbook/offensive-skill-and-playcalling.md",
+        "docs/football-handbook/defense-and-perception.md"
+      ]
+    },
+    {
+      "id": "public-film",
+      "documentationIds": [],
+      "usefulFor": [
+        "Named coaching principles.",
+        "Falsifying approach/contact examples.",
+        "Qualitative synchronization with specific tracking plays."
+      ],
+      "doesNotEstablish": [
+        "League frequencies from highlights.",
+        "Hidden assignments from broadcast view.",
+        "Automatic public reuse permission.",
+        "Force/grip constants."
+      ],
+      "inspectionStatus": "Source-selection guidance only; no new film archive or comprehensive primary film study completed in this chapter."
+    }
+  ],
+  "unobservedFootballMeasurements": [
+    "Actual eyes, gaze and acquisition.",
+    "Player certainty and intent.",
+    "Precise foot plants and ground reaction from NFL tracking.",
+    "Actual hand grip/contact force.",
+    "Maximum cleat friction.",
+    "Causal mental traits from outcome associations."
+  ],
+  "comparisonRequirements": [
+    "Same units, temporal window and measurement operator.",
+    "Condition on situation, role, entry speed, contact phase and generated roster composition.",
+    "Keep player-grouped repeated-observation weighting and holdout.",
+    "Retain missingness, adverse pairs, censored cases and ordinary panels.",
+    "Pin engine input, source and achieved work/trajectory separately from the request."
+  ],
+  "coachingReferences": [
+    {
+      "id": "coaching-kuchar-covered-zone",
+      "documentationId": "coaching-kuchar-covered-zone",
+      "chapter": "docs/football-handbook/trenches.md",
+      "authorOrPresenter": "Mike Kuchar",
+      "pagePublicationDate": "2015-09-24",
+      "narrowUse": "Covered/uncovered local classification and open-gap near-hip response.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or fitted physical constant."
+    },
+    {
+      "id": "coaching-grabowski-inside-zone",
+      "documentationId": "coaching-grabowski-inside-zone",
+      "chapter": "docs/football-handbook/trenches.md",
+      "authorOrPresenter": "Keith Grabowski",
+      "pagePublicationDate": "2016-04-25",
+      "narrowUse": "Vertical emphasis and the tradeoff between sustained four-hand contact and backer response.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or fitted physical constant."
+    },
+    {
+      "id": "coaching-penree-zone-pod",
+      "documentationId": "coaching-penree-zone-pod",
+      "chapter": "docs/football-handbook/trenches.md",
+      "authorOrPresenter": "George Penree",
+      "pagePublicationDate": "2012-03-11",
+      "narrowUse": "Public covered/uncovered, drive, check/climb, reach and takeover teaching.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or fitted physical constant."
+    },
+    {
+      "id": "coaching-janak-duo",
+      "documentationId": "coaching-janak-duo",
+      "chapter": "docs/football-handbook/trenches.md",
+      "authorOrPresenter": "Michael Janak",
+      "pagePublicationDate": "2020-07-02",
+      "narrowUse": "Public Duo spacing/base and fill/scrape/slant release examples.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or fitted physical constant."
+    },
+    {
+      "id": "coaching-parker-counter",
+      "documentationId": "coaching-parker-counter",
+      "chapter": "docs/football-handbook/trenches.md",
+      "authorOrPresenter": "Alex Kirby, describing Sam Parker",
+      "pagePublicationDate": null,
+      "narrowUse": "Public secondary account of three GT Counter examples, pull spacing and trap-to-log responses.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or fitted physical constant."
+    },
+    {
+      "id": "coaching-defense-press-eyes",
+      "documentationId": "coaching-defense-press-eyes",
+      "chapter": "docs/football-handbook/defense-and-perception.md",
+      "authorOrPresenter": "Mike Kuchar",
+      "pagePublicationDate": "2016-04-28",
+      "narrowUse": "A specific press/catch installation and eye/key teaching.",
+      "evidenceType": "Published coaching installation/teaching choice, not measured gaze or an empirical NFL rate."
+    },
+    {
+      "id": "coaching-defense-hips-man",
+      "documentationId": "coaching-defense-hips-man",
+      "chapter": "docs/football-handbook/defense-and-perception.md",
+      "authorOrPresenter": "Mike Kuchar",
+      "pagePublicationDate": "2016-04-14",
+      "narrowUse": "Off-man leverage, cushion and receiver-hip/footwork examples.",
+      "evidenceType": "Published coaching installation/teaching choice, not measured gaze or an empirical NFL rate."
+    },
+    {
+      "id": "coaching-defense-deep-ball",
+      "documentationId": "coaching-defense-deep-ball",
+      "chapter": "docs/football-handbook/defense-and-perception.md",
+      "authorOrPresenter": "Brady Grayvold",
+      "pagePublicationDate": "2017-11-30",
+      "narrowUse": "Phase, turn and catch-point teaching.",
+      "evidenceType": "Published coaching installation/teaching choice, not measured gaze or an empirical NFL rate."
+    },
+    {
+      "id": "coaching-defense-ripliz",
+      "documentationId": "coaching-defense-ripliz",
+      "chapter": "docs/football-handbook/defense-and-perception.md",
+      "authorOrPresenter": "Clayton Cason reporting Kyle Cogan",
+      "pagePublicationDate": "2019-05-21",
+      "narrowUse": "A high-school coordinator's Rip/Liz match installation.",
+      "evidenceType": "Published coaching installation/teaching choice, not measured gaze or an empirical NFL rate."
+    },
+    {
+      "id": "coaching-defense-quarters",
+      "documentationId": "coaching-defense-quarters",
+      "chapter": "docs/football-handbook/defense-and-perception.md",
+      "authorOrPresenter": "Clayton Cason reporting Dante Bartee",
+      "pagePublicationDate": "2019-07-02",
+      "narrowUse": "College quarters/Cover7 coaching examples; terminology varies.",
+      "evidenceType": "Published coaching installation/teaching choice, not measured gaze or an empirical NFL rate."
+    },
+    {
+      "id": "coaching-offense-alignment-landmarks-tempo",
+      "documentationId": "coaching-offense-alignment-landmarks-tempo",
+      "chapter": "docs/football-handbook/offensive-skill-and-playcalling.md",
+      "authorOrPresenter": "Elijah Brooks",
+      "pagePublicationDate": "2024-10-14",
+      "narrowUse": "Consistent installation fields and adaptation to personnel.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or calibrated movement parameter."
+    },
+    {
+      "id": "coaching-offense-ole-miss-inside-run-footwork",
+      "documentationId": "coaching-offense-ole-miss-inside-run-footwork",
+      "chapter": "docs/football-handbook/offensive-skill-and-playcalling.md",
+      "authorOrPresenter": "Kevin Smith",
+      "pagePublicationDate": "2024-02-02",
+      "narrowUse": "Particular inside-zone landmarks, changing pictures, square shoulders and controlled tempo.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or calibrated movement parameter."
+    },
+    {
+      "id": "coaching-offense-wr-press-release",
+      "documentationId": "coaching-offense-wr-press-release",
+      "chapter": "docs/football-handbook/offensive-skill-and-playcalling.md",
+      "authorOrPresenter": "Drew Lieberman",
+      "pagePublicationDate": "2019-03-26",
+      "narrowUse": "Conditional release plan/counter, leverage and route-dependent timing.",
+      "evidenceType": "Published coaching installation/teaching choice, not an empirical NFL rate or calibrated movement parameter."
+    }
+  ],
+  "chapterReferences": [
+    "docs/football-handbook/offensive-skill-and-playcalling.md",
+    "docs/football-handbook/trenches.md",
+    "docs/football-handbook/defense-and-perception.md",
+    "docs/football-handbook/data-and-measurement.md",
+    "docs/football-handbook/orientation-pilot.md"
+  ]
+}

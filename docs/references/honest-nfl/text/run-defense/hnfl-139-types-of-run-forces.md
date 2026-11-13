@@ -1,0 +1,333 @@
+# HNFL-139 — TYPES OF RUN FORCES
+
+[Original image](../../images/run-defense/hnfl-139-types-of-run-forces.jpeg) · [Topic](../../topics/run-defense.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Sky, cloud, apex and easy force / crack replacement
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Primary force changes with coverage: safety, corner or apex. Secondary force and cutback/boot/reverse duties are part of the coordinated fit.
+
+**Browse:** [Run fits / force / gap-and-a-half](../../CONCEPTS.md#run-fits)
+
+Original archive path(s): `HonestNFL/HJWdtgUXUAcdlCt.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+TYPES OF RUN FORCES
+
+PLAYSIDE SAFETY IS THE PRIMARY FORCE DEFENDER
+
+“TREY”
+
+SKY FORGE
+
+RESPONSIBLE FOR LEVERAGING THE BALL FROM
+
+MIDDLE 113
+
+“TREY SKY”
+
+(ALLEY)
+
+OUTSIDE-IN.
+
+413
+
+CURL-FLAT
+
+PLAYSIDE CORNER TYPICALLY HAS SECONDARY FORCE
+
+pe
+
+(a Force)
+
+erForce)
+
+$
+
+$
+
+RESPONSIBILITY (THINK PASS, REACT TO RUN). ALWAYS
+
+LOOKING TO LEVERAGE THE BALL OUTSIDE-IN. IF WE
+
+CURL LAT
+
+HOOK.cURL
+
+CRACK THE PRIMARY, HE MUST REPLACE HIM AS THE
+
+(PLUG)
+
+NEW PRIMARY.
+
+M
+
+D
+
+TYPICALLY APPLIES TO MIDDLE-CLOSED ZONE
+
+c
+
+N
+
+c
+
+COVERAGES.
+
+T
+
+T
+
+BACKSIDE APEX = “CUTBACK-BOOT-REVERSE” PLAYER
+
+@
+
+CORRESPONDING RUN FIT RESPONSIBILITIES ARE
+
+°
+
+OKOO
+
+®
+
+DETERMINED BY THE COVERAGE.
+
+@)
+
+@
+
+=> FLOW RT
+
+@O
+
+EX. “FLEX 9 SKY”
+
+PLAYSIDE CORNER IS THE PRIMARY FORCE DEFENDER
+
+CLOUD FORCE
+
+“CLOUD”
+
+DEEP 12
+
+se “CLOUD”
+
+RESPONSIBLE FOR LEVERAGING THE BALL FROM
+
+(* FORCE)
+
+OUTSIDE-IN.
+
+PLAYSIDE SAFETY HAS SECONDARY FORCE
+
+a
+
+RESPONSIBILITY (THINK PASS, REACT TO RUN).
+
+(ScraPBveRLAr)
+
+stor
+
+stot
+
+PLAYSIDE APEX IS THE “PLUG” DEFENDER RESPONSIBLE
+
+cLoup
+
+(CBR)
+
+FOR THE UPFIELD CUT INSIDE THE FORCE DEFENDER.
+
+ctouo
+
+M
+
+(FORCE)
+
+APPLIES TO ALL NON-INVERTED HALVES STRUCTURES
+
+c
+
+D
+
+AND ANY COVERAGE TAGGED.
+
+N
+
+c
+
+BACKSIDE APEX = “CUTBACK-BOOT-REVERSE” PLAYER
+
+T
+
+T
+
+CORRESPONDING RUN FITS ARE DETERMINED BY
+
+COVERAGE.
+
+®
+
+O°
+
+OKOO
+
+®
+
+TYPICALLY PLAYED WITH A “SPILL-OVERLAP” MINDSET
+
+©
+
+UP FRONT WITH DEFENDERS SPLATTERING BLOCKS.
+
+=> FLOW RT
+
+@®O
+
+EX. “FLEX 52”
+
+“QUADS”
+
+APEX FORCE
+
+PLAYSIDE APEX IS THE PRIMARY FORCE DEFENDER
+
+INSIDE 114
+
+“QUADS”
+
+14
+
+INSIDE 14
+
+(ALLEY)
+
+RESPONSIBLE FOR LEVERAGING THE BALL FROM
+
+a Force)
+
+OUTSIDE-IN.
+
+414 HOOK
+
+PLAYSIDE CORNER HAS SECONDARY FORCE
+
+$
+
+(SCRAPE A.c)
+
+AIA FLAT
+
+(FORCE)
+
+AA FLAT
+
+RESPONSIBILITY (THINK PASS, REACT TO RUN).
+
+(CBR)
+
+MIDPOINT WILL SCRAPE AND FIT THE PLAYSIDE A/B/C
+
+GAP BASED ON BLOCKING.
+
+7
+
+M
+
+«'N
+
+DX.
+
+BACKSIDE APEX = “CUTBACK-BOOT-REVERSE” PLAYER
+
+CORRESPONDING RUN FITS ARE DETERMINED BY
+
+T
+
+T
+
+COVERAGE.
+
+°
+
+OKOO
+
+®
+
+©
+
+=> FLOW RT
+
+EX. “FLEX QUADS”
+
+@O
+
+EASY FORCE
+
+“LURK”
+
+MIDDLE 13
+
+“LURK”
+
+PLAYSIDE EDGE IS THE PRIMARY FORCE DEFENDER
+
+(ALLEY)
+
+RESPONSIBLE FOR LEVERAGING THE BALL FROM
+
+OUTSIDE-IN.
+
+PLAYSIDE CORNER HAS SECONDARY FORCE
+
+$
+
+#3H00K
+
+(PLUG)
+
+#31H00K
+
+RESPONSIBILITY (THINK PASS, REACT TO RUN).
+
+(pursumT)
+
+PLAYSIDE MIDPOINT IS THE “PLUG” DEFENDER
+
+mnt
+
+RESPONSIBLE FOR THE UPFIELD CUT INSIDE THE FORCE.
+
+(CBR)
+
+er rorce)
+
+uy
+
+D
+
+BACKSIDE MIDPOINT WILL PURSUE.
+
+mm
+
+PLAYSIDE APEX WILL FIT BASED ON BLOCKING.
+
+sForce) |
+
+BACKSIDE APEX = “CUTBACK-BOOT-REVERSE” PLAYER
+
+CORRESPONDING RUN FITS ARE DETERMINED BY
+
+COVERAGE.
+
+CoanS Joomcoe
+
+FLOW LT <—
+
+EX. “FLEX LURK”
+
+@O
+```

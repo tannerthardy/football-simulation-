@@ -1,0 +1,572 @@
+diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
+index ecb7e83..6811bbf 100644
+--- a/src/sim/behaviors/common.ts
++++ b/src/sim/behaviors/common.ts
+@@ -6,6 +6,7 @@ import { availability, supportParams } from '../../physics/support.js';
+ import { interceptPoint, timeToReach } from '../../physics/reach.js';
+ import type { Agent } from '../agent.js';
+ import { chooseApproach } from '../approach-control.js';
++import { withMovementObjective } from '../movement-objective.js';
+ import type { PlaySim } from '../playsim.js';
+ 
+ export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
+@@ -69,7 +70,8 @@ export function track(a: Agent, target: Vec2, targetVel: Vec2, opts: { facing?:
+     vx *= vmax / sp;
+     vy *= vmax / sp;
+   }
+-  return { vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill };
++  return withMovementObjective({ vel: { x: vx, y: vy }, facing: opts.facing, cutSkill: opts.cutSkill },
++    { kind: 'moving', point: target, velocity: targetVel });
+ }
+ 
+ export function angleTo(from: Vec2, to: Vec2): number {
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 7874ca4..7535fc6 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -23,6 +23,7 @@ import { showsBlock } from '../coverage-cues.js';
+ import { executeRunFit, type KeyedRunFit } from '../run-fits.js';
+ import { RouteObservation } from '../coverage-read.js';
+ import { movingCatchApproach } from '../catch-approach.js';
++import { withMovementObjective } from '../movement-objective.js';
+ 
+ /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
+ export function believesRun(sim: PlaySim, a: Agent): boolean {
+@@ -803,7 +804,8 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
+     const control = 2.2 + 2.5 * (1 - a.r('tackling'));
+     const allowed = Math.sqrt(control * control + 2 * a.profile.brake * 0.7 * Math.max(0, d - 0.3));
+     const sp = Math.min(a.profile.vmax, allowed);
+-    return movingCatchApproach(a,sim,{vel:{x:(dx/d)*sp,y:(dy/d)*sp}},window,spot);
++    return movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
++      { kind: 'fixed', point: tgt }),window,spot);
+   }
+   return spot ? runThrough(a, spot.p, { speed: 0.9 }) : stand();
+ }
+diff --git a/src/sim/catch-approach.ts b/src/sim/catch-approach.ts
+index 38546fd..338eae1 100644
+--- a/src/sim/catch-approach.ts
++++ b/src/sim/catch-approach.ts
+@@ -10,6 +10,7 @@ import {availability,supportParams} from '../physics/support.js';
+ import type {Agent} from './agent.js';
+ import type {Perceived} from './perception.js';
+ import type {PlaySim} from './playsim.js';
++import {withMovementObjective} from './movement-objective.js';
+ 
+ interface CatchWindow {p:Vec2;t:number;receiver:Agent;seen:Perceived}
+ interface BallOpportunity {p:Vec2;t:number}
+@@ -51,5 +52,5 @@ export function movingCatchApproach(a:Agent,sim:PlaySim,original:MoveCommand,
+  const capacity=support?availability(support,supportParams(a.profile),fatigueFactor(a.body.energy)):1,
+   vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,contact,
+    2.5+2*(1-a.r('tackling')),1,capacity);
+- return {...original,vel};
++ return withMovementObjective({...original,vel},{kind:'moving',point:goal,velocity:seen.vel});
+ }
+diff --git a/src/sim/movement-objective.ts b/src/sim/movement-objective.ts
+new file mode 100644
+index 0000000..2be0153
+--- /dev/null
++++ b/src/sim/movement-objective.ts
+@@ -0,0 +1,24 @@
++/** The actor's own already-computed steering goal, carried with this command.
++ * This is a plan, not a new observation or a promise about future movement.
++ * Symbols survive ordinary command spreads, but are not physics/record data.
++ */
++import type { Vec2 } from '../core/vec.js';
++import type { MoveCommand } from '../physics/kinematics.js';
++
++export type MovementObjective =
++  | { kind: 'fixed'; point: Vec2 }
++  | { kind: 'moving'; point: Vec2; velocity?: Vec2 };
++
++const objective = Symbol('own movement objective');
++type PlannedCommand = MoveCommand & { [objective]?: MovementObjective };
++
++export function withMovementObjective<T extends MoveCommand>(command: T, goal: MovementObjective): T {
++  const snapshot: MovementObjective = goal.kind === 'fixed'
++    ? { kind: 'fixed', point: { ...goal.point } }
++    : { kind: 'moving', point: { ...goal.point }, velocity: goal.velocity && { ...goal.velocity } };
++  return { ...command, [objective]: snapshot };
++}
++
++export function movementObjective(command: MoveCommand): MovementObjective | undefined {
++  return (command as PlannedCommand)[objective];
++}
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index d753b3a..66cfd12 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -14,6 +14,8 @@ import {previewFreeMovement,type MovementSample} from '../physics/movement-previ
+ import {availability,supportParams} from '../physics/support.js';
+ import type { Agent } from './agent.js';
+ import type {Perceived} from './perception.js';
++import { movementObjective } from './movement-objective.js';
++import { containCoverage } from './coverage-space.js';
+ 
+ /** Time a player gives himself to close the gap to a teammate, s. */
+ const CLOSE_HORIZON = 0.3;
+@@ -34,6 +36,8 @@ export interface SpacingContext {
+ }
+ 
+ interface PeerPicture {
++  key: number;
++  age?: number;
+   pos: {x:number;y:number};
+   vel: {x:number;y:number};
+   touch: number;
+@@ -57,13 +61,13 @@ function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPic
+  * This is a held-command forecast against observed constant-velocity peers,
+  * not a contact solve or knowledge of their next decisions. Replan next tick.
+  */
+-function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):readonly PeerPicture[] {
+   const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
+   if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
+     ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
+     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
+     ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
+-    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return original;
++    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return [];
+   // A nearly aligned request does not remove momentum.
+   // Admit by the attainable tube below, then evaluate the actual held-command
+   // movement rather than assuming the body immediately adopts its request.
+@@ -78,7 +82,7 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+     const closest=v2>1e-12?Math.max(0,Math.min(TURN_HORIZON,(dx*rx+dy*ry)/v2)):0;
+     return Math.hypot(dx-rx*closest,dy-ry*closest)<=peer.touch+tube+1e-9;
+   });
+-  if(!near.length)return original;
++  if(!near.length)return [];
+   // An exactly matched request and settled support preserve the current
+   // travel line in free movement. Speed/facing caps can brake along it, but
+   // supply no transverse force. Reject only peers whose entire acquired
+@@ -95,8 +99,14 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+     const last=first+(peer.vel.x*nx+peer.vel.y*ny)*TURN_HORIZON;
+     return Number.isFinite(first)&&Number.isFinite(last)&&first*last>0
+       &&Math.min(Math.abs(first),Math.abs(last))>peer.touch+1e-9;
+-  }))return original;
+-  const samples=previewFreeMovement(a.body,original,context.now,TURN_STEPS);
++  }))return [];
++  return near;
++}
++
++function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++  const near=forecastPeers(a,original,peers,context);
++  if(!near.length)return original;
++  const samples=previewFreeMovement(a.body,original,context!.now,TURN_STEPS);
+   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
+   const worst=Math.min(...clearances);
+   if(worst>=0)return original;
+@@ -105,11 +115,11 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+   // safely follows the same observed peers. Keep posture/facing/skill and let
+   // ordinary movement decide whether this request is actually achievable.
+   const slowed:Intent={...original,vel:{x:original.vel.x*.5,y:original.vel.y*.5}};
+-  const slower=previewFreeMovement(a.body,slowed,context.now,TURN_STEPS);
++  const slower=previewFreeMovement(a.body,slowed,context!.now,TURN_STEPS);
+   if(slower.every(sample=>sample.support==='up')
+     &&peers.every(peer=>sweptClearance(a,slower,peer)>=0))return slowed;
+   const gather:Intent={...original,vel:{x:0,y:0}};
+-  const gathered=previewFreeMovement(a.body,gather,context.now,TURN_STEPS);
++  const gathered=previewFreeMovement(a.body,gather,context!.now,TURN_STEPS);
+   if(gathered.some(sample=>sample.support!=='up'))return original;
+   const alternative=near.map(peer=>sweptClearance(a,gathered,peer));
+   // Do not cure one overlap by creating another in a previously clear lane.
+@@ -118,6 +128,83 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
+   return gather;
+ }
+ 
++interface PassingFrame { peer: number; forward: {x:number;y:number}; normal: {x:number;y:number} }
++// Own maneuver state, not remembered peer motion. Every evaluation uses this
++// tick's acquired picture; a missing picture ends the maneuver.
++const passingFrames=new WeakMap<Agent,PassingFrame>();
++
++/** One compound local action: keep useful forward braking while matching the
++ * obstructing teammate's acquired transverse motion. This is not a new route
++ * or assignment. Full/half/gather alone can all intersect the same teammate.
++ */
++function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++  const goal=movementObjective(raw),speed=Math.hypot(raw.vel.x,raw.vel.y);
++  const clear=()=>{passingFrames.delete(a);return chosen;};
++  if((a.behavior.kind!=='man'&&a.behavior.kind!=='zone')||!goal||speed<1e-9
++    ||![goal.point.x,goal.point.y].every(Number.isFinite)
++    ||(goal.kind==='moving'&&(!goal.velocity||![goal.velocity.x,goal.velocity.y].every(Number.isFinite)))
++    ||peers.some(p=>!Number.isFinite(p.age)||p.age! < 0
++      ||![p.pos.x,p.pos.y,p.vel.x,p.vel.y].every(Number.isFinite))
++    ||!forecastPeers(a,raw,peers,context).length)return clear();
++  const now=context!.now,flow=goal.kind==='fixed'?{x:0,y:0}:goal.velocity!;
++  const forward={x:raw.vel.x/speed,y:raw.vel.y/speed};
++  const dot=(x:number,y:number,v:{x:number;y:number})=>x*v.x+y*v.y;
++  const gaps=(path:readonly MovementSample[])=>peers.map(p=>sweptClearance(a,path,p));
++  const originalPath=previewFreeMovement(a.body,raw,now,TURN_STEPS);
++  const originalGaps=gaps(originalPath);
++  const residual=previewFreeMovement(a.body,{...raw,vel:{...a.vel}},now,TURN_STEPS);
++  const residualGaps=gaps(residual);
++  let passing=passingFrames.get(a);
++  if(passing){
++    const p=peers.find(p=>p.key===passing!.peer);
++    if(!p||dot(p.pos.x-a.pos.x,p.pos.y-a.pos.y,passing.forward)<=0
++      ||dot(forward.x,forward.y,passing.forward)<=0)passing=undefined;
++  }
++  if(!passing){
++    const conflicts=Math.min(...originalGaps)<0?originalGaps:residualGaps;
++    const worst=Math.min(...conflicts);
++    if(worst>=0)return clear();
++    const peer=peers[conflicts.indexOf(worst)];
++    const normal={x:-forward.y,y:forward.x};
++    if(dot(peer.pos.x-a.pos.x,peer.pos.y-a.pos.y,normal)>0){normal.x=-normal.x;normal.y=-normal.y;}
++    passing={peer:peer.key,forward,normal};
++  }
++  passingFrames.set(a,passing);
++  const peer=peers.find(p=>p.key===passing!.peer)!,normal=passing.normal;
++  const oldPath=chosen===raw?originalPath:previewFreeMovement(a.body,chosen,now,TURN_STEPS);
++  const oldGaps=gaps(oldPath),previous=Math.min(...oldGaps);
++  const error=(path:readonly MovementSample[])=>{
++    const end=path[path.length-1];
++    return Math.hypot(end.pos.x-goal.point.x-flow.x*end.t,end.pos.y-goal.point.y-flow.y*end.t);
++  };
++  const stationaryError=Math.hypot(a.pos.x-goal.point.x-flow.x*TURN_HORIZON,
++    a.pos.y-goal.point.y-flow.y*TURN_HORIZON);
++  function evaluate(base:Intent):Intent|undefined {
++    const correction=dot(peer.vel.x-base.vel.x,peer.vel.y-base.vel.y,normal);
++    const vx=base.vel.x+normal.x*correction,vy=base.vel.y+normal.y*correction;
++    const scale=Math.min(1,speed/Math.max(1e-9,Math.hypot(vx,vy)));
++    // Preserve field containment, facing, posture and all other modifiers.
++    const command:Intent={...base,vel:containCoverage(a,{...base,vel:{x:vx*scale,y:vy*scale}}).vel};
++    const path=previewFreeMovement(a.body,command,now,TURN_STEPS),next=gaps(path),end=path[path.length-1];
++    if(path.some(s=>s.support!=='up')||dot(end.pos.x-a.pos.x,end.pos.y-a.pos.y,forward)<=0
++      ||next.some((g,i)=>oldGaps[i]>=0&&g<0))return;
++    // An unsafe unloaded sprint's endpoint is not an achievable-contact
++    // benchmark. During overlap demand useful progress plus material relief;
++    // when the native action clears, improve the original goal without a hit.
++    if(previous<0?Math.min(...next)>previous+TURN_MARGIN&&error(path)<stationaryError
++      :Math.min(...next)>=0&&error(path)<error(oldPath))return command;
++  }
++  const adjusted=evaluate(chosen);
++  if(adjusted)return adjusted;
++  if(previous<0){
++    // Retain current facing/posture constraints; add only the existing
++    // half-speed option composed with that same transverse adjustment.
++    const combined=evaluate({...chosen,vel:{x:raw.vel.x*.5,y:raw.vel.y*.5}});
++    if(combined)return combined;
++  }
++  return chosen;
++}
++
+ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+   observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> = (_a,b)=>b,
+   context?:SpacingContext): void {
+@@ -125,7 +212,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+   for (let i = 0; i < n; i++) {
+     const a = agents[i];
+     const ia = intents[i];
+-    if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') continue;
++    if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') { passingFrames.delete(a); continue; }
+     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
+     let vx = ia.vel.x, vy = ia.vel.y;
+     const peers:PeerPicture[]=[];
+@@ -137,7 +224,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
+       const d = Math.hypot(dx, dy);
+       const touch = TOUCH * (a.profile.radius + b.profile.radius);
+-      peers.push({pos:seen.pos,vel:seen.vel,touch});
++      peers.push({key:b.idx,pos:seen.pos,vel:seen.vel,touch,age:(seen as Perceived).age});
+       const gap = d - touch;
+       if (d < 1e-6) continue;
+       const nx = dx / d, ny = dy / d;
+@@ -169,6 +256,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
+       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
+     }
+-    intents[i]=gatherForMotion(a,spaced,peers,context);
++    const gathered=gatherForMotion(a,spaced,peers,context);
++    intents[i]=stepAroundTraffic(a,ia,gathered,peers,context);
+   }
+ }
+diff --git a/test/fixtures/traffic-step.json.gz b/test/fixtures/traffic-step.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..44fa6d87f1927664cd2025dc31c905236cfc42e2
+GIT binary patch
+literal 8829
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/test/traffic-step.test.ts b/test/traffic-step.test.ts
+new file mode 100644
+index 0000000..66858b7
+--- /dev/null
++++ b/test/traffic-step.test.ts
+@@ -0,0 +1,105 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it, vi } from 'vitest';
++import type { Body } from '../src/physics/kinematics.js';
++import * as Preview from '../src/physics/movement-preview.js';
++import { World, type Intent } from '../src/physics/world.js';
++import { Agent } from '../src/sim/agent.js';
++import { track } from '../src/sim/behaviors/common.js';
++import { movementObjective, withMovementObjective, type MovementObjective } from '../src/sim/movement-objective.js';
++import { spaceTeammates } from '../src/sim/spacing.js';
++
++const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/traffic-step.json.gz',import.meta.url))).toString());
++function run(kind='ordinary',objective=true) {
++  const first=fixture.rows[0];
++  const a=new Agent(fixture.actor,'D','SS',fixture.player,first.body.profile,structuredClone(first.body),
++    {kind:'man',update(){throw Error('Do not repeat the football decision');}});
++  const rows=[];
++  for(const row of fixture.rows){
++    Object.assign(a.body,structuredClone(row.body));
++    const pictures=new Map<number,any>();
++    const peers=row.peers.map((p:any)=>{
++      const seen=structuredClone(p.seen);
++      if(kind==='clear')seen.pos.x+=30;
++      if(kind==='unknown-peer')seen.vel.y=NaN;
++      if(kind==='unknown-age')delete seen.age;
++      // Make an actual obstruction on the proposed passing side, without
++      // moving or granting knowledge of any private body.
++      if(kind==='obstruction'&&p.idx===19){const speed=Math.hypot(a.vel.x,a.vel.y);seen.pos={x:a.pos.x+a.vel.x/speed,y:a.pos.y+a.vel.y/speed};seen.vel={x:0,y:0};}
++      pictures.set(p.idx,seen);
++      return {idx:p.idx,team:'D',profile:p.profile,
++        get pos(){throw Error('Private peer position');},get vel(){throw Error('Private peer velocity');}} as unknown as Agent;
++    });
++    const raw:Intent=structuredClone(row.command),goal:MovementObjective=structuredClone(row.goal);
++    if(kind==='unknown-goal'){goal.kind='moving';if(goal.kind==='moving')delete goal.velocity;}
++    const command=kind==='no-goal'||!objective?raw:withMovementObjective(raw,goal);
++    const source=structuredClone(a.body),picture=structuredClone([...pictures]);let reads=0;
++    const intents:Intent[]=[command,...peers.map(()=>({vel:{x:0,y:0},free:true}))];
++    spaceTeammates([a,...peers],intents,(_a,p)=>{reads++;return pictures.get(p.idx);},
++      {now:row.t,constrained:kind==='loaded'?new Set([a.body]):undefined});
++    expect(reads).toBe(10);expect(a.body).toEqual(source);expect([...pictures]).toEqual(picture);
++    rows.push({row,source,command:intents[0],raw,pictures,profile:a.profile});
++  }
++  return rows;
++}
++function clearance(body:Body,command:Intent,now:number,peers:Map<number,any>,profiles:any[]) {
++  const path=Preview.previewFreeMovement(body,command,now,12);
++  return Math.min(...profiles.map(p=>{
++    const seen=peers.get(p.idx),touch=.9*(body.profile.radius+p.profile.radius);
++    let previous={x:body.pos.x-seen.pos.x,y:body.pos.y-seen.pos.y},best=Math.hypot(previous.x,previous.y)-touch;
++    for(const s of path){
++      const r={x:s.pos.x-seen.pos.x-seen.vel.x*s.t,y:s.pos.y-seen.pos.y-seen.vel.y*s.t};
++      const dx=r.x-previous.x,dy=r.y-previous.y,u=Math.max(0,Math.min(1,-(previous.x*dx+previous.y*dy)/Math.max(1e-12,dx*dx+dy*dy)));
++      best=Math.min(best,Math.hypot(previous.x+u*dx,previous.y+u*dy)-touch);previous=r;
++    }
++    return best;
++  }));
++}
++describe('compound traffic movement preserves the football objective',()=>{
++  it('uses a real brake-and-transverse action where full, half and gather all overlap',()=>{
++    const rows=run(),last=rows.at(-1)!;
++    const {source,raw,row,pictures,command}=last;
++    for(const scale of [1,.5,0])expect(clearance(source,{...raw,vel:{x:raw.vel.x*scale,y:raw.vel.y*scale}},row.t,pictures,row.peers)).toBeLessThan(0);
++    expect(clearance(source,command,row.t,pictures,row.peers)).toBeGreaterThan(.25);
++    expect(command.vel).not.toEqual(raw.vel);
++    expect(Math.hypot(command.vel.x,command.vel.y)).toBeLessThanOrEqual(Math.hypot(raw.vel.x,raw.vel.y));
++    expect(movementObjective(command)).toEqual(row.goal);
++    const path=Preview.previewFreeMovement(source,command,row.t,12);
++    expect(path.every(s=>s.support==='up')).toBe(true);
++    const body=structuredClone(source),world=new World([body]);world.time=row.t;
++    const report=world.step([command],.05);
++    expect(body.pos).toEqual(path[0].pos);expect(body.vel).toEqual(path[0].vel);
++    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  });
++  it.each(['unknown-goal','unknown-peer','unknown-age','loaded','obstruction'])('does not invent a certified alternative with %s',kind=>{
++    const rows=run(kind),native=run(kind,false);
++    // Information/constraint controls do not use the new alternative. A
++    // genuinely blocked route is allowed to remain blocked.
++    if(kind!=='obstruction')expect(rows.map(r=>r.command.vel)).toEqual(native.map(r=>r.command.vel));
++    const last=rows.at(-1)!;
++    if(kind==='obstruction'){
++      expect(clearance(last.source,last.command,last.row.t,last.pictures,last.row.peers)).toBeLessThan(0);
++      const blocker=last.row.peers.find((p:any)=>p.idx===19),seen=last.pictures.get(19);
++      const body:Body={...structuredClone(last.source),profile:blocker.profile,pos:{...seen.pos},vel:{...seen.vel}};
++      const own=structuredClone(last.source),world=new World([own,body]);world.time=last.row.t;
++      expect(Math.hypot(own.pos.x-body.pos.x,own.pos.y-body.pos.y)).toBeGreaterThan(.9*(own.profile.radius+body.profile.radius));
++      let contact=false;
++      for(let k=0;k<12;k++)contact ||= world.step([last.command,{vel:{x:0,y:0}}],.05).contacts.some(c=>c.impulse>0);
++      expect(contact).toBe(true);
++    }
++  });
++  it('preserves a genuinely clear route with no forecasts even when its own goal is supplied',()=>{
++    const spy=vi.spyOn(Preview,'previewFreeMovement');
++    try{const rows=run('clear');expect(rows.every(r=>r.command.vel.x===r.raw.vel.x&&r.command.vel.y===r.raw.vel.y)).toBe(true);expect(spy).not.toHaveBeenCalled();}
++    finally{spy.mockRestore();}
++  });
++  it('copies the consumed moving goal, preserves it through modifiers, and distinguishes unknown from fixed',()=>{
++    const first=fixture.rows[0],body=structuredClone(first.body);
++    const a=new Agent(21,'D','SS',fixture.player,body.profile,body,{kind:'man',update(){throw Error('unused');}});
++    const point={x:58,y:22},velocity={x:0,y:2},command=track(a,point,velocity);
++    point.x=99;velocity.y=99;
++    expect(movementObjective({...command,vel:{x:0,y:0}})).toEqual({kind:'moving',point:{x:58,y:22},velocity:{x:0,y:2}});
++    expect(movementObjective(withMovementObjective({vel:{x:1,y:0}},{kind:'moving',point}))).toEqual({kind:'moving',point,velocity:undefined});
++    expect(movementObjective(withMovementObjective({vel:{x:1,y:0}},{kind:'fixed',point}))?.kind).toBe('fixed');
++  });
++});

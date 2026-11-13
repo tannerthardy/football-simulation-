@@ -1,0 +1,265 @@
+# HNFL-361 — Attacking Quarters — normal 2x2 splits
+
+[Original image](../../images/quarterback-process/hnfl-361-attacking-quarters-normal-2x2-splits.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Quarters attack menu by void, isolation, quick game and flat stress
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Another visual version of normal-split attacks. It is mechanism teaching and should not be reduced to outcome guarantees or one universal countercall.
+
+**Browse:** [Quarters match / MOD / poach](../../CONCEPTS.md#quarters-match), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
+Original archive path(s): `HonestNFL/HUchKqQWcAIGZ7Z.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+ip
+
+ATTACKING Q
+
+ARTERS (
+
+ORMAL SPL
+
+lig
+
+CORNER/SAFETY COLLAPSE — DEEP 1/4 VOID ATTACKER
+
+ISOLATE THE WEAK “
+
+UARTER FLAT’ WITH #3 AWAY
+
+DEEP
+
+OCCUPY THE CORNER
+
+INSIDE ,..
+
+AND ISOLATE #2 WEAK ON THE
+
+GET THE CORNER/SAFETY
+
+‘QTR FLAT’ APEX UNDERNEATH.
+
+TO COMMIT TO #1/#2,
+
+THEY MUST MATCH ANY
+
+THEN ATTACK THE DEEP
+
+12)
+
+8-10
+
+OUT, SHALLOW, OR UNDER
+
+1/4 THEIR COMMITMENT
+
+ROUTE WITH NO DIRECT HELP.
+
+LEAVES VOIDED.
+
+4
+
+OOf00@
+
+so
+
+BOBO
+
+CAN ALSO APPLY TO
+
+THE HB IN 3x1 FORMATIONS,
+
+BAT
+
+OR VS. MIDPOINT IN 2x2
+
+BAT
+
+“TAMPA ‘F’ READ”
+
+“BRANCH”
+
+PRESS THE CORNERS VERTICALLY, THEN BREAK IT OFF
+
+ATTACK THE UNDERCOVERAGE WITH QUICK GAME
+
+THE WEAKNESS OF ANY
+
+THE CORNERS ARE
+
+vt
+
+PRESS/CLOUD
+
+QUARTERS CONCEPT IS IN
+
+MUST COME OUT FLATS.
+
+QUARTERS DUE TO THE
+
+RESPONSIBLE FOR
+
+LEVERAGE WE NEED AT THE
+
+STAYING ON TOP OF #1
+
+THE UNDERCOVERAGE
+
+CATCH POINT AND TO AVOID
+
+AROUND THE “NO COVER
+
+THE SAFETY DRIVING DOWN
+
+AT ANY EXPENSE, SO WE
+
+DIRECTLY INTO #1
+
+WANT TO PRESS THEM
+
+ZONE” (SYDS FROM LOS)
+
+ON QUICK GAME TIMING.
+
+VERTICALLY, FLIP THEIR
+
+IT’S HARD FOR THEM TO
+
+HIPS, THEN BREAK IT OFF. 3]\ M
+
+WIN WITH RHYTHM!
+
+PICK UP QUICK GAME.
+
+(CROSS FACE OF APEX
+
+VS. QUARTERS
+
+RUN TO WIN
+
+(WE PREFER BACKSIDE)
+
+OCOBOO
+
+BENDER
+
+.OOKIE
+
+HINGE
+
+Sone’
+
+4
+
+H
+
+THIS IS ALL ABOUT TIMING BETWEEN US
+
+WE ARE ALWAYS WORKING OFF OF THE
+
+OPTION
+
+AND THE RECEIVER. GOOD TIMING
+
+e)
+
+APEX VS. MOFO ZONES IN QUICK GAME
+
+MEANS THE CB CAN'T RECOVER.
+
+“RAIDER”
+
+“LION”
+
+ATTACK THE IMMEDIATE FLAT AREA
+
+CLEAR OUT THE CORNER & ATTACK THE VOID
+
+THE SPACE OUTSIDE OF
+
+CLEAR THE CORNER AND
+
+THE APEX THAT EXTENDS
+
+ATTACK THE DEPTH & LEVERAGE
+
+UP TO THE CB DEPTH IS
+
+OF THE SAFETY WITHIN THAT
+
+THE “FLAT” AREA FOR US.
+
+VOID OF FIELD SPACE.
+
+19
+
+VOIDED AREA
+
+QUARTERS TYPICALLY
+
+NO DEEP EXCHANGE MEANS
+
+UNDER THE CLEAROUT
+
+SACRIFICES THAT SPACE
+
+THEY CAN’T JUST ZONE IT OFF.
+
+THROW ON TIME AND
+
+FOR I/S LEVERAGE ON #2
+
+FLAT
+
+AND CUSHION ON #1.
+
+asters
+
+AT
+
+TO LEVERAGE!
+
+AREA
+
+OOBOO
+
+ft1o
+
+OOWOO
+
+PRESSURE
+
+60
+
+so
+
+:
+
+(CAN ALSO APPLY TO THE INSIDE 1/4
+
+STAREDOWNS & HESITATIONS ON QUICK
+
+i
+
+WITH #2 CLEARING & #1 FILLING, BUT
+
+@
+
+OUTS ARE NOT ACCEPTABLE. THROW ON
+
+®
+
+WE NEED AN ANCHOR FOR THE APEX TO
+
+[IME AND TO LEVERAGE!
+
+PREVENT THEM FROM SINKING TOO DEEP
+
+“OHIO”
+
+“PRESSURE”
+```

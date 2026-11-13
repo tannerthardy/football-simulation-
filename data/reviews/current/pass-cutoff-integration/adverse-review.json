@@ -1,0 +1,455 @@
+{
+  "schema": "accepted-pass-cutoff-adverse-review-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "runtimeCommit": "b405a0e15efc5163bf9c435d50b35013e3e9883a",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "native": [
+    {
+      "play": 40,
+      "arm": "accepted",
+      "endTime": 3.05,
+      "phase": "dead",
+      "throwAt": -1,
+      "censoring": "Native dead-ball ending",
+      "events": [
+        {
+          "t": 1.75,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 77.13,
+            "y": 32.36
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.4,
+          "type": "pressure",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 73.81,
+            "y": 29.85
+          }
+        },
+        {
+          "t": 3,
+          "type": "sack",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 72,
+            "y": 26.67
+          }
+        }
+      ],
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 2.4809986596939466,
+          "position": {
+            "x": 73.81341458871114,
+            "y": 29.85403914058359
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 5.509525959006087,
+          "position": {
+            "x": 75.36344580556987,
+            "y": 22.171700001965277
+          }
+        }
+      },
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 1.25,
+          "b": 2,
+          "d": 12,
+          "phi": 0.48173577023762876
+        },
+        {
+          "t": 1.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.5837566965058237
+        }
+      ],
+      "contactWindows": {
+        "2": {
+          "count": 0,
+          "impulseKgYdPerS": 0,
+          "maxClosingYdPerS": 0
+        },
+        "3": {
+          "count": 19,
+          "impulseKgYdPerS": 951.3347093668621,
+          "maxClosingYdPerS": 0.096122402780427
+        }
+      }
+    },
+    {
+      "play": 40,
+      "arm": "candidate",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3,
+      "censoring": "Live at 3.50; no ending inferred",
+      "events": [
+        {
+          "t": 1.55,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 77.84,
+            "y": 22.47
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.6,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 74.41,
+            "y": 33.38
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 74.51,
+            "y": 27.52
+          }
+        }
+      ],
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 6.248979241352243,
+          "position": {
+            "x": 75.10732152041675,
+            "y": 33.47089959381494
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 3.1548162265726467,
+          "position": {
+            "x": 73.69974189982096,
+            "y": 24.248478677660398
+          }
+        }
+      },
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 5,
+          "d": 13,
+          "phi": 0.012101091448651756
+        },
+        {
+          "t": 0.95,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3475846198446589
+        },
+        {
+          "t": 1.2,
+          "b": 1,
+          "d": 11,
+          "phi": -0.4360625139407246
+        }
+      ],
+      "contactWindows": {
+        "2": {
+          "count": 0,
+          "impulseKgYdPerS": 0,
+          "maxClosingYdPerS": 0
+        },
+        "3": {
+          "count": 0,
+          "impulseKgYdPerS": 0,
+          "maxClosingYdPerS": 0
+        }
+      }
+    },
+    {
+      "play": 19,
+      "arm": "accepted",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3,
+      "censoring": "Live at 3.50; no ending inferred",
+      "events": [
+        {
+          "t": 3,
+          "type": "throw",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 25.1,
+            "y": 26.67
+          }
+        }
+      ],
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 6.2464253269505035,
+          "position": {
+            "x": 27.372718518902882,
+            "y": 32.48578722547545
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 6.228761296363498,
+          "position": {
+            "x": 27.044859684417702,
+            "y": 20.74862737706526
+          }
+        }
+      },
+      "contacts": [
+        {
+          "t": 0.6,
+          "b": 1,
+          "d": 11,
+          "phi": -0.08437975536389605
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.0865694420918857
+        },
+        {
+          "t": 1.15,
+          "b": 2,
+          "d": 12,
+          "phi": 0.3881091671441024
+        }
+      ],
+      "contactWindows": {
+        "2": {
+          "count": 0,
+          "impulseKgYdPerS": 0,
+          "maxClosingYdPerS": 0
+        },
+        "3": {
+          "count": 3,
+          "impulseKgYdPerS": 35.99588248568739,
+          "maxClosingYdPerS": 0.1107021737448833
+        }
+      }
+    },
+    {
+      "play": 19,
+      "arm": "candidate",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3.15,
+      "censoring": "Live at 3.50; no ending inferred",
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3.15,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 25.07,
+            "y": 26.68
+          }
+        }
+      ],
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 5.90087014801973,
+          "position": {
+            "x": 26.835192098593765,
+            "y": 32.30729546430638
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 6.169595399763899,
+          "position": {
+            "x": 28.967136049858375,
+            "y": 21.857771032958052
+          }
+        }
+      },
+      "contacts": [
+        {
+          "t": 0.45,
+          "b": 1,
+          "d": 11,
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.55,
+          "b": 2,
+          "d": 12,
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "b": 5,
+          "d": 13,
+          "phi": 0.08656791995243276
+        }
+      ],
+      "contactWindows": {
+        "2": {
+          "count": 0,
+          "impulseKgYdPerS": 0,
+          "maxClosingYdPerS": 0
+        },
+        "3": {
+          "count": 16,
+          "impulseKgYdPerS": 662.8559857032737,
+          "maxClosingYdPerS": 0.21845827730651995
+        }
+      }
+    }
+  ],
+  "targetedCenterExecutionDiagnostic": {
+    "play": 19,
+    "arm": "candidate-retain-center",
+    "endTime": 3.5,
+    "phase": "live",
+    "throwAt": 3.15,
+    "censoring": "Live at 3.50; no ending inferred",
+    "events": [
+      {
+        "t": 2.4,
+        "type": "shed",
+        "a": 13,
+        "b": 5,
+        "pos": {
+          "x": 29.11,
+          "y": 23.68
+        },
+        "note": "pass: turned the corner"
+      },
+      {
+        "t": 3.15,
+        "type": "throw",
+        "a": 0,
+        "b": 8,
+        "pos": {
+          "x": 25.07,
+          "y": 26.68
+        }
+      }
+    ],
+    "edgeAt24": {
+      "DE_W": {
+        "distanceToQB": 5.90087014801973,
+        "position": {
+          "x": 26.835192098593765,
+          "y": 32.30729546430638
+        }
+      },
+      "DE_S": {
+        "distanceToQB": 6.169595399763899,
+        "position": {
+          "x": 28.967136049858375,
+          "y": 21.857771032958052
+        }
+      }
+    },
+    "contacts": [
+      {
+        "t": 0.45,
+        "b": 1,
+        "d": 11,
+        "phi": -0.04089927131673052
+      },
+      {
+        "t": 0.55,
+        "b": 2,
+        "d": 12,
+        "phi": 0.07983606269242267
+      },
+      {
+        "t": 0.8,
+        "b": 5,
+        "d": 13,
+        "phi": 0.08656791995243276
+      }
+    ],
+    "contactWindows": {
+      "2": {
+        "count": 0,
+        "impulseKgYdPerS": 0,
+        "maxClosingYdPerS": 0
+      },
+      "3": {
+        "count": 2,
+        "impulseKgYdPerS": 22.667144237174366,
+        "maxClosingYdPerS": 0.06019571176096672
+      }
+    }
+  },
+  "firstDivergence": [
+    {
+      "index": 39,
+      "play": 40,
+      "identicalInitialBodiesAndRng": true,
+      "identicalPriorWorldFrames": 1,
+      "firstWorldRequestDivergence": {
+        "t": 0.05,
+        "sameBodies": true,
+        "rawActors": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "index": 18,
+      "play": 19,
+      "identicalInitialBodiesAndRng": true,
+      "identicalPriorWorldFrames": 1,
+      "firstWorldRequestDivergence": {
+        "t": 0.05,
+        "sameBodies": true,
+        "rawActors": [
+          1,
+          2
+        ]
+      }
+    }
+  ],
+  "fixtureRawSha256": "fa359ffe306bd4f9920d0bcb48dcbfe84451bae45ce380e554789469b0d908a1",
+  "diagnosticMeaning": "Retaining only original C/DT_N initial-contact variates reduces the extra C/LG contact through3s from16/662.856 to2/22.667 (accepted native3/35.996). It supports changed execution ordering rather than a new direct C/LG approach defect. Original native adverse outcome remains; later draws/whole-play effects remain coupled. Not a production RNG change.",
+  "originalAdverseReuse": "47 author manifest artifacts and original runtime hash verified. P040 RT initial-contact state and P019 RG initial-contact state exactly match the original candidate. Current accepted RT/DE_S and RG/DT_S body histories match original baseline through the recorded prefix; new candidate local RG divergence from original occurs only after2.50. Original retained-initial RT/RG diagnostics are supporting mechanism evidence, not a full current-source retained-randomness comparison.",
+  "measurementNotes": [
+    "First capture field edgesAtThrow actually observes censor state; do not interpret it as throw-time evidence. The focused P019 check measures actual throw time. Corrected reproduction names edgesAtCensor; original capture retained.",
+    "First capture fixtureSha256 hashes JSON Buffer encoding; use fixtureRawSha256 here for standard raw-file identity. Original capture and trace remain unchanged; corrected reproducer uses raw SHA256.",
+    "Contact windows are fixed at2/3s; positive impulses from repeated low-speed loaded contact are not a count of independent high-speed crashes. P019 extra C/LG closing speed peaks .218yd/s."
+  ],
+  "newWorldSegments": 5,
+  "newCompletedGames": 0,
+  "extraRosterInputs": 0,
+  "fullCombinedDecision": "Minimal runtime extraction and primary/opposing controls are coherent. Proceed to one exact new-candidate combined verification; do not rerun accepted #63 source."
+}

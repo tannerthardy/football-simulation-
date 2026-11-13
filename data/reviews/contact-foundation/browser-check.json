@@ -1,0 +1,25 @@
+{
+  "clips": 808,
+  "concepts": 27,
+  "games": 6,
+  "checks": [
+    "All filmed clips appear once, grouped by actual concept",
+    "All grouping modes preserve the clip collection",
+    "Watch group and next/previous stay in the selected concept",
+    "Seeking to the finish pauses without auto-advancing",
+    "Auto-next advances to the next matching clip",
+    "The playlist stops cleanly at its last clip",
+    "Loop selection returns to the first matching clip",
+    "Pausing cancels a pending auto-next",
+    "Game filters and scoreboard use the selected clip\u2019s game",
+    "Front and coverage filters compose correctly",
+    "Result filters agree with recorded outcomes and nullified plays",
+    "Play IDs search precisely; copied references include film version and timestamp",
+    "Run-family filters retain only the selected schemes",
+    "Empty selections are safe and clear filters restores all clips",
+    "Filters can be hidden to give the field more room",
+    "Mobile layout has no horizontal overflow; filters and playback work",
+    "Opening the empty template shows visible download instructions instead of a blank field",
+    "No JavaScript errors; viewer works without external fonts"
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "baselineCommit": "3a5d86b2fa979bfa54495158be07e5cbfae9642f",
+  "baselineSourceSha256": "6368ce73ec217e52860d34533d9de102b028725b23688735c5f0b58aace472c5",
+  "finalSourceSha256": "622c45f18386aad28e724d8745933626a1f4e49adf1410fc687cfddb517a1218",
+  "definitions": {
+    "handoff": "Pre-update QB/RB center distance on the tick that transfers possession, not distance from interpolated replay.",
+    "trapApproach": "Absolute field-y velocity before the first tick reporting an active engagement; acquisition need not carry load.",
+    "cohorts": "Original film recreates full games. Fixed setups preserve calls/personnel/energy/seed but omit scouting/audibles; compare fixed probes only as pairs."
+  },
+  "clips": {
+    "G1-P135": {
+      "originalFullGame": {
+        "handoff": {
+          "t": 2.15,
+          "distanceYd": 5.202519974824569
+        },
+        "firstBlockEventT": 0.4,
+        "result": {
+          "outcome": "touchdown",
+          "yards": 46.78
+        }
+      },
+      "fixedBefore": {
+        "handoff": {
+          "t": 2.15,
+          "distanceYd": 5.202519974824569
+        },
+        "firstBlockEventT": 0.4,
+        "result": {
+          "outcome": "oob",
+          "yards": 19.98
+        }
+      },
+      "fixedAfter": {
+        "handoff": {
+          "t": 1.05,
+          "distanceYd": 1.1003420533464854
+        },
+        "firstBlockEventT": 0.5,
+        "result": {
+          "outcome": "tackle",
+          "yards": 7.59
+        }
+      }
+    },
+    "G3-P015": {
+      "originalFullGame": {
+        "handoff": {
+          "t": 0.9,
+          "distanceYd": 0.5621168582778784
+        },
+        "firstBlockEventT": 0.4,
+        "result": {
+          "outcome": "tackle",
+          "yards": 1.18
+        },
+        "trapApproach": [
+          {
+            "slot": "RG",
+            "firstEngagementTick": 2.15,
+            "lateralSpeedYdPerS": 0.4490605954848914
+          }
+        ]
+      },
+      "fixedBefore": {
+        "handoff": {
+          "t": 0.9,
+          "distanceYd": 0.5621168582778784
+        },
+        "firstBlockEventT": 0.35,
+        "result": {
+          "outcome": "tackle",
+          "yards": -1.29
+        },
+        "trapApproach": [
+          {
+            "slot": "RG",
+            "firstEngagementTick": 1.15,
+            "lateralSpeedYdPerS": 2.700345940647652
+          }
+        ]
+      },
+      "fixedAfter": {
+        "handoff": {
+          "t": 0.9,
+          "distanceYd": 0.6293852292198455
+        },
+        "firstBlockEventT": 0.45,
+        "result": {
+          "outcome": "tackle",
+          "yards": 3.03
+        },
+        "trapApproach": [
+          {
+            "slot": "RG",
+            "firstEngagementTick": 1.25,
+            "lateralSpeedYdPerS": 2.0183694465718154
+          }
+        ]
+      }
+    },
+    "G5-P083": {
+      "originalFullGame": {
+        "handoff": {
+          "t": 0.9,
+          "distanceYd": 0.5848119614346987
+        },
+        "firstBlockEventT": 0.35,
+        "result": {
+          "outcome": "tackle",
+          "yards": -1.02
+        },
+        "trapApproach": [
+          {
+            "slot": "LG",
+            "firstEngagementTick": 1.3,
+            "lateralSpeedYdPerS": 3.136779247325537
+          }
+        ]
+      },
+      "fixedBefore": {
+        "handoff": {
+          "t": 0.9,
+          "distanceYd": 0.5848119614346987
+        },
+        "firstBlockEventT": 0.35,
+        "result": {
+          "outcome": "tackle",
+          "yards": -1.35
+        },
+        "trapApproach": [
+          {
+            "slot": "LG",
+            "firstEngagementTick": 1.2,
+            "lateralSpeedYdPerS": 3.1912254639704383
+          }
+        ]
+      },
+      "fixedAfter": {
+        "handoff": {
+          "t": 0.9,
+          "distanceYd": 0.6989871874867765
+        },
+        "firstBlockEventT": 0.45,
+        "result": {
+          "outcome": "tackle",
+          "yards": 0.82
+        },
+        "trapApproach": [
+          {
+            "slot": "LG",
+            "firstEngagementTick": 1.25,
+            "lateralSpeedYdPerS": 2.3355351813807044
+          }
+        ]
+      }
+    },
+    "G5-P172": {
+      "originalFullGame": {
+        "handoff": {
+          "t": 2.15,
+          "distanceYd": 4.765403906236021
+        },
+        "firstBlockEventT": 0.45,
+        "result": {
+          "outcome": "tackle",
+          "yards": 17.56
+        }
+      },
+      "fixedBefore": {
+        "handoff": {
+          "t": 2.15,
+          "distanceYd": 4.783619322217666
+        },
+        "firstBlockEventT": 0.45,
+        "result": {
+          "outcome": "tackle",
+          "yards": 7.47
+        }
+      },
+      "fixedAfter": {
+        "handoff": {
+          "t": 1.05,
+          "distanceYd": 1.112095320383572
+        },
+        "firstBlockEventT": 0.55,
+        "result": {
+          "outcome": "tackle",
+          "yards": 7.99
+        }
+      }
+    },
+    "G6-P111": {
+      "originalFullGame": {
+        "handoff": {
+          "t": 2.1,
+          "distanceYd": 5.477679352576893
+        },
+        "firstBlockEventT": 0.4,
+        "result": {
+          "outcome": "tackle",
+          "yards": 25.69
+        }
+      },
+      "fixedBefore": {
+        "handoff": {
+          "t": 2.1,
+          "distanceYd": 5.477679352576893
+        },
+        "firstBlockEventT": 0.4,
+        "result": {
+          "outcome": "tackle",
+          "yards": 1.56
+        }
+      },
+      "fixedAfter": {
+        "handoff": {
+          "t": 1,
+          "distanceYd": 1.1205135564699753
+        },
+        "firstBlockEventT": 0.5,
+        "result": {
+          "outcome": "tackle",
+          "yards": 2.52
+        }
+      }
+    }
+  },
+  "limitations": [
+    "A lower trap entry speed does not certify the final hand fit; G3-P015 still overruns later in the interaction.",
+    "No surface-friction or acceleration-envelope parameters changed. Contact impulses can produce raw acceleration spikes.",
+    "Original G6-P111: 232 lb RB, fallen safety attached about 1.9 s; drag force exists, duration/geometry remain unvalidated."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "independent-static-controller-review-support-delta-v1",
+  "priorReview": "/tmp/review-75-80/review.json",
+  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "reviewMode": "read-only delta review of source, tests and published receipts; no execution",
+  "productionAcceptance": "Unchanged. Both production blobs are byte-identical to the independently accepted prior heads; no new src changes appear in either delta.",
+  "decisions": [
+    {
+      "pr": 75,
+      "priorHead": "ec4a3a18785513d8016047a9a416c42ca9b2faa4",
+      "head": "43ac5e1835467cbc0914df0df1c82ea74740d1b4",
+      "ref": "refs/review/75-contract-refresh",
+      "disposition": "ACCEPT",
+      "testFile": "test/back-man-run-fit.test.ts",
+      "testSha256": "3f4b7a0b89710f74f8e3dd45238015dad3132cf658ca149c1492b7a4d2b07e77",
+      "productionBlob": "7874ca4d6434cb15a693116513bf8bd57cff9c25",
+      "review": "New insert/alley cases use production PlaySim.see and advancing PerceptionBuffer.record snapshots. They explicitly establish a positive consumed carrying picture, contradictory current pass belief cancelling the active command, restored run belief reauthorizing it, and delayed replacement by known-negative or unknown carrying. Repeated queries preserve buffer and RNG. Hidden current possession cannot restore the expired acquired authorization. Mirrored throw controls now provide a nearby attainable ball window and assert onBall on the actual actor, separately from the expected helper's actor. No prior opposing control is weakened.",
+      "sourceReferences": ["test/back-man-run-fit.test.ts:258", "test/back-man-run-fit.test.ts:406", "test/back-man-run-fit.test.ts:439"],
+      "publishedEvidence": "38 back-man checks pass in 1.927897549 launcher seconds, test-only dirty-checkout receipt, unchanged source/settings. Reviewed statically and not rerun. Original eight direct recognition/World checks retain their original receipt."
+    },
+    {
+      "pr": 80,
+      "priorHead": "25a73a3fdf5046c8ed682001458d5fda46bb3c59",
+      "head": "0fce2a085ea9f28cbaac65a388b7d3220c36e6d8",
+      "ref": "refs/review/80-contract-refresh",
+      "disposition": "ACCEPT with the exact test-only assertion-order correction below; Integration reports it applied before freeze",
+      "testFile": "test/coverage-run-support.test.ts",
+      "publishedTestSha256": "01c10434d17c51c78556d40f2a18848e9a4d42def024bc3137d4b868fc898769",
+      "productionBlob": "ee0685d1d97c4e1c58ee36df168df27f6ac21093",
+      "review": "New insert/alley expiry cases consume the real delayed buffer and explicitly verify positive-to-false/null replacement while keeping current run belief fixed. They preserve query/RNG invariance and compare fallback with ordinary ManCoverage despite hidden current RB possession. Existing belief contradiction controls remain. The nearby recognized-flight path strengthens command-priority coverage; one newly added tag assertion needs the ordering correction below because its expected helper mutates the same actor.",
+      "sourceReferences": ["test/coverage-run-support.test.ts:96", "test/coverage-run-support.test.ts:129", "test/coverage-run-support.test.ts:140"],
+      "assertionOrderCorrection": {
+        "finding": "The expression at line 140 evaluates expected playBall(recognized.a, ...) before line 141 checks onBall. playBall itself adds onBall, so the new tag assertion can be satisfied by the expected helper. Existing command equality remains meaningful, and this is not a production defect.",
+        "requiredReplacement": [
+          "const actual = recognized.update();",
+          "expect(recognized.a.tags.has('onBall')).toBe(true);",
+          "expect(actual).toEqual(playBall(recognized.a, recognized.sim, recognized.receiver));"
+        ],
+        "scope": "Replace the current equality/tag assertion pair with these three lines. No new scenario, production change or standalone runtime verification is requested.",
+        "integrationOwnerAgreement": "Integration reports the exact const actual / tag assertion / expected equality order applied in /workspace/football-coverage-contract-integration/test/coverage-run-support.test.ts before freeze. No independent execution or further scenario was requested."
+      },
+      "publishedEvidence": "11 wrapper checks pass in 2.019055678 launcher seconds, test-only dirty-checkout receipt, unchanged source/settings. Reviewed statically and not rerun. The exact assertion-order correction will be covered by Integration's planned combined verification."
+    }
+  ],
+  "newBehavior": false,
+  "newDependencies": [],
+  "expiryScope": "Snapshot replacement after controlled sensing latency; not gaze/occlusion confidence decay, arbitrary TTL or new memory policy. With dt=.05 and controlled .10 delay, the selected sample remains positive for two appended snapshots and changes on the third, consistent with PerceptionBuffer.perceive.",
+  "preservedLimits": "Prior failed combined verification remains failed. All source-specific adverse/native evidence, unfinished windows and accepted production-review limits remain unchanged. No whole-engine awareness repair, coverage-quality gain, completed tackle or YAC gain is newly established.",
+  "nextAction": "Freeze the composition with the agreed assertion-order correction and perform Integration's one exact combined verification. No remaining independent-review blocker. No additional focused run, native replay, game, suite repeat or scenario is requested by this review.",
+  "cost": {"testsRun": 0, "worldSteps": 0, "nativeExecutions": 0, "suitesRun": 0, "gamesRun": 0, "simulationRuntimeSeconds": 0},
+  "mutations": "Only this supplemental JSON under /tmp; no repository changes or published actions."
+}

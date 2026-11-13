@@ -150,7 +150,9 @@ const rows: Array<[string, number, number, number, string]> = [
   ['aDOT', acc.air / acc.airN, 7.5, 8.5, ''],
   ['YAC / reception', acc.yac / acc.yacN, 4.8, 5.6, ''],
   ['Time to throw', acc.ttt / acc.tttN, 2.7, 2.9, 's'],
-  ['Pressure rate', (100 * acc.pressured) / acc.dropbacks, 28, 36, '%'],
+  // This is a QB perception flag (arrival estimate plus block resistance),
+  // not the NFL tracking distance proxy. Do not score it against that rate.
+  ['QB sensed pressure (internal)', (100 * acc.pressured) / acc.dropbacks, NaN, NaN, '%'],
   ['Scramble rate', (100 * acc.scrambles) / acc.dropbacks, 3, 5, '%'],
   ['Rush yards / carry', acc.rushYds / acc.rushAtt, 4.1, 4.5, ''],
   ['Run stuff rate (<=0)', (100 * acc.stuffs) / acc.rushAtt, 16, 20, '%'],
@@ -174,6 +176,10 @@ const rows: Array<[string, number, number, number, string]> = [
 console.log(`\n${games} games, ${acc.plays} scrimmage plays in ${(ms / 1000).toFixed(1)} s (${(ms / games).toFixed(0)} ms/game), ties ${acc.ties}`);
 console.log('metric'.padEnd(42) + 'sim'.padStart(9) + '   target');
 for (const [name, v, lo, hi, unit] of rows) {
+  if (!Number.isFinite(lo) || !Number.isFinite(hi)) {
+    console.log(`${name.padEnd(42)}${v.toFixed(2).padStart(9)}${unit.padEnd(2)} internal; no NFL target`);
+    continue;
+  }
   const ok = v >= lo && v <= hi ? 'OK ' : v < lo ? 'LOW' : 'HIGH';
   console.log(`${name.padEnd(42)}${v.toFixed(2).padStart(9)}${unit.padEnd(2)} ${lo}–${hi}  ${ok}`);
 }

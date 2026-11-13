@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-16",
+  "archive_sha256": "2669253be2cf26dbf7fb8ae357ced0e666ba084a49e833fc0fbec80c6a3571ff",
+  "archive_files_checked": 403,
+  "unique_images": 385,
+  "removed_identical_copies": 18,
+  "all_original_paths_mapped": true,
+  "all_canonical_images_byte_identical_to_archive": true,
+  "zip_member_crc_checked_on_read": true,
+  "ocr_companions_checked": 385,
+  "ocr_body_normalization": "Remove Tesseract form-feed and outer whitespace only; text otherwise unchanged.",
+  "ocr_characters": 724617,
+  "topics": 12,
+  "retained_similarity_pairs": 26,
+  "catalog_sha256": "184b315e27a17e382eca7bfe234d7f29ff549813b7cd3e7a3ec73ee41332f2fe",
+  "validator_negative_controls": [
+    "changed source bytes",
+    "unindexed image",
+    "incomplete provenance",
+    "duplicate stable ID"
+  ],
+  "simulation_tests_run": 0,
+  "engine_files_changed": 0
+}

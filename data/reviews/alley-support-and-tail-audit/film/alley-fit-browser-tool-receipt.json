@@ -1,0 +1,9 @@
+{
+  "source": "scripts/check-replay-viewer.py",
+  "sourceSha256": "ecaefcffc61087c736fe7f6c7ad6b4626d7c4db544559d61ff29306b5395f589",
+  "generatedSha256": "a8de902757c2ed39c209a856ec3a5c10ae62c320e4ec6ea65aa192ba02021b6a",
+  "changes": {
+    "assert data['meta']['sourceSha256'][:12] in reference": "assert page.evaluate('(index) => REPLAY.plays[index].sourceSha256', filmed[0])[:12] in reference",
+    "assert clip['id'] in download.suggested_filename and data['meta']['sourceSha256'][:12] in download.suggested_filename": "assert clip['id'] in download.suggested_filename and page.evaluate('(index) => REPLAY.plays[index].sourceSha256', current())[:12] in download.suggested_filename"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "date": "2026-10-11",
+  "purpose": "Repair combination-contact ownership and departure mechanics. Yardage and NFL averages are not objectives.",
+  "baselineCommit": "923dbe008acbdb3025c0aaaa2ecb4401d4a527c9",
+  "baselineSourceSha256": "03d230f145f12bdd803dfda782102ab93d2469bdf23385387403c0997e9162ce",
+  "candidateSourceSha256": "850ea36e598d6cd252f701ce11b9b110ae06c834c7d6760922dd60b5b6f9acf3",
+  "changedEngineFiles": [
+    "src/sim/engagement.ts",
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "unchanged": {
+    "physicsModulesByteIdentical": 24,
+    "physicalProfileMappingByteIdentical": "src/players/physical.ts",
+    "ratingsAndForceLimitsRaised": false
+  },
+  "diagnosis": [
+    "Some helpers had fixed force allowances but no independently earned hand-control state. Release could judge the departing primary instead of the keeper, then transfer the wrong control.",
+    "Two ordinary Under doubles stayed joined until finish. The primary kept driving though the helper could keep the surface and the backer required a climb.",
+    "The direct backer approach could intersect the old defender or partner. An available first departure step needed to precede the second-level approach.",
+    "The full suite exposed wrong-side hand load cancelling foot replacement. The load was genuine but did not support the installed useful surface."
+  ],
+  "repairs": [
+    "Run helpers acquire and advance their own control through the existing primary hand-fight law. Air cannot carry push, hold or steering; shared arm limits remain.",
+    "Keeper eligibility checks that keeper's live contact, working reach, support, leverage and earned control. Promotion preserves the joint/control and clears departed-primary cloth hold and landed move.",
+    "The climber uses personally consumed DL, partner and backer pictures to choose a clear direct route or short arc step. He retains the cue to his next ordinary read; World executes movement.",
+    "Only locally useful loaded contact bypasses foot replacement. Wrong-side load retains the existing delayed recovery landmark; no force/support boost."
+  ],
+  "coachingBasis": [
+    {
+      "source": "Keith Grabowski, USA Football, 2016-04-25",
+      "url": "https://blogs.usafootball.com/blog/1428/building-an-offensive-line-coaching-the-inside-zone"
+    },
+    {
+      "source": "Mike Kuchar, USA Football, 2015-09-24",
+      "url": "https://blogs.usafootball.com/blog/590/strategies-for-blocking-covered-vs-uncovered-in-inside-zone-runs"
+    }
+  ],
+  "coachingScope": "Teaching examples support keeper security, leverage and second-level timing. They do not establish NFL rates or force magnitudes.",
+  "panels": [
+    {
+      "cohort": "ordinary",
+      "inputs": "Ace 11, Inside Zone, Over/Under, Cover 3, no pressure, rosters 7/8, seeds 3/11, both flips, LOS 40, natural finish",
+      "baseline": {
+        "snaps": 8,
+        "observerControls": 8,
+        "naturalEnds": 8,
+        "plannedCombinations": 10,
+        "reachedConcurrentLoad": 7,
+        "climbs": 6,
+        "achievedBackerContacts": 3,
+        "stillJoinedAtEnd": 2
+      },
+      "candidate": {
+        "snaps": 8,
+        "observerControls": 8,
+        "naturalEnds": 8,
+        "plannedCombinations": 10,
+        "reachedConcurrentLoad": 8,
+        "climbs": 9,
+        "achievedBackerContacts": 5,
+        "stillJoinedAtEnd": 0
+      },
+      "baselinePacket": "ordinary-combo-baseline-final.json.gz",
+      "baselinePacketSha256": "e3749a9f09008bb31f299520eed100bef577a121c1f3eb30610fe6220ffbe85c",
+      "candidatePacket": "ordinary-combo-candidate-c.json.gz",
+      "candidatePacketSha256": "a027a5b55bd09976ccb94cc798476f7a2725630677722356bd93cb0c789cc2e7"
+    },
+    {
+      "cohort": "default",
+      "inputs": "Rosters 31/32: Inside Zone/Over/seed 3, Duo/Odd/seed 11, Power/Under/seed 3, both flips, natural finish",
+      "baseline": {
+        "snaps": 6,
+        "observerControls": 6,
+        "naturalEnds": 6,
+        "plannedCombinations": 7,
+        "reachedConcurrentLoad": 6,
+        "climbs": 5,
+        "achievedBackerContacts": 4,
+        "stillJoinedAtEnd": 0
+      },
+      "candidate": {
+        "snaps": 6,
+        "observerControls": 6,
+        "naturalEnds": 6,
+        "plannedCombinations": 7,
+        "reachedConcurrentLoad": 6,
+        "climbs": 6,
+        "achievedBackerContacts": 4,
+        "stillJoinedAtEnd": 0
+      },
+      "baselinePacket": "default-combo-baseline-final.json.gz",
+      "baselinePacketSha256": "30a71ae095271c89c4643cdbc430436c259c43eb13d6301fd4ce0fcc514885af",
+      "candidatePacket": "default-combo-candidate-c.json.gz",
+      "candidatePacketSha256": "2fe60f833ee88b23b43c870048f04ebba4fa7a33f368a48f3a70d15341f9d488"
+    }
+  ],
+  "ordinaryMechanismWitnesses": [
+    {
+      "id": "CA-R1-iz_strong-under-L-S3",
+      "double": "LG + C on DT_S",
+      "baseline": {
+        "firstConcurrentLoadSeconds": 0.7,
+        "loadedSamples": 68,
+        "foreTravelYardsToFinish": 6.273,
+        "climb": false
+      },
+      "candidate": {
+        "climber": "LG",
+        "keeper": "C",
+        "climbSeconds": 1.05,
+        "actualBacker": "LB_M",
+        "actualHandLoadSeconds": 1.85
+      }
+    },
+    {
+      "id": "CA-R1-iz_strong-under-R-S11",
+      "double": "RG + C on DT_S",
+      "baseline": {
+        "firstConcurrentLoadSeconds": 0.65,
+        "loadedSamples": 56,
+        "foreTravelYardsToFinish": 5.643,
+        "climb": false
+      },
+      "candidate": {
+        "climber": "RG",
+        "keeper": "C",
+        "climbSeconds": 1.05,
+        "actualBacker": "LB_M",
+        "actualBodyContactSeconds": 2.05,
+        "bodyContactImpulse": 154.37
+      }
+    }
+  ],
+  "witnessLimits": "Fore travel to finish can include later contacts. Both keeper controls were near neutral, not dominant hands. Release follows feasibility and acquired cues, not a travel cap.",
+  "observationControls": {
+    "candidateRunsVerifiedUnchangedByCollector": 30,
+    "nativeRecordedInitialProjectionMatches": 14,
+    "nativeRecordedProfileMatches": 14,
+    "processInstalledPlanMatches": 16
+  },
+  "processControls": {
+    "inputs": "Duo, Outside Zone, Counter and Power; Over/Under; seed 3; both flips; four-second limit",
+    "snaps": 16,
+    "scope": "Time-censored. No complete initial hidden-state/body/profile hash or OL request trace; retained event divergence is not necessarily first causal divergence.",
+    "unaffected": "Power/Under/right/seed 3 retains the entire baseline process trial exactly.",
+    "adverse": "Counter/Over/left loses its climb. Power/Under/left loses sampled concurrent double load while retaining a climb. Both remain in evidence.",
+    "recoveryCheck": "Outside Zone/Under retains both baseline climbs after wrong-side helper foot replacement is repaired.",
+    "candidatePacket": "controls-candidate-c.json",
+    "candidatePacketSha256": "dfe7f92c07125ba2c883e599b50d4fb718c1369cb15c234f185a4b2cc0c3b23d"
+  },
+  "testContractUpdates": "Overlapping fixtures and inherited-primary-control assumptions became nonoverlapping earned-contact setups. A native incidental-fall assertion became an actual delayed-pose contract plus unchanged native observer checks. No seed search or forced win.",
+  "acceptance": {
+    "typeScriptTestsPassed": 1162,
+    "coreTests": 988,
+    "integrationTests": 6,
+    "researchTests": 168,
+    "completeTypeScriptCommand": "npm run test:all -- --reporter=json --outputFile=out/run-solidify/all-tests-integrated.json",
+    "completeTypeScriptWallSeconds": 126.05,
+    "pythonTestsPassed": 129,
+    "pythonCommand": "npm run test:data",
+    "typecheck": "pass",
+    "build": "pass",
+    "independentFinalDiffReview": "No concrete pre-push blocker; no reviewer source edits",
+    "typeScriptReportSha256": "516a6f6324aa6a60a53beb03f221c4de9410b0aefcfea58ac569ac0cccacc0dd",
+    "scope": "Complete checks repeated after integrating remote measurements; new mechanics adapter/metric tests included. Production engine source and native evidence pins unchanged."
+  },
+  "evidence": {
+    "directory": "out/run-solidify/",
+    "nativeReceipt": "candidate-c-native-receipt.json",
+    "nativeReceiptSha256": "d7510cc28a35ad23accc8661ea81ae43a94a7bbc2713c53ac74fd420dd2ffebf",
+    "nativeReceiptScope": "Measurement receipt was frozen before root acceptance; the acceptance field here records the later complete check.",
+    "collector": "scripts/diag/combo-attention-witness.ts",
+    "collectorSha256": "76b5ee0b6800e2169c57db0eb2725d24245bece3d30011af0217513afe394e0c",
+    "processCollectorSha256": "ead3d5e513c20851fb56a3ad5f05075fb9f7d3bc2b1e8ad9848e5ca46145e918",
+    "baselineCollectorProof": "final-diagnostic-equivalence.json",
+    "baselineCollectorProofSha256": "01f8afcd9914c1ef29c734dbf5e81c8da5cf5fa4ba75168bb4d7b44ae58182f0"
+  },
+  "reproduce": [
+    "node --import tsx scripts/diag/combo-attention-witness.ts out/combos.json.gz --ordinary",
+    "node --import tsx scripts/diag/combo-attention-witness.ts out/combos-supplemental.json.gz",
+    "node --import tsx scripts/diag/run-concept-process.ts out/run-controls.json --runs duo,oz_strong,counter,power --fronts over,under --seeds 3 --seconds 4 --verify"
+  ],
+  "baselineReproduction": "Use src and package.json from baselineCommit in a separate ignored staging directory, current scripts at collector pins, and the same Node 22 dependencies. Run the same commands there. Collector proof compares prior packet play objects after removing only new helper-control and departure fields.",
+  "film": {
+    "html": "out/run-solidify/film/inside-zone-combo-review.html",
+    "htmlSha256": "4fa33485f6ce4bedd0cb9d75a27315b540881ee9df820a55d110e32c70bf0cbc",
+    "zip": "out/run-solidify/film/inside-zone-combo-review.zip",
+    "zipSha256": "bccb8b29adaff3872b95792bfe6c8e89bff750e1ffa6dc3c0aeb72e3a536415e",
+    "clips": 16,
+    "inputPairs": 8,
+    "selection": "Every predeclared ordinary pair, including adverse results; full recorded frames/telemetry and 22 player cards. A is baseline; B explicitly candidate C.",
+    "browser": "Chromium desktop/mobile: all clips, telemetry, filters and grouping; zero page errors",
+    "browserReceiptSha256": "b6cb61e0c8f7291af3d62dbaf982a8c8bb69fb7fe8427d6b86c53aa59372435b",
+    "availability": "Ignored workspace output; no new giant tracked film or packet."
+  },
+  "limits": [
+    "Native hashes cover the recorded initial projection/profiles, not complete hidden mind, perception and RNG state. Helper acquisition adds RNG draws, so downstream whole-engine trajectories can change.",
+    "Flipped calls are not exact geometric mirrors. Separate controlled mirrored assertions verify the mechanism.",
+    "Positive hand load is not inside-hand victory. The reduced control scalar has uncertainty and limited empirical calibration.",
+    "Navigation checks the next step against two observed bodies; moving DL or traffic can close it. Five of nine ordinary climbs made backer contact, not nine guaranteed blocks.",
+    "These are controlled situations, not NFL population frequencies or paired full games. Supplemental backer contacts remain four rather than improving.",
+    "Shared physical laws/capacities were preserved, not newly certified against every NFL contact or timestep."
+  ],
+  "nextWork": "Check force responsibility against the installed coverage job before current-location/presentation filters. A curl-flat player can be excluded without disguise, leaving a deep safety as force. Compare matched calls before changing pursuit capacity; then diagnose actual climber misses and DL response to a second blocker. Also trace frontal gathering (common.ts) and crossing-arrival feasibility (approach-control.ts): fixed ordinary/adverse support, both mirrors, observed picture through requested/achieved velocity and actual contact. Do not raise grip or tackle speed based only on the proxy.",
+  "candidateEngineCommit": "17db7fb570c4a9b8534eaa8bb6ddd08be47058d7",
+  "integratedRemoteCommit": "dd06dd4",
+  "integrationScope": "Four measurement/data-only remote commits were integrated. No additional production source change; engine and native packet source pins remain identical.",
+  "widerMechanismCheck": {
+    "input": "Eight generated-roster games, seeds 101-108, same constructor as the upstream measured baseline",
+    "baseline": "data/reviews/mechanics/sim-baseline.json, measured at ff6e993; production src byte-identical to 923dbe0",
+    "candidateSourceSha256": "850ea36e598d6cd252f701ce11b9b110ae06c834c7d6760922dd60b5b6f9acf3",
+    "candidatePlays": {
+      "run": 225,
+      "pass": 884,
+      "air": 0
+    },
+    "baselinePlays": {
+      "run": 265,
+      "pass": 793,
+      "air": 0
+    },
+    "guard": "All 12 explicitly checked with n >= 30: none off (9 ok, 3 check). The tool alone would also pass missing rows, so coverage was checked separately.",
+    "lateProximityDisplacementP90Yards": {
+      "allRunsBaseline": 4.1,
+      "allRunsCandidate": 3.6,
+      "insideZoneBaseline": 4.6,
+      "insideZoneCandidate": 3.6
+    },
+    "remainingTacklePatterns": {
+      "runTacklerMedianSpeedYdPerSecond": 1.521,
+      "runHeadOnProxyShare": 0.213,
+      "runContactToWhistleMedianSeconds": 0.65,
+      "catchBrokenContactProxyShare": 0.241
+    },
+    "outcomeLimit": "Current eight games average 78 points per team-game. This increment does not establish credible full-game results; no scoring target was used to choose it.",
+    "comparisonLimit": "Same generated roster constructor and game seeds, not matched snap inputs: altered outcomes change later calls and mix (225 versus 265 runs). Proximity is not double-team identity; nearest defender is not the actual tackler. This is side-effect surveillance, not causal proof or an NFL population claim.",
+    "report": "out/run-solidify/mechanics-report.md",
+    "reportSha256": "3fc73190ed8794141c78eeef53fd04547647ae7816a1aacb59748d37d64d738b",
+    "candidateSummary": "out/run-solidify/mechanics-candidate.json",
+    "candidateSummarySha256": "321119f72b1e0a09e899eb50ddcd8e8bf11a61ac7bd3fa1d8fec431e590d96a8",
+    "candidatePacket": "out/run-solidify/mechanics-candidate-plays.jsonl.gz",
+    "candidatePacketSha256": "670a921075a74663f5acb45cdb671e10af4640794bb3381715d5d5a24d73f171",
+    "metricsToolSha256": "0a749b02e0d32fb5921b6232b8c76417991ac738c75c383ba5ef25f83c7c6438",
+    "exportToolSha256": "d04ab8be1bcecd8fff7a3e85d3ebf631e45c91f6c97f880e562ccebbe229f414",
+    "commands": [
+      "node --import tsx scripts/mechanics/sim-export.ts --seed 101 --games 8 --out out/run-solidify/mechanics-candidate-plays.jsonl.gz",
+      "python3 -I scripts/mechanics/measure.py out/run-solidify/mechanics-candidate-plays.jsonl.gz out/run-solidify/mechanics-candidate.json --label 'seed101, 8 games; engine850ea36; integrated measurement tools at dd06dd4'",
+      "python3 -I scripts/mechanics/compare.py --sim out/run-solidify/mechanics-candidate.json --out out/run-solidify/mechanics-report.md --guard data/reviews/mechanics/guard.json"
+    ]
+  }
+}

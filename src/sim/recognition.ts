@@ -16,6 +16,8 @@ import { OL_SLOTS, type PersonnelId, type QBAlignment } from '../playbook/types.
 import { r01, type Player } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { showsBlock } from './coverage-cues.js';
+import { sawThrow } from './behaviors/defense.js';
 
 // ------------------------------------------------------------ expectations
 
@@ -58,8 +60,10 @@ export function situationBucket(c: Pick<SnapContext, 'down' | 'distance' | 'yard
   return c.down === 2 ? `2nd-${len}` : `late-${len}`;
 }
 
-/** League knowledge of personnel and alignment, in log-odds of a pass. */
-const PERSONNEL_SHIFT: Record<PersonnelId, number> = { '10': 0.9, '11': 0.3, '12': -0.25, '13': -0.9, '21': -0.45, '22': -1.0 };
+/** League knowledge of personnel and alignment, in log-odds of a pass. 20
+ * personnel is passed as often as 21 (2022 weeks 1-9: 45.5% of 99 snaps
+ * against 44.8% of 1,379), so it carries 21's shift. */
+const PERSONNEL_SHIFT: Record<PersonnelId, number> = { '10': 0.9, '11': 0.3, '12': -0.25, '13': -0.9, '20': -0.45, '21': -0.45, '22': -1.0 };
 const QB_SHIFT: Record<QBAlignment, number> = { gun: 0.3, pistol: -0.1, under: -0.6 };
 
 const logit = (p: number) => Math.log(p / (1 - p));
@@ -132,6 +136,32 @@ export function gameSense(p: Player): number {
 
 // ------------------------------------------------------------ cues
 
+/** DEF_STANCE: how much later a hand-down lineman sees the backfield (delay scale; see assign.ts). */
+const DOWN_BACKFIELD_DELAY = 1.6;
+/** DRAW_READ: the expectation commits a defender early; what he then sees
+ * decides. A line that showed pass and turns to run blocking (the draw, a
+ * delayed handoff) defeats a committed pass read on the same visual evidence
+ * that would commit run from unsure, without the situation's prior holding
+ * him in his drop. NFL box linebackers are coming downhill at the draw
+ * handoff (+1.1 yd/s); a pass read held until the give kept ours dropping.
+ * DRAW_READ=0 restores the posterior-only change of mind. */
+const DRAW_READ = process.env.DRAW_READ !== '0';
+/** RUN_CONFIRM (experimental, off; needs DRAW_READ's coherent change of mind):
+ * an unsure defender commits run on what he sees, with the situation's pass
+ * expectation raising how clear the run picture must be rather than holding
+ * the commit until the ball shows. NFL box backers on runs trigger downhill
+ * at a median 0.4 s on every down (3rd and 7+: +0.50 yd by 1.0 s vs +0.61 on
+ * 1st, BDB 2025 with plays.csv downs); ours read run at 1.05 s on 3rd down.
+ * RUN_CONFIRM_PRIOR scales the required run cue per unit of pass prior: at 0.1
+ * a 3rd-down backer reads run at a median 0.50 s against 0.45 on 1st (0 gave
+ * no situation effect; 0.2 held 3rd down to 0.60 and a strong pass prior to
+ * 0.70; NFL 3rd and 7+ trails 1st down by about 0.1 yd at 1.0 s). */
+const RUN_CONFIRM = process.env.RUN_CONFIRM !== '0';
+const RUN_CONFIRM_PRIOR = 0.1;
+export function drawReadEnabled(): boolean {
+  return DRAW_READ;
+}
+
 /** Has `a` had time to see the first movement after the snap? */
 function t0(sim: PlaySim, a: Agent): boolean {
   return sim.t >= 0.1 + a.profile.reactionTime * 0.5;
@@ -172,6 +202,13 @@ export class Recognition {
   logOdds: number;
   /** He committed to run and it's a pass (or the reverse). */
   changedMind = false;
+  /** He has seen this play's throw; the ball cue stays once acquired. */
+  private sawPass = false;
+  /** He has seen the ball given to a runner; held unless a throw follows. */
+  private sawGive = false;
+  /** DRAW_READ: his run read came from what he saw against the situation's
+   * expectation; changing back to pass then needs the same picture to show it. */
+  private priorDefeated = false;
   private evidence = 0;
   private readonly prior: number;
   private readonly gain: number;
@@ -195,26 +232,46 @@ export class Recognition {
     this.gain = 1.4 + 2.2 * rec;
     this.tau = 0.1 + 0.3 * (1 - rec);
     // A per-play lean (eyes in the wrong place), coherent through the play.
-    this.bias = sim.rng.normal(0, 0.55 * (1 - rec));
+    this.bias = sim.rng.fork(`recognition:${a.slot}`).normal(0, 0.55 * (1 - rec));
   }
 
   pPass(): number {
     return sigmoid(this.logOdds);
   }
 
+  /** READ_LEAN: how his current picture leans, -1 (pass) .. +1 (run): the
+   * probability his commit reads from his picture alone (gain on the filtered
+   * evidence and his own lean, no situation prior), as 1 - 2 p(pass). */
+  lean(): number {
+    return 1 - 2 * sigmoid(this.gain * this.evidence + this.bias);
+  }
+
+  /** He has seen the ball given or thrown (a definitive cue). */
+  sawBall(): boolean {
+    return this.sawGive || this.sawPass;
+  }
+
   update(a: Agent, sim: PlaySim): void {
     const t = sim.t;
-    const delay = a.profile.reactionTime;
-    // Definitive cues: the throw, and the handoff once he can see it.
+    const delay = a.mind.observationDelay(a.profile.reactionTime);
+    // Definitive cues, each from his own pictures: the throw once he has seen
+    // it, a back he sees holding the ball (linemen at the mesh see it
+    // sooner), or the QB he sees carrying it past the line.
+    if (!this.sawPass && sawThrow(a, sim, null)) this.sawPass = true;
     let ball = 0;
-    if (sim.throwAt >= 0 && t - sim.throwAt >= delay) ball = 4;
-    else if (sim.handoffAt >= 0 && t - sim.handoffAt >= delay * (this.group === 'DL' ? 0.6 : 1)) ball = -3;
-    else if (sim.carrier === sim.qb && sim.qb.pos.x > sim.los + 0.5) ball = -3;
+    if (!this.sawPass && !this.sawGive && this.seesGive(a, sim)) this.sawGive = true;
+    if (this.sawPass) ball = 4;
+    else if (this.sawGive) ball = -3;
+    else {
+      const qb = sim.see(a, sim.qb);
+      if (qb.carrying === true && qb.pos.x > sim.los + 0.5) ball = -3;
+    }
 
     let visual = 0;
     if (t >= delay * 0.6) visual = this.cues(a, sim);
-    this.evidence += (visual - this.evidence) * Math.min(1, sim.dt / this.tau);
-    this.logOdds = this.prior + this.gain * this.evidence + this.bias + ball;
+    const tau = this.tau + 0.12 * (1 - a.mind.focus);
+    this.evidence += (visual - this.evidence) * (1 - Math.exp(-sim.dt / tau));
+    this.logOdds = this.prior + this.gain * (0.8 + 0.2 * a.mind.focus) * this.evidence + this.bias + ball;
 
     const p = this.pPass();
     if (t < delay) return;
@@ -222,16 +279,48 @@ export class Recognition {
     // Expectation alone doesn't commit him: he needs a cue that agrees,
     // unless the situation is overwhelming.
     const cue = this.evidence + ball;
+    const urgency = a.mind.urgency - 0.5;
+    // DRAW_READ: his picture alone, without the situation's prior.
+    const seen = sigmoid(this.gain * (0.8 + 0.2 * a.mind.focus) * this.evidence + this.bias + ball);
+    const commit = (r: Read) => {
+      this.commit(r, t);
+      sim.event('read', a, null, `${r}; pPass=${p.toFixed(2)} focus=${a.mind.focus.toFixed(2)} urgency=${a.mind.urgency.toFixed(2)}`);
+    };
     if (this.read === 'unsure') {
-      if (p < 0.3 && (cue < -0.1 || p < 0.1)) this.commit('run', t);
-      else if (p > 0.72 && (cue > 0.1 || p > 0.92)) this.commit('pass', t);
-    } else if (this.read === 'run' && p > 0.8) {
-      this.commit('pass', t);
+      if (p < 0.3 + 0.10 * urgency && (cue < -0.1 || p < 0.1)) commit('run');
+      else if (RUN_CONFIRM && cue < -0.1 - RUN_CONFIRM_PRIOR * Math.max(0, this.prior) && seen < 0.3 + 0.10 * urgency) {
+        // RUN_CONFIRM (below): the expectation asks for a clearer run picture;
+        // it does not hold his feet. A commit against it is the picture's.
+        this.priorDefeated = true;
+        commit('run');
+      } else if (p > 0.72 - 0.08 * urgency && (cue > 0.1 || p > 0.92)) commit('pass');
+    } else if (this.read === 'run' && (this.priorDefeated ? seen : p) > 0.8 + 0.06 * urgency) {
+      // Once what he saw has defeated the expectation, the expectation does
+      // not bring the pass back on its own: the same picture, without the
+      // prior, must show pass again (a pass set, or the throw he sees).
+      commit('pass');
       this.changedMind = true;
-    } else if (this.read === 'pass' && p < 0.16) {
-      this.commit('run', t);
+      this.priorDefeated = false;
+    } else if (this.read === 'pass' && (p < 0.16 || (DRAW_READ && cue < -0.1 && seen < 0.3 + 0.10 * urgency))) {
+      // DRAW_READ (above): what he now sees decides, not the expectation.
+      if (p >= 0.16) this.priorDefeated = true;
+      commit('run');
       this.changedMind = true;
     }
+  }
+
+  /** A backfield player holding the ball behind the line in his picture:
+   * the exchange, a pitch or a direct snap. A fake shows an empty-handed
+   * back. Linemen at the mesh see it sooner. Only the backfield is watched
+   * for this; a give to a receiver comes through the QB's empty hands. */
+  private seesGive(a: Agent, sim: PlaySim): boolean {
+    const scale = this.group === 'DL' ? 0.6 : 1;
+    for (const o of sim.offense) {
+      if (o === sim.qb || !sim.offAlign.spots[o.slot]?.backfield) continue;
+      const seen = sim.see(a, o, scale);
+      if (seen.carrying === true && seen.pos.x <= sim.los + 1) return true;
+    }
+    return false;
   }
 
   private commit(r: Read, t: number): void {
@@ -263,27 +352,30 @@ export class Recognition {
       if (!o) continue;
       const s = sim.see(a, o);
       back += (sim.snapX[o.idx] - s.pos.x) * 1.1 - s.vel.x * 0.3;
-      if (seenAfter && o.stance) hat += o.stance === 'high' ? 1 : -1;
+      if (seenAfter && s.stance) hat += s.stance === 'high' ? 1 : -1;
       if (Math.abs(s.vel.y) > 3 && s.pos.x < sim.los - 0.2 && s.vel.x < 1.5) pull++;
       n++;
     }
-    if (n) add(clamp((0.8 * hat) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol);
-    if (pull) add(-1.2, w.pull);
+    if (n) add(clamp((0.8 * hat) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol * a.mind.keyAttention(sim.t));
+    if (pull) add(-1.2, w.pull * a.mind.keyAttention(sim.t));
 
     // A lineman feels the block in front of him: a blocker firing out low
     // (run, or play action's run look) or one sitting back in a pass set.
     if (this.group === 'DL' && a.engagement) {
       const st = a.engagement.blocker.stance;
-      add(st === 'low' ? -1.2 : st === 'high' ? 1.2 : a.engagement.type === 'pass' ? 1.2 : -1.2, 1.5);
+      if (st) add(st === 'low' ? -1.2 : 1.2, 1.5);
     }
 
     // The quarterback: dropping past the mesh depth is a pass; riding a mesh
     // with the back is a run look. Standing at the snap says nothing.
-    const qb = sim.see(a, sim.qb);
+    // DEF_STANCE: a hand-down lineman's eyes are on the man in front; the
+    // backfield reaches him later than a man standing up.
+    const bf = a.setStance === 'down' ? DOWN_BACKFIELD_DELAY : 1;
+    const qb = sim.see(a, sim.qb, bf);
     const meshDepth = sim.offCall.formation.qb === 'under' ? 3.6 : sim.offCall.formation.qb === 'pistol' ? 4.6 : 5.2;
     const depth = sim.los - qb.pos.x;
     const rbAgent = sim.slot('RB');
-    const rb = rbAgent ? sim.see(a, rbAgent) : null;
+    const rb = rbAgent ? sim.see(a, rbAgent, bf) : null;
     let qbCue = depth > meshDepth + 0.4 ? clamp((depth - meshDepth - 0.4) / 1.0, 0, 1.2) : 0;
     // Bailing straight back from under center is a dropback.
     if (qb.vel.x < -1.5 && Math.abs(qb.vel.y) < 0.6 * -qb.vel.x) qbCue = Math.max(qbCue, 0.6);
@@ -301,11 +393,18 @@ export class Recognition {
 
     // Receivers: releasing hard is pass; closing down on a defender to block is run.
     if (w.wr > 0) {
-      let best: Agent | null = null;
+      // A man player keys the receiver he was assigned, including a back.
+      // Crossing/stacked receivers do not silently replace that known job.
+      // Zone players retain their existing local key; this is not a global
+      // attention budget or access to another defender's private read.
+      const man = a.behavior.kind === 'man'
+        ? (a.behavior as typeof a.behavior & { target?: Agent | null }).target : null;
+      let best: Agent | null = man?.team !== a.team && man !== sim.qb ? man ?? null : null;
       let bd = Infinity;
-      for (const o of sim.offense) {
+      if (!best) for (const o of sim.offense) {
         if (o === sim.qb || o === rbAgent || OL_SLOTS.includes(o.slot as (typeof OL_SLOTS)[number])) continue;
-        const d = Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y);
+        const seen = sim.see(a, o);
+        const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
         if (d < bd) {
           bd = d;
           best = o;
@@ -313,10 +412,12 @@ export class Recognition {
       }
       if (best) {
         const s = sim.see(a, best);
-        const sp = Math.hypot(s.vel.x, s.vel.y);
-        const gap = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y);
-        // Nothing to read until he's had time to release.
-        const stalk = sim.t > 0.6 && gap < 5 && sp < 3;
+        // A slow release or a stopped route is not a block declaration.
+        // Use the same acquired pad/contact evidence as coverage technique;
+        // never infer the receiver's intent from his private assignment.
+        // Own contact needs no remote teammate positions. General teammate
+        // perception remains a separate migration; do not expand its use here.
+        const stalk = sim.t > 0.6 && showsBlock(a, sim, best, s, [a]);
         if (stalk) add(-1, w.wr);
         else if (s.vel.x > 3.5) add(clamp((s.vel.x - 3.5) / 3, 0, 1), w.wr);
         else if (sim.t > 0.6) add(0, w.wr * 0.5);

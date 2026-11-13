@@ -1,0 +1,8 @@
+Profile candidate: run-game-2026-10-13, commit c412d3a8c26564febace3ede49238dec156f0c38, source 2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad
+Running npm run typecheck
+
+> gridiron-engine@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+test/incidental-catch-readiness.test.ts(18,3): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<OffSlot, Player>'.
+Validation receipt: out/controller-integration/combined-verification.json; exit 1

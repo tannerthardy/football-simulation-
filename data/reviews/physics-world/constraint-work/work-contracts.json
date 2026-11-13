@@ -1,0 +1,1783 @@
+{
+  "sourceSha256": "35030d91ffbaadef8e358c668cb4cb88a6ce9145da1f62c93d467445913be0e0",
+  "node": "v22.23.3",
+  "scope": "Three unit masses, initial velocities (0,2,1), two tensile normal rows, zero bias; actual private solver methods, no world integration or virtual feet.",
+  "cases": [
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": -0.9695999999999999,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.8781429614181995,
+        1.203095064303001,
+        0.9187619742787997
+      ],
+      "lambda": [
+        -0.7969049356969992,
+        -0.0812380257212004
+      ],
+      "residuals": [
+        0.02940014598547927,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9686518200903773,
+      "work": {
+        "hands": -0.9686518200903774,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.0010000000000000002,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": -0.9569161367820231,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.01356161559026363,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": -0.9547362304,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": -0.9569160140681715,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.0007641377581829326,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": -0.9569160140681715,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.0007641377581829326,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": -0.9695999999999999,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.8781429614181995,
+        1.203095064303001,
+        0.9187619742787997
+      ],
+      "lambda": [
+        -0.7969049356969992,
+        -0.0812380257212004
+      ],
+      "residuals": [
+        0.02940014598547927,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9686518200903773,
+      "work": {
+        "hands": -0.9686518200903774,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.0010000000000000002,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": -0.9569160997732427,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.013561654546876335,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": -0.9547362304,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": -0.9569160997732429,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.000764176714363908,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": -0.9569160997732429,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0.000764176714363908,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9695999999999999,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9695999999999999
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9695999999999999,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9695999999999999
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9695999999999999,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9695999999999999
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9547362304,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9547362304
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9547362304,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9547362304
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9547362304,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9547362304
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9695999999999999,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9695999999999999
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9695999999999999,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9695999999999999
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.88,
+        1.2,
+        0.92
+      ],
+      "lambda": [
+        -0.8,
+        -0.08000000000000004
+      ],
+      "residuals": [
+        0.032000000000000056,
+        -3.469446951953614e-18
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9696,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9695999999999999,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9695999999999999
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9547362304,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9547362304
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9547362304,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9547362304
+    },
+    {
+      "mode": "per-update",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.86816,
+        1.24544,
+        0.8864
+      ],
+      "lambda": [
+        -0.75456,
+        -0.11360000000000009
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        0.015424000000000049
+      ],
+      "normalWork": [
+        0,
+        0
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9547362303999998,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9547362304,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9547362304
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        -0.9464383844097363,
+        -0.01047775237228678
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": -0.9569161367820231,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        -0.9464383844097363,
+        -0.01047775237228678
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": -0.9569161367820231,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        -0.9464383844097363,
+        -0.01047775237228678
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": -0.9569161367820231,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        -0.6705761518263543,
+        -0.28633986224181707
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": -0.9569160140681715,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        -0.6705761518263543,
+        -0.28633986224181707
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": -0.9569160140681715,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        -0.6705761518263543,
+        -0.28633986224181707
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": -0.9569160140681715,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.9464383454531239,
+        -0.01047775432011886
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": -0.9569160997732427,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.9464383454531239,
+        -0.01047775432011886
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": -0.9569160997732427,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.9464383454531239,
+        -0.01047775432011886
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": -0.9569160997732427,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.6705762764876068,
+        -0.28633982328563606
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": -0.9569160997732429,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.6705762764876068,
+        -0.28633982328563606
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": -0.9569160997732429,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "hands",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.6705762764876068,
+        -0.28633982328563606
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": -0.9569160997732429,
+        "grasps": 0,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": 0
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        -0.9464383844097363,
+        -0.01047775237228678
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569161367820231,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569161367820231
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        -0.9464383844097363,
+        -0.01047775237228678
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569161367820231,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569161367820231
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.8571429184995328,
+        1.238095135834112,
+        0.9047619456663551
+      ],
+      "lambda": [
+        -0.761904864165888,
+        -0.09523805433364481
+      ],
+      "residuals": [
+        8.58993459695867e-08,
+        3.469446951953614e-17
+      ],
+      "normalWork": [
+        -0.9464383844097363,
+        -0.01047775237228678
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569161367820234,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569161367820231,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569161367820231
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        -0.6705761518263543,
+        -0.28633986224181707
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160140681715,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160140681715
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        -0.6705761518263543,
+        -0.28633986224181707
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160140681715,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160140681715
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 8,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.8571433479962624,
+        1.2380955653308416,
+        0.904761086672896
+      ],
+      "lambda": [
+        -0.7619044346691586,
+        -0.09523891332710398
+      ],
+      "residuals": [
+        0,
+        6.871947673334211e-07
+      ],
+      "normalWork": [
+        -0.6705761518263543,
+        -0.28633986224181707
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160140681712,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160140681715,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160140681715
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.9464383454531239,
+        -0.01047775432011886
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160997732427,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160997732427
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 0.001,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.9464383454531239,
+        -0.01047775432011886
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160997732427,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160997732427
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": false,
+      "budget": 100,
+      "velocities": [
+        0.8571428571428569,
+        1.2380952380952377,
+        0.9047619047619047
+      ],
+      "lambda": [
+        -0.7619047619047616,
+        -0.09523809523809554
+      ],
+      "residuals": [
+        0,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.9464383454531239,
+        -0.01047775432011886
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 2.999999999999999,
+      "energyChange": -0.9569160997732433,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160997732427,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160997732427
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.6705762764876068,
+        -0.28633982328563606
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160997732429,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160997732429
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 0.001,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.6705762764876068,
+        -0.28633982328563606
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160997732429,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160997732429
+    },
+    {
+      "mode": "per-solve",
+      "kind": "grasp",
+      "iterations": 32,
+      "reverse": true,
+      "budget": 100,
+      "velocities": [
+        0.8571428571428571,
+        1.2380952380952381,
+        0.9047619047619048
+      ],
+      "lambda": [
+        -0.761904761904762,
+        -0.09523809523809532
+      ],
+      "residuals": [
+        -2.7755575615628914e-17,
+        -6.938893903907228e-18
+      ],
+      "normalWork": [
+        -0.6705762764876068,
+        -0.28633982328563606
+      ],
+      "tangentWork": [
+        0,
+        0
+      ],
+      "momentum": 3,
+      "energyChange": -0.9569160997732427,
+      "work": {
+        "hands": 0,
+        "grasps": -0.9569160997732429,
+        "strikes": 0
+      },
+      "armWork": 0,
+      "passiveGraspWork": -0.9569160997732429
+    }
+  ]
+}

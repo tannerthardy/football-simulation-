@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "acceptedRevision": "2c98bed94adad8087c65f381d4090444ad283985",
+  "canonicalQueue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "reviewedPublication": "2c6d53ecce9f5eb54e7a086c7723dd21aa68320a",
+  "runtimeRevision": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+  "sourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+  "disposition": "READY for isolated Integration adoption/review; old cost hold resolved at this exact source",
+  "componentEvidence": "data/reviews/current/loaded-movement-readiness.json",
+  "independentDisposition": "docs/archive/research/movement-yaw/numeric-review.md",
+  "handoffRequest": "https://github.com/tannerthardy/football-simulation-/pull/180#issuecomment-6301770519",
+  "auditRevision": "57e009b39a299434227f1340346248ca7a4f535e",
+  "protectedFiles": [
+    {
+      "path": "src/physics/kinematics.ts",
+      "gitBlob": "b971e93853195063fe118dd20f2d4f455ab78654",
+      "sha256": "a42f4574d0e493e32968ae797da1c863037183c1ab7de981d9398f50e17c8f5d"
+    },
+    {
+      "path": "src/physics/world.ts",
+      "gitBlob": "6faf4925a1b777be30d1fbd7a06fda0c6bc73ffa",
+      "sha256": "0b5ac9e5132b2cb551ccce3837fbeff7d8da92e8f4eb768e406750e23f5ff268"
+    },
+    {
+      "path": "src/physics/yaw-response.ts",
+      "gitBlob": "b80db24d9aeec1a7c1db4f0530ac9b1e77699817",
+      "sha256": "13bbb3c30d432fd9a9f7ad9d0128241da52cbc43acced87a46003d20fccdc6b0"
+    },
+    {
+      "path": "test/movement-yaw-continuity.test.ts",
+      "gitBlob": "d573490b745fc083c3a0f164e0c282203cb0ef93",
+      "sha256": "a95ef0de32863a6d3eee8ce8e636496117e35d59f4ddb40ab380fc7f4e5cf8e7"
+    },
+    {
+      "path": "test/yaw-response.test.ts",
+      "gitBlob": "808afe26807393b2c04731087439a1b06689602c",
+      "sha256": "33a53023015947004888a4c3509820ad6574cefe94d0ff5c52e5ea6c097df8ea"
+    }
+  ],
+  "protectedTreeMatchesTestedRuntime": true,
+  "verifiedPublishedArtifactCount": 11,
+  "previewBoundaryChecks": [
+    {
+      "branch": "codex/pursuit-composed-preview",
+      "revision": "8239e8d89a8f326c95318ab62b73d807550ec683",
+      "runtimeTestOverlapWith180": [],
+      "sharedPreviewActuationFilesEqualAcceptedAnd180": [
+        "src/physics/movement-preview.ts",
+        "src/physics/actuation.ts"
+      ],
+      "status": "Source/interface compatibility; no composed execution claim"
+    },
+    {
+      "branch": "codex/announced-motion",
+      "revision": "0d13a208e233103fae11373ce67eca3d9b9c1d65",
+      "runtimeTestOverlapWith180": [],
+      "sharedPreviewActuationFilesEqualAcceptedAnd180": [
+        "src/physics/movement-preview.ts",
+        "src/physics/actuation.ts"
+      ],
+      "status": "Source/interface compatibility; no composed execution claim"
+    },
+    {
+      "branch": "codex/local-traffic-route",
+      "revision": "7b70c343cf30f0066fc46f223ad134d1249f6188",
+      "runtimeTestOverlapWith180": [],
+      "sharedPreviewActuationFilesEqualAcceptedAnd180": [
+        "src/physics/movement-preview.ts",
+        "src/physics/actuation.ts"
+      ],
+      "status": "Source/interface compatibility; no composed execution claim"
+    },
+    {
+      "branch": "codex/contact-middle",
+      "revision": "4a5aadcbbdfe3065ec41d73e0c0de3ee1272c070",
+      "runtimeTestOverlapWith180": [],
+      "sharedPreviewActuationFilesEqualAcceptedAnd180": [
+        "src/physics/movement-preview.ts",
+        "src/physics/actuation.ts"
+      ],
+      "status": "Source/interface compatibility; no composed execution claim"
+    }
+  ],
+  "newExecution": {
+    "tests": 0,
+    "simulations": 0,
+    "benchmarks": 0,
+    "fullSuite": false
+  },
+  "adoptionDecision": "Explicitly adopt ordinary center requested-angle bounded yaw response and reserve peak yaw torque from shared recovery traction; this changes ordinary default motor behavior even though capacities, contact/recovery laws and flags are unchanged. Recommend ACCEPT this bounded controller/budget correction; Integration retains adoption authority.",
+  "limits": [
+    "World-based free previews inherit the selected motor; stepBody shares angular response but is not a loaded World solver.",
+    "184 estimates a fresh free peer from acquired information; no current peer spin/support/load knowledge.",
+    "186/181 existing native outcomes predate composed motor and do not verify combined choices or runtime.",
+    "170 recoverable-glance, square-fall and genuine-miss assertions remain unchanged for Integration verification.",
+    "No165 attained-gait, GAIT_STEP activation, capacity tuning or experimental contact solver.",
+    "Preserve previous1.267 cost failure, later Toss contact, censored pass, loaded-slip adverse case and supplemental CPU-tail qualification."
+  ]
+}

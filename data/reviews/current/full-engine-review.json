@@ -1,0 +1,525 @@
+{
+  "schema": "full-engine-review-v1",
+  "reviewedAt": "2026-10-11",
+  "branch": "claude/engine-priorities",
+  "baseCommit": "b9223536cf3ffc4530e365d98b4a518ae418c192",
+  "engineSourceSha256": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+  "productionHandContact": "center",
+  "engineChanged": false,
+  "scope": "Major production subsystems, opt-in common-patch experiment, game wrapper, rosters/coaching, replay/data tooling and validation. Source inspection plus pinned reviews and fresh checks; not exhaustive line/rule/browser/performance certification.",
+  "priorities": [
+    "Catch window, attainable arrival, pursuit and first effective contact",
+    "Shared hand angular-law repair plus native promotion witnesses",
+    "Ordinary run coordination, loaded zone flow and independent runner track/mesh",
+    "QB pocket decisions, risk and pressure measurement",
+    "Acquired information and conditional validation throughout",
+    "Rules/special teams then persistent league and management product"
+  ],
+  "cohorts": {
+    "method": "Reuse immediately preceding current-source default cohort101; fresh export202; paired native/tracking analysis with the existing operators. Different roster cohorts are not paired counterfactual games.",
+    "rosterPairs": 2,
+    "teams": 4,
+    "games": 16,
+    "provenance": [
+      {
+        "sidecar": {
+          "path": "out/zone-development/center-merged-outcomes.json",
+          "bytes": 5337962,
+          "sha256": "ba32c3bbcb23014e1319b0fc3db110dfd8040ea2bda412f1f38f975e9f542784"
+        },
+        "tracking": {
+          "path": "out/zone-development/center-merged-plays.jsonl.gz",
+          "bytes": 3495956,
+          "sha256": "9b327d9d3b7f243eab637b00ad53ee6167824213c91797b6762682d8e9bc214f"
+        },
+        "normalizedTracking": null,
+        "normalization": "Join native first catch.a to common receiver by ID; shared actor order from the same exported replay; all other fields preserved.",
+        "actualReceiverDiffersFromTarget": 35,
+        "sourceBefore": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+        "sourceAfter": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+        "nativeCollectorSha256": "fd889f71e67c624298eb7b06c73bc0f85e4b7dc423328745e5ac0ebf01f5d39b",
+        "cohort": {
+          "seed": 101,
+          "games": 8,
+          "strength": 0.55,
+          "rosterSha256": "94f47259f970f8ab30e688661ef2cb3e30ac257403b10b05ba25dba84601e707",
+          "handContact": "center"
+        }
+      },
+      {
+        "sidecar": {
+          "path": "out/full-review/outcomes202.json",
+          "bytes": 4818225,
+          "sha256": "3bcfe2fd17bc1ba4400fed44dec86d2e11512f44349c0a0a24c0f6cc5e8a2e45"
+        },
+        "tracking": {
+          "path": "out/full-review/plays202.jsonl.gz",
+          "bytes": 3125795,
+          "sha256": "60063bfbffd85eb5ee65a4d0933b22666704c357fa2fb89fd5c09353c4aef1e1"
+        },
+        "normalizedTracking": null,
+        "normalization": "Join native first catch.a to common receiver by ID; shared actor order from the same exported replay; all other fields preserved.",
+        "actualReceiverDiffersFromTarget": 36,
+        "sourceBefore": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+        "sourceAfter": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+        "nativeCollectorSha256": "fd889f71e67c624298eb7b06c73bc0f85e4b7dc423328745e5ac0ebf01f5d39b",
+        "cohort": {
+          "seed": 202,
+          "games": 8,
+          "strength": 0.55,
+          "rosterSha256": "03144b0d35d6992b85f1497afa7a420fea9c51bdf28c36a34a33a463ca98f706",
+          "handContact": "center"
+        }
+      }
+    ],
+    "cleanPopulation": {
+      "plays": 2156,
+      "games": 16,
+      "dropbacks": 1637,
+      "throws": 1479,
+      "completions": 933
+    },
+    "designedRuns": 519
+  },
+  "native": {
+    "completion": {
+      "count": 933,
+      "denominator": 1479,
+      "percent": 63.08316430020284
+    },
+    "interception": {
+      "count": 90,
+      "denominator": 1479,
+      "percent": 6.085192697768763,
+      "missing": 0
+    },
+    "sackPerDropback": {
+      "count": 64,
+      "denominator": 1637,
+      "percent": 3.9095907147220523,
+      "missing": 0
+    },
+    "passTDPerThrow": {
+      "count": 191,
+      "denominator": 1479,
+      "percent": 12.914131169709263,
+      "missing": 0
+    },
+    "twentyYardCompletionPerThrow": {
+      "count": 295,
+      "denominator": 1479,
+      "percent": 19.945909398242055
+    },
+    "wholePlayYardsPerCompletion": 20.16956055734191,
+    "completedYAC": {
+      "n": 933,
+      "mean": 12.320785533357519,
+      "max": 94.61227318835228,
+      "p10": -0.11461242158378156,
+      "p25": 1.1766307877216065,
+      "p50": 4.936172038503486,
+      "p75": 14.833179747707817,
+      "p90": 39.67760400752825,
+      "p95": 60.00792033538688,
+      "p99": 73.59664710476896,
+      "completionCount": 933,
+      "missing": 0,
+      "coverage": {
+        "count": 933,
+        "denominator": 933,
+        "percent": 100.0
+      },
+      "tails": {
+        "10plus": {
+          "count": 298,
+          "denominator": 933,
+          "percent": 31.939978563772776
+        },
+        "20plus": {
+          "count": 171,
+          "denominator": 933,
+          "percent": 18.327974276527332
+        },
+        "40plus": {
+          "count": 92,
+          "denominator": 933,
+          "percent": 9.860664523043944
+        }
+      }
+    }
+  },
+  "nativeRun": {
+    "yards": {
+      "n": 519,
+      "mean": 5.319672447013487,
+      "max": 91.0,
+      "p10": -1.3459999999999996,
+      "p25": 0.075,
+      "p50": 1.9,
+      "p75": 4.55,
+      "p90": 9.357999999999997,
+      "p95": 19.441999999999997,
+      "p99": 75.83800000000005
+    },
+    "success4060100": {
+      "count": 144,
+      "denominator": 519,
+      "percent": 27.745664739884393,
+      "missing": 0
+    }
+  },
+  "NFLReference": {
+    "receipt": "data/reviews/current/nfl-gap-review.json",
+    "period": "Already examined 2022\u201323 regular-season clean native outcome reference; 2022 all22 tracking is separate. No reserved final exam read.",
+    "completionPercent": 64.5,
+    "meanCompletionGainYd": 10.9,
+    "meanYACYd": 5.16,
+    "YACp90Yd": 12.0,
+    "YAC20PlusPercent": 3.6,
+    "interceptionPercent": 2.3,
+    "passTDPerThrowPercent": 4.1,
+    "sackPerDropbackPercent": 6.7,
+    "runSuccessPercent": 49.2,
+    "runMedianYd": 3.0,
+    "runMeanYd": 4.27,
+    "limitations": "Reference numbers locate mechanisms, not fit targets. Talent, scheme, score and clock not fully matched; success is40/60/100, notEPA."
+  },
+  "checks": {
+    "defaultCohort101Guard": "12/12 reused current-source receipt",
+    "defaultCohort202Guard": "12/12 fresh",
+    "fullValidationReused": {
+      "typecheck": "passed",
+      "build": "passed",
+      "testAll": {
+        "files": 106,
+        "passed": 1236,
+        "failed": 0,
+        "skipped": 0
+      },
+      "testData": {
+        "passed": 141,
+        "failed": 0
+      },
+      "forcedPatchExistingWitnesses": {
+        "passed": 42,
+        "failed": 8,
+        "filesFailed": 4,
+        "scope": "Test-only World.step wrapper selects patch for centered worlds; original fixture assertions are unmodified.",
+        "reproduce": "node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1"
+      }
+    },
+    "reasonFullSuiteNotRepeated": "No engine/test changes; full suite at identical engine source already completed in preceding validation."
+  },
+  "sharedCapabilities": {
+    "sourceSha256": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+    "reps": 120,
+    "tasks": [
+      "absorb",
+      "anchor",
+      "double-drive",
+      "jam",
+      "shed"
+    ],
+    "summaries": [
+      {
+        "substeps": 6,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 8.881784197001252e-15,
+        "meanSubjectPositionErrorVs48Yd": 0.06062405647225135,
+        "maxSubjectPositionErrorVs48Yd": 0.394249302182361,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 6.821211110682786e-13,
+        "maxWorkResidualKgYd2PerS2": 2.1036505870597466e-12,
+        "maxArmImpulseFraction": 1.0000000000000002,
+        "maxArmWorkFraction": 0.5841195424187038,
+        "maxOverlapYd": 0.0048899103613536665,
+        "allFinite": true
+      },
+      {
+        "substeps": 12,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 2.0761170560490427e-14,
+        "meanSubjectPositionErrorVs48Yd": 0.03862529606060784,
+        "maxSubjectPositionErrorVs48Yd": 0.4597525859875216,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 5.115910136927028e-13,
+        "maxWorkResidualKgYd2PerS2": 1.3818945987509323e-12,
+        "maxArmImpulseFraction": 1.0000000000000004,
+        "maxArmWorkFraction": 0.5780811727583566,
+        "maxOverlapYd": 0.007683798542949427,
+        "allFinite": true
+      },
+      {
+        "substeps": 48,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 1.9165224962591765e-14,
+        "meanSubjectPositionErrorVs48Yd": 0,
+        "maxSubjectPositionErrorVs48Yd": 0,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 1.591615743591227e-12,
+        "maxWorkResidualKgYd2PerS2": 3.890249233862164e-12,
+        "maxArmImpulseFraction": 1.0000000000000013,
+        "maxArmWorkFraction": 0.5696189800888891,
+        "maxOverlapYd": 0.002114056425374544,
+        "allFinite": true
+      }
+    ],
+    "outlier": "Heavy jam, both mirrors: subject displacement difference12vs48 substeps0.4597525859875216yd. Resolution sensitivity is not a native-game frequency or exact-solution error claim;48 is a comparison reference."
+  },
+  "approachWitnesses": {
+    "sourceBefore": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+    "sourceAfter": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+    "method": "Fixed roster O19/D20, play seeds19/20/21/22, two mirrors. Full production tick (22 bodies), post-catch straight runner, one chaser, bystanders parked. Unmodified tackle rolls and grip physics. Reach is endpoint-sampled; event timestamps retain engine tick convention. No empirical rate claim.",
+    "recording": {
+      "level": "full",
+      "sampleSeconds": 0.05,
+      "matchesUnrecorded": 8,
+      "signatureIncludes": "all bodies/support, result excluding recordings, carrier/defender paths, intents, RNG state and perception buffer"
+    },
+    "trials": 8,
+    "tackleEnds": 8,
+    "rows": [
+      {
+        "seed": 19,
+        "side": -1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.44992662413428886,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 19,
+        "side": 1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.4499266241342864,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 20,
+        "side": -1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.4496814707775919,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 20,
+        "side": 1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.44968147077749504,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 21,
+        "side": -1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.44662213143474594,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 21,
+        "side": 1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.4466221314347485,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 22,
+        "side": -1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.4475463126743293,
+        "outcome": "tackle"
+      },
+      {
+        "seed": 22,
+        "side": 1,
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "closest": 0.44754631267424033,
+        "outcome": "tackle"
+      }
+    ],
+    "limitation": "Existing designed postcatch geometry with parked bystanders; not representative tackle-rate evidence."
+  },
+  "releaseAudit": {
+    "sourceBefore": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+    "sourceAfter": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+    "method": "48 fixed pass snaps, two generated roster pairs, four concepts, three coverages, two play seeds; release wrapper only records speed and calls original.",
+    "inputs": {
+      "rosterSeeds": [
+        [
+          31,
+          32
+        ],
+        [
+          41,
+          42
+        ]
+      ],
+      "concepts": [
+        "slant_flat",
+        "smash",
+        "four_verts",
+        "mesh"
+      ],
+      "coverages": [
+        "cover3",
+        "cover2",
+        "cover1"
+      ],
+      "playSeeds": [
+        3,
+        7
+      ],
+      "formation": "gun_doubles_11",
+      "front": "over",
+      "los": 40,
+      "firstDownX": 50,
+      "ballY": "CENTER_Y",
+      "defaultHandContact": "center"
+    },
+    "snaps": 48,
+    "releases": 41,
+    "overArmLimit": 0,
+    "maxRatio": 0.9695404775452666,
+    "analyticOutOfRange": {
+      "distanceYd": 100,
+      "cap": 26.843434343434343,
+      "T": 4.404767001227095,
+      "inRange": false,
+      "solvedSpeed": 37.20914344508658,
+      "note": "Out-of-range helper probe, not a frequency claim for game throws."
+    },
+    "interpretation": "Confirmed unchecked final capability contract, not observed ordinary-panel violation or explanation of highINT."
+  },
+  "artifactsLocalOnly": true,
+  "artifacts": [
+    {
+      "path": "out/full-review/plays202.jsonl.gz",
+      "bytes": 3125795,
+      "sha256": "60063bfbffd85eb5ee65a4d0933b22666704c357fa2fb89fd5c09353c4aef1e1"
+    },
+    {
+      "path": "out/full-review/outcomes202.json",
+      "bytes": 4818225,
+      "sha256": "3bcfe2fd17bc1ba4400fed44dec86d2e11512f44349c0a0a24c0f6cc5e8a2e45"
+    },
+    {
+      "path": "out/full-review/sim202.json",
+      "bytes": 51248,
+      "sha256": "69b6dc8d143e833a215d6c4452a068f03652f5f4d6f3625c0333efe7ade39e7f"
+    },
+    {
+      "path": "out/full-review/mechanisms202.md",
+      "bytes": 23949,
+      "sha256": "60aeb24b8d14f35d6efa7aa76037e57bfab3b86d6e1accac634f8b8066d1c20e"
+    },
+    {
+      "path": "out/full-review/pooled-outcomes.json",
+      "bytes": 4873954,
+      "sha256": "b5086fa6c51e25bbf6c3d470cb4776eb4f0838cb89fcd037aa13b0e01e99a366"
+    },
+    {
+      "path": "out/full-review/shared-capabilities.json",
+      "bytes": 137127,
+      "sha256": "1f7eb90c60d8b6d75de41c0b33b2738960e9e935d54328bbb5221d82e2e5a191"
+    },
+    {
+      "path": "out/full-review/approach-tackle.json",
+      "bytes": 90101,
+      "sha256": "1eca031242dc3e0c04500f27e1795eb610e052eaf02e696f7e6508f28dd4aa23"
+    },
+    {
+      "path": "out/full-review/approach-tackle-film.json",
+      "bytes": 11727121,
+      "sha256": "4ec69502eb61b43bedd651ac2301fd87e10961e72a9097893b5aa94e38772305"
+    },
+    {
+      "path": "out/full-review/throw-audit.ts",
+      "bytes": 2726,
+      "sha256": "aea403225bb0a90f5f32cbf47cc204db83eed62d1762391c8ac0402c956afbd4"
+    },
+    {
+      "path": "out/full-review/throw-audit.json",
+      "bytes": 15539,
+      "sha256": "1515780e1e0c00aa5f737c181ade077413af33be178623504d062f6afe7b7ce8"
+    }
+  ],
+  "limitations": [
+    "No engine fixes or prototype promotion in this review.",
+    "Two roster pairs do not characterize league-wide talent/scheme sensitivity.",
+    "Engineering film concerns do not establish an NFL coaching-error rate or a causal tackle defect.",
+    "Passing existing assertions/guards does not establish complete football realism or universal numerical convergence.",
+    "Special-team returns remain abstract; complete management game and complete NFL rulebook are not established.",
+    "Existing known production angular failure and candidate regressions are reported, not hidden."
+  ]
+}

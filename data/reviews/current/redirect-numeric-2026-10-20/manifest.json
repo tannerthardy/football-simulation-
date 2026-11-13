@@ -1,0 +1,64 @@
+{
+  "candidate": "075e2148a8c94c80ba90743a324e4670091998c0",
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "question": "Does the redirect mirror failure reflect a discrete changed assignment or a numeric perturbation under the new approved controller/motor composition?",
+  "scriptSha256": "25ced0035c0909dd310837cc536619fe83164d9ff2c6c8b519e26a3a47f666d7",
+  "scope": "Existing redirect seed7/maxT6; center opposing control and patch failing case, each two sides, same rosters/settings/components1.",
+  "newNativeExecutions": 16,
+  "retainedFinalNativeExecutions": 8,
+  "completedGames": 0,
+  "sharedSuites": 0,
+  "collectorFailure": "First8 native executions completed but writing raw traces failed because output directory was absent; both nonzero receipts/logs retained. Same bounded pair rerun to save evidence; no parameter change.",
+  "conclusion": "Tiny accumulated mirror perturbation demonstrated; no discrete target/time/assignment asymmetry. Existing strict mirror test remains red and has not been weakened.",
+  "decision": "Integration must decide a narrowly justified numerical repair or hold the responsible scope; this diagnostic is not a passing-test waiver.",
+  "files": [
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/baseline-final-receipt.json",
+      "sha256": "5b2ddd6ca670c1fbbc35e65eacdc294a199b89ce9c2bae4041a0d8716d70f104"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/baseline-final.log",
+      "sha256": "45f5fa9e542a8f5827f316ec691fe36a642c0a3e174ca55fd3e9da06c4cc1beb"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/baseline-receipt.json",
+      "sha256": "22815f1244c052abf00eb54f19e580abcfd1b6b381a307951c6f284d84b0db7d"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/baseline-summary.json",
+      "sha256": "336b03d7264f4d9b88892c1ceb23c671c669f84045038758ddb74df8de5fae10"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/baseline-trace.json.gz",
+      "sha256": "5f633f15bc70a68517272720e0683d177e5b4aeca9cee84200cfff8350dce432"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/baseline.log",
+      "sha256": "1070c47040947039bbd8cc3ffd8276a68cdeffa3a655e124b2a7b70fb0434311"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/candidate-final-receipt.json",
+      "sha256": "7de53f4746003203273b3033db7d70cb6abd33c26385e71d6fe5cda2aaf8cc3b"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/candidate-final.log",
+      "sha256": "3a24a7910039c773372ccffde80ef131ebe3692cc5da3d8a6ab64f0ecb0f364c"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/candidate-receipt.json",
+      "sha256": "494b6cfa7d7ca34a3d07c56defb4096218fbaefd13afa898c8b457147385c410"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/candidate-summary.json",
+      "sha256": "0e95b19165522340e0194a6b820975f7ee0059e765bc22ac7a940e245f1ac1d8"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/candidate-trace.json.gz",
+      "sha256": "453d20ad6fed72efcf239bbae5c510dbd5b650e43c2852ed113dfefb192e70d0"
+    },
+    {
+      "path": "data/reviews/current/redirect-numeric-2026-10-20/candidate.log",
+      "sha256": "254b559820b1042bd303ce0a82b9f06f2a79d6e49379388276e52cd3f95e54cd"
+    }
+  ]
+}

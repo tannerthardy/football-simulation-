@@ -1,0 +1,194 @@
+{
+  "schema": "opponent-risk-final-combined-verification-v1",
+  "acceptedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "testedCommit": "86a8816bb685a521f60400c6a3fe12e12d02e32f",
+  "approvedRiskCode": "71d98fcddc3c76764f36f438f9f4921d365c9ad4",
+  "previousPublication": "cfcbf6b60325ff3fe4dd722f9310d135fae49576",
+  "originalAuthorCandidate": "60223a863a8431e85d5027c879191f3527ed10b8",
+  "originalAuthorEvidence": "80c9fa4db36ebcd4b81edda110e9a451882d8291",
+  "branch": "codex/run-entry-opponent-information-review",
+  "sourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "validationSha256": "b8f620521c5bb9f58bd2b75e359bb2bbf8e9dcc635a9fea9ea2bf94ac383e622",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "hashEncoding": "Flag/World SHA256: UTF-8 JSON, sorted keys, compact separators. Source/validation: scripts/baseline.mjs path-NUL-content-NUL digest.",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1726,
+    "typescriptFiles": 145,
+    "pythonPassed": 145,
+    "skippedPhases": [],
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "exitCode": 0
+  },
+  "decision": "Recommend merging this isolated risk-only integration candidate after separate explicit merge authorization. User accepted scope/verification only; no merge performed. No additional full-suite or simulation campaign for an unchanged candidate.",
+  "scope": {
+    "productionFiles": [
+      "src/sim/behaviors/carrier.ts"
+    ],
+    "mechanism": "runReadAim risk uses acquired opponent pose/motion and public physical profile with the existing observed recovery estimator; removes private current-down/fatigue/engagement shortcuts.",
+    "testsAndFixture": [
+      "test/run-entry-opponent-information.test.ts",
+      "test/fixtures/run-entry-information.json.gz"
+    ],
+    "runtimeByteIdenticalToFocusedPass": true,
+    "otherAcceptedSourceTestsToolingAndSettingsPreserved": true,
+    "activeUnderAcceptedFlags": true
+  },
+  "reusedEvidence": {
+    "focusedPassed": 3,
+    "focusedReceipt": "focused-final.json",
+    "typecheckReceipt": "typecheck-final.json",
+    "scopeReview": "review.json",
+    "sourceAndArtifactPreflight": "final-preflight.json",
+    "historicalNativeAdverse": "https://github.com/tannerthardy/football-simulation-/tree/4ee0e2cdc8480f271fc3d8e9178f6abd949b3f9e/docs/reviews/run-entry-cues"
+  },
+  "adverseEvidenceAndLimits": [
+    "Historical information-only trial produced69.81kg*yd/s teammate collision; preserved for its exact source. This correction claims no current-source yardage, collision-avoidance or alternative-entry benefit.",
+    "Broader legacy carrier evaluate/lead/other private-information callers remain outside scope. No global awareness correction is claimed.",
+    "Recovery allowance is the existing coarse acquired-pose estimate and public get-up capability, not new anticipation tuning or NFL calibration.",
+    "Passing code/contract checks do not establish league-wide realism. Existing #72 native protection tradeoffs, forecast optimism and center-hand limitations remain.",
+    "Observation transport is owner-approved and preserved as a separate portable patch but has no current production consumer; no sensing/query plumbing is introduced. Navigation and sampledVel research stay parked."
+  ],
+  "cost": {
+    "finalCombinedCommandSeconds": 188.50406714500002,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.356333767
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.149784653000001
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 166.97469088
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 1.0232578450000147
+      }
+    ],
+    "priorScopeReviewCommandSeconds": 23.675058372000002,
+    "priorFailedPackagingRetained": true,
+    "allThisRiskReviewAndVerificationCommandSeconds": 212.17912551700002,
+    "standaloneExtraGames": 0,
+    "standaloneExtraReplays": 0,
+    "rosterCampaigns": 0,
+    "suiteGameAssertions": "Preserved full-suite game assertions ran; no additional game campaign."
+  },
+  "preservation": {
+    "priorScopeAndPackagingFailureReceiptsUnchanged": true,
+    "acceptedDevelopUnchanged": true,
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "defaultBranchUnchanged": true,
+    "branchAndEvidenceHistoryPreserved": true
+  },
+  "excluded": [
+    "observation-only transport",
+    "navigation/admission/ranking tuning",
+    "sampledVel/historical-motion research",
+    "#69 controller work",
+    "experimental physics",
+    "original research ancestry"
+  ],
+  "artifacts": {
+    "final-combined.json": {
+      "bytes": 2635,
+      "sha256": "2fb17bf66a02666371291feb7db9de8ed189352b3f2eee7062fefab6f55e00d1"
+    },
+    "final-combined.log": {
+      "bytes": 15543,
+      "sha256": "7b9da70eb2dd973787064c3b59d30e0da4bce96880a2949bb6c8de897aaeb2ed"
+    },
+    "final-candidate.patch": {
+      "bytes": 42870,
+      "sha256": "69312db6b13ea4f58f218285d27205c79b5a36e5b6dd2c27ac0ede27f5fe4bb3"
+    },
+    "final-preflight.json": {
+      "bytes": 1442,
+      "sha256": "b010891f386476fd3208d8a3e3235d74689d06189bbeaffcc26dd4b39b64ef0b"
+    }
+  },
+  "nextDecision": "Explicit authorization to merge the exact reviewed risk-only integration PR into develop."
+}

@@ -1,0 +1,53 @@
+[
+  {
+    "game": "zone-reference",
+    "before": 10,
+    "after": 16,
+    "note": "Counter: same offense, call, front/coverage, 1st-and-10 at35. Different earlier histories; earlier defensive access is a real result, not automatically better blocking.",
+    "gif": "clips/01-zone-reference-11-17.gif",
+    "beforeSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "afterSource": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9",
+    "beforeCall": "Gun Trips \u2014 Counter",
+    "afterCall": "Gun Trips \u2014 Counter",
+    "beforeOutcome": "tackle",
+    "afterOutcome": "tackle",
+    "beforeYards": -0.24,
+    "afterYards": -3.78,
+    "frames": 35,
+    "maxTime": 3.4
+  },
+  {
+    "game": "zone-reference",
+    "before": 7,
+    "after": 7,
+    "note": "Power: same called concept/front/coverage, but baseline1st-and20 at55.3 vs candidate2nd-and10 at64.2. Compare blocking/finish, not isolated causality.",
+    "gif": "clips/02-zone-reference-8-8.gif",
+    "beforeSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "afterSource": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9",
+    "beforeCall": "Singleback Twin TE \u2014 Power",
+    "afterCall": "Singleback Twin TE \u2014 Power",
+    "beforeOutcome": "touchdown",
+    "afterOutcome": "tackle",
+    "beforeYards": 44.7,
+    "afterYards": 2.55,
+    "frames": 94,
+    "maxTime": 8.35
+  },
+  {
+    "game": "spread-air",
+    "before": 1,
+    "after": 1,
+    "note": "PA Post-Dig opening control: same call/front/coverage, 1st-and10 at33.0/32.8. Edge sack remains; this is retained adverse behavior.",
+    "gif": "clips/03-spread-air-2-2.gif",
+    "beforeSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "afterSource": "12a5c88025b3c306c4673805fec54c45095e06730b9d8c98efc030694b36d1f9",
+    "beforeCall": "Gun Wing \u2014 PA Post-Dig",
+    "afterCall": "Gun Wing \u2014 PA Post-Dig",
+    "beforeOutcome": "tackle",
+    "afterOutcome": "tackle",
+    "beforeYards": -7.95,
+    "afterYards": -7.86,
+    "frames": 34,
+    "maxTime": 3.2
+  }
+]

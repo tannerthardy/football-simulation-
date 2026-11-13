@@ -1,0 +1,247 @@
+{
+  "sourceSha256Start": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+  "sourceSha256End": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+  "scriptSha256Start": "912dc2680f0f2acbea50bc550b45681fa5a65eb948c9435d0858ed6154f8a239",
+  "scriptSha256End": "912dc2680f0f2acbea50bc550b45681fa5a65eb948c9435d0858ed6154f8a239",
+  "node": "v22.23.3",
+  "before": {
+    "mass": 1,
+    "inertia": 1,
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    "velocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0.6
+    },
+    "angularMomentum": {
+      "x": 0,
+      "y": 2,
+      "z": 0
+    },
+    "basis": [
+      {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      }
+    ]
+  },
+  "local": {
+    "x": 0.3,
+    "y": 0,
+    "z": -1
+  },
+  "gravity": {
+    "x": 0,
+    "y": 0,
+    "z": -10
+  },
+  "initialPointNormalVelocity": 0,
+  "rows": [
+    {
+      "h": 0.2,
+      "normalImpulse": 1.1965816946814405,
+      "endpointGap": 2.220446049250313e-16,
+      "endpointPointNormalVelocity": -0.024197606884385603,
+      "chordNormalVelocity": 1.1102230246251565e-15,
+      "groundWork": 1.3284725482803244e-15,
+      "energyResidual": -1.3284725482803244e-15,
+      "linearResidual": 0,
+      "angularResidual": 1.3877787807814457e-16,
+      "after": {
+        "mass": 1,
+        "inertia": 1,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0396581694681442
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": -0.20341830531855953
+        },
+        "angularMomentum": {
+          "x": 0,
+          "y": 1.877620196871147,
+          "z": 0
+        },
+        "basis": [
+          {
+            "x": 0.9275439208977068,
+            "y": 0,
+            "z": -0.37371416190145745
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          {
+            "x": 0.37371416190145745,
+            "y": 0,
+            "z": 0.9275439208977068
+          }
+        ]
+      }
+    },
+    {
+      "h": 0.1,
+      "normalImpulse": 0.580630018537416,
+      "endpointGap": 0,
+      "endpointPointNormalVelocity": -0.011552571924425104,
+      "chordNormalVelocity": 0,
+      "groundWork": 0,
+      "energyResidual": 1.7763568394002505e-15,
+      "linearResidual": 0,
+      "angularResidual": 4.163336342344337e-17,
+      "after": {
+        "mass": 1,
+        "inertia": 1,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 1.0390315009268707
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0.180630018537416
+        },
+        "angularMomentum": {
+          "x": 0,
+          "y": 1.8832797927726403,
+          "z": 0
+        },
+        "basis": [
+          {
+            "x": 0.9813261717835314,
+            "y": 0,
+            "z": -0.192351097144464
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          {
+            "x": 0.192351097144464,
+            "y": 0,
+            "z": 0.9813261717835314
+          }
+        ]
+      }
+    },
+    {
+      "h": 0.05,
+      "normalImpulse": 0.2833800470439559,
+      "endpointGap": 2.220446049250313e-16,
+      "endpointPointNormalVelocity": -0.0035261971119390223,
+      "chordNormalVelocity": 4.440892098500626e-15,
+      "groundWork": 1.2584602117902397e-15,
+      "energyResidual": 5.178966276100108e-16,
+      "linearResidual": 0,
+      "angularResidual": 0,
+      "after": {
+        "mass": 1,
+        "inertia": 1,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 1.024584501176099
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0.3833800470439559
+        },
+        "angularMomentum": {
+          "x": 0,
+          "y": 1.9290748342162878,
+          "z": 0
+        },
+        "basis": [
+          {
+            "x": 0.9951873496570331,
+            "y": 0,
+            "z": -0.0979905050635518
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          {
+            "x": 0.0979905050635518,
+            "y": 0,
+            "z": 0.9951873496570331
+          }
+        ]
+      }
+    },
+    {
+      "h": 0.025,
+      "normalImpulse": 0.13971482745791292,
+      "endpointGap": 2.220446049250313e-16,
+      "endpointPointNormalVelocity": -0.0009580390388873039,
+      "chordNormalVelocity": 8.881784197001252e-15,
+      "groundWork": 1.2409169466024477e-15,
+      "energyResidual": 2.3117967321980532e-15,
+      "linearResidual": 0,
+      "angularResidual": 1.1102230246251565e-16,
+      "after": {
+        "mass": 1,
+        "inertia": 1,
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 1.013621435343224
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0.4897148274579129
+        },
+        "angularMomentum": {
+          "x": 0,
+          "y": 1.9615684237118498,
+          "z": 0
+        },
+        "basis": [
+          {
+            "x": 0.998774655540403,
+            "y": 0,
+            "z": -0.049489266009402434
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          {
+            "x": 0.049489266009402434,
+            "y": 0,
+            "z": 0.998774655540403
+          }
+        ]
+      }
+    }
+  ],
+  "independentContractViolations": 0,
+  "barrierReproduced": true,
+  "scope": "Unsupported one-point pivot under the existing Cayley endpoint-gap map. Positive normal impulse and closed work do not imply zero endpoint material-point normal velocity. No support API, lifecycle or World selection changed."
+}

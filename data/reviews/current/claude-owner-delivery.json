@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-20 America/Phoenix",
+  "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "researchHead": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+  "channel": "Owner-addressed existing GitHub PR conversations",
+  "directChatDispatchAvailable": false,
+  "acknowledgments": "Pending; GitHub publication is not a claim of chat delivery or technical acceptance",
+  "requests": [
+    {
+      "owner": "Claude",
+      "pr": 153,
+      "commentId": 6300178882,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300178882",
+      "status": "Posted; owner acknowledgment pending"
+    },
+    {
+      "owner": "Run Game",
+      "pr": 153,
+      "commentId": 6300179998,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300179998",
+      "status": "Posted; owner acknowledgment pending"
+    },
+    {
+      "owner": "Catching And Defensive Pursuit",
+      "pr": 171,
+      "commentId": 6300180952,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6300180952",
+      "status": "Posted; owner acknowledgment pending"
+    },
+    {
+      "owner": "Physics Sim",
+      "pr": 163,
+      "commentId": 6300182020,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/163#issuecomment-6300182020",
+      "status": "Posted; owner acknowledgment pending"
+    },
+    {
+      "owner": "Do-It-All!",
+      "pr": 170,
+      "commentId": 6300183042,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/170#issuecomment-6300183042",
+      "status": "Posted; owner acknowledgment pending"
+    },
+    {
+      "owner": "Measurement",
+      "pr": 153,
+      "commentId": 6300184096,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/153#issuecomment-6300184096",
+      "status": "Posted; owner acknowledgment pending"
+    },
+    {
+      "owner": "CEO of Football",
+      "pr": 154,
+      "commentId": 6300185209,
+      "url": "https://github.com/tannerthardy/football-simulation-/pull/154#issuecomment-6300185209",
+      "status": "Posted; owner acknowledgment pending"
+    }
+  ],
+  "readyQueue": [
+    {
+      "pr": 169,
+      "status": "Existing independent controller/mechanical review; Integration composition/verification pending"
+    },
+    {
+      "pr": 171,
+      "status": "Existing independent continuation review; Integration composition/verification pending"
+    },
+    {
+      "pr": 170,
+      "status": "Separate diagnostics/regression adoption review; no runtime/default promotion"
+    },
+    {
+      "pr": 172,
+      "head": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+      "status": "Existing independent solo-runoff acceptance; optional composition prepared, semantic overlap/combined verification pending"
+    }
+  ]
+}

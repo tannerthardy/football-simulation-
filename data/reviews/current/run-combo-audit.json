@@ -1,0 +1,278 @@
+{
+ "schema": "native-inside-zone-combination-audit-v1",
+ "updated": "2026-10-11",
+ "status": "diagnosed; no engine changes or candidate claim",
+ "source": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+ "selection": "Two owner-nominated retrospective clips. Not random, a rate estimate, or a claim of excessive average NFL displacement.",
+ "units": {
+  "distance": "yard",
+  "velocity": "yard/second",
+  "handForce": "kg*yard/second^2; multiply by0.9144 for newtons",
+  "workResidual": "kg*yard^2/second^2",
+  "phi": "angle divided by pi/2"
+ },
+ "coaching": [
+  {
+   "source": "Keith Grabowski, USA Football, 2016-04-25",
+   "url": "https://blogs.usafootball.com/blog/1428/building-an-offensive-line-coaching-the-inside-zone",
+   "point": "Verified public text: quick uncovered punch/stepoff when linebacker threatens; stay level1 when he does not. Prolonged fourhands can turn helperhips away. Not mandatorytimer/displacementcap."
+  },
+  {
+   "source": "Mike Kuchar, USA Football, 2015-09-24",
+   "url": "https://blogs.usafootball.com/blog/590/strategies-for-blocking-covered-vs-uncovered-in-inside-zone-runs",
+   "point": "Verified public text: observed nearDLhip decides climb versus collecting into-gap slant; installations differ."
+  },
+  {
+   "source": "Rich Alercio, X&O Labs, 2016-02-08",
+   "url": "https://www.xandolabs.com/the-lab/position-groups/offensive-line/run-game-mechanics-offensive-line/teaching-gap-double-teams-vs-zone-double-teams/",
+   "retrieved": "2026-10-11; HTTP200 public excerpt",
+   "htmlSha256": "e30d3f969fea645ffb90053accba5084d8676fc506003d68d42ec55fa67497b5",
+   "point": "Same steppingfoot in zone direction; covered vertical step and uncovered reach step. Full release teaching and film behind membership were not inspected."
+  }
+ ],
+ "witnesses": [
+  {
+   "id": "G1-P059",
+   "gameIndex": 1,
+   "gameSeed": 1928073449,
+   "snapSeed": 2681381068,
+   "nativeReceipt": {
+    "initialSha256": "7c7b2d073d343bc86b7f6657397b898c2c33617dcda64e605e6f650bd69bfe89",
+    "resultSha256": "f2204a907703e3a2522cacb2c38f6fa0673cf44cf2343fd97032cd3973a9fc90",
+    "nextRng": 3757792918,
+    "observerMatchesPlain": true,
+    "matchesOriginalLightGame": true,
+    "localPacket": "out/run-coaching/combo-native/G1-P059.json.gz",
+    "packetSha256": "22dec4db700f34ad41b7a37980fe2587dbe490d3bef182127a72735db5170fd2"
+   },
+   "combination": {
+    "members": [
+     "C",
+     "LG"
+    ],
+    "defender": "DT_W",
+    "backer": "LB_W"
+   },
+   "securityWitness": {
+    "t": 1.5,
+    "defenderDepth": 0.7948207088183139,
+    "currentPrimaryControl": 0.1559307484017472,
+    "phiByMember": {
+     "C": -0.82504343595046,
+     "LG": 0.30096656288863616
+    },
+    "helpersNormalForce": {
+     "LG": 910.1969973783222
+    }
+   },
+   "endOfReportedPush": {
+    "t": 2.25,
+    "defenderDepthYd": 2.694611182505078,
+    "defenderForwardSpeedYdPerS": 2.530613489377626
+   },
+   "climbsInSamePlay": [
+    {
+     "t": 2.05,
+     "actor": "RG",
+     "target": "LB_M",
+     "note": "secured DE_W; RT stays"
+    }
+   ],
+   "fallAndAbandon": [
+    {
+     "t": 2.35,
+     "type": "fall",
+     "actor": "DT_W",
+     "note": "contact"
+    },
+    {
+     "t": 2.45,
+     "type": "block_abandon",
+     "actor": "C",
+     "note": "original target unavailable; finding work"
+    }
+   ],
+   "maxAbsWorkResidualRetainedSamples": 3.282707439211663e-12
+  },
+  {
+   "id": "G4-P023",
+   "gameIndex": 4,
+   "gameSeed": 1397778264,
+   "snapSeed": 1131732728,
+   "nativeReceipt": {
+    "initialSha256": "9c47a6458cee0fec81bf763dbb17f2752cde9ec91cc4e3d1c0d378acc40e098f",
+    "resultSha256": "28fa30b0ea8c332533efbf055ecc29d9958c78a5c1ac2e541cd0b4b02a712c97",
+    "nextRng": 4167599248,
+    "observerMatchesPlain": true,
+    "matchesOriginalLightGame": true,
+    "localPacket": "out/run-coaching/combo-native/G4-P023.json.gz",
+    "packetSha256": "1bddba09245c8f748de30a39e2112a0362b6c84477ab024f8913db18b6fbfabf"
+   },
+   "combination": {
+    "members": [
+     "Y",
+     "RT"
+    ],
+    "defender": "DE_W",
+    "backer": "LB_W"
+   },
+   "securityWitness": {
+    "t": 1,
+    "defenderDepth": 0.9315947212183033,
+    "currentPrimaryControl": -0.17439760651408223,
+    "phiByMember": {
+     "Y": -0.8458098438663253,
+     "RT": 0.025501274248473677
+    },
+    "helpersNormalForce": {
+     "RT": 915.3213127280703
+    }
+   },
+   "endOfReportedPush": {
+    "t": 3.25,
+    "defenderDepthYd": 6.3290535295609445,
+    "defenderForwardSpeedYdPerS": 2.817409516277474
+   },
+   "climbsInSamePlay": [
+    {
+     "t": 1.15,
+     "actor": "RG",
+     "target": "LB_M",
+     "note": "secured DT_W; C stays"
+    }
+   ],
+   "fallAndAbandon": [],
+   "maxAbsWorkResidualRetainedSamples": 3.7410075037769275e-12
+  }
+ ],
+ "confirmedRuleConflict": {
+  "files": [
+   "src/sim/behaviors/blocking.ts:keeperCandidate",
+   "src/sim/behaviors/blocking.ts:readJoinedCombination",
+   "src/sim/behaviors/blocking.ts:revalidateJoinedProposal",
+   "src/sim/behaviors/blocking.ts:applyCombinationRelease",
+   "src/sim/engagement.ts:setHands"
+  ],
+  "mechanism": "Prospective keeper hands/support/angle are computed, but departure additionally uses current primary phi/baseB/control. A turned primary cannot depart even when helper has useful surface; helper cannot leave poor primary either. Native reads reset confirmation before consuming keeper/DL pictures at those inadmissible checks.",
+  "limit": "Loaded helper contact is not proof of independently won insidehands or attainable climb. This diagnoses ownership conflict, not permission to force departure.",
+  "transferProblem": "Promotion keeps actual helperjoint identity yet next setHands rewrites actor/extension/forcecaps from former primary control. Helperpush=.8*armForce*support and helpersteer=.4*armForce*support do not invert to one identical primary controlscalar. Inferring control from achieved force supplies unearned technique."
+ },
+ "departurePathWitness": {
+  "id": "G4-P023",
+  "t": 1.5,
+  "definition": "Actual straight climber-to-LB_W segment, not perception/pathfinding certificate.",
+  "Y": {
+   "closestDECenterDistanceYd": 0.13,
+   "bodyClearanceYd": 0.64
+  },
+  "RT": {
+   "closestDECenterDistanceYd": 0.38,
+   "bodyClearanceYd": 0.69
+  },
+  "finding": "Both direct exits intersect DLbody. Joined-release lacks corridor check used for optional unjoinedcheck; need attainable route around traffic rather than releaseevent only."
+ },
+ "ordinaryControls": {
+  "command": "node --import tsx scripts/diag/run-concept-process.ts out/run-coaching/combo-process-controls.json --runs iz_strong --fronts over,under --seeds 3,11 --seconds 4 --verify",
+  "localPacket": "out/run-coaching/combo-process-controls.json",
+  "packetSha256": "40c4fb9923e740d1a9853e825da21fc7c3842e46dad711289cdf7d8c6ce3d43b",
+  "cohort": "8fixedAce11IZcalls; rosterseeds7/8, frontsOver/Under, snapseeds3/11, bothdirections; foursecond observationwindow. Not exact allbodyreflections.",
+  "observerMatchesPlain": true,
+  "cases": [
+   {
+    "front": "over",
+    "flip": false,
+    "seed": 3,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DE_S: Y+RT; load@1.15; None@None",
+     "DT_W: C+LG; load@0.65; climb@2.6"
+    ]
+   },
+   {
+    "front": "over",
+    "flip": true,
+    "seed": 3,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DT_S: LT+LG; load@0.7; climb@2.1"
+    ]
+   },
+   {
+    "front": "over",
+    "flip": false,
+    "seed": 11,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DT_S: RT+RG; load@0.65; climb@2.05"
+    ]
+   },
+   {
+    "front": "over",
+    "flip": true,
+    "seed": 11,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DE_S: Y+LT; load@None; climb@0.95",
+     "DT_W: C+RG; load@0.65; climb@1.2"
+    ]
+   },
+   {
+    "front": "under",
+    "flip": false,
+    "seed": 3,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DE_S: RT+RG; load@None; other@2.5"
+    ]
+   },
+   {
+    "front": "under",
+    "flip": true,
+    "seed": 3,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DT_S: LG+C; load@0.7; None@None"
+    ]
+   },
+   {
+    "front": "under",
+    "flip": false,
+    "seed": 11,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DT_S: RG+C; load@0.65; None@None"
+    ]
+   },
+   {
+    "front": "under",
+    "flip": true,
+    "seed": 11,
+    "observerMatchesPlain": true,
+    "combinationSummary": [
+     "DE_S: LT+LG; load@None; climb@1.25"
+    ]
+   }
+  ],
+  "summary": {
+   "plannedCombinations": 10,
+   "climbed": 6,
+   "observerPlainControlsMatched": 8,
+   "limits": "Four-second observation window; ordinary flipped calls, not exact body reflections."
+  }
+ },
+ "nextScope": "Nextblockingpriority after proven puller-read repair. Represent genuine keeper contact/security and preserve it through ownership; personally observed attainable climb. Keep World/profiles/traction/arm-work limits unchanged.",
+ "falsification": [
+  "Promotion loses/gains handcapacity solely from departing primary scalar: reject.",
+  "Actual helperload treated as guaranteed insidehandcontrol: reject.",
+  "Release counted as success without achieved keeperload and attainable secondlevel work: reject.",
+  "Forced departure despite lostkeeperhands/support, delayed/missingLBcue, into-gap penetration or blockedexit: reject.",
+  "Acceptance depends on later yards/displacementlimit/strongerprofiles/new global solverdetail: reject."
+ ],
+ "requiredControls": [
+  "Loaded goodkeeper/poorprimary, acquiredLB, clear exit; exact spatialmirror/readorderreversal.",
+  "Badhelper/losthands-support/delayedLB/penetration/missingLB/blockedexit/legitimate prolongeddouble.",
+  "Same jointparameters and body state atownershiptransition; bounded load after nextsolve including unfavorable priorprimarycontrol.",
+  "ExactnativeG1-P059/G4-P023 and all8 ordinaryIZcontrols; preserve adverse outcomes, distinguish missingcue from physicalexecution."
+ ],
+ "dlGap": "stepRunRep has one opposition/lateral request and helpercount shedpenalty. Load-aware squeeze/anchor/skinny choice absent. Generated defensiveaidch4 supports studying it; independent completeDLclinic and measured anti-double displacement unverified."
+}

@@ -1,0 +1,121 @@
+{
+  "schema": "cleanup-v1",
+  "date": "2026-10-11",
+  "branch": "claude/engine-priorities",
+  "baselineCommit": "663193dfe7fe362d4f59072ef136437f881f1086",
+  "noHistoryRewrite": true,
+  "storage": {
+    "beforeTrackedFiles": 2642,
+    "beforeTrackedBytes": 1470747251,
+    "archivedFiles": 1190,
+    "archivedBytes": 1445065146,
+    "gitHistoryBefore": "1.17 GiB loose objects plus 468.30 KiB packs; retained, not a history reduction",
+    "metric": "Tracked source-tree bytes, excluding this small self-referential receipt after cleanup. Excludes git history, node_modules, out and provider data.",
+    "afterTrackedFiles": 1466,
+    "afterTrackedBytesExcludingReceipt": 25996917
+  },
+  "tests": {
+    "beforeDefault": {
+      "seconds": 72.17111710296012,
+      "returncode": 1,
+      "command": "npm test",
+      "node": "22.23.3",
+      "cwd": "/tmp/football-cleanup-baseline",
+      "workers": "Vitest default",
+      "tests": 1108,
+      "files": 96,
+      "limitation": "All assertions passed but runner exited1 for vitest-worker Timeout calling onTaskUpdate under default parallelism. Do not call this a clean pass."
+    },
+    "afterDefault": {
+      "seconds": 23.353113860997837,
+      "returncode": 0,
+      "command": "npm test",
+      "node": "22.23.3",
+      "cwd": "/workspace/football-simulation-",
+      "workers": "Vitest default",
+      "tests": 934,
+      "files": 80
+    },
+    "completeAfter": {
+      "command": "npm run test:all -- --maxWorkers=1",
+      "vitestSeconds": 118.32,
+      "tests": 1108,
+      "files": 99,
+      "returncode": 0
+    },
+    "preservedAssertions": {
+      "originalFiles": 19,
+      "newFiles": 22,
+      "expectLinesBefore": 802,
+      "expectLinesAfter": 802,
+      "identicalAssertions": true,
+      "researchFiles": 15,
+      "integrationFiles": 4
+    },
+    "researchTests": 168,
+    "integrationTests": 6,
+    "pythonTests": 121,
+    "typecheck": "pass",
+    "build": "pass",
+    "interpretation": "Default workflow runs fewer categories, not a faster engine. Research had little prior cost; game and ensemble checks dominated. Single-worker complete run avoids the observed baseline worker RPC timeout."
+  },
+  "engineUnchanged": {
+    "srcSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+    "unchangedFiles": 84,
+    "controlledPlays": [
+      "iz_strong vs cover3 seed41",
+      "smash vs cover3 seed41"
+    ],
+    "eventsResultsExact": true
+  },
+  "research": {
+    "productionRoot": "src/game/game.ts",
+    "reachableFileCount": 67,
+    "unreachablePausedPhysics": [
+      "src/physics/finite-support.ts",
+      "src/physics/inertial-gait.ts",
+      "src/physics/inertial-support.ts",
+      "src/physics/leg-compliance.ts",
+      "src/physics/material-plane.ts",
+      "src/physics/material-rigid.ts",
+      "src/physics/sole-contact.ts",
+      "src/physics/sole-shear.ts",
+      "src/physics/spatial-ground.ts",
+      "src/physics/spatial-sole-compliance.ts",
+      "src/physics/spatial-support.ts",
+      "src/physics/vertical-support.ts"
+    ],
+    "researchTests": [
+      "finite-support.test.ts",
+      "inertial-gait.test.ts",
+      "inertial-support.test.ts",
+      "leg-compliance.test.ts",
+      "material-plane.test.ts",
+      "material-rigid.test.ts",
+      "sole-contact.test.ts",
+      "sole-shear.test.ts",
+      "spatial-ground.test.ts",
+      "spatial-sole-compliance.test.ts",
+      "spatial-sole-events.test.ts",
+      "spatial-sole-traction.test.ts",
+      "spatial-support.test.ts",
+      "vertical-series-support.test.ts",
+      "vertical-support.test.ts"
+    ],
+    "note": "Legacy contact.ts is unreachable too, but its inexpensive law tests remain core. Active World/support/virtual-foot/actuation/bounded-attachment/filter tests remain core."
+  },
+  "artifactChecks": {
+    "filmZipRestoredFromPinnedCommit": true,
+    "recordingIndexRestoredFromPinnedCommit": true,
+    "bytesAndShaVerified": true,
+    "zipIntegrity": "pass",
+    "githubFallback": "implemented, not exercised; local history was available"
+  },
+  "documentation": {
+    "CLAUDEwords": 469,
+    "historicalReviews": 114,
+    "currentStatus": "docs/STATUS.md",
+    "validation": "docs/VALIDATION.md",
+    "randomReview": "data/reviews/current/random-play-review.json"
+  }
+}

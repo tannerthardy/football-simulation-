@@ -1,0 +1,473 @@
+{
+  "schema": "pass-cutoff-telemetry-contract-diagnostic-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "candidate": "be6225436498a43d8d98437a69069434e51565aa",
+  "testSourceSha256": "895d9892907717f17dfb5364fd416b06d0f540ac9d3f085b56691f0141f2088b",
+  "question": "Is the failed historical coverage-choice assertion a recorder defect or a current-behavior assumption after a legitimate transition?",
+  "rows": [
+    {
+      "arm": "accepted",
+      "endTime": 2.3,
+      "phase": "live",
+      "throwAt": -1,
+      "decisionCount": 6,
+      "historicalReaderContractPass": true,
+      "currentBehaviorAssumptionPass": true,
+      "copiedSourceImmutable": true,
+      "perceptionPresent": true,
+      "qbBeliefPresent": true,
+      "transitions": [],
+      "invalidCurrentBehaviorReferences": [],
+      "allDecisionKinds": {
+        "coverage-job": 6
+      },
+      "nonCoverageDecisions": [],
+      "events": [
+        {
+          "t": 0.25,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 44.99,
+            "y": 26.04
+          },
+          "note": "pass; pPass=0.75 focus=1.00 urgency=0.68"
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 44.62,
+            "y": 28.64
+          },
+          "note": "pass; pPass=0.71 focus=0.97 urgency=0.64"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 40.78,
+            "y": 22.69
+          },
+          "note": "pass; pPass=0.73 focus=0.83 urgency=0.60"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 40.79,
+            "y": 27.26
+          },
+          "note": "pass; pPass=0.74 focus=0.82 urgency=0.95"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 52,
+            "y": 35.54
+          },
+          "note": "pass; pPass=0.73 focus=0.87 urgency=0.76"
+        },
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 39.63573911656814,
+            "y": 29.269666608132987
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.5,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 40.82,
+            "y": 29.79
+          },
+          "note": "pass; pPass=0.70 focus=0.94 urgency=0.86"
+        },
+        {
+          "t": 0.65,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 52,
+            "y": 17.94
+          },
+          "note": "pass; pPass=0.71 focus=0.69 urgency=0.71"
+        },
+        {
+          "t": 0.7,
+          "type": "block_contact",
+          "a": 3,
+          "b": 14,
+          "pos": {
+            "x": 39.06681840683554,
+            "y": 26.850176585715744
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.7,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 40.47,
+            "y": 24.84
+          },
+          "note": "pass; pPass=0.70 focus=0.92 urgency=0.78"
+        },
+        {
+          "t": 0.7,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 44.42,
+            "y": 34.38
+          },
+          "note": "pass; pPass=0.74 focus=0.90 urgency=0.82"
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 38.95282224259756,
+            "y": 25.43425324022949
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.85,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 46.29,
+            "y": 8.93
+          },
+          "note": "pass; pPass=0.71 focus=0.99 urgency=0.81"
+        },
+        {
+          "t": 1.15,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 46.72,
+            "y": 44.66
+          },
+          "note": "pass; pPass=0.73 focus=0.84 urgency=0.64"
+        },
+        {
+          "t": 1.5,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 38.263617966176795,
+            "y": 21.9582431659304
+          },
+          "note": "pass"
+        },
+        {
+          "t": 1.85,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 36.68,
+            "y": 20.79
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.25,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 36.59,
+            "y": 28.61
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.25,
+          "type": "shed",
+          "a": 14,
+          "b": 3,
+          "pos": {
+            "x": 37.59,
+            "y": 27.81
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.25,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 36.93,
+            "y": 25.68
+          },
+          "note": "pass: turned the corner"
+        }
+      ]
+    },
+    {
+      "arm": "candidate",
+      "endTime": 2.3,
+      "phase": "live",
+      "throwAt": -1,
+      "decisionCount": 6,
+      "historicalReaderContractPass": true,
+      "currentBehaviorAssumptionPass": true,
+      "copiedSourceImmutable": true,
+      "perceptionPresent": true,
+      "qbBeliefPresent": true,
+      "transitions": [],
+      "invalidCurrentBehaviorReferences": [],
+      "allDecisionKinds": {
+        "coverage-job": 6,
+        "tackle-opportunity": 1
+      },
+      "nonCoverageDecisions": [
+        {
+          "t": 2.2,
+          "a": 11,
+          "kind": "tackle-opportunity",
+          "chose": "keep feet moving",
+          "cue": "delayed carrier motion and attainable movement",
+          "options": [
+            "keep feet moving",
+            "attempt current opportunity",
+            "take last reach"
+          ],
+          "detail": "Observed possession held; wrap quality 0.00; best attainable decision sample 0.18 at 0.15 s. Held movement command; future cuts and contacts are unknown."
+        }
+      ],
+      "events": [
+        {
+          "t": 0.25,
+          "type": "read",
+          "a": 15,
+          "pos": {
+            "x": 44.99,
+            "y": 26.04
+          },
+          "note": "pass; pPass=0.75 focus=1.00 urgency=0.68"
+        },
+        {
+          "t": 0.3,
+          "type": "read",
+          "a": 16,
+          "pos": {
+            "x": 44.62,
+            "y": 28.64
+          },
+          "note": "pass; pPass=0.71 focus=0.97 urgency=0.64"
+        },
+        {
+          "t": 0.4,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 39.687544961490076,
+            "y": 29.25265794649903
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 11,
+          "pos": {
+            "x": 40.86,
+            "y": 29.75
+          },
+          "note": "pass; pPass=0.75 focus=0.94 urgency=0.86"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 12,
+          "pos": {
+            "x": 40.78,
+            "y": 22.69
+          },
+          "note": "pass; pPass=0.73 focus=0.83 urgency=0.60"
+        },
+        {
+          "t": 0.45,
+          "type": "read",
+          "a": 20,
+          "pos": {
+            "x": 52,
+            "y": 35.54
+          },
+          "note": "pass; pPass=0.73 focus=0.87 urgency=0.76"
+        },
+        {
+          "t": 0.5,
+          "type": "read",
+          "a": 14,
+          "pos": {
+            "x": 40.73,
+            "y": 27.26
+          },
+          "note": "pass; pPass=0.75 focus=0.82 urgency=0.95"
+        },
+        {
+          "t": 0.7,
+          "type": "block_contact",
+          "a": 3,
+          "b": 14,
+          "pos": {
+            "x": 39.065697302970285,
+            "y": 26.849829819329695
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.7,
+          "type": "read",
+          "a": 21,
+          "pos": {
+            "x": 52.01,
+            "y": 18
+          },
+          "note": "pass; pPass=0.71 focus=0.69 urgency=0.71"
+        },
+        {
+          "t": 0.75,
+          "type": "read",
+          "a": 13,
+          "pos": {
+            "x": 40.37,
+            "y": 24.87
+          },
+          "note": "pass; pPass=0.70 focus=0.92 urgency=0.79"
+        },
+        {
+          "t": 0.75,
+          "type": "read",
+          "a": 19,
+          "pos": {
+            "x": 44.31,
+            "y": 34.36
+          },
+          "note": "pass; pPass=0.74 focus=0.90 urgency=0.82"
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 38.952727881615665,
+            "y": 25.434021898634757
+          },
+          "note": "pass"
+        },
+        {
+          "t": 0.85,
+          "type": "read",
+          "a": 17,
+          "pos": {
+            "x": 46.29,
+            "y": 8.93
+          },
+          "note": "pass; pPass=0.70 focus=0.99 urgency=0.81"
+        },
+        {
+          "t": 1.15,
+          "type": "read",
+          "a": 18,
+          "pos": {
+            "x": 46.72,
+            "y": 44.66
+          },
+          "note": "pass; pPass=0.73 focus=0.84 urgency=0.64"
+        },
+        {
+          "t": 1.2,
+          "type": "shed",
+          "a": 11,
+          "b": 1,
+          "pos": {
+            "x": 38.77,
+            "y": 30.13
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 1.5,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 38.30579955329802,
+            "y": 21.923638746984015
+          },
+          "note": "pass"
+        },
+        {
+          "t": 1.85,
+          "type": "shed",
+          "a": 12,
+          "b": 2,
+          "pos": {
+            "x": 36.68,
+            "y": 20.79
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.15,
+          "type": "pressure",
+          "a": 11,
+          "b": 0,
+          "pos": {
+            "x": 33.25,
+            "y": 28.67
+          }
+        },
+        {
+          "t": 2.25,
+          "type": "shed",
+          "a": 14,
+          "b": 3,
+          "pos": {
+            "x": 37.34,
+            "y": 28.55
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 2.25,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 36.99,
+            "y": 25.67
+          },
+          "note": "pass: turned the corner"
+        }
+      ]
+    }
+  ],
+  "completedGames": 0,
+  "shortSegments": 2,
+  "elapsedSeconds": 0.33946672899999997
+}

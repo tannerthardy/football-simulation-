@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Derived provider-angle pilot; no copied raw tracking files or engine calibration",
+  "tool": {
+    "path": "scripts/data/orientation_motion_audit.py",
+    "bytes": 16976,
+    "sha256": "d455dfa50113444797566e3c0be094971a8959611b6c3b319a2e0e8bfe3b42f0",
+    "python": "3.12.14",
+    "pandas": "2.2.3",
+    "numpy": "2.3.5"
+  },
+  "inputs": {
+    "games.csv": {
+      "bytes": 43174,
+      "sha256": "ca33543f6939af4ee393c568c60920c476ba91ddbfbdce5a06578b9492fa11fd"
+    },
+    "player_play.csv": {
+      "bytes": 146879042,
+      "sha256": "68926a268c0a49e58616001fb35ea179018d9cbbce1c5c31e7a4095273c35b2a"
+    },
+    "game_tracking_2023.csv": {
+      "bytes": 335463637,
+      "sha256": "385e620b6b94e8cd91f0d5776395b76b10d52a34401c764c21b4e98ab617855c"
+    },
+    "game_tracking_2025.csv": {
+      "bytes": 1022575093,
+      "sha256": "419b6bc0388a9210f61911ec2f1351b1e8d56355c0ac8576f24a3bbcd95e54ca"
+    }
+  },
+  "selection": {
+    "rule": "Earliest numeric tracked game_id with games.season_type=REG in each declared season; select before angles",
+    "seasons": [
+      2023,
+      2025
+    ],
+    "cohort": [
+      {
+        "season": 2023,
+        "gameId": "2023090700",
+        "rawRows": 5435
+      },
+      {
+        "season": 2025,
+        "gameId": "2025090400",
+        "rawRows": 30108
+      }
+    ]
+  },
+  "measurementTest": {
+    "path": "test/test_orientation_motion_audit.py",
+    "sha256": "b3898645498390aa9f552251676cfc6f1f54190fb1e78c00066be0e9a0d5d357",
+    "passed": 7
+  },
+  "files": {
+    "report.json.gz": {
+      "bytes": 40358,
+      "sha256": "eb679f9b06b6508c9bf1c7f11c101b85f5c90698251f2e4d2c75be4d8613ef37",
+      "decompressedBytes": 528515,
+      "decompressedSha256": "ec02185b23cc454742908cca453e6623340f9ff55ead1bcc6a15e6fa8f17004f"
+    },
+    "tests.log": {
+      "bytes": 105,
+      "sha256": "c6a2ab0390d670babdd6a68b373e01149704c25246292c46ca045763125d66a6"
+    },
+    "collection.log": {
+      "bytes": 170,
+      "sha256": "f11145aec2d0ebbe14368ba8dc4888f0a198b7cbf037ecf7aa0099b509fd919a"
+    },
+    "verification.json": {
+      "bytes": 340,
+      "sha256": "cce0a8cef8dab011dde84a4237fe0642cee1bcaa9de85402c26ac295a28745f7"
+    }
+  }
+}

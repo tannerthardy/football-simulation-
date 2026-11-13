@@ -1,0 +1,73 @@
+{
+  "schema": "independent-static-controller-review-v1",
+  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "acceptedSourceSha256": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+  "reviewMode": "read-only source and published evidence; minimal extractions only",
+  "decisions": [
+    {
+      "pr": 75,
+      "head": "ec4a3a18785513d8016047a9a416c42ca9b2faa4",
+      "ref": "refs/review/75-intake-v2",
+      "disposition": "ACCEPT",
+      "scope": [
+        "src/sim/behaviors/defense.ts",
+        "test/man-throw-recognition.test.ts",
+        "test/back-man-run-fit.test.ts"
+      ],
+      "sourceReferences": [
+        "src/sim/behaviors/defense.ts:214",
+        "src/sim/behaviors/defense.ts:743"
+      ],
+      "rationale": "The lazy callback preserves the existing man technique, route history and acquired run/block evidence while sawThrow is false. Recognized-flight ball/window behavior and generic callers remain unchanged. The owner-agreed test reconciliation explicitly establishes unrecognized-flight/held command and RNG equality, then recognized-ball priority, for mirrored insertion and alley; it retains FB, PA, unknown/negative carrying, current-belief and achieved-motion controls.",
+      "compatibleEvidence": "Published focused receipt on accepted source plus unchanged production extraction: 44 focused passes (36 back-man plus 8 direct recognition/World contracts), 1.953140604 launcher seconds; reviewed statically, not rerun.",
+      "preservedFailure": "0f349ef0735402a79d916cff7c9ad496f9424380 on prior accepted 8ca8deebe4afa91c3021bdd119bed8976cf00e47: typecheck/build pass, 1732 TypeScript pass and 2 fail. This receipt remains failed and is not exact-current combined clearance.",
+      "adverseEvidence": [
+        "Source-specific P006 first contact 3.35 to 3.55 seconds retains approach cost.",
+        "Source-specific Smash YAC 4.406273 to 5.651768, different first finisher and changed runner/entry geometry; no identical-entry grip-law inference.",
+        "Historical spread-air P045 remains a no-contact 49.503836-YAC touchdown."
+      ]
+    },
+    {
+      "pr": 80,
+      "head": "25a73a3fdf5046c8ed682001458d5fda46bb3c59",
+      "ref": "refs/review/80-intake",
+      "codePublication": "5e18fac098b067441e823205d0628a673e9c35c7",
+      "candidateSourceSha256": "257c603e417ec491b04ae911688c319bb9b60aa9ab9845f77147f562482b0f3d",
+      "disposition": "ACCEPT",
+      "scope": [
+        "src/sim/coverage/defender.ts",
+        "test/coverage-run-support.test.ts"
+      ],
+      "sourceReferences": [
+        "src/sim/coverage/defender.ts:103",
+        "src/sim/coverage/defender.ts:118"
+      ],
+      "rationale": "The coverage wrapper retains installed insert/alley support while its current subcontroller is ManCoverage. Activation requires current run belief and an affirmative personally acquired carrying picture of an originally backfield RB/FB. It passes the consumed cue into the existing keyed run fit, without live-possession confirmation. Both prerequisites are reevaluated every tick; supportRecorded affects diagnostics only. Recognized flight yields to the unchanged ball priority. Force/cutback and originally split backs are excluded.",
+      "compatibleEvidence": "Published 53 focused passes and typecheck; 8 native executions across two short baseline/candidate recorded/plain contexts, 26 simulated seconds, 5.744964659 native launcher seconds, 23.70909216 total listed command seconds. All reviewed statically, not rerun.",
+      "limits": [
+        "Both native contexts are unfinished and use restored post-constructor bodies/RNG, not exact original-game replay.",
+        "First whole-play fork is CB_W already man:X at 1.30 seconds; LB reassignment witness is later, not the first whole-play fork.",
+        "Gun Trey LB_M falls before reassignment; the repair does not prevent that fall.",
+        "At opposing-context cutoff the unchanged SS body's runner gap worsens 2.806 to 2.894 yards because runner continuation differs.",
+        "No completed tackle, run gain, YAC improvement, final support leverage or offense suppression is established.",
+        "Multi-back ambiguous positive pictures and existing sensing/recognition/run-fit debts remain outside this extraction.",
+        "The pre-fix five-failure reproducer and failed private-hash auditor remain failed; corrected saved-only audit does not claim equal private constructor state."
+      ]
+    }
+  ],
+  "substantiveFindings": [],
+  "realDependencies": "Both use acquired keyed run-fit and recognition APIs already in accepted develop. Neither minimal extraction depends on the other, #76, #81, parked P045 variants or experimental Physics. Accepted #69/#78 behavior was treated as a dependency, not re-reviewed.",
+  "combinedContract": "While coverage matching updates responsibility, current run belief plus positive acquired backfield RB/FB possession activates installed insert/alley support even when matched to another receiver. Held and unrecognized-flight states preserve that movement instruction. If support evidence is absent, ordinary installed man technique continues through unrecognized flight via #75. Existing recognized-flight priority wins over stale positive back pictures in both layers.",
+  "smallestAdditionalTest": null,
+  "testReason": "Existing coverage-run-support flight test covers held/unrecognized-flight equality and recognized-ball ownership for both insert and alley after reassignment; direct #75 tests and reconciled mirrored back-man tests cover fallback continuity. These tests will exercise the composed source in Integration's one exact combined verification. No separate replay, scenario, suite repeat or extra test is requested by this review.",
+  "integrationCondition": "ACCEPT is independent controller approval for the exact listed extractions. Integration still owns assembly and one exact combined verification before promotion; no new passing combined receipt or merge action is asserted here.",
+  "cost": {
+    "testsRun": 0,
+    "worldSteps": 0,
+    "nativeExecutions": 0,
+    "suitesRun": 0,
+    "gamesRun": 0,
+    "simulationRuntimeSeconds": 0
+  },
+  "mutations": "Only this review JSON under /tmp; no repository edits, checkout/reset/fetch, GitHub comments, or published actions."
+}

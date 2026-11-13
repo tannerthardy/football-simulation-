@@ -1,0 +1,111 @@
+{
+  "baselineCommit": "f331202f70e62cb66b9573eb7aa05d96f1c65129",
+  "baselineSourceSha256": "192b8d9644146584c6d9315cb1795b3a74e41451d8074703593513b4addf8f97",
+  "sourceSha256": "0bf4abc5bfdd385a7dd4231305adfab8fed4c6af5c9d64ad92cc4ac1f7bafd64",
+  "setup": {
+    "mechanical": {
+      "seeds": [
+        7,
+        19,
+        31,
+        43
+      ],
+      "reps": 20
+    },
+    "forcedHolds": {
+      "repsPerFrontRoster": 24,
+      "fronts": [
+        "over",
+        "under",
+        "wide9"
+      ],
+      "rosters": [
+        7,
+        19,
+        31,
+        43
+      ]
+    },
+    "pocket": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2
+    },
+    "gameGuards": {
+      "games": 32,
+      "seed": 7,
+      "leagues": 4
+    },
+    "budgetDrivesPerVariant": 20000,
+    "film": {
+      "seed": 7,
+      "games": 6,
+      "clips": 808,
+      "concepts": 27
+    }
+  },
+  "baselineMethod": "git archive f331202 src scripts package.json tsconfig.json test into ignored out/fundamentals/baseline; Node 22.23.3; same measurement scripts.",
+  "scriptSha256": {
+    "scripts/contact-fundamentals-lab.ts": "2f9dd5576146200d0f352f92276586470046259fb015d03e5897587f888cc551",
+    "scripts/pocket-anatomy.ts": "512e22e1d4f950785f0e03b148c774c3ba66d5d2ee84e6fa0be5b1887840709a",
+    "scripts/pocket-motion-lab.ts": "40506383526e4cd520f7512decade9385b78439deacc251ab14f55985f136cab",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/error-budget.ts": "a6734bf08a593d6203ea98aaa2fef0176312beada53490017d37ed7607cb76a9",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "reusedBaseline": {
+    "before-outcomes.json": {
+      "path": "data/reviews/coverage-judgment/after-outcomes.json",
+      "sha256": "1735736a0df6ba357782a2bc5c1550a7bdd73ec223723da11a93a4eaedcfc5b1",
+      "engineSourceSha256": "192b8d9644146584c6d9315cb1795b3a74e41451d8074703593513b4addf8f97"
+    },
+    "before-budget.log": {
+      "path": "data/reviews/coverage-judgment/after-budget.log",
+      "sha256": "22ea76e51a4b3c46e26967d1b81768be014c5c0fec7e7fe05cd58e821514834d",
+      "engineSourceSha256": "192b8d9644146584c6d9315cb1795b3a74e41451d8074703593513b4addf8f97"
+    },
+    "before-drives.log": {
+      "path": "data/reviews/coverage-judgment/after-drives.log",
+      "sha256": "862ad9fda3657653d96ced47142988bb5a8e59c2df921f548dc981b5b3d1b32b",
+      "engineSourceSha256": "192b8d9644146584c6d9315cb1795b3a74e41451d8074703593513b4addf8f97"
+    }
+  },
+  "references": {
+    "data/reviews/playbook-depth/nfl-pocket-push.json": "1117e288852420fb12dcb872da2a2dfdc676525031b21cb192470841af4c2d3a",
+    "data/reviews/error-budget/nfl-outcomes.json": "aaf6e0ff0ef2c32f10d7c5da2910087cdc611656ba845124bce606aa7604ab3f",
+    "data/reviews/error-budget/nfl-pocket.json": "b5e7088e581c1127fd928d763df0ccb960283e8a93d00033e0b173cfcdfe0df4"
+  },
+  "normalization": "Generated text logs have trailing spaces and final blank lines removed; numeric/test output retained. Reused baseline logs copied exactly.",
+  "limitations": [
+    "Geometric proximity is not PFF pressure. Blocker assignment/contact proxy differs from NFL PFF labels.",
+    "Late pocket slices select survivors. Paired seeds do not freeze later calls or random draws after outcomes change.",
+    "Controlled mechanical invariants do not establish NFL realism; full-game passing, turnovers, early run contact and stuff rates regress.",
+    "Players use 2D motion and simplified contact, not articulated 3D limbs."
+  ],
+  "artifactsSha256": {
+    "after-budget.log": "7afbf4a02767c3caa9c6517dba38bdd3b23bf07c8bb19503b9d00c7cfb47efdd",
+    "after-calibrate.log": "c7af8c899cc98732f01f1ff0333f8497a6a3a4cbd8ebb5957647ab704544a130",
+    "after-contact.json": "9fe03ea485a52bea04b60676c46803a2aaa739469d7fece9ced88cdcd87289f1",
+    "after-drives.log": "00eaf0f83e72175ef0d016e337b1a26cc3fe33b6032dcf5a9537ba6f9813fe83",
+    "after-hold.json": "c647e2ba388cb758c79102ed50deda7f05bc5ea8a0f076859cc3b7f2bb671934",
+    "after-outcomes.json": "caf97526639983814eb21bc4d9dc0ce43c9698ae02b69c3a17e78565b46459e6",
+    "after-pocket.json": "90de14ece76fb2beffcee0b2f62fb4f10e86122cf35705136902976ea6a392a3",
+    "after-tests.log": "00c4508f365dc5ab43b9b46a341c363300df84e9e4829aac17dd1ab556dfbf4e",
+    "before-budget.log": "22ea76e51a4b3c46e26967d1b81768be014c5c0fec7e7fe05cd58e821514834d",
+    "before-calibrate.log": "789cc0893099c31ddb466002ca65f5320385e4a279fb00fd6226b0b74b7ebfbc",
+    "before-contact.json": "1a0b9f7abba94575405656cad933cee07c6216fc5cc1b2f4b2db1c16cc5276b9",
+    "before-drives.log": "862ad9fda3657653d96ced47142988bb5a8e59c2df921f548dc981b5b3d1b32b",
+    "before-hold.json": "2d70e946566bb26e4a254c9bb7838ecdc2e7e4645aa3b265d82ad6b9cca056b3",
+    "before-outcomes.json": "1735736a0df6ba357782a2bc5c1550a7bdd73ec223723da11a93a4eaedcfc5b1",
+    "before-pocket.json": "5ba91a3ae15ebac996a6a2103e89cdc6ea56516cb4b29520874b4eea281d5db0",
+    "before-tests.log": "82ae05ba6c327b0991c533ed2f5e1ff27dc2b809938ad0e69375c2bb01d01710",
+    "browser-check.json": "3cd111f1c58d7af64f3c679bf11f9aae5381ce33dc3f886f40709ab50ea4a80c",
+    "build.log": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529",
+    "film-export.log": "9fc8cc5a764b061de4615619e21f6890550377f6a3cf58eb76ebd7bc77e9270d",
+    "typecheck.log": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d"
+  },
+  "filmSha256": {
+    "viewer/film-room.html": "b64e8e7e2a518d57269e39c2d9ccbb197fbf4ecb283290fca8f56c6a3dd42ba3",
+    "viewer/film-room.zip": "b66e4b5198e7e2305a290baffd3c2606189aa48dc7f2ca0fc0a2886fb74dc27b"
+  }
+}

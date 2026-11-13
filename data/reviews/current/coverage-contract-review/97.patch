@@ -1,0 +1,162 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 7535fc6652b03b319b10cdf22606fa6439b8d913..efeeea45ad39ffc0504373198479ed28c4a4f229 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -177,6 +177,8 @@ export interface ManOptions {
+   lev?: 'inside' | 'outside' | 'head';
+   trail?: boolean;
+   overTop?: boolean;
++  /** Acquired entry picture for a new match; used only to initialize cushion. */
++  initialPosition?: Vec2;
+ }
+ 
+ /** Man coverage with press/off technique, leverage and hip turn. */
+@@ -208,7 +210,7 @@ export class ManCoverage implements Behavior {
+     readonly opts: ManOptions = {},
+   ) {
+     this.press = press;
+-    this.initialCushion = Math.max(0.8, a.pos.x - target.pos.x);
++    this.initialCushion = Math.max(0.8, a.pos.x - (opts.initialPosition ?? target.pos).x);
+     void sim;
+   }
+ 
+diff --git a/src/sim/coverage/rules.ts b/src/sim/coverage/rules.ts
+index 99e7f241684c6ca9aea73d7663c1ba9e3c280759..20688494b4f654323e752b6158e0eaad88a3728b 100644
+--- a/src/sim/coverage/rules.ts
++++ b/src/sim/coverage/rules.ts
+@@ -48,7 +48,8 @@ export interface RuleCtx {
+ // ------------------------------------------------------------ helpers
+ 
+ const zoneOf = (c: RuleCtx, zone: ZoneId = c.zone): Directive => ({ t: 'zone', zone, style: c.style });
+-const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive => ({ t: 'man', r: rd.r, opts });
++const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive =>
++  ({ t: 'man', r: rd.r, opts: { ...opts, initialPosition: { ...rd.pos } } });
+ 
+ function ref(c: RuleCtx, n: 1 | 2 | 3, side: 'S' | 'W' = c.side): ReceiverRead | null {
+   return c.reader.readRef(c.sim, `${side}${n}`);
+@@ -101,7 +102,9 @@ function seamCurlFlat(c: RuleCtx, carry: number): Directive {
+     }
+     return man(two, { lev: 'inside' });
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
++  // Contact/low pads can precede a delayed release. Play the zone while he
++  // blocks, but only a route declaration closes this match key for the play.
++  if (two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
+   return zoneOf(c);
+ }
+ 
+@@ -181,7 +184,8 @@ function qSafety(c: RuleCtx): Directive {
+     c.state.mode = 'two';
+     return man(two, { overTop: true, lev: 'inside' });
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical' && (two.release !== 'block' || knowsPass(c.sim, c.a))) {
++  if (two.release === 'block') return knowsPass(c.sim, c.a) ? helpOne(c, one) : zoneOf(c);
++  if (two.release !== 'none' && two.release !== 'vertical') {
+     c.state.mode = 'one';
+     return helpOne(c, one);
+   }
+@@ -197,7 +201,7 @@ function wallTwo(c: RuleCtx, handoff: number): Directive {
+     c.state.mode = 'zoned';
+     return zoneOf(c);
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
++  if (two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
+   return zoneOf(c);
+ }
+ 
+diff --git a/test/match-block-release.test.ts b/test/match-block-release.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..3b3efe32d8332bdfa6e565d418bbc35e42f415f3
+--- /dev/null
++++ b/test/match-block-release.test.ts
+@@ -0,0 +1,90 @@
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { MatchRule, ZoneId } from '../src/playbook/types.js';
++import { CoverageDefender } from '../src/sim/coverage/defender.js';
++import type { Perceived } from '../src/sim/perception.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++function stage(rule: MatchRule, zone: ZoneId) {
++  const sim = new PlaySim({
++    offense: pickOffense(generateTeam(new Rng(101), 'O', 'PO1'), '11'),
++    defense: pickDefense(generateTeam(new Rng(102), 'D', 'PD1'), 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover4, pressure: null, label: '' },
++    los: 40, ballY: 26, firstDownX: 50, seed: 8101,
++  });
++  const a = sim.slot(rule === 'q_safety' ? 'SS' : 'LB_M')!, r = sim.slot(sim.offAlign.numbering.S2!)!;
++  const b = new CoverageDefender(a, sim, rule, zone, 'match', 'B', sim.offAlign.strongSign);
++  a.behavior = b; a.recog!.read = 'pass'; a.body.pos = { x: rule === 'q_safety' ? 52 : 46, y: r.pos.y+1 };
++  let picture: Perceived = { pos: { x: 41, y: r.pos.y }, vel: { x: .8, y: 0 },
++    stance: 'low', facing: 0, age: .2, carrying: false };
++  const see = sim.see.bind(sim);
++  sim.see = (observer,target,scale) => target === r ? picture : see(observer,target,scale);
++  const update = (t: number) => { sim.t=t; return b.update(a,sim); };
++  const block = () => { update(.6); update(.7); return update(.8); };
++  const release = () => {
++    picture = { ...picture, pos: { x: 48, y: r.pos.y }, vel: { x: 6.5, y: 0 }, stance: null };
++    update(1); update(1.1); return update(1.2);
++  };
++  return { sim,a,r,b,update,block,release,setPicture:(p: Perceived)=>{picture=p;},picture:()=>picture };
++}
++const roles = [
++  ['q_safety','quarter_s_in','man'],
++  ['c3_curl_flat','curl_flat_s','man'],
++  ['q_apex','hook_s','wall'],
++] as const;
++
++describe('acquired entry into a rule-based man technique', () => {
++  it('does not initialize from hidden live receiver positions', () => {
++    const one=stage('c3_curl_flat','curl_flat_s'), two=stage('c3_curl_flat','curl_flat_s');
++    for (const f of [one,two]) f.setPicture({ ...f.picture(),pos:{x:45,y:f.r.pos.y},vel:{x:6,y:0},stance:null });
++    for(const t of [1,1.1,1.2,1.25]) {
++      two.r.body.pos={x:85,y:2};two.r.body.vel={x:-9,y:8};
++      for(const f of [one,two]) f.sim.perception.record(f.sim.agents);
++      expect(two.update(t)).toEqual(one.update(t));
++      expect(two.b.recordedMan()).toEqual(one.b.recordedMan());
++      expect(two.sim.rng).toEqual(one.sim.rng);
++    }
++    expect(one.b.job).toBe(`man:${one.r.slot}`);
++    expect(one.b.recordedMan()?.initialCushion).toBe(1);
++    const before=one.update(1.3);
++    one.setPicture({ ...one.picture(),pos:{x:46,y:one.picture().pos.y} });
++    const fresh=one.update(1.4);
++    expect(fresh.vel.x).toBeGreaterThan(before.vel.x);
++    expect(one.b.recordedMan()?.initialCushion).toBe(1); // Entry only; do not restart a continuing technique.
++  });
++});
++
++describe('blocking is provisional evidence for an uncommitted match key', () => {
++  it.each(roles)('%s restores its installed #2 duty after an acquired vertical release', (rule,zone,technique) => {
++    const f=stage(rule,zone);f.block();
++    expect(f.b.recordedRule(.8).reads.find(rd=>rd.target===f.r.idx)?.release).toBe('block');
++    f.release();
++    expect(f.b.recordedRule(1.2).reads.find(rd=>rd.target===f.r.idx)?.release).toBe('vertical');
++    expect(f.b.job).toBe(`${technique}:${f.r.slot}`);
++    if(rule==='q_safety') expect(f.b.recordedRule(1.2).mode).toBe('two');
++  });
++
++  it.each(roles)('%s retains its block response while no release has been acquired', (rule,zone) => {
++    const f=stage(rule,zone);const command=f.block();
++    f.r.body.pos={x:85,y:2}; f.r.body.vel={x:9,y:0};
++    f.sim.perception.record(f.sim.agents);
++    expect(f.update(.9)).toEqual(command);
++    expect(f.b.job).not.toBe(`man:${f.r.slot}`);
++    expect(f.b.job).not.toBe(`wall:${f.r.slot}`);
++  });
++
++  it.each(roles)('%s preserves a genuine acquired flat/under exchange', (rule,zone) => {
++    const f=stage(rule,zone);
++    f.setPicture({ ...f.picture(),vel:{x:0,y:f.sim.offAlign.strongSign*5},facing:f.sim.offAlign.strongSign*Math.PI/2,stance:null });
++    f.block();const job=f.b.job;f.release();
++    // Deep judgment can legitimately rescue an uncovered observed vertical;
++    // the installed exchange itself must remain in its earned branch.
++    if(rule!=='q_safety') expect(f.b.job).toBe(job);
++    expect(f.b.recordedRule(1.2).mode).toBe(rule==='q_safety'?'one':'zoned');
++  });
++});

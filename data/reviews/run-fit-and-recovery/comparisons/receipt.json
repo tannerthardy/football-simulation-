@@ -1,0 +1,81 @@
+{
+  "schema": "run-fit-panel-comparison-receipt-v1",
+  "tool": "/workspace/football-simulation-/out/run-fit-follow-up/compare-panels.py",
+  "toolSha256": "393c9f1ab8ee58a1d97dedadd58335c1b56c96098e5df4b96c3b18b89609b947",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "candidateSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "inputPins": {
+    "runs": {
+      "baselineFile": "data/reviews/pursuit-and-tackle/runs/final.json.gz",
+      "baselineSha256": "e40f3bb57be5dbf1bf962fe7651d76d6baed99ee01c59d3a2b20c1ac02b0ac82",
+      "candidateFile": "out/run-fit-follow-up/runs-final.json.gz",
+      "candidateSha256": "71db674aed5b1c76f4c6b2780be0333c786dc4b189514c72534af816bb2c2a04",
+      "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "candidateSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "schema": "combo-transfer-review-v1",
+      "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+      "cohortCanonicalSha256": "32fb454ce3af75dd0ab6fb43780677199c69a0222ac51f585a0bb3a4873ebb67",
+      "sourceStableBoth": true,
+      "cohortSame": true,
+      "definitionsSame": true,
+      "collectorSame": true
+    },
+    "passing": {
+      "baselineFile": "data/reviews/pursuit-and-tackle/passing/final.json.gz",
+      "baselineSha256": "ce9695394f4145814326bc01cb36d67285ea7fcace29cd1caf6e9b6e69ae5147",
+      "candidateFile": "out/run-fit-follow-up/passing-final.json.gz",
+      "candidateSha256": "ec2a514b84d4d14c53687108f3c0b24d23734ecd60e65eec91e6deeaed47b556",
+      "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "candidateSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "schema": "decision-awareness-native-v1",
+      "collectorSha256": "73c1763a8be3c0615d590b03440e46cc070249ade1e220a75780d364c227bf5e",
+      "cohortCanonicalSha256": "fa70bc22de0f807db298dcc068842af96b3d63da55b0020203c797f875c7e8c0",
+      "sourceStableBoth": true,
+      "cohortSame": true,
+      "definitionsSame": true,
+      "collectorSame": true
+    },
+    "approach": {
+      "baselineFile": "data/reviews/pursuit-and-tackle/approach/final.json.gz",
+      "baselineSha256": "3bfd7da4b4fb505e824e042f4b57e6b61f28c88df01650cd05249a35302af1e1",
+      "candidateFile": "out/run-fit-follow-up/approach-final.json.gz",
+      "candidateSha256": "3bc9452c850cc10dd1c65ab6354113bbd0f1f205e15cb2c1c784eeb78ea40ed4",
+      "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "candidateSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "schema": "tackle-approach-review-v1",
+      "collectorSha256": "76f22c61b97c171040918cf6a6d5b9b5bd55f5a49848cdf2e02a77ac03c02e33",
+      "cohortCanonicalSha256": "8c5be5451b28a506b0f774ab23abbb8d5eab267b3021684ae36bd3786dd61196",
+      "sourceStableBoth": true,
+      "cohortSame": true,
+      "definitionsSame": true,
+      "collectorSame": true,
+      "inputSha256": "46a1d3b8cbed9b54c62400e3a7f44c323863677eb57cbf97f5ae1d90b61f28c3"
+    }
+  },
+  "outputsSha256": {
+    "out/run-fit-follow-up/runs-comparison.json.gz": "d15d7184ab2cbee9f1fc7c88e6a8f5e0990bf7d0c8db4f7dff8b9b0e4e5d3883",
+    "out/run-fit-follow-up/passing-comparison.json.gz": "0cbd4b0464a0d5b1bc51ca40ba8758b5196e2eb3dbc51411593b0abae2ab3917",
+    "out/run-fit-follow-up/approach-comparison.json.gz": "1c5777c22b35bace9809416be9cbbdc80993986e666bf83b9dbc9edf34f8e763",
+    "out/run-fit-follow-up/panel-comparison-findings.md": "95329a85f573eb35f7c37eda94903a8e1cba2ef84322bb09c8eb2a5c423d71b2"
+  },
+  "assertedMatched": [
+    "cohort/configuration",
+    "collector hashes",
+    "recorded initial/profile/roster hashes",
+    "run initial projections",
+    "approach initial players",
+    "row input order",
+    "measurement definitions",
+    "stable source guards"
+  ],
+  "observerControls": {
+    "runs": 162,
+    "passing": 96,
+    "approach": 32
+  },
+  "limits": [
+    "No resimulation or additional state reads.",
+    "Existing recorded hashes and raw projections are matched; JavaScript JSON.stringify-generated input hashes are not recomputed with Python float encoding.",
+    "Changed football populations are not pooled; broad games are separate evidence."
+  ]
+}

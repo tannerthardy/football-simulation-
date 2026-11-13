@@ -1,0 +1,12 @@
+{
+  "schema": "long-yardage-film-browser-smoke-v1",
+  "checks": [
+    "Four fixed controlled clips load offline with third&27 and no invented game clock/score",
+    "LY-R1-iz_strong-3rd27-rush4-R: assignments/contact/movement render; edge/backer/safety/carrier inspection and seed/context succeed",
+    "LY-R1-iz_strong-3rd27-drop3-R: assignments/contact/movement render; edge/backer/safety/carrier inspection and seed/context succeed",
+    "LY-R1-draw-3rd27-rush4-R: assignments/contact/movement render; edge/backer/safety/carrier inspection and seed/context succeed",
+    "LY-R1-draw-3rd27-drop3-R: assignments/contact/movement render; edge/backer/safety/carrier inspection and seed/context succeed",
+    "Stable named-fixture search selects the three-rusher Inside Zone clip"
+  ],
+  "pageErrors": []
+}

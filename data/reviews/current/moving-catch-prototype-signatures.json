@@ -1,0 +1,129 @@
+{
+  "schema": "moving-catch-completed-prototype-signatures-v1",
+  "purpose": "Frozen observer-neutral completed prototypes, for exact production result/body/intent/RNG/perception parity. Artifact paths are local optional film; reproducing parity requires only tracked inputs and these signatures. Additional explicitly named fresh unchanged controls compare to their frozen baseline signatures.",
+  "cases": [
+    {
+      "id": "R3101-S1001-P58",
+      "signature": "9bbf9b1d6fbde2b96e5640d2818e7b0a5c001a934819fc863fe85a0a430df530",
+      "artifact": {
+        "path": "out/catch-team-arrival/R3101-S1001-P58-team-window.json.gz",
+        "sha256": "68992411fa637da11688d628e330938c4832c76489a8836617d658eb0e3bae13"
+      }
+    },
+    {
+      "id": "R6103-S3001-P4",
+      "signature": "a9fb63ed9fd54ec91354d9336cac2c88dd22eb56131d19fabf0c06c284e0b160",
+      "artifact": {
+        "path": "out/catch-team-arrival/R6103-S3001-P4-team-window.json.gz",
+        "sha256": "a89afc1498b211d0f25d6de83f5c87f50b10b32944e04899f02ecc02c8d66791"
+      }
+    },
+    {
+      "id": "R7204-S4001-P16",
+      "signature": "5198ea6a2da6bcfc08a80392ef028d0a7d9632e88e5d67c8fcdf0cf28f5677aa",
+      "artifact": {
+        "path": "out/catch-team-arrival/R7204-S4001-P16-team-window.json.gz",
+        "sha256": "3e0e593d0633de55591cb0b01d8736fd5e0d0f86dacecab8f217e83017828355"
+      }
+    },
+    {
+      "id": "R4202-S2001-P95",
+      "signature": "755607b9e5154820a97e7f49ffbfbe5d08882c824e2daa4956d9502cc94db13e",
+      "artifact": {
+        "path": "out/catch-team-arrival/R4202-S2001-P95-team-window.json.gz",
+        "sha256": "84c4b2909dc14fb00a6390c8132e3c009b6752930bfc5c6d3e77d679b33e07e7"
+      }
+    },
+    {
+      "id": "R3101-S1001-P19",
+      "signature": "1885ef33f6426d7fbfd6cc9a8fa3b31e5a03c640fda86facb6dc72eb1794a336",
+      "artifact": {
+        "path": "out/catch-team-arrival/R3101-S1001-P19-team-window.json.gz",
+        "sha256": "0b2f5a8ff35ac8d3cc9931fb4ea2ad8cdaa8e9dcfa3c352396991104f1113dec"
+      }
+    },
+    {
+      "id": "R3101-S1001-P103",
+      "signature": "8e960101495fbc07728332d018b529835898a2cdb68a230ef4b8a72539a3b996",
+      "artifact": {
+        "path": "out/catch-team-arrival/R3101-S1001-P103-team-window.json.gz",
+        "sha256": "5176609cfd5e886fbfb5dce8ec4fa14a1c735eadc19e209375017385bb61c8d0"
+      }
+    },
+    {
+      "id": "H10831-C1-S51001",
+      "signature": "3b536a01de68659bc98881dfe84abe315cfeadb91af4f64d67d10e56e0640e00",
+      "artifact": {
+        "path": "out/catch-team-arrival/H10831-C1-S51001-team-window.json.gz",
+        "sha256": "6c35053ff4590b2ea3a9871c44527c08d1a22545d83296e6b5d08f1b0581bb40"
+      }
+    },
+    {
+      "id": "H10831-C3-S51003",
+      "signature": "3914947f0d74faed9f66103314aad5bc37c69af915a6d6ea03ccb04e0c803b1e",
+      "artifact": {
+        "path": "out/catch-team-arrival/H10831-C3-S51003-team-window.json.gz",
+        "sha256": "579528f7c3cd4fc63216df2f2bdcfc0fdb0eb2130ade0846df190d468bb48334"
+      }
+    },
+    {
+      "id": "H10831-C4-S51004",
+      "signature": "3d0365139e6be1ca1e558789cd10d5f0b23c5cd90da0ae424bbffe4a66b9a7cc",
+      "artifact": {
+        "path": "out/catch-team-arrival/H10831-C4-S51004-team-window.json.gz",
+        "sha256": "b2b702df74c3d399644834ce3b1457c25258a75c535bec46f4b8eea22a637a4a"
+      }
+    },
+    {
+      "id": "H11842-C4-S52004",
+      "signature": "f07647320171c9e6adad2b31a1ff0f335402dad9ac3147c1966d2eace7a3b853",
+      "artifact": {
+        "path": "out/catch-team-arrival/H11842-C4-S52004-team-window.json.gz",
+        "sha256": "89332d0e9cf2790de093758a10f20a4dbfb1b90fc15ff4b39d80cbbcede02597"
+      }
+    },
+    {
+      "id": "R3101-S1001-P173",
+      "signature": "bf086e531b54b23b5ca2e20b1801a580c9aa55b76d38d03915db1748acfb29cc",
+      "artifact": {
+        "path": "out/catch-team-arrival/scope/R3101-S1001-P173-team-window.json.gz",
+        "sha256": "3174c87336e6c36e98fe88f8008eace7aa0b6cc26c6777d5baeced1b0c2583f9"
+      }
+    },
+    {
+      "id": "H10831-C2-S51002",
+      "signature": "8e6b1cf094d6b592344af9348f9d35c3a59c66924ac99132ce04f497454a303d",
+      "artifact": null,
+      "baselineSignature": "8e6b1cf094d6b592344af9348f9d35c3a59c66924ac99132ce04f497454a303d",
+      "baselineStateUnchanged": true,
+      "note": "Full baseline state unchanged"
+    },
+    {
+      "id": "H11842-C2-S52002",
+      "signature": "04035e99b6c6227f49d2e377673fd1bbaa941166cc6a1ece46e15028de0db919",
+      "artifact": null,
+      "baselineSignature": "04035e99b6c6227f49d2e377673fd1bbaa941166cc6a1ece46e15028de0db919",
+      "baselineStateUnchanged": true,
+      "note": "Full baseline state unchanged"
+    },
+    {
+      "id": "H11842-C3-S52003",
+      "signature": "69147170ca55a348ff3aba9940577c93e4c5e8084c46cbb2c03f32747e9ec417",
+      "artifact": null,
+      "baselineSignature": "69147170ca55a348ff3aba9940577c93e4c5e8084c46cbb2c03f32747e9ec417",
+      "baselineStateUnchanged": true,
+      "note": "Full baseline state unchanged"
+    },
+    {
+      "id": "H11842-C1-S52001",
+      "signature": "d264e725ed2fcfb723c8a24cf5fde944c341b4fec7bb4d91759512a9d2db44a7",
+      "artifact": {
+        "path": "out/catch-production/incomplete-inspection/H11842-C1-S52001-production.json.gz",
+        "sha256": "345cc079ca2049f7220c5b2b89f02c76d003f0aaff71d8f5868ee76d20590e73"
+      },
+      "baselineSignature": "87eba054904229b129b6440a1f9d1c68631fce50be4bb9c2a37ac46c5a7f2646",
+      "baselineStateUnchanged": false,
+      "note": "Same complete football result, ball/carrier frames unchanged; eligible safety path differs. Failed baseline-state-equality assumption retained in remaining-fresh receipt; actual-source observed/plain inspection reproduces candidate fingerprint."
+    }
+  ]
+}

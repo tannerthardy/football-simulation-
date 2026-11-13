@@ -1,0 +1,12 @@
+{
+  "zip": "out/helper-fit/review/helper-fit-and-coverage.zip",
+  "zipSha256": "52f3cc8ff50b22eba9e617c087cb33f5fbd0f340c4a609690137ca38ea63e4a0",
+  "zipBytes": 8708705,
+  "member": "helper-fit-and-coverage.html",
+  "htmlSha256": "4a53e9469c06baace49f2ba19fb01975cf91a4589365fe69290fcb85605a2624",
+  "htmlBytes": 12532248,
+  "singleMemberExactBytes": true,
+  "browserChecks": 38,
+  "clips": 20,
+  "nativePairs": 10
+}

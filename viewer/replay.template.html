@@ -1,4 +1,4 @@
-<title>Gridiron Replay</title>
+<title>Gridiron Film Room</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -39,8 +39,9 @@
   --good: #4cc27c; --bad: #ff7a6b; --warn: #f0b43c; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { height: 100%; }
-body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.45; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.45; }
 .app { max-width: 1400px; margin: 0 auto; padding-block: 16px 24px; padding-inline: 16px; display: grid; gap: 14px; }
 .scoreboard { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
 .brand { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: 0.04em; text-transform: uppercase; }
@@ -54,7 +55,7 @@ body { background: var(--bg); color: var(--ink); font-family: var(--body); font-
 .linescore th, .linescore td { padding: 2px 8px; text-align: right; font-variant-numeric: tabular-nums; }
 .linescore th { font-weight: 500; }
 .linescore td:first-child, .linescore th:first-child { text-align: left; }
-.main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 14px; align-items: start; }
 @media (max-width: 980px) { .main { grid-template-columns: minmax(0, 1fr); } }
 .monitor { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
 .sit { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
@@ -70,7 +71,8 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 button, .chip { font-family: var(--body); font-size: 13px; font-weight: 600; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 6px; padding: 6px 10px; cursor: pointer; }
 button:hover, .chip:hover { border-color: var(--muted); }
-button:focus-visible, .chip:focus-visible, input:focus-visible, .play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:focus-visible, .chip:focus-visible, input:focus-visible, select:focus-visible, .play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: 0.45; cursor: default; }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); min-width: 76px; }
 button[aria-pressed="true"], .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .timeline { position: relative; height: 26px; }
@@ -84,9 +86,54 @@ button[aria-pressed="true"], .chip[aria-pressed="true"] { background: var(--ink)
 .result p { margin: 0; font-size: 14px; }
 .kv { display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .kv b { color: var(--ink); font-weight: 500; }
-.sheet { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; display: grid; grid-template-rows: auto minmax(0, 1fr); max-height: calc(100vh - 140px); min-width: 0; }
+.sheet { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; display: grid; grid-template-rows: auto minmax(0, 1fr); max-height: 860px; min-width: 0; }
 @media (max-width: 980px) { .sheet { max-height: 70vh; } }
-.filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.library { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 12px; }
+.library-title { display: flex; gap: 8px 16px; align-items: baseline; flex-wrap: wrap; }
+.library-title h1 { margin: 0; font-family: var(--display); font-size: 23px; }
+.library-title p { margin: 0; color: var(--muted); font-size: 12px; }
+.library-title button { margin-left: auto; }
+.library-body { display: grid; gap: 12px; }
+.library-body[hidden] { display: none; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.filter-grid label, .sheet-head label { display: grid; gap: 4px; color: var(--muted); font-size: 11px; font-weight: 600; }
+select, input[type="search"] { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 8px; background: var(--panel-2); color: var(--ink); font-family: var(--body); font-size: 13px; }
+.more-filters summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+.more-filters .filter-grid { margin-top: 10px; }
+.selection-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.selection-bar p { margin: 0 auto 0 0; color: var(--muted); font-size: 12px; }
+.selection-bar strong { color: var(--ink); }
+.sheet-head { padding: 12px; border-bottom: 1px solid var(--line); display: flex; align-items: end; gap: 10px; }
+.sheet-head label { flex: 1; }
+.group-head { position: sticky; top: 0; z-index: 1; background: var(--panel); display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.group-head div { flex: 1; min-width: 0; }
+.group-head strong { display: block; font-size: 13px; }
+.group-head small { color: var(--muted); font-size: 11px; }
+.group-head button { padding: 4px 8px; font-size: 11px; }
+.empty { padding: 30px 20px; color: var(--muted); text-align: center; }
+.play .name { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.play .gain { white-space: nowrap; font-family: var(--mono); font-size: 12px; }
+.play[aria-current="true"] { box-shadow: inset 3px 0 var(--accent); }
+.now-playing { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 12px; width: 100%; }
+.now-playing strong { color: var(--ink); }
+.event-jumps { display: flex; flex-wrap: wrap; gap: 6px; }
+.event-jumps button { font-family: var(--mono); font-size: 11px; padding: 4px 7px; }
+.clip-export { border-top: 1px solid var(--line); padding-top: 9px; display: grid; gap: 7px; }
+.clip-export label { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 12px; }
+.clip-export input { width: 70px; border: 1px solid var(--line); border-radius: 5px; padding: 5px; background: var(--panel-2); color: var(--ink); font-family: var(--mono); }
+.status-note { color: var(--muted); font-size: 12px; min-height: 1.45em; overflow-wrap: anywhere; }
+.inspector { padding: 12px 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.inspector h2 { margin: 0; font-family: var(--display); font-size: 21px; }
+.inspector-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; margin: 0; }
+.inspector-grid dt { color: var(--muted); font-size: 11px; }
+.inspector-grid dd { margin: 0; font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.layer-controls { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.layer-controls label { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+.layer-controls label:has(input:disabled) { color: var(--muted); }
+.detail-list { display: grid; gap: 5px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.detail-list button { font-family: var(--mono); font-size: 11px; padding: 2px 5px; margin-right: 5px; }
+@media (max-width: 680px) { .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .app { padding-inline: 8px; } .linescore { display: none; } }
 .list { overflow-y: auto; padding: 4px 0 8px; }
 .qhead { position: sticky; top: 0; background: var(--panel); font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; color: var(--muted); padding: 8px 12px 4px; border-bottom: 1px solid var(--line); }
 .play { display: grid; grid-template-columns: 4px minmax(0, 1fr); gap: 0 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
@@ -107,14 +154,36 @@ button[aria-pressed="true"], .chip[aria-pressed="true"] { background: var(--ink)
 
 <div class="app">
   <header class="scoreboard">
-    <div class="brand">Gridiron Replay<small>All-22 · simulated by Gridiron Engine</small></div>
+    <div class="brand">Gridiron Film Room<small id="game-label">All-22 · simulated by Gridiron Engine</small></div>
     <div class="teams" id="teams"></div>
     <table class="linescore" id="linescore" aria-label="Score by quarter"></table>
   </header>
 
+  <section class="library" aria-label="Film library">
+    <div class="library-title"><h1>Find your next set of plays</h1><p id="collection"></p><button id="toggle-filters" aria-expanded="true" aria-controls="filter-controls">Hide filters</button></div>
+    <p id="cohort-note" class="status-note" hidden></p>
+    <div class="library-body" id="filter-controls">
+    <div class="filters" id="filters" aria-label="Play families"></div>
+    <div class="filter-grid">
+      <label>Offensive concept<select id="concept-filter"></select></label>
+      <label>Defensive front<select id="front-filter"></select></label>
+      <label>Coverage<select id="coverage-filter"></select></label>
+      <label>Result<select id="outcome-filter"><option value="all">All results</option><option value="complete">Completions</option><option value="td">Touchdowns</option><option value="big">20+ yards</option><option value="to">Turnovers</option><option value="sack">Sacks</option><option value="pressure">Pressure: defender within 2 yd</option><option value="stuff">Runs: no gain / loss</option><option value="broken">Broken tackles</option><option value="oob">Out of bounds</option><option value="nullified">Nullified by penalty</option></select></label>
+    </div>
+    <details class="more-filters"><summary>Formation, game, team &amp; search</summary><div class="filter-grid">
+      <label>Formation<select id="formation-filter"></select></label>
+      <label>Game<select id="game-filter"></select></label>
+      <label>Offense<select id="team-filter"></select></label>
+      <label>Search plays, IDs or players<input type="search" id="search" placeholder="G2-P088, Mesh, player name…"></label>
+    </div></details>
+    </div>
+    <div class="selection-bar"><p id="selection-summary" aria-live="polite"></p><button id="reset-filters">Clear filters</button><button id="watch" class="primary">▶ Watch selection</button></div>
+  </section>
+
   <div class="main">
     <section class="monitor" aria-label="Play replay">
       <div class="sit">
+        <div class="now-playing"><strong id="clip-title">—</strong><span id="playlist-position"></span></div>
         <div class="dd" id="dd">—</div>
         <div class="clock" id="clock"></div>
         <dl class="calls">
@@ -133,121 +202,288 @@ button[aria-pressed="true"], .chip[aria-pressed="true"] { background: var(--ink)
         </div>
         <div class="tlabels" id="tlabels"></div>
         <div class="row">
-          <button id="prev" title="Previous play (↑)">◀◀</button>
-          <button id="back" title="Step back (←)">◀</button>
+          <button id="prev" title="Previous play (↑)" aria-label="Previous play">◀◀</button>
+          <button id="back" title="Step back (←)" aria-label="Step back">◀</button>
           <button id="playbtn" class="primary">Play</button>
-          <button id="fwd" title="Step forward (→)">▶</button>
-          <button id="next" title="Next play (↓)">▶▶</button>
+          <button id="fwd" title="Step forward (→)" aria-label="Step forward">▶</button>
+          <button id="next" title="Next play (↓)" aria-label="Next play">▶▶</button>
+          <button id="restart" title="Restart this play (R)">↺ Replay</button>
           <button id="speedbtn" title="Playback speed">1×</button>
           <button id="labels" aria-pressed="false" title="Show slots instead of jersey numbers (L)">Slots</button>
           <button id="trails" aria-pressed="true" title="Route trails (T)">Trails</button>
           <button id="wide" aria-pressed="false" title="Wide view (W)">Wide</button>
-          <button id="auto" aria-pressed="false" title="Auto-advance to the next play">Auto</button>
+          <button id="auto" aria-pressed="true" title="Play the next matching clip after a short pause">Auto-next</button>
+          <button id="loop-playlist" aria-pressed="false" title="Return to the first matching clip after the last">Loop selection</button>
+        </div>
+        <div class="event-jumps" id="event-jumps" aria-label="Jump to a play event"></div>
+        <div class="row"><label for="inspect-player">Inspect player</label><select id="inspect-player" aria-label="Inspect player"><option value="-1">Ball carrier</option></select><small id="player-motion"></small></div>
+        <div class="layer-controls" aria-label="Replay layers">
+          <label><input id="layer-assignments" type="checkbox">Assignments</label>
+          <label><input id="layer-movement" type="checkbox">Movement intent</label>
+          <label><input id="layer-contact" type="checkbox">Block &amp; tackle contact</label>
+          <label><input id="layer-perception" type="checkbox">Perceived targets</label>
+        </div>
+        <div id="telemetry-status" class="status-note"></div>
+        <div class="clip-export" aria-label="Export a video clip">
+          <div class="row"><label>Start <input id="clip-start" type="number" min="0" step="0.1" aria-label="Video clip start in seconds">s</label><label>End <input id="clip-end" type="number" min="0" step="0.1" aria-label="Video clip end in seconds">s</label><button id="clip-whole">Whole play</button><button id="clip-from-here">Start here</button><button id="export-video">Export clip (.webm)</button><button id="cancel-export" hidden>Cancel export</button></div>
+          <div id="export-status" class="status-note" role="status" aria-live="polite">Exports the selected time range at 1×, with your visible layers and the play reference.</div>
         </div>
       </div>
+      <section class="inspector" aria-label="Selected player detail"><h2 id="inspector-title">Player detail</h2><small class="status-note">Click a player on the field or select one above. Body-facing ticks are not eye tracking.</small><dl id="inspector-state" class="inspector-grid"></dl><div id="inspector-links" class="detail-list"></div><div id="inspector-decisions" class="detail-list"></div><details><summary>Recorded player ratings</summary><dl id="inspector-ratings" class="inspector-grid"></dl></details></section>
+      <details class="inspector"><summary>Recorded event notes</summary><div id="event-details" class="detail-list"></div></details>
       <div class="result">
         <p id="result">Pick a play from the sheet.</p>
+        <div class="row"><input id="play-reference" type="text" readonly aria-label="Play reference with film version and timestamp" style="flex:1;min-width:0;font-family:var(--mono)"><button id="copy-reference">Copy play reference</button></div>
+        <small id="copy-status" role="status"></small>
         <div class="kv" id="kv"></div>
-        <div class="foot"><kbd>Space</kbd> play · <kbd>←</kbd><kbd>→</kbd> step · <kbd>↑</kbd><kbd>↓</kbd> plays · offense always attacks to the right · blue = line of scrimmage, yellow = line to gain</div>
+        <div class="foot"><kbd>Space</kbd> play · <kbd>←</kbd><kbd>→</kbd> step · <kbd>↑</kbd><kbd>↓</kbd> matching plays · <kbd>R</kbd> replay · offense attacks right · blue = line of scrimmage, yellow = line to gain · player ticks = body facing, trails = paths</div>
       </div>
     </section>
 
-    <aside class="sheet" aria-label="Play-by-play">
-      <div class="filters" id="filters"></div>
-      <div class="list" id="list"></div>
+    <aside class="sheet" aria-label="Matching replay clips">
+      <div class="sheet-head"><label>Group plays by<select id="group-by"><option value="concept">Offensive concept</option><option value="front">Defensive front</option><option value="coverage">Coverage</option><option value="formation">Formation</option><option value="game">Game / chronological</option></select></label><span id="group-count" class="foot"></span></div>
+      <div class="list" id="list" aria-label="Replay playlist"></div>
     </aside>
   </div>
 </div>
 
 <script>
 const REPLAY = /*__REPLAY_DATA__*/null;
+window.REPLAY_READY = Promise.resolve(true);
+window.TELEMETRY_READY = Promise.resolve(true);
 (function () {
-  if (!REPLAY) { document.getElementById('result').textContent = 'No replay data embedded. Run: npm run replay'; return; }
   const $ = (id) => document.getElementById(id);
+  if (!REPLAY) {
+    document.querySelector('.library-title h1').textContent = 'Open the recorded film room';
+    $('collection').textContent = 'This template has no recorded plays embedded.';
+    $('filter-controls').hidden = true;
+    $('toggle-filters').hidden = true;
+    document.querySelector('.selection-bar').innerHTML = '<p>Download the film room, unzip it, and open <strong>film-room.html</strong> in your browser.</p><a class="chip" href="https://github.com/tannerthardy/football-simulation-/raw/refs/heads/claude/engine-priorities/viewer/film-room.zip">Download recorded plays</a>';
+    document.querySelector('.main').hidden = true;
+    return;
+  }
   const canvas = $('field');
   const ctx = canvas.getContext('2d');
   const plays = REPLAY.plays;
   const meta = REPLAY.meta;
-  // Positions, facings and ball coordinates arrive in tenths.
+  const games = REPLAY.games || [meta];
+  const catalog = REPLAY.catalog || {};
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const familyNames = { zone: 'Zone runs', gap: 'Gap runs', 'other-run': 'Other runs', quick: 'Quick game', dropback: 'Dropback passes', playaction: 'Play action', screen: 'Screens', other: 'Other plays' };
+  const familyOrder = Object.keys(familyNames);
+  // Positions, facings and ball coordinates arrive in tenths, or in the
+  // frames' own scale (hundredths in newer replays).
   for (const p of plays) {
+    p.game ??= 0;
+    p.id ??= `G${p.game + 1}-P${String(p.index + 1).padStart(3, '0')}`;
+    p.concept ??= { id: p.kindLabel, name: p.kindLabel, family: 'other' };
     if (!p.frames) continue;
-    p.frames.p = Float32Array.from(p.frames.p, (v) => v / 10);
-    p.frames.b = Float32Array.from(p.frames.b, (v) => v / 10);
+    const scale = p.frames.scale || 10;
+    p.frames.p = Float32Array.from(p.frames.p, (v) => v / scale);
+    p.frames.b = Float32Array.from(p.frames.b, (v) => v / scale);
+    if (p.frames.s) p.frames.s = Float32Array.from(p.frames.s, (v) => v / scale);
   }
+  const filmed = plays.map((p, i) => p.frames ? i : -1).filter((i) => i >= 0);
   const teams = { [meta.home.abbr]: meta.home, [meta.away.abbr]: meta.away };
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-
-  // ---------------------------------------------------------------- header
-  $('teams').innerHTML = [meta.away, meta.home].map((t, i) => `<div class="team"><span class="swatch" style="background:${t.color}"></span><span class="nm">${t.name}${i ? ' (home)' : ''}</span><span class="pts">${t === meta.home ? meta.final.home : meta.final.away}</span></div>`).join('');
-  const qs = meta.quarters;
-  const per = (side) => qs.map((q, i) => q[side] - (i ? qs[i - 1][side] : 0));
-  const head = qs.map((_, i) => `<th>${i < 4 ? i + 1 : 'OT'}</th>`).join('');
-  $('linescore').innerHTML = `<tr><th></th>${head}<th>T</th></tr><tr><td>${meta.away.abbr}</td>${per('away').map((v) => `<td>${v}</td>`).join('')}<td>${meta.final.away}</td></tr><tr><td>${meta.home.abbr}</td>${per('home').map((v) => `<td>${v}</td>`).join('')}<td>${meta.final.home}</td></tr>`;
-
-  // ---------------------------------------------------------------- list
   const ord = ['', '1st', '2nd', '3rd', '4th'];
   const yl = (y) => (Math.round(y) === 50 ? '50' : y < 50 ? `OWN ${Math.round(y)}` : `OPP ${100 - Math.round(y)}`);
   const clk = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-  const tags = (p) => {
-    const t = p.text;
-    const o = [];
-    if (/TOUCHDOWN/.test(t)) o.push('td');
-    if (/INTERCEPTED|FUMBLE.*recovered by (?!offense)|MUFFED/.test(t)) o.push('to');
-    if (/SACKED/.test(t)) o.push('sack');
-    if (p.yds >= 20) o.push('big');
-    return o;
-  };
-  let filter = 'all';
-  const filterDefs = [['all', 'All plays'], ['score', 'Scoring'], ['big', 'Explosive'], ['to', 'Turnovers'], ['sack', 'Sacks']];
-  $('filters').innerHTML = filterDefs.map(([k, l]) => `<button class="chip" data-f="${k}" aria-pressed="${k === filter}">${l}</button>`).join('');
-  $('filters').addEventListener('click', (e) => {
-    const b = e.target.closest('[data-f]');
-    if (!b) return;
-    filter = b.dataset.f;
-    for (const x of $('filters').children) x.setAttribute('aria-pressed', String(x.dataset.f === filter));
-    renderList();
-  });
-  function visible(p) {
-    const t = tags(p);
-    if (filter === 'all') return true;
-    if (filter === 'score') return t.includes('td') || /field goal.*GOOD|SAFETY/.test(p.text);
-    return t.includes(filter);
+  const gain = (y) => `${y > 0 ? '+' : ''}${Number(y.toFixed(1))} yd`;
+  const replaySeed = (p) => p.fixtureSeed ?? games[p.game].seed;
+  const label = (key, value) => key === 'concept' ? plays.find((p) => p.concept.id === value)?.concept.name ?? value
+    : key === 'game' ? `Game ${Number(value) + 1} · seed ${games[value].seed}`
+    : key === 'team' ? teams[value]?.name ?? value : catalog[key]?.[value] ?? (value === 'unknown' ? 'Unlabelled' : value);
+  function renderHeader(game) {
+    const g = games[game];
+    $('game-label').textContent = meta.cohort ? 'All-22 · controlled inspection fixtures' : `All-22 · Game ${game + 1} · seed ${g.seed} · final score`;
+    $('teams').hidden = $('linescore').hidden = !!meta.cohort;
+    $('teams').innerHTML = [meta.away, meta.home].map((tm, i) => `<div class="team"><span class="swatch" style="background:${esc(tm.color)}"></span><span class="nm">${esc(tm.name)}${i ? ' (home)' : ''}</span><span class="pts">${i ? g.final.home : g.final.away}</span></div>`).join('');
+    const qs = g.quarters;
+    const per = (side) => qs.map((q, i) => q[side] - (i ? qs[i - 1][side] : 0));
+    const head = qs.map((_, i) => `<th>${i < 4 ? i + 1 : 'OT'}</th>`).join('');
+    $('linescore').innerHTML = `<tr><th></th>${head}<th>T</th></tr><tr><td>${esc(meta.away.abbr)}</td>${per('away').map((v) => `<td>${v}</td>`).join('')}<td>${g.final.away}</td></tr><tr><td>${esc(meta.home.abbr)}</td>${per('home').map((v) => `<td>${v}</td>`).join('')}<td>${g.final.home}</td></tr>`;
   }
-  function renderList() {
-    let html = '';
-    let q = 0;
-    plays.forEach((p, i) => {
-      if (!visible(p)) return;
-      if (p.q !== q) { q = p.q; html += `<div class="qhead">${q <= 4 ? `Quarter ${q}` : 'Overtime'}</div>`; }
-      const t = tags(p);
-      const cls = ['play', ...t, p.frames ? '' : 'st'].join(' ');
-      const sit = p.frames ? `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}` : p.kindLabel;
-      const badges = t.filter((x) => x !== 'big').map((x) => `<span class="badge">${{ td: 'TD', to: 'TURNOVER', sack: 'SACK' }[x]}</span>`).join(' ');
-      html += `<div class="${cls}" data-i="${i}" ${p.frames ? 'tabindex="0" role="button"' : ''} ${i === cur ? 'aria-current="true"' : ''}><span class="stripe"></span><div><div class="meta"><span>${clk(p.clk)}</span><span>${p.off}</span><span>${sit}</span>${badges}</div><div class="txt">${p.text}</div></div></div>`;
-    });
-    $('list').innerHTML = html;
-  }
-  $('list').addEventListener('click', (e) => {
-    const el = e.target.closest('[data-i]');
-    if (el && plays[+el.dataset.i].frames) load(+el.dataset.i, true);
-  });
-  $('list').addEventListener('keydown', (e) => {
-    if (e.key !== 'Enter') return;
-    const el = e.target.closest('[data-i]');
-    if (el && plays[+el.dataset.i].frames) load(+el.dataset.i, true);
-  });
 
   // ---------------------------------------------------------------- state
   let cur = -1;
   let t = 0;
   let playing = false;
   let speed = 1;
-  let showSlots = false;
+  let showSlots = true;
   let showTrails = true;
   let wide = false;
-  let auto = false;
+  let auto = true;
+  let loopPlaylist = false;
+  let holdUntil = 0;
+  let exportTask = null;
+  let fieldProjection = null;
+  let inspectorStamp = '';
+  const telemetryDescriptors = new Map();
+  const telemetryCache = new Map();
+  let telemetryGeneration = 0;
+  let telemetryQueue = Promise.resolve();
+  let playlist = [];
   let cam = { x: 60, y: 26.67 };
   const scrub = $('scrub');
+  $('labels').setAttribute('aria-pressed', 'true');
+  const selection = { family: 'all', concept: 'all', coverage: 'all', front: 'all', formation: 'all', game: 'all', team: 'all', outcome: 'all', search: '' };
+  const layerNames = ['assignments', 'movement', 'contact', 'perception'];
+  const videoMime = typeof MediaRecorder !== 'undefined' ? ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'].find((mime) => MediaRecorder.isTypeSupported(mime)) : null;
+  const canExportVideo = typeof canvas.captureStream === 'function' && !!videoMime;
+  const valueOf = (p, key) => String(key === 'concept' ? p.concept.id : key === 'game' ? p.game : key === 'team' ? p.off : p.plan?.[key] ?? 'unknown');
+  const searchText = plays.map((p) => [p.id, p.call, p.def, p.text, p.concept.name, ...(p.roster || []).map((r) => r[2])].join(' ').toLowerCase());
+  function hasFlag(p, key) {
+    if (key === 'nullified') return !!p.nullified;
+    return !!p.flags?.[key];
+  }
+  function matches(i, omit) {
+    const p = plays[i];
+    const f = selection.family;
+    if (omit !== 'family' && f !== 'all' && (f === 'run' || f === 'pass' ? p.kind !== f : p.concept.family !== f)) return false;
+    for (const key of ['concept', 'front', 'coverage', 'formation', 'game', 'team']) {
+      if (key !== omit && selection[key] !== 'all' && valueOf(p, key) !== selection[key]) return false;
+    }
+    if (omit !== 'outcome' && selection.outcome !== 'all' && !hasFlag(p, selection.outcome)) return false;
+    return omit === 'search' || !selection.search || searchText[i].includes(selection.search.toLowerCase().trim());
+  }
+  const filterDefs = [['all', 'All film'], ['run', 'All runs'], ['pass', 'All passes'], ['zone', 'Zone runs'], ['gap', 'Gap runs'], ['other-run', 'Other runs'], ['quick', 'Quick game'], ['dropback', 'Dropback'], ['playaction', 'Play action']];
+  const fields = { concept: 'All concepts', front: 'All fronts', coverage: 'All coverages', formation: 'All formations', game: 'All games', team: 'Both teams' };
+  function renderFilters() {
+    const familyPool = filmed.filter((i) => matches(i, 'family'));
+    $('filters').innerHTML = filterDefs.map(([key, name]) => {
+      const n = familyPool.filter((i) => key === 'all' || (key === 'run' || key === 'pass' ? plays[i].kind === key : plays[i].concept.family === key)).length;
+      return `<button class="chip" data-f="${key}" aria-pressed="${selection.family === key}">${name} <span class="foot">${n}</span></button>`;
+    }).join('');
+    for (const [key, allLabel] of Object.entries(fields)) {
+      const pool = filmed.filter((i) => matches(i, key));
+      const values = [...new Set(filmed.map((i) => valueOf(plays[i], key)))].sort((a, b) => key === 'game' ? Number(a) - Number(b) : label(key, a).localeCompare(label(key, b)));
+      const counts = new Map();
+      for (const i of pool) { const v = valueOf(plays[i], key); counts.set(v, (counts.get(v) || 0) + 1); }
+      $(key + '-filter').innerHTML = `<option value="all">${allLabel} (${pool.length})</option>` + values.map((v) => `<option value="${esc(v)}">${esc(label(key, v))} (${counts.get(v) || 0})</option>`).join('');
+      $(key + '-filter').value = selection[key];
+    }
+  }
+  function groupsForSelection() {
+    const key = $('group-by').value;
+    const groups = new Map();
+    for (const i of filmed) {
+      if (!matches(i)) continue;
+      const value = valueOf(plays[i], key);
+      if (!groups.has(value)) groups.set(value, { value, name: label(key, value), family: plays[i].concept.family, items: [] });
+      groups.get(value).items.push(i);
+    }
+    return [...groups.values()].sort((a, b) => key === 'game' ? Number(a.value) - Number(b.value)
+      : key === 'concept' ? familyOrder.indexOf(a.family) - familyOrder.indexOf(b.family) || a.name.localeCompare(b.name)
+      : a.name.localeCompare(b.name));
+  }
+  function renderList() {
+    const groups = groupsForSelection();
+    playlist = groups.flatMap((g) => g.items);
+    $('group-count').textContent = `${groups.length} ${groups.length === 1 ? 'group' : 'groups'}`;
+    const descriptions = [];
+    if (selection.family !== 'all') descriptions.push(filterDefs.find(([k]) => k === selection.family)[1]);
+    for (const key of Object.keys(fields)) if (selection[key] !== 'all') descriptions.push(label(key, selection[key]));
+    if (selection.outcome !== 'all') descriptions.push($('outcome-filter').selectedOptions[0].textContent);
+    if (selection.search.trim()) descriptions.push(`“${selection.search.trim()}”`);
+    $('selection-summary').innerHTML = `<strong>${playlist.length} matching clips</strong>${descriptions.length ? ' · ' + esc(descriptions.join(' · ')) : ' · choose a concept or watch the whole library'}`;
+    $('list').innerHTML = groups.length ? groups.map((g) => {
+      const sub = $('group-by').value === 'concept' ? `${familyNames[g.family] || 'Other plays'} · ` : '';
+      return `<section class="clip-group"><div class="group-head"><div><strong>${esc(g.name)}</strong><small>${esc(sub)}${g.items.length} clips</small></div><button data-watch="${esc(g.value)}" aria-label="Watch ${esc(g.name)}">▶ Watch</button></div>${g.items.map((i) => {
+        const p = plays[i];
+        const tags = ['td', 'to', 'sack', 'big'].filter((k) => hasFlag(p, k));
+        const badges = p.nullified ? '<span class="badge">NULLIFIED</span>' : tags.filter((k) => k !== 'big').map((k) => `<span class="badge">${{td: 'TD', to: 'TURNOVER', sack: 'SACK'}[k]}</span>`).join('');
+        const sit = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;
+        return `<div class="play ${tags.join(' ')}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(p.id)}, ${esc(p.concept.name)}, game ${p.game + 1}, ${esc(p.text)}" ${i === cur ? 'aria-current="true"' : ''}><span class="stripe"></span><div><div class="name"><span>${esc(p.concept.name)}</span><span class="gain">${p.nullified ? 'Penalty' : gain(p.yds)}</span></div><div class="meta"><span>${esc(p.id)} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)}</span><span>${esc(p.off)}</span><span>${sit}</span>${badges}</div><div class="txt">${esc(label('front', valueOf(p, 'front')))} · ${esc(label('coverage', valueOf(p, 'coverage')))}</div><div class="txt foot">${esc(p.text)}</div></div></div>`;
+      }).join('')}</section>`;
+    }).join('') : '<div class="empty">No filmed plays match these filters.<br>Clear filters or choose a different concept.</div>';
+  }
+  function syncControls() {
+    const pos = playlist.indexOf(cur);
+    const active = pos >= 0;
+    for (const id of ['playbtn', 'back', 'fwd', 'restart', 'speedbtn', 'copy-reference']) $(id).disabled = !active;
+    scrub.disabled = !active;
+    $('prev').disabled = !active || pos === 0;
+    $('next').disabled = !active || pos === playlist.length - 1;
+    $('watch').disabled = playlist.length === 0;
+    $('playlist-position').textContent = active ? `${pos + 1} / ${playlist.length} clips` : 'No matching clips';
+    $('playbtn').textContent = playing ? 'Pause' : 'Play';
+    for (const id of ['clip-whole', 'clip-from-here', 'clip-start', 'clip-end']) $(id).disabled = !active || !!exportTask;
+    $('export-video').disabled = !active || !canExportVideo || !!exportTask;
+  }
+  function refreshSelection() {
+    playing = false;
+    holdUntil = 0;
+    renderFilters();
+    renderList();
+    if (playlist.length) {
+      if (!playlist.includes(cur)) load(playlist[0], false);
+    } else {
+      cur = -1;
+      t = 0;
+      $('dd').textContent = '—';
+      $('clock').textContent = '';
+      $('clip-title').textContent = 'No matching clips';
+      for (const id of ['offcall', 'defcall']) $(id).textContent = '—';
+      for (const id of ['kv', 'marks', 'tlabels', 'event-jumps', 'event-details']) $(id).innerHTML = '';
+      for (const name of layerNames) $('layer-'+name).disabled=true;
+      $('telemetry-status').textContent='Choose a matching clip to inspect recorded state.';
+      $('result').textContent = 'Choose another filter combination to keep watching.';
+      $('caption').textContent = 'No matching clips';
+      scrub.value = '0';
+    }
+    syncControls();
+  }
+  function watchSelection() {
+    if (!playlist.length) return;
+    auto = true;
+    $('auto').setAttribute('aria-pressed', 'true');
+    load(playlist[0], true);
+  }
+  $('watch').onclick = watchSelection;
+  $('toggle-filters').onclick = () => {
+    const hidden = !$('filter-controls').hidden;
+    $('filter-controls').hidden = hidden;
+    $('toggle-filters').textContent = hidden ? 'Show filters' : 'Hide filters';
+    $('toggle-filters').setAttribute('aria-expanded', String(!hidden));
+  };
+  $('reset-filters').onclick = () => {
+    for (const key of Object.keys(selection)) selection[key] = key === 'search' ? '' : 'all';
+    $('search').value = '';
+    $('outcome-filter').value = 'all';
+    refreshSelection();
+  };
+  $('filters').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-f]');
+    if (!b) return;
+    selection.family = b.dataset.f;
+    selection.concept = 'all';
+    refreshSelection();
+  });
+  for (const key of [...Object.keys(fields), 'outcome']) $(key + '-filter').onchange = () => {
+    selection[key] = $(key + '-filter').value;
+    refreshSelection();
+  };
+  $('search').oninput = () => { selection.search = $('search').value; refreshSelection(); };
+  $('group-by').onchange = refreshSelection;
+  $('list').addEventListener('click', (e) => {
+    const watch = e.target.closest('[data-watch]');
+    if (watch) {
+      selection[$('group-by').value] = watch.dataset.watch;
+      refreshSelection();
+      watchSelection();
+      return;
+    }
+    const el = e.target.closest('[data-i]');
+    if (el) load(+el.dataset.i, true);
+  });
+  $('list').addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const el = e.target.closest('[data-i]');
+    if (el) { e.preventDefault(); load(+el.dataset.i, true); }
+  });
+  $('collection').textContent = `${filmed.length} filmed clips · ${new Set(filmed.map((i) => plays[i].concept.id)).size} concepts · ${meta.cohort?'controlled fixtures':`${games.length} ${games.length===1?'game':'games'}`} · unfilmed entries omitted`;
+  if (meta.cohort) { $('cohort-note').hidden=false; $('cohort-note').textContent=meta.cohort; }
 
   function frameAt(p, time) {
     const T = p.frames.t;
@@ -264,87 +500,410 @@ const REPLAY = /*__REPLAY_DATA__*/null;
   }
 
   function load(i, start) {
+    if (exportTask || !plays[i]?.frames || !playlist.includes(i)) return;
     cur = i;
     const p = plays[i];
-    t = 0;
+    t = p.frames.t[0];
     playing = !!start;
-    $('playbtn').textContent = playing ? 'Pause' : 'Play';
+    holdUntil = 0;
     const dur = p.frames.t[p.frames.t.length - 1];
+    renderHeader(p.game);
+    $('clip-title').textContent = `${p.id} · ${p.concept.name}`;
+    $('copy-status').textContent = '';
     $('dd').textContent = `${ord[p.down] || p.down + 'th'} & ${100 - p.yl <= p.dist ? 'Goal' : p.dist} · ${yl(p.yl)}`;
-    $('clock').textContent = `${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} · ${p.off} ball · ${meta.away.abbr} ${p.score.away} – ${meta.home.abbr} ${p.score.home}`;
+    $('clock').textContent = meta.cohort ? `Controlled setup · seed ${replaySeed(p)} · ${p.off} ball` : `Game ${p.game + 1} · ${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)} · ${p.off} ball · ${meta.away.abbr} ${p.score.away} – ${meta.home.abbr} ${p.score.home}`;
     $('offcall').textContent = p.call || '—';
     $('defcall').textContent = p.def || '—';
     $('result').textContent = p.text;
     const s = p.stats || {};
     const kv = [];
+    if (p.nullified) kv.push('<b>Nullified by penalty; physical replay shown</b>');
     if (s.ttt !== undefined) kv.push(`time to throw <b>${s.ttt.toFixed(2)}s</b>`);
     if (s.air !== undefined) kv.push(`air yards <b>${s.air.toFixed(1)}</b>`);
     if (s.yac !== undefined) kv.push(`YAC <b>${s.yac.toFixed(1)}</b>`);
     if (s.sep !== undefined) kv.push(`separation at catch <b>${s.sep.toFixed(1)} yd</b>`);
     if (s.ybc !== undefined) kv.push(`yards before contact <b>${s.ybc.toFixed(1)}</b>`);
-    if (s.pressured) kv.push('<b>pressured</b>');
-    const COV = { cover0: 'Cover 0', cover1: 'Cover 1', cover2: 'Cover 2', tampa2: 'Tampa 2', cover2man: '2-Man', cover3: 'Cover 3', cover4: 'Cover 4', cover6: 'Cover 6' };
+    if (s.pressure2yd) kv.push(`defender within 2 yd <b>${s.ttp.toFixed(2)}s</b>`);
+    if (s.pressured) kv.push('<b>QB sensed pressure</b>');
+    const COV = catalog.coverage || {};
     const r = p.read;
     if (r && p.kindLabel === 'Pass') {
       const read = COV[r.post ?? r.pre] ?? r.post ?? r.pre;
       const right = (r.post ?? r.pre) === r.actual;
-      kv.push(`QB read <b>${read}</b> ${right ? '✓' : `(actually ${COV[r.actual] ?? r.actual})`}${r.shown ? ` · defense showed ${COV[r.shown] ?? r.shown}` : ''}`);
+      kv.push(`QB read <b>${esc(read)}</b> ${right ? '✓' : `(actually ${esc(COV[r.actual] ?? r.actual)})`}${r.shown ? ` · defense showed ${esc(COV[r.shown] ?? r.shown)}` : ''}`);
     }
-    if (r && r.audible) kv.push(`check at the line: <b>${r.audible}</b>`);
+    if (r?.audible) kv.push(`check at the line: <b>${esc(r.audible)}</b>`);
     kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
     $('kv').innerHTML = kv.join('');
-    // Event marks on the timeline.
-    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), touchdown: css('--good'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent') };
+    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), carrier_contact: css('--muted'), touchdown: css('--good'), pitch: css('--los'), pitch_catch: css('--los'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_contact: css('--muted'), block_exchange: css('--los'), block_collect: css('--warn'), block_threat: css('--warn'), block_abandon: css('--warn'), block_log: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
     const shown = p.ev.filter((e) => colors[e[1]]);
-    $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${(e[0] / dur) * 100}%;background:${colors[e[1]]}" title="${e[1]} ${e[0]}s"></span>`).join('');
-    const labelled = shown.filter((e, k) => k === 0 || e[0] - shown[k - 1][0] > dur * 0.08).slice(0, 7);
+    const pct = (time) => Math.max(0, Math.min(100, ((time - p.frames.t[0]) / (dur - p.frames.t[0])) * 100));
+    $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${pct(e[0])}%;background:${colors[e[1]]}" title="${esc(e[1])} ${e[0]}s"></span>`).join('');
+    const labelled = shown.filter((e) => ['handoff', 'pitch', 'pitch_catch', 'throw', 'catch', 'interception', 'fumble', 'sack', 'tackle', 'touchdown'].includes(e[1])).filter((e, k, all) => k === 0 || e[0] - all[k - 1][0] > (dur - p.frames.t[0]) * 0.08).slice(0, 7);
     $('tlabels').innerHTML = labelled.map((e) => {
-      const pct = (e[0] / dur) * 100;
-      const shift = pct > 85 ? -100 : pct < 15 ? 0 : -50;
-      return `<span style="left:${pct}%;transform:translateX(${shift}%)">${e[1].replace('_', ' ')}</span>`;
+      const x = pct(e[0]);
+      const shift = x > 85 ? -100 : x < 15 ? 0 : -50;
+      return `<span style="left:${x}%;transform:translateX(${shift}%)">${esc(e[1].replaceAll('_', ' '))}</span>`;
     }).join('');
+    const jumps = [['Snap', Math.max(0, p.frames.t[0])]];
+    if (s.ttp !== undefined) jumps.push(['Pressure (2 yd)', s.ttp]);
+    for (const [name, events] of [['First block', ['block_contact']], ['Handoff', ['handoff']], ['Pitch', ['pitch']], ['Pitch catch', ['pitch_catch']], ['Throw', ['throw']], ['Catch', ['catch', 'interception']], ['First contact', ['carrier_contact', 'tackle_wrap', 'tackle']]]) {
+      const event = p.ev.find((e) => events.includes(e[1]));
+      if (event) jumps.push([name, event[0]]);
+    }
+    jumps.push(['Finish', dur]);
+    $('event-jumps').innerHTML = jumps.map(([name, time]) => `<button data-time="${time}" title="Jump to ${esc(name.toLowerCase())}">${esc(name)} ${time.toFixed(1)}s</button>`).join('');
+    const eventDetails = p.eventDetails ?? p.ev.map(([t,type])=>({t,type}));
+    const eventPlayer = (i) => p.roster[i] ? `${p.roster[i][1]} #${p.roster[i][3]}` : null;
+    $('event-details').innerHTML = (!p.eventDetails?'<div>This replay records event times/types only. Actor and causal notes are unavailable.</div>':'')+eventDetails.map((event)=>`<div><button data-time="${event.t}" aria-label="Jump to ${esc(event.type)} at ${event.t.toFixed(2)} seconds">${event.t.toFixed(2)}s</button>${esc(event.type.replaceAll('_',' '))}${event.a!=null?' · '+esc(eventPlayer(event.a) ?? 'unknown actor'):''}${event.b!=null?' → '+esc(eventPlayer(event.b) ?? 'unknown target'):''}${event.note?' · '+esc(event.note):''}</div>`).join('');
+    $('inspect-player').innerHTML = '<option value="-1">Ball carrier</option>' + p.roster.map((r,k) => `<option value="${k}">${esc(r[1])} #${r[3]} · ${esc(r[2])}</option>`).join('');
+    $('clip-start').value = String(p.frames.t[0]);
+    $('clip-end').value = String(dur);
+    $('clip-start').max = $('clip-end').max = String(dur);
+    $('clip-start').min = $('clip-end').min = String(p.frames.t[0]);
+    $('export-status').textContent = canExportVideo ? 'Exports the selected time range at 1×, with your visible layers and the play reference. Recording takes the length of the clip; no audio.' : 'Video export requires a browser with canvas recording and WebM support. Try Chrome, Edge or Firefox.';
+    inspectorStamp = '';
+    prepareTelemetry(p);
     cam = { x: p.los + 8, y: 26.67 };
     for (const el of $('list').querySelectorAll('[aria-current]')) el.removeAttribute('aria-current');
     const li = $('list').querySelector(`[data-i="${i}"]`);
-    if (li) { li.setAttribute('aria-current', 'true'); li.scrollIntoView({ block: 'nearest' }); }
+    if (li) {
+      li.setAttribute('aria-current', 'true');
+      // Scroll only the clip list; auto-next must not move the whole page.
+      const listBox = $('list').getBoundingClientRect();
+      const rowBox = li.getBoundingClientRect();
+      if (rowBox.top < listBox.top + 58) $('list').scrollTop += rowBox.top - listBox.top - 58;
+      else if (rowBox.bottom > listBox.bottom) $('list').scrollTop += rowBox.bottom - listBox.bottom;
+    }
+    syncControls();
   }
 
-  function step(dir) {
-    let i = cur;
-    do { i += dir; } while (i >= 0 && i < plays.length && (!plays[i].frames || !visible(plays[i])));
-    if (i >= 0 && i < plays.length) load(i, playing || auto);
+  function step(dir, start = playing) {
+    const pos = playlist.indexOf(cur);
+    const nextPos = pos + dir;
+    if (nextPos < 0 || nextPos >= playlist.length) return false;
+    load(playlist[nextPos], start);
+    return true;
   }
-
-  $('playbtn').onclick = () => { if (cur < 0) return; const p = plays[cur]; if (t >= p.frames.t[p.frames.t.length - 1]) t = 0; playing = !playing; $('playbtn').textContent = playing ? 'Pause' : 'Play'; };
+  function seek(time) {
+    if (cur < 0) return;
+    const T = plays[cur].frames.t;
+    t = Math.max(T[0], Math.min(T[T.length - 1], time));
+    playing = false;
+    holdUntil = 0;
+    syncControls();
+  }
+  function reference() {
+    if (cur < 0) return '';
+    const p = plays[cur];
+    const selected = Number($('inspect-player').value), r = p.roster[selected];
+    return `Film ${(p.sourceSha256 ?? meta.sourceSha256)?.slice(0, 12) || 'legacy'} / ${p.id} / seed ${replaySeed(p)} / ${meta.cohort?'controlled setup':`${p.q <= 4 ? 'Q' + p.q : 'OT'} ${clk(p.clk)}`} / t=${t.toFixed(2)}s / ${p.call} vs ${p.def}${r?` / player=${r[1]} #${r[3]} ${r[2]}`:''}`;
+  }
+  $('copy-reference').onclick = async () => {
+    playing = false; holdUntil = 0; syncControls();
+    const value = reference(), field = $('play-reference');
+    field.value = value;
+    try {
+      await navigator.clipboard.writeText(value);
+      $('copy-status').textContent = 'Copied play and timestamp.';
+    } catch {
+      field.focus(); field.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch {}
+      $('copy-status').textContent = copied ? 'Copied play and timestamp.' : 'Reference selected. Press Ctrl+C or ⌘C to copy.';
+    }
+  };
+  $('playbtn').onclick = () => {
+    if (cur < 0) return;
+    const p = plays[cur];
+    if (t >= p.frames.t[p.frames.t.length - 1]) t = p.frames.t[0];
+    playing = !playing;
+    holdUntil = 0;
+    syncControls();
+  };
   $('prev').onclick = () => step(-1);
   $('next').onclick = () => step(1);
-  $('back').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t = Math.max(0, t - 0.1); };
-  $('fwd').onclick = () => { playing = false; $('playbtn').textContent = 'Play'; t += 0.1; };
-  const speeds = [0.25, 0.5, 1, 2];
+  $('back').onclick = () => seek(t - 0.1);
+  $('fwd').onclick = () => seek(t + 0.1);
+  $('restart').onclick = () => { if (cur >= 0) load(cur, playing); };
+  const speeds = [0.25, 0.5, 1, 2, 4];
   $('speedbtn').onclick = () => { speed = speeds[(speeds.indexOf(speed) + 1) % speeds.length]; $('speedbtn').textContent = `${speed}×`; };
   const toggle = (id, get, set) => { $(id).onclick = () => { set(!get()); $(id).setAttribute('aria-pressed', String(get())); }; };
   toggle('labels', () => showSlots, (v) => (showSlots = v));
   toggle('trails', () => showTrails, (v) => (showTrails = v));
   toggle('wide', () => wide, (v) => { wide = v; resize(); });
-  toggle('auto', () => auto, (v) => (auto = v));
-  scrub.addEventListener('input', () => { if (cur < 0) return; const p = plays[cur]; playing = false; $('playbtn').textContent = 'Play'; t = (scrub.value / 1000) * p.frames.t[p.frames.t.length - 1]; });
+  toggle('auto', () => auto, (v) => { auto = v; holdUntil = 0; });
+  toggle('loop-playlist', () => loopPlaylist, (v) => (loopPlaylist = v));
+  $('event-jumps').onclick = (e) => { const b = e.target.closest('[data-time]'); if (b) seek(Number(b.dataset.time)); };
+  $('event-details').onclick = (e) => { const b = e.target.closest('[data-time]'); if (b) seek(Number(b.dataset.time)); };
+  $('inspect-player').onchange = () => { inspectorStamp = ''; };
+  canvas.addEventListener('click', (event) => {
+    if (exportTask || !fieldProjection || cur < 0) return;
+    const box = canvas.getBoundingClientRect();
+    const px = (event.clientX - box.left) * W / box.width;
+    const py = (event.clientY - box.top) * H / box.height;
+    const nearby = fieldProjection.players.map((p, i) => ({i, distance: Math.hypot(px-p[0], py-p[1])})).sort((a,b) => a.distance-b.distance)[0];
+    if (nearby && nearby.distance <= Math.max(15, fieldProjection.radius * 1.8)) {
+      $('inspect-player').value = String(nearby.i);
+      inspectorStamp = '';
+    }
+  });
+  $('clip-whole').onclick = () => { if (cur >= 0) { const T = plays[cur].frames.t; $('clip-start').value = String(T[0]); $('clip-end').value = String(T[T.length-1]); } };
+  $('clip-from-here').onclick = () => { if (cur >= 0) $('clip-start').value = t.toFixed(2); };
+  $('export-video').onclick = exportVideo;
+  $('cancel-export').onclick = () => { if (exportTask) { exportTask.cancelled = true; if (exportTask.recorder.state!=='inactive') exportTask.recorder.stop(); } };
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && exportTask) { exportTask.cancelled = true; exportTask.cancelReason = 'Export cancelled because the tab was hidden. Keep this tab visible while recording.'; if (exportTask.recorder.state!=='inactive') exportTask.recorder.stop(); }
+  });
+  document.addEventListener('click', (event) => {
+    if (exportTask && !event.target.closest('#cancel-export')) { event.preventDefault(); event.stopImmediatePropagation(); }
+  }, true);
+  scrub.addEventListener('input', () => {
+    if (cur < 0) return;
+    const T = plays[cur].frames.t;
+    seek(T[0] + (Number(scrub.value) / 1000) * (T[T.length - 1] - T[0]));
+  });
   document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+    if (exportTask) { if (e.key === 'Escape') $('cancel-export').click(); if (!e.target.closest('#cancel-export')) e.preventDefault(); return; }
+    // Preserve typing, native select navigation, range keys, and button activation.
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, select, textarea, button, [contenteditable]')) return;
     if (e.key === ' ') { e.preventDefault(); $('playbtn').click(); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); $('back').click(); }
     else if (e.key === 'ArrowRight') { e.preventDefault(); $('fwd').click(); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
     else if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
-    else if (e.key === 'l' || e.key === 'L') $('labels').click();
-    else if (e.key === 't' || e.key === 'T') $('trails').click();
-    else if (e.key === 'w' || e.key === 'W') $('wide').click();
+    else if (e.key.toLowerCase() === 'l') $('labels').click();
+    else if (e.key.toLowerCase() === 't') $('trails').click();
+    else if (e.key.toLowerCase() === 'w') $('wide').click();
+    else if (e.key.toLowerCase() === 'r') $('restart').click();
   });
+
+  function telemetryAt(p, time) {
+    const frames = p.telemetry?.version === 1 ? p.telemetry.frames : null;
+    if (!frames?.length || frames[0].t > time) return null;
+    let lo = 0, hi = frames.length;
+    while (lo + 1 < hi) { const mid = (lo + hi) >> 1; if (frames[mid].t <= time) lo = mid; else hi = mid; }
+    return frames[lo];
+  }
+  function prepareTelemetry(p) {
+    const generation = ++telemetryGeneration;
+    if (!p.telemetry?.encoding) {
+      if (telemetryCache.has(p)) { const cached=telemetryCache.get(p); telemetryCache.delete(p); telemetryCache.set(p,cached); }
+      configureLayers(p); window.TELEMETRY_READY = Promise.resolve(true); return;
+    }
+    const descriptor = p.telemetry;
+    telemetryDescriptors.set(p,descriptor);
+    for (const name of layerNames) $('layer-'+name).disabled=true;
+    $('telemetry-status').textContent=`Loading ${descriptor.level ?? ''} telemetry locally… You can keep playing and browsing.`;
+    // Decode serially, skipping superseded selections before starting. The
+    // cache retains at most three decoded plays; the library stays compressed.
+    window.TELEMETRY_READY = telemetryQueue = telemetryQueue.catch(()=>false).then(async () => {
+      if (generation!==telemetryGeneration || plays[cur]!==p) return false;
+      try {
+        if (descriptor.encoding!=='gzip-base64' || descriptor.version!==1 || typeof descriptor.data!=='string') throw new Error('The telemetry payload format is unsupported.');
+        if (typeof DecompressionStream!=='function') throw new Error('This browser cannot unpack telemetry. Use a current browser with gzip decompression support. Positions and events remain available.');
+        const bytes=Uint8Array.from(atob(descriptor.data),(c)=>c.charCodeAt(0));
+        const decoded=JSON.parse(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+        if (decoded?.version!==1 || decoded.level!==descriptor.level || !Array.isArray(decoded.frames) || !Array.isArray(decoded.decisions)) throw new Error('The telemetry payload is missing its recorded frames or decisions, or its level does not match.');
+        if (generation!==telemetryGeneration || plays[cur]!==p) return false;
+        p.telemetry=decoded; telemetryCache.delete(p); telemetryCache.set(p,decoded);
+        while (telemetryCache.size>3) {
+          const oldest=telemetryCache.keys().next().value;
+          oldest.telemetry=telemetryDescriptors.get(oldest); telemetryCache.delete(oldest);
+        }
+        inspectorStamp=''; configureLayers(p); return true;
+      } catch (error) {
+        if (generation===telemetryGeneration && plays[cur]===p) {
+          $('telemetry-status').textContent=`Telemetry unavailable: ${error.message || String(error)} The physical replay still works.`;
+          $('telemetry-status').setAttribute('role','status'); inspectorStamp='';
+        }
+        return false;
+      }
+    });
+  }
+  function configureLayers(p) {
+    const frames = p.telemetry?.version === 1 ? p.telemetry.frames : [];
+    const available = {
+      assignments: frames.some((f) => f.links?.some((l) => ['man','bracket','target'].includes(l.kind)) || f.agents?.some((a)=>a.landmark)),
+      movement: frames.some((f) => f.agents?.some((a) => a.intent?.velocity)),
+      contact: frames.some((f) => f.blocks?.length || f.tackle || f.contacts?.length || f.links?.some((l) => ['block','tackle'].includes(l.kind))),
+      perception: frames.some((f) => f.perception?.length),
+    };
+    for (const name of layerNames) {
+      const input = $('layer-'+name); input.disabled = !available[name] || !!exportTask;
+      if (!available[name]) input.checked = false;
+      input.parentElement.title = available[name] ? 'Draws state recorded by the engine.' : 'This replay does not record this channel.';
+    }
+    const cadence = p.telemetry?.sampleSeconds!=null?`${p.telemetry.sampleSeconds}s`:`${p.telemetry?.sampleEvery} ticks`;
+    $('telemetry-status').textContent = frames.length ? `${p.telemetry.level} telemetry · sampled every ${cadence} · cyan assignments, gold intent, pink contact, white perception ghosts (select a player). ${p.telemetry.unavailable?.length ? 'Unrecorded: '+p.telemetry.unavailable.join(', ')+'.' : ''}` : 'Legacy/light replay: paths, body facing, ball and events only. Extra layers require a replay recorded with telemetry.';
+  }
+  function exportVideo() {
+    if (cur < 0 || exportTask || !canExportVideo) return;
+    const p = plays[cur], T = p.frames.t;
+    const start = Number($('clip-start').value), end = Number($('clip-end').value);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start < T[0] || end > T[T.length-1]+1e-8 || end <= start) {
+      $('export-status').textContent = `Choose a start and end within ${T[0].toFixed(2)}–${T[T.length-1].toFixed(2)}s, with end after start.`; return;
+    }
+    const output = document.createElement('canvas'); output.width = 1280; output.height = 840;
+    let stream;
+    try { stream = output.captureStream(30); }
+    catch (error) { $('export-status').textContent = `Video export could not start: ${error.message}`; return; }
+    let recorder;
+    try { recorder = new MediaRecorder(stream, { mimeType: videoMime, videoBitsPerSecond: 4000000 }); }
+    catch (error) { stream.getTracks().forEach((track) => track.stop()); $('export-status').textContent = `Video export could not start: ${error.message}`; return; }
+    const chunks = [];
+    const saved = { t, playing, speed, auto, cam: {...cam}, holdRemaining: Math.max(0,holdUntil-performance.now()), controls: [...document.querySelectorAll('.app button, .app input, .app select')].map((el) => [el, el.disabled]) };
+    const task = { output, stream, recorder, start, end, began: performance.now(), saved, cancelled: false, stopped: false, error: null };
+    exportTask = task; playing = false; holdUntil = 0; t = start; cam = {x:p.los+8,y:26.67};
+    saved.controls.forEach(([el]) => { el.disabled = true; }); $('cancel-export').hidden = false; $('cancel-export').disabled = false;
+    $('export-status').textContent = 'Starting video recording…';
+    recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+    recorder.onerror = (event) => { task.error = event.error?.message || 'Recorder failed'; if (recorder.state !== 'inactive') recorder.stop(); else finish(); };
+    recorder.onstop = finish;
+    function finish() {
+      if (exportTask !== task) return;
+      stream.getTracks().forEach((track) => track.stop());
+      exportTask = null; t = saved.t; playing = saved.playing; speed = saved.speed; auto = saved.auto; cam = saved.cam;
+      holdUntil = saved.holdRemaining ? performance.now()+saved.holdRemaining : 0;
+      saved.controls.forEach(([el, disabled]) => { el.disabled = disabled; }); $('cancel-export').hidden = true;
+      resize(); syncControls(); inspectorStamp = '';
+      if (plays[cur]?.telemetry?.frames) configureLayers(plays[cur]);
+      if (task.cancelled) { $('export-status').textContent = task.cancelReason || 'Export cancelled. Your replay position was restored.'; return; }
+      if (task.error) { $('export-status').textContent = `Video export failed: ${task.error}`; return; }
+      const blob = new Blob(chunks, {type:recorder.mimeType || videoMime});
+      if (!blob.size) { $('export-status').textContent = 'The browser returned an empty recording. Try exporting again in another browser.'; return; }
+      const url = URL.createObjectURL(blob), link = document.createElement('a');
+      link.href = url; link.download = `${p.id}_${(p.sourceSha256 ?? meta.sourceSha256)?.slice(0,12)||'legacy'}_${start.toFixed(2)}-${end.toFixed(2)}s.webm`;
+      document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000);
+      $('export-status').textContent = `Downloaded ${link.download} · ${(blob.size/1024/1024).toFixed(2)} MB. Replay position restored.`;
+    }
+    draw(); paintExport(task);
+    try { recorder.start(100); task.began = performance.now(); }
+    catch (error) { task.error = error.message; finish(); }
+  }
+  function paintExport(task) {
+    const out = task.output.getContext('2d'), p = plays[cur];
+    out.fillStyle = '#0f1411'; out.fillRect(0,0,1280,840);
+    out.fillStyle = '#fff'; out.font = 'bold 24px sans-serif'; out.textBaseline = 'top';
+    out.fillText(`${p.id} · ${p.concept.name} · ${p.nullified?'Nullified (physical replay)':gain(p.yds)}`,20,15,1240);
+    out.font = '16px sans-serif'; out.fillStyle = '#d8e0d8';
+    out.fillText(`${p.call} vs ${p.def}`,20,48,1240);
+    out.font = '14px monospace'; out.fillText(`Film ${(p.sourceSha256 ?? meta.sourceSha256)?.slice(0,12)||'legacy'} · seed ${replaySeed(p)} · ${t.toFixed(2)}s · ${ord[p.down]} & ${p.dist} · ${yl(p.yl)}${meta.cohort?' · controlled fixture':''}`,20,75,1240);
+    const scale = Math.min(1280/canvas.width, 676/canvas.height), width = canvas.width*scale, height = canvas.height*scale;
+    out.drawImage(canvas,(1280-width)/2,104+(676-height)/2,width,height);
+    out.fillStyle = '#fff'; out.font = '15px sans-serif';
+    out.fillText(p.text,20,790,1240);
+    out.fillStyle = '#b7c4b7'; out.font = '12px monospace'; out.fillText(`Simulated football · ${task.start.toFixed(2)}–${task.end.toFixed(2)}s · 1× · ticks show body facing`,20,818,1240);
+  }
+  function inspect(p, frame, player, velocity, ballHeight) {
+    const stamp = `${cur}:${player}:${frame?.t ?? Math.floor(t*10)}:${ballHeight.toFixed(1)}`;
+    if (stamp === inspectorStamp) return;
+    inspectorStamp = stamp;
+    const stats = [], add = (key,value) => { if (value !== undefined && value !== null) stats.push(`<div><dt>${esc(key)}</dt><dd>${esc(value)}</dd></div>`); };
+    add('Ball height', `${(ballHeight*3).toFixed(1)} ft`);
+    add('Ball state',frame?.ball?.kind);
+    if (frame?.ball?.target!=null) { const target=p.roster[frame.ball.target]; add('Ball target',target?`${target[1]} #${target[3]}`:'unrecorded'); }
+    if (frame?.ball?.intended) add('Intended arrival point',frame.ball.intended.map((v)=>v.toFixed(2)).join(', ')+' yd (x, y, height)');
+    add('Predicted arrival time',frame?.ball?.arrivalT!=null?`${frame.ball.arrivalT.toFixed(2)}s`:undefined);
+    if (player < 0) { $('inspector-title').textContent = 'Ball in flight'; $('inspector-state').innerHTML = stats.join(''); $('inspector-links').textContent = ''; $('inspector-decisions').textContent = ''; $('inspector-ratings').innerHTML=''; return; }
+    const roster = p.roster[player], agent = frame?.agents?.[player], profile = p.profiles?.[player];
+    const playerName = (i) => p.roster[i] ? `${p.roster[i][1]} #${p.roster[i][3]}` : `player ${i}`;
+    const ratings = profile?.ratings ?? profile?.[3];
+    $('inspector-ratings').innerHTML = ratings ? Object.entries(ratings).map(([key,value])=>`<div><dt>${esc(key.replace(/([A-Z])/g,' $1').replace(/^./,(s)=>s.toUpperCase()))}</dt><dd>${esc(value)} / 100</dd></div>`).join('') : '<div><dt>Player ratings</dt><dd>Unrecorded in this replay</dd></div>';
+    $('inspector-title').textContent = `${roster[1]} #${roster[3]} · ${roster[2]}`;
+    add('Position', profile?.position ?? profile?.[0]);
+    add('Weight', `${p.weights?.[player] ?? profile?.weightLb ?? profile?.[2] ?? 'unrecorded'} lb`);
+    const height = profile?.heightIn ?? profile?.[1]; add('Height', height!=null?`${height} in`:undefined);
+    add('Speed (recorded path)', `≈${(Math.hypot(...velocity)*3600/1760).toFixed(1)} mph`);
+    if (frame) {
+      add('State sampled at', `${frame.t.toFixed(2)}s (last recorded sample)`);
+      add('Behavior / job', [agent?.kind, agent?.job].filter(Boolean).join(' / ') || 'unrecorded');
+      add('Target', agent?.target != null ? playerName(agent.target) : undefined);
+      add('Zone', agent?.zone); if (agent?.landmark) add('Landmark', agent.landmark.map((v)=>v.toFixed(1)).join(', ')+' yd');
+      if (agent?.man) { add('Man technique', `${agent.man.leverage} · ${agent.man.press?'press':'off'}${agent.man.hipsOpen?' · hips open':''}${agent.man.trail?' · trail':''}${agent.man.overTop?' · over top':''}${agent.man.routeRead?' · route read':''}`); add('Initial cushion (pre-snap)', `${agent.man.initialCushion.toFixed(1)} yd`); }
+      if (agent?.intent?.velocity) add('Requested velocity', agent.intent.velocity.map((v)=>Number(v).toFixed(2)).join(', ')+' yd/s');
+      if (agent?.body) {
+        add('Recorded body speed', `${Math.hypot(...agent.body.velocity).toFixed(2)} yd/s`);
+        add('Energy', `${(agent.body.energy*100).toFixed(0)}%`);
+        add('Footwork support available', `${(agent.body.balance*100).toFixed(0)}%`); add('Posture', agent.body.posture.toFixed(2));
+        add('Body state', agent.body.state); add('Squeeze', agent.body.squeeze.toFixed(2));
+        if (agent.body.lean) add('Lean force', agent.body.lean.map((v)=>Number(v).toFixed(2)).join(', ')+' kg·yd/s²');
+        add('Pad height', agent.body.padHeight!=null?`${(agent.body.padHeight*3).toFixed(2)} ft`:undefined);
+        if (agent.body.supportDeviation) add('Support offset', agent.body.supportDeviation.map((v)=>v.toFixed(2)).join(', ')+' yd');
+      }
+      if (agent?.belief) { add('Run/pass read', agent.belief.read); add('Pass probability', `${(agent.belief.passProbability*100).toFixed(0)}%`); }
+      if (agent?.runFit) add('Run fit', `${agent.runFit.side} ${agent.runFit.gap} · ${agent.runFit.kind} · ${agent.runFit.technique}`);
+      if (agent?.runBlock) add('Run block', `${agent.runBlock.kind} → ${agent.runBlock.target!=null?playerName(agent.runBlock.target):'unassigned'}${agent.runBlock.climbTo != null ? ' · climb to '+playerName(agent.runBlock.climbTo) : ''}`);
+      if (agent?.passSet) add('Pass set', `depth ${agent.passSet.depth.toFixed(1)} yd · lane y ${agent.passSet.laneY.toFixed(1)}`);
+      if (frame.qb && roster[1] === 'QB') {
+        add('QB eyes', frame.qb.eyes != null ? playerName(frame.qb.eyes) : 'unrecorded');
+        add('QB phase / read', [frame.qb.phase,frame.qb.read!=null?playerName(frame.qb.read):undefined].filter(Boolean).join(' / '));
+        add('Coverage belief', Object.entries(frame.qb.belief ?? {}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>`${k} ${(v*100).toFixed(0)}%`).join(' · '));
+        add('Most likely coverage', catalog.coverage?.[frame.qb.best] ?? frame.qb.best); add('High-pressure read ticks', frame.qb.pressure?.toFixed(0));
+        if (frame.qb.pending) { add('Pending throw', `${playerName(frame.qb.pending.target)} · flight ${frame.qb.pending.flightTime.toFixed(2)}s`); add('Throw evaluation', `completion ${(frame.qb.pending.completion*100).toFixed(0)}% · INT ${(frame.qb.pending.interceptionRisk*100).toFixed(0)}% · value ${frame.qb.pending.value.toFixed(2)}`); }
+      }
+    } else add('Detailed state', p.telemetry?.encoding?'Telemetry is loading or unavailable; see the status above.':'Unrecorded in this replay');
+    $('inspector-state').innerHTML = stats.join('');
+    const links = [];
+    for (const link of frame?.links ?? []) if (link.a===player || link.b===player) links.push(`${link.kind}: ${playerName(link.a)} → ${playerName(link.b)}`);
+    for (const block of frame?.blocks ?? []) if (block.a===player || block.b===player || block.helpers?.includes(player)) {
+      links.push(`Block ${playerName(block.a)} / ${playerName(block.b)} · ${block.type} · control ${block.control.toFixed(2)} · φ ${(block.phi*90).toFixed(0)}° (±90° = hip-to-hip) · bases ${block.baseA.toFixed(2)}/${block.baseB.toFixed(2)} · ${block.move}${block.landed?' landed':''}`);
+      if (block.hands) links.push(`Hands: extension ${block.hands.extension.toFixed(2)} yd · push ${block.hands.push.toFixed(2)} · hold ${block.hands.hold.toFixed(2)} · steer ${block.hands.steer.toFixed(2)}${block.hands.normalForce!=null?' · normal '+block.hands.normalForce.toFixed(1):''}${block.hands.tangentForce!=null?' · tangent '+block.hands.tangentForce.toFixed(1):''} (forces in kg·yd/s²)`);
+    }
+    if (frame?.tackle && (frame.tackle.carrier===player || frame.tackle.tacklers.some((t)=>t.a===player))) {
+      const tackle = frame.tackle;
+      links.push(`Tackle: carrier ${playerName(tackle.carrier)} · forward progress x ${tackle.progressX.toFixed(2)} yd · stalled ${tackle.stall.toFixed(2)}s`);
+      for (const grip of tackle.tacklers) links.push(`${playerName(grip.a)} grip ${grip.grip==null?'unrecorded':grip.grip.toFixed(2)} · legs ${grip.legs.toFixed(2)}${grip.force!=null?' · hold force '+grip.force.toFixed(1)+' kg·yd/s² (interval mean)':''}${grip.origin?' · '+grip.origin:''}${grip.slipping?' · slipping':''}`);
+    }
+    for (const contact of frame?.contacts ?? []) if (contact.a===player || contact.b===player) links.push(`Contact ${playerName(contact.a)} / ${playerName(contact.b)} · closing ${contact.closing.toFixed(2)} yd/s · impulse ${contact.impulse.toFixed(1)} kg·yd/s`);
+    const perceived = (frame?.perception ?? []).filter((entry)=>entry.a===player);
+    if (perceived.length) links.push(`Perceived ${perceived.map((entry)=>`${playerName(entry.b)} (${entry.age==null?'age unrecorded':entry.age.toFixed(2)+'s old'}, ${entry.source==='qb'?'QB memory':'vision delay'}${entry.pose?' · saw '+entry.pose:''}${entry.carrying===true?' · saw ball held':entry.carrying===false?' · saw no ball held':''})`).join(', ')}`);
+    $('inspector-links').innerHTML = links.map((line)=>`<div>${esc(line)}</div>`).join('');
+    const decisions = (p.telemetry?.decisions ?? []).filter((d)=>d.a===player && d.t<=t).slice(-3);
+    $('inspector-decisions').innerHTML = decisions.length ? '<strong>Latest recorded decisions</strong>'+decisions.map((d)=>`<div>${d.t.toFixed(2)}s · ${esc(d.kind)} → ${esc(d.chose)} · cue: ${esc(d.cue ?? 'not recorded')}${d.detail?' · '+esc(d.detail):''}${d.options?.length?' · options: '+esc(d.options.join(', ')):''}</div>`).join('') : '<div>No decision records available for this player yet.</div>';
+  }
+
+  function drawLayers(p, frame, positions, X, Y, sc, selected) {
+    if (!frame) return;
+    const related = (a,b) => selected<0 || a===selected || b===selected;
+    const line = (a,b,color,dash=[]) => {
+      if (!a || !b) return; ctx.strokeStyle=color; ctx.lineWidth=2; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(X(a[0]),Y(a[1])); ctx.lineTo(X(b[0]),Y(b[1])); ctx.stroke(); ctx.setLineDash([]);
+    };
+    const label = (pos,text,color) => { if (!pos) return; ctx.font='11px monospace'; ctx.textAlign='center'; ctx.fillStyle='rgba(0,0,0,0.75)'; const w=ctx.measureText(text).width+8; ctx.fillRect(X(pos[0])-w/2,Y(pos[1])-21,w,16); ctx.fillStyle=color; ctx.fillText(text,X(pos[0]),Y(pos[1])-13); };
+    if ($('layer-assignments').checked) for (const link of frame.links ?? []) {
+      if (!['man','bracket','target'].includes(link.kind) || !related(link.a,link.b)) continue;
+      line(positions[link.a],positions[link.b],link.kind==='target'?'#c8e2e0':'#63f2f5',link.kind==='bracket'?[5,4]:[]);
+    }
+    if ($('layer-assignments').checked) frame.agents?.forEach((agent,i)=>{ if (!agent.landmark || selected>=0 && selected!==i) return; line(positions[i],agent.landmark,'#63f2f5',[3,4]); label(agent.landmark,agent.zone ?? agent.job ?? 'landmark','#63f2f5'); });
+    if ($('layer-movement').checked) frame.agents?.forEach((agent,i)=> {
+      if (selected>=0 && selected!==i || !agent.intent?.velocity || !positions[i]) return;
+      const from=positions[i], v=agent.intent.velocity, to=[from[0]+v[0]*0.35,from[1]+v[1]*0.35];
+      line(from,to,'#ffe07b'); const angle=Math.atan2(-v[1],v[0]);
+      ctx.strokeStyle='#ffe07b'; ctx.beginPath(); ctx.moveTo(X(to[0])-7*Math.cos(angle-.45),Y(to[1])-7*Math.sin(angle-.45)); ctx.lineTo(X(to[0]),Y(to[1])); ctx.lineTo(X(to[0])-7*Math.cos(angle+.45),Y(to[1])-7*Math.sin(angle+.45)); ctx.stroke();
+    });
+    if ($('layer-contact').checked) {
+      for (const link of frame.links ?? []) if (['block','tackle'].includes(link.kind) && related(link.a,link.b)) line(positions[link.a],positions[link.b],'#ff9add',[3,2]);
+      for (const block of frame.blocks ?? []) {
+        if (!related(block.a,block.b)) continue; const a=positions[block.a],b=positions[block.b]; if (!a||!b) continue;
+        label([(a[0]+b[0])/2,(a[1]+b[1])/2],`${block.move} · ctrl ${block.control.toFixed(2)}`,'#ffb9e6');
+      }
+      for (const contact of frame.contacts ?? []) if (related(contact.a,contact.b)) line(positions[contact.a],positions[contact.b],'#ff9add');
+      for (const grip of frame.tackle?.tacklers ?? []) if (related(grip.a,frame.tackle.carrier)) label(positions[grip.a],`grip ${grip.grip==null?'?':grip.grip.toFixed(2)}`,'#ffb9e6');
+    }
+    if ($('layer-perception').checked && selected>=0) for (const perceived of frame.perception ?? []) {
+      if (perceived.a!==selected) continue; const pos=perceived.position;
+      line(positions[perceived.b],pos,'rgba(255,255,255,0.8)',[4,4]); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.arc(X(pos[0]),Y(pos[1]),Math.max(6,sc*.55),0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+      label(pos,`${p.roster[perceived.b]?.[1] ?? '?'} · ${perceived.age==null?'age ?':perceived.age.toFixed(2)+'s old'}`,'#fff');
+    }
+  }
 
   // ---------------------------------------------------------------- render
   let W = 1200;
   let H = 720;
   let dpr = 1;
   function resize() {
+    if (exportTask) return;
     const box = canvas.parentElement.getBoundingClientRect();
     dpr = Math.min(2, window.devicePixelRatio || 1);
     W = Math.max(300, box.width);
@@ -427,7 +986,7 @@ const REPLAY = /*__REPLAY_DATA__*/null;
         ctx.save(); ctx.translate(X(x), Y(ny)); if (ny > 26) ctx.rotate(Math.PI); ctx.fillText(String(n), 0, 0); ctx.restore();
       }
     }
-    if (!p) return;
+    if (!p) { fieldProjection = null; $('inspector-title').textContent='No play selected'; $('inspector-state').innerHTML=''; $('inspector-links').textContent=''; $('inspector-decisions').textContent=''; $('inspector-ratings').innerHTML=''; return; }
     // LOS and line to gain.
     ctx.lineWidth = 3;
     ctx.strokeStyle = css('--los');
@@ -437,6 +996,9 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     const F = p.frames;
     const [a, b, f] = frameAt(p, t);
     const n = p.roster.length;
+    const telemetry = telemetryAt(p,t);
+    const positions = p.roster.map((_,i) => { const ia=(a*n+i)*3, ib=(b*n+i)*3; return [F.p[ia]+(F.p[ib]-F.p[ia])*f,F.p[ia+1]+(F.p[ib+1]-F.p[ia+1])*f]; });
+    const inspected = Number($('inspect-player').value);
     const offT = teams[p.off];
     const defT = Object.values(teams).find((x) => x !== offT);
     // Trails for receivers and the ball carrier.
@@ -461,24 +1023,31 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     // Players.
     const rad = Math.max(5, sc * 0.55);
     const carrier = f < 0.5 ? F.c[a] : F.c[b];
+    drawLayers(p,telemetry,positions,X,Y,sc,inspected);
+    fieldProjection = {players:positions.map((p)=>[X(p[0]),Y(p[1])]),radius:rad};
     for (let i = 0; i < n; i++) {
       const r = p.roster[i];
       const ia = (a * n + i) * 3;
       const ib = (b * n + i) * 3;
       const x = F.p[ia] + (F.p[ib] - F.p[ia]) * f;
       const y = F.p[ia + 1] + (F.p[ib + 1] - F.p[ia + 1]) * f;
-      const fc = F.p[ib + 2];
+      const da = F.p[ib+2]-F.p[ia+2];
+      const fc = F.p[ia+2]+Math.atan2(Math.sin(da),Math.cos(da))*f;
       const tm = r[0] === 'O' ? offT : defT;
       const px = X(x);
       const py = Y(y);
+      if (i===inspected) { ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(px,py,rad+4,0,Math.PI*2); ctx.stroke(); }
       ctx.beginPath();
-      ctx.arc(px, py, rad, 0, Math.PI * 2);
+      const poseFrame = f < 0.5 ? a : b;
+      const skinny = i === carrier && F.s ? F.s[poseFrame * 2] : 0;
+      const shoulderAxis = F.s ? F.s[poseFrame * 2 + 1] : fc;
+      ctx.ellipse(px, py, rad * (1 + 0.12 * skinny), rad * (1 - 0.32 * skinny), -shoulderAxis, 0, Math.PI * 2);
       ctx.fillStyle = tm.color;
       ctx.fill();
       ctx.lineWidth = i === carrier ? 3 : 1.5;
       ctx.strokeStyle = i === carrier ? css('--fd') : tm.alt;
       ctx.stroke();
-      // Facing tick.
+      // Body-facing tick (not a gaze or vision ray).
       ctx.beginPath();
       ctx.moveTo(px + Math.cos(fc) * rad * 0.6, py - Math.sin(fc) * rad * 0.6);
       ctx.lineTo(px + Math.cos(fc) * rad * 1.45, py - Math.sin(fc) * rad * 1.45);
@@ -503,7 +1072,19 @@ const REPLAY = /*__REPLAY_DATA__*/null;
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.ellipse(X(bx), Y(by) - lift, sc * 0.32 * size, sc * 0.2 * size, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
     }
-    $('caption').textContent = `${t.toFixed(2)}s${bz > 1.5 && carrier < 0 ? ` · ball ${(bz * 3).toFixed(0)} ft up` : ''}`;
+    $('caption').textContent = `${p.id} · ${t.toFixed(2)}s${bz > 1.5 && carrier < 0 ? ` · ball ${(bz * 3).toFixed(0)} ft up` : ''}`;
+    const player = inspected >= 0 ? inspected : carrier;
+    if (player >= 0) {
+      const lo = Math.max(0,a-1), hi = Math.min(F.t.length-1,b+1);
+      const dt = F.t[hi]-F.t[lo];
+      const vx = dt > 0 ? (F.p[(hi*n+player)*3]-F.p[(lo*n+player)*3])/dt : 0;
+      const vy = dt > 0 ? (F.p[(hi*n+player)*3+1]-F.p[(lo*n+player)*3+1])/dt : 0;
+      const r=p.roster[player], weight=p.weights?.[player] ?? p.profiles?.[player]?.weightLb ?? p.profiles?.[player]?.[2];
+      $('player-motion').textContent = `${r[1]} #${r[3]}${weight ? ` · ${weight} lb` : ''} · ≈${(Math.hypot(vx,vy)*3600/1760).toFixed(1)} mph (recorded path)`;
+      inspect(p,telemetry,player,[vx,vy],bz);
+    } else { $('player-motion').textContent = 'Ball in flight'; inspect(p,telemetry,-1,[0,0],bz); }
+    const ref = reference();
+    if ($('play-reference').value !== ref) $('play-reference').value = ref;
   }
 
   let last = performance.now();
@@ -513,26 +1094,37 @@ const REPLAY = /*__REPLAY_DATA__*/null;
     if (cur >= 0) {
       const p = plays[cur];
       const dur = p.frames.t[p.frames.t.length - 1];
-      if (playing) {
+      if (exportTask) {
+        const elapsed = Math.max(0,(now-exportTask.began)/1000), duration = exportTask.end-exportTask.start;
+        t = Math.min(exportTask.end,exportTask.start+elapsed);
+        $('export-status').textContent = `Recording ${Math.min(100,Math.round(elapsed/duration*100))}% · keep this tab visible (${duration.toFixed(1)}s clip). Esc cancels.`;
+        if (elapsed>=duration+.2 && !exportTask.stopped) { exportTask.stopped=true; if (exportTask.recorder.state!=='inactive') exportTask.recorder.stop(); }
+      } else if (playing) {
         t += dt * speed;
         if (t >= dur) {
           t = dur;
-          if (auto && !holdUntil) holdUntil = now + 1200;
-          else if (!auto) { playing = false; $('playbtn').textContent = 'Play'; }
+          if (auto && !holdUntil) holdUntil = now + 750;
+          else if (!auto) { playing = false; syncControls(); }
         }
       }
-      if (holdUntil && now >= holdUntil) { holdUntil = 0; step(1); }
-      t = Math.min(t, dur);
-      scrub.value = String(Math.round((t / dur) * 1000));
+      if (holdUntil && now >= holdUntil) {
+        holdUntil = 0;
+        if (!step(1, true)) {
+          if (loopPlaylist && playlist.length) load(playlist[0], true);
+          else { playing = false; syncControls(); }
+        }
+      }
+      // Auto-next can load a different duration in this frame.
+      const T = plays[cur].frames.t;
+      t = Math.min(t, T[T.length - 1]);
+      scrub.value = String(Math.round(((t - T[0]) / (T[T.length - 1] - T[0])) * 1000));
     }
     draw();
+    if (exportTask) paintExport(exportTask);
     requestAnimationFrame(loop);
   }
-  let holdUntil = 0;
-  renderList();
-  // Open on the first explosive or scoring play so the page starts in a working state.
-  const firstGood = plays.findIndex((p) => p.frames && (tags(p).includes('td') || tags(p).includes('big')));
-  load(firstGood >= 0 ? firstGood : plays.findIndex((p) => p.frames), false);
+  renderHeader(0);
+  refreshSelection();
   requestAnimationFrame(loop);
 })();
 </script>

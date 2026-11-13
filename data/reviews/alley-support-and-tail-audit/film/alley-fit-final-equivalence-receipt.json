@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "change": "Replace direct object-literal type assertion with inferred const clip and plays.push(clip); no runtime field changes.",
+  "allowedPayloadDifference": [
+    "meta.exporterSha256"
+  ],
+  "browserTestedHtmlSha256": "38dedf1608fc2855e2d7d7eb354fe68a6f4867d5010c5c2ee18c8920ffd9bbf9",
+  "finalHtmlSha256": "ac2e4e2c6f35d21416cb7ffd05f5657c4e1f416f4b2efc1573289abe7370d60d",
+  "browserTestedExporterSha256": "e2df06065e513b1c020fdbb2da144fc8f8b9228f84c91c374ef02475f38c3491",
+  "finalExporterSha256": "4d8c3408b6cc63e233c2f4e02bcee559187d27d032b5df583389e059134e5e3a",
+  "templateSha256": "9ee7232840e1ef442e17c35e3bd43013d13551ff071c838c65701de5fb268ae0",
+  "savedInputsExactlyUnchanged": true,
+  "allPackedPlaysExactlyUnchanged": true,
+  "allOtherPayloadExactlyUnchanged": true,
+  "entireHtmlExactlyUnchangedAfterSingleExporterHashReplacement": true,
+  "browserReceipt": "out/coverage-continuation/alley-fit-browser-focused/check.json",
+  "typecheckExitCode": 0,
+  "typecheckLog": "out/coverage-continuation/alley-fit-typecheck.log",
+  "zipSha256": "1ab86eb8498c1cb85073ef57e96bc9c73c9b98d32fd6378ca9ee64b5ea5d2abf",
+  "zipBytes": 1479111
+}

@@ -1,0 +1,91 @@
+{
+  "baselineCommit": "78f2002325da1ab1d32eec9553234ef9695686ea",
+  "baselineSourceSha256": "e3471f2c0be6e1c4b32c9713d53d216bc835691d868e93e1628ea279fb21498d",
+  "afterSourceSha256": "0f6b4078a3857a2f4664d2e4d91176ccfb252dbcc836c498a3bafdfa32792df7",
+  "sourceScope": "Lexically sorted src/ relative path strings, NUL, file bytes, NUL; docs/scripts/viewers excluded.",
+  "scripts": {
+    "scripts/diag/owner-film.ts": "6eefd193b7a60cc69b308e61b97ca43b4e3338340fbffc618ba417b635fbd126",
+    "scripts/diag/traffic-contact.ts": "ea49ca4e94beda76f131bb9723ffa0584f17edd99745752ab46119a25d7581bd",
+    "scripts/diag/man-accounting.ts": "9d5fd42f08eb1a236f0d01d355292d19fe3ffbdd28a0005ee179daba65c6815b",
+    "scripts/data/owner_film_report.py": "abd6eb36dbf40246b56d3c4e8615064b05e22b28b68189f650dbed79989a55aa",
+    "scripts/data/traffic_contact_report.py": "4c3ea8895317e5859755b1c1b23ecafa6c4cb98ecb83f2ccdcf373252cd56e72",
+    "scripts/film-outcomes.py": "7413472b2668bbeb08c31082efbf1c5a722c5eb264faf3d2982ade567118f8b6",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/replay-data.ts": "2f41af5aad0124730fb04714b0602f26e21a97985daefa258288e3cfda0fd741",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/check-replay-viewer.py": "8c07c3f24278e043abc70c036dd003e49ba3e9720491567798939d93af3097fa"
+  },
+  "baselineRuntimeScripts": {
+    "scripts/diag/owner-film.ts": "6eefd193b7a60cc69b308e61b97ca43b4e3338340fbffc618ba417b635fbd126",
+    "scripts/diag/traffic-contact.ts": "ea49ca4e94beda76f131bb9723ffa0584f17edd99745752ab46119a25d7581bd",
+    "scripts/diag/man-accounting.ts": "9d5fd42f08eb1a236f0d01d355292d19fe3ffbdd28a0005ee179daba65c6815b"
+  },
+  "baselineFilmSha256": "816623c3f410446d961cd4480a8f0bf03112def9fe8189e13e92f4df4a962ac2",
+  "references": {
+    "data/reviews/physics-world/controlled-approach/manifest.json": "55309f6b9be65851fa2cbe723f791c0014400e2670bbe5671fe18adb36cbc9db",
+    "data/reviews/physics-world/controlled-approach/calibration-16.txt": "6fc683f5c366bc85b027f6c9e79ba177aaf3bf6eddd77e68d00b05966e0227dd",
+    "data/reviews/physics-world/controlled-approach/kinematics.txt": "5c64557eafea0fb33d806b9c117670d690529323661610240873c9b5d21a913c",
+    "data/reviews/physics-world/controlled-approach/hand-convergence.json": "d3cb93654d1b676a62a9ac071bf437e7d9733e7e8f18acd241c79a66ba72b1ee",
+    "data/reviews/physics-world/controlled-approach/moving-contact-convergence.json": "25bdd3e38a4e8c0ec8aa3ef7182a8023f58f959843cdc656e41f053f7a940693",
+    "data/reviews/nflverse/reference.json": "ef13f27b292dab73d0d4aedf6128b9b3364d326446b03c5dd49567f65889caff",
+    "data/bdb2025-summary.json": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba",
+    "data/bdb2026-summary.json": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+  },
+  "rawResults": {
+    "out/owner-feedback-original.json": "2165a9da5e992aca4fe62d961bce6f0eff06981777e05fd2bf6e916b25d70e69",
+    "out/owner-feedback-fixed-before.json": "3d51d2f30e2cdc66704088499a31461a349a2d139175ad1618a4d2144d2013ac",
+    "out/owner-feedback-fixed-after.json": "3cdce8df29ce02739040bc6ef051962f126246264a9d07b09564f59ef3fede0d",
+    "out/traffic-contact-before.json": "e1fa38c4e635f6db1fb8d6e800af0ebe6981de6e24b4d3a95f4f8e8dd7c4a723",
+    "out/traffic-contact-after.json": "6c3709e9583822cb4b8b405492dde204e4e56bedc4580b994a5155b3e44c7c68"
+  },
+  "rawNote": "Raw paths stay ignored. The original saved shadow metadata was recovered from the traced CB_S assignment without altering observed rows; current diagnostic captures it directly. Compact reports and retained inputs can be regenerated using the README.",
+  "artifacts": {
+    "data/reviews/physics-world/traffic-and-man-accounting/README.md": "2264d573130c269e30b85fc6bb6a692819a77bee8576f18e74d54bdee4f39f4b",
+    "data/reviews/physics-world/traffic-and-man-accounting/browser-tests.json": "4f9bc5fcce21b5eed9e374a82ced3a84de4246f0ea52899104e19755b1b031bc",
+    "data/reviews/physics-world/traffic-and-man-accounting/build.txt": "31332ab7887258443be380e6c1625535b3d7d264ea650945cd8804c31347a7d7",
+    "data/reviews/physics-world/traffic-and-man-accounting/calibration-16.txt": "c7de77e854a7d14b7207654113a89d1b0e4650aaefc812f2e29fa8d1eaefb13e",
+    "data/reviews/physics-world/traffic-and-man-accounting/data-tests.txt": "5e59f69863ea99f062e0cbc934fab2e6322880d0aacdfec671e0875383080d9d",
+    "data/reviews/physics-world/traffic-and-man-accounting/film-export.txt": "ea4c264a60527bfd3bb6cbad636c00b6705c6756c1507668d3bebac87d490ea2",
+    "data/reviews/physics-world/traffic-and-man-accounting/film-outcomes-after.json": "e82a87f4dd26b2b7ef69a091b99d3e1d9b63cf491aff8f29cfffc2898eefbf10",
+    "data/reviews/physics-world/traffic-and-man-accounting/film-outcomes-before.json": "2f46e1f80ae0ba4fed4308a07f54c8e430cf9b39a22d4845e00c3e52dc55a9a0",
+    "data/reviews/physics-world/traffic-and-man-accounting/hand-convergence.json": "dfb9ba4931ffbb8c5bc97e9277c8835b2adc0e89af86f3a3db5a7731a03e622f",
+    "data/reviews/physics-world/traffic-and-man-accounting/kinematics.txt": "3d33f2c51f8af7659bf56653561a9c2e951b3bb6555d4e8c68b9d476405eeff3",
+    "data/reviews/physics-world/traffic-and-man-accounting/man-accounting-after.json": "b7a0e69be0a65ba8647af92910e1b2666316bfc5502011ecaa3e7de0a5684b60",
+    "data/reviews/physics-world/traffic-and-man-accounting/man-accounting-before.json": "e84f90e6e252977962221bd474300e15a1d85b7d3a87fc9fe9634855df308a64",
+    "data/reviews/physics-world/traffic-and-man-accounting/original-film-verification.txt": "45f380a7fd26467bccd7ffac863dc0d18545db202b77fbd50c2356df99398df7",
+    "data/reviews/physics-world/traffic-and-man-accounting/owner-isolated-pairs.json": "084bc3c9a1e8defa612989ef0b5bff229af6b9ed121adeeade7795bf5030fdeb",
+    "data/reviews/physics-world/traffic-and-man-accounting/owner-observations.json": "6d2f0875ae7175b16f55c921c1e90cabadd39661de5315d1af493af97c306fe9",
+    "data/reviews/physics-world/traffic-and-man-accounting/owner-setups.json": "569592c7d5bea5c289f7c6319b923c5dae37c93557cf42d46beaeb4d8868f639",
+    "data/reviews/physics-world/traffic-and-man-accounting/tests.txt": "9cfa202ddafa7fe8c508a7a1c34ea483debc56447a9bcda8bf1ba916e106114b",
+    "data/reviews/physics-world/traffic-and-man-accounting/traffic-contact-comparison.json": "0c8c0664493605ed7df5f896cb06f2c2901a64b923939b571187277b128585f6",
+    "data/reviews/physics-world/traffic-and-man-accounting/typecheck.txt": "da261241a3139ef6606e87edd53392ca08b8ac6355e004628743c15bad96e2b9"
+  },
+  "film": {
+    "viewer/film-room.html": "b303cb9a19b4f005942edff1d828cd9aeb90d771c3352bf6242f3e0194c8ddc5",
+    "viewer/film-room.zip": "c398c93b05379b90adfa3cc1d90a063044308dc0d389826b977f59f75cf097b4"
+  },
+  "handoff": {
+    "docs/reviews/traffic-and-man-accounting.md": "55b0396a9379b33e147ea5670614bf135bd3f033836c979142c906afae7f06f6",
+    "docs/PHYSICS_DEVELOPMENT.md": "fffb9616db42efa2a6fd7d14307e39e6eb9112129d15af8184a5667277d6071f",
+    "CLAUDE.md": "f95f37ddfb909b8b45b84c4f1c8b48428e021a11af0e970ed773a5341484f7aa"
+  },
+  "uploadedReference": {
+    "docs/references/Running_Back_Mechanics_Textbook.md": "52b679d0ecbd1646406dcb61cfe31db3a7a4a5728c3e9137a96f4651784d140a"
+  },
+  "verification": {
+    "engineTests": 274,
+    "dataTests": 22,
+    "browserChecks": 20,
+    "staticManCases": 19224,
+    "missingManCases": 0,
+    "farManCases": 0,
+    "clips": 884,
+    "games": 6,
+    "concepts": 27,
+    "pitchReleases": 8,
+    "pitchCatches": 8
+  }
+}

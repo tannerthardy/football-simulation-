@@ -1,0 +1,6410 @@
+{
+  "schemaVersion": 1,
+  "source": "BDB 2025, 2022 regular season, selected tracking weeks",
+  "trackingWeeks": [
+    1,
+    2
+  ],
+  "sources": [
+    {
+      "file": "tracking_week_1.csv",
+      "bytes": 971403802,
+      "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+    },
+    {
+      "file": "tracking_week_2.csv",
+      "bytes": 916177128,
+      "sha256": "d735b37f04bdf324132b9cb0f084a4ca583fadbbf02653e1873dad39c36924aa"
+    },
+    {
+      "file": "plays.csv",
+      "bytes": 6892353,
+      "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+    },
+    {
+      "file": "player_play.csv",
+      "bytes": 52533762,
+      "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+    },
+    {
+      "file": "players.csv",
+      "bytes": 104749,
+      "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+    }
+  ],
+  "cohort": "Non-nullified designed runs with one labeled rusher and 22 players plus ball at a unique snap frame; excludes kneels/spikes/dropbacks. Includes all runner positions.",
+  "definitions": {
+    "coordinates": "Offense attacks +x; left plays rotate both axes. LOS and lateral origin use ball at snap. Times use 10 Hz frame IDs.",
+    "frontProxy": "Heuristic near-LOS geometry at snap, not a true front call. Over/Under require one attached TE and one outside-guard shade. Overlapping Bear/4i windows become Reduced_ambiguous_proxy; mixed presentations stay ambiguous.",
+    "firstSustainedOlProximity": "Same OL/opponent within 1.0 yd for two consecutive 10 Hz frames, first four seconds only. Proximity, not observed hand contact or block success.",
+    "missing": "Each metric has its own n. LOS crossings and contact events are censored/missing on some runs; do not zero-impute.",
+    "blockingLabels": "Opponent labels are sparse on runs; no run assignments or combo releases are inferred from them."
+  },
+  "excluded": {},
+  "labelCoverageAllWeeks": {
+    "runPlayerRows": 136905,
+    "runRowsWithBlockingOpponentId": 251
+  },
+  "all": {
+    "plays": 1394,
+    "stuffPct": 18.867,
+    "pct10plus": 11.549,
+    "metrics": {
+      "defensePreSnapLateralMean": {
+        "n": 1386,
+        "mean": 0.24,
+        "p10": 0.073,
+        "p50": 0.183,
+        "p90": 0.485
+      },
+      "defensePreSnapMovingCount": {
+        "n": 1386,
+        "mean": 1.456,
+        "p10": 0,
+        "p50": 1,
+        "p90": 3
+      },
+      "firstContactTime": {
+        "n": 1310,
+        "mean": 2.955,
+        "p10": 2.1,
+        "p50": 2.8,
+        "p90": 4.1
+      },
+      "firstSustainedOlProximity": {
+        "n": 1394,
+        "mean": 0.635,
+        "p10": 0.3,
+        "p50": 0.6,
+        "p90": 0.9
+      },
+      "handoffTime": {
+        "n": 1276,
+        "mean": 1.282,
+        "p10": 1.0,
+        "p50": 1.3,
+        "p90": 1.5
+      },
+      "olForwardAt0p5": {
+        "n": 1328,
+        "mean": 0.13,
+        "p10": -0.002,
+        "p50": 0.126,
+        "p90": 0.282
+      },
+      "olLateralAbsAt0p5": {
+        "n": 1328,
+        "mean": 0.41,
+        "p10": 0.172,
+        "p50": 0.374,
+        "p90": 0.7
+      },
+      "timeToLos": {
+        "n": 1210,
+        "mean": 2.782,
+        "p10": 2.1,
+        "p50": 2.6,
+        "p90": 3.7
+      },
+      "yards": {
+        "n": 1394,
+        "mean": 4.492,
+        "p10": -1.0,
+        "p50": 3.0,
+        "p90": 11.0
+      },
+      "yardsBeforeContact": {
+        "n": 1310,
+        "mean": 1.164,
+        "p10": -2.34,
+        "p50": 0.57,
+        "p90": 4.7
+      }
+    }
+  },
+  "byConcept": {
+    "COUNTER": {
+      "plays": 92,
+      "stuffPct": 17.391,
+      "pct10plus": 16.304,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 92,
+          "mean": 0.225,
+          "p10": 0.079,
+          "p50": 0.192,
+          "p90": 0.385
+        },
+        "defensePreSnapMovingCount": {
+          "n": 92,
+          "mean": 1.413,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 87,
+          "mean": 3.053,
+          "p10": 2.2,
+          "p50": 2.9,
+          "p90": 4.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 92,
+          "mean": 0.691,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 1.0
+        },
+        "handoffTime": {
+          "n": 79,
+          "mean": 1.353,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 83,
+          "mean": 0.084,
+          "p10": -0.006,
+          "p50": 0.076,
+          "p90": 0.194
+        },
+        "olLateralAbsAt0p5": {
+          "n": 83,
+          "mean": 0.354,
+          "p10": 0.18,
+          "p50": 0.348,
+          "p90": 0.53
+        },
+        "timeToLos": {
+          "n": 78,
+          "mean": 2.9,
+          "p10": 2.4,
+          "p50": 2.8,
+          "p90": 3.8
+        },
+        "yards": {
+          "n": 92,
+          "mean": 4.957,
+          "p10": -1.0,
+          "p50": 4.0,
+          "p90": 12.0
+        },
+        "yardsBeforeContact": {
+          "n": 87,
+          "mean": 1.338,
+          "p10": -2.44,
+          "p50": 0.72,
+          "p90": 5.2
+        }
+      }
+    },
+    "DRAW": {
+      "plays": 31,
+      "stuffPct": 16.129,
+      "pct10plus": 9.677,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 31,
+          "mean": 0.143,
+          "p10": 0.064,
+          "p50": 0.139,
+          "p90": 0.192
+        },
+        "defensePreSnapMovingCount": {
+          "n": 31,
+          "mean": 0.581,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 31,
+          "mean": 3.51,
+          "p10": 2.4,
+          "p50": 3.3,
+          "p90": 4.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 31,
+          "mean": 0.826,
+          "p10": 0.6,
+          "p50": 0.8,
+          "p90": 1.2
+        },
+        "handoffTime": {
+          "n": 25,
+          "mean": 1.428,
+          "p10": 1.1,
+          "p50": 1.4,
+          "p90": 1.7
+        },
+        "olForwardAt0p5": {
+          "n": 31,
+          "mean": -0.124,
+          "p10": -0.25,
+          "p50": -0.156,
+          "p90": 0.026
+        },
+        "olLateralAbsAt0p5": {
+          "n": 31,
+          "mean": 0.178,
+          "p10": 0.08,
+          "p50": 0.174,
+          "p90": 0.292
+        },
+        "timeToLos": {
+          "n": 28,
+          "mean": 2.889,
+          "p10": 2.2,
+          "p50": 2.9,
+          "p90": 3.3
+        },
+        "yards": {
+          "n": 31,
+          "mean": 5.194,
+          "p10": -1.0,
+          "p50": 5.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 31,
+          "mean": 2.721,
+          "p10": -1.87,
+          "p50": 1.49,
+          "p90": 6.45
+        }
+      }
+    },
+    "FB RUN": {
+      "plays": 9,
+      "stuffPct": 11.111,
+      "pct10plus": 11.111,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 9,
+          "mean": 0.189,
+          "p10": 0.09,
+          "p50": 0.151,
+          "p90": 0.243
+        },
+        "defensePreSnapMovingCount": {
+          "n": 9,
+          "mean": 0.889,
+          "p10": 0,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 8,
+          "mean": 1.887,
+          "p10": 1.4,
+          "p50": 1.7,
+          "p90": 1.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 9,
+          "mean": 0.333,
+          "p10": 0,
+          "p50": 0.5,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 9,
+          "mean": 0.9,
+          "p10": 0.6,
+          "p50": 0.9,
+          "p90": 1.0
+        },
+        "olForwardAt0p5": {
+          "n": 7,
+          "mean": 0.33,
+          "p10": 0.238,
+          "p50": 0.328,
+          "p90": 0.368
+        },
+        "olLateralAbsAt0p5": {
+          "n": 7,
+          "mean": 0.331,
+          "p10": 0.174,
+          "p50": 0.298,
+          "p90": 0.35
+        },
+        "timeToLos": {
+          "n": 9,
+          "mean": 1.5,
+          "p10": 1.0,
+          "p50": 1.6,
+          "p90": 1.7
+        },
+        "yards": {
+          "n": 9,
+          "mean": 3.778,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 6.0
+        },
+        "yardsBeforeContact": {
+          "n": 8,
+          "mean": 2.096,
+          "p10": -0.46,
+          "p50": 0.31,
+          "p90": 1.18
+        }
+      }
+    },
+    "INSIDE ZONE": {
+      "plays": 294,
+      "stuffPct": 14.626,
+      "pct10plus": 7.483,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 293,
+          "mean": 0.245,
+          "p10": 0.074,
+          "p50": 0.179,
+          "p90": 0.482
+        },
+        "defensePreSnapMovingCount": {
+          "n": 293,
+          "mean": 1.478,
+          "p10": 0,
+          "p50": 1,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 269,
+          "mean": 2.705,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 3.5
+        },
+        "firstSustainedOlProximity": {
+          "n": 294,
+          "mean": 0.671,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 267,
+          "mean": 1.231,
+          "p10": 1.0,
+          "p50": 1.2,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 294,
+          "mean": 0.164,
+          "p10": 0.04,
+          "p50": 0.154,
+          "p90": 0.298
+        },
+        "olLateralAbsAt0p5": {
+          "n": 294,
+          "mean": 0.342,
+          "p10": 0.17,
+          "p50": 0.338,
+          "p90": 0.528
+        },
+        "timeToLos": {
+          "n": 264,
+          "mean": 2.506,
+          "p10": 2.0,
+          "p50": 2.4,
+          "p90": 3.2
+        },
+        "yards": {
+          "n": 294,
+          "mean": 3.993,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 269,
+          "mean": 1.137,
+          "p10": -1.77,
+          "p50": 0.8,
+          "p90": 4.07
+        }
+      }
+    },
+    "MAN": {
+      "plays": 226,
+      "stuffPct": 18.584,
+      "pct10plus": 10.177,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 224,
+          "mean": 0.23,
+          "p10": 0.065,
+          "p50": 0.172,
+          "p90": 0.471
+        },
+        "defensePreSnapMovingCount": {
+          "n": 224,
+          "mean": 1.353,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 220,
+          "mean": 2.829,
+          "p10": 2.1,
+          "p50": 2.7,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 226,
+          "mean": 0.538,
+          "p10": 0.2,
+          "p50": 0.6,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 216,
+          "mean": 1.325,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 202,
+          "mean": 0.197,
+          "p10": 0.082,
+          "p50": 0.2,
+          "p90": 0.314
+        },
+        "olLateralAbsAt0p5": {
+          "n": 202,
+          "mean": 0.273,
+          "p10": 0.128,
+          "p50": 0.258,
+          "p90": 0.44
+        },
+        "timeToLos": {
+          "n": 201,
+          "mean": 2.687,
+          "p10": 2.0,
+          "p50": 2.5,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 226,
+          "mean": 4.354,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 220,
+          "mean": 1.12,
+          "p10": -2.04,
+          "p50": 0.52,
+          "p90": 4.28
+        }
+      }
+    },
+    "NA": {
+      "plays": 3,
+      "stuffPct": 33.333,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.2,
+          "p10": 0.145,
+          "p50": 0.165,
+          "p90": 0.165
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 1.0,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 3,
+          "mean": 4.067,
+          "p10": 2.9,
+          "p50": 3.8,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 3,
+          "mean": 0.833,
+          "p10": 0.8,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.7,
+          "p10": 1.7,
+          "p50": 1.7,
+          "p90": 1.7
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": -0.311,
+          "p10": -0.468,
+          "p50": -0.318,
+          "p90": -0.318
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.332,
+          "p10": 0.262,
+          "p50": 0.366,
+          "p90": 0.366
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 4.7,
+          "p10": 3.1,
+          "p50": 3.7,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 3,
+          "mean": 2.667,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 3,
+          "mean": -1.593,
+          "p10": -5.44,
+          "p50": -0.57,
+          "p90": -0.57
+        }
+      }
+    },
+    "OUTSIDE ZONE": {
+      "plays": 399,
+      "stuffPct": 19.298,
+      "pct10plus": 10.526,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 398,
+          "mean": 0.248,
+          "p10": 0.068,
+          "p50": 0.185,
+          "p90": 0.524
+        },
+        "defensePreSnapMovingCount": {
+          "n": 398,
+          "mean": 1.558,
+          "p10": 0,
+          "p50": 1,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 382,
+          "mean": 2.978,
+          "p10": 2.2,
+          "p50": 2.8,
+          "p90": 4.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 399,
+          "mean": 0.638,
+          "p10": 0.3,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 394,
+          "mean": 1.315,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 392,
+          "mean": 0.139,
+          "p10": 0.028,
+          "p50": 0.124,
+          "p90": 0.286
+        },
+        "olLateralAbsAt0p5": {
+          "n": 392,
+          "mean": 0.57,
+          "p10": 0.298,
+          "p50": 0.56,
+          "p90": 0.822
+        },
+        "timeToLos": {
+          "n": 340,
+          "mean": 2.918,
+          "p10": 2.3,
+          "p50": 2.8,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 399,
+          "mean": 4.08,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 10.0
+        },
+        "yardsBeforeContact": {
+          "n": 382,
+          "mean": 0.767,
+          "p10": -2.57,
+          "p50": 0.18,
+          "p90": 3.84
+        }
+      }
+    },
+    "POWER": {
+      "plays": 124,
+      "stuffPct": 21.774,
+      "pct10plus": 12.097,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 122,
+          "mean": 0.232,
+          "p10": 0.067,
+          "p50": 0.185,
+          "p90": 0.469
+        },
+        "defensePreSnapMovingCount": {
+          "n": 122,
+          "mean": 1.451,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 115,
+          "mean": 2.964,
+          "p10": 2.0,
+          "p50": 2.7,
+          "p90": 4.1
+        },
+        "firstSustainedOlProximity": {
+          "n": 124,
+          "mean": 0.631,
+          "p10": 0.3,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 105,
+          "mean": 1.237,
+          "p10": 1.0,
+          "p50": 1.2,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 115,
+          "mean": 0.097,
+          "p10": 0.01,
+          "p50": 0.09,
+          "p90": 0.19
+        },
+        "olLateralAbsAt0p5": {
+          "n": 115,
+          "mean": 0.336,
+          "p10": 0.144,
+          "p50": 0.332,
+          "p90": 0.514
+        },
+        "timeToLos": {
+          "n": 109,
+          "mean": 2.703,
+          "p10": 2.2,
+          "p50": 2.5,
+          "p90": 3.5
+        },
+        "yards": {
+          "n": 124,
+          "mean": 5.306,
+          "p10": -1.0,
+          "p50": 4.0,
+          "p90": 13.0
+        },
+        "yardsBeforeContact": {
+          "n": 115,
+          "mean": 1.573,
+          "p10": -2.27,
+          "p50": 0.8,
+          "p90": 4.99
+        }
+      }
+    },
+    "PULL LEAD": {
+      "plays": 107,
+      "stuffPct": 28.037,
+      "pct10plus": 15.888,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 107,
+          "mean": 0.256,
+          "p10": 0.076,
+          "p50": 0.2,
+          "p90": 0.477
+        },
+        "defensePreSnapMovingCount": {
+          "n": 107,
+          "mean": 1.458,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 98,
+          "mean": 3.396,
+          "p10": 2.5,
+          "p50": 3.4,
+          "p90": 4.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 107,
+          "mean": 0.675,
+          "p10": 0.3,
+          "p50": 0.7,
+          "p90": 1.0
+        },
+        "handoffTime": {
+          "n": 101,
+          "mean": 1.254,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 100,
+          "mean": 0.011,
+          "p10": -0.094,
+          "p50": 0.014,
+          "p90": 0.126
+        },
+        "olLateralAbsAt0p5": {
+          "n": 100,
+          "mean": 0.532,
+          "p10": 0.262,
+          "p50": 0.516,
+          "p90": 0.774
+        },
+        "timeToLos": {
+          "n": 85,
+          "mean": 3.342,
+          "p10": 2.5,
+          "p50": 3.4,
+          "p90": 3.9
+        },
+        "yards": {
+          "n": 107,
+          "mean": 5.019,
+          "p10": -2.0,
+          "p50": 3.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 98,
+          "mean": 0.573,
+          "p10": -3.15,
+          "p50": -0.18,
+          "p90": 3.8
+        }
+      }
+    },
+    "SNEAK": {
+      "plays": 19,
+      "stuffPct": 10.526,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 17,
+          "mean": 0.257,
+          "p10": 0.078,
+          "p50": 0.235,
+          "p90": 0.464
+        },
+        "defensePreSnapMovingCount": {
+          "n": 17,
+          "mean": 1.412,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 17,
+          "mean": 1.065,
+          "p10": 0.8,
+          "p50": 0.9,
+          "p90": 1.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 19,
+          "mean": 0.432,
+          "p10": 0,
+          "p50": 0.5,
+          "p90": 0.7
+        },
+        "olForwardAt0p5": {
+          "n": 15,
+          "mean": 0.293,
+          "p10": 0.118,
+          "p50": 0.274,
+          "p90": 0.346
+        },
+        "olLateralAbsAt0p5": {
+          "n": 15,
+          "mean": 0.255,
+          "p10": 0.128,
+          "p50": 0.27,
+          "p90": 0.314
+        },
+        "timeToLos": {
+          "n": 17,
+          "mean": 1.106,
+          "p10": 0.1,
+          "p50": 0.9,
+          "p90": 1.7
+        },
+        "yards": {
+          "n": 19,
+          "mean": 1.842,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 17,
+          "mean": 0.024,
+          "p10": -1.26,
+          "p50": -0.08,
+          "p90": 1.17
+        }
+      }
+    },
+    "TRAP": {
+      "plays": 29,
+      "stuffPct": 10.345,
+      "pct10plus": 31.034,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 29,
+          "mean": 0.196,
+          "p10": 0.053,
+          "p50": 0.158,
+          "p90": 0.328
+        },
+        "defensePreSnapMovingCount": {
+          "n": 29,
+          "mean": 1.172,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 29,
+          "mean": 2.731,
+          "p10": 2.0,
+          "p50": 2.6,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 29,
+          "mean": 0.659,
+          "p10": 0.4,
+          "p50": 0.6,
+          "p90": 1.0
+        },
+        "handoffTime": {
+          "n": 29,
+          "mean": 1.121,
+          "p10": 0.9,
+          "p50": 1.1,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 29,
+          "mean": 0.131,
+          "p10": 0.038,
+          "p50": 0.138,
+          "p90": 0.22
+        },
+        "olLateralAbsAt0p5": {
+          "n": 29,
+          "mean": 0.308,
+          "p10": 0.136,
+          "p50": 0.298,
+          "p90": 0.51
+        },
+        "timeToLos": {
+          "n": 28,
+          "mean": 2.254,
+          "p10": 1.9,
+          "p50": 2.1,
+          "p90": 3.0
+        },
+        "yards": {
+          "n": 29,
+          "mean": 8.586,
+          "p10": 0.0,
+          "p50": 6.0,
+          "p90": 21.0
+        },
+        "yardsBeforeContact": {
+          "n": 29,
+          "mean": 3.05,
+          "p10": -0.92,
+          "p50": 1.52,
+          "p90": 8.14
+        }
+      }
+    },
+    "TRICK": {
+      "plays": 55,
+      "stuffPct": 20.0,
+      "pct10plus": 25.455,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 55,
+          "mean": 0.278,
+          "p10": 0.129,
+          "p50": 0.278,
+          "p90": 0.433
+        },
+        "defensePreSnapMovingCount": {
+          "n": 55,
+          "mean": 1.873,
+          "p10": 0,
+          "p50": 2,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 49,
+          "mean": 4.194,
+          "p10": 2.4,
+          "p50": 4.0,
+          "p90": 5.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 55,
+          "mean": 0.655,
+          "p10": 0.4,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 49,
+          "mean": 1.224,
+          "p10": 0.7,
+          "p50": 1.0,
+          "p90": 2.1
+        },
+        "olForwardAt0p5": {
+          "n": 51,
+          "mean": 0.108,
+          "p10": -0.014,
+          "p50": 0.106,
+          "p90": 0.264
+        },
+        "olLateralAbsAt0p5": {
+          "n": 51,
+          "mean": 0.413,
+          "p10": 0.22,
+          "p50": 0.392,
+          "p90": 0.626
+        },
+        "timeToLos": {
+          "n": 45,
+          "mean": 3.718,
+          "p10": 2.6,
+          "p50": 3.6,
+          "p90": 5.0
+        },
+        "yards": {
+          "n": 55,
+          "mean": 6.436,
+          "p10": -4.0,
+          "p50": 5.0,
+          "p90": 17.0
+        },
+        "yardsBeforeContact": {
+          "n": 49,
+          "mean": 2.864,
+          "p10": -6.95,
+          "p50": 1.67,
+          "p90": 9.79
+        }
+      }
+    },
+    "UNDEFINED": {
+      "plays": 6,
+      "stuffPct": 83.333,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 6,
+          "mean": 0.242,
+          "p10": 0.107,
+          "p50": 0.16,
+          "p90": 0.252
+        },
+        "defensePreSnapMovingCount": {
+          "n": 6,
+          "mean": 1.5,
+          "p10": 1,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 2.85,
+          "p10": 2.3,
+          "p50": 2.3,
+          "p90": 2.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 6,
+          "mean": 0.55,
+          "p10": 0.2,
+          "p50": 0.5,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.4,
+          "p10": 1.4,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 6,
+          "mean": -0.032,
+          "p10": -0.458,
+          "p50": -0.026,
+          "p90": 0.02
+        },
+        "olLateralAbsAt0p5": {
+          "n": 6,
+          "mean": 0.325,
+          "p10": 0.186,
+          "p50": 0.222,
+          "p90": 0.382
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 3.467,
+          "p10": 2.7,
+          "p50": 3.1,
+          "p90": 3.1
+        },
+        "yards": {
+          "n": 6,
+          "mean": -2.667,
+          "p10": -13.0,
+          "p50": -2.0,
+          "p90": 0.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": -0.01,
+          "p10": -1.88,
+          "p50": -1.88,
+          "p90": -1.88
+        }
+      }
+    }
+  },
+  "byFrontProxy": {
+    "Bear_proxy": {
+      "plays": 30,
+      "stuffPct": 20.0,
+      "pct10plus": 10.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 30,
+          "mean": 0.232,
+          "p10": 0.078,
+          "p50": 0.159,
+          "p90": 0.442
+        },
+        "defensePreSnapMovingCount": {
+          "n": 30,
+          "mean": 1.333,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 29,
+          "mean": 2.893,
+          "p10": 1.4,
+          "p50": 2.8,
+          "p90": 4.2
+        },
+        "firstSustainedOlProximity": {
+          "n": 30,
+          "mean": 0.4,
+          "p10": 0,
+          "p50": 0.4,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 25,
+          "mean": 1.232,
+          "p10": 0.9,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 29,
+          "mean": 0.158,
+          "p10": 0.02,
+          "p50": 0.138,
+          "p90": 0.346
+        },
+        "olLateralAbsAt0p5": {
+          "n": 29,
+          "mean": 0.43,
+          "p10": 0.206,
+          "p50": 0.402,
+          "p90": 0.594
+        },
+        "timeToLos": {
+          "n": 27,
+          "mean": 2.596,
+          "p10": 1.2,
+          "p50": 2.6,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 30,
+          "mean": 3.3,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 29,
+          "mean": 0.966,
+          "p10": -1.88,
+          "p50": 0.06,
+          "p90": 4.55
+        }
+      }
+    },
+    "Odd_or_reduced_proxy": {
+      "plays": 122,
+      "stuffPct": 18.852,
+      "pct10plus": 9.836,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 121,
+          "mean": 0.205,
+          "p10": 0.072,
+          "p50": 0.159,
+          "p90": 0.394
+        },
+        "defensePreSnapMovingCount": {
+          "n": 121,
+          "mean": 1.099,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 112,
+          "mean": 2.943,
+          "p10": 2.1,
+          "p50": 2.8,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 122,
+          "mean": 0.568,
+          "p10": 0.2,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 116,
+          "mean": 1.312,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 109,
+          "mean": 0.146,
+          "p10": 0.004,
+          "p50": 0.154,
+          "p90": 0.276
+        },
+        "olLateralAbsAt0p5": {
+          "n": 109,
+          "mean": 0.43,
+          "p10": 0.154,
+          "p50": 0.406,
+          "p90": 0.698
+        },
+        "timeToLos": {
+          "n": 102,
+          "mean": 2.752,
+          "p10": 2.1,
+          "p50": 2.7,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 122,
+          "mean": 4.254,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 112,
+          "mean": 1.294,
+          "p10": -1.86,
+          "p50": 0.41,
+          "p90": 4.7
+        }
+      }
+    },
+    "Other_or_ambiguous": {
+      "plays": 832,
+      "stuffPct": 19.231,
+      "pct10plus": 11.058,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 827,
+          "mean": 0.242,
+          "p10": 0.073,
+          "p50": 0.184,
+          "p90": 0.491
+        },
+        "defensePreSnapMovingCount": {
+          "n": 827,
+          "mean": 1.473,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 781,
+          "mean": 2.957,
+          "p10": 2.1,
+          "p50": 2.8,
+          "p90": 4.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 832,
+          "mean": 0.662,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 752,
+          "mean": 1.268,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 793,
+          "mean": 0.122,
+          "p10": -0.012,
+          "p50": 0.118,
+          "p90": 0.28
+        },
+        "olLateralAbsAt0p5": {
+          "n": 793,
+          "mean": 0.405,
+          "p10": 0.172,
+          "p50": 0.366,
+          "p90": 0.704
+        },
+        "timeToLos": {
+          "n": 720,
+          "mean": 2.773,
+          "p10": 2.0,
+          "p50": 2.6,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 832,
+          "mean": 4.522,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 781,
+          "mean": 1.18,
+          "p10": -2.47,
+          "p50": 0.65,
+          "p90": 4.7
+        }
+      }
+    },
+    "Over_proxy": {
+      "plays": 285,
+      "stuffPct": 17.544,
+      "pct10plus": 12.632,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 283,
+          "mean": 0.253,
+          "p10": 0.073,
+          "p50": 0.2,
+          "p90": 0.524
+        },
+        "defensePreSnapMovingCount": {
+          "n": 283,
+          "mean": 1.661,
+          "p10": 0,
+          "p50": 1,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 267,
+          "mean": 2.95,
+          "p10": 2.1,
+          "p50": 2.8,
+          "p90": 4.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 285,
+          "mean": 0.628,
+          "p10": 0.3,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 263,
+          "mean": 1.292,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 281,
+          "mean": 0.138,
+          "p10": -0.002,
+          "p50": 0.136,
+          "p90": 0.272
+        },
+        "olLateralAbsAt0p5": {
+          "n": 281,
+          "mean": 0.406,
+          "p10": 0.166,
+          "p50": 0.366,
+          "p90": 0.702
+        },
+        "timeToLos": {
+          "n": 252,
+          "mean": 2.796,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 285,
+          "mean": 4.432,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 267,
+          "mean": 1.232,
+          "p10": -2.41,
+          "p50": 0.68,
+          "p90": 4.8
+        }
+      }
+    },
+    "Reduced_ambiguous_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.136,
+          "p10": 0.136,
+          "p50": 0.136,
+          "p90": 0.136
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 1.5,
+          "p10": 1.5,
+          "p50": 1.5,
+          "p90": 1.5
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.5,
+          "p10": 0.5,
+          "p50": 0.5,
+          "p90": 0.5
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 0.9,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.238,
+          "p10": 0.238,
+          "p50": 0.238,
+          "p90": 0.238
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.624,
+          "p10": 0.624,
+          "p50": 0.624,
+          "p90": 0.624
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 1.5,
+          "p10": 1.5,
+          "p50": 1.5,
+          "p90": 1.5
+        },
+        "yards": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1.0,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": 0.19,
+          "p10": 0.19,
+          "p50": 0.19,
+          "p90": 0.19
+        }
+      }
+    },
+    "Tite_proxy": {
+      "plays": 41,
+      "stuffPct": 19.512,
+      "pct10plus": 17.073,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 41,
+          "mean": 0.258,
+          "p10": 0.062,
+          "p50": 0.249,
+          "p90": 0.47
+        },
+        "defensePreSnapMovingCount": {
+          "n": 41,
+          "mean": 1.463,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 40,
+          "mean": 3.11,
+          "p10": 2.1,
+          "p50": 2.9,
+          "p90": 4.2
+        },
+        "firstSustainedOlProximity": {
+          "n": 41,
+          "mean": 0.529,
+          "p10": 0.3,
+          "p50": 0.5,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 39,
+          "mean": 1.351,
+          "p10": 1.2,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 39,
+          "mean": 0.167,
+          "p10": 0.032,
+          "p50": 0.14,
+          "p90": 0.324
+        },
+        "olLateralAbsAt0p5": {
+          "n": 39,
+          "mean": 0.523,
+          "p10": 0.294,
+          "p50": 0.502,
+          "p90": 0.668
+        },
+        "timeToLos": {
+          "n": 35,
+          "mean": 2.98,
+          "p10": 2.4,
+          "p50": 2.8,
+          "p90": 3.8
+        },
+        "yards": {
+          "n": 41,
+          "mean": 6.171,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 13.0
+        },
+        "yardsBeforeContact": {
+          "n": 40,
+          "mean": 0.763,
+          "p10": -2.11,
+          "p50": 0.3,
+          "p90": 4.17
+        }
+      }
+    },
+    "Under_proxy": {
+      "plays": 83,
+      "stuffPct": 19.277,
+      "pct10plus": 13.253,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 83,
+          "mean": 0.215,
+          "p10": 0.081,
+          "p50": 0.165,
+          "p90": 0.413
+        },
+        "defensePreSnapMovingCount": {
+          "n": 83,
+          "mean": 1.169,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 80,
+          "mean": 2.94,
+          "p10": 2.2,
+          "p50": 2.8,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 83,
+          "mean": 0.622,
+          "p10": 0.3,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.323,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 76,
+          "mean": 0.133,
+          "p10": 0.018,
+          "p50": 0.116,
+          "p90": 0.274
+        },
+        "olLateralAbsAt0p5": {
+          "n": 76,
+          "mean": 0.386,
+          "p10": 0.132,
+          "p50": 0.382,
+          "p90": 0.598
+        },
+        "timeToLos": {
+          "n": 73,
+          "mean": 2.859,
+          "p10": 2.3,
+          "p50": 2.7,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 83,
+          "mean": 4.398,
+          "p10": -1.0,
+          "p50": 4.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 80,
+          "mean": 0.878,
+          "p10": -2.1,
+          "p50": 0.57,
+          "p90": 3.6
+        }
+      }
+    }
+  },
+  "byConceptAndFrontProxy": {
+    "COUNTER / Bear_proxy": {
+      "plays": 4,
+      "stuffPct": 50.0,
+      "pct10plus": 25.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.159,
+          "p10": 0.07,
+          "p50": 0.154,
+          "p90": 0.185
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 0.75,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 3.65,
+          "p10": 2.8,
+          "p50": 2.9,
+          "p90": 4.2
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.85,
+          "p10": 0.5,
+          "p50": 0.8,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 3,
+          "mean": 1.4,
+          "p10": 1.2,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": 0.066,
+          "p10": 0.02,
+          "p50": 0.068,
+          "p90": 0.076
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.357,
+          "p10": 0.188,
+          "p50": 0.312,
+          "p90": 0.342
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 3.133,
+          "p10": 2.4,
+          "p50": 3.0,
+          "p90": 3.0
+        },
+        "yards": {
+          "n": 4,
+          "mean": 3.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 1.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": 1.448,
+          "p10": -1.82,
+          "p50": -0.44,
+          "p90": -0.1
+        }
+      }
+    },
+    "COUNTER / Odd_or_reduced_proxy": {
+      "plays": 9,
+      "stuffPct": 11.111,
+      "pct10plus": 22.222,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 9,
+          "mean": 0.188,
+          "p10": 0.045,
+          "p50": 0.15,
+          "p90": 0.182
+        },
+        "defensePreSnapMovingCount": {
+          "n": 9,
+          "mean": 0.889,
+          "p10": 0,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 9,
+          "mean": 3.111,
+          "p10": 2.3,
+          "p50": 2.8,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 9,
+          "mean": 0.722,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 9,
+          "mean": 1.311,
+          "p10": 1.0,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 6,
+          "mean": 0.115,
+          "p10": -0.002,
+          "p50": 0.11,
+          "p90": 0.148
+        },
+        "olLateralAbsAt0p5": {
+          "n": 6,
+          "mean": 0.426,
+          "p10": 0.226,
+          "p50": 0.402,
+          "p90": 0.54
+        },
+        "timeToLos": {
+          "n": 8,
+          "mean": 2.7,
+          "p10": 2.3,
+          "p50": 2.7,
+          "p90": 2.8
+        },
+        "yards": {
+          "n": 9,
+          "mean": 4.778,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 9,
+          "mean": 2.332,
+          "p10": -1.35,
+          "p50": 0.28,
+          "p90": 5.28
+        }
+      }
+    },
+    "COUNTER / Other_or_ambiguous": {
+      "plays": 60,
+      "stuffPct": 18.333,
+      "pct10plus": 15.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 60,
+          "mean": 0.218,
+          "p10": 0.075,
+          "p50": 0.192,
+          "p90": 0.385
+        },
+        "defensePreSnapMovingCount": {
+          "n": 60,
+          "mean": 1.333,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 56,
+          "mean": 3.011,
+          "p10": 2.2,
+          "p50": 3.0,
+          "p90": 3.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 60,
+          "mean": 0.703,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 1.0
+        },
+        "handoffTime": {
+          "n": 49,
+          "mean": 1.373,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 55,
+          "mean": 0.066,
+          "p10": -0.04,
+          "p50": 0.07,
+          "p90": 0.146
+        },
+        "olLateralAbsAt0p5": {
+          "n": 55,
+          "mean": 0.334,
+          "p10": 0.172,
+          "p50": 0.322,
+          "p90": 0.502
+        },
+        "timeToLos": {
+          "n": 50,
+          "mean": 2.832,
+          "p10": 2.3,
+          "p50": 2.7,
+          "p90": 3.5
+        },
+        "yards": {
+          "n": 60,
+          "mean": 5.417,
+          "p10": -1.0,
+          "p50": 4.0,
+          "p90": 12.0
+        },
+        "yardsBeforeContact": {
+          "n": 56,
+          "mean": 1.119,
+          "p10": -3.02,
+          "p50": 1.11,
+          "p90": 4.66
+        }
+      }
+    },
+    "COUNTER / Over_proxy": {
+      "plays": 12,
+      "stuffPct": 0.0,
+      "pct10plus": 16.667,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 12,
+          "mean": 0.291,
+          "p10": 0.179,
+          "p50": 0.255,
+          "p90": 0.378
+        },
+        "defensePreSnapMovingCount": {
+          "n": 12,
+          "mean": 2.25,
+          "p10": 1,
+          "p50": 2,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 11,
+          "mean": 3.036,
+          "p10": 2.2,
+          "p50": 2.8,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 12,
+          "mean": 0.642,
+          "p10": 0.4,
+          "p50": 0.6,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 11,
+          "mean": 1.282,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 12,
+          "mean": 0.122,
+          "p10": 0.012,
+          "p50": 0.08,
+          "p90": 0.238
+        },
+        "olLateralAbsAt0p5": {
+          "n": 12,
+          "mean": 0.385,
+          "p10": 0.23,
+          "p50": 0.348,
+          "p90": 0.518
+        },
+        "timeToLos": {
+          "n": 12,
+          "mean": 3.042,
+          "p10": 2.4,
+          "p50": 2.8,
+          "p90": 3.0
+        },
+        "yards": {
+          "n": 12,
+          "mean": 4.5,
+          "p10": 1.0,
+          "p50": 3.0,
+          "p90": 4.0
+        },
+        "yardsBeforeContact": {
+          "n": 11,
+          "mean": 2.329,
+          "p10": -3.33,
+          "p50": 1.68,
+          "p90": 7.46
+        }
+      }
+    },
+    "COUNTER / Tite_proxy": {
+      "plays": 3,
+      "stuffPct": 0.0,
+      "pct10plus": 33.333,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.349,
+          "p10": 0.289,
+          "p50": 0.343,
+          "p90": 0.343
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 2.333,
+          "p10": 2,
+          "p50": 2,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 3,
+          "mean": 3.667,
+          "p10": 2.7,
+          "p50": 3.0,
+          "p90": 3.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 3,
+          "mean": 0.6,
+          "p10": 0.5,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 3,
+          "mean": 1.367,
+          "p10": 1.3,
+          "p50": 1.3,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": 0.113,
+          "p10": -0.012,
+          "p50": -0.012,
+          "p90": -0.012
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.445,
+          "p10": 0.394,
+          "p50": 0.394,
+          "p90": 0.394
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 3.6,
+          "p10": 2.9,
+          "p50": 2.9,
+          "p90": 2.9
+        },
+        "yards": {
+          "n": 3,
+          "mean": 5.0,
+          "p10": 1.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 3,
+          "mean": 2.193,
+          "p10": -0.74,
+          "p50": 0.33,
+          "p90": 0.33
+        }
+      }
+    },
+    "COUNTER / Under_proxy": {
+      "plays": 4,
+      "stuffPct": 50.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.188,
+          "p10": 0.116,
+          "p50": 0.131,
+          "p90": 0.232
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 1.25,
+          "p10": 0,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 2.5,
+          "p10": 1.9,
+          "p50": 2.4,
+          "p90": 2.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.5,
+          "p10": 0.1,
+          "p50": 0.5,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.35,
+          "p10": 1.3,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": 0.172,
+          "p10": 0.074,
+          "p50": 0.128,
+          "p90": 0.132
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.375,
+          "p10": 0.25,
+          "p50": 0.292,
+          "p90": 0.438
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 3.3,
+          "p10": 3.0,
+          "p50": 3.1,
+          "p90": 3.1
+        },
+        "yards": {
+          "n": 4,
+          "mean": 1.75,
+          "p10": -1.0,
+          "p50": 0.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": -1.315,
+          "p10": -2.1,
+          "p50": -2.08,
+          "p90": -1.16
+        }
+      }
+    },
+    "DRAW / Odd_or_reduced_proxy": {
+      "plays": 2,
+      "stuffPct": 50.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 2,
+          "mean": 0.078,
+          "p10": 0.064,
+          "p50": 0.064,
+          "p90": 0.064
+        },
+        "defensePreSnapMovingCount": {
+          "n": 2,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 2.8,
+          "p10": 2.7,
+          "p50": 2.7,
+          "p90": 2.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 2,
+          "mean": 0.3,
+          "p10": 0.1,
+          "p50": 0.1,
+          "p90": 0.1
+        },
+        "handoffTime": {
+          "n": 2,
+          "mean": 1.45,
+          "p10": 1.4,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": -0.066,
+          "p10": -0.222,
+          "p50": -0.222,
+          "p90": -0.222
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.192,
+          "p10": 0.126,
+          "p50": 0.126,
+          "p90": 0.126
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 2.6,
+          "p10": 2.6,
+          "p50": 2.6,
+          "p90": 2.6
+        },
+        "yards": {
+          "n": 2,
+          "mean": 3.5,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 0.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": 0.72,
+          "p10": -0.73,
+          "p50": -0.73,
+          "p90": -0.73
+        }
+      }
+    },
+    "DRAW / Other_or_ambiguous": {
+      "plays": 21,
+      "stuffPct": 14.286,
+      "pct10plus": 9.524,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 21,
+          "mean": 0.156,
+          "p10": 0.092,
+          "p50": 0.139,
+          "p90": 0.195
+        },
+        "defensePreSnapMovingCount": {
+          "n": 21,
+          "mean": 0.619,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 21,
+          "mean": 3.586,
+          "p10": 2.4,
+          "p50": 3.5,
+          "p90": 4.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 21,
+          "mean": 0.829,
+          "p10": 0.6,
+          "p50": 0.8,
+          "p90": 1.1
+        },
+        "handoffTime": {
+          "n": 16,
+          "mean": 1.369,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.6
+        },
+        "olForwardAt0p5": {
+          "n": 21,
+          "mean": -0.152,
+          "p10": -0.282,
+          "p50": -0.168,
+          "p90": 0.014
+        },
+        "olLateralAbsAt0p5": {
+          "n": 21,
+          "mean": 0.194,
+          "p10": 0.108,
+          "p50": 0.184,
+          "p90": 0.302
+        },
+        "timeToLos": {
+          "n": 20,
+          "mean": 2.845,
+          "p10": 2.2,
+          "p50": 2.9,
+          "p90": 3.2
+        },
+        "yards": {
+          "n": 21,
+          "mean": 5.571,
+          "p10": -1.0,
+          "p50": 5.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 21,
+          "mean": 3.671,
+          "p10": -1.21,
+          "p50": 1.86,
+          "p90": 8.82
+        }
+      }
+    },
+    "DRAW / Over_proxy": {
+      "plays": 7,
+      "stuffPct": 14.286,
+      "pct10plus": 14.286,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 7,
+          "mean": 0.136,
+          "p10": 0.065,
+          "p50": 0.161,
+          "p90": 0.164
+        },
+        "defensePreSnapMovingCount": {
+          "n": 7,
+          "mean": 0.714,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 7,
+          "mean": 3.514,
+          "p10": 2.2,
+          "p50": 3.3,
+          "p90": 4.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 7,
+          "mean": 0.971,
+          "p10": 0.6,
+          "p50": 0.9,
+          "p90": 1.2
+        },
+        "handoffTime": {
+          "n": 6,
+          "mean": 1.617,
+          "p10": 1.4,
+          "p50": 1.4,
+          "p90": 1.9
+        },
+        "olForwardAt0p5": {
+          "n": 7,
+          "mean": -0.055,
+          "p10": -0.206,
+          "p50": -0.05,
+          "p90": -0.01
+        },
+        "olLateralAbsAt0p5": {
+          "n": 7,
+          "mean": 0.141,
+          "p10": 0.004,
+          "p50": 0.12,
+          "p90": 0.242
+        },
+        "timeToLos": {
+          "n": 6,
+          "mean": 3.15,
+          "p10": 2.7,
+          "p50": 3.0,
+          "p90": 3.4
+        },
+        "yards": {
+          "n": 7,
+          "mean": 4.143,
+          "p10": -5.0,
+          "p50": 3.0,
+          "p90": 7.0
+        },
+        "yardsBeforeContact": {
+          "n": 7,
+          "mean": 0.654,
+          "p10": -4.99,
+          "p50": 0.88,
+          "p90": 3.67
+        }
+      }
+    },
+    "DRAW / Under_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.03,
+          "p10": 0.03,
+          "p50": 0.03,
+          "p90": 0.03
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 3.3,
+          "p10": 3.3,
+          "p50": 3.3,
+          "p90": 3.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.8,
+          "p10": 0.8,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.2,
+          "p10": 1.2,
+          "p50": 1.2,
+          "p90": 1.2
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": -0.114,
+          "p10": -0.114,
+          "p50": -0.114,
+          "p90": -0.114
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.08,
+          "p10": 0.08,
+          "p50": 0.08,
+          "p90": 0.08
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 2.5,
+          "p10": 2.5,
+          "p50": 2.5,
+          "p90": 2.5
+        },
+        "yards": {
+          "n": 1,
+          "mean": 8.0,
+          "p10": 8.0,
+          "p50": 8.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": 1.25,
+          "p10": 1.25,
+          "p50": 1.25,
+          "p90": 1.25
+        }
+      }
+    },
+    "FB RUN / Bear_proxy": {
+      "plays": 3,
+      "stuffPct": 33.333,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.248,
+          "p10": 0.15,
+          "p50": 0.243,
+          "p90": 0.243
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 1.0,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 1.55,
+          "p10": 1.4,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 3,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "handoffTime": {
+          "n": 3,
+          "mean": 0.833,
+          "p10": 0.6,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": 0.412,
+          "p10": 0.368,
+          "p50": 0.368,
+          "p90": 0.368
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.287,
+          "p10": 0.274,
+          "p50": 0.274,
+          "p90": 0.274
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 1.5,
+          "p10": 1.2,
+          "p50": 1.6,
+          "p90": 1.6
+        },
+        "yards": {
+          "n": 3,
+          "mean": 1.333,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": -0.075,
+          "p10": -0.46,
+          "p50": -0.46,
+          "p90": -0.46
+        }
+      }
+    },
+    "FB RUN / Odd_or_reduced_proxy": {
+      "plays": 2,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 2,
+          "mean": 0.165,
+          "p10": 0.09,
+          "p50": 0.09,
+          "p90": 0.09
+        },
+        "defensePreSnapMovingCount": {
+          "n": 2,
+          "mean": 1.0,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 1.8,
+          "p10": 1.7,
+          "p50": 1.7,
+          "p90": 1.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 2,
+          "mean": 0.65,
+          "p10": 0.6,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 2,
+          "mean": 0.95,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.328,
+          "p10": 0.328,
+          "p50": 0.328,
+          "p90": 0.328
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.174,
+          "p10": 0.174,
+          "p50": 0.174,
+          "p90": 0.174
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 1.8,
+          "p10": 1.7,
+          "p50": 1.7,
+          "p90": 1.7
+        },
+        "yards": {
+          "n": 2,
+          "mean": 5.5,
+          "p10": 5.0,
+          "p50": 5.0,
+          "p90": 5.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": 0.58,
+          "p10": -0.02,
+          "p50": -0.02,
+          "p90": -0.02
+        }
+      }
+    },
+    "FB RUN / Other_or_ambiguous": {
+      "plays": 2,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 2,
+          "mean": 0.132,
+          "p10": 0.114,
+          "p50": 0.114,
+          "p90": 0.114
+        },
+        "defensePreSnapMovingCount": {
+          "n": 2,
+          "mean": 0.5,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 1.65,
+          "p10": 1.6,
+          "p50": 1.6,
+          "p90": 1.6
+        },
+        "firstSustainedOlProximity": {
+          "n": 2,
+          "mean": 0.55,
+          "p10": 0.5,
+          "p50": 0.5,
+          "p90": 0.5
+        },
+        "handoffTime": {
+          "n": 2,
+          "mean": 0.9,
+          "p10": 0.8,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": 0.3,
+          "p10": 0.242,
+          "p50": 0.242,
+          "p90": 0.242
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.297,
+          "p10": 0.296,
+          "p50": 0.296,
+          "p90": 0.296
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 1.45,
+          "p10": 1.3,
+          "p50": 1.3,
+          "p90": 1.3
+        },
+        "yards": {
+          "n": 2,
+          "mean": 2.0,
+          "p10": 2.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": 1.04,
+          "p10": 0.96,
+          "p50": 0.96,
+          "p90": 0.96
+        }
+      }
+    },
+    "FB RUN / Over_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 100.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.228,
+          "p10": 0.228,
+          "p50": 0.228,
+          "p90": 0.228
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 2.0,
+          "p10": 2,
+          "p50": 2,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 3.6,
+          "p10": 3.6,
+          "p50": 3.6,
+          "p90": 3.6
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.1,
+          "p10": 0.1,
+          "p50": 0.1,
+          "p90": 0.1
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1.0,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.322,
+          "p10": 0.322,
+          "p50": 0.322,
+          "p90": 0.322
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.35,
+          "p10": 0.35,
+          "p50": 0.35,
+          "p90": 0.35
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1.0,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "yards": {
+          "n": 1,
+          "mean": 14.0,
+          "p10": 14.0,
+          "p50": 14.0,
+          "p90": 14.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": 13.49,
+          "p10": 13.49,
+          "p50": 13.49,
+          "p90": 13.49
+        }
+      }
+    },
+    "FB RUN / Reduced_ambiguous_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.136,
+          "p10": 0.136,
+          "p50": 0.136,
+          "p90": 0.136
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 1.5,
+          "p10": 1.5,
+          "p50": 1.5,
+          "p90": 1.5
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.5,
+          "p10": 0.5,
+          "p50": 0.5,
+          "p90": 0.5
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 0.9,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.238,
+          "p10": 0.238,
+          "p50": 0.238,
+          "p90": 0.238
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.624,
+          "p10": 0.624,
+          "p50": 0.624,
+          "p90": 0.624
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 1.5,
+          "p10": 1.5,
+          "p50": 1.5,
+          "p90": 1.5
+        },
+        "yards": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1.0,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": 0.19,
+          "p10": 0.19,
+          "p50": 0.19,
+          "p90": 0.19
+        }
+      }
+    },
+    "INSIDE ZONE / Bear_proxy": {
+      "plays": 3,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.14,
+          "p10": 0.131,
+          "p50": 0.135,
+          "p90": 0.135
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 1.0,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 3,
+          "mean": 2.233,
+          "p10": 1.8,
+          "p50": 2.3,
+          "p90": 2.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 3,
+          "mean": 0.433,
+          "p10": 0.2,
+          "p50": 0.5,
+          "p90": 0.5
+        },
+        "handoffTime": {
+          "n": 3,
+          "mean": 1.1,
+          "p10": 0.9,
+          "p50": 1.2,
+          "p90": 1.2
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": 0.216,
+          "p10": 0.114,
+          "p50": 0.15,
+          "p90": 0.15
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.546,
+          "p10": 0.454,
+          "p50": 0.536,
+          "p90": 0.536
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 2.2,
+          "p10": 2.1,
+          "p50": 2.2,
+          "p90": 2.2
+        },
+        "yards": {
+          "n": 3,
+          "mean": 4.667,
+          "p10": 3.0,
+          "p50": 5.0,
+          "p90": 5.0
+        },
+        "yardsBeforeContact": {
+          "n": 3,
+          "mean": 0.413,
+          "p10": -1.08,
+          "p50": 0.45,
+          "p90": 0.45
+        }
+      }
+    },
+    "INSIDE ZONE / Odd_or_reduced_proxy": {
+      "plays": 18,
+      "stuffPct": 22.222,
+      "pct10plus": 5.556,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 18,
+          "mean": 0.186,
+          "p10": 0.066,
+          "p50": 0.108,
+          "p90": 0.331
+        },
+        "defensePreSnapMovingCount": {
+          "n": 18,
+          "mean": 0.722,
+          "p10": 0,
+          "p50": 0,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 15,
+          "mean": 2.767,
+          "p10": 2.4,
+          "p50": 2.7,
+          "p90": 3.1
+        },
+        "firstSustainedOlProximity": {
+          "n": 18,
+          "mean": 0.489,
+          "p10": 0,
+          "p50": 0.5,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 15,
+          "mean": 1.273,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 18,
+          "mean": 0.195,
+          "p10": 0.004,
+          "p50": 0.198,
+          "p90": 0.308
+        },
+        "olLateralAbsAt0p5": {
+          "n": 18,
+          "mean": 0.386,
+          "p10": 0.142,
+          "p50": 0.406,
+          "p90": 0.538
+        },
+        "timeToLos": {
+          "n": 15,
+          "mean": 2.607,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 2.9
+        },
+        "yards": {
+          "n": 18,
+          "mean": 3.5,
+          "p10": -2.0,
+          "p50": 3.0,
+          "p90": 7.0
+        },
+        "yardsBeforeContact": {
+          "n": 15,
+          "mean": 0.605,
+          "p10": -3.09,
+          "p50": 0.39,
+          "p90": 3.31
+        }
+      }
+    },
+    "INSIDE ZONE / Other_or_ambiguous": {
+      "plays": 188,
+      "stuffPct": 12.766,
+      "pct10plus": 6.915,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 187,
+          "mean": 0.241,
+          "p10": 0.077,
+          "p50": 0.181,
+          "p90": 0.437
+        },
+        "defensePreSnapMovingCount": {
+          "n": 187,
+          "mean": 1.433,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 172,
+          "mean": 2.685,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 3.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 188,
+          "mean": 0.702,
+          "p10": 0.5,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 173,
+          "mean": 1.214,
+          "p10": 1.0,
+          "p50": 1.2,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 188,
+          "mean": 0.154,
+          "p10": 0.024,
+          "p50": 0.142,
+          "p90": 0.298
+        },
+        "olLateralAbsAt0p5": {
+          "n": 188,
+          "mean": 0.332,
+          "p10": 0.16,
+          "p50": 0.332,
+          "p90": 0.518
+        },
+        "timeToLos": {
+          "n": 171,
+          "mean": 2.48,
+          "p10": 1.9,
+          "p50": 2.4,
+          "p90": 3.2
+        },
+        "yards": {
+          "n": 188,
+          "mean": 4.043,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 172,
+          "mean": 1.17,
+          "p10": -1.46,
+          "p50": 0.86,
+          "p90": 4.07
+        }
+      }
+    },
+    "INSIDE ZONE / Over_proxy": {
+      "plays": 60,
+      "stuffPct": 15.0,
+      "pct10plus": 8.333,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 60,
+          "mean": 0.271,
+          "p10": 0.066,
+          "p50": 0.175,
+          "p90": 0.524
+        },
+        "defensePreSnapMovingCount": {
+          "n": 60,
+          "mean": 1.733,
+          "p10": 0,
+          "p50": 1,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 55,
+          "mean": 2.742,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 3.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 60,
+          "mean": 0.67,
+          "p10": 0.3,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 53,
+          "mean": 1.23,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 60,
+          "mean": 0.176,
+          "p10": 0.07,
+          "p50": 0.162,
+          "p90": 0.262
+        },
+        "olLateralAbsAt0p5": {
+          "n": 60,
+          "mean": 0.327,
+          "p10": 0.198,
+          "p50": 0.32,
+          "p90": 0.456
+        },
+        "timeToLos": {
+          "n": 54,
+          "mean": 2.511,
+          "p10": 2.0,
+          "p50": 2.3,
+          "p90": 3.3
+        },
+        "yards": {
+          "n": 60,
+          "mean": 4.017,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 55,
+          "mean": 1.499,
+          "p10": -0.99,
+          "p50": 0.87,
+          "p90": 3.93
+        }
+      }
+    },
+    "INSIDE ZONE / Tite_proxy": {
+      "plays": 6,
+      "stuffPct": 33.333,
+      "pct10plus": 16.667,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 6,
+          "mean": 0.38,
+          "p10": 0.062,
+          "p50": 0.347,
+          "p90": 0.564
+        },
+        "defensePreSnapMovingCount": {
+          "n": 6,
+          "mean": 1.833,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 6,
+          "mean": 2.683,
+          "p10": 2.1,
+          "p50": 2.4,
+          "p90": 2.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 6,
+          "mean": 0.467,
+          "p10": 0.3,
+          "p50": 0.5,
+          "p90": 0.5
+        },
+        "handoffTime": {
+          "n": 6,
+          "mean": 1.367,
+          "p10": 1.2,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 6,
+          "mean": 0.232,
+          "p10": 0.126,
+          "p50": 0.156,
+          "p90": 0.29
+        },
+        "olLateralAbsAt0p5": {
+          "n": 6,
+          "mean": 0.533,
+          "p10": 0.442,
+          "p50": 0.526,
+          "p90": 0.548
+        },
+        "timeToLos": {
+          "n": 5,
+          "mean": 2.6,
+          "p10": 2.3,
+          "p50": 2.5,
+          "p90": 2.8
+        },
+        "yards": {
+          "n": 6,
+          "mean": 6.5,
+          "p10": -1.0,
+          "p50": 2.0,
+          "p90": 7.0
+        },
+        "yardsBeforeContact": {
+          "n": 6,
+          "mean": -0.253,
+          "p10": -1.95,
+          "p50": -0.26,
+          "p90": 0.78
+        }
+      }
+    },
+    "INSIDE ZONE / Under_proxy": {
+      "plays": 19,
+      "stuffPct": 21.053,
+      "pct10plus": 10.526,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 19,
+          "mean": 0.241,
+          "p10": 0.085,
+          "p50": 0.223,
+          "p90": 0.398
+        },
+        "defensePreSnapMovingCount": {
+          "n": 19,
+          "mean": 1.789,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 18,
+          "mean": 2.822,
+          "p10": 2.2,
+          "p50": 2.7,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 19,
+          "mean": 0.653,
+          "p10": 0.2,
+          "p50": 0.7,
+          "p90": 1.0
+        },
+        "handoffTime": {
+          "n": 17,
+          "mean": 1.347,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 19,
+          "mean": 0.161,
+          "p10": 0.01,
+          "p50": 0.152,
+          "p90": 0.28
+        },
+        "olLateralAbsAt0p5": {
+          "n": 19,
+          "mean": 0.352,
+          "p10": 0.176,
+          "p50": 0.384,
+          "p90": 0.498
+        },
+        "timeToLos": {
+          "n": 16,
+          "mean": 2.694,
+          "p10": 2.2,
+          "p50": 2.6,
+          "p90": 3.1
+        },
+        "yards": {
+          "n": 19,
+          "mean": 3.0,
+          "p10": -1.0,
+          "p50": 4.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 18,
+          "mean": 0.752,
+          "p10": -3.01,
+          "p50": 0.42,
+          "p90": 2.31
+        }
+      }
+    },
+    "MAN / Bear_proxy": {
+      "plays": 3,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.331,
+          "p10": 0.146,
+          "p50": 0.152,
+          "p90": 0.152
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 2.333,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 3,
+          "mean": 2.767,
+          "p10": 2.2,
+          "p50": 2.5,
+          "p90": 2.5
+        },
+        "firstSustainedOlProximity": {
+          "n": 3,
+          "mean": 0.367,
+          "p10": 0.1,
+          "p50": 0.4,
+          "p90": 0.4
+        },
+        "handoffTime": {
+          "n": 3,
+          "mean": 1.333,
+          "p10": 1.2,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": 0.186,
+          "p10": 0.158,
+          "p50": 0.19,
+          "p90": 0.19
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.242,
+          "p10": 0.114,
+          "p50": 0.284,
+          "p90": 0.284
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 2.433,
+          "p10": 2.1,
+          "p50": 2.5,
+          "p90": 2.5
+        },
+        "yards": {
+          "n": 3,
+          "mean": 5.0,
+          "p10": 2.0,
+          "p50": 5.0,
+          "p90": 5.0
+        },
+        "yardsBeforeContact": {
+          "n": 3,
+          "mean": 1.87,
+          "p10": 0.06,
+          "p50": 1.0,
+          "p90": 1.0
+        }
+      }
+    },
+    "MAN / Odd_or_reduced_proxy": {
+      "plays": 23,
+      "stuffPct": 17.391,
+      "pct10plus": 8.696,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 22,
+          "mean": 0.195,
+          "p10": 0.081,
+          "p50": 0.131,
+          "p90": 0.385
+        },
+        "defensePreSnapMovingCount": {
+          "n": 22,
+          "mean": 1.045,
+          "p10": 0,
+          "p50": 0,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 22,
+          "mean": 2.827,
+          "p10": 1.9,
+          "p50": 2.7,
+          "p90": 3.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 23,
+          "mean": 0.522,
+          "p10": 0.3,
+          "p50": 0.5,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 23,
+          "mean": 1.361,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 20,
+          "mean": 0.184,
+          "p10": 0.07,
+          "p50": 0.196,
+          "p90": 0.278
+        },
+        "olLateralAbsAt0p5": {
+          "n": 20,
+          "mean": 0.275,
+          "p10": 0.118,
+          "p50": 0.252,
+          "p90": 0.408
+        },
+        "timeToLos": {
+          "n": 20,
+          "mean": 2.67,
+          "p10": 1.8,
+          "p50": 2.5,
+          "p90": 3.9
+        },
+        "yards": {
+          "n": 23,
+          "mean": 5.304,
+          "p10": 0.0,
+          "p50": 4.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 22,
+          "mean": 1.783,
+          "p10": -1.5,
+          "p50": 0.64,
+          "p90": 3.89
+        }
+      }
+    },
+    "MAN / Other_or_ambiguous": {
+      "plays": 130,
+      "stuffPct": 21.538,
+      "pct10plus": 8.462,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 129,
+          "mean": 0.233,
+          "p10": 0.054,
+          "p50": 0.16,
+          "p90": 0.529
+        },
+        "defensePreSnapMovingCount": {
+          "n": 129,
+          "mean": 1.333,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 125,
+          "mean": 2.767,
+          "p10": 2.0,
+          "p50": 2.6,
+          "p90": 3.6
+        },
+        "firstSustainedOlProximity": {
+          "n": 130,
+          "mean": 0.549,
+          "p10": 0.2,
+          "p50": 0.6,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 122,
+          "mean": 1.311,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 114,
+          "mean": 0.193,
+          "p10": 0.088,
+          "p50": 0.194,
+          "p90": 0.312
+        },
+        "olLateralAbsAt0p5": {
+          "n": 114,
+          "mean": 0.286,
+          "p10": 0.13,
+          "p50": 0.268,
+          "p90": 0.45
+        },
+        "timeToLos": {
+          "n": 115,
+          "mean": 2.61,
+          "p10": 1.9,
+          "p50": 2.5,
+          "p90": 3.4
+        },
+        "yards": {
+          "n": 130,
+          "mean": 3.992,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 125,
+          "mean": 0.873,
+          "p10": -2.24,
+          "p50": 0.46,
+          "p90": 3.67
+        }
+      }
+    },
+    "MAN / Over_proxy": {
+      "plays": 50,
+      "stuffPct": 14.0,
+      "pct10plus": 10.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 50,
+          "mean": 0.221,
+          "p10": 0.078,
+          "p50": 0.19,
+          "p90": 0.394
+        },
+        "defensePreSnapMovingCount": {
+          "n": 50,
+          "mean": 1.56,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 50,
+          "mean": 2.952,
+          "p10": 2.3,
+          "p50": 2.7,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 50,
+          "mean": 0.506,
+          "p10": 0.1,
+          "p50": 0.5,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 48,
+          "mean": 1.317,
+          "p10": 1.2,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 48,
+          "mean": 0.212,
+          "p10": 0.066,
+          "p50": 0.21,
+          "p90": 0.326
+        },
+        "olLateralAbsAt0p5": {
+          "n": 48,
+          "mean": 0.246,
+          "p10": 0.134,
+          "p50": 0.22,
+          "p90": 0.368
+        },
+        "timeToLos": {
+          "n": 46,
+          "mean": 2.885,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 3.9
+        },
+        "yards": {
+          "n": 50,
+          "mean": 4.16,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 50,
+          "mean": 1.329,
+          "p10": -1.83,
+          "p50": 0.78,
+          "p90": 4.25
+        }
+      }
+    },
+    "MAN / Tite_proxy": {
+      "plays": 4,
+      "stuffPct": 0.0,
+      "pct10plus": 25.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.362,
+          "p10": 0.249,
+          "p50": 0.38,
+          "p90": 0.385
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 2.5,
+          "p10": 1,
+          "p50": 2,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 2.6,
+          "p10": 2.1,
+          "p50": 2.5,
+          "p90": 2.6
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.75,
+          "p10": 0.6,
+          "p50": 0.7,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.375,
+          "p10": 1.2,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": 0.182,
+          "p10": 0.14,
+          "p50": 0.14,
+          "p90": 0.204
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.305,
+          "p10": 0.196,
+          "p50": 0.294,
+          "p90": 0.364
+        },
+        "timeToLos": {
+          "n": 4,
+          "mean": 2.675,
+          "p10": 2.2,
+          "p50": 2.7,
+          "p90": 2.8
+        },
+        "yards": {
+          "n": 4,
+          "mean": 4.75,
+          "p10": 2.0,
+          "p50": 2.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": -0.167,
+          "p10": -0.61,
+          "p50": -0.44,
+          "p90": -0.39
+        }
+      }
+    },
+    "MAN / Under_proxy": {
+      "plays": 16,
+      "stuffPct": 18.75,
+      "pct10plus": 25.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 16,
+          "mean": 0.223,
+          "p10": 0.088,
+          "p50": 0.183,
+          "p90": 0.38
+        },
+        "defensePreSnapMovingCount": {
+          "n": 16,
+          "mean": 0.812,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 16,
+          "mean": 2.994,
+          "p10": 2.1,
+          "p50": 2.8,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 16,
+          "mean": 0.544,
+          "p10": 0.2,
+          "p50": 0.6,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 16,
+          "mean": 1.387,
+          "p10": 1.0,
+          "p50": 1.4,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 13,
+          "mean": 0.201,
+          "p10": 0.09,
+          "p50": 0.166,
+          "p90": 0.296
+        },
+        "olLateralAbsAt0p5": {
+          "n": 13,
+          "mean": 0.258,
+          "p10": 0.092,
+          "p50": 0.232,
+          "p90": 0.416
+        },
+        "timeToLos": {
+          "n": 13,
+          "mean": 2.746,
+          "p10": 2.3,
+          "p50": 2.6,
+          "p90": 3.3
+        },
+        "yards": {
+          "n": 16,
+          "mean": 6.312,
+          "p10": -2.0,
+          "p50": 3.0,
+          "p90": 16.0
+        },
+        "yardsBeforeContact": {
+          "n": 16,
+          "mean": 1.666,
+          "p10": -2.9,
+          "p50": 0.63,
+          "p90": 4.37
+        }
+      }
+    },
+    "NA / Other_or_ambiguous": {
+      "plays": 3,
+      "stuffPct": 33.333,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.2,
+          "p10": 0.145,
+          "p50": 0.165,
+          "p90": 0.165
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 1.0,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 3,
+          "mean": 4.067,
+          "p10": 2.9,
+          "p50": 3.8,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 3,
+          "mean": 0.833,
+          "p10": 0.8,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.7,
+          "p10": 1.7,
+          "p50": 1.7,
+          "p90": 1.7
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": -0.311,
+          "p10": -0.468,
+          "p50": -0.318,
+          "p90": -0.318
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.332,
+          "p10": 0.262,
+          "p50": 0.366,
+          "p90": 0.366
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 4.7,
+          "p10": 3.1,
+          "p50": 3.7,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 3,
+          "mean": 2.667,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 3,
+          "mean": -1.593,
+          "p10": -5.44,
+          "p50": -0.57,
+          "p90": -0.57
+        }
+      }
+    },
+    "OUTSIDE ZONE / Bear_proxy": {
+      "plays": 6,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 6,
+          "mean": 0.237,
+          "p10": 0.068,
+          "p50": 0.097,
+          "p90": 0.442
+        },
+        "defensePreSnapMovingCount": {
+          "n": 6,
+          "mean": 1.333,
+          "p10": 0,
+          "p50": 0,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 6,
+          "mean": 3.033,
+          "p10": 2.3,
+          "p50": 2.9,
+          "p90": 3.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 6,
+          "mean": 0.333,
+          "p10": 0,
+          "p50": 0.3,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 6,
+          "mean": 1.367,
+          "p10": 1.3,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 6,
+          "mean": 0.141,
+          "p10": 0.062,
+          "p50": 0.132,
+          "p90": 0.194
+        },
+        "olLateralAbsAt0p5": {
+          "n": 6,
+          "mean": 0.596,
+          "p10": 0.402,
+          "p50": 0.524,
+          "p90": 0.792
+        },
+        "timeToLos": {
+          "n": 6,
+          "mean": 3.0,
+          "p10": 2.4,
+          "p50": 2.6,
+          "p90": 2.9
+        },
+        "yards": {
+          "n": 6,
+          "mean": 3.333,
+          "p10": 1.0,
+          "p50": 2.0,
+          "p90": 5.0
+        },
+        "yardsBeforeContact": {
+          "n": 6,
+          "mean": 0.703,
+          "p10": -0.92,
+          "p50": -0.2,
+          "p90": 1.56
+        }
+      }
+    },
+    "OUTSIDE ZONE / Odd_or_reduced_proxy": {
+      "plays": 34,
+      "stuffPct": 20.588,
+      "pct10plus": 5.882,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 34,
+          "mean": 0.198,
+          "p10": 0.064,
+          "p50": 0.156,
+          "p90": 0.357
+        },
+        "defensePreSnapMovingCount": {
+          "n": 34,
+          "mean": 1.206,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 32,
+          "mean": 3.062,
+          "p10": 2.4,
+          "p50": 3.0,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 34,
+          "mean": 0.559,
+          "p10": 0.2,
+          "p50": 0.6,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 34,
+          "mean": 1.376,
+          "p10": 1.2,
+          "p50": 1.4,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 33,
+          "mean": 0.163,
+          "p10": 0.064,
+          "p50": 0.18,
+          "p90": 0.244
+        },
+        "olLateralAbsAt0p5": {
+          "n": 33,
+          "mean": 0.573,
+          "p10": 0.298,
+          "p50": 0.568,
+          "p90": 0.762
+        },
+        "timeToLos": {
+          "n": 28,
+          "mean": 2.943,
+          "p10": 2.5,
+          "p50": 2.7,
+          "p90": 3.4
+        },
+        "yards": {
+          "n": 34,
+          "mean": 3.676,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 32,
+          "mean": 0.96,
+          "p10": -1.81,
+          "p50": 0.46,
+          "p90": 5.48
+        }
+      }
+    },
+    "OUTSIDE ZONE / Other_or_ambiguous": {
+      "plays": 225,
+      "stuffPct": 20.444,
+      "pct10plus": 11.111,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 224,
+          "mean": 0.27,
+          "p10": 0.075,
+          "p50": 0.202,
+          "p90": 0.54
+        },
+        "defensePreSnapMovingCount": {
+          "n": 224,
+          "mean": 1.714,
+          "p10": 0,
+          "p50": 1,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 213,
+          "mean": 2.985,
+          "p10": 2.1,
+          "p50": 2.8,
+          "p90": 4.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 225,
+          "mean": 0.672,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 221,
+          "mean": 1.301,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 221,
+          "mean": 0.131,
+          "p10": 0.02,
+          "p50": 0.104,
+          "p90": 0.286
+        },
+        "olLateralAbsAt0p5": {
+          "n": 221,
+          "mean": 0.579,
+          "p10": 0.298,
+          "p50": 0.564,
+          "p90": 0.872
+        },
+        "timeToLos": {
+          "n": 188,
+          "mean": 2.916,
+          "p10": 2.3,
+          "p50": 2.8,
+          "p90": 3.8
+        },
+        "yards": {
+          "n": 225,
+          "mean": 3.982,
+          "p10": -2.0,
+          "p50": 3.0,
+          "p90": 10.0
+        },
+        "yardsBeforeContact": {
+          "n": 213,
+          "mean": 0.797,
+          "p10": -2.92,
+          "p50": -0.02,
+          "p90": 3.56
+        }
+      }
+    },
+    "OUTSIDE ZONE / Over_proxy": {
+      "plays": 88,
+      "stuffPct": 19.318,
+      "pct10plus": 9.091,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 88,
+          "mean": 0.246,
+          "p10": 0.065,
+          "p50": 0.157,
+          "p90": 0.553
+        },
+        "defensePreSnapMovingCount": {
+          "n": 88,
+          "mean": 1.557,
+          "p10": 0,
+          "p50": 1,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 85,
+          "mean": 2.895,
+          "p10": 2.2,
+          "p50": 2.8,
+          "p90": 3.6
+        },
+        "firstSustainedOlProximity": {
+          "n": 88,
+          "mean": 0.636,
+          "p10": 0.3,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 87,
+          "mean": 1.318,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 88,
+          "mean": 0.143,
+          "p10": 0.032,
+          "p50": 0.128,
+          "p90": 0.288
+        },
+        "olLateralAbsAt0p5": {
+          "n": 88,
+          "mean": 0.57,
+          "p10": 0.318,
+          "p50": 0.562,
+          "p90": 0.802
+        },
+        "timeToLos": {
+          "n": 76,
+          "mean": 2.888,
+          "p10": 2.2,
+          "p50": 2.8,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 88,
+          "mean": 3.898,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 85,
+          "mean": 0.611,
+          "p10": -2.34,
+          "p50": 0.16,
+          "p90": 3.79
+        }
+      }
+    },
+    "OUTSIDE ZONE / Tite_proxy": {
+      "plays": 18,
+      "stuffPct": 22.222,
+      "pct10plus": 16.667,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 18,
+          "mean": 0.204,
+          "p10": 0.059,
+          "p50": 0.133,
+          "p90": 0.327
+        },
+        "defensePreSnapMovingCount": {
+          "n": 18,
+          "mean": 1.167,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 18,
+          "mean": 3.028,
+          "p10": 1.8,
+          "p50": 2.9,
+          "p90": 3.5
+        },
+        "firstSustainedOlProximity": {
+          "n": 18,
+          "mean": 0.467,
+          "p10": 0.2,
+          "p50": 0.4,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 18,
+          "mean": 1.333,
+          "p10": 1.2,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 18,
+          "mean": 0.199,
+          "p10": 0.046,
+          "p50": 0.146,
+          "p90": 0.356
+        },
+        "olLateralAbsAt0p5": {
+          "n": 18,
+          "mean": 0.546,
+          "p10": 0.368,
+          "p50": 0.536,
+          "p90": 0.668
+        },
+        "timeToLos": {
+          "n": 15,
+          "mean": 2.993,
+          "p10": 2.5,
+          "p50": 2.9,
+          "p90": 3.5
+        },
+        "yards": {
+          "n": 18,
+          "mean": 6.556,
+          "p10": -2.0,
+          "p50": 2.0,
+          "p90": 13.0
+        },
+        "yardsBeforeContact": {
+          "n": 18,
+          "mean": 0.681,
+          "p10": -3.11,
+          "p50": 0.61,
+          "p90": 3.16
+        }
+      }
+    },
+    "OUTSIDE ZONE / Under_proxy": {
+      "plays": 28,
+      "stuffPct": 10.714,
+      "pct10plus": 14.286,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 28,
+          "mean": 0.178,
+          "p10": 0.055,
+          "p50": 0.135,
+          "p90": 0.386
+        },
+        "defensePreSnapMovingCount": {
+          "n": 28,
+          "mean": 1.036,
+          "p10": 0,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 28,
+          "mean": 3.036,
+          "p10": 2.2,
+          "p50": 3.0,
+          "p90": 3.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 28,
+          "mean": 0.646,
+          "p10": 0.3,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 28,
+          "mean": 1.314,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 26,
+          "mean": 0.127,
+          "p10": 0.042,
+          "p50": 0.116,
+          "p90": 0.202
+        },
+        "olLateralAbsAt0p5": {
+          "n": 26,
+          "mean": 0.502,
+          "p10": 0.238,
+          "p50": 0.53,
+          "p90": 0.668
+        },
+        "timeToLos": {
+          "n": 27,
+          "mean": 2.93,
+          "p10": 2.5,
+          "p50": 2.8,
+          "p90": 3.4
+        },
+        "yards": {
+          "n": 28,
+          "mean": 4.5,
+          "p10": 0.0,
+          "p50": 3.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 28,
+          "mean": 0.856,
+          "p10": -1.5,
+          "p50": 0.23,
+          "p90": 3.57
+        }
+      }
+    },
+    "POWER / Bear_proxy": {
+      "plays": 2,
+      "stuffPct": 0.0,
+      "pct10plus": 50.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 2,
+          "mean": 0.291,
+          "p10": 0.231,
+          "p50": 0.231,
+          "p90": 0.231
+        },
+        "defensePreSnapMovingCount": {
+          "n": 2,
+          "mean": 1.5,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 3.2,
+          "p10": 2.3,
+          "p50": 2.3,
+          "p90": 2.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 2,
+          "mean": 0.8,
+          "p10": 0.6,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 2,
+          "mean": 1.4,
+          "p10": 1.3,
+          "p50": 1.3,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": 0.089,
+          "p10": 0.024,
+          "p50": 0.024,
+          "p90": 0.024
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.453,
+          "p10": 0.312,
+          "p50": 0.312,
+          "p90": 0.312
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 2.5,
+          "p10": 2.3,
+          "p50": 2.3,
+          "p90": 2.3
+        },
+        "yards": {
+          "n": 2,
+          "mean": 10.5,
+          "p10": 3.0,
+          "p50": 3.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": 3.63,
+          "p10": 0.29,
+          "p50": 0.29,
+          "p90": 0.29
+        }
+      }
+    },
+    "POWER / Odd_or_reduced_proxy": {
+      "plays": 19,
+      "stuffPct": 21.053,
+      "pct10plus": 5.263,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 19,
+          "mean": 0.298,
+          "p10": 0.121,
+          "p50": 0.28,
+          "p90": 0.495
+        },
+        "defensePreSnapMovingCount": {
+          "n": 19,
+          "mean": 1.947,
+          "p10": 0,
+          "p50": 2,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 18,
+          "mean": 2.7,
+          "p10": 1.9,
+          "p50": 2.7,
+          "p90": 3.1
+        },
+        "firstSustainedOlProximity": {
+          "n": 19,
+          "mean": 0.632,
+          "p10": 0.2,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 17,
+          "mean": 1.247,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 16,
+          "mean": 0.105,
+          "p10": -0.018,
+          "p50": 0.082,
+          "p90": 0.22
+        },
+        "olLateralAbsAt0p5": {
+          "n": 16,
+          "mean": 0.367,
+          "p10": 0.136,
+          "p50": 0.326,
+          "p90": 0.504
+        },
+        "timeToLos": {
+          "n": 15,
+          "mean": 2.56,
+          "p10": 2.1,
+          "p50": 2.5,
+          "p90": 2.9
+        },
+        "yards": {
+          "n": 19,
+          "mean": 3.0,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 18,
+          "mean": 0.766,
+          "p10": -2.27,
+          "p50": 0.38,
+          "p90": 2.95
+        }
+      }
+    },
+    "POWER / Other_or_ambiguous": {
+      "plays": 64,
+      "stuffPct": 25.0,
+      "pct10plus": 10.938,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 63,
+          "mean": 0.211,
+          "p10": 0.054,
+          "p50": 0.158,
+          "p90": 0.45
+        },
+        "defensePreSnapMovingCount": {
+          "n": 63,
+          "mean": 1.349,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 61,
+          "mean": 3.11,
+          "p10": 2.2,
+          "p50": 2.8,
+          "p90": 4.2
+        },
+        "firstSustainedOlProximity": {
+          "n": 64,
+          "mean": 0.611,
+          "p10": 0.3,
+          "p50": 0.6,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 50,
+          "mean": 1.232,
+          "p10": 1.0,
+          "p50": 1.2,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 59,
+          "mean": 0.105,
+          "p10": 0.024,
+          "p50": 0.096,
+          "p90": 0.19
+        },
+        "olLateralAbsAt0p5": {
+          "n": 59,
+          "mean": 0.325,
+          "p10": 0.144,
+          "p50": 0.33,
+          "p90": 0.512
+        },
+        "timeToLos": {
+          "n": 55,
+          "mean": 2.762,
+          "p10": 2.2,
+          "p50": 2.6,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 64,
+          "mean": 5.203,
+          "p10": -1.0,
+          "p50": 3.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 61,
+          "mean": 1.684,
+          "p10": -1.75,
+          "p50": 0.8,
+          "p90": 4.91
+        }
+      }
+    },
+    "POWER / Over_proxy": {
+      "plays": 25,
+      "stuffPct": 20.0,
+      "pct10plus": 16.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 24,
+          "mean": 0.256,
+          "p10": 0.063,
+          "p50": 0.227,
+          "p90": 0.438
+        },
+        "defensePreSnapMovingCount": {
+          "n": 24,
+          "mean": 1.625,
+          "p10": 0,
+          "p50": 2,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 22,
+          "mean": 2.836,
+          "p10": 2.1,
+          "p50": 2.6,
+          "p90": 3.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 25,
+          "mean": 0.684,
+          "p10": 0.5,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 22,
+          "mean": 1.227,
+          "p10": 1.1,
+          "p50": 1.2,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 25,
+          "mean": 0.086,
+          "p10": -0.004,
+          "p50": 0.084,
+          "p90": 0.15
+        },
+        "olLateralAbsAt0p5": {
+          "n": 25,
+          "mean": 0.318,
+          "p10": 0.118,
+          "p50": 0.302,
+          "p90": 0.504
+        },
+        "timeToLos": {
+          "n": 24,
+          "mean": 2.633,
+          "p10": 2.2,
+          "p50": 2.5,
+          "p90": 2.9
+        },
+        "yards": {
+          "n": 25,
+          "mean": 6.12,
+          "p10": 0.0,
+          "p50": 5.0,
+          "p90": 12.0
+        },
+        "yardsBeforeContact": {
+          "n": 22,
+          "mean": 1.945,
+          "p10": -2.41,
+          "p50": 1.23,
+          "p90": 4.8
+        }
+      }
+    },
+    "POWER / Tite_proxy": {
+      "plays": 4,
+      "stuffPct": 0.0,
+      "pct10plus": 25.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.138,
+          "p10": 0.075,
+          "p50": 0.114,
+          "p90": 0.135
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 0.75,
+          "p10": 0,
+          "p50": 0,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 2.75,
+          "p10": 1.6,
+          "p50": 2.7,
+          "p90": 3.1
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.625,
+          "p10": 0.4,
+          "p50": 0.5,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.25,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": 0.073,
+          "p10": 0.014,
+          "p50": 0.078,
+          "p90": 0.094
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.411,
+          "p10": 0.222,
+          "p50": 0.394,
+          "p90": 0.404
+        },
+        "timeToLos": {
+          "n": 4,
+          "mean": 2.625,
+          "p10": 2.5,
+          "p50": 2.5,
+          "p90": 2.6
+        },
+        "yards": {
+          "n": 4,
+          "mean": 11.75,
+          "p10": 2.0,
+          "p50": 8.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": 1.778,
+          "p10": -2.89,
+          "p50": 1.08,
+          "p90": 2.74
+        }
+      }
+    },
+    "POWER / Under_proxy": {
+      "plays": 10,
+      "stuffPct": 20.0,
+      "pct10plus": 10.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 10,
+          "mean": 0.213,
+          "p10": 0.081,
+          "p50": 0.141,
+          "p90": 0.335
+        },
+        "defensePreSnapMovingCount": {
+          "n": 10,
+          "mean": 1.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 8,
+          "mean": 2.85,
+          "p10": 1.7,
+          "p50": 2.5,
+          "p90": 3.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 10,
+          "mean": 0.59,
+          "p10": 0,
+          "p50": 0.6,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 10,
+          "mean": 1.23,
+          "p10": 1.0,
+          "p50": 1.2,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 9,
+          "mean": 0.062,
+          "p10": -0.026,
+          "p50": 0.056,
+          "p90": 0.072
+        },
+        "olLateralAbsAt0p5": {
+          "n": 9,
+          "mean": 0.335,
+          "p10": 0.07,
+          "p50": 0.334,
+          "p90": 0.392
+        },
+        "timeToLos": {
+          "n": 9,
+          "mean": 2.844,
+          "p10": 2.3,
+          "p50": 2.6,
+          "p90": 3.4
+        },
+        "yards": {
+          "n": 10,
+          "mean": 4.7,
+          "p10": -5.0,
+          "p50": 4.0,
+          "p90": 8.0
+        },
+        "yardsBeforeContact": {
+          "n": 8,
+          "mean": 0.912,
+          "p10": -3.04,
+          "p50": 0.57,
+          "p90": 2.89
+        }
+      }
+    },
+    "PULL LEAD / Bear_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.418,
+          "p10": 0.418,
+          "p50": 0.418,
+          "p90": 0.418
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 3.4,
+          "p10": 3.4,
+          "p50": 3.4,
+          "p90": 3.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.2,
+          "p10": 1.2,
+          "p50": 1.2,
+          "p90": 1.2
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": -0.022,
+          "p10": -0.022,
+          "p50": -0.022,
+          "p90": -0.022
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.582,
+          "p10": 0.582,
+          "p50": 0.582,
+          "p90": 0.582
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 3.6,
+          "p10": 3.6,
+          "p50": 3.6,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 1,
+          "mean": 2.0,
+          "p10": 2.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": -0.45,
+          "p10": -0.45,
+          "p50": -0.45,
+          "p90": -0.45
+        }
+      }
+    },
+    "PULL LEAD / Odd_or_reduced_proxy": {
+      "plays": 8,
+      "stuffPct": 25.0,
+      "pct10plus": 25.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 8,
+          "mean": 0.145,
+          "p10": 0.075,
+          "p50": 0.121,
+          "p90": 0.206
+        },
+        "defensePreSnapMovingCount": {
+          "n": 8,
+          "mean": 0.5,
+          "p10": 0,
+          "p50": 0,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 6,
+          "mean": 3.517,
+          "p10": 2.8,
+          "p50": 3.3,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 8,
+          "mean": 0.588,
+          "p10": 0.2,
+          "p50": 0.6,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 8,
+          "mean": 1.238,
+          "p10": 1.0,
+          "p50": 1.2,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 7,
+          "mean": 0.004,
+          "p10": -0.044,
+          "p50": 0.01,
+          "p90": 0.04
+        },
+        "olLateralAbsAt0p5": {
+          "n": 7,
+          "mean": 0.56,
+          "p10": 0.242,
+          "p50": 0.634,
+          "p90": 0.646
+        },
+        "timeToLos": {
+          "n": 6,
+          "mean": 3.333,
+          "p10": 2.7,
+          "p50": 3.2,
+          "p90": 3.6
+        },
+        "yards": {
+          "n": 8,
+          "mean": 4.625,
+          "p10": -2.0,
+          "p50": 2.0,
+          "p90": 12.0
+        },
+        "yardsBeforeContact": {
+          "n": 6,
+          "mean": -0.337,
+          "p10": -4.71,
+          "p50": -1.35,
+          "p90": 2.92
+        }
+      }
+    },
+    "PULL LEAD / Other_or_ambiguous": {
+      "plays": 65,
+      "stuffPct": 27.692,
+      "pct10plus": 15.385,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 65,
+          "mean": 0.246,
+          "p10": 0.083,
+          "p50": 0.184,
+          "p90": 0.44
+        },
+        "defensePreSnapMovingCount": {
+          "n": 65,
+          "mean": 1.415,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 62,
+          "mean": 3.358,
+          "p10": 2.5,
+          "p50": 3.3,
+          "p90": 4.1
+        },
+        "firstSustainedOlProximity": {
+          "n": 65,
+          "mean": 0.728,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 1.0
+        },
+        "handoffTime": {
+          "n": 61,
+          "mean": 1.246,
+          "p10": 1.0,
+          "p50": 1.3,
+          "p90": 1.5
+        },
+        "olForwardAt0p5": {
+          "n": 61,
+          "mean": 0.018,
+          "p10": -0.106,
+          "p50": 0.016,
+          "p90": 0.148
+        },
+        "olLateralAbsAt0p5": {
+          "n": 61,
+          "mean": 0.52,
+          "p10": 0.312,
+          "p50": 0.5,
+          "p90": 0.752
+        },
+        "timeToLos": {
+          "n": 52,
+          "mean": 3.312,
+          "p10": 2.5,
+          "p50": 3.3,
+          "p90": 3.9
+        },
+        "yards": {
+          "n": 65,
+          "mean": 4.892,
+          "p10": -1.0,
+          "p50": 4.0,
+          "p90": 11.0
+        },
+        "yardsBeforeContact": {
+          "n": 62,
+          "mean": 0.642,
+          "p10": -3.1,
+          "p50": -0.05,
+          "p90": 4.47
+        }
+      }
+    },
+    "PULL LEAD / Over_proxy": {
+      "plays": 25,
+      "stuffPct": 28.0,
+      "pct10plus": 20.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 25,
+          "mean": 0.269,
+          "p10": 0.076,
+          "p50": 0.269,
+          "p90": 0.465
+        },
+        "defensePreSnapMovingCount": {
+          "n": 25,
+          "mean": 1.84,
+          "p10": 0,
+          "p50": 2,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 21,
+          "mean": 3.371,
+          "p10": 2.5,
+          "p50": 3.4,
+          "p90": 4.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 25,
+          "mean": 0.608,
+          "p10": 0.3,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 24,
+          "mean": 1.283,
+          "p10": 1.1,
+          "p50": 1.3,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 24,
+          "mean": -0.004,
+          "p10": -0.078,
+          "p50": 0.008,
+          "p90": 0.06
+        },
+        "olLateralAbsAt0p5": {
+          "n": 24,
+          "mean": 0.518,
+          "p10": 0.23,
+          "p50": 0.502,
+          "p90": 0.75
+        },
+        "timeToLos": {
+          "n": 20,
+          "mean": 3.335,
+          "p10": 2.4,
+          "p50": 3.4,
+          "p90": 3.8
+        },
+        "yards": {
+          "n": 25,
+          "mean": 6.28,
+          "p10": -4.0,
+          "p50": 2.0,
+          "p90": 14.0
+        },
+        "yardsBeforeContact": {
+          "n": 21,
+          "mean": 0.692,
+          "p10": -3.63,
+          "p50": 0.04,
+          "p90": 3.25
+        }
+      }
+    },
+    "PULL LEAD / Tite_proxy": {
+      "plays": 4,
+      "stuffPct": 50.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.338,
+          "p10": 0.085,
+          "p50": 0.317,
+          "p90": 0.47
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 1.75,
+          "p10": 0,
+          "p50": 2,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 3.75,
+          "p10": 3.5,
+          "p50": 3.6,
+          "p90": 3.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.475,
+          "p10": 0.3,
+          "p50": 0.4,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 3,
+          "mean": 1.267,
+          "p10": 1.2,
+          "p50": 1.3,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": 0.054,
+          "p10": 0.008,
+          "p50": 0.036,
+          "p90": 0.064
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.756,
+          "p10": 0.374,
+          "p50": 0.61,
+          "p90": 0.854
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 3.833,
+          "p10": 3.6,
+          "p50": 3.9,
+          "p90": 3.9
+        },
+        "yards": {
+          "n": 4,
+          "mean": 1.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 1.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": 0.05,
+          "p10": -0.6,
+          "p50": -0.37,
+          "p90": -0.34
+        }
+      }
+    },
+    "PULL LEAD / Under_proxy": {
+      "plays": 4,
+      "stuffPct": 25.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.43,
+          "p10": 0.065,
+          "p50": 0.415,
+          "p90": 0.563
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 1.5,
+          "p10": 0,
+          "p50": 2,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 3.575,
+          "p10": 3.0,
+          "p50": 3.5,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.775,
+          "p10": 0.4,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.25,
+          "p10": 1.1,
+          "p50": 1.2,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": -0.038,
+          "p10": -0.142,
+          "p50": -0.024,
+          "p90": -0.024
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.491,
+          "p10": 0.382,
+          "p50": 0.524,
+          "p90": 0.524
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 3.367,
+          "p10": 2.9,
+          "p50": 3.5,
+          "p90": 3.5
+        },
+        "yards": {
+          "n": 4,
+          "mean": 4.75,
+          "p10": -1.0,
+          "p50": 5.0,
+          "p90": 7.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": 1.023,
+          "p10": -2.74,
+          "p50": 1.77,
+          "p90": 1.81
+        }
+      }
+    },
+    "SNEAK / Bear_proxy": {
+      "plays": 2,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 2,
+          "mean": 0.404,
+          "p10": 0.255,
+          "p50": 0.255,
+          "p90": 0.255
+        },
+        "defensePreSnapMovingCount": {
+          "n": 2,
+          "mean": 2.5,
+          "p10": 2,
+          "p50": 2,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 0.95,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "firstSustainedOlProximity": {
+          "n": 2,
+          "mean": 0.15,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": 0.291,
+          "p10": 0.236,
+          "p50": 0.236,
+          "p90": 0.236
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.234,
+          "p10": 0.206,
+          "p50": 0.206,
+          "p90": 0.206
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 1.05,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "yards": {
+          "n": 2,
+          "mean": 1.5,
+          "p10": 1.0,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": -0.055,
+          "p10": -0.17,
+          "p50": -0.17,
+          "p90": -0.17
+        }
+      }
+    },
+    "SNEAK / Odd_or_reduced_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.2,
+          "p10": 0.2,
+          "p50": 0.2,
+          "p90": 0.2
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 0.8,
+          "p10": 0.8,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.7,
+          "p10": 0.7,
+          "p50": 0.7,
+          "p90": 0.7
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.324,
+          "p10": 0.324,
+          "p50": 0.324,
+          "p90": 0.324
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.302,
+          "p10": 0.302,
+          "p50": 0.302,
+          "p90": 0.302
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 0.9,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "yards": {
+          "n": 1,
+          "mean": 3.0,
+          "p10": 3.0,
+          "p50": 3.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": -0.02,
+          "p10": -0.02,
+          "p50": -0.02,
+          "p90": -0.02
+        }
+      }
+    },
+    "SNEAK / Other_or_ambiguous": {
+      "plays": 10,
+      "stuffPct": 10.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 9,
+          "mean": 0.229,
+          "p10": 0.101,
+          "p50": 0.235,
+          "p90": 0.32
+        },
+        "defensePreSnapMovingCount": {
+          "n": 9,
+          "mean": 1.111,
+          "p10": 0,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 9,
+          "mean": 1.111,
+          "p10": 0.7,
+          "p50": 0.9,
+          "p90": 1.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 10,
+          "mean": 0.45,
+          "p10": 0,
+          "p50": 0.5,
+          "p90": 0.7
+        },
+        "olForwardAt0p5": {
+          "n": 8,
+          "mean": 0.33,
+          "p10": 0.082,
+          "p50": 0.286,
+          "p90": 0.366
+        },
+        "olLateralAbsAt0p5": {
+          "n": 8,
+          "mean": 0.27,
+          "p10": 0.128,
+          "p50": 0.27,
+          "p90": 0.314
+        },
+        "timeToLos": {
+          "n": 8,
+          "mean": 1.0,
+          "p10": 0.0,
+          "p50": 0.8,
+          "p90": 1.5
+        },
+        "yards": {
+          "n": 10,
+          "mean": 2.0,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 9,
+          "mean": 0.028,
+          "p10": -1.66,
+          "p50": -0.38,
+          "p90": 1.52
+        }
+      }
+    },
+    "SNEAK / Over_proxy": {
+      "plays": 4,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 3,
+          "mean": 0.386,
+          "p10": 0.078,
+          "p50": 0.464,
+          "p90": 0.464
+        },
+        "defensePreSnapMovingCount": {
+          "n": 3,
+          "mean": 2.667,
+          "p10": 0,
+          "p50": 3,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 1.075,
+          "p10": 0.8,
+          "p50": 0.9,
+          "p90": 1.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.375,
+          "p10": 0,
+          "p50": 0.1,
+          "p90": 0.5
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": 0.245,
+          "p10": 0.23,
+          "p50": 0.24,
+          "p90": 0.24
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.259,
+          "p10": 0.138,
+          "p50": 0.306,
+          "p90": 0.306
+        },
+        "timeToLos": {
+          "n": 4,
+          "mean": 1.05,
+          "p10": 0.5,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "yards": {
+          "n": 4,
+          "mean": 1.75,
+          "p10": 1.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": 0.387,
+          "p10": -0.19,
+          "p50": -0.08,
+          "p90": 0.65
+        }
+      }
+    },
+    "SNEAK / Tite_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.05,
+          "p10": 0.05,
+          "p50": 0.05,
+          "p90": 0.05
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.6,
+          "p10": 0.6,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 0.9,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "yards": {
+          "n": 1,
+          "mean": 2.0,
+          "p10": 2.0,
+          "p50": 2.0,
+          "p90": 2.0
+        }
+      }
+    },
+    "SNEAK / Under_proxy": {
+      "plays": 1,
+      "stuffPct": 100.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.1,
+          "p10": 0.1,
+          "p50": 0.1,
+          "p90": 0.1
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 1.1,
+          "p10": 1.1,
+          "p50": 1.1,
+          "p90": 1.1
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.6,
+          "p10": 0.6,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.118,
+          "p10": 0.118,
+          "p50": 0.118,
+          "p90": 0.118
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.128,
+          "p10": 0.128,
+          "p50": 0.128,
+          "p90": 0.128
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 2.7,
+          "p10": 2.7,
+          "p50": 2.7,
+          "p90": 2.7
+        },
+        "yards": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 0.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": -1.26,
+          "p10": -1.26,
+          "p50": -1.26,
+          "p90": -1.26
+        }
+      }
+    },
+    "TRAP / Odd_or_reduced_proxy": {
+      "plays": 2,
+      "stuffPct": 0.0,
+      "pct10plus": 50.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 2,
+          "mean": 0.119,
+          "p10": 0.088,
+          "p50": 0.088,
+          "p90": 0.088
+        },
+        "defensePreSnapMovingCount": {
+          "n": 2,
+          "mean": 0.5,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "firstContactTime": {
+          "n": 2,
+          "mean": 4.45,
+          "p10": 2.5,
+          "p50": 2.5,
+          "p90": 2.5
+        },
+        "firstSustainedOlProximity": {
+          "n": 2,
+          "mean": 0.5,
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        },
+        "handoffTime": {
+          "n": 2,
+          "mean": 1.2,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 0.9
+        },
+        "olForwardAt0p5": {
+          "n": 2,
+          "mean": 0.09,
+          "p10": 0.06,
+          "p50": 0.06,
+          "p90": 0.06
+        },
+        "olLateralAbsAt0p5": {
+          "n": 2,
+          "mean": 0.24,
+          "p10": 0.132,
+          "p50": 0.132,
+          "p90": 0.132
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 2.4,
+          "p10": 2.0,
+          "p50": 2.0,
+          "p90": 2.0
+        },
+        "yards": {
+          "n": 2,
+          "mean": 13.0,
+          "p10": 3.0,
+          "p50": 3.0,
+          "p90": 3.0
+        },
+        "yardsBeforeContact": {
+          "n": 2,
+          "mean": 10.37,
+          "p10": -0.92,
+          "p50": -0.92,
+          "p90": -0.92
+        }
+      }
+    },
+    "TRAP / Other_or_ambiguous": {
+      "plays": 23,
+      "stuffPct": 13.043,
+      "pct10plus": 26.087,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 23,
+          "mean": 0.206,
+          "p10": 0.053,
+          "p50": 0.183,
+          "p90": 0.328
+        },
+        "defensePreSnapMovingCount": {
+          "n": 23,
+          "mean": 1.261,
+          "p10": 0,
+          "p50": 1,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 23,
+          "mean": 2.613,
+          "p10": 2.0,
+          "p50": 2.6,
+          "p90": 3.0
+        },
+        "firstSustainedOlProximity": {
+          "n": 23,
+          "mean": 0.652,
+          "p10": 0.4,
+          "p50": 0.6,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 23,
+          "mean": 1.104,
+          "p10": 0.9,
+          "p50": 1.1,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 23,
+          "mean": 0.128,
+          "p10": 0.038,
+          "p50": 0.138,
+          "p90": 0.212
+        },
+        "olLateralAbsAt0p5": {
+          "n": 23,
+          "mean": 0.313,
+          "p10": 0.16,
+          "p50": 0.3,
+          "p90": 0.428
+        },
+        "timeToLos": {
+          "n": 22,
+          "mean": 2.264,
+          "p10": 1.9,
+          "p50": 2.1,
+          "p90": 3.0
+        },
+        "yards": {
+          "n": 23,
+          "mean": 8.522,
+          "p10": 0.0,
+          "p50": 6.0,
+          "p90": 16.0
+        },
+        "yardsBeforeContact": {
+          "n": 23,
+          "mean": 2.577,
+          "p10": -0.86,
+          "p50": 1.52,
+          "p90": 5.16
+        }
+      }
+    },
+    "TRAP / Over_proxy": {
+      "plays": 4,
+      "stuffPct": 0.0,
+      "pct10plus": 50.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.176,
+          "p10": 0.104,
+          "p50": 0.115,
+          "p90": 0.158
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 1.0,
+          "p10": 0,
+          "p50": 0,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 4,
+          "mean": 2.55,
+          "p10": 2.3,
+          "p50": 2.3,
+          "p90": 2.6
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.775,
+          "p10": 0.6,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.175,
+          "p10": 0.9,
+          "p50": 1.1,
+          "p90": 1.3
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": 0.17,
+          "p10": 0.096,
+          "p50": 0.136,
+          "p90": 0.208
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.309,
+          "p10": 0.136,
+          "p50": 0.216,
+          "p90": 0.264
+        },
+        "timeToLos": {
+          "n": 4,
+          "mean": 2.125,
+          "p10": 1.9,
+          "p50": 1.9,
+          "p90": 2.3
+        },
+        "yards": {
+          "n": 4,
+          "mean": 6.75,
+          "p10": 2.0,
+          "p50": 4.0,
+          "p90": 10.0
+        },
+        "yardsBeforeContact": {
+          "n": 4,
+          "mean": 2.11,
+          "p10": 0.2,
+          "p50": 0.7,
+          "p90": 2.95
+        }
+      }
+    },
+    "TRICK / Bear_proxy": {
+      "plays": 5,
+      "stuffPct": 40.0,
+      "pct10plus": 20.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 5,
+          "mean": 0.167,
+          "p10": 0.103,
+          "p50": 0.159,
+          "p90": 0.198
+        },
+        "defensePreSnapMovingCount": {
+          "n": 5,
+          "mean": 1.2,
+          "p10": 0,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 5,
+          "mean": 3.8,
+          "p10": 1.8,
+          "p50": 3.6,
+          "p90": 3.7
+        },
+        "firstSustainedOlProximity": {
+          "n": 5,
+          "mean": 0.42,
+          "p10": 0,
+          "p50": 0.4,
+          "p90": 0.4
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.15,
+          "p10": 0.9,
+          "p50": 0.9,
+          "p90": 1.0
+        },
+        "olForwardAt0p5": {
+          "n": 5,
+          "mean": 0.076,
+          "p10": -0.158,
+          "p50": 0.12,
+          "p90": 0.136
+        },
+        "olLateralAbsAt0p5": {
+          "n": 5,
+          "mean": 0.454,
+          "p10": 0.358,
+          "p50": 0.426,
+          "p90": 0.52
+        },
+        "timeToLos": {
+          "n": 3,
+          "mean": 3.5,
+          "p10": 2.8,
+          "p50": 3.1,
+          "p90": 3.1
+        },
+        "yards": {
+          "n": 5,
+          "mean": 1.6,
+          "p10": -7.0,
+          "p50": 2.0,
+          "p90": 5.0
+        },
+        "yardsBeforeContact": {
+          "n": 5,
+          "mean": 1.298,
+          "p10": -6.95,
+          "p50": 1.52,
+          "p90": 3.61
+        }
+      }
+    },
+    "TRICK / Odd_or_reduced_proxy": {
+      "plays": 4,
+      "stuffPct": 0.0,
+      "pct10plus": 25.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.237,
+          "p10": 0.135,
+          "p50": 0.221,
+          "p90": 0.279
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 0.75,
+          "p10": 0,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 3,
+          "mean": 3.767,
+          "p10": 2.8,
+          "p50": 3.8,
+          "p90": 3.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.675,
+          "p10": 0.5,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 4,
+          "mean": 1.225,
+          "p10": 0.8,
+          "p50": 0.9,
+          "p90": 1.1
+        },
+        "olForwardAt0p5": {
+          "n": 3,
+          "mean": 0.091,
+          "p10": -0.176,
+          "p50": 0.176,
+          "p90": 0.176
+        },
+        "olLateralAbsAt0p5": {
+          "n": 3,
+          "mean": 0.613,
+          "p10": 0.594,
+          "p50": 0.618,
+          "p90": 0.618
+        },
+        "timeToLos": {
+          "n": 4,
+          "mean": 3.475,
+          "p10": 2.3,
+          "p50": 2.7,
+          "p90": 3.9
+        },
+        "yards": {
+          "n": 4,
+          "mean": 6.25,
+          "p10": 3.0,
+          "p50": 5.0,
+          "p90": 7.0
+        },
+        "yardsBeforeContact": {
+          "n": 3,
+          "mean": 3.27,
+          "p10": -0.78,
+          "p50": 3.33,
+          "p90": 3.33
+        }
+      }
+    },
+    "TRICK / Other_or_ambiguous": {
+      "plays": 37,
+      "stuffPct": 16.216,
+      "pct10plus": 24.324,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 37,
+          "mean": 0.286,
+          "p10": 0.131,
+          "p50": 0.286,
+          "p90": 0.433
+        },
+        "defensePreSnapMovingCount": {
+          "n": 37,
+          "mean": 2.027,
+          "p10": 0,
+          "p50": 2,
+          "p90": 4
+        },
+        "firstContactTime": {
+          "n": 33,
+          "mean": 4.091,
+          "p10": 2.4,
+          "p50": 4.1,
+          "p90": 5.8
+        },
+        "firstSustainedOlProximity": {
+          "n": 37,
+          "mean": 0.681,
+          "p10": 0.4,
+          "p50": 0.7,
+          "p90": 0.9
+        },
+        "handoffTime": {
+          "n": 33,
+          "mean": 1.179,
+          "p10": 0.7,
+          "p50": 0.9,
+          "p90": 2.0
+        },
+        "olForwardAt0p5": {
+          "n": 34,
+          "mean": 0.119,
+          "p10": 0.0,
+          "p50": 0.094,
+          "p90": 0.25
+        },
+        "olLateralAbsAt0p5": {
+          "n": 34,
+          "mean": 0.369,
+          "p10": 0.214,
+          "p50": 0.324,
+          "p90": 0.56
+        },
+        "timeToLos": {
+          "n": 32,
+          "mean": 3.734,
+          "p10": 2.6,
+          "p50": 3.6,
+          "p90": 5.0
+        },
+        "yards": {
+          "n": 37,
+          "mean": 7.27,
+          "p10": -2.0,
+          "p50": 5.0,
+          "p90": 17.0
+        },
+        "yardsBeforeContact": {
+          "n": 33,
+          "mean": 3.043,
+          "p10": -4.02,
+          "p50": 1.67,
+          "p90": 6.65
+        }
+      }
+    },
+    "TRICK / Over_proxy": {
+      "plays": 8,
+      "stuffPct": 37.5,
+      "pct10plus": 37.5,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 8,
+          "mean": 0.345,
+          "p10": 0.129,
+          "p50": 0.307,
+          "p90": 0.465
+        },
+        "defensePreSnapMovingCount": {
+          "n": 8,
+          "mean": 2.25,
+          "p10": 0,
+          "p50": 2,
+          "p90": 3
+        },
+        "firstContactTime": {
+          "n": 7,
+          "mean": 4.829,
+          "p10": 3.3,
+          "p50": 4.6,
+          "p90": 6.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 8,
+          "mean": 0.662,
+          "p10": 0.5,
+          "p50": 0.7,
+          "p90": 0.8
+        },
+        "handoffTime": {
+          "n": 7,
+          "mean": 1.357,
+          "p10": 0.6,
+          "p50": 1.1,
+          "p90": 2.2
+        },
+        "olForwardAt0p5": {
+          "n": 8,
+          "mean": 0.09,
+          "p10": -0.064,
+          "p50": 0.01,
+          "p90": 0.26
+        },
+        "olLateralAbsAt0p5": {
+          "n": 8,
+          "mean": 0.476,
+          "p10": 0.138,
+          "p50": 0.488,
+          "p90": 0.59
+        },
+        "timeToLos": {
+          "n": 5,
+          "mean": 3.56,
+          "p10": 2.8,
+          "p50": 3.5,
+          "p90": 3.7
+        },
+        "yards": {
+          "n": 8,
+          "mean": 5.375,
+          "p10": -10.0,
+          "p50": 4.0,
+          "p90": 19.0
+        },
+        "yardsBeforeContact": {
+          "n": 7,
+          "mean": 2.436,
+          "p10": -9.28,
+          "p50": 1.48,
+          "p90": 12.06
+        }
+      }
+    },
+    "TRICK / Tite_proxy": {
+      "plays": 1,
+      "stuffPct": 0.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.182,
+          "p10": 0.182,
+          "p50": 0.182,
+          "p90": 0.182
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 6.4,
+          "p10": 6.4,
+          "p50": 6.4,
+          "p90": 6.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.7,
+          "p10": 0.7,
+          "p50": 0.7,
+          "p90": 0.7
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 2.1,
+          "p10": 2.1,
+          "p50": 2.1,
+          "p90": 2.1
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.076,
+          "p10": 0.076,
+          "p50": 0.076,
+          "p90": 0.076
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.6,
+          "p10": 0.6,
+          "p50": 0.6,
+          "p90": 0.6
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 5.6,
+          "p10": 5.6,
+          "p50": 5.6,
+          "p90": 5.6
+        },
+        "yards": {
+          "n": 1,
+          "mean": 9.0,
+          "p10": 9.0,
+          "p50": 9.0,
+          "p90": 9.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": 6.54,
+          "p10": 6.54,
+          "p50": 6.54,
+          "p90": 6.54
+        }
+      }
+    },
+    "UNDEFINED / Bear_proxy": {
+      "plays": 1,
+      "stuffPct": 100.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.107,
+          "p10": 0.107,
+          "p50": 0.107,
+          "p90": 0.107
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 1.0,
+          "p10": 1,
+          "p50": 1,
+          "p90": 1
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 2.3,
+          "p10": 2.3,
+          "p50": 2.3,
+          "p90": 2.3
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.2,
+          "p10": 0.2,
+          "p50": 0.2,
+          "p90": 0.2
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": 0.336,
+          "p10": 0.336,
+          "p50": 0.336,
+          "p90": 0.336
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.31,
+          "p10": 0.31,
+          "p50": 0.31,
+          "p90": 0.31
+        },
+        "timeToLos": {
+          "n": 1,
+          "mean": 3.1,
+          "p10": 3.1,
+          "p50": 3.1,
+          "p90": 3.1
+        },
+        "yards": {
+          "n": 1,
+          "mean": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 0.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": -1.88,
+          "p10": -1.88,
+          "p50": -1.88,
+          "p90": -1.88
+        }
+      }
+    },
+    "UNDEFINED / Other_or_ambiguous": {
+      "plays": 4,
+      "stuffPct": 75.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 4,
+          "mean": 0.196,
+          "p10": 0.145,
+          "p50": 0.16,
+          "p90": 0.227
+        },
+        "defensePreSnapMovingCount": {
+          "n": 4,
+          "mean": 1.5,
+          "p10": 1,
+          "p50": 1,
+          "p90": 2
+        },
+        "firstContactTime": {
+          "n": 1,
+          "mean": 3.4,
+          "p10": 3.4,
+          "p50": 3.4,
+          "p90": 3.4
+        },
+        "firstSustainedOlProximity": {
+          "n": 4,
+          "mean": 0.575,
+          "p10": 0.3,
+          "p50": 0.5,
+          "p90": 0.6
+        },
+        "handoffTime": {
+          "n": 1,
+          "mean": 1.4,
+          "p10": 1.4,
+          "p50": 1.4,
+          "p90": 1.4
+        },
+        "olForwardAt0p5": {
+          "n": 4,
+          "mean": -0.12,
+          "p10": -0.458,
+          "p50": -0.026,
+          "p90": -0.016
+        },
+        "olLateralAbsAt0p5": {
+          "n": 4,
+          "mean": 0.363,
+          "p10": 0.22,
+          "p50": 0.222,
+          "p90": 0.382
+        },
+        "timeToLos": {
+          "n": 2,
+          "mean": 3.65,
+          "p10": 2.7,
+          "p50": 2.7,
+          "p90": 2.7
+        },
+        "yards": {
+          "n": 4,
+          "mean": -0.75,
+          "p10": -2.0,
+          "p50": -2.0,
+          "p90": 0.0
+        },
+        "yardsBeforeContact": {
+          "n": 1,
+          "mean": 1.86,
+          "p10": 1.86,
+          "p50": 1.86,
+          "p90": 1.86
+        }
+      }
+    },
+    "UNDEFINED / Over_proxy": {
+      "plays": 1,
+      "stuffPct": 100.0,
+      "pct10plus": 0.0,
+      "metrics": {
+        "defensePreSnapLateralMean": {
+          "n": 1,
+          "mean": 0.563,
+          "p10": 0.563,
+          "p50": 0.563,
+          "p90": 0.563
+        },
+        "defensePreSnapMovingCount": {
+          "n": 1,
+          "mean": 2.0,
+          "p10": 2,
+          "p50": 2,
+          "p90": 2
+        },
+        "firstSustainedOlProximity": {
+          "n": 1,
+          "mean": 0.8,
+          "p10": 0.8,
+          "p50": 0.8,
+          "p90": 0.8
+        },
+        "olForwardAt0p5": {
+          "n": 1,
+          "mean": -0.046,
+          "p10": -0.046,
+          "p50": -0.046,
+          "p90": -0.046
+        },
+        "olLateralAbsAt0p5": {
+          "n": 1,
+          "mean": 0.186,
+          "p10": 0.186,
+          "p50": 0.186,
+          "p90": 0.186
+        },
+        "yards": {
+          "n": 1,
+          "mean": -13.0,
+          "p10": -13.0,
+          "p50": -13.0,
+          "p90": -13.0
+        }
+      }
+    }
+  }
+}

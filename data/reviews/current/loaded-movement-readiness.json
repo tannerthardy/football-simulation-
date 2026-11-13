@@ -1,0 +1,1322 @@
+{
+  "schema": 1,
+  "question": "Does the profiled allocation correction close #180 cost while preserving its reviewed physical response?",
+  "acceptedRevision": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "candidateRevision": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+  "candidateSource": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+  "disposition": {
+    "component": "READY for isolated Integration review after independent source/mechanical, native-parity and cost review",
+    "production": "UNCHANGED; Integration owns combined verification and adoption",
+    "scope": "Steady-facing response and exactly equivalent execution optimization; no claim to fix all requested spins or path jitter",
+    "dependencies": "Accepted develop only; #184 remains independent, not imported"
+  },
+  "priorEvidence": {
+    "path": "data/reviews/current/loaded-movement.json",
+    "status": "Immutable held-source receipt, retained failure and adverse cases; compatible mechanics reused through exact parity",
+    "failedTossPairedP95": 1.267310083,
+    "unchangedLimit": 1.25
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "focused": {
+    "assertions": 48,
+    "launcher": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/loaded-movement",
+      "commit": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+      "validationSha256": "5fb8b720e507cc4bb8d244063a3f153bb72f36f472f295bcc28bcb244c60b7e7",
+      "startedAt": "2026-10-20T20:59:33.089Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/yaw-response.test.ts",
+            "test/movement-yaw-continuity.test.ts",
+            "test/yaw-motor.test.ts",
+            "test/rise-yaw-budget.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.959897758
+        }
+      ],
+      "finishedAt": "2026-10-20T20:59:36.052Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "qualification": "Reuse compatible earlier 114 checks; no new full suite. Tests and accuracy tolerances unchanged."
+  },
+  "typecheck": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/loaded-movement",
+    "commit": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+    "validationSha256": "5fb8b720e507cc4bb8d244063a3f153bb72f36f472f295bcc28bcb244c60b7e7",
+    "startedAt": "2026-10-20T20:59:33.107Z",
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 16.232175331
+      }
+    ],
+    "finishedAt": "2026-10-20T20:59:49.345Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "numericalParity": {
+    "revision": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+    "candidateSourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+    "heldFileSha256": "d2f0526c205d05cb7d9c7d727828f06106f80b742d58f24fd0286875ba152440",
+    "candidateFileSha256": "13bbb3c30d432fd9a9f7ad9d0128241da52cbc43acced87a46003d20fccdc6b0",
+    "cases": 1024,
+    "exact": 1024,
+    "throws": 11,
+    "events": 607,
+    "failures": [],
+    "qualification": "Independent readonly comparison to frozen aadac6d held reference; ordered recursive Object.is covers motion, peak effort, events and signed zero; invalid input exceptions compared by name/message. Deterministic mechanical states, not football outcomes or a runtime benchmark."
+  },
+  "nativeParity": {
+    "question": "Can final #180 execution optimization reuse held native body-facing and adverse-contact evidence?",
+    "reference_commit": "aadac6d8b78bd452ff3bb92b337e027bec4a0d25",
+    "new_commit": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+    "reference_source": "8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2",
+    "new_source": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+    "input_sha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+    "input_equal": true,
+    "normalized_fields_excluded": [
+      "source",
+      "elapsedSeconds"
+    ],
+    "normalized_reference_sha256": "9060314b3b24994423d74ab81f389572524373e047e7a373ce530bffd411468f",
+    "normalized_new_sha256": "9060314b3b24994423d74ab81f389572524373e047e7a373ce530bffd411468f",
+    "normalized_original_unoptimized_sha256": "9060314b3b24994423d74ab81f389572524373e047e7a373ce530bffd411468f",
+    "normalized_exact_equal": true,
+    "original_unoptimized_exact_equal": true,
+    "different_fields": [],
+    "tick_count": 94,
+    "field_parity": {
+      "initial": true,
+      "ticks": true,
+      "cues": true,
+      "calls": true,
+      "aims": true,
+      "contact": true,
+      "events": true,
+      "result": true
+    },
+    "recording_seconds": 1.436326427,
+    "cost_qualification": "One saved Toss input, passive capture. Recording is not an uninstrumented benchmark; cost owner runs after this work.",
+    "launch_exit_code": 0,
+    "launch_inputs_unchanged": true,
+    "launch_source_matches_tape": true,
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "artifacts": [
+      {
+        "path": "out/loaded-movement/yaw-native/native/current-fast/TOSS.json.gz",
+        "sha256": "c3acc25ececa90bb4677c382f074a812decb7868cac244405db6c5fda4888894",
+        "bytes": 1845786
+      },
+      {
+        "path": "out/loaded-movement/yaw-native/native/current-candidate/TOSS.json.gz",
+        "sha256": "41934976b0bd75d013e990c5df7d32a036731c02354b6e707063dfed0514241d",
+        "bytes": 1845785
+      },
+      {
+        "path": "out/yaw-readiness/native-final/TOSS.json.gz",
+        "sha256": "28297608a80eab347bb36fd6cca7a692c8cd1d53853ad2f9fde9dab04dc58294",
+        "bytes": 1845782
+      },
+      {
+        "path": "out/loaded-movement/yaw-native/capture-current.mjs",
+        "sha256": "a17b05715c18cdfa447694e0af8e490c3f63ce489cd95213e69e08ba8e739819",
+        "bytes": 4788
+      },
+      {
+        "path": "out/loaded-movement/yaw-native/toss-input.json.gz",
+        "sha256": "7bbe126d863fea8adc4de16201bde577eb1ab33a50aab37ea727625fce2187a5",
+        "bytes": 5886
+      }
+    ]
+  },
+  "profile": {
+    "path": "docs/archive/research/movement-yaw/profile-report.md",
+    "scope": "Held source Node22/tsx CPU/GC sample, not acceptance timing",
+    "finding": "Repeated local function creation/naming before fast return; remove setup, preserve exact event algorithm",
+    "qualification": "Not a tsc-built production or browser FPS speedup claim"
+  },
+  "runtime": {
+    "warmupStartedAt": "2026-10-20T21:02:32.888Z",
+    "timedStartedAt": "2026-10-20T21:02:37.285Z",
+    "timedFinishedAt": "2026-10-20T21:02:49.555Z",
+    "competing": [],
+    "cpuSummary": [
+      {
+        "id": "TOSS",
+        "baseline": {
+          "median": 3.383666666666667,
+          "p95": 4.024566666666667,
+          "max": 4.6879333333333335
+        },
+        "candidate": {
+          "median": 3.18265,
+          "p95": 4.189633333333333,
+          "max": 5.240683333333333
+        }
+      },
+      {
+        "id": "PASS13",
+        "baseline": {
+          "median": 2.5962166666666664,
+          "p95": 4.134133333333334,
+          "max": 4.863283333333333
+        },
+        "candidate": {
+          "median": 2.4262,
+          "p95": 3.7849,
+          "max": 4.04535
+        }
+      }
+    ],
+    "node": "v22.23.3",
+    "baselineRevision": "2c98bed94adad8087c65f381d4090444ad283985",
+    "candidateRevision": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+    "baselineSource": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+    "candidateSource": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+    "ticksPerPrefix": 60,
+    "rounds": 20,
+    "warmupPairsPerCase": 4,
+    "inputs": [
+      {
+        "id": "TOSS",
+        "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571"
+      },
+      {
+        "id": "PASS13",
+        "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336"
+      }
+    ],
+    "recording": false,
+    "copying": "outside all clocks",
+    "budget": {
+      "medianRatio": 1.1,
+      "p95Ratio": 1.25
+    },
+    "summary": [
+      {
+        "id": "TOSS",
+        "baseline": {
+          "median": 2.720292299999983,
+          "p95": 3.020183733333336,
+          "max": 3.3640632000000097
+        },
+        "candidate": {
+          "median": 2.4912389000000075,
+          "p95": 2.7424468500000025,
+          "max": 2.8941339166666693
+        },
+        "pairedRatio": {
+          "median": 0.908298919723276,
+          "p95": 1.0168814114016531,
+          "max": 1.1212161482576553
+        },
+        "initInclusiveBaseline": {
+          "median": 2.7686145166666694,
+          "p95": 3.0520546666666633,
+          "max": 3.4053127166666703
+        },
+        "initInclusiveCandidate": {
+          "median": 2.5243447666666725,
+          "p95": 2.7843674500000057,
+          "max": 2.9241887166666705
+        },
+        "initInclusivePairedRatio": {
+          "median": 0.9111607008912941,
+          "p95": 1.019398539410053,
+          "max": 1.137846923783917
+        },
+        "candidateP95VersusBaselineP95": 0.9080397393483081,
+        "allLive": true
+      },
+      {
+        "id": "PASS13",
+        "baseline": {
+          "median": 2.420054266666678,
+          "p95": 2.751130366666666,
+          "max": 2.9862071833333177
+        },
+        "candidate": {
+          "median": 2.2969461166666707,
+          "p95": 2.552357166666661,
+          "max": 2.7000854166666612
+        },
+        "pairedRatio": {
+          "median": 0.9252716728978836,
+          "p95": 1.0254084054166575,
+          "max": 1.0313089656035308
+        },
+        "initInclusiveBaseline": {
+          "median": 2.4488654166666795,
+          "p95": 2.792032933333333,
+          "max": 3.0173912666666487
+        },
+        "initInclusiveCandidate": {
+          "median": 2.3316181333333286,
+          "p95": 2.5855512333333235,
+          "max": 2.7337880333333335
+        },
+        "initInclusivePairedRatio": {
+          "median": 0.926008229853268,
+          "p95": 1.028579907114457,
+          "max": 1.0297011282169108
+        },
+        "candidateP95VersusBaselineP95": 0.9277485347810531,
+        "allLive": true
+      }
+    ],
+    "combinedPairedRatio": {
+      "median": 0.9187036841742257,
+      "p95": 1.0254084054166575,
+      "max": 1.1212161482576553
+    },
+    "budgetDecision": {
+      "medianLimit": 1.1,
+      "pairedP95Limit": 1.25,
+      "allInputsPass": true,
+      "inputs": [
+        {
+          "id": "TOSS",
+          "medianPass": true,
+          "pairedP95Pass": true
+        },
+        {
+          "id": "PASS13",
+          "medianPass": true,
+          "pairedP95Pass": true
+        }
+      ]
+    }
+  },
+  "runtimeRounds": [
+    {
+      "round": 0,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.8696429362928811,
+      "baseline": {
+        "wallMillisecondsPerTick": 3.020183733333336,
+        "cpuMillisecondsPerTick": 3.5153499999999998,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.626481449999998,
+        "cpuMillisecondsPerTick": 3.0835500000000002,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 0,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 1.0208392899355019,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.354180499999999,
+        "cpuMillisecondsPerTick": 2.8377333333333334,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.4032399500000037,
+        "cpuMillisecondsPerTick": 2.8820333333333332,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 1,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9814458265524318,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.751130366666666,
+        "cpuMillisecondsPerTick": 4.134133333333334,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.7000854166666612,
+        "cpuMillisecondsPerTick": 4.04535,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 1,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.8603090205518912,
+      "baseline": {
+        "wallMillisecondsPerTick": 3.3640632000000097,
+        "cpuMillisecondsPerTick": 4.6879333333333335,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.8941339166666693,
+        "cpuMillisecondsPerTick": 5.240683333333333,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 2,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9091372346933283,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.91314140000001,
+        "cpuMillisecondsPerTick": 3.7207833333333338,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.64844531666666,
+        "cpuMillisecondsPerTick": 3.8251166666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 2,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.891184608514763,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.577407750000005,
+        "cpuMillisecondsPerTick": 3.1385,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.2969461166666707,
+        "cpuMillisecondsPerTick": 2.7107,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 3,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 1.0254084054166575,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.379618700000007,
+        "cpuMillisecondsPerTick": 2.6648,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.4400810166666664,
+        "cpuMillisecondsPerTick": 2.6261666666666668,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 3,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.7937570183637056,
+      "baseline": {
+        "wallMillisecondsPerTick": 3.0069627666666596,
+        "cpuMillisecondsPerTick": 3.9182,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.3867978000000067,
+        "cpuMillisecondsPerTick": 3.5583,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 4,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 1.0168814114016531,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.696919049999997,
+        "cpuMillisecondsPerTick": 3.297633333333333,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.7424468500000025,
+        "cpuMillisecondsPerTick": 4.189633333333333,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 4,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.8478366409498264,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.547390750000007,
+        "cpuMillisecondsPerTick": 2.5962166666666664,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.1597712166666647,
+        "cpuMillisecondsPerTick": 2.2628666666666666,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 5,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9189510844929395,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.5101538833333508,
+        "cpuMillisecondsPerTick": 2.5476666666666667,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.306708633333346,
+        "cpuMillisecondsPerTick": 2.34695,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 5,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9196220761247926,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.708981183333344,
+        "cpuMillisecondsPerTick": 2.7381333333333333,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.4912389000000075,
+        "cpuMillisecondsPerTick": 2.73235,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 6,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9160025456318021,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.9204013999999914,
+        "cpuMillisecondsPerTick": 4.024566666666667,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.6750951166666708,
+        "cpuMillisecondsPerTick": 3.4617500000000003,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 6,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9472344678119298,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.2672221499999976,
+        "cpuMillisecondsPerTick": 2.3865166666666666,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.147590966666667,
+        "cpuMillisecondsPerTick": 2.2474166666666666,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 7,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.945545218881244,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.375310866666678,
+        "cpuMillisecondsPerTick": 2.5357666666666665,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.245963833333341,
+        "cpuMillisecondsPerTick": 2.5279000000000003,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 7,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9478939134487144,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.843538566666666,
+        "cpuMillisecondsPerTick": 3.7192166666666666,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.6953729000000144,
+        "cpuMillisecondsPerTick": 3.70575,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 8,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9245168857567564,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.5779754666666728,
+        "cpuMillisecondsPerTick": 3.3312833333333334,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.383381849999993,
+        "cpuMillisecondsPerTick": 3.491216666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 8,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.7726958339924562,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.9862071833333177,
+        "cpuMillisecondsPerTick": 3.22095,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.3074298500000014,
+        "cpuMillisecondsPerTick": 2.6175166666666665,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 9,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9770833235133055,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.439741500000006,
+        "cpuMillisecondsPerTick": 2.47795,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.383830733333343,
+        "cpuMillisecondsPerTick": 2.4262,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 9,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.908298919723276,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.5961264500000047,
+        "cpuMillisecondsPerTick": 3.46615,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.358058850000028,
+        "cpuMillisecondsPerTick": 2.4227333333333334,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 10,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.8575991325147964,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.720292299999983,
+        "cpuMillisecondsPerTick": 2.8850333333333333,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.3329203166666654,
+        "cpuMillisecondsPerTick": 2.403833333333333,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 10,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 1.0313089656035308,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.474871500000002,
+        "cpuMillisecondsPerTick": 2.5105166666666667,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.552357166666661,
+        "cpuMillisecondsPerTick": 3.7849,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 11,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9402033482010272,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.5475202833333244,
+        "cpuMillisecondsPerTick": 4.863283333333333,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.395187100000021,
+        "cpuMillisecondsPerTick": 3.355933333333333,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 11,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9187036841742257,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.709103699999984,
+        "cpuMillisecondsPerTick": 3.1961166666666667,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.4888635500000116,
+        "cpuMillisecondsPerTick": 3.18265,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 12,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.8878028113169054,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.711480150000019,
+        "cpuMillisecondsPerTick": 2.9719333333333333,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.4072597000000013,
+        "cpuMillisecondsPerTick": 2.6106333333333334,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 12,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9787414932822782,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.380307516666653,
+        "cpuMillisecondsPerTick": 2.612,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.3297057333333515,
+        "cpuMillisecondsPerTick": 2.49205,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 13,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.872565406895211,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.3099864499999967,
+        "cpuMillisecondsPerTick": 2.7183,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.015614266666671,
+        "cpuMillisecondsPerTick": 2.0847666666666664,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 13,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.8786771259675334,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.752484800000002,
+        "cpuMillisecondsPerTick": 3.5496166666666666,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.418545433333323,
+        "cpuMillisecondsPerTick": 2.9000666666666666,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 14,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.955630606809516,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.6886465666666783,
+        "cpuMillisecondsPerTick": 3.383666666666667,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.5693529499999994,
+        "cpuMillisecondsPerTick": 3.46875,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 14,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9237479082425021,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.420054266666678,
+        "cpuMillisecondsPerTick": 2.50325,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.235520066666686,
+        "cpuMillisecondsPerTick": 2.2866833333333334,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 15,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.8642551059988527,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.379903266666649,
+        "cpuMillisecondsPerTick": 2.4455,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.0568435500000004,
+        "cpuMillisecondsPerTick": 2.387516666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 15,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.8962624319078911,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.9351639166666854,
+        "cpuMillisecondsPerTick": 3.8945333333333334,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.630677149999974,
+        "cpuMillisecondsPerTick": 3.6804,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 16,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.8438119203942732,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.7995790999999977,
+        "cpuMillisecondsPerTick": 3.4602166666666667,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.362318216666669,
+        "cpuMillisecondsPerTick": 2.5622833333333332,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 16,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9252716728978836,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.576218516666662,
+        "cpuMillisecondsPerTick": 3.0747666666666666,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.3837020166666663,
+        "cpuMillisecondsPerTick": 3.266116666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 17,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.9534438320360672,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.3236552333333447,
+        "cpuMillisecondsPerTick": 2.5165,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.215474750000006,
+        "cpuMillisecondsPerTick": 2.3436333333333335,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 17,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.8975798148588163,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.778816333333331,
+        "cpuMillisecondsPerTick": 2.8501166666666666,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.4942094499999863,
+        "cpuMillisecondsPerTick": 2.952566666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 18,
+      "id": "TOSS",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.9718548492831556,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.4728416166666647,
+        "cpuMillisecondsPerTick": 2.54945,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.403243116666696,
+        "cpuMillisecondsPerTick": 3.2329166666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 18,
+      "id": "PASS13",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "ratio": 0.8816761548855698,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.20075843333337,
+        "cpuMillisecondsPerTick": 2.26305,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 1.9403562333333564,
+        "cpuMillisecondsPerTick": 1.9714666666666667,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 19,
+      "id": "PASS13",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 0.8752183865744821,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.5038646166666996,
+        "cpuMillisecondsPerTick": 2.9896833333333332,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.191428349999963,
+        "cpuMillisecondsPerTick": 2.2416,
+        "phase": "live"
+      }
+    },
+    {
+      "round": 19,
+      "id": "TOSS",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "ratio": 1.1212161482576553,
+      "baseline": {
+        "wallMillisecondsPerTick": 2.382878333333368,
+        "cpuMillisecondsPerTick": 2.7989,
+        "phase": "live"
+      },
+      "candidate": {
+        "wallMillisecondsPerTick": 2.67172166666666,
+        "cpuMillisecondsPerTick": 3.1133499999999996,
+        "phase": "live"
+      }
+    }
+  ],
+  "runtimeLauncher": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/loaded-movement",
+    "commit": "f96a85fdd818b6fd860554e7a9881083ae0dd60c",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "03233b05ba0cbdfc1fe4fe6787caec2dc41fe4b09ef07726917c3edf0f9ebee1",
+    "validationSha256": "5fb8b720e507cc4bb8d244063a3f153bb72f36f472f295bcc28bcb244c60b7e7",
+    "startedAt": "2026-10-20T21:02:32.248Z",
+    "commands": [
+      {
+        "command": [
+          "node",
+          "--import",
+          "tsx",
+          "out/yaw-readiness/native-cost-final.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 17.366418786
+      }
+    ],
+    "finishedAt": "2026-10-20T21:02:49.618Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "runtimeQualification": "20 balanced AB/BA paired rounds per existing 60-tick live input after four warmup pairs. Batch-average wall gates unchanged, not individual-tick or all-input bounds. Old/new geometry differs. Supplemental Toss CPU p95/max worsens; process CPU includes V8 worker work and does not replace wall gate. No rolling reruns until pass.",
+  "independentReview": {
+    "path": "docs/archive/research/movement-yaw/numeric-review.md",
+    "mechanics": "ACCEPT",
+    "finalDisposition": "READY for isolated Integration review",
+    "testEvidence": "1024 exact ordered Object.is comparisons; 607 event cases, 11 exceptions; regression parity, not new physical oracle"
+  },
+  "retainedAdverse": [
+    "Later Toss first contact 2.50\u21923.95s; valid different runner cut/avoidance, not proved optimal",
+    "Pass control censored live at6s on accepted versus candidate tackle5.25s",
+    "Loaded torso-slip late angular error \u22642.09\u21923.54 degrees",
+    "Supplemental Toss process-CPU p95/max 4.0246/4.6879\u21924.1896/5.2407 ms/tick",
+    "Known angular/contact accounting, support-history and nine unrelated historical patch failures remain separate holds"
+  ],
+  "originalRawArtifacts": [
+    {
+      "path": "out/yaw-readiness/native-cost-final.json",
+      "sha256": "092d2adf1cbddcc67a108573083a0c6bef20a5765f703e4a03bf814e25ed500a",
+      "bytes": 47133
+    },
+    {
+      "path": "out/yaw-readiness/native-cost-final-receipt.json",
+      "sha256": "f6518c6e24b260adbd4898358614454006c66aacd1f09b000255b02bfc7c3e78",
+      "bytes": 2210
+    },
+    {
+      "path": "out/yaw-readiness/numeric-review-evidence.json",
+      "sha256": "985b100a36c7428dbe7984e4f9efe4101b1f4c0f9bb31dc26dd99de6856afc71",
+      "bytes": 927395
+    },
+    {
+      "path": "out/yaw-readiness/final-native-parity.json",
+      "sha256": "8d106e5f4728f5fcbd5fec7d95535029522ec885c1c52d36349879b0e5a99382",
+      "bytes": 3928
+    },
+    {
+      "path": "out/yaw-readiness/focused.json",
+      "sha256": "70cc0191c615a523df53674b0fba2d4082a4c2fd44f238bb95f61c0b05ab16a7",
+      "bytes": 2352
+    },
+    {
+      "path": "out/yaw-readiness/typecheck.json",
+      "sha256": "39f211266587caa2cc457f0bf92a0d275fd44c9a7239b7b1b44a4b1a37446245",
+      "bytes": 2160
+    }
+  ],
+  "publishedArtifacts": [
+    {
+      "path": "docs/archive/research/movement-yaw/capture-current.mjs",
+      "sha256": "a17b05715c18cdfa447694e0af8e490c3f63ce489cd95213e69e08ba8e739819",
+      "bytes": 4788
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/compare-final-native-parity.py",
+      "sha256": "b96866c82f3e9c879da8469d27212a18b5b0e9ed7213cb50349cd73dfb4d4953",
+      "bytes": 2976
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/native-cost-final.ts",
+      "sha256": "934db9c7af1019b91c6e27cf614ea2da01d5573ebfd5776f17f30cfed3a5423b",
+      "bytes": 6187
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/numeric-review.md",
+      "sha256": "146a1c6ee19e42f944c93796c018dac46a51e8643f540ab9ed506edb808ed64a",
+      "bytes": 3468
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/numeric-review.ts",
+      "sha256": "24d4bb19661dfd9997314ce403cfbe2726f948501768710062416554cb915bdc",
+      "bytes": 3695
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/numeric-seed-cases.json",
+      "sha256": "e47372287f8d04e31c306374f2c833ef9dd81a277d4b8bf44d422fb27ab20daa",
+      "bytes": 5062
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/pass-input.json.gz",
+      "sha256": "27dc1c1df2ec4c11c3d4a961e92cbfdc4184ac71a8c27de89fce181e1f03ffb2",
+      "bytes": 5929
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/profile-report.md",
+      "sha256": "85a2116f4722f5c8d47319f828a6cd6bfaba580b4d5f4ae6274f8a648329f0f3",
+      "bytes": 4294
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/toss-input.json.gz",
+      "sha256": "7bbe126d863fea8adc4de16201bde577eb1ab33a50aab37ea727625fce2187a5",
+      "bytes": 5886
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/yaw-fastpath-review.ts",
+      "sha256": "c86dcea1d9d3567232c1b36ca5f7dceaa0def50f8827b3abfcc479af4bdbd648",
+      "bytes": 1936
+    },
+    {
+      "path": "docs/archive/research/movement-yaw/yaw-native-cost-repeat.ts",
+      "sha256": "557d6366ec9827e6b375393d418d4075cd01e51aeb07d1bb252cc23472c05365",
+      "bytes": 3861
+    }
+  ],
+  "handoff": "No full-suite rerun. Exact combined verification, physical motor/default adoption and merge remain with Integration under existing authority."
+}

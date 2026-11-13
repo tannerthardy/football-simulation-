@@ -1,0 +1,592 @@
+{
+  "schema": "carrier-recovery-held-picture-controls-v1",
+  "sourceBefore": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "sourceAfter": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "node": "v22.23.3",
+  "toolSha256": "2dfdc33229d1d974f3fddbda1bb8f1b1ffe1aa24f3f6d88514aa77c9f7218524",
+  "method": "Helper-independent existing BallCarrier.evaluate on staged held-picture decision states. Same profiles/positions/velocities and consumed images; only hidden support state changes for first three checks. Positive scenario parking separate. No World trajectory, native finish, new recovery API import or NFL prevalence claim.",
+  "checks": 8,
+  "passes": 2,
+  "failures": [
+    "stale-up-hidden-fall--1",
+    "stale-down-hidden-rise--1",
+    "unknown-pose-no-oracle--1",
+    "stale-up-hidden-fall-1",
+    "stale-down-hidden-rise-1",
+    "unknown-pose-no-oracle-1"
+  ],
+  "rows": [
+    {
+      "id": "stale-up-hidden-fall--1",
+      "initialSha256": "bce13a51a57b265f56cb231710584702e920040a4b376279b7cf73202318fd82",
+      "visiblePose": "up",
+      "side": -1,
+      "upright": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "hiddenFall": {
+        "choice": {
+          "heading": 0,
+          "score": 0,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 0,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "falling",
+        "downUntil": -1,
+        "legacyRecoveryExtra": -4.8
+      },
+      "consumedPicturesEqual": true,
+      "passes": false
+    },
+    {
+      "id": "stale-down-hidden-rise--1",
+      "initialSha256": "bce13a51a57b265f56cb231710584702e920040a4b376279b7cf73202318fd82",
+      "visiblePose": "down",
+      "side": -1,
+      "stillDown": {
+        "choice": {
+          "heading": 0,
+          "score": 0,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 0,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "down"
+            }
+          }
+        ],
+        "trueSupport": "down",
+        "downUntil": -1,
+        "legacyRecoveryExtra": -4.8
+      },
+      "hiddenRise": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "down"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "consumedPicturesEqual": true,
+      "passes": false
+    },
+    {
+      "id": "unknown-pose-no-oracle--1",
+      "initialSha256": "bce13a51a57b265f56cb231710584702e920040a4b376279b7cf73202318fd82",
+      "visiblePose": null,
+      "side": -1,
+      "unknownUp": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "unknownFall": {
+        "choice": {
+          "heading": 0,
+          "score": 0,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 0,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2
+            }
+          }
+        ],
+        "trueSupport": "falling",
+        "downUntil": -1,
+        "legacyRecoveryExtra": -4.8
+      },
+      "consumedPicturesEqual": true,
+      "passes": false
+    },
+    {
+      "id": "positive-scenario-parking--1",
+      "initialSha256": "bce13a51a57b265f56cb231710584702e920040a4b376279b7cf73202318fd82",
+      "visiblePose": "up",
+      "side": -1,
+      "available": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "scheduled": {
+        "choice": {
+          "heading": 0,
+          "score": 21.74555434956309,
+          "blocked": false,
+          "aimBlocked": false,
+          "aimScore": 21.74555434956309,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 26.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": 9,
+        "legacyRecoveryExtra": 5.2
+      },
+      "consumedPicturesEqual": true,
+      "passes": true
+    },
+    {
+      "id": "stale-up-hidden-fall-1",
+      "initialSha256": "1cdb6a74ca02e484d3ac8bd1195a99cda0a908e1e0f3bec1f585f5c46fbb85d7",
+      "visiblePose": "up",
+      "side": 1,
+      "upright": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "hiddenFall": {
+        "choice": {
+          "heading": 0,
+          "score": 0,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 0,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "falling",
+        "downUntil": -1,
+        "legacyRecoveryExtra": -4.8
+      },
+      "consumedPicturesEqual": true,
+      "passes": false
+    },
+    {
+      "id": "stale-down-hidden-rise-1",
+      "initialSha256": "1cdb6a74ca02e484d3ac8bd1195a99cda0a908e1e0f3bec1f585f5c46fbb85d7",
+      "visiblePose": "down",
+      "side": 1,
+      "stillDown": {
+        "choice": {
+          "heading": 0,
+          "score": 0,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 0,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "down"
+            }
+          }
+        ],
+        "trueSupport": "down",
+        "downUntil": -1,
+        "legacyRecoveryExtra": -4.8
+      },
+      "hiddenRise": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "down"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "consumedPicturesEqual": true,
+      "passes": false
+    },
+    {
+      "id": "unknown-pose-no-oracle-1",
+      "initialSha256": "1cdb6a74ca02e484d3ac8bd1195a99cda0a908e1e0f3bec1f585f5c46fbb85d7",
+      "visiblePose": null,
+      "side": 1,
+      "unknownUp": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "unknownFall": {
+        "choice": {
+          "heading": 0,
+          "score": 0,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 0,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2
+            }
+          }
+        ],
+        "trueSupport": "falling",
+        "downUntil": -1,
+        "legacyRecoveryExtra": -4.8
+      },
+      "consumedPicturesEqual": true,
+      "passes": false
+    },
+    {
+      "id": "positive-scenario-parking-1",
+      "initialSha256": "1cdb6a74ca02e484d3ac8bd1195a99cda0a908e1e0f3bec1f585f5c46fbb85d7",
+      "visiblePose": "up",
+      "side": 1,
+      "available": {
+        "choice": {
+          "heading": 0,
+          "score": 1.1241419236499368,
+          "blocked": true,
+          "aimBlocked": true,
+          "aimScore": 1.1241419236499368,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": -1,
+        "legacyRecoveryExtra": 0
+      },
+      "scheduled": {
+        "choice": {
+          "heading": 0,
+          "score": 21.74555434956309,
+          "blocked": false,
+          "aimBlocked": false,
+          "aimScore": 21.74555434956309,
+          "exits": false
+        },
+        "consumedReads": [
+          {
+            "target": "LB_M",
+            "picture": {
+              "pos": {
+                "x": 58,
+                "y": 27.166666666666668
+              },
+              "vel": {
+                "x": 0,
+                "y": 0
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.2,
+              "pose": "up"
+            }
+          }
+        ],
+        "trueSupport": "up",
+        "downUntil": 9,
+        "legacyRecoveryExtra": 5.2
+      },
+      "consumedPicturesEqual": true,
+      "passes": true
+    }
+  ]
+}

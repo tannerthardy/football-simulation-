@@ -1,0 +1,97 @@
+{
+  "baselineSource": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "candidateSource": "01a504731ec27ee4d1767c9203ff71d91e597f0d0e67ad54084ea52664da3036",
+  "collectorSha256": "f753dcdfa82d4a1d036ae81811208d25621320a2b7bc981a03985d9ca0d7e08b",
+  "trials": 48,
+  "matchedProfilesAndInitialBodies": 48,
+  "passTraceIdentical": 24,
+  "passTrials": 24,
+  "runTraceChanged": 12,
+  "runTrials": 24,
+  "candidateRunPassRatingIrrelevantIdentical": 12,
+  "irrelevantPairs": 12,
+  "crossoverExample": {
+    "baseline": {
+      "runSpecialist": {
+        "technique": {
+          "pad": 1.1521134513634512,
+          "bend": 0.1779129600558173,
+          "hands": 0.45918367346938777,
+          "arm": 33.4,
+          "lateral": 2.2684677883345388,
+          "feet": 0.2413500784929357,
+          "balance": 0.6020408163265306,
+          "read": 0.7428571428571429
+        },
+        "initialControl": 0.23404236882870436,
+        "loadedTicks": 12,
+        "outcome": {
+          "liveHands": true,
+          "blockerSupport": "up",
+          "defenderSupport": "up"
+        }
+      },
+      "passSpecialist": {
+        "technique": {
+          "pad": 1.1521134513634512,
+          "bend": 0.1779129600558173,
+          "hands": 0.7091836734693877,
+          "arm": 33.4,
+          "lateral": 2.2684677883345388,
+          "feet": 0.6699215070643643,
+          "balance": 0.6020408163265306,
+          "read": 0.7428571428571429
+        },
+        "initialControl": 0.4840423688287042,
+        "loadedTicks": 12,
+        "outcome": {
+          "liveHands": true,
+          "blockerSupport": "up",
+          "defenderSupport": "up"
+        }
+      }
+    },
+    "candidate": {
+      "runSpecialist": {
+        "technique": {
+          "pad": 1.1521134513634512,
+          "bend": 0.1779129600558173,
+          "hands": 0.7091836734693877,
+          "arm": 33.4,
+          "lateral": 2.2684677883345388,
+          "feet": 0.6699215070643643,
+          "balance": 0.6020408163265306,
+          "read": 0.7428571428571429
+        },
+        "initialControl": 0.4840423688287042,
+        "loadedTicks": 12,
+        "outcome": {
+          "liveHands": true,
+          "blockerSupport": "up",
+          "defenderSupport": "up"
+        }
+      },
+      "passSpecialist": {
+        "technique": {
+          "pad": 1.1521134513634512,
+          "bend": 0.1779129600558173,
+          "hands": 0.45918367346938777,
+          "arm": 33.4,
+          "lateral": 2.2684677883345388,
+          "feet": 0.2413500784929357,
+          "balance": 0.6020408163265306,
+          "read": 0.7428571428571429
+        },
+        "initialControl": 0.23404236882870436,
+        "loadedTicks": 12,
+        "outcome": {
+          "liveHands": true,
+          "blockerSupport": "up",
+          "defenderSupport": "up"
+        }
+      }
+    }
+  },
+  "candidateMaxWorkResidual": 6.714628852932947e-13,
+  "candidateMaxBudgetExcess": 2.842170943040401e-14
+}

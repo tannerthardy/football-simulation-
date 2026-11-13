@@ -1,0 +1,357 @@
+{
+  "schema": "ol-technique-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BEFORE-OT-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 34,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-oz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 28,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-oz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 52,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-wz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 36,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-wz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 51,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-power-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-power-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 42,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-counter-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 41,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-counter-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-trap-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-trap-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 40,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-duo-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 35,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-duo-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 25,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-split_zone-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 31,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R1-split_zone-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 29,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R2-oz_strong-over-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 80,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OT-R2-power-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 40,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 34,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 31,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-oz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 28,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-oz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 37,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-wz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 35,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-wz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 51,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-power-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 36,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-power-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 39,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-counter-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 42,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-counter-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 37,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-trap-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-trap-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-duo-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-duo-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 25,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-split_zone-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R1-split_zone-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 29,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R2-oz_strong-over-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 106,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OT-R2-power-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 37,
+      "copiedReferenceUsesSelectedEngineSource": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "stuffFilterUsesRecordedResults": true,
+  "pairedFixtureSearch": true,
+  "recordedSourceFilter": true,
+  "conceptAndCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "copiedReferenceUsesSelectedEngineSource": true,
+  "videoExportUsesSelectedEngineSource": [
+    {
+      "id": "BEFORE-OT-R1-iz_strong-over-R-S3",
+      "selectedSourceSha256": "fedfb636eb7a02f298cff1fdf2e2fb213ef37645cc7e1f31b1ef05b52d338205",
+      "downloadFilename": "BEFORE-OT-R1-iz_strong-over-R-S3_fedfb636eb7a_0.00-1.00s.webm",
+      "nonemptyBytes": 304884,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film fedfb636eb7a \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    },
+    {
+      "id": "FINAL-OT-R1-iz_strong-over-R-S3",
+      "selectedSourceSha256": "a629d4d04485ade21e4354b8078ed6cd0bf56b155aa92b83dad7f97cc2d8172f",
+      "downloadFilename": "FINAL-OT-R1-iz_strong-over-R-S3_a629d4d04485_0.00-1.00s.webm",
+      "nonemptyBytes": 276065,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film a629d4d04485 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    }
+  ],
+  "nativeOwnershipBeforeAfterInspected": [
+    {
+      "id": "BEFORE-OT-R2-oz_strong-over-L-S11",
+      "sourceSha256": "fedfb636eb7a02f298cff1fdf2e2fb213ef37645cc7e1f31b1ef05b52d338205",
+      "separateSupplementalWitnessLabel": true,
+      "actualEngagementKeptSeparate": true,
+      "priorWitnessFocusSlot": "LT",
+      "inspectedTime": 3.6,
+      "inspectedText": "After tick 3.50\u20133.55s: LT combo \u2192 DE_S\nCombo #1: Y + LT \u2192 DE_S \u00b7 released\nNo actual block engagement\nRecorded entry-step target 39.63, 29.67 yd\nRead at 3.50s: requested velocity 1.91, -6.92 yd/s \u00b7 requested posture 0.70\nTarget DE_S \u00b7 observed position 42.45, 31.92 yd \u00b7 observed velocity 0.33, 1.10 yd/s\nActual center offset from intended drive: lateral 0.03 yd / along 0.61 yd (geometry, not proof of leverage)\nAchieved velocity 0.62, 0.76 yd/s \u00b7 ground impulse 10.20, -11.07\nArm impulse 0.00 / 45.37 \u00b7 arm work 0.00 / 136.11\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 2.75s: earned-climb observed by LT: combo \u2192 combo \u00b7 target DE_S \u2192 DE_S \u00b7 combo DE_S \u2192 DE_S\nRecorded cue: secured DE_S; LT stays"
+    },
+    {
+      "id": "BEFORE-OT-R2-power-over-R-S3",
+      "sourceSha256": "fedfb636eb7a02f298cff1fdf2e2fb213ef37645cc7e1f31b1ef05b52d338205",
+      "separateSupplementalWitnessLabel": true,
+      "actualEngagementKeptSeparate": true,
+      "priorWitnessFocusSlot": "RT",
+      "inspectedTime": 2.95,
+      "inspectedText": "After tick 2.90\u20132.95s: RT combo \u2192 LB_S\nCombo #1: RG + RT \u2192 DT_S \u00b7 released\nNo actual block engagement\nRecorded entry-step target 39.63, 24.46 yd\nRead at 2.90s: requested velocity -4.18, -6.02 yd/s \u00b7 requested posture 0.70\nTarget LB_S \u00b7 observed position 43.01, 24.28 yd \u00b7 observed velocity -0.21, 1.13 yd/s\nActual center offset from intended drive: lateral 0.25 yd / along -1.34 yd (geometry, not proof of leverage)\nAchieved velocity 1.64, 0.34 yd/s \u00b7 ground impulse -24.53, -19.90\nArm impulse 0.00 / 78.96 \u00b7 arm work 0.00 / 236.89\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 2.30s: earned-climb observed by RT: combo \u2192 combo \u00b7 target DT_S \u2192 DT_S \u00b7 combo DT_S \u2192 DT_S\nRecorded cue: secured DT_S; RT stays\nRead at 2.75s: target-change observed by RT: combo \u2192 combo \u00b7 target DT_S \u2192 LB_S \u00b7 combo DT_S \u2192 DT_S"
+    },
+    {
+      "id": "FINAL-OT-R2-oz_strong-over-L-S11",
+      "sourceSha256": "a629d4d04485ade21e4354b8078ed6cd0bf56b155aa92b83dad7f97cc2d8172f",
+      "separateSupplementalWitnessLabel": true,
+      "actualEngagementKeptSeparate": true,
+      "priorWitnessFocusSlot": "LT",
+      "inspectedTime": 3.6,
+      "inspectedText": "After tick 3.50\u20133.55s: LT reach \u2192 DE_S\nNo shared combination pointer\nActual engagement: LT \u2192 DE_S \u00b7 helpers none\nRecorded entry-step target 39.63, 29.67 yd\nRead at 3.50s: requested velocity 0.00, 0.00 yd/s\nTarget DE_S \u00b7 observed position unrecorded yd \u00b7 observed velocity unrecorded yd/s\nActual center offset from intended drive: lateral 0.01 yd / along 0.66 yd (geometry, not proof of leverage)\nAchieved velocity 0.17, 1.46 yd/s \u00b7 ground impulse 4.74, 10.09\nArm impulse 54.54 / 64.79 \u00b7 arm work 14.26 / 194.36\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1 \u00b7 mean forces 1068.45 normal / -217.02 tangent\nRead at 2.75s: earned-climb observed by LT: combo \u2192 reach \u00b7 target DE_S \u2192 DE_S \u00b7 combo DE_S \u2192 none\nRecorded cue: secured DE_S; LT stays"
+    },
+    {
+      "id": "FINAL-OT-R2-power-over-R-S3",
+      "sourceSha256": "a629d4d04485ade21e4354b8078ed6cd0bf56b155aa92b83dad7f97cc2d8172f",
+      "separateSupplementalWitnessLabel": true,
+      "actualEngagementKeptSeparate": true,
+      "priorWitnessFocusSlot": "RT",
+      "inspectedTime": 2.95,
+      "inspectedText": "After tick 2.90\u20132.95s: RT climb \u2192 SS\nNo shared combination pointer\nNo actual block engagement\nRecorded entry-step target 39.63, 24.46 yd\nRead at 2.90s: requested velocity -2.56, -5.17 yd/s\nTarget SS \u00b7 observed position 43.78, 22.82 yd \u00b7 observed velocity -0.80, -0.02 yd/s\nActual center offset from intended drive: lateral 2.76 yd / along -0.29 yd (geometry, not proof of leverage)\nAchieved velocity 1.42, -0.08 yd/s \u00b7 ground impulse -24.10, -25.08\nArm impulse 0.00 / 78.97 \u00b7 arm work 0.00 / 236.92\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 2.30s: earned-climb observed by RT: combo \u2192 down \u00b7 target DT_S \u2192 DT_S \u00b7 combo DT_S \u2192 none\nRecorded cue: secured DT_S; RT stays\nRead at 2.65s: target-change observed by RT: down \u2192 climb \u00b7 target DT_S \u2192 SS \u00b7 combo none \u2192 none"
+    }
+  ]
+}

@@ -1,0 +1,844 @@
+{
+  "schema": "saved-selected-alley-policy-receipt-v1",
+  "toolSha256": "454defadecc1f95c436131ddf29109f5130b7abdee6c99fe5c97519887f399bb",
+  "scope": "Baseline601 native Game prefix and constructor; only selected candidate ManCoverage.update. Not a complete candidate game or NFL rate experiment.",
+  "selectionSha256": "6ab3689ce97862d46b2bd4a258e24b3da211a307efe92d7e7d52e5b3ae950a00",
+  "rows": [
+    {
+      "id": "G4-P127",
+      "baselineFileSha256": "8ccfbce5654247f3091238c0b6360848337694e3d2eff6e6e25bbe8cdd0941bb",
+      "candidateFileSha256": "acb059ee44bf4a4068c5cd8a102e610bb0994775e59faf09f997d3a19f8456d6",
+      "scope": "Baseline601 native Game/PlaySim constructor throughout, only selected ManCoverage.update borrowed from candidate; no full candidate-game claim.",
+      "candidateSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+      "nativePrefixExact": true,
+      "initialStateExact": true,
+      "observerPlainBothVerified": true,
+      "completeExecutionExact": false,
+      "firstTickFork": {
+        "t": 1.3,
+        "beforeExact": true
+      },
+      "firstRequestFork": [
+        {
+          "t": 1.3,
+          "a": 20,
+          "slot": "FS",
+          "before": {
+            "vel": {
+              "x": 0.5812945337592268,
+              "y": -1.167955697111889
+            },
+            "facing": 3.141592653589793
+          },
+          "after": {
+            "vel": {
+              "x": -0.2924755594541324,
+              "y": 2.9711133902862414
+            },
+            "facing": 3.141592653589793
+          }
+        }
+      ],
+      "fsInitialRole": {
+        "idx": 20,
+        "kind": "man",
+        "target": 6,
+        "targetSlot": "RB",
+        "fit": {
+          "edge": "box",
+          "gap": "A",
+          "kind": "alley",
+          "pace": "stack",
+          "side": 1,
+          "technique": "attack"
+        }
+      },
+      "baseline": {
+        "gain": 86,
+        "outcome": "touchdown",
+        "duration": 12.15,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover0",
+            "actual": "cover0"
+          },
+          "rusher": "PIL-RB1"
+        },
+        "accounting": {
+          "reports": 243,
+          "maxWorkResidual": 3.4994229736184934e-11,
+          "maxMomentumResidual": 2.07999832500743e-12,
+          "maxArmImpulseExcess": 2.1316282072803006e-14,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": 0,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 0.9999952906755781,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidate": {
+        "gain": 31.34,
+        "outcome": "tackle",
+        "duration": 6.1,
+        "stats": {
+          "tacklers": [
+            "COM-CB4"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover0",
+            "actual": "cover0"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 6.108282276992295
+        },
+        "accounting": {
+          "reports": 122,
+          "maxWorkResidual": 2.1591617382910044e-11,
+          "maxMomentumResidual": 2.6872755460423674e-12,
+          "maxArmImpulseExcess": 2.1316282072803006e-14,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -21.2510505889819,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 1.0000000000000002,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidateFitDecisions": [
+        {
+          "t": 1.3,
+          "a": 20,
+          "kind": "coverage-run-fit",
+          "chose": "keyed-fit:RB",
+          "cue": "RB carrying=true in consumed picture; run belief; installed alley",
+          "options": [
+            "man:RB",
+            "keyed-fit:RB"
+          ],
+          "detail": "Installed A-gap, side 1; known target RB; picture age 0.25 s, depth -4.21 yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit."
+        }
+      ],
+      "candidateContactTimeline": [
+        {
+          "t": 1,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 19,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 3.15,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 30.11,
+            "y": 32.14
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 3.15,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 30.12,
+            "y": 30.8
+          },
+          "note": "initial"
+        },
+        {
+          "t": 4.9,
+          "type": "broken_tackle",
+          "a": 6,
+          "b": 20,
+          "pos": {
+            "x": 44.41,
+            "y": 34.86
+          },
+          "note": "hold slipped"
+        },
+        {
+          "t": 5.2,
+          "type": "tackle_wrap",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 46.54,
+            "y": 35.56
+          },
+          "note": "initial"
+        },
+        {
+          "t": 5.7,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 52.12,
+            "y": 35.1
+          },
+          "note": "legs"
+        },
+        {
+          "t": 6.05,
+          "type": "tackle",
+          "a": 20,
+          "b": 6,
+          "pos": {
+            "x": 54.88,
+            "y": 35.11
+          }
+        }
+      ]
+    },
+    {
+      "id": "G3-P099",
+      "baselineFileSha256": "1c831e291470b9e1437178042a1a5db7c73b330dc88d33a963d4fb48d93ea363",
+      "candidateFileSha256": "5bda65d7284fac7fac73078bfb226e4cde3b2d14367a5cfb3651776c00381e30",
+      "scope": "Baseline601 native Game/PlaySim constructor throughout, only selected ManCoverage.update borrowed from candidate; no full candidate-game claim.",
+      "candidateSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+      "nativePrefixExact": true,
+      "initialStateExact": true,
+      "observerPlainBothVerified": true,
+      "completeExecutionExact": false,
+      "firstTickFork": {
+        "t": 1.7,
+        "beforeExact": true
+      },
+      "firstRequestFork": [
+        {
+          "t": 1.7,
+          "a": 20,
+          "slot": "FS",
+          "before": {
+            "vel": {
+              "x": 0.866277027923383,
+              "y": 1.697732784487473
+            },
+            "facing": 3.141592653589793
+          },
+          "after": {
+            "vel": {
+              "x": 4.921632603886478,
+              "y": -0.36932370255075014
+            },
+            "facing": 3.141592653589793
+          }
+        }
+      ],
+      "fsInitialRole": {
+        "idx": 20,
+        "kind": "man",
+        "target": 6,
+        "targetSlot": "RB",
+        "fit": {
+          "edge": "box",
+          "gap": "A",
+          "kind": "alley",
+          "pace": "stack",
+          "side": -1,
+          "technique": "attack"
+        }
+      },
+      "baseline": {
+        "gain": 2.07,
+        "outcome": "touchdown",
+        "duration": 2.85,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover0"
+          },
+          "rusher": "WOL-RB1",
+          "yardsBeforeContact": 1.7723211861957253
+        },
+        "accounting": {
+          "reports": 57,
+          "maxWorkResidual": 3.0517810500896303e-12,
+          "maxMomentumResidual": 1.1240733059783366e-12,
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -139.49271489471832,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 0.9999952203733352,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidate": {
+        "gain": 2.07,
+        "outcome": "touchdown",
+        "duration": 2.85,
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover0"
+          },
+          "rusher": "WOL-RB1",
+          "yardsBeforeContact": 1.7726235708995688
+        },
+        "accounting": {
+          "reports": 57,
+          "maxWorkResidual": 9.272582701669307e-12,
+          "maxMomentumResidual": 1.2840591269674951e-12,
+          "maxArmImpulseExcess": 0,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -130.1974853759637,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 0.9999952203733352,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidateFitDecisions": [
+        {
+          "t": 1.7,
+          "a": 20,
+          "kind": "coverage-run-fit",
+          "chose": "keyed-fit:RB",
+          "cue": "RB carrying=true in consumed picture; run belief; installed alley",
+          "options": [
+            "man:RB",
+            "keyed-fit:RB"
+          ],
+          "detail": "Installed A-gap, side -1; known target RB; picture age 0.25 s, depth -3.86 yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit."
+        }
+      ],
+      "candidateContactTimeline": [
+        {
+          "t": 1.4,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 104.67,
+            "y": 24.03
+          }
+        },
+        {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 109.71,
+            "y": 26.29
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 110.3,
+            "y": 25.72
+          },
+          "note": "initial"
+        },
+        {
+          "t": 2.8,
+          "type": "touchdown",
+          "a": 6,
+          "pos": {
+            "x": 110,
+            "y": 26.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "G4-P012",
+      "baselineFileSha256": "8a872eb4a2f6486477bf13c6f4ac80001d447896bd4bed8d3a579bcb07fc34f4",
+      "candidateFileSha256": "61b2ad7c91b423d447cff32bfcc71e35622950bb260d47a9407190f5c8827f3f",
+      "scope": "Baseline601 native Game/PlaySim constructor throughout, only selected ManCoverage.update borrowed from candidate; no full candidate-game claim.",
+      "candidateSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+      "nativePrefixExact": true,
+      "initialStateExact": true,
+      "observerPlainBothVerified": true,
+      "completeExecutionExact": true,
+      "firstTickFork": null,
+      "firstRequestFork": [],
+      "fsInitialRole": {
+        "idx": 20,
+        "kind": "zone",
+        "target": null,
+        "targetSlot": null,
+        "fit": {
+          "edge": "box",
+          "gap": "D",
+          "kind": "force",
+          "pace": "stack",
+          "side": 1,
+          "technique": "attack"
+        }
+      },
+      "baseline": {
+        "gain": 3.59,
+        "outcome": "tackle",
+        "duration": 3.35,
+        "stats": {
+          "tacklers": [
+            "COM-DT3",
+            "COM-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2man",
+            "actual": "cover3",
+            "shown": "cover2man"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 1.8909183441179493
+        },
+        "accounting": {
+          "reports": 67,
+          "maxWorkResidual": 6.791900375446858e-12,
+          "maxMomentumResidual": 1.5330445801715218e-12,
+          "maxArmImpulseExcess": 2.842170943040401e-14,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -392.74574577554773,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 0.999906740762954,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidate": {
+        "gain": 3.59,
+        "outcome": "tackle",
+        "duration": 3.35,
+        "stats": {
+          "tacklers": [
+            "COM-DT3",
+            "COM-LB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2man",
+            "actual": "cover3",
+            "shown": "cover2man"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 1.8909183441179493
+        },
+        "accounting": {
+          "reports": 67,
+          "maxWorkResidual": 6.791900375446858e-12,
+          "maxMomentumResidual": 1.5330445801715218e-12,
+          "maxArmImpulseExcess": 2.842170943040401e-14,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -392.74574577554773,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 0.999906740762954,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidateFitDecisions": [],
+      "candidateContactTimeline": [
+        {
+          "t": 1,
+          "type": "handoff",
+          "a": 0,
+          "b": 6,
+          "pos": {
+            "x": 36,
+            "y": 26.67
+          }
+        },
+        {
+          "t": 2.75,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 13,
+          "pos": {
+            "x": 42.89,
+            "y": 24.67
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 13,
+          "b": 6,
+          "pos": {
+            "x": 42.73,
+            "y": 25.69
+          },
+          "note": "initial"
+        },
+        {
+          "t": 2.75,
+          "type": "tackle_wrap",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 43.62,
+            "y": 25.78
+          },
+          "note": "assist"
+        },
+        {
+          "t": 2.95,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 43.63,
+            "y": 24.99
+          },
+          "note": "legs"
+        },
+        {
+          "t": 2.95,
+          "type": "fall",
+          "a": 13,
+          "pos": {
+            "x": 43.21,
+            "y": 25.57
+          },
+          "note": "contact"
+        },
+        {
+          "t": 3.3,
+          "type": "tackle",
+          "a": 13,
+          "b": 6,
+          "pos": {
+            "x": 43.9,
+            "y": 25.44
+          }
+        }
+      ]
+    },
+    {
+      "id": "G2-P188",
+      "baselineFileSha256": "7ba82f3982928558bd3f2a5b9d20afd2915e59fed1080ed4a3d8a81d102c7180",
+      "candidateFileSha256": "e97ab6e41b05369ea096eb71438eff5ddc93650eaaa34545562ca84aa1d25f79",
+      "scope": "Baseline601 native Game/PlaySim constructor throughout, only selected ManCoverage.update borrowed from candidate; no full candidate-game claim.",
+      "candidateSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+      "nativePrefixExact": true,
+      "initialStateExact": true,
+      "observerPlainBothVerified": true,
+      "completeExecutionExact": false,
+      "firstTickFork": {
+        "t": 1.05,
+        "beforeExact": true
+      },
+      "firstRequestFork": [
+        {
+          "t": 1.05,
+          "a": 20,
+          "slot": "FS",
+          "before": {
+            "vel": {
+              "x": -4.704021145831371,
+              "y": 1.8159644037509812
+            },
+            "facing": 3.141592653589793
+          },
+          "after": {
+            "vel": {
+              "x": 1.280343919263558,
+              "y": -0.6836267909067857
+            },
+            "facing": 3.141592653589793
+          }
+        }
+      ],
+      "fsInitialRole": {
+        "idx": 20,
+        "kind": "man",
+        "target": 6,
+        "targetSlot": "RB",
+        "fit": {
+          "edge": "box",
+          "gap": "A",
+          "kind": "alley",
+          "pace": "stack",
+          "side": -1,
+          "technique": "attack"
+        }
+      },
+      "baseline": {
+        "gain": 3.62,
+        "outcome": "tackle",
+        "duration": 3.5,
+        "stats": {
+          "tacklers": [
+            "COM-CB4"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover0",
+            "actual": "cover0"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 0.793854511910574
+        },
+        "accounting": {
+          "reports": 70,
+          "maxWorkResidual": 4.1389114358025836e-12,
+          "maxMomentumResidual": 1.2234951100760078e-12,
+          "maxArmImpulseExcess": 1.4210854715202004e-14,
+          "maxArmWorkExcess": 0,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -16.858808852413517,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 1.0000000000000004,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidate": {
+        "gain": 1.93,
+        "outcome": "tackle",
+        "duration": 3.55,
+        "stats": {
+          "tacklers": [
+            "COM-LB1",
+            "COM-CB3"
+          ],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover0",
+            "actual": "cover0"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 0.3266594333933668
+        },
+        "accounting": {
+          "reports": 71,
+          "maxWorkResidual": 4.281908161374304e-12,
+          "maxMomentumResidual": 1.2482150123007218e-12,
+          "maxArmImpulseExcess": 1.4210854715202004e-14,
+          "maxArmWorkExcess": 2.842170943040401e-14,
+          "maxSupportMotorWorkExcess": 0,
+          "minimumSignedSupportMotorWork": -20.072924841311412,
+          "maxAbsolute1_1mgGroundEnvelopeRatio": 1.0000000000000004,
+          "limits": [
+            "Actual saved tick reports only; shared engine caps unchanged.",
+            "Absolute1.1mg traction envelope is not proof of every instantaneous support-reduced substep bound.",
+            "Negative signed motor work is dissipative, not unexplained positive work.",
+            "pairImpulse tap misses lower-grasp supportImpulse; empty grasp rows do not establish zero force."
+          ]
+        }
+      },
+      "candidateFitDecisions": [
+        {
+          "t": 1.05,
+          "a": 20,
+          "kind": "coverage-run-fit",
+          "chose": "keyed-fit:RB",
+          "cue": "RB carrying=true in consumed picture; run belief; installed alley",
+          "options": [
+            "man:RB",
+            "keyed-fit:RB"
+          ],
+          "detail": "Installed A-gap, side -1; known target RB; picture age 0.25 s, depth -6.27 yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit."
+        }
+      ],
+      "candidateContactTimeline": [
+        {
+          "t": 2.5,
+          "type": "missed_tackle",
+          "a": 12,
+          "b": 6,
+          "pos": {
+            "x": 43.28,
+            "y": 26.83
+          },
+          "note": "dive"
+        },
+        {
+          "t": 2.55,
+          "type": "fall",
+          "a": 12,
+          "pos": {
+            "x": 43.33,
+            "y": 26.84
+          },
+          "note": "dive"
+        },
+        {
+          "t": 2.6,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 17,
+          "pos": {
+            "x": 43.95,
+            "y": 29.41
+          },
+          "note": "grasp"
+        },
+        {
+          "t": 2.6,
+          "type": "tackle_wrap",
+          "a": 17,
+          "b": 6,
+          "pos": {
+            "x": 45.33,
+            "y": 28.95
+          },
+          "note": "initial"
+        },
+        {
+          "t": 3,
+          "type": "fall",
+          "a": 14,
+          "pos": {
+            "x": 49.92,
+            "y": 21.23
+          },
+          "note": "contact"
+        },
+        {
+          "t": 3.1,
+          "type": "fall",
+          "a": 6,
+          "pos": {
+            "x": 45.06,
+            "y": 30.71
+          },
+          "note": "legs"
+        },
+        {
+          "t": 3.2,
+          "type": "fall",
+          "a": 17,
+          "pos": {
+            "x": 45.31,
+            "y": 30.53
+          },
+          "note": "contact"
+        },
+        {
+          "t": 3.25,
+          "type": "tackle_wrap",
+          "a": 18,
+          "b": 6,
+          "pos": {
+            "x": 46.62,
+            "y": 31.31
+          },
+          "note": "assist"
+        },
+        {
+          "t": 3.5,
+          "type": "tackle",
+          "a": 17,
+          "b": 6,
+          "pos": {
+            "x": 45.55,
+            "y": 31.2
+          }
+        }
+      ]
+    }
+  ]
+}

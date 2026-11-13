@@ -1,0 +1,32 @@
+{
+  "parentSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "rows": [
+    {
+      "phase": "possession-foundation",
+      "sourceSha256": "dc9590708bf18de096e5e4ae62ff43b2a7fbdbc95113bb1470ef407011482f2d",
+      "patchSha256": "34a967d55d6b7ff4d0041b800175a127c7f16bde2dd907bf446343e2b7a4ffba",
+      "appliedToExactBaseline": true,
+      "publishedPatch": "possession-foundation.patch.gz",
+      "patchEncoding": "gzip; patchSha256 verifies decoded original",
+      "compressedSha256": "b89080429ab3b5012a6fe61b0ea92657f2fcf055f971dba1e1d9d114125102af"
+    },
+    {
+      "phase": "draw-only",
+      "sourceSha256": "fe93ba60a2fd18f7721386db9c2862edcdeb0a4c0d6cac835ba30bcbb60e11be",
+      "patchSha256": "259fd0621eac48505f8d7daf95829fcf3218d4b46c667f600fb309fd0e3ba184",
+      "appliedToExactBaseline": true,
+      "publishedPatch": "draw-only.patch.gz",
+      "patchEncoding": "gzip; patchSha256 verifies decoded original",
+      "compressedSha256": "f8ff0e43c782d8fd9e177cbac1c260a5a50165684958426eb9958db7360840f9"
+    },
+    {
+      "phase": "recovery-only",
+      "sourceSha256": "0863dc038fd1f5046cf47bb6ff49096dc554807cbdcf1f50039b94e011c6e74c",
+      "patchSha256": "db984ce2a076bcdf19759c2278c37085e53ee8c80321add206335b2ea9f1428c",
+      "appliedToExactBaseline": true,
+      "publishedPatch": "recovery-only.patch.gz",
+      "patchEncoding": "gzip; patchSha256 verifies decoded original",
+      "compressedSha256": "3c7c2c280bb09f8082aedeb0d18ecf10631d877e3592bce668f739f637d295d8"
+    }
+  ]
+}

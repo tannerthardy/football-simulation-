@@ -1,0 +1,30 @@
+{
+  "testedCommit": "7f98ad4b3c4c4ea67687de60d18f1b2acde09c5a",
+  "canonicalSourceSha256": "f63a7d7a49fa76859aaa78af2367e5b2031fb296287cbd2a6195447c83cfe202",
+  "validationSha256": "0dfe557e07993239c0abf3f7ab6063ad83bb0fb2d4d09c54bd8bf2161932f940",
+  "commandSeconds": 219.552908087,
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 2003,
+    "typescriptFailed": 1,
+    "python": "skipped by fail-fast",
+    "inputsUnchanged": true
+  },
+  "blocker": {
+    "pr": 126,
+    "owner": "Run plus original/nonauthor combo reviewer",
+    "test": "test/zone-reach.test.ts:118",
+    "decision": "Adjudicate old ordinary-command guarantee versus the intended installed combination half. No assertion relaxation or code change without review.",
+    "sourceOnlyDiagnostic": "Fixture directly runs RunBlocker with other actors idle; #128 wrapper is not exercised. Old expected ordinary approach uses stretch direction, new combo approach uses installed C/LG half."
+  },
+  "nextCandidate": "#128 alone; #126 remains independently held, not rejected as a physical or football defect.",
+  "hashCorrection": {
+    "incorrectPreflightSourceSha256": "82c480d982cefc288272c861c506cb5d3cf1387efa4d6cdd72fe2dd49d78524b",
+    "reason": "Python Path object ordering compares components; canonical algorithm sorts full path strings.",
+    "correctSourceSha256": "f63a7d7a49fa76859aaa78af2367e5b2031fb296287cbd2a6195447c83cfe202",
+    "sourceChanged": false
+  },
+  "newEngineDiagnostics": 0,
+  "assertionsChanged": false
+}

@@ -1,0 +1,189 @@
+{
+  "schema": "minimal-controller-extraction-and-evidence-v1",
+  "acceptedDevelop": "90edc52530caa71efdebf257f17d954a8a629ea0",
+  "heads": {
+    "75": "ec4a3a18785513d8016047a9a416c42ca9b2faa4",
+    "80": "25a73a3fdf5046c8ed682001458d5fda46bb3c59"
+  },
+  "sourceDigestsIndependentlyVerified": {
+    "90edc52530caa71efdebf257f17d954a8a629ea0": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+    "ec4a3a18785513d8016047a9a416c42ca9b2faa4": "2c90810d2d4051d2ef7dab818312b3ea6c1622619846c9eff728ecdf3b97c981",
+    "25a73a3fdf5046c8ed682001458d5fda46bb3c59": "257c603e417ec491b04ae911688c319bb9b60aa9ab9845f77147f562482b0f3d"
+  },
+  "publishedEvidenceHashesVerified": [
+    {
+      "path": "scripts/diag/coverage-run-support.mjs",
+      "sha256": "7f04b61378663269199fb155eb9eeef39ce5338bb9b6a7aa6fddf7e990a2e812",
+      "independentlyVerified": true
+    },
+    {
+      "path": "scripts/diag/coverage-run-support-review.py",
+      "sha256": "6a5f4661a215065854e4df7a6822a5cd8c7fc56f14c299fa88fcf6db7d3dcc87",
+      "independentlyVerified": true
+    },
+    {
+      "path": "test/coverage-run-support.test.ts",
+      "sha256": "e0f5270c6098c9de954a549c251d025aab816d1b59922e46d7a23eefa560efd8",
+      "independentlyVerified": true
+    },
+    {
+      "path": "data/reviews/current/coverage-run-support-review.json",
+      "sha256": "07ef8a4d77b1c340ce197181714cd6b0d7e8184919ab932167bf98eb30fe6e69",
+      "independentlyVerified": true
+    }
+  ],
+  "inputHashVerified": {
+    "fetchCommit": "4cf253efead2cac450abe0bc74aa5e0db0306126",
+    "gitPath": "test/fixtures/rb-local-traffic.json.gz",
+    "localPath": "out/coverage-run-support/flex-inputs.json.gz",
+    "sha256": "10454c0f5e735e683e208597a3f009e0a11d65197c73a6b6bc80cd03ef79ecc0",
+    "plays": [
+      45,
+      19
+    ]
+  },
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagsCount": 44,
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "pr75FocusedReceipt": {
+    "url": "https://github.com/tannerthardy/football-simulation-/blob/ec4a3a18785513d8016047a9a416c42ca9b2faa4/data/reviews/current/man-recognition-contract/focused.json",
+    "testedCommit": "3fb93bdc562b9fbc92e711db41b2c4c54d6ac022",
+    "trackedChanges": [
+      "test/back-man-run-fit.test.ts"
+    ],
+    "sourceMatchesPublishedHead": true,
+    "checks": 44,
+    "seconds": 1.953140604,
+    "limit": "Focused receipt includes dirty reconciled test; exact published tests are included in the new frozen combined verification."
+  },
+  "pr80Evidence": {
+    "url": "https://github.com/tannerthardy/football-simulation-/blob/25a73a3fdf5046c8ed682001458d5fda46bb3c59/data/reviews/current/coverage-run-support-receipts.json",
+    "testedCheckout": "1df12c14877d889fcf440b4c27b3c6c77b2b85af",
+    "trackedChanges": [
+      "src/sim/coverage/defender.ts"
+    ],
+    "focused": {
+      "checks": 53,
+      "files": 3,
+      "pass": true
+    },
+    "nativeExecutionsReused": 8,
+    "rawTraceBytesIndependentlyAvailable": false,
+    "limit": "Published operators, input, report hashes and embedded receipts verified; do not claim direct access to author-local native traces. No native rerun."
+  },
+  "excluded": [
+    "#76",
+    "#81 runtime/diagnostic tooling",
+    "parked P045 variants",
+    "observation transport",
+    "navigation trials",
+    "experimental Physics"
+  ],
+  "newTestsRun": 0,
+  "newNativeExecutions": 0,
+  "reviewSupportDelta": [
+    {
+      "pr": 75,
+      "reviewedPriorHead": "ec4a3a18785513d8016047a9a416c42ca9b2faa4",
+      "updatedHead": "43ac5e1835467cbc0914df0df1c82ea74740d1b4",
+      "productionSettingsToolingUnchanged": true,
+      "test": "test/back-man-run-fit.test.ts",
+      "testSha256": "3f4b7a0b89710f74f8e3dd45238015dad3132cf658ca149c1492b7a4d2b07e77",
+      "focusedChecks": 38,
+      "focusedSeconds": 1.927897549,
+      "publishedReceiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/43ac5e1835467cbc0914df0df1c82ea74740d1b4/data/reviews/current/man-recognition-contract/review-support.json",
+      "testedDirtyFiles": [
+        "test/back-man-run-fit.test.ts"
+      ],
+      "limits": []
+    },
+    {
+      "pr": 80,
+      "reviewedPriorHead": "25a73a3fdf5046c8ed682001458d5fda46bb3c59",
+      "updatedHead": "0fce2a085ea9f28cbaac65a388b7d3220c36e6d8",
+      "productionSettingsToolingUnchanged": true,
+      "test": "test/coverage-run-support.test.ts",
+      "testSha256": "01c10434d17c51c78556d40f2a18848e9a4d42def024bc3137d4b868fc898769",
+      "focusedChecks": 11,
+      "focusedSeconds": 2.019055678,
+      "publishedReceiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/0fce2a085ea9f28cbaac65a388b7d3220c36e6d8/data/reviews/current/coverage-run-support-review-support.json",
+      "testedDirtyFiles": [
+        "test/coverage-run-support.test.ts"
+      ],
+      "limits": [
+        "Sampling expiry via advancing history, not gaze/occlusion confidence expiry.",
+        "No arbitrary TTL/new persistence policy introduced.",
+        "Original unfinished runs/adverse geometry unchanged.",
+        "No new behavior or mesh-spacing work.",
+        "Combined verification belongs to Integration."
+      ]
+    }
+  ],
+  "currentHeads": {
+    "75": "43ac5e1835467cbc0914df0df1c82ea74740d1b4",
+    "80": "0fce2a085ea9f28cbaac65a388b7d3220c36e6d8"
+  },
+  "integrationTestOrderingCorrection": {
+    "file": "test/coverage-run-support.test.ts",
+    "reason": "Independent delta review found expected playBall could set onBall before assertion. Store actual update command, assert tag first, then compare expected command.",
+    "productionChanged": false,
+    "newTestScenario": false,
+    "independentReview": "review-support-delta.json",
+    "newFocusedRerun": false,
+    "verification": "Included in the one exact combined verification."
+  }
+}

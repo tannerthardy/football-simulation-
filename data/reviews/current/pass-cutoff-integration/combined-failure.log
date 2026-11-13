@@ -1,0 +1,246 @@
+Profile candidate: run-game-2026-10-13, commit be6225436498a43d8d98437a69069434e51565aa, source 1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7
+Running npm run typecheck
+
+> gridiron-engine@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Running npm run build
+
+> gridiron-engine@0.1.0 build
+> tsc -p tsconfig.json
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Running npm run test:all
+
+> gridiron-engine@0.1.0 test:all
+> vitest run --maxWorkers=1
+
+
+ RUN  v3.2.4 /workspace/football-pass-cutoff-review
+
+ ✓ |integration| test/integration/game-record.test.ts (3 tests) 67181ms
+   ✓ official record of a full game > box-score plays and third downs agree with the official log, seed 21  19842ms
+   ✓ official record of a full game > box-score plays and third downs agree with the official log, seed 22  17332ms
+   ✓ official record of a full game > replay recording preserves the same full game > is reproducible, with or without replay recording  15239ms
+ ✓ |integration| test/integration/recognition-panel.test.ts (2 tests) 18147ms
+   ✓ reading run and pass > anticipates from the situation: pass reads come sooner on 3rd and long, run reads later  12312ms
+   ✓ reading run and pass > play action fools linebackers when they expect run, not on 3rd and long  5833ms
+ ✓ |research| test/research/grip-refinement-observer.test.ts (5 tests) 5864ms
+   ✓ loaded-grip diagnostic records without changing the simulation > tests the proposed held flow against the achieved-motion gravity solution  1041ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'center', side 1  1444ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'center', side -1  1177ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'patch', side 1  1130ms
+   ✓ loaded-grip diagnostic records without changing the simulation > preserves execution and RNG: 'patch', side -1  1070ms
+ ✓ |integration| test/integration/coverage-panel.test.ts (1 test) 4887ms
+   ✓ zone technique > match hook defenders carry the seams; spot droppers sink to their landmark and watch the QB  4886ms
+ ✓ |integration| test/integration/protection-panel.test.ts (1 test) 2961ms
+   ✓ pass protection > blocks the edge rushers instead of shadowing their arc  2960ms
+ ✓ |research| test/research/recovery-phase-world.test.ts (20 tests) 2320ms
+   ✓ recovery candidate physical controls and rejected negative control > phase retains ordinary frontal physical tackles and mirrors  786ms
+   ✓ recovery candidate physical controls and rejected negative control > phase-timing retains ordinary frontal physical tackles and mirrors  453ms
+ ✓ |core| test/combo-attention.test.ts (20 tests) 1699ms
+   ✓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift 0  633ms
+   ✓ joined pair proposals resolve before ordinary movement > resolves an equal-cost surface consistently and honors a real cost advantage, backer shift -0.5  604ms
+ ✓ |research| test/research/continued-recovery-world.test.ts (5 tests) 1782ms
+   ✓ continued response shares achieved World placement and physical budgets > retains an ordinary frontal physical tackle, side=1  696ms
+   ✓ continued response shares achieved World placement and physical budgets > retains an ordinary frontal physical tackle, side=-1  575ms
+ ❯ |core| test/replay-telemetry.test.ts (6 tests | 1 failed) 2144ms
+   ✓ observational replay recording > light, standard and full preserve pass physics, results, event decisions and RNG  1308ms
+   ✓ observational replay recording > light, standard and full preserve run physics, results, event decisions and RNG  392ms
+   × observational replay recording > stores copied source state and only existing coverage choices, with unavailable causes explicit 57ms
+     → expected false to be true // Object.is equality
+   ✓ observational replay recording > does not keep rich state when recording is off, even with a full request 2ms
+   ✓ observational replay recording > coverage rule inspection copies consumed keys and preserves the play and RNG  373ms
+   ✓ observational replay recording > records staged pre-snap commands without changing movement and replaces the staged snap frame 10ms
+ ✓ |core| test/defensive-call-integrity.test.ts (9 tests) 1237ms
+   ✓ automatic defensive call installation guards > automatic callers preserve resolved deep jobs and actual pressure participants across situations and coaching trees  1201ms
+ ✓ |core| test/export-comparison-metadata.test.ts (8 tests) 1278ms
+ ✓ |core| test/roster-screen.test.ts (7 tests) 1351ms
+   ✓ bounded roster screen and evidence reuse > enforces tick-boundary budgets without changing native execution or RNG  602ms
+   ✓ bounded roster screen and evidence reuse > reports the expensive audit bill without executing it  705ms
+ ✓ |core| test/qb-rusher-recording.test.ts (5 tests) 1183ms
+   ✓ recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness  852ms
+ ✓ |core| test/carrier-recovery-cue.test.ts (10 tests) 1085ms
+   ✓ carrier recovery is a bounded visible-pose estimate > observes finite decisions without changing either fixed native run  1032ms
+ ✓ |core| test/held-recovery.test.ts (17 tests) 844ms
+ ✓ |core| test/zone-helper-check.test.ts (22 tests) 892ms
+ ✓ |core| test/coverage-rules.test.ts (11 tests) 885ms
+ ✓ |core| test/run-system.test.ts (26 tests) 679ms
+   ✓ functional contact and pre-snap motion > retains legal unfinished stem positions, momentum and negative replay frames  587ms
+ ✓ |core| test/shotgun-exchange.test.ts (5 tests) 762ms
+   ✓ saved shotgun exchange coordination > P069 preserves its complete current-source trajectory against only the cadence rollback  638ms
+ ✓ |core| test/run-shed.test.ts (2 tests) 689ms
+   ✓ a run shed is a decision the body executes > defenders try to get off blocks near the runner, and no roll frees them, flip=false  348ms
+   ✓ a run shed is a decision the body executes > defenders try to get off blocks near the runner, and no roll frees them, flip=true  340ms
+ ✓ |core| test/world-physics.test.ts (27 tests) 661ms
+ ✓ |core| test/scenario-pack.test.ts (4 tests) 782ms
+   ✓ scenario pack: physical contracts and mirror symmetry > approach tackle, front and side  315ms
+   ✓ scenario pack: physical contracts and mirror symmetry > redirect, seal and squeeze keep the contracts on both sides of the field  336ms
+ ✓ |core| test/schematic-stress.test.ts (9 tests) 674ms
+   ✓ native schematic stress installation and measurement contracts > recording and consumed-read instrumentation preserve the complete native physical result and RNG  545ms
+ ✓ |core| test/motion-contact.test.ts (9 tests) 432ms
+ ✓ |core| test/combo-transfer.test.ts (22 tests) 451ms
+ ✓ |core| test/bounded-attachment-world.test.ts (11 tests) 548ms
+ ✓ |core| test/lower-grip-angular-transfer.test.ts (61 tests) 486ms
+ ✓ |core| test/roster-review.test.ts (5 tests) 468ms
+   ✓ saved-result behavioral review has no outcome promotion rule > CLI only reads saved results, recomputes comparisons and refuses to overwrite a filled review  446ms
+ ✓ |core| test/redirect-protection.test.ts (2 tests) 449ms
+   ✓ redirect mirrors the installed protection after the original contact ends > preserves post-shed targets and requests with center hands  303ms
+ ✓ |core| test/tackle-support-choice.test.ts (20 tests) 469ms
+ ✓ |core| test/grasp-angular-transfer.test.ts (51 tests) 413ms
+ ✓ |core| test/baseline-runner.test.ts (5 tests) 366ms
+ ✓ |core| test/pass-cutoff-approach.test.ts (4 tests) 313ms
+ ✓ |core| test/run-contact-technique.test.ts (9 tests) 338ms
+ ✓ |core| test/wrap-binding.test.ts (30 tests) 398ms
+ ✓ |research| test/research/spatial-ground.test.ts (9 tests) 357ms
+ ✓ |core| test/snap-mesh-and-pull.test.ts (12 tests) 304ms
+ ✓ |core| test/cutoff-surface.test.ts (17 tests) 313ms
+ ✓ |core| test/pull-fit-plan.test.ts (12 tests) 304ms
+ ✓ |core| test/reach-contact.test.ts (18 tests) 265ms
+ ✓ |research| test/research/spatial-sole-events.test.ts (11 tests) 263ms
+ ✓ |core| test/run-job-exchange.test.ts (24 tests) 263ms
+ ✓ |core| test/incidental-catch-readiness.test.ts (13 tests) 285ms
+ ✓ |research| test/research/inertial-gait.test.ts (9 tests) 267ms
+ ✓ |core| test/hand-comoving.test.ts (11 tests) 225ms
+ ✓ |core| test/loose-ball-recovery.test.ts (15 tests) 249ms
+ ✓ |core| test/run-contact-flow.test.ts (23 tests) 296ms
+ ✓ |core| test/virtual-foot.test.ts (6 tests) 262ms
+ ✓ |core| test/traffic-turning.test.ts (12 tests) 215ms
+ ✓ |core| test/zone-track.test.ts (5 tests) 258ms
+ ✓ |research| test/research/vertical-support.test.ts (11 tests) 205ms
+ ✓ |research| test/research/spatial-sole-traction.test.ts (10 tests) 212ms
+ ✓ |core| test/pass-contact.test.ts (6 tests) 140ms
+ ✓ |core| test/pursuit-contact.test.ts (21 tests) 235ms
+ ✓ |core| test/run-block-fit.test.ts (22 tests) 219ms
+ ✓ |core| test/grasp-world.test.ts (13 tests) 223ms
+ ✓ |core| test/tackle-touch.test.ts (8 tests) 168ms
+ ✓ |core| test/contact-motion.test.ts (14 tests) 146ms
+ ✓ |research| test/research/continued-recovery.test.ts (16 tests) 177ms
+ ✓ |core| test/run-force-ownership.test.ts (36 tests) 172ms
+ ✓ |core| test/tackle-window.test.ts (28 tests) 153ms
+ ✓ |core| test/approach-control.test.ts (19 tests) 164ms
+ ✓ |core| test/helper-fit.test.ts (12 tests) 163ms
+ ✓ |core| test/run-contact-track.test.ts (6 tests) 161ms
+ ✓ |research| test/research/spatial-support.test.ts (8 tests) 174ms
+ ✓ |core| test/chase-arrival.test.ts (12 tests) 177ms
+ ✓ |core| test/actuation.test.ts (9 tests) 176ms
+ ✓ |core| test/run-hand-control.test.ts (14 tests) 153ms
+ ✓ |core| test/draw-presentation.test.ts (28 tests) 160ms
+ ✓ |core| test/back-man-run-fit.test.ts (33 tests) 182ms
+ ✓ |core| test/contact-height.test.ts (4 tests) 152ms
+ ✓ |core| test/contact-choice.test.ts (6 tests) 117ms
+ ✓ |core| test/run-anchor.test.ts (1 test) 127ms
+ ✓ |core| test/game-rules.test.ts (30 tests) 113ms
+ ✓ |core| test/defensive-awareness-contact.test.ts (20 tests) 124ms
+ ✓ |core| test/run-base.test.ts (15 tests) 161ms
+ ✓ |core| test/in-stride-catch.test.ts (4 tests) 124ms
+ ✓ |core| test/press-contact.test.ts (15 tests) 138ms
+ ✓ |core| test/spacing-yield.test.ts (8 tests) 116ms
+ ✓ |core| test/run-execution.test.ts (17 tests) 124ms
+ ✓ |core| test/run-technique.test.ts (19 tests) 113ms
+ ✓ |research| test/research/vertical-series-support.test.ts (9 tests) 117ms
+ ✓ |core| test/zone-reach.test.ts (18 tests) 107ms
+ ✓ |core| test/hand-force-point.test.ts (35 tests) 116ms
+ ✓ |core| test/run-combo-retarget.test.ts (17 tests) 111ms
+ ✓ |core| test/visible-help.test.ts (13 tests) 101ms
+ ✓ |research| test/research/spatial-sole-compliance.test.ts (7 tests) 97ms
+ ✓ |core| test/movement-preview.test.ts (18 tests) 61ms
+ ✓ |core| test/filtered-follow.test.ts (4 tests) 93ms
+ ✓ |core| test/tackle-wait-constraints.test.ts (13 tests) 93ms
+ ✓ |core| test/edge-fit-approach.test.ts (15 tests) 75ms
+ ✓ |core| test/delayed-possession.test.ts (14 tests) 84ms
+ ✓ |core| test/gait-facing-contract.test.ts (12 tests) 57ms
+ ✓ |research| test/research/finite-support.test.ts (14 tests) 77ms
+ ✓ |core| test/hand-angular-transfer.test.ts (8 tests) 62ms
+ ✓ |core| test/long-yardage-run.test.ts (5 tests) 75ms
+ ✓ |core| test/catch-phase-control.test.ts (7 tests) 67ms
+ ✓ |core| test/carrier-boundary.test.ts (6 tests) 65ms
+ ✓ |core| test/hand-force-integration.test.ts (4 tests) 62ms
+ ✓ |core| test/combination-ownership.test.ts (10 tests) 80ms
+ ✓ |core| test/coverage-judgment.test.ts (9 tests) 69ms
+ ✓ |core| test/strike-force-integration.test.ts (4 tests) 75ms
+ ✓ |core| test/puller-target-read.test.ts (10 tests) 47ms
+ ✓ |core| test/coverage-mechanics.test.ts (16 tests) 57ms
+ ✓ |core| test/qb-memory-awareness.test.ts (14 tests) 49ms
+ ✓ |research| test/research/sole-contact.test.ts (14 tests) 40ms
+ ✓ |core| test/projected-cap.test.ts (21 tests) 61ms
+ ✓ |core| test/man-cushion-compression.test.ts (10 tests) 48ms
+ ✓ |core| test/traffic-control.test.ts (3 tests) 45ms
+ ✓ |core| test/recognition.test.ts (10 tests) 44ms
+ ✓ |core| test/coverage-flat-responsibility.test.ts (13 tests) 49ms
+ ✓ |core| test/catch-reach.test.ts (2 tests) 34ms
+ ✓ |core| test/roster-audit.test.ts (4 tests) 35ms
+ ✓ |core| test/pass-installation.test.ts (6 tests) 43ms
+ ✓ |core| test/live-gaps.test.ts (6 tests) 38ms
+ ✓ |core| test/carrier-decision-cadence.test.ts (6 tests) 41ms
+ ✓ |core| test/grasp-reel-travel.test.ts (9 tests) 38ms
+ ✓ |core| test/run-read-approach.test.ts (3 tests) 44ms
+ ✓ |core| test/downfield-contact-rejection.test.ts (2 tests) 40ms
+ ✓ |core| test/mind.test.ts (8 tests) 38ms
+ ✓ |core| test/stalk-ledger.test.ts (8 tests) 29ms
+ ✓ |core| test/contact-angular-transfer.test.ts (6 tests) 27ms
+ ✓ |research| test/research/material-plane.test.ts (12 tests) 23ms
+ ✓ |core| test/protection.test.ts (1 test) 29ms
+ ✓ |core| test/rise-yaw-budget.test.ts (8 tests) 21ms
+ ✓ |research| test/research/inertial-support.test.ts (20 tests) 26ms
+ ✓ |core| test/physics.test.ts (10 tests) 26ms
+ ✓ |core| test/impact-timing.test.ts (3 tests) 19ms
+ ✓ |research| test/research/recovery-phase.test.ts (11 tests) 18ms
+ ✓ |core| test/yaw-response.test.ts (25 tests) 16ms
+ ✓ |core| test/alignment.test.ts (10 tests) 16ms
+ ✓ |research| test/research/material-rigid.test.ts (11 tests) 14ms
+ ✓ |core| test/constraint-work.test.ts (5 tests) 15ms
+ ✓ |core| test/yaw-motor.test.ts (5 tests) 14ms
+ ✓ |research| test/research/sole-shear.test.ts (15 tests) 12ms
+ ✓ |core| test/determinism.test.ts (2 tests) 15ms
+ ✓ |core| test/replay-telemetry-packing.test.ts (2 tests) 10ms
+ ✓ |core| test/replay-export.test.ts (21 tests) 10ms
+ ✓ |core| test/bounded-attachment.test.ts (8 tests) 8ms
+ ✓ |core| test/schematic-stress-export.test.ts (4 tests) 5ms
+ ✓ |research| test/research/leg-compliance.test.ts (8 tests) 5ms
+ ✓ |core| test/departed-center-gap.test.ts (3 tests) 4ms
+ ✓ |core| test/contact-anatomy.test.ts (8 tests) 5ms
+ ✓ |core| test/mechanics-export.test.ts (3 tests) 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/replay-telemetry.test.ts > observational replay recording > stores copied source state and only existing coverage choices, with unavailable causes explicit
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/replay-telemetry.test.ts:55:45
+     53|     for (const decision of before) {
+     54|       const b = sim.agents[decision.a].behavior;
+     55|       expect(b instanceof CoverageDefender).toBe(true);
+       |                                             ^
+     56|       expect((b as CoverageDefender).history).toContainEqual({ t: deci…
+     57|       expect(decision.cue).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 143 passed (144)
+      Tests  1 failed | 1723 passed (1724)
+   Start at  20:01:13
+   Duration  172.75s (transform 3.26s, setup 0ms, collect 13.38s, tests 137.12s, environment 24ms, prepare 7.58s)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/pass-cutoff-review/combined.json; exit 1

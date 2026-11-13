@@ -72,6 +72,55 @@ describe('defensive alignment', () => {
   it('pressures add rushers', () => {
     const off = alignOffense(FORMATION_BY_ID.gun_doubles_11, false, 40, 26.67);
     const d = alignDefense(call('over', 'cover0', 'nickel', 'zero_6'), off, slotsFor('nickel'));
-    expect(d.rushers.length).toBe(7);
+    expect(d.rushers.length).toBe(6);
+    const targets=new Set(Object.values(d.spots).map(s=>s!.manTarget));
+    for(const slot of ['X','Z','H','Y','RB'])expect(targets.has(slot as never)).toBe(true);
+  });
+
+  it('a disguised shadow trades outside receivers and keeps each marker on his man side',()=>{
+    const off=alignOffense(FORMATION_BY_ID.ace_11,false,40,HASH_LEFT_Y);
+    const actual={...call('under','cover1','nickel'),shown:COVERAGE_BY_ID.cover6};
+    const d=alignDefense(actual,off,slotsFor('nickel'),{overrides:{CB_S:'X'}});
+    expect(d.spots.CB_S!.manTarget).toBe('X');
+    expect(d.spots.CB_W!.manTarget).toBe('Z');
+    for(const spot of Object.values(d.spots)){
+      if(spot!.role.kind!=='man'||!spot!.manTarget)continue;
+      expect(Math.abs(spot!.pos.y-off.spots[spot!.manTarget].pos.y)).toBeLessThan(1);
+    }
+  });
+
+  it('zero blitz retains all five eligible matchups against spread and heavy formations',()=>{
+    for(const formation of ['gun_trips_11','gun_empty_11','i_pro_21'])for(const personnel of ['base43','nickel'] as const){
+      const off=alignOffense(FORMATION_BY_ID[formation],false,40,HASH_LEFT_Y);
+      const d=alignDefense({...call('over','cover0',personnel,'zero_6'),shown:COVERAGE_BY_ID.cover2},off,slotsFor(personnel),{overrides:{CB_S:'X'}});
+      const covered=new Set(Object.values(d.spots).map(s=>s!.manTarget));
+      for(const receiver of Object.keys(off.refOf))expect(covered.has(receiver as never)).toBe(true);
+      expect(d.rushers.length).toBe(6);
+    }
+  });
+
+  it('man pressure replaces optional low help or a bracket with the vacated assignment',()=>{
+    const off=alignOffense(FORMATION_BY_ID.gun_doubles_11,false,40,HASH_LEFT_Y);
+    for(const coverage of ['cover1','cover1_off','cover1_robber','cover1_double'])for(const pressure of ['mike_a','will_b','nickel_edge']){
+      const d=alignDefense(call('over',coverage,'nickel',pressure),off,slotsFor('nickel'));
+      const covered=new Set(Object.values(d.spots).map(s=>s!.manTarget));
+      for(const receiver of Object.keys(off.refOf))expect(covered.has(receiver as never)).toBe(true);
+      expect(d.spots.FS!.zone).toBe('deep_mid');expect(d.rushers.length).toBe(5);
+    }
+    expect(PRESSURE_BY_ID.double_a.coverages).not.toContain('cover1');
+  });
+
+  it('odd fronts budget edge drops to retain eligible matchups and called deep help',()=>{
+    const off=alignOffense(FORMATION_BY_ID.gun_empty_11,false,40,HASH_LEFT_Y);
+    for(const [coverage,pressure,rushers] of [['cover0','zero_6',6],['cover1','mike_a',5],['cover2man',undefined,4]] as const){
+      const d=alignDefense(call('tite',coverage,'base34',pressure),off,slotsFor('base34'));
+      const covered=new Set(Object.values(d.spots).map(s=>s!.manTarget));
+      for(const receiver of Object.keys(off.refOf))expect(covered.has(receiver as never)).toBe(true);
+      expect(d.rushers.length).toBe(rushers);
+      if(coverage==='cover1')expect(d.spots.FS!.zone).toBe('deep_mid');
+      if(coverage==='cover2man'){
+        expect(d.spots.FS!.zone).toBe('deep_half_w');expect(d.spots.SS!.zone).toBe('deep_half_s');
+      }
+    }
   });
 });

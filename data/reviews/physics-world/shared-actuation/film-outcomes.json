@@ -1,0 +1,123 @@
+{
+  "sourceSha256": "e0ecd30f2c6c160f463f1fbbdeef599b0956587ec61f0e74ab24a222e3041a18",
+  "filmSha256": "136054e30ffa278dd0c9b62768db0df73011dab7b55c90fa8d39f6a865340b34",
+  "cohort": {
+    "games": 6,
+    "seeds": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "includedPlays": 749,
+    "excludedNullified": 96,
+    "note": "Fixed film teams; not the independently generated league cohort used by calibrate.ts. Explosive pass-play denominator includes sacks and scrambles; explosive completion denominator is throws."
+  },
+  "definitions": {
+    "success": "At least 40% of yards to go on first down, 60% on second, 100% on third/fourth; nullified plays and kneels excluded.",
+    "pressure": "Recorded defender within 2 yards before throw; association only."
+  },
+  "pass": {
+    "plays": 551,
+    "explosiveYardsThreshold": 20,
+    "explosive": {
+      "count": 97,
+      "denominator": 551,
+      "percent": 17.604355716878402
+    },
+    "success": {
+      "count": 256,
+      "denominator": 551,
+      "percent": 46.46098003629764
+    },
+    "successByDown": {
+      "1": {
+        "count": 132,
+        "denominator": 241,
+        "percent": 54.77178423236514
+      },
+      "2": {
+        "count": 83,
+        "denominator": 180,
+        "percent": 46.111111111111114
+      },
+      "3": {
+        "count": 39,
+        "denominator": 124,
+        "percent": 31.451612903225808
+      },
+      "4": {
+        "count": 2,
+        "denominator": 6,
+        "percent": 33.333333333333336
+      }
+    }
+  },
+  "run": {
+    "plays": 198,
+    "explosiveYardsThreshold": 10,
+    "explosive": {
+      "count": 12,
+      "denominator": 198,
+      "percent": 6.0606060606060606
+    },
+    "success": {
+      "count": 48,
+      "denominator": 198,
+      "percent": 24.242424242424242
+    },
+    "successByDown": {
+      "1": {
+        "count": 29,
+        "denominator": 119,
+        "percent": 24.369747899159663
+      },
+      "2": {
+        "count": 12,
+        "denominator": 53,
+        "percent": 22.641509433962263
+      },
+      "3": {
+        "count": 5,
+        "denominator": 20,
+        "percent": 25.0
+      },
+      "4": {
+        "count": 2,
+        "denominator": 6,
+        "percent": 33.333333333333336
+      }
+    }
+  },
+  "passingOutcomes": {
+    "throwsWithEvent": 491,
+    "counts": {
+      "completion": 320,
+      "other_incomplete": 108,
+      "interception": 27,
+      "drop": 19,
+      "pbu": 17
+    },
+    "withGeometricPressureBeforeThrow": {
+      "completion": 68,
+      "other_incomplete": 17,
+      "pbu": 4,
+      "drop": 5,
+      "interception": 3
+    },
+    "incompletionsExcludingInterceptions": 144,
+    "dropShareOfIncompletions": {
+      "count": 19,
+      "denominator": 144,
+      "percent": 13.194444444444445
+    },
+    "twentyYardCompletionsPerThrow": {
+      "count": 94,
+      "denominator": 491,
+      "percent": 19.144602851323828
+    },
+    "unclassifiedCauseNote": "Other incompletions cannot be separated into accuracy, pressure, mechanics or decision errors from these events. Pressure overlaps outcomes and does not establish causation."
+  }
+}

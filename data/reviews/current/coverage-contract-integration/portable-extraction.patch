@@ -1,0 +1,494 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index e02bd1b..7874ca4 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -213,7 +213,13 @@ export class ManCoverage implements Behavior {
+ 
+   update(a: Agent, sim: PlaySim): MoveCommand {
+     const R = this.target;
+-    if (sim.ball.kind === 'air') return playBall(a, sim, R);
++    if (sim.ball.kind === 'air') return playBall(a, sim, R, () => this.coverMan(a, sim));
++    return this.coverMan(a, sim);
++  }
++
++  /** An unrecognized throw does not erase the installed man technique. */
++  private coverMan(a: Agent, sim: PlaySim): MoveCommand {
++    const R = this.target;
+     const receiverCue = sim.see(a, R);
+     // A back carrying the ball will not look like a stalk blocker. A man
+     // marker who reads run and personally acquires that possession uses his
+@@ -734,10 +740,14 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+   return sim.t - sim.throwAt >= react;
+ }
+ 
+-export function playBall(a: Agent, sim: PlaySim, man: Agent | null): MoveCommand {
++export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
++  continueCoverage?: () => MoveCommand): MoveCommand {
+   const ball = sim.ball;
+   if (ball.kind !== 'air') return stand();
+   if (!sawThrow(a, sim, man)) {
++    // Use the same acquired route picture, leverage and technique until the
++    // defender recognizes the throw. Ball flight alone is hidden information.
++    if (continueCoverage) return continueCoverage();
+     // Haven't seen it yet: stay with the man / keep doing what we were doing.
+     if (man) {
+       const s = sim.see(a, man);
+diff --git a/src/sim/coverage/defender.ts b/src/sim/coverage/defender.ts
+index ddd0c89..ee0685d 100644
+--- a/src/sim/coverage/defender.ts
++++ b/src/sim/coverage/defender.ts
+@@ -8,7 +8,7 @@
+ import type { MoveCommand } from '../../physics/kinematics.js';
+ import type { Gap, MatchRule, ZoneId, ZoneStyle } from '../../playbook/types.js';
+ import type { Agent, Behavior } from '../agent.js';
+-import { ManCoverage, ZoneCoverage } from '../behaviors/defense.js';
++import { believesRun, ManCoverage, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
+ import type { PlaySim } from '../playsim.js';
+ import { ReleaseReader } from './reads.js';
+ import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
+@@ -22,6 +22,7 @@ export class CoverageDefender implements Behavior {
+   private readonly side: 'S' | 'W';
+   private sub: Behavior;
+   private subKey = '';
++  private supportRecorded = false;
+   /** What he is doing now, for film and diagnostics ("zone:hook_s", "man:Y", "trap:H"). */
+   job = '';
+   /** Every job he has taken this play, with the time he took it. */
+@@ -95,6 +96,28 @@ export class CoverageDefender implements Behavior {
+         detail: `Observed rule inputs: ${this.reader.recordedReads(sim.t).map(r => `${r.r.slot}=${r.release} at ${r.depth.toFixed(1)} yd`).join(', ') || 'none'}. Causal trigger is not exposed.` });
+       a.tags.add(`cov-${d.t}`);
+     }
++    // A match changes the receiver responsibility, not the installed run
++    // support. A personally acquired runner can still activate that support
++    // while the new man is a different receiver. Recheck belief and picture
++    // each tick; recognized flight retains the ordinary ball priority.
++    if (this.sub instanceof ManCoverage && believesRun(sim, a)
++      && (a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
++      && (sim.ball.kind !== 'air' || !sawThrow(a, sim, this.sub.target))) {
++      for (const back of sim.offense) {
++        if (!sim.offAlign.spots[back.slot]?.backfield
++          || (back.player.position !== 'RB' && back.player.position !== 'FB')) continue;
++        const cue = sim.see(a, back);
++        if (cue.carrying !== true) continue;
++        if (!this.supportRecorded) {
++          this.supportRecorded = true;
++          if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit',
++            chose: `keyed-fit:${back.slot}`, cue: `${back.slot} carrying=true in consumed picture; current run belief`,
++            options: [this.job, `keyed-fit:${back.slot}`],
++            detail: `Installed ${a.runFit.kind} ${a.runFit.gap}-gap side ${a.runFit.side} survives ${this.job}; picture age ${cue.age ?? 'unknown'} s. No live-possession confirmation.` });
++        }
++        return runFit(a, sim, this.gap, this.gapSign, { target: back, cue });
++      }
++    }
+     return this.sub.update(a, sim);
+   }
+ 
+diff --git a/test/back-man-run-fit.test.ts b/test/back-man-run-fit.test.ts
+index 108c750..9264fa5 100644
+--- a/test/back-man-run-fit.test.ts
++++ b/test/back-man-run-fit.test.ts
+@@ -9,7 +9,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
+ import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
+ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+ import type { Gap } from '../src/playbook/types.js';
+-import { ManCoverage, playBall } from '../src/sim/behaviors/defense.js';
++import { ManCoverage, playBall, sawThrow } from '../src/sim/behaviors/defense.js';
+ import { chase } from '../src/sim/behaviors/common.js';
+ import { PlaySim } from '../src/sim/playsim.js';
+ import type { Perceived } from '../src/sim/perception.js';
+@@ -243,8 +243,8 @@ describe('inside man players insert from their acquired back possession', () =>
+     expect(f.update()).toEqual(chase(expected.sim, expected.a, expected.r));
+   });
+ 
+-  it('lets the existing ball-in-flight technique own an old positive runner picture', () => {
+-    const f = stage(), expected = stage();
++  it.each([-1, 1])('retains acquired insertion until throw recognition then transfers to the ball, side=%s', side => {
++    const held = stage(true, side), f = stage(true, side), expected = stage(true, side);
+     for (const item of [f, expected]) {
+       item.sim.throwAt = 1.4;
+       item.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
+@@ -252,7 +252,19 @@ describe('inside man players insert from their acquired back possession', () =>
+         intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+       item.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
+     }
++    // The fixtures' old .20-second flight is still unrecognized. Hidden
++    // release does not cancel positive acquired possession and run belief.
++    expect(sawThrow(f.a, f.sim, f.r)).toBe(false);
++    expect(f.update()).toEqual(held.update());
++    expect(f.sim.rng).toEqual(held.sim.rng);
++    f.sim.throwAt = expected.sim.throwAt = .1;
++    for (const item of [f, expected]) {
++      item.a.tags.add('looking');
++      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
++    }
++    expect(sawThrow(f.a, f.sim, f.r)).toBe(true);
+     expect(f.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
++    expect(f.a.tags.has('onBall')).toBe(true);
+     expect(f.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
+   });
+ 
+@@ -369,7 +381,7 @@ describe('back man markers preserve their installed alley support instead of rec
+     expect(split.update()).toEqual(unknown.update());
+   });
+ 
+-  it('supports a known backfield FB without reading live possession, and lets an airborne ball retain ownership', () => {
++  it('supports a known backfield FB without reading live possession', () => {
+     const one = alleyStage(true, 1, 'run', 'F', 'i_pro_21'), two = alleyStage(true, 1, 'run', 'F', 'i_pro_21');
+     expect(one.r.player.position).toBe('FB');
+     expect(one.a.runFit!.kind).toBe('alley');
+@@ -379,7 +391,10 @@ describe('back man markers preserve their installed alley support instead of rec
+     two.r.body.pos = { x: 75, y: 2 }; two.r.body.vel = { x: -8, y: 0 };
+     expect(one.update()).toEqual(two.update());
+     expect(one.sim.rng.nextU32()).toBe(two.sim.rng.nextU32());
+-    const air = alleyStage(), expected = alleyStage();
++  });
++
++  it.each([-1, 1])('retains acquired alley support until throw recognition then transfers to the ball, side=%s', side => {
++    const held = alleyStage(true, side), air = alleyStage(true, side), expected = alleyStage(true, side);
+     for (const f of [air, expected]) {
+       f.sim.throwAt = 1.1;
+       f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
+@@ -387,7 +402,17 @@ describe('back man markers preserve their installed alley support instead of rec
+         intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+       f.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
+     }
++    expect(sawThrow(air.a, air.sim, air.r)).toBe(false);
++    expect(air.update()).toEqual(held.update());
++    expect(air.sim.rng).toEqual(held.sim.rng);
++    air.sim.throwAt = expected.sim.throwAt = .1;
++    for (const item of [air, expected]) {
++      item.a.tags.add('looking');
++      item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
++    }
++    expect(sawThrow(air.a, air.sim, air.r)).toBe(true);
+     expect(air.update()).toEqual(playBall(expected.a, expected.sim, expected.r));
++    expect(air.a.tags.has('onBall')).toBe(true);
+     expect(air.sim.rng.nextU32()).toBe(expected.sim.rng.nextU32());
+   });
+ 
+@@ -410,3 +435,38 @@ describe('back man markers preserve their installed alley support instead of rec
+     }
+   });
+ });
++
++describe('acquired back-man support has no private positive-picture latch', () => {
++  it.each(['insert', 'alley'] as const)('uses new sensing and contradictory belief after a positive %s choice', kind => {
++    for (const replacement of [null, undefined]) {
++      const f = kind === 'insert' ? stage() : alleyStage();
++      f.sim.see = PlaySim.prototype.see;
++      f.a.mind.observationDelay = () => .1;
++      f.a.eyes = { keys: [f.r], peripheral: .15 };
++      for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents, f.r.idx);
++      expect(f.sim.see(f.a, f.r).carrying).toBe(true);
++      const positive = f.update();
++      f.a.recog!.read = 'pass';
++      const pass = f.update();
++      expect(pass).not.toEqual(positive);
++      f.a.recog!.read = 'run';
++      expect(f.update()).toEqual(positive);
++
++      for (let i = 0; i < 3; i++) {
++        f.sim.t += f.sim.dt;
++        f.sim.perception.record(f.sim.agents, replacement);
++        const cue = f.sim.see(f.a, f.r);
++        const buffer = structuredClone(f.sim.perception), rng = structuredClone(f.sim.rng);
++        for (let j = 0; j < 4; j++) expect(f.sim.see(f.a, f.r)).toEqual(cue);
++        expect(f.sim.perception).toEqual(buffer);
++        expect(f.sim.rng).toEqual(rng);
++        expect(cue.carrying).toBe(i < 2 ? true : replacement === null ? false : null);
++        if (i < 2) f.update();
++      }
++      expect(f.a.recog!.read).toBe('run');
++      f.sim.ball = { kind: 'held', carrier: f.r };
++      expect(f.update()).toEqual(new ManCoverage(f.a, f.sim, f.r, false, 'B', 1).update(f.a, f.sim));
++      expect(f.sim.see(f.a, f.r).carrying).toBe(replacement === null ? false : null);
++    }
++  });
++});
+diff --git a/test/coverage-run-support.test.ts b/test/coverage-run-support.test.ts
+new file mode 100644
+index 0000000..4fdf271
+--- /dev/null
++++ b/test/coverage-run-support.test.ts
+@@ -0,0 +1,165 @@
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { World } from '../src/physics/world.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { CoverageDefender } from '../src/sim/coverage/defender.js';
++import { ManCoverage, playBall, runFit, sawThrow } from '../src/sim/behaviors/defense.js';
++import type { Perceived } from '../src/sim/perception.js';
++import type { Read } from '../src/sim/recognition.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++function stage(alley = false, side = 1, carrying: Perceived['carrying'] = true) {
++  const sim = new PlaySim({
++    offense: pickOffense(generateTeam(new Rng(31), 'O', 'OBS'), '11'),
++    defense: pickDefense(generateTeam(new Rng(32), 'D', 'DEF'), 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: side < 0, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover4, pressure: null, label: '' },
++    los: 40, ballY: 26, firstDownX: 50, seed: 3,
++  });
++  const a = sim.slot(alley ? 'FS' : 'LB_M')!, rb = sim.slot('RB')!, receiver = sim.slot('H')!;
++  a.body.pos = { x: alley ? 50 : 44, y: 26 + side * 2 };
++  a.body.vel = { x: 2, y: side * .2 }; a.body.facing = Math.PI;
++  a.runFit = { gap: 'B', side, kind: alley ? 'alley' : 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
++  a.recog!.read = 'run'; sim.t = 1.6;
++  let picture: Perceived = { pos: { x: 36.8, y: 26 + side }, vel: { x: 1.2, y: side * 1.85 },
++    facing: 0, stance: null, pose: 'up', carrying, age: .2 };
++  const see = sim.see.bind(sim);
++  sim.see = (observer, target, scale) => target === rb ? picture : see(observer, target, scale);
++  const behavior = new CoverageDefender(a, sim, 'q_apex', 'hook_s', 'match', 'B', side);
++  a.behavior = behavior;
++  let match = false;
++  // Control only the assignment boundary; native saved film establishes the
++  // natural rule change. The controller still consumes its own pictures.
++  behavior.judgment.decide = (_a, _s, _reader, primary) => match
++    ? { t: 'man', r: receiver, opts: { lev: 'inside' } } : primary;
++  return { sim, a, rb, receiver, behavior, picture: () => picture,
++    setPicture: (p: Perceived) => { picture = p; },
++    reassign: () => { match = true; }, update: () => behavior.update(a, sim) };
++}
++
++function flight(f: ReturnType<typeof stage>, recognized = false) {
++  f.sim.throwAt = recognized ? .1 : f.sim.t;
++  f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: 26, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
++    thrower: f.sim.qb, target: f.receiver, releaseT: f.sim.throwAt, releaseX: 35,
++    intended: { x: 46, y: 26, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
++  f.sim.ballPath = [{ t: 1.9, x: 46, y: 26, z: 1.2 }];
++}
++
++describe('installed support survives a coverage target replacement', () => {
++  it.each([-1, 1])('retains the acquired insertion after zone becomes man on another receiver, side=%s', side => {
++    const f = stage(false, side), expected = stage(false, side);
++    f.update(); expect(f.behavior.job.startsWith('zone:')).toBe(true); f.reassign();
++    expect(f.update()).toEqual(runFit(expected.a, expected.sim, 'B', side, { target: expected.rb, cue: expected.picture() }));
++    expect(f.behavior.job).toBe('man:H');
++    expect(f.behavior.target).toBe(f.receiver);
++    expect(f.a.runFit!.kind).toBe('insert');
++  });
++
++  it.each([-1, 1])('preserves the alley cap and achieved braking instead of becoming another insertion, side=%s', side => {
++    const f = stage(true, side), expected = stage(true, side);
++    f.reassign();
++    const command = f.update();
++    expect(command).toEqual(runFit(expected.a, expected.sim, 'B', side, { target: expected.rb, cue: expected.picture() }));
++    const initial = f.a.vel.x, report = new World([f.a.body]).step([command], .05);
++    expect(f.a.vel.x).toBeLessThan(initial);
++    expect(f.a.pos.x).toBeGreaterThan(f.sim.los + 4);
++    expect(f.a.body.support!.state).toBe('up');
++    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
++  });
++
++  it('uses acquired back information instead of hidden possession, body motion or call identity', () => {
++    const one = stage(), two = stage(); one.reassign(); two.reassign();
++    two.sim.ball = { kind: 'held', carrier: two.rb }; two.sim.handoffAt = .5; two.sim.isPass = false;
++    two.rb.body.pos = { x: 90, y: 2 }; two.rb.body.vel = { x: -8, y: 9 };
++    const buffer = structuredClone(two.sim.perception);
++    expect(one.update()).toEqual(two.update());
++    expect(one.sim.rng).toEqual(two.sim.rng);
++    expect(two.sim.perception).toEqual(buffer);
++  });
++
++  it('does not latch run belief or positive carrying after the current evidence changes', () => {
++    for (const read of ['pass', 'unsure'] as Read[]) {
++      const f = stage(), control = stage(); f.reassign(); control.reassign(); f.update();
++      f.a.recog!.read = control.a.recog!.read = read;
++      expect(f.update()).toEqual(new ManCoverage(control.a, control.sim, control.receiver, false, 'B', 1).update(control.a, control.sim));
++    }
++    for (const carrying of [false, null, undefined]) {
++      const f = stage(), control = stage(); f.reassign(); control.reassign(); f.update();
++      f.setPicture({ ...f.picture(), carrying }); control.setPicture({ ...control.picture(), carrying });
++      expect(f.update()).toEqual(control.update());
++    }
++  });
++
++  it.each([false, true])('expires positive support through advancing sensing snapshots, alley=%s', alley => {
++    for (const replacement of [null, undefined]) {
++      const f = stage(alley); f.reassign();
++      // Use the production buffer/query, not the factory's supplied RB cue.
++      // Keep belief fixed so only the acquired possession can cancel support.
++      f.sim.see = PlaySim.prototype.see;
++      f.a.mind.observationDelay = () => .1;
++      f.a.eyes = { keys: [f.rb], peripheral: .15 };
++      for (let i = 0; i < 24; i++) f.sim.perception.record(f.sim.agents, f.rb.idx);
++      expect(f.sim.see(f.a, f.rb).carrying).toBe(true);
++      f.update();
++
++      for (let i = 0; i < 3; i++) {
++        f.sim.t += f.sim.dt;
++        f.sim.perception.record(f.sim.agents, replacement);
++        const cue = f.sim.see(f.a, f.rb);
++        const buffer = structuredClone(f.sim.perception), rng = structuredClone(f.sim.rng);
++        for (let j = 0; j < 4; j++) expect(f.sim.see(f.a, f.rb)).toEqual(cue);
++        expect(f.sim.perception).toEqual(buffer);
++        expect(f.sim.rng).toEqual(rng);
++        // The original image survives the sensing latency, not a new query.
++        expect(cue.carrying).toBe(i < 2 ? true : replacement === null ? false : null);
++        if (i < 2) f.update();
++      }
++      expect(f.a.recog!.read).toBe('run');
++      // Hidden possession cannot restore an expired/unknown acquired picture.
++      f.sim.ball = { kind: 'held', carrier: f.rb };
++      const man = new ManCoverage(f.a, f.sim, f.receiver, false, 'B', 1, { lev: 'inside' });
++      expect(f.update()).toEqual(man.update(f.a, f.sim));
++      expect(f.sim.see(f.a, f.rb).carrying).toBe(replacement === null ? false : null);
++    }
++  });
++
++  it('retains acquired support through unrecognized flight, then recognized ball priority wins', () => {
++    for (const alley of [false, true]) {
++      const held = stage(alley), air = stage(alley), recognized = stage(alley);
++      for (const f of [held, air, recognized]) f.reassign();
++      flight(air); flight(recognized, true);
++      recognized.a.tags.add('looking');
++      recognized.sim.ballPath = [{ t: recognized.sim.t + .1,
++        x: recognized.a.pos.x - .2, y: recognized.a.pos.y, z: 1.2 }];
++      expect(sawThrow(air.a, air.sim, air.receiver)).toBe(false);
++      expect(air.update()).toEqual(held.update());
++      expect(sawThrow(recognized.a, recognized.sim, recognized.receiver)).toBe(true);
++      const actual = recognized.update();
++      expect(recognized.a.tags.has('onBall')).toBe(true);
++      expect(actual).toEqual(playBall(recognized.a, recognized.sim, recognized.receiver));
++    }
++  });
++
++  it('preserves vertical and PA responsibility without both run belief and affirmative carrying', () => {
++    for (const carrying of [false, null]) for (const read of ['run', 'pass', 'unsure'] as Read[]) {
++      const f = stage(false, 1, carrying), expected = stage(false, 1, carrying);
++      f.a.recog!.read = expected.a.recog!.read = read;
++      f.sim.offCall.pass = expected.sim.offCall.pass = PASS_BY_ID.pa_post_dig;
++      f.reassign();
++      expect(f.update()).toEqual(new ManCoverage(expected.a, expected.sim, expected.receiver, false, 'B', 1).update(expected.a, expected.sim));
++    }
++  });
++
++  it('does not redirect a force/cutback job or a back originally aligned out of the backfield', () => {
++    for (const kind of ['force', 'cutback'] as const) {
++      const f = stage(), expected = stage(); f.reassign(); f.a.runFit!.kind = expected.a.runFit!.kind = kind;
++      expect(f.update()).toEqual(new ManCoverage(expected.a, expected.sim, expected.receiver, false, 'B', 1).update(expected.a, expected.sim));
++    }
++    const f = stage(), expected = stage(); f.reassign();
++    f.sim.offAlign.spots.RB.backfield = expected.sim.offAlign.spots.RB.backfield = false;
++    expect(f.update()).toEqual(new ManCoverage(expected.a, expected.sim, expected.receiver, false, 'B', 1).update(expected.a, expected.sim));
++  });
++});
+diff --git a/test/man-throw-recognition.test.ts b/test/man-throw-recognition.test.ts
+new file mode 100644
+index 0000000..0e1119d
+--- /dev/null
++++ b/test/man-throw-recognition.test.ts
+@@ -0,0 +1,110 @@
++import { describe, expect, it } from 'vitest';
++import { Rng } from '../src/core/rng.js';
++import { World } from '../src/physics/world.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { ManCoverage, playBall, sawThrow, type ManOptions } from '../src/sim/behaviors/defense.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++function stage(air: boolean, opts: ManOptions = {}, press = false) {
++  const sim = new PlaySim({
++    offense: pickOffense(generateTeam(new Rng(171), 'O', 'OBS'), '11'),
++    defense: pickDefense(generateTeam(new Rng(172), 'D', 'DEF'), 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1_off, pressure: null, label: '' },
++    los: 40, ballY: 26, firstDownX: 50, seed: 19,
++  });
++  const r = sim.slot('X')!, d = sim.slot('CB_W')!;
++  r.body.pos = { x: 50, y: 33 }; r.body.vel = { x: 6, y: 0 };
++  d.body.pos = { x: press ? 50.8 : opts.trail ? 49.5 : 54, y: 33.5 };
++  d.body.vel = { x: 4, y: 0 }; d.body.facing = Math.PI;
++  d.recog!.read = 'pass';
++  const behavior = new ManCoverage(d, sim, r, press, 'C', 1, opts);
++  d.behavior = behavior;
++  const rp = { ...r.pos }, dp = { ...d.pos };
++  for (let i = 0; i < 24; i++) {
++    const age = (23 - i) * sim.dt;
++    r.body.pos = { x: rp.x - r.vel.x * age, y: rp.y };
++    d.body.pos = { x: dp.x - d.vel.x * age, y: dp.y };
++    sim.perception.record(sim.agents);
++  }
++  sim.t = 2;
++  if (air) release(sim, r);
++  return { sim, r, d, behavior };
++}
++
++function release(sim: PlaySim, r: PlaySim['offense'][number]) {
++  sim.throwAt = sim.t;
++  sim.ball = { kind: 'air', flight: { pos: { x: 40, y: 26, z: 2 }, vel: { x: 20, y: 0, z: 2 }, drag: 0 },
++    thrower: sim.qb, target: r, releaseT: sim.t, releaseX: 35, intended: { x: 55, y: 33, z: 1.2 },
++    arrivalT: sim.t + .8, deflected: false, throwaway: false };
++  sim.ballPath = [{ t: sim.t + .8, x: 55, y: 33, z: 1.2 }];
++}
++
++describe('man technique before acquired throw recognition', () => {
++  it.each([
++    ['off inside', {}, false], ['off outside', { lev: 'outside' }, false],
++    ['head up', { lev: 'head' }, false], ['press', { lev: 'outside' }, true],
++    ['trail with deep help', { trail: true }, false], ['over the top', { overTop: true }, false],
++  ] as const)('preserves %s requests and achieved movement when only hidden release changes', (_, opts, press) => {
++    const held = stage(false, opts, press), air = stage(true, opts, press);
++    const worlds = [held, air].map(s => new World([s.r.body, s.d.body]));
++    for (let i = 0; i < 2; i++) {
++      expect(sawThrow(air.d, air.sim, air.r)).toBe(false);
++      const commands = [held, air].map(s => s.behavior.update(s.d, s.sim));
++      expect(commands[1]).toEqual(commands[0]);
++      expect(air.behavior.recordedTechnique()).toEqual(held.behavior.recordedTechnique());
++      expect(air.sim.rng).toEqual(held.sim.rng);
++      for (const [j, s] of [held, air].entries()) {
++        worlds[j].step([{ vel: { x: 6, y: 0 } }, commands[j]], simDt);
++        s.sim.t += simDt; s.sim.perception.record(s.sim.agents);
++      }
++      expect(air.d.body).toEqual(held.d.body);
++    }
++  });
++
++  it('retains history and responds to acquired plants while the throw remains unrecognized', () => {
++    const held = stage(false, { overTop: true }), air = stage(false, { overTop: true });
++    const initial = stage(false, { overTop: true });
++    const initialCommand = initial.behavior.update(initial.d, initial.sim);
++    for (const s of [held, air]) {
++      const world = new World([s.r.body, s.d.body]);
++      // The plant develops through real movement and past sensing samples
++      // before either arm's hidden throw. Queries alone add no pictures.
++      for (let i = 0; i < 8; i++) {
++        world.step([{ vel: { x: 1, y: -2 } }, s.behavior.update(s.d, s.sim)], simDt);
++        s.sim.t += simDt; s.sim.perception.record(s.sim.agents);
++      }
++    }
++    release(air.sim, air.r);
++    expect(sawThrow(air.d, air.sim, air.r)).toBe(false);
++    const acquired = air.sim.see(air.d, air.r);
++    const rng = structuredClone(air.sim.rng), buffer = structuredClone(air.sim.perception);
++    air.r.body.pos = { x: 90, y: 2 }; air.r.body.vel = { x: 0, y: 9 };
++    air.r.body.facing = 2.5;
++    if (air.sim.ball.kind !== 'air') throw new Error('Expected flight');
++    air.sim.ball.target = air.sim.slot('H')!;
++    const changed = air.behavior.update(air.d, air.sim);
++    expect(changed).toEqual(held.behavior.update(held.d, held.sim));
++    expect(changed).not.toEqual(initialCommand);
++    expect(air.sim.see(air.d, air.r)).toEqual(acquired);
++    expect(air.sim.rng).toEqual(rng);
++    expect(air.sim.perception).toEqual(buffer);
++  });
++
++  it('switches to the unchanged attainable ball contest after recognition', () => {
++    const s = stage(true, { overTop: true });
++    s.sim.throwAt = 1;
++    s.d.tags.add('looking');
++    s.sim.ballPath = [{ t: 2.1, x: 53.8, y: 33.5, z: 1.2 }, { t: 2.8, x: 55, y: 33, z: 1.2 }];
++    expect(sawThrow(s.d, s.sim, s.r)).toBe(true);
++    const command = s.behavior.update(s.d, s.sim);
++    expect(command).toEqual(playBall(s.d, s.sim, s.r));
++    expect(s.d.tags.has('onBall')).toBe(true);
++    expect(command.vel.x).toBeLessThan(0);
++  });
++});
++
++const simDt = .05;

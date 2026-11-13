@@ -1,0 +1,56 @@
+{
+  "parentCommit": "fcafcafa3775719f770ae5a9800911eb07df44b0",
+  "finalSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "unchangedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "phases": [
+    {
+      "phase": "baseline",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "frozenArchive": "out/tackle-breakthrough/baseline-source",
+      "retainedInFinal": false,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    },
+    {
+      "phase": "arrival-v1",
+      "sourceSha256": "52b170997c8b9134431137dfd353c1722f1337460569c66bdb83d2235e2e2f79",
+      "frozenArchive": "out/tackle-breakthrough/common-v1.ts and withheld patch",
+      "retainedInFinal": false,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    },
+    {
+      "phase": "arrival-v2",
+      "sourceSha256": "66b5ce3e6ed1cbab4372cfe39e0ed19049fac26e586eae1007dfbd4c98801635",
+      "frozenArchive": "out/tackle-breakthrough/candidate-v2-source",
+      "retainedInFinal": true,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    },
+    {
+      "phase": "arrival-and-wait-v3",
+      "sourceSha256": "030e0f3fb252f4c63ecbb81c8c7544728a6c54b2fa91c5827689ea1fb6e7cdeb",
+      "frozenArchive": "out/tackle-breakthrough/candidate-v3-source",
+      "retainedInFinal": true,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    },
+    {
+      "phase": "coverage-v4",
+      "sourceSha256": "a1cca44e8d2b82c661a211de347e00bea3dd4b274dd0138657445e7135a3d7df",
+      "frozenArchive": "out/tackle-breakthrough/coverage-candidate-source",
+      "retainedInFinal": true,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    },
+    {
+      "phase": "coverage-release-latch",
+      "sourceSha256": "faec7725758d40f1e784833573b54857c6f779bd5b9fd8e1f6b82fffdcd7d159",
+      "frozenArchive": "out/tackle-breakthrough/coverage-latched-source",
+      "retainedInFinal": true,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    },
+    {
+      "phase": "final",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "frozenArchive": "out/tackle-breakthrough/final-source",
+      "retainedInFinal": true,
+      "scope": "Component mechanism evidence, not an independent final-engine result."
+    }
+  ]
+}

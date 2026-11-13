@@ -1,0 +1,142 @@
+{
+  "schema": "controller-checkpoint-author-review-v1",
+  "acceptedDevelop": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "contributorPR": 69,
+  "contributorCode": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+  "contributorPublication": "084122c16264962801fab963bcc35023d3104a64",
+  "actualBase": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "independentReview": {
+    "url": "https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6202748101",
+    "id": 6202748101,
+    "createdAt": "2026-10-15T21:33:50Z",
+    "body": "**Independent re-review: ACCEPT the bounded #69 controller correction. My private-engagement blocker in [6202205906](https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6202205906) is resolved; no remaining blocker in this reviewed scope.**\n\nReviewed controller/test **`cdd55b955421744ae6ba688de5f73ab87d13b8ab`**, evidence/head **`084122c16264962801fab963bcc35023d3104a64`**, runtime source **`cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a`**. This is a controller disposition, not merge or physics-promotion authority.\n\n**Production hook:** [blocking.ts:1110](https://github.com/tannerthardy/football-simulation-/blob/cdd55b955421744ae6ba688de5f73ab87d13b8ab/src/sim/behaviors/blocking.ts#L1110) removes the remote `target.engagement` gate. Installed original-check responsibility, acquired owner torso-loss/clearance, ordinary read cadence and the helper's own joint/contact eligibility remain. Changing the defender's private flag can no longer clear this held collection read merely through that gate. Ordinary physical `sim.engage` eligibility at1098\u20131102 remains separate and unchanged; this correction awards no hands.\n\n**Regression:** [collection-approach.test.ts:69](https://github.com/tannerthardy/football-simulation-/blob/cdd55b955421744ae6ba688de5f73ab87d13b8ab/test/collection-approach.test.ts#L69) calls public `RunBlocker.update` and uses a call-through spy on the original attack method. It covers both held-read identity and fresh selection with the private flag nonempty, while acquired pictures, own body and RNG stay fixed. The old source's expected failure changes a held brake into `(6.987817,-2.997026)`yd/s. Corrected choices stay equal; a newly delivered facing cue can still change the next ordinary read. The detached former-rep flag is an appropriate no-step information poison, not a claimed physically reacting continuation.\n\n**Compatible evidence reused, no duplicate campaign:** I independently verified all13 published artifact hashes and that the complete extraction equals the exact four-file diff. Offline comparison confirms all10 saved center/isolated-law cases retain exact bodies, requests, reports and events; native Under/Tite fingerprints and observer-neutral controls match. Collection geometry and the force/reach/torso/support/installed-side assertions are unchanged. Both isolated-law mirrors still acquire2.55/load2.60, retain usable upright contact through3.40 and remove25 former-owner impacts each. The genuinely obstructed C/RT control still executes finite braking over eight real World steps without impacts, manufactured hands or climb. Reuse the compatible64 focused passes/typecheck on cdd55b9; I ran zero tests and zero World steps for this review.\n\n**Limits retained:** collection witnesses park the runner. Their collected surface is demonstrated; live runner-arrival protection, yardage benefit, complete motion guarantees and global RunBlocker information correctness remain unproved. The three adjudicated #66-host failures, rejected variants, history/yaw/physics accuracy holds remain visible. This review does not reopen broader assignment/join/release consumers.\n\n**Integration:** current fetched accepted develop remains `8ca8deebe4afa91c3021bdd119bed8976cf00e47`, reconciled with #74's acceptance update6202634529. The supplied complete four-file extraction preserves #72 PassProtector and #74 carrier risk; its static application is not combined runtime verification. Integration owns the exact final composition/checks and subsequent adoption decision. Do not import the separate #66 context ancestry. Author repair evidence cost18.244548s, including expected-red; original47.417s evidence remains separately pinned.\n\n**#76 remains unchanged:** branch/head `codex/rb-local-traffic@4cf253efead2cac450abe0bc74aa5e0db0306126`, code2e1dfa3. No jukes, stepping-over, width change, navigation tuning, source edit or new campaign was added during this review."
+  },
+  "independentReviewBodySha256": "1f1110cd2d2cdb4f524cf29df36c060323e060159e5f7a3b852636cd67c955a0",
+  "reviewDisposition": "Accept bounded controller scope; production-hook information blocker resolved. No law/default promotion.",
+  "artifactHashesVerified": 39,
+  "completeExtractionEqualsExactReviewedFourFileDiff": true,
+  "extractedFiles": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/collection-approach.ts",
+    "test/collection-approach.test.ts",
+    "test/zone-helper-check.test.ts"
+  ],
+  "resultingCodeTreeBeforeMetadata": "cddd8ee326df33bf52fe3ff34e7d8ae18e466d06",
+  "resultingSourceSha256": "7ea3e00e2504271133a4384fbdbf1931e8ac8bf352861ee9e812f1372a0bf42b",
+  "acceptedPassProtectorPreserved": true,
+  "acceptedCarrierRiskPreserved": true,
+  "receipts": [
+    {
+      "name": "red",
+      "commit": "a159f82d4821f03082e5a110c190a5ef1396df60",
+      "sourceSha256": "f22dc431da3e62d1b94a5b156835282b111c4bab2aebf9bfba10f64b4a464a67",
+      "validationSha256": "c4b7e392892a5df7435c25565a36f120e0d5ff211077305218b96da6c7a6c8fa",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/collection-approach.test.ts",
+            "-t",
+            "production approach",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 1.3934244089999999
+        }
+      ],
+      "exitCode": 1
+    },
+    {
+      "name": "focused",
+      "commit": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+      "sourceSha256": "cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a",
+      "validationSha256": "c4b7e392892a5df7435c25565a36f120e0d5ff211077305218b96da6c7a6c8fa",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--project",
+            "core",
+            "test/collection-approach.test.ts",
+            "test/zone-helper-check.test.ts",
+            "test/run-block-fit.test.ts",
+            "test/run-combo-retarget.test.ts",
+            "--maxWorkers=1"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.412355421
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "typecheck",
+      "commit": "cdd55b955421744ae6ba688de5f73ab87d13b8ab",
+      "sourceSha256": "cf8d726d81b1d562fd4c2a959f3bff3ed9c3b0f60fcf2587481386db9394e08a",
+      "validationSha256": "c4b7e392892a5df7435c25565a36f120e0d5ff211077305218b96da6c7a6c8fa",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 10.171604056
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "law-controls",
+      "commit": "72cfe3d1f31159753e2b53286fc366a60bb17403",
+      "sourceSha256": "355d14b11d3f53e700689a9ed80d5e1cac01507f61d484da755f4becca642c47",
+      "validationSha256": "e4c8c3b3092c8c049fc960cff243f98a51a682bdbe1a49431d49e624ef0e6b03",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone/helper-contract-review.ts",
+            "out/collection-information/law-controls.json.gz",
+            "--collection-window"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.267164217
+        }
+      ],
+      "exitCode": 0
+    }
+  ],
+  "focusedChecksReused": 64,
+  "typecheckReused": true,
+  "offlineSavedScenarioParity": 10,
+  "contextSourceQualification": "The ten center/patch comparisons are pinned to the separate #66 context host; they are not relabeled as current-develop simulations or promoted physical law.",
+  "contributorRepairLauncherSeconds": 18.244548103,
+  "originalEvidenceLauncherSeconds": 47.417,
+  "newNativeReplays": 0,
+  "newGames": 0,
+  "adverseAndLimits": [
+    "Controlled collection runner remains parked; no native runner-arrival or yardage claim.",
+    "The counterfactual uses a detached real rep as hidden-state poison; it is a no-step information test, not a claimed physical continuation.",
+    "Existing broader target-selection/join/release live-state contracts are not rewritten or certified by this narrow hook fix.",
+    "Physics, three adjudicated law-host failures, history and accuracy limits remain separate.",
+    "Local six-direction/now-next-read clearance is approximate, not a fast-motion or between-read crossing guarantee.",
+    "Three adjudicated #66-host failures and rejected variants remain in original history."
+  ],
+  "held": [
+    "#75 acquired back-man recognition contract",
+    "#76 carrier navigation/traffic",
+    "unused observation transport",
+    "experimental physics"
+  ],
+  "verificationQuestion": "Can this exact four-file reviewed collection correction compose with accepted #72/#74 contracts and all preserved checks?",
+  "verificationPlan": "Integration alone freezes one exact candidate under accepted44 flags/components1 and completes typecheck/build/full TS/Python. No new native panel/roster/game campaign for local integration."
+}

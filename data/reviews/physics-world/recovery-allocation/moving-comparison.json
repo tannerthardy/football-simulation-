@@ -1,0 +1,270 @@
+{
+  "baselineSource": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "candidateSource": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "scriptSha256": "6493c300d813a8ce9cf9e4dc078f9908e68b1e26efc4615f90836f0f4b97df53",
+  "identicalCohort": true,
+  "baseline": {
+    "continuity": [
+      {
+        "capacity": 0,
+        "pairs": 72,
+        "fallDisagreements": 0,
+        "maxPositionYd": 0,
+        "maxVelocityYdS": 0,
+        "maxSupportYd": 0,
+        "maxFacingRad": 0,
+        "maxSpinRadS": 0
+      },
+      {
+        "capacity": 1e-06,
+        "pairs": 72,
+        "fallDisagreements": 0,
+        "maxPositionYd": 0.22535020073702317,
+        "maxVelocityYdS": 0.6758196693894796,
+        "maxSupportYd": 8.813946508881001e-07,
+        "maxFacingRad": 0.32840208879822086,
+        "maxSpinRadS": 6.331238141866288
+      }
+    ],
+    "mirrors": {
+      "pairs": 216,
+      "fallDisagreements": 0,
+      "maxPositionYd": 5.25446660927523e-10,
+      "maxVelocityYdS": 1.9201802011299936e-09,
+      "maxSupportYd": 2.167354118073423e-10,
+      "maxFacingRad": 1.3405596632765082e-09,
+      "maxSpinRadS": 1.337003308066187e-08
+    },
+    "refinement": {
+      "pairs": 216,
+      "fallDisagreements": 0,
+      "maxPositionYd": 0.005523043692656085,
+      "maxVelocityYdS": 0.027420562488109874,
+      "maxSupportYd": 0.08056913268569721,
+      "maxFacingRad": 0.02369688366565592,
+      "maxSpinRadS": 1.2130552740995975
+    },
+    "validation": {
+      "maxMomentumResidual": 5.327629472321232e-12,
+      "maxWorkResidual": 3.6383915742513455e-11,
+      "maxArmImpulseExcess": 0,
+      "maxArmWorkExcess": 0,
+      "maxMotorWorkExcess": 0,
+      "maxPassiveGripPositiveWork": 2.6533061831261624e-28,
+      "maxStrengthExcess": 0,
+      "maxTractionExcess": 8.412825991399586e-12,
+      "maxCommandFraction": 1.0000000000000004,
+      "maxStrengthFraction": 0.9998191215610824,
+      "maxTractionFraction": 1.0000000000000058,
+      "maxExistingDriveStrengthExcess": 0,
+      "heldCommandSamples": 63074,
+      "analyticCommandSamples": 0,
+      "unknownUnheldCommandSamples": 34560,
+      "observerEquivalence": [
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "straight",
+            "gripCapacity": 1e-06,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "straight",
+            "gripCapacity": 900,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "turn",
+            "gripCapacity": 1e-06,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "turn",
+            "gripCapacity": 900,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "brake",
+            "gripCapacity": 1e-06,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "brake",
+            "gripCapacity": 900,
+            "substeps": 12
+          },
+          "identical": true
+        }
+      ]
+    }
+  },
+  "candidate": {
+    "continuity": [
+      {
+        "capacity": 0,
+        "pairs": 72,
+        "fallDisagreements": 0,
+        "maxPositionYd": 0,
+        "maxVelocityYdS": 0,
+        "maxSupportYd": 0,
+        "maxFacingRad": 0,
+        "maxSpinRadS": 0
+      },
+      {
+        "capacity": 1e-06,
+        "pairs": 72,
+        "fallDisagreements": 0,
+        "maxPositionYd": 8.81221241974988e-08,
+        "maxVelocityYdS": 6.720317032628487e-06,
+        "maxSupportYd": 2.733387000116971e-09,
+        "maxFacingRad": 1.9071988432983744e-09,
+        "maxSpinRadS": 6.264428975555347e-08
+      }
+    ],
+    "mirrors": {
+      "pairs": 216,
+      "fallDisagreements": 0,
+      "maxPositionYd": 0,
+      "maxVelocityYdS": 0,
+      "maxSupportYd": 0,
+      "maxFacingRad": 0,
+      "maxSpinRadS": 0
+    },
+    "refinement": {
+      "pairs": 216,
+      "fallDisagreements": 0,
+      "maxPositionYd": 0.004277665616321262,
+      "maxVelocityYdS": 0.07394101818504106,
+      "maxSupportYd": 0.0991117212381687,
+      "maxFacingRad": 0.03578985644324861,
+      "maxSpinRadS": 0.7256206525299872
+    },
+    "validation": {
+      "maxMomentumResidual": 4.775757166574284e-12,
+      "maxWorkResidual": 3.210676982525612e-11,
+      "maxArmImpulseExcess": 0,
+      "maxArmWorkExcess": 0,
+      "maxMotorWorkExcess": 0,
+      "maxPassiveGripPositiveWork": 0,
+      "maxStrengthExcess": 4.547473508864641e-13,
+      "maxTractionExcess": 3.183231456205249e-12,
+      "maxCommandFraction": 1.0000000000000075,
+      "maxStrengthFraction": 1.0000000000000004,
+      "maxTractionFraction": 1.0000000000000022,
+      "maxExistingDriveStrengthExcess": 0,
+      "heldCommandSamples": 61266,
+      "analyticCommandSamples": 34560,
+      "unknownUnheldCommandSamples": 0,
+      "observerEquivalence": [
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "straight",
+            "gripCapacity": 1e-06,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "straight",
+            "gripCapacity": 900,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "turn",
+            "gripCapacity": 1e-06,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "turn",
+            "gripCapacity": 900,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "brake",
+            "gripCapacity": 1e-06,
+            "substeps": 12
+          },
+          "identical": true
+        },
+        {
+          "case": {
+            "profile": "standard",
+            "initialSpeed": 3,
+            "mirror": 1,
+            "control": "brake",
+            "gripCapacity": 900,
+            "substeps": 12
+          },
+          "identical": true
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Controlled persistent recovery under fixed commands, not tackle technique, game outcome or NFL calibration.",
+    "Finite lower-attachment validity remains active; a hold may release or a body may fall naturally.",
+    "Allocation is observed after actual ground actuation, before contact impulses; external motor-force peaks are tick-end samples.",
+    "Profile strength bounds drive+correction; existing drive above that strength must receive zero correction. Existing drive excess is reported separately.",
+    "Held commands are observed from motor state; analytic commands are inferred from actual allocated recovery scratch and its nominal ramp, not from an invented external foot force. Older missing analytic allocation remains unknown.",
+    "Analytic ramp latency .12s matches the pinned production source. The observer is an allocation diagnostic, not an independent constitutive model.",
+    "Motor command reserve and actual passive grip load are different quantities. Passive support force may exceed active capacity.",
+    "Refinement is native12 versus48 substeps, not empirical truth; progressive samples do not assert monotonic game outcomes."
+  ]
+}

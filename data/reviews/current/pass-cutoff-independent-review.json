@@ -1,0 +1,43 @@
+{
+  "schema": "pass-cutoff-independent-two-gate-review-v1",
+  "reviewedAt": "2026-10-15T20:22:56.535037+00:00",
+  "reviewer": "Independent read-only integration reviewer /root/review_67_contract_tradeoffs, requested by Integration under the user instruction",
+  "ownerApprovalClaimed": false,
+  "publicationReviewed": "48bbfe77df0b64798ff0dde1e6d1ea69f1d9a752",
+  "frozenCombined": "be6225436498a43d8d98437a69069434e51565aa",
+  "currentAcceptedDevelop": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "runtimeByteCompatibleWith": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "replayContract": {
+    "decision": "ACCEPT exact one-line coverage-job filter",
+    "patch": "https://github.com/tannerthardy/football-simulation-/blob/48bbfe77df0b64798ff0dde1e6d1ea69f1d9a752/data/reviews/current/pass-cutoff-integration/telemetry-contract-proposal.patch",
+    "applied": false,
+    "reason": "ReplayTrace accepts multiple kinds. Candidate adds an existing DE_W tackle-opportunity at2.20, while both arms preserve six actual coverage jobs. This is not a missing history or coverage behavior transition. Every original coverage-history, nonempty, unavailable-cause, perception, QB-belief and copy assertion stays."
+  },
+  "footballAdoption": {
+    "decision": "HOLD immediate #67 adoption",
+    "blockingCase": "Ordinary existing replay fixture: candidate LT contacts.40 versus.50, sheds1.20 and allows pressure2.15; accepted has no LT shed/pressure before2.25. Saved event-level diagnostic does not attribute this loss to first-load geometry/execution.",
+    "otherTradeoffs": {
+      "P040_RT": "Earlier loss has bounded execution attribution: original initial variates remove early shed despite changed arrival. Not a general protection certificate.",
+      "P019_RG": "Identical initial geometry/request then different execution supports a coupled defensive win. Initial retained swim still leaves later bull/swim route divergence. No new guard cutoff command or strength change demonstrated.",
+      "P019_C_LG": "Retaining original C initial execution reduces excess contact16/662.856 to2/22.667 versus accepted3/35.996. Changed execution ordering is a substantial cause; native adverse data remains and full contact realism is unproved."
+    },
+    "rule": "BEHAVIOR_REVIEW: material unreviewed adverse result blocks adoption; correcting a test assertion is not football acceptance.",
+    "owner": "Run Game / pass-controller handoff owner",
+    "smallestNextAction": "Adjudicate the one existing ordinary fixture LT first-load geometry/execution from compatible saved detail. If insufficient, one short accepted/candidate first-contact diagnostic for the same fixture; retain execution only if needed. No new rosters, games or suite rerun now."
+  },
+  "newTests": 0,
+  "newSimulations": 0,
+  "separateQueue69": {
+    "head": "a159f82d4821f03082e5a110c190a5ef1396df60",
+    "runtimeTest": "3b4ea698819074640626a215bf2f06af2735f25a",
+    "evidence": "bb430b1b2a801b5221e622f7f950d59bc8d8084f",
+    "actualBase": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+    "productionPaths": [
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/collection-approach.ts"
+    ],
+    "physicsSettingsChanges": [],
+    "reviewHandoff": "https://github.com/tannerthardy/football-simulation-/pull/69#issuecomment-6201486238",
+    "state": "Queued independent controller review, not accepted. No dependency on #67, entry-admission or physics promotion."
+  }
+}

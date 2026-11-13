@@ -1,0 +1,193 @@
+{
+  "schema": "duo-motion-first-combined-review-v1",
+  "pr": 85,
+  "testedCommit": "bbc4f82fea8ffe70cc52e5f747ddad3bb80468e5",
+  "sourceSha256": "544fea1cc8cd60649d438613e575c914a66424d9357288f8c92a110d73238162",
+  "validationSha256": "0b5dd3290a86c07a431deb457525efb1dbd70d96dee19a17af2c58a07a11a5b6",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1761,
+    "typescriptFailed": 1,
+    "typescriptFilesPassed": 148,
+    "typescriptFilesFailed": 1,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "skippedCommands": [],
+    "exitCode": 1
+  },
+  "failure": {
+    "path": "test/traffic-turning.test.ts:212",
+    "case": "preserves fast straight, parallel and close passable lanes",
+    "assertion": "previewFreeMovement must not be called",
+    "observedCalls": 15,
+    "previousAssertions": "First executed lane completed16 original-command/contact-free/bounded-work ticks before the zero-preview assertion failed. Remaining lanes do not execute after that failure.",
+    "owner": "Run independent contract reviewer, consulting Do-It-All author",
+    "question": "Is forecast invocation for the three passable lanes a justified admission change, an unacceptable cost regression or a movement regression? Preserve movement/contact/far-clear/contact-load controls; do not automatically weaken the assertion."
+  },
+  "decision": "HOLD #85; no merge or new baseline. Independent #84 remains supported; failure belongs to shared #81 admission/cost contract.",
+  "nextDecision": "Hold #81 for Run + Do-It-All cost-contract disposition; progress independently accepted #84-only candidate, with one exact verification of its materially different runtime tree.",
+  "cost": {
+    "combinedCommandSeconds": 202.275426376,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.928995622999999
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.886694142999998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 1,
+        "elapsedSeconds": 179.68210159400002
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7776350159999856
+      }
+    ],
+    "newStandaloneNativeReplays": 0,
+    "newEvaluationGames": 0,
+    "newRosterScreens": 0,
+    "suiteGames": "Only existing game/ensemble assertions in the preserved full suite."
+  },
+  "preservation": {
+    "independentApprovalsAndAdverseEvidenceRetained": true,
+    "runtimeTestsSettingsUnchangedFromFreeze": true,
+    "historicalBaseline": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "acceptedDevelop": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe"
+  },
+  "artifacts": {
+    "first-failed-combined.json": {
+      "sha256": "17c6a8f7f2b1be1e2f969345df6110ce42ee31c14e9f1d95832489ede5eb798b",
+      "bytes": 2632
+    },
+    "first-failed-combined.log": {
+      "sha256": "37d4ccd3b9f7f33c29a7483d7ba5f84bcfd2ed685b70446faa8e92818fe874dc",
+      "bytes": 89649
+    }
+  },
+  "targetedDiagnostic": {
+    "operator": "traffic-lanes-diagnostic.test.ts.txt",
+    "config": "traffic-lanes-diagnostic.config.ts.txt",
+    "results": "traffic-lanes-diagnostic.json",
+    "launcher": "traffic-lanes-diagnostic-launcher.json",
+    "mechanicalWorldSteps": 48,
+    "nativeFootballContinuations": 0,
+    "launcherSeconds": 1.451017638,
+    "rows": [
+      {
+        "kind": "original straight",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 57.2000000000001,
+        "previewCalls": 15,
+        "previewMilliseconds": 11.60696500000006,
+        "totalMilliseconds": 22.413005999999996
+      },
+      {
+        "kind": "parallel",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 57.200000000000045,
+        "previewCalls": 0,
+        "previewMilliseconds": 0,
+        "totalMilliseconds": 4.022623999999951
+      },
+      {
+        "kind": "close passable",
+        "frames": 16,
+        "originalCommandPreservedEveryFrame": true,
+        "actualContacts": 0,
+        "existingPhysicalBudgetsPass": true,
+        "attainedX": 54.00000000000014,
+        "previewCalls": 14,
+        "previewMilliseconds": 6.672929999999951,
+        "totalMilliseconds": 15.563411000000087
+      }
+    ],
+    "decision": "Original movement/contact/budget controls hold in all3 existing cases. New preview cost remains an owner-adjudicated contract; no assertion was edited."
+  }
+}

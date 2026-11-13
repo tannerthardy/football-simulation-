@@ -1,0 +1,494 @@
+{
+  "wrap-before": {
+    "sourceSha256": "0f1124fde702bfd754944b10bc2d35f2ebf4914c1a2fa864e701afb6683b47ad",
+    "raw": {
+      "path": "out/foot-restraint/wrap-before.json",
+      "bytes": 21542733,
+      "sha256": "c22895e515b95335d823b375fab95b45ce538588ca583a6c893dec910f47d3fe"
+    },
+    "note": "Seed3/power1, real football controllers/officiating. All pre-wrap paths use192; switch only the first incoming grasp step. Same pre-wrap RNG/trajectory, no new observation calls. Rows record feet-phase xi transfer separately from support update, geometry/loads/filtered support, and chosen tick intents. Runtime prototypes restored after diagnostic.",
+    "trials": [
+      {
+        "before": 192,
+        "after": 6,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6529570611417943,
+          "carriedPast": 0.6672851957050696,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 28
+      },
+      {
+        "before": 192,
+        "after": 12,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6548457041234321,
+          "carriedPast": 0.6704335097179097,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 52
+      },
+      {
+        "before": 192,
+        "after": 24,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6557220000011994,
+          "carriedPast": 0.6719853711725392,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 100
+      },
+      {
+        "before": 192,
+        "after": 48,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6562308436717162,
+          "carriedPast": 0.6727609458682906,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 196
+      },
+      {
+        "before": 192,
+        "after": 96,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6564600757336142,
+          "carriedPast": 0.6731487121075332,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 388
+      },
+      {
+        "before": 192,
+        "after": 192,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.256048714907312e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6565842566768951,
+          "carriedPast": 0.6733425766975003,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 772
+      }
+    ]
+  },
+  "wrap-after": {
+    "sourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+    "raw": {
+      "path": "out/foot-restraint/wrap-after.json",
+      "bytes": 21542733,
+      "sha256": "f5ecd640826f7a276e2373d7ccae3c3111bb2799d7ec7fa393b378ed8b45b419"
+    },
+    "note": "Seed3/power1, real football controllers/officiating. All pre-wrap paths use192; switch only the first incoming grasp step. Same pre-wrap RNG/trajectory, no new observation calls. Rows record feet-phase xi transfer separately from support update, geometry/loads/filtered support, and chosen tick intents. Runtime prototypes restored after diagnostic.",
+    "trials": [
+      {
+        "before": 192,
+        "after": 6,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6529570611417943,
+          "carriedPast": 0.6672851957050696,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 28
+      },
+      {
+        "before": 192,
+        "after": 12,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6548457041234321,
+          "carriedPast": 0.6704335097179097,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 52
+      },
+      {
+        "before": 192,
+        "after": 24,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6557220000011994,
+          "carriedPast": 0.6719853711725392,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 100
+      },
+      {
+        "before": 192,
+        "after": 48,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6562308436717162,
+          "carriedPast": 0.6727609458682906,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 196
+      },
+      {
+        "before": 192,
+        "after": 96,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6564600757336142,
+          "carriedPast": 0.6731487121075332,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 388
+      },
+      {
+        "before": 192,
+        "after": 192,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.256048714907312e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [
+            "QB"
+          ],
+          "closest": 0.6565842566768951,
+          "carriedPast": 0.6733425766975003,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 772
+      }
+    ]
+  },
+  "wrap-candidate": {
+    "sourceSha256": "318a83dde51fa145b661aaaecfa28f79541180229b94ff01bfb5efe73fa1862a",
+    "raw": {
+      "path": "out/foot-restraint/wrap-candidate.json",
+      "bytes": 21898429,
+      "sha256": "9faea4b1229bf3b9c41df54f723404a5ddd5c860165b147479ba3c6061f6fed7"
+    },
+    "note": "Seed3/power1, real football controllers/officiating. All pre-wrap paths use192; switch only the first incoming grasp step. Same pre-wrap RNG/trajectory, no new observation calls. Rows record feet-phase xi transfer separately from support update, geometry/loads/filtered support, and chosen tick intents. Runtime prototypes restored after diagnostic.",
+    "trials": [
+      {
+        "before": 192,
+        "after": 6,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6536383413545923,
+          "carriedPast": 0.6672874916168894,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 28
+      },
+      {
+        "before": 192,
+        "after": 12,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6556319148782017,
+          "carriedPast": 0.6704357796120277,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 52
+      },
+      {
+        "before": 192,
+        "after": 24,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6565588630029056,
+          "carriedPast": 0.6719876549677153,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 100
+      },
+      {
+        "before": 192,
+        "after": 48,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6570682743753766,
+          "carriedPast": 0.6727632406651054,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 196
+      },
+      {
+        "before": 192,
+        "after": 96,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6573245527774061,
+          "carriedPast": 0.6731509971059069,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 388
+      },
+      {
+        "before": 192,
+        "after": 192,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6574507638673123,
+          "carriedPast": 0.6733448618839617,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 772
+      }
+    ]
+  },
+  "wrap-active-demand": {
+    "sourceSha256": "a9d1215e33971ef2ed7095470d4efb2812185869dfa27953a2370721a1da1b38",
+    "raw": {
+      "path": "out/foot-restraint/wrap-active-demand.json",
+      "bytes": 21900077,
+      "sha256": "6ffdc9109a9cc4f883900369811e6805ff5c604ad49a07ed2ad142e41586e922"
+    },
+    "note": "Seed3/power1, real football controllers/officiating. All pre-wrap paths use192; switch only the first incoming grasp step. Same pre-wrap RNG/trajectory, no new observation calls. Rows record feet-phase xi transfer separately from support update, geometry/loads/filtered support, and chosen tick intents. Runtime prototypes restored after diagnostic.",
+    "trials": [
+      {
+        "before": 192,
+        "after": 6,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6536270092078901,
+          "carriedPast": 0.6672874916168894,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 28
+      },
+      {
+        "before": 192,
+        "after": 12,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6556209035541642,
+          "carriedPast": 0.6704357796120277,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 52
+      },
+      {
+        "before": 192,
+        "after": 24,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6565552058976307,
+          "carriedPast": 0.6719876549677153,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 100
+      },
+      {
+        "before": 192,
+        "after": 48,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6570619766670296,
+          "carriedPast": 0.6727632406651054,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 196
+      },
+      {
+        "before": 192,
+        "after": 96,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6573186087982514,
+          "carriedPast": 0.6731509971059069,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 388
+      },
+      {
+        "before": 192,
+        "after": 192,
+        "wrapAt": 2.35,
+        "result": {
+          "momentumError": 2.1976714657674776e-12,
+          "maxPenetration": 0.00026470084146279493,
+          "finite": true,
+          "falls": [],
+          "closest": 0.6574438636414189,
+          "carriedPast": 0.6733448618839617,
+          "cornerTurned": true,
+          "peakNormal": 784.1115885680236,
+          "peakTangent": 397.67906586891957
+        },
+        "tickCount": 4,
+        "substepCount": 772
+      }
+    ]
+  }
+}

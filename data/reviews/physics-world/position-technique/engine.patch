@@ -1,0 +1,213 @@
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index e4e73ad..43f6466 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -33,6 +33,14 @@ export interface PassSetIntent {
+   outside: number;
+ }
+ 
++/** Installed run-contact shoulder, separate from the displacement request. */
++export interface RunContactSurface {
++  /** Unit axis from defender toward the desired blocker shoulder. */
++  axis: Vec2;
++  /** Desired signed angle in this frame, in quarter turns. */
++  sealTarget: number;
++}
++
+ /**
+  * A block in progress (see engagement.ts for the model). Angles/positions are
+  * relative to the engagement axis: toward the protected QB on pass pro or
+@@ -68,7 +76,7 @@ export interface Engagement {
+   /** Direction the blocker is driving (unit vector), for run blocks. */
+   drive: Vec2 | null;
+   /** Optional stable contact surface, separate from displacement intention.
+-   * Stretch-zone fit uses the vertical front while its feet may run laterally. */
++   * Stretch-zone and cutoff fits can wall a shoulder while driving elsewhere. */
+   surfaceAxis?: Vec2;
+   /** Desired signed lateral surface angle on runs, in quarter turns. */
+   sealTarget: number;
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 249c36d..ddaf4ed 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -18,7 +18,7 @@ import { cornerSpeed, fatigueFactor, type MoveCommand } from '../../physics/kine
+ import { availability, supportParams } from '../../physics/support.js';
+ import type { HandJoint, Intent } from '../../physics/world.js';
+ import type { RunConcept } from '../../playbook/types.js';
+-import type { Agent, Behavior, Engagement } from '../agent.js';
++import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
+ import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
+@@ -388,6 +388,8 @@ export interface RunBlockPlan {
+   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
+   pullRole?: 'kick' | 'lead' | 'trap';
+   combination?: Combination;
++  /** A solo cutoff's installed shoulder belongs to this exact down threat. */
++  contactFit?: RunContactSurface & { target: Agent };
+ }
+ 
+ function classify(sim: PlaySim): { dl: Agent[]; lb: Agent[]; db: Agent[] } {
+@@ -645,6 +647,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+   // pass-influence conversion, rather than an intermediate owner label.
+   for (const p of plans.values()) if (p.combination)
+     p.combination.soloKind = plans.get(p.combination.members[0])!.kind;
++  for (const [b, p] of plans) {
++    // Only a clearly outside solo backside threat calls for this wall. Inside
++    // shades, doubles, pullers and Draw retain their original contact frame.
++    if (isOL(b) && p.kind === 'cutoff' && p.target && dl.includes(p.target) && !p.combination
++      && rel(b) < 0 && (b.pos.y - p.target.pos.y) * ps > b.profile.radius + p.target.profile.radius)
++      p.contactFit = { target: p.target, axis: norm({ x: -.3, y: p.drive.y * .6 }), sealTarget: 0 };
++  }
+   return plans;
+ }
+ 
+@@ -668,6 +677,8 @@ export class RunBlocker implements Behavior {
+   update(a: Agent, sim: PlaySim): Intent {
+     const plan = this.plan;
+     const t = sim.t;
++    if (plan.contactFit && (plan.kind !== 'cutoff' || plan.target !== plan.contactFit.target
++      || (plan.combination && !plan.combination.released))) delete plan.contactFit;
+     this.homeY ??= a.pos.y;
+     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
+     this.rememberSoloWork();
+@@ -712,6 +723,7 @@ export class RunBlocker implements Behavior {
+           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
+         }
+         plan.target = target = replacement;
++        if (replacement !== previous) delete plan.contactFit;
+         if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
+           this.classifyWork(a, sim, replacement);
+       }
+@@ -785,13 +797,16 @@ export class RunBlocker implements Behavior {
+     const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+       && (!plan.combination || plan.combination.released)
+       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
++    const contactFit = fit && plan.kind === 'cutoff' && plan.contactFit?.target === target
++      ? plan.contactFit : null;
+     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
+     // Keep marginal reaches and actual collisions; use the same observed
+     // leverage boundary as an established run block, without a time grace.
+-    const fitDrive = zone ? { x: 1, y: 0 } : plan.drive;
++    const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
++      : zone ? { x: 1, y: 0 } : plan.drive;
+     const lost = fit && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+     if (!lost && dd < contact) {
+-      const e = sim.engage(a, target, 'run', plan.drive);
++      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? undefined);
+       if (e) {
+         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
+         return stand();
+@@ -799,7 +814,10 @@ export class RunBlocker implements Behavior {
+     }
+     // Aiming point: reach blocks work to the playside shoulder.
+     let aim = seen.pos;
+-    if (zone) {
++    if (contactFit) {
++      const sep = a.profile.radius + target.profile.radius + .15;
++      aim = { x: seen.pos.x + contactFit.axis.x * sep, y: seen.pos.y + contactFit.axis.y * sep };
++    } else if (zone) {
+       const side = zone.phase === 'runoff' ? -zone.side : zone.side;
+       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
+     } else if (plan.kind === 'combo' && plan.combination) {
+@@ -832,7 +850,7 @@ export class RunBlocker implements Behavior {
+     const original = runThrough(a, aim, { speed: 1 });
+     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
+       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
+-      !!zone, zone ? 2.4 : 0) : original;
++      !!zone || !!contactFit, zone ? 2.4 : 0) : original;
+   }
+ 
+   private zoneEligible(a: Agent, sim: PlaySim): boolean {
+@@ -883,6 +901,7 @@ export class RunBlocker implements Behavior {
+ 
+   private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
+     const p = this.plan;
++    delete p.contactFit;
+     // Reserved kick/trap jobs and pass influence retain their installed
+     // responsibility. A wrap/lead already has a second-level approach.
+     if (RESERVED_RUN_KINDS.has(p.kind)) return;
+@@ -939,6 +958,7 @@ export class RunBlocker implements Behavior {
+     if (p.combination && !p.combination.released)
+       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
+     p.target = threat; p.kind = 'drive';
++    delete p.contactFit;
+     a.tags.add('block-collect');
+     sim.event('block_collect',a,threat,'penetration before climb');
+   }
+@@ -1263,6 +1283,7 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
+   climber.engagement = null;
+   climber.behavior.plan.kind = 'climb';
+   climber.behavior.plan.target = combo.backer;
++  delete climber.behavior.plan.contactFit;
+   // The installed backer fit drives upfield. The old diagonal wall/stretch
+   // vector belongs to the keeper's first-level job, not the new approach.
+   climber.behavior.plan.drive = { x: 1, y: 0 };
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 03c4ef0..3657d4e 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -33,7 +33,7 @@ import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+ import { fatigueFactor } from '../physics/kinematics.js';
+ import { availability, supportParams } from '../physics/support.js';
+ import type { HandJoint, Intent } from '../physics/world.js';
+-import type { Agent, Engagement, RushMove } from './agent.js';
++import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ 
+ // ------------------------------------------------------------ traits
+@@ -125,7 +125,7 @@ function baseOf(a: Agent): number {
+ 
+ // ------------------------------------------------------------ creation
+ 
+-export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null): Engagement | null {
++export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null, surface?: RunContactSurface): Engagement | null {
+   const t = sim.t;
+   if (sim.bond && [sim.bond.carrier, ...sim.bond.tacklers].some((a) => a === blocker || a === defender)) return null;
+   if (blocker.engagement) return blocker.engagement;
+@@ -170,6 +170,12 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent,
+     repEdge: rng.normal(0, 0.08),
+     holding: false,
+   };
++  // This is the installed shoulder, never inferred from the actual arrival.
++  // Existing hands and joining helpers returned above keep their acquired frame.
++  if (type === 'run' && surface) {
++    e.surfaceAxis = { ...surface.axis };
++    e.sealTarget = surface.sealTarget;
++  }
+   const axis = axisOf(sim, e);
+   const lat = latOf(axis);
+   e.phi = clamp(measurePhi(axis, defender, blocker), -0.95, 0.95);
+@@ -215,7 +221,7 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent,
+     e.control = clamp(punchB - strike + 0.1, -0.8, 0.8);
+     e.move = 'shed';
+     // Reach blocks want the defender sealed on the backside.
+-    if (drive) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
++    if (drive && !surface) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
+   }
+   blocker.engagement = e;
+   defender.engagement = e;
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index cf8629b..1d5340c 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -19,7 +19,7 @@ import type { Player } from '../players/types.js';
+ import { alignDefense, alignOffense, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+ import { applyCheck, resolveZeus } from '../playbook/coverages.js';
+ import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
+-import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
++import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
+ import { CoverageScouting, QBMind } from './qbmind.js';
+ import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
+ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
+@@ -482,8 +482,8 @@ export class PlaySim {
+     this.lunges.set(a, dv);
+   }
+ 
+-  engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null): Engagement | null {
+-    return createEngagement(this, blocker, defender, type, drive);
++  engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null, surface?: RunContactSurface): Engagement | null {
++    return createEngagement(this, blocker, defender, type, drive, surface);
+   }
+ 
+   disengage(e: Engagement): void {

@@ -1,0 +1,20 @@
+{
+  "scope": "Read-only export, offline browser, independent raw-film decode and ZIP checks; no simulation rerun. Current and historical saved-film schemas tested separately.",
+  "currentSource": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+  "files": {
+    "browser-check.json": "da0762864dcdcd5c51919bba0ba0c35839ea34453f1ba5dd4bfbccd530c18a25",
+    "browser-integrity-check.log": "ce112624a58733eb8e1862768c3e155436404e4fcd0c5eb6d6e8d0f2f59bf56e",
+    "browser-integrity-check.py": "b866a8fa4478009c34293a47b9ef1f415882dee0b3a6513ad6787919c6077737",
+    "export-validation.json": "2ac153990a9234473b8d4b4e9b701d8ba3a2bd99abddecf82c8c86cc3bb294c0",
+    "film-integrity.json": "f0a72acc22f2981b3d8e93db8024ef205b522af07bdb964262eb2014da095b81",
+    "historical-v1/browser-check.json": "0081a8894ca2466d8cb248a1d98b5d6042c3dc455e4e186367cf9bd578a4c805",
+    "historical-v1/export-validation.json": "a53bbc4b2f822579a303b0d9bcdd9ab91a33dd490033351e3ad9696609aa20ec",
+    "historical-v1/film-integrity.json": "a9478d4fb452dc0147a9c2236a1b5a6c9c0a719189dbb354b832e85421cfe6fb"
+  },
+  "commands": [
+    "node --import tsx scripts/export-motion-contact.ts out/strike-contact-review/corrected-after/film.json.gz viewer/motion-contact.html",
+    "python3 out/strike-contact-review/film-checks/browser-integrity-check.py out/strike-contact-review/corrected-after/film.json.gz viewer/motion-contact.html out/strike-contact-review/film-checks",
+    "node --import tsx scripts/export-motion-contact.ts data/reviews/physics-world/motion-contact/film.json.gz out/block-approach-review/historical-contact.html",
+    "python3 out/strike-contact-review/film-checks/browser-integrity-check.py data/reviews/physics-world/motion-contact/film.json.gz out/block-approach-review/historical-contact.html out/block-approach-review/historical-check"
+  ]
+}

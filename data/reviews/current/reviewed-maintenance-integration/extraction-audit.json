@@ -1,0 +1,144 @@
+{
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "patches": [
+    {
+      "pr": 117,
+      "reviewedHead": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "patch": "docs/reviews/independent-run-117-122/117.patch",
+      "patchSha256": "81563a5e2e4d2543bf76ea71abafa259196ebdc9031d5446b03180a20bab4d98",
+      "paths": [
+        "src/sim/engagement.ts",
+        "test/stretch-anchor-footwork.test.ts",
+        "test/stretch-normal-follow.test.ts"
+      ]
+    },
+    {
+      "pr": 122,
+      "reviewedHead": "cf827df7b59f133d25eea91052aa3c243899f8f8",
+      "patch": "docs/reviews/independent-run-117-122/122.patch",
+      "patchSha256": "c21e4ea89d58a0090f7c8f940ba9755c8109f0f5f3441be151c497046a6b6c60",
+      "paths": [
+        "src/sim/spacing.ts",
+        "test/fixtures/run-pace-gather.json.gz",
+        "test/fixtures/spacing-forecast-paced-reference.json",
+        "test/run-pace-gather.test.ts",
+        "test/spacing-forecast-reuse.test.ts"
+      ]
+    },
+    {
+      "pr": 123,
+      "reviewedHead": "5da02125075de0baf2ffae5c4a8b28bcae8ef77f",
+      "patch": "data/reviews/current/independent-defense-123-124/pr123.patch",
+      "patchSha256": "9597d858ec464949f379b4da5cf624ae155ff86726666ddefb61520c76f36969",
+      "paths": [
+        "src/sim/run-fits.ts",
+        "test/second-level-handover.test.ts"
+      ]
+    },
+    {
+      "pr": 124,
+      "reviewedHead": "9f2206a3fd22aab83b19a0431346c7569ed19f7b",
+      "patch": "data/reviews/current/independent-defense-123-124/pr124.patch",
+      "patchSha256": "c2526b04f1a65de271985dabf25c4d424c3174cb1d1e55eb860b7478f38df2a9",
+      "paths": [
+        "src/sim/coverage/rules.ts",
+        "test/match-block-release.test.ts",
+        "test/quarters-flat-wheel.test.ts",
+        "test/release-cushion.test.ts"
+      ]
+    },
+    {
+      "pr": 118,
+      "reviewedHead": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+      "patch": "data/reviews/current/pr118-120-121-independent-review/pr118.patch",
+      "patchSha256": "e403efdcf80d0f8391f4f587b3e16af57d36f15a8d0563ecba5ca991bdd93754",
+      "paths": [
+        "src/physics/world.ts",
+        "scripts/diag/physics/directional-brace.ts",
+        "test/directional-brace.test.ts",
+        "test/fixtures/directional-brace-control.json"
+      ]
+    },
+    {
+      "pr": 120,
+      "reviewedHead": "35f87c90c5e39bf2fa9c9c513aae7ae5e82c8e41",
+      "patch": "data/reviews/current/pr118-120-121-independent-review/pr120.patch",
+      "patchSha256": "e08fd4d8e2b5dcbed683d092098f86161ba85b1c6bdda164a7ce382bad8bd9b3",
+      "paths": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/action-effort.test.ts",
+        "test/dive-yaw.test.ts",
+        "test/fall-cause-history.test.ts"
+      ]
+    },
+    {
+      "pr": 121,
+      "reviewedHead": "1dc41611d82a7cb5e81db259e0e6f185ac2abcb5",
+      "patch": "data/reviews/current/pr118-120-121-independent-review/pr121.patch",
+      "patchSha256": "de00ab5bc0c396b71e168fda36b6dfdd755abb1011e40d5c97850096585a50b3",
+      "paths": [
+        "src/game/game.ts",
+        "test/two-point-energy.test.ts"
+      ]
+    }
+  ],
+  "sourceSha256": "9513511efacc10721f8ed2cc8553ef96d7b95a5b51217b8f4c6339533b504941",
+  "protectedFiles": [
+    "scripts/diag/physics/directional-brace.ts",
+    "src/game/game.ts",
+    "src/physics/kinematics.ts",
+    "src/physics/world.ts",
+    "src/sim/coverage/rules.ts",
+    "src/sim/engagement.ts",
+    "src/sim/run-fits.ts",
+    "src/sim/spacing.ts",
+    "test/action-effort.test.ts",
+    "test/directional-brace.test.ts",
+    "test/dive-yaw.test.ts",
+    "test/fall-cause-history.test.ts",
+    "test/fixtures/directional-brace-control.json",
+    "test/fixtures/run-pace-gather.json.gz",
+    "test/fixtures/spacing-forecast-paced-reference.json",
+    "test/match-block-release.test.ts",
+    "test/quarters-flat-wheel.test.ts",
+    "test/release-cushion.test.ts",
+    "test/run-pace-gather.test.ts",
+    "test/second-level-handover.test.ts",
+    "test/spacing-forecast-reuse.test.ts",
+    "test/stretch-anchor-footwork.test.ts",
+    "test/stretch-normal-follow.test.ts",
+    "test/two-point-energy.test.ts"
+  ],
+  "protectedBlobs": {
+    "scripts/diag/physics/directional-brace.ts": "1dd27d78edc415966154b371646f10996a6cf6f6",
+    "src/game/game.ts": "3a6b915f9604e4c99af52b034fbd8fa040723dd5",
+    "src/physics/kinematics.ts": "bd65a9e185fce1b1432497a95a44afb22f7965ce",
+    "src/physics/world.ts": "d036ca623cdb66840aebc1bb518242ecbae9c117",
+    "src/sim/coverage/rules.ts": "57da45e42880a6312fb4bfae81d126ee9524c718",
+    "src/sim/engagement.ts": "8ad94db042665f460cfb0703264a0b2e7280aa4d",
+    "src/sim/run-fits.ts": "8dea3c0fede012337a6160a7dbe1e9d20ca3b2dd",
+    "src/sim/spacing.ts": "61015e29ceb7725d9a95bad751c9d575ccb8d6ae",
+    "test/action-effort.test.ts": "af52bd72dd12999ba4d41c018344e52850a4ebf5",
+    "test/directional-brace.test.ts": "97f784029c9c658c4c09e5dda23b7c95a56c6d7d",
+    "test/dive-yaw.test.ts": "e50ecb0d29cf101f2a62106991383d5357a58533",
+    "test/fall-cause-history.test.ts": "8e4f659010c3a0e3ec7343cff575bd3fbfe79c72",
+    "test/fixtures/directional-brace-control.json": "f604f16bcb9f0b20afea23bab892ff0734125305",
+    "test/fixtures/run-pace-gather.json.gz": "950879273b29c1829ea720547c925c522d40d046",
+    "test/fixtures/spacing-forecast-paced-reference.json": "07ca801ec51483dc933c577c938f112108b4c645",
+    "test/match-block-release.test.ts": "6c6dc8e182d89820064864f970eb4cfbc24d2475",
+    "test/quarters-flat-wheel.test.ts": "3bca956548fdaae258d43ff6026d71e092d5f70f",
+    "test/release-cushion.test.ts": "250f93f3a14dde0a57b00f9a988cd3be15337e27",
+    "test/run-pace-gather.test.ts": "acab52dcb498b712d472da1c8d3ea1fa73f8c150",
+    "test/second-level-handover.test.ts": "66a24a7eac669570f9acca2103194d4e6b404e78",
+    "test/spacing-forecast-reuse.test.ts": "d8ca52ae900763258631cfe44b13090fe1d631a5",
+    "test/stretch-anchor-footwork.test.ts": "0c974efb807b4f0f1a6134a92164ada9882d9981",
+    "test/stretch-normal-follow.test.ts": "c846087c5c21f6c17e4b4877246a057b8fc1d858",
+    "test/two-point-energy.test.ts": "213e1640500a3df51f39ffd77c741589f05be242"
+  },
+  "allOtherProtectedFilesUnchanged": true,
+  "worldCompositionMatchesIndependentReview": true,
+  "newBehavioralTests": 0,
+  "newNativeExecutions": 0,
+  "combinedVerification": "Pending; no historical native source relabeled as combined evidence."
+}

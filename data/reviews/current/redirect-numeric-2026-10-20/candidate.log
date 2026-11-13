@@ -1,0 +1,17 @@
+Profile candidate: run-game-2026-10-13, commit 075e2148a8c94c80ba90743a324e4670091998c0, source 889bbd59981b680afb915d96108acbbe8f3ebe5fc395446f82d83b8dfe655f6a
+Running node --import tsx scripts/diag/integration/redirect-numeric.mjs /workspace/football-big-redirect-diagnostic /workspace/football-big-redirect-diagnostic/out/redirect-numeric-candidate.json
+node:fs:2430
+    return binding.writeFileUtf8(
+                   ^
+
+Error: ENOENT: no such file or directory, open '/workspace/football-big-redirect-diagnostic/out/redirect-numeric-candidate.json'
+    at writeFileSync (node:fs:2430:20)
+    at <anonymous> (/workspace/football-big-redirect-diagnostic/scripts/diag/integration/redirect-numeric.mjs:52:1) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspace/football-big-redirect-diagnostic/out/redirect-numeric-candidate.json'
+}
+
+Node.js v22.23.3
+Validation receipt: out/redirect-numeric/candidate-receipt.json; exit 1

@@ -1,0 +1,703 @@
+{
+  "schema": "lower-grip-angular-repair-v1",
+  "date": "2026-10-12 UTC",
+  "implementationCommit": "c92bd3efffd4ded788c4542f489f5670dcb5c021",
+  "sources": {
+    "baseline": "e901bb5b04bf7150709a3319f0db14f6d9fcc3e743b75fbd802091214ae75b24",
+    "testedImplementation": "84d340e4d9933b07c644b80c7089c1178c3060f23c21cd1a78f97a7740e88559",
+    "finalAnnotated": "27b43749f5e25302c8ed195a393257b6925b26112321c312b73ab6858633a04b",
+    "annotationIdentity": {
+      "testedSource": "84d340e4d9933b07c644b80c7089c1178c3060f23c21cd1a78f97a7740e88559",
+      "finalSource": "27b43749f5e25302c8ed195a393257b6925b26112321c312b73ab6858633a04b",
+      "executableUnchanged": true,
+      "worldExecutableSha256": "ae00261dfc8dceb15b83924e2e813948becb86009b94e71f84020bf747ffd411"
+    }
+  },
+  "scope": "Only existing handContact:patch. Two-component local material coordinate per lower hold, coupled to existing shared recovery actuator. No anatomy, capacity, rating, global-resolution or controller change. Default center unchanged.",
+  "geometry": {
+    "point": "p_b + R(theta_b) Q(z)",
+    "materialVelocity": "z_dot = legs R^-1 u_achieved",
+    "motorJacobian": "legs R DQ R^-1",
+    "forcePoint": "same held material point for both bodies",
+    "foot": "world-oriented averaged support offset remains unchanged by yaw",
+    "integration": "body force/yaw centered; algebraic corrective motor full achieved velocity, mid-attained orientation approximation"
+  },
+  "permanentTests": {
+    "path": "test/lower-grip-angular-transfer.test.ts",
+    "sha256": "a3e6ff45093f3fad30e6da61b71a75238710951e2b6f9653a567b9b271b564b9",
+    "total": 61,
+    "baselineFailed": 53,
+    "baselinePassed": 8,
+    "candidatePassed": 61,
+    "baselineLog": {
+      "path": "out/lower-grip-repair/baseline-test.log",
+      "bytes": 55696,
+      "sha256": "1e51bfd0186ef0f45fc56b60cb605cbbf26a0d1bdf1fd022ba0d7631d2894269"
+    },
+    "candidateLog": {
+      "path": "out/lower-grip-repair/candidate-test.log",
+      "bytes": 303,
+      "sha256": "381679273e84bdd091e87063cda3979d52ba9012d6a7a5c48c54936531c0b2d1"
+    }
+  },
+  "laws": {
+    "retainedTransitionCases": {
+      "cases": 48,
+      "maxAngularError": 7.105427357601002e-13,
+      "maxMomentumError": 4.3220627292571254e-14,
+      "maxWorkResidual": 1.2989609388114332e-14,
+      "lawPasses": 48,
+      "lowerTransitions": 16
+    },
+    "collector": {
+      "path": "docs/archive/research/contact-mechanics/grasp-law.ts",
+      "bytes": 6246,
+      "sha256": "fad940ffb6d2b82257ab8b117fe106c7ea7eb20ccfdff6bd61afc8b186afec4b"
+    },
+    "nativeGeometry": {
+      "worldSha": "39e4374c84a113d4d0e02ff7f8a2d88c791ed420e45a01ea0af6c983675cbb3e",
+      "cases": 72,
+      "maxDerivativeError": 4.6342954852526795e-10,
+      "maxJacobianSymmetryError": 1.7763568394002505e-15,
+      "fullSolverExercised": false
+    },
+    "lifecycle": {
+      "worldSha": "39e4374c84a113d4d0e02ff7f8a2d88c791ed420e45a01ea0af6c983675cbb3e",
+      "checks": 21,
+      "fullSolverExercised": false
+    },
+    "existingHandCases": 144,
+    "existingSharedMaterialHandTorsoCases": 36
+  },
+  "checks": {
+    "typescript": {
+      "passed": 1449,
+      "files": 117,
+      "seconds": 146.76,
+      "log": {
+        "path": "out/lower-grip-repair/all-tests.log",
+        "bytes": 10464,
+        "sha256": "59b6c3b8533d2709cba0c8c2124f6aeeada8e8ce0e283c09ccc9025ce66379ca"
+      }
+    },
+    "python": {
+      "passed": 141,
+      "seconds": 0.231,
+      "log": {
+        "path": "out/lower-grip-repair/data-tests.log",
+        "bytes": 331,
+        "sha256": "dc62397947150dfff9d96f6a812b7d582976024a4a4ef9caf2acf15de85c8b07"
+      }
+    },
+    "typecheck": {
+      "passed": true,
+      "log": {
+        "path": "out/lower-grip-repair/typecheck.log",
+        "bytes": 68,
+        "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+      }
+    },
+    "build": {
+      "passed": true,
+      "log": {
+        "path": "out/lower-grip-repair/build.log",
+        "bytes": 55,
+        "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+      }
+    },
+    "finalFocused": {
+      "passed": 112,
+      "log": {
+        "path": "out/lower-grip-repair/final-focused.log",
+        "bytes": 506,
+        "sha256": "b27771b36aebe14330779575f253441f15c3b3bac69ce7f70d98b357b4a3a9b8"
+      }
+    }
+  },
+  "promotion": {
+    "passed": 42,
+    "total": 50,
+    "footballFailures": 6,
+    "historicHashDifferences": 2,
+    "failures": [
+      "test/helper-fit.test.ts > joined helpers replace unusable feet through bounded physical movement > turns a wrong-side acquisition into actual useful contact, side -1",
+      "test/helper-fit.test.ts > joined helpers replace unusable feet through bounded physical movement > turns a wrong-side acquisition into actual useful contact, side 1",
+      "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+      "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+      "test/zone-helper-check.test.ts > optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path",
+      "test/zone-helper-check.test.ts > a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands",
+      "test/zone-helper-check.test.ts > the historic native Split Zone Tite witness retains unfinished first-level work > stays when the backer is not arriving, then collects the end after keeper leverage is lost",
+      "test/zone-helper-check.test.ts > optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help"
+    ],
+    "log": {
+      "path": "out/lower-grip-repair/promotion.log",
+      "bytes": 27044,
+      "sha256": "9931bfa19c3eda4cc66ad300321c7d6ad7dd556e64ed33d829410d53e429f280"
+    }
+  },
+  "native": {
+    "sources": {
+      "baseline": "e901bb5b04bf7150709a3319f0db14f6d9fcc3e743b75fbd802091214ae75b24",
+      "current": "84d340e4d9933b07c644b80c7089c1178c3060f23c21cd1a78f97a7740e88559"
+    },
+    "inputs": {
+      "rosterSeeds": [
+        61,
+        62
+      ],
+      "strength": 0.55,
+      "seeds": [
+        3000,
+        3001,
+        3002
+      ],
+      "cells": 24,
+      "sides": [
+        1,
+        -1
+      ],
+      "repsPerArm": 144,
+      "arms": 4
+    },
+    "inputSha256": "867ad1bdf3091c0dd4d7fb92fa39310d418e72803320599ecc86484041083456",
+    "operatorSha256": "bf63ce55697ba6c0fa77d95e2124de85b79a49f5e7db83394840268774174244",
+    "collectorSha256": "dbf045ce1aac98f79736b15cad33879b30e68768cafabab8905f167a163a369a",
+    "reducerSha256": "d95ceb0977952abc119113d69e24f24fbaf7e3eb073edf8dfe3d7ca7acd54748",
+    "centerRowsByteExact": true,
+    "comparisons": {
+      "center": {
+        "count": 144,
+        "before": {
+          "tackled": 120,
+          "escaped": 20,
+          "censored": 4
+        },
+        "after": {
+          "tackled": 120,
+          "escaped": 20,
+          "censored": 4
+        },
+        "exactResults": 144,
+        "exactNativeEndpoints": 144,
+        "lowerBeforeSlipReps": {
+          "before": 126,
+          "after": 126
+        },
+        "pointMomentRowReps": {
+          "before": 0,
+          "after": 0
+        },
+        "operatorCarry": {
+          "before": {
+            "n": 126,
+            "mean": 4.341926691780991,
+            "median": 2.699367713363195,
+            "max": 18.836333846378977
+          },
+          "after": {
+            "n": 126,
+            "mean": 4.341926691780991,
+            "median": 2.699367713363195,
+            "max": 18.836333846378977
+          }
+        },
+        "grips": {
+          "before": {
+            "recordedAttempts": 126,
+            "brokenAttempts": 2,
+            "heldSeconds": {
+              "n": 126,
+              "mean": 1.2484126984126978,
+              "median": 0.8500000000000002,
+              "max": 4.099999999999993
+            }
+          },
+          "after": {
+            "recordedAttempts": 126,
+            "brokenAttempts": 2,
+            "heldSeconds": {
+              "n": 126,
+              "mean": 1.2484126984126978,
+              "median": 0.8500000000000002,
+              "max": 4.099999999999993
+            }
+          }
+        },
+        "becameUntackled": [],
+        "tackledRunnerEndpointSupport": {
+          "baseline": {
+            "up": 14,
+            "falling": 0,
+            "down": 106
+          },
+          "current": {
+            "up": 14,
+            "falling": 0,
+            "down": 106
+          }
+        },
+        "tackledContactToEndAtLeast4s": {
+          "baseline": 14,
+          "current": 14
+        }
+      },
+      "patch": {
+        "count": 144,
+        "before": {
+          "tackled": 120,
+          "escaped": 20,
+          "censored": 4
+        },
+        "after": {
+          "tackled": 94,
+          "escaped": 42,
+          "censored": 8
+        },
+        "exactResults": 18,
+        "exactNativeEndpoints": 18,
+        "lowerBeforeSlipReps": {
+          "before": 126,
+          "after": 126
+        },
+        "pointMomentRowReps": {
+          "before": 0,
+          "after": 126
+        },
+        "operatorCarry": {
+          "before": {
+            "n": 126,
+            "mean": 4.380059682598866,
+            "median": 2.718543620317167,
+            "max": 18.836333846378977
+          },
+          "after": {
+            "n": 126,
+            "mean": 7.225420741716862,
+            "median": 6.10758945569799,
+            "max": 21.152192817375564
+          }
+        },
+        "grips": {
+          "before": {
+            "recordedAttempts": 126,
+            "brokenAttempts": 2,
+            "heldSeconds": {
+              "n": 126,
+              "mean": 1.258730158730158,
+              "median": 0.8500000000000002,
+              "max": 4.099999999999993
+            }
+          },
+          "after": {
+            "recordedAttempts": 126,
+            "brokenAttempts": 26,
+            "heldSeconds": {
+              "n": 126,
+              "mean": 1.9063492063492045,
+              "median": 1.0000000000000002,
+              "max": 4.099999999999993
+            }
+          }
+        },
+        "becameUntackled": 26,
+        "tackledRunnerEndpointSupport": {
+          "baseline": {
+            "up": 14,
+            "falling": 0,
+            "down": 106
+          },
+          "current": {
+            "up": 34,
+            "falling": 0,
+            "down": 60
+          }
+        },
+        "tackledContactToEndAtLeast4s": {
+          "baseline": 14,
+          "current": 34
+        }
+      }
+    },
+    "adverseCells": [
+      {
+        "angle": 45,
+        "speed": 8,
+        "cut": false,
+        "reps": 6,
+        "before": {
+          "tackled": 6,
+          "escaped": 0,
+          "censored": 0
+        },
+        "after": {
+          "tackled": 0,
+          "escaped": 6,
+          "censored": 0
+        },
+        "exactResults": 0,
+        "exactNativeEndpoints": 0,
+        "carryIncrease": 6,
+        "becameUntackled": 6
+      },
+      {
+        "angle": 45,
+        "speed": 8,
+        "cut": true,
+        "reps": 6,
+        "before": {
+          "tackled": 6,
+          "escaped": 0,
+          "censored": 0
+        },
+        "after": {
+          "tackled": 0,
+          "escaped": 4,
+          "censored": 2
+        },
+        "exactResults": 0,
+        "exactNativeEndpoints": 0,
+        "carryIncrease": 6,
+        "becameUntackled": 6
+      },
+      {
+        "angle": 90,
+        "speed": 6,
+        "cut": false,
+        "reps": 6,
+        "before": {
+          "tackled": 4,
+          "escaped": 2,
+          "censored": 0
+        },
+        "after": {
+          "tackled": 0,
+          "escaped": 6,
+          "censored": 0
+        },
+        "exactResults": 0,
+        "exactNativeEndpoints": 0,
+        "carryIncrease": 2,
+        "becameUntackled": 4
+      },
+      {
+        "angle": 90,
+        "speed": 6,
+        "cut": true,
+        "reps": 6,
+        "before": {
+          "tackled": 6,
+          "escaped": 0,
+          "censored": 0
+        },
+        "after": {
+          "tackled": 0,
+          "escaped": 6,
+          "censored": 0
+        },
+        "exactResults": 0,
+        "exactNativeEndpoints": 0,
+        "carryIncrease": 4,
+        "becameUntackled": 6
+      },
+      {
+        "angle": 135,
+        "speed": 6,
+        "cut": false,
+        "reps": 6,
+        "before": {
+          "tackled": 2,
+          "escaped": 0,
+          "censored": 4
+        },
+        "after": {
+          "tackled": 0,
+          "escaped": 0,
+          "censored": 6
+        },
+        "exactResults": 0,
+        "exactNativeEndpoints": 0,
+        "carryIncrease": 6,
+        "becameUntackled": 2
+      },
+      {
+        "angle": 180,
+        "speed": 6,
+        "cut": false,
+        "reps": 6,
+        "before": {
+          "tackled": 6,
+          "escaped": 0,
+          "censored": 0
+        },
+        "after": {
+          "tackled": 4,
+          "escaped": 2,
+          "censored": 0
+        },
+        "exactResults": 0,
+        "exactNativeEndpoints": 0,
+        "carryIncrease": 4,
+        "becameUntackled": 2
+      }
+    ],
+    "receipt": {
+      "path": "out/lower-grip-repair/native-panel-review.json",
+      "bytes": 22797,
+      "sha256": "b0240efb3801750e24cf5e4cc1fb8d98967eb3f0e5076b024e236b50267c5b09"
+    },
+    "limits": [
+      "Lower law is exercised before slip in126reps; the changed row moment coefficients do not alone prove law conservation.",
+      "One roster pair and3 seeds; no full-game, NFL-frequency, broad-YAC or patch-promotion claim.",
+      "Original firstContact includes missed attempts; operatorCarry is its advance, not physical/NFL YAC.",
+      "Deceleration is actual tick-to-tick carrier forward velocity change after first positive-load hold, includes ground/body/control changes and truncates at observed end; it is not grip-only force attribution.",
+      "Read-only inspector makes no extra perception/controller/RNG call; no extra unobserved fifth arm was authorized.",
+      "All first-difference states are achieved after a tick; raw and applied commands were not recorded by this minimal observer."
+    ],
+    "adverseIds": [
+      "TP-45-8-straight-1-3000",
+      "TP-45-8-straight-1-3001",
+      "TP-45-8-straight-1-3002",
+      "TP-45-8-straight--1-3000",
+      "TP-45-8-straight--1-3001",
+      "TP-45-8-straight--1-3002",
+      "TP-45-8-cut-1-3000",
+      "TP-45-8-cut-1-3001",
+      "TP-45-8-cut-1-3002",
+      "TP-45-8-cut--1-3000",
+      "TP-45-8-cut--1-3001",
+      "TP-45-8-cut--1-3002",
+      "TP-90-6-straight-1-3001",
+      "TP-90-6-straight-1-3002",
+      "TP-90-6-straight--1-3001",
+      "TP-90-6-straight--1-3002",
+      "TP-90-6-cut-1-3000",
+      "TP-90-6-cut-1-3001",
+      "TP-90-6-cut-1-3002",
+      "TP-90-6-cut--1-3000",
+      "TP-90-6-cut--1-3001",
+      "TP-90-6-cut--1-3002",
+      "TP-135-6-straight-1-3001",
+      "TP-135-6-straight--1-3001",
+      "TP-180-6-straight-1-3000",
+      "TP-180-6-straight--1-3000"
+    ],
+    "firstLoadedWitness": {
+      "id": "TP-45-8-straight-1-3000",
+      "before": {
+        "ending": "tackled",
+        "afterContact": 5.428408074724771,
+        "contactToEnd": 0.8500000000000001,
+        "tacklerDown": false
+      },
+      "after": {
+        "ending": "escaped",
+        "afterContact": 8.245311702043246,
+        "contactToEnd": 1.15,
+        "tacklerDown": true
+      },
+      "firstObservedPhysicalDifference": {
+        "t": 2.7,
+        "previousObservedStatesExact": 13,
+        "before": {
+          "t": 2.7,
+          "grips": [
+            {
+              "legs": 0.5315349795795975,
+              "force": 968.80158867056,
+              "slipping": true
+            }
+          ],
+          "carrierGround": {
+            "x": 3.376935373657445,
+            "y": 0.08098351358817342
+          },
+          "tacklerGround": {
+            "x": 59.929123620958784,
+            "y": 0.6165172202668058
+          },
+          "c": {
+            "vel": {
+              "x": 7.6057376119695705,
+              "y": 0.055135483953757114
+            },
+            "spin": 0,
+            "support": {
+              "state": "up",
+              "xi": {
+                "x": 0.16593914931085335,
+                "y": -0.023668960371393634
+              },
+              "out": 0.004166666666666667
+            }
+          },
+          "d": {
+            "vel": {
+              "x": 1.9966146501932136,
+              "y": -3.013986833924111
+            },
+            "spin": 3.0190346588790917,
+            "support": {
+              "state": "up",
+              "xi": {
+                "x": 0.07381577443534632,
+                "y": 0.0013492930111166405
+              },
+              "out": 0
+            }
+          }
+        },
+        "after": {
+          "t": 2.7,
+          "grips": [
+            {
+              "legs": 0.4542073106848386,
+              "force": 541.3061297175551,
+              "slipping": false
+            }
+          ],
+          "carrierGround": {
+            "x": 2.794304177876978,
+            "y": -1.6019338788959114
+          },
+          "tacklerGround": {
+            "x": 59.929123620958784,
+            "y": 0.6165172202668058
+          },
+          "c": {
+            "vel": {
+              "x": 7.91353431016995,
+              "y": 0.16409451375609624
+            },
+            "spin": -0.014236136984132978,
+            "support": {
+              "state": "up",
+              "xi": {
+                "x": 0.03964289772872953,
+                "y": -0.06593882449122408
+              },
+              "out": 0
+            }
+          },
+          "d": {
+            "vel": {
+              "x": 1.6528536248730976,
+              "y": -3.150210579841739
+            },
+            "spin": 6.559499936709864,
+            "support": {
+              "state": "up",
+              "xi": {
+                "x": 0.04686095263206726,
+                "y": -0.0006266957674361414
+              },
+              "out": 0
+            }
+          }
+        }
+      }
+    },
+    "otherWitnesses": [
+      {
+        "id": "TP-90-6-cut-1-3000",
+        "before": {
+          "ending": "tackled",
+          "afterContact": 4.7373663040312834,
+          "contactToEnd": 1.1999999999999997,
+          "tacklerDown": true
+        },
+        "after": {
+          "ending": "escaped",
+          "afterContact": 4.465837827476342,
+          "contactToEnd": 1,
+          "tacklerDown": true
+        }
+      },
+      {
+        "id": "TP-0-6-cut-1-3001",
+        "before": {
+          "ending": "tackled",
+          "afterContact": 1.248056869876983,
+          "contactToEnd": 0.6499999999999999,
+          "tacklerDown": true
+        },
+        "after": {
+          "ending": "tackled",
+          "afterContact": 13.609464924734645,
+          "contactToEnd": 4.1,
+          "tacklerDown": false
+        }
+      },
+      {
+        "id": "TP-180-6-straight-1-3000",
+        "before": {
+          "ending": "tackled",
+          "afterContact": 5.834807408798646,
+          "contactToEnd": 1.1,
+          "tacklerDown": true
+        },
+        "after": {
+          "ending": "escaped",
+          "afterContact": 6.787593298692222,
+          "contactToEnd": 1.2000000000000002,
+          "tacklerDown": true
+        }
+      }
+    ]
+  },
+  "zoneSupport": {
+    "source": "27b43749f5e25302c8ed195a393257b6925b26112321c312b73ab6858633a04b",
+    "operator": {
+      "path": "docs/archive/research/contact-mechanics/zone-motion-envelope.ts",
+      "bytes": 4003,
+      "sha256": "ece96c1d30e862428ca95631212db7687eb46b386c9b9d9aeaacc805e696e110"
+    },
+    "inputSha256": "c525c16c43800f8c23f6438637c5c53658bb4e8b06e7f7020f6839028b092ce5",
+    "cases": 40,
+    "summaries": [
+      {
+        "mode": "center",
+        "case": "ordinary",
+        "medianPoint2Y": 0.048908851750904876,
+        "medianPoint2Vy": 0.43277924010422236,
+        "medianPoint5Y": 0.2210010912002637,
+        "medianPoint5Vy": 0.6811870764868793,
+        "medianTempoStraightPredictionAtPoint2": 0.34
+      },
+      {
+        "mode": "center",
+        "case": "max-side",
+        "medianPoint2Y": 0.056659208077711604,
+        "medianPoint2Vy": 0.5530244614826725,
+        "medianPoint5Y": 0.32884908845510524,
+        "medianPoint5Vy": 1.2355370224049966,
+        "medianTempoStraightPredictionAtPoint2": 1.5075850000740754
+      },
+      {
+        "mode": "center",
+        "case": "max-open",
+        "medianPoint2Y": 0.07790871271392522,
+        "medianPoint2Vy": 0.8035700211498873,
+        "medianPoint5Y": 0.49775449880517786,
+        "medianPoint5Vy": 1.953271132911615,
+        "medianTempoStraightPredictionAtPoint2": 1.5075850000740754
+      },
+      {
+        "mode": "center",
+        "case": "called-tempo",
+        "medianPoint2Y": 0.05083343354701354,
+        "medianPoint2Vy": 0.49532033507782103,
+        "medianPoint5Y": 0.28665534642203583,
+        "medianPoint5Vy": 1.0450029061384465,
+        "medianTempoStraightPredictionAtPoint2": 0.678413250033334
+      }
+    ],
+    "limits": "Bare actual-profile capabilities; no loaded blocks/controller ticks/game results or NFL target. Supports conditional request/facing and attainable call prediction recommendations."
+  },
+  "next": "Retain fast angled grip escape and slow rear co-motion; inspect first loaded contact location, moment, attainable ground yaw/control and support. Current one-point acquisition is not a distributed anatomical wrap. Do not retune strength/inertia to restore an old stop or promote on laws alone.",
+  "reproduce": [
+    "npm test -- test/lower-grip-angular-transfer.test.ts test/grasp-angular-transfer.test.ts",
+    "node --import tsx docs/archive/research/contact-mechanics/grasp-law.ts out/grasp-lower.json . --stress-lower --assert-law",
+    "node --import tsx docs/archive/research/contact-mechanics/zone-motion-envelope.ts out/zone-motion.json",
+    "node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1"
+  ]
+}

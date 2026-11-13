@@ -1,0 +1,142 @@
+{
+  "schema": "tackle-timing-trap-first-difference-v1",
+  "id": "RC-R3-trap-over-L-S3",
+  "selection": "Retrospective largest absolute run-gain delta selected after the full 144-pair measurement.",
+  "baselineSource": "2b405d9a79bbb09c21e5e1146a32632c62263fb9e67f319091196f45d8a80ef4",
+  "candidateSource": "bbfaf460a9962459702dc5702b62b5b5e5933eac7c7e5ab1986095690d1759db",
+  "scriptSha256": "7eacd2ae40dd8fc10d6ed524baa1e548e6a2bb76ff842bdf5f19c153d06c976d",
+  "firstRetainedPhysicalDifference": {
+    "tickLabel": 3.35,
+    "tickEnd": 3.4,
+    "differingFields": [
+      "afterTick",
+      "afterTickJoints",
+      "bond"
+    ],
+    "samePrePhysicsState": true,
+    "sameExecutedIntents": true,
+    "samePostPhysicsState": true
+  },
+  "firstWraps": {
+    "baseline": {
+      "event": {
+        "t": 3.35,
+        "type": "tackle_wrap",
+        "a": 21,
+        "b": 6,
+        "pos": {
+          "x": 42.74,
+          "y": 31.82
+        },
+        "note": "initial"
+      },
+      "postPhysicsDistanceYd": 1.2423130480947668,
+      "postPhysicsQuality": 0.39216450863360863,
+      "acquiredHold": {
+        "kind": "grasp",
+        "a": 21,
+        "b": 6,
+        "reach": 1.4456477272727275,
+        "capacity": 301.7690762492929,
+        "legs": 0.27456809923586745,
+        "pull": 1.6897959183673468,
+        "hold": 1.2423130480947668,
+        "origin": "reach",
+        "actualPoint": {
+          "x": 41.77524659673749,
+          "y": 32.6030982310623
+        },
+        "actualCapacity": 301.7690762492929,
+        "actor": -1,
+        "holder": -1
+      },
+      "panelSignatureVerified": true,
+      "signature": "5e03aa1216a25c8a6aa43a14b1bad30b2629a49b52d148c1e4e33d513ed068a4",
+      "rawGainYd": 26.48,
+      "penalty": "holding",
+      "outcome": "oob"
+    },
+    "candidate": {
+      "event": {
+        "t": 3.4,
+        "type": "tackle_wrap",
+        "a": 21,
+        "b": 6,
+        "pos": {
+          "x": 42.65,
+          "y": 31.89
+        },
+        "note": "initial"
+      },
+      "postPhysicsDistanceYd": 1.1800042892272211,
+      "postPhysicsQuality": 0.47189137265463743,
+      "acquiredHold": {
+        "kind": "grasp",
+        "a": 21,
+        "b": 6,
+        "reach": 1.4456477272727275,
+        "capacity": 913.8349656675941,
+        "legs": 0.615119488501526,
+        "pull": 1.6897959183673468,
+        "hold": 1.1800042892272213,
+        "origin": "reach+behind",
+        "actualPoint": {
+          "x": 41.9520649657608,
+          "y": 32.84688578358464
+        },
+        "actualCapacity": 913.8349656675941,
+        "actor": -1,
+        "holder": -1
+      },
+      "panelSignatureVerified": true,
+      "signature": "d600cbf3dfba7d83f99b4d5c4195ec8786422f66667da9ecc8c626df0970f9c0",
+      "rawGainYd": 3.66,
+      "penalty": null,
+      "outcome": "tackle"
+    }
+  },
+  "candidateDecisions": [
+    {
+      "t": 3.3,
+      "a": 21,
+      "kind": "tackle-opportunity",
+      "chose": "keep feet moving",
+      "cue": "delayed carrier motion and attainable movement",
+      "options": [
+        "keep feet moving",
+        "attempt current opportunity"
+      ],
+      "detail": "Observed wrap quality 0.31; best attainable decision sample 0.84 at 0.15 s. Held movement command; future cuts and contacts are unknown."
+    },
+    {
+      "t": 3.35,
+      "a": 21,
+      "kind": "tackle-opportunity",
+      "chose": "keep feet moving",
+      "cue": "delayed carrier motion and attainable movement",
+      "options": [
+        "keep feet moving",
+        "attempt current opportunity"
+      ],
+      "detail": "Observed wrap quality 0.50; best attainable decision sample 0.72 at 0.10 s. Held movement command; future cuts and contacts are unknown."
+    },
+    {
+      "t": 3.4,
+      "a": 21,
+      "kind": "tackle-opportunity",
+      "chose": "attempt current opportunity",
+      "cue": "delayed carrier motion and attainable movement",
+      "options": [
+        "keep feet moving",
+        "attempt current opportunity"
+      ],
+      "detail": "Observed wrap quality 0.57; best attainable decision sample 0.62 at 0.05 s. Held movement command; future cuts and contacts are unknown."
+    }
+  ],
+  "limits": [
+    "50 ms retained tick boundaries, not sub-tick event onset.",
+    "Raw forward progress precedes game penalty enforcement; baseline includes holding.",
+    "Later execution RNG draws/order and approach angle differ after the attempt decision. Stronger acquired hold is not wholly explained by closer geometry.",
+    "No strength or tackle-success parameters were edited; no NFL rate or target gain was fitted."
+  ]
+}

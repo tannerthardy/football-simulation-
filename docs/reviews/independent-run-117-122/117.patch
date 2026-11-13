@@ -1,0 +1,263 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 7f880da93024f127f77866962b63b2d311b4c314..8ad94db042665f460cfb0703264a0b2e7280aa4d 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -1054,9 +1054,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
+   const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
+   const seal = clamp(dLat + feedback + correction, -mirror, mirror);
+-  // Anchor: a blocker who feels himself driven back stops spending traction
+-  // on lateral drive and pushes straight against the load he feels.
+-  // Locomotion and lean share one traction budget in the World.
++  // Anchor against felt lost depth. A stretch keeps its shoulder footwork;
++  // drive blocks reduce it. Locomotion and lean share one physical budget.
+   // On a stretch play the reach is a race for the playside shoulder, not a
+   // vertical drive: forward work only keeps him connected (matches the
+   // defender's own forward motion and closes separation), leaving the shared
+@@ -1082,8 +1081,19 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+       }
+     }
+   }
+-  let blockVel = RUN_CONTACT_COMPONENTS && stretch ? contactMotion(drive, lat, forward, lateral)
+-    : { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
++  let blockVel: Vec2;
++  if (RUN_CONTACT_COMPONENTS && stretch) {
++    // Follow motion across the contact surface in that same normal frame.
++    // Projecting the defender onto a diagonal drive aliases shoulder flow
++    // into depth work, then attenuates true normal motion a second time.
++    // Keep the existing projected closure and bounds: a tangential drive
++    // earns no extra normal request, and no angle division is needed.
++    const driveNormal = -(drive.x * axis.x + drive.y * axis.y);
++    const defenderNormal = -(d.vel.x * axis.x + d.vel.y * axis.y);
++    const normal = clamp(defenderNormal + driveNormal * gap * 3,
++      Math.min(-driveNormal, 2.4 * driveNormal), Math.max(-driveNormal, 2.4 * driveNormal));
++    blockVel = { x: -axis.x * normal + lat.x * lateral, y: -axis.y * normal + lat.y * lateral };
++  } else blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+   const preAnchor = blockVel;
+   let anchored = false;
+   // Anchor against the normal threat only (lost depth), and keep the
+@@ -1095,14 +1105,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     const load = Math.hypot(feltLoad.x, feltLoad.y);
+     if (ANCHOR_SPLIT) {
+       // The normal threat is lost depth: load and motion toward his own
+-      // backfield. Then he braces upfield and spends little on lateral work
+-      // (one traction budget). Load from a defender flowing across him, with
+-      // no depth lost, is lateral co-flow: he keeps working sideways.
++      // backfield. Then he braces upfield. A stretch retains its shoulder
++      // work; a vertical drive reduces it. Both spend the same World budget.
++      // Flowing across him without lost depth is lateral co-flow.
+       const up = sim.attackDir(b.team);
+       const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
+       if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
+         anchored = true;
+-        blockVel = { x: up * 2.4 + lat.x * lateral * 0.3, y: lat.y * lateral * 0.3 };
++        const shoulderWork = lateral * (stretch ? 1 : 0.3);
++        blockVel = { x: up * 2.4 + lat.x * shoulderWork, y: lat.y * shoulderWork };
+       }
+     } else {
+       const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
+@@ -1121,6 +1132,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     cutSkill: 0.8 + 0.3 * tb.feet,
+   };
+   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
++    // `forward` is retained for older diagnostic readers. Component-mode
++    // normal work is the emitted command, not that legacy drive projection.
++    legacyDriveRequest: forward, normalRequest: -(blockVel.x * axis.x + blockVel.y * axis.y),
+     dLat, feltCue, feedback, correction, mirror, offset, wantOffset, seal,
+     sealWithoutFeel: clamp(dLat + correction, -mirror, mirror), contactTrack, lateral, preAnchor,
+     anchored, command: intents[b.idx], blockerPos: b.pos, defenderPos: d.pos,
+diff --git a/test/stretch-anchor-footwork.test.ts b/test/stretch-anchor-footwork.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..0c974efb807b4f0f1a6134a92164ada9882d9981
+--- /dev/null
++++ b/test/stretch-anchor-footwork.test.ts
+@@ -0,0 +1,46 @@
++import {afterEach,describe,expect,it,vi} from 'vitest';
++import {contactFixture} from '../scripts/diag/run-contact-technique.js';
++import {RUN_BY_ID} from '../src/playbook/concepts.js';
++import type {Intent} from '../src/physics/world.js';
++
++afterEach(()=>{vi.unstubAllEnvs();vi.resetModules();});
++
++async function command(side:number,anchor:boolean,stretch=true){
++ vi.stubEnv('RUN_ANCHOR',anchor?'1':'0');
++ vi.stubEnv('ANCHOR_SPLIT','1');vi.stubEnv('STRETCH_REACH','1');vi.resetModules();
++ const {updateEngagements}=await import('../src/sim/engagement.js');
++ const {runContactObservers}=await import('../src/sim/run-contact-observer.js');
++ const f=contactFixture({type:'run',runBlock:60,passBlock:60,side});
++ f.sim.offCall.run=stretch?RUN_BY_ID.wz_strong:RUN_BY_ID.iz_strong;
++ f.engagement.surfaceAxis={x:-1,y:0};f.engagement.drive={x:1,y:0};f.engagement.nextMoveAt=Infinity;
++ // Declared incoming loaded state; actual execution remains a separate World
++ // witness. No future runner route or new opponent information is supplied.
++ f.blocker.body.vel={x:-.4,y:side*.8};
++ f.blocker.body.support!.felt={x:-1000,y:-side*400};
++ const bodies=structuredClone(f.sim.agents.map(a=>a.body)),hands=f.engagement.hands;
++ let movement:any;
++ runContactObservers.set(f.sim,(_e,phase,data)=>{if(phase==='movement')movement=data;});
++ const intents:Intent[]=f.sim.agents.map(a=>({vel:{x:0,y:0},facing:a.facing}));
++ updateEngagements(f.sim,intents);
++ expect(f.sim.agents.map(a=>a.body)).toEqual(bodies);expect(f.engagement.hands).toBe(hands);
++ return {command:intents[f.blocker.idx],movement,profile:structuredClone(f.blocker.profile),rng:structuredClone(f.sim.rng),
++  hand:{push:hands!.push,hold:hands!.hold,steer:hands!.steer,extension:hands!.extension}};
++}
++
++describe('a loaded stretch anchor retains useful shoulder footwork',()=>{
++ it.each([-1,1])('adds depth resistance without commanding loss of the existing shoulder work, side=%s',async side=>{
++  const free=await command(side,false),anchor=await command(side,true);
++  expect(anchor.movement.anchored).toBe(true);expect(free.movement.anchored).toBe(false);
++  expect(Math.abs(free.command.vel.y)).toBeGreaterThan(.1);
++  expect(anchor.command.vel.y).toBeCloseTo(free.command.vel.y,12);
++  expect(anchor.command.vel.x).toBeCloseTo(2.4,12);
++  expect(anchor.command.vel.x).toBeGreaterThan(free.command.vel.x);
++  expect(anchor.command.push).toBe(free.command.push);expect(anchor.command.posture).toBe(free.command.posture);
++  expect(anchor.profile).toEqual(free.profile);expect(anchor.hand).toEqual(free.hand);expect(anchor.rng).toEqual(free.rng);
++ });
++ it('preserves the ordinary vertical-block anchor response',async()=>{
++  const drive=await command(1,true,false);
++  expect(drive.movement.anchored).toBe(true);expect(drive.command.vel.x).toBeCloseTo(2.4,12);
++  expect(drive.command.vel.y).toBeCloseTo(drive.movement.lat.y*drive.movement.lateral*.3,12);
++ });
++});
+diff --git a/test/stretch-normal-follow.test.ts b/test/stretch-normal-follow.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..c846087c5c21f6c17e4b4877246a057b8fc1d858
+--- /dev/null
++++ b/test/stretch-normal-follow.test.ts
+@@ -0,0 +1,137 @@
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
++import type { Vec2 } from '../src/core/vec.js';
++import { contactFixture } from '../scripts/diag/run-contact-technique.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++
++beforeEach(() => {
++  vi.stubEnv('RUN_CONTACT_COMPONENTS', '1');
++  vi.stubEnv('RUN_HANDS', '0');
++  vi.stubEnv('DL_HANDS', '0');
++  vi.stubEnv('RUN_ANCHOR', '1');
++  vi.stubEnv('ANCHOR_SPLIT', '1');
++  vi.stubEnv('STRETCH_REACH', '1');
++  vi.resetModules();
++});
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++interface Input {
++  side?: number;
++  driveNormal?: number;
++  normalVelocity?: number;
++  lateralVelocity?: number;
++  gap?: number;
++  stretch?: boolean;
++  anchor?: boolean;
++  axis?: Vec2;
++}
++
++/** A real acquired engagement, with explicit geometry and incoming velocity.
++ * Commands only: no World previews, fabricated contact load or future runner
++ * path. The anchor opposing control alone installs its stated incoming load.
++ */
++async function command(input: Input = {}) {
++  const { updateEngagements } = await import('../src/sim/engagement.js');
++  const { runContactObservers } = await import('../src/sim/run-contact-observer.js');
++  const side = input.side ?? 1, driveNormal = input.driveNormal ?? .6;
++  const f = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side });
++  f.sim.offCall.run = input.stretch === false ? RUN_BY_ID.iz_strong : RUN_BY_ID.wz_strong;
++  const axis = input.axis ?? { x: -1, y: 0 };
++  const normal = { x: -axis.x, y: -axis.y }, across = { x: axis.y, y: -axis.x };
++  const driveLateral = side * Math.sqrt(1 - driveNormal * driveNormal);
++  f.engagement.surfaceAxis = { ...axis };
++  f.engagement.drive = { x: normal.x * driveNormal + across.x * driveLateral,
++    y: normal.y * driveNormal + across.y * driveLateral };
++  f.engagement.nextMoveAt = Infinity;
++  const sep = f.blocker.profile.radius + f.defender.profile.radius;
++  f.defender.body.pos = { x: f.blocker.pos.x + normal.x * (sep + (input.gap ?? 0)),
++    y: f.blocker.pos.y + normal.y * (sep + (input.gap ?? 0)) };
++  f.defender.body.vel = { x: normal.x * (input.normalVelocity ?? 0) + across.x * side * (input.lateralVelocity ?? 0),
++    y: normal.y * (input.normalVelocity ?? 0) + across.y * side * (input.lateralVelocity ?? 0) };
++  f.blocker.body.vel = { x: input.anchor ? -.4 : 0, y: 0 };
++  f.blocker.body.support!.felt = input.anchor ? { x: -1000, y: 0 } : { x: 0, y: 0 };
++  const before = structuredClone(f.sim.agents.map(a => a.body));
++  const hands = f.engagement.hands!;
++  let movement: { anchored: boolean; lateral: number; lat: Vec2 } | undefined;
++  runContactObservers.set(f.sim, (_e, phase, data) => {
++    if (phase === 'movement') movement = data as typeof movement;
++  });
++  const intents = f.sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
++  updateEngagements(f.sim, intents);
++  expect(movement).toBeDefined();
++  expect(f.engagement.hands).toBe(hands);
++  expect(f.sim.agents.map(a => a.body)).toEqual(before);
++  return { intent: intents[f.blocker.idx], movement: movement! };
++}
++
++describe('stretch connection follows velocity in the acquired normal frame', () => {
++  it.each([-1, 1])('does not turn pure lateral opponent motion into normal drive, side=%s', async side => {
++    const resting = await command({ side });
++    const flowing = await command({ side, lateralVelocity: 3 });
++    expect(resting.movement.anchored).toBe(false);
++    expect(flowing.movement.anchored).toBe(false);
++    expect(flowing.intent.vel.x).toBeCloseTo(resting.intent.vel.x, 12);
++    expect(flowing.intent.vel.x).toBeCloseTo(0, 12);
++    expect(Math.abs(flowing.intent.vel.y)).toBeGreaterThan(Math.abs(resting.intent.vel.y));
++  });
++
++  it.each([-.5, .7])('follows attainable normal opponent velocity %s without attenuating it twice', async normalVelocity => {
++    const requested = await command({ normalVelocity });
++    expect(requested.intent.vel.x).toBeCloseTo(normalVelocity, 12);
++  });
++
++  it.each([[-3, -.6], [3, 1.44]])('keeps projected normal bounds for opponent velocity %s', async (normalVelocity, limit) => {
++    const requested = await command({ normalVelocity });
++    expect(requested.intent.vel.x).toBeCloseTo(limit, 12);
++  });
++
++  it.each([-1, 1])('retains stationary oblique gap closure, side=%s', async side => {
++    const requested = await command({ side, gap: .1 });
++    // Existing 3/s closure along a drive with 0.6 normal component.
++    expect(requested.intent.vel.x).toBeCloseTo(.18, 12);
++  });
++
++  it.each([0, 1e-10, 1e-5])('does not amplify normal work for near-tangent drive %s', async driveNormal => {
++    const requested = await command({ driveNormal, normalVelocity: 3, lateralVelocity: 3, gap: .1 });
++    expect(Number.isFinite(requested.intent.vel.x)).toBe(true);
++    expect(Number.isFinite(requested.intent.vel.y)).toBe(true);
++    expect(Math.abs(requested.intent.vel.x)).toBeLessThanOrEqual(2.4 * driveNormal + 1e-12);
++  });
++
++  it('retains straight-drive following and closure despite lateral flow', async () => {
++    const requested = await command({ driveNormal: 1, normalVelocity: -.4, lateralVelocity: 3, gap: .1 });
++    expect(requested.intent.vel.x).toBeCloseTo(-.1, 12);
++  });
++
++  it('retains ordinary inside-zone downhill work', async () => {
++    const requested = await command({ stretch: false, normalVelocity: -.5, lateralVelocity: 3 });
++    expect(requested.intent.vel.x).toBeCloseTo(.6 * 2.4, 12);
++    expect(requested.movement.anchored).toBe(false);
++  });
++
++  it('retains the opposing vertical-block lost-depth anchor response', async () => {
++    const requested = await command({ stretch: false, anchor: true, normalVelocity: -.5, lateralVelocity: 3 });
++    expect(requested.movement.anchored).toBe(true);
++    expect(requested.intent.vel.x).toBeCloseTo(2.4, 12);
++    expect(requested.intent.vel.y).toBeCloseTo(requested.movement.lat.y * requested.movement.lateral * .3, 12);
++  });
++
++  it('keeps normal following in a rotated acquired surface frame', async () => {
++    const requested = await command({ axis: { x: -.8, y: -.6 }, normalVelocity: -.5, lateralVelocity: 3 });
++    expect(requested.movement.anchored).toBe(false);
++    expect(requested.intent.vel.x * .8 + requested.intent.vel.y * .6).toBeCloseTo(-.5, 12);
++  });
++
++  it('preserves signed closure and bounded following for a reversed normal drive', async () => {
++    const closing = await command({ driveNormal: -.6, gap: .1 });
++    expect(closing.intent.vel.x).toBeCloseTo(.18, 12);
++    const following = await command({ driveNormal: -.6, normalVelocity: -.5 });
++    expect(following.intent.vel.x).toBeCloseTo(-.5, 12);
++  });
++
++  it('preserves the explicitly selected legacy non-component request', async () => {
++    vi.stubEnv('RUN_CONTACT_COMPONENTS', '0'); vi.resetModules();
++    const requested = await command({ lateralVelocity: 3 });
++    expect(requested.intent.vel.x).toBeCloseTo(.6 * 2.4, 12);
++    expect(requested.intent.vel.y).toBeCloseTo(.8 * 2.4 - requested.movement.lateral, 12);
++  });
++});

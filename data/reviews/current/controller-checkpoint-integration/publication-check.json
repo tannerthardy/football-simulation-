@@ -1,0 +1,54 @@
+{
+  "schema": "controller-checkpoint-publication-check-v1",
+  "testedCommit": "40be568d9fa19c8361384c677e3ab87ba1321255",
+  "acceptedBase": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "protectedSourceTestsSettingsToolingMatchTestedFreeze": true,
+  "changedProtectedPaths": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/collection-approach.ts",
+    "test/collection-approach.test.ts",
+    "test/zone-helper-check.test.ts"
+  ],
+  "passingReceiptArtifactHashesChecked": true,
+  "all153PriorCurrentEvidenceFilesPreserved": true,
+  "newDocumentationLinksChecked": [
+    [
+      "docs/INTEGRATION.md",
+      "TESTING_COSTS.md"
+    ],
+    [
+      "docs/INTEGRATION.md",
+      "../data/reviews/current/controller-checkpoint-integration/final-receipt.json"
+    ],
+    [
+      "docs/STATUS.md",
+      "INTEGRATION.md#standing-integration-workflow"
+    ],
+    [
+      "docs/STATUS.md",
+      "INTEGRATION.md#accepted-controller-game-checkpoint"
+    ],
+    [
+      "docs/ISSUES.md",
+      "INTEGRATION.md#standing-integration-workflow"
+    ],
+    [
+      "docs/ISSUES.md",
+      "#RUN-008"
+    ],
+    [
+      "docs/WORKBOARD.md",
+      "INTEGRATION.md#standing-integration-workflow"
+    ],
+    [
+      "docs/WORKBOARD.md",
+      "../data/reviews/current/controller-checkpoint-integration/final-receipt.json"
+    ],
+    [
+      "docs/WORKBOARD.md",
+      "INTEGRATION.md#accepted-controller-game-checkpoint"
+    ]
+  ],
+  "scope": "Only docs/new receipts after tested freeze; no suite rerun justified.",
+  "readiness": "#69 has exact independent acceptance and full verification; #75 remains individually blocked."
+}

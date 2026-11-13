@@ -1,0 +1,43 @@
+/** Reconstructed reproducer, not the original inline inspection tool.
+ * Compare its output to the preserved original report before using it.
+ * Static constructors only: no World step or NFL outcome is measured. */
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { CENTER_Y } from '../../src/core/field.js';
+import { Rng } from '../../src/core/rng.js';
+import { generateTeam, pickOffense, pickDefense } from '../../src/league/team.js';
+import { RUN_BY_ID } from '../../src/playbook/concepts.js';
+import { FRONT_BY_ID, COVERAGE_BY_ID } from '../../src/playbook/defense.js';
+import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
+import { PlaySim } from '../../src/sim/playsim.js';
+import { buildRunFits } from '../../src/sim/run-fits.js';
+import { sourceVersion } from '../source-version.js';
+
+const expected = '11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85';
+const source = sourceVersion();
+if (source !== expected) throw new Error(`Expected ${expected}, found ${source}`);
+const offense = generateTeam(new Rng(11), 'O', 'O', { strength: .55 });
+const defense = generateTeam(new Rng(12), 'D', 'D', { strength: .55 });
+const rows = [];
+for (const front of ['over', 'under', 'odd', 'tite']) {
+  for (const exchange of [false, true]) {
+    const personnel = front === 'odd' || front === 'tite' ? 'base34' : 'base43';
+    const sim = new PlaySim({
+      offense: pickOffense(offense, '11'), defense: pickDefense(defense, personnel),
+      offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'audit' },
+      defCall: { personnel, front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID.cover2, pressure: null, label: 'audit',
+        ...(exchange ? { gapExchange: { edge: 'DE_W', backer: 'LB_W' } } : {}) },
+      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 77,
+    });
+    const jobs = buildRunFits(sim);
+    rows.push({ front, exchange, jobs: sim.defense.map(d => ({
+      slot: d.slot, pos: d.pos, role: sim.defAlign.spots[d.slot]!.role, fit: jobs.get(d),
+    })) });
+  }
+}
+if (sourceVersion() !== source) throw new Error('Source changed during reproduction');
+const report = { source, scope: 'Static manually requested fit audit, no physical or NFL outcomes', rows };
+const output = process.argv[2] ?? 'out/fit-exchanges-reproduced.json';
+mkdirSync(dirname(output), { recursive: true });
+writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
+console.log(JSON.stringify({ source, rows: rows.length, output }));

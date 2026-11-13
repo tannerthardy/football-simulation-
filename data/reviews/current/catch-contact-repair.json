@@ -1,0 +1,698 @@
+{
+  "schema": "catch-contact-repair-v1",
+  "reviewedAt": "2026-10-12",
+  "branch": "claude/engine-priorities",
+  "baseCommit": "36c294c61d26d7c40a80227adc05e50f4b321141",
+  "sources": {
+    "baseline": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+    "final": "8eee2fb390e62f4a0552ecea372dfa7b44b8490c9a714b55d403535c235ef972"
+  },
+  "changes": [
+    "Observed catch window uses existing tracking-hand reach and admits moving-hand passes without assuming a stop at the ball point.",
+    "Already nearby defender carries the observed moving catcher unless an earlier ball is attainable.",
+    "Rejected downfield engagement retains movement toward fit; accepted contact owns movement.",
+    "Exact native context capture and recorded/unrecorded reexecution diagnostic."
+  ],
+  "fixedCapacities": true,
+  "productionHandContact": "center",
+  "handLawStatus": "Known production angular failure unchanged; patch experiment remains opt-in with promotion blockers.",
+  "nativeMethod": {
+    "selection": "Two nominated failures and four ordinary opposing controls from the existing uniform48-completion engineering review; diagnostic panel, not frequency sample.",
+    "contexts": "Original OC/DC calls, man preferences, snap seed, fatigue, down/hurry and both learned scout histories captured before game mutations. Saved context restored against archived baseline source matches result, all bodies, RNG and perception exactly.",
+    "recording": "All6 baseline and6 final20Hz full observer runs match unrecorded result/body/RNG/perception signatures.",
+    "inputSha256": "bae640d7e1a2e6a4e36e54911dde6e2b30577b3fa85519301877c717f0413bcb",
+    "baselineRecordedInputSha256": "bae640d7e1a2e6a4e36e54911dde6e2b30577b3fa85519301877c717f0413bcb"
+  },
+  "pairedCases": [
+    {
+      "id": "S107-P214",
+      "before": {
+        "outcome": "tackle",
+        "YAC": 2.7906968265181007,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "outcome": "tackle",
+        "YAC": 2.431114596930229,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "recordingVerifiedBeforeAndAfter": true
+    },
+    {
+      "id": "S107-P233",
+      "before": {
+        "outcome": "touchdown",
+        "YAC": 69.28075623273918,
+        "missedTackles": 1,
+        "brokenTackles": 0
+      },
+      "after": {
+        "outcome": "touchdown",
+        "YAC": 69.28075623273921,
+        "missedTackles": 1,
+        "brokenTackles": 0
+      },
+      "recordingVerifiedBeforeAndAfter": true
+    },
+    {
+      "id": "S108-P143",
+      "before": {
+        "outcome": "touchdown",
+        "YAC": 37.53870750047838,
+        "missedTackles": 1,
+        "brokenTackles": 1
+      },
+      "after": {
+        "outcome": "tackle",
+        "YAC": 10.883197799981218,
+        "missedTackles": 1,
+        "brokenTackles": 0
+      },
+      "recordingVerifiedBeforeAndAfter": true
+    },
+    {
+      "id": "S204-P41",
+      "before": {
+        "outcome": "tackle",
+        "YAC": 6.803483779712693,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "outcome": "tackle",
+        "YAC": 6.829357037780937,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "recordingVerifiedBeforeAndAfter": true
+    },
+    {
+      "id": "S204-P60",
+      "before": {
+        "outcome": "tackle",
+        "YAC": 1.5174853146308465,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "outcome": "tackle",
+        "YAC": 2.4337763247965682,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "recordingVerifiedBeforeAndAfter": true
+    },
+    {
+      "id": "S207-P161",
+      "before": {
+        "outcome": "tackle",
+        "YAC": 1.2808511905164934,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "after": {
+        "outcome": "tackle",
+        "YAC": 1.2836955237733179,
+        "missedTackles": 0,
+        "brokenTackles": 0
+      },
+      "recordingVerifiedBeforeAndAfter": true
+    }
+  ],
+  "trialLimits": {
+    "firstPhaseTrial": "With old window estimate, both nominated escapes remain; rejected as repair.",
+    "windowPlusPhase": "RepairsS108-P143; all4 controls still tackle;S107-P233 unresolved. Published bounded variant.",
+    "offsetVelocityMatch": "After separate offset diagnosis, preserves two more misses and convertsS204-P60 from ordinary wrap to incomplete; backed out. Its new requirement witness is local, not a disabled preserved test.",
+    "windowOnlyAblation": "Both nominated long escapes remain; estimate alone is insufficient.",
+    "retainedAdverse": "S204-P60 YAC1.52\u21922.43 in published candidate, still tackle;S107-P233 YAC69.28 unchanged."
+  },
+  "validation": {
+    "typescript": {
+      "files": 108,
+      "passed": 1244,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python": {
+      "passed": 141,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "focused": {
+      "files": 6,
+      "passed": 54,
+      "failed": 0
+    },
+    "newAssertions": 8,
+    "preservedAssertionsRemoved": 0,
+    "nativeRecordingWitnesses": {
+      "baseline": 6,
+      "final": 6
+    }
+  },
+  "cohorts": {
+    "rosterPairs": 2,
+    "teams": 4,
+    "games": 16,
+    "seeds": [
+      [
+        101,
+        108
+      ],
+      [
+        202,
+        209
+      ]
+    ],
+    "strength": 0.55,
+    "guards": {
+      "101": "12/12",
+      "202": "12/12",
+      "thresholdsChanged": false
+    },
+    "interpretation": "Later calls and RNG diverge after behavior changes; full games are downstream guards, not paired causal estimates or statistically established broad improvement."
+  },
+  "nativeOutcomes": {
+    "before": {
+      "plays": 2156,
+      "dropbacks": 1637,
+      "throws": 1479,
+      "completions": 933,
+      "completion": {
+        "count": 933,
+        "denominator": 1479,
+        "percent": 63.08316430020284
+      },
+      "interception": {
+        "count": 90,
+        "denominator": 1479,
+        "percent": 6.085192697768763,
+        "missing": 0
+      },
+      "sackPerDropback": {
+        "count": 64,
+        "denominator": 1637,
+        "percent": 3.9095907147220523,
+        "missing": 0
+      },
+      "wholePlayYardsPerCompletion": 20.16956055734191,
+      "completedYAC": {
+        "n": 933,
+        "mean": 12.320785533357519,
+        "max": 94.61227318835228,
+        "p10": -0.11461242158378156,
+        "p25": 1.1766307877216065,
+        "p50": 4.936172038503486,
+        "p75": 14.833179747707817,
+        "p90": 39.67760400752825,
+        "p95": 60.00792033538688,
+        "p99": 73.59664710476896,
+        "completionCount": 933,
+        "missing": 0,
+        "coverage": {
+          "count": 933,
+          "denominator": 933,
+          "percent": 100.0
+        },
+        "tails": {
+          "10plus": {
+            "count": 298,
+            "denominator": 933,
+            "percent": 31.939978563772776
+          },
+          "20plus": {
+            "count": 171,
+            "denominator": 933,
+            "percent": 18.327974276527332
+          },
+          "40plus": {
+            "count": 92,
+            "denominator": 933,
+            "percent": 9.860664523043944
+          }
+        }
+      }
+    },
+    "after": {
+      "plays": 2103,
+      "dropbacks": 1541,
+      "throws": 1394,
+      "completions": 871,
+      "completion": {
+        "count": 871,
+        "denominator": 1394,
+        "percent": 62.48206599713056
+      },
+      "interception": {
+        "count": 84,
+        "denominator": 1394,
+        "percent": 6.025824964131994,
+        "missing": 0
+      },
+      "sackPerDropback": {
+        "count": 60,
+        "denominator": 1541,
+        "percent": 3.8935756002595716,
+        "missing": 0
+      },
+      "wholePlayYardsPerCompletion": 19.91603903559127,
+      "completedYAC": {
+        "n": 871,
+        "mean": 11.921220782727481,
+        "max": 92.72558436396866,
+        "p10": -0.0739354622307431,
+        "p25": 1.3284059687868321,
+        "p50": 4.9856860773587,
+        "p75": 14.107143472226632,
+        "p90": 37.262032354236084,
+        "p95": 56.93679700344299,
+        "p99": 77.29898884022862,
+        "completionCount": 871,
+        "missing": 0,
+        "coverage": {
+          "count": 871,
+          "denominator": 871,
+          "percent": 100.0
+        },
+        "tails": {
+          "10plus": {
+            "count": 284,
+            "denominator": 871,
+            "percent": 32.60619977037887
+          },
+          "20plus": {
+            "count": 154,
+            "denominator": 871,
+            "percent": 17.680826636050515
+          },
+          "40plus": {
+            "count": 80,
+            "denominator": 871,
+            "percent": 9.184845005740527
+          }
+        }
+      }
+    },
+    "runSuccessBefore": {
+      "count": 144,
+      "denominator": 519,
+      "percent": 27.745664739884393,
+      "missing": 0
+    },
+    "runSuccessAfter": {
+      "count": 151,
+      "denominator": 562,
+      "percent": 26.868327402135233,
+      "missing": 0
+    },
+    "selection": "Existing clean operator excludes all flagged fouls, including declined. YAC is native completion YAC; completion gain is offensive whole-play gain; success is40/60/100, notEPA."
+  },
+  "notSolved": [
+    "Broad YAC tail andS107-P233 escape",
+    "Achieved airborne catch/landing support",
+    "Downfield blocker true-state/private-target reads",
+    "Run coordination and pocket decision gaps",
+    "Production hand angular law and experimental patch promotion regressions"
+  ],
+  "artifactsLocalOnly": true,
+  "artifacts": [
+    {
+      "path": "out/catch-contact/native-contexts.json",
+      "bytes": 280735,
+      "sha256": "bae640d7e1a2e6a4e36e54911dde6e2b30577b3fa85519301877c717f0413bcb"
+    },
+    {
+      "path": "out/catch-contact/native-traces.json.gz",
+      "bytes": 14509991,
+      "sha256": "9eeb30b3d8a36353c2a01336db23abaab882d89a56b9c5e9e3fcc31181d70441"
+    },
+    {
+      "path": "out/catch-contact/baseline-native.json",
+      "bytes": 173658,
+      "sha256": "76ecf9566043d93ddb0efe22fba53bc1442a4a0b6a885ae6bd43031502a9e71b"
+    },
+    {
+      "path": "out/catch-contact/baseline-native.json.traces.json.gz",
+      "bytes": 6315893,
+      "sha256": "e744c8f342399f3ace6371b4557e7e72da6da3e427715159128c04658416d784"
+    },
+    {
+      "path": "out/catch-contact/final-native.json",
+      "bytes": 172647,
+      "sha256": "eed8441fa76c77ff12752bb13340570976c26c4649d3655ea4cd146dec387321"
+    },
+    {
+      "path": "out/catch-contact/final-native.json.traces.json.gz",
+      "bytes": 5695333,
+      "sha256": "d387d35a6902aa0d2f6718f75a6c77bf154ac3d54611c4828e74a8ef2a108799"
+    },
+    {
+      "path": "out/catch-contact/replay-candidate1.json",
+      "bytes": 176847,
+      "sha256": "4e6fa5e07c3316be05a0e5d490d76d92361e3a41b014bce832e8c302f6f9c297"
+    },
+    {
+      "path": "out/catch-contact/replay-candidate2.json",
+      "bytes": 175174,
+      "sha256": "fbe3e8248880586f9fbb98708319e61345da65cd68acc27d912264e3a90992cf"
+    },
+    {
+      "path": "out/catch-contact/replay-corridor.json",
+      "bytes": 174565,
+      "sha256": "6bce838f9ec1895abfc5acc02a016065f2792083ca7778e0e49b702eb9387876"
+    },
+    {
+      "path": "out/catch-contact/replay-window-only.json",
+      "bytes": 174262,
+      "sha256": "63d558c3f3b48670758aabed2d6fd8a68f1eaf59e201978832aa688e5d3c870e"
+    },
+    {
+      "path": "out/catch-contact/rejected-corridor.test.ts",
+      "bytes": 4755,
+      "sha256": "13ce48a64e2fb4c2375b9ac66433d95c1886d060a40815f179171ffe03d7e9c0"
+    },
+    {
+      "path": "out/catch-contact/paired-film.html",
+      "bytes": 7431560,
+      "sha256": "425314cd09ff9b12b5e919782871904a0fc5463b82c49474ebd566a53eb03255"
+    },
+    {
+      "path": "out/catch-contact/plays101.jsonl.gz",
+      "bytes": 3307500,
+      "sha256": "0caa0c42d648f9441aebc74d8b48a171cfcc6db5e3429576e6fa5e00c2ea0cd6"
+    },
+    {
+      "path": "out/catch-contact/outcomes101.json",
+      "bytes": 5129530,
+      "sha256": "3170500d334f7a3668055b342f60423f67af033486d0553df5bacdfdb1db8e79"
+    },
+    {
+      "path": "out/catch-contact/report101.md",
+      "bytes": 24182,
+      "sha256": "84ec6257095cc79e83a5894f3dfdf2d4e9b6e2ab60ae828cd89064355deeecd7"
+    },
+    {
+      "path": "out/catch-contact/plays202.jsonl.gz",
+      "bytes": 3136883,
+      "sha256": "0769d7b2b89c27f1e529799d8b58d9f22fdff9cdc0cde3f57e03adf78aa2b660"
+    },
+    {
+      "path": "out/catch-contact/outcomes202.json",
+      "bytes": 4900701,
+      "sha256": "9692d605a9a405a9a00c337cdc22efce8d4201771f54a16d2f7a6c9199962029"
+    },
+    {
+      "path": "out/catch-contact/report202.md",
+      "bytes": 24107,
+      "sha256": "0e13f184215a0529f26f8f0e908f74ff5efe936ad5e08a6de8e7829345ec78c4"
+    },
+    {
+      "path": "out/catch-contact/pooled-outcomes.json",
+      "bytes": 5172724,
+      "sha256": "e0d82620e1339a6bca0a8b05425a5104dea030188b05f983c39437054086c0b3"
+    },
+    {
+      "path": "out/catch-contact/test-all.log",
+      "bytes": 9740,
+      "sha256": "1db99b57735af18604d3aafd02f388374d13c28271138cfda4e9cb16bc87148d"
+    },
+    {
+      "path": "out/catch-contact/test-data.log",
+      "bytes": 539,
+      "sha256": "912855e4262325f79ca8d9f54d823364811b6cdae808526d6df17480064614e7"
+    },
+    {
+      "path": "out/catch-contact/typecheck-final.log",
+      "bytes": 276,
+      "sha256": "d1fe520f03f53c08ee8077e089e609bf4a39e5a102909c81f5ef4e74d9fdf3e6"
+    },
+    {
+      "path": "out/catch-contact/build-final.log",
+      "bytes": 263,
+      "sha256": "fd29aac771af30772580101569f39e8291dcd1f0ad4cc6aa9a3b14a700155d3a"
+    }
+  ],
+  "tools": [
+    {
+      "path": "scripts/diag/catch-contact-review.ts",
+      "bytes": 8381,
+      "sha256": "4518892a3ae1957a39ec83366e363c291e063154017e1c37904df3b76cf53079"
+    },
+    {
+      "path": "scripts/mechanics/sim-export.ts",
+      "bytes": 8385,
+      "sha256": "fd889f71e67c624298eb7b06c73bc0f85e4b7dc423328745e5ac0ebf01f5d39b"
+    },
+    {
+      "path": "scripts/mechanics/outcomes.py",
+      "bytes": 20907,
+      "sha256": "568d41da7761f67ff04e72e86ab2cc64f76eb9cfaca359874544e1d675a9bf8e"
+    }
+  ],
+  "reservedExamRead": false,
+  "integration": {
+    "upstreamCommit": "cd257576383b71680d0a3b72a8218fd97e036ee3",
+    "mergeCommit": "ef2179f",
+    "pursuitOnlySource": "0398418c6e8b8d53a1517a17f7087c697230ac62f12dd37373af2b6548bd1df7",
+    "combinedFinalSource": "eda0633497f99277887112c93c7bd7c566dd39271cbc56acf1a3a2a26f88b7e1",
+    "pairedSameContextCases": [
+      {
+        "id": "S107-P214",
+        "pursuitOnly": {
+          "outcome": "tackle",
+          "YAC": 2.8332542968077234
+        },
+        "combined": {
+          "outcome": "tackle",
+          "YAC": 2.3317808432320675
+        }
+      },
+      {
+        "id": "S107-P233",
+        "pursuitOnly": {
+          "outcome": "touchdown",
+          "YAC": 69.28075623273918
+        },
+        "combined": {
+          "outcome": "touchdown",
+          "YAC": 69.28075623273921
+        }
+      },
+      {
+        "id": "S108-P143",
+        "pursuitOnly": {
+          "outcome": "touchdown",
+          "YAC": 37.53870750047838
+        },
+        "combined": {
+          "outcome": "tackle",
+          "YAC": 10.883197799981218
+        }
+      },
+      {
+        "id": "S204-P41",
+        "pursuitOnly": {
+          "outcome": "tackle",
+          "YAC": 5.9971691436427506
+        },
+        "combined": {
+          "outcome": "tackle",
+          "YAC": 5.222595867294487
+        }
+      },
+      {
+        "id": "S204-P60",
+        "pursuitOnly": {
+          "outcome": "tackle",
+          "YAC": 1.5174853146308465
+        },
+        "combined": {
+          "outcome": "tackle",
+          "YAC": 2.4337763247965682
+        }
+      },
+      {
+        "id": "S207-P161",
+        "pursuitOnly": {
+          "outcome": "incomplete",
+          "YAC": null
+        },
+        "combined": {
+          "outcome": "incomplete",
+          "YAC": null
+        }
+      }
+    ],
+    "observerWitnesses": {
+      "pursuitOnly": 6,
+      "combined": 6
+    },
+    "validation": {
+      "typescriptPassed": 1246,
+      "typescriptFiles": 108,
+      "pythonPassed": 141,
+      "typecheck": "pass",
+      "build": "pass",
+      "guard101": "12/12",
+      "guard202": "12/12",
+      "thresholdsChanged": false
+    },
+    "nativeOutcomes": {
+      "plays": 2061,
+      "dropbacks": 1516,
+      "throws": 1362,
+      "completions": 857,
+      "completion": {
+        "count": 857,
+        "denominator": 1362,
+        "percent": 62.92217327459618
+      },
+      "interception": {
+        "count": 96,
+        "denominator": 1362,
+        "percent": 7.048458149779735,
+        "missing": 0
+      },
+      "sackPerDropback": {
+        "count": 60,
+        "denominator": 1516,
+        "percent": 3.9577836411609497,
+        "missing": 0
+      },
+      "wholePlayYardsPerCompletion": 19.723757292882144,
+      "completedYAC": {
+        "n": 857,
+        "mean": 11.690559808894122,
+        "max": 92.75879913281004,
+        "p10": -0.06642722279085536,
+        "p25": 1.285368356245872,
+        "p50": 4.720336628838297,
+        "p75": 13.19808125219597,
+        "p90": 36.789814549501415,
+        "p95": 57.35753825880936,
+        "p99": 80.75441368184971,
+        "completionCount": 857,
+        "missing": 0,
+        "coverage": {
+          "count": 857,
+          "denominator": 857,
+          "percent": 100.0
+        },
+        "tails": {
+          "10plus": {
+            "count": 271,
+            "denominator": 857,
+            "percent": 31.62193698949825
+          },
+          "20plus": {
+            "count": 147,
+            "denominator": 857,
+            "percent": 17.152858809801632
+          },
+          "40plus": {
+            "count": 82,
+            "denominator": 857,
+            "percent": 9.56826137689615
+          }
+        }
+      }
+    },
+    "runSuccess": {
+      "count": 157,
+      "denominator": 545,
+      "percent": 28.807339449541285,
+      "missing": 0
+    },
+    "limits": [
+      "The earlier receipt sections retain catch/contact-only validation at8eee2fb, not combined engine claims.",
+      "S207-P161 is incomplete on both pursuit-only and combined held-input sources; that change predates adding catch/contact repair.",
+      "Combined meanYAC11.69yd exceeds pursuit-only reported10.5yd and remains below preceding baseline12.32yd. Whole-game calls andRNG diverge; broad improvement is not established.",
+      "One paired escape is repaired; S107-P233 and globalYAC/contact gaps remain. Production angular defect unchanged; hand patch not promoted."
+    ],
+    "artifacts": [
+      {
+        "path": "out/catch-contact/combined/native.json",
+        "bytes": 168710,
+        "sha256": "34230e34016ba4367cec0bcffb109bd4781f1c3642fdcfc9900c53e4a99efb4c"
+      },
+      {
+        "path": "out/catch-contact/combined/native.json.traces.json.gz",
+        "bytes": 5430436,
+        "sha256": "0533fea58766770ee95444f821b9f8f0f2abd1a26e69aade2fb449dc000676df"
+      },
+      {
+        "path": "out/catch-contact/combined/pursuit-only-native.json",
+        "bytes": 169001,
+        "sha256": "615cb17101e9ce3a6ce0205f74bd32e1c2ca4b8255780a9c2fb8af2089c9868e"
+      },
+      {
+        "path": "out/catch-contact/combined/pursuit-only-native.json.traces.json.gz",
+        "bytes": 6049338,
+        "sha256": "8e55d5609e17ff5e06eeb87f98ef203f4160aed894e216b17c713762680f385b"
+      },
+      {
+        "path": "out/catch-contact/combined/paired-film.html",
+        "bytes": 7153617,
+        "sha256": "7b691bfe08cacab0e7e6187268fa1dd9427698d85c371b58eacc7f22a81328d3"
+      },
+      {
+        "path": "out/catch-contact/combined/plays101.jsonl.gz",
+        "bytes": 3267573,
+        "sha256": "721858238dcb47455f84f84694b9872d2688abc098e4eef9a49b85472610a5ab"
+      },
+      {
+        "path": "out/catch-contact/combined/outcomes101.json",
+        "bytes": 5032745,
+        "sha256": "e06dfe8c478c0644c7b269e4ae0f2425ff6e1683cc30530921992b2263fa279b"
+      },
+      {
+        "path": "out/catch-contact/combined/report101.md",
+        "bytes": 24078,
+        "sha256": "a5d2dedbd4cf44439cbc21fd9383eb308a653142ac9a9281f58daec79c2fc6a2"
+      },
+      {
+        "path": "out/catch-contact/combined/plays202.jsonl.gz",
+        "bytes": 2983039,
+        "sha256": "6ac5d4fd9df4183cebaecf7e0cea91a736bc0c312021c3bfe58734520d7a5ed8"
+      },
+      {
+        "path": "out/catch-contact/combined/outcomes202.json",
+        "bytes": 4775036,
+        "sha256": "2c0a70045d966a40e6f3dab4fa349e7210b2edc9b7730fbd1ed77ff5583d6e38"
+      },
+      {
+        "path": "out/catch-contact/combined/report202.md",
+        "bytes": 24103,
+        "sha256": "78e642441c1fa9432580ce98d7866d51dd2404a8879c15625afdcf0f9f26bae6"
+      },
+      {
+        "path": "out/catch-contact/combined/pooled-outcomes.json",
+        "bytes": 4869678,
+        "sha256": "0d3a824f1ca90d23600010221f6d1e25a0fdba1b297b72b6335b074ecb25e36b"
+      },
+      {
+        "path": "out/catch-contact/combined/test-all.log",
+        "bytes": 9735,
+        "sha256": "debda61c83100bae30f94679150bcb9a8d4fa1494f1bb355fe3cd3a0486e4b99"
+      },
+      {
+        "path": "out/catch-contact/combined/test-data.log",
+        "bytes": 539,
+        "sha256": "0e654bd52f5a4c2ffa9cd7ad8306bfc7f7aae824191bbfcabdc59be009bee10b"
+      },
+      {
+        "path": "out/catch-contact/combined/typecheck.log",
+        "bytes": 276,
+        "sha256": "d1fe520f03f53c08ee8077e089e609bf4a39e5a102909c81f5ef4e74d9fdf3e6"
+      },
+      {
+        "path": "out/catch-contact/combined/build.log",
+        "bytes": 263,
+        "sha256": "fd29aac771af30772580101569f39e8291dcd1f0ad4cc6aa9a3b14a700155d3a"
+      }
+    ]
+  }
+}

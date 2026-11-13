@@ -1,0 +1,30 @@
+{
+  "query": {
+    "schema": "engine-rushing-benchmark-query-v1",
+    "source": "Published ordinary eight-game native indexes only; no fixed-lab pooling.",
+    "selection": "Native scrimmage, actual post-audible offCall run => designedRun; actual pass call and raw scramble=true and sacked!=true => scramble. Failed escape sacks audited separately. Two-point and non-scrimmage plays excluded. Native known called intent is richer than observational NFL realized-action classification.",
+    "penalty": "For the verified full-native producer only, optional undefined raw.penalty is omitted by JSON and means no native flagged foul. Object means flagged even when declined; malformed/null penalty or missing raw means unknown. Nullified plays excluded. Engine flags are not complete NFL officiating flags.",
+    "yards": "Primary settled GameLog.yards; retain native raw.offenseYards and flag differences. No terminal coordinate inference or substitution. Rounded-whole-yard sensitivity is separate, never changes saved outcomes.",
+    "context": "Actual nativeInput.state before snap: down, distance, yardline, score, quarter, clock. yardline_100=100-state.yardline and los=10+state.yardline. Preserve firstDownX-los separately, never replace missing state.distance with it.",
+    "carrier": "Exact raw.stats.rusher ID to selected offense team's saved league roster; ambiguity/missing stays unknown. Never infer names, slot or QB from scramble label.",
+    "unavailable": "EPA, NFL positive-EPA success, observed run_location/run_gap, charted box and NFL concepts/fronts remain unavailable. Generated offensive scheme and called defense labels remain engine-only margins; Duo is not renamed MAN.",
+    "cohort": "Same immutable source/rosters/game seeds retained; divergent baseline/candidate play streams are not paired snap trials.",
+    "standardization": "Fixed coarse backoff with minimum NFL support declared before comparison; report common support/excluded engine exposure. Weighted NFL conditional means/rates, not pooled quantiles or an engine EPA model.",
+    "declarationScope": "Existing engine outcome summaries were already viewed. New adapter/query is declared before executing its NFL comparison, not outcome-blind preregistration.",
+    "minimumNflGains": 100,
+    "minimumNflGames": 20,
+    "minimumNflPerMetricDenominator": 100
+  },
+  "querySha256": "f122ce05a4a6241169761644f53400ac561a6775988e4c5e1b452e337984e4ce",
+  "adapterSha256": "b0067b156fd2b185e23ca673efb893f44141ca723bc52b8922f2fe467bbe5c19",
+  "sharedModuleSha256": "0b5d645953c303fcb5804643a2829de83418c135952c25c122f69bb28a4df238",
+  "operatorSha256": "43af2d0bcd7255c7dbec94423dc0e4b38faac645d4e097c8ce5fd40a900909c8",
+  "referenceHelperSha256": "1b4e2b7b7e2cfe30495b2887a9e950d74a636a32b16b9867130fad7d86c90582",
+  "contextHelperSha256": "fca850cdac0e1837f68ae449ae94c2826b1f1cd5a802166e88074f0e6a365a9b",
+  "engineIndexSha256": "6fc42309e0f5fee3cbc0ec43709a783a1dd66cc37a581d03b4f2d13c3c9cb15a",
+  "nflReportSha256": "4f624c55eee5495b15bc2d53ffade7f7b591b02c582bc9912a280d6a7e7745c3",
+  "expectedEngineSourceSha256": "8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006",
+  "expectedEngineCollectorSha256": "c13d6ceee5c2e1510aa2a0d6f1f2820e327ce8e424d84fb2463aa2d9807eefa5",
+  "comparisonLabel": "withheldQuarter8d27",
+  "declaredAtUtc": "2026-10-11T18:02:22.442924+00:00"
+}

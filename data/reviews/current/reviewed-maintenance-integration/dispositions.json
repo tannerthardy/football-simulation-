@@ -1,0 +1,63 @@
+{
+  "acceptedDevelop": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "successorPR": 125,
+  "method": "Closed as incorporated by independently reviewed minimal extraction; no original branch or evidence deleted.",
+  "closures": [
+    {
+      "pr": 117,
+      "head": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "closed": true,
+      "comment": {
+        "id": 6228301603
+      }
+    },
+    {
+      "pr": 118,
+      "head": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+      "closed": true,
+      "comment": {
+        "id": 6228303070
+      }
+    },
+    {
+      "pr": 120,
+      "head": "35f87c90c5e39bf2fa9c9c513aae7ae5e82c8e41",
+      "closed": true,
+      "comment": {
+        "id": 6228304585
+      }
+    },
+    {
+      "pr": 121,
+      "head": "1dc41611d82a7cb5e81db259e0e6f185ac2abcb5",
+      "closed": true,
+      "comment": {
+        "id": 6228306300
+      }
+    },
+    {
+      "pr": 122,
+      "head": "cf827df7b59f133d25eea91052aa3c243899f8f8",
+      "closed": true,
+      "comment": {
+        "id": 6228311289
+      }
+    },
+    {
+      "pr": 123,
+      "head": "5da02125075de0baf2ffae5c4a8b28bcae8ef77f",
+      "closed": true,
+      "comment": {
+        "id": 6228313042
+      }
+    },
+    {
+      "pr": 124,
+      "head": "9f2206a3fd22aab83b19a0431346c7569ed19f7b",
+      "closed": true,
+      "comment": {
+        "id": 6228314601
+      }
+    }
+  ]
+}

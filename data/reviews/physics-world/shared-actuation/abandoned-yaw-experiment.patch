@@ -1,0 +1,10 @@
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -566,0 +567 @@
++    const groundSpins = ids.map(i => bs[i].spin ?? 0);
+@@ -602 +603,2 @@
+-    for (const i of ids) {
++    for (let k = 0; k < ids.length; k++) {
++      const i = ids[k];
+@@ -605,0 +608 @@
++      b.facing += ((b.spin ?? 0) - groundSpins[k]) * h;

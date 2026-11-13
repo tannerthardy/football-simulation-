@@ -1,0 +1,5859 @@
+{
+  "schema": "nfl-rule-coverage-plan-v1",
+  "reviewDate": "2026-10-20",
+  "timezone": "America/Phoenix",
+  "rulesEdition": "NFL-2026",
+  "reviewedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "canonicalQueue": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+  "publicationScope": "Documentation and coverage index only; no runtime, flag, default or rule activation. Proposed owners are not active claims.",
+  "completeness": {
+    "chapters": 19,
+    "sections": 116,
+    "explicitArticles": 347,
+    "penaltySummaryRows": 143,
+    "officialFoulCodes": 61,
+    "indexCoverage": "All extracted chapter/section/explicit-article headings and official summary rows. Subitems/notes/exceptions remain in authoritative text.",
+    "semanticImplementationAuditComplete": false,
+    "completeNFLOfficiatingImplemented": false,
+    "summaryRowsAreDistinctFouls": false
+  },
+  "source": {
+    "retrieved": "2026-10-20",
+    "page": "https://operations.nfl.com/rules-officiating/2026-nfl-rulebook",
+    "legacyPageRedirect": "https://operations.nfl.com/the-rules/nfl-rulebook/",
+    "pdf": "https://static.www.nfl.com/image/upload/fl_attachment/league/tqivdkzt9mu6wdgsh1ku.pdf",
+    "edition": 2026,
+    "proof": "PDF cover and preface explicitly state rules in effect for the2026NFLseason",
+    "files": {
+      "nfl-rulebook.html": {
+        "bytes": 1850956,
+        "sha256": "5bc0911af8c2d369b5521cfb3996a24ce31a77aa676d59da621d5e03ff809184"
+      },
+      "2026-nfl-rulebook.pdf": {
+        "bytes": 3844147,
+        "sha256": "144cec5bffd2725bb703a26523f5ccf0b16c59c2fe5c13f6e671f4bddaa87c55"
+      },
+      "2026-nfl-rulebook.txt": {
+        "bytes": 453356,
+        "sha256": "35d9d7ea2551c9dda738fa711a58357e5a8e18eae1443c95aa9d7d8489e6c89b"
+      },
+      "rulebook-headings.json": {
+        "bytes": 83644,
+        "sha256": "b6663d5a79a9b69d282c4480ce2ce6672983f65d1effcaf65af4e76532c44760"
+      },
+      "penalty-summary.json": {
+        "bytes": 30016,
+        "sha256": "b8e596a84f10596f07e714d865edbd39f3fa383bbd3919a96c4af4d4921f202c"
+      }
+    }
+  },
+  "statusMeanings": {
+    "not_individually_qualified": "Indexed but not individually adjudicated against code and legal controls; not proof of absence or compliance.",
+    "partial_model": "Some related runtime behavior exists; full article coverage and exceptions are not certified.",
+    "sampled_dead_ball_abstraction": "Sampled game-level flag, not a native achieved-movement detector.",
+    "type_only": "Name exists without a native detector/resolver.",
+    "controller_guard_not_officiating": "Local technique constraint; no general foul adjudication.",
+    "unresolved": "Required legal fact is absent/unsupported; never silently treat as legal."
+  },
+  "reviewedCodeFingerprints": {
+    "AGENTS.md": {
+      "gitBlob": "e43c3aba22303aa7dc15c654fb25e29b1b55835c",
+      "sha256": "750d41d2a4e2d5059ab01683c8a56623d31a2ba9eb6161daf3cbec35f0a6e995"
+    },
+    "CLAUDE.md": {
+      "gitBlob": "3fa6c129e72109d1c733e2023c61f340a1427340",
+      "sha256": "385ad9fddd3f31c7602cd907eb6c87c84d94600498d7a4fb2815f9f0887b4e32"
+    },
+    "docs/NFL_DATA.md": {
+      "gitBlob": "05303bc90578b318261b0522000f4baf1ffc67b0",
+      "sha256": "1931dde1d1ace83fb223c7f6a1258aca26dbd69bbc1390bf1c33fd1809771dcf"
+    },
+    "docs/reviews/nfl-agent-evidence-plan.md": {
+      "gitBlob": "53997f1d03535199019883ca382d26f2a2816920",
+      "sha256": "a25bd98a9d80a8f5903efa2b0ca9cdcd662bddd3d8f4d76f152b4becc4dbf0cc"
+    },
+    "docs/BEHAVIOR_REVIEW.md": {
+      "gitBlob": "c3c2a8fe79d61dde92d0bd008531398797f76247",
+      "sha256": "663f55171922f4c9dbc4e7bf5e7519fc47b417212db4cd82bca5b18c80e40787"
+    },
+    "src/sim/types.ts": {
+      "gitBlob": "ff7638808cf115a9e9989451cb49f01fda9e8f57",
+      "sha256": "75908634cb14d8ac9a71fcd00f6e86a435f65b7d30643b16325eee06a7cdcbc3"
+    },
+    "src/sim/playsim.ts": {
+      "gitBlob": "5edbdecf4227fed55d24d23b7d01a1bf46167eea",
+      "sha256": "eef67c335eb25448ba26dad5b0e6a8ba07fc24654488cf4a0f5a13317f92d384"
+    },
+    "src/sim/engagement.ts": {
+      "gitBlob": "d66a8a49e72bf42f2977a3baffed850b46a22621",
+      "sha256": "e3876af54094f9293fb8dcd3634d448c7c43cd1a61ee037264b502bfe20f7763"
+    },
+    "src/sim/behaviors/receiver.ts": {
+      "gitBlob": "3f87e2e0e9560be6cc5dc09a264add08ffa53afb",
+      "sha256": "ab0e5adb942b9815e1a8c8c49477febfaf20702f47b4083953ee6bbab057c58a"
+    },
+    "src/sim/catching.ts": {
+      "gitBlob": "b3ecbb352a5907e3eee02ae13081a87120dd69d8",
+      "sha256": "ac18a11ad9559d0ce078bfed9d6af9a9a7bed49bd9f981ad98ab92b98a194dbc"
+    },
+    "src/physics/world.ts": {
+      "gitBlob": "d036ca623cdb66840aebc1bb518242ecbae9c117",
+      "sha256": "3bfea27d1c71e88bb9e9c9fd07c16e209991dd1ad0dfbc3fa8ad6fa80ea96da9"
+    },
+    "src/game/game.ts": {
+      "gitBlob": "84ae8fbe8e5e088cc99a8a56c360d9222205a616",
+      "sha256": "1a878affa1c79865198601917b150faf55e80bf4f419d1f3475a2c3591a4a0eb"
+    },
+    "src/game/specialteams.ts": {
+      "gitBlob": "61771955e5177acfeee4334d9c8e8a28a0dfc4b8",
+      "sha256": "96dcba7951c422f78af286e4b66e22d5d941686a1af213433a01b54e4e2a0a93"
+    },
+    "test/game-rules.test.ts": {
+      "gitBlob": "d39be549cab107812d4eb1b26107500bf0acf69d",
+      "sha256": "b95b3b6185c63f71fe89172b36953b4d06393edff953d5bc2a8376bfc3634cb3"
+    },
+    "src/core/field.ts": {
+      "gitBlob": "5754935306b8a0cd2557c7f31e5b5364d3b4f899",
+      "sha256": "379112225696271a6c61db19ef5d2ea0dded095effe79b95eba5715470c0f332"
+    }
+  },
+  "currentImplementationFacts": [
+    {
+      "id": "single-foul-result",
+      "references": [
+        "14"
+      ],
+      "status": "partial",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/types.ts#L180",
+      "detail": "Four penalty names, one optional penalty; game resolves offensive holding and sampled presnap subset. Multiple/offset/possession-phase call lists are absent."
+    },
+    {
+      "id": "offensive-holding",
+      "references": [
+        "12-1-3(c)",
+        "14-3-6"
+      ],
+      "status": "legacy_heuristic_partial",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/engagement.ts#L1351",
+      "detail": "Discipline-conditioned chosen grab and separate visibility roll; no independent record for uncalled chosen holding. This does not qualify every material-restraint element or all ordinary physical hands."
+    },
+    {
+      "id": "presnap-sampled",
+      "references": [
+        "7-4-2",
+        "7-4-3",
+        "7-4-4",
+        "7-4-5"
+      ],
+      "status": "sampled_partial",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/game/game.ts#L712",
+      "detail": "Game samples false_start/offside; both are dead ball. Native encroachment/NZI/live offside distinctions are not implemented by this path."
+    },
+    {
+      "id": "dpi-type-only",
+      "references": [
+        "8-5"
+      ],
+      "status": "type_only",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/types.ts#L180",
+      "detail": "DPI exists in types but no src producer or generic enforcement branch was found."
+    },
+    {
+      "id": "press-guard",
+      "references": [
+        "8-4"
+      ],
+      "status": "controller_guard_not_officiating",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/behaviors/receiver.ts#L215",
+      "detail": "Press release retires beyond five yards/after throw/scramble and forbids cloth tension in its own joint. This is not general illegal-contact/DPI coverage."
+    },
+    {
+      "id": "other-native-foul-pipelines",
+      "references": [
+        "8-4",
+        "8-5",
+        "12-1",
+        "12-2",
+        "12-3",
+        "13"
+      ],
+      "status": "not_implemented_as_general_native_detectors",
+      "detail": "No general OPI, defensive holding, illegal contact, roughing, blindside/back/low/chop, facemask, horse-collar or hip-drop detector found. This does not prove every represented contact illegal."
+    },
+    {
+      "id": "catch-process",
+      "references": [
+        "3-2-7",
+        "8-1-3"
+      ],
+      "status": "reduced_model",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/catching.ts#L250",
+      "detail": "Reach query/collection success and center-inbounds are not complete catch/control/feet/ground chronology."
+    },
+    {
+      "id": "pass-and-fumble",
+      "references": [
+        "8-1",
+        "8-2",
+        "8-7"
+      ],
+      "status": "reduced_model",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/sim/playsim.ts#L394",
+      "detail": "No general legal forward-pass/grounding detector; fumble advance and boundary/impetus exceptions need explicit qualification."
+    },
+    {
+      "id": "special-teams",
+      "references": [
+        "6",
+        "9",
+        "10"
+      ],
+      "status": "outcome_abstraction",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/game/specialteams.ts#L109",
+      "detail": "Kick/punt/FG outcomes are not native kick-contact/formation/fair-catch officiating."
+    },
+    {
+      "id": "contact-observability",
+      "references": [
+        "12"
+      ],
+      "status": "insufficient_for_all_branches",
+      "evidence": "https://github.com/tannerthardy/football-simulation-/blob/2c98bed94adad8087c65f381d4090444ad283985/src/physics/world.ts#L142",
+      "detail": "Reduced pair/impulse/closing records lack exact anatomical contact/grip history; preserve unknowns instead of guessing head/neck/back/waist/leg-trap facts."
+    }
+  ],
+  "chapterAssessments": [
+    {
+      "rule": 1,
+      "title": "THE FIELD",
+      "assessment": "partial_model",
+      "proposedOwner": "Game rules",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/core/field.ts"
+    },
+    {
+      "rule": 2,
+      "title": "THE BALL",
+      "assessment": "equipment_assumption",
+      "proposedOwner": "Game rules",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/physics/ball.ts"
+    },
+    {
+      "rule": 3,
+      "title": "DEFINITIONS",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules + affected domains",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/sim/types.ts"
+    },
+    {
+      "rule": 4,
+      "title": "GAME TIMING",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/game.ts"
+    },
+    {
+      "rule": 5,
+      "title": "PLAYERS, SUBSTITUTES, EQUIPMENT, GENERAL RULES",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules/Flex",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/league/team.ts"
+    },
+    {
+      "rule": 6,
+      "title": "FREE KICKS",
+      "assessment": "abstracted_phase",
+      "proposedOwner": "Special teams + Rules",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/specialteams.ts"
+    },
+    {
+      "rule": 7,
+      "title": "BALL IN PLAY, DEAD BALL, SCRIMMAGE",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules/Flex",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/game.ts"
+    },
+    {
+      "rule": 8,
+      "title": "FORWARD PASS, BACKWARD PASS, FUMBLE",
+      "assessment": "partial_model",
+      "proposedOwner": "Pass/Catching + Rules",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/sim/catching.ts"
+    },
+    {
+      "rule": 9,
+      "title": "SCRIMMAGE KICK",
+      "assessment": "abstracted_phase",
+      "proposedOwner": "Special teams + Rules",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/specialteams.ts"
+    },
+    {
+      "rule": 10,
+      "title": "OPPORTUNITY TO CATCH A KICK, FAIR CATCH",
+      "assessment": "abstracted_phase",
+      "proposedOwner": "Special teams + Rules",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/specialteams.ts"
+    },
+    {
+      "rule": 11,
+      "title": "SCORING",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/game.ts"
+    },
+    {
+      "rule": 12,
+      "title": "PLAYER CONDUCT",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules + Run/Physics + Pass",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/sim/engagement.ts"
+    },
+    {
+      "rule": 13,
+      "title": "NON-PLAYER CONDUCT",
+      "assessment": "not_individually_qualified",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false
+    },
+    {
+      "rule": 14,
+      "title": "PENALTY ENFORCEMENT",
+      "assessment": "holding_and_presnap_subset",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/game.ts"
+    },
+    {
+      "rule": 15,
+      "title": "INSTANT REPLAY",
+      "assessment": "not_individually_qualified",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false
+    },
+    {
+      "rule": 16,
+      "title": "OVERTIME PROCEDURES",
+      "assessment": "partial_model",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false,
+      "implementationEntryPoint": "src/game/game.ts"
+    },
+    {
+      "rule": 17,
+      "title": "EMERGENCIES, UNFAIR ACTS",
+      "assessment": "not_individually_qualified",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false
+    },
+    {
+      "rule": 18,
+      "title": "GUIDELINES FOR CAPTAINS",
+      "assessment": "not_individually_qualified",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false
+    },
+    {
+      "rule": 19,
+      "title": "OFFICIALS",
+      "assessment": "not_individually_qualified",
+      "proposedOwner": "Rules/Game",
+      "articleComplianceCertified": false
+    }
+  ],
+  "ruleIndex": [
+    {
+      "kind": "section",
+      "rule": 1,
+      "section": 1,
+      "title": "DIMENSIONS",
+      "reference": "1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 1,
+      "article": 1,
+      "reference": "1-1-1",
+      "title": "PLAYING LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 1,
+      "article": 2,
+      "reference": "1-1-2",
+      "title": "FIELD",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 1,
+      "section": 2,
+      "title": "MARKINGS",
+      "reference": "1-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 2,
+      "article": 1,
+      "reference": "1-2-1",
+      "title": "YARD LINE MARKINGS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 2,
+      "article": 2,
+      "reference": "1-2-2",
+      "title": "INBOUNDS LINES AND YARD MARKERS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 2,
+      "article": 3,
+      "reference": "1-2-3",
+      "title": "GOAL LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 2,
+      "article": 4,
+      "reference": "1-2-4",
+      "title": "ADDITIONAL FIELD MARKINGS AND REQUIREMENTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 1,
+      "section": 3,
+      "title": "GOAL",
+      "reference": "1-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 3,
+      "article": 1,
+      "reference": "1-3-1",
+      "title": "CROSSBAR",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 1,
+      "section": 3,
+      "article": 2,
+      "reference": "1-3-2",
+      "title": "GOAL POSTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 1,
+      "section": 4,
+      "title": "CHAIN CREW AND BALL CREW",
+      "reference": "1-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 1,
+      "section": 5,
+      "title": "SIDELINE MARKERS",
+      "reference": "1-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 2,
+      "section": 1,
+      "title": "DIMENSIONS",
+      "reference": "2-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 2,
+      "section": 2,
+      "title": "SUPPLY",
+      "reference": "2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 1,
+      "title": "APPROVED RULING (A.R.), OFFICIAL RULING (O.R.), AND NOTES",
+      "reference": "3-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 2,
+      "title": "THE BALL AND POSSESSION OF THE BALL",
+      "reference": "3-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 1,
+      "reference": "3-2-1",
+      "title": "DEAD BALL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 2,
+      "reference": "3-2-2",
+      "title": "BALL READY FOR PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 3,
+      "reference": "3-2-3",
+      "title": "LIVE BALL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 4,
+      "reference": "3-2-4",
+      "title": "LOOSE BALL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 5,
+      "reference": "3-2-5",
+      "title": "FUMBLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 6,
+      "reference": "3-2-6",
+      "title": "MUFF",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 2,
+      "article": 7,
+      "reference": "3-2-7",
+      "title": "PLAYER POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 3,
+      "title": "BAT",
+      "reference": "3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 4,
+      "title": "BLOCKING",
+      "reference": "3-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 5,
+      "title": "CHUCKING",
+      "reference": "3-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 6,
+      "title": "CLOSE-LINE PLAY",
+      "reference": "3-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 7,
+      "title": "DISQUALIFIED PLAYER",
+      "reference": "3-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 8,
+      "title": "DOWN",
+      "reference": "3-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 8,
+      "article": 1,
+      "reference": "3-8-1",
+      "title": "DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 8,
+      "article": 2,
+      "reference": "3-8-2",
+      "title": "SERIES OF DOWNS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 8,
+      "article": 3,
+      "reference": "3-8-3",
+      "title": "LINE TO GAIN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 8,
+      "article": 4,
+      "reference": "3-8-4",
+      "title": "CHARGED DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 8,
+      "article": 5,
+      "reference": "3-8-5",
+      "title": "FIRST DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 9,
+      "title": "FAIR CATCH",
+      "reference": "3-9",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 10,
+      "title": "FIELD GOAL",
+      "reference": "3-10",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 11,
+      "title": "THE FIELD",
+      "reference": "3-11",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 1,
+      "reference": "3-11-1",
+      "title": "BOUNDARY LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 2,
+      "reference": "3-11-2",
+      "title": "END LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 3,
+      "reference": "3-11-3",
+      "title": "END ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 4,
+      "reference": "3-11-4",
+      "title": "FIELD OF PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 5,
+      "reference": "3-11-5",
+      "title": "GOAL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 6,
+      "reference": "3-11-6",
+      "title": "GOAL LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 7,
+      "reference": "3-11-7",
+      "title": "INBOUNDS LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 8,
+      "reference": "3-11-8",
+      "title": "SIDELINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 11,
+      "article": 9,
+      "reference": "3-11-9",
+      "title": "YARD LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 12,
+      "title": "FORWARD PROGRESS",
+      "reference": "3-12",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 12,
+      "article": 1,
+      "reference": "3-12-1",
+      "title": "FORWARD PROGRESS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 12,
+      "article": 2,
+      "reference": "3-12-2",
+      "title": "FORWARD, BEYOND, OR IN ADVANCE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 13,
+      "title": "FOULS AND SPOTS OF ENFORCEMENT, VIOLATION",
+      "reference": "3-13",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 13,
+      "article": 1,
+      "reference": "3-13-1",
+      "title": "TYPES OF FOULS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 13,
+      "article": 2,
+      "reference": "3-13-2",
+      "title": "BASIC SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 13,
+      "article": 3,
+      "reference": "3-13-3",
+      "title": "SPOTS OF ENFORCEMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 13,
+      "article": 4,
+      "reference": "3-13-4",
+      "title": "VIOLATION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 14,
+      "title": "HANDING THE BALL",
+      "reference": "3-14",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 15,
+      "title": "HUDDLE",
+      "reference": "3-15",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 16,
+      "title": "IMPETUS",
+      "reference": "3-16",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 17,
+      "title": "KICKS",
+      "reference": "3-17",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 1,
+      "reference": "3-17-1",
+      "title": "KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 2,
+      "reference": "3-17-2",
+      "title": "KICKER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 3,
+      "reference": "3-17-3",
+      "title": "RECEIVER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 4,
+      "reference": "3-17-4",
+      "title": "FAIR CATCH KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 5,
+      "reference": "3-17-5",
+      "title": "FREE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 6,
+      "reference": "3-17-6",
+      "title": "RESTRAINING LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 7,
+      "reference": "3-17-7",
+      "title": "SCRIMMAGE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 17,
+      "article": 8,
+      "reference": "3-17-8",
+      "title": "TEE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 18,
+      "title": "LINE OF SCRIMMAGE, NEUTRAL ZONE",
+      "reference": "3-18",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 18,
+      "article": 1,
+      "reference": "3-18-1",
+      "title": "SCRIMMAGE LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 18,
+      "article": 2,
+      "reference": "3-18-2",
+      "title": "NEUTRAL ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 18,
+      "article": 3,
+      "reference": "3-18-3",
+      "title": "PLAYER ON LINE OF SCRIMMAGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 18,
+      "article": 4,
+      "reference": "3-18-4",
+      "title": "ENCROACHING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 18,
+      "article": 5,
+      "reference": "3-18-5",
+      "title": "LOOSE BALL CROSSES LINE OF SCRIMMAGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 19,
+      "title": "OFFSIDE",
+      "reference": "3-19",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 20,
+      "title": "OUT OF BOUNDS, INBOUNDS, AND INBOUNDS SPOT",
+      "reference": "3-20",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 1,
+      "reference": "3-20-1",
+      "title": "PLAYER OR OFFICIAL OUT OF BOUNDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 2,
+      "reference": "3-20-2",
+      "title": "PLAYER INBOUNDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 3,
+      "reference": "3-20-3",
+      "title": "BALL OUT OF BOUNDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 4,
+      "reference": "3-20-4",
+      "title": "OUT OF BOUNDS SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 5,
+      "reference": "3-20-5",
+      "title": "INBOUNDS SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 6,
+      "reference": "3-20-6",
+      "title": "PLAYER INSIDE THE LANDING ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 20,
+      "article": 7,
+      "reference": "3-20-7",
+      "title": "LOOSE BALL OUT OF LANDING ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 21,
+      "title": "PASS",
+      "reference": "3-21",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 21,
+      "article": 1,
+      "reference": "3-21-1",
+      "title": "PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 21,
+      "article": 2,
+      "reference": "3-21-2",
+      "title": "PASSER AND PASSING TEAM",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 21,
+      "article": 3,
+      "reference": "3-21-3",
+      "title": "FORWARD PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 21,
+      "article": 4,
+      "reference": "3-21-4",
+      "title": "BACKWARD PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 22,
+      "title": "PENALTY",
+      "reference": "3-22",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 22,
+      "article": 1,
+      "reference": "3-22-1",
+      "title": "PENALTY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 22,
+      "article": 2,
+      "reference": "3-22-2",
+      "title": "LOSS OF DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 23,
+      "title": "PLAYER",
+      "reference": "3-23",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 24,
+      "title": "PLAYS",
+      "reference": "3-24",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 24,
+      "article": 1,
+      "reference": "3-24-1",
+      "title": "FREE KICK PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 24,
+      "article": 2,
+      "reference": "3-24-2",
+      "title": "PASSING PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 24,
+      "article": 3,
+      "reference": "3-24-3",
+      "title": "RUNNING PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 24,
+      "article": 4,
+      "reference": "3-24-4",
+      "title": "SCRIMMAGE KICK PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 24,
+      "article": 5,
+      "reference": "3-24-5",
+      "title": "FAIR CATCH KICK PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 24,
+      "article": 6,
+      "reference": "3-24-6",
+      "title": "COMBINATIONS OF PLAYS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 25,
+      "title": "POCKET AREA",
+      "reference": "3-25",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 26,
+      "title": "POST-POSSESSION FOUL",
+      "reference": "3-26",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 27,
+      "title": "RUNNER",
+      "reference": "3-27",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 28,
+      "title": "SAFETY",
+      "reference": "3-28",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 29,
+      "title": "SCRIMMAGE DOWN, FROM SCRIMMAGE, NOT FROM SCRIMMAGE",
+      "reference": "3-29",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 30,
+      "title": "SHIFT",
+      "reference": "3-30",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 31,
+      "title": "SNAP AND THE SNAPPER",
+      "reference": "3-31",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 32,
+      "title": "SUSPENDED PLAYER",
+      "reference": "3-32",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 33,
+      "title": "TIGHT END BOX",
+      "reference": "3-33",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 34,
+      "title": "TACKLING",
+      "reference": "3-34",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 35,
+      "title": "TEAM A AND B, OFFENSE AND DEFENSE",
+      "reference": "3-35",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 35,
+      "article": 1,
+      "reference": "3-35-1",
+      "title": "OFFENSE AND DEFENSE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 35,
+      "article": 2,
+      "reference": "3-35-2",
+      "title": "TEAM A AND TEAM B",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 35,
+      "article": 3,
+      "reference": "3-35-3",
+      "title": "CHANGE OF POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 36,
+      "title": "TIMEOUT OR TIME IN",
+      "reference": "3-36",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 36,
+      "article": 1,
+      "reference": "3-36-1",
+      "title": "TIMEOUT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 36,
+      "article": 2,
+      "reference": "3-36-2",
+      "title": "CHARGED TEAM TIMEOUT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 3,
+      "section": 36,
+      "article": 3,
+      "reference": "3-36-3",
+      "title": "TIME IN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 37,
+      "title": "TOUCHBACK",
+      "reference": "3-37",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 38,
+      "title": "TOUCHDOWN",
+      "reference": "3-38",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 39,
+      "title": "TRIPPING",
+      "reference": "3-39",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 40,
+      "title": "TRY",
+      "reference": "3-40",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 41,
+      "title": "TWO-MINUTE WARNING",
+      "reference": "3-41",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 3,
+      "section": 42,
+      "title": "T-FORMATION QUARTERBACK",
+      "reference": "3-42",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 1,
+      "title": "PERIODS, INTERMISSIONS, HALFTIME",
+      "reference": "4-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 1,
+      "article": 1,
+      "reference": "4-1-1",
+      "title": "LENGTH OF GAME",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 1,
+      "article": 2,
+      "reference": "4-1-2",
+      "title": "INTERMISSIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 1,
+      "article": 3,
+      "reference": "4-1-3",
+      "title": "HALFTIME",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 1,
+      "article": 4,
+      "reference": "4-1-4",
+      "title": "OFFICIAL TIME",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 2,
+      "title": "STARTING A PERIOD OR HALF",
+      "reference": "4-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 2,
+      "article": 1,
+      "reference": "4-2-1",
+      "title": "KICKOFF ON SCHEDULE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 2,
+      "article": 2,
+      "reference": "4-2-2",
+      "title": "TOSS OF COIN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 2,
+      "article": 3,
+      "reference": "4-2-3",
+      "title": "CHANGE OF GOALS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 3,
+      "title": "STARTING THE GAME CLOCK",
+      "reference": "4-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 3,
+      "article": 1,
+      "reference": "4-3-1",
+      "title": "FREE KICK DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 3,
+      "article": 2,
+      "reference": "4-3-2",
+      "title": "SCRIMMAGE DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 3,
+      "article": 3,
+      "reference": "4-3-3",
+      "title": "FAIR CATCH KICK DOWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 4,
+      "title": "STOPPING THE GAME CLOCK",
+      "reference": "4-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 5,
+      "title": "TIMEOUTS",
+      "reference": "4-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 5,
+      "article": 1,
+      "reference": "4-5-1",
+      "title": "CHARGED TEAM TIMEOUTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 5,
+      "article": 2,
+      "reference": "4-5-2",
+      "title": "INJURY TIMEOUTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 5,
+      "article": 3,
+      "reference": "4-5-3",
+      "title": "INJURY TIMEOUTS PRIOR TO TWO-MINUTE WARNING OF EITHER HALF",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 5,
+      "article": 4,
+      "reference": "4-5-4",
+      "title": "INJURY TIMEOUTS AFTER TWO-MINUTE WARNING OF EITHER HALF",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 5,
+      "article": 5,
+      "reference": "4-5-5",
+      "title": "REFEREE\u2019S TIMEOUT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 6,
+      "title": "DELAY OF GAME",
+      "reference": "4-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 6,
+      "article": 1,
+      "reference": "4-6-1",
+      "title": "40-SECOND PLAY CLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 6,
+      "article": 2,
+      "reference": "4-6-2",
+      "title": "25-SECOND PLAY CLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 6,
+      "article": 3,
+      "reference": "4-6-3",
+      "title": "INTERRUPTION OF PLAY CLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 6,
+      "article": 4,
+      "reference": "4-6-4",
+      "title": "BALL REMAINS DEAD",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 6,
+      "article": 5,
+      "reference": "4-6-5",
+      "title": "OTHER DELAY OF GAME FOULS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 7,
+      "title": "ACTIONS THAT CONSERVE TIME",
+      "reference": "4-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 7,
+      "article": 1,
+      "reference": "4-7-1",
+      "title": "ILLEGAL ACTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 7,
+      "article": 2,
+      "reference": "4-7-2",
+      "title": "SUBSTITUTION VIOLATION AFTER TWO-MINUTE WARNING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 7,
+      "article": 3,
+      "reference": "4-7-3",
+      "title": "DEFENSIVE FOULS OR INJURIES DURING LAST 40 SECONDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 7,
+      "article": 4,
+      "reference": "4-7-4",
+      "title": "10-SECOND RUNOFF AFTER REPLAY REVIEW OR NULLIFIED FOUL AFTER TWO-MINUTE WARNING OF",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 4,
+      "section": 8,
+      "title": "EXTENSION OF A PERIOD OR A HALF",
+      "reference": "4-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 8,
+      "article": 1,
+      "reference": "4-8-1",
+      "title": "BALL IN PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 4,
+      "section": 8,
+      "article": 2,
+      "reference": "4-8-2",
+      "title": "PERIOD EXTENDED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 5,
+      "section": 1,
+      "title": "PLAYERS",
+      "reference": "5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 1,
+      "article": 1,
+      "reference": "5-1-1",
+      "title": "NUMBER OF PLAYERS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 1,
+      "article": 2,
+      "reference": "5-1-2",
+      "title": "PLAYERS NUMBERED BY POSITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 5,
+      "section": 2,
+      "title": "SUBSTITUTES AND WITHDRAWN PLAYERS",
+      "reference": "5-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 1,
+      "reference": "5-2-1",
+      "title": "NUMBER OF PLAYERS IN HUDDLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 2,
+      "reference": "5-2-2",
+      "title": "SUBSTITUTE BECOMES PLAYER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 3,
+      "reference": "5-2-3",
+      "title": "LEGAL SUBSTITUTIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 4,
+      "reference": "5-2-4",
+      "title": "ILLEGAL SUBSTITUTIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 5,
+      "reference": "5-2-5",
+      "title": "OFFENSIVE SUBSTITUTIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 6,
+      "reference": "5-2-6",
+      "title": "WITHDRAWN PLAYERS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 7,
+      "reference": "5-2-7",
+      "title": "DISQUALIFIED AND SUSPENDED PLAYERS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 8,
+      "reference": "5-2-8",
+      "title": "PENALTIES FOR ILLEGAL SUBSTITUTION OR WITHDRAWAL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 9,
+      "reference": "5-2-9",
+      "title": "PROCEDURE FOLLOWING TIMEOUT OR CHANGE OF POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 10,
+      "reference": "5-2-10",
+      "title": "DEFENSIVE MATCHUPS FOLLOWING SUBSTITUTIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 2,
+      "article": 11,
+      "reference": "5-2-11",
+      "title": "UNSPORTSMANLIKE CONDUCT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 5,
+      "section": 3,
+      "title": "CHANGES IN POSITION",
+      "reference": "5-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 3,
+      "article": 1,
+      "reference": "5-3-1",
+      "title": "REPORTING CHANGE OF POSITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 3,
+      "article": 2,
+      "reference": "5-3-2",
+      "title": "RETURNING TO ORIGINAL POSITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 3,
+      "article": 3,
+      "reference": "5-3-3",
+      "title": "SPEAKERS IN HELMETS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 5,
+      "section": 4,
+      "title": "EQUIPMENT, UNIFORMS, PLAYER APPEARANCE",
+      "reference": "5-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 1,
+      "reference": "5-4-1",
+      "title": "GENERAL POLICY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 2,
+      "reference": "5-4-2",
+      "title": "TEAM COLORS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 3,
+      "reference": "5-4-3",
+      "title": "MANDATORY EQUIPMENT, APPAREL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 4,
+      "reference": "5-4-4",
+      "title": "OTHER PROHIBITED EQUIPMENT, APPAREL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 5,
+      "reference": "5-4-5",
+      "title": "RECOMMENDED EQUIPMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 6,
+      "reference": "5-4-6",
+      "title": "OPTIONAL EQUIPMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 7,
+      "reference": "5-4-7",
+      "title": "LOGOS AND COMMERCIAL IDENTIFICATION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 8,
+      "reference": "5-4-8",
+      "title": "PERSONAL MESSAGES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 5,
+      "section": 4,
+      "article": 9,
+      "reference": "5-4-9",
+      "title": "GENERAL APPEARANCE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 6,
+      "section": 1,
+      "title": "PROCEDURES FOR A FREE KICK",
+      "reference": "6-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 1,
+      "reference": "6-1-1",
+      "title": "FREE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 2,
+      "reference": "6-1-2",
+      "title": "RESTRAINING LINES AND ZONES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 3,
+      "reference": "6-1-3",
+      "title": "KICKOFF OR SAFETY KICK FORMATION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 4,
+      "reference": "6-1-4",
+      "title": "CATCH OR RECOVERY OF A KICKOFF OR SAFETY KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 5,
+      "reference": "6-1-5",
+      "title": "KICKOFF OR SAFETY KICK CROSSES GOAL LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 6,
+      "reference": "6-1-6",
+      "title": "ONSIDE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 1,
+      "article": 7,
+      "reference": "6-1-7",
+      "title": "END OF FREE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 6,
+      "section": 2,
+      "title": "OTHER FREE KICK FOULS",
+      "reference": "6-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 2,
+      "article": 1,
+      "reference": "6-2-1",
+      "title": "BLOCKING DURING A KICKOFF OR SAFETY KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 2,
+      "article": 2,
+      "reference": "6-2-2",
+      "title": "BLOCKING DURING ONSIDE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 2,
+      "article": 3,
+      "reference": "6-2-3",
+      "title": "RUNNING INTO FREE KICKER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 2,
+      "article": 4,
+      "reference": "6-2-4",
+      "title": "FREE KICK OUT OF BOUNDS OR NOT REACHING THE LANDING ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 2,
+      "article": 5,
+      "reference": "6-2-5",
+      "title": "FREE KICK ILLEGALLY TOUCHED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 2,
+      "article": 6,
+      "reference": "6-2-6",
+      "title": "PLAYER VOLUNTARILY OUT OF BOUNDS ON A FREE KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 6,
+      "section": 3,
+      "title": "ENFORCEMENT OF FOULS",
+      "reference": "6-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 6,
+      "section": 3,
+      "article": 1,
+      "reference": "6-3-1",
+      "title": "ENFORCEMENT FROM PREVIOUS SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 7,
+      "section": 1,
+      "title": "BALL IN PLAY",
+      "reference": "7-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 1,
+      "article": 1,
+      "reference": "7-1-1",
+      "title": "LIVE BALL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 7,
+      "section": 2,
+      "title": "DEAD BALL",
+      "reference": "7-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 2,
+      "article": 1,
+      "reference": "7-2-1",
+      "title": "DEAD BALL DECLARED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 2,
+      "article": 2,
+      "reference": "7-2-2",
+      "title": "BALL TOUCHES OFFICIAL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 7,
+      "section": 3,
+      "title": "NEW SERIES OF DOWNS",
+      "reference": "7-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 3,
+      "article": 1,
+      "reference": "7-3-1",
+      "title": "NEW SERIES FOR TEAM A",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 3,
+      "article": 2,
+      "reference": "7-3-2",
+      "title": "NEW SERIES FOR TEAM B",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 3,
+      "article": 3,
+      "reference": "7-3-3",
+      "title": "FORWARD PART OF BALL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 7,
+      "section": 4,
+      "title": "ACTION AT OR BEFORE THE SNAP",
+      "reference": "7-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 1,
+      "reference": "7-4-1",
+      "title": "BALL READY FOR PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 2,
+      "reference": "7-4-2",
+      "title": "FALSE START",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 3,
+      "reference": "7-4-3",
+      "title": "ENCROACHMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 4,
+      "reference": "7-4-4",
+      "title": "NEUTRAL ZONE INFRACTION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 5,
+      "reference": "7-4-5",
+      "title": "OFFSIDE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 6,
+      "reference": "7-4-6",
+      "title": "COMPLETE STOP",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 7,
+      "reference": "7-4-7",
+      "title": "SHIFTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 4,
+      "article": 8,
+      "reference": "7-4-8",
+      "title": "ILLEGAL MOTION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 7,
+      "section": 5,
+      "title": "POSITION OF PLAYERS AT THE SNAP",
+      "reference": "7-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 5,
+      "article": 1,
+      "reference": "7-5-1",
+      "title": "OFFENSIVE TEAM",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 7,
+      "section": 6,
+      "title": "PUTTING THE BALL IN PLAY",
+      "reference": "7-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 6,
+      "article": 1,
+      "reference": "7-6-1",
+      "title": "BALL IN PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 6,
+      "article": 2,
+      "reference": "7-6-2",
+      "title": "SNAP AT INBOUNDS SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 6,
+      "article": 3,
+      "reference": "7-6-3",
+      "title": "RESTRICTIONS FOR SNAPPER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 7,
+      "section": 6,
+      "article": 4,
+      "reference": "7-6-4",
+      "title": "LEGAL SNAP",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 1,
+      "title": "FORWARD PASS",
+      "reference": "8-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 1,
+      "reference": "8-1-1",
+      "title": "DEFINITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 2,
+      "reference": "8-1-2",
+      "title": "LEGAL FORWARD PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 3,
+      "reference": "8-1-3",
+      "title": "COMPLETED OR INTERCEPTED PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 4,
+      "reference": "8-1-4",
+      "title": "INCOMPLETE PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 5,
+      "reference": "8-1-5",
+      "title": "ELIGIBLE RECEIVERS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 6,
+      "reference": "8-1-6",
+      "title": "INELIGIBLE RECEIVERS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 7,
+      "reference": "8-1-7",
+      "title": "LEGAL TOUCHING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 1,
+      "article": 8,
+      "reference": "8-1-8",
+      "title": "ILLEGAL TOUCHING OF A FORWARD PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 2,
+      "title": "INTENTIONAL GROUNDING",
+      "reference": "8-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 2,
+      "article": 1,
+      "reference": "8-2-1",
+      "title": "DEFINITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 3,
+      "title": "INELIGIBLE PLAYER DOWNFIELD",
+      "reference": "8-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 3,
+      "article": 1,
+      "reference": "8-3-1",
+      "title": "LEGAL AND ILLEGAL ACTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 3,
+      "article": 2,
+      "reference": "8-3-2",
+      "title": "AFTER PASS IS THROWN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 4,
+      "title": "LEGAL AND ILLEGAL CONTACT WITH ELIGIBLE RECEIVERS",
+      "reference": "8-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 1,
+      "reference": "8-4-1",
+      "title": "LEGAL CONTACT WITHIN FIVE YARDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 2,
+      "reference": "8-4-2",
+      "title": "ILLEGAL CONTACT WITHIN FIVE YARDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 3,
+      "reference": "8-4-3",
+      "title": "ILLEGAL CONTACT BEYOND FIVE-YARD ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 4,
+      "reference": "8-4-4",
+      "title": "INCIDENTAL CONTACT BEYOND FIVE-YARD ZONE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 5,
+      "reference": "8-4-5",
+      "title": "ILLEGAL CUT BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 6,
+      "reference": "8-4-6",
+      "title": "DEFENSIVE HOLDING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 4,
+      "article": 7,
+      "reference": "8-4-7",
+      "title": "END OF RESTRICTIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 5,
+      "title": "PASS INTERFERENCE",
+      "reference": "8-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 5,
+      "article": 1,
+      "reference": "8-5-1",
+      "title": "DEFINITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 5,
+      "article": 2,
+      "reference": "8-5-2",
+      "title": "PROHIBITED ACTS BY BOTH TEAMS WHILE THE BALL IS IN THE AIR",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 5,
+      "article": 3,
+      "reference": "8-5-3",
+      "title": "PERMISSIBLE ACTS BY BOTH TEAMS WHILE THE BALL IS IN THE AIR",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 5,
+      "article": 4,
+      "reference": "8-5-4",
+      "title": "OTHER PROHIBITED ACTS BY THE OFFENSE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 6,
+      "title": "ENFORCEMENT SPOT",
+      "reference": "8-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 6,
+      "article": 1,
+      "reference": "8-6-1",
+      "title": "ENFORCEMENT SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 8,
+      "section": 7,
+      "title": "BACKWARD PASS AND FUMBLE",
+      "reference": "8-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 1,
+      "reference": "8-7-1",
+      "title": "BACKWARD PASS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 2,
+      "reference": "8-7-2",
+      "title": "BACKWARD PASS OUT OF BOUNDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 3,
+      "reference": "8-7-3",
+      "title": "FUMBLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 4,
+      "reference": "8-7-4",
+      "title": "HANDING BALL FORWARD",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 5,
+      "reference": "8-7-5",
+      "title": "FOURTH DOWN FUMBLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 6,
+      "reference": "8-7-6",
+      "title": "FUMBLE AFTER TWO-MINUTE WARNING OR DURING A TRY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 8,
+      "section": 7,
+      "article": 7,
+      "reference": "8-7-7",
+      "title": "ENFORCEMENT SPOT DURING A BACKWARD PASS OR FUMBLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 9,
+      "section": 1,
+      "title": "KICK FROM SCRIMMAGE",
+      "reference": "9-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 1,
+      "article": 1,
+      "reference": "9-1-1",
+      "title": "KICK ON OR BEHIND LINE OF SCRIMMAGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 1,
+      "article": 2,
+      "reference": "9-1-2",
+      "title": "KICKING TEAM PLAYERS ON LINE DURING KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 1,
+      "article": 3,
+      "reference": "9-1-3",
+      "title": "DEFENSIVE TEAM FORMATION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 1,
+      "article": 4,
+      "reference": "9-1-4",
+      "title": "BLOCKING DURING KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 1,
+      "article": 5,
+      "reference": "9-1-5",
+      "title": "KICKING TEAM PLAYER VOLUNTARILY OUT OF BOUNDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 9,
+      "section": 2,
+      "title": "TOUCHING A SCRIMMAGE KICK",
+      "reference": "9-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 2,
+      "article": 1,
+      "reference": "9-2-1",
+      "title": "TOUCHING BEHIND THE LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 2,
+      "article": 2,
+      "reference": "9-2-2",
+      "title": "FIRST TOUCHING BEYOND THE LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 2,
+      "article": 3,
+      "reference": "9-2-3",
+      "title": "KICKING TEAM PLAYER OUT OF BOUNDS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 2,
+      "article": 4,
+      "reference": "9-2-4",
+      "title": "BLOCKED INTO KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 2,
+      "article": 5,
+      "reference": "9-2-5",
+      "title": "BALL BATTED OR ILLEGALLY KICKED INTO OPPONENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 9,
+      "section": 3,
+      "title": "CATCH OR RECOVERY OF A SCRIMMAGE KICK",
+      "reference": "9-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 3,
+      "article": 1,
+      "reference": "9-3-1",
+      "title": "KICKERS CATCH OR RECOVER BEHIND LINE OF SCRIMMAGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 3,
+      "article": 2,
+      "reference": "9-3-2",
+      "title": "KICKERS CATCH OR RECOVER BEYOND LINE OF SCRIMMAGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 3,
+      "article": 3,
+      "reference": "9-3-3",
+      "title": "RECEIVERS CATCH OR RECOVERY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 3,
+      "article": 4,
+      "reference": "9-3-4",
+      "title": "SIMULTANEOUS CATCH OR RECOVERY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 9,
+      "section": 4,
+      "title": "BALL CROSSES GOAL LINE, TOUCHES GOAL POSTS, OUT OF BOUNDS, DEAD IN FIELD OF PLAY",
+      "reference": "9-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 4,
+      "article": 1,
+      "reference": "9-4-1",
+      "title": "BALL CROSSES RECEIVERS\u2019 GOAL LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 4,
+      "article": 2,
+      "reference": "9-4-2",
+      "title": "KICK TOUCHES RECEIVERS\u2019 GOAL POSTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 4,
+      "article": 3,
+      "reference": "9-4-3",
+      "title": "KICK TOUCHES KICKERS\u2019 GOAL POSTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 4,
+      "article": 4,
+      "reference": "9-4-4",
+      "title": "BALL OUT OF BOUNDS OR NOT RECOVERED IN FIELD OF PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 9,
+      "section": 5,
+      "title": "SPOTS OF ENFORCEMENT",
+      "reference": "9-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 9,
+      "section": 5,
+      "article": 1,
+      "reference": "9-5-1",
+      "title": "SPOTS OF ENFORCEMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 10,
+      "section": 1,
+      "title": "OPPORTUNITY TO CATCH A KICK",
+      "reference": "10-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 10,
+      "section": 1,
+      "article": 1,
+      "reference": "10-1-1",
+      "title": "INTERFERENCE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 10,
+      "section": 2,
+      "title": "FAIR CATCH",
+      "reference": "10-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 10,
+      "section": 2,
+      "article": 1,
+      "reference": "10-2-1",
+      "title": "DEFINITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 10,
+      "section": 2,
+      "article": 2,
+      "reference": "10-2-2",
+      "title": "FAIR CATCH SIGNAL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 10,
+      "section": 2,
+      "article": 3,
+      "reference": "10-2-3",
+      "title": "RESTRICTIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 10,
+      "section": 2,
+      "article": 4,
+      "reference": "10-2-4",
+      "title": "PUTTING BALL IN PLAY AFTER FAIR CATCH",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 10,
+      "section": 2,
+      "article": 5,
+      "reference": "10-2-5",
+      "title": "EXTENSION OF A PERIOD",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 11,
+      "section": 1,
+      "title": "VALUE OF SCORES",
+      "reference": "11-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 1,
+      "article": 1,
+      "reference": "11-1-1",
+      "title": "WINNING TEAM",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 1,
+      "article": 2,
+      "reference": "11-1-2",
+      "title": "TYPES OF SCORING PLAYS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 11,
+      "section": 2,
+      "title": "TOUCHDOWN",
+      "reference": "11-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 2,
+      "article": 1,
+      "reference": "11-2-1",
+      "title": "TOUCHDOWN PLAYS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 11,
+      "section": 3,
+      "title": "TRY",
+      "reference": "11-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 3,
+      "article": 1,
+      "reference": "11-3-1",
+      "title": "GENERAL RULES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 3,
+      "article": 2,
+      "reference": "11-3-2",
+      "title": "RESULTS OF A TRY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 3,
+      "article": 3,
+      "reference": "11-3-3",
+      "title": "FOULS COMMITTED DURING TRY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 3,
+      "article": 4,
+      "reference": "11-3-4",
+      "title": "KICKOFF AFTER TRY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 11,
+      "section": 4,
+      "title": "FIELD GOAL",
+      "reference": "11-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 4,
+      "article": 1,
+      "reference": "11-4-1",
+      "title": "SUCCESSFUL FIELD GOAL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 4,
+      "article": 2,
+      "reference": "11-4-2",
+      "title": "MISSED FIELD GOALS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 4,
+      "article": 3,
+      "reference": "11-4-3",
+      "title": "FAIR CATCH KICK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 4,
+      "article": 4,
+      "reference": "11-4-4",
+      "title": "NO TEE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 4,
+      "article": 5,
+      "reference": "11-4-5",
+      "title": "FOREIGN ARTICLES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 4,
+      "article": 6,
+      "reference": "11-4-6",
+      "title": "BALL NEXT IN PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 11,
+      "section": 5,
+      "title": "SAFETY",
+      "reference": "11-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 5,
+      "article": 1,
+      "reference": "11-5-1",
+      "title": "SAFETY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 5,
+      "article": 2,
+      "reference": "11-5-2",
+      "title": "BALL IN PLAY AFTER SAFETY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 11,
+      "section": 6,
+      "title": "TOUCHBACK",
+      "reference": "11-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 6,
+      "article": 1,
+      "reference": "11-6-1",
+      "title": "DEFINITION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 6,
+      "article": 2,
+      "reference": "11-6-2",
+      "title": "TOUCHBACK SITUATIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 11,
+      "section": 6,
+      "article": 3,
+      "reference": "11-6-3",
+      "title": "BALL NEXT IN PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 12,
+      "section": 1,
+      "title": "BLOCKING, USE OF HANDS AND ARMS",
+      "reference": "12-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 1,
+      "reference": "12-1-1",
+      "title": "LEGAL AND ILLEGAL BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 2,
+      "reference": "12-1-2",
+      "title": "LEGAL BLOCK BY OFFENSIVE PLAYER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 3,
+      "reference": "12-1-3",
+      "title": "ILLEGAL BLOCK BY OFFENSIVE PLAYER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 4,
+      "reference": "12-1-4",
+      "title": "ASSISTING THE RUNNER AND INTERLOCKING INTERFERENCE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 5,
+      "reference": "12-1-5",
+      "title": "LEGAL USE OF HANDS OR ARMS BY DEFENSE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 6,
+      "reference": "12-1-6",
+      "title": "DEFENSIVE HOLDING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 1,
+      "article": 7,
+      "reference": "12-1-7",
+      "title": "ILLEGAL USE OF HANDS BY DEFENSE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 12,
+      "section": 2,
+      "title": "PERSONAL FOULS",
+      "reference": "12-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 1,
+      "reference": "12-2-1",
+      "title": "CLIPPING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 2,
+      "reference": "12-2-2",
+      "title": "PEEL BACK BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 3,
+      "reference": "12-2-3",
+      "title": "ILLEGAL CUT BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 4,
+      "reference": "12-2-4",
+      "title": "BLOCKING BELOW THE WAIST",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 5,
+      "reference": "12-2-5",
+      "title": "CHOP BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 6,
+      "reference": "12-2-6",
+      "title": "CRACKBACK BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 7,
+      "reference": "12-2-7",
+      "title": "BLINDSIDE BLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 8,
+      "reference": "12-2-8",
+      "title": "UNNECESSARY ROUGHNESS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 9,
+      "reference": "12-2-9",
+      "title": "PLAYERS IN A DEFENSELESS POSTURE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 10,
+      "reference": "12-2-10",
+      "title": "IMPERMISSIBLE USE OF THE HELMET",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 11,
+      "reference": "12-2-11",
+      "title": "ROUGHING THE PASSER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 12,
+      "reference": "12-2-12",
+      "title": "ROUGHING/RUNNING INTO THE KICKER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 13,
+      "reference": "12-2-13",
+      "title": "ROUGHING THE HOLDER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 14,
+      "reference": "12-2-14",
+      "title": "STRIKING, KICKING, TRIPPING OR KNEEING OPPONENTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 15,
+      "reference": "12-2-15",
+      "title": "TWISTING, PULLING, OR TURNING THE FACEMASK OR HELMET OPENING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 16,
+      "reference": "12-2-16",
+      "title": "HORSE-COLLAR TACKLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 17,
+      "reference": "12-2-17",
+      "title": "USE OF HELMET AS A WEAPON",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 18,
+      "reference": "12-2-18",
+      "title": "HIP-DROP TACKLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 2,
+      "article": 19,
+      "reference": "12-2-19",
+      "title": "OTHER PERSONAL FOULS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 12,
+      "section": 3,
+      "title": "UNSPORTSMANLIKE CONDUCT",
+      "reference": "12-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 3,
+      "article": 1,
+      "reference": "12-3-1",
+      "title": "PROHIBITED ACTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 3,
+      "article": 2,
+      "reference": "12-3-2",
+      "title": "FOULS TO PREVENT SCORE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 3,
+      "article": 3,
+      "reference": "12-3-3",
+      "title": "INTENTIONAL FOULS TO MANIPULATE GAME CLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 3,
+      "article": 4,
+      "reference": "12-3-4",
+      "title": "PALPABLY UNFAIR ACT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 12,
+      "section": 4,
+      "title": "AUTOMATIC DISQUALIFICATION",
+      "reference": "12-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 4,
+      "article": 1,
+      "reference": "12-4-1",
+      "title": "MULTIPLE UNSPORTSMANLIKE CONDUCT FOULS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 12,
+      "section": 5,
+      "title": "ILLEGAL BATS AND KICKS",
+      "reference": "12-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 5,
+      "article": 1,
+      "reference": "12-5-1",
+      "title": "ILLEGAL BAT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 12,
+      "section": 5,
+      "article": 2,
+      "reference": "12-5-2",
+      "title": "ILLEGALLY KICKING BALL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 13,
+      "section": 1,
+      "title": "NON-PLAYER CONDUCT",
+      "reference": "13-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 1,
+      "reference": "13-1-1",
+      "title": "NON-PLAYER FOULS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 2,
+      "reference": "13-1-2",
+      "title": "TEAM ATTENDANTS MAY ENTER FIELD DURING TIMEOUT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 3,
+      "reference": "13-1-3",
+      "title": "BENCH CREDENTIALS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 4,
+      "reference": "13-1-4",
+      "title": "RESTRICTED AREAS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 5,
+      "reference": "13-1-5",
+      "title": "MOVEMENT ON SIDELINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 6,
+      "reference": "13-1-6",
+      "title": "NON-BENCH AREAS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 7,
+      "reference": "13-1-7",
+      "title": "PALPABLY UNFAIR ACT (NON-PLAYER)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 13,
+      "section": 1,
+      "article": 8,
+      "reference": "13-1-8",
+      "title": "NON-PLAYER PERSONNEL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 14,
+      "section": 1,
+      "title": "GENERAL RULES",
+      "reference": "14-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 1,
+      "article": 1,
+      "reference": "14-1-1",
+      "title": "REFUSAL OF PENALTIES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 1,
+      "article": 2,
+      "reference": "14-1-2",
+      "title": "NUMBER OF DOWN AFTER PENALTY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 1,
+      "article": 3,
+      "reference": "14-1-3",
+      "title": "CHOICE OF PENALTIES (MULTIPLE FOULS)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 14,
+      "section": 2,
+      "title": "SPECIAL ENFORCEMENT FOR PENALTIES",
+      "reference": "14-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 2,
+      "article": 1,
+      "reference": "14-2-1",
+      "title": "HALF-DISTANCE PENALTY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 2,
+      "article": 2,
+      "reference": "14-2-2",
+      "title": "FOUL BEHIND A GOAL LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 2,
+      "article": 3,
+      "reference": "14-2-3",
+      "title": "FOUL DURING A SCORE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 2,
+      "article": 4,
+      "reference": "14-2-4",
+      "title": "PERSONAL FOULS AND UNSPORTSMANLIKE CONDUCT FOULS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 14,
+      "section": 3,
+      "title": "SPOT FROM WHICH PENALTY IS ENFORCED",
+      "reference": "14-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 3,
+      "article": 1,
+      "reference": "14-3-1",
+      "title": "GOVERNING PROVISIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 3,
+      "article": 2,
+      "reference": "14-3-2",
+      "title": "FOUL BY NON-PLAYER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 3,
+      "article": 3,
+      "reference": "14-3-3",
+      "title": "ENFORCEMENT SPOT NOT GOVERNED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 3,
+      "article": 4,
+      "reference": "14-3-4",
+      "title": "SPOTS OF ENFORCEMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 3,
+      "article": 5,
+      "reference": "14-3-5",
+      "title": "BASIC SPOT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 3,
+      "article": 6,
+      "reference": "14-3-6",
+      "title": "THREE-AND-ONE METHOD OF ENFORCEMENT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 14,
+      "section": 4,
+      "title": "SPOTS OF ENFORCEMENT",
+      "reference": "14-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 1,
+      "reference": "14-4-1",
+      "title": "FOUL BEFORE OR AT THE SNAP",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 2,
+      "reference": "14-4-2",
+      "title": "FOUL COMMITTED DURING RUNNING PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 3,
+      "reference": "14-4-3",
+      "title": "FOUL COMMITTED DURING RUNNING PLAY BEFORE CHANGE OF POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 4,
+      "reference": "14-4-4",
+      "title": "FOUL COMMITTED AFTER CHANGE OF POSSESSION (END ZONE ENFORCEMENT)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 5,
+      "reference": "14-4-5",
+      "title": "FOUL COMMITTED DURING PASSING PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 6,
+      "reference": "14-4-6",
+      "title": "FOUL DURING A BACKWARD PASS OR FUMBLE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 7,
+      "reference": "14-4-7",
+      "title": "FOUL DURING FREE KICK PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 8,
+      "reference": "14-4-8",
+      "title": "FOUL DURING SCRIMMAGE KICK PLAY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 4,
+      "article": 9,
+      "reference": "14-4-9",
+      "title": "DEAD BALL FOUL AND FOUL BETWEEN DOWNS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 14,
+      "section": 5,
+      "title": "FOULS BY BOTH TEAMS (DOUBLE FOULS)",
+      "reference": "14-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 5,
+      "article": 1,
+      "reference": "14-5-1",
+      "title": "DOUBLE FOUL WITHOUT CHANGE OF POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 5,
+      "article": 2,
+      "reference": "14-5-2",
+      "title": "DOUBLE FOUL WITH A CHANGE OF POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 14,
+      "section": 5,
+      "article": 3,
+      "reference": "14-5-3",
+      "title": "DOUBLE FOUL AFTER A CHANGE OF POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 1,
+      "title": "INITIATING A REPLAY REVIEW",
+      "reference": "15-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 1,
+      "article": 1,
+      "reference": "15-1-1",
+      "title": "COACH CHALLENGES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 1,
+      "article": 2,
+      "reference": "15-1-2",
+      "title": "REPLAY OFFICIAL REQUEST FOR REVIEW",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 2,
+      "title": "REPLAY REVIEWS",
+      "reference": "15-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 2,
+      "article": 1,
+      "reference": "15-2-1",
+      "title": "CHANGING A RULING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 2,
+      "article": 2,
+      "reference": "15-2-2",
+      "title": "SCOPE OF REVIEW",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 2,
+      "article": 3,
+      "reference": "15-2-3",
+      "title": "AWARDING POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 2,
+      "article": 4,
+      "reference": "15-2-4",
+      "title": "EACH RULING REVIEWED SEPARATELY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 3,
+      "title": "REVIEWABLE RULINGS",
+      "reference": "15-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 1,
+      "reference": "15-3-1",
+      "title": "PLAY SITUATIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 2,
+      "reference": "15-3-2",
+      "title": "PLAYS INVOLVING POSSESSION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 3,
+      "reference": "15-3-3",
+      "title": "PLAYS INVOLVING TOUCHING OF EITHER THE BALL OR THE GROUND",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 4,
+      "reference": "15-3-4",
+      "title": "PLAYS GOVERNED BY THE GOAL LINE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 5,
+      "reference": "15-3-5",
+      "title": "PLAYS GOVERNED BY THE BOUNDARY LINES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 6,
+      "reference": "15-3-6",
+      "title": "PLAYS GOVERNED BY THE LINE OF SCRIMMAGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 7,
+      "reference": "15-3-7",
+      "title": "PLAYS GOVERNED BY THE LINE TO GAIN",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 8,
+      "reference": "15-3-8",
+      "title": "NUMBER OF PLAYERS ON THE FIELD",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 9,
+      "reference": "15-3-9",
+      "title": "GAME CLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 10,
+      "reference": "15-3-10",
+      "title": "DISQUALIFICATION OF A PLAYER",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 3,
+      "article": 11,
+      "reference": "15-3-11",
+      "title": "OTHER REVIEWABLE PLAYS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 4,
+      "title": "NON-REVIEWABLE PLAYS",
+      "reference": "15-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 5,
+      "title": "GAME CLOCK ADMINISTRATION AFTER REVIEW",
+      "reference": "15-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 5,
+      "article": 1,
+      "reference": "15-5-1",
+      "title": "RESETTING GAME CLOCK",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 5,
+      "article": 2,
+      "reference": "15-5-2",
+      "title": "10-SECOND RUNOFF",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 6,
+      "title": "TIMEOUTS FOLLOWING REVIEW",
+      "reference": "15-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 6,
+      "article": 1,
+      "reference": "15-6-1",
+      "title": "UNSUCCESSFUL CHALLENGE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 6,
+      "article": 2,
+      "reference": "15-6-2",
+      "title": "CHARGED TIMEOUT RESTORED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 7,
+      "title": "FOULS",
+      "reference": "15-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 7,
+      "article": 1,
+      "reference": "15-7-1",
+      "title": "PENALTY ADMINISTRATION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 7,
+      "article": 2,
+      "reference": "15-7-2",
+      "title": "FOUL NULLIFIED BY A CHANGED RULING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 15,
+      "section": 7,
+      "article": 3,
+      "reference": "15-7-3",
+      "title": "ENFORCEMENT OF FOULS FOLLOWING A CHANGED RULING",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 8,
+      "title": "LOSS OF COMMUNICATION",
+      "reference": "15-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 15,
+      "section": 9,
+      "title": "GAME ADMINISTRATION, CONSULTATION, AND ASSISTANCE",
+      "reference": "15-9",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 16,
+      "section": 1,
+      "title": "OVERTIME PROCEDURES",
+      "reference": "16-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 16,
+      "section": 1,
+      "article": 1,
+      "reference": "16-1-1",
+      "title": "SCORE TIED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 16,
+      "section": 1,
+      "article": 2,
+      "reference": "16-1-2",
+      "title": "END OF REGULATION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 16,
+      "section": 1,
+      "article": 3,
+      "reference": "16-1-3",
+      "title": "OVERTIME IN REGULAR SEASON",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 16,
+      "section": 1,
+      "article": 4,
+      "reference": "16-1-4",
+      "title": "OVERTIME IN POSTSEASON",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 16,
+      "section": 1,
+      "article": 5,
+      "reference": "16-1-5",
+      "title": "GENERAL RULES APPLICABLE TO OVERTIME",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 17,
+      "section": 1,
+      "title": "EMERGENCIES",
+      "reference": "17-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 1,
+      "reference": "17-1-1",
+      "title": "NON-PLAYER ON FIELD",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 2,
+      "reference": "17-1-2",
+      "title": "FIELD CONTROL",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 3,
+      "reference": "17-1-3",
+      "title": "GAME CALLED",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 4,
+      "reference": "17-1-4",
+      "title": "EMERGENCY SITUATIONS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 5,
+      "reference": "17-1-5",
+      "title": "LEAGUE AUTHORITY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 6,
+      "reference": "17-1-6",
+      "title": "LATER DATE",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 7,
+      "reference": "17-1-7",
+      "title": "PRE-GAME THREAT",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 8,
+      "reference": "17-1-8",
+      "title": "INTERRUPTED GAME",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 9,
+      "reference": "17-1-9",
+      "title": "ALTERNATE DATES, SITES",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 10,
+      "reference": "17-1-10",
+      "title": "POSTSEASON INTERRUPTION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 1,
+      "article": 11,
+      "reference": "17-1-11",
+      "title": "GAME RESUMPTION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 17,
+      "section": 2,
+      "title": "EXTRAORDINARILY UNFAIR ACTS",
+      "reference": "17-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 2,
+      "article": 1,
+      "reference": "17-2-1",
+      "title": "COMMISSIONER AUTHORITY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 2,
+      "article": 2,
+      "reference": "17-2-2",
+      "title": "NO CLUB PROTESTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 17,
+      "section": 2,
+      "article": 3,
+      "reference": "17-2-3",
+      "title": "PENALTIES FOR UNFAIR ACTS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 18,
+      "section": 1,
+      "title": "GUIDELINES FOR CAPTAINS",
+      "reference": "18-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 18,
+      "section": 1,
+      "article": 1,
+      "reference": "18-1-1",
+      "title": "NUMBER OF CAPTAINS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 18,
+      "section": 1,
+      "article": 2,
+      "reference": "18-1-2",
+      "title": "COIN TOSS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 18,
+      "section": 1,
+      "article": 3,
+      "reference": "18-1-3",
+      "title": "CHOICE ON PENALTY OPTION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 18,
+      "section": 1,
+      "article": 4,
+      "reference": "18-1-4",
+      "title": "CHANGE OF CAPTAINS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 19,
+      "section": 1,
+      "title": "OFFICIALS",
+      "reference": "19-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 19,
+      "section": 1,
+      "article": 1,
+      "reference": "19-1-1",
+      "title": "GAME OFFICIALS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 19,
+      "section": 1,
+      "article": 2,
+      "reference": "19-1-2",
+      "title": "JURISDICTION",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 19,
+      "section": 1,
+      "article": 3,
+      "reference": "19-1-3",
+      "title": "REFEREE\u2019S AUTHORITY",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "article",
+      "rule": 19,
+      "section": 1,
+      "article": 4,
+      "reference": "19-1-4",
+      "title": "RESPONSIBILITIES AND MECHANICS",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "kind": "section",
+      "rule": 19,
+      "section": 2,
+      "title": "SUPPORT FROM NFL OFFICIATING STAFF",
+      "reference": "19-2",
+      "assessment": "not_individually_qualified"
+    }
+  ],
+  "penaltySummary": [
+    {
+      "id": "SUM-001",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Delay of game",
+      "reference": "4-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-002",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Encroachment",
+      "reference": "7-4-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-003",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "False start",
+      "reference": "7-4-2",
+      "assessment": "sampled_dead_ball_abstraction",
+      "implementationFacts": [
+        "presnap-sampled"
+      ]
+    },
+    {
+      "id": "SUM-004",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Holding (defense)",
+      "reference": "12-1-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-005",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal contact",
+      "reference": "8-4-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-006",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal formation (free kick)",
+      "reference": "6-1-3, 6-1-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-007",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal formation (scrimmage down)",
+      "reference": "7-5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-008",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal formation (scrimmage kick)",
+      "reference": "9-1-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-009",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal forward handing",
+      "reference": "8-7-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-010",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal kick",
+      "reference": "6-1-1, 6-1-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-011",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal motion",
+      "reference": "7-4-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-012",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal shift",
+      "reference": "7-4-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-013",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal snap",
+      "reference": "7-6-3, 7-6-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-014",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal substitution",
+      "reference": "4-7-2, 5-2-8, 5-3-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-015",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal touching of a forward pass",
+      "reference": "8-1-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-016",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegally touching of a free kick",
+      "reference": "6-2-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-017",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Illegal use of hands by defense",
+      "reference": "12-1-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-018",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Ineligible player downfield on kick",
+      "reference": "9-1-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-019",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Ineligible player downfield on pass",
+      "reference": "8-3-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-020",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Invalid fair catch signal",
+      "reference": "10-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-021",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Kicking team player voluntarily out of bounds",
+      "reference": "9-1-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-022",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Neutral zone infraction",
+      "reference": "7-4-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-023",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Offside",
+      "reference": "7-4-5",
+      "assessment": "sampled_dead_ball_abstraction_missing_live_distinction",
+      "implementationFacts": [
+        "presnap-sampled"
+      ]
+    },
+    {
+      "id": "SUM-024",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Punt, drop kick, or place kick from beyond the line",
+      "reference": "9-1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-025",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Running into kicker",
+      "reference": "12-2-12",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-026",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Second excess team timeout after two-minute warning",
+      "reference": "4-5-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-027",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Team timeout called when not allowed",
+      "reference": "4-5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-028",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Too many players on the field",
+      "reference": "5-1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-029",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Five Yards",
+      "description": "Voluntarily going out of bounds on free kick",
+      "reference": "6-2-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-030",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Assisting the runner",
+      "reference": "12-1-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-031",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Holding (offense)",
+      "reference": "12-1-3(c)",
+      "assessment": "sampled_native_technique_and_call_partial_enforcement",
+      "implementationFacts": [
+        "offensive-holding",
+        "single-foul-result"
+      ]
+    },
+    {
+      "id": "SUM-032",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Illegal batting",
+      "reference": "12-5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-033",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Illegal blocking or use of hands (free kick)",
+      "reference": "6-2-1, 6-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-034",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Illegal kicking",
+      "reference": "12-5-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-035",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Illegal use of hands (offense)",
+      "reference": "12-1-3(a)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-036",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Illegal block in the back",
+      "reference": "12-1-3(b)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-037",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Ten Yards",
+      "description": "Offensive pass interference",
+      "reference": "8-5-2, 8-5-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-038",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Attempting to call excess/illegal timeout to freeze kicker",
+      "reference": "12-3-1(v)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-039",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Blindside block",
+      "reference": "12-2-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-040",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Blocking a kicking team player out of bounds",
+      "reference": "12-2-8(c)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-041",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Chop block",
+      "reference": "12-2-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-042",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Clipping",
+      "reference": "12-2-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-043",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Concealing ball or using equipment to simulate ball",
+      "reference": "12-3-1(j)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-044",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Crackback block",
+      "reference": "12-2-6",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-045",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Delaying the start of a half",
+      "reference": "4-2-1(a)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-046",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Disconcerting acts or signals",
+      "reference": "12-3-1(i)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-047",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Forcibly contacting a player out of bounds",
+      "reference": "12-2-8(b)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-048",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Goaltending",
+      "reference": "12-3-1(s)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-049",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Horse-collar tackle",
+      "reference": "12-2-16",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-050",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegal block after fair catch signal",
+      "reference": "10-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-051",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegal block below the waist",
+      "reference": "12-2-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-052",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Hip-drop tackle",
+      "reference": "12-2-18",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-053",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegal contact after a fair catch",
+      "reference": "10-2-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-054",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegal cut block",
+      "reference": "8-4-5, 12-2-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-055",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegal double team block",
+      "reference": "6-2-1, Item 2(c), 6-2-2, Item 2(d)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-056",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegal wedge on free kick",
+      "reference": "6-2-1, Item 2(d), 6-2-2, Item 2(d)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-057",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Illegally entering field",
+      "reference": "4-1-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-058",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Impermissible Use of the Helmet",
+      "reference": "12-2-10",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-059",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Interference with a fair catch",
+      "reference": "10-1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-060",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Interference with the opportunity to make a catch",
+      "reference": "10-1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-061",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Kicker or holder simulating being roughed",
+      "reference": "12-3-1(t)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-062",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Kicking player not attempting to return inbounds",
+      "reference": "12-3-1(u)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-063",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Leaping",
+      "reference": "12-3-1(o), (r)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-064",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Leg whip",
+      "reference": "12-2-8(a)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-065",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Leverage",
+      "reference": "12-3-1(p)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-066",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Non-player unnecessary contact or abusive language",
+      "reference": "13-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-067",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Peel back block",
+      "reference": "12-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-068",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Picking up a teammate to block a kick",
+      "reference": "12-3-1(q)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-069",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Player going in motion in front of bench area",
+      "reference": "12-3-1(l)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-070",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Prohibited contact to a defenseless player",
+      "reference": "12-2-9",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-071",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Prolonged or excessive celebration",
+      "reference": "12-3-1(f)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-072",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Pulling opponent off a pile of players",
+      "reference": "12-2-8(h)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-073",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Pushing teammate on scrimmage kick",
+      "reference": "9-1-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-074",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Removal of helmet in the field of play",
+      "reference": "12-3-1(h)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-075",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Repeated illegal substitutions when time is in",
+      "reference": "12-3-1(m)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-076",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Roughing the holder",
+      "reference": "12-2-13",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-077",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Roughing the kicker",
+      "reference": "12-2-12",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-078",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Roughing the passer",
+      "reference": "12-2-11",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-079",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Striking, kicking, tripping or kneeing an opponent",
+      "reference": "12-2-14",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-080",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Successive delay of game penalties when time in",
+      "reference": "12-3-1(n)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-081",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Throwing a punch, forearm, or kicking at opponent",
+      "reference": "12-3-1(a)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-082",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Twisting, turning or pulling of opponent\u2019s facemask",
+      "reference": "12-2-15",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-083",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unnecessary contact against a runner",
+      "reference": "12-2-8(d), (f)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-084",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unnecessary contact against player on the ground",
+      "reference": "12-2-8(e)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-085",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unnecessary contact to a kicker out of the play",
+      "reference": "12-2-8(i)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-086",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unnecessary contact to a player out of the play",
+      "reference": "12-2-8(g)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-087",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unnecessary physical contact with game official",
+      "reference": "12-3-1(e)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-088",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unnecessary roughness",
+      "reference": "12-2-8",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-089",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Unsportsmanlike conduct by non-player",
+      "reference": "13-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-090",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Use of the helmet as a weapon",
+      "reference": "12-2-17",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-091",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Using abusive, threatening or insulting language",
+      "reference": "12-3-1(b)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-092",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Using an object as a prop",
+      "reference": "12-3-1(g)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-093",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Using baiting or taunting acts or words",
+      "reference": "12-3-1(c)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-094",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Using substitutes or returning players to deceive",
+      "reference": "12-3-1(k)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-095",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Fifteen Yards",
+      "description": "Violent, offensive, or sexually suggestive gesture",
+      "reference": "12-3-1(d)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-096",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down Without Yardage",
+      "description": "Illegal touching of forward pass by an eligible receiver who had gone out of bounds and reestablished",
+      "reference": "8-1-8(b)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-097",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Illegal batting behind the line of scrimmage",
+      "reference": "12-5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-098",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Illegal forward handing beyond the line of scrimmage or to an ineligible receiver behind the line of scrimmage",
+      "reference": "8-7-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-099",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Illegal forward pass",
+      "reference": "8-1-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-100",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Backward Pass Out of Bounds that Conserves Time",
+      "reference": "8-7-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-101",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Intentional grounding",
+      "reference": "8-2-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-102",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Illegal kicking behind the line of scrimmage",
+      "reference": "12-5-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-103",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Loss of Down with Yardage",
+      "description": "Punt, drop kick, or place kick from beyond scrimmage",
+      "reference": "9-1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-104",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Ball Placed on 1-Yard Line",
+      "description": "Defensive pass interference in its end zone and previous spot is outside its 2-yard line",
+      "reference": "8-5",
+      "assessment": "type_only_no_native_detector_or_resolver",
+      "implementationFacts": [
+        "dpi-type-only"
+      ]
+    },
+    {
+      "id": "SUM-105",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Time Penalty",
+      "description": "Actions to conserve time",
+      "reference": "4-7-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-106",
+      "summaryGroup": "Yardage, down, spot and time penalties",
+      "category": "Time Penalty",
+      "description": "Fouling by defense, illegal touching or fair catch interfering by offense or fouling by both teams at end of half during play in which time expires (extend quarter)",
+      "reference": "4-8-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-107",
+      "summaryGroup": "Replay Penalties",
+      "category": "Replay Penalties",
+      "description": "Defensive foul on unsuccessful Try",
+      "reference": "11-3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-108",
+      "summaryGroup": "Replay Penalties",
+      "category": "Replay Penalties",
+      "description": "Double foul without change of possession",
+      "reference": "14-5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-109",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Try",
+      "description": "Foul by Team B that would result in a safety during Try",
+      "reference": "11-3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-110",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Score Awarded",
+      "description": "Palpably unfair act",
+      "reference": "12-3-4, 13-1-7",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-111",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Score Awarded",
+      "description": "Repeated fouling by defense to prevent score",
+      "reference": "12-3-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-112",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Safety",
+      "description": "Enforcement for offensive foul behind goal line",
+      "reference": "11-5-1, 14-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-113",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Safety",
+      "description": "Intentional grounding in own end zone",
+      "reference": "8-2-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-114",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Score Not Allowed",
+      "description": "Offending team scores after foul during down in which time expires for half (with no extension of time)",
+      "reference": "4-8-2(b)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-115",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Unsuccessful Try",
+      "description": "Team A committing foul during a Try which would ordinarily result:",
+      "reference": "",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-116",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Unsuccessful Try",
+      "description": "in loss of down or in a touchback",
+      "reference": "11-3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-117",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Unsuccessful Try",
+      "description": "in loss of ball in field of play (not during a kick)",
+      "reference": "11-3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-118",
+      "summaryGroup": "Scoring Penalties",
+      "category": "Unsuccessful Try",
+      "description": "Team B recovering ball",
+      "reference": "11-3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-119",
+      "summaryGroup": "Scoring Penalties",
+      "category": "New Series Penalties",
+      "description": "Team B foul during scrimmage down",
+      "reference": "14-1-2, Item 5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-120",
+      "summaryGroup": "Combination Penalties",
+      "category": "Loss of Ball and Fifteen Yards",
+      "description": "Fair catch interference",
+      "reference": "10-1-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-121",
+      "summaryGroup": "Combination Penalties",
+      "category": "Loss of Ball and Fifteen Yards",
+      "description": "Prohibited contact against a kick returner",
+      "reference": "12-2-9(a)(6)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-122",
+      "summaryGroup": "Combination Penalties",
+      "category": "Time Restored and Fifteen Yards",
+      "description": "Intentional fouls to manipulate game clock",
+      "reference": "12-3-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-123",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Fair Catch Awarded",
+      "description": "Interference with opportunity to make fair catch",
+      "reference": "10-1-1, 10-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-124",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "First down at Spot of Foul",
+      "description": "Defensive pass interference",
+      "reference": "8-5-2, 4",
+      "assessment": "type_only_no_native_detector_or_resolver",
+      "implementationFacts": [
+        "dpi-type-only"
+      ]
+    },
+    {
+      "id": "SUM-125",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Safety",
+      "description": "Ball in possession of team behind or out of bound behind own goal line and impetus from player of that team",
+      "reference": "11-5-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-126",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Touchback",
+      "description": "Illegal touching of scrimmage kick inside five-yard line",
+      "reference": "9-2-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-127",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Kickoff Out of Bounds Between Goal Lines",
+      "description": "Receiver\u2019s ball at inbounds spot",
+      "reference": "6-2-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-128",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Kickoff Out of Bounds Between Goal Lines",
+      "description": "Receiver\u2019s ball 25 yards from spot of kick",
+      "reference": "6-2-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-129",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Kickoff Not Reaching the Landing Zone",
+      "description": "Receiver\u2019s ball at inbounds spot",
+      "reference": "6-2-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-130",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Kickoff Not Reaching the Landing Zone",
+      "description": "Receiver\u2019s ball 25 yards from spot of kick",
+      "reference": "6-2-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-131",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Kickoff Not Reaching the Landing Zone",
+      "description": "Receiver\u2019s ball at the spot where ball lands or touched",
+      "reference": "6-2-4",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-132",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Remains Dead",
+      "description": "Actions that delay game",
+      "reference": "4-6-4, 4-6-5",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-133",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Remains Dead",
+      "description": "Snapping before Officials assume normal position",
+      "reference": "4-6-5(b)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-134",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Dead Immediately",
+      "description": "Committing acts that conserve time",
+      "reference": "4-7-1",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-135",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Dead Immediately",
+      "description": "Kickers recovering free kick",
+      "reference": "6-1-4(d)(1)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-136",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Dead Immediately",
+      "description": "Kickers advancing after recovery of a scrimmage kick unless behind line",
+      "reference": "9-3-1, 9-3-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-137",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Dead Immediately",
+      "description": "Any kick touching receiver\u2019s goal post or cross bar unless scoring field goal",
+      "reference": "6-1-5(c), 9-4-2, 11-6-2(d)",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-138",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Dead Immediately",
+      "description": "Official sounding whistle",
+      "reference": "7-2-1(o), 7-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-139",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Ball Dead Immediately",
+      "description": "Catch after fair catch signal",
+      "reference": "10-2-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-140",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Penalty Enforced from Goal Line",
+      "description": "Spot of enforcement behind other team\u2019s goal line",
+      "reference": "14-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-141",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Penalty Enforced from Goal Line",
+      "description": "Runner crosses opponent\u2019s goal line and spot of enforcing foul by teammate during run is behind defense goal line",
+      "reference": "14-2-2",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-142",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Penalty Enforced on Next Free Kick",
+      "description": "Personal foul, unsportsmanlike conduct foul, or palpably unfair act committed during opponent scoring play",
+      "reference": "14-2-3",
+      "assessment": "not_individually_qualified"
+    },
+    {
+      "id": "SUM-143",
+      "summaryGroup": "Miscellaneous Situations",
+      "category": "Loss of Fifteen Yards from the Kicking Team\u2019s Restraining Line",
+      "description": "Onside Kick Untouched Beyond Onside Kick Setup Zone",
+      "reference": "6-1-6",
+      "assessment": "not_individually_qualified"
+    }
+  ],
+  "officialFoulCodeIndex": [
+    {
+      "description": "Chop Block",
+      "code": "CHB"
+    },
+    {
+      "description": "Clipping",
+      "code": "CLP"
+    },
+    {
+      "description": "Defensive Delay of Game",
+      "code": "DOD"
+    },
+    {
+      "description": "Defensive Holding",
+      "code": "DH"
+    },
+    {
+      "description": "Defensive Offside",
+      "code": "DOF"
+    },
+    {
+      "description": "Defensive Pass Interference",
+      "code": "DPI"
+    },
+    {
+      "description": "Defensive Too Many Men on Field",
+      "code": "DTM"
+    },
+    {
+      "description": "Delay of Game",
+      "code": "DOG"
+    },
+    {
+      "description": "Delay of Kickoff",
+      "code": "DOK"
+    },
+    {
+      "description": "Disqualification",
+      "code": "DSQ"
+    },
+    {
+      "description": "Encroachment",
+      "code": "ENC"
+    },
+    {
+      "description": "Facemask",
+      "code": "FMM"
+    },
+    {
+      "description": "Fair Catch Interference",
+      "code": "FCI"
+    },
+    {
+      "description": "False Start",
+      "code": "FST"
+    },
+    {
+      "description": "Hip-Drop Tackle",
+      "code": "HDT"
+    },
+    {
+      "description": "Horse Collar",
+      "code": "HC"
+    },
+    {
+      "description": "Illegal Bat",
+      "code": "BAT"
+    },
+    {
+      "description": "Illegal Blindside Block",
+      "code": "BLI"
+    },
+    {
+      "description": "Illegal Block Above the Waist",
+      "code": "IBW"
+    },
+    {
+      "description": "Illegal Contact",
+      "code": "ICT"
+    },
+    {
+      "description": "Illegal Crackback",
+      "code": "ICB"
+    },
+    {
+      "description": "Illegal Cut",
+      "code": "ICU"
+    },
+    {
+      "description": "Illegal Double Team Block",
+      "code": "IDT"
+    },
+    {
+      "description": "Illegal Formation",
+      "code": "ILF"
+    },
+    {
+      "description": "Illegal Forward Handoff",
+      "code": "IFH"
+    },
+    {
+      "description": "Illegal Forward Pass",
+      "code": "IFP"
+    },
+    {
+      "description": "Illegal Kick/Kicking Loose Ball",
+      "code": "KIK"
+    },
+    {
+      "description": "Illegal Motion",
+      "code": "ILM"
+    },
+    {
+      "description": "Illegal Peel Back",
+      "code": "IPB"
+    },
+    {
+      "description": "Illegal Punt",
+      "code": "IPU"
+    },
+    {
+      "description": "Illegal Shift",
+      "code": "ISH"
+    },
+    {
+      "description": "Illegal Substitution",
+      "code": "ILS"
+    },
+    {
+      "description": "Illegal Touch\u2014Kick",
+      "code": "ITK"
+    },
+    {
+      "description": "Illegal Touch\u2014Pass",
+      "code": "ITP"
+    },
+    {
+      "description": "Illegal Use of Hands",
+      "code": "ILH"
+    },
+    {
+      "description": "Illegal Wedge",
+      "code": "WED"
+    },
+    {
+      "description": "Impermissible Use of Helmet",
+      "code": "UOH"
+    },
+    {
+      "description": "Ineligible Downfield Kick",
+      "code": "IDK"
+    },
+    {
+      "description": "Ineligible Downfield Pass",
+      "code": "IDP"
+    },
+    {
+      "description": "Intentional Grounding",
+      "code": "ING"
+    },
+    {
+      "description": "Invalid Fair Catch Signal",
+      "code": "IFC"
+    },
+    {
+      "description": "Kick Catch Interference",
+      "code": "KCI"
+    },
+    {
+      "description": "Kickoff Out of Bounds",
+      "code": "KOB"
+    },
+    {
+      "description": "Landing Zone",
+      "code": "LZ"
+    },
+    {
+      "description": "Leaping",
+      "code": "LEA"
+    },
+    {
+      "description": "Leverage",
+      "code": "LEV"
+    },
+    {
+      "description": "Low Block",
+      "code": "LBL"
+    },
+    {
+      "description": "Neutral Zone Infraction",
+      "code": "NZI"
+    },
+    {
+      "description": "Offensive Holding",
+      "code": "OH"
+    },
+    {
+      "description": "Offensive Offside",
+      "code": "OOF"
+    },
+    {
+      "description": "Offensive Pass Interference",
+      "code": "OPI"
+    },
+    {
+      "description": "Offensive Too Many Men on Field",
+      "code": "OTM"
+    },
+    {
+      "description": "Offside on Free Kick",
+      "code": "OFK"
+    },
+    {
+      "description": "Player Out of Bounds on Kick",
+      "code": "POK"
+    },
+    {
+      "description": "Roughing the Kicker",
+      "code": "RRK"
+    },
+    {
+      "description": "Roughing the Passer",
+      "code": "RPS"
+    },
+    {
+      "description": "Running into the Kicker",
+      "code": "RNK"
+    },
+    {
+      "description": "Taunting",
+      "code": "TAU"
+    },
+    {
+      "description": "Tripping",
+      "code": "TRP"
+    },
+    {
+      "description": "Unnecessary Roughness",
+      "code": "UNR"
+    },
+    {
+      "description": "Unsportsmanlike Conduct",
+      "code": "UNS"
+    }
+  ],
+  "nextOwners": [
+    {
+      "priority": 1,
+      "owner": "Rules/Flex with Integration interface",
+      "nextAction": "Existing-holding vertical slice through incident/call list, legal enforcement options and official result. Preserve legacy semantics explicitly, then add first qualified native predicate."
+    },
+    {
+      "priority": 2,
+      "owner": "Run + Physics with Rules",
+      "nextAction": "First supported block/hold predicate and achieved-fact interface; distinguish legal controls, missing anatomy and blindside/back/low/chop exceptions."
+    },
+    {
+      "priority": 3,
+      "owner": "Pass/Awareness with Rules",
+      "nextAction": "Independently deliver a native achieved prethrow-downfield-block/qualifying-pass OPI8-5-4(a) flag and legal control through the central resolver; DPI/illegal-contact slices progress separately."
+    }
+  ],
+  "validation": {
+    "newEngineRuns": 0,
+    "newNFLQueries": 0,
+    "gameSuiteRepeated": false,
+    "fullPDFRepublished": false,
+    "indexChecks": "Counts, unique article IDs and official summary/foul-code row equality; source fingerprints and publication links checked."
+  }
+}

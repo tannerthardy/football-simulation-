@@ -1,0 +1,3525 @@
+{
+ "source": "Big Data Bowl 2025 (2022 season) tracking, 2 week(s) present; plays.csv, player_play.csv, players.csv",
+ "units": "yards and seconds; depth = yards behind the LOS (positive toward the offense's own end zone); t = seconds after the snap",
+ "definitions": "from the snap until the first pass_forward / pass_shovel (throw), qb_sack / qb_strip_sack (sack), run (scramble) or fumble, capped at 4.5 s. Time slices: a play is live at t if that event has not happened by snap + t (strictly). Whole-play proximity scans every frame from 0.5 s up to and including the event frame (as bdb2025_pocket.py), capped at 4.5 s. Plays with a handoff, lateral or direct snap before the end are dropped. Geometry, in yards: depth = (LOS x - x) toward the offense's own end zone, so positive is behind the line (LOS = the football's x at the snap). Distances are between tracking centers at 10 Hz. Rushers: wasInitialPassRusher. A defender's blockers: offensive players who list him in blockedPlayerNFLId1-3. Attached: a listed blocker within 1.5 yd of him (also reported at 1.0 yd); detached: has a listed blocker, none within 1.5 yd (not yet engaged, or beaten/shed); unblocked: no listed blocker. Free = detached + unblocked. Tackles: the two outermost OL (roster T/G/C) by lateral position at the snap. Interior rusher: roster DT/NT or lined up between the tackles at the snap; other rushers are edge rushers. Interior push uses interior rushers on the line (within 2 yd of the LOS at the snap) and, for each, his nearest listed blocker at that moment. 2-yd proximity: any defender within 2 yd of the QB (the passer, hadDropback).",
+ "caveats": [
+  "Slices after ~2 s are survivors: only plays not yet thrown/sacked, a selected subset (n and pctOfCohort in liveAtT).",
+  "Distances are between tracking centers (shoulder pads); bodies in contact are ~0.6-1.0 yd apart center to center.",
+  "Attached is a geometric proxy (a PFF-listed blocker within 1.5 yd), not a block-state label; blockers listed for chips or double teams count.",
+  "OL and blocker depth include the voluntary pass set, not only push; blockerRetreatSinceSnap is retreat for any reason.",
+  "Depths are from the football's tracked center at the snap; the play-by-play yard line (absoluteYardlineNumber) sits a median 0.34 yd further downfield (losCheck).",
+  "Proximity counts the outcome frame itself (as bdb2025_pocket.py); about a fifth of first 2-yd proximities happen on the throw/sack frame (firstAtOutcomeFramePct), so firstToOutcomeSeconds p10 is 0.",
+  "Under-center snaps put the QB within 3 yd of the nose at 0.5 s; whole-play proximity starts at 0.5 s as in bdb2025_pocket.py.",
+  "Two regular-season weeks only; play-level dependence (several rushers per play) is not accounted for in the shares."
+ ],
+ "cohortFilter": {
+  "dropbacks": 9736,
+  "droppedType:DESIGNED_ROLLOUT_LEFT": 190,
+  "droppedType:DESIGNED_ROLLOUT_RIGHT": 369,
+  "droppedType:DESIGNED_RUN": 14,
+  "droppedType:NA": 1,
+  "kept:SCRAMBLE": 842,
+  "kept:SCRAMBLE_ROLLOUT_LEFT": 27,
+  "kept:SCRAMBLE_ROLLOUT_RIGHT": 121,
+  "kept:TRADITIONAL": 8149,
+  "spikeOrKneel": 23
+ },
+ "restriction": "Primary cohort is dropbackType TRADITIONAL only: scrambles (SCRAMBLE, SCRAMBLE_ROLLOUT_*), designed rollouts, designed runs and unknown types are excluded, which removes most pressure-to-scramble plays (see withScrambles).",
+ "trackingPlaysOutOfOrder": 0,
+ "losCheck": {
+  "medianBallDepthBehindAbsoluteYardline": 0.34,
+  "medianAbsDiff": 0.35
+ },
+ "traditional": {
+  "plays": 1948,
+  "alignment": {
+   "shotgunPistolPct": 85.5,
+   "underCenterPct": 14.5
+  },
+  "endEvents": {
+   "throw": 1823,
+   "sack": 109,
+   "scramble": 5,
+   "fumble": 7,
+   "none": 4
+  },
+  "endAfter4.5s": 59,
+  "excluded": {
+   "handoffLateralOrDirectSnap": 9
+  },
+  "liveAtT": {
+   "0.5": {
+    "n": 1945,
+    "pctOfCohort": 99.8
+   },
+   "1.0": {
+    "n": 1932,
+    "pctOfCohort": 99.2
+   },
+   "1.5": {
+    "n": 1820,
+    "pctOfCohort": 93.4
+   },
+   "2.0": {
+    "n": 1500,
+    "pctOfCohort": 77.0
+   },
+   "2.5": {
+    "n": 994,
+    "pctOfCohort": 51.0
+   },
+   "3.0": {
+    "n": 534,
+    "pctOfCohort": 27.4
+   },
+   "3.5": {
+    "n": 249,
+    "pctOfCohort": 12.8
+   }
+  },
+  "qbDepth": {
+   "all": {
+    "0.5": {
+     "n": 1945,
+     "mean": 4.24,
+     "p25": 4.0,
+     "median": 4.63,
+     "p75": 4.99
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 4.99,
+     "p25": 4.6,
+     "median": 5.19,
+     "p75": 5.64
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 6.2,
+     "p25": 5.61,
+     "median": 6.24,
+     "p75": 6.88
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 7.31,
+     "p25": 6.72,
+     "median": 7.36,
+     "p75": 8.01
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 7.89,
+     "p25": 7.22,
+     "median": 7.97,
+     "p75": 8.64
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 7.95,
+     "p25": 7.09,
+     "median": 8.0,
+     "p75": 8.96
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 7.67,
+     "p25": 6.57,
+     "median": 7.75,
+     "p75": 8.93
+    }
+   },
+   "shotgunPistol": {
+    "0.5": {
+     "n": 1664,
+     "mean": 4.66,
+     "p25": 4.33,
+     "median": 4.74,
+     "p75": 5.06
+    },
+    "1.0": {
+     "n": 1654,
+     "mean": 5.3,
+     "p25": 4.91,
+     "median": 5.31,
+     "p75": 5.73
+    },
+    "1.5": {
+     "n": 1550,
+     "mean": 6.4,
+     "p25": 5.89,
+     "median": 6.42,
+     "p75": 6.98
+    },
+    "2.0": {
+     "n": 1254,
+     "mean": 7.39,
+     "p25": 6.76,
+     "median": 7.46,
+     "p75": 8.09
+    },
+    "2.5": {
+     "n": 788,
+     "mean": 7.92,
+     "p25": 7.2,
+     "median": 7.95,
+     "p75": 8.66
+    },
+    "3.0": {
+     "n": 395,
+     "mean": 7.95,
+     "p25": 6.96,
+     "median": 7.96,
+     "p75": 8.97
+    },
+    "3.5": {
+     "n": 182,
+     "mean": 7.67,
+     "p25": 6.51,
+     "median": 7.77,
+     "p75": 8.94
+    }
+   },
+   "underCenter": {
+    "0.5": {
+     "n": 281,
+     "mean": 1.75,
+     "p25": 1.55,
+     "median": 1.76,
+     "p75": 1.97
+    },
+    "1.0": {
+     "n": 278,
+     "mean": 3.11,
+     "p25": 2.76,
+     "median": 3.14,
+     "p75": 3.53
+    },
+    "1.5": {
+     "n": 270,
+     "mean": 5.09,
+     "p25": 4.74,
+     "median": 5.14,
+     "p75": 5.62
+    },
+    "2.0": {
+     "n": 246,
+     "mean": 6.89,
+     "p25": 6.54,
+     "median": 7.02,
+     "p75": 7.49
+    },
+    "2.5": {
+     "n": 206,
+     "mean": 7.8,
+     "p25": 7.38,
+     "median": 8.0,
+     "p75": 8.6
+    },
+    "3.0": {
+     "n": 139,
+     "mean": 7.98,
+     "p25": 7.34,
+     "median": 8.08,
+     "p75": 8.84
+    },
+    "3.5": {
+     "n": 67,
+     "mean": 7.68,
+     "p25": 6.85,
+     "median": 7.67,
+     "p75": 8.8
+    }
+   }
+  },
+  "olDepth": {
+   "T": {
+    "0.5": {
+     "n": 3786,
+     "mean": 1.28,
+     "p25": 0.96,
+     "median": 1.36,
+     "p75": 1.69
+    },
+    "1.0": {
+     "n": 3763,
+     "mean": 2.04,
+     "p25": 1.49,
+     "median": 2.19,
+     "p75": 2.69
+    },
+    "1.5": {
+     "n": 3543,
+     "mean": 3.19,
+     "p25": 2.48,
+     "median": 3.45,
+     "p75": 4.13
+    },
+    "2.0": {
+     "n": 2923,
+     "mean": 4.44,
+     "p25": 3.56,
+     "median": 4.78,
+     "p75": 5.65
+    },
+    "2.5": {
+     "n": 1924,
+     "mean": 5.36,
+     "p25": 4.28,
+     "median": 5.7,
+     "p75": 6.83
+    },
+    "3.0": {
+     "n": 1042,
+     "mean": 5.84,
+     "p25": 4.57,
+     "median": 6.22,
+     "p75": 7.5
+    },
+    "3.5": {
+     "n": 485,
+     "mean": 6.32,
+     "p25": 4.84,
+     "median": 6.77,
+     "p75": 8.11
+    }
+   },
+   "G": {
+    "0.5": {
+     "n": 3778,
+     "mean": 0.93,
+     "p25": 0.65,
+     "median": 1.02,
+     "p75": 1.29
+    },
+    "1.0": {
+     "n": 3749,
+     "mean": 1.43,
+     "p25": 0.97,
+     "median": 1.5,
+     "p75": 1.94
+    },
+    "1.5": {
+     "n": 3536,
+     "mean": 2.29,
+     "p25": 1.68,
+     "median": 2.41,
+     "p75": 3.0
+    },
+    "2.0": {
+     "n": 2910,
+     "mean": 3.27,
+     "p25": 2.5,
+     "median": 3.39,
+     "p75": 4.18
+    },
+    "2.5": {
+     "n": 1937,
+     "mean": 4.07,
+     "p25": 3.11,
+     "median": 4.18,
+     "p75": 5.19
+    },
+    "3.0": {
+     "n": 1030,
+     "mean": 4.62,
+     "p25": 3.43,
+     "median": 4.68,
+     "p75": 5.98
+    },
+    "3.5": {
+     "n": 475,
+     "mean": 4.97,
+     "p25": 3.48,
+     "median": 5.01,
+     "p75": 6.56
+    }
+   },
+   "C": {
+    "0.5": {
+     "n": 2176,
+     "mean": 0.56,
+     "p25": 0.27,
+     "median": 0.62,
+     "p75": 0.93
+    },
+    "1.0": {
+     "n": 2162,
+     "mean": 1.22,
+     "p25": 0.81,
+     "median": 1.31,
+     "p75": 1.73
+    },
+    "1.5": {
+     "n": 2034,
+     "mean": 2.12,
+     "p25": 1.62,
+     "median": 2.28,
+     "p75": 2.8
+    },
+    "2.0": {
+     "n": 1678,
+     "mean": 3.01,
+     "p25": 2.35,
+     "median": 3.22,
+     "p75": 3.88
+    },
+    "2.5": {
+     "n": 1118,
+     "mean": 3.68,
+     "p25": 2.84,
+     "median": 3.88,
+     "p75": 4.7
+    },
+    "3.0": {
+     "n": 605,
+     "mean": 4.12,
+     "p25": 3.11,
+     "median": 4.18,
+     "p75": 5.28
+    },
+    "3.5": {
+     "n": 287,
+     "mean": 4.5,
+     "p25": 3.4,
+     "median": 4.45,
+     "p75": 5.79
+    }
+   },
+   "interior": {
+    "0.5": {
+     "n": 5954,
+     "mean": 0.79,
+     "p25": 0.47,
+     "median": 0.87,
+     "p75": 1.2
+    },
+    "1.0": {
+     "n": 5911,
+     "mean": 1.35,
+     "p25": 0.91,
+     "median": 1.43,
+     "p75": 1.86
+    },
+    "1.5": {
+     "n": 5570,
+     "mean": 2.23,
+     "p25": 1.65,
+     "median": 2.36,
+     "p75": 2.92
+    },
+    "2.0": {
+     "n": 4588,
+     "mean": 3.18,
+     "p25": 2.45,
+     "median": 3.32,
+     "p75": 4.06
+    },
+    "2.5": {
+     "n": 3055,
+     "mean": 3.93,
+     "p25": 2.99,
+     "median": 4.05,
+     "p75": 4.96
+    },
+    "3.0": {
+     "n": 1635,
+     "mean": 4.43,
+     "p25": 3.32,
+     "median": 4.52,
+     "p75": 5.71
+    },
+    "3.5": {
+     "n": 762,
+     "mean": 4.79,
+     "p25": 3.44,
+     "median": 4.78,
+     "p75": 6.26
+    }
+   }
+  },
+  "pocket": {
+   "qbToNearestRusher": {
+    "0.5": {
+     "n": 1945,
+     "mean": 5.09,
+     "p25": 5.04,
+     "median": 5.41,
+     "p75": 5.72
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 4.79,
+     "p25": 4.51,
+     "median": 4.94,
+     "p75": 5.32
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 4.64,
+     "p25": 4.18,
+     "median": 4.66,
+     "p75": 5.1
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 4.17,
+     "p25": 3.54,
+     "median": 4.18,
+     "p75": 4.77
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 3.44,
+     "p25": 2.59,
+     "median": 3.38,
+     "p75": 4.26
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 2.87,
+     "p25": 1.83,
+     "median": 2.81,
+     "p75": 3.63
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 2.38,
+     "p25": 1.14,
+     "median": 2.35,
+     "p75": 3.24
+    }
+   },
+   "qbToNearestInteriorRusher": {
+    "0.5": {
+     "n": 1937,
+     "mean": 5.09,
+     "p25": 5.03,
+     "median": 5.4,
+     "p75": 5.72
+    },
+    "1.0": {
+     "n": 1924,
+     "mean": 4.8,
+     "p25": 4.51,
+     "median": 4.94,
+     "p75": 5.34
+    },
+    "1.5": {
+     "n": 1813,
+     "mean": 4.77,
+     "p25": 4.3,
+     "median": 4.78,
+     "p75": 5.26
+    },
+    "2.0": {
+     "n": 1496,
+     "mean": 4.71,
+     "p25": 3.99,
+     "median": 4.68,
+     "p75": 5.33
+    },
+    "2.5": {
+     "n": 990,
+     "mean": 4.38,
+     "p25": 3.39,
+     "median": 4.28,
+     "p75": 5.27
+    },
+    "3.0": {
+     "n": 530,
+     "mean": 3.95,
+     "p25": 2.78,
+     "median": 3.76,
+     "p75": 4.97
+    },
+    "3.5": {
+     "n": 246,
+     "mean": 3.58,
+     "p25": 2.13,
+     "median": 3.36,
+     "p75": 4.71
+    }
+   },
+   "qbToNearestEdgeRusher": {
+    "0.5": {
+     "n": 1919,
+     "mean": 6.95,
+     "p25": 6.57,
+     "median": 7.12,
+     "p75": 7.56
+    },
+    "1.0": {
+     "n": 1906,
+     "mean": 6.19,
+     "p25": 5.71,
+     "median": 6.22,
+     "p75": 6.73
+    },
+    "1.5": {
+     "n": 1795,
+     "mean": 5.4,
+     "p25": 4.84,
+     "median": 5.37,
+     "p75": 5.92
+    },
+    "2.0": {
+     "n": 1479,
+     "mean": 4.63,
+     "p25": 3.85,
+     "median": 4.53,
+     "p75": 5.33
+    },
+    "2.5": {
+     "n": 980,
+     "mean": 3.91,
+     "p25": 2.83,
+     "median": 3.77,
+     "p75": 4.74
+    },
+    "3.0": {
+     "n": 525,
+     "mean": 3.52,
+     "p25": 2.29,
+     "median": 3.29,
+     "p75": 4.53
+    },
+    "3.5": {
+     "n": 244,
+     "mean": 3.08,
+     "p25": 1.83,
+     "median": 2.82,
+     "p75": 4.06
+    }
+   },
+   "qbToNearestDefender": {
+    "0.5": {
+     "n": 1945,
+     "mean": 5.09,
+     "p25": 5.04,
+     "median": 5.4,
+     "p75": 5.71
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 4.79,
+     "p25": 4.51,
+     "median": 4.94,
+     "p75": 5.32
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 4.64,
+     "p25": 4.18,
+     "median": 4.66,
+     "p75": 5.1
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 4.17,
+     "p25": 3.54,
+     "median": 4.18,
+     "p75": 4.77
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 3.44,
+     "p25": 2.59,
+     "median": 3.38,
+     "p75": 4.26
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 2.86,
+     "p25": 1.83,
+     "median": 2.81,
+     "p75": 3.63
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 2.35,
+     "p25": 1.14,
+     "median": 2.35,
+     "p75": 3.19
+    }
+   },
+   "qbDepthMinusDeepestRusherDepth": {
+    "0.5": {
+     "n": 1945,
+     "mean": 4.5,
+     "p25": 4.41,
+     "median": 4.83,
+     "p75": 5.14
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 3.66,
+     "p25": 3.17,
+     "median": 3.78,
+     "p75": 4.28
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 2.81,
+     "p25": 2.15,
+     "median": 2.79,
+     "p75": 3.48
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 2.02,
+     "p25": 1.1,
+     "median": 1.89,
+     "p75": 2.87
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 1.21,
+     "p25": 0.06,
+     "median": 1.0,
+     "p75": 2.28
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 0.44,
+     "p25": -0.9,
+     "median": 0.35,
+     "p75": 1.73
+    },
+    "3.5": {
+     "n": 249,
+     "mean": -0.56,
+     "p25": -2.04,
+     "median": -0.5,
+     "p75": 1.02
+    }
+   },
+   "nearestRusherWithinPctOfLive": {
+    "0.5": {
+     "2yd": 1.0,
+     "3yd": 12.6,
+     "4yd": 13.5
+    },
+    "1.0": {
+     "2yd": 0.2,
+     "3yd": 5.0,
+     "4yd": 14.6
+    },
+    "1.5": {
+     "2yd": 0.1,
+     "3yd": 2.1,
+     "4yd": 17.8
+    },
+    "2.0": {
+     "2yd": 1.7,
+     "3yd": 11.4,
+     "4yd": 43.1
+    },
+    "2.5": {
+     "2yd": 13.1,
+     "3yd": 36.9,
+     "4yd": 67.7
+    },
+    "3.0": {
+     "2yd": 28.8,
+     "3yd": 56.4,
+     "4yd": 81.3
+    },
+    "3.5": {
+     "2yd": 39.8,
+     "3yd": 69.9,
+     "4yd": 87.1
+    }
+   }
+  },
+  "interiorPush": {
+   "rusherDepth": {
+    "0.5": {
+     "n": 3748,
+     "mean": -0.57,
+     "p25": -0.84,
+     "median": -0.55,
+     "p75": -0.29
+    },
+    "1.0": {
+     "n": 3719,
+     "mean": 0.44,
+     "p25": 0.02,
+     "median": 0.44,
+     "p75": 0.87
+    },
+    "1.5": {
+     "n": 3486,
+     "mean": 1.64,
+     "p25": 1.01,
+     "median": 1.71,
+     "p75": 2.31
+    },
+    "2.0": {
+     "n": 2888,
+     "mean": 2.72,
+     "p25": 1.84,
+     "median": 2.82,
+     "p75": 3.7
+    },
+    "2.5": {
+     "n": 1903,
+     "mean": 3.55,
+     "p25": 2.38,
+     "median": 3.61,
+     "p75": 4.76
+    },
+    "3.0": {
+     "n": 1021,
+     "mean": 4.08,
+     "p25": 2.61,
+     "median": 4.01,
+     "p75": 5.62
+    },
+    "3.5": {
+     "n": 465,
+     "mean": 4.64,
+     "p25": 2.96,
+     "median": 4.51,
+     "p75": 6.64
+    }
+   },
+   "blockerDepth": {
+    "0.5": {
+     "n": 3660,
+     "mean": 0.87,
+     "p25": 0.56,
+     "median": 0.89,
+     "p75": 1.2
+    },
+    "1.0": {
+     "n": 3632,
+     "mean": 1.37,
+     "p25": 0.93,
+     "median": 1.41,
+     "p75": 1.82
+    },
+    "1.5": {
+     "n": 3424,
+     "mean": 2.24,
+     "p25": 1.66,
+     "median": 2.35,
+     "p75": 2.9
+    },
+    "2.0": {
+     "n": 2842,
+     "mean": 3.18,
+     "p25": 2.44,
+     "median": 3.33,
+     "p75": 4.07
+    },
+    "2.5": {
+     "n": 1883,
+     "mean": 3.95,
+     "p25": 2.97,
+     "median": 4.07,
+     "p75": 5.03
+    },
+    "3.0": {
+     "n": 1008,
+     "mean": 4.42,
+     "p25": 3.23,
+     "median": 4.48,
+     "p75": 5.81
+    },
+    "3.5": {
+     "n": 455,
+     "mean": 4.94,
+     "p25": 3.45,
+     "median": 4.93,
+     "p75": 6.48
+    }
+   },
+   "blockerRetreatSinceSnap": {
+    "0.5": {
+     "n": 3660,
+     "mean": 0.16,
+     "p25": 0.02,
+     "median": 0.15,
+     "p75": 0.3
+    },
+    "1.0": {
+     "n": 3632,
+     "mean": 0.63,
+     "p25": 0.27,
+     "median": 0.69,
+     "p75": 1.05
+    },
+    "1.5": {
+     "n": 3424,
+     "mean": 1.5,
+     "p25": 0.96,
+     "median": 1.64,
+     "p75": 2.18
+    },
+    "2.0": {
+     "n": 2842,
+     "mean": 2.45,
+     "p25": 1.74,
+     "median": 2.66,
+     "p75": 3.35
+    },
+    "2.5": {
+     "n": 1883,
+     "mean": 3.21,
+     "p25": 2.31,
+     "median": 3.39,
+     "p75": 4.32
+    },
+    "3.0": {
+     "n": 1008,
+     "mean": 3.68,
+     "p25": 2.54,
+     "median": 3.8,
+     "p75": 5.0
+    },
+    "3.5": {
+     "n": 455,
+     "mean": 4.19,
+     "p25": 2.8,
+     "median": 4.31,
+     "p75": 5.69
+    }
+   },
+   "separation": {
+    "0.5": {
+     "n": 3660,
+     "mean": 1.62,
+     "p25": 1.32,
+     "median": 1.58,
+     "p75": 1.85
+    },
+    "1.0": {
+     "n": 3632,
+     "mean": 1.09,
+     "p25": 0.86,
+     "median": 1.03,
+     "p75": 1.23
+    },
+    "1.5": {
+     "n": 3424,
+     "mean": 0.85,
+     "p25": 0.68,
+     "median": 0.8,
+     "p75": 0.95
+    },
+    "2.0": {
+     "n": 2842,
+     "mean": 0.85,
+     "p25": 0.64,
+     "median": 0.78,
+     "p75": 0.93
+    },
+    "2.5": {
+     "n": 1883,
+     "mean": 0.9,
+     "p25": 0.64,
+     "median": 0.78,
+     "p75": 0.95
+    },
+    "3.0": {
+     "n": 1008,
+     "mean": 1.01,
+     "p25": 0.66,
+     "median": 0.81,
+     "p75": 1.04
+    },
+    "3.5": {
+     "n": 455,
+     "mean": 1.18,
+     "p25": 0.68,
+     "median": 0.87,
+     "p75": 1.24
+    }
+   },
+   "attachedPct": {
+    "0.5": 42.0,
+    "1.0": 91.6,
+    "1.5": 97.1,
+    "2.0": 94.6,
+    "2.5": 92.8,
+    "3.0": 88.8,
+    "3.5": 81.8
+   }
+  },
+  "rusherStatus": {
+   "edge": {
+    "0.5": {
+     "n": 4089,
+     "attachedPct": 1.6,
+     "detachedPct": 87.4,
+     "unblockedPct": 11.0
+    },
+    "1.0": {
+     "n": 4066,
+     "attachedPct": 26.1,
+     "detachedPct": 63.0,
+     "unblockedPct": 10.9
+    },
+    "1.5": {
+     "n": 3822,
+     "attachedPct": 70.9,
+     "detachedPct": 19.4,
+     "unblockedPct": 9.7
+    },
+    "2.0": {
+     "n": 3151,
+     "attachedPct": 82.9,
+     "detachedPct": 8.7,
+     "unblockedPct": 8.4
+    },
+    "2.5": {
+     "n": 2067,
+     "attachedPct": 85.1,
+     "detachedPct": 7.6,
+     "unblockedPct": 7.2
+    },
+    "3.0": {
+     "n": 1105,
+     "attachedPct": 80.2,
+     "detachedPct": 12.3,
+     "unblockedPct": 7.5
+    },
+    "3.5": {
+     "n": 517,
+     "attachedPct": 71.8,
+     "detachedPct": 20.7,
+     "unblockedPct": 7.5
+    }
+   },
+   "interior": {
+    "0.5": {
+     "n": 4226,
+     "attachedPct": 39.5,
+     "detachedPct": 56.0,
+     "unblockedPct": 4.5
+    },
+    "1.0": {
+     "n": 4192,
+     "attachedPct": 85.6,
+     "detachedPct": 10.0,
+     "unblockedPct": 4.4
+    },
+    "1.5": {
+     "n": 3941,
+     "attachedPct": 92.0,
+     "detachedPct": 4.0,
+     "unblockedPct": 4.0
+    },
+    "2.0": {
+     "n": 3236,
+     "attachedPct": 91.2,
+     "detachedPct": 5.2,
+     "unblockedPct": 3.6
+    },
+    "2.5": {
+     "n": 2122,
+     "attachedPct": 90.2,
+     "detachedPct": 7.0,
+     "unblockedPct": 2.8
+    },
+    "3.0": {
+     "n": 1139,
+     "attachedPct": 85.9,
+     "detachedPct": 10.9,
+     "unblockedPct": 3.2
+    },
+    "3.5": {
+     "n": 529,
+     "attachedPct": 78.1,
+     "detachedPct": 17.8,
+     "unblockedPct": 4.2
+    }
+   }
+  },
+  "rusherToQB": {
+   "edge": {
+    "0.5": {
+     "n": 4089,
+     "mean": 7.43,
+     "p25": 6.88,
+     "median": 7.45,
+     "p75": 7.97
+    },
+    "1.0": {
+     "n": 4066,
+     "mean": 6.71,
+     "p25": 6.06,
+     "median": 6.64,
+     "p75": 7.26
+    },
+    "1.5": {
+     "n": 3822,
+     "mean": 5.99,
+     "p25": 5.22,
+     "median": 5.83,
+     "p75": 6.59
+    },
+    "2.0": {
+     "n": 3151,
+     "mean": 5.33,
+     "p25": 4.32,
+     "median": 5.14,
+     "p75": 6.15
+    },
+    "2.5": {
+     "n": 2067,
+     "mean": 4.77,
+     "p25": 3.44,
+     "median": 4.55,
+     "p75": 5.79
+    },
+    "3.0": {
+     "n": 1105,
+     "mean": 4.51,
+     "p25": 3.01,
+     "median": 4.25,
+     "p75": 5.7
+    },
+    "3.5": {
+     "n": 517,
+     "mean": 4.28,
+     "p25": 2.55,
+     "median": 3.89,
+     "p75": 5.57
+    }
+   },
+   "interior": {
+    "0.5": {
+     "n": 4226,
+     "mean": 5.41,
+     "p25": 5.19,
+     "median": 5.64,
+     "p75": 6.02
+    },
+    "1.0": {
+     "n": 4192,
+     "mean": 5.15,
+     "p25": 4.71,
+     "median": 5.22,
+     "p75": 5.68
+    },
+    "1.5": {
+     "n": 3941,
+     "mean": 5.2,
+     "p25": 4.61,
+     "median": 5.15,
+     "p75": 5.72
+    },
+    "2.0": {
+     "n": 3236,
+     "mean": 5.27,
+     "p25": 4.47,
+     "median": 5.2,
+     "p75": 6.01
+    },
+    "2.5": {
+     "n": 2122,
+     "mean": 5.13,
+     "p25": 4.05,
+     "median": 5.0,
+     "p75": 6.13
+    },
+    "3.0": {
+     "n": 1139,
+     "mean": 4.93,
+     "p25": 3.53,
+     "median": 4.8,
+     "p75": 6.21
+    },
+    "3.5": {
+     "n": 529,
+     "mean": 4.73,
+     "p25": 2.97,
+     "median": 4.4,
+     "p75": 6.27
+    }
+   }
+  },
+  "nearQB": {
+   "within2yd": {
+    "0.5": {
+     "playsPctOfLive": 1.0,
+     "defenders": 20,
+     "attachedPct": 100.0,
+     "detachedPct": 0.0,
+     "unblockedPct": 0.0,
+     "freePct": 0.0,
+     "attachedWithin1.0Pct": 55.0,
+     "anyOffensivePlayerWithin1.5Pct": 100.0,
+     "initialRusherPct": 100.0
+    },
+    "1.0": {
+     "playsPctOfLive": 0.2,
+     "defenders": 3,
+     "attachedPct": 100.0,
+     "detachedPct": 0.0,
+     "unblockedPct": 0.0,
+     "freePct": 0.0,
+     "attachedWithin1.0Pct": 100.0,
+     "anyOffensivePlayerWithin1.5Pct": 100.0,
+     "initialRusherPct": 100.0
+    },
+    "1.5": {
+     "playsPctOfLive": 0.1,
+     "defenders": 2,
+     "attachedPct": 100.0,
+     "detachedPct": 0.0,
+     "unblockedPct": 0.0,
+     "freePct": 0.0,
+     "attachedWithin1.0Pct": 50.0,
+     "anyOffensivePlayerWithin1.5Pct": 100.0,
+     "initialRusherPct": 100.0
+    },
+    "2.0": {
+     "playsPctOfLive": 1.7,
+     "defenders": 25,
+     "attachedPct": 52.0,
+     "detachedPct": 24.0,
+     "unblockedPct": 24.0,
+     "freePct": 48.0,
+     "attachedWithin1.0Pct": 44.0,
+     "anyOffensivePlayerWithin1.5Pct": 56.0,
+     "initialRusherPct": 100.0
+    },
+    "2.5": {
+     "playsPctOfLive": 13.1,
+     "defenders": 149,
+     "attachedPct": 74.5,
+     "detachedPct": 12.8,
+     "unblockedPct": 12.8,
+     "freePct": 25.5,
+     "attachedWithin1.0Pct": 63.8,
+     "anyOffensivePlayerWithin1.5Pct": 77.9,
+     "initialRusherPct": 100.0
+    },
+    "3.0": {
+     "playsPctOfLive": 28.8,
+     "defenders": 194,
+     "attachedPct": 68.0,
+     "detachedPct": 21.1,
+     "unblockedPct": 10.8,
+     "freePct": 32.0,
+     "attachedWithin1.0Pct": 52.6,
+     "anyOffensivePlayerWithin1.5Pct": 73.2,
+     "initialRusherPct": 100.0
+    },
+    "3.5": {
+     "playsPctOfLive": 39.8,
+     "defenders": 149,
+     "attachedPct": 59.7,
+     "detachedPct": 30.2,
+     "unblockedPct": 10.1,
+     "freePct": 40.3,
+     "attachedWithin1.0Pct": 41.6,
+     "anyOffensivePlayerWithin1.5Pct": 72.5,
+     "initialRusherPct": 100.0
+    }
+   },
+   "within3yd": {
+    "0.5": {
+     "playsPctOfLive": 12.6,
+     "defenders": 331,
+     "attachedPct": 86.1,
+     "detachedPct": 12.4,
+     "unblockedPct": 1.5,
+     "freePct": 13.9,
+     "attachedWithin1.0Pct": 19.6,
+     "anyOffensivePlayerWithin1.5Pct": 88.2,
+     "initialRusherPct": 100.0
+    },
+    "1.0": {
+     "playsPctOfLive": 5.0,
+     "defenders": 122,
+     "attachedPct": 98.4,
+     "detachedPct": 0.0,
+     "unblockedPct": 1.6,
+     "freePct": 1.6,
+     "attachedWithin1.0Pct": 87.7,
+     "anyOffensivePlayerWithin1.5Pct": 99.2,
+     "initialRusherPct": 100.0
+    },
+    "1.5": {
+     "playsPctOfLive": 2.1,
+     "defenders": 39,
+     "attachedPct": 82.1,
+     "detachedPct": 5.1,
+     "unblockedPct": 12.8,
+     "freePct": 17.9,
+     "attachedWithin1.0Pct": 76.9,
+     "anyOffensivePlayerWithin1.5Pct": 89.7,
+     "initialRusherPct": 100.0
+    },
+    "2.0": {
+     "playsPctOfLive": 11.4,
+     "defenders": 194,
+     "attachedPct": 83.0,
+     "detachedPct": 7.2,
+     "unblockedPct": 9.8,
+     "freePct": 17.0,
+     "attachedWithin1.0Pct": 74.2,
+     "anyOffensivePlayerWithin1.5Pct": 86.1,
+     "initialRusherPct": 100.0
+    },
+    "2.5": {
+     "playsPctOfLive": 36.9,
+     "defenders": 509,
+     "attachedPct": 87.0,
+     "detachedPct": 7.1,
+     "unblockedPct": 5.9,
+     "freePct": 13.0,
+     "attachedWithin1.0Pct": 75.2,
+     "anyOffensivePlayerWithin1.5Pct": 89.6,
+     "initialRusherPct": 100.0
+    },
+    "3.0": {
+     "playsPctOfLive": 56.4,
+     "defenders": 473,
+     "attachedPct": 79.3,
+     "detachedPct": 13.7,
+     "unblockedPct": 7.0,
+     "freePct": 20.7,
+     "attachedWithin1.0Pct": 65.5,
+     "anyOffensivePlayerWithin1.5Pct": 84.8,
+     "initialRusherPct": 99.8
+    },
+    "3.5": {
+     "playsPctOfLive": 70.3,
+     "defenders": 309,
+     "attachedPct": 69.9,
+     "detachedPct": 22.3,
+     "unblockedPct": 7.8,
+     "freePct": 30.1,
+     "attachedWithin1.0Pct": 50.8,
+     "anyOffensivePlayerWithin1.5Pct": 81.6,
+     "initialRusherPct": 99.7
+    }
+   }
+  },
+  "firstWithin2": {
+   "playsPctOfDropbacks": 27.3,
+   "plays": 531,
+   "playsPctUncapped": 27.5,
+   "playsPctStrictlyBeforeOutcomeFrame": 21.6,
+   "firstAtOutcomeFramePct": 20.9,
+   "nearestAtFirstMomentPct": {
+    "attached": 76.1,
+    "detached": 13.4,
+    "unblocked": 10.5
+   },
+   "nearestAttachedWithin1.0Pct": 62.1,
+   "anyDefenderWithin2AttachedPct": 76.1,
+   "nearestHasAnyOffensivePlayerWithin1.5Pct": 80.4,
+   "nearestByRusherGroupPct": {
+    "edge": 59.9,
+    "interior": 40.1,
+    "notInitialRusher": 0.0
+   },
+   "attachedFirstPressurePctOfDropbacks": 20.7,
+   "everAttachedWithin2PctOfDropbacks": 21.7,
+   "everFreeWithin2PctOfDropbacks": 12.0,
+   "timeOfFirst": {
+    "n": 531,
+    "mean": 2.58,
+    "p25": 2.3,
+    "median": 2.6,
+    "p75": 2.9,
+    "p10": 2.0,
+    "p90": 3.3
+   },
+   "noOutcomeEvent": 2,
+   "firstToOutcomeSeconds": {
+    "all": {
+     "n": 529,
+     "mean": 0.68,
+     "p25": 0.1,
+     "median": 0.3,
+     "p75": 1.0,
+     "p10": 0.0,
+     "p90": 2.0
+    },
+    "attached": {
+     "n": 403,
+     "mean": 0.71,
+     "p25": 0.1,
+     "median": 0.3,
+     "p75": 1.05,
+     "p10": 0.0,
+     "p90": 2.1
+    },
+    "free": {
+     "n": 126,
+     "mean": 0.58,
+     "p25": 0.0,
+     "median": 0.2,
+     "p75": 0.97,
+     "p10": 0.0,
+     "p90": 1.75
+    },
+    "detached": {
+     "n": 71,
+     "mean": 0.6,
+     "p25": 0.0,
+     "median": 0.2,
+     "p75": 1.05,
+     "p10": 0.0,
+     "p90": 1.9
+    },
+    "unblocked": {
+     "n": 55,
+     "mean": 0.56,
+     "p25": 0.0,
+     "median": 0.2,
+     "p75": 0.9,
+     "p10": 0.0,
+     "p90": 1.56
+    }
+   },
+   "outcomeMixPct": {
+    "all": {
+     "n": 529,
+     "throw": 78.4,
+     "sack": 20.6,
+     "scramble": 0.4,
+     "fumble": 0.6
+    },
+    "attached": {
+     "n": 403,
+     "throw": 81.6,
+     "sack": 17.6,
+     "scramble": 0.2,
+     "fumble": 0.5
+    },
+    "free": {
+     "n": 126,
+     "throw": 68.3,
+     "sack": 30.2,
+     "scramble": 0.8,
+     "fumble": 0.8
+    },
+    "detached": {
+     "n": 71,
+     "throw": 69.0,
+     "sack": 31.0,
+     "scramble": 0.0,
+     "fumble": 0.0
+    },
+    "unblocked": {
+     "n": 55,
+     "throw": 67.3,
+     "sack": 29.1,
+     "scramble": 1.8,
+     "fumble": 1.8
+    }
+   }
+  },
+  "pocketShape": {
+   "tackleWidth": {
+    "0.5": {
+     "n": 1945,
+     "mean": 6.58,
+     "p25": 6.27,
+     "median": 6.54,
+     "p75": 6.86
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 7.11,
+     "p25": 6.67,
+     "median": 7.19,
+     "p75": 7.67
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 7.31,
+     "p25": 6.64,
+     "median": 7.44,
+     "p75": 8.07
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 6.8,
+     "p25": 5.94,
+     "median": 6.87,
+     "p75": 7.72
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 6.04,
+     "p25": 4.84,
+     "median": 6.0,
+     "p75": 7.11
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 5.47,
+     "p25": 4.0,
+     "median": 5.33,
+     "p75": 6.86
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 4.97,
+     "p25": 2.89,
+     "median": 4.77,
+     "p75": 6.93
+    }
+   },
+   "meanOLDepth": {
+    "0.5": {
+     "n": 1945,
+     "mean": 0.98,
+     "p25": 0.73,
+     "median": 1.06,
+     "p75": 1.35
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 1.62,
+     "p25": 1.18,
+     "median": 1.7,
+     "p75": 2.14
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 2.6,
+     "p25": 2.08,
+     "median": 2.78,
+     "p75": 3.29
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 3.67,
+     "p25": 3.04,
+     "median": 3.88,
+     "p75": 4.5
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 4.48,
+     "p25": 3.62,
+     "median": 4.73,
+     "p75": 5.48
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 4.99,
+     "p25": 4.01,
+     "median": 5.28,
+     "p75": 6.04
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 5.39,
+     "p25": 4.31,
+     "median": 5.69,
+     "p75": 6.5
+    }
+   },
+   "qbDepthMinusMeanOLDepth": {
+    "0.5": {
+     "n": 1945,
+     "mean": 3.26,
+     "p25": 3.27,
+     "median": 3.55,
+     "p75": 3.79
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 3.37,
+     "p25": 3.07,
+     "median": 3.46,
+     "p75": 3.8
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 3.6,
+     "p25": 3.11,
+     "median": 3.56,
+     "p75": 4.06
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 3.64,
+     "p25": 2.88,
+     "median": 3.57,
+     "p75": 4.29
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 3.41,
+     "p25": 2.34,
+     "median": 3.3,
+     "p75": 4.26
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 2.97,
+     "p25": 1.82,
+     "median": 3.01,
+     "p75": 4.09
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 2.28,
+     "p25": 0.6,
+     "median": 2.21,
+     "p75": 3.82
+    }
+   },
+   "qbToNearestOL": {
+    "0.5": {
+     "n": 1945,
+     "mean": 3.58,
+     "p25": 3.61,
+     "median": 3.87,
+     "p75": 4.09
+    },
+    "1.0": {
+     "n": 1932,
+     "mean": 3.69,
+     "p25": 3.43,
+     "median": 3.84,
+     "p75": 4.15
+    },
+    "1.5": {
+     "n": 1820,
+     "mean": 3.92,
+     "p25": 3.49,
+     "median": 3.93,
+     "p75": 4.35
+    },
+    "2.0": {
+     "n": 1500,
+     "mean": 3.78,
+     "p25": 3.19,
+     "median": 3.73,
+     "p75": 4.33
+    },
+    "2.5": {
+     "n": 994,
+     "mean": 3.33,
+     "p25": 2.48,
+     "median": 3.21,
+     "p75": 4.05
+    },
+    "3.0": {
+     "n": 534,
+     "mean": 2.96,
+     "p25": 2.05,
+     "median": 2.79,
+     "p75": 3.69
+    },
+    "3.5": {
+     "n": 249,
+     "mean": 2.67,
+     "p25": 1.59,
+     "median": 2.4,
+     "p75": 3.3
+    }
+   }
+  },
+  "pffPressure": {
+   "pressuredPlaysPct": 31.3,
+   "unblockedPressureFlagPctOfPressured": 20.0,
+   "pressuresMeasured": 792,
+   "afterOutcomeEvent": 12,
+   "statusAtPressurePct": {
+    "attached": 69.2,
+    "detached": 14.3,
+    "unblocked": 16.5
+   },
+   "attachedWithin1.0Pct": 57.2,
+   "anyOffensivePlayerWithin1.5Pct": 79.4,
+   "timeToPressure": {
+    "n": 792,
+    "mean": 2.68,
+    "p25": 2.1,
+    "median": 2.6,
+    "p75": 3.0,
+    "p10": 1.8,
+    "p90": 3.8
+   },
+   "distanceToQB": {
+    "all": {
+     "n": 792,
+     "mean": 2.68,
+     "p25": 2.04,
+     "median": 2.47,
+     "p75": 3.25,
+     "p10": 1.83,
+     "p90": 3.8
+    },
+    "attached": {
+     "n": 548,
+     "mean": 2.52,
+     "p25": 1.99,
+     "median": 2.34,
+     "p75": 3.05,
+     "p10": 1.8,
+     "p90": 3.59
+    },
+    "free": {
+     "n": 244,
+     "mean": 3.03,
+     "p25": 2.3,
+     "median": 2.97,
+     "p75": 3.67,
+     "p10": 1.95,
+     "p90": 4.26
+    }
+   }
+  }
+ },
+ "sensitivity": {
+  "traditionalNoPlayAction": {
+   "plays": 1542,
+   "liveAtT": {
+    "0.5": {
+     "n": 1539,
+     "pctOfCohort": 99.8
+    },
+    "1.0": {
+     "n": 1526,
+     "pctOfCohort": 99.0
+    },
+    "1.5": {
+     "n": 1440,
+     "pctOfCohort": 93.4
+    },
+    "2.0": {
+     "n": 1169,
+     "pctOfCohort": 75.8
+    },
+    "2.5": {
+     "n": 727,
+     "pctOfCohort": 47.1
+    },
+    "3.0": {
+     "n": 344,
+     "pctOfCohort": 22.3
+    },
+    "3.5": {
+     "n": 161,
+     "pctOfCohort": 10.4
+    }
+   },
+   "qbDepth": {
+    "all": {
+     "0.5": {
+      "n": 1539,
+      "mean": 4.54,
+      "p25": 4.25,
+      "median": 4.72,
+      "p75": 5.05
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 5.26,
+      "p25": 4.93,
+      "median": 5.35,
+      "p75": 5.75
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 6.44,
+      "p25": 5.97,
+      "median": 6.48,
+      "p75": 7.01
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 7.46,
+      "p25": 6.83,
+      "median": 7.53,
+      "p75": 8.14
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 7.94,
+      "p25": 7.22,
+      "median": 8.0,
+      "p75": 8.7
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 8.01,
+      "p25": 7.01,
+      "median": 8.04,
+      "p75": 9.02
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 7.65,
+      "p25": 6.43,
+      "median": 7.75,
+      "p75": 8.94
+     }
+    },
+    "shotgunPistol": {
+     "0.5": {
+      "n": 1472,
+      "mean": 4.67,
+      "p25": 4.33,
+      "median": 4.75,
+      "p75": 5.07
+     },
+     "1.0": {
+      "n": 1462,
+      "mean": 5.36,
+      "p25": 4.99,
+      "median": 5.38,
+      "p75": 5.78
+     },
+     "1.5": {
+      "n": 1383,
+      "mean": 6.52,
+      "p25": 6.03,
+      "median": 6.52,
+      "p75": 7.04
+     },
+     "2.0": {
+      "n": 1131,
+      "mean": 7.5,
+      "p25": 6.85,
+      "median": 7.56,
+      "p75": 8.17
+     },
+     "2.5": {
+      "n": 697,
+      "mean": 8.0,
+      "p25": 7.24,
+      "median": 8.04,
+      "p75": 8.74
+     },
+     "3.0": {
+      "n": 330,
+      "mean": 8.05,
+      "p25": 7.02,
+      "median": 8.04,
+      "p75": 9.11
+     },
+     "3.5": {
+      "n": 151,
+      "mean": 7.72,
+      "p25": 6.47,
+      "median": 7.75,
+      "p75": 9.06
+     }
+    },
+    "underCenter": {
+     "0.5": {
+      "n": 67,
+      "mean": 1.71,
+      "p25": 1.43,
+      "median": 1.72,
+      "p75": 2.01
+     },
+     "1.0": {
+      "n": 64,
+      "mean": 2.93,
+      "p25": 2.53,
+      "median": 2.96,
+      "p75": 3.47
+     },
+     "1.5": {
+      "n": 57,
+      "mean": 4.59,
+      "p25": 3.94,
+      "median": 4.83,
+      "p75": 5.27
+     },
+     "2.0": {
+      "n": 38,
+      "mean": 6.11,
+      "p25": 5.55,
+      "median": 6.47,
+      "p75": 7.21
+     },
+     "2.5": {
+      "n": 30,
+      "mean": 6.65,
+      "p25": 5.89,
+      "median": 7.44,
+      "p75": 7.94
+     },
+     "3.0": {
+      "n": 14,
+      "mean": 7.04,
+      "p25": 6.3,
+      "median": 7.85,
+      "p75": 8.51
+     },
+     "3.5": {
+      "n": 10,
+      "mean": 6.6,
+      "p25": 5.57,
+      "median": 7.57,
+      "p75": 8.04
+     }
+    }
+   },
+   "olDepth": {
+    "T": {
+     "0.5": {
+      "n": 2999,
+      "mean": 1.36,
+      "p25": 1.05,
+      "median": 1.44,
+      "p75": 1.76
+     },
+     "1.0": {
+      "n": 2976,
+      "mean": 2.26,
+      "p25": 1.83,
+      "median": 2.36,
+      "p75": 2.79
+     },
+     "1.5": {
+      "n": 2806,
+      "mean": 3.56,
+      "p25": 3.01,
+      "median": 3.7,
+      "p75": 4.27
+     },
+     "2.0": {
+      "n": 2280,
+      "mean": 4.93,
+      "p25": 4.24,
+      "median": 5.09,
+      "p75": 5.84
+     },
+     "2.5": {
+      "n": 1403,
+      "mean": 6.03,
+      "p25": 5.18,
+      "median": 6.18,
+      "p75": 7.1
+     },
+     "3.0": {
+      "n": 671,
+      "mean": 6.72,
+      "p25": 5.71,
+      "median": 6.82,
+      "p75": 7.92
+     },
+     "3.5": {
+      "n": 315,
+      "mean": 7.08,
+      "p25": 5.95,
+      "median": 7.29,
+      "p75": 8.33
+     }
+    },
+    "G": {
+     "0.5": {
+      "n": 2974,
+      "mean": 0.97,
+      "p25": 0.69,
+      "median": 1.07,
+      "p75": 1.34
+     },
+     "1.0": {
+      "n": 2945,
+      "mean": 1.58,
+      "p25": 1.19,
+      "median": 1.63,
+      "p75": 2.03
+     },
+     "1.5": {
+      "n": 2778,
+      "mean": 2.56,
+      "p25": 2.04,
+      "median": 2.59,
+      "p75": 3.14
+     },
+     "2.0": {
+      "n": 2251,
+      "mean": 3.64,
+      "p25": 2.98,
+      "median": 3.64,
+      "p75": 4.34
+     },
+     "2.5": {
+      "n": 1410,
+      "mean": 4.54,
+      "p25": 3.67,
+      "median": 4.51,
+      "p75": 5.43
+     },
+     "3.0": {
+      "n": 656,
+      "mean": 5.24,
+      "p25": 4.15,
+      "median": 5.2,
+      "p75": 6.46
+     },
+     "3.5": {
+      "n": 301,
+      "mean": 5.52,
+      "p25": 4.29,
+      "median": 5.56,
+      "p75": 7.04
+     }
+    },
+    "C": {
+     "0.5": {
+      "n": 1727,
+      "mean": 0.61,
+      "p25": 0.31,
+      "median": 0.68,
+      "p75": 0.98
+     },
+     "1.0": {
+      "n": 1713,
+      "mean": 1.36,
+      "p25": 1.03,
+      "median": 1.45,
+      "p75": 1.82
+     },
+     "1.5": {
+      "n": 1619,
+      "mean": 2.36,
+      "p25": 1.98,
+      "median": 2.46,
+      "p75": 2.9
+     },
+     "2.0": {
+      "n": 1315,
+      "mean": 3.32,
+      "p25": 2.8,
+      "median": 3.42,
+      "p75": 3.98
+     },
+     "2.5": {
+      "n": 823,
+      "mean": 4.05,
+      "p25": 3.34,
+      "median": 4.15,
+      "p75": 4.84
+     },
+     "3.0": {
+      "n": 394,
+      "mean": 4.59,
+      "p25": 3.59,
+      "median": 4.63,
+      "p75": 5.61
+     },
+     "3.5": {
+      "n": 189,
+      "mean": 4.91,
+      "p25": 3.8,
+      "median": 4.8,
+      "p75": 6.04
+     }
+    },
+    "interior": {
+     "0.5": {
+      "n": 4701,
+      "mean": 0.84,
+      "p25": 0.51,
+      "median": 0.93,
+      "p75": 1.26
+     },
+     "1.0": {
+      "n": 4658,
+      "mean": 1.5,
+      "p25": 1.12,
+      "median": 1.56,
+      "p75": 1.95
+     },
+     "1.5": {
+      "n": 4397,
+      "mean": 2.49,
+      "p25": 2.02,
+      "median": 2.53,
+      "p75": 3.04
+     },
+     "2.0": {
+      "n": 3566,
+      "mean": 3.52,
+      "p25": 2.9,
+      "median": 3.56,
+      "p75": 4.19
+     },
+     "2.5": {
+      "n": 2233,
+      "mean": 4.36,
+      "p25": 3.55,
+      "median": 4.39,
+      "p75": 5.2
+     },
+     "3.0": {
+      "n": 1050,
+      "mean": 5.0,
+      "p25": 3.92,
+      "median": 4.99,
+      "p75": 6.08
+     },
+     "3.5": {
+      "n": 490,
+      "mean": 5.29,
+      "p25": 4.06,
+      "median": 5.27,
+      "p75": 6.69
+     }
+    }
+   },
+   "pocket": {
+    "qbToNearestRusher": {
+     "0.5": {
+      "n": 1539,
+      "mean": 5.4,
+      "p25": 5.17,
+      "median": 5.46,
+      "p75": 5.74
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 4.98,
+      "p25": 4.7,
+      "median": 5.01,
+      "p75": 5.36
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 4.68,
+      "p25": 4.25,
+      "median": 4.71,
+      "p75": 5.13
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 4.05,
+      "p25": 3.44,
+      "median": 4.07,
+      "p75": 4.61
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 3.18,
+      "p25": 2.46,
+      "median": 3.16,
+      "p75": 3.96
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 2.56,
+      "p25": 1.56,
+      "median": 2.56,
+      "p75": 3.37
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 2.16,
+      "p25": 0.91,
+      "median": 2.18,
+      "p75": 2.98
+     }
+    },
+    "qbToNearestInteriorRusher": {
+     "0.5": {
+      "n": 1531,
+      "mean": 5.39,
+      "p25": 5.17,
+      "median": 5.46,
+      "p75": 5.74
+     },
+     "1.0": {
+      "n": 1518,
+      "mean": 4.98,
+      "p25": 4.7,
+      "median": 5.01,
+      "p75": 5.36
+     },
+     "1.5": {
+      "n": 1433,
+      "mean": 4.8,
+      "p25": 4.35,
+      "median": 4.81,
+      "p75": 5.28
+     },
+     "2.0": {
+      "n": 1165,
+      "mean": 4.55,
+      "p25": 3.9,
+      "median": 4.53,
+      "p75": 5.17
+     },
+     "2.5": {
+      "n": 723,
+      "mean": 4.03,
+      "p25": 3.18,
+      "median": 4.01,
+      "p75": 4.87
+     },
+     "3.0": {
+      "n": 340,
+      "mean": 3.5,
+      "p25": 2.38,
+      "median": 3.33,
+      "p75": 4.43
+     },
+     "3.5": {
+      "n": 158,
+      "mean": 3.15,
+      "p25": 1.85,
+      "median": 2.98,
+      "p75": 3.96
+     }
+    },
+    "qbToNearestEdgeRusher": {
+     "0.5": {
+      "n": 1516,
+      "mean": 7.16,
+      "p25": 6.77,
+      "median": 7.21,
+      "p75": 7.61
+     },
+     "1.0": {
+      "n": 1503,
+      "mean": 6.32,
+      "p25": 5.87,
+      "median": 6.32,
+      "p75": 6.8
+     },
+     "1.5": {
+      "n": 1418,
+      "mean": 5.41,
+      "p25": 4.87,
+      "median": 5.38,
+      "p75": 5.89
+     },
+     "2.0": {
+      "n": 1151,
+      "mean": 4.48,
+      "p25": 3.81,
+      "median": 4.4,
+      "p75": 5.13
+     },
+     "2.5": {
+      "n": 716,
+      "mean": 3.61,
+      "p25": 2.67,
+      "median": 3.49,
+      "p75": 4.38
+     },
+     "3.0": {
+      "n": 337,
+      "mean": 3.21,
+      "p25": 1.97,
+      "median": 3.06,
+      "p75": 3.99
+     },
+     "3.5": {
+      "n": 157,
+      "mean": 2.87,
+      "p25": 1.42,
+      "median": 2.71,
+      "p75": 3.78
+     }
+    },
+    "qbToNearestDefender": {
+     "0.5": {
+      "n": 1539,
+      "mean": 5.39,
+      "p25": 5.17,
+      "median": 5.46,
+      "p75": 5.74
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 4.97,
+      "p25": 4.7,
+      "median": 5.01,
+      "p75": 5.36
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 4.68,
+      "p25": 4.25,
+      "median": 4.71,
+      "p75": 5.13
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 4.05,
+      "p25": 3.44,
+      "median": 4.07,
+      "p75": 4.61
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 3.18,
+      "p25": 2.46,
+      "median": 3.16,
+      "p75": 3.96
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 2.56,
+      "p25": 1.56,
+      "median": 2.56,
+      "p75": 3.37
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 2.13,
+      "p25": 0.91,
+      "median": 2.18,
+      "p75": 2.98
+     }
+    },
+    "qbDepthMinusDeepestRusherDepth": {
+     "0.5": {
+      "n": 1539,
+      "mean": 4.78,
+      "p25": 4.56,
+      "median": 4.87,
+      "p75": 5.15
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 3.81,
+      "p25": 3.38,
+      "median": 3.87,
+      "p75": 4.3
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 2.79,
+      "p25": 2.14,
+      "median": 2.77,
+      "p75": 3.44
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 1.83,
+      "p25": 0.99,
+      "median": 1.75,
+      "p75": 2.6
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 0.86,
+      "p25": -0.23,
+      "median": 0.71,
+      "p75": 1.89
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 0.05,
+      "p25": -1.26,
+      "median": 0.08,
+      "p75": 1.23
+     },
+     "3.5": {
+      "n": 161,
+      "mean": -0.86,
+      "p25": -2.28,
+      "median": -0.64,
+      "p75": 0.46
+     }
+    },
+    "nearestRusherWithinPctOfLive": {
+     "0.5": {
+      "2yd": 0.3,
+      "3yd": 2.9,
+      "4yd": 3.3
+     },
+     "1.0": {
+      "2yd": 0.1,
+      "3yd": 1.8,
+      "4yd": 5.0
+     },
+     "1.5": {
+      "2yd": 0.1,
+      "3yd": 1.5,
+      "4yd": 15.4
+     },
+     "2.0": {
+      "2yd": 1.5,
+      "3yd": 12.2,
+      "4yd": 47.0
+     },
+     "2.5": {
+      "2yd": 15.5,
+      "3yd": 43.3,
+      "4yd": 75.5
+     },
+     "3.0": {
+      "2yd": 35.5,
+      "3yd": 65.1,
+      "4yd": 88.7
+     },
+     "3.5": {
+      "2yd": 46.0,
+      "3yd": 75.2,
+      "4yd": 92.5
+     }
+    }
+   },
+   "interiorPush": {
+    "rusherDepth": {
+     "0.5": {
+      "n": 2870,
+      "mean": -0.55,
+      "p25": -0.83,
+      "median": -0.53,
+      "p75": -0.26
+     },
+     "1.0": {
+      "n": 2841,
+      "mean": 0.59,
+      "p25": 0.19,
+      "median": 0.58,
+      "p75": 0.98
+     },
+     "1.5": {
+      "n": 2661,
+      "mean": 1.93,
+      "p25": 1.41,
+      "median": 1.91,
+      "p75": 2.48
+     },
+     "2.0": {
+      "n": 2163,
+      "mean": 3.14,
+      "p25": 2.39,
+      "median": 3.13,
+      "p75": 3.92
+     },
+     "2.5": {
+      "n": 1320,
+      "mean": 4.11,
+      "p25": 3.09,
+      "median": 4.05,
+      "p75": 5.17
+     },
+     "3.0": {
+      "n": 606,
+      "mean": 4.88,
+      "p25": 3.51,
+      "median": 4.78,
+      "p75": 6.27
+     },
+     "3.5": {
+      "n": 276,
+      "mean": 5.42,
+      "p25": 3.77,
+      "median": 5.2,
+      "p75": 7.15
+     }
+    },
+    "blockerDepth": {
+     "0.5": {
+      "n": 2798,
+      "mean": 0.95,
+      "p25": 0.63,
+      "median": 0.96,
+      "p75": 1.28
+     },
+     "1.0": {
+      "n": 2770,
+      "mean": 1.55,
+      "p25": 1.19,
+      "median": 1.57,
+      "p75": 1.94
+     },
+     "1.5": {
+      "n": 2612,
+      "mean": 2.55,
+      "p25": 2.07,
+      "median": 2.55,
+      "p75": 3.03
+     },
+     "2.0": {
+      "n": 2125,
+      "mean": 3.61,
+      "p25": 2.98,
+      "median": 3.62,
+      "p75": 4.25
+     },
+     "2.5": {
+      "n": 1305,
+      "mean": 4.5,
+      "p25": 3.69,
+      "median": 4.51,
+      "p75": 5.32
+     },
+     "3.0": {
+      "n": 598,
+      "mean": 5.17,
+      "p25": 4.08,
+      "median": 5.15,
+      "p75": 6.4
+     },
+     "3.5": {
+      "n": 270,
+      "mean": 5.63,
+      "p25": 4.28,
+      "median": 5.71,
+      "p75": 7.07
+     }
+    },
+    "blockerRetreatSinceSnap": {
+     "0.5": {
+      "n": 2798,
+      "mean": 0.21,
+      "p25": 0.08,
+      "median": 0.2,
+      "p75": 0.35
+     },
+     "1.0": {
+      "n": 2770,
+      "mean": 0.8,
+      "p25": 0.51,
+      "median": 0.83,
+      "p75": 1.12
+     },
+     "1.5": {
+      "n": 2612,
+      "mean": 1.81,
+      "p25": 1.38,
+      "median": 1.84,
+      "p75": 2.31
+     },
+     "2.0": {
+      "n": 2125,
+      "mean": 2.87,
+      "p25": 2.29,
+      "median": 2.93,
+      "p75": 3.49
+     },
+     "2.5": {
+      "n": 1305,
+      "mean": 3.76,
+      "p25": 3.01,
+      "median": 3.82,
+      "p75": 4.57
+     },
+     "3.0": {
+      "n": 598,
+      "mean": 4.41,
+      "p25": 3.37,
+      "median": 4.51,
+      "p75": 5.43
+     },
+     "3.5": {
+      "n": 270,
+      "mean": 4.86,
+      "p25": 3.64,
+      "median": 5.03,
+      "p75": 6.09
+     }
+    },
+    "separation": {
+     "0.5": {
+      "n": 2798,
+      "mean": 1.69,
+      "p25": 1.38,
+      "median": 1.65,
+      "p75": 1.91
+     },
+     "1.0": {
+      "n": 2770,
+      "mean": 1.13,
+      "p25": 0.9,
+      "median": 1.07,
+      "p75": 1.27
+     },
+     "1.5": {
+      "n": 2612,
+      "mean": 0.86,
+      "p25": 0.68,
+      "median": 0.81,
+      "p75": 0.97
+     },
+     "2.0": {
+      "n": 2125,
+      "mean": 0.85,
+      "p25": 0.64,
+      "median": 0.78,
+      "p75": 0.93
+     },
+     "2.5": {
+      "n": 1305,
+      "mean": 0.89,
+      "p25": 0.64,
+      "median": 0.78,
+      "p75": 0.96
+     },
+     "3.0": {
+      "n": 598,
+      "mean": 1.03,
+      "p25": 0.66,
+      "median": 0.83,
+      "p75": 1.07
+     },
+     "3.5": {
+      "n": 270,
+      "mean": 1.2,
+      "p25": 0.69,
+      "median": 0.9,
+      "p75": 1.31
+     }
+    },
+    "attachedPct": {
+     "0.5": 34.6,
+     "1.0": 90.0,
+     "1.5": 97.1,
+     "2.0": 95.1,
+     "2.5": 93.1,
+     "3.0": 87.3,
+     "3.5": 81.5
+    }
+   },
+   "rusherStatus": {
+    "edge": {
+     "0.5": {
+      "n": 3209,
+      "attachedPct": 0.7,
+      "detachedPct": 89.8,
+      "unblockedPct": 9.5
+     },
+     "1.0": {
+      "n": 3186,
+      "attachedPct": 22.2,
+      "detachedPct": 68.5,
+      "unblockedPct": 9.3
+     },
+     "1.5": {
+      "n": 3001,
+      "attachedPct": 71.8,
+      "detachedPct": 19.8,
+      "unblockedPct": 8.4
+     },
+     "2.0": {
+      "n": 2435,
+      "attachedPct": 84.4,
+      "detachedPct": 8.2,
+      "unblockedPct": 7.4
+     },
+     "2.5": {
+      "n": 1501,
+      "attachedPct": 86.5,
+      "detachedPct": 7.1,
+      "unblockedPct": 6.4
+     },
+     "3.0": {
+      "n": 705,
+      "attachedPct": 79.9,
+      "detachedPct": 12.6,
+      "unblockedPct": 7.5
+     },
+     "3.5": {
+      "n": 326,
+      "attachedPct": 71.8,
+      "detachedPct": 20.6,
+      "unblockedPct": 7.7
+     }
+    },
+    "interior": {
+     "0.5": {
+      "n": 3277,
+      "attachedPct": 33.1,
+      "detachedPct": 62.6,
+      "unblockedPct": 4.3
+     },
+     "1.0": {
+      "n": 3243,
+      "attachedPct": 84.2,
+      "detachedPct": 11.6,
+      "unblockedPct": 4.3
+     },
+     "1.5": {
+      "n": 3049,
+      "attachedPct": 92.0,
+      "detachedPct": 4.2,
+      "unblockedPct": 3.7
+     },
+     "2.0": {
+      "n": 2458,
+      "attachedPct": 91.7,
+      "detachedPct": 4.8,
+      "unblockedPct": 3.5
+     },
+     "2.5": {
+      "n": 1502,
+      "attachedPct": 90.5,
+      "detachedPct": 6.9,
+      "unblockedPct": 2.6
+     },
+     "3.0": {
+      "n": 698,
+      "attachedPct": 84.4,
+      "detachedPct": 12.5,
+      "unblockedPct": 3.2
+     },
+     "3.5": {
+      "n": 327,
+      "attachedPct": 78.0,
+      "detachedPct": 18.3,
+      "unblockedPct": 3.7
+     }
+    }
+   },
+   "nearQB": {
+    "within2yd": {
+     "0.5": {
+      "playsPctOfLive": 0.3,
+      "defenders": 5,
+      "attachedPct": 100.0,
+      "detachedPct": 0.0,
+      "unblockedPct": 0.0,
+      "freePct": 0.0,
+      "attachedWithin1.0Pct": 40.0,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "1.0": {
+      "playsPctOfLive": 0.1,
+      "defenders": 1,
+      "attachedPct": 100.0,
+      "detachedPct": 0.0,
+      "unblockedPct": 0.0,
+      "freePct": 0.0,
+      "attachedWithin1.0Pct": 100.0,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "1.5": {
+      "playsPctOfLive": 0.1,
+      "defenders": 1,
+      "attachedPct": 100.0,
+      "detachedPct": 0.0,
+      "unblockedPct": 0.0,
+      "freePct": 0.0,
+      "attachedWithin1.0Pct": 100.0,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "2.0": {
+      "playsPctOfLive": 1.5,
+      "defenders": 18,
+      "attachedPct": 44.4,
+      "detachedPct": 33.3,
+      "unblockedPct": 22.2,
+      "freePct": 55.6,
+      "attachedWithin1.0Pct": 33.3,
+      "anyOffensivePlayerWithin1.5Pct": 50.0,
+      "initialRusherPct": 100.0
+     },
+     "2.5": {
+      "playsPctOfLive": 15.5,
+      "defenders": 132,
+      "attachedPct": 74.2,
+      "detachedPct": 13.6,
+      "unblockedPct": 12.1,
+      "freePct": 25.8,
+      "attachedWithin1.0Pct": 63.6,
+      "anyOffensivePlayerWithin1.5Pct": 78.0,
+      "initialRusherPct": 100.0
+     },
+     "3.0": {
+      "playsPctOfLive": 35.5,
+      "defenders": 159,
+      "attachedPct": 70.4,
+      "detachedPct": 21.4,
+      "unblockedPct": 8.2,
+      "freePct": 29.6,
+      "attachedWithin1.0Pct": 54.1,
+      "anyOffensivePlayerWithin1.5Pct": 76.1,
+      "initialRusherPct": 100.0
+     },
+     "3.5": {
+      "playsPctOfLive": 46.0,
+      "defenders": 113,
+      "attachedPct": 63.7,
+      "detachedPct": 27.4,
+      "unblockedPct": 8.8,
+      "freePct": 36.3,
+      "attachedWithin1.0Pct": 43.4,
+      "anyOffensivePlayerWithin1.5Pct": 77.9,
+      "initialRusherPct": 100.0
+     }
+    },
+    "within3yd": {
+     "0.5": {
+      "playsPctOfLive": 2.9,
+      "defenders": 65,
+      "attachedPct": 84.6,
+      "detachedPct": 15.4,
+      "unblockedPct": 0.0,
+      "freePct": 15.4,
+      "attachedWithin1.0Pct": 12.3,
+      "anyOffensivePlayerWithin1.5Pct": 84.6,
+      "initialRusherPct": 100.0
+     },
+     "1.0": {
+      "playsPctOfLive": 1.8,
+      "defenders": 38,
+      "attachedPct": 97.4,
+      "detachedPct": 0.0,
+      "unblockedPct": 2.6,
+      "freePct": 2.6,
+      "attachedWithin1.0Pct": 86.8,
+      "anyOffensivePlayerWithin1.5Pct": 97.4,
+      "initialRusherPct": 100.0
+     },
+     "1.5": {
+      "playsPctOfLive": 1.5,
+      "defenders": 22,
+      "attachedPct": 90.9,
+      "detachedPct": 4.5,
+      "unblockedPct": 4.5,
+      "freePct": 9.1,
+      "attachedWithin1.0Pct": 90.9,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "2.0": {
+      "playsPctOfLive": 12.2,
+      "defenders": 162,
+      "attachedPct": 84.0,
+      "detachedPct": 6.8,
+      "unblockedPct": 9.3,
+      "freePct": 16.0,
+      "attachedWithin1.0Pct": 75.9,
+      "anyOffensivePlayerWithin1.5Pct": 87.0,
+      "initialRusherPct": 100.0
+     },
+     "2.5": {
+      "playsPctOfLive": 43.3,
+      "defenders": 450,
+      "attachedPct": 89.1,
+      "detachedPct": 6.7,
+      "unblockedPct": 4.2,
+      "freePct": 10.9,
+      "attachedWithin1.0Pct": 77.1,
+      "anyOffensivePlayerWithin1.5Pct": 91.8,
+      "initialRusherPct": 100.0
+     },
+     "3.0": {
+      "playsPctOfLive": 65.1,
+      "defenders": 373,
+      "attachedPct": 80.4,
+      "detachedPct": 14.2,
+      "unblockedPct": 5.4,
+      "freePct": 19.6,
+      "attachedWithin1.0Pct": 66.8,
+      "anyOffensivePlayerWithin1.5Pct": 86.1,
+      "initialRusherPct": 100.0
+     },
+     "3.5": {
+      "playsPctOfLive": 75.2,
+      "defenders": 226,
+      "attachedPct": 71.7,
+      "detachedPct": 22.1,
+      "unblockedPct": 6.2,
+      "freePct": 28.3,
+      "attachedWithin1.0Pct": 50.4,
+      "anyOffensivePlayerWithin1.5Pct": 85.8,
+      "initialRusherPct": 100.0
+     }
+    }
+   },
+   "firstWithin2": {
+    "playsPctOfDropbacks": 26.7,
+    "plays": 412,
+    "playsPctUncapped": 26.9,
+    "playsPctStrictlyBeforeOutcomeFrame": 21.2,
+    "firstAtOutcomeFramePct": 20.6,
+    "nearestAtFirstMomentPct": {
+     "attached": 77.7,
+     "detached": 13.1,
+     "unblocked": 9.2
+    },
+    "nearestAttachedWithin1.0Pct": 64.6,
+    "anyDefenderWithin2AttachedPct": 77.7,
+    "nearestHasAnyOffensivePlayerWithin1.5Pct": 82.5,
+    "nearestByRusherGroupPct": {
+     "edge": 60.4,
+     "interior": 39.6,
+     "notInitialRusher": 0.0
+    },
+    "attachedFirstPressurePctOfDropbacks": 20.8,
+    "everAttachedWithin2PctOfDropbacks": 21.7,
+    "everFreeWithin2PctOfDropbacks": 11.3,
+    "timeOfFirst": {
+     "n": 412,
+     "mean": 2.59,
+     "p25": 2.3,
+     "median": 2.6,
+     "p75": 2.82,
+     "p10": 2.1,
+     "p90": 3.2
+    },
+    "noOutcomeEvent": 1,
+    "firstToOutcomeSeconds": {
+     "all": {
+      "n": 411,
+      "mean": 0.6,
+      "p25": 0.1,
+      "median": 0.3,
+      "p75": 0.9,
+      "p10": 0.0,
+      "p90": 1.9
+     },
+     "attached": {
+      "n": 320,
+      "mean": 0.62,
+      "p25": 0.1,
+      "median": 0.3,
+      "p75": 0.9,
+      "p10": 0.0,
+      "p90": 1.9
+     },
+     "free": {
+      "n": 91,
+      "mean": 0.54,
+      "p25": 0.0,
+      "median": 0.2,
+      "p75": 0.9,
+      "p10": 0.0,
+      "p90": 1.8
+     },
+     "detached": {
+      "n": 54,
+      "mean": 0.56,
+      "p25": 0.0,
+      "median": 0.2,
+      "p75": 0.95,
+      "p10": 0.0,
+      "p90": 1.71
+     },
+     "unblocked": {
+      "n": 37,
+      "mean": 0.52,
+      "p25": 0.0,
+      "median": 0.2,
+      "p75": 0.9,
+      "p10": 0.0,
+      "p90": 1.64
+     }
+    },
+    "outcomeMixPct": {
+     "all": {
+      "n": 411,
+      "throw": 77.4,
+      "sack": 21.7,
+      "scramble": 0.2,
+      "fumble": 0.7
+     },
+     "attached": {
+      "n": 320,
+      "throw": 79.7,
+      "sack": 19.4,
+      "scramble": 0.3,
+      "fumble": 0.6
+     },
+     "free": {
+      "n": 91,
+      "throw": 69.2,
+      "sack": 29.7,
+      "scramble": 0.0,
+      "fumble": 1.1
+     },
+     "detached": {
+      "n": 54,
+      "throw": 70.4,
+      "sack": 29.6,
+      "scramble": 0.0,
+      "fumble": 0.0
+     },
+     "unblocked": {
+      "n": 37,
+      "throw": 67.6,
+      "sack": 29.7,
+      "scramble": 0.0,
+      "fumble": 2.7
+     }
+    }
+   },
+   "pocketShape": {
+    "tackleWidth": {
+     "0.5": {
+      "n": 1539,
+      "mean": 6.64,
+      "p25": 6.34,
+      "median": 6.58,
+      "p75": 6.89
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 7.29,
+      "p25": 6.87,
+      "median": 7.29,
+      "p75": 7.73
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 7.53,
+      "p25": 6.93,
+      "median": 7.57,
+      "p75": 8.11
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 6.94,
+      "p25": 6.11,
+      "median": 6.92,
+      "p75": 7.72
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 5.98,
+      "p25": 4.93,
+      "median": 5.92,
+      "p75": 6.89
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 5.14,
+      "p25": 3.78,
+      "median": 5.05,
+      "p75": 6.36
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 4.68,
+      "p25": 2.61,
+      "median": 4.59,
+      "p75": 6.47
+     }
+    },
+    "meanOLDepth": {
+     "0.5": {
+      "n": 1539,
+      "mean": 1.04,
+      "p25": 0.78,
+      "median": 1.15,
+      "p75": 1.4
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 1.8,
+      "p25": 1.48,
+      "median": 1.86,
+      "p75": 2.22
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 2.9,
+      "p25": 2.51,
+      "median": 2.99,
+      "p75": 3.4
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 4.07,
+      "p25": 3.6,
+      "median": 4.16,
+      "p75": 4.62
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 5.0,
+      "p25": 4.49,
+      "median": 5.09,
+      "p75": 5.64
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 5.67,
+      "p25": 5.05,
+      "median": 5.78,
+      "p75": 6.39
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 5.99,
+      "p25": 5.26,
+      "median": 6.09,
+      "p75": 6.85
+     }
+    },
+    "qbDepthMinusMeanOLDepth": {
+     "0.5": {
+      "n": 1539,
+      "mean": 3.5,
+      "p25": 3.35,
+      "median": 3.56,
+      "p75": 3.78
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 3.47,
+      "p25": 3.19,
+      "median": 3.48,
+      "p75": 3.77
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 3.54,
+      "p25": 3.08,
+      "median": 3.52,
+      "p75": 3.96
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 3.39,
+      "p25": 2.75,
+      "median": 3.36,
+      "p75": 3.96
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 2.94,
+      "p25": 2.12,
+      "median": 2.89,
+      "p75": 3.73
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 2.34,
+      "p25": 1.21,
+      "median": 2.36,
+      "p75": 3.43
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 1.66,
+      "p25": -0.11,
+      "median": 1.65,
+      "p75": 3.03
+     }
+    },
+    "qbToNearestOL": {
+     "0.5": {
+      "n": 1539,
+      "mean": 3.83,
+      "p25": 3.69,
+      "median": 3.9,
+      "p75": 4.1
+     },
+     "1.0": {
+      "n": 1526,
+      "mean": 3.86,
+      "p25": 3.58,
+      "median": 3.9,
+      "p75": 4.17
+     },
+     "1.5": {
+      "n": 1440,
+      "mean": 3.95,
+      "p25": 3.53,
+      "median": 3.96,
+      "p75": 4.35
+     },
+     "2.0": {
+      "n": 1169,
+      "mean": 3.63,
+      "p25": 3.13,
+      "median": 3.61,
+      "p75": 4.14
+     },
+     "2.5": {
+      "n": 727,
+      "mean": 3.0,
+      "p25": 2.34,
+      "median": 2.92,
+      "p75": 3.58
+     },
+     "3.0": {
+      "n": 344,
+      "mean": 2.56,
+      "p25": 1.73,
+      "median": 2.37,
+      "p75": 3.18
+     },
+     "3.5": {
+      "n": 161,
+      "mean": 2.36,
+      "p25": 1.46,
+      "median": 2.17,
+      "p75": 2.82
+     }
+    }
+   }
+  },
+  "withScrambles": {
+   "plays": 2177,
+   "endEvents": {
+    "throw": 1943,
+    "sack": 119,
+    "scramble": 104,
+    "fumble": 7,
+    "none": 4
+   },
+   "liveAtT": {
+    "0.5": {
+     "n": 2174,
+     "pctOfCohort": 99.9
+    },
+    "1.0": {
+     "n": 2161,
+     "pctOfCohort": 99.3
+    },
+    "1.5": {
+     "n": 2049,
+     "pctOfCohort": 94.1
+    },
+    "2.0": {
+     "n": 1724,
+     "pctOfCohort": 79.2
+    },
+    "2.5": {
+     "n": 1210,
+     "pctOfCohort": 55.6
+    },
+    "3.0": {
+     "n": 732,
+     "pctOfCohort": 33.6
+    },
+    "3.5": {
+     "n": 425,
+     "pctOfCohort": 19.5
+    }
+   },
+   "nearQB": {
+    "within2yd": {
+     "0.5": {
+      "playsPctOfLive": 1.1,
+      "defenders": 27,
+      "attachedPct": 100.0,
+      "detachedPct": 0.0,
+      "unblockedPct": 0.0,
+      "freePct": 0.0,
+      "attachedWithin1.0Pct": 55.6,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "1.0": {
+      "playsPctOfLive": 0.1,
+      "defenders": 3,
+      "attachedPct": 100.0,
+      "detachedPct": 0.0,
+      "unblockedPct": 0.0,
+      "freePct": 0.0,
+      "attachedWithin1.0Pct": 100.0,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "1.5": {
+      "playsPctOfLive": 0.1,
+      "defenders": 2,
+      "attachedPct": 100.0,
+      "detachedPct": 0.0,
+      "unblockedPct": 0.0,
+      "freePct": 0.0,
+      "attachedWithin1.0Pct": 50.0,
+      "anyOffensivePlayerWithin1.5Pct": 100.0,
+      "initialRusherPct": 100.0
+     },
+     "2.0": {
+      "playsPctOfLive": 1.9,
+      "defenders": 32,
+      "attachedPct": 50.0,
+      "detachedPct": 18.8,
+      "unblockedPct": 31.2,
+      "freePct": 50.0,
+      "attachedWithin1.0Pct": 43.8,
+      "anyOffensivePlayerWithin1.5Pct": 56.2,
+      "initialRusherPct": 100.0
+     },
+     "2.5": {
+      "playsPctOfLive": 13.1,
+      "defenders": 180,
+      "attachedPct": 73.3,
+      "detachedPct": 12.8,
+      "unblockedPct": 13.9,
+      "freePct": 26.7,
+      "attachedWithin1.0Pct": 62.2,
+      "anyOffensivePlayerWithin1.5Pct": 76.1,
+      "initialRusherPct": 100.0
+     },
+     "3.0": {
+      "playsPctOfLive": 26.2,
+      "defenders": 235,
+      "attachedPct": 69.8,
+      "detachedPct": 19.6,
+      "unblockedPct": 10.6,
+      "freePct": 30.2,
+      "attachedWithin1.0Pct": 53.6,
+      "anyOffensivePlayerWithin1.5Pct": 74.5,
+      "initialRusherPct": 100.0
+     },
+     "3.5": {
+      "playsPctOfLive": 29.9,
+      "defenders": 180,
+      "attachedPct": 58.9,
+      "detachedPct": 31.7,
+      "unblockedPct": 9.4,
+      "freePct": 41.1,
+      "attachedWithin1.0Pct": 41.7,
+      "anyOffensivePlayerWithin1.5Pct": 69.4,
+      "initialRusherPct": 100.0
+     }
+    },
+    "within3yd": {
+     "0.5": {
+      "playsPctOfLive": 13.4,
+      "defenders": 395,
+      "attachedPct": 86.6,
+      "detachedPct": 11.6,
+      "unblockedPct": 1.8,
+      "freePct": 13.4,
+      "attachedWithin1.0Pct": 20.3,
+      "anyOffensivePlayerWithin1.5Pct": 89.4,
+      "initialRusherPct": 100.0
+     },
+     "1.0": {
+      "playsPctOfLive": 5.2,
+      "defenders": 143,
+      "attachedPct": 98.6,
+      "detachedPct": 0.0,
+      "unblockedPct": 1.4,
+      "freePct": 1.4,
+      "attachedWithin1.0Pct": 89.5,
+      "anyOffensivePlayerWithin1.5Pct": 99.3,
+      "initialRusherPct": 100.0
+     },
+     "1.5": {
+      "playsPctOfLive": 2.1,
+      "defenders": 45,
+      "attachedPct": 77.8,
+      "detachedPct": 4.4,
+      "unblockedPct": 17.8,
+      "freePct": 22.2,
+      "attachedWithin1.0Pct": 73.3,
+      "anyOffensivePlayerWithin1.5Pct": 86.7,
+      "initialRusherPct": 100.0
+     },
+     "2.0": {
+      "playsPctOfLive": 11.9,
+      "defenders": 229,
+      "attachedPct": 80.3,
+      "detachedPct": 7.4,
+      "unblockedPct": 12.2,
+      "freePct": 19.7,
+      "attachedWithin1.0Pct": 72.5,
+      "anyOffensivePlayerWithin1.5Pct": 83.8,
+      "initialRusherPct": 100.0
+     },
+     "2.5": {
+      "playsPctOfLive": 37.5,
+      "defenders": 616,
+      "attachedPct": 86.2,
+      "detachedPct": 7.0,
+      "unblockedPct": 6.8,
+      "freePct": 13.8,
+      "attachedWithin1.0Pct": 74.8,
+      "anyOffensivePlayerWithin1.5Pct": 88.5,
+      "initialRusherPct": 100.0
+     },
+     "3.0": {
+      "playsPctOfLive": 53.4,
+      "defenders": 588,
+      "attachedPct": 79.3,
+      "detachedPct": 13.8,
+      "unblockedPct": 7.0,
+      "freePct": 20.7,
+      "attachedWithin1.0Pct": 64.5,
+      "anyOffensivePlayerWithin1.5Pct": 84.2,
+      "initialRusherPct": 99.8
+     },
+     "3.5": {
+      "playsPctOfLive": 60.5,
+      "defenders": 415,
+      "attachedPct": 66.7,
+      "detachedPct": 25.8,
+      "unblockedPct": 7.5,
+      "freePct": 33.3,
+      "attachedWithin1.0Pct": 47.5,
+      "anyOffensivePlayerWithin1.5Pct": 76.9,
+      "initialRusherPct": 99.8
+     }
+    }
+   },
+   "firstWithin2": {
+    "playsPctOfDropbacks": 29.9,
+    "plays": 650,
+    "playsPctUncapped": 30.9,
+    "playsPctStrictlyBeforeOutcomeFrame": 24.5,
+    "firstAtOutcomeFramePct": 18.0,
+    "nearestAtFirstMomentPct": {
+     "attached": 75.1,
+     "detached": 13.4,
+     "unblocked": 11.5
+    },
+    "nearestAttachedWithin1.0Pct": 60.5,
+    "anyDefenderWithin2AttachedPct": 75.1,
+    "nearestHasAnyOffensivePlayerWithin1.5Pct": 78.9,
+    "nearestByRusherGroupPct": {
+     "edge": 60.0,
+     "interior": 39.8,
+     "notInitialRusher": 0.2
+    },
+    "attachedFirstPressurePctOfDropbacks": 22.4,
+    "everAttachedWithin2PctOfDropbacks": 23.4,
+    "everFreeWithin2PctOfDropbacks": 13.5,
+    "timeOfFirst": {
+     "n": 650,
+     "mean": 2.63,
+     "p25": 2.3,
+     "median": 2.6,
+     "p75": 3.0,
+     "p10": 2.0,
+     "p90": 3.4
+    },
+    "noOutcomeEvent": 2,
+    "firstToOutcomeSeconds": {
+     "all": {
+      "n": 648,
+      "mean": 0.89,
+      "p25": 0.1,
+      "median": 0.4,
+      "p75": 1.4,
+      "p10": 0.0,
+      "p90": 2.5
+     },
+     "attached": {
+      "n": 487,
+      "mean": 0.92,
+      "p25": 0.1,
+      "median": 0.4,
+      "p75": 1.45,
+      "p10": 0.0,
+      "p90": 2.6
+     },
+     "free": {
+      "n": 161,
+      "mean": 0.78,
+      "p25": 0.1,
+      "median": 0.4,
+      "p75": 1.3,
+      "p10": 0.0,
+      "p90": 2.0
+     },
+     "detached": {
+      "n": 87,
+      "mean": 0.74,
+      "p25": 0.1,
+      "median": 0.3,
+      "p75": 1.25,
+      "p10": 0.0,
+      "p90": 2.0
+     },
+     "unblocked": {
+      "n": 74,
+      "mean": 0.83,
+      "p25": 0.1,
+      "median": 0.55,
+      "p75": 1.35,
+      "p10": 0.0,
+      "p90": 2.14
+     }
+    },
+    "outcomeMixPct": {
+     "all": {
+      "n": 648,
+      "throw": 72.4,
+      "sack": 17.9,
+      "scramble": 9.3,
+      "fumble": 0.5
+     },
+     "attached": {
+      "n": 487,
+      "throw": 74.5,
+      "sack": 15.2,
+      "scramble": 9.9,
+      "fumble": 0.4
+     },
+     "free": {
+      "n": 161,
+      "throw": 65.8,
+      "sack": 26.1,
+      "scramble": 7.5,
+      "fumble": 0.6
+     },
+     "detached": {
+      "n": 87,
+      "throw": 67.8,
+      "sack": 27.6,
+      "scramble": 4.6,
+      "fumble": 0.0
+     },
+     "unblocked": {
+      "n": 74,
+      "throw": 63.5,
+      "sack": 24.3,
+      "scramble": 10.8,
+      "fumble": 1.4
+     }
+    }
+   },
+   "pffPressure": {
+    "pressuredPlaysPct": 34.2,
+    "unblockedPressureFlagPctOfPressured": 19.9,
+    "pressuresMeasured": 960,
+    "afterOutcomeEvent": 13,
+    "statusAtPressurePct": {
+     "attached": 64.5,
+     "detached": 17.7,
+     "unblocked": 17.8
+    },
+    "attachedWithin1.0Pct": 52.5,
+    "anyOffensivePlayerWithin1.5Pct": 74.0,
+    "timeToPressure": {
+     "n": 960,
+     "mean": 2.84,
+     "p25": 2.2,
+     "median": 2.6,
+     "p75": 3.23,
+     "p10": 1.8,
+     "p90": 4.2
+    },
+    "distanceToQB": {
+     "all": {
+      "n": 960,
+      "mean": 2.69,
+      "p25": 2.05,
+      "median": 2.49,
+      "p75": 3.24,
+      "p10": 1.82,
+      "p90": 3.81
+     },
+     "attached": {
+      "n": 619,
+      "mean": 2.53,
+      "p25": 1.99,
+      "median": 2.36,
+      "p75": 3.04,
+      "p10": 1.79,
+      "p90": 3.61
+     },
+     "free": {
+      "n": 341,
+      "mean": 2.98,
+      "p25": 2.26,
+      "median": 2.86,
+      "p75": 3.59,
+      "p10": 1.89,
+      "p90": 4.24
+     }
+    }
+   }
+  }
+ }
+}

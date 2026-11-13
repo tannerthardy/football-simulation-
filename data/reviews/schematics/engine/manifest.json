@@ -1,0 +1,430 @@
+{
+  "schema": "schematic-engine-publication-v1",
+  "publishedAtUtc": "2026-10-11T11:26:50.568495+00:00",
+  "sourceScope": "Bounded installation/controller repairs and retained football stress fixtures; no shared physical law or NFL outcome tuning.",
+  "sources": {
+    "baselineGitCommit": "beae5c77c9e1c32731cb5eb7c72655a89ebf00c3",
+    "baselineEngineSha256": "0d2387ee2350df36a6af9b881a6efeee586b61cb4a2967ef7722431cc8e921b2",
+    "withheldRoofOnlyEngineSha256": "a2c377083c41c5fe6fd5e692599e003149b9f9e4b4efdb9a09188ff96161e360",
+    "finalEngineSha256": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+    "unchangedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "sourceHashMethod": "scripts/source-version.ts: globally sorted src relative strings, path NUL + file bytes NUL."
+  },
+  "runtime": {
+    "node": "v22.23.3",
+    "typescriptTests": "Vitest 3.2.4",
+    "python": "3.12.14"
+  },
+  "tools": {
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/diag/pass-installation.ts": "f6527cc608a7836b07467c6c2cba3a83fe3712c6909c7247adfc00c945241ad5",
+    "scripts/diag/defensive-installation.ts": "f3a2cab856475ea30534bf0af865404a132ac5d180b579f62ee6b19fc94d4be8",
+    "scripts/schematic-stress.ts": "b20d00577147f6465af259a8528af997a155dd9bf750e70dfefeb483be54e0d2",
+    "src/lab/schematic-stress.ts": "6b983187dd725a0c812a008422e304d932426a6153a153aaccf128f28c7a5949",
+    "scripts/export-schematic-stress.ts": "b4e5a408a12e3d74fe900776e2a54dcc6891c3db0bfaaa5a977004f6454236d6",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "scripts/check-replay-viewer.py": "ecaefcffc61087c736fe7f6c7ad6b4626d7c4db544559d61ff29306b5395f589",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4",
+    "test/pass-installation.test.ts": "70c26b35fd69b62adeb0ad0c16b04e1c70166d4204a6e0e3c6a6f7bfb45c8629",
+    "test/defensive-call-integrity.test.ts": "60a0a1356457ab2dc918f2c62ed8f3a9199e28db3a5c70924cfde7291f7f1973",
+    "test/schematic-stress.test.ts": "838ed49d3adcf52b7672493a2162a88e172da76cd51e37e981bb816a9f6ef504",
+    "test/schematic-stress-export.test.ts": "f0489c907e9ea711c096707f742b946062ac25728af8fbf7d53ca929cff51cb7",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  },
+  "cohorts": {
+    "passing": {
+      "rosterSeedPairs": [
+        [
+          31,
+          32
+        ],
+        [
+          41,
+          42
+        ]
+      ],
+      "strength": 0.55,
+      "playSeed": 3,
+      "los": 40,
+      "ballY": 26.666666666666668,
+      "cases": [
+        {
+          "formation": "gun_doubles_11",
+          "concept": "pa_shot",
+          "treatment": "protector-read"
+        },
+        {
+          "formation": "ace_12",
+          "concept": "pa_post_dig",
+          "treatment": "formation-and-protector-read"
+        },
+        {
+          "formation": "pistol_12",
+          "concept": "pa_shot",
+          "treatment": "formation-and-protector-read"
+        },
+        {
+          "formation": "gun_doubles_11",
+          "concept": "curl_flat",
+          "treatment": "check-outlet-control"
+        },
+        {
+          "formation": "gun_trips_11",
+          "concept": "four_verts",
+          "treatment": "vertical-control"
+        },
+        {
+          "formation": "gun_bunch_11",
+          "concept": "mesh",
+          "treatment": "degraded-install-control"
+        }
+      ],
+      "flips": [
+        false,
+        true
+      ],
+      "declaration": "fixed before native outcomes"
+    },
+    "passingRostersSha256": "7149bb7a73676fbe2709428c25ac87e290135ab2f345c7c0676de0ea1d9f8578",
+    "defensiveCallMatrix": {
+      "offenseSeed": 901,
+      "strength": 0.55,
+      "defensiveSchemes": [
+        "4-3",
+        "3-4",
+        "nickel-heavy"
+      ],
+      "coachingTrees": [
+        "single-high",
+        "quarters",
+        "two-high",
+        "tampa",
+        "pressure-man"
+      ],
+      "formations": [
+        "gun_doubles_11",
+        "gun_trips_11",
+        "gun_trey_11",
+        "gun_bunch_11",
+        "gun_empty_11",
+        "ace_11",
+        "pistol_11",
+        "ace_trips_11",
+        "gun_spread_10",
+        "gun_trips_10",
+        "ace_12",
+        "gun_wing_12",
+        "pistol_12",
+        "i_pro_21",
+        "i_twins_21",
+        "offset_i_21",
+        "i_jumbo_22",
+        "heavy_13"
+      ],
+      "drawSeeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "seedRule": "scheme:tree:formation.id:situation.yardline:drawSeed",
+      "defenseSeedRule": "defense:scheme",
+      "forcedCoach": {
+        "blitzRate": 0.8,
+        "disguise": 0.9,
+        "shadow": true
+      },
+      "situations": [
+        {
+          "id": "ordinary-1st10",
+          "down": 1,
+          "distance": 10,
+          "yardline": 35,
+          "quarter": 1,
+          "clock": 600,
+          "scoreDiff": 0,
+          "ballY": 23.583333333333332,
+          "hurry": false
+        },
+        {
+          "id": "hurry-3rd27",
+          "down": 3,
+          "distance": 27,
+          "yardline": 20,
+          "quarter": 2,
+          "clock": 30,
+          "scoreDiff": -14,
+          "ballY": 29.750000000000004,
+          "hurry": true
+        },
+        {
+          "id": "redzone-3rd5",
+          "down": 3,
+          "distance": 5,
+          "yardline": 85,
+          "quarter": 4,
+          "clock": 100,
+          "scoreDiff": 10,
+          "ballY": 23.583333333333332,
+          "hurry": false
+        },
+        {
+          "id": "goal-1st1",
+          "down": 1,
+          "distance": 1,
+          "yardline": 99,
+          "quarter": 4,
+          "clock": 45,
+          "scoreDiff": -7,
+          "ballY": 29.750000000000004,
+          "hurry": true
+        }
+      ]
+    },
+    "defensiveCohortSha256": "c628d6a5e4adcddfdc4612fac86dc45385e087d2cd5e6728519cf1b16d1ac3bf",
+    "schematicStress": {
+      "rosterSeeds": [
+        31,
+        32
+      ],
+      "strength": 0.55,
+      "playSeed": 3,
+      "los": 40,
+      "ballY": 26.666666666666668,
+      "selection": "fixed-before-outcomes",
+      "nativeControllerDt": 0.05,
+      "sliceSeed": 7,
+      "sliceInitialSpeeds": [
+        0,
+        4
+      ],
+      "sliceSubsteps": 12,
+      "rosterSha256": "fa762b86b63dd42cb6c9be79ef36a2008520ff4ce3450866e0c3928375a4b135"
+    }
+  },
+  "validation": {
+    "typescript": {
+      "passed": 869,
+      "files": 78,
+      "exitCode": 0,
+      "receipt": "checks/final-vitest.log"
+    },
+    "python": {
+      "passed": 37,
+      "exitCode": 0,
+      "receipt": "checks/final-python-tests.log"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "receipt": "checks/final-typecheck.log"
+    },
+    "build": {
+      "exitCode": 0,
+      "receipt": "checks/final-build.log"
+    },
+    "baselineFeatureTests": {
+      "expectedFailures": 4,
+      "controlsPassed": 2,
+      "exitCode": 1,
+      "receipt": "pass-installation-baseline-tests.log"
+    },
+    "passingControlsExact": 12,
+    "passingObserverComparisonsPerRevision": 6,
+    "stressObserverComparisons": 6,
+    "browser": "checks/browser-agent-reported.json",
+    "offlineContent": "checks/offline-delivery-check.json"
+  },
+  "publicArtifactPathsForHistoricalCollectionPaths": {
+    "/workspace/football-simulation-/out/scheme-audit/defense-baseline.all-calls.json.gz": "data/reviews/schematics/engine/defense-baseline.all-calls.json.gz",
+    "/workspace/football-simulation-/out/scheme-audit/defense-baseline.violations.json.gz": "data/reviews/schematics/engine/defense-baseline.violations.json.gz",
+    "/workspace/football-simulation-/out/scheme-audit/defense-candidate.all-calls.json.gz": "data/reviews/schematics/engine/defense-roof-only-intermediate.all-calls.json.gz",
+    "/workspace/football-simulation-/out/scheme-audit/defense-candidate.violations.json.gz": "data/reviews/schematics/engine/defense-roof-only-intermediate.violations.json.gz",
+    "/workspace/football-simulation-/out/scheme-audit/defense-candidate-final.all-calls.json.gz": "data/reviews/schematics/engine/defense-candidate-final.all-calls.json.gz",
+    "/workspace/football-simulation-/out/scheme-audit/defense-candidate-final.violations.json.gz": "data/reviews/schematics/engine/defense-candidate-final.violations.json.gz",
+    "out/schematic-stress/panel.json": "data/reviews/schematics/engine/stress-panel.json.gz",
+    "out/schematic-stress/panel-film.json.gz": "data/reviews/schematics/engine/stress-film.json.gz",
+    "out/scheme-audit/pass-baseline.json": "data/reviews/schematics/engine/pass-baseline.json",
+    "out/scheme-audit/pass-baseline-film.json.gz": "data/reviews/schematics/engine/pass-baseline-film.json.gz",
+    "out/scheme-audit/pass-candidate.json": "data/reviews/schematics/engine/pass-candidate.json",
+    "out/scheme-audit/pass-candidate-film.json.gz": "data/reviews/schematics/engine/pass-candidate-film.json.gz"
+  },
+  "exportInputNote": "Original panel.json is published as stress-panel.json.gz; compare decompressed SHA against exporter input. Other mapped input digests cover exact published bytes.",
+  "artifacts": {
+    "README.md": {
+      "bytes": 7219,
+      "sha256": "ddbd122fa69d49db3b07427f92339fc593b1f953ef0ce9352edcc23c4a8e3c16"
+    },
+    "baseline-defensive-allocations.json.gz": {
+      "bytes": 1609,
+      "sha256": "8e8b5e8c33bf18b206b99466ec65e92d214f8ba7c9b8568f4973165a5abf19c2",
+      "decompressedBytes": 37342,
+      "decompressedSha256": "ff0e6080b6f5282f1ca8f145e438a09907485622db763346039118c3236284ba"
+    },
+    "baseline-offense-assignments.json.gz": {
+      "bytes": 2859,
+      "sha256": "2728cc270239176908107d1df621b815252de7b857674010a3ab3d882d947017",
+      "decompressedBytes": 141595,
+      "decompressedSha256": "46d571365afe32b56b4f62207aa7a59654a5757be42cea510800e06db56c5727"
+    },
+    "baseline-offense-tool.txt": {
+      "bytes": 2906,
+      "sha256": "e3ac5919aa18a8a36f5d5ec6704d1458fe05692781e7590e17c4afe89ca4de88"
+    },
+    "checks/browser-agent-reported.json": {
+      "bytes": 805,
+      "sha256": "7f424c4de1beb94792b43b17ef5427882e5c9db2f5740eb7644743a128fed96a"
+    },
+    "checks/export-final.json": {
+      "bytes": 1348,
+      "sha256": "81659438d4d0967fba70523d0a65393a86ef0938d9ba657027ec7ee33f6823a8"
+    },
+    "checks/final-build.log": {
+      "bytes": 55,
+      "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+    },
+    "checks/final-python-tests.log": {
+      "bytes": 136,
+      "sha256": "7dd02d82065b4f2dafd152a538e40187237546bea647a558088b8ab508b37301"
+    },
+    "checks/final-typecheck.log": {
+      "bytes": 68,
+      "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+    },
+    "checks/final-vitest.log": {
+      "bytes": 5667,
+      "sha256": "07a90f9fc845165aede0f225feebe84c9118caa62d7e0aaf9184b680d5257a6c"
+    },
+    "checks/offline-delivery-check.json": {
+      "bytes": 466,
+      "sha256": "5b57fbd745809ac1510b9c1400db7b2314c3a44fe9049b6753eec599d762f52a"
+    },
+    "checks/published-input-export.json": {
+      "bytes": 1433,
+      "sha256": "7b9b02a7bdd2dbdb6c8218db384fc36ed4f34dba597490203a14a2ecc35e13b7"
+    },
+    "defense-baseline.all-calls.json.gz": {
+      "bytes": 271185,
+      "sha256": "8abe8bfb2249f1d5456a7058eb3e7554f46193d94b404e1acc209d29454f0d9d",
+      "decompressedBytes": 3955488,
+      "decompressedSha256": "b0144440b3435cd832efce659b697ae2a3019a5a128b4697b449a69070d7479f",
+      "records": 4320
+    },
+    "defense-baseline.json": {
+      "bytes": 5284,
+      "sha256": "861bb6afa45b98e7b8f294a0d916caca1492210c80327525776887ae93659f9a"
+    },
+    "defense-baseline.violations.json.gz": {
+      "bytes": 25211,
+      "sha256": "d0981de2daefbabe9882267980e672a7b4be05ec1baa66121ac747d99c5a8527",
+      "decompressedBytes": 374505,
+      "decompressedSha256": "f0d85df119136a0f431925f46559bbc5d70f285f38540a79c518426f49a73f51",
+      "records": 366
+    },
+    "defense-candidate-final.all-calls.json.gz": {
+      "bytes": 265069,
+      "sha256": "0d723e26b22298eac44475ae554ad5dddd648c8ef510ff9b3c756299d5a45147",
+      "decompressedBytes": 3890722,
+      "decompressedSha256": "b336053ae2c0c99275708ff890210963ee8ab29e2c2cf4e3495b060d73f82eed",
+      "records": 4320
+    },
+    "defense-candidate-final.json": {
+      "bytes": 4540,
+      "sha256": "834530088c82ecdfc6db69968bccf07b1d7b4136ea1526fe05cadc093c7ac40e"
+    },
+    "defense-candidate-final.violations.json.gz": {
+      "bytes": 22,
+      "sha256": "d15254cd9d142b950433cb8d1c0efb328352fa04db90c0f4d6eb2a68dead445f",
+      "decompressedBytes": 2,
+      "decompressedSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "records": 0
+    },
+    "defense-roof-only-intermediate.all-calls.json.gz": {
+      "bytes": 266677,
+      "sha256": "cebf34ffd25a02af61e4defffc09e4a4ca195ff41e0f066766299c3f9e15abe4",
+      "decompressedBytes": 3912947,
+      "decompressedSha256": "313488141814900d39ef3b59136c485e36f337b49b556b898e1fd6a9d0985f54",
+      "records": 4320
+    },
+    "defense-roof-only-intermediate.json": {
+      "bytes": 4617,
+      "sha256": "ba945b2d84301b58a131aa0f3a913bf25d67de3579281d2f8762d28c708c13fb"
+    },
+    "defense-roof-only-intermediate.violations.json.gz": {
+      "bytes": 22,
+      "sha256": "d15254cd9d142b950433cb8d1c0efb328352fa04db90c0f4d6eb2a68dead445f",
+      "decompressedBytes": 2,
+      "decompressedSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "records": 0
+    },
+    "pass-baseline-film.json.gz": {
+      "bytes": 1385063,
+      "sha256": "e2d09d21baeb8b223dd19023da99645eb16e1f95f96b923237a69466582eacad",
+      "decompressedBytes": 16366824,
+      "decompressedSha256": "8ce4014953b4adf02ea8dd42d81e11e0eb78b004071317b6999753d1e9f134cd"
+    },
+    "pass-baseline.json": {
+      "bytes": 155200,
+      "sha256": "e37abfb353b82ca298fc7d56f6332e7db3db2aedbac1a2508c99863252579169"
+    },
+    "pass-candidate-film.json.gz": {
+      "bytes": 1387580,
+      "sha256": "293056ffc782c27382544ab9dfd2421038fbaf0063bb6ec13b7241ae79f959c6",
+      "decompressedBytes": 16394047,
+      "decompressedSha256": "4421630fc2b0190f30abecc61ebf8b324f114139cc1c7ba37b59f80c5c9cce6b"
+    },
+    "pass-candidate.json": {
+      "bytes": 152924,
+      "sha256": "8915b2e8a8a874b22a7905e58b8242b7d76557367f04b22a4a6e1b2c8e8c2b94"
+    },
+    "pass-comparison.json": {
+      "bytes": 13972,
+      "sha256": "c14f7fe6e61d2203f5eded5cd47392c291e1ce54e258ddbd68b7c6ab9c47882f"
+    },
+    "pass-installation-baseline-tests.log": {
+      "bytes": 4031,
+      "sha256": "d6b19188768285ee4e2a5a8b12cabe37e0499f392ca84959567de22227b4a2fb"
+    },
+    "stress-film.json.gz": {
+      "bytes": 1673800,
+      "sha256": "82a73d89fe3fdf5dabe36ba7591caa0ae94b37701bc6304d72e309ae2b86ccf4",
+      "decompressedBytes": 19499669,
+      "decompressedSha256": "8a9d2ccf56a26fc04747f328e9de2b138aedf0f94c0b18e0f24d2622922f0a81",
+      "schema": "schematic-stress-film-v1"
+    },
+    "stress-panel.json.gz": {
+      "bytes": 656576,
+      "sha256": "d5c5ef5bb7fa547ce7cbcc7452240a1ba740782c3c5233402821dd3c5f83d220",
+      "decompressedBytes": 7937601,
+      "decompressedSha256": "d010aeeb925fa9ba79ea788587e516dc40bc05363dd37b891bea5d7562039e50",
+      "schema": "schematic-stress-v1"
+    }
+  },
+  "externalArtifacts": {
+    "viewer/schematic-stress.html": {
+      "bytes": 3470779,
+      "sha256": "d34a0b82d9786ddee7141fb2fae73e9137879bb670a5aadce8db2bdc6148b97a"
+    },
+    "viewer/schematic-stress.zip": {
+      "bytes": 2397630,
+      "sha256": "a9aa38733878d338beeb1688fc10ee541ddf823324f8c2a84fb49698c45eeaaf"
+    },
+    "data/reviews/schematics/context/manifest.json": {
+      "bytes": 4479,
+      "sha256": "51a9918e2e967adaa3ff8b599624b4f1ecc350ebaee28fd6b31d23f7bcbe471d"
+    },
+    "data/research/schematic-coaching-sources.json": {
+      "bytes": 14014,
+      "sha256": "288ba4232fe6a08b784ba8317d656207fd6120c3fae49a7fa6c45de925ddce56"
+    }
+  },
+  "limits": [
+    "4,320 balanced automatic-caller draws force high blitz/disguise; static installation checks, not NFL prevalence or full coverage execution.",
+    "20 native plays form a fixed small cohort, not league outcome calibration; adverse and unchanged large gains remain recorded.",
+    "Eight reduced slices have two active bodies, staged momentum and a 2.5-second censor; not native offensive motion or football yardage.",
+    "Bunch Mesh lacks its second shallow; quad diamond is static Quick Outs, not a screen. Real offensive motion/communication remains to build.",
+    "Goal-line auto-caller uses Cover0 because stock zone variants need an absent named FS; installation debt, not an NFL policy claim.",
+    "Conservation and bounded work do not establish calibrated force parameters, full convergence or a percentage of physics gains remaining.",
+    "Browser stdout exists in a completed tool result only; its publication receipt is explicitly agent-reported. Direct file:// remains unverified."
+  ]
+}

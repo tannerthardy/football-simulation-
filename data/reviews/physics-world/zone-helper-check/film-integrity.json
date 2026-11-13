@@ -1,0 +1,136 @@
+{
+  "schema": "zone-helper-film-integrity-v1",
+  "clips": 10,
+  "predeterminedInputs": [
+    "CT-R1-iz_strong-over-R-S3",
+    "CT-R1-iz_strong-over-L-S3",
+    "CT-R1-split_zone-tite-R-S3",
+    "CT-R1-split_zone-tite-L-S3",
+    "CT-R1-duo-odd-R-S11"
+  ],
+  "naturalFinishes": 10,
+  "sourceComparison": [
+    {
+      "label": "Baseline: installed zone doubles",
+      "sourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+      "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+      "cohortSha256": "efa27d3b3aefc024ebfc8be06ff73fb5e7d1aaf602bb60e86ea532ae70ab12e0",
+      "inputRawSha256": "be923593b0badb2705f4251210b535a5ccf81d15e9e7b7eb33a2e5bcb66f3e72",
+      "panelRawSha256": "5a934250515578a77e617843ce4cb6b41340f1934b0c0b9e35e07b939dd95668",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "8fdde78ebf5b604fbeac2a6e55f5f359506919e5c4d94cd03cf18a4bc66316f6",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+      },
+      "observerChecks": [
+        {
+          "id": "CT-R1-iz_strong-over-R-S3",
+          "initialSha256": "84624eed8f2dd2929243fea6857eb8f1435bdc1860dd7adc0f9f8728ee8576b3",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "aee1cfc6ee9588c257570c20e998938ff70845c80ff8ba4b25bb5abc08d458b2",
+          "plainSignature": "aee1cfc6ee9588c257570c20e998938ff70845c80ff8ba4b25bb5abc08d458b2"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S3",
+          "initialSha256": "722b5398e6bdb4571b83bf03198040066f0cea4c6621941349bb56abe3a44b1c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10",
+          "plainSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S11",
+          "initialSha256": "5cfdd8c1e501ebb4619b600cf78de6559987ff7c922e9ed277560bc63a0d9b2f",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b6397abfb910bcc137f87eca4fb18891075b81bcbdc5580b40e8482ea299e821",
+          "plainSignature": "b6397abfb910bcc137f87eca4fb18891075b81bcbdc5580b40e8482ea299e821"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S3",
+          "initialSha256": "c83fe36f96e379b5adfa5e892344ecadef0a831c93c1b6c270d1a2c7f46c7164",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "4479cc2b2ebbda4922ee8f098a4a490dd3e49da72ba60ed9939ab96d8a257df8",
+          "plainSignature": "4479cc2b2ebbda4922ee8f098a4a490dd3e49da72ba60ed9939ab96d8a257df8"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S3",
+          "initialSha256": "697e460e23bc5e7449592b5779ef24bde8d25e7049d5203c220788211a352838",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506",
+          "plainSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506"
+        }
+      ]
+    },
+    {
+      "label": "Candidate: uncovered helper checks his work",
+      "sourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+      "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+      "cohortSha256": "efa27d3b3aefc024ebfc8be06ff73fb5e7d1aaf602bb60e86ea532ae70ab12e0",
+      "inputRawSha256": "b6a1acfe872dffa56444114645770a2fb3da26b1a1f54a90406e53ca684f3944",
+      "panelRawSha256": "287ffd1b25e230ff7055b565084a823908163da8b1eca92124e4ebe39b58874d",
+      "moduleSha256": {
+        "src/sim/behaviors/blocking.ts": "4a249b7859cfc21f41052814ac0e288421180b4948c28c932dcc9eb1497cc5bd",
+        "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+        "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+      },
+      "observerChecks": [
+        {
+          "id": "CT-R1-iz_strong-over-R-S3",
+          "initialSha256": "84624eed8f2dd2929243fea6857eb8f1435bdc1860dd7adc0f9f8728ee8576b3",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "aee1cfc6ee9588c257570c20e998938ff70845c80ff8ba4b25bb5abc08d458b2",
+          "plainSignature": "aee1cfc6ee9588c257570c20e998938ff70845c80ff8ba4b25bb5abc08d458b2"
+        },
+        {
+          "id": "CT-R1-iz_strong-over-L-S3",
+          "initialSha256": "722b5398e6bdb4571b83bf03198040066f0cea4c6621941349bb56abe3a44b1c",
+          "profileSha256": "dae23dc84edbcfbfafeaf03d80f83cb776798e04e0328f6028519b9210e80ebe",
+          "observedSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10",
+          "plainSignature": "f4261f79bd178d9e85b8bb2b73f9bdb7fab7c33fe598e87a2fe6503037439e10"
+        },
+        {
+          "id": "CT-R1-duo-odd-R-S11",
+          "initialSha256": "5cfdd8c1e501ebb4619b600cf78de6559987ff7c922e9ed277560bc63a0d9b2f",
+          "profileSha256": "11d958a880f6c97710f89a730dbc53fa49b465e962973e44d1c395a418a9028f",
+          "observedSignature": "b6397abfb910bcc137f87eca4fb18891075b81bcbdc5580b40e8482ea299e821",
+          "plainSignature": "b6397abfb910bcc137f87eca4fb18891075b81bcbdc5580b40e8482ea299e821"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-R-S3",
+          "initialSha256": "c83fe36f96e379b5adfa5e892344ecadef0a831c93c1b6c270d1a2c7f46c7164",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "d0fc53e7c161bbc00587e36d6d2b39dc3f375fd9c2f02aaea9857cd5861d46f3",
+          "plainSignature": "d0fc53e7c161bbc00587e36d6d2b39dc3f375fd9c2f02aaea9857cd5861d46f3"
+        },
+        {
+          "id": "CT-R1-split_zone-tite-L-S3",
+          "initialSha256": "697e460e23bc5e7449592b5779ef24bde8d25e7049d5203c220788211a352838",
+          "profileSha256": "46188f31e878a12ade7a504e642d5db0516147c2cfdbe8e7bbb237acd745c39b",
+          "observedSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506",
+          "plainSignature": "6d11a69d76ffa66f356d642f1cc8e94a63f44bd0b39d76e19cc157a00c470506"
+        }
+      ]
+    }
+  ],
+  "all324ObserverControlsNeutral": true,
+  "negativeControlExact": true,
+  "exactFullTelemetryEventsProfilesRatings": true,
+  "exactNativeHelperTraceAndCompletedStepSubset": true,
+  "crossSourceInitialBodiesProfilesPositionsMatch": true,
+  "maxExistingPackingPositionFacingError": 0.050000000000000044,
+  "zipHtmlByteExact": true,
+  "preservedTickStartPostPhysicsFrameStamping": true,
+  "completionTimeGateTrailsFrameStateOneTick": true,
+  "finalNativeSolveOutsideSeekRange": true,
+  "privateHelperPolicyAndClockUnrecorded": true,
+  "legacyNextReadDoesNotProveHelperVisualCheck": true,
+  "htmlSha256": "12713ff237e307a30047d92c9ecfef13dbd6be5926fab6543b0f29333750f42c",
+  "zipSha256": "e12746b5693505da0807c87ec7939fbc809d247fa37fb5de0809a809ab1af77b",
+  "checkerSha256": "460d028d7ffd4fec1829f3c34f91d9e30ca421e28c14e594e7809f888c322363",
+  "toolSha256": {
+    "scripts/diag/combo-transfer-review.ts": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+    "scripts/export-zone-helper.ts": "4fc8a1077ad9a6148af54b7d09af08052390218e1879a2220911626f2b285b8a",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4"
+  }
+}

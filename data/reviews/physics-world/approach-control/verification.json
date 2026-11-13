@@ -1,0 +1,342 @@
+{
+  "schema": "approach-control-verification-v1",
+  "baselineCommit": "38b53792450cfd8858409126ed08223a8745def7",
+  "baselineSource": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "candidateSource": "2b405d9a79bbb09c21e5e1146a32632c62263fb9e67f319091196f45d8a80ef4",
+  "historicalBroadCandidateSource": "21e9a3716e6069575de171d012b215c05fce3e2c130eecc1749af8bb9efb6e8c",
+  "runtime": {
+    "node": "v22.23.3",
+    "python": "3.12.14"
+  },
+  "validation": {
+    "typescript": {
+      "exitCode": 0,
+      "files": 51,
+      "tests": 525,
+      "newMovementTests": 8,
+      "newApproachTests": 16,
+      "log": "tests.log"
+    },
+    "python": {
+      "exitCode": 0,
+      "tests": 22,
+      "log": "python-tests.log"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+      "log": "typecheck.log"
+    },
+    "build": {
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+      "log": "build.log"
+    },
+    "recording": {
+      "baselineAndCandidateRecordedVsUnrecordedMatches": 16,
+      "historicalPhysicalRowsMatched": 16,
+      "signatureIncludes": "body/support states, result, paths, intents, RNG and perception buffer"
+    },
+    "browser": {
+      "pairedRuns": {
+        "exitCode": 0,
+        "clips": 26,
+        "checks": 31,
+        "log": "run-viewer-check.json"
+      },
+      "isolatedTackles": {
+        "exitCode": 0,
+        "clips": 16,
+        "checks": 35,
+        "log": "tackle-viewer-check.json",
+        "actualWebMExport": "VP9;1280x840;43 decoded frames",
+        "localVideoSha256": "2595d9f1fdd14c98d2ffcad37a8863a5148d28d7ec7c701398db43abb995b5ef",
+        "localVideoBytes": 309101
+      }
+    },
+    "offlineZipsMatchHtml": true,
+    "sourceStableAtPackaging": true,
+    "retainedMeasurementScriptPinsMatchCurrentFiles": true
+  },
+  "scope": {
+    "mechanicalPrimaryCases": 120,
+    "retrospectiveMechanicalWitnesses": 4,
+    "actualTackleIndependentSeeds": 4,
+    "actualTackleMirrorsPerSeed": 2,
+    "pairedRunInputs": 144,
+    "fullGameInputs": 4,
+    "costInputs": 8,
+    "warmedCostProcessesSequential": true
+  },
+  "limits": [
+    "Mechanical body contact is not tackle success.",
+    "Actual tackle fixtures share one roster and a diagnostic-selected geometry. Both sources eventually tackle all of them.",
+    "Three-candidate approach cost is not a full-game percentage. Full-game guards change later RNG and playcalling.",
+    "Raw full film files are regenerable and ignored; recorded telemetry is retained in the self-contained HTML.",
+    "Historical broader candidate traces are separate diagnostic evidence, not the current engine.",
+    "This increment uses the unchanged production World and existing physical profiles; no NFL outcome constants were fitted.",
+    "Physics readiness remains provisional; tackle attempt forecasting, lower attachment transitions and sustained hand-contact convergence remain."
+  ],
+  "files": [
+    {
+      "path": "CLAUDE.md",
+      "bytes": 26634,
+      "sha256": "dfbbdeddebc55360c2f27bf465624b85a8bfac6afee2a66a2d6c1a9a6e25ef5f"
+    },
+    {
+      "path": "data/README.md",
+      "bytes": 49069,
+      "sha256": "928c84f8e865690c83c81b4c4dfb217d86c414e29f92014c809b7bf895b9231e"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/README.md",
+      "bytes": 5083,
+      "sha256": "61622bcf3e5f5e2f49718add24ed3c9495c62bce24e7461421df02e6326fe09c"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/approach-comparison.json",
+      "bytes": 193637,
+      "sha256": "65dbb94ec8ed4a7336910ddd5022f084dd89222b5e5388a377f1fc1db2459c24"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/baseline-approaches.json.gz",
+      "bytes": 1645496,
+      "sha256": "3842fb83a66b18ef253a501d67aefee0dff643c601a52e38c861b4f52a33775b"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/baseline-cost.json",
+      "bytes": 60061,
+      "sha256": "57499cc1922bd97e5d18b25ad463643bb4a414515c761c2620d8994e7cbdecc1"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/baseline-games-seed17.json",
+      "bytes": 6373,
+      "sha256": "3cb19e30d8e1b96c828ffab0848f1f15a0d96c75790fe08de8522cf24def1957"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/baseline-games-seed9.json",
+      "bytes": 6326,
+      "sha256": "3796440cf56699faa90aff63e84df27926e5b043325fc290881474c97cad533c"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/baseline-runs.json.gz",
+      "bytes": 161414,
+      "sha256": "cd07634af5c0f0b6d21e05822922c0d92d9b415bcf7482ae3077d5fc669344ca"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/baseline-tackles.json.gz",
+      "bytes": 24343,
+      "sha256": "71a92a64148d0f4c390dae3f9a883aab0d490eec6246a2ac69b2c717f48743b3"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/candidate-approaches.json.gz",
+      "bytes": 1720983,
+      "sha256": "fecf3375a0c119a2b6af824a089d92f1d5aa98d50163e825015b352ebd403015"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/candidate-cost.json",
+      "bytes": 60899,
+      "sha256": "931224d7d52215e8290542a15467be058127fde11be19ce34cb70612e8577365"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/candidate-games-seed17.json",
+      "bytes": 6250,
+      "sha256": "7ac76ef24cd450f3659e5b9545279265e684672d8d3141e049068777cbc3e58b"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/candidate-games-seed9.json",
+      "bytes": 6288,
+      "sha256": "2807d75e347936d6c7d48942ac03059a7175bc7a7923a21cbf6575266d9611f4"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/candidate-runs.json.gz",
+      "bytes": 161311,
+      "sha256": "a2a0af0eb477c42f8d35171e6ec3a24795f9236ab62564b6abad3906e78ab87f"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/candidate-tackles.json.gz",
+      "bytes": 13156,
+      "sha256": "096a153944686c97b12f5d218b2e2dd02ffbdcfc31ccee0fd9a673a11988bb91"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/cost-comparison.json",
+      "bytes": 3369,
+      "sha256": "74e4cf80d756ca4b0b4b605b64c6f22db3f056390e3177ba71076365ad4b5f83"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/football-comparison.json",
+      "bytes": 22362,
+      "sha256": "7afcde9125854e9400c49f2143e47ecf5bafac08d363846287f2e1c78bc45af2"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/python-tests.log",
+      "bytes": 121,
+      "sha256": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/run-comparison.json",
+      "bytes": 197694,
+      "sha256": "07720d034cb179c0d603ab7a70b211d595e4dc920f0d7122c4ca7bf51c34645e"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/run-viewer-check.json",
+      "bytes": 2448,
+      "sha256": "079b47a0eee2212f97e417597b95a673b118f993bfd78a571e6c05268c1a9dc6"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/scope-witness-baseline.json.gz",
+      "bytes": 1398990,
+      "sha256": "ccd73bc88ba937137b2c4519e1ad6e5e8e9d8d3c2c64dec182bb88cdcba88333"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/scope-witness-broad-candidate.json.gz",
+      "bytes": 2219103,
+      "sha256": "835772629ac761772b9b749e27f7f5da9abd1b80f9f895f2e61a548c88eb1b08"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/scope-witness-final.json.gz",
+      "bytes": 1392271,
+      "sha256": "4e39239113e1067ded343b2f28c9efcf1ed6263175e926345cfec68a4ee33f9f"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/tackle-comparison.json",
+      "bytes": 18583,
+      "sha256": "33108839d1d40c9a8b98dd7ed19350f629f8b40fb8c9b8879c4f07a958488928"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/tackle-viewer-check.json",
+      "bytes": 2826,
+      "sha256": "2f6f66ce1fbd0472cb08b663b2e40a55e5e44de5d9ea9c457991b2726085fffc"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/tests.log",
+      "bytes": 3919,
+      "sha256": "184da10ba41589abe60c74d3d625c2d66545b7589770fa83417a3113f923f7e7"
+    },
+    {
+      "path": "data/reviews/physics-world/approach-control/typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/PHYSICS_DEVELOPMENT.md",
+      "bytes": 28622,
+      "sha256": "9b0028b736a32c2d80b14f7d3226626c5590b17d85c37e0a16eef2106772c866"
+    },
+    {
+      "path": "docs/reviews/approach-control-and-remaining-contact.md",
+      "bytes": 9388,
+      "sha256": "066a870e69a8ffa028c0d8d23ed34452d3b3dcb66a829b11c597fbc6ae570978"
+    },
+    {
+      "path": "scripts/check-replay-viewer.py",
+      "bytes": 30921,
+      "sha256": "7b9eab4e13bb72176f5637f495cd970775e421bec3bce58eac72398d0aaee6fd"
+    },
+    {
+      "path": "scripts/diag/approach-control-cost.ts",
+      "bytes": 10657,
+      "sha256": "85d2555be97a5a3b9bd87b75f0b41df33ba1789f70a0b02789674165b3d4250d"
+    },
+    {
+      "path": "scripts/diag/approach-control-review.ts",
+      "bytes": 21736,
+      "sha256": "2d936e646150162039361abb1ce6bff489e4fb4e7de8b5e0d4258121baf6bd2f"
+    },
+    {
+      "path": "scripts/diag/approach-tackle-review.ts",
+      "bytes": 10110,
+      "sha256": "b823a56a374884b3cec7c2a549a63f1b2f4eac0c283290797956a3d1c2577efd"
+    },
+    {
+      "path": "scripts/diag/compare-approach-control.py",
+      "bytes": 15146,
+      "sha256": "44a05c873785f6039432877850c5a47a19b844c193e97e50e78b74c7c380f59a"
+    },
+    {
+      "path": "scripts/diag/compare-run-contact.py",
+      "bytes": 9078,
+      "sha256": "098ad7e8edf1a1fd44fe05d59d2456457aa91633becbe789ec4c20a7c52ed9d2"
+    },
+    {
+      "path": "scripts/diag/held-recovery-football.ts",
+      "bytes": 13066,
+      "sha256": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91"
+    },
+    {
+      "path": "scripts/diag/run-contact-review.ts",
+      "bytes": 19652,
+      "sha256": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971"
+    },
+    {
+      "path": "scripts/diag/trace-run-approach.mts",
+      "bytes": 4828,
+      "sha256": "7eacd2ae40dd8fc10d6ed524baa1e548e6a2bb76ff842bdf5f19c153d06c976d"
+    },
+    {
+      "path": "scripts/export-approach-tackles.ts",
+      "bytes": 8207,
+      "sha256": "cac1815ee1aea3969d032a0975ea5c8ddff6ea2b90b6561a9be9061f54b7391b"
+    },
+    {
+      "path": "scripts/export-run-contact-review.ts",
+      "bytes": 6091,
+      "sha256": "fc2f7a5da8d70ca0f064d18b035b1ac27d88be20609f305c34c3ae55639cd3fb"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "src/physics/movement-preview.ts",
+      "bytes": 2187,
+      "sha256": "7583b3555f69cde7150c4ed3bf9543e83176e802435e2945429ed1c1554ae133"
+    },
+    {
+      "path": "src/sim/approach-control.ts",
+      "bytes": 4455,
+      "sha256": "a38253b365ee337820e0f9478dd9cb8a709a53ae77bd62d31180c92a2dd3c40a"
+    },
+    {
+      "path": "src/sim/behaviors/common.ts",
+      "bytes": 11782,
+      "sha256": "08690f3e7f339ecd941e87df41eb19715e76da454e890df2b70603a8f6e8986d"
+    },
+    {
+      "path": "test/approach-control.test.ts",
+      "bytes": 10606,
+      "sha256": "5695f0e3634d8d4bbb6d4b4287ea31ab8a701c90ac54dffcfc1a4edc8d7fe3bd"
+    },
+    {
+      "path": "test/movement-preview.test.ts",
+      "bytes": 7164,
+      "sha256": "247c14c7c044fc45796af0af405607cddbfa733b1d0f071e5c01db291d81c5b9"
+    },
+    {
+      "path": "viewer/approach-control-review.html",
+      "bytes": 5910113,
+      "sha256": "b89ba47c711159a93a8d6f3f0a7466e68d4e4797e4d39111e133d299013aabd9"
+    },
+    {
+      "path": "viewer/approach-control-review.zip",
+      "bytes": 3931937,
+      "sha256": "96e732dcd78491c608f6254641bf87d80fada1f61bf2fe45eda31945a7ee59fc"
+    },
+    {
+      "path": "viewer/approach-tackles.html",
+      "bytes": 1955481,
+      "sha256": "4c8be1c7eccbdee172bb20965373dd919e71c1011d87bd54f61f1ed0c2eaa310"
+    },
+    {
+      "path": "viewer/approach-tackles.zip",
+      "bytes": 1046932,
+      "sha256": "9a6d85a920f788f04f82ff4d27f306724cba04c73c7c845931082dd16e5ab8c0"
+    }
+  ]
+}

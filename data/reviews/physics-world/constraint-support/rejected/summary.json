@@ -1,0 +1,853 @@
+{
+  "status": "REJECTED, not applied to adopted engine",
+  "firstSourceSha256": "318a83dde51fa145b661aaaecfa28f79541180229b94ff01bfb5efe73fa1862a",
+  "revisedSourceSha256": "a9d1215e33971ef2ed7095470d4efb2812185869dfa27953a2370721a1da1b38",
+  "reason": "Body-level grip impulse is not the force on an attempted support-foot placement. Clean frontal tackle transfer fails; do not fit forces or weaken tests to accept this shortcut.",
+  "firstHandSummaries": [
+    {
+      "substeps": 6,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.2355252538032676,
+      "maxClosestErrorYd": 0.8060128665866508,
+      "meanCarriedPastErrorYd": 0.09519890616349258,
+      "maxCarriedPastErrorYd": 0.20981722797000302,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 2,
+      "maxMomentumResidualKgYdPerS": 5.549516171688151e-13,
+      "maxOverlapYd": 0.0033713539877768817,
+      "allFinite": true
+    },
+    {
+      "substeps": 12,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.20837438730177166,
+      "maxClosestErrorYd": 0.8220399013420656,
+      "meanCarriedPastErrorYd": 0.08674065373007246,
+      "maxCarriedPastErrorYd": 0.20912040577516677,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 2,
+      "maxMomentumResidualKgYdPerS": 6.692694023125009e-13,
+      "maxOverlapYd": 0.003150591365223554,
+      "allFinite": true
+    },
+    {
+      "substeps": 24,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.07958371287683588,
+      "maxClosestErrorYd": 0.3214312592967472,
+      "meanCarriedPastErrorYd": 0.059825392776345784,
+      "maxCarriedPastErrorYd": 0.18272284512291748,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 8.541302975239737e-13,
+      "maxOverlapYd": 0.0017113427461123987,
+      "allFinite": true
+    },
+    {
+      "substeps": 48,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.029693899804033166,
+      "maxClosestErrorYd": 0.11013820727626422,
+      "meanCarriedPastErrorYd": 0.023915452745403028,
+      "maxCarriedPastErrorYd": 0.08068576588346588,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 1.5300445235705915e-12,
+      "maxOverlapYd": 0.0011597961562577197,
+      "allFinite": true
+    },
+    {
+      "substeps": 96,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.011123334921331206,
+      "maxClosestErrorYd": 0.041288512960386825,
+      "meanCarriedPastErrorYd": 0.010895549974896883,
+      "maxCarriedPastErrorYd": 0.039962736258733145,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 3.009576291183504e-12,
+      "maxOverlapYd": 0.0004884927440219622,
+      "allFinite": true
+    }
+  ],
+  "firstFrontalApproaches": [
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 6,
+      "momentumError": 9.237055564881302e-14,
+      "maxPenetration": 0.010820769483537718,
+      "finite": true,
+      "falls": [],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 3.7055308134599585,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 56.90553081345996,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 12,
+      "momentumError": 1.8474111129762605e-13,
+      "maxPenetration": 0.0033586954099368294,
+      "finite": true,
+      "falls": [],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 3.802900238233242,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 57.002900238233245,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 24,
+      "momentumError": 2.4868995751603507e-13,
+      "maxPenetration": 0.008900768550099358,
+      "finite": true,
+      "falls": [],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 3.8413053785401203,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 57.04130537854012,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 48,
+      "momentumError": 7.176481631177012e-13,
+      "maxPenetration": 0.004549398794090664,
+      "finite": true,
+      "falls": [],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 3.8515579201534464,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 57.05155792015345,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 96,
+      "momentumError": 7.034373084024992e-13,
+      "maxPenetration": 0.00278376344945086,
+      "finite": true,
+      "falls": [],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 3.8394665580961203,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 57.03946655809612,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 4,
+      "substeps": 192,
+      "momentumError": 1.8474111129762605e-12,
+      "maxPenetration": 0.0026847209835315633,
+      "finite": true,
+      "falls": [],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 3.8428938672307353,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 57.04289386723074,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 6,
+      "momentumError": 2.7711166694643907e-13,
+      "maxPenetration": 0.012963284494667549,
+      "finite": true,
+      "falls": [
+        "FS"
+      ],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 12.904649963004786,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 67.10464996300479,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 12,
+      "momentumError": 7.034373084024992e-13,
+      "maxPenetration": 0.005636687915938965,
+      "finite": true,
+      "falls": [
+        "FS"
+      ],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 13.212935272227696,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 67.4129352722277,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 24,
+      "momentumError": 1.1155520951433573e-12,
+      "maxPenetration": 0.001887249408256353,
+      "finite": true,
+      "falls": [
+        "FS"
+      ],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 13.1767849027962,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 67.3767849027962,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 48,
+      "momentumError": 1.6413537196058314e-12,
+      "maxPenetration": 0.002193385427319172,
+      "finite": true,
+      "falls": [
+        "FS"
+      ],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 13.117008955433974,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 67.31700895543398,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 96,
+      "momentumError": 3.552713678800501e-12,
+      "maxPenetration": 0.0023205602414725357,
+      "finite": true,
+      "falls": [
+        "FS"
+      ],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 13.168539665103907,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 67.36853966510391,
+      "endDy": 0
+    },
+    {
+      "bearing": 0,
+      "speed": 7,
+      "substeps": 192,
+      "momentumError": 6.529887741635321e-12,
+      "maxPenetration": 0.002241320618026621,
+      "finite": true,
+      "falls": [
+        "FS"
+      ],
+      "tackled": false,
+      "time": 4,
+      "afterContact": 13.163552486681809,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endX": 67.36355248668181,
+      "endDy": 0
+    }
+  ],
+  "revisedFootNative": [
+    {
+      "scenario": "separation",
+      "native": [
+        {
+          "capacity": null,
+          "count": 0,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 1,
+          "maxLock": 0.001062468751383581,
+          "lockIntegral": 0.000173494109657953,
+          "maxXi": 0.0011226010783524768,
+          "gripImpulse": 0.17083333333333334,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 4,
+          "maxLock": 0.00026561718784589374,
+          "lockIntegral": 4.4042383901018854e-05,
+          "maxXi": 0.0008263856463351652,
+          "gripImpulse": 0.17083333333333336,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 1,
+          "maxLock": 0.0548842432154895,
+          "lockIntegral": 0.008606241092941815,
+          "maxXi": 0.055428954622513425,
+          "gripImpulse": 8.541666666666666,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 4,
+          "maxLock": 0.013747632730098153,
+          "lockIntegral": 0.0022475889948882213,
+          "maxXi": 0.04131474764955246,
+          "gripImpulse": 8.541666666666666,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 1,
+          "maxLock": 0.48977158634538154,
+          "lockIntegral": 0.08019530102211911,
+          "maxXi": 0.9041758537693219,
+          "gripImpulse": 252.10765880309287,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 4,
+          "maxLock": 0.2810425261972207,
+          "lockIntegral": 0.052415417082435294,
+          "maxXi": 0.8225061331851863,
+          "gripImpulse": 254.08490712209544,
+          "falls": []
+        }
+      ]
+    },
+    {
+      "scenario": "common-acceleration",
+      "native": [
+        {
+          "capacity": null,
+          "count": 0,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 1.7230351543061487e-15,
+          "gripImpulse": 3.1421963157628174e-13,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 2.08428789001552e-15,
+          "gripImpulse": 3.8010051980826103e-13,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 1.7230351543061487e-15,
+          "gripImpulse": 3.1421963157628174e-13,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 2.08428789001552e-15,
+          "gripImpulse": 3.8010051980826103e-13,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 1.7230351543061487e-15,
+          "gripImpulse": 3.1421963157628174e-13,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 2.08428789001552e-15,
+          "gripImpulse": 3.8010051980826103e-13,
+          "falls": []
+        }
+      ]
+    },
+    {
+      "scenario": "side-slide",
+      "native": [
+        {
+          "capacity": null,
+          "count": 0,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 1,
+          "maxLock": 0.0010617457030145851,
+          "lockIntegral": 0.00017824665295492967,
+          "maxXi": 0.0013978464978398597,
+          "gripImpulse": 0.375,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 4,
+          "maxLock": 0.0002654364257536462,
+          "lockIntegral": 4.456166323873245e-05,
+          "maxXi": 0.0012242997996053837,
+          "gripImpulse": 0.37500000000000006,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 1,
+          "maxLock": 0.05315964334189435,
+          "lockIntegral": 0.008860302340089,
+          "maxXi": 0.06996094893829227,
+          "gripImpulse": 19.166666666666668,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 4,
+          "maxLock": 0.013289910835473588,
+          "lockIntegral": 0.0022843840535703027,
+          "maxXi": 0.06185628515057264,
+          "gripImpulse": 19.16666666666667,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 1,
+          "maxLock": 0.5019334690557298,
+          "lockIntegral": 0.0722367613995748,
+          "maxXi": 0.6861832835749615,
+          "gripImpulse": 251.44912537028273,
+          "falls": [
+            1
+          ]
+        },
+        {
+          "capacity": 900,
+          "count": 4,
+          "maxLock": 0.2682505924965498,
+          "lockIntegral": 0.04646495550233513,
+          "maxXi": 0.8393785720385497,
+          "gripImpulse": 268.5631531216,
+          "falls": []
+        }
+      ]
+    },
+    {
+      "scenario": "recovery",
+      "native": [
+        {
+          "capacity": null,
+          "count": 0,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.23066897072799272,
+          "gripImpulse": 0,
+          "falls": []
+        }
+      ]
+    },
+    {
+      "scenario": "past-standing",
+      "native": [
+        {
+          "capacity": null,
+          "count": 0,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 2.2697985551608622e-05,
+          "gripImpulse": 0.004166666666666667,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 2.2697985551608622e-05,
+          "gripImpulse": 0.004166666666666667,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.0011348992775804308,
+          "gripImpulse": 0.20833333333333337,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.0011348992775804308,
+          "gripImpulse": 0.20833333333333337,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.02042818699644776,
+          "gripImpulse": 3.75,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.02042818699644776,
+          "gripImpulse": 3.75,
+          "falls": []
+        }
+      ]
+    },
+    {
+      "scenario": "past-ground",
+      "native": [
+        {
+          "capacity": null,
+          "count": 0,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 0,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0,
+          "gripImpulse": 0,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 1.588858988612603e-05,
+          "gripImpulse": 0.0029166666666666664,
+          "falls": []
+        },
+        {
+          "capacity": 1,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 1.588858988612603e-05,
+          "gripImpulse": 0.0029166666666666664,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.0007944294943063018,
+          "gripImpulse": 0.14583333333333334,
+          "falls": []
+        },
+        {
+          "capacity": 50,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.0007944294943063018,
+          "gripImpulse": 0.14583333333333334,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 1,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.01429973089751343,
+          "gripImpulse": 2.625,
+          "falls": []
+        },
+        {
+          "capacity": 900,
+          "count": 4,
+          "maxLock": 0,
+          "lockIntegral": 0,
+          "maxXi": 0.01429973089751343,
+          "gripImpulse": 2.625,
+          "falls": []
+        }
+      ]
+    }
+  ],
+  "rawInputs": {
+    "hand-candidate.json": {
+      "path": "out/foot-restraint/hand-candidate.json",
+      "bytes": 28993,
+      "sha256": "7a6ea62ab6842a03d14f37f8cc853541918d2e77e9fb36770b6802a83546ceff"
+    },
+    "support-candidate.json": {
+      "path": "out/foot-restraint/support-candidate.json",
+      "bytes": 856203,
+      "sha256": "5ed49187410a1322605830b4b1c17609bfc411f5f552684db4bbe045154dfbfb"
+    },
+    "foot-active-demand.json": {
+      "path": "out/foot-restraint/foot-active-demand.json",
+      "bytes": 1356484,
+      "sha256": "f4de2a0c6d471af90eaeb03547a5e6fa6f3e5d4a3bfd22d507d953afd6359e92"
+    },
+    "wrap-active-demand.json": {
+      "path": "out/foot-restraint/wrap-active-demand.json",
+      "bytes": 21900077,
+      "sha256": "6ffdc9109a9cc4f883900369811e6805ff5c604ad49a07ed2ad142e41586e922"
+    },
+    "focused-active-demand.txt": {
+      "path": "out/foot-restraint/focused-active-demand.txt",
+      "bytes": 1461,
+      "sha256": "6da298cc2915b78f3d65b60f24b85d28e8f916dd127f7bc05544e8237b824101"
+    },
+    "calibration-active-demand.txt": {
+      "path": "out/foot-restraint/calibration-active-demand.txt",
+      "bytes": 2312,
+      "sha256": "a754b3a245f5be12f9c19bf4003837fbf4a6fd97b91acc800b350c067a21be36"
+    },
+    "rejected-world.ts": {
+      "path": "out/foot-restraint/rejected-world.ts",
+      "bytes": 60907,
+      "sha256": "d1ec5da648c2c64a262360bf3d8976fbeac537dcd055a50a23c3d774dc2a4d83"
+    },
+    "rejected-support-equivalent.patch": {
+      "path": "out/foot-restraint/rejected-support-equivalent.patch",
+      "bytes": 6916,
+      "sha256": "209672fa67aae63d9bd1b79fbfc10004cf2c1669c7a8686d94a95b037a9d7892"
+    }
+  }
+}

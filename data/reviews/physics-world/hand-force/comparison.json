@@ -1,0 +1,717 @@
+{
+  "schema": "hand-force-integration-comparison-v1",
+  "panelSourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "panelSourceEquality": true,
+  "panelSummariesEnd": [
+    {
+      "substeps": 6,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.2212375547415672,
+      "maxClosestErrorYd": 0.8060128665866508,
+      "meanCarriedPastErrorYd": 0.0913356512985241,
+      "maxCarriedPastErrorYd": 0.20981722797000302,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 1,
+      "maxMomentumResidualKgYdPerS": 5.549516171688151e-13,
+      "maxOverlapYd": 0.0033713539877768817,
+      "allFinite": true
+    },
+    {
+      "substeps": 12,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.2094742893827156,
+      "maxClosestErrorYd": 0.8220399013420656,
+      "meanCarriedPastErrorYd": 0.0742202836016293,
+      "maxCarriedPastErrorYd": 0.20912040577516677,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 6.692694023125009e-13,
+      "maxOverlapYd": 0.003150591365223554,
+      "allFinite": true
+    },
+    {
+      "substeps": 24,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.08304991731036439,
+      "maxClosestErrorYd": 0.3214312592967472,
+      "meanCarriedPastErrorYd": 0.056132261670465686,
+      "maxCarriedPastErrorYd": 0.18272284512291748,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 8.541302975239737e-13,
+      "maxOverlapYd": 0.0017113427461123987,
+      "allFinite": true
+    },
+    {
+      "substeps": 48,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.033049533379170506,
+      "maxClosestErrorYd": 0.11013820727626422,
+      "meanCarriedPastErrorYd": 0.025769667429494564,
+      "maxCarriedPastErrorYd": 0.08068576588346588,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 1.5300445235705915e-12,
+      "maxOverlapYd": 0.0011597961562577197,
+      "allFinite": true
+    },
+    {
+      "substeps": 96,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.01132831170858638,
+      "maxClosestErrorYd": 0.041288512960386825,
+      "meanCarriedPastErrorYd": 0.011170486095708773,
+      "maxCarriedPastErrorYd": 0.039962736258733145,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 2.210565284580294e-12,
+      "maxOverlapYd": 0.0004884927440219622,
+      "allFinite": true
+    }
+  ],
+  "panelSummariesCentered": [
+    {
+      "substeps": 6,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.11983136351441158,
+      "maxClosestErrorYd": 0.43318288061042587,
+      "meanCarriedPastErrorYd": 0.09631866475105413,
+      "maxCarriedPastErrorYd": 0.27911570564245025,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 4.927909709635884e-13,
+      "maxOverlapYd": 0.0007692133444267002,
+      "allFinite": true
+    },
+    {
+      "substeps": 12,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.061669574571898575,
+      "maxClosestErrorYd": 0.18168112637592193,
+      "meanCarriedPastErrorYd": 0.06606322674297734,
+      "maxCarriedPastErrorYd": 0.14017917654708612,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 5.631499455002648e-13,
+      "maxOverlapYd": 0.0017008062617550612,
+      "allFinite": true
+    },
+    {
+      "substeps": 24,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.022846437158059514,
+      "maxClosestErrorYd": 0.0761141424610079,
+      "meanCarriedPastErrorYd": 0.018505545210521588,
+      "maxCarriedPastErrorYd": 0.059240579371032,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 1.3180998663450187e-12,
+      "maxOverlapYd": 0.001969136595929788,
+      "allFinite": true
+    },
+    {
+      "substeps": 48,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.012193824970327592,
+      "maxClosestErrorYd": 0.03946796347762982,
+      "meanCarriedPastErrorYd": 0.0073940062311683465,
+      "maxCarriedPastErrorYd": 0.019665450137935636,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 1.7460566702862956e-12,
+      "maxOverlapYd": 0.0012769840591759785,
+      "allFinite": true
+    },
+    {
+      "substeps": 96,
+      "fixtures": 9,
+      "meanClosestErrorYd": 0.003144219777125744,
+      "maxClosestErrorYd": 0.009467938106153095,
+      "meanCarriedPastErrorYd": 0.0021751444684040186,
+      "maxCarriedPastErrorYd": 0.004158209080195263,
+      "cornerOutcomeDisagreements": 0,
+      "fallOutcomeDisagreements": 0,
+      "maxMomentumResidualKgYdPerS": 3.0131415908141403e-12,
+      "maxOverlapYd": 0.0005964466555866688,
+      "allFinite": true
+    }
+  ],
+  "nativePerFixture": [
+    {
+      "seed": 3,
+      "rusherPower": 0.7,
+      "endClosestError": 0.0023020714202335313,
+      "centeredClosestError": 0.0073922019409112805,
+      "endCarriedPastError": 0.0011615472778245817,
+      "centeredCarriedPastError": 0.006656830371312594
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1,
+      "endClosestError": 0.018346130836098373,
+      "centeredClosestError": 0.010399758866927344,
+      "endCarriedPastError": 0.024379084042699617,
+      "centeredCarriedPastError": 0.10057034409444299
+    },
+    {
+      "seed": 3,
+      "rusherPower": 1.4,
+      "endClosestError": 0.0618884385117231,
+      "centeredClosestError": 0.09704883806066422,
+      "endCarriedPastError": 0.03435559095534302,
+      "centeredCarriedPastError": 0.10087401915644989
+    },
+    {
+      "seed": 7,
+      "rusherPower": 0.7,
+      "endClosestError": 0.14762623336106007,
+      "centeredClosestError": 0.035689206638626736,
+      "endCarriedPastError": 0.11054331300242737,
+      "centeredCarriedPastError": 0.04513907335536871
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1,
+      "endClosestError": 0.8220399013420656,
+      "centeredClosestError": 0.18168112637592193,
+      "endCarriedPastError": 0.20912040577516677,
+      "centeredCarriedPastError": 0.14017917654708612
+    },
+    {
+      "seed": 7,
+      "rusherPower": 1.4,
+      "endClosestError": 0.8220399013420656,
+      "centeredClosestError": 0.18168112637592193,
+      "endCarriedPastError": 0.20912040577516677,
+      "centeredCarriedPastError": 0.14017917654708612
+    },
+    {
+      "seed": 11,
+      "rusherPower": 0.7,
+      "endClosestError": 0.0003981926414100556,
+      "centeredClosestError": 0.011313248338997717,
+      "endCarriedPastError": 0.04222306272246357,
+      "centeredCarriedPastError": 0.029410548154590543
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1,
+      "endClosestError": 0.004674404313645186,
+      "centeredClosestError": 0.016672324641561875,
+      "endCarriedPastError": 0.019444855359488145,
+      "centeredCarriedPastError": 0.016543325198195902
+    },
+    {
+      "seed": 11,
+      "rusherPower": 1.4,
+      "endClosestError": 0.0059533306761386795,
+      "centeredClosestError": 0.013148339907554152,
+      "endCarriedPastError": 0.0176342875040838,
+      "centeredCarriedPastError": 0.015016547262263202
+    }
+  ],
+  "nativeClosestRegressions": 5,
+  "retainedTraceResults": [
+    {
+      "substeps": 12,
+      "end": {
+        "momentumError": 6.692694023125009e-13,
+        "maxPenetration": 0,
+        "finite": true,
+        "falls": [],
+        "closest": 4.353278628530291,
+        "carriedPast": 2.7821778248429823,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869187450996,
+        "peakTangent": 711.1287054344133
+      },
+      "centered": {
+        "momentumError": 4.121147867408581e-13,
+        "maxPenetration": 0.00034328018346863054,
+        "finite": true,
+        "falls": [],
+        "closest": 3.688549584547538,
+        "carriedPast": 2.704685089911198,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869215130833,
+        "peakTangent": 711.301458217683
+      },
+      "endObserver": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "centeredObserver": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    },
+    {
+      "substeps": 24,
+      "end": {
+        "momentumError": 8.541302975239737e-13,
+        "maxPenetration": 0.0010872209063513827,
+        "finite": true,
+        "falls": [],
+        "closest": 3.852669986484973,
+        "carriedPast": 2.755780264190733,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869226652907,
+        "peakTangent": 711.257693334488
+      },
+      "centered": {
+        "momentumError": 7.989736330313575e-13,
+        "maxPenetration": 0.0004259263555576043,
+        "finite": true,
+        "falls": [],
+        "closest": 3.582982600632624,
+        "carriedPast": 2.623746492735144,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869240793047,
+        "peakTangent": 711.2782160247464
+      },
+      "endObserver": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "centeredObserver": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    },
+    {
+      "substeps": 48,
+      "end": {
+        "momentumError": 1.5300445235705915e-12,
+        "maxPenetration": 0.0011597961562577197,
+        "finite": true,
+        "falls": [],
+        "closest": 3.64137693446449,
+        "carriedPast": 2.6537431849512814,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869246412792,
+        "peakTangent": 711.2703660407258
+      },
+      "centered": {
+        "momentumError": 1.7460566702862956e-12,
+        "maxPenetration": 0.00046811176419248035,
+        "finite": true,
+        "falls": [],
+        "closest": 3.546336421649246,
+        "carriedPast": 2.5841713635020476,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869253557918,
+        "peakTangent": 711.2643482804158
+      },
+      "endObserver": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "centeredObserver": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    },
+    {
+      "substeps": 96,
+      "end": {
+        "momentumError": 2.072198486002133e-12,
+        "maxPenetration": 0.0001593087829168116,
+        "finite": true,
+        "falls": [],
+        "closest": 3.5725272401486126,
+        "carriedPast": 2.6130201553265486,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869256331798,
+        "peakTangent": 711.2678506749612
+      },
+      "centered": {
+        "momentumError": 1.9472112217097058e-12,
+        "maxPenetration": 0.0005964466555866688,
+        "finite": true,
+        "falls": [],
+        "closest": 3.516336396277769,
+        "carriedPast": 2.568664122444307,
+        "cornerTurned": false,
+        "peakNormal": 1045.886925992313,
+        "peakTangent": 711.2701651412546
+      },
+      "endObserver": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "centeredObserver": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    },
+    {
+      "substeps": 192,
+      "end": {
+        "momentumError": 5.507772199574797e-12,
+        "maxPenetration": 0.00010552213327930104,
+        "finite": true,
+        "falls": [],
+        "closest": 3.5312387271882257,
+        "carriedPast": 2.5730574190678155,
+        "cornerTurned": false,
+        "peakNormal": 1045.886926130033,
+        "peakTangent": 711.263136927764
+      },
+      "centered": {
+        "momentumError": 3.1339772932569367e-12,
+        "maxPenetration": 0.0003527269480699813,
+        "finite": true,
+        "falls": [],
+        "closest": 3.506868458171616,
+        "carriedPast": 2.564505913364112,
+        "cornerTurned": false,
+        "peakNormal": 1045.8869263100653,
+        "peakTangent": 711.2698312754317
+      },
+      "endObserver": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "centeredObserver": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    }
+  ],
+  "firstTickActualPositionError": [
+    {
+      "slot": "RT",
+      "endPositionError": 0.0008701492972455441,
+      "centeredPositionError": 3.1320607751038e-05
+    },
+    {
+      "slot": "DE_S",
+      "endPositionError": 0.0010224115435842462,
+      "centeredPositionError": 3.494516424236328e-05
+    }
+  ],
+  "sharedCommandInterventions": [
+    {
+      "handIntegration": "end",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "controllerInput": {
+        "path": "out/hand-divergence/final-end/redirect-12.json.gz",
+        "sha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f"
+      },
+      "inputSameWithinMode": true,
+      "closest12": 4.353278628530291,
+      "closest192": 3.9254604538119215,
+      "absoluteClosestError": 0.4278181747183698,
+      "carriedPast12": 2.7821778248429823,
+      "carriedPast192": 3.044436891452971,
+      "absoluteCarriedPastError": 0.2622590666099889,
+      "observer12": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "observer192": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    },
+    {
+      "handIntegration": "centered",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "controllerInput": {
+        "path": "out/hand-divergence/final-end/redirect-12.json.gz",
+        "sha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f"
+      },
+      "inputSameWithinMode": true,
+      "closest12": 3.9721980006042132,
+      "closest192": 3.911651418209845,
+      "absoluteClosestError": 0.060546582394368276,
+      "carriedPast12": 3.0801374853143564,
+      "carriedPast192": 3.0379522355290725,
+      "absoluteCarriedPastError": 0.04218524978528393,
+      "observer12": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "observer192": {
+        "exactResultAndEveryControllerTickState": true
+      }
+    }
+  ],
+  "sharedCommandInputEquality": true,
+  "historicalEndOptionExactRecordedResultAndTickState": true,
+  "ordinaryFrontalApproachesExactlyEqual": true,
+  "forceAndWorkChecks": [
+    {
+      "mode": "end",
+      "maxKineticWorkResidual": 1.7905676941154525e-12,
+      "maxArmWorkExcess": -78.98891029766818,
+      "maxArmImpulseExcess": 2.1316282072803006e-14,
+      "maxReportedOverlap": 0
+    },
+    {
+      "mode": "centered",
+      "maxKineticWorkResidual": 1.149302875091962e-12,
+      "maxArmWorkExcess": -78.98891029766818,
+      "maxArmImpulseExcess": 2.1316282072803006e-14,
+      "maxReportedOverlap": 0.00034328018346863054
+    },
+    {
+      "mode": "end-refined",
+      "maxKineticWorkResidual": 1.2462919585232157e-11,
+      "maxArmWorkExcess": -78.98891029766818,
+      "maxArmImpulseExcess": 3.268496584496461e-13,
+      "maxReportedOverlap": 0.00010552213327930104
+    },
+    {
+      "mode": "centered-refined",
+      "maxKineticWorkResidual": 7.787548383930698e-12,
+      "maxArmWorkExcess": -78.98891029766818,
+      "maxArmImpulseExcess": 3.126388037344441e-13,
+      "maxReportedOverlap": 0.0003527269480699813
+    }
+  ],
+  "traceArtifacts": [
+    {
+      "path": "end-12.trace.json.gz",
+      "sha256": "00a99595eb1d4ffae0b3bfc16c1e48e3df3fbeb02a41741669833d80ff4892fa",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "end",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-12.json.gz",
+        "originalFullFileSha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 600,
+        "retainedIntervalCount": 600,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": null
+    },
+    {
+      "path": "end-192.trace.json.gz",
+      "sha256": "7c5eb466ac6b33697bba0264e29f199455383267ce0b63b07105ea90023df53e",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "end",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-192.json.gz",
+        "originalFullFileSha256": "5693edab849d7da3e147eb05a70e21b2e5da242dab6b12dfcdb30994217a0937",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 9600,
+        "retainedIntervalCount": 822,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": null
+    },
+    {
+      "path": "centered-12.trace.json.gz",
+      "sha256": "c3e32541a7f9feb6d0f0fd4ed20355a6c105b2761d5c6be20b2d3c03efa605bf",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "centered",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-12.json.gz",
+        "originalFullFileSha256": "434ded1c54c1c4fb488ad8dfb25ea3e1ca7b24816f7153106f2eecb4854b7d3a",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 600,
+        "retainedIntervalCount": 600,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": null
+    },
+    {
+      "path": "centered-192.trace.json.gz",
+      "sha256": "719da12b288950bf0c18d30108582d5838e26ae151a274f56e26c6cc830ee414",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "centered",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-192.json.gz",
+        "originalFullFileSha256": "9343ccb7d993e1ea07ba047c81926a5134ed5b2a5dcb049ecd4a31dbf1f7053f",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 9600,
+        "retainedIntervalCount": 824,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": null
+    },
+    {
+      "path": "shared-input-end-12.trace.json.gz",
+      "sha256": "9e9bcef4abe406247de0eea4391876647c2156a6371acec7ac77348208ac78f4",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "end",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-12.json.gz",
+        "originalFullFileSha256": "555f3ac3d3b2afda38f8e7c0a0cccceb1f8e85b79f336181b10561cd50afd830",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 600,
+        "retainedIntervalCount": 600,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": {
+        "path": "out/hand-divergence/final-end/redirect-12.json.gz",
+        "sha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f"
+      }
+    },
+    {
+      "path": "shared-input-end-192.trace.json.gz",
+      "sha256": "2c2b1a2d9415823ba5ec8edd53bb98641c2788df4eb67dc809f67dd06d658925",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "end",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-192.json.gz",
+        "originalFullFileSha256": "67e9e4796735f1b6091b5fbac2fa5bf91208ef983b3e502610ef75f1024174bb",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 9600,
+        "retainedIntervalCount": 832,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": {
+        "path": "out/hand-divergence/final-end/redirect-12.json.gz",
+        "sha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f"
+      }
+    },
+    {
+      "path": "shared-input-centered-12.trace.json.gz",
+      "sha256": "d3e2ea742f3d50a7a0dc0a733c694948c49efbf7ea3d28658c9b6a58c9591dda",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "centered",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-12.json.gz",
+        "originalFullFileSha256": "be02af847731e0f209e276e1a4655e40dc6f6b81eddf0e5c24321682d8fd84a3",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 600,
+        "retainedIntervalCount": 600,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": {
+        "path": "out/hand-divergence/final-end/redirect-12.json.gz",
+        "sha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f"
+      }
+    },
+    {
+      "path": "shared-input-centered-192.trace.json.gz",
+      "sha256": "2b268001f8733c67129eb3fa56f935b11478260cdd7994780fa9652b288e7d0a",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "coreHashes": {
+        "src/physics/world.ts": "b282a282d7c488d4fd9658766ce5a322eb3ca098b5efb0d0ae3b180904d2fa81",
+        "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+        "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+        "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+        "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+        "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+      },
+      "recordedHandIntegration": "centered",
+      "recordingScriptSha256": "5731be0f63356b6c192f6bfbc1ece5b08474849d3d0a22350b610d535f86b83c",
+      "retention": {
+        "originalFullFile": "redirect-192.json.gz",
+        "originalFullFileSha256": "14612cd306a28efc36ad048ec7a912d178edee4489355888db21e53de023059d",
+        "compactingScriptSha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+        "originalIntervalCount": 9600,
+        "retainedIntervalCount": 831,
+        "rule": "Every controller tick remains complete; all first-tick physics intervals, each shared native12 endpoint, and two intervals either side of row mode/cap state, contact-pair/guard or support-state transitions. No resimulation or gain/outcome selection.",
+        "observerControlScope": "Exact checks were performed on the original full trace, before excerpting."
+      },
+      "observerNeutrality": {
+        "exactResultAndEveryControllerTickState": true
+      },
+      "controllerInput": {
+        "path": "out/hand-divergence/final-end/redirect-12.json.gz",
+        "sha256": "43efedcf0cd81c27ac340149705c4021a196f538bf03ac32ebee5ff5595e241f"
+      }
+    }
+  ],
+  "commands": {
+    "end": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx --import ./scripts/diag/disable-centered-hands.ts scripts/diag/hand-convergence.ts out/hand-divergence/panel-end.json",
+    "centered": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx --import ./scripts/diag/enable-centered-hands.ts scripts/diag/hand-convergence.ts out/hand-divergence/panel-centered.json"
+  },
+  "commandScope": "The older hand-convergence report does not contain its mode. These are declared generation invocations from the actual tool execution; preload checksums select it. The detailed trace schema records actual World mode per tick.",
+  "toolHashes": {
+    "scripts/diag/hand-divergence.ts": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/enable-centered-hands.ts": "c652d790da326e99b383d69029e5c4094b9611837edc3fda056313f3fef323ab",
+    "scripts/diag/disable-centered-hands.ts": "3a764ba2ab391a3c3647fda9ed6b76fdc35b3ae7c39a252c88f08847b6bebf3d"
+  },
+  "limits": [
+    "192 subdivisions is a numerical reference, not NFL data.",
+    "Nine parameter rows reuse three rosters; seed7 powers1 and1.4 duplicate actual trajectories.",
+    "Closest error rises in five native fixtures, and seed3 carried-past error rises; raw rows retained.",
+    "No blanket second-order or complete numerical/contact convergence claim.",
+    "Frozen command interventions intentionally override football controllers, not force/body capabilities.",
+    "Compact trace retention preserves all controller ticks and selected substeps only; original full-file SHA and deterministic retention rule provided."
+  ]
+}

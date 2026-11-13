@@ -1,0 +1,2 @@
+import { defineConfig } from 'vitest/config';
+export default defineConfig({test:{include:['out/duo-motion-integration/traffic-lanes-diagnostic.test.ts'],environment:'node',maxWorkers:1,fileParallelism:false}});

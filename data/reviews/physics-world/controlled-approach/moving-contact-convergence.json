@@ -1,0 +1,1265 @@
+{
+  "definitions": {
+    "comparison": "12 vs 48 substeps, decisions at 20 Hz, five-second continued chase without wraps or officiated play termination. Ending error is not an NFL tackle-displacement estimate.",
+    "contactTime": "First report with contact, rounded up to next 20 Hz sample; does not identify exact continuous/substep contact time.",
+    "mirror": "Both paths reflected across y=80/3. Maximum body-position difference at all 100 recorded samples; same roster/body profiles."
+  },
+  "before": {
+    "sourceSha256": "92eb1ea66cfffd94732d7eb2dc8132212a135fdf8a2cf17a595f7d1674632e63",
+    "scenarios": [
+      {
+        "scenario": "cross",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.05431085027110716,
+            "carrierFinalErrorYd": 0.09762277181782356,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.05431085027110716,
+            "carrierFinalErrorYd": 0.09762277181782356,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 0.23776672980103583,
+            "carrierFinalErrorYd": 0.14177955469845446,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 0.23776672980103805,
+            "carrierFinalErrorYd": 0.14177955469845446,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 0.10265906999235064,
+            "carrierFinalErrorYd": 0.023917033163848356,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 0.10265906999234951,
+            "carrierFinalErrorYd": 0.023917033163848356,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 0.015112949695468362,
+            "carrierFinalErrorYd": 0.051631191456166826,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 0.015112949695468362,
+            "carrierFinalErrorYd": 0.051631191456166826,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 0.23776672980103805,
+        "meanDefenderFinalErrorYd": 0.10246239993999064,
+        "fallDisagreements": 0,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 7.105427357601002e-15
+      },
+      {
+        "scenario": "nearCross",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.02978797619591613,
+            "carrierFinalErrorYd": 0.03519829667008219,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.02978797619591613,
+            "carrierFinalErrorYd": 0.03519829667008219,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 0.016624241215075976,
+            "carrierFinalErrorYd": 0.0424867044100394,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 0.016624241215075976,
+            "carrierFinalErrorYd": 0.0424867044100394,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 0.027196686147151285,
+            "carrierFinalErrorYd": 0.017672867731579125,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 0.027196686147151285,
+            "carrierFinalErrorYd": 0.017672867731579125,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 0.17129780803043684,
+            "carrierFinalErrorYd": 0.07926882840509962,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 0.17129780803043035,
+            "carrierFinalErrorYd": 0.07926882840509962,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 0.17129780803043684,
+        "meanDefenderFinalErrorYd": 0.06122667789714425,
+        "fallDisagreements": 0,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 7.105427357601002e-15,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 7.105427357601002e-15
+      },
+      {
+        "scenario": "frontal",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.26669560260224967,
+            "carrierFinalErrorYd": 0.1846590863287155,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.1979579936495607,
+            "carrierFinalErrorYd": 0.5280691962610807,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 10.457340258685562,
+            "carrierFinalErrorYd": 14.14578482183836,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": false
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 10.45733682273881,
+            "carrierFinalErrorYd": 14.145792102883574,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": false
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 4.773044399823482,
+            "carrierFinalErrorYd": 3.1522809254676183,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 4.773044399807338,
+            "carrierFinalErrorYd": 3.1522809255850484,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 0.5920918825390818,
+            "carrierFinalErrorYd": 0.6687359177310823,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 0.592091878248433,
+            "carrierFinalErrorYd": 0.6687359186978651,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 10.457340258685562,
+        "meanDefenderFinalErrorYd": 4.013700404761814,
+        "fallDisagreements": 2,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 1.3756725089274281e-05,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.690596591205217,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 7.473318951529784e-05,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 0.000720055593572551,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 5.8354318241900704e-05,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 8.102991476199099e-13,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 1.249169781389062e-10,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 2.615125486848266e-12,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 7.316631355969679e-09,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 6.056308830397948e-13,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 0.690596591205217
+      },
+      {
+        "scenario": "trailing",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.054068704649533006,
+            "carrierFinalErrorYd": 0.06443308293530897,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.054068704649533006,
+            "carrierFinalErrorYd": 0.06443308293530897,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 0.025037241259987027,
+            "carrierFinalErrorYd": 0.03180396136378053,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 0.025037241259987027,
+            "carrierFinalErrorYd": 0.03180396136378053,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 0.006671526019374949,
+            "carrierFinalErrorYd": 0.009676615346606195,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 0.006671526019374949,
+            "carrierFinalErrorYd": 0.009676615346606195,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 0.047382102188490705,
+            "carrierFinalErrorYd": 0.040827554305659056,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 0.047382102188490705,
+            "carrierFinalErrorYd": 0.040827554305659056,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 0.054068704649533006,
+        "meanDefenderFinalErrorYd": 0.03328989352934642,
+        "fallDisagreements": 0,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 0.0
+      }
+    ]
+  },
+  "after": {
+    "sourceSha256": "e3471f2c0be6e1c4b32c9713d53d216bc835691d868e93e1628ea279fb21498d",
+    "scenarios": [
+      {
+        "scenario": "cross",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.11720544938864962,
+            "carrierFinalErrorYd": 0.13587845368843102,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.11720525991078831,
+            "carrierFinalErrorYd": 0.13587850413685743,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 0.557111321039129,
+            "carrierFinalErrorYd": 0.7757096254550994,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 0.5571113210564917,
+            "carrierFinalErrorYd": 0.7757096254658296,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 0.7297566654014848,
+            "carrierFinalErrorYd": 1.1780707015672143,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 0.7297566654013703,
+            "carrierFinalErrorYd": 1.1780707015665837,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 1.3077148949275357,
+            "carrierFinalErrorYd": 1.8687515957072993,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 1.3077148949275808,
+            "carrierFinalErrorYd": 1.8687515957174645,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 1.3077148949275808,
+        "meanDefenderFinalErrorYd": 0.6779470590066288,
+        "fallDisagreements": 0,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 2.7537519379510502e-08,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 7.693957206694379e-10,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 3.468585760286356e-07,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 1.5617076317296604e-12,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 1.8623058072752797e-11,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 2.0009065111038244e-13,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 2.1750036957277482e-13,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 8.838477619675358e-13,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 2.729816047846405e-13,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 1.567580310749881e-12,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 2.151067650857693e-12,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 8.61671575182757e-12,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 3.468585760286356e-07
+      },
+      {
+        "scenario": "nearCross",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.05530705701993063,
+            "carrierFinalErrorYd": 0.03726247485788219,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.05530705701993063,
+            "carrierFinalErrorYd": 0.03726247485788219,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 0.10947064896680095,
+            "carrierFinalErrorYd": 0.10575426559370639,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 0.10947064896680095,
+            "carrierFinalErrorYd": 0.10575426559370639,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 0.09274017549977553,
+            "carrierFinalErrorYd": 0.08542717633830857,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 0.09274017549977553,
+            "carrierFinalErrorYd": 0.08542717633830857,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 0.35125926006098135,
+            "carrierFinalErrorYd": 0.3006048364558666,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 0.35125926006098135,
+            "carrierFinalErrorYd": 0.3006048364558666,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 0.35125926006098135,
+        "meanDefenderFinalErrorYd": 0.15219428538687213,
+        "fallDisagreements": 0,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 0.0
+      },
+      {
+        "scenario": "frontal",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.1981206523617404,
+            "carrierFinalErrorYd": 0.18465908632871825,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.06584598913494101,
+            "carrierFinalErrorYd": 0.5280691962611176,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 8.490345171584133,
+            "carrierFinalErrorYd": 11.82578154691385,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": false
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 8.501703989237207,
+            "carrierFinalErrorYd": 11.842049448061807,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": false
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 2.1592473392591085,
+            "carrierFinalErrorYd": 2.459260223796519,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 2.159247339277657,
+            "carrierFinalErrorYd": 2.459260223823657,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 1.3088018597502489,
+            "carrierFinalErrorYd": 1.8728549177441964,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 1.3088018596818358,
+            "carrierFinalErrorYd": 1.8728549174209133,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 8.501703989237207,
+        "meanDefenderFinalErrorYd": 3.024014275035859,
+        "fallDisagreements": 2,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0031562268809653803,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.6905965912052383,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0007623236525768231,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 9.634171913629455e-06,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 0.01655096891860974,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 8.102991476199099e-13,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 3.2212218847837534e-11,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 1.5081259105039013e-12,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 7.001844547239826e-10,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 2.5624004574341827e-10,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 0.6905965912052383
+      },
+      {
+        "scenario": "trailing",
+        "pairs": [
+          {
+            "seed": 7,
+            "side": 1,
+            "defenderFinalErrorYd": 0.07128443547122426,
+            "carrierFinalErrorYd": 0.06499300365150777,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "side": -1,
+            "defenderFinalErrorYd": 0.07128443547122426,
+            "carrierFinalErrorYd": 0.06499300365150777,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": 1,
+            "defenderFinalErrorYd": 0.061215291596430015,
+            "carrierFinalErrorYd": 0.053715115150055566,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "side": -1,
+            "defenderFinalErrorYd": 0.061215291596430015,
+            "carrierFinalErrorYd": 0.053715115150055566,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": 1,
+            "defenderFinalErrorYd": 0.02561498986093137,
+            "carrierFinalErrorYd": 0.030497688842194285,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "side": -1,
+            "defenderFinalErrorYd": 0.02561498986093137,
+            "carrierFinalErrorYd": 0.030497688842194285,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": 1,
+            "defenderFinalErrorYd": 0.008471669419334353,
+            "carrierFinalErrorYd": 0.012323970596458728,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "side": -1,
+            "defenderFinalErrorYd": 0.008471669419334353,
+            "carrierFinalErrorYd": 0.012323970596458728,
+            "contactExistenceAgrees": true,
+            "contactTimeDeltaS": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxDefenderFinalErrorYd": 0.07128443547122426,
+        "meanDefenderFinalErrorYd": 0.04164659658698,
+        "fallDisagreements": 0,
+        "maxContactTimeDeltaS": 0,
+        "mirrorPairs": [
+          {
+            "seed": 7,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 7,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 19,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 31,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 6,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 12,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          },
+          {
+            "seed": 43,
+            "substeps": 48,
+            "maxPathErrorYd": 0.0,
+            "fallSetAgrees": true
+          }
+        ],
+        "maxMirrorPathErrorYd": 0.0
+      }
+    ]
+  }
+}

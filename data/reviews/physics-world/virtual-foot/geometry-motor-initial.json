@@ -1,0 +1,83 @@
+{
+  "candidateSourceSha256": "fc95de97b53d80b942c213507075f4ad6f3e269dd7f0d41dff66f28716feeffc",
+  "supportModel": "virtual-foot (experimental, explicit preload)",
+  "motor": {
+    "foot": {
+      "supportModel": "virtual-foot (experimental, explicit preload)",
+      "steps": 1296,
+      "bodySteps": 2592,
+      "maxPositiveMotorWork": 27.77070710238547,
+      "maxMotorWorkLimit": 182.31519725456153,
+      "maxMotorWorkRatio": 0.24348748164584522,
+      "maxMotorWorkExcess": 0,
+      "sumSignedMotorWork": -2012.5996637785822,
+      "sumPositiveMotorWork": 809.0040777850879,
+      "sumMotorWorkLimit": 37406.67961885553,
+      "maxPassiveGraspWork": 8.550061242193546e-27,
+      "minPassiveGraspWork": -50.08838898624133,
+      "sumPassiveGraspWork": -1191.073858727827,
+      "maxPlanarLedgerResidual": 1.4503953593703045e-11,
+      "maxFootOffset": 0.6689056356914111,
+      "maxFootForceCapacityRatio": 1.4735530223624385,
+      "maxFootVelocity": 3.3999824155101974,
+      "maxUnloadedExternalFootForce": 900.0000000000002,
+      "motorViolations": [],
+      "passiveViolations": []
+    },
+    "wrap": {
+      "supportModel": "virtual-foot (experimental, explicit preload)",
+      "steps": 216,
+      "bodySteps": 4752,
+      "maxPositiveMotorWork": 6.132451571465805,
+      "maxMotorWorkLimit": 223.71957532065747,
+      "maxMotorWorkRatio": 0.1307336976240776,
+      "maxMotorWorkExcess": 0,
+      "sumSignedMotorWork": -2257.8068815066663,
+      "sumPositiveMotorWork": 34.81939185076727,
+      "sumMotorWorkLimit": 27623.129503304157,
+      "maxPassiveGraspWork": 0,
+      "minPassiveGraspWork": -125.27107814186567,
+      "sumPassiveGraspWork": -760.56155261692,
+      "maxPlanarLedgerResidual": 4.298783551348606e-12,
+      "maxFootOffset": 0.4768063033257743,
+      "maxFootForceCapacityRatio": 1.6696145881578228,
+      "maxFootVelocity": 5.25733721627305,
+      "maxUnloadedExternalFootForce": 0,
+      "motorViolations": [],
+      "passiveViolations": []
+    }
+  },
+  "geometry": {
+    "foot": {
+      "maxRecordedFootOffsetYd": 0.6689056356914111,
+      "maxAnchorRelationResidualYd": 2.065405138584886e-16,
+      "maxLiveAttachmentOrHoldOverreachYd": 0,
+      "liveAttachmentOverreachCount": 0,
+      "snapshotSets": 486
+    },
+    "wrap": {
+      "maxRecordedFootOffsetYd": 0.47683405047997524,
+      "maxAnchorRelationResidualYd": 3.941297845595826e-15,
+      "maxLiveAttachmentOrHoldOverreachYd": 0,
+      "liveAttachmentOverreachCount": 0,
+      "snapshotSets": 3072
+    }
+  },
+  "hashes": {
+    "motor-foot.json": "3f9a1bb0f4c7275cebca89852db7086da4490489c9f3597244ea72b7c399321c",
+    "foot-motor-observed.json": "375ffe1c6cdb3ade7c9efc05e5ea4b4cf3c0d99f0fd6449304025a44bff56761",
+    "motor-wrap.json": "f8b7dd5b4acce28a4bb2f18dc1b84071161dd48ea329cdafbff3f9c7e9ece498",
+    "wrap-motor-observed.json": "79f3f1c56ba10ac62c5894cbe096a18ac5bcec32f2f0ec3ec24a27678d3b3861"
+  },
+  "observerCodeSha256": "feb2f2787e6470edd7611e8ff3833cf2c3965bb0d35f9f9345f99fd316d73da0",
+  "notes": [
+    "Only recorded states are audited; absence of violations is not proof of continuous anatomical reach or calibrated biomechanical forces.",
+    "Actual grasp endpoint is body.pos + clamp(legs)*foot.offset. COM distance alone is not the virtual-foot reach condition.",
+    "Foot force/capacity is external-load over active motor allocation; overloaded or unloaded support can still receive external grip load.",
+    "The averaged gait/support anchor is not an anatomical planted sole. No articulated leg or measured leg length is asserted."
+  ],
+  "nonperturbation": {
+    "foot": true,
+    "wrap": true
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "schema": "qb-cue-native-manifest-v1",
+  "baselineCommit": "80e8151",
+  "cohort": "24 fixed native passes; 2generated roster pairs x4 pass concepts x3 coverages, all S3/Over/nickel/LOS40/center/firstDown50; inspection8s; each phase includes24 observed/plain controls.",
+  "phases": {
+    "promoted-C-baseline": {
+      "path": "data/reviews/physics-world/position-technique/qb-cue/before.json.gz",
+      "bytes": 5096726,
+      "sha256": "303f965c5ee0e617ce8b4d55d93844bf0f77353278906f5136b16f0f11e376c7",
+      "sourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "toolSha256": "5a4152372b7744aa15c0f2f2f67111c59a65e3fb5b1159cc17c3ffee2fbfa94b",
+      "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+      "inputSha256": "f64ed0e21054ee5d97111a8f61d8f86f6f8f6b9c40b180eceb4ba648d657f80c",
+      "node": "v22.23.3",
+      "inspectionSeconds": 8,
+      "runtime": {
+        "elapsedSeconds": 6.303137612,
+        "cpuSeconds": 10.868185,
+        "note": "Whole48-execution collector runtime, not an idle engine-performance comparison."
+      },
+      "inputs": 24,
+      "observedNativeExecutions": 24,
+      "plainControls": 24,
+      "naturalEnds": 23,
+      "censoredIds": [
+        "QBCUE-R2-gun_trips_11-smash-cover3_match-S3"
+      ]
+    },
+    "rejected-coarse-ray-candidate": {
+      "path": "data/reviews/physics-world/position-technique/qb-cue/coarse-unpromoted.json.gz",
+      "bytes": 5172144,
+      "sha256": "f6ee2d33fef07d042a11c8a6de9c769b3f280b3daf6a16daee395d37a9319c7d",
+      "sourceSha256": "f641f128241746ab1b0b6a90f13affb05a0c8505e35792195ce19497ea5bccdd",
+      "toolSha256": "5a4152372b7744aa15c0f2f2f67111c59a65e3fb5b1159cc17c3ffee2fbfa94b",
+      "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+      "inputSha256": "f64ed0e21054ee5d97111a8f61d8f86f6f8f6b9c40b180eceb4ba648d657f80c",
+      "node": "v22.23.3",
+      "inspectionSeconds": 8,
+      "runtime": {
+        "elapsedSeconds": 6.31220717,
+        "cpuSeconds": 11.428132,
+        "note": "Whole48-execution collector runtime, not an idle engine-performance comparison."
+      },
+      "inputs": 24,
+      "observedNativeExecutions": 24,
+      "plainControls": 24,
+      "naturalEnds": 23,
+      "censoredIds": [
+        "QBCUE-R1-gun_doubles_11-four_verts-cover1-S3"
+      ]
+    },
+    "narrowed-final-candidate": {
+      "path": "data/reviews/physics-world/position-technique/qb-cue/candidate.json.gz",
+      "bytes": 5168299,
+      "sha256": "8c0655f577d45b5bece0884b34407d5ed362331b842523649db08046648567b0",
+      "sourceSha256": "d73aaed8c8095e2b7050ae1fd07fe257ff44c8b7805811369b955750856b1121",
+      "toolSha256": "5a4152372b7744aa15c0f2f2f67111c59a65e3fb5b1159cc17c3ffee2fbfa94b",
+      "sourceVersionToolSha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+      "inputSha256": "f64ed0e21054ee5d97111a8f61d8f86f6f8f6b9c40b180eceb4ba648d657f80c",
+      "node": "v22.23.3",
+      "inspectionSeconds": 8,
+      "runtime": {
+        "elapsedSeconds": 6.457643713,
+        "cpuSeconds": 11.251701,
+        "note": "Whole48-execution collector runtime, not an idle engine-performance comparison."
+      },
+      "inputs": 24,
+      "observedNativeExecutions": 24,
+      "plainControls": 24,
+      "naturalEnds": 23,
+      "censoredIds": [
+        "QBCUE-R1-gun_doubles_11-four_verts-cover1-S3"
+      ]
+    }
+  },
+  "tools": [
+    {
+      "path": "scripts/diag/qb-cue-review.ts",
+      "bytes": 14641,
+      "sha256": "5a4152372b7744aa15c0f2f2f67111c59a65e3fb5b1159cc17c3ffee2fbfa94b"
+    },
+    {
+      "path": "scripts/diag/qb-cue-compare.py",
+      "bytes": 14282,
+      "sha256": "f22c14a5b54d2ab7e40bd5a8a948d51f0ad8d51484f4a3f84871068cf73818cd"
+    }
+  ],
+  "comparisons": [
+    {
+      "path": "data/reviews/physics-world/position-technique/qb-cue/coarse-comparison.json",
+      "bytes": 320474,
+      "sha256": "6fde09b4e403d2da386b9199817d03d9413ab6bdd05be6b59dd51e9b8fc49c02"
+    },
+    {
+      "path": "data/reviews/physics-world/position-technique/qb-cue/comparison.json",
+      "bytes": 339693,
+      "sha256": "0a3a24d4b1219dba0baec0102034e4fd51eb2bf72f1e163be51bdff5ac10b563"
+    }
+  ],
+  "README": {
+    "path": "data/reviews/physics-world/position-technique/qb-cue/README.md",
+    "sha256": "d586f5d15d293aadcbd0d0ad734a9450304650a3f939dc3ab39f1d8512df918c"
+  },
+  "finalCounts": {
+    "pairs": 24,
+    "initialMatches": {
+      "initialSignature": 24,
+      "initialPhysicalSha256": 24,
+      "profileSha256": 24,
+      "initialCallsSha256": 24
+    },
+    "beforeNeutralControls": {
+      "initial": 24,
+      "endpoint": 24,
+      "result": 24,
+      "nextRng": 24
+    },
+    "afterNeutralControls": {
+      "initial": 24,
+      "endpoint": 24,
+      "result": 24,
+      "nextRng": 24
+    },
+    "beforeNatural": 23,
+    "afterNatural": 23,
+    "pairedNatural": 22,
+    "pairedNaturalBeforeMeanYards": 8.649090909090908,
+    "pairedNaturalAfterMeanYards": 10.540909090909091
+  },
+  "observerScope": "Actual existing sim.see, ZoneCoverage.update, delivered intents and subsequent native tick bodies/solve flags. No additional live cue, judgment, perception or RNG call. Hidden eyes/true QB body are diagnostics only.",
+  "limits": [
+    "Selected native inputs are not NFL rate estimates.",
+    "All ordinary zone samples are match style; spotUnderneath is not natively measured here.",
+    "Each phase source includes OL cutoff as well as QB cue policy; isolated outcome causation is not established.",
+    "Censor IDs differ despite23 natural ends each. Only22 identical paired-natural IDs contribute mean yards; no live final yards.",
+    "Native event times/positions differ in phase from post-tick body samples; tickStart/tickEnd/actual new solve are retained.",
+    "The raw baseline/coarse files were copied byte-identically from their completed collectors, never resimulated or filtered.",
+    "Runtime is instrumented48-execution collector duration with concurrent work, not an idle engine-speed benchmark."
+  ],
+  "promotionStatus": "Both QB policies withheld; production is cutoff-only dd4, coverage exact C. Raw/comparison bytes unchanged.",
+  "archivedFinalTests": "data/reviews/physics-world/position-technique/qb-cue/unpromoted-source-test/test/coverage-qb-cue.test.ts"
+}

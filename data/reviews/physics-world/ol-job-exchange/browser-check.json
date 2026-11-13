@@ -1,0 +1,141 @@
+{
+  "schema": "ol-work-exchange-browser-v1",
+  "clips": [
+    {
+      "id": "BEFORE-WX-R1-duo-odd-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 42,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-WX-R1-duo-odd-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 39,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-WX-R1-power-under-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 55,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-WX-R1-power-under-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 46,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 42,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 39,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-WX-R1-power-under-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 55,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-WX-R1-power-under-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 46,
+      "referenceSourceCorrect": true
+    }
+  ],
+  "pageErrors": [],
+  "externalHttpsBlocked": true,
+  "recordedSourceFilter": true,
+  "pairedFixtureSearch": true,
+  "frontConceptCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "videoExport": [
+    {
+      "id": "BEFORE-WX-R1-duo-odd-R-S3",
+      "sourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+      "filename": "BEFORE-WX-R1-duo-odd-R-S3_ff641a802030_0.00-1.00s.webm",
+      "bytes": 294359,
+      "sourceStampCorrect": true
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-R-S3",
+      "sourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+      "filename": "FINAL-WX-R1-duo-odd-R-S3_206cb45f5484_0.00-1.00s.webm",
+      "bytes": 290917,
+      "sourceStampCorrect": true
+    }
+  ],
+  "actualObserverExchangeInspections": [
+    {
+      "id": "BEFORE-WX-R1-duo-odd-R-S3",
+      "t": 2.2,
+      "slot": "RT",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 2.20s initiated by RT: RT \u2194 RG\nRT before: drive \u2192 DT_S \u00b7 drive 1.00, 0.00\nRT at decision: drive \u2192 LB_M \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nActual observer RT saw DT_S: age 0.30s \u00b7 observed depth 0.43 yd \u00b7 position 40.43, 25.44 yd \u00b7 velocity -0.85, 1.25 yd/s\nActual observer RT saw LB_M: age 0.30s \u00b7 observed depth 1.47 yd \u00b7 position 41.47, 25.08 yd \u00b7 velocity -1.25, -0.47 yd/s\nAfter initiator update: drive \u2192 LB_M \u00b7 drive 1.00, 0.00\nCompleted native tick at 2.25s: drive \u2192 LB_M \u00b7 drive 1.00, 0.00\nAchieved center 40.93, 24.49 yd \u00b7 velocity 1.71, 0.10 yd/s \u00b7 support up\nApplied velocity intention 2.40, 1.66 yd/s \u00b7 ground impulse 21.27, 60.98\nArm impulse 53.78 / 60.46 \u00b7 arm work 0.00 / 181.37\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 0 \u00b7 surviving hand joints 1\nActual hands #9 RT \u2194 LB_M \u00b7 normal/tangent force 752.32 / -675.17"
+    },
+    {
+      "id": "BEFORE-WX-R1-duo-odd-R-S3",
+      "t": 2.2,
+      "slot": "RG",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 2.20s initiated by RT: RT \u2194 RG\nRG before: climb \u2192 LB_M \u00b7 drive 1.00, 0.00\nRG at decision: climb \u2192 DT_S \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nNo consumed visual image recorded for RG during this exchange.\nOther actual observers in this update: RT\nAfter initiator update: climb \u2192 DT_S \u00b7 drive 1.00, 0.00\nCompleted native tick at 2.25s: climb \u2192 DT_S \u00b7 drive 1.00, 0.00\nAchieved center 40.67, 25.79 yd \u00b7 velocity -0.08, 0.15 yd/s \u00b7 support up\nApplied velocity intention 0.00, 0.00 yd/s \u00b7 ground impulse 23.91, 29.86\nArm impulse 0.00 / 71.40 \u00b7 arm work 0.00 / 214.21\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "BEFORE-WX-R1-duo-odd-R-S3",
+      "t": 3.1,
+      "slot": "LT",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 3.10s initiated by LT: LT \u2194 LG\nLT before: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nLT at decision: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nActual observer LT saw DE_W: age 0.30s \u00b7 observed depth 0.08 yd \u00b7 position 40.08, 31.02 yd \u00b7 velocity -0.16, 0.94 yd/s\nActual observer LT saw DT_W: age 0.30s \u00b7 observed depth -0.84 yd \u00b7 position 39.16, 30.37 yd \u00b7 velocity -1.06, -1.10 yd/s\nAfter initiator update: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nCompleted native tick at 3.15s: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nAchieved center 40.41, 30.27 yd \u00b7 velocity 0.29, -0.32 yd/s \u00b7 support up\nApplied velocity intention 0.00, 0.00 yd/s \u00b7 ground impulse -17.74, -32.64\nArm impulse 0.00 / 65.58 \u00b7 arm work 0.00 / 196.75\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 1 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "BEFORE-WX-R1-duo-odd-R-S3",
+      "t": 3.1,
+      "slot": "LG",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 3.10s initiated by LT: LT \u2194 LG\nLG before: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nLG at decision: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nNo consumed visual image recorded for LG during this exchange.\nOther actual observers in this update: LT\nAfter initiator update: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nCompleted native tick at 3.15s: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nAchieved center 39.80, 31.21 yd \u00b7 velocity 0.40, -0.60 yd/s \u00b7 support up\nApplied velocity intention 1.00, -0.13 yd/s \u00b7 ground impulse 24.99, 21.75\nArm impulse 0.00 / 67.62 \u00b7 arm work 0.00 / 202.86\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 0 \u00b7 surviving hand joints 1\nActual hands #15 LG \u2194 DE_W \u00b7 normal/tangent force 428.95 / -208.98"
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-R-S3",
+      "t": 2.2,
+      "slot": "RT",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 2.20s initiated by RT: RT \u2194 RG\nRT before: drive \u2192 DT_S \u00b7 drive 1.00, 0.00\nRT at decision: drive \u2192 LB_M \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nActual observer RT saw DT_S: age 0.30s \u00b7 observed depth 0.43 yd \u00b7 position 40.43, 25.44 yd \u00b7 velocity -0.85, 1.25 yd/s\nActual observer RT saw LB_M: age 0.30s \u00b7 observed depth 1.47 yd \u00b7 position 41.47, 25.08 yd \u00b7 velocity -1.25, -0.47 yd/s\nActual observer RT saw LB_M: age 0.30s \u00b7 observed depth 1.47 yd \u00b7 position 41.47, 25.08 yd \u00b7 velocity -1.25, -0.47 yd/s\nOther actual observers in this update: RG\nAfter initiator update: drive \u2192 LB_M \u00b7 drive 1.00, 0.00\nCompleted native tick at 2.25s: drive \u2192 LB_M \u00b7 drive 1.00, 0.00\nAchieved center 40.93, 24.49 yd \u00b7 velocity 1.71, 0.10 yd/s \u00b7 support up\nApplied velocity intention 2.40, 1.66 yd/s \u00b7 ground impulse 21.27, 60.98\nArm impulse 53.78 / 60.46 \u00b7 arm work 0.00 / 181.37\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 0 \u00b7 surviving hand joints 1\nActual hands #9 RT \u2194 LB_M \u00b7 normal/tangent force 752.32 / -675.17"
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-R-S3",
+      "t": 2.2,
+      "slot": "RG",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 2.20s initiated by RT: RT \u2194 RG\nRG before: climb \u2192 LB_M \u00b7 drive 1.00, 0.00\nRG at decision: drive \u2192 DT_S \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nActual observer RG saw DT_S: age 0.30s \u00b7 observed depth 0.43 yd \u00b7 position 40.43, 25.44 yd \u00b7 velocity -0.85, 1.25 yd/s\nOther actual observers in this update: RT\nAfter initiator update: drive \u2192 DT_S \u00b7 drive 1.00, 0.00\nCompleted native tick at 2.25s: drive \u2192 DT_S \u00b7 drive 1.00, 0.00\nAchieved center 40.67, 25.79 yd \u00b7 velocity -0.08, 0.15 yd/s \u00b7 support up\nApplied velocity intention 0.00, 0.00 yd/s \u00b7 ground impulse 23.91, 29.86\nArm impulse 0.00 / 71.40 \u00b7 arm work 0.00 / 214.21\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-R-S3",
+      "t": 3.1,
+      "slot": "LT",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 3.10s initiated by LT: LT \u2194 LG\nLT before: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nLT at decision: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nActual observer LT saw DE_W: age 0.30s \u00b7 observed depth 0.08 yd \u00b7 position 40.08, 31.02 yd \u00b7 velocity -0.16, 0.94 yd/s\nActual observer LT saw DT_W: age 0.30s \u00b7 observed depth -0.84 yd \u00b7 position 39.16, 30.37 yd \u00b7 velocity -1.06, -1.10 yd/s\nActual observer LT saw DT_W: age 0.30s \u00b7 observed depth -0.84 yd \u00b7 position 39.16, 30.37 yd \u00b7 velocity -1.06, -1.10 yd/s\nOther actual observers in this update: LG\nAfter initiator update: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nCompleted native tick at 3.15s: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nAchieved center 40.41, 30.27 yd \u00b7 velocity 0.29, -0.32 yd/s \u00b7 support up\nApplied velocity intention 0.00, 0.00 yd/s \u00b7 ground impulse -17.74, -32.64\nArm impulse 0.00 / 65.58 \u00b7 arm work 0.00 / 196.75\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 1 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-WX-R1-duo-odd-R-S3",
+      "t": 3.1,
+      "slot": "LG",
+      "actualObserverImagesAndIntentionInspected": true,
+      "nativeCompletedLoadInspected": true,
+      "text": "Exchange at 3.10s initiated by LT: LT \u2194 LG\nLG before: drive \u2192 DT_W \u00b7 drive 1.00, 0.00\nLG at decision: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nAt event emission, participant bodies unchanged; physical joints unchanged\nActual observer LG saw DE_W: age 0.25s \u00b7 observed depth -0.02 yd \u00b7 position 39.98, 31.04 yd \u00b7 velocity -0.52, 1.00 yd/s\nOther actual observers in this update: LT\nAfter initiator update: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nCompleted native tick at 3.15s: drive \u2192 DE_W \u00b7 drive 1.00, 0.00\nAchieved center 39.80, 31.21 yd \u00b7 velocity 0.40, -0.60 yd/s \u00b7 support up\nApplied velocity intention 1.00, -0.13 yd/s \u00b7 ground impulse 24.99, 21.75\nArm impulse 0.00 / 67.62 \u00b7 arm work 0.00 / 202.86\nSupport motor work 0.00 / 0.00 \u00b7 physical contacts 0 \u00b7 surviving hand joints 1\nActual hands #15 LG \u2194 DE_W \u00b7 normal/tangent force 428.95 / -208.98"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "changedRelativeLinks": [
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/controller-checkpoint/final-receipt.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/pr151-merge.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/controller-checkpoint/final-receipt.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/controller-checkpoint/dispositions.json"
+    },
+    {
+      "from": "docs/ISSUES.md",
+      "target": "INTEGRATION.md#accepted-development"
+    },
+    {
+      "from": "docs/ISSUES.md",
+      "target": "../data/reviews/current/pr151-merge.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/pr151-merge.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/pr145-merge.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/pr151-merge.json"
+    },
+    {
+      "from": "docs/WORKBOARD.md",
+      "target": "../data/reviews/current/controller-checkpoint/intake.json"
+    }
+  ],
+  "jsonParse": "pass",
+  "frozenReceiptArtifacts": "unchanged",
+  "sourceTestsSettingsToolingEqualAcceptedDevelop": true,
+  "engineRunsForMetadata": 0
+}

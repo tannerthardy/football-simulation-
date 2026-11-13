@@ -1,0 +1,30 @@
+import {writeFileSync,readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {contactFixture} from '../../../scripts/diag/run-contact-technique.js';
+import {Recognition} from '../../../src/sim/recognition.js';
+import {ManCoverage} from '../../../src/sim/behaviors/defense.js';
+import {sourceVersion} from '../../../scripts/source-version.js';
+const cases=[];
+for(const nearSpeed of [0,6]) for(const keySpeed of [0,6]) {
+ const {sim}=contactFixture({type:'run',runBlock:60,passBlock:60});
+ const a=sim.slot('CB_S')!,target=sim.slot('X')!,near=sim.slot('Y')!;
+ a.behavior=new ManCoverage(a,sim,target,false,'D',1);
+ a.recog=new Recognition(a,sim,0); sim.handoffAt=-1;sim.throwAt=-1;
+ a.body.pos={x:42,y:35};a.body.facing=Math.PI;
+ const cues:any[]=[];
+ sim.see=function(observer,r) {
+  let pos={x:this.snapX[r.idx],y:20},vel={x:0,y:0};
+  if(r===this.qb)pos={x:36.5,y:20};
+  else if(r.slot==='RB')pos={x:34,y:20};
+  else if(r===target) {pos={x:41,y:43};vel={x:keySpeed,y:0};}
+  else if(r===near) {pos={x:41,y:35.5};vel={x:nearSpeed,y:0};}
+  else if(!['LT','LG','C','RG','RT'].includes(r.slot))pos={x:41,y:15};
+  const image={pos,vel,facing:0,stance:null,pose:'up' as const,age:.25};
+  if(observer===a)cues.push({t:this.t,slot:r.slot,image});return image;
+ };
+ const trajectory=[];
+ for(let k=0;k<16;k++){sim.t=.65+k*sim.dt;a.recog.update(a,sim);trajectory.push({t:sim.t,read:a.recog.read,pPass:a.recog.pPass(),readAt:a.recog.readAt});}
+ cases.push({nearSpeed,keySpeed,assigned:target.slot,near:near.slot,trajectory,cues});
+}
+writeFileSync('out/decision-awareness/defense/key-cues.json',JSON.stringify({source:sourceVersion(),toolSha256:createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex'),scope:'Reduced held-picture role-key interpretation; no NFL frequencies or physical football outcomes',cases}));
+console.log(JSON.stringify(cases.map(c=>({near:c.nearSpeed,key:c.keySpeed,final:c.trajectory.at(-1)}))));

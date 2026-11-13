@@ -1,0 +1,50 @@
+{
+  "source": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "artifacts": [
+    {
+      "path": "data/reviews/decision-awareness/runs/final.json.gz",
+      "bytes": 6549086,
+      "sha256": "7f0da5cb45c7a66e3d1121b307ed13debfe7926a00dc92fa7952fa7aec63a52c"
+    },
+    {
+      "path": "out/tackle-breakthrough/runs-v3.json.gz",
+      "bytes": 6176459,
+      "sha256": "5271c7aa7500a09fbec12ba5fc68bc8b2a13a81fc1ec3721a882565dfac923ee"
+    },
+    {
+      "path": "out/tackle-breakthrough/runs-final.json.gz",
+      "bytes": 6115995,
+      "sha256": "e40f3bb57be5dbf1bf962fe7651d76d6baed99ee01c59d3a2b20c1ac02b0ac82"
+    },
+    {
+      "path": "out/tackle-breakthrough/runs-final-film.json.gz",
+      "bytes": 6790220,
+      "sha256": "378ea92e092b3bce66a6712ae80f5859ef73d075ca90bfdc28e28010d03a2f7e"
+    },
+    {
+      "path": "out/tackle-breakthrough/runs-final.log",
+      "bytes": 22493,
+      "sha256": "b873e9ce0c5092670210435e8605c36d763b5350b7e0ddf61ed1a369f1efe8e2"
+    },
+    {
+      "path": "out/tackle-breakthrough/run-comparison-final.json",
+      "bytes": 2193649,
+      "sha256": "f9e20baf002f82f478cab4bee1a8829ace109a167cd083bd7bc50ee93f70082c"
+    },
+    {
+      "path": "out/tackle-breakthrough/run-v3-final-comparison.json",
+      "bytes": 2082623,
+      "sha256": "a70bfc4fca24de675bffe8d5fc77af3770439230b5eb5055e27da41857295638"
+    },
+    {
+      "path": "out/tackle-breakthrough/final-source/scripts/diag/combo-transfer-review.ts",
+      "bytes": 28420,
+      "sha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6"
+    },
+    {
+      "path": "scripts/diag/run-outcome-review.py",
+      "bytes": 25090,
+      "sha256": "e2d621e787fb6c91e191cf8b4e031f30dbb5b717477f46cd6e564ba787634ada"
+    }
+  ]
+}

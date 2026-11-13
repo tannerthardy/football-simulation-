@@ -1,0 +1,71 @@
+{
+  "baseline": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+  "primaryReadOnly": "41103cb78c79d127223afb20cc38a0e89243eda4",
+  "stageSourceSha256": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+  "supplements": {
+    "focus-baseline-loaded.json": {
+      "sha256": "e02edaabef8d3162bc3e212d384ab1472a029bc460fd637a3a05263b018d9838",
+      "provenance": {
+        "commit": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+        "sourceSha256": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+        "probeSha256": "796fcb7ce7168666555dac728604852b6cb091cc4f930b3e7a7de61f617d5ea5",
+        "flags": {
+          "PULL_PLAN": "0",
+          "LB_PLAN": null,
+          "PULL_READ": null,
+          "FLOW_READ": null,
+          "SCRAPE": null,
+          "LIVE_GAPS": null,
+          "CF_FLOW": null,
+          "RUN_READ": null,
+          "RUN_READ_TURN": null,
+          "RUN_CONTACT_TRACK": "0"
+        }
+      },
+      "observerNeutral": true
+    },
+    "regression-loaded.json": {
+      "sha256": "b27b9a42b343ca40362979916bde9217ed83106f260edba39f1234b9422f33fb",
+      "provenance": {
+        "commit": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+        "sourceSha256": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+        "probeSha256": "bb99c1a3b4cd7e1a65bbda5dab46662b424da73eff135b1208d9bd91e5192aa8",
+        "flags": {
+          "PULL_PLAN": "0",
+          "LB_PLAN": null,
+          "PULL_READ": null,
+          "FLOW_READ": null,
+          "SCRAPE": null,
+          "LIVE_GAPS": null,
+          "CF_FLOW": null,
+          "RUN_READ": null,
+          "RUN_READ_TURN": null,
+          "RUN_CONTACT_TRACK": "1"
+        }
+      },
+      "observerNeutral": true
+    },
+    "control-loaded.json": {
+      "sha256": "00a6e1ed54cfc7a5a7456d49902558e35713ebae201b6e983a7c690939bc809e",
+      "provenance": {
+        "commit": "b143f1ba63460f0de0de82b8eecefcd563e052c1",
+        "sourceSha256": "2dc56aa22381136a97c293c4e39988d943999cd14ff70cda293cb09943b82dca",
+        "probeSha256": "bb99c1a3b4cd7e1a65bbda5dab46662b424da73eff135b1208d9bd91e5192aa8",
+        "flags": {
+          "PULL_PLAN": "0",
+          "LB_PLAN": null,
+          "PULL_READ": null,
+          "FLOW_READ": null,
+          "SCRAPE": null,
+          "LIVE_GAPS": null,
+          "CF_FLOW": null,
+          "RUN_READ": null,
+          "RUN_READ_TURN": null,
+          "RUN_CONTACT_TRACK": "0"
+        }
+      },
+      "observerNeutral": true
+    }
+  },
+  "scope": "Contact/defensive controllers only; physics, tackle, RB and capacities unchanged. Trials default-off."
+}

@@ -1,0 +1,364 @@
+{
+  "schema": "football-handbook-traffic-evidence-manifest-v1",
+  "baselineCommit": "7ce355985b2b7a0b31f7449de734fc67c39e110c",
+  "baselineSource": "dd4cbb75c981e82e8a33d8e5d1c30d72d922d824de99fd9cba77403d0c7f9843",
+  "promotedSource": "0d2387ee2350df36a6af9b881a6efeee586b61cb4a2967ef7722431cc8e921b2",
+  "preliminarySource": "0cc15b157559dd30f8df7400aae5cb3c2a0aedb4517b6efa9c6fb349dfbc3615",
+  "node": "v22.23.3",
+  "publishedAt": "2026-10-11",
+  "scope": "Two-command free teammate turning controller; shared physics and capacities unchanged. Original football handbook and independently versioned NFL orientation pilot.",
+  "baselineRunPanel": {
+    "path": "data/reviews/physics-world/position-technique/installed-cutoff/candidate.json.gz",
+    "sha256": "6e26aa49bb39a9fd3524b3cda1c7c016929a2be6467664432b34665228bd30f0",
+    "reusedWithoutMutation": true
+  },
+  "checks": {
+    "engineTests": 841,
+    "dataTests": 29,
+    "typecheck": "pass",
+    "build": "pass",
+    "focusedNewTests": 12,
+    "baselineExpectedFeatureFailures": 5,
+    "baselinePassingControls": 7,
+    "exactSourceMatchedRuns": 162,
+    "exactSourceMatchedPasses": 24,
+    "forecastScreeningExecutionMatches": 186,
+    "ballisticForecasts": 954,
+    "certifiedClearPeerPictures": 35304
+  },
+  "files": {
+    "README.md": {
+      "bytes": 4488,
+      "sha256": "cdbfb674b1557d934f442f4f899730990d0ec9423ae604051e1dd80e5eb91f51"
+    },
+    "adverse-after.json.gz": {
+      "bytes": 1749099,
+      "sha256": "3e830594327147656f4743917678b122e81f6c6e3cb0d5191547acdc424c1d10",
+      "decompressedBytes": 12114748,
+      "decompressedSha256": "0df76628e0d4a7e02d1892ec0eddcc0ac9fe4eada2334ba9cc2c0cefb6a08704"
+    },
+    "adverse-before.json.gz": {
+      "bytes": 2439047,
+      "sha256": "43f2d9cbb0ec2e393c292d88dba36675089dd797ad13712703202264996fc919",
+      "decompressedBytes": 16018746,
+      "decompressedSha256": "a3392693b5b77eb217c2ca5029ae3fe56df35597e0a8b00dff5b76284ce661aa"
+    },
+    "ballistic-bound.json": {
+      "bytes": 1078,
+      "sha256": "e6f9a8e6eafb460d09bf04835695b020764125dfe85676800ed5443e16386295"
+    },
+    "build.log": {
+      "bytes": 55,
+      "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+    },
+    "candidate.json.gz": {
+      "bytes": 6144342,
+      "sha256": "50c7b96fb542d8cde7d4a5950f5e7b25372cd8c757f9ea88873bbd3a89ef1002",
+      "decompressedBytes": 65631736,
+      "decompressedSha256": "e19e73f7f7b69b87eb27a5f49cd3c3fd5749a4262863fff6bcff9800f38c8ef4"
+    },
+    "collection.log": {
+      "bytes": 22485,
+      "sha256": "2d533932d84457652ecaced31c09d3e7905d2682c853570c4fb153087ab120cf"
+    },
+    "comparison.json": {
+      "bytes": 118776,
+      "sha256": "16d3aea566cc432fc1289f0230c0b7380c683c5c156e5dea6c6fee8d285f53ec"
+    },
+    "first-instruction.json": {
+      "bytes": 48370,
+      "sha256": "74748081d3475b27a17af871d7229cd136ef18a893703b053e05a0e694039e7c"
+    },
+    "focused-baseline.log": {
+      "bytes": 4231,
+      "sha256": "852095bc4df56e25e5d46cccaed52abe53e56c215356672d4d425f516ddf4c3b"
+    },
+    "focused-candidate.log": {
+      "bytes": 383,
+      "sha256": "e1f5161b534d728e14d313a42030bf7b331e9dbfe9feb288db8cd908fc95d467"
+    },
+    "forecast-bound-review.md": {
+      "bytes": 7353,
+      "sha256": "f7bbc10017d14bcce6373b09850161ab2523ef10dfd7fa09539bdee6192edbde"
+    },
+    "forecast-screening-equivalence.json": {
+      "bytes": 80665,
+      "sha256": "98f119ecd5b260152a3a7eb845491aa43ef8d8270e8e155ea6a9119f80c2a502"
+    },
+    "game-19.txt": {
+      "bytes": 2294,
+      "sha256": "19ce2f3f98ef5d8ecd3c9a6f26325b3df7fc22b792b719a6f4f4f01282b8cef1"
+    },
+    "game-7.txt": {
+      "bytes": 2376,
+      "sha256": "84c0687a85bb2c572bd1b53ada7b1dab87427735aa9bbe4af9c472da544df54a"
+    },
+    "independent-review.md": {
+      "bytes": 6626,
+      "sha256": "505e2c12c960e393af4b7a8026c83b10a4460b21b83f885208ca71783ca6c737"
+    },
+    "pass-baseline.json.gz": {
+      "bytes": 5096737,
+      "sha256": "31c33e281d2dd33960b92e46bab0e7a26695028a3ed219b99733245ee9efb32e",
+      "decompressedBytes": 38402525,
+      "decompressedSha256": "87cb7e5123e3825938cd4ece0dd919cad86b2d2221e0721d590871cde8f0711c"
+    },
+    "pass-baseline.log": {
+      "bytes": 33972,
+      "sha256": "b736918194ea514ab49f781d6e3eafb9502e0eb1a89b035baa039192d9cc0e43"
+    },
+    "pass-candidate.json.gz": {
+      "bytes": 5051883,
+      "sha256": "5673e2eaec88aa325addb75a1c73cd5e6547621845551cb014cec7bef8f369d6",
+      "decompressedBytes": 38149462,
+      "decompressedSha256": "0770b714fb5535504924fc608364196b5006fdc861ff4f881660a795dbc81764"
+    },
+    "pass-candidate.log": {
+      "bytes": 34087,
+      "sha256": "2251fb1b25cd9fdd01c6829c8e1ec69c3f8702cf5470bfac0a2b30b6153c7de4"
+    },
+    "pass-comparison.json": {
+      "bytes": 448215,
+      "sha256": "e5da9a57c9f2bc2ac499b79e472d06ea6a98acb793630a41757bba39a5649e0a"
+    },
+    "preliminary-candidate.patch": {
+      "bytes": 6380,
+      "sha256": "18f1b89f8ecb77b72bfeb88b029121bcce1ac291a7deac526921ba7e32764fe1"
+    },
+    "python-tests.log": {
+      "bytes": 218,
+      "sha256": "e2d9891a984e4367e4685e8b529e30779aa6c8d73bcf3827f46bdf313b5b132d"
+    },
+    "tests.log": {
+      "bytes": 5151,
+      "sha256": "2504291f5d049b39a022fab82a7015285c3254f128e9e63223e0da4981f5df65"
+    },
+    "typecheck.log": {
+      "bytes": 68,
+      "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+    },
+    "verification.json": {
+      "bytes": 1447,
+      "sha256": "7d34d691075abc28c51e85e191cc217617bda65467768267d95f9adf90eecf5b"
+    }
+  },
+  "externalBindings": {
+    "CLAUDE.md": {
+      "bytes": 7206,
+      "sha256": "defe607d624e6dc2b828712d1da82c1e4995e673ec72714b1dfcf3182f5f5781"
+    },
+    "data/README.md": {
+      "bytes": 64439,
+      "sha256": "e96f11a65ad23c0df66a1a27d43d7a50137416d46ef1944171087d18f2253015"
+    },
+    "data/research/football-handbook-sources.json": {
+      "bytes": 46685,
+      "sha256": "992104de17941b942fbbd7984d07fa637b32f8b6352b0509b338981fcc85d680"
+    },
+    "data/reviews/football-handbook/source-catalog-verification.json": {
+      "bytes": 3559,
+      "sha256": "16f59a558acef6dda9d9f0ec249a6e4c3a88a22b35c1bcda1f10111374a9fd59"
+    },
+    "docs/PHYSICS_DEVELOPMENT.md": {
+      "bytes": 10386,
+      "sha256": "2c4496624eb72a992b57030dd530c037d2b433d72c7f788ae23fdde8656a1587"
+    },
+    "docs/football-handbook/README.md": {
+      "bytes": 4948,
+      "sha256": "2ac958097f018eb37ec47f2ecdb992bfac5789ccdfa3ab70e3d20389572ecc49"
+    },
+    "docs/football-handbook/data-and-measurement.md": {
+      "bytes": 22772,
+      "sha256": "ad8f1981d81948a395499bf8b743dd62c318c25b4e29acdb321cb32729f3cef3"
+    },
+    "docs/football-handbook/defense-and-perception.md": {
+      "bytes": 51616,
+      "sha256": "0c3bff57f2c01092ec5641d264e6bd78817e55c470d5015c0d0be933d32b3d89"
+    },
+    "docs/football-handbook/offensive-skill-and-playcalling.md": {
+      "bytes": 54690,
+      "sha256": "fd8b5b7305af9fb14c030002b4dd47096bc5990250ebf88e6ae0c057e24ee266"
+    },
+    "docs/football-handbook/orientation-pilot.md": {
+      "bytes": 7087,
+      "sha256": "f3acc512e6d93a6c5901796b78c2d0653f921b938d67a6ae630aded50005bbbd"
+    },
+    "docs/football-handbook/shared-model-and-learning.md": {
+      "bytes": 10563,
+      "sha256": "982856e9854ec0d88e882fd7d43e81bffa0bc51da9593a42f8749600fe23aca0"
+    },
+    "docs/football-handbook/trenches.md": {
+      "bytes": 41095,
+      "sha256": "da5294adb4156d6558401303c6842238eb42bfa4907fc811916e1d298971a45d"
+    },
+    "docs/reviews/traffic-turning-and-football-handbook.md": {
+      "bytes": 9544,
+      "sha256": "d3fe5075c0082a412f1ca0ce1da8275789ced3ebf1143b449244275d21665655"
+    },
+    "scripts/data/orientation_motion_audit.py": {
+      "bytes": 16976,
+      "sha256": "d455dfa50113444797566e3c0be094971a8959611b6c3b319a2e0e8bfe3b42f0"
+    },
+    "scripts/diag/combo-attention-compare.py": {
+      "bytes": 54348,
+      "sha256": "f9561f577a06593aeb8c416aca65a77e927283ec4fcce226d1ab0ec54192b226"
+    },
+    "scripts/diag/combo-transfer-review.ts": {
+      "bytes": 28420,
+      "sha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6"
+    },
+    "scripts/diag/compare-combo-transfer.py": {
+      "bytes": 18627,
+      "sha256": "fed54abaf570205301bd588b0066dadee653c6712b34dc250d7e1aa6138475ea"
+    },
+    "scripts/diag/compare-traffic-turning-passes.py": {
+      "bytes": 4511,
+      "sha256": "9416a096c64510f4f78b26ab3a89e15dce66afe4bdeef79dfa7655d86805c494"
+    },
+    "scripts/diag/compare-traffic-turning.py": {
+      "bytes": 5199,
+      "sha256": "7ed3fff1b7c3a0b4824ad50c4d914fdb2a24e547a2e85edc61904653833985ee"
+    },
+    "scripts/diag/qb-cue-review.ts": {
+      "bytes": 14641,
+      "sha256": "5a4152372b7744aa15c0f2f2f67111c59a65e3fb5b1159cc17c3ffee2fbfa94b"
+    },
+    "scripts/diag/traffic-turning-bound.ts": {
+      "bytes": 4654,
+      "sha256": "c5ab0da482a67d4d63573a198f3a73afacee86499fcd2c2e033d5b7a0a93c52e"
+    },
+    "scripts/diag/traffic-turning-first-instruction.ts": {
+      "bytes": 7454,
+      "sha256": "fbfb3c0e05967380191d5f6703a0a060763779105756233939983bf0f5553340"
+    },
+    "scripts/diag/traffic-turning-witness.ts": {
+      "bytes": 6213,
+      "sha256": "4c14259a72d5c98dd3a80a6cf4a1dd5a3fb75be3295eefc46ecf81311a6b352f"
+    },
+    "scripts/source-version.ts": {
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    "src/physics/actuation.ts": {
+      "bytes": 2146,
+      "sha256": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5"
+    },
+    "src/physics/ball.ts": {
+      "bytes": 4336,
+      "sha256": "c7f6f136485861b0abcd05524e62f59b2dd43fb8d43bc98e64716c1f5e74a3a3"
+    },
+    "src/physics/bodyshape.ts": {
+      "bytes": 1927,
+      "sha256": "142289f67f83c43486a8c26e662fc6ff6fe4d8f11b650e3afd44da8465a65b5d"
+    },
+    "src/physics/bounded-attachment.ts": {
+      "bytes": 2760,
+      "sha256": "695cffe6fb2385cfa30e3417660631ab2d888234ced754beac7e6f2b6daaf78c"
+    },
+    "src/physics/contact.ts": {
+      "bytes": 8379,
+      "sha256": "b041f03b73d2b9abb84d5bf159a7cc2a21c1ec416dfdfb7e7cefca08e13c46d2"
+    },
+    "src/physics/filtered-follow.ts": {
+      "bytes": 5339,
+      "sha256": "58c04e99f807fad36b49d22fbb6891593d6988a9bd653fc9f898552a8168e3e0"
+    },
+    "src/physics/finite-support.ts": {
+      "bytes": 29422,
+      "sha256": "8848e2343659f74d34a795608d61cfec140e64649f8685060158c145d3673662"
+    },
+    "src/physics/inertial-gait.ts": {
+      "bytes": 18303,
+      "sha256": "272906b4e12bd575990e62bd25a5b5fc2cd746310a044f365cc86ad800d29e22"
+    },
+    "src/physics/inertial-support.ts": {
+      "bytes": 34194,
+      "sha256": "a44871b69c8573d45b98a4f3976ff6a4b058b4fee27da2f0f727aeaea8533199"
+    },
+    "src/physics/kinematics.ts": {
+      "bytes": 15282,
+      "sha256": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc"
+    },
+    "src/physics/leg-compliance.ts": {
+      "bytes": 4843,
+      "sha256": "d5538fafc286e6d55c9f25459bf49bcd5a3e6bd1eaffcff7d58ef8e8ce651431"
+    },
+    "src/physics/material-plane.ts": {
+      "bytes": 13822,
+      "sha256": "71dc8ec304e54bb849cc2a5275733af6ee941bbd490383b65dc0abd8a9ad29d6"
+    },
+    "src/physics/material-rigid.ts": {
+      "bytes": 16574,
+      "sha256": "c5e038cab6fa1b1969467785de17c30b963c1cec963c69c87f08bf9124cec9b5"
+    },
+    "src/physics/movement-preview.ts": {
+      "bytes": 2187,
+      "sha256": "7583b3555f69cde7150c4ed3bf9543e83176e802435e2945429ed1c1554ae133"
+    },
+    "src/physics/reach.ts": {
+      "bytes": 3115,
+      "sha256": "86387b202fb1e9eff44c5d308fd1e6534493c4621ccbbdf4279f4c7988022756"
+    },
+    "src/physics/sole-contact.ts": {
+      "bytes": 26669,
+      "sha256": "90b5004019f65c7d2f07d6ae1b1216701c6031d64fc5315136553c6c42d104f9"
+    },
+    "src/physics/sole-shear.ts": {
+      "bytes": 27506,
+      "sha256": "7cede92a819cfd298544801db9187c5666193cc29cf30848989161a735fda28a"
+    },
+    "src/physics/spatial-ground.ts": {
+      "bytes": 29319,
+      "sha256": "769fa0b67e69182433e44f6af4c9d05fd46fea09155b320e354c36c569b6e161"
+    },
+    "src/physics/spatial-sole-compliance.ts": {
+      "bytes": 56734,
+      "sha256": "137b9327b0465c2bdbe024d7814232d6042564a5aa000b0ddf908591d3ba8b1b"
+    },
+    "src/physics/spatial-support.ts": {
+      "bytes": 21251,
+      "sha256": "d67f8f17341e91115f30fa886366714e7d33bb260db45b297bfa51252edc69a9"
+    },
+    "src/physics/support.ts": {
+      "bytes": 10059,
+      "sha256": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301"
+    },
+    "src/physics/vertical-support.ts": {
+      "bytes": 36200,
+      "sha256": "5ff3d038fb929899a30d2a48e82fd6b2570c144c4b771e798396a6f699545cb2"
+    },
+    "src/physics/virtual-foot.ts": {
+      "bytes": 3232,
+      "sha256": "ac1e522bbe28a45bbcb7494db115eea0b1266e2c133c936a60a5c06ac0c30c92"
+    },
+    "src/physics/world.ts": {
+      "bytes": 88175,
+      "sha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+    },
+    "src/sim/playsim.ts": {
+      "bytes": 38228,
+      "sha256": "bb3e510026d63d0cc6f20142da122b5e71b7a837a5ac3d119f74bc16ff57fecb"
+    },
+    "src/sim/spacing.ts": {
+      "bytes": 7244,
+      "sha256": "22d6f15bc9387229ac1f5e0f139e48c191efad4b6bd8b94fea7bf933d13b392f"
+    },
+    "test/test_orientation_motion_audit.py": {
+      "bytes": 4284,
+      "sha256": "b3898645498390aa9f552251676cfc6f1f54190fb1e78c00066be0e9a0d5d357"
+    },
+    "test/traffic-turning.test.ts": {
+      "bytes": 12512,
+      "sha256": "4e82887707d063a66db7b664d87e1f2959d3d6b984706c25976f952d62795f33"
+    }
+  },
+  "limits": [
+    "Fixed mechanism cohorts and generated rosters are not NFL frequencies.",
+    "Native physicslimit checks cover saved OL loads plus actors in controlled Worldtests, not every loadin every play.",
+    "Private QB/route information remains known debt; no gaze claim.",
+    "Run/pass/game metrics are mixed; no tuningto NFLscoring or universalphysicsOK.",
+    "Circle/constantvelocity forecasts do not know future cuts or contact; loaded/squeezed actors excluded.",
+    "Historical collector commandpaths retained; current aliases arefilepaths in this packet.",
+    "Orientation packet/sourcecatalog have independent NFL/coaching provenance."
+  ]
+}

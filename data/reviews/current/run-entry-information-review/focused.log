@@ -1,0 +1,28 @@
+Profile candidate: run-game-2026-10-13, commit 0d0282ac896cd08b4b44378825ca1759cf55f0e2, source f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/run-entry-opponent-information.test.ts test/run-system.test.ts -t does not use private opponent|preserves the saved contrasting entry|moves a Duo read away
+
+ RUN  v3.2.4 /workspace/football-entry-information-review
+
+ ✓ |core| test/run-system.test.ts (26 tests | 25 skipped) 18ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |core| test/run-entry-opponent-information.test.ts [ test/run-entry-opponent-information.test.ts ]
+ReferenceError: it is not defined
+ ❯ test/run-entry-opponent-information.test.ts:22:3
+     20| }
+     21| describe('acquired opponent entry risk without teammate transport',()=…
+     22|   it('does not use private opponent engagement, fatigue, pose or movem…
+       |   ^
+     23|     const s=scene('failing'),entry=s.read();expect(entry).not.toBeNull…
+     24|     for(const d of s.actors.filter((a:Agent)=>a.team==='D')){
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 passed | 25 skipped (26)
+   Start at  21:00:17
+   Duration  1.30s (transform 679ms, setup 0ms, collect 891ms, tests 18ms, environment 0ms, prepare 120ms)
+
+Validation receipt: out/entry-risk-review/focused.json; exit 1

@@ -1,0 +1,23 @@
+{
+  "schema": "cutoff-inside-control-replay-check-v1",
+  "baselineSource": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "candidateSource": "dd4cbb75c981e82e8a33d8e5d1c30d72d922d824de99fd9cba77403d0c7f9843",
+  "controls": [
+    {
+      "id": "CT-R1-split_zone-tite-R-S3",
+      "eventsExact": true,
+      "recordedFramesExact": true,
+      "frameCount": 29,
+      "replayPrecisionYards": 0.1,
+      "scope": "Only recorded frames, not unrecorded native body precision."
+    },
+    {
+      "id": "CT-R1-split_zone-tite-L-S3",
+      "eventsExact": true,
+      "recordedFramesExact": true,
+      "frameCount": 32,
+      "replayPrecisionYards": 0.1,
+      "scope": "Only recorded frames, not unrecorded native body precision."
+    }
+  ]
+}

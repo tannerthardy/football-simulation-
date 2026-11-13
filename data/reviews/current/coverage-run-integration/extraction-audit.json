@@ -1,0 +1,98 @@
+{
+  "protectedFiles": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/behaviors/defense.ts",
+    "src/sim/coverage/defender.ts",
+    "src/sim/coverage/rules.ts",
+    "src/sim/coverage/techniques.ts",
+    "src/sim/engagement.ts",
+    "test/coverage-run-support.test.ts",
+    "test/fixtures/run-contact-span.ts",
+    "test/inline-zone-keeper.test.ts",
+    "test/match-block-release.test.ts",
+    "test/rat-coverage.test.ts",
+    "test/release-cushion.test.ts",
+    "test/run-contact-span.test.ts",
+    "test/seam-delivery.test.ts"
+  ],
+  "blobs": [
+    {
+      "path": "src/sim/behaviors/defense.ts",
+      "blob": "5db25b81168130fbb6e6e34cb4049b9ec48fcfa6",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "src/sim/coverage/defender.ts",
+      "blob": "2269cfdde655cd8a3330ab73b84b62817767f6c1",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "src/sim/coverage/techniques.ts",
+      "blob": "e9f3f83ee5bae2cf63242b6aabd7eceb443f4b9f",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "test/coverage-run-support.test.ts",
+      "blob": "4473de16e79836c948338b5dda5a68e9e5eb82d3",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "test/release-cushion.test.ts",
+      "blob": "5ba5335311c8b8fa2cdb734fb9c91926d76ed729",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "test/seam-delivery.test.ts",
+      "blob": "7576540ace3864a11d50b05e3106f4ebe9042d3c",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "test/match-block-release.test.ts",
+      "blob": "3b3efe32d8332bdfa6e565d418bbc35e42f415f3",
+      "origin": "reviewed 97/100 composition"
+    },
+    {
+      "path": "src/sim/behaviors/blocking.ts",
+      "blob": "b312fcfc4d823db7558332b8af613804add4cd20",
+      "origin": "reviewed current-base 104 extraction; preserves96"
+    },
+    {
+      "path": "test/inline-zone-keeper.test.ts",
+      "blob": "7c63a288da4492ed59a72381b74d7ae91e0c065f",
+      "origin": "reviewed current-base 104 extraction; preserves96"
+    },
+    {
+      "path": "src/sim/engagement.ts",
+      "blob": "d9f9274a57f382c620cf7d3928fca6629d458303",
+      "origin": "7b09c65b770583d404d173972c50d7ee5ed87645"
+    },
+    {
+      "path": "test/fixtures/run-contact-span.ts",
+      "blob": "309850905e230d259927a7e529dd2646368aced9",
+      "origin": "7b09c65b770583d404d173972c50d7ee5ed87645"
+    },
+    {
+      "path": "test/run-contact-span.test.ts",
+      "blob": "fc85240cc0d94292a624582131e83a96944652f9",
+      "origin": "7b09c65b770583d404d173972c50d7ee5ed87645"
+    },
+    {
+      "path": "test/rat-coverage.test.ts",
+      "blob": "d2bfb3b30e7654fd0d02e82d7dc1093596988f2d",
+      "origin": "45c3308b82312dc9cfca86f4663507c17dc73aa2"
+    },
+    {
+      "path": "src/sim/coverage/rules.ts",
+      "blob": "7a56c509f02f1a8dc3ca7e762968b19d653c6650",
+      "origin": "Reviewed97/100 composition plus separately accepted95 rule delta; shared acquired-entry producer once",
+      "checks": "20 existing rat/provisional-block tests pass; remaining exact combined suite pending"
+    }
+  ],
+  "allOtherProtectedFilesEqualAcceptedBase": true,
+  "flagsAndWorldConfigUnchanged": true,
+  "evidencePayloads": "All five pinned coverage/rat/inline payload sizes and SHA256 values in coverage-contract-review.json independently verified; objects fetched before verification.",
+  "preparationNotes": [
+    "Exact source objects were fetched before extraction. An initial application check for95 failed on its duplicate Vec2 import; no partial application. The explicit distinct overlay preserves the already-present shared entry producer.",
+    "Original failed patch application attempt is not a failed behavioral check. No test/assertion alteration was used to assemble this candidate."
+  ]
+}

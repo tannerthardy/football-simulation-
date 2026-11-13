@@ -1,0 +1,1102 @@
+{
+  "schema": "trench-controller-review-v1",
+  "baselineSource": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+  "candidateSource": "b11642896c86eecfab19c71dd92965ca0e821369eb2a5f6d4caebbe236a0bb85",
+  "collectorSha256": "2a5c1c9af07cdd48fccf3777229ea436d56bbcc1673c8c692e5f5e113bfd5a4a",
+  "baselineArchiveCommit": "5879913",
+  "packetReceipts": {
+    "baseline-ordinary-contacts.json.gz": {
+      "sha256": "bd45244514a14ebe2cb1e8963cc7e7cc600b3699dcb5b3a135927809a81251f4",
+      "bytes": 10421790
+    },
+    "baseline-six-contacts.json.gz": {
+      "sha256": "33f993e7b99b8b4e24f5dcb29517661989cae0e8747fd8b2629e96cec0945849",
+      "bytes": 8424981
+    },
+    "final-ordinary-contacts.json.gz": {
+      "sha256": "d80e2ace73dbdb1abe1296c20b9cb391e8e570b516af57f9c402e50f07baeb8f",
+      "bytes": 11501308
+    },
+    "final-six-contacts.json.gz": {
+      "sha256": "82d4c81a15c34a63bef105ffb3183640fe9d824b3f95f1c9161b2fd17a7eab27",
+      "bytes": 8987479
+    },
+    "checked-tests.json": {
+      "sha256": "5915047a55abf29fecd76d15e607532598db7181f3629f4a9791f7ddee7ab97f",
+      "bytes": 462060
+    },
+    "checked-contact.json": {
+      "sha256": "c41a1c8a01dd624dd7ecde674ea145ff77b9c7c42fa92c3a3e7093b6a4a25702",
+      "bytes": 3087676
+    },
+    "final-angular-law.json": {
+      "sha256": "e7e929b5578026e2ba352a21f906e20a8bddf04c0e1b1b3aa1824d7105a567f5",
+      "bytes": 192733
+    },
+    "final-games.jsonl.gz": {
+      "sha256": "3a134dc06c9bef154db8ceb7e5729a6af937fb6fe7f6768d6c552f95d3a1dbc3",
+      "bytes": 3493124
+    },
+    "final-games-mechanics.json": {
+      "sha256": "55cef1afa42879f75a80c88be0c3b066220bbb458e650a61a8dcf24c21ea8844",
+      "bytes": 51190
+    },
+    "checked-process.json": {
+      "sha256": "e58bbd3f7544c006e1059bec7e630f2723512b716612b8dbde7f7f6f325ca839",
+      "bytes": 2690292
+    }
+  },
+  "method": [
+    "Existing eight ordinary IZ inputs and six supplemental IZ/Duo/Power inputs, each with fixed rosters/front/seed/mirror declared before candidate outcomes.",
+    "All 14 baseline and all 14 candidate executions finish naturally and pass their own observed/plain endpoint/body/intent/ownership/joint/next-RNG signatures.",
+    "Inputs, initial bodies and physical profiles match across each source pair; first request forks are compared before their local actors move.",
+    "Optional collector copies actual World.step arguments/report once, with no extra see/behavior/forecast/RNG calls. Same acquired rep and actor references are retained through afterWorld and afterTick.",
+    "Later native trajectories and RNG branches diverge normally; no later events are claimed to remain matched state counterfactuals."
+  ],
+  "physicsAndProfilesUnchanged": {
+    "initialProfilePairs": 14,
+    "scope": "No force/strength/traction/hand/work/solver changes; production source change is engagement controller only.",
+    "ordinaryModulePins": {
+      "src/sim/behaviors/blocking.ts": "376131e8c87251f0408855af92389e526c4bb884f7f913ba3da7fd757a684025",
+      "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+      "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+      "src/sim/playsim.ts": "aa0e5ddc6ff421c2dd97b0ea659c42d9a0c5df539450a3734a30c729d9d8f722"
+    },
+    "sixModulePins": {
+      "src/sim/behaviors/blocking.ts": "376131e8c87251f0408855af92389e526c4bb884f7f913ba3da7fd757a684025",
+      "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+      "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+      "src/sim/playsim.ts": "aa0e5ddc6ff421c2dd97b0ea659c42d9a0c5df539450a3734a30c729d9d8f722"
+    },
+    "physicsFilesComparedWith5879913": 24
+  },
+  "panels": {
+    "ordinary": {
+      "baseline": {
+        "plays": 8,
+        "observed": 8,
+        "natural": 8,
+        "climbs": 9,
+        "backerContacts": 4,
+        "runRepSamples": 1600,
+        "solvedHandLoadSamples": 1599,
+        "DLabsRequestYmedian": 1.0103440656305787,
+        "DLabsAchievedYmedian": 0.6662651499206619,
+        "maxWorkResidual": 1.0206946399193839e-11,
+        "maxArmImpulseExcess": 1.4210854715202004e-14,
+        "maxArmWorkExcess": -74.80122420286486,
+        "maxSupportMotorWorkExcess": 0,
+        "maxGroundTractionImpulseExcess": -0.00030349381943040044
+      },
+      "candidate": {
+        "plays": 8,
+        "observed": 8,
+        "natural": 8,
+        "climbs": 8,
+        "backerContacts": 1,
+        "runRepSamples": 1827,
+        "solvedHandLoadSamples": 1826,
+        "DLabsRequestYmedian": 1.5798872013213505,
+        "DLabsAchievedYmedian": 0.9734812401485804,
+        "maxWorkResidual": 2.7195135032798134e-11,
+        "maxArmImpulseExcess": 1.4210854715202004e-14,
+        "maxArmWorkExcess": -78.50800825688974,
+        "maxSupportMotorWorkExcess": 0,
+        "maxGroundTractionImpulseExcess": -0.000951725639154688
+      },
+      "initialAndProfileHashesMatched": 8,
+      "pairs": [
+        {
+          "id": "CA-R1-iz_strong-over-R-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            -0.38,
+            -1.09
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            0,
+            0
+          ],
+          "missedTackles": [
+            1,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.6340210447560617,
+              "y": 0.192107539495881
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": -1.6727217469009654
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-over-L-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            -0.16,
+            -1.13
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            0,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.6340210447560617,
+              "y": -0.192107539495881
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": 1.9219738791645324
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-over-R-S11",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            0.7,
+            -0.76
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            0,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -2.4455115758596344,
+              "y": -1.1603766790100731
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": -1.5592994279781216
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-over-L-S11",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            -0.76,
+            0.52
+          ],
+          "climbs": [
+            2,
+            2
+          ],
+          "backerContacts": [
+            2,
+            1
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.6340210447560617,
+              "y": -0.192107539495881
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": 1.7555037757003573
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-under-R-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            0.98,
+            -0.9
+          ],
+          "climbs": [
+            1,
+            0
+          ],
+          "backerContacts": [
+            0,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.45,
+            "defender": "DT_S",
+            "blocker": "C",
+            "repStart": 0.45,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.427620470948633,
+              "y": 0.5361084958415954
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": -1.4869273646967227
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-under-L-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            2.52,
+            4.01
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            1,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.45,
+            "defender": "LB_S",
+            "blocker": "Y",
+            "repStart": 0.45,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -2.0922619622594136,
+              "y": 0.5716273230097058
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": 0.3524458255935343
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-under-R-S11",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            17,
+            35.7
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            1,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            1,
+            2
+          ],
+          "firstRequestFork": {
+            "t": 0.5,
+            "defender": "DT_S",
+            "blocker": "RG",
+            "repStart": 0.5,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.1448583061889996,
+              "y": 1.0073787704409845
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": -0.7341222644110821
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-under-L-S11",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            0.32,
+            -1.53
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            0,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.45,
+            "defender": "LB_S",
+            "blocker": "Y",
+            "repStart": 0.45,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.5280461606759956,
+              "y": -0.3687323462959912
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": 0.7049803091108775
+            }
+          }
+        }
+      ]
+    },
+    "six": {
+      "baseline": {
+        "plays": 6,
+        "observed": 6,
+        "natural": 6,
+        "climbs": 6,
+        "backerContacts": 4,
+        "runRepSamples": 1329,
+        "solvedHandLoadSamples": 1328,
+        "DLabsRequestYmedian": 1.068314459450017,
+        "DLabsAchievedYmedian": 0.538007456601202,
+        "maxWorkResidual": 8.644196469731469e-12,
+        "maxArmImpulseExcess": 1.4210854715202004e-14,
+        "maxArmWorkExcess": -74.40966524953396,
+        "maxSupportMotorWorkExcess": 0,
+        "maxGroundTractionImpulseExcess": -0.00043843059509640625
+      },
+      "candidate": {
+        "plays": 6,
+        "observed": 6,
+        "natural": 6,
+        "climbs": 6,
+        "backerContacts": 5,
+        "runRepSamples": 1397,
+        "solvedHandLoadSamples": 1396,
+        "DLabsRequestYmedian": 1.1437768859980029,
+        "DLabsAchievedYmedian": 0.8956824467794111,
+        "maxWorkResidual": 8.387956995647983e-12,
+        "maxArmImpulseExcess": 2.842170943040401e-14,
+        "maxArmWorkExcess": -91.89936861456745,
+        "maxSupportMotorWorkExcess": 0,
+        "maxGroundTractionImpulseExcess": -0.0009654323499006523
+      },
+      "initialAndProfileHashesMatched": 6,
+      "pairs": [
+        {
+          "id": "CA-R1-iz_strong-over-R-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            0.59,
+            1.58
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            0,
+            0
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.4474592686909573,
+              "y": 0.5030438329377218
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": -1.6875802795531574
+            }
+          }
+        },
+        {
+          "id": "CA-R1-iz_strong-over-L-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            5.25,
+            8.06
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            0,
+            1
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.4474592686909573,
+              "y": -0.5030438329377218
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": 2.06137954302316
+            }
+          }
+        },
+        {
+          "id": "CA-R1-duo-odd-R-S11",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            0.81,
+            0.72
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            1,
+            1
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "NT",
+            "blocker": "C",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.5,
+              "y": -0.31335512182830977
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": -1.1109778964544503
+            }
+          }
+        },
+        {
+          "id": "CA-R1-duo-odd-L-S11",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            1.3,
+            1.02
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            1,
+            1
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.4,
+            "defender": "NT",
+            "blocker": "C",
+            "repStart": 0.4,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -1.5,
+              "y": 0.31335512182830977
+            },
+            "newExecutedVelocity": {
+              "x": -1.5,
+              "y": 1.3509819773989982
+            }
+          }
+        },
+        {
+          "id": "CA-R1-power-under-R-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            6.6,
+            5.31
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            1,
+            1
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.45,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.45,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -0.8393444495761293,
+              "y": -0.6891480261119879
+            },
+            "newExecutedVelocity": {
+              "x": -1.5008672461049977,
+              "y": -0.6894378143193893
+            }
+          }
+        },
+        {
+          "id": "CA-R1-power-under-L-S3",
+          "matchedInitial": true,
+          "outcomes": [
+            "tackle",
+            "tackle"
+          ],
+          "yards": [
+            2.68,
+            1.97
+          ],
+          "climbs": [
+            1,
+            1
+          ],
+          "backerContacts": [
+            1,
+            1
+          ],
+          "missedTackles": [
+            0,
+            0
+          ],
+          "brokenTackles": [
+            0,
+            0
+          ],
+          "firstRequestFork": {
+            "t": 0.45,
+            "defender": "DE_S",
+            "blocker": "Y",
+            "repStart": 0.45,
+            "sameBeforeActorBodies": true,
+            "sameBeforeControl": true,
+            "oldExecutedVelocity": {
+              "x": -0.8347756888579022,
+              "y": 0.5246729343843818
+            },
+            "newExecutedVelocity": {
+              "x": -1.4877811597896646,
+              "y": 0.5209586958740271
+            }
+          }
+        }
+      ]
+    }
+  },
+  "firstOrdinaryDT_SWitness": {
+    "play": "CA-R1-iz_strong-over-R-S3",
+    "t": 0.45,
+    "beforeBodiesAndControlMatched": true,
+    "assignedGap": {
+      "gap": "B",
+      "side": -1,
+      "ballY": 26.666666666666668,
+      "landmarkY": 24.71666666666667,
+      "definition": "gapY: ballY + side*1.95; src/playbook/alignment.ts:218"
+    },
+    "cue": {
+      "pos": {
+        "x": 39.50019146955717,
+        "y": 25.287762144859954
+      },
+      "vel": {
+        "x": 0.14340419873477403,
+        "y": -0.22544149087633159
+      },
+      "stance": "low",
+      "facing": 0,
+      "age": 0.30000000000000004,
+      "pose": "up",
+      "carrying": false
+    },
+    "oldVelocity": {
+      "x": -1.427620470948633,
+      "y": 0.5361084958415954
+    },
+    "newVelocity": {
+      "x": -1.5,
+      "y": -1.5223483393166362
+    },
+    "inferredHeldGoalY": 24.791398508496318,
+    "inferenceConditions": "Initial owner/read, no prior hand force, undeclared deep RB, unsaturated lateral request. Derived from executed request = observed flow + 3*(held goal - current defender y); not a directly exported private stack field.",
+    "priorHandLoad": 0,
+    "firstSolvedHandLoadAt": 0.5,
+    "firstSolvedHandForceMagnitude": 232.23087652724132,
+    "firstSolvedHandForceChannel": "Tangent; normal=0. Model-transmitted load is not measured NFL anatomical contact.",
+    "candidateAchievedVelocity": {
+      "x": -0.7625319775604287,
+      "y": -0.04582486463313641
+    },
+    "interpretation": "New request heads toward installed B-side shoulder and observed negative blocker flow; legacy heads away. Actual body response remains gradual under identical hand capacity."
+  },
+  "adverseUnderRightSeed11": {
+    "play": "CA-R1-iz_strong-under-R-S11",
+    "outcomes": [
+      "tackle",
+      "tackle"
+    ],
+    "yards": [
+      17,
+      35.7
+    ],
+    "candidate1Outcome": "Preserved diagnostic7f4 produced70yd TD; final candidate produces35.7yd tackle.",
+    "climb": {
+      "climber": "RG",
+      "backer": "LB_M",
+      "baselineT": 1.05,
+      "candidateT": 1.55,
+      "actualBackerContacts": [
+        1,
+        0
+      ]
+    },
+    "geometryAt2_4s": {
+      "baselineRG": [
+        41.3,
+        25.1
+      ],
+      "baselineLB_M": [
+        41.9,
+        25.1
+      ],
+      "baselineDistance": 0.6,
+      "candidateRG": [
+        41,
+        24.7
+      ],
+      "candidateLB_M": [
+        42.4,
+        25.2
+      ],
+      "candidateDistance": 1.4866068747318493,
+      "candidateDT_S": [
+        41.6,
+        24.9
+      ]
+    },
+    "candidateHoldEvents": [
+      {
+        "t": 3.6,
+        "type": "tackle_wrap",
+        "a": "FS",
+        "b": "RB"
+      },
+      {
+        "t": 3.8,
+        "type": "broken_tackle",
+        "a": "RB",
+        "b": "FS"
+      },
+      {
+        "t": 4.1,
+        "type": "tackle_wrap",
+        "a": "CB_S",
+        "b": "RB"
+      },
+      {
+        "t": 4.45,
+        "type": "broken_tackle",
+        "a": "RB",
+        "b": "CB_S"
+      },
+      {
+        "t": 7,
+        "type": "tackle_wrap",
+        "a": "CB_W",
+        "b": "RB"
+      },
+      {
+        "t": 8.15,
+        "type": "tackle",
+        "a": "CB_W",
+        "b": "RB"
+      }
+    ],
+    "assessment": "No clear pre-declaration DL fit abandonment established: DT_S retains installed A-side fit/contact and later redirects toward observed RB. The longer gain includes lost RG/LB_M contact and two subsequent slipping secondary holds, not a certified physics regression.",
+    "handoff": "Inspect climber exit/target/replanning and first-level obstruction1.55-3.0s; candidate RG stays ~1.45-1.51yd from LB_M versus baseline~.60-.70yd. Retain as unresolved adverse evidence; no further engine fix attempted."
+  },
+  "limitations": [
+    "Loaded samples mean live model hand force after World, not proximity. Most have some tangent load; no measured human grip/contact force is inferred.",
+    "Lateral medians are descriptive duration-weighted solve samples with changing run duration and contact ownership; they are neither matched NFL operators nor tuning targets.",
+    "Executed intents include ordinary spacing/contact overlays. Later inferred controller goals may therefore be ambiguous; the private held stack itself is not directly recorded.",
+    "An opposite-to-blocker-flow request can be appropriate shoulder correction or runner pursuit. Do not classify every opposite sign as wrong.",
+    "World still fails the separate isolated angular-law check; both complete software suites pass.",
+    "The new private stack state is not directly exported by the observer; endpoint/body/intent/ownership/joint/RNG equivalence is the measured scope.",
+    "Conditional force-inside jobs, inherited true-position facing and drive-derived fallback contact frames retain their earlier limitations. The new unloaded privacy test certifies fit velocity/depth, not every orientation request.",
+    "Shoulder geometry is a reduced coaching placement heuristic, not an NFL-calibrated distance. No body capacities were adjusted to rescue outcomes."
+  ],
+  "referenceInvestigation": {
+    "branch": "claude/trench-investigation",
+    "commit": "b6a48f1",
+    "base": "dd06dd4269e530fa365afe8be883dd5149eb56f5",
+    "merged": false,
+    "review": "https://github.com/tannerthardy/football-simulation-/blob/b6a48f1/docs/reviews/trench-deep-dive.md"
+  },
+  "adopted": [
+    "Only installed interior/edge contacts acquire delayed blocker flow and a moving gap-side shoulder; physical hand load grants local position.",
+    "Control/lag request bounded recovery toward their first loaded-contact depth; attack retains forward intent. No displacement cap, extra strength or traction.",
+    "Runner target and flow cancellation follow the held aim; a keeper transfer refreshes opponent cues while preserving depth.",
+    "Existing optional contact observer records actual commands and World response without extra decisions/reads/RNG."
+  ],
+  "withheld": {
+    "ECC": "Multiplies muscle and turf traction ceilings without increased physical normal load; recorded work alone does not validate the force law.",
+    "LEV": "Pseudovertical impulse alters final translational traction without coherent vertical work/loads or a shared translation/yaw/recovery allowance.",
+    "universalAttackHold": "A fixed half-yard attack goal or holding every initial contact point may suppress legitimate gap disruption; retained as a separate hypothesis.",
+    "massClaims": "Duration-weighted observational bins use different timing/smoothing/contact definitions and can mix keeper identities. No controlled evidence that mass should not matter."
+  },
+  "mechanicalChecks": {
+    "typescript": {
+      "command": "npm run test:all -- --reporter=json --outputFile=out/trench-controller/checked-tests.json",
+      "passed": 1229,
+      "failed": 0,
+      "pending": 0,
+      "todo": 0,
+      "wallSeconds": 127.8,
+      "note": "Complete preserved suite. Timing is not an isolated performance comparison. First run found two incomplete mirror fixtures and an intentionally superseded controller scope; final fixtures reflect duties and preserve both historical snapshot hashes."
+    },
+    "python": {
+      "command": "npm run test:data",
+      "passed": 129,
+      "failed": 0
+    },
+    "typecheck": "pass",
+    "build": "pass",
+    "newContactFlowTests": 23,
+    "angularLaw": {
+      "command": "node --import tsx scripts/diag/hand-angular-law.ts out/trench-controller/final-angular-law.json --assert-law",
+      "status": "KNOWN FAILURE",
+      "exitCode": 1,
+      "cases": 144,
+      "normalCasesPass": 72,
+      "tangentCasesFail": 72,
+      "angularErrorRange": [
+        3.7124773258256027,
+        3.712757620082357
+      ],
+      "units": "kg yd^2/s",
+      "note": "Controller changes do not repair the unchanged physical moment-transfer law."
+    }
+  },
+  "contactTechniqueControl": {
+    "collectorSha256": "f753dcdfa82d4a1d036ae81811208d25621320a2b7bc981a03985d9ca0d7e08b",
+    "baselineSource": "116e2f7a993342d22b9e3346a873a8b0c9b449565388f2202606beb8adcf1d34",
+    "candidateSource": "b11642896c86eecfab19c71dd92965ca0e821369eb2a5f6d4caebbe236a0bb85",
+    "trials": 48,
+    "profilesAndInitialBodiesMatched": true,
+    "passTrajectoriesIdentical": 24,
+    "passTrials": 24,
+    "candidateLoadedTrials": 48,
+    "maxWorkResidual": 6.714628852932947e-13,
+    "maxBudgetExcess": 2.842170943040401e-14
+  },
+  "fullGames": {
+    "rosterAndGameSeed": 101,
+    "games": 8,
+    "scores": [
+      [
+        58,
+        69
+      ],
+      [
+        75,
+        71
+      ],
+      [
+        89,
+        83
+      ],
+      [
+        58,
+        61
+      ],
+      [
+        38,
+        58
+      ],
+      [
+        74,
+        61
+      ],
+      [
+        83,
+        77
+      ],
+      [
+        38,
+        86
+      ]
+    ],
+    "plays": {
+      "run": 257,
+      "pass": 860,
+      "air": 0
+    },
+    "pointsPerTeamGame": 67.4375,
+    "guardedMetricsRetained": 12,
+    "guardedMetrics": 12,
+    "selectedDiagnostics": {
+      "run.max_engaged_dl_driven_back_3s": {
+        "n": 210,
+        "mean": 0.49,
+        "p10": -1.0,
+        "p25": -0.7,
+        "p50": 0.2,
+        "p75": 1.2,
+        "p90": 2.6
+      },
+      "catch.yards_after_catch": {
+        "n": 511,
+        "mean": 13.029,
+        "p10": -1.01,
+        "p25": 1.23,
+        "p50": 4.98,
+        "p75": 15.84,
+        "p90": 47.6
+      },
+      "contact.catch.broke_contact": {
+        "n": 194,
+        "mean": 0.263,
+        "p10": 0.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 1.0,
+        "p90": 1.0
+      },
+      "contact.run.tackler_speed_at_contact": {
+        "n": 170,
+        "mean": 1.881,
+        "p10": 0.75,
+        "p25": 1.031,
+        "p50": 1.521,
+        "p75": 2.25,
+        "p90": 3.202
+      },
+      "contact.run.approach_headon": {
+        "n": 131,
+        "mean": 0.221,
+        "p10": 0.0,
+        "p25": 0.0,
+        "p50": 0.0,
+        "p75": 0.0,
+        "p90": 1.0
+      }
+    },
+    "limitations": "Native-game check with diverging calls/RNG, not a matched-play estimate of why results changed. Neither the smaller drive tail nor any NFL percentile selected the policy. Scoring, pursuit and YAC remain poor; no readiness claim."
+  },
+  "reproduction": {
+    "runtime": "Node22, npm ci; see CLAUDE.md. Generated packets stay ignored in out/.",
+    "candidate": [
+      "node --import tsx scripts/diag/combo-attention-witness.ts out/trench-controller/ordinary.json.gz --ordinary --contacts",
+      "node --import tsx scripts/diag/combo-attention-witness.ts out/trench-controller/six.json.gz --contacts",
+      "node --import tsx scripts/diag/run-contact-technique.ts out/trench-controller/contact.json",
+      "npm test -- test/run-contact-flow.test.ts test/cutoff-surface.test.ts test/run-hand-control.test.ts",
+      "node --import tsx scripts/mechanics/sim-export.ts --seed 101 --games 8 --out out/trench-controller/games.jsonl.gz",
+      "python3 -I scripts/mechanics/measure.py out/trench-controller/games.jsonl.gz out/trench-controller/games.json",
+      "python3 -I scripts/mechanics/compare.py --sim out/trench-controller/games.json --out out/trench-controller/report.md --guard data/reviews/mechanics/guard.json",
+      "node --import tsx scripts/diag/run-concept-process.ts out/trench-controller/process.json --runs iz_strong,duo,power,counter --fronts over,under,tite --seeds 3,11 --seconds 4 --verify"
+    ],
+    "baseline": "Archive src and scripts from immutable5879913 into an ignored scratch directory, share Node22 dependencies, and copy the same contact collector from ebaa48c. Run both native commands there. No branch checkout, merge or worktree is needed."
+  },
+  "runProcessControl": {
+    "source": "b11642896c86eecfab19c71dd92965ca0e821369eb2a5f6d4caebbe236a0bb85",
+    "trials": 48,
+    "runs": [
+      "iz_strong",
+      "duo",
+      "power",
+      "counter"
+    ],
+    "fronts": [
+      "over",
+      "under",
+      "tite"
+    ],
+    "seeds": [
+      3,
+      11
+    ],
+    "bothDirections": true,
+    "horizonSeconds": 4,
+    "observerVerified": true,
+    "limitations": "Fixed four-second process panel, not natural-end outcomes or NFL league rates. Complete natural-end controls are the separate14-play packets."
+  }
+}

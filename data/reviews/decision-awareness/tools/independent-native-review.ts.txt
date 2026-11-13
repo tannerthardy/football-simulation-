@@ -1,0 +1,60 @@
+import { createHash } from 'node:crypto';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { gzipSync } from 'node:zlib';
+const root = '/workspace/football-simulation-';
+const digest = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
+function source(base: string) {
+  const files = (dir: string): string[] => readdirSync(join(base,dir),{withFileTypes:true})
+    .flatMap(e=>e.isDirectory()?files(join(dir,e.name)):[join(dir,e.name)]).sort();
+  const h=createHash('sha256');for(const f of files('src'))h.update(f).update('\0').update(readFileSync(join(base,f))).update('\0');
+  return h.digest('hex');
+}
+const cases = [
+  { id:'CT-R1-split_zone-over-L-S11',run:'split_zone',front:'over',flip:true },
+  { id:'CT-R1-split_zone-odd-R-S11',run:'split_zone',front:'odd',flip:false },
+  { id:'CT-R1-wz_strong-bear-R-S11',run:'wz_strong',front:'bear',flip:false },
+  { id:'CT-R1-trap-tite-L-S11',run:'trap',front:'tite',flip:true },
+];
+const rows:unknown[]=[];
+for (const [phase,base] of [['baseline',join(root,'out/decision-awareness/baseline-source')],['final',root]]) {
+  const before=source(base);
+  const imp=(p:string)=>import(pathToFileURL(join(base,p)).href);
+  const [{Rng},{generateTeam,pickOffense,pickDefense},{RUN_BY_ID},{COVERAGE_BY_ID,FRONT_BY_ID},
+    {FORMATION_BY_ID},{PlaySim},{CENTER_Y}]=await Promise.all([
+      imp('src/core/rng.ts'),imp('src/league/team.ts'),imp('src/playbook/concepts.ts'),
+      imp('src/playbook/defense.ts'),imp('src/playbook/formations.ts'),imp('src/sim/playsim.ts'),imp('src/core/field.ts')]);
+  const offense=generateTeam(new Rng(31),'Panel offense 1','O1',{strength:.55});
+  const defense=generateTeam(new Rng(32),'Panel defense 1','D1',{strength:.55});
+  for(const c of cases){
+    const formation=FORMATION_BY_ID[c.run==='split_zone'?'gun_wing_12':'ace_11'];
+    const personnel=FRONT_BY_ID[c.front].personnel[0];
+    const create=(record:boolean)=>new PlaySim({offense:pickOffense(offense,formation.personnel),defense:pickDefense(defense,personnel),
+      offCall:{formation,flip:c.flip,kind:'run',run:RUN_BY_ID[c.run],label:`${formation.name} · ${RUN_BY_ID[c.run].name}`},
+      defCall:{personnel,front:FRONT_BY_ID[c.front],coverage:COVERAGE_BY_ID.cover3,pressure:null,label:`${FRONT_BY_ID[c.front].name} · Cover 3`},
+      los:40,ballY:CENTER_Y,firstDownX:50,seed:11,record,recordLevel:'full'});
+    const sim=create(true),samples:unknown[]=[];
+    const step=sim.world.step;
+    sim.world.step=function(intents:any,dt:number){
+      samples.push({t:sim.t,carrier:sim.carrier?.slot??null,ball:sim.ball.kind,
+        agents:sim.agents.map((a:any)=>({slot:a.slot,pos:{...a.pos},vel:{...a.vel},intent:structuredClone(intents[a.idx]),
+          read:a.recog?.read??null,passProbability:a.recog?.pPass()??null,
+          fit:a.runFit?{...a.runFit}:null,job:a.behavior.kind,target:a.behavior.plan?.target?.slot??a.behavior.target?.slot??null,
+          engagement:a.engagement?{blocker:a.engagement.blocker.slot,defender:a.engagement.defender.slot,
+            side:a.engagement.side,type:a.engagement.type,nextMoveAt:a.engagement.nextMoveAt,phi:a.engagement.phi,
+            control:a.engagement.control,hands:!!a.engagement.hands}:null}))});
+      return step.call(this,intents,dt);
+    };
+    const result=sim.run();sim.world.step=step;
+    const signature=(s:any,r:any)=>digest({result:{...r,frames:undefined,telemetry:undefined},bodies:s.agents.map((a:any)=>a.body),intents:s.intents,rng:{...s.rng}});
+    const plain=create(false),plainResult=plain.run();
+    if(signature(sim,result)!==signature(plain,plainResult))throw Error(`observer changed ${phase}/${c.id}`);
+    rows.push({phase,id:c.id,source:before,observerVerified:true,result,samples,slots:sim.agents.map((a:any)=>a.slot)});
+  }
+  if(source(base)!==before)throw Error(`Source changed ${phase}`);
+}
+const path=join(root,'out/decision-awareness/independent-native-review.json.gz');
+writeFileSync(path,gzipSync(JSON.stringify({schema:'independent-native-decision-review-v1',
+  scope:'Four outcome-selected adverse/tail cases; existing native state only; no extra picture or RNG requests; not an unbiased outcome sample.',rows})));
+console.log(JSON.stringify({path,rows:rows.map((r:any)=>({phase:r.phase,id:r.id,source:r.source,observerVerified:r.observerVerified,gain:r.result.offenseYards,outcome:r.result.outcome}))}));

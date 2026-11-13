@@ -1,0 +1,25 @@
+{
+  "baseCommit": "627964cc44f6c6829d04898ebd7a563b26dc12d7",
+  "measuredBeforeDefaultFloorChange": true,
+  "minimumFloorSourceSha256": {
+    "6": "3df434ef60f46d6e3422124d073df65b44a19a23045c67aa87164a40ae9b45b5",
+    "12": "d95b0c4919028dde7a7c23e710bef39ad75fab5a3d52ab026f8c754df3502a8c"
+  },
+  "commands": [
+    "node --import tsx scripts/diag/hand-convergence.ts out/hand-convergence.json",
+    "node --import tsx scripts/diag/physics-cost.ts out/physics-cost.json 2 9"
+  ],
+  "costRepeatNote": "The first repetition used an equivalent ignored hand-cost.ts probe. The final min6/min12 cost pair used the published physics-cost.ts tool. Each snapshot differs only in MIN_SUBSTEPS. Same seeds can produce different play counts.",
+  "scriptSha256": {
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/physics-cost.ts": "664ac493760cb63983c5105ec87a9ba0df32840ba7c10060cdf507b5deb625e5"
+  },
+  "artifacts": {
+    "felt-predictor-experiment.json": "4cfc832a8b13b67aabb5fb56d91b02ce01b140d847a2b29f91752d420178f8f9",
+    "height-grid.json": "67e9aa6e92edd3feb262032e218007084befee77b471008809b9afd63e96ee78",
+    "min12-cost-repeat.json": "0ef8d8c6cbb117b37cf6fc3fa2af3cb8bb1c76ef72de98e91202c868094fadb4",
+    "min12-cost.json": "394caa97a239b5918f9590ea3d5bf516aa3e3a356e16af81fea08dacb66cd710",
+    "min6-cost-repeat.json": "fb7860cfd62565d3f8f2d6d0c4f6ccd2c6d29da15e05439cca5e9d9c884ae7b5",
+    "min6-cost.json": "483e8679fe21c73d55347145427287547e62902cf8fcbdb3e2efe2abe8ea994e"
+  }
+}

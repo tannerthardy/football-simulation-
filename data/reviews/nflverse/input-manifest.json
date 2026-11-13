@@ -1,0 +1,77 @@
+{
+  "source": "nflverse-data releases",
+  "files": [
+    {
+      "name": "play_by_play_2022.csv.gz",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.csv.gz",
+      "bytes": 19093961,
+      "sha256": "0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4",
+      "assetId": 354728863,
+      "updatedAt": "2026-02-12T10:25:24Z",
+      "publishedDigest": "sha256:0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4"
+    },
+    {
+      "name": "play_by_play_2023.csv.gz",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.csv.gz",
+      "bytes": 19169807,
+      "sha256": "4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8",
+      "assetId": 354728691,
+      "updatedAt": "2026-02-12T10:24:52Z",
+      "publishedDigest": "sha256:4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8"
+    },
+    {
+      "name": "roster_2022.csv",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2022.csv",
+      "bytes": 980115,
+      "sha256": "864719595d14909c73bd14110adcdcfc304c6621de9ba34feafb83666fac43c9",
+      "assetId": 125776585,
+      "updatedAt": "2023-09-13T01:16:11Z",
+      "publishedDigest": null
+    },
+    {
+      "name": "roster_2023.csv",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2023.csv",
+      "bytes": 967354,
+      "sha256": "f98283e6ef420babc597092b5483109a4570f9b5f63b7bfcce69643290960b6c",
+      "assetId": 156614734,
+      "updatedAt": "2024-03-14T07:18:12Z",
+      "publishedDigest": null
+    },
+    {
+      "name": "combine.csv",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/combine/combine.csv",
+      "bytes": 893875,
+      "sha256": "5648886b1bb9de8a0c42b05ee7b1d9cbe58897676caaa2f6a4a3d3c9228235bb",
+      "assetId": 372509438,
+      "updatedAt": "2026-03-12T17:51:56Z",
+      "publishedDigest": "sha256:5648886b1bb9de8a0c42b05ee7b1d9cbe58897676caaa2f6a4a3d3c9228235bb"
+    },
+    {
+      "name": "players.csv",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/players/players.csv",
+      "bytes": 7298117,
+      "sha256": "97d15de28f366d0548bd0cb10a55f1f41e73752d10054c710075277fba6ef29e",
+      "assetId": 622230603,
+      "updatedAt": "2026-10-08T15:34:25Z",
+      "publishedDigest": "sha256:97d15de28f366d0548bd0cb10a55f1f41e73752d10054c710075277fba6ef29e"
+    },
+    {
+      "name": "snap_counts_2022.csv",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2022.csv",
+      "bytes": 2379719,
+      "sha256": "0018a4833fbf0f825286c1c27450c6254391b548d6c55bcde728e93e4816815a",
+      "assetId": 300999999,
+      "updatedAt": "2025-10-06T06:51:14Z",
+      "publishedDigest": "sha256:0018a4833fbf0f825286c1c27450c6254391b548d6c55bcde728e93e4816815a"
+    },
+    {
+      "name": "ftn_charting_2022.csv",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2022.csv",
+      "bytes": 7089615,
+      "sha256": "80e13831525f726cb3befb7eb62aa6ea8bf55d36080fcf09fdddd7c578f3b200",
+      "assetId": 198051731,
+      "updatedAt": "2024-10-10T01:13:45Z",
+      "publishedDigest": null
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+Profile candidate: run-game-2026-10-13, commit a1b16e666a9ee7d1bc1d2aecba141fc535863b24, source 2402d98170109b92a3a862609e6fc2fadd5114d56524a332c024e77b898df9ad
+Running node node_modules/vitest/vitest.mjs run --project core --maxWorkers=1 test/departed-center-gap.test.ts test/live-gaps.test.ts test/shotgun-exchange.test.ts test/recognition.test.ts test/incidental-catch-readiness.test.ts test/game-rules.test.ts test/qb-rusher-recording.test.ts test/replay-export.test.ts
+
+ RUN  v3.2.4 /workspace/football-gap-integration
+
+ ✓ |core| test/game-rules.test.ts (30 tests) 148ms
+ ✓ |core| test/incidental-catch-readiness.test.ts (13 tests) 272ms
+ ✓ |core| test/qb-rusher-recording.test.ts (5 tests) 1196ms
+   ✓ recording the actual rushing player > records a native pass-call scramble without changing movement, observations or randomness  745ms
+ ✓ |core| test/live-gaps.test.ts (6 tests) 38ms
+ ✓ |core| test/replay-export.test.ts (21 tests) 10ms
+ ✓ |core| test/recognition.test.ts (10 tests) 47ms
+ ❯ |core| test/shotgun-exchange.test.ts (5 tests | 1 failed) 439ms
+   ✓ saved shotgun exchange coordination > P038 transfers in real reach when its installed window opens 114ms
+   × saved shotgun exchange coordination > P069 retains its complete successful native trajectory and events 317ms
+     → expected '1f7c0cba040c006e640c8db9150193933ea46…' to be '756cf2c58a9ddd034381159b078f40566b1a6…' // Object.is equality
+   ✓ saved shotgun exchange coordination > being near a riding landmark does not authorize early departure, side -1 3ms
+   ✓ saved shotgun exchange coordination > being near a riding landmark does not authorize early departure, side 1 2ms
+   ✓ saved shotgun exchange coordination > preserves a declared QB keeper instead of recovering toward a back 3ms
+ ✓ |core| test/departed-center-gap.test.ts (3 tests) 4ms
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  1 failed | 92 passed (93)
+   Start at  18:18:46
+   Duration  5.10s (transform 882ms, setup 0ms, collect 1.64s, tests 2.15s, environment 2ms, prepare 435ms)
+
+Validation receipt: out/controller-readiness/portability.json; exit 1

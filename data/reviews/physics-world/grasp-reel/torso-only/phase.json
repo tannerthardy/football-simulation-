@@ -1,0 +1,20 @@
+{
+  "phase": "intermediate-torso-only",
+  "source": "605e1d6cbe598282468694fa7424845b04f584ea1d46ec66e012dc2bb24eb0d8",
+  "beforeSource": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+  "scope": "Achieved active body impulse centered only when lower share == 0. This is not the all-grip candidate.",
+  "relocation": "All artifacts preserve exact bytes. Report file paths describe their original locations before this snapshot relocation. Archived comparator source is retained as evidence; its original ROOT assumes the parent grasp-reel directory.",
+  "files": {
+    "compare.py": "18d3be008906b21f5908b95cc8fe7dc3fa2c79ee421075d738bfc6c1b87249e2",
+    "local-comparison.json": "1398a6dfbc110ae116d45e176bea4191b4000ff220a5677032d1e646054f2419",
+    "comparison.json": "a2c25d5dfc9c98331b2594480b46ff185db3ad2fefb27c78d5d687a9d356a4e6",
+    "hand-before.json.gz": "5bfd5525fd0719d81877a02a77e3cecf700a1252bb1ead4cbbfbaf36823e9c64",
+    "hand-after.json.gz": "bf62815e07517623ae89e61cb425225c12bb4f6abc2c329bef6449d1532be3f7",
+    "support-before.json.gz": "58e50672920ca44a3f106586687869456be3f86d2202fbd4655e5bd0dc9981ef",
+    "support-after.json.gz": "13190b4951e518fd0cd9e33dfa280f7016be81ff6dfeb3f1095d76ada75e70ea",
+    "oracle-after.json.gz": "1bba108c2feba8e7c9421aacb58c429fbd02a1d27b527e1bba30f5118c501224",
+    "current-runs.json.gz": "cfe4868adc7fa12d33656e4c964dcfbe645fd1a411c10bf739d75a66f76ba189",
+    "current-tackles.json.gz": "eea3321f4ed9c4a480483905892cbe4ab78e908e49662c667c879820f3bb8fa2",
+    "current-games9.json": "aa98a10ec4204756eb8d85ef787176829b96913a9fac98aeb5c508e659af6001"
+  }
+}

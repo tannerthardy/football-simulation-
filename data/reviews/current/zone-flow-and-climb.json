@@ -1,0 +1,941 @@
+{
+  "schema": "zone-flow-and-climb-v1",
+  "sources": {
+    "controllerCommit": "ebff3938494b0e343df4aa00c9b8c492b60e881f",
+    "nativeCombined": "036b15a95676343740643f27f2e2f6dffee0882a557e19a34d941bb3a00ee38d",
+    "nativePhysicsCommit": "8a2682c",
+    "previewBefore": "a6459b85d12a9fc60652904a3d12125f90f1aebb9a0a97df076da35a2aea0f19",
+    "previewAfter": "621ad9364ec2e16bbb18d9ea6ed18397fddccfbac71c303dbe327e7d3b78a359",
+    "previewCommit": "87e8534"
+  },
+  "scope": "Eight designed WZ inputs in center and patch for lateral audit; eight center WZ extensions plus two OZ transfers and two snap-only responsibility installations for climb audit. No full-game cohort, random frequency estimate, NFL yaw/capacity calibration or controller integration.",
+  "physics": {
+    "input": {
+      "rosters": [
+        [
+          31,
+          32
+        ],
+        [
+          41,
+          42
+        ]
+      ],
+      "fronts": [
+        "over",
+        "under"
+      ],
+      "flips": [
+        false,
+        true
+      ],
+      "seed": 3,
+      "limit": 1.8,
+      "late": [
+        0.9,
+        1.6
+      ],
+      "dt": 0.05
+    },
+    "collectorIdentifier": "f4414aac923743a7d2ac256223118fe667ffff3a616c3403970813f27d8784ea",
+    "plays": 16,
+    "all16FrozenEndpointsExact": true,
+    "probes": 144,
+    "maxReconstructedYawError": 1.1161072066556699e-12,
+    "summaries": [
+      {
+        "mode": "center",
+        "who": "OL",
+        "n": 366,
+        "requestedVy": {
+          "p10": -0.7511640856801212,
+          "p50": 1.474674779082211,
+          "p90": 3.1884662530307697
+        },
+        "achievedVy": 1.018990981461391,
+        "requestWrongSide": 80,
+        "requestAboveCurrentBy1": 104,
+        "requestAtLeast3": 56,
+        "magnitudeAboveCap": 3,
+        "plannedAyAtLeastPoint5": 170,
+        "requestedAyPoint5ButAchievedBelowHalf": 51,
+        "supportLimitedTicks": 7,
+        "groundOpposesPlan": 64,
+        "meanMeanUse": 0.7933698379318558,
+        "meanPeakUse": 0.7933698379318558,
+        "peakBindingTicks": 245
+      },
+      {
+        "mode": "center",
+        "who": "DL",
+        "n": 366,
+        "requestedVy": {
+          "p10": -2.1737745822263386,
+          "p50": 1.7780728457806618,
+          "p90": 3.2441711154033492
+        },
+        "achievedVy": 0.9575749142065172,
+        "requestWrongSide": 109,
+        "requestAboveCurrentBy1": 173,
+        "requestAtLeast3": 42,
+        "magnitudeAboveCap": 6,
+        "plannedAyAtLeastPoint5": 170,
+        "requestedAyPoint5ButAchievedBelowHalf": 67,
+        "supportLimitedTicks": 32,
+        "groundOpposesPlan": 45,
+        "meanMeanUse": 0.8754523729142212,
+        "meanPeakUse": 0.8754523729142212,
+        "peakBindingTicks": 237
+      },
+      {
+        "mode": "patch",
+        "who": "OL",
+        "n": 366,
+        "requestedVy": {
+          "p10": -1.0423609235158262,
+          "p50": 1.6415773362418993,
+          "p90": 3.0973655398927824
+        },
+        "achievedVy": 1.0006972576538748,
+        "requestWrongSide": 70,
+        "requestAboveCurrentBy1": 120,
+        "requestAtLeast3": 49,
+        "magnitudeAboveCap": 2,
+        "plannedAyAtLeastPoint5": 184,
+        "requestedAyPoint5ButAchievedBelowHalf": 65,
+        "supportLimitedTicks": 9,
+        "groundOpposesPlan": 52,
+        "meanMeanUse": 0.7894840687849919,
+        "meanPeakUse": 0.8063302126831895,
+        "peakBindingTicks": 178
+      },
+      {
+        "mode": "patch",
+        "who": "DL",
+        "n": 366,
+        "requestedVy": {
+          "p10": -2.4501381705512046,
+          "p50": 1.6170160515846579,
+          "p90": 3.9898105301554474
+        },
+        "achievedVy": 0.9354658926030583,
+        "requestWrongSide": 120,
+        "requestAboveCurrentBy1": 152,
+        "requestAtLeast3": 47,
+        "magnitudeAboveCap": 9,
+        "plannedAyAtLeastPoint5": 179,
+        "requestedAyPoint5ButAchievedBelowHalf": 67,
+        "supportLimitedTicks": 18,
+        "groundOpposesPlan": 29,
+        "meanMeanUse": 0.8122399360452824,
+        "meanPeakUse": 0.827682528789851,
+        "peakBindingTicks": 160
+      }
+    ],
+    "byFront": [
+      {
+        "mode": "center",
+        "front": "over",
+        "n": 186,
+        "wrongSide": 57,
+        "atLeast3": 16,
+        "meanVy": 0.720004712903681,
+        "peakBinding": 135
+      },
+      {
+        "mode": "center",
+        "front": "under",
+        "n": 180,
+        "wrongSide": 23,
+        "atLeast3": 40,
+        "meanVy": 1.3279434589710268,
+        "peakBinding": 110
+      },
+      {
+        "mode": "patch",
+        "front": "over",
+        "n": 186,
+        "wrongSide": 62,
+        "atLeast3": 17,
+        "meanVy": 0.5868229145163099,
+        "peakBinding": 116
+      },
+      {
+        "mode": "patch",
+        "front": "under",
+        "n": 180,
+        "wrongSide": 8,
+        "atLeast3": 32,
+        "meanVy": 1.428367412229357,
+        "peakBinding": 62
+      }
+    ],
+    "profileExample": {
+      "massKg": 149.23188973,
+      "vmax": 7.249871931691923,
+      "tau": 1.2985123554827451,
+      "shuffle": 0.5248,
+      "reach": 1.0693055555555557
+    },
+    "finding": "No demonstrated universal pair-speed barrier; identical bodies/requests retain bare acceleration with zero hand load. Requests, peak yaw/translation budget, contact impulses and incoming lean explain visible differences. Capacities remain uncalibrated model assumptions.",
+    "peakDefinition": "Maximum over feet intervals of hypot(actual translation force, peak yaw torque / support radius) / (traction * actual availability); patch peak reconstructed with exact motor flow; saturation marker>=0.999999."
+  },
+  "climbs": {
+    "operatorSha256": "21ac887f29ec2914fdb8c002ca275a8d751d7c953b62b61c6ce0a5adfd7a805e",
+    "reducerSha256": "064bce2ed06e7eba29c0d0c6e7443b2f4426c15bfb4300bc8eea43a9adc728c0",
+    "inputSha256": "3b84b200db0b23e58cd567b48ae806952e19a0c3923db8d16fe0c21775c2f43a",
+    "parity": {
+      "eightPrior180Exact": true,
+      "extendedPlainFirst": {
+        "input": {
+          "o": 31,
+          "d": 32,
+          "front": "over",
+          "flip": false,
+          "seed": 3,
+          "formation": "ace_11",
+          "run": "wz_strong",
+          "handContact": "center",
+          "side": -1
+        },
+        "t": 3.75,
+        "signature": "06596aab101cb0d2e18f968b75ddd065e4e5535f5ab98019e691b8c9baefb9e4",
+        "exact": true
+      },
+      "OZExtendedPlain": "Not separately checked; no individual OZ parity claim"
+    },
+    "scheduledWzReadCounts": {
+      "confirmation": 8,
+      "proposal": 7,
+      "keeper:phi,useful,control": 1,
+      "keeper:control": 23,
+      "keeper:touching,control": 5,
+      "keeper:phi,touching": 1,
+      "keeper:phi": 13,
+      "keeper:phi,touching,useful,control": 1,
+      "keeper:phi,control": 6,
+      "keeper:phi,useful": 1
+    },
+    "cases": [
+      {
+        "input": {
+          "o": 31,
+          "d": 32,
+          "front": "over",
+          "flip": false,
+          "run": "wz_strong"
+        },
+        "endTime": 3.75,
+        "initial": "7d627b63f3c0ab8737ffeb2a41bfb06a0cbbff16b900250310fcd7221eb54024",
+        "final": "06596aab101cb0d2e18f968b75ddd065e4e5535f5ab98019e691b8c9baefb9e4",
+        "firstCarrierContact": {
+          "t": 3.35,
+          "bSlot": "SS",
+          "note": "body collision"
+        },
+        "climbs": [
+          {
+            "t": 1.15,
+            "aSlot": "C",
+            "bSlot": "LB_M",
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.65,
+            "aSlot": "Y",
+            "bSlot": "LB_S",
+            "note": "secured DE_S; RT stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "C",
+              "LG"
+            ],
+            "t": 0.95
+          },
+          {
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "t": 1.3
+          }
+        ],
+        "scheduledReadCounts": {
+          "confirmation": 2,
+          "proposal": 2,
+          "keeper:phi,useful,control": 1,
+          "keeper:control": 2
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "C/LG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y/RT",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 31,
+          "d": 32,
+          "front": "over",
+          "flip": true,
+          "run": "wz_strong"
+        },
+        "endTime": 3.1,
+        "initial": "5e57f29304b1607ed2b714b26000081817c904487b12967e16ec598aada14a11",
+        "final": "b57605afda385e278fdfdfe4ad3eef25fe7729cd8b9fc1ff49f57b3f0aac3971",
+        "firstCarrierContact": {
+          "t": 2.7,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "aSlot": "LT",
+            "bSlot": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "LT",
+              "LG"
+            ],
+            "t": 0.6
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:touching,control": 1,
+          "keeper:phi,touching": 1,
+          "confirmation": 1,
+          "keeper:phi": 2,
+          "proposal": 1
+        },
+        "backerOwners": {
+          "LB_S": [
+            {
+              "owner": "LT/LG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_M": [
+            {
+              "owner": "C",
+              "kind": "climb"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 31,
+          "d": 32,
+          "front": "under",
+          "flip": false,
+          "run": "wz_strong"
+        },
+        "endTime": 2.65,
+        "initial": "5cb79867a3ec845e914c9ce17f6f7658ad32c436b055cd69f75dfbf7128ea8f9",
+        "final": "120769411ff0e2624abf3f8db1d93d4afebd3bb6cde1df9dd3f435db09ce27ed",
+        "firstCarrierContact": {
+          "t": 2.25,
+          "bSlot": "DE_S",
+          "note": "body collision"
+        },
+        "climbs": [],
+        "firstJoined": [
+          {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "t": 2.35
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:phi": 2,
+          "keeper:phi,touching,useful,control": 1
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "RT/RG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y",
+              "kind": "reach"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 31,
+          "d": 32,
+          "front": "under",
+          "flip": true,
+          "run": "wz_strong"
+        },
+        "endTime": 3.3,
+        "initial": "4b22a4f15842b7659842e1db2b944c76177b191c2a71cded5125ce578faf2faa",
+        "final": "fc9715eaa1e505f316810a9fc0cb82ee99be69836512342991da4b486c224811",
+        "firstCarrierContact": {
+          "t": 2.9,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [
+          {
+            "t": 1.05,
+            "aSlot": "LG",
+            "bSlot": "LB_M",
+            "note": "secured DT_S; C stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "t": 0.65
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:phi,control": 3,
+          "confirmation": 1,
+          "proposal": 1
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "LG/C",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y",
+              "kind": "reach"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 41,
+          "d": 42,
+          "front": "over",
+          "flip": false,
+          "run": "wz_strong"
+        },
+        "endTime": 3.25,
+        "initial": "abf7b1793aa8f32e4b18d5da784f0572b2d58dc0ddb4104b3728af5b0b10fe17",
+        "final": "53413c5f5adf6e489ff890052972f8624c872b629467c38ffed8430e6bdf71f1",
+        "firstCarrierContact": {
+          "t": 2.85,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [
+          {
+            "t": 1.15,
+            "aSlot": "C",
+            "bSlot": "LB_M",
+            "note": "secured DT_W; LG stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "C",
+              "LG"
+            ],
+            "t": 0.95
+          },
+          {
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "t": 1.45
+          }
+        ],
+        "scheduledReadCounts": {
+          "confirmation": 1,
+          "proposal": 1,
+          "keeper:phi,useful": 1,
+          "keeper:control": 11
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "C/LG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y/RT",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 41,
+          "d": 42,
+          "front": "over",
+          "flip": true,
+          "run": "wz_strong"
+        },
+        "endTime": 3.2,
+        "initial": "d41a22a3d012682e5739cf73b03d4adc3994630216dbf8fce84ce657052c109f",
+        "final": "dd7cfe0dd466060ea73223754fb5cc010c1c2b387054b286e3366050a2a5b76b",
+        "firstCarrierContact": {
+          "t": 2.8,
+          "bSlot": "DT_S",
+          "note": "body collision"
+        },
+        "climbs": [
+          {
+            "t": 1.1,
+            "aSlot": "LT",
+            "bSlot": "LB_S",
+            "note": "secured DT_S; LG stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "LT",
+              "LG"
+            ],
+            "t": 0.6
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:touching,control": 1,
+          "keeper:phi,control": 3,
+          "confirmation": 1,
+          "proposal": 1
+        },
+        "backerOwners": {
+          "LB_S": [
+            {
+              "owner": "LT/LG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_M": [
+            {
+              "owner": "C",
+              "kind": "climb"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 41,
+          "d": 42,
+          "front": "under",
+          "flip": false,
+          "run": "wz_strong"
+        },
+        "endTime": 3.1,
+        "initial": "f13f758e442b30d151cb7908e45a365d80427f25da289d9f835b0fdbc67de4a3",
+        "final": "6d8eca66273e920fab87e1960c65b6b6a2b3b3aed2f262874b762901f05da09a",
+        "firstCarrierContact": {
+          "t": 2.7,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [],
+        "firstJoined": [
+          {
+            "members": [
+              "RT",
+              "RG"
+            ],
+            "t": 2.45
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:touching,control": 3,
+          "keeper:control": 2,
+          "confirmation": 1
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "RT/RG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y",
+              "kind": "reach"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 41,
+          "d": 42,
+          "front": "under",
+          "flip": true,
+          "run": "wz_strong"
+        },
+        "endTime": 3.05,
+        "initial": "58ba5572557c06739e941f3427e49b102636c793785d5c18993bac4f965e47ae",
+        "final": "156968c5c4be5d74baf4d99198b1b4c7d621b49e281d383e9e6fcb8244a09962",
+        "firstCarrierContact": {
+          "t": 2.65,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [
+          {
+            "t": 2.65,
+            "aSlot": "C",
+            "bSlot": "LB_M",
+            "note": "secured DT_S; LG stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "t": 0.65
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:phi": 9,
+          "keeper:control": 8,
+          "confirmation": 1,
+          "proposal": 1
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "LG/C",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y",
+              "kind": "reach"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 31,
+          "d": 32,
+          "front": "over",
+          "flip": false,
+          "run": "oz_strong"
+        },
+        "endTime": 3.15,
+        "initial": "a1e3169491a69ac6c4eca5049638d868ff69d5e5dc26ee1f43fac440daad6bd0",
+        "final": "47d4407b67948a2125f1a25aaaf167b100e4c92ef71ccad1f1176e8dfbf992c9",
+        "firstCarrierContact": {
+          "t": 2.75,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [
+          {
+            "t": 1.2,
+            "aSlot": "C",
+            "bSlot": "LB_M",
+            "note": "secured DT_W; LG stays"
+          },
+          {
+            "t": 1.65,
+            "aSlot": "Y",
+            "bSlot": "LB_S",
+            "note": "secured DE_S; RT stays"
+          }
+        ],
+        "firstJoined": [
+          {
+            "members": [
+              "C",
+              "LG"
+            ],
+            "t": 1
+          },
+          {
+            "members": [
+              "Y",
+              "RT"
+            ],
+            "t": 1.3
+          }
+        ],
+        "scheduledReadCounts": {
+          "confirmation": 2,
+          "proposal": 2,
+          "keeper:phi,useful": 1,
+          "keeper:control": 2
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "C/LG",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y/RT",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      },
+      {
+        "input": {
+          "o": 41,
+          "d": 42,
+          "front": "under",
+          "flip": true,
+          "run": "oz_strong"
+        },
+        "endTime": 2.95,
+        "initial": "5c9d9e483d64b8a8c6a2918f8e7c7a71beed2fd69f76682ba1cc630c7ffe7197",
+        "final": "458fb0d03e0b42d5a6e0c127d70895338de051aabe91df7d15b5cd2692b07e95",
+        "firstCarrierContact": {
+          "t": 2.55,
+          "bSlot": "LB_M",
+          "note": "grasp"
+        },
+        "climbs": [],
+        "firstJoined": [
+          {
+            "members": [
+              "LG",
+              "C"
+            ],
+            "t": 0.65
+          }
+        ],
+        "scheduledReadCounts": {
+          "keeper:phi": 12,
+          "keeper:control": 9
+        },
+        "backerOwners": {
+          "LB_M": [
+            {
+              "owner": "LG/C",
+              "kind": "combination-backer"
+            }
+          ],
+          "LB_S": [
+            {
+              "owner": "Y",
+              "kind": "reach"
+            }
+          ],
+          "LB_W": [
+            {
+              "owner": "H",
+              "kind": "stalk"
+            }
+          ]
+        }
+      }
+    ],
+    "snapOnly": {
+      "count": 2,
+      "finding": "All selected installations account for three linebacker slots, including receiver stalk jobs. Assignment does not certify arrival. Historical14unassignedcases need original calls."
+    },
+    "geometryWitness": {
+      "input": "31/32 WZ Over flipped",
+      "eventTime": 2.7,
+      "physicalEndpointTime": 2.75,
+      "C": [
+        42.739,
+        30.1895
+      ],
+      "LB_M": [
+        41.1356,
+        30.4468
+      ],
+      "RB": [
+        40.3226,
+        30.1596
+      ],
+      "LBToRB": 0.8623,
+      "CToLB": 1.6239,
+      "CProjectionOnDirectedLBToRB": -1.6538,
+      "interpretation": "C lies beyond LB on the side away from RB; the reach does not cross C. Blocker fit versus runner read remains unisolated. Current joint N/T not recorded; felt loads are not joint loads."
+    }
+  },
+  "preview": {
+    "baseline": {
+      "commit": "1ff0670ef7e76356199b7b089983e9aab3ed3835",
+      "source": "a6459b85d12a9fc60652904a3d12125f90f1aebb9a0a97df076da35a2aea0f19",
+      "snapshot": "out/preview-model/baseline-source",
+      "cases": 18,
+      "failed": 10,
+      "passed": 8,
+      "testMs": 77,
+      "log": "out/preview-model/baseline-test.log",
+      "logSha256": "7174f541d50896b158a8b34fb565de551aebc2fc38de05e8ab31d79972c0852f"
+    },
+    "candidate": {
+      "sourceBeforeAfter": "621ad9364ec2e16bbb18d9ea6ed18397fddccfbac71c303dbe327e7d3b78a359",
+      "helperSha256": "6bc54d02f95dcfa693332e58ddeb52fd6a5f8a26190b7b6367e31946a2239fdb",
+      "cases": 18,
+      "passed": 18,
+      "testMs": 84,
+      "totalMs": 622,
+      "log": "out/preview-model/candidate-test.log",
+      "logSha256": "2e79e57d8ada869fda1677ea4265bb2efd549d29c3438a033992f492c78d3c1a"
+    },
+    "mechanism": {
+      "before": "Helper ignored the requested fifth mode argument and always constructed center World.",
+      "after": "Explicit center/patch choice constructs matching scratch World; at most two model entries per source Body. Default remains center.",
+      "directionalBoundaryFirstSample": {
+        "timeSeconds": 0.05,
+        "oldPreviewSpeedYdPerSecond": 5.752778468418103,
+        "independentPatchSpeedYdPerSecond": 5.7,
+        "samplePositionErrorYd": 0.001319461710453,
+        "meaning": "An immediate model mismatch, not an NFL movement target or proof of ordinary frequency."
+      }
+    },
+    "scope": "A free held-command forecast must execute the selected body's movement model. This does not forecast grips, traffic, future decisions or run-block outcomes.",
+    "preserved": "All eight original default-center assertions remain and pass; no original hashes or physical tolerances were replaced.",
+    "limits": [
+      "Only the selected handContact-associated gait/yaw model is added; independent checks use the same default legacy support model.",
+      "All existing production callers still use the default until their owner explicitly supplies the actual model. This helper repair alone does not establish a changed native play.",
+      "An empty-World preview is not an engaged-contact reachability certificate, and cannot guarantee a climb, tackle, clear lane or successful block."
+    ],
+    "testTypeAnnotation": {
+      "baselineTestSha": "e4fe3312d267254b57795bdf53e4f44fbace79cb432af7e1932c8cdcd6134e7d",
+      "finalTestSha": "31dd8d73dc4b70abb8e3e598cfd88925f2acc7861f2133b5154ef96752729139",
+      "emittedJsSame": true,
+      "emittedJsSha": "7d82792df5289b113122854885e80b2b4adfe8dd48f504576cc066519ab79d87"
+    },
+    "finalTestSha256": "31dd8d73dc4b70abb8e3e598cfd88925f2acc7861f2133b5154ef96752729139"
+  },
+  "verification": {
+    "typescript": {
+      "passed": 1482,
+      "failed": 0,
+      "files": 119,
+      "seconds": 156.092,
+      "logSha256": "1ba0d44b4f9239e75db2b4da68811272cc08b487503da13d88ac0abf7cc71c7b"
+    },
+    "python": 141,
+    "typecheck": "pass",
+    "build": "pass",
+    "defaultHashes": "Both preserved run/pass pins pass; original default preview assertions retained.",
+    "promotion": "Not rerun: no World law or controller behavior changed; prior42/50gate remains open.",
+    "manualReproduction": {
+      "passed": true,
+      "source": "036b15a95676343740643f27f2e2f6dffee0882a557e19a34d941bb3a00ee38d",
+      "physicsSummariesExact": true,
+      "climbCompactExact": true,
+      "note": "All documented manual commands executed in fresh ignored folder; regenerated compact climb witnesses and physics summaries match. Archived reducer omits the old mandatory hash of an unrelated local human-review file; classifications unchanged."
+    }
+  },
+  "tools": {
+    "docs/archive/research/contact-mechanics/zone-climb-observer.ts": "21ac887f29ec2914fdb8c002ca275a8d751d7c953b62b61c6ce0a5adfd7a805e",
+    "docs/archive/research/contact-mechanics/reduce-zone-climb.py": "616316d4e705609e3a171c5b164e0f654c63f88e312a10d58fca6a1581862816",
+    "docs/archive/research/contact-mechanics/zone-lateral-audit.ts": "3be4b6ffeed30b060cd160bf4e986713e9180f1ba90dc70a294221b6593f3df9"
+  },
+  "artifactHashes": {
+    "out/zone-climb/physics-audit.json": "44aabf2ad413804fbc684835cdec8ac4ec387c2dec6bbf3e638d45c9b9cdd2ab",
+    "out/zone-climb/receipt.json": "015cac419cce4e09ec24fe1c01fdbe2e11c9442e72700bbe335c2f3828465e17",
+    "out/zone-climb/compact-witnesses.json": "1b44d95d4228b1ce138ebe262916732c143c9417b14db3a5d29f2a88e04960cc",
+    "out/preview-model/receipt.json": "114cdb18653b54840f4d47c4a1d05fd2d514d25b6de126bc10f1d4550d5cad15"
+  },
+  "nextForClaude": [
+    "Preserve useful lateral work during anchor.",
+    "Replace contradictory fixed-frame keeper tests with coherent attained useful contact and personal acquired evidence.",
+    "Use timed attainable postrelease approaches; expose nominal unreachable fallback, consistent acquired aim/velocity, and near-fit transition.",
+    "Grade protected runner path after acquisition, retaining valid defensive access and tackle bonds.",
+    "Recover original unassigned calls and fix full responsibility ledger locally, including stalk jobs."
+  ]
+}

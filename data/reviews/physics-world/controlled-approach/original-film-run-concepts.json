@@ -1,0 +1,77 @@
+{
+  "sourceSha256": "92eb1ea66cfffd94732d7eb2dc8132212a135fdf8a2cf17a595f7d1674632e63",
+  "baselineCommit": "2c2c250c48c6ce32c95fa6778bfd0d1c18e41d63",
+  "definition": "Non-nullified run clips in the original six fixed-team games. Unmatched front/context groups, small concept samples, not causal or calibration targets. 10+ yd is the explosive definition; stuffs are <=0 yd.",
+  "concepts": {
+    "outsideZone": {
+      "attempts": 52,
+      "yards": 336.40000000000003,
+      "tenPlus": 6,
+      "stuffs": 3,
+      "yardsPerCarry": 6.46923076923077
+    },
+    "trap": {
+      "attempts": 12,
+      "yards": 15.25,
+      "tenPlus": 0,
+      "stuffs": 3,
+      "yardsPerCarry": 1.2708333333333333
+    },
+    "power": {
+      "attempts": 18,
+      "yards": 13.08,
+      "tenPlus": 0,
+      "stuffs": 9,
+      "yardsPerCarry": 0.7266666666666667
+    },
+    "draw": {
+      "attempts": 9,
+      "yards": 4.090000000000002,
+      "tenPlus": 0,
+      "stuffs": 5,
+      "yardsPerCarry": 0.45444444444444465
+    },
+    "insideZone": {
+      "attempts": 33,
+      "yards": 73.57999999999998,
+      "tenPlus": 1,
+      "stuffs": 7,
+      "yardsPerCarry": 2.229696969696969
+    },
+    "counter": {
+      "attempts": 13,
+      "yards": 112.39000000000003,
+      "tenPlus": 3,
+      "stuffs": 1,
+      "yardsPerCarry": 8.645384615384618
+    },
+    "wideZone": {
+      "attempts": 43,
+      "yards": 254.34999999999997,
+      "tenPlus": 6,
+      "stuffs": 0,
+      "yardsPerCarry": 5.915116279069767
+    },
+    "duo": {
+      "attempts": 17,
+      "yards": 32.86,
+      "tenPlus": 0,
+      "stuffs": 3,
+      "yardsPerCarry": 1.9329411764705882
+    },
+    "splitZone": {
+      "attempts": 7,
+      "yards": 15.290000000000001,
+      "tenPlus": 0,
+      "stuffs": 1,
+      "yardsPerCarry": 2.1842857142857146
+    },
+    "toss": {
+      "attempts": 4,
+      "yards": 23.58,
+      "tenPlus": 0,
+      "stuffs": 0,
+      "yardsPerCarry": 5.895
+    }
+  }
+}

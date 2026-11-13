@@ -1,0 +1,393 @@
+{
+  "schema": "run-puller-target-read-review-v1",
+  "baselineSourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "candidatePullOnlySourceSha256": "8f686b44daa72203e69cd59b1d975a2ff47fc673f0e527da0788bed881dfbe14",
+  "physicsWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "candidateBlockingModuleSha256": "79fc177374ca7e83dbe0ffb613bd7c904839fb2581935bf35d8e6c7281da46d9",
+  "pairedPolicyAdapterSha256": "8092e567e67d474cabeafe809d66a39ac6ddf83e76888787866eb1cb2bd5118e",
+  "adapterCommonSha256": "17266132697681cf43e2686e0cfa42778b85685a3d97c6654289c8cce2261571",
+  "nativeGameIndexSha256": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f",
+  "scope": "Baseline native Game prefix and PlaySim constructor, then only update, attack and readPull instance descriptors borrowed from the pull-only candidate on originally installed kick/trap pullers. Wrappers, other blockers, defenders and World use baseline policies/capacities. Captured initial state agrees before the explicit fresh controller-memory initialization. This is a narrow component counterfactual, not whole candidate-game evidence.",
+  "classIdentityBridge": "During selected snap only, CandidateRunBlocker[Symbol.hasInstance] forwards to baseline RunBlocker so borrowed methods recognize baseline teammate controllers. Bridge and borrowed instance method descriptors are restored after the selected run. No baseline prototype mutation or nonpuller method swap.",
+  "observation": "Wrap existing controller, sim.see and World calls without adding perceptions, decisions, RNG or movement. Read additions in candidate are the actual proposed controller behavior, not diagnostic enrichment. Baseline exact initial/history/result/final/RNG and observed/plain per-tick agreement are required; changed candidate outcomes are retained.",
+  "acceptance": "Repair an identified absent cue and obsolete approach request while retaining physical clearance, delayed cadence, finite movement and loss possibilities. Gain direction and NFL averages are not acceptance criteria.",
+  "focusedValidation": {
+    "command": "npx vitest run test/puller-target-read.test.ts test/run-execution.test.ts test/run-system.test.ts test/run-technique.test.ts test/run-block-fit.test.ts test/draw-presentation.test.ts --maxWorkers=1",
+    "files": 6,
+    "tests": 114,
+    "passed": 114,
+    "durationSeconds": 5.27,
+    "newFixtures": 10,
+    "fixtureScope": "Moving kick/trap, unchanged first step, body clearance vs waypoint tolerance, stale picture, normal-cadence retention, stationary corner, exact observed geometry mirror, unaffected wrapper insertion and an actual bounded World advance. A widened stationary target must permit actual waypoint progression instead of stalling at an updated requested point."
+  },
+  "results": [
+    {
+      "id": "G5-P053",
+      "selection": "user-selected mechanism witness",
+      "actor": "RG",
+      "installedKind": "pull",
+      "installedRole": "kick",
+      "installedTarget": "DE_W",
+      "otherInstalledPullersNotSwapped": [
+        {
+          "slot": "RT",
+          "role": "lead"
+        }
+      ],
+      "snapSeed": 3599669369,
+      "initialSha256": "d03c5c2565f356b28a39730d2444f760921569d97bcbf7f4de7c18dfdce8fdd7",
+      "fullInitialSha256": "848de2e5e553329ddf5a48c1ab83cdc9d3a5bbd9d38b9cbf17b59cd16420ece1",
+      "priorLogSha256": "798c3180353275fcfdca6273c2d826d3cef5297fb02d6ffd81af522f02dce687",
+      "sourceAndObserverChecks": {
+        "matchedNativePrefixAndCapturedInitialState": true,
+        "baselineMatchesOriginalOrdinaryLightExecution": true,
+        "baselineObservedPlainResultStateTicksAndRng": true,
+        "candidateObservedPlainResultStateTicksAndRng": true,
+        "borrowedOnlyInstalledKickTrapInstances": true,
+        "extraPerceptionAddedByDiagnosticObserver": false
+      },
+      "stateInitAfterInitialCapture": {
+        "slot": "RG",
+        "pullRead": null,
+        "pullCleared": false,
+        "baselineInitialHasTheseFields": false
+      },
+      "baseline": {
+        "resultSha256": "411238106279b4b6f6de4484e52f6f979a7c065ae4cf4c9cbc7a970f106fea16",
+        "outcome": "tackle",
+        "gainYards": -4.13,
+        "durationSeconds": 2.25,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": null,
+          "personallyConsumedTargetPictures": 0,
+          "firstFacingFitRequestSeconds": null,
+          "firstRecordedTargetBlockContactSeconds": null
+        },
+        "limits": {
+          "solves": 45,
+          "maxAbsoluteWorkResidual": 3.83160170258634e-12,
+          "maxArmImpulseBudgetExcess": 7.105427357601002e-15,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "c834e2a26b30ca8f79d9611dd645b9c65647e12da12c05cc44e5aac822f725b2"
+      },
+      "candidate": {
+        "resultSha256": "dabd2ae00781312a870d8da966c07ac7cec3118fb007eba3d87b38fa924f11d9",
+        "outcome": "tackle",
+        "gainYards": -4.15,
+        "durationSeconds": 2.25,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 0.25,
+          "personallyConsumedTargetPictures": 9,
+          "firstFacingFitRequestSeconds": 0.75,
+          "firstRecordedTargetBlockContactSeconds": null
+        },
+        "limits": {
+          "solves": 45,
+          "maxAbsoluteWorkResidual": 3.069544618483633e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "fdfe657db6635110b4ae7446c2f459e512ac514e27f1f656f4358f626baea1ee"
+      },
+      "gainDeltaYards": -0.02,
+      "outcomeDirectionOnly": "adverse gain change"
+    },
+    {
+      "id": "G1-P169",
+      "selection": "user-selected mechanism witness",
+      "actor": "RG",
+      "installedKind": "pull",
+      "installedRole": "trap",
+      "installedTarget": "DT_S",
+      "otherInstalledPullersNotSwapped": [],
+      "snapSeed": 3679040486,
+      "initialSha256": "d35672acb1897286fe8d5717a83e02657c9c811081f9dde6d1efd6c758adcc16",
+      "fullInitialSha256": "1fdcb6b566ea0561e2661ad16e8a33d6f81e280d5b44e1ce23d944e43f43830e",
+      "priorLogSha256": "0b1a84772a900fa4bd1518e8543fb6a41c239fbfa8571329ed1d577fa4a5807d",
+      "sourceAndObserverChecks": {
+        "matchedNativePrefixAndCapturedInitialState": true,
+        "baselineMatchesOriginalOrdinaryLightExecution": true,
+        "baselineObservedPlainResultStateTicksAndRng": true,
+        "candidateObservedPlainResultStateTicksAndRng": true,
+        "borrowedOnlyInstalledKickTrapInstances": true,
+        "extraPerceptionAddedByDiagnosticObserver": false
+      },
+      "stateInitAfterInitialCapture": {
+        "slot": "RG",
+        "pullRead": null,
+        "pullCleared": false,
+        "baselineInitialHasTheseFields": false
+      },
+      "baseline": {
+        "resultSha256": "852d12375f79726b5c5a03295e201b715c0113f07340b089c29ff47da2518054",
+        "outcome": "tackle",
+        "gainYards": -3.79,
+        "durationSeconds": 2.2,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 1.9,
+          "personallyConsumedTargetPictures": 6,
+          "firstFacingFitRequestSeconds": 1.9,
+          "firstRecordedTargetBlockContactSeconds": null
+        },
+        "limits": {
+          "solves": 44,
+          "maxAbsoluteWorkResidual": 4.127365116346482e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "c3fe7ba3d8ca7967cbbe1c48d9f747e8d2d5a8daac926702e8102e660cefebe8"
+      },
+      "candidate": {
+        "resultSha256": "87d576c8868d2bcc6cc202d80496caebec318612a4a84a690c532828481c2a53",
+        "outcome": "tackle",
+        "gainYards": -3.73,
+        "durationSeconds": 2.3,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 0.05,
+          "personallyConsumedTargetPictures": 9,
+          "firstFacingFitRequestSeconds": 0.8,
+          "firstRecordedTargetBlockContactSeconds": null
+        },
+        "limits": {
+          "solves": 46,
+          "maxAbsoluteWorkResidual": 3.836486683894691e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "db67e7605655948a2a27d2da94dc86119f85cf4f14380b151a5d5fa91a1f209b"
+      },
+      "gainDeltaYards": 0.06,
+      "outcomeDirectionOnly": "increased gain; not automatically a better mechanism"
+    },
+    {
+      "id": "G2-P021",
+      "selection": "user-selected mechanism witness",
+      "actor": "RG",
+      "installedKind": "pull",
+      "installedRole": "kick",
+      "installedTarget": "DE_W",
+      "otherInstalledPullersNotSwapped": [
+        {
+          "slot": "RT",
+          "role": "lead"
+        }
+      ],
+      "snapSeed": 2170819994,
+      "initialSha256": "fcef1b32956fffc0a175c8327a9658bf5cc75be9cf0e3e8760aae91bf148afe4",
+      "fullInitialSha256": "e3bffc88a357d639d61ca582eb622196349f1c54d1e7d5a62fa27350fcc3dbcb",
+      "priorLogSha256": "e5a93f9f61d0a0d85f81337361596c1e70ac3263b8b504635fb6b81493ba8913",
+      "sourceAndObserverChecks": {
+        "matchedNativePrefixAndCapturedInitialState": true,
+        "baselineMatchesOriginalOrdinaryLightExecution": true,
+        "baselineObservedPlainResultStateTicksAndRng": true,
+        "candidateObservedPlainResultStateTicksAndRng": true,
+        "borrowedOnlyInstalledKickTrapInstances": true,
+        "extraPerceptionAddedByDiagnosticObserver": false
+      },
+      "stateInitAfterInitialCapture": {
+        "slot": "RG",
+        "pullRead": null,
+        "pullCleared": false,
+        "baselineInitialHasTheseFields": false
+      },
+      "baseline": {
+        "resultSha256": "ae41643092459c8a112e477b1a9d506e2ea4d6f0d1508e3b2c17f736044e3b79",
+        "outcome": "tackle",
+        "gainYards": 21.33,
+        "durationSeconds": 6.4,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 2.75,
+          "personallyConsumedTargetPictures": 56,
+          "firstFacingFitRequestSeconds": 2.75,
+          "firstRecordedTargetBlockContactSeconds": 3
+        },
+        "limits": {
+          "solves": 128,
+          "maxAbsoluteWorkResidual": 1.8989254613188677e-11,
+          "maxArmImpulseBudgetExcess": 2.1316282072803006e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "75775e1902a520f8c609e03ecc45e70088d4e859938f90a123ee7420ad3256ad"
+      },
+      "candidate": {
+        "resultSha256": "3fe10de6e5222c574d458f4b75e321800617a46c05ddfb06faa324745c400a6f",
+        "outcome": "tackle",
+        "gainYards": 3.45,
+        "durationSeconds": 4.05,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 0.25,
+          "personallyConsumedTargetPictures": 16,
+          "firstFacingFitRequestSeconds": 0.85,
+          "firstRecordedTargetBlockContactSeconds": null
+        },
+        "limits": {
+          "solves": 81,
+          "maxAbsoluteWorkResidual": 8.813394458684343e-12,
+          "maxArmImpulseBudgetExcess": 7.105427357601002e-15,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "df7f31cc56f36ce6fbf4ecc088c2aa84d071570e91a3cb15c78de316f05fb7c6"
+      },
+      "gainDeltaYards": -17.88,
+      "outcomeDirectionOnly": "adverse gain change"
+    },
+    {
+      "id": "G1-P060",
+      "selection": "predeclared ordinary random-review control",
+      "actor": "RG",
+      "installedKind": "pull",
+      "installedRole": "trap",
+      "installedTarget": "DE_S",
+      "otherInstalledPullersNotSwapped": [],
+      "snapSeed": 2922212320,
+      "initialSha256": "8e6b7b7a7b955239a9a3f403454f5a7ccbcd9965dea64b8e938cdfb28ccb2b14",
+      "fullInitialSha256": "0729ebad4f09a9acd6767c7bee8795d35c948be87f245cbe13574f4cb768914f",
+      "priorLogSha256": "e9b0f3b72d5ada662c38564c4efc1f8d41ead6a8400f999ff295c35bd42c939e",
+      "sourceAndObserverChecks": {
+        "matchedNativePrefixAndCapturedInitialState": true,
+        "baselineMatchesOriginalOrdinaryLightExecution": true,
+        "baselineObservedPlainResultStateTicksAndRng": true,
+        "candidateObservedPlainResultStateTicksAndRng": true,
+        "borrowedOnlyInstalledKickTrapInstances": true,
+        "extraPerceptionAddedByDiagnosticObserver": false
+      },
+      "stateInitAfterInitialCapture": {
+        "slot": "RG",
+        "pullRead": null,
+        "pullCleared": false,
+        "baselineInitialHasTheseFields": false
+      },
+      "baseline": {
+        "resultSha256": "97601bdb02a672fd20b4e4395ab42763afc82f8fd9d4b28ab8dca5110af5ddd7",
+        "outcome": "tackle",
+        "gainYards": 1.05,
+        "durationSeconds": 3.15,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 2.05,
+          "personallyConsumedTargetPictures": 7,
+          "firstFacingFitRequestSeconds": 2.45,
+          "firstRecordedTargetBlockContactSeconds": 2.1
+        },
+        "limits": {
+          "solves": 63,
+          "maxAbsoluteWorkResidual": 4.718003765447065e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "7622a81d98f45c1a33f63b3df893dea77ee338d08b8790ccc7c2a9f15fb23868"
+      },
+      "candidate": {
+        "resultSha256": "65f7912aa6a8933eeedcd30a0ff3561b292c95bf9f99f17b1b18e174df72cb1d",
+        "outcome": "tackle",
+        "gainYards": 1.53,
+        "durationSeconds": 3.35,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 0.05,
+          "personallyConsumedTargetPictures": 12,
+          "firstFacingFitRequestSeconds": 0.9,
+          "firstRecordedTargetBlockContactSeconds": 2.15
+        },
+        "limits": {
+          "solves": 67,
+          "maxAbsoluteWorkResidual": 4.650058116340006e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "dd064ed44fd272200dfaf043a556b0bffc04cc232e797fb6001b20a30217ff94"
+      },
+      "gainDeltaYards": 0.48,
+      "outcomeDirectionOnly": "increased gain; not automatically a better mechanism"
+    },
+    {
+      "id": "G8-P115",
+      "selection": "predeclared ordinary random-review control",
+      "actor": "RG",
+      "installedKind": "pull",
+      "installedRole": "kick",
+      "installedTarget": "DE_S",
+      "otherInstalledPullersNotSwapped": [],
+      "snapSeed": 583147774,
+      "initialSha256": "547cdf772017f639c00534f5ed9e7f1120b95cabfffb16fd42e6469a7cdd632b",
+      "fullInitialSha256": "fda92bb48f6a197556f7d3ff9bad4e324bd6431921b59cda159ef0d23afb1b06",
+      "priorLogSha256": "db9d4bee5f7bfef113920c41484e9749ad2976f730d120c338bb6699e7e9941a",
+      "sourceAndObserverChecks": {
+        "matchedNativePrefixAndCapturedInitialState": true,
+        "baselineMatchesOriginalOrdinaryLightExecution": true,
+        "baselineObservedPlainResultStateTicksAndRng": true,
+        "candidateObservedPlainResultStateTicksAndRng": true,
+        "borrowedOnlyInstalledKickTrapInstances": true,
+        "extraPerceptionAddedByDiagnosticObserver": false
+      },
+      "stateInitAfterInitialCapture": {
+        "slot": "RG",
+        "pullRead": null,
+        "pullCleared": false,
+        "baselineInitialHasTheseFields": false
+      },
+      "baseline": {
+        "resultSha256": "7d26fc21409286ea1fc1a51aa499b719fb8dbb07418c22e53a99caf25345af73",
+        "outcome": "tackle",
+        "gainYards": 1.05,
+        "durationSeconds": 3.6,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 2.5,
+          "personallyConsumedTargetPictures": 16,
+          "firstFacingFitRequestSeconds": 2.5,
+          "firstRecordedTargetBlockContactSeconds": 2.7
+        },
+        "limits": {
+          "solves": 72,
+          "maxAbsoluteWorkResidual": 5.375699885235008e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "b60b5a28db71842387e6011982e4e9712566182e0389d0bad1a52be55fd70039"
+      },
+      "candidate": {
+        "resultSha256": "82f8278388911419337b06a2f7e7b3caaab8ccf1a8d23146f69f2205efc0c176",
+        "outcome": "tackle",
+        "gainYards": 0.81,
+        "durationSeconds": 3.4,
+        "mechanism": {
+          "firstConsumedTargetPictureSeconds": 0.25,
+          "personallyConsumedTargetPictures": 12,
+          "firstFacingFitRequestSeconds": 1,
+          "firstRecordedTargetBlockContactSeconds": 2.3
+        },
+        "limits": {
+          "solves": 68,
+          "maxAbsoluteWorkResidual": 5.830447236121472e-12,
+          "maxArmImpulseBudgetExcess": 1.4210854715202004e-14,
+          "maxArmWorkBudgetExcess": 0,
+          "maxSupportMotorWorkBudgetExcess": 0
+        },
+        "packetSha256": "808661759cce5fb7e2e0cc9fa96a7c188451cd4648f88dbe9dc38574e180be8e"
+      },
+      "gainDeltaYards": -0.24,
+      "outcomeDirectionOnly": "adverse gain change"
+    }
+  ],
+  "limits": [
+    "Five selected observations are not league-wide frequency evidence.",
+    "G5-P053 and G1-P169 still lose their blocks; acquiring a target picture does not grant a reachable or successful interception.",
+    "G2-P021 gains 3.45 rather than 21.33 yd; retain this adverse pair and review deep-penetration relevance, kick/log coordination and RB/WRAP use of achieved geometry. Do not optimize the repair toward preserving its old gain.",
+    "Root may combine further independent policies after this source pin. These numbers describe only the named puller component, not that eventual combined engine.",
+    "Generated packet and adapter files remain ignored. General mechanism is covered by tracked fixtures; no new diagnostic framework was added."
+  ],
+  "reproducedImplementationCorrection": {
+    "problem": "Updated observed target waypoint was requested, but progression compared against the old stored waypoint; a widened stationary target could leave the guard parked instead of turning up.",
+    "evidence": "New widened-target fixture failed with commanded vel.x=0 before the correction.",
+    "repair": "Store the same current observed waypoint in existing pullPath before measuring future progression. Original first clearance point is preserved.",
+    "revalidation": "All 114 focused assertions pass; all five final source-pinned narrow policy pairs recollected rather than copying old candidate outputs. Typecheck passes."
+  }
+}

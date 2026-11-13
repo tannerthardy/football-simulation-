@@ -1,0 +1,86 @@
+{
+ "source": "Big Data Bowl 2025 plays (2022 weeks 1-9); game clock between consecutive snaps of a drive, outside the last 2:00 of Q2 and 5:00 of Q4",
+ "games": 136,
+ "scrimmagePlaysPerTeamGame": 59.28,
+ "secondsBetweenSnaps": {
+  "in bounds": {
+   "n": 7195,
+   "mean": 39.37,
+   "p25": 35,
+   "median": 40,
+   "p75": 43
+  },
+  "incomplete": {
+   "n": 1476,
+   "mean": 6.55,
+   "p25": 4,
+   "median": 5.0,
+   "p75": 6
+  },
+  "out of bounds": {
+   "n": 1262,
+   "mean": 36.01,
+   "p25": 31,
+   "median": 36.0,
+   "p75": 40
+  },
+  "penalty": {
+   "n": 155,
+   "mean": 24,
+   "p25": 19,
+   "median": 25,
+   "p75": 28
+  },
+  "sack": {
+   "n": 213,
+   "mean": 42.07,
+   "p25": 40,
+   "median": 43,
+   "p75": 45
+  },
+  "all": {
+   "n": 10301,
+   "mean": 34.08,
+   "p25": 29,
+   "median": 38,
+   "p75": 42
+  }
+ },
+ "playClockAtNextSnap": {
+  "in bounds": {
+   "n": 7195,
+   "mean": 10.22,
+   "p25": 6.0,
+   "median": 9.0,
+   "p75": 13.0
+  },
+  "incomplete": {
+   "n": 1476,
+   "mean": 7.4,
+   "p25": 4.0,
+   "median": 6.0,
+   "p75": 10.0
+  },
+  "out of bounds": {
+   "n": 1262,
+   "mean": 9.55,
+   "p25": 5.0,
+   "median": 9.0,
+   "p75": 12.0
+  },
+  "penalty": {
+   "n": 155,
+   "mean": 10.14,
+   "p25": 7.0,
+   "median": 10.0,
+   "p75": 13.0
+  },
+  "sack": {
+   "n": 213,
+   "mean": 7.19,
+   "p25": 4.0,
+   "median": 6.0,
+   "p75": 8.0
+  }
+ }
+}

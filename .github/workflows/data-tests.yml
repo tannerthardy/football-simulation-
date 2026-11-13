@@ -1,0 +1,41 @@
+name: offline data tests
+
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  data:
+    name: offline data
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/data/requirements-movement.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install declared test dependencies
+        run: |
+          python3 -m pip install -r scripts/data/requirements-movement.txt
+          npm ci --no-audit --no-fund
+      - name: Show runtime and dependency versions
+        run: |
+          python3 --version
+          node --version
+          python3 -c 'import numpy, pandas; print(f"NumPy {numpy.__version__}; pandas {pandas.__version__}")'
+      # Discover every test_*.py, including mechanics-guard and future
+      # measurement fixtures. Import failures and failed tests fail the job.
+      # These use offline fixtures; do not fetch NFL data or simulate games.
+      - name: Run discovered offline tests
+        run: npm run test:data -- --verbose

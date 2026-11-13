@@ -1,0 +1,28 @@
+{
+  "schema": "pr87-reload-contract-independent-review-v1",
+  "reviewer": "/root/review_87_reload_contract",
+  "decision": "ACCEPT exact test-only reload correction; no material Run/Catching contract ambiguity. Production and football reviews remain independently source-qualified.",
+  "reviewedCommit": "618a65f9820698bac50887e335657e66e636224c",
+  "failedFreeze": "b3caeb84c4fe72b603dbf68ef48b2628889d24ce",
+  "path": "test/pull-fit-plan.test.ts",
+  "blob": "079f42e5eff993821d2e8143b1fdf7dbb36f4f1f",
+  "sha256": "1d4e465dd0faf642d710dcab853d3a0c8cd9a35ec6edd2b072eff848b3dc65e7",
+  "patchSha256": "4d90527d79dd07672b656b1b0fa3eccfe6146509c68eabc21184a624a3ca43cf",
+  "sourceTreeUnchanged": "801eb5a54242dfdb40a90626f8d7e761ae712f02",
+  "checks": [
+    "Only controller() helper changes versus failed freeze.",
+    "Each flag arm imports its own movementObjective reader and asserts exactly one expected private symbol.",
+    "Goal is defined; symbol value equals module-reader output.",
+    "Only module-specific symbol identity is canonicalized; all enumerable physical fields and complete objective payload remain in existing whole-command equality.",
+    "All physical,target,body and positive/negative planner assertions remain.",
+    "Production Symbol ownership, source, settings, scripts, dependencies and tooling unchanged."
+  ],
+  "limits": [
+    "Accepts semantic comparison repair only; does not certify football merit or final verification.",
+    "MoveCommand fields in these fixtures are ordinary enumerable fields. No new runtime or test scope was requested."
+  ],
+  "newTests": 0,
+  "newSimulations": 0,
+  "edits": 0,
+  "externalPublications": 0
+}

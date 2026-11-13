@@ -1,0 +1,400 @@
+{
+  "schema": "hand-force-publication-verification-v1",
+  "parentCommit": "c02a3b94ef0a0d6d689c7cb4feda43d3276e13ff",
+  "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "sourceHashContract": "Sorted src file paths and bytes with NUL delimiters; scripts/source-version.ts",
+  "node": "v22.23.3",
+  "checks": [
+    {
+      "name": "Complete TypeScript suite (isolated final rerun)",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--minWorkers=1"
+      ],
+      "exitCode": 0,
+      "tests": 599,
+      "files": 59,
+      "log": "tests-final.log"
+    },
+    {
+      "name": "Initial concurrent TypeScript suite",
+      "exitCode": 1,
+      "collectedAssertionsPassed": 593,
+      "failure": "Vitest worker RPC timeout; retained separately, no assertions/suites disabled",
+      "log": "tests.log"
+    },
+    {
+      "name": "Final typecheck",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json",
+        "--noEmit"
+      ],
+      "exitCode": 0,
+      "log": "typecheck-final.log"
+    },
+    {
+      "name": "Final build",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "exitCode": 0,
+      "log": "build-final.log"
+    },
+    {
+      "name": "Python data suite",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_*.py"
+      ],
+      "exitCode": 0,
+      "tests": 22,
+      "log": "python.log"
+    }
+  ],
+  "declaredActualInvocations": {
+    "end-run-guard": {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/disable-centered-hands.ts",
+        "scripts/diag/run-contact-review.ts",
+        "out/hand-force-review/end-runs.json"
+      ],
+      "modeSelection": "disable-centered-hands.ts preload before World.firstStep",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "exitCode": 0
+    },
+    "end-game-guard": {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "--import",
+        "./scripts/diag/disable-centered-hands.ts",
+        "scripts/diag/held-recovery-football.ts",
+        "out/hand-force-review/end-games9.json",
+        "9",
+        "--games-only"
+      ],
+      "modeSelection": "disable-centered-hands.ts preload before World.firstStep",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "exitCode": 0
+    },
+    "centered-run-guard": {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/run-contact-review.ts",
+        "out/hand-force-review/centered-runs.json"
+      ],
+      "modeSelection": "live default centered",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "exitCode": 0
+    },
+    "centered-game-guard": {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--expose-gc",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/hand-force-review/centered-games9.json",
+        "9",
+        "--games-only"
+      ],
+      "modeSelection": "live default centered",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "exitCode": 0
+    }
+  },
+  "currentTools": {
+    "scripts/diag/hand-divergence.ts": {
+      "bytes": 15109,
+      "sha256": "0b54b0e1576d4721480923fb3c145b50e05ed87d4d8de17cb9d5341d9230446b"
+    },
+    "scripts/diag/hand-convergence.ts": {
+      "bytes": 3169,
+      "sha256": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8"
+    },
+    "scripts/diag/enable-centered-hands.ts": {
+      "bytes": 655,
+      "sha256": "c652d790da326e99b383d69029e5c4094b9611837edc3fda056313f3fef323ab"
+    },
+    "scripts/diag/disable-centered-hands.ts": {
+      "bytes": 584,
+      "sha256": "3a764ba2ab391a3c3647fda9ed6b76fdc35b3ae7c39a252c88f08847b6bebf3d"
+    },
+    "scripts/diag/run-contact-review.ts": {
+      "bytes": 19652,
+      "sha256": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971"
+    },
+    "scripts/diag/held-recovery-football.ts": {
+      "bytes": 13066,
+      "sha256": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91"
+    },
+    "scripts/diag/tackle-timing-review.ts": {
+      "bytes": 22011,
+      "sha256": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91"
+    },
+    "scripts/diag/ol-path-audit.mts": {
+      "bytes": 6882,
+      "sha256": "71473595d5d68eb277544831454da7ab8f2f1c35085b7239ab953b3eca4febe3"
+    },
+    "scripts/diag/motion-contact-review.ts": {
+      "bytes": 12192,
+      "sha256": "ee01ca641f73bc4fae46a9cef9d9c8052f04af1f061a3689d9669a83b191647a"
+    },
+    "scripts/diag/long-yardage-run.ts": {
+      "bytes": 20302,
+      "sha256": "6e28e9988e7a82013526acc6e8652287d502f43db9622e663e774248468dcb5f"
+    },
+    "scripts/diag/carrier-boundary-review.ts": {
+      "bytes": 5998,
+      "sha256": "8e0677f1c47ce8584bb690aa60c094c655dfd83cd0f881a16813eba375affc3c"
+    },
+    "scripts/export-motion-contact.ts": {
+      "bytes": 12109,
+      "sha256": "33911b1de714a194644ff7c8caeb48ef621e50bebfc3f46c58c5e9878fde04cf"
+    },
+    "scripts/export-long-yardage-run.ts": {
+      "bytes": 9251,
+      "sha256": "8e413ec2b6cb29b79e6693f823d00975d3f5e3325bbc284332c1a382d3471add"
+    },
+    "scripts/export-carrier-boundary-review.ts": {
+      "bytes": 8753,
+      "sha256": "85df0240fa1182b7269d9598b0c6a940826dc3b88401f9656714f57db1e55c4b"
+    },
+    "scripts/diag/compare-run-contact.py": {
+      "bytes": 9078,
+      "sha256": "098ad7e8edf1a1fd44fe05d59d2456457aa91633becbe789ec4c20a7c52ed9d2"
+    },
+    "scripts/source-version.ts": {
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    }
+  },
+  "retainedArtifacts": {
+    "README.md": {
+      "bytes": 8200,
+      "sha256": "b2e780f7ca30a406de1815ca81026fe68b4031f07bd30bccf6d48ddff3e3175c"
+    },
+    "build-final.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "centered-12.trace.json.gz": {
+      "bytes": 560098,
+      "sha256": "c3e32541a7f9feb6d0f0fd4ed20355a6c105b2761d5c6be20b2d3c03efa605bf"
+    },
+    "centered-192.trace.json.gz": {
+      "bytes": 954633,
+      "sha256": "719da12b288950bf0c18d30108582d5838e26ae151a274f56e26c6cc830ee414"
+    },
+    "centered-games9.json.gz": {
+      "bytes": 2209,
+      "sha256": "b437d31d0db757c4d6e4d84efc7dcb8704b82b768794ad4f9862f128287187e3"
+    },
+    "centered-games9.log": {
+      "bytes": 86,
+      "sha256": "4b16d6e6c0448d42f3164f84e5aaa38cbe5d526d2959477d4eac2e01924dd9e7"
+    },
+    "centered-runs-compact.json.gz": {
+      "bytes": 169805,
+      "sha256": "8312fe26802ded9811bd6d835e40bb9758ea82770e3b00efda6244518efdaca5"
+    },
+    "comparison.json": {
+      "bytes": 32572,
+      "sha256": "5bca699c0e695aeda84b9ed687371d6d7fd9b7cbd19c645a68056e75c3cbf9fe"
+    },
+    "current-ol.json.gz": {
+      "bytes": 854849,
+      "sha256": "1e52fa00ff49dc7922b30640b07ad733560232e6544835ffd26b39b22eed2f3f"
+    },
+    "current-tackles.json.gz": {
+      "bytes": 1598936,
+      "sha256": "3b056e0ab93cf84a4e2c7131c8903b0bacd8185e6d69b9e8f936b511eead0b0e"
+    },
+    "end-12.trace.json.gz": {
+      "bytes": 566023,
+      "sha256": "00a99595eb1d4ffae0b3bfc16c1e48e3df3fbeb02a41741669833d80ff4892fa"
+    },
+    "end-192.trace.json.gz": {
+      "bytes": 956391,
+      "sha256": "7c5eb466ac6b33697bba0264e29f199455383267ce0b63b07105ea90023df53e"
+    },
+    "end-games9.json.gz": {
+      "bytes": 2182,
+      "sha256": "6fd5149412d5821fcb2eb081d9014f014d534f91db8cd9e509c4d43c5b875840"
+    },
+    "end-games9.log": {
+      "bytes": 81,
+      "sha256": "b12a44e62f86ce144948b23993ada199238e2a93080ae5d444b8f83ca6ebd98e"
+    },
+    "end-runs-compact.json.gz": {
+      "bytes": 178639,
+      "sha256": "723f2942b0df09c8265c1605e57cf8f01d177b567ef8eb17e5e9244eaa825e10"
+    },
+    "game-comparison.json": {
+      "bytes": 3382,
+      "sha256": "72bd12baf5b9fc76de066d6dc0b5a7f1a6a7bbcbb7d59e6f82b74940acf2e3a7"
+    },
+    "panel-centered.json": {
+      "bytes": 29183,
+      "sha256": "0488ef4b6364fb0b4c4ccc82b2a91d24b330c3e4d0b1614807d2fe2174f29577"
+    },
+    "panel-end.json": {
+      "bytes": 29112,
+      "sha256": "64a77b0044e2b69fc894fa590a039a8a16e92507d21e635e5a608cb4c2469608"
+    },
+    "parent-to-current-runs.json.gz": {
+      "bytes": 18005,
+      "sha256": "6132230c122ac4867cefaa89b189d3802630b8a37362895d2aa8e83fdec8b931"
+    },
+    "python.log": {
+      "bytes": 121,
+      "sha256": "cc016bd25e556621a6f8f98570de5022b65da43e4b9f099773a47226c14c92e5"
+    },
+    "run-comparison.json.gz": {
+      "bytes": 19025,
+      "sha256": "ac5386e25f514500ee25c234209331c5e87c3d7c1c1590b0dee1039670271846"
+    },
+    "shared-input-centered-12.trace.json.gz": {
+      "bytes": 555459,
+      "sha256": "d3e2ea742f3d50a7a0dc0a733c694948c49efbf7ea3d28658c9b6a58c9591dda"
+    },
+    "shared-input-centered-192.trace.json.gz": {
+      "bytes": 960905,
+      "sha256": "2b268001f8733c67129eb3fa56f935b11478260cdd7994780fa9652b288e7d0a"
+    },
+    "shared-input-end-12.trace.json.gz": {
+      "bytes": 566155,
+      "sha256": "9e9bcef4abe406247de0eea4391876647c2156a6371acec7ac77348208ac78f4"
+    },
+    "shared-input-end-192.trace.json.gz": {
+      "bytes": 961181,
+      "sha256": "2c2b1a2d9415823ba5ec8edd53bb98641c2788df4eb67dc809f67dd06d658925"
+    },
+    "tackle-comparison.json.gz": {
+      "bytes": 16211,
+      "sha256": "b7c3f1bc4e9dedba9728ac3ed2bb41f9d3be6d62609f39cc2378625174a050e0"
+    },
+    "tests-final.log": {
+      "bytes": 4493,
+      "sha256": "5ea05d70e9e5651af10e8c83718424ef221b7863b390c54a854b6722927442ee"
+    },
+    "tests.log": {
+      "bytes": 5263,
+      "sha256": "6c12bcfd2082c4c6ef575e5623c7c191ff7d8a84cea72060d112a4d9cf2b5eb2"
+    },
+    "typecheck-final.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "typecheck.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "offlineFilms": {
+    "carrier-boundary": {
+      "html": {
+        "bytes": 1405658,
+        "sha256": "2b9399ed2015aacd3e06ed4bc935520fc67839e0988d13376a0bd3d71b9e5048"
+      },
+      "zip": {
+        "bytes": 937577,
+        "sha256": "c5255cca9821da948e9f1ee6f31d8cda66bb452df603cdf7619a758384f41ac0"
+      },
+      "zipHtmlByteIdentical": true,
+      "browserEvidence": {
+        "data/reviews/physics-world/carrier-boundary/browser-current.json": {
+          "bytes": 491,
+          "sha256": "b3831f726d94133b01a92eca5fa598ee68666a26a6d9df4b14257ea813c58ac0"
+        }
+      },
+      "integrityEvidence": {
+        "data/reviews/physics-world/carrier-boundary/verification.json": {
+          "bytes": 4976,
+          "sha256": "60d8e2c25f9fc5f3ebc7114af6baf8f58b333ccc6f8bd5a04055ad3d16d54e2c"
+        }
+      }
+    },
+    "motion-contact": {
+      "html": {
+        "bytes": 766594,
+        "sha256": "662263e41d37019b1399cc919ed60b493cee5e5ba2fdc1a8bdc21e3209601c55"
+      },
+      "zip": {
+        "bytes": 260776,
+        "sha256": "6f133e9d1f9a6a2c23fb97490b749e05358704532a3e3dc5f4262bfc38186401"
+      },
+      "zipHtmlByteIdentical": true,
+      "browserEvidence": {
+        "data/reviews/physics-world/motion-contact/browser-check.json": {
+          "bytes": 2955,
+          "sha256": "021c743e7b3f4afa30aa552349b6b42b4314255bd81a5176a63f56a62de2fa07"
+        }
+      },
+      "integrityEvidence": {
+        "data/reviews/physics-world/motion-contact/film-integrity.json": {
+          "bytes": 293,
+          "sha256": "29a4b8b181f2c3c9ef7cd8c9fb24f50ea98305e08c8b41639dc5589172d34452"
+        }
+      }
+    },
+    "long-yardage-runs": {
+      "html": {
+        "bytes": 1830399,
+        "sha256": "98aacca68ceaf5772d508b6dfe37d1297e6f2af9bf2c588f71b586619508f580"
+      },
+      "zip": {
+        "bytes": 1227622,
+        "sha256": "590637558196c950c21f6b6cd5568d6e65d976332ecb6260580a6c0c304065a1"
+      },
+      "zipHtmlByteIdentical": true,
+      "browserEvidence": {
+        "data/reviews/physics-world/long-yardage-run/browser-checks.json": {
+          "bytes": 805,
+          "sha256": "0f05a7e40fd2f45cfd81b2dca68ab3457f102c4061f76d68909675b7544f04e9"
+        }
+      },
+      "integrityEvidence": {
+        "data/reviews/physics-world/long-yardage-run/film-integrity.json": {
+          "bytes": 1811,
+          "sha256": "23cb158a22c638938e26b4701d90096329b8ad7bce6bb62da0a73e1dc80fe118"
+        }
+      }
+    }
+  },
+  "constraints": [
+    "Raw recorded script hashes remain as recorded; current hashes here do not relabel historical data.",
+    "Explicit mode selection matters even with identical source. Older generated commands omit preloads.",
+    "Same-source run guards include the final boundary and combination controller fixes in both modes.",
+    "Parent-to-current run evidence combines multiple changes and is not hand-only causality.",
+    "Films and game guards establish scoped stability/inspection, not NFL realism or final physics readiness.",
+    "No global solver step increase, new body anatomy, strength/traction constants or fitted NFL outcomes."
+  ]
+}

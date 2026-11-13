@@ -1,0 +1,100 @@
+{
+  "schema": "native-rushing-review-film-v1",
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "cleanRuns": 302,
+  "selectedClips": 24,
+  "selectedIds": [
+    "G1-P059",
+    "G2-P062",
+    "G8-P088",
+    "G2-P111",
+    "G4-P074",
+    "G3-P033",
+    "G1-P071",
+    "G5-P164",
+    "G1-P038",
+    "G5-P053",
+    "G7-P103",
+    "G1-P095",
+    "G2-P021",
+    "G1-P169",
+    "G8-P004",
+    "G2-P013",
+    "G4-P023",
+    "G3-P099",
+    "G6-P144",
+    "G1-P077",
+    "G2-P136",
+    "G6-P181",
+    "G7-P010",
+    "G3-P048"
+  ],
+  "method": "Saved-only packing; no simulation, new observations, replay reconstruction or changed outcomes.",
+  "identityRule": "G{gameIndex}-P{native log row.index padded to three digits}; no index+1 transformation.",
+  "allOriginalFrameTimesRetained": true,
+  "packing": "Existing viewer packs coordinates to tenths of a yard; raw native outcome retained separately.",
+  "selectedSelectionBias": true,
+  "telemetry": "light",
+  "inputs": [
+    {
+      "path": "/workspace/football-simulation-/data/reviews/rushing-benchmark/validation/recording-games-index.json.gz",
+      "sha256": "6b3812952dd0d8f33d37c07e65c83b2c3a17ef77c4680319ba982e3335e9057f"
+    },
+    {
+      "path": "/workspace/football-simulation-/data/reviews/rushing-benchmark/engine/productionRecording8f8cf-engine-benchmark.json.gz",
+      "sha256": "30aa9c14f6c14532ffe70e3dc834c3533aab3c4b0c0e316d1d3957a2e11686ac"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-film/nominations.json",
+      "sha256": "a28a654c9f4dd5108b2fa050e3b292a1dc2f29a5307ba8c54dcd441c9a888ba5"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-1.json.gz",
+      "sha256": "2061fc5bbe417314d474f1700461045966fb01ba72bcb916eeec31775317fe93"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-2.json.gz",
+      "sha256": "54a20da1c812b3b0a7d5a3284e6503989f139dd8cd7657bf71a2d5bf624617fa"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-3.json.gz",
+      "sha256": "a82eee2fffaa3195b00f592b146ab883ae7d879b6d9c75756d062531de51b191"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-4.json.gz",
+      "sha256": "cac18f28a69e624bb7e8e91379dc9122e5941266e3beee504ba38dffb8537e15"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-5.json.gz",
+      "sha256": "ebbf1618628e721322dd823eca464b1e5f22949122abdf6dcd6a0b327971e230"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-6.json.gz",
+      "sha256": "443190f3534857b9cab3d1b3ab013b10c19942efcfb904d3bc4423a29a796607"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-7.json.gz",
+      "sha256": "ce307fe4ee4fc91eb2b49b8140d5145af47f5bee24edb043876d5061d74d6532"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/rushing-benchmark/validation/recording-games/game-8.json.gz",
+      "sha256": "0a1555fee8436a1f7f73db4e7e71e6f06ecc92af25079c9678a985bb2b9be234"
+    }
+  ],
+  "exporterSha256": "a8c0947a916daf9f931722e267863e1d0eeb9c50a90786d56633f5e7b0e79049",
+  "templateSha256": "9ee7232840e1ef442e17c35e3bd43013d13551ff071c838c65701de5fb268ae0",
+  "artifacts": [
+    {
+      "filename": "rushing-review.html",
+      "clips": 24,
+      "bytes": 710667,
+      "sha256": "9868abb8a3b5d382a5063948bbed4e7f6c01efed1962186988bd71aeb1e633ca"
+    },
+    {
+      "filename": "all-runs.html",
+      "clips": 302,
+      "bytes": 5642213,
+      "sha256": "f95d8dd300e84cd023c3a8a36ecf252150e0ebfcc81c326bd7a585f8c41e38dd"
+    }
+  ]
+}

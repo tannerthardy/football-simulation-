@@ -1,0 +1,162 @@
+{
+  "schema": "run-fit-targeted-receipt-v1",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "finalSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "baselineArchive": "out/run-fit-follow-up/baseline-source",
+  "finalArchive": "out/run-fit-follow-up/final-source",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "cohortSha256": "ef6fd9055da106169390e33626cd2211079e24cac4c0cbcb74f3adeb66d35eec",
+  "declaredAt": "2026-10-11T14:22:13.900Z",
+  "rows": 24,
+  "profilesAndInitialStateMatched": true,
+  "observerPlainEndpointMatches": 48,
+  "commands": [
+    {
+      "cwd": "out/run-fit-follow-up/baseline-source",
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/out/run-fit-follow-up/declare-targeted-panel.ts"
+      ]
+    },
+    {
+      "cwd": "out/run-fit-follow-up/baseline-source",
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/out/run-fit-follow-up/targeted-panel.ts",
+        "baseline"
+      ]
+    },
+    {
+      "cwd": "out/run-fit-follow-up/final-source",
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "/workspace/football-simulation-/out/run-fit-follow-up/targeted-panel.ts",
+        "final"
+      ]
+    },
+    {
+      "cwd": "/workspace/football-simulation-",
+      "argv": [
+        "python",
+        "out/run-fit-follow-up/compare-targeted.py"
+      ]
+    }
+  ],
+  "nativeSourceGuards": {
+    "baseline": {
+      "sourceBefore": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "sourceAfter": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "node": "v22.23.3",
+      "toolSha256": "3df148b923eaaa1e89ace67f0eb22b310ba4974a20d05c27880527d1ab43f4ab",
+      "cohortFileSha256": "4a2819b12e089a0588c9d2b744b454bbac8a9e145c4221a3dda42662b00aece6",
+      "startedAt": "2026-10-11T14:24:23.374Z",
+      "finishedAt": "2026-10-11T14:24:39.589Z",
+      "wallMs": 16201.301901
+    },
+    "final": {
+      "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "sourceAfter": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+      "node": "v22.23.3",
+      "toolSha256": "3df148b923eaaa1e89ace67f0eb22b310ba4974a20d05c27880527d1ab43f4ab",
+      "cohortFileSha256": "4a2819b12e089a0588c9d2b744b454bbac8a9e145c4221a3dda42662b00aece6",
+      "startedAt": "2026-10-11T14:24:23.048Z",
+      "finishedAt": "2026-10-11T14:24:40.132Z",
+      "wallMs": 17082.26818
+    }
+  },
+  "files": [
+    {
+      "path": "out/run-fit-follow-up/declare-targeted-panel.ts",
+      "sha256": "94897eccf61ecf65dac863d6d7da9873693435ce0bc6ed192b867ade5d23c3e0",
+      "bytes": 4099
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-cohort.json",
+      "sha256": "4a2819b12e089a0588c9d2b744b454bbac8a9e145c4221a3dda42662b00aece6",
+      "bytes": 1825373
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-cohort.log",
+      "sha256": "bf3f826fdecd1e9686d2c7fb46aada9ba1d32c83f381e9284596b4b4701d107b",
+      "bytes": 3883
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-panel.ts",
+      "sha256": "3df148b923eaaa1e89ace67f0eb22b310ba4974a20d05c27880527d1ab43f4ab",
+      "bytes": 13004
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-baseline.json.gz",
+      "sha256": "75ce3825182147eff0fc4017d8fca2c9bc6dfe970cd4fde11e91cdfcf37e9e3c",
+      "bytes": 1642756
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-final.json.gz",
+      "sha256": "0f6738e28c176999acbf5e12768c558358683e25009f1cfa08c12a214af0165c",
+      "bytes": 1662528
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-baseline-film.json.gz",
+      "sha256": "a4b62057c606eb32867f5e5a7942618185d902876a7cab9c03bada1e55ec37b2",
+      "bytes": 5959291
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-final-film.json.gz",
+      "sha256": "9dcc8b305d68354f9afa8ee7109dd5cbbc42781c569a466e8284b5b6abaa610a",
+      "bytes": 5965729
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-baseline-traces.json.gz",
+      "sha256": "840af3000a0a044e3fdc625d21182593dc07f9d0875d0642ceceb8d847319fa6",
+      "bytes": 21942629
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-final-traces.json.gz",
+      "sha256": "61af9e824221d1e12da6951f658f97105319c74665ef92ad5c39e77649312226",
+      "bytes": 22000023
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-baseline.log",
+      "sha256": "e3079b6e1747362966afbc2b7f514b3cc950a270f6c8e4ebe6ad7b8983ce9154",
+      "bytes": 4318
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-final.log",
+      "sha256": "85b564de4f684c0964c35d41ab5a7e838f31503b2069d8f967409eb3e11ea17f",
+      "bytes": 4563
+    },
+    {
+      "path": "out/run-fit-follow-up/compare-targeted.py",
+      "sha256": "6e49fb2476715a1520392a24209b200292e191ea5eebec6321237f645cc24421",
+      "bytes": 7676
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-comparison.json",
+      "sha256": "848d234d5596721ee8aee10e89bd000b87825e316ec7446800936eabf25315fc",
+      "bytes": 1171438
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-comparison.log",
+      "sha256": "d30ba592ab6170957785bea23c8032a8851fef56394ab0545daad3e30fe9a72f",
+      "bytes": 7839
+    },
+    {
+      "path": "out/run-fit-follow-up/targeted-findings.md",
+      "sha256": "edf16aee6da4a9eb5d33b53a62cce9994180650de3bc71e306694c7b1f63456c",
+      "bytes": 7239
+    }
+  ],
+  "limits": [
+    "All24 predeclared input rows retained regardless of gain direction; not NFL frequencies or a calibration conclusion.",
+    "Cross-phase physical equality excludes only changed coverage behavior structure/possession-history layout; within each phase the observer controls retain both.",
+    "A recorded fit is a cue/intent transition; actual block/tackle contact and outcomes are listed separately.",
+    "Draw presentation is installed sequence timing, not a visual recognition timer. The sampled0.25s requests establish technique consistency, not optimal footwork.",
+    "Raw trace receipts pin original gzip and can be supplemented by independent saved-only delta decode hashes. Concurrent audit wall times include full observation/control/compression and do not benchmark the physics solver."
+  ]
+}

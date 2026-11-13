@@ -1,0 +1,106 @@
+diff --git a/src/sim/contact-motion.ts b/src/sim/contact-motion.ts
+index 0bbc48c8c984754a4409a0d02790c2f1c1bf1d39..0c2e8a9c95583781fd9a6a08274a2a41ef65c29e 100644
+--- a/src/sim/contact-motion.ts
++++ b/src/sim/contact-motion.ts
+@@ -13,3 +13,17 @@ export function contactMotion(drive: Vec2, tangent: Vec2, forward: number, later
+     y: drive.y * forward + tangent.y * (lateral - driveLateral),
+   };
+ }
++
++/** Distance to torso clearance along the emitted movement component, holding
++ * its perpendicular offset fixed. Radial distance is not normal travel, and
++ * a radial gradient needlessly attenuates a valid oblique approach. Keep the
++ * current side of the defender: a connection goal cannot run through him.
++ * Resolving a unit axis here does not amplify the emitted drive component. */
++export function connectionGap(delta: Vec2, separation: number, direction: Vec2): number {
++  const length = Math.hypot(direction.x, direction.y);
++  if (length < 1e-9) return 0;
++  const normal = (delta.x * direction.x + delta.y * direction.y) / length;
++  const lateral = (delta.x * direction.y - delta.y * direction.x) / length;
++  const contactDepth = Math.sqrt(Math.max(0, separation * separation - lateral * lateral));
++  return normal - Math.sign(normal) * contactDepth;
++}
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index d9f9274a57f382c620cf7d3928fca6629d458303..7f880da93024f127f77866962b63b2d311b4c314 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -35,7 +35,7 @@ import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinema
+ import { availability, supportParams } from '../physics/support.js';
+ import { gapY } from '../playbook/alignment.js';
+ import { CF_FLOW } from './counterfactual.js';
+-import { contactMotion } from './contact-motion.js';
++import { connectionGap, contactMotion } from './contact-motion.js';
+ import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
+ import { requestToCover } from './motion-plan.js';
+ import { runContactObservers } from './run-contact-observer.js';
+@@ -1064,8 +1064,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const run = sim.offCall.run;
+   const stretch = STRETCH_REACH && !!e.surfaceAxis && (run?.scheme === 'outsideZone' || run?.scheme === 'wideZone');
+   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
+-  const dist = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y);
+-  const forward = stretch ? clamp(along(d.vel) + (dist - sep) * 3, -1, 2.4) : 2.4;
++  const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
++  const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
++  const forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+   // A stretch never fights the flow: ahead of the man, he does not step back
+   // to a fixed seal offset; he at least matches the defender's play-side
+   // speed (beat him to the shoulder, or run him past the hole).
+diff --git a/test/stretch-closure.test.ts b/test/stretch-closure.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..9a7ff748e12b5b447a8869fb59ce9e601bd41ead
+--- /dev/null
++++ b/test/stretch-closure.test.ts
+@@ -0,0 +1,53 @@
++import {describe,expect,it} from 'vitest';
++import {contactFixture,contactCommands} from '../scripts/diag/run-contact-technique.js';
++import {RUN_BY_ID} from '../src/playbook/concepts.js';
++import {runContactObservers} from '../src/sim/run-contact-observer.js';
++
++/** Same acquired native hands, shifted to a valid lateral fit. This is a
++ * controller question, not a requirement that the block win a native play. */
++function fit(side:number,dx:number,dy:number){
++ const f=contactFixture({type:'run',runBlock:60,passBlock:60,side});
++ f.sim.offCall.run=RUN_BY_ID.wz_strong;
++ f.engagement.surfaceAxis={x:-1,y:0};f.engagement.drive={x:1,y:0};
++ f.engagement.nextMoveAt=Infinity;
++ f.defender.body.pos={x:f.blocker.pos.x+dx,y:f.blocker.pos.y+side*dy};
++ f.defender.body.vel={x:0,y:0};f.blocker.body.vel={x:0,y:0};
++ f.blocker.body.facing=Math.atan2(side*dy,dx);
++ f.blocker.body.support!.felt={x:0,y:0};
++ let movement:any;
++ runContactObservers.set(f.sim,(_e,phase,data)=>{if(phase==='movement')movement=data;});
++ return{...f,read:()=>{const commands=contactCommands(f);return{commands,movement};}};
++}
++
++describe('stretch connection footwork closes the actual separation',()=>{
++ it.each([-1,1])('does not turn purely lateral separation into an upfield step, mirror=%s',side=>{
++  const f=fit(side,0,.85),before=structuredClone(f.sim.agents.map(a=>a.body));
++  const{commands,movement}=f.read();
++  expect(movement.anchored).toBe(false);
++  expect(commands[f.blocker.idx].vel.x).toBeCloseTo(f.defender.vel.x,12);
++  expect(f.sim.agents.map(a=>a.body)).toEqual(before);
++ });
++ it.each([-1,1])('does not increase normal separation after reaching above the defender, mirror=%s',side=>{
++  const f=fit(side,-.1,.85),{commands,movement}=f.read();
++  expect(movement.anchored).toBe(false);
++  const correction=commands[f.blocker.idx].vel.x-f.defender.vel.x;
++  expect(correction*(f.defender.pos.x-f.blocker.pos.x)).toBeGreaterThan(0);
++ });
++ it('retains forward closure on the ordinary aligned contact',()=>{
++  const f=fit(1,.9,0),{commands,movement}=f.read();
++  expect(movement.anchored).toBe(false);
++  const gap=.9-f.blocker.profile.radius-f.defender.profile.radius;
++  expect(commands[f.blocker.idx].vel.x).toBeCloseTo(gap*3,12);
++ });
++ it.each([-1,1])('uses the normal distance to contact without sacrificing the existing lateral offset, mirror=%s',side=>{
++  const f=fit(side,.8,.4),{commands,movement}=f.read();
++  expect(movement.anchored).toBe(false);
++  // Inspect the requested proportional goal, not an assertion that the
++  // body instantly executes it: removing its gain must end on the torso
++  // clearance circle at this same lateral offset.
++  const forwardGoal=commands[f.blocker.idx].vel.x/3;
++  const remainingX=f.defender.pos.x-f.blocker.pos.x-forwardGoal;
++  const lateral=f.defender.pos.y-f.blocker.pos.y;
++  expect(Math.hypot(remainingX,lateral)).toBeCloseTo(f.blocker.profile.radius+f.defender.profile.radius,12);
++ });
++});

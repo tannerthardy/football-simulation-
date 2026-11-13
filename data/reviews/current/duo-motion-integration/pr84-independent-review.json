@@ -1,0 +1,785 @@
+{
+  "verdict": "accept bounded production correction for Integration review; no merge or physics authority",
+  "accepted": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "reviewedHead": "4af71ac8a8f320456e87a027579200469a0c1ee0",
+  "authorEvidence": "70ed238a2246cd89d3c4108d647245baf5ff70bb",
+  "testedCandidate": "8d4b868b6125270a407a2b9b1b6238508616c365",
+  "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+  "protectedCandidateEqualsTested": true,
+  "newProductionFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "verifiedAuthorArtifacts": 22,
+  "rows": [
+    {
+      "id": "A030",
+      "identicalFrames": false,
+      "identicalResult": false,
+      "firstDifference": {
+        "t": 0.85,
+        "sameAll22EnteringBodies": true,
+        "prefixFramesExact": true,
+        "rawActors": [
+          2,
+          3
+        ],
+        "postStepRngEqual": false
+      },
+      "candidateClimbs": [
+        {
+          "t": 1.05,
+          "type": "block_climb",
+          "a": 5,
+          "b": 15,
+          "pos": {
+            "x": 35.15,
+            "y": 25.22
+          },
+          "note": "secured DT_S; RT stays"
+        },
+        {
+          "t": 1.05,
+          "type": "block_climb",
+          "a": 3,
+          "b": 16,
+          "pos": {
+            "x": 35.49,
+            "y": 27.11
+          },
+          "note": "secured DT_W; LG stays"
+        }
+      ],
+      "candidateNativeDepartures": [
+        {
+          "t": 1.05,
+          "actor": 5,
+          "acquiredDeparture": {
+            "exit": {
+              "x": 35.29914595668349,
+              "y": 25.54718606437318
+            },
+            "flow": {
+              "x": 0.08094783803393621,
+              "y": -0.5378915246451431
+            },
+            "backer": {
+              "pos": {
+                "x": 38.90486052216271,
+                "y": 25.538672723892674
+              },
+              "vel": {
+                "x": -1.8519021415977288,
+                "y": 0.3320853653688588
+              },
+              "stance": null,
+              "facing": 3.155262125120231,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 1.05,
+          "actor": 3,
+          "acquiredDeparture": {
+            "exit": {
+              "x": 35.77388147744866,
+              "y": 27.007797231319287
+            },
+            "flow": {
+              "x": 0.28355314676806526,
+              "y": 0.5372391976282409
+            },
+            "backer": {
+              "pos": {
+                "x": 39.06682277963537,
+                "y": 27.815572379633235
+              },
+              "vel": {
+                "x": -1.3526190583214979,
+                "y": -0.21480333146622735
+              },
+              "stance": null,
+              "facing": 3.126839601225714,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        }
+      ],
+      "runner": {
+        "acceptedLos": 2.7,
+        "candidateLos": 2.65,
+        "acceptedSpeed": 4.738349497950255,
+        "candidateSpeed": 6.332035954207676,
+        "candidateOffensiveImpacts": []
+      }
+    },
+    {
+      "id": "A018",
+      "identicalFrames": false,
+      "identicalResult": false,
+      "firstDifference": {
+        "t": 0.8,
+        "sameAll22EnteringBodies": true,
+        "prefixFramesExact": true,
+        "rawActors": [
+          2
+        ],
+        "postStepRngEqual": false
+      },
+      "candidateClimbs": [
+        {
+          "t": 1.05,
+          "type": "block_climb",
+          "a": 5,
+          "b": 15,
+          "pos": {
+            "x": 35.13,
+            "y": 25.21
+          },
+          "note": "secured DT_S; RT stays"
+        }
+      ],
+      "candidateNativeDepartures": [
+        {
+          "t": 1.05,
+          "actor": 5,
+          "acquiredDeparture": {
+            "exit": {
+              "x": 35.22905821550421,
+              "y": 25.555101376796973
+            },
+            "flow": {
+              "x": 0.015383790835355664,
+              "y": -0.5635130900157462
+            },
+            "backer": {
+              "pos": {
+                "x": 38.77943984608737,
+                "y": 25.470056710881508
+              },
+              "vel": {
+                "x": -2.0250771996831936,
+                "y": 0.42899145771540503
+              },
+              "stance": null,
+              "facing": 3.1543053275835127,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        }
+      ],
+      "runner": {
+        "acceptedLos": 2.65,
+        "candidateLos": 2.65,
+        "acceptedSpeed": 3.7237468321259106,
+        "candidateSpeed": 5.470529288805171,
+        "candidateOffensiveImpacts": []
+      }
+    },
+    {
+      "id": "A027",
+      "identicalFrames": true,
+      "identicalResult": true,
+      "candidateClimbs": [
+        {
+          "t": 2.15,
+          "type": "block_climb",
+          "a": 7,
+          "b": 15,
+          "pos": {
+            "x": 35.16,
+            "y": 21.05
+          },
+          "note": "secured DE_S; RT stays"
+        }
+      ],
+      "candidateNativeDepartures": [
+        {
+          "t": 2.15,
+          "actor": 7,
+          "acquiredDeparture": {
+            "exit": null,
+            "flow": {
+              "x": -1.615578943344318,
+              "y": -3.453232948269486
+            },
+            "backer": {
+              "pos": {
+                "x": 36.06221891647778,
+                "y": 22.25068491363562
+              },
+              "vel": {
+                "x": -1.615578943344318,
+                "y": -3.453232948269486
+              },
+              "stance": null,
+              "facing": 3.141592653589793,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        }
+      ],
+      "runner": {
+        "acceptedLos": 2.95,
+        "candidateLos": 2.95,
+        "acceptedSpeed": 3.988566250903725,
+        "candidateSpeed": 3.988566250903725,
+        "candidateOffensiveImpacts": []
+      }
+    },
+    {
+      "id": "DuoUnder",
+      "identicalFrames": true,
+      "identicalResult": true,
+      "candidateClimbs": [
+        {
+          "t": 0.85,
+          "type": "block_climb",
+          "a": 2,
+          "b": 15,
+          "pos": {
+            "x": 35.24,
+            "y": 24.02
+          },
+          "note": "secured DE_S; Y stays"
+        },
+        {
+          "t": 1,
+          "type": "block_climb",
+          "a": 3,
+          "b": 16,
+          "pos": {
+            "x": 35.14,
+            "y": 26.54
+          },
+          "note": "secured DT_S; RG stays"
+        }
+      ],
+      "candidateNativeDepartures": [
+        {
+          "t": 0.85,
+          "actor": 2,
+          "acquiredDeparture": {
+            "exit": {
+              "x": 35.46241327540955,
+              "y": 24.261112410981532
+            },
+            "flow": {
+              "x": -0.6629100775741457,
+              "y": -0.13411316708237955
+            },
+            "backer": {
+              "pos": {
+                "x": 39.37369433464197,
+                "y": 24.66738723079104
+              },
+              "vel": {
+                "x": -1.2594917238009011,
+                "y": -0.10110840512657782
+              },
+              "stance": null,
+              "facing": 3.273078010796404,
+              "age": 0.30000000000000004,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        },
+        {
+          "t": 1,
+          "actor": 3,
+          "acquiredDeparture": {
+            "exit": {
+              "x": 35.24574232931381,
+              "y": 26.883685180237453
+            },
+            "flow": {
+              "x": 0.15399783069778641,
+              "y": -0.39623423994440093
+            },
+            "backer": {
+              "pos": {
+                "x": 39.18296918408502,
+                "y": 27.7861964509637
+              },
+              "vel": {
+                "x": -1.1348044569812343,
+                "y": -0.3984438220745575
+              },
+              "stance": null,
+              "facing": 3.127979500103772,
+              "age": 0.25,
+              "pose": "up",
+              "carrying": false
+            }
+          }
+        }
+      ],
+      "runner": {
+        "acceptedLos": 2.6,
+        "candidateLos": 2.6,
+        "acceptedSpeed": 5.838417906007146,
+        "candidateSpeed": 5.838417906007146,
+        "candidateOffensiveImpacts": []
+      }
+    }
+  ],
+  "firstAcquiredGate": {
+    "t": 0.85,
+    "reader": 2,
+    "cues": {
+      "5": {
+        "pos": {
+          "x": 34.97720674732457,
+          "y": 25.239205545059654
+        },
+        "vel": {
+          "x": 0.49578485439165276,
+          "y": 0.05662802525768666
+        },
+        "stance": "low",
+        "facing": -0.6502846908402152,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      },
+      "13": {
+        "pos": {
+          "x": 35.25074944923399,
+          "y": 24.876678088009086
+        },
+        "vel": {
+          "x": -1.2474917381427792,
+          "y": -0.013808318128687944
+        },
+        "stance": null,
+        "facing": 2.9697346216130907,
+        "age": 0.30000000000000004,
+        "pose": "up",
+        "carrying": false
+      },
+      "15": {
+        "pos": {
+          "x": 39.40525589852963,
+          "y": 25.3922828730762
+        },
+        "vel": {
+          "x": -1.182834445515196,
+          "y": 0.07826564551425036
+        },
+        "stance": null,
+        "facing": 3.180938321883258,
+        "age": 0.30000000000000004,
+        "pose": "up",
+        "carrying": false
+      },
+      "6": {
+        "pos": {
+          "x": 29.212626896047283,
+          "y": 26.268848957493617
+        },
+        "vel": {
+          "x": 2.1242555288157443,
+          "y": -0.8345289579811203
+        },
+        "stance": null,
+        "facing": -0.3757013164611582,
+        "age": 0.05,
+        "pose": "up",
+        "carrying": false
+      }
+    },
+    "ownY": 24.243670489740946,
+    "decisionInterval": 0.2215105686714075,
+    "own": -0.63300759826814,
+    "partner": 0.3625274570505681,
+    "key": 0.515604785067115,
+    "nextKey": 0.5360001411134928,
+    "nextPartner": 0.37812985152921846
+  },
+  "nativeLoads": [
+    {
+      "t": 1.05,
+      "RTkeepsDT": {
+        "b": 2,
+        "d": 13,
+        "helpers": [],
+        "phi": -0.6475623832031169,
+        "baseB": 1,
+        "baseD": 1,
+        "control": 0.20003506870846752,
+        "move": "shed",
+        "side": 1,
+        "hands": {
+          "normal": 633.1651144486669,
+          "tangent": 341.032352837888,
+          "extension": 0.9116412732555491
+        }
+      },
+      "RGonLB": null,
+      "runner": {
+        "pos": {
+          "x": 29.68057180824443,
+          "y": 26.085013456284578
+        },
+        "vel": {
+          "x": 2.436772335170799,
+          "y": -0.957303417355825
+        },
+        "facing": -0.37467089624559885,
+        "energy": 0.9932288913771035,
+        "profile": {
+          "vmax": 9.44467621902496,
+          "tau": 1.3158802021257818,
+          "brake": 6.727585034013605,
+          "lateral": 7.019309523809527,
+          "turnRate": 8.826666666666668,
+          "backpedal": 0.5448979591836736,
+          "shuffle": 0.5312000000000001,
+          "massKg": 101.60469088,
+          "heightYd": 1.9916666666666667,
+          "radius": 0.27999999999999997,
+          "reach": 0.9984722222222222,
+          "maxCatchHeight": 3.464472222222222,
+          "reactReach": 2.95475,
+          "reactionTime": 0.23248979591836735,
+          "power": 101.20034568160001,
+          "balance": 0.8877551020408163,
+          "bend": 0.7568843537414967,
+          "stepSpeed": 3.9606530612244892,
+          "getUp": 0.905
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19871153108528272,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 0.9917196732676017,
+            "y": -0.38960415642493934
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": 0.013119619486356981,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.3743336160079297
+      }
+    },
+    {
+      "t": 2.6,
+      "RTkeepsDT": {
+        "b": 2,
+        "d": 13,
+        "helpers": [],
+        "phi": -0.7244160110666601,
+        "baseB": 1,
+        "baseD": 1,
+        "control": 0.31095584904274004,
+        "move": "shed",
+        "side": 1,
+        "hands": {
+          "normal": 740.0535982925468,
+          "tangent": 4.155683792045765,
+          "extension": 0.9271701825023473
+        }
+      },
+      "RGonLB": {
+        "b": 5,
+        "d": 15,
+        "helpers": [],
+        "phi": 0.11190223562060689,
+        "baseB": 1,
+        "baseD": 1,
+        "control": 0.3717743376086656,
+        "move": "shed",
+        "side": 1,
+        "hands": {
+          "normal": 818.5290431386628,
+          "tangent": 489.70172807703153,
+          "extension": 0.8409815993001359
+        }
+      },
+      "runner": {
+        "pos": {
+          "x": 34.94406273157984,
+          "y": 23.415636938321892
+        },
+        "vel": {
+          "x": 5.63509826515883,
+          "y": -2.609126150765774
+        },
+        "facing": -0.36430991755629427,
+        "energy": 0.9746538918459372,
+        "profile": {
+          "vmax": 9.44467621902496,
+          "tau": 1.3158802021257818,
+          "brake": 6.727585034013605,
+          "lateral": 7.019309523809527,
+          "turnRate": 8.826666666666668,
+          "backpedal": 0.5448979591836736,
+          "shuffle": 0.5312000000000001,
+          "massKg": 101.60469088,
+          "heightYd": 1.9916666666666667,
+          "radius": 0.27999999999999997,
+          "reach": 0.9984722222222222,
+          "maxCatchHeight": 3.464472222222222,
+          "reactReach": 2.95475,
+          "reactionTime": 0.23248979591836735,
+          "power": 101.20034568160001,
+          "balance": 0.8877551020408163,
+          "bend": 0.7568843537414967,
+          "stepSpeed": 3.9606530612244892,
+          "getUp": 0.905
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.195097490257624,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 2.564005827914959,
+            "y": -0.6096381388432752
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": 0.09432028977755635,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.3640822263678234
+      }
+    },
+    {
+      "t": 2.65,
+      "RTkeepsDT": {
+        "b": 2,
+        "d": 13,
+        "helpers": [],
+        "phi": -0.7242968665285653,
+        "baseB": 1,
+        "baseD": 1,
+        "control": 0.29043298167173137,
+        "move": "shed",
+        "side": 1,
+        "hands": {
+          "normal": 735.5986705347618,
+          "tangent": 10.19972412959299,
+          "extension": 0.924296981070406
+        }
+      },
+      "RGonLB": {
+        "b": 5,
+        "d": 15,
+        "helpers": [],
+        "phi": 0.17045448391916798,
+        "baseB": 1,
+        "baseD": 1,
+        "control": 0.3622888919580543,
+        "move": "shed",
+        "side": 1,
+        "hands": {
+          "normal": 821.3695744087485,
+          "tangent": 492.1052545363348,
+          "extension": 0.8397050164063244
+        }
+      },
+      "runner": {
+        "pos": {
+          "x": 35.22885172905175,
+          "y": 23.284464543025738
+        },
+        "vel": {
+          "x": 5.756461633717559,
+          "y": -2.6377696610804526
+        },
+        "facing": -0.3618380647176198,
+        "energy": 0.9738165888652595,
+        "profile": {
+          "vmax": 9.44467621902496,
+          "tau": 1.3158802021257818,
+          "brake": 6.727585034013605,
+          "lateral": 7.019309523809527,
+          "turnRate": 8.826666666666668,
+          "backpedal": 0.5448979591836736,
+          "shuffle": 0.5312000000000001,
+          "massKg": 101.60469088,
+          "heightYd": 1.9916666666666667,
+          "radius": 0.27999999999999997,
+          "reach": 0.9984722222222222,
+          "maxCatchHeight": 3.464472222222222,
+          "reactReach": 2.95475,
+          "reactionTime": 0.23248979591836735,
+          "power": 101.20034568160001,
+          "balance": 0.8877551020408163,
+          "bend": 0.7568843537414967,
+          "stepSpeed": 3.9606530612244892,
+          "getUp": 0.905
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19493077836918746,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 2.4664435949459578,
+            "y": -0.5834043953396955
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": 0.0045538237694220385,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": -0.3640822263678234
+      }
+    }
+  ],
+  "savedCandidateBudgetCheck": {
+    "maximumArmImpulseExcess": 4.263256414560601e-14,
+    "maximumAbsoluteWorkResidual": 8.889777802778553e-12
+  },
+  "reusedAuthorChecks": {
+    "focused": 66,
+    "newControls": 7,
+    "oldSourceExpectedFailures": 3,
+    "typecheck": "pass",
+    "nativeExecutions": 8,
+    "nativeLauncherSeconds": 8.115281821,
+    "allLauncherSeconds": 23.393741055
+  },
+  "independentNewTests": 0,
+  "independentNewNativeExecutions": 0,
+  "independentNewGames": 0,
+  "whyNoNewTest": "The explicit clear-route bypass is statically preserved; mirrored near-half/crossing controls and an unchanged native Under detour resolve valid-departure risk. Existing keeper/security/attention controls are unchanged and their source receipt applies byte-for-byte.",
+  "risks": [
+    "Duo-only half-surface preference, not optimal routing certification. Some contacts may remain longer.",
+    "A030 includes changed C departure and immediately divergent execution RNG; final gain is not isolated controller value.",
+    "A018 still misses LB collection, retains legitimate LB tackle, and existing rotated-contact limitations remain.",
+    "No broad front/formation, wide-zone improvement, live mesh or physical-law claim. Integration owns combined verification/adoption."
+  ],
+  "runtime": {
+    "independentReductionWallSeconds": 1.6976046190102352,
+    "independentReductionCpuSeconds": 1.456114875
+  }
+}

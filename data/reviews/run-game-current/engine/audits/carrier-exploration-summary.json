@@ -1,0 +1,85 @@
+{
+  "schema": "run-carrier-audit-summary-v1",
+  "evidence": {
+    "baseline_native_cues": {
+      "path": "out/run-carrier-audit/pose-cues.json",
+      "sha256": "66ee40914ebd4a4fc88c9ffdf679286bc40d9b411606dead3b53a11f58b9f663",
+      "sourceBefore": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "sourceAfter": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "toolSha256": "f30547074081b5a4011a74d04f32536c5974c499f4d4c4b7b90c477732621653",
+      "cases": 9,
+      "nativeCasesWithNegativeCue": 5,
+      "nativeNegativeCues": 22,
+      "negativePoseCounts": {
+        "up": 6,
+        "down": 16,
+        "rising": 0
+      },
+      "observerVerified": true,
+      "naturalEnds": 9,
+      "counterfactuals": null
+    },
+    "baseline_counterfactual": {
+      "path": "out/run-carrier-audit/immutable-baseline/out/run-carrier-audit/pose-counterfactual.json",
+      "sha256": "6e8ccc01a0fdfcea34c373ab0dd938b64f51c434dfbc1e672afacda817535fd4",
+      "sourceBefore": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "sourceAfter": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "toolSha256": "5f9bc0df063f827628ad6cee2067b1ade1f67b3b61301906a1ada1c58b3d38a7",
+      "cases": 9,
+      "nativeCasesWithNegativeCue": 5,
+      "nativeNegativeCues": 22,
+      "negativePoseCounts": {
+        "up": 6,
+        "down": 16,
+        "rising": 0
+      },
+      "observerVerified": true,
+      "naturalEnds": 9,
+      "counterfactuals": {
+        "nonnegative-only": {
+          "decisions": 22,
+          "changedHeadingCount": 0,
+          "changedBlockedCount": 0,
+          "changedScoreCount": 0
+        },
+        "delayed-pose-recovery": {
+          "decisions": 22,
+          "changedHeadingCount": 0,
+          "changedBlockedCount": 0,
+          "changedScoreCount": 2
+        }
+      }
+    },
+    "ol_intermediate_counterfactual": {
+      "path": "out/run-carrier-audit/pose-counterfactual.json",
+      "sha256": "19478ad15a86f096482144fe550eadb4286ecf70fd8362076b0b8d2cf7a2b7ac",
+      "sourceBefore": "01a504731ec27ee4d1767c9203ff71d91e597f0d0e67ad54084ea52664da3036",
+      "sourceAfter": "01a504731ec27ee4d1767c9203ff71d91e597f0d0e67ad54084ea52664da3036",
+      "toolSha256": "5f9bc0df063f827628ad6cee2067b1ade1f67b3b61301906a1ada1c58b3d38a7",
+      "cases": 9,
+      "nativeCasesWithNegativeCue": 4,
+      "nativeNegativeCues": 31,
+      "negativePoseCounts": {
+        "up": 8,
+        "down": 21,
+        "rising": 2
+      },
+      "observerVerified": true,
+      "naturalEnds": 9,
+      "counterfactuals": {
+        "nonnegative-only": {
+          "decisions": 24,
+          "changedHeadingCount": 2,
+          "changedBlockedCount": 2,
+          "changedScoreCount": 4
+        },
+        "delayed-pose-recovery": {
+          "decisions": 24,
+          "changedHeadingCount": 3,
+          "changedBlockedCount": 3,
+          "changedScoreCount": 5
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,449 @@
+{
+  "baselineCommit": "ba42c297883f8d1308ba47dbf44fa1a52aa561a2",
+  "baselineSourceSha256": "0f1124fde702bfd754944b10bc2d35f2ebf4914c1a2fa864e701afb6683b47ad",
+  "adoptedSourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+  "sourceDefinition": "Lexically sorted relative path strings under src/, then NUL, file bytes, NUL. Scripts, tests and docs separately hashed.",
+  "inputs": {
+    "src/physics/world.ts": {
+      "bytes": 60442,
+      "sha256": "9c51c69d36883c42b4f5792c1c8ed5bd8f763095be39a5dee24f45ba199fe0a9"
+    },
+    "test/actuation.test.ts": {
+      "bytes": 7478,
+      "sha256": "038f47d32b7a95e4c96e07b68b2c9a2571b1c3f0b61f4175d8217776c208677e"
+    },
+    "test/grasp-world.test.ts": {
+      "bytes": 11209,
+      "sha256": "1be338d9957b7ad785ac215b0150d8d2a1a771f44b02d0d6ce36bdb0212b06e3"
+    },
+    "scripts/diag/foot-contact-audit.ts": {
+      "bytes": 6843,
+      "sha256": "83ab5550a67f17658e1783279e1a7cf3099ac0a45f56b0534468978afddda7bb"
+    },
+    "scripts/diag/long-contact-trace.ts": {
+      "bytes": 4775,
+      "sha256": "36067c865b76342abfa650e3ad62bb22c84338276a3763714a786805e7a12290"
+    },
+    "scripts/diag/constraint-support-summary.py": {
+      "bytes": 6066,
+      "sha256": "6b7745e50b14df704baa974fe4a11715244f0e22316a2d09b2a0e2c175754785"
+    },
+    "scripts/diag/hand-convergence.ts": {
+      "bytes": 3169,
+      "sha256": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8"
+    },
+    "scripts/diag/shared-capabilities.ts": {
+      "bytes": 6749,
+      "sha256": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505"
+    },
+    "scripts/diag/grip-budget.ts": {
+      "bytes": 4493,
+      "sha256": "4112d79bc6bb80abf4f65aa080b9c8916b6be340bfdff7072fbf815f4bf214f9"
+    },
+    "scripts/diag/wrap-feedback.ts": {
+      "bytes": 4939,
+      "sha256": "e8df5c9c5181997dde855b120b2d03a65d9bf778d4814a1d2d5bd08874e20103"
+    },
+    "scripts/diag/moving-contact.ts": {
+      "bytes": 4735,
+      "sha256": "811b407b6e895c24e81048700177e937356d3207bf5ea700686dbaf10a57064c"
+    },
+    "scripts/scenario-pack.ts": {
+      "bytes": 2773,
+      "sha256": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94"
+    },
+    "scripts/kinematics-compare.ts": {
+      "bytes": 12263,
+      "sha256": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2"
+    },
+    "scripts/calibrate.ts": {
+      "bytes": 9382,
+      "sha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749"
+    },
+    "scripts/source-version.ts": {
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    "package-lock.json": {
+      "bytes": 70083,
+      "sha256": "455a7d0b374610049774af19e31243c12b90dc2cb599e9586f54ce13b94cd641"
+    }
+  },
+  "references": {
+    "data/reviews/physics-world/lean-release/manifest.json": {
+      "bytes": 13903,
+      "sha256": "34b67c219fcd18485c7f24f4741c1433f8307e919fd26109da28a00de7aa7868"
+    },
+    "data/reviews/physics-world/lean-release/hand-convergence.json": {
+      "bytes": 29300,
+      "sha256": "fe1ffa7a7c99c2fe0b5f99beaf23d723b727be21702b266979190a4ff4aa8cc1"
+    },
+    "data/reviews/physics-world/lean-release/moving-contact-after.json": {
+      "bytes": 278241,
+      "sha256": "973b5c2cd70d395d576f0a0f1b90bf172b216e8f9a4381c506157ceb798b7f0e"
+    },
+    "data/reviews/physics-world/lean-release/shared-capabilities.json": {
+      "bytes": 136754,
+      "sha256": "da997ba21dfebb2e77758e61316a19bb2d34d0f99860784e90136cf29403d366"
+    },
+    "data/reviews/physics-world/lean-release/kinematics.txt": {
+      "bytes": 3913,
+      "sha256": "24f3d97563e585b7bb72ddda17c82a9105a92cb14f26e07a3c40db971a2eaa30"
+    },
+    "data/bdb2025-summary.json": {
+      "bytes": 17710,
+      "sha256": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba"
+    },
+    "data/bdb2026-summary.json": {
+      "bytes": 21089,
+      "sha256": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+    },
+    "docs/references/physical-contact-evidence.md": {
+      "bytes": 13143,
+      "sha256": "c5996f7db9aa3ec34c0dce2fe415e4376517f142a4e8c988cb012456903b2313"
+    },
+    "docs/reviews/visual-keys-and-attention.md": {
+      "bytes": 13178,
+      "sha256": "0bfe77ec92f110340c91d6641893532acbb74102f4f971f5cc9a473ec669ae2a"
+    }
+  },
+  "rawIgnored": {
+    "out/foot-restraint/foot-before.json": {
+      "bytes": 1304737,
+      "sha256": "9e97e26c036476be043101a52fe69f853ff3a10843ce1516dd1492de0b9f312b"
+    },
+    "out/foot-restraint/foot-after.json": {
+      "bytes": 1243750,
+      "sha256": "24aff741be4aebaa8fb3fc475f7fb1cdd1cb31848d146c475f05a44e2dd5fa89"
+    },
+    "out/foot-restraint/long-trace-before.json": {
+      "bytes": 6296938,
+      "sha256": "ad9b02155c2812107a5d0665ed5c398d76f29cd15b0543c6ee1aad7a15b3ab40"
+    },
+    "out/foot-restraint/long-trace-after.json": {
+      "bytes": 6223568,
+      "sha256": "0f6217949bf8a9079b5056ff5eeec2e6ead359415bfbc8af307a8fa51f429702"
+    },
+    "out/foot-restraint/moving-after.json": {
+      "bytes": 4224862,
+      "sha256": "518bd923a06f58e3f875f480516e93057046cb0cb62c21012f66889b932cba4b"
+    },
+    "out/foot-restraint/wrap-before.json": {
+      "bytes": 21542733,
+      "sha256": "c22895e515b95335d823b375fab95b45ce538588ca583a6c893dec910f47d3fe"
+    },
+    "out/foot-restraint/wrap-after.json": {
+      "bytes": 21542733,
+      "sha256": "f5ecd640826f7a276e2373d7ccae3c3111bb2799d7ec7fa393b378ed8b45b419"
+    },
+    "out/foot-restraint/foot-release.json": {
+      "bytes": 1243734,
+      "sha256": "69bde4e07096a05033b2c520b4f80ef0bc205ff0363c1639cc646fd80ef5f773"
+    },
+    "out/foot-restraint/hand-release.json": {
+      "bytes": 29300,
+      "sha256": "d51c86294a0f56a0807df5eb973b93b41487dc6bdea185c420f7b9dd08dcaf78"
+    },
+    "out/foot-restraint/calibration-before-8.txt": {
+      "bytes": 2311,
+      "sha256": "0170e57f742f6ef6cde09be2f8c99c71091ae293cb3e4aeb7d124699e948dc53"
+    },
+    "out/foot-restraint/calibration-after-8.txt": {
+      "bytes": 2310,
+      "sha256": "bfd9dea46e8e604519b495d2b262a8caaa2dc5644408c131c69711cd0dff64cd"
+    },
+    "out/foot-restraint/calibration-active-demand.txt": {
+      "bytes": 2312,
+      "sha256": "a754b3a245f5be12f9c19bf4003837fbf4a6fd97b91acc800b350c067a21be36"
+    },
+    "out/foot-restraint/tracking-after.txt": {
+      "bytes": 3913,
+      "sha256": "4a6d2184da1cd1c8979ed26bfa587307acd184c1a58440c7adba91e3466f2b93"
+    },
+    "out/foot-restraint/tests-final.txt": {
+      "bytes": 3239,
+      "sha256": "3a7af7bd167878cb2f0b8ccaf8b98d019aaa269ae0034f08ba7ae72a713ec859"
+    },
+    "out/foot-restraint/typecheck-final.txt": {
+      "bytes": 68,
+      "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+    },
+    "out/foot-restraint/build-final.txt": {
+      "bytes": 55,
+      "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+    },
+    "out/foot-restraint/data-tests-final.txt": {
+      "bytes": 121,
+      "sha256": "2fc29405cfd872c0b746ec2200b868fe5e82373d1c6cedc468f59fda3ae14a91"
+    },
+    "out/foot-restraint/regression-tests-before.txt": {
+      "bytes": 3005,
+      "sha256": "339a875477576e0edab7fd6eacb6de235e79edaa1317cf14809e85bd3c0b29f2"
+    },
+    "out/foot-restraint/focused-active-demand.txt": {
+      "bytes": 1461,
+      "sha256": "6da298cc2915b78f3d65b60f24b85d28e8f916dd127f7bc05544e8237b824101"
+    }
+  },
+  "artifacts": {
+    "data/reviews/physics-world/constraint-support/README.md": {
+      "bytes": 7480,
+      "sha256": "7fe96902abe244b5af4730d6bd2373e35ba49feb5ea283a2363e4c12cf3028d2"
+    },
+    "data/reviews/physics-world/constraint-support/build-final.txt": {
+      "bytes": 54,
+      "sha256": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529"
+    },
+    "data/reviews/physics-world/constraint-support/calibration-after-8.txt": {
+      "bytes": 2308,
+      "sha256": "a1d91b43c35d1aeb06ee28e703cdbd811b1732488ef6530c7b5448bf51a3073d"
+    },
+    "data/reviews/physics-world/constraint-support/calibration-before-8.txt": {
+      "bytes": 2306,
+      "sha256": "ffc1eb5029b0a2e8ed9eb83d68653d537469be8b7ff3cb07d39605acb9e7b943"
+    },
+    "data/reviews/physics-world/constraint-support/comparison.json": {
+      "bytes": 521685,
+      "sha256": "095f3abc21293ced34d7c1e6e945ee70b035490566823cc1f2033ab0bcb032c4"
+    },
+    "data/reviews/physics-world/constraint-support/data-tests-final.txt": {
+      "bytes": 121,
+      "sha256": "2fc29405cfd872c0b746ec2200b868fe5e82373d1c6cedc468f59fda3ae14a91"
+    },
+    "data/reviews/physics-world/constraint-support/grip-after.json": {
+      "bytes": 7987,
+      "sha256": "2b4380fc03346cda3a586ba1521a1e6989542d0adfac7fe2dae63ef6dccb0c48"
+    },
+    "data/reviews/physics-world/constraint-support/hand-after.json": {
+      "bytes": 29302,
+      "sha256": "b94b71375b06ecc2f4209b8bbe7ea08cc22ef51e57edb8c468779e07778f7971"
+    },
+    "data/reviews/physics-world/constraint-support/regression-tests-before.txt": {
+      "bytes": 3004,
+      "sha256": "d066745f87eb0a7ad43df47d6ac0d86f800ccf6dd270d95bea9b2bce88a81bad"
+    },
+    "data/reviews/physics-world/constraint-support/rejected/calibration-8.txt": {
+      "bytes": 2309,
+      "sha256": "0ca4599a6cc460b110ab87d66df74a93154ae6a9c7e5cd1ca46230bec2fa92b6"
+    },
+    "data/reviews/physics-world/constraint-support/rejected/focused-test-failure.txt": {
+      "bytes": 1460,
+      "sha256": "197fcc77dc5dcd8269f6f3dd6c9b0f39a439145085eb9a73851e7ffd5f41e405"
+    },
+    "data/reviews/physics-world/constraint-support/rejected/summary.json": {
+      "bytes": 21982,
+      "sha256": "10e4ecbbc3a4437d09cc1e58ddbbc7d3843546a3d0b15baf86443196df8b6427"
+    },
+    "data/reviews/physics-world/constraint-support/rejected/support-equivalent.patch": {
+      "bytes": 4612,
+      "sha256": "32a5b2dc066ec22310858f09727c048039215392005331947d56eeba4a801b01"
+    },
+    "data/reviews/physics-world/constraint-support/scenarios-after.json": {
+      "bytes": 19867,
+      "sha256": "cfb8cdf35f0af54c736275c0e3137a59e08aa39e90098de0052e69245ceeb2a8"
+    },
+    "data/reviews/physics-world/constraint-support/shared-after.json": {
+      "bytes": 136742,
+      "sha256": "1c8c2270cb11e4c891c277df5418c1bdc33474e0489fb041fde4e8d2b2b2d44d"
+    },
+    "data/reviews/physics-world/constraint-support/tests-final.txt": {
+      "bytes": 3238,
+      "sha256": "288bd4965b06d869151b12e1d86c4c527ba4f9e375cb841e80dbc7634df23e41"
+    },
+    "data/reviews/physics-world/constraint-support/tracking-after.txt": {
+      "bytes": 3913,
+      "sha256": "4a6d2184da1cd1c8979ed26bfa587307acd184c1a58440c7adba91e3466f2b93"
+    },
+    "data/reviews/physics-world/constraint-support/typecheck-final.txt": {
+      "bytes": 67,
+      "sha256": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d"
+    },
+    "data/reviews/physics-world/constraint-support/wrap-summary.json": {
+      "bytes": 15551,
+      "sha256": "b0d1dd61e47a6b99d2d8904d0cb0245101cff3b9ae6ca5333bf6c60668119a74"
+    }
+  },
+  "handoff": {
+    "docs/reviews/constraint-support-and-ground-friction.md": {
+      "bytes": 15205,
+      "sha256": "1bb39adc043b5d1817d813dd61103e7303f82ec4b5ad6eca783a3387a295af17"
+    },
+    "docs/PHYSICS_DEVELOPMENT.md": {
+      "bytes": 18231,
+      "sha256": "09f3ac9aab3b32d8ccf770bb49e4b89e3ed07f484a6f145daded50a7ce2684fa"
+    },
+    "CLAUDE.md": {
+      "bytes": 16035,
+      "sha256": "37214a13ff9ed19deca309cd0f911b1da4dfad13c86c00ac33b110b5258a81ed"
+    },
+    "data/README.md": {
+      "bytes": 41278,
+      "sha256": "d185aaa595052dfebdde5f2b3cb9c8cb4686e3af52b8a8c843d2c4c6526ef12b"
+    }
+  },
+  "cohorts": {
+    "footTrialsPerRevision": 162,
+    "longMirroredPairsPerRevision": 8,
+    "movingContactReps": 96,
+    "sharedCapabilityReps": 120,
+    "handFixtures": 9,
+    "isolatedGrips": 9,
+    "footballGrips": 27,
+    "trackingGames": 4,
+    "trackingSeed": 5,
+    "leagueGames": 8,
+    "leagueSeed": 7,
+    "independentLeagues": 2,
+    "baselineCountedScrimmagePlays": 1014,
+    "adoptedCountedScrimmagePlays": 1013
+  },
+  "verification": {
+    "engineTests": 290,
+    "engineTestFiles": 28,
+    "dataTests": 22,
+    "typecheck": "pass",
+    "build": "pass",
+    "targetedGroundRegressionTestsFailOnArchivedBaseline": 2,
+    "unusableGripReducedFinalStatesExactlyMatchControls": true,
+    "sourceFrozenDuringFinalDiagnostics": true
+  },
+  "longMirrors": {
+    "before": [
+      {
+        "seed": 7,
+        "substeps": 12,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 0.6905965912052383
+      },
+      {
+        "seed": 7,
+        "substeps": 12,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 1.3044814639135414
+      },
+      {
+        "seed": 7,
+        "substeps": 48,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 0.0007623236525768231
+      },
+      {
+        "seed": 7,
+        "substeps": 48,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 7.679459553153494e-05
+      },
+      {
+        "seed": 19,
+        "substeps": 12,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 0.000197063361783603
+      },
+      {
+        "seed": 19,
+        "substeps": 12,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 0.0003983741054539298
+      },
+      {
+        "seed": 19,
+        "substeps": 48,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 8.102991476199099e-13
+      },
+      {
+        "seed": 19,
+        "substeps": 48,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 1.0946048639454894e-12
+      }
+    ],
+    "after": [
+      {
+        "seed": 7,
+        "substeps": 12,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 9.278671512694308e-05
+      },
+      {
+        "seed": 7,
+        "substeps": 12,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 5.447616345569284e-08
+      },
+      {
+        "seed": 7,
+        "substeps": 48,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 9.166657458303146e-08
+      },
+      {
+        "seed": 7,
+        "substeps": 48,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 1.960683748329276e-09
+      },
+      {
+        "seed": 19,
+        "substeps": 12,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 0.000197063361783603
+      },
+      {
+        "seed": 19,
+        "substeps": 12,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 0.0003983741054539298
+      },
+      {
+        "seed": 19,
+        "substeps": 48,
+        "mode": "closed-loop",
+        "maxPositionErrorYd": 7.815970093361102e-14
+      },
+      {
+        "seed": 19,
+        "substeps": 48,
+        "mode": "matched-controls",
+        "maxPositionErrorYd": 7.140866117879973e-14
+      }
+    ]
+  },
+  "reportedLimits": {
+    "nativeHandFallDisagreements": 3,
+    "handFixtures": 9,
+    "handMaxClosestErrorYd": 0.8220399013420656,
+    "nativeLongEndingErrorYd": {
+      "carrier": 11.741297200282286,
+      "defender": 8.696989961045007
+    },
+    "nativeLongFallSetDisagreements": 2,
+    "nativeFullPathMirrorErrorYd": 0.000197063361783603,
+    "validPositiveCapacityFootRestraintForceFeasible": false,
+    "normalLoadAndProneFootprintEmpiricallyValidated": false,
+    "totalHumanEnergyClosed": false,
+    "newRawNflOrAddBiomechanicsSubjectMeasurements": false,
+    "performanceClaim": false,
+    "physicsReady": false
+  },
+  "unchangedViewer": {
+    "recordedSourceSha256": "23fd4c510883618b454f75354cfafcd7540c0b6c08de0c4906358cb1e9769296",
+    "files": {
+      "viewer/film-room.html": {
+        "bytes": 43510636,
+        "sha256": "b6e10fd474d9c065b6ab53280960947e9f9a4d20250cbaf117eeb4abb786ecba"
+      },
+      "viewer/inspection-room.html": {
+        "bytes": 1394932,
+        "sha256": "ddcea5a8eaaae1588ddfd9107f4c7f47bad2e01c571d93b5938d6d2e414a61c9"
+      }
+    },
+    "regenerated": false,
+    "browserRevalidated": false
+  },
+  "rejectedCandidatePatchAppliedToAdoptedEngine": false,
+  "physicalProfilesOrForceCoefficientsRetuned": false,
+  "globalStepBudgetRaised": false,
+  "pr1Touched": false,
+  "retainedTextNormalization": "Trailing whitespace and surplus final blank lines removed; numerical content unchanged. Rejected patch regenerated with zero context against the pinned baseline; original raw diff and rejected world are separately checksummed."
+}

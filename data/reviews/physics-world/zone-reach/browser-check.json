@@ -1,0 +1,265 @@
+{
+  "schema": "zone-reach-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BEFORE-ZR-R1-oz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 28,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-oz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 37,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-wz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 35,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-wz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 51,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 34,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 31,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-duo-odd-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 42,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-duo-odd-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 50,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-power-under-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 39,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-power-under-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-counter-tite-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 48,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-ZR-R1-counter-tite-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 37,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-oz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 30,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-oz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 35,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-wz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 34,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-wz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 51,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 34,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 31,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-duo-odd-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 42,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-duo-odd-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 50,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-power-under-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 39,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-power-under-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-counter-tite-R-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 48,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-ZR-R1-counter-tite-L-S11",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 37,
+      "copiedReferenceUsesSelectedEngineSource": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "stuffFilterUsesRecordedResults": true,
+  "pairedFixtureSearch": true,
+  "installedControlsLabelledAndSearchable": true,
+  "frontFilterAndGrouping": true,
+  "recordedSourceFilter": true,
+  "conceptAndCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "copiedReferenceUsesSelectedEngineSource": true,
+  "videoExportUsesSelectedEngineSource": [
+    {
+      "id": "BEFORE-ZR-R1-oz_strong-over-R-S3",
+      "selectedSourceSha256": "a629d4d04485ade21e4354b8078ed6cd0bf56b155aa92b83dad7f97cc2d8172f",
+      "downloadFilename": "BEFORE-ZR-R1-oz_strong-over-R-S3_a629d4d04485_0.00-1.00s.webm",
+      "nonemptyBytes": 298066,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film a629d4d04485 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    },
+    {
+      "id": "FINAL-ZR-R1-oz_strong-over-R-S3",
+      "selectedSourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+      "downloadFilename": "FINAL-ZR-R1-oz_strong-over-R-S3_cf53e3f0e729_0.00-1.00s.webm",
+      "nonemptyBytes": 207326,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film cf53e3f0e729 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    }
+  ],
+  "nativeOwnershipBeforeAfterInspected": [
+    {
+      "id": "BEFORE-ZR-R1-wz_strong-over-R-S3",
+      "sourceSha256": "a629d4d04485ade21e4354b8078ed6cd0bf56b155aa92b83dad7f97cc2d8172f",
+      "fixedWideZoneRGInspected": true,
+      "inspectedTime": 0.45,
+      "zeroEarlyContactsAndHands": true,
+      "actualGroundImpulseShown": true,
+      "controllerIntentionSeparatedFromActualLoad": true,
+      "inspectedText": "After tick 0.40\u20130.45s: RG reach \u2192 DT_S\nNo shared combination pointer\nNo actual block engagement\nRecorded entry-step target 39.63, 24.89 yd\nNo stored zone-read record in this controller snapshot.\nRead at 0.40s: requested velocity 2.16, 1.42 yd/s \u00b7 requested posture 0.70\nTarget DT_S \u00b7 observed position 40.90, 25.11 yd \u00b7 observed velocity 0.00, 0.00 yd/s\nActual center offset from intended drive: lateral 1.09 yd / along 0.77 yd (geometry, not proof of leverage)\nActual achieved center 39.57, 25.27 yd \u00b7 velocity 0.81, 0.11 yd/s \u00b7 ground impulse 15.96, 32.21\nArm impulse 0.00 / 71.43 \u00b7 arm work 0.00 / 214.28\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-ZR-R1-oz_strong-over-L-S3",
+      "sourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+      "fixedOutsideZoneRGContactInspected": true,
+      "inspectedTime": 0.9,
+      "stableSurfaceFrameSeparateFromDisplacement": true,
+      "runoffIntentionSeparatedFromActualContact": true,
+      "inspectedText": "After tick 0.80\u20130.85s: RG reach \u2192 DT_W\nNo shared combination pointer\nActual engagement: RG \u2192 DT_W \u00b7 helpers none\nRecorded entry-step target 39.63, 25.77 yd\nStored zone phase runoff \u00b7 target DT_W \u00b7 read at 0.80s \u00b7 next permitted read 1.00s\nConsumed delayed visual image: age 0.25s when read \u00b7 saw up \u00b7 position 40.54, 26.07 yd \u00b7 velocity -1.04, 0.26 yd/s\nRelative hip at that read: playside -0.34 yd (positive = outside) \u00b7 longitudinal -0.73 yd \u00b7 defender playside velocity 0.26 yd/s\nIntended contact surface aim 40.24, 25.47 yd \u00b7 displacement direction 0.67, 0.74 \u00b7 world-lateral seal target -0.30 (intent)\nCurrent-envelope outward-step estimate over 0.10s: needs 0.69 yd / available 0.07 yd; traffic and contact loads excluded\nActual engagement geometry: surface frame -1.00, 0.00 \u00b7 displacement direction 0.67, 0.74 \u00b7 frame seal target -0.30 \u00b7 achieved \u03c6 -0.29 / control 0.41\nRead at 0.80s: requested velocity 0.00, 0.00 yd/s\nTarget DT_W \u00b7 observed position 40.54, 26.07 yd \u00b7 observed velocity -1.04, 0.26 yd/s\nActual center offset from intended drive: lateral 0.31 yd / along 0.78 yd (geometry, not proof of leverage)\nActual achieved center 39.85, 25.77 yd \u00b7 velocity 0.88, 0.69 yd/s \u00b7 ground impulse 35.85, 30.04\nArm impulse 51.31 / 71.42 \u00b7 arm work 0.00 / 214.26\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 1 \u00b7 mean forces 882.72 normal / -522.31 tangent"
+    },
+    {
+      "id": "FINAL-ZR-R1-wz_strong-over-R-S3",
+      "sourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+      "fixedWideZoneRGInspected": true,
+      "inspectedTime": 0.45,
+      "zeroEarlyContactsAndHands": true,
+      "actualGroundImpulseShown": true,
+      "controllerIntentionSeparatedFromActualLoad": true,
+      "inspectedText": "After tick 0.35\u20130.40s: RG reach \u2192 DT_S\nNo shared combination pointer\nNo actual block engagement\nRecorded entry-step target 39.63, 24.89 yd\nStored zone phase reach \u00b7 target DT_S \u00b7 read at 0.30s \u00b7 next permitted read 0.55s\nConsumed delayed visual image: age 0.30s when read \u00b7 saw up \u00b7 position 40.90, 25.11 yd \u00b7 velocity 0.00, 0.00 yd/s\nRelative hip at that read: playside -0.19 yd (positive = outside) \u00b7 longitudinal -1.42 yd \u00b7 defender playside velocity 0.00 yd/s\nIntended contact surface aim 40.60, 24.51 yd \u00b7 displacement direction 1.00, 0.00 \u00b7 world-lateral seal target -0.30 (intent)\nCurrent-envelope outward-step estimate over 0.40s: needs 0.49 yd / available 0.54 yd; traffic and contact loads excluded\nRead at 0.35s: requested velocity 2.68, -2.30 yd/s \u00b7 requested posture 0.70\nTarget DT_S \u00b7 observed position 40.90, 25.11 yd \u00b7 observed velocity 0.00, 0.00 yd/s\nActual center offset from intended drive: lateral 0.17 yd / along 1.39 yd (geometry, not proof of leverage)\nActual achieved center 39.53, 25.25 yd \u00b7 velocity 0.55, -0.64 yd/s \u00b7 ground impulse -4.63, -35.84\nArm impulse 0.00 / 71.43 \u00b7 arm work 0.00 / 214.28\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-ZR-R1-wz_strong-over-L-S3",
+      "sourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+      "fixedWideZoneLGAcquiredLegacyFrameInspected": true,
+      "inspectedTime": 3.36,
+      "preservedNonverticalFrameAndRealHandsShown": true,
+      "worldLateralIntentSeparatedFromFrameProjection": true,
+      "inspectedText": "After tick 3.30\u20133.35s: LG reach \u2192 DT_S\nNo shared combination pointer\nActual engagement: LG \u2192 DT_S \u00b7 helpers none\nRecorded entry-step target 39.63, 28.45 yd\nStored zone phase runoff \u00b7 target DT_S \u00b7 read at 3.30s \u00b7 next permitted read 3.51s\nConsumed delayed visual image: age 0.25s when read \u00b7 saw up \u00b7 position 40.63, 30.63 yd \u00b7 velocity 1.14, 0.88 yd/s\nRelative hip at that read: playside -0.35 yd (positive = outside) \u00b7 longitudinal -0.47 yd \u00b7 defender playside velocity 0.88 yd/s\nIntended contact surface aim 40.33, 30.03 yd \u00b7 displacement direction 0.49, 0.87 \u00b7 world-lateral seal target -0.30 (intent)\nCurrent-envelope outward-step estimate over 0.10s: needs 0.73 yd / available 0.15 yd; traffic and contact loads excluded\nActual engagement geometry: surface frame -0.49, -0.87 \u00b7 displacement direction 0.49, 0.87 \u00b7 frame seal target -0.14 \u00b7 achieved \u03c6 0.21 / control 0.28\nRead at 3.30s: requested velocity 0.00, 0.00 yd/s\nTarget DT_S \u00b7 observed position 40.63, 30.63 yd \u00b7 observed velocity 1.14, 0.88 yd/s\nActual center offset from intended drive: lateral 0.20 yd / along 0.56 yd (geometry, not proof of leverage)\nActual achieved center 40.21, 30.35 yd \u00b7 velocity 1.01, 1.27 yd/s \u00b7 ground impulse 73.76, 39.79\nArm impulse 37.22 / 67.38 \u00b7 arm work 0.00 / 202.13\nSupport motor work 0.00 / 0.00\nPhysical contacts 1 \u00b7 surviving hand joints 1 \u00b7 mean forces 720.04 normal / -126.03 tangent\nRead at 3.30s: earned-climb observed by LT: combo \u2192 reach \u00b7 target DT_S \u2192 DT_S \u00b7 combo DT_S \u2192 none\nRecorded cue: secured DT_S; LG stays"
+    }
+  ]
+}

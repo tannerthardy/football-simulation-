@@ -1,0 +1,90 @@
+{
+  "schema": "approach-cost-comparison-v1",
+  "baselineSource": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "candidateSource": "2b405d9a79bbb09c21e5e1146a32632c62263fb9e67f319091196f45d8a80ef4",
+  "scriptSha256": "85d2555be97a5a3b9bd87b75f0b41df33ba1789f70a0b02789674165b3d4250d",
+  "inputSha256": "dda56a65e5e1369a2771bd2796fe194f3b359a41f06201575a5fef47673e78a0",
+  "cohortSha256": "0e9024c8e5af82a2362dc081e301e06e83e2fbe681d11543bcdf12b18cd6fb44",
+  "runtime": "v22.23.3",
+  "warmBlocksExcluded": 3,
+  "measuredBlocks": 7,
+  "callsPerBlock": 1000,
+  "rows": [
+    {
+      "input": "ordinary-live-crossing",
+      "baselineWallMsPerCall": 0.003688200999999992,
+      "candidateWallMsPerCall": 0.16705984300000024,
+      "baselineCpuMsPerCall": 0.007731,
+      "candidateCpuMsPerCall": 0.178749,
+      "candidatePreviewStepsPerCall": 36,
+      "candidateSelectedIndex": 1
+    },
+    {
+      "input": "ordinary-live-crossing-mirror",
+      "baselineWallMsPerCall": 0.003499362999999903,
+      "candidateWallMsPerCall": 0.1697346510000002,
+      "baselineCpuMsPerCall": 0.007606,
+      "candidateCpuMsPerCall": 0.18313300000000002,
+      "candidatePreviewStepsPerCall": 36,
+      "candidateSelectedIndex": 1
+    },
+    {
+      "input": "official-crossing",
+      "baselineWallMsPerCall": 0.003255493999999999,
+      "candidateWallMsPerCall": 0.16685282800000004,
+      "baselineCpuMsPerCall": 0.007315,
+      "candidateCpuMsPerCall": 0.18821100000000002,
+      "candidatePreviewStepsPerCall": 36,
+      "candidateSelectedIndex": 0
+    },
+    {
+      "input": "near-strike",
+      "baselineWallMsPerCall": 0.0006702720000000682,
+      "candidateWallMsPerCall": 0.0007996590000002471,
+      "baselineCpuMsPerCall": 0.0030800000000000003,
+      "candidateCpuMsPerCall": 0.001577,
+      "candidatePreviewStepsPerCall": 0,
+      "candidateSelectedIndex": null
+    },
+    {
+      "input": "head-on",
+      "baselineWallMsPerCall": 0.0004259869999999637,
+      "candidateWallMsPerCall": 0.0004545650000000023,
+      "baselineCpuMsPerCall": 0.000429,
+      "candidateCpuMsPerCall": 0.000475,
+      "candidatePreviewStepsPerCall": 0,
+      "candidateSelectedIndex": null
+    },
+    {
+      "input": "open-far",
+      "baselineWallMsPerCall": 0.00044713899999999283,
+      "candidateWallMsPerCall": 0.000436745000000883,
+      "baselineCpuMsPerCall": 0.000451,
+      "candidateCpuMsPerCall": 0.00044,
+      "candidatePreviewStepsPerCall": 0,
+      "candidateSelectedIndex": null
+    },
+    {
+      "input": "faster-carrier-escape",
+      "baselineWallMsPerCall": 0.008244402000000036,
+      "candidateWallMsPerCall": 0.008455156999999417,
+      "baselineCpuMsPerCall": 0.012442,
+      "candidateCpuMsPerCall": 0.012322,
+      "candidatePreviewStepsPerCall": 0,
+      "candidateSelectedIndex": null
+    },
+    {
+      "input": "moving-away-redirect",
+      "baselineWallMsPerCall": 0.006595984000000044,
+      "candidateWallMsPerCall": 0.007338536999999633,
+      "baselineCpuMsPerCall": 0.010877000000000001,
+      "candidateCpuMsPerCall": 0.011618,
+      "candidatePreviewStepsPerCall": 0,
+      "candidateSelectedIndex": null
+    }
+  ],
+  "limitations": [
+    "Separate sequential warmed processes without concurrent tests/browser/games.",
+    "Fixed-input command cost includes controller previews; it is not a full-game percentage estimate."
+  ]
+}

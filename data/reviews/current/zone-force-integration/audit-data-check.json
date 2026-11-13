@@ -1,0 +1,48 @@
+{
+  "auditPublication": "94f25c64cf2c471220f6297cb7cddd86a1fc3d4e",
+  "acceptedEngine": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+  "scope": "Data/ref checks only; no audit tooling or data-only history promoted",
+  "protectedAuditDelta": [],
+  "archiveTag": "evidence-accepted-games-70b4db6-deep-audit-v1",
+  "archiveCommit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+  "verifiedPublicationFiles": [
+    {
+      "path": "accepted-games-deep-audit-v1.tar.gz",
+      "bytes": 14192453,
+      "sha256": "5498158a401c95e332e948040384b5dafc1dcd62eb65921ddf134c848dc5ec56"
+    },
+    {
+      "path": "audit-receipt.json",
+      "bytes": 945,
+      "sha256": "8c4126a6af6c2d1b38d73940d8b8947e130131b3c238065b5623fe6ed589c484"
+    },
+    {
+      "path": "AUDIT.md",
+      "bytes": 1701,
+      "sha256": "9f7eaef1ab4a5c88fd4c676989af1ad565349ef7ae1a6a535656ab4e83d3a281"
+    },
+    {
+      "path": "audit-figures/catch-time-counterexample.png",
+      "bytes": 106970,
+      "sha256": "60b5a5163472f96e19c7d539a45bfdeb3b7a10975b772b6251b549df3c4851a9"
+    },
+    {
+      "path": "audit-figures/exchange-context.png",
+      "bytes": 156094,
+      "sha256": "8b680de9a254aa730925fd64597494b4c83ad69a12c15689200b8a164f165bff"
+    },
+    {
+      "path": "audit-figures/scramble-continuity.png",
+      "bytes": 98805,
+      "sha256": "a025a7f6658994b895490c3a8e6915592459f98859319ed4d9f15f9b9cfb0e8e"
+    },
+    {
+      "path": "AUDIT-SHA256SUMS",
+      "bytes": 577,
+      "sha256": "3b3927e37f8fb4f382d327a9730dcc8e477909cbae622b03f5498610397905a7"
+    }
+  ],
+  "auditNewEngineExecutions": 0,
+  "dataCheckSeconds": 0.07730648998403922,
+  "ownerCoordination": "https://github.com/tannerthardy/football-simulation-/pull/129#issuecomment-6229679789"
+}

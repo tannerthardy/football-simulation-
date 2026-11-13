@@ -1,0 +1,1714 @@
+{
+  "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "scope": "Static manually requested fit audit, no physical or NFL outcomes",
+  "rows": [
+    {
+      "front": "over",
+      "exchange": false,
+      "jobs": [
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 29.824553866406312
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 22.885690746728677
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 24.555338571786265
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 27.442993927844093
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 45,
+            "y": 25.926659111663277
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_mid"
+          },
+          "fit": {
+            "gap": "A",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.67216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_S",
+          "pos": {
+            "x": 44.1,
+            "y": 23.309567418595122
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "over",
+      "exchange": true,
+      "jobs": [
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 29.824553866406312
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "LB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 22.885690746728677
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 24.555338571786265
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 27.442993927844093
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 45,
+            "y": 25.926659111663277
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_mid"
+          },
+          "fit": {
+            "gap": "A",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.67216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "C",
+            "side": 1,
+            "kind": "cutback",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "DE_W"
+          }
+        },
+        {
+          "slot": "LB_S",
+          "pos": {
+            "x": 44.1,
+            "y": 23.309567418595122
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "under",
+      "exchange": false,
+      "jobs": [
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 31.474553866406314
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 23.535690746728676
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 25.855338571786266
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": -1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 28.742993927844093
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 44.9,
+            "y": 24.626659111663276
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.02216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "A",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_S",
+          "pos": {
+            "x": 41,
+            "y": 22.159567418595124
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "under",
+      "exchange": true,
+      "jobs": [
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 31.474553866406314
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "LB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 23.535690746728676
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 25.855338571786266
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": -1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 28.742993927844093
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 44.9,
+            "y": 24.626659111663276
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.02216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "cutback",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "DE_W"
+          }
+        },
+        {
+          "slot": "LB_S",
+          "pos": {
+            "x": 41,
+            "y": 22.159567418595124
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "odd",
+      "exchange": false,
+      "jobs": [
+        {
+          "slot": "NT",
+          "pos": {
+            "x": 40.9,
+            "y": 26.584433499602714
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": -1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 31.474553866406314
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 22.185690746728678
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 23.255338571786265
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 30.04280937377371
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_W"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 44.6,
+            "y": 25.276659111663275
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.02216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "odd",
+      "exchange": true,
+      "jobs": [
+        {
+          "slot": "NT",
+          "pos": {
+            "x": 40.9,
+            "y": 26.584433499602714
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": -1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 31.474553866406314
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "LB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 22.185690746728678
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 23.255338571786265
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 30.04280937377371
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "C",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_W"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 44.6,
+            "y": 25.276659111663275
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.02216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "cutback",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "DE_W"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "tite",
+      "exchange": false,
+      "jobs": [
+        {
+          "slot": "NT",
+          "pos": {
+            "x": 40.9,
+            "y": 26.584433499602714
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": 1,
+            "kind": "interior",
+            "technique": "lag",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 31.474553866406314
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 22.185690746728678
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 24.205338571786264
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "interior",
+            "technique": "control",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 29.09280937377371
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "control",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 44.6,
+            "y": 24.626659111663276
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.67216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "C",
+            "side": 1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    },
+    {
+      "front": "tite",
+      "exchange": true,
+      "jobs": [
+        {
+          "slot": "NT",
+          "pos": {
+            "x": 40.9,
+            "y": 26.584433499602714
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "A",
+            "side": 1,
+            "kind": "interior",
+            "technique": "lag",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DE_W",
+          "pos": {
+            "x": 40.9,
+            "y": 31.474553866406314
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "LB_W"
+          }
+        },
+        {
+          "slot": "DE_S",
+          "pos": {
+            "x": 40.9,
+            "y": 22.185690746728678
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "edge",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "CB_S"
+          }
+        },
+        {
+          "slot": "DT_S",
+          "pos": {
+            "x": 40.9,
+            "y": 24.205338571786264
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": -1,
+            "kind": "interior",
+            "technique": "control",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "DT_W",
+          "pos": {
+            "x": 40.9,
+            "y": 29.09280937377371
+          },
+          "role": {
+            "kind": "rush"
+          },
+          "fit": {
+            "gap": "B",
+            "side": 1,
+            "kind": "interior",
+            "technique": "control",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_M",
+          "pos": {
+            "x": 44.6,
+            "y": 24.626659111663276
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_s"
+          },
+          "fit": {
+            "gap": "C",
+            "side": -1,
+            "kind": "insert",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "LB_W",
+          "pos": {
+            "x": 44.6,
+            "y": 28.67216911316529
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "hook_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "cutback",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack",
+            "partner": "DE_W"
+          }
+        },
+        {
+          "slot": "CB_S",
+          "pos": {
+            "x": 46,
+            "y": 9.60618419997696
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "CB_W",
+          "pos": {
+            "x": 46,
+            "y": 44.2020437279408
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "flat_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "force",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "FS",
+          "pos": {
+            "x": 52,
+            "y": 35.65396630570863
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_w"
+          },
+          "fit": {
+            "gap": "D",
+            "side": 1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        },
+        {
+          "slot": "SS",
+          "pos": {
+            "x": 52,
+            "y": 17.89720669202552
+          },
+          "role": {
+            "kind": "zone",
+            "zone": "deep_half_s"
+          },
+          "fit": {
+            "gap": "D",
+            "side": -1,
+            "kind": "alley",
+            "technique": "attack",
+            "edge": "box",
+            "pace": "stack"
+          }
+        }
+      ]
+    }
+  ]
+}

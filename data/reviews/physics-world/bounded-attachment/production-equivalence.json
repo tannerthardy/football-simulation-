@@ -1,0 +1,46 @@
+{
+  "schema": "bounded-attachment-production-equivalence-v1",
+  "controlledSource": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+  "productionSource": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+  "gamesComparedToUncachedSource": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+  "results": [
+    {
+      "panel": "tackles",
+      "group": "primary",
+      "count": 56,
+      "different": []
+    },
+    {
+      "panel": "tackles",
+      "group": "witnesses",
+      "count": 8,
+      "different": []
+    },
+    {
+      "panel": "runs",
+      "group": "trials",
+      "count": 144,
+      "different": []
+    },
+    {
+      "panel": "games",
+      "rootSeed": 9,
+      "count": 2,
+      "officialResultSummariesIdentical": true,
+      "timeouts": 0,
+      "lowerBoundReleases": 0
+    },
+    {
+      "panel": "games",
+      "rootSeed": 17,
+      "count": 2,
+      "officialResultSummariesIdentical": true,
+      "timeouts": 0,
+      "lowerBoundReleases": 0
+    }
+  ],
+  "limits": [
+    "Tackle/run full physical endpoint signatures match sampled controlled bounded runs; observer checks still pass.",
+    "Game official result summaries match, not complete raw game state/RNG signatures; runtime excluded."
+  ]
+}

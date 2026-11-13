@@ -1,0 +1,44 @@
+{
+  "schema": "passing-component-shared-rows-v1",
+  "packetSchema": "retained-passing-tail-panel-v2",
+  "description": "The six complete component rows are identical to final.json.gz. Restore the original component by changing only the three announced header fields; source/tool, original compressed payload and decoded UTF-8 bytes are checked before writing.",
+  "payloadRelativeToReceipt": "final.json.gz",
+  "payload": {
+    "sourceBefore": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+    "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+    "archiveRoot": "/workspace/football-simulation-/out/helper-fit/promoted-source",
+    "toolSha256": "ed6132bd1393bf35fe18bd851f1df8be1817729d3cba576851a87a88bfad1164",
+    "gzipSha256": "1e4729d68cf34ac3d741d2cca82ee999253e2c834189f717982f8d9060252cb1",
+    "gzipBytes": 11240856,
+    "decodedSha256": "d7476eb49535bde28805f26ad468d66d8da59f5be91ab85fabd45e4f82c399f6",
+    "decodedBytes": 149174775
+  },
+  "component": {
+    "sourceBefore": "e5e9a122f7c76090e12b8eb57dc358e43ba9c59ee440232bf330cae5ddad0e4a",
+    "sourceAfter": "e5e9a122f7c76090e12b8eb57dc358e43ba9c59ee440232bf330cae5ddad0e4a",
+    "archiveRoot": "/workspace/football-simulation-/out/helper-fit/defense/component-source",
+    "toolSha256": "ed6132bd1393bf35fe18bd851f1df8be1817729d3cba576851a87a88bfad1164",
+    "gzipSha256": "42a9b29a64dbc44fcb0cffa8c8592b8a9b8d96a5d5bac0cc40edc8fbec55de73",
+    "gzipBytes": 11240861,
+    "decodedSha256": "3ed52942428c2d04d828be042a35e2f6707f3b70c64f9fb1cd3e277b2f7e25d5",
+    "decodedBytes": 149174784
+  },
+  "sharedRows": {
+    "sha256": "0751b15b4184d91d14befe27d9b7abcd70815cf191686b6099c7f2dd17a99b7c",
+    "bytes": 149174027,
+    "count": 6,
+    "completeRowsEqual": true
+  },
+  "headerReplacements": {
+    "sourceBefore": "e5e9a122f7c76090e12b8eb57dc358e43ba9c59ee440232bf330cae5ddad0e4a",
+    "sourceAfter": "e5e9a122f7c76090e12b8eb57dc358e43ba9c59ee440232bf330cae5ddad0e4a",
+    "archiveRoot": "/workspace/football-simulation-/out/helper-fit/defense/component-source"
+  },
+  "compression": {
+    "level": 9,
+    "contract": "Original decoded UTF-8 bytes are mandatory; gzip checksum equality is reported separately because zlib versions can differ.",
+    "originalNode": "v22.23.3",
+    "originalZlib": "1.3.1-e00f703"
+  },
+  "reproduce": "node tools/restore-component.mjs coverage/final.json.gz coverage/component-shared-rows.json out/coverage-component.json.gz"
+}

@@ -1,0 +1,52 @@
+{
+  "schema": "engine-rushing-recording-artifact-manifest-v1",
+  "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "adapterSha256": "8f3a57d5b54fa4b1b9580589a5d07b041713a26a027b955815c58d8a7ba71a45",
+  "sharedModuleSha256": "0b5d645953c303fcb5804643a2829de83418c135952c25c122f69bb28a4df238",
+  "nflReportSha256": "4f624c55eee5495b15bc2d53ffade7f7b591b02c582bc9912a280d6a7e7745c3",
+  "engineQuerySha256": "f122ce05a4a6241169761644f53400ac561a6775988e4c5e1b452e337984e4ce",
+  "producerSha256": "7aae5bb1bc756efef52ab6bd9abc380e564bf5a2d59596d74629ab1ca66edc35",
+  "historicalReportsUnchanged": true,
+  "operatorTests": {
+    "file": "test/test_engine_rushing_benchmark.py",
+    "passed": 17,
+    "sha256": "be735c0a3db51aefb796fb00bf3d21c001a3014f5f6fda7f39b9645ff9ccf441"
+  },
+  "artifacts": [
+    {
+      "path": "out/rushing-benchmark/productionRecording8f8cf-engine-benchmark.json.gz",
+      "bytes": 298831,
+      "sha256": "30aa9c14f6c14532ffe70e3dc834c3533aab3c4b0c0e316d1d3957a2e11686ac"
+    },
+    {
+      "path": "out/rushing-benchmark/productionRecording8f8cf-engine-query.json",
+      "bytes": 3380,
+      "sha256": "68bb7c888e21782b58306a2540551e1935d000b01635e91a909f77c5c35ce698"
+    },
+    {
+      "path": "out/rushing-benchmark/productionRecording8f8cf-comparability.json",
+      "bytes": 2083,
+      "sha256": "527cff024f3fc0e4e4807bc74952dd830753ab6c1dd91cc30a026e70e8632b50"
+    },
+    {
+      "path": "out/rushing-benchmark/productionRecording8f8cf-adapter-parity.json",
+      "bytes": 5064,
+      "sha256": "b9e182b07edc8d49cbf771ecbace6db8cf407e71ebf4426fdcde43cbb14bcb5c"
+    },
+    {
+      "path": "out/rushing-benchmark/productionRecording8f8cf-engine-commands.json",
+      "bytes": 1474,
+      "sha256": "d471b1ef2ef79b5a9303913d00e1a8146db0deac20df15a7629a8a54f387dbfb"
+    },
+    {
+      "path": "out/rushing-benchmark/engine-newrecording-review.md",
+      "bytes": 2227,
+      "sha256": "0870e43a58dbec1e910e3453c5e7cc56e71c64613a276d028e9c37d2cd34e488"
+    },
+    {
+      "path": "out/rushing-benchmark/engine_rushing_benchmark-b006.py",
+      "bytes": 34555,
+      "sha256": "b0067b156fd2b185e23ca673efb893f44141ca723bc52b8922f2fe467bbe5c19"
+    }
+  ]
+}

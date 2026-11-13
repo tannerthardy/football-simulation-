@@ -1,0 +1,101 @@
+{
+  "schema": "matched-controller-game-batch-v1",
+  "input": "/workspace/football-big-game-evaluation/out/checkpoint/inputs-reviewed.json",
+  "inputSha256": "fd67d00a40fbcf90ca78297946e415a7dd62185034dc4ed9894ff045da3e8c80",
+  "startedAt": "2026-10-20T22:35:00.964Z",
+  "budget": {
+    "gamesPerArm": 2,
+    "totalGames": 4,
+    "maxGameSeconds": 120,
+    "maxCollectionSeconds": 100,
+    "maxCombinedGameSeconds": 480,
+    "maxGameSteps": 600
+  },
+  "games": [
+    {
+      "arm": "candidate",
+      "id": "zone-reference",
+      "seed": 701,
+      "status": "complete",
+      "startedAt": "2026-10-20T22:35:00.975Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "launcherSeconds": 48.008101142,
+      "finishedAt": "2026-10-20T22:35:48.984Z",
+      "complete": true,
+      "score": {
+        "home": 27,
+        "away": 41
+      },
+      "steps": 160,
+      "summary": "/workspace/football-big-game-evaluation/out/checkpoint-reviewed/candidate/zone-reference/summary.json",
+      "summarySha256": "4566b3b05bf97d66f02a59e00e44cd16cf152986e49793b5a07cd2f2f5e52495"
+    },
+    {
+      "arm": "baseline",
+      "id": "zone-reference",
+      "seed": 701,
+      "status": "complete",
+      "startedAt": "2026-10-20T22:36:26.911Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "launcherSeconds": 45.657356867000004,
+      "finishedAt": "2026-10-20T22:37:12.570Z",
+      "complete": true,
+      "score": {
+        "home": 46,
+        "away": 57
+      },
+      "steps": 154,
+      "summary": "/workspace/football-big-game-evaluation/out/checkpoint-reviewed/baseline/zone-reference/summary.json",
+      "summarySha256": "d8ed8870536b334e2aad4baaed5da3ebf3a96b2c0b99876194a99ed6f384267a"
+    },
+    {
+      "arm": "baseline",
+      "id": "spread-air",
+      "seed": 702,
+      "status": "complete",
+      "startedAt": "2026-10-20T22:37:12.587Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "launcherSeconds": 47.465876115,
+      "finishedAt": "2026-10-20T22:38:00.053Z",
+      "complete": true,
+      "score": {
+        "home": 37,
+        "away": 34
+      },
+      "steps": 161,
+      "summary": "/workspace/football-big-game-evaluation/out/checkpoint-reviewed/baseline/spread-air/summary.json",
+      "summarySha256": "ff5be7821a65639e83f041e7511792789faf5fba1076e3fab1ad42a0ac1f4998"
+    },
+    {
+      "arm": "candidate",
+      "id": "spread-air",
+      "seed": 702,
+      "status": "complete",
+      "startedAt": "2026-10-20T22:38:00.074Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "launcherSeconds": 50.104954713,
+      "finishedAt": "2026-10-20T22:38:50.179Z",
+      "complete": true,
+      "score": {
+        "home": 45,
+        "away": 35
+      },
+      "steps": 152,
+      "summary": "/workspace/football-big-game-evaluation/out/checkpoint-reviewed/candidate/spread-air/summary.json",
+      "summarySha256": "b07351552d72fd830329bf9723cc6b6aafdca281040ddb05465b5e020f79e4ba"
+    }
+  ],
+  "lastPhase": "compare",
+  "updatedAt": "2026-10-20T22:38:50.193Z",
+  "completed": 4,
+  "attempted": 4,
+  "launcherSeconds": 191.23628883700002
+}

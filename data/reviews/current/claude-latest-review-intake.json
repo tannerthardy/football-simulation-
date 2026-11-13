@@ -1,0 +1,132 @@
+{
+  "schema": "claude-latest-review-intake-v1",
+  "date": "2026-10-20 America/Phoenix",
+  "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "acceptedSourceSha256": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+  "canonicalQueueParent": "4cc3337df24faa6d857b612ae62e3df3109a5296",
+  "researchHead": "bae3fe80d189a7d792aaafbc4eea1ae2baa79573",
+  "researchBranch": "claude/run-game-v3",
+  "researchMergeBase": "2c98bed94adad8087c65f381d4090444ad283985",
+  "researchSourceSha256": "12091d2003e5c1cd1fc75bd376a3c021bbc8df77d9dd1de8cf944897f487b930",
+  "researchChangedSourceFiles": [
+    "src/playbook/alignment.ts",
+    "src/sim/agent.ts",
+    "src/sim/assign.ts",
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/behaviors/carrier.ts",
+    "src/sim/behaviors/defense.ts",
+    "src/sim/behaviors/qb.ts",
+    "src/sim/engagement.ts",
+    "src/sim/run-fits.ts",
+    "src/sim/spacing.ts"
+  ],
+  "registeredAcceptedFlags": 44,
+  "registeredResearchFlags": 75,
+  "existingFlagValuesUnchanged": true,
+  "additionalResearchFlags": {
+    "BACK_CHASE": "0",
+    "BLOCK_FRONT": "0",
+    "COMBO_LEAVE": "0",
+    "DEEP_CAP": "0",
+    "DEF_GETOFF": "1",
+    "DEPART_TEMPO": "0",
+    "DL_FEEL": "0",
+    "DRIVE_CONNECT": "0",
+    "EDGE_SQUEEZE": "0",
+    "FB_TRACK": "0",
+    "FORCE_DEPTH": "0",
+    "FORCE_LEAD": "0",
+    "GUN_MESH_SIDE": "0",
+    "LB_DEPTH": "0",
+    "LB_GLIDE": "0",
+    "LB_KEY": "0",
+    "LEAD_READ": "0",
+    "MAN_RUN_COMMIT": "0",
+    "MESH_TEMPO": "0",
+    "OL_ALIGN": "0",
+    "PACE_LEAD": "0",
+    "QB_CARRYOUT": "0",
+    "RUN_LATERAL": "0",
+    "SHED_AWAY": "0",
+    "SHED_PURSUE": "0",
+    "SPACE_STEER": "0",
+    "STRETCH_FLAT": "0",
+    "TRACK_FACING": "0",
+    "TRAP_READ": "0",
+    "UC_MESH": "0",
+    "ZONE_TE": "0"
+  },
+  "proposedControllerCandidate": {
+    "status": "Portable preparation only; not frozen, combined-verified or adopted",
+    "base": "2c98bed94adad8087c65f381d4090444ad283985",
+    "components": [
+      {
+        "pr": 169,
+        "head": "1004b818f2f7692df595a237ec9eec05a9ef2587",
+        "patchSha256": "418cb83d7550903886aa727451dbd1ad826b5b925baf516268ea87a374cf8b11"
+      },
+      {
+        "pr": 171,
+        "head": "6cbdcc4dc70e6ce5b644582c6ca14f77f5c28bbf",
+        "patchSha256": "70eebd89d53e1d01b3b853e5dafc9d4c0c4f3ecd200ce527fb3bad249f6922bd"
+      }
+    ],
+    "files": [
+      "src/sim/behaviors/defense.ts",
+      "src/sim/coverage-cues.ts",
+      "src/sim/coverage/reads.ts",
+      "src/sim/engagement.ts",
+      "src/sim/run-fits.ts",
+      "test/man-run-continuity.test.ts",
+      "test/support-work-off.test.ts"
+    ],
+    "tree": "aeb3f7e6738eefb78cc443dcee36f36ecf227111",
+    "sourceSha256": "f3ed945fcf3b413aff56061a80fb59215f69ceeba94dcd27ad64f332de729a07",
+    "patch": "claude-next-controller-candidate.patch",
+    "patchSha256": "8134915c331a5bac2c6db53c41e71b3e1aeb236ecb2bcbaa1eb67cd374156dcf",
+    "settingChanges": false,
+    "experimentalPhysics": false,
+    "newEngineExecutions": 0,
+    "nextGate": "Integration source/overlap acceptance, reuse compatible focused receipts, then required exact combined verification once. One targeted composition diagnostic only for a specific unresolved169/171 interaction."
+  },
+  "separateDiagnostic": {
+    "pr": 170,
+    "head": "4a5aadcbbdfe3065ec41d73e0c0de3ee1272c070",
+    "status": "Independent diagnostic/evidence review supports conclusion; Integration portability/contract adoption review remains. No src/settings delta; not generic slowdown approval."
+  },
+  "reviewPins": {
+    "earlierRunController": "https://github.com/tannerthardy/football-simulation-/pull/153#pullrequestreview-5566596943",
+    "measurement": "c9f162ab70991c5da94b4ccd68eb92f82a11f9a8",
+    "shed": "fed3de03f1d47d7964235cb8dfe7ee2c854deb11",
+    "drive": "7f3b30fbf0eddf443cf5f961304403f2d6748a28",
+    "latest618Independent": "77c28ffbbd55b29b2f0459be289bd497927d045c",
+    "newProcess": "f3063e550b434d355fc050bfc604a894303ea0a0"
+  },
+  "historyPolicy": "Keep original intakes, receipts, branches, rejected arms and data-only roots; no wholesale research merge or untracked-file upload.",
+  "costPolicy": "Source/ref/doc/patch checks only during intake; no new simulations, games, NFL query or full suite. Combined verification follows an accepted exact candidate.",
+  "additionalReviewedController": {
+    "pr": 172,
+    "head": "ae6b1d940124debdc71eb6fe24f20c98d87be5ae",
+    "runtime": "859d0255fdaca7ceba26a56258c97890fe263009",
+    "independentReview": "https://github.com/tannerthardy/football-simulation-/pull/172#issuecomment-6300122933",
+    "status": "Optional169+171+172 temporary-index composition prepared; not frozen, combined-tested or adopted",
+    "qualification": "Earlier exposed DT/RB contact, live-censored strong/Tite endings and missing late Will collection retained; no universal protection claim.",
+    "appliesToPrepared169171": true,
+    "preparedTree": "27603aab0c95dd55775149f1e2458f5d08fcc43f",
+    "sourceSha256": "094ce7348ae10bc1c0bc2b54cf7a495995fc906247a662e3697980bcfd786d27",
+    "patch": "claude-controller-169-171-172.patch",
+    "patchSha256": "5ee7f97b405092527fb137d8be25c499fa4148636d5e3bca1c22213d2ce7124b",
+    "files": [
+      "src/sim/agent.ts",
+      "src/sim/behaviors/blocking.ts",
+      "src/sim/behaviors/defense.ts",
+      "src/sim/coverage-cues.ts",
+      "src/sim/coverage/reads.ts",
+      "src/sim/engagement.ts",
+      "src/sim/run-fits.ts",
+      "test/man-run-continuity.test.ts",
+      "test/support-work-off.test.ts",
+      "test/zone-runoff-work.test.ts"
+    ]
+  }
+}

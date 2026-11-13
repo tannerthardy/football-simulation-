@@ -1,0 +1,169 @@
+{
+  "schema": "zone-helper-browser-v1",
+  "clips": [
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 32,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 31,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 30,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 30,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "BEFORE-CT-R1-duo-odd-R-S11",
+      "fullTelemetryReady": true,
+      "eventsInspected": 53,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 32,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 31,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-R-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 31,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-L-S3",
+      "fullTelemetryReady": true,
+      "eventsInspected": 30,
+      "referenceSourceCorrect": true
+    },
+    {
+      "id": "FINAL-CT-R1-duo-odd-R-S11",
+      "fullTelemetryReady": true,
+      "eventsInspected": 53,
+      "referenceSourceCorrect": true
+    }
+  ],
+  "pageErrors": [],
+  "externalHttpsBlocked": true,
+  "recordedSourceFilter": true,
+  "pairedFixtureSearch": true,
+  "frontConceptCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "videoExport": [
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-R-S3",
+      "sourceSha256": "206cb45f54841596ae01fa3ecccb2a6cd192d77664563595cbe82c05c443cae9",
+      "filename": "BEFORE-CT-R1-iz_strong-over-R-S3_206cb45f5484_0.00-1.00s.webm",
+      "bytes": 290134,
+      "sourceStampCorrect": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-R-S3",
+      "sourceSha256": "512a8b2bd695a09f4f2bf0bf97a2e2e8133794f97afbc4b65462b38f661a0230",
+      "filename": "FINAL-CT-R1-iz_strong-over-R-S3_512a8b2bd695_0.00-1.00s.webm",
+      "bytes": 290272,
+      "sourceStampCorrect": true
+    }
+  ],
+  "helperOwnImageInspections": [
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-R-S3",
+      "slot": "LG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #2: owner C + original uncovered helper LG versus DT_W; second-level work LB_W\nOwn update 0.45s: LG combo \u2192 DT_W \u2192 combo \u2192 DT_W \u00b7 no-target-change\nRequested velocity 7.60, -0.11 yd/s; body before/after update 39.58, 27.85 \u2192 39.58, 27.85 yd\nActual observer LG saw DT_W: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw LB_W: age 0.25s \u00b7 observed depth 4.60 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw DT_W: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nNo surviving native engagement on original DT_W recorded among the installed members at the last completed physical tick.\nCompleted native tick at 0.45s: LG combo \u2192 DT_W\nAchieved center 39.58, 27.85 yd \u00b7 velocity 0.94, -0.38 yd/s \u00b7 support up\nApplied velocity intention 7.60, -0.25 yd/s \u00b7 ground impulse 32.75, 0.72\nArm impulse 0.00 / 67.69 \u00b7 arm work 0.00 / 203.06\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-L-S3",
+      "slot": "LG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #1: owner LT + original uncovered helper LG versus DT_S; second-level work LB_M\nOwn update 0.45s: LG combo \u2192 DT_S \u2192 combo \u2192 DT_S \u00b7 no-target-change\nRequested velocity 7.14, 2.61 yd/s; body before/after update 39.58, 28.10 \u2192 39.58, 28.10 yd\nActual observer LG saw DT_S: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw LB_M: age 0.25s \u00b7 observed depth 5.00 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw DT_S: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nNo surviving native engagement on original DT_S recorded among the installed members at the last completed physical tick.\nCompleted native tick at 0.45s: LG combo \u2192 DT_S\nAchieved center 39.58, 28.10 yd \u00b7 velocity 0.89, 0.60 yd/s \u00b7 support up\nApplied velocity intention 7.11, 2.70 yd/s \u00b7 ground impulse 30.69, 9.84\nArm impulse 0.00 / 67.69 \u00b7 arm work 0.00 / 203.06\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-R-S3",
+      "slot": "LG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #2: owner C + original uncovered helper LG versus NT; second-level work LB_W\nOwn update 0.45s: LG combo \u2192 NT \u2192 combo \u2192 NT \u00b7 no-target-change\nRequested velocity 5.88, -4.82 yd/s; body before/after update 39.57, 27.82 \u2192 39.57, 27.82 yd\nActual observer LG saw LB_W: age 0.25s \u00b7 observed depth 4.60 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw NT: age 0.25s \u00b7 observed depth 0.80 yd \u00b7 velocity -0.37, 0.01 yd/s\nActual keeper C on NT \u00b7 helpers none \u00b7 control 0.19 \u00b7 native axis -0.86, 0.51\nC support availability 1.00 \u00b7 helper support unrecorded \u00b7 normalized surfacePhi -0.33 (quarter-turn units)\nNative hands #1 C \u2194 NT \u00b7 live \u00b7 normal/tangent force 0.00 / -346.01\nCompleted native tick at 0.45s: LG combo \u2192 NT\nAchieved center 39.57, 27.82 yd \u00b7 velocity 0.84, -0.71 yd/s \u00b7 support up\nApplied velocity intention 6.10, -4.53 yd/s \u00b7 ground impulse 29.40, -12.96\nArm impulse 0.00 / 67.69 \u00b7 arm work 0.00 / 203.06\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-L-S3",
+      "slot": "RG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #2: owner C + original uncovered helper RG versus NT; second-level work LB_W\nOwn update 0.45s: RG combo \u2192 NT \u2192 combo \u2192 NT \u00b7 no-target-change\nRequested velocity 6.36, 3.48 yd/s; body before/after update 39.57, 25.51 \u2192 39.57, 25.51 yd\nActual observer RG saw NT: age 0.30s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual keeper C on NT \u00b7 helpers none \u00b7 control 0.22 \u00b7 native axis -0.86, -0.51\nC support availability 1.00 \u00b7 helper support unrecorded \u00b7 normalized surfacePhi 0.47 (quarter-turn units)\nNative hands #1 C \u2194 NT \u00b7 live \u00b7 normal/tangent force 0.00 / 395.87\nCompleted native tick at 0.45s: RG combo \u2192 NT\nAchieved center 39.57, 25.51 yd \u00b7 velocity 0.91, 0.70 yd/s \u00b7 support up\nApplied velocity intention 6.33, 3.53 yd/s \u00b7 ground impulse 33.43, 14.19\nArm impulse 0.00 / 71.42 \u00b7 arm work 0.00 / 214.27\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "BEFORE-CT-R1-duo-odd-R-S11",
+      "slot": "RG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #1: owner C + original uncovered helper RG versus NT; second-level work LB_M\nOwn update 0.45s: RG combo \u2192 NT \u2192 combo \u2192 NT \u00b7 no-target-change\nRequested velocity 5.56, 4.66 yd/s; body before/after update 39.62, 25.40 \u2192 39.62, 25.40 yd\nActual observer RG saw NT: age 0.30s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual keeper C on NT \u00b7 helpers none \u00b7 control 0.16 \u00b7 native axis -1.00, 0.00\nC support availability 1.00 \u00b7 helper support unrecorded \u00b7 normalized surfacePhi 0.06 (quarter-turn units)\nNative hands #1 C \u2194 NT \u00b7 live \u00b7 normal/tangent force 0.00 / 329.86\nCompleted native tick at 0.45s: RG combo \u2192 NT\nAchieved center 39.62, 25.40 yd \u00b7 velocity 0.98, 0.49 yd/s \u00b7 support up\nApplied velocity intention 5.61, 4.60 yd/s \u00b7 ground impulse 27.34, 24.34\nArm impulse 0.00 / 71.43 \u00b7 arm work 0.00 / 214.28\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-R-S3",
+      "slot": "LG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #2: owner C + original uncovered helper LG versus DT_W; second-level work LB_W\nOwn update 0.45s: LG combo \u2192 DT_W \u2192 combo \u2192 DT_W \u00b7 no-target-change\nRequested velocity 7.60, -0.11 yd/s; body before/after update 39.58, 27.85 \u2192 39.58, 27.85 yd\nActual observer LG saw DT_W: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw LB_W: age 0.25s \u00b7 observed depth 4.60 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw DT_W: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nNo surviving native engagement on original DT_W recorded among the installed members at the last completed physical tick.\nCompleted native tick at 0.45s: LG combo \u2192 DT_W\nAchieved center 39.58, 27.85 yd \u00b7 velocity 0.94, -0.38 yd/s \u00b7 support up\nApplied velocity intention 7.60, -0.25 yd/s \u00b7 ground impulse 32.75, 0.72\nArm impulse 0.00 / 67.69 \u00b7 arm work 0.00 / 203.06\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-L-S3",
+      "slot": "LG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #1: owner LT + original uncovered helper LG versus DT_S; second-level work LB_M\nOwn update 0.45s: LG combo \u2192 DT_S \u2192 combo \u2192 DT_S \u00b7 no-target-change\nRequested velocity 7.14, 2.61 yd/s; body before/after update 39.58, 28.10 \u2192 39.58, 28.10 yd\nActual observer LG saw DT_S: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw LB_M: age 0.25s \u00b7 observed depth 5.00 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw DT_S: age 0.25s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nNo surviving native engagement on original DT_S recorded among the installed members at the last completed physical tick.\nCompleted native tick at 0.45s: LG combo \u2192 DT_S\nAchieved center 39.58, 28.10 yd \u00b7 velocity 0.89, 0.60 yd/s \u00b7 support up\nApplied velocity intention 7.11, 2.70 yd/s \u00b7 ground impulse 30.69, 9.84\nArm impulse 0.00 / 67.69 \u00b7 arm work 0.00 / 203.06\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-R-S3",
+      "slot": "LG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #2: owner C + original uncovered helper LG versus NT; second-level work LB_W\nOwn update 0.45s: LG combo \u2192 NT \u2192 combo \u2192 NT \u00b7 no-target-change\nRequested velocity 5.88, -4.82 yd/s; body before/after update 39.57, 27.82 \u2192 39.57, 27.82 yd\nActual observer LG saw LB_W: age 0.25s \u00b7 observed depth 4.60 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual observer LG saw C: age 0.05s \u00b7 observed depth -0.40 yd \u00b7 velocity 0.85, -0.07 yd/s\nActual observer LG saw NT: age 0.25s \u00b7 observed depth 0.80 yd \u00b7 velocity -0.37, 0.01 yd/s\nActual observer LG saw NT: age 0.25s \u00b7 observed depth 0.80 yd \u00b7 velocity -0.37, 0.01 yd/s\nActual keeper C on NT \u00b7 helpers none \u00b7 control 0.19 \u00b7 native axis -0.86, 0.51\nC support availability 1.00 \u00b7 helper support unrecorded \u00b7 normalized surfacePhi -0.33 (quarter-turn units)\nNative hands #1 C \u2194 NT \u00b7 live \u00b7 normal/tangent force 0.00 / -346.01\nCompleted native tick at 0.45s: LG combo \u2192 NT\nAchieved center 39.57, 27.82 yd \u00b7 velocity 0.84, -0.71 yd/s \u00b7 support up\nApplied velocity intention 6.10, -4.53 yd/s \u00b7 ground impulse 29.40, -12.96\nArm impulse 0.00 / 67.69 \u00b7 arm work 0.00 / 203.06\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-L-S3",
+      "slot": "RG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #2: owner C + original uncovered helper RG versus NT; second-level work LB_W\nOwn update 0.45s: RG combo \u2192 NT \u2192 combo \u2192 NT \u00b7 no-target-change\nRequested velocity 6.36, 3.48 yd/s; body before/after update 39.57, 25.51 \u2192 39.57, 25.51 yd\nActual observer RG saw NT: age 0.30s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual keeper C on NT \u00b7 helpers none \u00b7 control 0.22 \u00b7 native axis -0.86, -0.51\nC support availability 1.00 \u00b7 helper support unrecorded \u00b7 normalized surfacePhi 0.47 (quarter-turn units)\nNative hands #1 C \u2194 NT \u00b7 live \u00b7 normal/tangent force 0.00 / 395.87\nCompleted native tick at 0.45s: RG combo \u2192 NT\nAchieved center 39.57, 25.51 yd \u00b7 velocity 0.91, 0.70 yd/s \u00b7 support up\nApplied velocity intention 6.33, 3.53 yd/s \u00b7 ground impulse 33.43, 14.19\nArm impulse 0.00 / 71.42 \u00b7 arm work 0.00 / 214.27\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    },
+    {
+      "id": "FINAL-CT-R1-duo-odd-R-S11",
+      "slot": "RG",
+      "t": 0.45,
+      "ownImagesAndIntentionInspected": true,
+      "completedNativeLoadInspected": true,
+      "text": "Installed double #1: owner C + original uncovered helper RG versus NT; second-level work LB_M\nOwn update 0.45s: RG combo \u2192 NT \u2192 combo \u2192 NT \u00b7 no-target-change\nRequested velocity 5.56, 4.66 yd/s; body before/after update 39.62, 25.40 \u2192 39.62, 25.40 yd\nActual observer RG saw NT: age 0.30s \u00b7 observed depth 0.90 yd \u00b7 velocity 0.00, 0.00 yd/s\nActual keeper C on NT \u00b7 helpers none \u00b7 control 0.16 \u00b7 native axis -1.00, 0.00\nC support availability 1.00 \u00b7 helper support unrecorded \u00b7 normalized surfacePhi 0.06 (quarter-turn units)\nNative hands #1 C \u2194 NT \u00b7 live \u00b7 normal/tangent force 0.00 / 329.86\nCompleted native tick at 0.45s: RG combo \u2192 NT\nAchieved center 39.62, 25.40 yd \u00b7 velocity 0.98, 0.49 yd/s \u00b7 support up\nApplied velocity intention 5.61, 4.60 yd/s \u00b7 ground impulse 27.34, 24.34\nArm impulse 0.00 / 71.43 \u00b7 arm work 0.00 / 214.28\nSupport motor work 0.00 / 0.00 \u00b7 contacts 0 \u00b7 surviving hand joints 0"
+    }
+  ]
+}

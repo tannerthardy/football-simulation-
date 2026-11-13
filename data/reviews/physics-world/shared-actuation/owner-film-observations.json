@@ -1,0 +1,1372 @@
+{
+  "sourceSha256": "622c45f18386aad28e724d8745933626a1f4e49adf1410fc687cfddb517a1218",
+  "filmSha256": "bc489cd6c868207d184becf9efef661cc99469304b111ed94fe2dc15441cd4f4",
+  "seeds": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "note": "Owner observations refer to this baseline. Regenerating film changes the plays at these IDs. These events cannot establish an illegal hold or a QB mechanics cause. No coverage/QB changes were made in the shared actuation work.",
+  "observations": [
+    {
+      "id": "G1-P060",
+      "game": 0,
+      "index": 59,
+      "kind": "pass",
+      "q": 2,
+      "clk": 457,
+      "off": "COM",
+      "down": 2,
+      "dist": 27,
+      "yl": 32.64892985712255,
+      "call": "Gun Bunch \u2014 Flood",
+      "def": "4-3 Under Cover 3 Buzz (match)",
+      "text": "D.Tucker pass complete to C.Rice for 23 yds (8 air, 16 YAC) (J.Fisher)",
+      "yds": 23.05,
+      "score": {
+        "home": 3,
+        "away": 6
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover4",
+        "actual": "cover3",
+        "post": "cover2"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_bunch_11",
+        "qb": "gun",
+        "concept": "flood",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "under",
+        "coverage": "cover3_buzz",
+        "called": "cover3_buzz",
+        "family": "cover3",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4
+      },
+      "concept": {
+        "id": "flood",
+        "name": "Flood",
+        "family": "dropback"
+      },
+      "outcome": "tackle",
+      "nullified": false,
+      "firstDown": false,
+      "flags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": true
+      },
+      "los": 42.64892985712255,
+      "fd": 69.64892985712255,
+      "stats": {
+        "ttt": 3,
+        "air": 7.55,
+        "yac": 16.03,
+        "sep": 10,
+        "pressured": true,
+        "pressure2yd": true,
+        "ttp": 2.8
+      },
+      "ev": [
+        [
+          0.4,
+          "block_contact"
+        ],
+        [
+          0.55,
+          "block_contact"
+        ],
+        [
+          0.8,
+          "block_contact"
+        ],
+        [
+          0.9,
+          "block_contact"
+        ],
+        [
+          1.9,
+          "shed"
+        ],
+        [
+          2.35,
+          "shed"
+        ],
+        [
+          2.7,
+          "pressure"
+        ],
+        [
+          2.95,
+          "shed"
+        ],
+        [
+          3,
+          "throw"
+        ],
+        [
+          4.6,
+          "catch"
+        ],
+        [
+          6.6,
+          "carrier_contact"
+        ],
+        [
+          6.6,
+          "tackle_wrap"
+        ],
+        [
+          7.1,
+          "tackle"
+        ]
+      ]
+    },
+    {
+      "id": "G1-P056",
+      "game": 0,
+      "index": 55,
+      "kind": "pass",
+      "q": 2,
+      "clk": 581,
+      "off": "COM",
+      "down": 2,
+      "dist": 10,
+      "yl": 35.3,
+      "call": "Gun Bunch \u2014 Flood",
+      "def": "Wide-9 Nickel Cover 3 Match (Rip/Liz) (match)",
+      "text": "D.Tucker pass complete to C.Rice for 14 yds (7 air, 8 YAC), out of bounds",
+      "yds": 14.18,
+      "score": {
+        "home": 3,
+        "away": 6
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover3",
+        "actual": "cover3",
+        "post": "cover3"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_bunch_11",
+        "qb": "gun",
+        "concept": "flood",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "wide9",
+        "coverage": "cover3_mable",
+        "called": "cover3_match",
+        "family": "cover3",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4
+      },
+      "concept": {
+        "id": "flood",
+        "name": "Flood",
+        "family": "dropback"
+      },
+      "outcome": "oob",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": true,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": true,
+        "pressure": false
+      },
+      "los": 45.3,
+      "fd": 55.3,
+      "stats": {
+        "ttt": 3.05,
+        "air": 7.08,
+        "yac": 7.74,
+        "sep": 12.8
+      },
+      "ev": [
+        [
+          0.55,
+          "block_contact"
+        ],
+        [
+          0.7,
+          "block_contact"
+        ],
+        [
+          0.95,
+          "block_contact"
+        ],
+        [
+          1.5,
+          "block_contact"
+        ],
+        [
+          1.9,
+          "shed"
+        ],
+        [
+          2.55,
+          "shed"
+        ],
+        [
+          3.05,
+          "throw"
+        ],
+        [
+          5.2,
+          "catch"
+        ],
+        [
+          7.25,
+          "out_of_bounds"
+        ]
+      ]
+    },
+    {
+      "id": "G3-P044",
+      "game": 2,
+      "index": 43,
+      "kind": "pass",
+      "q": 2,
+      "clk": 744,
+      "off": "COM",
+      "down": 2,
+      "dist": 5,
+      "yl": 39.788724049026236,
+      "call": "Gun Bunch \u2014 Flood",
+      "def": "Wide-9 Nickel Quarters / 2-Man split (match) (shows Cover 3 (Sky))",
+      "text": "D.Tucker pass complete to C.Matthews for 60 yds (31 air, 32 YAC) \u2014 TOUCHDOWN",
+      "yds": 60.21,
+      "score": {
+        "home": 13,
+        "away": 7
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover3",
+        "actual": "cover6",
+        "shown": "cover3",
+        "post": "cover3"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_bunch_11",
+        "qb": "gun",
+        "concept": "flood",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "wide9",
+        "coverage": "split_quarters_2man",
+        "called": "split_quarters_2man",
+        "family": "cover6",
+        "shell": "two-high",
+        "pressure": false,
+        "rushers": 4,
+        "shown": "cover3"
+      },
+      "concept": {
+        "id": "flood",
+        "name": "Flood",
+        "family": "dropback"
+      },
+      "outcome": "touchdown",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": true,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": false,
+        "pressure": true
+      },
+      "los": 49.788724049026236,
+      "fd": 54.788724049026236,
+      "stats": {
+        "ttt": 2.8,
+        "air": 30.8,
+        "yac": 31.59,
+        "sep": 3.5,
+        "pressure2yd": true,
+        "ttp": 2.8
+      },
+      "ev": [
+        [
+          0.6,
+          "block_contact"
+        ],
+        [
+          0.7,
+          "block_contact"
+        ],
+        [
+          0.9,
+          "block_contact"
+        ],
+        [
+          0.95,
+          "block_contact"
+        ],
+        [
+          2.3,
+          "shed"
+        ],
+        [
+          2.8,
+          "throw"
+        ],
+        [
+          4.4,
+          "catch"
+        ],
+        [
+          8.05,
+          "touchdown"
+        ]
+      ]
+    },
+    {
+      "id": "G1-P186",
+      "game": 0,
+      "index": 185,
+      "kind": "pass",
+      "q": 4,
+      "clk": 100,
+      "off": "IRN",
+      "down": 3,
+      "dist": 10,
+      "yl": 71.9321272708163,
+      "call": "Gun Bunch \u2014 Dagger",
+      "def": "4-3 Over Cover 6 / Stuff (quarters strong, half weak) (match)",
+      "text": "D.Howard pass complete to H.Crawford for 28 yds (28 air, 1 YAC) \u2014 TOUCHDOWN",
+      "yds": 28.07,
+      "score": {
+        "home": 47,
+        "away": 43
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover4",
+        "actual": "cover6",
+        "post": "cover2"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_bunch_11",
+        "qb": "gun",
+        "concept": "dagger",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "dime",
+        "front": "over",
+        "coverage": "cover6",
+        "called": "cover6",
+        "family": "cover6",
+        "shell": "two-high",
+        "pressure": false,
+        "rushers": 4
+      },
+      "concept": {
+        "id": "dagger",
+        "name": "Dagger",
+        "family": "dropback"
+      },
+      "outcome": "touchdown",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": true,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 81.9321272708163,
+      "fd": 91.9321272708163,
+      "stats": {
+        "ttt": 2.55,
+        "air": 27.75,
+        "yac": 0.59,
+        "sep": 3.5
+      },
+      "ev": [
+        [
+          0.45,
+          "block_contact"
+        ],
+        [
+          0.6,
+          "block_contact"
+        ],
+        [
+          0.75,
+          "block_contact"
+        ],
+        [
+          0.95,
+          "block_contact"
+        ],
+        [
+          2.55,
+          "throw"
+        ],
+        [
+          2.6,
+          "shed"
+        ],
+        [
+          4.3,
+          "catch"
+        ],
+        [
+          4.4,
+          "touchdown"
+        ]
+      ]
+    },
+    {
+      "id": "G1-P151",
+      "game": 0,
+      "index": 150,
+      "kind": "pass",
+      "q": 4,
+      "clk": 669,
+      "off": "IRN",
+      "down": 1,
+      "dist": 10,
+      "yl": 47.19358171469374,
+      "call": "Gun Bunch \u2014 Drive",
+      "def": "4-3 Under Cover 3 Buzz (match) (shows Cover 1 (Man-Free))",
+      "text": "D.Howard pass complete to C.Robinson for 53 yds (21 air, 34 YAC) \u2014 TOUCHDOWN",
+      "yds": 52.81,
+      "score": {
+        "home": 33,
+        "away": 35
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover1",
+        "actual": "cover3",
+        "shown": "cover1",
+        "post": "cover1"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_bunch_11",
+        "qb": "gun",
+        "concept": "drive",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "under",
+        "coverage": "cover3_buzz",
+        "called": "cover3_buzz",
+        "family": "cover3",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4,
+        "shown": "cover1"
+      },
+      "concept": {
+        "id": "drive",
+        "name": "Drive",
+        "family": "dropback"
+      },
+      "outcome": "touchdown",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": true,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 57.19358171469374,
+      "fd": 67.19358171469375,
+      "stats": {
+        "ttt": 1.95,
+        "air": 20.9,
+        "yac": 33.68,
+        "sep": 2.6
+      },
+      "ev": [
+        [
+          0.45,
+          "block_contact"
+        ],
+        [
+          0.8,
+          "block_contact"
+        ],
+        [
+          0.85,
+          "block_contact"
+        ],
+        [
+          1.45,
+          "block_contact"
+        ],
+        [
+          1.95,
+          "throw"
+        ],
+        [
+          2,
+          "shed"
+        ],
+        [
+          3.3,
+          "catch"
+        ],
+        [
+          3.4,
+          "block_contact"
+        ],
+        [
+          3.85,
+          "shed"
+        ],
+        [
+          7.2,
+          "touchdown"
+        ]
+      ]
+    },
+    {
+      "id": "G6-P195",
+      "game": 5,
+      "index": 194,
+      "kind": "pass",
+      "q": 4,
+      "clk": 100,
+      "off": "IRN",
+      "down": 4,
+      "dist": 16,
+      "yl": 25.578365106599964,
+      "call": "Gun Bunch \u2014 Four Verticals",
+      "def": "4-3 Over Cover 9 (weak rotation) (match) (shows Cover 1 (Man-Free))",
+      "text": "D.Howard pass complete to C.Robinson for 74 yds (21 air, 58 YAC) \u2014 TOUCHDOWN",
+      "yds": 74.42,
+      "score": {
+        "home": 35,
+        "away": 44
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover1",
+        "actual": "cover3",
+        "shown": "cover1",
+        "post": "cover1"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_bunch_11",
+        "qb": "gun",
+        "concept": "four_verts",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "over",
+        "coverage": "cover9",
+        "called": "cover9",
+        "family": "cover3",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4,
+        "shown": "cover1"
+      },
+      "concept": {
+        "id": "four_verts",
+        "name": "Four Verticals",
+        "family": "dropback"
+      },
+      "outcome": "touchdown",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": true,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": false,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 35.57836510659996,
+      "fd": 51.57836510659996,
+      "stats": {
+        "ttt": 1.95,
+        "air": 20.91,
+        "yac": 57.53,
+        "sep": 1.9
+      },
+      "ev": [
+        [
+          0.4,
+          "block_contact"
+        ],
+        [
+          0.7,
+          "block_contact"
+        ],
+        [
+          0.85,
+          "block_contact"
+        ],
+        [
+          0.85,
+          "block_contact"
+        ],
+        [
+          1.95,
+          "throw"
+        ],
+        [
+          3.1,
+          "catch"
+        ],
+        [
+          4.5,
+          "block_contact"
+        ],
+        [
+          8.55,
+          "block_contact"
+        ],
+        [
+          8.6,
+          "shed"
+        ],
+        [
+          9.6,
+          "touchdown"
+        ]
+      ]
+    },
+    {
+      "id": "G1-P105",
+      "game": 0,
+      "index": 104,
+      "kind": "pass",
+      "q": 3,
+      "clk": 770,
+      "off": "COM",
+      "down": 1,
+      "dist": 10,
+      "yl": 75.3,
+      "call": "Gun Doubles \u2014 Four Verticals",
+      "def": "4-3 Over Cover 1 (Man-Free) (shows 2-Man)",
+      "text": "D.Tucker pass complete to C.Rice for 22 yds (18 air, 8 YAC) (K.Wright)",
+      "yds": 21.62,
+      "score": {
+        "home": 17,
+        "away": 28
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover2man",
+        "actual": "cover1",
+        "shown": "cover2man",
+        "post": "cover2man"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_doubles_11",
+        "qb": "gun",
+        "concept": "four_verts",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "over",
+        "stemFrom": "wide9",
+        "coverage": "cover1",
+        "called": "cover1",
+        "family": "cover1",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4,
+        "shown": "cover2man"
+      },
+      "concept": {
+        "id": "four_verts",
+        "name": "Four Verticals",
+        "family": "dropback"
+      },
+      "outcome": "tackle",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 85.3,
+      "fd": 95.3,
+      "stats": {
+        "ttt": 2.1,
+        "air": 17.57,
+        "yac": 7.54,
+        "sep": 5
+      },
+      "ev": [
+        [
+          0.6,
+          "block_contact"
+        ],
+        [
+          0.65,
+          "block_contact"
+        ],
+        [
+          0.8,
+          "block_contact"
+        ],
+        [
+          1.6,
+          "block_contact"
+        ],
+        [
+          2.05,
+          "shed"
+        ],
+        [
+          2.1,
+          "throw"
+        ],
+        [
+          2.4,
+          "shed"
+        ],
+        [
+          3,
+          "catch"
+        ],
+        [
+          3.05,
+          "shed"
+        ],
+        [
+          4.05,
+          "carrier_contact"
+        ],
+        [
+          4.05,
+          "tackle_wrap"
+        ],
+        [
+          4.55,
+          "tackle"
+        ]
+      ]
+    },
+    {
+      "id": "G2-P186",
+      "game": 1,
+      "index": 185,
+      "kind": "pass",
+      "q": 4,
+      "clk": 116,
+      "off": "COM",
+      "down": 2,
+      "dist": 8,
+      "yl": 78.6,
+      "call": "Gun Doubles \u2014 Four Verticals",
+      "def": "4-3 Under Cover 8 (half strong, quarters weak) (match)",
+      "text": "D.Tucker pass complete to K.Wilson for 15 yds (17 air, 3 YAC) (T.Murphy, K.Wright, M.Ellis)",
+      "yds": 14.74,
+      "score": {
+        "home": 44,
+        "away": 21
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover4",
+        "actual": "cover6",
+        "post": "cover2"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_doubles_11",
+        "qb": "gun",
+        "concept": "four_verts",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "under",
+        "coverage": "cover6_rev",
+        "called": "cover6_rev",
+        "family": "cover6",
+        "shell": "two-high",
+        "pressure": false,
+        "rushers": 4
+      },
+      "concept": {
+        "id": "four_verts",
+        "name": "Four Verticals",
+        "family": "dropback"
+      },
+      "outcome": "tackle",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 88.6,
+      "fd": 96.6,
+      "stats": {
+        "ttt": 2,
+        "air": 16.83,
+        "yac": 2.94,
+        "sep": 1.6
+      },
+      "ev": [
+        [
+          0.45,
+          "block_contact"
+        ],
+        [
+          0.5,
+          "block_contact"
+        ],
+        [
+          0.75,
+          "block_contact"
+        ],
+        [
+          1,
+          "block_contact"
+        ],
+        [
+          2,
+          "throw"
+        ],
+        [
+          3,
+          "catch"
+        ],
+        [
+          3.05,
+          "shed"
+        ],
+        [
+          3.05,
+          "shed"
+        ],
+        [
+          3.1,
+          "block_contact"
+        ],
+        [
+          3.35,
+          "carrier_contact"
+        ],
+        [
+          3.35,
+          "tackle_wrap"
+        ],
+        [
+          3.5,
+          "tackle_wrap"
+        ],
+        [
+          3.65,
+          "tackle_wrap"
+        ],
+        [
+          3.85,
+          "tackle"
+        ]
+      ]
+    },
+    {
+      "id": "G3-P029",
+      "game": 2,
+      "index": 28,
+      "kind": "pass",
+      "q": 1,
+      "clk": 134,
+      "off": "IRN",
+      "down": 2,
+      "dist": 19,
+      "yl": 37.066868657305776,
+      "call": "Gun Doubles \u2014 Four Verticals",
+      "def": "4-3 Under 2-Man",
+      "text": "D.Howard pass complete to J.Williams for 63 yds (20 air, 47 YAC) (L.Gaines, M.Young)",
+      "yds": 62.88,
+      "score": {
+        "home": 6,
+        "away": 0
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover2man",
+        "actual": "cover2man",
+        "post": "cover2man"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_doubles_11",
+        "qb": "gun",
+        "concept": "four_verts",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "under",
+        "coverage": "cover2man",
+        "called": "cover2man",
+        "family": "cover2man",
+        "shell": "two-high",
+        "pressure": false,
+        "rushers": 4
+      },
+      "concept": {
+        "id": "four_verts",
+        "name": "Four Verticals",
+        "family": "dropback"
+      },
+      "outcome": "tackle",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 47.066868657305776,
+      "fd": 66.06686865730578,
+      "stats": {
+        "ttt": 2,
+        "air": 20.27,
+        "yac": 46.54,
+        "sep": 1.9
+      },
+      "ev": [
+        [
+          0.35,
+          "block_contact"
+        ],
+        [
+          0.85,
+          "block_contact"
+        ],
+        [
+          0.85,
+          "block_contact"
+        ],
+        [
+          1.15,
+          "block_contact"
+        ],
+        [
+          2,
+          "throw"
+        ],
+        [
+          3.25,
+          "catch"
+        ],
+        [
+          3.3,
+          "shed"
+        ],
+        [
+          6.15,
+          "carrier_contact"
+        ],
+        [
+          6.15,
+          "tackle_wrap"
+        ],
+        [
+          8.75,
+          "tackle_wrap"
+        ],
+        [
+          9.15,
+          "tackle"
+        ]
+      ]
+    },
+    {
+      "id": "G6-P147",
+      "game": 5,
+      "index": 146,
+      "kind": "pass",
+      "q": 4,
+      "clk": 785,
+      "off": "COM",
+      "down": 1,
+      "dist": 10,
+      "yl": 68.2762164602544,
+      "call": "Gun Doubles \u2014 PA Shot",
+      "def": "4-3 Over Cover 3 Match (Rip/Liz) (match) (shows Quarters (MOD))",
+      "text": "D.Tucker pass complete to C.Rice for 32 yds (14 air, 16 YAC) \u2014 TOUCHDOWN",
+      "yds": 31.72,
+      "score": {
+        "home": 21,
+        "away": 34
+      },
+      "kindLabel": "Pass",
+      "read": {
+        "pre": "cover6",
+        "actual": "cover3",
+        "shown": "cover4",
+        "post": "cover2"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_doubles_11",
+        "qb": "gun",
+        "concept": "pa_shot",
+        "playAction": true,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "over",
+        "coverage": "cover3_match",
+        "called": "cover3_match",
+        "family": "cover3",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4,
+        "shown": "cover4"
+      },
+      "concept": {
+        "id": "pa_shot",
+        "name": "PA Shot",
+        "family": "playaction"
+      },
+      "outcome": "touchdown",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": true,
+        "to": false,
+        "sack": false,
+        "big": true,
+        "complete": true,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": true
+      },
+      "los": 78.2762164602544,
+      "fd": 88.2762164602544,
+      "stats": {
+        "ttt": 5,
+        "air": 13.97,
+        "yac": 16.17,
+        "sep": 3.7,
+        "pressured": true,
+        "pressure2yd": true,
+        "ttp": 4.7
+      },
+      "ev": [
+        [
+          0.1,
+          "block_contact"
+        ],
+        [
+          0.35,
+          "block_contact"
+        ],
+        [
+          0.4,
+          "block_contact"
+        ],
+        [
+          1.55,
+          "block_contact"
+        ],
+        [
+          4.05,
+          "shed"
+        ],
+        [
+          4.6,
+          "pressure"
+        ],
+        [
+          4.7,
+          "block_contact"
+        ],
+        [
+          5,
+          "throw"
+        ],
+        [
+          5.9,
+          "catch"
+        ],
+        [
+          8.4,
+          "carrier_contact"
+        ],
+        [
+          8.4,
+          "tackle_wrap"
+        ],
+        [
+          8.7,
+          "touchdown"
+        ]
+      ]
+    },
+    {
+      "id": "G6-P015",
+      "game": 5,
+      "index": 14,
+      "kind": "run",
+      "q": 1,
+      "clk": 596,
+      "off": "COM",
+      "down": 1,
+      "dist": 10,
+      "yl": 55.34370083602862,
+      "call": "Gun Doubles \u2014 Outside Zone Weak",
+      "def": "4-3 Over Cover 1 (Man-Free) (shows Quarters (MOD))",
+      "text": "M.Gray runs for 13 yds (D.Reynolds)",
+      "yds": 13.13,
+      "score": {
+        "home": 0,
+        "away": 0
+      },
+      "kindLabel": "Run",
+      "read": {
+        "pre": "cover4",
+        "actual": "cover1",
+        "shown": "cover4"
+      },
+      "plan": {
+        "personnel": "11",
+        "formation": "gun_doubles_11",
+        "qb": "gun",
+        "concept": "outsideZone",
+        "playAction": false,
+        "audible": false,
+        "defPersonnel": "nickel",
+        "front": "over",
+        "coverage": "cover1",
+        "called": "cover1",
+        "family": "cover1",
+        "shell": "one-high",
+        "pressure": false,
+        "rushers": 4,
+        "shown": "cover4"
+      },
+      "concept": {
+        "id": "outsideZone",
+        "name": "Outside Zone",
+        "family": "zone"
+      },
+      "outcome": "tackle",
+      "nullified": false,
+      "firstDown": true,
+      "flags": {
+        "td": false,
+        "to": false,
+        "sack": false,
+        "big": false,
+        "complete": false,
+        "stuff": false,
+        "contact": true,
+        "broken": false,
+        "oob": false,
+        "pressure": false
+      },
+      "los": 65.34370083602862,
+      "fd": 75.34370083602862,
+      "stats": {
+        "ybc": 9.16
+      },
+      "ev": [
+        [
+          0.45,
+          "block_contact"
+        ],
+        [
+          0.55,
+          "block_contact"
+        ],
+        [
+          0.55,
+          "block_contact"
+        ],
+        [
+          0.55,
+          "block_contact"
+        ],
+        [
+          1,
+          "handoff"
+        ],
+        [
+          1.1,
+          "shed"
+        ],
+        [
+          1.55,
+          "block_contact"
+        ],
+        [
+          1.75,
+          "shed"
+        ],
+        [
+          1.95,
+          "block_contact"
+        ],
+        [
+          2.1,
+          "shed"
+        ],
+        [
+          2.35,
+          "shed"
+        ],
+        [
+          2.4,
+          "block_contact"
+        ],
+        [
+          2.7,
+          "shed"
+        ],
+        [
+          2.75,
+          "shed"
+        ],
+        [
+          2.9,
+          "block_contact"
+        ],
+        [
+          2.95,
+          "shed"
+        ],
+        [
+          3.25,
+          "block_contact"
+        ],
+        [
+          3.3,
+          "block_contact"
+        ],
+        [
+          3.4,
+          "block_contact"
+        ],
+        [
+          3.65,
+          "block_contact"
+        ],
+        [
+          3.75,
+          "block_contact"
+        ],
+        [
+          3.8,
+          "block_contact"
+        ],
+        [
+          3.9,
+          "block_contact"
+        ],
+        [
+          3.85,
+          "carrier_contact"
+        ],
+        [
+          3.85,
+          "tackle_wrap"
+        ],
+        [
+          4.25,
+          "block_contact"
+        ],
+        [
+          4.25,
+          "block_contact"
+        ],
+        [
+          4.3,
+          "block_contact"
+        ],
+        [
+          4.4,
+          "block_contact"
+        ],
+        [
+          4.5,
+          "tackle"
+        ]
+      ]
+    }
+  ]
+}

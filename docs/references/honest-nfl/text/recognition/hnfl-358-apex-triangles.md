@@ -1,0 +1,221 @@
+# HNFL-358 — APEX TRIANGLES
+
+[Original image](../../images/recognition/hnfl-358-apex-triangles.jpeg) · [Topic](../../topics/recognition.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Apex triangles: combine safety, corner and apex cues
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Updated recognition sheet includes structure/alignment/behavior assessment and several possible coverages for each picture. These are clues with alternatives, not a guaranteed diagnosis.
+
+**Browse:** [Coverage / front recognition](../../CONCEPTS.md#coverage-recognition)
+
+Original archive path(s): `HonestNFL/HTLVhkkXYAEsjMJ.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+APEX TRIANGLES
+
+QB AND CORE: MUST READ FULL COVERAGE (BOTH APEX TRIANGLES) AND IDENTIFY THE COVG
+
+WRS: VS. SSM — ONLY READ YOUR APEX TRIANGLE TO CLASSIFY INTO COVER 1/3/9/FZ
+
+WRS: VS. SHELL — ONLY READ YOUR TRIANGLE AND CLASSIFY IT BY COVERAGE FAMILY
+
+PRE-SNAP THOUGHT PROCESS
+
+1. IDENTIFY THE DEFENDERS WITHIN EACH TRIANGLE — THE CORNER, APEX, AND SAFETY
+
+2. ASSESS THE DEPTH, LEVERAGE, AND ALIGNMENT OF EACH DEFENDER RELATIVE TO OURS
+
+3. FOLLOW THE SUBSEQUENT STEPS OF OUR PRE-SNAP PROCESS (STRUCTURE-ALIGNMENT-BEHAVIOR)
+
+**A FULL UNDERSTANDING OF THE COVERAGE RESPONSIBILITY OF THE DEFENDER OVER YOU IS CRUCIAL TO OUR ABILITY
+
+TO EXECUTE! IT WILL ASSIST YOU IN RELEASES, IN BLOCKING, AND MOST IMPORTANTLY — ROUTE CONVERSIONS, WHICH
+
+ARE OFTEN NECESSARY. IT WILL ALSO INFORM OUR POST-SNAP “LIVE” PROCESS. MUST KNOW WHO THE NICKEL IS AND
+
+WHERE THEY ALIGN TO DETERMINE PASSING STRENGTH. ALL ROTATIONS ARE CLASSIFIED BASED ON HAVING A
+
+DECLARED PASSING STRENGTH (TO/AWAY FROM NICKEL, FIELD/BOUNDARY, ETC.)
+
+HALVES TRIANGLE
+
+HALVES ALIGNMENT
+
+COVER 2 (BOTH SIDES)
+
+14+ YDS DEPTH
+
+COVER 6 (WEAK SIDE)
+
+SQUAT ALIGNMENT
+
+CAPPING #2
+
+COVER 8 (STRONG SIDE)
+
+CLOUD DEPTH
+
+PEEKING TO #1
+
+DEUCE ZONE
+
+O/S LEVERAGE ON #1
+
+NARROW, LIGHT STANCE
+
+HIPS OPEN, EYES INSIDE
+
+POSSIBLE CONCEPTS
+
+“WILD”
+
+“CLOUD”
+
+WALL ALIGNMENT
+
+“READ”
+
+FA
+
+VS LEVERAGE ON #2
+
+EYES TO #2
+
+“TRAP”
+
+HIPS & FEET SQUARE
+
+“TAMPA” (CB = SMASH ALIGN)
+
+“SMACK” (CB = SMASH ALIGN)
+
+“DEUCE”
+
+OOEB
+
+POST ALIGNMENT
+
+THI
+
+S TRIANGLE
+
+CLUE ALIGNMENT
+
+SELF-EXPLANATORY
+
+OFF (7+ YDS DEPTH)
+
+$
+
+COVER 1 (ZONE ALIGN ONLY)
+
+O/S LEVERAGE ON #1
+
+COVER 3
+
+HIPS OPEN, EYES TO #2
+
+COVER 9
+
+FIRE ZONE
+
+C
+
+POSSIBLE CONCEPTS
+
+“TREY”
+
+“DANGER”
+
+Ss
+
+UEEZE ALIGNMENT
+
+“FREEZE”
+
+O/S LEVERAGE ON #2
+
+“LURK”
+
+HIPS OPEN, EYES TO #2
+
+“RAIDER” (CB & APEX TIGHT)
+
+OOBd
+
+QUARTERS ALIGNMENT
+
+QUARTERS TRIA
+
+CLUE ALIGNMENT
+
+10-12 YDS DEPTH
+
+>
+
+COVER 4 (BOTH SIDES)
+
+CAPPING #2
+
+OFF (7+ YDS DEPTH)
+
+>
+
+COVER 6 (STRONG SIDE)
+
+O/S LEVERAGE ON #1
+
+EYES TO #2
+
+>
+
+HIPS OPEN, EYES TO #2
+
+SQUARE STANCE
+
+COVER 8 (WEAK SIDE)
+
+POSSIBLE CONCEPTS
+
+Cc
+
+“QUADS”
+
+“MIX”
+
+“ZORRO”
+
+“MOD” (CB = MOD ALIGNMENT)
+
+MOD ALIGNMENT
+
+WALL ALIGNMENT
+
+PRESS-BAIL
+
+VS LEVERAGE ON #2
+
+“MEG” (CB = MOD ALIGNMENT)
+
+HEAD-UP OR O'S EYE OF #1)
+
+SHOW SQUARED To #1
+
+EYES TO #2
+
+OPEN UP HIPS & BAIL LATE
+
+HIPS & FEET SQUARE
+
+(“QUADS” & “MEG”)
+
+@
+
+OOK,
+
+@
+```

@@ -1,0 +1,3639 @@
+{
+  "schema": "p033-gap-decision-v1",
+  "runtime": "f62511a513f2187884d74ae3b94435835e43309c",
+  "sourceSha256": "dd173a3ef44f22b5ee74f3cc17ef15b2137203cea58dd2fa12fbaad12c4784ba",
+  "prefixSha256": "7ea690b70385be7662b3142ed948c6e5169925168fead1bf056672642ecb35d1",
+  "los": 25,
+  "ballY": 26.666666666666668,
+  "firstDownX": 35,
+  "call": {
+    "formation": {
+      "id": "gun_trey_11",
+      "name": "Gun Trey (TE attached)",
+      "personnel": "11",
+      "qb": "gun",
+      "tags": [
+        "3x1",
+        "trips"
+      ],
+      "slots": {
+        "X": {
+          "side": "L",
+          "split": "wide",
+          "depth": 0.6
+        },
+        "Z": {
+          "side": "R",
+          "split": "wide",
+          "depth": 1.2
+        },
+        "H": {
+          "side": "R",
+          "split": "slot",
+          "depth": 1.2
+        },
+        "Y": {
+          "side": "R",
+          "split": "inline",
+          "depth": 0.6
+        },
+        "RB": {
+          "side": "L",
+          "split": 1.6,
+          "depth": 5.2
+        }
+      }
+    },
+    "flip": false,
+    "kind": "run",
+    "run": {
+      "id": "iz_weak",
+      "name": "Inside Zone Weak",
+      "scheme": "insideZone",
+      "direction": "weak",
+      "aim": "B",
+      "meshTime": 1.2,
+      "pullers": [],
+      "beats": [
+        "even",
+        "light-box"
+      ]
+    },
+    "label": "Gun Trey (TE attached) \u2014 Inside Zone Weak"
+  },
+  "defense": {
+    "personnel": "nickel",
+    "front": {
+      "id": "under",
+      "name": "4-3 Under",
+      "personnel": [
+        "base43",
+        "nickel"
+      ],
+      "slots": {
+        "DE_S": {
+          "tech": "5",
+          "side": "S",
+          "depth": 0.9
+        },
+        "DT_S": {
+          "tech": "1",
+          "side": "S",
+          "depth": 0.9
+        },
+        "DT_W": {
+          "tech": "3",
+          "side": "W",
+          "depth": 0.9
+        },
+        "DE_W": {
+          "tech": "w9",
+          "side": "W",
+          "depth": 0.9
+        },
+        "LB_S": {
+          "tech": "9",
+          "side": "S",
+          "depth": 1
+        },
+        "LB_M": {
+          "tech": "3",
+          "side": "S",
+          "depth": 4.8999999999999995
+        },
+        "LB_W": {
+          "tech": "2",
+          "side": "W",
+          "depth": 4.6
+        }
+      }
+    },
+    "coverage": {
+      "id": "cover1",
+      "name": "Cover 1 (Man-Free)",
+      "family": "cover1",
+      "shell": "one-high",
+      "man": true,
+      "press": true,
+      "note": "Press man with a post safety; the spare backer plays robber.",
+      "roles": {
+        "CB_S": {
+          "kind": "man",
+          "prefer": [
+            "S1"
+          ]
+        },
+        "CB_W": {
+          "kind": "man",
+          "prefer": [
+            "W1"
+          ]
+        },
+        "NB": {
+          "kind": "man",
+          "prefer": [
+            "S2",
+            "W2"
+          ]
+        },
+        "DB": {
+          "kind": "man",
+          "prefer": [
+            "W2",
+            "S3"
+          ]
+        },
+        "SS": {
+          "kind": "man",
+          "prefer": [
+            "S3",
+            "S2",
+            "W2"
+          ]
+        },
+        "FS": {
+          "kind": "zone",
+          "zone": "deep_mid"
+        },
+        "LB_S": {
+          "kind": "man",
+          "prefer": [
+            "S3",
+            "B"
+          ]
+        },
+        "LB_M": {
+          "kind": "zone",
+          "zone": "robber"
+        },
+        "LB_W": {
+          "kind": "man",
+          "prefer": [
+            "B",
+            "W2"
+          ]
+        }
+      },
+      "underneath": []
+    },
+    "pressure": null,
+    "checkPick": 0,
+    "runPolicy": {
+      "edge": "box",
+      "linebacker": "stack"
+    },
+    "label": "4-3 Under Cover 1 (Man-Free)"
+  },
+  "actors": [
+    {
+      "idx": 0,
+      "slot": "QB",
+      "team": "O",
+      "player": {
+        "id": "H2-QB1",
+        "firstName": "Dominic",
+        "lastName": "Lewis",
+        "jersey": 6,
+        "position": "QB",
+        "age": 25,
+        "experience": 3,
+        "measurables": {
+          "heightIn": 74.7,
+          "weightLb": 220,
+          "armIn": 31.4,
+          "handIn": 9.3,
+          "forty": 4.71,
+          "tenSplit": 1.6,
+          "shuttle": 4.32,
+          "threeCone": 7.06,
+          "vertical": 33.1,
+          "broad": 118,
+          "bench": 0
+        },
+        "ratings": {
+          "strength": 32,
+          "stamina": 66,
+          "balance": 28,
+          "toughness": 60,
+          "throwPower": 70,
+          "accShort": 85,
+          "accMid": 80,
+          "accDeep": 78,
+          "release": 75,
+          "throwOnRun": 68,
+          "touch": 62,
+          "pocketPresence": 79,
+          "vision": 50,
+          "elusiveness": 51,
+          "breakTackle": 30,
+          "ballSecurity": 59,
+          "patience": 27,
+          "routeRunning": 36,
+          "releaseVsPress": 44,
+          "hands": 41,
+          "contestedCatch": 21,
+          "ballTracking": 38,
+          "passBlock": 39,
+          "runBlock": 13,
+          "handTechnique": 36,
+          "leadBlock": 27,
+          "passRushPower": 30,
+          "passRushFinesse": 37,
+          "blockShedding": 26,
+          "tackling": 40,
+          "hitPower": 34,
+          "pursuit": 28,
+          "manCoverage": 35,
+          "zoneCoverage": 34,
+          "press": 17,
+          "ballSkills": 26,
+          "kickPower": 28,
+          "kickAccuracy": 34,
+          "puntPower": 34,
+          "puntAccuracy": 35,
+          "awareness": 87,
+          "playRecognition": 74,
+          "decisionMaking": 78,
+          "composure": 76,
+          "discipline": 42,
+          "anticipation": 81,
+          "consistency": 74,
+          "workRate": 80
+        },
+        "familiarity": {},
+        "archetype": "Pocket Passer"
+      },
+      "profile": {
+        "vmax": 9.115025089115042,
+        "tau": 1.287300825227686,
+        "brake": 6.20128117913832,
+        "lateral": 6.429051020408166,
+        "turnRate": 8.657777777777778,
+        "backpedal": 0.5346938775510205,
+        "shuffle": 0.5096,
+        "massKg": 99.79032140000001,
+        "heightYd": 2.075,
+        "radius": 0.27636363636363637,
+        "reach": 0.9913888888888889,
+        "maxCatchHeight": 3.495305555555556,
+        "reactReach": 3.0355833333333333,
+        "reactionTime": 0.21008163265306126,
+        "power": 71.45699800250001,
+        "balance": 0.2755102040816326,
+        "bend": 0.5477687074829933,
+        "stepSpeed": 3.5595283446712016,
+        "getUp": 0.9114444444444445
+      }
+    },
+    {
+      "idx": 1,
+      "slot": "LT",
+      "team": "O",
+      "player": {
+        "id": "H2-OT2",
+        "firstName": "Keith",
+        "lastName": "Crawford",
+        "jersey": 75,
+        "position": "OT",
+        "age": 27,
+        "experience": 5,
+        "measurables": {
+          "heightIn": 77.6,
+          "weightLb": 319,
+          "armIn": 34,
+          "handIn": 9.7,
+          "forty": 5.15,
+          "tenSplit": 1.79,
+          "shuttle": 4.83,
+          "threeCone": 7.6,
+          "vertical": 28.7,
+          "broad": 103,
+          "bench": 29
+        },
+        "ratings": {
+          "strength": 75,
+          "stamina": 74,
+          "balance": 50,
+          "toughness": 67,
+          "throwPower": 30,
+          "accShort": 21,
+          "accMid": 31,
+          "accDeep": 16,
+          "release": 26,
+          "throwOnRun": 29,
+          "touch": 18,
+          "pocketPresence": 26,
+          "vision": 32,
+          "elusiveness": 25,
+          "breakTackle": 28,
+          "ballSecurity": 35,
+          "patience": 30,
+          "routeRunning": 30,
+          "releaseVsPress": 23,
+          "hands": 37,
+          "contestedCatch": 22,
+          "ballTracking": 15,
+          "passBlock": 92,
+          "runBlock": 61,
+          "handTechnique": 63,
+          "leadBlock": 13,
+          "passRushPower": 25,
+          "passRushFinesse": 29,
+          "blockShedding": 19,
+          "tackling": 27,
+          "hitPower": 38,
+          "pursuit": 19,
+          "manCoverage": 44,
+          "zoneCoverage": 33,
+          "press": 25,
+          "ballSkills": 34,
+          "kickPower": 41,
+          "kickAccuracy": 28,
+          "puntPower": 25,
+          "puntAccuracy": 31,
+          "awareness": 57,
+          "playRecognition": 61,
+          "decisionMaking": 62,
+          "composure": 48,
+          "discipline": 52,
+          "anticipation": 25,
+          "consistency": 65,
+          "workRate": 44
+        },
+        "familiarity": {
+          "OG": 0.75,
+          "C": 0.4
+        },
+        "archetype": "Pass Protector"
+      },
+      "profile": {
+        "vmax": 7.768482847543257,
+        "tau": 1.4415968591882835,
+        "brake": 4.79111111111111,
+        "lateral": 5.47698979591837,
+        "turnRate": 6.4444444444444455,
+        "backpedal": 0.6628571428571428,
+        "shuffle": 0.588,
+        "massKg": 144.69596603,
+        "heightYd": 2.1555555555555554,
+        "radius": 0.36636363636363634,
+        "reach": 1.0527777777777776,
+        "maxCatchHeight": 3.504666666666667,
+        "reactReach": 3.1060555555555553,
+        "reactionTime": 0.2564897959183674,
+        "power": 159.734011070975,
+        "balance": 0.5,
+        "bend": 0.18466666666666698,
+        "stepSpeed": 2.6495555555555557,
+        "getUp": 1.222111111111111
+      }
+    },
+    {
+      "idx": 2,
+      "slot": "RT",
+      "team": "O",
+      "player": {
+        "id": "H2-OT4",
+        "firstName": "Josh",
+        "lastName": "Woods",
+        "jersey": 69,
+        "position": "OT",
+        "age": 21,
+        "experience": 0,
+        "measurables": {
+          "heightIn": 78.3,
+          "weightLb": 307,
+          "armIn": 34.2,
+          "handIn": 10.3,
+          "forty": 5.23,
+          "tenSplit": 1.79,
+          "shuttle": 4.77,
+          "threeCone": 7.79,
+          "vertical": 27.6,
+          "broad": 109,
+          "bench": 33
+        },
+        "ratings": {
+          "strength": 81,
+          "stamina": 69,
+          "balance": 64,
+          "toughness": 36,
+          "throwPower": 19,
+          "accShort": 30,
+          "accMid": 31,
+          "accDeep": 30,
+          "release": 31,
+          "throwOnRun": 28,
+          "touch": 36,
+          "pocketPresence": 30,
+          "vision": 16,
+          "elusiveness": 34,
+          "breakTackle": 19,
+          "ballSecurity": 29,
+          "patience": 21,
+          "routeRunning": 25,
+          "releaseVsPress": 26,
+          "hands": 13,
+          "contestedCatch": 19,
+          "ballTracking": 38,
+          "passBlock": 60,
+          "runBlock": 86,
+          "handTechnique": 60,
+          "leadBlock": 26,
+          "passRushPower": 31,
+          "passRushFinesse": 28,
+          "blockShedding": 18,
+          "tackling": 10,
+          "hitPower": 51,
+          "pursuit": 15,
+          "manCoverage": 33,
+          "zoneCoverage": 37,
+          "press": 31,
+          "ballSkills": 28,
+          "kickPower": 19,
+          "kickAccuracy": 26,
+          "puntPower": 30,
+          "puntAccuracy": 24,
+          "awareness": 43,
+          "playRecognition": 51,
+          "decisionMaking": 57,
+          "composure": 60,
+          "discipline": 51,
+          "anticipation": 25,
+          "consistency": 55,
+          "workRate": 67
+        },
+        "familiarity": {
+          "OG": 0.75,
+          "C": 0.4
+        },
+        "archetype": "Mauler"
+      },
+      "profile": {
+        "vmax": 7.638621280831117,
+        "tau": 1.3723546603415155,
+        "brake": 5.06873015873016,
+        "lateral": 5.208312925170071,
+        "turnRate": 6.197777777777779,
+        "backpedal": 0.6302040816326531,
+        "shuffle": 0.5804,
+        "massKg": 139.25285759000002,
+        "heightYd": 2.175,
+        "radius": 0.35545454545454547,
+        "reach": 1.0575,
+        "maxCatchHeight": 3.506083333333333,
+        "reactReach": 3.12275,
+        "reactionTime": 0.28440816326530616,
+        "power": 161.27043951201074,
+        "balance": 0.6428571428571429,
+        "bend": 0.1559047619047622,
+        "stepSpeed": 2.7412698412698417,
+        "getUp": 1.214611111111111
+      }
+    },
+    {
+      "idx": 3,
+      "slot": "C",
+      "team": "O",
+      "player": {
+        "id": "H2-C1",
+        "firstName": "Jabari",
+        "lastName": "McCoy",
+        "jersey": 66,
+        "position": "C",
+        "age": 24,
+        "experience": 2,
+        "measurables": {
+          "heightIn": 73.7,
+          "weightLb": 308,
+          "armIn": 32.4,
+          "handIn": 9.4,
+          "forty": 5.35,
+          "tenSplit": 1.8,
+          "shuttle": 4.75,
+          "threeCone": 7.86,
+          "vertical": 26.7,
+          "broad": 103,
+          "bench": 34
+        },
+        "ratings": {
+          "strength": 88,
+          "stamina": 80,
+          "balance": 46,
+          "toughness": 71,
+          "throwPower": 27,
+          "accShort": 24,
+          "accMid": 39,
+          "accDeep": 26,
+          "release": 30,
+          "throwOnRun": 48,
+          "touch": 23,
+          "pocketPresence": 26,
+          "vision": 38,
+          "elusiveness": 21,
+          "breakTackle": 20,
+          "ballSecurity": 37,
+          "patience": 16,
+          "routeRunning": 25,
+          "releaseVsPress": 33,
+          "hands": 27,
+          "contestedCatch": 29,
+          "ballTracking": 29,
+          "passBlock": 73,
+          "runBlock": 68,
+          "handTechnique": 65,
+          "leadBlock": 29,
+          "passRushPower": 36,
+          "passRushFinesse": 21,
+          "blockShedding": 30,
+          "tackling": 21,
+          "hitPower": 47,
+          "pursuit": 27,
+          "manCoverage": 16,
+          "zoneCoverage": 37,
+          "press": 35,
+          "ballSkills": 40,
+          "kickPower": 21,
+          "kickAccuracy": 25,
+          "puntPower": 40,
+          "puntAccuracy": 26,
+          "awareness": 88,
+          "playRecognition": 66,
+          "decisionMaking": 66,
+          "composure": 48,
+          "discipline": 61,
+          "anticipation": 35,
+          "consistency": 62,
+          "workRate": 57
+        },
+        "familiarity": {
+          "OG": 0.8,
+          "OT": 0.4
+        },
+        "archetype": "Anchor"
+      },
+      "profile": {
+        "vmax": 7.364308374476758,
+        "tau": 1.2883419439683284,
+        "brake": 5.00861678004535,
+        "lateral": 4.911125850340137,
+        "turnRate": 6.102222222222222,
+        "backpedal": 0.543469387755102,
+        "shuffle": 0.5276000000000001,
+        "massKg": 139.70644996000001,
+        "heightYd": 2.0472222222222225,
+        "radius": 0.3563636363636363,
+        "reach": 1.015,
+        "maxCatchHeight": 3.316138888888889,
+        "reactReach": 2.945305555555556,
+        "reactionTime": 0.22195918367346945,
+        "power": 167.8045533142,
+        "balance": 0.45918367346938777,
+        "bend": 0.19450340136054417,
+        "stepSpeed": 2.609954648526077,
+        "getUp": 1.2203888888888887
+      }
+    },
+    {
+      "idx": 4,
+      "slot": "LG",
+      "team": "O",
+      "player": {
+        "id": "H2-OG1",
+        "firstName": "Drew",
+        "lastName": "Jones",
+        "jersey": 64,
+        "position": "OG",
+        "age": 24,
+        "experience": 1,
+        "measurables": {
+          "heightIn": 77.9,
+          "weightLb": 318,
+          "armIn": 35,
+          "handIn": 10.8,
+          "forty": 5.2,
+          "tenSplit": 1.79,
+          "shuttle": 4.54,
+          "threeCone": 7.73,
+          "vertical": 29.1,
+          "broad": 106,
+          "bench": 31
+        },
+        "ratings": {
+          "strength": 75,
+          "stamina": 69,
+          "balance": 50,
+          "toughness": 66,
+          "throwPower": 30,
+          "accShort": 41,
+          "accMid": 34,
+          "accDeep": 19,
+          "release": 25,
+          "throwOnRun": 11,
+          "touch": 22,
+          "pocketPresence": 29,
+          "vision": 33,
+          "elusiveness": 21,
+          "breakTackle": 10,
+          "ballSecurity": 33,
+          "patience": 29,
+          "routeRunning": 47,
+          "releaseVsPress": 29,
+          "hands": 36,
+          "contestedCatch": 26,
+          "ballTracking": 19,
+          "passBlock": 75,
+          "runBlock": 77,
+          "handTechnique": 80,
+          "leadBlock": 36,
+          "passRushPower": 34,
+          "passRushFinesse": 20,
+          "blockShedding": 34,
+          "tackling": 23,
+          "hitPower": 50,
+          "pursuit": 20,
+          "manCoverage": 21,
+          "zoneCoverage": 48,
+          "press": 42,
+          "ballSkills": 18,
+          "kickPower": 25,
+          "kickAccuracy": 35,
+          "puntPower": 46,
+          "puntAccuracy": 27,
+          "awareness": 62,
+          "playRecognition": 67,
+          "decisionMaking": 63,
+          "composure": 56,
+          "discipline": 75,
+          "anticipation": 27,
+          "consistency": 62,
+          "workRate": 64
+        },
+        "familiarity": {
+          "OT": 0.6,
+          "C": 0.7
+        },
+        "archetype": "Zone Athlete"
+      },
+      "profile": {
+        "vmax": 7.639241026466799,
+        "tau": 1.38937706236012,
+        "brake": 5.6772222222222215,
+        "lateral": 5.229414965986395,
+        "turnRate": 6.828888888888889,
+        "backpedal": 0.5455102040816326,
+        "shuffle": 0.5328,
+        "massKg": 144.24237366,
+        "heightYd": 2.163888888888889,
+        "radius": 0.3654545454545455,
+        "reach": 1.0763888888888888,
+        "maxCatchHeight": 3.524638888888889,
+        "reactReach": 3.1204722222222228,
+        "reactionTime": 0.24265306122448982,
+        "power": 160.82288732612142,
+        "balance": 0.5,
+        "bend": 0.23199999999999982,
+        "stepSpeed": 2.8184444444444443,
+        "getUp": 1.179388888888889
+      }
+    },
+    {
+      "idx": 5,
+      "slot": "RG",
+      "team": "O",
+      "player": {
+        "id": "H2-OG4",
+        "firstName": "Elijah",
+        "lastName": "Kowalski",
+        "jersey": 70,
+        "position": "OG",
+        "age": 33,
+        "experience": 11,
+        "measurables": {
+          "heightIn": 76.4,
+          "weightLb": 318,
+          "armIn": 33,
+          "handIn": 9.3,
+          "forty": 5.39,
+          "tenSplit": 1.86,
+          "shuttle": 4.73,
+          "threeCone": 7.75,
+          "vertical": 24.5,
+          "broad": 96,
+          "bench": 31
+        },
+        "ratings": {
+          "strength": 81,
+          "stamina": 62,
+          "balance": 59,
+          "toughness": 63,
+          "throwPower": 31,
+          "accShort": 17,
+          "accMid": 21,
+          "accDeep": 38,
+          "release": 22,
+          "throwOnRun": 25,
+          "touch": 28,
+          "pocketPresence": 13,
+          "vision": 21,
+          "elusiveness": 26,
+          "breakTackle": 41,
+          "ballSecurity": 22,
+          "patience": 25,
+          "routeRunning": 50,
+          "releaseVsPress": 36,
+          "hands": 28,
+          "contestedCatch": 23,
+          "ballTracking": 24,
+          "passBlock": 54,
+          "runBlock": 69,
+          "handTechnique": 65,
+          "leadBlock": 21,
+          "passRushPower": 26,
+          "passRushFinesse": 22,
+          "blockShedding": 44,
+          "tackling": 24,
+          "hitPower": 31,
+          "pursuit": 15,
+          "manCoverage": 30,
+          "zoneCoverage": 17,
+          "press": 30,
+          "ballSkills": 20,
+          "kickPower": 31,
+          "kickAccuracy": 37,
+          "puntPower": 9,
+          "puntAccuracy": 32,
+          "awareness": 54,
+          "playRecognition": 46,
+          "decisionMaking": 54,
+          "composure": 57,
+          "discipline": 62,
+          "anticipation": 26,
+          "consistency": 76,
+          "workRate": 70
+        },
+        "familiarity": {
+          "OT": 0.6,
+          "C": 0.7
+        },
+        "archetype": "Mauler"
+      },
+      "profile": {
+        "vmax": 7.384887900164484,
+        "tau": 1.457786021404414,
+        "brake": 5.1572789115646245,
+        "lateral": 5.268775510204084,
+        "turnRate": 6.366666666666666,
+        "backpedal": 0.5240816326530613,
+        "shuffle": 0.532,
+        "massKg": 144.24237366,
+        "heightYd": 2.1222222222222222,
+        "radius": 0.3654545454545455,
+        "reach": 1.0291666666666666,
+        "maxCatchHeight": 3.3670000000000004,
+        "reactReach": 3.0267222222222223,
+        "reactionTime": 0.28293877551020413,
+        "power": 165.45924933662144,
+        "balance": 0.5918367346938775,
+        "bend": 0.2103673469387754,
+        "stepSpeed": 2.7164353741496594,
+        "getUp": 1.2186666666666668
+      }
+    },
+    {
+      "idx": 6,
+      "slot": "RB",
+      "team": "O",
+      "player": {
+        "id": "H2-RB1",
+        "firstName": "Tristan",
+        "lastName": "Woods",
+        "jersey": 24,
+        "position": "RB",
+        "age": 26,
+        "experience": 4,
+        "measurables": {
+          "heightIn": 70.3,
+          "weightLb": 201,
+          "armIn": 30.9,
+          "handIn": 8.9,
+          "forty": 4.5,
+          "tenSplit": 1.51,
+          "shuttle": 4.08,
+          "threeCone": 6.89,
+          "vertical": 39.8,
+          "broad": 126,
+          "bench": 22
+        },
+        "ratings": {
+          "strength": 58,
+          "stamina": 77,
+          "balance": 69,
+          "toughness": 54,
+          "throwPower": 30,
+          "accShort": 35,
+          "accMid": 39,
+          "accDeep": 29,
+          "release": 22,
+          "throwOnRun": 35,
+          "touch": 30,
+          "pocketPresence": 32,
+          "vision": 76,
+          "elusiveness": 75,
+          "breakTackle": 74,
+          "ballSecurity": 74,
+          "patience": 89,
+          "routeRunning": 71,
+          "releaseVsPress": 38,
+          "hands": 54,
+          "contestedCatch": 39,
+          "ballTracking": 64,
+          "passBlock": 57,
+          "runBlock": 31,
+          "handTechnique": 40,
+          "leadBlock": 27,
+          "passRushPower": 26,
+          "passRushFinesse": 42,
+          "blockShedding": 36,
+          "tackling": 28,
+          "hitPower": 26,
+          "pursuit": 22,
+          "manCoverage": 30,
+          "zoneCoverage": 36,
+          "press": 28,
+          "ballSkills": 23,
+          "kickPower": 37,
+          "kickAccuracy": 30,
+          "puntPower": 30,
+          "puntAccuracy": 24,
+          "awareness": 58,
+          "playRecognition": 80,
+          "decisionMaking": 54,
+          "composure": 74,
+          "discipline": 53,
+          "anticipation": 36,
+          "consistency": 65,
+          "workRate": 42
+        },
+        "familiarity": {
+          "FB": 0.55,
+          "WR": 0.4
+        },
+        "archetype": "Workhorse"
+      },
+      "profile": {
+        "vmax": 9.608770220006077,
+        "tau": 1.1758382811182186,
+        "brake": 7.2107369614512455,
+        "lateral": 7.160251700680275,
+        "turnRate": 9.531111111111112,
+        "backpedal": 0.5357142857142858,
+        "shuffle": 0.5364000000000001,
+        "massKg": 91.17206637000001,
+        "heightYd": 1.9527777777777777,
+        "radius": 0.2590909090909091,
+        "reach": 0.9795833333333333,
+        "maxCatchHeight": 3.481638888888889,
+        "reactReach": 2.928861111111111,
+        "reactionTime": 0.22538775510204084,
+        "power": 88.8276418062,
+        "balance": 0.6938775510204082,
+        "bend": 0.8561088435374152,
+        "stepSpeed": 4.152548752834467,
+        "getUp": 0.8164444444444444
+      }
+    },
+    {
+      "idx": 7,
+      "slot": "Y",
+      "team": "O",
+      "player": {
+        "id": "H2-TE1",
+        "firstName": "Cole",
+        "lastName": "Freeman",
+        "jersey": 46,
+        "position": "TE",
+        "age": 28,
+        "experience": 6,
+        "measurables": {
+          "heightIn": 79.1,
+          "weightLb": 274,
+          "armIn": 34.2,
+          "handIn": 9.4,
+          "forty": 4.8,
+          "tenSplit": 1.63,
+          "shuttle": 4.39,
+          "threeCone": 7.13,
+          "vertical": 29.1,
+          "broad": 115,
+          "bench": 28
+        },
+        "ratings": {
+          "strength": 77,
+          "stamina": 70,
+          "balance": 33,
+          "toughness": 66,
+          "throwPower": 29,
+          "accShort": 34,
+          "accMid": 30,
+          "accDeep": 26,
+          "release": 28,
+          "throwOnRun": 26,
+          "touch": 37,
+          "pocketPresence": 32,
+          "vision": 16,
+          "elusiveness": 40,
+          "breakTackle": 65,
+          "ballSecurity": 36,
+          "patience": 33,
+          "routeRunning": 60,
+          "releaseVsPress": 57,
+          "hands": 84,
+          "contestedCatch": 65,
+          "ballTracking": 63,
+          "passBlock": 74,
+          "runBlock": 88,
+          "handTechnique": 70,
+          "leadBlock": 58,
+          "passRushPower": 16,
+          "passRushFinesse": 31,
+          "blockShedding": 25,
+          "tackling": 37,
+          "hitPower": 46,
+          "pursuit": 40,
+          "manCoverage": 34,
+          "zoneCoverage": 32,
+          "press": 35,
+          "ballSkills": 46,
+          "kickPower": 45,
+          "kickAccuracy": 27,
+          "puntPower": 33,
+          "puntAccuracy": 14,
+          "awareness": 69,
+          "playRecognition": 75,
+          "decisionMaking": 63,
+          "composure": 69,
+          "discipline": 49,
+          "anticipation": 25,
+          "consistency": 69,
+          "workRate": 69
+        },
+        "familiarity": {
+          "FB": 0.6,
+          "WR": 0.45
+        },
+        "archetype": "Inline Blocker"
+      },
+      "profile": {
+        "vmax": 8.526370739199056,
+        "tau": 1.2487800145200811,
+        "brake": 6.021065759637188,
+        "lateral": 6.341761904761908,
+        "turnRate": 8.362222222222224,
+        "backpedal": 0.5336734693877552,
+        "shuffle": 0.5268,
+        "massKg": 124.28430938000001,
+        "heightYd": 2.197222222222222,
+        "radius": 0.32545454545454544,
+        "reach": 1.0575,
+        "maxCatchHeight": 3.5689722222222224,
+        "reactReach": 3.1648055555555556,
+        "reactionTime": 0.2239183673469388,
+        "power": 137.84778579652144,
+        "balance": 0.32653061224489793,
+        "bend": 0.4233061224489799,
+        "stepSpeed": 3.2870294784580505,
+        "getUp": 1.0142222222222221
+      }
+    },
+    {
+      "idx": 8,
+      "slot": "X",
+      "team": "O",
+      "player": {
+        "id": "H2-WR3",
+        "firstName": "Kenny",
+        "lastName": "Howard",
+        "jersey": 14,
+        "position": "WR",
+        "age": 27,
+        "experience": 4,
+        "measurables": {
+          "heightIn": 77.9,
+          "weightLb": 232,
+          "armIn": 34.4,
+          "handIn": 9.5,
+          "forty": 4.62,
+          "tenSplit": 1.61,
+          "shuttle": 4.3,
+          "threeCone": 7.22,
+          "vertical": 32.5,
+          "broad": 118,
+          "bench": 27
+        },
+        "ratings": {
+          "strength": 67,
+          "stamina": 71,
+          "balance": 58,
+          "toughness": 61,
+          "throwPower": 38,
+          "accShort": 20,
+          "accMid": 13,
+          "accDeep": 22,
+          "release": 25,
+          "throwOnRun": 24,
+          "touch": 19,
+          "pocketPresence": 33,
+          "vision": 47,
+          "elusiveness": 60,
+          "breakTackle": 74,
+          "ballSecurity": 41,
+          "patience": 10,
+          "routeRunning": 69,
+          "releaseVsPress": 69,
+          "hands": 79,
+          "contestedCatch": 87,
+          "ballTracking": 73,
+          "passBlock": 36,
+          "runBlock": 27,
+          "handTechnique": 33,
+          "leadBlock": 22,
+          "passRushPower": 15,
+          "passRushFinesse": 39,
+          "blockShedding": 33,
+          "tackling": 44,
+          "hitPower": 32,
+          "pursuit": 24,
+          "manCoverage": 35,
+          "zoneCoverage": 31,
+          "press": 25,
+          "ballSkills": 39,
+          "kickPower": 31,
+          "kickAccuracy": 16,
+          "puntPower": 18,
+          "puntAccuracy": 33,
+          "awareness": 61,
+          "playRecognition": 64,
+          "decisionMaking": 63,
+          "composure": 65,
+          "discipline": 48,
+          "anticipation": 31,
+          "consistency": 44,
+          "workRate": 52
+        },
+        "familiarity": {
+          "RB": 0.3,
+          "TE": 0.25
+        },
+        "archetype": "Possession X"
+      },
+      "profile": {
+        "vmax": 9.389236235851074,
+        "tau": 1.4171429605625332,
+        "brake": 6.464433106575963,
+        "lateral": 6.3892414965986415,
+        "turnRate": 8.382222222222223,
+        "backpedal": 0.5346938775510205,
+        "shuffle": 0.5232000000000001,
+        "massKg": 105.23342984,
+        "heightYd": 2.163888888888889,
+        "radius": 0.28727272727272724,
+        "reach": 1.0622222222222222,
+        "maxCatchHeight": 3.6001944444444454,
+        "reactReach": 3.148805555555556,
+        "reactionTime": 0.24828571428571433,
+        "power": 110.50047038454288,
+        "balance": 0.5816326530612245,
+        "bend": 0.498326530612245,
+        "stepSpeed": 3.636090702947846,
+        "getUp": 0.9442222222222222
+      }
+    },
+    {
+      "idx": 9,
+      "slot": "Z",
+      "team": "O",
+      "player": {
+        "id": "H2-WR6",
+        "firstName": "Sam",
+        "lastName": "Gray",
+        "jersey": 16,
+        "position": "WR",
+        "age": 22,
+        "experience": 0,
+        "measurables": {
+          "heightIn": 74.4,
+          "weightLb": 204,
+          "armIn": 33.8,
+          "handIn": 9.8,
+          "forty": 4.41,
+          "tenSplit": 1.47,
+          "shuttle": 4.08,
+          "threeCone": 6.83,
+          "vertical": 39.7,
+          "broad": 123,
+          "bench": 17
+        },
+        "ratings": {
+          "strength": 50,
+          "stamina": 73,
+          "balance": 52,
+          "toughness": 57,
+          "throwPower": 4,
+          "accShort": 29,
+          "accMid": 24,
+          "accDeep": 19,
+          "release": 29,
+          "throwOnRun": 28,
+          "touch": 20,
+          "pocketPresence": 32,
+          "vision": 42,
+          "elusiveness": 50,
+          "breakTackle": 61,
+          "ballSecurity": 59,
+          "patience": 3,
+          "routeRunning": 46,
+          "releaseVsPress": 53,
+          "hands": 57,
+          "contestedCatch": 59,
+          "ballTracking": 70,
+          "passBlock": 25,
+          "runBlock": 30,
+          "handTechnique": 31,
+          "leadBlock": 37,
+          "passRushPower": 33,
+          "passRushFinesse": 30,
+          "blockShedding": 19,
+          "tackling": 26,
+          "hitPower": 21,
+          "pursuit": 30,
+          "manCoverage": 33,
+          "zoneCoverage": 15,
+          "press": 21,
+          "ballSkills": 25,
+          "kickPower": 27,
+          "kickAccuracy": 20,
+          "puntPower": 38,
+          "puntAccuracy": 24,
+          "awareness": 53,
+          "playRecognition": 44,
+          "decisionMaking": 67,
+          "composure": 60,
+          "discipline": 57,
+          "anticipation": 25,
+          "consistency": 40,
+          "workRate": 56
+        },
+        "familiarity": {
+          "RB": 0.3,
+          "TE": 0.25
+        },
+        "archetype": "Deep Threat"
+      },
+      "profile": {
+        "vmax": 9.734213488860885,
+        "tau": 1.1116935911260626,
+        "brake": 7.096247165532879,
+        "lateral": 7.091557823129254,
+        "turnRate": 9.651111111111112,
+        "backpedal": 0.5326530612244899,
+        "shuffle": 0.5388000000000001,
+        "massKg": 92.53284348000001,
+        "heightYd": 2.066666666666667,
+        "radius": 0.26181818181818184,
+        "reach": 1.0480555555555555,
+        "maxCatchHeight": 3.6308888888888893,
+        "reactReach": 3.0795000000000003,
+        "reactionTime": 0.2869795918367347,
+        "power": 83.63835995365716,
+        "balance": 0.5204081632653061,
+        "bend": 0.7594149659863945,
+        "stepSpeed": 4.064467120181406,
+        "getUp": 0.8139444444444445
+      }
+    },
+    {
+      "idx": 10,
+      "slot": "H",
+      "team": "O",
+      "player": {
+        "id": "H2-WR1",
+        "firstName": "Connor",
+        "lastName": "Phillips",
+        "jersey": 15,
+        "position": "WR",
+        "age": 21,
+        "experience": 0,
+        "measurables": {
+          "heightIn": 69.1,
+          "weightLb": 196,
+          "armIn": 31.4,
+          "handIn": 9.1,
+          "forty": 4.52,
+          "tenSplit": 1.55,
+          "shuttle": 4.03,
+          "threeCone": 6.76,
+          "vertical": 33.7,
+          "broad": 122,
+          "bench": 8
+        },
+        "ratings": {
+          "strength": 41,
+          "stamina": 59,
+          "balance": 46,
+          "toughness": 58,
+          "throwPower": 25,
+          "accShort": 29,
+          "accMid": 31,
+          "accDeep": 26,
+          "release": 22,
+          "throwOnRun": 40,
+          "touch": 31,
+          "pocketPresence": 24,
+          "vision": 41,
+          "elusiveness": 60,
+          "breakTackle": 39,
+          "ballSecurity": 43,
+          "patience": 18,
+          "routeRunning": 70,
+          "releaseVsPress": 47,
+          "hands": 59,
+          "contestedCatch": 47,
+          "ballTracking": 56,
+          "passBlock": 18,
+          "runBlock": 19,
+          "handTechnique": 29,
+          "leadBlock": 31,
+          "passRushPower": 27,
+          "passRushFinesse": 34,
+          "blockShedding": 12,
+          "tackling": 20,
+          "hitPower": 17,
+          "pursuit": 1,
+          "manCoverage": 39,
+          "zoneCoverage": 35,
+          "press": 30,
+          "ballSkills": 14,
+          "kickPower": 30,
+          "kickAccuracy": 28,
+          "puntPower": 26,
+          "puntAccuracy": 26,
+          "awareness": 48,
+          "playRecognition": 55,
+          "decisionMaking": 49,
+          "composure": 44,
+          "discipline": 49,
+          "anticipation": 13,
+          "consistency": 52,
+          "workRate": 57
+        },
+        "familiarity": {
+          "RB": 0.3,
+          "TE": 0.25
+        },
+        "archetype": "Slot"
+      },
+      "profile": {
+        "vmax": 9.765704483483107,
+        "tau": 1.3210361351789028,
+        "brake": 7.20861678004535,
+        "lateral": 7.223744897959187,
+        "turnRate": 9.902222222222223,
+        "backpedal": 0.5387755102040817,
+        "shuffle": 0.5416000000000001,
+        "massKg": 88.90410452,
+        "heightYd": 1.9194444444444443,
+        "radius": 0.2545454545454545,
+        "reach": 0.9913888888888889,
+        "maxCatchHeight": 3.30175,
+        "reactReach": 2.8336944444444443,
+        "reactionTime": 0.2737551020408164,
+        "power": 71.6630585363,
+        "balance": 0.45918367346938777,
+        "bend": 0.893170068027211,
+        "stepSpeed": 4.13128798185941,
+        "getUp": 0.7840555555555555
+      }
+    },
+    {
+      "idx": 11,
+      "slot": "DE_W",
+      "team": "D",
+      "player": {
+        "id": "A2-EDGE2",
+        "firstName": "Trey",
+        "lastName": "Patterson",
+        "jersey": 57,
+        "position": "EDGE",
+        "age": 24,
+        "experience": 1,
+        "measurables": {
+          "heightIn": 77,
+          "weightLb": 251,
+          "armIn": 34.5,
+          "handIn": 10,
+          "forty": 4.57,
+          "tenSplit": 1.49,
+          "shuttle": 4.15,
+          "threeCone": 6.87,
+          "vertical": 38.3,
+          "broad": 132,
+          "bench": 21
+        },
+        "ratings": {
+          "strength": 64,
+          "stamina": 65,
+          "balance": 53,
+          "toughness": 63,
+          "throwPower": 48,
+          "accShort": 34,
+          "accMid": 17,
+          "accDeep": 41,
+          "release": 26,
+          "throwOnRun": 32,
+          "touch": 35,
+          "pocketPresence": 31,
+          "vision": 41,
+          "elusiveness": 30,
+          "breakTackle": 36,
+          "ballSecurity": 32,
+          "patience": 37,
+          "routeRunning": 33,
+          "releaseVsPress": 33,
+          "hands": 42,
+          "contestedCatch": 30,
+          "ballTracking": 30,
+          "passBlock": 28,
+          "runBlock": 22,
+          "handTechnique": 31,
+          "leadBlock": 25,
+          "passRushPower": 70,
+          "passRushFinesse": 84,
+          "blockShedding": 72,
+          "tackling": 71,
+          "hitPower": 65,
+          "pursuit": 69,
+          "manCoverage": 22,
+          "zoneCoverage": 23,
+          "press": 28,
+          "ballSkills": 51,
+          "kickPower": 15,
+          "kickAccuracy": 33,
+          "puntPower": 20,
+          "puntAccuracy": 32,
+          "awareness": 44,
+          "playRecognition": 65,
+          "decisionMaking": 53,
+          "composure": 62,
+          "discipline": 64,
+          "anticipation": 30,
+          "consistency": 73,
+          "workRate": 68
+        },
+        "familiarity": {
+          "LB": 0.55,
+          "DT": 0.5
+        },
+        "archetype": "Speed Rusher"
+      },
+      "profile": {
+        "vmax": 8.887798472448756,
+        "tau": 0.9880526235454778,
+        "brake": 6.889092970521541,
+        "lateral": 6.981707482993198,
+        "turnRate": 9.415555555555557,
+        "backpedal": 0.5224489795918368,
+        "shuffle": 0.5372,
+        "massKg": 113.85168487,
+        "heightYd": 2.138888888888889,
+        "radius": 0.30454545454545456,
+        "reach": 1.0645833333333332,
+        "maxCatchHeight": 3.6958333333333337,
+        "reactReach": 3.163888888888889,
+        "reactionTime": 0.261265306122449,
+        "power": 113.95624253977857,
+        "balance": 0.5306122448979592,
+        "bend": 0.6727891156462584,
+        "stepSpeed": 3.809478458049886,
+        "getUp": 0.9027222222222223
+      }
+    },
+    {
+      "idx": 12,
+      "slot": "DE_S",
+      "team": "D",
+      "player": {
+        "id": "A2-LB2",
+        "firstName": "Miles",
+        "lastName": "Wells",
+        "jersey": 53,
+        "position": "LB",
+        "age": 25,
+        "experience": 3,
+        "measurables": {
+          "heightIn": 74.2,
+          "weightLb": 239,
+          "armIn": 33.4,
+          "handIn": 9.5,
+          "forty": 4.63,
+          "tenSplit": 1.58,
+          "shuttle": 4.26,
+          "threeCone": 7.21,
+          "vertical": 34.1,
+          "broad": 116,
+          "bench": 22
+        },
+        "ratings": {
+          "strength": 67,
+          "stamina": 76,
+          "balance": 28,
+          "toughness": 73,
+          "throwPower": 18,
+          "accShort": 34,
+          "accMid": 37,
+          "accDeep": 27,
+          "release": 36,
+          "throwOnRun": 39,
+          "touch": 28,
+          "pocketPresence": 42,
+          "vision": 36,
+          "elusiveness": 15,
+          "breakTackle": 33,
+          "ballSecurity": 43,
+          "patience": 44,
+          "routeRunning": 44,
+          "releaseVsPress": 16,
+          "hands": 27,
+          "contestedCatch": 27,
+          "ballTracking": 39,
+          "passBlock": 29,
+          "runBlock": 27,
+          "handTechnique": 35,
+          "leadBlock": 16,
+          "passRushPower": 61,
+          "passRushFinesse": 25,
+          "blockShedding": 87,
+          "tackling": 93,
+          "hitPower": 73,
+          "pursuit": 82,
+          "manCoverage": 51,
+          "zoneCoverage": 57,
+          "press": 35,
+          "ballSkills": 32,
+          "kickPower": 24,
+          "kickAccuracy": 32,
+          "puntPower": 32,
+          "puntAccuracy": 41,
+          "awareness": 75,
+          "playRecognition": 78,
+          "decisionMaking": 64,
+          "composure": 56,
+          "discipline": 44,
+          "anticipation": 52,
+          "consistency": 56,
+          "workRate": 43
+        },
+        "familiarity": {
+          "EDGE": 0.5,
+          "S": 0.35
+        },
+        "archetype": "Thumper"
+      },
+      "profile": {
+        "vmax": 9.152967472471824,
+        "tau": 1.2731255651416455,
+        "brake": 6.3846145124716545,
+        "lateral": 6.095122448979594,
+        "turnRate": 8.491111111111113,
+        "backpedal": 0.6071428571428571,
+        "shuffle": 0.5836,
+        "massKg": 108.40857643000001,
+        "heightYd": 2.0611111111111113,
+        "radius": 0.29363636363636364,
+        "reach": 1.038611111111111,
+        "maxCatchHeight": 3.4990555555555556,
+        "reactReach": 3.0254444444444446,
+        "reactionTime": 0.21400000000000002,
+        "power": 110.847769399675,
+        "balance": 0.2755102040816326,
+        "bend": 0.5277687074829933,
+        "stepSpeed": 3.4601950113378686,
+        "getUp": 0.9457777777777777
+      }
+    },
+    {
+      "idx": 13,
+      "slot": "DT_S",
+      "team": "D",
+      "player": {
+        "id": "A2-DT2",
+        "firstName": "Shane",
+        "lastName": "Scott",
+        "jersey": 90,
+        "position": "DT",
+        "age": 23,
+        "experience": 1,
+        "measurables": {
+          "heightIn": 75.9,
+          "weightLb": 343,
+          "armIn": 33.5,
+          "handIn": 10.2,
+          "forty": 5.19,
+          "tenSplit": 1.77,
+          "shuttle": 4.6,
+          "threeCone": 7.85,
+          "vertical": 32.8,
+          "broad": 105,
+          "bench": 38
+        },
+        "ratings": {
+          "strength": 99,
+          "stamina": 65,
+          "balance": 54,
+          "toughness": 69,
+          "throwPower": 58,
+          "accShort": 26,
+          "accMid": 38,
+          "accDeep": 30,
+          "release": 38,
+          "throwOnRun": 45,
+          "touch": 15,
+          "pocketPresence": 18,
+          "vision": 6,
+          "elusiveness": 33,
+          "breakTackle": 22,
+          "ballSecurity": 35,
+          "patience": 33,
+          "routeRunning": 42,
+          "releaseVsPress": 39,
+          "hands": 21,
+          "contestedCatch": 37,
+          "ballTracking": 28,
+          "passBlock": 23,
+          "runBlock": 37,
+          "handTechnique": 25,
+          "leadBlock": 34,
+          "passRushPower": 77,
+          "passRushFinesse": 44,
+          "blockShedding": 80,
+          "tackling": 85,
+          "hitPower": 82,
+          "pursuit": 57,
+          "manCoverage": 38,
+          "zoneCoverage": 20,
+          "press": 42,
+          "ballSkills": 38,
+          "kickPower": 22,
+          "kickAccuracy": 42,
+          "puntPower": 34,
+          "puntAccuracy": 26,
+          "awareness": 77,
+          "playRecognition": 57,
+          "decisionMaking": 86,
+          "composure": 51,
+          "discipline": 64,
+          "anticipation": 32,
+          "consistency": 65,
+          "workRate": 73
+        },
+        "familiarity": {
+          "EDGE": 0.55
+        },
+        "archetype": "Nose Tackle"
+      },
+      "profile": {
+        "vmax": 7.49408808070698,
+        "tau": 1.306395353671451,
+        "brake": 5.520827664399094,
+        "lateral": 5.0267006802721115,
+        "turnRate": 6.4555555555555575,
+        "backpedal": 0.5377551020408163,
+        "shuffle": 0.49800000000000005,
+        "massKg": 155.58218291,
+        "heightYd": 2.1083333333333334,
+        "radius": 0.3881818181818182,
+        "reach": 1.0409722222222222,
+        "maxCatchHeight": 3.5329722222222224,
+        "reactReach": 3.077416666666667,
+        "reactionTime": 0.24571428571428572,
+        "power": 199.470646650275,
+        "balance": 0.5408163265306123,
+        "bend": 0.2201632653061227,
+        "stepSpeed": 2.640267573696146,
+        "getUp": 1.2425555555555554
+      }
+    },
+    {
+      "idx": 14,
+      "slot": "DT_W",
+      "team": "D",
+      "player": {
+        "id": "A2-DT3",
+        "firstName": "Dalton",
+        "lastName": "Wallace",
+        "jersey": 79,
+        "position": "DT",
+        "age": 27,
+        "experience": 5,
+        "measurables": {
+          "heightIn": 75.6,
+          "weightLb": 330,
+          "armIn": 33.1,
+          "handIn": 10,
+          "forty": 5.06,
+          "tenSplit": 1.73,
+          "shuttle": 4.71,
+          "threeCone": 7.8,
+          "vertical": 27.6,
+          "broad": 110,
+          "bench": 34
+        },
+        "ratings": {
+          "strength": 93,
+          "stamina": 78,
+          "balance": 64,
+          "toughness": 78,
+          "throwPower": 35,
+          "accShort": 37,
+          "accMid": 35,
+          "accDeep": 39,
+          "release": 29,
+          "throwOnRun": 38,
+          "touch": 27,
+          "pocketPresence": 37,
+          "vision": 25,
+          "elusiveness": 28,
+          "breakTackle": 18,
+          "ballSecurity": 34,
+          "patience": 36,
+          "routeRunning": 27,
+          "releaseVsPress": 27,
+          "hands": 41,
+          "contestedCatch": 20,
+          "ballTracking": 48,
+          "passBlock": 22,
+          "runBlock": 32,
+          "handTechnique": 25,
+          "leadBlock": 37,
+          "passRushPower": 76,
+          "passRushFinesse": 48,
+          "blockShedding": 84,
+          "tackling": 76,
+          "hitPower": 82,
+          "pursuit": 62,
+          "manCoverage": 26,
+          "zoneCoverage": 23,
+          "press": 29,
+          "ballSkills": 34,
+          "kickPower": 32,
+          "kickAccuracy": 34,
+          "puntPower": 39,
+          "puntAccuracy": 28,
+          "awareness": 64,
+          "playRecognition": 76,
+          "decisionMaking": 58,
+          "composure": 50,
+          "discipline": 78,
+          "anticipation": 16,
+          "consistency": 65,
+          "workRate": 87
+        },
+        "familiarity": {
+          "EDGE": 0.55
+        },
+        "archetype": "Nose Tackle"
+      },
+      "profile": {
+        "vmax": 7.7200290922258645,
+        "tau": 1.292636443471204,
+        "brake": 5.252063492063493,
+        "lateral": 5.183656462585035,
+        "turnRate": 6.311111111111112,
+        "backpedal": 0.5255102040816327,
+        "shuffle": 0.5,
+        "massKg": 149.6854821,
+        "heightYd": 2.0999999999999996,
+        "radius": 0.37636363636363634,
+        "reach": 1.0315277777777778,
+        "maxCatchHeight": 3.4063333333333334,
+        "reactReach": 3.023,
+        "reactionTime": 0.22661224489795923,
+        "power": 183.80002539289282,
+        "balance": 0.6428571428571429,
+        "bend": 0.2265714285714289,
+        "stepSpeed": 2.6912698412698415,
+        "getUp": 1.238611111111111
+      }
+    },
+    {
+      "idx": 15,
+      "slot": "LB_M",
+      "team": "D",
+      "player": {
+        "id": "A2-LB3",
+        "firstName": "Noah",
+        "lastName": "Lambert",
+        "jersey": 42,
+        "position": "LB",
+        "age": 21,
+        "experience": 0,
+        "measurables": {
+          "heightIn": 73.6,
+          "weightLb": 229,
+          "armIn": 32.6,
+          "handIn": 10.2,
+          "forty": 4.6,
+          "tenSplit": 1.56,
+          "shuttle": 4.28,
+          "threeCone": 7.05,
+          "vertical": 31.9,
+          "broad": 121,
+          "bench": 24
+        },
+        "ratings": {
+          "strength": 63,
+          "stamina": 75,
+          "balance": 15,
+          "toughness": 63,
+          "throwPower": 31,
+          "accShort": 37,
+          "accMid": 14,
+          "accDeep": 28,
+          "release": 44,
+          "throwOnRun": 25,
+          "touch": 29,
+          "pocketPresence": 37,
+          "vision": 19,
+          "elusiveness": 30,
+          "breakTackle": 31,
+          "ballSecurity": 30,
+          "patience": 32,
+          "routeRunning": 36,
+          "releaseVsPress": 24,
+          "hands": 42,
+          "contestedCatch": 32,
+          "ballTracking": 32,
+          "passBlock": 27,
+          "runBlock": 34,
+          "handTechnique": 15,
+          "leadBlock": 37,
+          "passRushPower": 74,
+          "passRushFinesse": 48,
+          "blockShedding": 77,
+          "tackling": 72,
+          "hitPower": 49,
+          "pursuit": 80,
+          "manCoverage": 37,
+          "zoneCoverage": 52,
+          "press": 36,
+          "ballSkills": 35,
+          "kickPower": 24,
+          "kickAccuracy": 51,
+          "puntPower": 29,
+          "puntAccuracy": 15,
+          "awareness": 83,
+          "playRecognition": 74,
+          "decisionMaking": 61,
+          "composure": 47,
+          "discipline": 54,
+          "anticipation": 49,
+          "consistency": 58,
+          "workRate": 55
+        },
+        "familiarity": {
+          "EDGE": 0.5,
+          "S": 0.35
+        },
+        "archetype": "Blitzer"
+      },
+      "profile": {
+        "vmax": 9.248915909702104,
+        "tau": 1.2371120019135111,
+        "brake": 6.23595238095238,
+        "lateral": 6.323503401360546,
+        "turnRate": 8.766666666666667,
+        "backpedal": 0.6020408163265306,
+        "shuffle": 0.59,
+        "massKg": 103.87265273,
+        "heightYd": 2.0444444444444443,
+        "radius": 0.28454545454545455,
+        "reach": 1.0197222222222222,
+        "maxCatchHeight": 3.4279999999999995,
+        "reactReach": 2.984944444444444,
+        "reactionTime": 0.21351020408163268,
+        "power": 105.1286638880107,
+        "balance": 0.14285714285714285,
+        "bend": 0.5599047619047621,
+        "stepSpeed": 3.4797142857142855,
+        "getUp": 0.916
+      }
+    },
+    {
+      "idx": 16,
+      "slot": "LB_W",
+      "team": "D",
+      "player": {
+        "id": "A2-LB5",
+        "firstName": "Connor",
+        "lastName": "Sanders",
+        "jersey": 52,
+        "position": "LB",
+        "age": 25,
+        "experience": 2,
+        "measurables": {
+          "heightIn": 70.9,
+          "weightLb": 215,
+          "armIn": 31,
+          "handIn": 9,
+          "forty": 4.55,
+          "tenSplit": 1.55,
+          "shuttle": 4.02,
+          "threeCone": 6.67,
+          "vertical": 41.8,
+          "broad": 122,
+          "bench": 11
+        },
+        "ratings": {
+          "strength": 49,
+          "stamina": 70,
+          "balance": 22,
+          "toughness": 49,
+          "throwPower": 30,
+          "accShort": 28,
+          "accMid": 28,
+          "accDeep": 19,
+          "release": 32,
+          "throwOnRun": 19,
+          "touch": 31,
+          "pocketPresence": 31,
+          "vision": 25,
+          "elusiveness": 33,
+          "breakTackle": 32,
+          "ballSecurity": 20,
+          "patience": 31,
+          "routeRunning": 24,
+          "releaseVsPress": 36,
+          "hands": 29,
+          "contestedCatch": 6,
+          "ballTracking": 23,
+          "passBlock": 27,
+          "runBlock": 20,
+          "handTechnique": 24,
+          "leadBlock": 21,
+          "passRushPower": 49,
+          "passRushFinesse": 40,
+          "blockShedding": 58,
+          "tackling": 54,
+          "hitPower": 63,
+          "pursuit": 59,
+          "manCoverage": 67,
+          "zoneCoverage": 51,
+          "press": 27,
+          "ballSkills": 23,
+          "kickPower": 37,
+          "kickAccuracy": 25,
+          "puntPower": 24,
+          "puntAccuracy": 24,
+          "awareness": 62,
+          "playRecognition": 68,
+          "decisionMaking": 44,
+          "composure": 58,
+          "discipline": 57,
+          "anticipation": 44,
+          "consistency": 57,
+          "workRate": 37
+        },
+        "familiarity": {
+          "EDGE": 0.5,
+          "S": 0.35
+        },
+        "archetype": "Coverage LB"
+      },
+      "profile": {
+        "vmax": 9.496569302029327,
+        "tau": 1.2664372621784548,
+        "brake": 7.077539682539682,
+        "lateral": 7.134734693877553,
+        "turnRate": 10.104444444444447,
+        "backpedal": 0.6173469387755102,
+        "shuffle": 0.6052,
+        "massKg": 97.52235955,
+        "heightYd": 1.9694444444444446,
+        "radius": 0.2718181818181818,
+        "reach": 0.9819444444444445,
+        "maxCatchHeight": 3.5482500000000003,
+        "reactReach": 2.967694444444445,
+        "reactionTime": 0.24106122448979594,
+        "power": 84.40162168605357,
+        "balance": 0.21428571428571427,
+        "bend": 0.8415238095238096,
+        "stepSpeed": 3.958126984126985,
+        "getUp": 0.800111111111111
+      }
+    },
+    {
+      "idx": 17,
+      "slot": "CB_S",
+      "team": "D",
+      "player": {
+        "id": "A2-CB2",
+        "firstName": "Jalen",
+        "lastName": "Bryant",
+        "jersey": 34,
+        "position": "CB",
+        "age": 26,
+        "experience": 3,
+        "measurables": {
+          "heightIn": 69.8,
+          "weightLb": 184,
+          "armIn": 32.7,
+          "handIn": 9.3,
+          "forty": 4.37,
+          "tenSplit": 1.53,
+          "shuttle": 3.97,
+          "threeCone": 6.64,
+          "vertical": 37.5,
+          "broad": 125,
+          "bench": 13
+        },
+        "ratings": {
+          "strength": 40,
+          "stamina": 64,
+          "balance": 39,
+          "toughness": 47,
+          "throwPower": 38,
+          "accShort": 40,
+          "accMid": 23,
+          "accDeep": 22,
+          "release": 45,
+          "throwOnRun": 30,
+          "touch": 25,
+          "pocketPresence": 25,
+          "vision": 39,
+          "elusiveness": 30,
+          "breakTackle": 26,
+          "ballSecurity": 18,
+          "patience": 41,
+          "routeRunning": 16,
+          "releaseVsPress": 40,
+          "hands": 69,
+          "contestedCatch": 30,
+          "ballTracking": 14,
+          "passBlock": 22,
+          "runBlock": 33,
+          "handTechnique": 35,
+          "leadBlock": 32,
+          "passRushPower": 37,
+          "passRushFinesse": 26,
+          "blockShedding": 33,
+          "tackling": 64,
+          "hitPower": 17,
+          "pursuit": 58,
+          "manCoverage": 66,
+          "zoneCoverage": 94,
+          "press": 66,
+          "ballSkills": 84,
+          "kickPower": 37,
+          "kickAccuracy": 30,
+          "puntPower": 25,
+          "puntAccuracy": 13,
+          "awareness": 70,
+          "playRecognition": 83,
+          "decisionMaking": 76,
+          "composure": 77,
+          "discipline": 74,
+          "anticipation": 77,
+          "consistency": 63,
+          "workRate": 48
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Zone Corner"
+      },
+      "profile": {
+        "vmax": 10.287646551886766,
+        "tau": 1.4155944629917876,
+        "brake": 7.344807256235826,
+        "lateral": 7.316459183673473,
+        "turnRate": 10.275555555555556,
+        "backpedal": 0.7648979591836734,
+        "shuffle": 0.6464000000000001,
+        "massKg": 83.46099608,
+        "heightYd": 1.9388888888888889,
+        "radius": 0.24363636363636362,
+        "reach": 1.0220833333333335,
+        "maxCatchHeight": 3.412055555555556,
+        "reactReach": 2.8912222222222224,
+        "reactionTime": 0.21032653061224493,
+        "power": 69.12784746748571,
+        "balance": 0.3877551020408163,
+        "bend": 0.9248843537414969,
+        "stepSpeed": 4.239097505668934,
+        "getUp": 0.7403888888888889
+      }
+    },
+    {
+      "idx": 18,
+      "slot": "CB_W",
+      "team": "D",
+      "player": {
+        "id": "A2-CB1",
+        "firstName": "Noah",
+        "lastName": "Bailey",
+        "jersey": 30,
+        "position": "CB",
+        "age": 26,
+        "experience": 4,
+        "measurables": {
+          "heightIn": 74.1,
+          "weightLb": 202,
+          "armIn": 31.2,
+          "handIn": 9.4,
+          "forty": 4.49,
+          "tenSplit": 1.55,
+          "shuttle": 4.27,
+          "threeCone": 7.19,
+          "vertical": 35.8,
+          "broad": 122,
+          "bench": 15
+        },
+        "ratings": {
+          "strength": 42,
+          "stamina": 70,
+          "balance": 32,
+          "toughness": 58,
+          "throwPower": 19,
+          "accShort": 20,
+          "accMid": 31,
+          "accDeep": 22,
+          "release": 26,
+          "throwOnRun": 27,
+          "touch": 33,
+          "pocketPresence": 21,
+          "vision": 34,
+          "elusiveness": 23,
+          "breakTackle": 17,
+          "ballSecurity": 39,
+          "patience": 28,
+          "routeRunning": 36,
+          "releaseVsPress": 26,
+          "hands": 62,
+          "contestedCatch": 30,
+          "ballTracking": 37,
+          "passBlock": 28,
+          "runBlock": 41,
+          "handTechnique": 39,
+          "leadBlock": 40,
+          "passRushPower": 21,
+          "passRushFinesse": 26,
+          "blockShedding": 31,
+          "tackling": 74,
+          "hitPower": 31,
+          "pursuit": 47,
+          "manCoverage": 89,
+          "zoneCoverage": 73,
+          "press": 74,
+          "ballSkills": 61,
+          "kickPower": 31,
+          "kickAccuracy": 28,
+          "puntPower": 39,
+          "puntAccuracy": 44,
+          "awareness": 62,
+          "playRecognition": 73,
+          "decisionMaking": 56,
+          "composure": 59,
+          "discipline": 45,
+          "anticipation": 74,
+          "consistency": 83,
+          "workRate": 61
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Press Corner"
+      },
+      "profile": {
+        "vmax": 9.834210431011375,
+        "tau": 1.34916334173662,
+        "brake": 6.380997732426303,
+        "lateral": 6.166884353741498,
+        "turnRate": 8.50888888888889,
+        "backpedal": 0.759795918367347,
+        "shuffle": 0.6244000000000001,
+        "massKg": 91.62565874,
+        "heightYd": 2.058333333333333,
+        "radius": 0.26,
+        "reach": 0.9866666666666667,
+        "maxCatchHeight": 3.533138888888889,
+        "reactReach": 3.0359166666666666,
+        "reactionTime": 0.23310204081632654,
+        "power": 77.88180992900001,
+        "balance": 0.3163265306122449,
+        "bend": 0.5412653061224492,
+        "stepSpeed": 3.6342403628117914,
+        "getUp": 0.8898888888888888
+      }
+    },
+    {
+      "idx": 19,
+      "slot": "NB",
+      "team": "D",
+      "player": {
+        "id": "A2-CB3",
+        "firstName": "Darnell",
+        "lastName": "Tucker",
+        "jersey": 35,
+        "position": "CB",
+        "age": 25,
+        "experience": 2,
+        "measurables": {
+          "heightIn": 70.7,
+          "weightLb": 186,
+          "armIn": 30.7,
+          "handIn": 9.3,
+          "forty": 4.58,
+          "tenSplit": 1.61,
+          "shuttle": 4.09,
+          "threeCone": 6.71,
+          "vertical": 32.6,
+          "broad": 114,
+          "bench": 15
+        },
+        "ratings": {
+          "strength": 41,
+          "stamina": 60,
+          "balance": 27,
+          "toughness": 53,
+          "throwPower": 45,
+          "accShort": 35,
+          "accMid": 31,
+          "accDeep": 26,
+          "release": 30,
+          "throwOnRun": 30,
+          "touch": 24,
+          "pocketPresence": 36,
+          "vision": 24,
+          "elusiveness": 38,
+          "breakTackle": 10,
+          "ballSecurity": 20,
+          "patience": 28,
+          "routeRunning": 23,
+          "releaseVsPress": 23,
+          "hands": 57,
+          "contestedCatch": 31,
+          "ballTracking": 38,
+          "passBlock": 35,
+          "runBlock": 44,
+          "handTechnique": 31,
+          "leadBlock": 39,
+          "passRushPower": 34,
+          "passRushFinesse": 30,
+          "blockShedding": 19,
+          "tackling": 66,
+          "hitPower": 30,
+          "pursuit": 58,
+          "manCoverage": 77,
+          "zoneCoverage": 65,
+          "press": 68,
+          "ballSkills": 78,
+          "kickPower": 18,
+          "kickAccuracy": 20,
+          "puntPower": 29,
+          "puntAccuracy": 16,
+          "awareness": 58,
+          "playRecognition": 61,
+          "decisionMaking": 49,
+          "composure": 51,
+          "discipline": 70,
+          "anticipation": 62,
+          "consistency": 52,
+          "workRate": 69
+        },
+        "familiarity": {
+          "S": 0.6
+        },
+        "archetype": "Slot Corner"
+      },
+      "profile": {
+        "vmax": 9.851551225127846,
+        "tau": 1.5132337956541806,
+        "brake": 6.8973242630385485,
+        "lateral": 7.0978435374149695,
+        "turnRate": 9.86888888888889,
+        "backpedal": 0.7475510204081632,
+        "shuffle": 0.6436000000000001,
+        "massKg": 84.36818082,
+        "heightYd": 1.963888888888889,
+        "radius": 0.24545454545454545,
+        "reach": 0.9748611111111111,
+        "maxCatchHeight": 3.3364166666666666,
+        "reactReach": 2.883638888888889,
+        "reactionTime": 0.2556326530612245,
+        "power": 71.26098129975001,
+        "balance": 0.2653061224489796,
+        "bend": 0.819061224489796,
+        "stepSpeed": 4.031628117913832,
+        "getUp": 0.7748888888888888
+      }
+    },
+    {
+      "idx": 20,
+      "slot": "FS",
+      "team": "D",
+      "player": {
+        "id": "A2-S2",
+        "firstName": "Jerome",
+        "lastName": "Bailey",
+        "jersey": 26,
+        "position": "S",
+        "age": 23,
+        "experience": 1,
+        "measurables": {
+          "heightIn": 70.2,
+          "weightLb": 190,
+          "armIn": 32.5,
+          "handIn": 8.9,
+          "forty": 4.42,
+          "tenSplit": 1.51,
+          "shuttle": 4.2,
+          "threeCone": 6.86,
+          "vertical": 37.9,
+          "broad": 123,
+          "bench": 10
+        },
+        "ratings": {
+          "strength": 40,
+          "stamina": 71,
+          "balance": 20,
+          "toughness": 38,
+          "throwPower": 26,
+          "accShort": 32,
+          "accMid": 40,
+          "accDeep": 35,
+          "release": 42,
+          "throwOnRun": 25,
+          "touch": 34,
+          "pocketPresence": 25,
+          "vision": 30,
+          "elusiveness": 41,
+          "breakTackle": 29,
+          "ballSecurity": 18,
+          "patience": 33,
+          "routeRunning": 42,
+          "releaseVsPress": 44,
+          "hands": 53,
+          "contestedCatch": 31,
+          "ballTracking": 33,
+          "passBlock": 15,
+          "runBlock": 23,
+          "handTechnique": 58,
+          "leadBlock": 25,
+          "passRushPower": 27,
+          "passRushFinesse": 33,
+          "blockShedding": 70,
+          "tackling": 63,
+          "hitPower": 33,
+          "pursuit": 68,
+          "manCoverage": 48,
+          "zoneCoverage": 79,
+          "press": 36,
+          "ballSkills": 67,
+          "kickPower": 27,
+          "kickAccuracy": 35,
+          "puntPower": 33,
+          "puntAccuracy": 39,
+          "awareness": 75,
+          "playRecognition": 66,
+          "decisionMaking": 46,
+          "composure": 59,
+          "discipline": 55,
+          "anticipation": 75,
+          "consistency": 55,
+          "workRate": 73
+        },
+        "familiarity": {
+          "CB": 0.6,
+          "LB": 0.45
+        },
+        "archetype": "Centerfielder"
+      },
+      "profile": {
+        "vmax": 9.965325063493694,
+        "tau": 1.2690405086249028,
+        "brake": 6.514070294784578,
+        "lateral": 6.765037414965986,
+        "turnRate": 9.324444444444444,
+        "backpedal": 0.709591836734694,
+        "shuffle": 0.6176,
+        "massKg": 86.1825503,
+        "heightYd": 1.9500000000000002,
+        "radius": 0.24909090909090909,
+        "reach": 1.0173611111111112,
+        "maxCatchHeight": 3.4357222222222226,
+        "reactReach": 2.909333333333334,
+        "reactionTime": 0.23310204081632654,
+        "power": 69.95736608535715,
+        "balance": 0.19387755102040816,
+        "bend": 0.7281088435374149,
+        "stepSpeed": 3.8172154195011334,
+        "getUp": 0.8197777777777778
+      }
+    },
+    {
+      "idx": 21,
+      "slot": "SS",
+      "team": "D",
+      "player": {
+        "id": "A2-S1",
+        "firstName": "Ryan",
+        "lastName": "Knight",
+        "jersey": 36,
+        "position": "S",
+        "age": 24,
+        "experience": 2,
+        "measurables": {
+          "heightIn": 72.7,
+          "weightLb": 210,
+          "armIn": 31,
+          "handIn": 9.8,
+          "forty": 4.54,
+          "tenSplit": 1.56,
+          "shuttle": 4.28,
+          "threeCone": 6.99,
+          "vertical": 35.8,
+          "broad": 117,
+          "bench": 19
+        },
+        "ratings": {
+          "strength": 54,
+          "stamina": 62,
+          "balance": 19,
+          "toughness": 65,
+          "throwPower": 14,
+          "accShort": 25,
+          "accMid": 14,
+          "accDeep": 32,
+          "release": 14,
+          "throwOnRun": 42,
+          "touch": 31,
+          "pocketPresence": 19,
+          "vision": 31,
+          "elusiveness": 33,
+          "breakTackle": 40,
+          "ballSecurity": 31,
+          "patience": 25,
+          "routeRunning": 26,
+          "releaseVsPress": 29,
+          "hands": 54,
+          "contestedCatch": 26,
+          "ballTracking": 31,
+          "passBlock": 35,
+          "runBlock": 25,
+          "handTechnique": 16,
+          "leadBlock": 25,
+          "passRushPower": 33,
+          "passRushFinesse": 40,
+          "blockShedding": 62,
+          "tackling": 74,
+          "hitPower": 66,
+          "pursuit": 69,
+          "manCoverage": 55,
+          "zoneCoverage": 62,
+          "press": 37,
+          "ballSkills": 85,
+          "kickPower": 37,
+          "kickAccuracy": 32,
+          "puntPower": 34,
+          "puntAccuracy": 21,
+          "awareness": 69,
+          "playRecognition": 73,
+          "decisionMaking": 57,
+          "composure": 57,
+          "discipline": 68,
+          "anticipation": 75,
+          "consistency": 59,
+          "workRate": 69
+        },
+        "familiarity": {
+          "CB": 0.6,
+          "LB": 0.45
+        },
+        "archetype": "Box Safety"
+      },
+      "profile": {
+        "vmax": 9.623496834919242,
+        "tau": 1.3243205658716928,
+        "brake": 6.262891156462584,
+        "lateral": 6.468074829931974,
+        "turnRate": 8.886666666666667,
+        "backpedal": 0.6922448979591838,
+        "shuffle": 0.6123999999999999,
+        "massKg": 95.2543977,
+        "heightYd": 2.0194444444444444,
+        "radius": 0.2672727272727273,
+        "reach": 0.9819444444444445,
+        "maxCatchHeight": 3.4814166666666666,
+        "reactReach": 2.9841944444444444,
+        "reactionTime": 0.22710204081632657,
+        "power": 89.189219724,
+        "balance": 0.1836734693877551,
+        "bend": 0.6060680272108842,
+        "stepSpeed": 3.608204081632653,
+        "getUp": 0.8805000000000001
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "t": 2.0,
+      "pictures": {
+        "1": {
+          "pos": {
+            "x": 24.132956290559736,
+            "y": 33.753671583722515
+          },
+          "vel": {
+            "x": 0.3591356164390113,
+            "y": 1.6517479488832796
+          },
+          "stance": "low",
+          "facing": 4.213139980577081,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "2": {
+          "pos": {
+            "x": 27.602117279773342,
+            "y": 23.884763273320747
+          },
+          "vel": {
+            "x": 0.9965425802534692,
+            "y": -0.06796061327328692
+          },
+          "stance": "low",
+          "facing": -2.6788878170890684,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "3": {
+          "pos": {
+            "x": 25.817572530431118,
+            "y": 27.03196029763812
+          },
+          "vel": {
+            "x": 0.8588384638365233,
+            "y": 0.24240946563619925
+          },
+          "stance": "low",
+          "facing": -0.5862195950052838,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "4": {
+          "pos": {
+            "x": 24.972536087971992,
+            "y": 28.851290448530648
+          },
+          "vel": {
+            "x": 0.2972471514378437,
+            "y": 1.236437591763167
+          },
+          "stance": "low",
+          "facing": 1.375797777252191,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "5": {
+          "pos": {
+            "x": 25.920523316447657,
+            "y": 26.164628333133667
+          },
+          "vel": {
+            "x": 0.9708279509119027,
+            "y": 0.16720416162954724
+          },
+          "stance": "low",
+          "facing": 0.7975160417693072,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "7": {
+          "pos": {
+            "x": 26.892754962392768,
+            "y": 20.420224431874928
+          },
+          "vel": {
+            "x": 0.6625055380742285,
+            "y": -0.16210812431943072
+          },
+          "stance": "low",
+          "facing": 0.07399995468638726,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "11": {
+          "pos": {
+            "x": 23.793566688299144,
+            "y": 33.168207991148925
+          },
+          "vel": {
+            "x": 0.5144741570068044,
+            "y": 0.9202785220637943
+          },
+          "stance": null,
+          "facing": 3.1418034024285566,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "12": {
+          "pos": {
+            "x": 24.91428286692705,
+            "y": 22.91199373363098
+          },
+          "vel": {
+            "x": -0.7480372657530663,
+            "y": 0.06597136982094884
+          },
+          "stance": null,
+          "facing": 0.7615697434731757,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "13": {
+          "pos": {
+            "x": 26.369793284361137,
+            "y": 26.666124089301338
+          },
+          "vel": {
+            "x": 0.8090508066878385,
+            "y": 0.30691315397907853
+          },
+          "stance": null,
+          "facing": 3.937015586455053,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "14": {
+          "pos": {
+            "x": 24.787417537197143,
+            "y": 29.38706418160606
+          },
+          "vel": {
+            "x": -0.6485260584646655,
+            "y": 0.3181079267969576
+          },
+          "stance": null,
+          "facing": 4.226955852704035,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "15": {
+          "pos": {
+            "x": 29.794288606568934,
+            "y": 25.223323758276393
+          },
+          "vel": {
+            "x": -2.305027945752058,
+            "y": 0.06822539204584477
+          },
+          "stance": null,
+          "facing": 3.1409611707450686,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "16": {
+          "pos": {
+            "x": 29.19787208581655,
+            "y": 27.185447343042878
+          },
+          "vel": {
+            "x": -1.9655044581680272,
+            "y": 0.3031969697919852
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "17": {
+          "pos": {
+            "x": 27.171053435009473,
+            "y": 13.294111034768893
+          },
+          "vel": {
+            "x": 0.7957057289742909,
+            "y": 4.0341565109134505
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "18": {
+          "pos": {
+            "x": 26.373115598782086,
+            "y": 40.6958498625392
+          },
+          "vel": {
+            "x": 0.048703485532158475,
+            "y": -2.7138681997750407
+          },
+          "stance": null,
+          "facing": 2.590242576830179,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "19": {
+          "pos": {
+            "x": 27.784901490307973,
+            "y": 19.90871832510663
+          },
+          "vel": {
+            "x": 1.0201577372194475,
+            "y": 0.04788459366137982
+          },
+          "stance": null,
+          "facing": 2.4699025829938144,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "20": {
+          "pos": {
+            "x": 39.402170476789045,
+            "y": 25.375240466825087
+          },
+          "vel": {
+            "x": -0.6521838860094135,
+            "y": -0.5047680167335893
+          },
+          "stance": null,
+          "facing": 3.142400609718387,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "21": {
+          "pos": {
+            "x": 27.922089374520876,
+            "y": 20.62629498012354
+          },
+          "vel": {
+            "x": -0.7555918214562208,
+            "y": -2.224628908889308
+          },
+          "stance": null,
+          "facing": 3.796490431405103,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "0": {
+          "pos": {
+            "x": 19.788661218760232,
+            "y": 27.880950731004933
+          },
+          "vel": {
+            "x": -0.4924123196321176,
+            "y": 2.1179614860008584
+          },
+          "stance": null,
+          "facing": 1.7858004605182312,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "8": {
+          "pos": {
+            "x": 25.123224294846132,
+            "y": 42.12952124267427
+          },
+          "vel": {
+            "x": -0.09225707543962569,
+            "y": -2.5089537930558956
+          },
+          "stance": "low",
+          "facing": -1.4728305237827,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "9": {
+          "pos": {
+            "x": 25.62545044862757,
+            "y": 11.600603788345103
+          },
+          "vel": {
+            "x": 0.7714562135289595,
+            "y": 2.934731972776853
+          },
+          "stance": "low",
+          "facing": 1.3583074423901809,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "body": {
+        "pos": {
+          "x": 22.53747924129073,
+          "y": 28.85259983354357
+        },
+        "vel": {
+          "x": 3.6443817191339942,
+          "y": 2.466088995093555
+        },
+        "facing": 0.6297222355674162,
+        "energy": 0.9854101029445014,
+        "profile": {
+          "vmax": 9.608770220006077,
+          "tau": 1.1758382811182186,
+          "brake": 7.2107369614512455,
+          "lateral": 7.160251700680275,
+          "turnRate": 9.531111111111112,
+          "backpedal": 0.5357142857142858,
+          "shuffle": 0.5364000000000001,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9527777777777777,
+          "radius": 0.2590909090909091,
+          "reach": 0.9795833333333333,
+          "maxCatchHeight": 3.481638888888889,
+          "reactReach": 2.928861111111111,
+          "reactionTime": 0.22538775510204084,
+          "power": 88.8276418062,
+          "balance": 0.6938775510204082,
+          "bend": 0.8561088435374152,
+          "stepSpeed": 4.152548752834467,
+          "getUp": 0.8164444444444444
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.197229835026398,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 3.7275649869961405,
+            "y": 2.847754511036799
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": 0.7417194651900871,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 0.6277332702647664
+      },
+      "raw": {
+        "vel": {
+          "x": 7.404825186709665,
+          "y": 6.123481778787768
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "final": {
+        "vel": {
+          "x": 7.404825186709665,
+          "y": 6.123481778787768
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "behavior": {
+        "kind": "carrier",
+        "heading": 0.6909641568927414,
+        "nextEval": 2.186415340449417,
+        "wasDesigned": false,
+        "visionNoise": 0.23469387755102045,
+        "plannedExit": false,
+        "boundaryRecovery": false,
+        "readDone": false,
+        "opts": {
+          "aim": {
+            "x": 25.6,
+            "y": 28.616666666666667
+          },
+          "aimGap": {
+            "gap": "B",
+            "side": 1,
+            "offset": 0
+          },
+          "aimUntil": 1.7989795918367348,
+          "follow": [],
+          "run": {
+            "scheme": "insideZone",
+            "side": 1,
+            "readKey": {
+              "agent": 16
+            }
+          }
+        }
+      },
+      "aim": {
+        "phase": "aim",
+        "t": 2,
+        "actor": 6,
+        "preferred": 31.30248101612658,
+        "selected": {
+          "x": 25.5,
+          "y": 31.30248101612658
+        },
+        "candidates": [
+          {
+            "entry": {
+              "x": 27.847436121083057,
+              "y": 22.152493852597836
+            },
+            "risk": 12.552641929655804,
+            "score": 19.304146303662975
+          },
+          {
+            "entry": {
+              "x": 27.3613202981105,
+              "y": 25.024695803227207
+            },
+            "risk": 6.141660660073274,
+            "score": 10.681569532095832
+          },
+          {
+            "entry": {
+              "x": 25.995054309201556,
+              "y": 27.941625373084385
+            },
+            "risk": 0.21658899360254036,
+            "score": 2.5104620968350706
+          },
+          {
+            "entry": {
+              "x": 25.5,
+              "y": 31.30248101612658
+            },
+            "risk": 0.024973055475981942,
+            "score": 0.31895879738594307
+          },
+          {
+            "entry": {
+              "x": 27.392754962392768,
+              "y": 19.435678977329474
+            },
+            "risk": 15.092211394790708,
+            "score": 23.93566322275452
+          },
+          {
+            "entry": {
+              "x": 25.5,
+              "y": 34.77912612917706
+            },
+            "risk": 3.748673483071829,
+            "score": 6.719675962030657
+          }
+        ],
+        "surface": [
+          {
+            "pos": {
+              "x": 26.892754962392768,
+              "y": 20.420224431874928
+            },
+            "vel": {
+              "x": 0.6625055380742285,
+              "y": -0.16210812431943072
+            },
+            "stance": "low",
+            "facing": 0.07399995468638726,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.32545454545454544
+          },
+          {
+            "pos": {
+              "x": 27.602117279773342,
+              "y": 23.884763273320747
+            },
+            "vel": {
+              "x": 0.9965425802534692,
+              "y": -0.06796061327328692
+            },
+            "stance": "low",
+            "facing": -2.6788878170890684,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.35545454545454547
+          },
+          {
+            "pos": {
+              "x": 25.920523316447657,
+              "y": 26.164628333133667
+            },
+            "vel": {
+              "x": 0.9708279509119027,
+              "y": 0.16720416162954724
+            },
+            "stance": "low",
+            "facing": 0.7975160417693072,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.3654545454545455
+          },
+          {
+            "pos": {
+              "x": 25.817572530431118,
+              "y": 27.03196029763812
+            },
+            "vel": {
+              "x": 0.8588384638365233,
+              "y": 0.24240946563619925
+            },
+            "stance": "low",
+            "facing": -0.5862195950052838,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.3563636363636363
+          },
+          {
+            "pos": {
+              "x": 24.972536087971992,
+              "y": 28.851290448530648
+            },
+            "vel": {
+              "x": 0.2972471514378437,
+              "y": 1.236437591763167
+            },
+            "stance": "low",
+            "facing": 1.375797777252191,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.3654545454545455
+          },
+          {
+            "pos": {
+              "x": 24.132956290559736,
+              "y": 33.753671583722515
+            },
+            "vel": {
+              "x": 0.3591356164390113,
+              "y": 1.6517479488832796
+            },
+            "stance": "low",
+            "facing": 4.213139980577081,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.36636363636363634
+          }
+        ]
+      }
+    },
+    {
+      "t": 2.2,
+      "pictures": {
+        "1": {
+          "pos": {
+            "x": 24.12136674788815,
+            "y": 34.05040789069702
+          },
+          "vel": {
+            "x": -0.10513630468790915,
+            "y": 1.4134025865071131
+          },
+          "stance": "low",
+          "facing": 4.369887313013421,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "2": {
+          "pos": {
+            "x": 27.67650929812699,
+            "y": 23.783820898063126
+          },
+          "vel": {
+            "x": 0.14831555969239685,
+            "y": -0.6283086559885329
+          },
+          "stance": "low",
+          "facing": -2.829493639316631,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "3": {
+          "pos": {
+            "x": 25.972480601364264,
+            "y": 27.099205593586973
+          },
+          "vel": {
+            "x": 0.751063307990208,
+            "y": 0.45394381657380023
+          },
+          "stance": "low",
+          "facing": -0.41176643243802563,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "4": {
+          "pos": {
+            "x": 25.05439262832449,
+            "y": 29.255439731638056
+          },
+          "vel": {
+            "x": 0.5165973010240844,
+            "y": 2.2378713777845283
+          },
+          "stance": "low",
+          "facing": 1.897698695229844,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "5": {
+          "pos": {
+            "x": 26.091818201257116,
+            "y": 26.2637853273475
+          },
+          "vel": {
+            "x": 0.7907162385649527,
+            "y": 0.5501596560847536
+          },
+          "stance": "low",
+          "facing": 0.8288538626871684,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "7": {
+          "pos": {
+            "x": 26.899195020249888,
+            "y": 20.40220998882585
+          },
+          "vel": {
+            "x": -0.08299356355727111,
+            "y": -0.029767520896630664
+          },
+          "stance": "low",
+          "facing": -0.7568148960420507,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "11": {
+          "pos": {
+            "x": 24.00181343703252,
+            "y": 33.486477344526996
+          },
+          "vel": {
+            "x": 0.7129979705438585,
+            "y": 1.4088389270520596
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "12": {
+          "pos": {
+            "x": 24.926054375942602,
+            "y": 23.31277596774112
+          },
+          "vel": {
+            "x": -0.25774484812152687,
+            "y": 1.1556415986993003
+          },
+          "stance": null,
+          "facing": 2.4185630579814537,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "13": {
+          "pos": {
+            "x": 26.55167546571457,
+            "y": 26.71687624125567
+          },
+          "vel": {
+            "x": 0.8708182885920771,
+            "y": 0.2606083594450275
+          },
+          "stance": null,
+          "facing": 3.957058664955395,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "14": {
+          "pos": {
+            "x": 24.571946351989688,
+            "y": 29.673177338606976
+          },
+          "vel": {
+            "x": -0.905457964969475,
+            "y": 0.9413528456793525
+          },
+          "stance": null,
+          "facing": 4.999158541790381,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "15": {
+          "pos": {
+            "x": 29.14379793844252,
+            "y": 25.415341504232853
+          },
+          "vel": {
+            "x": -2.8414749712826612,
+            "y": 0.5582023768399976
+          },
+          "stance": null,
+          "facing": 3.1415799510069786,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "16": {
+          "pos": {
+            "x": 28.627310368774324,
+            "y": 27.503580216017248
+          },
+          "vel": {
+            "x": -2.4842843128920316,
+            "y": 0.9954681340078585
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "17": {
+          "pos": {
+            "x": 27.36148429029047,
+            "y": 14.218897485446366
+          },
+          "vel": {
+            "x": 0.8653209989402384,
+            "y": 4.37287648413206
+          },
+          "stance": null,
+          "facing": 3.141592653589793,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "18": {
+          "pos": {
+            "x": 26.01788362388778,
+            "y": 40.44571021750291
+          },
+          "vel": {
+            "x": -0.9892861344236447,
+            "y": -1.869577816147019
+          },
+          "stance": null,
+          "facing": 3.109115799153802,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "19": {
+          "pos": {
+            "x": 27.47405367208756,
+            "y": 20.09974382044852
+          },
+          "vel": {
+            "x": -0.42612772417847994,
+            "y": 0.5366268796320921
+          },
+          "stance": null,
+          "facing": 2.5709709040855486,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "20": {
+          "pos": {
+            "x": 38.93921353368092,
+            "y": 25.59828977194908
+          },
+          "vel": {
+            "x": -1.5791815157578846,
+            "y": 0.440826299956108
+          },
+          "stance": null,
+          "facing": 3.1418945827727143,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "21": {
+          "pos": {
+            "x": 27.671105717415955,
+            "y": 20.412469155919098
+          },
+          "vel": {
+            "x": -1.0002498271799403,
+            "y": -1.683403958834272
+          },
+          "stance": null,
+          "facing": 4.38429387735734,
+          "age": 0.25,
+          "pose": "up",
+          "carrying": false
+        },
+        "0": {
+          "pos": {
+            "x": 19.703228683476233,
+            "y": 28.34150437341262
+          },
+          "vel": {
+            "x": -0.441225964796029,
+            "y": 2.3518963945307303
+          },
+          "stance": null,
+          "facing": 1.7527654749442316,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "8": {
+          "pos": {
+            "x": 25.145457648317425,
+            "y": 41.59635739133362
+          },
+          "vel": {
+            "x": -0.003931926648898118,
+            "y": -2.7070961429929494
+          },
+          "stance": "low",
+          "facing": -1.5675512083617673,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        },
+        "9": {
+          "pos": {
+            "x": 25.75530201926742,
+            "y": 12.230317379850504
+          },
+          "vel": {
+            "x": 0.7164169027459724,
+            "y": 3.195051511553787
+          },
+          "stance": "low",
+          "facing": 1.363867550385919,
+          "age": 0.05,
+          "pose": "up",
+          "carrying": false
+        }
+      },
+      "body": {
+        "pos": {
+          "x": 23.328056041271612,
+          "y": 29.40583436655187
+        },
+        "vel": {
+          "x": 4.244954739249186,
+          "y": 3.0502764484651084
+        },
+        "facing": 0.6878381569894171,
+        "energy": 0.982323114273435,
+        "profile": {
+          "vmax": 9.608770220006077,
+          "tau": 1.1758382811182186,
+          "brake": 7.2107369614512455,
+          "lateral": 7.160251700680275,
+          "turnRate": 9.531111111111112,
+          "backpedal": 0.5357142857142858,
+          "shuffle": 0.5364000000000001,
+          "massKg": 91.17206637000001,
+          "heightYd": 1.9527777777777777,
+          "radius": 0.2590909090909091,
+          "reach": 0.9795833333333333,
+          "maxCatchHeight": 3.481638888888889,
+          "reactReach": 2.928861111111111,
+          "reactionTime": 0.22538775510204084,
+          "power": 88.8276418062,
+          "balance": 0.6938775510204082,
+          "bend": 0.8561088435374152,
+          "stepSpeed": 4.152548752834467,
+          "getUp": 0.8164444444444444
+        },
+        "support": {
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "since": null,
+          "posture": 0.19662252480729775,
+          "lean": {
+            "x": 0,
+            "y": 0
+          },
+          "load": {
+            "x": 0,
+            "y": 0
+          },
+          "felt": {
+            "x": 0,
+            "y": 0
+          },
+          "feetLock": 0,
+          "feetVel": {
+            "x": 0,
+            "y": 0
+          },
+          "fall": {
+            "x": 0,
+            "y": 0
+          },
+          "peak": 0,
+          "out": 0,
+          "feltTip": {
+            "x": 0,
+            "y": 0
+          },
+          "causes": {
+            "contact": 0,
+            "legs": 0,
+            "overspeed": 0
+          },
+          "accel": {
+            "x": 2.862139617887498,
+            "y": 2.7788382729957104
+          },
+          "tipAccel": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "spin": -0.3665994767911762,
+        "squeeze": 0,
+        "sprintLoad": 0,
+        "squeezeHeading": 0.6909641568927414
+      },
+      "raw": {
+        "vel": {
+          "x": 8.791622648167047,
+          "y": -3.877607039542799
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "final": {
+        "vel": {
+          "x": 8.791622648167047,
+          "y": -3.877607039542799
+        },
+        "cutSkill": 1.1142857142857143,
+        "squeeze": 0
+      },
+      "behavior": {
+        "kind": "carrier",
+        "heading": -0.4153921170836228,
+        "nextEval": 2.387973291739777,
+        "wasDesigned": false,
+        "visionNoise": 0.23469387755102045,
+        "plannedExit": false,
+        "boundaryRecovery": false,
+        "readDone": false,
+        "opts": {
+          "aim": {
+            "x": 25.6,
+            "y": 28.616666666666667
+          },
+          "aimGap": {
+            "gap": "B",
+            "side": 1,
+            "offset": 0
+          },
+          "aimUntil": 1.7989795918367348,
+          "follow": [],
+          "run": {
+            "scheme": "insideZone",
+            "side": 1,
+            "readKey": {
+              "agent": 16
+            }
+          }
+        }
+      },
+      "aim": {
+        "phase": "aim",
+        "t": 2.2,
+        "actor": 6,
+        "preferred": 27.96105319915236,
+        "selected": {
+          "x": 26.113436614844378,
+          "y": 28.177322662612514
+        },
+        "candidates": [
+          {
+            "entry": {
+              "x": 27.88785215918844,
+              "y": 22.093015443444486
+            },
+            "risk": 6.842270336490519,
+            "score": 11.534033148473522
+          },
+          {
+            "entry": {
+              "x": 27.484163749692055,
+              "y": 25.023803112705313
+            },
+            "risk": 3.4757687180926817,
+            "score": 5.910825024744849
+          },
+          {
+            "entry": {
+              "x": 26.113436614844378,
+              "y": 28.177322662612514
+            },
+            "risk": 0.0897683615829985,
+            "score": 0.3777649173048213
+          },
+          {
+            "entry": {
+              "x": 25.5,
+              "y": 31.652923811167536
+            },
+            "risk": 0,
+            "score": 2.669366631163745
+          },
+          {
+            "entry": {
+              "x": 27.399195020249888,
+              "y": 19.417664534280394
+            },
+            "risk": 15.21730762891944,
+            "score": 21.969090640958797
+          },
+          {
+            "entry": {
+              "x": 25.5,
+              "y": 35.07586243615156
+            },
+            "risk": 1.8414349403012915,
+            "score": 7.146464312702735
+          }
+        ],
+        "surface": [
+          {
+            "pos": {
+              "x": 26.899195020249888,
+              "y": 20.40220998882585
+            },
+            "vel": {
+              "x": -0.08299356355727111,
+              "y": -0.029767520896630664
+            },
+            "stance": "low",
+            "facing": -0.7568148960420507,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.32545454545454544
+          },
+          {
+            "pos": {
+              "x": 27.67650929812699,
+              "y": 23.783820898063126
+            },
+            "vel": {
+              "x": 0.14831555969239685,
+              "y": -0.6283086559885329
+            },
+            "stance": "low",
+            "facing": -2.829493639316631,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.35545454545454547
+          },
+          {
+            "pos": {
+              "x": 26.091818201257116,
+              "y": 26.2637853273475
+            },
+            "vel": {
+              "x": 0.7907162385649527,
+              "y": 0.5501596560847536
+            },
+            "stance": "low",
+            "facing": 0.8288538626871684,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.3654545454545455
+          },
+          {
+            "pos": {
+              "x": 25.972480601364264,
+              "y": 27.099205593586973
+            },
+            "vel": {
+              "x": 0.751063307990208,
+              "y": 0.45394381657380023
+            },
+            "stance": "low",
+            "facing": -0.41176643243802563,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.3563636363636363
+          },
+          {
+            "pos": {
+              "x": 25.05439262832449,
+              "y": 29.255439731638056
+            },
+            "vel": {
+              "x": 0.5165973010240844,
+              "y": 2.2378713777845283
+            },
+            "stance": "low",
+            "facing": 1.897698695229844,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.3654545454545455
+          },
+          {
+            "pos": {
+              "x": 24.12136674788815,
+              "y": 34.05040789069702
+            },
+            "vel": {
+              "x": -0.10513630468790915,
+              "y": 1.4134025865071131
+            },
+            "stance": "low",
+            "facing": 4.369887313013421,
+            "age": 0.05,
+            "pose": "up",
+            "carrying": false,
+            "radius": 0.36636363636363634
+          }
+        ]
+      }
+    }
+  ]
+}

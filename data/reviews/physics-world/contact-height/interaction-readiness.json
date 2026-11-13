@@ -1,0 +1,313 @@
+{
+  "sourceSha256": "6368ce73ec217e52860d34533d9de102b028725b23688735c5f0b58aace472c5",
+  "setup": {
+    "seeds": [
+      7,
+      19,
+      31,
+      43
+    ],
+    "nativeDt": 0.05,
+    "graspTicks": 1,
+    "crossingDuration": 0.05,
+    "engine": "physics world"
+  },
+  "units": {
+    "momentum": "kg m/s",
+    "kinetic": "joules",
+    "position": "yards",
+    "velocity": "yards/s",
+    "time": "seconds"
+  },
+  "definitions": {
+    "grasp": "Actual tryTackles grasp, actual updateBond technique intents, one world step. chance() false. Momentum error excludes recorded ground impulse; kinetic energy added excludes positive ground work.",
+    "support": "Immediate run disengagement/re-engagement with both bodies' capture points displaced; the new contact reads the same body-owned support.",
+    "crossing": "One 0.05 s world step of a head-on pair at 10.5 yd/s each, with one fixed substep and with adaptive substeps; swept detection.",
+    "limitations": "Synthetic counterfactuals check solver/representation contracts, not their frequency in games. Not NFL validation."
+  },
+  "summary": {
+    "meanFormationMomentumError": 0,
+    "meanNextUpdateMomentumError": 1.4841729215281674e-13,
+    "meanKineticAddedBeyondGroundWork": -21.91203501321899,
+    "meanGraspRelativeSpeedBefore": 6,
+    "meanGraspRelativeSpeedAfter": 5.687427391834181,
+    "supportResetCases": 0,
+    "singleSubstepCrossingsDetected": 1,
+    "adaptiveCrossingsDetected": 1,
+    "headOnPassThroughs": 0
+  },
+  "weakGrasps": [
+    {
+      "seed": 7,
+      "grip": 0.3199144017932942,
+      "before": {
+        "momentumX": 502.695014111136,
+        "momentumY": 0,
+        "kineticJoules": 1378.9929627096685,
+        "centerX": 50,
+        "centerY": 26.69122807017544
+      },
+      "afterFormation": {
+        "momentumX": 502.695014111136,
+        "momentumY": 0,
+        "kineticJoules": 1378.9929627096685,
+        "centerX": 50,
+        "centerY": 26.69122807017544
+      },
+      "afterUpdate": {
+        "momentumX": 521.6610883403681,
+        "momentumY": -6.402136890838374,
+        "kineticJoules": 1370.8743037958423,
+        "centerX": 50.15470402238004,
+        "centerY": 26.690403823409792
+      },
+      "relativeSpeedAtFormation": 6,
+      "relativeSpeedAfterUpdate": 5.720732277749579,
+      "momentumErrorFormation": 0,
+      "momentumErrorUpdate": 1.3145340668414136e-13,
+      "groundImpulseUpdate": 20.017475576050312,
+      "kineticAddedBeyondGroundWork": -15.458305791830725
+    },
+    {
+      "seed": 19,
+      "grip": 0.19982977860877355,
+      "before": {
+        "momentumX": 460.3889980720801,
+        "momentumY": 0,
+        "kineticJoules": 1262.93909951133,
+        "centerX": 50,
+        "centerY": 26.730749354005166
+      },
+      "afterFormation": {
+        "momentumX": 460.3889980720801,
+        "momentumY": 0,
+        "kineticJoules": 1262.93909951133,
+        "centerX": 50,
+        "centerY": 26.730749354005166
+      },
+      "afterUpdate": {
+        "momentumX": 480.2495690054205,
+        "momentumY": -6.182760729220424,
+        "kineticJoules": 1259.847493384239,
+        "centerX": 50.14648527826051,
+        "centerY": 26.729887172784444
+      },
+      "relativeSpeedAtFormation": 6,
+      "relativeSpeedAfterUpdate": 5.737531924171038,
+      "momentumErrorFormation": 0,
+      "momentumErrorUpdate": 1.4568562954173386e-13,
+      "groundImpulseUpdate": 20.800692489266552,
+      "kineticAddedBeyondGroundWork": -7.794249138824606
+    },
+    {
+      "seed": 31,
+      "grip": 0.4785804771647907,
+      "before": {
+        "momentumX": 492.740657396064,
+        "momentumY": 0,
+        "kineticJoules": 1351.686171368883,
+        "centerX": 50,
+        "centerY": 26.717241379310344
+      },
+      "afterFormation": {
+        "momentumX": 492.740657396064,
+        "momentumY": 0,
+        "kineticJoules": 1351.686171368883,
+        "centerX": 50,
+        "centerY": 26.717241379310344
+      },
+      "afterUpdate": {
+        "momentumX": 517.0218484877271,
+        "momentumY": -8.411386261478803,
+        "kineticJoules": 1333.07191767388,
+        "centerX": 50.14980932455325,
+        "centerY": 26.716217019571367
+      },
+      "relativeSpeedAtFormation": 6,
+      "relativeSpeedAfterUpdate": 5.61797861673222,
+      "momentumErrorFormation": 0,
+      "momentumErrorUpdate": 1.5635976840162435e-13,
+      "groundImpulseUpdate": 25.696841433717967,
+      "kineticAddedBeyondGroundWork": -34.218343345422014
+    },
+    {
+      "seed": 43,
+      "grip": 0.5126668680157079,
+      "before": {
+        "momentumX": 482.78630068099204,
+        "momentumY": 0,
+        "kineticJoules": 1324.379380028097,
+        "centerX": 50,
+        "centerY": 26.685263157894735
+      },
+      "afterFormation": {
+        "momentumX": 482.78630068099204,
+        "momentumY": 0,
+        "kineticJoules": 1324.379380028097,
+        "centerX": 50,
+        "centerY": 26.685263157894735
+      },
+      "afterUpdate": {
+        "momentumX": 500.6258856649399,
+        "momentumY": -6.6173588632699705,
+        "kineticJoules": 1306.759106730308,
+        "centerX": 50.1558940824309,
+        "centerY": 26.684430735974043
+      },
+      "relativeSpeedAtFormation": 6,
+      "relativeSpeedAfterUpdate": 5.673466748683888,
+      "momentumErrorFormation": 0,
+      "momentumErrorUpdate": 1.6017036398376739e-13,
+      "groundImpulseUpdate": 19.027354801043725,
+      "kineticAddedBeyondGroundWork": -30.177241776798617
+    }
+  ],
+  "supportResets": [
+    {
+      "seed": 7,
+      "before": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      },
+      "after": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      }
+    },
+    {
+      "seed": 19,
+      "before": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      },
+      "after": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      }
+    },
+    {
+      "seed": 31,
+      "before": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      },
+      "after": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      }
+    },
+    {
+      "seed": 43,
+      "before": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      },
+      "after": {
+        "blocker": 0.2844582472000672,
+        "defender": 0.53524199845511,
+        "time": 0
+      }
+    }
+  ],
+  "crossings": [
+    {
+      "substeps": 1,
+      "lateralOffset": 0,
+      "speedPerBody": 10.5,
+      "bodyRadius": 0.25,
+      "detected": true,
+      "crossedOrder": false,
+      "finalDistance": 0.25,
+      "before": {
+        "momentumX": 21.775155314220115,
+        "momentumY": 0,
+        "kineticJoules": 8341.798085995273,
+        "centerX": 49.99655388471178,
+        "centerY": 26
+      },
+      "after": {
+        "momentumX": 21.775155314220065,
+        "momentumY": 0,
+        "kineticJoules": 1.309947501271243,
+        "centerX": 50.0031328320802,
+        "centerY": 26
+      }
+    },
+    {
+      "substeps": "adaptive",
+      "lateralOffset": 0,
+      "speedPerBody": 10.5,
+      "bodyRadius": 0.25,
+      "detected": true,
+      "crossedOrder": false,
+      "finalDistance": 0.4417740285018539,
+      "before": {
+        "momentumX": 21.775155314220115,
+        "momentumY": 0,
+        "kineticJoules": 8341.798085995273,
+        "centerX": 49.99655388471178,
+        "centerY": 26
+      },
+      "after": {
+        "momentumX": 11.398287361248252,
+        "momentumY": 0,
+        "kineticJoules": 0.7485753803113002,
+        "centerX": 50.00189966620645,
+        "centerY": 26
+      }
+    },
+    {
+      "substeps": 1,
+      "lateralOffset": 0.4,
+      "speedPerBody": 10.5,
+      "bodyRadius": 0.25,
+      "detected": true,
+      "crossedOrder": true,
+      "finalDistance": 0.6356894872027226,
+      "before": {
+        "momentumX": 21.775155314220115,
+        "momentumY": 0,
+        "kineticJoules": 8341.798085995273,
+        "centerX": 49.99655388471178,
+        "centerY": 26.197493734335843
+      },
+      "after": {
+        "momentumX": 21.775155314220115,
+        "momentumY": 5.684341886080802e-14,
+        "kineticJoules": 5473.288000404926,
+        "centerX": 50.0031328320802,
+        "centerY": 26.197493734335836
+      }
+    },
+    {
+      "substeps": "adaptive",
+      "lateralOffset": 0.4,
+      "speedPerBody": 10.5,
+      "bodyRadius": 0.25,
+      "detected": true,
+      "crossedOrder": true,
+      "finalDistance": 0.6778611656022386,
+      "before": {
+        "momentumX": 21.775155314220115,
+        "momentumY": 0,
+        "kineticJoules": 8341.798085995273,
+        "centerX": 49.99655388471178,
+        "centerY": 26.197493734335843
+      },
+      "after": {
+        "momentumX": 21.775155314220115,
+        "momentumY": 0,
+        "kineticJoules": 4428.266879012155,
+        "centerX": 50.00313283208022,
+        "centerY": 26.197493734335836
+      }
+    }
+  ]
+}

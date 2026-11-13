@@ -1,0 +1,14 @@
+{
+  "html": "/workspace/football-simulation-/out/coverage-continuation/alley-fit.html",
+  "scope": "Focused paired-film selection, playback, full inspection and WebM checks; does not replace all legacy viewer regression tests.",
+  "status": "failed",
+  "checks": [
+    "All four paired native witnesses retained; component method explicit and end-to-end game scoreboard hidden",
+    "Every grouping mode preserves all eight clips"
+  ],
+  "browserErrors": [
+    "Cannot read properties of undefined (reading 'color')"
+  ],
+  "error": "",
+  "wallSeconds": 3.001
+}

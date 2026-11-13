@@ -1,0 +1,657 @@
+diff --git a/src/sim/live-gaps.ts b/src/sim/live-gaps.ts
+index 5a27ae8..bdde432 100644
+--- a/src/sim/live-gaps.ts
++++ b/src/sim/live-gaps.ts
+@@ -118,7 +118,7 @@ export function gapIn(p: LinePicture, gap: Gap, side: number): number {
+     case 'A': off = n >= 1 ? o[0] / 2 : .65; break;
+     case 'B': off = n >= 2 ? (o[0] + o[1]) / 2 : n === 1 ? o[0] + .65 : 1.95; break;
+     case 'C': off = n >= 3 ? (o[1] + o[2]) / 2 : n === 2 ? o[1] + .65 : n === 1 ? o[0] + 1.95 : 3.25; break;
+-    case 'D': off = n >= 3 ? o[2] + .7 : n === 2 ? o[1] + 1.6 : n === 1 ? o[0] + 2.9 : 4.2; break;
++    case 'D': off = n >= 3 ? o[n - 1] + .7 : n === 2 ? o[1] + 1.6 : n === 1 ? o[0] + 2.9 : 4.2; break;
+   }
+   return c + s * off;
+ }
+diff --git a/test/fixtures/outer-d-gap-accepted.json b/test/fixtures/outer-d-gap-accepted.json
+new file mode 100644
+index 0000000..c2c83ae
+--- /dev/null
++++ b/test/fixtures/outer-d-gap-accepted.json
+@@ -0,0 +1,259 @@
++{
++  "case": "A039",
++  "source": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
++  "inputSha256": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d",
++  "rawSha256": "0903524edf83b7d162e99199a434ef3ff7066ff0a01bfb2559084c5100d1ec1e",
++  "qualification": "Accepted-source RB6 consumed teammate pictures; independently reconstructed D producer matches the recorded runner heading exactly. No new perception or native simulation.",
++  "los": 35,
++  "ballY": 26.666666666666668,
++  "actors": [
++    {
++      "idx": 1,
++      "slot": "LT",
++      "team": "O",
++      "profile": {
++        "radius": 0.36363636363636365
++      }
++    },
++    {
++      "idx": 2,
++      "slot": "RT",
++      "team": "O",
++      "profile": {
++        "radius": 0.3709090909090909
++      }
++    },
++    {
++      "idx": 3,
++      "slot": "C",
++      "team": "O",
++      "profile": {
++        "radius": 0.34818181818181815
++      }
++    },
++    {
++      "idx": 4,
++      "slot": "LG",
++      "team": "O",
++      "profile": {
++        "radius": 0.37
++      }
++    },
++    {
++      "idx": 5,
++      "slot": "RG",
++      "team": "O",
++      "profile": {
++        "radius": 0.36363636363636365
++      }
++    },
++    {
++      "idx": 6,
++      "slot": "RB",
++      "team": "O",
++      "profile": {
++        "radius": 0.2609090909090909
++      }
++    },
++    {
++      "idx": 7,
++      "slot": "Y",
++      "team": "O",
++      "profile": {
++        "radius": 0.29545454545454547
++      }
++    }
++  ],
++  "rows": [
++    {
++      "t": 1.7,
++      "pictures": {
++        "1": {
++          "pos": {
++            "x": 34.25594851966664,
++            "y": 26.74098669637728
++          },
++          "vel": {
++            "x": -0.7131729744093224,
++            "y": -2.4589939161759253
++          },
++          "stance": "low",
++          "facing": 3.073568816760621,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "2": {
++          "pos": {
++            "x": 35.19691216270156,
++            "y": 20.314952247755873
++          },
++          "vel": {
++            "x": 0.5339252927296608,
++            "y": -2.899563607178429
++          },
++          "stance": "low",
++          "facing": -0.585921145564289,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "3": {
++          "pos": {
++            "x": 37.13790428952617,
++            "y": 24.582497323195557
++          },
++          "vel": {
++            "x": 3.610297695143892,
++            "y": -1.2832750377602626
++          },
++          "stance": "low",
++          "facing": -0.0025209869417077632,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "4": {
++          "pos": {
++            "x": 34.73861604841687,
++            "y": 25.448304129223775
++          },
++          "vel": {
++            "x": -0.1849114932194658,
++            "y": -2.184768622993579
++          },
++          "stance": "low",
++          "facing": 1.4349816496713088,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "5": {
++          "pos": {
++            "x": 36.12345991219531,
++            "y": 24.119187878005615
++          },
++          "vel": {
++            "x": 1.5535860333679412,
++            "y": -0.2565793160048168
++          },
++          "stance": "low",
++          "facing": -1.0189939442939004,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "7": {
++          "pos": {
++            "x": 35.921450813419455,
++            "y": 20.384159017861236
++          },
++          "vel": {
++            "x": 0.18676019959236712,
++            "y": -1.6223561116693668
++          },
++          "stance": "low",
++          "facing": -1.8455939579111371,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        }
++      }
++    },
++    {
++      "t": 1.75,
++      "pictures": {
++        "1": {
++          "pos": {
++            "x": 34.21952976889899,
++            "y": 26.615427042334925
++          },
++          "vel": {
++            "x": -0.7233076683717542,
++            "y": -2.4937933592900374
++          },
++          "stance": "low",
++          "facing": 3.0058980970785685,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "2": {
++          "pos": {
++            "x": 35.2002269212913,
++            "y": 20.19932340462082
++          },
++          "vel": {
++            "x": 0.22560937254227756,
++            "y": -2.5224867296841507
++          },
++          "stance": "low",
++          "facing": -0.5167431435044146,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "3": {
++          "pos": {
++            "x": 37.316228261288074,
++            "y": 24.49758919964806
++          },
++          "vel": {
++            "x": 3.5810855218732502,
++            "y": -1.5598666598867372
++          },
++          "stance": "low",
++          "facing": -0.17773338573185077,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "4": {
++          "pos": {
++            "x": 34.72799900108232,
++            "y": 25.34171524451764
++          },
++          "vel": {
++            "x": -0.20083560837888415,
++            "y": -2.1420367739825683
++          },
++          "stance": "low",
++          "facing": 1.4710517807973105,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "5": {
++          "pos": {
++            "x": 36.177877708102116,
++            "y": 24.111312524832446
++          },
++          "vel": {
++            "x": 1.2416391477695763,
++            "y": -0.1897194993300637
++          },
++          "stance": "low",
++          "facing": -1.1082500451371808,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "7": {
++          "pos": {
++            "x": 35.91821854681809,
++            "y": 20.28343241860803
++          },
++          "vel": {
++            "x": 0.02024745733195693,
++            "y": -1.8838043113236256
++          },
++          "stance": "low",
++          "facing": -1.9350085840229911,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        }
++      }
++    }
++  ]
++}
+diff --git a/test/fixtures/outer-d-gap.json b/test/fixtures/outer-d-gap.json
+new file mode 100644
+index 0000000..66fd92a
+--- /dev/null
++++ b/test/fixtures/outer-d-gap.json
+@@ -0,0 +1,259 @@
++{
++  "case": "A003",
++  "source": "5e68386c893613af9313122a31b963d5bba6ea79be20f1bc00d340a737dc5323",
++  "inputSha256": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
++  "rawSha256": "50721d207b0837870d75216ac2e642443b0279639ea74d06540766cc14a0b58f",
++  "qualification": "Only RB6 consumed teammate pictures and their known public radii; no live peer positions, new observations or native simulation.",
++  "los": 35,
++  "ballY": 26.666666666666668,
++  "actors": [
++    {
++      "idx": 1,
++      "slot": "LT",
++      "team": "O",
++      "profile": {
++        "radius": 0.3527272727272727
++      }
++    },
++    {
++      "idx": 2,
++      "slot": "RT",
++      "team": "O",
++      "profile": {
++        "radius": 0.3654545454545455
++      }
++    },
++    {
++      "idx": 3,
++      "slot": "C",
++      "team": "O",
++      "profile": {
++        "radius": 0.3618181818181818
++      }
++    },
++    {
++      "idx": 4,
++      "slot": "LG",
++      "team": "O",
++      "profile": {
++        "radius": 0.3609090909090909
++      }
++    },
++    {
++      "idx": 5,
++      "slot": "RG",
++      "team": "O",
++      "profile": {
++        "radius": 0.36636363636363634
++      }
++    },
++    {
++      "idx": 6,
++      "slot": "RB",
++      "team": "O",
++      "profile": {
++        "radius": 0.2581818181818182
++      }
++    },
++    {
++      "idx": 7,
++      "slot": "Y",
++      "team": "O",
++      "profile": {
++        "radius": 0.29454545454545455
++      }
++    }
++  ],
++  "rows": [
++    {
++      "t": 1.95,
++      "pictures": {
++        "1": {
++          "pos": {
++            "x": 34.37476775057548,
++            "y": 25.93537629063475
++          },
++          "vel": {
++            "x": 0.23388535759714008,
++            "y": -2.8351551883524917
++          },
++          "stance": "low",
++          "facing": 0.8757193496297866,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "2": {
++          "pos": {
++            "x": 35.28691271491461,
++            "y": 22.000002130752463
++          },
++          "vel": {
++            "x": 1.2947998454206262,
++            "y": 0.3002474782341785
++          },
++          "stance": "low",
++          "facing": 0.617681352597219,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "3": {
++          "pos": {
++            "x": 35.928727691411936,
++            "y": 24.425646904408705
++          },
++          "vel": {
++            "x": 0.9946306695576088,
++            "y": -1.9568279873951027
++          },
++          "stance": "low",
++          "facing": -1.9263381318943122,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "4": {
++          "pos": {
++            "x": 35.07593204165845,
++            "y": 25.31151423937229
++          },
++          "vel": {
++            "x": -0.0066889662397221,
++            "y": -1.7204807421205088
++          },
++          "stance": "low",
++          "facing": 1.6958248487773373,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "5": {
++          "pos": {
++            "x": 35.21558014655004,
++            "y": 24.225440860586342
++          },
++          "vel": {
++            "x": 0.20405517555986502,
++            "y": -0.2672388755644517
++          },
++          "stance": "low",
++          "facing": -1.1553445743591877,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "7": {
++          "pos": {
++            "x": 35.401645104099984,
++            "y": 20.36695545309691
++          },
++          "vel": {
++            "x": -0.45304520111716745,
++            "y": -1.2154913891940649
++          },
++          "stance": "low",
++          "facing": -1.3177527653617067,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        }
++      }
++    },
++    {
++      "t": 2.0,
++      "pictures": {
++        "1": {
++          "pos": {
++            "x": 34.36829667386311,
++            "y": 25.791006635795
++          },
++          "vel": {
++            "x": -0.00831923696588751,
++            "y": -2.869980460647558
++          },
++          "stance": "low",
++          "facing": 0.49560823851867547,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "2": {
++          "pos": {
++            "x": 35.35983435534417,
++            "y": 21.99772091706886
++          },
++          "vel": {
++            "x": 1.4038884875343836,
++            "y": 0.06966631029668499
++          },
++          "stance": "low",
++          "facing": 0.4917764223706944,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "3": {
++          "pos": {
++            "x": 35.963578507595365,
++            "y": 24.346719466207468
++          },
++          "vel": {
++            "x": 0.7981852558655638,
++            "y": -1.7050857675985356
++          },
++          "stance": "low",
++          "facing": -2.00899540277065,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "4": {
++          "pos": {
++            "x": 35.08783252305943,
++            "y": 25.231471964775807
++          },
++          "vel": {
++            "x": 0.1548962484622387,
++            "y": -1.633201272768464
++          },
++          "stance": "low",
++          "facing": 1.7313258256689974,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "5": {
++          "pos": {
++            "x": 35.228244616865645,
++            "y": 24.21077900910762
++          },
++          "vel": {
++            "x": 0.2388745608859436,
++            "y": -0.28363083987974863
++          },
++          "stance": "low",
++          "facing": -1.1827987714568071,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        },
++        "7": {
++          "pos": {
++            "x": 35.35587174417322,
++            "y": 20.307774078938166
++          },
++          "vel": {
++            "x": -0.7554861691940009,
++            "y": -1.1904748056519072
++          },
++          "stance": "low",
++          "facing": -1.3807739287119545,
++          "age": 0.05,
++          "pose": "up",
++          "carrying": false
++        }
++      }
++    }
++  ]
++}
+diff --git a/test/outer-d-gap.test.ts b/test/outer-d-gap.test.ts
+new file mode 100644
+index 0000000..748ffc3
+--- /dev/null
++++ b/test/outer-d-gap.test.ts
+@@ -0,0 +1,108 @@
++import { describe, expect, it } from 'vitest';
++import { readFileSync } from 'node:fs';
++import { alignOffense } from '../src/playbook/alignment.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { Agent } from '../src/sim/agent.js';
++import { gapIn, gapSurfaceIn, linePicture, type LinePicture } from '../src/sim/live-gaps.js';
++import type { PlaySim } from '../src/sim/playsim.js';
++import type { Perceived } from '../src/sim/perception.js';
++
++interface Snapshot {
++  los: number; ballY: number;
++  actors: { idx: number; slot: string; team: string; profile: { radius: number } }[];
++  rows: { t: number; pictures: Record<string, Perceived> }[];
++}
++const saved: Snapshot = JSON.parse(readFileSync(new URL('./fixtures/outer-d-gap.json', import.meta.url), 'utf8'));
++const accepted: Snapshot = JSON.parse(readFileSync(new URL('./fixtures/outer-d-gap-accepted.json', import.meta.url), 'utf8'));
++
++/** Replay only the pictures RB already consumed. No bodies or observers run. */
++function scene(at: number, mirror = false, fixture: Snapshot = saved) {
++  const row = fixture.rows.find(r => r.t === at)!;
++  const reflect = (y: number) => mirror ? 2*fixture.ballY-y : y;
++  const offense = fixture.actors.map(a => ({ ...structuredClone(a), engagement: null })) as unknown as Agent[];
++  for (const a of offense) Object.defineProperties(a, {
++    pos: { get() { throw new Error('private live position'); } },
++    vel: { get() { throw new Error('private live velocity'); } },
++  });
++  const offAlign = alignOffense(FORMATION_BY_ID.ace_11, false, fixture.los, fixture.ballY);
++  if (mirror) for (const spot of Object.values(offAlign.spots)) spot.pos.y = reflect(spot.pos.y);
++  const picture = (idx: number) => {
++    const p = structuredClone(row.pictures[idx]);
++    p.pos.y = reflect(p.pos.y);
++    if (mirror) { p.vel.y *= -1; p.facing *= -1; }
++    return p;
++  };
++  const sim = { t: at, offense, offAlign, ballY: fixture.ballY, attackDir: () => 1,
++    see: (_observer: Agent, target: Agent) => picture(target.idx),
++  } as unknown as PlaySim;
++  const rb = offense.find(a => a.slot === 'RB')!;
++  return { sim, rb, side: mirror ? 1 : -1, outer: picture(7) };
++}
++
++describe('an outside gap uses the outer body after the center leaves the surface', () => {
++  it.each([false, true])('retains the ordinary three-boundary D before departure, mirror %s', mirror => {
++    const f = scene(1.95, mirror), p = linePicture(f.sim, f.rb);
++    expect(p.surface.some(b => b.agent.slot === 'C')).toBe(true);
++    expect(p.outward[f.side > 0 ? '1' : '-1']).toHaveLength(3);
++    expect(gapIn(p, 'D', f.side)).toBeCloseTo(f.outer.pos.y+f.side*.7, 12);
++  });
++
++  it.each([false, true])('keeps D outside the same body that supplies its velocity after departure, mirror %s', mirror => {
++    const f = scene(2, mirror), p = linePicture(f.sim, f.rb);
++    expect(p.departed.map(b => b.agent.slot)).toEqual(['C']);
++    expect(p.outward[f.side > 0 ? '1' : '-1']).toHaveLength(5);
++    const d = gapSurfaceIn(p, 'D', f.side);
++    expect(d.width).toBe(Infinity);
++    expect(d.vel).toBe(f.outer.vel.y);
++    expect((d.y-f.outer.pos.y)*f.side).toBeCloseTo(.7, 12);
++    expect(d.y).toBeCloseTo(f.outer.pos.y+f.side*.7, 12);
++  });
++
++  it('does not manufacture an inward jump when only the center crosses its existing depth cutoff', () => {
++    const a = scene(1.95), b = scene(2);
++    const before = gapIn(linePicture(a.sim, a.rb), 'D', a.side);
++    const after = gapIn(linePicture(b.sim, b.rb), 'D', b.side);
++    expect(after-before).toBeCloseTo(b.outer.pos.y-a.outer.pos.y, 12);
++    expect(Math.abs(after-before)).toBeLessThan(.1);
++  });
++
++  it.each([false, true])('retains the accepted-source outer tackle instead of an interior vacancy, mirror %s', mirror => {
++    const a = scene(1.7, mirror, accepted), b = scene(1.75, mirror, accepted);
++    const before = linePicture(a.sim, a.rb), after = linePicture(b.sim, b.rb);
++    const last = after.outward[b.side > 0 ? '1' : '-1'].at(-1)!;
++    expect(after.departed.map(body => body.agent.slot)).toEqual(['C', 'RG', 'Y']);
++    expect(after.outward[b.side > 0 ? '1' : '-1']).toHaveLength(4);
++    expect(last.vacancy).toBe(false);
++    const tackle = after.surface.find(body => body.agent.slot === 'RT')!.seen;
++    const formerTackle = before.surface.find(body => body.agent.slot === 'RT')!.seen;
++    const d = gapSurfaceIn(after, 'D', b.side);
++    expect(d.y).toBeCloseTo(tackle.pos.y+b.side*.7, 12);
++    expect(d.vel).toBe(tackle.vel.y);
++    expect(d.width).toBe(Infinity);
++    expect(d.y-gapIn(before, 'D', a.side)).toBeCloseTo(tackle.pos.y-formerTackle.pos.y, 12);
++  });
++});
++
++describe('the bounded D correction leaves existing interior and sparse landmarks unchanged', () => {
++  function synthetic(count: number, side: number): LinePicture {
++    const center = 20;
++    const outward = Array.from({ length: count }, (_, i) => ({
++      y: center+side*(i+1)*1.3, vel: i+.25, radius: .3, vacancy: false,
++    }));
++    return { center, centerVel: 0, centerRadius: .3,
++      outward: { '1': side > 0 ? outward : [], '-1': side < 0 ? outward : [] }, surface: [], departed: [] };
++  }
++
++  it.each([-1, 1])('preserves the two-boundary tackle edge and ordinary three-boundary inline edge, side %s', side => {
++    const two = synthetic(2, side), three = synthetic(3, side);
++    expect(gapIn(two, 'D', side)).toBeCloseTo(two.center+side*(2.6+1.6), 12);
++    expect(gapIn(three, 'D', side)).toBeCloseTo(three.center+side*(3.9+.7), 12);
++  });
++
++  it.each([-1, 1])('retains A/B/C counting when more than three boundaries occupy one side, side %s', side => {
++    const p = synthetic(5, side);
++    expect(gapIn(p, 'A', side)).toBeCloseTo(p.center+side*.65, 12);
++    expect(gapIn(p, 'B', side)).toBeCloseTo(p.center+side*1.95, 12);
++    expect(gapIn(p, 'C', side)).toBeCloseTo(p.center+side*3.25, 12);
++  });
++});

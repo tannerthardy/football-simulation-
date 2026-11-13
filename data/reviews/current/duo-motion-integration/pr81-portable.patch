@@ -1,0 +1,169 @@
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 91ff1de..bf201c3 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -57,14 +57,16 @@ function sweptClearance(a:Agent, samples:readonly MovementSample[], peer:PeerPic
+  * This is a held-command forecast against observed constant-velocity peers,
+  * not a contact solve or knowledge of their next decisions. Replan next tick.
+  */
+-function gatherForTurn(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
++function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], context?:SpacingContext):Intent {
+   const s=a.body.support,speed=Math.hypot(a.vel.x,a.vel.y);
+   if(!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)
+     ||a.engagement||context.constrained?.has(a.body)||original.free||original.dive||original.lunge
+     ||(original.squeeze??0)>1e-6||(a.body.squeeze??0)>1e-6
+     ||(original.push??0)>1e-6||!s||s.state!=='up'||s.foot||s.strike
+-    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6
+-    ||Math.abs(original.vel.x*a.vel.y-original.vel.y*a.vel.x)/speed<1)return original;
++    ||Math.hypot(s.lean.x,s.lean.y)>1e-6||Math.hypot(s.load.x,s.load.y)>1e-6)return original;
++  // A nearly aligned request does not remove momentum.
++  // Admit by the attainable tube below, then evaluate the actual held-command
++  // movement rather than assuming the body immediately adopts its request.
+   // In an empty World, every COM acceleration is bounded by traction/mass
+   // (including a fall). Midpoint integration keeps its path within .5*a*t²
+   // of the initial-velocity line. This tube only rejects definitely clear
+@@ -150,6 +152,6 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       const speed=Math.hypot(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
+       spaced = { ...ia, vel: { x: vx*scale, y: vy*scale } };
+     }
+-    intents[i]=gatherForTurn(a,spaced,peers,context);
++    intents[i]=gatherForMotion(a,spaced,peers,context);
+   }
+ }
+diff --git a/test/fixtures/spacing-residual-motion.json.gz b/test/fixtures/spacing-residual-motion.json.gz
+new file mode 100644
+index 0000000000000000000000000000000000000000..bbcae6387b6a7723b97ea5c21aa710953e99af98
+GIT binary patch
+literal 3652
+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
+W#aXrs_Wb;x=l=m-z&eZCDgXdhci+?i
+
+literal 0
+HcmV?d00001
+
+diff --git a/test/spacing-residual-motion.test.ts b/test/spacing-residual-motion.test.ts
+new file mode 100644
+index 0000000..8d2e028
+--- /dev/null
++++ b/test/spacing-residual-motion.test.ts
+@@ -0,0 +1,51 @@
++import { readFileSync } from 'node:fs';
++import { gunzipSync } from 'node:zlib';
++import { describe, expect, it, vi } from 'vitest';
++import type { Body } from '../src/physics/kinematics.js';
++import * as Preview from '../src/physics/movement-preview.js';
++import type { Intent } from '../src/physics/world.js';
++import { Agent } from '../src/sim/agent.js';
++import { spaceTeammates } from '../src/sim/spacing.js';
++
++const fixture = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/spacing-residual-motion.json.gz', import.meta.url))).toString());
++function scene(clear = false) {
++  const body: Body = structuredClone(fixture.body);
++  const a = new Agent(fixture.actor, 'D', 'SS', fixture.player, body.profile, body, { kind: 'man', update() { throw Error('No decision reevaluation'); } });
++  const pictures = new Map<number, { pos: { x: number; y: number }; vel: { x: number; y: number } }>();
++  const peers = fixture.peers.map((p: any) => {
++    const seen = structuredClone(p.seen); if (clear) seen.pos.x += 20;
++    pictures.set(p.idx, seen);
++    return { idx: p.idx, team: 'D', profile: p.profile,
++      get pos() { throw Error('Private peer position'); }, get vel() { throw Error('Private peer velocity'); } } as unknown as Agent;
++  });
++  const intents: Intent[] = [structuredClone(fixture.command), ...peers.map(() => ({ vel: { x: 0, y: 0 }, free: true }))];
++  const run = () => spaceTeammates([a, ...peers], intents, (_a, b) => pictures.get(b.idx)!, { now: fixture.t });
++  return { a, pictures, intents, run };
++}
++describe('attainable spacing admission instead of requested-turn shortcuts', () => {
++  it('checks the exact #81 A044 state even though the requested turn is below one', () => {
++    const { a, pictures, intents, run } = scene(), request = structuredClone(intents[0]);
++    expect(Math.abs(request.vel.x * a.vel.y - request.vel.y * a.vel.x) / a.speed).toBeCloseTo(.8749657976, 8);
++    const source = structuredClone(a.body), peer = pictures.get(15)!;
++    const samples = Preview.previewFreeMovement(a.body, request, fixture.t, 12);
++    // This is the unchanged physical forecast: a requested direction alone
++    // cannot clear the observed robber. A full gather is not declared safe.
++    const touch = .9 * (a.profile.radius + fixture.peers.find((p: any) => p.idx === 15).profile.radius);
++    expect(Math.min(...samples.map(s => Math.hypot(s.pos.x - peer.pos.x - peer.vel.x * s.t,
++      s.pos.y - peer.pos.y - peer.vel.y * s.t))) - touch).toBeLessThan(0);
++    const preview = vi.spyOn(Preview, 'previewFreeMovement');
++    try {
++      run(); expect(preview).toHaveBeenCalled();
++      expect(a.body).toEqual(source);
++      // Existing alternatives remain insufficient in this state. Admission
++      // is corrected without inventing an instant turn or a successful stop.
++      expect(intents[0]).toEqual(request);
++    } finally { preview.mockRestore(); }
++  });
++  it('keeps an actually clear route unchanged without a new forecast', () => {
++    const { intents, run } = scene(true), request = structuredClone(intents[0]);
++    const preview = vi.spyOn(Preview, 'previewFreeMovement');
++    try { run(); expect(intents[0]).toEqual(request); expect(preview).not.toHaveBeenCalled(); }
++    finally { preview.mockRestore(); }
++  });
++});

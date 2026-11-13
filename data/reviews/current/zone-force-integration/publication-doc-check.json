@@ -1,0 +1,30 @@
+{
+  "acceptedDevelop": "0000e560e0dbe31905151465152d412ba838803d",
+  "changedRelativeLinks": [
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/pr130-merge.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/zone-force-integration/final-receipt.json"
+    },
+    {
+      "from": "docs/ISSUES.md",
+      "target": "../data/reviews/current/zone-force-integration/final-receipt.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/zone-force-integration/final-receipt.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/pr130-merge.json"
+    }
+  ],
+  "jsonParse": "pass",
+  "protectedTreeEqualAcceptedDevelop": true,
+  "frozenReceiptArtifactsUnchanged": true,
+  "engineRunsForMetadata": 0,
+  "note": "Only Integration-owned workboard claim wording conflicted when reconciling queue; retained two-file claim. No behavior ambiguity or runtime conflict."
+}

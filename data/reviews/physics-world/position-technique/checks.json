@@ -1,0 +1,91 @@
+{
+  "schema": "position-technique-checks-v1",
+  "promotedSource": "dd4cbb75c981e82e8a33d8e5d1c30d72d922d824de99fd9cba77403d0c7f9843",
+  "baselineCommit": "80e815102709a19026eb5398a7e5daaa844d7bb4",
+  "node": "v22.23.3",
+  "typescript": {
+    "files": 73,
+    "tests": 829,
+    "exitCode": 0,
+    "log": "checks/tests.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "checks/typecheck.log"
+  },
+  "build": {
+    "exitCode": 0,
+    "log": "checks/build.log"
+  },
+  "python": {
+    "tests": 22,
+    "exitCode": 0,
+    "log": "checks/data-tests.log",
+    "scope": "Covered Python measurement modules and their22 tests unchanged; final new read-only comparator independently recomputed from raw."
+  },
+  "cutoffControlled": {
+    "candidatePasses": 17,
+    "baselineExpectedFeatureFailures": 13,
+    "baselinePassingControls": 2,
+    "baselineCachedNativeControlsNotResimulated": 2
+  },
+  "unpromotedQBControlled": {
+    "candidatePasses": 16,
+    "baselineExpectedFeatureFailures": 11,
+    "baselinePassingControls": 5,
+    "broadRayNewGateFailures": 4
+  },
+  "unpromotedCombinedSuite": {
+    "source": "d73aaed8c8095e2b7050ae1fd07fe257ff44c8b7805811369b955750856b1121",
+    "files": 74,
+    "tests": 845,
+    "exitCode": 0,
+    "log": "combined-unpromoted-checks/tests.log"
+  },
+  "runPanel": {
+    "ordinaryInputs": 160,
+    "separateSupplementalInputs": 2,
+    "matchedCommonInitials": 162,
+    "baselineAndCandidateObserverControls": 324,
+    "naturalFinishes": 324,
+    "fullCandidateSidecars": 4
+  },
+  "smokeGames": [
+    {
+      "seed": 7,
+      "baselineScore": [
+        20,
+        23
+      ],
+      "cutoffScore": [
+        39,
+        29
+      ],
+      "unpromotedCombinedScore": [
+        29,
+        35
+      ]
+    },
+    {
+      "seed": 19,
+      "baselineScore": [
+        47,
+        33
+      ],
+      "cutoffScore": [
+        26,
+        34
+      ],
+      "unpromotedCombinedScore": [
+        61,
+        58
+      ]
+    }
+  ],
+  "limitations": [
+    "Two games are descriptive smoke, not NFL rates or validated performance improvement.",
+    "Observer/full common projections intentionally omit new contactFit; actual installation is in four sidecars.",
+    "QB cue and RB prototypes are unpromoted; production coverage information shortcut remains debt.",
+    "829 final TS tests exclude16 archived prototype tests;845 describes only the rejected combined source."
+  ]
+}
