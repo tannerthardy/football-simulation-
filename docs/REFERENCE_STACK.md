@@ -607,6 +607,29 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-51: play action as a call (`PA_DROP`, `PA_CALL`); `DROP_BELIEF` released (2026-11-13)
+
+**`PA_DROP`** (Rules + Coaching #656). The play-action drop by alignment, depth against time taken from tracking the way the ordinary drops were, in place of one shared fake-then-drop. Read in `qb.ts` and `assign.ts`.
+
+**`PA_CALL`** (Rules + Coaching #660). Play action is a tag the caller puts on a pass at the NFL's situational rates rather than a rare standalone call: it was 4% of our drop-backs against 25.4%. The lane measured the tag's premium in range before it was called more often (gun +2.0 yd against the NFL's +1.5, under center +2.4 against +2.25) and stated its cost up front: about +0.3 to +0.6 yards a play on an engine already high in yards an attempt. It lands because the call is the sport's and the premium is the NFL's size; the excess it adds to is the zone YAC and target-distribution gap, which is not this flag's. Open and recorded in GAPS: the line still pass-sets its feet under the fake (52% of backside ends read pass by 0.3 s), the protections are not yet typed (boot and naked stay parked), and the defense does not yet respond to a caller's tendencies.
+
+**`DROP_BELIEF`** (Rules + Coaching #651, held at engine-50). Released: over the lane's eight seeds the interception rise that held it was noise. Lesson kept: at 16 games the interception rate swings more than a point between unpaired games, so a hold on it needs eight seeds or a paired panel.
+
+**With them:** the fumble beyond the plane (#657; a carrier in bounds by his support who loses the ball outside the boundary plane no longer aborts the game), and the belief tables' call-type fallback removed (Defense, `defense/C9-belief-no-calltype`).
+
+Checks on the candidate (`a89fced4`): full suite 4358 pass with only the two known research failures; fixed run set 3.84 a carry, unchanged. Cards, 16 games a side, each flag 0 → 1 with the others on:
+
+| flag, seed | yards an attempt | completion | INT | 20+ completions an attempt | time to throw | points a team-game |
+|---|---|---|---|---|---|---|
+| `PA_CALL`, 11 | 8.31 → 8.76 | 65.1 → 65.1% | 1.2 → 1.7% | 10.5 → 12.7% (moved) | 2.72 → 2.77 (moved) | 28.2 → 30.1 |
+| `PA_CALL`, 23 | 8.22 → 8.38 | 67.1 → 62.5% (moved) | 1.9 → 2.4% | 10.7 → 11.4% | 2.77 → 2.77 | 29.8 → 30.6 |
+| `PA_DROP`, 11 | 8.73 → 8.76 | 63.8 → 65.1% | 1.9 → 1.7% | 11.1 → 12.7% | 2.87 → 2.77 (moved) | 31.6 → 30.1 |
+| `PA_DROP`, 23 | 7.63 → 8.38 (moved) | 63.9 → 62.5% | 2.1 → 2.4% | 9.6 → 11.4% | 2.86 → 2.77 (moved) | 27.7 → 30.6 |
+| `DROP_BELIEF`, 11 | 8.40 → 8.76 | 65.1 → 65.1% | 2.1 → 1.7% | 10.3 → 12.7% (moved) | 2.75 → 2.77 | 33.3 → 30.1 |
+| `DROP_BELIEF`, 23 | 8.73 → 8.38 | 64.9 → 62.5% | 1.8 → 2.4% | 13.1 → 11.4% (moved) | 2.76 → 2.77 | 31.6 → 30.6 |
+
+`PA_CALL` reads as stated: +0.2 to +0.5 yards an attempt, more deep completions, and fewer plays a game. `PA_DROP` shortens the time to throw by 0.1 s on both seeds (with `PA_CALL` on, a quarter of drop-backs take it). `DROP_BELIEF` agrees on nothing between seeds. Where the engine stands after it: yards an attempt 8.4–8.8 (NFL 6.35–7.89), YAC 6.7–7.3 (4.53–5.91), completion 62.5–65.1%, sacks 4.5–4.9%, interceptions 1.7–2.4%, points 30.
+
 ## engine-50: `SHOULDER_READ` on as the underneath plant; the dither guard (2026-11-12)
 
 **`SHOULDER_READ`** (Coverage #652; the flag's earlier eyes lean is replaced, with Defense's agreement). An underneath zone defender keyed the quarterback's windup correctly (facing him 86–97% of the time, his reaction about 0.18 s) but `sawThrow` could not act until the ball was in the air, so the cue was ready about 0.2 s before the release and thrown away; at the release about half of these defenders were still dropping, and the 0.25–0.35 s to their break was the time to stop and reverse. Now, when his read of the windup matures, his drop stops (no velocity away from the line) while his lateral and downhill zone play continue. A first attempt, a full stop squared to the quarterback, cancelled his movement toward threats and was reverted. Coverage, seeds 11 / 23: hook break p50 0.50 → 0.35–0.40 s, curl / flat 0.40 → 0.30–0.35 s; breaking at the release 10–13 → 10–16%; wrong plants per pump 0.07–0.12; no added re-aiming. It does not close the NFL gap (32–41% breaking at the release), which is direction before the release: NFL underneath defenders facing the quarterback close on the eventual catcher over the last 0.5 s even when he has not broken (+1.10 yd/s; ours +0.11), starting before a windup could be read, and our quarterback's eyes reach his target only with his motion (on him 20% at −0.5 s, 83% at −0.3 s). That is a quarterback item (Rules + Coaching). Parked from the same work: `WINDUP_READ` (reading the direction of the windup; first read on the right receiver 20–27%, two attempts) and an earlier head-turn cue for trailing man defenders (not supported: the NFL trailer's closing begins no earlier than ours).
