@@ -12,7 +12,7 @@ import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import { CONCEPT_MENU } from '../playbook/concepts.js';
 /** PA_DROP (qb.ts): the play-action back's fake track beside the QB, not on his drop line. */
-const PA_DROP_FAKE = process.env.PA_DROP === '1';
+const PA_DROP_FAKE = process.env.PA_DROP !== '0';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';

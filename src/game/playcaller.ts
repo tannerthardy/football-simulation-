@@ -251,7 +251,7 @@ function installWeight(id: string, personnel: DefPersonnelId, passingDown: boole
 }
 
 /** PA_CALL (experimental, off; PA_CALL=1): play action as a tag on the call (see playActionTag). */
-const PA_CALL = process.env.PA_CALL === '1';
+const PA_CALL = process.env.PA_CALL !== '0';
 /** The NFL's play-action rate on drop-backs by down/distance and the QB's alignment [gun, under center or pistol]
  * (BDB 2025 plays.csv, drop-backs, not empty, not spikes; 9,7xx plays). Under center about 80% everywhere; from the
  * gun it falls with the situation. */
