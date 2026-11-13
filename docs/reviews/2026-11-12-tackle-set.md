@@ -1789,3 +1789,34 @@ Clubs with the keys (`club-probe.mts`, seed 11 x 2):
 The two-hand count leaves sacks in the band and conversion higher, but the interior row barely moves. The interior
 rusher is still free at pressure 70% of the time and early. Two attempts at stage 2's outcome: stop and re-diagnose
 how the interior rusher gets free (the rep's end, the guard's recovery), not the club's size.
+
+## RUSH_HANDS with the rusher's hand recovery (08d79b3f): the read
+
+Interior moves per rep 3.75 → 2.50 (off 2.51); the guard's hands at lockout 10 → 18% of ticks (off 31%).
+
+| | two hands | + recovery 11 \| 23 | NFL |
+|---|---|---|---|
+| native sacked | 4.9 / 4.9% | 6.0 \| 4.7% | band 4.6-9.4% |
+| operator sacked; pressured | 6.2 / 5.9%; 40.1 / 39.5% | 6.7 \| 5.6%; 40.6 \| 35.9% | 6.7%; 32.9% |
+| sacks per pressure | 15.5 / 14.9% | 16.6 \| 15.3% | 19.1% |
+| interior; free; before 2.5 s | 16.9 / 16.6%; 70 / 69%; 6.5 / 7.4% | 16.5 \| 12.3%; 74 \| 67%; 8.3 \| 6.6% | 9.8%; 46%; 3.8% |
+| hip reach per 100 | 37 / 32 | 32 \| 27 | 58 |
+
+**What an interior "free" pressure is** (`interior-free-kind.py`; first pressers from inside the tackles, free at
+pressure):
+
+| | NFL | A (11) | two hands (11) | + recovery (11 \| 23) |
+|---|---|---|---|---|
+| of dropbacks | 4.4% | 5.1% | 11.8% | 12.2 \| 8.3% |
+| never engaged | 0.5% (at 0.1 s: snap geometry) | 0.4% | 0.2% | 0.2 \| 0.1% |
+| stunt / twist (lateral travel > 2 yd) | 1.8%, at 3.3 s | 1.1% | 1.4% | 2.0 \| 1.0% |
+| engaged, then free | 2.2%, last within 1.2 yd 0.1 s before | 3.6%, 0.4 s before | 10.3%, 0.4 s before | 10.0 \| 7.1%, 0.4 s before |
+
+**Reading.**
+- The NFL's interior "free" pressure is about half stunts (late) and half wins that come off the blocker right at the
+  QB, 0.1 s before. Ours is almost all wins, three to four times the NFL's, coming off 0.4 s before.
+- Recovery removed the extra attempts, but not the extra wins. A won interior rep ends at PAST's out-of-reach beat
+  with no ride: `canRidePassContact` applies only to tackles (`passSet.outside`). A guard passed beyond his arm is
+  done, and the rusher runs about 0.4 s free to the QB. The NFL guard stays on him until the QB.
+- Next look, per Integration: the doubles (22% of interior reps, the helper's hands untouched by RUSH_HANDS), and the
+  interior ride (staying on a man who has won the hip, as the tackle does).
