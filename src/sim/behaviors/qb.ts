@@ -324,6 +324,13 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
  * A loss from this is repaired by preparation as a mechanism (film study raising how well he knows them), not by the
  * leak. SCOUT constants are chosen. */
 const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF === '1';
+/** QB_SEEN_OUT (experimental, off; QB_SEEN_OUT=1; information rule): whether a check-release man is out on his route is
+ * no longer read from the man's behaviour object. He is out once the quarterback's own picture has placed him on his
+ * installed release route (the forecast's progress, from a look or his peripheral view), and he then stays out. It
+ * gates the rhythm outlet, whether that man is ready, and his place in the hot order. A man whose route starts on an
+ * installed count is unchanged. A slow screen's "he has settled" is likewise read from where the quarterback has him,
+ * not from the receiver's own flag and true position. Receivers with no installed picture are unchanged. */
+const QB_SEEN_OUT = process.env.QB_SEEN_OUT === '1';
 const SCOUT0 = 0.2;
 const SCOUT_AWARE = 0.4;
 const SCOUT_EXP = 0.4;
@@ -730,7 +737,7 @@ export class QBPass implements Behavior {
     const out = [...reads];
     if (out.length < 2) return out;
     const m = this.mind;
-    const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
+    const bt = (r: Agent) => this.breakClock(r);
     if (m.blitzExpected) {
       const hot = out.slice(0, 4).reduce((b, r) => (bt(r) < bt(b) ? r : b));
       return [hot, ...out.filter((r) => r !== hot)];
@@ -989,9 +996,9 @@ export class QBPass implements Behavior {
         if (sim.dice('qb', a).chance(clamp(2 * prep - 0.8, 0, 1))) this.confirm = { at: this.rushB.get(top)!.from, until: t + 0.1 + 0.3 * (1 - prep) };
       }
       const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
-      const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
+      const bt = (r: Agent) => this.breakClock(r);
       const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(r.pos.y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
-      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && r.behavior instanceof RouteRunner) ?? null;
+      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : r.behavior instanceof RouteRunner)) ?? null;
       this.hot = { target, at: t };
       if (top) this.hotBy = `${top.player.position}:${top.behavior?.kind}:${top.recog?.read ?? '-'}`;
       const k = target ? this.reads.indexOf(target) : -1;
@@ -1263,7 +1270,7 @@ export class QBPass implements Behavior {
     const last = this.reads.length - 1;
     if (this.readIdx >= last - 1 || last < 1) return null;
     const outlet = this.reads[last];
-    if (!outlet || outlet.behavior.kind === 'pass-pro' || !this.ready(outlet, sim)) return null;
+    if (!outlet || (QB_SEEN_OUT && this.checkRelease(outlet) ? !this.seenOut(outlet) : outlet.behavior.kind === 'pass-pro') || !this.ready(outlet, sim)) return null;
     const ev = this.evaluate(a, sim, outlet, u);
     return ev && ev.P >= need && ev.intRisk <= risk ? ev : null;
   }
@@ -1297,7 +1304,34 @@ export class QBPass implements Behavior {
     return read ? heldPoint(read) : { x: sim.los + 10, y: sim.ballY };
   }
 
+  /** QB_SEEN_OUT: a man whose release is not on an installed count (a check-release from protection or a fake). */
+  private checkRelease(r: Agent): boolean {
+    return this.receiverForecasts.get(r)?.prior.startDelay === null;
+  }
+
+  /** QB_SEEN_OUT: whether he has seen a check-release man on his release route. Once out, he stays out. */
+  private outSeen = new Set<Agent>();
+  private seenOut(r: Agent): boolean {
+    if (this.outSeen.has(r)) return true;
+    const e = this.receiverForecasts.get(r)?.estimate;
+    if (!e || e.source !== 'acquired' || e.progress === null) return false;
+    this.outSeen.add(r);
+    return true;
+  }
+
+  /** When a receiver's break comes, for ordering quick answers: the installed time; 9 for a man not out on a route. */
+  private breakClock(r: Agent): number {
+    if (QB_SEEN_OUT && this.checkRelease(r)) return this.seenOut(r) ? this.receiverForecasts.get(r)!.breakAt() ?? 0 : 9;
+    return r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9;
+  }
+
   private ready(r: Agent, sim: PlaySim): boolean {
+    if (QB_SEEN_OUT && this.checkRelease(r)) {
+      if (!this.seenOut(r)) return false;
+      // Out, on the route he installed: ready once its break is behind him or a throw started now meets it.
+      const brk = this.receiverForecasts.get(r)!.breakAt();
+      return brk === null || sim.t + this.windup(sim.qb) >= brk - 0.3 * sim.qb.r('anticipation');
+    }
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     if (!rr) return r.behavior.kind === 'route';
     // A slow screen is thrown once the receiver has settled behind his blockers.
@@ -1306,6 +1340,10 @@ export class QBPass implements Behavior {
       // the hand with the receiver still ~2.3-2.9 yd from where he catches it
       // (BDB 2025, screen_reference), lofted over the rush he let through.
       const last = rr.path[rr.path.length - 1]?.p;
+      if (QB_SEEN_OUT) {
+        const at = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? sim.see(sim.qb, r).pos;
+        return !!last && Math.hypot(at.x - last.x, at.y - last.y) < 3.5;
+      }
       return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
     }
     // A quick screen after a sell is thrown to its spot: once the ball,
