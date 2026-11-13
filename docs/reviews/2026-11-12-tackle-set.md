@@ -2631,3 +2631,82 @@ saturates near 1014:
 - The come-off *counts* are now on or near the NFL's (interior 50-55 against 48.6), so the remaining gap is *when*.
 - That is RUSH_HANDS' own question (c): what a club or a cleared hand buys, in path and time. The rep-end probe put it
   at "past him" after a club (65-81%), with the rusher leaving at about 4 yd/s against the rider's 2.5-2.8.
+
+# The standing pass-rep report (`pass-rep-report.py`; NFL against ours, same operator)
+
+The user's questions: does each lineman have NFL-realistic places every 0.5 s; are they beaten at realistic rates;
+are the D-linemen getting where they should; why doesn't our QB get sacked enough?
+
+Sources:
+- NFL: out/mechanics/nfl-plays.jsonl.gz, BDB 2025 (2022 season), with BDB 2025's PFF-derived labels.
+- BDB 2023's labels (beaten / hurry / hit allowed) are not reachable: Kaggle returns 401 for that competition on this
+  account, probably its rules not accepted. BDB 2025's per-player `pressureAllowedAsBlocker`, `causedPressure` and
+  `wasInitialPassRusher` stand in.
+- Ours: seeds 11 / 23 x 16 on three heads: engine-56 defaults (E56; engine-57 differs only by CARRY_READ, a run
+  change); + PUNCH_STRIKE (PS); + PUNCH_STRIKE + ANCHOR_BASE (AB; the engine-58 candidate without PURSUIT_COMMIT).
+
+## 3. The sack funnel: the answer to "why"
+
+| per dropback | NFL (n 9617) | E56 | PS | AB |
+|---|---|---|---|---|
+| a rusher free (from 1.0 s, within 5 yd of the QB, no blocker within 1.5 yd); first at p50 | 38%; 2.3 s | 63 / 56%; 1.9 s | 48 / 46%; 2.0 s | 45 / 46%; 2.0 / 1.9 s |
+| nearest rusher to the QB at 2.0 / 2.5 / 3.0 / 3.5 s (ball in hand) | 4.2 / 3.5 / 3.0 / 2.8 | 4.3-4.4 / 3.6-3.7 / 3.0-3.3 / 2.8 | 4.3 / 3.6 / 2.9-3.0 / 2.6-2.9 | 4.3-4.4 / 3.6-3.7 / 3.0-3.3 / 2.8-3.1 |
+| a rusher within 2 yd before the ball is out; when | 27.6%; 2.7 s | 27.5 / 25.4%; 2.6 s | 26.9 / 25.1%; 2.6-2.7 s | 25.0 / 26.6%; 2.6 s |
+| contact (within 1.0 yd), given 2 yd | 35% | 37 / 31% | 30 / 25% | 29 / 32% |
+| **sacked, given contact** | **53%** | **22 / 14%** | **18 / 14%** | **26 / 24%** |
+| sacked | 6.2% | 3.0 / 1.5% | 2.3 / 1.9% | 2.7 / 2.5% |
+| time to throw p50 | 2.70 s | 2.70 / 2.60 s | 2.70 / 2.60 s | 2.70 / 2.65 s |
+| by rush count: within 2 yd, 4 / 5 / 6+ | 26 / 36 / 39% | 23-26 / 34-35 / 42-46% | 23-24 / 34-36 / 39-52% | 22-24 / 34-35 / 41-47% |
+| by rush count: sacked, 4 / 5 / 6+ | 5.8 / 8.8 / 10.6% | 1.1-2.7 / 2.0-2.4 / 7.1-11.5% | 1.9 / 1.5-2.0 / 2.7-8.8% | 1.9 / 4.0-4.8 / 8.6-9.4% |
+
+**Which stage loses the sacks: the finish.** Our rushers get within 2 yd of the QB before the ball is out as often as
+the NFL's (25-27.5% against 27.6%), at the same time (2.6 s against 2.7 s). They make contact about as often (25-37%
+against 35%). Once a rusher is within a yard, the NFL QB is sacked 53% of the time and ours 14-26%. Neither the rush
+nor the clock is short; the take-down is. That is the QB lane's finding too (sacked with a defender inside 2 yd 20-36%
+against 38%). It belongs to the tackle and escape mechanics on the QB (tackle.ts bond and finish, the QB's escape),
+not to pass protection. Rushers also come free more often than the NFL's and a little earlier (45-63% against 38%,
+1.9-2.0 s against 2.3 s), but that does not convert, because the finish fails.
+
+## 1. The pocket map (gun, 4-man rush; depth behind the line / in front of the QB / width outward / nearest rusher, yd)
+
+| | NFL 1 s | NFL 2 s | NFL 3 s | AB 1 s | AB 2 s | AB 3 s |
+|---|---|---|---|---|---|---|
+| LT | 2.3 / +3.0 / +3.6 | 4.9 / +2.5 / +3.4 | 6.6 / +1.5 / +2.5 | 2.5 / +2.7 / +4.1 | 5.2 / +2.4 / +3.8 | 7.7 / +0.1 / +3.7 |
+| LG | 1.5 / +3.8 / +1.8 | 3.4 / +4.0 / +1.7 | 4.8 / +3.1 / +1.4 | 1.6 / +3.6 / +1.2 | 3.1 / +4.4 / +1.4 | 4.6 / +2.9 / +1.8 |
+| C | 1.3 / +4.0 / 0.0 | 3.2 / +4.2 / 0.0 | 4.3 / +3.7 / 0.0 | 1.5 / +3.7 / 0.0 | 2.5 / +4.7 / 0.0 | 4.0 / +3.4 / 0.0 |
+| RG | 1.5 / +3.8 / +1.8 | 3.5 / +3.9 / +1.8 | 4.9 / +3.1 / +1.6 | 1.7 / +3.6 / +1.2 | 3.1 / +4.4 / +1.6 | 4.6 / +2.9 / +2.1 |
+| RT | 2.3 / +3.0 / +3.6 | 5.0 / +2.5 / +3.4 | 6.7 / +1.5 / +2.5 | 2.5 / +2.7 / +4.1 | 5.1 / +2.5 / +3.9 | 7.2 / +0.6 / +3.7 |
+| edge rusher to QB; closing | 6.6; +3.1 | 4.9; +2.5 | 3.9; +1.1 | 6.5; +3.1 | 5.4; +1.6 | 4.5; +0.1 |
+| interior rusher to QB; closing | 5.2; +2.3 | 5.0; +1.8 | 4.3; +0.8 | 4.7; +1.8 | 5.7; +1.2 | 4.9; +0.5 |
+
+- Guards and the center are within 0.3 yd of the NFL at every slice. The center sits 0.7 yd shallower at 2 s.
+- **Tackles:** on the NFL's track to 2 s, then the walk-back. At 3 s they are 0.5-1.1 yd deeper, only 0.1-0.6 yd in
+  front of the QB against 1.5, and 1.2 yd wider. That is the late walk-back diagnosed above (PASS_KICK's chosen
+  retreat).
+- **Edge rushers** are stalled at 3 s (4.5 yd from the QB, closing +0.1) where the NFL's are still coming (3.9 yd,
+  +1.1). They are carried wide with the deep tackle. Interior rushers are 0.6-0.7 yd farther at 2-3 s.
+- All rush counts and under center are in the script's output; n per cell is printed.
+
+## 2. Beaten (NFL labels) and how far our inferred operators can be trusted
+
+- PFF pressure allowed as blocker, per lineman-dropback:
+  - 4-man rush: LT 10.1% (2.6 s), LG 7.6, C 5.0, RG 6.3, RT 7.9%;
+  - 5-man: 8.6-10.0%, about 2.5 s;
+  - 6+: 6.6-11.0%.
+- **Our rusher operator against `wasInitialPassRusher`**, per defender: recall 79%, precision 97%. It misses some
+  rushers, mostly late or wide, and rarely invents one.
+- **Our "came off his own blocker and reached 2 yd of the QB" operator against `pressureAllowedAsBlocker`**, per
+  lineman-dropback: recall 24%, precision 70%. When it fires, PFF mostly agrees. But it sees only a quarter of the
+  pressures PFF charges to a blocker. Most PFF pressure-allowed reps never show as a clean come-off by geometry: the
+  pressure comes while still engaged, or from a second man. Inferred "beaten" counts from this operator are a
+  lower-bound sample, not a rate.
+
+Eye-check traces (`PASS_REP_TRACE`, 12 each side) show the funnel stages per dropback. Most NFL dropbacks never have a
+free rusher or a rusher within 2 yd; those that do reach 2 yd at 2.2-2.9 s.
+
+**Reading for the plan.**
+1. The sack shortfall is the finish on the QB: sacked given contact is 53% in the NFL against 14-26% here. It is the
+   largest gap and it is not pass protection. For the QB lane and the tackle owner.
+2. The late tackle walk-back is real in positions too (0.1-0.6 yd in front of the QB at 3 s against 1.5) and stalls
+   the edge rush. Next pass-pro item, after the stance/base proposal.
+3. The club's "a second early" is a side issue for sacks: arrivals are already on the NFL's count and time.
