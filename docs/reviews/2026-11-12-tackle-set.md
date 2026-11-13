@@ -2822,3 +2822,49 @@ Read:
 - INT and fumbles move both ways between seeds; there is no consistent direction at this sample size.
 - Not computed yet: completion and air yards inside the thrown bucket, and the pre-windup finish split
   (finish-trace.mts on the F1 flags).
+
+### The owed rows (Integration, 2026-11-13)
+
+**The thrown-after-contact bucket** (finish.py `--dump` joined to the review; off-target = the `miss` event, a ball
+that reached the receiver outside his catchable window; air = arrival x minus the line):
+
+| | s11 F0 | s11 F1 | s23 F0 | s23 F1 |
+|---|---|---|---|---|
+| thrown after contact, n | 135 | 118 | 139 | 103 |
+| completion | 46% | 37% | 63% | 39% |
+| INT | 0.7% | 0.8% | 0.0% | 0.0% |
+| off-target at the hands | 4% | 9% | 4% | 3% |
+| air p50, yd | 4.5 | 4.7 | 3.8 | 4.7 |
+| yards per attempt | 5.0 | 5.1 | 8.9 | 5.3 |
+
+On, fewer throws get out after contact (the held motions become sacks), and those that do complete less (37-39%,
+was 46-63%). Air yards don't move. The flick (`throwDisturb` at release) costs completions; it does not throw more
+interceptions. `stats.throwaway` is never set on these plays (0% in every arm), so throwaways are not in this table.
+
+**The clean-throw control.** Throws where no defender came within 2 yd before the release:
+
+| | s11 F0 | s11 F1 | s23 F0 | s23 F1 |
+|---|---|---|---|---|
+| n | 1044 | 991 | 1076 | 1050 |
+| completion | 68% | 70% | 70% | 71% |
+| INT | 2.3% | 1.5% | 1.6% | 1.7% |
+| air p50 | 5.3 | 5.0 | 5.2 | 5.4 |
+| yards per attempt | 8.4 | 8.6 | 8.7 | 9.3 |
+
+Games diverge after the first changed play, so this is a distribution check, not matched plays. The direct check is
+clean-disturb.mts (F1, 3 games): on 194 throws with no defender within 2 yd, `throwDisturb` at release is 0 on
+every one. On 61 throws with a defender within 2 yd, 22 were disturbed (max 0.98). By construction the hold reaches
+only a passer under load, and no clean throw had any.
+
+**The pre-windup split** (finish-trace.mts, seed 11, 4 games per arm; small):
+
+| at first contact | F0 | F1 |
+|---|---|---|
+| not yet in his windup | n 18: sacked 72%, escaped 22%, threw 6% | n 15: sacked 73%, escaped 27%, threw 0% |
+| windup under way | n 36: threw 34, sacked 1, escaped 1 | n 38: threw 30, sacked 8 |
+
+The change is all in the contacts made during the windup (sacked 3% → 21%). Before the windup, the outcome was
+already like the NFL's and does not move.
+
+**The fumble before the hand comes forward** is not small. It needs the strike's impulse on the ball-carrying arm
+during the load-up, read against the grip (a ball-security mechanism of its own). It follows separately.
