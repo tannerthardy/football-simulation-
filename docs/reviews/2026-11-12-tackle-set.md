@@ -2345,3 +2345,59 @@ dropbacks for all five, against our 31).
 - Controls: PUNCH's own gates (an anchored tackle's hands carry compression, which is why PRESS_INTO was added: its
   attempt 1 left N p50 0 as an edge rusher crossed), the pass operators (pressure-source, come-off, rep-end), and
   the run set (PUNCH is pass technique, draws only).
+
+# PUNCH_STRIKE (ad49b821, off; with PUNCH): the punch as a strike
+
+The build:
+- on a new fit, the hands drive into the man as before (the touch + PRESS_INTO);
+- the strike ends when he feels the man on them (the joint's press >= UNLOADED x his press, last step's);
+- from then the hands hold the touch: they give and follow at ARM_SPEED, so they press only as the man closes on them
+  faster than his arms give;
+- a new fit (the man beyond his arms by 0.05 yd, or a hand knocked off) is a new strike.
+
+Attempt 1 kept the arms' length against the man (locked, never shorter). A man closing then compressed the joint
+deeper than the drive had, and falls rose to 41% of dropbacks (seed 11 x 3). Attempt 2 is the build above.
+
+Fixtures (`test/punch-strike.test.ts`, four verticals against Cover 2, seed 5):
+- roster 2, the RG: falls to a spin with the standing drive; does not with the strike;
+- roster 7, the LG: still falls to a swim with the strike (a propped lineman who is swum goes down).
+
+**Read** (engine-56, seeds 11 / 23 x 16, same head; off → on):
+
+| | off | on | NFL |
+|---|---|---|---|
+| OL falls before the throw, /100 dropbacks (true) | 30.5 / 21.8 | **18.4 / 13.0** | ~1-5 (bound) |
+| interior come-offs from his own blocker, /100 | 64.2 / 54.3 | **32.0 / 30.0** | 48.6 |
+| ... time p50; contact p50 | 2.2 / 2.3 s; 1.4 s | **3.0 / 2.8 s; 2.0 / 1.9 s** | 3.2 s; 1.7 s |
+| ... then reached the QB | 13 / 12% | 26 / 22% | 17% |
+| tackle come-offs from his own blocker, /100 | 79.7 / 65.5 | **41.0 / 29.6** | 41.1 |
+| ... time p50; contact p50 | 2.1 / 2.1 s; 0.8 / 0.9 s | **2.7 / 2.7 s; 1.4 s** | 3.1 s; 1.6 s |
+| ... then reached the QB | 11 / 10% | 12 / 15% | 20% |
+| pressured (pressure-source) | 30.7 / 29.3% | 31.2 / 29.4% | 32.9% |
+| edge level/in front | 11.0 / 10.5% | 12.3 / 11.4% | 3.0% |
+| edge inside / past outside | 3.9 / 4.3%; 2.3 / 1.7% | 4.0 / 3.2%; 1.4 / 1.9% | 6.4%; 3.8% |
+| interior pressure; engaged-then-free | 7.7 / 5.3%; 3.5 / 2.5% | 6.7 / 5.7%; 3.6 / 2.9% | 9.8%; 2.2% |
+| native sacked | 3.1 / 1.6% | 2.3 / 2.0% | band 4.6-9.4% |
+| sacked per pressure | 12.6 / 6.8% | 8.6 / 7.5% | 19.1% |
+| tackle x-velocity 2.5-3.0 s / 3.0-4.0 s | -2.50 / -1.50; -2.75 / -1.00 | -2.50 / -2.00; -2.50 / -2.00 | -1.50 / -0.50 |
+| tackle minus QB depth 3.0-4.0 s | -0.20 / -0.40 | 0.00 / 0.00 | +1.00 |
+| QB depth (gun, 2.0 s / 3.0 s) | -7.8 / -7.9 | -7.8 / -7.9 | -7.5 / -8.0 |
+| BLOCK_SEEN misread (engaged pass ticks beyond his arm; hands-band, seed 101 x 2) | 2% | 1% | |
+| PUNCH's gate: tackle-edge hands carrying load (N > 50); N p50 | 92%; 1028 | 91%; 1023 | |
+
+**Reading.**
+- Falls drop by about 40%, from 30.5 / 21.8 to 18.4 / 13.0 per 100 dropbacks. That is still above the NFL's bound;
+  HANDS_CHEST and the lean release are the remainder, each its own step.
+- The rep moves onto the NFL's shape. Come-offs from his own blocker halve. Tackles land on the NFL's count
+  (41.0 / 29.6 against 41.1), interior below it (32 / 30 against 48.6). They come later (interior 2.8-3.0 s against
+  3.2, tackles 2.7 against 3.1) after contact as long as or longer than the NFL's.
+- A come-off from an interior blocker now reaches the QB more often (22-26% against 17%). Fewer come-offs, each
+  later and nearer the throw.
+- Pressure is unchanged (31.2 / 29.4%). Sacks are flat pooled (2.4 → 2.2%) and sacks per pressure fall. The
+  in-front edge class rises a little (+1 point) and stays the largest gap to the NFL (11-12% against 3.0%).
+- **Price.** Reps last, so the tackles keep walking back late: at 3.0-4.0 s they retreat at 2.0 yd/s against the
+  NFL's 0.5, and the pocket at that time is no deeper (tackle level with the QB against the NFL's +1.0). Late in the
+  rep our tackle is still being driven where the NFL's has stopped him. That is the walked-back class, now visible
+  because the reps survive to show it.
+- The hands rows that made PUNCH worth having hold. The gate holds (91% against 92% loaded), and the QB misread can
+  only fall (2% → 1%). Price: with the hands holding the touch, the man sits closer (gap 0.62 → 0.46 of the arm).
