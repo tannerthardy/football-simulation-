@@ -8,7 +8,7 @@
 import type { Vec2 } from '../core/vec.js';
 
 const HISTORY = 24;
-const STRIDE = 8;
+const STRIDE = 11;
 
 /** Coarse visible body pose, separate from pad-level technique or capability. */
 export type VisiblePose = 'up' | 'down' | 'rising';
@@ -25,6 +25,12 @@ export interface Perceived {
   carrying?: boolean | null;
   /** Age of the sampled visual state before constant-velocity prediction. */
   age?: number;
+  /** QB_BODY_SEEN: his visible throwing motion, sampled with the same latency. */
+  arm?: 'set' | 'load' | 'deliver';
+  /** QB_BODY_SEEN: his visible head direction (rad), or null where not modelled. */
+  head?: number | null;
+  /** The ball holder's visible carry posture (up to throw, or tucked), or null where not shown. */
+  carryPosture?: 'up' | 'tucked' | null;
 }
 
 export class PerceptionBuffer {
@@ -43,7 +49,7 @@ export class PerceptionBuffer {
 
   /** Omitted possession is unknown. Null records a known unheld ball; an
    * index records that holder and known non-possession for the other bodies. */
-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null }>, heldCarrierIndex?: number | null): void {
+  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null; arm?: 'set' | 'load' | 'deliver'; head?: number | null; carryPosture?: 'up' | 'tucked' | null }>, heldCarrierIndex?: number | null): void {
     this.head = (this.head + 1) % HISTORY;
     this.count = Math.min(HISTORY, this.count + 1);
     const base = this.head * this.n * STRIDE;
@@ -58,6 +64,9 @@ export class PerceptionBuffer {
       this.data[o + 5] = s.facing ?? 0;
       this.data[o + 6] = s.pose === 'up' ? 1 : s.pose === 'down' ? -1 : s.pose === 'rising' ? 2 : 0;
       this.data[o + 7] = heldCarrierIndex === undefined ? 0 : heldCarrierIndex === i ? 1 : -1;
+      this.data[o + 8] = s.arm === 'load' ? 1 : s.arm === 'deliver' ? 2 : 0;
+      this.data[o + 9] = s.head ?? NaN;
+      this.data[o + 10] = s.carryPosture === 'up' ? 1 : s.carryPosture === 'tucked' ? -1 : 0;
     }
   }
 
@@ -75,10 +84,13 @@ export class PerceptionBuffer {
     const stance = this.data[o + 4];
     const pose = this.data[o + 6];
     const carrying = this.data[o + 7];
+    const arm = this.data[o + 8], head = this.data[o + 9], posture = this.data[o + 10];
     return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy },
       stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag,
       pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null,
-      carrying: carrying > 0 ? true : carrying < 0 ? false : null };
+      carrying: carrying > 0 ? true : carrying < 0 ? false : null,
+      arm: arm === 1 ? 'load' : arm === 2 ? 'deliver' : 'set', head: Number.isNaN(head) ? null : head,
+      carryPosture: posture > 0 ? 'up' : posture < 0 ? 'tucked' : null };
   }
 
   /** Where agent `i` was and which way he faced `delay` seconds ago, as
