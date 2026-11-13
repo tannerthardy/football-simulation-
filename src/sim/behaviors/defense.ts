@@ -1163,6 +1163,19 @@ export class ManCoverage implements Behavior {
  * Overloaded match defenders can hesitate at an exchange, then recover on a
  * subsequent read. Their called technique stays intact.
  */
+/** CURL_FLAT_BACK (experimental, off; CURL_FLAT_BACK=1 turns it on): the
+ * curl-flat rule's second half. With No. 2 not (or no longer) carried
+ * vertically, the curl-flat defender who sees the back or No. 3 showing to the
+ * flat on his side (shallow, running outside, 2 yd outside the ball) sinks to
+ * his curl window and widens under it toward the flat with his eyes on the QB,
+ * by his read and range, and breaks on the throw (the existing sawThrow /
+ * playBall), so a flat-curl high-low still works on him. Without it the curl-flat
+ * expansion covered only No. 2 and was switched off by a fast-releasing back;
+ * he played the threat nearest his curl landmark and was about 10 yd inside
+ * the catcher on our wide back-flat catches with nobody in front of the
+ * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
+ * wide-owner.ts). */
+const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK === '1';
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1512,6 +1525,28 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...carry, facing: openCarryFacing(a, sim, th.r, carry, true) }, { label: 'open-carry-seam', key: th.vel });
       }
       return withFacingTechnique(carry, { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
+    }
+    // CURL_FLAT_BACK: with No. 2 not (or no longer) carried vertically, the
+    // curl-flat defender who sees the back or No. 3 showing to the flat on his
+    // side widens under his curl window toward him and breaks on the throw.
+    if (CURL_FLAT_BACK && knowsPass(sim, a) && (this.zone === 'curl_flat_s' || this.zone === 'curl_flat_w')) {
+      const side = this.zone === 'curl_flat_s' ? 'S' : 'W';
+      const sign = side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+      const three = sim.offAlign.numbering[`${side}3` as 'S3' | 'W3'];
+      const showing = threats.filter(th => (sim.offAlign.spots[th.r.slot]?.backfield || th.r.slot === three)
+        && th.pos.x - sim.los < 5 && th.pos.x - sim.los > -8 && sign * th.vel.y > 1.5 && sign * (th.pos.y - sim.ballY) > 2);
+      if (showing.length) {
+        showing.sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y));
+        const flat = showing[0];
+        this.selectTarget(a, flat.r);
+        a.tags.add('curl-flat-back');
+        // He sinks to his curl window and widens under it toward the flat with his eyes on the QB; how far he cheats
+        // is his read and his range (0.25 + 0.35 play recognition + up to 0.15 for top speed over 8 yd/s; estimated,
+        // stand-in debt). He breaks on the throw (sawThrow -> playBall), not on the back's release.
+        const cheat = clamp(0.25 + 0.35 * a.r('playRecognition') + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.85);
+        const tgt = { x: Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
+      }
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;
