@@ -91,6 +91,10 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
 }
 
 
+/** SCREEN_QB (experimental, off; SCREEN_QB=1): screens thrown as NFL quarterbacks throw them: a slow screen on its
+ * timing once the receiver is ready, and firm (docs/reviews/2026-11-13-screens.md). */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
+
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
 
@@ -730,7 +734,10 @@ export class QBPass implements Behavior {
     //   nearest DL at the throw, NFL 5.7; 5 picks, 19 bats in 80 reps).
     const called = this.concept.family === 'screen';
     const quick = called && this.concept.screen?.tempo === 'quick';
-    const need = quick ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
+    // SCREEN_QB: a slow screen is thrown on its timing too, once the receiver is ready (settled behind his blockers),
+    // at a low bar: NFL slow screens leave at 2.2-2.4 s and almost never end in a sack; waiting for the ordinary bar
+    // had him hit before the throw on a quarter to a third of called slow screens (screen-outcomes.mts).
+    const need = quick ? Math.min(thr, 0.2) : called && SCREEN_QB ? Math.min(thr, 0.3) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // READ_PLAN triangle: the three routes as one picture; the best one open that clears his bar is the throw.
     // The picture is held until all three have shown (or two and a half looks), then the order goes on.
     const tri = READ_PLAN && !this.triDone ? this.plan?.triangle ?? null : null;
@@ -971,6 +978,8 @@ export class QBPass implements Behavior {
     return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
   }
 
+  /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
+  private screenLane = false;
   private spotCache: ScreenSpot | null | undefined;
   private spotDone = false;
   /**
@@ -1170,7 +1179,11 @@ export class QBPass implements Behavior {
     }
     if (this.concept.family === 'screen' && this.concept.screen?.tempo === 'slow') {
       options.length = 0;
-      options.push(this.screenTouch(a, sim, r, pt, T) === 'float' ? Math.max(T * 1.5, T + 0.25) : T);
+      // SCREEN_QB: NFL screens are thrown firm: 0.5 s over 6-10 yd and 0.6 s over 10-14 to the ball's arrival (BDB
+      // 2025 screens, pass_forward -> pass_arrived). The 0.8 s this float was set to was measured to the catch event
+      // (pass_outcome_caught), about 0.3 s after the arrival. Over a rusher in his lane only a little air.
+      const touch = this.screenTouch(a, sim, r, pt, T);
+      options.push(touch !== 'float' ? T : SCREEN_QB ? (this.screenLane ? T * 1.2 : T) : Math.max(T * 1.5, T + 0.25));
       fastball = null;
     }
 
@@ -1205,6 +1218,7 @@ export class QBPass implements Behavior {
     }
     const seenR = this.mind.estimate(r);
     const away = (seenR.vel.x * dx + seenR.vel.y * dy) / len;
+    this.screenLane = inLane;
     if (inLane) return 'float';
     if (closing) return 'firm';
     return away > 1.5 ? 'float' : 'firm';

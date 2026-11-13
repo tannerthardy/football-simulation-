@@ -94,6 +94,10 @@ for (const call of CALLS) {
     const events: Record<string, number> = { end: r2(ev.find(e => END.has(e.type))?.t ?? sim.t) };
     if (thr) events.pass_forward = thr.t;
     if (cat) events.catch = cat.t;
+    // The ball reaching the receiver's hands (CATCH_SECURE's 'secure', before the securing window ends in a catch)
+    // is NFL tracking's pass_arrived; without it the operator's flight ran to possession, past the arrival.
+    const arrived = ev.find(e => e.type === 'secure' && (!thr || e.t >= thr.t));
+    if (arrived) events.pass_arrived = arrived.t;
     const receiverAgent = sim.agents.find((a: any) => a.slot === sim.offAlign.numbering[concept.screen!.receiver]) ?? (concept.screen!.receiver === 'B' ? sim.slot('RB') : null);
     const r = receiverAgent?.idx ?? thr?.b ?? null;
     const play = {
