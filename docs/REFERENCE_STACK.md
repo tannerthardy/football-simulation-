@@ -607,6 +607,27 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-54: the blocker's hands (`PAST_ALONG_PATH`, `OPEN_HANDS`, `PUNCH`), landed with a stated cost (2026-11-13)
+
+**The set** (Flex #520 at `a1e611ce`). `PAST_ALONG_PATH`: a rusher has beaten his blocker when he is past him along his own path and the blocker is no longer between him and where he is going, in place of a fixed line. `OPEN_HANDS`: open hands, a legal inside grip and a hold are different contacts with different limits. `PUNCH`: a blocker's hands work to where he feels the man and extend to lockout; with it the quarterback's `BLOCK_SEEN` contact read measures the blocker's arm from the body surfaces, so a locked-out block no longer reads as a free rusher (`ba4b9866`). Everything else on that branch is in the tree off (`RUSH_INTENT`, `TACKLE_SET`, `TACKLE_BRAKE`, `TACKLE_RESET`, `TACKLE_ANCHOR`, `EDGE_ARC`, `EXTEND`, `HANG_GRIP`, `HOLD_CALL`). `dropSpec` moves to `src/sim/called-drop.ts`; `PA_DROP` is read there as well.
+
+**What it costs, and why it lands anyway.** Held at engine-52 because the sack rate fell on four of four seeds against the lane's first read, which had compared a different engine and seeds with the NFL and had no off arm. The lane's reconcile on the candidate agrees with the cards: pressure 36 → 31% of drop-backs (its operator) and later (by 2.5 s 16.4 → 13.1%), conversion per pressure unchanged at 12 to 13%. Leave-one-out: `PUNCH` takes about 4.5 points of pressure; in the rep the rusher makes the same moves at the same success (15% edge, 17% interior) and is held 0.2 to 0.4 yd farther off by an arm at lockout. `PAST_ALONG_PATH` takes about a point of sacks at about two standard errors, not localised to a class (rushers who reach the hip finish at 8.1 / 4.3% against the NFL's 9.0%); `OPEN_HANDS` adds about 0.6. The hands are inside physics. What is missing is the rusher's answer to an extended arm: move success is still a rating roll with no term for the blocker's extension (a recorded model-rule breach). The rule is to repair the missing mechanism, not to hold back the technique, so the set is on and the rush is the debt: `RUSH_HANDS` (Flex, building: moves as forces on a one-degree-of-freedom hand, fit continuous in extension, swipe/club and long-arm first), then the untouched tackle's stop and inside help.
+
+**Until `RUSH_HANDS` lands, every pass-game measurement is taken behind a pass rush at about half the NFL's sack rate.** Lanes should read time to throw, scrambles and completion with that in mind.
+
+Checks. On the first candidate (`7e207f9b`, develop engine-51): full suite clean but for `test/hot-look.test.ts`, whose engine-45 panel of alarmed rushes no longer alarmed (4 of 11); Rules + Coaching re-surveyed the panel on the set (#665, 9 of 96 plays) and verified the alarm itself is unchanged (it fires whenever his pressure read says so; rushers close without alarm 5 against 7). On the stacked candidate (`1855940c`, engine-53 tree + the set): full suite 4388 pass with the two known research failures and the `catch-choice` fixture restated in engine-53; fixed run set 3.86 → 3.59 a carry. On the final tree: typecheck, registry tests, `hot-look` and `catch-choice` pass. Set cards, 16 games a side, the three flags 0 → 1 together:
+
+| tree, seed | sack rate | completion | yards an attempt | rush yards a carry | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| engine-51, 11 | 4.9 → 3.8% | 65.1 → 67.3% | 8.76 → 9.10 | 4.47 → 4.17 | 7.32 → 7.13 | 30.1 → 34.0 |
+| engine-51, 23 | 4.5 → 3.8% | 62.5 → 66.2% (moved) | 8.38 → 8.20 | 4.05 → 3.98 | 6.67 → 6.36 | 30.6 → 29.7 |
+| engine-51, 31 | 4.0 → 3.0% (moved) | 63.3 → 63.0% | 8.15 → 8.66 | 4.38 → 3.74 (moved) | 6.69 → 7.31 | 27.4 → 28.4 |
+| engine-51, 47 | 3.4 → 2.5% | 65.0 → 67.3% | 8.87 → 8.73 | 4.42 → 4.29 | 7.04 → 6.59 | 30.5 → 31.8 |
+| engine-53, 11 | 3.4 → 2.5% | 63.9 → 67.1% (moved) | 7.81 → 8.06 | 4.41 → 3.81 (moved) | 7.17 → 6.40 | 26.6 → 29.4 |
+| engine-53, 23 | 4.6 → 2.4% (moved) | 66.0 → 66.9% | 7.85 → 7.78 | 4.04 → 3.77 | 6.86 → 6.32 | 26.2 → 28.0 |
+
+Per flag on engine-51 (others on, seeds 11 / 23): `PAST_ALONG_PATH` completion +4.8 / +3.2 (both moved), sacks −0.5 / +0.8; `OPEN_HANDS` completion +4.0 / +4.1 (both moved), scrambles 1.8 → 3.1% (moved, seed 11); `PUNCH` sacks −0.3 / −0.3. Where the engine stands: sacks about 2.5% (NFL 4.61 to 9.36), yards an attempt 7.8 to 8.1, completion 67%, fixed run set 3.59.
+
 ## engine-53: `BACK_PATHS` on: the back's routes drawn and paced from tracking (2026-11-13)
 
 **`BACK_PATHS`** (Rules + Coaching #661). The back's release paths redrawn from route-labelled tracking, and a route can carry a pace (`RouteDef.pace`, a fraction of top speed between its points, still adjusted by his route running); only the back's flat uses it, at 0.55. The flat is coached as run under control and timed to the drop. Before, the back was at the right depth but widened at about 6 yd/s against the NFL back's steady 4.2. Checked at equal time after the snap against NFL `routeRan` FLAT (n 916): within 0.4 yd in depth and 1 yd in width through 3.0 s; the ball arrives 12.1 yd from the sideline (11.7). An earlier version of this claim used a proxy that selected on width and was withdrawn by the lane.
