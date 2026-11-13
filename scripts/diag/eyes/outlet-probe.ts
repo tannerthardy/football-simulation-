@@ -10,7 +10,7 @@ const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
   const tick = sim.tick.bind(sim); const men = new Map<any, { rel: number | null; seen: number | null }>();
-  let thrown: any = null, windup: { t: number; onRoute: boolean; target: any } | null = null, wasWind = false;
+  let thrown: any = null, windup: any = null, wasWind = false;
   sim.tick = () => {
     tick();
     const q = sim.qb, b: any = q.behavior; if (b?.kind !== 'qb-pass' || sim.carrier !== q) return;
@@ -32,7 +32,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
     return tb(qb, target, v0, intended, arrivalT, throwaway, ...rest);
   };
   const res = orig.apply(this);
-  console.log(JSON.stringify({ men: [...men.values()], thrown, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: res.yards ?? res.stats.yards ?? null, scramble: !!sim.scrambled }));
+  console.log(JSON.stringify({ men: [...men.values()], thrown, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null, scramble: !!sim.scrambled }));
   return res;
 };
 const seed = Number(process.argv[2] ?? 101);
