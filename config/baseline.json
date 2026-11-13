@@ -257,6 +257,7 @@
     "BACK_PATHS": "0",
     "SCREEN_QB": "0",
     "BACK_FRONT": "0",
+    "BACK_CHECKDOWN": "0",
     "READ_PLAN": "0",
     "FORECAST_BREAK": "0",
     "FORECAST_HOLD": "0",

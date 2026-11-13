@@ -26,6 +26,8 @@ export interface RouteDescriptor {
   depthAtReady: number;
   crossesField: boolean;
   isBack: boolean;
+  /** The back's assignment is a check-release (concept.back 'check'): he checks protection, then is the check-down. */
+  checkRelease: boolean;
   /** His route ends settled (a hitch, hook, stick, curl or sit: nearly stopped at the end of the horizon). */
   settles: boolean;
 }
