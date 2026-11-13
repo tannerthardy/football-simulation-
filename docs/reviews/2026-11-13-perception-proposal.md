@@ -338,3 +338,24 @@ operator lag at the break is still to come.
 - 1e run-fit keys (with Defense's attention-penalty change);
 - 1b QB feel through `felt()` after QB_POCKET;
 - then recognition, then anticipation (built toward the rugby finding: skill is which cue he weights).
+
+## 11. The second anticipation witness: a back's outward step (Coverage, 2026-11-13)
+
+Coverage measured the earliest outward cue from a back. The cue is the first time he is at least d yd outward of his
+snap spot, moving outward at least v yd/s. For each threshold: the share of those cues that turn out to be flat-side
+releases, and the median time a flat fires.
+
+| threshold | NFL flat share | sim flat share | flat fires at (NFL / sim) |
+|---|---|---|---|
+| 0.5 yd, 1.0 yd/s | 0.52 | 0.65 / 0.58 | 0.8 s / 0.6 s |
+| 1.5 yd, 1.5 yd/s | 0.55 | 0.73 / 0.68 | 1.1 s / 1.1 s |
+
+The NFL false alarms are:
+- backs with no route (protection), stepping out;
+- ANGLE, the under-then-in counter.
+
+So outward motion alone is a coin flip in the NFL. A defender who commits on that tell is wrong about half the time,
+and wrong in those places.
+
+When `PERCEIVE_ANTICIPATE` is built, an apex or flat defender's early commit on a back must be this wager, with the NFL's
+error rate and its false alarms, not a sure read.
