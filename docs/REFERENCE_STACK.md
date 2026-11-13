@@ -607,6 +607,20 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-53: `BACK_PATHS` on: the back's routes drawn and paced from tracking (2026-11-13)
+
+**`BACK_PATHS`** (Rules + Coaching #661). The back's release paths redrawn from route-labelled tracking, and a route can carry a pace (`RouteDef.pace`, a fraction of top speed between its points, still adjusted by his route running); only the back's flat uses it, at 0.55. The flat is coached as run under control and timed to the drop. Before, the back was at the right depth but widened at about 6 yd/s against the NFL back's steady 4.2. Checked at equal time after the snap against NFL `routeRan` FLAT (n 916): within 0.4 yd in depth and 1 yd in width through 3.0 s; the ball arrives 12.1 yd from the sideline (11.7). An earlier version of this claim used a proxy that selected on width and was withdrawn by the lane.
+
+Checks on the candidate (`5ea96305`): full suite 4364 pass apart from the two known research failures and `test/catch-choice.test.ts`, which Coverage restated: on 4 of its 8 forced go balls the quarterback now pulls the ball down and checks to the back, and the fixture counted the first thrown receiver. It is now a paired panel (four verticals against four shells, 16 seeds, only balls that go to the forced go, each play against itself across arms); the mechanism holds on both stacks (11 pairs, 7 choosing later, all 7 faster). Fixed run set 3.86 a carry. Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | aDOT | time to throw | completion | INT | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.74 → 7.81 (moved) | 6.53 → 5.65 (moved) | 2.76 → 2.71 (moved) | 63.2 → 63.9% | 1.8 → 1.8% | 30.4 → 26.6 (moved) |
+| 23 | 8.32 → 7.85 | 6.85 → 5.59 (moved) | 2.80 → 2.71 (moved) | 64.9 → 66.0% | 1.8 → 2.2% | 27.7 → 26.2 |
+| 31 | 8.13 → 7.90 | 6.66 → 5.49 (moved) | 2.79 → 2.73 (moved) | 64.0 → 66.3% | 0.8 → 2.6% (moved) | 28.6 → 30.0 |
+
+Yards an attempt fall on all three seeds to the top of the NFL's band. aDOT falls a yard, further under the NFL's: the back's flat is caught behind the line as the NFL's is, and it is 18% of our targets against the NFL's 7.9% (backs take 32% of targets against 20%). That share is the read compiler placing a check-release back third in the progression (#669, `BACK_CHECKDOWN`, drafted; it waits on the deep-window belief re-read because it turns check-downs into scrambles). The interception rise on seed 31 is from an off arm of 0.8%.
+
 ## engine-52: `SAFETY_DEPTH` on: deep safeties stay over the top (2026-11-13)
 
 **`SAFETY_DEPTH`** (Coverage #663). Two halves of one coached rule, "deeper than the deepest". First, a deep or quarter-field zone landmark is never shallower than the safety's alignment: a quarter of our safeties were installed with a landmark 1.3 to 1.5 yd under where they lined up and walked down to it in the first second (91 to 95% of the safeties who came downhill had one; 1 to 2% of the rest did; none believed run). Second, the landmark is a floor, not a stop: he stays deeper than the deepest route he sees in his band by a cushion taken from the NFL medians (scaled by his speed and play recognition; the scaling is an estimate and recorded as stand-in debt), a route that stops climbing no longer pulls him deeper, and facing the quarterback he asks for no more than his own pedal before opening to run. Calls that send a safety down (robber, buzz, invert) are unchanged.
