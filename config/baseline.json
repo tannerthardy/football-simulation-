@@ -238,6 +238,10 @@
     "TACKLE_RESET": "0",
     "RUSH_HANDS": "0",
     "PASS_RIDE": "0",
+    "RUSH_ONE_HAND": "0",
+    "HAND_SITE": "0",
+    "PUNCH_STRIKE": "0",
+    "ANCHOR_BASE": "0",
     "TACKLE_ANCHOR": "0",
     "RUSH_INTENT": "0",
     "PASS_ANCHOR": "0",
@@ -312,7 +316,8 @@
     "CONCEPT_MENU": "0",
     "OPEN_CARRY": "0",
     "CATCH_CARRY": "0",
-    "PURSUIT_FIELD": "0"
+    "PURSUIT_FIELD": "0",
+    "PURSUIT_COMMIT": "0"
   },
   "worldDefaults": {
     "handContact": "center",
