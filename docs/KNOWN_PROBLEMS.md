@@ -305,6 +305,8 @@ problem), resolved.
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
 | [TKL-6](#tkl-6) | An engaged tackler's miss is a flat bonus, not his reach, balance or the blocker's hold | G1 | medium | open |
 | [TKL-8](#tkl-8) | The tackling rating slows a defender's approach | P1 | low | open |
+| [PRO-OPTRUST](#pro-optrust) | Inferred come-off counts are a lower-bound sample (24% of charted pressures) | G5 | medium | open |
+| [PRO-INFO](#pro-info) | Information leaks and rating-awarded outcomes in protection and the rush | G5 | high | in work |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
@@ -1254,6 +1256,48 @@ Carried over from the issue register; each was measured on an older develop.
   measure to re-open it.
 
 ## Pass protection
+
+<a id="pro-optrust"></a>
+### PRO-OPTRUST: inferred come-off counts are a lower-bound sample, not a rate
+
+- **Symptom:** this week's pass-rush reads compared our come-off counts with the NFL's as if both were rates.
+- **Measure:** BDB 2025 labels against our operator on the same NFL plays (`pass-rep-report.py`). "Came off his own
+  blocker and reached 2 yd of the QB" sees **24% of charted pressures**, at 70% precision.
+- **Cause:** *confirmed.* Most charted pressures come while the blocker is still engaged, or from a second man, and
+  never show as a clean come-off by geometry.
+- **Open:** every come-off count compared with the NFL this week is a lower-bound sample, not a rate. The rusher
+  operator itself is sound (recall 79%, precision 97% against `wasInitialPassRusher`). The BDB 2023 beaten / hit /
+  hurry labels (`npm run nfl:fetch`, bdb2023-2021) are to be added to the report.
+
+<a id="pro-info"></a>
+### PRO-INFO: information leaks and rating-awarded outcomes in pass protection and the rush (being removed by Flex)
+
+The user's standing rule: every information cheat found is removed and given a real solution. Found by the
+Rules+Coaching perception census, the QB lane's audit and Flex's audit, 2026-11-13. Line numbers are at f117dd98.
+
+| # | what he reads that he could not sense | where |
+|---|---|---|
+| 1 | Pass set: the rusher's true position and velocity (`cutOffPoint`, the kick lookahead, the mirror) | `src/sim/behaviors/blocking.ts:388` (and ~340-443) |
+| 2 | Protection assignment from which defenders are actually rushing; it then feeds the QB's rush belief | `src/sim/behaviors/blocking.ts:225,250,267` |
+| 3 | The rusher aims at the QB's true position, and the pass rep's axis is the line to the true QB | `src/sim/engagement.ts:1691,180` |
+| 4 | The ride uses the man's true velocity and the true QB | `src/sim/engagement.ts:1313` (`rideIntent`) |
+| 5 | Pass rep becomes a run rep on the QB's private `sim.scrambled` (also tackle.ts, blocking.ts) | `src/sim/engagement.ts:1494`; `src/sim/tackle.ts:377,779`; `src/sim/behaviors/blocking.ts:1471` |
+| 6 | Pocket-QB escape `seesIt`: the rusher's true bearing off the QB's facing | `src/sim/tackle.ts:378` |
+| 7 | Rusher's overset read on the blocker's true velocity and leverage | `src/sim/engagement.ts:829` |
+| 8 | PASS_FEEL's hands-off delay keyed on the rusher's move record, not the blocker's hands | `src/sim/engagement.ts:1748` |
+
+Outcomes awarded by a rating roll (CLAUDE.md: ratings must not award a win):
+
+| # | outcome | where |
+|---|---|---|
+| 9 | Every rush move but RUSH_HANDS' club and long-arm succeeds by `rng.chance(logistic(skill - counter + bonus))`, using the blocker's traits | `src/sim/engagement.ts:956` (`resolveMove`) |
+| 10 | The hand fight's `control` drifts toward the better hands rating and then scales push, hold and steer | `src/sim/engagement.ts:1687` |
+| 11 | Pocket-QB escape chance from elusiveness and pocket presence (with #6) | `src/sim/tackle.ts:379` |
+
+- **Order (Integration, 2026-11-13):** the finish (sacked given contact, with #6 and #11 inside it); then #1 + #2 on
+  `sim.see()`, switching to `track()`; then #3, #4, #7, #8 under one flag; then #5 with the QB lane; then the
+  stance/base proposal and walk-back; then #9 and #10, one move at a time as forces and timing, ranked by share of rep
+  endings.
 
 <a id="run-11"></a>
 ### RUN-11: Staged scenes recorded on arm-force hands or true-velocity mirroring

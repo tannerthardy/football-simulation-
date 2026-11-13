@@ -1,5 +1,9 @@
 # TACKLE_SET: the tackle's set against an edge rusher (attempt 1, stopped)
 
+> **Read this first (2026-11-13):** our "came off his own blocker and reached 2 yd" operator sees 24% of charted
+> pressures (precision 70%; `pass-rep-report.py` against BDB 2025 labels). Every come-off count compared with the NFL
+> in this review is a lower-bound sample, not a rate.
+
 Integration, 2026-11-12. The edge-rush diagnosis (`2026-11-12-edge-rush.md`) found our tackle ending deeper than the
 QB (-8.2 vs -7.8 at 3.0 s; NFL tackle -6.8) while still asking to retreat. The assignment: kick to a set depth that
 meets the arc short of the launch point, from what the tackle knows, then anchor. Add no strength or anchor capacity.
