@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-56`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-57`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,24 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-57: `CARRY_READ` on: the man corner stays on top of a vertical (2026-11-13)
+
+**`CARRY_READ`** (Coverage #676, `56b6da06`; built in Defense's `CUSHION_BREAK` code). A man corner carrying a vertical route sat on the receiver's hip instead of on top of him. The lane's read, off → on (NFL): corner on top of a vertical 17 to 25 → 27 to 40% (54); the hitch still completes at 3.5 yd of cushion and 71% caught (3.2 yd, 68%); completion on medium flights 67 → 61% (58). It closes about a third of the on-top gap and is a stand-in for the corner's read of the stem; that debt stays with Coverage.
+
+Checks. Candidate `2e66174d`: full suite 4412 pass with only the two known research failures. Fresh run set 3.81 (3.80, placebo ± 0.03): no run effect. Cards, 16 games a side, `CARRY_READ` 0 → 1:
+
+| seed | completion | 20+ yd completions an attempt | aDOT | INT | YAC | sack rate | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 65.4 → 66.3% | 11.2 → 11.0% | 5.78 → 5.97 | 1.6 → 1.4% | 6.85 → 6.83 | 3.1 → 3.0% | 28.8 → 28.3 |
+| 23 | 66.7 → 67.5% | 10.4 → 9.6% | 5.81 → 5.35 (moved) | 1.9 → 2.1% | 6.30 → 6.45 | 3.0 → 3.0% | 24.8 → 26.2 |
+| 31 | 66.0 → 66.0% | 10.1 → 9.9% | 5.29 → 5.61 (moved) | 1.4 → 1.6% | 6.72 → 6.53 | 2.8 → 2.4% | 24.8 → 26.3 |
+
+Nothing moves at the game level (the two aDOT moves disagree in sign); 20+ yd completions fall on all three seeds, inside the interval each time. It lands on the corner's position, not on a game number.
+
+**Held beside it: `ACC_RADIUS` and `BACK_CHECKDOWN`** (rules/qb-gather, #669). Carded with `CARRY_READ` as a set of three (`out/e58-*`): points 25 to 29 → 35 to 38 a team-game, aDOT 5.8 → 11.2, 9.2 to 9.7 yards an attempt, 20+ yd completions 14 to 16%. Rules+Coaching's deep-window read on that tree (370 deep targets, BDB 2025 GO + POST) says why: separation at the throw matches the NFL (p50 1.90 vs 1.80 yd), but completion is flat near 50% across separation (NFL 29% under 1 yd → 52% at 5+), interceptions under 2 yd are 0 to 1% (4 to 5%), and completion does not fall with flight time (NFL halves past 1.8 s). A covered deep ball costs nothing, so a quarterback who throws deep more prints points. The two flags wait on the catch point of a covered ball (Coverage). On that tree `acc-radius` fails because `CARRY_READ` holds a seam a beat longer (re-record its ceiling when `ACC_RADIUS` is carded) and `hot-look` "off" moves with `ACC_RADIUS`.
+
+**`PURSUIT_COMMIT` cleared for the next engine** (Defense #666). My cards (`out/e57-*`) showed rush yards a carry up on two of three seeds; on the fresh run set, paired, it is +0.00 (SE 0.05) with missed + broken 0.306 → 0.307 a run, and at close-range cuts 289 vs 285 tackles with 1 vs 0 missed. The card rise was diverged games, not the mechanism.
 
 ## engine-56: `PASS_RIDE` on: the block becomes a ride (2026-11-13)
 
