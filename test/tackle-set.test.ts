@@ -24,10 +24,23 @@ async function run(flag: string, seed: number) {
   const floor = tackleFloor(sim) as number;
   // Per tick while the QB holds: each tackle's depth, his requested x, whether he is past the floor.
   const rows: { x: number; req: number; t: number }[] = [];
+  // The set is his rep and his approach to it. Two states are not the set, and the floor does not apply to them:
+  // after his rep has ended (beaten), and blocking.ts's pre-contact chase when he is beaten to the corner -- an
+  // outside rusher level with him or past (less than 1.0 yd in front, within 4 yd), whose inside hip he chases past
+  // the QB. Seed 2: the RT works inside, DE_S comes free outside at 1.5 s, and he chases him at about -5 yd/s through
+  // the floor in both engines (off he catches him at 2.75 s, 0.02 yd short of the floor; with set A on he does not).
+  const repEnded = new Set<any>();
+  const chasing = (tk: any) => sim.defense.some((r: any) => Math.abs(r.pos.y - sim.ballY) > Math.abs(tk.pos.y - sim.ballY)
+    && r.pos.x < tk.pos.x + 1.0 && Math.hypot(r.pos.x - tk.pos.x, r.pos.y - tk.pos.y) < 4 && !sim.engagements.some((e: any) => e.defender === r));
   while (sim.phase === 'live' && sim.t < 4 && sim.throwAt < 0 && sim.carrier === sim.qb) {
     const before = tackles.map((tk: any) => tk.pos.x);              // the spot this tick's request is made from
+    const engagedBefore = tackles.map((tk: any) => !!tk.engagement);
+    const chaseBefore = tackles.map((tk: any) => !tk.engagement && chasing(tk));
     sim.tick();
-    tackles.forEach((tk: any, i: number) => rows.push({ x: before[i], req: sim.intents?.[tk.idx]?.vel.x ?? 0, t: sim.t }));
+    tackles.forEach((tk: any, i: number) => {
+      if (engagedBefore[i] && !tk.engagement) repEnded.add(tk);
+      if (!repEnded.has(tk) && !chaseBefore[i]) rows.push({ x: before[i], req: sim.intents?.[tk.idx]?.vel.x ?? 0, t: sim.t });
+    });
   }
   return { sim, floor, rows };
 }
