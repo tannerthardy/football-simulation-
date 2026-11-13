@@ -33,7 +33,7 @@ import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, seenInContact, unresolvedBallArea } from '../possession-read.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -70,6 +70,20 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * is the one, in his own delayed picture, nearest the QB's perceived facing,
  * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
 const SEEN_EYES = process.env.SEEN_EYES !== '0';
+/** HONEST_READS (experimental, off; HONEST_READS=1 turns it on): removes
+ * true-state reads found by the 2026-11-13 defense audit. A blitzer peels to
+ * the ball only once he has seen the throw, on his acquired flight; the ball
+ * finder's turn is measured from the thrower he sees; a pursuer plays the
+ * ball only once he has seen it thrown; a coverage player opens to the holder
+ * he has seen whatever the true ball state; a breaking-down defender screens
+ * nearby bodies by his picture of them; a backer taking on a climber, and an
+ * edge setting his line, treat a body as blocked when they see it in contact,
+ * not by its engagement state; a defender drives on a catch at the receiver
+ * his own flight estimate brings the ball to, at the facing he sees, not at
+ * the private securing state. */
+export const HONEST_READS = process.env.HONEST_READS === '1';
+/** HONEST_READS' drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
+const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
@@ -541,8 +555,9 @@ export class Blitzer implements Behavior {
       }
       return runFit(a, sim, this.gap, this.gapSign);
     }
-    if (sim.ball.kind === 'air') {
-      const spot = catchSpot(a, sim);
+    if (HONEST_READS ? sim.ball.kind === 'air' && sawThrow(a, sim, null) : sim.ball.kind === 'air') {
+      // HONEST_READS: the ball he has seen thrown, on his acquired flight.
+      const spot = HONEST_READS ? catchSpot(a, { t: sim.t, ballPath: acquireFlight(a, sim) }) : catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
     const gy = gapY(sim.offAlign, this.gap, this.gapSign);
@@ -629,7 +644,7 @@ function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     // A climber: a blocker off his block and moving at him himself. A
     // blocker locked on a lineman is not coming, however fast the backer
     // runs toward him.
-    if (o.engagement) continue;
+    if (HONEST_READS ? seenInContact(sim, a, o) : o.engagement) continue;
     const ux = dx / Math.max(dist, 1e-6), uy = dy / Math.max(dist, 1e-6);
     const closing = (a.vel.x - p.vel.x) * ux + (a.vel.y - p.vel.y) * uy;
     if (closing < TAKEON_CLOSING || p.vel.x * -ux + p.vel.y * -uy < TAKEON_CLIMB) continue;
@@ -918,7 +933,8 @@ function findsBall(a: Agent, sim: PlaySim): boolean {
   let plan = lookPlan.get(a);
   if (!plan || plan.flight !== ball.releaseT) {
     const bs = a.r('ballSkills');
-    const from = Math.atan2(ball.thrower.pos.y - a.pos.y, ball.thrower.pos.x - a.pos.x);
+    const thrower = HONEST_READS ? sim.see(a, ball.thrower).pos : ball.thrower.pos;
+    const from = Math.atan2(thrower.y - a.pos.y, thrower.x - a.pos.x);
     const away = (1 - Math.cos(a.body.facing - from)) / 2;
     const finds = sim.dice('look', a).chance(0.25 + 0.6 * bs);
     plan = { flight: ball.releaseT, at: finds ? sim.t + (0.25 + 0.35 * away) * (1.2 - 0.4 * bs) : Infinity };
@@ -2063,10 +2079,17 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
   // through his hands and body to play the catch, at full effort.
-  if (DRIVE_CATCH && sim.ball.kind === 'air' && sim.ball.securing) {
-    const R = sim.ball.securing.receiver, seen = sim.see(a, R);
+  // HONEST_READS: the receiver his own flight estimate brings the ball to, from
+  // just before its arrival to the end of a catch's securing beat, and the
+  // facing he sees, not the private securing state or true body.
+  const opportunity = HONEST_READS ? catchOpportunity(a) : null;
+  const securing = HONEST_READS
+    ? (opportunity && sim.t >= opportunity.t - DRIVE_LEAD && sim.t <= opportunity.t + DRIVE_SECURE ? opportunity.receiver : null)
+    : (sim.ball.kind === 'air' && sim.ball.securing ? sim.ball.securing.receiver : null);
+  if (DRIVE_CATCH && securing) {
+    const R = securing, seen = sim.see(a, R);
     if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
-      const f = R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
+      const f = HONEST_READS ? seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x) : R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
       a.tags.add('drive-catch');
       if (CATCH_CARRY) catchDrive.set(a, { receiver: R, t: sim.t });
       return runThrough(a, hands, { speed: 1 });
@@ -2179,7 +2202,7 @@ export class Pursuit implements Behavior {
     if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     const holder = observedHolder(a, sim);
     if (holder) return chase(sim, a, holder.target);
-    if (sim.ball.kind === 'air') return playBall(a, sim, null);
+    if (sim.ball.kind === 'air' && (!HONEST_READS || sawThrow(a, sim, null))) return playBall(a, sim, null);
     return pursueIfLive(sim, a) ?? stand();
   }
 }

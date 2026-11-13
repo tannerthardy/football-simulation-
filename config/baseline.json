@@ -310,7 +310,8 @@
     "CONCEPT_MENU": "0",
     "OPEN_CARRY": "0",
     "CATCH_CARRY": "0",
-    "PURSUIT_FIELD": "0"
+    "PURSUIT_FIELD": "0",
+    "HONEST_READS": "0"
   },
   "worldDefaults": {
     "handContact": "center",

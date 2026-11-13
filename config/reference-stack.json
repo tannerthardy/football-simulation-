@@ -199,6 +199,7 @@
     "PRO_CALL": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
+    "HONEST_READS": "off",
     "QB_FEEL": "off",
     "QB_RHYTHM": "on",
     "RACE_LEAN": "off",

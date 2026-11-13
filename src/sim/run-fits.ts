@@ -13,7 +13,7 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
-import { qbRunning, type PossessionRead } from './possession-read.js';
+import { qbRunning, seenInContact, type PossessionRead } from './possession-read.js';
 import { KEY_STEP_SEEN } from './key-read.js';
 
 export interface RunFitJob {
@@ -69,6 +69,8 @@ function gameGap(sim: PlaySim, d: Agent, gap: Gap, side: number): { gap: Gap; si
 
 /** FIT_BLITZ_SLIDE (experimental, off): see buildRunFits. */
 const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
+/** HONEST_READS (behaviors/defense.ts): a teammate counts on the line when seen in contact, not by his engagement state. */
+const HONEST_READS = process.env.HONEST_READS === '1';
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
@@ -585,7 +587,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       if (FORCE_BOUNCE) {
         const dir = sim.attackDir(sim.offense[0].team);
         for (const o of sim.agents) {
-          if (o === a || o === c || o === sim.qb || (o.team === a.team && !o.engagement)) continue;
+          if (o === a || o === c || o === sim.qb || (o.team === a.team && !(HONEST_READS ? seenInContact(sim, a, o) : o.engagement))) continue;
           const b = sim.see(a,o), outer = b.pos.y + job.side*o.profile.radius, depth = (b.pos.x - sim.los)*dir;
           if (depth < -2.5 || depth > 1.5 || job.side*(outer-surface) <= 0 || job.side*(outer-surface) > 4) continue;
           if (job.side*(outer-line) > 0) { line = outer; lineVel = b.vel.y; }
