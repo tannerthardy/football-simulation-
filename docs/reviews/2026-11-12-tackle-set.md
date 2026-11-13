@@ -2264,3 +2264,34 @@ rarely end up propped.
 The second is World behaviour (support), the first is how much of himself he commits (the controller's lean request
 and the World's growth). Previous attempts in this area (TACKLE_BRAKE, TACKLE_RESET, PASS_SINK) all acted on the
 retreat and the base, not on the commitment, which is why none of them changed the fall.
+
+## 3. History and the staged unload
+
+**This mechanism was diagnosed before (PASS_ANCHOR, promoted 2026-11-10).**
+- Then, an OL fell before the throw on 75% of dropbacks (NFL "about 1%"): leans into a full push pitched him onto the
+  rusher when the load sagged.
+- PASS_ANCHOR's fix was the lean's growth 0 (it grows to the felt load and no further, not the legs' 1.25x). With
+  LEAN_PITCH, that brought falls to about 11-19%.
+- On engine-56 a blocker (block_contact actor) falls before the throw on **24.1%** of dropbacks (seed 11 x 16): back
+  above PASS_ANCHOR's level.
+
+**Staged unload** (`unload-scene.mts`: two bodies, World only, no controller). A 130 kg rusher bull-presses a 140 kg
+protector who asks to hold (velocity 0, push 1) through a hands joint for 1 s, then the joint goes and he steps aside.
+- The press settles at about 1045. The protector's lean settles at 0.90-0.95 of it (945-999), and he is not driven
+  back (vx ~0).
+- On the unload, his capture point peaks at 0.46-0.51 of his base and recovers in about 0.4 s. **No fall**, with the
+  rusher driving at 1.5, 3 or 4.5 yd/s.
+
+So a protector whose lean is a little under the press and who stands still survives a one-tick unload. The falls in
+games differ in two ways:
+- the lean equals or exceeds the felt press (1504 against 1454 at 0.1 s);
+- he is being carried back at 1.0-1.7 yd/s when it goes.
+
+The question narrows to those two:
+1. Why the lean reaches the full press in games. The felt load is filtered, and it may be the joint's press plus
+   torso contact in a moving pair.
+2. What the backward carry adds at the unload. His legs' braking toward the man, the lean, and the backward momentum
+   reversing.
+
+Next staged variants: the protector carried back (his own request backward, or a heavier rusher) with the lean at the
+press, and the unload, to find which one tips him.
