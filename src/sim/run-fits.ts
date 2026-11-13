@@ -339,6 +339,18 @@ const FILL_DEPTH = 1;
  * enter and an exit margin on the lateral speed asked toward the play. */
 export const BACKSIDE_DUTY = process.env.BACKSIDE_DUTY === '1';
 const CHASE_OPEN = 1.5, CHASE_CLOSE = 0.8, SQUEEZE_INSIDE = 2;
+/** BACKSIDE_DUTY attempt 2: the pace he asks for along the flow once his own read says it is going away (fraction of
+ * his top speed), and the margins on the ball he sees coming back toward his side (yd/s) that end and resume it. Under
+ * the gait law a request is approached with a time constant of tau x wanted / start (KNOWN_PROBLEMS PHY-4): keeping
+ * station on a slow mesh point asks to arrive at ~4 yd/s slowly; the chase asks for his pace now. Estimated. */
+const CHASE_PACE = 0.9, BACK_EXIT = 1.5, BACK_ENTER = 0.5;
+const pacing = new WeakMap<Agent, boolean>();
+/** BACKSIDE_DUTY: chase pace on, with an exit margin on the ball he sees coming back toward his side. */
+function chasePace(a: Agent, back: number): boolean {
+  const on = pacing.get(a) ?? true ? back < BACK_EXIT : back < BACK_ENTER;
+  pacing.set(a, on);
+  return on;
+}
 const chasing = new WeakMap<Agent, boolean>();
 const wideEnd = new WeakMap<Agent, boolean>();
 /** BACKSIDE_DUTY: may he chase now (wide: yes; tight: once the ball is well inside his tackle)? */
@@ -645,6 +657,19 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (motion.y*job.side > 0 && Math.abs(fit.vel.y)>Math.abs(fit.vel.x))
       fit.facing = Math.atan2(fit.vel.y,fit.vel.x);
     // BACKSIDE_DUTY: chasing flow away he turns and runs, not shuffles.
+    // BACKSIDE_DUTY (attempt 2): on his own flow read he asks for his chase
+    // pace along the flow now, keeping his depth request; he no longer keeps
+    // station on the mesh point he sees. The ball he sees coming back toward
+    // his side ends it (exit margin), and it resumes only once it is clearly
+    // going away again.
+    if (chase && chasePace(a, job.side * seen.vel.y)) {
+      const pace = CHASE_PACE * a.profile.vmax, along = -job.side * fit.vel.y;
+      if (along < pace) {
+        const vy = -job.side * pace, sp = Math.hypot(fit.vel.x, vy), cap = a.profile.vmax;
+        fit.vel = sp > cap ? { x: fit.vel.x * cap / sp, y: vy * cap / sp } : { x: fit.vel.x, y: vy };
+        a.tags.add('backside-pace');
+      }
+    }
     if (chase && openToChase(a, -job.side * fit.vel.y) && Math.abs(fit.vel.y) > Math.abs(fit.vel.x)) {
       fit.facing = Math.atan2(fit.vel.y, fit.vel.x); a.tags.add('backside-chase');
     }
