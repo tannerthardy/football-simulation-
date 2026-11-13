@@ -1903,3 +1903,122 @@ side and moving the same way, the joint's normal (blocker to man) carries nothin
 and the QB is the blocker's body. That body offers no resistance to a man running along it. Per the agreed stop, the
 next step is torso contact (what a blocker's body does to a man going past it at his hip), not a fourth attempt at the
 hands.
+
+# Torso contact: diagnosis (2026-11-13, before any build)
+
+Question (Integration): our ridden rusher runs 4.9 yd/s against the blocker's 3.2 with zero press. Does the NFL's ride
+slow and bend him, and what does our World apply between two bodies side by side?
+
+## NFL against ours, same operator (`ride-pair.py`)
+
+Dropbacks, 0.5 s to the throw. Each DL/LB is paired each frame with the nearest OL within 1.2 yd. Tackles are the two
+outermost linemen at the snap, interior the other three. "Ridden" means the rusher is level with or past the blocker
+toward the QB (dx <= +0.2 along the QB-blocker line). "In front" means dx >= +0.5. Ours: RUSH_HANDS + PASS_RIDE +
+RUSH_ONE_HAND, seed 11 x 16, on the engine-55 merge. Without RUSH_ONE_HAND, the rows differ by under 0.2 yd/s.
+
+| | NFL interior | ours interior | NFL tackle | ours tackle |
+|---|---|---|---|---|
+| ridden frames /100 dropbacks | 638 | 463 | 504 | 202 |
+| ridden: rusher speed p50 (p75) | 2.93 (3.76) | 3.02 (4.19) | 3.40 (4.45) | 3.58 (4.60) |
+| ridden: rusher toward the QB | 2.04 | 2.33 | 2.36 | 2.54 |
+| ridden: blocker speed | 2.25 | 2.14 | 2.69 | 2.61 |
+| ridden: centre distance p25 / p50; share < 0.65 yd | 0.58 / 0.73; 37% | 0.67 / 0.81; 24% | 0.60 / 0.76; 34% | 0.67 / 0.82; 20% |
+| ridden: curvature p25/50/75 (deg/s, + toward the QB) | -14/+13/+38 | -15/+14/+40 | -2/+27/+50 | -6/+22/+48 |
+| in front: centre distance p50; share < 0.65 yd | 0.89; 10% | 0.90; 11% | 0.91; 8% | 0.92; 12% |
+| ride episode duration p50 / p75 | 0.30 / 0.60 s | 0.30 / 0.50 s | 0.40 / 0.70 s | 0.30 / 0.50 s |
+| ride ends with the pair apart (> 1.2 yd) | 46% | 54% | 44% | 49% |
+| came off a ride /100 dropbacks | 38.2 | 37.9 | 33.6 | 20.5 |
+| ... then within 2 yd of the QB before the throw | 9.9 (26%) | 20.3 (53%) | 9.9 (29%) | 10.4 (51%) |
+| off the ride and reached the QB: QB distance, heading off the line to him, speed | 2.33 yd, 26°, 3.95 | 3.10 yd, 26°, 4.67 | 2.12 yd, 35°, 4.19 | 2.28 yd, 33°, 5.03 |
+| off the ride, did not reach: QB distance, heading off his line | 5.21 yd, 40° | 4.10 yd, 32° | 5.18 yd, 44° | 4.65 yd, 38° |
+| off the ride: time, throw after | 3.0 s, 0.7-1.2 s | 2.2-2.4 s, 0.5-0.7 s | 3.0 s, 0.8-1.2 s | 2.4-2.7 s, 0.5-0.6 s |
+
+**Reading.**
+- The ridden rusher's speed, curvature and the blocker's speed are close to the NFL in the frame-level medians.
+  The probe's 4.9 against 3.2 is the subset of reps that end "past him", not the typical ridden frame.
+- What differs is how close the ride is. With the man in front, our spacing matches the NFL (0.90 against 0.89 yd;
+  11 against 10% within 0.65). Once he is past the shoulder, NFL pairs close in to the body (0.73 yd, 37% within 0.65);
+  ours stay at arm's length (0.81 yd, 24%).
+- What differs most is what a ride costs him. Our rushers come off a ride as often as the NFL's (38 per 100 dropbacks
+  interior). Half of them then reach the QB, against a quarter in the NFL. They come off earlier (2.2-2.4 s against
+  3.0), farther from the QB yet faster (3.1 yd at 4.7 yd/s against 2.3 yd at 3.95), and the ones that miss are on a
+  more direct line (32° off it against 40°, 4.1 yd from him against 5.2).
+- The NFL ride carries the man past and off the QB's line and costs him speed. Ours lets him go with his line and his
+  speed intact.
+
+## What the World applies (`ride-probe.mts`, RUSH_HANDS + PASS_RIDE, seed 11 x 2)
+
+In reps ending "past him", while riding:
+- centre distance p25 / 50 / 75: 1.13 / 1.32 / 1.52 yd (guards), 1.18 / 1.38 / 1.55 (tackles);
+- the hands joint's extension is 0.89 yd, and the centre distance is beyond it in 88% / 97% of riding ticks, so the
+  joint is slack: press N is 0, and only a grip's hold acts;
+- torso contact in 0% of riding ticks.
+
+Torsos meet a compliant contact at 0.9 x (r1 + r2), about 0.55-0.6 yd, with Coulomb friction 0.35 and real moments.
+That contact would slow a man running along a blocker's body (friction on the normal load) and bend him (the normal
+load across his path). The support model already carries a side load on his balance and lets the blocker lean into a
+load he feels. None of it acts in a ride, because the two bodies never touch.
+
+**Why they never touch.** The hands joint is a strut of fixed length, the arm's extension measured to the chest, set
+when the hands fitted in front. When the man is in front, that is right: the hands keep him off the body, and our
+spacing there matches the NFL. When he is beside the blocker, the hand that is still on him is on his near shoulder,
+side or back plate, with the elbow bent. Its working length is a forearm, not a locked-out arm. Our joint still
+pushes him out to 0.89 yd while the blocker is close (mode 1, c < 0). That is the ride's "push through the hands",
+and it keeps him off the body. Once he is beyond 0.89 yd, the joint is slack. Either way the two torsos stay apart:
+the hands strut the pair open, and the blocker accelerating out of his set cannot then close a yard on a man
+already at speed.
+
+So the ride's push through the hands has no normal to push on once they are abreast. Its line runs from the blocker's
+chest to the man's centre at arm's length. The hand that is actually on him sits at bent-arm length, and the normal
+that could carry a force is the torso contact.
+
+## Proposal (shared physics; not built)
+
+**HAND_SITE (one flag).** A hands joint's working length follows where the hand is on the man.
+- Fitted to his chest (the man in front, within the joint's frame), it is the arm's extension, as now.
+- On his side or back (the man past along the blocker's facing by more than the torso, or the joint's line more than
+  about 60° off the blocker's facing), it is the bent arm: forearm plus hand, about 0.25-0.3 yd beyond the torsos.
+- The change runs at ARM_SPEED, the arm's own speed, not a step.
+- The hand's push is still bounded by the press the arm can make at that elbow angle (the existing arm budget).
+
+The pair can then close to the body. Two things then act with no new force law:
+- the torso contact's normal (the blocker leaning into a load he feels; the man's balance carrying it on one side);
+- friction along it (0.35 x N against their speed difference).
+
+What a ride costs the man becomes the bodies': their masses, the blocker's lean and traction, the man's balance.
+
+**What it does not do.** No speed cap, no ride-specific slow-down, no change to the contact law, no new ratings. If
+the touching pairs still let the man run off at 4.7 yd/s, the contact law itself is the next question (does a 0.35
+dry-cloth friction and a 9 Hz compliant normal carry what a leaning 140 kg body does?). That would be a separate,
+measured step.
+
+**Where else bodies side by side happen, and the controls each needs:**
+- **Run blocks** (seal, reach, cut-off, drive blocks that turn the man). The same hands joint and its strut. A seal
+  is hip to hip, so HAND_SITE should bring run blocks closer, not further, from football.
+  - Control: fixed run set (3.59-3.60 on the current candidate), duo/toss rows (the run-block grip frame gap in GAPS
+    is the same frame question), run-block movement tests.
+- **Tackles in pursuit / the carrier beside a defender.** No hands joint (grasp joints and torso contact), so they are
+  unchanged by construction.
+  - Control: tackle and grasp tests; whiff and broken-tackle rates on the run cards.
+- **Pile-ups and double teams.** Torso contacts unchanged; helper hands are hands joints, so the helper's working
+  length changes the same way when the man is beside him.
+  - Control: doubles probe (22% of interior reps), pile-up and push tests.
+- **The pass rep with the man in front.** Unchanged by construction (chest site). Spacing in front already matches
+  the NFL (0.90 against 0.89).
+  - Control: the "in front" row above must not move.
+
+**Expected, stated before any build.**
+- ridden centre distance toward 0.73 (within 0.65 yd: 24% → about 35%);
+- of rushers who come off a ride, the share reaching the QB from 53% toward 30%, those that miss carried wider;
+- interior engaged-then-free under RUSH_HANDS + PASS_RIDE from about 9% toward 4-5%.
+
+Not to 2.2% from this alone: the stunt class and the RUSH_HANDS seat timing are separate. If the ridden distance
+closes and the reach share does not move, the contact law is the question, and the next step is a measured one,
+not a fourth hands attempt.
+
+**Tests it would come with:**
+- a staged two-body scene (a man passing a blocker at the hip, with and without a lean): the speed lost and the path
+  bent, against the impulse ledger's own numbers, momentum conserved;
+- the working length's change bounded by ARM_SPEED (no step);
+- the dither budget (the site switch has an enter and an exit margin);
+- off bit-identical.
