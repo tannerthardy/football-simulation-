@@ -33,7 +33,7 @@ import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, seenInContact, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, seenInContact, unresolvedBallArea } from '../possession-read.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -62,7 +62,7 @@ export function believesRun(_sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
-/** SEEN_EYES (experimental, off; SEEN_EYES=1 turns it on): a zone defender
+/** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
  * read target (sim.qbEyes, the exact receiver, instantly, for every defender
  * whether or not he can see the QB). He must have the QB in view (within
@@ -80,7 +80,9 @@ const SEEN_EYES = process.env.SEEN_EYES !== '0';
  * edge setting his line, treat a body as blocked when they see it in contact,
  * not by its engagement state; a defender drives on a catch at the receiver
  * his own flight estimate brings the ball to, at the facing he sees, not at
- * the private securing state. */
+ * the private securing state; the switch from playing the flight to the catch
+ * (catch-carry, flight continuation, ball rally) comes when his own estimate
+ * says the ball has arrived, not on the true end of the air state. */
 export const HONEST_READS = process.env.HONEST_READS === '1';
 /** HONEST_READS' drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
@@ -162,7 +164,10 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // end or rallying to where the ball landed. A newer picture of him without
   // the ball refutes it (dropped); a ball back in the air is played as flight;
   // an acquired holder is pursued above.
-  if (CATCH_CARRY && sim.ball.kind !== 'air') {
+  // HONEST_READS: the ball is out of the air when his own flight estimate
+  // says it has arrived (or he never saw a throw), not on the true air state.
+  const landed = HONEST_READS ? !hasObservedFlight(a) || flightLanded(a, sim.t) : sim.ball.kind !== 'air';
+  if (CATCH_CARRY && landed) {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
       const seen = sim.see(a, drive.receiver);
@@ -180,18 +185,18 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // Disappearance of the authoritative air state does not announce a catch,
   // or reopen coverage. A receiver can still miss this predicted opportunity.
   const path = rememberedFlight(a, sim.t);
-  const anticipated = sim.ball.kind !== 'air' && path ? anticipatedCatcher(a, sim) : null;
+  const anticipated = landed && path ? anticipatedCatcher(a, sim) : null;
   if (anticipated) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-anticipation', chose: anticipated.target.slot,
       cue: 'first acquired catch opportunity; result not yet acquired',
       detail: 'Keep working with the possible catcher; an empty picture after the opportunity refutes it. No confirmed possession.' });
     return track(a, anticipated.cue.pos, anticipated.cue.vel);
   }
-  if (sim.ball.kind !== 'air' && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
+  if (landed && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
     chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
     detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
-  if (sim.ball.kind !== 'air' && path) return playObservedFlight(a, sim, path);
-  const area = sim.ball.kind !== 'air' ? unresolvedBallArea(a) : null;
+  if (landed && path) return playObservedFlight(a, sim, path);
+  const area = landed ? unresolvedBallArea(a) : null;
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
       chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
