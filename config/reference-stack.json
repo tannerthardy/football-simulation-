@@ -178,6 +178,7 @@
     "PUNCH_STRIKE": "off",
     "ANCHOR_BASE": "off",
     "RUSH_ARM_BALANCE": "off",
+    "PASS_SET_SEEN": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
