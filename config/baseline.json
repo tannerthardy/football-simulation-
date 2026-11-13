@@ -233,6 +233,8 @@
     "HOLD_CALL": "0",
     "TACKLE_BRAKE": "0",
     "TACKLE_RESET": "0",
+    "RUSH_HANDS": "0",
+    "PASS_RIDE": "0",
     "TACKLE_ANCHOR": "0",
     "RUSH_INTENT": "0",
     "PASS_ANCHOR": "0",

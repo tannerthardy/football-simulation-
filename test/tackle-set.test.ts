@@ -10,12 +10,27 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // The engine as it runs (the reference stack), not the legacy engine the suite is pinned to.
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 
-afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); vi.doUnmock('../src/sim/spacing.js'); });
+
+/** The tackle's request after the engagement stage (where an engaged set applies its floor and width), just before
+ * teammate spacing: spacing can move him (PRO-7: his guard driven into him), and the behaviour's command (sim.cmds)
+ * does not carry an engaged set's request at all. */
+let preSpace: { x: number; y: number }[] = [];
+function capturePreSpacing() {
+  vi.doMock('../src/sim/spacing.js', async (orig) => {
+    const m: any = await orig();
+    return { ...m, spaceTeammates: (agents: any, intents: any[], ...r: any[]) => {
+      preSpace = intents.map((i) => (i ? { ...i.vel } : { x: 0, y: 0 }));
+      return m.spaceTeammates(agents, intents, ...r);
+    } };
+  });
+}
 
 async function run(flag: string, seed: number) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
   vi.stubEnv('TACKLE_SET', flag);
+  capturePreSpacing();
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { tackleFloor } = await import('../src/sim/engagement.js');
@@ -39,7 +54,7 @@ async function run(flag: string, seed: number) {
     sim.tick();
     tackles.forEach((tk: any, i: number) => {
       if (engagedBefore[i] && !tk.engagement) repEnded.add(tk);
-      if (!repEnded.has(tk) && !chaseBefore[i]) rows.push({ x: before[i], req: sim.intents?.[tk.idx]?.vel.x ?? 0, t: sim.t });
+      if (!repEnded.has(tk) && !chaseBefore[i]) rows.push({ x: before[i], req: preSpace[tk.idx]?.x ?? 0, t: sim.t });
     });
   }
   return { sim, floor, rows };
@@ -54,6 +69,8 @@ describe('TACKLE_SET', () => {
   it('at or past the floor he asks for no more depth', async () => {
     for (const seed of [1, 2, 3]) {
       const { floor, rows } = await run('1', seed);
+      expect(preSpace.length).toBeGreaterThan(0);                   // the pre-spacing capture ran
+      expect(rows.some((r) => r.req !== 0)).toBe(true);
       const at = rows.filter((r) => r.x <= floor);
       // 0.1, not 0.05: engine-44, seed 3, t 4.0, the LT's request is -0.057 yd/s 2.4 yd past the floor with an
       // interior man on him. His own rep caps it at 0 there, so a later intent layer shades it (the teammate-spacing
@@ -70,6 +87,7 @@ describe('TACKLE_SET', () => {
       vi.resetModules();
       for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
       vi.stubEnv('TACKLE_SET', '1');
+      capturePreSpacing();
       const { PlaySim } = await import('../src/sim/playsim.js');
       const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
       const { tackleSetLine } = await import('../src/sim/engagement.js');
@@ -83,7 +101,7 @@ describe('TACKLE_SET', () => {
           const line = tackleSetLine(sim, tk, e.defender), home = sim.offAlign.spots[tk.slot].pos.y;
           const w = (line.y - home) * line.out;
           expect(w).toBeGreaterThanOrEqual(0.3 - 1e-9); expect(w).toBeLessThanOrEqual(1.0 + 1e-9);
-          const p = before.get(tk) as any, req = sim.intents[tk.idx].vel.y * line.out;
+          const p = before.get(tk) as any, req = (preSpace[tk.idx]?.y ?? 0) * line.out;
           if ((p.y - line.y) * line.out >= 0) expect(req).toBeLessThanOrEqual(1e-9);   // at or past the line: nothing outward
           worst = Math.max(worst, (tk.pos.y - line.y) * line.out);
         }
