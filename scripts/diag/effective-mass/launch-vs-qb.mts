@@ -20,6 +20,7 @@ for (let s = first; s < first + games; s++) {
     const tick = sim.tick.bind(sim);
     sim.tick = () => {
       tick();
+      if (r.atThrow === undefined && sim.throwAt >= 0) r.atThrow = sim.qb.pos.x - sim.los;
       for (const t of TS) if (Math.abs(sim.t - t) < 1e-6 && sim.carrier === sim.qb && sim.throwAt < 0)
         r.at[t] = { qb: sim.qb.pos.x - sim.los, tk: sim.offense.filter((a: any) => a.slot === 'LT' || a.slot === 'RT').map((a: any) => a.pos.x - sim.los) };
     };
@@ -32,6 +33,8 @@ for (const gun of [true, false]) {
   const R = rows.filter((r) => r.gun === gun && r.launch !== null);
   const drops: Record<string, number> = {}; for (const r of R) drops[r.drop] = (drops[r.drop] ?? 0) + 1;
   console.log(`${gun ? 'gun' : 'under center'}: dropbacks ${R.length}; drops ${JSON.stringify(drops)}; launch point p50 ${q(R.map((r) => r.launch))} yd, floor (launch + 1.0) ${q(R.map((r) => r.launch + 1))}`);
+  const T = R.filter((r) => Number.isFinite(r.atThrow)).map((r) => r.atThrow - r.launch);
+  console.log(`  at the throw (n ${T.length}): QB minus launch point p25/50/75 ${q(T, .25)}/${q(T)}/${q(T, .75)}`);
   for (const t of TS) {
     const A = R.filter((r) => r.at[t]);
     const qbVsLaunch = A.map((r) => r.at[t].qb - r.launch);

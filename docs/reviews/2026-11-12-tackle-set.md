@@ -1583,3 +1583,37 @@ his depth over the launch point (+ = shallower), p10 / 25 / 50 / 75 / 90:
   +1.9 / +2.6 / +3.3.
 - So the stop sits around +2 to +3 yd over the launch point with a spread of about ±1.5 yd. Integration's "≈ 2 yd" is
   the lower end of the NFL's middle half.
+
+## The two cautions before designing the stop (Integration, 2026-11-13)
+
+**1. Our called depth against our depth at the throw** (`launch-vs-qb.mts`, seeds 201-206, A): QB minus the called
+launch point at the throw, p25 / 50 / 75:
+- gun (353): +0.12 / +0.17 / +0.25;
+- under center (109): +0.15 / +0.23 / +0.64.
+
+He throws about 0.2 yd short of the called depth (under center, up to 0.6). The NFL sizing is over the depth at the
+throw, so on our called depth the centre is about +2.7 to +3.2.
+
+**2. Is a tackle at the stop depth still on the rusher's inside path?** (`untouched-lateral.py`, same code.)
+Untouched tackle, 1.5-3.0 s, +1.5 to +4.0 over the launch point, his paired rusher in front of him 1.2-4 yd away; one
+sample per pair per 0.3 s.
+
+| | NFL (3001) | A 201 (1650) | A 301 (1222) |
+|---|---|---|---|
+| over the launch point p50 | +3.0 | +2.9 | +2.9 |
+| rusher outside him p50 | +1.3 | +1.2 | +1.2 |
+| tackle on the rusher's line to the QB (offset ≤ 0.65 yd) | 77% (offset p50 0.33) | 62% (0.54) | 60% (0.55) |
+| next 1.0 s: meets / past outside / inside / none | 61 / 4 / 12 / 23% | 19 / 1 / 4 / 76% | 30 / 2 / 4 / 64% |
+| settled subset (x-vel ≥ −1): n; on the line; meets / past outside / inside | 130; 68%; 44 / 1 / 20% | 47; 64%; 32 / 0 / 2% | 23; 57%; 43 / 9 / 4% |
+
+**Reading.**
+- At this depth the NFL tackle is on the rusher's line to the QB 77% of the time and meets him within a second 61% of
+  the time. Past outside stays at 4% overall and 1% when he has settled. Settling at +2.5 to +3 does not hand the NFL
+  rusher the corner.
+- Settling does give up more inside (20% against 12%). Those crossings are what the NFL's inside help (guard, back)
+  handles; ours is the queued inside-free item.
+- Ours at the same depth is less often on the line (60-62%, offset 0.54 against 0.33). Two-thirds of the time the pair
+  does not meet within a second (64-76% none, against 23%): the tackle keeps retreating ahead of a rusher who is not
+  closing on him.
+- So the stop needs its lateral half too: settling at the depth on the rusher's inside path to the QB, by what he sees.
+  A depth stop on a tackle 0.5 yd off the line would give the rusher an angle earlier.
