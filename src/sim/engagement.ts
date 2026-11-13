@@ -594,7 +594,9 @@ function setHands(sim: PlaySim, e: Engagement): void {
   if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
     // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
     // request works past, as a landed move).
-    if (hands.off || Math.max(0, hands.normalForce ?? 0) < UNLOADED * pressForce(b)) { e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt); }
+    // RUSH_ONE_HAND: one hand gone is not a landed move: only both gone frees him (the side it guarded is open, the
+    // body and the other hand are still in front; workToCleared aims him there).
+    if (hands.off || (!RUSH_ONE_HAND && Math.max(0, hands.normalForce ?? 0) < UNLOADED * pressForce(b))) { e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt); }
     refit(sim, hands, b, d);
   }
   // A landed finesse move has the hands off for its window.
@@ -706,6 +708,16 @@ function planMove(sim: PlaySim, e: Engagement, d: Agent, b: Agent): RushMove {
  * with probability 0.5 + 0.5 x his recognition (finesse and awareness); a misread commits him to the wrong move,
  * which costs what that move costs. */
 const UNLOADED = 0.2;
+/** RUSH_ONE_HAND: the side (along `lat`, +-1) a cleared hand vacated, 0 with both hands on or both off. The
+ * hands joint runs blocker -> rusher; its tangent is (-n.y, n.x) and `offSide` is the vacated side's sign along it. */
+function clearedSide(e: Engagement, lat: Vec2): number {
+  const j = e.hands;
+  if (!j || j.off || (j.handsOn ?? 2) !== 1 || !j.offSide) return 0;
+  const dx = e.defender.pos.x - e.blocker.pos.x, dy = e.defender.pos.y - e.blocker.pos.y, n = Math.hypot(dx, dy) || 1;
+  const along = j.offSide * (-dy / n * lat.x + dx / n * lat.y);
+  return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
+}
+
 export function handUnloaded(e: Engagement): boolean {
   const h = e.hands;
   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
@@ -1179,6 +1191,9 @@ const RIDE_PUSH = 1.0;
  * front (along his path by more than PAST_MARGIN), so the two do not flicker. A grip from behind stays the holding
  * detector's. */
 export const PASS_RIDE = process.env.PASS_RIDE === '1';
+/** RUSH_ONE_HAND (with RUSH_HANDS; off): one cleared hand opens the side it guarded instead of freeing him; only
+ * both hands gone is a landed move, and PAST (geometry) declares the win. */
+export const RUSH_ONE_HAND = RUSH_HANDS && process.env.RUSH_ONE_HAND === '1';
 const RIDE_GAIN = 2.5;
 function rideIntent(b: Agent, d: Agent, qb: Vec2, growth: number | undefined, feet: number): Intent {
   const sp = Math.hypot(d.vel.x, d.vel.y);
@@ -1571,6 +1586,10 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // Work the edge: at the blocker's hip on his working side, a step past it toward the QB.
     aim = { x: b.pos.x + lat.x * e.side * (sep + 0.2) + axis.x * 0.5, y: b.pos.y + lat.y * e.side * (sep + 0.2) + axis.y * 0.5 };
   } else if (between === 'stall') aim = { x: b.pos.x, y: b.pos.y };
+  // RUSH_ONE_HAND: a cleared hand opens the side it guarded. He works to it, at the blocker's hip a step past toward
+  // the QB, through the body and the remaining hand at whatever speed that contact allows; PAST (geometry) wins it.
+  const cleared = RUSH_ONE_HAND && !turned && !inMove ? clearedSide(e, lat) : 0;
+  if (cleared) aim = { x: b.pos.x + lat.x * cleared * (sep + 0.2) + axis.x * 0.5, y: b.pos.y + lat.y * cleared * (sep + 0.2) + axis.y * 0.5 };
   // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
   // the QB's depth outside the tackle's shoulder; past the hips he turns.
   const arcOut = b.passSet?.outside ?? 0;
@@ -1579,12 +1598,12 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: arcLandmark(sim, b, d).y };
   }
   const toAim = norm(sub(aim, d.pos));
-  const rush = between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
+  const rush = cleared ? d.profile.vmax * (0.8 + 0.15 * td.bend) : between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
     : d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
   intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
     facing: Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
-    push: between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
+    push: cleared ? 0.75 : between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };

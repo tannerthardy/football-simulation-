@@ -152,6 +152,7 @@
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",
     "PASS_RIDE": "off",
+    "RUSH_ONE_HAND": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
