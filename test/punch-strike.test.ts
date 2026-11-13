@@ -30,13 +30,13 @@ async function falls(strike: string, roster: number) {
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
     const off = await falls('0', 2), on = await falls('1', 2);
-    expect(off.some((f) => f.slot === 'RG' && f.move === 'spin')).toBe(true);
-    expect(on.some((f) => f.slot === 'RG')).toBe(false);
+    expect(off.some((f: any) => f.slot === 'RG' && f.move === 'spin')).toBe(true);
+    expect(on.some((f: any) => f.slot === 'RG')).toBe(false);
   });
 
   it('a protector still propped on the man when he is swum goes down (the fall is not removed)', async () => {
     const on = await falls('1', 7);
-    expect(on.some((f) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
+    expect(on.some((f: any) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
   });
 
   it('needs PUNCH', async () => {
