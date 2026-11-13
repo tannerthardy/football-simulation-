@@ -15,8 +15,9 @@ PlaySim.prototype.run = function (this: PlaySim) {
       let near: any = null, nd = Infinity;
       for (const d of sim.defense) { const x = Math.hypot(d.pos.x - intended.x, d.pos.y - intended.y); if (x < nd) { nd = x; near = d; } }
       const typ = near ? typicalAt(near.player.position) : null, tr = qb.behavior?.throwRec;
-      rec = { P: tr?.P ?? null, intRisk: tr?.intRisk ?? null, nd, pos: near?.player.position, dBall: near ? near.r('ballSkills') - typ!.ratings.ballSkills : null,
-        dV: near ? near.profile.vmax - typ!.profile.vmax : null, aware: qb.r('awareness'), exp: qb.player.experience };
+      rec = { P: tr?.P ?? null, intRisk: tr?.intRisk ?? null, nd, pos: near?.player.position, dBall: near && typ ? near.r('ballSkills') - typ.ratings.ballSkills : null,
+        dV: near && typ ? near.profile.vmax - typ.profile.vmax : null,
+        dReach: near && typ ? near.profile.reach - typ.profile.reach : null, dReact: near && typ ? near.profile.reactionTime - typ.profile.reactionTime : null, aware: qb.r('awareness'), exp: qb.player.experience };
     }
     return tb(qb, target, v0, intended, arrivalT, throwaway, ...rest);
   };

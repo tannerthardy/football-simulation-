@@ -1788,7 +1788,8 @@ export class QBPass implements Behavior {
     if (!b) {
       const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
       const typ = typicalAt(d.player.position);
-      b = { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k };
+      b = typ ? { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k }
+        : { profile: d.profile, ballSkills: d.r('ballSkills') };
       this.believed.set(d, b);
     }
     return b;
