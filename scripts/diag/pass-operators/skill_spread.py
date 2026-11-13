@@ -12,7 +12,7 @@ import sys, os, gzip, json, math, collections as C, statistics as st
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play  # noqa
 POS = {'DE': 'DL', 'DT': 'DL', 'NT': 'DL', 'ILB': 'LB', 'MLB': 'LB', 'OLB': 'LB', 'LB': 'LB', 'CB': 'CB', 'FS': 'S', 'SS': 'S', 'S': 'S', 'DB': 'CB'}
-MIN = {'lead': 40, 'rel': 8, 'angle': 8, 'appr': 8}
+MIN = {'lead': 40, 'rel': 8, 'angle': 8, 'appr': 8, 'ended': 8}
 path = sys.argv[1]; mx = int(sys.argv[2]) if len(sys.argv) > 2 else 10 ** 9
 S = C.defaultdict(lambda: C.defaultdict(lambda: ([], [])))   # S[measure][(group, pid)] = (odd, even)
 grp_of = {}; n = 0
@@ -66,6 +66,8 @@ for line in gzip.open(path, 'rt'):
             (x, y), (cx, cy) = p.pos(d, ka), p.pos(c, ka); vx, vy = p.velocity(d, ka)
             if math.hypot(vx, vy) > 0.5:
                 S['angle'][key][half].append(abs(math.degrees(math.atan2(-vx * (cy - y) + vy * (cx - x), vx * (cx - x) + vy * (cy - y)))))
+            k1 = ka + round(1.0 / p.dt)
+            S['ended'][key][half].append(1.0 if kl <= k1 and p.pos(d, kl)[0] is not None and p.pos(c, kl)[0] is not None and p.dist(d, c, kl) <= 2 else 0.0)
             kb = next((k for k in range(ka, k0 - 1, -1) if p.pos(d, k)[0] is not None and p.pos(c, k)[0] is not None and 2 <= p.dist(d, c, k) < 3), None)
             if kb is not None: S['appr'][key][half].append(p.speed(d, kb))
         if kind == 'pass' and 'pass_forward' in ev:
@@ -93,3 +95,12 @@ for m in ('lead', 'rel', 'angle', 'appr'):
         pool = [x for k in keys for x in S[m][k][0] + S[m][k][1]]
         q = lambda v, p: v[int(p * (len(v) - 1))]
         print(f'  {m:5} {g:2} players {len(keys):3}: player medians p10/p50/p90 {q(med, .1):6.1f} {q(med, .5):6.1f} {q(med, .9):6.1f} | sample sd {st.pstdev(pool):5.1f} | split-half r {r:5.2f} (corrected {rsb:5.2f}, {len(both)} players)')
+
+print('  cross-player: does a player who ends the play at his arrival (within 1 s, within 2 yd) more often come in slower or faster, at a different angle? Pearson r of player means')
+for g in ('DL', 'LB', 'CB', 'S'):
+    for m in ('appr', 'angle'):
+        keys = [k for k in S['ended'] if k[0] == g and len(S['ended'][k][0]) + len(S['ended'][k][1]) >= 10 and len(S[m][k][0]) + len(S[m][k][1]) >= 8]
+        if len(keys) < 10: continue
+        e = [st.mean(S['ended'][k][0] + S['ended'][k][1]) for k in keys]; v = [st.median(S[m][k][0] + S[m][k][1]) for k in keys]
+        srt = sorted(zip(e, v)); n3 = len(srt) // 3
+        print(f"    {g} {m:5} players {len(keys):3}: r {pear(e, v):5.2f} | {m} median of players in the low / high third by end rate: {st.median([x[1] for x in srt[:n3]]):.1f} / {st.median([x[1] for x in srt[-n3:]]):.1f} (end rate {st.mean([x[0] for x in srt[:n3]]):.2f} / {st.mean([x[0] for x in srt[-n3:]]):.2f})")
