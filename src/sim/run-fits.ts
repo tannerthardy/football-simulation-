@@ -13,7 +13,8 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
-import { hasObservedFlight, observedHolder, qbRunning, seenInContact, type PossessionRead } from './possession-read.js';
+import { hasObservedFlight, observedHolder, qbRunning, type PossessionRead } from './possession-read.js';
+import { seenEngaged } from './seen-contact.js';
 import { KEY_STEP_SEEN } from './key-read.js';
 
 export interface RunFitJob {
@@ -596,7 +597,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       if (FORCE_BOUNCE) {
         const dir = sim.attackDir(sim.offense[0].team);
         for (const o of sim.agents) {
-          if (o === a || o === c || o === sim.qb || (o.team === a.team && !(HONEST_READS ? seenInContact(sim, a, o) : o.engagement))) continue;
+          if (o === a || o === c || o === sim.qb || (o.team === a.team && !(HONEST_READS ? seenEngaged(sim, a, o) : o.engagement))) continue;
           const b = sim.see(a,o), outer = b.pos.y + job.side*o.profile.radius, depth = (b.pos.x - sim.los)*dir;
           if (depth < -2.5 || depth > 1.5 || job.side*(outer-surface) <= 0 || job.side*(outer-surface) > 4) continue;
           if (job.side*(outer-line) > 0) { line = outer; lineVel = b.vel.y; }

@@ -20,6 +20,7 @@
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { MoveCommand } from '../physics/kinematics.js';
+import { seenDown } from './seen-contact.js';
 
 /** HONEST_READS (behaviors/defense.ts): screen nearby bodies by his picture of them. */
 const HONEST_READS = process.env.HONEST_READS === '1';
@@ -52,7 +53,7 @@ export function breakdownForContact(a: Agent, sim: PlaySim, cmd: MoveCommand): M
     if (HONEST_READS) {
       // His picture of the body: one he sees on the ground or beyond 3.5 yd is no contact threat.
       const seen = sim.see(a, o);
-      if (seen.pose === 'down' || Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) > 3.5) continue;
+      if (seenDown(sim, a, o) || Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) > 3.5) continue;
     } else {
       if (o.isDown(sim.t)) continue;
       if (Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) > 3.5) continue;

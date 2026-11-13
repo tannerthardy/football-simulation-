@@ -147,16 +147,3 @@ export function qbRunning(a: Agent, sim: PlaySim): boolean {
   if (running) qbRuns.set(a, { settledSince: null });
   return running;
 }
-
-/** HONEST_READS: in the observer's own pictures, is this body in contact with
- * one of its opponents (another player than the observer)? A body seen
- * touching someone stands in for a block or a hold the observer cannot know
- * as engagement state; the same test as live-gaps' seenOnDefender. */
-export function seenInContact(sim: PlaySim, observer: Agent, body: Agent): boolean {
-  const b = body === observer ? body.pos : sim.see(observer, body).pos;
-  return sim.opponents(body).some((d) => {
-    if (d === observer) return false;
-    const p = sim.see(observer, d).pos;
-    return Math.hypot(p.x - b.x, p.y - b.y) < body.profile.radius + d.profile.radius + .35;
-  });
-}

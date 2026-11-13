@@ -33,7 +33,8 @@ import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, seenInContact, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { seenEngaged } from '../seen-contact.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -77,7 +78,8 @@ const SEEN_EYES = process.env.SEEN_EYES !== '0';
  * ball only once he has seen it thrown; a coverage player opens to the holder
  * he has seen whatever the true ball state; a breaking-down defender screens
  * nearby bodies by his picture of them; a backer taking on a climber, and an
- * edge setting his line, treat a body as blocked when they see it in contact,
+ * edge setting his line, treat a body as blocked when their picture shows it
+ * in contact (seen contact, src/sim/seen-contact.ts),
  * not by its engagement state; a defender drives on a catch at the receiver
  * his own flight estimate brings the ball to, at the facing he sees, not at
  * the private securing state; the switch from playing the flight to the catch
@@ -649,7 +651,7 @@ function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     // A climber: a blocker off his block and moving at him himself. A
     // blocker locked on a lineman is not coming, however fast the backer
     // runs toward him.
-    if (HONEST_READS ? seenInContact(sim, a, o) : o.engagement) continue;
+    if (HONEST_READS ? seenEngaged(sim, a, o) : o.engagement) continue;
     const ux = dx / Math.max(dist, 1e-6), uy = dy / Math.max(dist, 1e-6);
     const closing = (a.vel.x - p.vel.x) * ux + (a.vel.y - p.vel.y) * uy;
     if (closing < TAKEON_CLOSING || p.vel.x * -ux + p.vel.y * -uy < TAKEON_CLIMB) continue;
