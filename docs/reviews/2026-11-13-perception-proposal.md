@@ -150,7 +150,7 @@ each already compensates. What changes the design:
   ~340-443, `cutOffPoint`), which reads the rusher's real position and velocity. Others: the QB's blind-side test and
   pressure distance (`qb.ts` ~1104, 1212), the QB slide check (`carrier.ts` ~439), the post-catch blocker's pick
   (`receiver.ts` ~682). Some are touch (the engaged ride), some are leaks. Tracking gives the leaks an honest channel.
-- **Self-compensators that a tracking channel retires on migration, rather than stacks on:**
+- **Self-compensators that a tracking channel retires on migration, rather than stacks on** (the QB memory's prior is *not* one, per the QB lane; see section 9):
   - `RouteObservation`;
   - CARRY_READ's `seenAcceleration`;
   - the pursuit forecast's two-sample trend;
@@ -259,3 +259,82 @@ Nothing is built before Integration approves. The lanes are asked about the chan
     anticipation at a cut.
 - **Flex:** 1d. Moving the pass set from true state to tracking will cost protection a little. Is that acceptable as
   a correction, and which witness decides it?
+
+## 9. Reviews of the channel split (2026-11-13), and what changed
+
+**Integration** approved step 0 (`track()`, identical when off) and step 1a after Defense's review. The user's standing
+rule supersedes the census's "debts": *every information cheat found is removed by its owner now*, with the honest
+replacement built behind a flag only while it is measured. The true-state reads are assigned and are not perception
+steps.
+
+**Defense:**
+- **Pursuit and the tackle window are two groups**, so step 1a splits:
+  - **1a pursuit:** aim at 2-15 yd. Witnesses: re-aim rate, bearing jumps, the closing curve.
+  - **1a' the tackle window:** the last about 1.5 yd (gather, dive timing, wrap). Witnesses: gather and dive timing
+    against the NFL's, missed and broken tackles by approach speed.
+  - They may share an attention set, but not their parameters or witnesses.
+- **DL key:**
+  - recognition is the first movement and its class (zone step, down block, pull, pass set), primed from the stance;
+  - tracking is the magnitude after it (squeeze and flow pace);
+  - STANCE_TELL is pre-snap recognition;
+  - a misread class costs a full re-recognition, not a tracking correction.
+- **The run-read attention penalty** should end once he has acquired the carrier: the carrier is then his attention.
+  Today it charges him on a jet, a reverse or a quick throw to a WR or TE. Witness: the screens rally (2.7 s against the
+  NFL's 0.9 to reach the catcher).
+
+**Flex:**
+- **Both census findings verified in the code.**
+- **The pass set moving off true state is a correction.** Witnesses:
+  - deciding: the pass-rush classes in `pressure-source.py` (edge past outside 1.4-3.6% against 3.8; inside 3.2-4.4%
+    against 6.4) and `tackle-retreat.py` at 0.5-2.0 s;
+  - must not drift: OL falls (about 4 per 100) and the come-offs;
+  - a blocker: the set lagging by more than a delay *and* past-outside overshooting widely. That would point at the
+    mirror's gain.
+- **Build on engine-58,** with `PUNCH_STRIKE` and `ANCHOR_BASE` on.
+- **Hands-off `PASS_FEEL`** (0.12-0.24 s, touch lost, sight regained) is tracking.
+- **`RUN_FEEL`** (`engagement.ts` ~2285) follows the same pattern: touch while hands are on, sight otherwise. Added to
+  the census.
+- **Open, separate from these flags:** should touch pay the focus and stress terms? Today a stressed, unfocused
+  blocker's "touch" is no faster than his sight.
+- **A dependency to watch:** BLOCK_SEEN's inArm geometry assumes PUNCH lockout distances.
+
+**QB lane:**
+- **`felt()` is the seam for 1b.** Its body calls `track()` instead of `see()`. QB_POCKET reads only `felt()`
+  positions, so pocket movement needs no rework and does not wait.
+- **`feltClosing` retires cleanly:** its only callers are SET_DECIDE and EXTEND, both off and to be parked.
+- **A rusher in front is not an attended target.** It is lower periphery: tracking latency with a large eccentricity
+  error, not counted against his attention set, or counted at a discount.
+- **Behind his shoulder is not seen at all.** It keeps a separate non-visual term (protection knowledge, the pocket's
+  shape), untouched by `PERCEIVE_TRACK`. NFL: he moves 1+ yd from a body behind him at about three quarters of the
+  frontal rate.
+- **The QB's memory is a fourth thing, not a latency compensator.** `qbmind.estimate` is his belief about men outside
+  his look; it stays, and is removed from the retire list.
+- **His mixed site splits as:**
+  - tracking: time to contact for the pocket move, the reset spot, his arc out, and the defender in `window()`;
+  - recognition: "that man is free", "my read is covered", coverage identification;
+  - "the ball should be gone" is a threshold on tracking that already pays `processing(a)`, so no recognition latency
+    is added on top.
+- **On anticipation he is mostly the source:** his eyes, his shoulders, the pump. QB_EYES, SHOULDERS_SET, the look-off
+  and pullDown's pumps are the offence's half of step 3. His own reading side is the route forecast
+  (`receiverForecasts`).
+- **1b's witnesses:**
+  - `free-rusher.ts`, believed against true closing speed;
+  - `scripts/diag/escape/qb-pocket.py` event rows, with the behind/front ratio near 3/4;
+  - the sack share with a man within 2 yd and the ball held 0.5 s more (NFL 38%, ours 20-36%);
+  - the alarm rate.
+- **Expect the alarm rate and hot throws to rise sharply** (today a free blitzer barely registers: alarms on 2 and 4 of
+  9 hot-look panel snaps). That lands on a hot throw the defense cannot yet trap.
+- **"Come-off pocket movement" is withdrawn as a witness:** 63% of NFL come-offs find him already running.
+- **1b waits until QB_POCKET is read.**
+
+**Coverage** answered the first draft: RouteObservation, seenAcceleration and the CUSHION reads are listed. Its same-
+operator lag at the break is still to come.
+
+**Revised order:**
+- 0 (shipping);
+- 1a pursuit, then 1a' tackle window (Defense);
+- 1c man mirror (Coverage);
+- 1d pass set (Flex, on engine-58, alongside the true-state removal);
+- 1e run-fit keys (with Defense's attention-penalty change);
+- 1b QB feel through `felt()` after QB_POCKET;
+- then recognition, then anticipation (built toward the rugby finding: skill is which cue he weights).
