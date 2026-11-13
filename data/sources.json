@@ -209,7 +209,13 @@
       "movementExtractor": "scripts/data/bdb2027_movement.py",
       "movementSummary": "data/reviews/physics-world/nfl-movement/bdb2027-movement.json",
       "movementReview": "docs/reviews/bdb2027-movement-transfer.md",
-      "movementStatus": "Descriptive observations only; no fitted engine constants or held-out accuracy claim."
+      "movementStatus": "Descriptive observations only; no fitted engine constants or held-out accuracy claim.",
+      "archiveUrl": "https://drive.google.com/file/d/1U_JCLZocMD_xbOWYDtz9240bctj-12FN/view",
+      "archiveName": "nfl-big-data-bowl-2027.zip",
+      "archiveExtractTo": "data/raw/kaggle/nfl-big-data-bowl-2027",
+      "archiveBytes": 512718566,
+      "archiveSha256": "27d52f594d6d31d4f617f9c94b0b37d11e280397ad8293c0987da5f91a8d0ced",
+      "archiveNote": "Drive copy supplied by the owner 2026-11-13: the same nine files and 2,306,804,135 uncompressed bytes as the Kaggle download, so it restores data/raw without Kaggle credentials. Kaggle terms still apply."
     },
     {
       "id": "addbiomechanics-core-1.0",
