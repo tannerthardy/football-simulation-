@@ -1617,3 +1617,97 @@ sample per pair per 0.3 s.
   closing on him.
 - So the stop needs its lateral half too: settling at the depth on the rusher's inside path to the QB, by what he sees.
   A depth stop on a tackle 0.5 yd off the line would give the rusher an angle earlier.
+
+# Spec: physical pass-rush move resolution (RUSH_HANDS, off; for Integration before any build)
+
+**Why.** With set A the blocker's hands work through the World. They are pressed to lockout at arm speed, push is
+bounded by the joint and traction, and a punch at air leaves him overextended. The rusher's moves are still
+`resolveMove`'s rating roll. That roll has no term for the blocker's extension, a won move leaves the hands joint in
+place, and its effects are applied by fiat (a `control` change, a strike). Engine-54 measured the result: same moves
+at the same success rate (15-17%), the rusher held 0.2-0.4 yd farther off, pressure about −4.5 points.
+
+This replaces the roll with moves that act on the blocker's hands and body through the World. The blocker's extension
+is what makes him vulnerable.
+
+## State the World needs (small)
+
+The blocker's hands joint gets a **fit state**, from what has physically happened:
+- *fitted*: inside, pressed, elbows in. The joint's limits as today.
+- *extended*: at or near lockout (PUNCH's extension ≥ 0.8 arm). Today's limits, but the arm is a long lever: a lateral
+  impulse at the hand turns it off the man more easily, and his centre of mass is ahead of his base (lean, LEAN_PITCH).
+- *off*: knocked off, missed, or slid off. push = hold = steer = 0 until he re-fits.
+- **Re-fit**: the hand travels back to the man at ARM_SPEED (PUNCH's machinery) after the blocker's reaction time to
+  the loss, felt by touch. No timer: the distance and arm speed set it.
+
+No two-hand model. One joint with a fit state is the simplest one that tells a fitted hand from an extended one from a
+lost one.
+
+## The rusher's moves: action, what makes each work, what failing costs
+
+The rusher keys on what he sees and feels:
+- the blocker's arms out (extended) or not yet on him (late hands);
+- the blocker's set: oversetting width, retreat speed, shoulders turned;
+- the blocker's weight forward (lean over his feet);
+- his own pad level against the blocker's hand height.
+
+Ratings act on timing (when he sees it, by `passRushFinesse` and awareness), hand speed, strength (impulse size) and
+bend (pad level). Never on the outcome.
+
+| move | action through the World | works when | if it fails |
+|---|---|---|---|
+| **swipe / club** | a strike on the blocker's arm at the hand, lateral to the joint (the World's `strike`, aimed at the arm, not the torso) | the impulse's torque at the hand exceeds what his arm and grip hold. Extended: the lever is long and the grip resists less. Fitted and pressed: resists. Result: the joint goes *off* on that side | his own hands were off the blocker for the strike: the blocker's punch lands on an open chest (the current failed-move strike, now only if the blocker's hands are fitted and re-fit in time) |
+| **snatch / pull** | a pull on the extended arm (tension through the joint, from the rusher) | the blocker is *extended* with his centre of mass ahead of his base: the pull adds to his lean past the base (xi grows) and availability falls | against a fitted, sat blocker it moves nothing; the rusher has stopped his feet and given up ground toward the QB |
+| **rip** | his near arm drives up under the blocker's hand and armpit, shoulder dropped | his pad height (`padHeightAt`, posture and bend) is below the blocker's hand contact and his upward force exceeds the hold on that side: the contact slides off up and over (*off*) | a high rip into a fitted hand: he has turned his shoulder and is ridden past (PAST's ride) |
+| **long-arm** | his extended arm into the blocker's chest (a joint from the rusher's side at his own lockout) | his arm is longer than the blocker's reach or the blocker is late: the blocker's hands cannot reach his chest (extension limited by the blocker's arm), and the rusher's legs drive through his straight arm. The World resolves the push | a shorter arm: the blocker fits inside it and clubs it down (the blocker's swipe, same mechanics, his side) |
+| **dip under a high punch** | he drops his pad level as the punch comes | the punch's target (his chest) drops below the hand's path: PUNCH's existing *at air* branch (overextended, push × 1/3 for a reaction time). That is the window | dipping too early or into a low punch: he is lower and slower with no window |
+| **spin** | his yaw rotates the contact off | his yaw rate carries the contact point beyond the hand's reach on the far side before the re-fit | against a square, pressed, close blocker he gives his back and is driven past |
+| **bull** | already physical: push through the joint against the anchor | as now | as now |
+| **speed / dip** | already physical: feet and bend around the corner | as now | as now |
+
+**GRIP_BREAK** is the physical release behind swipe, club and rip: a strike or a lift that exceeds the grip
+capacity (under OPEN_HANDS, a *grip* has the hold limit; open hands only friction) takes the joint *off*. The release
+is the World's limit being exceeded, not a declared success.
+
+## The blocker's counters (his technique, not scripted)
+
+- **Re-fit** after an *off*: at arm speed, after his reaction time.
+- **Don't overextend.** His extension choice (PUNCH) now carries a cost (lever, lean), so pressing to lockout is a
+  choice with a risk: a disciplined blocker punches and re-bends.
+- **Anchor** (lean and base, as the World has it).
+- **Give ground** (the kick).
+- **His own swipe** on a long-arm, with the same mechanics on his side.
+
+Nothing is banned. A blocker who keeps his hands fitted defeats the swipe. A rusher who reads an extended arm beats it.
+
+## Fixtures (both ways; World and engagement unit tests, same bodies)
+
+1. Swipe against an extended arm takes the joint *off*. The same swipe against a fitted, pressed hand at the same
+   impulse does not.
+2. Snatch against an extended, leaning blocker: xi grows and availability falls. Against a sat blocker: no effect, and
+   the rusher's own forward speed is lost.
+3. Rip with the rusher's pad below the hand: off. With it above: fails, rusher ridden.
+4. Long-arm: the longer-armed rusher keeps the blocker's hands off his chest. The shorter-armed one does not, and is
+   clubbed down.
+5. Dip as a punch is thrown at his chest: the punch goes to air (PUNCH's overextension). Against a low punch: no
+   window.
+6. Re-fit: after an *off*, the hands return within (distance / ARM_SPEED + reaction time), not a fixed time.
+7. Off: bit-identical (the roll restored).
+
+## Reads to land on (same operators as the set A reads; NFL in brackets)
+
+- Pressure by class: past outside 3.8%, in front 3.0%, inside 6.4%, interior 9.8% of dropbacks.
+- Time to pressure p50 2.6-2.7 s.
+- Sacks per pressure 19%.
+- Walked-back share (in front at pressure) 9%.
+- Rushers reaching the tackle's hip 58 per 100 dropbacks.
+- Engaged rusher win rate and move-success rate by move, against the blocker's fit state.
+
+Controls: the fixed run set (run reps keep their hands), holds (committed / material), dither.
+
+## Build order (two attempts, then re-diagnose)
+
+1. The World: the fit state, *off* limits, re-fit at arm speed, and GRIP_BREAK's release by exceeded limits. Fixtures
+   6 and 7.
+2. The moves, each replacing its branch of `resolveMove` behind RUSH_HANDS: swipe/club, rip and snatch first (they
+   answer the extended arm); then long-arm, dip and spin. Fixtures 1-5.
+3. The rusher's keys from what he sees (extension, set, lean) into `chooseMove`. That is intent, not outcome.
