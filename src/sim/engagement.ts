@@ -585,7 +585,17 @@ function setHands(sim: PlaySim, e: Engagement): void {
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
   // RUSH_HANDS: a hand knocked off re-fits by reach and touch: after his reaction to the loss (felt), it travels
   // from his chest to the man at arm speed, then is on him again where it lands.
-  if (RUSH_HANDS && hands.off) refit(sim, hands, b, d);
+  // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
+  // arm, at arm speed, once it is no longer being driven (at rest on the chest).
+  if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
+    const o = hands.handOffset, step = ARM_SPEED * sim.dt;
+    hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
+  }
+  if (RUSH_HANDS && hands.off) {
+    // He feels the hand gone: he is free of it until it re-fits (his request works past, as a landed move).
+    e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt);
+    refit(sim, hands, b, d);
+  }
   // A landed finesse move has the hands off for its window.
   if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
     hands.steer *= 0.1;
@@ -602,6 +612,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.hold = 0;
     if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e, false);
   }
+  if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
 }
 
 const refitState = new WeakMap<HandJoint, { lostAt: number }>();
@@ -638,7 +649,8 @@ function felt(e: Engagement, lat: Vec2): number {
 
 /** Remove a rep's joints from the world (disengage). */
 export function releaseJoints(sim: PlaySim, e: Engagement): void {
-  const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? [])]);
+  const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? []), ...(e.rusherHand ? [e.rusherHand] : [])]);
+  e.rusherHand = undefined;
   for (const joint of gone) runHands.delete(joint);
   sim.world.joints = sim.world.joints.filter((j) => !gone.has(j as HandJoint));
 }
@@ -714,6 +726,69 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   );
 }
 
+/** RUSH_HANDS: the club. His near arm sweeps across the blocker's hand: a force of his arm (armForce) on the hand,
+ * across the joint toward his working side's inside, for as long as his hand is on the blocker's arm: the time it
+ * takes to cross the forearm's thickness (FOREARM, about 0.1 yd: a forearm circumference of about 30 cm) at his hand
+ * speed (ARM_SPEED by his finesse: 0.75-1.25), about 0.03 s. Whether the hand comes off is the
+ * World's: the blocker's hold (extension, press, grip) against it. Nothing else is applied: a club that does not
+ * clear the hand has spent his hands for its length. */
+/** RUSH_HANDS: a forearm's thickness, yd (circumference about 30 cm, so about 9.5 cm across). */
+const FOREARM = 0.1;
+export function clubHand(sim: PlaySim, e: Engagement, axis: Vec2): { force: Vec2; duration: number } {
+  const d = e.defender, lat = latOf(axis);
+  const speed = ARM_SPEED * (0.75 + 0.5 * d.r('passRushFinesse'));
+  const duration = FOREARM / speed, F = armForce(d);
+  const force = { x: -lat.x * e.side * F, y: -lat.y * e.side * F };
+  sim.world.handForce(e.hands!, d.body, force, sim.world.time, sim.world.time + duration);
+  e.moveOk = false; e.moveUntil = sim.t + duration;
+  return { force, duration };
+}
+
+/** RUSH_HANDS: the long-arm. His near arm goes straight into the blocker's chest at his own lockout (0.9 of his
+ * arm): a hands joint of his (a = rusher), pushing with his press, held until his next move decision. While it is on
+ * and the man is beyond the blocker's arm, the blocker's hands cannot reach him (no push, hold or steer). His legs
+ * drive through the straight arm in the World. */
+export function longArm(sim: PlaySim, e: Engagement): HandJoint {
+  const b = e.blocker, d = e.defender;
+  const j: HandJoint = e.rusherHand && !e.rusherHand.off ? e.rusherHand
+    : { kind: 'hands', a: d.body, b: b.body, actor: d.body, extension: 1, push: 0, hold: 0, steer: 0 };
+  j.extension = b.profile.radius + d.profile.radius + 0.9 * d.player.measurables.armIn / 36;
+  j.push = pressForce(d); j.steer = 0.3 * armForce(d); j.hold = 0;
+  e.rusherHand = j; e.longArmUntil = e.nextMoveAt; e.moveOk = false; e.moveUntil = sim.t;
+  if (!sim.world.joints.includes(j)) sim.world.joints.push(j);
+  return j;
+}
+
+/** RUSH_HANDS: the blocker against a long-arm. He feels a straight arm on his chest with the man beyond his own hands;
+ * after his reaction time he clubs the arm (the same force on a hand as the rusher's club, his arm and hand speed). */
+function counterLongArm(sim: PlaySim, e: Engagement): void {
+  const j = e.rusherHand, b = e.blocker, d = e.defender;
+  if (!j || j.off) return;
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  if (e.counterAt === undefined) { e.counterAt = sim.t + rt; return; }
+  if (sim.t < e.counterAt) return;
+  const dx = b.pos.x - d.pos.x, dy = b.pos.y - d.pos.y, L = Math.hypot(dx, dy) || 1;
+  const lat = { x: -dy / L * e.side, y: dx / L * e.side };
+  const speed = ARM_SPEED * (0.75 + 0.5 * b.r('handTechnique')), duration = FOREARM / speed, F = armForce(b);
+  sim.world.handForce(j, b.body, { x: lat.x * F, y: lat.y * F }, sim.world.time, sim.world.time + duration);
+  e.counterAt = sim.t + rt + duration;
+}
+
+/** RUSH_HANDS: the long-arm's lifetime and the blocker's reach while it is on. */
+function stepLongArm(sim: PlaySim, e: Engagement): void {
+  const j = e.rusherHand;
+  if (!j) return;
+  if (j.off || sim.t >= (e.longArmUntil ?? 0)) {
+    sim.world.joints = sim.world.joints.filter((x) => x !== j);
+    e.rusherHand = undefined; e.counterAt = undefined;
+    return;
+  }
+  const b = e.blocker, d = e.defender, h = e.hands;
+  const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
+  if (h && gap > b.player.measurables.armIn / 36) { h.push = 0; h.hold = 0; h.steer = 0; }
+  counterLongArm(sim, e);
+}
+
 /**
  * Resolve the defender's move against the blocker's counters. Success and
  * failure are physical actions on the two bodies and their hands.
@@ -721,6 +796,9 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
 function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   const t = sim.t;
   const rng = sim.dice('rep', e.blocker, e.defender);
+  // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
+  if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
+  if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);

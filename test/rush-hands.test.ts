@@ -94,3 +94,58 @@ describe('RUSH_HANDS stage 1', () => {
     expect(refitTime(b, d)).toBeCloseTo(0.25, 9);
   });
 });
+
+/** RUSH_HANDS stage 2 fixtures (1: the club, 4: the long-arm), on a real pass rep (four verticals vs Cover 2). */
+async function rep() {
+  vi.resetModules(); vi.stubEnv('RUSH_HANDS', '1');
+  const { PlaySim } = await import('../src/sim/playsim.js');
+  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+  const eng = await import('../src/sim/engagement.js');
+  const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover2', concept: 'four_verts', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false }));
+  let e: any = null;
+  while (!e && sim.t < 3) { sim.tick(); e = sim.engagements.find((x: any) => x.type === 'pass' && (x.blocker.slot === 'LT' || x.blocker.slot === 'RT')); }
+  return { sim, e, eng };
+}
+
+describe('RUSH_HANDS stage 2', () => {
+  it('fixture 1: a club takes an unpressed hand off; a pressed hand at the same club stays on', async () => {
+    const out: Record<string, { off: boolean; offset: number }> = {};
+    for (const pressed of [false, true]) {
+      const { sim, e, eng } = await rep();
+      expect(e).toBeTruthy();
+      // The club's own force and contact time, applied to a hand set up pressed or not (the World's measured press).
+      const { force, duration } = eng.clubHand(sim, e, { x: 1, y: 0 });
+      const { W, body } = await load({ RUSH_HANDS: '1' });
+      const a = body(140, { x: 0, y: 0 }), b = body(120, { x: 1.4, y: 0 }, Math.PI);
+      const w = new W.World([a, b], { substeps: 12 });
+      const j: any = { kind: 'hands', a, b, extension: 1.4, push: 1500, hold: 0, steer: e.hands.steer };
+      w.joints.push(j);
+      for (let k = 0; k < 3; k++) w.step([{ vel: { x: pressed ? 1 : 0, y: 0 }, push: pressed ? 1 : 0 }, { vel: { x: pressed ? -1 : 0, y: 0 }, push: pressed ? 1 : 0 }], 0.05);
+      w.handForce(j, b, force, w.time, w.time + duration);
+      for (let k = 0; k < 6; k++) w.step([{ vel: { x: pressed ? 1 : 0, y: 0 }, push: pressed ? 1 : 0 }, { vel: { x: pressed ? -1 : 0, y: 0 }, push: pressed ? 1 : 0 }], 0.05);
+      out[pressed ? 'pressed' : 'unpressed'] = { off: !!j.off, offset: j.handOffset ?? 0 };
+      expect(duration).toBeGreaterThan(0.015); expect(duration).toBeLessThan(0.06);
+    }
+    console.log(`club: unpressed ${JSON.stringify(out.unpressed)} | pressed ${JSON.stringify(out.pressed)}`);
+    expect(out.unpressed.off).toBe(true);
+    expect(out.pressed.off).toBe(false);
+  });
+
+  it('fixture 4: a longer-armed rusher\'s long-arm keeps the blocker\'s hands off him; a shorter arm does not', async () => {
+    const cut: Record<string, boolean> = {};
+    for (const longer of [true, false]) {
+      const { sim, e, eng } = await rep();
+      const b = e.blocker, d = e.defender;
+      b.player.measurables.armIn = longer ? 32 : 36; d.player.measurables.armIn = longer ? 36 : 32;
+      // Bodies at the rusher's lockout.
+      const L = b.profile.radius + d.profile.radius + 0.9 * d.player.measurables.armIn / 36;
+      d.body.pos = { x: b.pos.x + L, y: b.pos.y };
+      eng.longArm(sim, e);
+      eng.syncJoints(sim, e);
+      cut[longer ? 'longer' : 'shorter'] = e.hands.push === 0 && e.hands.steer === 0;
+      expect(sim.world.joints.includes(e.rusherHand)).toBe(true);
+    }
+    expect(cut.longer).toBe(true);
+    expect(cut.shorter).toBe(false);
+  });
+});

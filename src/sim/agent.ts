@@ -69,6 +69,11 @@ export interface RunContactSurface {
 export interface Engagement {
   /** TACKLE_RESET: the blocker's base re-set (cue onset, step end, done) and his last depth request. */
   baseReset?: { cueAt?: number; until?: number; done?: boolean };
+  /** RUSH_HANDS: the rusher's own hand on the blocker's chest during a long-arm (a = rusher, b = blocker), held until
+   * his next move decision or until it is swiped off; and when the blocker last swiped at it. */
+  rusherHand?: import('../physics/world.js').HandJoint;
+  longArmUntil?: number;
+  counterAt?: number;
   lastReqX?: number;
   /** Emitted once when the physical hands/torso actually carry load. */
   contactReported?: boolean;
