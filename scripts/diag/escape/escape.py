@@ -64,7 +64,7 @@ for path in args:
                 air = tx
                 if side: d = ty - p.pos(qb, p.k(fw))[1]; rel = 'toward' if d * side > 3 else 'back across' if d * side < -3 else 'middle'
         intc = (pf['passResult'] == 'IN') if pf is not None else bool(lab.get('interception'))
-        R.append(dict(esc=out_k is not None, t_out=out_k * p.dt if out_k is not None else None, out=out, fw=fw,
+        R.append(dict(id=raw['id'], k_out=out_k, side=side, esc=out_k is not None, t_out=out_k * p.dt if out_k is not None else None, out=out, fw=fw,
                       after=(fw - out_k * p.dt) if (fw is not None and out_k is not None) else None, air=air, rel=rel,
                       comp='catch' in ev, intc=intc, yds=raw.get('yards'),
                       pff=(pf['dropbackType'].startswith('SCRAMBLE') if pf is not None else None)))
@@ -84,3 +84,11 @@ for path in args:
         print(f"   {lab:16s} n {len(rs):5d} | air p50 {q([r['air'] for r in rs]):5.1f} | comp {pct(sum(r['comp'] for r in rs), len(rs)):>4s} | INT {pct(sum(r['intc'] for r in rs), len(rs)):>3s} | yds/att {mean([r['yds'] for r in rs]):.1f}")
     runs = [r for r in E if r['out'] == 'run']
     print(f"   escape runs yds p50 {q([r['yds'] for r in runs]):.0f} mean {mean([r['yds'] for r in runs]):.1f}; all runs by the QB on dropbacks {pct(sum(r['out']=='run' for r in R), len(R))}; sacks {pct(sum(r['out']=='sack/other' for r in R), len(R))}")
+
+    if os.environ.get('ESCAPE_TRACE'):
+        import random
+        rnd = random.Random(int(os.environ['ESCAPE_TRACE']))
+        lab = [r for r in E if r['pff']]; nol = [r for r in E if r['pff'] is False]
+        for name, rs in (('PFF scramble', lab), ('no PFF label', nol), ('flagged', E if R[0]['pff'] is None else [])):
+            for r in rnd.sample(rs, min(6, len(rs))):
+                print(f"   trace [{name}] {r['id']} left at frame {r['k_out']} ({r['t_out']:.1f} s) toward {'+y' if r['side'] > 0 else '-y'}: {r['out']}, pass at {r['fw']}")
