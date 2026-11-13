@@ -7,7 +7,9 @@
  *   pursuit-aim   - the intercept sprint (pursuitPoint) turned;
  *   gather-blend  - the approach-and-gather blend turned while the sprint did not;
  *   around-bodies - only PURSUE_AROUND's bend turned;
- *   after-chase   - chase's command held but a later stage (technique, spacing, contact) turned his request;
+ *   after:<stage> - chase's command held but a later pipeline stage turned his request (the first that did, from a
+ *                   passive stub of the responsibility ledger: containment, orientation, open-to-ball, dive/lunge,
+ *                   engagement, tackle bond, spacing, snap guard);
  *   none          - nothing above turned more than 20 deg (sum of small turns).
  * Also: share of in-band chase ticks that re-steer, and share of pursuers with any re-steer in the band.
  * usage: node --import tsx scripts/diag/effective-mass/close-resteer.mts [games] [seed] */
@@ -33,9 +35,14 @@ const turn = (a: number | null, b: number | null) => {
 const counts: Record<string, number> = {}; let ticks = 0, resteers = 0;
 const pursuers = new Map<string, boolean>();
 const prev = new WeakMap<any, any>();
+const stageH = new WeakMap<any, Record<string, number>>();
+const ORDER = ['containment', 'coverage-orientation', 'open-to-ball', 'technique-intents', 'engagement', 'tackle-bond', 'spacing', 'snap-guard'];
 const tick0 = PlaySim.prototype.tick;
 PlaySim.prototype.tick = function (this: any) {
-  const sim = this; for (const a of sim.agents) chaseRec.delete(a);
+  const sim = this; for (const a of sim.agents) { chaseRec.delete(a); stageH.delete(a); }
+  if (!sim.__stub) { sim.__stub = true; const was = sim.responsibility;
+    const stageAll = (name: string, intents: any[], ...x: any[]) => { for (const a of sim.agents) { const v = intents?.[a.idx]?.vel; if (!v || Math.hypot(v.x, v.y) < 1) continue; const m = stageH.get(a) ?? {}; m[name] = Math.atan2(v.y, v.x); stageH.set(a, m); } return was?.stageAll?.(name, intents, ...x); };
+    sim.responsibility = new Proxy({}, { get: (_o, k) => k === 'stageAll' ? stageAll : was && typeof was[k] === 'function' ? was[k].bind(was) : was ? was[k] : () => undefined }); }
   tick0.call(this);
   if (sim.phase !== 'live') return;
   for (const d of sim.defense) {
@@ -45,7 +52,7 @@ PlaySim.prototype.tick = function (this: any) {
     const stages: Record<string, number | null> = {};
     for (const q of r.requests ?? []) stages[q.stage] = head(q.command?.vel);
     const last = (r.requests ?? []).at(-1);
-    const cur = { final: head(it.vel), chaseOut: head(last?.command?.vel), planner: r.planner, stages };
+    const cur = { final: head(it.vel), chaseOut: head(last?.command?.vel), planner: r.planner, stages, pipe: { ...(stageH.get(d) ?? {}) } };
     prev.set(d, cur);
     if (!P || cur.final === null || P.final === null) continue;
     ticks++;
@@ -54,10 +61,12 @@ PlaySim.prototype.tick = function (this: any) {
     resteers++; pursuers.set(key, true);
     const st = (s: string) => turn(cur.stages[s] ?? null, P.stages[s] ?? null);
     const src = cur.planner !== P.planner ? 'handover'
-      : cur.planner === 'bypassed-close-gather' ? (st('close-gather') ? 'close-gather' : turn(cur.chaseOut, P.chaseOut) ? 'close-gather' : 'after-chase')
+      : cur.planner === 'bypassed-close-gather' ? (st('close-gather') || turn(cur.chaseOut, P.chaseOut) ? 'close-gather' : 'after-chase')
       : st('intercept-sprint') ? 'pursuit-aim' : st('approach-and-gather') ? 'gather-blend' : st('around-bodies') ? 'around-bodies'
       : !turn(cur.chaseOut, P.chaseOut) ? 'after-chase' : 'none';
-    counts[src] = (counts[src] ?? 0) + 1;
+    const firstPipe = () => ORDER.find((k) => turn(cur.pipe[k] ?? null, P.pipe[k] ?? null)) ?? 'unstaged';
+    const label = src === 'after-chase' ? `after:${firstPipe()}` : src;
+    counts[label] = (counts[label] ?? 0) + 1;
   }
 };
 const run0 = PlaySim.prototype.run; let playNo = 0;
