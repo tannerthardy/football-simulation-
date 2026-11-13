@@ -37,6 +37,7 @@ and proposed mechanisms are identified separately.
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
 | [Play-action protections](play-action-protections.md) | Naked, boot, run-action and gap fakes as call structure: who blocks the edge, the QB's path and his read of an unblocked end, with sources; what the engine would need. |
+| [Coverage inference from tracking](coverage-inference-from-tracking.md) | Inferring coverage family, man/zone and each defender's job from alignment and post-snap movement on 2022 full tracking and 2023 partial tracking, with held-out accuracy, what it confuses, and how little of the field it needs. |
 
 Chapter check catalogs are proposed options, not mandatory test suites. Choose
 the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
