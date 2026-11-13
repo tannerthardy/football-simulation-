@@ -1,8 +1,9 @@
 """Ball placement / contest at arrival (BDB 2025 wk1-3, dropback, no PA, C/I/IN).
 Run: python3 -I nfl_deep_arrival.py [datadir] [outdir]"""
 import csv, sys, os, math, collections, json
-D = sys.argv[1] if len(sys.argv) > 1 else '/home/user/football-simulation-/data/raw/bdb2025/big-data-bowl-data'
-OUT = sys.argv[2] if len(sys.argv) > 2 else '/home/user/fb-gather/out/eyes'
+import os
+D = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'data', 'raw', 'bdb2025', 'big-data-bowl-data')
+OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'out', 'eyes')
 os.makedirs(OUT, exist_ok=True)
 WEEKS = (1, 2, 3); GO = {'GO', 'POST', 'SEAM'}
 games = {r['gameId'] for r in csv.DictReader(open(f'{D}/games.csv')) if int(r['week']) in WEEKS}

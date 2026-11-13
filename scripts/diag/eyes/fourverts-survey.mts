@@ -1,10 +1,10 @@
 // Four verts survey (fixture candidates): per play, the separation of each seam/go at 2.2 s (nearest defender), the
 // target, the throw time, and whether the back got it. Env sets flags; reference stack applied unless set.
 import { readFileSync } from 'node:fs';
-const flags: Record<string, string> = JSON.parse(readFileSync('/home/user/fb-gather/config/reference-stack.json', 'utf8')).flags;
+const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../../../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 for (const [k, v] of Object.entries(flags)) if (v === 'on' && process.env[k] === undefined) process.env[k] = '1';
-const { PlaySim } = await import('/home/user/fb-gather/src/sim/playsim.js');
-const { nativeTraceSetup } = await import('/home/user/fb-gather/scripts/diag/command-trace.js');
+const { PlaySim } = await import('../../../src/sim/playsim.js');
+const { nativeTraceSetup } = await import('../command-trace.js');
 for (const coverage of ['cover2', 'cover4', 'cover3', 'cover6']) for (let seed = 1; seed <= 8; seed++) for (const flip of [false, true]) {
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster: seed, formation: 'gun_doubles_11', flip }));
   let at22: any = null, thr: any = null;
