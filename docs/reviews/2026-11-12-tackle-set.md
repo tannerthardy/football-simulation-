@@ -2473,3 +2473,31 @@ ground given from 1.0 s to the throw, p50:
 - **The late walk-back** (tackle at 2.0 yd/s at 3-4 s against the NFL's 0.5, level with the QB against +1.0) is
   untouched by ANCHOR_BASE, so it is not the bound's price. It is the next item: the re-set and the untouched-tackle
   stop are the same ground.
+
+# The late walk-back: chosen, then carried (`walkback.mts`, PUNCH_STRIKE + ANCHOR_BASE, seed 11 x 3)
+
+Tackle pass reps with a rusher outside him, ball in the QB's hands (asked / achieved x-velocity, + upfield):
+
+| | 2.5-3.0 s: asked p50; achieved; rusher | chose to retreat / carried | 3.0-4.0 s: asked; achieved; rusher | tackle minus QB depth at 3-4 s |
+|---|---|---|---|---|
+| engine (PASS_KICK) | -1.97; -2.33; -2.28 | 73% / 10% | -0.42; -1.57; -1.43 | -0.15 |
+| + TACKLE_SET (the set floor) | 0.00; -2.09; -2.18 | 29% / 50% | 0.00; -0.76; -0.84 | -0.88 |
+| NFL | | | achieved -0.5 | +1.0 |
+
+- **The walk-back on the engine is chosen.** PASS_KICK keeps the tackle level with or deeper than the rusher, down to
+  0.5 yd short of the QB. He asks for the retreat, and the rusher follows him (still at 1.4 yd/s at 3-4 s against the
+  NFL's 0.25).
+- **TACKLE_SET stops the choice.** He asks to hold at his set, but then he is carried. Half the 2.5-3.0 s ticks he is
+  driven back at about 2 yd/s while asking for 0, and he ends deeper than the QB. By 3-4 s he has slowed to -0.76
+  (closer to the NFL's -0.5). OL falls stay at 3.9 /100.
+- **Why he is carried.** ANCHOR_BASE bounds his lean by what his base can recover from. The World's base is a circle
+  of about 0.17 yd (`baseRadius`, x 0.75-1.25 by posture). A lineman in a staggered anchor has a base along the press
+  of perhaps 0.3-0.4 yd: the drop-step and stagger that a coached anchor builds.
+- With the narrow base, the honest bound is small (about 1000-1300 for a good technician) against a rusher's sustained
+  press of 1300-1500, so the excess walks him back. That is Integration's piece 2 (the stagger raises the bound).
+  It is World support geometry: a base that is longer along the stance than across it. That is shared physics and a
+  longer item.
+
+**Status.** Diagnosed. The walk-back is controller choice (PASS_KICK); TACKLE_SET removes the choice; what remains is
+the anchor's size, which needs the support base's stagger. Proposed to Integration as a separate, approved
+shared-physics item, after RUSH_HANDS' cleared hand.
