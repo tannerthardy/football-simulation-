@@ -582,7 +582,7 @@ export class QBPass implements Behavior {
         const pin = throwInterference(a, sim);
         if (pin > 0) {
           if (sim.dice('throw', a).chance(pin)) {
-            this.phase = 'set'; this.pending = null; this.readStart = t;
+            this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.readStart = t;
             sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
             return stand();
           }
@@ -797,8 +797,9 @@ export class QBPass implements Behavior {
       // like a route's: the defender near the spot is the one a blocker in the call is assigned to (NFL tunnel screens
       // leave at 1.6 s, before the receiver turns; ours priced that defender as a 40%+ pick and held to 3.0 s).
       const toSpotNow = SCREEN_QB && quick && ev ? this.toSpot(a, sim, read) : null;
-      if (toSpotNow && ev && !sim.defense.some((d) => !d.isDown(sim.t) && Math.hypot(this.mind.estimate(d).pos.x - toSpotNow.spot.x, this.mind.estimate(d).pos.y - toSpotNow.spot.y) < 2)) {
-        const go = this.startIfFinish(a, sim, ev); if (go) return go;
+      if (toSpotNow && ev && !this.spotSatOn(sim, toSpotNow.spot)) {
+        const go = this.startIfFinish(a, sim, ev);
+        if (go) { this.pendingSpot = toSpotNow.spot; return go; }
       }
       if (ev && ev.P >= need && ev.intRisk <= risk) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
       // A read that has made his break and is plainly covered is done: he
@@ -1009,6 +1010,12 @@ export class QBPass implements Behavior {
   private screenLane = false;
   /** SCREEN_QB diagnostics: a quick screen thrown away, on his read of it as dead or at the outer bound. */
   screenThrownAway: false | 'dead' | 'bound' = false;
+  /** SCREEN_QB: the spot of a quick screen whose throw he has started to its spot (null otherwise). */
+  private pendingSpot: Vec2 | null = null;
+  /** SCREEN_QB: a defender sits on the spot in his picture (within 2 yd of it). */
+  private spotSatOn(sim: PlaySim, spot: Vec2): boolean {
+    return sim.defense.some((d) => { if (d.isDown(sim.t)) return false; const e = this.mind.estimate(d).pos; return Math.hypot(e.x - spot.x, e.y - spot.y) < 2; });
+  }
   /** SCREEN_QB: when his picture of the quick screen went dead (-1: not dead). */
   private deadSince = -1;
   /**
@@ -1057,12 +1064,16 @@ export class QBPass implements Behavior {
     return { spot: sp.spot, lead: tR - this.windup(a), natural, float: 1.8 * natural };
   }
 
-  /** The flight time real QBs use at this distance (2023 tracking: ~0.6 s
-   * under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35, 2.5 s at 45), never
-   * faster than his arm allows. Stronger arms get there a little sooner. */
+  /** The flight time real QBs use at this distance, never faster than his arm allows. Stronger arms get there a
+   * little sooner. Its one consumer is the quick screen thrown to its spot (toSpot).
+   * Off: the 2023 fit (BDB 2026 output frames over all targeted passes, to the pass's end rather than its arrival:
+   * ~0.6 s under 10 yd, 0.8 at 15, 1.2 at 25, 1.8 at 35, 2.5 at 45; the fit itself runs 0.06-0.2 s above those).
+   * SCREEN_QB: refit to BDB 2025 completions, pass_forward to pass_arrived (the ball at the hands; p50 0.5 s at 8 yd,
+   * 0.7 at 15, 1.1 at 25, 1.6 at 35, 2.2 at 45; scripts/diag/flight/), least squares on 3-yd bins. */
   private naturalFlight(d: number): number {
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
-    return (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
+    const base = SCREEN_QB ? 0.27 + 0.0173 * d + 0.00062 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
+    return base * (1 - 0.12 * armEdge);
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
@@ -1443,6 +1454,7 @@ export class QBPass implements Behavior {
 
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
+    this.pendingSpot = null;
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
@@ -1503,6 +1515,13 @@ export class QBPass implements Behavior {
     const left = this.releaseAt - sim.t;
     const pressure = this.pressure(a, sim);
     if (heldBy(a, sim) > 0 || pressure.time < left + 0.3) return false;
+    // SCREEN_QB: a quick screen thrown to its spot is rechecked by the rule it was thrown on (a defender now sitting on
+    // the spot in his picture), not re-priced as a route's window: that pumped tunnel screens every look to 2.7-3.0 s.
+    if (this.pendingSpot) {
+      const pull = this.spotSatOn(sim, this.pendingSpot);
+      if (pull) this.pendingSpot = null;
+      return pull;
+    }
     const p = this.receiverForecasts.get(ev.target)?.predict(sim.t, left + ev.T);
     if (!p) return false;
     const point: Vec3 = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
@@ -1515,7 +1534,9 @@ export class QBPass implements Behavior {
     // Re-aim at release with the latest prediction.
     const r = ev.target;
     let point = ev.point;
-    const p = this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    // SCREEN_QB: a throw to the spot goes to the spot; his forecast of a receiver still selling points the wrong way.
+    const p = this.pendingSpot ? null : this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    this.pendingSpot = null;
     if (p) {
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }

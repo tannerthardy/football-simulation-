@@ -5,14 +5,17 @@
  * Over a named panel of screen-lab snaps (teams 41/42, seed 1000s+7, flip on even s):
  * - every throwaway on his read had, in truth at that moment, a defender within 1.5 yd of the catcher or a rusher in
  *   the lane, and the known dead snaps are thrown away on the read;
- * - live quick screens (bunch now and now screen against Cover 3) are thrown, not thrown away. */
+ * - live quick screens (bunch now and now screen against Cover 3) are thrown, not thrown away;
+ * - a tunnel thrown to its spot is rechecked at the delivery by the rule it was thrown on, not re-priced as a route's
+ *   window (that pumped it every look to 2.7-3.0 s). */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-const DEAD: [string, string, number][] = [['tunnel_screen', 'cover1', 1], ['tunnel_screen', 'cover1', 8], ['tunnel_screen', 'cover3', 5], ['bubble_screen', 'cover1', 1]];
+const DEAD: [string, string, number][] = [['bubble_screen', 'cover1', 1], ['bubble_screen', 'cover1', 2], ['bubble_screen', 'cover1', 3]];
 const LIVE: [string, string, number][] = [['bunch_now_screen', 'cover3', 1], ['bunch_now_screen', 'cover3', 2], ['wide_now_screen', 'cover3', 1], ['wide_now_screen', 'cover3', 2]];
+const TUNNEL: [string, string, number][] = [['tunnel_screen', 'cover3', 1], ['tunnel_screen', 'cover3', 2], ['tunnel_screen', 'cover1', 1], ['tunnel_screen', 'cover2', 2]];
 const FORMATION: Record<string, string> = { bubble_screen: 'gun_trips_11', bunch_now_screen: 'gun_bunch_11', tunnel_screen: 'gun_doubles_11', wide_now_screen: 'gun_doubles_11' };
 
 async function snap(concept: string, coverage: string, s: number) {
@@ -51,7 +54,8 @@ async function snap(concept: string, coverage: string, s: number) {
     }
   };
   sim.run();
-  return { away: (qb.behavior.screenThrownAway ?? false) as false | 'dead' | 'bound', truth: seen.truth, thrown: sim.events.some((e: any) => e.type === 'throw') };
+  const thr = sim.events.find((e: any) => e.type === 'throw');
+  return { away: (qb.behavior.screenThrownAway ?? false) as false | 'dead' | 'bound', truth: seen.truth, thrown: !!thr, at: thr?.t as number | undefined };
 }
 
 describe('SCREEN_QB dead quick screen', () => {
@@ -61,5 +65,8 @@ describe('SCREEN_QB dead quick screen', () => {
     for (const r of dead) if (r.away === 'dead') expect(r.truth!.covered || r.truth!.lane).toBe(true);
     expect(dead.filter((r) => r.away === 'dead').length).toBeGreaterThanOrEqual(3);
     for (const c of LIVE) { const r = await snap(...c); expect(r.away).toBe(false); expect(r.thrown).toBe(true); }
+  }, 120000);
+  it('a tunnel thrown to its spot is not pumped by a route window at the delivery: it leaves before 2.2 s (NFL 1.6)', async () => {
+    for (const c of TUNNEL) { const r = await snap(...c); expect(r.thrown).toBe(true); expect(r.at!).toBeLessThan(2.2); }
   }, 120000);
 });
