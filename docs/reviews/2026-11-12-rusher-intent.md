@@ -238,3 +238,39 @@ A + RUSH_INTENT, other gates:
   differently, so the walk-back left with A is the rusher in front pushing the tackle into the QB's space.
 - So on top of A, RUSH_INTENT is right on total pressure, sacks, edge win and past outside, and wrong on the in-front
   class, which is the anchor's gate. Small cells (about 80 in-front pressures per arm); a 2 x 16 read would settle it.
+
+## A + RUSH_INTENT on 2 x 16 (r201-ARI, r301-ARI) against A (q201-A, q301-A reused; same base, flags off bit-identical)
+
+| | A 201 \| 301 (pooled) | A + RUSH_INTENT 201 \| 301 (pooled) | NFL |
+|---|---|---|---|
+| dropbacks | 1326 \| 1416 (2742) | 1370 \| 1403 (2773) | 9713 |
+| pressured | 27.3 \| 35.1% (31.3%) | 34.5 \| 42.2% (38.4%) | 32.9% |
+| sacked | 3.2 \| 5.0% (4.1%) | 4.8 \| 6.9% (5.9%) | 6.7% |
+| sacked per pressure | 11.9 \| 14.3% | 14.0 \| 16.4% | 19.1% |
+| edge win | 9 \| 13% | 14 \| 18% | 13% |
+| in front at pressure, of dropbacks (share of pressure) | 8.3 \| 10.9% (30 \| 31%) | 11.5 \| 12.5% (33 \| 30%) | 3.0% (9%) |
+| in front, before 2.5 s | 1.9 \| 3.7% | 4.5 \| 5.7% | 0.5% |
+| in front, sacked per pressure | 1.8 \| 3.2% | 5.7 \| 5.7% | 19.9% |
+| real pressure (all but in front) | 19.0 \| 24.2% (21.6%) | 23.0 \| 29.7% (26.4%) | 29.9% |
+| past outside | 1.5 \| 2.5% | 2.6 \| 4.7% | 3.8% |
+| inside (free then) | 5.4 \| 7.2% (92 \| 96%) | 8.1 \| 9.7% (83 \| 87%) | 6.4% (48%) |
+| interior | 6.5 \| 8.0% | 6.4 \| 9.9% | 9.8% |
+| retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0-4.0 s | −3.25 / −3.25 / −2.75 / −1.50 (both) | −3.00 / −3.00 / −2.75 \| −2.50 / −1.00 (both) | −2.75 / −2.25 / −1.50 / −0.50 |
+
+What RUSH_INTENT adds on top of A, pooled, in points of dropbacks:
+- edge in front +2.4, edge inside +2.6, edge past outside +1.6;
+- interior +0.9, other −0.3;
+- in all, +7.2 (+6.6 from the edge).
+
+**Reading.**
+- On 2 x 16, A + RUSH_INTENT overshoots pressure on both seed sets: 38.4% pooled against 32.9%. Each seed set is up
+  about 7 points on A. The 8-game read (34.6%) was the low draw.
+- Sacks are right (5.9% against 6.7%), with sacks per pressure closer (15.3% pooled against 19.1%).
+- Edge win (14-18% against 13%) and past outside (2.6-4.7% against 3.8%) are in range.
+- Retreat improves 0.25 yd/s at 1.5-2.5 s and 0.5 yd/s after 3.0 s.
+- Real pressure improves (21.6 → 26.4%, NFL 29.9). The in-front class grows (9.6 → 12.0% of dropbacks against 3.0%)
+  and arrives early (5.1% before 2.5 s against 0.5%).
+- The overshoot is edge pressure, two-thirds of it in front or inside. Inside pressure stays free 83-87% against the
+  NFL's 48%. Interior and other are roughly unchanged.
+- A caveat: every arm carries PUNCH's QB misread (BLOCK_SEEN treats about 42% of engaged ticks as free rushers;
+  previous section). It is common to A and A + RUSH_INTENT, but it may raise sacks and cut scrambles in both.
