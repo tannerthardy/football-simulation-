@@ -432,10 +432,12 @@ const contradictedMesh = new WeakSet<Agent>();
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
-  // A direct caller without a read gets the one defense.runFit builds: his
-  // acquired holder, else his picture of the backfield mesh (never the true
-  // carrier or the true handoff).
-  if (input === undefined) {
+  // HONEST_READS: a direct caller without a read gets the one defense.runFit
+  // builds (his acquired holder, else his picture of the backfield mesh), never
+  // the true carrier or the true handoff. No production caller reaches this;
+  // edge-backside-trail and edge-fit-approach tests do, and pass explicit reads
+  // when the flag's old path is deleted.
+  if (HONEST_READS && input === undefined) {
     const holder = observedHolder(a, sim), rb = sim.slot('RB');
     input = holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim)) ? { possession: holder }
       : rb && sim.offAlign.spots[rb.slot]?.backfield ? { backfield: { back: rb, backCue: sim.see(a, rb), qbCue: sim.see(a, sim.qb) } }
@@ -446,12 +448,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const acquired = input && 'possession' in input ? input.possession : undefined;
   const back = picture?.back ?? sim.slot('RB');
   const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
-  const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? null);
+  const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? (HONEST_READS ? null : sim.carrier));
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
   let premesh = acquired ? false : picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
-    : c === sim.qb && !qbRunning(a, sim) && !!back;
+    : c === sim.qb && !qbRunning(a, sim) && (HONEST_READS || sim.handoffAt < 0) && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
   let seen = acquired?.cue ?? (picture ? premesh || c === back ? picture.backCue : picture.qbCue
     : keyed?.cue ?? sim.see(a, premesh ? back! : c));
