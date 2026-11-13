@@ -1406,3 +1406,13 @@ within the blocker's arm's length". With elbows bent (PUNCH off) the two never d
 armIn/36, the punch's arm), and stays bit-identical off by being gated under PUNCH, which is what introduced the
 extension. The same misreading may also be in his pressure feel (sacks +0.4 / +0.8 with PUNCH); to check after the
 fix.
+
+**Fix built** (under PUNCH; `qb.ts` `inArm`, used by `seenHold` and `freeBound`; off bit-identical, seed 999 hash). The
+same seeds 11-18 with PAST_ALONG_PATH + OPEN_HANDS (`scr-probe.mts`, 703 dropbacks an arm):
+
+| | PUNCH off | PUNCH on, before | PUNCH on, with the fix |
+|---|---|---|---|
+| scrambles | 20 | 4 | 18 |
+| sacks | 30 | - | 30 |
+
+block-seen, free-bound, past-along-path and scorecard-provenance pass.

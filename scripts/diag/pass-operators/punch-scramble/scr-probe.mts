@@ -18,6 +18,7 @@ for (let s = first; s < first + games; s++) {
     if (x) { add('scramble checks', x.checks); add('panic checks', x.panicChecks); if (x.checks) add('dropbacks with a check'); if (x.panicChecks) add('dropbacks with a panic check');
       if (x.fired) add(`scramble (${x.fired})`); for (const o of x.open) add(`lanes open ${o}`); }
     if (sim.stats.scramble) add('scrambles (stats)');
+    if (sim.stats.sacked) add('sacks (stats)');
     return res; } } });
 }
 for (const [k, v] of Object.entries(c).sort()) console.log(`  ${k}: ${v}`);

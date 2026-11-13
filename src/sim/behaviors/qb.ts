@@ -21,6 +21,7 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
 import { dropSpec } from '../called-drop.js';
+import { PUNCH } from '../engagement.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
@@ -1030,6 +1031,14 @@ export class QBPass implements Behavior {
    * level with or past the blocker's edge is as near as he looks. A rusher in
    * contact (any blocker within arm's length) is also paced: he closes no
    * faster than the QB sees him closing while the contact lasts. */
+  /** BLOCK_SEEN's "in contact": the rusher's body within the blocker's arm's length. With elbows bent that is his
+   * reach (0.25 + 0.85 arm from his centre). PUNCH puts the hands out to lockout (the bodies plus 0.9 arm, about
+   * 0.1 yd beyond that), so under PUNCH the arm is measured from the body surfaces: radii + his arm. Off, 46% of
+   * engaged pass ticks under PUNCH read as a free rusher sprinting at him (4% truly at air). */
+  private inArm(o: Agent, d: Agent, dist: number): boolean {
+    return dist <= (PUNCH ? o.profile.radius + d.profile.radius + o.player.measurables.armIn / 36 : o.profile.reach + d.profile.radius);
+  }
+
   private seenHold(a: Agent, d: Agent, sim: PlaySim): number {
     const seen = this.felt(a, sim, d), r = seen.pos;
     const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
@@ -1037,7 +1046,7 @@ export class QBPass implements Behavior {
     for (const o of sim.offense) {
       if (o === a || o.isDown(sim.t)) continue;
       const b = this.felt(a, sim, o).pos, width = d.profile.radius + o.profile.radius;
-      if (Math.hypot(b.x - r.x, b.y - r.y) > o.profile.reach + d.profile.radius) continue;
+      if (!this.inArm(o, d, Math.hypot(b.x - r.x, b.y - r.y))) continue;
       contact = true;
       const along = ((b.x - r.x) * px + (b.y - r.y) * py) / L;
       const off = Math.abs((b.x - r.x) * py - (b.y - r.y) * px) / L;
@@ -1068,7 +1077,7 @@ export class QBPass implements Behavior {
     for (const o of sim.offense) {
       if (o === a || o.isDown(sim.t)) continue;
       const b = this.felt(a, sim, o).pos;
-      if (Math.hypot(b.x - seen.pos.x, b.y - seen.pos.y) <= o.profile.reach + d.profile.radius) return Infinity;
+      if (this.inArm(o, d, Math.hypot(b.x - seen.pos.x, b.y - seen.pos.y))) return Infinity;
     }
     const dx = at.x - seen.pos.x, dy = at.y - seen.pos.y, R = Math.hypot(dx, dy) || 1;
     if (R > FREE_NEAR) return Infinity;
