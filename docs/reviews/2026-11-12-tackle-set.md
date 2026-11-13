@@ -2151,3 +2151,47 @@ Come-offs from his own blocker (continuous contact >= 0.5 s). NFL against ours (
 
 Next (trenches): what ends our reps at 2 s. Use the sim's own record of each come-off: the shed note, the move, the
 hands' state and PAST.
+
+## What ends our pass reps (`rep-end.mts`, engine-56 default, seed 11 x 3)
+
+Each pass rep with an OL primary that ends before the throw, attributed to the call that ended it. `sim.disengage` is
+wrapped to record its caller. A beat's shed note is used where one was recorded.
+
+| ended by | interior /100 dropbacks | tackles /100 |
+|---|---|---|
+| **blocker down (falling)** (`updateEngagements`: a body down) | **12.7** at 2.55 s | **13.8** at 2.80 s |
+| rusher down | 2.9 | 2.5 |
+| both down | 0.7 | — |
+| "past him" (PAST, the ride lost) | 3.6 | 6.2 |
+| re-assignment (`assign.ts`), separation | 1.4, 1.1 | 1.1, 0.4 |
+| all before the throw | 22.5 (p50 2.50 s) | 24.3 (p50 2.65 s) |
+
+In the reps that end with the blocker falling, over their last 0.3 s:
+- the blocker goes away from the rusher at 1.50 yd/s (interior) and 1.51 (tackles), while asking for 0.09 and -0.89
+  (to hold or close);
+- the rusher follows at 0.9;
+- the hands press at about 460-490 N;
+- the move is a bull or a long-arm in about half, and finesse in the rest.
+
+The commonest way our pass rep ends is the blocker being driven back faster than he asks and falling. It is not a
+beat, a move or the ride. That fits the come-off rows above: earlier and more often than the NFL, after shorter
+contact. Its NFL rate is not in the tracking (no body state). Before any change, the next step is a check on film of
+how often an NFL pass protector goes down, and on our side a staged rep (a bull rush against an anchor) that shows
+the support and capture-point path to the fall.
+
+## OPEN_HANDS on the fresh run set (Integration's ask; `ref:report --set fresh --placebo 4 --flag OPEN_HANDS=0`)
+
+The candidate is OPEN_HANDS **off**, against the stack with it on. Plays changed: 79% (placebos 78-95%).
+
+| family | candidate (off - on) | placebo mean ± RMS |
+|---|---|---|
+| all | **+0.27 (SE 0.07)** | -0.03 ± 0.07 |
+| OZ | +0.30 (0.15) | -0.17 ± 0.19 |
+| gap | +0.34 (0.13) | -0.14 ± 0.16 |
+| duo | +0.32 (0.23) | +0.19 ± 0.23 |
+| IZ | +0.13 (0.16) | +0.21 ± 0.26 |
+| draw / toss | +0.22 / +0.05 | +0.37 / -0.59 (wide) |
+
+OPEN_HANDS' run cost is real on the fresh set, about 0.27-0.30 a run beyond divergence, carried by gap and OZ. It is
+not the biased set's selection. With it off, engaged-grab tackle breaks are 0.063 a run, against 0.039 on. This is
+the GAPS run-block grip frame row: seals and reach blocks lose the man across their face.
