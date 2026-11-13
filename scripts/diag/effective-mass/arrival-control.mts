@@ -17,7 +17,11 @@ PlaySim.prototype.tick = function (this: any) {
   for (let i = s.pend.length - 1; i >= 0; i--) { const P = s.pend[i]; if (sim.phase === 'live' && sim.t < P.due) continue; s.pend.splice(i, 1);
     const d = P.d, c = P.c, dist = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
     const cs = Math.hypot(c.vel.x, c.vel.y), behind = cs > 1 && ((d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y) / cs < 0;
-    P.row.out = sim.phase !== 'live' && dist <= 2 ? 'ended' : dist > 1.5 && behind ? 'past' : 'other'; rows.push(P.row); }
+    P.row.out = sim.phase !== 'live' && dist <= 2 ? 'ended' : dist > 1.5 && behind ? 'past' : 'other';
+    const E = sim.events.filter((e: any) => e.t >= P.t0 - 0.05 && e.t <= P.t0 + 1.0 && (e.a === d.idx || e.b === d.idx)).map((e: any) => e.type + (e.note ? ':' + e.note : ''));
+    const has = (t: string) => E.some((e: string) => e.startsWith(t));
+    P.row.ev = has('missed_tackle') ? (has('tackle_wrap') ? 'whiff then wrap' : 'whiff') : has('tackle_wrap') ? (has('broken_tackle') ? 'wrap, broken' : 'wrap') : has('carrier_contact') ? 'contact, no wrap' : 'no attempt';
+    P.row.kind = sim.offCall?.kind; rows.push(P.row); }
   if (sim.phase !== 'live') return;
   const c = sim.ball.kind === 'held' ? sim.ball.carrier : null; if (!c || c.team !== 'O') return;
   if (s.t0 < 0) { const open = sim.offCall?.kind === 'pass' ? c !== sim.qb : c.pos.x > sim.los; if (!open) return; s.t0 = sim.t; s.c = c; }
@@ -25,12 +29,20 @@ PlaySim.prototype.tick = function (this: any) {
   for (const d of sim.defense) { if (s.done.has(d)) continue; const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, dist = Math.hypot(dx, dy);
     if (dist > 1.5) continue; s.done.add(d);
     const closing = ((d.vel.x - c.vel.x) * dx + (d.vel.y - c.vel.y) * dy) / dist;
-    s.pend.push({ due: sim.t + 1, d, c, row: { g: grp(d.slot), closing, speed: Math.hypot(d.vel.x, d.vel.y), tk: d.r('tackling') } }); }
+    s.pend.push({ due: sim.t + 1, t0: sim.t, d, c, row: { g: grp(d.slot), closing, speed: Math.hypot(d.vel.x, d.vel.y), tk: d.r('tackling') } }); }
 };
 const rng = new Rng(seed0); const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed0 + g), leagueSample(away, seed0 + g), { seed: seed0 + g, record: false });
 const tert = (v: number[]) => { const w = [...v].sort((a, b) => a - b); return [w[Math.floor(w.length / 3)], w[Math.floor(2 * w.length / 3)]]; };
 console.log(`arrivals ${rows.length}`);
+for (const kind of ['run', 'pass']) for (const g of ['DB', 'LB', 'DL']) {
+  const X = rows.filter(r => r.g === g && r.kind === kind); if (X.length < 40) continue;
+  for (const [lab, lo, hi] of [['<2', -99, 2], ['2-4', 2, 4], ['4+', 4, 99]] as const) {
+    const Y = X.filter(r => r.closing >= lo && r.closing < hi); if (Y.length < 10) continue;
+    const m: Record<string, { n: number; ended: number }> = {}; for (const r of Y) { m[r.ev] ??= { n: 0, ended: 0 }; m[r.ev].n++; if (r.out === 'ended') m[r.ev].ended++; }
+    console.log(`  ${kind} ${g} closing ${lab} n ${Y.length}, ended ${(100 * Y.filter(r => r.out === 'ended').length / Y.length).toFixed(0)}%: ` + Object.entries(m).sort((a, b) => b[1].n - a[1].n).map(([k, v]) => `${k} ${(100 * v.n / Y.length).toFixed(0)}% (ended ${(100 * v.ended / v.n).toFixed(0)}%)`).join(', '));
+  }
+}
 for (const g of ['DL', 'LB', 'DB']) {
   const X = rows.filter(r => r.g === g); if (X.length < 60) continue;
   const [c1, c2] = tert(X.map(r => r.closing)), [t1, t2] = tert(X.map(r => r.tk));
