@@ -46,6 +46,18 @@ import { isOL } from './behaviors/blocking.js';
 
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** QB_SEEN_MAN (experimental, off; QB_SEEN_MAN=1; information rule): three places where his picture of the defense
+ * read the field as it truly is.
+ * - A man defender he is not looking at is remembered on his receiver. Off, "his receiver" is the receiver's TRUE
+ *   position now; on, it is where the quarterback's own forecast has that receiver (the installed route run from his
+ *   last picture of him), or the defender's own canonical spot when he has no forecast of that man.
+ * - With no belief to place a defender, off falls back to the defender's true position; on, to his last picture.
+ * - The check at the line reads corner depth exactly; on, with his alignment noise like the rest of his pre-snap
+ *   picture.
+ * The canonical looks themselves (how each coverage would line up against this formation) are built from the call's
+ * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
+ * and pressure are swapped, and a disguised shell still fools him. Not changed. */
+const QB_SEEN_MAN = process.env.QB_SEEN_MAN === '1';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -158,6 +170,8 @@ export class QBMind {
   readonly identifyAt: number;
   private readonly canon = new Map<string, DefenseAlignment>();
   private readonly memory = new Map<Agent, Memory>();
+  /** QB_SEEN_MAN: where the quarterback's own forecast has a receiver now (set by QBPass); null when he has none. */
+  receiverAt: ((r: Agent) => Vec2 | null) | null = null;
   /** Pictures already represented in the prior or a post-snap likelihood. */
   private readonly classifiedAt = new Map<Agent, number>();
   readonly clearHalf: number;
@@ -502,7 +516,9 @@ export class QBMind {
         p = { x: sp.pos.x + (lm.x - sp.pos.x) * f, y: sp.pos.y + (lm.y - sp.pos.y) * f };
       } else if (r.kind === 'man' && sp.manTarget) {
         const t = sim.slot(sp.manTarget);
-        p = t ? { x: t.pos.x + 1, y: t.pos.y + (Math.sign(sim.ballY - t.pos.y) || 1) * 0.6 } : sp.pos;
+        // QB_SEEN_MAN: the receiver where his own forecast has him, not where he truly is.
+        const tp = t ? (QB_SEEN_MAN ? this.receiverAt?.(t) ?? null : t.pos) : null;
+        p = tp ? { x: tp.x + 1, y: tp.y + (Math.sign(sim.ballY - tp.y) || 1) * 0.6 } : sp.pos;
       } else {
         p = { x: sim.qb.pos.x + 3, y: sp.pos.y };
       }
@@ -510,7 +526,7 @@ export class QBMind {
       y += b * p.y;
       wsum += b;
     }
-    if (wsum < 1e-6) return d.pos;
+    if (wsum < 1e-6) return QB_SEEN_MAN ? this.memory.get(d)?.pos ?? d.pos : d.pos;
     return { x: x / wsum, y: y / wsum };
   }
 
@@ -658,7 +674,9 @@ export class QBMind {
   private quickCheck(): PassConcept | null {
     const sim = this.sim;
     const cbs = sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W');
-    const depth = cbs.length ? cbs.reduce((s, d) => s + d.pos.x - sim.los, 0) / cbs.length : 6;
+    // QB_SEEN_MAN: corner depth as he sees it, with his alignment noise.
+    const sig = QB_SEEN_MAN ? 0.3 + 1.0 * (1 - this.rec) : 0;
+    const depth = cbs.length ? cbs.reduce((s, d) => s + d.pos.x + (sig ? sim.dice('qb-mind').normal(0, sig) : 0) - sim.los, 0) / cbs.length : 6;
     const id = depth > 5 ? 'hitches' : depth < 2.5 ? 'slant_flat' : 'quick_outs';
     return PASS_BY_ID[id] ?? null;
   }

@@ -623,6 +623,7 @@ export class QBPass implements Behavior {
     if (concept.family === 'playaction') this.fakeUntil = 0.7;
     this.mind = sim.qbMind;
     for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
+    this.mind.receiverAt = (r) => this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? null;
   }
 
   /** Called after all behaviors are assigned (receivers exist). */
