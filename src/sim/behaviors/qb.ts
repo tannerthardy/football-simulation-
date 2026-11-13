@@ -780,6 +780,14 @@ export class QBPass implements Behavior {
       }
     } else if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);
+      // SCREEN_QB: a quick screen thrown to its spot goes on its timing (it is ready: the ball and the receiver get
+      // there together) unless a defender is already sitting on the spot in his picture. Its window is not judged
+      // like a route's: the defender near the spot is the one a blocker in the call is assigned to (NFL tunnel screens
+      // leave at 1.6 s, before the receiver turns; ours priced that defender as a 40%+ pick and held to 3.0 s).
+      const toSpotNow = SCREEN_QB && quick && ev ? this.toSpot(a, sim, read) : null;
+      if (toSpotNow && ev && !sim.defense.some((d) => !d.isDown(sim.t) && Math.hypot(this.mind.estimate(d).pos.x - toSpotNow.spot.x, this.mind.estimate(d).pos.y - toSpotNow.spot.y) < 2)) {
+        const go = this.startIfFinish(a, sim, ev); if (go) return go;
+      }
       if (ev && ev.P >= need && ev.intRisk <= risk) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
