@@ -180,6 +180,7 @@
     "LINE_START": "on",
     "LINE_STEP": "on",
     "EYES_HEAD": "off",
+    "OPEN_NEED": "off",
     "MAN_PHASE": "off",
     "MESH_GUN_SIDE": "on",
     "MESH_TEMPO": "on",

@@ -762,6 +762,30 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
   }
   return toQB + side * Math.PI;
 }
+/** OPEN_NEED (experimental, off; OPEN_NEED=1 turns it on): one rule for a
+ * defender who opens his hips to run while keeping the QB in view. His task
+ * sets the speed he needs along `heading`; he faces the smallest opening off
+ * the line to the QB, toward `toward`, at which his facing's speed cap
+ * reaches it (`openTo`). Called without a state it is `openTo` exactly (the
+ * carry). With a state (new users) the opening has margins: he opens further
+ * only when the need passes his present opening's cap by OPEN_IN, and squares
+ * back only when the need falls below the next squarer opening's cap by
+ * OPEN_OUT (both estimated, stand-in debt), so a need hovering at a cap does
+ * not flip his hips every tick. Step 1 of 3: the carry routes through it
+ * unchanged; the underneath dropper and the safety follow. */
+export const OPEN_NEED = process.env.OPEN_NEED === '1';
+const OPEN_IN = 0.1, OPEN_OUT = 0.2;
+export interface OpenState { deg: number }
+export function openForNeed(a: Agent, qb: Vec2, toward: Vec2, heading: number, need: number, state?: OpenState): number {
+  if (!state) return openTo(a, qb, toward, heading, need);
+  const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(toward.y - a.pos.y, toward.x - a.pos.x);
+  const side = Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1;
+  const p = a.profile, cap = (deg: number) => p.vmax * directionalSpeedFactor(p, angleDiff(toQB + side * deg * Math.PI / 180, heading));
+  const want = Math.round(Math.abs(angleDiff(openTo(a, qb, toward, heading, need), toQB)) * 180 / Math.PI / 5) * 5;
+  if (want > state.deg && need > cap(state.deg) * (1 + OPEN_IN)) state.deg = want;
+  else if (want < state.deg && need < cap(Math.max(0, state.deg - 5)) * (1 - OPEN_OUT)) state.deg = want;
+  return toQB + side * state.deg * Math.PI / 180;
+}
 /** CUSHION_BREAK: has the receiver broken the cushion of a defender over him?
  * He opens to run when the cushion left is less than what the receiver closes
  * while his own hips turn from where they face now to the run (side-on is a
@@ -887,7 +911,7 @@ export function openCarryFacing(a: Agent, sim: PlaySim, receiver: Agent, req: Mo
   const qb = sim.see(a, sim.qb).pos, r = sim.see(a, receiver).pos;
   const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
   const need = Math.hypot(req.vel.x, req.vel.y);
-  const facing = openTo(a, qb, r, Math.atan2(req.vel.y, req.vel.x), need);
+  const facing = (OPEN_NEED ? openForNeed : openTo)(a, qb, r, Math.atan2(req.vel.y, req.vel.x), need);
   const off = angleDiff(facing, toQB);
   if (vertical && Math.abs(off) > Math.PI / 2 && seesDeepHelp(a, sim, r)) {
     a.tags.add('open-carry-help');
@@ -1251,7 +1275,7 @@ export class ManCoverage implements Behavior {
     if (breakOn && !this.hipsOpen && !broken()) {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
-      const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
+      const facing = (OPEN_NEED ? openForNeed : openTo)(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
         carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration));
       const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
       if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
@@ -1623,7 +1647,7 @@ export class ZoneCoverage implements Behavior {
       if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
-        const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
+        const facing = (OPEN_NEED ? openForNeed : openTo)(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
           carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
         if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
