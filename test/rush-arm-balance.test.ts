@@ -35,11 +35,11 @@ describe('RUSH_ARM_BALANCE', () => {
     expect(on.some((f: any) => f.slot === 'DT_S')).toBe(false);
   });
 
-  it('a bull keeps its commitment: the over-committed bull who is dropped still falls (Cover 1, seed 2, roster 11)', async () => {
-    // Re-pinned on engine-58 (PURSUIT_COMMIT on shifts the old roster 8 / seed 6 scene); this bull falls at about 1.5 s
-    // under every coverage and concept searched.
-    const on = await falls('1', 11, 'cover1', 2);
-    expect(on.some((f: any) => f.slot === 'DE_S' && f.move === 'bull')).toBe(true);
+  it('a bull keeps its commitment: the over-committed bull who is dropped still falls (Cover 1, seed 4, roster 3)', async () => {
+    // Re-found on the engine-59 stack (PASS_SET_SEEN, QB_BODY_SEEN, RUSH_PROMISE on) by a native search: 216 staged
+    // scenes, 3 bull falls among 33 DL falls; this one (the strong tackle at about 1.65 s) falls under all three coverages.
+    const on = await falls('1', 3, 'cover1', 4);
+    expect(on.some((f: any) => f.slot === 'DT_S' && f.move === 'bull')).toBe(true);
   });
 
   it('is off unless set', async () => {

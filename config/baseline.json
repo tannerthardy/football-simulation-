@@ -88,6 +88,8 @@
     "WRAP_FOOT": "0",
     "LEG_ALLOMETRY": "0",
     "GAZE": "0",
+    "PERCEIVE_TRACK": "0",
+    "QB_BODY_SEEN": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
@@ -320,7 +322,8 @@
     "OPEN_CARRY": "0",
     "CATCH_CARRY": "0",
     "PURSUIT_FIELD": "0",
-    "PURSUIT_COMMIT": "0"
+    "PURSUIT_COMMIT": "0",
+    "RUSH_PROMISE": "0"
   },
   "worldDefaults": {
     "handContact": "center",

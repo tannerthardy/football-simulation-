@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-58",
+  "id": "engine-59",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -117,6 +117,8 @@
     "FORECAST_HOLD": "on",
     "GAP_CLIMB": "on",
     "GAZE": "off",
+    "PERCEIVE_TRACK": "off",
+    "QB_BODY_SEEN": "on",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
@@ -178,7 +180,7 @@
     "PUNCH_STRIKE": "on",
     "ANCHOR_BASE": "on",
     "RUSH_ARM_BALANCE": "off",
-    "PASS_SET_SEEN": "off",
+    "PASS_SET_SEEN": "on",
     "REP_SEEN": "off",
     "THROW_HOLD": "off",
     "POCKET_REACH": "off",
@@ -210,6 +212,7 @@
     "PULL_PLAN": "off",
     "QB_FEEL": "off",
     "QB_RHYTHM": "on",
+    "RUSH_PROMISE": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",
     "RB_FLOW": "on",

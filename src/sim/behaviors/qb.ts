@@ -563,6 +563,8 @@ export class QBPass implements Behavior {
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
     const gaze = this.gazePoint(sim);
     this.mind.observe(gaze);
+    // QB_BODY_SEEN: his head shows where he is looking.
+    a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
     const routeKeys = this.mind.routeKeyPictures();
     for (const [r, forecast] of this.receiverForecasts) {
       const picture = this.mind.receiverLook(r, gaze);
