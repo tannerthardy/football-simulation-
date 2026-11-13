@@ -41,7 +41,8 @@ describe('interception uses the sprint request budget', () => {
     expect(timeToReachRequested({ pos: b.pos, vel: b.vel, profile }, target, .7, request))
       .toBe(timeToReachRequested({ pos: b.pos, vel: b.vel, profile }, target, .7, { speed: 1, effort: .8 }));
     const acc = locomotionAccel(b, { vel: { x: 6.4, y: 0 }, effort: .8 }, .05);
-    expect(acc.x).toBeCloseTo((6.4 - 2) / profile.tau, 12);
+    // Wanted 6.4 of a full 8: full start force, leveling at 6.4 (8 / 6.4 on the lag law).
+    expect(acc.x).toBeCloseTo((6.4 - 2) / profile.tau * (8 / 6.4), 12);
     expect(acc.y).toBe(0);
     expect(profile.vmax).toBe(8); expect(profile.lateral).toBe(6); expect(profile.brake).toBe(8);
     // With a short leveling time the FULL 8yd/s drive curve is the first

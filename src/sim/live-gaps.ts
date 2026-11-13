@@ -58,9 +58,36 @@ const cache = new WeakMap<Agent, { t: number; sim: PlaySim; picture: LinePicture
 function departed(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   const dir = sim.attackDir(b.agent.team);
   const home = sim.offAlign.spots[b.agent.slot]!.pos;
-  const depth = (b.seen.pos.x - home.x) * dir;
+  const depth = (b.seen.pos.x - home.x) * dir, across = Math.abs(b.seen.pos.y - home.y);
   if (depth > 1.5 || depth < -1.5) return true;
-  return depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1 && !seenOnDefender(sim, observer, b);
+  // Pullers run flat, inside the half-yard depth above, and cross behind the
+  // line: a body still behind his stance who is now seen past a teammate he
+  // lined up beside, with no defender on him, has left his place in the line.
+  // A zone line moves together and keeps its order, so a reach or cutoff
+  // running flat across stays on the surface.
+  if ((depth < 0 && crossedBehind(sim, observer, b) || depth < -.5 && across > 1) && !seenOnDefender(sim, observer, b)) return true;
+  return false;
+}
+
+/** In the observer's pictures, this body has crossed a line body whose stance
+ * lay beside his on the way: that teammate's stance lies between this body's
+ * stance and where this body is now, the teammate is still seen on that path,
+ * and this body is clear past him, the two bodies' widths apart. A teammate
+ * who himself left and crossed the other way is not on that path, and a body
+ * that has not reached a teammate's stance has passed no one, so a nearly
+ * still body is never taken off the line by someone else's pull; two blockers
+ * who meet at the edge (a tackle setting back outside his tight end) have not
+ * crossed each other. */
+function crossedBehind(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
+  const s = Math.sign(b.seen.pos.y - b.home);
+  if (!s) return false;
+  return sim.offense.some((o) => {
+    const spot = sim.offAlign.spots[o.slot];
+    if (o === b.agent || !spot || !(CORE.has(o.slot) || spot.inline) || (spot.pos.y - b.home) * s <= 0
+      || (b.seen.pos.y - spot.pos.y) * s <= 0) return false;
+    const y = sim.see(observer, o).pos.y;
+    return (y - b.home) * s > 0 && (b.seen.pos.y - y) * s > b.agent.profile.radius + o.profile.radius;
+  });
 }
 
 /** The observer's visible-block test: in his pictures, a defender within

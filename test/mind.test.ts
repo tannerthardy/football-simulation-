@@ -17,7 +17,8 @@ function sim() {
   const formation = FORMATION_BY_ID.gun_doubles_11;
   return new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 45,
     offCall: { formation, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'verts' },
-    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'match', label: 'c3' },
+    // dropStart 'early': these scenes stage a pass read and test the drop's technique, not when it starts.
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'match', dropStart: 'early', label: 'c3' },
     los: 40, ballY: 26, firstDownX: 50 });
 }
 
@@ -109,6 +110,8 @@ describe('observations and dynamic recovery', () => {
     }
     for (let i = 0; i < 20; i++) s.perception.record(s.agents);
     s.t = 1;
+    // He has read pass and is in his drop: an undecided box backer stands and reads instead.
+    d.recog!.read = 'pass';
     d.mind.focus = 0.25;
     coverage.update(d, s);
     expect(d.tags.has('match-hesitation')).toBe(true);

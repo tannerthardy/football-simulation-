@@ -367,9 +367,11 @@ describe('real World contact → native rule caller', () => {
     }
     for (let i = 0; i < 20 && !called(sim, 'hip_drop').length; i++) advance();
     if (trap) expect(legTrap!.force).toBeGreaterThan(0);
-    // Actual loaded leg restraint is not a certified landing or down. This
-    // witness stays legal because the runner is still upright.
-    expect(runner.body.support!.state).toBe('up');
+    // Actual loaded leg restraint is not a certified landing or down. With
+    // the trap binding his escape stride the runner may go down from his own
+    // legs; that is still not a hip-drop finish.
+    if (!trap) expect(runner.body.support!.state).toBe('up');
+    else expect(runner.body.support!.state === 'up' || runner.body.support!.cause === 'legs').toBe(true);
     expect(called(sim, 'hip_drop')).toEqual([]);
   });
 });

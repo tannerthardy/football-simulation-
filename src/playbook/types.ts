@@ -13,7 +13,7 @@ export type OffSlot = 'QB' | SkillSlot | OLSlot;
 export const OL_SLOTS: readonly OLSlot[] = ['LT', 'LG', 'C', 'RG', 'RT'];
 export const SKILL_SLOTS: readonly SkillSlot[] = ['X', 'Z', 'Y', 'H', 'F', 'RB'];
 
-export type PersonnelId = '10' | '11' | '12' | '13' | '21' | '22';
+export type PersonnelId = '10' | '11' | '12' | '13' | '20' | '21' | '22';
 
 export type Side = 'L' | 'R';
 export const sideSign = (s: Side): number => (s === 'L' ? 1 : -1);
@@ -63,16 +63,28 @@ export interface RoutePoint {
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';
 
+/** A coached menu, shared with the QB; selecting an answer is observer-local. */
+export interface RouteRead {
+  readonly key: 'underneath' | 'middle';
+  /** Read landmark in yards beyond the line, before the branch's break. */
+  readonly depth: number;
+  readonly answers: readonly { readonly id: 'away' | 'post' | 'under'; readonly points: readonly RoutePoint[]; readonly end: 'continue' | 'settle' }[];
+}
+
 export interface RouteDef {
   id: string;
   points: RoutePoint[];
   end: RouteEnd;
-  /** Converts against man coverage (e.g. stick → out-breaking). */
+  /** Legacy installed run-away branch. The name does not grant coverage knowledge. */
   vsMan?: RoutePoint[];
+  read?: RouteRead;
   /** Typical target depth for the QB's timing (yards beyond LOS). */
   depth: number;
   /** Route family for defensive anticipation. */
   family: 'quick' | 'intermediate' | 'deep' | 'flat' | 'cross' | 'back';
+  /** The route's coached pace between its points, as a fraction of top speed, where it is run under control rather
+   * than at the family's effort (the back's flat, timed to the drop). The receiver's route running still adjusts it. */
+  pace?: number;
 }
 
 export type ReceiverRef = `S${1 | 2 | 3 | 4}` | `W${1 | 2 | 3 | 4}` | 'B' | 'B2';
@@ -99,6 +111,54 @@ export interface PassConcept {
   minReceivers?: number;
   /** Play-action fake attached. */
   fake?: string;
+  /** A screen: who catches it and who releases to block for him. */
+  screen?: ScreenSpec;
+  /** A plain-text note of the intended key and rule ("flat defender: sinks → #2 flat, widens → #1 corner").
+   * Not read by the quarterback, who runs `progression`, ordered to match. */
+  read?: string;
+}
+
+/**
+ * Blocking jobs for a screen (docs/football-handbook/screens.md). Released
+ * linemen work "out, up, in": the first takes the outermost threat to the
+ * catch, the next the alley, the next anyone chasing from inside. Perimeter
+ * receivers take the defender over them (stalk) or the next one inside
+ * (crack). Targets are chosen live from what each blocker sees.
+ */
+export type ScreenJob = 'out' | 'up' | 'in' | 'stalk' | 'crack';
+
+export interface ScreenBlock {
+  /** 'T' | 'G' | 'C' (the screen side's tackle/guard, or the center), or a receiver number. */
+  who: 'T' | 'G' | 'C' | ReceiverRef;
+  job: ScreenJob;
+}
+
+export interface ScreenSpec {
+  /** The screen receiver. */
+  receiver: ReceiverRef;
+  /** Slow screens are sold as a pass first; quick screens are thrown at once. */
+  tempo: 'quick' | 'slow';
+  /** Called count, seconds after the snap, at which released linemen leave
+   * their pass set (each lineman counts with his own rhythm). */
+  count: number;
+  /** When a screen receiver who sells a block (a back or attached end) leaves
+   * for his route; defaults to just after the linemen's count. */
+  receiverRelease?: number;
+  /** A detached screen receiver who first sells a stalk block (the tunnel's
+   * vertical sell) leaves for his route this many seconds after the snap. */
+  receiverSell?: number;
+  /** Installed kill: the QB checks out of the screen at the line when he sees
+   * this look on the screen receiver ('press': a defender pressed over him,
+   * so there is no cushion to catch and turn in; 'numbers': more defenders outside the box to the screen's side
+   * than receivers there, the coached count for a bubble, as the run-pass option reads it). */
+  kill?: 'press' | 'numbers';
+  /** Slow screens: the released linemen's screen set, the assignment as it is coached. They show pass pro and give
+   * ground under control, taking the rusher's charge rather than kicking to a launch point, no deeper than maxDepth
+   * (yards behind the line); then they release on their own count (the called count is the earliest) and let the
+   * rusher go. maxDepth is the NFL linemen's median depth at the throw on these screens (BDB 2025,
+   * screen_line_depth_backs.py: RB 2.4, TE 1.8). Data only until the line's screen set reads it (Flex). */
+  lineSet?: { maxDepth: number };
+  blocks: ScreenBlock[];
 }
 
 export type RunScheme = 'insideZone' | 'outsideZone' | 'wideZone' | 'splitZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw';
@@ -132,7 +192,11 @@ export interface OffensivePlayCall {
   flip: boolean;
   kind: 'pass' | 'run';
   pass?: PassConcept;
+  /** The run. On a run-pass option thrown, the run the line still blocks. */
   run?: RunConcept;
+  /** Run-pass option: a run call tagged with this quick screen. The QB picks
+   * one at the line from the look outside (QBMind.rpoRead). */
+  rpo?: PassConcept;
   /** Installed non-contact stalk presentation before the player's normal
    * route/blocking job. Seconds from the snap, not a defender belief timer. */
   receiverBlockLook?: Partial<Record<SkillSlot, { until: number }>>;
@@ -160,7 +224,7 @@ export type DefSlot =
   | 'FS'
   | 'SS';
 
-export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline' | 'heavy';
+export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline' | 'heavy' | 'stack335';
 
 export type Technique = '0' | '1' | '2i' | '2' | '3' | '4i' | '4' | '5' | '6' | '7' | '9' | 'w9';
 
@@ -170,6 +234,8 @@ export interface FrontAlignment {
   side: 'S' | 'W';
   /** Yards beyond the LOS. */
   depth: number;
+  /** NICKEL_FRONTS: a stand-up rover off the ball who drops on 3rd and long, rushes otherwise. */
+  rover?: boolean;
 }
 
 export interface Front {
@@ -366,6 +432,23 @@ export interface DefensivePlayCall {
   /** Zone technique for zone defenders (default `match`). */
   zoneStyle?: ZoneStyle;
   /**
+   * What an underneath zone defender does before the throw about a receiver
+   * still behind the line in front of him (a back, a swing or a screen):
+   * `hold` (default) keeps his depth and leverage, squeezes the lane from
+   * there and breaks on the throw ("ball brings you back down"); `trap` is the
+   * coach's tag to drive down on it before the ball is out.
+   */
+  flatThreat?: 'hold' | 'trap';
+  /**
+   * How sure a box backer in zone must be that it is a pass before he leaves
+   * his read step for his drop, in his own pass belief: `early` drops as soon
+   * as he reads pass (default; third and long), `confirmed` on a confirmed
+   * pass as coaches teach it, `late` only when he is all but certain (run
+   * downs, RPO-heavy teams). `confirmed` becomes the default once a late
+   * dropper settles on the quarterback's set instead of sprinting to his spot.
+   */
+  dropStart?: 'early' | 'confirmed' | 'late';
+  /**
    * Disguise: the coverage the secondary *shows* pre-snap. DBs align in this
    * look and rotate to the real coverage at the snap (absent = no disguise).
    */
@@ -383,6 +466,16 @@ export interface DefensivePlayCall {
   /** FRONT_MENU: backers walked up into the open A gaps (one or both), each
    * still playing his called job from there. */
   mug?: 1 | 2;
+  /** SAM_ON_TE: the Sam walks onto the line on an attached TE in an Over or Even front (a "Sam on" call). */
+  samOn?: boolean;
+  /** DL_GAMES: a called defensive-line game. Run-down movement (`angle`: the
+   * interior linemen, `slant`: every lineman, one gap toward `dir`; `pinch`:
+   * both end men one gap inside) changes each mover's gap from the snap and the
+   * backers re-fit the gaps it vacates. `twist`: a pass-rush exchange between
+   * two adjacent rushers on `dir`'s side (`pair` names them by position:
+   * `TE` tackle crashes and end loops, `ET` end crashes and tackle loops,
+   * `TT` the two interior linemen). `dir` is the strength side (S) or weak (W). */
+  dlGame?: { kind: 'angle' | 'slant' | 'pinch' | 'twist'; dir: 'S' | 'W'; pair?: 'TE' | 'ET' | 'TT' };
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
   /** Show another compatible front, then move at a finite rate before snap. */
@@ -408,6 +501,8 @@ export const DEF_PERSONNEL: Record<DefPersonnelId, Partial<Record<DefSlot, Posit
   goalline: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', SS: 'S' },
   // Short yardage away from the goal line (SHORT_PACKAGE): five down, two backers, a safety deep.
   heavy: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', CB_S: 'CB', CB_W: 'CB', FS: 'S', SS: 'S' },
+  // NICKEL_FRONTS: the 3-3-5 (three down, three stacked backers, five backs).
+  stack335: { DE_S: 'EDGE', DE_W: 'EDGE', NT: 'DT', LB_S: 'LB', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', NB: 'CB', FS: 'S', SS: 'S' },
 };
 
 export const OFF_PERSONNEL: Record<PersonnelId, Partial<Record<SkillSlot, Position>>> = {
@@ -415,6 +510,7 @@ export const OFF_PERSONNEL: Record<PersonnelId, Partial<Record<SkillSlot, Positi
   '11': { RB: 'RB', X: 'WR', Z: 'WR', H: 'WR', Y: 'TE' },
   '12': { RB: 'RB', X: 'WR', Z: 'WR', Y: 'TE', H: 'TE' },
   '13': { RB: 'RB', X: 'WR', Y: 'TE', H: 'TE', F: 'TE' },
+  '20': { RB: 'RB', X: 'WR', Z: 'WR', H: 'WR', F: 'RB' },
   '21': { RB: 'RB', X: 'WR', Z: 'WR', Y: 'TE', F: 'FB' },
   '22': { RB: 'RB', X: 'WR', Y: 'TE', H: 'TE', F: 'FB' },
 };

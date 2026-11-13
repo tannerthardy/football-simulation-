@@ -15,7 +15,10 @@ function scene(at:number,mirror=false){
  const offense=fixture.actors.filter((a:any)=>a.team==='O').map((a:any)=>({...a})) as Agent[];
  const offAlign=alignOffense(fixture.call.formation,fixture.call.flip,fixture.los,center);
  if(mirror)for(const spot of Object.values(offAlign.spots))if(spot)spot.pos.y=reflect(spot.pos.y);
+ // The recorded defenders too: whether a body is seen on a defender is part of RB's own picture.
+ const defense=fixture.actors.filter((a:any)=>a.team==='D'&&d.pictures[a.idx]).map((a:any)=>({...a})) as Agent[];
  const sim={t:at,offense,offAlign,ballY:center,attackDir:()=>1,
+  opponents:(a:Agent)=>a.team==='O'?defense:offense,
   see:(_a:Agent,b:Agent)=>{const p=structuredClone(d.pictures[b.idx]);p.pos.y=reflect(p.pos.y);if(mirror)p.vel.y*=-1;return p;},
  } as unknown as PlaySim;
  return{sim,rb:offense.find(a=>a.slot==='RB')!,d,side:mirror?-1:1,

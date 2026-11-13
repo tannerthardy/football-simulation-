@@ -4,7 +4,7 @@
  * from these records, so adding a metric never needs a new simulation.
  */
 import { Rng } from '../../src/core/rng.js';
-import { generateTeam, type Team } from '../../src/league/team.js';
+import { generateTeam, withIdentity, type Team } from '../../src/league/team.js';
 import type { GameResult, PlayLog } from '../../src/game/game.js';
 import type { PlayStats } from '../../src/sim/types.js';
 import type { WeirdEvent } from './weird/types.js';
@@ -177,7 +177,9 @@ export function makeLeague(seed: number, n: number): Team[] {
   const lr = new Rng(seed).fork(`league-${n}`);
   return TEAM_NAMES.map((name) => {
     const tr = lr.fork(name);
-    return generateTeam(tr, name, name.slice(0, 3).toUpperCase(), { strength: tr.range(0.35, 0.75) });
+    // Identities salted by the league seed: alignment habits sample the league
+    // instead of the same eight on every seed (rosters unchanged).
+    return withIdentity(generateTeam(tr, name, name.slice(0, 3).toUpperCase(), { strength: tr.range(0.35, 0.75) }), `${seed}-${n}`);
   });
 }
 
@@ -258,7 +260,7 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
       formation: p.plan?.formation ?? '?',
       personnel: p.plan?.personnel ?? '?',
       playAction: !!p.plan?.playAction,
-      yards: p.yards,
+      yards: p.officialCredit?.yards ?? p.yards,
       att,
       comp,
       sack: pass && !!st.sacked,

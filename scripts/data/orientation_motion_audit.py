@@ -58,7 +58,9 @@ def clean_trajectory(g):
     if deduped.duplicated('parsed_time', keep=False).any():
         return None, 'conflictingDuplicateClock', exact_duplicates
     g = deduped.sort_values('parsed_time').copy()
-    g['seconds'] = g.parsed_time.astype('int64') / 1e9
+    # Datetime integers use the Series' storage unit (e.g. us in pandas 3),
+    # so normalize before converting to epoch seconds.
+    g['seconds'] = g.parsed_time.dt.as_unit('ns').astype('int64') / 1e9
     for column in ['x', 'y', 's', 'o', 'dir']:
         g[column] = pd.to_numeric(g[column], errors='coerce')
     return g, None, exact_duplicates

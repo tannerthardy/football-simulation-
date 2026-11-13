@@ -68,6 +68,70 @@ perception, applied force or the cause of a fall. Mark those cases **needs trace
 not confirmed physics failures. Use existing recording levels to collect the
 missing state only for the selected mechanism. Preserve unsuccessful examples.
 
+## Building the film pack
+
+```sh
+npm ci --no-audit --no-fund
+npm run film-pack -- --seed 101 --games 12 --out out/film-pack/review
+npm run film-pack -- --seed 11 --games 2 --run-only --out out/film-pack/run-s11   # run-game film
+```
+
+`--run-only` plays the same games with every offensive scrimmage call a designed run
+(`GameOptions.runOnly`); enabled manifests record `runOnly: true` and its input
+hash. Omitting the switch preserves ordinary call selection.
+
+New packs also retain only their selected constructors in a private `inputs/`
+sidecar, checked against the original clips on the same source/settings. See
+[selected film inputs](FILM_PACK_INPUTS.md) for the bounded second pass, existing
+F2 saved-path selector, unavailable cases and legacy-pack limits.
+
+Use Node 22.23.3 and a fresh ignored output directory. This plays the same
+Ironmen/Comets teams and consecutive game seeds as `npm run replay`. The
+existing detectors read those same recorded games. `manifest.json` records the
+develop base, actual HEAD and engine/tool/lockfile hashes, resolved settings,
+roster/input identity, selection version, exclusions, strata and selected IDs.
+Keep the manifest with its source: later engine changes can change the plays
+behind the same IDs. Build duration is separate in `build.json` so the manifest
+contains no wall-clock values.
+
+Watch the HTML parts in `index.md` order, using the default **Film review order**
+grouping. Each standalone part uses the existing replay renderer, light body
+frames and fewer than 15,000,000 UTF-8 bytes. The ordinary group is a seeded
+proportional sample of 120 eligible run/pass plays across kind, down, distance
+(≤3, 4–7, 8+) and offensive field zone (own 20 and in, middle, opponent 20 and
+in). Every non-empty cell gets at least one play; if cells exceed the quota,
+the tool explicitly expands it. Nullified, unfilmed and invalid situations are
+excluded and counted. Ordinary selection precedes any inspection of gains or
+detector results.
+
+The remaining unique plays supply up to 40 **watch first** clips, ranked by
+uncapped eligible detector-event frequency times severity, with at most ten
+selected per detector; then up to 20 **big plays** (20+ yard gains, sacks or
+turnovers). Shortages are reported, never padded. Alerts indicate where to look,
+not confirmed defects, and this enriched queue is not a population defect rate.
+The 20 before/after pair slots are explicitly empty for F2, which writes a
+separate source-qualified sidecar. No play appears in two groups.
+
+Raw original clips and uncapped detector events stay in the pack's `raw/`
+directory for offline inspection. Only the indexed HTML parts are publication
+size-limited; do not commit the generated pack. Light film shows body facing
+and travel, not hidden perception, intention or applied force. Those questions
+still need the existing selected-play traces. The small native determinism
+test builds one game twice and requires identical manifest and film bytes;
+synthetic tests cover stratification, caps, exclusions and duplicate prevention.
+
+### Before/after pairs from one saved snap
+
+`npm run film-pairs -- --base <ref> --head <ref> --plays out/selection.json --out out/film-pairs/name`
+captures once on the declared source and replays the identical constructor on
+both pinned refs. Saved IDs resolve through exact paths/hashes; seed/game/play
+triples use film-room numbering, not scorecard IDs. See [FILM_PAIRS](FILM_PAIRS.md)
+for the versioned input, compatibility checks and measurement limits. Open the
+standalone index.html for synced playback and first recorded differences.
+Keep generated inputs/films in ignored out/ and deliver them through the film-pack
+artifact channel. Same-ref pairs must say no change; whole-game comparisons do
+not replace these paired snapshots.
+
 ## Film weirdness detectors
 
 A person watching ordinary film finds things the averages hide: a motion man
@@ -87,7 +151,17 @@ to a target count.
 | Blocker on a man out of the play (`stuck`) | A run play with a carrier: a blocker engaged with, or planning against, a defender more than 5 yd from the carrier and moving away at over 0.5 yd/s, while a free defender (not engaged, not down, no offensive teammate within 1 yd) is within 3.5 yd of the carrier. | 5 yd and 3.5 yd are RUN-12's; the 0.5 yd/s and the 0.25 s are chosen. RUN-12 is rebuilt from its text, since no script exists. | The blocker's requested and achieved velocity, and his job. |
 | Lineman running toward his own backfield (`backpedal`, **candidate**) | An unengaged offensive lineman, while the offense still has the ball, faces more than 120° from downfield and moves back faster than 1 yd/s, for 0.25 s. Run and pass plays both; the play kind is logged. | 120°, 1 yd/s, 0.25 s are chosen. **Demoted 2026-10-27:** he faces within 45° of his travel in 18 of 19 run-only film events, so the facing clause restates the velocity clause and he is running, not backpedaling; and 1 yd/s for 0.25 s is ordinary (NFL linemen hold 1 yd/s toward their goal for a second on 46% of runs, the sim 38%). The NFL-comparable form (every 0.1 s step above 2 yd/s for 1 s, any lineman, snap to end) is 10.8% of NFL runs against 1.9% of sim runs, so the sim retreats less, not more. Review: [backpedal detector review](reviews/2026-10-27-backpedal-detector-review.md). | Requested against achieved velocity and facing. The rate is a share of OL frames. |
 | Sliding through a cut (`slide`, **candidate**) | A sharp turn (60° or more over 0.5 s, entered at 3 yd/s or faster) in which no window of the turn shows him slowing: speed retention at or above the NFL 90th percentile for his role. | The turn operator and the retention percentiles are sourced from BDB2027 tracking (`scripts/data/bdb2027_movement.py`; the table in `detectors.ts` is checked against `bdb2027-movement.json` by a test). The 3 yd/s entry floor is chosen. **No plant-deceleration threshold exists anywhere**, hence "candidate". | Requested turn angle and speed ratio against achieved. The rate is a share of sharp turns. |
+| Free second-level OL requests stop (`frozen`, **candidate**) | Live designed run, OL job climb/lead, unengaged/up/out of tackle bond; request under 0.3 yd/s for at least 0.4 s of consecutive 20 Hz samples, including before handoff. | 0.3 yd/s and 0.4 s are chosen review thresholds, not NFL calibration. | Requested and achieved speeds and job. A stop may be lawful braking/traffic; not a failed-block verdict. |
+| QB down without nearby defender (`downalone`, **candidate**) | New QB down onset on a pass/scramble, with complete preceding 0.5 s of samples, no engagement/bond, and all defender centers over 2 yd away throughout the lookback and onset. | 2 yd and 0.5 s are chosen. Missing history/defenders mean unknown. | Smallest sampled defender distance and onset; positions do not establish valid/invalid reach or cause of fall. |
+| Trailing man body stays turned from ball (`blindball`, **candidate**) | At flight end, man marker stayed within 2 yd of the target and behind along flight direction, body over 120° from ball throughout recorded undeflected/non-throwaway flight, accumulating no more than 30° facing travel. Missing/partial flight is skipped. | 2 yd, 120°, 30° and the 20 Hz window are chosen. | Target, sampled offsets, facing travel and signed arrival angle/left-rear or right-rear shoulder side. Body facing is not gaze or proof of missed recognition. |
+| Runner departs static installed aim toward defender (`phantomlane`, **candidate**) | Before passing the installed aim on a designed run, achieved travel at least 0.3 yd/s departs its bearing by 30°+, with an upright defender 0–3 yd forward along that ray and within 1.5 yd perpendicular. | 30°, 0.3 yd/s, 3 yd and 1.5 yd are chosen geometry heuristics. | Achieved/requested travel headings, installed-aim bearing and defender offsets/engagement. Static aim is not a newly evaluated live-gap route, and a nearby defender does not establish a wrong cut. |
 | Puller first engages a man deeper than the ball holder (`pulldeep`) | A run play: an offensive blocker with a kick-out or lead pull role, on the tick he is first engaged in the play, with a defender whose x is behind the ball holder's (the QB before the handoff, the runner after). One tick, no hold time. Ranked by how many yards deeper. | Zero margin; no thresholds. Sourced in kind from BDB2025 weeks 1-2 (3 yd lateral pullers, first touch within 1.2 yd): the man touched is deeper than the runner on 0% of 113 power and 3% of 101 counter pullers, against 30% and 16% of the run-only sim pullers (`run_film_reference.py`, last column of the Pullers table; touch is proximity, the detector uses the engagement). On 4 run-only seeds (7, 9, 11, 13; two games each) it finds 28 of 147 counter/power plays (power 17/74, counter 11/73), Tanner's count was 24 of 146. | Geometry only: a crashed back-side end can be the right kick-out target, and it says nothing about why he went there. The puller's job, the defender and the holder's x. |
+
+The four additional candidate definitions landed in
+[#318](https://github.com/tannerthardy/football-simulation-/pull/318) at
+`58ae15d7dd285d33ddd058f3743f706b4f4f886c` (head `0f6329e3`).
+Their chosen thresholds nominate review clips; they are not calibrated football
+limits or automatic defect verdicts.
 
 The retention table describes how NFL players turn (their typical turn is
 entered at about 1.9 yd/s, so it is generous to a run-speed cut), not when a foot
@@ -100,7 +174,7 @@ cut spans several overlapping windows, so it is judged by its worst one.
   (`weird.*` metrics) that move like any other metric. Severity is duration,
   smallest distance, closing speed or, for slides, speed carried through the cut.
 - The full list is `<saved card>.weird-events.json` (or `--weird path`), written
-  next to `--out`/`--md`; CI uploads it with `out/`. It keeps the worst 25 events
+  next to `--out`/`--md`; retain it with local `out/` for review. It keeps the worst 25 events
   per detector per game; rate counts are never capped.
 - Scorecard ids look like `sc7/G2-P014` and belong to that run's own games, not the
   film room's. `npm run weird -- 7 --games 6` plays the film room's games (the same
@@ -241,6 +315,7 @@ Focused checks during iteration precede shared checks on the combined candidate.
 
 ```sh
 npm test
+npm run test:workflows
 npm run test:integration
 npm run test:research
 npm run typecheck
@@ -248,15 +323,27 @@ npm run build
 npm run test:data
 ```
 
-`npm test` covers the production contracts. Integration keeps the existing slow
-game/ensemble checks; research keeps the paused anatomical/sole experiments.
+`npm test` covers engine/controller contracts. `test:workflows` selects native
+capture/replay, film/CLI and lab contracts for focused work. The integration
+command includes those workflows plus the existing slow game/ensemble checks,
+so the required core-plus-integration path retains every former production
+check exactly once. Do not also run the complete workflow tier when that
+integration command is the chosen gate. Research keeps the paused
+anatomical/sole experiments.
 At integration, one designated owner runs `npm run test:all` on the exact combined
 engine candidate, without omitting any preserved assertion, alongside the other
 required full checks. Local agents supply focused receipts and link the shared
 result rather than each launching the suite. Reuse only compatible tested code,
 inputs and settings. Docs-only work needs no new games.
-Complete and integration runs use one worker to avoid the worker RPC timeout
-observed in the old parallel full suite; the fast default remains parallel.
+Complete verification uses one shared isolated thread pool, capped at three
+workers; the combined workflow/game integration command caps it at two.
+Standalone workflow selection uses one worker. Every test file retains module
+and environment isolation. On a constrained host use
+`npm exec -- vitest run --maxWorkers=1` for all projects, or
+`npm exec -- vitest run --project workflows --project integration --maxWorkers=1`
+for integration. Appending a duplicate worker option to the npm scripts is an
+error, not an override. Preserve and report any timeout or worker failure;
+lower concurrency does not authorize changing a deadline or assertion.
 The native game tests yield between synchronous games so worker reports can
 be delivered. Their simulation inputs, assertions and test timeout are unchanged.
 
@@ -364,6 +451,20 @@ bodies bypass them. Budgets, failures, skipped cases and timings are recorded;
 partial/favorable-prefix evidence does not pass a planned screen. Optional
 `npm run baseline:verify -- --candidate --fail-fast` stops failed cheap phases
 and records the omitted tail without weakening assertions.
+
+## The fixed run set is a used benchmark
+
+`ref:report`'s fixed run set (`config/reference-stack.json` `runSet`, 1,321
+runs) has been the yardstick for dozens of promotions, so the default engine is
+partly fitted to its exact plays. Measured 2026-11-13 with placebo arms (one
+body nudged 0.05 yd after the first tick, nothing else changed; see
+[TESTING_COSTS](TESTING_COSTS.md#noise-floor-of-the-fixed-run-set-refreport---placebo-n)):
+on `runSet` every arm loses yards (mean -0.10 a run, IZ -0.14); on
+`runSetFresh`, captured on engine-55 with new seeds, the overall bias is -0.00.
+Read run-set deltas on `ref:report -- --set fresh`, against the placebo mean and
+spread at a matching share of changed plays. Keep `runSet` for continuity and
+the operators. When `runSetFresh` has in turn judged several promotions,
+capture another and retire it the same way.
 
 ## Keep an honest final exam
 

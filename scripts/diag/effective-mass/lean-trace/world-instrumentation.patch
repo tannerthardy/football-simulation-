@@ -1,0 +1,43 @@
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 79cbd37e..3b5ec6c1 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -2009,6 +2009,7 @@ export class World {
+           }
+         }
+         let leanX = sup.lean.x, leanY = sup.lean.y;
++        const __T = (globalThis as any).__L?.target === b ? { entry: leanX, entryY: leanY, ty, feltY: sup.felt.y, vy: b.vel.y, vx: b.vel.x, tx, felt: sup.felt.x, plan: plan.ax * m, w0: omega0(sp, sup.posture), rb: baseRadiusAt(sp, sup.posture), m, rel: [0, 0], blend: 0, pitch: 0 } as any : null;
+         // A lean is his COM held ahead of his feet by the load. Whatever the
+         // load no longer balances, beyond what his gait can accept as planned
+         // acceleration, is a capture-point offset now: an overextension.
+@@ -2026,7 +2027,7 @@ export class World {
+             const dx = hx * conv / (m * w0 * w0), dy = hy * conv / (m * w0 * w0);
+             sup.xi = { x: sup.xi.x + dx, y: sup.xi.y + dy };
+             report.leanRelease[i].x += dx; report.leanRelease[i].y += dy;
+-            leanX -= hx * conv; leanY -= hy * conv;
++            leanX -= hx * conv; leanY -= hy * conv; if (__T) __T.rel[phase] += hx * conv;
+             // Transferred geometry changes what the same feet can absorb.
+             a = availability(sup, sp, fat); this.alpha[i] = a;
+             conv = unsupportedLean(b, plan, leanX, leanY, a, m); iterations++;
+@@ -2041,18 +2042,18 @@ export class World {
+             const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
+             const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
+             const before = LEAN_PITCH ? hypot2(leanX, leanY) : 0;
+-            leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
++            leanX += (tx - leanX) * k; leanY += (ty - leanY) * k; if (__T) { __T.afterBlend = leanX; __T.k = k; __T.rising = rising; }
+             if (LEAN_PITCH) {
+               const after = hypot2(leanX, leanY), stiff = m * w0 * w0;
+               const most = stiff * Math.max(baseRadiusAt(sp, sup.posture), before / stiff * Math.exp(w0 * h));
+               if (after > most && after > before) {
+                 const keep = Math.max(before, most) / after;
+-                leanX *= keep; leanY *= keep;
++                leanX *= keep; leanY *= keep; if (__T) { __T.pitch = 1; __T.most = most; }
+               }
+             }
+           }
+         }
+-        sup.lean = { x: leanX, y: leanY };
++        sup.lean = { x: leanX, y: leanY }; if (__T) { __T.finalY = leanY; __T.final = leanX; (globalThis as any).__L.rows.push(__T); }
+         // One budget: locomotion and lean share traction and leg strength.
+         // Leg drive is directional: full straight ahead, a shuffle's or a
+         // backpedal's share sideways or backward. Traction caps all of it.

@@ -38,6 +38,9 @@ export interface Behavior {
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent, work?: 'reach' | 'runoff' | 'prepare'): Vec2 | null;
+  /** ENGAGED_TECHNIQUE: the engaged run blocker's goal for this rep (engaged-technique.ts). */
+  engagedGoal?(a: Agent, sim: import('./playsim.js').PlaySim, e: Engagement): import('./engaged-technique.js').EngagedGoal | null;
+  reachGoal?(a: Agent, sim: import('./playsim.js').PlaySim, e: Engagement): import('./engaged-technique.js').EngagedGoal | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';
@@ -64,6 +67,22 @@ export interface RunContactSurface {
  * the intended contact surface on runs (normally against the drive).
  */
 export interface Engagement {
+  /** TACKLE_RESET: the blocker's base re-set (cue onset, step end, done) and his last depth request. */
+  baseReset?: { cueAt?: number; until?: number; done?: boolean };
+  /** RUSH_HANDS: the rusher's own hand on the blocker's chest during a long-arm (a = rusher, b = blocker), held until
+   * his next move decision or until it is swiped off; and when the blocker last swiped at it. */
+  rusherHand?: import('../physics/world.js').HandJoint;
+  longArmUntil?: number;
+  /** RUSH_HANDS: whether the rusher last felt the blocker's hand loaded on him (the keys' felt change). */
+  feltLoaded?: boolean;
+  /** PASS_RIDE: the blocker is riding this man (kept until the man is clearly back in front). */
+  riding?: boolean;
+  /** RUSH_HANDS: his last club (its end, the blocker's hands on before it, his hand speed) and when his hands are
+   * back from it: no move, keyed or not, before then. */
+  club?: { end: number; handsBefore: number; speed: number };
+  handsBackAt?: number;
+  counterAt?: number;
+  lastReqX?: number;
   /** Emitted once when the physical hands/torso actually carry load. */
   contactReported?: boolean;
   blocker: Agent;
@@ -133,6 +152,13 @@ export class Agent {
    * out on a run block. Defenders read it.
    */
   stance: 'high' | 'low' | null = null;
+  /** STANCE_TELL: pre-snap weight lean a lineman shows in his stance, as a
+   * lateral sign (-1, 0, +1). Visible before the snap like his alignment. */
+  stanceLean = 0;
+  /** KEY_REACT: the key's lateral step this lineman saw before contact, and whose. */
+  keyStep: { from: Agent; side: number } | null = null;
+  /** DEF_STANCE: a front defender's pre-snap stance, hand(s) down or standing up. */
+  setStance: 'down' | 'up' | null = null;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */

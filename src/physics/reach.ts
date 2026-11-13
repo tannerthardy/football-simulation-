@@ -41,10 +41,11 @@ export interface Mover {
 }
 
 /** Forward, aligned, unloaded scalar response. In the ordinary gait the
- * approach to a submaximal wanted speed uses profile.tau. Under GAIT_STEP,
- * it is capped both by the full-profile drive curve and by the requested
- * speed's leveling time. Braking above the wanted speed retains momentum.
- * This does not solve the lateral/facing/support problem. */
+ * approach to a submaximal wanted speed starts at full force and levels off
+ * at it: an exponential approach with time constant tau * wanted / full.
+ * Under GAIT_STEP, it is capped both by the full-profile drive curve and by
+ * the requested speed's leveling time. Braking above the wanted speed
+ * retains momentum. This does not solve the lateral/facing/support problem. */
 export function requestedSprintTime(distance: number, u0: number, wanted: number,
   full: number, tau: number, lag: number, brake: number): number {
   if (distance <= 0) return 0;
@@ -57,7 +58,8 @@ export function requestedSprintTime(distance: number, u0: number, wanted: number
   if (wanted <= 0) return Infinity;
   // Full effort is still limited by the athlete's sprint curve even if a
   // short leveling time would request a more abrupt acceleration.
-  if (wanted >= full || lag >= tau) return sprintTime(distance, u, wanted, Math.max(tau, lag));
+  if (wanted >= full) return sprintTime(distance, u, wanted, Math.max(tau, lag));
+  if (lag >= tau) return sprintTime(distance, u, wanted, tau * wanted / full);
   const crossover = (tau * wanted - lag * full) / (tau - lag);
   if (u >= crossover) return sprintTime(distance, u, wanted, lag);
   const turnAt = tau * Math.log((full - u) / (full - crossover));

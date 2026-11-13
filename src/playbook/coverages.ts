@@ -23,7 +23,11 @@ const NINE_DEEP = {
   CB_S: z('deep_third_s', 'c3_corner'),
   CB_W: z('deep_third_w', 'c3_corner'),
   SS: z('deep_mid'),
-  FS: z('curl_flat_w', 'c3_seam', 9),
+  // Shown 11 yd deep: tracked one-high calls disguised as two-high show the
+  // rotator at 11.1 (p25-p75 10.0-12.6) beside a 14.1 post (BDB 2025, PFF
+  // assignment; docs/reviews/2026-11-09-coverage-spacing.md). At 9 he gave
+  // the rotation away.
+  FS: z('curl_flat_w', 'c3_seam', 11),
 };
 
 // Quarters pieces shared by several calls.
@@ -246,6 +250,18 @@ export const COVERAGES: Coverage[] = [
       FS: z('deep_mid'),
     },
     underneath: ['curl_flat_s', 'curl_flat_w', 'hook_s', 'hook_w', 'hook_mid'],
+    checks: { '3x1': ['cover3_trips'] },
+  },
+  {
+    id: 'cover3_trips', name: 'Cover 3 (vs trips)', family: 'cover3', shell: 'one-high', man: false, press: false,
+    note: 'Vs 3x1 the Mike pushes to the middle hook toward the trips side and walls a vertical #3 from it; the weak curl-flat stays home, so the backside hook goes unfilled. Same spot-zone technique as Sky.',
+    roles: {
+      CB_S: z('deep_third_s'),
+      CB_W: z('deep_third_w'),
+      FS: z('deep_mid'),
+      LB_M: z('hook_mid'),
+    },
+    underneath: ['curl_flat_s', 'hook_s', 'curl_flat_w', 'hook_w'],
   },
   {
     id: 'cover3_match', name: 'Cover 3 Match (Rip/Liz)', family: 'cover3', shell: 'one-high', man: false, press: false,
@@ -286,7 +302,7 @@ export const COVERAGES: Coverage[] = [
       CB_S: z('deep_third_s', 'c3_corner'),
       CB_W: z('deep_third_w', 'c3_corner'),
       FS: z('deep_mid'),
-      SS: z('hook_s', 'c3_hook', 9),
+      SS: z('hook_s', 'c3_hook', 11), // the buzz safety shows at the tracked rotator depth (see NINE_DEEP)
     },
     underneath: [seat('curl_flat_s', 'c3_curl_flat'), seat('curl_flat_w', 'c3_curl_flat'), seat('hook_mid', 'mike_3'), 'hook_w'],
   },
@@ -338,7 +354,7 @@ export const COVERAGES: Coverage[] = [
   {
     id: 'cover9_grab', name: 'Cover 9 Grab (vs empty)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
     note: 'Empty 3x2 (HNFL-054/063 "Grab"): rotation becomes Buzz. The weak overhang is seam/flat on weak #2 and the rotating safety becomes the #3 receiver hook on the final #3 up or over.',
-    roles: { ...NINE_DEEP, FS: z('hook_s', 'three_rec_hook', 9) },
+    roles: { ...NINE_DEEP, FS: z('hook_s', 'three_rec_hook', 11) },
     underneath: [seat('curl_flat_s', 'c3_seam'), seat('curl_flat_w', 'c3_seam'), seat('hook_mid', 'bonus_hook'), 'hook_w'],
   },
   // ------------------------------------------------------------ two-deep zone

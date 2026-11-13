@@ -80,7 +80,7 @@ function move(body: ReturnType<typeof stage>['sim']['agents'][number]['body'], c
     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
     expect(report.armImpulse).toEqual([0]);
     expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
-      .toBeLessThanOrEqual(supportParams(copy.profile).traction * .05 + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[0] + 1e-8);
     expect(report.supportMotorWork[0]).toBeLessThanOrEqual(report.supportMotorWorkLimit[0] + 1e-8);
   }
   expect(copy.pos).not.toEqual(start);

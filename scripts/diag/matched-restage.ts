@@ -30,7 +30,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { Rng } from '../../src/core/rng.js';
 import { simulateGame } from '../../src/game/game.js';
-import { generateTeam } from '../../src/league/team.js';
+import { generateTeam, leagueSample } from '../../src/league/team.js';
 import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
 import { captureSetup, restoreSetup } from './saved-play.js';
 import { watchRunPlay } from './run-trace-watch.js';
@@ -70,7 +70,9 @@ const same = (a: Result, b: Result) => a.y === b.y && a.o === b.o && a.events ==
 
 if (mode === 'capture') {
   const seed = Number(rest[0]), games = Number(v.games), rng = new Rng(seed);
-  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+  // Per-seed league sample (leagueSample): the teams' alignment habits and coordinators sample the league instead
+  // of the same IRN/COM pair on every seed (rosters unchanged).
+  const home = leagueSample(generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), seed), away = leagueSample(generateTeam(rng, 'Comets', 'COM', { strength: 0.55 }), seed);
   const plays: Snap[] = []; let setup: PlaySetup | null = null;
   for (let g = 0; g < games; g++) {
     simulateGame(home, away, { seed: seed + g, ...(v['run-only'] ? { runOnly: true } : {}), hooks: { playSetup: s => { setup = s; }, playResult: (sim, kind) => {

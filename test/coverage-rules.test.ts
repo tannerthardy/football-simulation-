@@ -75,7 +75,10 @@ describe('Quarters', () => {
 
   it('safety carries acquired #2 vertical and does not infer an out from the private route', () => {
     expect(run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'seam' }).jobs('FS')).toContain('man:H');
-    const out = run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'quick_out' });
+    // Start law (#336): H's stem now runs about 0.15 s ahead and the safety
+    // reads the out at 2.35 s (2.50 before), so the prefix ends 0.15 s earlier
+    // on the same picture (H 6.2 yd deep, breaking out at 3.1 yd/s).
+    const out = run('gun_doubles_11', 'cover4', { 1: 'go', 2: 'go' }, { 1: 'go', 2: 'quick_out' }, { until: 2.25 });
     const safety = out.sim.slot('FS')!.behavior as CoverageDefender;
     // H has not declared the out in this prefix. Previous #1 help was an
     // emergency override after the corner lost X, not the coached out rule.

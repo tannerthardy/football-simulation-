@@ -75,7 +75,7 @@ def convert(key, rows, meta, position):
     gid, pid = key
     snap = None
     direction = rows[0][9]
-    tracks, events, ball = {}, {}, {}
+    tracks, events, ball, orient = {}, {}, {}, {}
     for r in rows:
         frame = int(r[4])
         if r[5] == "SNAP":
@@ -87,6 +87,10 @@ def convert(key, rows, meta, position):
             ball[frame] = (x, y)
         else:
             tracks.setdefault(r[2], (r[8], {}))[1][frame] = (x, y)
+            # Orientation (NGS 'o': 0 deg = +y, clockwise) as a math angle in the normalized frame, degrees.
+            if r[15] not in ("", "NA"):
+                a = 90.0 - float(r[15]) + (180.0 if direction == "left" else 0.0)
+                orient.setdefault(r[2], {})[frame] = round((a + 180.0) % 360.0 - 180.0, 1)
         if r[17] != "NA":
             events.setdefault(r[17], frame)
     if snap is None or snap not in ball or len(tracks) < 22:
@@ -99,24 +103,29 @@ def convert(key, rows, meta, position):
         group = GROUP.get(position.get(i, ""), None)
         if group is None:
             return None
-        players.append({"side": "O" if tracks[i][0] == meta["offense"] else "D", "group": group})
-    xy, carry = [], {}
+        players.append({"side": "O" if tracks[i][0] == meta["offense"] else "D", "group": group,
+                        "id": i, "pos": position.get(i, "")})
+    xy, carry, ori, ocarry = [], {}, [], {}
     for f in range(snap, last + 1):
-        row = []
+        row, orow = [], []
         for i in ids:
             point = tracks[i][1].get(f, carry.get(i))
             if point is None:
                 return None
             carry[i] = point
             row += [round(point[0] - los, 2), round(point[1], 2)]
+            o = orient.get(i, {}).get(f, ocarry.get(i))
+            ocarry[i] = o
+            orow.append(o)
         xy.append(row)
+        ori.append(orow)
     ev = {name: round((frame - snap) / 10, 2) for name, frame in events.items() if name in KEEP_EVENTS and frame >= snap}
     if "pass_outcome_caught" in ev:
         ev["catch"] = ev.pop("pass_outcome_caught")
     ends = [frame for name, frame in events.items() if name in END_EVENTS and frame >= snap]
     ev["end"] = round(((min(ends) if ends else last) - snap) / 10, 2)
     return {"id": f"{gid}-{pid}", "source": "nfl-bdb2025", "kind": meta["kind"], "yards": meta["yards"],
-            "players": players, "dt": 0.1, "xy": xy, "ball_y": round(ball_y, 2), "events": ev,
+            "players": players, "dt": 0.1, "xy": xy, "o": ori, "ball_y": round(ball_y, 2), "events": ev,
             "carrier": ids.index(meta["carrier"]) if meta["carrier"] in ids else None,
             "target": ids.index(meta["target"]) if meta["target"] in ids else None,
             "blocks": [[ids.index(b), ids.index(d)] for b, d in meta["blocks"] if b in ids and d in ids],

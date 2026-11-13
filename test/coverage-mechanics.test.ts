@@ -19,7 +19,8 @@ const away = generateTeam(new Rng(7).fork('defense'), 'Away', 'AWY', { strength:
 function setup(coverage = 'cover1', los = 40, zoneStyle: 'spot' | 'match' = 'match') {
   return new PlaySim({ offense: pickOffense(home, '11'), defense: pickDefense(away, 'nickel'), seed: 1,
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
-    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, zoneStyle, label: '' },
+    // dropStart 'early': these scenes stage a pass read and test the drop's technique, not when it starts.
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, zoneStyle, dropStart: 'early', label: '' },
     los, ballY: 26, firstDownX: Math.min(110, los + 10) });
 }
 const cue = (vx = 6, vy = 0, facing = 0): Perceived => ({ pos: { x: 50, y: 30 }, vel: { x: vx, y: vy }, facing, stance: null });

@@ -64,7 +64,7 @@ function initialRoles(personnel: DefPersonnelId, front: Front, coverage: Coverag
  */
 /** Experimental pressures by their flag, read literally so the baseline
  * profile's flag inventory sees them; an unknown flag name reads as off. */
-const PRESSURE_FLAGS: Record<string, () => boolean> = { DEUCE: () => process.env.DEUCE !== '0' };
+const PRESSURE_FLAGS: Record<string, () => boolean> = { DEUCE: () => process.env.DEUCE !== '0', MUG_PRESSURES: () => process.env.MUG_PRESSURES !== '0' };
 
 export function pressureIsInstallable(personnel: DefPersonnelId, front: Front, called: Coverage, pressure: Pressure): boolean {
   if (pressure.flag && !PRESSURE_FLAGS[pressure.flag]?.()) return false;

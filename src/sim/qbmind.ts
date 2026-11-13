@@ -32,6 +32,7 @@
  */
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
+import type { RouteKeyPicture } from './route-read.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { PRESSURE_BY_ID } from '../playbook/defense.js';
@@ -40,6 +41,11 @@ import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConce
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { screenSpot } from './screen-spot.js';
+import { isOL } from './behaviors/blocking.js';
+
+/** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -127,6 +133,7 @@ interface Memory {
   vel: Vec2;
   facing: number;
   t: number;
+  latency?: number;
 }
 
 type Features = number[];
@@ -151,7 +158,7 @@ export class QBMind {
   private readonly memory = new Map<Agent, Memory>();
   /** Pictures already represented in the prior or a post-snap likelihood. */
   private readonly classifiedAt = new Map<Agent, number>();
-  private readonly clearHalf: number;
+  readonly clearHalf: number;
   /** Coverage frequencies he expects from this defense, and its disguise rate. */
   private readonly prior: Record<string, number> = {};
   private readonly disguiseRate: number;
@@ -392,10 +399,10 @@ export class QBMind {
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
       if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
-        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t });
+        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0 });
       } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
         const s = sim.see(qb, d, 1.7);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1 });
+        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0 });
       }
     }
     // Existing recognition milestones summarize this acquired look and its
@@ -425,6 +432,25 @@ export class QBMind {
     const age = seen.age ?? 0;
     return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
       vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
+  }
+
+  /** Acquired route keys, with memory age plus the original sensing latency. */
+  routeKeyPictures(): RouteKeyPicture[] {
+    // Read-only view of observe()'s memory: querying this cannot see another
+    // defender, improve a picture, or consume a decision/random draw. Do not
+    // use estimate()'s expected-position fallback as acquired route evidence.
+    return [...this.memory].map(([d, m]) => {
+      const age = Math.max(0, this.sim.t - m.t), dt = Math.min(.5, age);
+      return { id: d.player.id, pos: { x: m.pos.x + m.vel.x * dt, y: m.pos.y + m.vel.y * dt },
+        vel: { ...m.vel }, age: age + (m.latency ?? 0) };
+    });
+  }
+
+  /** Age of his picture of a defender: memory age plus its sensing latency.
+   * Zero when he has no memory of him (the estimate is then a fresh look). */
+  pictureAge(d: Agent): number {
+    const m = this.memory.get(d);
+    return m ? Math.max(0, this.sim.t - m.t) + (m.latency ?? 0) : 0;
   }
 
   /** Where the QB thinks a defender is (and how he's moving). */
@@ -517,9 +543,10 @@ export class QBMind {
         if (!sp || o === sim.qb) return count;
         const side = Math.sign(sp.pos.y - by);
         if (['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) return count + Number(side === sign || o.slot === 'C');
-        // The installed backfield fullback is F. A centered lead contributes
-        // half to either side, one total; his actual block still has to work.
-        if (o.slot === 'F' && sp.backfield) return count + (side === 0 ? .5 : Number(side === sign));
+        // The second back (a fullback, or a split back). A centered lead
+        // contributes half to either side, one total; his actual block still
+        // has to work.
+        if (o.slot === sim.offAlign.numbering.B2) return count + (side === 0 ? .5 : Number(side === sign));
         return count + Number(!!sp.inline && side === sign);
       }, 0);
     const blkL = blockersOn(1) - 0.5; // the center counts half to each side
@@ -558,6 +585,69 @@ export class QBMind {
       }
     }
     return call;
+  }
+
+  /**
+   * Checks built into the call, made by every QB whatever his freedom to
+   * change plays: a screen's kill and a run-pass option's pre-snap read.
+   */
+  installedChecks(call: OffensivePlayCall): OffensivePlayCall {
+    return this.rpoRead(call) ?? this.screenKill(call) ?? call;
+  }
+
+  /** What the QB sees outside on a screen: press over the receiver, and the
+   * defenders and receivers outside the box to that side (defenders off the
+   * line and within 9 yd of it), each defender seen with his alignment noise. */
+  private screenLook(concept: PassConcept): { press: boolean; defenders: number; receivers: number } | null {
+    const sim = this.sim;
+    const designed = screenSpot(sim, concept);
+    if (!designed) return null;
+    const r = designed.receiver.pos, side = designed.side, by = sim.ballY;
+    const sig = 0.3 + 1.0 * (1 - this.rec);
+    let press = false, defenders = 0;
+    for (const d of sim.defense) {
+      const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
+      const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
+      if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
+      // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
+      if ((y - by) * side > 5 && x >= 1.5 && x < 9) defenders++;
+    }
+    const receivers = sim.offense.filter((o) => o !== sim.qb && !isOL(o) && !sim.offAlign.spots[o.slot]?.backfield
+      && (o.pos.y - by) * side > 5).length;
+    return { press, defenders, receivers };
+  }
+
+  /**
+   * Run-pass option, read before the snap: throw the tagged screen unless the
+   * receiver is pressed or the defense has more men outside than receivers
+   * there; otherwise hand off. Thrown, the line still blocks the run.
+   */
+  private rpoRead(call: OffensivePlayCall): OffensivePlayCall | null {
+    if (call.kind !== 'run' || !call.rpo || !call.run) return null;
+    const look = this.screenLook(call.rpo);
+    const throwIt = !!look && !look.press && look.defenders <= look.receivers;
+    this.report.audible = throwIt ? `rpo: ${call.rpo.name}` : `rpo: ${call.run.name}`;
+    if (!throwIt) return { ...call, rpo: undefined };
+    return { ...call, kind: 'pass', pass: call.rpo, rpo: undefined, label: `${call.formation.name} — ${call.run.name} / ${call.rpo.name} (thrown)` };
+  }
+
+  /**
+   * A called quick screen with a press kill: if he sees a defender pressed
+   * over the screen receiver (within ~2 yd of the line and over his
+   * alignment), check to the quick game. Seen with the same alignment noise
+   * as the box count.
+   */
+  private screenKill(call: OffensivePlayCall): OffensivePlayCall | null {
+    const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
+    if (!spec || !spec.kill) return null;
+    const look = this.screenLook(call.pass!);
+    if (spec.kill === 'press' && !look?.press) return null;
+    // SCREEN_QB: a numbers kill (the bubble): more of them outside than us there.
+    if (spec.kill === 'numbers' && (!SCREEN_QB || !look || look.defenders <= look.receivers)) return null;
+    const quick = this.quickCheck();
+    if (!quick) return null;
+    this.report.audible = `kill to ${quick.name}`;
+    return { ...call, pass: quick, label: `${call.formation.name} — ${quick.name} (kill)` };
   }
 
   /** Quick-game answer to the look: hitches vs. off corners, slants vs. press. */

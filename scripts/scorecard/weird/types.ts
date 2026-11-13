@@ -154,6 +154,10 @@ export interface WeirdEvent {
   /** Seconds from the snap. */
   t0: number;
   t1: number;
+  /** Observer tick that produced the preserved representative hit. Windowed
+   * rules may summarize earlier samples; this is not an inferred decision
+   * time. Missing on legacy records, whose representative tick is unknown. */
+  representativeT?: number;
   players: string[];
   text: string;
   severity: number;

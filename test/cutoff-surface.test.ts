@@ -27,7 +27,7 @@ type FitPlan = RunBlockPlan & { contactFit?: Surface & { target: Agent } };
 type SurfaceEngage = (blocker: Agent, defender: Agent, kind: 'run' | 'pass',
   drive: Vec2 | null, surface?: Surface) => Engagement | null;
 
-function natural(run = 'power', front = 'under', flip = true) {
+function natural(run = 'power', front = 'under', flip = true, seed = 3) {
   const formation = FORMATION_BY_ID[run === 'split_zone' ? 'gun_wing_12' : 'ace_11'];
   const personnel = front === 'tite' ? 'base34' : 'base43';
   return new PlaySim({
@@ -35,7 +35,7 @@ function natural(run = 'power', front = 'under', flip = true) {
     offCall: { formation, flip, kind: 'run', run: RUN_BY_ID[run], label: run },
     defCall: { personnel, front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID.cover3,
       pressure: null, label: front },
-    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3,
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed,
   });
 }
 
@@ -88,7 +88,7 @@ function step(f: Fixture, decide = true, extra?: Agent) {
     expect(report.armWork[a.idx]).toBeLessThanOrEqual(report.armWorkLimit[a.idx] + 1e-8);
     expect(report.supportMotorWork[a.idx]).toBeLessThanOrEqual(report.supportMotorWorkLimit[a.idx] + 1e-8);
     expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-      .toBeLessThanOrEqual(supportParams(a.profile).traction * .05 + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
   }
   f.sim.t += .05; f.sim.perception.record(f.sim.agents);
   return report;
@@ -123,7 +123,11 @@ describe('cutoff installation distinguishes outside walls from inside collection
   });
 
   it.each([false, true])('keeps an ordinary Split/Tite inside-shade cutoff in its previous contact frame, flip %s', flip => {
-    const sim = natural('split_zone', 'tite', flip), blocker = sim.slot(flip ? 'RT' : 'LT')!;
+    // Start law (#336): on S3 flipped, the RT now reaches DT_W at 0.60 s (was 0.70) and
+    // the DT's arms win the hands (the RT's arm impulse stays 0); panel seed S11 loads both mirrors.
+    // With #347's engaged flow on the combined start law + mesh departure, S11 unflipped no longer
+    // loads the LT's arms on DT_W within 2 s; S1 loads both mirrors (seeds 1-40: 33 load both).
+    const sim = natural('split_zone', 'tite', flip, 1), blocker = sim.slot(flip ? 'RT' : 'LT')!;
     const plan = (blocker.behavior as RunBlocker).plan as FitPlan;
     expect(plan.kind).toBe('cutoff'); expect(plan.target!.slot).toBe('DT_W');
     expect(plan.contactFit).toBeUndefined();

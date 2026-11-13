@@ -26,7 +26,8 @@ describe('matched snap film pairs', () => {
     const beforeStatus = execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' });
     const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
     const file = resolve(dir, 'selection.json');
-    writeFileSync(file, JSON.stringify({ format: 'film-pairs-v1', plays: [2, 3, 4].map(play => ({ id: `same-P${play}`, seed: 7, game: 1, play, note: 'same ref native control' })) }));
+    // Plays 5-7: with the QB's throwing motion (#408) plays 3 and 4 of this game are no longer scrimmage snaps.
+    writeFileSync(file, JSON.stringify({ format: 'film-pairs-v1', plays: [5, 6, 7].map(play => ({ id: `same-P${play}`, seed: 7, game: 1, play, note: 'same ref native control' })) }));
     try {
       const batch = runFilmPairs({ base: sha, head: sha, plays: file, out: resolve(dir, 'batch') });
       const registered = execFileSync('git', ['worktree', 'list', '--porcelain'], { encoding: 'utf8' });
@@ -50,7 +51,7 @@ describe('matched snap film pairs', () => {
       if (!registered.split('\n').some(line => line.startsWith('worktree ' + dir + '/')))
         rmSync(dir, { recursive: true, force: true });
     }
-  }, 60_000);
+  }, 180_000);
 
   it('labels missing contact unknown, preserves event times and safely embeds notes', () => {
     const summary = outcome({ yards: 2, outcome: 'tackle', events: [{ t: 1.2, type: 'block_contact' }, { t: 2.2, type: 'tackle_wrap' }, { t: 3, type: 'tackle' }] } as any);

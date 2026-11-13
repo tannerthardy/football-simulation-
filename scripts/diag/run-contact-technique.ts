@@ -107,7 +107,7 @@ export function executeContact(input: ContactInput, ticks = 12) {
       budgets.maxArmWorkExcess = Math.max(budgets.maxArmWorkExcess, report.armWork[i] - report.armWorkLimit[i]);
       budgets.maxSupportWorkExcess = Math.max(budgets.maxSupportWorkExcess, report.supportMotorWork[i] - report.supportMotorWorkLimit[i]);
       budgets.maxGroundImpulseExcess = Math.max(budgets.maxGroundImpulseExcess,
-        Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y) - supportParams(a.profile).traction * f.sim.dt);
+        Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y) - report.groundImpulseLimit[i]);
     }
     // The player controlling the hands supplies their active work. A defender
     // controlling the rep loads the same joint without OL arm expenditure.

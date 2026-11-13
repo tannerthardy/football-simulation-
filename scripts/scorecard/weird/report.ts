@@ -21,7 +21,9 @@ export function allEvents(games: GameRec[]): WeirdEvent[] {
 /** `play @ time: description`, the form the film room's suite takes. */
 export function watchLine(e: WeirdEvent): string {
   const t = e.t0 < 0 ? `${e.t0.toFixed(2)} s (pre-snap)` : `${e.t0.toFixed(2)} s`;
-  return `${e.id} @ ${t}: ${e.text}${e.nullified ? ' [play nullified by a penalty]' : ''}`;
+  const rep = Number.isFinite(e.representativeT) && e.representativeT !== e.t0
+    ? ` [representative detector tick ${e.representativeT!.toFixed(2)} s]` : '';
+  return `${e.id} @ ${t}${rep}: ${e.text}${e.nullified ? ' [play nullified by a penalty]' : ''}`;
 }
 
 /** The worst few events per detector, most severe first. */

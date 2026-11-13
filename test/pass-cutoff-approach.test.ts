@@ -7,6 +7,7 @@ import {PassProtector,ProtectionCoordinator} from '../src/sim/behaviors/blocking
 import {ScoutingReport} from '../src/sim/recognition.js';
 import {CoverageScouting} from '../src/sim/qbmind.js';
 import {PlaySim} from '../src/sim/playsim.js';
+import {ROUTES} from '../src/playbook/routes.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 // Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
@@ -56,7 +57,18 @@ describe('edge cutoff approach execution',()=>{
   // decides; that duration is PRO-1's edge-hold measure (KNOWN_PROBLEMS), not
   // an assertion on one recorded scene.
   it('P019 obtains loaded contact on both edges, on their feet, before the actual throw',()=>{
-    const sim=saved(18),edge:Record<string,string>={LT:'DE_W',RT:'DE_S'},loaded=new Map<string,number>();
+    // The saved constructor stores route IDs, not their historical geometry.
+    // Preserve P019's installed flat for this recorded protection contract:
+    // REC-1/COV-10's earlier-width flat changes the QB opportunity and removes
+    // this pre-3.5s throw. Current flat calls have independent native controls.
+    // Keep the actual throw, loaded-contact, upright and deadline assertions.
+    const flat=ROUTES.flat;
+    let sim:PlaySim;
+    try {
+      ROUTES.flat={...flat,points:[{d:1.5,l:2,s:.9},{d:3.5,l:12}]};
+      sim=saved(18);
+    } finally { ROUTES.flat=flat; }
+    const edge:Record<string,string>={LT:'DE_W',RT:'DE_S'},loaded=new Map<string,number>();
     while(sim.phase==='live'&&sim.throwAt<0&&sim.t<3.5){
       sim.tick();
       for(const slot of ['LT','RT']){

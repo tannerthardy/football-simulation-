@@ -12,8 +12,10 @@ Prints tables only; nothing is written. Definitions (x = yards past the LOS):
 - timeline: handoff event; first frame the carrier is past the LOS; first
   contact (NFL event first_contact, sim carrier_contact/tackle_wrap event) and
   the carrier's x then ("backfield" = contact behind the LOS).
-- pullers on POWER/COUNTER/TRAP: NFL = an OL who moves 3+ yd laterally in the
-  first 1.5 s; sim = every OL with plan "pull" (so slow sim pullers are kept).
+- pullers on POWER/COUNTER/TRAP, one rule on both sides: an OL who gets 3+ yd
+  laterally from his snap spot within 2.5 s while staying no more than 0.5 yd
+  past the LOS until he is 2 yd lateral. The sim also gets a row for every OL
+  with plan "pull" (the installed pullers), with how many the rule catches.
   Distance from his snap spot at 0.5/1.0/1.5 s, deepest point behind the LOS in
   2.5 s, time to 3 yd lateral, first frame within 1.2 yd of a defender after
   0.6 s with 2+ yd lateral ("touch"), that defender's depth, and whether the
@@ -63,6 +65,10 @@ def sim(paths):
             if p["nullified"]:
                 continue
             s, agents = p["setup"], p["setup"]["agents"]
+            # Frame k must sit at 0.1k s, the NFL clock. Traces written before
+            # the t=0 frame was recorded sit at 0.1k + 0.05 and are refused.
+            if any(abs(f["t"] - 0.1 * k) > 0.011 for k, f in enumerate(p["frames"][:30])):
+                raise SystemExit(f"{path}: frames are not at t = 0.1k; re-run scripts/diag/run-film-trace.ts")
             car = next((f["c"] for f in p["frames"] if f["c"] >= 0 and agents[f["c"]]["slot"] != "QB"), None)
             if car is None:
                 continue
@@ -85,6 +91,18 @@ def mean(v):
     return round(sum(v) / len(v), 2) if v else None
 
 
+def puller(xy, i, last):
+    """3+ yd lateral by frame `last`, never more than 0.5 yd past the LOS before 2 yd lateral."""
+    x0, y0 = xy[0][i]
+    for f in range(min(len(xy), last + 1)):
+        lateral = abs(xy[f][i][1] - y0)
+        if lateral < 2 and xy[f][i][0] > 0.5:
+            return False
+        if lateral >= 3:
+            return True
+    return False
+
+
 def measure(play, out):
     xy, c, players = play["xy"], play["carrier"], play["players"]
     n, src = len(xy), play["src"]
@@ -103,7 +121,9 @@ def measure(play, out):
     if play["concept"] in ("POWER", "COUNTER", "TRAP"):
         for i in ol:
             x0, y0 = xy[0][i]
-            if (src == "nfl" and abs(xy[k(1.5)][i][1] - y0) < 3) or (src == "sim" and players[i].get("plan") != "pull"):
+            ruled = puller(xy, i, k(2.5))
+            planned = src == "sim" and players[i].get("plan") == "pull"
+            if not ruled and not planned:
                 continue
             moved = [math.hypot(xy[k(t)][i][0] - x0, xy[k(t)][i][1] - y0) for t in (0.5, 1.0, 1.5)]
             depth = -min(xy[f][i][0] for f in range(min(n, k(2.5) + 1)))
@@ -116,9 +136,13 @@ def measure(play, out):
                 if hit:
                     touch = (f * 0.1, xy[f][hit[0]][0], xy[f][hit[0]][0] < xy[f][c][0])
                     break
-            out["pull"].append((src, play["concept"], *moved, depth, lat3, touch[0] if touch else None,
-                                touch[1] if touch else None, touch is not None and cross is not None and touch[0] <= cross,
-                                touch[2] if touch else None))
+            row = (play["concept"], *moved, depth, lat3, touch[0] if touch else None,
+                   touch[1] if touch else None, touch is not None and cross is not None and touch[0] <= cross,
+                   touch[2] if touch else None)
+            if ruled:
+                out["pull"].append((src, *row))
+            if planned:
+                out["pull"].append(("sim plan", *row, ruled))
     if len(ol) < 5:
         return
     blockers = [i for i, q in enumerate(players) if q["side"] == "O" and q["group"] in ("OL", "TE", "RB") and i != c]
@@ -168,13 +192,15 @@ def main():
         r = [t for t in out["start"] if t[0] == src]
         print(f"  {src}: {med([t[1] for t in r])} {med([t[2] for t in r])} {med([t[3] for t in r])} (n={len(r)})")
     print("Pullers: n, moved 0.5/1.0/1.5 s, deepest, 3 yd lateral at, touch at, no touch, touched man's depth, touch before carrier crosses, touched man deeper than the runner")
+    print("  (rows nfl and sim use the same rule; 'sim plan' is every installed puller, last column = share the rule catches)")
     for concept in ("POWER", "COUNTER", "TRAP"):
-        for src in ("nfl", "sim"):
+        for src in ("nfl", "sim", "sim plan"):
             r = [t for t in out["pull"] if t[0] == src and t[1] == concept]
             if r:
-                print(f"  {concept:8s} {src}: {len(r):4d} {med([t[2] for t in r])} {med([t[3] for t in r])} {med([t[4] for t in r])} "
+                caught = f" {mean([t[11] for t in r])}" if src == "sim plan" else ""
+                print(f"  {concept:8s} {src:8s}: {len(r):4d} {med([t[2] for t in r])} {med([t[3] for t in r])} {med([t[4] for t in r])} "
                       f"{med([t[5] for t in r])} {med([t[6] for t in r])} {med([t[7] for t in r])} {mean([t[7] is None for t in r])} "
-                      f"{med([t[8] for t in r])} {mean([t[9] for t in r])} {mean([t[10] for t in r if t[10] is not None])}")
+                      f"{med([t[8] for t in r])} {mean([t[9] for t in r])} {mean([t[10] for t in r if t[10] is not None])}{caught}")
     print("Box backers touched by a blocker before the carrier reaches them")
     for concept in CONCEPTS + [None]:
         for src in ("nfl", "sim"):

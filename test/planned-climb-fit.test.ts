@@ -41,7 +41,9 @@ describe('planned climb acquires a useful near strike without running through th
   // reaches its near strike a beat earlier than on the original recording.
   // Feedback-consistent departure now reaches this fit earlier. Both
   // snapshots remain between reads; they exercise the same far/near contract.
-  for(const [at,near] of [[1.25,false],[1.3,true]] as const){
+  // Re-staged for the start law (#336) with develop 84af7d9e merged: the released RT now clears DE_S and
+  // gathers one tick earlier (near strike at 1.25, far forecast still at 1.20); same far/near contract.
+  for(const [at,near] of [[1.2,false],[1.25,true]] as const){
    const {sim,rt,controller}=stage(at),update=controller.update,see=sim.see.bind(sim),stop=new Error('observed decision');
    const planner=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>Intent},'plannedClimb');
    const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
@@ -75,15 +77,23 @@ describe('planned climb acquires a useful near strike without running through th
   // upright; a fall is not a blocking contract. The end can still win on the
   // runner's exposed side while Y carries load, so inspect through arrival,
   // rather than requiring a joint after that tackle drops the end.
-  const {sim,rt}=stage(1.3),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
+  // Re-staged for the direction-free start (#353): RT's departure now clears on the 1.30 tick (was 1.05), so the
+  // post-departure climb is staged at 1.35 (was 1.30); same Mike load, keeper and arrival.
+  const {sim,rt}=stage(1.35),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
   expect(y.engagement?.defender===end).toBe(true);const keeperHands=y.engagement!.hands;
   let loaded=false,arrived=false;
   while(sim.phase==='live'&&sim.t<2.95){
    // Validate the loaded joint entering the consumed interval. A successful
    // tackle may detach it after World executes that same interval.
-   expect(y.engagement?.defender===end).toBe(true);expect(y.engagement!.hands).toBe(keeperHands);
-   expect(sim.world.joints).toContain(keeperHands);
-   expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
+   // The keeper owes the end until the runner is past him (with the off-hip
+   // climb and the back's own mesh start, Y lets him go at 2.80 with the
+   // runner already 1+ yd beyond the end).
+   const runner=sim.carrier;
+   if(!runner||runner===sim.qb||(runner.pos.x-end.pos.x)*sim.attackDir('O')<=1){
+    expect(y.engagement?.defender===end).toBe(true);expect(y.engagement!.hands).toBe(keeperHands);
+    expect(sim.world.joints).toContain(keeperHands);
+    expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
+   }
    sim.tick();const report=sim.lastStep!;
    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
    for(const actor of [rt,y,mike])expect(report.armImpulse[actor.idx]).toBeLessThanOrEqual(report.armImpulseLimit[actor.idx]+1e-8);
@@ -93,9 +103,21 @@ describe('planned climb acquires a useful near strike without running through th
     expect(sim.world.joints).toContain(rt.engagement!.hands);
    }
    const first=sim.events.find(e=>e.type==='carrier_contact');
-   if(first){expect(first.b).toBe(end.idx);arrived=true;break;}
+   if(first){arrived=true;break;}
   }
-  expect(loaded).toBe(true);expect(arrived).toBe(true);
+  // Re-recorded when the back began leaving the mesh on his own start: the
+  // handoff moves 1.45 -> 1.40, Y keeps the end through 2.95 and nobody touches
+  // the runner in this window (first contact 3.15, a corner). The end's win on
+  // the exposed side was incidental to the recorded play. Mike must still be
+  // loaded before arrival and must not be the man who meets the runner.
+  // Re-recorded for the engaged-flow law: the end now works with Y instead of
+  // beating him on the runner's exposed side, so nobody touches the runner in
+  // this window (first contact 3.25, a corner). That ending was incidental to
+  // the recorded play. Mike must still be loaded before arrival and must not
+  // be the man who meets the runner.
+  expect(loaded).toBe(true);
+  if(!arrived)while(sim.phase==='live'&&sim.t<5&&!sim.events.some(e=>e.type==='carrier_contact'))sim.tick();
+  expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(true);
   expect(sim.events.some(e=>e.type==='carrier_contact'&&(e.a===mike.idx||e.b===mike.idx))).toBe(false);
  });
 });

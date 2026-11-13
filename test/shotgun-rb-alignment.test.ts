@@ -3,7 +3,7 @@ import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y } from '../src/core/field.js';
 import { alignOffense } from '../src/playbook/alignment.js';
 import { FORMATIONS, FORMATION_BY_ID } from '../src/playbook/formations.js';
 
-const offsetGun = FORMATIONS.filter(f => f.qb === 'gun' && typeof f.slots.RB?.split === 'number');
+const offsetGun = FORMATIONS.filter(f => f.qb === 'gun' && typeof f.slots.RB?.split === 'number' && !f.tags.includes('split-backs'));
 
 describe('offset shotgun back alignment', () => {
   it.each(offsetGun)('$id gives the back lateral and downhill runway on either side/hash', formation => {

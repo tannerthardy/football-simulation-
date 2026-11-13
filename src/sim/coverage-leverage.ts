@@ -25,7 +25,8 @@ export class DeepCoverage {
       this.previous = { stamp, vx: cue.vel.x };
     }
     const s = a.body.support;
-    if (seen.vel.x <= 1.5 || seen.vel.x <= Math.abs(seen.vel.y) || a.engagement || a.isDown(now)
+    if (seen.vel.x <= 1.5 || seen.vel.x <= Math.abs(seen.vel.y)
+      || a.engagement || a.isDown(now)
       || (s && (s.state !== 'up' || s.foot || s.strike || Math.hypot(s.lean.x, s.lean.y) > 1e-6
         || Math.hypot(s.load.x, s.load.y) > 1e-6))) return original;
 
@@ -43,6 +44,7 @@ export class DeepCoverage {
       const h = Math.min(t, burst);
       return acceleration * (h * h * .5 + h * Math.max(0, t - burst));
     };
+    // His measured burst or plant continued.
     const targetX = (t: number) => seen.pos.x + seen.vel.x * t + extra(age + t);
     const targetV = clamp(seen.vel.x + acceleration * burst, 0, receiver.vmax);
     const base = Math.max(0, Math.min(cushion, END_LINE_X - a.profile.radius - seen.pos.x));
@@ -58,7 +60,8 @@ export class DeepCoverage {
       }
       const end = path[path.length - 1];
       const turn = Math.abs(angleDiff(commandFacing(a.body, command), heading)) / turnRateOf(a.body);
-      const recovery = Math.max(0, targetV - end.vel.x) * (turn + tau);
+      const deficit = Math.max(0, targetV - end.vel.x);
+      const recovery = deficit * (turn + tau);
       return Math.min(margin, end.pos.x - targetX(end.t) - base - recovery);
     };
     let choice = original, best = score(original);
@@ -72,7 +75,8 @@ export class DeepCoverage {
     };
     // Spend excess depth if safe; otherwise match the stem square, open with
     // it, or run with it. The chosen request is the one actually previewed.
-    const candidates = [request(targetV, original.facing)];
+    const candidates: MoveCommand[] = [];
+    candidates.push(request(targetV, original.facing));
     if (original.facing !== undefined) candidates.push(request(targetV));
     candidates.push(request(a.profile.vmax));
     for (const command of candidates) {

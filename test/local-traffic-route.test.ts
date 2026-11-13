@@ -5,7 +5,7 @@ import { localPassage } from '../scripts/diag/navigation/local-passage.js';
 import { CENTER_Y } from '../src/core/field.js';
 import type { Body } from '../src/physics/kinematics.js';
 import * as Preview from '../src/physics/movement-preview.js';
-import { newSupport } from '../src/physics/support.js';
+import { baseRadiusAt, newSupport, supportParams } from '../src/physics/support.js';
 import { World, type Intent } from '../src/physics/world.js';
 import { Agent } from '../src/sim/agent.js';
 import { track } from '../src/sim/behaviors/common.js';
@@ -34,27 +34,74 @@ function request(a: Agent): Intent {
     posture: .25, effort: .9, cutSkill: .85 };
 }
 
-function usefulPassage(row: ReturnType<typeof localPassage>) {
+function achievedPassage(row: ReturnType<typeof localPassage>) {
   // Reaching the far side is achieved movement, not a nominal detour request.
   expect(row.result.progress).toBeGreaterThan(7);
   expect(row.result.goalError).toBeLessThan(1);
   expect(row.states.every(s => s.after[0].state === 'up')).toBe(true);
   expect(row.states.every(s => s.command.facing === s.raw.facing)).toBe(true);
   expect(row.result.maximumWorkResidual).toBeLessThan(1e-8);
+}
+
+function usefulPassage(row: ReturnType<typeof localPassage>) {
+  achievedPassage(row);
   // A tangent can produce a reported touch with zero delivered impulse.
   // Such a record is not a physical teammate impact or a failed passage.
   expect(row.result.contactIntervals.flatMap(s => s.contacts)
     .every(c => c.impulse <= 1e-8)).toBe(true);
 }
 
+function insideBalanceBase(body: Body) {
+  const support = body.support!;
+  return Math.hypot(support.xi.x, support.xi.y)
+    <= baseRadiusAt(supportParams(body.profile), support.posture);
+}
+
 describe('local traffic routing preserves an owned goal through achieved movement', () => {
-  it.each(['head-on', 'cluster'] as const)('passes %s traffic and resumes the same goal over three seconds', mode => {
-    const row = localPassage(mode);
+  it('passes head-on traffic without impact and resumes the same goal over three seconds', () => {
+    const row = localPassage('head-on');
     usefulPassage(row);
     expect(row.states.some(s => Math.abs(s.after[0].pos.y - row.initial[0].pos.y) > row.initial[0].profile.radius)).toBe(true);
     expect(row.states.every(s => s.raw.objective?.kind === 'moving'
       && s.raw.objective.point.x === row.goal.x && s.raw.objective.point.y === row.goal.y
       && s.raw.objective.velocity?.x === 0 && s.raw.objective.velocity?.y === 0)).toBe(true);
+  });
+
+  it('passes the cluster with all bodies inside their balance bases, without claiming contact-free travel', () => {
+    const unobserved = localPassage('cluster');
+    const step = World.prototype.step;
+    const supported: boolean[] = [], stayedUp: boolean[] = [], falls: number[] = [];
+    const observer = vi.spyOn(World.prototype, 'step').mockImplementation(function(this: World, intents, dt) {
+      const report = step.call(this, intents, dt);
+      // One-body unloaded previews are not achieved teammate passage.
+      if (this.bodies.length > 1) {
+        supported.push(this.bodies.every(insideBalanceBase));
+        stayedUp.push(this.bodies.every(b => b.support!.state === 'up'));
+        falls.push(...report.falls);
+      }
+      return report;
+    });
+    let row: ReturnType<typeof localPassage>;
+    try { row = localPassage('cluster'); } finally { observer.mockRestore(); }
+    expect(row).toEqual(unobserved);
+    expect(supported).toHaveLength(row.states.length);
+    expect(supported.every(Boolean)).toBe(true);
+    expect(stayedUp.every(Boolean)).toBe(true);
+    expect(falls).toEqual([]);
+    // A glance cannot grind against the same peer over repeated intervals,
+    // even while the individual loads stay inside the support base.
+    const contactPairs = row.result.contactIntervals.flatMap(s => s.contacts)
+      .map(c => `${Math.min(c.i, c.j)}:${Math.max(c.i, c.j)}`);
+    expect(new Set(contactPairs).size).toBe(contactPairs.length);
+    achievedPassage(row);
+    expect(row.states.some(s => Math.abs(s.after[0].pos.y - row.initial[0].pos.y) > row.initial[0].profile.radius)).toBe(true);
+    expect(row.states.every(s => s.raw.objective?.kind === 'moving'
+      && s.raw.objective.point.x === row.goal.x && s.raw.objective.point.y === row.goal.y
+      && s.raw.objective.velocity?.x === 0 && s.raw.objective.velocity?.y === 0)).toBe(true);
+    // The 20 Hz chord forecast is not a continuous contact-clearance proof.
+    // Keep native contacts visible; a glance may move the passive peers.
+    // This checks the existing physical support base at controller boundaries,
+    // not a fitted impulse allowance or harmlessness to a peer's football job.
   });
 
   it('preserves useful offset passage in both mirrors, allowing harmless touch records', () => {
@@ -139,6 +186,9 @@ describe('local traffic routing preserves an owned goal through achieved movemen
     spaceTeammates([a, peer], intents, () => seen, { now: 2 });
     const report = world.step(intents, .05);
     expect(report.contacts.some(c => c.impulse > 0)).toBe(true);
+    // Staying upright alone cannot qualify an impact as an absorbed glance:
+    // this unavoidable collision needs recovery beyond the existing base.
+    expect([a.body, body].some(b => !insideBalanceBase(b))).toBe(true);
     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
   });
   it('reconsiders acquired motion and retires its old detour when the owned goal changes', () => {

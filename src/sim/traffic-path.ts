@@ -4,6 +4,7 @@
  * paths which leave the caller's existing field limits; no wall waypoints or
  * field/circle intersections are invented to make a route exist.
  */
+import { hypot2 } from '../core/vec.js';
 import type { Vec2 } from '../core/vec.js';
 
 export interface TrafficDisc { center: Vec2; radius: number }
@@ -26,7 +27,7 @@ export interface TrafficPath {
 // Numerical comparison tolerance only; disc radii remain caller supplied.
 const EPS = 1e-9, TAU = 2 * Math.PI;
 const copy = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
-const distance = (a: Vec2, b: Vec2) => Math.hypot(a.x - b.x, a.y - b.y);
+const distance = (a: Vec2, b: Vec2) => hypot2(a.x - b.x, a.y - b.y);
 const finite = (v: Vec2) => Number.isFinite(v.x) && Number.isFinite(v.y);
 const angle = (a: number) => (a % TAU + TAU) % TAU;
 const inside = (p: Vec2, c: TrafficDisc) => distance(p, c.center) < c.radius - EPS;

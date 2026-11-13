@@ -1,0 +1,251 @@
+{
+ "schema": "call-mix-v1",
+ "source": {
+  "nfl": "BDB 2025 weeks 1-3 dropbacks, routes run by label and break depth (scripts/diag/call-mix/nfl_route_depth.py)",
+  "sim": "1541 called passes, CALL_MIX off, collect.ts (league-sampled games)",
+  "lambda": 0.01,
+  "model": "call weight x prod_k pref[k] ** profile[k]; fitted routes-run class mix vs NFL, SCREEN excluded"
+ },
+ "classes": [
+  "quick",
+  "flat",
+  "cross",
+  "breaking",
+  "vertical"
+ ],
+ "pref": {
+  "1st": {
+   "quick": 1.336,
+   "flat": 0.99,
+   "cross": 1.221,
+   "breaking": 0.613,
+   "vertical": 1.01
+  },
+  "2nd_short": {
+   "quick": 1.477,
+   "flat": 1.127,
+   "cross": 1.419,
+   "breaking": 0.353,
+   "vertical": 1.197
+  },
+  "2nd_med": {
+   "quick": 1.0,
+   "flat": 0.961,
+   "cross": 1.492,
+   "breaking": 0.625,
+   "vertical": 1.116
+  },
+  "2nd_long": {
+   "quick": 2.203,
+   "flat": 0.795,
+   "cross": 0.942,
+   "breaking": 0.595,
+   "vertical": 1.02
+  },
+  "3rd_short": {
+   "quick": 0.682,
+   "flat": 0.903,
+   "cross": 1.931,
+   "breaking": 0.703,
+   "vertical": 1.195
+  },
+  "3rd_med": {
+   "quick": 0.94,
+   "flat": 0.785,
+   "cross": 1.662,
+   "breaking": 0.564,
+   "vertical": 1.445
+  },
+  "3rd_long": {
+   "quick": 0.856,
+   "flat": 0.882,
+   "cross": 1.055,
+   "breaking": 1.178,
+   "vertical": 1.066
+  }
+ },
+ "fit": {
+  "1st": {
+   "n_sim_calls": 757,
+   "n_nfl_routes": 5675,
+   "nfl_screen_share": 0.046,
+   "nfl": {
+    "quick": 0.232,
+    "flat": 0.213,
+    "cross": 0.11,
+    "breaking": 0.127,
+    "vertical": 0.318
+   },
+   "sim_off": {
+    "quick": 0.189,
+    "flat": 0.227,
+    "cross": 0.079,
+    "breaking": 0.183,
+    "vertical": 0.322
+   },
+   "sim_fitted": {
+    "quick": 0.208,
+    "flat": 0.226,
+    "cross": 0.081,
+    "breaking": 0.162,
+    "vertical": 0.323
+   }
+  },
+  "2nd_short": {
+   "n_sim_calls": 61,
+   "n_nfl_routes": 473,
+   "nfl_screen_share": 0.04,
+   "nfl": {
+    "quick": 0.297,
+    "flat": 0.244,
+    "cross": 0.097,
+    "breaking": 0.079,
+    "vertical": 0.282
+   },
+   "sim_off": {
+    "quick": 0.237,
+    "flat": 0.225,
+    "cross": 0.04,
+    "breaking": 0.22,
+    "vertical": 0.278
+   },
+   "sim_fitted": {
+    "quick": 0.278,
+    "flat": 0.223,
+    "cross": 0.041,
+    "breaking": 0.167,
+    "vertical": 0.29
+   }
+  },
+  "2nd_med": {
+   "n_sim_calls": 116,
+   "n_nfl_routes": 1512,
+   "nfl_screen_share": 0.032,
+   "nfl": {
+    "quick": 0.303,
+    "flat": 0.199,
+    "cross": 0.1,
+    "breaking": 0.1,
+    "vertical": 0.298
+   },
+   "sim_off": {
+    "quick": 0.296,
+    "flat": 0.207,
+    "cross": 0.052,
+    "breaking": 0.158,
+    "vertical": 0.288
+   },
+   "sim_fitted": {
+    "quick": 0.297,
+    "flat": 0.205,
+    "cross": 0.057,
+    "breaking": 0.143,
+    "vertical": 0.299
+   }
+  },
+  "2nd_long": {
+   "n_sim_calls": 319,
+   "n_nfl_routes": 3279,
+   "nfl_screen_share": 0.045,
+   "nfl": {
+    "quick": 0.302,
+    "flat": 0.179,
+    "cross": 0.078,
+    "breaking": 0.131,
+    "vertical": 0.311
+   },
+   "sim_off": {
+    "quick": 0.189,
+    "flat": 0.226,
+    "cross": 0.079,
+    "breaking": 0.193,
+    "vertical": 0.313
+   },
+   "sim_fitted": {
+    "quick": 0.258,
+    "flat": 0.217,
+    "cross": 0.069,
+    "breaking": 0.159,
+    "vertical": 0.297
+   }
+  },
+  "3rd_short": {
+   "n_sim_calls": 60,
+   "n_nfl_routes": 1043,
+   "nfl_screen_share": 0.028,
+   "nfl": {
+    "quick": 0.348,
+    "flat": 0.185,
+    "cross": 0.15,
+    "breaking": 0.068,
+    "vertical": 0.249
+   },
+   "sim_off": {
+    "quick": 0.397,
+    "flat": 0.215,
+    "cross": 0.055,
+    "breaking": 0.093,
+    "vertical": 0.24
+   },
+   "sim_fitted": {
+    "quick": 0.348,
+    "flat": 0.213,
+    "cross": 0.07,
+    "breaking": 0.096,
+    "vertical": 0.273
+   }
+  },
+  "3rd_med": {
+   "n_sim_calls": 78,
+   "n_nfl_routes": 1701,
+   "nfl_screen_share": 0.014,
+   "nfl": {
+    "quick": 0.316,
+    "flat": 0.127,
+    "cross": 0.126,
+    "breaking": 0.127,
+    "vertical": 0.304
+   },
+   "sim_off": {
+    "quick": 0.288,
+    "flat": 0.237,
+    "cross": 0.042,
+    "breaking": 0.176,
+    "vertical": 0.257
+   },
+   "sim_fitted": {
+    "quick": 0.279,
+    "flat": 0.229,
+    "cross": 0.048,
+    "breaking": 0.153,
+    "vertical": 0.291
+   }
+  },
+  "3rd_long": {
+   "n_sim_calls": 150,
+   "n_nfl_routes": 1891,
+   "nfl_screen_share": 0.036,
+   "nfl": {
+    "quick": 0.187,
+    "flat": 0.183,
+    "cross": 0.083,
+    "breaking": 0.221,
+    "vertical": 0.326
+   },
+   "sim_off": {
+    "quick": 0.196,
+    "flat": 0.24,
+    "cross": 0.072,
+    "breaking": 0.184,
+    "vertical": 0.309
+   },
+   "sim_fitted": {
+    "quick": 0.185,
+    "flat": 0.239,
+    "cross": 0.073,
+    "breaking": 0.189,
+    "vertical": 0.314
+   }
+  }
+ }
+}

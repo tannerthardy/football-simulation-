@@ -99,13 +99,14 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       roster.push(p);
     }
   }
+  return { id: abbr, name, abbr, roster, ...drawCoaching(rng, opts) };
+}
+
+/** The schemes and coaching tendencies, in generateTeam's draw order. */
+function drawCoaching(rng: Rng, opts: { offScheme?: OffScheme; defScheme?: DefScheme } = {}): Pick<Team, 'offScheme' | 'defScheme' | 'coach'> {
   const offScheme = opts.offScheme ?? rng.pick<OffScheme>(['west-coast', 'air-raid', 'spread', 'power', 'wide-zone']);
   const defScheme = opts.defScheme ?? rng.pick<DefScheme>(['4-3', '3-4', 'nickel-heavy']);
   return {
-    id: abbr,
-    name,
-    abbr,
-    roster,
     offScheme,
     defScheme,
     coach: {
@@ -120,6 +121,36 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       checkPick: rng.int(0, 1),
     },
   };
+}
+
+/** The same team under another identity. Its id and its players' ids carry
+ * `salt`, so everything seeded by identity is drawn afresh: the team's
+ * alignment style and A-gap habit (`align:`/`agap:` + team id) and each
+ * player's ALIGN_HABIT depth habit (`align-habit:` + player id). Ratings,
+ * names, jerseys, schemes and coaching are unchanged. For diagnostic games,
+ * which otherwise reuse one fixed pair of identities (IRN, COM) on every seed
+ * and so sample two teams' habits instead of the league's. */
+export function withIdentity(team: Team, salt: string | number): Team {
+  const id = `${team.id}~${salt}`;
+  return { ...team, id, roster: team.roster.map((p) => ({ ...p, id: `${id}-${p.id.slice(p.id.indexOf('-') + 1)}` })) };
+}
+
+/** The same team under other coordinators: offensive and defensive schemes and
+ * every coaching tendency (pass and blitz rates, man rate, coverage tree,
+ * disguise, match rate, shadowing) redrawn from the league's distribution,
+ * seeded by the team id and `salt`. The roster is unchanged. Diagnostic games
+ * reuse two fixed rosters per seed, so without this a card samples two or four
+ * coordinators: the 32-game card of 2026-11-11 had two single-high coverage
+ * trees and no pressure-man or quarters tree
+ * (docs/reviews/2026-11-11-cover-mix.md). */
+export function withCoaching(team: Team, salt: string | number): Team {
+  return { ...team, ...drawCoaching(new Rng(`coach:${team.id}~${salt}`)) };
+}
+
+/** A diagnostic game's team, sampling the league: identity-seeded habits
+ * (withIdentity) and coordinators (withCoaching) drawn afresh per salt. */
+export function leagueSample(team: Team, salt: string | number): Team {
+  return withCoaching(withIdentity(team, salt), salt);
 }
 
 function pickJersey(rng: Rng, pos: Position, used: Set<number>): number {
@@ -247,13 +278,28 @@ export function pickOffense(team: Team, personnel: PersonnelId, av: Availability
   return out;
 }
 
+/** DB_SLOTS (on since run-ref-21; DB_SLOTS=0 restores): the defensive backs are placed by
+ * position before the nickel and dime are filled. The installed order filled
+ * NB and DB first from corners or safeties, scored on slot-corner and zone
+ * suitability, so a safety usually took the nickel; the safeties' slots then
+ * went to whoever remained, FS from S or CB and SS from S, LB or CB on box and
+ * robber suitability. On 200 generated rosters with fresh legs the nickel was
+ * a safety 84% of the time, the nickel SS a linebacker 20% and the dime SS a
+ * linebacker 64%; on the pass panel an LB held SS on 78 of 197 snaps and
+ * played a deep half or quarter. With it on, FS and SS take safeties (a corner,
+ * then for SS a backer, only when none is available), then NB and DB choose
+ * from the corners and the safeties left, as before. Rosters carry 6 CB and
+ * 4 S, so nickel and dime stay staffed by defensive backs.
+ * docs/reviews/2026-11-11-db-slots.md. */
+export const DB_SLOTS = process.env.DB_SLOTS !== '0';
+
 export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availability = {}): Partial<Record<DefSlot, Player>> {
   const taken = new Set<string>();
   const out: Partial<Record<DefSlot, Player>> = {};
   const need = DEF_PERSONNEL[personnel];
-  const take = (slot: DefSlot, cands: Position[], score: (p: Player) => number) => {
+  const take = (slot: DefSlot, cands: Position[], score: (p: Player) => number, fallback: Position[] = []) => {
     if (!need[slot]) return;
-    const p = pickBest(pool(team, cands, av, taken), score, av);
+    const p = pickBest(pool(team, cands, av, taken), score, av) ?? pickBest(pool(team, fallback, av, taken), score, av);
     if (!p) throw new Error(`${team.abbr}: no player for ${slot}`);
     out[slot] = p;
     taken.add(p.id);
@@ -271,6 +317,14 @@ export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availabil
   take('LB_S', ['LB', 'EDGE'], best('LB_SAM', 'LB_MIKE'));
   take('CB_S', ['CB'], at('CB'));
   take('CB_W', ['CB'], at('CB'));
+  if (DB_SLOTS) {
+    // Safeties first, from the safeties; then the nickel and dime from the corners.
+    take('FS', ['S'], best('S_FREE', 'S_ROBBER'), ['CB']);
+    take('SS', ['S'], best('S_BOX', 'S_ROBBER'), ['CB', 'LB']);
+    take('NB', ['CB', 'S'], best('CB_SLOT', 'CB_ZONE'));
+    take('DB', ['CB', 'S'], (p) => at('CB')(p) * 0.6 + at('S')(p) * 0.4);
+    return out;
+  }
   take('NB', ['CB', 'S'], best('CB_SLOT', 'CB_ZONE'));
   take('DB', ['CB', 'S'], (p) => at('CB')(p) * 0.6 + at('S')(p) * 0.4);
   take('FS', ['S', 'CB'], best('S_FREE', 'S_ROBBER'));

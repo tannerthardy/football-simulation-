@@ -22,7 +22,7 @@
  * spinning out of one grasp into another.
  */
 import { G } from '../core/units.js';
-import { clamp, type Vec2 } from '../core/vec.js';
+import { hypot2, clamp, type Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { VirtualFoot } from './virtual-foot.js';
 
@@ -104,6 +104,18 @@ export interface SupportParams {
  * grasps and tackles keep the arm-force capacity. Off: a press is capped at
  * the arm force, so a rusher's leg drive folds a blocker's arms. */
 const ARM_PRESS = process.env.ARM_PRESS !== '0';
+/** Experimental (LEG_ALLOMETRY=1, off): leg drive scales with body mass^0.69 at
+ * a fixed rating rather than linearly, normalised so a 110 kg player keeps
+ * today's force. Vertical push-off force across NFL combine athletes, fitted
+ * within position groups, scales as mass^0.69 (0.67-0.71;
+ * scripts/mechanics/leg_force_allometry.py, data/reviews/mechanics/leg-force-allometry.json).
+ * Traction stays proportional to mass; arm and press strength are unchanged. */
+const LEG_ALLOMETRY = process.env.LEG_ALLOMETRY !== '0';
+const LEG_MASS_EXPONENT = 0.69, LEG_REF_MASS_KG = 110;
+/** Leg drive at zero speed before the traction cap, kg·yd/s². */
+export function legDrive(p: PhysicalProfile): number {
+  return p.power * G * (LEG_ALLOMETRY ? (p.massKg / LEG_REF_MASS_KG) ** (LEG_MASS_EXPONENT - 1) : 1);
+}
 
 /** Cleat-turf traction coefficient for a sustained push (model assumption). */
 export const TURF_MU = 1.1;
@@ -122,7 +134,7 @@ export function supportParams(p: PhysicalProfile): SupportParams {
     yawInertia: p.massKg * (0.5 * p.radius) ** 2,
     pitchRadiusSq: (0.3 * p.heightYd) ** 2,
     traction,
-    pushForce: Math.min(p.power * G, traction),
+    pushForce: Math.min(legDrive(p), traction),
     armForce: 0.75 * p.power * G,
     pressForce: ARM_PRESS && p.press !== undefined ? Math.max(p.press * G, 0.75 * p.power * G) : 0.75 * p.power * G,
   };
@@ -212,7 +224,7 @@ export function criticalDeviation(s: SupportParams, posture: number, feetLock: n
  */
 export function availability(sup: Support, s: SupportParams, fatigue: number): number {
   if (sup.state !== 'up') return 0;
-  const e = Math.hypot(sup.xi.x, sup.xi.y);
+  const e = hypot2(sup.xi.x, sup.xi.y);
   const rb = baseRadiusAt(s, sup.posture);
   if (e <= rb) return 1;
   const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
@@ -223,7 +235,7 @@ export function availability(sup: Support, s: SupportParams, fatigue: number): n
 /** Fraction of the fall threshold a deviation has reached (0 balanced, 1 falling). */
 export function deviationFraction(sup: Support, s: SupportParams, fatigue: number): number {
   if (sup.state !== 'up') return 1;
-  const e = Math.hypot(sup.xi.x, sup.xi.y);
+  const e = hypot2(sup.xi.x, sup.xi.y);
   const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
   return clamp(e / Math.max(1e-6, crit), 0, 1);
 }

@@ -9,13 +9,32 @@ import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 PlaySim.recordedSingleStream = true;
 
 const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false };
-const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 3.65 };
+// Re-selected under the leg force-velocity law (PHY-1): seed 1 now ends incomplete.
+// Seed 8 is the same call with a caught ball against CB_W's man coverage of X.
+// Start law (#336): seed 8's throw leaves at 2.9 s (2.65 before) and is caught
+// at 4.2 s (3.5); the capture runs to 4.35 s to keep the catch and next step.
+// Re-selected for the direction-free start (#353): the first divergence is at
+// the snap tick (the C's backward set and the RB's angled start, below-cap
+// requests now starting at full force), and CB_W's own pedal starts the same
+// way (t 0.40: lift 14.3 -> 20.1). His pedal is about 0.1 s ahead, so on
+// curl_flat X never consumes the cushion and CB_W never opens his hips (seeds
+// 1-70; all twelve of seeds 1-12 opened near 1.45 s before). On four_verts,
+// same seed, X runs at him: CB_W opens at 1.9 s, the throw is caught at
+// 3.95 s, and the same 2-4.35 s window holds the free step, catch and next step.
+// With the edge kick that stops matching the rusher's retreat once deeper than its lead, seed 8's four_verts
+// ends incomplete; seed 6 (the lowest four_verts seed that completes and keeps every property here) is caught
+// at 4.05 s with CB_W in man on X, inside the same window.
+// The QB's throwing motion (load and delivery, ~0.4 s) moves seed 6's release and it no longer completes;
+// seed 13 (the lowest four_verts seed that completes and keeps every property here) is caught at 4.25 s
+// with CB_W in man on X, inside the same window.
+const caught = { ...input, concept: 'four_verts', seed: 13 };
+const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 4.35 };
 
 describe('selected command attribution in normal execution', () => {
   it('preserves the complete native play, reads, decisions, steps and RNG while attributing the catch command to coverage', () => {
     const execute = (record: boolean) => {
       const draws = vi.spyOn(Rng.prototype, 'nextU32');
-      const sim = new PlaySim({ ...nativeTraceSetup(input), record: true, recordLevel: 'full' });
+      const sim = new PlaySim({ ...nativeTraceSetup(caught), record: true, recordLevel: 'full' });
       const trace = record ? sim.recordCommands(selection) : undefined;
       const physics = vi.spyOn(sim.world, 'step'), reads = vi.spyOn(sim.perception, 'perceive');
       // Track the actual installed update entries, including the selected coverage wrapper.

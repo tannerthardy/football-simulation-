@@ -93,7 +93,7 @@ function step(f: Fixture) {
     expect(report.armWork[i]).toBeLessThanOrEqual(report.armWorkLimit[i] + 1e-8);
     expect(report.supportMotorWork[i]).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8);
     expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
-      .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[i] + 1e-8);
   }
   f.sim.t += f.sim.dt;
   f.sim.perception.record(f.sim.agents);
@@ -278,7 +278,9 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
       // every historical physics field and its order, excluding only the
       // newly added contact/strike metadata from this legacy hash. Commands,
       // bodies, loads, control and the next execution RNG draw stay exact.
-      const historicalReport = { ...report,
+      // armSwingYaw (GRASP_ARM_MOMENT) is a later report field, 0 here (no grasp); left out so the hash stays on the physics.
+      const { armSwingYaw: _armSwingYaw, ...reportFields } = report;
+      const historicalReport = { ...reportFields,
         contacts: report.contacts.map(({ first: _first, ...physical }) => physical),
         strikes: report.strikes.map(({ requestedAt: _requestedAt, first: _first,
           contactAnatomy: _contactAnatomy, ...physical }) => physical),
@@ -301,15 +303,32 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
     // load, so energies and fatigue factors move. With the old drain and curve
     // both hashes reproduce exactly. In the pass rep one command moves by at
     // most 4e-7 yd/s on ticks 3-6 (agent 3, vel.x); the run policy is unchanged.
+    // PHY-1 (leg force-velocity): a leaning body's strength term now falls with
+    // his speed along the force, and the ground limit is friction on his actual
+    // normal load. Commands, control and RNG are unchanged (the policy hashes
+    // above), only the achieved bodies move, so both physical hashes are
+    // re-recorded.
+    // Start law (#336): C's 2.4 (run) / 2.2 (pass) yd/s and DT_W's sub-top-speed
+    // requests now start at full leg force, so bodies move from tick 1 and C's
+    // seal/set commands follow them from tick 2; tick-1 commands, every control
+    // value and the RNG are unchanged. Policy and physical hashes re-recorded.
+    // Direction-free start (#353): a below-cap request starts at the body's full
+    // start force whatever his facing. The first divergence is the tick-1 bodies
+    // of exactly the agents with such a request off their facing: run C (2.4 yd/s,
+    // 6-17 deg off) and DT_W (1.5 yd/s, 11 deg off); pass C (2.2 yd/s set, 180
+    // deg off). Tick-1 commands, every control value and the next RNG draw are
+    // unchanged; C's later commands follow his body (run <= 0.008, pass <= 0.09
+    // yd/s by tick 6). With the old start force both hashes reproduce exactly.
+    // Policy and physical hashes re-recorded.
     const policy = { trace: policyTrace, nextRng };
     const policyHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex');
     expect(policyHash).toBe(type === 'run'
-      ? '82b6a93e956e652f136d93444a82bb718f209ddebf98f3bce86d18da8f0b12dc'
-      : '2375619cc4d9f0e29a8d6c004cfb5feeb5fea2a1df2e98904063918c02d1e036');
+      ? '04f3e3b09f78e10495d63d73ed66e0cabbc68bd11d8caba06a4eb3facef9fd93'
+      : 'c880366aa2b2fc9662b93c1734521f1c4b1700f4730144558a36686df172e6c5');
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng })).digest('hex');
     const motor180 = type === 'run'
-      ? '8766748b6a1120025b8b980151dcaefca00342c27955d7b199e2633b7c5484cd'
-      : '3e4847ceadb889e50ffbd1f3bc3072c72344b64a97287786df9126e50a819088';
+      ? 'f054f02f10718e96e18c041fc1191a240da26a2c5215e0099d2099061f4d380b'
+      : '4c9f557fe7ae66d00860fadb146fadca5e1972320053ce2505407612d77f23d5';
     expect(actual).toBe(motor180);
   });
 });

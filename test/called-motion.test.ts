@@ -34,7 +34,9 @@ describe('announced teammate target stays distinct from achieved motion',()=>{
  });
  it('adds exactly one fresh free first-step acceleration, without re-advancing the CV position',()=>{
   const seen=picture(),before=structuredClone(seen),p0=structuredClone(profile),target={x:3,y:0};
-  const predicted=predictCalledMotion(seen,target,profile),a=2/profile.tau;
+  // Start law (#336): full start force falling to zero at the wanted 3 yd/s,
+  // a=(vmax/tau)(1-1/3) (the old law's (3-1)/tau scaled by vmax/3).
+  const predicted=predictCalledMotion(seen,target,profile),a=profile.vmax/profile.tau*(1-1/3);
   expect(predicted.vel.x).toBeCloseTo(1+a*.05,12);
   expect(predicted.pos.x).toBeCloseTo(10+.5*a*.05**2,12);
   expect(predicted.pos.y).toBe(20);expect(seen).toEqual(before);expect(profile).toEqual(p0);

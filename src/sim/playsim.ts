@@ -8,7 +8,7 @@
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
-import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
+import { hypot2, clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, solveLaunch, stepFlight, type BallFlight } from '../physics/ball.js';
 import { handoffReach } from './ball-transfer.js';
 import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds, looseBallBoundaryStep, momentumDeadBallSpot,
@@ -25,28 +25,31 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
-import { ThrowSight } from './throw-sight.js';
+import { ThrowSight, viewCone } from './throw-sight.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, PRESS_BACKOFF, RECEIVER_DEPTH, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
 import { CoverageScouting, QBMind } from './qbmind.js';
 import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
-import { resolveCatchOpportunities } from './catching.js';
+import { resolveCatchOpportunities, secureStep } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { ANTICIPATION_PRIOR } from './anticipation-prior.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
-import { predictCalledMotion } from './called-motion.js';
+import { L2_BREAKDOWN, breakdownForContact } from './breakdown.js';
+import { calledVelocityAhead, predictCalledMotion } from './called-motion.js';
 import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { orderedDefense, orderedOffense } from './lineup.js';
+import { BACKER_CREEP, planBackerCreeps, type CreepPlan } from './backer-creep.js';
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
 import { CommandTrace, type BlockingSink, type CommandTraceSelection } from './command-trace.js';
@@ -54,6 +57,8 @@ import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
+/** ALIGN_HABIT (experimental, off): see alignDefense. */
+const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
   /** The defense's scouting of this offense (run/pass tendencies so far). */
@@ -112,6 +117,36 @@ interface SnapEvent { t: number; o: Agent; d?: Agent }
 /** Length of the ball: the neutral zone's depth (yd). */
 const BALL_LENGTH = 0.31;
 
+/** Experimental (GAZE=1, off): a player who names what he is watching
+ * (`lookAt`) sees opponents only inside his gaze cone or in contact with him.
+ * Others he knows from his last in-view sighting, projected forward for as
+ * long as his read skill lets him anticipate. Stage 1: chasing defenders only
+ * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
+ * neck range and cone half-angle below. */
+const GAZE = process.env.GAZE === '1';
+const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
+const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
+const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
+/** Anticipation from motion alone helps to about 1.0 s on NFL tracking. */
+const ANTICIPATION_HORIZON = 1.0;
+const ANTICIPATION_MAX_SPEED = 10;
+/** Position group, as the tracking exports name it, for the anticipation prior. */
+const PRIOR_GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL',
+  EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' };
+/** Default responsibilities by observer group, when his controller declares none (`assignedTo`). */
+const DEFAULT_ASSIGNED: Record<string, string[]> = { DB: ['WR', 'TE', 'RB'], LB: ['RB', 'TE', 'QB'], DL: ['OL', 'RB', 'QB'],
+  OL: ['DL', 'LB'], RB: ['LB', 'DL'], TE: ['LB', 'DB', 'DL'], WR: ['DB'], QB: ['DL', 'LB', 'DB'] };
+const PRIOR_HORIZONS = [0.3, 0.6, 1.0, 1.5];
+/** Picture age (s) where experience starts to replace motion, and where it has fully replaced it. */
+const PRIOR_HANDOVER = [0.8, 1.5];
+const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+/** Default on (RELEASE_REDECIDE=0 for comparison): a player whose block ends
+ * during the engagement update decides again in the same step (PlaySim.tick). */
+const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
+
+/** Outside the field's boundary planes (sidelines and end lines). */
+const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >= 120 || p.y <= 0 || p.y >= FIELD_WIDTH;
+
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
@@ -156,6 +191,14 @@ export class PlaySim {
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   /** When each defender first had the current pass in view. */
   readonly throwSight = new ThrowSight();
+  /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
+  private sightSamples?: Map<string, number>;
+  /** GAZE: head direction and what each opted-in player is watching. */
+  private gaze = new Map<Agent, { dir: number; t: number; target: Agent; set: number; since: number }>();
+  /** GAZE: last in-view picture per observer>target, with when it was taken. */
+  private sightMemory = new Map<string, { seen: Perceived; at: number; acc?: Vec2; snapT?: number }>();
+  /** GAZE: opponents an observer's own assignment makes his responsibility this play. */
+  private assigned = new Map<Agent, Set<Agent>>();
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
@@ -232,6 +275,11 @@ export class PlaySim {
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
   windupAt = -1;
+  /** When his last throwing motion was pulled down without a throw (a pump, or the arm pinned); −1 if none. */
+  windupEndAt = -1;
+  /** When the passer's arm starts forward (front foot planted); the in-grasp
+   * ruling does not cut off a pass already in its delivery. */
+  deliveryAt = -1;
   /** SNAP_REACT: the count's start plans and the pre-snap acts they produced. */
   snapCount?: SnapCount;
   snapActs?: { falseStarts: Set<string>; incidents: SnapIncident[]; inZone: Set<string>; cause?: string };
@@ -266,13 +314,20 @@ export class PlaySim {
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
-      { kind: setup.offCall.kind, pass: setup.offCall.pass, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
     // The secondary checks its call to the receiver distribution it sees.
     this.defCall = installCoverage(setup.defCall, this.offAlign);
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
-    this.defStyle = { ...setup.defStyle, mass, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
+    // ALIGN_HABIT (experimental, off): each off-ball defender's personal depth
+    // habit (his own seed) and this snap's placement scatter (the play's).
+    const scatter = ALIGN_HABIT ? Object.fromEntries(defense.map(([slot, player]) => {
+      const snap = this.rng.fork(`align-scatter:${slot}`);
+      const habit = new Rng(`align-habit:${player.id}`).normalClamped(0, .4, -.8, .8);
+      return [slot, { x: habit + snap.normalClamped(0, .6, -1.2, 1.2), y: snap.normalClamped(0, .4, -.8, .8) }];
+    })) : undefined;
+    this.defStyle = { ...setup.defStyle, mass, scatter, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los, personnel: setup.offCall.formation.personnel } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
@@ -299,9 +354,23 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+    // RECEIVER_DEPTH (experimental, off): a receiver on the line who sees a
+    // press look in front of him sets deeper to have room to release.
+    if (RECEIVER_DEPTH) {
+      const dir = this.attackDir('O');
+      for (const o of this.offense) {
+        const spot = this.offAlign.spots[o.slot], f = setup.offCall.formation.slots[o.slot as keyof typeof setup.offCall.formation.slots];
+        if (!spot || !f || spot.backfield || f.depth > 0.6 + 1e-9) continue;
+        const pressed = this.defense.some((d) => Math.abs(d.pos.y - o.pos.y) <= 1.5 && (d.pos.x - this.los) * dir > 0 && (d.pos.x - this.los) * dir <= 2);
+        if (pressed) o.body.pos = { x: o.pos.x - dir * PRESS_BACKOFF, y: o.pos.y };
+      }
+    }
     if (setup.alignment?.length) this.placeByHand(setup.alignment);
     this.snapX = this.agents.map((a) => a.pos.x);
-    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? undefined });
+    // TORSO_CAPSULE (World): the carrier's torso contact with a defender uses the capsule; every other pair keeps the disc.
+    this.world.capsulePair = (a, b) => { const c = this.carrier?.body; if (!c) return false; const o = a === c ? b : b === c ? a : null;
+      return !!o && this.defense.some((d) => d.body === o); };
     // Linemen and backs start in their stances; skill players upright.
     for (const a of this.agents) {
       const line = ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || a.player.position === 'DT' || a.player.position === 'EDGE';
@@ -320,10 +389,11 @@ export class PlaySim {
     if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
     this.snapX = this.agents.map((a) => a.pos.x);
     this.qbMind = new QBMind(this, qb);
+    this.offCall = this.qbMind.installedChecks(this.offCall);
     if (setup.audibles) {
       this.offCall = this.qbMind.preSnapCheck(this.offCall, { hurry: this.hurry, down: setup.down ?? 1, distance: this.firstDownX - this.los });
-      this.isPass = this.offCall.kind === 'pass';
     }
+    this.isPass = this.offCall.kind === 'pass';
     this.stats.qbRead = this.qbMind.report;
     // What the defense expects, from the formation it sees and the situation.
     const f = this.offCall.formation;
@@ -378,7 +448,13 @@ export class PlaySim {
       const p = this.snapCount!.plans.get(a)!;
       a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
     }
-    if (!stem && !creep && !this.motion && !early) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    // BACKER_CREEP (experimental, off): box backers who time the cadence walk
+    // into the snap (backer-creep.ts). Not under a stem, which moves everyone.
+    const creeps = BACKER_CREEP && !stem ? planBackerCreeps(this.defense, this.los, this.ballY,
+      (a) => this.defAlign.spots[a.slot as DefSlot]?.role.kind === 'blitz', this.rng.fork('backer-creep')) : new Map<Agent, CreepPlan>();
+    // Having timed the count to creep, he is moving at the snap: his start is the snap.
+    for (const a of creeps.keys()) a.snapReadyAt = 0;
+    if (!stem && !creep && !this.motion && !early && !creeps.size) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -401,11 +477,13 @@ export class PlaySim {
       targets.set(mug!,{x:this.los+.65,y:gapY(this.offAlign,spot.role.gap,side)});
       mug!.body.pos.x = Math.max(mug!.pos.x,this.los+4);
     }
+    for (const [d, plan] of creeps) targets.set(d, { x: d.pos.x - plan.pace * plan.start, y: d.pos.y });
     // A stem replaces the initial presentation above. Fit that starting
     // stance before its first observable history, never the moving endpoint.
     if (stem || creep || this.motion) fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
     // SNAP_REACT's count keeps its own rounding; the installed movements keep theirs.
-    const ticks = Math.max(Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,this.motion?.plan.seconds ?? 0)/this.dt),
+    const creepAhead = Math.max(0, ...[...creeps.values()].map((p) => p.start));
+    const ticks = Math.max(Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,this.motion?.plan.seconds ?? 0,creepAhead)/this.dt),
       Math.ceil(early/this.dt - 1e-9));
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
@@ -414,9 +492,11 @@ export class PlaySim {
       this.t = -i*this.dt;
       const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
       for (const [d,target] of targets) {
-        const active = d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
-        const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=Math.hypot(dx,dy);
-        const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
+        const backer = creeps.get(d);
+        const active = backer ? this.t>=-backer.start-1e-8 : d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
+        const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=hypot2(dx,dy);
+        // A creeping backer walks at his creep pace into the snap; he does not stop short of it.
+        const speed=!active ? 0 : backer ? backer.pace : Math.min(d.profile.vmax*.45,length*3);
         intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};
       }
       this.motion?.step(this, intents);
@@ -438,7 +518,7 @@ export class PlaySim {
     const rng = this.rng.fork('snap-count');
     const spotX = (a: Agent) => (a.team === 'D' ? this.defAlign.spots[a.slot as DefSlot]?.pos.x : undefined) ?? a.pos.x;
     const count = this.snapCount = planSnap(this.agents, { down: this.down, distance: this.firstDownX - this.los,
-      offBall: (a) => spotX(a) - a.profile.radius - this.los }, rng);
+      offBall: (a) => spotX(a) - a.profile.radius - this.los, ballY: this.ballY }, rng);
     this.snapActs = { falseStarts: new Set(), incidents: [], inZone: new Set() };
     // A down lineman crowds the ball: his helmet and hands set at the line,
     // ahead of the represented torso (tracked torsos 0.9 yd off the ball).
@@ -502,7 +582,7 @@ export class PlaySim {
       // neutral zone (the ball's length) into the man set across from him.
       const set = this.snapSetFront.get(d);
       const across = set !== undefined && set - (d.pos.x - d.profile.radius) > BALL_LENGTH;
-      for (const o of this.offense) if (Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) < o.profile.radius + d.profile.radius
+      for (const o of this.offense) if (hypot2(o.pos.x - d.pos.x, o.pos.y - d.pos.y) < o.profile.radius + d.profile.radius
         || (across && this.los - o.pos.x < 1.6 && Math.abs(o.pos.y - d.pos.y) < 0.75)) {
         acts.incidents.push({ playerId: d.player.id, enteredNeutralZone: true, contactedOpponentOrBall: true });
         acts.cause = this.snapCount!.hard ? 'hard count' : 'own timing';
@@ -566,6 +646,132 @@ export class PlaySim {
     return this.bySlot.get(name);
   }
 
+  /** GAZE: `a` is watching `target` this tick (stage 1: a chaser watches his man). */
+  lookAt(a: Agent, target: Agent): void {
+    if (!GAZE) return;
+    const g = this.gaze.get(a);
+    // A lapsed watch starts over: head from body facing, no memories from before.
+    if (g && g.set >= this.t - this.dt - 1e-9) { g.target = target; g.set = this.t; }
+    else this.gaze.set(a, { dir: a.facing, t: this.t, target, set: this.t, since: this.t });
+  }
+
+  /** GAZE: `observer`'s assignment makes these opponents his responsibility (his man, his zone's
+   * receivers, the backs and pullers his fit reads). Replaces the role default for this play. */
+  assignedTo(observer: Agent, targets: Agent[]): void {
+    if (!GAZE) return;
+    this.assigned.set(observer, new Set(targets));
+  }
+
+  private isAssigned(observer: Agent, target: Agent): boolean {
+    const set = this.assigned.get(observer);
+    if (set) return set.has(target);
+    const og = PRIOR_GROUP[observer.player.position], tg = PRIOR_GROUP[target.player.position];
+    return !!og && !!tg && (DEFAULT_ASSIGNED[og] ?? []).includes(tg);
+  }
+
+  /** The prior's context for a remembered picture: the same observables, bins and frame as
+   * scripts/diag/anticipation-bound.py (offense attacks +x, LOS at 0, mirrored to his own sideline). */
+  private priorContext(target: Agent, seen: Perceived, tSeen: number) {
+    const g = PRIOR_GROUP[target.player.position]; if (!g) return null;
+    const up = this.attackDir('O'), vx = seen.vel.x * up, vy = seen.vel.y, sp = Math.hypot(vx, vy);
+    const depth = (seen.pos.x - this.los) * up, wide = seen.pos.y - this.ballY, side = wide >= 0 ? 1 : -1;
+    const hd = sp > 0.3 ? Math.atan2(vy * side, vx) : 0;
+    const key = [g, Math.min(4, Math.floor(sp / 1.5)), Math.floor(((hd + Math.PI) / (2 * Math.PI)) * 8) % 8,
+      depth < 0 ? 0 : depth < 5 ? 1 : depth < 12 ? 2 : 3, Math.abs(wide) < 5 ? 0 : Math.abs(wide) < 13 ? 1 : 2,
+      tSeen < 1 ? 0 : tSeen < 2 ? 1 : 2].join('|');
+    return { key, up, side, ux: sp > 0.3 ? vx / sp : 1, uy: sp > 0.3 ? vy / sp : 0 };
+  }
+
+  /** What `observer` believes the play is: the offense knows its own call; a defender has his own
+   * run/pass read, which play action and draws can make wrong; unsure (or no read) uses no belief. */
+  private believedKind(observer: Agent): 'run' | 'pass' | null {
+    if (observer.team === 'O') return this.isPass ? 'pass' : 'run';
+    const read = observer.recog?.read;
+    return read === 'run' || read === 'pass' ? read : null;
+  }
+
+  /** Experience: the prior's displacement for a picture like this one, interpolated over horizons.
+   * Conditioned on what the observer believes the play is, when he has a belief and the cell exists. */
+  private priorDisplacement(target: Agent, seen: Perceived, tSeen: number, s: number, observer?: Agent): Vec2 | null {
+    const c0 = this.priorContext(target, seen, tSeen); if (!c0) return null;
+    const { key, up, side, ux, uy } = c0;
+    const pooled = key.slice(0, key.lastIndexOf('|')) + '|*', kind = observer ? this.believedKind(observer) : null;
+    const cell = (kind && (ANTICIPATION_PRIOR[`${kind}|${key}`] ?? ANTICIPATION_PRIOR[`${kind}|${pooled}`]))
+      ?? ANTICIPATION_PRIOR[key] ?? ANTICIPATION_PRIOR[pooled];
+    if (!cell) return null;
+    const pts = PRIOR_HORIZONS.map(h => [h, cell[String(h)]] as const).filter(([, v]) => !!v) as [number, [number, number, number]][];
+    if (!pts.length) return null;
+    const lerp = (h: number): [number, number] => {
+      if (h <= pts[0][0]) return [pts[0][1][0] * h / pts[0][0], pts[0][1][1] * h / pts[0][0]];
+      for (let k = 1; k < pts.length; k++) if (h <= pts[k][0]) { const [h0, a] = pts[k - 1], [h1, b] = pts[k], w = (h - h0) / (h1 - h0);
+        return [a[0] + (b[0] - a[0]) * w, a[1] + (b[1] - a[1]) * w]; }
+      const last = pts[pts.length - 1][1]; return [last[0], last[1]];
+    };
+    const [along, across] = lerp(s), c = across * side;
+    return { x: (along * ux - c * uy) * up, y: along * uy + c * ux };
+  }
+
+  /** GAZE: is `target` in `observer`'s view or contact, given his delayed picture of it? */
+  private inView(observer: Agent, target: Agent, picture: Perceived, delay: number): boolean {
+    const g = this.gaze.get(observer)!;
+    if (target === g.target) return true;
+    const e = observer.engagement;
+    if (e && (e.blocker === target || e.defender === target || e.helpers.includes(target))) return true;
+    if (target.engagement && (target.engagement.blocker === observer || target.engagement.defender === observer)) return true;
+    if (this.bond && this.bond.carrier === target && this.bond.tacklers.includes(observer)) return true;
+    if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
+    if (g.t < this.t) {
+      // The head turns toward the watched man's delayed picture, within the neck range.
+      const w = this.perception.perceive(g.target.idx, delay);
+      const want = Math.atan2(w.pos.y - observer.pos.y, w.pos.x - observer.pos.x);
+      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -GAZE_NECK, GAZE_NECK);
+      const step = GAZE_HEAD_RATE * (this.t - g.t);
+      g.dir = g.dir + clamp(angDiff(clamped, g.dir), -step, step);
+      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -GAZE_NECK, GAZE_NECK);
+      g.t = this.t;
+    }
+    const brg = Math.atan2(picture.pos.y - observer.pos.y, picture.pos.x - observer.pos.x);
+    return Math.abs(angDiff(brg, g.dir)) <= GAZE_CONE;
+  }
+
+  /** GAZE: out of view, his last in-view picture projected for his anticipation horizon. */
+  private remembered(observer: Agent, target: Agent, seen: Perceived): Perceived {
+    const key = `${observer.idx}>${target.idx}`;
+    let m = this.sightMemory.get(key);
+    if (!m || m.at < this.gaze.get(observer)!.since) { m = { seen, at: this.t }; this.sightMemory.set(key, m); }
+    const since = this.t - m.at;
+    // Anticipation bounds measured on NFL tracking with the same operator
+    // (scripts/diag/anticipation-bound.py): from motion alone, constant
+    // acceleration is the best single predictor to about 1.0 s, beyond which
+    // motion stops helping. Skill is the mean of play recognition and awareness.
+    const skill = clamp(0.5 * observer.r('playRecognition') + 0.5 * observer.r('awareness'), 0, 1);
+    const s = Math.min(since, ANTICIPATION_HORIZON), a = m.acc ?? { x: 0, y: 0 };
+    let dx = m.seen.vel.x * s + 0.5 * a.x * s * s, dy = m.seen.vel.y * s + 0.5 * a.y * s * s;
+    const vx = m.seen.vel.x + a.x * s, vy = m.seen.vel.y + a.y * s, sp = Math.hypot(vx, vy);
+    if (sp > ANTICIPATION_MAX_SPEED) { dx = m.seen.vel.x * s; dy = m.seen.vel.y * s; }
+    const moving = since < ANTICIPATION_HORIZON;
+    // The ladder (measured on tracking): frozen picture -> motion projection -> experience prior.
+    // Following motion is basic perception: it saturates at read skill 0.5 (generated players run
+    // 0.3-1.0, so only a hypothetical zero-rated player is frozen). Above 0.5, his experience
+    // (the tracking prior) takes over, but only for opponents his own assignment makes his.
+    const wm = Math.min(1, 2 * skill), hp = PRIOR_HORIZONS[PRIOR_HORIZONS.length - 1], sp2 = Math.min(since, hp);
+    const tSeen = m.at - (m.seen.age ?? 0);
+    const prior = this.isAssigned(observer, target) ? this.priorDisplacement(target, m.seen, tSeen, sp2, observer) : null;
+    // On NFL tracking constant acceleration is the better predictor to about 0.8 s and the context prior
+    // by 1.5 s (Run Game, held out), so experience takes over as the picture ages.
+    const handover = clamp((since - PRIOR_HANDOVER[0]) / (PRIOR_HANDOVER[1] - PRIOR_HANDOVER[0]), 0, 1);
+    const wp = prior ? Math.max(0, 2 * skill - 1) * handover : 0;
+    let pvx = 0, pvy = 0;
+    if (prior && wp > 0 && since < hp) {
+      const ahead = this.priorDisplacement(target, m.seen, tSeen, Math.min(hp, sp2 + 0.1), observer)!;
+      pvx = (ahead.x - prior.x) / 0.1; pvy = (ahead.y - prior.y) / 0.1;
+    }
+    const px = (1 - wp) * wm * dx + (prior ? wp * prior.x : 0), py = (1 - wp) * wm * dy + (prior ? wp * prior.y : 0);
+    const mv = moving ? 1 : 0;
+    return { ...m.seen, pos: { x: m.seen.pos.x + px, y: m.seen.pos.y + py },
+      vel: { x: (1 - wp) * wm * vx * mv + wp * pvx, y: (1 - wp) * wm * vy * mv + wp * pvy }, age: (m.seen.age ?? 0) + since };
+  }
+
   /** What `observer` perceives of `target` (delayed for opponents). */
   see(observer: Agent, target: Agent, delayScale = 1): Perceived {
     if (observer.team === target.team) {
@@ -575,12 +781,39 @@ export class PlaySim {
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
-    // Attention follows the observer's belief, regardless of the hidden call.
-    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
-    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)) delay += 0.15;
     // Eyes on keys: everything else is peripheral.
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
-    const seen = this.perception.perceive(target.idx, delay);
+    // Attention follows the observer's belief, regardless of the hidden call:
+    // reading run, his eyes go to the backfield and the blockers, so a man
+    // releasing away from him is seen late. A blocker his own picture shows in
+    // front of him and in range is one of the blockers he is watching,
+    // whatever his position; where the blocker really is now does not decide it.
+    // Looking away from a man he was watching holds the picture he has of him;
+    // it ages from there and does not rewind to an older moment.
+    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
+    // Held per query: a caller asking for an older picture on purpose
+    // (pursuit compares two samples for acceleration) keeps its own history.
+    const now = Math.round(this.t / this.dt), key = `${observer.idx}>${target.idx}@${delayScale}`;
+    const sampled = (this.sightSamples ??= new Map<string, number>()).get(key);
+    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)
+      && !inBlockingView(observer, this.perception.perceive(target.idx, delay).pos)) {
+      const attended = delay;
+      delay += 0.15;
+      if (sampled !== undefined && sampled <= now) delay = Math.max(attended, Math.min(delay, (now - sampled) * this.dt));
+    }
+    let seen = this.perception.perceive(target.idx, delay);
+    this.sightSamples.set(key, now - Math.round((seen.age ?? delay) / this.dt));
+    const g = GAZE ? this.gaze.get(observer) : undefined;
+    if (g && g.set >= this.t - this.dt - 1e-9) {
+      if (this.inView(observer, target, seen, delay)) {
+        // Acceleration from two in-view pictures close together, for anticipation.
+        const k = `${observer.idx}>${target.idx}`, prev = this.sightMemory.get(k), dt = prev ? this.t - prev.at : 0;
+        const acc = prev && dt > 1e-6 && dt <= 0.3 + 1e-9
+          ? { x: (seen.vel.x - prev.seen.vel.x) / dt, y: (seen.vel.y - prev.seen.vel.y) / dt } : prev?.acc;
+        this.sightMemory.set(k, { seen, at: this.t, acc });
+      }
+      else seen = this.remembered(observer, target, seen);
+    }
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -852,15 +1085,31 @@ export class PlaySim {
             if (event) event.note = `${ruling.rule}: teammate recovery cannot advance`;
             this.whistle('tackle', { x: ruling.deadBallX, y: a.pos.y });
           } else {
-            // A fumble spot beyond the opponent's goal line would already
-            // have been a touchdown, so the dead spot is in the own end zone.
+            // Possession beyond the opponent's goal line is ruled a touchdown
+            // before tackles (checkTouchdown), so the dead spot should be in
+            // the own end zone. If it is not, the fumbler held the ball in
+            // the end zone his team attacks: the nearest ruling is his score.
             const ownEndZone = a.team === 'O' ? ruling.deadBallX <= OWN_GOAL_X : ruling.deadBallX >= OPP_GOAL_X;
-            const endZone = ownEndZone ? restrictedRecoveryInOwnEndZone({ team: a.team,
-              fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
-              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX }) : null;
-            if (!endZone || endZone.kind === 'unresolved') {
-              throw new Error(`Unsupported NFL ${ruling.rule}: end-zone recovery impetus/momentum`);
+            if (!ownEndZone) {
+              this.ruleLimitations.add(`${ruling.rule}: dead spot in the attacked end zone; ruled a touchdown`);
+              this.scoreKind = 'TD';
+              this.event('touchdown', a, null, `${ruling.rule}: teammate recovery dead in the attacked end zone`);
+              this.whistle('touchdown', { x: ruling.deadBallX, y: a.pos.y });
+              if (a.team !== prevTeam) this.capturePossessionSnapshot();
+              return;
             }
+            const facts = { team: a.team, fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
+              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX };
+            let endZone = restrictedRecoveryInOwnEndZone(facts);
+            if (endZone.kind === 'unresolved') {
+              // The ball's history lacks the end-zone impetus or momentum
+              // facts: rule on the recorded impetus (else the recovering
+              // team's) without the momentum exception, and record the gap.
+              this.ruleLimitations.add(`${ruling.rule}: end-zone recovery lacks impetus/momentum facts; ruled on recorded impetus`);
+              endZone = restrictedRecoveryInOwnEndZone({ ...facts, impetusTeam: facts.impetusTeam ?? a.team,
+                momentumExceptionExcluded: true, momentumSpotX: undefined });
+            }
+            if (endZone.kind === 'unresolved') throw new Error('unreachable: impetus and momentum supplied');
             const note = `${ruling.rule}/${endZone.rule}: teammate recovery dead in own end zone`;
             if (endZone.kind === 'safety') {
               this.scoreKind = 'safety';
@@ -905,7 +1154,12 @@ export class PlaySim {
       impetusTeam: this.acquisition?.team === carrier.team ? this.acquisition.impetusTeam : carrier.team,
       momentumExceptionExcluded: !this.acquisition?.momentumRetained,
       momentumSpotX: this.acquisition?.team === carrier.team && this.acquisition.momentumRetained
-        ? this.acquisition.spotX : undefined };
+        ? this.acquisition.spotX : undefined,
+      // A carrier still in bounds can hold the ball beyond the boundary's plane (his support is what puts him out).
+      // A fumble there is loose already beyond it: it crossed at the fumble's yard line, so that is where it is out
+      // if it then touches the ground or anything out of bounds. Without this the loose ball had no crossing and
+      // its out-of-bounds contact was an invariant failure (engine-50 cards, seed 23).
+      boundaryExit: outOfField(flight.pos) ? { x: clamp(flight.pos.x, 0, 120), y: clamp(flight.pos.y, 0, FIELD_WIDTH) } : undefined };
     // Statistical spot of the fumble: forward progress if he was wrapped up.
     this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
     // Offensive fumbles are the box-score stat; a returner's fumble is only an event.
@@ -1019,6 +1273,33 @@ export class PlaySim {
     return this.commandTrace?.isCollecting(a) ? this.commandTrace : undefined;
   }
 
+  /** One player's decision for this step, through containment, coverage
+   * orientation and opening to the ball, into this.cmds. */
+  private decide(i: number, t: number): void {
+    const a = this.agents[i];
+    const commandTrace = this.commandTrace, ledger = this.responsibility;
+    commandTrace?.at('decision');
+    const owner = a.behavior, before = commandTrace?.decisionStart(a, this);
+    // Reaction delays control, not collisions: he can still be pushed.
+    const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
+    commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
+    ledger?.decision(a, owner, command, t >= a.snapReadyAt);
+    const coverage = a.behavior.kind === 'man' || a.behavior.kind === 'zone';
+    let contained = coverage ? containCoverage(a, command) : command;
+    commandTrace?.command(a, 'containment', contained);
+    ledger?.stage('containment', a, contained);
+    if (coverage) {
+      contained = coverageOrientation(a).steer(a, t, this.dt, contained);
+      commandTrace?.command(a, 'coverage-orientation', contained);
+      ledger?.stage('coverage-orientation', a, contained);
+    }
+    commandTrace?.at('open-to-ball');
+    this.cmds[i] = openToBall(a, this, contained);
+    if (L2_BREAKDOWN && t >= a.snapReadyAt) this.cmds[i] = breakdownForContact(a, this, this.cmds[i]);
+    commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
+    ledger?.stage('open-to-ball', a, this.cmds[i]);
+  }
+
   tick(): void {
     const t = this.t;
     const commandTrace = this.commandTrace;
@@ -1030,7 +1311,7 @@ export class PlaySim {
       let nearby = 0;
       for (const other of this.opponents(a)) {
         const seen = this.perception.perceive(other.idx, a.profile.reactionTime);
-        if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < 3) nearby++;
+        if (hypot2(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < 3) nearby++;
       }
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
@@ -1042,28 +1323,7 @@ export class PlaySim {
 
     // Decide.
     this.presentedFakeRunners.clear();
-    for (let i = 0; i < this.agents.length; i++) {
-      const a = this.agents[i];
-      commandTrace?.at('decision');
-      const owner = a.behavior, before = commandTrace?.decisionStart(a, this);
-      // Reaction delays control, not collisions: he can still be pushed.
-      const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
-      commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
-      ledger?.decision(a, owner, command, t >= a.snapReadyAt);
-      const coverage = a.behavior.kind === 'man' || a.behavior.kind === 'zone';
-      let contained = coverage ? containCoverage(a, command) : command;
-      commandTrace?.command(a, 'containment', contained);
-      ledger?.stage('containment', a, contained);
-      if (coverage) {
-        contained = coverageOrientation(a).steer(a, t, this.dt, contained);
-        commandTrace?.command(a, 'coverage-orientation', contained);
-        ledger?.stage('coverage-orientation', a, contained);
-      }
-      commandTrace?.at('open-to-ball');
-      this.cmds[i] = openToBall(a, this, contained);
-      commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
-      ledger?.stage('open-to-ball', a, this.cmds[i]);
-    }
+    for (let i = 0; i < this.agents.length; i++) this.decide(i, t);
 
     // Intents: the decisions, refined by the techniques that own contact.
     for (let i = 0; i < this.agents.length; i++) {
@@ -1076,7 +1336,27 @@ export class PlaySim {
     commandTrace?.stage('technique-intents', this.intents);
     ledger?.stageAll('technique-intents', this.intents);
     commandTrace?.at('engagement');
+    const engagedBefore = RELEASE_REDECIDE ? this.agents.map((a) => !!a.engagement) : null;
     updateEngagements(this, this.intents);
+    // A player whose block ended in this update (he shed it, or it was given
+    // up) knows he is free: he decides again now, rather than carrying the
+    // command he gave while engaged (usually a standstill) through the rest
+    // of the step. Half of all block releases otherwise stood still for a step.
+    if (engagedBefore) for (let i = 0; i < this.agents.length; i++) {
+      const a = this.agents[i];
+      if (!engagedBefore[i] || a.engagement || t < a.snapReadyAt) continue;
+      // Technique requests this decision makes (a dive, a lunge) belong to
+      // this step's intent, as an ordinary decision's do, and must not wait in
+      // the maps for the next step. Requests already there came from the
+      // engagement update and keep their ordinary timing.
+      const priorDive = this.dives.get(a), priorLunge = this.lunges.get(a);
+      this.decide(i, t);
+      const dive = this.dives.get(a), lunge = this.lunges.get(a);
+      const newDive = dive !== priorDive ? dive : undefined, newLunge = lunge !== priorLunge ? lunge : undefined;
+      if (newDive) { if (priorDive) this.dives.set(a, priorDive); else this.dives.delete(a); }
+      if (newLunge) { if (priorLunge) this.lunges.set(a, priorLunge); else this.lunges.delete(a); }
+      this.intents[i] = newDive || newLunge ? { ...this.cmds[i], dive: newDive, lunge: newLunge } : { ...this.cmds[i] };
+    }
     commandTrace?.stage('engagement', this.intents);
     ledger?.stageAll('engagement', this.intents);
     commandTrace?.at('tackle-bond');
@@ -1100,7 +1380,8 @@ export class PlaySim {
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
-    },{now:t,constrained});
+    },{now:t,constrained,calledAhead:(a,b,h)=>a.team===b.team
+      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null});
     commandTrace?.stage('spacing', this.intents);
     ledger?.stageAll('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
@@ -1152,6 +1433,9 @@ export class PlaySim {
       this.afterPhysics(report);
     }
     this.updateBall(catchStarts);
+    // Possession in the opponent's end zone is a touchdown at once (11-2-1):
+    // ruled before this tick's tackles can strip the ball from the scorer.
+    if (this.phase === 'live') this.checkTouchdown();
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
     flushPassContacts(this);
@@ -1168,7 +1452,7 @@ export class PlaySim {
     for (const e of this.engagements) {
       if (e.contactReported) continue;
       const j = e.hands;
-      const loaded = Math.hypot(j?.normalForce ?? 0, j?.tangentForce ?? 0) > 1e-6
+      const loaded = hypot2(j?.normalForce ?? 0, j?.tangentForce ?? 0) > 1e-6
         || report.contacts.some(c => (c.i === e.blocker.idx && c.j === e.defender.idx)
           || (c.j === e.blocker.idx && c.i === e.defender.idx));
       if (loaded) {
@@ -1208,6 +1492,7 @@ export class PlaySim {
   private updateBall(catchStarts?: readonly Readonly<Vec2>[]): void {
     const ball = this.ball;
     if (ball.kind === 'held' || ball.kind === 'dead') return;
+    if (ball.kind === 'air' && ball.securing) { secureStep(this); return; }
     const prev = { ...ball.flight.pos };
     stepFlight(ball.flight, this.dt, this.wind);
     const cur = ball.flight.pos;
@@ -1222,7 +1507,7 @@ export class PlaySim {
           const s = clamp(((a.pos.x - prev.x) * dx + (a.pos.y - prev.y) * dy) / Math.max(1e-9, d2), 0, 1);
           const z = prev.z + (cur.z - prev.z) * s;
           return { a, s, valid: z > 0.1 && z <= a.profile.reactReach
-            && Math.hypot(a.pos.x - prev.x - dx * s, a.pos.y - prev.y - dy * s) <= a.profile.reach };
+            && hypot2(a.pos.x - prev.x - dx * s, a.pos.y - prev.y - dy * s) <= a.profile.reach };
         }).filter(c => c.valid).sort((a, b) => a.s - b.s);
       if (this.t - ball.releaseT >= 0.1 && candidates.length) {
         const { a: to, s: touchFraction } = candidates[0];
@@ -1319,7 +1604,7 @@ export class PlaySim {
       const c = Math.cos(ang);
       const s = Math.sin(ang);
       f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: Math.abs(f.vel.z) * this.dice('loose-ball').range(0.15, 0.45) };
-      if (Math.hypot(f.vel.x, f.vel.y) < 0.5 && f.vel.z < 0.4) f.vel = { x: 0, y: 0, z: 0 };
+      if (hypot2(f.vel.x, f.vel.y) < 0.5 && f.vel.z < 0.4) f.vel = { x: 0, y: 0, z: 0 };
     }
     if (this.t - ball.since < 0.15) return;
     // Nearest players scramble for it; possession chance rises when on the ground.
@@ -1327,7 +1612,7 @@ export class PlaySim {
     let bestD = 1.0;
     for (const a of this.agents) {
       if (a.isDown(this.t)) continue;
-      const d = Math.hypot(a.pos.x - cur.x, a.pos.y - cur.y);
+      const d = hypot2(a.pos.x - cur.x, a.pos.y - cur.y);
       if (d < bestD && cur.z < 1.2) {
         bestD = d;
         best = a;
@@ -1390,6 +1675,19 @@ export class PlaySim {
     this.whistle('oob', { x: spotX, y: exit.y });
   }
 
+  /** A carrier in possession in the end zone his team attacks has scored. */
+  private checkTouchdown(): boolean {
+    const c = this.carrier;
+    if (!c || c.team !== this.possession) return false;
+    const p = c.pos;
+    // Out of bounds first, as in checkWhistle.
+    if (p.y <= 0 || p.y >= FIELD_WIDTH || (c.team === 'O' ? p.x < OPP_GOAL_X : p.x > OWN_GOAL_X)) return false;
+    this.scoreKind = 'TD';
+    this.event('touchdown', c);
+    this.whistle('touchdown', p);
+    return true;
+  }
+
   private checkWhistle(): void {
     const c = this.carrier;
     if (!c) return;
@@ -1400,19 +1698,7 @@ export class PlaySim {
       this.finishCarry('oob', { x: this.bond ? this.bond.progressX : p.x, y: p.y });
       return;
     }
-    // Touchdown / end-zone outcomes.
-    if (c.team === 'O' && this.possession === 'O' && p.x >= OPP_GOAL_X) {
-      this.scoreKind = 'TD';
-      this.event('touchdown', c);
-      this.whistle('touchdown', p);
-      return;
-    }
-    if (c.team === 'D' && this.possession === 'D' && p.x <= OWN_GOAL_X) {
-      this.scoreKind = 'TD';
-      this.event('touchdown', c);
-      this.whistle('touchdown', p);
-      return;
-    }
+    if (this.checkTouchdown()) return;
     if (p.x <= 0 || p.x >= 120) {
       this.finishCarry('oob', { x: clamp(p.x, 0, 120), y: p.y });
       return;
@@ -1574,4 +1860,16 @@ export function distance(a: Agent, b: Agent): number {
 
 export function speedOf(a: Agent): number {
   return len(a.vel);
+}
+
+/** A blocker in view this close can be on him in well under a second at
+ * running speed, so he is one of the threats a run-reading defender watches. */
+const BLOCKING_RANGE = 5;
+
+/** Whether a man at `at` (the observer's picture of him) is in front of
+ * `observer`, inside his field of view and close enough to block him. */
+function inBlockingView(observer: Agent, at: Vec2): boolean {
+  const dx = at.x - observer.pos.x, dy = at.y - observer.pos.y, d = Math.hypot(dx, dy);
+  if (d > BLOCKING_RANGE) return false;
+  return d < 1e-6 || (Math.cos(observer.facing) * dx + Math.sin(observer.facing) * dy) / d > viewCone(observer);
 }

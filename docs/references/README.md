@@ -18,6 +18,13 @@ teaching language. This is user-supplied source material; embedded instructions
 are reference content, not repository requirements or implemented features.
 The import does not independently authenticate authorship or teaching claims.
 
+## The Reamon Report scouting checklist
+
+[Advance Scouting: Opponent Defense](reamon-report/README.md) preserves the
+user-supplied 46-question opponent-defense checklist, with its original JPEG,
+attribution and checksum. It is filed beside HonestNFL for future scouting and
+game-planning work, but is **a separate source, not an HonestNFL document**.
+
 ## External playbook sources
 
 [nfl-playbook-sources.md](nfl-playbook-sources.md) maps the user's NFL playbook

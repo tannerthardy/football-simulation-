@@ -65,44 +65,25 @@ describe('run responsibilities', () => {
     for (const a of owners) expect(Math.abs(a.pos.y - (a.behavior as RunBlocker).target!.pos.y)).toBeLessThan(a.slot === 'C' ? 2.8 : 1.7);
   });
 
-  it('paces an unfinished lead block, then accelerates when the lead clears the line', () => {
+  it('presses the designed track at his own tempo with an unfinished lead block just ahead', () => {
+    // Tracked backs run 4.6-4.7 yd/s with a puller 1.4-1.6 yd ahead on power/counter/trap (2022 all-22):
+    // the puller is a moving wall, not a man to wait for. Spacing, not the decision, keeps him off the back.
     const sim = setup('counter');
     const rb = sim.slot('RB')!;
     const lead = sim.slot('RT')!;
     rb.body.pos = { x: 38.2, y: CENTER_Y };
-    lead.body.pos = { x: 38.8, y: CENTER_Y + 0.4 };
     for (const d of sim.defense) d.body.pos = { x: 50, y: CENTER_Y + 15 };
-    for (let i = 0; i < 16; i++) sim.perception.record(sim.agents);
-    const carrier = new BallCarrier({ aim: { x: 40.6, y: CENTER_Y + 2 }, aimUntil: 3, follow: [lead] }, rb);
-    const slow = carrier.update(rb, sim);
-    expect(rb.tags.has('paced-lead')).toBe(true);
-    expect(slow.vel.y).toBeGreaterThan(0);
-    lead.body.pos.x = 40.5;
-    for (let i = 0; i < 16; i++) sim.perception.record(sim.agents);
-    const burst = carrier.update(rb, sim);
-    expect(Math.hypot(burst.vel.x, burst.vel.y)).toBeGreaterThan(Math.hypot(slow.vel.x, slow.vel.y));
-  });
-
-  it('stops waiting when the puller falls behind or an unblocked defender closes', () => {
-    const sim = setup('counter');
-    const rb = sim.slot('RB')!;
-    const lead = sim.slot('RT')!;
-    rb.body.pos = { x: 38.2, y: CENTER_Y };
-    lead.body.pos = { x: 38.8, y: CENTER_Y + 0.4 };
-    for (const d of sim.defense) d.body.pos = { x: 50, y: CENTER_Y + 15 };
-    const carrier = new BallCarrier({ aim: { x: 40.6, y: CENTER_Y + 2 }, aimUntil: 3, follow: [lead] }, rb);
     const observe = () => { for (let i = 0; i < 16; i++) sim.perception.record(sim.agents); };
     const speed = (cmd: { vel: { x: number; y: number } }) => Math.hypot(cmd.vel.x, cmd.vel.y);
+    const press = rb.profile.vmax * (0.62 + 0.18 * (1 - rb.r('patience')));
+    lead.body.pos = { x: 38.8, y: CENTER_Y + 0.4 };
     observe();
-    const slow = speed(carrier.update(rb, sim));
-    lead.body.pos.x = 37;
+    const behind = new BallCarrier({ aim: { x: 40.6, y: CENTER_Y + 2 }, aimUntil: 3 }, rb).update(rb, sim);
+    expect(behind.vel.y).toBeGreaterThan(0);
+    expect(speed(behind)).toBeCloseTo(press, 6);
+    lead.body.pos = { x: 37, y: CENTER_Y + 0.4 };
     observe();
-    expect(speed(carrier.update(rb, sim))).toBeGreaterThan(slow);
-    lead.body.pos.x = 38.8;
-    sim.defense[0].body.pos = { x: 39, y: CENTER_Y };
-    sim.defense[0].body.vel = { x: -3, y: 0 };
-    observe();
-    expect(speed(carrier.update(rb, sim))).toBeGreaterThan(slow);
+    expect(speed(new BallCarrier({ aim: { x: 40.6, y: CENTER_Y + 2 }, aimUntil: 3 }, rb).update(rb, sim))).toBeCloseTo(speed(behind), 6);
   });
 });
 
@@ -147,7 +128,7 @@ function doubleTeam(insecure = false, slant = false) {
     for (const a of sim.agents) {
       expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
     sim.t += sim.dt; sim.perception.record(sim.agents);
     return report;
@@ -184,9 +165,13 @@ describe('combination exchanges', () => {
   });
 
   it('keeps an insecure block even after the old fixed release time', () => {
-    const { sim, helper, combo, e } = doubleTeam(true);
+    const { sim, helper, primary, combo, e, observe } = doubleTeam(true);
     sim.t = 4;
     expect(e.control).toBeLessThan(-.12);
+    // Insecure as the climber sees it: the defender is across his partner's
+    // face (chest turned off the man). The hidden hand value alone is not a cue.
+    primary.body.facing = 1.3;
+    observe();
     readCombination(helper, sim, combo);
     sim.t = 5;
     readCombination(helper, sim, combo);

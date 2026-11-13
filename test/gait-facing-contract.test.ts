@@ -72,10 +72,12 @@ describe('held patch gait is planned from attained tick-entry facing', () => {
   it.each([-1, 1])('preserves the historical center-mode prospective-face counterexample, side %s', side => {
     const result = run('center', side), record = result.records[0];
     // The original 20 Hz plan credits 0.3 rad of requested turn. Its analytic
-    // desired-speed clip then feeds the established propulsion lag law.
+    // desired-speed clip then feeds the established propulsion lag law, which
+    // starts from the body's full start force (7.2) in any direction (#353):
+    // the lag law lifted by 7.2 / desired.
     const desired = 7.2 * (1 - .5 * ((Math.PI / 2 - .3) / (Math.PI / 2)) ** 2);
-    const expected = (desired - 3.6) / 1.4;
-    expect(expected).toBeCloseTo(.8884188959382183, 12);
+    const expected = (desired - 3.6) / 1.4 * (7.2 / desired);
+    expect(expected).toBeCloseTo(1.3205817620342934, 12);
     expect(record.plan.ay * side).toBeCloseTo(expected, 12);
     for (const force of result.forces) expect(force.y * side).toBeCloseTo(expected, 10);
   });
@@ -83,9 +85,15 @@ describe('held patch gait is planned from attained tick-entry facing', () => {
   it.each([-1, 1])('preserves the below-directional-cap held propulsion law, side %s', side => {
     const legacy = run('center', side, 12, false, .2, true), patch = run('patch', side, 12, false, .2, true);
     const expected = currentCommand(patch.records[0]);
-    expect(expected.y * side).toBeCloseTo((1.3 - 1) / 1.4, 12);
+    // Below the sideways cap (7.2 x .5 shuffle = 3.6) the legs push from the
+    // body's full start force, 7.2 in any direction (#353), and level off at the
+    // wanted 1.3: the lag law scaled by 7.2 / 1.3.
+    expect(expected.y * side).toBeCloseTo((1.3 - 1) / 1.4 * (7.2 / 1.3), 12);
     expect(patch.records[0].plan.ax).toBe(legacy.records[0].plan.ax);
-    expect(patch.records[0].plan.ay).toBe(legacy.records[0].plan.ay);
+    expect(patch.records[0].plan.ay * side).toBeCloseTo(expected.y * side, 12);
+    // The start force does not depend on the hips' direction (#353), so legacy
+    // center mode's prospective turn no longer changes it: the same push.
+    expect(legacy.records[0].plan.ay * side).toBeCloseTo(patch.records[0].plan.ay * side, 12);
     for (const force of patch.forces) expect(force.y).toBeCloseTo(expected.y, 10);
   });
 

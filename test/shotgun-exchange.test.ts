@@ -17,9 +17,15 @@ describe('saved shotgun exchange coordination', () => {
       sim.tick();
       if (sim.handoffAt >= 0) actualDistance = before;
     }
-    expect(sim.handoffAt).toBe(1.05);
+    // The back now leaves on his own start for the installed 1.2 s exchange
+    // rather than standing in reach early, so the give lands inside the
+    // window at 1.2, not on its opening tick (was 1.05).
+    const mesh = rb.behavior instanceof RunnerToMesh ? rb.behavior : null;
+    expect(sim.handoffAt).toBeGreaterThanOrEqual(1.05);
+    expect(sim.handoffAt).toBeLessThanOrEqual(1.2);
     expect(actualDistance).toBeLessThanOrEqual(handoffReach(sim.qb, rb));
     expect(sim.carrier).toBe(rb);
+    expect(mesh).toBeNull();
   });
 
   it('P069 preserves its complete current-source trajectory against only the cadence rollback', () => {
@@ -45,15 +51,34 @@ describe('saved shotgun exchange coordination', () => {
   });
 
   it.each([-1, 1])('being near a riding landmark does not authorize early departure, side %s', side => {
-    const sim = savedExchange('spread-air'), rb = sim.slot('RB')!;
-    const mesh = {x: rb.pos.x + .2, y: rb.pos.y - side*.2};
-    const aim = {x: rb.pos.x + 6, y: rb.pos.y + side*5};
-    rb.behavior = new RunnerToMesh(mesh, 1.2, aim, true);
-    sim.t = .5;
-    expect(rb.behavior.update(rb, sim)).toEqual(goTo(rb, mesh, {speed: .3, through: rb.profile.vmax*.55}));
-    sim.t = 1.05;
-    expect(rb.behavior.update(rb, sim)).toEqual(goTo(rb, aim, {speed: .55, through: rb.profile.vmax*.55}));
-    expect(sim.carrier).toBe(sim.qb);
+    const stage = (qbInHands: boolean) => {
+      const sim = savedExchange('spread-air'), rb = sim.slot('RB')!;
+      const mesh = {x: rb.pos.x + .2, y: rb.pos.y - side*.2};
+      const aim = {x: rb.pos.x + 6, y: rb.pos.y + side*5};
+      // The QB as the back sees him: at the landmark, or yards away from it.
+      sim.qb.body.pos = qbInHands ? {x: mesh.x - .3, y: mesh.y + side*.5} : {x: mesh.x - 4, y: mesh.y + side*3};
+      sim.qb.body.vel = {x: 0, y: 0};
+      for (let k = 0; k < 24; k++) sim.perception.record(sim.agents);
+      rb.behavior = new RunnerToMesh(mesh, 1.2, aim, true);
+      return {sim, rb, aim};
+    };
+    const rides = (f: ReturnType<typeof stage>) => {
+      const c = f.rb.behavior.update(f.rb, f.sim);
+      return Reflect.get(f.rb.behavior, 'passed') === true
+        && JSON.stringify(c) === JSON.stringify(goTo(f.rb, f.aim, {speed: .55, through: f.rb.profile.vmax*.55}));
+    };
+    // Early, beside the landmark with the QB there: he does not leave for the aim.
+    const early = stage(true);
+    early.sim.t = .5;
+    expect(rides(early)).toBe(false);
+    // In the window with the QB in his hands he rides through; with the QB away he does not.
+    const ready = stage(true);
+    ready.sim.t = 1.05;
+    expect(ready.rb.behavior.update(ready.rb, ready.sim)).toEqual(goTo(ready.rb, ready.aim, {speed: .55, through: ready.rb.profile.vmax*.55}));
+    const away = stage(false);
+    away.sim.t = 1.05;
+    expect(rides(away)).toBe(false);
+    expect(ready.sim.carrier).toBe(ready.sim.qb);
   });
 
   it('preserves a declared QB keeper instead of recovering toward a back', () => {

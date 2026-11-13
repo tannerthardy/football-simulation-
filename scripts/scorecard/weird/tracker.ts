@@ -71,6 +71,7 @@ interface Open {
   last: number;
   /** The worst tick (highest sev), or the lowest for an `episodeMin` detector. */
   peak: Hit;
+  peakT: number;
 }
 
 export class Tracker {
@@ -104,10 +105,13 @@ export class Tracker {
         if (cur && f.t - cur.last <= BRIDGE) {
           cur.last = f.t;
           cur.t0 = Math.min(cur.t0, h.at ?? f.t);
-          if (det.episodeMin ? h.sev < cur.peak.sev : h.sev > cur.peak.sev) cur.peak = h;
+          if (det.episodeMin ? h.sev < cur.peak.sev : h.sev > cur.peak.sev) {
+            cur.peak = h;
+            cur.peakT = f.t;
+          }
         } else {
           if (cur) this.finish(cur);
-          this.open.set(key, { det, t0: h.at ?? f.t, last: f.t, peak: h });
+          this.open.set(key, { det, t0: h.at ?? f.t, last: f.t, peak: h, peakT: f.t });
         }
       }
     }
@@ -138,6 +142,7 @@ export class Tracker {
       detector: d.id as DetectorId,
       t0: Math.round(o.t0 * 100) / 100,
       t1: Math.round(o.last * 100) / 100,
+      representativeT: Math.round(o.peakT * 100) / 100,
       players: o.peak.players.map((i) => this.slots[i] ?? String(i)),
       text: d.describe(o.peak, dur, this.slots),
       severity: Math.round((d.score ? d.score(o.peak, dur) : dur) * 1000) / 1000,

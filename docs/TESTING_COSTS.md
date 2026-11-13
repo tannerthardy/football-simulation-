@@ -7,14 +7,154 @@ merge criteria and testing tiers. Integration-owner/full-suite obligations,
 receipt publication and historical flag profiles below are not current gates.
 Documentation-only navigation changes need documentation/path checks, not games.
 
-## Offline data checks in CI
+## Current test loop
 
-The separate [offline-data workflow](../.github/workflows/data-tests.yml) runs
-`npm run test:data -- --verbose` on Python **3.12** and the Node version in
+Use the smallest check that answers the changed mechanism's question, under
+[PLAN](PLAN.md) and [AGENTS](../AGENTS.md#no-github-actions). All execution is
+manual/local. The tiers separate workloads; they do not remove assertions.
+
+| Command | Workload | Use |
+| --- | --- | --- |
+| `npm test -- test/<file>.test.ts` | Selected engine/controller contracts | Local mechanism and opposing control |
+| `npm test` | Core: 3,698 checks in 339 files | Broader engine/controller checkpoint |
+| `npm run test:workflows` | Capture, restoration, film/CLI and lab workflows: 32 checks in four files | Changes to `PlaySetup`, game hooks, replay, provenance or the affected tools |
+| `npm run test:integration` | Workflows plus native panels/full-game contracts: 42 checks in ten files | Required final integration gate, alongside core and static checks |
+| `npm run test:research` | Paused physics experiments: 225 checks in 20 files | Work on those experimental mechanisms |
+| `npm run test:all` | All four TypeScript tiers: 3,965 checks in 369 files | Complete combined-candidate verification |
+| `npm run test:data -- --verbose` | Offline Python measurement checks | Affected data/extraction changes |
+
+Counts describe develop `2a8b5de7a8892f77746b7dfbc1f642619e7738e9`
+with this tier change; the historical timing source below has earlier counts.
+New tests join their matching tier.
+Append a file to workflow/integration commands to select the affected check,
+for example `npm run test:workflows -- test/film-pairs.test.ts`. Workflow files
+are excluded from `npm test`; use their named command when selecting them.
+
+The required `npm test` plus `npm run test:integration` path retains all 3,740
+production/workflow checks exactly once. The integration command selects both
+the workflows and integration projects; do not run the whole workflow tier
+again immediately beforehand. Research remains its own explicit scope.
+
+`test:all` already includes core, workflows, integration and research. Running
+every tier immediately before it repeats the same work, including six full-game
+executions. Reuse compatible completed evidence and choose the applicable scope;
+the merger's independent local verification still follows AGENTS. An additional
+scorecard or game campaign needs its own football question. Static related-test
+selection alone misses CLI children and dynamic source/fixture reads.
+
+### Noise floor of the fixed run set (`ref:report --placebo N`)
+
+A paired run-set delta is only as good as its floor. Each placebo arm replays the
+1,321 fixed runs on the reference stack with one body nudged sideways after the
+first tick and nothing else changed (`REF_PLACEBO=<slot>:<sign>`,
+`REF_PLACEBO_SIZE=<yd>` in `scripts/diag/ref-replay.mts`); its paired delta
+against `ref` is what play divergence alone does.
+`npm run ref:report -- --skip-operators [--set fresh] --placebo 4 [--placebo-size 0.05] [--flag X=1]`
+(about 20 minutes) prints the arms, their mean (bias), RMS (spread) and mean
+paired SE per family, the candidate beside them, and each arm's share of plays
+whose yards change.
+
+**The floor depends on how hard plays diverge, and it is biased.** Measured on
+engine-55 (develop 2478e998, 2026-11-13), paired yards a run (capped at 20):
+
+| nudge | plays changed | all: mean / RMS / SE | IZ: mean / RMS / SE |
+| --- | --- | --- | --- |
+| 1e-3 yd, six arms (C+, LG+, LB+, C-, RT+, LT-) | 46-69% | -0.01 / 0.04 / 0.03 | -0.06 / 0.08 / 0.08 |
+| 0.05 yd, four arms (C+, LB+, LG-, RT+) | 77-95% | -0.10 / 0.11 / 0.08 | -0.14 / 0.15 / 0.19 |
+| 0.05 yd, same four arms, **fresh set** (`--set fresh`) | 78-94% | -0.00 / 0.03 / 0.09 | +0.20 / 0.23 / 0.19 |
+
+- On `runSet` every 0.05 yd arm loses yards overall (-0.05 to -0.17) and on IZ
+  (-0.08 to -0.20): perturbing that set hard lowers its yards whatever the
+  mechanism. On `runSetFresh` (captured on engine-55 with new seeds, which no
+  flag was promoted on) the overall bias is gone (-0.00) and the family biases
+  change sign. So the bias is selection: the default engine is the survivor of
+  many promotions judged on `runSet`'s exact plays (a winner's curse on the
+  benchmark). Read run-set deltas on `--set fresh`; keep `runSet` for continuity
+  and for the operators, and there read a candidate that diverges most plays
+  against the placebo mean, not zero.
+- Match the placebo to the candidate: compare its share of changed plays with
+  the arms' and pick the size that matches (a mechanism change usually diverges
+  90%+ of plays, like the 0.05 yd arms). Read the candidate's delta against the
+  placebo mean and RMS, not against zero and its own paired SE.
+- Duo, toss and draw are small families with a wide floor (toss RMS 0.59 at
+  0.05 yd); read them only beside it.
+- Re-run the arms when the run set or the reference stack changes materially.
+
+## Suite cost review — F2, 2026-10-29
+
+Comparison pin `f62c5bc07d8f00e3c2664fc183a7f92eb0f593d3` has the identical
+tracked tree (`dafc87c238bd328a9de7c3d8dc16b72559d8e3a5`) as accepted develop
+`9acefb012b5e98880337ba2a9d51aa0ef104f55a`, which merged the earlier PR #380
+runtime optimizations during this review. This measures the **additional**
+tier/scheduling change, with
+identical engine code, test files, fixtures and seeds in both arms. Node 22.23.3,
+Linux x64, four-CPU quota, no competing benchmark, source flag overrides unset,
+and identical default/JSON reporters including npm/Vitest startup.
+
+| Command | Before wall | After wall | Before CPU | After CPU |
+| --- | ---: | ---: | ---: | ---: |
+| `npm test` | 161.799 s | 117.193 s | 606.554 s | 441.041 s |
+| `npm run test:all` | 369.904 s | 275.813 s | 1,019.346 s | 1,025.323 s |
+
+These are **one paired measurement per command**, about 27.6% and 25.4% less
+wall time on this machine. The core receipt is at
+`96077e78e05c858ca39a87c3c04c6ea1268ed22a`; the final complete receipt is at
+`9b7ec932279c9f6e6f1e3397e0d8f8e0f114a143`. Only the unselected integration/
+research pools and the complete command change between those heads; the core
+command and selected configuration remain identical. Timing varies with host
+capacity, ordering and load; this is not a universal latency guarantee.
+
+Four former core files consumed 100.460 of 301.511 summed file-wall seconds
+in the refreshed core profile: `film-pairs`, `film-pack-inputs`, `saved-game-play`
+and `play-lab`. They contain 32 checks (0.87% of the former core count) but start
+native game prefixes, independent replays, CLI children and Git worktrees.
+They now form the workflow tier. Summed file times overlap; they are not CPU or
+suite elapsed time, and test count is not a measure of behavioral coverage.
+
+The full suite originally split threads and forks into separate pools, with one
+worker per pool. A trial with one thread and two forks took 377.163 s: the fork
+workers finished while the thread queue stayed busy. All tiers now use the same
+isolated thread pool. Complete verification caps it at three workers; standalone
+integration caps it at two and workflows at one. File isolation, every timeout,
+independent game executions and every assertion stay intact. Full-suite CPU
+work is similar, while average CPU use rises from 2.76 to 3.72 cores. On a
+constrained host, `npm exec -- vitest run --maxWorkers=1` lowers concurrency
+while selecting all four projects. For the workflow/game integration scope use
+`npm exec -- vitest run --project workflows --project integration --maxWorkers=1`.
+Do not append another `--maxWorkers` to a script that already specifies it:
+Vitest rejects duplicate scalar options rather than using the last one.
+
+The final integration-gate repair includes workflows in `test:integration`.
+The timings in this dated review used the earlier command map and source;
+they do not measure the expanded 42-check integration command or develop
+after #382. The core selection and complete
+shared-pool implementation are retained; current-head verification must state
+its own source and results.
+
+All 3,929 test identities/statuses match across all 368 files: 3,927 pass,
+the same two ordinary-frontal research assertions fail, and none are skipped.
+Both complete commands exit 1. There are no new timeout or worker errors.
+Core passes all 3,662 retained checks; the full run passes all 32 moved workflow
+checks and all 10 integration checks. No test file was changed by this tier/
+scheduling pass. Raw reports, timing and exact identity comparisons remain in
+ignored `out/perf/`.
+
+The blocking-responsibility ledger remains in core despite its cost: its named
+native cases protect assignment/release and observation seams relevant to active
+engine work. The six full-game executions remain in integration: official-record
+checks and independent recording/film comparisons answer different questions.
+Their scope and seeds are preserved. The main avoidable costs were triggering
+whole workflows during routine checks, repeating complete scopes, and leaving
+workers idle between separate queues.
+
+## Offline data checks
+
+Run `npm run test:data -- --verbose` locally on Python **3.12** and the Node
+version in
 `.nvmrc` (**22.23.3**). Install Python dependencies with
 `python3 -m pip install -r scripts/data/requirements-movement.txt` (pinned
 NumPy and pandas), and Node dependencies with `npm ci --no-audit --no-fund`.
-Dependency installation/import errors and test failures fail the job.
+Dependency installation/import errors and test failures fail the command.
 
 Add offline measurement checks as `test/test_*.py` using ordinary
 `unittest.TestCase` discovery. There is no module allowlist: mechanics-guard
@@ -22,11 +162,72 @@ checks and new measurement fixtures join automatically. Keep required checks
 unconditional; missing tools or packages must produce errors, not skips.
 Verbose output identifies every discovered test and reports any skips.
 
-The job uses committed or synthetic fixtures, with no NFL download or game
-collector. Relevant test, script, dependency, config and reference-data changes
-trigger it on PRs; every develop push also runs it. Core/integration and
-scorecard triggers are unchanged, so a reference-only PR does not schedule
-extra simulated games.
+These checks use committed or synthetic fixtures, with no NFL download or game
+collector. Select them for affected test, measurement, dependency, configuration
+or reference-data changes; they need no simulated-game campaign. GitHub Actions
+is not used for routine verification; follow AGENTS for execution venue.
+
+## Engine and typecheck timing — F2, 2026-10-30
+
+Manual comparison of develop `7a56d7904ba340b05998dccc3a1dbaf8f5207a73`
+and runtime candidate `cd565ceb8acdf3ab877b457c73857d21caed2568`, using
+Node 22.23.3, Linux x64 and a four-CPU container quota. Source-declared
+environment overrides were unset in both arms; tests still set their own
+flags. Each measurement includes npm/Vitest startup and identical default/JSON
+reporters, with no competing benchmark process.
+
+| Existing command | Base wall | Candidate wall | Base CPU | Candidate CPU |
+| --- | ---: | ---: | ---: | ---: |
+| `npm test` | 162.705 s | 159.774 s | 613.757 s | 602.265 s |
+| `npm run test:all` | 367.846 s | 358.443 s | 1,041.899 s | 985.840 s |
+
+These are **one paired measurement per command**: about 1.8% and 2.6% less
+wall time, respectively. Machine variability and test scheduling still matter.
+Within the complete suite, the two longest game-test files improve from
+147.020 to 129.417 s and from 142.231 to 127.193 s (about 11–12%). These file
+timings are concurrent observations, not independent benchmark repetitions.
+
+The new two-component norm avoids the pinned runtime's general `Math.hypot`
+temporary argument array, retaining its scaled arithmetic and argument order.
+Higher-arity norms keep the built-in. Numeric edge checks and 2,750,324 manual
+comparisons match exactly. Requalify exactness when upgrading Node. The earlier
+support optimizations also remain: direct copies for ordinary flat records,
+`structuredClone` for complex/shared state, a bounded cache of clock-only
+coefficients, and skips for empty held-support work. Redundant facing and
+zero-acceleration work is avoided without changing football parameters.
+
+Seven frozen replays, two warmup groups and 12 measured groups per arm isolate
+the additional norm/shortcut change from the first-pass support optimization
+on the same develop composition. Base-then-candidate takes 19.820 → 16.985 s;
+the reverse-order repeat takes 20.155 → 17.514 s. That is an additional 13–14%
+for this warmed replay panel, not the entire test suite or a universal game rate.
+
+Only no-emit typechecking adopts TypeScript's incremental cache, in ignored
+`out/typescript/typecheck.tsbuildinfo`. On publication source
+`423e797f2c5fcae4153a7ac600feefd9277c0ab1`, a fresh typecheck takes 15.144 s
+and a warm check 3.083 s, versus 15.352 s for the original command. Warm checks
+still fail on new and repeated errors, detect changed bytes with unchanged
+size/mtime, and pass after errors are fixed or their source is deleted. They
+emit no build output. The cache is disposable; a cold check remains valid.
+Build stays unchanged: an incremental-build trial returned success without
+recreating a missing JavaScript output. A Node bytecode-cache trial saved only
+2.4% on one core run (159.774 → 155.980 s); it is not enabled automatically.
+
+All 3,923 pre-existing test identities/statuses match the base. Two new numeric
+checks pass: core has 3,690 passes in 342 files; the complete suite has 3,923
+passes and the same two research failures in 368 files, with no skips. Both
+complete-suite commands exit 1 at the ordinary-frontal `physical fall`
+assertions in `test/research/continued-recovery-world.test.ts`. Focused checks
+(81), Python checks (297), typecheck and build pass. Seven saved plays preserve
+90,031 World-step states/reports, 797 controller ticks, 4,155 random draws and
+complete results exactly.
+
+Every pre-existing test/fixture, discovery rule, timeout, isolation setting,
+worker setting and test command is unchanged. Raw output stays in ignored
+`out/perf/`; exact identities and manual verification are summarized in the PR.
+Develop advanced to `e70cc2abe8650b02a2ad6eac84839208a6d074a0` during these
+measurements. Its separate squeeze repair is outside this pinned comparison;
+the merger still verifies the updated combined head locally.
 
 ## Core and integration timing — F2, 2026-10-23
 

@@ -11,7 +11,7 @@
  *     relative to facing (shuffle, backpedal),
  *   • fatigue.
  */
-import { angleDiff, angleOf, clamp, dot, len, type Vec2 } from '../core/vec.js';
+import { hypot2, angleDiff, angleOf, clamp, dot, len, type Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { Support } from './support.js';
 import { supportParams } from './support.js';
@@ -50,6 +50,10 @@ export interface MoveCommand {
   cutSkill?: number;
   /** 0–1 demand to turn shoulders through a narrow opening. */
   squeeze?: number;
+  /** 0–1 share of his start force he chooses to push with when speeding up (default 1: a full start). The body's
+   * capacity is unchanged; braking and cutting are not scaled. Used by a receiver getting off the line under
+   * control (LINE_START). */
+  drive?: number;
 }
 
 /** Output lost at an empty fast pool, and how sharply the loss grows with
@@ -102,10 +106,13 @@ export function enduranceFactor(body: Body): number {
  * levels off at a wanted speed below his top speed. */
 const GAIT_STEP = Number(process.env.GAIT_STEP ?? 0);
 
-/** The lag a controller should expect when it asks for a speed below his
- * top speed: the sprint time constant, or the leveling time under GAIT_STEP. */
-export function gaitLag(profile: PhysicalProfile): number {
-  return GAIT_STEP || profile.tau;
+/** The lag a controller should expect when it asks for `wanted` speed: the
+ * legs start at full force whatever he wants and level off at his wanted
+ * speed, so the approach time constant is tau scaled by wanted / top speed
+ * (the full sprint time constant for a full request, or with no wanted
+ * speed given). Under GAIT_STEP, the leveling time. */
+export function gaitLag(profile: PhysicalProfile, wanted = profile.vmax): number {
+  return GAIT_STEP || profile.tau * clamp(wanted / profile.vmax, 0, 1);
 }
 
 /** Propulsive acceleration available at speed `speed` toward a cap `cap`. */
@@ -118,7 +125,7 @@ export function updateSqueeze(body: Body, cmd: MoveCommand, dt: number): void {
   const p = body.profile;
   const desiredSqueeze = clamp(cmd.squeeze ?? 0, 0, 1);
   body.squeeze = clamp((body.squeeze ?? 0) + clamp(desiredSqueeze - (body.squeeze ?? 0), -3 * dt, 4 * dt), 0, 1);
-  if (Math.hypot(cmd.vel.x, cmd.vel.y) > 0.4) {
+  if (hypot2(cmd.vel.x, cmd.vel.y) > 0.4) {
     const h = angleOf(cmd.vel);
     const previous = body.squeezeHeading ?? h;
     body.squeezeHeading = previous + clamp(angleDiff(previous, h), -p.turnRate * dt, p.turnRate * dt);
@@ -128,8 +135,8 @@ export function updateSqueeze(body: Body, cmd: MoveCommand, dt: number): void {
 /** Facing a command asks for: explicit, else direction of travel (bounded by
  * his actual path while he carries speed). */
 export function commandFacing(body: Body, cmd: MoveCommand): number {
-  const speed = len(body.vel);
   if (cmd.facing !== undefined) return cmd.facing;
+  const speed = len(body.vel);
   if (len(cmd.vel) <= 0.4) return speed > 0.6 ? angleOf(body.vel) : body.facing;
   const wanted = angleOf(cmd.vel);
   if (speed <= PLANT_SPEED) return wanted;
@@ -163,7 +170,9 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const p = body.profile;
   const squeeze = body.squeeze ?? 0;
   // A narrower profile costs burst/cutting control; it is not free agility.
-  const effort = clamp(cmd.effort ?? 1, 0, 1) * (1 - 0.08 * squeeze);
+  const narrow = 1 - 0.08 * squeeze;
+  const effort = clamp(cmd.effort ?? 1, 0, 1) * narrow;
+  const drive = clamp(cmd.drive ?? 1, 0.05, 1);
   const cutSkill = (cmd.cutSkill ?? 1) * (1 - 0.12 * squeeze);
   const speed = len(body.vel);
 
@@ -172,11 +181,34 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const dmag = len(dv0);
   const fat = fatigueFactor(body.energy);
   let desired = dv0;
+  // His wanted speed, and the full speed his legs allow in that direction.
+  let wanted = 0, full = 0;
+  // The force of a full start: legs push off in any direction from the body's
+  // own curve (vmax / tau). Facing limits the speed he can hold that way.
+  const start = p.vmax * fat * enduranceFactor(body);
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
-    const cap = p.vmax * fat * enduranceFactor(body) * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * effort;
+    full = start * directionalSpeedFactor(p, angleDiff(body.facing, heading));
+    const cap = full * effort;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
+    wanted = Math.min(dmag, cap);
   }
+  // Starting is the low-speed end of the legs' force-velocity curve: at rest
+  // they push with the force of a full start whatever speed he wants, and
+  // that force falls to zero at his wanted speed instead of at top speed.
+  // On the sprint curve's terms this scales the propulsion toward a wanted
+  // speed by start / wanted. Only a request whose cap is the full forward
+  // speed (moving the way he faces) keeps the sprint curve unchanged; a full
+  // request capped by facing (sideways, backward) also starts with the full
+  // force and levels off at its lower cap.
+  // A lineman who wants 2.4 yd/s fires off as hard as one who wants top
+  // speed and levels off sooner (gaitLag). Mass and leg force enter through
+  // the body's own curve (vmax / tau), not a shared constant. The start force
+  // does not depend on his facing: tracked NFL pullers reach 0.5 yd/s
+  // sideways at 0.1 s with their shoulders opened 10 degrees by 0.3 s. Facing
+  // limits only the speed at which that force runs out (full, above). A
+  // shoulder squeeze still costs burst: it narrows the start force.
+  const lift = (w: number) => { const f = start * narrow; return w > 0 && w < f ? f / w : 1; };
 
   const dvx = desired.x - body.vel.x;
   const dvy = desired.y - body.vel.y;
@@ -186,10 +218,11 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   if (speed < 0.35) {
     // Near standstill: isotropic, limited by initial drive.
     const cap = len(desired);
-    const amax = Math.max(driveAccel(p, speed, GAIT_STEP ? p.vmax * fat : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
+    const amax = Math.max((GAIT_STEP ? driveAccel(p, speed, p.vmax * fat) * fat
+      : driveAccel(p, speed, Math.max(cap, 0.5)) * fat * lift(Math.max(wanted, 0.5))) * drive, p.brake * 0.5 * drive) * capacity;
     ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
-    const a = Math.hypot(ax, ay);
+    const a = hypot2(ax, ay);
     if (a > amax) {
       ax *= amax / a;
       ay *= amax / a;
@@ -206,7 +239,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // on the sprint (force-velocity) curve or braking, and cutting, which
     // is harder at high speed. Head straight for the wanted velocity, as
     // hard as the envelope allows in that direction.
-    const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
+    const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat * drive, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
     const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat) * capacity;
     const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
     if (k > 1) {
@@ -214,15 +247,14 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
       at *= s;
       an *= s;
     }
-    // Speeding up follows the sprint curve toward the wanted speed: a
-    // player who wants three-quarter speed pushes with about three-quarter
-    // effort. The share of the envelope that leaves free goes to the cut.
-    // GAIT_STEP (experimental, off by default): he pushes as hard as the
-    // force-velocity curve allows and levels off over about two steps,
-    // instead of approaching every wanted speed on the sprint time constant.
+    // Speeding up toward the wanted speed starts at full force and falls
+    // linearly to zero there (lift, above). It never exceeds the
+    // force-velocity envelope At. The share of the envelope that leaves free
+    // goes to the cut. GAIT_STEP (experimental, off by default): the full
+    // force-velocity curve, leveling off over a fixed time instead.
     const ease = GAIT_STEP
       ? Math.min(driveAccel(p, speed, p.vmax * fat) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
-      : driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
+      : driveAccel(p, speed, Math.max(cap, speed)) * fat * lift(wanted) * capacity * drive;
     if (at > ease) {
       at = ease;
       const room = An * Math.sqrt(Math.max(0, 1 - (at / Math.max(At, 1e-9)) ** 2));
@@ -241,11 +273,11 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
  * lateral ellipse). The remainder displaces the body's support.
  */
 export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Vec2 {
+  const amag = hypot2(a.x, a.y);
+  if (amag < 1e-12) return { x: 0, y: 0 };
   const p = body.profile;
   const speed = len(body.vel);
   const fat = fatigueFactor(body.energy);
-  const amag = Math.hypot(a.x, a.y);
-  if (amag < 1e-12) return { x: 0, y: 0 };
   if (speed < 0.35) {
     const amax = Math.max(driveAccel(p, speed, p.vmax * fat) * fat, p.brake * 0.5) * capacity;
     return amag > amax ? { x: a.x * amax / amag, y: a.y * amax / amag } : { x: a.x, y: a.y };
@@ -272,7 +304,7 @@ export const FAST_DRAIN = 3;
  * The charge comes out of the fast pool. */
 export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number, additionalWork = 0, velocity = body.vel): void {
   const p = body.profile;
-  const nspeed = Math.hypot(velocity.x, velocity.y);
+  const nspeed = hypot2(velocity.x, velocity.y);
   const frac = nspeed / p.vmax;
   body.sprintLoad = Math.max(0, (body.sprintLoad ?? 0) + (frac > 0.85 ? dt : frac < 0.7 ? -0.5 * dt : 0));
   const work = Math.max(0, accel.x * velocity.x + accel.y * velocity.y) / (p.vmax * (p.vmax / p.tau));
@@ -293,7 +325,7 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   const a = locomotionAccel(body, cmd, dt);
   body.facing = beforeFacing;
   const traction = supportParams(body.profile).traction;
-  const force = Math.hypot(a.x,a.y) * body.profile.massKg;
+  const force = hypot2(a.x,a.y) * body.profile.massKg;
   if (force > traction) { a.x *= traction / force; a.y *= traction / force; }
   // Preview the same bounded motor used by World, toward the actual requested
   // facing. `target` above remains the existing gait estimate for this step.
@@ -317,12 +349,13 @@ export function pushBody(body: Body, push: Vec2, dt: number): void {
  * Steering helper: desired velocity to arrive at `target` passing through it at
  * `throughSpeed` (0 = stop there), never exceeding `maxSpeed`.
  */
-export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0): Vec2 {
+export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0, decel?: number): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;
-  const d = Math.hypot(dx, dy);
+  const d = hypot2(dx, dy);
   if (d < 1e-3) return { x: 0, y: 0 };
-  const brake = body.profile.brake * 0.8;
+  // `decel`: the deceleration he plans to approach on (default: 0.8 of his braking).
+  const brake = decel ?? body.profile.brake * 0.8;
   const allowed = Math.sqrt(throughSpeed * throughSpeed + 2 * brake * Math.max(0, d - 0.15));
   const s = Math.min(maxSpeed, allowed);
   return { x: (dx / d) * s, y: (dy / d) * s };
@@ -336,9 +369,9 @@ export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throu
  */
 export function movingArrivalVelocity(body: Body, target: Vec2, targetVelocity: Vec2,
   maxSpeed: number, radius: number, throughSpeed: number, cutSkill=1, capacity=1): Vec2 {
-  const dx=target.x-body.pos.x,dy=target.y-body.pos.y,d=Math.hypot(dx,dy);
+  const dx=target.x-body.pos.x,dy=target.y-body.pos.y,d=hypot2(dx,dy);
   if(d<1e-9){
-    const speed=Math.hypot(targetVelocity.x,targetVelocity.y),scale=Math.min(1,maxSpeed/Math.max(1e-9,speed));
+    const speed=hypot2(targetVelocity.x,targetVelocity.y),scale=Math.min(1,maxSpeed/Math.max(1e-9,speed));
     return {x:targetVelocity.x*scale,y:targetVelocity.y*scale};
   }
   const ux=dx/d,uy=dy/d,nx=-uy,ny=ux;
@@ -357,7 +390,7 @@ export function movingArrivalVelocity(body: Body, target: Vec2, targetVelocity: 
 export function cornerSpeed(body: Body, corner: Vec2, next: Vec2, radius: number): number {
   const ix = corner.x-body.pos.x, iy = corner.y-body.pos.y;
   const ox = next.x-corner.x, oy = next.y-corner.y;
-  const inLen = Math.hypot(ix,iy), outLen = Math.hypot(ox,oy);
+  const inLen = hypot2(ix,iy), outLen = hypot2(ox,oy);
   if (inLen < 1e-6 || outLen < 1e-6) return 0;
   const cosine = clamp((ix*ox+iy*oy)/(inLen*outLen),-1,1);
   if (cosine > 1-1e-6) return body.profile.vmax;
@@ -370,7 +403,7 @@ export function cornerSpeed(body: Body, corner: Vec2, next: Vec2, radius: number
 export function seekVelocity(body: Body, target: Vec2, speed: number): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;
-  const d = Math.hypot(dx, dy);
+  const d = hypot2(dx, dy);
   if (d < 1e-3) return { x: 0, y: 0 };
   return { x: (dx / d) * speed, y: (dy / d) * speed };
 }

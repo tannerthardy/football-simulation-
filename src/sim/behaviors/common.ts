@@ -97,8 +97,12 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
   const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
   const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
-  const acceleration = clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / 0.2,
-    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
+  // Over the time actually between the two pictures he holds, which attention
+  // can stretch past the 0.2 s asked for; two pictures of the same moment show
+  // no acceleration.
+  const interval = (older.age ?? 0) - (seen.age ?? 0);
+  const acceleration = interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
+    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau)) : 0;
   // Recent acceleration is evidence for a short burst, not a promise of full
   // speed throughout the horizon. Reassess as new motion becomes visible.
   const tau = 0.3 + 0.3 * a.r('anticipation');
@@ -226,6 +230,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
 }
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
+  sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
   const seen = sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
@@ -330,4 +335,11 @@ export function nearest(list: Agent[], p: Vec2, filter?: (a: Agent) => boolean):
     }
   }
   return best;
+}
+
+/** GAZE (Flex's field-of-view model, #417): name what this player watches this
+ * tick. Optional so it is a no-op on builds without the model; where the model
+ * is present it is itself a no-op with GAZE off. */
+export function watch(sim: PlaySim, a: Agent, target: Agent | null | undefined): void {
+  if (target) (sim as unknown as { lookAt?: (who: Agent, what: Agent) => void }).lookAt?.(a, target);
 }

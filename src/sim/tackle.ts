@@ -25,8 +25,9 @@
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { supportParams, TURF_MU } from '../physics/support.js';
-import { GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
+import { availability, comHeightAt, supportParams, TURF_MU } from '../physics/support.js';
+import { fatigueFactor } from '../physics/kinematics.js';
+import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { contactQuality, previewTackleWindow } from './tackle-window.js';
@@ -49,6 +50,12 @@ export interface TackleBond {
   holds?: Map<Agent, GraspJoint>;
   /** Execution draw for each hold (median 1): technique and footing on this rep. */
   execution?: Map<Agent, number>;
+  /** HOLD_SINK: since when each tackler's hold has held without slipping, s. */
+  sink?: Map<Agent, number>;
+  /** Tacklers holding with one arm (ONE_ARM_HOLD): a grab with the arm a
+   * blocker did not control. One hand on the man, no locked wrap, until his
+   * body closes on the carrier and the second arm can come around. */
+  oneArm?: Set<Agent>;
   /** Seconds the held carrier has gone without gaining ground. */
   stalled?: number;
   /** Last step's external (ground) impulse and work on the pile, kg·yd units. */
@@ -61,17 +68,24 @@ const STALL = 0.8;
 /** Force a hold of quality q can sustain, kg·yd/s². Locked arms around a
  * body hold by geometry (the hands must come apart), several times what
  * fingertips on a jersey can; technique finishes the wrap. */
-/** Experimental tight-wrap finish (TACKLE_ROLL=1, off by default); see updateBond. */
-const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
-/** Experimental secure lower-wrap coupling; all transmitted loads still use
- * World's existing grip, arm and recovery budgets. Default-off. */
-const WRAP_BIND = process.env.WRAP_BIND === '1';
 /** Experimental contact acquired at standing reach with finite arm bracing.
  * Approach requests and real torso collisions remain physical. Default-off. */
 const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+/** GRASP_JEOPARDY (experimental, off): the in-the-grasp whistle is the
+ * rule's exception, not the ordinary sack. The rule declares a passer down
+ * when he is in the grasp and control of a tackler behind the line and his
+ * safety is in jeopardy. On, a pocket QB is whistled in the grasp only while a
+ * tackler has control of him (the arms-tight measure, not a grip at full
+ * stretch) and his body is going down (support falling); otherwise he is ruled
+ * like any runner: stopped forward progress or down by contact. Off: a pocket
+ * QB held 0.25 s with control or grip 0.6 is down at once. */
+const GRASP_JEOPARDY = process.env.GRASP_JEOPARDY !== '0';
+/** Experimental (WRAP_FOOT=1, off): a hold's coupling to the carrier's
+ * corrective step is its secure leg share only (see updateBond). */
+const WRAP_FOOT = process.env.WRAP_FOOT === '1';
 /** Default on (BLOCKED_REACH=0 turns it off): a blocked defender reaches for a
  * passing carrier with the arm his blocker does not control, rather than only
  * once he is beating the block. One free arm reaches 0.7 of his reach; a
@@ -93,14 +107,27 @@ const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
  * weaker grip slipped more and the hold broke: crowd holds on break-through
  * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
 const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
+/** Default on (ONE_ARM_HOLD=0 for comparison): a grab made from inside a block
+ * (BLOCKED_REACH, the free arm) holds with one hand and no locked wrap until
+ * the tackler's body has closed on the carrier, when the second arm comes
+ * around. One arm cannot lock around a body; the hands have to meet. Before
+ * this the free-arm grab was scored against the short arm's own range, so a
+ * back passing close to the free shoulder gave a form-tackle hold with two
+ * locked arms: OZ runs stopped at the first engaged DL's grab, 1.3 yd after
+ * contact against NFL 2.6 (Run Game, 2026-11-06). */
+const ONE_ARM_HOLD = process.env.ONE_ARM_HOLD !== '0';
+/** The second arm comes around once the arms' span is within this of the
+ * torsos touching, yd. */
+const SECOND_ARM_CLOSE = 0.15;
 
 /** `lock`: how much of the wrap the arms' geometry still locks (default
  * the hold's quality). A wrap that slides out to arm's length is a hand hold
  * again; the hands keep the grip they acquired (GRIP_HOLD). */
-export function gripForce(d: Agent, quality: number, lock = quality): number {
+export function gripForce(d: Agent, quality: number, lock = quality, hands = 2): number {
   const q = clamp(quality, 0, 1), l = clamp(lock, 0, 1);
-  const wrap = supportParams(d.profile).armForce * (0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
-  return GRIP_HOLD ? Math.max(wrap, handHold(d, q)) : wrap;
+  // One arm pulls with its own share of the arms' force and cannot lock.
+  const wrap = supportParams(d.profile).armForce * (hands < 2 ? 0.15 : 0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
+  return GRIP_HOLD ? Math.max(wrap, handHold(d, q, hands)) : wrap;
 }
 
 /** What two hands closed on a jersey hold, kg·yd/s², by hold quality: a
@@ -112,9 +139,9 @@ export function gripForce(d: Agent, quality: number, lock = quality): number {
  * keeps 3/4 of it; a pinch is about a third of a full grip. No combine drill
  * measures grip, so this replaces only the arm-push mapping the old law used
  * below a wrap. A locked wrap keeps the arm law above (GRIP_HOLD). */
-function handHold(d: Agent, q: number): number {
+function handHold(d: Agent, q: number, hands = 2): number {
   const perHand = d.profile.massKg * (0.42 + 0.16 * d.r('strength'));
-  return 2 * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
+  return hands * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
 }
 
 export function tryTackles(sim: PlaySim): void {
@@ -191,7 +218,7 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      attempt(sim, d, c, q, engaged, dd > arms);
+      attempt(sim, d, c, q, engaged, dd > arms, dd > arms ? range : arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
     }
@@ -204,7 +231,8 @@ export function tryTackles(sim: PlaySim): void {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
-      if (sim.dice('tackle', d).chance(Math.max(0.05, p))) {
+      if ((TKL_WHIFF ? !whiffs(sim, d, c, dive, false, DIVE_WINDOW) : sim.dice('tackle', d).chance(Math.max(0.05, p)))
+        && (!GRAB_CONNECT || grabConnects(sim, d, c, dive, false))) {
         // He gets a hand on a foot: a weak hold, all of it on the legs.
         grasp(sim, d, c, 0.3, 1, dd, 1, true, 'dive');
         sim.event('hit', d, c, 'diving tackle');
@@ -235,7 +263,91 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
   return false;
 }
 
-function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean): void {
+/** TKL_WHIFF (experimental, off; =1 turns it on): an open-field reach or dive
+ * misses because the carrier's body is not where the tackler's hands can get
+ * to in the reach window, not on a rating roll. In that window the tackler's
+ * centre goes where his momentum takes it, redirected toward his delayed
+ * picture of the carrier only as far as his cut capacity allows (a blocked
+ * defender a fraction of it); the carrier, if he can see the tackler, moves
+ * his hips away by his own cut capacity, otherwise runs on. A whiff is the
+ * carrier ending outside the tackler's hand reach. Ratings enter only as
+ * these capacities and the picture delay. A pocket QB keeps his escape law. */
+const TKL_WHIFF = process.env.TKL_WHIFF === '1';
+/** Hand strike, extension to contact (model assumption, s). */
+const REACH_WINDOW = 0.2;
+/** Layout from the launch to full extension (model assumption, s). */
+const DIVE_WINDOW = 0.3;
+/** WHIFF_MARGIN (experimental, off; needs TKL_WHIFF): the reach's geometry
+ * decides how close the hands get to the runner's body; whether fingers then
+ * get a grip of cloth at that margin is below the body scale we simulate, so it
+ * is a probability of the margin (W tier, docs/reviews/2026-11-10-tackle-forms.md).
+ * p(miss) = 1 / (1 + exp(-margin / sigma)): margin = the runner's predicted
+ * body point beyond the hands' reach (yd, + = out of reach). sigma is hand
+ * placement precision: HAND_SIGMA (a hand's width, a model assumption), wider
+ * with lost balance (availability) and with a blocker still on him, narrower
+ * with tackling skill (capability, not outcome). Checked against the missed
+ * share by approach on the shared index (Defense's classes, NFL tracking). */
+const WHIFF_MARGIN = process.env.WHIFF_MARGIN === '1';
+const HAND_SIGMA = 0.1;
+/** TKL_EXEC_STATE (experimental, off): drop the per-attempt random execution
+ * draw; the hold's quality keeps its deterministic contact-quality and
+ * skill-against-elusiveness terms. The whiff and grip physics carry the noise. */
+const TKL_EXEC_STATE = process.env.TKL_EXEC_STATE === '1';
+/** GRAB_CONNECT (experimental, off): a grab becomes a hold only if the fingers
+ * close on cloth before the runner's separation uses up the reach margin the
+ * grab has left. p(connect) = 1 / (1 + exp(-(m - dv * GRIP_CLOSE) / sigma)):
+ * m = the attempt's reach limit minus the distance (yd), dv = how fast the
+ * runner is pulling away from him (yd/s), GRIP_CLOSE = hand closure time (a
+ * model assumption), sigma = hand placement precision as in WHIFF_MARGIN. A
+ * grab that does not connect is a miss (the lunge or dive still costs him his
+ * base). W tier (docs/reviews/2026-11-10-tackle-forms.md): a full-stretch
+ * grab on a fleeing runner mostly fails to become a hold, instead of holding
+ * for 0.3 s and slipping. Checked against the missed share at first contact. */
+const GRAB_CONNECT = process.env.GRAB_CONNECT === '1';
+const GRIP_CLOSE = 0.1;
+export function grabConnects(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean): boolean {
+  const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, dd = Math.hypot(dx, dy) || 1;
+  const sep = Math.max(0, ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / dd);
+  const m = limit - dd;
+  const sup = d.body.support, a = sup ? availability(sup, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  const sigma = HAND_SIGMA * (2 - a) * (engaged ? 1.5 : 1) * (1.3 - 0.6 * d.r('tackling'));
+  return sim.dice('tackle', d).chance(1 / (1 + Math.exp(-(m - sep * GRIP_CLOSE) / sigma)));
+}
+export function whiffs(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean, window: number): boolean {
+  const m = whiffMargin(sim, d, c, limit, engaged, window);
+  if (!WHIFF_MARGIN) return m > 0;
+  const sup = d.body.support, a = sup ? availability(sup, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  const sigma = HAND_SIGMA * (2 - a) * (engaged ? 1.5 : 1) * (1.3 - 0.6 * d.r('tackling'));
+  return sim.dice('tackle', d).chance(1 / (1 + Math.exp(-m / sigma)));
+}
+/** The reach's miss distance: + = the runner's body beyond the hands' reach (yd). */
+export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean, window: number): number {
+  // The hands get there sooner the less they have to extend: a form tackle
+  // at body distance is on him at once; a reach at full stretch takes the
+  // whole window, in which the carrier can be gone.
+  const body = c.profile.radius + d.profile.radius;
+  const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+  const w = Math.max(0.08, window * clamp((dd - body) / Math.max(0.1, limit - body), 0, 1));
+  const seenC = sim.see(d, c);
+  const aim = { x: seenC.pos.x + seenC.vel.x * w, y: seenC.pos.y + seenC.vel.y * w };
+  const coast = { x: d.pos.x + d.vel.x * w, y: d.pos.y + d.vel.y * w };
+  const redirect = 0.5 * d.profile.lateral * (engaged ? 0.3 : 1) * w * w;
+  const ax = aim.x - coast.x, ay = aim.y - coast.y, al = Math.hypot(ax, ay);
+  const k = al > redirect ? redirect / al : 1;
+  const hands = { x: coast.x + ax * k, y: coast.y + ay * k };
+  let cw = { x: c.pos.x + c.vel.x * w, y: c.pos.y + c.vel.y * w };
+  const seenD = sim.see(c, d);
+  const sees = Math.cos(c.body.facing - Math.atan2(seenD.pos.y - c.pos.y, seenD.pos.x - c.pos.x)) > -0.2;
+  if (sees && !sim.bond) {
+    const tw = { x: seenD.pos.x + seenD.vel.x * w, y: seenD.pos.y + seenD.vel.y * w };
+    const ex = cw.x - tw.x, ey = cw.y - tw.y, el = Math.hypot(ex, ey) || 1;
+    const cut = 0.5 * c.profile.lateral * w * w;
+    cw = { x: cw.x + ex / el * cut, y: cw.y + ey / el * cut };
+  }
+  return Math.hypot(cw.x - hands.x, cw.y - hands.y) - limit;
+}
+
+function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, limit = Infinity): void {
   const t = sim.t;
   const rng = sim.dice('tackle', d);
   // Arms reach and recoil: one attempt per beat, not per physics tick.
@@ -266,7 +378,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
     const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
     const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.3 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
-    if (rng.chance(pMiss)) {
+    if (TKL_WHIFF && !pocketQB ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;
       sim.event('missed_tackle', d, c);
@@ -276,6 +388,15 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
       else if (!engaged) commitLunge(d, nx, ny, q);
       return;
     }
+  }
+
+  if (GRAB_CONNECT && !alreadyWrapped && !grabConnects(sim, d, c, limit, engaged)) {
+    d.missedTackles++;
+    sim.stats.missedTackles++;
+    sim.event('missed_tackle', d, c, 'grab did not connect');
+    if (lunged && q < 0.25) sim.diveAt(d, { x: dx, y: dy });
+    else if (!engaged) commitLunge(d, nx, ny, q);
+    return;
   }
 
   // Fumble on contact: hit severity from the closing speed and the hitter's mass.
@@ -292,19 +413,21 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // off a block, it is a grab. A slippery, powerful runner turns his hips so
   // the arms cannot lock. One execution draw per attempt.
   const base = clamp(0.25 + 0.85 * q - (engaged ? 0.3 : 0), 0.1, 1);
-  const execution = clamp((1 - 0.35 * clamp(0.5 * P + 0.5 * E - T, -1, 1)) * Math.exp(0.3 * rng.normal(0, 1)), 0.2, 1.6);
+  const execution = clamp((1 - 0.35 * clamp(0.5 * P + 0.5 * E - T, -1, 1)) * (TKL_EXEC_STATE ? 1 : Math.exp(0.3 * rng.normal(0, 1))), 0.2, 1.6);
   const quality = clamp(base * execution, 0.08, 1);
   // Where: good tacklers wrap the thighs; from behind they take the legs; a
   // reach off a block gets jersey; a lunge goes for the legs.
   const fromBehind = cosA < -0.3 ? 1 : 0;
   const legs = lunged ? clamp(0.75 + rng.normal(0, 0.15), 0.4, 1)
+    : GRIP_REACH ? gripReach(rng, engaged, fromBehind === 1, d.r('tackling') * q)
     : clamp(0.1 + 0.55 * d.r('tackling') * q + 0.25 * fromBehind - (engaged ? 0.3 : 0) + rng.normal(0, 0.15), 0, 1);
   // Out of standing reach he has to lay out to get there. Within it he
   // strikes: the last step drives his body into the carrier's near hip, so
   // the wrap follows a collision instead of a reach at a passing runner.
   if (lunged) sim.diveAt(d, { x: dx, y: dy });
   else if (!engaged) strike(sim, d, c, d.r('tackling'));
-  grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`);
+  grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`,
+    ONE_ARM_HOLD && engaged);
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);
 }
@@ -336,15 +459,18 @@ function commitLunge(d: Agent, nx: number, ny: number, q: number): void {
 
 /** Create a tackler's hold on the carrier and join (or start) the bond.
  * `extended`: he caught him at full stretch on a dive, holding from the ground. */
-function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, dd: number, execution: number, extended = false, origin = ''): void {
+function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, dd: number, execution: number, extended = false, origin = '', oneArm = false): void {
   const wasEngaged = !!d.engagement;
   if (sim.firstContactX === null) {
     sim.firstContactX = c.pos.x;
     sim.event('carrier_contact', c, d, 'grasp');
   }
   // A defender committing to the carrier relinquishes his old block. Keeping
-  // both constraints would hold the same body in two techniques.
-  if (d.engagement) sim.disengage(d.engagement);
+  // both constraints would hold the same body in two techniques. A one-armed
+  // grab off a block (ONE_ARM_HOLD) is the exception: the blocker's hands
+  // stay on him because he chose to tackle; he holds the runner with the
+  // free arm while the block goes on, until he gets off it.
+  if (d.engagement && !oneArm) sim.disengage(d.engagement);
   if (!sim.bond) {
     sim.bond = { carrier: c, tacklers: [], start: sim.t, progressX: c.pos.x, down: false, stalled: 0,
       grip: new Map(), control: new Map(), holds: new Map(), execution: new Map() };
@@ -356,7 +482,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   const reach = c.profile.radius + d.profile.radius + d.profile.reach * 0.9 + (extended ? 0.9 : 0);
   // He pulls himself into the runner: a sure tackler's arms reel faster.
   const pull = extended ? 0.6 : 1.2 + 1.2 * d.r('tackling');
-  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: gripForce(d, quality), legs, pull, hold: dd, origin,
+  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: oneArm ? gripForce(d, quality, 0, 1) : gripForce(d, quality), lock: oneArm ? 0 : clamp(quality, 0, 1), legs, pull, hold: dd, origin,
     ground: extended ? Math.max(reach, dd + 0.15) : undefined };
   if (REACH_CONTACT && !extended && !wasEngaged && dd > c.profile.radius + d.profile.radius) {
     joint.brace = dd;
@@ -366,7 +492,80 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   (bond.control ??= new Map()).set(d, quality);
   (bond.holds ??= new Map()).set(d, joint);
   (bond.execution ??= new Map()).set(d, execution);
+  // A hold is one-armed for exactly as long as this grab: a later two-arm grab
+  // in the same bond must not inherit an earlier grab's missing arm.
+  if (oneArm) (bond.oneArm ??= new Set()).add(d);
+  else bond.oneArm?.delete(d);
   sim.world.joints.push(joint);
+}
+
+/** The body-center distance a hold's arms amount to: at `CONTACT_SCALE`
+ * of the radii the World reads a full wrap; never farther than the centers. */
+function armDistance(joint: GraspJoint | undefined, centers: number, torso: number): number {
+  return Math.min(centers, (joint?.hold ?? centers) + (1 - CONTACT_SCALE) * torso);
+}
+
+/** GRIP_REACH (experimental, off): where a tackler's hands land on the runner
+ * (legs share: 0 shoulder line, 0.5 waist, 1 legs) is drawn from what he can
+ * reach in his situation, not one formula clamped at the shoulders. Free and
+ * square: chest to waist, lower (thighs) the better his form and approach;
+ * from behind: waist, hips or legs; off a block: what one arm reaches at the
+ * side (arm, waist, jersey). A draw outside the reach is drawn again, so no
+ * situation piles up at an edge. An input to the hold's physics, not a
+ * result: where the hands are, not whether the tackle holds. */
+const GRIP_REACH = process.env.GRIP_REACH !== '0';
+export function gripReach(rng: { normal(m: number, s: number): number }, engaged: boolean, fromBehind: boolean, form: number): number {
+  const [mean, sd, lo, hi] = engaged ? [0.35, 0.12, 0.15, 0.6]
+    : fromBehind ? [0.6 + 0.15 * form, 0.18, 0.35, 1]
+    : [0.2 + 0.45 * form, 0.12, 0.15, 0.75];
+  for (let i = 0; i < 8; i++) {
+    const v = mean + rng.normal(0, sd);
+    if (v >= lo && v <= hi) return v;
+  }
+  return clamp(mean, lo, hi);
+}
+
+/** HOLD_FINISH (experimental, off): the holder plants against the runner's
+ * travel in proportion to his grip, and an upper grip sits at the height his
+ * hands hold (shoulder line to waist). */
+const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
+/** Experimental (HOLD_SINK=1, off): sink and drag. Beside or behind the runner
+ * (the existing side/rear branch: the runner is not running into him), once
+ * his hold is not slipping he stops running with the man: he asks to stop
+ * along the runner's path and leans against the load (push), so his weight and
+ * his feet's friction act against the runner instead of his legs adding to the
+ * pair's momentum. Holding is not running with him: from the grasp his
+ * request along the runner's path never exceeds the speed he already has there
+ * (no delay: it is what his body does when it grabs, not a read of the
+ * carrier). The committed sink is executed by skill: once his hands have held
+ * (not slipping, read from his own hands) for his reaction time, longer for a
+ * poor tackler (he has to know he has him), he commits as fully as his
+ * tackling lets him (a poor one keeps half running). Until then, and while his
+ * grip slips, HOLD_FINISH's request under that cap. Third design (2026-11-12):
+ * attempts 1-2 left HOLD_FINISH's target, a speed to accelerate to, in charge
+ * during the recognition delay. The World
+ * decides the rest: a grip too weak for the anchor is torn off (a broken
+ * tackle), and a holder already off his base regains it or hangs as the
+ * physics has him; nothing forces a stance. Off, HOLD_FINISH commits his
+ * weight by grip security, which ramps from the hold's quality, so when the
+ * load arrives he still runs with the man at about half his speed (34 fast
+ * game wraps: median 55% over the first 0.3 s; side-wrap-bench.mts: asking to
+ * stop ends a side wrap in 2.5 yd and 0.5 s, running with him 3.7 yd). */
+const HOLD_SINK = process.env.HOLD_SINK === '1';
+/** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
+ * the way he is being carried, not square to the runner every tick. */
+const HOLD_FACING = process.env.HOLD_FACING !== '0';
+/** Shoulder line as a share of stature (Flex's bench: 1.60 yd). */
+const SHOULDER = 0.79;
+/** Height of an upper hold, yd, for the runner's current posture: the shoulder
+ * line at legs share 0, joining the World's default (COM · (1 − 0.55 legs))
+ * at the waist (0.5). Undefined below the waist: the default stands. */
+function upperHoldHeight(c: Agent, legs: number): number | undefined {
+  const l = clamp(legs, 0, 1);
+  if (l >= 0.5) return undefined;
+  const sp = supportParams(c.profile), posture = c.body.support?.posture ?? 0;
+  const com = comHeightAt(sp, posture), shoulder = SHOULDER * c.profile.heightYd * (comHeightAt(sp, posture) / sp.comHeight);
+  return com * (1 - 0.55 * l) + (shoulder - com) * (1 - 2 * l);
 }
 
 /** Release every hold of the bond (fumble, whistle, carrier change). */
@@ -405,7 +604,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     if (joint) sim.world.joints = sim.world.joints.filter((j) => j !== joint);
     d.nextTackleAt = Math.max(d.nextTackleAt, t + 0.3);
     sim.stats.brokenTackles++;
-    sim.event('broken_tackle', c, d, 'hold slipped');
+    // A one-armed grab made from inside a block (ONE_ARM_HOLD) that the runner
+    // pulls through is counted apart: charting would usually call it a miss or
+    // not chart it, so G1's missed + broken comparison uses open tackles only.
+    const engagedGrab = bond.oneArm?.delete(d) ?? false;
+    if (engagedGrab) sim.stats.brokenEngagedGrabs = (sim.stats.brokenEngagedGrabs ?? 0) + 1;
+    sim.event('broken_tackle', c, d, engagedGrab ? 'engaged grab slipped' : 'hold slipped');
   }
   if (bond.tacklers.length === 0) {
     sim.bond = null;
@@ -418,10 +622,13 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // a body wrap because time passed.
     const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
     const torso = c.profile.radius + d.profile.radius;
+    // How tight the hold is, by the arms' own span: a wrap on a trailing
+    // leg is tight although the bodies' centers are a stride apart.
+    const near = armDistance(joint, distance, torso);
     // A holder on the ground is stretched out behind his arms; the arms
     // themselves are as close as they were.
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
-    const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const quality = clamp(1 - (near - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
@@ -432,17 +639,24 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const k = control.get(d) ?? g;
     const held = clamp(k < available ? k + (available - k) * rate : available, 0.05, 1);
     control.set(d, held);
-    joint.capacity = gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
-    if (WRAP_BIND && joint.legs > 0) {
-      // Use the same acquired grip and actual closing quality as the roll.
-      // Height/pitch stay on `legs`; a tighter wrap increases only the
-      // contact's coupling to attempted corrective placement. A slack or
-      // weak grip must actually transmit force to impede that placement.
-      const secure = clamp(next, 0, 1) * quality;
-      joint.recoveryCoupling = joint.legs + (1 - joint.legs) * secure;
-    }
+    // A one-armed hold becomes a wrap only once his body has closed on the
+    // carrier, so the second arm can come around.
+    const oneArm = bond.oneArm?.has(d) ?? false;
+    if (oneArm && !d.engagement && near - torso <= SECOND_ARM_CLOSE) bond.oneArm!.delete(d);
+    // HOLD_FINISH: an upper hold is taken where his hands are, from the
+    // shoulders (jersey, pads: legs share 0) down to the waist (0.5), not at
+    // the runner's centre of mass, so a pull on it has its moment about his
+    // base. Below the waist the World's own interpolation stands.
+    if (HOLD_FINISH) joint.height = upperHoldHeight(c, joint.legs);
+    joint.capacity = oneArm && bond.oneArm!.has(d) ? gripForce(d, clamp(next, 0.05, 1), 0, 1)
+      : gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
+    joint.lock = oneArm && bond.oneArm!.has(d) ? 0 : Math.min(clamp(next, 0.05, 1), held);
+    // The lower-body share describes the acquired point's motion relative
+    // to corrective support. Grip security limits transmitted load above;
+    // it cannot move that point or change its geometric Jacobian.
+    delete joint.recoveryCoupling;
     const tx = (c.pos.x - d.pos.x) / (distance || 1), ty = (c.pos.y - d.pos.y) / (distance || 1);
-    const close = Math.min(1.5, Math.max(0, distance - torso) * 3);
+    const close = Math.min(1.5, Math.max(0, near - torso) * 3);
     const own = intents[d.idx];
     const cs = Math.hypot(c.vel.x, c.vel.y);
     // +1: the carrier is running into him; −1: he holds on from behind.
@@ -464,8 +678,61 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
       let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
-      intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
-        dive: own?.dive, lunge: own?.lunge };
+      // HOLD_FINISH (experimental, off): with a hold, he commits his weight
+      // against the runner's travel, not only along his arms: he sits and
+      // drags as hard as his grip lets him. Beside the runner the line of his
+      // arms is across the runner's path, so the plant above asks for almost
+      // nothing and he runs along with his hands on the man. He reads it from
+      // his own hands (how hard he holds); the runner's speed is the load the
+      // plant puts on that grip, and the World decides whether the grip
+      // survives it: a weak grip that plants may be torn off (a broken tackle).
+      // While his hold is slipping (his hands at their limit last step) he
+      // gives with it and keeps his feet with the runner instead of sitting:
+      // a trailing man who grabs a runner going by would otherwise sit while
+      // being ripped through his hands. He sits again once it holds.
+      if (HOLD_SINK && cs > 0.5) {
+        // Sink and drag: once his hands have held (not slipping) for as long
+        // as it takes him to know he has the man -- his reaction time, longer
+        // for a poor tackler -- he commits as fully as his tackling lets him
+        // sink. Until then: his weight by his grip's security; while the grip
+        // slips he gives with it (commitment 0).
+        const since = (bond.sink ??= new Map());
+        if (joint.slipping) since.delete(d); else if (!since.has(d)) since.set(d, t);
+        const knows = since.has(d) && t - since.get(d)! >= d.profile.reactionTime * (1.5 - d.r('tackling'));
+        const full = 0.6 + 0.4 * d.r('tackling');
+        const commit = joint.slipping ? 0 : knows ? Math.max(full, clamp(next, 0, 1)) : clamp(next, 0, 1);
+        const ux = c.vel.x / cs, uy = c.vel.y / cs;
+        // Holding is not running with him: from the grasp his request along
+        // the runner's path never exceeds the speed he already has there.
+        // (HOLD_FINISH's request, the runner's speed x (1 - grip security), is
+        // a target he would accelerate to after a grab from beside or from a
+        // slower trail.) Across the path he stays tight to the hold.
+        const own = Math.max(0, d.vel.x * ux + d.vel.y * uy);
+        // Sunk (he knows he has him): his own speed less what he commits.
+        const along = knows && !joint.slipping ? Math.min(own, cs) * (1 - commit) : Math.min(own, cs * (1 - commit));
+        vel = { x: ux * along + tx * close, y: uy * along + ty * close };
+      } else if (HOLD_FINISH && cs > 0.5) {
+        const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
+        vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
+      }
+      // Planted on a secure hold of his legs and still dragged, he drops his
+      // weight and hangs on: off his feet he can no longer chase, but half
+      // his weight then hangs on the runner's legs (the World decides what
+      // that binds). He reads it from his own body and arms: where they are
+      // on the man, how secure they are, and that after a plant he is still
+      // carried along faster than he asks to go.
+      const secure = clamp(next, 0, 1) * quality;
+      const dragged = (d.vel.x - vel.x) * tx + (d.vel.y - vel.y) * ty > 1;
+      const drop = d.body.support?.state === 'up' && joint.legs >= 0.35 && secure >= 0.6
+        && t - bond.start >= 0.4 && dragged;
+      // HOLD_FACING (experimental, off): holding a runner going past him, he
+      // does not re-aim his chest at the runner every tick (a pirouette the
+      // grasp's own moment never asks for). He asks to keep the facing he
+      // has; the runner turns him through the hold and the contacts, as far
+      // as the World's yaw response gives.
+      const facing = HOLD_FACING ? d.body.facing : Math.atan2(ty, tx);
+      intents[d.idx] = { vel, facing, push: 1, posture: 0.6,
+        dive: drop ? { x: tx * 0.2, y: ty * 0.2 } : own?.dive, lunge: own?.lunge };
     }
     if (TACKLE_TOUCH && (own?.lunge || d.body.support?.strike)
       && c.body.support?.state === 'up' && d.body.support?.state === 'up'
@@ -477,15 +744,15 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
         cutSkill: own.cutSkill, effort: own.effort };
     }
   }
-  // TACKLE_ROLL (experimental, off by default): a tight, secure wrap on an
-  // upright carrier finishes by rolling him, not by matching or out-pushing
-  // him. The holder sits his weight down against the carrier's travel and
-  // turns away across it, so the wrap pulls the carrier's hips sideways while
-  // his held legs limit the step that would catch him. Ground, grip and
-  // balance decide whether he goes down; a loose or extended hold is unchanged.
-  if (TACKLE_ROLL && c.body.support?.state === 'up') for (const d of bond.tacklers) {
-    const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+  // A tight, secure wrap on an upright carrier finishes by rolling him, not
+  // by matching or out-pushing him. The holder sits his weight down against
+  // the carrier's travel and turns away across it, so the wrap pulls the
+  // carrier's hips sideways while his held legs limit the step that would
+  // catch him. Ground, grip and balance decide whether he goes down; a loose
+  // or extended hold is unchanged.
+  if (c.body.support?.state === 'up') for (const d of bond.tacklers) {
     const torso = c.profile.radius + d.profile.radius;
+    const distance = armDistance(holds.get(d), Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y), torso);
     const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
@@ -507,8 +774,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // In the grasp: a quarterback held firmly behind the line before he throws
   // is ruled down at once (the rule protects him).
   const held = t - bond.start;
-  const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
-  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6);
+  // A passer whose arm is already coming forward gets the pass off.
+  const delivering = sim.deliveryAt >= 0 && t >= sim.deliveryAt;
+  const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled && !delivering;
+  const inGrasp = pocketQB && (GRASP_JEOPARDY
+    ? c.body.support?.state === 'falling' && bond.tacklers.some((d) => (control.get(d) ?? 0) >= 0.6)
+    : held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6));
   // A running carrier is not down merely because the arms held for seconds.
   // Upright tackles require stopped progress; physical falls are checked below.
   if (inGrasp || (bond.stalled ?? 0) >= STALL) whistleDown(sim, bond);

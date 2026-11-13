@@ -66,8 +66,19 @@ describe('pass contact momentum and anchor', () => {
       for (let i = 0; i < 20 && b.engagement; i++) sim.tick();
       return start - b.pos.x;
     };
-    expect(run(0.3)).toBeLessThan(0.15);
-    expect(run(2)).toBeGreaterThan(0.5);
+    // Re-recorded for the gait start law (#336): legs start at full force
+    // whatever speed is wanted, so the weak end's bull request now drives with
+    // his whole start force. Cutting `power` reaches his brace, not his gait
+    // (the sprint curve is his measured 10-split and 40). The anchor gives
+    // 0.20 yd in 20 ticks (0.05 under the old proportional start).
+    const held = run(0.3);
+    expect(held).toBeLessThan(0.25);
+    // Re-recorded for the leg force-velocity law (PHY-1): the driving end's
+    // force falls with his speed (1279 -> 1116 at 1.2 yd/s). A clear drive
+    // advantage moves the anchor 0.51 yd, more than twice the held case.
+    const driven = run(2);
+    expect(driven).toBeGreaterThan(0.3);
+    expect(driven).toBeGreaterThan(2 * held);
   });
 
   it('keeps pass protection during the short follow-through after release', () => {

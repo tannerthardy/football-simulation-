@@ -45,6 +45,12 @@ export function rememberCatchOpportunity(a: Agent, opportunity: { receiver: Agen
   if (flight) flight.opportunity = opportunity ? { receiver: opportunity.receiver, t: opportunity.t } : undefined;
 }
 
+/** The receiver this observer last judged the ball to be arriving at on his acquired flight, if any (his own
+ * hypothesis; refuted by a newer empty picture, superseded by an acquired holder). */
+export function catchOpportunity(a: Agent): { receiver: Agent; t: number } | null {
+  return flights.get(a)?.opportunity ?? null;
+}
+
 export function anticipatedCatcher(a: Agent, sim: PlaySim): PossessionRead | null {
   const opportunity = flights.get(a)?.opportunity;
   if (!opportunity || sim.t < opportunity.t || !rememberedFlight(a, sim.t)) return null;

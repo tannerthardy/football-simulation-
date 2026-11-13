@@ -77,8 +77,12 @@ access. Scripts, the viewer template and compact references remain tracked.
 perception; `src/playbook` owns installed calls and alignment; `src/players`
 owns profiles; `src/game` owns the game; `scripts` contains labs and exporters.
 `test/integration` holds slow game panels, `test/research` holds paused physics
-experiments. `npm test` keeps production contracts in the normal development
-loop when relevant; `npm run test:all` retains every TypeScript assertion.
+experiments. `npm test` keeps engine/controller contracts in the normal development
+loop. `npm run test:workflows` runs native capture/replay, film/CLI and lab checks.
+`npm run test:integration` includes those workflows and the game panels, keeping
+the required core-plus-integration gate complete without repeating workflows.
+`npm run test:all` retains every TypeScript assertion across core, workflows,
+integration and research; see [the command map and measured costs](docs/TESTING_COSTS.md#current-test-loop).
 
 Start assigned feature work from `develop` and follow PLAN's lane/review rules.
 Preserve existing worker branches and source-qualified research.

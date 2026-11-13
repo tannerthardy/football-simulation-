@@ -1,7 +1,7 @@
 import {describe,expect,it} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {RunBlocker} from '../src/sim/behaviors/blocking.js';
+import {RunBlocker,pullTurnRadius} from '../src/sim/behaviors/blocking.js';
 import {goTo} from '../src/sim/behaviors/common.js';
 import {cornerSpeed} from '../src/physics/kinematics.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
@@ -61,7 +61,8 @@ describe('one acquired rear surface governs the ordinary pull corner',()=>{
  it.each([false,true])('turns up after passing the lateral station at real clearance, mirror=%s',mirror=>{
   const f=stage(mirror);
   expect(Reflect.get(f.controller,'pullIdx')).toBe(2);
-  expect(f.command).toEqual(goTo(f.a,f.controller.plan.pullPath![2],{speed:.95,through:0}));
+  // The wrapper runs through the hole on his upfield leg (not asked to stop on it).
+  expect(f.command).toEqual(goTo(f.a,f.controller.plan.pullPath![2],{speed:.95,through:f.a.profile.vmax*.8}));
   expect(f.command.vel.x).toBeGreaterThan(0);
  });
  it.each([false,true])('cannot use waypoint tolerance or passed y to bypass an acquired obstruction, mirror=%s',mirror=>{
@@ -89,6 +90,7 @@ describe('one acquired rear surface governs the ordinary pull corner',()=>{
   expect(Reflect.get(f.controller,'pullIdx')).toBe(1);
   f.a.body.pos.x+=.15;f.sim.t+=.05;
   const p=f.controller.plan.pullPath!;
-  expect(f.controller.update(f.a,f.sim)).toEqual(goTo(f.a,p[1],{speed:.95,through:cornerSpeed(f.a.body,p[1],p[2],.65)}));
+  // A held corner is approached at the speed his own turn radius allows.
+  expect(f.controller.update(f.a,f.sim)).toEqual(goTo(f.a,p[1],{speed:.95,through:cornerSpeed(f.a.body,p[1],p[2],pullTurnRadius(f.a))}));
  });
 });

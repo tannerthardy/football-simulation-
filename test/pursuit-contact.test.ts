@@ -13,7 +13,7 @@ import { chase, pursuitPoint } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Agent } from '../src/sim/agent.js';
 import { inBlockReach, traits } from '../src/sim/engagement.js';
-import { afterStep as afterTackleStep, tryTackles, updateBond } from '../src/sim/tackle.js';
+import { afterStep as afterTackleStep, gripForce, tryTackles, updateBond } from '../src/sim/tackle.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -170,12 +170,17 @@ describe('physical tackle contact',()=>{
     // The hold has taken a share of the carrier's motion.
     expect(d.vel.x).toBeGreaterThan(.5);
   });
-  it('a wrapped defender releases his block and cannot join a second constraint',()=>{
+  it('a defender who grabs from inside a block holds with one arm and stays blocked (ONE_ARM_HOLD)',()=>{
+    // The blocker's hands stay on him because he chose to tackle: one hand on
+    // the runner, no locked wrap, and no second block on the same pair.
     const {sim,c,d}=stage(),b=sim.slot('C')!;
     d.body.pos={x:50,y:CENTER_Y+.7};b.body.pos={x:49.7,y:CENTER_Y+.7};b.downUntil=-1;
     const block=sim.engage(b,d,'run',{x:1,y:0})!;block.win=.8;
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);tryTackles(sim);
-    expect(sim.bond?.tacklers).toContain(d);expect(d.engagement).toBeNull();expect(b.engagement).toBeNull();
+    expect(sim.bond?.tacklers).toContain(d);expect(d.engagement).toBe(block);expect(b.engagement).toBe(block);
+    expect(sim.bond!.oneArm?.has(d)).toBe(true);
+    expect(sim.bond!.holds!.get(d)!.capacity).toBeCloseTo(gripForce(d,sim.bond!.grip!.get(d)!,0,1),6);
+    expect(sim.bond!.holds!.get(d)!.capacity).toBeLessThan(gripForce(d,sim.bond!.grip!.get(d)!));
     expect(sim.engage(b,d,'run',{x:1,y:0})).toBeNull();
     void c;
   });

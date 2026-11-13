@@ -20,18 +20,50 @@ import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, PRESSURES } from '../playbook/defense.js';
+import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, type CoverageSystem, type Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
+import { CALL_MIX, callMixWeight } from './call-mix.js';
 
 /** FRONT_ALIGN (on; =0 turns it off): fronts are called as team installs use
  * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
  * Under is the base front and Over a secondary call; nickel lines up in the
  * Over family; its pass-down front is a wide "Rush". One draw either way. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
+/** SAM_ON_TE (experimental, off): see the defensive call; share of Over/Even calls with the Sam on the TE. */
+const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
+/** MUG_CALLS (experimental, off): mug rates [>=1, 2] by package and situation
+ * (1 = 1st, 2 = 2nd, 3 = 3rd/4th and short (< 4), 4 = 3rd/4th and long). NFL 2022
+ * snap frames: a non-lineman 0-1.6 yd off the ball inside the guards. */
+const MUG_CALLS = process.env.MUG_CALLS !== '0';
+/** NICKEL_FRONTS (experimental, off): shares of nickel's five-man front and of the three-man front, by moment. */
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS !== '0';
+const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>>> = {
+  nickel: {
+    early: { penny: .02, penny_bear: .05, mint: .03, okie: .01 },
+    third: { penny: .01, penny_bear: .03, mint: .01, okie: .05 },
+    short: { penny: .03, penny_bear: .10, mint: .03 },
+  },
+  dime: { early: { okie: .11 }, third: { okie: .18 }, short: { okie: .12 } },
+};
+/** MUG_PRESSURES (experimental, off): mug packages by mug count; the remainder bails (no pressure). */
+const MUG_PRESSURES = process.env.MUG_PRESSURES !== '0';
+const MUG_PACKAGES: Record<'double' | 'single', Array<[string, number]>> = {
+  double: [['mug_one', .24], ['mug_sim', .08], ['mug_fire', .06], ['mug_both', .19]],
+  single: [['mug_one', .44], ['mug_sim', .06]],
+};
+/** SHORT_BASE (experimental, off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
+const SHORT_BASE = process.env.SHORT_BASE !== '0', SHORT_HEAVY_RATE = .15;
+/** NICKEL_FRONTS: share of nickel calls played from 3-3-5 personnel (the 3-3 Stack). */
+const STACK_RATE = .03;
+const FRONT_BY_ID_SUB = Object.fromEntries(FRONTS.filter(f => NICKEL_FRONT_IDS.has(f.id)).map(f => [f.id, f]));
+const MUG_RATES: Record<'nickel' | 'dime', Record<number, [number, number]>> = {
+  nickel: { 1: [.013, .001], 2: [.026, .008], 3: [.072, .023], 4: [.19, .068] },
+  dime: { 1: [.062, .003], 2: [.062, .007], 3: [.105, .011], 4: [.113, .016] },
+};
 /** SHORT_PACKAGE (on; =0 turns it off): a short-yardage package answers the
  * offense's heavy package anywhere on the field, not only at the goal line:
  * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
@@ -113,6 +145,29 @@ const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.
  *   ratio to the whole (Cover 1 0.82, Cover 0 0.75, 2-man 0.5, Cover 3
  *   1.12, quarters 1.07, Cover 6 1.1). */
 const COVER_CALL = process.env.COVER_CALL !== '0';
+/** RUN_FORM_PAIR (default off): the run concept is called for the formation
+ * the quarterback is in. Tracked 2022 runs (BDB, scripts' concept labels),
+ * by quarterback alignment at the snap (under centre <= 2 yd, pistol with the
+ * back directly behind, gun with the back beside him), as a ratio of the
+ * concept's share in that alignment to its share of all runs (under 58.5%,
+ * pistol 5.9%, gun 34.7%): outside zone is 77% under centre and 15% gun,
+ * inside zone 35% and 62%, draw 19% and 75%. The installed call drew the
+ * concept independently of the formation, so half our outside zone came from
+ * the gun and half our inside zone from under centre, which changes where the
+ * back takes the ball (tracked outside-zone backs 2.6 yd play side and running,
+ * ours level with the ball). Duo uses the tracked man/duo label. Run
+ * formations themselves follow the tracked alignment shares of all runs
+ * (ours were about 49% gun, 39% under centre). */
+const RUN_FORM_PAIR = process.env.RUN_FORM_PAIR !== '0';
+/** RUN_FORM_PAIR: tracked quarterback alignment shares of all 2022 runs. */
+const RUN_QB_SHARE = { under: 0.585, pistol: 0.059, gun: 0.347 };
+const RUN_FORM_RATIO: Partial<Record<RunConcept['scheme'], Record<'under' | 'pistol' | 'gun', number>>> = {
+  outsideZone: { under: 1.32, pistol: 1.31, gun: 0.42 }, wideZone: { under: 1.32, pistol: 1.31, gun: 0.42 },
+  insideZone: { under: 0.59, pistol: 0.37, gun: 1.78 }, splitZone: { under: 0.59, pistol: 0.37, gun: 1.78 },
+  duo: { under: 1.27, pistol: 1.5, gun: 0.48 }, power: { under: 0.74, pistol: 1.12, gun: 1.4 },
+  counter: { under: 0.75, pistol: 1.64, gun: 1.32 }, trap: { under: 0.7, pistol: 0.47, gun: 1.58 },
+  draw: { under: 0.33, pistol: 0.71, gun: 2.16 },
+};
 /** PRESSURE_CALL (on; =0 turns it off): how often the coordinator brings
  * pressure depends on the shell behind it. 2022 tracking, dropbacks (initial
  * pass rushers against PFF's coverage, scripts/diag/align): five or more
@@ -124,9 +179,27 @@ const COVER_CALL = process.env.COVER_CALL !== '0';
  * whatever the coverage, and a two-high call without an installable
  * pressure rushes four (3% with five or more, 24% behind one high). */
 const PRESSURE_CALL = process.env.PRESSURE_CALL !== '0';
+/** DL_GAMES (experimental, off): the coordinator calls defensive-line games
+ * (angles, slants, pinches; twists on passing downs). Off: no line game is called. */
+const DL_GAMES = process.env.DL_GAMES === '1';
 const PRESSURE_BY_SHELL: Record<string, number> = { 'one-high': 1.48, 'two-high': .43 };
 export const CB_NORM = 79.3;
-export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '21': 72.0, '13': 76.6, '22': 76.6 };
+// 20 personnel fields the same three receivers as 11.
+/** Split-back shotgun's share of each personnel group's snaps (2022 weeks
+ * 1-9, one back on each side of a shotgun QB): 11 128 of 10,114, 12 33 of
+ * 2,945, 21 102 of 1,379. 20 personnel has no other installed set. */
+const SPLIT_BACK_SHARE: Partial<Record<PersonnelId, number>> = { '11': .013, '12': .011, '21': .074 };
+/** Of the group's runs: 11 36 of 3,036, 12 21 of 1,552, 21 48 of 761. */
+const SPLIT_BACK_RUN_SHARE: Partial<Record<PersonnelId, number>> = { '11': .012, '12': .014, '21': .063 };
+export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '20': 71.3, '21': 72.0, '13': 76.6, '22': 76.6 };
+/** COVER_LONG (on since run-ref-24; COVER_LONG=0 restores): the early-down tilt is not
+ * applied on 2nd and 7+. An offence off schedule is passing, and NFL defences
+ * call 2nd and long like 3rd and long (BDB 2025 weeks 1-9, pff_passCoverage:
+ * Cover 3 29.7% on 2nd & 8+, 27.7% on 3rd & 8+, 38.6% on 1st down). The tilt
+ * applied to every 1st and 2nd down, so over 200 league-sampled coordinators
+ * 2nd & 7+ was Cover 3 41.6% (docs/reviews/2026-11-11-cover-mix.md). No new
+ * weights: 2nd & 7+ keeps the base shares and the coordinator's tree. */
+const COVER_LONG = process.env.COVER_LONG !== '0';
 const EARLY_DOWN: Record<string, number> = { cover1: .82, cover0: .75, cover2man: .5, cover3: 1.12, cover4: 1.07, cover6: 1.1 };
 const CALL_CHECK: Record<'under' | 'empty', Record<string, number>> = {
   under: { cover3: 1.38, cover4: .8, cover6: .6, cover2: .75, tampa2: .75, cover0: 1.3 },
@@ -137,7 +210,9 @@ function defPackage(rng: Rng, off: PersonnelId, s: Situation, scheme: string): D
   const short = s.distance <= 2;
   const w: [number, number, number] = off === '10' || off === '11'
     ? short ? [9, 83, 8] : !third ? [6, 85, 8] : s.distance <= 6 ? [1, 70, 29] : [0, 57, 43]
-    : off === '12' ? short ? [58, 42, 0] : third ? [20, 50, 30] : [56, 43, 1]
+    // 20 personnel is met like 12 (2022 weeks 1-9, early downs: base 45%,
+    // nickel 53% of 86 snaps; 12 is 58/41, 21 is 56/43).
+    : off === '12' || off === '20' ? short ? [58, 42, 0] : third ? [20, 50, 30] : [56, 43, 1]
     : short ? [75, 25, 0] : third ? [30, 60, 10] : [65, 34, 1];
   if (scheme === 'nickel-heavy') w[0] /= 3;
   const base: DefPersonnelId = scheme === '3-4' ? 'base34' : 'base43';
@@ -174,6 +249,16 @@ function installWeight(id: string, personnel: DefPersonnelId, passingDown: boole
   }
   return 1;
 }
+
+/** PA_CALL (experimental, off; PA_CALL=1): play action as a tag on the call (see playActionTag). */
+const PA_CALL = process.env.PA_CALL !== '0';
+/** The NFL's play-action rate on drop-backs by down/distance and the QB's alignment [gun, under center or pistol]
+ * (BDB 2025 plays.csv, drop-backs, not empty, not spikes; 9,7xx plays). Under center about 80% everywhere; from the
+ * gun it falls with the situation. */
+const PA_TAG_RATE: Record<string, [number, number]> = {
+  '1st': [0.24, 0.81], '2nd_short': [0.23, 0.75], '2nd_med': [0.21, 0.79], '2nd_long': [0.16, 0.77],
+  '3rd_short': [0.11, 0.79], '3rd_med': [0.03, 0.5], '3rd_long': [0.02, 0.47], '4th': [0.06, 0.73],
+};
 
 export interface Situation {
   down: number;
@@ -331,7 +416,9 @@ export class OffensiveCoordinator {
     const motion = motionEnabled() ? this.chooseMotion(formation, isPass) : undefined;
     const tag = motion ? ` (${motion.slot} ${motion.kind} motion)` : '';
     if (isPass) {
-      const concept = this.choosePass(s, formation, defense);
+      let concept = this.choosePass(s, formation, defense);
+      // PA_CALL: play action as a tag on the call, at the NFL's rate for this situation and alignment.
+      if (PA_CALL) concept = this.playActionTag(concept, s, formation);
       return { formation, flip, kind: 'pass', pass: concept, motion, label: `${formation.name} — ${concept.name}${tag}` };
     }
     const run = this.chooseRun(s, formation);
@@ -365,12 +452,14 @@ export class OffensiveCoordinator {
     const shortYd = s.distance <= 2 || 100 - s.yardline <= 3;
     if (shortYd && !isPass) return pickWeighted(this.rng, [['12', 3], ['21', 3], ['22', 2], ['13', 1.5], ['11', 1]]);
     if (s.hurry || (s.down >= 3 && s.distance >= 7)) return pickWeighted(this.rng, [['11', 7], ['10', scheme === 'air-raid' || scheme === 'spread' ? 3.5 : 1.5], ['12', 0.5]]);
+    // 20 personnel was 0.6% of 2022 snaps (weeks 1-9): a weight of 0.06 in
+    // tables that sum to about 10.
     const table: Record<string, Array<[PersonnelId, number]>> = {
-      'air-raid': [['10', 3], ['11', 6], ['12', 1]],
-      spread: [['11', 6.5], ['10', 1.5], ['12', 2]],
-      'west-coast': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['10', 0.5]],
-      'wide-zone': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['13', 0.5]],
-      power: [['11', 4], ['12', 3], ['21', 2], ['22', 1]],
+      'air-raid': [['10', 3], ['11', 6], ['12', 1], ['20', 0.06]],
+      spread: [['11', 6.5], ['10', 1.5], ['12', 2], ['20', 0.06]],
+      'west-coast': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['10', 0.5], ['20', 0.06]],
+      'wide-zone': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['13', 0.5], ['20', 0.06]],
+      power: [['11', 4], ['12', 3], ['21', 2], ['22', 1], ['20', 0.06]],
     };
     return pickWeighted(this.rng, table[scheme]);
   }
@@ -379,11 +468,47 @@ export class OffensiveCoordinator {
     const scheme = this.team.offScheme;
     const forms = FORMATIONS.filter((f) => f.personnel === personnel);
     const gunPref = scheme === 'air-raid' || scheme === 'spread' ? 2.5 : scheme === 'west-coast' ? 1.4 : 0.8;
-    return pickWeighted(
-      this.rng,
-      forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]),
-    );
+    const runPair = RUN_FORM_PAIR && !isPass;
+    let weights: Array<[Formation, number]>;
+    if (runPair) {
+      // Runs: the tracked quarterback alignment shares of all runs, spread
+      // over this personnel's formations of each alignment, with the
+      // scheme's gun preference kept as a tilt (1 for a pro-style offense).
+      const count = (qb: string) => forms.filter((f) => f.qb === qb && !f.tags.includes('empty')).length || 1;
+      weights = forms.map((f): [Formation, number] => [f, f.tags.includes('empty') ? 0.002
+        : (f.qb === 'gun' ? RUN_QB_SHARE.gun * gunPref / 0.8 : f.qb === 'pistol' ? RUN_QB_SHARE.pistol : RUN_QB_SHARE.under) / count(f.qb)]);
+    } else weights = forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]);
+    // Split-back gun takes its 2022 share of its personnel group's snaps
+    // (of its runs, when runs follow the tracked alignment shares).
+    const share = (runPair ? SPLIT_BACK_RUN_SHARE : SPLIT_BACK_SHARE)[personnel];
+    const splitW = weights.filter(([f]) => f.tags.includes('split-backs')).reduce((t, [, w]) => t + w, 0);
+    const otherW = weights.reduce((t, [, w]) => t + w, 0) - splitW;
+    if (share !== undefined && splitW > 0 && otherW > 0) {
+      const k = share / (1 - share) * otherW / splitW;
+      for (const entry of weights) if (entry[0].tags.includes('split-backs')) entry[1] *= k;
+    }
+    return pickWeighted(this.rng, weights);
   }
+
+  /**
+   * PA_CALL: play action is an action put in front of a concept, not a family of its own (docs/reviews/
+   * 2026-11-12-pa-call.md). After the concept is chosen the caller decides whether to put the run action on it, at
+   * the NFL's rate for the down and distance and the QB's alignment (PA_TAG_RATE). Quick and drop-back concepts take
+   * it from either alignment (NFL play action from the gun: 53% of throws under 5 air yards; under center 42% under 5
+   * and 32% at 15+). Screens and empty sets never do; the PA concepts already carry it. The tagged call is
+   * the same concept with the fake (the back's run track, the line's look, the QB's PA drop by alignment). Drawn on
+   * its own stream, so the rest of the call is unchanged.
+   */
+  private playActionTag(c: PassConcept, s: Situation, f: Formation): PassConcept {
+    if (c.family === 'playaction' || c.family === 'screen' || f.tags.includes('empty')) return c;
+    const gun = f.qb === 'gun';
+    const bucket = s.down === 1 ? '1st' : s.down === 2 ? (s.distance <= 3 ? '2nd_short' : s.distance <= 6 ? '2nd_med' : '2nd_long')
+      : s.down === 3 ? (s.distance <= 3 ? '3rd_short' : s.distance <= 6 ? '3rd_med' : '3rd_long') : '4th';
+    const rate = (s.hurry ? 0.25 : 1) * PA_TAG_RATE[bucket][gun ? 0 : 1];
+    if (this.rng.fork(`pa-tag:${this.paTags++}`).next() >= rate) return c;
+    return { ...c, id: `${c.id}+pa`, name: `PA ${c.name}`, family: 'playaction', drop: 'pa', fake: gun ? 'insideZone' : 'outsideZone' };
+  }
+  private paTags = 0;
 
   private choosePass(s: Situation, f: Formation, defense: Team): PassConcept {
     const qb = bestAt(this.team, 'QB');
@@ -409,6 +534,8 @@ export class OffensiveCoordinator {
         if (p) w *= 0.7 + 0.6 * (overallAt(p) / 100);
       }
       w *= this.learned(`pass:${c.family}:${c.id}`);
+      // CALL_MIX: the route classes this down and distance calls for (src/game/call-mix.ts).
+      if (CALL_MIX) w *= callMixWeight(c, s.down, s.distance);
       weights.push([c, w]);
     }
     void defense;
@@ -431,13 +558,18 @@ export class OffensiveCoordinator {
       const gap = c.scheme === 'power' || c.scheme === 'counter' || c.scheme === 'trap' || c.scheme === 'duo';
       if (zone) w *= scheme === 'wide-zone' ? 2.4 : 1.2;
       if (c.scheme === 'outsideZone' || c.scheme === 'wideZone') w *= scheme === 'wide-zone' ? 1.6 : 0.8;
+      // Split zone needs a slicer: a fullback, an off-ball tight end, or a
+      // second back set beside the QB.
       if (c.scheme === 'splitZone' && !Object.entries(f.slots).some(([slot,p]) =>
-        (slot === 'F' || ((slot === 'H' || slot === 'Y') && (f.personnel === '12' || f.personnel === '22')))
+        (slot === 'F' || ((slot === 'H' || slot === 'Y') && (f.personnel === '12' || f.personnel === '22'))
+          || (slot !== 'RB' && !!p && p.depth >= 3))
         && p && p.depth > .9 && (p.split === 'core' || p.split === 'wing' || (typeof p.split === 'number' && p.split < 6)))) w = 0;
       if (gap) w *= scheme === 'power' ? 2.0 : 0.9;
       w *= Math.exp(((zone ? zoneFit : gap ? gapFit : (zoneFit + gapFit) / 2) - 55) / 25);
       if (c.scheme === 'power' && hasFB) w *= 1.5;
-      if (c.scheme === 'draw') w *= gun ? 1.2 : 0.5;
+      if (c.scheme === 'draw' && !RUN_FORM_PAIR) w *= gun ? 1.2 : 0.5;
+      const pair = RUN_FORM_PAIR ? RUN_FORM_RATIO[c.scheme]?.[f.qb as 'under' | 'pistol' | 'gun'] : undefined;
+      if (pair !== undefined) w *= pair;
       if (c.scheme === 'toss') w *= gun ? 0.1 : 0.8;
       if (c.scheme === 'qbDraw') w *= gun && mobile ? 0.6 : 0;
       if (s.distance <= 2 && (c.scheme === 'outsideZone' || c.scheme === 'wideZone' || c.scheme === 'toss' || c.scheme === 'draw')) w *= 0.4;
@@ -543,16 +675,39 @@ export class DefensiveCoordinator {
     let heavy = false;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
     else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && 100 - s.yardline <= 5) personnel = 'goalline';
-    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) { personnel = 'heavy'; heavy = true; }
+    // SHORT_BASE (experimental, off): short yardage against heavy personnel
+    // goes to the heavy package (its bear) on 15% of snaps, the league's
+    // 4+-interior "heavy" share there; otherwise base personnel and its
+    // short-yardage menu, whose 3-4 bear supplies the rest of the bear (NFL vs
+    // 3+ backs and ends at 2 yards or less, 2022 snap frames: over/under 33%,
+    // bear 24%, heavy 13%, tite 8%, even 6%; scripts/diag/align/nfronts.py).
+    // Ours played the bear on 88% of those snaps.
+    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && (!SHORT_BASE || own.fork('short-heavy').next() < SHORT_HEAVY_RATE)) { personnel = 'heavy'; heavy = true; }
+    else if (SHORT_BASE && SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) personnel = scheme === '3-4' ? 'base34' : 'base43';
     else if (DEF_PACKAGE) personnel = defPackage(own.fork('package'), offPersonnel, s, scheme);
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
-    else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
+    else if (offPersonnel === '12' || offPersonnel === '20') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else personnel = scheme === '3-4' ? 'base34' : 'base43';
 
-    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)));
+    if (NICKEL_FRONTS && personnel === 'nickel' && own.fork('stack335').next() < STACK_RATE) personnel = 'stack335';
+    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)) && !NICKEL_FRONT_IDS.has(f.id));
     const moment: Moment = s.distance <= 2 ? 'short' : s.down >= 3 ? 'third' : 'early';
-    const front = pickWeighted(
+    // NICKEL_FRONTS (experimental, off): sub packages also play the Penny,
+    // Penny Bear, Mint, Okie and (in 3-3-5 personnel) the 3-3 Stack, at shares
+    // from 2022 snap frames classified by interior shape
+    // (scripts/diag/align/nfronts.py), less what mugs and walk-ups add.
+    const subDraw = own.fork('sub-front').next();
+    let sub: typeof fronts[number] | undefined;
+    if (NICKEL_FRONTS && (personnel === 'nickel' || personnel === 'dime')) {
+      let acc = 0;
+      for (const [id, share] of Object.entries(SUB_SHARE[personnel][moment])) {
+        acc += share;
+        if (subDraw < acc) { sub = FRONT_BY_ID_SUB[id]; break; }
+      }
+    }
+    if (NICKEL_FRONTS && personnel === 'stack335') sub = FRONT_BY_ID_SUB.stack33;
+    let front = sub ?? pickWeighted(
       rng,
       fronts.map((f) => [f, FRONT_MENU ? menuWeight(f.id, personnel, scheme, moment)
         : FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
@@ -594,7 +749,7 @@ export class DefensiveCoordinator {
       else if (toGoal <= 20) fw[1] *= f === 'cover1' ? 1.4 : f === 'cover0' ? 1.5 : 1;
       if (s.hurry && s.scoreDiff < 0 && ['cover2', 'cover4', 'cover6', 'tampa2'].includes(f)) fw[1] *= 2;
       if (COVER_CALL && seenForm) fw[1] *= CALL_CHECK[seenForm][f] ?? 1;
-      if (COVER_CALL && s.down <= 2) fw[1] *= EARLY_DOWN[f] ?? 1;
+      if (COVER_CALL && s.down <= 2 && !(COVER_LONG && s.down === 2 && s.distance >= 7)) fw[1] *= EARLY_DOWN[f] ?? 1;
       fw[1] *= this.learned(f);
     }
     // Variants within the family by tree; spot vs. match by the coach's habit.
@@ -641,7 +796,7 @@ export class DefensiveCoordinator {
     if (PRESSURE_CALL) blitz *= PRESSURE_BY_SHELL[coverage.look ?? coverage.shell] ?? 1;
     let pressure = null;
     if (rng.chance(blitz)) {
-      const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
+      const options = PRESSURES.filter((p) => !p.id.startsWith('mug_') && pressureIsInstallable(personnel, front, coverage, p));
       // A two-high tree brings its pressure mostly as four-man simulated
       // pressures (Whip, Slug, Sting) rather than extra rushers (HNFL-186:
       // a four-man rush on ~80% of snaps).
@@ -709,13 +864,63 @@ export class DefensiveCoordinator {
     const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     const mugDraw = own.fork('mug').next();
-    const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
-      ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // MUG_CALLS (experimental, off): nickel and dime mug on every down at the
+    // league's rates by package and situation (rates[0] one or more backers in
+    // an A gap at the snap, rates[1] two; 2022 tracking, rgtools/mugwalk.py).
+    // Whether a mugged backer rushes or bails stays with the pressure call.
+    const mugRates = MUG_CALLS && (personnel === 'nickel' || personnel === 'dime') ? MUG_RATES[personnel][s.down <= 2 ? s.down : s.distance < 4 ? 3 : 4] : null;
+    const mug: DefensivePlayCall['mug'] = mugRates
+      ? mugDraw < mugRates[1] ? 2 : mugDraw < mugRates[0] ? 1 : undefined
+      : FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
+        ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // MUG_PRESSURES (experimental, off): a call that mugs also says who of
+    // the muggers comes (the mug package), at the shares 2022 tracking shows
+    // on nickel dropbacks with a mug at the snap (scripts/diag/align/mugrush.py):
+    // double mug no mugger rushes 42%, one 32%, both 25% (a lineman dropping
+    // 14%); single mug the mugger rushes half the time. A package the called
+    // coverage cannot carry falls back to the bail (no pressure).
+    // A double mug is called out of a front that leaves both A gaps open
+    // (the Even's two 3 techniques, the "Jet" look); from an Over or Under
+    // the 1 technique sits in one of them and only one backer can mug.
+    if (MUG_PRESSURES && mug === 2 && front.id !== 'even') {
+      const even = FRONTS.find((f) => f.id === 'even' && f.personnel.includes(personnel));
+      if (even) front = even;
+    }
+    if (MUG_PRESSURES && mug) {
+      const table = mug === 2 && personnel === 'nickel' ? MUG_PACKAGES.double : MUG_PACKAGES.single;
+      const draw = own.fork('mug-package').next();
+      let acc = 0, id: string | null = null;
+      for (const [pid, share] of table) { acc += share; if (draw < acc) { id = pid; break; } }
+      const pick = id ? PRESSURES.find((p) => p.id === id) : undefined;
+      pressure = pick && pressureIsInstallable(personnel, front, coverage, pick) ? pick : null;
+    }
+    // A creep must belong to the pressure finally called.
+    const creepCalled = creep && pressure && creep.slot in pressure.blitzers ? creep : undefined;
+    // SAM_ON_TE (experimental, off): in an Over or Even front the Sam is
+    // called on the line on the tight end ("Sam on") or kept off the ball
+    // as the front's stack backer. NFL backers over an attached TE stand on
+    // the line on 56% of snaps (30% at backer depth); Under calls already
+    // put ours on, so about half the Over/Even calls do.
+    const samOn = SAM_ON_TE && (front.id === 'over' || front.id === 'even') && 'LB_S' in DEF_PERSONNEL[personnel] && own.fork('sam-on').next() < SAM_ON_RATE ? true : undefined;
+    // DL_GAMES: a called line game. Passing downs bring twists; run downs an
+    // occasional angle, slant or pinch (more in short yardage). Rates from 2022
+    // tracking: twists on about 6-10% of dropbacks, movement led by the line on
+    // a few percent of runs (most early DL lateral movement is a read).
+    let dlGame: DefensivePlayCall['dlGame'];
+    if (DL_GAMES && !pressure?.droppers) {
+      const g = own.fork('dlgame'), u = g.next(), dir = g.chance(.5) ? 'S' as const : 'W' as const;
+      const short = s.distance <= 2;
+      if (passingDown) { if (u < .12) dlGame = { kind: 'twist', dir, pair: g.weighted(['TE', 'ET', 'TT'] as const, [.4, .35, .25]) }; }
+      else if (short) { if (u < .04) dlGame = { kind: 'pinch', dir }; else if (u < .07) dlGame = { kind: 'slant', dir }; else if (u < .11) dlGame = { kind: 'angle', dir }; }
+      else if (u < .04) dlGame = { kind: 'angle', dir }; else if (u < .055) dlGame = { kind: 'slant', dir };
+      else if (u < .06) dlGame = { kind: 'pinch', dir }; else if (u < .09) dlGame = { kind: 'twist', dir, pair: g.weighted(['TE', 'ET', 'TT'] as const, [.4, .35, .25]) };
+    }
+    const gameTag = dlGame ? ` [${dlGame.kind}${dlGame.pair ? ' ' + dlGame.pair : ''} ${dlGame.dir}]` : '';
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
-        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep: creepCalled, checkPick: coach.checkPick,
+        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, samOn, ...(dlGame ? { dlGame } : {}),
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
-        label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
+        label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}${gameTag}` },
       prefs,
     };
   }

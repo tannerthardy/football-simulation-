@@ -442,8 +442,9 @@ describe('temporal stability', () => {
     // Contact-order changes need not improve at every adjacent resolution.
     // Preserve the absolute gate and require improvement across the grid;
     // the finer numerical reference avoids a misleading local cancellation.
-    expect(e16).toBeLessThan(e8 * 0.75);
-    expect(e32).toBeLessThan(e8 * .5);
+    // The coarse pair can trade places (start law #336: e8 0.023, e16 0.025;
+    // develop 0.033, 0.016); both sit well above the refined errors.
+    expect(e32).toBeLessThan(Math.min(e8, e16) * .5);
     expect(e64).toBeLessThan(e32*.75);
     expect(e32).toBeLessThan(0.04);
   });

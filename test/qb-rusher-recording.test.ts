@@ -93,7 +93,15 @@ describe('recording the actual rushing player', () => {
     const coaching = vi.spyOn(DeepCoverage.prototype, 'choose').mockImplementation(
       (_a, _seen, _cue, _receiver, _cushion, original) => original);
     try {
-      const recorded = fixture(0), unrecorded = fixture(0);
+      // Re-selected under the leg force-velocity law (PHY-1): the pocket plays out
+      // differently, so seed 0's QB throws. Seeds 23 and 35 are the scrambles in seeds 0-59.
+      // Re-staged for the direction-free start (#353): seed 23's QB now
+      // throws; seeds 0-59 hold no pass-call scramble (0, 4, 23, 24, 35, 41
+      // and 47 did before). Seed 76 is the first scramble after them (76, 140,
+      // 250, 263 in 60-299). The bookkeeping witness is the same.
+      // Re-staged for zone droppers settling once the QB has set (ZONE_SETTLE):
+      // seed 76's QB now throws; 172 and 263 are the scrambles in 0-299.
+      const recorded = fixture(172), unrecorded = fixture(172);
       Object.defineProperty(unrecorded.stats, 'rusher', {
         configurable: true, enumerable: true, get: () => undefined, set: () => {},
       });

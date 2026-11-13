@@ -72,6 +72,8 @@ export type BallState =
       arrivalT: number;
       deflected: boolean;
       throwaway: boolean;
+      /** CATCH_SECURE: in a receiver's hands but not yet a catch (securing window). */
+      securing?: { receiver: Agent; start: number; until: number; tried: Set<Agent> };
     }
   | { kind: 'loose'; flight: BallFlight; since: number; lastTeam: TeamSide; fumbledBy: Agent;
       /** Actual release spot and act; a missed backward pitch is not a fumble for advancement restrictions. */
@@ -89,12 +91,14 @@ export type PlayEventType =
   | 'block_threat'
   | 'block_abandon'
   | 'block_log'
+  | 'pull_turn_up'
   | 'squeeze'
   | 'carrier_contact'
   | 'tackle_wrap'
   | 'snap'
   | 'handoff'
   | 'handoff_fake'
+  | 'pump'
   | 'momentum'
   | 'pitch'
   | 'pitch_catch'
@@ -102,6 +106,8 @@ export type PlayEventType =
   | 'throwaway'
   | 'catch'
   | 'drop'
+  /** A targeted ball the receiver reached for and did not catch, but not a catchable drop (stretched, high, low or deflected). */
+  | 'miss'
   | 'pbu'
   | 'deflection'
   | 'interception'
@@ -129,7 +135,9 @@ export type PlayEventType =
   | 'dpi'
   | 'touchback'
   | 'slide'
-  | 'fall';
+  | 'fall'
+  /** CATCH_SECURE: the ball reached the receiver's hands; the securing window opens (the catch, if any, follows). */
+  | 'secure';
 
 export interface PlayEvent {
   t: number;
@@ -312,6 +320,8 @@ export interface PlayStats {
   hurriedBy?: string;
   separation?: number;
   brokenTackles: number;
+  /** Of brokenTackles: one-armed grabs made from inside a block that the runner pulled through (ONE_ARM_HOLD). */
+  brokenEngagedGrabs?: number;
   missedTackles: number;
   /** Native per-player credit, including a frozen pre-illegal-pass snapshot. */
   missedTacklesBy?: Record<string, number>;

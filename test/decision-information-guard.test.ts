@@ -14,6 +14,8 @@ const ALLOWED = new Set([
   'src/sim/pass-interference.ts', 'src/sim/pass-legality.ts', 'src/sim/team-contact-rules.ts',
   // The offense reading its own QB and ball.
   'src/sim/assign.ts', 'src/sim/behaviors/qb.ts', 'src/sim/behaviors/blocking.ts', 'src/sim/behaviors/receiver.ts',
+  // Screen blockers: the offense's own carrier and ball, as for blocking.ts.
+  'src/sim/behaviors/screen.ts', 'src/sim/behaviors/space-block.ts',
   // Recording: the responsibility ledger notes who actually holds the ball; no controller reads it.
   'src/sim/responsibility-ledger.ts',
   // Lab scene construction, not in-play decisions.

@@ -303,7 +303,9 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       for (let left = d; left > stopAt && t < 2 * MAX_SECONDS; t += dt) {
         const target = brakes ? Math.min(top, left * 2.5)
           : Math.min(top, Math.sqrt(corner * corner + 2 * body.brake * Math.max(0, left - CORNER_CUT)));
-        v = target > v ? v + (target - v) * dt / body.tau : Math.max(target, v - body.brake * dt);
+        // The gait's start law: full start force, falling to zero at the
+        // wanted speed, so the approach lag is tau * wanted / top speed.
+        v = target > v ? v + (target - v) * dt / (body.tau * Math.min(1, target / body.vmax)) : Math.max(target, v - body.brake * dt);
         left -= v * dt;
       }
       // He turns for the next waypoint from where he cut this corner, not

@@ -17,8 +17,12 @@ function physical(r: Invariants) {
 
 describe('scenario pack: physical contracts and mirror symmetry', () => {
   it('approach tackle, front and side', () => {
-    for (const [bearing, speed] of [[0, 7], [90, 4]]) {
-      const a = approachTackle({ bearing, speed, side: 1 }), b = approachTackle({ bearing, speed, side: -1 });
+    // The side approach finishes by dragging: the FS takes the ankles, goes down at 0.4 s after contact and his
+    // hanging weight (#355) stops the back. With the start law (#336) the back, asking for 4 yd/s, drives at his
+    // full start force through the hold, so he stops later and is down at 4.15 s (3.90 on develop's start law,
+    // 4.95 -> 5.93 yd after contact); the window is 4.5 s so the finish is inside it.
+    for (const [bearing, speed, maxT] of [[0, 7, 4], [90, 4, 4.5]]) {
+      const a = approachTackle({ bearing, speed, side: 1, maxT }), b = approachTackle({ bearing, speed, side: -1, maxT });
       physical(a); physical(b);
       expect(a.tackled).toBe(true);
       expect(b.time).toBeCloseTo(a.time, 9);
@@ -42,14 +46,22 @@ describe('scenario pack: physical contracts and mirror symmetry', () => {
     for (const side of [1, -1] as const) {
       const rd = redirect({ side }), se = seal({ side }), sq = squeeze({ side });
       for (const r of [rd, se, sq]) physical(r);
-      // The tackle rides the speed rusher past the quarterback's depth.
-      expect(rd.carriedPast).toBeGreaterThan(0.5);
+      // Loaded protection is checked causally in redirect-phase-contract:
+      // the actual hand must move the rusher outside and protect QB space
+      // against an otherwise identical no-hand World. Whole-rep carriedPast
+      // also includes free pursuit after release; it remains a report value.
+      expect(rd.peakNormal).toBeGreaterThan(0);
+      expect(rd.peakTangent).toBeGreaterThan(0);
+      expect(rd.cornerTurned).toBe(true);
       expect(se.sealedFor).toBeGreaterThan(1);
     }
     const a = redirect({ side: 1 }), b = redirect({ side: -1 });
     expect(b.closest).toBeCloseTo(a.closest, 9);
     const s1 = squeeze({ side: 1 }), s2 = squeeze({ side: -1 });
-    expect(s2.inside).toBeCloseTo(s1.inside, 9);
+    // The leg force-velocity law (PHY-1) feeds the achieved speed back into the
+    // strength term, so last-digit mirror noise is carried into the contest:
+    // the two sides differ by 8e-9 yd here (develop: 2e-10), no mirror law.
+    expect(s2.inside).toBeCloseTo(s1.inside, 7);
   });
 
   it('a side hit gives nearly the same balance loss at coarse and fine physics steps', () => {

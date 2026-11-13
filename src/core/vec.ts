@@ -19,9 +19,23 @@ export const scale = (a: Vec2, k: number): Vec2 => ({ x: a.x * k, y: a.y * k });
 export const addScaled = (a: Vec2, b: Vec2, k: number): Vec2 => ({ x: a.x + b.x * k, y: a.y + b.y * k });
 export const dot = (a: Vec2, b: Vec2): number => a.x * b.x + a.y * b.y;
 export const cross = (a: Vec2, b: Vec2): number => a.x * b.y - a.y * b.x;
-export const len = (a: Vec2): number => Math.hypot(a.x, a.y);
+
+/** Two-component hypot without the general built-in's temporary argument
+ * array. Use the same scaled sum as pinned Node 22: for two terms the first
+ * Kahan compensation is zero and the second is unused. Keep argument order,
+ * overflow/underflow protection and infinity-before-NaN handling.
+ */
+export function hypot2(x: number, y: number): number {
+  const a = Math.abs(x), b = Math.abs(y);
+  if (a === 0) return b;
+  if (b === 0) return a;
+  if (a === Infinity || b === Infinity) return Infinity;
+  const scale = a > b ? a : b, u = a / scale, v = b / scale;
+  return Math.sqrt(u * u + v * v) * scale;
+}
+export const len = (a: Vec2): number => hypot2(a.x, a.y);
 export const len2 = (a: Vec2): number => a.x * a.x + a.y * a.y;
-export const dist = (a: Vec2, b: Vec2): number => Math.hypot(a.x - b.x, a.y - b.y);
+export const dist = (a: Vec2, b: Vec2): number => hypot2(a.x - b.x, a.y - b.y);
 export const dist2 = (a: Vec2, b: Vec2): number => (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
 export const perp = (a: Vec2): Vec2 => ({ x: -a.y, y: a.x });
 export const lerp = (a: Vec2, b: Vec2, t: number): Vec2 => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
@@ -30,12 +44,12 @@ export const angleOf = (a: Vec2): number => Math.atan2(a.y, a.x);
 export const copy = (a: Vec2): Vec2 => ({ x: a.x, y: a.y });
 
 export function norm(a: Vec2): Vec2 {
-  const l = Math.hypot(a.x, a.y);
+  const l = hypot2(a.x, a.y);
   return l > 1e-9 ? { x: a.x / l, y: a.y / l } : { x: 0, y: 0 };
 }
 
 export function clampLen(a: Vec2, max: number): Vec2 {
-  const l = Math.hypot(a.x, a.y);
+  const l = hypot2(a.x, a.y);
   return l > max && l > 1e-9 ? { x: (a.x / l) * max, y: (a.y / l) * max } : a;
 }
 

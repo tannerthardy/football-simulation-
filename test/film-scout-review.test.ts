@@ -28,6 +28,15 @@ function temporary() { const d = mkdtempSync(join(tmpdir(), 'scout-review-')); d
 afterEach(() => { for (const d of dirs.splice(0)) rmSync(d, { recursive: true }); });
 
 describe('frozen offline scout queue', () => {
+  it('carries a known representative tick to the report without inventing one for legacy evidence', () => {
+    const card = fixture();
+    for (const e of card.arms[0].games[0].weird!.events) e.representativeT = e.t1;
+    const before = structuredClone(card), queue = makeQueue(card, 'card');
+    const alert = queue.episodes.find(e => e.kind === 'alert')!;
+    expect(report(queue, '.')).toContain(`Representative detector tick: **${alert.event.t1.toFixed(2)} s**`);
+    expect(card).toEqual(before);
+    expect(report(makeQueue(fixture(), 'legacy'), '.')).not.toContain('Representative detector tick:');
+  });
   it('samples twelve alerts and six negative windows without mutating evidence or depending on event order', () => {
     const card = fixture(), before = structuredClone(card);
     const a = makeQueue(card, 'card', 243);

@@ -281,7 +281,7 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
         expect(report.maxPenetration).toBeLessThan(.03);
         for (const [i, body] of world.bodies.entries()) {
           expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
-            .toBeLessThanOrEqual(supportParams(body.profile).traction * .05 + 1e-8);
+            .toBeLessThanOrEqual(report.groundImpulseLimit[i] + 1e-8);
         }
         s.sim.t = world.time;
       }
@@ -339,7 +339,7 @@ describe('run-block fit choices use observed geometry and ordinary bodies', () =
         expect(report.maxPenetration).toBeLessThan(.03);
         for (const [i, body] of world.bodies.entries()) {
           expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
-            .toBeLessThanOrEqual(supportParams(body.profile).traction * .05 + 1e-8);
+            .toBeLessThanOrEqual(report.groundImpulseLimit[i] + 1e-8);
         }
       }
       expect(s.blocker.pos.y * side).toBeGreaterThan(start.y * side);

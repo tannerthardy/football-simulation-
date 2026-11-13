@@ -28,6 +28,10 @@ export function abandonmentSetup(kind: 'run' | 'deception', until = BLOCK_LOOK_U
     name: 'Ace / COV-7 fixed Z', slots: { ...setup.offCall.formation.slots,
       Z: { ...setup.offCall.formation.slots.Z!, split: 8 + 1 / 3 } } };
   setup.offCall.receiverBlockLook = { Z: { until } };
+  // Declared coach matchup: the nickel takes the inline Y and the strong safety
+  // the detached H. This was the installed picture when the scenario was
+  // qualified; the default rule now gives the nickel the slot.
+  setup.manPrefs = { overrides: { NB: 'Y', SS: 'H' } };
   return { ...setup, record: true, recordLevel: 'full' };
 }
 
@@ -48,7 +52,7 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
       pos: p.player.position, weightLb: p.player.measurables.weightLb })),
     lookTarget: actor(primary.behavior.target),
     snap: sim.snapAssessment, formation: sim.offCall.formation, calls: { off: sim.offCall, def: sim.defCall } });
-  const rows: any[] = [], endpoints: any[] = [], qbEvaluations: any[] = [], releases: any[] = [];
+  const rows: any[] = [], endpoints: any[] = [], qbEvaluations: any[] = [], releases: any[] = [], zReads: any[] = [];
   const trace = observe ? sim.recordCommands({ actor: { team: 'D', slot: 'CB_S' }, from: 0, to: 20 }) : undefined;
   let row: any;
   if (observe) {
@@ -86,6 +90,17 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
     sim.tick = () => {
       const start = sim.t;
       tick();
+      // The QB's own score of Z every tick before the throw, wherever his eyes
+      // are: his held picture of Z and his remembered defenders, no dice drawn.
+      if (evaluate && sim.throwAt < 0 && sim.carrier === sim.qb) {
+        // Not a controller request, so it stays out of the perception record.
+        const observe = sim.trace.observe;
+        sim.trace.observe = () => {};
+        let ev;
+        try { ev = evaluate.call(qb, sim.qb, sim, primary, 0); } finally { sim.trace.observe = observe; }
+        zReads.push({ at: sim.t, eyesOnZ: sim.qbEyes === primary,
+          completion: ev?.P ?? null, interceptionRisk: ev?.intRisk ?? null });
+      }
       endpoints.push(copySaved({ start, end: sim.world.time, primary: { body: primary.body,
         stance: primary.stance, behavior: primary.behavior.kind, engaged: !!primary.engagement },
         corner: { body: a.body, behavior: a.behavior.kind }, qb: { body: sim.qb.body },
@@ -121,7 +136,7 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
   const execution = copySaved({ result, rng: sim.rng, perception: sim.perception,
     actors: sim.agents.map(p => ({ actor: actor(p), body: p.body, mind: p.mind, recognition: p.recog,
       controller: p.behavior.constructor.name, behavior: p.behavior.kind })) });
-  return { installed, rows, endpoints, qbEvaluations, releases, steps: trace?.steps, execution };
+  return { installed, rows, endpoints, qbEvaluations, releases, zReads, steps: trace?.steps, execution };
 }
 
 const primaryCue = (r: any) => r.observations.find((o: any) => o.target.slot === 'Z')?.cue;

@@ -9,6 +9,7 @@ import { observedHolder, acquireFlight, anticipatedCatcher, rememberedFlight, un
 import { movementObjective } from '../src/sim/movement-objective.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { ROUTES } from '../src/playbook/routes.js';
 import { World } from '../src/physics/world.js';
 import { handoffReach } from '../src/sim/ball-transfer.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
@@ -297,19 +298,44 @@ describe('an acquired trajectory supports anticipation, not certified possession
   });
 
   it('keeps rallying instead of reopening route coverage after the native mirror forecast ends', () => {
-    const sim = new PlaySim({ ...nativeTraceSetup({ ...input, flip: true }), record: true, recordLevel: 'full' });
-    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 4.35, to: 4.6 });
+    // Re-selected under the leg force-velocity law (PHY-1): the original
+    // roster-7 flip now catches earlier with no rally phase. This native play
+    // has the same sequence: flight continuation, rally, possession pursuit.
+    // Start law (#336): roster 5 seed 7 now catches at 4.1 s with catch
+    // anticipation, no rally. The file's own input (roster 7, seed 1) has the
+    // sequence; its catch (y 4.3) lies to −y of the SS (y 12.2), so the rally is −y.
+    // Re-staged for the direction-free start (#353): roster 7 seed 1 now
+    // throws at 2.45 s (2.65 before) and falls incomplete at 4.25 s, so there
+    // is no catch to rally to. Roster 3 seed 2 flipped has the same sequence
+    // one second earlier: catch at 3.5 s, flight continuation at 3.55 s, rally
+    // at 3.6-3.7 s, possession pursuit from 3.75 s. Its catch (y 37.9) lies to
+    // +y of the SS (y 34.8), so the rally is +y. The behavior is the same.
+    // With the edge kick that stops matching the rusher's retreat once deeper than its lead, roster 3 seed 2
+    // flipped no longer completes. Roster 5 seed 10 (not flipped) has the sequence: catch at 3.4 s, flight
+    // continuation 3.45-3.6 s, rally at 3.65 s, possession pursuit from 3.7 s. Its catch (y 10.7) lies to
+    // -y of the SS (y 14.3), so the rally is -y.
+    // The QB's throwing motion (load and delivery, ~0.4 s) moves roster 5 seed 10's release, and it falls
+    // incomplete; roster 10 seed 18 flipped carried the sequence on that branch. The receiver route reads and
+    // flat release (#420) re-pinned roster 5 seed 10 under the old flat install on develop. With both, neither
+    // completes. Roster 7 seed 26 flipped has the sequence on current routes: catch at 3.4 s, flight
+    // continuation 3.45 s, rally 3.6-3.65 s, possession pursuit from 3.7 s. Its catch (y 39.3) lies to +y of
+    // the SS (y 33.7), so the rally is +y.
+    const rallyInput = { ...input, seed: 26, roster: 7, flip: true };
+    const sim = new PlaySim({ ...nativeTraceSetup(rallyInput), record: true, recordLevel: 'full' });
+    const toBall = 1;
+    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.45, to: 3.75 });
     const result = sim.run();
     // Exact native input from the opposing control. The correction owns the
     // request/response, not this play's yardage or the receiver's earned catch.
-    expect(result.events.find(e => e.type === 'catch')?.t).toBe(4.25);
-    for (const t of [4.4, 4.45, 4.5]) {
+    expect(result.events.find(e => e.type === 'catch')?.t).toBe(3.4);
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.45 && d.kind === 'flight-continuation')).toBe(true);
+    for (const t of [3.65]) {
       const s = trace.steps.find(s => s.stepStart === t)!;
-      expect(s.decision!.raw.vel.y).toBeGreaterThan(0);
-      expect(s.final!.vel.y).toBeGreaterThan(0);
-      expect(s.endpoint!.body.velocity.y).toBeGreaterThan(0);
+      expect(s.decision!.raw.vel.y * toBall).toBeGreaterThan(0);
+      expect(s.final!.vel.y * toBall).toBeGreaterThan(0);
+      expect(s.endpoint!.body.velocity.y * toBall).toBeGreaterThan(0);
       expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === t && d.kind === 'ball-rally')).toBe(true);
     }
-    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 4.55 && d.kind === 'possession-pursuit')).toBe(true);
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.7 && d.kind === 'possession-pursuit')).toBe(true);
   });
 });

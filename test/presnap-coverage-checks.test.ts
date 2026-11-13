@@ -39,7 +39,12 @@ describe('structure checks', () => {
 
 describe('Quarters Box vs bunch', () => {
   it('nickel takes the first out, hook the first in, and a lone vertical gets both deep players', () => {
-    const f = filmScene({ formation: 'gun_bunch_11', coverage: 'cover4', strong: { 1: 'go', 2: 'flat', 3: 'slant' }, weak: { 1: 'go' }, until: 2.8 });
+    // Run with the nickel tagged to trap (flatThreat), the timing this rule scene was built on. By default
+    // (hold) he stays 4.5 deep over the bunch before Y declares, then crosses Z's release chasing Y's flat;
+    // Z's go is slowed and drifts inside, so no lone vertical develops for the deep players to take. That
+    // traffic is physical, not this rule; the default arm below keeps the rest of the Box contract.
+    const f = filmScene({ formation: 'gun_bunch_11', coverage: 'cover4', strong: { 1: 'go', 2: 'flat', 3: 'slant' }, weak: { 1: 'go' }, until: 2.8,
+      call: { flatThreat: 'trap' } });
     expect(f.played).toBe('cover4_box');
     const { S1, S2, S3 } = f.numbering;
     expect(jobsOf(f, 'NB').at(-1)).toBe(`man:${S2}`);
@@ -47,6 +52,15 @@ describe('Quarters Box vs bunch', () => {
     expect(jobsOf(f, hook).at(-1)).toBe(`man:${S3}`);
     expect(jobsOf(f, 'CB_S').at(-1)).toBe(`man:${S1}`);
     expect(jobsOf(f, 'SS').at(-1)).toBe(`man:${S1}`);
+  });
+
+  it('with the default hold the same Box assignments are made underneath', () => {
+    const f = filmScene({ formation: 'gun_bunch_11', coverage: 'cover4', strong: { 1: 'go', 2: 'flat', 3: 'slant' }, weak: { 1: 'go' }, until: 2.8 });
+    expect(f.played).toBe('cover4_box');
+    const { S2, S3 } = f.numbering;
+    expect(jobsOf(f, 'NB').at(-1)).toBe(`man:${S2}`);
+    const hook = Object.values(f.defenders).find(d => d.rule === 'box_in_low')!.slot;
+    expect(jobsOf(f, hook).at(-1)).toBe(`man:${S3}`);
   });
 });
 
@@ -90,8 +104,18 @@ describe('Cover 3 Clue vs bunch', () => {
     expect(jobsOf(lock, 'CB_S').at(-1)).toBe(`man:${lock.numbering.S1}`);
     const squeeze = clue('slant', 'go');
     expect(jobsOf(squeeze, 'CB_S').at(-1)).toBe(`man:${squeeze.numbering.S2}`);
+    // Re-staged for the direction-free start (#353): the SS and nickel now
+    // reach their drops sooner and sit 2.6-2.8 yd off #2's line at 1.8 s
+    // (2.1-2.6 before), outside the visible-cap width, so the deep-third
+    // judgment protects #2's vertical over the top for a few tenths
+    // (protect-vertical:Y, 1.8-2.2 s) before returning to the third. Before
+    // #353 that same help already fired on seeds 3, 4, 8, 9 and 10; now on
+    // seeds 1-10. The Clue rule is the same: it never keys one receiver
+    // (mode stays unset), never locks #1, and he finishes in the third.
     const both = clue('go', 'go');
-    expect(jobsOf(both, 'CB_S')).toEqual(['zone:deep_third_s']);
+    expect(both.defenders.CB_S.modes).toEqual(['-@0.00']);
+    expect(jobsOf(both, 'CB_S')).not.toContain(`man:${both.numbering.S1}`);
+    expect(jobsOf(both, 'CB_S').at(-1)).toBe('zone:deep_third_s');
     // The bunch-side underneath players zone off instead of matching.
     expect(lock.defenders.NB.rule).toBeNull();
   });
