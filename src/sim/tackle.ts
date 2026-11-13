@@ -151,6 +151,11 @@ export function tryTackles(sim: PlaySim): void {
   for (const d of sim.opponents(c)) {
     if (d.isDown(t) || t < d.nextTackleAt) continue;
     if (sim.bond && sim.bond.tacklers.includes(d)) continue;
+    const pic = HONEST_TACKLE ? sim.see(d, c) : null;
+    if (pic && pic.carrying === false) continue;
+    // His read of the carrier's motion relative to him (true geometry when off).
+    const cp = pic ? pic.pos : c.pos, cv = pic ? pic.vel : c.vel;
+    const rx = cp.x - d.pos.x, ry = cp.y - d.pos.y, rd = Math.hypot(rx, ry) || 1;
     const dx = c.pos.x - d.pos.x;
     const dy = c.pos.y - d.pos.y;
     const dd = Math.hypot(dx, dy);
@@ -174,7 +179,7 @@ export function tryTackles(sim: PlaySim): void {
       // the best shot the visible relative trajectory offers (a runner
       // passing or pulling away). While he is still closing on a better
       // shot he keeps his feet running; an assist takes whatever it gets.
-      const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
+      const closing = -((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
       // A crossing hip can already be passing without rapidly separating.
       // Outside standing reach, retain the ordinary escape exception or
       // require acquired evidence that this is the last attainable reach.
@@ -228,8 +233,8 @@ export function tryTackles(sim: PlaySim): void {
     // Escaping carrier just out of reach: lay out for his legs. The dive is a
     // real fall; whether he trips the carrier is the hold and the physics.
     const dive = range + 0.3;
-    const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
-    const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
+    const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
+    const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
@@ -281,6 +286,13 @@ const TKL_WHIFF = process.env.TKL_WHIFF === '1';
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
  * runner's seen velocity says) promised a shot 0.3 s away forever, and he never took the one he had. */
 const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
+/** HONEST_TACKLE (experimental, off; HONEST_TACKLE=1 turns it on): the tackler's
+ * decisions come from his picture of the carrier, not the true state. He reaches
+ * only for a body his picture does not show without the ball (the carrier he has
+ * not yet seen take a handoff is not his target until he sees it), and his
+ * closing, separating and behind reads for the last reach and the dive use the
+ * carrier's seen position and velocity. Reach, grip and contact stay physical. */
+const HONEST_TACKLE = process.env.HONEST_TACKLE === '1';
 /** Hand strike, extension to contact (model assumption, s). */
 const REACH_WINDOW = 0.2;
 /** Layout from the launch to full extension (model assumption, s). */
