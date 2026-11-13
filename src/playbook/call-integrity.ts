@@ -10,6 +10,8 @@ import { isDeepZone, seatRole } from './alignment.js';
 import { COVERAGE_BY_ID } from './coverages.js';
 import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefPersonnelId, type DefSlot, type Front, type Pressure, type UnderSeat } from './types.js';
 
+/** RUSH_PROMISE (experimental, off; RUSH_PROMISE=1 turns it on): a pressure's maxRushers bounds its rush behind a coverage family. */
+const RUSH_PROMISE = process.env.RUSH_PROMISE === '1';
 const FRONT_RUSHERS: readonly DefSlot[] = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'];
 
 /** A coverage variant needs the players it explicitly assigns deep help to. */
@@ -50,6 +52,11 @@ function initialRoles(personnel: DefPersonnelId, front: Front, coverage: Coverag
   if (has('LB_S') && front.slots.LB_S && front.slots.LB_S.depth < 2 && !coverage.man && !roles.has('LB_S')) {
     roles.set('LB_S', { kind: 'rush' });
   }
+  // RUSH_PROMISE: count the backer alignDefense walks up onto the line as an
+  // edge (Penny's Will or Mike) as a rusher too, as it installs him.
+  if (RUSH_PROMISE) for (const lb of ['LB_W', 'LB_M'] as DefSlot[]) {
+    if (has(lb) && front.slots[lb] && front.slots[lb]!.depth < 2 && !coverage.man && !roles.has(lb)) roles.set(lb, { kind: 'rush' });
+  }
   for (const slot of present) {
     const role = coverage.roles[slot];
     if (role && !roles.has(slot)) roles.set(slot, role);
@@ -83,9 +90,10 @@ export function pressureIsInstallable(personnel: DefPersonnelId, front: Front, c
   // on-line Sam in base Under otherwise turn a five-man fire zone into six,
   // or a four-man simulated pressure into five.
   const promised = pressure.rushers ?? (pressure.id === 'fire_zone' ? 5 : undefined);
-  if (promised !== undefined) {
-    const rushers = [...roles.values()].filter((role) => role.kind === 'rush' || role.kind === 'blitz').length;
-    if (rushers !== promised) return false;
-  }
+  const rushers = [...roles.values()].filter((role) => role.kind === 'rush' || role.kind === 'blitz').length;
+  if (promised !== undefined && rushers !== promised) return false;
+  // RUSH_PROMISE: the most this call sends behind the installed coverage family.
+  const most = RUSH_PROMISE ? pressure.maxRushers?.[coverage.family ?? coverage.id] : undefined;
+  if (most !== undefined && rushers > most) return false;
   return true;
 }
