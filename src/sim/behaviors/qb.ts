@@ -317,6 +317,8 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
  *   knows the opponent, SCOUT0 + SCOUT_AWARE x awareness + SCOUT_EXP x experience (to 8 years). So an elite corner he
  *   has not studied is rated nearer an ordinary one, and knowing the opponent is a rating, not a given. Fixed for the
  *   play (no fresh noise each tick).
+ * - a defender's current fatigue (his speed scale) is not read: it shows only in how he is moving, which the picture
+ *   already carries.
  * - tied up is what he sees: an offensive body other than his target within arm's length of the defender in his
  *   pictures; the same in screenDead() and the rush belief.
  * A loss from this is repaired by preparation as a mechanism (film study raising how well he knows them), not by the
@@ -1646,7 +1648,7 @@ export class QBPass implements Behavior {
       const pMan = this.mind.pMan();
       const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - dp.reactionTime) : 0;
       const blind = facingQB ? facingBlind : onTarget ? Math.min(untilBreak, wind) : wind;
-      let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: dp, speedScale: d.speedScale };
+      let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: dp, speedScale: bel ? 1 : d.speedScale };
       // DEF_BELIEF: the man on the target goes partly where the target goes.
       if (DEF_BELIEF && Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 4) {
         const k = clamp(PHASE_MEAN + (1 - know) * 0.35 * a.mind.judgment('def-phase'), 0, 1);
