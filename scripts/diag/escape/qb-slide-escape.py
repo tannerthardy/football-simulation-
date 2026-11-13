@@ -3,6 +3,18 @@ movement with nobody near turns into. Same code NFL and sim. usage: python3 -I r
 import sys, os, json, gzip, math, csv, re, random, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
+def held_end(raw, p, qb, kend):
+    """Last frame the QB can still have the ball on a play with no forward pass: the frame before the ball's track
+    (sim exports' `bxy`) is first more than 2.5 yd from him (a strip, a fumble, a lateral). Without it a strip-sack's
+    return is read as the QB running (he is chasing the returner). NFL files carry no ball track or fumble event."""
+    b = raw.get('bxy')
+    if not b or raw['events'].get('pass_forward') is not None: return kend
+    for k in range(min(kend, len(b) - 1) + 1):
+        x, y = p.pos(qb, k); bb = b[k]
+        if x is None or not bb or bb[0] is None: continue
+        if math.hypot(bb[0] - x, bb[1] - y) > 2.5: return max(0, k - 1)
+    return kend
+
 args = sys.argv[1:]; PFF = {}; trace = None
 if '--plays-csv' in args:
     i = args.index('--plays-csv')
@@ -29,6 +41,7 @@ for path in args:
         n += 1
         width = max(abs(p.pos(o, 0)[1] - by) for o in OL) + 0.5; y0 = p.pos(qb, 0)[1]
         kend = min(p.frames - 1, p.k(fw if fw is not None else p.end))
+        kend = held_end(raw, p, qb, kend)
         RU = [d for d in p.who('D') if p.players[d]['group'] in ('DL', 'LB')]
         tgt = raw.get('target'); tside = None
         if fw is not None and tgt is not None:
@@ -45,7 +58,7 @@ for path in args:
         def inbox(k):
             x, y = p.pos(qb, k)
             return x is not None and x <= 0 and abs(y - by) <= width and abs(y - y0) <= 2.5
-        out = 'throw' if fw is not None else ('run' if any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(p.frames)) else 'sack')
+        out = 'throw' if fw is not None else ('run' if any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1)) else 'sack')
         kout = None
         for k in range(p.k(0.3), kend + 1):
             x, y = p.pos(qb, k)

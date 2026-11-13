@@ -4,6 +4,18 @@ and by-eye traces (QB xy and rusher distance, frame by frame). usage: python3 -I
 import sys, os, json, gzip, math, random
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
+def held_end(raw, p, qb, kend):
+    """Last frame the QB can still have the ball on a play with no forward pass: the frame before the ball's track
+    (sim exports' `bxy`) is first more than 2.5 yd from him (a strip, a fumble, a lateral). Without it a strip-sack's
+    return is read as the QB running (he is chasing the returner). NFL files carry no ball track or fumble event."""
+    b = raw.get('bxy')
+    if not b or raw['events'].get('pass_forward') is not None: return kend
+    for k in range(min(kend, len(b) - 1) + 1):
+        x, y = p.pos(qb, k); bb = b[k]
+        if x is None or not bb or bb[0] is None: continue
+        if math.hypot(bb[0] - x, bb[1] - y) > 2.5: return max(0, k - 1)
+    return kend
+
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 NEAR, OFF = 1.2, 1.5
 path = sys.argv[1]; rows = []; drop = 0
@@ -17,6 +29,7 @@ for line in gzip.open(path, 'rt'):
     drop += 1
     ys = sorted(OL, key=lambda o: p.pos(o, 0)[1]); tackle = {ys[0], ys[-1]}
     fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw if fw is not None else p.end))
+    kend = held_end(raw, p, qb, kend)
     for d in [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] in ('DL', 'LB')]:
         last = None
         for k in range(max(1, p.k(0.5)), kend + 1):

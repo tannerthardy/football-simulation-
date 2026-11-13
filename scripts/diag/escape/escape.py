@@ -12,7 +12,19 @@ the NFL rows also print the agreement with PFF's scramble label.
 """
 import sys, os, json, gzip, math, re, csv, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
-from metrics import Play  # noqa
+from metrics import Play
+def held_end(raw, p, qb, kend):
+    """Last frame the QB can still have the ball on a play with no forward pass: the frame before the ball's track
+    (sim exports' `bxy`) is first more than 2.5 yd from him (a strip, a fumble, a lateral). Without it a strip-sack's
+    return is read as the QB running (he is chasing the returner). NFL files carry no ball track or fumble event."""
+    b = raw.get('bxy')
+    if not b or raw['events'].get('pass_forward') is not None: return kend
+    for k in range(min(kend, len(b) - 1) + 1):
+        x, y = p.pos(qb, k); bb = b[k]
+        if x is None or not bb or bb[0] is None: continue
+        if math.hypot(bb[0] - x, bb[1] - y) > 2.5: return max(0, k - 1)
+    return kend
+  # noqa
 args = sys.argv[1:]; pcsv = None
 if '--plays-csv' in args: i = args.index('--plays-csv'); pcsv = args[i + 1]; del args[i:i + 2]
 PFF = {}
@@ -41,6 +53,7 @@ for path in args:
         width = max(abs(p.pos(o, 0)[1] - by) for o in OL) + 0.5
         y0 = p.pos(qb, 0)[1]
         fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw if fw is not None else p.end))
+        kend = held_end(raw, p, qb, kend)
         out_k = None; side = 0; crossed = False
         for k in range(p.k(0.3), kend + 1):
             x, y = p.pos(qb, k)
@@ -49,7 +62,7 @@ for path in args:
             if abs(y - by) > width or abs(y - y0) > 2.5:
                 out_k = k; side = 1 if (y - y0) > 0 else -1; break
         if fw is None:
-            crossed = crossed or any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(p.frames))
+            crossed = crossed or any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1))
         lab = raw.get('labels') or {}
         if fw is not None:
             if pf is not None: away = pf['passResult'] == 'I' and 'pass incomplete' in pf['playDescription'] and not re.search(r'pass incomplete \w+ \w+ to ', pf['playDescription'])

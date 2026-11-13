@@ -13,6 +13,18 @@ usage: python3 -I pocket.py <plays.jsonl.gz> [--plays-csv plays.csv]"""
 import sys, json, gzip, math, csv, re, os, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
+def held_end(raw, p, qb, kend):
+    """Last frame the QB can still have the ball on a play with no forward pass: the frame before the ball's track
+    (sim exports' `bxy`) is first more than 2.5 yd from him (a strip, a fumble, a lateral). Without it a strip-sack's
+    return is read as the QB running (he is chasing the returner). NFL files carry no ball track or fumble event."""
+    b = raw.get('bxy')
+    if not b or raw['events'].get('pass_forward') is not None: return kend
+    for k in range(min(kend, len(b) - 1) + 1):
+        x, y = p.pos(qb, k); bb = b[k]
+        if x is None or not bb or bb[0] is None: continue
+        if math.hypot(bb[0] - x, bb[1] - y) > 2.5: return max(0, k - 1)
+    return kend
+
 args = sys.argv[1:]; PFF = {}
 if '--plays-csv' in args:
     i = args.index('--plays-csv')
@@ -40,6 +52,7 @@ for path in args:
         width = max(abs(p.pos(o, 0)[1] - by) for o in OL) + 0.5; y0 = p.pos(qb, 0)[1]
         aln = 'gun' if p.pos(qb, 0)[0] < -3 else 'under'; n[aln] += 1
         kend = min(p.frames - 1, p.k(fw if fw is not None else p.end))
+        kend = held_end(raw, p, qb, kend)
         RU = [d for d in p.who('D') if p.players[d]['group'] in ('DL', 'LB')]
         ori = raw.get('o')
         def vel(k):
@@ -55,7 +68,7 @@ for path in args:
                 if dd < best[0]: best = (dd, d)
             return best
         kd = None; done = {3: False, 2: False}
-        out = 'throw' if fw is not None else ('run' if any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(p.frames)) else 'sack')
+        out = 'throw' if fw is not None else ('run' if any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1)) else 'sack')
         for k in range(p.k(0.5), kend + 1):
             x, y = p.pos(qb, k)
             if x is None or x > 0 or abs(y - by) > width or abs(y - y0) > 2.5: break

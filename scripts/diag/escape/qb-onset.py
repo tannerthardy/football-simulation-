@@ -7,6 +7,18 @@ moving (at throw-0.5 s), and what follows. usage: python3 -I onset.py <plays.jso
 import sys, json, gzip, math, csv, re, os, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
+def held_end(raw, p, qb, kend):
+    """Last frame the QB can still have the ball on a play with no forward pass: the frame before the ball's track
+    (sim exports' `bxy`) is first more than 2.5 yd from him (a strip, a fumble, a lateral). Without it a strip-sack's
+    return is read as the QB running (he is chasing the returner). NFL files carry no ball track or fumble event."""
+    b = raw.get('bxy')
+    if not b or raw['events'].get('pass_forward') is not None: return kend
+    for k in range(min(kend, len(b) - 1) + 1):
+        x, y = p.pos(qb, k); bb = b[k]
+        if x is None or not bb or bb[0] is None: continue
+        if math.hypot(bb[0] - x, bb[1] - y) > 2.5: return max(0, k - 1)
+    return kend
+
 args = sys.argv[1:]; PFF = {}
 if '--plays-csv' in args:
     i = args.index('--plays-csv')
@@ -28,6 +40,7 @@ for path in args:
         if not qbs or p.pos(qbs[0], 0)[0] is None: continue
         qb = qbs[0]; ev = raw['events']; fw = ev.get('pass_forward'); n += 1
         kend = min(p.frames - 1, p.k(fw if fw is not None else p.end)); w = p.k(0.3)
+        kend = held_end(raw, p, qb, kend)
         def sp(k):
             a, b = p.pos(qb, k), p.pos(qb, k - 1)
             return None if a[0] is None or b[0] is None else math.hypot(a[0] - b[0], a[1] - b[1]) / p.dt
@@ -49,7 +62,7 @@ for path in args:
                 dist = math.hypot(a[0] - qx, a[1] - qy); d0 = math.hypot(b[0] - qx, b[1] - qy)
                 if dist < best[0]: best = (dist, (d0 - dist) / (2 * p.dt))
             return best
-        out = 'throw' if fw is not None else ('run' if any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(p.frames)) else 'sack')
+        out = 'throw' if fw is not None else ('run' if any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1)) else 'sack')
         if ko is None:
             kb = max(ks, kend - p.k(0.5)); d, c = rush(kb)
             R.append(dict(set=True, onset=False, out=out, d=d, c=c, hold=(kend - ks) * p.dt, tset=ks * p.dt)); continue
