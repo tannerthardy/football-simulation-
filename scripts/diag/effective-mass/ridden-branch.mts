@@ -26,7 +26,7 @@ for (let g = 0; g < games; g++) {
       tick();
       if (!ol) {
         ol = sim.offense.filter((a: any) => ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot));
-        const ys = [...ol].sort((a: any, b: any) => a.pos.y - b.pos.y); tackles = new Set([ys[0], ys[ys.length - 1]]);
+        const ys = [...(ol ?? [])].sort((a: any, b: any) => a.pos.y - b.pos.y); tackles = new Set([ys[0], ys[ys.length - 1]]);
       }
       if (sim.t < 0.5 || sim.ballThrown || sim.outcome || !sim.qb || sim.carrier !== sim.qb) return;
       const qb = sim.qb.pos;

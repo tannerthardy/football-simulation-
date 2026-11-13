@@ -417,7 +417,18 @@ export const PUNCH = process.env.PUNCH !== '0';
 const LOCKOUT = 0.9;
 /** How far the punch drives the hands into the man (yd): a press, not a touch. */
 const PRESS_INTO = 0.1;
-const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
+const punchState = new WeakMap<HandJoint, { ext: number; over: number; striking?: boolean }>();
+/** PUNCH_STRIKE (experimental, off; with PUNCH): the punch's press into the man (PRESS_INTO) is a strike, not a
+ * standing request. On a new fit his hands drive into the man as before, until he feels the man on them (the joint's
+ * press at UNLOADED of his own press, last step's): the strike has landed. From then he holds the fit: his hands stay
+ * at the man (the touch), giving and following at arm speed, so they press only as the man closes on them faster than
+ * his arms give: his press, not a drive of his own. (Attempt 1 kept the arms' length against him, never shorter: a man
+ * closing compressed the joint deeper than the drive had, and falls rose to 41% of dropbacks.) A new fit (the man off his hands, beyond his arms by 0.05 yd, or a
+ * hand knocked off) is a new strike. A standing 0.1-yd drive into the man kept the joint at its push limit; his lean
+ * (sized by PASS_ANCHOR to the load he feels, his own drive's reaction included) grew to about a body weight, and when
+ * a swim, club or pull took the load away he fell forward: OL falls before the throw on 24.6% of dropbacks against
+ * 10.7% with PUNCH off (fall-rate.mts; NFL about 1-5 falls per 100 dropbacks, fall-proxy.py). */
+export const PUNCH_STRIKE = PUNCH && process.env.PUNCH_STRIKE === '1';
 
 /** PUNCH is pass-set technique, the blocker's choice from what his job is
  * showing: pressing a man at arm's length is how a pass blocker keeps him off
@@ -446,7 +457,16 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
   // A punch presses: the hands go a little into the man (PRESS_INTO), so the joint compresses against him -- across
   // his path when he comes across the blocker's face -- rather than resting at the touch (attempt 1 aimed at the
   // gap less 0.02 yd: as the man crossed, N p50 stayed 0).
-  const want = clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
+  if (PUNCH_STRIKE) {
+    // A new fit: the man off his hands (beyond his arms), or a hand knocked off (RUSH_HANDS).
+    if (st.striking === undefined || gap > st.ext + 0.05 || joint.off || (joint.handsOn ?? 2) < 2) st.striking = true;
+    // Landed: he feels the man on his hands.
+    else if (st.striking && Math.max(0, joint.normalForce ?? 0) >= UNLOADED * pressForce(b)) st.striking = false;
+  }
+  const holding = PUNCH_STRIKE && !st.striking;
+  // Holding the fit: his hands stay at the man (the touch), giving and following at arm speed; they press only as the man
+  // closes on them faster than his arms give (his press, not a drive of his own).
+  const want = holding ? clamp(gap, base, lock) : clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
   st.ext = clamp(want, st.ext - step, st.ext + step);
   joint.extension = bodies + Math.max(base, st.ext);
 }
