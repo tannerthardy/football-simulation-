@@ -1173,7 +1173,7 @@ export class ManCoverage implements Behavior {
  * 38% vs 6%), none of them reading run (safety-downhill.ts, safety_deep.py).
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
-const SAFETY_DEPTH = process.env.SAFETY_DEPTH === '1';
+const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
 /** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
