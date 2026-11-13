@@ -1452,3 +1452,52 @@ All engaged tackle-edge pairs, by the time of first contact (share of pairs; bec
 - TACKLE_SET makes late contact more common (28% of pairs from 1.8 s) without moving that geometry.
 - Next: what the late-contact rusher does before contact (arc width, a delayed or looping rush, a stunt), and the QB's
   depth at those times (NFL deeper: a deeper drop, or climbing less).
+
+## Earliest in-front pressures, parts 1 and 2 (measurement only; on ba4b9866, A)
+
+**Part 2a: the QB's depth against time** (`qb-depth.py`; non-play-action in ours; the NFL set has no play-action
+label). p50 behind the line at 1.0 / 1.5 / 1.75 / 2.0 / 2.25 / 2.5 / 3.0 s:
+
+| | 1.0 | 1.5 | 1.75 | 2.0 | 2.25 | 2.5 | 3.0 |
+|---|---|---|---|---|---|---|---|
+| NFL gun | −5.3 | −6.5 | −7.1 | −7.5 | −7.7 | −8.0 | −8.0 |
+| A gun (201 \| 301) | −5.3 | −6.8 | −7.6 | −7.9 \| −7.8 | −7.9 | −7.9 | −7.9 |
+| NFL under center | −3.2 | −5.2 | −6.5 | −7.2 | −7.8 | −8.4 | −8.5 |
+| A under center | −3.5 \| −3.6 | −5.4 | −6.4 \| −6.6 | −7.1 \| −7.2 | −7.7 | −7.9 | −7.9 |
+
+In the gun our QB reaches his depth earlier than the NFL's and stops dead at 7.9 yd; the NFL's settles to 8.0. Under
+center ours tracks the NFL's to 2.25 s and stops at 7.9 where the NFL's goes on to 8.4-8.6.
+
+**Part 2b: TACKLE_SET's floor against where the QB is** (`launch-vs-qb.mts`, seeds 201-206, A; TACKLE_SET's floor
+computed, not applied).
+- Gun, 385 dropbacks, launch point p50 8.0 yd, floor 7.0:
+  - QB minus launch point at 1.5 / 2.0 / 2.5 s: +1.25 / +0.16 / +0.10 (short by more than 0.5 yd: 89 / 3 / 5%);
+  - the tackles over the QB: 2.98 / 2.53 / 1.32.
+- Under center, 122 dropbacks:
+  - QB minus launch point at 1.5 / 2.0 / 2.5 s: +2.76 / +0.87 / +0.12 (short by more than 0.5 yd: 96 / 73 / 9%);
+  - the tackles over the QB: 2.08 / 2.37 / 1.76.
+
+So in the gun the QB reaches the called launch point by 2.0 s and stays there: the tackle is not setting to a point the
+QB has not reached, and the QB does not stop short. Under center he is still 0.9 yd short at 2.0 s (Rules+Coaching's
+finding) and there by 2.5 s.
+
+The "QB 0.7-0.9 yd shallower" in the late-contact plays was selection. Across all dropbacks the late gap is 0.1 yd in
+the gun and 0.5-0.7 yd under center after 2.5 s. What differs late is our tackle: 1.3 yd over the QB at 2.5 s, against
+the NFL's +2.1 (2.0-2.5 s) and +1.6 (2.5-3.0 s).
+
+**Part 1: the late-contact rusher before contact** (`early-front.py`; pairs whose first contact comes at 1.8 s or
+later):
+
+| | NFL (n 1323) | A 201 (n 215) | A 301 (n 289) |
+|---|---|---|---|
+| aligned outside the tackle at the snap (contact 1.2-1.5 s: reference) | +2.9 (+2.4) | +2.4 (+2.6) | +2.5 (+2.5) |
+| at 1.0 s: outside / ahead in depth / gap / speed | +2.2 / +1.6 / 2.8 / 3.7 | +1.3 / +1.9 / 2.4 / 3.8 | +1.4 / +1.8 / 2.3 / 3.8 |
+| at 1.5 s: outside / ahead / gap / speed | +1.5 / +0.9 / 1.9 / 4.4 | +1.3 / +1.2 / 1.7 / 4.0 | +1.2 / +1.2 / 1.8 / 4.0 |
+
+- The NFL's late contacts are wide rushers: aligned wider, still 2.2 yd outside at 1.0 s. That is the arc, and it
+  meets the tackle late because it is long.
+- Ours are ordinary alignments, closer to straight in front of the tackle, 1.7-2.4 yd from him and not touching until
+  1.8 s or later.
+- So our tackle retreats ahead of a rusher close in front of him, at the rusher's pace, keeping out of contact until
+  both are at the QB's depth. That is PASS_KICK's follow: matching the rusher's depth speed while he is in front.
+- It is the tackle's set, not the drop.

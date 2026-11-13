@@ -54,6 +54,14 @@ for path in sys.argv[1:]:
             k1 = min(kend, k0 + p.k(1.0))
             tv = (p.pos(tk, k1)[0] - p.pos(tk, k0)[0]) / max(p.dt, (k1 - k0) * p.dt)
             r = {'t0': k0 * p.dt, 'tdepth0': p.pos(tk, k0)[0], 'tOverQB0': p.pos(tk, k0)[0] - p.pos(qb, k0)[0], 'tv1': tv}
+            # Before contact: where the rusher is against his tackle at 1.0 and 1.5 s (outside width, depth, gap, speed),
+            # and whether he started inside the tackle's snap alignment (a twist or an inside alignment).
+            for tt in (1.0, 1.5):
+                kk = min(p.k(tt), kend)
+                if kk < k0 and p.pos(d, kk)[0] is not None and p.pos(tk, kk)[0] is not None:
+                    r[f'w{tt}'] = side * (p.pos(d, kk)[1] - p.pos(tk, kk)[1]); r[f'dx{tt}'] = p.pos(d, kk)[0] - p.pos(tk, kk)[0]
+                    r[f'gap{tt}'] = p.dist(d, tk, kk); r[f'sp{tt}'] = p.speed(d, kk)
+            r['startOut'] = side * (p.pos(d, 0)[1] - p.pos(tk, 0)[1])
             if kp is not None:
                 k10 = min(p.k(1.0), kp)
                 r.update({'tdepthP': p.pos(tk, kp)[0], 'qbDepthP': p.pos(qb, kp)[0],
@@ -88,3 +96,12 @@ for path in sys.argv[1:]:
     for lo, hi in ((0, 1.2), (1.2, 1.5), (1.5, 1.8), (1.8, 2.2), (2.2, 9)):
         R = [r for r in A if lo <= r['t0'] < hi]
         if R: print(f"     first contact {lo:.1f}-{hi:.1f} s: {100 * len(R) / max(1, len(A)):4.1f}% of pairs | tackle at contact {q([r['tdepth0'] for r in R]):+.2f} yd ({q([r['tOverQB0'] for r in R]):+.2f} over the QB) | the rusher becomes an in-front presser {100 * sum(r['frontP'] for r in R) / len(R):.1f}%")
+    L = [r for r in A if r['t0'] >= 1.8]
+    if L:
+        def st(key): v = [r[key] for r in L if key in r]; return f"{q(v):+.2f}" if v else 'nan'
+        print(f"     late contacts (from 1.8 s), n {len(L)}: rusher at 1.0 s outside {st('w1.0')} / ahead in depth {st('dx1.0')} / gap {st('gap1.0')} / speed {st('sp1.0')}"
+              f" | at 1.5 s outside {st('w1.5')} / ahead {st('dx1.5')} / gap {st('gap1.5')} / speed {st('sp1.5')} | aligned outside him at the snap {st('startOut')}")
+    E = [r for r in A if 1.2 <= r['t0'] < 1.5]
+    if E:
+        v = [r['startOut'] for r in E]
+        print(f"     (reference: contact 1.2-1.5 s, n {len(E)}: aligned outside him at the snap {q(v):+.2f})")
