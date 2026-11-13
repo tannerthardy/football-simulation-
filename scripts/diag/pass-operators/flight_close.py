@@ -1,6 +1,7 @@
 """How the defender plays a ball in flight (same code on NFL trail_nfl.py cov=all and sim trail-export.ts COV=all
 records). Observation only. Targeted throws (caught or not); flight = release (pass_forward) to arrival (pass_arrived);
-the landing point = the target's position at the arrival. The defender: the one nearest the landing point at the
+the landing point = the target's position at the arrival. Any defender: the nearest at the arrival, the second, and how
+many are within 3 yd. The defender: the one nearest the landing point at the
 release. For him: distance to the landing point at the release and at the arrival; his closing on the landing point
 (velocity . unit vector, central differences) at 0 / 0.2 / ... s into the flight; his reaction = the first frame after
 the release where that closing has risen >= 1.0 yd/s over its value at the release, for two frames; aim at 0.4 s =
@@ -72,15 +73,21 @@ for arg in sys.argv[1:]:
                     mq, mc = sum(aq) / len(aq), sum(ac) / len(ac)
                     orient = 'facing QB' if mq <= 60 else 'facing receiver' if mq > 90 and mc <= 60 else 'other'
             (xa, ya) = pos(d, ka)
+            DA = [math.hypot(pos(i, ka)[0] - lx, pos(i, ka)[1] - ly) for i in D if pos(i, ka)[0] is not None]
+            DA.sort()
+            near_other = next((i for i in sorted(D, key=lambda i: math.hypot(pos(i, ka)[0] - lx, pos(i, ka)[1] - ly) if pos(i, ka)[0] is not None else 99) if i != d), None)
+            o0 = math.hypot(pos(near_other, kr)[0] - lx, pos(near_other, kr)[1] - ly) if near_other is not None and pos(near_other, kr)[0] is not None else None
             R.append(dict(band=band((ka - kr) * 0.1), d0=math.hypot(dx0 - lx, dy0 - ly), da=math.hypot(xa - lx, ya - ly) if xa is not None else None,
                           prof={s: closing(kr + s) if kr + s <= ka else None for s in STEPS}, react=react, aim=aim, posc=posc, orient=orient,
-                          caught=p.get('catch') is not None, fam=p.get('manzone') or '?'))
+                          caught=p.get('catch') is not None, fam=p.get('manzone') or '?',
+                          any_a=DA[0] if DA else None, n3=sum(1 for x in DA if x <= 3), second_a=DA[1] if len(DA) > 1 else None, other0=o0))
     print(f'== {name}: the defender nearest the landing point at the release (n {len(R)})')
     for b in ('<0.8', '0.8-1.2', '1.2-1.8', '1.8+'):
         V = [r for r in R if r['band'] == b]
         if len(V) < 10: continue
         print(f'   flight {b:<7} n {len(V):4d} | complete {100 * sum(r["caught"] for r in V) / len(V):.0f}% | to the landing point at the release {q([r["d0"] for r in V])} -> at the arrival {q([r["da"] for r in V])} yd'
               f' | reaction {q([r["react"] for r in V])} s (none {100 * sum(r["react"] is None for r in V) / len(V):.0f}%) | aimed at the ball at 0.4 s {100 * sum(r["aim"] == "ball" for r in V) / max(1, sum(r["aim"] is not None for r in V)):.0f}%')
+        print(f'      any defender: nearest to the landing point at the arrival {q([r["any_a"] for r in V])} yd | second {q([r["second_a"] for r in V])} | defenders within 3 yd: 0 {100 * sum(r["n3"] == 0 for r in V) / len(V):.0f}% / 1 {100 * sum(r["n3"] == 1 for r in V) / len(V):.0f}% / 2+ {100 * sum(r["n3"] >= 2 for r in V) / len(V):.0f}% | the nearest at the arrival, when not our man: from {q([r["other0"] for r in V])} yd at the release')
         print('      closing on the landing point at 0 / 0.2 / 0.4 / 0.6 / 0.8 / 1.0 / 1.2 / 1.4 s: ' + ' / '.join(mean([r['prof'][s] for r in V]) for s in STEPS))
         for key, vals in (('posc', ('on top', 'hip', 'trailing', 'off')), ('orient', ('facing QB', 'facing receiver', 'other'))):
             for v in vals:
