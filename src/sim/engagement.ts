@@ -33,7 +33,7 @@ import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
-import { availability, baseRadiusAt, omega0, recoverySpeed, supportParams } from '../physics/support.js';
+import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
@@ -1113,6 +1113,30 @@ export const TACKLE_BRAKE = process.env.TACKLE_BRAKE === '1';
 export const TACKLE_RESET = process.env.TACKLE_RESET === '1';
 const SINK_POSTURE = 0.95;
 
+/** ANCHOR_BASE (experimental, off): how much of himself a pass protector commits into the man is bounded by what
+ * his base could recover from if the load vanished. The World releases a lean that loses its load into his capture
+ * point (lean / (m w0^2), less what his gait absorbs) and he falls past criticalDeviation (base radius + stepping speed
+ * / w0); in games, unloads topple him 1-4% of the time with a lean under 0.6 of m w0^2 x critical deviation, 21-30% at
+ * 0.9 and above, where the lean has grown to the whole press (unload-outcomes.mts). So:
+ *  - the commit bound: leanCap = k m w0^2 critDev at his present posture, k = 1.05 - 0.55 x technique (pass blocking
+ *    and balance): a poor technician commits up to all of what he can recover from and is swum and pulled; a good one
+ *    keeps a margin;
+ *  - the anchor: under a heavy press he sinks (posture 0.6 + 0.35 x technique), a lower centre of mass and a wider base
+ *    (w0^2 x critDev both grow), so the base itself stops more press for the same margin; his strength (the World's
+ *    leg drive and traction) decides how much of it the legs can hold;
+ *  - the rest of the press, beyond what he commits, walks him back: ground given is the rusher's power against his base
+ *    and strength.
+ * PASS_SINK sank him under load and TACKLE_RESET re-set his feet, both acting on the retreat with the lean unbounded
+ * (it grew to the press); this bounds the commitment itself. No capacity added. */
+export const ANCHOR_BASE = process.env.ANCHOR_BASE === '1';
+function anchorBase(b: Agent, tb: TrenchTraits, heavy: boolean, intent: Intent): void {
+  const sup = b.body.support; if (!sup) return;
+  const technique = clamp(0.5 * b.r('passBlock') + 0.5 * tb.balance, 0, 1);
+  if (heavy) intent.posture = Math.max(intent.posture ?? 0.6, 0.6 + 0.35 * technique);
+  const sp = supportParams(b.profile), w0 = omega0(sp, sup.posture);
+  intent.leanCap = (1.05 - 0.55 * technique) * b.profile.massKg * w0 * w0 * criticalDeviation(sp, sup.posture, sup.feetLock, 1);
+}
+
 /** TACKLE_RESET: the blocker's base re-set (see the flag). Edits his intent in place. */
 function baseReset(sim: PlaySim, e: Engagement, intent: Intent): void {
   const b = e.blocker, sup = b.body.support;
@@ -1771,6 +1795,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
   if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
+  if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
   e.lastReqX = intents[b.idx].vel.x;
   if (PASS_RIDE) e.riding = riding;
   if (riding) {
@@ -1781,6 +1806,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     if (PASS_RIDE) intents[b.idx] = rideIntent(b, d, qb, growth, tb.feet);
     else intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
       facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
+    if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
   }
   helperIntents(sim, e, intents, axis);
 }
