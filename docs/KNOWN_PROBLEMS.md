@@ -341,6 +341,7 @@ problem), resolved.
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
+| [PHY-4](#phy-4) | A sub-maximal speed request is approached slowly (by design; note for controller authors) | F2 | low | note |
 | [FAT-1](#fat-1) | Starters never rotate: DL, edge and RB play every snap | — | medium | partly fixed (#298); visible-fade cue open |
 | [FAT-2](#fat-2) | Fatigue too small to matter: linemen go full power every snap | — | medium | fixed (#298); rush-fade slope noisy under rotation |
 | [FAT-3](#fat-3) | No fade within a long engaged rep | — | low–medium | open (waits on Move 1, `world.ts`) |
@@ -3683,6 +3684,23 @@ seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.m
 `NFL` here is BDB 2025: snap shares from weeks 1–9, rush reps from weeks 1–2.
 
 <a id="fat-1"></a>
+### PHY-4: A sub-maximal speed request is approached slowly (by design; a note for controller authors)
+
+- **What the law does** (`locomotionAccel`, `src/physics/kinematics.ts`): the
+  start force is full at rest and falls linearly to zero at the speed he asks
+  for, dv/dt = (start / tau)(1 - v / wanted). A request below top speed is
+  therefore approached with a time constant of about tau x wanted / start:
+  about 0.6 s for a 4 yd/s request. This is taken from tracked NFL pullers and
+  is not a gap.
+- **Consequence for controllers:** a request of 4 yd/s is a request to arrive
+  at 4 slowly. A controller that wants to be at pace now asks for more and
+  throttles as it gets there.
+- **Seen in:** the free backside end on zone runs (fixed run set, 2026-11-13,
+  `scripts/diag/concepts/bsend-exec.mts`): before the handoff his request held
+  at about 4 yd/s (tracking a mesh point that moves slowly) and his speed rose
+  1.9 -> 2.8 yd/s from 0.5 to 1.0 s, as the law predicts; NFL box ends are at
+  3.4 yd/s by 1.5 s. The same shape was reported for the safety's pedal.
+
 ### FAT-1: Starters never rotate: DL, edge and RB play every snap
 
 - **Symptom:** The same four linemen and the same RB play the whole game.
