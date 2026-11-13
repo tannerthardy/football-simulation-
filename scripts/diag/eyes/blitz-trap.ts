@@ -25,7 +25,7 @@ PlaySim.prototype.run = function (this: any) {
   const sim = this;
   if (sim.offCall?.kind !== 'pass') return run.call(this);
   const snapAt = new Map<any, { x: number; y: number; cls: string }>();
-  let align: any[] | null = null, seats: any[] | null = null, hot: any = null, thr: any = null, qbB: any = null, maxEx = 0;
+  let align = null as any[] | null, seats = null as any[] | null, hot: any = null, thr: any = null, qbB: any = null, maxEx = 0, maxFreeU = 0;
   const kinds05 = new Map<any, string>(), kindsThr = new Map<any, string>();
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -37,7 +37,7 @@ PlaySim.prototype.run = function (this: any) {
       snapAt.set(d, { x: d.pos.x, y: d.pos.y, cls: cls((d.pos.x - sim.los) * dir, Math.abs(d.pos.y - sim.ballY)) });
     }
     if (!qbB && sim.qb.behavior?.kind === 'qb-pass') qbB = sim.qb.behavior;
-    if (qbB && sim.t <= 2.5) maxEx = Math.max(maxEx, qbB.rushExcess ?? 0);
+    if (qbB && sim.t <= 2.5) { maxEx = Math.max(maxEx, qbB.rushExcess ?? 0); maxFreeU = Math.max(maxFreeU, qbB.freeU ?? 0); }
     if (!seats && sim.t >= 0.5 - 1e-9) {
       seats = [];
       for (const d of sim.defense) kinds05.set(d, `${d.player.position}:${d.behavior?.kind ?? '-'}`);
@@ -49,7 +49,8 @@ PlaySim.prototype.run = function (this: any) {
     if (!align && sim.t >= 1.0 - 1e-9) align = [...snapAt].map(([d, s]) => ({ cls: s.cls, pos: d.player.position, rush: rushing(d) }));
     if (qbB && !hot && qbB.hot) {
       let top: any = null, tp = -1;
-      for (const [d, r] of qbB.rushB) if (r.p > tp) { top = d; tp = r.p; }
+      if (qbB.freeThreat) { top = qbB.freeThreat.d; tp = qbB.freeThreat.p; }
+      else for (const [d, r] of qbB.rushB) if (r.p > tp) { top = d; tp = r.p; }
       hot = { at: r2(qbB.hot.at), target: qbB.hot.target?.slot ?? null, targetAgent: qbB.hot.target, top, topP: r2(tp),
         topPos: top?.player.position ?? null, topCls: top ? snapAt.get(top)?.cls ?? null : null, topRushNow: top ? rushing(top) : null, excess: r2(qbB.rushExcess) };
     }
@@ -82,7 +83,7 @@ PlaySim.prototype.run = function (this: any) {
       topRushed05: hot.top ? (seats?.some((s) => s.d === hot.top) ?? false) : null,
       topRefilled: hot.top ? (seats?.find((s) => s.d === hot.top)?.refilled ?? null) : null,
       toTarget: !!thr && !!hot.targetAgent && thr.targetAgent === hot.targetAgent } : null,
-    maxEx: r2(maxEx),
+    maxEx: r2(maxEx), maxFreeU: r2(maxFreeU),
     thr: thr ? { t: thr.t, slot: thr.slot, away: thr.away, air: thr.air } : null,
     int: !!intEv, picker, sack: sim.events.some((e: any) => e.type === 'sack'), caught: !!sim.stats.completed, outcome: res.outcome, yards: res.yards ?? null,
   };
@@ -91,4 +92,12 @@ PlaySim.prototype.run = function (this: any) {
 };
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+// QB_PROFILE=top|bottom: every QB's reading ratings set to the middle of the top / bottom third of generated starters
+// (300 teams: awareness / decisionMaking / composure / playRecognition at the 5/6 and 1/6 points), same plays otherwise.
+const PROFILE: Record<string, Record<string, number>> = {
+  top: { awareness: 86, decisionMaking: 84, composure: 84, playRecognition: 85 },
+  bottom: { awareness: 69, decisionMaking: 65, composure: 66, playRecognition: 68 },
+};
+const prof = PROFILE[process.env.QB_PROFILE ?? ''];
+if (prof) for (const t of [home, away]) for (const pl of t.roster as any[]) if (pl.position === 'QB') Object.assign(pl.ratings, prof);
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed + g), leagueSample(away, seed + g), { seed: seed + g });

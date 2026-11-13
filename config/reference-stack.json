@@ -205,6 +205,8 @@
     "QB_COMMIT": "off",
     "QB_EYES": "off",
     "BLITZ_READ": "off",
+    "BLITZ_DEPTH": "off",
+    "BLITZ_SKILL": "off",
     "QB_RHYTHM": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",

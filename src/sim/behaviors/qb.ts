@@ -180,6 +180,28 @@ const QB_EYES = process.env.QB_EYES === '1';
  * quick on 18% of blitzes (9% otherwise), 69% to wideouts; ours 7% (6%); on our blitzes with a free rusher (34%) he
  * threw quick on 5% and was sacked on 13%. docs/reviews/2026-11-13-qb-gather.md. */
 const BLITZ_READ = process.env.BLITZ_READ === '1';
+/** BLITZ_DEPTH (experimental, off; BLITZ_DEPTH=1, read with BLITZ_READ): attempt 2 of the rush belief. Its prior is
+ * keyed by alignment and role, from the NFL's realized rush rates of non-linemen (BDB 2025 wk1-3, dropbacks without
+ * play action, OLBs excluded: `nfl_rush_by_align.py`), and a step at him raises it fully only at or past the line;
+ * above it a quarter (a box backer stepping up on a fake or a man coming up on a route is where those stop). */
+const BLITZ_DEPTH = process.env.BLITZ_DEPTH === '1';
+/** BLITZ_SKILL (experimental, off; BLITZ_SKILL=1, read with BLITZ_READ): the blitz read's skill levels (the user's
+ * direction, 2026-11-13). (a) His clock is per threat, from the protection call he knows (the blockers' assignments at
+ * the snap, declared backers included): a man he believes is coming whom the call has nobody for is a free rusher,
+ * and his urgency is the earliest believed free arrival (belief x how soon he gets there in his felt picture), not a
+ * head count; the hot look fires on a believed free rusher. (b) Believed pressure narrows him by (1 - composure):
+ * a longer processing time (freezing), shorter looks and a lower bar; a composed QB is not narrowed. (c) A prepared
+ * answer (awareness and decision-making): on the hot call he first takes one short look at the vacated seat, where
+ * the replacement comes from, before the ball can go; an unprepared one goes straight to the throw on the picture
+ * he has (stares down the vacated space). */
+const BLITZ_SKILL = process.env.BLITZ_SKILL === '1';
+/** BLITZ_DEPTH's prior: on the line off the ball LB 0.54 / DB 0.27, box 0.11 / 0.13, edge 0.32 / 0.18, else 0.03 / 0.01. */
+function rushPrior(depth: number, wide: number, lb: boolean): number {
+  if (depth <= 1.5 && wide <= 9.5) return lb ? 0.54 : 0.27;
+  if (depth <= 6 && wide <= 5.5) return lb ? 0.11 : 0.13;
+  if (depth <= 2.5 && wide <= 9.5) return lb ? 0.32 : 0.18;
+  return lb ? 0.03 : 0.01;
+}
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -410,6 +432,14 @@ export class QBPass implements Behavior {
   /** BLITZ_READ: believed rushers beyond his protection's count (linemen, plus his rush belief on the rest, less his
    * blockers), as of his last update. */
   private rushExcess = 0;
+  /** BLITZ_SKILL: the protection call as he knows it (the defenders it has a blocker for at the snap), his believed
+   * free threat (the earliest believed free arrival), its urgency, and his confirmation look at the vacated seat. */
+  private callSet: Set<Agent> | null = null;
+  private freeThreat: { d: Agent; p: number; arr: number } | null = null;
+  private freeU = 0;
+  private confirm: { at: Vec2; until: number } | null = null;
+  /** BLITZ_SKILL: how much believed pressure narrows him (0 for a composed QB). */
+  private narrow(a: Agent): number { return BLITZ_SKILL ? this.freeU * (1 - a.r('composure')) : 0; }
   /** BLITZ_READ: a defender's rush belief, 0 if he is not tracked (linemen: the protection counts them). */
   private rushOf(d: Agent): number { return this.rushB.get(d)?.p ?? 0; }
   /** BLITZ_READ: update his rush belief from his felt picture. A defender's prior comes from his alignment at the
@@ -428,19 +458,36 @@ export class QBPass implements Behavior {
       let r = this.rushB.get(d);
       if (!r) {
         const depth = (p.x - sim.los) * dir, wide = Math.abs(p.y - sim.ballY);
-        const prior = depth <= 1.5 && wide <= 9.5 ? 0.45 : depth <= 6 && wide <= 5.5 ? 0.25 : depth <= 2.5 && wide <= 9.5 ? 0.3 : 0.03;
+        const prior = BLITZ_DEPTH ? rushPrior(depth, wide, d.player.position === 'LB')
+          : depth <= 1.5 && wide <= 9.5 ? 0.45 : depth <= 6 && wide <= 5.5 ? 0.25 : depth <= 2.5 && wide <= 9.5 ? 0.3 : 0.03;
         r = { p: prior, prior, from: { ...p } }; this.rushB.set(d, r);
       }
       const tx = a.pos.x - r.from.x, ty = a.pos.y - r.from.y, tl = Math.hypot(tx, ty) || 1;
-      const toward = ((p.x - r.from.x) * tx + (p.y - r.from.y) * ty) / tl;
+      let toward = ((p.x - r.from.x) * tx + (p.y - r.from.y) * ty) / tl;
+      // BLITZ_DEPTH: a step at him counts as a rush only at or past the line (1 yd off it), where a run fitter or a
+      // coverage player stops; above it, a quarter of it (a backer filling on a fake, a man coming up on a route).
+      if (BLITZ_DEPTH && toward > 0 && (p.x - sim.los) * dir > 1) toward *= 0.25;
       const target = logistic(Math.log(r.prior / (1 - r.prior)) + 2.5 * toward);
       r.p += (target - r.p) * k;
       if (d.engagement) r.p = Math.min(r.p, 0.5);
       believed += r.p;
     }
-    const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[] } }).coord).find((c) => c?.protectors);
+    const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[]; assigned?: Map<Agent, Agent | null> } }).coord).find((c) => c?.protectors);
     const blockers = coord ? coord.protectors.length : 5;
     this.rushExcess = lineMen + believed - blockers;
+    if (BLITZ_SKILL) {
+      // The call he knows: who has a blocker at the snap (read once, as his protection call; not the rep's later truth).
+      if (!this.callSet) this.callSet = new Set([...(coord?.assigned?.values() ?? [])].filter((x): x is Agent => !!x));
+      let best: { d: Agent; p: number; arr: number } | null = null, u = 0;
+      for (const [d, r] of this.rushB) {
+        if (this.callSet.has(d) || d.isDown(sim.t) || r.p < 0.15) continue;
+        const f = this.felt(a, sim, d);
+        const arr = timeToReach({ pos: f.pos, vel: f.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8);
+        const ud = r.p * clamp((2.2 - arr) / 1.4, 0, 1);
+        if (ud > u) { u = ud; best = { d, p: r.p, arr }; }
+      }
+      this.freeThreat = best; this.freeU = u;
+    }
   }
   /** BLITZ_READ diagnostics: the last defender he saw trigger (position:behaviour:read). */
   hotBy: string | null = null;
@@ -659,7 +706,7 @@ export class QBPass implements Behavior {
     // BLITZ_READ: his rush belief, from the snap on, through his drop.
     if (BLITZ_READ && this.phase !== 'windup' && t <= this.snapAt + 2.5) {
       this.updateRush(a, sim);
-      if (this.rushExcess > 0.5) this.hotSeenAt ??= t; else if (!this.hot) this.hotSeenAt = null;
+      if (BLITZ_SKILL ? (this.freeThreat?.p ?? 0) >= 0.5 : this.rushExcess > 0.5) this.hotSeenAt ??= t; else if (!this.hot) this.hotSeenAt = null;
     }
 
     if (this.phase === 'windup') {
@@ -771,12 +818,12 @@ export class QBPass implements Behavior {
     // ---- set: reading the field ----
     // Quick game is rhythm: one look per read. Dropback reads take longer.
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
-    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus)) * (1 - 0.3 * this.narrow(a));
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
     // BLITZ_READ: believed rushers beyond his protection's count shorten how long he thinks he has.
-    const u = Math.max(urgency, clockUrgency, BLITZ_READ ? clamp(0.4 * this.rushExcess, 0, 0.7) : 0);
+    const u = Math.max(urgency, clockUrgency, BLITZ_READ ? (BLITZ_SKILL ? clamp(0.7 * this.freeU, 0, 0.7) : clamp(0.4 * this.rushExcess, 0, 0.7)) : 0);
     if (u > 0.5) this.underPressure++;
 
     // Look-off: veterans hold the safety with their eyes before the first read.
@@ -822,8 +869,13 @@ export class QBPass implements Behavior {
     // quickest-breaking route on the side of the man he believes is coming (the concept's built-in answer). The throw
     // itself comes from his ordinary window valuation, in which a believed rusher is discounted as a coverage defender.
     if (BLITZ_READ && !this.hot && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a)) {
-      let top: Agent | null = null;
-      for (const [d, r] of this.rushB) if (!top || r.p > this.rushOf(top)) top = d;
+      let top: Agent | null = BLITZ_SKILL ? this.freeThreat?.d ?? null : null;
+      if (!top) for (const [d, r] of this.rushB) if (!top || r.p > this.rushOf(top)) top = d;
+      // BLITZ_SKILL: a prepared answer takes one short look at the vacated seat (where the replacement comes from).
+      if (BLITZ_SKILL && top) {
+        const prep = 0.5 * a.r('awareness') + 0.5 * a.r('decisionMaking');
+        if (sim.dice('qb', a).chance(clamp(2 * prep - 0.8, 0, 1))) this.confirm = { at: this.rushB.get(top)!.from, until: t + 0.1 + 0.3 * (1 - prep) };
+      }
       const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
       const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
       const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(r.pos.y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
@@ -843,7 +895,7 @@ export class QBPass implements Behavior {
       sim.qbEyes = this.eyesOn;
     } else sim.qbEyes = read ?? null;
     const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
-    const thr = 0.6 - 0.12 * aggression - 0.32 * u;
+    const thr = 0.6 - 0.12 * aggression - 0.32 * u - 0.15 * this.narrow(a);
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
     this.barNow = { t, u, urgency, clock: clockUrgency, thr, maxInt, thr0: 0.6 - 0.12 * aggression, max0: 0.025 + 0.05 * aggression };
 
@@ -1010,9 +1062,10 @@ export class QBPass implements Behavior {
   /** QB_EYES: the man he is gating a throw to (his eyes went there for it), or null. */
   private gateFor: Agent | null = null;
   /** QB_EYES: his processing time on a man his eyes have just reached. */
-  private processing(a: Agent): number { return 0.15 + 0.25 * (1 - a.r('decisionMaking')); }
+  private processing(a: Agent): number { return (0.15 + 0.25 * (1 - a.r('decisionMaking'))) * (1 + 0.8 * this.narrow(a)); }
 
   private startIfFinish(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand | null {
+    if (this.confirm && sim.t < this.confirm.until) return null;
     // QB_EYES: the ball goes only to the man his eyes have been on for his processing time; otherwise they go there.
     if (QB_EYES) {
       if (this.eyesOn !== ev.target) { this.eyesOn = ev.target; this.eyesOnAt = sim.t; this.gateFor = ev.target; sim.qbEyes = ev.target; return null; }
@@ -1109,6 +1162,8 @@ export class QBPass implements Behavior {
       return forecast?.predict(sim.t, 0) ?? forecast?.prior.start ?? { x: sim.los + 10, y: sim.ballY };
     };
     if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
+    // BLITZ_SKILL: his confirmation look at the vacated seat.
+    if (this.confirm && sim.t < this.confirm.until) return this.confirm.at;
     if (this.phase === 'windup' && this.pending) return this.pending.point;
     // HOT_LOOK: on the way to a hot target his eyes leave where they were at the head's turn.
     if (this.look) return sim.t < this.look.eyesAt ? this.look.from : heldPoint(this.look.target);
