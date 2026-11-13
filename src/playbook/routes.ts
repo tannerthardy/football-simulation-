@@ -6,6 +6,9 @@
  */
 import type { RouteDef } from './types.js';
 
+/** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
+
 export const ROUTES: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
@@ -84,7 +87,12 @@ export const ROUTES: Record<string, RouteDef> = {
   // NFL in-breaking WR screens: turn inside at 1.8 s, caught 3.1 yd inside
   // and 0.6 yd behind the line (screen_wr_path_reference.py,
   // quick_screen_reference.py).
-  tunnel: { id: 'tunnel', family: 'flat', depth: -0.7, end: 'continue', points: [{ d: -0.3, l: -1.5, s: 0.5 }, { d: -0.7, l: -3, s: 0.45 }, { d: 0, l: -5 }] },
+  // SCREEN_QB: from tracking (screen_tunnel_path.py, BDB 2025 WR-in screens, n 23): after the sell he comes back
+  // under it, 0.8 yd behind the line and 1.5 inside at 2.0 s, and catches it 1.3 behind and 2.5 inside his start
+  // (off: caught at the line, 3 inside).
+  tunnel: SCREEN_QB
+    ? { id: 'tunnel', family: 'flat', depth: -1.3, end: 'continue', points: [{ d: -0.8, l: -1.5, s: 0.5 }, { d: -1.3, l: -2.5, s: 0.45 }, { d: 0, l: -4.5 }] }
+    : { id: 'tunnel', family: 'flat', depth: -0.7, end: 'continue', points: [{ d: -0.3, l: -1.5, s: 0.5 }, { d: -0.7, l: -3, s: 0.45 }, { d: 0, l: -5 }] },
   /** The back's out: a short release to 4-5 yd, then flat to the sideline (NFL back OUT, 7.4% of drop-backs). */
   back_out: { id: 'back_out', family: 'back', depth: 4, end: 'continue', points: [{ d: 2, l: 2, s: 0.8 }, { d: 4.5, l: 4, s: 0.5 }, { d: 4.5, l: 14 }] },
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
