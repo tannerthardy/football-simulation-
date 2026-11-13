@@ -1852,3 +1852,22 @@ against a blocker accelerating out of his set.
 
 The ride moves the interior wins onto the NFL's count and closer to its timing, and the walked-back class shrinks.
 Pressure and sacks barely move on set A. Next: the read with RUSH_HANDS on.
+
+**With RUSH_HANDS on** (seeds 11 / 23, same head): RUSH_HANDS + recovery → + PASS_RIDE:
+- native sacked 6.0 / 4.7 → 4.3 / 3.6%; pressured 40.6 / 35.9 → 38.7 / 33.7%;
+- interior 16.5 / 12.3 → 16.0 / 11.6%; engaged-then-free 10.0 / 7.1 → 9.4 / 6.6% of dropbacks, still 0.4 s before
+  pressure.
+
+The ride barely moves it. `ride-probe.mts` with both flags (seed 11 x 3), guards:
+- reps ending "past him" double (48 against 22);
+- while ridden, the rusher runs at 4.73 yd/s (4.07 toward the QB) against the blocker's 2.75;
+- press under the guard's hands is 0, with a hand cleared in 66% of these reps.
+
+`interior-free.mts`: interior first pressers 16% of dropbacks, free 80%, last rep ended "past him" 73%.
+
+**Reading.** Under RUSH_HANDS a one-hand clear frees the man's path, not only his hands. "Hand gone" puts the rusher in
+his landed-move request (working past at 0.8-1.0 of vmax), and he goes round the guard's body faster than any ride can
+follow. In football a club wins a hand; the blocker's body is still in front and has to be gone round, and the other
+hand is on him. The open question is what the body does (torso contact, the ride's push with one hand, how much path a
+club buys), not the club's size. Recommendation: PASS_RIDE stands on its own (it improves set A's interior on both
+seeds). RUSH_HANDS is parked with that question named.
