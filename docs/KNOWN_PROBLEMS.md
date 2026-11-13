@@ -297,6 +297,7 @@ problem), resolved.
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
 | [RUN-18](#run-18) | An engaged edge past his containment bound kept widening on his held flow | G2 | medium | resolved |
+| [RUN-19](#run-19) | Run blockers keep a grip only by the pass-rep frame rule | G2 | medium | open |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -637,6 +638,21 @@ Carried over from the issue register; each was measured on an older develop.
   with #365 the edge moves toward NFL's position against the last blocker
   (1.5 s: +0.18 → +0.07 yd outside him; NFL −0.03). Develop restage:
   −0.36 ± 0.22 yd per run, on wide zone, toss and trap.
+
+<a id="run-19"></a>
+### RUN-19: Run blockers keep a grip only by the pass-rep frame rule
+
+- **Symptom:** `OPEN_HANDS` (engine-52) bounds run-block steering to friction
+  under the hand. A run blocker keeps a grip only by the pass rep's frame rule,
+  which is drawn against the line to the quarterback. In football, a seal or
+  reach block keeps cloth while his body is between the defender and the run's
+  path.
+- **Measure:** the fixed run set fell 3.86 → 3.59 yd a carry at engine-54. The
+  canaries are duo and toss.
+- **Cause:** *likely*: there is no run-specific frame (named by Flex,
+  2026-11-13).
+- **Open:** a run-specific frame for the grip: inside it while the blocker's
+  body is between the defender and the run's path.
 
 ## Tackling and pursuit
 
@@ -1231,9 +1247,11 @@ Carried over from the issue register; each was measured on an older develop.
   shapes the request, not the body's control.
 - **Tried:** flipping the term (sure tacklers keep more speed) was considered
   and not built; the NFL relation is weak for DL and absent elsewhere.
-- **Open:** make the approach's contact speed independent of the rating and let
-  body control show through physics (posture, cut skill, the over-run whiff
-  term). Proposed to Integration 2026-11-13, not built.
+- **Decision (Integration, 2026-11-13): left as is.** Arrivals and finishes
+  match the NFL, so changing the term has no gap behind it. A rating-independent
+  approach speed is parked ([PARKED](PARKED.md), `TACKLE_APPROACH`), with
+  `arrival_finish.py`, `contact_finish.py` and `arrival-control.mts` as the
+  measure to re-open it.
 
 ## Pass protection
 
