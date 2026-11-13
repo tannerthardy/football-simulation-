@@ -324,6 +324,51 @@ const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 /** Where a threatened stack backer fills to: a yard off the ball, meeting the runner in the hole. */
 const FILL_DEPTH = 1;
+/** BACKSIDE_DUTY (experimental, off): the backside end's coached rule on
+ * flow away, "squeeze and chase; boot, bootleg, reverse". Part (a), the chase:
+ * squeezing behind a line that flows away from him (before the handoff) or
+ * trailing a ball carried away from his side, he turns and runs at it rather
+ * than shuffling square down the line. Measured (backside_end.py against
+ * backside-end.ts, box ends only): NFL backside ends on zone runs are 2.7 yd
+ * toward the play at 1.5 s at 3.4 yd/s, 77% chasing; ours 1.7 yd at 2.2 yd/s,
+ * 55%. The trail asked for the right point but kept his hips square (facing
+ * downfield), so the body could only shuffle. By technique, as coached: a
+ * wide end (6, 7, 9, wide 9, or standing up) chases as soon as he trails; a
+ * tight end (4i to 5, hand down) squeezes first and opens only once the ball
+ * he sees is 2 yd inside the tackle's surface on his side. Opening has an
+ * enter and an exit margin on the lateral speed asked toward the play. */
+export const BACKSIDE_DUTY = process.env.BACKSIDE_DUTY === '1';
+const CHASE_OPEN = 1.5, CHASE_CLOSE = 0.8, SQUEEZE_INSIDE = 2;
+/** BACKSIDE_DUTY attempt 2: the pace he asks for along the flow once his own read says it is going away (fraction of
+ * his top speed), and the margins on the ball he sees coming back toward his side (yd/s) that end and resume it. Under
+ * the gait law a request is approached with a time constant of tau x wanted / start (KNOWN_PROBLEMS PHY-4): keeping
+ * station on a slow mesh point asks to arrive at ~4 yd/s slowly; the chase asks for his pace now. Estimated. */
+const CHASE_PACE = 0.9, BACK_EXIT = 1.5, BACK_ENTER = 0.5;
+const pacing = new WeakMap<Agent, boolean>();
+/** BACKSIDE_DUTY: chase pace on, with an exit margin on the ball he sees coming back toward his side. */
+function chasePace(a: Agent, back: number): boolean {
+  const on = pacing.get(a) ?? true ? back < BACK_EXIT : back < BACK_ENTER;
+  pacing.set(a, on);
+  return on;
+}
+const chasing = new WeakMap<Agent, boolean>();
+const wideEnd = new WeakMap<Agent, boolean>();
+/** BACKSIDE_DUTY: may he chase now (wide: yes; tight: once the ball is well inside his tackle)? */
+function backsideChase(sim: PlaySim, a: Agent, seen: { pos: Vec2 }, surface: number, side: number): boolean {
+  let wide = wideEnd.get(a);
+  if (wide === undefined) {
+    const home = sim.defAlign.spots[a.slot as DefSlot]!.pos.y;
+    wide = a.setStance === 'up' || side * (home - surface) >= 1.0;
+    wideEnd.set(a, wide);
+  }
+  return wide || side * (surface - seen.pos.y) >= SQUEEZE_INSIDE;
+}
+/** BACKSIDE_DUTY: hips open to chase, with an enter and an exit margin on his request toward the play. */
+function openToChase(a: Agent, toward: number): boolean {
+  const on = chasing.get(a) ? toward > CHASE_CLOSE : toward > CHASE_OPEN;
+  chasing.set(a, on);
+  return on;
+}
 /** END_CHASE (experimental, off): see the edge fit; how far into the backfield a backside edge chases (yd). */
 const END_CHASE = process.env.END_CHASE !== '0', END_CHASE_DEPTH = 1.0;
 
@@ -570,7 +615,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // player chasing from the back, rather than at his side of the line.
     // NFL unblocked backside ends on zone runs are 0.6-0.7 yd in the
     // backfield by 1.5 s (68-80% cross the line); ours sat at +0.2.
-    if (END_CHASE && job.kind === 'edge' && !kick && replace === undefined && lineRead(sim, a) === -job.side) {
+    const squeezeAway = END_CHASE && job.kind === 'edge' && !kick && replace === undefined && lineRead(sim, a) === -job.side;
+    if (squeezeAway) {
       x = Math.min(x, sim.los - END_CHASE_DEPTH);
       a.tags.add('end-chase');
     }
@@ -603,12 +649,30 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       // Trailing, the point moves with the ball he sees: carry its lateral motion.
       if (trail) motion = { x: 0, y: seen.vel.y };
     }
-    const fit = track(a,aim,motion,{speed:.9,gain:3,facing:Math.PI});
+    const chase = BACKSIDE_DUTY && (trail || squeezeAway) && backsideChase(sim, a, seen, surface, job.side);
+    const fit = track(a,aim,motion,{speed:chase ? 1 : .9,gain:3,facing:Math.PI});
     // Open the hips for an acquired outward lateral run; a square shuffle
     // cannot execute this request. Near-contact gathering below still owns
     // the final approach, and stationary/inside fits keep their technique.
     if (motion.y*job.side > 0 && Math.abs(fit.vel.y)>Math.abs(fit.vel.x))
       fit.facing = Math.atan2(fit.vel.y,fit.vel.x);
+    // BACKSIDE_DUTY: chasing flow away he turns and runs, not shuffles.
+    // BACKSIDE_DUTY (attempt 2): on his own flow read he asks for his chase
+    // pace along the flow now, keeping his depth request; he no longer keeps
+    // station on the mesh point he sees. The ball he sees coming back toward
+    // his side ends it (exit margin), and it resumes only once it is clearly
+    // going away again.
+    if (chase && chasePace(a, job.side * seen.vel.y)) {
+      const pace = CHASE_PACE * a.profile.vmax, along = -job.side * fit.vel.y;
+      if (along < pace) {
+        const vy = -job.side * pace, sp = Math.hypot(fit.vel.x, vy), cap = a.profile.vmax;
+        fit.vel = sp > cap ? { x: fit.vel.x * cap / sp, y: vy * cap / sp } : { x: fit.vel.x, y: vy };
+        a.tags.add('backside-pace');
+      }
+    }
+    if (chase && openToChase(a, -job.side * fit.vel.y) && Math.abs(fit.vel.y) > Math.abs(fit.vel.x)) {
+      fit.facing = Math.atan2(fit.vel.y, fit.vel.x); a.tags.add('backside-chase');
+    }
     // A fit landmark is not permission to run through an approaching back.
     // Gather for a personally identified runner threatening this surface,
     // even before he crosses the old LOS pursuit gate. Keep the installed
