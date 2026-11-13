@@ -6,7 +6,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 type Script = 'curl' | 'vertical';
-async function play(flag: string, two: Script, back: boolean, until = 2.6, look?: 'curl' | 'flat') {
+type Back = boolean | 'settled';
+async function play(flag: string, two: Script, back: Back, until = 2.6, look?: 'curl' | 'flat') {
   vi.resetModules();
   vi.stubEnv('CURL_FLAT_BACK', flag);
   vi.stubEnv('SEEN_EYES', '1'); // the QB's look as the defender sees it (promoted; the suite runs pre-promotion)
@@ -28,7 +29,10 @@ async function play(flag: string, two: Script, back: boolean, until = 2.6, look?
   for (const o of sim.offense) if (!['LT', 'LG', 'C', 'RG', 'RT', 'QB'].includes(o.slot) && o !== n2 && o !== rb) o.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) } as never;
   // No. 2: a curl (up to 9 yd, then settles) or a vertical; the back: out to the flat on the curl-flat side, or he stays in.
   n2.behavior = { kind: 'route', update: (o: { pos: { x: number } }) => (two === 'vertical' || o.pos.x - sim.los < 9 ? { vel: { x: 7, y: 0 } } : { vel: { x: -0.5, y: 0 } }) } as never;
-  rb.behavior = { kind: 'route', update: () => (back ? { vel: { x: 0.8, y: sign * 7.5 } } : { vel: { x: 0, y: 0 } }) } as never;
+  // The back: out to the flat (still running), or already settled there from the start (7 yd outside the ball, a yard
+  // behind the line, standing: never "showing", only there).
+  if (back === 'settled') rb.body.pos = { x: sim.los - sim.attackDir(sim.offense[0].team), y: sim.ballY + sign * 7 };
+  rb.behavior = { kind: 'route', update: () => (back === true ? { vel: { x: 0.8, y: sign * 7.5 } } : { vel: { x: 0, y: 0 } }) } as never;
   if (look) {
     // What the defender sees of the QB: facing No. 2's curl or the back in the flat.
     const see = sim.see.bind(sim), aim = look === 'curl' ? n2 : rb;
@@ -60,5 +64,11 @@ describe('CURL_FLAT_BACK: the curl-flat defender breaks on a back to his flat', 
     const curl = await play('1', 'curl', true, 3.2, 'curl'), flat = await play('1', 'curl', true, 3.2, 'flat');
     expect(flat.out).toBeGreaterThan(curl.out + 1);
     expect(flat.toRb).toBeLessThan(curl.toRb);
+  });
+  it('a back already settled in the flat is still his to widen to', async () => {
+    const off = await play('0', 'curl', 'settled', 3.4), on = await play('1', 'curl', 'settled', 3.4);
+    expect(on.rbOut).toBeGreaterThan(5);
+    expect(on.tags.has('curl-flat-back')).toBe(true);
+    expect(on.toRb).toBeLessThan(off.toRb - 1);
   });
 });

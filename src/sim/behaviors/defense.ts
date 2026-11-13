@@ -1166,7 +1166,8 @@ export class ManCoverage implements Behavior {
 /** CURL_FLAT_BACK (experimental, off; CURL_FLAT_BACK=1 turns it on): the
  * curl-flat rule's second half. With No. 2 not (or no longer) carried
  * vertically, the curl-flat defender who sees the back or No. 3 showing to the
- * flat on his side (shallow, running outside, 2 yd outside the ball) sinks to
+ * flat on his side (shallow, running outside 2 yd outside the ball, or already
+ * settled in the flat 4 yd outside it) sinks to
  * his curl window and widens under it toward the flat with his eyes on the QB,
  * by his read and range, and breaks on the throw (the existing sawThrow /
  * playBall), so a flat-curl high-low still works on him. Without it the curl-flat
@@ -1592,7 +1593,9 @@ export class ZoneCoverage implements Behavior {
       const sign = side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
       const three = sim.offAlign.numbering[`${side}3` as 'S3' | 'W3'];
       const showing = threats.filter(th => (sim.offAlign.spots[th.r.slot]?.backfield || th.r.slot === three)
-        && th.pos.x - sim.los < 5 && th.pos.x - sim.los > -8 && sign * th.vel.y > 1.5 && sign * (th.pos.y - sim.ballY) > 2);
+        && th.pos.x - sim.los < 5 && th.pos.x - sim.los > -8
+        // showing to the flat (running outside), or already settled in it on his side
+        && ((sign * th.vel.y > 1.5 && sign * (th.pos.y - sim.ballY) > 2) || sign * (th.pos.y - sim.ballY) > 4));
       if (showing.length) {
         showing.sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y));
         const flat = showing[0];
