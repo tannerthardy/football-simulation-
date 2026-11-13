@@ -82,7 +82,7 @@ the technique.
   bags never taught. **Feet before hands.** **Keep a center of balance between the
   feet**; tilt the shoulders opposite the set direction. Kick set aims at the inside
   shoulder point and reads three things: chest ("if he gives you chest, take chest":
-  two-hand lifting punch and grab), shoulder (speed: two-hand punch the shoulder and
+  two-hand lifting punch and grab; if driven backwards, **hop back with both feet and lower the hips**), shoulder (speed: two-hand punch the shoulder and
   retract; do not duck for the chest) or across the face (turn it into a post). Centers
   and guards own the depth of the pocket and **give ground grudgingly**; tackles own the
   width. Vary sets.
@@ -169,12 +169,14 @@ eyes open; the rusher's body gives the read; vary the set; give ground in a cont
 way.
 
 Coaching disagreements the engine should leave as the player's choice, with the cost
-coming from physics:
+coming from physics. (Correction 2026-11-13: an earlier version of this table set Iske
+against the hop. He teaches it, as the answer to being driven back; the real disagreement
+is how freely to use it.)
 
 | Question | One side | Other side |
 | --- | --- | --- |
 | Lock out the arms? | Bentley: no, it moves the center of mass away and cuts stability | Iske: after stopping the charge, lock out the elbows for separation. SWBU: lock out after the punch |
-| Hop? | WFCA, Thomas: hop back, plant, re-sink | Iske, Newsome: keep both feet down, feet low; air time invites the bull rush |
+| Hop? | WFCA, Thomas, **and Iske (Ch. 13: "if you are being driven backwards, hop back with both feet and lower hips to stop his momentum"; push-pull also hops back)** | Newsome: feet low, excess air time invites the bull rush; Iske's general rule is both feet down as much as possible, so the hop is the exception he teaches when carried back |
 | High or low hands | Iske: low, strike on the rise; high hands give a target | Iske also teaches **high hands and the fake punch as a change-up** to bait a hand slapper |
 | Punch and grab vs punch and off | Against a bull rusher grab within his frame | Against a hand slapper, punch and off to keep weight back |
 | Chop | WFCA: less effective than the hop | Iske: legitimate escape if beaten inside; swipe turns the shoulders |
