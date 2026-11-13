@@ -2049,3 +2049,31 @@ Stopped after two attempts. Re-diagnose before anything else: in the sim's ridde
 in (riding, still engaged in front, released, or a different blocker's man), and what his request and achieved
 velocity are. HAND_SITE stays in the tree, off. It is correct about where a hand can be, but it is not the binding
 constraint. RIDE_CONTACT_DIAG (spot at 0.8 of the width, the run above) was removed after the read; it was a one-line scale on `w` in rideIntent.
+
+## Re-diagnosis: what ride-pair's "ridden" frames are in the sim (`ridden-branch.mts`, RUSH_HANDS, engine-56, seed 11 x 2)
+
+The same geometry as `ride-pair.py`: the rusher within 1.2 yd of the nearest OL and level with or past him toward the QB.
+Here each such tick is classed by the branch the lineman is in.
+
+| class | interior share | blocker request / achieved | rusher | centre distance (< 0.65) | tackles share |
+|---|---|---|---|---|---|
+| in his rep, riding (PASS_RIDE) | 6% | 6.30 / 3.15 | 4.65 | 1.11 (0%) | 5% |
+| in his rep, not riding | 19% | 3.90 / 2.32 | 3.89 | 0.93 (8%) | 28% |
+| a helper on him | 14% | 3.12 / 1.79 | 2.21 | 0.66 (35%) | 2% |
+| the lineman engaged with another man | 33% | 2.28 / 2.26 | 2.85 | 0.71 (31%) | 30% |
+| the lineman in no rep | 28% | 3.57 / 1.46 | 2.35 | 0.80 (19%) | 36% |
+
+**Reading.** The operator's "ridden" population is mostly not a ride:
+- a rusher going past a lineman who is blocking someone else, or no one;
+- a helper;
+- his own blocker before the ride.
+
+The ridden-distance gap to the NFL (0.81 against 0.73) is a mixed number, and HAND_SITE and the ride-spot cut were
+built on it. That was the mistake: an inferred category not checked on the plays (CLAUDE.md). Within the true ride
+(about 6% of these frames), the blocker asks for 6.3 yd/s and gets 3.15, against a rusher at 4.65, at 1.1 yd: the body
+cannot follow a man who leaves at that speed. The outcome-level gap still stands, because it does not depend on the
+class: 53% of our rushers coming off a lineman reach the QB, against 26% in the NFL.
+
+**Next question.** For the rushers who come free and reach the QB, which branch did they come off: the ride, their
+rep before the ride, a passing lineman, a helper? At what speed and how far from the QB? That decides whether the gap
+is the ride (body), the rep (hands / moves), or the line's spacing (who is blocking whom).
