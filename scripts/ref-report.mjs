@@ -5,6 +5,8 @@
  *   npm run ref:report -- --flag REACH_CLOSE=0 --flag GAP_CLIMB=0   # adds a "candidate" arm: the stack with these changes
  *   npm run ref:report -- --skip-operators   # yards and tackles only (about 4 minutes)
  *   npm run ref:report -- --reuse            # rebuild the tables from the arms already in out/ref (same commit and flags only)
+ *   npm run ref:report -- --set fresh        # replay runSetFresh (captured on engine-55 with new seeds; no flag was
+ *                                            # promoted on it) instead of runSet; operators are skipped (they read runSet)
  *   npm run ref:report -- --placebo 4        # adds N placebo arms: the reference stack with one body nudged
  *                                            # (--placebo-size yd, default 0.05) after the first tick, no mechanism
  *                                            # changed; their paired deltas against `ref` are the floor (bias and
@@ -27,9 +29,12 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const stack = JSON.parse(readFileSync(join(root, 'config/reference-stack.json'), 'utf8'));
-const { commit: setCommit, seeds, digest: setSha } = stack.runSet;
+const setArg = process.argv.indexOf('--set'), setName = setArg > 0 ? process.argv[setArg + 1] : 'main';
+if (!['main', 'fresh'].includes(setName)) throw new Error(`Unknown run set: ${setName} (main or fresh)`);
+const { commit: setCommit, seeds, digest: setSha } = setName === 'fresh' ? stack.runSetFresh : stack.runSet;
 const args = process.argv.slice(2), flags = []; let operators = true, reuse = false, placebos = 0, placeboSize = '0.05';
 while (args.length) { const a = args.shift(); if (a === '--flag' && args.length) flags.push(args.shift()); else if (a === '--skip-operators') operators = false; else if (a === '--reuse') reuse = true;
+  else if (a === '--set' && args.length) args.shift();
   else if (a === '--placebo' && args.length) placebos = Number(args.shift()); else if (a === '--placebo-size' && args.length) placeboSize = args.shift();
   else throw new Error(`Unknown argument: ${a}`); }
 /** Placebo nudges, in order: offensive line first steps, then a linebacker, each sign. */
@@ -76,6 +81,7 @@ async function arm(name, refArgs, env = {}, ops = operators) {
 
 async function main() {
   mkdirSync(join(root, 'out/ref'), { recursive: true });
+  if (setName === 'fresh' && operators) { console.error('[ref:report] --set fresh: operators skipped (they replay runSet)'); operators = false; }
   await ensureSet();
   const arms = [['off', ['--off']], ['ref', []]];
   if (flags.length) arms.push(['candidate', flags.flatMap(f => ['--flag', f])]);
@@ -84,7 +90,7 @@ async function main() {
   if (!reuse) for (const [name, p] of placeboArms) { console.error(`[ref:report] arm ${name} (${p})`); await arm(name, [], { REF_PLACEBO: p, REF_PLACEBO_SIZE: placeboSize }, false); }
   const py = (script, ...a) => run('python3', ['-I', script, ...a]);
   const md = [`# Run-game report: ${stack.id} @ ${git(['rev-parse', '--short', 'HEAD'])}${git(['status', '--porcelain', '--', 'src']) ? ' (src modified)' : ''}`, '',
-    `Run set ${setSha.slice(0, 12)} (${seeds.length} run-only games captured at ${setCommit.slice(0, 8)}). Yards capped at 20 for means.`,
+    `Run set ${setName === 'fresh' ? 'runSetFresh ' : ''}${setSha.slice(0, 12)} (${seeds.length} run-only games captured at ${setCommit.slice(0, 8)}). Yards capped at 20 for means.`,
     ...(flags.length ? [`Candidate = ${stack.id} with ${flags.join(' ')}.`] : []), '', '## Yards and tackles', '', '```',
     (await py('scripts/diag/ref-compare.py', 'off', 'ref')).trimEnd(), ...(flags.length ? ['', (await py('scripts/diag/ref-compare.py', 'ref', 'candidate')).trimEnd()] : []), '```'];
   if (placeboArms.length) md.push('', '## Placebo floor', '',

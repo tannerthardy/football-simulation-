@@ -49,7 +49,7 @@ A paired run-set delta is only as good as its floor. Each placebo arm replays th
 first tick and nothing else changed (`REF_PLACEBO=<slot>:<sign>`,
 `REF_PLACEBO_SIZE=<yd>` in `scripts/diag/ref-replay.mts`); its paired delta
 against `ref` is what play divergence alone does.
-`npm run ref:report -- --skip-operators --placebo 4 [--placebo-size 0.05] [--flag X=1]`
+`npm run ref:report -- --skip-operators [--set fresh] --placebo 4 [--placebo-size 0.05] [--flag X=1]`
 (about 20 minutes) prints the arms, their mean (bias), RMS (spread) and mean
 paired SE per family, the candidate beside them, and each arm's share of plays
 whose yards change.
@@ -61,10 +61,17 @@ engine-55 (develop 2478e998, 2026-11-13), paired yards a run (capped at 20):
 | --- | --- | --- | --- |
 | 1e-3 yd, six arms (C+, LG+, LB+, C-, RT+, LT-) | 46-69% | -0.01 / 0.04 / 0.03 | -0.06 / 0.08 / 0.08 |
 | 0.05 yd, four arms (C+, LB+, LG-, RT+) | 77-95% | -0.10 / 0.11 / 0.08 | -0.14 / 0.15 / 0.19 |
+| 0.05 yd, same four arms, **fresh set** (`--set fresh`) | 78-94% | -0.00 / 0.03 / 0.09 | +0.20 / 0.23 / 0.19 |
 
-- Every 0.05 yd arm loses yards overall (-0.05 to -0.17) and on IZ (-0.08 to
-  -0.20): perturbing this set hard lowers its yards whatever the mechanism. A
-  candidate that diverges most plays starts from that bias, not from zero.
+- On `runSet` every 0.05 yd arm loses yards overall (-0.05 to -0.17) and on IZ
+  (-0.08 to -0.20): perturbing that set hard lowers its yards whatever the
+  mechanism. On `runSetFresh` (captured on engine-55 with new seeds, which no
+  flag was promoted on) the overall bias is gone (-0.00) and the family biases
+  change sign. So the bias is selection: the default engine is the survivor of
+  many promotions judged on `runSet`'s exact plays (a winner's curse on the
+  benchmark). Read run-set deltas on `--set fresh`; keep `runSet` for continuity
+  and for the operators, and there read a candidate that diverges most plays
+  against the placebo mean, not zero.
 - Match the placebo to the candidate: compare its share of changed plays with
   the arms' and pick the size that matches (a mechanism change usually diverges
   90%+ of plays, like the 0.05 yd arms). Read the candidate's delta against the
