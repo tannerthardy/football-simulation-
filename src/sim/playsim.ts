@@ -277,6 +277,12 @@ export class PlaySim {
   windupAt = -1;
   /** When his last throwing motion was pulled down without a throw (a pump, or the arm pinned); −1 if none. */
   windupEndAt = -1;
+  /** THROW_HOLD: the largest load on the passer since his delivery started, as a share of his arm force (0..1), and
+   * its direction (field frame, magnitude = throwDisturb); reset at the release. qbHold: the grasp's upper-body hold as a
+   * share of his arm force whenever a grasp is on him (qb.ts throwLoad). */
+  throwDisturb = 0;
+  throwPull = { x: 0, y: 0 };
+  qbHold = 0;
   /** When the passer's arm starts forward (front foot planted); the in-grasp
    * ruling does not cut off a pass already in its delivery. */
   deliveryAt = -1;

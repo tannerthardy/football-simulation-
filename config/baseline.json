@@ -242,6 +242,8 @@
     "ANCHOR_BASE": "0",
     "RUSH_ARM_BALANCE": "0",
     "PASS_SET_SEEN": "0",
+    "THROW_HOLD": "0",
+    "POCKET_REACH": "0",
     "TACKLE_ANCHOR": "0",
     "RUSH_INTENT": "0",
     "PASS_ANCHOR": "0",

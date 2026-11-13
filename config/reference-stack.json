@@ -179,6 +179,8 @@
     "ANCHOR_BASE": "off",
     "RUSH_ARM_BALANCE": "off",
     "PASS_SET_SEEN": "off",
+    "THROW_HOLD": "off",
+    "POCKET_REACH": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
