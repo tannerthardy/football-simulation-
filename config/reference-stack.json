@@ -182,6 +182,7 @@
     "QB_PEEK": "off",
     "QB_COMMIT": "off",
     "QB_EYES": "off",
+    "BLITZ_READ": "off",
     "QB_RHYTHM": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",

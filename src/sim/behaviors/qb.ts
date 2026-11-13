@@ -174,6 +174,12 @@ const QB_COMMIT = process.env.QB_COMMIT === '1';
  * before the release (+1.5/+2.5 yd/s zone/man) where ours did not (+0.3/+0.6): his eyes were on the eventual target
  * 21% of the time at -0.5 s, 85% at -0.3 s (the windup). docs/reviews/2026-11-13-qb-gather.md. */
 const QB_EYES = process.env.QB_EYES === '1';
+/** BLITZ_READ (experimental, off; BLITZ_READ=1): the post-snap blitz read. A free rusher by his protection (one no
+ * protector is assigned to), coming at him unblocked in his picture in the first second and held for his processing
+ * time, sends his eyes and the ball to the hot (the quickest-breaking route on that side, else the back). NFL QBs throw
+ * quick on 18% of blitzes (9% otherwise), 69% to wideouts; ours 7% (6%); on our blitzes with a free rusher (34%) he
+ * threw quick on 5% and was sacked on 13%. docs/reviews/2026-11-13-qb-gather.md. */
+const BLITZ_READ = process.env.BLITZ_READ === '1';
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -396,6 +402,26 @@ export class QBPass implements Behavior {
   private triDone = false;
   /** READ_PLAN vertical peek: when every vertical was 12 yd deep (the squeeze can show), -1 before. */
   private peekDeclared = -1;
+  /** BLITZ_READ: his hot call (the man his eyes went to, when), and since when he has seen a free rusher. */
+  private hot: { target: Agent | null; at: number } | null = null;
+  private hotSeenAt: number | null = null;
+  /** BLITZ_READ: a rusher in his picture coming across the line at him, unblocked, whom his protection does not
+   * account for (no protector is assigned to him: the call he knows); his position, or null. */
+  private freeRusherSeen(a: Agent, sim: PlaySim): Vec2 | null {
+    const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { assigned: Map<Agent, Agent | null> } }).coord).find((c) => c?.assigned);
+    const taken = new Set<Agent>(coord ? [...coord.assigned.values()].filter((d): d is Agent => !!d) : []);
+    const dir = sim.attackDir(a.team);
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t) || d.engagement || taken.has(d)) continue;
+      const e = this.mind.estimate(d);
+      // A blitzer is read as he comes, from his alignment off the ball: up to 3 yd beyond the line and 12 yd from him.
+      if ((e.pos.x - sim.los) * dir > 3) continue;
+      const dx = a.pos.x - e.pos.x, dy = a.pos.y - e.pos.y, L = Math.hypot(dx, dy) || 1;
+      if (L > 12 || (e.vel.x * dx + e.vel.y * dy) / L < 2) continue;
+      return e.pos;
+    }
+    return null;
+  }
   /** QB_EYES: the man his eyes are on, and since when. */
   private eyesOn: Agent | null = null;
   private eyesOnAt = 0;
@@ -756,6 +782,31 @@ export class QBPass implements Behavior {
         // HOT_LOOK: his eyes leave the plan's picture for the back (off, the peek or triangle kept his gaze).
         if (HOT_LOOK) this.triDone = true;
       }
+    }
+    // BLITZ_READ: in the first second, a rusher his protection does not account for (the call's free man), coming
+    // across the line at him unblocked in his picture and held there for his processing time, sends his eyes to the
+    // hot: the quickest-breaking route on that side, else the back. The ball goes there at the hot bar, through
+    // HOT_LOOK's look and QB_EYES' gate when they are on. A poor reader is later; a receiver with no quick route on
+    // that side leaves him the back or nothing.
+    if (BLITZ_READ && !this.hot && t <= this.snapAt + 1.2) {
+      const free = this.freeRusherSeen(a, sim);
+      if (!free) this.hotSeenAt = null;
+      else {
+        this.hotSeenAt ??= t;
+        if (t - this.hotSeenAt >= this.processing(a)) {
+          const side = Math.sign(free.y - sim.ballY) || 1;
+          const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
+          const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(r.pos.y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
+          const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && r.behavior instanceof RouteRunner) ?? null;
+          this.hot = { target, at: t };
+          const k = target ? this.reads.indexOf(target) : -1;
+          if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
+        }
+      }
+    }
+    if (BLITZ_READ && this.hot?.target) {
+      const ev = this.evaluate(a, sim, this.hot.target, u);
+      if (ev && ev.P > 0.3 && ev.intRisk < 0.18) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
     }
     const read = this.reads[this.readIdx];
     // QB_EYES: his eyes are on the man he is gating a throw to; otherwise on his read (from when they got there).

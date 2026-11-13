@@ -250,6 +250,7 @@
     "QB_PEEK": "0",
     "QB_COMMIT": "0",
     "QB_EYES": "0",
+    "BLITZ_READ": "0",
     "HOT_LOOK": "0",
     "DEF_BELIEF": "0",
     "ACC_BELIEF": "0",
