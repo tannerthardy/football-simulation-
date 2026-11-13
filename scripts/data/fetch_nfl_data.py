@@ -33,7 +33,8 @@ def sha256(path):
 def archives():
     catalog = json.loads((ROOT / "data/sources.json").read_text())
     for source in catalog["sources"]:
-        match = re.search(r"drive\.google\.com/file/d/([\w-]+)", source.get("sourceUrl", ""))
+        # archiveUrl (a Drive copy of a Kaggle dataset) wins over sourceUrl, which keeps the original provenance.
+        match = re.search(r"drive\.google\.com/file/d/([\w-]+)", source.get("archiveUrl") or source.get("sourceUrl", ""))
         if match and source.get("archiveSha256") and source.get("inputDirectory"):
             yield source, match.group(1)
 
@@ -42,7 +43,8 @@ def fetch(source, drive_id, keep_zip):
     name = source["archiveName"]
     zip_path = ZIPS / name
     # The archive's own folder layout is preserved under data/raw/<dataset>/.
-    target = ROOT / Path(*Path(source["inputDirectory"]).parts[:3])
+    # archiveExtractTo: where the archive's own top folder lands, when it is not the first three parts of inputDirectory.
+    target = ROOT / (Path(source["archiveExtractTo"]) if source.get("archiveExtractTo") else Path(*Path(source["inputDirectory"]).parts[:3]))
     if (ROOT / source["inputDirectory"]).is_dir() and any((ROOT / source["inputDirectory"]).iterdir()):
         print(f"{source['id']}: already extracted at {source['inputDirectory']}")
         return True
