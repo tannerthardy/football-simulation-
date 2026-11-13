@@ -118,6 +118,7 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "PERCEIVE_TRACK": "off",
+    "TRACK_PURSUIT": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
