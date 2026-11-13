@@ -1163,6 +1163,17 @@ export class ManCoverage implements Behavior {
  * Overloaded match defenders can hesitate at an exchange, then recover on a
  * subsequent read. Their called technique stays intact.
  */
+/** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
+ * quarter-field zone defender's landmark is never shallower than his
+ * alignment. Without it a quarter of our safeties (quarters inside safeties at
+ * 12 yd aligned about 12; deep middles compressed near the goal line) were
+ * installed with a landmark 1.3-1.5 yd shallower than where they lined up and
+ * walked down to it in the first second: 91-95% of the safeties who came
+ * downhill on non-PA drop-backs (21% of safeties vs the NFL's 12%; Cover 4
+ * 38% vs 6%), none of them reading run (safety-downhill.ts, safety_deep.py).
+ * A call that sends a safety down gives him an underneath zone and is
+ * unchanged. */
+const SAFETY_DEPTH = process.env.SAFETY_DEPTH === '1';
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1209,6 +1220,15 @@ export class ZoneCoverage implements Behavior {
       // Spot drops are deeper: curl and hook defenders sink to 11-12 yards.
       const sink = zone.startsWith('curl_flat') ? 2.5 : zone.startsWith('hook') ? 1.5 : zone.startsWith('flat') ? 1.5 : 0;
       this.landmark = { x: sim.los + coverageDepth(sim.los, this.landmark.x - sim.los + sink), y: this.landmark.y };
+    }
+    // SAFETY_DEPTH: a deep or quarter-field zone defender does not walk down to
+    // a landmark shallower than where he lined up: his landmark is never
+    // shallower than his alignment (to the end line). Calls that send a
+    // safety down give him an underneath zone (robber, hook, curl-flat), and
+    // those landmarks are unchanged.
+    if (SAFETY_DEPTH && this.deep && this.landmark.x - sim.los < this.initialDepth) {
+      this.landmark = { x: Math.min(END_LINE_X - 1.2, sim.los + this.initialDepth), y: this.landmark.y };
+      a.tags.add('safety-depth');
     }
     this.style = style;
   }
