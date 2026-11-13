@@ -762,12 +762,70 @@ function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: bool
  * cushion breaks and he turns. a is his own: the propulsion his legs give
  * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
  * tau, so a slow-footed defender has to start earlier. */
-function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): number {
+function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number,
+  seenAccel?: number): number {
   const vx = Math.max(0, receiverVx), p = a.profile;
+  if (CARRY_READ && seenAccel !== undefined) {
+    const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+    return spare <= 0 ? vx : burstNeed(a, spare, vx, seenAccel);
+  }
   const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
   const accel = Math.max(0.1, (1 - Math.max(0, a.vel.x) / cap) * p.vmax / p.tau);
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
+}
+/** CARRY_READ (experimental, off; CARRY_READ=1 turns it on): a deep carry
+ * plays off what the receiver can still become, read from what he shows: his
+ * seen upfield speed vx and the acceleration in the defender's picture
+ * (DeepCoverage's seen-velocity change), continued as a burst that fades over
+ * BURST_TAU: v(t) = vx + a tau (1 - e^(-t / tau)). Three parts:
+ * 1. A man carry with installed deep responsibility does not come downhill at
+ *    a receiver who will still be climbing (`holdWeight`, continuous in that
+ *    projection); he gives the cushion back only as the receiver throttles.
+ * 2. The carry need (`carrySpeedNeed`, both call sites) is the slowest speed
+ *    now that keeps the gap he gives up within his spare cushion while the
+ *    receiver bursts and he accelerates at his own top speed and tau: a
+ *    slower defender needs more, so he opens sooner and keeps more cushion.
+ * 3. The open-carry request asks for the speed his chosen facing allows, not
+ *    a sprint a square body cannot run.
+ * Off: on No. 1's go vs a Cover 3 match corner, as No. 1 passed 3 yd/s at
+ * about 0.8 s the over-the-top roof asked a corner 6-9 yd over him to come
+ * downhill at 4-6 yd/s; then the need (from vx alone) kept him square at a
+ * pedal while No. 1 burst 6.1 -> 8.3 yd/s. Over him at 1.5 / 2.0 / 2.85 s NFL
+ * 4.9 / 3.3 / +1.2 yd, sim 3.9 / 2.1 / -0.8; his speed at 1.5 s 3.1 vs about 2
+ * yd/s; on top at 2.85 s 54% vs 0% (BDB 2025 weeks 1-3 n 37 vs seeds 11/23;
+ * scripts/diag/risk/vert-pos.ts, vert_sep_nfl.py --pos). */
+const CARRY_READ = process.env.CARRY_READ === '1';
+/** CARRY_READ: how fast a seen burst fades (s), and how far ahead his cushion must last (s). Estimated, stand-in debt. */
+const BURST_TAU = 1.0, BURST_HORIZON = 2.0;
+/** CARRY_READ: receiver speed t s ahead, from what the defender sees. */
+const projected = (vx: number, accel: number, t: number) => Math.max(0, vx + accel * BURST_TAU * (1 - Math.exp(-t / BURST_TAU)));
+/** CARRY_READ: how fully he holds his depth: 1 while the receiver will be climbing 0.5 s on (3+ yd/s), easing to 0 as
+ * that projection falls to 1 yd/s (a throttle, a plant). */
+const holdWeight = (vx: number, accel: number) => clamp((projected(vx, accel, 0.5) - 1) / 2, 0, 1);
+function burstNeed(a: Agent, spare: number, vx: number, accel: number): number {
+  const p = a.profile, dt = 0.05;
+  const keeps = (v0: number) => {
+    let gap = 0, vd = v0;
+    for (let t = dt; t <= BURST_HORIZON + 1e-9; t += dt) {
+      vd += Math.max(0, p.vmax - vd) / p.tau * dt;
+      gap += (projected(vx, accel, t) - vd) * dt;
+      if (gap > spare) return false;
+    }
+    return true;
+  };
+  if (keeps(0)) return 0;
+  if (!keeps(p.vmax)) return p.vmax;
+  let lo = 0, hi = p.vmax;
+  for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (keeps(mid)) hi = mid; else lo = mid; }
+  return hi;
+}
+/** CARRY_READ: the speed the facing he chose lets him run along the request. */
+function honestCarry(a: Agent, req: MoveCommand, facing: number): MoveCommand {
+  if (!CARRY_READ) return req;
+  const sp = Math.hypot(req.vel.x, req.vel.y);
+  const cap = a.profile.vmax * directionalSpeedFactor(a.profile, angleDiff(facing, Math.atan2(req.vel.y, req.vel.x)));
+  return sp > cap ? { ...req, vel: { x: req.vel.x * cap / sp, y: req.vel.y * cap / sp } } : req;
 }
 /** OPEN_CARRY (experimental, off; OPEN_CARRY=1 turns it on): an underneath
  * zone or match defender carrying a route keeps his hips as square to the QB
@@ -1125,6 +1183,11 @@ export class ManCoverage implements Behavior {
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
     if (o.protectDepth) {
       if (!this.releaseObserved) tx = Math.max(tx, a.pos.x - .2);
+      // CARRY_READ: no ground back toward a receiver who will still be climbing.
+      if (CARRY_READ && tx < a.pos.x) {
+        const w = holdWeight(vx, this.depth.seenAcceleration);
+        if (w > 0) { tx += w * (a.pos.x - tx); a.tags.add('carry-hold'); }
+      }
       tx = Math.min(tx, END_LINE_X - a.profile.radius);
     }
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
@@ -1152,11 +1215,11 @@ export class ManCoverage implements Behavior {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
       const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
-        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius));
+        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration));
       const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
       if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
       a.tags.add('open-carry');
-      return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
+      return withFacingTechnique({ ...honestCarry(a, req, facing), facing }, { label: 'man-open-carry', key: seen.vel });
     }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
@@ -1524,11 +1587,11 @@ export class ZoneCoverage implements Behavior {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
         const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
-          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius));
+          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
         if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
         a.tags.add('open-carry');
-        return withFacingTechnique({ ...req, facing }, { label: 'deep-open-carry', key: deepest.vel });
+        return withFacingTechnique({ ...honestCarry(a, req, facing), facing }, { label: 'deep-open-carry', key: deepest.vel });
       }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined

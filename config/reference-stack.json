@@ -37,6 +37,7 @@
     "BRACE_EVIDENCE": "off",
     "CALL_MIX": "on",
     "CARRIER_BRACE": "off",
+    "CARRY_READ": "off",
     "CATCH_EYES": "on",
     "CLIMB_BASE": "on",
     "CLIMB_PATH": "on",
