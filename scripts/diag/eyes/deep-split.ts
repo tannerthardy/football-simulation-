@@ -10,7 +10,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
   let rec: any = null, last: any = null;
   const tb = sim.throwBall.bind(sim);
   sim.throwBall = (qb: any, target: any, v0: any, intended: any, arrivalT: number, throwaway = false) => {
-    if (target && !throwaway) rec = { t: sim.t, T: arrivalT - sim.t, qb: { x: qb.pos.x, y: qb.pos.y, sp: Math.hypot(qb.vel.x, qb.vel.y) }, aim: { x: intended.x, y: intended.y },
+    if (target && !throwaway) rec = { t: sim.t, T: arrivalT - sim.t, qb: { x: qb.pos.x, y: qb.pos.y, sp: Math.hypot(qb.vel.x, qb.vel.y), vx: qb.vel.x, vy: qb.vel.y }, aim: { x: intended.x, y: intended.y },
       r0: { x: target.pos.x, y: target.pos.y, vx: target.vel.x, vy: target.vel.y }, target, arrivalT, los: sim.los, acc: [qb.r('accShort'), qb.r('accMid'), qb.r('accDeep')], route: target.behavior?.route?.id ?? null };
     return tb(qb, target, v0, intended, arrivalT, throwaway);
   };

@@ -207,6 +207,7 @@
     "QB_GATHER": "off",
     "QB_POCKET": "off",
     "QB_HONEST_FEEL": "off",
+    "THROW_PLATFORM": "off",
     "ACC_RADIUS": "off",
     "QB_PEEK": "off",
     "QB_COMMIT": "off",

@@ -295,6 +295,29 @@ const QB_POCKET = process.env.QB_POCKET === '1';
  * distance is to the felt position, and he evades the felt position. Expect him to feel pressure a little later and
  * less exactly; a loss is repaired by better perception (PERCEIVE_TRACK step 1b), not by the leak. */
 const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
+/** THROW_PLATFORM (experimental, off; THROW_PLATFORM=1): what moving costs a throw, as one continuous mechanism. Off, a
+ * throw from a mover is 1.15-1.6x wider in every direction once his speed passes 2.2 yd/s and costs nothing below it: a
+ * step on his own speed, with no direction. On, the cost comes from the part of his velocity the throw cannot use:
+ * - Stepping toward the target is the throw itself, free up to PLATFORM_STRIDE (the weight going into the ball).
+ * - The rest of his velocity is carried by the ball. He corrects for it, imperfectly: the uncorrected share
+ *   (PLATFORM_RESID0 + PLATFORM_RESID_SKILL x (1 - throwOnRun)) of that velocity over the flight time is a miss along
+ *   his direction of motion, so a long ball thrown on the move misses by more than a short one.
+ * - Moving across the target line or away from it takes his base and trunk out of the throw: an arm throw (flick) to
+ *   the degree that component nears PLATFORM_BASE, less for a good thrower on the run.
+ * Below PLATFORM_QUIET of unusable velocity nothing is charged, so a set throw (his stride into it included) is
+ * unchanged. The shape is mechanics; the coefficients are chosen, to be checked for ORDER only (set < stepping in <
+ * drifting away < across the body) and against ball-vs-aim by platform (scripts/diag/eyes/deep-split.ts), never fitted
+ * to completions or to the NFL's ball-to-receiver distance (which contains the receiver's adjustment). */
+const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
+/** THROW_PLATFORM constants. PLATFORM_STRIDE, yd/s: NFL quarterbacks release moving at 0.7 / 1.1 / 1.9 yd/s (p25/50/75,
+ * BDB 2026); ours at 0.4 (STRIDE_SPEED). PLATFORM_QUIET, yd/s: chosen, above a planted body's sway. PLATFORM_RESID0 /
+ * PLATFORM_RESID_SKILL: chosen (the best mover leaves a twelfth of his motion in the ball, the worst a third).
+ * PLATFORM_BASE, yd/s: chosen (a run at about two thirds of a quarterback's top speed leaves no base at all). */
+const PLATFORM_STRIDE = 1.2;
+const PLATFORM_QUIET = 0.3;
+const PLATFORM_RESID0 = 0.08;
+const PLATFORM_RESID_SKILL = 0.25;
+const PLATFORM_BASE = 6;
 /** QB_POCKET, named so a reader can tell a measurement from a choice.
  * - POCKET_NEAR0 / POCKET_NEAR_PP, yd: the felt distance inside which the nearest body decides his feet,
  *   NEAR0 + NEAR_PP x pocketPresence. Chosen, bracketing the operator's 3 yd; the rating acts on how far out he
@@ -445,6 +468,8 @@ export class QBPass implements Behavior {
   private moveDir: Vec2 | null = null;
   /** QB_GATHER: the read his current hitch is to, and where it takes his feet. */
   private hitchFor: Agent | null = null;
+  /** THROW_PLATFORM diagnostics (no effect): what his motion added to the last release. */
+  platformRec: { sigma: number; flick: number; speed: number } | null = null;
   /** QB_POCKET: the slide under way, the felt distance of each body at his last slide off it, and diagnostics (no
    * effect): the first classification of the nearest body inside POCKET_NEAR on this dropback, and each slide. */
   private slide: { to: Vec2; until: number } | null = null;
@@ -1687,8 +1712,8 @@ export class QBPass implements Behavior {
       // The rush as it will be when the ball leaves his hand, and a flick if it is on him by then.
       const pr = this.pressure(a, sim), atRelease = pr.time - wind;
       const uRel = clamp(clamp((0.9 - atRelease) / 0.7, 0, 1) + (1 - know) * 0.25 * a.mind.judgment('acc-urgency'), 0, 1);
-      sigma = this.missSigma(a, sim, dist, uRel) * (1 + 0.8 * clamp((0.15 - atRelease) / 0.3, 0, 1));
-    } else sigma = this.missSigma(a, sim, dist, urgency);
+      sigma = this.missSigma(a, sim, dist, uRel, THROW_PLATFORM ? this.platform(a, point, T) : undefined) * (1 + 0.8 * clamp((0.15 - atRelease) / 0.3, 0, 1));
+    } else sigma = this.missSigma(a, sim, dist, urgency, THROW_PLATFORM ? this.platform(a, point, T) : undefined);
     // ACC_RADIUS: how far from his aim the ball can land and still be caught grows with the flight, as the receiver
     // sees it and runs under it, and with his ball skills (our own catches: about 1.9 yd on short balls, 3 on long
     // ones; scripts/diag/eyes/catch-radius.ts). Off: a fixed 1.35 yd whatever the flight.
@@ -1729,14 +1754,33 @@ export class QBPass implements Behavior {
     return best;
   }
 
-  private missSigma(a: Agent, sim: PlaySim, dist: number, urgency: number): number {
+  /** THROW_PLATFORM: what his motion does to a throw at `to` with flight time T: the miss it adds along his direction
+   * of motion (yd, one sigma), that direction, and the share of the throw that is arm only. Zero for a set throw. */
+  private platform(a: Agent, to: Vec2, T: number): { sigma: number; dir: Vec2; flick: number } {
+    const ux = to.x - a.pos.x, uy = to.y - a.pos.y, ul = Math.hypot(ux, uy) || 1;
+    const par = (a.vel.x * ux + a.vel.y * uy) / ul;
+    // His velocity less the stride into the throw.
+    const free = clamp(par, 0, PLATFORM_STRIDE);
+    const ex = a.vel.x - free * ux / ul, ey = a.vel.y - free * uy / ul, e = Math.hypot(ex, ey);
+    const lost = Math.max(0, e - PLATFORM_QUIET);
+    if (lost <= 0) return { sigma: 0, dir: { x: 0, y: 0 }, flick: 0 };
+    const skill = 1 - a.r('throwOnRun');
+    const perp = Math.abs(a.vel.x * uy - a.vel.y * ux) / ul, away = Math.max(0, -par);
+    return { sigma: (PLATFORM_RESID0 + PLATFORM_RESID_SKILL * skill) * lost * T, dir: { x: ex / e, y: ey / e },
+      flick: clamp((perp + away - PLATFORM_QUIET) / PLATFORM_BASE, 0, 1) * (0.4 + 0.6 * skill) };
+  }
+
+  private missSigma(a: Agent, sim: PlaySim, dist: number, urgency: number, plat?: { sigma: number }): number {
     const acc = dist < 10 ? a.r('accShort') : dist < 20 ? lerp(a.r('accShort'), a.r('accMid'), (dist - 10) / 10) : lerp(a.r('accMid'), a.r('accDeep'), clamp((dist - 20) / 15, 0, 1));
     // Error grows with distance, and faster beyond ~15 yards (deep balls).
     let sigma = 0.25 + dist * (0.013 + 0.034 * (1 - acc)) + 0.0007 * Math.max(0, dist - 15) ** 2;
     sigma *= 1 + 0.7 * urgency * (1.1 - a.r('composure'));
-    if (a.speed > 2.2) sigma *= 1.15 + 0.45 * (1 - a.r('throwOnRun'));
+    if (!THROW_PLATFORM && a.speed > 2.2) sigma *= 1.15 + 0.45 * (1 - a.r('throwOnRun'));
     sigma *= 1 + 0.25 * (1 - a.body.energy);
     sigma *= 1 + 2.5 * heldBy(a, sim);
+    // THROW_PLATFORM: his belief of the miss includes what his motion adds (as one spread; the release applies it along
+    // his direction of motion).
+    if (THROW_PLATFORM && plat && plat.sigma > 0) sigma = Math.hypot(sigma, plat.sigma);
     return sigma;
   }
 
@@ -1839,6 +1883,9 @@ export class QBPass implements Behavior {
     let sigma = this.missSigma(a, sim, dist, urgency);
     // THROW_BODY: a hold takes the trunk and the step: an arm throw to that degree.
     if (THROW_BODY) this.flick = Math.max(this.flick, throwInterference(a, sim));
+    // THROW_PLATFORM: moving across or away from the target takes his base out of it.
+    const plat = THROW_PLATFORM ? this.platform(a, point, ev.T) : null;
+    if (plat) this.flick = Math.max(this.flick, plat.flick);
     // A flick: thrown with the arm alone, without the full coil and step [D].
     sigma *= 1 + 0.8 * this.flick;
     const dice = sim.dice('throw', a);
@@ -1848,6 +1895,13 @@ export class QBPass implements Behavior {
       y: point.y + dice.normal(0, sigma),
       z: Math.max(0.4, point.z + dice.normal(0, sigma * 0.45)),
     };
+    // THROW_PLATFORM: the share of his own motion he did not take out of the ball, along that motion. Drawn only for
+    // a mover, so a set throw's draws are unchanged.
+    if (plat && plat.sigma > 0) {
+      const k = dice.normal(0, plat.sigma);
+      miss.x += plat.dir.x * k; miss.y += plat.dir.y * k;
+      this.platformRec = { sigma: plat.sigma, flick: plat.flick, speed: a.speed };
+    }
     // Without the legs and trunk, less on the ball [D].
     const T = Math.max(ev.T * (1 + dice.normal(0, 0.03)), minFlightTime(from, miss, this.armSpeed * (1 - 0.2 * this.flick)));
     const v0 = solveLaunch(from, miss, T, DRAG_SPIRAL, sim.wind);
