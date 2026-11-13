@@ -1178,6 +1178,12 @@ const SAFETY_DEPTH = process.env.SAFETY_DEPTH === '1';
  * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
  * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
  * 9.6 / top speed, 0.85-1.25, x 1.1 - 0.2 play recognition: estimated, stand-in debt). Never under 2 yd. */
+/** SAFETY_DEPTH: a safety facing the QB requests the backward speed he means to run, his pedal (top speed x
+ * backpedal), not a speed the body would clip; to go faster he opens and runs (the turn-run / open-carry branches). */
+function pedalRequest(a: Agent, cmd: MoveCommand): MoveCommand {
+  const pedal = a.profile.vmax * a.profile.backpedal;
+  return cmd.vel.x > pedal ? { ...cmd, vel: { x: pedal, y: cmd.vel.y } } : cmd;
+}
 function safetyOver(a: Agent, r: number): number {
   const scale = clamp(9.6 / a.profile.vmax, 0.85, 1.25) * (1.1 - 0.2 * a.r('playRecognition'));
   return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
@@ -1418,7 +1424,7 @@ export class ZoneCoverage implements Behavior {
         if (SAFETY_DEPTH && this.initialDepth >= 9) {
           const r = Math.max(0, ...threats.map(th => th.pos.x - sim.los));
           const x = Math.min(END_LINE_X - 1.2, Math.max(lm.x, sim.los + r + safetyOver(a, r)));
-          return withFacingTechnique(goTo(a, { x, y: tgt.y }, { facing: facingQB, speed: zs }), { label: 'deep-read' });
+          return withFacingTechnique(pedalRequest(a, goTo(a, { x, y: tgt.y }, { facing: facingQB, speed: zs })), { label: 'deep-read' });
         }
         return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
           { label: 'deep-read' });
@@ -1477,11 +1483,13 @@ export class ZoneCoverage implements Behavior {
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
       this.selectTarget(a, deepest.r);
-      const command = withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+      const overReq = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
-      }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
+      });
+      const command = withFacingTechnique(SAFETY_DEPTH && this.initialDepth >= 9 && !turnRun ? pedalRequest(a, overReq) : overReq,
+        { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
