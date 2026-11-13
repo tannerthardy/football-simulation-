@@ -428,7 +428,7 @@ const punchState = new WeakMap<HandJoint, { ext: number; over: number; striking?
  * (sized by PASS_ANCHOR to the load he feels, his own drive's reaction included) grew to about a body weight, and when
  * a swim, club or pull took the load away he fell forward: OL falls before the throw on 24.6% of dropbacks against
  * 10.7% with PUNCH off (fall-rate.mts; NFL about 1-5 falls per 100 dropbacks, fall-proxy.py). */
-export const PUNCH_STRIKE = PUNCH && process.env.PUNCH_STRIKE === '1';
+export const PUNCH_STRIKE = PUNCH && process.env.PUNCH_STRIKE !== '0';
 
 /** PUNCH is pass-set technique, the blocker's choice from what his job is
  * showing: pressing a man at arm's length is how a pass blocker keeps him off
@@ -1128,7 +1128,7 @@ const SINK_POSTURE = 0.95;
  *    and strength.
  * PASS_SINK sank him under load and TACKLE_RESET re-set his feet, both acting on the retreat with the lean unbounded
  * (it grew to the press); this bounds the commitment itself. No capacity added. */
-export const ANCHOR_BASE = process.env.ANCHOR_BASE === '1';
+export const ANCHOR_BASE = process.env.ANCHOR_BASE !== '0';
 function anchorBase(b: Agent, tb: TrenchTraits, heavy: boolean, intent: Intent): void {
   const sup = b.body.support; if (!sup) return;
   const technique = clamp(0.5 * b.r('passBlock') + 0.5 * tb.balance, 0, 1);
