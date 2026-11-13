@@ -144,6 +144,9 @@ const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a
  * during the engagement update decides again in the same step (PlaySim.tick). */
 const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
 
+/** Outside the field's boundary planes (sidelines and end lines). */
+const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >= 120 || p.y <= 0 || p.y >= FIELD_WIDTH;
+
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
@@ -272,6 +275,8 @@ export class PlaySim {
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
   windupAt = -1;
+  /** When his last throwing motion was pulled down without a throw (a pump, or the arm pinned); −1 if none. */
+  windupEndAt = -1;
   /** When the passer's arm starts forward (front foot planted); the in-grasp
    * ruling does not cut off a pass already in its delivery. */
   deliveryAt = -1;
@@ -1149,7 +1154,12 @@ export class PlaySim {
       impetusTeam: this.acquisition?.team === carrier.team ? this.acquisition.impetusTeam : carrier.team,
       momentumExceptionExcluded: !this.acquisition?.momentumRetained,
       momentumSpotX: this.acquisition?.team === carrier.team && this.acquisition.momentumRetained
-        ? this.acquisition.spotX : undefined };
+        ? this.acquisition.spotX : undefined,
+      // A carrier still in bounds can hold the ball beyond the boundary's plane (his support is what puts him out).
+      // A fumble there is loose already beyond it: it crossed at the fumble's yard line, so that is where it is out
+      // if it then touches the ground or anything out of bounds. Without this the loose ball had no crossing and
+      // its out-of-bounds contact was an invariant failure (engine-50 cards, seed 23).
+      boundaryExit: outOfField(flight.pos) ? { x: clamp(flight.pos.x, 0, 120), y: clamp(flight.pos.y, 0, FIELD_WIDTH) } : undefined };
     // Statistical spot of the fumble: forward progress if he was wrapped up.
     this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
     // Offensive fumbles are the box-score stat; a returner's fumble is only an event.

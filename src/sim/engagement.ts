@@ -412,7 +412,7 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
  * reaction time, his push down to a third, while the man goes by. The arm's
  * force is the joint's (push from his press, the World's limits); only where
  * the hands work is his. The same joint serves run and pass blocks. */
-export const PUNCH = process.env.PUNCH === '1';
+export const PUNCH = process.env.PUNCH !== '0';
 /** Lockout: the share of his arm the hands reach with the elbows locked. */
 const LOCKOUT = 0.9;
 /** How far the punch drives the hands into the man (yd): a press, not a touch. */
@@ -985,7 +985,7 @@ export function pressOnBlocker(b: Agent, joint: HandJoint | undefined): number {
  * reach, the rep goes on as a ride: the blocker turns with him and pushes him
  * on past the QB; it ends when the man is out of reach. OPEN_HANDS's frame
  * uses the same test (`gripFor`): the grip lapses when the ride starts. */
-export const PAST_ALONG_PATH = process.env.PAST_ALONG_PATH === '1';
+export const PAST_ALONG_PATH = process.env.PAST_ALONG_PATH !== '0';
 /** TACKLE_ANCHOR (experimental, off; TACKLE_ANCHOR=1 with TACKLE_SET): once
  * engaged with an edge rusher the tackle gives no more ground -- he anchors
  * and plays him from inside half. Retried on top of PAST_ALONG_PATH's ride:

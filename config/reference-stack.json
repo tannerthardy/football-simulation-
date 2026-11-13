@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-47",
+  "id": "engine-54",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -77,6 +77,11 @@
     "HOT_LOOK": "on",
     "DEF_BELIEF": "on",
     "ACC_BELIEF": "on",
+    "INT_BELIEF": "on",
+    "DROP_BELIEF": "on",
+    "PA_DROP": "on",
+    "PA_CALL": "on",
+    "BACK_PATHS": "on",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
@@ -114,7 +119,6 @@
     "EXTEND": "off",
     "CATCH_CHOICE": "on",
     "CATCH_SPEED": "on",
-    "IN_STRIDE_CATCH": "off",
     "HANDS_CUE": "on",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
@@ -138,10 +142,10 @@
     "SHOULDERS_SET": "off",
     "TACKLE_SET": "off",
     "EDGE_ARC": "off",
-    "OPEN_HANDS": "off",
+    "OPEN_HANDS": "on",
     "OPEN_HANDS_BACK_ONLY": "off",
-    "PAST_ALONG_PATH": "off",
-    "PUNCH": "off",
+    "PAST_ALONG_PATH": "on",
+    "PUNCH": "on",
     "HOLD_CALL": "off",
     "TACKLE_BRAKE": "off",
     "TACKLE_RESET": "off",
@@ -210,7 +214,8 @@
     "SHED_PAST_GATE": "on",
     "SHED_ROUTE": "on",
     "SHORT_BASE": "on",
-    "SHOULDER_READ": "off",
+    "SHOULDER_READ": "on",
+    "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",
     "STANCE_TELL": "on",
@@ -237,6 +242,7 @@
     "ZONE_ONBALL": "on",
     "ZONE_RUN": "on",
     "ZONE_SCOOP": "on",
-    "ZONE_WINGS": "on"
+    "ZONE_WINGS": "on",
+    "PURSUIT_FIELD": "on"
   }
 }

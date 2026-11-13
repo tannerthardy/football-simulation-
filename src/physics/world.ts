@@ -349,7 +349,7 @@ const HAND_MOTOR = process.env.HAND_MOTOR === '1';
  * rusher's hip 250-600 N dragged along his path with no compression under it,
  * and about 40% of run-rep and 30% of pass-rep steering force exceeded mu*N
  * (open-hands-share.mts; docs/reviews/2026-11-12-tackle-set.md). */
-export const OPEN_HANDS = process.env.OPEN_HANDS === '1';
+export const OPEN_HANDS = process.env.OPEN_HANDS !== '0';
 /** Friction of an open hand on a jersey: 0.42, dynamic, natural dry skin on a
  * cotton-polyester fabric at about 15 N (Gerhardt et al. 2008, J R Soc
  * Interface 5:1317, PMC2607440; normally moist skin 0.53-0.61, wet fabric

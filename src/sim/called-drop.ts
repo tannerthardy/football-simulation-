@@ -1,6 +1,9 @@
 import type { DropType } from '../playbook/types.js';
 import type { PlaySim } from './playsim.js';
 
+/** PA_DROP (on; PA_DROP=0 restores one drop for both alignments). Also read in qb.ts and assign.ts. */
+const PA_DROP = process.env.PA_DROP !== '0';
+
 /** Where and when the called drop puts the QB (los-relative x, seconds). */
 export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
   switch (drop) {
@@ -17,6 +20,10 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
       return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
     case 'pa':
     case 'boot':
+      // PA_DROP: play action by alignment, from tracking (BDB 2025 traditional drop-backs with play action, weeks 1-3,
+      // nfl_pa_drop.py): from the gun a mesh and a shallow set (deepest 6.0 yd behind the snap at 2.1 s, the pass at
+      // 2.3 s); under center the fake and the full drop (8.1 yd at 2.6 s, the pass at 3.2 s). Off: one drop for both.
+      if (PA_DROP) return gun ? { x: los - 6.0, time: 1.8 } : { x: los - 8.1, time: 2.1 };
       return { x: los - 8.3, time: 1.95 };
   }
   void qbStartX;

@@ -52,6 +52,7 @@
     "SEEN_EYES": "0",
     "JUDGE_SEEN_BALL": "0",
     "SHOULDER_READ": "0",
+    "SAFETY_DEPTH": "0",
     "ARRIVE_LEAD": "0",
     "PEDAL_CAP": "0",
     "CUSHION_NEED": "0",
@@ -89,7 +90,6 @@
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
     "CATCH_SPEED": "0",
-    "IN_STRIDE_CATCH": "0",
     "HANDS_CUE": "0",
     "KEEPER_TORSO": "1",
     "LB_PLAN": "1",
@@ -248,6 +248,11 @@
     "HOT_LOOK": "0",
     "DEF_BELIEF": "0",
     "ACC_BELIEF": "0",
+    "INT_BELIEF": "0",
+    "DROP_BELIEF": "0",
+    "PA_DROP": "0",
+    "PA_CALL": "0",
+    "BACK_PATHS": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
     "FORECAST_BREAK": "0",
@@ -300,7 +305,8 @@
     "PRO_CALL": "0",
     "CONCEPT_MENU": "0",
     "OPEN_CARRY": "0",
-    "CATCH_CARRY": "0"
+    "CATCH_CARRY": "0",
+    "PURSUIT_FIELD": "0"
   },
   "worldDefaults": {
     "handContact": "center",

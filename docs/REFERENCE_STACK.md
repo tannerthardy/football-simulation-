@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-47`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-54`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,137 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-54: the blocker's hands (`PAST_ALONG_PATH`, `OPEN_HANDS`, `PUNCH`), landed with a stated cost (2026-11-13)
+
+**The set** (Flex #520 at `a1e611ce`). `PAST_ALONG_PATH`: a rusher has beaten his blocker when he is past him along his own path and the blocker is no longer between him and where he is going, in place of a fixed line. `OPEN_HANDS`: open hands, a legal inside grip and a hold are different contacts with different limits. `PUNCH`: a blocker's hands work to where he feels the man and extend to lockout; with it the quarterback's `BLOCK_SEEN` contact read measures the blocker's arm from the body surfaces, so a locked-out block no longer reads as a free rusher (`ba4b9866`). Everything else on that branch is in the tree off (`RUSH_INTENT`, `TACKLE_SET`, `TACKLE_BRAKE`, `TACKLE_RESET`, `TACKLE_ANCHOR`, `EDGE_ARC`, `EXTEND`, `HANG_GRIP`, `HOLD_CALL`). `dropSpec` moves to `src/sim/called-drop.ts`; `PA_DROP` is read there as well.
+
+**What it costs, and why it lands anyway.** Held at engine-52 because the sack rate fell on four of four seeds against the lane's first read, which had compared a different engine and seeds with the NFL and had no off arm. The lane's reconcile on the candidate agrees with the cards: pressure 36 → 31% of drop-backs (its operator) and later (by 2.5 s 16.4 → 13.1%), conversion per pressure unchanged at 12 to 13%. Leave-one-out: `PUNCH` takes about 4.5 points of pressure; in the rep the rusher makes the same moves at the same success (15% edge, 17% interior) and is held 0.2 to 0.4 yd farther off by an arm at lockout. `PAST_ALONG_PATH` takes about a point of sacks at about two standard errors, not localised to a class (rushers who reach the hip finish at 8.1 / 4.3% against the NFL's 9.0%); `OPEN_HANDS` adds about 0.6. The hands are inside physics. What is missing is the rusher's answer to an extended arm: move success is still a rating roll with no term for the blocker's extension (a recorded model-rule breach). The rule is to repair the missing mechanism, not to hold back the technique, so the set is on and the rush is the debt: `RUSH_HANDS` (Flex, building: moves as forces on a one-degree-of-freedom hand, fit continuous in extension, swipe/club and long-arm first), then the untouched tackle's stop and inside help.
+
+**Until `RUSH_HANDS` lands, every pass-game measurement is taken behind a pass rush at about half the NFL's sack rate.** Lanes should read time to throw, scrambles and completion with that in mind.
+
+Checks. On the first candidate (`7e207f9b`, develop engine-51): full suite clean but for `test/hot-look.test.ts`, whose engine-45 panel of alarmed rushes no longer alarmed (4 of 11); Rules + Coaching re-surveyed the panel on the set (#665, 9 of 96 plays) and verified the alarm itself is unchanged (it fires whenever his pressure read says so; rushers close without alarm 5 against 7). On the stacked candidate (`1855940c`, engine-53 tree + the set): full suite 4388 pass with the two known research failures and the `catch-choice` fixture restated in engine-53; fixed run set 3.86 → 3.59 a carry. On the final tree: typecheck, registry tests, `hot-look` and `catch-choice` pass. Set cards, 16 games a side, the three flags 0 → 1 together:
+
+| tree, seed | sack rate | completion | yards an attempt | rush yards a carry | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| engine-51, 11 | 4.9 → 3.8% | 65.1 → 67.3% | 8.76 → 9.10 | 4.47 → 4.17 | 7.32 → 7.13 | 30.1 → 34.0 |
+| engine-51, 23 | 4.5 → 3.8% | 62.5 → 66.2% (moved) | 8.38 → 8.20 | 4.05 → 3.98 | 6.67 → 6.36 | 30.6 → 29.7 |
+| engine-51, 31 | 4.0 → 3.0% (moved) | 63.3 → 63.0% | 8.15 → 8.66 | 4.38 → 3.74 (moved) | 6.69 → 7.31 | 27.4 → 28.4 |
+| engine-51, 47 | 3.4 → 2.5% | 65.0 → 67.3% | 8.87 → 8.73 | 4.42 → 4.29 | 7.04 → 6.59 | 30.5 → 31.8 |
+| engine-53, 11 | 3.4 → 2.5% | 63.9 → 67.1% (moved) | 7.81 → 8.06 | 4.41 → 3.81 (moved) | 7.17 → 6.40 | 26.6 → 29.4 |
+| engine-53, 23 | 4.6 → 2.4% (moved) | 66.0 → 66.9% | 7.85 → 7.78 | 4.04 → 3.77 | 6.86 → 6.32 | 26.2 → 28.0 |
+
+Per flag on engine-51 (others on, seeds 11 / 23): `PAST_ALONG_PATH` completion +4.8 / +3.2 (both moved), sacks −0.5 / +0.8; `OPEN_HANDS` completion +4.0 / +4.1 (both moved), scrambles 1.8 → 3.1% (moved, seed 11); `PUNCH` sacks −0.3 / −0.3. Where the engine stands: sacks about 2.5% (NFL 4.61 to 9.36), yards an attempt 7.8 to 8.1, completion 67%, fixed run set 3.59.
+
+## engine-53: `BACK_PATHS` on: the back's routes drawn and paced from tracking (2026-11-13)
+
+**`BACK_PATHS`** (Rules + Coaching #661). The back's release paths redrawn from route-labelled tracking, and a route can carry a pace (`RouteDef.pace`, a fraction of top speed between its points, still adjusted by his route running); only the back's flat uses it, at 0.55. The flat is coached as run under control and timed to the drop. Before, the back was at the right depth but widened at about 6 yd/s against the NFL back's steady 4.2. Checked at equal time after the snap against NFL `routeRan` FLAT (n 916): within 0.4 yd in depth and 1 yd in width through 3.0 s; the ball arrives 12.1 yd from the sideline (11.7). An earlier version of this claim used a proxy that selected on width and was withdrawn by the lane.
+
+Checks on the candidate (`5ea96305`): full suite 4364 pass apart from the two known research failures and `test/catch-choice.test.ts`, which Coverage restated: on 4 of its 8 forced go balls the quarterback now pulls the ball down and checks to the back, and the fixture counted the first thrown receiver. It is now a paired panel (four verticals against four shells, 16 seeds, only balls that go to the forced go, each play against itself across arms); the mechanism holds on both stacks (11 pairs, 7 choosing later, all 7 faster). Fixed run set 3.86 a carry. Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | aDOT | time to throw | completion | INT | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.74 → 7.81 (moved) | 6.53 → 5.65 (moved) | 2.76 → 2.71 (moved) | 63.2 → 63.9% | 1.8 → 1.8% | 30.4 → 26.6 (moved) |
+| 23 | 8.32 → 7.85 | 6.85 → 5.59 (moved) | 2.80 → 2.71 (moved) | 64.9 → 66.0% | 1.8 → 2.2% | 27.7 → 26.2 |
+| 31 | 8.13 → 7.90 | 6.66 → 5.49 (moved) | 2.79 → 2.73 (moved) | 64.0 → 66.3% | 0.8 → 2.6% (moved) | 28.6 → 30.0 |
+
+Yards an attempt fall on all three seeds to the top of the NFL's band. aDOT falls a yard, further under the NFL's: the back's flat is caught behind the line as the NFL's is, and it is 18% of our targets against the NFL's 7.9% (backs take 32% of targets against 20%). That share is the read compiler placing a check-release back third in the progression (#669, `BACK_CHECKDOWN`, drafted; it waits on the deep-window belief re-read because it turns check-downs into scrambles). The interception rise on seed 31 is from an off arm of 0.8%.
+
+## engine-52: `SAFETY_DEPTH` on: deep safeties stay over the top (2026-11-13)
+
+**`SAFETY_DEPTH`** (Coverage #663). Two halves of one coached rule, "deeper than the deepest". First, a deep or quarter-field zone landmark is never shallower than the safety's alignment: a quarter of our safeties were installed with a landmark 1.3 to 1.5 yd under where they lined up and walked down to it in the first second (91 to 95% of the safeties who came downhill had one; 1 to 2% of the rest did; none believed run). Second, the landmark is a floor, not a stop: he stays deeper than the deepest route he sees in his band by a cushion taken from the NFL medians (scaled by his speed and play recognition; the scaling is an estimate and recorded as stand-in debt), a route that stops climbing no longer pulls him deeper, and facing the quarterback he asks for no more than his own pedal before opening to run. Calls that send a safety down (robber, buzz, invert) are unchanged.
+
+The lane's measurement, same operator on NFL tracking and ours, off → on (NFL): stepping downhill in the first second 22 → 10% (12), Cover 4 30 → 5% (6); depth at the throw 15.8 → 17.6 yd (18.3); depth over the deepest route 6.2 → 8.4 (8.5); Cover 2 / 3 / 4 depth 17.0 / 15.6 / 13.9 → 18.9 / 17.4 / 16.4 (20.4 / 18.0 / 16.5). Not moved, and recorded as the outside defenders' item: 20+ yd catches with nobody deeper 40 → 36% (15).
+
+Checks on the candidate (`38412c98`): full suite 4364 pass with only the two known research failures; fixed run set 3.87 a carry (3.84). Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | completion | INT | 20+ completions an attempt | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.76 → 8.74 | 65.1 → 63.2% | 1.7 → 1.8% | 12.7 → 12.4% | 7.32 → 7.66 | 30.1 → 30.4 |
+| 23 | 8.38 → 8.32 | 62.5 → 64.9% | 2.4 → 1.8% | 11.4 → 11.0% | 6.67 → 6.26 | 30.6 → 27.7 |
+| 31 | 8.15 → 8.13 | 63.3 → 64.0% | 1.0 → 0.8% | 11.4 → 10.5% | 6.69 → 6.51 | 27.4 → 28.6 |
+
+Nothing moved outside its range on any seed. It lands as the safety playing his rule; the scoreboard does not see it because the deep ball was not where the excess yards are.
+
+**Held out: Flex's edge set** (`PAST_ALONG_PATH` + `OPEN_HANDS` + `PUNCH`, candidate `7e207f9b`, kept as `held/e52-setA`). Carded together 0 → 1 on four seeds, the sack rate fell on every one: 4.9 → 3.8, 4.5 → 3.8, 4.0 → 3.0, 3.4 → 2.5% (pooled 4.2 → 3.3; NFL band 4.61 to 9.36), completion +2 to +4 points on three, fixed run set 3.84 → 3.62. The lane's earlier "the set lands on the NFL's sacks" compared a different engine and seeds with the NFL and had no off arm; its reconcile on the candidate agrees with the cards: pressures fall 36 → 31% and come later, conversion per pressure unchanged at 12 to 13%, the loss mostly interior and inside-edge pressures. Held until the lane attributes the fall by flag and says whether it is an honest consequence of better hands or a defect.
+
+## engine-51: play action as a call (`PA_DROP`, `PA_CALL`); `DROP_BELIEF` released (2026-11-13)
+
+**`PA_DROP`** (Rules + Coaching #656). The play-action drop by alignment, depth against time taken from tracking the way the ordinary drops were, in place of one shared fake-then-drop. Read in `qb.ts` and `assign.ts`.
+
+**`PA_CALL`** (Rules + Coaching #660). Play action is a tag the caller puts on a pass at the NFL's situational rates rather than a rare standalone call: it was 4% of our drop-backs against 25.4%. The lane measured the tag's premium in range before it was called more often (gun +2.0 yd against the NFL's +1.5, under center +2.4 against +2.25) and stated its cost up front: about +0.3 to +0.6 yards a play on an engine already high in yards an attempt. It lands because the call is the sport's and the premium is the NFL's size; the excess it adds to is the zone YAC and target-distribution gap, which is not this flag's. Open and recorded in GAPS: the line still pass-sets its feet under the fake (52% of backside ends read pass by 0.3 s), the protections are not yet typed (boot and naked stay parked), and the defense does not yet respond to a caller's tendencies.
+
+**`DROP_BELIEF`** (Rules + Coaching #651, held at engine-50). Released: over the lane's eight seeds the interception rise that held it was noise. Lesson kept: at 16 games the interception rate swings more than a point between unpaired games, so a hold on it needs eight seeds or a paired panel.
+
+**With them:** the fumble beyond the plane (#657; a carrier in bounds by his support who loses the ball outside the boundary plane no longer aborts the game), and the belief tables' call-type fallback removed (Defense, `defense/C9-belief-no-calltype`).
+
+Checks on the candidate (`a89fced4`): full suite 4358 pass with only the two known research failures; fixed run set 3.84 a carry, unchanged. Cards, 16 games a side, each flag 0 → 1 with the others on:
+
+| flag, seed | yards an attempt | completion | INT | 20+ completions an attempt | time to throw | points a team-game |
+|---|---|---|---|---|---|---|
+| `PA_CALL`, 11 | 8.31 → 8.76 | 65.1 → 65.1% | 1.2 → 1.7% | 10.5 → 12.7% (moved) | 2.72 → 2.77 (moved) | 28.2 → 30.1 |
+| `PA_CALL`, 23 | 8.22 → 8.38 | 67.1 → 62.5% (moved) | 1.9 → 2.4% | 10.7 → 11.4% | 2.77 → 2.77 | 29.8 → 30.6 |
+| `PA_DROP`, 11 | 8.73 → 8.76 | 63.8 → 65.1% | 1.9 → 1.7% | 11.1 → 12.7% | 2.87 → 2.77 (moved) | 31.6 → 30.1 |
+| `PA_DROP`, 23 | 7.63 → 8.38 (moved) | 63.9 → 62.5% | 2.1 → 2.4% | 9.6 → 11.4% | 2.86 → 2.77 (moved) | 27.7 → 30.6 |
+| `DROP_BELIEF`, 11 | 8.40 → 8.76 | 65.1 → 65.1% | 2.1 → 1.7% | 10.3 → 12.7% (moved) | 2.75 → 2.77 | 33.3 → 30.1 |
+| `DROP_BELIEF`, 23 | 8.73 → 8.38 | 64.9 → 62.5% | 1.8 → 2.4% | 13.1 → 11.4% (moved) | 2.76 → 2.77 | 31.6 → 30.6 |
+
+`PA_CALL` reads as stated: +0.2 to +0.5 yards an attempt, more deep completions, and fewer plays a game. `PA_DROP` shortens the time to throw by 0.1 s on both seeds (with `PA_CALL` on, a quarter of drop-backs take it). `DROP_BELIEF` agrees on nothing between seeds. Where the engine stands after it: yards an attempt 8.4–8.8 (NFL 6.35–7.89), YAC 6.7–7.3 (4.53–5.91), completion 62.5–65.1%, sacks 4.5–4.9%, interceptions 1.7–2.4%, points 30.
+
+## engine-50: `SHOULDER_READ` on as the underneath plant; the dither guard (2026-11-12)
+
+**`SHOULDER_READ`** (Coverage #652; the flag's earlier eyes lean is replaced, with Defense's agreement). An underneath zone defender keyed the quarterback's windup correctly (facing him 86–97% of the time, his reaction about 0.18 s) but `sawThrow` could not act until the ball was in the air, so the cue was ready about 0.2 s before the release and thrown away; at the release about half of these defenders were still dropping, and the 0.25–0.35 s to their break was the time to stop and reverse. Now, when his read of the windup matures, his drop stops (no velocity away from the line) while his lateral and downhill zone play continue. A first attempt, a full stop squared to the quarterback, cancelled his movement toward threats and was reverted. Coverage, seeds 11 / 23: hook break p50 0.50 → 0.35–0.40 s, curl / flat 0.40 → 0.30–0.35 s; breaking at the release 10–13 → 10–16%; wrong plants per pump 0.07–0.12; no added re-aiming. It does not close the NFL gap (32–41% breaking at the release), which is direction before the release: NFL underneath defenders facing the quarterback close on the eventual catcher over the last 0.5 s even when he has not broken (+1.10 yd/s; ours +0.11), starting before a windup could be read, and our quarterback's eyes reach his target only with his motion (on him 20% at −0.5 s, 83% at −0.3 s). That is a quarterback item (Rules + Coaching). Parked from the same work: `WINDUP_READ` (reading the direction of the windup; first read on the right receiver 20–27%, two attempts) and an earlier head-turn cue for trailing man defenders (not supported: the NFL trailer's closing begins no earlier than ours).
+
+**The dither guard** (Defense #653): `test/dither-budget.test.ts`, 135 fixed plays, reversed re-aims over 20° a second by controller and by post-decision stage against a budget of the recorded value × 1.10 plus a statistical slack, ratcheted down by any change that lowers it; and the model rule "commit to a decision" in CLAUDE.md. It measures requests, never outcomes. Recorded on engine-49.
+
+**Held out: `DROP_BELIEF`** (Rules + Coaching #651; his believed drop rate 0.05 → the observed 0.08). In the tree, off. Cards 0 → 1: seed 11 points 25.4 → 29.0 (moved), INT 1.6 → 2.4% (moved); seed 23 completion 65.7 → 62.9% (moved), INT 1.9 → 1.5%. With the lane's four seeds the interception rate rises on five of six (pooled about +0.6 points, p ≈ 0.06) while the paired panel is flat; the extra picks are on intermediate throws that cleared his bar. Not explained, so not landed.
+
+Checks on the candidate (`19ec65f6`, both flags on): full suite 4349 pass with only the two known research failures. On the final tree (`DROP_BELIEF` off, the guard merged): core suite 4085 of 4085; a first run of it showed three 60 s timeouts under machine load, which passed alone and did not recur. Fixed run set unchanged (3.84). Paired league scorecards for `SHOULDER_READ`, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | YAC | points a team-game |
+|---|---|---|---|---|---|
+| 11 | 8.29 → 8.65 | 64.0 → 64.8% | 4.6 → 5.8% (moved) | 6.92 → 7.01 | 27.3 → 29.0 |
+| 23 | 8.42 → 8.17 | 65.3 → 62.9% | 6.0 → 4.5% | 6.62 → 7.00 | 26.8 → 28.3 |
+
+Nothing agrees between the seeds; it lands as the use of a cue he already had.
+
+Found by these cards: a scorecard with `FREE_BOUND` on aborted on "Loose-ball boundary contact lacks its actual outward crossing" (a carrier in bounds by his support holding the ball beyond the plane, fumbling; fixed by Rules + Coaching in #657, next tree). On the seed that completed, `FREE_BOUND` still takes sacks 5.8 → 3.0%; held.
+
+## engine-49: `PURSUIT_FIELD` on, a pursuer of a seen carrier is not held in the field; `IN_STRIDE_CATCH` retired (2026-11-12)
+
+**`PURSUIT_FIELD`** (Defense #649). Coverage behaviours call `pursueIfLive` themselves, so a zone or man defender chasing a ball carrier kept his coverage kind and his pursuit request went through `containCoverage`, the rule that keeps a coverage drop in the field. It zeroed his velocity toward the sideline whenever he could not stop before it on half his lateral traction (5–8 yd from the line at pursuit speed), his lateral speed decayed, the check passed, the request returned, and it repeated. Traced on short zone catches with the nearest underneath defender 4+ yd away: about half of all pursuit re-aims over 20° were containment's output exactly (331 of 331 on one seed), 60–67% of re-aims were undone within 0.3 s, and only 14–16% followed a new cue. Now a chase of a seen holder, and `CATCH_CARRY`'s drive on the catcher, are left alone; a drop is still contained. Defense, 2 × 16 games: re-aims 2.3 → 1.1–1.3 a second, undone within 0.3 s 59–65 → 37–43%, containment's share 45–55 → 0–5%; first defender within 1 yd by +2.0 s 36 → 41% (NFL 69); YAC in that population 11.33 → 10.16. On runs it rarely applies (a pursuer was contained on 2.0% of fixed-set runs).
+
+Not repaired by it, recorded: the first defender still runs at the catcher (24 → 26° off the line to him; NFL 32–47° and leading), and the remaining re-aims come from contact technique (dive / lunge, 34–42%) and mode switches around close-gather (33–36%). The engine-wide audit behind this (63% of re-aims are the decision itself, spacing 14% of re-aims and 22% of reversed ones, containment 3% and 8%; 14–27% follow a new cue) set a model rule, "commit to a decision", and a suite guard on reversed re-aims (#653, next tree).
+
+**`IN_STRIDE_CATCH` retired** (Coverage #647): superseded by `CATCH_CHOICE`. Its code path, test, FLAGS row and both config entries are removed; the retirement first failed `baseline-runner` because the baseline profile still listed the flag, corrected here.
+
+Checks on the candidate (`10781b12`): full suite 4347 pass with only the two known research failures. Fixed run set 3.86 → 3.84. Paired league scorecards, 16 games an arm:
+
+| seed | YAC | yards an attempt | completion | INT rate | rush yards a carry | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 6.92 → 6.67 | 8.20 → 8.52 | 63.3 → 65.2% | 2.0 → 1.5% | 4.77 → 4.42 | 31.8 → 29.0 |
+| 23 | 6.81 → 6.21 | 8.13 → 8.09 | 63.5 → 66.0% | 1.4 → 2.3% (moved) | 4.23 → 4.20 | 26.7 → 29.2 |
+
+YAC falls on both seeds (neither resolved); the interception move on seed 23 is opposite in sign to seed 11. It lands as the repair of a rule applied to the wrong task.
+
+## engine-48: `INT_BELIEF` on, his interception risk combines as a probability and weighs the catch point (2026-11-12)
+
+Rules + Coaching #644, calibrated on the engine-47 flags. His interception belief had the right total and a compressed ranking: on 2,639 natural league throws, throws he rated under 0.5% were picked 0.88% of the time and those over 5%, 3.83%. Two causes. His path term summed every nearby defender's risk (capped only at 1), so it exploded in the tail; and his catch-point terms expected about 13 picks where 32 happened (58% of picks are at the catch point). Now defenders combine as 1 − Π(1 − p), the path term is weighted 0.2 (an in-flight touch that ends in a pick a fraction of the time) and the catch-point term 1.75, fitted on seeds 101 / 201 and checked on 301 / 401 (the halves disagree on the level, 15 against 31 picks, and agree that the catch point is worth 7–9 times the path); scaled by his knowledge with two-sided error.
+
+Reliability on natural throws with it on (32 games), believed / observed by his band: 0.15 / 0.45%, 1.17 / 1.56%, 3.16 / 3.10%, 6.36 / 5.07%. Lane read, 32 games an arm: sacks 131 → 121, yards a play 8.05 → 8.23, picks 46 → 49.
+
+Withdrawn evidence, recorded so it is not quoted again: an earlier table said he passes up throws that complete 53% for 8.7 yd. That probe forced throws his window then pulled down at the plant, so it measured the rest of the play. Committed declines (reads he looked at and passed) complete about 0.3 and are picked about 10%: he is right to decline them and overstates how bad they are. A facing split of the pick fraction (in front of a defender facing him against behind an underneath defender) was tested and not supported. His earlier beliefs were re-read on engine-47 and need no refit (defended 0.14 / 0.14; off target at urgency 0.5–1, 0.25 / 0.27); drops are believed 0.05 against 0.08 observed, a one-constant follow-up.
+
+Checks on the candidate (`e5d5e81e`): full suite 4347 pass; besides the two known research failures, the `read-plan` covered-first-read fixture failed on a real change at the margin (an aggressive passer's rhythm gate is risk ≤ 6.04%; the covered #1 was priced 7.07% off and 5.88% on, so on one more seed of sixteen he throws it). Restated over seeds 1–16 as shares (he moves on in at least 12, #1 thrown at most 5 times). Fixed run set 3.87 → 3.86. Paired league scorecards, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | INT rate | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.65 → 8.20 | 64.3 → 63.3% | 5.4 → 4.3% | 1.7 → 2.0% | 7.00 → 6.92 | 31.3 → 31.8 |
+| 23 | 7.93 → 8.13 | 63.9 → 63.5% | 5.3 → 5.3% | 2.0 → 1.4% | 6.13 → 6.81 | 27.7 → 26.7 |
+
+Nothing resolved on either seed. It lands on the reliability table.
+
+`FREE_BOUND` on top, 16 games an arm: sack rate 4.3 → 2.5% (moved) and 5.3 → 2.1% (moved); points 31.8 → 34.3 and 26.7 → 32.9 (moved). Still held.
 
 ## engine-47: `CATCH_CARRY`, `HANDS_CUE`, `CATCH_SPEED` and `CATCH_CHOICE` on (2026-11-12)
 

@@ -19,6 +19,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
+import { asCarrierPursuit } from '../coverage-space.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
 import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
@@ -51,10 +52,10 @@ const DB_SLOWPLAY = process.env.DB_SLOWPLAY !== '0', SLOW_GIVE = 0.3, SLOW_MIN =
 /** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
 const LB_READ_STEP = process.env.LB_READ_STEP !== '0', READ_STEP = 0.3;
 
-/** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
-export function believesRun(sim: PlaySim, a: Agent): boolean {
-  if (a.recog) return a.recog.read === 'run';
-  return !sim.isPass && sim.t >= a.readAt;
+/** Has this defender read run? (His own read from what he's seen — see recognition.ts.)
+ * Without a recognition he is unsure: never the offense's play type. */
+export function believesRun(_sim: PlaySim, a: Agent): boolean {
+  return a.recog?.read === 'run';
 }
 /** ZONE_SETTLE (default on; ZONE_SETTLE=0 turns it off): underneath zone
  * droppers stop gaining depth once they see the QB set ("drop until his back
@@ -92,9 +93,9 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   return r;
 }
 
-export function knowsPass(sim: PlaySim, a: Agent): boolean {
-  if (a.recog) return a.recog.read === 'pass';
-  return sim.isPass && sim.t >= a.readAt;
+/** Has this defender read pass? His own read; without a recognition he is unsure. */
+export function knowsPass(_sim: PlaySim, a: Agent): boolean {
+  return a.recog?.read === 'pass';
 }
 
 /**
@@ -137,7 +138,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
-      return chase(sim, a, target);
+      return asCarrierPursuit(chase(sim, a, target));
     }
   }
   // CATCH_CARRY: the ball reached a receiver he is on (he drove on the catch,
@@ -156,7 +157,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (!refuted && on) {
         a.tags.add('catch-carry');
         const f = seen.facing;
-        return runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+        return asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 }));
       }
       if (refuted) catchDrive.delete(a);
     }
@@ -1173,6 +1174,31 @@ export class ManCoverage implements Behavior {
  * Overloaded match defenders can hesitate at an exchange, then recover on a
  * subsequent read. Their called technique stays intact.
  */
+/** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
+ * quarter-field zone defender's landmark is never shallower than his
+ * alignment. Without it a quarter of our safeties (quarters inside safeties at
+ * 12 yd aligned about 12; deep middles compressed near the goal line) were
+ * installed with a landmark 1.3-1.5 yd shallower than where they lined up and
+ * walked down to it in the first second: 91-95% of the safeties who came
+ * downhill on non-PA drop-backs (21% of safeties vs the NFL's 12%; Cover 4
+ * 38% vs 6%), none of them reading run (safety-downhill.ts, safety_deep.py).
+ * A call that sends a safety down gives him an underneath zone and is
+ * unchanged. */
+const SAFETY_DEPTH = process.env.SAFETY_DEPTH !== '0';
+/** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
+ * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
+ * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
+ * 9.6 / top speed, 0.85-1.25, x 1.1 - 0.2 play recognition: estimated, stand-in debt). Never under 2 yd. */
+/** SAFETY_DEPTH: a safety facing the QB requests the backward speed he means to run, his pedal (top speed x
+ * backpedal), not a speed the body would clip; to go faster he opens and runs (the turn-run / open-carry branches). */
+function pedalRequest(a: Agent, cmd: MoveCommand): MoveCommand {
+  const pedal = a.profile.vmax * a.profile.backpedal;
+  return cmd.vel.x > pedal ? { ...cmd, vel: { x: pedal, y: cmd.vel.y } } : cmd;
+}
+function safetyOver(a: Agent, r: number): number {
+  const scale = clamp(9.6 / a.profile.vmax, 0.85, 1.25) * (1.1 - 0.2 * a.r('playRecognition'));
+  return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
+}
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1220,7 +1246,25 @@ export class ZoneCoverage implements Behavior {
       const sink = zone.startsWith('curl_flat') ? 2.5 : zone.startsWith('hook') ? 1.5 : zone.startsWith('flat') ? 1.5 : 0;
       this.landmark = { x: sim.los + coverageDepth(sim.los, this.landmark.x - sim.los + sink), y: this.landmark.y };
     }
+    // SAFETY_DEPTH: a deep or quarter-field zone defender does not walk down to
+    // a landmark shallower than where he lined up: his landmark is never
+    // shallower than his alignment (to the end line). Calls that send a
+    // safety down give him an underneath zone (robber, hook, curl-flat), and
+    // those landmarks are unchanged.
+    if (SAFETY_DEPTH && this.deep && this.landmark.x - sim.los < this.initialDepth) {
+      this.landmark = { x: Math.min(END_LINE_X - 1.2, sim.los + this.initialDepth), y: this.landmark.y };
+      a.tags.add('safety-depth');
+    }
     this.style = style;
+  }
+
+  /** SAFETY_DEPTH: the depth he held over a route when he first saw it stop climbing (cleared if it climbs again). */
+  private readonly heldOver = new Map<Agent, number>();
+  private holdOver(r: Agent, x: number): number {
+    const held = this.heldOver.get(r);
+    if (held !== undefined) return held;
+    this.heldOver.set(r, x);
+    return x;
   }
 
   private selectTarget(a: Agent, target: Agent | null): void {
@@ -1234,9 +1278,14 @@ export class ZoneCoverage implements Behavior {
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
-    // SHOULDER_READ: an underneath defender reading the QB breaks on the
-    // throwing motion toward the receiver the QB's shoulders point at.
-    if (SHOULDER_READ && !this.deep) { const lean = shoulderLean(a, sim); if (lean) return lean; }
+    // SHOULDER_READ: an underneath defender reading the QB stops his drop on
+    // the throwing motion he has seen; the rest of his zone play goes on.
+    if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
+    return this.zonePlay(a, sim);
+  }
+
+  /** His zone play with the ball in the QB's hands (no throw seen). */
+  private zonePlay(a: Agent, sim: PlaySim): MoveCommand {
     // A deep defender who reads run executes his cap/force contract. Alley
     // fits retain depth through the mesh; certainty about the hidden call is
     // not required, and a mistaken read can still expose play action.
@@ -1381,6 +1430,13 @@ export class ZoneCoverage implements Behavior {
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (qbEyes) tgt = lerp(lm, qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
+        // SAFETY_DEPTH: a deep safety keeps his depth over the deepest receiver he sees in his band, with his landmark
+        // as a floor; the QB's eyes shade him laterally only.
+        if (SAFETY_DEPTH && this.initialDepth >= 9) {
+          const r = Math.max(0, ...threats.map(th => th.pos.x - sim.los));
+          const x = Math.min(END_LINE_X - 1.2, Math.max(lm.x, sim.los + r + safetyOver(a, r)));
+          return withFacingTechnique(pedalRequest(a, goTo(a, { x, y: tgt.y }, { facing: facingQB, speed: zs })), { label: 'deep-read' });
+        }
         return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
           { label: 'deep-read' });
       }
@@ -1418,7 +1474,13 @@ export class ZoneCoverage implements Behavior {
       // the stem climbs; otherwise a corner retreats from a hitch into grass.
       const developing = clamp((deepest.pos.x - sim.los) / 8, 0, 1);
       const workingCushion = Math.max(cushion, this.initialDepth * (1 - developing) + cushion * developing);
-      const tx = Math.min(END_LINE_X - a.profile.radius, deepest.pos.x + workingCushion);
+      // SAFETY_DEPTH: a deep safety stays deeper than the deepest route he sees, by the NFL's cushion (landmark floor).
+      const tx = Math.min(END_LINE_X - a.profile.radius, SAFETY_DEPTH && this.initialDepth >= 9
+        // A route that has stopped climbing (a dig, a curl) no longer pulls him deeper: he holds his depth over it.
+        ? Math.max(deepest.pos.x + workingCushion, lm.x, deepest.vel.x < 1
+          ? this.holdOver(deepest.r, Math.min(a.pos.x, deepest.pos.x + safetyOver(a, deepest.pos.x - sim.los)))
+          : (this.heldOver.delete(deepest.r), deepest.pos.x + safetyOver(a, deepest.pos.x - sim.los)))
+        : deepest.pos.x + workingCushion);
       // Turn before the receiver consumes the cushion during the hip flip.
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
@@ -1432,11 +1494,13 @@ export class ZoneCoverage implements Behavior {
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
       this.selectTarget(a, deepest.r);
-      const command = withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+      const overReq = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
-      }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
+      });
+      const command = withFacingTechnique(SAFETY_DEPTH && this.initialDepth >= 9 && !turnRun ? pedalRequest(a, overReq) : overReq,
+        { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
@@ -1747,32 +1811,49 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
 }
 
 /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
-/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): from the
- * throwing motion, before the ball is out, an underneath zone defender with
- * his eyes held on the QB breaks toward the receiver the QB's front shoulder
- * and eyes point at, in his own delayed picture (seenQbEyes). How hard he
- * commits is his read: more with anticipation, less with discipline (a
- * disciplined defender waits for the ball). It costs what it costs: a pump or
- * a look-off moves him the wrong way, and he recovers at his body's rates. NFL
- * underneath zone defenders begin turning toward the eventual catcher about
- * 0.3 s before the release (zone LB toward-catcher 0.0 at -0.3 s, +1.1 at the
- * release); ours start about 0.1 s later at half the rate (+0.4 at the release),
- * because the motion tells them when but not where (underarrival.py). */
-const SHOULDER_READ = process.env.SHOULDER_READ === '1';
-/** SHOULDER_READ: the windup-keyed lean, or null. */
-function shoulderLean(a: Agent, sim: PlaySim): MoveCommand | null {
-  // From his own pictures: he sees the QB holding it and has seen no ball in flight.
-  if (sim.windupAt < 0 || hasObservedFlight(a) || observedHolder(a, sim)?.target !== sim.qb) return null;
-  const qb = sim.see(a, sim.qb).pos;
-  if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) <= -0.2) return null;
+/** SHOULDER_READ (experimental, off; SHOULDER_READ=1 turns it on): the
+ * underneath plant. An underneath zone defender who keys the quarterback as
+ * keysQB does (facing him, eyes held on him through his observation delay)
+ * stops his drop once he has seen the throwing motion: he brakes it at his own
+ * rates, break-ready ("feet stop when the ball comes off
+ * his front hand"). The motion tells him when, not where, so he gets no
+ * direction; at the release keysQB hands him to playBall from the plant rather
+ * than from a backpedal. Without it the cue matures about 0.2 s before the
+ * release but cannot act until the ball is out (sawThrow), and he is still
+ * dropping away from the catch (docs/reviews/2026-11-12-underneath-plant.md).
+ * Only the drop stops: his lateral and downhill zone play go on (a full stop
+ * also cancelled his movement toward threats; attempt 1, reverted).
+ * Its costs are physical: a quick release gives him little time planted, a
+ * long one a lot; a pump is a windup, so he plants on it and restarts his drop
+ * only once he sees the ball pulled down (after his observation delay); a
+ * planted defender gives up depth to a route behind him. Replaces the earlier
+ * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
+const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** SHOULDER_READ: the throwing motion each defender planted on (by its windupAt), per play. */
+const plants = new WeakMap<Agent, { sim: PlaySim; windup: number }>();
+/** SHOULDER_READ: whether he is planted on a throwing motion he has seen. */
+function underneathPlant(a: Agent, sim: PlaySim): boolean {
+  if (hasObservedFlight(a) || observedHolder(a, sim)?.target !== sim.qb) return false;
   const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
-  if (sim.t - sim.windupAt < react || !eyesHeldOnQB(a, sim, react, -0.2)) return null;
-  const target = seenQbEyes(a, sim);
-  if (!target) return null;
-  a.tags.add('shoulder-read');
-  const commit = clamp(0.3 + 0.4 * a.r('anticipation') + 0.3 * (1 - a.r('discipline')), 0.2, 1);
-  const c = chase(sim, a, target);
-  return withFacingTechnique({ ...c, vel: { x: c.vel.x * commit, y: c.vel.y * commit } }, { label: 'shoulder-lean', key: target.vel });
+  let p = plants.get(a);
+  if (p && p.sim !== sim) { plants.delete(a); p = undefined; }
+  // The motion he planted on was pulled down: once he has seen that, he restarts his drop.
+  if (p && sim.windupAt !== p.windup && sim.windupEndAt >= p.windup && sim.t - sim.windupEndAt >= react) {
+    plants.delete(a); p = undefined; a.tags.add('plant-restart');
+  }
+  if (sim.windupAt >= 0 && p?.windup !== sim.windupAt && sim.t - sim.windupAt >= react) {
+    const qb = sim.see(a, sim.qb).pos;
+    if (Math.cos(a.body.facing - Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x)) > -0.2 && eyesHeldOnQB(a, sim, react, -0.2)) {
+      p = { sim, windup: sim.windupAt }; plants.set(a, p); a.tags.add('plant');
+    }
+  }
+  return !!p;
+}
+/** SHOULDER_READ: his zone command without its drop: no velocity away from the line (he brakes it at his own
+ * rates); his lateral and downhill play and his facing are unchanged. */
+function stopDrop(sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const deeper = sim.attackDir(sim.offense[0].team), away = cmd.vel.x * deeper;
+  return away > 0 ? { ...cmd, vel: { x: 0, y: cmd.vel.y } } : cmd;
 }
 
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
