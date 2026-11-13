@@ -20,7 +20,7 @@ import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
-import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
+import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
 import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
@@ -2073,6 +2073,18 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
 /** Same catch approach, seeded only by this defender's acquired trajectory.
  * A newer body-possession picture takes priority in pursueIfLive. */
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
+  const c = flightApproach(a, sim, path, acquired);
+  if (!PURSUIT_COMMIT) return c ?? stand();
+  // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
+  // him; that is not a reason to stop. Hold the approach he last chose.
+  if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
+  const last = lastFlightApproach.get(a);
+  return last && sim.t - last.t <= 0.3 ? { ...last.cmd } : stand();
+}
+
+const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
+
+function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
   const window = observedCatchWindow(a, sim, path);
   if (acquired) rememberCatchOpportunity(a, window);
@@ -2149,7 +2161,7 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
     return movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
       { kind: 'fixed', point: tgt }),window,spot);
   }
-  return spot ? runThrough(a, spot.p, { speed: 0.9 }) : stand();
+  return spot ? runThrough(a, spot.p, { speed: 0.9 }) : null;
 }
 
 /** First plausible receiver catch from the defender's delayed picture and
