@@ -149,6 +149,8 @@ export class QBMind {
   belief: Record<string, number> = {};
   readonly report: QBReadReport;
   blitzExpected = false;
+  /** Diagnostic: the inputs of blitzExpected at his last pre-snap update. */
+  blitzInputs: { box: number; boxSoft: number; blockers: number; cover0: number; pMan: number } | null = null;
   identified = false;
   private confirmed = false;
   /** Set for one tick when the post-snap read completes. */
@@ -270,6 +272,8 @@ export class QBMind {
     const blockers = 5 + sim.offense.filter((o) => sim.offAlign.spots[o.slot]?.inline).length;
     const box = Math.round(obs[5]);
     this.blitzExpected = (this.belief.cover0 ?? 0) > 0.3 || (box >= blockers + 2 && this.pMan() > 0.5);
+    // Diagnostic only (scripts/diag/eyes/blitz-read.ts): the inputs of his blitz expectation.
+    this.blitzInputs = { box, boxSoft: +obs[5].toFixed(2), blockers, cover0: +(this.belief.cover0 ?? 0).toFixed(3), pMan: +this.pMan().toFixed(3) };
   }
 
   /**
