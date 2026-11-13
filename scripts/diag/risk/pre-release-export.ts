@@ -2,7 +2,8 @@
 // pre_release_nfl.py builds from BDB tracking): every player's position from the snap to the catch at 10 Hz,
 // normalised so the offence attacks +x from the line of scrimmage, the QB's body facing (math angle, same frame), every player's body facing (fo),
 // release and catch frames, the target. Sim only; positions and facing are the bodies' true values, as tracking's are.
-// usage: npx tsx scripts/diag/risk/pre-release-export.ts SEED GAMES OUT.jsonl.gz
+// usage: [COV=all] [TAIL=5] npx tsx scripts/diag/risk/pre-release-export.ts SEED GAMES OUT.jsonl.gz
+// (COV=all: man and zone, with manzone; TAIL: 10 Hz frames kept after the catch)
 import { createWriteStream } from 'node:fs';
 import { createGzip } from 'node:zlib';
 import { Rng } from '../../../src/core/rng.js';
@@ -11,6 +12,7 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 8), outPath = process.argv[4] ?? 'out/pre-sim.jsonl.gz';
+const COV = process.env.COV ?? 'zone', TAIL = Number(process.env.TAIL ?? 0);
 const gz = createGzip(); gz.pipe(createWriteStream(outPath));
 const GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL', EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' };
 const P: any = PlaySim.prototype, tick0 = P.tick, ev0 = P.event;
@@ -38,12 +40,12 @@ P.tick = function () {
     S.qbf.push(+Math.atan2(Math.sin(f), Math.cos(f)).toFixed(3));
     if (S.R && S.catch === undefined && this.ball.kind === 'held' && this.ball.carrier === S.R) S.catch = S.xy.length - 1;
   }
-  if (this.phase !== 'live' || S.catch !== undefined) {
+  if (this.phase !== 'live' || (S.catch !== undefined && S.xy.length - 1 >= S.catch + TAIL)) {
     S.done = true;
-    if (S.catch !== undefined && S.release !== undefined && S.catch > S.release && !this.defCall?.coverage?.man) {
+    if (S.catch !== undefined && S.release !== undefined && S.catch > S.release && (COV === 'all' || !this.defCall?.coverage?.man)) {
       const players = S.all.map((a: any) => ({ side: this.offense.includes(a) ? 'O' : 'D', group: GROUP[a.player?.position] ?? null }));
       gz.write(JSON.stringify({ src: 'sim', id: `${seed}-${n}`, dt: 0.1, players, xy: S.xy, qbf: S.qbf, fo: S.fo, release: S.release, catch: S.catch,
-        target: S.all.indexOf(S.R), qb: S.all.indexOf(this.qb), coverage: this.defCall?.coverage?.id ?? null,
+        target: S.all.indexOf(S.R), qb: S.all.indexOf(this.qb), coverage: this.defCall?.coverage?.id ?? null, manzone: this.defCall?.coverage?.man ? 'Man' : 'Zone',
         ball_y: +(S.dir > 0 ? this.ballY : FIELD_WIDTH - this.ballY).toFixed(2) }) + '\n');
       n++;
     }
