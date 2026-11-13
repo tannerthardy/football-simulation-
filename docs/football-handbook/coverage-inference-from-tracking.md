@@ -9,7 +9,7 @@ about nine times in ten. It gets worse as less of the field is visible, and it i
 labels are a judgment call (Quarters versus Cover 3 versus Cover 6). This is an inferred label, weaker evidence than
 positions and outcomes. Use it to find plays and to measure, not as truth.
 
-Code: `scripts/coverage_infer/` (`extract.py`, `features.py`, `fit.py`, `transfer.py`, `solo.py`, `apply_runs.py`).
+Code: `scripts/coverage_infer/` (`extract.py`, `features.py`, `fit.py`, `transfer.py`, `solo.py`, `apply_runs.py`, `apex.py`, `roles_table.py`).
 Results regenerate into ignored `out/coverage-infer/` (numbers below are from the 2026-11-13 run). Needs scikit-learn (not in the repo's stdlib set) and the
 BDB 2025/2026 raw data (`npm run nfl:fetch`). Test: `test/test_coverage_infer_features.py` (no feature sees past its time limit).
 
@@ -87,6 +87,60 @@ after the snap, which a run changes for every defender. Pre-snap accuracy on lab
 The inferred shell on runs is 46% Cover 3, 20% Cover 1, 12% Quarters, 8% Cover 2, 4% Cover 6, against PFF's 32% / 21% / 13% / 14% / 10% on drop-backs. The pre-snap model
 leans toward the most common class, so read these as shares of a look, and use the per-play probabilities, not the argmax. Per-play output:
 `out/coverage-infer/runs-inferred.csv.gz` (ignored). By run concept: `out/coverage-infer/runs-summary.json`.
+
+
+## Quarters apex and the role table
+
+For Quarters and the quarter side of Cover 6 (PFF's call; BDB 2025 weeks 1-9), `apex.py` takes the curl-flat defender
+(PFF job CF) on each side that has exactly one, and measures him against #2 (the second receiver in from the
+sideline at the snap) and against a back who releases flat (3 yd or more toward that sideline, 4 yd or less downfield by 2 s).
+2251 play-sides in 1750 plays. The apex is a CB (nickel) 1031 times, an inside linebacker 451,
+an outside linebacker 330, a free safety 180, the Mike 109, a strong safety 105.
+#2's release is read from tracking at 2 s (vertical: 7 yd or more downfield; flat/under: 3 yd or less downfield and 3 yd or more outside/inside; break: between; stay: neither).
+
+Median apex depth in yards past the ball at 1 / 2 / 3 s, his lateral position against #2 at 2 s (negative: inside #2), and the share who are 7 yd or deeper at 2 s:
+
+| Cell (family, #2, back) | n | Depth 1 / 2 / 3 s | Out vs #2 at 2 s | 7 yd+ at 2 s |
+|---|---|---|---|---|
+| Quarters | #2 break | back not flat | 528 | 4.5 / 5.4 / 6.7 | -0.3 | 20% |
+| Quarters | #2 break | back flat | 162 | 4.1 / 4.4 / 5.0 | 0.6 | 10% |
+| Quarters | #2 flat | back not flat | 73 | 4.4 / 4.5 / 4.8 | -1.6 | 11% |
+| Quarters | #2 stay | back not flat | 147 | 4.0 / 4.0 / 4.8 | -0.2 | 4% |
+| Quarters | #2 stay | back flat | 30 | 4.5 / 4.1 / 4.5 | 1.5 | 13% |
+| Quarters | #2 under | back not flat | 54 | 3.5 / 3.5 / 4.6 | 5.6 | 9% |
+| Quarters | #2 under | back flat | 45 | 3.2 / 2.6 / 3.6 | 10.8 | 2% |
+| Quarters | #2 vertical | back not flat | 434 | 5.2 / 7.0 / 9.0 | -0.1 | 49% |
+| Quarters | #2 vertical | back flat | 125 | 4.7 / 5.8 / 7.2 | 0.8 | 30% |
+| Cover 6 (quarter side) | #2 break | back not flat | 215 | 4.2 / 5.6 / 7.2 | 0.5 | 27% |
+| Cover 6 (quarter side) | #2 break | back flat | 69 | 3.7 / 3.8 / 5.0 | 1.9 | 4% |
+| Cover 6 (quarter side) | #2 flat | back not flat | 39 | 3.5 / 4.0 / 4.5 | -2.2 | 8% |
+| Cover 6 (quarter side) | #2 stay | back not flat | 39 | 3.6 / 3.1 / 4.2 | 1.1 | 5% |
+| Cover 6 (quarter side) | #2 vertical | back not flat | 184 | 4.8 / 6.9 / 9.7 | 0.1 | 47% |
+| Cover 6 (quarter side) | #2 vertical | back flat | 41 | 4.5 / 5.7 / 7.1 | 1.2 | 32% |
+
+Reading it: against a vertical #2 with no flat back the apex is at about 5 yd at 1 s, 7 at 2 s, 9 at 3 s, level with #2 laterally
+(about half are 7 yd or deeper by 2 s: he walls #2 up the field). When a back releases flat the same apex is held to about 4-6 yd
+(5.8 yd at 2 s against a vertical #2, 4.4 against a break), outside of #2 by about 1 yd. Against an under route he is 5.6 to 10.8 yd
+outside of #2 and shallow (about 3 yd at 2 s): he is not with #2 at all.
+
+Behaviour labels (`variant`, named from where he is by 2 s, not from his instruction): Quarters sit 52%, carry 15%, carry-late 11%,
+to-flat 12%, sink 7%. Cover 6 quarter side is within 2 points of that on every label.
+
+Who is nearest the back when he reaches the flat (n 493; the back's first frame at 4 yd or more outside and 4 yd or less downfield,
+arrival 1.6 s median): the nearest coverage defender is the PFF apex 61% of the time, otherwise the Mike
+(HOL) 22%. By position ILB 43%, CB 20%, OLB 18%, MLB 10%. At that moment he is
+8.3 yd deeper than the back (IQR 6.5-10.2) and 1.0 yd outside
+(IQR -1.0 to 2.5), 8.8 yd away. That is the moment the back arrives, not the catch; the table
+has the apex's path to 3 s (`a_vsB_dx`, `a_vsB_out`) for any later moment.
+
+**The role table** (`roles_table.py`, one row per defender per play on BDB 2025, 106744 rows, 9704 plays):
+game, play, nflId, pos, side, job_pff, job_inferred, job_conf, family_pff, family_inferred, family_conf, no_template, variant (the apex's), cues.
+Inferred columns are held-out-game predictions. Label names are PFF's job names with left/right merged (CF is curl-flat, HC hook-curl, HOL hole, 4I/4O inside/outside quarter, 3S/3M deep thirds, 2 deep half, DF deep free, FL flat).
+
+**No template fits.** In the table `no_template` means no coverage family reaches 0.5 in the inferred family probabilities: 4.8% of plays
+(9.8% of defender rows have a job under 0.5), highest in the rare calls (Cover 3 Cloud and Double Cloud 16-22%, Cover 1 Double 14%) and
+Cover 0 10%, Cover 6 8%, Quarters 9%. This is **not** yet the share the engine's installed rules (`rules.ts`) do not cover: that needs each installed call mapped to a PFF job multiset and the unmatched
+rest counted, which is the next step.
 
 ## What this is for
 
