@@ -68,7 +68,7 @@ describe('HAND_SITE', () => {
     let prev: { e: number; p: number; s: number } | null = null;
     for (let deg = 0; deg <= 180; deg += 0.5) {
       const r = (deg * Math.PI) / 180, d = agent({ x: Math.cos(r), y: Math.sin(r) }, 0);
-      const j = joint(b, d); handSite({ dt: 1e3 }, j, b, d); // a long dt: the length reaches its target
+      const j = joint(b, d); handSite({ dt: 1e3 } as any, j, b, d); // a long dt: the length reaches its target
       const now = { e: j.extension, p: j.push, s: j.steer };
       if (prev) { expect(Math.abs(now.e - prev.e)).toBeLessThan(0.02); expect(Math.abs(now.p - prev.p)).toBeLessThan(25); expect(Math.abs(now.s - prev.s)).toBeLessThan(15); }
       prev = now;
