@@ -44,7 +44,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { OPEN_HANDS, PUSH_GROWTH, type HandJoint, type Intent } from '../physics/world.js';
+import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -583,6 +583,9 @@ function setHands(sim: PlaySim, e: Engagement): void {
   if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
+  // RUSH_HANDS: a hand knocked off re-fits by reach and touch: after his reaction to the loss (felt), it travels
+  // from his chest to the man at arm speed, then is on him again where it lands.
+  if (RUSH_HANDS && hands.off) refit(sim, hands, b, d);
   // A landed finesse move has the hands off for its window.
   if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
     hands.steer *= 0.1;
@@ -599,6 +602,21 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.hold = 0;
     if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e, false);
   }
+}
+
+const refitState = new WeakMap<HandJoint, { lostAt: number }>();
+/** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
+ * chest (the bodies' gap) at ARM_SPEED. */
+export function refitTime(b: Agent, d: Agent): number {
+  const gap = Math.max(0, Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) - b.profile.radius - d.profile.radius);
+  return Math.max(0.1, b.profile.reactionTime) + gap / ARM_SPEED;
+}
+function refit(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
+  let st = refitState.get(hands);
+  if (!st) { st = { lostAt: sim.t }; refitState.set(hands, st); }
+  if (sim.t - st.lostAt < refitTime(b, d)) return;
+  hands.off = false; hands.handOffset = 0; hands.handVel = 0;
+  refitState.delete(hands);
 }
 
 /**
