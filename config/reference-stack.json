@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-55",
+  "id": "engine-56",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -151,7 +151,7 @@
     "TACKLE_BRAKE": "off",
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",
-    "PASS_RIDE": "off",
+    "PASS_RIDE": "on",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",

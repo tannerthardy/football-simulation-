@@ -1178,7 +1178,7 @@ const RIDE_PUSH = 1.0;
  * up is his body's: the rep still ends when the man is beyond his arm. Ride to stop needs the man clearly back in
  * front (along his path by more than PAST_MARGIN), so the two do not flicker. A grip from behind stays the holding
  * detector's. */
-export const PASS_RIDE = process.env.PASS_RIDE === '1';
+export const PASS_RIDE = process.env.PASS_RIDE !== '0';
 const RIDE_GAIN = 2.5;
 function rideIntent(b: Agent, d: Agent, qb: Vec2, growth: number | undefined, feet: number): Intent {
   const sp = Math.hypot(d.vel.x, d.vel.y);
