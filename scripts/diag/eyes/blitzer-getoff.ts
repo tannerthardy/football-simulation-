@@ -14,7 +14,7 @@ const run = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: any) {
   const sim = this;
   if (sim.offCall?.kind !== 'pass') return run.call(this);
-  const hist = new Map<any, any[]>(); const snap = new Map<any, any>(); let fast = new Map<any, number>(); let rushers: any[] | null = null;
+  const hist = new Map<any, any[]>(); const snap = new Map<any, any>(); const fast = new Map<any, number>(); let rushers = null as any[] | null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     tick();

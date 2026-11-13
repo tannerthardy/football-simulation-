@@ -405,22 +405,34 @@ export class QBPass implements Behavior {
   /** BLITZ_READ: his hot call (the man his eyes went to, when), and since when he has seen a free rusher. */
   private hot: { target: Agent | null; at: number } | null = null;
   private hotSeenAt: number | null = null;
-  /** BLITZ_READ: a rusher in his picture coming across the line at him, unblocked, whom his protection does not
-   * account for (no protector is assigned to him: the call he knows); his position, or null. */
+  /** BLITZ_READ: where each defender stood in his picture at the snap, and who he has seen trigger. */
+  private snapSeen = new Map<Agent, Vec2>();
+  private triggered = new Set<Agent>();
+  /** BLITZ_READ diagnostics: the last defender he saw trigger (position:behaviour:read). */
+  hotBy: string | null = null;
+  /** BLITZ_READ: a defender his protection does not account for (no protector is assigned to him: the call he
+   * knows), unblocked, whose position in his picture has moved toward the line from where he stood at the snap by
+   * 0.6 yd or more (his trigger; held once seen unless he goes back 0.3 yd). NFL and our blitzers have moved 0.4 yd
+   * by 0.4 s and 0.8 yd by 0.6 s while their speed is still low (1.8 yd/s at 0.4 s), and his picture's position is
+   * right to 0.2-0.3 yd while its speed lags about 0.4 s; so the first step is the cue, not the closing speed. */
   private freeRusherSeen(a: Agent, sim: PlaySim): Vec2 | null {
     const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { assigned: Map<Agent, Agent | null> } }).coord).find((c) => c?.assigned);
     const taken = new Set<Agent>(coord ? [...coord.assigned.values()].filter((d): d is Agent => !!d) : []);
     const dir = sim.attackDir(a.team);
+    let found: Vec2 | null = null;
     for (const d of sim.defense) {
-      if (d.isDown(sim.t) || d.engagement || taken.has(d)) continue;
+      if (d.isDown(sim.t)) continue;
       const e = this.mind.estimate(d);
-      // A blitzer is read as he comes, from his alignment off the ball: up to 3 yd beyond the line and 12 yd from him.
-      if ((e.pos.x - sim.los) * dir > 3) continue;
-      const dx = a.pos.x - e.pos.x, dy = a.pos.y - e.pos.y, L = Math.hypot(dx, dy) || 1;
-      if (L > 12 || (e.vel.x * dx + e.vel.y * dy) / L < 2) continue;
-      return e.pos;
+      // The trigger is a second-level defender's: one aligned off the ball (1 yd or more past the line at the snap in
+      // his picture), not a lineman, whose rush the protection's count already carries.
+      if (!this.snapSeen.has(d)) { this.snapSeen.set(d, { ...e.pos }); continue; }
+      if ((this.snapSeen.get(d)!.x - sim.los) * dir < 1 || ['DE', 'DT', 'NT', 'EDGE'].includes(d.player.position)) continue;
+      const moved = (this.snapSeen.get(d)!.x - e.pos.x) * dir;
+      // A read step is about half a yard and then a drop; a blitzer keeps coming (1.4 yd by 0.8 s in the NFL).
+      if (moved >= 1.0) this.triggered.add(d); else if (moved < 0.6) this.triggered.delete(d);
+      if (!found && this.triggered.has(d) && !d.engagement && !taken.has(d)) { found = e.pos; this.hotBy = `${d.player.position}:${d.behavior?.kind}:${d.recog?.read ?? '-'}`; }
     }
-    return null;
+    return found;
   }
   /** QB_EYES: the man his eyes are on, and since when. */
   private eyesOn: Agent | null = null;
@@ -634,6 +646,11 @@ export class QBPass implements Behavior {
       if (t < this.snapAt) return stand(facingDown);
       this.phase = 'drop';
     }
+    // BLITZ_READ: his picture of the defense from the snap on, through his drop: the trigger is watched every tick.
+    if (BLITZ_READ && !this.hot && this.phase !== 'windup' && t <= this.snapAt + 1.2) {
+      const free = this.freeRusherSeen(a, sim);
+      if (!free) this.hotSeenAt = null; else this.hotSeenAt ??= t;
+    }
 
     if (this.phase === 'windup') {
       // THROW_BODY: a hold taken in the load can pin the arm. It matters at the
@@ -710,7 +727,9 @@ export class QBPass implements Behavior {
         const fakePt = rb ? { x: sim.los - 4.2, y: (a.pos.y + rb.pos.y) / 2 } : target;
         return goTo(a, fakePt, { speed: 0.6, facing: Math.PI / 2 * Math.sign(fakePt.y - a.pos.y || 1) });
       }
-      if (d < 0.4 || t > this.snapAt + this.drop.time + 0.4 || (pressure.time < 0.5 && t > this.snapAt + 0.4)) {
+      // BLITZ_READ: a free rusher he has recognized ends the drop: he hits his back foot and throws hot.
+      const hotNow = BLITZ_READ && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a);
+      if (d < 0.4 || t > this.snapAt + this.drop.time + 0.4 || (pressure.time < 0.5 && t > this.snapAt + 0.4) || hotNow) {
         this.phase = 'set';
         this.setAt = t;
         this.readStart = t;
@@ -788,11 +807,9 @@ export class QBPass implements Behavior {
     // hot: the quickest-breaking route on that side, else the back. The ball goes there at the hot bar, through
     // HOT_LOOK's look and QB_EYES' gate when they are on. A poor reader is later; a receiver with no quick route on
     // that side leaves him the back or nothing.
-    if (BLITZ_READ && !this.hot && t <= this.snapAt + 1.2) {
+    if (BLITZ_READ && !this.hot && this.hotSeenAt !== null) {
       const free = this.freeRusherSeen(a, sim);
-      if (!free) this.hotSeenAt = null;
-      else {
-        this.hotSeenAt ??= t;
+      if (free) {
         if (t - this.hotSeenAt >= this.processing(a)) {
           const side = Math.sign(free.y - sim.ballY) || 1;
           const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
