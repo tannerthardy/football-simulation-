@@ -2022,3 +2022,30 @@ not a fourth hands attempt.
 - the working length's change bounded by ARM_SPEED (no step);
 - the dither budget (the site switch has an enter and an exit margin);
 - off bit-identical.
+
+# HAND_SITE (906a6b93, off) and the ride-spot cut: the bodies do not close
+
+Expectation (stated before the read): ridden centre distance toward 0.73; share reaching the QB after coming off a ride
+53% → about 30%; interior engaged-then-free about 9% → 4-5%. RUSH_HANDS + PASS_RIDE, seeds 11 / 23 x 16, same head.
+`ride-pair.py` (interior) and `interior-free-kind.py`:
+
+| | without | HAND_SITE | HAND_SITE + ride spot at 0.8 of the bodies' width (RIDE_CONTACT_DIAG, diagnostic only) | NFL |
+|---|---|---|---|---|
+| ridden centre distance p50; within 0.65 yd | 0.82 / 0.81; 22 / 25% | 0.81 / 0.81; 23 / 25% | 0.82 / 0.82; 24 / 24% | 0.73; 37% |
+| came off a ride, then reached the QB | 53 / 46% | 53 / 46% | 52 / 48% | 26% |
+| interior engaged-then-free | 9.1 / 7.2% | 10.1 / 8.6% | 10.5 / 8.5% | 2.2% |
+| native sacked | 3.9 / 4.0% | 5.4 / 3.6% | 5.1 / 3.7% | 4.6-9.4% |
+
+**Missed at the first link: the bodies do not close.** Neither the hand's working length nor the ride's requested
+spacing sets how far apart a ridden pair is.
+- The probe already showed the joint slack in 88% of riding ticks. The strut was not what held them apart.
+- Asking the rider for a spot inside the torso contact changes nothing measurable either.
+
+In ridden frames our blocker is slower than the rusher (2.1 against 3.0 yd/s). The NFL ridden blocker is close to his
+rusher's pace relative to ours (2.25 against 2.93). Most "ridden" frames, as the operator counts them, may not be in
+PASS_RIDE's riding branch at all. The operator's "past the shoulder" (dx <= +0.2) is not PAST_ALONG_PATH.
+
+Stopped after two attempts. Re-diagnose before anything else: in the sim's ridden frames, which branch is the blocker
+in (riding, still engaged in front, released, or a different blocker's man), and what his request and achieved
+velocity are. HAND_SITE stays in the tree, off. It is correct about where a hand can be, but it is not the binding
+constraint. RIDE_CONTACT_DIAG is unregistered and comes out once this is read.
