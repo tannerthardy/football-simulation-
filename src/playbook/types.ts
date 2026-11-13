@@ -82,6 +82,9 @@ export interface RouteDef {
   depth: number;
   /** Route family for defensive anticipation. */
   family: 'quick' | 'intermediate' | 'deep' | 'flat' | 'cross' | 'back';
+  /** The route's coached pace between its points, as a fraction of top speed, where it is run under control rather
+   * than at the family's effort (the back's flat, timed to the drop). The receiver's route running still adjusts it. */
+  pace?: number;
 }
 
 export type ReceiverRef = `S${1 | 2 | 3 | 4}` | `W${1 | 2 | 3 | 4}` | 'B' | 'B2';

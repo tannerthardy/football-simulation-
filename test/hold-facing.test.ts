@@ -11,10 +11,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function turn(flag: string) {
+async function turn(flag: string, openHands = '0') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('HOLD_FACING', flag);
+  // The reproducer's play: the DT makes the hold still engaged with the C, whose hands are on him. OPEN_HANDS
+  // changes the play, not the hold: his open-handed C lets him slip off at 1.75 s and he makes the hold free at
+  // 1.95 s against a faster back (5.3 vs 4.8 yd/s). Pinned here; that play is the second case below.
+  vi.stubEnv('OPEN_HANDS', openHands);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { Rng } = await import('../src/core/rng.js');
   const { generateTeam, pickOffense, pickDefense } = await import('../src/league/team.js');
@@ -50,5 +54,12 @@ describe('HOLD_FACING', () => {
     expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
     expect(off.turnDeg).toBeGreaterThan(120);
     expect(on.turnDeg).toBeLessThan(60);
+  });
+  it('OPEN_HANDS (the DT free of his blocker when he grabs): HOLD_FACING still keeps him from spinning with the runner', async () => {
+    const off = await turn('0', '1'), on = await turn('1', '1');
+    expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
+    // No blocker's hands hold him now, so the hold and contacts carry him further (about 103 vs 167 deg off).
+    expect(on.turnDeg).toBeLessThan(off.turnDeg - 30);
+    console.log(`free holder, first 0.5 s of the hold: off ${off.turnDeg.toFixed(0)} deg, on ${on.turnDeg.toFixed(0)} deg`);
   });
 });
