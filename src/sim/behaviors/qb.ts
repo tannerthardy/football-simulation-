@@ -164,6 +164,14 @@ const PICTURE_AGE = process.env.PICTURE_AGE === '1';
  * becomes when the existing scramble check finds a lane. Off, he walks toward a
  * set point nudged by rushers within 3.5 yd at 0.45-0.6 of his speed. */
 const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
+/** QB_GATHER (experimental, off; QB_GATHER=1): the drop's rhythm carries his feet to the read he is on. When his eyes
+ * reach a read in the pocket, he hitches toward it (a short step, longer with a slower release and less experience),
+ * so the ball comes out on the hitch to the read he is on and a later read takes a second hitch. No beat is added:
+ * the hitch is taken while he reads. NFL QBs move toward the eventual target from about 0.6 s before the release (p75
+ * +0.37 yd/s at -0.6 s, +0.52 at -0.5, +0.67 at -0.4; BDB 2025, scripts/diag/eyes/), ours stood still until the
+ * windup (p75 0.00). Under pressure his pocket movement (QB_FEEL, SET_DECIDE) takes over.
+ * docs/reviews/2026-11-13-qb-gather.md. */
+const QB_GATHER = process.env.QB_GATHER === '1';
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -337,6 +345,9 @@ export class QBPass implements Behavior {
   noFinish = 0;
   /** SET_DECIDE: the direction he is moving in, held until moveUntil. */
   private moveDir: Vec2 | null = null;
+  /** QB_GATHER: the read his current hitch is to, and where it takes his feet. */
+  private hitchFor: Agent | null = null;
+  private hitchTo: Vec2 | null = null;
   private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
   private pinRolled = false;
@@ -1596,6 +1607,19 @@ export class QBPass implements Behavior {
     if (POCKET_CLIMB) {
       const climb = this.climb(a, sim, facing);
       if (climb) return climb;
+    }
+    // QB_GATHER: a hitch to the read his eyes are on, from where he is when they get there; no hitch with an edge
+    // rusher he feels (he slides off him as before).
+    if (QB_GATHER && read && !edge) {
+      if (this.hitchFor !== read) {
+        this.hitchFor = read;
+        const seen = sim.see(a, read).pos, dx = seen.x - a.pos.x, dy = seen.y - a.pos.y, L = Math.hypot(dx, dy) || 1;
+        const len = 0.5 + 0.3 * (1 - a.r('release')) + 0.2 * (1 - Math.min(1, a.player.experience / 8));
+        // The hitch is up and toward him, never back: the pocket's floor is where he stands.
+        const ux = Math.max(0.35, dx / L), uy = dy / L, n = Math.hypot(ux, uy);
+        this.hitchTo = { x: Math.min(a.pos.x + ux / n * len, sim.los - 2.5, this.drop.x + 2.5), y: a.pos.y + uy / n * len };
+      }
+      return goTo(a, this.hitchTo!, { speed: 0.35, facing });
     }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
   }
