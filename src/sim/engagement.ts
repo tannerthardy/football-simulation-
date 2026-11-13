@@ -44,7 +44,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { OPEN_HANDS, PUSH_GROWTH, type HandJoint, type Intent } from '../physics/world.js';
+import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -583,6 +583,20 @@ function setHands(sim: PlaySim, e: Engagement): void {
   if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
+  // RUSH_HANDS: a hand knocked off re-fits by reach and touch: after his reaction to the loss (felt), it travels
+  // from his chest to the man at arm speed, then is on him again where it lands.
+  // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
+  // arm, at arm speed, once it is no longer being driven (at rest on the chest).
+  if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
+    const o = hands.handOffset, step = ARM_SPEED * sim.dt;
+    hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
+  }
+  if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
+    // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
+    // request works past, as a landed move).
+    if (hands.off || Math.max(0, hands.normalForce ?? 0) < UNLOADED * pressForce(b)) { e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt); }
+    refit(sim, hands, b, d);
+  }
   // A landed finesse move has the hands off for its window.
   if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
     hands.steer *= 0.1;
@@ -599,6 +613,24 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.hold = 0;
     if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e, false);
   }
+  if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
+}
+
+const refitState = new WeakMap<HandJoint, { lostAt: number }>();
+/** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
+ * chest (the bodies' gap) at ARM_SPEED. */
+export function refitTime(b: Agent, d: Agent): number {
+  const gap = Math.max(0, Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) - b.profile.radius - d.profile.radius);
+  return Math.max(0.1, b.profile.reactionTime) + gap / ARM_SPEED;
+}
+function refit(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
+  let st = refitState.get(hands);
+  if (!st) { st = { lostAt: sim.t }; refitState.set(hands, st); }
+  if (sim.t - st.lostAt < refitTime(b, d)) return;
+  // One hand back at a time.
+  const on = hands.off ? 1 : Math.min(2, (hands.handsOn ?? 2) + 1);
+  hands.off = false; hands.handsOn = on; hands.handOffset = 0; hands.handVel = 0;
+  if (on === 2) { hands.offSide = undefined; refitState.delete(hands); } else refitState.set(hands, { lostAt: sim.t });
 }
 
 /**
@@ -620,7 +652,8 @@ function felt(e: Engagement, lat: Vec2): number {
 
 /** Remove a rep's joints from the world (disengage). */
 export function releaseJoints(sim: PlaySim, e: Engagement): void {
-  const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? [])]);
+  const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? []), ...(e.rusherHand ? [e.rusherHand] : [])]);
+  e.rusherHand = undefined;
   for (const joint of gone) runHands.delete(joint);
   sim.world.joints = sim.world.joints.filter((j) => !gone.has(j as HandJoint));
 }
@@ -667,9 +700,29 @@ function planMove(sim: PlaySim, e: Engagement, d: Agent, b: Agent): RushMove {
   );
 }
 
+/** RUSH_HANDS: the rusher's keys for the physical moves. By touch, the blocker's hand on him is unloaded (pressing
+ * him with less than UNLOADED of the blocker's press capacity, from the joint's measured force last step): the
+ * exposed hand a club beats. By sight, his arm is longer than the blocker's: the long-arm's edge. Each is read right
+ * with probability 0.5 + 0.5 x his recognition (finesse and awareness); a misread commits him to the wrong move,
+ * which costs what that move costs. */
+const UNLOADED = 0.2;
+export function handUnloaded(e: Engagement): boolean {
+  const h = e.hands;
+  return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
+}
+function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
+  const d = e.defender, b = e.blocker, rng = sim.dice('rep', b, d);
+  const recognition = 0.5 * d.r('passRushFinesse') + 0.5 * d.r('awareness');
+  const read = (truth: boolean) => (rng.chance(0.5 + 0.5 * recognition) ? truth : !truth);
+  if (read(handUnloaded(e))) return 'club';
+  if (read(d.player.measurables.armIn > b.player.measurables.armIn) && !handUnloaded(e)) return 'longarm';
+  return null;
+}
+
 /** Choose the next move from the state of the rep. */
 function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   const d = e.defender;
+  if (RUSH_HANDS && e.type === 'pass') { const keyed = keyedMove(sim, e); if (keyed) return keyed; }
   const td = traits(d);
   const power = d.r('passRushPower');
   const fin = d.r('passRushFinesse');
@@ -696,6 +749,70 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   );
 }
 
+/** RUSH_HANDS: the club. His near arm sweeps across the blocker's hand: a force of his arm (armForce) on the hand,
+ * across the joint toward his working side's inside, for as long as his hand is on the blocker's arm: the time it
+ * takes to cross the forearm's thickness (FOREARM, about 0.1 yd: a forearm circumference of about 30 cm) at his hand
+ * speed (ARM_SPEED by his finesse: 0.75-1.25), about 0.03 s. Whether the hand comes off is the
+ * World's: the blocker's hold (extension, press, grip) against it. Nothing else is applied: a club that does not
+ * clear the hand has spent his hands for its length. */
+/** RUSH_HANDS: a forearm's thickness, yd (circumference about 30 cm, so about 9.5 cm across). */
+const FOREARM = 0.1;
+export function clubHand(sim: PlaySim, e: Engagement, axis: Vec2): { force: Vec2; duration: number } {
+  const d = e.defender, lat = latOf(axis);
+  const speed = ARM_SPEED * (0.75 + 0.5 * d.r('passRushFinesse'));
+  const duration = FOREARM / speed, F = armForce(d);
+  const force = { x: -lat.x * e.side * F, y: -lat.y * e.side * F };
+  sim.world.handForce(e.hands!, d.body, force, sim.world.time, sim.world.time + duration);
+  e.moveOk = false; e.moveUntil = sim.t + duration;
+  e.club = { end: sim.t + duration, handsBefore: e.hands!.off ? 0 : e.hands!.handsOn ?? 2, speed };
+  return { force, duration };
+}
+
+/** RUSH_HANDS: the long-arm. His near arm goes straight into the blocker's chest at his own lockout (0.9 of his
+ * arm): a hands joint of his (a = rusher), pushing with his press, held until his next move decision. While it is on
+ * and the man is beyond the blocker's arm, the blocker's hands cannot reach him (no push, hold or steer). His legs
+ * drive through the straight arm in the World. */
+export function longArm(sim: PlaySim, e: Engagement): HandJoint {
+  const b = e.blocker, d = e.defender;
+  const j: HandJoint = e.rusherHand && !e.rusherHand.off ? e.rusherHand
+    : { kind: 'hands', a: d.body, b: b.body, actor: d.body, extension: 1, push: 0, hold: 0, steer: 0 };
+  j.extension = b.profile.radius + d.profile.radius + 0.9 * d.player.measurables.armIn / 36;
+  j.push = pressForce(d); j.steer = 0.3 * armForce(d); j.hold = 0;
+  e.rusherHand = j; e.longArmUntil = e.nextMoveAt; e.moveOk = false; e.moveUntil = sim.t;
+  if (!sim.world.joints.includes(j)) sim.world.joints.push(j);
+  return j;
+}
+
+/** RUSH_HANDS: the blocker against a long-arm. He feels a straight arm on his chest with the man beyond his own hands;
+ * after his reaction time he clubs the arm (the same force on a hand as the rusher's club, his arm and hand speed). */
+function counterLongArm(sim: PlaySim, e: Engagement): void {
+  const j = e.rusherHand, b = e.blocker, d = e.defender;
+  if (!j || j.off) return;
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  if (e.counterAt === undefined) { e.counterAt = sim.t + rt; return; }
+  if (sim.t < e.counterAt) return;
+  const dx = b.pos.x - d.pos.x, dy = b.pos.y - d.pos.y, L = Math.hypot(dx, dy) || 1;
+  const lat = { x: -dy / L * e.side, y: dx / L * e.side };
+  const speed = ARM_SPEED * (0.75 + 0.5 * b.r('handTechnique')), duration = FOREARM / speed, F = armForce(b);
+  sim.world.handForce(j, b.body, { x: lat.x * F, y: lat.y * F }, sim.world.time, sim.world.time + duration);
+  e.counterAt = sim.t + rt + duration;
+}
+
+/** RUSH_HANDS: the long-arm's lifetime and the blocker's reach while it is on. */
+function stepLongArm(sim: PlaySim, e: Engagement): void {
+  const j = e.rusherHand;
+  if (!j) return;
+  if (j.off || sim.t >= (e.longArmUntil ?? 0)) {
+    sim.world.joints = sim.world.joints.filter((x) => x !== j);
+    e.rusherHand = undefined; e.counterAt = undefined;
+    return;
+  }
+  const b = e.blocker, d = e.defender, h = e.hands;
+  const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
+  if (h && gap > b.player.measurables.armIn / 36) { h.push = 0; h.hold = 0; h.steer = 0; }
+  counterLongArm(sim, e);
+}
+
 /**
  * Resolve the defender's move against the blocker's counters. Success and
  * failure are physical actions on the two bodies and their hands.
@@ -703,6 +820,9 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
 function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   const t = sim.t;
   const rng = sim.dice('rep', e.blocker, e.defender);
+  // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
+  if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
+  if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);
@@ -1049,6 +1169,28 @@ export function rushIntentOf(e: Engagement): { intent: RushIntent; switches: num
 export const PAST_MARGIN = 0.3;
 /** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
 const RIDE_PUSH = 1.0;
+/** PASS_RIDE (experimental, off; PASS_RIDE=1 turns it on): the ride as coached, one rule for every pass blocker. A man
+ * who has won his hip (past along his path, PAST_ALONG_PATH's test) is not let go: the blocker runs with him on his
+ * QB side -- the spot beside the man's hip, a body's width toward the QB across his path -- matching his velocity and
+ * closing on that spot, hips opened to run where he is going, and pushes through his hands (the joint's push, away from himself: the man's path flattened
+ * away from the QB). Off, the ride asked for the man's velocity less 1 yd/s toward the QB, so the blocker fell behind
+ * by design (guards 1.9 against the man's 3.4 yd/s; the rep ended 3 yd from the QB, ride-probe.mts). Whether he keeps
+ * up is his body's: the rep still ends when the man is beyond his arm. Ride to stop needs the man clearly back in
+ * front (along his path by more than PAST_MARGIN), so the two do not flicker. A grip from behind stays the holding
+ * detector's. */
+export const PASS_RIDE = process.env.PASS_RIDE !== '0';
+const RIDE_GAIN = 2.5;
+function rideIntent(b: Agent, d: Agent, qb: Vec2, growth: number | undefined, feet: number): Intent {
+  const sp = Math.hypot(d.vel.x, d.vel.y);
+  const path = sp >= 1 ? { x: d.vel.x / sp, y: d.vel.y / sp } : norm(sub(qb, d.pos));
+  const nx = -path.y, ny = path.x, side = Math.sign((qb.x - d.pos.x) * nx + (qb.y - d.pos.y) * ny) || 1;
+  const w = b.profile.radius + d.profile.radius;
+  const spot = { x: d.pos.x + nx * side * w, y: d.pos.y + ny * side * w };
+  const vel = { x: d.vel.x + RIDE_GAIN * (spot.x - b.pos.x), y: d.vel.y + RIDE_GAIN * (spot.y - b.pos.y) };
+  // He opens his hips and runs with the man (faces where he is going), his near hand on the man's side.
+  const facing = Math.hypot(vel.x, vel.y) > 1 ? Math.atan2(vel.y, vel.x) : Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
+  return { vel, facing, push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * feet };
+}
 
 /** PAST_ALONG_PATH: is the man past the blocker along his own path of travel?
  * Below a walk, his path is not defined; the leverage (phi) decides. */
@@ -1361,7 +1503,12 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // of travel; past but still within reach, the rep goes on as a ride.
   let riding = false;
   if (PAST_ALONG_PATH) {
-    const past = pastAlongPath(b, d, Math.abs(e.phi));
+    let past = pastAlongPath(b, d, Math.abs(e.phi));
+    // PASS_RIDE: once riding, he stays on him until the man is clearly back in front along his path.
+    if (PASS_RIDE && !past && e.riding) {
+      const sp = Math.hypot(d.vel.x, d.vel.y);
+      past = sp < 1 || ((b.pos.x - d.pos.x) * d.vel.x + (b.pos.y - d.pos.y) * d.vel.y) / sp <= PAST_MARGIN;
+    }
     if (past) {
       const reach = b.profile.radius + d.profile.radius + b.player.measurables.armIn / 36;
       if (Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) > reach && !canRidePassContact(e, t)) {
@@ -1380,6 +1527,24 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
 
   // ---- moves at decision points
+  // RUSH_HANDS: a move takes his arm away; he throws no other until it is back. After a club his arm returns across
+  // its sweep (0.45 of his arm) at his hand speed, plus his reaction; a club that did not clear (his arm stopped on a
+  // hand) must be cocked again from rest (a second sweep); one that left him off balance costs his reaction again.
+  // A counter is a new decision on a felt change (the blocker's hand going unloaded on him) -- once he can.
+  if (RUSH_HANDS && e.type === 'pass') {
+    const rt = Math.max(0.1, d.profile.reactionTime);
+    if (e.club && t >= e.club.end) {
+      const h = e.hands, now = !h || h.off ? 0 : h.handsOn ?? 2, cleared = now < e.club.handsBefore;
+      const sweep = 0.45 * d.player.measurables.armIn / 36 / e.club.speed;
+      e.handsBackAt = e.club.end + sweep + rt + (cleared ? 0 : sweep) + (baseOf(d) < 0.9 ? rt : 0);
+      e.nextMoveAt = Math.max(e.nextMoveAt, e.handsBackAt);
+      e.club = undefined;
+    }
+    const loaded = !handUnloaded(e);
+    const ready = !e.club && !e.rusherHand && t >= (e.handsBackAt ?? 0);
+    if (ready && e.feltLoaded && !loaded && !(t < e.moveUntil)) e.nextMoveAt = Math.min(e.nextMoveAt, Math.max(t + rt, e.handsBackAt ?? 0));
+    e.feltLoaded = loaded;
+  }
   if (t >= e.nextMoveAt) {
     const scripted = rushScripts.get(e);
     e.move = scripted?.length ? scripted.shift()! : t - e.start < 0.1 ? e.move : chooseMove(sim, e);
@@ -1515,12 +1680,14 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   };
   if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
   e.lastReqX = intents[b.idx].vel.x;
+  if (PASS_RIDE) e.riding = riding;
   if (riding) {
     // PAST_ALONG_PATH: the ride. He has been beaten along the man's path but
     // is still within reach: he turns with him, keeps up, and pushes him on
     // past -- away from the QB -- with his hands on the man's side.
     const away = norm(sub(d.pos, qb));
-    intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
+    if (PASS_RIDE) intents[b.idx] = rideIntent(b, d, qb, growth, tb.feet);
+    else intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
       facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
   }
   helperIntents(sim, e, intents, axis);
