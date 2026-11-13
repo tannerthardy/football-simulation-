@@ -2195,3 +2195,72 @@ The candidate is OPEN_HANDS **off**, against the stack with it on. Plays changed
 OPEN_HANDS' run cost is real on the fresh set, about 0.27-0.30 a run beyond divergence, carried by gap and OZ. It is
 not the biased set's selection. With it off, engaged-grab tackle breaks are 0.063 a run, against 0.039 on. This is
 the GAPS run-block grip frame row: seals and reach blocks lose the man across their face.
+
+# Protector falls (Integration, 2026-11-13): diagnosis
+
+## 1. An NFL rate, as a bound (`fall-proxy.py`; same code on both, scored against the sim's own fall events)
+
+The proxy: an OL whose speed stays below a threshold for a hold time, starting before the throw (it may run past it),
+having had a DL/LB within 1.2 yd in the 0.5 s before. Variants require his man to have left, or him to have been moving
+(>= 1.0 yd/s) just before. On the sim, a fall's speed falls to 0 within about 0.7 s and stays there.
+
+| variant | ours: proxy /100 dropbacks, recall, precision (engine-56, seed 11 x 16; true falls 30.5 /100) | NFL proxy /100 |
+|---|---|---|
+| < 0.5 for 1.0 s, man left | 7.7; 18%; 71% | 0.8 |
+| < 0.5 for 1.0 s | 13.9; 28%; 61% | 3.4 |
+| < 0.5 for 1.0 s, was moving | 11.2; 24%; 66% | 1.8 |
+| < 0.3 for 1.0 s, was moving | 7.9; 18%; 69% | 0.3 |
+| < 0.5 for 0.8 s, was moving | 12.8; 26%; 63% | 3.4 |
+
+Recall is low because many falls come just before the play ends. The proxy fires 4-26x as often on ours as on the NFL.
+Corrected by our precision and recall, the NFL is about 1-5 linemen falls per 100 dropbacks (all five). That is an
+upper bound: NFL plays run longer after a fall, so its recall is higher. Ours is 30.5 (RUSH_HANDS + PASS_RIDE: 32).
+The size is settled: about 6-25x.
+
+## 2. The fall, traced (`fall-trace.mts`, engine-56 default, seed 11 x 3: 37 interior, 43 tackle falls before the throw)
+
+Medians over the 1.0 s before the fall. Directions are taken along the press he feels (+ = the way he is pushed).
+
+| | 1.0 s | 0.6 s | 0.3 s | 0.1 s | the fall tick |
+|---|---|---|---|---|---|
+| interior: press felt | 1265 | 1360 | 1628 | 1454 | **472** |
+| interior: his lean against it | 815 | 997 | 1307 | **1504** | 477 |
+| interior: capture point along the press (x base radius) | +0.02 | -0.00 | -0.01 | -0.03 | **-3.68** |
+| interior: velocity along the press / asked | 1.02 / 0.08 | 1.26 / 0.00 | 1.60 / 0.29 | 1.71 / 0.18 | |
+| tackles: press / lean | 1153 / 465 | 1199 / 781 | 1418 / 1121 | 1385 / 1335 | 497 / 470 |
+| tackles: capture point | +0.02 | -0.04 | -0.26 | -0.53 | -3.86 |
+
+- Press direction: about 165° off his facing (in front of him). Posture 0.54. Cause: 'contact' in every case.
+- Fall direction: **forward, onto the man, 33 of 37 interior and 36 of 43 tackles**; backward 0 and 2; the rest
+  sideways.
+- Rusher's move at the fall: interior bull 10, swim 10, club 6, long-arm 5, snatch 2; tackles club 9, rip 9, bull 7,
+  swim 7, spin 7.
+
+**Reading: none of (a), (b) or (c). He is propped on the man.**
+- He is driven back at 1.0-1.7 yd/s against a request of about 0, as the rep-end probe showed. His lean into the man
+  grows to the press, about 1500 kg·yd/s² by 0.1 s before. For a 140 kg lineman that is about one body weight of
+  horizontal ground force, the posture of a man leaning on a wall.
+- His capture point stays centred (|xi| < 0.05 of his base) only because the press props him.
+- When the rusher's move takes the load away (a swim, club, rip, snatch, a bull's pull, a spin), the press falls by
+  two-thirds in one tick while the lean is still about 1500. His capture point jumps 3.7 base radii toward the man,
+  and he falls forward.
+- He is not toppled backward about a planted base (b), and his feet are not failing to follow a retreat (a: xi is
+  ~0 until the unload). The press is not unmet (c): it is met, with all his weight, and that is the problem when it
+  goes.
+
+**What football says.** A protector who leans on the man falls when the man pulls or swims. That is real, and it is
+what those moves exploit. It is also exactly what pass-protection technique coaches against: weight over the feet, a
+wide base, sit in it, punch and re-fit, never lean. The NFL's 1-5 falls per 100 dropbacks says real protectors
+rarely end up propped.
+
+**Questions for the mechanism, before any proposal:**
+1. Why does the lean grow to the full press? The lean's target follows the felt load, so a sustained press is met
+   with an equal lean. A coached protector meets it with his base (stagger, sink, friction under a lower centre of
+   mass) and gives ground, rather than with a lean that is propped on the man.
+2. Why does the lean not leave with the press? `unsupportedLean` releases only past 1.25x the felt press, and the
+   felt press is filtered over ~40 ms. A one-tick unload of 1000 leaves the lean in place for long enough to
+   topple him.
+
+The second is World behaviour (support), the first is how much of himself he commits (the controller's lean request
+and the World's growth). Previous attempts in this area (TACKLE_BRAKE, TACKLE_RESET, PASS_SINK) all acted on the
+retreat and the base, not on the commitment, which is why none of them changed the fall.
