@@ -30,6 +30,8 @@ import { GUN_SNAP, handoffReach, snapSecured } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
+import { believedProfile, typicalAt } from '../believed.js';
+import type { PhysicalProfile } from '../../players/physical.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
@@ -308,6 +310,21 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
  * unchanged. The shape is mechanics; the coefficients are chosen, to be checked for ORDER only (set < stepping in <
  * drifting away < across the body) and against ball-vs-aim by platform (scripts/diag/eyes/deep-split.ts), never fitted
  * to completions or to the NFL's ball-to-receiver distance (which contains the receiver's adjustment). */
+/** QB_BELIEVED_DEF (experimental, off; QB_BELIEVED_DEF=1; information rule): in pricing a throw he no longer knows each
+ * defender exactly. Off, the window reads every defender's true physical profile (reach, reaction time, top speed, leap)
+ * and exact ball-skills rating, and the sim's engagement record for whether a defender is tied up. On:
+ * - body and ball skills are a belief: the position's typical values corrected toward the man's own by how well he
+ *   knows the opponent, SCOUT0 + SCOUT_AWARE x awareness + SCOUT_EXP x experience (to 8 years). So an elite corner he
+ *   has not studied is rated nearer an ordinary one, and knowing the opponent is a rating, not a given. Fixed for the
+ *   play (no fresh noise each tick).
+ * - tied up is what he sees: an offensive body other than his target within arm's length of the defender in his
+ *   pictures; the same in screenDead() and the rush belief.
+ * A loss from this is repaired by preparation as a mechanism (film study raising how well he knows them), not by the
+ * leak. SCOUT constants are chosen. */
+const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF === '1';
+const SCOUT0 = 0.2;
+const SCOUT_AWARE = 0.4;
+const SCOUT_EXP = 0.4;
 const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
 /** THROW_PLATFORM constants. PLATFORM_STRIDE, yd/s: NFL quarterbacks release moving at 0.7 / 1.1 / 1.9 yd/s (p25/50/75,
  * BDB 2026); ours at 0.4 (STRIDE_SPEED). PLATFORM_QUIET, yd/s: chosen, above a planted body's sway. PLATFORM_RESID0 /
@@ -556,7 +573,7 @@ export class QBPass implements Behavior {
       if (BLITZ_DEPTH && toward > 0 && (p.x - sim.los) * dir > 1) toward *= 0.25;
       const target = logistic(Math.log(r.prior / (1 - r.prior)) + 2.5 * toward);
       r.p += (target - r.p) * k;
-      if (d.engagement) r.p = Math.min(r.p, 0.5);
+      if (QB_BELIEVED_DEF ? this.seenTied(a, sim, d, p) : !!d.engagement) r.p = Math.min(r.p, 0.5);
       believed += r.p;
     }
     const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[]; assigned?: Map<Agent, Agent | null> } }).coord).find((c) => c?.protectors);
@@ -1330,7 +1347,7 @@ export class QBPass implements Behavior {
       const along = ((seen.x - a.pos.x) * dx + (seen.y - a.pos.y) * dy) / len;
       const off = Math.abs((seen.x - a.pos.x) * dy - (seen.y - a.pos.y) * dx) / len;
       if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) return true;
-      if (d.engagement) continue;
+      if (QB_BELIEVED_DEF ? this.seenTied(a, sim, d, seen, r) : !!d.engagement) continue;
       if (Math.hypot(seen.x - rc.x, seen.y - rc.y) < 1.5 || (sp && Math.hypot(seen.x - sp.x, seen.y - sp.y) < 1.5)) return true;
     }
     return false;
@@ -1612,6 +1629,10 @@ export class QBPass implements Behavior {
     const defenders = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => {
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
+      // QB_BELIEVED_DEF: the defender's body and ball skills as he believes them, and whether he sees him tied up.
+      const bel = QB_BELIEVED_DEF ? this.believe(a, d) : null;
+      const dp = bel ? bel.profile : d.profile, dBall = bel ? bel.ballSkills : d.r('ballSkills');
+      const tied = QB_BELIEVED_DEF ? this.seenTied(a, sim, d, seen.pos, r) : !!d.engagement;
       const facingQB = Math.cos(seen.facing - Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x)) > 0.2;
       // What each defender knows, and when: one facing him sees the motion
       // start; one on the target follows the stem until the break; anyone
@@ -1622,9 +1643,9 @@ export class QBPass implements Behavior {
       // a reaction after the motion starts, whichever is later; one in man
       // reads the release itself. Weighted by his own man/zone belief.
       const pMan = this.mind.pMan();
-      const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - d.profile.reactionTime) : 0;
+      const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - dp.reactionTime) : 0;
       const blind = facingQB ? facingBlind : onTarget ? Math.min(untilBreak, wind) : wind;
-      let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: dp, speedScale: d.speedScale };
       // DEF_BELIEF: the man on the target goes partly where the target goes.
       if (DEF_BELIEF && Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 4) {
         const k = clamp(PHASE_MEAN + (1 - know) * 0.35 * a.mind.judgment('def-phase'), 0, 1);
@@ -1633,15 +1654,15 @@ export class QBPass implements Behavior {
         mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
           vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
       }
-      const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
-      const leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
+      const react = dp.reactionTime * (facingQB ? 1 : 1.8) + (tied ? 0.5 : 0);
+      const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
       // PICTURE_AGE: how far he could be from where the QB has him, in time.
       let spreadD = 0;
       if (PICTURE_AGE) {
-        const age = this.mind.pictureAge(d), A = d.profile.vmax / Math.max(d.profile.tau, 1e-3);
-        spreadD = Math.min(0.5 * A * age * age, d.profile.vmax * age) / Math.max(d.profile.vmax, 1e-3);
+        const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
+        spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
       }
-      return { d, blind, mover, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
@@ -1662,16 +1683,16 @@ export class QBPass implements Behavior {
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, blind, mover, react, leap, spreadD, facingQB, estimateError } of defenders) {
-        const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
+      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, estimateError } of defenders) {
+        const tt = blind + timeToReach(mover, pt, dp.reach + 0.3) + react;
         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
-        const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(d.profile.vmax, 1e-3)) : 0.13;
+        const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
         const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
         const contest = 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
-        pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
+        pOpen *= 1 - contest * (0.55 + 0.3 * dBall);
         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
         if (DEF_BELIEF) {
           const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
@@ -1684,19 +1705,19 @@ export class QBPass implements Behavior {
           const tau = T * f;
           const b = arcPoint(from, v0, tau);
           if (b.z > leap + 0.1) continue;
-          const tb = blind + timeToReach(mover, b, d.profile.reach) + react;
+          const tb = blind + timeToReach(mover, b, dp.reach) + react;
           const mb = tb - (wind + tau) + estimateError;
           touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
         }
         pClear *= 1 - touch * 0.75;
-        const iPath = touch * (0.08 + 0.3 * d.r('ballSkills'));
+        const iPath = touch * (0.08 + 0.3 * dBall);
         // At the catch point: jumped routes are picks; contested balls sometimes.
-        const iJump = first * (0.15 + 0.35 * d.r('ballSkills')), iContest = Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
+        const iJump = first * (0.15 + 0.35 * dBall), iContest = Math.max(0, contest - first) * 0.08 * dBall;
         intRisk += iPath + iJump + iContest;
         intPath += iPath; intJump += iJump; intContest += iContest;
         if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
           contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
-          iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +d.r('ballSkills').toFixed(2) });
+          iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
         if (INT_BELIEF) {
           noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
           noCatchPick *= 1 - clamp((iJump + iContest) * CATCH_PICK * intBelief, 0, 0.95);
@@ -1755,6 +1776,30 @@ export class QBPass implements Behavior {
       if (ev && (!best || ev.value > best.value)) best = ev;
     }
     return best;
+  }
+
+  /** QB_BELIEVED_DEF: his belief of a defender's body and ball skills, fixed for the play. */
+  private believed = new Map<Agent, { profile: PhysicalProfile; ballSkills: number }>();
+  private believe(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number } {
+    let b = this.believed.get(d);
+    if (!b) {
+      const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
+      const typ = typicalAt(d.player.position);
+      b = { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k };
+      this.believed.set(d, b);
+    }
+    return b;
+  }
+
+  /** QB_BELIEVED_DEF: whether he sees a defender tied up: an offensive body other than `except` within arm's length of
+   * where he has the defender, on his own picture of that teammate. */
+  private seenTied(a: Agent, sim: PlaySim, d: Agent, at: Vec2, except?: Agent): boolean {
+    for (const o of sim.offense) {
+      if (o === a || o === except || o.isDown(sim.t)) continue;
+      const b = sim.see(a, o).pos;
+      if (this.inArm(o, d, Math.hypot(b.x - at.x, b.y - at.y))) return true;
+    }
+    return false;
   }
 
   /** THROW_PLATFORM: what his motion does to a throw at `to` with flight time T: the miss it adds along his direction
