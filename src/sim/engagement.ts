@@ -1169,6 +1169,28 @@ export function rushIntentOf(e: Engagement): { intent: RushIntent; switches: num
 export const PAST_MARGIN = 0.3;
 /** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
 const RIDE_PUSH = 1.0;
+/** PASS_RIDE (experimental, off; PASS_RIDE=1 turns it on): the ride as coached, one rule for every pass blocker. A man
+ * who has won his hip (past along his path, PAST_ALONG_PATH's test) is not let go: the blocker runs with him on his
+ * QB side -- the spot beside the man's hip, a body's width toward the QB across his path -- matching his velocity and
+ * closing on that spot, hips opened to run where he is going, and pushes through his hands (the joint's push, away from himself: the man's path flattened
+ * away from the QB). Off, the ride asked for the man's velocity less 1 yd/s toward the QB, so the blocker fell behind
+ * by design (guards 1.9 against the man's 3.4 yd/s; the rep ended 3 yd from the QB, ride-probe.mts). Whether he keeps
+ * up is his body's: the rep still ends when the man is beyond his arm. Ride to stop needs the man clearly back in
+ * front (along his path by more than PAST_MARGIN), so the two do not flicker. A grip from behind stays the holding
+ * detector's. */
+export const PASS_RIDE = process.env.PASS_RIDE === '1';
+const RIDE_GAIN = 2.5;
+function rideIntent(b: Agent, d: Agent, qb: Vec2, growth: number | undefined, feet: number): Intent {
+  const sp = Math.hypot(d.vel.x, d.vel.y);
+  const path = sp >= 1 ? { x: d.vel.x / sp, y: d.vel.y / sp } : norm(sub(qb, d.pos));
+  const nx = -path.y, ny = path.x, side = Math.sign((qb.x - d.pos.x) * nx + (qb.y - d.pos.y) * ny) || 1;
+  const w = b.profile.radius + d.profile.radius;
+  const spot = { x: d.pos.x + nx * side * w, y: d.pos.y + ny * side * w };
+  const vel = { x: d.vel.x + RIDE_GAIN * (spot.x - b.pos.x), y: d.vel.y + RIDE_GAIN * (spot.y - b.pos.y) };
+  // He opens his hips and runs with the man (faces where he is going), his near hand on the man's side.
+  const facing = Math.hypot(vel.x, vel.y) > 1 ? Math.atan2(vel.y, vel.x) : Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
+  return { vel, facing, push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * feet };
+}
 
 /** PAST_ALONG_PATH: is the man past the blocker along his own path of travel?
  * Below a walk, his path is not defined; the leverage (phi) decides. */
@@ -1481,7 +1503,12 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // of travel; past but still within reach, the rep goes on as a ride.
   let riding = false;
   if (PAST_ALONG_PATH) {
-    const past = pastAlongPath(b, d, Math.abs(e.phi));
+    let past = pastAlongPath(b, d, Math.abs(e.phi));
+    // PASS_RIDE: once riding, he stays on him until the man is clearly back in front along his path.
+    if (PASS_RIDE && !past && e.riding) {
+      const sp = Math.hypot(d.vel.x, d.vel.y);
+      past = sp < 1 || ((b.pos.x - d.pos.x) * d.vel.x + (b.pos.y - d.pos.y) * d.vel.y) / sp <= PAST_MARGIN;
+    }
     if (past) {
       const reach = b.profile.radius + d.profile.radius + b.player.measurables.armIn / 36;
       if (Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) > reach && !canRidePassContact(e, t)) {
@@ -1653,12 +1680,14 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   };
   if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
   e.lastReqX = intents[b.idx].vel.x;
+  if (PASS_RIDE) e.riding = riding;
   if (riding) {
     // PAST_ALONG_PATH: the ride. He has been beaten along the man's path but
     // is still within reach: he turns with him, keeps up, and pushes him on
     // past -- away from the QB -- with his hands on the man's side.
     const away = norm(sub(d.pos, qb));
-    intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
+    if (PASS_RIDE) intents[b.idx] = rideIntent(b, d, qb, growth, tb.feet);
+    else intents[b.idx] = { vel: { x: d.vel.x + away.x * RIDE_PUSH, y: d.vel.y + away.y * RIDE_PUSH },
       facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
   }
   helperIntents(sim, e, intents, axis);
