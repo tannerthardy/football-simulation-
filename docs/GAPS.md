@@ -80,6 +80,17 @@ tables.
   (28–44%).
 - **Ruled out by the matrix:** any one formation (the excess is the same
   across 2x2, 3x1, bunch, empty and 12 personnel).
+- **Where pursuit stands (Defense, 2026-11-13):**
+  - Lead angle, arrival speed and the finish match the NFL in aggregate, on the
+    same operators.
+  - The YAC gap is structure, which is Coverage's area: nobody downfield of the
+    catcher on outside catches (RB 41% against 13%), the corner's position on
+    wide outs and curls, and ball defense on medium flights.
+  - The commitment fixes (`PURSUIT_COMMIT`, `CARRIER_COMMIT`, `SPACING_SMOOTH`,
+    `PURSUIT_SPACING_SMOOTH`) are in engine-55's cards.
+  - Between-player skill spread has no supported lever except LB closing at the
+    release, which waits on the quarterback showing a cue
+    ([RAT-4](KNOWN_PROBLEMS.md#rat-4)).
 - **Unknown:** how much of the gap each piece carries. Concept-level cells
   are weak: the classifier agrees with the called concept 25–80%, and 70% of
   NFL dropbacks fit none of our 17 concepts. One concept cell stands out and
@@ -178,6 +189,7 @@ matrix first cut. "Rule" items are coached rules our defenders lack.
 | Playbook coverage | Counted from the NFL's own route labels, no classifier ([review](reviews/2026-11-11-playbook-coverage.md)): 55% of NFL formation sides are a combination one of our 17 concepts runs, 25% of dropbacks have both sides covered, 7% are exactly one of our concepts (this replaces the matrix's "70% fit none"). On drop-back passes only (6,098 of 9,736 dropbacks after removing play action, screens, RPOs, designed rollouts and spikes): 54% / 22% / 5%. Missing, by size: the back's routes (angle 14.9%, out 6.2%, screen 3.4%, wheel 1.6%: 26% of dropbacks; ours block, check, swing or flat); screens of every kind; almost every common trips side (our #3 runs only hook, seam, flat or shallow); and two-receiver pairs such as go+flat, double slants, hitch+post, out+out, corner+flat | Corrected 2026-11-12: the back's routes are not missing. Measured on engine-47 over 1,470 drop-backs (`scripts/diag/concepts/back-routes.ts`), ours / NFL: flat or swing 35.4 / 34.5%, stays in 21.0 / 17.8%, angle 17.1 / 16.8%, no back 15.9 / 15.3%, out 7.1 / 7.4%, wheel 3.6 / 2.0%; the earlier count predated `CONCEPT_MENU` and `BACK_RELEASE`. Open playbook items, queued (Rules + Coaching): play-action protections (one generic protection today; boot and naked first, a `boot` drop type exists that no concept uses), then double moves (none in the playbook). Screens are left out on purpose and are being filtered from the matrix and this count: the aim is the drop-back game |
 | Screens | Not callable | Parked, out of scope for now |
 | Run-block grip frame | Since `OPEN_HANDS` (engine-54) a run blocker keeps cloth only by the pass rep's frame (between the man and the QB line), so seals, reach and cut-off blocks lose the man across their face: fixed run set 3.86 → 3.59, duo and toss lost most (−0.49 / −0.58 on engine-47). The old 40% of run steering above μ·N was the defect and stays fixed; what is missing is the coached seal/reach leverage: grip kept while his body is between the defender and the run's path | Parked behind the pass game (Flex). Named follow-up: a run-specific frame; canaries duo and toss; first measurement hitter class by concept, `OPEN_HANDS` on/off, after `RUSH_HANDS` stage 2's reads |
+| Ratings that leave no trace in motion | NFL pursuers have stable habits our ratings do not create: LB closing at the throw (split-half 0.59), safety closing angle on arrival (0.51), DL approach speed (0.51), corner lead within role (0.65; traced to nothing tracking measures). Acceleration and redirect are not traits of our corners at all (0.08 / 0.14). The tackling rating slows the approach, which the NFL does not show. Finishing at speed is not a gap: from first contact, ours stop the runner as fast as the NFL's | Recorded ([RAT-4](KNOWN_PROBLEMS.md#rat-4), [RAT-5](KNOWN_PROBLEMS.md#rat-5), [TKL-8](KNOWN_PROBLEMS.md#tkl-8)). Nothing built for DB lead (safeties = role, corners = no measured source); the approach term is left as is and a rating-independent version parked |
 | Old defense flags | Seven off flags undecided | Parked |
 
 ## What improved recently

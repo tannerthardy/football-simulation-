@@ -1174,6 +1174,20 @@ export class ManCoverage implements Behavior {
  * Overloaded match defenders can hesitate at an exchange, then recover on a
  * subsequent read. Their called technique stays intact.
  */
+/** CURL_FLAT_BACK (experimental, off; CURL_FLAT_BACK=1 turns it on): the
+ * curl-flat rule's second half. With No. 2 not (or no longer) carried
+ * vertically, the curl-flat defender who sees the back or No. 3 showing to the
+ * flat on his side (shallow, running outside 2 yd outside the ball, or already
+ * settled in the flat 4 yd outside it) sinks to
+ * his curl window and widens under it toward the flat with his eyes on the QB,
+ * by his read and range, and breaks on the throw (the existing sawThrow /
+ * playBall), so a flat-curl high-low still works on him. Without it the curl-flat
+ * expansion covered only No. 2 and was switched off by a fast-releasing back;
+ * he played the threat nearest his curl landmark and was about 10 yd inside
+ * the catcher on our wide back-flat catches with nobody in front of the
+ * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
+ * wide-owner.ts). */
+const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
 /** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at
@@ -1581,6 +1595,36 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...carry, facing: openCarryFacing(a, sim, th.r, carry, true) }, { label: 'open-carry-seam', key: th.vel });
       }
       return withFacingTechnique(carry, { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
+    }
+    // CURL_FLAT_BACK: with No. 2 not (or no longer) carried vertically, the
+    // curl-flat defender who sees the back or No. 3 showing to the flat on his
+    // side widens under his curl window toward him and breaks on the throw.
+    if (CURL_FLAT_BACK && knowsPass(sim, a) && (this.zone === 'curl_flat_s' || this.zone === 'curl_flat_w')) {
+      const side = this.zone === 'curl_flat_s' ? 'S' : 'W';
+      const sign = side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+      const three = sim.offAlign.numbering[`${side}3` as 'S3' | 'W3'];
+      const showing = threats.filter(th => (sim.offAlign.spots[th.r.slot]?.backfield || th.r.slot === three)
+        && th.pos.x - sim.los < 5 && th.pos.x - sim.los > -8
+        // showing to the flat (running outside), or already settled in it on his side
+        && ((sign * th.vel.y > 1.5 && sign * (th.pos.y - sim.ballY) > 2) || sign * (th.pos.y - sim.ballY) > 4));
+      if (showing.length) {
+        showing.sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y));
+        const flat = showing[0];
+        this.selectTarget(a, flat.r);
+        a.tags.add('curl-flat-back');
+        // He sinks to his curl window and widens under it toward the flat with his eyes on the QB, by what the QB
+        // shows (weights estimated, stand-in debt), and breaks on the throw (sawThrow -> playBall), not on the release.
+        // The cheat follows what the QB shows him (his seen picture of the QB's eyes): eyes on the flat, he widens;
+        // eyes on a receiver in his curl window, he hangs in it; eyes elsewhere, he widens once the back has
+        // crossed his face. Recognition sharpens it; range lets him cheat further.
+        const eyes = seenQbEyes(a, sim), rec = a.r('playRecognition');
+        const inCurl = eyes && eyes !== flat.r && Math.hypot(sim.see(a, eyes).pos.x - lm.x, sim.see(a, eyes).pos.y - lm.y) < 6;
+        const crossed = sign * (flat.pos.y - a.pos.y) > 0;
+        const base = eyes === flat.r ? 0.55 + 0.3 * rec : inCurl ? 0.1 : crossed ? 0.35 + 0.2 * rec : 0.15;
+        const cheat = clamp(base + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.9);
+        const tgt = { x: Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
+        return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
+      }
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;

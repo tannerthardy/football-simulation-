@@ -297,12 +297,14 @@ problem), resolved.
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
 | [RUN-18](#run-18) | An engaged edge past his containment bound kept widening on his held flow | G2 | medium | resolved |
+| [RUN-19](#run-19) | Run blockers keep a grip only by the pass-rep frame rule | G2 | medium | open |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
 | [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
 | [TKL-6](#tkl-6) | An engaged tackler's miss is a flat bonus, not his reach, balance or the blocker's hold | G1 | medium | open |
+| [TKL-8](#tkl-8) | The tackling rating slows a defender's approach | P1 | low | open |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
@@ -346,6 +348,8 @@ problem), resolved.
 | [RAT-1](#rat-1) | Ratings and capability mappings uncalibrated | — | medium | open |
 | [RAT-2](#rat-2) | Team habits drawn without within-team scatter | — | low | open |
 | [RAT-3](#rat-3) | Ratings with no effect on the field | — | low–medium | open |
+| [RAT-4](#rat-4) | The pursuit rating gives no player a lasting pursuit habit | P1 | low–medium | open |
+| [RAT-5](#rat-5) | Acceleration and change of direction are not player traits in motion | — | medium | open |
 | [GAME-1](#game-1) | Game-rule and accounting defects from the Oct 8 review | — | — | resolved |
 | [GAME-2](#game-2) | Remaining accounting limits | — | low | open |
 | [PERF-1](#perf-1) | Games are slow to simulate | F2 | high | open |
@@ -634,6 +638,21 @@ Carried over from the issue register; each was measured on an older develop.
   with #365 the edge moves toward NFL's position against the last blocker
   (1.5 s: +0.18 → +0.07 yd outside him; NFL −0.03). Develop restage:
   −0.36 ± 0.22 yd per run, on wide zone, toss and trap.
+
+<a id="run-19"></a>
+### RUN-19: Run blockers keep a grip only by the pass-rep frame rule
+
+- **Symptom:** `OPEN_HANDS` (engine-52) bounds run-block steering to friction
+  under the hand. A run blocker keeps a grip only by the pass rep's frame rule,
+  which is drawn against the line to the quarterback. In football, a seal or
+  reach block keeps cloth while his body is between the defender and the run's
+  path.
+- **Measure:** the fixed run set fell 3.86 → 3.59 yd a carry at engine-54. The
+  canaries are duo and toss.
+- **Cause:** *likely*: there is no run-specific frame (named by Flex,
+  2026-11-13).
+- **Open:** a run-specific frame for the grip: inside it while the blocker's
+  body is between the defender and the run's path.
 
 ## Tackling and pursuit
 
@@ -1196,6 +1215,43 @@ Carried over from the issue register; each was measured on an older develop.
   separate.
 - **Owner:** tackling (Main Engine for the contact side). Don't tune the run
   fits around it.
+
+<a id="tkl-8"></a>
+### TKL-8: The tackling rating slows a defender's approach
+
+- **Symptom:** the better a defender's tackling, the slower he asks to close on
+  the carrier. `approach-control.ts` sets the closing speed he keeps at contact
+  to 2.5 + 2(1 − tackling) yd/s; `playBall`'s landing approach in
+  `behaviors/defense.ts` uses 2.2 + 2.5(1 − tackling). Sim, per defender-play
+  (`scripts/diag/effective-mass/pursuit-ratings.mts`): DL approach speed 3–2 yd
+  before arrival against tackling, rho −0.36.
+- **Measure** (NFL weeks 1–9 by player id, `skill_spread.py`): DL who end the
+  play at their arrival more often come in faster (3.5 against 2.9 yd/s, top
+  against bottom third by end rate; r 0.21) and more head-on (50 against 61°).
+  LB, CB and S show no relation.
+- **Not the cause: finishing at speed** (2026-11-13, same operator both sides,
+  `arrival_finish.py`, `contact_finish.py`, sim engine-50):
+  - From first contact to the end of the play, by the nearest defender's
+    closing speed: runs 1.2–1.4 s and 1.8–2.6 yd after contact, NFL 1.3–1.4 s
+    and 2.2–2.5 yd. Fast first contacts (4+ yd/s) stop our carrier sooner than
+    the NFL's (1.8 against 2.5 yd). Passes match too.
+  - Our first arrivals at 4+ yd/s end the play within 1 s less often than slow
+    ones (run DB 51 against 81%; NFL flat, 47 against 51%). That split is
+    selection, not physics: slow arrivals are mostly late joiners to a play that
+    is already ending (86–92% make no tackle attempt), while fast ones are the
+    first tackler (about 75% wrap; whiffs and broken wraps 2–5%)
+    (`arrival-control.mts`).
+  - This is by closing speed. It does not contradict the carrier-speed cells in
+    the GAPS row "The tackle at speed" (a side or rear wrap on a fast carrier).
+- **Cause:** *confirmed*, a design choice with no NFL support: the rating
+  shapes the request, not the body's control.
+- **Tried:** flipping the term (sure tacklers keep more speed) was considered
+  and not built; the NFL relation is weak for DL and absent elsewhere.
+- **Decision (Integration, 2026-11-13): left as is.** Arrivals and finishes
+  match the NFL, so changing the term has no gap behind it. A rating-independent
+  approach speed is parked ([PARKED](PARKED.md), `TACKLE_APPROACH`), with
+  `arrival_finish.py`, `contact_finish.py` and `arrival-control.mts` as the
+  measure to re-open it.
 
 ## Pass protection
 
@@ -3749,6 +3805,53 @@ seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.m
   timing (`audit`: coverage recovery 0.15–0.30 s by trait).
 - **Open:** wire a trait to a technique channel only once that channel
   works; check other ratings the same way.
+
+<a id="rat-4"></a>
+### RAT-4: The pursuit rating gives no player a lasting pursuit habit
+
+- **Symptom:** NFL pursuers differ from one another in stable ways; ours do not.
+- **Measure** (2026-11-13; NFL weeks 1–9 by player id, `skill_spread.py`,
+  `role_spread.py`, `cb_trait.py`; sim by player id, `player-spread.mts`).
+  Split-half reliability of player medians, Spearman–Brown corrected:
+  - **Corners:** open-field lead (intercept angle minus aim) is a real habit
+    within a corner's main pre-snap role (0.65; press and off roles differ by
+    6–7°, which hides it when roles are mixed). It tracks nothing tracking can
+    measure about him: top speed, acceleration, closing at the throw, redirect
+    after the catch (|r| ≤ 0.12, 136 corners). Ours: 0.00.
+  - **Safeties:** the lead trait is where they line up. 0.13 once each role's
+    mean is removed. Nothing to build.
+  - **DL and LB lead:** 0.20 and 0.24, below the 0.4 bar.
+  - **Real NFL spreads elsewhere:** LB closing on the catch point at the throw
+    0.59; safety closing angle on arrival 0.51; DL approach speed 0.51. Our
+    ratings move none of these for LB and DB (|rho| ≤ 0.15).
+- **Cause:** *confirmed*: the pursuit rating's only lever is a timing error
+  drawn fresh every play.
+- **Tried:** `PURSUIT_TENDENCY` (branch `defense/C9-pursuit-tendency`,
+  unregistered, no PR). A per-player, zero-mean misjudgment of the meeting time
+  gave DL and LB a habit (0.44 / 0.38 at an oversized 0.6 s), but not DBs: a
+  DB's requested lead carried it (0.38) while his achieved lead did not. The
+  form is also wrong. A trait seeded by player id has no cause a scout could
+  see; a habit must come from something the player has.
+- **Open:** the corner habit has no measured source. LB closing at the throw
+  waits on what the early close is read from (Coverage).
+
+<a id="rat-5"></a>
+### RAT-5: Acceleration and change of direction are not player traits in motion
+
+- **Symptom:** our corners do not differ from one another in how they
+  accelerate or redirect. A management game needs a quick corner to look quick.
+- **Measure** (2026-11-13, `player-spread.mts`, 8 games, 52–66 corners and
+  nickels):
+  - acceleration from under 3 yd/s: split-half reliability 0.08;
+  - heading change in the first 0.5 s after the catch: 0.14 (p10–p90 7.2–14.2°;
+    NFL corners 9.0–13.6°);
+  - neither tracks the profile's `tau` or `lateral` (|r| ≤ 0.2);
+  - top speed is a trait (0.68). Game peak speed tracks profile `vmax` across
+    273 players (r 0.89); the corners' own range is about 4%.
+- **Cause:** *hypothesis*: in these windows motion is set by the request and the
+  shared turn and drive limits more than by the player's own capacities.
+- **Open:** the profile owner's call. First check where `tau` and `lateral`
+  enter a redirect out of a backpedal or trail.
 
 ## Game layer and accounting
 
