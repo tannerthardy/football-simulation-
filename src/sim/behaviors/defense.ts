@@ -1187,7 +1187,7 @@ export class ManCoverage implements Behavior {
  * the catcher on our wide back-flat catches with nobody in front of the
  * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
  * wide-owner.ts). */
-const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK === '1';
+const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
 /** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at
