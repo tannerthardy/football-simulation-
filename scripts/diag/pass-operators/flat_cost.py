@@ -26,8 +26,10 @@ for arg in sys.argv[1:]:
                     cx = p.pos(t, min(p.k(ev['catch']), p.frames - 1))[0] if comp else None
                     A.append(dict(comp=comp, yac=(yds - cx) if comp and cx is not None else None))
             elif 5 <= x <= 12 and wide < 12:
-                B.append(dict(comp=comp, yds=yds))
+                cx = p.pos(t, min(p.k(ev['catch']), p.frames - 1))[0] if comp else None
+                B.append(dict(comp=comp, yds=yds, air=cx, yac=(yds - cx) if comp and cx is not None else None))
     q = lambda v: sorted(v)[len(v) // 2] if v else float('nan')
     ya = [o['yac'] for o in A if o['yac'] is not None]
     print(f'== {name}: back to the wide flat n {len(A)} | complete {100 * sum(o["comp"] for o in A) / max(1, len(A)):.0f}% | YAC per catch mean {sum(ya) / max(1, len(ya)):.1f} p50 {q(ya):.1f}'
-          f' || behind the curl-flat (non-back, 5-12 yd, wide) n {len(B)} | complete {100 * sum(o["comp"] for o in B) / max(1, len(B)):.0f}% | yd/target {sum(o["yds"] for o in B) / max(1, len(B)):.2f}')
+          f' || behind the curl-flat (non-back, 5-12 yd, wide) n {len(B)} | complete {100 * sum(o["comp"] for o in B) / max(1, len(B)):.0f}% | yd/target {sum(o["yds"] for o in B) / max(1, len(B)):.2f}'
+          f' | per catch: air {(lambda v: sum(v) / max(1, len(v)))([o["air"] for o in B if o["air"] is not None]):.1f}, YAC mean {(lambda v: sum(v) / max(1, len(v)))([o["yac"] for o in B if o["yac"] is not None]):.1f} p50 {q([o["yac"] for o in B if o["yac"] is not None]):.1f}')
