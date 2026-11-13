@@ -278,7 +278,7 @@ function qSafety(c: RuleCtx): Directive {
   if (c.state.mode === 'one') return helpOne(c, one);
   if (!two) return one && climbing(one) ? man(one, { overTop: true, lev: 'inside' }) : zoneOf(c);
   // Past quick-out depth before a safety commits to carrying #2.
-  if (vertical(two, 7)) {
+  if (vertical(two, SAFETY_TAKES_TWO)) {
     c.state.mode = 'two';
     return man(two, { overTop: true, lev: 'inside' });
   }
@@ -339,8 +339,45 @@ function quarterFlat(c: RuleCtx): Directive {
     c.state.mode = 'two';
     return man(two, { lev: 'head' });
   }
+  // APEX_FLAT: the back released to the flat on his side (his own read, held
+  // for a beat), so the flat is his. He walls #2's vertical only until the
+  // quarters safety's read takes #2 (vertical past the safety's 7 yd trigger),
+  // then sinks and expands on the back's line with outside leverage and
+  // rallies to him outside-in (the trap technique: just outside and over the
+  // back's projected spot). Held once called, so he cannot dither between #2
+  // and the back.
+  if (APEX_FLAT && !cornerTakesFlat) {
+    const back = backTo(c);
+    // He sees the back run out to his flat: shallow, outside the ball and moving outward (or declared flat).
+    const showing = !!back && back.depth < 4 && (back.release === 'flat' || (back.outward > 2 && back.vel.y * back.outSign > 1.5));
+    if (c.state.mode !== 'rally' && c.state.mode !== 'trap') {
+      if (showing) {
+        c.state.pendingAt ??= c.sim.t;
+        if (c.sim.t - c.state.pendingAt >= DECLARE) { c.state.mode = 'rally'; c.state.match = back!.r; }
+      } else c.state.pendingAt = undefined;
+    }
+    if ((c.state.mode === 'rally' || c.state.mode === 'trap') && c.state.match) {
+      // Wall #2 only until the safety's read takes him; once he has turned to the back he stays on him.
+      if (c.state.mode === 'rally' && two && vertical(two, 2) && two.depth < SAFETY_TAKES_TWO) return { t: 'wall', r: two.r };
+      c.state.mode = 'trap';
+      return { t: 'trap', r: c.state.match };
+    }
+  }
   return wallTwo(c, 10, true);
 }
+/** APEX_FLAT (experimental, off; APEX_FLAT=1 turns it on): the quarters apex
+ * takes the flat when he sees the back release to it on his side (held for
+ * DECLARE), walls #2 only to the safety's trigger, then rallies to the back
+ * outside-in. Off, his rule had no branch for the back: he walled a vertical
+ * #2 to 10 yd (15 of 37 back-flat catches), left the wall at 2.6 s and found
+ * the back from inside: back flat catches against quarters / Cover 6, nearest
+ * at the catch 5.1 yd, 4.3 inside, 1.2 deeper (NFL 4.4, 1.3 inside, 2.9
+ * deeper; 1.0 s before 2.9 inside, 4.1 deeper vs 1.5, 6.0; BDB 2025 weeks 1-9
+ * n 211 vs seeds 31/47/59 x 16 games n 86; scripts/diag/pass-operators/
+ * flat_position.py, scripts/diag/risk/flat-role.ts). */
+const APEX_FLAT = process.env.APEX_FLAT === '1';
+/** The quarters safety commits to carrying #2 once #2 is vertical past this depth (qSafety's trigger). */
+const SAFETY_TAKES_TWO = 7;
 
 /** Palms/2-Read corner: trap #2's quick out; otherwise MOD on #1. */
 function palmsCorner(c: RuleCtx): Directive {
@@ -364,7 +401,7 @@ function palmsSafety(c: RuleCtx): Directive {
     c.state.mode = 'one';
     return man(one, { overTop: true, lev: 'outside' });
   }
-  if (vertical(two, 7)) {
+  if (vertical(two, SAFETY_TAKES_TWO)) {
     c.state.mode = 'two';
     return man(two, { overTop: true, lev: 'inside' });
   }
