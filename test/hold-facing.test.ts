@@ -1,10 +1,11 @@
 /** HOLD_FACING (tackle.ts updateBond; experimental, off): a holder beside or
  * behind the runner keeps the facing he has instead of re-squaring his chest
- * on the runner every tick. Reproducer: Inside Zone vs Cover 3. Re-pinned on
- * engine-55 (SPACING_SMOOTH changes the play from the C's first steps, so seed
- * 1916's DT_S no longer side-holds): seed 1937, the weak tackle (DT_W) grabs
- * the back from the side, 144 deg in the hold's first 0.5 s off against 36 on
- * (candidate stack). The free-holder case (OPEN_HANDS) stays on 1916 / DT_S.
+ * on the runner every tick. Reproducer: Inside Zone vs Cover 3, seed 1922: the
+ * weak tackle (DT_W) grabs the back from the side. In the hold's first 0.5 s he
+ * turns 187 deg off against 32 on (engine-55), and 167 against 29 with
+ * SPACING_SMOOTH + PURSUIT_COMMIT on (re-pinned for that candidate: SPACING_SMOOTH
+ * changes the play from the C's first steps). The free-holder case (OPEN_HANDS)
+ * stays on 1916 / DT_S.
  * Runs on the engine defaults (the reference stack), not the legacy pin. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -12,7 +13,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function turn(flag: string, openHands = '0', seed = 1937, slot = 'DT_W') {
+async function turn(flag: string, openHands = '0', seed = 1922, slot = 'DT_W') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('HOLD_FACING', flag);
