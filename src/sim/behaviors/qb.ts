@@ -273,6 +273,51 @@ const SHOULDERS_SET = process.env.SHOULDERS_SET === '1';
  * yd: the QB with no throw moves 3 yd before a sack, 2.4 before a throwaway, 10
  * in a scramble; ours 0.8-1.0, inside the tackles; no-throw-in-time review). */
 const EXTEND = process.env.EXTEND === '1';
+/** QB_POCKET (experimental, off; QB_POCKET=1): movement in the pocket is a decision with a destination, not a drift.
+ * While he reads, a body he feels near him that no blocker has in front of him, or a rusher who will reach him before
+ * he can finish his read and a throw, makes him RESET: one move of about a yard, at a pace he can still throw from,
+ * eyes and read unchanged. Where he goes is the coached rule, from where that body is: up inside a rusher at the edge
+ * (wide of him, at or behind his depth); to the side off a body in front of him, toward the read his eyes are on (away
+ * from the body when his read is straight ahead). The destination holds until he gets there, a felt body closes on it,
+ * or it times out; the same body does not move him again until it is clearly nearer than when he last decided.
+ * NFL (BDB 2025 wk 1-9, scripts/diag/escape/qb-pocket.py, first DL/LB within 3 yd after the drop, he moves 1+ yd): body
+ * at the edge -> up 59-67%; body in front -> lateral 56-58%, up 23%; straight away from it 20-22%; the most open of
+ * eight directions 11-15% (chance 12%). Ours: up 50-100% whatever the body. Post-drop he is still 33-37% of the time,
+ * ours 70-77%. With nobody inside the trigger and time in hand, nothing here runs. Off: pocketMove's set point nudged
+ * by bodies within 3.5 yd. Replaces POCKET_CLIMB, QB_FEEL and SET_DECIDE's in-pocket move once read. */
+const QB_POCKET = process.env.QB_POCKET === '1';
+/** QB_POCKET, named so a reader can tell a measurement from a choice.
+ * - POCKET_PACE, yd/s: the fastest he moves on a reset. Existing engine value: missSigma's edge of a set throw (2.2).
+ * - POCKET_NEAR0 / POCKET_NEAR_PP, yd: the felt distance at which a body not in a blocker's hands moves him,
+ *   NEAR0 + NEAR_PP x pocketPresence. Chosen, bracketing the NFL rows (a set QB with the nearest DL/LB at 0-2 yd takes
+ *   off 37%, at 2-3 yd 17%, beyond 9-12%; qb-onset.py); the rating acts on how far out he notices, not on an outcome.
+ * - POCKET_FREE_HOLD, s: a body counts as held up when his picture has a blocker on its path worth at least this
+ *   (seenHold). Chosen: one tick's worth above zero.
+ * - POCKET_STEP_UP / POCKET_STEP_SIDE, yd: how far one reset goes. Chosen inside the NFL displacement over 0.5 s on
+ *   these events (p50 0.85-1.12 yd).
+ * - POCKET_EDGE_WIDE, yd / POCKET_EDGE_DEPTH, yd: the body is "at the edge": wide of him by this much, and no more
+ *   than this far in front of his depth. The operator's definition (1.5, 1.0), which the NFL rows above are split by.
+ * - POCKET_READ_SIDE, yd: his read is "to a side" when its bearing is this far off his own y. Chosen (the operator's
+ *   3 yd for a target's side).
+ * - POCKET_CLEAR, yd: a destination with a felt defender within this is not taken. Chosen.
+ * - POCKET_RENEW, yd: the same body moves him again only when this much nearer than at his last decision (the exit
+ *   margin). Chosen.
+ * - POCKET_MAX_T, s: a reset not reached by then is dropped. Chosen (a 1.5 yd move at POCKET_PACE takes about 0.7 s).
+ * - POCKET_BACK, yd: how far behind his set depth he may give ground, and only with both sides taken. NFL back
+ *   14-21% of these moves; the depth is chosen. */
+const POCKET_PACE = 2.2;
+const POCKET_NEAR0 = 2.2;
+const POCKET_NEAR_PP = 1.2;
+const POCKET_FREE_HOLD = 0.05;
+const POCKET_STEP_UP = 1.5;
+const POCKET_STEP_SIDE = 1.25;
+const POCKET_EDGE_WIDE = 1.5;
+const POCKET_EDGE_DEPTH = 1.0;
+const POCKET_READ_SIDE = 3;
+const POCKET_CLEAR = 1.5;
+const POCKET_RENEW = 0.5;
+const POCKET_MAX_T = 0.9;
+const POCKET_BACK = 1.0;
 /** Estimated (SHOULDERS_SET): how long he holds a read before his feet reset
  * to it, s: a reaction time, not fitted. Its check is the NFL shoulder angle to
  * the target at his last settled frame and the turn-angle mix (qb-release.py),
@@ -394,6 +439,13 @@ export class QBPass implements Behavior {
   private moveDir: Vec2 | null = null;
   /** QB_GATHER: the read his current hitch is to, and where it takes his feet. */
   private hitchFor: Agent | null = null;
+  /** QB_POCKET: the reset under way (its destination, when it lapses, the body that caused it), the felt distance of
+   * each body at his last decision about it, and when he may next decide. */
+  private reset: { to: Vec2; until: number; by: Agent; kind: 'up' | 'side' | 'back' } | null = null;
+  private resetAt = new Map<Agent, number>();
+  private resetFree = -1;
+  /** QB_POCKET diagnostics (no effect): each reset decided. */
+  readonly resetLog: Array<{ t: number; kind: 'up' | 'side' | 'back'; cause: 'near' | 'time'; dist: number; edge: boolean; by: string }> = [];
   private hitchTo: Vec2 | null = null;
   private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
@@ -1914,6 +1966,10 @@ export class QBPass implements Behavior {
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
     const facing = this.bodyFacing(a, sim, (QB_EYES && this.eyesOn) || read);
+    if (QB_POCKET) {
+      const move = this.pocketReset(a, sim, (QB_EYES && this.eyesOn) || read, facing);
+      if (move) return move;
+    }
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a
     // pace he can still throw from, eyes still on his read.
@@ -1951,6 +2007,72 @@ export class QBPass implements Behavior {
       return goTo(a, this.hitchTo!, { speed: 0.35, facing });
     }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
+  }
+
+  /** QB_POCKET: the reset. Returns the move while one is under way or has just been decided; null when he has no
+   * reason to move (the caller's hold / hitch runs, unchanged). Everything is on his pictures: felt() for defenders,
+   * see() for his own blockers. */
+  private pocketReset(a: Agent, sim: PlaySim, read: Agent | null | undefined, facing: number): MoveCommand | null {
+    const t = sim.t;
+    const felt = sim.defense.filter((d) => !d.isDown(t)).map((d) => ({ d, pos: this.felt(a, sim, d).pos }));
+    const clearOf = (q: Vec2) => felt.every(({ pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) >= POCKET_CLEAR);
+    const go = (to: Vec2): MoveCommand => goTo(a, to, { speed: Math.min(1, POCKET_PACE / a.profile.vmax), facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') });
+    if (this.reset) {
+      const r = this.reset, left = Math.hypot(r.to.x - a.pos.x, r.to.y - a.pos.y);
+      // Held until he is there, it lapses, or a body he feels has closed on where he is going.
+      if (left > 0.25 && t < r.until && clearOf(r.to)) return go(r.to);
+      this.reset = null;
+      this.resetFree = t + this.processing(a);
+      if (left <= 0.25 || t >= r.until) return null;
+      // The destination has been closed: one new decision now, below.
+      this.resetFree = t;
+    }
+    // The cause, on his picture: a body near him that no blocker has in front of him, or a rusher who gets to him
+    // before he can finish what he still needs (the rest of this read, then a throw).
+    const near = POCKET_NEAR0 + POCKET_NEAR_PP * a.r('pocketPresence');
+    let by: Agent | null = null, bp: Vec2 | null = null, bd = Infinity, cause: 'near' | 'time' = 'near';
+    for (const { d, pos } of felt) {
+      const dd = Math.hypot(pos.x - a.pos.x, pos.y - a.pos.y);
+      if (dd > near || dd >= bd || this.held(a, d, sim) >= POCKET_FREE_HOLD) continue;
+      by = d; bp = pos; bd = dd;
+    }
+    if (!by) {
+      const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
+      const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
+      const rest = this.readStart + dwell - t;
+      const p = this.pressure(a, sim);
+      if (p.agent && p.time < (rest > 0 ? rest : dwell) + this.windup(a)) {
+        by = p.agent; bp = this.felt(a, sim, by).pos; bd = Math.hypot(bp.x - a.pos.x, bp.y - a.pos.y); cause = 'time';
+      }
+    }
+    if (!by || !bp) return null;
+    // The same body moves him again only when clearly nearer than at his last decision about it; and after a reset
+    // he takes his processing time before another.
+    const last = this.resetAt.get(by);
+    if (last !== undefined && bd > last - POCKET_RENEW) return null;
+    if (t < this.resetFree) return null;
+    // Where: the coached rule, from where the body is.
+    const mates = sim.offense.filter((o) => o !== a && !o.isDown(t)).map((o) => ({ o, pos: sim.see(a, o).pos }));
+    const open = (q: Vec2) => q.x <= sim.los - 2.5 && q.y > 1 && q.y < FIELD_WIDTH - 1 && clearOf(q)
+      && !mates.some(({ o, pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) < o.profile.radius + a.profile.radius);
+    const edge = Math.abs(bp.y - a.pos.y) > POCKET_EDGE_WIDE && bp.x <= a.pos.x + POCKET_EDGE_DEPTH;
+    const up: Vec2 = { x: Math.min(a.pos.x + POCKET_STEP_UP, sim.los - 2.5), y: a.pos.y };
+    // The side: toward the read his eyes are on when it is to a side, else away from the body.
+    const rp = read ? (this.receiverForecasts.get(read)?.predict(t, 0) ?? sim.see(a, read).pos) : null;
+    const away = Math.sign(a.pos.y - bp.y) || Math.sign(a.pos.y - sim.ballY) || 1;
+    const first = rp && Math.abs(rp.y - a.pos.y) >= POCKET_READ_SIDE ? Math.sign(rp.y - a.pos.y) : away;
+    const side = (sg: number): Vec2 => ({ x: a.pos.x, y: a.pos.y + sg * POCKET_STEP_SIDE });
+    const back: Vec2 = { x: a.pos.x - POCKET_BACK, y: a.pos.y };
+    const order: Array<{ to: Vec2; kind: 'up' | 'side' | 'back' }> = edge
+      ? [{ to: up, kind: 'up' }, { to: side(first), kind: 'side' }, { to: side(-first), kind: 'side' }]
+      : [{ to: side(first), kind: 'side' }, { to: side(-first), kind: 'side' }, { to: up, kind: 'up' }];
+    if (a.pos.x >= this.drop.x) order.push({ to: back, kind: 'back' });
+    const pick = order.find((c) => Math.hypot(c.to.x - a.pos.x, c.to.y - a.pos.y) > 0.3 && open(c.to));
+    this.resetAt.set(by, bd);
+    if (!pick) return null;
+    this.reset = { to: pick.to, until: t + POCKET_MAX_T, by, kind: pick.kind };
+    this.resetLog.push({ t, kind: pick.kind, cause, dist: bd, edge, by: by.slot });
+    return go(pick.to);
   }
 
   /** SET_DECIDE: a rusher as he sees him closing. His delayed picture is carried
