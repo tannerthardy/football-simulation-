@@ -1501,3 +1501,60 @@ later):
 - So our tackle retreats ahead of a rusher close in front of him, at the rusher's pace, keeping out of contact until
   both are at the QB's depth. That is PASS_KICK's follow: matching the rusher's depth speed while he is in front.
 - It is the tackle's set, not the drop.
+
+## The unengaged approach (Integration, 2026-11-13; `approach-gap.py` same code both sides, `approach/approach-probe.mts` engine)
+
+Rusher in front of his tackle and not in contact (gap > 1.2 yd), 1.0-1.8 s, ball in. By the rusher's width outside the
+tackle at the snap.
+
+| | NFL | A 201 | A 301 |
+|---|---|---|---|
+| **head-up / shaded (≤ 1.5 yd)** | | | |
+| pairs | 1392 (10%) | 129 (5%) | 83 (3%) |
+| tackle / rusher x-vel | −2.00 / −3.00 | −2.50 / −3.00 | −2.25 / −3.00 |
+| gap rate p25 / 50 / 75 | −1.41 / −0.94 / −0.16 | −1.57 / −0.59 / +0.35 | −1.76 / −0.50 / +0.15 |
+| first contact p50; from 1.8 s | 1.10 s; 8% | 1.40 s; 28% | 1.30 s; 16% |
+| **wide (1.5-3 yd)** | | | |
+| pairs | 9725 | 1901 | 1995 |
+| tackle / rusher x-vel | −2.50 / −4.00 | −2.50 / −3.75 | −2.50 / −3.75 |
+| gap rate p25 / 50 / 75 | −2.12 / −1.73 / −1.09 | −2.18 / −1.34 / 0.00 | −2.33 / −1.53 / −0.38 |
+| first contact p50; from 1.8 s | 1.30 s; 8% | 1.20 s; 13% | 1.30 s; 14% |
+| **very wide (> 3 yd)** | | | |
+| pairs | 2607 | 381 | 471 |
+| tackle / rusher x-vel | −2.75 / −4.00 | −2.50 / −4.00 | −2.50 / −4.00 |
+| gap rate p50 | −1.96 | −2.10 | −2.04 |
+| first contact p50; from 1.8 s | 1.60 s; 33% | 1.30 s; 7% | 1.30 s; 12% |
+| **last yard (gap 2.2 → 1.2) closed by the rusher** (> 100%: the tackle keeps giving ground) | 146-156% | 104-137% | 110-131% |
+| **tackle over the QB at first contact, by contact time** (< 1.2 / 1.2-1.5 / 1.5-1.8 / 1.8-2.2 / 2.2+ s; `early-front.py`) | +2.9 / +2.6 / +2.4 / +2.3 / +2.1 | +2.6 / +2.9 / +3.0 / +2.6 / +1.2 | +2.7 / +2.9 / +3.0 / +2.6 / +1.3 |
+
+**The NFL tackle against an unengaged rusher.** He does not hold his depth and let the gap close. He keeps
+retreating (−2.0 to −2.75 yd/s) and the rusher closes the last yard and more (146-156%). Our tackle's depth speed is
+the same for wide and very wide rushers (−2.5) and faster for head-up ones (−2.25 to −2.5 against −2.0). In the last
+yard ours gives less ground (104-137%).
+
+**Why our rusher in front is not closing** (engine, seeds 201-206, A; unengaged rusher in front of his tackle, gap
+1.2-2.6 yd, 1.0-1.8 s; his branch in `PassRusher.decide` instrumented in a scratch worktree):
+
+| | closing (rate < −0.3), 92% of ticks | not closing, 8% |
+|---|---|---|
+| branch / plan | arc/speed 37%, power 31%, arc/finesse 29% | power 33%, arc/speed 19%, arc/finesse 11%, lane 14%, other 9% |
+| asks / achieves | 8.89 (vmax) / 4.35 yd/s | 8.82 (vmax) / 1.96 yd/s |
+| heading at the tackle, asked / achieved (1 = straight) | 0.96 / 0.89 | 0.90 / 0.80 |
+| support | up 100% | up 83%, falling 11%, down 5% |
+| touching another body | none 96% | none 56%, H 22%, Y 14%, RB 2% |
+| x-vel rusher / tackle | −4.02 / −2.24 | −1.27 / −2.02 |
+
+- Our rusher is not waiting on the tackle, working a move without contact, or throttled by a stage. Unengaged in front,
+  he asks for full speed nearly straight at the tackle and closes on 92% of ticks.
+- The 8% that stall are physical: a chip from a tight end, H-back or back (38%) or off his feet (16%).
+- So the rusher's half is not the cause.
+
+**Reading.**
+- The approach itself is close to the NFL's: the tackle's depth speed and the rusher's closing rate match for wide and
+  very wide rushers. Late contacts come mostly from head-up and shaded rushers (16-28% late against 8%), where our
+  tackle retreats faster than the NFL's and the gap can open.
+- Where our late contact differs is depth. At a first contact from 2.2 s the tackle is 1.2-1.3 yd over the QB against
+  the NFL's 2.1. Every earlier contact bin is at or above the NFL's. With the QB stopped dead at 7.9 yd (Part 2a), the
+  tackle reaches him.
+- There is no single "close to contact" fix here. The candidates are the head-up retreat speed (small: 3-5% of pairs)
+  and late depth (the tackle keeps going down to the QB's level while the QB has stopped).
