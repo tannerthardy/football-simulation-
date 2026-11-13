@@ -42,6 +42,34 @@ the merger's independent local verification still follows AGENTS. An additional
 scorecard or game campaign needs its own football question. Static related-test
 selection alone misses CLI children and dynamic source/fixture reads.
 
+### Noise floor of the fixed run set (`ref:report --placebo N`)
+
+A paired run-set delta is only as good as its floor. Each placebo arm replays the
+1,321 fixed runs on the reference stack with one body nudged 1e-3 yd after the
+first tick and nothing else changed (`REF_PLACEBO=<slot>:<sign>` in
+`scripts/diag/ref-replay.mts`); its paired delta against `ref` is what play
+divergence alone does. `npm run ref:report -- --skip-operators --placebo 6`
+(about 25 minutes; add `--flag X=1` to print a candidate beside the floor).
+
+Measured on engine-55 (develop 2478e998, 2026-11-13; six arms: C, LG, RG, a
+linebacker, C, RT, LT; 46-69% of plays' yards change in each), paired delta
+in yards a run (capped at 20), RMS across arms vs the mean paired SE:
+
+| family | placebo RMS | mean paired SE |
+| --- | --- | --- |
+| all | 0.04 | 0.03 |
+| OZ | 0.08 | 0.07 |
+| IZ | 0.08 | 0.08 |
+| gap | 0.06 | 0.06 |
+| duo | 0.16 | 0.12 |
+| toss | 0.21 | 0.18 |
+| draw | 0.06 | 0.07 |
+
+So on this set the paired SE is close to the divergence floor (RMS about 1.0-1.3
+x SE): a paired delta of about 3 SE or more is outside the floor. Duo and toss
+are small families; read them only with this column beside them. Re-run the
+placebo arms when the run set or the reference stack changes materially.
+
 ## Suite cost review — F2, 2026-10-29
 
 Comparison pin `f62c5bc07d8f00e3c2664fc183a7f92eb0f593d3` has the identical
