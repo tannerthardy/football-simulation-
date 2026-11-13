@@ -103,7 +103,8 @@ def convert(key, rows, meta, position):
         group = GROUP.get(position.get(i, ""), None)
         if group is None:
             return None
-        players.append({"side": "O" if tracks[i][0] == meta["offense"] else "D", "group": group})
+        players.append({"side": "O" if tracks[i][0] == meta["offense"] else "D", "group": group,
+                        "id": i, "pos": position.get(i, "")})
     xy, carry, ori, ocarry = [], {}, [], {}
     for f in range(snap, last + 1):
         row, orow = [], []
