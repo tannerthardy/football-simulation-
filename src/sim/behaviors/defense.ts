@@ -1540,10 +1540,16 @@ export class ZoneCoverage implements Behavior {
         const flat = showing[0];
         this.selectTarget(a, flat.r);
         a.tags.add('curl-flat-back');
-        // He sinks to his curl window and widens under it toward the flat with his eyes on the QB; how far he cheats
-        // is his read and his range (0.25 + 0.35 play recognition + up to 0.15 for top speed over 8 yd/s; estimated,
-        // stand-in debt). He breaks on the throw (sawThrow -> playBall), not on the back's release.
-        const cheat = clamp(0.25 + 0.35 * a.r('playRecognition') + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.85);
+        // He sinks to his curl window and widens under it toward the flat with his eyes on the QB, by what the QB
+        // shows (weights estimated, stand-in debt), and breaks on the throw (sawThrow -> playBall), not on the release.
+        // The cheat follows what the QB shows him (his seen picture of the QB's eyes): eyes on the flat, he widens;
+        // eyes on a receiver in his curl window, he hangs in it; eyes elsewhere, he widens once the back has
+        // crossed his face. Recognition sharpens it; range lets him cheat further.
+        const eyes = seenQbEyes(a, sim), rec = a.r('playRecognition');
+        const inCurl = eyes && eyes !== flat.r && Math.hypot(sim.see(a, eyes).pos.x - lm.x, sim.see(a, eyes).pos.y - lm.y) < 6;
+        const crossed = sign * (flat.pos.y - a.pos.y) > 0;
+        const base = eyes === flat.r ? 0.55 + 0.3 * rec : inCurl ? 0.1 : crossed ? 0.35 + 0.2 * rec : 0.15;
+        const cheat = clamp(base + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.9);
         const tgt = { x: Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
       }
