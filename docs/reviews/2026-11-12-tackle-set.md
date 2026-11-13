@@ -2295,3 +2295,53 @@ The question narrows to those two:
 
 Next staged variants: the protector carried back (his own request backward, or a heavier rusher) with the lean at the
 press, and the unload, to find which one tips him.
+
+## 4. Bisect: what brought the falls back (`fall-rate.mts`, seed 11 x 3, about 280 dropbacks each)
+
+Engine-56 default: an OL falls before the throw on 24.6% of dropbacks (31.2 falls /100). Legacy (`ref --off`): 92.3%.
+Each flag promoted since 2026-11-10 that touches the trenches or the drop, set to 0:
+
+| off | dropbacks with an OL fall | OL falls /100 |
+|---|---|---|
+| (engine-56) | 24.6% | 31.2 |
+| **PUNCH** | **10.7%** | **11.7** |
+| HANDS_CHEST | 13.6% | 17.3 |
+| LEAN_PITCH | 58.1% | 89.8 |
+| PASS_ANCHOR | 47.4% | 72.6 |
+| HIP_BRACE / HIP_STRENGTH / LINE_START / PEDAL_CAP / PAST_ALONG_PATH | 26.1 / 26.0 / 23.1 / 23.8 / 25.5% | 31.7-32.7 |
+| OPEN_HANDS / PASS_RIDE / QB_RHYTHM | 27.5 / 26.6 / 27.8% | 35.6-36.8 |
+
+PUNCH (Set A, engine-54; Flex's mechanism) more than doubles the falls. PUNCH's two parts, split in a scratch
+worktree (diagnostic env only, not committed):
+
+| PUNCH with | dropbacks with an OL fall | OL falls /100 |
+|---|---|---|
+| PRESS_INTO 0.1 (as shipped), lockout 0.9 | 24.6% | 31.2 |
+| PRESS_INTO 0.05 | 18.7% | 20.6 |
+| PRESS_INTO 0 | 15.9% | 18.8 |
+| PRESS_INTO 0, lockout 0.5 | 12.0% | 14.8 |
+| lockout 0.5 alone | 27.7% | 37.6 |
+
+**The cause is PRESS_INTO.** Every tick, PUNCH's hands are driven 0.1 yd into the man ("a punch presses ... rather
+than resting at the touch"), so the joint stays compressed at its push limit. PASS_ANCHOR sizes his lean to the load
+he feels, and that load now includes the reaction to his own continuous drive. He becomes propped on his own push, at
+about a body weight. When the man swims, clubs, rips or pulls, the load goes and he falls forward. That is the trace
+in section 2.
+
+In football a punch is a strike: the hands land with force, the elbows lock, and the blocker's weight stays over his
+feet. He presses only as hard as the man presses him (an anchor, not a drive), and he re-fits. A continuous drive
+into a rusher is how a protector gets swum and falls on his face. That is real, but rare in the NFL (1-5 per 100
+dropbacks for all five, against our 31).
+
+**Proposal for review (not built).** PRESS_INTO becomes the punch's strike, not a standing request.
+- The hands drive into the man for the punch's contact (from landing until the arms reach the press he meets, at
+  ARM_SPEED).
+- After that, the extension holds where the man is (the touch) while the man presses into it. The press then comes
+  from the man's load against locked arms, and the blocker's lean meets that load and no more (PASS_ANCHOR's rule,
+  now fed by the man's press rather than his own drive).
+- A re-punch is a new strike on a new fit (after a slide or a lost hand).
+- Expected: falls toward the PRESS_INTO 0 row (about 16% / 19 per 100), not to the NFL's: the remaining gap to
+  PUNCH-off (11%) and to the NFL is HANDS_CHEST and the lean release (question ii).
+- Controls: PUNCH's own gates (an anchored tackle's hands carry compression, which is why PRESS_INTO was added: its
+  attempt 1 left N p50 0 as an edge rusher crossed), the pass operators (pressure-source, come-off, rep-end), and
+  the run set (PUNCH is pass technique, draws only).
