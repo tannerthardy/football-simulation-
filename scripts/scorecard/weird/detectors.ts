@@ -401,8 +401,8 @@ const phantomlane: Detector = {
  * 10. A kick-out or lead puller whose first engagement of the play is a man deeper in the backfield than the
  * ball holder (the QB before the handoff). Geometry of who he found first, not proof the man was the wrong one
  * (a back-side end who has crashed can be the right kick-out target). NFL tracking (BDB2025 weeks 1-2, 3 yd lateral
- * pullers' first touch, scripts/mechanics/run_film_reference.py): the man touched is deeper than the runner on 0% of
- * 113 power and 3% of 101 counter pullers; run-only sim film 30% and 16%.
+ * pullers' first touch, scripts/mechanics/run_film_reference.py): the man touched is deeper than the runner on 2% of
+ * 167 power and 3% of 146 counter pullers (one rule for both sources); run-only sim film 17% and 10% (develop 516d8729).
  */
 const pulldeep: Detector = {
   id: 'pulldeep', label: 'Puller first engages a man deeper than the ball holder', minHold: 0,
