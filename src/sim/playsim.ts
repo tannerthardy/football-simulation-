@@ -1329,6 +1329,8 @@ export class PlaySim {
     commandTrace?.begin(this);
     const ledger = this.responsibility;
     ledger?.begin(this);
+    // QB_BODY_SEEN: his throwing motion shows on his body (recorded for everyone; read only through perception).
+    if (this.qb) this.qb.arm = this.windupAt < 0 ? 'set' : this.deliveryAt >= 0 && t >= this.deliveryAt ? 'deliver' : 'load';
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
