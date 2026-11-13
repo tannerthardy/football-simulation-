@@ -2417,3 +2417,59 @@ Next proposal (for review, not built): the lean he commits against a press is bo
 it vanished, a function of his base and his balance/technique. The rest of the press is answered by giving ground.
 A propped, poorly balanced lineman who is swum still falls; a good technician rarely does. Then the staged check of
 (ii), whether a protector leaning only what he can recover from still topples on a one-tick unload.
+
+# ANCHOR_BASE (65c50bc9, off): the commit bound and the anchor
+
+A pass protector commits no more lean than his base could recover from:
+- `Intent.leanCap = k m w0^2 criticalDeviation` at his present posture, with k = 1.05 - 0.55 x technique (0.5 pass
+  blocking + 0.5 balance);
+- under a heavy press he sinks (posture 0.6 + 0.35 x technique);
+- the press beyond the bound walks him back.
+
+The bound was measured first. Unloads in games (`unload-outcomes.mts`, 1814) topple him 1-4% of the time with a lean
+under 0.6 of m w0^2 critDev, 7-10% at 0.6-0.9, and 21-30% at 0.9 and above.
+
+Tests:
+- `test/lean-cap.test.ts`: unset is identical to an infinite cap; set, it bounds the lean.
+- Off is bit-identical: seed 999 gives b5f4ab46.
+- A first patch put a call between PASS_RIDE's if and its else, so with the flag off the old ride overwrote
+  PASS_RIDE's. The identity check caught it; fixed before commit.
+
+**Read** (engine-56 + PUNCH_STRIKE, seeds 11 / 23 x 16):
+
+| | PUNCH_STRIKE | + ANCHOR_BASE | + RUSH_HANDS + ANCHOR_BASE | NFL |
+|---|---|---|---|---|
+| OL falls before the throw, /100 dropbacks (true) | 18.4 / 13.0 | **3.9 / 3.5** | **3.5 / 3.8** | ~1-5 |
+| fall proxy (same code as NFL), /100 | 12.5 / 11.2 | 6.2 / 7.3 | 4.4 / 7.1 | 0.3-3.4 |
+| interior come-offs from own blocker, /100; time p50 | 32.0 / 30.0; 3.0 / 2.8 s | 28.7 / 29.2; 3.0 / 2.8 s | 51.6 / 59.2; 2.3 / 2.1 s | 48.6; 3.2 s |
+| tackle come-offs, /100; time p50 | 41.0 / 29.6; 2.7 s | 34.3 / 28.2; 2.9 s | 53.8 / 54.5; 2.3 / 2.2 s | 41.1; 3.1 s |
+| pressured (pressure-source) | 31.2 / 29.4% | 29.3 / 31.3% | 35.6 / 33.8% | 32.9% |
+| interior pressure; engaged-then-free | 6.7 / 5.7%; 3.6 / 2.9% | 6.0 / 6.3%; 2.8 / 2.9% | 14.1 / 12.1%; 8.4 / 7.4% | 9.8%; 2.2% |
+| edge in front / inside / past outside | 12.3 / 11.4; 4.0 / 3.2; 1.4 / 1.9% | 10.6 / 10.7; 3.6 / 4.4; 1.9 / 2.2% | 10.1 / 8.8; 3.8 / 2.6; 2.7 / 3.0% | 3.0; 6.4; 3.8% |
+| native sacked | 2.3 / 2.0% | 2.7 / 2.6% | 3.8 / 3.2% | band 4.6-9.4% |
+| tackle x-velocity 3.0-4.0 s; tackle minus QB depth | -2.0 / -2.0; 0.0 / 0.0 | -2.0 / -1.75; +0.1 / -0.2 | -2.0 / -1.75; -0.1 / -0.3 | -0.5; +1.0 |
+
+Spread by technique (`technique-spread.mts`, seed 11 x 6, PUNCH_STRIKE). Falls before the throw per OL-dropback, then
+ground given from 1.0 s to the throw, p50:
+
+| technique third | ANCHOR_BASE off | on |
+|---|---|---|
+| bottom (0.51-0.58) | 4.4%; 2.86 yd | **1.4%**; 2.83 yd |
+| middle (0.58-0.68) | 4.3%; 2.88 yd | **0.9%**; 2.78 yd |
+| top (0.68-0.80) | 1.6%; 3.27 yd | **0.7%**; 3.20 yd |
+
+**Reading.**
+- **Falls land on the NFL's bound:** 3.5-3.9 per 100 dropbacks, with or without RUSH_HANDS. The fall proxy now reads
+  4-7 per 100 on ours against 0.3-3.4 on the NFL. Its precision on ours is 17-26% (it now mostly flags linemen
+  standing still), so the true counts are the measure.
+- **The price did not show up as lost reps.** Come-offs, pressure and the pass rows barely move against PUNCH_STRIKE
+  alone. A protector who keeps his margin mostly still holds his man; the walk-back is unchanged.
+- **The spread is real:** poor technicians fall twice as often as good ones (1.4% against 0.7% of their dropbacks),
+  without being a liability every snap. Ground given does not depend on ANCHOR_BASE. The technique range on these
+  strength-0.55 rosters is narrow (0.51-0.80).
+- **RUSH_HANDS' interior overshoot is not falls.** With falls fixed, it keeps interior pressure at 12-14% (NFL 9.8),
+  engaged-then-free at 7-8% (NFL 2.2), and interior come-offs at 52-59 per 100 at 2.1-2.3 s (NFL 48.6 at 3.2 s). Its
+  clubs end reps early by themselves. Not cardable yet; that is RUSH_HANDS' own question (what a cleared hand buys).
+- **The late walk-back** (tackle at 2.0 yd/s at 3-4 s against the NFL's 0.5, level with the QB against +1.0) is
+  untouched by ANCHOR_BASE, so it is not the bound's price. It is the next item: the re-set and the untouched-tackle
+  stop are the same ground.
