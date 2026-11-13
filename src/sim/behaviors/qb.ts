@@ -180,6 +180,11 @@ const ACC_RADIUS = process.env.ACC_RADIUS === '1';
  * the top of the drop: declared once he is set and the inside verticals have shown their stems (10 yd), instead of when
  * every vertical is 12 yd downfield. docs/reviews/2026-11-13-qb-gather.md. */
 const QB_PEEK = process.env.QB_PEEK === '1';
+/** QB_COMMIT (experimental, off; QB_COMMIT=1): the delivery recheck (pullDown) keeps a started throw unless what he now
+ * sees has clearly changed (the window at half the chance he threw it at, or its pick risk up by 0.12); off, any
+ * re-priced value below zero pumped it, so on contested verticals he started and pumped repeatedly.
+ * docs/reviews/2026-11-13-qb-gather.md. */
+const QB_COMMIT = process.env.QB_COMMIT === '1';
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -1483,7 +1488,12 @@ export class QBPass implements Behavior {
     if (!p) return false;
     const point: Vec3 = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
-    return this.window(a, sim, ev.target, { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, point, ev.T, left, urgency).value < 0;
+    const w = this.window(a, sim, ev.target, { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, point, ev.T, left, urgency);
+    // QB_COMMIT: a started throw holds unless what he now sees clears a margin beyond what he started on: the window
+    // at half the chance he threw it at, or its pick risk up by 0.12 or more. Off: any re-priced value below zero
+    // pulled it down (a pump), at the entry itself.
+    if (QB_COMMIT) return w.P < 0.5 * ev.P || w.intRisk > ev.intRisk + 0.12;
+    return w.value < 0;
   }
 
   private release(a: Agent, sim: PlaySim, ev: ThrowEval): void {

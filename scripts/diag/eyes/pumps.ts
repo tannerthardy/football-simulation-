@@ -15,7 +15,7 @@ PlaySim.prototype.run = function (this: any) {
   const ev = sim.events as any[];
   const thr = ev.find((e) => e.type === 'throw' || e.type === 'throwaway');
   process.stdout.write(JSON.stringify({ concept: sim.offCall.pass?.id, pumps: ev.filter((e) => e.type === 'pump').map((e) => +e.t.toFixed(2)),
-    thr: thr ? +thr.t.toFixed(2) : null, sack: ev.some((e) => e.type === 'sack'), caught: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception') }) + '\n');
+    thr: thr ? +thr.t.toFixed(2) : null, sack: ev.some((e) => e.type === 'sack'), throwaway: ev.some((e) => e.type === 'throwaway'), outcome: res.outcome, yards: res.yards, caught: !!sim.stats.completed, int: ev.some((e) => e.type === 'interception') }) + '\n');
   return res;
 };
 const rng = new Rng(seed);

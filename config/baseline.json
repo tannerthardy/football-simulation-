@@ -234,6 +234,7 @@
     "QB_GATHER": "0",
     "ACC_RADIUS": "0",
     "QB_PEEK": "0",
+    "QB_COMMIT": "0",
     "HOT_LOOK": "0",
     "DEF_BELIEF": "0",
     "ACC_BELIEF": "0",
