@@ -1416,3 +1416,39 @@ same seeds 11-18 with PAST_ALONG_PATH + OPEN_HANDS (`scr-probe.mts`, 703 dropbac
 | sacks | 30 | - | 30 |
 
 block-seen, free-bound, past-along-path and scorecard-provenance pass.
+
+# The earliest in-front pressures (`early-front.py`; on ba4b9866, A 2 x 16, f201-A / f301-A; NFL same code)
+
+In-front pressure before 2.5 s: NFL 0.5% of dropbacks (n 51); A 1.4 / 2.7%.
+
+| | NFL | A 201 | A 301 |
+|---|---|---|---|
+| first contact (rusher within 1.2 yd of his tackle) | 1.30 s | 2.00 s | 1.90 s |
+| tackle depth at contact (over the QB) | −4.1 (+1.9) | −5.1 (+1.8) | −5.2 (+2.3) |
+| tackle x-velocity over contact's first second | −2.70 | −3.33 | −3.75 |
+| at pressure: time / tackle / QB depth | 2.30 / −6.6 / −6.9 | 2.30 / −6.1 / −7.4 | 2.30 / −6.7 / −8.0 |
+| QB drift toward the rusher since 1.0 s | +0.30 | −0.10 | −0.10 |
+| tackle to QB at pressure | 1.50 | 1.33 | 1.39 |
+
+All engaged tackle-edge pairs, by the time of first contact (share of pairs; becomes an in-front presser):
+
+| first contact | NFL | A 201 | A 301 | A + TACKLE_SET (t201-S, 8 games) |
+|---|---|---|---|---|
+| before 1.2 s | 20% (1.5%) | 25% (0.2%) | 21% (0.2%) | 9% (0%) |
+| 1.2-1.5 s | 42% (2.6%) | 53% (0.6%) | 55% (1.5%) | 35% (1.4%) |
+| 1.5-1.8 s | 26% (3.0%) | 10% (4.8%) | 10% (8.7%) | 28% (3.2%) |
+| 1.8-2.2 s | 7% (3.8%) | 5% (26%) | 6% (28%) | 16% (14%) |
+| 2.2 s or later | 5% (1.7%) | 8% (33%) | 7% (27%) | 12% (26%) |
+| tackle over the QB at contact, 2.2 s or later | +2.1 | +1.2 | +1.3 | +1.1 |
+
+**Reading.**
+- The earliest in-front pressures are not a press unanswered in the first second, and not the QB drifting toward the
+  rusher. Their first contact comes late (1.9-2.0 s against 1.3 s), with the tackle already 5 yd deep.
+- Late first contacts (from 1.8 s) are as common in ours as in the NFL's: 12-14% of pairs against 12%. In the NFL
+  they almost never become in-front pressure (2-4%). In ours they do 26-33% of the time.
+- At a late contact our tackle is about 1.2 yd above the QB, against the NFL's 2.1. The tackle's depth is the same as
+  the NFL's (−6.5 against −6.3); the gap is the QB, about 0.7-0.9 yd shallower than the NFL's at that time. A rusher
+  who reaches the tackle's side there is already within 2 yd of the QB.
+- TACKLE_SET makes late contact more common (28% of pairs from 1.8 s) without moving that geometry.
+- Next: what the late-contact rusher does before contact (arc width, a delayed or looping rush, a stunt), and the QB's
+  depth at those times (NFL deeper: a deeper drop, or climbing less).
