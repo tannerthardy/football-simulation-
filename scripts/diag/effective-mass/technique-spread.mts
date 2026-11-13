@@ -36,8 +36,8 @@ for (let g = 0; g < games; g++) {
   } } });
 }
 const sorted = [...rows].sort((a, b) => a.tech - b.tech), n = sorted.length;
-const q = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[s.length >> 1].toFixed(2) : 'nan'; };
+const q = (v: number[], f = .5) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))].toFixed(2) : 'nan'; };
 for (const [lab, lo, hi] of [['bottom third', 0, n / 3], ['middle third', n / 3, 2 * n / 3], ['top third', 2 * n / 3, n]] as const) {
   const T = sorted.slice(Math.floor(lo), Math.floor(hi));
-  console.log(`${lab.padEnd(12)} technique ${T[0]?.tech.toFixed(2)}-${T[T.length - 1]?.tech.toFixed(2)} | OL-dropbacks ${T.length} | fell before the throw ${(100 * T.filter((r) => r.fell).length / T.length).toFixed(1)}% | ground given 1.0 s -> throw (or 3.0 s) p50 ${q(T.map((r) => r.ground))} yd, p75 ${q(T.filter((_, i) => i >= T.length / 2).map((r) => r.ground))}`);
+  console.log(`${lab.padEnd(12)} technique ${T[0]?.tech.toFixed(2)}-${T[T.length - 1]?.tech.toFixed(2)} | OL-dropbacks ${T.length} | fell before the throw ${(100 * T.filter((r) => r.fell).length / T.length).toFixed(1)}% | ground given 1.0 s -> throw (or 3.0 s) p50 ${q(T.map((r) => r.ground))} yd, p75 ${q(T.map((r) => r.ground), .75)}`);
 }
