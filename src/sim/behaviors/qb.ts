@@ -172,6 +172,10 @@ const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
  * windup (p75 0.00). Under pressure his pocket movement (QB_FEEL, SET_DECIDE) takes over.
  * docs/reviews/2026-11-13-qb-gather.md. */
 const QB_GATHER = process.env.QB_GATHER === '1';
+/** ACC_RADIUS (experimental, off; ACC_RADIUS=1): his accuracy belief's catchable radius grows with the flight time and
+ * the receiver's ball skills (1.6 + 0.9 T yd), as our receivers' catches by the aim miss show, instead of a fixed
+ * 1.35 yd: the fixed radius priced a 2 s ball at a fifth of what our receivers catch. docs/reviews/2026-11-13-qb-gather.md. */
+const ACC_RADIUS = process.env.ACC_RADIUS === '1';
 /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
  * The QB reads a rusher as held only from what he sees: an offensive body in
  * contact with the rusher and on his path to the QB (seenHold), never from the
@@ -1353,7 +1357,11 @@ export class QBPass implements Behavior {
       const uRel = clamp(clamp((0.9 - atRelease) / 0.7, 0, 1) + (1 - know) * 0.25 * a.mind.judgment('acc-urgency'), 0, 1);
       sigma = this.missSigma(a, sim, dist, uRel) * (1 + 0.8 * clamp((0.15 - atRelease) / 0.3, 0, 1));
     } else sigma = this.missSigma(a, sim, dist, urgency);
-    const pAcc = Math.exp(-(sigma * sigma) / (2 * 1.35 * 1.35));
+    // ACC_RADIUS: how far from his aim the ball can land and still be caught grows with the flight, as the receiver
+    // sees it and runs under it, and with his ball skills (our own catches: about 1.9 yd on short balls, 3 on long
+    // ones; scripts/diag/eyes/catch-radius.ts). Off: a fixed 1.35 yd whatever the flight.
+    const radius = ACC_RADIUS ? 1.6 + 0.9 * T + 0.4 * (r.r('ballSkills') - 0.5) : 1.35;
+    const pAcc = Math.exp(-(sigma * sigma) / (2 * radius * radius));
     // He knows his own accuracy: the ball can land anywhere in his miss, and an
     // errant ball is the one a defender can pick. Its risk is averaged over the
     // miss (four sigma points of his release error: 0.8σ along the throw's
