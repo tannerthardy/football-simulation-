@@ -116,7 +116,7 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
       trajectory: P, breakT, breakAt,
       window: { ready: +ready.toFixed(2), best: +Math.min(last, ready + 0.25).toFixed(2), last: +last.toFixed(2) },
       depthAtReady: +at(ready).x.toFixed(1), crossesField: Math.sign(yEnd) !== Math.sign(start.y) && Math.abs(yEnd - start.y) > 8,
-      isBack, settles,
+      isBack, checkRelease: ref === 'B' && concept.back === 'check', settles,
     });
   }
   return { qbSetAt: +qbSetAt.toFixed(2), routes, excluded };

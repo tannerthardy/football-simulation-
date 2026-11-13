@@ -31,6 +31,7 @@
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
     "BACK_FRONT": "on",
+    "BACK_CHECKDOWN": "off",
     "BACK_RELEASE": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",

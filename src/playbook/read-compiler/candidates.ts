@@ -36,6 +36,13 @@ export const BEAT = 0.4;
  * the other side is read after the whole start side (often fourth or fifth), out and open but unread on about a
  * quarter of drop-backs (docs/reviews/2026-11-11-read-compiler-phase1.md). */
 const BACK_FRONT = process.env.BACK_FRONT !== '0';
+/** BACK_CHECKDOWN (experimental, off; BACK_CHECKDOWN=1): the back is read where the concept puts him. A back on a
+ * check-release (concept.back 'check': he checks protection, then releases) is the check-down, read after the
+ * downfield progression, and still the outlet a pressured QB comes off the plan to. A back with a called route (swing,
+ * angle, flat, out, wheel) is a read the concept designed, placed by his window as before. Off, his early window placed him second or third on
+ * vertical and isolation concepts (four verts S2, S1, B), and the back drew 32% of targets against the NFL's 20%
+ * (docs/reviews/2026-11-13-back-checkdown.md). */
+const BACK_CHECKDOWN = process.env.BACK_CHECKDOWN === '1';
 function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxReads: number): { order: ReadStep[]; outlet: ReceiverRef | null; warnings: string[]; score: number } {
   const warnings: string[] = [];
   const clearers = new Set(motifs.filter((m) => m.kind === 'clearout').map((m) => m.refs[0]));
@@ -50,9 +57,11 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
     sideOf.set(outletR, BACK_FRONT ? startSideOf(routes) : at.y >= 0 ? 'S' : 'W');
   }
   const side = (r: RouteDescriptor) => sideOf.get(r)!;
-  const field = [...routes.filter((r) => !r.isBack), ...(outletR ? [outletR] : [])]
+  // BACK_CHECKDOWN: a check-release back is left out of the search and read last, after the downfield reads.
+  const checkdown = BACK_CHECKDOWN && !!outletR && outletR.checkRelease;
+  const field = [...routes.filter((r) => !r.isBack), ...(outletR && !checkdown ? [outletR] : [])]
     .sort((a, b) => a.window.ready - b.window.ready || refKey(a).localeCompare(refKey(b)));
-  maxReads += outletR ? 1 : 0;
+  maxReads += outletR && !checkdown ? 1 : 0;
   type Node = { seq: RouteDescriptor[]; t: number; cost: number };
   const LOOK = 0.35;  // a look: eyes on, decide, move on (s); crossing the field adds a reset
   const startSide = startSideOf(routes);
@@ -92,7 +101,8 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
     const at = best.seq.slice(0, i + 1).reduce((t, x, k) => Math.max(t + (k ? LOOK : 0), x.window.ready), qbSet - 0.15);
     if (at > r.window.last) warnings.push(`${r.ref} expired before the read reaches him (${at.toFixed(2)} > ${r.window.last} s)`);
   }
-  return { order: best.seq.map((r) => step(r, qbSet)), outlet: outletR?.ref ?? null, warnings, score: -best.cost };
+  const seq = checkdown ? [...best.seq, outletR!] : best.seq;
+  return { order: seq.map((r) => step(r, qbSet)), outlet: outletR?.ref ?? null, warnings, score: -best.cost };
 }
 
 /** The side the read starts on: the side with more route runners (the side the concept is built to), the strength
