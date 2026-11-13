@@ -705,8 +705,10 @@ function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pa
       const target = corners.reduce((b, d) => Math.hypot(d.pos.x - receiver.pos.x, d.pos.y - receiver.pos.y)
         < Math.hypot(b.pos.x - receiver.pos.x, b.pos.y - receiver.pos.y) ? d : b);
       mkScreenRoute(receiver, routeId);
+      // SCREEN_QB: the screen receiver's sell stays behind the line, as tracked (BDB 2025 WR-in screens: 0.5 yd
+      // behind it at 1.0 and 1.5 s; screen_tunnel_path.py); off, 0.5 yd past it.
       receiver.behavior = new ReceiverBlockLook(target, spec.receiverSell + jitter(receiver), true,
-        () => new RouteRunner(receiver, sim, route, side, sim.t));
+        () => new RouteRunner(receiver, sim, route, side, sim.t), process.env.SCREEN_QB === '1' ? -0.5 : 0.5);
     }
   }
   const line = sim.offense.filter(isOL).sort((a, b) => (b.pos.y - a.pos.y) * side);

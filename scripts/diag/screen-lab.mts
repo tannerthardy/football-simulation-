@@ -94,6 +94,10 @@ for (const call of CALLS) {
     const events: Record<string, number> = { end: r2(ev.find(e => END.has(e.type))?.t ?? sim.t) };
     if (thr) events.pass_forward = thr.t;
     if (cat) events.catch = cat.t;
+    // The ball reaching the receiver's hands (CATCH_SECURE's 'secure', before the securing window ends in a catch)
+    // is NFL tracking's pass_arrived; without it the operator's flight ran to possession, past the arrival.
+    const arrived = ev.find(e => e.type === 'secure' && (!thr || e.t >= thr.t));
+    if (arrived) events.pass_arrived = arrived.t;
     const receiverAgent = sim.agents.find((a: any) => a.slot === sim.offAlign.numbering[concept.screen!.receiver]) ?? (concept.screen!.receiver === 'B' ? sim.slot('RB') : null);
     const r = receiverAgent?.idx ?? thr?.b ?? null;
     const play = {
@@ -102,7 +106,7 @@ for (const call of CALLS) {
       dt: 0.1, xy, ball_y: r2(sim.ballY), events, target: thr?.b ?? null, carrier: cat?.a ?? null,
       screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id, rpo: call.run ? call.id : undefined,
         passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers,
-        penalties: sim.penalties.map((p: any) => p.kind) },
+        penalties: sim.penalties.map((p: any) => p.kind), thrownAway: sim.agents.find((a: any) => a.slot === 'QB')?.behavior?.screenThrownAway || false, throwawayAt: ev.find(e => e.type === 'throwaway')?.t ?? null },
     };
     lines.push(JSON.stringify(play));
     s.n++; if (cat) s.caught++; s.yards.push(res.yards); if (thr) s.ttt.push(thr.t);
