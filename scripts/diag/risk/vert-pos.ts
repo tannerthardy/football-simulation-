@@ -20,7 +20,7 @@ const rows: any[] = [];
 P.tick = function () {
   if (this.__vp === undefined) {
     const sh = shell(String(this.defCall?.coverage?.id ?? ''));
-    this.__vp = sh && this.offCall?.kind === 'pass' && !String(this.offCall?.pass?.id ?? '').startsWith('pa_') ? { sh, pairs: [] as any[], marks: [1.5, 2.0, 2.85] } : null;
+    this.__vp = sh && this.offCall?.kind === 'pass' && !String(this.offCall?.pass?.id ?? '').startsWith('pa_') ? { sh, call: String(this.defCall?.coverage?.id ?? ''), pairs: [] as any[], marks: [1.5, 2.0, 2.85] } : null;
     if (this.__vp) for (const o of this.offense) {
       const id = o.behavior?.route?.id ?? o.behavior?.fallback?.route?.id;
       if (id !== 'go' && id !== 'seam') continue;
@@ -38,7 +38,7 @@ P.tick = function () {
       for (const p of V.pairs) p.row[lab] = { over: (p.c.pos.x - p.o.pos.x) * dir, inside: Math.abs(p.o.pos.y - mid) - Math.abs(p.c.pos.y - mid),
         dist: Math.hypot(p.c.pos.x - p.o.pos.x, p.c.pos.y - p.o.pos.y), tech: last.get(p.c) ?? (p.c.behavior?.kind ?? '?'), depth: (p.o.pos.x - this.los) * dir };
     }
-    if (!V.marks.length) { for (const p of V.pairs) rows.push({ sh: V.sh, zone: p.zone, row: p.row }); this.__vp = null; }
+    if (!V.marks.length) { for (const p of V.pairs) rows.push({ sh: V.sh, call: V.call, zone: p.zone, row: p.row }); this.__vp = null; }
   }
   return r;
 };
@@ -54,5 +54,17 @@ for (const sh of ['cover3', 'cover4']) {
     const W = V.map(r => r.row[lab]).filter(Boolean);
     if (W.length < 5) continue;
     console.log(`   ${lab.padStart(4)} s n ${W.length} | runner depth ${q(W.map(w => w.depth))} | over him ${q(W.map(w => w.over))} | inside ${q(W.map(w => w.inside))} | distance ${q(W.map(w => w.dist))} | on top ${(100 * W.filter(w => w.over > 1).length / W.length).toFixed(0)}% hip ${(100 * W.filter(w => Math.abs(w.over) <= 1).length / W.length).toFixed(0)}% trailing ${(100 * W.filter(w => w.over < -1).length / W.length).toFixed(0)}% | technique ${cnt(W.map(w => w.tech))}`);
+  }
+}
+
+// By call at 2.85 s: plain cover3 / cover4 against each match call, the corner's technique and on-top share.
+for (const sh of ['cover3', 'cover4']) {
+  const V = rows.filter(r => r.sh === sh && r.row['2.85']);
+  const calls = [...new Set(V.map(r => r.call))].sort();
+  console.log(`== sim seed ${seed} ${sh} by call at 2.85 s`);
+  for (const c of calls) {
+    const W = V.filter(r => r.call === c).map(r => ({ ...r.row['2.85'], zone: r.zone }));
+    if (W.length < 3) continue;
+    console.log(`   ${c.padEnd(18)} n ${String(W.length).padStart(3)} | corner zones ${cnt(W.map(w => String(w.zone)))} | technique ${cnt(W.map(w => w.tech))} | on top ${(100 * W.filter(w => w.over > 1).length / W.length).toFixed(0)}% | distance p50 ${q(W.map(w => w.dist)).split('/')[1] ?? '-'}`);
   }
 }

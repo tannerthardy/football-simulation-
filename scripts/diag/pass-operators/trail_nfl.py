@@ -2,21 +2,23 @@
 Man (pff_manZone) targeted passes (complete, incomplete, intercepted), not nullified; snap to 0.5 s after pass_arrived. Per play, from the snap to the catch at 10 Hz: every player's
 position, normalised so the offence attacks +x from the line of scrimmage (the ball's x at the snap), and the QB's
 body orientation as a math angle in the same frame, and every player's orientation (fo). Output: pre_release.py's record format plus `arrive`, read by trail_look.py.
-usage: python3 -I scripts/diag/pass-operators/trail_nfl.py ARCHIVE.zip OUT.jsonl.gz [weeks=1,2,3]"""
+usage: python3 -I scripts/diag/pass-operators/trail_nfl.py ARCHIVE.zip OUT.jsonl.gz [weeks=1,2,3] [cov=Man|Zone|all]"""
 import sys, csv, io, gzip, json, math, zipfile, collections as C
 
 GROUP = {'QB': 'QB', 'WR': 'WR', 'TE': 'TE', 'RB': 'RB', 'FB': 'RB', 'T': 'OL', 'G': 'OL', 'C': 'OL',
          'DE': 'DL', 'DT': 'DL', 'NT': 'DL', 'ILB': 'LB', 'OLB': 'LB', 'MLB': 'LB', 'LB': 'LB',
          'CB': 'DB', 'SS': 'DB', 'FS': 'DB', 'DB': 'DB'}
 zpath, out = sys.argv[1], sys.argv[2]
-weeks = [int(w) for w in (sys.argv[3].split('=')[1] if len(sys.argv) > 3 else '1,2,3').split(',')]
+opt = dict(a.split('=') for a in sys.argv[3:])
+weeks = [int(w) for w in opt.get('weeks', '1,2,3').split(',')]
+COV = opt.get('cov', 'Man')
 z = zipfile.ZipFile(zpath); D = 'big-data-bowl-data/'
 rd = lambda n: csv.DictReader(io.TextIOWrapper(z.open(D + n), encoding='utf-8'))
 pos = {r['nflId']: GROUP.get(r['position']) for r in rd('players.csv')}
 plays = {}
 for r in rd('plays.csv'):
-    if r['pff_manZone'] == 'Man' and r['passResult'] in ('C', 'I', 'IN') and r['playNullifiedByPenalty'] != 'Y':
-        plays[(r['gameId'], r['playId'])] = dict(poss=r['possessionTeam'], coverage=r['pff_passCoverage'])
+    if (COV == 'all' or r['pff_manZone'] == COV) and r['passResult'] in ('C', 'I', 'IN') and r['playNullifiedByPenalty'] != 'Y':
+        plays[(r['gameId'], r['playId'])] = dict(poss=r['possessionTeam'], coverage=r['pff_passCoverage'], manzone=r['pff_manZone'])
 target = {}
 for r in rd('player_play.csv'):
     k = (r['gameId'], r['playId'])
@@ -63,5 +65,5 @@ with gzip.open(out, 'wt') as fo:
             by = ball[snap][1] if sg > 0 else 53.3 - ball[snap][1]
             fo.write(json.dumps(dict(src='nfl-bdb2025', id=f'{k[0]}-{k[1]}', dt=0.1, players=players, xy=xy, qbf=qbf, fo=fol,
                                      release=rel - snap, arrive=arr - snap, catch=ev['pass_outcome_caught'] - snap if 'pass_outcome_caught' in ev else None, target=ids.index(target[k]), qb=qbs[0],
-                                     coverage=plays[k]['coverage'], ball_y=round(by, 2))) + '\n'); n += 1
+                                     coverage=plays[k]['coverage'], manzone=plays[k]['manzone'], ball_y=round(by, 2))) + '\n'); n += 1
         print(f'week {w}: {len(rows)} man targets; written so far {n}', file=sys.stderr)

@@ -4,7 +4,7 @@
 // pre_release_nfl.py builds from BDB tracking): every player's position from the snap to the catch at 10 Hz,
 // normalised so the offence attacks +x from the line of scrimmage, the QB's body facing (math angle, same frame), every player's body facing (fo),
 // release and catch frames, the target. Sim only; positions and facing are the bodies' true values, as tracking's are.
-// usage: npx tsx scripts/diag/risk/trail-export.ts SEED GAMES OUT.jsonl.gz
+// usage: [COV=all] npx tsx scripts/diag/risk/trail-export.ts SEED GAMES OUT.jsonl.gz
 import { createWriteStream } from 'node:fs';
 import { createGzip } from 'node:zlib';
 import { Rng } from '../../../src/core/rng.js';
@@ -17,6 +17,7 @@ const gz = createGzip(); gz.pipe(createWriteStream(outPath));
 const GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL', EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' };
 const P: any = PlaySim.prototype, tick0 = P.tick, ev0 = P.event;
 let n = 0;
+const COV = process.env.COV ?? 'man';
 const ARRIVE = new Set(['secure', 'catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss']);
 P.event = function (type: string, a: any, b: any, note?: string) {
   if (type === 'throw' && b && this.__pr && this.__pr.release === undefined) { this.__pr.release = this.__pr.xy.length - 1; this.__pr.R = b; }
@@ -44,10 +45,10 @@ P.tick = function () {
   }
   if (this.phase !== 'live' || (S.arriveT !== undefined && this.t >= S.arriveT + 0.5)) {
     S.done = true;
-    if (S.arrive !== undefined && S.release !== undefined && S.arrive > S.release && this.defCall?.coverage?.man) {
+    if (S.arrive !== undefined && S.release !== undefined && S.arrive > S.release && (COV === 'all' || this.defCall?.coverage?.man)) {
       const players = S.all.map((a: any) => ({ side: this.offense.includes(a) ? 'O' : 'D', group: GROUP[a.player?.position] ?? null }));
       gz.write(JSON.stringify({ src: 'sim', id: `${seed}-${n}`, dt: 0.1, players, xy: S.xy, qbf: S.qbf, fo: S.fo, release: S.release, arrive: S.arrive, catch: S.catch ?? null,
-        target: S.all.indexOf(S.R), qb: S.all.indexOf(this.qb), coverage: this.defCall?.coverage?.id ?? null,
+        target: S.all.indexOf(S.R), qb: S.all.indexOf(this.qb), coverage: this.defCall?.coverage?.id ?? null, manzone: this.defCall?.coverage?.man ? 'Man' : 'Zone',
         ball_y: +(S.dir > 0 ? this.ballY : FIELD_WIDTH - this.ballY).toFixed(2) }) + '\n');
       n++;
     }
