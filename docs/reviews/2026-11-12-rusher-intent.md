@@ -302,3 +302,62 @@ Against the pre-fix A (q201-A, q301-A): pressure 31.3 → 33.3%, sacks 4.1 → 6
   Sacks stay at 6.7%. The reason to land it with A (putting the pass rush back in range) is gone.
 - Still open with A: the in-front class (9.4% of dropbacks against 3.0%, converting about 5% against 20%), real
   pressure 23.9% against 29.9%, inside pressure free 86-90% against 48%, and the retreat curve.
+
+# Set A on engine-51 (Integration's hold, 2026-11-13): reconcile and attribution
+
+Local rebuild of Integration's candidate (develop 762fb804 + a1e611ce, PA_DROP moved into called-drop.ts), sim-export
+with league samples, 16 games a seed. "Native" is the review's stats, the scorecard's definitions. "Mine" is
+pressure-time / pressure-source on the same plays (`reconcile-sacks.py`).
+
+| seed | native sacked off → A | my sacked | my pressured | pressure by 2.5 s | sacks per pressure |
+|---|---|---|---|---|---|
+| 11 | 3.4 → 3.5% | 4.2 → 3.9 | 35.4 → 31.9 | 15.9 → 13.2 | 11.9 → 12.1 |
+| 23 | 4.0 → 2.8 | 4.5 → 3.4 | 35.3 → 30.0 | 17.1 → 14.2 | 12.8 → 11.0 |
+| 31 | 4.1 → 2.7 | 5.5 → 4.3 | 41.3 → 34.5 | 17.6 → 13.7 | 13.3 → 12.4 |
+| 47 | 3.6 → 2.7 | 4.4 → 3.6 | 33.6 → 28.2 | 14.9 → 11.3 | 13.1 → 12.7 |
+
+The earlier "A 6.2% sacked, on the NFL" was my operator on my branch's engine (no engine-50/51), seeds 201/301,
+compared with the NFL and with no off arm on that head. It was a wrong comparison. The last off arm I had there was
+6.8%. Play action shows no systematic difference.
+
+**Leave-one-out, seeds 11 / 23** (A without one flag):
+
+| arm | native sacked | my sacked | pressured | in front | inside | interior |
+|---|---|---|---|---|---|---|
+| off | 3.4 / 4.0 | 4.2 / 4.5 | 35.4 / 35.3 | 13.1 / 13.6 | 6.0 / 4.7 | 8.2 / 7.0 |
+| A | 3.5 / 2.8 | 3.9 / 3.4 | 31.9 / 30.0 | 11.6 / 10.8 | 4.3 / 3.3 | 6.7 / 6.6 |
+| A without PAST_ALONG_PATH | 4.7 / 3.6 | 5.1 / 4.4 | 29.8 / 29.2 | 10.3 / 9.8 | 4.1 / 4.6 | 6.9 / 6.1 |
+| A without OPEN_HANDS | 2.8 / 2.3 | 3.3 / 2.7 | 32.0 / 28.0 | 11.2 / 10.3 | 4.4 / 3.9 | 7.6 / 6.2 |
+| A without PUNCH | 3.2 / 1.9 | 3.9 / 2.4 | 36.6 / 34.1 | 14.5 / 13.1 | 6.7 / 5.1 | 6.6 / 6.7 |
+
+Sacks are about 55 an arm, with a standard error of about 0.5 points per seed. What holds on both seeds:
+- **PUNCH takes about 4.5 points of pressure:** in front −3 and inside −2. It does not move sacks consistently.
+- **PAST_ALONG_PATH takes about 1 point of sacks** (about 2 SE), not localised to a presser class. Rushers who reach
+  the tackle's hip finish about as the NFL's do either way (`hip-finish.py`: NFL sacked on 9.0% of such plays; A 8.1 /
+  4.3%; A without PAST 8.5 / 8.1%).
+- **OPEN_HANDS adds about +0.6 sacks.**
+- Rushers reach the tackle's hip 24-26 times per 100 dropbacks with A, against 32-37 off and the NFL's 58.
+
+**What PUNCH changes in the rep** (`rep-probe.mts`, seed 11 x 4, A's other flags on):
+
+| | PUNCH off | PUNCH on |
+|---|---|---|
+| edge reps; moves per rep; move success | 651; 1.66; 15% | 739; 1.67; 15% |
+| interior reps; moves per rep; move success | 844; 2.57; 17% | 968; 2.53; 17% |
+| body gap p50, edge / interior | 0.24 / 0.22 yd | 0.61 / 0.43 yd |
+| hands at lockout (share of ticks), edge / interior | 0 / 0 | 0.34 / 0.19 |
+| rusher to QB at the rep's end, edge / interior | 4.85 / 4.82 yd | 5.36 / 5.09 yd |
+| rep ends | play over 89%, past him 6% | play over 83%, other 13%, past him 4% |
+
+**Reading.**
+- The pressures PUNCH removes are rushers held at arm's length: the same moves at the same rate (15-17%), with the
+  rusher kept 0.2-0.4 yd farther off and ending 0.3-0.5 yd farther from the QB.
+- Nothing in the rusher answers the locked-out arm. Move success is a rating roll (`resolveMove`) with no term for the
+  blocker's extension, and a won move leaves the hands joint in place.
+- In football the answers are hand-fighting: swipe, club, snatch, rip under, long-arm, a ghost under a high punch
+  (OL protection textbook §8.4). They make an extended blocker more vulnerable, not less. Those are the rush's missing
+  mechanism: physical move resolution (the spec in the tackle-set review) and GRIP_BREAK (parked).
+- The hands themselves are within physics: push at lockout bounded by the joint's limits and the World's traction.
+- So this is the second case: A's mechanisms are right and the rush has no physical answer to real hands. The cost
+  stated with A: pressure about −4.5 points (PUNCH), sacks about −1 (PAST, at about 2 SE).
+- Queued: physical move resolution with GRIP_BREAK, the untouched-tackle stop, inside help.
