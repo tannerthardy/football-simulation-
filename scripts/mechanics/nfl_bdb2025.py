@@ -54,7 +54,9 @@ def load_meta():
             continue
         plays[(r["gameId"], r["playId"])] = {"kind": kind, "yards": yards, "offense": r["possessionTeam"],
                                              "week": None, "concept": r["pff_runConceptPrimary"],
-                                             "coverage": r["pff_passCoverage"], "carrier": None, "target": None,
+                                             "coverage": r["pff_passCoverage"], "playAction": r.get("playAction"),
+                                             "dropbackType": r.get("dropbackType"), "passLocation": r.get("passLocationType"),
+                                             "rpo": r.get("pff_runPassOption"), "carrier": None, "target": None,
                                              "blocks": []}
     for r in read_csv("player_play.csv"):
         meta = plays.get((r["gameId"], r["playId"]))
@@ -129,7 +131,8 @@ def convert(key, rows, meta, position):
             "carrier": ids.index(meta["carrier"]) if meta["carrier"] in ids else None,
             "target": ids.index(meta["target"]) if meta["target"] in ids else None,
             "blocks": [[ids.index(b), ids.index(d)] for b, d in meta["blocks"] if b in ids and d in ids],
-            "cell": {"concept": meta["concept"], "coverage": meta["coverage"]}}
+            "cell": {"concept": meta["concept"], "coverage": meta["coverage"], "playAction": meta["playAction"],
+                     "dropbackType": meta["dropbackType"], "passLocation": meta["passLocation"], "rpo": meta["rpo"]}}
 
 
 def stream(weeks, plays, position):
