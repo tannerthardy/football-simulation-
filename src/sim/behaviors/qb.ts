@@ -85,11 +85,18 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
       return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
     case 'pa':
     case 'boot':
+      // PA_DROP: play action by alignment, from tracking (BDB 2025 traditional drop-backs with play action, weeks 1-3,
+      // nfl_pa_drop.py): from the gun a mesh and a shallow set (deepest 6.0 yd behind the snap at 2.1 s, the pass at
+      // 2.3 s); under center the fake and the full drop (8.1 yd at 2.6 s, the pass at 3.2 s). Off: one drop for both.
+      if (PA_DROP) return gun ? { x: los - 6.0, time: 1.8 } : { x: los - 8.1, time: 2.1 };
       return { x: los - 8.3, time: 1.95 };
   }
   void qbStartX;
 }
 
+
+/** PA_DROP (experimental, off; PA_DROP=1 turns it on): the play-action drop by the QB's alignment (see dropSpec). */
+const PA_DROP = process.env.PA_DROP !== '0';
 
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
@@ -266,7 +273,7 @@ const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
  * was 0.165 - 0.13·hands (fitted on one half of the games, within 0.004 on the other), about 0.025 above his belief at
  * every hands level (docs/reviews/2026-11-12-drop-belief.md). On: the fitted rate. His knowledge (decision-making and
  * experience) sets how well he knows it, with error both ways. Re-read when the catch rules change. */
-const DROP_BELIEF = process.env.DROP_BELIEF === '1';
+const DROP_BELIEF = process.env.DROP_BELIEF !== '0';
 const DROP_BASE = 0.165;
 const DROP_HANDS = 0.13;
 /** INT_BELIEF (experimental, off; INT_BELIEF=1 turns it on): his interception belief, shaped like how picks happen.
@@ -634,6 +641,13 @@ export class QBPass implements Behavior {
       if (t < this.fakeUntil) {
         const rb = sim.slot('RB');
         if (rb) sim.presentHandoffFake(a, rb);
+        // PA_DROP: under center the fake is carried on the drop (NFL QBs keep moving back through it: 1.9 -> 3.3 yd
+        // behind the snap from 0.5 to 1.0 s); off, he slowed to the mesh point and re-started his drop from it.
+        if (PA_DROP && sim.offCall.formation.qb !== 'gun') {
+          // He carries it back on a line just off the back's track (0.6 yd away from it), not into him.
+          const meshPt = rb ? { x: sim.los - 5.0, y: this.dropY - Math.sign(rb.pos.y - this.dropY || 1) * 0.6 } : target;
+          return goTo(a, meshPt, { speed: 1, through: 1, facing: Math.PI / 2 * Math.sign(meshPt.y - a.pos.y || 1) });
+        }
         const fakePt = rb ? { x: sim.los - 4.2, y: (a.pos.y + rb.pos.y) / 2 } : target;
         return goTo(a, fakePt, { speed: 0.6, facing: Math.PI / 2 * Math.sign(fakePt.y - a.pos.y || 1) });
       }

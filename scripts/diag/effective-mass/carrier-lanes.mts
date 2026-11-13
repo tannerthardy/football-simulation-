@@ -16,23 +16,24 @@ const wrap = (d: number) => Math.abs(((d * 180 / Math.PI) + 540) % 360 - 180);
 let secs = 0, switches = 0, reversed = 0; const margins: number[] = []; let teamTurn = 0, blockedSw = 0;
 function play(cfg: any) {
   const sim: any = new PlaySim(cfg);
-  let sel: { h: number; score: number; kept: boolean; blocked: boolean } | null = null;
+  type Sel = { h: number; score: number; kept: boolean; blocked: boolean };
+  let sel = null as Sel | null;
   const tc0 = sim.commandTraceFor.bind(sim);
   sim.commandTraceFor = (a: any) => { const inner = tc0(a); return new Proxy(inner ?? {}, { get: (o: any, k) => k === 'carrier'
     ? (d: any) => { if (d?.kind === 'evaluate' && d.selected && a === sim.carrier) { const cur = d.routes?.find((r: any) => r.current); sel = { h: d.selected.heading, score: d.selected.score - (cur?.score ?? d.selected.score), kept: d.selected.keptCurrent, blocked: d.selected.blocked }; } return o?.carrier?.(d); }
     : typeof o?.[k] === 'function' ? o[k].bind(o) : inner ? o[k] : () => undefined }); };
   const hist: { t: number; h: number }[] = []; const prevReq = new Map<any, number>();
   while (sim.phase !== 'dead' && sim.t < 12) {
-    sel = null; sim.tick();
+    sel = null as Sel | null; sim.tick();
     const c = sim.carrier; if (!c || c === sim.qb || sim.phase !== 'live') continue;
     let turnNear = false;
     for (const m of sim.offense) { const v = sim.intents[m.idx]?.vel; if (!v || Math.hypot(v.x, v.y) < 1) continue; const h = Math.atan2(v.y, v.x), p = prevReq.get(m);
       if (m !== c && p !== undefined && wrap(h - p) > 20 && Math.hypot(m.pos.x - c.pos.x, m.pos.y - c.pos.y) < 3) turnNear = true; prevReq.set(m, h); }
-    if (!sel) continue; secs += sim.dt;
+    const cur = sel as Sel | null; if (!cur) continue; secs += sim.dt;
     const last = hist[hist.length - 1];
-    if (last && wrap(sel.h - last.h) > 20) { switches++; margins.push(sel.score); if (turnNear) teamTurn++; if (sel.blocked) blockedSw++;
-      const back = hist.slice(-6).find(x => sim.t - x.t <= 0.3 && x !== last && wrap(sel!.h - x.h) <= 20); if (back) reversed++; }
-    hist.push({ t: sim.t, h: sel.h });
+    if (last && wrap(cur.h - last.h) > 20) { switches++; margins.push(cur.score); if (turnNear) teamTurn++; if (cur.blocked) blockedSw++;
+      const back = hist.slice(-6).find(x => sim.t - x.t <= 0.3 && x !== last && wrap(cur.h - x.h) <= 20); if (back) reversed++; }
+    hist.push({ t: sim.t, h: cur.h });
   }
 }
 for (const run of ['oz_strong', 'oz_weak', 'wz_strong', 'iz_strong', 'power', 'counter', 'toss', 'duo']) for (let seed = 1; seed <= 5; seed++)
