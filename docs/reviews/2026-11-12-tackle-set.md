@@ -2714,3 +2714,44 @@ free rusher or a rusher within 2 yd; those that do reach 2 yd at 2.2-2.9 s.
 2. The late tackle walk-back is real in positions too (0.1-0.6 yd in front of the QB at 3 s against 1.5) and stalls
    the edge rush. Next pass-pro item, after the stance/base proposal.
 3. The club's "a second early" is a side issue for sacks: arrivals are already on the NFL's count and time.
+
+# The finish: from first contact to the outcome (`finish.py`, `finish-trace.mts`)
+
+First contact means a defender within 1.0 yd of the QB, ball in his hands, after 0.5 s. Same operator both sides.
+
+| after first contact | NFL (n 1211, 12.5% of dropbacks) | ours AB 11 / 23 (n 127 / 166, 9.5 / 10.8%) | ours E56 11 (n 158, 12.0%) |
+|---|---|---|---|
+| sacked; time after contact | **47%; 1.0 s** | **24 / 22%; 0.6 s** | 22%; 0.7 s |
+| threw; time after contact | **30%; 0.3 s** | **65 / 64%; 0.05-0.10 s** | 72%; 0.1 s |
+| escaped (neither) | 22% | 11 / 14% | 6% |
+| from the front: sacked / threw | 48 / 31% | 13 / 73-74% | 16 / 81% |
+| from the side: sacked / threw | 51 / 27% | 21-25 / 63-74% | 18 / 78% |
+| from behind: sacked / threw | 40 / 31% | 36-59 / 27-42% | 40 / 43% |
+| free / partly blocked: sacked | 45 / 51% | 24-27 / 17-20% | 25 / 19% |
+
+**The trace** (`finish-trace.mts`, PUNCH_STRIKE + ANCHOR_BASE, seed 11 x 6, 41 first contacts):
+
+| at first contact | n | outcome |
+|---|---|---|
+| already in his windup (sim.windupAt >= 0), 0.25 s into it | 25 of the 27 throws (93%) | ball out 0.10 s later; thrown before any wrap 89%; a wrap followed in 11% |
+| not yet in his windup | 16 | **sacked 69%**, threw 13% (after 0.35 s), escaped 19% |
+
+**Which stage loses the sacks: the windup.** A contact that catches our QB before he starts his throw finishes him
+more often than the NFL's 47%. A contact that arrives during his windup almost never stops the throw: the ball comes
+out about 0.1 s later, before any wrap. Our QB's windup is immune to a rusher arriving within a yard. Only a hold
+already taken during the load can pin the arm, and only by a rolled chance at the delivery's start (THROW_BODY,
+qb.ts ~580). There is no hit-as-he-throws.
+
+In the NFL, a QB with a rusher within a yard gets the ball out in 30% of cases, 0.3 s later. The rest are sacks (47%)
+or escapes (22%).
+
+Suspects from Integration's list, as the trace reads them:
+- **(a) the throw completing through contact: yes, this is the stage.** Whether that is the QB's decision (starting a
+  windup with a rusher a step away) or the throw's physics (a windup a body can't interrupt) is the next split. The
+  NFL rows say both happen: fewer throws, and later.
+- **(b) the pocket-QB escape (`seesIt`, the escape roll):** not the loss. Missed tackles on the QB after contact are
+  0% in the sacked and not-in-windup groups, and 11% among the throws.
+- **(c) and (d) the arrival geometry and the bond:** not the loss. Before the windup, contact finishes 69% of the time.
+
+Also found in the path: for a pocket QB the tackle attempt is always `rng.chance(pMiss)` with a rating-weighted escape
+(tackle.ts ~379-381), never the physical whiff path. That is PRO-INFO #11, a rating roll.
