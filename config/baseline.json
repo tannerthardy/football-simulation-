@@ -238,6 +238,7 @@
     "DROP_BELIEF": "0",
     "PA_DROP": "0",
     "PA_CALL": "0",
+    "BACK_PATHS": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
     "FORECAST_BREAK": "0",
