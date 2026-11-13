@@ -2501,3 +2501,33 @@ Tackle pass reps with a rusher outside him, ball in the QB's hands (asked / achi
 **Status.** Diagnosed. The walk-back is controller choice (PASS_KICK); TACKLE_SET removes the choice; what remains is
 the anchor's size, which needs the support base's stagger. Proposed to Integration as a separate, approved
 shared-physics item, after RUSH_HANDS' cleared hand.
+
+# The rusher's falls (RUSH_HANDS): not a lean commitment
+
+**NFL bound** (`fall-proxy.py --role DL`, the same proxy with DL as subjects and the offense's OL/TE/RB as the men
+they were in contact with):
+- NFL: 0.0-1.0 per 100 dropbacks (all DL). The traces mostly hover at 0.2-0.4 yd/s, men milling, with few flat
+  zeros: about 1 DL fall per 100 or fewer.
+- Ours: true falls 5.7 per 100 (PUNCH_STRIKE + ANCHOR_BASE) and 18.6 (+ RUSH_HANDS). The proxy's precision on ours
+  is 68-100%. True falls decelerate to a flat 0.0; false hits hover like the NFL's.
+
+**RUSH_BALANCE, attempt 1** (removed, not committed): the protector's commit bound applied to the rusher. 0.95 of
+m w0^2 critDev in a power move he chose, 0.6 otherwise, plus up to 0.45 of misjudgement for a poor technician.
+- DL falls 19.6 → 19.1 per 100 (seed 11 x 3, RUSH_HANDS + PUNCH_STRIKE + ANCHOR_BASE). No effect.
+
+**Why** (`fall-trace.mts`, `FALL_ROLE=DL`; 34 interior and 10 tackle rushers' falls):
+- 37 of 44 are in a long-arm (`e.rusherHand`), and only 1 has a blocker's hand off.
+- The rusher asks to run at the blocker at 4-6 yd/s while his own extended arm holds the blocker off: the press on
+  him (his arm's reaction) is about 1500 at 0.3-0.1 s.
+- His lean is about 1300 for interior rushers, but only about 160 for the tackles' rushers, who fall all the same.
+- At the fall tick the press drops to about 200-300 (the long-arm joint ends or slips), and his capture point jumps
+  2.7-2.9 base radii in one step (cause 'contact').
+
+**Reading.** The rusher's fall is not a lean he committed. It is his legs' full drive, requested at a sprint, held off
+by his own arm, released in one tick when the long-arm ends. A lean bound cannot touch it. Two candidates:
+- **Controller:** a long-arm is a controlled power move, a steady drive with the arm locked, not a sprint request
+  held back by his own arm.
+- **World:** the release of a held body's leg drive into the capture point when a joint ends in one tick.
+
+Stopped after one attempt at the wrong lever. Diagnosis next: the World's contact deviation on a joint release, in a
+staged long-arm, before choosing.
