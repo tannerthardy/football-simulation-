@@ -2,7 +2,8 @@
 // held(), pressure() time and who, the rusher's behaviour and engagement, the alarm.
 //   node --import tsx scripts/diag/eyes/placed-trace.mts <concept> <seed> [FLAG=value ...]   (cover 3)
 import { readFileSync } from 'node:fs';
-const root = new URL('../../..', import.meta.url).pathname.replace(//$/, '');
+import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../../..', import.meta.url)).replace(/\/$/, '');
 const flags: Record<string, string> = JSON.parse(readFileSync(`${root}/config/reference-stack.json`, 'utf8')).flags;
 for (const [k, v] of Object.entries(flags)) if (v === 'on') process.env[k] = '1';
 process.env.HOT_LOOK = '1';
