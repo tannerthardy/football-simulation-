@@ -2107,3 +2107,47 @@ Pooled over outcomes (not split by whether he reached the QB, so not circular):
 - **The timing differs too.** Our come-offs happen during the QB's drop (2.1-2.2 s, the QB still going back 1.6 yd a
   second), against 3.0 s in the NFL, when he has set and can move. Rushers come off linemen about a third more often
   than in the NFL. The rep itself still ends early and often; that part is ours (trenches).
+
+## The come-off checked by frame, and corrected (`come-off.py` with hysteresis)
+
+Checked on 12 traced come-offs per side (`COME_OFF_TRACE=<seed>` prints the rusher-to-lineman distance from 1.2 s
+before to 0.3 s after). Two defects, the same lesson as "ridden":
+- **Chatter at 1.2 yd.** NFL rushers hovering at 1.0-1.2 yd for a second counted as come-offs each time they ticked
+  over 1.2 (2022101604-3437).
+- **Contact time reset.** It reset when a neighbouring lineman was briefly nearer (2022091802-817: within 1.2 yd for
+  12 frames, logged as 0.1 s).
+
+Fixed:
+- a come-off is now attached at <= 1.2 yd, then beyond 1.5 yd of every lineman;
+- contact time is the continuous time within 1.5 yd of the lineman he comes off.
+
+After the fix the traces are genuine separations (distance rising through 1.5 yd), and the "brief" passing class
+nearly vanishes on both sides (NFL 3.8 / 1.3, ours 6.2 / 1.1 per 100 dropbacks).
+
+Come-offs from his own blocker (continuous contact >= 0.5 s). NFL against ours (RUSH_HANDS + PASS_RIDE, seeds 11 / 23 x 16):
+
+| | NFL | ours |
+|---|---|---|
+| interior: per 100 dropbacks | 48.6 | 69.9 / 65.5 |
+| interior: time p25/50/75 | 2.3 / 3.2 / 4.1 s | 1.7 / 2.1 / 2.6-2.7 s |
+| interior: contact before it p50 | 1.7 s | 1.2 / 1.1 s |
+| interior: then reached the QB | 17% | 21 / 17% |
+| tackle: per 100 dropbacks | 41.1 | 85.8 / 76.0 |
+| tackle: time p50 | 3.1 s | 2.0 / 2.0 s |
+| tackle: contact p50 | 1.6 s | 0.8 / 0.8 s |
+| tackle: then reached the QB | 20% | 14 / 13% |
+| QB toward the rusher, 0.5 s after (interior / tackle, all come-offs) | -0.73 / -0.74 yd | -0.14 to -0.18 / -0.06 to -0.07 |
+
+**Corrections to the reads above.**
+- "53% of ours reach the QB after coming off a ride, against 26%" came from the chattering operator. Counted cleanly, a
+  come-off from his own blocker reaches the QB about as often as the NFL's: 17-21% interior against 17%, tackles
+  13-14% against 20%.
+- The QB row holds, and is larger with the fix (NFL -0.73 to -0.99 yd, ours -0.06 to -0.18).
+
+**The rep's gap:**
+- our reps end about 1.1 s earlier (2.0-2.1 s against 3.1-3.2 s), after shorter contact (interior 1.1-1.2 s against
+  1.7 s, tackles 0.8 s against 1.6 s);
+- they end more often: 1.4x interior, 2x tackles.
+
+Next (trenches): what ends our reps at 2 s. Use the sim's own record of each come-off: the shed note, the move, the
+hands' state and PAST.

@@ -3,7 +3,7 @@ tracking and sim exports (common play format).
 
 usage: python3 -I scripts/diag/pass-operators/come-off.py <plays.jsonl.gz> [...]
 
-Dropbacks; a come-off is a DL/LB within 1.2 yd of an offensive lineman on one frame and of none on the next, between
+Dropbacks; a come-off is a DL/LB within 1.2 yd of an offensive lineman, then beyond 1.5 yd of all of them (hysteresis), between
 0.5 s and the throw. Its state is the last close frame's (as ride-pair.py): ridden (dx <= +0.2 along the QB-blocker
 line: level with or past him toward the QB), front (dx >= +0.5) or between. Offense moves toward +x.
 
@@ -18,7 +18,7 @@ import sys, os, json, gzip, math
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play  # noqa
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
-NEAR = 1.2
+NEAR, OFF = 1.2, 1.5
 
 for path in sys.argv[1:]:
     ev_rows = []; drop = 0
@@ -36,19 +36,25 @@ for path in sys.argv[1:]:
         fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw if fw is not None else p.end))
         DLB = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] in ('DL', 'LB')]
         for d in DLB:
-            last = None
+            last = None; since = None
             for k in range(max(1, p.k(0.5)), kend + 1):
                 rx, ry = p.pos(d, k); qx, qy = p.pos(qb, k)
                 if rx is None or qx is None: break
                 near = [(math.hypot(p.pos(o, k)[0] - rx, p.pos(o, k)[1] - ry), o) for o in OL if p.pos(o, k)[0] is not None]
                 dist, o = min(near) if near else (99, None)
+                # Attached at <= NEAR to some lineman; off only beyond OFF (hysteresis: hovering at 1.2 yd is not a
+                # come-off). Contact time is how long he was continuously within OFF of the lineman he comes off.
                 if o is not None and dist <= NEAR:
                     tx, ty = p.pos(o, k); lx, ly = tx - qx, ty - qy; ll = math.hypot(lx, ly) or 1e-6
                     dx = ((rx - tx) * lx + (ry - ty) * ly) / ll
                     last = (o, 'ridden' if dx <= 0.2 else 'front' if dx >= 0.5 else 'between')
                     continue
-                if last is None: continue
+                if last is None or dist <= OFF: continue
                 o0, state = last; last = None
+                since = k
+                while since > 0 and p.pos(o0, since - 1)[0] is not None and p.pos(d, since - 1)[0] is not None and p.dist(d, o0, since - 1) <= OFF:
+                    since -= 1
+                held = (k - since) * p.dt
                 # QB movement
                 ux, uy = rx - qx, ry - qy; ul = math.hypot(ux, uy) or 1e-6; ux, uy = ux / ul, uy / ul
                 kb = max(0, k - p.k(1.0)); ka = min(kend, k + p.k(0.5)); k4 = min(kend, k + p.k(0.4))
@@ -67,8 +73,25 @@ for path in sys.argv[1:]:
                 ev_rows.append({'cls': 'tackle' if o0 in tackle else 'interior', 'state': state, 'reached': reached,
                                 'toQB': ul, 'qbLater': math.hypot(fx - rx, fy - ry), 'b_tow': before[0], 'b_up': before[1],
                                 'a_tow': after[0], 'a_up': after[1], 'help': hd, 'hgroup': p.players[h]['group'] if h is not None else '-',
-                                'helped': helped, 't': k * p.dt})
+                                'helped': helped, 't': k * p.dt, 'held': held,
+                                'trace': (raw.get('id'), d, o0, k, [round(p.dist(d, o0, j), 1) if p.pos(o0, j)[0] is not None else None
+                                          for j in range(max(0, k - 12), min(p.frames, k + 4))])})
     print(f"== {os.path.basename(path)}: dropbacks {drop}")
+    for c in ('interior', 'tackle'):
+        R = [r for r in ev_rows if r['cls'] == c]
+        for lab, f in (('own blocker (close >= 0.5 s)', lambda r: r['held'] >= 0.5), ('brief (< 0.3 s: passing)', lambda r: r['held'] < 0.3),
+                       ('0.3-0.5 s', lambda r: 0.3 <= r['held'] < 0.5)):
+            C = [r for r in R if f(r)]
+            if not C: continue
+            print(f"   {c:8s} come-offs from {lab:30s} {100 * len(C) / max(1, drop):6.1f} /100 dropbacks | time p25/50/75 {q([r['t'] for r in C], .25):.1f}/{q([r['t'] for r in C]):.1f}/{q([r['t'] for r in C], .75):.1f} s"
+                  f" | close for p50 {q([r['held'] for r in C]):.1f} s | then reached the QB {100 * sum(r['reached'] for r in C) / len(C):.0f}%"
+                  f" | from ridden {100 * sum(r['state'] == 'ridden' for r in C) / len(C):.0f}%")
+    if os.environ.get('COME_OFF_TRACE'):
+        import random
+        rnd = random.Random(int(os.environ['COME_OFF_TRACE']))
+        for r in rnd.sample(ev_rows, min(12, len(ev_rows))):
+            pid, d, o0, k, tr = r['trace']
+            print(f"   trace {pid} rusher {d} OL {o0} come-off t {k * 0.1:.1f} s {r['cls']} {r['state']} close {r['held']:.1f} s reached {r['reached']}: dist k-12..k+3 {tr}")
     for c in ('interior', 'tackle'):
         for st in ('ridden', 'all'):
             R = [r for r in ev_rows if r['cls'] == c and (st == 'all' or r['state'] == st)]
