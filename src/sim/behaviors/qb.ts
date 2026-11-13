@@ -411,6 +411,8 @@ export class QBPass implements Behavior {
   private readonly clock: number;
   private readonly armSpeed: number;
   private fakeUntil = 0;
+  /** Diagnostics: when his play-action fake ended (null until then, or no fake). */
+  fakeEndAt: number | null = null;
   private readonly mind: QBMind;
   /** Look-off: eyes on a decoy to move the safety before the first read. */
   private lookOff: { until: number; decoy: Agent } | null = null;
@@ -771,7 +773,12 @@ export class QBPass implements Behavior {
       const target = { x: this.drop.x, y: this.dropY };
       const d = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
       // Play-action: sell the fake first.
-      if (t < this.fakeUntil) {
+      // BLITZ_SKILL: how long he sells the fake depends on how much time he believes he has: with a believed free
+      // rusher coming (prior and update) he cuts it short and gets his eyes up; with none he rides the mesh. A QB
+      // narrowed by believed pressure cuts it more.
+      const fakeEnd = BLITZ_SKILL ? this.fakeUntil * (1 - clamp(0.6 * this.freeU + 0.3 * this.narrow(a), 0, 0.8)) : this.fakeUntil;
+      if (this.fakeUntil > 0 && t >= fakeEnd && this.fakeEndAt === null) this.fakeEndAt = t;
+      if (t < fakeEnd) {
         const rb = sim.slot('RB');
         if (rb) sim.presentHandoffFake(a, rb);
         // PA_DROP: under center the fake is carried on the drop (NFL QBs keep moving back through it: 1.9 -> 3.3 yd

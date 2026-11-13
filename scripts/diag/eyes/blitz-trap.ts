@@ -25,7 +25,7 @@ PlaySim.prototype.run = function (this: any) {
   const sim = this;
   if (sim.offCall?.kind !== 'pass') return run.call(this);
   const snapAt = new Map<any, { x: number; y: number; cls: string }>();
-  let align = null as any[] | null, seats = null as any[] | null, hot: any = null, thr: any = null, qbB: any = null, maxEx = 0, maxFreeU = 0;
+  let align = null as any[] | null, seats = null as any[] | null, hot: any = null, thr: any = null, qbB: any = null, maxEx = 0, maxFreeU = 0, fakeRec: any = null;
   const kinds05 = new Map<any, string>(), kindsThr = new Map<any, string>();
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -37,6 +37,7 @@ PlaySim.prototype.run = function (this: any) {
       snapAt.set(d, { x: d.pos.x, y: d.pos.y, cls: cls((d.pos.x - sim.los) * dir, Math.abs(d.pos.y - sim.ballY)) });
     }
     if (!qbB && sim.qb.behavior?.kind === 'qb-pass') qbB = sim.qb.behavior;
+    if (qbB && qbB.fakeEndAt !== null && !fakeRec) fakeRec = { freeU: r2(qbB.freeU ?? 0), excess: r2(qbB.rushExcess ?? 0), depth: r2((sim.los - sim.qb.pos.x) * dir) };
     if (qbB && sim.t <= 2.5) { maxEx = Math.max(maxEx, qbB.rushExcess ?? 0); maxFreeU = Math.max(maxFreeU, qbB.freeU ?? 0); }
     if (!seats && sim.t >= 0.5 - 1e-9) {
       seats = [];
@@ -83,7 +84,7 @@ PlaySim.prototype.run = function (this: any) {
       topRushed05: hot.top ? (seats?.some((s) => s.d === hot.top) ?? false) : null,
       topRefilled: hot.top ? (seats?.find((s) => s.d === hot.top)?.refilled ?? null) : null,
       toTarget: !!thr && !!hot.targetAgent && thr.targetAgent === hot.targetAgent } : null,
-    maxEx: r2(maxEx), maxFreeU: r2(maxFreeU),
+    maxEx: r2(maxEx), maxFreeU: r2(maxFreeU), pa: sim.offCall.formation?.qb ? { gun: sim.offCall.formation.qb === 'gun', fakeEnd: qbB?.fakeEndAt ?? null, fake: (qbB as any)?.fakeUntil ?? 0, at: fakeRec } : null,
     thr: thr ? { t: thr.t, slot: thr.slot, away: thr.away, air: thr.air } : null,
     int: !!intEv, picker, sack: sim.events.some((e: any) => e.type === 'sack'), caught: !!sim.stats.completed, outcome: res.outcome, yards: res.yards ?? null,
   };
