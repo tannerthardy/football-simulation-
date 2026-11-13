@@ -591,9 +591,10 @@ function setHands(sim: PlaySim, e: Engagement): void {
     const o = hands.handOffset, step = ARM_SPEED * sim.dt;
     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
   }
-  if (RUSH_HANDS && hands.off) {
-    // He feels the hand gone: he is free of it until it re-fits (his request works past, as a landed move).
-    e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt);
+  if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
+    // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
+    // request works past, as a landed move).
+    if (hands.off || Math.max(0, hands.normalForce ?? 0) < UNLOADED * pressForce(b)) { e.moveOk = true; e.moveUntil = Math.max(e.moveUntil, t + sim.dt); }
     refit(sim, hands, b, d);
   }
   // A landed finesse move has the hands off for its window.
@@ -626,8 +627,10 @@ function refit(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
   let st = refitState.get(hands);
   if (!st) { st = { lostAt: sim.t }; refitState.set(hands, st); }
   if (sim.t - st.lostAt < refitTime(b, d)) return;
-  hands.off = false; hands.handOffset = 0; hands.handVel = 0;
-  refitState.delete(hands);
+  // One hand back at a time.
+  const on = hands.off ? 1 : Math.min(2, (hands.handsOn ?? 2) + 1);
+  hands.off = false; hands.handsOn = on; hands.handOffset = 0; hands.handVel = 0;
+  if (on === 2) { hands.offSide = undefined; refitState.delete(hands); } else refitState.set(hands, { lostAt: sim.t });
 }
 
 /**

@@ -43,7 +43,7 @@ async function scene(opts: { ext: number; press: number; F: number; dur: number;
     rows.push({ N: j.normalForce ?? 0, T: j.tangentForce ?? 0 });
   }
   const p1 = mom(), arm = W.ARM_MASS * a.profile.massKg * (j.handVel ?? 0);
-  return { offset: j.handOffset ?? 0, off: !!j.off, rows, residualY: p1.y + arm - p0.y - ground.y, scaleY: Math.abs(opts.F * opts.dur), W };
+  return { offset: j.handOffset ?? 0, off: !!j.off || (j.handsOn ?? 2) < 2, both: !!j.off, handsOn: j.handsOn ?? 2, rows, residualY: p1.y + arm - p0.y - ground.y, scaleY: Math.abs(opts.F * opts.dur), W };
 }
 
 describe('RUSH_HANDS stage 1', () => {
@@ -60,7 +60,7 @@ describe('RUSH_HANDS stage 1', () => {
     const open = await scene({ ext: 0.6 * 0.95, press: 0, F: 900, dur: 0.08, flags: { OPEN_HANDS: '1' } });
     const grip = await scene({ ext: 0.6 * 0.95, press: 0, F: 900, dur: 0.08, grip: true, flags: { OPEN_HANDS: '1' } });
     console.log(`open offset ${open.offset.toFixed(3)} off ${open.off} | grip offset ${grip.offset.toFixed(3)} off ${grip.off}`);
-    expect(Math.abs(grip.offset)).toBeLessThan(Math.abs(open.offset));
+    expect(open.off).toBe(true); expect(grip.off).toBe(false);
   });
 
   it('the hand displacement does not depend on the substep count', async () => {
@@ -123,7 +123,7 @@ describe('RUSH_HANDS stage 2', () => {
       for (let k = 0; k < 3; k++) w.step([{ vel: { x: pressed ? 1 : 0, y: 0 }, push: pressed ? 1 : 0 }, { vel: { x: pressed ? -1 : 0, y: 0 }, push: pressed ? 1 : 0 }], 0.05);
       w.handForce(j, b, force, w.time, w.time + duration);
       for (let k = 0; k < 6; k++) w.step([{ vel: { x: pressed ? 1 : 0, y: 0 }, push: pressed ? 1 : 0 }, { vel: { x: pressed ? -1 : 0, y: 0 }, push: pressed ? 1 : 0 }], 0.05);
-      out[pressed ? 'pressed' : 'unpressed'] = { off: !!j.off, offset: j.handOffset ?? 0 };
+      out[pressed ? 'pressed' : 'unpressed'] = { off: !!j.off || (j.handsOn ?? 2) < 2, offset: j.handOffset ?? 0 };
       expect(duration).toBeGreaterThan(0.015); expect(duration).toBeLessThan(0.06);
     }
     console.log(`club: unpressed ${JSON.stringify(out.unpressed)} | pressed ${JSON.stringify(out.pressed)}`);
@@ -147,5 +147,40 @@ describe('RUSH_HANDS stage 2', () => {
     }
     expect(cut.longer).toBe(true);
     expect(cut.shorter).toBe(false);
+  });
+});
+
+describe('RUSH_HANDS two hands (attempt 2)', () => {
+  async function world2() {
+    const { W, body } = await load({ RUSH_HANDS: '1' });
+    const a = body(140, { x: 0, y: 0 }), b = body(120, { x: 1.4, y: 0 }, Math.PI);
+    const w = new W.World([a, b], { substeps: 12 });
+    const j: any = { kind: 'hands', a, b, extension: 1.4, push: 1500, hold: 0, steer: 700 };
+    w.joints.push(j);
+    const idle = () => w.step([{ vel: { x: 0, y: 0 }, push: 0 }, { vel: { x: 0, y: 0 }, push: 0 }], 0.05);
+    return { W, w, j, a, b, idle };
+  }
+  it('one club leaves one hand: half the limits, the vacated side recorded', async () => {
+    const { w, j, b, idle } = await world2();
+    idle(); w.handForce(j, b, { x: 0, y: 1200 }, w.time, w.time + 0.04); for (let k = 0; k < 4; k++) idle();
+    expect(j.handsOn).toBe(1); expect(j.off ?? false).toBe(false);
+    expect(j.offSide).toBe(-1);                                  // the hand slid +t, so it was on the -t side
+  });
+  it('two clubs inside the re-fit window take both hands', async () => {
+    const { w, j, b, idle } = await world2();
+    idle(); w.handForce(j, b, { x: 0, y: 1200 }, w.time, w.time + 0.04); for (let k = 0; k < 3; k++) idle();
+    w.handForce(j, b, { x: 0, y: 1200 }, w.time, w.time + 0.04); for (let k = 0; k < 4; k++) idle();
+    expect(j.off).toBe(true); expect(j.handsOn).toBe(0);
+  });
+  it('with one hand off, the man slides further toward the vacated side than away from it', async () => {
+    const slide = async (dir: number) => {
+      const { w, j, a, b } = await world2();
+      j.handsOn = 1; j.offSide = -1;                            // vacated side: -t (t = +y here)
+      for (let k = 0; k < 8; k++) w.step([{ vel: { x: 0, y: 0 }, push: 1 }, { vel: { x: 0, y: 3 * dir }, push: 1 }], 0.05);
+      return Math.abs(b.pos.y - a.pos.y);
+    };
+    const toward = await slide(-1), away = await slide(1);
+    console.log(`one hand off on -t: slide toward the vacated side ${toward.toFixed(3)} yd, away ${away.toFixed(3)} yd`);
+    expect(toward).toBeGreaterThan(away);
   });
 });

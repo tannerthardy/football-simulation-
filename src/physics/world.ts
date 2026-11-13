@@ -101,6 +101,12 @@ export interface HandJoint {
   handOffset?: number;
   handVel?: number;
   off?: boolean;
+  /** RUSH_HANDS: hands on the man (2 when unset). With one off: push, hold and the arm's hold are one hand's; steer
+   * resisting him toward the vacated side (`offSide`, the joint tangent's sign) is ONE_HAND_SIDE of the remaining
+   * hand's. The turning moment about the remaining hand is not modelled (the production contact has no off-centre
+   * point). */
+  handsOn?: number;
+  offSide?: number;
   /** Height of the hand contact, yd; defaults to the lower player's pads. */
   height?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
@@ -369,6 +375,9 @@ export const HAND_MU = 0.42;
  * on the hand it stays at 0 and every joint force is today's. */
 export const RUSH_HANDS = process.env.RUSH_HANDS === '1';
 export const ARM_MASS = 0.05;
+/** RUSH_HANDS: with one hand off, the share of the remaining hand's steer left to resist the man toward the vacated
+ * side (his body has to turn on the remaining hand to stop him there: most of it is lost). */
+export const ONE_HAND_SIDE = 0.25;
 /** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
  * A push runs from the pusher's pads to the other man's; when one man's pads
  * are lower, the line of action tilts up into the higher man. Its vertical
@@ -638,6 +647,8 @@ interface JointRow {
   pushLim: number;
   holdLim: number;
   steerLim: number;
+  /** RUSH_HANDS: one hand off, the vacated side's tangent sign (0 for none): steer resisting motion that way is cut. */
+  steerSide?: number;
   actor: number;
   steerActor: number;
   /** Active reel transmitted through this grip in the substep. */
@@ -910,7 +921,7 @@ export class World {
     const ext = Math.max(bent, jt.extension - owner.profile.radius - target.profile.radius);
     const press = Math.max(0, this.lastHandN.get(jt) ?? 0);
     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
-    return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt);
+    return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
   }
 
   /** RUSH_HANDS: 1 with the hand where it fitted, falling to 0 at the edge of the man's torso. */
@@ -1171,9 +1182,12 @@ export class World {
       jt.handOffset = (jt.handOffset ?? 0) + 0.5 * (v + v1) * h;
       jt.handVel = v1;
       if (Math.abs(jt.handOffset) >= jt.b.profile.radius) {
-        // Off the edge: the arm swings with him; its momentum goes to his body.
+        // Off the edge: the arm swings with him; its momentum goes to his body. One hand at a time: the struck hand
+        // was on the side the club drove it from (opposite its slide), and the other is still where it fitted.
         this.bodies[ia].vel.x += tx * mArm * v1 / this.mass[ia]; this.bodies[ia].vel.y += ty * mArm * v1 / this.mass[ia];
-        jt.handVel = 0; jt.off = true;
+        const on = (jt.handsOn ?? 2) - 1;
+        if (on <= 0) { jt.handsOn = 0; jt.off = true; jt.handVel = 0; }
+        else { jt.handsOn = on; jt.offSide = -Math.sign(jt.handOffset); jt.handOffset = 0; jt.handVel = 0; }
       }
     }
   }
@@ -2767,9 +2781,10 @@ export class World {
         row.pushLim = Math.max(0, jt.push) * h * scale;
         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
-        if (RUSH_HANDS && (jt.off || jt.handOffset)) {
-          const e = jt.off ? 0 : this.handEdge(jt);
+        if (RUSH_HANDS && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
+          const e = (jt.off ? 0 : this.handEdge(jt)) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
           row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
+          row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;
         }
         const c = dist - jt.extension;
         if (c < 0) { row.mode = 1; row.c = c; }
@@ -2867,7 +2882,7 @@ export class World {
     }
     // OPEN_HANDS: an open hand's steer is friction on the push it carries.
     const slipLim = OPEN_HANDS && !(r.joint as HandJoint).grip ? Math.min(r.steerLim, HAND_MU * Math.max(0, r.ln)) : r.steerLim;
-    if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
+    if (slipLim > 0) this.solveTangent(r, a, b, slipLim, 0, r.steerSide ?? 0);
   }
 
   /** Patch reel and passive grip share a frozen force point and one budget.
@@ -2959,7 +2974,7 @@ export class World {
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip
    * around a torso does not let him roll past like two touching pads. */
-  private solveTangent(r: JointRow, a: Body, b: Body, lim: number, h = 0): void {
+  private solveTangent(r: JointRow, a: Body, b: Body, lim: number, h = 0, side = 0): void {
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     const tx = -r.ny, ty = r.nx;
     const ri = r.ri ?? 0, rj = r.rj ?? 0;
@@ -2968,7 +2983,10 @@ export class World {
     // HAND_MOTOR: steering hands may drive toward a wanted tangential speed
     // (active arm work) rather than only braking slip (passive).
     const drive = r.joint.kind === 'hands' ? r.drive ?? 0 : 0;
-    const lt = clamp(r.lt - (r.mt ?? r.mn) * (vt - drive), -lim, lim);
+    // RUSH_HANDS: with one hand off, the impulse resisting the man toward the vacated side (side > 0: he moves +t, the
+    // resisting impulse is negative) is ONE_HAND_SIDE of the remaining hand's.
+    const lo = side > 0 ? -ONE_HAND_SIDE * lim : -lim, hi = side < 0 ? ONE_HAND_SIDE * lim : lim;
+    const lt = clamp(r.lt - (r.mt ?? r.mn) * (vt - drive), lo, hi);
     const dt = lt - r.lt;
     const angA = r.joint.kind === 'grasp' && h > 0 ? this.armMoment(r.i, -ri * dt, h) : -ri * dt;
     const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,drive ? r.steerActor : r.actor,r.joint.kind==='hands'?'hands':'grasps',!!drive,r.tangentWork??={net:0},
