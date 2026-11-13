@@ -13,7 +13,7 @@ async function paths(flag: string) {
   const { routePath } = await import('../src/sim/route-motion.js');
   const los = 40, start = { x: los - 4.5, y: 25 };
   const at = (id: string) => { const r = getRoute(id); return routePath(start, los, 1, r.points, false, r.family).map((p) => ({ d: p.p.x - los, w: p.p.y - start.y })); };
-  return { flat: at('back_flat'), angle: at('angle'), out: at('back_out') };
+  return { flat: at('back_flat'), angle: at('angle'), out: at('back_out'), flatPace: getRoute('back_flat').pace };
 }
 
 describe('BACK_PATHS', () => {
@@ -23,6 +23,9 @@ describe('BACK_PATHS', () => {
     for (const p of on.flat.slice(0, -1)) expect(p.d).toBeLessThan(-3);
     expect(on.flat[on.flat.length - 2].w).toBeGreaterThanOrEqual(10);
     expect(on.flat[on.flat.length - 1].d).toBeLessThan(0);
+    // The flat is run under control on: the NFL back widens at about 4.2 yd/s (pace 0.55); off, the family's effort.
+    expect(on.flatPace).toBeLessThan(0.7);
+    expect(off.flatPace).toBeUndefined();
     // Off, the flat is at the line by its first point.
     expect(off.flat[0].d).toBeGreaterThanOrEqual(0);
     // Angle and out: the break is at the line on, past it off.

@@ -68,3 +68,31 @@ The causes, in order of size:
 
 - `npx tsc --noEmit -p .` is clean.
 - `back-paths`, `scorecard-provenance` and `baseline-runner` pass.
+
+## The flat's pace at equal time (2026-11-13, after the first card)
+
+**The route-labelled check.** NFL FLAT routes by backs (BDB 2025 weeks 1–2, `routeRan` FLAT, n 916), against ours, at
+equal time after the snap, until the throw (`scripts/diag/backs/flat_path.py`, same quantities on both sides). Columns
+are depth past the line / distance from his start toward the flat, in yd, medians:
+
+| | 1.5 s | 2.0 s | 2.5 s | 3.0 s | 3.5 s |
+|---|---|---|---|---|---|
+| NFL FLAT | −4.7 / 3.1 | −4.5 / 5.3 | −4.3 / 7.4 | −3.6 / 9.3 | −2.7 / 11.3 |
+| Off | −2.5 / 2.1 | −0.3 / 3.7 | +1.3 / 6.0 | +2.0 / 9.1 | +2.0 / 12.7 |
+| On, before (the family's 0.8 effort) | −4.5 / 3.7 | −4.2 / 6.5 | −3.6 / 9.6 | −2.1 / 12.6 | 0.0 / 15.5 |
+| On, with the flat's pace (0.55) | −4.5 / 3.2 | −4.3 / 5.4 | −4.0 / 7.8 | −3.4 / 10.2 | −1.9 / 12.5 |
+
+**The path was right in depth but run too fast.** It widened at about 6 yd/s against the NFL's steady 4.2 from 1.5 to
+3.5 s. A route point's `s` is the speed through that point, the break speed, so slowing the points did little (at
+0.6, 8.7 yd at 2.5 s). The flat is coached as run under control, timed to the drop, so the route now carries a pace:
+`RouteDef.pace`, the fraction of top speed between its points, which replaces the family's effort and is still
+adjusted by the back's route running. The flat's pace is 0.55.
+
+**Where the ball arrives.** With the path matched at equal time, the remaining width at the ball's arrival comes from
+the QB: he throws the flat at 2.9 s against the NFL's 2.4 (`rb_table.py`), so the back is further along. That is
+proposal 2, measured separately.
+
+**Correction to the first card.** The first card compared catch width and depth with NFL RB catches made within 10 yd
+of a sideline. That proxy selects on width, so it could not confirm width. Against route-labelled FLAT targets at
+`pass_arrived`, the NFL arrives 11.7 yd from the sideline and 1.3 yd behind the line; ours, before the pace, arrived
+7.2 yd from it and 1.4 yd past it.
