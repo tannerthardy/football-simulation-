@@ -2868,3 +2868,40 @@ already like the NFL's and does not move.
 
 **The fumble before the hand comes forward** is not small. It needs the strike's impulse on the ball-carrying arm
 during the load-up, read against the grip (a ball-security mechanism of its own). It follows separately.
+
+## REP_SEEN: the pass rep on what each man senses (PRO-INFO #3, #4, #7, #8)
+
+Flex, 2026-11-13. REP_SEEN (off) at a813c2bd. Off is bit-identical (seed 999: 55388863 on engine-58; c7236fb3 on the
+engine-59 merge).
+- The rusher aims at and faces the QB he sees.
+- He reads his leverage and the blocker's overset from his picture of the blocker.
+- The blocker sets and rides against the called launch point (`calledLaunchX`) and the man as he has him.
+- The blocker's sight delay follows his own hands being off the man.
+- The rep's outcome geometry (past, turned the corner) stays the World's.
+
+Read: 16 games per arm on engine-58 with PASS_SET_SEEN, THROW_HOLD and POCKET_REACH on. Control = the F1 runs above.
+
+| | s11 control | s11 REP_SEEN | s23 control | s23 REP_SEEN |
+|---|---|---|---|---|
+| a rusher within 2 yd before the ball is out | 22.1% | 23.6% | 20.9% | 20.2% |
+| rusher free (funnel) | 33% | 35% | 35% | 33% |
+| contact given 2 yd | 51% | 45% | 47% | 47% |
+| after contact: sacked / threw / escaped | 27 / 65 / 7% | 36 / 56 / 9% | 27 / 62 / 11% | 21 / 65 / 13% |
+| native sacked | 4.4% | 5.4% | 3.7% | 3.0% |
+| pressured (stats) | 11.7% | 12.5% | 10.6% | 11.3% |
+| completion | 65.9% | 68.5% | 66.3% | 67.5% |
+| scrambles | 18 | 27 | 32 | 43 |
+| yards per dropback | 7.40 | 7.16 | 7.84 | 7.63 |
+| OL falls /100 (true) | 3.9 | 4.5 | 3.8 | 5.0 |
+| DL falls /100 (true) | 8.5 | 8.6 | 10.1 | 8.5 |
+
+The removal is close to neutral. Arrival, the funnel and the finish move in opposite directions on the two seeds.
+Small shifts in the same direction on both seeds:
+- pressured +0.7-0.8 points;
+- scrambles +9 and +11;
+- OL falls +0.6 and +1.2 per 100 (still inside the 1-5 band);
+- yards per dropback -0.2.
+
+None is large enough to diagnose at this sample. The OL falls are the one to watch. The blocker now acts on a
+delayed picture of the man by sight while his hands are off (a landed move), so a late mirror can leave him leaning
+on a press that is no longer where he set it.
