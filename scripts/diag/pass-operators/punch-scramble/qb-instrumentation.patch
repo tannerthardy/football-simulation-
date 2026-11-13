@@ -1,0 +1,16 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index c1c433df..f35cc026 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -1505,7 +1505,10 @@ export class QBPass implements Behavior {
+       }
+       if (margin > 0.35) open++;
+     }
+-    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.dice('qb', a).chance(0.3) : true);
++    const __ok = open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.dice('qb', a).chance(0.3) : true);
++    const __s = ((sim as any).__scr ??= { checks: 0, panicChecks: 0, open: [] as number[], mob: mobility });
++    __s.checks++; if (panic) __s.panicChecks++; __s.open.push(open); if (__ok) __s.fired = panic ? 'panic' : 'clock';
++    return __ok;
+   }
+ 
+   private scramble(a: Agent, sim: PlaySim): MoveCommand {

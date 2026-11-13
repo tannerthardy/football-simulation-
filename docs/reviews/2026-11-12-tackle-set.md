@@ -1365,3 +1365,44 @@ RUSH_INTENT's in-front share is 28.8% of pressure (off 34.3%), converting at 5.0
    walk-back.
 4. RUSH_INTENT is parked waiting on the anchor because pressure overshoots (40.3% against 32.9%). This reverses the
    order: the rusher's request is the larger part of the retreat, and the anchor is second.
+
+# Why PUNCH cuts scrambles (Integration's card question, 2026-11-13)
+
+Cards (Integration, seeds 11 / 23, 16 games): PUNCH takes scrambles from 2.8 to 1.8% and 2.8 to 0.7%.
+
+**The QB's decision** (`scripts/diag/pass-operators/punch-scramble/`; the instrumentation is a patch for a scratch
+worktree; seeds 11-18, PAST_ALONG_PATH + OPEN_HANDS on):
+
+| | PUNCH off | PUNCH on |
+|---|---|---|
+| dropbacks | 703 | 700 |
+| dropbacks where he checks for a scramble lane / with a panic check | 173 / 31 | 148 / 30 |
+| checks / panic checks | 1462 / 101 | 1333 / 108 |
+| checks with at least one lane open | 176 | 46 |
+| scrambles fired (clock / panic) | 38 / 4 | 9 / 1 |
+
+He looks for a lane about as often. He sees one a quarter as often.
+
+**Why the lanes close.** `shouldScramble` adds the hold he sees on each rusher to the rusher's time to the lane.
+BLOCK_SEEN (on in the stack) counts a rusher as in contact only when the centres are within the blocker's
+`profile.reach` plus the rusher's radius. `profile.reach` is 0.25 + 0.85 arm from the centre (the catch and tackle
+radius). PUNCH puts the hands at lockout: the bodies plus 0.9 arm, about 0.1 yd beyond that.
+
+| engaged pass pairs (nativeTraceSetup, four verticals and smash against Cover 2, seeds 1-16) | PUNCH off | PUNCH on |
+|---|---|---|
+| ticks | 5690 | 5325 |
+| gap between the bodies p25 / 50 / 75 | 0.11 / 0.27 / 0.33 yd | 0.23 / 0.64 / 0.84 yd |
+| joint extension past the bodies p50 | 0.24 | 0.70 |
+| beyond the QB's "in contact" (reach + rusher radius) | 0.5% | 46.1% |
+| truly at air (beyond lockout + 0.05) | 0% | 4.4% |
+| beyond the blocker's full arm from the body surfaces | 0% | 1.1% |
+
+So on about 42% of engaged ticks the QB reads a rusher in a locked-out block as a free man sprinting at him: no hold
+and no pacing. Every lane closes and he does not scramble. This is a perception definition, not the pocket: the
+punch's geometry and the QB's contact test use different arms. BLOCK_SEEN's own description is "the rusher's body
+within the blocker's arm's length". With elbows bent (PUNCH off) the two never disagree.
+
+**Proposed fix (not built).** BLOCK_SEEN's contact test uses the blocker's arm from the body surfaces (radii +
+armIn/36, the punch's arm), and stays bit-identical off by being gated under PUNCH, which is what introduced the
+extension. The same misreading may also be in his pressure feel (sacks +0.4 / +0.8 with PUNCH); to check after the
+fix.
