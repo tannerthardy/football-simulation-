@@ -2077,3 +2077,33 @@ class: 53% of our rushers coming off a lineman reach the QB, against 26% in the 
 **Next question.** For the rushers who come free and reach the QB, which branch did they come off: the ride, their
 rep before the ride, a passing lineman, a helper? At what speed and how far from the QB? That decides whether the gap
 is the ride (body), the rep (hands / moves), or the line's spacing (who is blocking whom).
+
+## At the come-off: the QB and the next blocker (`come-off.py`; NFL against ours, same code)
+
+A come-off is a DL/LB within 1.2 yd of an OL on one frame and of none on the next (0.5 s to the throw). "From ridden"
+means the last close frame was level with or past the blocker toward the QB. Ours: RUSH_HANDS + PASS_RIDE, seeds 11 / 23
+x 16 (engine-55 merge).
+
+Pooled over outcomes (not split by whether he reached the QB, so not circular):
+
+| come-offs from ridden | NFL | ours (11 / 23) |
+|---|---|---|
+| interior: QB displacement toward the rusher in the 0.5 s after | -0.75 yd | -0.20 / -0.16 |
+| interior: growth of rusher-spot-to-QB distance over 0.4 s | +0.82 | +0.27 / +0.22 |
+| tackle: QB displacement toward the rusher in the 0.5 s after | -0.74 | -0.12 / -0.11 |
+| tackle: growth over 0.4 s | +0.81 | +0.36 / +0.26 |
+| interior come-off time p50 | 3.0 s | 2.1-2.2 s |
+| interior: QB "up" over the 1.0 s before (+ toward the line) | -0.5 to -1.0 | -1.6 to -1.7 (still in his drop) |
+| interior: nearest other blocker at the come-off | 1.9-2.0 yd | 1.6-1.75 |
+| interior: another blocker within 1.2 yd in 0.4 s | 15-16% | 20-36% |
+| come-offs from any state, /100 dropbacks (interior / tackle) | 95 / 74 | 125-128 / 103-115 |
+
+**Reading.**
+- **Help is not the gap.** Our next blocker is nearer and gets to the rusher more often than the NFL's.
+- **The QB is.** When a rusher comes off a ride, the NFL QB moves about 0.75 yd away from him in the next half
+  second. Ours moves 0.1-0.2. So the NFL rusher's spot falls 0.8 yd behind the QB in 0.4 s; ours falls 0.2-0.3 behind.
+  "The ride carries him off the QB's line" is, in large part, the QB leaving the line. That belongs to Rules+Coaching
+  (POCKET_CLIMB / QB_FEEL are off in the stack).
+- **The timing differs too.** Our come-offs happen during the QB's drop (2.1-2.2 s, the QB still going back 1.6 yd a
+  second), against 3.0 s in the NFL, when he has set and can move. Rushers come off linemen about a third more often
+  than in the NFL. The rep itself still ends early and often; that part is ours (trenches).
