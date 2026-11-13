@@ -1,5 +1,5 @@
 /** HOT_LOOK (behaviors/qb.ts; on since engine-41): the hot throw costs the look. docs/reviews/2026-11-12-hot-look.md.
- * Asserted as the mechanism over a named panel of plays whose rush sets off his alarm (re-surveyed engine-52), not as one play's
+ * Asserted as the mechanism over a named panel of plays whose rush sets off his alarm (re-surveyed engine-58), not as one play's
  * outcome: single-play fixtures moved with every engine from 42 to 45 (later releases, the window, the forecast),
  * while the mechanism held. Off: he never looks, and hot throws go to men well away from his eyes. On: he looks,
  * no hot throw goes to a man more than 60 deg from his eyes, and a throw after a look is on his eyes and later. */
@@ -8,14 +8,18 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-/** Gun doubles; plays where the rush reaches his alarm on the engine-52 candidate (Flex's edge set on: PAST_ALONG_PATH,
- * OPEN_HANDS, PUNCH; 9 of 96 surveyed plays: 8 concepts x Cover 1 / 3 x seeds 1-3 x flip). Re-surveyed because the set
- * changes which rushes get home (engine-45's panel: 4 of 11 alarmed); the alarm still follows his pressure read on
- * every pocket play (docs/reviews/2026-11-12-hot-look.md). */
+/** Gun doubles; plays where the rush reaches his alarm in both arms. Re-surveyed on the engine-58 candidate (PUNCH_STRIKE,
+ * ANCHOR_BASE, PURSUIT_COMMIT on): 24 of 384 plays (every dropback and play-action concept x Cover 1 / 3 x seeds 1-4 x
+ * flip) alarm with HOT_LOOK off and on; 14 are kept, 11 of them with a look when on. The engine-52 panel (9 plays) lost
+ * four of its alarms to PUNCH_STRIKE (the punch keeps those rushes off him: 8 alarmed without it, 5 with it), which is
+ * the scene, not the look logic: the alarm still follows his pressure read. The panel is wider than the counts asked of
+ * it so one pass-protection change does not empty it. A called pressure does not stage the alarm on this engine (Mike A
+ * and nickel edge: 2 and 4 of the old 9 alarmed): a free rusher is not yet felt as a hit soon (FREE_BOUND, off). */
 const PANEL: [string, string, number, boolean][] = [
-  ['pa_shot', 'cover3', 2, true], ['post_cross', 'cover1', 2, false], ['post_cross', 'cover1', 3, false], ['post_cross', 'cover3', 2, false],
-  ['seam_hitch', 'cover1', 3, false], ['seam_hitch', 'cover3', 3, false], ['seam_hitch', 'cover3', 3, true], ['pa_post_dig', 'cover1', 3, false],
-  ['smash', 'cover1', 3, false],
+  ['pa_shot', 'cover3', 2, true], ['post_cross', 'cover1', 2, false], ['post_cross', 'cover1', 3, false], ['dagger', 'cover3', 3, false],
+  ['drive', 'cover3', 2, false], ['drive', 'cover3', 3, false], ['comebacks', 'cover1', 2, false], ['pa_flood', 'cover1', 4, true],
+  ['pa_shot', 'cover1', 4, false], ['hitch_cross', 'cover1', 3, false], ['seam_hitch', 'cover1', 4, false], ['trips_outs', 'cover1', 3, false],
+  ['smash', 'cover1', 3, false], ['corner_flat', 'cover1', 4, true],
 ];
 
 async function panel(hotLook: string) {
