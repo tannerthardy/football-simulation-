@@ -1501,3 +1501,373 @@ later):
 - So our tackle retreats ahead of a rusher close in front of him, at the rusher's pace, keeping out of contact until
   both are at the QB's depth. That is PASS_KICK's follow: matching the rusher's depth speed while he is in front.
 - It is the tackle's set, not the drop.
+
+## The unengaged approach (Integration, 2026-11-13; `approach-gap.py` same code both sides, `approach/approach-probe.mts` engine)
+
+Rusher in front of his tackle and not in contact (gap > 1.2 yd), 1.0-1.8 s, ball in. By the rusher's width outside the
+tackle at the snap.
+
+| | NFL | A 201 | A 301 |
+|---|---|---|---|
+| **head-up / shaded (≤ 1.5 yd)** | | | |
+| pairs | 1392 (10%) | 129 (5%) | 83 (3%) |
+| tackle / rusher x-vel | −2.00 / −3.00 | −2.50 / −3.00 | −2.25 / −3.00 |
+| gap rate p25 / 50 / 75 | −1.41 / −0.94 / −0.16 | −1.57 / −0.59 / +0.35 | −1.76 / −0.50 / +0.15 |
+| first contact p50; from 1.8 s | 1.10 s; 8% | 1.40 s; 28% | 1.30 s; 16% |
+| **wide (1.5-3 yd)** | | | |
+| pairs | 9725 | 1901 | 1995 |
+| tackle / rusher x-vel | −2.50 / −4.00 | −2.50 / −3.75 | −2.50 / −3.75 |
+| gap rate p25 / 50 / 75 | −2.12 / −1.73 / −1.09 | −2.18 / −1.34 / 0.00 | −2.33 / −1.53 / −0.38 |
+| first contact p50; from 1.8 s | 1.30 s; 8% | 1.20 s; 13% | 1.30 s; 14% |
+| **very wide (> 3 yd)** | | | |
+| pairs | 2607 | 381 | 471 |
+| tackle / rusher x-vel | −2.75 / −4.00 | −2.50 / −4.00 | −2.50 / −4.00 |
+| gap rate p50 | −1.96 | −2.10 | −2.04 |
+| first contact p50; from 1.8 s | 1.60 s; 33% | 1.30 s; 7% | 1.30 s; 12% |
+| **last yard (gap 2.2 → 1.2) closed by the rusher** (> 100%: the tackle keeps giving ground) | 146-156% | 104-137% | 110-131% |
+| **tackle over the QB at first contact, by contact time** (< 1.2 / 1.2-1.5 / 1.5-1.8 / 1.8-2.2 / 2.2+ s; `early-front.py`) | +2.9 / +2.6 / +2.4 / +2.3 / +2.1 | +2.6 / +2.9 / +3.0 / +2.6 / +1.2 | +2.7 / +2.9 / +3.0 / +2.6 / +1.3 |
+
+**The NFL tackle against an unengaged rusher.** He does not hold his depth and let the gap close. He keeps
+retreating (−2.0 to −2.75 yd/s) and the rusher closes the last yard and more (146-156%). Our tackle's depth speed is
+the same for wide and very wide rushers (−2.5) and faster for head-up ones (−2.25 to −2.5 against −2.0). In the last
+yard ours gives less ground (104-137%).
+
+**Why our rusher in front is not closing** (engine, seeds 201-206, A; unengaged rusher in front of his tackle, gap
+1.2-2.6 yd, 1.0-1.8 s; his branch in `PassRusher.decide` instrumented in a scratch worktree):
+
+| | closing (rate < −0.3), 92% of ticks | not closing, 8% |
+|---|---|---|
+| branch / plan | arc/speed 37%, power 31%, arc/finesse 29% | power 33%, arc/speed 19%, arc/finesse 11%, lane 14%, other 9% |
+| asks / achieves | 8.89 (vmax) / 4.35 yd/s | 8.82 (vmax) / 1.96 yd/s |
+| heading at the tackle, asked / achieved (1 = straight) | 0.96 / 0.89 | 0.90 / 0.80 |
+| support | up 100% | up 83%, falling 11%, down 5% |
+| touching another body | none 96% | none 56%, H 22%, Y 14%, RB 2% |
+| x-vel rusher / tackle | −4.02 / −2.24 | −1.27 / −2.02 |
+
+- Our rusher is not waiting on the tackle, working a move without contact, or throttled by a stage. Unengaged in front,
+  he asks for full speed nearly straight at the tackle and closes on 92% of ticks.
+- The 8% that stall are physical: a chip from a tight end, H-back or back (38%) or off his feet (16%).
+- So the rusher's half is not the cause.
+
+**Reading.**
+- The approach itself is close to the NFL's: the tackle's depth speed and the rusher's closing rate match for wide and
+  very wide rushers. Late contacts come mostly from head-up and shaded rushers (16-28% late against 8%), where our
+  tackle retreats faster than the NFL's and the gap can open.
+- Where our late contact differs is depth. At a first contact from 2.2 s the tackle is 1.2-1.3 yd over the QB against
+  the NFL's 2.1. Every earlier contact bin is at or above the NFL's. With the QB stopped dead at 7.9 yd (Part 2a), the
+  tackle reaches him.
+- There is no single "close to contact" fix here. The candidates are the head-up retreat speed (small: 3-5% of pairs)
+  and late depth (the tackle keeps going down to the QB's level while the QB has stopped).
+
+## Sizing the untouched tackle's stop (`untouched-depth.py`; measurement for the design after the re-card)
+
+Non-play-action dropbacks thrown at 2.0 s or later. The launch point is the QB's depth at the throw (the NFL set has no
+called drop). A tackle is untouched while no defender has come within 1.2 yd of him since the snap. Frames 2.0-3.0 s,
+his depth over the launch point (+ = shallower), p10 / 25 / 50 / 75 / 90:
+
+| | NFL | A 201 | A 301 |
+|---|---|---|---|
+| launch depth p50 | 7.5 yd | 7.8 | 7.8 |
+| untouched tackle frames | 8915 | 3788 | 2558 |
+| over the launch point | +0.5 / +1.8 / +3.2 / +4.9 / +6.9 | −0.3 / +1.0 / +1.9 / +2.6 / +3.4 | −0.1 / +1.1 / +1.8 / +2.5 / +3.2 |
+| giving ground faster than 1 yd/s | 70% (x-vel p50 −1.75) | 91% (−2.50) | 91% (−2.50) |
+| settled (x-vel ≥ −1): over the launch point | +1.4 / +2.9 / +4.6 / +6.5 / +8.1 (n 2637) | +0.4 / +1.0 / +1.6 / +2.2 / +2.9 (n 324) | +0.2 / +1.1 / +1.7 / +2.2 / +2.9 (n 233) |
+
+**Reading.**
+- The NFL's untouched tackle sits much higher over the launch point than ours: p50 +3.2 against +1.8-1.9.
+- He has settled on 30% of frames against our 9%. When settled he is at +4.6 p50, with a wide spread (p10 +1.4, p90
+  +8.1). Ours, when settled, is at +1.6-1.7 with a narrow spread.
+- Caveat: "untouched at 2-3 s" includes tackles whose man dropped or went elsewhere (helping inside, no rusher). The
+  very high NFL settled depths are probably those. For sizing the stop against a rusher still coming, the
+  still-giving-ground row is the cleaner reference: NFL +0.3 / +1.5 / +2.8 / +4.2 / +5.9, ours about −0.2 / +1.0 /
+  +1.9 / +2.6 / +3.3.
+- So the stop sits around +2 to +3 yd over the launch point with a spread of about ±1.5 yd. Integration's "≈ 2 yd" is
+  the lower end of the NFL's middle half.
+
+## The two cautions before designing the stop (Integration, 2026-11-13)
+
+**1. Our called depth against our depth at the throw** (`launch-vs-qb.mts`, seeds 201-206, A): QB minus the called
+launch point at the throw, p25 / 50 / 75:
+- gun (353): +0.12 / +0.17 / +0.25;
+- under center (109): +0.15 / +0.23 / +0.64.
+
+He throws about 0.2 yd short of the called depth (under center, up to 0.6). The NFL sizing is over the depth at the
+throw, so on our called depth the centre is about +2.7 to +3.2.
+
+**2. Is a tackle at the stop depth still on the rusher's inside path?** (`untouched-lateral.py`, same code.)
+Untouched tackle, 1.5-3.0 s, +1.5 to +4.0 over the launch point, his paired rusher in front of him 1.2-4 yd away; one
+sample per pair per 0.3 s.
+
+| | NFL (3001) | A 201 (1650) | A 301 (1222) |
+|---|---|---|---|
+| over the launch point p50 | +3.0 | +2.9 | +2.9 |
+| rusher outside him p50 | +1.3 | +1.2 | +1.2 |
+| tackle on the rusher's line to the QB (offset ≤ 0.65 yd) | 77% (offset p50 0.33) | 62% (0.54) | 60% (0.55) |
+| next 1.0 s: meets / past outside / inside / none | 61 / 4 / 12 / 23% | 19 / 1 / 4 / 76% | 30 / 2 / 4 / 64% |
+| settled subset (x-vel ≥ −1): n; on the line; meets / past outside / inside | 130; 68%; 44 / 1 / 20% | 47; 64%; 32 / 0 / 2% | 23; 57%; 43 / 9 / 4% |
+
+**Reading.**
+- At this depth the NFL tackle is on the rusher's line to the QB 77% of the time and meets him within a second 61% of
+  the time. Past outside stays at 4% overall and 1% when he has settled. Settling at +2.5 to +3 does not hand the NFL
+  rusher the corner.
+- Settling does give up more inside (20% against 12%). Those crossings are what the NFL's inside help (guard, back)
+  handles; ours is the queued inside-free item.
+- Ours at the same depth is less often on the line (60-62%, offset 0.54 against 0.33). Two-thirds of the time the pair
+  does not meet within a second (64-76% none, against 23%): the tackle keeps retreating ahead of a rusher who is not
+  closing on him.
+- So the stop needs its lateral half too: settling at the depth on the rusher's inside path to the QB, by what he sees.
+  A depth stop on a tackle 0.5 yd off the line would give the rusher an angle earlier.
+
+# Spec: physical pass-rush move resolution (RUSH_HANDS, off; for Integration before any build)
+
+**Why.** With set A the blocker's hands work through the World. They are pressed to lockout at arm speed, push is
+bounded by the joint and traction, and a punch at air leaves him overextended. The rusher's moves are still
+`resolveMove`'s rating roll. That roll has no term for the blocker's extension, a won move leaves the hands joint in
+place, and its effects are applied by fiat (a `control` change, a strike). Engine-54 measured the result: same moves
+at the same success rate (15-17%), the rusher held 0.2-0.4 yd farther off, pressure about −4.5 points.
+
+This replaces the roll with moves that act on the blocker's hands and body through the World. The blocker's extension
+is what makes him vulnerable.
+
+## State the World needs (small)
+
+The blocker's hands joint gets a **fit state**, from what has physically happened:
+- *fitted*: inside, pressed, elbows in. The joint's limits as today.
+- *extended*: at or near lockout (PUNCH's extension ≥ 0.8 arm). Today's limits, but the arm is a long lever: a lateral
+  impulse at the hand turns it off the man more easily, and his centre of mass is ahead of his base (lean, LEAN_PITCH).
+- *off*: knocked off, missed, or slid off. push = hold = steer = 0 until he re-fits.
+- **Re-fit**: the hand travels back to the man at ARM_SPEED (PUNCH's machinery) after the blocker's reaction time to
+  the loss, felt by touch. No timer: the distance and arm speed set it.
+
+No two-hand model. One joint with a fit state is the simplest one that tells a fitted hand from an extended one from a
+lost one.
+
+## The rusher's moves: action, what makes each work, what failing costs
+
+The rusher keys on what he sees and feels:
+- the blocker's arms out (extended) or not yet on him (late hands);
+- the blocker's set: oversetting width, retreat speed, shoulders turned;
+- the blocker's weight forward (lean over his feet);
+- his own pad level against the blocker's hand height.
+
+Ratings act on timing (when he sees it, by `passRushFinesse` and awareness), hand speed, strength (impulse size) and
+bend (pad level). Never on the outcome.
+
+| move | action through the World | works when | if it fails |
+|---|---|---|---|
+| **swipe / club** | a strike on the blocker's arm at the hand, lateral to the joint (the World's `strike`, aimed at the arm, not the torso) | the impulse's torque at the hand exceeds what his arm and grip hold. Extended: the lever is long and the grip resists less. Fitted and pressed: resists. Result: the joint goes *off* on that side | his own hands were off the blocker for the strike: the blocker's punch lands on an open chest (the current failed-move strike, now only if the blocker's hands are fitted and re-fit in time) |
+| **snatch / pull** | a pull on the extended arm (tension through the joint, from the rusher) | the blocker is *extended* with his centre of mass ahead of his base: the pull adds to his lean past the base (xi grows) and availability falls | against a fitted, sat blocker it moves nothing; the rusher has stopped his feet and given up ground toward the QB |
+| **rip** | his near arm drives up under the blocker's hand and armpit, shoulder dropped | his pad height (`padHeightAt`, posture and bend) is below the blocker's hand contact and his upward force exceeds the hold on that side: the contact slides off up and over (*off*) | a high rip into a fitted hand: he has turned his shoulder and is ridden past (PAST's ride) |
+| **long-arm** | his extended arm into the blocker's chest (a joint from the rusher's side at his own lockout) | his arm is longer than the blocker's reach or the blocker is late: the blocker's hands cannot reach his chest (extension limited by the blocker's arm), and the rusher's legs drive through his straight arm. The World resolves the push | a shorter arm: the blocker fits inside it and clubs it down (the blocker's swipe, same mechanics, his side) |
+| **dip under a high punch** | he drops his pad level as the punch comes | the punch's target (his chest) drops below the hand's path: PUNCH's existing *at air* branch (overextended, push × 1/3 for a reaction time). That is the window | dipping too early or into a low punch: he is lower and slower with no window |
+| **spin** | his yaw rotates the contact off | his yaw rate carries the contact point beyond the hand's reach on the far side before the re-fit | against a square, pressed, close blocker he gives his back and is driven past |
+| **bull** | already physical: push through the joint against the anchor | as now | as now |
+| **speed / dip** | already physical: feet and bend around the corner | as now | as now |
+
+**GRIP_BREAK** is the physical release behind swipe, club and rip: a strike or a lift that exceeds the grip
+capacity (under OPEN_HANDS, a *grip* has the hold limit; open hands only friction) takes the joint *off*. The release
+is the World's limit being exceeded, not a declared success.
+
+## The blocker's counters (his technique, not scripted)
+
+- **Re-fit** after an *off*: at arm speed, after his reaction time.
+- **Don't overextend.** His extension choice (PUNCH) now carries a cost (lever, lean), so pressing to lockout is a
+  choice with a risk: a disciplined blocker punches and re-bends.
+- **Anchor** (lean and base, as the World has it).
+- **Give ground** (the kick).
+- **His own swipe** on a long-arm, with the same mechanics on his side.
+
+Nothing is banned. A blocker who keeps his hands fitted defeats the swipe. A rusher who reads an extended arm beats it.
+
+## Fixtures (both ways; World and engagement unit tests, same bodies)
+
+1. Swipe against an extended arm takes the joint *off*. The same swipe against a fitted, pressed hand at the same
+   impulse does not.
+2. Snatch against an extended, leaning blocker: xi grows and availability falls. Against a sat blocker: no effect, and
+   the rusher's own forward speed is lost.
+3. Rip with the rusher's pad below the hand: off. With it above: fails, rusher ridden.
+4. Long-arm: the longer-armed rusher keeps the blocker's hands off his chest. The shorter-armed one does not, and is
+   clubbed down.
+5. Dip as a punch is thrown at his chest: the punch goes to air (PUNCH's overextension). Against a low punch: no
+   window.
+6. Re-fit: after an *off*, the hands return within (distance / ARM_SPEED + reaction time), not a fixed time.
+7. Off: bit-identical (the roll restored).
+
+## Reads to land on (same operators as the set A reads; NFL in brackets)
+
+- Pressure by class: past outside 3.8%, in front 3.0%, inside 6.4%, interior 9.8% of dropbacks.
+- Time to pressure p50 2.6-2.7 s.
+- Sacks per pressure 19%.
+- Walked-back share (in front at pressure) 9%.
+- Rushers reaching the tackle's hip 58 per 100 dropbacks.
+- Engaged rusher win rate and move-success rate by move, against the blocker's fit state.
+
+Controls: the fixed run set (run reps keep their hands), holds (committed / material), dither.
+
+## Build order (two attempts, then re-diagnose)
+
+1. The World: the fit state, *off* limits, re-fit at arm speed, and GRIP_BREAK's release by exceeded limits. Fixtures
+   6 and 7.
+2. The moves, each replacing its branch of `resolveMove` behind RUSH_HANDS: swipe/club, rip and snatch first (they
+   answer the extended arm); then long-arm, dip and spin. Fixtures 1-5.
+3. The rusher's keys from what he sees (extension, set, lean) into `chooseMove`. That is intent, not outcome.
+
+## RUSH_HANDS stage 2: the reads (A against A + RUSH_HANDS; engine-54 tree at 2b4d6346, seeds 11 / 23, 16 games)
+
+| | A 11 \| 23 | A + RUSH_HANDS 11 \| 23 | NFL |
+|---|---|---|---|
+| native sacked (review stats) | 2.1 \| 2.4% | 3.0 \| 2.9% | 4.6-9.4% band |
+| native pressured | 16.5 \| 12.1% | 16.1 \| 14.7% | |
+| sacked (operator) | 2.6 \| 3.1% | 3.9 \| 3.9% | 6.7% |
+| pressured | 32.1 \| 26.9% | 32.9 \| 29.8% | 32.9% |
+| time to pressure p50; by 2.5 s | 2.6 s; 14.1 \| 12.3% | 2.7 \| 2.6 s; 13.0 \| 13.4% | 2.6-2.7 s |
+| sacks per pressure | 8.2 \| 11.5% | 11.7 \| 13.1% | 19.1% |
+| edge in front, of dropbacks (share of pressure) | 12.9 \| 10.0% (40 \| 37%) | 11.9 \| 9.8% (36 \| 33%) | 3.0% (9%) |
+| edge past outside | 1.4 \| 1.5% | 2.5 \| 1.9% | 3.8% |
+| edge inside | 4.2 \| 3.5% | 4.6 \| 3.8% | 6.4% |
+| interior | 7.1 \| 6.2% | 9.1 \| 6.1% | 9.8% |
+| rushers reaching the hip per 100 dropbacks | 24.2 \| 23.0 | 26.6 \| 25.5 | 58 |
+| retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 s | −3.0 / −3.0 / −2.75 (both) | the same | −2.75 / −2.25 / −1.50 |
+| native scrambles; completion | 1.5 \| 1.9%; 68.0 \| 65.5% | 1.5 \| 2.3%; 66.3 \| 65.0% | |
+
+Club success by the rusher's finesse (`club-probe.mts`, seed 11 x 2): below 0.4: 9%; 0.4-0.7: 17%; 0.7 and above: 15%.
+
+**Reading.**
+- Two physical moves move sacks toward the NFL on both seeds: native about +0.7 points, operator +1.3 / +0.8. Sacks per
+  pressure go up (8.2 → 11.7, 11.5 → 13.1). The in-front share of pressure falls 4 points, past outside rises.
+- Pressure by class and time to pressure barely move: the class composition and the walk-back are as with A. Rushers
+  reach the tackle's hip a quarter as often as the NFL's: 24-27 against 58 per 100 dropbacks.
+- Why so little: the moves now resolve physically, but they are chosen by the old weights. A club succeeds against an
+  unpressed hand (about 50-70%) and almost never against a pressed one (3-12%), and the rusher does not choose it by
+  seeing an exposed hand. The corner itself (speed, dip) is still a roll. The between-player spread is small and not
+  monotone in finesse.
+- By Integration's rule ("if pressure by class and time to pressure come back toward the NFL with two moves, add the
+  rest one at a time; if not, re-diagnose"), this is "not". Re-diagnosis points to the choice (item 4: keys from what
+  he sees) before more moves. Rip, snatch, dip and spin wait.
+
+## RUSH_HANDS keys: the read (5c47b27c; seeds 11 / 23, 16 games, engine-54 tree)
+
+| | A | stage 2 (moves, old choice) | + keys | NFL |
+|---|---|---|---|---|
+| native sacked | 2.1 / 2.4% | 3.0 / 2.9% | 5.1 / 3.7% | band 4.6-9.4% |
+| operator sacked | 2.6 / 3.1% | 3.9 / 3.9% | 5.9 / 4.3% | 6.7% |
+| pressured | 32.1 / 26.9% | 32.9 / 29.8% | 43.4 / 37.0% | 32.9% |
+| time to pressure p50; by 2.5 s | 2.6 s; 14.1 / 12.3% | 2.6-2.7 s; 13.0 / 13.4% | 2.5 s; 24.2 / 18.7% | 2.6-2.7 s |
+| sacks per pressure | 8.2 / 11.5% | 11.7 / 13.1% | 13.6 / 11.8% | 19.1% |
+| edge in front (share of pressure) | 12.9 / 10.0% (40 / 37%) | 11.9 / 9.8% (36 / 33%) | 10.9 / 7.5% (25 / 20%) | 3.0% (9%) |
+| edge past outside | 1.4 / 1.5% | 2.5 / 1.9% | 4.0 / 4.1% | 3.8% |
+| interior (free then) | 7.1 / 6.2% | 9.1 / 6.1% | 19.4 / 15.7% (79 / 67%) | 9.8% (46%) |
+| interior before 2.5 s | 2.4 / 2.6% | 3.0 / 2.7% | 10.7 / 7.6% | 3.8% |
+| hip reach per 100 dropbacks | 24 / 23 | 27 / 26 | 33 / 32 | 58 |
+
+Clubs with the keys (`club-probe.mts`, seed 11 x 2):
+- against tackles: 284 clubs, 38% at an unloaded hand, 18% off, press N p50 766, extension 0.90 arm;
+- against guards and the center: 667 clubs, 61% at an unloaded hand, 39% off, press N p50 77, extension 0.23 arm.
+
+**Reading.**
+- Choice moves the composition toward the NFL. In-front share falls to 20-25%, past outside reaches the NFL's, hip
+  reach rises by a third, sacks are in or near the band.
+- Pressure overshoots through the interior: twice the NFL's interior rate, free and early. Interior blockers' hands
+  carry almost no press (N p50 77): arms bent, not punching. The rusher reads that state correctly and clubs it.
+- The defect is on the blocker's side: interior pass sets without press under the hands. It existed before RUSH_HANDS;
+  nothing exploited it. Next diagnostic: why the guard's hands are unloaded (PUNCH's extension against the seen gap,
+  control, the hands joint's mode).
+
+## RUSH_HANDS attempt 2 (two hands, 95fbbb16): the read, then stop
+
+| | keys (attempt 1) | two hands (attempt 2) | NFL |
+|---|---|---|---|
+| native sacked | 5.1 / 3.7% | 4.9 / 4.9% | band 4.6-9.4% |
+| operator sacked; pressured | 5.9 / 4.3%; 43.4 / 37.0% | 6.2 / 5.9%; 40.1 / 39.5% | 6.7%; 32.9% |
+| sacks per pressure | 13.6 / 11.8% | 15.5 / 14.9% | 19.1% |
+| time to pressure p50 | 2.5 s | 2.5-2.6 s | 2.6-2.7 s |
+| edge in front (share of pressure) | 10.9 / 7.5% (25 / 20%) | 10.6 / 9.4% (26 / 24%) | 3.0% (9%) |
+| edge past outside | 4.0 / 4.1% | 4.0 / 3.8% | 3.8% |
+| interior; free then; before 2.5 s | 19.4 / 15.7%; 79 / 67%; 10.7 / 7.6% | 16.9 / 16.6%; 70 / 69%; 6.5 / 7.4% | 9.8%; 46%; 3.8% |
+| hip reach per 100 | 33 / 32 | 37 / 32 | 58 |
+
+The two-hand count leaves sacks in the band and conversion higher, but the interior row barely moves. The interior
+rusher is still free at pressure 70% of the time and early. Two attempts at stage 2's outcome: stop and re-diagnose
+how the interior rusher gets free (the rep's end, the guard's recovery), not the club's size.
+
+## RUSH_HANDS with the rusher's hand recovery (08d79b3f): the read
+
+Interior moves per rep 3.75 → 2.50 (off 2.51); the guard's hands at lockout 10 → 18% of ticks (off 31%).
+
+| | two hands | + recovery 11 \| 23 | NFL |
+|---|---|---|---|
+| native sacked | 4.9 / 4.9% | 6.0 \| 4.7% | band 4.6-9.4% |
+| operator sacked; pressured | 6.2 / 5.9%; 40.1 / 39.5% | 6.7 \| 5.6%; 40.6 \| 35.9% | 6.7%; 32.9% |
+| sacks per pressure | 15.5 / 14.9% | 16.6 \| 15.3% | 19.1% |
+| interior; free; before 2.5 s | 16.9 / 16.6%; 70 / 69%; 6.5 / 7.4% | 16.5 \| 12.3%; 74 \| 67%; 8.3 \| 6.6% | 9.8%; 46%; 3.8% |
+| hip reach per 100 | 37 / 32 | 32 \| 27 | 58 |
+
+**What an interior "free" pressure is** (`interior-free-kind.py`; first pressers from inside the tackles, free at
+pressure):
+
+| | NFL | A (11) | two hands (11) | + recovery (11 \| 23) |
+|---|---|---|---|---|
+| of dropbacks | 4.4% | 5.1% | 11.8% | 12.2 \| 8.3% |
+| never engaged | 0.5% (at 0.1 s: snap geometry) | 0.4% | 0.2% | 0.2 \| 0.1% |
+| stunt / twist (lateral travel > 2 yd) | 1.8%, at 3.3 s | 1.1% | 1.4% | 2.0 \| 1.0% |
+| engaged, then free | 2.2%, last within 1.2 yd 0.1 s before | 3.6%, 0.4 s before | 10.3%, 0.4 s before | 10.0 \| 7.1%, 0.4 s before |
+
+**Reading.**
+- The NFL's interior "free" pressure is about half stunts (late) and half wins that come off the blocker right at the
+  QB, 0.1 s before. Ours is almost all wins, three to four times the NFL's, coming off 0.4 s before.
+- Recovery removed the extra attempts, but not the extra wins. A won interior rep ends at PAST's out-of-reach beat
+  with no ride: `canRidePassContact` applies only to tackles (`passSet.outside`). A guard passed beyond his arm is
+  done, and the rusher runs about 0.4 s free to the QB. The NFL guard stays on him until the QB.
+- Next look, per Integration: the doubles (22% of interior reps, the helper's hands untouched by RUSH_HANDS), and the
+  interior ride (staying on a man who has won the hip, as the tackle does).
+
+# PASS_RIDE (908ab8ad, off): the block becomes a ride
+
+**Diagnosis** (`ride-probe.mts`, develop's set A, seed 11 x 3): reps ending "past him" spend about 0.3-0.45 s riding
+before the man gets beyond the blocker's arm. While riding, guards move 1.9 yd/s against the rusher's 3.4. The ride's
+request was the man's velocity less 1 yd/s toward the QB (`RIDE_PUSH`, written as "push him past"), so the blocker fell
+behind by design; facing the rusher, he also shuffled sideways at the directional cap.
+
+**Build:** one rule for every pass blocker (`rideIntent`):
+- he runs with the man on his QB side (a body's width across his path), matching his velocity and closing on that spot;
+- hips open (facing where he goes);
+- he pushes through his hands (the joint's push flattens the man away from the QB);
+- once riding he stays on him until the man is clearly back in front (along his path by more than PAST_MARGIN);
+- the rep still ends when the man is beyond his arm, so whether he keeps up is his body's.
+
+The tackles' ride is the same code path and changes too: tackles ride at 1.8 yd/s, up from 1.3. Guards ride at 2.9 yd/s
+(was 1.9) against rushers at 4.1-4.2. They still lose about 0.8 yd over about 0.45 s: a man with a running start
+against a blocker accelerating out of his set.
+
+**Read on set A** (seeds 11 / 23, 16 games, engine-54 tree):
+
+| | A | A + PASS_RIDE | NFL |
+|---|---|---|---|
+| native sacked | 2.1 / 2.4% | 3.0 / 2.2% | band 4.6-9.4% |
+| pressured; sacks per pressure | 32.1 / 26.9%; 8.2 / 11.5% | 30.3 / 28.2%; 10.2 / 11.0% | 32.9%; 19.1% |
+| edge in front (share of pressure) | 12.9 / 10.0% (40 / 37%) | 10.1 / 9.6% (34 / 34%) | 3.0% (9%) |
+| interior; free at pressure | 7.1 / 6.2%; 73 / 59% | 6.7 / 5.2%; 53 / 57% | 9.8%; 46% |
+| interior engaged-then-free (of dropbacks) | 3.6 / 3.1% | 2.4 / 2.7% | 2.2% |
+| ... last within 1.2 yd of a blocker before pressure | 0.4 / 0.4 s | 0.2 / 0.3 s | 0.1 s |
+
+The ride moves the interior wins onto the NFL's count and closer to its timing, and the walked-back class shrinks.
+Pressure and sacks barely move on set A. Next: the read with RUSH_HANDS on.
+
+**With RUSH_HANDS on** (seeds 11 / 23, same head): RUSH_HANDS + recovery → + PASS_RIDE:
+- native sacked 6.0 / 4.7 → 4.3 / 3.6%; pressured 40.6 / 35.9 → 38.7 / 33.7%;
+- interior 16.5 / 12.3 → 16.0 / 11.6%; engaged-then-free 10.0 / 7.1 → 9.4 / 6.6% of dropbacks, still 0.4 s before
+  pressure.
+
+The ride barely moves it. `ride-probe.mts` with both flags (seed 11 x 3), guards:
+- reps ending "past him" double (48 against 22);
+- while ridden, the rusher runs at 4.73 yd/s (4.07 toward the QB) against the blocker's 2.75;
+- press under the guard's hands is 0, with a hand cleared in 66% of these reps.
+
+`interior-free.mts`: interior first pressers 16% of dropbacks, free 80%, last rep ended "past him" 73%.
+
+**Reading.** Under RUSH_HANDS a one-hand clear frees the man's path, not only his hands. "Hand gone" puts the rusher in
+his landed-move request (working past at 0.8-1.0 of vmax), and he goes round the guard's body faster than any ride can
+follow. In football a club wins a hand; the blocker's body is still in front and has to be gone round, and the other
+hand is on him. The open question is what the body does (torso contact, the ride's push with one hand, how much path a
+club buys), not the club's size. Recommendation: PASS_RIDE stands on its own (it improves set A's interior on both
+seeds). RUSH_HANDS is parked with that question named.

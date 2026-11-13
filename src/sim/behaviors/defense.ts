@@ -792,12 +792,68 @@ function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: bool
  * cushion breaks and he turns. a is his own: the propulsion his legs give
  * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
  * tau, so a slow-footed defender has to start earlier. */
-function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): number {
+function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number,
+  seenAccel?: number): number {
   const vx = Math.max(0, receiverVx), p = a.profile;
+  if (CARRY_READ && seenAccel !== undefined) {
+    const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+    return spare <= 0 ? vx : burstNeed(a, spare, vx, seenAccel);
+  }
   const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
   const accel = Math.max(0.1, (1 - Math.max(0, a.vel.x) / cap) * p.vmax / p.tau);
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
+}
+/** CARRY_READ (experimental, off; CARRY_READ=1 turns it on): a deep carry
+ * plays off what the receiver can still become, read from what he shows: his
+ * seen upfield speed vx and the acceleration in the defender's picture
+ * (DeepCoverage's seen-velocity change), continued as a burst that fades over
+ * BURST_TAU: v(t) = vx + a tau (1 - e^(-t / tau)). Three parts:
+ * 1. A man carry with installed deep responsibility asks for no ground back
+ *    toward a receiver who will still be climbing (`holdWeight`, continuous in
+ *    that projection, scales the downhill part of his request); he may still
+ *    spend cushion by pedalling slower than the receiver climbs, and comes
+ *    downhill as the receiver throttles.
+ * 2. The carry need (`carrySpeedNeed`, both call sites) is the slowest speed
+ *    now that keeps the gap he gives up within his spare cushion while the
+ *    receiver bursts and he accelerates with his own tau, toward his facing's
+ *    cap until a rounded turn to the run would be done and toward his top
+ *    speed after: a slower or squarer defender needs more, so he opens sooner.
+ * Off: on No. 1's go vs a Cover 3 match corner, as No. 1 passed 3 yd/s at
+ * about 0.8 s the over-the-top roof asked a corner 6-9 yd over him to come
+ * downhill at 4-6 yd/s; then the need (from vx alone) kept him square at a
+ * pedal while No. 1 burst 6.1 -> 8.3 yd/s. Over him at 1.5 / 2.0 / 2.85 s NFL
+ * 4.9 / 3.3 / +1.2 yd, sim 3.9 / 2.1 / -0.8; his speed at 1.5 s 3.1 vs about 2
+ * yd/s; on top at 2.85 s 54% vs 0% (BDB 2025 weeks 1-3 n 37 vs seeds 11/23;
+ * scripts/diag/risk/vert-pos.ts, vert_sep_nfl.py --pos). */
+const CARRY_READ = process.env.CARRY_READ === '1';
+/** CARRY_READ: how fast a seen burst fades (s), and how far ahead his cushion must last (s). Estimated, stand-in debt. */
+const BURST_TAU = 1.0, BURST_HORIZON = 2.0;
+/** CARRY_READ: receiver speed t s ahead, from what the defender sees. */
+const projected = (vx: number, accel: number, t: number) => Math.max(0, vx + accel * BURST_TAU * (1 - Math.exp(-t / BURST_TAU)));
+/** CARRY_READ: how fully he holds his depth: 1 while the receiver will be climbing 0.5 s on (3+ yd/s), easing to 0 as
+ * that projection falls to 1 yd/s (a throttle, a plant). */
+const holdWeight = (vx: number, accel: number) => clamp((projected(vx, accel, 0.5) - 1) / 2, 0, 1);
+function burstNeed(a: Agent, spare: number, vx: number, accel: number): number {
+  const p = a.profile, dt = 0.05;
+  // Square, his body cannot reach his top speed: until a rounded turn from his
+  // facing to the run would be done, he accelerates only toward his facing's cap.
+  const turn = roundedTurnTime(a, angleDiff(a.body.facing, 0));
+  const square = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
+  const keeps = (v0: number) => {
+    let gap = 0, vd = v0;
+    for (let t = dt; t <= BURST_HORIZON + 1e-9; t += dt) {
+      vd += Math.max(0, (t < turn ? square : p.vmax) - vd) / p.tau * dt;
+      gap += (projected(vx, accel, t) - vd) * dt;
+      if (gap > spare) return false;
+    }
+    return true;
+  };
+  if (keeps(0)) return 0;
+  if (!keeps(p.vmax)) return p.vmax;
+  let lo = 0, hi = p.vmax;
+  for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (keeps(mid)) hi = mid; else lo = mid; }
+  return hi;
 }
 /** OPEN_CARRY (experimental, off; OPEN_CARRY=1 turns it on): an underneath
  * zone or match defender carrying a route keeps his hips as square to the QB
@@ -1165,13 +1221,27 @@ export class ManCoverage implements Behavior {
     // to the QB as his request allows (pure man and deep carries unchanged).
     const underCarry = OPEN_CARRY && openReq && !sim.defCall.coverage.man && !o.protectDepth;
     if (underCarry) a.tags.add('open-carry');
-    const command = openReq
+    let command = openReq
       ? underCarry
         ? withFacingTechnique({ ...openReq, facing: openCarryFacing(a, sim, R, openReq, vx > 3) }, { label: 'open-carry', key: seen.vel })
         : withFacingTechnique(openReq, { label: 'man-open', key: seen.vel })
       : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
         { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
+    // CARRY_READ: while the receiver will still be climbing, he asks for at
+    // least the upfield speed his carry needs (the slowest that keeps his spare
+    // cushion against the burst he sees): he spends cushion only as fast as it
+    // allows and never comes downhill at a climber. As the receiver throttles
+    // the hold fades and the roof / cushion need bring him down.
+    const hold = CARRY_READ ? holdWeight(vx, this.depth.seenAcceleration) : 0;
+    if (hold > 0) {
+      const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, !o.protectDepth, R.profile.radius, this.depth.seenAcceleration);
+      const floor = hold * need;
+      if (command.vel.x < floor) {
+        command = { ...command, vel: { x: floor, y: command.vel.y } };
+        a.tags.add('carry-hold');
+      }
+    }
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
     // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
@@ -1182,7 +1252,7 @@ export class ManCoverage implements Behavior {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
       const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
-        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius));
+        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration));
       const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
       if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
       a.tags.add('open-carry');
@@ -1554,7 +1624,7 @@ export class ZoneCoverage implements Behavior {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
         const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
-          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius));
+          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
         if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
         a.tags.add('open-carry');
