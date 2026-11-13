@@ -51,8 +51,8 @@ first tick and nothing else changed (`REF_PLACEBO=<slot>:<sign>` in
 divergence alone does. `npm run ref:report -- --skip-operators --placebo 6`
 (about 25 minutes; add `--flag X=1` to print a candidate beside the floor).
 
-Measured on engine-55 (develop 2478e998, 2026-11-13; six arms: C, LG, RG, a
-linebacker, C, RT, LT; 46-69% of plays' yards change in each), paired delta
+Measured on engine-55 (develop 2478e998, 2026-11-13; six arms: C+, LG+, a
+linebacker+, C-, RT+, LT-; 46-69% of plays' yards change in each), paired delta
 in yards a run (capped at 20), RMS across arms vs the mean paired SE:
 
 | family | placebo RMS | mean paired SE |
