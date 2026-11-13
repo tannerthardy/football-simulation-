@@ -271,6 +271,7 @@
     "ZONE_RUN": "on",
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
-    "PURSUIT_FIELD": "on"
+    "PURSUIT_FIELD": "on",
+    "PURSUIT_COMMIT": "off"
   }
 }
