@@ -796,7 +796,7 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
  * 4.9 / 3.3 / +1.2 yd, sim 3.9 / 2.1 / -0.8; his speed at 1.5 s 3.1 vs about 2
  * yd/s; on top at 2.85 s 54% vs 0% (BDB 2025 weeks 1-3 n 37 vs seeds 11/23;
  * scripts/diag/risk/vert-pos.ts, vert_sep_nfl.py --pos). */
-const CARRY_READ = process.env.CARRY_READ === '1';
+const CARRY_READ = process.env.CARRY_READ !== '0';
 /** CARRY_READ: how fast a seen burst fades (s), and how far ahead his cushion must last (s). Estimated, stand-in debt. */
 const BURST_TAU = 1.0, BURST_HORIZON = 2.0;
 /** CARRY_READ: receiver speed t s ahead, from what the defender sees. */
