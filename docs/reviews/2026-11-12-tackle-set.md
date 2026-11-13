@@ -1744,3 +1744,31 @@ Club success by the rusher's finesse (`club-probe.mts`, seed 11 x 2): below 0.4:
 - By Integration's rule ("if pressure by class and time to pressure come back toward the NFL with two moves, add the
   rest one at a time; if not, re-diagnose"), this is "not". Re-diagnosis points to the choice (item 4: keys from what
   he sees) before more moves. Rip, snatch, dip and spin wait.
+
+## RUSH_HANDS keys: the read (5c47b27c; seeds 11 / 23, 16 games, engine-54 tree)
+
+| | A | stage 2 (moves, old choice) | + keys | NFL |
+|---|---|---|---|---|
+| native sacked | 2.1 / 2.4% | 3.0 / 2.9% | 5.1 / 3.7% | band 4.6-9.4% |
+| operator sacked | 2.6 / 3.1% | 3.9 / 3.9% | 5.9 / 4.3% | 6.7% |
+| pressured | 32.1 / 26.9% | 32.9 / 29.8% | 43.4 / 37.0% | 32.9% |
+| time to pressure p50; by 2.5 s | 2.6 s; 14.1 / 12.3% | 2.6-2.7 s; 13.0 / 13.4% | 2.5 s; 24.2 / 18.7% | 2.6-2.7 s |
+| sacks per pressure | 8.2 / 11.5% | 11.7 / 13.1% | 13.6 / 11.8% | 19.1% |
+| edge in front (share of pressure) | 12.9 / 10.0% (40 / 37%) | 11.9 / 9.8% (36 / 33%) | 10.9 / 7.5% (25 / 20%) | 3.0% (9%) |
+| edge past outside | 1.4 / 1.5% | 2.5 / 1.9% | 4.0 / 4.1% | 3.8% |
+| interior (free then) | 7.1 / 6.2% | 9.1 / 6.1% | 19.4 / 15.7% (79 / 67%) | 9.8% (46%) |
+| interior before 2.5 s | 2.4 / 2.6% | 3.0 / 2.7% | 10.7 / 7.6% | 3.8% |
+| hip reach per 100 dropbacks | 24 / 23 | 27 / 26 | 33 / 32 | 58 |
+
+Clubs with the keys (`club-probe.mts`, seed 11 x 2):
+- against tackles: 284 clubs, 38% at an unloaded hand, 18% off, press N p50 766, extension 0.90 arm;
+- against guards and the center: 667 clubs, 61% at an unloaded hand, 39% off, press N p50 77, extension 0.23 arm.
+
+**Reading.**
+- Choice moves the composition toward the NFL. In-front share falls to 20-25%, past outside reaches the NFL's, hip
+  reach rises by a third, sacks are in or near the band.
+- Pressure overshoots through the interior: twice the NFL's interior rate, free and early. Interior blockers' hands
+  carry almost no press (N p50 77): arms bent, not punching. The rusher reads that state correctly and clubs it.
+- The defect is on the blocker's side: interior pass sets without press under the hands. It existed before RUSH_HANDS;
+  nothing exploited it. Next diagnostic: why the guard's hands are unloaded (PUNCH's extension against the seen gap,
+  control, the hands joint's mode).

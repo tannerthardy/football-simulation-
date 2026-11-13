@@ -58,3 +58,7 @@ const players = [...by.values()].filter((a) => a.length >= 8).map((a) => ({ n: a
 players.sort((x, y) => x.fin - y.fin);
 console.log(`  clubs thrown at an unloaded hand ${pc(rows.filter((r) => r.unloaded).length, rows.length)}, off then ${pc(rows.filter((r) => r.unloaded && r.off).length, rows.filter((r) => r.unloaded).length)}; at a loaded hand off ${pc(rows.filter((r) => !r.unloaded && r.off).length, rows.filter((r) => !r.unloaded).length)}`);
 console.log(`  by player (>= 8 clubs, ${players.length}): ` + players.map((p) => `fin ${p.fin.toFixed(2)} ${(100 * p.ok).toFixed(0)}% (n ${p.n})`).join(' | '));
+for (const [lab, f] of [['against tackles', (r: any) => r.edge], ['against guards/center', (r: any) => !r.edge]] as const) {
+  const R = rows.filter(f);
+  console.log(`  ${lab}: clubs ${R.length} | at an unloaded hand ${pc(R.filter((r) => r.unloaded).length, R.length)} | off ${pc(R.filter((r) => r.off).length, R.length)} | press N p50 ${q(R.map((r) => r.N))} | extension p50 ${(R.map((r) => r.ext).sort((a, b) => a - b)[R.length >> 1] ?? 0).toFixed(2)} arm`);
+}
