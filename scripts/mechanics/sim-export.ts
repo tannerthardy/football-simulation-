@@ -29,6 +29,9 @@ const END = new Set(['tackle', 'out_of_bounds', 'touchdown', 'sack', 'incomplete
 // 'secure': CATCH_SECURE's securing window opens when the ball reaches his hands; its 'catch' comes up to 0.45 s later.
 const ARRIVE = new Set(['secure', 'catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss']);
 const LABEL_BALL = ARRIVE;
+// The sim's own ball-security calls. They happen with or without a throw (a strip-sack has none), so they are
+// read from the whole play, not from the throw onward.
+const SECURITY = new Set(['fumble', 'recovery', 'interception']);
 
 function arg(name: string, fallback: string): string {
   const i = process.argv.indexOf(name);
@@ -99,6 +102,23 @@ export function commonPlay(p: PlayLog, id: string) {
     if (e.type === 'block_contact' && e.a !== undefined && e.b !== undefined) pairs.set(`${e.a}:${e.b}`, [e.a, e.b]);
   }
   events.end = r2(firstOf(e => END.has(e.type)) ?? lastT);
+  // Fumbles and changes of possession, in play order. The ball starts with the offense; a recovery or interception
+  // by the other side is a change. `events.end` still marks the first ending call (a sack, say): operators that
+  // follow a carrier should stop there, or at `possession_change`, instead of following him through a return.
+  const ballSecurity: { t: number; type: string; a: number | null; side: 'O' | 'D' | null }[] = [];
+  const possessionChanges: { t: number; to: 'O' | 'D'; by: number }[] = [];
+  let holderSide: 'O' | 'D' = 'O';
+  for (const e of ev) {
+    if (!SECURITY.has(e.type)) continue;
+    const a = e.a ?? null, side = a === null ? null : rp.players[a]?.team ?? null;
+    ballSecurity.push({ t: r2(e.t), type: e.type, a, side });
+    if (e.type === 'fumble') events.fumble ??= r2(e.t);
+    if (e.type !== 'fumble' && a !== null && side !== null && side !== holderSide) {
+      holderSide = side;
+      possessionChanges.push({ t: r2(e.t), to: side, by: a });
+      events.possession_change ??= r2(e.t);
+    }
+  }
   const ball = rp.frames[0].ball;
   return {
     id, source: 'sim', kind: p.kind, yards: r2(p.yards),
@@ -111,6 +131,7 @@ export function commonPlay(p: PlayLog, id: string) {
     // The sim's own calls, for cross-checking geometric operators (as nfl_bdb2025_ball.py does with the NFL's labels).
     labels: { throwaway: throwEv?.type === 'throwaway', grounding: ev.some(e => e.type === 'intentional_grounding'),
       interception: ev.some(e => e.type === 'interception'),
+      ballSecurity, possessionChanges,
       ballEvents: throwEv ? ev.filter(e => e.t >= throwEv.t && LABEL_BALL.has(e.type)).map(e => e.type) : [],
       // After the ball carrier gets the ball (catch, else handoff/pitch): the sim's own contact calls on him (defender
       // index first), so an operator can name how the play ended after first contact (tackled, broke, missed, second

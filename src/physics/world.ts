@@ -49,6 +49,9 @@ export interface Intent extends MoveCommand {
    * legs' ordinary PUSH_GROWTH). 0 is an anchor: he leans only as hard as the
    * load he feels, so nothing is left over when it is taken away. */
   growth?: number;
+  /** The most lean he is willing to commit into a felt load (kg·yd/s²; default unbounded): a request the lean law
+   * reads, like `growth`, not a cap on an outcome. ANCHOR_BASE sets it from what his base could recover from. */
+  leanCap?: number;
   /** Deliberately leave his feet in this direction (dive, layout). A unit
    * vector launches the body with full leg drive; a shorter one launches it
    * that fraction (near zero: he just lets his legs go). */
@@ -2110,7 +2113,7 @@ export class World {
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
             const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
-            const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h);
+            const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h, intent.leanCap ?? Infinity);
             tx = ux * mag; ty = uy * mag;
           }
         }

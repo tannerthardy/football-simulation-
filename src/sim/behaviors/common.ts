@@ -3,7 +3,7 @@ import { FIELD_WIDTH } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
-import { interceptPoint, timeToReach, type SprintRequest } from '../../physics/reach.js';
+import { interceptPoint, timeToReach, timeToReachRequested, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -123,7 +123,8 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const biasedTime = clamp(ip.t - bias, 0, horizon);
+  const meetT = PURSUIT_COMMIT ? commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request) : ip.t;
+  const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
@@ -142,6 +143,46 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** PURSUIT_COMMIT (experimental, off): a pursuer commits to the meeting he
+ * chose. Measured (pursuit-weave.mts): re-picking the first reachable forecast
+ * sample every tick flips between a reachable meeting and the least-late
+ * fallback, and jumps the meeting time, on 9-13% of ticks; those ticks gave
+ * 35-40% of his aim-point turn and 44% of the big pass re-aims (his body
+ * heading turns 26 deg/s vs NFL 17). He keeps the meeting moment he chose, on
+ * his current picture of the carrier, until:
+ *  - it is no longer reachable by MEET_EXIT s (a reachable meeting), or a
+ *    fresh one is reachable with MEET_ENTER s to spare (a fallback);
+ *  - a fresh meeting is earlier (reachable) or less late (fallback) by
+ *    MEET_MARGIN s;
+ *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
+ * The exit is on the far side of the entry. Also: a defender playing the
+ * ball holds his last approach on the flight's final tick (defense.ts). */
+export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
+const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
+const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
+
+function commitMeeting(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
+  mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
+  const freshOk = ip.estimate.status === 'estimated-feasible';
+  const freshSlack = ip.estimate.slack ?? -Infinity;
+  const choose = (t: number, ok: boolean) => { heldMeeting.set(a, { target, at: sim.t + t, ok }); return t; };
+  const held = heldMeeting.get(a);
+  if (!held || held.target !== target) return choose(ip.t, freshOk);
+  const t = held.at - sim.t;
+  if (t < MEET_NEAR || t > horizon) return choose(ip.t, freshOk);
+  const pt = path(t);
+  const slack = t - (request ? timeToReachRequested(mover, pt, reach, request) : timeToReach(mover, pt, reach));
+  if (held.ok) {
+    if (slack < -MEET_EXIT) return choose(ip.t, freshOk);
+    if (freshOk && ip.t < t - MEET_MARGIN) return choose(ip.t, true);
+    return t;
+  }
+  if (freshOk && freshSlack >= MEET_ENTER) return choose(ip.t, true);
+  if (slack >= MEET_ENTER) { held.ok = true; return t; }
+  if (!freshOk && freshSlack > slack + MEET_MARGIN) return choose(ip.t, false);
+  return t;
+}
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
