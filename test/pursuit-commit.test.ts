@@ -1,7 +1,9 @@
 /** PURSUIT_COMMIT (src/sim/behaviors/common.ts commitMeeting, defense.ts playObservedFlight; experimental, off).
  * Fixed short passes against zone and man (teams from fixed seeds, the reference stack's on-flags):
- *  - on the last tick of the ball's flight a defender playing it no longer requests a stop (off: some defenders
- *    within 8 yd of the catch ask for zero speed on that tick; on: none do);
+ *  - on the last tick of the ball's flight a defender playing it no longer decides to stop (his decided command,
+ *    before teammate spacing; off: some defenders within 8 yd of the catch decide zero speed on that tick; on: none
+ *    do). Teammate spacing can still stop a defender who is running straight at a teammate converging on the same
+ *    catch; that is spacing's limit, not this decision;
  *  - an open-field pursuer keeps the meeting he chose: the bearing to his planned meeting point turns by more than
  *    10 deg in a tick less often than with the flag off. Requests only; no outcome is asserted. */
 import { readFileSync } from 'node:fs';
@@ -42,7 +44,7 @@ async function run(flag: string) {
       if (wasAir && !caught && c && c.team === 'O' && c !== sim.qb) {
         caught = true;
         for (const d of sim.defense) if (Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y) <= 8) {
-          nearAtCatch++; const v = sim.intents[d.idx].vel; if (Math.hypot(v.x, v.y) < 0.3) zeroAtCatch++; }
+          nearAtCatch++; const v = sim.cmds[d.idx].vel; if (Math.hypot(v.x, v.y) < 0.3) zeroAtCatch++; }
       }
       for (const [a, m] of meet) { const p = seen.get(a); if (p !== undefined) { ticks++; const dd = Math.abs(((m - p) * 180 / Math.PI + 540) % 360 - 180); if (dd > 10) jumps++; } seen.set(a, m); }
       for (const a of [...seen.keys()]) if (!meet.has(a)) seen.delete(a);
