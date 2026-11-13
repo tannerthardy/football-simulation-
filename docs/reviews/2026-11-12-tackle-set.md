@@ -2562,3 +2562,23 @@ press (1520 against 1598) and the press huge (1600-1900). When the arm slips, th
 
 A perception-based willingness ("committing buys nothing while I am being driven back") is a candidate for attempt 3,
 but only after (1) and (2) say whether the 1600-1900 is real.
+
+**Re-diagnosis (1) and (2)** (`longarm-release.mts`, which now also logs the joint force and the blocker's felt load
+and lean):
+- In a staged pair with the long-arm joint alone, the joint's force saturates at its push limit (about 1014). Each
+  man's felt load equals it, the blocker's lean settles at 0.9 of it, and the rusher's at 1.12 (the default growth
+  0.25). With the blocker's growth 0 the same. **No feedback loop:** one strut does not drive two leans upward.
+- In games the 1600-1900 is the **sum of two joints between the same pair**: the guard's hands joint (PUNCH) and the
+  rusher's long-arm joint (RUSH_HANDS). Each man feels both, and the rusher's lean grows to the sum, plus his 25%
+  growth.
+- When the long-arm ends, its share of the press goes in one tick, and the lean sized to both dumps forward.
+
+**So the rusher's long-arm fall is a commitment after all,** to a load that is partly his own arm's strut and that
+he can lose in one tick. That is the same propped-lean mechanism, with two features RUSH_BALANCE's numbers missed:
+- his growth 0.25 takes the lean past the press;
+- the cap at 0.95-1.4 x recoverable (about 1700-2400) sat above the 1500 he actually leaned.
+
+Candidate for attempt 3, for review: in a long-arm, his own arm is the strut, so what he commits behind it is bounded
+by what he can recover from losing the strut. That means growth 0 and the protector's margin while he holds a long-arm,
+because a lean against his own locked arm buys no movement that the arm's push does not already give. Approval needed
+before a third attempt.
