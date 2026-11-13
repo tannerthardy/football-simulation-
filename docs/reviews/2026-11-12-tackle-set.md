@@ -2755,3 +2755,39 @@ Suspects from Integration's list, as the trace reads them:
 
 Also found in the path: for a pocket QB the tackle attempt is always `rng.chance(pMiss)` with a rating-weighted escape
 (tackle.ts ~379-381), never the physical whiff path. That is PRO-INFO #11, a rating roll.
+
+# PASS_SET_SEEN (9975b844, off, intended on): the pass set from the blocker's picture (PRO-INFO #1/#2)
+
+The pass set (set point, kick, mirror, cut-off, overset fear, reach for a man going by) and protection's assignment
+costs now read each blocker's picture of the rusher (`sim.see`), not the rusher's true state. Only contact (the
+bodies' true distance at engage) is the World's. Off is bit-identical (seed 999 f95d494b).
+
+**Before/after** (PUNCH_STRIKE + ANCHOR_BASE, seeds 11 / 23 x 16, same head):
+
+| | without | with PASS_SET_SEEN | NFL |
+|---|---|---|---|
+| pressured (pressure-source) | 28.2 / 30.5% | 25.9 / 25.2% | 32.9% |
+| edge past outside | 1.8 / 2.4% | 0.4 / 0.5% | 3.8% |
+| edge level / in front | 10.3 / 10.1% | **2.6 / 3.8%** | **3.0%** |
+| edge inside | 4.7 / 4.6% | 8.1 / 6.5% | 6.4% |
+| interior pressure | 4.9 / 6.1% | 8.6 / 8.5% | 9.8% |
+| rusher free (funnel) | 44 / 43% | 37 / 33% | 38% |
+| within 2 yd before the ball is out | 24.2 / 26.6% | 21.4 / 21.0% | 27.6% |
+| contact, given 2 yd | 28 / 29% | 51 / 47% | 35% |
+| sacked, given contact | 17 / 12% | 17 / 17% | 53% |
+| native sacked | 2.0 / 1.7% | **3.2 / 2.8%** | band 4.6-9.4% |
+| tackle x-velocity 3-4 s; tackle minus QB depth | -2.0 / -2.0; -0.2 / 0.0 | -1.5 / -1.75; +0.4 / +0.4 | -0.5; +1.0 |
+| OL falls /100 (true) | 4.0 / 3.7 | 3.5 / 4.3 | ~1-5 |
+
+**Reading.**
+- Removing the leak moves most pass rows onto the NFL's. The edge "in front" class, our largest pass-rush gap all
+  week (10% against 3.0), falls to 2.6-3.8%. Edge inside and interior come up to the NFL's.
+- The tackle's late walk-back eases (+0.4 yd over the QB at 3-4 s, from about 0).
+- Sacks rise by about a point: fewer rushers reach 2 yd, but those who do make contact more often.
+- With true state, the tackle could sit exactly on a rusher's path, and the rusher stayed in front of him all the way
+  to the QB. With a delayed picture, the tackle is a beat late, and the rush resolves as a win inside or a loss. That
+  is football, not a cost.
+- Remaining gaps: edge past outside drops further below the NFL (0.4-0.5% against 3.8), and total pressure falls 3-5
+  points.
+- Recommendation: on, with PUNCH_STRIKE and ANCHOR_BASE. The sack finish (THROW_HOLD) and the outside arc are the
+  next questions.
