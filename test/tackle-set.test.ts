@@ -39,7 +39,8 @@ async function run(flag: string, seed: number) {
     sim.tick();
     tackles.forEach((tk: any, i: number) => {
       if (engagedBefore[i] && !tk.engagement) repEnded.add(tk);
-      if (!repEnded.has(tk) && !chaseBefore[i]) rows.push({ x: before[i], req: sim.intents?.[tk.idx]?.vel.x ?? 0, t: sim.t });
+      // His decided command (before teammate spacing, which can push him back when his guard is driven into him: PRO-7).
+      if (!repEnded.has(tk) && !chaseBefore[i]) rows.push({ x: before[i], req: sim.cmds?.[tk.idx]?.vel.x ?? 0, t: sim.t });
     });
   }
   return { sim, floor, rows };
@@ -83,7 +84,8 @@ describe('TACKLE_SET', () => {
           const line = tackleSetLine(sim, tk, e.defender), home = sim.offAlign.spots[tk.slot].pos.y;
           const w = (line.y - home) * line.out;
           expect(w).toBeGreaterThanOrEqual(0.3 - 1e-9); expect(w).toBeLessThanOrEqual(1.0 + 1e-9);
-          const p = before.get(tk) as any, req = sim.intents[tk.idx].vel.y * line.out;
+          // His decided command (before teammate spacing: PRO-8 is whether the set should ask past its line at all).
+          const p = before.get(tk) as any, req = sim.cmds[tk.idx].vel.y * line.out;
           if ((p.y - line.y) * line.out >= 0) expect(req).toBeLessThanOrEqual(1e-9);   // at or past the line: nothing outward
           worst = Math.max(worst, (tk.pos.y - line.y) * line.out);
         }
