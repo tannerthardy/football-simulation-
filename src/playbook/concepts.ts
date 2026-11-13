@@ -247,7 +247,8 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     id: 'bubble_screen', name: 'Trips Bubble', family: 'screen', drop: 'quick',
     strong: { 1: 'go', 2: 'bubble', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
     progression: ['S2'], beats: ['off-coverage', 'light-box'],
-    screen: { receiver: 'S2', tempo: 'quick', count: 0, blocks: [{ who: 'S1', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
+    // The bubble is thrown when the numbers outside are ours (SCREEN_QB: checked at the line, as the RPO reads it).
+    screen: { receiver: 'S2', tempo: 'quick', count: 0, kill: 'numbers', blocks: [{ who: 'S1', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
   },
   {
     // Bunch now screen to the point man... caught by #1 coming back; #2/#3 block.

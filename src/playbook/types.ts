@@ -146,8 +146,9 @@ export interface ScreenSpec {
   receiverSell?: number;
   /** Installed kill: the QB checks out of the screen at the line when he sees
    * this look on the screen receiver ('press': a defender pressed over him,
-   * so there is no cushion to catch and turn in). */
-  kill?: 'press';
+   * so there is no cushion to catch and turn in; 'numbers': more defenders outside the box to the screen's side
+   * than receivers there, the coached count for a bubble, as the run-pass option reads it). */
+  kill?: 'press' | 'numbers';
   blocks: ScreenBlock[];
 }
 

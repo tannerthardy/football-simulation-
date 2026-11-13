@@ -740,6 +740,13 @@ export class QBPass implements Behavior {
     const need = quick ? Math.min(thr, 0.2) : called && SCREEN_QB ? Math.min(thr, 0.3) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // READ_PLAN triangle: the three routes as one picture; the best one open that clears his bar is the throw.
     // The picture is held until all three have shown (or two and a half looks), then the order goes on.
+    // SCREEN_QB: a called quick screen is decided before the snap. Once its timing has passed (half a second after his
+    // drop, after the receiver's sell if he has one) and it still isn't there (a man sitting on it), he doesn't hold
+    // the ball for it: he throws it away.
+    if (SCREEN_QB && quick && t > this.snapAt + this.drop.time + (this.concept.screen?.receiverSell ?? 0) + 0.5) {
+      const r = this.reads[0], ev = r ? this.evaluate(a, sim, r, u) : null;
+      if (!ev || ev.P < need || ev.intRisk > risk) { this.screenThrownAway = true; return this.throwAway(a, sim); }
+    }
     const tri = READ_PLAN && !this.triDone ? this.plan?.triangle ?? null : null;
     // READ_PLAN alert: a yes/no glance, not a full read.
     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
@@ -980,6 +987,8 @@ export class QBPass implements Behavior {
 
   /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
   private screenLane = false;
+  /** SCREEN_QB diagnostics: a dead quick screen thrown away. */
+  screenThrownAway = false;
   private spotCache: ScreenSpot | null | undefined;
   private spotDone = false;
   /**

@@ -636,8 +636,11 @@ export class QBMind {
    */
   private screenKill(call: OffensivePlayCall): OffensivePlayCall | null {
     const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
-    if (!spec || spec.kill !== 'press') return null;
-    if (!this.screenLook(call.pass!)?.press) return null;
+    if (!spec || !spec.kill) return null;
+    const look = this.screenLook(call.pass!);
+    if (spec.kill === 'press' && !look?.press) return null;
+    // SCREEN_QB: a numbers kill (the bubble): more of them outside than us there.
+    if (spec.kill === 'numbers' && (process.env.SCREEN_QB !== '1' || !look || look.defenders <= look.receivers)) return null;
     const quick = this.quickCheck();
     if (!quick) return null;
     this.report.audible = `kill to ${quick.name}`;
