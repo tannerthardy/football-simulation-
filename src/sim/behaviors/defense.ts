@@ -775,13 +775,20 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * unchanged; the underneath dropper and the safety follow. */
 export const OPEN_NEED = process.env.OPEN_NEED === '1';
 const OPEN_IN = 0.1, OPEN_OUT = 0.2;
-export interface OpenState { deg: number }
-export function openForNeed(a: Agent, qb: Vec2, toward: Vec2, heading: number, need: number, state?: OpenState): number {
+/** OPEN_NEED: his opening off the QB line (deg, a multiple of 5) and the side he opened to (+1 / -1). The side
+ * changes only from square, so a target crossing the QB line cannot swing him from one side to the other. */
+export interface OpenState { deg: number; side?: number }
+export function openForNeed(a: Agent, qb: Vec2, toward: Vec2, heading: number, need: number, state?: OpenState, maxDeg = 180): number {
   if (!state) return openTo(a, qb, toward, heading, need);
   const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(toward.y - a.pos.y, toward.x - a.pos.x);
-  const side = Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1;
+  const sideNow = Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1;
+  // The side he is open to holds while he is open; from square he takes the target's side.
+  if (state.deg === 0 || !state.side) state.side = sideNow;
+  const side = state.side;
   const p = a.profile, cap = (deg: number) => p.vmax * directionalSpeedFactor(p, angleDiff(toQB + side * deg * Math.PI / 180, heading));
-  const want = Math.round(Math.abs(angleDiff(openTo(a, qb, toward, heading, need), toQB)) * 180 / Math.PI / 5) * 5;
+  // The smallest opening (5 deg steps, on his side) whose cap reaches the need.
+  let want = 0;
+  for (let deg = 0; deg <= maxDeg; deg += 5) { want = deg; if (cap(deg) >= need) break; }
   if (want > state.deg && need > cap(state.deg) * (1 + OPEN_IN)) state.deg = want;
   else if (want < state.deg && need < cap(Math.max(0, state.deg - 5)) * (1 - OPEN_OUT)) state.deg = want;
   return toQB + side * state.deg * Math.PI / 180;
