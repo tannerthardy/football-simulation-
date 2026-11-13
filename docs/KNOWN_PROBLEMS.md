@@ -268,6 +268,12 @@ Small samples are common. Same-seed arms are identical until the first
 changed play and then diverge, so an 8-game comparison is closer to 8 paired
 observations than to 1,000 plays (`scripts/diag/arm-power.py`, #191).
 
+## Perception (reference)
+
+How a player's picture of an opponent works (a delayed sample; position extrapolated, velocity held; no distance or
+looming term; the QB's periphery ×1.7) is written up in [PERCEPTION.md](PERCEPTION.md). Several "reacts late" findings
+may share it: check there before diagnosing a late reaction from scratch.
+
 ## Index
 
 Severity says how much the problem distorts ordinary football: **high**
