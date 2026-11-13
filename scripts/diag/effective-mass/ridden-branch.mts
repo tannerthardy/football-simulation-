@@ -10,6 +10,9 @@ const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
 const { Rng } = await import(`${W}/src/core/rng.ts`);
 const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 2);
 const rows: { cls: string; tackle: boolean; req: number; got: number; man: number; cd: number }[] = [];
+// Separations: a DL/LB within 1.2 yd of any OL, then of none. The class of his last close tick (any dx), his speed and
+// QB distance then, and whether he gets within 2 yd of the QB before the throw.
+const seps: { cls: string; tackle: boolean; man: number; toQB: number; t: number; reached: boolean }[] = [];
 const rng = new Rng(first);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < games; g++) {
@@ -17,6 +20,8 @@ for (let g = 0; g < games; g++) {
     if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
     const tick = sim.tick.bind(sim);
     let ol: any[] | null = null, tackles = new Set<any>();
+    const last = new Map<any, { cls: string; tackle: boolean }>();
+    const open: { d: any; rec: (typeof seps)[number] }[] = [];
     sim.tick = () => {
       tick();
       if (!ol) {
@@ -25,11 +30,24 @@ for (let g = 0; g < games; g++) {
       }
       if (sim.t < 0.5 || sim.ballThrown || sim.outcome || !sim.qb || sim.carrier !== sim.qb) return;
       const qb = sim.qb.pos;
+      for (const s of open) if (!s.rec.reached && Math.hypot(s.d.pos.x - qb.x, s.d.pos.y - qb.y) <= 2) s.rec.reached = true;
       for (const d of sim.defense) {
         if (!/^(DE|DT|NT|LB)/.test(d.slot)) continue;
         let best: any = null, bd = 1.2;
         for (const o of ol!) { const dd = Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y); if (dd <= bd) { bd = dd; best = o; } }
-        if (!best) continue;
+        if (!best) {
+          const l = last.get(d);
+          if (l) {
+            const rec = { ...l, man: Math.hypot(d.vel.x, d.vel.y), toQB: Math.hypot(d.pos.x - qb.x, d.pos.y - qb.y), t: sim.t, reached: false };
+            seps.push(rec); open.push({ d, rec }); last.delete(d);
+          }
+          continue;
+        }
+        {
+          const reps0 = sim.engagements.filter((e: any) => e.type === 'pass' && (e.blocker === best || e.helpers?.includes(best)));
+          const m0 = reps0.find((e: any) => e.defender === d);
+          last.set(d, { tackle: tackles.has(best), cls: m0 ? (m0.blocker !== best ? 'helper on him' : m0.riding ? 'riding' : 'his rep, not riding') : reps0.length ? 'engaged with another man' : 'in no rep' });
+        }
         const lx = best.pos.x - qb.x, ly = best.pos.y - qb.y, ll = Math.hypot(lx, ly) || 1e-6;
         const dx = ((d.pos.x - best.pos.x) * lx + (d.pos.y - best.pos.y) * ly) / ll;
         if (dx > 0.2) continue;
@@ -52,3 +70,13 @@ for (const [lab, t] of [['interior', false], ['tackles', true]] as const) {
     console.log(`   ${c.padEnd(26)} ${(100 * C.length / R.length).toFixed(0).padStart(3)}% | blocker request ${q(C.map((r) => r.req))} achieved ${q(C.map((r) => r.got))} | rusher ${q(C.map((r) => r.man))} | centre distance ${q(C.map((r) => r.cd))} (< 0.65: ${(100 * C.filter((r) => r.cd < 0.65).length / C.length).toFixed(0)}%)`);
   }
 }
+const drops = new Set<number>();
+for (const [lab, t] of [['interior', false], ['tackles', true]] as const) {
+  const R = seps.filter((r) => r.tackle === t);
+  console.log(`${lab}: came off a lineman ${R.length}, reached the QB ${R.filter((r) => r.reached).length}`);
+  for (const c of ['riding', 'his rep, not riding', 'helper on him', 'engaged with another man', 'in no rep']) {
+    const C = R.filter((r) => r.cls === c); if (!C.length) continue; const Y = C.filter((r) => r.reached);
+    console.log(`   from ${c.padEnd(26)} ${String(C.length).padStart(4)} | reached ${String(Y.length).padStart(4)} (${(100 * Y.length / C.length).toFixed(0)}%) | reached: speed ${q(Y.map((r) => r.man))}, QB ${q(Y.map((r) => r.toQB))} yd, at ${q(Y.map((r) => r.t))} s | did not: speed ${q(C.filter((r) => !r.reached).map((r) => r.man))}, QB ${q(C.filter((r) => !r.reached).map((r) => r.toQB))} yd`);
+  }
+}
+void drops;
