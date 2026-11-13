@@ -62,6 +62,11 @@ export const carrierCommitTrace: { onHold?: (a: Agent, bend: number, heldClearan
  * limit itself (headway the body can brake out of) is unchanged. */
 const SPACING_SMOOTH = process.env.SPACING_SMOOTH === '1';
 const SPACING_RAMP = .3;
+/** PURSUIT_SPACING_SMOOTH (experimental, off; with SPACING_SMOOTH): pursuers and coverage players on a seen carrier
+ * get the inside-the-gates ramp too. Measured (pursuit-weave.mts, #666): the team-spacing stage leads 34-58% of the
+ * bend-led big re-aims of open-field pursuers, at the same two gates. The earlier pursuer failure (attempt 1,
+ * radial reversals 1 -> 12) was a ramp beyond the gates; this one never reaches past them. */
+const PURSUIT_SPACING_SMOOTH = process.env.PURSUIT_SPACING_SMOOTH === '1';
 
 export interface SpacingContext {
   now: number;
@@ -351,8 +356,9 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     // limit changes with his swept miss every tick, so he keeps the gate.
     // A carrier is smoothed only when his bend is committed (CARRIER_COMMIT):
     // without it a softer cut hands the conflict to the bend ladder.
-    const smooth=SPACING_SMOOTH&&!((a.behavior.kind==='carrier'&&!CARRIER_COMMIT)||a.behavior.kind==='pursuit'
-      ||a.behavior.kind==='track'||isCarrierPursuit(ia));
+    // PURSUIT_SPACING_SMOOTH: ball-chasers get the same inside-the-gates ramp.
+    const chasing=a.behavior.kind==='pursuit'||a.behavior.kind==='track'||isCarrierPursuit(ia);
+    const smooth=SPACING_SMOOTH&&!((a.behavior.kind==='carrier'&&!CARRIER_COMMIT)||(chasing&&!PURSUIT_SPACING_SMOOTH));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
     const limits:ClosingLimit[]=[];
