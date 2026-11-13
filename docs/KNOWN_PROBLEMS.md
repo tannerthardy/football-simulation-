@@ -309,6 +309,7 @@ problem), resolved.
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
 | [PRO-5](#pro-5) | No pass protection calls | G9 | high | open (rusher read from sight: `PRO_READ`, on) |
 | [PRO-7](#pro-7) | A pass-setter whose guard is driven back into him gives ground with the guard | G5 | low | open |
+| [PRO-8](#pro-8) | The engaged set controller asks past its own set line; teammate spacing hides it | G5 | low | open |
 | [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | paused (#324 diagnosis) |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
@@ -2538,6 +2539,22 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   engaged bodies from the limit removed this leak but exposed the set's own
   outward request past its width on another tick (seed 2, RT, 1.9 yd/s at or
   past the set line, already in the engagement-stage request); not kept.
+- **Open.** Logged 2026-11-13.
+
+### PRO-8: The engaged set controller asks past its own set line; teammate spacing hides it
+
+- **Measure** (*confirmed*, `test/tackle-set.test.ts` "the set has a width"
+  scene, #659 tree with CARRIER_COMMIT, SPACING_SMOOTH and
+  PURSUIT_SPACING_SMOOTH on, seed 2, RT, t 3.50-3.75 s): engaged, at or past
+  his set line, the tackle's request leaves the engagement stage at 1.05-1.90
+  yd/s outward; his decided command is 0. Teammate spacing's limit (a body
+  outside him) cuts it before the request reaches the World, so the fixture,
+  which reads the post-spacing request, passes.
+- **Why it matters:** spacing is for free bodies choosing paths. With an
+  engaged body exempted from it (tried 2026-11-13, not kept), this request
+  reaches the body. Whether the set should ask past its line here is the set
+  controller's question (`engagement.ts`), to be decided with evidence; it is
+  not a side effect of a spacing change. See PRO-7 for the other direction.
 - **Open.** Logged 2026-11-13.
 
 ## Pass defense and coverage
