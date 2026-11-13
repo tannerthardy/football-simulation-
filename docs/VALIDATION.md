@@ -425,6 +425,20 @@ partial/favorable-prefix evidence does not pass a planned screen. Optional
 `npm run baseline:verify -- --candidate --fail-fast` stops failed cheap phases
 and records the omitted tail without weakening assertions.
 
+## The fixed run set is a used benchmark
+
+`ref:report`'s fixed run set (`config/reference-stack.json` `runSet`, 1,321
+runs) has been the yardstick for dozens of promotions, so the default engine is
+partly fitted to its exact plays. Measured 2026-11-13 with placebo arms (one
+body nudged 0.05 yd after the first tick, nothing else changed; see
+[TESTING_COSTS](TESTING_COSTS.md#noise-floor-of-the-fixed-run-set-refreport---placebo-n)):
+on `runSet` every arm loses yards (mean -0.10 a run, IZ -0.14); on
+`runSetFresh`, captured on engine-55 with new seeds, the overall bias is -0.00.
+Read run-set deltas on `ref:report -- --set fresh`, against the placebo mean and
+spread at a matching share of changed plays. Keep `runSet` for continuity and
+the operators. When `runSetFresh` has in turn judged several promotions,
+capture another and retire it the same way.
+
 ## Keep an honest final exam
 
 All 2022–2025 outcome benchmarks have been inspected. They are descriptive

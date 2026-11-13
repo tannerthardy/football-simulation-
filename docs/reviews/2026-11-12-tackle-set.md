@@ -2048,4 +2048,4 @@ PASS_RIDE's riding branch at all. The operator's "past the shoulder" (dx <= +0.2
 Stopped after two attempts. Re-diagnose before anything else: in the sim's ridden frames, which branch is the blocker
 in (riding, still engaged in front, released, or a different blocker's man), and what his request and achieved
 velocity are. HAND_SITE stays in the tree, off. It is correct about where a hand can be, but it is not the binding
-constraint. RIDE_CONTACT_DIAG is unregistered and comes out once this is read.
+constraint. RIDE_CONTACT_DIAG (spot at 0.8 of the width, the run above) was removed after the read; it was a one-line scale on `w` in rideIntent.

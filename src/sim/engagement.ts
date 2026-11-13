@@ -1243,19 +1243,16 @@ const RIDE_PUSH = 1.0;
  * up is his body's: the rep still ends when the man is beyond his arm. Ride to stop needs the man clearly back in
  * front (along his path by more than PAST_MARGIN), so the two do not flicker. A grip from behind stays the holding
  * detector's. */
-export const PASS_RIDE = process.env.PASS_RIDE === '1';
+export const PASS_RIDE = process.env.PASS_RIDE !== '0';
 /** RUSH_ONE_HAND (with RUSH_HANDS; off): one cleared hand opens the side it guarded instead of freeing him; only
  * both hands gone is a landed move, and PAST (geometry) declares the win. */
 export const RUSH_ONE_HAND = RUSH_HANDS && process.env.RUSH_ONE_HAND === '1';
 const RIDE_GAIN = 2.5;
-const RIDE_CONTACT_DIAG = Number(process.env.RIDE_CONTACT_DIAG ?? 1);
 function rideIntent(b: Agent, d: Agent, qb: Vec2, growth: number | undefined, feet: number): Intent {
   const sp = Math.hypot(d.vel.x, d.vel.y);
   const path = sp >= 1 ? { x: d.vel.x / sp, y: d.vel.y / sp } : norm(sub(qb, d.pos));
   const nx = -path.y, ny = path.x, side = Math.sign((qb.x - d.pos.x) * nx + (qb.y - d.pos.y) * ny) || 1;
-  // RIDE_CONTACT_DIAG (diagnostic cut, unregistered; Flex 2026-11-13): the spot at a fraction of the bodies' width, inside
-  // the torso contact (0.9), so the rider's body is on the man's hip and the contact carries his lean.
-  const w = (b.profile.radius + d.profile.radius) * RIDE_CONTACT_DIAG;
+  const w = b.profile.radius + d.profile.radius;
   const spot = { x: d.pos.x + nx * side * w, y: d.pos.y + ny * side * w };
   const vel = { x: d.vel.x + RIDE_GAIN * (spot.x - b.pos.x), y: d.vel.y + RIDE_GAIN * (spot.y - b.pos.y) };
   // He opens his hips and runs with the man (faces where he is going), his near hand on the man's side.
