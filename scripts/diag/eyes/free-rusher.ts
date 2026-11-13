@@ -41,7 +41,7 @@ PlaySim.prototype.run = function (this: any) {
   let qbB: any = null; const t2 = sim.tick.bind(sim); sim.tick = () => { t2(); if (!qbB && sim.qb.behavior?.kind === 'qb-pass') qbB = sim.qb.behavior; };
   const res = run.call(this);
   const hot = qbB?.hot ? { at: +qbB.hot.at.toFixed(2), target: qbB.hot.target?.slot ?? null, by: qbB.hotBy } : null;
-  process.stdout.write(JSON.stringify({ concept: sim.offCall.pass?.id, hot, at, thr, sack: sim.events.some((e: any) => e.type === 'sack'), caught: !!sim.stats.completed, outcome: res.outcome }) + '\n');
+  process.stdout.write(JSON.stringify({ concept: sim.offCall.pass?.id, pressure: sim.defCall?.pressure?.id ?? null, int: sim.events.some((e: any) => e.type === 'interception'), hot, at, thr, sack: sim.events.some((e: any) => e.type === 'sack'), caught: !!sim.stats.completed, outcome: res.outcome }) + '\n');
   return res;
 };
 const rng = new Rng(seed);

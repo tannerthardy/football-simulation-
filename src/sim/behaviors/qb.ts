@@ -405,42 +405,42 @@ export class QBPass implements Behavior {
   /** BLITZ_READ: his hot call (the man his eyes went to, when), and since when he has seen a free rusher. */
   private hot: { target: Agent | null; at: number } | null = null;
   private hotSeenAt: number | null = null;
-  /** BLITZ_READ: the hot threats he counted at the snap (defenders in the box or on its edge, by alignment in his
-   * picture), with when each became one (a man rotating into the box late counts once he has recognized it), and the
-   * spot each stood on when he became a threat. */
-  private threats = new Map<Agent, { at: number; from: Vec2 }>();
-  private counted = false;
-  /** BLITZ_READ: the free rusher by the protection, as a quarterback is taught to count it. Before the snap the threats
-   * are the defenders outside the line who can get to him: in the box (within about 5.5 yd of the ball and 6 yd of the
-   * line) or on its edge (outside that to about 9.5 yd, within 2.5 yd of the line); a corner in off-man over a receiver
-   * or a deep safety is not one. A man who walks or spins into the box after the snap becomes a threat once he has
-   * recognized it (by his awareness: the late rotation good quarterbacks see and poor ones miss). The trigger is a
-   * threat, unaccounted for by the protection and unblocked, whose step in his felt picture is at him: 0.6 yd or more
-   * from where he stood, within 35 deg of the line to him. His position there is right to 0.2-0.3 yd while speed lags. */
-  private freeRusherSeen(a: Agent, sim: PlaySim): Vec2 | null {
-    const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { assigned: Map<Agent, Agent | null> } }).coord).find((c) => c?.assigned);
-    const taken = new Set<Agent>(coord ? [...coord.assigned.values()].filter((d): d is Agent => !!d) : []);
-    const dir = sim.attackDir(a.team);
-    const zone = (p: Vec2) => {
-      const depth = (p.x - sim.los) * dir, wide = Math.abs(p.y - sim.ballY);
-      return (wide <= 5.5 && depth <= 6) || (wide <= 9.5 && depth <= 2.5);
-    };
-    const DLINE = ['DE', 'DT', 'NT', 'EDGE'];
-    let found: Vec2 | null = null;
+  /** BLITZ_READ: his rush belief on each defender off the line (0..1) and where he stood at the snap. */
+  private rushB = new Map<Agent, { p: number; prior: number; from: Vec2 }>();
+  /** BLITZ_READ: believed rushers beyond his protection's count (linemen, plus his rush belief on the rest, less his
+   * blockers), as of his last update. */
+  private rushExcess = 0;
+  /** BLITZ_READ: a defender's rush belief, 0 if he is not tracked (linemen: the protection counts them). */
+  private rushOf(d: Agent): number { return this.rushB.get(d)?.p ?? 0; }
+  /** BLITZ_READ: update his rush belief from his felt picture. A defender's prior comes from his alignment at the
+   * snap: on the line off the ball 0.45, in the box 0.25, on its edge 0.3, elsewhere 0.03. Each yard he moves toward
+   * the quarterback from that spot adds to it, each yard he drops or widens takes it away, so a man who shows and
+   * bails loses it as his position reverses; position in the felt picture is right to 0.2-0.3 yd while speed lags. His
+   * belief follows the evidence at a rate set by his awareness, so a poor reader acts on a stale one. */
+  private updateRush(a: Agent, sim: PlaySim): void {
+    const dir = sim.attackDir(a.team), DLINE = ['DE', 'DT', 'NT', 'EDGE'];
+    const tau = 0.1 + 0.4 * (1 - a.r('awareness')), k = Math.min(1, sim.dt / tau);
+    let lineMen = 0, believed = 0;
     for (const d of sim.defense) {
-      if (d.isDown(sim.t) || DLINE.includes(d.player.position)) continue;
+      if (d.isDown(sim.t)) continue;
+      if (DLINE.includes(d.player.position)) { lineMen++; continue; }
       const p = this.felt(a, sim, d).pos;
-      if (!this.counted) { if (zone(p)) this.threats.set(d, { at: sim.t, from: { ...p } }); continue; }
-      if (!this.threats.has(d) && zone(p)) this.threats.set(d, { at: sim.t + 0.15 + 0.35 * (1 - a.r('awareness')), from: { ...p } });
-      const th = this.threats.get(d);
-      if (!th || sim.t < th.at || found || d.engagement || taken.has(d)) continue;
-      const mx = p.x - th.from.x, my = p.y - th.from.y, moved = Math.hypot(mx, my);
-      if (moved < 0.6) continue;
-      const tx = a.pos.x - th.from.x, ty = a.pos.y - th.from.y, tl = Math.hypot(tx, ty) || 1;
-      if ((mx * tx + my * ty) / (moved * tl) >= Math.cos(35 * Math.PI / 180)) { found = p; this.hotBy = `${d.player.position}:${d.behavior?.kind}:${d.recog?.read ?? '-'}`; }
+      let r = this.rushB.get(d);
+      if (!r) {
+        const depth = (p.x - sim.los) * dir, wide = Math.abs(p.y - sim.ballY);
+        const prior = depth <= 1.5 && wide <= 9.5 ? 0.45 : depth <= 6 && wide <= 5.5 ? 0.25 : depth <= 2.5 && wide <= 9.5 ? 0.3 : 0.03;
+        r = { p: prior, prior, from: { ...p } }; this.rushB.set(d, r);
+      }
+      const tx = a.pos.x - r.from.x, ty = a.pos.y - r.from.y, tl = Math.hypot(tx, ty) || 1;
+      const toward = ((p.x - r.from.x) * tx + (p.y - r.from.y) * ty) / tl;
+      const target = logistic(Math.log(r.prior / (1 - r.prior)) + 2.5 * toward);
+      r.p += (target - r.p) * k;
+      if (d.engagement) r.p = Math.min(r.p, 0.5);
+      believed += r.p;
     }
-    this.counted = true;
-    return found;
+    const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[] } }).coord).find((c) => c?.protectors);
+    const blockers = coord ? coord.protectors.length : 5;
+    this.rushExcess = lineMen + believed - blockers;
   }
   /** BLITZ_READ diagnostics: the last defender he saw trigger (position:behaviour:read). */
   hotBy: string | null = null;
@@ -656,10 +656,10 @@ export class QBPass implements Behavior {
       if (t < this.snapAt) return stand(facingDown);
       this.phase = 'drop';
     }
-    // BLITZ_READ: his picture of the defense from the snap on, through his drop: the trigger is watched every tick.
-    if (BLITZ_READ && !this.hot && this.phase !== 'windup' && t <= this.snapAt + 1.2) {
-      const free = this.freeRusherSeen(a, sim);
-      if (!free) this.hotSeenAt = null; else this.hotSeenAt ??= t;
+    // BLITZ_READ: his rush belief, from the snap on, through his drop.
+    if (BLITZ_READ && this.phase !== 'windup' && t <= this.snapAt + 2.5) {
+      this.updateRush(a, sim);
+      if (this.rushExcess > 0.5) this.hotSeenAt ??= t; else if (!this.hot) this.hotSeenAt = null;
     }
 
     if (this.phase === 'windup') {
@@ -775,7 +775,8 @@ export class QBPass implements Behavior {
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
-    const u = Math.max(urgency, clockUrgency);
+    // BLITZ_READ: believed rushers beyond his protection's count shorten how long he thinks he has.
+    const u = Math.max(urgency, clockUrgency, BLITZ_READ ? clamp(0.4 * this.rushExcess, 0, 0.7) : 0);
     if (u > 0.5) this.underPressure++;
 
     // Look-off: veterans hold the safety with their eyes before the first read.
@@ -817,23 +818,20 @@ export class QBPass implements Behavior {
     // hot: the quickest-breaking route on that side, else the back. The ball goes there at the hot bar, through
     // HOT_LOOK's look and QB_EYES' gate when they are on. A poor reader is later; a receiver with no quick route on
     // that side leaves him the back or nothing.
-    if (BLITZ_READ && !this.hot && this.hotSeenAt !== null) {
-      const free = this.freeRusherSeen(a, sim);
-      if (free) {
-        if (t - this.hotSeenAt >= this.processing(a)) {
-          const side = Math.sign(free.y - sim.ballY) || 1;
-          const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
-          const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(r.pos.y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
-          const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && r.behavior instanceof RouteRunner) ?? null;
-          this.hot = { target, at: t };
-          const k = target ? this.reads.indexOf(target) : -1;
-          if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
-        }
-      }
-    }
-    if (BLITZ_READ && this.hot?.target) {
-      const ev = this.evaluate(a, sim, this.hot.target, u);
-      if (ev && ev.P > 0.3 && ev.intRisk < 0.18) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
+    // BLITZ_READ: believing more rushers than his protection has, his eyes go first to where the space is vacated: the
+    // quickest-breaking route on the side of the man he believes is coming (the concept's built-in answer). The throw
+    // itself comes from his ordinary window valuation, in which a believed rusher is discounted as a coverage defender.
+    if (BLITZ_READ && !this.hot && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a)) {
+      let top: Agent | null = null;
+      for (const [d, r] of this.rushB) if (!top || r.p > this.rushOf(top)) top = d;
+      const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
+      const bt = (r: Agent) => (r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9);
+      const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(r.pos.y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
+      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && r.behavior instanceof RouteRunner) ?? null;
+      this.hot = { target, at: t };
+      if (top) this.hotBy = `${top.player.position}:${top.behavior?.kind}:${top.recog?.read ?? '-'}`;
+      const k = target ? this.reads.indexOf(target) : -1;
+      if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
     const read = this.reads[this.readIdx];
     // QB_EYES: his eyes are on the man he is gating a throw to; otherwise on his read (from when they got there).
@@ -1514,7 +1512,8 @@ export class QBPass implements Behavior {
       const v0 = dragFreeLaunch(from, pt, T);
       for (const { d, blind, mover, react, leap, spreadD, facingQB, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
-        const m = tt - total + estimateError;
+        // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
+        const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
         const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(d.profile.vmax, 1e-3)) : 0.13;
         const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
         const contest = 1 - logistic((m - 0.05) / sCatch);
