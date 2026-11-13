@@ -50,6 +50,9 @@ const TURN_MARGIN = .05;
  * went to this selector whenever anything near him changed (dither guard). */
 const CARRIER_COMMIT = process.env.CARRIER_COMMIT === '1', COMMIT_MARGIN = .15;
 const heldBend = new WeakMap<Agent, number>();
+/** Diagnostic hook (no behaviour): called when a held bend is kept, with the bend, its swept clearance and the
+ * straight request's worst clearance (yd). Used to find closing-gap episodes on fixed plays. */
+export const carrierCommitTrace: { onHold?: (a: Agent, bend: number, heldClearance: number, straightClearance: number) => void } = {};
 /** SPACING_SMOOTH (experimental, off): the teammate closing limit fades in
  * over SPACING_RAMP yd inside the awareness and touch gates instead of
  * switching fully on or off at them. As a step it
@@ -198,7 +201,8 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
     // or until the held bend itself no longer clears to within it.
     if(worst>=COMMIT_MARGIN){heldBend.delete(a);return original;}
     const held=bend(heldBend.get(a)!),path=forecast(held);
-    if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=-COMMIT_MARGIN))return held;
+    const heldClear=Math.min(...peers.map(peer=>sweptClearance(a,path,peer)));
+    if(path.every(sample=>sample.support==='up')&&heldClear>=-COMMIT_MARGIN){carrierCommitTrace.onHold?.(a,heldBend.get(a)!,heldClear,worst);return held;}
     heldBend.delete(a);
   }
   if(worst>=0)return original;
