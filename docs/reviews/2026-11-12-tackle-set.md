@@ -2611,3 +2611,23 @@ saturates near 1014:
 - So the pair's total is bounded by the two men's legs and ground, and stacking joints does not exceed it. The defect
   was only that his lean was sized to the sum, his own arm's share included. Nothing for the stance/base proposal from
   this, beyond noting that a felt load can include a man's own strut.
+
+**RUSH_ARM_BALANCE read** (RUSH_HANDS + PUNCH_STRIKE + ANCHOR_BASE, seeds 11 / 23 x 16; without → with):
+
+| | without | with RUSH_ARM_BALANCE | NFL |
+|---|---|---|---|
+| engaged-rusher falls before the throw, /100 dropbacks | 20.0 / 34.8 | **5.7 / 8.2** | ~1 (DL proxy bound) |
+| blocker falls, /100 | 2.7 / 3.4 | 4.3 / 4.7 | ~1-5 |
+| pressured (pressure-source) | 35.6 / 33.8% | 37.3 / 35.5% | 32.9% |
+| interior pressure; engaged-then-free | 14.1 / 12.1%; 8.4 / 7.4% | 13.4 / 11.8%; 8.5 / 6.4% | 9.8%; 2.2% |
+| interior come-offs from own blocker, /100; time p50 | 51.6 / 59.2; 2.3 / 2.1 s | 50.3 / 55.1; 2.2 / 2.0 s | 48.6; 3.2 s |
+| tackle come-offs, /100; time p50 | 53.8 / 54.5; 2.3 / 2.2 s | 55.1 / 50.7; 2.3 / 2.2 s | 41.1; 3.1 s |
+| native sacked | 3.8 / 3.2% | 4.0 / 3.4% | band 4.6-9.4% |
+
+**Reading.**
+- Rusher falls come down to the level without RUSH_HANDS, and blocker falls stay on the NFL's bound.
+- RUSH_HANDS' interior overshoot is not falls on either side. Engaged-then-free stays at 3-4x the NFL's, and reps end
+  a second early (interior and tackles, 2.0-2.3 s against 3.1-3.2 s).
+- The come-off *counts* are now on or near the NFL's (interior 50-55 against 48.6), so the remaining gap is *when*.
+- That is RUSH_HANDS' own question (c): what a club or a cleared hand buys, in path and time. The rep-end probe put it
+  at "past him" after a club (65-81%), with the rusher leaving at about 4 yd/s against the rider's 2.5-2.8.
