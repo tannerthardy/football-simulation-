@@ -92,10 +92,13 @@ export function angleTo(from: Vec2, to: Vec2): number {
  */
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   request?: SprintRequest): Vec2 {
-  const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+  // INTERCEPT_COURSE: a cut reaches his forecast later the lower his anticipation.
+  const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime)
+    * (INTERCEPT_COURSE && !process.env.IC_NODELAY ? 1 + 0.8 * (1 - a.r('anticipation')) : 1);
   const seen = sim.see(a, target, delay);
-  const sp = Math.hypot(seen.vel.x, seen.vel.y);
-  const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
+  const est = INTERCEPT_COURSE && !process.env.IC_NOEST ? estimateError(sim, a) : null;
+  const sp = Math.hypot(seen.vel.x, seen.vel.y) * (est ? 1 + est.speed : 1);
+  const heading = sp > 0.1 ? (est ? rotate(norm(seen.vel), est.heading) : norm(seen.vel)) : { x: 0, y: 0 };
   const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
   // Over the time actually between the two pictures he holds, which attention
   // can stretch past the 0.2 s asked for; two pictures of the same moment show
@@ -113,7 +116,8 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   };
   const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
   const trace = sim.commandTraceFor?.(a);
-  const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+  const tk = Number(process.env.IC_TAUK ?? 1);
+  const mover = { pos: a.pos, vel: a.vel, profile: INTERCEPT_COURSE && tk !== 1 ? { ...a.profile, tau: a.profile.tau * tk } : a.profile, speedScale: a.speedScale };
   const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
   let bias = angleBias.get(a);
   if (bias === undefined) {
@@ -142,6 +146,88 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** INTERCEPT_COURSE (experimental, off): a pursuer runs the intercept at a
+ * speed he can turn onto it at, from his own forecast of the carrier.
+ * Measured (pursuit.py / pursuit-planner.mts): the planner asked for roughly
+ * the NFL's course (pass, level 5-10 yd: 36 deg ahead of the man vs NFL 34)
+ * but at a sprint (9.8 yd/s), so the body could not turn onto it and the
+ * achieved course lagged 10-12 deg back toward the man (24 deg; NFL runs it at
+ * 5.5 yd/s), a tail chase. Three parts, all his own:
+ *  - his forecast of the carrier's heading and speed carries an error that
+ *    wanders with time (ESTIMATE_TAU), sized by pursuit and play recognition,
+ *    and a cut reaches it later the lower his anticipation;
+ *  - he asks for the speed at which his judged cut capacity turns him onto
+ *    the course within half the run to it; his judgment of that capacity is
+ *    off by a per-play error sized by pursuit (too fast over-runs it, too
+ *    slow throttles early);
+ *  - he holds the planned course until his picture of the carrier changes
+ *    past COURSE_MARGIN (heading or speed) or he is near the point.
+ * Error sizes are ESTIMATED until the NFL within-position spread is in. */
+export const INTERCEPT_COURSE = process.env.INTERCEPT_COURSE === '1';
+const ESTIMATE_TAU = 0.5, HEADING_SIGMA = 10 * Math.PI / 180, SPEED_SIGMA = 0.12, CAPACITY_SIGMA = 0.25;
+const COURSE_HEADING_MARGIN = 12 * Math.PI / 180, COURSE_SPEED_MARGIN = 1.0, TURN_SHARE = 0.5;
+const estimates = new WeakMap<Agent, { t: number; heading: number; speed: number }>();
+const capacityJudgment = new WeakMap<Agent, number>();
+const heldCourse = new WeakMap<Agent, { point: Vec2; heading: number; speed: number; target: Agent }>();
+
+function rotate(v: Vec2, a: number): Vec2 {
+  const c = Math.cos(a), s = Math.sin(a);
+  return { x: v.x * c - v.y * s, y: v.x * s + v.y * c };
+}
+
+/** His forecast error of the carrier's motion: an Ornstein-Uhlenbeck wander
+ * (correlated in time), larger the lower his pursuit and play recognition. */
+function estimateError(sim: PlaySim, a: Agent): { heading: number; speed: number } {
+  const skill = 0.5 * (a.r('pursuit') + a.r('playRecognition'));
+  const sh = HEADING_SIGMA * (1.2 - skill), ss = SPEED_SIGMA * (1.2 - skill);
+  const prev = estimates.get(a);
+  const rng = sim.rng.fork(`pursuit-estimate:${a.idx}:${Math.round(sim.t * 20)}`);
+  if (!prev) {
+    const e = { t: sim.t, heading: rng.normal(0, sh), speed: rng.normal(0, ss) };
+    estimates.set(a, e); return e;
+  }
+  const dt = Math.max(0, sim.t - prev.t);
+  if (dt > 0) {
+    const k = Math.exp(-dt / ESTIMATE_TAU), w = Math.sqrt(1 - k * k);
+    prev.heading = prev.heading * k + rng.normal(0, sh) * w;
+    prev.speed = prev.speed * k + rng.normal(0, ss) * w;
+    prev.t = sim.t;
+  }
+  return prev;
+}
+
+/** INTERCEPT_COURSE: the speed (fraction of his top speed) at which he judges
+ * he can turn from his current velocity onto the line to `p` within half the
+ * run to it: a turn of dTheta at speed s takes dTheta * s / lateral, the run
+ * d / s, so s = sqrt(TURN_SHARE * d * lateral / dTheta). */
+export function holdableSpeed(sim: PlaySim, a: Agent, p: Vec2): number {
+  const dx = p.x - a.pos.x, dy = p.y - a.pos.y, d = Math.hypot(dx, dy);
+  const v = Math.hypot(a.vel.x, a.vel.y);
+  if (v < 1 || d < 1) return 1;
+  const turn = Math.abs(angleDiff(angleOf(a.vel), Math.atan2(dy, dx)));
+  if (turn < 0.15) return 1;
+  let judged = capacityJudgment.get(a);
+  if (judged === undefined) {
+    judged = sim.rng.fork(`pursuit-capacity:${a.idx}`).normal(0, CAPACITY_SIGMA * (1.15 - a.r('pursuit')));
+    capacityJudgment.set(a, judged);
+  }
+  const lateral = a.profile.lateral * Math.max(0.3, 1 + judged);
+  const s = Math.sqrt(TURN_SHARE * d * lateral / turn);
+  return clamp(s / (a.profile.vmax * a.speedScale), 0.45, 1);
+}
+
+/** INTERCEPT_COURSE: keep the planned point until his picture of the carrier
+ * changes past the margin, the target changes, or he is near the point. */
+export function holdCourse(a: Agent, target: Agent, seen: { vel: Vec2 }, fresh: Vec2): Vec2 {
+  const sp = Math.hypot(seen.vel.x, seen.vel.y), hd = Math.atan2(seen.vel.y, seen.vel.x);
+  const held = heldCourse.get(a);
+  if (held && held.target === target && Math.hypot(held.point.x - a.pos.x, held.point.y - a.pos.y) > 2
+    && Math.abs(angleDiff(held.heading, hd)) < COURSE_HEADING_MARGIN && Math.abs(held.speed - sp) < COURSE_SPEED_MARGIN)
+    return held.point;
+  heldCourse.set(a, { point: { ...fresh }, heading: hd, speed: sp, target });
+  return fresh;
+}
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
@@ -255,7 +341,11 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
   const request = { speed: effort, effort };
-  const p = pursuitPoint(sim, a, target, horizon, request);
+  let p = pursuitPoint(sim, a, target, horizon, request);
+  if (INTERCEPT_COURSE) {
+    if (!process.env.IC_NOHOLD) p = holdCourse(a, target, seen, p);
+    if (!process.env.IC_NOSPEED) request.speed = Math.min(request.speed, holdableSpeed(sim, a, p));
+  }
   const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) {
