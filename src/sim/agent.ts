@@ -73,6 +73,8 @@ export interface Engagement {
    * his next move decision or until it is swiped off; and when the blocker last swiped at it. */
   rusherHand?: import('../physics/world.js').HandJoint;
   longArmUntil?: number;
+  /** RUSH_HANDS: whether the rusher last felt the blocker's hand loaded on him (the keys' felt change). */
+  feltLoaded?: boolean;
   counterAt?: number;
   lastReqX?: number;
   /** Emitted once when the physical hands/torso actually carry load. */

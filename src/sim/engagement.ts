@@ -697,9 +697,29 @@ function planMove(sim: PlaySim, e: Engagement, d: Agent, b: Agent): RushMove {
   );
 }
 
+/** RUSH_HANDS: the rusher's keys for the physical moves. By touch, the blocker's hand on him is unloaded (pressing
+ * him with less than UNLOADED of the blocker's press capacity, from the joint's measured force last step): the
+ * exposed hand a club beats. By sight, his arm is longer than the blocker's: the long-arm's edge. Each is read right
+ * with probability 0.5 + 0.5 x his recognition (finesse and awareness); a misread commits him to the wrong move,
+ * which costs what that move costs. */
+const UNLOADED = 0.2;
+export function handUnloaded(e: Engagement): boolean {
+  const h = e.hands;
+  return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
+}
+function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
+  const d = e.defender, b = e.blocker, rng = sim.dice('rep', b, d);
+  const recognition = 0.5 * d.r('passRushFinesse') + 0.5 * d.r('awareness');
+  const read = (truth: boolean) => (rng.chance(0.5 + 0.5 * recognition) ? truth : !truth);
+  if (read(handUnloaded(e))) return 'club';
+  if (read(d.player.measurables.armIn > b.player.measurables.armIn) && !handUnloaded(e)) return 'longarm';
+  return null;
+}
+
 /** Choose the next move from the state of the rep. */
 function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   const d = e.defender;
+  if (RUSH_HANDS && e.type === 'pass') { const keyed = keyedMove(sim, e); if (keyed) return keyed; }
   const td = traits(d);
   const power = d.r('passRushPower');
   const fin = d.r('passRushFinesse');
@@ -1476,6 +1496,13 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
 
   // ---- moves at decision points
+  // RUSH_HANDS: a counter is a new decision on a felt change: the blocker's hand going unloaded on him brings his
+  // next decision forward to his reaction time.
+  if (RUSH_HANDS && e.type === 'pass') {
+    const loaded = !handUnloaded(e);
+    if (e.feltLoaded && !loaded && !(t < e.moveUntil)) e.nextMoveAt = Math.min(e.nextMoveAt, t + Math.max(0.1, d.profile.reactionTime));
+    e.feltLoaded = loaded;
+  }
   if (t >= e.nextMoveAt) {
     const scripted = rushScripts.get(e);
     e.move = scripted?.length ? scripted.shift()! : t - e.start < 0.1 ? e.move : chooseMove(sim, e);

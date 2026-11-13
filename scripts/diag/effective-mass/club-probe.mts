@@ -24,7 +24,7 @@ for (let g = 0; g < games; g++) {
         if (b0 && e.move === 'club' && e.moveUntil !== b0.until && !e.moveOk && !b0.off) {
           const bodies = e.blocker.profile.radius + e.defender.profile.radius, arm = e.blocker.player.measurables.armIn / 36;
           open.set(e, { t: sim.t, ext: (e.hands.extension - bodies) / arm, N: e.hands.normalForce ?? 0, grip: !!e.hands.grip, off: false, until: e.moveUntil + 0.05,
-            edge: ['LT', 'RT'].includes(e.blocker.slot), fin: e.defender.r('passRushFinesse'),
+            edge: ['LT', 'RT'].includes(e.blocker.slot), fin: e.defender.r('passRushFinesse'), who: e.defender.player.id, unloaded: (e.hands.normalForce ?? 0) < 0.2 * supportParams(e.blocker.profile).pressForce,
             H: sim.world.handHold(e.hands), steer: e.hands.steer, hold: e.hands.hold, lever: Math.min(1, 0.25 * arm / Math.max(0.25 * arm, e.hands.extension - bodies)),
             F: (await_import_free_armForce(e.defender)), off0: e.hands.handOffset ?? 0, lastN: (sim.world as any).lastHandN.get(e.hands) ?? -1, ctl: e.control });
         }
@@ -53,3 +53,8 @@ for (const [lab, lo, hi] of [['bent', -9, 0.4], ['mid', 0.4, 0.75], ['extended',
   const R = rows.filter((r) => r.ext >= lo && r.ext < hi);
   console.log(`  ${lab}: H p50 ${q(R.map((r) => r.H))} | steer ${q(R.map((r) => r.steer))} | lastN ${q(R.map((r) => r.lastN))} | |offset| at throw p50 ${(R.map((r) => Math.abs(r.off0)).sort((a, b) => a - b)[R.length >> 1] ?? 0).toFixed(3)} | control p50 ${(R.map((r) => r.ctl).sort((a, b) => a - b)[R.length >> 1] ?? 0).toFixed(2)} | off ${R.filter((r) => r.off).length}/${R.length}`);
 }
+const by = new Map<string, any[]>(); for (const r of rows) { const a = by.get(r.who) ?? []; a.push(r); by.set(r.who, a); }
+const players = [...by.values()].filter((a) => a.length >= 8).map((a) => ({ n: a.length, fin: a[0].fin, ok: a.filter((r) => r.off).length / a.length }));
+players.sort((x, y) => x.fin - y.fin);
+console.log(`  clubs thrown at an unloaded hand ${pc(rows.filter((r) => r.unloaded).length, rows.length)}, off then ${pc(rows.filter((r) => r.unloaded && r.off).length, rows.filter((r) => r.unloaded).length)}; at a loaded hand off ${pc(rows.filter((r) => !r.unloaded && r.off).length, rows.filter((r) => !r.unloaded).length)}`);
+console.log(`  by player (>= 8 clubs, ${players.length}): ` + players.map((p) => `fin ${p.fin.toFixed(2)} ${(100 * p.ok).toFixed(0)}% (n ${p.n})`).join(' | '));
