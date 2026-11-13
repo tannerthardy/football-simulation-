@@ -72,6 +72,30 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
 const SEEN_EYES = process.env.SEEN_EYES !== '0';
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
+/** EYES_HEAD (experimental, off; EYES_HEAD=1 turns it on): a zone defender
+ * reads the QB's look from where his head points (his gaze, sim.qbEyes, as it
+ * was one observation delay ago), not from his body facing. The receiver he
+ * takes the QB to be looking at is still the one, in his own delayed picture,
+ * nearest that head line within the same tolerance, so stacked receivers
+ * confuse him and a look-off moves him: the head points at the decoy.
+ * The delay is his own: 0.10 s plus up to 0.15 s for poor play recognition
+ * (estimated, stand-in debt), through his focus and stress. Off, the read used
+ * the QB's body facing: with QB_EYES on the QB's eyes are on the eventual
+ * target 99% of the last 0.7 s before a zone completion, but the defenders
+ * within 8 yd of the catch who face him read it as that receiver 37% of the
+ * time; those who do request +3.2 yd/s toward the catch point at the release
+ * and reach +1.5 (NFL median for zone defenders facing the QB +1.5), those who
+ * do not reach +0.5 (scripts/diag/risk/eyes-probe.ts, seed 11). */
+const EYES_HEAD = process.env.EYES_HEAD === '1';
+/** EYES_HEAD: the QB's gaze, sampled once per tick, per play. */
+const gazeLog = new WeakMap<PlaySim, { t: number; eyes: Agent | null }[]>();
+function gazeAt(sim: PlaySim, t: number): Agent | null {
+  let log = gazeLog.get(sim);
+  if (!log) { log = []; gazeLog.set(sim, log); }
+  if (!log.length || log[log.length - 1].t < sim.t - 1e-9) { log.push({ t: sim.t, eyes: sim.qbEyes }); if (log.length > 60) log.shift(); }
+  for (let i = log.length - 1; i >= 0; i--) if (log[i].t <= t + 1e-9) return log[i].eyes;
+  return log[0].eyes;
+}
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   if (!SEEN_EYES) return sim.qbEyes;
   const c = eyesCache.get(a);
@@ -79,13 +103,19 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   let r: Agent | null = null;
   const q = sim.see(a, sim.qb);
   const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), dist = Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y);
+  // EYES_HEAD: the head line he saw, toward where the gaze target was in his picture.
+  let look = q.facing;
+  if (EYES_HEAD) {
+    const g = gazeAt(sim, sim.t - a.mind.observationDelay(0.1 + 0.15 * (1 - a.r('playRecognition'))));
+    if (g) { const gp = sim.see(a, g).pos; look = Math.atan2(gp.y - q.pos.y, gp.x - q.pos.x); }
+  }
   if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
     const tol = Math.cos((dist > 20 ? 12 : 20) * Math.PI / 180);
     let best = tol;
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos(q.facing - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos(look - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
       if (cos > best) { best = cos; r = o; }
     }
   }
