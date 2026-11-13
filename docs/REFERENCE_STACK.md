@@ -607,6 +607,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-55: `CURL_FLAT_BACK` on: the curl-flat defender widens to a back in his flat (2026-11-13)
+
+**`CURL_FLAT_BACK`** (Coverage #667). The curl-flat defender's expansion to the flat existed only for No. 2 and was switched off when a back released fast to his side, so he played the threat nearest his curl landmark and a back in the flat lost to a curl every time (on 42 of 44 wide catches with nobody in front he was present, about 10 yd inside the catcher). Now he sinks to his curl window and widens toward a back in his flat by what the quarterback shows him (his seen eyes, with his delay): most when the eyes are on the flat, hanging when they are on a receiver in his curl window, moderately once the back has crossed his face; a back already settled wide counts as well as one still releasing. He breaks on the throw. The widening weights are estimates and recorded as stand-in debt. A first version that ran to the back as he showed, and one that widened by a fixed fraction, were dropped: the second opened the throw behind him (80% against the NFL's 69%).
+
+The lane's reads, paired on one tree (NFL): the back's wide-flat YAC a catch, median 13.0 → 6.8 and 11.2 → 8.4 across two runs (5.0); completion on throws behind him 68 → 66% and 72 → 64% (69). **Not this rule's, and recorded as open:** wide back catches with nobody in front stay at 42 to 48% (12) after three looks; they are the calls with no curl-flat player to that side (the Cover 2 family, stubbie, book: the corner beaten to the edge or the flat defender sinking under No. 1) and late check-downs thrown 0.8 s after the NFL's.
+
+Checks on the candidate (`9a6b3d2b`): full suite 4394 pass with only the two known research failures; fixed run set 3.59, unchanged. Cards, 16 games a side, 0 → 1:
+
+| seed | yards an attempt | completion | INT | YAC | sack rate | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 8.06 → 7.91 | 67.1 → 65.8% | 1.6 → 1.6% | 6.40 → 6.80 | 2.5 → 2.7% | 29.4 → 28.6 |
+| 23 | 7.78 → 7.83 | 66.9 → 65.2% | 1.6 → 2.3% | 6.32 → 6.82 | 2.4 → 3.0% | 28.0 → 27.9 |
+| 31 | 8.29 → 8.29 | 64.5 → 66.3% | 1.4 → 1.4% | 7.58 → 7.27 | 2.4 → 2.6% | 30.0 → 26.2 |
+
+Nothing moved outside its range. It lands as the coached rule; the whole-game YAC does not see it because the back's flat with this defender present is a small share of catches.
+
+**With it:** Defense's findings record (#673, docs and diagnostic scripts only): pursuit lead, arrival speed and the finish match the NFL in aggregate; safety lead is role; the corners' within-role lead trait tracks nothing measurable; acceleration and redirect are not player traits in our motion; the tackling rating slows the approach with no NFL support (left as is, parked); the run-specific grip frame for `OPEN_HANDS`.
+
+**Not landed: the commitment candidate** (`PURSUIT_COMMIT`, `CARRIER_COMMIT`, `SPACING_SMOOTH`, `PURSUIT_SPACING_SMOOTH`; `b7f14572`, kept as `held/e55-commit`). Three fixtures that pass on develop failed with the four on. `tackle-set` and `hold-facing` trace to `SPACING_SMOOTH` alone: the spacing stage applied its teammate radial limit to engaged and bonded bodies (a pass-setting tackle at his floor was pushed 0.28 yd/s deeper; his own decision never asked for it). Defense is exempting engaged and constrained bodies and re-measuring the flag's benefit on free bodies only. `PURSUIT_COMMIT`'s jump-rate claim no longer separates on engine-54; whether the hysteresis still does anything is being re-measured. Cards on two seeds agreed on nothing for any of the four; fixed run set 3.59 → 3.48 with all four on, unattributed.
+
 ## engine-54: the blocker's hands (`PAST_ALONG_PATH`, `OPEN_HANDS`, `PUNCH`), landed with a stated cost (2026-11-13)
 
 **The set** (Flex #520 at `a1e611ce`). `PAST_ALONG_PATH`: a rusher has beaten his blocker when he is past him along his own path and the blocker is no longer between him and where he is going, in place of a fixed line. `OPEN_HANDS`: open hands, a legal inside grip and a hold are different contacts with different limits. `PUNCH`: a blocker's hands work to where he feels the man and extend to lockout; with it the quarterback's `BLOCK_SEEN` contact read measures the blocker's arm from the body surfaces, so a locked-out block no longer reads as a free rusher (`ba4b9866`). Everything else on that branch is in the tree off (`RUSH_INTENT`, `TACKLE_SET`, `TACKLE_BRAKE`, `TACKLE_RESET`, `TACKLE_ANCHOR`, `EDGE_ARC`, `EXTEND`, `HANG_GRIP`, `HOLD_CALL`). `dropSpec` moves to `src/sim/called-drop.ts`; `PA_DROP` is read there as well.
