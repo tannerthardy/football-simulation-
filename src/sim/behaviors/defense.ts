@@ -1174,6 +1174,14 @@ export class ManCoverage implements Behavior {
  * A call that sends a safety down gives him an underneath zone and is
  * unchanged. */
 const SAFETY_DEPTH = process.env.SAFETY_DEPTH === '1';
+/** SAFETY_DEPTH: a deep safety's depth over the deepest route in his zone, as he sees it, with that route `r` yd past
+ * the line: NFL deep safeties' median depth over it is 13.0 / 11.7 / 8.5 yd with the route at 1.2 / 3.7 / 9.7 yd
+ * (BDB 2025, safety_cushion.py), i.e. 13.4 - 0.5 r. A slower safety keeps more and a better reader less (scale
+ * 9.6 / top speed, 0.85-1.25, x 1.1 - 0.2 play recognition: estimated, stand-in debt). Never under 2 yd. */
+function safetyOver(a: Agent, r: number): number {
+  const scale = clamp(9.6 / a.profile.vmax, 0.85, 1.25) * (1.1 - 0.2 * a.r('playRecognition'));
+  return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
+}
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1231,6 +1239,15 @@ export class ZoneCoverage implements Behavior {
       a.tags.add('safety-depth');
     }
     this.style = style;
+  }
+
+  /** SAFETY_DEPTH: the depth he held over a route when he first saw it stop climbing (cleared if it climbs again). */
+  private readonly heldOver = new Map<Agent, number>();
+  private holdOver(r: Agent, x: number): number {
+    const held = this.heldOver.get(r);
+    if (held !== undefined) return held;
+    this.heldOver.set(r, x);
+    return x;
   }
 
   private selectTarget(a: Agent, target: Agent | null): void {
@@ -1396,6 +1413,13 @@ export class ZoneCoverage implements Behavior {
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (qbEyes) tgt = lerp(lm, qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
+        // SAFETY_DEPTH: a deep safety keeps his depth over the deepest receiver he sees in his band, with his landmark
+        // as a floor; the QB's eyes shade him laterally only.
+        if (SAFETY_DEPTH && this.initialDepth >= 9) {
+          const r = Math.max(0, ...threats.map(th => th.pos.x - sim.los));
+          const x = Math.min(END_LINE_X - 1.2, Math.max(lm.x, sim.los + r + safetyOver(a, r)));
+          return withFacingTechnique(goTo(a, { x, y: tgt.y }, { facing: facingQB, speed: zs }), { label: 'deep-read' });
+        }
         return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
           { label: 'deep-read' });
       }
@@ -1433,7 +1457,13 @@ export class ZoneCoverage implements Behavior {
       // the stem climbs; otherwise a corner retreats from a hitch into grass.
       const developing = clamp((deepest.pos.x - sim.los) / 8, 0, 1);
       const workingCushion = Math.max(cushion, this.initialDepth * (1 - developing) + cushion * developing);
-      const tx = Math.min(END_LINE_X - a.profile.radius, deepest.pos.x + workingCushion);
+      // SAFETY_DEPTH: a deep safety stays deeper than the deepest route he sees, by the NFL's cushion (landmark floor).
+      const tx = Math.min(END_LINE_X - a.profile.radius, SAFETY_DEPTH && this.initialDepth >= 9
+        // A route that has stopped climbing (a dig, a curl) no longer pulls him deeper: he holds his depth over it.
+        ? Math.max(deepest.pos.x + workingCushion, lm.x, deepest.vel.x < 1
+          ? this.holdOver(deepest.r, Math.min(a.pos.x, deepest.pos.x + safetyOver(a, deepest.pos.x - sim.los)))
+          : (this.heldOver.delete(deepest.r), deepest.pos.x + safetyOver(a, deepest.pos.x - sim.los)))
+        : deepest.pos.x + workingCushion);
       // Turn before the receiver consumes the cushion during the hip flip.
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
