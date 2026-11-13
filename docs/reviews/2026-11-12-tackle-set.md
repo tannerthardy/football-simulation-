@@ -2531,3 +2531,34 @@ by his own arm, released in one tick when the long-arm ends. A lean bound cannot
 
 Stopped after one attempt at the wrong lever. Diagnosis next: the World's contact deviation on a joint release, in a
 staged long-arm, before choosing.
+
+## The rusher's falls: two attempts, stopped
+
+**The staged release** (`longarm-release.mts`, World only): a rusher holds a blocker off with a locked arm, with his
+lean about 1140 against a felt press of about 1014 (the default growth 0.25 lets it exceed the press), and the arm
+ends in one tick:
+- asking 4.5 yd/s, his capture point goes to -3.3, then -4.9 base radii;
+- asking 1.5 yd/s, -0.8.
+
+The World releases what the gait cannot absorb as planned acceleration, and a sprint request has spent that room.
+That is defensible physics.
+
+**Attempt 2, RUSH_DRIVE_PACE** (removed, not committed): in a power move the rusher asks for his current pace toward
+the man plus what his legs add within a reaction time (vmax / tau x rt), not 0.55 vmax.
+- The request does reach him: asked -2.3 / -1.7 yd/s at 0.3 / 0.1 s, against about -4 before.
+- DL falls 19.6 → 18.7 per 100 (seed 11 x 3): no real change. Tackles' rushers' falls 10 → 5, interior 34 → 35.
+
+**What the interior long-arm fall is** (`fall-trace.mts`, `FALL_ROLE=DL`, with attempt 2): the rusher is being
+driven back by the guard (velocity along the press +0.47 at 0.1 s: the way he is pushed), with his lean grown to the
+press (1520 against 1598) and the press huge (1600-1900). When the arm slips, that lean dumps forward.
+- RUSH_BALANCE's cap (0.95 + misjudgement x recoverable, about 1700-2400) never bound it.
+- The pace change does not touch a man who is not moving forward anyway.
+
+**Re-diagnosis needed before attempt 3.**
+1. Why does a guard with PUNCH_STRIKE + ANCHOR_BASE drive a long-arming rusher back with a press of 1600-1900? That
+   is more than either man's lean, and the rusher's arm is the strut.
+2. What does the long-arm's locked arm do to both men's felt loads? Each feels the other through the same joint, and
+   each grows a lean to it.
+
+A perception-based willingness ("committing buys nothing while I am being driven back") is a candidate for attempt 3,
+but only after (1) and (2) say whether the 1600-1900 is real.
