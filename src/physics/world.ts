@@ -107,6 +107,9 @@ export interface HandJoint {
    * point). */
   handsOn?: number;
   offSide?: number;
+  /** RUSH_HANDS: the last step's normal force (the press a club must overcome). A plain field, so a World stays
+   * structured-cloneable (lab tools and replay clone it). */
+  lastN?: number;
   /** Height of the hand contact, yd; defaults to the lower player's pads. */
   height?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
@@ -783,7 +786,6 @@ export class World {
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
   private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number }> = [];
-  private readonly lastHandN = new WeakMap<HandJoint, number>();
   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
   private readonly reels = new Map<GraspJoint, number>();
   /** Reference adjustment preserves the held point when a grip slides down. */
@@ -919,7 +921,7 @@ export class World {
     const owner = jt.a, target = jt.b;
     const arm = Math.max(0.3, (owner.profile.reach - 0.25) / 0.85), bent = 0.25 * arm;
     const ext = Math.max(bent, jt.extension - owner.profile.radius - target.profile.radius);
-    const press = Math.max(0, this.lastHandN.get(jt) ?? 0);
+    const press = Math.max(0, jt.lastN ?? 0);
     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
   }
@@ -1068,7 +1070,7 @@ export class World {
     for (const j of this.joints) {
       if (j.kind === 'hands') {
         j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt;
-        if (RUSH_HANDS) this.lastHandN.set(j, j.normalForce);
+        if (RUSH_HANDS) j.lastN = j.normalForce;
         j.normalForceOnB = { x: (j.normalForceOnB?.x ?? 0) / dt, y: (j.normalForceOnB?.y ?? 0) / dt };
         j.tangentForceOnB = { x: (j.tangentForceOnB?.x ?? 0) / dt, y: (j.tangentForceOnB?.y ?? 0) / dt };
         if (this.handContact === 'patch') {

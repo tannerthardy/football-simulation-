@@ -203,3 +203,17 @@ describe('RUSH_HANDS hand recovery', () => {
     expect(minNext).toBeGreaterThanOrEqual(back! - 1e-9);
   });
 });
+
+describe('RUSH_HANDS: a World stays cloneable', () => {
+  it('structuredClone of a World with a stepped hands joint works (lab tools and replay clone it)', async () => {
+    for (const flag of ['0', '1']) {
+      const { W, body } = await load({ RUSH_HANDS: flag });
+      const a = body(140, { x: 0, y: 0 }, 0), b = body(120, { x: 0.9, y: 0 }, Math.PI);
+      const w = new W.World([a, b], { substeps: 12 });
+      w.joints.push({ kind: 'hands', a, b, extension: 0.9, push: 1500, hold: 0, steer: 700 } as any);
+      w.step([{ vel: { x: 0, y: 0 }, push: 1 }, { vel: { x: -1, y: 0 }, push: 1 }], 0.05);
+      const fields: any = { ...w }; delete fields.attachments;
+      expect(() => structuredClone(fields)).not.toThrow();
+    }
+  });
+});
