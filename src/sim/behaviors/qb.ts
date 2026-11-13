@@ -445,7 +445,7 @@ export class QBPass implements Behavior {
   private resetAt = new Map<Agent, number>();
   private resetFree = -1;
   /** QB_POCKET diagnostics (no effect): each reset decided. */
-  readonly resetLog: Array<{ t: number; kind: 'up' | 'side' | 'back'; cause: 'near' | 'time'; dist: number; edge: boolean; by: string }> = [];
+  readonly resetLog: Array<{ t: number; kind: 'up' | 'side' | 'back'; cause: 'near' | 'time'; dist: number; edge: boolean; by: string; from: Vec2; end?: { t: number; why: 'there' | 'lapsed' | 'closed'; moved: number } }> = [];
   private hitchTo: Vec2 | null = null;
   private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
@@ -2021,6 +2021,8 @@ export class QBPass implements Behavior {
       const r = this.reset, left = Math.hypot(r.to.x - a.pos.x, r.to.y - a.pos.y);
       // Held until he is there, it lapses, or a body he feels has closed on where he is going.
       if (left > 0.25 && t < r.until && clearOf(r.to)) return go(r.to);
+      const rec = this.resetLog[this.resetLog.length - 1];
+      if (rec && !rec.end) rec.end = { t, why: left <= 0.25 ? 'there' : t >= r.until ? 'lapsed' : 'closed', moved: Math.hypot(a.pos.x - rec.from.x, a.pos.y - rec.from.y) };
       this.reset = null;
       this.resetFree = t + this.processing(a);
       if (left <= 0.25 || t >= r.until) return null;
@@ -2071,7 +2073,7 @@ export class QBPass implements Behavior {
     this.resetAt.set(by, bd);
     if (!pick) return null;
     this.reset = { to: pick.to, until: t + POCKET_MAX_T, by, kind: pick.kind };
-    this.resetLog.push({ t, kind: pick.kind, cause, dist: bd, edge, by: by.slot });
+    this.resetLog.push({ t, kind: pick.kind, cause, dist: bd, edge, by: by.slot, from: { x: a.pos.x, y: a.pos.y } });
     return go(pick.to);
   }
 
