@@ -44,9 +44,10 @@ const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
 /** RCV_SEEN (experimental, off; intended on once measured; the user's information rule): receivers' and downfield
  * blockers' reads of opponents come from what they see (`seen-contact.ts`): a defender is down when his picture shows
  * him down, and taken when it shows him in contact with one of the observer's teammates, not from his true support
- * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender. Contact
+ * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender, and a teammate
+ * turns to the convoy when his picture shows the catcher with the ball (`ConvoyCue`), not at the true catch. Contact
  * itself stays physics. Off: the true reads (docs/reviews/2026-11-13-information-leak-sweep.md, Rules + Coaching). */
-const RCV_SEEN = process.env.RCV_SEEN === '1';
+export const RCV_SEEN = process.env.RCV_SEEN === '1';
 const isDownFor = (a: Agent, sim: PlaySim, o: Agent): boolean => RCV_SEEN ? seenDown(sim, a, o) : o.isDown(sim.t);
 const isTakenFor = (a: Agent, sim: PlaySim, d: Agent): boolean => RCV_SEEN ? seenTaken(sim, a, d, 'my-team') : !!d.engagement;
 
@@ -646,6 +647,19 @@ export function catchSpot(a: Agent, sim: Pick<PlaySim, 'ballPath' | 't'>): { p: 
     if (tt <= s.t - sim.t) return { p, t: s.t, z: s.z };
   }
   return last;
+}
+
+/** RCV_SEEN: a teammate keeps his job after a catch until his own picture shows the catcher with the ball (the catch is
+ * a discrete event: recognition, on his reaction time and focus), then turns to the convoy. Off: everyone turns at
+ * the true catch. */
+export class ConvoyCue implements Behavior {
+  constructor(private readonly prev: Behavior, private readonly catcher: Agent) {}
+  get kind(): Behavior['kind'] { return this.prev.kind; }
+  update(a: Agent, sim: PlaySim): MoveCommand {
+    const seen = sim.perception.perceive(this.catcher.idx, a.mind.observationDelay(a.profile.reactionTime));
+    if (seen.carrying === true) { a.behavior = new DownfieldBlocker(); return a.behavior.update(a, sim); }
+    return this.prev.update(a, sim);
+  }
 }
 
 /** After the catch (or on runs): block the most dangerous unblocked defender. */
