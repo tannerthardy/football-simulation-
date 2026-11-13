@@ -75,6 +75,10 @@ export interface Engagement {
   longArmUntil?: number;
   /** RUSH_HANDS: whether the rusher last felt the blocker's hand loaded on him (the keys' felt change). */
   feltLoaded?: boolean;
+  /** RUSH_HANDS: his last club (its end, the blocker's hands on before it, his hand speed) and when his hands are
+   * back from it: no move, keyed or not, before then. */
+  club?: { end: number; handsBefore: number; speed: number };
+  handsBackAt?: number;
   counterAt?: number;
   lastReqX?: number;
   /** Emitted once when the physical hands/torso actually carry load. */

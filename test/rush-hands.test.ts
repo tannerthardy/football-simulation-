@@ -184,3 +184,22 @@ describe('RUSH_HANDS two hands (attempt 2)', () => {
     expect(toward).toBeGreaterThan(away);
   });
 });
+
+describe('RUSH_HANDS hand recovery', () => {
+  it('after a club his next decision waits for his arm\'s return and his reaction, however slack the hand', async () => {
+    const { sim, e, eng } = await rep();
+    const d = e.defender;
+    const { duration } = eng.clubHand(sim, e, { x: 1, y: 0 });
+    const speed = e.club.speed, sweep = 0.45 * d.player.measurables.armIn / 36 / speed, rt = Math.max(0.1, d.profile.reactionTime);
+    const end = sim.t + duration;
+    let back: number | undefined, minNext = Infinity;
+    for (let k = 0; k < 30 && sim.engagements.includes(e); k++) {
+      sim.tick();
+      if (e.handsBackAt !== undefined && back === undefined) back = e.handsBackAt;
+      if (back !== undefined && sim.t < back) minNext = Math.min(minNext, e.nextMoveAt);
+    }
+    expect(back).toBeDefined();
+    expect(back! - end).toBeGreaterThanOrEqual(sweep + rt - 1e-9);
+    expect(minNext).toBeGreaterThanOrEqual(back! - 1e-9);
+  });
+});

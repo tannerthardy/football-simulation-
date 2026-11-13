@@ -20,7 +20,7 @@ for (let g = 0; g < games; g++) {
     let hit: any = null;
     const tick = sim.tick.bind(sim);
     sim.tick = () => {
-      const before = new Set(sim.engagements);
+      const before = new Set<any>(sim.engagements);
       tick();
       for (const e of sim.engagements) {
         if (e.type !== 'pass' || !['LG', 'C', 'RG'].includes(e.blocker.slot)) continue;

@@ -764,6 +764,7 @@ export function clubHand(sim: PlaySim, e: Engagement, axis: Vec2): { force: Vec2
   const force = { x: -lat.x * e.side * F, y: -lat.y * e.side * F };
   sim.world.handForce(e.hands!, d.body, force, sim.world.time, sim.world.time + duration);
   e.moveOk = false; e.moveUntil = sim.t + duration;
+  e.club = { end: sim.t + duration, handsBefore: e.hands!.off ? 0 : e.hands!.handsOn ?? 2, speed };
   return { force, duration };
 }
 
@@ -1499,11 +1500,22 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
 
   // ---- moves at decision points
-  // RUSH_HANDS: a counter is a new decision on a felt change: the blocker's hand going unloaded on him brings his
-  // next decision forward to his reaction time.
+  // RUSH_HANDS: a move takes his arm away; he throws no other until it is back. After a club his arm returns across
+  // its sweep (0.45 of his arm) at his hand speed, plus his reaction; a club that did not clear (his arm stopped on a
+  // hand) must be cocked again from rest (a second sweep); one that left him off balance costs his reaction again.
+  // A counter is a new decision on a felt change (the blocker's hand going unloaded on him) -- once he can.
   if (RUSH_HANDS && e.type === 'pass') {
+    const rt = Math.max(0.1, d.profile.reactionTime);
+    if (e.club && t >= e.club.end) {
+      const h = e.hands, now = !h || h.off ? 0 : h.handsOn ?? 2, cleared = now < e.club.handsBefore;
+      const sweep = 0.45 * d.player.measurables.armIn / 36 / e.club.speed;
+      e.handsBackAt = e.club.end + sweep + rt + (cleared ? 0 : sweep) + (baseOf(d) < 0.9 ? rt : 0);
+      e.nextMoveAt = Math.max(e.nextMoveAt, e.handsBackAt);
+      e.club = undefined;
+    }
     const loaded = !handUnloaded(e);
-    if (e.feltLoaded && !loaded && !(t < e.moveUntil)) e.nextMoveAt = Math.min(e.nextMoveAt, t + Math.max(0.1, d.profile.reactionTime));
+    const ready = !e.club && !e.rusherHand && t >= (e.handsBackAt ?? 0);
+    if (ready && e.feltLoaded && !loaded && !(t < e.moveUntil)) e.nextMoveAt = Math.min(e.nextMoveAt, Math.max(t + rt, e.handsBackAt ?? 0));
     e.feltLoaded = loaded;
   }
   if (t >= e.nextMoveAt) {
