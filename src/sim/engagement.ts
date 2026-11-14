@@ -534,7 +534,12 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
   const bodies = b.profile.radius + d.profile.radius, arm = b.player.measurables.armIn / 36;
   const base = joint.extension - bodies, lock = LOCKOUT * arm;
   let st = punchState.get(joint);
-  if (!st) { st = { ext: base, over: -Infinity }; punchState.set(joint, st); }
+  if (!st) {
+    // PAIR_HANDS: his hands start where the man is (inside his bent base, they cannot throw him out in one step).
+    let ext0 = base;
+    if (PAIR_HANDS) { const g0 = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) - bodies; ext0 = clamp(g0, 0, base); }
+    st = { ext: ext0, over: -Infinity }; punchState.set(joint, st);
+  }
   const rt = Math.max(0.1, b.profile.reactionTime);
   const felt = sim.see(b, d, 0.06 / rt);
   const gap = Math.hypot(felt.pos.x - b.pos.x, felt.pos.y - b.pos.y) - bodies;
@@ -565,7 +570,8 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
     // PAIR_HANDS: beaten at his bend (the joint at its push limit), the forearm folds toward his chest, so the bodies can
     // meet and the torso take the load. Otherwise the recoil stops at the bent base.
     const beaten = PAIR_HANDS && joint.push > 0 && N >= 0.95 * joint.push;
-    const floor = beaten ? 0 : base;
+    // PAIR_HANDS: inside his base he extends back toward it at arm speed, never in one step.
+    const floor = beaten ? 0 : PAIR_HANDS ? Math.min(base, st.ext + ARM_SPEED * sim.dt) : base;
     const want = clamp(gap * (1 - w) + base * w, floor, lock), step = ARM_SPEED * sim.dt;
     st.ext = clamp(beaten ? Math.min(want, st.ext) - step : want, st.ext - step, st.ext + step);
     joint.extension = bodies + Math.max(floor, st.ext);
@@ -763,7 +769,10 @@ function setHands(sim: PlaySim, e: Engagement): void {
     // The defender's own hands: his press inside, his arm outside; his length follows and recoils as the blocker's.
     const dj = e.defHands, sep = b.profile.radius + d.profile.radius;
     dj.actor = d.body; dj.extension = sep + traits(d, e.type).arm / 36 * 0.3;
-    dj.push = dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.steer = armForce(d) * 0.55; dj.hold = 0;
+    // His hands press along the line only when his technique is to press: a run defender's stack, a power rush (bull,
+    // long-arm). Rushing on speed or a finesse move, his hands work the blocker's hands and arms, not his chest.
+    const pressing = e.type === 'run' || e.move === 'bull' || e.move === 'longarm';
+    dj.push = !pressing ? 0 : dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.steer = armForce(d) * 0.55; dj.hold = 0;
     if (PUNCH) punch(sim, dj, d, b, true);
   }
   const inMove = t < e.moveUntil && e.moveOk;

@@ -770,6 +770,18 @@ function chestArms(a: Body, b: Body): { x: number; y: number; rax: number; ray: 
   return { x: c.x, y: c.y, rax: sa * ux, ray: sa * uy, rbx: tb * vx, rby: tb * vy };
 }
 
+/** PAIR_HANDS: an outside hand on the man's near shoulder: the end of b's chest segment nearer a, from a's chest point
+ * closest to it; the line between them and each point's offset from its centre (the lever arms). */
+function shoulderArms(a: Body, b: Body): { x: number; y: number; rax: number; ray: number; rbx: number; rby: number } {
+  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  const sgn = (a.pos.x - b.pos.x) * vx + (a.pos.y - b.pos.y) * vy >= 0 ? 1 : -1;
+  const rbx = sgn * vx, rby = sgn * vy, px = b.pos.x + rbx, py = b.pos.y + rby;
+  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
+  const sa = clamp(((px - a.pos.x) * ux + (py - a.pos.y) * uy) / (ux * ux + uy * uy), -1, 1);
+  const rax = sa * ux, ray = sa * uy;
+  return { x: px - (a.pos.x + rax), y: py - (a.pos.y + ray), rax, ray, rbx, rby };
+}
+
 function chestPoints(a: Body, b: Body): Vec2 {
   const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
   const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
@@ -1318,7 +1330,7 @@ export class World {
 
   /** HANDS_LEVER: a centre-mode hands row with chest-point lever arms. */
   private handsLevered(jt: Joint): boolean {
-    return HANDS_LEVER && this.handContact === 'center' && jt.kind === 'hands' && !jt.contact;
+    return (HANDS_LEVER || (PAIR_HANDS_W && jt.kind === 'hands' && jt.fit === 'outside')) && this.handContact === 'center' && jt.kind === 'hands' && !jt.contact;
   }
   /** GRASP_PATCH: a centre-mode grasp that follows the common-patch grasp law. */
   private gripPatched(jt: Joint): boolean {
@@ -2799,7 +2811,8 @@ export class World {
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
       let lever: ReturnType<typeof chestArms> | null = null;
       if (HANDS_CHEST && jt.kind === 'hands' && this.handContact === 'center' && !jt.contact) {
-        if (this.handsLevered(jt)) { lever = chestArms(a, b); dx = lever.x; dy = lever.y; }
+        if (PAIR_HANDS_W && jt.fit === 'outside') { lever = shoulderArms(a, b); dx = lever.x; dy = lever.y; }
+        else if (this.handsLevered(jt)) { lever = chestArms(a, b); dx = lever.x; dy = lever.y; }
         else { const c = chestPoints(a, b); dx = c.x; dy = c.y; }
       }
       let px = 0, py = 0; // Material offset from the body's force-midpoint center.
