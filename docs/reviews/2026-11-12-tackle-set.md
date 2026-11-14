@@ -3034,3 +3034,69 @@ The stance/base proposal (docs/reviews/2026-11-14-stance-base-proposal.md, secti
 fallers are hit more side-on (19-27 deg off their facing, against 13-14) while going around the man, and the blocker
 drives through. That is a base-and-recovery question: the isotropic base and recovery step treat an angled hit like a
 square one.
+
+## The rating rolls (PRO-INFO #9/#10): ranking, then RUSH_BULL (2026-11-14)
+
+### Ranking (rep-rolls.mts, engine-61, RUSH_HANDS off, 8 games)
+
+662 dropbacks, 2669 pass reps, 6506 move rolls. The rusher shed his blocker in 210 reps (7.9%), and 164 of those
+became pressure.
+- Only 11% of sheds (23) followed a won roll within 0.6 s. 89% were bodies alone.
+- About 92% of rolls were lost. Each lost roll scripted a 0.3 s stall, a blocker punch (`world.strike`) and +0.35 of
+  `control` (#10's rated drift then scales push, hold and steer).
+- The rusher's gain on the QB over 0.5 s, edge / interior:
+
+| | edge | interior |
+|---|---|---|
+| after a lost roll | 0.09 yd | 0.08 yd |
+| after a won roll | 0.46 | 0.36 |
+| engaged, no move in flight | 0.12 | 0.14 |
+
+  So attempting a move gained him less than not trying: a rated penalty on effort.
+- Rolls by move: bull 1475 (10% won), rip 1126 (6%), swim 1077 (6%), club 988 (6%), long-arm 637 (9%), spin 547 (6%),
+  snatch 396 (3%), dip 260 (27%).
+
+### RUSH_BULL (attempt 1; f56aeaa1, off)
+
+The bull is the rusher's drive: push 1 through the chest to the QB at 0.55 vmax, at his pad level, resolved by the
+World against the blocker's anchor. Removed together: the roll, both scripted strikes, the stall, the control swings,
+and (#10) the pass rep's drift of `control` toward the better hands rating. Off is bit-identical (seed 999 e401972b).
+Fixture: test/rush-bull.test.ts.
+
+**8 games (rep-rolls):**
+- Sheds 210 → 225, and those that became pressure 164 → 183.
+- The bull opened 36 sheds (16%), against 4.
+- What a move attempt is worth (gain minus no move, over 0.5 s):
+
+| matchup | bull, off | bull, on |
+|---|---|---|
+| rusher's leg drive better (top third) | -0.06 yd | -0.02 yd |
+| rusher's leg drive worse (bottom third) | -0.01 yd | +0.01 yd |
+| by ratings: rusher better / worse | -0.02 / +0.10 | +0.01 / +0.05 |
+
+**16 games x seeds 11 / 23, off → on:**
+
+| | s11 | s23 |
+|---|---|---|
+| pressured | 28.9 → 29.5% | 25.4 → 27.6% |
+| edge past outside | 0.5 → 0.8% | 0.5 → 0.6% |
+| edge level / in front | 2.7 → 3.0% | 3.8 → 4.1% |
+| edge inside | 9.6 → 10.6% | 7.7 → 7.7% |
+| interior | 9.7 → 9.2% | 7.6 → 8.8% |
+| within 2 yd before the ball is out | 24.1 → 24.2% | 21.2 → 23.4% |
+| sacked | 5.5 → 5.7% | 4.2 → 4.2% |
+| tackle come-offs (own blocker) /100 | 32.3 → 35.9 | 28.9 → 29.7 |
+| interior come-offs /100 | 34.2 → 31.3 | 27.0 → 31.9 |
+| come-off time p50 | 2.7-2.8 s, unchanged | |
+| OL falls /100 (true) | 3.6 → 4.0 | 3.6 → 3.7 |
+| DL falls /100 (true) | 4.8 → 6.1 | 4.2 → 4.7 |
+
+**Read.**
+- The penalty is gone, and pressure moves the right way on both seeds (+0.6, +2.2), modestly: the bull is one move
+  of eight, and the other seven still script their losses.
+- Edge past-outside barely moves. Those rushers work the corner with speed, dip, rip and swim, not the bull.
+- DL falls rise (+1.3, +0.5). A committed bull leans more, within RUSH_LEAN_BOUND's bound.
+- The worth row is about zero in both matchups, not positive for the better rusher. The measure is relative to his
+  own no-move push, and leg-drive advantage helps both equally, so it may not separate them.
+- Next: rip and swim (2203 rolls, 6% won), the hand-clearing moves, on RUSH_HANDS' joint geometry. Their lost rolls
+  are the bulk of the remaining penalty.
