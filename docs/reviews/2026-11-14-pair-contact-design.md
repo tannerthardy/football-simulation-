@@ -277,3 +277,34 @@ Expected under a physical yaw: the blocker turned toward the rusher's push side.
 The opening impact throws the lighter man back before any sustained chest-to-chest load forms. The torso contact never
 carries load in staging, so the hand-over's continuity cannot be shown there. That is another reason the parked pieces
 wait.
+
+## Tools' yaw trace (2026-11-14), and item 6 resolved: the 2,032 / 0 N chatter is PAIR_HANDS's beaten yield
+
+Tools' trace (PR #745, `pair-yaw-trace.mts`) on the staged power-rusher rows: the rusher's shoulder joint carries load only
+in tick 1; the blocker's inside joint carries the whole press with a 0.00-0.02 yd arm (squared men: the chest segments'
+closest points lie on the line of centres), so the moment is never applied and the motor never fights (peak 150 of a
+1,696 budget). The 0.27 lever lengthened the arm of a joint carrying nothing. Grip is not shared (the motor's budget reads
+1,696 while the hands carry 2,032).
+
+Item 6, the blocker's joint at 2,032 N on even ticks and 0 on odd ones (`hands-chatter.mts`, the same staging):
+
+| arm | last 6 ticks, blocker's joint N |
+|---|---|
+| PAIR_HANDS, hands law each tick | 0 / 2,032 alternating, extension 0.82 / 0.97 yd |
+| PAIR_HANDS, hands law not called after the first tick | 906-944, steady |
+| HAND_FIT + CONTROL_HANDS (no PAIR_HANDS) | settles to about 1,570-1,610 within 4 ticks |
+| CONTROL_HANDS alone; default | uneven while the strike drives the man out, no period-2 cycle |
+
+So it is the hands law, and only under PAIR_HANDS: `punch`'s beaten yield. The joint is rigid up to its push limit, so the
+force it reports is 0 (slack) or the limit. The yield reads last tick's force: at the limit, beat = 1 and the arm folds a
+full ARM_SPEED step (0.15 yd), the joint goes slack; at 0, beat = 0 and the arm extends a full step back to the man. That is
+a bang-bang loop with a one-tick delay. The joint's own push limit already is the yield (an arm that cannot hold gives at
+the limit, and the bodies close as far as the man pushes): the fold counts it twice. **Every PAIR_HANDS press number so far
+is double the mean (about 1,016 N)**; the attempt-1 staged rows and PAIR_HANDS' 0.46 restitution should be read with that
+in mind. Other arms' press numbers stand.
+
+Repair for attempt 2 (not built): the beaten arm gives only as far as the man has pushed it (its length follows the
+achieved gap from above, never shorter than it), so the joint stays at its limit and the bodies close at the rate the excess
+drives them, continuous in the load. The yaw design uses the same reading: the turn comes from where the load goes (the
+shoulder joint carrying it, or bodies off the line of centres), the load-sharing between the two joints on one gap, and
+grip shared with the motor second.
