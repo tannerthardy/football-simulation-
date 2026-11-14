@@ -36,9 +36,11 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
  * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
  *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
-/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, the eight sourced keys the compiler ran as pure orders key. */
+/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, the four sourced keys the compiler ran as pure orders key
+ * (slant_flat, stick, fade_flat, double_slants). Quick outs, hitch-out, trips stick and seam-slant stay pure
+ * progressions until their key is found as taught: a key by analogy is not the sport's rule. */
 export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 === '1';
-const SECOND_KEYS = new Set(['slant_flat', 'stick', 'quick_outs', 'fade_flat', 'double_slants', 'hitch_out', 'trips_stick', 'seam_slant']);
+const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
@@ -54,15 +56,11 @@ const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; 
   pa_post_dig: { low: 'W1', high: 'S1', role: 'deep_free_safety', deep: true, danger: 'the hook defender under the dig' },
   smash: { low: 'S1', high: 'S2', role: 'corner', deep: false, danger: 'the half-field safety over the corner route' },
   corner_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false, danger: 'the half-field safety over the corner route' },
-  // The eight the compiler ran as pure orders, with their sourced keys.
+  // PLAN_KEYS_2: four the compiler ran as pure orders, with their sourced keys.
   slant_flat: { low: 'S2', high: 'S1', role: 'curl_flat', deep: false, danger: 'the hook defender inside the slant' },     // Dunn, USA Football
   stick: { low: 'S3', high: 'S2', role: 'flat', deep: false, danger: 'the hook defender inside the stick' },                // Throw Deep
-  quick_outs: { low: 'S1', high: 'S2', role: 'flat', deep: false, danger: 'the corner over the out' },                     // Bear Raid (weak)
   fade_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false, danger: 'the half-field safety over the fade' },         // Cover 2 beater
   double_slants: { low: 'S1', high: 'S2', role: 'hook', deep: false, danger: 'the next defender inside' },                // Galina, USA Football
-  hitch_out: { low: 'S2', high: 'S1', role: 'flat', deep: false, danger: 'the corner over the hitch' },                    // stick analogue
-  trips_stick: { low: 'S3', high: 'S2', role: 'curl_flat', deep: false, danger: 'the hook defender inside the hitch' },     // stick
-  seam_slant: { low: 'S2', high: 'S3', role: 'hook', deep: false, danger: 'the safety over the seam' },                    // double-slants analogue
 };
 /** The danger on the keys the compiler already names correctly (PLAN_KEYS adds it; the key itself is unchanged). */
 const DANGER: Record<string, string> = {
