@@ -35,14 +35,19 @@ PlaySim.prototype.run = function (this: PlaySim) {
     }
   };
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, aim: rest[1] ? { x: rest[1].x, y: rest[1].y } : null, arriveAt: sim.t + (rest[2] ?? 0), arr: null as any, air: target ? +Math.hypot(target.pos.x - sim.qb.pos.x, target.pos.y - sim.qb.pos.y).toFixed(1) : null,
+  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, dz: target && rest[1] ? (() => {
+        // The named danger man against the man the corner_danger.py operator would pick (over the top of the target, nearest the aim), by true position at release.
+        const b: any = sim.qb.behavior, dm = b?.plan?.key?.danger ?? null, dir = sim.attackDir(sim.qb.team), aim = rest[1];
+        const over = sim.defense.filter((d: any) => (d.pos.x - target.pos.x) * dir >= -2).map((d: any) => ({ d, dist: Math.hypot(d.pos.x + d.vel.x * 0.3 - aim.x, d.pos.y + d.vel.y * 0.3 - aim.y) })).sort((x: any, y: any) => x.dist - y.dist)[0];
+        return { danger: dm?.slot ?? null, dDanger: dm ? +Math.hypot(dm.pos.x - aim.x, dm.pos.y - aim.y).toFixed(1) : null, op: over?.d.slot ?? null, dOp: over ? +over.dist.toFixed(1) : null, opCov: over?.d.behavior?.kind ?? null, flight: +((rest[2] ?? sim.t) - sim.t).toFixed(2), nDanger: b?.keyDanger ?? 0 };
+      })() : null, aim: rest[1] ? { x: rest[1].x, y: rest[1].y } : null, arriveAt: sim.t + (rest[2] ?? 0), arr: null as any, air: target ? +Math.hypot(target.pos.x - sim.qb.pos.x, target.pos.y - sim.qb.pos.y).toFixed(1) : null,
       brk: target ? (() => { const f = (sim.qb.behavior as any)?.receiverForecasts?.get(target), b = f?.breakAt?.(); return b == null ? null : +(b - sim.t).toFixed(2); })() : null,
       near: target ? +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1) : null, kind: (sim.qb.behavior as any)?.kind }; return tb(p, target, ...rest); };
   const res = orig.apply(this);
   if (rec) {
     const { low, high, ...row } = rec;
     console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null,
-      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, arr: tgt?.arr ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
+      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, dz: tgt?.dz ?? null, arr: tgt?.arr ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
       ball: tgt ? sim.events.filter((e: any) => e.t >= tgt.t && ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss'].includes(e.type)).map((e: any) => e.type) : [], kindAtThrow: tgt?.kind ?? null, endKind: sim.qb.behavior?.kind ?? null, desc: String((res as any).description ?? (res as any).text ?? '').slice(0, 90) }));
   }
   return res;
