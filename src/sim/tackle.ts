@@ -273,6 +273,13 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
  * carrier ending outside the tackler's hand reach. Ratings enter only as
  * these capacities and the picture delay. A pocket QB keeps his escape law. */
 const TKL_WHIFF = process.env.TKL_WHIFF === '1';
+/** POCKET_REACH (experimental, off; intended on; PRO-INFO #6/#11): a reach for a QB in the pocket misses when his body
+ * is not where the tackler's hands can get to in the reach window (`whiffs`: the tackler's momentum, redirected toward
+ * his delayed picture by his cut capacity; the QB, if he sees the man, cutting away by his own), not by a roll with a
+ * rated escape (elusiveness, pocket presence) and the rusher's true bearing off his facing (`seesIt`). Diagnosis
+ * (qb-tackle-gates.mts): when our QB threw after a rusher reached a yard of him, the rusher spent 42% of those ticks on
+ * his tackle cooldown after a rolled miss at lunge range, and 49% bonded with the throw still coming out. */
+const POCKET_REACH = process.env.POCKET_REACH !== '0';
 /** WAIT_REACHED (on; WAIT_REACHED=0 turns it off): a tackler holds his reach for a better
  * shot only when his forecast reaches that better point inside its lookahead. Each tick the forecast is redone; one
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
@@ -389,7 +396,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
     const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
     const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.3 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
-    if (TKL_WHIFF && !pocketQB ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
+    if ((TKL_WHIFF && !pocketQB) || (POCKET_REACH && pocketQB) ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;
       sim.event('missed_tackle', d, c);

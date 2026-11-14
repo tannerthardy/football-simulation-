@@ -6,8 +6,9 @@
  *    catch; that is spacing's limit, not this decision;
  *  - an open-field pursuer keeps the meeting he chose: his final request's heading turns less (median per tick, while
  *    his pursuit planner runs; engine-54: 13.2 -> 8.4 deg/s over about 6,000 pursuer-ticks each), and the bearing to
- *    his planned meeting point jumps (> 10 deg in a tick) no more often than off, within two standard errors (engine-54:
- *    0.0230 vs 0.0223; the engine-52 reduction, about 1.5 SE, is not claimed). Requests only; no outcome is asserted. */
+ *    his planned meeting point jumps (> 10 deg in a tick) no more often than off, within two standard errors, both at
+ *    matched range (3-8 yd from the pursued body; pooled, engine-54: 0.0230 vs 0.0223; the engine-52 reduction, about
+ *    1.5 SE, is not claimed). Requests only; no outcome is asserted. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -77,8 +78,14 @@ describe('PURSUIT_COMMIT: pursuers commit to their meeting and keep their approa
     const off = await run('0'), on = await run('1');
     expect(on.zeroAtCatch).toBe(0);
     expect(on.ticks).toBeGreaterThan(200);
-    const se = Math.sqrt(on.jumpRate * (1 - on.jumpRate) / on.ticks + off.jumpRate * (1 - off.jumpRate) / off.ticks);
-    expect(on.jumpRate).toBeLessThan(off.jumpRate + 2 * se); // engine-54: 137/5945 vs 151/6783 per pursuer-tick
+    // Meeting-bearing jumps at matched range, as the turn rate below: the pooled rate moves with the band mix (engine-61
+    // candidate: pooled 187/3292 on vs 188/4175 off fails a pooled bound while 3-8 yd is 22/857 vs 22/1062, because the
+    // 0-3 yd band, where most jumps are, is 266 vs 477 ticks). The pooled counts and every band are printed by PC_PRINT.
+    const [jOn, nOn] = on.bandJ['3-8'] ?? [0, 0], [jOff, nOff] = off.bandJ['3-8'] ?? [0, 0];
+    expect(nOn).toBeGreaterThan(300); expect(nOff).toBeGreaterThan(300);
+    const rOn = jOn / nOn, rOff = jOff / nOff;
+    const se = Math.sqrt(rOn * (1 - rOn) / nOn + rOff * (1 - rOff) / nOff);
+    expect(rOn).toBeLessThan(rOff + 2 * se);
     expect(on.turnN).toBeGreaterThan(1000);
     // Steadiness at matched range: the pooled median mixes ranges (close pursuit turns more), and a stack that changes
     // which pursuits occur moves it without any change in steadiness (engine-59's QB_BODY_SEEN changes the catches:

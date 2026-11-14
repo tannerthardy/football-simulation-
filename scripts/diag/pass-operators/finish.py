@@ -2,7 +2,9 @@
 against 14-26% ours, with arrival and contact rates matching). Same operator on NFL tracking and sim exports.
 
 usage: python3 -I scripts/diag/pass-operators/finish.py [--nfl-labels <bdb2025 dir> | --review <review.json>]
-       <plays.jsonl.gz> [trace-seed]
+       [--dump <rows.json>] <plays.jsonl.gz> [trace-seed]
+
+--dump writes one row per first contact (play id, contact time, split, outcome) for joins with other reads.
 
 Dropbacks. First contact: the first frame, ball in the QB's hands and after 0.5 s, with a defender within 1.0 yd of
 the QB. Outcome: sacked (NFL plays.csv passResult 'S'; sim stats.sacked), threw (a forward pass within the play), or
@@ -19,10 +21,11 @@ import sys, os, json, gzip, math, csv, random
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play  # noqa
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
-args = sys.argv[1:]; labels = review = None
+args = sys.argv[1:]; labels = review = dump = None
 while args and args[0].startswith('--'):
     if args[0] == '--nfl-labels': labels = args[1]
     elif args[0] == '--review': review = args[1]
+    elif args[0] == '--dump': dump = args[1]
     args = args[2:]
 path = args[0]; seed = int(args[1]) if len(args) > 1 else None
 SACK = {}
@@ -67,6 +70,7 @@ for line in gzip.open(path, 'rt'):
     after = (ts - t) if sacked and ts is not None else (fw - t) if out == 'threw' else (p.end - t)
     rows.append({'pid': pid, 't': t, 'where': where, 'free': free, 'closing': closing, 'out': out, 'after': after})
 n = len(rows)
+if dump: json.dump(rows, open(dump, 'w'))
 print(f"== {os.path.basename(path)}: dropbacks {drops} | first contact (a defender within 1.0 yd, ball in hand) {n} ({100 * n / max(1, drops):.1f}%)")
 def line(lab, R):
     if len(R) < 5: return
