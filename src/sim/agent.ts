@@ -3,7 +3,7 @@
  * + per-play state.
  */
 import type { Vec2 } from '../core/vec.js';
-import { enduranceFactor, fatigueFactor, type Body, type MoveCommand } from '../physics/kinematics.js';
+import { enduranceFactor, fatigueFactor, shouldersOf, type Body, type MoveCommand } from '../physics/kinematics.js';
 import { fallTime, supportParams } from '../physics/support.js';
 import type { HandJoint } from '../physics/world.js';
 import type { PhysicalProfile } from '../players/physical.js';
@@ -207,6 +207,14 @@ export class Agent {
   }
   get facing(): number {
     return this.body.facing;
+  }
+  /** The gait heading (the speed cap, the turn motor, the base). Same as `facing`; named for the meaning. */
+  get hips(): number {
+    return this.body.facing;
+  }
+  /** Where his chest points: hips plus the trunk twist (TRUNK_TWIST); equal to `hips` with no twist. */
+  get shoulders(): number {
+    return shouldersOf(this.body);
   }
   /** Visible off-feet/recovery cue for the snapshot, not a recovery forecast.
    * Scenario parking does not imply a physical pose. Falls and ground time
