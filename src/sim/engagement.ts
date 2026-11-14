@@ -2858,9 +2858,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
   };
-  // ENGAGE_TRUNK: his hips on his track (opened toward the play in the race), his shoulders on the man.
+  // ENGAGE_TRUNK: his hips on his track (opened toward the play in the race), his shoulders on the man. The track is
+  // where his feet are asked to go (a zone step runs along the line, not up the drive axis), the drive axis when he is
+  // nearly still. (Attempt 1 as first built put the hips on the drive axis: an outside-zone blocker shuffled sideways at
+  // his shuffle speed and the run set lost 0.58 yd on OZ.)
   if (ENGAGE_TRUNK) {
-    const track = Math.atan2(drive.y, drive.x);
+    const v = intents[b.idx].vel, track = Math.hypot(v.x, v.y) > 1 ? Math.atan2(v.y, v.x) : Math.atan2(drive.y, drive.x);
     intents[b.idx].facing = racingSide ? openToward(track, racingSide, REACH_RACE_OPEN) : track;
     intents[b.idx].look = bearing(b.pos, dK.pos);
   }
