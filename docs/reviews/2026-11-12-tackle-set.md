@@ -4337,3 +4337,53 @@ The 4 yd/s contact rows go off their feet in 0.05-0.25 s on both arms (KNOWN_PRO
 So even with CONTROL_HANDS, the rep at the hip is decided by `control`'s sign, the first remaining consumer in its
 FLAGS row: whose hands the joint is, and whether PUNCH follows and presses. A rusher whose opening roll went his way
 meets a slack joint; one whose roll did not meets a tracked full press that never gives.
+
+### HAND_FIT, attempts 1 and 2 (2026-11-14, engine-63; with CONTROL_HANDS)
+
+**The law.**
+- The joint is always the blocker's hands.
+- Their length follows the man on every rep: out toward lockout when unloaded; recoiling toward the bent base as he
+  loads them, once the strike has landed (pass) or on contact (run).
+- The blend is a smoothstep in the felt press over 0 to 2 x UNLOADED of his press. No new constants.
+- Off is bit-identical to develop; dither budget passes.
+
+**Attempt 1:** the recoiled hands were read by PUNCH_STRIKE's new-fit test (`gap > ext + 0.05`) as the man off them,
+and re-struck every tick, so the hands stayed at 0.59-0.72 yd under 1314 N.
+
+**Attempt 2:** a new fit only when the hands carry nothing. The level trace now shows the recoil: hands 0.60 -> 0.29 yd
+(the bent base), gap 0.48 -> 0.32 yd, closing 0.36 yd/s (was 0.06-0.09).
+
+**Engine-63, seeds 11 / 23 x 8:**
+
+| | VS + CH | + HAND_FIT 2 | NFL |
+|---|---|---|---|
+| separation at +0.4 s: wide / outside half / head-up | 1.08 / 1.00 / 1.02-1.04 | 1.00 / 0.95-0.98 / 1.00-1.02 | 0.81 / 0.76 / 0.89 |
+| edge win | 6 / 5% | 5 / 5% | 13% |
+| inside at the win | 36 / 35% | 25 / 25% | 47% |
+| interior pressure (CH -> CH + HF) | 3.3% (s11) | 2.2 / 2.1% | about 9.8% |
+| sacks (VS arm) | 1.9% | 2.2% | 6.7% |
+| OL proxy falls (was moving, 1.0 s) | 4.9 / 3.4 | 5.7 / 5.8 | |
+
+**Run set fresh (engine-63 ref -> CH + HF), paired:**
+- all +0.62 (0.13): OZ +0.70, IZ +1.07, gap +0.64, duo +0.65, toss -1.18 (0.68), draw -0.10.
+- Missed + broken 0.270 -> 0.253.
+
+The run defender has lost his own hands meanwhile: the joint was his, with the sign flipped.
+
+**Correlations (rep-bodies, VS + CH + HF; edge mass / arm / speed / roll; interior):**
+- edge 0.16 / 0.03 / 0.12 / -0.11;
+- interior -0.04 / 0.00 / 0.24 / 0.04.
+
+**RIP_CLEAR on top:** 0.26 rips a rep; the hand off on 5%.
+
+**Read.**
+- The mechanism works (the arms recoil and the bodies close faster), but it floors.
+- The hands stop at the bent base, 0.29 yd beyond the bodies (arm x 0.3). There the joint is a strut again, because
+  the solver holds the extension at or above the base. The NFL's working length at +0.4 s is about 0.21 yd beyond the
+  bodies.
+- So the bodies never come into contact, and the hand-over to body contact Integration asked about never happens.
+- Mass predicts the edge rep for the first time (0.16), and the roll's grip is nearly gone. That is a sign the bodies
+  are starting to decide.
+- Two attempts are spent. The re-diagnosis question: below the bent base, does a real blocker's press go into the body
+  contact (hands inside, elbows folded, chests meeting)? If so, the base is not a floor but the point where the press
+  starts to hand over to the torso, and our torso contact has to carry a man driving through.
