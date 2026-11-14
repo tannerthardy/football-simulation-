@@ -2905,3 +2905,56 @@ Small shifts in the same direction on both seeds:
 None is large enough to diagnose at this sample. The OL falls are the one to watch. The blocker now acts on a
 delayed picture of the man by sight while his hands are off (a landed move), so a late mirror can leave him leaning
 on a press that is no longer where he set it.
+
+## REP_SEEN's OL-fall drift, traced (Integration, 2026-11-14)
+
+fall-trace.mts, engine-58 + PASS_SET_SEEN + THROW_HOLD + POCKET_REACH, REP_SEEN off vs on, two windows of 8 games:
+
+| | off: falls (forward onto the man) | on: falls (forward onto the man) |
+|---|---|---|
+| seeds 11-18 | 20 (5) | 13 (3) |
+| seeds 23-30 | 3 (2) | 11 (3) |
+| both | 23 (7) | 24 (6) |
+
+- A blocker's hand was off at the fall in 0 of the 47 falls.
+- REP_SEEN's tackle falls are mostly backward (8 of 9 in the first window). The rusher is within a yard, the tackle is
+  asking to go with the press, and he has no lean before the last tick. That is a man run over, not a propped one.
+- The forward propped class does not grow. The 16-game drift (3.9→4.5, 3.8→5.0) is inside the window-to-window
+  spread (3 to 20 per 8 games).
+- ANCHOR_BASE's bound already reads his own contact: `heavy` and the lean come from `support.felt`, not his picture.
+
+## DL falls, classified (Integration, 2026-11-14)
+
+dl-falls.mts, same stack, RUSH_HANDS off, seeds 11-18: 43 falls in 647 dropbacks, 6.6 /100. The NFL bound is about 1.
+
+| class | n | what happens |
+|---|---|---|
+| interior, forward, press removed | 8 | bull 5, rip 2, long-arm 1. Lean 1420 N at a 1870 N press peak; the press drops to about 320 N; he goes forward onto the man |
+| interior, forward, press kept | 4 | bull 3. Lean 1330 N at about 1700 N; falls into the man |
+| interior, back or sideways | 9 | lean up to 1100 N, then the press goes and the release takes him off his base |
+| edge, driven over backward | 17 | bull 8, long-arm 5. Press peak 2700 N (up to 6100), lean about 140 N, the press still about 2000 N at the fall |
+| edge, other | 5 | |
+
+**Eye-check.** 12 sampled falls stayed down at least 1.45 s and travelled 0.3-1.6 yd while down. Down is down: none
+gets straight back up and nothing races off.
+
+**RUSH_ARM_BALANCE's bound generalised to every engaged rusher** (scratch, LEAN_ANY): growth 0 and leanCap = (1.05 -
+0.55 technique) m w0^2 critDev for any pass rusher in a rep. DL falls 6.6 → 3.2 /100 (43 → 23). The interior forward
+class goes 12 → 2. The edge driven-over class goes only 17 → 13. So it covers the propped rusher, not the edge.
+
+**The edge class is a collision, not a prop** (edge-arrive.mts, 10 edge falls within 0.4 s of the rep's start):
+- Before contact, 8 of 10 are balanced (availability 1.0, xi 0) at 4.8-5.5 yd/s, with no lean.
+- The first contact puts 3400-6100 N on his chest in one or two ticks.
+- His availability goes from 1.0 to 0 in 0.1-0.3 s, and he goes over backward.
+- 2 of 10 were already off balance (xi 3.5-4.2 base) the tick before the rep.
+
+He runs into a set tackle upright. Nothing in his request or his lean anticipates a contact he can see coming, because
+the World's lean is purely reactive to felt load. Coached rushers win this with pad level. They are low and into the
+man (hands and weight forward) as they arrive, so the impact goes through their legs and they get stood up, not
+knocked over.
+
+Proposal (not built): a rusher closing on a blocker he sees (`sim.see`, his closing speed and range) commits his
+posture and lean ahead of the contact. That means posture toward his pad level and a lean request sized to the
+impulse he expects (his mass times his closing speed over the contact time), bounded by ANCHOR_BASE's recoverable
+lean. Everything is from his picture, nothing from the blocker's state. Pair it with the generalised RUSH_ARM_BALANCE
+bound (the propped class). The two classes need different mechanisms; together they cover about 30 of the 43.
