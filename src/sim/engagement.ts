@@ -1161,6 +1161,13 @@ function anchorBase(b: Agent, tb: TrenchTraits, heavy: boolean, intent: Intent):
  * 1600-1900) and his lean grew to it plus the legs' 25% growth, then dumped forward when the arm ended
  * (fall-trace.mts FALL_ROLE=DL, longarm-release.mts). */
 export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
+/** RUSH_LEAN_BOUND (experimental, off; RUSH_LEAN_BOUND=1): every pass rusher engaged with a blocker commits as a
+ * protector does (ANCHOR_BASE's law, armBalance): no lean past the load he feels (growth 0) and no more than his base
+ * could recover from if the press went (k m w0^2 critDev, k = 1.05 - 0.55 x technique: balance and power rush). The
+ * long-arm case (RUSH_ARM_BALANCE) generalised: the interior rusher leaning about 1400 N into an 1800 N press went
+ * forward onto the man when it was taken away (12 of 21 interior falls; dl-falls.mts). A bull still keeps the
+ * commitment his bound allows and can still be dropped. */
+export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND === '1';
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
   const sup = d.body.support; if (!sup) return;
   const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
@@ -1745,7 +1752,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
-  if (RUSH_ARM_BALANCE && e.rusherHand) armBalance(d, td, intents[d.idx]);
+  if ((RUSH_ARM_BALANCE && e.rusherHand) || RUSH_LEAN_BOUND) armBalance(d, td, intents[d.idx]);
 
   // ---- the blocker: stay between him and the QB, give ground to set depth,
   // then anchor. Mirror with the feet; the hands steer what they control.

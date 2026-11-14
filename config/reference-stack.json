@@ -182,6 +182,7 @@
     "RUSH_ARM_BALANCE": "off",
     "PASS_SET_SEEN": "on",
     "REP_SEEN": "off",
+    "RUSH_LEAN_BOUND": "off",
     "THROW_HOLD": "off",
     "POCKET_REACH": "off",
     "TACKLE_ANCHOR": "off",
