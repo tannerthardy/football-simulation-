@@ -40,8 +40,9 @@ describe('RUSH_LEAN_BOUND', () => {
     expect(on.some((f: any) => f.slot === 'DT_W')).toBe(false);
   });
 
-  it('a fall the World earns otherwise still happens: the weak end dipping into the tackle (Cover 3, roster 10, seed 4)', async () => {
-    const on = await falls('1', 10, 'cover3', 4);
+  it('a fall the World earns otherwise still happens: the weak end dipping into the tackle (Cover 2, roster 10, seed 8)', async () => {
+    // Re-found on engine-61 (288 staged scenes, 11 DL falls): DE_W dips into the tackle and goes down at 2.70 s.
+    const on = await falls('1', 10, 'cover2', 8);
     expect(on.some((f: any) => f.slot === 'DE_W' && f.move === 'dip')).toBe(true);
   });
 

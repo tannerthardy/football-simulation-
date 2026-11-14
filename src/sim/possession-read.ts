@@ -28,6 +28,15 @@ export function rememberedFlight(a: Agent, t: number): FlightSample[] | null {
 
 export function hasObservedFlight(a: Agent): boolean { return flights.has(a); }
 
+/** HONEST_READS: has the flight he saw reached, in his own estimate, the catch
+ * opportunity he recorded on it (or its end, without one)? His stand-in for
+ * the ball no longer being in the air. */
+export function flightLanded(a: Agent, t: number): boolean {
+  const flight = flights.get(a);
+  if (!flight) return false;
+  return t >= (flight.opportunity?.t ?? flight.path.at(-1)?.t ?? -Infinity);
+}
+
 /** Once a defender sees the pass, his job is to find/play the ball until a
  * newer cue or the whistle. The trajectory can end without answering who
  * caught it. Retain the last acquired landing area, not a fictitious flight

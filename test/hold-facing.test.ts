@@ -58,7 +58,8 @@ describe('HOLD_FACING', () => {
     expect(on.turnDeg).toBeLessThan(60);
   });
   it('OPEN_HANDS (the DT free of his blocker when he grabs): HOLD_FACING still keeps him from spinning with the runner', async () => {
-    const off = await turn('0', '1', 1916, 'DT_S'), on = await turn('1', '1', 1916, 'DT_S');
+    // Re-found on engine-61 (seeds 1900-1989): seed 1974's DT_S, free of his blocker, holds the back from the side.
+    const off = await turn('0', '1', 1974, 'DT_S'), on = await turn('1', '1', 1974, 'DT_S');
     expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
     // No blocker's hands hold him now, so the hold and contacts carry him further (about 103 vs 167 deg off).
     expect(on.turnDeg).toBeLessThan(off.turnDeg - 30);
