@@ -8,6 +8,8 @@ import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { ROUTES } from '../../../src/playbook/routes.js';
+for (const kv of (process.env.ROUTE_S ?? '').split(',').filter(Boolean)) { const [id, v] = kv.split('='); (ROUTES as any)[id].points[0].s = Number(v); } // ROUTE_S=slant=1: first point's s, for a what-if
 const N = Number(process.argv[2] ?? 24), defName = process.argv[3] ?? 'cover3';
 const TS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5];
 const BREAKS = process.env.BREAKS === '1'; // also dump 10 Hz paths for route_break.py (same operator as the NFL), to BREAKS_OUT
