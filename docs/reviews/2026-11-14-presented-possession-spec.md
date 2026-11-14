@@ -250,7 +250,7 @@ behaviour (unit test per consumer group: unresolved belief equals today's unknow
 
 ## Build order (proposed)
 
-0. (Rules + Coaching) the shared sight query: up as #714, `lineOfSight(bodies, observer, target, height?)` in `src/sim/sight.ts` (occlusion only; view direction is the caller's; hands and ball at about 1.1 yd or `bodyHeight(holder, frac)`; its test has a backer seeing the QB's head over a guard but not his hands).
+0. (Rules + Coaching) the shared sight query: up as #714, `lineOfSight(bodies, observer, target, height?)` in `src/sim/sight.ts` (occlusion only; view direction is the caller's; since dac312b0 an optional `posOf(agent)` places bodies at a past moment, `a => sim.perception.recorded(a.idx, back * dt)?.pos ?? null`, so each cue is judged by the sight line at the moment the sample shows, not by what he could see now; hands and ball at about 1.1 yd or `bodyHeight(holder, frac)`; its test has a backer seeing the QB's head over a guard but not his hands).
 1. Belief store and `Perceived.carrying` from belief; every recording site stops passing the true holder. Cues:
    ball visible, exchange seen, contact outcome. Controls first: plain handoffs and dropbacks unchanged.
 1b. The release candidate (own flag; co-built with Rules + Coaching): `sawThrow` reads the belief; control: real-throw
