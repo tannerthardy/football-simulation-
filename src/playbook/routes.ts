@@ -13,6 +13,16 @@ const BACK_PATHS = process.env.BACK_PATHS !== '0';
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
+/** CROSS_OVER (experimental, off): the deep cross (the over, Y-cross) released inside on a diagonal, "inside of the
+ * Sam LB, and over the Mike LB", to its "landmark ... 18-22 yards" (Throw Deep, Y Cross; Shanahan's 1994 dover breaks in
+ * at about 20). Off, it climbs 6 yd nearly straight up (1 yd inside) before crossing: 1.2 yd across at 2.0 s against
+ * the NFL's 3.6 (crossers 4-8 yd deep at 2.0 s, WR / TE vs zone, ball held, BDB 2025 weeks 1-6), 1.7-1.9 yd from the
+ * nearest zone defender against 3.0-3.3 (docs/reviews/2026-11-14-crosser-depth.md). The points are the default path;
+ * clearing the apex and the Mike is his route running from what he sees (ROUTE_CRAFT bends him to a shoulder of a body
+ * in his lane), not a landmark tied to those defenders, which the route runner does not have. It continues against
+ * zone as against man (Throw Deep: the same coaching points; one coordinator's "do not run past the center" against
+ * zone is not adopted without a second source). */
+const CROSS_OVER = process.env.CROSS_OVER === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -74,7 +84,9 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     ? { id: 'shallow_high', family: 'cross', depth: 5.5, end: 'continue', points: [{ d: 2.5, l: -2, s: 0.9 }, { d: 4.5, l: -4.5 }, { d: 5, l: -26 }] }
     : { id: 'shallow_high', family: 'cross', depth: 6, end: 'continue', points: [{ d: 3, l: -2, s: 0.9 }, { d: 6.5, l: -24 }] },
   ...(CROSS_FLAT ? { mesh_under: { id: 'mesh_under', family: 'cross', depth: 4.5, end: 'continue', points: [{ d: 2, l: -2, s: 0.9 }, { d: 3.5, l: -4.5 }, { d: 4, l: -26 }] } as RouteDef } : {}),
-  cross: { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
+  cross: CROSS_OVER
+    ? { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 4, l: -3, s: 0.9 }, { d: 11, l: -10 }, { d: 17, l: -20 }, { d: 21, l: -34 }] }
+    : { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
   // Backs
   swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
   checkdown: { id: 'checkdown', family: 'back', depth: 4, end: 'settle', points: [{ d: 0.5, l: 1, s: 0.8 }, { d: 4.5, l: -1, s: 0 }] },
