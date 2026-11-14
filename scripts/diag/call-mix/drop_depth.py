@@ -6,8 +6,9 @@ NFL: checked against BDB's dropbackDistance on the same plays (which operator it
 refit_targets.py does (< 3.5, 3.5-5, 5-7, 7+), gun and under center apart. Non-designed, non-play-action
 dropbacks with no screen route; sim: no 'pa'/'boot'/screen concepts (by name), formation from the export cell.
 Result (2026-11-14, BDB wk 1-6 vs develop 3c2f968d, seeds 101/105/109/113 x 4 games): 'back' reproduces dropbackDistance
-(median |diff| 0.04 yd). Gun back p25/50/75 sim 2.3/3.4/3.4 vs NFL 2.3/3.1/3.9, 5+ yd 1.3% vs 7.6%; under center sim
-6.3/6.4/6.4 vs NFL 3.4/4.8/6.5 (NFL n 132). Each called drop lands on one depth, and the 3.5 yd bin edge sits on our gun5.
+(median |diff| 0.04 yd). Gun back p25/50/75 sim 2.7/3.4/3.4 vs NFL 2.3/3.1/3.9, 5+ yd 1.5% vs 7.6%; under center sim
+4.4/6.1/6.3 vs NFL 3.4/4.8/6.5 (sim n 68, NFL 132), < 3.5 yd 19% vs 25%, 5-7 yd 63% vs 30%. Corrected the same day: the
+first version kept '+pa' play-action concepts in the sim side (the name test missed the suffix).
 usage: python3 -I scripts/diag/call-mix/drop_depth.py --data <bdb2025 dir> name=a.jsonl.gz,... """
 import sys, os, json, gzip, csv, math, re, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
@@ -18,7 +19,7 @@ SCR = set()
 for r in csv.DictReader(open(f'{D}/player_play.csv')):
     if r['routeRan'] == 'SCREEN': SCR.add(f"{r['gameId']}-{r['playId']}")
 UC_NFL = {'SINGLEBACK', 'I_FORM', 'JUMBO'}
-SIM_SKIP = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|_pa$|bubble|tunnel|slip|now_', re.I)
+SIM_SKIP = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|_pa$|\+pa\b|bubble|tunnel|slip|now_', re.I)
 def q(v, p=.5):
     v = sorted(v); return v[int(p * (len(v) - 1))] if v else float('nan')
 def bins(v):
