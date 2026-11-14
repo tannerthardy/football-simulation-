@@ -809,6 +809,7 @@ export class QBPass implements Behavior {
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
   /** QB_KEY_THROW diagnostics (no effect): throws started on the read, and times the window was shut and by what. */
   keyThrows = 0;
+  keyDanger = 0;
   keyPulled = 0;
   /** QB_KEY_THROW: the throw in his hand was started on the key read's window test, and is rechecked by it. */
   private pendingKey = false;
@@ -834,11 +835,14 @@ export class QBPass implements Behavior {
         if (dist < KEY_WINDOW + 1.5 && toward >= KEY_MOVE) return 'key';
       }
       // QB_KEY_DANGER: the man the coaching warns about on this throw. He keeps his course until the ball is out; if
-      // he then gets to the catch point, within the reach the quarterback believes he has, before the ball does, he
-      // can make the play and the window is shut.
+      // he then gets to the catch point, within the reach the quarterback believes he has, by the time the ball is
+      // secured, he can make the play and the window is shut.
       if (d === k.danger && d !== k.man) {
         const dp = QB_BELIEVED_DEF ? this.believe(a, d).profile : d.profile;
-        if (timeToReach({ pos: at, vel: m.vel, profile: dp, speedScale: 1 }, ev.point, dp.reach) + dp.reactionTime < ev.T) return 'danger';
+        // "Can make the play" is arriving inside the securing window after the ball (SECURE_T, his pricing's own:
+        // a defender that late still gets it out), with the error his pricing puts on a defender's arrival.
+        const err = a.mind.judgment(`reach:${d.slot}`) * (0.22 * (1 - a.r('decisionMaking')) + 0.05);
+        if (timeToReach({ pos: at, vel: m.vel, profile: dp, speedScale: 1 }, ev.point, dp.reach) + dp.reactionTime + err < ev.T + SECURE_T) { this.keyDanger++; return 'danger'; }
       }
       if (dist < KEY_WINDOW) return 'near';
       const along = ((at.x - a.pos.x) * px + (at.y - a.pos.y) * py) / L, off = Math.abs((at.x - a.pos.x) * py - (at.y - a.pos.y) * px) / L;
