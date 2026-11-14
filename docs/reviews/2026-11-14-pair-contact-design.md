@@ -1,0 +1,138 @@
+# Design note: the blocker–defender pair contact model (PAIR_HANDS)
+
+Flex, 2026-11-14, for Integration's approval before any code. Evidence: [the tackle-set review](2026-11-12-tackle-set.md)
+(CONTROL_HANDS, HAND_FIT, BRACE_GAIT, the hands-vs-torso measurement).
+
+## Why one model, not a sixth single-law flag
+
+Five single-law flags on the hands joint each exposed the same thing:
+- RIP_CLEAR;
+- HANDS_LEVER;
+- BRACE_GAIT;
+- CONTROL_HANDS;
+- HAND_FIT.
+
+Today one `hands` joint per engagement stands in for both men's hands and for the torso between them:
+
+1. **It belongs to whoever the rolled `control` names.** Its sign picks the actor; its size scaled the press until
+   CONTROL_HANDS.
+2. **It carries all the load at any gap.** In engaged play the torso contact carries essentially nothing (p50 0 N in
+   every gap bin but touching). When the chests do touch, both constraints act across the one gap (14-58% of touching
+   ticks), and inside the bent base the hands' force rises (1650-1800 N under HAND_FIT) instead of handing over.
+3. **It has a set length.** A man going by leaves it in 0.05-0.10 s (the stalk), and a man in front is held at its
+   length (the edge, separation 1.00-1.12 against the NFL's 0.76-0.89).
+
+## The model, as it is taught
+
+The sources are the handbook's coached reductions:
+- [trenches](../football-handbook/trenches.md) section 2: supported arrival, hands with feet, independent recovery;
+- section 7: sets, the anchor, controlled yielding, "continuous hands when physically possible";
+- section 8: the defender's strike and extension, the rusher's attack and counter ("a rip, club, swim or snatch
+  changes contact/access and cannot provide an unexplained burst of energy");
+- Jerry Campbell's DL run and pass teaching cited there.
+
+These are coaching proposals, not measured NFL facts.
+
+### Each man has his own hands state
+
+On one pair there are two hands states, the blocker's and the defender's. Each holds:
+
+- **Fit:** off, or on the man at a site, by side. The site is inside (on his chest plate, inside his arms) or outside
+  (on his shoulder or arm, outside his hands). A hand that is off re-fits by reach and arm speed (RUSH_HANDS' refit:
+  reaction plus the gap at ARM_SPEED).
+- **Length:** a state between his bent base (forearm, arm x 0.3) and lockout (arm x 0.9). It moves at ARM_SPEED: out to
+  follow a man going away or by, as far as lockout (the stalk, the ride); in under a load the arm does not hold (the
+  recoil, HAND_FIT attempt 2's law); out under his own strike (PUNCH).
+- **Force:** pressForce along the arm and armForce across it. Inside hands press through the bones of a straight arm
+  (the strut at lockout is right: LONGARM_STRUT's finding). Outside hands press on a shoulder or arm and steer the man
+  (they cannot hold him off his line). The one-degree-of-freedom hand (RUSH_HANDS, RIP_CLEAR) is the site's sliding.
+
+### Who has inside hands is placement, not a roll
+
+At each strike, and each re-fit, a hand lands at a site. Where it lands depends on:
+- **Reach:** arm length against the gap at the strike; the longer arm arrives first (the existing armEdge physical
+  term, without the dice).
+- **Timing:** whose hands arrive first. The strike's travel time at ARM_SPEED from his felt picture of the man (PASS_FEEL
+  latency). Late hands land outside, on an arm already inside.
+- **Skill acting on placement error:** a hand aimed at the chest plate lands with an error whose spread falls with his
+  hand technique (a perceptual and motor error, sim.dice, the same kind of draw as a throw's accuracy). The error
+  decides inside or outside, not the outcome.
+- **The other man's hands:** a hand already inside blocks the line to the chest; the second hand lands outside it, or
+  must clear it (a rip, swipe or club).
+
+`control` is removed as a state. Where something needs "who has the better of the hands", it reads the two fits.
+
+### Force through hands while there is arm length, then the torso
+
+- **Beyond either man's bent base:** the hands carry the load (the joints as today, one per hand that is on, each with
+  its own length and limits).
+- **As a man's length reaches his bent base under load:** his hands' share hands over to the torso contact
+  continuously over the last part of the arm's travel. The press limit falls to zero at the base, while the torso
+  contact (already in the World) carries the rest. One gap, one load path at a time, blended. The two constraints never
+  both hold the same distance.
+- **With the chests together:** the torso contact carries the normal load, and friction carries the across. The hands
+  that are still on steer and hold (a man with his hands inside and his elbows in holds with his body and legs). This
+  is the run fit, and the edge's 0.81 yd.
+
+### The defender's side is the same hands
+
+- **The run defender's stack:** strike, lockout, separate; then the shed, which is his hands clearing the blocker's
+  (the rip, swipe or club law). It is his hands state at lockout on the blocker, inside if he won the placement.
+  Today it is the same joint with the sign flipped, then a rolled shed.
+- **The rusher's moves** are the same hands acting from his side:
+  - the long-arm is his inside hand at lockout (exists as a joint under RUSH_HANDS);
+  - the rip, club and swipe are forces on the blocker's hand at its site (exist as forces under RUSH_HANDS and
+    RIP_CLEAR);
+  - the swim and the snatch are not yet forces (rolls).
+- **Each move needs a target state.** A rip is the rusher's near arm under the blocker's outside hand; the club, the
+  blocker's inside hand from outside.
+
+## What each existing flag becomes
+
+| flag | under PAIR_HANDS |
+|---|---|
+| CONTROL_HANDS | subsumed: capacity is each man's own; `control` removed |
+| HAND_FIT | subsumed: the blocker's length state, follow and recoil |
+| RUSH_HANDS (the hand body, refit, club, long-arm, keyed) | subsumed: the 1-DOF hand is the site's slide; the club and long-arm are the rusher's hands |
+| RIP_CLEAR | subsumed (the rip force on an outside hand) |
+| RUSH_ONE_HAND | subsumed (per-hand fit) |
+| LONGARM_STRUT, KEYED_FELT, RUSH_ARM_BALANCE | carried over, read on the per-hand state |
+| HAND_SITE | subsumed: the site replaces the bearing weight |
+| HANDS_CHEST | kept (chest points: where the hands meet) |
+| HANDS_LEVER | kept as an option: it acts on the hands' rows; its IZ question is re-read |
+| PUNCH, PUNCH_STRIKE | kept: the strike that sets the site and length |
+| OPEN_HANDS | kept: the grip at a site (holding) |
+| BRACE_GAIT | independent; re-read on top |
+| VERTICAL_SET, CORNER_AIM | independent; CORNER_AIM re-read on top |
+| HAND_FIGHT, the run shed rolls, DL_HANDS, RUN_HAND_MOVE, `contactControl` | die: replaced by the fits; the shed is the defender's hands |
+| resolveMove's logistic for the finesse moves still rolled (swim, snatch, spin) | stays for now as the next rolls to rebuild; their outcome writes a fit, not `control` |
+
+## Witnesses, and what I expect to move
+
+**Pass:**
+- separation at +0.4 s by landing class, against the NFL's 0.81 / 0.76 / 0.89; expected to close to about bodies plus
+  the bent base, and below it on reps where the rusher is inside;
+- edge win (13%);
+- interior pressure (9.8%);
+- the standing body correlations (mass, arm, speed; the roll's coefficient should go to about zero);
+- falls;
+- the inside share at the win (47%).
+
+I expect interior pressure to rise from CONTROL_HANDS' 2-3%, because placement lets a rusher win the hands, and the
+long-arm and club then act on a real fit. The edge should close toward bodies plus the base and below.
+
+**Run:**
+- missed + broken;
+- toss (-1.18 under HAND_FIT with the defender's hands missing), IZ, gap, duo;
+- the stalk's joint life (0.05-0.10 s now; expected several tenths) and a crosser's speed lost;
+- Rules+Coaching's screen fixtures.
+
+I expect run blocks to lose most of HAND_FIT's +0.62 as the defender gets his stack and shed back.
+
+**Both:** the dither budget, and a fixed-seed staged pair for each fit outcome (inside vs outside, both sides). The rep
+should be decided by placement, reach, timing and the bodies.
+
+## Scope and attempts
+
+One flag (PAIR_HANDS), two attempts, read on all three populations from the first run. The swim, snatch and spin stay
+rolls whose outcomes write a fit. Rebuilding them as forces is the follow-on.
