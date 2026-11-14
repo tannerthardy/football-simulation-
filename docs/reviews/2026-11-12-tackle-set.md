@@ -3628,3 +3628,56 @@ The separation at +0.4 s after a wide contact: NFL 0.81 yd (closing from 1.12), 
 This is Integration's second branch: "ours is square because he turns too freely; the turn while engaged is" the
 defect. A press that falls with the chest angle (HAND_SITE exists, off) would almost never bite on our tackle, who is
 within 30 deg of the rusher 97-100% of the time.
+
+### HANDS_LEVER, attempt 1 (2026-11-14)
+
+Two suspects checked first (staged shoulder press, `scratch/yaw-budget.mts` in a scratch worktree, not committed):
+- **The hands rows have no moment in centre mode.** Confirmed: ni = nj = 0; only patch rows and GRASP_PATCH grasps write
+  a contact moment into facing. HANDS_LEVER fixes that.
+- **The yaw budget is charged with his planned ground force, not the load his base holds.** Cleared. His ground force
+  tracks the held load (950-1400 N against a hands normal of 1100-1200 N). The torque left, about 200-300 N.yd, beats
+  the lever moment (about 117 N.yd at a 0.1 yd arm) until his base saturates, and then he turns.
+- The base (`baseRadiusAt`, `criticalDeviation`) and ANCHOR_BASE do not read facing. A tackle turned 90 deg anchors as
+  well as a square one. Only locomotion (`directionalSpeedFactor`) prices the turn. Reported, not added (BASE_ORIENT is
+  parked).
+
+Staged: the pressed man's turn against his own yaw motor goes from 0.9 to 7.1 deg (test/hands-lever.test.ts).
+
+**Edge, seeds 11 and 23 x 8, off -> on:**
+
+| | off | on | NFL |
+|---|---|---|---|
+| wide contact share | 24 / 23% | 25 / 27% | 49% |
+| wide: into-and-past, 0.2 s after | +0.92 / +1.01 | +1.09 / +1.14 | +2.41 |
+| wide: past outside at 2.0 s | 8 / 13% | 9 / 7% | 30% |
+| wide: separation at +0.4 s | 0.94 | 0.89 | 0.81 |
+| chest IQR at +0.4 s, wide | -2/+3 | -1/+6 | -11/+17 |
+
+The edge did not move. Interior reps and falls are within unpaired noise:
+- pressure 32.0 / 24.9% -> 28.9 / 29.3%;
+- interior share of dropbacks 10.0 / 9.0 -> 8.3 / 9.0;
+- OL proxy falls (was moving) 3.9 / 4.1 -> 4.5 / 5.4 per 100.
+
+**Run set fresh (1,295 plays, paired), ref -> candidate:**
+- all +0.18 (SE 0.10);
+- IZ +0.73 (SE 0.24), missed per run 0.133 -> 0.242, 20+ 0.8 -> 3.8%;
+- OZ +0.05, gap +0.03, duo +0.23, toss -0.09, draw -0.02.
+
+IZ is the only concept outside its SE, which suggests double teams and the 3-technique's turn. Not yet explained.
+
+**Why the edge did not move.** A press on the tackle's outside shoulder turns him open, toward the rusher. That is the
+same way his facing request already turns him, so the moment helps him square. It does not take him off it.
+
+The tackle's own velocity at first contact (edge-rush.py) shows the difference is in the set, not the turn:
+
+| landing | NFL retreat / outward yd/s | ours s11 / s23 |
+|---|---|---|
+| head-up | +1.50 / -0.75 | +1.75 / -2.00 |
+| outside half | +2.25 / +0.00 | +2.50-2.75 / +0.50-0.75 |
+| wide | +3.00 / +0.00 | +2.75 / +1.50 |
+
+The NFL tackle at contact is retreating straight back (a vertical set; he gives the rusher the width and makes the
+corner long). Ours is still sliding out across the rusher's path at 1.5 yd/s on a wide landing, because his kick
+intent copies the rusher's lateral velocity (blocking.ts, `y: wide ? 0 : r.vel.y`). A tackle moving out into the
+rusher meets him with his base behind the press along the line. That is the strut, and it is also why ours lands
+less wide (the earlier wider-set finding).
