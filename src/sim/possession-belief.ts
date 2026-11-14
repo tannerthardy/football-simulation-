@@ -1,7 +1,7 @@
 /** PRESENTED_POSSESSION (experimental, off; PRESENTED_POSSESSION=1 turns it on): who an opponent believes has the ball
  * at a mesh, step 1 of the presented-possession spec (docs/reviews/2026-11-14-presented-possession-spec.md).
  *
- * Today every picture's `carrying` is the true holder, delayed (`perception.record(..., sim.carrier.idx)`), so no fake
+ * Today every picture's `carrying` is the true holder, delayed (`perception.record` is passed the true carrier's index), so no fake
  * can be believed. With this flag, an opponent's picture of the two mesh bodies (the QB and the back meeting him) shows
  * possession as his own belief:
  *  - A mesh starts in his picture when he sees a backfield runner within handoff reach of the QB, moving (over
@@ -16,8 +16,8 @@
  *    0.25-0.3 s), so he commits on his first clear sighting; he leaves an answer only after EXIT_HOLD s of sightings that
  *    contradict it (the exit on the far side of the entry: the commitment rule). Skill acts on what the cues show and how
  *    he weights them (step 2's presentation), not on an extra wait.
- *  - Once the ball is no longer held by a mesh body (thrown, pitched, loose), his picture falls back to the ordinary
- *    record: those transitions have their own channels (sawThrow, the flight estimate, loose-ball recognition).
+ *  - Once his delayed record no longer has a mesh body holding the ball (thrown, pitched, loose), his picture falls
+ *    back to the ordinary record: those transitions have their own channels (sawThrow, flight estimate, loose ball).
  * Not in this step (spec steps 2-3): presentation (carry posture, the QB's hands and gaze), the non-carrier tackle. */
 import type { Agent } from './agent.js';
 import { handoffReach } from './ball-transfer.js';
@@ -107,9 +107,9 @@ export function presentedCarrying(sim: PlaySim, observer: Agent, target: Agent, 
   if (!PRESENTED_POSSESSION || observer.team === target.team || sim.phase !== 'live') return seen;
   const b = update(sim, observer, delay);
   if (!b.mesh || !b.mesh.includes(target.idx)) return seen;
-  // Once neither mesh body holds the ball, the ordinary record stands (throw, pitch and loose ball have their channels).
-  const holder = sim.ball.kind === 'held' ? sim.ball.carrier.idx : -2;
-  if (!b.mesh.includes(holder)) return seen;
+  // Once his delayed record no longer has a mesh body holding the ball (thrown, pitched, loose), the ordinary record
+  // stands: those transitions have their own channels (sawThrow, the flight estimate, loose-ball recognition).
+  if (!b.mesh.some(i => sim.perception.perceive(i, delay).carrying === true)) return seen;
   const carrying = b.resolved === undefined ? null : b.resolved === target.idx;
   return carrying === seen.carrying ? seen : { ...seen, carrying };
 }
