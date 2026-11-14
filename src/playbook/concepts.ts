@@ -216,9 +216,9 @@ export const MENU_CONCEPTS: PassConcept[] = [
 const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
 const COACHED_DROP: Record<string, PassConcept['drop']> = {
   // 'five_deep' is this class's own drop (dropSpec), so the concepts already on 'five' (dagger, y_cross) do not move.
-  // dagger, y_cross: taught five-step, so they belong here by the marking's own rule; held on 'five' pending
-  // QB_DROP_READ (the deeper set cost them half their yards a play with every decision hanging off the set). The
-  // five_deep arm read on top of QB_DROP_READ is twelve concepts: these ten and those two.
+  // dagger, y_cross: taught five-step, so they belong here by the marking's own rule; held on 'five' until the
+  // marking is settled. Paired read on engine-66 (scripts/diag/escape/drop-staged.ts, STAGED_FIVE_DEEP): dagger is
+  // flat on the deeper set (5.43 -> 5.60 yd a play), y_cross loses nearly half (6.36 -> 3.51).
   smash: 'five_deep', mesh: 'five_deep', flood: 'five_deep', drive: 'five_deep', sail_corner: 'five_deep', corner_flat: 'five_deep',
   trips_sail: 'five_deep', trips_outs: 'five_deep', double_outs: 'five_deep', comebacks: 'five_deep',
 };
