@@ -3412,3 +3412,50 @@ wrist and forearm against elbow and upper arm are the same; only the hold it mee
   hands stay on and the slide is brief.
 
 The hand model stays held.
+
+### The club's two sides, and where the hand model stands (2026-11-14; the interior work stops here)
+
+**What a club does with the hands kept on** (club-trace.mts, arm H, seed 11 x 6 games, against a clean no-move
+control):
+
+| | interior club | interior control | tackle club | tackle control |
+|---|---|---|---|---|
+| blocker's lateral velocity change in the club's own tick (+ = toward the rusher's working side) | -0.26 yd/s | +0.02 | -0.31 | 0.00 |
+| blocker's lateral speed 0.3 s later (his mirror) | 1.38 | 1.22 | 2.17 | 2.06 |
+| rusher's lateral movement toward his side over 0.3 s | 0.50 yd | 0.42 | 0.81 | 0.71 |
+| rusher's gain on the blocker over 0.3 s, p50 (p75) | 0.06 (0.24) | 0.00 (0.04) | 0.09 (0.27) | 0.00 (0.07) |
+| past him within 1 s | 9% | 2% | 10% | 5% |
+
+The club acts on both men:
+- The hand's resisted share shoves the blocker away from the working side (about -0.26 yd/s). His mirror is not late:
+  0.3 s on he is moving across faster than in the control.
+- The striker pays the reaction (world.ts stepHands), which carries the rusher toward his working side, about 0.08 yd
+  more than control over 0.3 s. That is Newton's third law and physical. But it is unbounded by what a club's swing can
+  actually move a body, so for the rusher it works as a small free lateral step.
+
+The net edge gain is small at the median (0.06 yd) with a real tail (p75 0.24), consistent with the interior pass rate
+tripling on a minority of clubs.
+
+**Where the hand model stands (RUSH_HANDS + RUSH_ONE_HAND, held):**
+
+| piece | status |
+|---|---|
+| interior excess with KEYED_FELT + LONGARM_STRUT (arm H) | about +5 points of interior pressure (range +1.3 to +8.9 by 8-game half; A 9.5, NFL 9.8) |
+| KEYED_FELT (rated misread coin on the keyed club) | built, off: an information fix in its own right; clubs 39 → 31% of decisions |
+| LONGARM_STRUT (the step that disarmed the blocker) | built, off: switch-on episodes past him 17 → 11% interior, 25 → 14% tackle |
+| self-trigger of the next decision | falsified (10% of decisions) |
+| refit after a hand comes off | p50 0.40 s, plausible; past before the refit 4% interior |
+| the hand's slide and walk-back gate | about 0.1 s window; not where the passes come |
+| the engaged blocker's lateral achievement | the shared gait law; matches the NFL at the median |
+| where a club lands | not modelled: one force on a one-degree-of-freedom hand |
+| the club's two-way push | the blocker shoved about 0.26 yd/s and the rusher carried by the reaction; a candidate, not built |
+
+Two pieces are named and not built:
+1. The club's site (wrist and forearm against elbow and upper arm) and what its reaction can move.
+2. The blocker's recovery starting on the felt slide (about a tick).
+
+The interior rate is explained in parts but not closed. The hand model stays held.
+
+**The larger NFL gaps in the pass rep remain on the edge.** Edge past-outside is 0.3-0.7% in every arm against the NFL's
+3.8%, and our rushers move across less while engaged (p90 1.75 against 2.50). They may be one finding, and they are
+the next item: the edge corner, measured with EDGE_ARC's question in mind, ahead of rip and swim.
