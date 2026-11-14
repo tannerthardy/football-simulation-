@@ -106,9 +106,14 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
 /** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
  * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
  *   from his own picture of the defenders (seen within the last 0.5 s), every tick. Against man (a defender within 2.5 yd
- *   of him) he does not sit: he keeps separating, away from that man. Against zone he works his window: between the
- *   nearest underneath defenders either side of him at his depth, or 4 yd off the one who is there, facing the QB, so the
- *   squared-up shuffle's pace is his body's (the facing speed caps), not a pace number. No move toward the line or the QB
+ *   of him) he settles and shields: he slides off the man's side, at his settle depth, then holds with the man on his
+ *   back (separating is what a route that keeps running does, not a hitch). Against zone he works his window: between
+ *   the nearest underneath defenders either side of him at his depth, or 4 yd off the one who is there, facing the QB, so
+ *   the squared-up shuffle's pace is his body's (the facing speed caps), not a pace number. Both goals are placed from
+ *   his settle point, not from where he stands (fix 2026-11-14: a goal moved with him each tick, so he never arrived and
+ *   ran 3.3-3.6 yd/s after the settle against the NFL's 1.6-2.0). How far he may slide is a choice, not a measurement:
+ *   it is how far a settled receiver can move before he is no longer where the quarterback expects him, SETTLE_SHIELD
+ *   against man (a body width and a step) and SETTLE_WINDOW in zone (within that, the window he sees decides). No move toward the line or the QB
  *   until the ball is thrown: that is the catch's. Off, a `settle` route stands on its last point; `sitVsZone` drifts once.
  *   NFL WR hitch (not the target, BDB 2025 weeks 1-6): 3.4 / 2.0 / 1.6 yd/s at 2.0 / 2.5 / 3.0 s, no return toward the line
  *   by 3.0 s; ours 2.9 / 0.9 / 0.8.
@@ -117,6 +122,8 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
  *   the quarterback still hasn't thrown the ball, the receiver should stop running", fourvertsfootball). NFL WR flats:
  *   5.5 -> 4.1 yd/s from 2.0 to 3.0 s, 9.3 yd from the sideline at 3.0 s; ours accelerate to 6.8. */
 const ROUTE_END = process.env.ROUTE_END === '1';
+/** ROUTE_END: how far a settled receiver slides from his settle point, against man and in a zone window (yd; a choice). */
+const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
 export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number): MoveCommand {
@@ -455,20 +462,24 @@ export class RouteRunner implements Behavior {
     const seen = this.readKeys(a, sim).filter((p) => p.age <= 0.5);
     let near: RouteKeyPicture | null = null, nd = Infinity;
     for (const d of seen) { const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y); if (dd < nd) { nd = dd; near = d; } }
-    // Man: a defender on him. He keeps separating, away from the man, at his depth or better.
+    // Both goals are placed from his settle point `last`, never from where he stands, so he arrives and sits.
+    // Man: a defender on him. He settles and shields: he slides off the man's side at his settle depth, at most
+    // SETTLE_SHIELD from the point, then holds there with the man on his back.
     if (near && nd < 2.5) {
-      const away = { x: a.pos.x - near.pos.x, y: a.pos.y - near.pos.y }, n = Math.hypot(away.x, away.y) || 1;
-      const spot = { x: a.pos.x + Math.max(0, away.x / n) * 2, y: clamp(a.pos.y + (away.y / n) * 3, 1.5, FIELD_WIDTH - 1.5) };
-      return goTo(a, spot, { speed: 0.8, facing });
+      const side = Math.sign(last.y - near.pos.y) || 1;
+      return goTo(a, { x: last.x, y: clamp(last.y + side * SETTLE_SHIELD, 1.5, FIELD_WIDTH - 1.5) }, { speed: 0.8, facing });
     }
     // Zone: the window between the underneath defenders either side of him, near his depth.
     const under = seen.filter((d) => Math.abs(d.pos.x - last.x) < 4 && Math.abs(d.pos.y - a.pos.y) < 8);
     const left = under.filter((d) => d.pos.y > a.pos.y).sort((p, q) => p.pos.y - q.pos.y)[0];
     const right = under.filter((d) => d.pos.y <= a.pos.y).sort((p, q) => q.pos.y - p.pos.y)[0];
-    let y = a.pos.y;
+    // Zone: the window as he sees it (midway between them, or 4 yd off the one who is there), no farther than
+    // SETTLE_WINDOW from the settle point.
+    let y = last.y;
     if (left && right) y = (left.pos.y + right.pos.y) / 2;
-    else if (left) y = Math.min(a.pos.y, left.pos.y - 4);
-    else if (right) y = Math.max(a.pos.y, right.pos.y + 4);
+    else if (left) y = Math.min(last.y, left.pos.y - 4);
+    else if (right) y = Math.max(last.y, right.pos.y + 4);
+    y = clamp(y, last.y - SETTLE_WINDOW, last.y + SETTLE_WINDOW);
     return goTo(a, { x: last.x, y: clamp(y, 1.5, FIELD_WIDTH - 1.5) }, { speed: 0.8, facing });
   }
 
