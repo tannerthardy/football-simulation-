@@ -47,7 +47,8 @@ import { isOL } from './behaviors/blocking.js';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** CLOUD_KILL (experimental, off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
- * screen's installed kill (and the screen RPO's read) also takes a corner he sees squatting over the screen receiver:
+ * screen's installed kill (and the screen RPO's read) also takes a defender he sees squatting over the screen receiver,
+ * whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review, 2026-11-14):
  * 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside (outside leverage), with the same alignment noise as the
  * press look, at the alignment after motion. Off, only press killed it; on the now screen against Cover 2 the squat
  * corner made every tackle (screen-defense.mts). */
@@ -615,7 +616,7 @@ export class QBMind {
       const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
       const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
       if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
-      else if (x >= 2.2 && x <= 5 && (y - r.y) * side >= -0.5 && (y - r.y) * side <= 3 && d.player.position === 'CB') cloud = true;
+      else if (x >= 2.2 && x <= 5 && (y - r.y) * side >= -0.5 && (y - r.y) * side <= 3) cloud = true;
       // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
       if ((y - by) * side > 5 && x >= 1.5 && x < 9) defenders++;
     }
