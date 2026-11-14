@@ -386,6 +386,21 @@ const QB_BREAK = process.env.QB_BREAK === '1';
  * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
  * and reads on from it. */
 const QB_RELOOK = process.env.QB_RELOOK === '1';
+/** QB_KEY_MAN (experimental, off; QB_KEY_MAN=1; with READ_PLAN's defender keys): his key read is taken on the defender
+ * the concept names, not on whoever is nearest the line between the two routes (on corner_flat that was the middle
+ * linebacker once the corner sank under the corner route). Before the snap he picks the man by the role's alignment
+ * rule, from where the defense lines up: the corner is the widest defender on the key's side inside 10 yd; the apex
+ * (flat) defender the second from the sideline inside 8 yd; the hook player the second-level defender (2.5-8 yd off
+ * the ball) nearest the ball, on the key's side of it; a deep key the deepest man (8 yd or more) nearest the middle, or over the high
+ * route. He picks from alignment, so a rotated or disguised look can give him the wrong man. In the drop his eyes go
+ * to that man, and at the cue he reads the man's movement in his picture (sinking to the high route gives the low man, jumping
+ * the low route gives the high man), or where he stands when he is not moving along the stretch. When he has no fresh
+ * picture of the man, or the role names nobody, there is no key read and he runs the order as installed. */
+const QB_KEY_MAN = process.env.QB_KEY_MAN === '1';
+/** QB_KEY_MAN: the speed along the low-high stretch (yd/s) at which the key's movement is the read, and how his
+ * reading noise on a place along the stretch scales to a speed. Both chosen. */
+const KEY_MOVE = 1.0;
+const KEY_MOVE_NOISE = 5;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
 /** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
@@ -601,7 +616,7 @@ export class QBPass implements Behavior {
   private lookOffChecked = false;
   private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
   /** READ_PLAN: the installed plan this play runs (null: the hand-written progression). */
-  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
+  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean; role: string; man: Agent | null } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
   /** READ_PLAN: the key read once made (diagnostic): the defender he read (null: none in the stretch), where he
    * put him between the low (0) and high (1) routes, and the throw it gave. */
   keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
@@ -753,7 +768,7 @@ export class QBPass implements Behavior {
     const low = ag(p.key?.low ?? null), high = ag(p.key?.high ?? null);
     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
     const peek = p.style === 'vertical_peek';
-    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep') } : null,
+    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
       triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
   }
@@ -762,8 +777,43 @@ export class QBPass implements Behavior {
    * by looking there, with their age), placed along the line from the low route (0) to the high one (1) where he
    * is heading; playing the high route (0.5 or more) gives the low throw, the low one the high throw. His
    * decision-making and awareness set how cleanly he places him. */
+  /** QB_KEY_MAN: the defender a role names, picked from the alignment before the snap (everyone is in view then). */
+  private keyMan(sim: PlaySim, role: string, low: Agent, high: Agent): Agent | null {
+    const dir = sim.attackDir(sim.qb.team), midY = (low.pos.y + high.pos.y) / 2, side = Math.sign(midY - sim.ballY) || 1;
+    const D = sim.defense.map((d) => ({ d, depth: (d.pos.x - sim.los) * dir, out: (d.pos.y - sim.ballY) * side, y: d.pos.y }));
+    const best = (S: typeof D, cost: (x: typeof D[number]) => number) => S.reduce<typeof D[number] | null>((b, x) => (!b || cost(x) < cost(b) ? x : b), null)?.d ?? null;
+    if (/corner/.test(role)) return best(D.filter((x) => x.depth <= 10 && x.out > 0), (x) => -x.out);
+    if (/apex|flat/.test(role)) return D.filter((x) => x.depth <= 8 && x.out > 0).sort((x, y) => y.out - x.out)[1]?.d ?? null;
+    // The hook player is an inside second-level defender: nearest the ball, on the key's side of it when there is one.
+    if (/hook/.test(role)) return best(D.filter((x) => x.depth >= 2.5 && x.depth <= 8), (x) => Math.abs(x.y - sim.ballY) + (role !== 'middle_hook' && x.out < 0 ? 2 : 0));
+    if (/safety|deep/.test(role)) return best(D.filter((x) => x.depth >= 8), (x) => Math.abs(x.y - (/over_vertical/.test(role) ? high.pos.y : sim.ballY)) - 0.1 * x.depth);
+    return null;
+  }
+
   private readKey(a: Agent, sim: PlaySim): void {
     const k = this.plan!.key!;
+    if (QB_KEY_MAN) {
+      // The named man, as his picture has him now. No fresh picture, or nobody named: no key read; the order stands.
+      const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
+      const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+      const p = k.man ? this.mind.routeKeyPictures().find((x) => x.id === k.man!.player.id && x.age <= 0.8) : null;
+      if (!p || !lo || !hi) { this.keyRead = { at: sim.t, defender: null, s: null, throwTo: 'low' }; return; }
+      const sx = hi.x - lo.x, sy = hi.y - lo.y, L2 = Math.max(1, sx * sx + sy * sy);
+      const q = { x: p.pos.x + p.vel.x * 0.3, y: p.pos.y + p.vel.y * 0.3 };
+      const noise = 0.06 + 0.2 * (1 - a.r('decisionMaking')) + 0.08 * (1 - a.r('awareness'));
+      const z = sim.dice('readkey', a).normal(0, noise);
+      const s = clamp(((q.x - lo.x) * sx + (q.y - lo.y) * sy) / L2, -0.25, 1.75) + z;
+      // What he reads is the man's movement: going to the high route (sinking) gives the low man, coming down on the
+      // low route (jumping it) gives the high man. A man who is not moving along the stretch is read by where he stands.
+      const along = (p.vel.x * sx + p.vel.y * sy) / Math.sqrt(L2) + z * KEY_MOVE_NOISE;
+      const throwTo = Math.abs(along) >= KEY_MOVE ? (along > 0 ? 'low' : 'high') : s >= 0.5 ? 'low' : 'high';
+      this.keyRead = { at: sim.t, defender: p.id, s: +s.toFixed(3), throwTo };
+      const first = throwTo === 'low' ? k.low : k.high, second = first === k.low ? k.high : k.low;
+      this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
+      this.readIdx = 0;
+      this.readStart = sim.t;
+      return;
+    }
     // The stretch is where the two routes are going (he knows the installed routes): the high route about half a
     // second on, so a route that has not yet broken is placed where it is headed, not on its stem.
     const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
@@ -1419,6 +1469,8 @@ export class QBPass implements Behavior {
     // a triangle is one picture, its middle.
     const k = this.plan?.key;
     if (k && !this.keyRead && this.phase !== 'snap' && (!HOT_LOOK || this.readIdx === 0)) {
+      // QB_KEY_MAN: his eyes are on the man he is reading (where he has him), not on the middle of the two routes.
+      if (QB_KEY_MAN && k.man) return this.mind.estimate(k.man).pos;
       const lo = heldPoint(k.low), hi = heldPoint(k.high);
       return { x: (lo.x + hi.x) / 2, y: (lo.y + hi.y) / 2 };
     }
