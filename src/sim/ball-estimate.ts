@@ -50,6 +50,14 @@ export const BALL_EST_INCIDENTAL = (BALL_EST_BITS & 32) !== 0;
  * TRUNK_RANGE), and only the remainder past both turns his hips, which the facing speed cap prices. What he looks at is
  * his own: his estimate's first point, or the QB he sees before he has one; never the ball's true position. */
 export const BALL_EST_TRUNK = (BALL_EST_BITS & 64) !== 0;
+/** Bit 128 (defense only, 2026-11-14): the estimator is on for the defense alone. Defenders play the ball from their own
+ * estimate (`acquireFlight`) and, with bit 32, play it only on their own sight; receivers keep today's tracking and the
+ * incidental-catch gate (the receiver bits 2 / 4 / 8 / 16 / 64 do not apply). For carding the defense first: 129, 161. */
+export const BALL_EST_DEF_ONLY = (BALL_EST_BITS & 128) !== 0;
+/** The estimator replaces the true flight for the receivers (off under bit 128). */
+export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
+/** Is the estimator on for this player (his own estimate in place of the true flight)? */
+export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (!BALL_EST_DEF_ONLY || a.team === 'D');
 /** Design 6: landmark depth past the line (yd; measured, the NFL deep receiver's turn depth, GO/POST median 12.3/12.2). */
 export const DEEP_LOOK_DEPTH = 12;
 /** Design 6: how long he holds the look without a throw (s; choice, a coached count). */
@@ -169,7 +177,7 @@ export class BallEstimates {
     if (BALL_EST_INCIDENTAL) {
       const b = ball.flight.pos;
       for (const a of sim.agents) {
-        if (a === ball.thrower || a.isDown(sim.t)) continue;
+        if (a === ball.thrower || a.isDown(sim.t) || !estimatesFor(a)) continue;
         let tr0 = this.tracks.get(a);
         if (tr0 && tr0.flight !== this.flight && tr0.preLookT === undefined) { this.reset(tr0); tr0.flight = this.flight; }
         if (tr0 && sim.t - tr0.attendT <= sim.dt + 1e-9 && tr0.flight === this.flight) continue;
