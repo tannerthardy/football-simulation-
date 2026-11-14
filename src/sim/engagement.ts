@@ -841,6 +841,10 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // Latched hands can hold and steer; a defender in control steers the
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
+  // PRESS_SPRING: a defender whose hands are inside has the frame; the blocker cannot steer him with his full arm, only
+  // with the friction his hand's press gives him at the shoulder (the outside-hand rule, now for the defender's inside fit).
+  if (PRESS_SPRING && e.defHands?.fit === 'inside' && !e.defHands.off)
+    hands.steer = Math.min(hands.steer, HAND_MU * Math.max(0, hands.normalForce ?? 0));
   // PAIR_HANDS: the blocker's joint is his own arm whoever controls the hands (the defender has his own joint).
   if (PAIR_HANDS) hands.actor = b.body;
   // PUNCH: the blocker's hands go to the man, out to lockout.

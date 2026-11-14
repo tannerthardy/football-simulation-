@@ -38,7 +38,7 @@ function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: 
   const dx0 = d.body.pos.x, fb0 = b.body.facing, fd0 = d.body.facing, dy0 = d.body.pos.y, sb0 = shouldersOf(b.body), sd0 = shouldersOf(d.body);
   const out: string[] = []; let prevTot: number | null = null, maxJump = 0, life = 0, overJump = 0, torsoOn = false, minSep = Infinity; const tot: number[] = [];
   for (let k = 0; k < Math.round(secs / sim.dt); k++) {
-    if (move) e.move = move as any;
+    if (move) { e.move = move as any; if (move === 'longarm') { e.moveUntil = Infinity; e.moveOk = true; } }
     syncJoints(sim, e);
     if (e.hands) e.hands.fit = fitB; if (e.defHands) e.defHands.fit = fitD;
     const intents: any[] = sim.agents.map((a: any) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
@@ -73,6 +73,7 @@ for (const side of [1, -1]) {
   for (const fd of ['inside', 'outside'] as Fit[]) run(`gap: a reach block on a run defender, his stack ${fd}`, 'run', 'outside', fd, { x: 0.5, y: 2 }, { x: -0.5, y: 0 }, side, 0.6);
   run('long-arm on a blocker who does not answer it (he stands)', 'pass', 'inside', 'inside', { x: 0, y: 0 }, { x: -1, y: 0 }, side, 0.8, 0.05, 0, 'longarm');
   for (const fd of ['inside', 'outside'] as Fit[]) run(`drive into a run defender holding his gap, his hands ${fd}`, 'run', 'inside', fd, { x: 2, y: 0 }, { x: 0, y: 0 }, side, 0.8, 0.05);
+  for (const fd of ['inside', 'outside'] as Fit[]) run(`a reach driving across a run defender holding his gap, his hands ${fd}`, 'run', 'inside', fd, { x: 1, y: 1.5 }, { x: 0, y: 0 }, side, 0.8, 0.05);
   run('hand-over forced: a 150 kg man driving a 90 kg one (run), both inside', 'run', 'inside', 'inside', { x: -0.5, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.05, 150, undefined, 90);
   run('hand-over forced: a 150 kg bull on a 90 kg pass-setter, both inside', 'pass', 'inside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.1, 150, 'bull', 90);
   run('hand-over: a heavy bull (150 kg) at 3 yd/s, blocker outside', 'pass', 'outside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.3, 150);

@@ -739,3 +739,36 @@ read with HANDS_LEVER, TRUNK_TWIST and CHEST_SHOULDERS:
 | G3 a blocker driving into a run defender holding his gap, his hands inside / outside | moved back 0.15 / 0.15 yd | the inside-handed man moved at least 0.1 yd less |
 | G4 a long-arm on a blocker who does not answer it | separation 0.89 -> 1.24 yd (0.2 / 0.6 s) | the extension reaches lockout at arm speed (0.25-0.35 s) and the separation grows at least 0.3 yd |
 | G5 the stalk: a crosser at 3 yd/s past a standing blocker | joint life 0.05 s | at least 0.5 s (Tools' screens-only NFL: engaged 0.8 s median, 74% held 0.5 s or more) |
+
+### PRESS_SPRING attempt 1: staged read
+
+Both sides of the field give the same rows (mirror checked). Off is bit-identical to develop (seed 999, 7225da15f3023012).
+
+| gate | reference | PRESS_SPRING | |
+|---|---|---|---|
+| G1 the bull | one joint 1,668 N, 1.13 yd at 0.6 s | 741 -> 1,177 N total across both arms, steady, 0.75 / 0.77 yd at 0.2 / 0.6 s | passes |
+| G2 the crosser, blocker outside / inside: his speed after | 2.14 / 2.14 | 2.92 / 2.35 | passes |
+| G3 a reach driving across a run defender, his hands inside / outside: his lateral, his turn | 0.03 / 0.03 yd, 0 / 0 deg | 0.01 / 0.14 yd, 2 / 14 deg | passes (see below) |
+| G4 a long-arm on a blocker who does not answer it | 0.89 -> 1.24 yd | 0.95 -> 1.52 yd (0.2 / 0.6 s): the extension at arm speed drives him off | passes |
+| G5 the stalk, a crosser at 3 yd/s | joint life 0.05 s | 0.00 s: the blocker's hands never reach him | **fails** |
+
+Notes on the read:
+- **G3 as first written** (a straight drive into a run defender) gives 0.23 / 0.23 yd moved back in both arms. That is
+  right: a straight drive is the blocker's legs against the defender's feet, and his hand placement does not change his
+  traction. The coached difference is control: who can steer whom across. The reach row shows it once the design note's
+  rule is built: an inside-handed defender has the frame, so the blocker steers him only with the friction his press
+  gives him at the shoulder. That rule was in the note but missing from the first build; it is now in, still attempt 1.
+- **G4** needed the staged long-arm row to open its move window (`moveUntil`), as resolveMove does in games. The
+  staging now opens it for that row only; a "speed" move with an open window took the crosser rows' steer away.
+- **G5 fails because of the design, not a constant.** Under PRESS_SPRING the blocker holds his bent length (0.80 centre
+  to centre) whatever the man does. A crosser passing at 1.04 yd is beyond his bent hands, so the blocker never touches
+  him. The note gives the defender a bounded extension (long-arm, shed) but gives the blocker none: no reach for a man
+  not yet on his hands. HAND_FIT had it (unloaded, the hands follow the man out), together with the recoil that
+  chattered.
+
+**Attempt 1 fails G5. Attempt 2, proposed:** the blocker's reach is the same bounded extension. While his hands carry
+nothing and the man he has (felt or seen) is beyond his bent length but inside his lockout, his length moves toward the
+man at ARM_SPEED. Once his hands carry load it returns to bent at ARM_SPEED. Its enter and exit are on the load, with
+the exit (UNLOADED of his press) above the enter (no load), so it cannot flip on a single tick. It is still a spring
+about its current length, so a reach that lands presses only as the man compresses it. Gates as above, G5 against
+Tools' screens-only NFL (engaged 0.8 s median, 74% held 0.5 s or more).
