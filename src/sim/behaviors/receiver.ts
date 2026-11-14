@@ -17,7 +17,7 @@ import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 
-import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn } from '../route-motion.js';
+import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
@@ -183,6 +183,7 @@ export class RouteRunner implements Behavior {
   idx = 0;
   /** ROUTE_FILLET: the corner turn he has begun, carried to its exit point. */
   turn: FilletTurn | null = null;
+  plan: FilletPlan | null = null;
   settled = false;
   private pressContact: PressContact | null = null;
   private readonly releasedCorners = new Set<Agent>();
@@ -293,7 +294,7 @@ export class RouteRunner implements Behavior {
       if (answer) {
         this.routeEnd = answer.end;
         this.path = this.buildPath(this.start, answer.points, answer.end === 'continue');
-        this.idx = 0; this.turn = null;
+        this.idx = 0; this.turn = null; this.plan = null;
         this.skipPassed(a);
       }
     }
@@ -307,9 +308,9 @@ export class RouteRunner implements Behavior {
       const inward = a.pos.y < 1.2 ? 1 : -1;
       return { vel: { x: Math.max(a.vel.x, 3), y: inward * 2 }, cutSkill };
     }
-    const st: RouteCursor = { idx: this.idx, from: this.start, turn: this.turn };
+    const st: RouteCursor = { idx: this.idx, from: this.start, turn: this.turn, plan: this.plan };
     const cmd = this.steer(a.body, st, rr, cutSkill);
-    this.idx = st.idx; this.turn = st.turn ?? null;
+    this.idx = st.idx; this.turn = st.turn ?? null; this.plan = st.plan ?? null;
     if (!cmd) {
       this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);

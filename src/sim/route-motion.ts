@@ -79,7 +79,7 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * (docs/reviews/2026-11-14-route-speed.md: cut 0.5-0.8 yd, radius 6-10 yd on a rolled bend, about 3 yd on a 90 degree plant).
  * With the flag the declared through speed `s` still says what the route asks (a speed cut s .4, a rolled bend s .85-.9), and
  * the corner is a fillet: on his usable lateral acceleration aLat = lateral * cutSkill the radius at that speed is v^2 / aLat, he
- * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of an adjacent leg shared with a neighbouring corner; the first leg is his alone), and if the legs do
+ * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of an adjacent leg shared with a neighbouring corner; the first leg is his alone), at the speed he can have at the vertex (his speed along the leg under his own acceleration over the distance to it, up to the declared through speed), planned once per corner, and if the legs do
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
@@ -88,12 +88,15 @@ const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */
 const FILLET_MIN_TURN = 12 * Math.PI / 180;
 export interface FilletTurn { readonly idx: number; readonly exit: Readonly<Vec2>; readonly speed: number }
-export interface RouteCursor { idx: number; from?: Vec2; turn?: FilletTurn | null }
+/** The corner he has planned (made once, when he first heads for it): the lead and the speed he plans to carry into the turn. */
+export interface FilletPlan { readonly idx: number; readonly lead: number; readonly speed: number }
+export interface RouteCursor { idx: number; from?: Vec2; turn?: FilletTurn | null; plan?: FilletPlan | null }
 
 export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint[], end: RouteEnd,
   effort: number, rr: number, cutSkill: number): MoveCommand | null {
   if (ROUTE_FILLET && st.idx === 0 && !st.from) st.from = { x: body.pos.x, y: body.pos.y };
   if (st.turn && st.turn.idx !== st.idx) st.turn = null; // something else moved his place on the route: that turn is over
+  if (st.plan && st.plan.idx !== st.idx) st.plan = null;
   for (let guard = 0; guard < 6; guard++) {
     const tgt = path[st.idx], next = path[st.idx + 1];
     if (!tgt) return null;
@@ -124,9 +127,18 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
       const theta = Math.acos(clamp(lx * bx / bl + ly * by / bl, -1, 1));
       if (theta > FILLET_MIN_TURN && bl > 1) {
         const aLat = Math.max(0.5, body.profile.lateral * cutSkill), tn = Math.tan(theta / 2);
-        // The leg he leaves the line on has no corner behind it to share it with, so he may use all of it.
-        const lead = Math.min(through * through / aLat * tn, st.idx === 0 ? l1 : FILLET_LEAD * l1, FILLET_LEAD * bl), radius = lead / tn;
-        const speed = Math.min(through, Math.sqrt(aLat * radius));
+        if (!st.plan) {
+          // The speed he will carry into the corner is the speed he can have there: his speed along the leg now, built under his own
+          // acceleration over the distance to the vertex, never above the declared through speed. A corner near the line is
+          // small because he is slow.
+          const v0 = Math.max(0, body.vel.x * lx + body.vel.y * ly);
+          const reach = speedAfter(v0, vtop, body.profile.tau, d);
+          const carry = Math.min(through, reach);
+          // The leg he leaves the line on has no corner behind it to share it with, so he may use all of it.
+          const lead = Math.min(carry * carry / aLat * tn, st.idx === 0 ? l1 : FILLET_LEAD * l1, FILLET_LEAD * bl);
+          st.plan = { idx: st.idx, lead, speed: Math.min(carry, Math.sqrt(aLat * lead / tn)) };
+        }
+        const { lead, speed } = st.plan;
         if (d <= lead) { st.turn = { idx: st.idx, exit: { x: tgt.p.x + bx / bl * lead, y: tgt.p.y + by / bl * lead }, speed }; continue; }
         const entry = { x: body.pos.x + ax * (d - lead), y: body.pos.y + ay * (d - lead) };
         return { vel: arriveVelocity(body, entry, vtop, speed, decel), cutSkill };
@@ -141,6 +153,17 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
     return { vel: arriveVelocity(body, tgt.p, vtop, through, decel), cutSkill };
   }
   return null;
+}
+
+/** His speed after covering `d` yd from speed v0 under the body's own drive law (a = (V - v) / tau, which `stepBody`'s sprint
+ * is built on): v(t) = V - (V - v0) e^(-t/tau), distance V t - (V - v0) tau (1 - e^(-t/tau)); the t that covers d, found by bisection. */
+export function speedAfter(v0: number, V: number, tau: number, d: number): number {
+  if (V <= v0 || d <= 0) return v0;
+  const dist = (t: number) => V * t - (V - v0) * tau * (1 - Math.exp(-t / tau));
+  let lo = 0, hi = 1;
+  while (dist(hi) < d && hi < 60) hi *= 2;
+  for (let i = 0; i < 40; i++) { const mid = 0.5 * (lo + hi); if (dist(mid) < d) lo = mid; else hi = mid; }
+  return V - (V - v0) * Math.exp(-0.5 * (lo + hi) / tau);
 }
 
 function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
