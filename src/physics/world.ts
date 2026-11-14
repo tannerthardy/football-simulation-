@@ -80,6 +80,8 @@ export interface HandJoint {
   kind: 'hands';
   a: Body;
   b: Body;
+  /** PAIR_HANDS: where the owner's hands landed on the man (inside his frame on the chest plate, or outside it). */
+  fit?: 'inside' | 'outside';
   /** Body supplying muscular work (default a); technique may give b control. */
   actor?: Body;
   /** Owner of a tensile hold (default a), distinct from who controls a shove. */
@@ -394,6 +396,10 @@ export const RIP_CLEAR = process.env.RIP_CLEAR === '1';
  * No new constants. Off, a tackle carried 3.8 yd/s across his own press braced about 1400 N against a gait envelope
  * of 750-1000 N across his travel (docs/reviews/2026-11-12-tackle-set.md, (B)). */
 export const BRACE_GAIT = process.env.BRACE_GAIT === '1';
+/** PAIR_HANDS (the World's half): with the bodies touching, a hands row carries what the torso contact between the
+ * same pair does not: its push limit less the torso's normal force on the pair in the World's previous step, never
+ * below zero, so the total across the gap is continuous through the hand-over. engagement.ts has the rest. */
+const PAIR_HANDS_W = process.env.PAIR_HANDS === '1';
 /** The hand as a body: RUSH_HANDS or its rip piece. */
 const HAND_BODY = RUSH_HANDS || RIP_CLEAR;
 export const ARM_MASS = 0.05;
@@ -831,6 +837,8 @@ export class World {
   substeps?: number;
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
+  /** PAIR_HANDS: the torso contact's normal force per pair in the previous step. */
+  private prevTorso = new Map<string, number>();
   private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number; rip?: boolean }> = [];
   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
   private readonly reels = new Map<GraspJoint, number>();
@@ -1113,6 +1121,7 @@ export class World {
       spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, hypot2(lx, ly) / Math.max(1, this.sp[i].pushForce), activeTime, plan.actionWork, velocity);
     }
     report.contacts = [...pairs.values()];
+    if (PAIR_HANDS_W) { this.prevTorso.clear(); for (const c of report.contacts) this.prevTorso.set(c.i < c.j ? `${c.i}:${c.j}` : `${c.j}:${c.i}`, c.impulse / dt); }
     this.pending = [];
     if (HAND_BODY) this.handForces = this.handForces.filter(f => f.t1 > this.time + 1e-12 && this.joints.includes(f.jt));
     for (const j of this.joints) {
@@ -2865,6 +2874,10 @@ export class World {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
         row.pushLim = Math.max(0, jt.push) * h * scale;
+        if (PAIR_HANDS_W) {
+          const tN = this.prevTorso.get(i < j ? `${i}:${j}` : `${j}:${i}`) ?? 0;
+          if (tN > 0) row.pushLim = Math.max(0, row.pushLim - tN * h * scale);
+        }
         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
         if (HAND_BODY && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {

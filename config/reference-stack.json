@@ -199,6 +199,7 @@
     "CONTROL_HANDS": "off",
     "BRACE_GAIT": "off",
     "HAND_FIT": "off",
+    "PAIR_HANDS": "off",
     "PUNCH_STRIKE": "on",
     "ANCHOR_BASE": "on",
     "RUSH_ARM_BALANCE": "off",

@@ -110,6 +110,8 @@ export interface Engagement {
   ripUntil?: number;
   /** CORNER_AIM: the side he goes round the blocker (1 / -1), chosen once while the blocker is in his way. */
   cornerSide?: number;
+  /** PAIR_HANDS: the defender's own hands on the blocker (a = him). */
+  defHands?: import('../physics/world.js').HandJoint;
   nextMoveAt: number;
   /** Bonus push while a power move is landing. */
   pushBoost: number;

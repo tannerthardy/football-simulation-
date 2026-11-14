@@ -407,7 +407,42 @@ export function promoteContact(e: Engagement, keeper: Agent): boolean {
  * tackle's hip it separated the reps that held (+0.47) from those that went past (-0.28) on every tick
  * (docs/reviews/2026-11-12-tackle-set.md). Still read from `control` (the next rolls to rebuild): whose hands the
  * joint is (its sign), and the consumers listed in docs/FLAGS.md. */
-export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1';
+/** PAIR_HANDS (experimental, off; PAIR_HANDS=1): the blocker-defender pair contact model (docs/reviews/
+ * 2026-11-14-pair-contact-design.md). It implies CONTROL_HANDS and HAND_FIT, and adds:
+ * - each man's own hands state on the pair (the defender's own joint, a = him, with the same length law);
+ * - a fit (inside / outside) placed at each strike by a motor error drawn once on the landing point, against the man's
+ *   chest plate and the other man's hands (the first hand inside blocks the line), reach and timing deciding who
+ *   arrives first;
+ * - an inside hand presses with his press; an outside hand only with his arm;
+ * - `control` derived each tick from the two fits; the rolled moves' outcomes write a fit;
+ * - the arm below its bent base only when beaten;
+ * - in the World, the hands carry what the torso contact does not (the hand-over).
+ * Off, the joint is one object named by the roll. */
+export const PAIR_HANDS = process.env.PAIR_HANDS === '1';
+export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1' || PAIR_HANDS;
+/** PAIR_HANDS: the spread of a hand's landing point at the man for a hand technique of 0 (yd, 1 SD), falling to 0.4 of
+ * it at a technique of 1. A choice, not a sourced number: about a hand's width off the chest plate for a poor
+ * technician. */
+const PLACE_SPREAD = 0.2;
+/** PAIR_HANDS: the man's chest plate, inside his frame: the torso's flat front less its shoulders (world.ts CHEST_HALF,
+ * 0.27 - 0.15 yd). */
+const CHEST_PLATE = 0.12;
+/** PAIR_HANDS: where one man's strike lands on the other: drawn once, a motor error on the landing point. Inside when
+ * it lands on the chest plate and the other man's hand is not already inside on it (the line to the chest is blocked). */
+function placeHand(sim: PlaySim, owner: Agent, man: Agent, other: HandJoint | undefined): 'inside' | 'outside' {
+  if (other && !other.off && other.fit === 'inside') return 'outside';
+  const sd = PLACE_SPREAD * (1 - 0.6 * clamp(owner.r('handTechnique'), 0, 1));
+  return Math.abs(sim.dice('place', owner, man).normal(0, sd)) < CHEST_PLATE ? 'inside' : 'outside';
+}
+/** PAIR_HANDS: at the rep's start both strike; whose hands arrive first (reaction, then the gap beyond his lockout at
+ * arm speed) is placed first, so a longer or quicker man can beat a better technician to the spot. */
+function placeBoth(sim: PlaySim, e: Engagement): void {
+  const b = e.blocker, d = e.defender, gap = Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) - b.profile.radius - d.profile.radius;
+  const arrive = (a: Agent) => Math.max(0.1, a.profile.reactionTime) + Math.max(0, gap - 0.9 * a.player.measurables.armIn / 36) / ARM_SPEED;
+  const bFirst = arrive(b) <= arrive(d);
+  if (bFirst) { e.hands!.fit = placeHand(sim, b, d, undefined); e.defHands!.fit = placeHand(sim, d, b, e.hands); }
+  else { e.defHands!.fit = placeHand(sim, d, b, undefined); e.hands!.fit = placeHand(sim, b, d, e.defHands); }
+}
 /** HAND_FIT (experimental, off; HAND_FIT=1, requires CONTROL_HANDS): the blocker's hands are a state with a length and
  * a force, not a joint owned by whoever the roll named. (1) The joint is the blocker's in every rep: `control`'s sign no
  * longer hands it to the defender or gates PUNCH. (2) Its length follows the man on every rep, pass and run, at
@@ -420,7 +455,7 @@ export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1';
  * rusher's way met a slack joint at the base; a stalk's hands could not follow a crosser (on for 0.05-0.10 s)
  * (docs/reviews/2026-11-12-tackle-set.md). Meanwhile the defender's own hands in a run rep (his stack and shed, carried
  * by this joint with the sign flipped) are his only through the rolled shed and control. */
-export const HAND_FIT = process.env.HAND_FIT === '1';
+export const HAND_FIT = process.env.HAND_FIT === '1' || PAIR_HANDS;
 if (HAND_FIT && !CONTROL_HANDS) throw new Error('HAND_FIT=1 requires CONTROL_HANDS=1 (the hands at their capacity)');
 function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'run', c: number, holding: boolean): void {
   const tb = traits(b, type), td = traits(d, type);
@@ -433,7 +468,8 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
       // HAND_FIT: the blocker's hands, whatever the roll; his arm's base length.
       joint.actor = b.body;
       joint.extension = sep + (tb.arm / 36) * 0.3;
-      joint.push = pressForce(b);
+      // PAIR_HANDS: an inside hand presses through a straight arm; an outside hand (on a shoulder or arm) only with the arm.
+      joint.push = PAIR_HANDS && joint.fit === 'outside' ? armForce(b) : pressForce(b);
       joint.hold = holding ? armForce(b) * 1.2 : 0;
       joint.steer = armForce(b) * 0.7;
       return;
@@ -512,7 +548,11 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
     // A new fit: the man off his hands (beyond his arms), or a hand knocked off (RUSH_HANDS).
     // HAND_FIT (attempt 2): his recoiled hands are not the man off them; a new fit only when the hands carry nothing.
     const offHim = HAND_FIT ? gap > st.ext + 0.05 && Math.max(0, joint.normalForce ?? 0) < UNLOADED * pressForce(b) : gap > st.ext + 0.05;
-    if (st.striking === undefined || offHim || joint.off || (joint.handsOn ?? 2) < 2) st.striking = true;
+    if (st.striking === undefined || offHim || joint.off || (joint.handsOn ?? 2) < 2) {
+      // PAIR_HANDS: a new strike lands somewhere new.
+      if (PAIR_HANDS && st.striking === false && b.engagement?.hands === joint) joint.fit = placeHand(sim, b, d, b.engagement.defHands);
+      st.striking = true;
+    }
     // Landed: he feels the man on his hands.
     else if (st.striking && Math.max(0, joint.normalForce ?? 0) >= UNLOADED * pressForce(b)) st.striking = false;
   }
@@ -522,9 +562,13 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
     // HAND_FIT: unloaded, the hands follow the man out (as far as lockout); loaded, they recoil toward the bent base,
     // pressing only what the closing needs. Continuous in the felt press.
     const N = Math.max(0, joint.normalForce ?? 0), u = clamp(N / (2 * UNLOADED * pressForce(b)), 0, 1), w = u * u * (3 - 2 * u);
-    const want = clamp(gap * (1 - w) + base * w, base, lock), step = ARM_SPEED * sim.dt;
-    st.ext = clamp(want, st.ext - step, st.ext + step);
-    joint.extension = bodies + Math.max(base, st.ext);
+    // PAIR_HANDS: beaten at his bend (the joint at its push limit), the forearm folds toward his chest, so the bodies can
+    // meet and the torso take the load. Otherwise the recoil stops at the bent base.
+    const beaten = PAIR_HANDS && joint.push > 0 && N >= 0.95 * joint.push;
+    const floor = beaten ? 0 : base;
+    const want = clamp(gap * (1 - w) + base * w, floor, lock), step = ARM_SPEED * sim.dt;
+    st.ext = clamp(beaten ? Math.min(want, st.ext) - step : want, st.ext - step, st.ext + step);
+    joint.extension = bodies + Math.max(floor, st.ext);
     return;
   }
   // Holding the fit: his hands stay at the man (the touch), giving and following at arm speed; they press only as the man
@@ -700,12 +744,28 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
   const mine = new Set(want.values());
   world.joints = world.joints.filter((j) => j.kind !== 'hands' || j.b !== e.defender.body || mine.has(j));
   for (const j of mine) if (!world.joints.includes(j)) world.joints.push(j);
+  if (PAIR_HANDS) {
+    // The defender's own hands on the blocker: a joint of his (a = him).
+    e.defHands ??= { kind: 'hands', a: e.defender.body, b: e.blocker.body, actor: e.defender.body, extension: 1, push: 0, hold: 0, steer: 0 };
+    if (e.defHands.b !== e.blocker.body) e.defHands.b = e.blocker.body;
+    if (!world.joints.includes(e.defHands)) world.joints.push(e.defHands);
+    if (e.hands!.fit === undefined || e.defHands.fit === undefined) placeBoth(sim, e);
+  }
   setHands(sim, e);
 }
 
 function setHands(sim: PlaySim, e: Engagement): void {
   const b = e.blocker, d = e.defender;
   const t = sim.t;
+  if (PAIR_HANDS && e.hands && e.defHands) {
+    // `control` is the two fits, not a rolled state: whose hands are inside.
+    e.control = (e.hands.fit === 'inside' && !e.hands.off ? 0.5 : 0) - (e.defHands.fit === 'inside' && !e.defHands.off ? 0.5 : 0);
+    // The defender's own hands: his press inside, his arm outside; his length follows and recoils as the blocker's.
+    const dj = e.defHands, sep = b.profile.radius + d.profile.radius;
+    dj.actor = d.body; dj.extension = sep + traits(d, e.type).arm / 36 * 0.3;
+    dj.push = dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.steer = armForce(d) * 0.55; dj.hold = 0;
+    if (PUNCH) punch(sim, dj, d, b, true);
+  }
   const inMove = t < e.moveUntil && e.moveOk;
   // Inside hands lock out at the controlling player's arm length; neither in
   // control, the hands meet in the middle.
@@ -791,7 +851,7 @@ function felt(e: Engagement, lat: Vec2): number {
 
 /** Remove a rep's joints from the world (disengage). */
 export function releaseJoints(sim: PlaySim, e: Engagement): void {
-  const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? []), ...(e.rusherHand ? [e.rusherHand] : [])]);
+  const gone = new Set<HandJoint>([...(e.hands ? [e.hands] : []), ...(e.helperHands?.values() ?? []), ...(e.rusherHand ? [e.rusherHand] : []), ...(e.defHands ? [e.defHands] : [])]);
   e.rusherHand = undefined;
   for (const joint of gone) runHands.delete(joint);
   sim.world.joints = sim.world.joints.filter((j) => !gone.has(j as HandJoint));
@@ -1070,6 +1130,14 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   }
   const p = logistic(-2.1 + 3.4 * (skill - counter) + bonus + e.control * -0.6);
   const ok = rng.chance(p);
+  // PAIR_HANDS: a rolled move's outcome is a fit, not `control`: a landed finesse move has knocked the blocker's hands
+  // outside and freed the rusher's; a failed one leaves the blocker inside on an exposed chest. The rusher's next
+  // strike (after the move) is placed afresh.
+  if (PAIR_HANDS && e.hands && e.defHands) {
+    if (ok && e.move !== 'bull' && e.move !== 'longarm') { e.hands.fit = 'outside'; e.defHands.fit = 'outside'; }
+    else if (!ok) { e.hands.fit = 'inside'; e.defHands.fit = placeHand(sim, e.defender, e.blocker, e.hands); }
+    else e.defHands.fit = placeHand(sim, e.defender, e.blocker, e.hands);
+  }
   e.moveUntil = t + 0.3;
   e.moveOk = ok;
   const lat = latOf(axis);
