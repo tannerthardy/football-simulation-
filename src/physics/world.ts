@@ -404,6 +404,10 @@ export const BRACE_GAIT = process.env.BRACE_GAIT === '1';
  * also took the torso contact's previous-step normal off the push limit; attempt 2 does not (each man's strut presses
  * with his own press, engagement.ts pressStrut). */
 const PAIR_HANDS_W = process.env.PAIR_HANDS === '1';
+/** PAIR_HANDS: how far an arm gives under its full load before its force ceiling (yd): elbow flexion under a maximal
+ * press, a few inches. A stated choice with that physical meaning, the same for every body, not fitted to separation;
+ * it sets each arm's stiffness (strength / ARM_GIVE). */
+const ARM_GIVE = 3 / 36;
 /** The hand as a body: RUSH_HANDS or its rip piece. */
 const HAND_BODY = RUSH_HANDS || RIP_CLEAR;
 export const ARM_MASS = 0.05;
@@ -700,6 +704,8 @@ interface JointRow {
   shove?: number;
   /** Hand limits for this substep (push, hold, steer), kg·yd/s. */
   pushLim: number;
+  /** PAIR_HANDS: this row's own softness (his arm's stiffness, strength / ARM_GIVE), else the hands' shared one. */
+  soft?: Softness;
   holdLim: number;
   steerLim: number;
   /** RUSH_HANDS: one hand off, the vacated side's tangent sign (0 for none): steer resisting motion that way is cut. */
@@ -1866,7 +1872,7 @@ export class World {
       for (let it = 0; it < ITERATIONS; it++) {
         if (this.handContact === 'center') for (const c of contacts) this.solveContact(c, soft);
         for (const r of rows) {
-          if (r.joint.kind === 'hands') this.solveHands(r, handSoft);
+          if (r.joint.kind === 'hands') this.solveHands(r, r.soft ?? handSoft);
           else this.solveGrasp(r, graspSoft, h);
         }
       }
@@ -2903,8 +2909,14 @@ export class World {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
         row.pushLim = Math.max(0, jt.push) * h * scale;
-        // PAIR_HANDS attempt 2: each man's strut presses with his own press; the torso contact is its own row. (Attempt
-        // 1 took the torso's previous-step normal off the push limit for a continuous hand-over.)
+        // PAIR_HANDS attempt 2: each man's arm is a spring about the length he holds, its force capped at his strength:
+        // stiffness k = strength / ARM_GIVE, as this row's own softness (frequency sqrt(k / its effective mass)). Two arms
+        // on one gap then share the load by how far each is deflected from its own length; nothing pushes unless
+        // something compresses it. (Attempt 1 took the torso's previous-step normal off the push limit instead.)
+        if (PAIR_HANDS_W && jt.push > 0 && row.mn > 0) {
+          const k = Math.max(0, jt.push) * scale / ARM_GIVE;
+          row.soft = softness(Math.sqrt(k / row.mn) / (2 * Math.PI), HANDS_ZETA, h);
+        }
         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
         if (HAND_BODY && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {

@@ -583,7 +583,8 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
     // PAIR_HANDS: beaten at his bend (the joint at its push limit), the forearm folds toward his chest, so the bodies can
     // meet and the torso take the load. Otherwise the recoil stops at the bent base.
     // PAIR_HANDS: how beaten he is, continuous in the load against what his arm holds: none below 85% of it, all at it.
-    const ub = PAIR_HANDS && joint.push > 0 ? clamp((N / joint.push - 0.85) / 0.15, 0, 1) : 0, beat = ub * ub * (3 - 2 * ub);
+    // PAIR_HANDS attempt 2: no fold (the arm's own spring gives as far as the man pushes it).
+    const ub = 0, beat = ub * ub * (3 - 2 * ub);
     const beaten = beat > 0;
     // The floor his arm folds to falls smoothly from the bent base toward his chest as he is beaten; inside his base he
     // extends back toward it at arm speed, never in one step.
@@ -776,21 +777,22 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
   setHands(sim, e);
 }
 
-/** PAIR_HANDS attempt 2: two hands joints on one gap, one per man. The load rule: **each man's hands are his own strut,
- * pressing the other body with the force he chooses, at most what he can produce, at his own contact point, while the
- * gap is inside his lockout.** The joint asks for his lockout (bodies + LOCKOUT x arm) and its push limit is his press
- * (set above), so while he presses its row saturates at his press: each man's push reaches the other at his own fit (an
- * inside hand at the chest points, an outside hand at the shoulder with its lever, HANDS_LEVER / CHEST_SHOULDERS), and the
- * World applies the reaction to him. Neither joint is the rigid one carrying the pair's whole load (attempt 1: the
- * blocker's joint 2,032 N, the rusher's slack, the pair's load on one row and double its mean). Being beaten is not a step:
- * his press and his legs against the other man's move the gap, and his arm gives exactly as far as the man pushes it,
- * so no fold rule reads last tick's force (attempt 1's beaten yield, a one-tick bang-bang between 0 and the push limit).
- * His arm extends toward the man no faster than ARM_SPEED. */
-function pressStrut(sim: PlaySim, joint: HandJoint, self: Agent, man: Agent): void {
-  const bodies = self.profile.radius + man.profile.radius, lock = bodies + LOCKOUT * self.player.measurables.armIn / 36;
-  const gap = Math.hypot(man.pos.x - self.pos.x, man.pos.y - self.pos.y);
-  // From where his arm is (the gap itself, when the man is on it), a step toward the man at arm speed, at most lockout.
-  joint.extension = Math.max(bodies, Math.min(lock, Math.max(gap, bodies) + ARM_SPEED * sim.dt));
+/** PAIR_HANDS attempt 2: two hands joints on one gap, one per man. **Each arm is a spring about the length its owner is
+ * trying to hold, its force capped at his strength** (the World gives each row the stiffness strength / ARM_GIVE). He
+ * chooses the length; the arm transmits whatever load arrives, deflecting as it does, up to its ceiling, and adds force
+ * of its own only while it is still extending toward his length. Two arms then share the load by how far each is
+ * deflected from its own length, and nothing pushes unless something compresses it, so the pair's total is what the
+ * legs drive. (Attempt 1: the rusher's 0.80 left his joint slack on a wider gap and the blocker's carried the whole
+ * load, 2,032 N; its beaten fold chattered 2,032 / 0. Attempt 2's first build asked both for the gap plus an arm step,
+ * which compressed both past their ceilings: two independent presses, 3,300 N apart.) The lengths, as coached:
+ *   - a bull rusher drives through bent arms: the bent base (BASE_CENTRES);
+ *   - a long-arm, and a run defender's stack (arms extended to keep the blocker off): his lockout;
+ *   - the blocker, pass set or run: bent, elbows in (the bent base).
+ */
+function defenderLength(joint: HandJoint, d: Agent, b: Agent, e: Engagement): void {
+  const bodies = d.profile.radius + b.profile.radius, lock = bodies + LOCKOUT * d.player.measurables.armIn / 36;
+  // The spring is about his length: compressed below it, his arm pushes back by its deflection (capped at his strength).
+  joint.extension = e.type === 'run' || e.move === 'longarm' ? lock : Math.max(bodies, BASE_CENTRES);
 }
 
 function setHands(sim: PlaySim, e: Engagement): void {
@@ -807,8 +809,8 @@ function setHands(sim: PlaySim, e: Engagement): void {
     const pressing = e.type === 'run' || e.move === 'bull' || e.move === 'longarm';
     dj.push = !pressing ? 0 : dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.hold = 0;
     dj.steer = dj.fit === 'outside' ? Math.min(armForce(d) * 0.55, HAND_MU * Math.max(0, dj.normalForce ?? 0)) : armForce(d) * 0.55;
-    // PAIR_HANDS attempt 2: his hands are his own strut (pressStrut below), not the punch's length law.
-    pressStrut(sim, dj, d, b);
+    // PAIR_HANDS attempt 2: his arms hold the length his technique wants (defenderLength).
+    defenderLength(dj, d, b, e);
   }
   const inMove = t < e.moveUntil && e.moveOk;
   // Inside hands lock out at the controlling player's arm length; neither in
@@ -820,9 +822,14 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // PAIR_HANDS: the blocker's joint is his own arm whoever controls the hands (the defender has his own joint).
   if (PAIR_HANDS) hands.actor = b.body;
   // PUNCH: the blocker's hands go to the man, out to lockout.
-  if (PUNCH && (HAND_FIT || (e.control >= 0 && passSetTechnique(sim, b, e)))) punch(sim, hands, b, d, !passSetTechnique(sim, b, e));
-  // PAIR_HANDS attempt 2: the blocker's hands too are his own strut, whatever length the punch asked for.
-  if (PAIR_HANDS) pressStrut(sim, hands, b, d);
+  if (PAIR_HANDS) {
+    // PAIR_HANDS attempt 2: his arms are a spring about his length, as the defender's: bent, elbows in (the bent base,
+    // the NFL's held separation), for a pass setter and a run blocker alike. The punch's strike re-fired each time his
+    // hands unloaded, a period-2 cycle on the spring (extension 0.95 / 0.80 yd); a lockout length pinned his spring at
+    // its 2,032 N cap and threw a same-size bull out to 1.5 yd.
+    const bodies = b.profile.radius + d.profile.radius;
+    hands.extension = Math.max(bodies, BASE_CENTRES);
+  } else if (PUNCH && (HAND_FIT || (e.control >= 0 && passSetTechnique(sim, b, e)))) punch(sim, hands, b, d, !passSetTechnique(sim, b, e));
   if (HAND_SITE) handSite(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
