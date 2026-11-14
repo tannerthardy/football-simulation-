@@ -554,3 +554,40 @@ Off is bit-identical (f45b8a7e377c73b2).
   - the beaten arm gives only as far as the man pushed it, so it does not chatter;
   - the rusher's hand on the shoulder carries his press;
   - with CHEST_SHOULDERS and HANDS_LEVER, its lever then reaches the blocker's yaw.
+
+## PAIR_HANDS attempt 2, first build: stopped at the staged step on the load rule itself (2026-11-14)
+
+**The gates were written down before building:**
+- the power rusher's outside hand turns the blocker's hips (today 0-1 deg);
+- the outside-handed blocker loses the crosser (2.9 against 2.1 yd/s already) and the edge;
+- the inside-handed run defender holds his gap while the outside-handed one is moved (today about 0 in every arm);
+- the press is steady, with no period-2 cycle.
+
+**The load rule as built:** each man's hands are his own strut, pressing the other body with the force he chooses (at
+most his press) at his own contact point while the gap is inside his lockout. Both joints ask for the current gap plus
+an arm-speed step, at most lockout, so each row saturates at its owner's press. Neither is the one rigid joint carrying
+the pair's load. The beaten fold is gone. Under PAIR_HANDS the blocker's joint keeps him as its actor, and the World no
+longer takes the torso's previous-step normal off the push limit. Off is bit-identical (f45b8a7e377c73b2).
+
+**Staged** (hands-chatter.mts, a 144 kg bull on a 144 kg pass setter; PAIR_HANDS + HANDS_LEVER + TRUNK_TWIST +
+CHEST_SHOULDERS):
+- No period-2 cycle. The blocker's joint goes 2,032 -> 1,751 -> 550 -> 454 -> 391 N, steady.
+- **But both struts push the bodies apart.** The rusher's own joint carries 1,294 -> 1,114 -> 394 N at the same time, so
+  the two presses add, about 3,300 N apart at contact. The pair is driven out to lockout (1.56 yd centre to centre) in
+  0.3 s, rel. velocity +2 yd/s apart, the same with the rusher's hand inside or outside. The NFL's centre to centre at
+  +0.4 s is 0.76-0.89.
+
+**Why the rule is wrong, not just mistuned.** A man's arms carry what his legs drive. A bull who pressed with his arms
+beyond his legs' drive would push himself backward. The press is not a force he chooses independently of his base; the
+arm is a strut that transmits his leg drive up to its strength. That is the rigid-up-to-limit joint attempt 1 already
+had. The real defect of attempt 1 is that two rigid struts on one gap are **statically indeterminate**: they share the
+load only through their compliance, and with none the longer one carries everything (the 2,032 on one joint, the other
+slack). Making both carry load needs either:
+- an arm stiffness per strut (a spring: the load splits by stiffness), or
+- one combined pair row whose force is the pair's, with its point of application split between the two contact points
+  by a rule.
+Neither has a sourced constant or rule in hand. It is a physics decision, like the trunk under load, and not something
+to invent inside the last attempt.
+
+**State:** the build stays on the branch behind PAIR_HANDS (off), recorded as attempt 2's first build, failing condition 2
+(conservation and sharing) at the staged step. No game read was taken; the decision on the strut model comes first.

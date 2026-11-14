@@ -776,6 +776,23 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
   setHands(sim, e);
 }
 
+/** PAIR_HANDS attempt 2: two hands joints on one gap, one per man. The load rule: **each man's hands are his own strut,
+ * pressing the other body with the force he chooses, at most what he can produce, at his own contact point, while the
+ * gap is inside his lockout.** The joint asks for his lockout (bodies + LOCKOUT x arm) and its push limit is his press
+ * (set above), so while he presses its row saturates at his press: each man's push reaches the other at his own fit (an
+ * inside hand at the chest points, an outside hand at the shoulder with its lever, HANDS_LEVER / CHEST_SHOULDERS), and the
+ * World applies the reaction to him. Neither joint is the rigid one carrying the pair's whole load (attempt 1: the
+ * blocker's joint 2,032 N, the rusher's slack, the pair's load on one row and double its mean). Being beaten is not a step:
+ * his press and his legs against the other man's move the gap, and his arm gives exactly as far as the man pushes it,
+ * so no fold rule reads last tick's force (attempt 1's beaten yield, a one-tick bang-bang between 0 and the push limit).
+ * His arm extends toward the man no faster than ARM_SPEED. */
+function pressStrut(sim: PlaySim, joint: HandJoint, self: Agent, man: Agent): void {
+  const bodies = self.profile.radius + man.profile.radius, lock = bodies + LOCKOUT * self.player.measurables.armIn / 36;
+  const gap = Math.hypot(man.pos.x - self.pos.x, man.pos.y - self.pos.y);
+  // From where his arm is (the gap itself, when the man is on it), a step toward the man at arm speed, at most lockout.
+  joint.extension = Math.max(bodies, Math.min(lock, Math.max(gap, bodies) + ARM_SPEED * sim.dt));
+}
+
 function setHands(sim: PlaySim, e: Engagement): void {
   const b = e.blocker, d = e.defender;
   const t = sim.t;
@@ -790,7 +807,8 @@ function setHands(sim: PlaySim, e: Engagement): void {
     const pressing = e.type === 'run' || e.move === 'bull' || e.move === 'longarm';
     dj.push = !pressing ? 0 : dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.hold = 0;
     dj.steer = dj.fit === 'outside' ? Math.min(armForce(d) * 0.55, HAND_MU * Math.max(0, dj.normalForce ?? 0)) : armForce(d) * 0.55;
-    if (PUNCH) punch(sim, dj, d, b, true);
+    // PAIR_HANDS attempt 2: his hands are his own strut (pressStrut below), not the punch's length law.
+    pressStrut(sim, dj, d, b);
   }
   const inMove = t < e.moveUntil && e.moveOk;
   // Inside hands lock out at the controlling player's arm length; neither in
@@ -799,8 +817,12 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // Latched hands can hold and steer; a defender in control steers the
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
+  // PAIR_HANDS: the blocker's joint is his own arm whoever controls the hands (the defender has his own joint).
+  if (PAIR_HANDS) hands.actor = b.body;
   // PUNCH: the blocker's hands go to the man, out to lockout.
   if (PUNCH && (HAND_FIT || (e.control >= 0 && passSetTechnique(sim, b, e)))) punch(sim, hands, b, d, !passSetTechnique(sim, b, e));
+  // PAIR_HANDS attempt 2: the blocker's hands too are his own strut, whatever length the punch asked for.
+  if (PAIR_HANDS) pressStrut(sim, hands, b, d);
   if (HAND_SITE) handSite(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
