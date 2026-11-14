@@ -11,7 +11,7 @@ import { DRAG_TUMBLE } from '../physics/ball.js';
 import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { shouldersOf } from '../physics/kinematics.js';
+import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
@@ -217,7 +217,14 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   const trackPen = airTime > 1.4 ? (1 - R.r('ballTracking')) * 0.25 : 0;
   // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
   const rs = R.speed;
-  const fromBehind = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
+  const fromBehindRun = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
+  // TRUNK_TWIST: the term is about tracking a ball he is not facing while he runs (CATCH_SPEED's own words), and the line of run
+  // stands in for "facing" because his hips were all the body he had. A receiver whose shoulders are on the ball keeps his speed and
+  // faces it: the cost is charged against where his chest points when that is more favourable than his line of run (a trunk can only
+  // lower it). Off, or with no twist, his shoulders are his hips and this is the line of run as before.
+  const fromBehind = TRUNK_TWIST && rs > 1 && R.body.trunk
+    ? Math.min(fromBehindRun, (Math.cos(shouldersOf(R.body)) * bv.x + Math.sin(shouldersOf(R.body)) * bv.y) / (Math.hypot(bv.x, bv.y) || 1))
+    : fromBehindRun;
   const shoulder = CATCH_SPEED ? runTrackTerm(rs, fromBehind, airTime, R.r('ballTracking'))
     : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - R.r('ballTracking')) : 0;
   const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen + shoulder;
