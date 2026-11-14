@@ -61,8 +61,20 @@ import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulR
 
 /** ALIGN_HABIT (experimental, off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
+/** PlaySetup.stagedThrow (test staging only). */
+export interface StagedThrow { at: number; slot: string; aim?: { x: number; y: number; z: number }; T?: number }
+
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
+  /** Test staging only (never set in games): the passer starts his throw to `slot` at sim time `at` (or the first
+   * tick after it on which the receiver can be thrown to), and makes no other throw or pump. His motion and release
+   * are his own. With `aim` and `T` the ball goes to that point in that flight time (his accuracy draw is replaced).
+   * Defensive tests use it so a change in the QB does not move their scene. It suppresses any pump the natural QB
+   * would have made before it (a pulled-down load), which changes what defenders saw: a staged play reproduces its
+   * natural play exactly only when that play had no earlier pump: 52 of the 56 recorded panel plays; the 4 others
+   * pumped first, and on 2 of them the outcome changes (arrival-lead slant_flat seed 3, a pump at 1.35-1.55 s and then
+   * a miss, is a catch when staged). */
+  stagedThrow?: StagedThrow;
   /** The defense's scouting of this offense (run/pass tendencies so far). */
   scouting?: ScoutingReport;
   /** The offense's scouting of this defense (coverage mix, disguise). */
@@ -301,6 +313,8 @@ export class PlaySim {
   /** When the passer's arm starts forward (front foot planted); the in-grasp
    * ruling does not cut off a pass already in its delivery. */
   deliveryAt = -1;
+  /** PlaySetup.stagedThrow (test staging). */
+  readonly stagedThrow: StagedThrow | null;
   /** SNAP_REACT: the count's start plans and the pre-snap acts they produced. */
   snapCount?: SnapCount;
   snapActs?: { falseStarts: Set<string>; incidents: SnapIncident[]; inZone: Set<string>; cause?: string };
@@ -319,6 +333,7 @@ export class PlaySim {
     // Normalize once before alignment, actor indices and any ordered consumer.
     const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
+    this.stagedThrow = setup.stagedThrow ?? null;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
     this.ballY = setup.ballY;

@@ -82,7 +82,13 @@ export const METRICS: Metric[] = [
   { id: 'ttt', label: 'Time to throw (s)', band: [2.7, 2.9], source: 'unsourced: legacy scorecard estimate; no committed time-to-throw distribution', play: { on: (p) => p.ttt !== undefined, num: (p) => p.ttt ?? 0 } },
   { id: 'scramble', label: 'Scramble rate', scale: 100, unit: '%', band: [2.18, 7.32], source: nflSource('teamSeasonRanges.scramblePerDropback'), play: { on: pass, num: (p) => yes(p.scramble) } },
   { id: 'sep', label: 'Separation at catch point (yd)', band: [2.8, 3.2], source: 'unsourced: NGS 2022–24; no committed cohort or team-season aggregate', play: { on: (p) => p.sep !== undefined, num: (p) => p.sep ?? 0 } },
-  { id: 'ypc', label: 'Rush yards / carry', band: [3.7, 4.83], source: nflSource('teamSeasons[].designedRun.yards.mean'), splitKind: 'run', play: { on: run, num: (p) => p.yards } },
+  { id: 'ypc', label: 'Rush yards / carry (designed runs, uncapped)', band: [3.7, 4.83], source: nflSource('teamSeasons[].designedRun.yards.mean'), splitKind: 'run', play: { on: run, num: (p) => p.yards } },
+  // The paired run set (`ref:report`) caps each run at 20 yd, so a move in the long tail shows here and not there. These two rows split
+  // the card's mean into the part the run set sees and the part it cannot; docs/VALIDATION.md says how to read them together.
+  { id: 'ypc20', label: 'Rush yards / carry, each run capped at 20 yd', source: 'internal: the ref:report convention; no NFL band', splitKind: 'run', play: { on: run, num: (p) => Math.min(20, p.yards) } },
+  { id: 'ypcTail', label: 'Rush yards / carry beyond 20 yd (the uncapped part)', source: 'internal: ypc minus ypc20; no NFL band', splitKind: 'run', play: { on: run, num: (p) => Math.max(0, p.yards - 20) } },
+  // QB scrambles are logged as passes, so the rush row never counts them.
+  { id: 'scrYds', label: 'QB scramble yards / scramble', source: 'internal: scrambles are pass-kind plays, not in the rush row; no NFL band', play: { on: (p) => pass(p) && p.scramble, num: (p) => p.yards } },
   { id: 'stuff', label: 'Run stuff rate (<=0)', scale: 100, unit: '%', band: [15.89, 23.54], source: nflSource('teamSeasonRanges.stuffPerDesignedRun'), splitKind: 'run', play: { on: run, num: (p) => yes(p.yards <= 0) } },
   { id: 'run10', label: '10+ yd runs', scale: 100, unit: '%', band: [7.58, 12.87], source: nflSource('teamSeasons[].designedRun.explosive.percent'), splitKind: 'run', play: { on: run, num: (p) => yes(p.yards >= 10) } },
   {
@@ -174,6 +180,26 @@ export const SPLITS: Split[] = [
   { id: 'playAction', label: 'Play action', key: (p) => (p.kind === 'run' ? 'run' : p.playAction ? 'PA' : 'no PA') },
   { id: 'personnel', label: 'Personnel', key: (p) => p.personnel },
   { id: 'quarter', label: 'Quarter', key: (p) => `Q${p.quarter}` },
+];
+
+/**
+ * The mix of situations the designed runs are called in, as metrics so the same comparison and interval apply: how
+ * often the offence runs, and the share of runs by down, distance and field zone. A defence that gives up different
+ * passing yards changes when and where the offence runs, which moves the rush row without any run being defended
+ * differently. Internal measures: no NFL band.
+ */
+const DISTANCES = ['short (1-3)', 'medium (4-7)', 'long (8+)'];
+const ZONES = ['own 1-19', 'own 20-49', 'opp 50-21', 'red zone'];
+export const RUN_MIX: Metric[] = [
+  { id: 'mix.runShare', label: 'Run share of scrimmage plays', scale: 100, unit: '%', source: 'internal: call mix', play: { on: () => true, num: (p) => yes(run(p)) } },
+  ...[1, 2, 3].map((d): Metric => ({ id: `mix.runShareDown${d}`, label: `Run share of plays on down ${d}`, scale: 100, unit: '%', source: 'internal: call mix',
+    play: { on: (p) => p.down === d, num: (p) => yes(run(p)) } })),
+  ...[1, 2, 3].map((d): Metric => ({ id: `mix.down${d}`, label: `Runs on down ${d} (share of runs)`, scale: 100, unit: '%', source: 'internal: run situation mix',
+    play: { on: run, num: (p) => yes(p.down === d) } })),
+  ...DISTANCES.map((b): Metric => ({ id: `mix.dist.${b}`, label: `Runs at distance ${b} (share of runs)`, scale: 100, unit: '%', source: 'internal: run situation mix',
+    play: { on: run, num: (p) => yes(distBucket(p.dist) === b) } })),
+  ...ZONES.map((z): Metric => ({ id: `mix.zone.${z}`, label: `Runs in ${z} (share of runs)`, scale: 100, unit: '%', source: 'internal: run situation mix',
+    play: { on: run, num: (p) => yes(zone(p.yl) === z) } })),
 ];
 
 /** Small deterministic generator for resampling, independent of the engine's streams. */

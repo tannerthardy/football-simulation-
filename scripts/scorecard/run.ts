@@ -32,7 +32,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { GameRec, PlayRec } from './records.js';
-import { METRICS, SPLITS, evaluate, interval, penaltyMetrics, status, type Metric } from './metrics.js';
+import { METRICS, RUN_MIX, SPLITS, evaluate, interval, penaltyMetrics, status, type Metric } from './metrics.js';
 import { PROBES } from './probes.js';
 import { eventsFile, overheadLine, watchSection } from './weird/report.js';
 import { compatibility, engineSettings, measurementIdentity, provenance, type Arm, type Card } from './provenance.js';
@@ -231,6 +231,7 @@ function report(card: Card, baseCard?: Card): string {
     out.push('', '## Metrics', '', ...absoluteTable(card.arms[0], metrics));
     const st = splitTables(card.arms[0], metrics);
     if (st.lines.length) out.push('', '## Splits', ...st.lines);
+    if (metrics.some(m => m.id === 'ypc')) out.push('', '## Run-situation mix', '', ...absoluteTable(card.arms[0], RUN_MIX));
   }
   for (const [b, n, label] of pairs) {
     out.push('', `## ${n.name} vs ${label}`, '');
@@ -242,6 +243,7 @@ function report(card: Card, baseCard?: Card): string {
     out.push(...ct.lines);
     const st = splitTables(n, metrics, b, qualified);
     allMoves.push(...ct.moves, ...st.moves);
+    if (metrics.some(m => m.id === 'ypc')) out.push('', '### Run-situation mix', '', 'Whether the offence ran in different situations. A move here changes the rush row without any run being defended differently.', '', ...compareTable(b, n, label, qualified, RUN_MIX).lines);
     if (st.lines.length) out.push('', '### Splits', ...(qualified ? ['', '◆ marks a cell whose 90% change interval excludes zero.'] : []), ...st.lines);
   }
   out.push(...watchSection(card.arms));
