@@ -1451,7 +1451,7 @@ export const REP_SEEN = process.env.REP_SEEN !== '0';
  * between-moves intent, the run defender's touch reads of the blocker, the helpers' and climbers' reads of the man.
  * Physics (joint and strike geometry, the World's contact and reach) and the rep's outcome geometry (past and out of
  * reach, behind his shoulders, the body no longer in the way) stay on the true bodies. */
-export const ENGAGE_FELT = process.env.ENGAGE_FELT === '1';
+export const ENGAGE_FELT = process.env.ENGAGE_FELT !== '0';
 type Felt = { pos: Vec2; vel: Vec2 };
 /** Diagnostic hook (no behaviour): each feltMan call, with whether he had the man by touch. */
 export const feltProbe: { on?: (self: Agent, man: Agent, touch: boolean, t: number, delay?: number) => void } = {};

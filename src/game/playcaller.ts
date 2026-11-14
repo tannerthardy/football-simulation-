@@ -257,7 +257,7 @@ function installWeight(id: string, personnel: DefPersonnelId, passingDown: boole
  * the RPO, per run call (run or RPO)]. The WR-screen rate is the targeted rate divided by the share of our pass calls
  * whose formation fits a quick screen (engine-62 collect, seeds 101-116), so the called share matches; a killed
  * screen still counts as a call. The RPO is called from 11 personnel only (its formation is gun doubles 11). */
-export const SCREEN_CALL = process.env.SCREEN_CALL === '1';
+export const SCREEN_CALL = process.env.SCREEN_CALL !== '0';
 const SCREEN_CALL_RATE: Record<string, [number, number]> = {
   '1st': [0.037, 0.220],        // WR screen 2.6% of 3,542 dropbacks; RPO 826 of 3,747 runs
   '2nd_short': [0.021, 0.289],  // 1.5% of 342; 161 of 557

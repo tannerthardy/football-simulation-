@@ -64,7 +64,7 @@ const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
  * 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside (outside leverage), with the same alignment noise as the
  * press look, at the alignment after motion. Off, only press killed it; on the now screen against Cover 2 the squat
  * corner made every tackle (screen-defense.mts). */
-const CLOUD_KILL = process.env.CLOUD_KILL === '1';
+const CLOUD_KILL = process.env.CLOUD_KILL !== '0';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family

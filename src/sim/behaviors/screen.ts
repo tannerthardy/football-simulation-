@@ -36,7 +36,7 @@ const ON_MAN = 4;
  * hands on the man's catch-side half once he is within reach. NFL perimeter stalks (BDB 2025 WR/TE screens, blocker on
  * a DB, stalk_reference.py): gap 3.7 yd at the snap, 2.0 at 0.9 s, 1.1 at 1.2 s, first contact 1.0 s before the
  * catch, never 1 of 18; ours off: 5.5, 5.1, 4.7, at the catch, never 50 of 263. */
-export const STALK_CLOSE = process.env.STALK_CLOSE === '1';
+export const STALK_CLOSE = process.env.STALK_CLOSE !== '0';
 /** Where he breaks down: this far off the man, on the man's line to the catch (yd). A coaching figure (about a yard
  * and a half), not a fit. */
 const STALK_BREAK = 1.5;
