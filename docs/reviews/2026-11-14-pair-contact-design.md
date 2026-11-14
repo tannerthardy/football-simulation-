@@ -959,3 +959,52 @@ time, which is why it orbits like the NFL.
 **PRESS_SPRING is stopped after two attempts.** It stays behind its flag, off; interior-orbit.py stays as a standing
 witness (runs and pass sets, the NFL rows in its header). What would make a third design sound is the hand fight
 (moves that clear and re-place hands), not a further change to the press.
+
+## ENGAGE_TRUNK + CHEST_SHOULDERS on engine-66: the patch's lane read, and where its run cost comes from (2026-11-14)
+
+The patch: develop 0c8c38b4 + ENGAGE_TRUNK, its run-hips fix, CHEST_SHOULDERS, the VERTICAL_SET information fix, and the
+lane-read tools (sim-export's opt-in EXPORT_FACING, signed-off, engaged-yaw, interior-orbit). Off is develop (seed 999,
+287b9553c2e9b709); tests pass; dither passes with it on.
+
+**Run sets** (paired against the engine-66 reference):
+- ENGAGE_TRUNK + CHEST_SHOULDERS: fresh -0.24 (SE 0.12), main -0.34 (SE 0.11). Main by concept: OZ -0.33, IZ -0.70, gap
+  +0.04, duo -0.53, toss -0.99, draw -0.67.
+- ENGAGE_TRUNK alone, main: -0.19 (SE 0.11), **IZ -0.87 (SE 0.27)**, gap +0.11.
+- CHEST_SHOULDERS alone, main: 0.00 exactly. Only ENGAGE_TRUNK asks for a trunk twist, so without it the shoulders are
+  the hips.
+
+**Where the cost comes from** (iz-lever.mts, the matched staged IZ set, 120 plays, the same bodies):
+- ENGAGE_TRUNK -0.72 (SE 0.48); with CHEST_SHOULDERS -0.49 (SE 0.48).
+- The arms diverge first at 0.7 s, in LG, C and the strong-side DT.
+- The change is the run defenders. Under ENGAGE_TRUNK their hips hold square to the line of scrimmage, so they are no
+  longer turned out of their gaps. Median defender |turn| over the block: LT>DE_S 72 -> 10 deg, H>DE_W 88 -> 0,
+  LG>DE_S 65 -> 3, C>DT_S 106 -> 46.
+
+**Is that football?** The net facing change over an engaged interior run block (interior-orbit.py, `o` = the
+shoulders on both sides, seeds 11 / 23):
+
+| | blocker p50 / p90 | defender p50 / p90 |
+|---|---|---|
+| NFL | 33 / 105 deg | 30 / 95 |
+| develop | 44 / 103; 42 / 108 | 39 / 124; 37 / 114 |
+| ENGAGE_TRUNK + CHEST_SHOULDERS | 38 / 104; 32 / 101 | 26 / 103; 23 / 92 |
+
+Develop over-turns both men, the defender most (p90 114-124 against the NFL's 95). The patch brings both toward the
+NFL: the defender's p90 matches, his p50 is a little under. **So the run cost is what follows from a mechanism that moved
+toward the NFL**: our run defenders were being turned out of their gaps more than real ones are. Under PLAN's merge
+criteria a worse statistic from a better mechanism is not a veto.
+
+**Pass rows and facing** (develop -> patch, seeds 11 / 23):
+- pressured 30.6 / 32.0 -> 35.3 / 27.8% (the seeds disagree); interior 10.0 / 11.9 -> 12.0 / 11.4%; edge win 9 / 8 ->
+  11 / 8%;
+- sacks 5.7 -> 5.9%, before 3 s 66 -> 80% of them; falls 8.2 / 6.1 -> 5.4 / 6.3 per 100;
+- the joint fit's QB-frame term -0.18 / -0.19 -> +0.16 / +0.14 (NFL 0.27), the rusher term 0.64 / 0.76 -> 0.62 / 0.57
+  (NFL 0.61);
+- the signed off-chest median -2.1 / -2.0 -> -3.3 to -4.7 (NFL -5.8 / -6.6), but the trailing tail overshoots (p25 -34
+  to -55 against the NFL's -24);
+- the orbit is unchanged (runs 48 / 45 -> 49 / 42; pass 13 / 11 -> 13 / 13).
+
+**ENGAGE_FELT and completions** (Integration's question; ENGAGE_FELT off -> on on engine-66, seeds 11 / 23): pressured
+28.9 / 28.7 -> 30.6 / 32.0%; interior 9.3 / 10.0 -> 10.0 / 11.9% of dropbacks; edge pressure from inside earlier (time
+p50 2.70 / 2.80 -> 2.30 / 2.60 s; by 2.5 s 2.6 -> 4.0%, seed 11); sacks 5.5 -> 5.7%. The mirror one felt delay behind
+the rusher lets inside moves land a beat earlier: the honest cost.
