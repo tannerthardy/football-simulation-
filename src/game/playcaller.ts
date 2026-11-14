@@ -20,9 +20,9 @@ import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
-import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
+import { PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
-import { FORMATIONS } from '../playbook/formations.js';
+import { FORMATION_BY_ID, FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, type CoverageSystem, type Team } from '../league/team.js';
@@ -251,6 +251,36 @@ function installWeight(id: string, personnel: DefPersonnelId, passingDown: boole
   return 1;
 }
 
+/** SCREEN_CALL (experimental, off; SCREEN_CALL=1; menu sizing, 2026-11-14): the quick perimeter screens and the
+ * screen RPO in the caller's pool, as calls of their own at the NFL's rate for the down and distance. Pool admission
+ * only: the screens, their blocking, the QB's kills and the RPO's pre-snap read are the screen lab's, unchanged.
+ * Rates are BDB 2025 weeks 1-9 (plays.csv, player_play.csv): [quick screen to a WR, per pass call, not an RPO;
+ * the RPO, per run call (run or RPO)]. The WR-screen rate is the targeted rate divided by the share of our pass calls
+ * whose formation fits a quick screen (engine-62 collect, seeds 101-116), so the called share matches; a killed
+ * screen still counts as a call. The RPO is called from 11 personnel only (its formation is gun doubles 11). */
+export const SCREEN_CALL = process.env.SCREEN_CALL !== '0';
+const SCREEN_CALL_RATE: Record<string, [number, number]> = {
+  '1st': [0.037, 0.220],        // WR screen 2.6% of 3,542 dropbacks; RPO 826 of 3,747 runs
+  '2nd_short': [0.021, 0.289],  // 1.5% of 342; 161 of 557
+  '2nd_med': [0.038, 0.257],    // 3.0% of 978; 212 of 824
+  '2nd_long': [0.055, 0.315],   // 3.8% of 2,030; 257 of 815
+  '3rd_short': [0.015, 0.208],  // 1.0% of 616; 121 of 583 (3rd and 4th down)
+  '3rd_med': [0.012, 0.370],    // 0.9% of 1,022; 37 of 100
+  '3rd_long': [0.052, 0.220],   // 4.3% of 1,206; 20 of 91
+};
+const screenBucket = (s: Situation) => s.down === 1 ? '1st'
+  : `${s.down === 2 ? '2nd' : '3rd'}_${s.distance <= 3 ? 'short' : s.distance <= 7 ? 'med' : 'long'}`;
+/** The quick screens a formation can run: the bubble from trips (the slot behind #1's stalk and #3's crack), the
+ * bunch now from a bunch, the now screen from 2x2 (#2 stalks for #1), the tunnel from 2x2 or trips (#2 stalks). */
+function quickScreensFor(f: Formation): PassConcept[] {
+  const t = f.tags, out: PassConcept[] = [];
+  if (t.includes('bunch')) out.push(SCREEN_BY_ID.bunch_now_screen);
+  if (t.includes('trips') && !t.includes('bunch')) out.push(SCREEN_BY_ID.bubble_screen);
+  if (t.includes('2x2')) out.push(SCREEN_BY_ID.wide_now_screen);
+  if (t.includes('2x2') || (t.includes('trips') && !t.includes('bunch'))) out.push(SCREEN_BY_ID.tunnel_screen);
+  return out.filter(Boolean);
+}
+
 /** PA_CALL (experimental, off; PA_CALL=1): play action as a tag on the call (see playActionTag). */
 const PA_CALL = process.env.PA_CALL !== '0';
 /** The NFL's play-action rate on drop-backs by down/distance and the QB's alignment [gun, under center or pistol]
@@ -417,10 +447,27 @@ export class OffensiveCoordinator {
     const motion = motionEnabled() ? this.chooseMotion(formation, isPass) : undefined;
     const tag = motion ? ` (${motion.slot} ${motion.kind} motion)` : '';
     if (isPass) {
+      // SCREEN_CALL: a quick screen is its own call, drawn on its own stream before the concept.
+      if (SCREEN_CALL) {
+        const screens = quickScreensFor(formation), rs = this.rng.fork(`screen-call:${this.screenCalls++}`);
+        if (screens.length && rs.next() < SCREEN_CALL_RATE[screenBucket(s)][0]) {
+          const pass = screens[Math.floor(rs.next() * screens.length)];
+          // Without motion: the screens' blocking and spots are built from the formation as aligned (screen lab).
+          return { formation, flip, kind: 'pass', pass, label: `${formation.name} — ${pass.name}` };
+        }
+      }
       let concept = this.choosePass(s, formation, defense);
       // PA_CALL: play action as a tag on the call, at the NFL's rate for this situation and alignment.
       if (PA_CALL) concept = this.playActionTag(concept, s, formation);
       return { formation, flip, kind: 'pass', pass: concept, motion, label: `${formation.name} — ${concept.name}${tag}` };
+    }
+    // SCREEN_CALL: the screen RPO, from 11 personnel, on its own stream.
+    if (SCREEN_CALL && personnel === '11') {
+      const rpo = RPO_CONCEPTS[0], rr = this.rng.fork(`rpo-call:${this.screenCalls++}`);
+      if (rpo && rr.next() < SCREEN_CALL_RATE[screenBucket(s)][1]) {
+        const f = FORMATION_BY_ID[rpo.formation], run = RUN_BY_ID[rpo.run], screen = SCREEN_BY_ID[rpo.screen];
+        if (f && run && screen) return { formation: f, flip, kind: 'run', run, rpo: screen, label: `${f.name} — ${rpo.name}` };
+      }
     }
     const run = this.chooseRun(s, formation);
     return { formation, flip, kind: 'run', run, motion, label: `${formation.name} — ${run.name}${tag}` };
@@ -510,6 +557,7 @@ export class OffensiveCoordinator {
     return { ...c, id: `${c.id}+pa`, name: `PA ${c.name}`, family: 'playaction', drop: 'pa', fake: gun ? 'insideZone' : 'outsideZone' };
   }
   private paTags = 0;
+  private screenCalls = 0;
 
   private choosePass(s: Situation, f: Formation, defense: Team): PassConcept {
     const qb = bestAt(this.team, 'QB');
