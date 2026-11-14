@@ -3962,3 +3962,35 @@ Per substep of a rip (instrumented once, not committed), p50:
 beside him with no run-up (the rusher's speed along the push 0.68 against 2.44 yd/s) and no line to the QB. A rusher who
 sees the tackle's hips open has the coached answers of the inside counter across his face or the arc kept running, not
 the bull. RUSH_INTENT's choice should read the tackle's posture as he sees it.
+
+### CORNER_AIM, attempts 1 and 2 (2026-11-14, engine-62): stopped
+
+| | VERTICAL_SET | + CORNER_AIM 1 | + CORNER_AIM 2 |
+|---|---|---|---|
+| level phase: request into the tackle / past him (yd/s) | 4.72 / 5.47 | 4.39 / 5.61 | 4.34 / 5.08 |
+| hands' normal force | 1111 N | 1133 N | 1130 N |
+| past by 0.5 s | 15% | 18% | 13% |
+| dither, rush / engagement stage (budget 0.039) | 0.0375 | 0.0351 | **0.050** (over) |
+
+Edge-level trace, seed 11 x 4.
+
+**Attempt 1** applied the tangent only once the rusher was "turned" (phi x side > 0.5). At the hip he never is: 0% of
+level ticks, power moves 0%. He aims at the static corner point beside the blocker, so attempt 1 changed a branch that
+does not occur there.
+
+**Attempt 2** applied it to the corner branch as well, on his working side, latched. The into component barely moves,
+and the engagement stage's reversed re-aims go over budget: the 2-cycle Integration warned of, an aim depending on his
+own position against the body that the engagement stage bounds back.
+
+**Why the tangent does not help.** He is held 0.89 yd from the tackle's centre, against bodies that touch at about 0.6
+yd. The tangent to a body that close is still about 42 deg off the line to the man, so about three quarters of any path
+round him still points into him. To get round, he has to close a gap the press holds open. The aim was a symptom: the
+gap the hands hold open is the thing.
+
+Re-diagnosis question for Integration: what lets an NFL rusher close from arm's length to body on body (separation
+1.12 -> 0.81 yd in 0.4 s) against a tackle's press? Our press holds about one body weight at a bent arm with nothing
+yielding. Candidates:
+- the arm's force-length and force-velocity (a bent arm being driven shorter is eccentric and strong, but the press
+  of a long lever at lockout is weak);
+- the press being a strut of fixed extension (PUNCH_STRIKE's held touch) rather than an arm that yields under load;
+- the hand coming off, which RIP_CLEAR showed needs the press itself to fall.

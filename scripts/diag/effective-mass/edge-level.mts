@@ -55,6 +55,8 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       const lean = Math.hypot(d.body.support?.lean?.x ?? 0, d.body.support?.lean?.y ?? 0); r.lean += lean;
       if (Number.isFinite(iv.leanCap)) { r.cap += iv.leanCap; r.capN++; if (lean >= 0.95 * iv.leanCap) r.bind++; }
       r.offChest += deg(Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x) - b.body.facing); r.yaw += Math.abs(b.body.spin ?? 0) * 180 / Math.PI;
+      if ((e.phi ?? 0) * e.side > 0.5) r.turnedN = (r.turnedN ?? 0) + 1;
+      if (e.move === 'bull' || e.move === 'longarm') r.powerN = (r.powerN ?? 0) + 1;
       r.moves[e.move ?? 'none'] = (r.moves[e.move ?? 'none'] ?? 0) + 1;
       if (depth < -0.3 && width >= -0.3) r.past = true;
     }
@@ -71,6 +73,7 @@ for (const [lab, f] of [['all level', (r: any) => true], ['went past by 0.5 s', 
   console.log(`   1 strut: load along the line p50 ${q(m('ln'))} N, across ${q(m('lt'))} N | tackle's hands on ${q(R.map((r) => 100 * r.on / Math.max(1, r.n)))}% of ticks, normal ${q(m('jn', 'on'))} N, tangential ${q(m('jt', 'on'))} N`);
   console.log(`   2 bend: request off the QB bearing p50 ${q(m('reqQB'))} deg, achieved ${q(m('gotQB'))} deg; speed ${q(m('v'), .5, 2)} yd/s; turn ${q(R.map((r) => r.turn))} deg/s | lean ${q(m('lean'))} N, cap ${q(m('cap', 'capN'))} N, cap binding ${q(R.map((r) => 100 * r.bind / Math.max(1, r.capN)))}% of capped ticks (capped on ${q(R.map((r) => 100 * r.capN / Math.max(1, r.n)))}% of ticks)`);
   console.log(`   request into the tackle p50 ${q(m('reqInto'), .5, 2)} yd/s, past him ${q(m('reqPast'), .5, 2)} yd/s | the line to the QB through the tackle's body on ${q(R.map((r) => 100 * (r.through ?? 0) / Math.max(1, r.n)))}% of ticks`);
+  console.log(`   branch: turned (phi x side > 0.5) on ${q(R.map((r) => 100 * (r.turnedN ?? 0) / Math.max(1, r.n)))}% of ticks, power move ${q(R.map((r) => 100 * (r.powerN ?? 0) / Math.max(1, r.n)))}%`);
   console.log(`   3 hands: moves ${Object.entries(mv).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${(100 * v / tot).toFixed(0)}%`).join(', ')}`);
   console.log(`   4 tackle: rusher off his chest p50 ${q(m('offChest'))} deg, yaw rate ${q(m('yaw'))} deg/s`);
 }
