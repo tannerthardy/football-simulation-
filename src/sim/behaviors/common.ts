@@ -174,7 +174,7 @@ const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean 
  * tracker corrects every tick; a meeting moment held fixed turns each correction into a shift of his aim point along
  * the carrier's path (engine-61 candidate, pursuit-commit's 3-8 yd band: held-moment ticks turn 14.0 deg/s against the
  * uncommitted re-solved intercept's 10.6), while a held spot only moves when the forecast path stops passing it. */
-const PURSUIT_SPOT = process.env.PURSUIT_SPOT === '1';
+const PURSUIT_SPOT = process.env.PURSUIT_SPOT !== '0';
 const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean }>();
 /** PURSUIT_SPOT: commit to the meeting spot, not its moment. The carrier's time to the held spot is read off
  * his current forecast (its along-path distance over the forecast speed); released when his forecast path no longer
