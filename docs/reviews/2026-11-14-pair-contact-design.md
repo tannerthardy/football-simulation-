@@ -591,3 +591,53 @@ to invent inside the last attempt.
 
 **State:** the build stays on the branch behind PAIR_HANDS (off), recorded as attempt 2's first build, failing condition 2
 (conservation and sharing) at the staged step. No game read was taken; the decision on the strut model comes first.
+
+## PAIR_HANDS attempt 2, the arm as a spring (Integration's ruling (a)): staged gates, and the stop (2026-11-14)
+
+**The model:** each arm is a spring about the length its owner holds, its force capped at his strength. The World gives
+each PAIR_HANDS hands row its own softness: stiffness k = strength / ARM_GIVE, frequency sqrt(k / its effective mass),
+the hands' damping ratio. ARM_GIVE = 3 in: elbow flexion under a full press, a stated choice with that meaning, the same
+for every body, not fitted. The World's hands rows were already soft (5 Hz for all: about 1 in of give at 2,000 N for
+a 72 kg pair). Attempt 1's 2,032 / 0 was the rusher's length (0.80) leaving his joint slack on a wider gap, not rigidity.
+
+The lengths:
+- the bull's bent arms and the blocker's (pass set and run): the bent base, BASE_CENTRES 0.80;
+- a long-arm and a run defender's stack: lockout.
+No strike and no fold. Off is bit-identical (f45b8a7e377c73b2).
+
+**Lengths tried on the way, each failing the staged bull:**
+- the blocker on the punch's strike and recoil: the strike re-fired each time his hands unloaded, extension 0.95 / 0.80
+  and force 2,032 / 0-400 N, period 2;
+- the pass setter at lockout: his spring sat 0.6 yd compressed at its 2,032 N cap and threw a same-size bull to 1.5 yd.
+
+**Staged** (PAIR_HANDS + HANDS_LEVER + TRUNK_TWIST + CHEST_SHOULDERS; pair-staged STAGE_TRUNK=1):
+
+| gate (numbers written before) | before | attempt 2 | |
+|---|---|---|---|
+| steady press, both arms carry, the sum the drive | 2,032 / 0 chatter | 720 / 446 N steady (their strength ratio at equal deflection), 0.77 yd centre to centre (NFL 0.76-0.89) | passes |
+| the power rusher's outside hand turns the blocker's hips | 0-1 deg | 0 deg (shoulders 1) | **fails** |
+| the outside-handed blocker loses the crosser: speed after, outside / inside | 2.9 / 2.1 | 2.92 / 2.35; stalk at 3 yd/s 3.00 / 2.29 | passes (the edge itself not staged) |
+| the inside-handed run defender holds, the outside-handed one is moved: his lateral | about 0 | 0.08 / 0.06 yd; the reach never connects (joint life 0 s, separation 1.7 yd) | **fails** |
+
+**Why each failure is physics, not a constant:**
+- **Gate 1.** The rusher's arm carries about 450 N at the blocker's shoulder, on a lever of at most CHEST_HALF (0.12 yd):
+  about 54 N·yd. The set man's yaw motor holds 190-360 N·yd (OT, standing to 80% of traction in use). A steady press
+  cannot turn a man whose feet resist it, here or on a field. Turning a set man takes a strike (a club, a rip's force
+  across the forearm: impulses, RIP_CLEAR's piece) or his own feet losing the race, not the press of a held arm. The gate
+  asked the steady press for what only a move can do.
+- **Gate 3.** A lockout length on a spring is an independent press again. The run defender's stack sits about 0.8 yd
+  compressed at its cap, pushes the blocker off his reach before the blocker's hands (bent base, 0.80) ever touch, and
+  the reach's steer has nothing to act through. Any lockout target reproduces the first build's failure (two presses
+  adding, the pair driven apart). A stack is the defender extending his arms against a blocker who drives into him; with
+  a blocker who steps laterally, the lockout spring is a shove into air.
+
+**Stop.** That is the second attempt. Re-diagnosis, for whoever takes the pair model next:
+1. The arm-as-spring with a bent working length is right for the press: steady, shared, conserving, the NFL's held
+   separation with no constant fitted to it.
+2. Lockout is not a spring length. It is an extension, a motion of the arm at arm speed, that ends when the arm is
+   straight. It belongs with the strikes (a punch, a long-arm's lockout, a stack's extension) as an impulse or a bounded
+   extension rate, not as the spring's rest length.
+3. Turning a man is the moves' and the feet's (strikes across the body, the race), not the steady press's. The yaw
+   question's next step is the strike impulses' lever (club, rip, swim at the shoulder) against the motor, measured in
+   games with Tools' trace, not another hands law.
+4. HANDS_LEVER's IZ +0.73 is not answered by this attempt (no game read was taken: the staged gates failed first).
