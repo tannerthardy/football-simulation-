@@ -9,7 +9,7 @@ import type { Agent } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { hasObservedFlight, observedHolder } from '../possession-read.js';
-import { sawThrow } from '../behaviors/defense.js';
+import { infoHonest, sawThrow } from '../behaviors/defense.js';
 import type { ReceiverRead, ReleaseReader } from './reads.js';
 import type { Directive } from './rules.js';
 
@@ -33,8 +33,9 @@ export class CoverageJudgment {
     if (!deep || (holder && holder.target !== sim.qb && hasObservedFlight(a))) return primary;
     // Release is not a cue to undo a help decision. Keep the current job
     // until its technique sees the ball and transitions to playing it.
-    if (JUDGE_SEEN_BALL && !this.sawBall && sim.ball.kind === 'air' && sawThrow(a, sim, null)) this.sawBall = true;
-    if (JUDGE_SEEN_BALL ? this.sawBall : sim.ball.kind === 'air') return this.override ?? primary;
+    const seenBall = JUDGE_SEEN_BALL || infoHonest(3);
+    if (seenBall && !this.sawBall && sim.ball.kind === 'air' && sawThrow(a, sim, null)) this.sawBall = true;
+    if (seenBall ? this.sawBall : sim.ball.kind === 'air') return this.override ?? primary;
     const key = primary.t === 'zone' ? `zone:${primary.zone}` : `${primary.t}:${primary.r.slot}`;
     if (sim.t < this.nextRead && key === this.primaryKey) return this.override ?? primary;
     this.nextRead = sim.t + a.mind.decisionInterval;
@@ -62,7 +63,7 @@ export class CoverageJudgment {
     const danger = routes.filter(r => r.r !== own?.r && climbing(r) && !capped(r))
       .sort((p, q) => (q.depth - 0.25 * Math.abs(q.pos.y - a.pos.y)) - (p.depth - 0.25 * Math.abs(p.pos.y - a.pos.y)))[0];
     if (danger && danger.pos.x > a.pos.x - 5) {
-      this.override = { t: 'man', r: danger.r, opts: { overTop: true, lev: 'inside' } };
+      this.override = { t: 'man', r: danger.r, opts: infoHonest(7) ? { overTop: true, lev: 'inside', initialPosition: { ...danger.pos } } : { overTop: true, lev: 'inside' } };
       this.reason = `protect-vertical:${danger.r.slot}`;
     } else if (!routes.some(r => climbing(r) && !capped(r))) {
       const short = own ?? routes.filter(r => r.depth > 2 && r.depth < 14 && r.vel.x < 2.5)

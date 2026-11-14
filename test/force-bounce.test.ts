@@ -37,7 +37,9 @@ function stage(side: number, kickout = true) {
     const pos = { ...spot(o) }, vel = { x: 0, y: 0 };
     if (kickout && o === guard) { pos.x = 39.7; pos.y = side * (surface + 1.5); vel.y = side * 2; }
     if (kickout && o === end) { pos.x = 40.3; pos.y = side * (surface + 2.3); }
-    return [o, { pos, vel, age: .2, carrying: o === sim.qb ? true : null, stance: null, facing: 0, pose: 'up' } as Perceived] as const;
+    // The kicked end is seen in contact with the guard (seen contact), as well as engaged (below) for the old read.
+    const contactWith = kickout && o === end ? [guard.idx] : kickout && o === guard ? [end.idx] : [];
+    return [o, { pos, vel, age: .2, carrying: o === sim.qb ? true : null, stance: null, facing: 0, pose: 'up', contactWith } as Perceived] as const;
   }));
   if (kickout) end.engagement = { blocker: guard, defender: end, helpers: [], start: 1, type: 'run', win: .2, control: 0, phi: 0, side,
     baseB: 1, baseD: 1 } as unknown as Engagement;

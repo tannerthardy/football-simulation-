@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-60",
+  "id": "engine-61",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -119,6 +119,10 @@
     "GAZE": "off",
     "PERCEIVE_TRACK": "off",
     "QB_BODY_SEEN": "on",
+    "RCV_SEEN": "on",
+    "TRACK_PURSUIT": "on",
+    "TRACK_TACKLE": "on",
+    "PURSUIT_SPOT": "on",
     "SIGHT_CARRIER": "off",
     "SIGHT_COVER": "off",
     "SIGHT_RECOG": "off",
@@ -215,6 +219,9 @@
     "PRO_CALL": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
+    "HONEST_READS": "on",
+    "HONEST_FLIGHT": "off",
+    "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "WAIT_REACHED": "on",
     "QB_RHYTHM": "on",
