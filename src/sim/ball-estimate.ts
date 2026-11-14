@@ -109,7 +109,7 @@ export class BallEstimates {
       for (const [a, tr] of this.tracks) {
         if (tr.preLookT === undefined || sim.t - tr.preLookT > sim.dt + 1e-9 || a.isDown(sim.t)) continue;
         const qb = sim.see(a, sim.qb).pos, toward = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
-        const lim = a.facing + clamp(angDiff(toward, a.facing), -NECK, NECK);
+        const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -NECK, NECK);
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -NECK, NECK);
         tr.headT = sim.t;
@@ -126,7 +126,7 @@ export class BallEstimates {
       // The head turns toward where he believes the ball is (his estimate, else where it comes from).
       const want = this.believedAt(a, sim, tr);
       const toward = Math.atan2(want.y - a.pos.y, want.x - a.pos.x);
-      const lim = a.facing + clamp(angDiff(toward, a.facing), -NECK, NECK);
+      const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -NECK, NECK);
       const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
       tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -NECK, NECK);
       tr.headT = sim.t;
@@ -191,6 +191,12 @@ export class BallEstimates {
     tr.preLookT = sim.t;
     // Pre-release attention carries into the flight's first tick.
     tr.attendT = sim.t;
+  }
+
+  /** Design 4: was he looking for the QB when this flight left the hand (his pre-release look)? */
+  lookedAtRelease(a: Agent, sim: PlaySim): boolean {
+    const tr = this.tracks.get(a);
+    return sim.ball.kind === 'air' && tr?.preLookT !== undefined && sim.ball.releaseT - tr.preLookT <= 2 * sim.dt + 1e-9;
   }
 
   /** Read-only: his last fitted path (the `ballPath` shape) as of now, without attending, turning his head or
@@ -284,6 +290,15 @@ export class BallEstimates {
     return null;
   }
 }
+
+/** A target almost directly behind him is reached over the shoulder his head is already turned to; the head cannot
+ * pass through the back of his neck, and the shortest-angle side flips arbitrarily near 180 deg. */
+export function sideOf(rel: number, headRel: number): number {
+  if (Math.abs(rel) <= BEHIND || Math.abs(headRel) < 0.2) return rel;
+  const side = Math.sign(headRel);
+  return Math.sign(rel) === side ? rel : side * (2 * Math.PI - Math.abs(rel));
+}
+const BEHIND = (150 * Math.PI) / 180;
 
 function angDiff(a: number, b: number): number {
   let d = a - b;

@@ -15,7 +15,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, LOOK_NECK, PRE_LOOK_LATE, bodyTurnLead } from '../ball-estimate.js';
+import { BALL_EST, LOOK_NECK, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -245,6 +245,7 @@ export class RouteRunner implements Behavior {
     let d = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x) - heading;
     while (d > Math.PI) d -= 2 * Math.PI;
     while (d < -Math.PI) d += 2 * Math.PI;
+    d = turnSide(a, sim, d, heading);
     const over = Math.abs(d) - LOOK_NECK;
     return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
   }
@@ -630,7 +631,8 @@ export class TrackBall implements Behavior {
       // Still on his route; late in the flight (by his estimate) he turns his body to find a ball behind him.
       const due = catchSpot(a, { t: sim.t, ballPath: path });
       const route = this.fallback.update(a, sim);
-      return due && due.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, route) : route;
+      // Design 4: if he was already looking for the ball when it left, he keeps looking until he finds it.
+      return (due && due.t - sim.t <= bodyTurnLead(a)) || sim.ballEstimates.lookedAtRelease(a, sim) ? lookFor(a, sim, route) : route;
     }
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
@@ -657,6 +659,16 @@ export class TrackBall implements Behavior {
   }
 }
 
+/** BALL_EST: a turn toward something almost behind him goes over the shoulder his head is already turned to. */
+function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
+  const head = sim.ballEstimates.headOf(a);
+  if (head === undefined) return d;
+  let h = head - heading;
+  while (h > Math.PI) h -= 2 * Math.PI;
+  while (h < -Math.PI) h += 2 * Math.PI;
+  return sideOf(d, h);
+}
+
 /** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
  * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
  * turned body, which the facing speed cap prices. */
@@ -669,6 +681,7 @@ function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   let d = toward - heading;
   while (d > Math.PI) d -= 2 * Math.PI;
   while (d < -Math.PI) d += 2 * Math.PI;
+  d = turnSide(a, sim, d, heading);
   const over = Math.abs(d) - LOOK_NECK;
   return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
 }
