@@ -922,6 +922,8 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
   if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
   if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
+  // RUSH_BULL: no roll; the drive is his intent (stepPassRep's power request) and the World's.
+  if (RUSH_BULL && e.move === 'bull') { e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); return; }
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);
@@ -1168,6 +1170,18 @@ export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
  * forward onto the man when it was taken away (12 of 21 interior falls; dl-falls.mts). A bull still keeps the
  * commitment his bound allows and can still be dropped. */
 export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND !== '0';
+/** RUSH_BULL (experimental, off; RUSH_BULL=1; PRO-INFO #9 and #10, the first move): the bull rush is the rusher's
+ * drive, not a roll. He asks to go through the man's chest to the QB (power: push 1 at 0.55 of his top speed, his pad
+ * level), and the World resolves his legs, mass, lean and base against the blocker's anchor; nothing else. The roll
+ * (logistic of rated skill against the blocker's rated counter), the scripted strikes (a won bull's 0.9 x the
+ * blocker's mass, a lost one's blocker punch), the lost move's stall and both control swings are gone together. What
+ * a bull that doesn't move the man costs comes from the bodies: he spent his drive and his weight is forward on the
+ * man; the blocker's counter is his own anchor and hands. With it the pass rep's control no longer drifts toward the
+ * better hands rating (#10): it changes only through the hand events still in the rep.
+ * Diagnosis (rep-rolls.mts, engine-61, 8 games): 1475 bull rolls, 10% won, opening 4 of 210 sheds; a lost roll left
+ * the rusher 0.08-0.09 yd nearer the QB over 0.5 s against 0.12-0.14 engaged with no move: a move attempt was worth
+ * less than none. */
+export const RUSH_BULL = process.env.RUSH_BULL === '1';
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
   const sup = d.body.support; if (!sup) return;
   const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
@@ -1712,7 +1726,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const stalled = t < e.moveUntil && !e.moveOk;
   e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
   // Hand fight drifts toward the better hands; arm length keeps you off the body.
-  e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
+  // RUSH_BULL (#10): no drift toward the better hands rating.
+  if (!RUSH_BULL) e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
   setHands(sim, e);
 
   const sep = b.profile.radius + d.profile.radius;

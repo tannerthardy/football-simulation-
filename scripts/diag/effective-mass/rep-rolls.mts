@@ -10,6 +10,9 @@ const W = process.cwd();
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
 const { Rng } = await import(`${W}/src/core/rng.ts`);
+const { supportParams } = await import(`${W}/src/physics/support.ts`);
+const ADV = process.env.RR_ADV ?? 'rating';
+const adv = (d: any, b: any) => ADV === 'push' ? supportParams(d.profile).pushForce - supportParams(b.profile).pushForce : d.r('passRushPower') - b.r('passBlock');
 const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 2);
 const rng = new Rng(first);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
@@ -34,11 +37,11 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       let r = live.get(e);
       if (!r) { r = { e, d: e.defender, start: sim.t, lastUntil: e.moveUntil, res: [] as any[] }; live.set(e, r); reps++; }
       // A control sample: an engaged tick with no move in flight, 0.5 s on.
-      if (!(e.moveUntil > sim.t) && Math.random() < 0.05) after.push({ t: sim.t, move: 'none', ok: false, ctrl: true, dq: Math.hypot(e.defender.pos.x - sim.qb.pos.x, e.defender.pos.y - sim.qb.pos.y), d: e.defender, edge: Math.abs(e.defender.pos.y - sim.ballY) > 3 });
+      if (!(e.moveUntil > sim.t) && Math.random() < 0.05) after.push({ t: sim.t, move: 'none', ok: false, ctrl: true, dq: Math.hypot(e.defender.pos.x - sim.qb.pos.x, e.defender.pos.y - sim.qb.pos.y), d: e.defender, edge: Math.abs(e.defender.pos.y - sim.ballY) > 3, adv: adv(e.defender, e.blocker) });
       if (e.moveUntil !== r.lastUntil && e.moveUntil > sim.t) {
         r.lastUntil = e.moveUntil;
         const dq = Math.hypot(r.d.pos.x - sim.qb.pos.x, r.d.pos.y - sim.qb.pos.y);
-        const x = { t: sim.t, move: e.move, ok: !!e.moveOk, dq, d: r.d, edge: Math.abs(r.d.pos.y - sim.ballY) > 3 };
+        const x = { t: sim.t, move: e.move, ok: !!e.moveOk, dq, d: r.d, edge: Math.abs(r.d.pos.y - sim.ballY) > 3, adv: adv(r.d, e.blocker) };
         r.res.push(x); after.push(x);
         const k = rolls.get(e.move) ?? { n: 0, ok: 0 }; k.n++; if (e.moveOk) k.ok++; rolls.set(e.move, k);
       }
@@ -72,4 +75,18 @@ const med = (v: number[]) => { const q = [...v].sort((a, b) => a - b); return q.
 for (const edge of [true, false]) {
   const G = gains.filter((x) => x.edge === edge);
   console.log(`${edge ? 'edge' : 'interior'}: the rusher's gain on the QB over 0.5 s (yd, p50) | after a lost roll ${med(G.filter((x) => !x.ok && !x.ctrl).map((x) => x.gain))} (n ${G.filter((x) => !x.ok && !x.ctrl).length}) | after a won roll ${med(G.filter((x) => x.ok).map((x) => x.gain))} (n ${G.filter((x) => x.ok).length}) | engaged, no move in flight ${med(G.filter((x) => x.ctrl).map((x) => x.gain))} (n ${G.filter((x) => x.ctrl).length})`);
+}
+// What a move attempt is worth, by matchup (RR_ADV=rating: rusher pass-rush power minus blocker pass-block; RR_ADV=push:
+// the two bodies' leg drive, supportParams.pushForce; thirds of the pooled
+// resolutions): his gain on the QB over 0.5 s after a move resolution, minus the same with no move in flight.
+{
+  const all = gains.filter((x) => x.adv !== undefined).map((x) => x.adv).sort((a, b) => a - b);
+  const lo = all[Math.floor(all.length / 3)], hi = all[Math.floor(2 * all.length / 3)];
+  for (const [lab, f] of [['rusher better (top third)', (x: any) => x.adv >= hi], ['blocker better (bottom third)', (x: any) => x.adv <= lo]] as const) {
+    const G = gains.filter(f), base = Number(med(G.filter((x) => x.ctrl).map((x) => x.gain)));
+    const rows = ['bull', 'rip', 'swim', 'club', 'spin', 'dip', 'longarm', 'snatch'].map((m) => {
+      const M = G.filter((x) => !x.ctrl && x.move === m); return `${m} ${(Number(med(M.map((x) => x.gain))) - base).toFixed(2)} (n ${M.length})`;
+    });
+    console.log(`worth of a move attempt, ${lab} (gain minus no-move ${base.toFixed(2)} yd): ${rows.join(' | ')}`);
+  }
 }
