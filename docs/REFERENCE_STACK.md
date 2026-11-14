@@ -625,7 +625,7 @@ Checks. Fresh run set 3.92 (engine-65 3.80; `ENGAGE_FELT`'s lane read was +0.10,
 
 What agrees across seeds: the screens lower aDOT by about 0.3. Nothing else agrees; seed 31 is up in every arm. The two honesty changes land on the information rule.
 
-Suite on the flipped stack: the known research pair, and one fixture moved by `ENGAGE_FELT`, restated before merge (below).
+Suite on the flipped stack: the known research pair, and one fixture moved by `ENGAGE_FELT`, restated before merge: `hold-facing`'s pinned scene (seed 1922, `DT_W`) no longer has the hold in either arm, and is re-pinned to seed 1921 `DT_S` from a scan of seeds 1900 to 1989 on the test's own premise (Defense `95c22940`; off 206 deg, on 36 deg).
 
 ## engine-65: `QB_KEY_MAN`, `PLAN_KEYS_2`, `TRUNK_TWIST`, `VERTICAL_SET`, `CROSS_FLAT` and `CUT_WALL` on (2026-11-14)
 
