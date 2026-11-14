@@ -44,7 +44,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+import { OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -669,11 +669,12 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // from his chest to the man at arm speed, then is on him again where it lands.
   // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
-  if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
+  // RIP_CLEAR: the same recovery and re-fit for a hand an edge's rip slid or took off.
+  if ((RUSH_HANDS || RIP_CLEAR) && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
     const o = hands.handOffset, step = ARM_SPEED * sim.dt;
     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
   }
-  if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
+  if ((RUSH_HANDS || RIP_CLEAR) && (hands.off || (hands.handsOn ?? 2) < 2)) {
     // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
     // request works past, as a landed move).
     // RUSH_ONE_HAND: one hand gone is not a landed move: only both gone frees him (the side it guarded is open, the
@@ -954,6 +955,18 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
       sim.world.handForce(e.hands, e.defender.body, { x: -lat.x * e.side * F, y: -lat.y * e.side * F }, sim.world.time, sim.world.time + FOREARM / speed);
     }
     e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return;
+  }
+  // RIP_CLEAR: an edge's rip (a rep against a tackle) is RUSH_RIP's force on the tackle's hand, with no roll and no
+  // landed or stalled window: whether the hand slides or comes off is the World's (his hold against the force: weakest
+  // at full extension), and only a hand gone frees him (the hands-gone block above), until the tackle re-fits. The
+  // rip's bend (low, at the hip, through the corner) is his request for the arm's time across the forearm.
+  if (RIP_CLEAR && !RUSH_RIP && e.move === 'rip' && (e.blocker.slot === 'LT' || e.blocker.slot === 'RT')) {
+    const speed = ARM_SPEED * (0.75 + 0.5 * e.defender.r('passRushFinesse'));
+    if (e.hands && !e.hands.off) {
+      const lat = latOf(axis), F = armForce(e.defender);
+      sim.world.handForce(e.hands, e.defender.body, { x: -lat.x * e.side * F, y: -lat.y * e.side * F }, sim.world.time, sim.world.time + FOREARM / speed);
+    }
+    e.ripUntil = t + FOREARM / speed; e.moveUntil = t; e.moveOk = false; e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return;
   }
   // RUSH_BULL: no roll; the drive is his intent (stepPassRep's power request) and the World's.
   if (RUSH_BULL && e.move === 'bull') { e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); return; }
@@ -1787,7 +1800,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // RUSH_INTENT: between moves his request is an intent he chose (edge, power or stall), not a default.
   const between = RUSH_INTENT && !(t < e.moveUntil) && !turned ? rushIntent(sim, e, axis, sep) : null;
   const power = between ? between === 'power' : RUSH_INTENT ? (t < e.moveUntil && (e.move === 'bull' || e.move === 'longarm')) : e.move === 'bull' || e.move === 'longarm';
-  const bend = inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip');
+  const bend = (inMove && (e.move === 'speed' || e.move === 'dip' || e.move === 'rip'))
+    || (RIP_CLEAR && e.move === 'rip' && t < (e.ripUntil ?? -Infinity));
   const corner = { x: b.pos.x + lat.x * e.side * (sep + 0.45) + axis.x * 0.35, y: b.pos.y + lat.y * e.side * (sep + 0.45) + axis.y * 0.35 };
   let aim = power || turned ? qbD : corner;
   if (between === 'edge') {

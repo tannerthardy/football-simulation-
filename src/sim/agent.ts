@@ -106,6 +106,8 @@ export interface Engagement {
   moveUntil: number;
   /** Whether the current move landed. */
   moveOk: boolean;
+  /** RIP_CLEAR: the end of an edge's rip (his arm across the tackle's hand; his bend request until then). */
+  ripUntil?: number;
   nextMoveAt: number;
   /** Bonus push while a power move is landing. */
   pushBoost: number;

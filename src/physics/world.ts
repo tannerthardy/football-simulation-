@@ -380,6 +380,13 @@ export const HAND_MU = 0.42;
  * modelled), and past the edge it is off: no push, hold or steer until he re-fits (engagement.ts). With no force
  * on the hand it stays at 0 and every joint force is today's. */
 export const RUSH_HANDS = process.env.RUSH_HANDS === '1';
+/** RIP_CLEAR (experimental, off; RIP_CLEAR=1): the hand's one degree of freedom above (handForce, the hold, the slide,
+ * handEdge and the hand coming off at the torso's edge), and only that, without the rest of RUSH_HANDS (club, long-arm,
+ * keyed moves, one hand). It is the part of RUSH_HANDS' rip that survives: when the hand model returns, RUSH_HANDS
+ * includes it and RIP_CLEAR is retired. engagement.ts: an edge's rip is a force on the tackle's hand (RUSH_RIP's law). */
+export const RIP_CLEAR = process.env.RIP_CLEAR === '1';
+/** The hand as a body: RUSH_HANDS or its rip piece. */
+const HAND_BODY = RUSH_HANDS || RIP_CLEAR;
 export const ARM_MASS = 0.05;
 /** RUSH_HANDS: with one hand off, the share of the remaining hand's steer left to resist the man toward the vacated
  * side (his body has to turn on the remaining hand to stop him there: most of it is lost). */
@@ -942,7 +949,7 @@ export class World {
    * times t0 and t1 (its contact time). Only the component along the joint's tangent moves the hand; the rest is an
    * ordinary push between the bodies. */
   handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number): void {
-    if (!RUSH_HANDS || !(t1 > t0) || !Number.isFinite(f.x + f.y)) return;
+    if (!HAND_BODY || !(t1 > t0) || !Number.isFinite(f.x + f.y)) return;
     this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1 });
   }
 
@@ -1096,11 +1103,11 @@ export class World {
     }
     report.contacts = [...pairs.values()];
     this.pending = [];
-    if (RUSH_HANDS) this.handForces = this.handForces.filter(f => f.t1 > this.time + 1e-12 && this.joints.includes(f.jt));
+    if (HAND_BODY) this.handForces = this.handForces.filter(f => f.t1 > this.time + 1e-12 && this.joints.includes(f.jt));
     for (const j of this.joints) {
       if (j.kind === 'hands') {
         j.normalForce = (j.normalForce ?? 0) / dt; j.tangentForce = (j.tangentForce ?? 0) / dt;
-        if (RUSH_HANDS) j.lastN = j.normalForce;
+        if (HAND_BODY) j.lastN = j.normalForce;
         j.normalForceOnB = { x: (j.normalForceOnB?.x ?? 0) / dt, y: (j.normalForceOnB?.y ?? 0) / dt };
         j.tangentForceOnB = { x: (j.tangentForceOnB?.x ?? 0) / dt, y: (j.tangentForceOnB?.y ?? 0) / dt };
         if (this.handContact === 'patch') {
@@ -1723,7 +1730,7 @@ export class World {
         this.addLoad(ia, ib, 1, 0, x*delivered, y*delivered, p.height);
       }
     }
-    if (RUSH_HANDS) this.stepHands(h);
+    if (HAND_BODY) this.stepHands(h);
     // Active reeling is distinct from passive grip. Arms apply a finite
     // force; the passive joint never invents work to shorten its landmark.
     if (contact) for (const jt of this.joints) {
@@ -2831,7 +2838,7 @@ export class World {
         row.pushLim = Math.max(0, jt.push) * h * scale;
         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
-        if (RUSH_HANDS && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
+        if (HAND_BODY && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
           const e = (jt.off ? 0 : this.handEdge(jt)) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
           row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
           row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;

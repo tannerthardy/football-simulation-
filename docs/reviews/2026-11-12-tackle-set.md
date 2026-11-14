@@ -3831,3 +3831,44 @@ Re-read on VERTICAL_SET with each candidate flag (the same trace, seed 11 x 4). 
 
 **The corner waits on the hand being cleared.** An NFL rusher at the hip rips or dips under the tackle's outside hand
 and gets body on body (separation 0.81 yd); ours never removes it, and the press holds him at arm's length (0.89-0.94).
+
+### RIP_CLEAR, attempt 1, and the bull against a turned tackle (2026-11-14)
+
+RIP_CLEAR (off) is RUSH_HANDS' one-degree-of-freedom hand, and only that (world.ts `HAND_BODY`):
+- An edge's rip against a tackle is RUSH_RIP's arm force across the tackle's hand, with no roll and no landed or
+  stalled window.
+- The hand's hold is steer x bent/extension (weakest at full extension) plus HAND_MU x the measured press. The excess
+  slides the hand; push, hold and steer fall with handEdge; at the torso's edge the hand is off.
+- Only a hand gone frees him, until the tackle re-fits; a slid hand is walked back.
+- Off is bit-identical (seed 999, 9a15a2b7c5438ddc).
+
+**rip-witness.mts, VERTICAL_SET + RIP_CLEAR, seed 11 x 2 (264 DE reps against a tackle, 55 rips, 0.21 a rep):**
+
+| tackle's arm at the rip | n | rip force / hand's hold (steer, press under it) | slid past half | came off | past within 0.6 s |
+|---|---|---|---|---|---|
+| all | 55 | 994 / 1079 N (656, 1060) | 2% | 4% | cleared 100%, not 15% |
+| tight (< 0.6 of his arm) | 43 | 994 / 1146 N (619, 1198) | 0% | 0% | 12% |
+| mid | 9 | 994 / 924 N | 0% | 0% | 33% |
+| full extension (>= 0.9) | 3 | 994 / 361 N (648, 431) | 33% | 67% | 100% |
+
+Back on him after a clear: p50 0.60 s; half are not back within 1.5 s.
+
+**Read:**
+- The law does what Integration asked: strongest at full extension, nothing when tight, and the clears go past.
+- But it is almost inert:
+  - 43 of 55 rips come with the tackle's arm bent (the level phase is at a bent-arm gap, 0.34 yd against an arm of
+    about 0.94).
+  - There the hold, the arm's steer plus friction on about 1100 N of press, is just over the rip's 994 N.
+- The friction term carries it. A rip in football drives the forearm up under the tackle's arm and lifts the hand off
+  the chest. The 1-DOF hand only slides it sideways against the press, and the vertical (the lift that unloads the
+  press) is not modelled.
+
+**The bull against a turned tackle (bull-turned.mts, seed 11 x 4):**
+
+| | bulls | tackle turned > 60 deg | driven back p50: turned / square | rusher within 2 yd of the QB: turned / square | tackle down |
+|---|---|---|---|---|---|
+| off | 230 | 58 (25%) | 0.42 / 1.47 yd/s | 10 / 6% | 0% |
+| VERTICAL_SET | 222 | 98 (44%) | 0.88 / 2.09 yd/s | 0 / 6% | 0% |
+
+A turned tackle is common now, and he is harder to bull than a square one: the base and ANCHOR_BASE do not read
+facing, so the price of being turned (a bull into his narrow side) does not exist. This is the named gap.
