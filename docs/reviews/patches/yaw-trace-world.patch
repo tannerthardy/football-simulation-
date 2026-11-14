@@ -1,36 +1,13 @@
 diff --git a/src/physics/world.ts b/src/physics/world.ts
-index 862e4ac0..1ce45455 100644
+index 1ce45455..c6e006a6 100644
 --- a/src/physics/world.ts
 +++ b/src/physics/world.ts
-@@ -822,6 +822,8 @@ export function allocateGroundForce(out: Float64Array, lx: number, ly: number,
- const allocation = new Float64Array(5);
- 
- export class World {
-+  /** TOOLS TRACE (local, not for merge): per-substep hands row and yaw motor events. */
-+  public yawTrace?: (ev: Record<string, unknown>) => void;
-   readonly bodies: Body[];
-   /** Production uses analytic recovery except during a lower hold. The
-    * global averaged-motor mode remains a research comparison. */
-@@ -1869,6 +1871,12 @@ export class World {
-         // already centered above, while patch reels share this frozen row.
-         const gripPatch = jt.kind === 'grasp' && (this.handContact === 'patch' || this.gripPatched(jt));
-         const normal = r.ln - (gripPatch ? r.reel : 0);
-+        if (this.yawTrace && jt.kind === 'hands') {
-+          const levered = this.handContact === 'patch' || this.gripPatched(jt) || this.handsLevered(jt);
-+          const yt = (this.handIntegration === 'centered' ? .5 : 1) * h;
-+          this.yawTrace({ k: 'row', t: this.time, h, owner: (jt.actor ?? jt.a) === bs[r.i] ? bs[r.i].profile.massKg : bs[r.j].profile.massKg, fit: jt.fit, i: r.i, j: r.j, ln: r.ln, normal, lt: r.lt, ni: r.ni ?? 0, ri: r.ri ?? 0, nj: r.nj ?? 0, rj: r.rj ?? 0, levered,
-+            dSpinI: levered ? yt * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i] / h : 0, dSpinJ: levered ? yt * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j] / h : 0 });
-+        }
+@@ -1874,7 +1874,7 @@ export class World {
+         if (this.yawTrace && jt.kind === 'hands') {
+           const levered = this.handContact === 'patch' || this.gripPatched(jt) || this.handsLevered(jt);
+           const yt = (this.handIntegration === 'centered' ? .5 : 1) * h;
+-          this.yawTrace({ k: 'row', t: this.time, h, owner: (jt.actor ?? jt.a) === bs[r.i] ? bs[r.i].profile.massKg : bs[r.j].profile.massKg, fit: jt.fit, i: r.i, j: r.j, ln: r.ln, normal, lt: r.lt, ni: r.ni ?? 0, ri: r.ri ?? 0, nj: r.nj ?? 0, rj: r.rj ?? 0, levered,
++          this.yawTrace({ k: 'row', t: this.time, h, owner: (jt.actor ?? jt.a) === bs[r.i] ? bs[r.i].profile.massKg : bs[r.j].profile.massKg, own: (jt.actor ?? jt.a) === bs[r.i] ? r.i : r.j, fit: jt.fit, i: r.i, j: r.j, ln: r.ln, normal, lt: r.lt, ni: r.ni ?? 0, ri: r.ri ?? 0, nj: r.nj ?? 0, rj: r.rj ?? 0, levered,
+             dSpinI: levered ? yt * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i] / h : 0, dSpinJ: levered ? yt * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j] / h : 0 });
+         }
          if (this.handContact === 'patch' || this.gripPatched(jt) || this.handsLevered(jt)) {
-           const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
-           this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
-@@ -2296,7 +2304,8 @@ export class World {
-         // Turning pays from the same grip as translation: friction on the
-         // actual normal load. A lifted body turns on less, a pressed one on more.
-         const yaw: { impulse: number; work: number; peakTorque?: number } =
--          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, hypot2(fx, fy), traction * a);
-+          (() => { const before = b.facing, spin0 = b.spin ?? 0; const r2 = turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, hypot2(fx, fy), traction * a);
-+            this.yawTrace?.({ k: 'motor', t: this.time, h, i, err: Math.atan2(Math.sin(plan.facing - before), Math.cos(plan.facing - before)), spin0, spin1: b.spin ?? 0, impulse: r2.impulse, peak: r2.peakTorque, grip: traction * a, force: hypot2(fx, fy) }); return r2; })();
-         // Strength limits drive+correction; traction also pays for yaw at
-         // the physical support radius. Difference-of-squares keeps the
-         // near-saturation subtraction well conditioned. Passive compliance
