@@ -3956,3 +3956,9 @@ Per substep of a rip (instrumented once, not committed), p50:
 - This is a controller defect (the request), not the press law and not the rip. It explains three things together:
   the strut (along the line), the rip that cannot clear against the press his own drive creates, and the separation
   held at arm's length.
+
+**Logged for RUSH_INTENT (move choice, not fixed now; Integration 2026-11-14).** Under VERTICAL_SET, 42-44% of DE bulls
+(98-103 of 222-238, seeds 11 and 23 x 4, engine-62) are thrown at a tackle turned more than 60 deg. They come from
+beside him with no run-up (the rusher's speed along the push 0.68 against 2.44 yd/s) and no line to the QB. A rusher who
+sees the tackle's hips open has the coached answers of the inside counter across his face or the arc kept running, not
+the bull. RUSH_INTENT's choice should read the tackle's posture as he sees it.
