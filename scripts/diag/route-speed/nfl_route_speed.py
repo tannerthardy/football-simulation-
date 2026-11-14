@@ -4,21 +4,22 @@
 import csv, sys, math, json, collections as C
 D, W, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
 TS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
-play = {}
+play = {}; poss = {}
 for r in csv.DictReader(open(f'{D}/plays.csv')):
-    if r['isDropback'] in ('TRUE', 'True'): play[(r['gameId'], r['playId'])] = (float(r['absoluteYardlineNumber']), r['pff_manZone'])
+    if r['isDropback'] in ('TRUE', 'True'): play[(r['gameId'], r['playId'])] = (float(r['absoluteYardlineNumber']), r['pff_manZone']); poss[(r['gameId'], r['playId'])] = r['possessionTeam']
 pos = {r['nflId']: r['position'] for r in csv.DictReader(open(f'{D}/players.csv'))}
 route = {}
 for r in csv.DictReader(open(f'{D}/player_play.csv')):
     k = (r['gameId'], r['playId'])
     if k in play and r['routeRan'] not in ('', 'NA') and r['wasRunningRoute'] in ('1', '1.0', 'TRUE', 'True'): route[(k, r['nflId'])] = r['routeRan']
-tr = C.defaultdict(list); snap = {}; thrown = {}
+tr = C.defaultdict(list); snap = {}; thrown = {}; first = C.defaultdict(list)  # (play) -> [(frame, nflId, club, x, y)] until the snap + 1 s is known
 for r in csv.DictReader(open(f'{D}/tracking_week_{W}.csv')):
     k = (r['gameId'], r['playId'])
     if k not in play or r['displayName'] == 'football': continue
     ev = r['event']
     if ev == 'ball_snap': snap.setdefault(k, int(r['frameId']))
     if ev in ('pass_forward', 'qb_sack', 'qb_strip_sack', 'run', 'handoff'): thrown.setdefault(k, int(r['frameId']))
+    first[k].append((int(r['frameId']), r['nflId'], r['club'], float(r['x']), float(r['y'])))
     key = (k, r['nflId'])
     if key in route: tr[key].append((int(r['frameId']), float(r['x']), float(r['s']), r['playDirection']))
 rows = []
@@ -28,7 +29,12 @@ for (k, i), F in tr.items():
     by = {f: (x, s, d) for f, x, s, d in F}
     if s0 not in by: continue
     los = play[k][0]
-    row = {'route': route[(k, i)], 'cov': play[k][1], 'pos': pos.get(i, '?'), 'sp': {}}
+    # free release: no defender within 1.5 yd of him in the first second after the snap
+    me = {f: (x, y) for f, n, c, x, y in first[k] if n == i and s0 <= f <= s0 + 10}
+    mind = 99.0
+    for f, n, c, x, y in first[k]:
+        if s0 <= f <= s0 + 10 and c != poss[k] and n != i and f in me: mind = min(mind, math.hypot(x - me[f][0], y - me[f][1]))
+    row = {'route': route[(k, i)], 'cov': play[k][1], 'pos': pos.get(i, '?'), 'mind1': mind, 'sp': {}}
     ok = True
     for t in TS:
         f = s0 + int(round(t * 10))
