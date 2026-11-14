@@ -444,3 +444,20 @@ the ball" carry forward.
 **Next, if the receiver side continues:** his approach to a converging spot. Lead his estimate's movement, or run
 through the spot at speed rather than braking to arrive, the way the receiver's oracle path does by being fixed.
 Measure first: arrival timing and his reach margin at the catch on the reachable-but-missed cases.
+
+## Design 5: the final approach (2026-11-14)
+
+Measurement first (`final-approach.ts`, open targets, design 4 attempt 2):
+- **Throttle is rejected.** He runs at route speed through the last 0.6 s (0.97-1.02 of release speed). The
+  reachable-but-missed are mostly wide (31/32), then behind him (15/20), rarely late (3/5).
+- **The estimate converges late.** His estimated ball position at the true pass time is about 2 yd off at 0.4 s out
+  and 0.9-1.2 at 0.1 s, mostly along the ball's path.
+- **On the misses the chosen spot gets worse at the end** (1.6-1.9 -> 1.75-2.3 yd) while their ball estimate improves.
+
+Two separately switchable BALL_EST bits, read as separate rows. (b) is built and read first.
+
+| Constant | Value | Source |
+| --- | --- | --- |
+| (b) bit 4: a committed catch point moves with his estimate | CATCH_CHOICE commits him in the last 0.3 s to a point chosen from his estimate then, frozen in place. Under the oracle a frozen point was exact; under BALL_EST it freezes a 1-2 yd error. With bit 4, the choice stays his: which moment of the flight he meets it, chosen and committed by CATCH_CHOICE's existing rule. Its position is re-read from his current estimate at that moment, every tick. No new constant | engine (the commitment rule is CATCH_CHOICE's); coached ("adjust your line, let the hands take the last error") |
+| (a) bit 8: looming | Each sample, while his head is on the ball (within his eye range), also gives the ball's time to contact, tau = range / closing speed, as an observation of the velocity along his line of sight. Its weight scales continuously with how directly the ball closes on him (the closing share of the ball's speed, squared), so a ball moving across his line gives nothing. sigma_tau / tau = 7% | Lee 1976 (time to contact from optical expansion, in Tools' table). The 7% is choice: TTC discrimination thresholds in the literature run roughly 5-15%, and no source in our docs gives a football figure. Sensitivity read at 3.5% and 14% before it lands |
+| Who | Both bits apply to anyone holding an estimate who is looking at the ball: receivers and defenders | Integration |
