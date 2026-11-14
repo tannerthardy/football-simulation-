@@ -98,3 +98,39 @@ carrier panel is small (292 s). Not explained further yet.
 - **Dither:** the carrier / spacing stage is over the recorded budget, 1.4 sigma over today's off arm; the blocks' own
   re-aims are flat. It needs a decision: land as honesty with the budget re-recorded, or a targeted look at which carrier
   reversals are new first.
+
+## Attribution (Integration, 2026-11-14), and a fix
+
+**A defect in feltMan, found and fixed: the touch / sight hand-over was a step.** `felt-switch.mts` (seed 11 x 2): 96%
+of feltMan calls were by touch, but the hands' load crossed zero about once per engaged second, and 86% of the sight
+stretches were a single tick. Each one made the picture jump from 0.06 s old to 0.12-0.24 s old for a tick and back: the
+picture stepping back in time about 0.54 times per engaged second, by 0.06-0.18 s (REP_SEEN's `known` and RUN_FEEL's
+`runSeen` have the same step in the default engine). The fix: a hand unloaded for a tick still has the man; from the
+last loaded tick the delay ages continuously toward his sight delay over his reaction time (so the picture never steps
+back in time), and a reloaded hand is fresh information at once; kept per pair in the play, delays held to 0.01 s.
+Under the flag `known` and `runSeen` use the same picture. After it the picture steps back in time on 0.01% of ticks
+(largest 0.12 s); touch regained makes it fresher by more than 0.03 s on 3.1%. Off is still bit-identical
+(f45b8a7e377c73b2); on, the patch and the branch give the same game (df786187313e600c).
+
+**Dither, after the fix: passes.** Carrier / spacing 0.174/s (51 events in 293 s) against its budget of 0.174 (today's
+off arm 0.140, 45 events in 323 s); the blocks' own stages flat (block / engagement 482 events, rush / engagement 78).
+Per play (`carrier-dither.mts`, the same 135 plays, each its own accumulator): 26 plays change, 15 up and 11 down, net
++6, and one play carries +8 (wz_strong seed 1, 0 -> 8). By concept the reversals move between runs (wide zone 1 -> 15,
+outside zone weak 12 -> 8, counter 8 -> 4, inside zone 7 -> 3); the bodies within 2 yd at a reversal are fewer
+opponents, engaged and free (engaged 23 -> 14, free 98 -> 53), not more. The carrier's controller is untouched: his
+spacing re-aims follow the bodies around him, and the changed blocks send the same snaps down different paths.
+
+**Broken tackles: not feltMan.** feltMan is called only in the engaged reps (pass, run, helpers); nothing in
+tackle.ts, the carrier or the grab reads it. `break-trace.mts` (seed 11 x 6, every grasp and break on designed runs):
+
+| tackler when he took hold | default: grasps a run, broken a run (of grasps) | ENGAGE_FELT |
+|---|---|---|
+| engaged (the engaged grab) | 0.351, 0.044 (13%) | 0.373, 0.045 (12%) |
+| off a block within 1.0 s | 0.466, 0.012 (3%) | 0.495, 0.014 (3%) |
+| free | 1.590, 0.028 (2%) | 1.484, 0.045 (3%) |
+| all | 2.41, 0.084 | 2.35, 0.111 |
+
+The engaged and off-a-block rates are flat; the rise is free tacklers' holds slipping (7 -> 13 events), men feltMan
+never reads for. On the fresh run set after the fix: +0.10 (SE 0.10), broken 0.094 -> 0.120 (engaged grabs 0.040 ->
+0.052), missed 0.217 -> 0.216. The run set's engaged-grab rise (about 16 events in 1295 runs) is not reproduced in the
+games' per-grasp rate; both are within their counts' noise.
