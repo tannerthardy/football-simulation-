@@ -95,7 +95,7 @@ describe('READ_PLAN', () => {
     for (const r of read) expect(r.target === 'S1' || r.throwAt > 2.6, JSON.stringify(r)).toBe(true);
   });
 
-  it('a covered first read moves him on in rhythm (press-man quick outs: #1 covered, #2 thrown)', async () => {
+  it('a covered first read moves him on in rhythm (press-man quick outs: #1 covered, #2 thrown on at least 6 of 16; 5 with QB_EYES on)', async () => {
     // Panel form (16 seeds): the mechanism, not three named plays. An aggressive passer may still take #1 on rhythm
     // when its window sits at his bar (INT_BELIEF moved seed 3 across it: priced 7.1% -> 5.9% against a 6.0% gate),
     // so the covered #1 is held to a share, and the move-on and the rhythm throw to #2 to theirs.
@@ -107,7 +107,9 @@ describe('READ_PLAN', () => {
     for (const r of movedOn) expect(r.movedOn).toBeLessThan(2.3);
     expect(rows.filter((r) => r.target === 'S1').length).toBeLessThanOrEqual(5);
     const toS2 = rows.filter((r) => r.target === 'S2');
-    expect(toS2.length).toBeGreaterThanOrEqual(6);
+    // QB_EYES: the ball goes to #2 only after his processing time on him, so one play of the panel no longer gets
+    // there in rhythm (recorded 2026-11-14 on engine-61 with the honesty flags and QB_GATHER / QB_GATHER_THROW on).
+    expect(toS2.length).toBeGreaterThanOrEqual(process.env.QB_EYES === '1' ? 5 : 6);
     expect(toS2.filter((r) => r.throwAt < 2.8).length / toS2.length).toBeGreaterThanOrEqual(0.75);
   });
 
