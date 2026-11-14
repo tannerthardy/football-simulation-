@@ -150,3 +150,62 @@ The first is in the design. The second is measured and decided after it, with th
    come-off measured;
 5. interior-orbit on pass sets toward 39 deg (today 11), runs unchanged (53);
 6. the run set by concept, falls, sacks and dither.
+
+## 4. After Integration's read (2026-11-14): staged, both sides, no outcome gates
+
+**Stages, each with its own two attempts at the game read:**
+1. **The physics, one move.**
+   - Press, friction and steer exist only through a fitted hand, per hand.
+   - The re-fit is the blocker's reaction plus arm travel, with placement error.
+   - The club, which already clears, is the only move.
+   - Gates: the hands' load falls in the club's window; the orbit at 0.5-1.0 s moves; the offset p25 moves; release
+     timing is kept.
+   - If one move plus honest hands gives most of the orbit, the remaining moves are detail. If it gives none, the theory
+     is wrong, and six more moves would have hidden that.
+2. Rip and swim, as forces on a fit.
+3. Snatch, spin and dip by geometry, and retiring the rolls.
+
+**The blocker's half** (written before building, so the law is not rusher-sided):
+- **What he perceives:** he sees the arm come, at his sight delay. A move he reads late lands, because the clear's force
+  arrives before his hold can be set against it. He feels a hand go light by touch at the hands' delay.
+- **What he does besides re-fit:**
+  - independent hands: one strikes or holds while the other re-fits;
+  - re-punch: a new strike with its own landing;
+  - snatch back: his own grip on the rusher's wrist, the coached snatch-and-trap, a grasp on the rusher's arm that holds
+    it out of position;
+  - anchor: sink against a bull (ANCHOR_BASE's lean on the felt load);
+  - give ground: his set's kick, already the mirror's.
+- **What a miss costs him:** a re-punch that misses leaves the hand extended and late back to bent (the reach's cost,
+  measured in PRESS_SPRING's stem-and-cut row). A snatch that misses leaves his hand off the man for its travel back.
+
+**The rusher's symmetric costs and commitment:**
+- A failed clear leaves his arm out of position for its return travel (RUSH_HANDS' sweep: reaction plus the arm's
+  return at ARM_SPEED, twice if the club stopped on a hand). A clear that left him off balance costs his reaction again.
+  He throws no other move until the arm is back.
+- A committed move is committed. Today he makes 1.24 decisions a second; under the new law a decision is made only at
+  a decision point (the arm back, or a felt change: a hand going light by touch) and is never re-rolled on the same
+  picture. The dither guard covers his requests.
+
+**Gates corrected:**
+- Interior pressure is a reported row, not a gate. If the fight's timing, orbit and offset are right and pressure is
+  high, the fault is after the release (the come-off: ride, help, the QB's response), its own piece of work. A hand
+  force is never sized to hold pressure down.
+- "Toward 25 deg / 39 deg" are places to look, not targets. The forces come from arm strength and hand speed, and the
+  orbit that results is the result.
+
+**Never ban what works.** No move is made to fail by a roll or a cooldown once this exists. If the club clears every
+time under the new law, the answer is the blocker's counter (he reads it, sets his hold, snatches back) or the club's
+cost (his arm out of position), found from how it is coached.
+
+**Interaction with ENGAGE_TRUNK / CHEST_SHOULDERS and the yaw findings.** Stage 1's "press only through a fitted hand"
+acts on the same contact. The order is the patch first, the hands on top:
+- The patch assumes nothing of the hands: hips on the set, shoulders on the felt man, the chest segment across the
+  shoulders. All hold whether the press is continuous or comes and goes.
+- The hands stage assumes the patch: the hand body's contact point is the chest segment, so the shoulders decide where
+  a hand lands and where its edge is.
+- The yaw findings stand under both: no moment on a set blocker from a press or a strike, and grip not shared with the
+  yaw motor. An intermittent press changes how often there is a press to share grip with, not the motor's law. The
+  shared-grip budget is measured after stage 1, on the new contact.
+
+**Retirements** (accepted in principle): RUSH_HANDS' rolls, RUSH_RIP, RIP_CLEAR, RUSH_ONE_HAND, CONTROL_HANDS and
+HAND_FIT. Each is executed only when the stage that replaces it has carded.
