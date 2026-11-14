@@ -16,7 +16,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -243,12 +243,20 @@ export class RouteRunner implements Behavior {
 
   /** When this route was installed (the snap, or his release on a delayed route): breakTime counts from here. */
   private readonly bornAt: number;
+  /** Design 6: when he reached his deep landmark (his look starts there and lasts his count). */
+  private deepLookAt: number | undefined;
   /** BALL_EST design 4: out of his break, before the throw, he gets his head round to the QB (and his shoulders as
    * far as his head cannot reach him), so he is already looking when the ball leaves. A better route runner leaves
-   * it later. Not on a deep route, which does not expect the ball at its stem's break. */
+   * it later. Not on a deep route, which does not expect the ball at its stem's break; design 6 (bit 16) gives the
+   * deep route its own look: from his landmark depth, for his count, once. */
   private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
-    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
-    if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb) return cmd;
+    if (this.route.family === 'deep') {
+      if (!BALL_EST_DEEP_LOOK) return cmd;
+      // His own depth past the line is his cue; the release is not.
+      if (this.deepLookAt === undefined && (a.pos.x - sim.los) * sim.attackDir(a.team) >= DEEP_LOOK_DEPTH) this.deepLookAt = sim.t;
+      if (this.deepLookAt === undefined || sim.t - this.deepLookAt > DEEP_LOOK_HOLD) return cmd;
+    } else if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
     sim.ballEstimates.lookAtQB(a, sim);
     const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
     const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
@@ -256,7 +264,7 @@ export class RouteRunner implements Behavior {
     while (d > Math.PI) d -= 2 * Math.PI;
     while (d < -Math.PI) d += 2 * Math.PI;
     d = turnSide(a, sim, d, heading);
-    const over = Math.abs(d) - LOOK_NECK;
+    const over = Math.abs(d) - neckOf(a);
     return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
   }
 
@@ -698,7 +706,7 @@ function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   while (d > Math.PI) d -= 2 * Math.PI;
   while (d < -Math.PI) d += 2 * Math.PI;
   d = turnSide(a, sim, d, heading);
-  const over = Math.abs(d) - LOOK_NECK;
+  const over = Math.abs(d) - neckOf(a);
   return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
 }
 
