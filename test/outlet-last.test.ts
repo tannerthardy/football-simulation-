@@ -41,6 +41,12 @@ describe('OUTLET_LAST / PLAN_KEYS', () => {
     expect(on('mesh').order.slice(0, 3)).toEqual(['S1', 'S2', 'W2']);
     expect(on('mesh').key).toBeNull();
     expect(on('y_cross').order.slice(0, 2)).toEqual(['W1', 'S2']);
+    // Every key names its danger; the eight sourced keys that were pure orders now key (stick and seam_slant need
+    // their #3, so from trips).
+    expect(on('smash').key?.danger).toMatch(/safety/);
+    expect(on('curl_flat').key?.danger).toMatch(/hook/);
+    for (const id of ['slant_flat', 'quick_outs', 'fade_flat', 'double_slants', 'hitch_out']) expect(on(id).style).toBe('defender_key');
+    for (const id of ['stick', 'seam_slant', 'trips_stick']) expect(on(id, 'gun_trips_11').key).not.toBeNull();
   }, 120000);
 
   it('rhythm: read 1 on the set, read 2 on a hitch, the rest on the second hitch, with the installed ready time', async () => {
