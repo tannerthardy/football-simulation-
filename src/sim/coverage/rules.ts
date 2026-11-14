@@ -14,7 +14,7 @@
 import type { ZoneId, ZoneStyle, MatchRule } from '../../playbook/types.js';
 import type { Agent } from '../agent.js';
 import type { Vec2 } from '../../core/vec.js';
-import { zoneLandmark } from '../../playbook/alignment.js';
+import { isDeepZone, seatZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { ManOptions } from '../behaviors/defense.js';
 import { knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
@@ -31,6 +31,43 @@ export const CUT_WALL = process.env.CUT_WALL === '1';
 export const CUT_ENTER = 5;
 export const CUT_EXIT = 6;
 const APEX_OUTSIDE = 1.0;
+/** CROSS_PASS (experimental, off; CROSS_PASS=1, with CUT_WALL): the coached match rule for any crosser under the call's
+ * hook-curl level, not only the shallow (CUT_WALL's 7 yd "under"). A match defender on #2 (nickel / apex, curl-flat,
+ * seam) carries #2 vertical and passes him in or across to the hook ("in is not mine": Saban Fire Zone apex "passes #2
+ * to the hook", Stubbie / Mable apex "man on #2 except under", Bowen's Cover 4 Mike "wall crossers", "Patty" an alert to
+ * pass crossers off; docs/research/coverage-terminology.md); the hook walls him and passes him on. Families that carry
+ * keep the carry: MEG corners, the MUSH nickel, the rat, pure man calls, the halves apex matching #2 "up and in"
+ * (c2_hook mode 'in', HNFL-097) and the quarter-flat apex carrying #2 back across himself with #3 away (q_apex mode
+ * 'two', HNFL-094). */
+export const CROSS_PASS = process.env.CROSS_PASS === '1';
+/** CROSS_PASS: a crosser in his own picture. Enter: the release read is in / under and the path is more across than up
+ * (|vy| > |vx|: 45 deg; choice, the "across" of the coaching) at or under the call's hook-curl level. Exit: turned
+ * back up past 37 deg off vertical (|vy| < 0.75 |vx|) or a yard over the level (margins: choice, the commit rule, so
+ * a stem that leans inside and then climbs is neither passed nor re-taken on a wobble). */
+export const PASS_ENTER = 1, PASS_EXIT = 0.75, PASS_OVER = 1;
+export function crossing(rd: ReceiverRead, level: number, held: boolean): boolean {
+  if (rd.release !== 'in' && rd.release !== 'under') return false;
+  const vy = Math.abs(rd.vel.y), vx = Math.abs(rd.vel.x);
+  return held ? vy >= PASS_EXIT * vx && rd.depth <= level + PASS_OVER : vy > PASS_ENTER * vx && rd.depth <= level;
+}
+const LEVELS = new WeakMap<object, number>();
+/** The call's hook-curl level: the deepest landmark of its underneath hook / curl / hole / robber zones (yd past the
+ * line). Installed knowledge of his own call, the same for every defender in it. */
+export function hookCurlLevel(sim: PlaySim): number {
+  const cov = sim.defCall.coverage;
+  const hit = LEVELS.get(cov);
+  if (hit !== undefined) return hit;
+  const zones: ZoneId[] = [...cov.underneath.map(seatZone)];
+  for (const r of Object.values(cov.roles)) if (r?.kind === 'zone') zones.push(r.zone);
+  let level = 0;
+  for (const z of zones) {
+    if (isDeepZone(z) || !/^(hook|curl|hole|robber)/.test(z) || /^curl_flat/.test(z)) continue;
+    level = Math.max(level, zoneLandmark(z, sim.offAlign).x - sim.los);
+  }
+  const out = level || 10;
+  LEVELS.set(cov, out);
+  return out;
+}
 
 export type Directive =
   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
@@ -257,7 +294,7 @@ function cutWall(c: RuleCtx): Directive | null {
   const wall = (rd: ReceiverRead): Directive => ({ t: 'crossWall', r: rd.r, area: lm, half: CUT_ENTER });
   if (st.cut) {
     const rd = c.reader.read(c.sim, st.cut);
-    if (rd && rd.release === 'under' && rd.depth < 8 && Math.abs(rd.pos.y - lm.y) < CUT_EXIT) return wall(rd);
+    if (rd && (CROSS_PASS ? crossing(rd, hookCurlLevel(c.sim), true) : rd.release === 'under' && rd.depth < 8) && Math.abs(rd.pos.y - lm.y) < CUT_EXIT) return wall(rd);
     st.cut = undefined;
     return null;
   }
@@ -265,7 +302,7 @@ function cutWall(c: RuleCtx): Directive | null {
   let bd = Infinity;
   for (const r of c.sim.offense) {
     const rd = c.reader.read(c.sim, r);
-    if (!rd || rd.release !== 'under' || rd.depth > 7 || Math.abs(rd.pos.y - lm.y) >= CUT_ENTER) continue;
+    if (!rd || !(CROSS_PASS ? crossing(rd, hookCurlLevel(c.sim), false) : rd.release === 'under' && rd.depth <= 7) || Math.abs(rd.pos.y - lm.y) >= CUT_ENTER) continue;
     const toward = Math.sign(lm.y - rd.pos.y) * rd.vel.y > 1.5 || Math.abs(rd.vel.y) > 1.5;
     const d = Math.abs(rd.pos.y - lm.y);
     if (toward && d < bd) { best = rd; bd = d; }

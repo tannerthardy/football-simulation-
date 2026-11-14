@@ -11,7 +11,7 @@ import type { Agent, Behavior } from '../agent.js';
 import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
-import { CUT_ENTER, CUT_EXIT, CUT_WALL, runRule, zoneSide, type Directive, type RuleState } from './rules.js';
+import { CROSS_PASS, crossing, CUT_ENTER, CUT_EXIT, CUT_WALL, hookCurlLevel, runRule, zoneSide, type Directive, type RuleState } from './rules.js';
 import { CrossWall, ReadRelease, Rob, Trap, Wall } from './techniques.js';
 import { isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import { CoverageJudgment } from './judgment.js';
@@ -21,6 +21,8 @@ export class CoverageDefender implements Behavior {
   private readonly state: RuleState = {};
   /** CUT_WALL: the crosser he is walling in his area (commit: taken inside CUT_ENTER, passed past CUT_EXIT). */
   private walling: Agent | null = null;
+  /** CROSS_PASS: the crosser he has passed (or is walling), held by the exit margin. */
+  private passed: Agent | null = null;
   private readonly side: 'S' | 'W';
   private sub: Behavior;
   private subKey = '';
@@ -151,7 +153,13 @@ export class CoverageDefender implements Behavior {
     const area = zoneLandmark(this.zone, sim.offAlign);
     const target = d.t === 'man' || d.t === 'wall' ? d.r : null;
     const rd = target ? this.reader.read(sim, target) : null;
-    const under = !!rd && rd.release === 'under' && rd.depth <= 7;
+    // CROSS_PASS: the carries the families teach: the halves apex matches #2 up and in (HNFL-097); the quarter-flat apex
+    // carries a shallow #2 back across himself with #3 away (HNFL-094) while #2 stays the shallow he declared (his
+    // rule's own 7 yd), not an over that climbs out of it.
+    if (CROSS_PASS && rd && ((this.rule === 'c2_hook' && this.state.mode === 'in')
+      || (this.rule === 'q_apex' && this.state.mode === 'two' && rd.deepest <= 7))) return d;
+    const under = !!rd && (CROSS_PASS ? crossing(rd, hookCurlLevel(sim), this.passed === rd.r) : rd.release === 'under' && rd.depth <= 7);
+    if (CROSS_PASS) this.passed = under && rd ? rd.r : this.passed === target ? null : this.passed;
     if (!under || !rd) { if (this.walling === target) this.walling = null; return d; }
     const off = Math.abs(rd.pos.y - area.y);
     if (this.walling === rd.r ? off < CUT_EXIT : off < CUT_ENTER) {
