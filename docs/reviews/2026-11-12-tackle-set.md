@@ -4427,3 +4427,19 @@ blocker's bent base (arm x 0.3). Hands N / torso N are p50; "both" is the share 
 | stalk | 7%: 884 / 0 N, both 38% | 4%; 1215 N |
 
 Torso p50 is 0 N in every bin but touching, in every population and on both engines.
+
+### VERTICAL_SET: The OL-falls row, attributed (Integration's question)
+
+The tracking-side proxy (fall-proxy.py: a lineman who was moving, then stays under 0.5 yd/s for 1.0 s) rose 4.2 / 5.9
+-> 5.8 / 6.8 per 100. The World's own fall events (ol-falls.mts, seed 11 x 8, before the throw):
+
+| | default | VERTICAL_SET |
+|---|---|---|
+| all OL falls | 5.8 /100 | 5.2 /100 |
+| tackles | 1.4 /100 (rep age p50 0.55 s; 2.0 yd/s; 50% retreating > 2 yd/s) | 1.3 /100 (0.95 s; 3.1 yd/s; 33%) |
+| interior | 4.4 /100 | 3.9 /100 |
+| just struck (a contact closing > 2 yd/s in the 0.15 s before) | 0% | 0% |
+
+So the rise is the proxy, not falls. It also counts linemen who stop and hold, and the vertical set has more of those:
+the set ends at the rusher's depth. The tackles who do fall go down a little later in the rep, moving a little faster.
+None of them is the impact family. **It is not a cost.**
