@@ -20,7 +20,7 @@ const { syncJoints } = await import('../../../src/sim/engagement.js');
 const { shouldersOf } = await import('../../../src/physics/kinematics.js');
 const STAGE_TRUNK = process.env.STAGE_TRUNK === '1';
 type Fit = 'inside' | 'outside';
-function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: number; y: number }, dv: { x: number; y: number }, side = 1, secs = 0.6, gap0 = 0.3, dMass = 0, move?: string, bMass = 0) {
+function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: number; y: number }, dv: { x: number; y: number }, side = 1, secs = 0.6, gap0 = 0.3, dMass = 0, move?: string, bMass = 0, cut?: { at: number; v: { x: number; y: number } }) {
   const { sim, blocker: b, defender: d, engagement: e0 } = contactFixture({ type: type === 'pass' ? 'pass' : 'run', runBlock: 60, passBlock: 60, side });
   const e: any = e0;
   e.type = type;
@@ -33,6 +33,9 @@ function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: 
   if (move) e.move = move as any;
   // A fresh hands joint after the bodies are placed (the fixture's was set up at its own positions).
   e.hands = undefined; e.defHands = undefined;
+  // Perception: the staging steps the World directly, so record each tick as PlaySim.tick does (a man's picture of the
+  // other is then where he was, not the fixture's first placement); warm the history at the staged positions.
+  for (let w = 0; w < 12; w++) sim.perception.record(sim.agents, null);
   syncJoints(sim, e);
   if (e.hands) e.hands.fit = fitB; if (e.defHands) e.defHands.fit = fitD;
   const dx0 = d.body.pos.x, fb0 = b.body.facing, fd0 = d.body.facing, dy0 = d.body.pos.y, sb0 = shouldersOf(b.body), sd0 = shouldersOf(d.body);
@@ -42,11 +45,12 @@ function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: 
     syncJoints(sim, e);
     if (e.hands) e.hands.fit = fitB; if (e.defHands) e.defHands.fit = fitD;
     const intents: any[] = sim.agents.map((a: any) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+    if (cut && (k + 1) * sim.dt > cut.at) dv = cut.v;
     const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), toB = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x);
     intents[b.idx] = STAGE_TRUNK ? { vel: { ...bv }, facing: type === 'run' && Math.hypot(bv.x, bv.y) > 1 ? Math.atan2(bv.y, bv.x) : 0, look: toD, push: 1, posture: 0.75 }
       : { vel: { ...bv }, facing: toD, push: 1, posture: 0.75 };
     intents[d.idx] = STAGE_TRUNK ? { vel: { ...dv }, facing: Math.PI, look: toB, push: 1, posture: 0.75 } : { vel: { ...dv }, facing: toB, push: 1, posture: 0.75 };
-    sim.world.step(intents, sim.dt); sim.t += sim.dt;
+    sim.world.step(intents, sim.dt); sim.t += sim.dt; sim.perception.record(sim.agents, null);
     const hN = Math.max(0, e.hands?.normalForce ?? 0) + Math.max(0, e.defHands?.normalForce ?? 0);
     const c = ((sim.world as any).report?.contacts ?? []).find((c: any) => (c.i === b.idx && c.j === d.idx) || (c.i === d.idx && c.j === b.idx));
     const tN = c ? c.impulse / sim.dt : 0, total = hN + tN; tot.push(total);
@@ -79,4 +83,8 @@ for (const side of [1, -1]) {
   run('hand-over: a heavy bull (150 kg) at 3 yd/s, blocker outside', 'pass', 'outside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.3, 150);
   run('hand-over: a drive started inside the base, both inside', 'run', 'inside', 'inside', { x: 1, y: 0 }, { x: -1.5, y: 0 }, side, 0.6, 0.05);
   for (const v of [3, 4]) for (const fb of ['inside', 'outside'] as Fit[]) run(`stalk: a crosser at ${v} yd/s (blocker ${fb})`, 'run', fb, 'outside', { x: 0, y: 0 }, { x: 0, y: v }, side, 0.5);
+  // The stalk as it is played: the blocker shuffles with the crosser (80% of his lateral speed) to stay in front.
+  for (const v of [3, 4]) for (const fb of ['inside', 'outside'] as Fit[]) run(`stalk, the blocker shuffling with him: a crosser at ${v} yd/s (blocker ${fb})`, 'run', fb, 'outside', { x: 0, y: 0.8 * v }, { x: 0, y: v }, side, 0.8);
+  // The reach's cost: a crosser who stems at the blocker's reach (3 yd/s across, 0.6 yd/s at him) and cuts back under it at 0.25 s.
+  for (const fb of ['inside', 'outside'] as Fit[]) run(`stem and cut: a crosser who cuts back under the reach at 0.25 s (blocker ${fb})`, 'run', fb, 'outside', { x: 0, y: 0 }, { x: -0.6, y: 3 }, side, 0.8, 0.3, 0, undefined, 0, { at: 0.25, v: { x: -0.6, y: -3 } });
 }

@@ -800,6 +800,30 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
  *   - the blocker, pass set or run: bent, elbows in (the bent base).
  */
 const extLen = new WeakMap<HandJoint, number>();
+/** PRESS_SPRING: the blocker's reach, the same bounded extension as a defender's. While his hands carry nothing and the man
+ * as he has him (by touch at the hands' delay when loaded, else by sight at his sight delay; never where the man truly
+ * is) is beyond his bent length but inside his lockout, his length moves toward the man at ARM_SPEED; once his hands carry
+ * load it returns to bent at ARM_SPEED. The reach starts on no load and ends on UNLOADED x his press, the exit above
+ * the entry, so a single tick cannot flip it. It is still a spring about its current length: a reach that lands presses
+ * only as the man compresses it. Its cost is real: extended, his hands are late back to bent against a man who cuts back
+ * under them. */
+const reachState = new WeakMap<HandJoint, { len: number; on: boolean }>();
+function blockerReach(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
+  const bodies = b.profile.radius + d.profile.radius, bent = Math.max(bodies, BASE_CENTRES);
+  const lock = bodies + LOCKOUT * b.player.measurables.armIn / 36, rt = Math.max(0.1, b.profile.reactionTime);
+  const N = Math.max(0, joint.normalForce ?? 0), loaded = N > 0;
+  const seen = sim.see(b, d, (loaded ? 0.06 : 0.12 + 0.12 * (1 - traits(b).read)) / rt);
+  const gap = Math.hypot(seen.pos.x - b.pos.x, seen.pos.y - b.pos.y);
+  const st = reachState.get(joint) ?? { len: bent, on: false };
+  if (!st.on && !loaded && gap > bent && gap <= lock) st.on = true;
+  else if (st.on && (N > UNLOADED * pressForce(b) || gap > lock + 0.05)) st.on = false;
+  // A reach punches into the man (PRESS_INTO, the punch's own depth), so a hand that lands presses him and the steer has a
+  // load to act through; a reach that only touches carried nothing (staged stalk: joint 0 N, the crosser not slowed).
+  const target = st.on ? Math.min(lock, gap + PRESS_INTO) : bent, step = ARM_SPEED * sim.dt;
+  st.len = clamp(target, st.len - step, st.len + step);
+  reachState.set(joint, st);
+  joint.extension = Math.max(bodies, st.len);
+}
 function defenderLength(sim: PlaySim, joint: HandJoint, d: Agent, b: Agent, e: Engagement): void {
   const bodies = d.profile.radius + b.profile.radius, lock = bodies + LOCKOUT * d.player.measurables.armIn / 36;
   const bent = Math.max(bodies, BASE_CENTRES);
@@ -855,6 +879,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     // its 2,032 N cap and threw a same-size bull out to 1.5 yd.
     const bodies = b.profile.radius + d.profile.radius;
     hands.extension = Math.max(bodies, BASE_CENTRES);
+    if (PRESS_SPRING) blockerReach(sim, hands, b, d);
   } else if (PUNCH && (HAND_FIT || (e.control >= 0 && passSetTechnique(sim, b, e)))) punch(sim, hands, b, d, !passSetTechnique(sim, b, e));
   if (HAND_SITE) handSite(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.

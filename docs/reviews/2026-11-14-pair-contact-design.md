@@ -772,3 +772,39 @@ man at ARM_SPEED. Once his hands carry load it returns to bent at ARM_SPEED. Its
 the exit (UNLOADED of his press) above the enter (no load), so it cannot flip on a single tick. It is still a spring
 about its current length, so a reach that lands presses only as the man compresses it. Gates as above, G5 against
 Tools' screens-only NFL (engaged 0.8 s median, 74% held 0.5 s or more).
+
+### PRESS_SPRING attempt 1, the reach and the staged gates re-read (still attempt 1: no game read yet)
+
+**The blocker's reach** (added; Integration: a blocker with no reach for a man not yet on his hands is a hole in the build):
+- It is the defender's bounded extension, for the blocker. While his hands carry nothing and the man as he has him
+  (touch at the hands' delay if loaded, else sight at his sight delay; never the true position) is beyond his bent
+  length and inside lockout, his length moves toward the man at ARM_SPEED. It returns to bent at ARM_SPEED once his hands
+  carry load.
+- It turns on at no load and off at UNLOADED x his press: the exit is above the entry.
+- It punches into the man (the reach's target is the man plus PRESS_INTO, the punch's depth). A reach that only touched
+  carried nothing: the staged stalk read 0 N and the crosser was not slowed.
+
+**Two staging corrections** (not engine changes):
+- The staged pairs step the World directly and never recorded perception, so every man's picture of the other was the
+  fixture's first placement, frozen. They now record each tick, as PlaySim.tick does. This moved the reference rows too:
+  the bull 1.13 -> 0.92 yd at 0.6 s, the crosser 2.14 -> 1.95, the long-arm 1.24 -> 0.92. The "reference today" column
+  written before the read came from the frozen picture; the pass thresholds were absolute and are judged as written.
+- The stalk gate as written ("a crosser at 3 yd/s past a standing blocker") fails under PRESS_SPRING too. The reach
+  lands (joint life 0.50 / 0.45 s, 303 N), but a standing blocker's arm steer (about 0.7 of his arm force) is less than
+  the crosser's leg drive, and the crosser is not slowed (2.31 / 3.01 against 2.29 / 3.00). A stalk is played with the
+  feet: the blocker shuffles to stay in front, and the NFL's 0.8 s held includes his feet. The stalk row as played (the
+  blocker shuffling at 80% of the crosser's lateral speed) is the gate.
+
+**G3's proper statement:** hand placement decides control on a reach (who can steer whom across), not who wins a
+straight drive. A straight drive is the blocker's legs against the defender's feet, and the defender's hand placement
+does not change his traction (0.23 / 0.23 yd moved back with either hands).
+
+| gate | reference (perception recorded) | PRESS_SPRING | |
+|---|---|---|---|
+| G1 the bull | 1,668 / 1,287 N on one joint, 0.92 yd at 0.6 s | both arms, 741 -> 1,177 N steady, 0.75 / 0.77 yd | passes |
+| G2 the crosser, blocker outside / inside: his speed after | 1.95 / 1.95 | 2.93 / 2.14 | passes |
+| G3 a reach across a run defender, his hands inside / outside: his lateral | 0.03 / 0.03 yd | 0.00 / 0.13 yd | passes |
+| G4 a long-arm on a blocker who does not answer it | 0.89 -> 0.92 yd | 0.95 -> 1.53 yd | passes |
+| G5 the stalk as played, 3 yd/s, blocker inside / outside: joint life, crosser's speed after | 0.05 s, 2.99 | 0.75 / 0.70 s, 2.53 / 2.92 | passes (NFL screens-only 0.8 s median, 74% held 0.5 s+) |
+| G5 at 4 yd/s, inside / outside | 0.05 s, 3.76 | 0.80 / 0.45 s, 3.44 / 3.73 | the outside-handed blocker short of 0.5 s at 4 yd/s |
+| the reach's cost: a crosser who stems at the reach and cuts back at 0.25 s, blocker inside / outside: his lateral, joint life | 1.42 / 1.42 yd, 0.15 s | 0.94 / 1.62 yd, 0.80 / 0.60 s | the outside-handed reaching blocker gives up 0.2 yd more than the reference: his extended hands are late back |
