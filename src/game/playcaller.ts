@@ -13,6 +13,7 @@
  * QB's pocket presence (blitz the panicky ones) and what has worked today. In
  * man coverage a shadowing coach puts his best corner on their best receiver.
  */
+import { CORNER_SIDE, callCornerTech } from '../playbook/corner-side.js';
 import type { Rng } from '../core/rng.js';
 import { CENTER_Y } from '../core/field.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
@@ -916,8 +917,26 @@ export class DefensiveCoordinator {
       else if (u < .06) dlGame = { kind: 'pinch', dir }; else if (u < .09) dlGame = { kind: 'twist', dir, pair: g.weighted(['TE', 'ET', 'TT'] as const, [.4, .35, .25]) };
     }
     const gameTag = dlGame ? ` [${dlGame.kind}${dlGame.pair ? ' ' + dlGame.pair : ''} ${dlGame.dir}]` : '';
+    // CORNER_SIDE (experimental, off): the corner technique by side, called where the coverage installs a solo
+    // corner. His corner (CB_S the better by overall, CB_W the next, as the depth chart fills them) against the
+    // receiver he expects alone on that side: the seen formation's only receiver on its short side (W), else the
+    // wideouts' average; his team's man habit sets how often.
+    const cornerTech = CORNER_SIDE ? callCornerTech(coverage, s.down, Math.sqrt(coach.manRate / 0.4), (side) => {
+      const byCorner = this.team.roster.filter((p) => p.position === 'CB').sort((a, b) => overallAt(b) - overallAt(a));
+      const cb = byCorner[side === 'S' ? 0 : 1]?.ratings.manCoverage ?? cbMan;
+      let wr = wrRoute;
+      if (formation) {
+        const bySide: Record<string, string[]> = { L: [], R: [] };
+        for (const [slot, a] of Object.entries(formation.slots)) if (a && a.side !== 'C' && a.split !== 'core') bySide[a.side].push(slot);
+        const [short, long] = bySide.L.length <= bySide.R.length ? [bySide.L, bySide.R] : [bySide.R, bySide.L];
+        const lone = (side === 'W' ? short : long).length === 1 ? (side === 'W' ? short : long)[0] : undefined;
+        const p = lone ? offSlots[lone as OffSlot] : undefined;
+        if (p) wr = (p.ratings.routeRunning + p.ratings.releaseVsPress) / 2;
+      }
+      return Math.exp(((cb - CB_NORM) - (wr - (WR_NORM[offPersonnel] ?? 72))) / 25);
+    }, (side) => own.fork(`corner-tech:${side}`).next()) : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep: creepCalled, checkPick: coach.checkPick,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, ...(cornerTech ? { cornerTech } : {}), frontStem, creep: creepCalled, checkPick: coach.checkPick,
         checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, samOn, ...(dlGame ? { dlGame } : {}),
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}${gameTag}` },

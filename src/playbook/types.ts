@@ -429,6 +429,9 @@ export interface Pressure {
  */
 export type ZoneStyle = 'spot' | 'match';
 
+/** CORNER_SIDE: a corner's technique on his side. `press_bail` and a zone `press` wait for their post-snap techniques. */
+export type CornerTech = 'off' | 'press' | 'press_bail' | 'solo';
+
 export interface DefensivePlayCall {
   personnel: DefPersonnelId;
   front: Front;
@@ -436,6 +439,8 @@ export interface DefensivePlayCall {
   pressure: Pressure | null;
   /** Zone technique for zone defenders (default `match`). */
   zoneStyle?: ZoneStyle;
+  /** CORNER_SIDE: the corner technique called for each side (S = the coverage's strong side). */
+  cornerTech?: Partial<Record<'S' | 'W', CornerTech>>;
   /**
    * What an underneath zone defender does before the throw about a receiver
    * still behind the line in front of him (a back, a swing or a screen):
