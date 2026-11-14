@@ -338,3 +338,18 @@ operator lag at the break is still to come.
 - 1e run-fit keys (with Defense's attention-penalty change);
 - 1b QB feel through `felt()` after QB_POCKET;
 - then recognition, then anticipation (built toward the rugby finding: skill is which cue he weights).
+
+## 10. The first anticipation witness: pursuit lead (from step 1a, 2026-11-13)
+
+`pursuit_aim.py`, the same operator on NFL and sim, measures lead per time to contact at 5-10 yd:
+- **NFL:** 0.94;
+- **ours, the old scaled picture plus the two-sample burst:** 0.80-0.81;
+- **`TRACK_PURSUIT`, on the tracking channel with no acceleration term:** 0.69-0.75.
+
+NFL pursuers lead more than any constant-velocity forecast of the carrier does.
+
+**Integration's ruling:** that is anticipation, not tracking latency. A pursuer reads where the carrier can go: his
+blockers, the sideline, the cutback lane. So it belongs to step 3, and the tracking latency is not tuned toward it.
+
+When `PERCEIVE_ANTICIPATE` is built, pursuit lead against the NFL's is its first witness. It must rise from the carrier's
+seen options (lanes, blockers, boundary), and be wrong when the carrier takes the other one.
