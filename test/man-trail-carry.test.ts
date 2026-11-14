@@ -2,22 +2,26 @@
  * coverage/C14-release-seen): a man defender trailing his receiver at matched speed when the ball arrives. Without the
  * carry he keeps his coverage for ~0.3 s while the ball is secured, rallies to the ball area, and starts to chase at
  * ~0.55 s; on these plays he drifts away or holds. With it he closes through the catch. A control play where he
- * already closes is not slowed. Natural plays, no forcing; the cases need the current engine defaults (stack 'on'). */
+ * already closes is not slowed. The cases need the current engine defaults (stack 'on'). The throw is staged
+ * (PlaySetup.stagedThrow): its start, receiver, aim point and flight time are the ones develop's QB produced on each
+ * play (recorded 2026-11-14 at 45e17fcc, CATCH_CARRY off), so a change in the QB does not move a defensive fixture's
+ * premise. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { StagedThrow } from '../src/sim/playsim.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags as Record<string, string>)
   .filter(([, v]) => v === 'on').map(([k]) => k);
 
-type Case = { coverage: string; concept: string; formation: string; seed: number; flip: boolean };
+type Case = { coverage: string; concept: string; formation: string; seed: number; flip: boolean; staged: StagedThrow };
 const TRAIL: Case[] = [
-  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 3, flip: false },
-  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 5, flip: false },
-  { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 10, flip: true },
+  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 3, flip: false, staged: { at: 1.7, slot: 'H', aim: { x: 46.813467117784064, y: 27.378647345717763, z: 1.4021466241115106 }, T: 0.7987500560135912 } },
+  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 5, flip: false, staged: { at: 1.7, slot: 'H', aim: { x: 46.630641784473625, y: 27.90120688357736, z: 1.2553959154179828 }, T: 0.7445107982581539 } },
+  { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 10, flip: true, staged: { at: 1.75, slot: 'H', aim: { x: 45.70821508789646, y: 25.079612717080366, z: 1.201432880219722 }, T: 0.7220591384695301 } },
 ];
-const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: false };
+const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: false, staged: { at: 1.7, slot: 'Y', aim: { x: 44.62284293422765, y: 24.94643850961164, z: 1.1075868239625482 }, T: 0.6951580120998386 } };
 
 /** His own man defender's closing speed on the catcher (yd/s), mean over 0.1-0.4 s after the secure event. */
 async function closing(flag: string, c: Case): Promise<number> {
@@ -26,7 +30,7 @@ async function closing(flag: string, c: Case): Promise<number> {
   vi.stubEnv('CATCH_CARRY', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-  const sim: any = new PlaySim(nativeTraceSetup({ ...c, roster: c.seed }));
+  const sim: any = new PlaySim({ ...nativeTraceSetup({ ...c, roster: c.seed }), stagedThrow: c.staged });
   let C: any = null;
   const ev0 = sim.event.bind(sim);
   sim.event = (type: string, a: any, b: any, note?: string) => {

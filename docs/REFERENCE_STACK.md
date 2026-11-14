@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-61`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-62`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-62: `RUSH_BULL` on and `APEX_LEVERAGE` at 7 (2026-11-14)
+
+**`RUSH_BULL` (Flex, `claude/quirky-franklin-9lbwbp` `8c58f7c5`).** The bull rush is the rusher's drive (push through the chest to the quarterback at 0.55 vmax, pad level) against the blocker's anchor, resolved by the World. The rated roll, the won bull's scripted strike, the lost move's blocker punch and stall, and both control swings are removed together; the pass rep's control no longer drifts toward the better hands rating. It is the first of the rating rolls engine-60 measured (92% of about 6,500 rolls lost, a move attempt worth less than none) to be rebuilt as a force.
+
+**`APEX_LEVERAGE` = 7 (Coverage, #702 `64934823`).** The quarters and Cover 6 apex walls No. 2 level, not 0.8 yd inside (1); once the back commits as a flat threat to his side he stops leading No. 2, widens and holds about 9 yd over the back he sees, never coming up to make it (2); the quarters Mike widens to the hook on a flat declaration (4). Lane read, off → 7 (NFL): apex depth at 2.5 s with a flat back 7.9 to 8.5 → 6.0 to 6.7 (6.2). The cushion and margins are measured stand-ins, not coached. Open (COV-11): he gets level with No. 2, not 2 yd outside. Merged onto engine-61 here; in `Wall` the feed-forward and `INFO_HONEST`'s seen-quarterback facing are kept together (Coverage confirmed).
+
+Checks. Candidate `164f4d14` carded; fixtures then restated. Fresh run set 3.75 (engine-61 3.73); missed + broken open 0.266. Cards, 16 games a side, four arms (`out/e67-card-*`), seeds 11 / 23 / 31:
+
+| arm | sack rate | yards / attempt | YAC / reception |
+|---|---|---|---|
+| bull | +1.5 (moved) / −0.8 / +1.5 (moved) | +0.51 / −0.06 / −0.63 | +0.59 / +0.21 / −1.16 (moved) |
+| apex | +1.1 (moved) / −0.0 / −0.3 | +0.01 / −0.38 / +0.11 | +0.33 / −0.76 / −0.71 |
+| both | +0.9 / −2.2 (moved) / +0.1 | −0.38 / −0.19 / −0.35 | −0.09 / −0.13 / −0.43 |
+
+Nothing agrees across seeds in either arm. Suite: five fixtures moved with the new defaults and were restated before merge. Flex `7c8c590a`: `rush-lean-bound`'s two "no longer goes down" cases became one paired search (re-found at cover1 roster 2 seed 2), and the swum-past-his-press case is dropped because no such fall occurs in 288 scenes with the bull as a force; `punch-strike`'s isolating case pins `RUSH_BULL` off and its propped fall is a search with a floor. Defense's `pursuit-commit` case moved because the throw moved; it now stages develop's recorded throws through the test-only `stagedThrow` hook (start, receiver, aim and flight time; it suppresses an earlier pump, stated in its comment), as do `man-trail-carry` and `arrival-lead`, so a quarterback timing change no longer breaks a defensive scene.
+
+Also in this merge, no engine change: Tools' scorecard rows (#724: rush yards capped at 20 and beyond 20, scramble yards, a run-situation mix section; numeric flags in `ref` and `ref:report`, with `INFO_HONEST` and `APEX_LEVERAGE` registered), and Rules+Coaching's `release-evidence.ts` (#725, no consumer; for presented possession).
+
+**The card's rush row** (Tools, 48 games an arm on the engine-61 candidate, recorded in `docs/VALIDATION.md`): the defensive honesty arm read 4.12 → 4.25 uncapped and 3.61 → 3.75 capped, breakaway counts flat and the run mix unchanged; a 16-game card is about ±0.45 uncapped on that row, so engine-61's +0.5 on three seeds was inside the spread. One cell moved: runs of 0 yd or less 11.6 → 9.6%.
 
 ## engine-61: the honesty batch: `HONEST_READS`, `INFO_HONEST` (63), `HONEST_TACKLE`, `RCV_SEEN`, `TRACK_PURSUIT`, `TRACK_TACKLE` and `PURSUIT_SPOT` on (2026-11-14)
 

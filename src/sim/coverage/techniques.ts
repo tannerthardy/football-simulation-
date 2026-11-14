@@ -17,6 +17,8 @@ import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, play
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
 
+const APEX_CUSHION = 9;
+
 abstract class Technique implements Behavior {
   readonly kind = 'zone';
   readonly zoneEyes = true;
@@ -88,16 +90,34 @@ export class Trap extends Technique {
  */
 export class Wall extends Technique {
   private opened = false;
+  /** `insideBy`: yards inside #2 he walls from (0 level, negative outside).
+   * `flat`: a committed flat threat under him (APEX_LEVERAGE 2): he stops leading
+   * #2 and holds a cushion over the seen back. */
+  constructor(target: Agent, reader: ReleaseReader, gap: Gap, gapSign: number,
+    private readonly insideBy = 0.8, private readonly flat?: Agent) {
+    super(target, reader, gap, gapSign);
+  }
+
   protected move(a: Agent, sim: PlaySim): MoveCommand {
     const rd = this.reader.read(sim, this.target);
     if (!rd) return { vel: { x: 0, y: 0 } };
     const inside = Math.sign(sim.ballY - rd.pos.y) || 1;
-    const aim = { x: Math.max(rd.pos.x + 1.2, a.pos.x - 0.4), y: clamp(rd.pos.y + inside * 0.8, 0.5, FIELD_WIDTH - 0.5) };
+    const aim = { x: Math.max(rd.pos.x + 1.2, a.pos.x - 0.4), y: clamp(rd.pos.y + inside * this.insideBy, 0.5, FIELD_WIDTH - 0.5) };
+    const back = this.flat ? this.reader.read(sim, this.flat) : null;
+    // A committed flat threat under him: the quarters safety has #2 over the top, so he stops leading #2 at once
+    // and holds a cushion over the back he sees (never closer to the line than 1 yd, never coming up to make it),
+    // from #2's outside. Measured, not coached: the NFL apex sits ~9 yd over a flat back (apex_leverage_nfl.py,
+    // 9.1-9.4 at 1.0-2.5 s), stand-in debt. With no flat threat he keeps carrying #2 to the hand-off.
+    if (back) aim.x = Math.min(a.pos.x, Math.max(sim.los + 1, back.pos.x + APEX_CUSHION));
     const closing = Math.max(0, rd.vel.x - Math.max(0, a.vel.x));
     const turnTime = Math.PI / a.profile.turnRate;
-    if (rd.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - rd.pos.x < 1.2 + closing * turnTime) this.opened = true;
+    // With a flat threat under him he does not turn and run with #2 (the safety has him over the top); he stays
+    // square to the quarterback (a choice: the coached apex keeps his eyes in the backfield, HNFL quarters notes).
+    if (back) this.opened = false;
+    else if (rd.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - rd.pos.x < 1.2 + closing * turnTime) this.opened = true;
     const speed = this.opened ? 0.92 + 0.08 * a.r('zoneCoverage') : (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
-    const req = track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos), speed, gain: 2 });
+    const ff = { x: back ? Math.max(0, back.vel.x) : Math.max(0, rd.vel.x), y: rd.vel.y };
+    const req = track(a, aim, ff, { facing: this.opened ? undefined : angleTo(a.pos, infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos), speed, gain: 2 });
     // OPEN_CARRY: an opened wall rides the vertical as square to the QB as the run allows.
     if (OPEN_CARRY && this.opened) {
       a.tags.add('open-carry');
