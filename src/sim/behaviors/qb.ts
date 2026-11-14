@@ -89,6 +89,13 @@ const PA_DROP = process.env.PA_DROP !== '0';
 /** SCREEN_QB (experimental, off; SCREEN_QB=1): screens thrown as NFL quarterbacks throw them: a slow screen on its
  * timing once the receiver is ready, and firm (docs/reviews/2026-11-13-screens.md). */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** The quarterback's natural flight time to a point d yd away for his arm (the measured fit below, scaled by his arm);
+ * shared with his receivers' expectation of his ball (BALL_EST). */
+export function naturalFlightFor(armSpeed: number, d: number): number {
+  const armEdge = clamp((armSpeed - 26) / 8, -0.5, 0.5);
+  const base = SCREEN_QB ? 0.27 + 0.0173 * d + 0.00062 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
+  return base * (1 - 0.12 * armEdge);
+}
 
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
@@ -1536,9 +1543,7 @@ export class QBPass implements Behavior {
    * SCREEN_QB: refit to BDB 2025 completions, pass_forward to pass_arrived (the ball at the hands; p50 0.5 s at 8 yd,
    * 0.7 at 15, 1.1 at 25, 1.6 at 35, 2.2 at 45; scripts/diag/flight/), least squares on 3-yd bins. */
   private naturalFlight(d: number): number {
-    const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
-    const base = SCREEN_QB ? 0.27 + 0.0173 * d + 0.00062 * d * d : 0.38 + 0.022 * d + 0.00065 * d * d;
-    return base * (1 - 0.12 * armEdge);
+    return naturalFlightFor(this.armSpeed, d);
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
