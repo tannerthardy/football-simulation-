@@ -214,12 +214,17 @@ export const MENU_CONCEPTS: PassConcept[] = [
  * 'five' and 'gun5' are the same drop in the gun today, until the QB lane sets 'five' to the NFL's depth and time. */
 const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
 const COACHED_DROP: Record<string, PassConcept['drop']> = {
-  smash: 'five', mesh: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
-  trips_sail: 'five', trips_outs: 'five', double_outs: 'five', comebacks: 'five',
-  // Four verticals is "a quick five-step drop (from shotgun, a quick three-steps)" (Gonzalez via Smart Football).
-  four_verts: 'gun3', verts_hitch: 'gun3',
+  // 'five_deep' is this class's own drop (dropSpec), so the concepts already on 'five' (dagger, y_cross) do not move.
+  smash: 'five_deep', mesh: 'five_deep', flood: 'five_deep', drive: 'five_deep', sail_corner: 'five_deep', corner_flat: 'five_deep',
+  trips_sail: 'five_deep', trips_outs: 'five_deep', double_outs: 'five_deep', comebacks: 'five_deep',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
+/** VERTS_QUICK (experimental, off; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a
+ * quick five-step drop (from shotgun, a quick three-steps)" (Gonzalez via Smart Football), so four_verts and
+ * verts_hitch take the gun three-step instead of 'gun5'. Paired staged read (the same 384 plays off and on,
+ * scripts/diag/escape/drop-staged.ts): 7.92 -> 9.66 yd a play, sacks 40 -> 37, four_verts' time to throw 4.10 -> 3.30 s. */
+const VERTS_QUICK = process.env.VERTS_QUICK === '1';
+if (VERTS_QUICK) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.id === 'four_verts' || c.id === 'verts_hitch') c.drop = 'gun3';
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
 
 export const RUN_CONCEPTS: RunConcept[] = [

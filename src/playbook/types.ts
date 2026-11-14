@@ -91,7 +91,7 @@ export type ReceiverRef = `S${1 | 2 | 3 | 4}` | `W${1 | 2 | 3 | 4}` | 'B' | 'B2'
 
 export type PassAssignment = { route: string } | { block: 'pass' } | { chip: string };
 
-export type DropType = 'quick' | 'gun3' | 'gun5' | 'five' | 'seven' | 'pa' | 'boot';
+export type DropType = 'quick' | 'gun3' | 'gun5' | 'five' | 'five_deep' | 'seven' | 'pa' | 'boot';
 
 export interface PassConcept {
   id: string;
