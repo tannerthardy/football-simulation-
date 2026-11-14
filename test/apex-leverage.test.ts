@@ -1,8 +1,8 @@
 /** APEX_LEVERAGE (rules.ts / techniques.ts; experimental, off). Fixed plays, cover4 (MOD quarters), seeds 1-4.
  * Off at 0: every defender's position on every tick is identical whether the flag module is read at 0 or not set.
  * 1: the apex walls #2's seam level rather than 0.8 yd inside (four verts: his lateral offset to #2's inside at 1.5 s
- *    shrinks). 2: with the back seen threatening the flat under him (seam-hitch, wheel back), he walls #2 from the outside
- *    (the depth hold binds after the throw on these fixtures; its read is in the game panel). */
+ *    shrinks). 2: with the back committed as a flat threat (staged four verts with the back's flat), he stops leading #2 and
+ *    holds over the back from #2's outside (shallower at 2.5 s, and further outside, than with 1 alone). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
@@ -12,6 +12,9 @@ async function run(flag: string | undefined, concept: string, at: number) {
   if (flag !== undefined) vi.stubEnv('APEX_LEVERAGE', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+  const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+  // Staged: four verticals with the back's flat (No. 2 seams, the back flares).
+  PASS_BY_ID.seam_flat = { ...PASS_BY_ID.four_verts, id: 'seam_flat', back: 'back_flat' };
   const all: number[] = [], apex: { inside: number; depth: number }[] = [];
   for (let seed = 1; seed <= 4; seed++) {
     const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover4', concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false }));
@@ -50,9 +53,10 @@ describe('APEX_LEVERAGE', () => {
     expect(on.apex.length).toBeGreaterThan(3);
     expect(mean(on.apex.map((e) => e.inside))).toBeLessThan(mean(off.apex.map((e) => e.inside)) - 0.3);
   });
-  it('2: walls a seam from its outside once he sees the back threaten the flat under him', async () => {
-    const lev = await run('1', 'seam_hitch', 2.25), flat = await run('3', 'seam_hitch', 2.25);
+  it('2: with the back committed as a flat threat he stops leading the seam and holds over the back', async () => {
+    const lev = await run('1', 'seam_flat', 2.5), flat = await run('3', 'seam_flat', 2.5);
     expect(flat.apex.length).toBeGreaterThan(3);
-    expect(mean(flat.apex.map((e) => e.inside))).toBeLessThan(mean(lev.apex.map((e) => e.inside)) - 0.4);
+    expect(mean(flat.apex.map((e) => e.depth))).toBeLessThan(mean(lev.apex.map((e) => e.depth)) - 1.5);
+    expect(mean(flat.apex.map((e) => e.inside))).toBeLessThan(mean(lev.apex.map((e) => e.inside)));
   });
 });

@@ -268,7 +268,7 @@ function mike3(c: RuleCtx): Directive {
 }
 
 /** APEX_LEVERAGE 4: the quarters Mike widens to the hook on the side he sees the back release flat, so the apex
- * can stay over #2 and the flat. A commitment on his own read: enter once the back is seen flat/out and 2+ yd
+ * can stay over #2 and the flat. A commitment on his own read: enter once the back is declared flat and 2+ yd
  * outside his alignment; hold it until the back is seen back inside 1 yd (a flat-then-under back is the counter, and
  * an under/in/vertical declaration returns him to the back above). Measured, not coached: the NFL Mike's lateral
  * shift with a flat back (apex_leverage_nfl.py), stand-in debt. */
@@ -276,8 +276,7 @@ const MIKE_WIDEN_IN = 2, MIKE_WIDEN_OUT = 1;
 function mikeWiden(c: RuleCtx, b: ReceiverRead | null): Directive | null {
   const fam = c.sim.defAlign.coverage.family;
   if (!b || c.state.mode === 'zoned' || (fam !== 'cover4' && fam !== 'cover6')) return null;
-  const flat = b.release === 'flat' || (b.release === 'out' && b.depth < 4);
-  if (c.state.mode === 'widen' ? b.outward < MIKE_WIDEN_OUT : !(flat && b.outward >= MIKE_WIDEN_IN)) {
+  if (c.state.mode === 'widen' ? b.outward < MIKE_WIDEN_OUT : !(b.release === 'flat' && b.outward >= MIKE_WIDEN_IN)) {
     if (c.state.mode === 'widen') c.state.mode = undefined;
     return null;
   }
@@ -369,12 +368,12 @@ function quarterFlat(c: RuleCtx): Directive {
 /** APEX_LEVERAGE (bitmask, off at 0): the quarters apex's wall on #2's vertical.
  * 1: level on #2 rather than 0.8 yd inside (the deep-quarter safety owns the
  *    seam's inside; the apex keeps #2 from flattening outside and stays square).
- * 2: when he sees the back threaten the flat to his side, he walls from #2's
- *    outside, level rather than over the top, and stops sinking once #2 has
- *    passed him to the safety instead of carrying #2 to the hand-off.
+ * 2: once he commits to the back as a flat threat to his side, he stops
+ *    leading #2 (the safety has him over the top), widens to #2's outside and
+ *    holds a cushion over the back he sees instead of carrying #2 to the hand-off.
  * Measured, not coached: level leverage, 1 yd outside with a flat back and the
- * shallower hold are the NFL quarters apex's medians (apex_leverage_nfl.py),
- * stand-in debt. */
+ * cushion over the back are the NFL quarters apex's medians
+ * (apex_leverage_nfl.py), stand-in debt. */
 function apexWall(c: RuleCtx, two: ReceiverRead): Directive {
   const flat = APEX_LEVERAGE & 2 ? flatThreat(c) : undefined;
   return { t: 'wall', r: two.r, inside: flat ? -APEX_OUTSIDE : APEX_LEVERAGE & 1 ? 0 : undefined, flat };
