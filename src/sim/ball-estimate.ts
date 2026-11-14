@@ -75,7 +75,8 @@ export class BallEstimates {
     if (!BALL_EST || sim.t <= this.lastSenseAt) return;
     this.lastSenseAt = sim.t;
     const ball = sim.ball;
-    if (ball.kind !== 'air') return;
+    // A ball being secured is in someone's hands (catching.ts carries it with him): no longer a flight to fit.
+    if (ball.kind !== 'air' || ball.securing) return;
     if (ball.flight !== this.flight) { this.flight = ball.flight; this.history.length = 0; }
     this.history.push({ t: sim.t, p: { ...ball.flight.pos } });
     for (const [a, tr] of this.tracks) {
