@@ -79,6 +79,10 @@ for p in plays:
   r['fast'] = spd(F[c]['d'][j1]) > 3
   dm = F[c // 2]['d'][j1]
   if len(dm) > 6:
+    if len(dm) > 11 and dm[10] is not None and dm[11] is not None:
+      r['land_err'] = math.hypot(dm[10] - cp[0], dm[11] - cp[1]); r['land_short'] = (cp[0] - dm[10]) * d
+      r['goto'] = dm[9] == 1; r['req_speed'] = math.hypot(dm[4], dm[5])
+    elif len(dm) > 5: r['req_speed'] = math.hypot(dm[4], dm[5])
     f = int(dm[6]); r['est'] = bool(f & 2); r['saw'] = bool(f & 1); r['mz'] = 'man' if f & 4 else 'zone' if f & 8 else 'other'; r['hands'] = bool(f & 16)
   else: r['mz'] = {'Man': 'man', 'Zone': 'zone'}.get(p.get('mz'), 'other')
   yac = (F[-1]['c'][0] - cp[0]) * d; r['yac'] = yac
@@ -119,5 +123,11 @@ print('(1b) D1 closing toward the catch point at mid-flight | at the catch, by s
 for nm, f in (('man', lambda x: x['mz'] == 'man'), ('zone', lambda x: x['mz'] == 'zone'), ('estimate yet (mid)', lambda x: x.get('est') is True), ('no estimate (mid)', lambda x: x.get('est') is False), ('saw the flight (mid)', lambda x: x.get('saw') is True), ('not seen (mid)', lambda x: x.get('saw') is False), ('man, saw hands (mid)', lambda x: x['mz'] == 'man' and x.get('hands') is True), ('man, no hands (mid)', lambda x: x['mz'] == 'man' and x.get('hands') is False)):
   S = [x for x in R if f(x)]
   if len(S) >= 5: print(f'   {nm}: n {len(S)} | mid {q("D1_mid_close", S)} | catch {q("D1_catch_close", S)} | YAC mean {mean("yac", S)}')
+Z = [x for x in R if x['mz'] == 'zone' and 'land_err' in x]
+if Z:
+  print(f'(1c) zone D1 holding a flight picture at mid-flight (n {len(Z)}): arrival point off the true catch point {q("land_err", Z)} yd, short of it along the field {q("land_short", Z)} yd | goTo (spot reachable) branch {share(lambda x: x["goto"], Z)} | requested speed {q("req_speed", Z)} | mid closing {q("D1_mid_close", Z)}')
+  for nm, f in (('goTo', lambda x: x['goto']), ('drive', lambda x: not x['goto'])):
+    S = [x for x in Z if f(x)]
+    if len(S) >= 5: print(f'   {nm}: n {len(S)} | requested speed {q("req_speed", S)} | mid closing {q("D1_mid_close", S)} | arrival point off {q("land_err", S)} | YAC mean {mean("yac", S)}')
 T = [x for x in R if x['yac'] > 10]
 print(f'(4) tail YAC > 10 (n {len(T)}): at the catch D2 {q("D2_dist", T)} yd closing {q("D2_close", T)}, D3 {q("D3_dist", T)} yd closing {q("D3_close", T)} | closest before 10 yd: D2 {q("tail_D2_min", T)}, D3 {q("tail_D3_min", T)} | no contact in 5 yd {share(lambda x: x["no5"], T)}')

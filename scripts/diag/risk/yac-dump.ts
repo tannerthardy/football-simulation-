@@ -6,6 +6,8 @@ import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+import { catchSpot } from '../../../src/sim/behaviors/receiver.js';
+import { timeToReach } from '../../../src/physics/reach.js';
 const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 8);
 const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult;
 const r2 = (v: number) => Math.round(v * 100) / 100;
@@ -16,7 +18,18 @@ function dst(sim: any, d: any) {
   const c = sim.cmds?.[d.idx]?.vel ?? { x: NaN, y: NaN }, ts = sim.throwSight, be = sim.ballEstimates;
   const k = d.behavior?.kind;
   const f = (ts?.seenAt?.(d) !== undefined ? 1 : 0) | (be?.lastSeen?.(d) ? 2 : 0) | (k === 'man' ? 4 : k === 'zone' ? 8 : 0) | (ts?.handsAt?.(d) !== undefined ? 16 : 0);
-  return [...st(d), r2(c.x), r2(c.y), f];
+  // His flight picture (BALL_EST: his own estimate via peek; off: the true path once he has seen the flight) and what
+  // playBall would do with it: the catch spot, whether it is reachable before the ball (the goTo branch), and the
+  // arrival point he drives on otherwise.
+  let extra = [NaN, NaN, NaN, NaN, NaN];
+  const path = sim.ball.kind !== 'air' ? [] : be && process.env.BALL_EST && Number(process.env.BALL_EST) & 1 ? be.peek(d, sim) : ts?.seenAt?.(d) !== undefined ? sim.ballPath : [];
+  if (path.length) {
+    const sp = catchSpot(d, { t: sim.t, ballPath: path });
+    let land: any = null; for (const q of path) { if (q.t < sim.t) continue; land = q; if (q.z < 1.4 && q.t > sim.t + 0.1) break; }
+    const reach = sp ? timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile, speedScale: d.speedScale }, sp.p, d.profile.reach) <= sp.t - sim.t + 0.05 : false;
+    extra = [sp ? r2(sp.p.x) : NaN, sp ? r2(sp.p.y) : NaN, reach ? 1 : 0, land ? r2(land.x) : NaN, land ? r2(land.y) : NaN];
+  }
+  return [...st(d), r2(c.x), r2(c.y), f, ...extra];
 }
 P.tick = function () {
   const r = t0.call(this);
