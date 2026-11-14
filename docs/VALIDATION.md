@@ -439,6 +439,42 @@ spread at a matching share of changed plays. Keep `runSet` for continuity and
 the operators. When `runSetFresh` has in turn judged several promotions,
 capture another and retire it the same way.
 
+## Reading the card's rush row and the paired run set together
+
+Two instruments, two questions. `ref:report` replays the same captured runs under two engines and asks what the change
+did to those plays (each run capped at 20 yd). The scorecard plays whole games under each engine and asks what the
+change did to football, so its plays differ between arms after the first divergence.
+
+**What the card's `Rush yards / carry` counts.** Every play logged `kind: run`: designed runs, draws, sneaks and tricks, uncapped.
+QB scrambles are logged as passes (their own row, `QB scramble yards / scramble`), kneel-downs have their own kind, and sacks
+are passes. The card now also prints the mean with each run capped at 20 yd (the `ref:report` convention) and the part
+beyond 20 yd, and a **Run-situation mix** section (run share of plays, share of runs by down, distance and field zone).
+
+**How big the noise is.** About 2% of runs go 20 yd or more and supply about 0.5 of the roughly 4.1 yd a carry, so a few plays
+decide the uncapped mean. Measured 2026-11-14 on the engine-61 candidate (two arms, 4-game cards, 12 independent
+cards, 48 games an arm): the difference between arms varied from card to card with a standard deviation of 0.54 yd uncapped and 0.41
+capped, which is about +/-0.45 and +/-0.34 at 90% for a 16-game card and +/-0.27 and +/-0.21 for 48 games. A single 16-game card
+that moves the row by 0.5 is inside that spread.
+
+**What the candidate's defensive-honesty arm did** (`HONEST_READS`, `INFO_HONEST=63`, `HONEST_TACKLE` on; receivers and tracking
+off; 48 games an arm): uncapped rush yards a carry 4.12 -> 4.25 (+0.13, 90% -0.24 to +0.48); capped at 20 yd 3.61 -> 3.75 (+0.14, -0.09 to +0.38);
+the part beyond 20 yd 0.50 -> 0.50; runs of 20+ yd 34 -> 38, of 40+ 22 -> 23, of 60+ 12 -> 13; run share of plays 33.9% -> 33.8%, and the
+down, distance, field-zone and personnel mix agree within noise. The paired fresh run set read +0.02 to +0.04. So the capped means
+agree with the run set, the breakaway count did not move, and the 16-game cards that read +0.5 are samples from the same spread. One
+cell did move: runs of 0 yd or less fell from 11.6% to 9.6% (-2.0 points, 90% -3.4 to -0.5). With all six flags on (the
+tracking flags included) the same 48-game comparison read -0.33 uncapped (-0.83 to +0.10), capped -0.24.
+
+**How to read them together.**
+1. A change to how a run is blocked, defended or tackled belongs on `ref:report --set fresh`: same plays, so no divergence noise.
+2. Use the card for what the run set cannot see: whether the offence ran in different situations (the mix section), and whether
+   a rise in a game-level number comes with a rise in the capped row. A move in the uncapped row with no move in the capped row, the
+   mix or the 20+ count is the tail.
+3. Do not call a card move a bias before 48 games an arm, the capped row and the run set disagree, and the beyond-20 row or the 20+
+   count explains the gap. Name the plays: `scripts/diag/rush-card-split.ts` splits saved two-arm cards by run concept, lists the
+   longest runs and prints the mix, with intervals from resampling whole games.
+4. `npm run ref -- --off` and `ref:report --flag` set numeric flags (`INFO_HONEST`) explicitly: `--off` zeroes them and `--flag
+   INFO_HONEST=7` gives a candidate arm one item.
+
 ## Keep an honest final exam
 
 All 2022–2025 outcome benchmarks have been inspected. They are descriptive
