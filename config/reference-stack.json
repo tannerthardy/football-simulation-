@@ -112,6 +112,7 @@
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
+    "CUT_WALL": "off",
     "DRIVE_CATCH": "on",
     "OFFICIATE": "on",
     "LOOK_ONCE": "on",

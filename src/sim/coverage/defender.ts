@@ -12,7 +12,7 @@ import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, Z
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
-import { ReadRelease, Rob, Trap, Wall } from './techniques.js';
+import { CrossWall, ReadRelease, Rob, Trap, Wall } from './techniques.js';
 import { isDeepZone } from '../../playbook/alignment.js';
 import { CoverageJudgment } from './judgment.js';
 
@@ -147,6 +147,7 @@ export class CoverageDefender implements Behavior {
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign, d.inside, d.flat);
       case 'rob': return new Rob(d.r, this.reader, this.gap, this.gapSign);
+      case 'crossWall': return new CrossWall(d.r, this.reader, this.gap, this.gapSign, d.area, d.half);
     }
   }
 }
@@ -156,6 +157,7 @@ function directiveKey(d: Directive): string {
     case 'zone': return `zone:${d.zone}:${d.style}`;
     case 'man': return `man:${d.r.slot}:${d.opts.lev ?? 'inside'}:${d.opts.overTop ? 'top' : ''}${d.opts.trail ? 'trail' : ''}`;
     case 'wall': return `wall:${d.r.slot}:${d.inside ?? ''}:${d.flat?.slot ?? ''}`;
+    case 'crossWall': return `crossWall:${d.r.slot}`;
     default: return `${d.t}:${d.r.slot}`;
   }
 }
