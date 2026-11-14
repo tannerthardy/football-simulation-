@@ -45,6 +45,7 @@ export const EXEMPT: Record<string, string> = {
   'src/sim/counterfactual.ts': 'analysis',
   'src/sim/types.ts': 'declarations',
   'src/sim/agent.ts': 'declares the state',
+  'src/sim/ball-estimate.ts': 'perception producer: turns the true ball into each player\'s own delayed, noisy estimate (BALL_EST samples the ball as it was one perception delay ago); consumers read the estimate, never the ball',
 };
 
 /**
