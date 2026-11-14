@@ -128,6 +128,9 @@
     "TRACK_TACKLE": "on",
     "PURSUIT_SPOT": "on",
     "TRACK_FEEL": "off",
+    "SIGHT_CARRIER": "off",
+    "SIGHT_COVER": "off",
+    "SIGHT_RECOG": "off"
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
