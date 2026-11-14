@@ -100,6 +100,19 @@ way PA holds a backer (experts wait for the ball; raw players bite on the arm). 
 (QB_BODY_SEEN consumed in `sawThrow`). Coverage's LOOK_PHASE then consumes "the ball is out" from it, so this is built
 first.
 
+**Integration's ruling (2026-11-14): taken in, on conditions.**
+- Same store, but its own flag and its own step: mesh candidates first, the release candidate second. Each reads
+  separately and either can land alone.
+- Rules + Coaching co-builds the release half (sawThrow's arm key and QB_BODY_SEEN are theirs).
+- Evidence order as stated: a seen ball in flight is decisive; a seen arm-through with no ball after it is weak and
+  decays, with the decay a named choice.
+- The control that matters most is the real throw. Break-on-the-ball timing on short and intermediate throws must not
+  get later than today for a defender watching the QB (COV-1 and Coverage's closing rows). The honest version of a
+  real throw must be at least as fast as reading a timestamp plus a reaction.
+- A pump then bites by his skill and by whether the QB sells it, and costs the QB the time of a real load (already
+  recorded by QB_BODY_SEEN).
+- The read-only `peek` / `lastSeen` contract is fixed.
+
 ### Evidence (what moves the belief)
 
 All through his own sight, with his ordinary delay and, where GAZE / SEE_SIGHT is on, his head and occlusion:
@@ -223,6 +236,8 @@ behaviour (unit test per consumer group: unresolved belief equals today's unknow
 0. (Rules + Coaching) SEE_SIGHT's `inSight(observer, target, height?)` query lands as plumbing.
 1. Belief store and `Perceived.carrying` from belief; every recording site stops passing the true holder. Cues:
    ball visible, exchange seen, contact outcome. Controls first: plain handoffs and dropbacks unchanged.
+1b. The release candidate (own flag; co-built with Rules + Coaching): `sawThrow` reads the belief; control: real-throw
+    break timing no later than today.
 2. Presentation: `carryPosture` set by carriers and fakers; the QB's hands after the mesh (with QB_BODY_SEEN).
 3. Non-carrier tackle outcome, on contact-holding's 12-1-6(a) predicate; outside it, ordinary fouls.
 Two attempts each, after the honesty batch lands. Occlusion is SEE_SIGHT's, not a step here (I1).
