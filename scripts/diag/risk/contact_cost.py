@@ -193,3 +193,35 @@ for nm in ('D1', 'D2'):
     print(line)
   if leave[nm]:
     L = leave[nm]; print(f'  {nm} leaves man/zone after the catch: median {st.median(L):.1f} s (never within the play {sum(1 for x in L if x == 99) / len(L):.2f})')
+# Part 4, D1/D2 on free plays in the catcher's frame, at the catch and +0.5 / +1.0 s: depth (yd upfield of the catcher
+# along the attack direction, + = between him and the goal line), lateral offset across the catcher's direction of
+# travel (absolute), the defender's velocity toward the goal line he defends (+ = giving ground / retreating, - =
+# driving downhill toward the line of scrimmage), and the share of defenders upfield of the catcher. Sim rows also give
+# the same components of his requested velocity.
+P4 = {}
+for p in plays:
+  F, c, d = p['frames'], p['catch'], p['dir']
+  if c >= len(F) - 2 or len(F[c]['d']) < 2: continue
+  up = lambda i: (F[i]['c'][0] - F[c]['c'][0]) * d
+  yac = up(len(F) - 1)
+  f = next((i for i in range(c + 1, len(F)) if any(dist(x, F[i]['c']) < 1 for x in F[i]['d'])), None)
+  if not (f is None or up(f) > 5 or (yac - up(f)) > 3): continue
+  order = sorted(range(len(F[c]['d'])), key=lambda k: dist(F[c]['d'][k], F[c]['c']))
+  for nm, j in (('D1', order[0]), ('D2', order[1])):
+    for k in (0, 5, 10):
+      i = c + k
+      if i >= len(F) or j >= len(F[i]['d']): continue
+      x, C = F[i]['d'][j], F[i]['c']
+      cs = spd(C); ux, uy = (C[2] / cs, C[3] / cs) if cs > 0.5 else (d, 0.0)
+      row = {'depth': (x[0] - C[0]) * d, 'lat': abs((x[0] - C[0]) * -uy + (x[1] - C[1]) * ux), 'back': x[2] * d, 'spd': spd(x)}
+      if len(x) >= 6 and x[4] == x[4]: row['rback'] = x[4] * d; row['rspd'] = math.hypot(x[4], x[5])
+      P4.setdefault((nm, k), []).append(row)
+print('part 4, near defenders on free plays in the catcher frame')
+for nm in ('D1', 'D2'):
+  for k in (0, 5, 10):
+    R = P4.get((nm, k), [])
+    if not R: continue
+    line = (f'  {nm} +{k / 10:.1f} s: n {len(R)} depth {med(R, "depth")} yd (upfield of him {sum(1 for r in R if r["depth"] > 0) / len(R):.2f}, 2+ yd upfield '
+            f'{sum(1 for r in R if r["depth"] >= 2) / len(R):.2f}) lateral {med(R, "lat")} yd | toward his own goal {med(R, "back")} yd/s (retreating {sum(1 for r in R if r["back"] > 0.5) / len(R):.2f}) speed {med(R, "spd")}')
+    if any('rback' in r for r in R): line += f' | requested toward own goal {med(R, "rback")} speed {med(R, "rspd")}'
+    print(line)
