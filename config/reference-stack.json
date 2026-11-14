@@ -238,6 +238,7 @@
     "BLITZ_DEPTH": "off",
     "BLITZ_SKILL": "off",
     "WAIT_REACHED": "on",
+    "QB_RELEASE": "off",
     "QB_RHYTHM": "on",
     "RUSH_PROMISE": "on",
     "RACE_LEAN": "off",
