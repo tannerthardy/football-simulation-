@@ -45,25 +45,67 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
   return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
 }
 
-export function steerRoute(body: Body, st: { idx: number }, path: readonly PathPoint[], end: RouteEnd,
+/** ROUTE_FILLET (experimental, off; ROUTE_FILLET=1 turns it on): a corner is led, not point-turned. The follower used to steer
+ * at each vertex with a speed cap that assumes a 1.3 yd corner, so a rolled bend was taken slowly and the body then swung
+ * about 2 yd outside the next leg; an NFL receiver starts the turn before the vertex and passes inside it
+ * (docs/reviews/2026-11-14-route-speed.md: cut 0.5-0.8 yd, radius 6-10 yd on a rolled bend, about 3 yd on a 90 degree plant).
+ * With the flag the declared through speed `s` still says what the route asks (a speed cut s .4, a rolled bend s .85-.9), and
+ * the corner is a fillet: on his usable lateral acceleration aLat = lateral * cutSkill the radius at that speed is v^2 / aLat, he
+ * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of the shorter adjacent leg), and if the legs do
+ * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
+ * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
+export const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
+/** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
+const FILLET_LEAD = 0.6;
+/** A turn this small is followed straight; there is nothing to lead. */
+const FILLET_MIN_TURN = 12 * Math.PI / 180;
+export interface FilletTurn { readonly idx: number; readonly exit: Readonly<Vec2>; readonly speed: number }
+export interface RouteCursor { idx: number; from?: Vec2; turn?: FilletTurn | null }
+
+export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint[], end: RouteEnd,
   effort: number, rr: number, cutSkill: number): MoveCommand | null {
+  if (ROUTE_FILLET && st.idx === 0 && !st.from) st.from = { x: body.pos.x, y: body.pos.y };
+  if (st.turn && st.turn.idx !== st.idx) st.turn = null; // something else moved his place on the route: that turn is over
   for (let guard = 0; guard < 6; guard++) {
-    if (st.idx >= path.length) return null;
     const tgt = path[st.idx], next = path[st.idx + 1];
-    const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
-    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; continue; }
-    const isLast = st.idx === path.length - 1;
+    if (!tgt) return null;
     const vtop = body.profile.vmax * effort;
+    if (ROUTE_FILLET && st.turn && st.turn.idx === st.idx && next) {
+      // Carry the turn he began to its exit point on the next leg.
+      const E = st.turn.exit, dE = Math.hypot(E.x - body.pos.x, E.y - body.pos.y);
+      const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y, bl = Math.hypot(bx, by) || 1;
+      const beyond = (body.pos.x - E.x) * bx / bl + (body.pos.y - E.y) * by / bl > 0;
+      if (dE < 0.6 || (beyond && dE < 2)) { st.idx++; st.turn = null; continue; }
+      return { vel: { x: (E.x - body.pos.x) / dE * st.turn.speed, y: (E.y - body.pos.y) / dE * st.turn.speed }, cutSkill };
+    }
+    const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
+    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
+    const isLast = st.idx === path.length - 1;
     let through = isLast && end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
+    // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
+    // full braking, so he carries only the speed his cutting ability lets him take through it.
+    const decel = LINE_START && next ? Math.min(body.profile.brake, body.profile.lateral * cutSkill) * 0.8 : undefined;
+    if (ROUTE_FILLET && next) {
+      const ax = (tgt.p.x - body.pos.x) / d, ay = (tgt.p.y - body.pos.y) / d;
+      const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y, bl = Math.hypot(bx, by) || 1;
+      const theta = Math.acos(clamp(ax * bx / bl + ay * by / bl, -1, 1));
+      if (theta > FILLET_MIN_TURN && bl > 1) {
+        const prev = st.idx > 0 ? path[st.idx - 1].p : st.from ?? body.pos;
+        const l1 = Math.hypot(tgt.p.x - prev.x, tgt.p.y - prev.y);
+        const aLat = Math.max(0.5, body.profile.lateral * cutSkill), tn = Math.tan(theta / 2);
+        const lead = Math.min(through * through / aLat * tn, FILLET_LEAD * Math.min(l1, bl)), radius = lead / tn;
+        const speed = Math.min(through, Math.sqrt(aLat * radius));
+        if (d <= lead) { st.turn = { idx: st.idx, exit: { x: tgt.p.x + bx / bl * lead, y: tgt.p.y + by / bl * lead }, speed }; continue; }
+        const entry = { x: body.pos.x + ax * (d - lead), y: body.pos.y + ay * (d - lead) };
+        return { vel: arriveVelocity(body, entry, vtop, speed, decel), cutSkill };
+      }
+    }
     if (next) {
       const ax = tgt.p.x - body.pos.x, ay = tgt.p.y - body.pos.y;
       const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y;
       const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
       through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
     }
-    // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
-    // full braking, so he carries only the speed his cutting ability lets him take through it.
-    const decel = LINE_START && next ? Math.min(body.profile.brake, body.profile.lateral * cutSkill) * 0.8 : undefined;
     return { vel: arriveVelocity(body, tgt.p, vtop, through, decel), cutSkill };
   }
   return null;

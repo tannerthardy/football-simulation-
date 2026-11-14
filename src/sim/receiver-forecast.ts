@@ -4,7 +4,7 @@ import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
-import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
+import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
@@ -198,7 +198,7 @@ export class ReceiverForecast {
     // Nominal fresh capacity is a model prior, not unseen current fatigue/support.
     const body: Body = { pos: { ...(p?.pos ?? prior.start) }, vel: { ...(p?.vel ?? { x: 0, y: 0 }) },
       facing: p?.facing ?? 0, energy: 1, sprintLoad: 0, profile: prior.profile };
-    const st = { idx: c.estimate.progress ?? 0 };
+    const st: RouteCursor = { idx: c.estimate.progress ?? 0, from: prior.start };
     const cutSkill = 0.8 + 0.4 * prior.routeRunning;
     const pts: Vec2[] = [{ ...body.pos }];
     let done = false;
@@ -213,7 +213,7 @@ export class ReceiverForecast {
       // Anticipation selects a future answer, not permission to execute its
       // easier/faster stem before the receiver's installed decision landmark.
       if (!selected && body.pos.x >= prior.readContext!.los + prior.read!.depth) {
-        selected = true; st.idx = 0;
+        selected = true; st.idx = 0; st.turn = null;
         while (st.idx < c.route.path.length - 1 && c.route.path[st.idx].p.x < body.pos.x - .5) st.idx++;
       }
       const active = selected ? c.route : prior;
