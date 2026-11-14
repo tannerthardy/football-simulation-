@@ -51,6 +51,19 @@ Three things, in the order I would check:
 
 Not checked: the order of the motor and the contact rows inside a substep, and whether the yaw rows from `HANDS_CHEST` carry the lever at the chest end or at the centre. Flex's reproducer decides between 1, 2 and 3; I can instrument one staged pair to print the net yaw impulse from contacts and the motor's counter-impulse per substep.
 
+### Update, traced on Flex's staged pair (2026-11-14): why the rusher's hand does not turn the blocker
+
+Instrumented, not inferred. `docs/reviews/patches/yaw-trace-world.patch` adds a local `World.yawTrace` hook (each hands row's normal impulse, lever arms and the yaw it delivers; each yaw-motor call's error, spin change, impulse, peak torque and the grip it was given), and `docs/reviews/patches/pair-yaw-trace.mts` is Flex's `pair-staged.mts` ("turn: a power rusher, his hand outside / inside on the blocker", `PAIR_HANDS=1`, 0.6 s, both men 144 kg) with the per-tick summary. Run on `claude/quirky-franklin-9lbwbp` at e2a02893, `HANDS_LEVER=1` and `=0`. What it shows:
+
+1. **The rusher's shoulder joint is slack.** His outside joint carries a compression only in tick 1 (mean 2.7, max 5.4 per substep impulse, about 1,300 N) and zero from tick 2 on. The blocker's inside joint, whose chest points sit on the line of centres, carries the whole 2,032 N press (8.5 per substep, impulse = force x 0.0042 s).
+2. **The compressing joint has no lever.** Its arms are 0.00 to 0.02 yd (the closest chest points of two squared-up men lie on the line of centres), so the 2,032 N press delivers a yaw acceleration of 0.00 rad/s^2. The slack joint has the arms (0.12) but no force. The only moment is in tick 1: +/-0.13 rad/s^2 for one tick, a spin of about 0.007 rad/s added over the run (0.000 to 0.002 rad/s in the summary).
+3. **The motor never has to fight.** Over the run the yaw motor's counter-impulse sums to -0.5 and -0.8 kg yd^2/s (the two men), its error stays under 0.6 deg, its peak torque is at most 150 against a grip budget of 1,696 (the OT's whole traction), and the pair ends 1 deg turned. So of the two cases asked, the moment is not applied: there is nothing for the motor to win against.
+4. **With `HANDS_LEVER=0` (the default) there is no lever at all**, as the code says: 288 of 432 rows are levered (the shoulder joint's) against 432 of 432 with the flag on, and the blocker's joint is unlevered; the outcome is the same, 1 deg.
+5. **Grip is not shared with holding ground.** The motor's grip budget is 1,696 at every substep while the hands carry 2,032 N (Flex's note, confirmed): the press is not charged against the traction the yaw motor draws on, only the gait's own force is (19 to 215 in the trace).
+6. **A period-2 chatter, cause not determined.** The blocker's joint force is 2,032 N on every even tick and 0 on every odd tick (rows per tick: 8.5, 0.0, 8.5, 0.0...). Flex's "hands 2032" at 0.2, 0.4 and 0.6 s are all even ticks, so the mean press is about 1,016 N. The staging calls `syncJoints` each tick; whether the chatter is the staging or the engagement's own hands law is not checked.
+
+So the first cause on the list above is confirmed in a stronger form than I stated: not a short lever, but a compressing joint whose lever is zero by geometry (squared up chest to chest) and a shoulder joint that carries nothing. A man gets turned when the shoulder joint carries the load (one hand loaded, the other slack and the compression taken by the shoulder, the geometry of a swim or rip) or the two bodies are off the line of centres.
+
 ### What it would take for facing to be a physical state that contact can overcome
 
 It is already a state with a bounded motor; what is missing is a motor torque that is a body capacity, not just friction. Smallest changes, in order of cost:
