@@ -1,7 +1,7 @@
 /** Shared route geometry/control. No agent, perception or live route state. */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../core/vec.js';
-import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
+import { arriveVelocity, lateralEnvelope, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 
@@ -98,7 +98,7 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
       const lx = l1 > 1e-6 ? (tgt.p.x - prev.x) / l1 : ax, ly = l1 > 1e-6 ? (tgt.p.y - prev.y) / l1 : ay;
       const theta = Math.acos(clamp(lx * bx / bl + ly * by / bl, -1, 1));
       if (theta > FILLET_MIN_TURN && bl > 1) {
-        const aLat = Math.max(0.5, body.profile.lateral * cutSkill), tn = Math.tan(theta / 2);
+        const tn = Math.tan(theta / 2);
         if (!st.plan) {
           // The speed he will carry into the corner is the speed he can have there: his speed along the leg now, built under his own
           // acceleration over the distance to the vertex, never above the declared through speed. A corner near the line is
@@ -106,6 +106,9 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
           const v0 = Math.max(0, body.vel.x * lx + body.vel.y * ly);
           const reach = speedAfter(v0, vtop, body.profile.tau, d);
           const carry = Math.min(through, reach);
+          // What the legs will give him at that speed (the body's own envelope: the high-speed derate and fatigue included), so the
+          // plan never asks for more turn than he has.
+          const aLat = Math.max(0.5, lateralEnvelope(body, carry, cutSkill));
           // The leg he leaves the line on has no corner behind it to share it with, so he may use all of it.
           const lead = Math.min(carry * carry / aLat * tn, st.idx === 0 ? l1 : FILLET_LEAD * l1, FILLET_LEAD * bl);
           st.plan = { idx: st.idx, lead, speed: Math.min(carry, Math.sqrt(aLat * lead / tn)) };
