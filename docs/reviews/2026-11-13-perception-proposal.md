@@ -401,3 +401,48 @@ the carrier for his traffic reads. Integration's design conditions:
 5. **The guard.** Tools' decision-information guard treats a `see()` of an occluded man as the leak it is once the
    flag is on.
 
+## 13. One head per player: GAZE for coverage (proposal, 2026-11-14; Integration: before the back routes)
+
+Seeing behind the shoulder is the half SEE_SIGHT deferred to GAZE. It is the larger effect for man trails, and BALL_EST
+(design 5's looming row only exists while his eyes are on the ball) and presented possession's release belief (#713)
+need the same head. Today there are three: GAZE's (`playsim.gaze`, stage 1, chasers), BALL_EST's per-flight
+`track.head`, and QB_BODY_SEEN's `Agent.head` for the passer. This makes them one.
+
+**State.** `Agent.head`: where his eyes point (rad, field frame), for every player, recorded in the perception record
+each tick like his position (STRIDE already carries `head` for the passer). Its dynamics are GAZE's: it turns toward
+what he wants to see at 6 rad/s, within +-90 deg of his body facing. Seen: within +-90 deg of it (the cone), or in
+contact.
+
+**Who sets it: his technique, as coached, one want a tick.** `head.want(a, target, reason)`, where target is a body or a
+point. The technique decides each tick; BALL_EST and the release belief ask through it and do not turn a head of their
+own.
+- Man trail: eyes on the receiver's near hip until the receiver's hands or eyes go to the ball (his own picture of
+  them), then to the ball.
+- Zone: eyes on the QB; to a threat entering his zone (his picture); to the ball once he has seen it thrown.
+- Press / off man before the break: the receiver.
+- A turn to find the ball is a decision in the technique (the coached cue, or his read), not automatic.
+
+**Cost.** None is invented. Within the neck range the head is free. Looking further round needs the shoulders and body
+turned, and the existing kinematics already charge running with the body facing off travel (backpedal and shuffle
+capacities). So a trail man who turns to find the ball pays in his stride, by physics.
+
+**Consumers.**
+- `see()`'s view half, for the groups that SEE_SIGHT gated by body facing (or left without a bound): in view = in the
+  cone of his recorded head at the sample's moment (the same record-based rule as `sighted`, which replaces GAZE's
+  separate `remembered()`).
+- BALL_EST's samples: its eye range is taken about `Agent.head`. Its `track.head` and its own head turning are retired,
+  and it asks `head.want(a, ballEstimate, 'ball')`.
+- The release belief's arm and ball cues (#713): in view by the same cone.
+- The QB's own `Agent.head` (QB_BODY_SEEN: defenders read his eyes): the QB lane's technique sets it through
+  `head.want`, so the passer's head and everyone else's are the same field.
+
+**Flag and order.** `HEAD` (off): one head state with GAZE's dynamics, set by the coverage techniques first (man and
+zone), consumed by `see()` for coverage defenders and by BALL_EST when both flags are on. Other groups move to it one
+at a time as their techniques name a want. Off, GAZE's stage 1 and BALL_EST's head stand as they are.
+
+**Witnesses.**
+- Coverage: `vert-pos`, `break-panel` and `man-dither` (turn-side flips; a head that turns back and forth would show
+  there first), `rcv-flight`, est-controls' closing in the air.
+- QB: QB_BODY_SEEN's look-off controls.
+- Controls: dither-budget and the fresh run set.
+
