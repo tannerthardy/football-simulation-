@@ -1,11 +1,17 @@
 /** HOLD_FACING (tackle.ts updateBond; experimental, off): a holder beside or
  * behind the runner keeps the facing he has instead of re-squaring his chest
- * on the runner every tick. Reproducer: Inside Zone vs Cover 3, seed 1922: the
- * weak tackle (DT_W) grabs the back from the side. In the hold's first 0.5 s he
+ * on the runner every tick. Reproducer: Inside Zone vs Cover 3 (first pinned on
+ * seed 1922, where the weak tackle, DT_W, grabbed the back from the side). In the hold's first 0.5 s he
  * turns 187 deg off against 32 on (engine-55), and 167 against 29 with
  * SPACING_SMOOTH + PURSUIT_COMMIT on (re-pinned for that candidate: SPACING_SMOOTH
- * changes the play from the C's first steps). The free-holder case (OPEN_HANDS)
- * stays on 1916 / DT_S.
+ * changes the play from the C's first steps). Re-pinned on the engine-66 candidate
+ * (8437292c) to seed 1921, DT_S: with ENGAGE_FELT (an engaged man reads the man he
+ * is engaged with by touch) 1922's DT_W no longer makes the hold. A scan of seeds
+ * 1900-1989, DT_S and DT_W, found 10 side holds that spin him over 120 deg in the
+ * first 0.5 s with HOLD_FACING off; on, every one turns less (mean 184 -> 72 deg) and
+ * 4 stay under 60 (1908 DT_S 123 -> 17, 1921 DT_S 206 -> 36, 1937 DT_W 145 -> 59, 1963
+ * DT_W 175 -> 14). 1921 is pinned for its margin on both bounds. The free-holder case
+ * (OPEN_HANDS) stays on 1916 / DT_S.
  * Runs on the engine defaults (the reference stack), not the legacy pin. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -13,7 +19,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function turn(flag: string, openHands = '0', seed = 1922, slot = 'DT_W') {
+async function turn(flag: string, openHands = '0', seed = 1921, slot = 'DT_S') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('HOLD_FACING', flag);

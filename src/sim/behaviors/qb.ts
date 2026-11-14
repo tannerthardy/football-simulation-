@@ -661,9 +661,11 @@ export class QBPass implements Behavior {
     const tau = 0.1 + 0.4 * (1 - a.r('awareness')), k = Math.min(1, sim.dt / tau);
     let lineMen = 0, believed = 0;
     for (const d of sim.defense) {
-      if (d.isDown(sim.t)) continue;
+      // A man he sees on the ground is out of the count (his felt picture's pose, not the man's true state).
+      const fd = this.felt(a, sim, d);
+      if (fd.pose === 'down') continue;
       if (DLINE.includes(d.player.position)) { lineMen++; continue; }
-      const p = this.felt(a, sim, d).pos;
+      const p = fd.pos;
       let r = this.rushB.get(d);
       if (!r) {
         const depth = (p.x - sim.los) * dir, wide = Math.abs(p.y - sim.ballY);
@@ -678,7 +680,7 @@ export class QBPass implements Behavior {
       if (BLITZ_DEPTH && toward > 0 && (p.x - sim.los) * dir > 1) toward *= 0.25;
       const target = logistic(Math.log(r.prior / (1 - r.prior)) + 2.5 * toward);
       r.p += (target - r.p) * k;
-      if (QB_BELIEVED_DEF ? this.seenTied(a, sim, d, p) : !!d.engagement) r.p = Math.min(r.p, 0.5);
+      if (this.seenTied(a, sim, d, p)) r.p = Math.min(r.p, 0.5);
       believed += r.p;
     }
     const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[]; assigned?: Map<Agent, Agent | null> } }).coord).find((c) => c?.protectors);
@@ -689,9 +691,11 @@ export class QBPass implements Behavior {
       if (!this.callSet) this.callSet = new Set([...(coord?.assigned?.values() ?? [])].filter((x): x is Agent => !!x));
       let best: { d: Agent; p: number; arr: number } | null = null, u = 0;
       for (const [d, r] of this.rushB) {
-        if (this.callSet.has(d) || d.isDown(sim.t) || r.p < 0.15) continue;
+        if (this.callSet.has(d) || r.p < 0.15) continue;
         const f = this.felt(a, sim, d);
-        const arr = timeToReach({ pos: f.pos, vel: f.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8);
+        if (f.pose === 'down') continue;
+        // The body he believes the man has; he does not know how tired the man is.
+        const arr = timeToReach({ pos: f.pos, vel: f.vel, profile: this.bodyOf(a, d), speedScale: 1 }, a.pos, 0.8);
         const ud = r.p * clamp((2.2 - arr) / 1.4, 0, 1);
         if (ud > u) { u = ud; best = { d, p: r.p, arr }; }
       }
@@ -699,7 +703,6 @@ export class QBPass implements Behavior {
     }
   }
   /** BLITZ_READ diagnostics: the last defender he saw trigger (position:behaviour:read). */
-  hotBy: string | null = null;
   /** QB_EYES: the man his eyes are on, and since when. */
   private eyesOn: Agent | null = null;
   private eyesOnAt = 0;
@@ -1181,7 +1184,6 @@ export class QBPass implements Behavior {
       const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
       const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : r.behavior instanceof RouteRunner)) ?? null;
       this.hot = { target, at: t };
-      if (top) this.hotBy = `${top.player.position}:${top.behavior?.kind}:${top.recog?.read ?? '-'}`;
       const k = target ? this.reads.indexOf(target) : -1;
       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
@@ -1773,7 +1775,8 @@ export class QBPass implements Behavior {
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     if (QB_SEEN_REC) {
       const pose = sim.see(a, r).pose;
-      if ((pose === null ? r.isDown(sim.t) : pose !== 'up') || (this.checkRelease(r) && !this.seenOut(r))) return null;
+      // No picture of his pose is not a picture of him down.
+      if ((pose !== null && pose !== undefined && pose !== 'up') || (this.checkRelease(r) && !this.seenOut(r))) return null;
     } else if (r.isDown(sim.t) || r.engagement) return null;
     // SHOULDERS_SET: his motion to this man includes the turn to him (as startThrow will make it).
     const wind = (SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a))
@@ -2048,12 +2051,17 @@ export class QBPass implements Behavior {
     return b;
   }
 
+  /** The body he takes a defender to have: his belief about the man (QB_BELIEVED_DEF), else the man's own. */
+  private bodyOf(a: Agent, d: Agent): PhysicalProfile { return QB_BELIEVED_DEF ? this.believe(a, d).profile : d.profile; }
+
   /** QB_BELIEVED_DEF: whether he sees a defender tied up: an offensive body other than `except` within arm's length of
    * where he has the defender, on his own picture of that teammate. */
   private seenTied(a: Agent, sim: PlaySim, d: Agent, at: Vec2, except?: Agent): boolean {
     for (const o of sim.offense) {
-      if (o === a || o === except || o.isDown(sim.t)) continue;
-      const b = sim.see(a, o).pos;
+      if (o === a || o === except) continue;
+      const so = sim.see(a, o);
+      if (so.pose === 'down') continue;
+      const b = so.pos;
       if (this.inArm(o, d, Math.hypot(b.x - at.x, b.y - at.y))) return true;
     }
     return false;
@@ -2324,14 +2332,14 @@ export class QBPass implements Behavior {
 
   /** QB_BREAK: the pursuers as he feels them, with the hold he sees on each. */
   private pursuers(a: Agent, sim: PlaySim): Array<{ d: Agent; seen: Perceived; held: number }> {
-    return sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
+    return sim.defense.map((d) => ({ d, seen: this.felt(a, sim, d) })).filter((x) => x.seen.pose !== 'down').map((x) => ({ ...x, held: this.held(a, x.d, sim) }));
   }
 
   /** QB_BREAK: the time a spot leaves him on the nearest felt pursuer, running to it from where he is. */
   private spotMargin(a: Agent, q: Vec2, threats: Array<{ d: Agent; seen: Perceived; held: number }>): number {
     const myT = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q);
     let margin = Infinity;
-    for (const { d, seen, held } of threats) margin = Math.min(margin, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + held - myT);
+    for (const { d, seen, held } of threats) margin = Math.min(margin, timeToReach({ pos: seen.pos, vel: seen.vel, profile: this.bodyOf(a, d), speedScale: 1 }, q, 1) + held - myT);
     return margin;
   }
 
@@ -2380,7 +2388,7 @@ export class QBPass implements Behavior {
       // to (measured to where he stands, every break looked like a man about to be hit and his bar fell at once).
       let soon = Infinity, dist = Infinity;
       for (const { d, seen, held } of threats) {
-        soon = Math.min(soon, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, o.dest, 0.8) + held);
+        soon = Math.min(soon, timeToReach({ pos: seen.pos, vel: seen.vel, profile: this.bodyOf(a, d), speedScale: 1 }, o.dest, 0.8) + held);
         dist = Math.min(dist, Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y));
       }
       // His bar is the bar he has in the pocket: his own, lowered by the pressure he feels now (the same rule).

@@ -13,6 +13,18 @@ const BACK_PATHS = process.env.BACK_PATHS !== '0';
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
+/** CROSS_OVER (experimental, off): the deep cross (the over, Y-cross) released inside on a diagonal, "inside of the
+ * Sam LB, and over the Mike LB", to its "landmark ... 18-22 yards" (Throw Deep, Y Cross; Shanahan's 1994 dover breaks in
+ * at about 20). Off, it climbs 6 yd nearly straight up (1 yd inside) before crossing: 1.2 yd across at 2.0 s against
+ * the NFL's 3.6 (crossers 4-8 yd deep at 2.0 s, WR / TE vs zone, ball held, BDB 2025 weeks 1-6), 1.7-1.9 yd from the
+ * nearest zone defender against 3.0-3.3 (docs/reviews/2026-11-14-crosser-depth.md). The points are the default path;
+ * clearing the apex and the Mike is his route running from what he sees (ROUTE_CRAFT bends him to a shoulder of a body
+ * in his lane), not a landmark tied to those defenders, which the route runner does not have. It continues against
+ * zone as against man (Throw Deep: the same coaching points; one coordinator's "do not run past the center" against
+ * zone is not adopted without a second source). */
+const CROSS_OVER = process.env.CROSS_OVER === '1';
+/** ROUTE_SHAPE (experimental, off): the in and out breaks as rolls, as taught (see SHAPES below). */
+const ROUTE_SHAPE = process.env.ROUTE_SHAPE === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -74,7 +86,9 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
     ? { id: 'shallow_high', family: 'cross', depth: 5.5, end: 'continue', points: [{ d: 2.5, l: -2, s: 0.9 }, { d: 4.5, l: -4.5 }, { d: 5, l: -26 }] }
     : { id: 'shallow_high', family: 'cross', depth: 6, end: 'continue', points: [{ d: 3, l: -2, s: 0.9 }, { d: 6.5, l: -24 }] },
   ...(CROSS_FLAT ? { mesh_under: { id: 'mesh_under', family: 'cross', depth: 4.5, end: 'continue', points: [{ d: 2, l: -2, s: 0.9 }, { d: 3.5, l: -4.5 }, { d: 4, l: -26 }] } as RouteDef } : {}),
-  cross: { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
+  cross: CROSS_OVER
+    ? { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 4, l: -3, s: 0.9 }, { d: 11, l: -10 }, { d: 17, l: -20 }, { d: 21, l: -34 }] }
+    : { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
   // Backs
   swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
   checkdown: { id: 'checkdown', family: 'back', depth: 4, end: 'settle', points: [{ d: 0.5, l: 1, s: 0.8 }, { d: 4.5, l: -1, s: 0 }] },
@@ -132,6 +146,30 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
 
+/** ROUTE_SHAPE: the in and out breaks rolled, as taught and as the NFL runs them. A square plant is taught under about 8-10 yd
+ * ("Square Break": drop, break, line), but past about 8 yd "he has too much momentum to run a Square Break": in and out
+ * routes at 10 yd or deeper are a speed drop or speed cut, "round the corner without losing any speed", and the 6 yd speed
+ * out is a speed cut on the 2nd inside step (USA Football, Coaching the Wide Receiver: Square Break, Speed Drop, Speed
+ * Cut). The dig: "push vertical to ten yards before planting on his outside foot to make a speed cut", "working to
+ * flatten out at 12", and "does not gain ground once he has hit his depth" (Viqtory Sports, Complete Coaching Guide to
+ * Football Routes). The speed out: "push vertical to about 4 yards and then bend out to the sideline" (ibid.).
+ * NFL (BDB 2025 weeks 1-3, route_break.py, WR, matched on vertex depth from his start): deep IN (vertex 13.1) turns 53 deg
+ * in the operator's windows and 72 deg 0.8-1.5 s later, v_in 6.6, v_min / v_in .88; deep OUT (11.4) 51 / 74 deg, .89;
+ * short OUT (5.0) 52 / 68 deg, 1.01. Read by eye (12 deep INs, week 1): one roll of about a second, gaining its depth
+ * in the roll, then flat or losing a little; a few still climb when the track ends at the throw.
+ * The short in stays a square cut (under 10 yd). Each point is a roll led by the fillet under ROUTE_FILLET (no `cut`) at s 1:
+ * the radius his lateral allows at the speed he carries gives the dip (v_min / v_in .89 deep, .97 on the speed out; NFL
+ * .88-.89 and 1.01). s .6 / .42, set from the NFL's through speed over his top speed, gave .87 and .83. */
+const SHAPES: Record<string, RouteDef['points']> = {
+  quick_out: [{ d: 4, l: 0, s: 1 }, { d: 5.5, l: 3 }, { d: 6.5, l: 10 }],
+  out: [{ d: 9, l: 0, s: 1 }, { d: 11, l: 3 }, { d: 11.5, l: 12 }],
+  deep_out: [{ d: 12, l: 0, s: 1 }, { d: 14, l: 3 }, { d: 14.5, l: 12 }],
+  dig: [{ d: 10, l: 0, s: 1 }, { d: 12, l: -3.5 }, { d: 12.3, l: -24 }],
+};
+const SHAPED: Record<string, RouteDef> = ROUTE_SHAPE
+  ? Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id, SHAPES[id] ? { ...r, points: SHAPES[id] } : r]))
+  : ROUTE_TABLE;
+
 /** ROUTE_EFFORT: the break table. With effort at 1 (the stem's pace, no coached throttle), each break says how it is run:
  * a cut (`cut: true`: plant, stick the foot and break; the follower's vertex law, no lead) or a roll (led as a fillet
  * under ROUTE_FILLET), and the speed he brings through it (s, a fraction of his top speed), set against NFL break-aligned
@@ -163,10 +201,10 @@ const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>
   shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
 };
 export const ROUTES: Record<string, RouteDef> = ROUTE_EFFORT
-  ? Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id, BREAKS[id]
+  ? Object.fromEntries(Object.entries(SHAPED).map(([id, r]) => [id, BREAKS[id] && !(ROUTE_SHAPE && SHAPES[id])
     ? { ...r, points: r.points.map((p, i) => ({ ...p, ...(BREAKS[id][i] ?? {}) })) }
     : r]))
-  : ROUTE_TABLE;
+  : SHAPED;
 
 export function getRoute(id: string): RouteDef {
   const r = ROUTES[id];
