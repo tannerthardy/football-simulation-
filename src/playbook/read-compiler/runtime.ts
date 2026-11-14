@@ -38,6 +38,9 @@ export const OUTLET_LAST = process.env.OUTLET_LAST === '1';
 export const PLAN_KEYS = process.env.PLAN_KEYS === '1';
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
+/** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
+const FIVE_STEP_BEAT = 0.8;
+const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
 /** The coached key per concept, and the danger: the defender the coaching warns about on the answer (the window
  * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
  * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
@@ -133,11 +136,17 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
       if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
       // The rhythm (see InstalledPlan.rhythm): the coached step by place, and when his route is ready as installed.
+      // CONCEPT_DROPS: the five- and seven-step class reads its first answer on the hitch, and its hitch is the NFL's
+      // set-to-release at that depth ("five and a hitch": set 2.2 s, ball out 3.0, QB lane's drop-time.py), not the
+      // quick game's beat.
+      const fiveStep = CONCEPT_DROPS_RHYTHM && (concept.drop === 'five' || concept.drop === 'seven');
       const set = compiled.qbSetAt, steps = ['set', 'hitch', 'hitch2'] as const;
       const seq = [...plan.order, ...(plan.outlet && !plan.order.includes(plan.outlet) ? [plan.outlet] : [])];
+      const stepAt = (st: typeof steps[number]) => st === 'set' ? set : st === 'hitch' ? set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT)
+        : set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT) + RHYTHM_BEAT;
       plan.rhythm = seq.map((ref, i) => {
-        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(i, 2)];
-        const at = +(set + RHYTHM_BEAT * steps.indexOf(step)).toFixed(2);
+        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(fiveStep ? i + 1 : i, 2)];
+        const at = +stepAt(step).toFixed(2);
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         return { ref, step, at, ready, onTime: ready <= at + 1e-9 };
       });
