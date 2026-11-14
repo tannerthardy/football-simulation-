@@ -764,6 +764,8 @@ const MAN_PHASE = process.env.MAN_PHASE === '1';
  * help; ours 51-91% (BDB 2025 weeks 1-2 vs leagueSample games, nflcue.py /
  * simcue.mts). Pure man (Cover 0/1, 2-Man) keeps its own trigger. */
 const CUSHION_BREAK = process.env.CUSHION_BREAK !== '0';
+/** MAN_SLOT (experimental, off; see playbook/alignment.ts): its man technique from catch depth (attempt 2). */
+const MAN_SLOT_TECH = process.env.MAN_SLOT === '1';
 /** CUSHION_BREAK: how far he opens his hips off the quarterback while he
  * carries a vertical, as the output of the speed match: the smallest angle off
  * the line to the QB (opened toward the receiver) at which his body's facing
@@ -1188,7 +1190,11 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
     // pure man keeps its trigger. Help: a carry with no installed deep
     // responsibility has a deep player behind it.
-    const breakOn = CUSHION_BREAK && !sim.defCall.coverage.man, help = !o.protectDepth;
+    // MAN_SLOT (attempt 2; Coverage's review): from catch depth (off, 3.5 yd or less) pure man plays the release
+    // square and opens when the seen stem breaks his cushion, by the zone carry's rule; the fixed man trigger, built
+    // for a 4-6 yd cushion, was met at the snap from there (he turned and ran from his first steps).
+    const catchDepth = MAN_SLOT_TECH && !this.press && this.initialCushion <= 3.5;
+    const breakOn = CUSHION_BREAK && (!sim.defCall.coverage.man || catchDepth), help = !o.protectDepth;
     const broken = () => cushionBroken(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius);
     const consumed = breakOn ? broken()
       : a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
