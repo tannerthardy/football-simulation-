@@ -3595,3 +3595,36 @@ length. Ours acts as a strut along the line whatever the angle the rusher takes 
 - (b) The aim: the corner landmark and the half-man start (EDGE_ARC), so more contacts land wide.
 
 (a) is the one an outside landing still runs into, and (b) changes how often it applies.
+
+### The tackle's chest against the line to the rusher (2026-11-14, Integration's measurement before the press build)
+
+edge-rush.py, the same code on NFL tracking ('o') and on sim exports with `EXPORT_FACING=1` (seeds 11 and 23, 8 games
+each, the current default engine). off = the rusher's bearing from the tackle minus the tackle's facing (+ = the rusher
+toward the outside of his chest); turn = the tackle's facing toward the outside of downfield.
+
+| landing | | NFL off p25/50/75, \|off\| > 30 | ours s11 / s23 off p25/50/75, \|off\| > 30 | NFL turn | ours turn |
+|---|---|---|---|---|---|
+| head-up | contact | -12/+1/+14, 16% | -8/-3/-1, 1% / -7/-3/-1, 1% | +3 | +5 |
+| | +0.4 s | -37/-13/+2, 35% | -4/-1/+1, 1% / -3/-1/+1, 1% | -3 | -3 / -2 |
+| outside half | contact | -9/+4/+17, 15% | -5/-1/+2, 9% / -4/-0/+2, 7% | +37 | +46 / +45 |
+| | +0.4 s | -16/-1/+12, 20% | -2/+0/+3, 1% / -2/-0/+2, 0% | +44 | +47 / +46 |
+| wide | contact | -11/+2/+16, 17% | -46/-29/-4, 50% / -45/-31/-4, 53% | +69 | +105 / +103 |
+| | +0.2 s | -13/+1/+15, 18% | -15/-3/+2, 14% / -10/-3/+3, 11% | +81 | +88 / +88 |
+| | +0.4 s | -11/+3/+17, 20% | -2/+0/+3, 1% / -2/+1/+3, 3% | +90 | +75 / +74 |
+
+The separation at +0.4 s after a wide contact: NFL 0.81 yd (closing from 1.12), ours 0.94 (from 1.10-1.12).
+
+**Read.**
+1. Neither tackle is off-square on the median. The NFL tackle keeps his chest on the rusher by turning his whole body
+   outward (+69 to +90 deg on wide landings). Integration's expectation, 30-60 deg off by +0.4 s, is not what the
+   tracking shows.
+2. Ours is too exact. The NFL interquartile range is about +/-15 deg and 15-35% of reps are more than 30 deg off (part
+   of that is the orientation chip's noise). Ours is +/-3 deg and 0-3% by +0.4 s, from every landing.
+3. On a wide landing ours arrives over-turned (+105 deg; the rusher 30 deg inside his chest) and then re-squares to
+   the rusher within 0.2-0.4 s. The NFL tackle is on him at contact.
+4. Why: the engaged tackle's facing request is the bearing to the rusher every tick (engagement.ts, the pass-rep
+   intent), and his body turns at his rated rate (4.5-12 rad/s). The contact's yaw moment does not pull him off it.
+
+This is Integration's second branch: "ours is square because he turns too freely; the turn while engaged is" the
+defect. A press that falls with the chest angle (HAND_SITE exists, off) would almost never bite on our tackle, who is
+within 30 deg of the rusher 97-100% of the time.
