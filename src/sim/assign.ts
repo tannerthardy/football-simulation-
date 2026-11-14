@@ -2,6 +2,7 @@
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
+import { ownRoutes } from './ball-estimate.js';
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
@@ -168,6 +169,7 @@ export function assignBehaviors(sim: PlaySim): void {
       const route = getRoute(id);
       const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
       receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route, null, a.profile, a.r('routeRunning')));
+      ownRoutes.set(a, receiverPriors.get(a)!);
       return () => new RouteRunner(a, sim, route, outside, 0);
     };
     // PRO_CALL: the box count against the protectors this concept keeps in
@@ -196,6 +198,8 @@ export function assignBehaviors(sim: PlaySim): void {
         receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route,
           conditional || blockLook || (concept.fake && (ref === 'B' || ref === 'B2')) ? null : delay,
           a.profile, a.r('routeRunning')));
+        // BALL_EST: his own route is his own knowledge (the prior for a ball thrown to him).
+        ownRoutes.set(a, receiverPriors.get(a)!);
         return () => installBlockLook(a, sim, () => new RouteRunner(a, sim, route, outside,
           blockLook ? sim.t + delay : delay), true);
       };
