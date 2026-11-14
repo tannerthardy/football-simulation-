@@ -38,11 +38,12 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
 /** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, six concepts the compiler ran as pure orders key as taught:
  * slant_flat, stick, fade_flat, double_slants by their own sources; quick_outs and hitch_out by the family rule for a
- * two-receiver quick combination (the front-side flat defender, on the third step). Trips stick and seam-slant stay
+ * two-receiver quick combination (the front-side flat defender, on the third step); dagger and levels by their own
+ * sources, made explicit so a route-timing change cannot remove them. Trips stick and seam-slant stay
  * pure progressions: no source for trips stick's alert (a keyed plan demotes it to third), and seam-slant's hook key
  * would be double slants' borrowed for a different structure. */
 export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 === '1';
-const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']);
+const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out', 'dagger', 'levels']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
@@ -68,6 +69,14 @@ const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; 
   // Reads"). The cue is the set, not the low route's ready time.
   quick_outs: { low: 'S1', high: 'S2', role: 'flat', deep: false, danger: 'the corner over the out', onSet: true },
   hitch_out: { low: 'S2', high: 'S1', role: 'flat', deep: false, danger: 'the corner over the hitch', onSet: true },
+  // Coached keys the compiler had only derived from geometry, made explicit so a route timing change cannot remove them
+  // (with ROUTE_SHAPE the dig is ready on the first hitch and the compiler's geometry no longer picks a key here).
+  // Dagger: the deep safety, the seam (high) clearing for the dig (low): "confirm that the deep safety has been
+  // occupied" (Weekly Spiral, Dagger Concept; FirstDown PlayBook, Dagger reads); the compiler's own key on develop.
+  dagger: { low: 'S1', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the dig' },
+  // Levels: the hook defender, the dig (high) over the in under it (low): "if he drops toward the dig, the shallow route
+  // opens underneath; if he squeezes the shallow route, the dig opens behind him" (Football Nation USA, Levels Concept).
+  levels: { low: 'S2', high: 'S1', role: 'hook', deep: false, danger: 'the safety over the dig' },
 };
 /** The danger on the keys the compiler already names correctly (PLAN_KEYS adds it; the key itself is unchanged). */
 const DANGER: Record<string, string> = {
