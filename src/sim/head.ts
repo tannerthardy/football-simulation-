@@ -5,7 +5,7 @@
  * His technique, as coached, names one want a tick (`want`): a body or a point, with a reason ('qb', 'ball', the
  * receiver he trails, ...). Ball tracking and the release belief ask through it, and do not turn a head of their own.
  * The head turns toward the want at GAZE's rate, within the neck range of his body facing; with no want it relaxes to
- * his body facing. A target nearly behind him is reached over the shoulder the head is already turned to, never by
+ * his body facing. The neck's range narrows with his speed (`neckRange`). A target nearly behind him is reached over the shoulder the head is already turned to, never by
  * the short way through the front (Coverage's `sideOf`, ball-estimate.ts). Turning further than the neck range is a
  * body turn, which the existing kinematics charge to his running; nothing is added here.
  *
@@ -15,10 +15,23 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
 export const HEAD = process.env.HEAD === '1';
-/** Head turn rate (rad/s), neck range off body facing, and the view cone about the head: GAZE's. */
+/** Head turn rate (rad/s) and the view cone about the head: GAZE's. */
 export const HEAD_RATE = 6;
-export const NECK = Math.PI / 2;
 export const HEAD_CONE = Math.PI / 2;
+/** The neck's range off body facing, one function for every look (agreed with Coverage, 2026-11-14): 90 deg standing,
+ * narrowing linearly in his own speed share to 45 deg at top speed. Standing is anatomy (cervical rotation about 70-80
+ * deg a side, plus the eyes, with the target near central vision); the sprint value and the linear shape are stated
+ * choices (at a sprint the trunk counter-rotates and the shoulders stay square, so looking back takes the shoulders),
+ * with a sensitivity read at 60 deg. A look beyond it is a body turn, priced by the facing kinematics; no speed or catch
+ * term is added here. */
+export const NECK_STAND = Math.PI / 2;
+export const NECK_SPRINT = (45 * Math.PI) / 180;
+/** Kept for callers of the old constant: the standing range. */
+export const NECK = NECK_STAND;
+export function neckRange(a: Agent): number {
+  const v = Math.hypot(a.body.vel.x, a.body.vel.y), vmax = a.profile.vmax || 1;
+  return NECK_STAND - (NECK_STAND - NECK_SPRINT) * Math.min(1, v / vmax);
+}
 /** Beyond this off his body, a target is behind him: reached over the shoulder he is already turned to. */
 const BEHIND = (150 * Math.PI) / 180;
 
@@ -70,9 +83,10 @@ export function stepHeads(sim: PlaySim): void {
       const p = isAgent(w.target) ? sim.perception.perceive(w.target.idx, a.profile.reactionTime).pos : w.target;
       toward = Math.atan2(p.y - a.pos.y, p.x - a.pos.x);
     }
-    const lim = facing + Math.max(-NECK, Math.min(NECK, sideOf(angDiff(toward, facing), angDiff(head, facing))));
+    const neck = neckRange(a);
+    const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
     head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
-    head = facing + Math.max(-NECK, Math.min(NECK, angDiff(head, facing)));
+    head = facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
     a.head = head;
   }
 }

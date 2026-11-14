@@ -52,6 +52,24 @@ describe('HEAD: one head per player', () => {
     void man;
   });
 
+  it('the neck range narrows with his speed: 90 deg standing, 45 at top speed, linear between', async () => {
+    const { head, d } = await scene({ HEAD: '1' });
+    const at = (v: number) => { d.body.vel = { x: v, y: 0 }; return head.neckRange(d); };
+    expect(at(0)).toBeCloseTo(Math.PI / 2, 9);
+    expect(at(d.profile.vmax)).toBeCloseTo(Math.PI / 4, 9);
+    expect(at(2 * d.profile.vmax)).toBeCloseTo(Math.PI / 4, 9);
+    expect(at(d.profile.vmax / 2)).toBeCloseTo((3 * Math.PI) / 8, 9);
+  });
+
+  it('at a sprint the head stops at the narrower range: a look further back is a body turn', async () => {
+    const { head, sim, d } = await scene({ HEAD: '1' });
+    const target = { x: 50, y: 30 };   // straight to his left (+90 deg)
+    d.behavior = { kind: 'idle', update: (a: any) => { head.want(sim, a, target, 'ball'); return { vel: { x: a.profile.vmax, y: 0 }, facing: 0 }; } } as any;
+    for (let k = 0; k < 30; k++) { sim.tick(); d.body.vel = { x: d.profile.vmax, y: 0 }; d.body.facing = 0; }
+    expect(Math.abs(d.head!)).toBeLessThanOrEqual(head.neckRange(d) + 1e-9);
+    expect(d.head!).toBeGreaterThan(Math.PI / 4 - 0.05);
+  });
+
   it('over the shoulder already turned to: a target dead behind is reached on that side, not through the front', async () => {
     const { head } = await scene({ HEAD: '1' });
     expect(head.sideOf(-(170 * Math.PI) / 180, 0.5)).toBeGreaterThan(Math.PI / 2);

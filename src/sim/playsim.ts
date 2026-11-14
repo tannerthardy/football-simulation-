@@ -7,7 +7,7 @@
  */
 import { recordContact } from './seen-contact.js';
 import { lineOfSight } from './sight.js';
-import { HEAD, inHeadCone, stepHeads } from './head.js';
+import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -156,7 +156,6 @@ export const PERCEIVE_TRACK = process.env.PERCEIVE_TRACK === '1';
  * first group that uses it, not imported as a constant. */
 const TRACK_LATENCY = 0.12;
 const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
-const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
 const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
 /** Anticipation from motion alone helps to about 1.0 s on NFL tracking. */
 const ANTICIPATION_HORIZON = 1.0;
@@ -761,10 +760,11 @@ export class PlaySim {
       // The head turns toward the watched man's delayed picture, within the neck range.
       const w = this.perception.perceive(g.target.idx, delay);
       const want = Math.atan2(w.pos.y - observer.pos.y, w.pos.x - observer.pos.x);
-      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -GAZE_NECK, GAZE_NECK);
+      const neck = neckRange(observer);
+      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -neck, neck);
       const step = GAZE_HEAD_RATE * (this.t - g.t);
       g.dir = g.dir + clamp(angDiff(clamped, g.dir), -step, step);
-      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -GAZE_NECK, GAZE_NECK);
+      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -neck, neck);
       g.t = this.t;
     }
     const brg = Math.atan2(picture.pos.y - observer.pos.y, picture.pos.x - observer.pos.x);
