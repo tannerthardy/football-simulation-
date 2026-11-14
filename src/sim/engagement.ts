@@ -510,7 +510,9 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
   // gap less 0.02 yd: as the man crossed, N p50 stayed 0).
   if (PUNCH_STRIKE) {
     // A new fit: the man off his hands (beyond his arms), or a hand knocked off (RUSH_HANDS).
-    if (st.striking === undefined || gap > st.ext + 0.05 || joint.off || (joint.handsOn ?? 2) < 2) st.striking = true;
+    // HAND_FIT (attempt 2): his recoiled hands are not the man off them; a new fit only when the hands carry nothing.
+    const offHim = HAND_FIT ? gap > st.ext + 0.05 && Math.max(0, joint.normalForce ?? 0) < UNLOADED * pressForce(b) : gap > st.ext + 0.05;
+    if (st.striking === undefined || offHim || joint.off || (joint.handsOn ?? 2) < 2) st.striking = true;
     // Landed: he feels the man on his hands.
     else if (st.striking && Math.max(0, joint.normalForce ?? 0) >= UNLOADED * pressForce(b)) st.striking = false;
   }
