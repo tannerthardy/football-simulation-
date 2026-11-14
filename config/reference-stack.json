@@ -183,6 +183,7 @@
     "PASS_SET_SEEN": "on",
     "REP_SEEN": "off",
     "RUSH_LEAN_BOUND": "off",
+    "BASE_ORIENT": "off",
     "THROW_HOLD": "off",
     "POCKET_REACH": "off",
     "TACKLE_ANCHOR": "off",
