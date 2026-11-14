@@ -24,12 +24,17 @@ describe('CORNER_SIDE', () => {
     expect(m.soloSides(COVERAGE_BY_ID.cover3)).toEqual([]);
     expect(m.soloSides(COVERAGE_BY_ID.cover1)).toEqual([]);   // man calls press by the call, as now
     const edge = () => 1;
-    expect(m.callCornerTech(COVERAGE_BY_ID.cover3, 1, 1, edge, () => 0)).toBeUndefined();
-    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, 1, edge, () => 0)).toEqual({ W: 'solo' });
-    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, 1, edge, () => 0.99)).toEqual({ W: 'off' });
-    // A better matchup and 3rd down make the press more likely for the same draw.
-    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, 1, edge, () => 0.5)).toEqual({ W: 'off' });
-    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 3, 1, () => 1.2, () => 0.5)).toEqual({ W: 'solo' });
+    // Called for the family (the solo install is made at the line); none for man calls or families without one.
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3, 1, edge, () => 0)).toEqual({ S: 'solo', W: 'solo' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover1, 1, edge, () => 0)).toBeUndefined();
+    expect(m.callCornerTech(COVERAGE_BY_ID.tampa2, 1, edge, () => 0)).toBeUndefined();
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, edge, () => 0.99)).toEqual({ S: 'off', W: 'off' });
+    // The league tendency for Cover 3 is 48%: a draw of 0.47 presses, 0.49 does not; a man-heavy team or a better
+    // matchup moves the odds (0.49 presses at a habit of 1.2), a weaker one the other way.
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, edge, () => 0.47)).toEqual({ S: 'solo', W: 'solo' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, edge, () => 0.49)).toEqual({ S: 'off', W: 'off' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, m.pressHabit(0.48), edge, () => 0.49)).toEqual({ S: 'solo', W: 'solo' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, () => 0.8, () => 0.47)).toEqual({ S: 'off', W: 'off' });
   });
 
   it('at the line: a #2 near the line keeps the previous state (no hop)', async () => {

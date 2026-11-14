@@ -13,7 +13,7 @@
  * QB's pocket presence (blitz the panicky ones) and what has worked today. In
  * man coverage a shadowing coach puts his best corner on their best receiver.
  */
-import { CORNER_SIDE, callCornerTech } from '../playbook/corner-side.js';
+import { CORNER_SIDE, callCornerTech, pressHabit } from '../playbook/corner-side.js';
 import type { Rng } from '../core/rng.js';
 import { CENTER_Y } from '../core/field.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
@@ -920,8 +920,8 @@ export class DefensiveCoordinator {
     // CORNER_SIDE (experimental, off): the corner technique by side, called where the coverage installs a solo
     // corner. His corner (CB_S the better by overall, CB_W the next, as the depth chart fills them) against the
     // receiver he expects alone on that side: the seen formation's only receiver on its short side (W), else the
-    // wideouts' average; his team's man habit sets how often.
-    const cornerTech = CORNER_SIDE ? callCornerTech(coverage, s.down, Math.sqrt(coach.manRate / 0.4), (side) => {
+    // wideouts' average; his team's habit (pressHabit, from his man rate) moves how often.
+    const cornerTech = CORNER_SIDE ? callCornerTech(coverage, pressHabit(coach.manRate), (side) => {
       const byCorner = this.team.roster.filter((p) => p.position === 'CB').sort((a, b) => overallAt(b) - overallAt(a));
       const cb = byCorner[side === 'S' ? 0 : 1]?.ratings.manCoverage ?? cbMan;
       let wr = wrRoute;

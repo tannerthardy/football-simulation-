@@ -20,12 +20,22 @@ import type { DefenseAlignment, OffenseAlignment } from './alignment.js';
 export const CORNER_SIDE = process.env.CORNER_SIDE === '1';
 export type CornerSide = 'S' | 'W';
 
-/** NFL press share of a corner alone with #1, by the call's family (per side, weeks 1-6). The centre of the habit. */
-const ALONE_PRESS: Record<string, number> = { cover3: 0.48, cover4: 0.43, cover6: 0.5, cover2: 0.51 };
-/** The down's weight on it (NFL per-side press by down against all downs: 1st 33%, 2nd 27-37%, 3rd 42-53%, all 38%). */
-const DOWN_WEIGHT = (down: number) => (down <= 1 ? 0.87 : down === 2 ? 0.88 : 1.3);
+/** How often a corner alone with #1 is pressed, by the call's family: an NFL frequency installed as the league's
+ * coordinator tendency (BDB 2025 weeks 1-6, the corner over a wideout with no other receiver to his side, zone calls:
+ * Cover 3 48% of 195, Cover 4 43% of 81, Cover 6 51% of 97; Cover 2 51% from the per-side table). It is flat by down
+ * (zone families pooled: 1st 48%, 2nd 48%, 3rd+ 47%, n 122 / 128 / 123), so there is no down term: the per-side press
+ * that rises on 3rd down overall comes from what the call and formation are on 3rd down, not from the lone corner. */
+const ALONE_PRESS: Record<string, number> = { cover3: 0.48, cover4: 0.43, cover6: 0.51, cover2: 0.51 };
 
-/** The side whose corner has a solo / MEG man role in this zone call (stage 1's only technique), or none. */
+/** A team's press habit, the odds multiplier its coordinator brings to the league tendency: his man rate over the
+ * league's 0.4, the same scaling the call's family weights give man coverage (`manScale`). A choice, stated: a coach
+ * who calls more man presses his lone corner more. Generated coaches' man rate p10 0.30, p90 0.53, so two teams
+ * differ (the press of a lone corner from about 30% to 67% between them, with the matchup). */
+export function pressHabit(manRate: number): number {
+  return manRate / 0.4;
+}
+
+/** The sides whose corner has a solo / MEG man role in this installed zone call (stage 1's only technique). */
 export function soloSides(cov: Coverage): CornerSide[] {
   if (cov.man) return [];
   const out: CornerSide[] = [];
@@ -37,19 +47,25 @@ export function soloSides(cov: Coverage): CornerSide[] {
 }
 
 /**
- * The coordinator's call for each solo side: press him or not. `p` is the team's habit share for the family, moved
- * by his corner against the receiver he expects there (`edge`, the same scale as the family weights' matchup term:
- * exp of the rating difference over 25) and by the down. A choice with a reason, and it can be wrong.
+ * The coordinator's call for each solo side: press him or not. The odds of a press are the league tendency's for the
+ * family (an NFL frequency), times his team's habit (`pressHabit`, a choice), times his corner against the receiver he
+ * expects alone there (`edge`: exp of the normed rating difference over 25, the family weights' matchup term, a
+ * choice). Multiplying odds, not the probability, keeps the league mean at the tendency: generated teams give a lone
+ * corner's press 46-51% at a 48% tendency, the better corner (CB_S) a little more than CB_W. A choice with a reason,
+ * and it can be wrong.
  */
-export function callCornerTech(cov: Coverage, down: number, habit: number, edge: (side: CornerSide) => number,
+export function callCornerTech(cov: Coverage, habit: number, edge: (side: CornerSide) => number,
   draw: (side: CornerSide) => number): DefensivePlayCall['cornerTech'] {
-  const sides = soloSides(cov);
-  if (!sides.length) return undefined;
-  const base = ALONE_PRESS[cov.family ?? cov.id] ?? 0.45;
+  // He calls it for the family: the solo install (Mable, Poach, Stubbie, Book) is made at the line against the
+  // formation (installCoverage), so the call names the technique for each side and the alignment applies it only
+  // where the installed role on that side is a solo man corner.
+  const base = ALONE_PRESS[cov.family ?? cov.id];
+  if (cov.man || base === undefined) return undefined;
+  const sides: CornerSide[] = ['S', 'W'];
   const out: NonNullable<DefensivePlayCall['cornerTech']> = {};
   for (const side of sides) {
-    const p = Math.max(0.03, Math.min(0.9, base * habit * edge(side) * DOWN_WEIGHT(down)));
-    out[side] = draw(side) < p ? 'solo' : 'off';
+    const odds = base / (1 - base) * habit * edge(side);
+    out[side] = draw(side) < odds / (1 + odds) ? 'solo' : 'off';
   }
   return out;
 }
