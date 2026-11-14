@@ -18,6 +18,13 @@ import { ROUTES } from '../routes.js';
 /** CROSS_OVER (routes.ts): the over climbs across on a diagonal without a sharp cut, so it declares as the comment
  * below says a crosser does (5 yd from his start, the line crossed), not as a vertical at 12 yd. Off, unchanged. */
 const CROSS_OVER = process.env.CROSS_OVER === '1';
+/** SCREEN_DECLARE (experimental, off): a screen's receiver has shown his answer when he turns back to the catch point
+ * (the break), not when he has moved 5 yd past the line, which a screen behind the line may never do in the horizon. Off,
+ * the tunnel's S1 window came from the fallback (no `moved`, so break + 0.1 = 1.3 s), and running him 0.1 yd/s faster
+ * upfield at the end (ROUTE_EFFORT) crossed +0.5 at 3.9 s and declared him at 4.1 s. With the flag a route in a screen
+ * concept that has a break declares on it, ahead of `moved`. The screen QB's own throw timing (SCREEN_QB) does not read
+ * these windows. */
+const SCREEN_DECLARE = process.env.SCREEN_DECLARE === '1';
 
 const DT = 0.1, HORIZON = 4.0;
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -111,7 +118,9 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     const p10 = P[Math.min(P.length - 1, 10)];
     const lateralStem = Math.abs(p10.y - start.y) > Math.abs(p10.x - start.x);
     const crosser = CROSS_OVER && !!id && ROUTES[id]?.family === 'cross';
-    const declared = (lateralStem || (crosser && breakT === null)) && moved !== null ? moved + 0.2
+    const screenTurn = SCREEN_DECLARE && concept.family === 'screen' && breakT !== null;
+    const declared = screenTurn ? breakT! + 0.1
+      : (lateralStem || (crosser && breakT === null)) && moved !== null ? moved + 0.2
       : breakT !== null ? breakT + 0.1 : vertical !== null ? vertical : moved !== null ? moved + 0.2 : HORIZON;
     const ready = Math.max(qbSetAt - 0.15, declared);
     const settles = P.length > 3 && P[P.length - 1].speed < 1.5;
