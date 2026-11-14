@@ -3,6 +3,35 @@
 Flex, 2026-11-14, for Integration's approval before any code. Evidence: [the tackle-set review](2026-11-12-tackle-set.md)
 (CONTROL_HANDS, HAND_FIT, BRACE_GAIT, the hands-vs-torso measurement).
 
+## Read first: the yaw question is the request (2026-11-14, after Tools' off-centre trace)
+
+The engaged blocker's facing request is the bearing to the man: `engagement.ts` sets `facing: atan2(d.pos - b.pos)` for the
+engaged pass set (line ~2106), the ride (~2124) and the run drive (~1595); the staged rows did the same. On the crossing
+row (Tools, PR #745) the pair turned 68-69 deg (outside) and 43-44 deg (inside); with no contact spin at all (inside,
+HANDS_LEVER=0) 39-40 deg on the motor alone: about 90% of the turn is the request. Contact moments do reach him (joints to
+about 1,460 N on 0.04-0.12 yd arms, 0.2-0.4 s), against a motor at its grip-limited cap (peak 249 / 223 of 241, lagging
+11-18 deg). A request that tracks the opponent's bearing hides every "turned" outcome: he turns with the man beating him,
+and there is no moment to show it.
+
+So the order of the design is:
+
+1. **What he is trying to face.** As coached: a pass setter keeps his shoulders square to his set (inside-out, his chest
+   between the rusher and the quarterback, hands to the man's inside half); he does not turn to follow the rusher's
+   shoulder. Opening his hips to run with a man who has won the corner is a decision (the ride, with its enter / exit
+   margins), not a tick-by-tick bearing. The same for a run blocker (square to his track, his head on the play side) and a
+   run defender holding a gap (square to the line, his outside arm free). The request comes from his set, his landmark and
+   what he feels, not the man's true position.
+2. **The motor yielding past its cap** under an applied moment: being turned is losing that facing against the man's force
+   and his own late feet.
+3. **Where the load goes**: the shoulder joint carrying it, or bodies off the line of centres, and the two joints on one
+   gap sharing it. Grip shared with the motor is a separate second item.
+
+Falsifiable: with a square request, the facing-follows-bearing slope (NFL 0.72, ours 0.78) can stay near the NFL only if
+contact turns him; if it collapses toward 0 and the rusher off his chest (NFL 15 deg, ours 3) jumps far past the NFL,
+the moments are missing. Information: the engaged requests read `d.pos` (the man's true position, undelayed); through
+the hands he feels the man, but at the felt delay the punch already uses (`sim.see(b, d, 0.06 / rt)`), so the new request
+reads that, not the true position.
+
 ## Why one model, not a sixth single-law flag
 
 Five single-law flags on the hands joint each exposed the same thing:
