@@ -3787,3 +3787,47 @@ NFL and ours:
 
 **What does not:** "holding at 5.0 s ends in a sack 81%" was the wrap counted as holding; it is withdrawn. Ours now
 agrees with the QB lane's late-hold-ends.py on the late end (fewer still holding at 4-5 s, few of them sacked).
+
+### The corner once level, under VERTICAL_SET (2026-11-14; Integration's four candidates)
+
+edge-level.mts, seed 11 x 4. A DE pass rep against a tackle, from the first tick the rusher is level outside (depth
+within 0.3 yd of the tackle's, 0.3 yd or more outside), over the next 0.5 s. Medians of per-rep means.
+
+| | all level (n 224) | went past by 0.5 s (34) | stayed level (190) |
+|---|---|---|---|
+| 1. load on him along the line / across | 1086 / 156 N | 939 / 256 N | 1112 / 120 N |
+| 1. tackle's hands on; normal / tangential | 100%; 1111 / 202 N | 100%; 776 / 148 N | 100%; 1139 / 205 N |
+| 2. his request off the bearing to the QB / achieved | 26 / 55 deg | 11 / 50 deg | 30 / 56 deg |
+| 2. speed; turn rate | 4.21 yd/s; 33 deg/s | 4.78; 28 | 4.14; 35 |
+| 2. lean into the press / RUSH_LEAN_BOUND's cap; cap binding | 410 / 1203 N; 0% | 348 / 1207; 0% | 419 / 1202; 0% |
+| 3. moves (share of ticks) | speed 41, swim 13, rip 13, club 11, bull 10, longarm 6, snatch 3, dip 3% | speed 37, rip 18, swim 11, longarm 10, bull 9, dip 8% | similar to all |
+| 4. rusher off the tackle's chest; tackle yaw rate | 20 deg; 106 deg/s | 18; 105 | 20; 106 |
+
+Re-read on VERTICAL_SET with each candidate flag (the same trace, seed 11 x 4). Hands' normal, all / past / held:
+
+| | normal force | past by 0.5 s |
+|---|---|---|
+| VERTICAL_SET | 1111 / 776 / 1139 N | 15% |
+| + HAND_SITE | 1114 / 865 / 1142 N | 15% |
+| + HANDS_LEVER | 1074 / 843 / 1117 N | 14% |
+
+**Which candidates:**
+1. **The strut: yes.**
+   - The tackle's hands are on him for every tick of the level phase, at about a body weight along the line.
+   - The press is the only thing that separates the outcomes: about 1140 N on reps that stay level, 780 N on reps
+     that go past.
+   - HAND_SITE and HANDS_LEVER do not change it. The tackle keeps the rusher about 20 deg off his chest by turning,
+     and HAND_SITE's weight is full within 45 deg, so the geometry they need ("at his hip") is never reached.
+2. **His bend: no.**
+   - He asks to turn: his request is 26-30 deg off the QB bearing, not aimed upfield.
+   - He is deflected about 30 deg away from it (achieved 55 deg).
+   - RUSH_LEAN_BOUND's cap is never the binding limit (lean about 410 N against a cap of about 1200).
+3. **His hands: yes, with 1.**
+   - Rip, dip and swim ticks all have the tackle's hand still on him: nothing in the default engine removes it.
+   - The moves are the old rolls (RUSH_RIP needs RUSH_HANDS, which is held).
+4. **The tackle's free turn: not the gate.**
+   - He is no longer exact (20 deg off, about 106 deg/s).
+   - Turning toward the rusher keeps HAND_SITE from biting, but the load holds the rusher, not the facing.
+
+**The corner waits on the hand being cleared.** An NFL rusher at the hip rips or dips under the tackle's outside hand
+and gets body on body (separation 0.81 yd); ours never removes it, and the press holds him at arm's length (0.89-0.94).
