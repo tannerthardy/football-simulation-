@@ -4,7 +4,7 @@
  */
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
-import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
+import { carrierSeen, READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
@@ -621,8 +621,10 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   // A split-zone slice travels against the runner's flow. It is a backside
   // cutoff, not a pull that lengthens the runner's designed track.
   const pullers = sim.offense.filter((a) => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'pull' && sim.offCall.run?.scheme!=='splitZone');
-  const key=sim.defense.filter((d)=>d.pos.x>sim.los+2 && d.pos.x<sim.los+7 && Math.abs(d.pos.y-sim.ballY)<4)
-    .sort((p,q)=>Math.abs(p.pos.y-sim.ballY)-Math.abs(q.pos.y-sim.ballY))[0];
+  // CARRIER_SEEN duo: the read key is the box backer nearest the ball as the back sees them at the handoff.
+  const keyPos = (d: Agent) => carrierSeen('duo') ? sim.see(to, d).pos : d.pos;
+  const key=sim.defense.map((d)=>({ d, p: keyPos(d) })).filter(({ p })=>(p.x-sim.los)*sim.attackDir('O')>2 && (p.x-sim.los)*sim.attackDir('O')<7 && Math.abs(p.y-sim.ballY)<4)
+    .sort((p,q)=>Math.abs(p.p.y-sim.ballY)-Math.abs(q.p.y-sim.ballY))[0]?.d;
   const run = sim.offCall.run, meshAim = to.behavior instanceof RunnerToMesh;
   const aimGap = run && meshAim ? (() => {
     const side = playSideSign(sim, run), gap: Gap = run.aim === 'edge' ? 'D' : run.aim;

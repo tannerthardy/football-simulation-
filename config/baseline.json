@@ -202,6 +202,8 @@
     "CUTOFF_RACE": "0",
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
+    "CARRIER_SEEN": "0",
+    "CARRIER_SEEN_ROWS": "0",
     "BACK_RELEASE": "0",
     "CATCH_EYES": "0",
     "BACKSIDE_SWAP": "0",

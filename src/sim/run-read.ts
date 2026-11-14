@@ -29,6 +29,36 @@ import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { observeRunRead, runReadObservers } from './run-read-observer.js';
+import { seenEngaged, seenEngagedWith } from './seen-contact.js';
+
+/** CARRIER_SEEN (experimental, off; the user's information rule, docs/reviews/2026-11-13-information-leak-sweep.md,
+ * "Ball carrier"): the back's run read uses only what he sees.
+ *  - keys: which blocker is on his key, from the bodies he sees in contact (seen contact), not the engagement record;
+ *  - risk: a defender he sees tied up with a blocker is slower to his entry, not one the record says is engaged;
+ *  - unsafe: the press is unsafe while a defender he sees up and free can close, not by true down/engaged state;
+ *  - down: defenders and his key drop out of the read when he sees them off their feet, not by true state;
+ *  - duo: the duo key at the handoff is picked from where he sees the box backers (assign.ts);
+ *  - squeeze: the bodies he squeezes between are the ones he sees on their feet (carrier.ts).
+ * CARRIER_SEEN_ROWS (diagnostic, measurement only): with CARRIER_SEEN on, 0 is every row; otherwise the sum of the
+ * rows' bits (keys 1, risk 2, unsafe 4, down 8, duo 16, squeeze 32) turns on only those. */
+const CARRIER_SEEN = process.env.CARRIER_SEEN === '1';
+const CARRIER_SEEN_ROWS = Number(process.env.CARRIER_SEEN_ROWS ?? 0);
+const CARRIER_ROW = { keys: 1, risk: 2, unsafe: 4, down: 8, duo: 16, squeeze: 32 } as const;
+export function carrierSeen(row: keyof typeof CARRIER_ROW): boolean {
+  return CARRIER_SEEN && (CARRIER_SEEN_ROWS === 0 || (CARRIER_SEEN_ROWS & CARRIER_ROW[row]) !== 0);
+}
+/** Off his feet as the observer sees him (down or getting up); the true state when the down row is off. */
+function downFor(a: Agent, sim: PlaySim, d: Agent, seen?: Perceived): boolean {
+  if (!carrierSeen('down')) return d.isDown(sim.t);
+  const pose = (seen ?? sim.see(a, d)).pose;
+  return pose === 'down' || pose === 'rising';
+}
+/** The offensive body his picture shows on this defender, or the engagement record when the keys row is off. */
+function blockerOn(a: Agent, sim: PlaySim, d: Agent): Agent | null {
+  if (!carrierSeen('keys')) return sim.engagements.find((e) => e.defender === d)?.blocker ?? null;
+  const on = seenEngagedWith(sim, a, d);
+  return on && on.team === a.team ? on : null;
+}
 
 /** Press-and-read for zone runs. Experimental, off by default (RUN_READ=1 on):
  * see docs/reviews/run-read.md. */
@@ -86,14 +116,14 @@ export function readKeys(a: Agent, sim: PlaySim, scheme: RunScheme, side: number
   const ol = surface.filter((o) => SURFACE.has(o.slot));
   const tackle = Math.max(...ol.map(seenLat));
   const center = sim.slot('C') ? seenLat(sim.slot('C')!) : 0;
-  const defenders = sim.opponents(a).filter((d) => !d.isDown(sim.t)).map((d) => ({ d, s: sim.see(a, d) }));
+  const defenders = sim.opponents(a).map((d) => ({ d, s: sim.see(a, d) })).filter(({ d, s }) => !downFor(a, sim, d, s));
   const atLine = defenders.filter(({ s }) => f.depth(s.pos) < 2 && s.pose !== 'down');
   const floor = STRETCH.has(scheme) ? tackle - .6 : center + .3;
   const first = atLine.filter(({ s }) => f.lat(s.pos) >= floor).sort((p, q) => f.lat(p.s.pos) - f.lat(q.s.pos))[0]?.d ?? null;
   let blocker: Agent | null = null;
   if (first) {
     // Bodies locked together are visible; otherwise the nearest surface body.
-    blocker = sim.engagements.find((e) => e.defender === first)?.blocker ?? null;
+    blocker = blockerOn(a, sim, first);
     if (!blocker) {
       const k = sim.see(a, first).pos;
       blocker = surface.map((o) => ({ o, dist: Math.hypot(sim.see(a, o).pos.x - k.x, sim.see(a, o).pos.y - k.y) }))
@@ -113,7 +143,7 @@ export function entryRisk(a: Agent, sim: PlaySim, entry: Vec2, chargeRedirect = 
   const D = Math.hypot(entry.x - a.pos.x, entry.y - a.pos.y) || 1e-6;
   const ux = (entry.x - a.pos.x) / D, uy = (entry.y - a.pos.y) / D;
   const s0 = Math.max(0, a.vel.x * ux + a.vel.y * uy);
-  const seen = sim.opponents(a).filter((d) => !d.isDown(sim.t)).map((d) => ({ d, s: sim.see(a, d) }));
+  const seen = sim.opponents(a).map((d) => ({ d, s: sim.see(a, d) })).filter(({ d, s }) => !downFor(a, sim, d, s));
   const trace = runReadObservers.has(sim) && process.env.READ_RISK_TRACE === '1';
   const samples: unknown[] = [];
   let worst = 0;
@@ -129,7 +159,7 @@ export function entryRisk(a: Agent, sim: PlaySim, entry: Vec2, chargeRedirect = 
     for (const { d, s } of seen) {
       if (Math.hypot(s.pos.x - q.x, s.pos.y - q.y) > 8) continue;
       // Bodies locked in a block are slower to come off it; not a known outcome.
-      const tied = d.engagement ? .35 : 0;
+      const tied = (carrierSeen('risk') ? seenEngaged(sim, a, d) : !!d.engagement) ? .35 : 0;
       const reach = timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, q, d.profile.radius + a.profile.radius) + tied;
       risk += Math.max(0, arrive - reach) * 3;
       if (trace) threats.push({ defender: d.idx, seen: s, tied, reach, uncontainedReach: reach - tied,
@@ -182,9 +212,9 @@ export function runRead(a: Agent, sim: PlaySim, scheme: RunScheme, side: number,
   // The key is the man identified early at the line; he is tracked, and only
   // re-keyed if he leaves the line or goes down. A committed back keeps his
   // answer; only its entry moves with the bodies.
-  const gone = st.key && (st.key.isDown(sim.t) || f.depth(sim.see(a, st.key).pos) > 2.5);
+  const gone = st.key && (downFor(a, sim, st.key) || f.depth(sim.see(a, st.key).pos) > 2.5);
   if (!st.answer && (!st.key || gone)) st.key = keys.key;
-  if (!st.answer && st.key) st.blocker = sim.engagements.find((x) => x.defender === st!.key)?.blocker ?? (st.key === keys.key ? keys.blocker : st.blocker);
+  if (!st.answer && st.key) st.blocker = blockerOn(a, sim, st.key) ?? (st.key === keys.key ? keys.blocker : st.blocker);
   a.eyes = { keys: [st.key, st.fitter].filter((x): x is Agent => !!x), peripheral };
   if (!st.key) return st;
   const key = sim.see(a, st.key), blocker = st.blocker ? sim.see(a, st.blocker) : null;
@@ -228,8 +258,8 @@ export function runRead(a: Agent, sim: PlaySim, scheme: RunScheme, side: number,
   const atDepth = depth > -1.6;
   // Pressing is unsafe once an unblocked defender can close on him within two reads.
   const unsafe = sim.opponents(a).some((d) => {
-    if (d.isDown(sim.t) || d.engagement) return false;
     const s = sim.see(a, d);
+    if (carrierSeen('unsafe') ? (s.pose === 'down' || s.pose === 'rising' || seenEngaged(sim, a, d)) : (d.isDown(sim.t) || d.engagement)) return false;
     return timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, a.pos, a.profile.radius + d.profile.radius + d.profile.reach * .75) < 2 * a.mind.decisionInterval;
   });
   const ok = order.find((ans) => risks[ans]! < .6);

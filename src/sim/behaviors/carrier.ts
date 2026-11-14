@@ -25,7 +25,7 @@ import { liveGapY } from '../live-gaps.js';
 import { RunBlocker } from './blocking.js';
 import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
-import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
+import { carrierSeen, READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
 import { observeRunRead, runReadObservers } from '../run-read-observer.js';
 
 export interface CarrierOptions {
@@ -519,7 +519,10 @@ export class BallCarrier implements Behavior {
   }
 
   private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number): MoveCommand {
-    const bodies = sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
+    // CARRIER_SEEN squeeze: the bodies he squeezes between are the ones he sees on their feet.
+    const bodies = carrierSeen('squeeze')
+      ? sim.agents.filter((o) => o !== a).map((o) => ({ s: sim.see(a, o), o })).filter(({ s }) => !offFeet(s)).map(({ s, o }) => ({ pos: s.pos, radius: o.profile.radius }))
+      : sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
     const squeeze = sim.bond ? 0 : squeezeForGap(a.pos, h, a.profile.radius, bodies) * (0.65 + 0.35 * a.r('elusiveness'));
     if (squeeze > 0.3 && !a.tags.has('squeezed')) {
       a.tags.add('squeezed');
