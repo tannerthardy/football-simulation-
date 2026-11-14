@@ -468,7 +468,7 @@ const PASS_KICK = process.env.PASS_KICK !== '0';
  * tackle retreats 2.5-3.0 yd/s with outward speed about 0 (wide / very wide alignments, IQR -0.75..+0.75), ours 2.25-2.75
  * with +0.25..+0.75 (p75 +1.25..+1.5), and meets the very wide rusher at 1.3 s against 1.5 s, landing wide 27-32% vs
  * 64% (docs/reviews/2026-11-12-tackle-set.md). Depth (TACKLE_SET's floor) is not part of it. */
-const VERTICAL_SET = process.env.VERTICAL_SET === '1';
+const VERTICAL_SET = process.env.VERTICAL_SET !== '0';
 /** PRO_READ (default on; PRO_READ=0 restores the old read): protection reads
  * who rushes from what the line sees. Off, the coordinator read each
  * defender's private behavior (rush/blitz), so the line never set on a

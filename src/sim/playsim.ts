@@ -30,6 +30,7 @@ import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
 import { ThrowSight, viewCone } from './throw-sight.js';
+import { BallEstimates } from './ball-estimate.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -238,6 +239,8 @@ export class PlaySim {
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   /** When each defender first had the current pass in view. */
   readonly throwSight = new ThrowSight();
+  /** BALL_EST: each player's own estimate of the ball in flight. */
+  readonly ballEstimates = new BallEstimates();
   /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
   private sightSamples?: Map<string, number>;
   /** GAZE: head direction and what each opted-in player is watching. */
@@ -1487,6 +1490,7 @@ export class PlaySim {
     }
     this.incidentalCatchReadiness.sense(this);
     this.throwSight.sense(this);
+    this.ballEstimates.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();

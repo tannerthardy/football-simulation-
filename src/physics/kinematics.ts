@@ -80,7 +80,7 @@ const FATIGUE = Float64Array.from({ length: FATIGUE_STEPS + 1 }, (_, k) => 1 - F
  * and trunk rotation is about 35-45° a side standing, the rest being the pelvis turning a little off the path, which
  * the hips' lead already allows. Sensitivity 45 / 65 via TRUNK_RANGE_DEG. The rate, 360°/s, is a stated choice of the
  * order trunk rotation takes in a quick look over the shoulder (several hundred °/s); only transients depend on it. */
-export const TRUNK_TWIST = process.env.TRUNK_TWIST === '1';
+export const TRUNK_TWIST = process.env.TRUNK_TWIST !== '0';
 export const TRUNK_RANGE = (Number(process.env.TRUNK_RANGE_DEG ?? 55) * Math.PI) / 180;
 export const TRUNK_RATE = (Number(process.env.TRUNK_RATE_DEG ?? 360) * Math.PI) / 180;
 

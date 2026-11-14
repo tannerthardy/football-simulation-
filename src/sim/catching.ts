@@ -11,6 +11,7 @@ import { DRAG_TUMBLE } from '../physics/ball.js';
 import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { BALL_EST_NO_TRACKPEN } from './ball-estimate.js';
 import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -214,7 +215,8 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   const chest = R.profile.heightYd * 1.02;
   const high = o.z > chest ? (o.z - chest) / Math.max(0.2, R.profile.maxCatchHeight - chest) : 0;
   const low = o.z < 0.5 ? (0.5 - o.z) / 0.4 : 0;
-  const trackPen = airTime > 1.4 ? (1 - R.r('ballTracking')) * 0.25 : 0;
+  // BALL_EST bit 2: his tracking acts through his own estimate; no second charge at the catch.
+  const trackPen = airTime > 1.4 && !BALL_EST_NO_TRACKPEN ? (1 - R.r('ballTracking')) * 0.25 : 0;
   // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
   const rs = R.speed;
   const fromBehindRun = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
