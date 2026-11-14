@@ -3372,3 +3372,43 @@ RUSH_HANDS a struck hand that does not come off slides toward the man's edge. Wh
 hold and steer are scaled down (`handEdge`), until he walks it back at ARM_SPEED, and only once the hand has stopped.
 The next diagnostic is that window: the blocker's steer limit over time after a club that leaves both hands on, and
 whether the rusher's pass comes while it is reduced. The hand model stays held.
+
+### Arm H's residual: the halves, and the hand's slide after a club (2026-11-14, diagnostic only)
+
+**Sampling.** Interior pressure by 8-game half (pressure-source.py, % of dropbacks):
+
+| | s11 half 1 | s11 half 2 | s23 half 1 | s23 half 2 |
+|---|---|---|---|---|
+| A | 10.0 | 8.8 | 9.0 | 10.2 |
+| H | 18.9 | 15.4 | 13.3 | 11.5 |
+| H - A | +8.9 | +6.6 | +4.3 | +1.3 |
+
+The excess is positive in every half, so it is real. Its size is about +5 points, with a range of +1.3 to +8.9: it
+depends strongly on which games. A is stable (8.8-10.2, NFL 9.8).
+
+**The hand's slide after a club that leaves both hands on** (club-slide.mts, seed 11 x 6 games):
+
+| | interior | tackle |
+|---|---|---|
+| clubs (followed to 1 s or the rep's end) | 843 | 369 |
+| the hand slid (handEdge under 0.8) | 22% | 11% |
+| minimum edge p50 | 0.57 | 0.63 |
+| slide stopped / edge back over 0.9 | +0.05 / +0.10 s | +0.05 / +0.10 s |
+| past him within 1 s: slid / not slid | 8% / 10% | 13% / 10% |
+| past him inside the low-edge window | 2% | 8% |
+
+The reduced window lasts about 0.1 s. The walk-back's gate (only once the hand has stopped) costs about one tick. On
+the interior a slid hand leads to a pass no more often than an unslid one. So the slide and the blocker's response to
+it are not the interior residual, and his recovery starting on the felt slide would buy about a tick.
+
+**Where a club lands.** The model does not distinguish it. A club is one force on a one-degree-of-freedom hand, so
+wrist and forearm against elbow and upper arm are the same; only the hold it meets differs.
+
+**Read.**
+- What the club does with both hands on is not the slide.
+- What is left to measure is the club's push on the blocker's body (the hand's resisted share reaches his body through
+  his shoulder) against his mirror.
+- The remaining question is why a club raises the interior pass rate within 1 s (6% vs 2%, club-trace.mts) when the
+  hands stay on and the slide is brief.
+
+The hand model stays held.
