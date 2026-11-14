@@ -2187,7 +2187,7 @@ export class QBPass implements Behavior {
   }
 
   /** QB_BREAK: out of the pocket with the ball up: the side he broke to, his held destination, his next decision. */
-  private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number } | null = null;
+  private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number; order: Agent[]; idx: number } | null = null;
   /** QB_BREAK diagnostics (no effect): what he did out there and when. */
   readonly breakRec: Array<{ t: number; what: 'break:rush' | 'break:clock' | 'break:feel' | 'tuck' | 'away' | 'set' | 'throw' }> = [];
 
@@ -2219,7 +2219,10 @@ export class QBPass implements Behavior {
     }
     this.breakTry.push({ t: sim.t, why, m: [-1, 1].map((sd) => this.spotMargin(a, { x: Math.min(a.pos.x + 1, sim.los - 1), y: clamp(a.pos.y + sd * BREAK_REACH, 1, FIELD_WIDTH - 1) }, threats)) });
     if (!dest) return false;
-    this.out = { side, since: sim.t, dest, until: sim.t + OUT_HOLD, decideAt: sim.t + this.processing(a), clearSince: null, away: null, best: null, thr: 1, risk: 0 };
+    this.out = { side, since: sim.t, dest, until: sim.t + OUT_HOLD, decideAt: sim.t + this.processing(a), clearSince: null, away: null, best: null, thr: 1, risk: 0, order: [], idx: 0 };
+    // He goes on reading one man at a time: the men on the side he broke to first, in the order he had them.
+    const sideOf = (r: Agent) => Math.sign(this.has(sim, r).y - a.pos.y) === side ? 0 : 1;
+    this.out.order = [...this.reads].sort((x, y) => sideOf(x) - sideOf(y));
     this.breakRec.push({ t: sim.t, what: `break:${why}` as const });
     this.look = null;
     sim.event('read', a, null, `breaks the pocket (${why})`);
@@ -2241,17 +2244,25 @@ export class QBPass implements Behavior {
     if (t >= o.decideAt) {
       o.decideAt = t + this.processing(a);
       const threats = this.pursuers(a, sim);
-      // The nearest pursuer he feels: how soon, and how far.
+      // The nearest pursuer he feels: how far he is, and how soon he gets to where the quarterback is going. Not to
+      // where he stands: he is running, and the time he has is the time until a pursuer reaches the spot he is running
+      // to (measured to where he stands, every break looked like a man about to be hit and his bar fell at once).
       let soon = Infinity, dist = Infinity;
       for (const { d, seen, held } of threats) {
-        soon = Math.min(soon, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + held);
+        soon = Math.min(soon, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, o.dest, 0.8) + held);
         dist = Math.min(dist, Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y));
       }
       // His bar is the bar he has in the pocket: his own, lowered by the pressure he feels now (the same rule).
       const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
       const u = clamp((0.9 - soon) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
       o.thr = 0.6 - 0.12 * aggression - 0.32 * u; o.risk = 0.025 + 0.05 * aggression + 0.08 * u;
-      const best = o.best = this.lastHotBest = this.bestOption(a, sim, u);
+      // One look per decision: the man his eyes are on now, then the next. No look round the whole field.
+      const man = o.order.length ? o.order[o.idx % o.order.length] : null;
+      const k = man ? this.reads.indexOf(man) : -1;
+      if (k >= 0) { this.readIdx = k; this.readStart = t; }
+      const seenNow = man && (this.ready(man, sim) || u >= 0.8) ? this.evaluate(a, sim, man, u) : null;
+      if (!(seenNow && seenNow.P >= o.thr && seenNow.intRisk <= o.risk)) o.idx++;
+      const best = o.best = this.lastHotBest = seenNow;
       const near = Math.max(0, best ? best.P / o.thr : 0);
       // Tuck and run: a lane past the line beats every pursuer he feels, and nobody is near his bar.
       if (near < TUCK_BAR) {
