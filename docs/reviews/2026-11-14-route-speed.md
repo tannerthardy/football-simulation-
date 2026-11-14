@@ -51,7 +51,7 @@ Over (`rules/cross-over` fe14536e, `CROSS_OVER=1`), n 24:
   between 1.5 and 3.0 s (right at 0.5-1.0 s).
 - The over has no such corner: the through law moves it by at most 0.1 yd/s. Its shortfall is the runner: the sim's TE crosser
   (vmax 8.6 times effort .84 caps at 7.2; he reaches 6.5 at 3.0 s) is 0.9-1.1 yd/s under the NFL TE crosser at every time; a WR body on the same
-  route matches the NFL WR to 0.25 yd/s. Effort 1 on the TE recovers 0.7-0.9 of it. A TE-over speed shortfall of about 1 yd/s is a
+  route matches the NFL WR to 0.25 yd/s through 3.0 s. Effort 1 on the TE recovers 0.2 yd/s at 1.5 s, growing to 0.85 at 3.0 s. A TE-over speed shortfall of about 1 yd/s is a
   body-and-effort term, not a follower term.
 
 ## 3. Corners (same operator on both: `route_break.py`)
