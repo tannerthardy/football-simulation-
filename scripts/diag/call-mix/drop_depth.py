@@ -5,6 +5,9 @@ The QB's displacement from where he took the snap, at its largest, from the snap
 NFL: checked against BDB's dropbackDistance on the same plays (which operator it is), then binned as
 refit_targets.py does (< 3.5, 3.5-5, 5-7, 7+), gun and under center apart. Non-designed, non-play-action
 dropbacks with no screen route; sim: no 'pa'/'boot'/screen concepts (by name), formation from the export cell.
+Result (2026-11-14, BDB wk 1-6 vs develop 3c2f968d, seeds 101/105/109/113 x 4 games): 'back' reproduces dropbackDistance
+(median |diff| 0.04 yd). Gun back p25/50/75 sim 2.3/3.4/3.4 vs NFL 2.3/3.1/3.9, 5+ yd 1.3% vs 7.6%; under center sim
+6.3/6.4/6.4 vs NFL 3.4/4.8/6.5 (NFL n 132). Each called drop lands on one depth, and the 3.5 yd bin edge sits on our gun5.
 usage: python3 -I scripts/diag/call-mix/drop_depth.py --data <bdb2025 dir> name=a.jsonl.gz,... """
 import sys, os, json, gzip, csv, math, re, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
