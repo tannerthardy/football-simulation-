@@ -1,3 +1,11 @@
+# Orientation-sensor floor for BDB 2025 `o` (shoulder-pad orientation, compass degrees clockwise from +y); weeks given as arguments.
+#   python3 -I scripts/diag/route-speed/orient_noise.py WEEK [WEEK ...]      (from the repo root)
+# Three numbers, all absolute (unsigned) angles on drop-backs, offensive T/G/C:
+#   1. frame-to-frame |d o| of linemen standing still pre-snap (s < 0.3 yd/s on both frames, 1.5 s before the snap): jitter
+#   2. |o - direction of play| of the same men (they should be square to the line): the floor of an absolute facing angle
+#   3. |o - bearing to the nearest defender| for a tackle and a defender within 1.5 yd with both s < 0.7 yd/s (nearly still pairs)
+# Weeks 1-2: 1. p50 0.0 / p90 1.8 / p99 10.2 deg (sd 4.5); 2. p50 11.9 / p90 44.1 deg; 3. p50 18.7 / p90 75.7 deg (n 1,885).
+# Unsigned: no sign convention; see signed_off.py for the signed measure.
 import csv, sys, math, statistics as st, collections as C
 D='data/raw/bdb2025/big-data-bowl-data'
 pos={r['nflId']:r['position'] for r in csv.DictReader(open(f'{D}/players.csv'))}
