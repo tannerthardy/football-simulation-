@@ -885,12 +885,62 @@ export class PlaySim {
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
    * short correcting loop at TRACK_LATENCY, with no focus, stress or attention terms stacked on it (those belong to
    * recognition) and no acceleration term; teammates as in `see()`. */
-  track(observer: Agent, target: Agent, delayScale = 1): Perceived {
-    if (!PERCEIVE_TRACK || observer.team === target.team) return this.see(observer, target, delayScale);
-    const seen = this.perception.perceive(target.idx, TRACK_LATENCY);
+  track(observer: Agent, target: Agent, delayScale = 1, group = false): Perceived {
+    // `group`: the consumer group's own flag (each step is measured alone); PERCEIVE_TRACK turns on every group.
+    if (!(PERCEIVE_TRACK || group) || observer.team === target.team) return this.see(observer, target, delayScale);
+    // The loop corrects only on a target in sight (touch, or in view with a clear sight line): its newest picture is
+    // the newest moment the line was clear that has had the loop's latency to arrive, carried forward on its velocity.
+    // While the line is blocked, and for one latency after it reopens, that picture ages; one older than the
+    // choice-reaction picture is no better than it, so `see()` stands in.
+    const key = `${observer.idx}>${target.idx}`, map = (this.trackSight ??= new Map());
+    let spells = map.get(key);
+    const clear = this.inSight(observer, target), last = spells?.[spells.length - 1];
+    // A pair not asked about last tick starts over: as if the line had been clear (or blocked) all along.
+    if (!spells || !last || last.asked < this.t - this.dt - 1e-9) spells = clear ? [{ from: this.t - 1, to: this.t, asked: this.t }] : [];
+    else if (clear && last.to >= this.t - this.dt - 1e-9) { last.to = this.t; last.asked = this.t; }
+    else if (clear) spells.push({ from: this.t, to: this.t, asked: this.t });
+    else last.asked = this.t;
+    while (spells.length && spells[0].to < this.t - 1) spells.shift();
+    if (!spells.length) spells.push({ from: -Infinity, to: -Infinity, asked: this.t });
+    spells[spells.length - 1].asked = this.t;
+    map.set(key, spells);
+    let tau = -Infinity;
+    for (const sp of spells) if (sp.from <= this.t - TRACK_LATENCY + 1e-9) tau = Math.max(tau, Math.min(sp.to, this.t - TRACK_LATENCY));
+    const delay = this.t - tau;
+    if (delay > TRACK_LATENCY + 1e-9) {
+      const fallback = this.see(observer, target, delayScale);
+      if (!Number.isFinite(delay) || (fallback.age ?? 0) <= delay + 1e-9) return fallback;
+    }
+    const seen = this.perception.perceive(target.idx, delay);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
+  }
+  private trackSight?: Map<string, { from: number; to: number; asked: number }[]>;
+
+  /** PERCEIVE_TRACK: whether light (or touch) reaches `observer` from `target` now: in contact, or within his view (the
+   * gaze cone under GAZE, else 1.8 rad either side of his body facing, as the QB's feel) with no body's centre line
+   * across the sight line. This is the physics of sight, not information: it decides only whether his loop gets a new
+   * sample. */
+  inSight(observer: Agent, target: Agent): boolean {
+    const e = observer.engagement;
+    if (e && (e.blocker === target || e.defender === target || e.helpers.includes(target))) return true;
+    if (target.engagement && (target.engagement.blocker === observer || target.engagement.defender === observer)) return true;
+    if (this.bond && this.bond.carrier === target && this.bond.tacklers.includes(observer)) return true;
+    if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
+    const sx = target.pos.x - observer.pos.x, sy = target.pos.y - observer.pos.y, l2 = sx * sx + sy * sy;
+    const g = GAZE ? this.gaze.get(observer) : undefined;
+    const dir = g && g.set >= this.t - this.dt - 1e-9 ? g.dir : observer.body.facing, cone = g && g.set >= this.t - this.dt - 1e-9 ? GAZE_CONE : 1.8;
+    if (l2 > 1e-9 && Math.abs(angDiff(Math.atan2(sy, sx), dir)) > cone) return false;
+    if (l2 < 0.36) return true;
+    for (const o of this.agents) {
+      if (o === observer || o === target) continue;
+      const u = ((o.pos.x - observer.pos.x) * sx + (o.pos.y - observer.pos.y) * sy) / l2;
+      if (u <= 0.15 || u >= 0.85) continue;
+      const px = observer.pos.x + sx * u - o.pos.x, py = observer.pos.y + sy * u - o.pos.y;
+      if (px * px + py * py < o.profile.radius ** 2) return false;
+    }
+    return true;
   }
 
   ballPos(): Vec3 {
