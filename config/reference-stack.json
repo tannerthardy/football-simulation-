@@ -104,6 +104,7 @@
     "PA_CALL": "on",
     "BACK_PATHS": "on",
     "BACK_SHAPE": "off",
+    "BACK_CHECK": "off",
     "SCREEN_QB": "off",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",

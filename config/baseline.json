@@ -273,6 +273,7 @@
     "PA_CALL": "0",
     "BACK_PATHS": "0",
     "BACK_SHAPE": "0",
+    "BACK_CHECK": "0",
     "SCREEN_QB": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",

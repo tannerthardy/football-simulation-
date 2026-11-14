@@ -12,6 +12,7 @@
  * end man on the line or leading through the hole, trap), plus fullback lead
  * and receivers stalking defensive backs.
  */
+import { seenEngagedWith } from '../seen-contact.js';
 import { FIELD_WIDTH } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { gaitLag, cornerSpeed, fatigueFactor, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
@@ -270,6 +271,13 @@ export class ProtectionCoordinator {
   }
 }
 
+/** BACK_CHECK (experimental, off; BACK_CHECK=1; the back routes, with Flex's review): a checking back releases when his
+ * own read of his blitz keys says none is coming, and from wherever his check took him, not on a timer (CHECK_READ +
+ * reaction time + dice). NFL backs on a check-release are still 4.4 yd behind the line at 1.0 s (BDB 2025 ANGLE, n
+ * 390); ours left on the timer. */
+export const BACK_CHECK = process.env.BACK_CHECK === '1';
+/** BACK_CHECK: the check's count (s from the snap): a key still holding then is not coming. assign.ts's CHECK_READ. */
+const BACK_CHECK_COUNT = 0.55;
 export class PassProtector implements Behavior {
   readonly kind = 'pass-pro';
   /** A check-release is an installed outlet; permanent protection is not. */
@@ -307,6 +315,46 @@ export class PassProtector implements Behavior {
     return a.engagement?.defender.idx ?? this.coord.assigned.get(a)?.idx ?? null;
   }
 
+  /** BACK_CHECK: his blitz keys, read in his own picture. Set at his first look: up to two defenders off the line
+   * (1.5-7 yd deep) near his check gap (2.5 yd outside the ball to his side; both sides from behind the QB), nearest
+   * first. A key comes when, in his picture, he is moving at the line (over 1.5 yd/s) within 2.5 yd of it or past it;
+   * he is clear once he has been moving away (over 1 yd/s) or holding off the line (3+ yd deep, not coming) for one
+   * decision interval. A key who has come is clear again only after he is seen dropping for 0.25 s (the exit margin).
+   * No keys: nothing to check, he goes once he has a picture of the box. */
+  private keys: { d: Agent; state: 'unread' | 'comes' | 'clear'; awaySince: number | null }[] | null = null;
+  private keysClear(a: Agent, sim: PlaySim): boolean {
+    const off = sim.attackDir(a.team), side = Math.sign(a.pos.y - sim.ballY);
+    if (!this.keys) {
+      const gaps = side ? [sim.ballY + side * 2.5] : [sim.ballY - 2.5, sim.ballY + 2.5];
+      const cands = sim.opponents(a).map((d) => ({ d, p: sim.see(a, d).pos }))
+        .map(({ d, p }) => ({ d, depth: (p.x - sim.los) * off, dy: Math.min(...gaps.map((g) => Math.abs(p.y - g))) }))
+        .filter((c) => c.depth >= 1.5 && c.depth <= 7 && c.dy < 5).sort((x, y) => x.dy - y.dy).slice(0, 2);
+      this.keys = cands.map((c) => ({ d: c.d, state: 'unread', awaySince: null }));
+    }
+    const dwell = a.mind.decisionInterval;
+    for (const k of this.keys) {
+      const p = sim.see(a, k.d), depth = (p.pos.x - sim.los) * off, toward = -p.vel.x * off;
+      const comes = toward > 1.5 && depth < 2.5;
+      // Dropping is decisive; holding off the line says nothing until the count has run (a delayed blitz shows by then).
+      const away = -toward > 1 || (depth >= 3 && toward < 1 && sim.t >= BACK_CHECK_COUNT);
+      // A key who comes and is seen engaged with another of his blockers is someone else's: clear for him.
+      const on = comes || k.state === 'comes' ? seenEngagedWith(sim, a, k.d) : null;
+      if (on && on !== a && on.team === a.team) { k.state = 'clear'; k.awaySince = null; continue; }
+      if (comes) {
+        k.state = 'comes'; k.awaySince = null;
+        // A back who was not counted in at the snap is now: the coordinator decides whom he takes.
+        if (!this.coord.protectors.includes(a)) this.coord.add(a);
+        continue;
+      }
+      if (!away) { k.awaySince = null; continue; }
+      k.awaySince ??= sim.t;
+      if (k.state !== 'clear' && sim.t - k.awaySince >= (k.state === 'comes' ? 0.25 : dwell) - 1e-9) k.state = 'clear';
+    }
+    // No keys: the box on his side is empty, which he knows once he has a picture of it.
+    if (!this.keys.length) return sim.t >= a.profile.reactionTime;
+    return this.keys.every((k) => k.state === 'clear');
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     // Play action: everyone shows a low, aggressive pad level at first.
     a.stance = isOL(a) && (PUNCH ? paRunLook(a, sim, a.engagement?.defender ?? this.coord.assigned.get(a) ?? null)
@@ -338,11 +386,16 @@ export class PassProtector implements Behavior {
     }
     this.coord.update(sim);
     const rA = this.coord.assigned.get(a) ?? null;
-    if (!rA && this.releaseTo && sim.t > this.releaseAfter) {
+    // BACK_CHECK: a checking back releases when his read of his keys says none is coming, not on a timer. A key
+    // who comes is still the coordinator's to assign him (rA), so doubles and costs see him.
+    const checking = BACK_CHECK && !this.calledRelease && !!sim.offAlign.spots[a.slot]?.backfield;
+    if (!rA && this.releaseTo && (checking ? this.keysClear(a, sim) : sim.t > this.releaseAfter)) {
       this.released = true;
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
+    // BACK_CHECK: a back not counted into the protection scans his keys from his spot, facing the line.
+    if (checking && !this.coord.protectors.includes(a)) return stand(sim.attackDir(a.team) > 0 ? 0 : Math.PI);
     const qb = sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
