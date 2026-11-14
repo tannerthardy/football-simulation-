@@ -3171,3 +3171,35 @@ moves built on it (the rip and the swim) can be read. The edge's missing past-ou
 problem: the rip clears hands but its sheds go inside. The next diagnostic is the interior come-off under RUSH_HANDS
 + RUSH_ONE_HAND: what frees him at 2.0-2.2 s (a hand knocked off and not refitted, one hand opening the side, or the
 long-arm), traced as the PUNCH_STRIKE falls were.
+
+### What frees the interior under the hand model (interior-free.mts, club-trace.mts; seed 11 x 6-8 games)
+
+**Interior reps that end with the ball held, after 0.5 s:**
+
+| | engine-60 | + RUSH_HANDS / ONE_HAND / ARM_BALANCE |
+|---|---|---|
+| ended, per 100 dropbacks | 17.2 | 25.7 |
+| 'past him' (beat()), per 100 dropbacks | 10.9 | 12.2, plus 4.6 more in the hands-1 / long-arm / club classes |
+| ended at, p50 | 2.45 s | 2.00 s |
+| rep length, p50 | 1.70 s | 1.30 s |
+| last move before 'past him' | dip 34 of 72 | **club 56 of 77** |
+
+At the end of those reps the blocker had both hands on again: the club wins by what it does before his hands are back,
+not by leaving him with fewer. 34 of the 77 had lost a hand about 1.1 s before.
+
+**Per club, against a clean no-move control** (engaged, no move in flight, none in the last 0.6 s):
+
+| | after a club | no move (clean control) | engine-60, no move |
+|---|---|---|---|
+| interior: past him within 1 s | **6%** | 2% | 3% |
+| interior: a hand off within 0.3 s | 21% | 6% | 0% |
+| tackle: past him within 1 s | 8% | 7% | 5% |
+
+**Frequency.** About 315 clubs a game under the hand model (1893 in 6 games: 1332 interior, 561 tackle), against about
+124 club rolls a game on engine-60. Under RUSH_HANDS a hand that goes unloaded on him is a felt change that brings his
+next move decision forward to his reaction time. His own club unloads the blocker's hand, so he re-decides about a
+reaction after his arm is back, often into another club. He reacts to his own action as if it were news.
+
+So the hand model's interior excess is mostly the club, used about 2.5x as often and tripling the interior pass rate
+each time. Proposed repair (one flag): the felt-unload counter trigger reads a change he did not cause, so an unload
+during and just after his own club (until his arm is back) is not news. Then re-read the base arm's rows.
