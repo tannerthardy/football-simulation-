@@ -1,8 +1,8 @@
 /** BASE_ORIENT (support.ts baseShape / shapeRadius, world.ts orient; experimental, off): the witness. One body, his
  * capture point displaced at 0 / 30 / 60 / 90 deg off his feet axis; the smallest displacement that puts him on the
  * ground, found by bisection. Off, every direction is the same (an isotropic base). On, a set body (standing, facing
- * +x) goes first along his facing (his base is wide across it); a running body (+x at 0.8 vmax) goes first across
- * his path (his stride is long along it). The aspects are choices; the direction dependence is the evidence (van
+ * +x, a stance staggered along his facing) and a running body (+x at 0.8 vmax, his stride long along his path) both go
+ * first across. The aspects are choices; the direction dependence is the evidence (van
  * Mierlo et al. 2023; Hof 2005). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -43,9 +43,9 @@ describe('BASE_ORIENT', () => {
     }
   });
 
-  it('on, set: he goes first along his facing (his base is wide across it)', async () => {
+  it('on, set: he goes first across his facing (his stance is staggered along it)', async () => {
     const t = await thresholds('1', false);
-    expect(t[0]).toBeLessThan(t[1]); expect(t[1]).toBeLessThan(t[2]); expect(t[2]).toBeLessThan(t[3]);
+    expect(t[3]).toBeLessThan(t[2]); expect(t[2]).toBeLessThan(t[1]); expect(t[1]).toBeLessThan(t[0]);
   });
 
   it('on, running: he goes first across his path (his stride is long along it)', async () => {

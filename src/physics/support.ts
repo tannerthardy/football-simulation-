@@ -217,12 +217,13 @@ export function advanceRecovery(e: number, rb: number, w: number, speed: number,
  *
  * The base is an ellipse of the same area as today's circle (baseRadiusAt), described by a shape tensor P (symmetric,
  * det 1; the radius in direction u is baseRadiusAt / sqrt(u^T P^-1 u)). Two shapes are blended:
- * - set: wide across his facing (SET_ASPECT across : along);
+ * - set: a fighting stance, staggered along his facing (SET_ASPECT along : across);
  * - stride: long along his velocity (STRIDE_ASPECT along : across).
  * The weight on the stride shape rises smoothly with his speed (smoothstep of speed / (STRIDE_SPEED x vmax)). A tensor
  * has no sign, so a velocity that reverses (a backpedal, a man being driven, a cut through a stop) does not flip it;
  * at no speed the stride weight is zero, and through a cut it rotates with his velocity. A backpedalling DB is long
- * along his path, a shuffling blocker long across his facing, a man being driven long along the drive.
+ * along his path (his facing too), a shuffling blocker long across his facing at speed and along it when set, a man
+ * being driven long along the drive. Both shapes are weakest across: a man is easiest to move sideways.
  *
  * The effective base is oriented as a whole: the recovery step's reach in direction u scales with the base's extent that
  * way (world.ts orient), so the point of no return is base(u) + step(u) / w0. Movement's directional factor (shuffle,
@@ -234,7 +235,9 @@ export function advanceRecovery(e: number, rb: number, w: number, speed: number,
  * stability is the extrapolated COM's distance from the base's edge, not its distance from a centre (Hof 2005).
  */
 export const BASE_ORIENT = process.env.BASE_ORIENT === '1';
-/** Set stance: across his facing : along it (a choice). */
+/** Set stance: along his facing : across it (a choice). Attempt 1 had the set wide across (a parallel stance): head-on
+ * contact met its short axis and lineman falls doubled. A fighting stance is staggered along the line of force, as the
+ * evidence's stance was (0.40 m long, 0.15 m wide). */
 export const SET_ASPECT = 1.3;
 /** Running stride: along his velocity : across it (a choice). */
 export const STRIDE_ASPECT = 1.5;
@@ -249,7 +252,7 @@ export function baseShape(facing: number, vel: Vec2, vmax: number, out: Float64A
   };
   out[o] = 0; out[o + 1] = 0; out[o + 2] = 0;
   const sp = hypot2(vel.x, vel.y), x = clamp(sp / Math.max(1e-6, STRIDE_SPEED * vmax), 0, 1), w = x * x * (3 - 2 * x);
-  if (w < 1) add(facing, 1 / Math.sqrt(SET_ASPECT), Math.sqrt(SET_ASPECT), 1 - w);
+  if (w < 1) add(facing, Math.sqrt(SET_ASPECT), 1 / Math.sqrt(SET_ASPECT), 1 - w);
   if (w > 0) add(Math.atan2(vel.y, vel.x), Math.sqrt(STRIDE_ASPECT), 1 / Math.sqrt(STRIDE_ASPECT), w);
   const det = Math.sqrt(Math.max(1e-12, out[o] * out[o + 2] - out[o + 1] * out[o + 1]));
   out[o] /= det; out[o + 1] /= det; out[o + 2] /= det;
