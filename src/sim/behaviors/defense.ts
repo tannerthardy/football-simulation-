@@ -1948,7 +1948,7 @@ const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
  * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
  * known to every defender) and `sim.qbEyes`. SHOULDER_READ's plant and restart, sawThrow's arm key and SEEN_EYES's
  * look read the picture. Off: the published fields, as before. */
-const QB_BODY_SEEN = process.env.QB_BODY_SEEN === '1';
+const QB_BODY_SEEN = process.env.QB_BODY_SEEN !== '0';
 /** QB_BODY_SEEN: whether this picture of the passer shows a throwing motion (loading or delivering). */
 const throwingShown = (q: { arm?: 'set' | 'load' | 'deliver' }) => q.arm === 'load' || q.arm === 'deliver';
 /** SHOULDER_READ: the throwing motion each defender planted on (by its windupAt), per play. */

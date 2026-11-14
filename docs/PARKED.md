@@ -106,6 +106,12 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | `ZONE_ARM` | Every zone defender whose eyes are on the quarterback reads his arm and shoulders, not only spot droppers. | `claude/zen-feynman-7712y8` `src/sim/behaviors/defense.ts:799` | Run Game research (off). Every zone defender reads the QB's arm and shoulders. |
 | `IN_STRIDE_CATCH` | A tracking receiver plays the reachable catchable point nearest his current running line instead of the earliest reachable point. | removed from develop after engine-47; last on `d6e3f56f` `src/sim/behaviors/receiver.ts` (`strideCatchSpot`) | Retired, superseded: `CATCH_CHOICE` (on) plays the same `TrackBall` path as a choice over the reachable segment against the defenders he sees, which includes this point. Revive only if a fixed running-line point is wanted as a control arm. |
 
+## Pressure installs (Defense, 2026-11-13)
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `MAX_ZONE_6` | (Idea, not built.) A designed six-man, three-deep, two-under zone pressure: two hot droppers (seam/flat or hot-hook players) named by the call, three deep behind them; the rare max zone pressure, called on purpose. | `src/playbook/defense.ts` `PRESSURES` | Not built. RUSH_PROMISE (FLAGS.md) stops this shape arising by accident (Mike-A / Will-B / Nickel Edge in Cover 3 from fronts that already rush an extra man: two curl-flat players, no one in the middle). A designed install names its two droppers and their hot rules, so it is a legitimate future call, not the accident. |
+
 ## G5 Edge protection gives way
 
 | Flag | What it does | Where | Status |

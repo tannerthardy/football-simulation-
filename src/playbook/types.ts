@@ -408,6 +408,11 @@ export interface Pressure {
   droppers?: Partial<Record<DefSlot, UnderSeat>>;
   /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
   rushers?: number;
+  /** RUSH_PROMISE (experimental, off): the most rushers the call sends behind
+   * a coverage family (`cover3: 5`), so a front that already rushes an extra
+   * man does not turn the call into an unplanned six-man pressure with two
+   * underneath. */
+  maxRushers?: Partial<Record<string, number>>;
   /** Compatible coverages: the called coverage's family (or id) must be one of these. */
   coverages: string[];
   /** A zone pressure that brings its own coverage (Deuce): installed in place of the called one. */
