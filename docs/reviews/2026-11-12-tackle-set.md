@@ -3681,3 +3681,37 @@ corner long). Ours is still sliding out across the rusher's path at 1.5 yd/s on 
 intent copies the rusher's lateral velocity (blocking.ts, `y: wide ? 0 : r.vel.y`). A tackle moving out into the
 rusher meets him with his base behind the press along the line. That is the strut, and it is also why ours lands
 less wide (the earlier wider-set finding).
+
+### Early sacks: who and how (2026-11-14, Integration via the QB lane)
+
+early-sack.py: the sack population and time as the QB lane's leave-onset.py (claude/exciting-cori-hc8l4u ff305cbd).
+The sacker is the nearest DL/LB at the last frame the QB can have the ball. Default engine-61, seeds 11 and 23 x 8; NFL
+BDB 2025 weeks 1-9.
+
+| | NFL | ours |
+|---|---|---|
+| sacks (timing definition) | 612, 6.7% | 85, 5.9% |
+| time p10/25/50/75/90 | 3.2/3.7/4.3/5.2/6.5 | 2.8/3.1/3.4/3.9/4.5 |
+| before 3.0 s, of dropbacks | 0.33% | 1.11% |
+| before 3.0 s: unblocked / beat his man | 7 / 93% | 6 / 94% |
+| before 3.0 s, of those who beat their man: edge in / edge out / interior in / interior out | 39 / 14 / 36 / 11% | 13 / 7 / **73** / 7% |
+| before 3.0 s: came free p50 | 2.2 s | 1.8 s |
+| before 3.0 s: sacker an edge / crossed (stunt proxy) | 57 / 33% | 19 / 12% |
+| 3.0 s and after: came free p50, before 2.5 s | 3.5 s, 13% | **2.5 s, 49%** |
+| 3.0 s and after: edge in / edge out / interior in / interior out | 30 / 28 / 19 / 22% | 46 / 13 / 21 / 21% |
+| still holding at 4.0 s, of dropbacks; ends throw / run / sack | 17%; 50 / 24 / 26% | 13%; 44 / 11 / 45% |
+| still holding at 5.0 s; ends throw / run / sack | 8%; 44 / 31 / 26% | 7%; 7 / 12 / **81%** |
+
+**Read.**
+1. The early sacks are not unblocked men or stunts. They are interior rushers who beat their man to the inside and
+   come free by 1.8 s: 73% of the early beaten-man sacks, against 36%. The early sacker is an edge 19% of the time,
+   against 57%.
+2. Every sack comes off a block about a second early. Even the sacks at 3.0 s and after came free at 2.5 s
+   (NFL 3.5 s), 49% before 2.5 s (NFL 13%). Our time to sack is short because the rusher gets off the block early, not
+   because the QB holds it.
+3. The late end belongs to the QB. Holding at 5.0 s ends in a sack 81% of the time (NFL 26%), a run 12% (31%) and a
+   throw 7% (44%). Ours holding late does not escape or throw it away. Few sacks after 4.0 s because the rush is
+   home by then; those still holding are sacked rather than escaping.
+
+Whose: (1) and (2) are the interior pass rep's (the come-off time inside, ours), and (3) the QB lane's (the late
+answers: escape, throwaway). n is 16 early sacks in ours.
