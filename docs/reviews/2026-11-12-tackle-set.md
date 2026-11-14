@@ -4263,7 +4263,7 @@ is bit-identical. Dither budget passes on the default and the CONTROL_HANDS base
 - retreating with it at 3 yd/s: 908 -> 379 N;
 - back-pedal against a bull 379 N against 1290 N planted.
 
-The 4 yd/s contact rows go off their feet in 0.05-0.25 s on both arms (KNOWN_PROBLEMS RUN-17).
+The 4 yd/s contact rows go off their feet in 0.05-0.25 s on both arms (KNOWN_PROBLEMS RUN-20).
 
 **Pass game (seeds 11 / 23 x 8):**
 

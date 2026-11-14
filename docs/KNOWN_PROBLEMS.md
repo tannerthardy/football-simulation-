@@ -268,6 +268,12 @@ Small samples are common. Same-seed arms are identical until the first
 changed play and then diverge, so an 8-game comparison is closer to 8 paired
 observations than to 1,000 plays (`scripts/diag/arm-power.py`, #191).
 
+## Perception (reference)
+
+How a player's picture of an opponent works (a delayed sample; position extrapolated, velocity held; no distance or
+looming term; the QB's periphery ×1.7) is written up in [PERCEPTION.md](PERCEPTION.md). Several "reacts late" findings
+may share it: check there before diagnosing a late reaction from scratch.
+
 ## Index
 
 Severity says how much the problem distorts ordinary football: **high**
@@ -295,7 +301,7 @@ problem), resolved.
 | [RUN-14](#run-14) | Engaged DL lose the backside shoulder; play-side DL drift away from the play | G2 | medium | open |
 | [RUN-15](#run-15) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
-| [RUN-17](#run-17) | A blocker arriving at 4 yd/s on a man who holds goes off his feet | physics | medium | logged |
+| [RUN-20](#run-20) | A blocker arriving at 4 yd/s on a man who holds goes off his feet | physics | medium | logged |
 | [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
 | [RUN-18](#run-18) | An engaged edge past his containment bound kept widening on his held flow | G2 | medium | resolved |
 | [RUN-19](#run-19) | Run blockers keep a grip only by the pass-rep frame rule | G2 | medium | open |
@@ -2362,8 +2368,8 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
     - Half of draw box backers are nobody's target when the carrier arrives;
       a quarter never were.
 
-<a id="run-17"></a>
-### RUN-17: A blocker arriving at 4 yd/s on a man who holds goes off his feet
+<a id="run-20"></a>
+### RUN-20: A blocker arriving at 4 yd/s on a man who holds goes off his feet
 
 - **Measure** (`scripts/diag/effective-mass/brace-staged.mts`, engine-62 defaults, 2026-11-14): two equal bodies from
   `contactFixture`, the arriving man requesting his speed straight at a man who holds his ground (push 1, posture

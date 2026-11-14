@@ -4,9 +4,10 @@ Usage: python3 -I nfl_checkdown.py [DATA_DIR] [OUT_DIR] [MAX_WEEK]
 Sample: isDropback TRUE, playAction FALSE, exactly one wasTargettedReceiver=1.
 """
 import csv, collections, json, os, sys
+import os
 
-DATA = sys.argv[1] if len(sys.argv) > 1 else "/home/user/football-simulation-/data/raw/bdb2025/big-data-bowl-data"
-OUT = sys.argv[2] if len(sys.argv) > 2 else "/home/user/fb-back/out/backs"
+DATA = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'data', 'raw', 'bdb2025', 'big-data-bowl-data')
+OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'out', 'backs')
 MAXW = int(sys.argv[3]) if len(sys.argv) > 3 else 3
 RB = {"RB", "FB"}
 HOT = 1.8
