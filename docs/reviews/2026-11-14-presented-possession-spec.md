@@ -131,6 +131,18 @@ The fake is something a player *does*, with skill and cost, not a label:
     the back's pocket; he pays the eyes and a later drop for every tick. The QB lane supplies the NFL ride-time row
     (`scripts/diag/eyes/nfl_pa_fake_depth.py`) before calibration.
   - `sim.presentHandoffFake(a, rb)`, called every tick of the ride, stays the single presentation call.
+  - *NFL ride (QB lane, `scripts/diag/eyes/nfl_pa_ride.py` @ 4f360280, BDB 2025 PA dropbacks; body proximity, not the
+    ball; body orientation, not the head; not yet film-checked):*
+
+    | | n | mesh at p25/50/75 | apart at the mesh | QB depth there | within 1.5 yd for p25/50/75 | body turned > 90 deg from downfield (of the first 2 s) | last turned |
+    |---|---|---|---|---|---|---|---|
+    | gun | 1,052 | 1.1 / 1.2 / 1.3 s | 0.9 yd | 5.0 yd | 0.4 / 0.5 / 0.6 s | 0.0 s | never |
+    | under center | 1,223 | 1.3 / 1.4 / 1.5 s | 1.2 yd | 4.9 yd | 0.0 / 0.2 / 0.3 s | 0.7 / 1.0 / 1.2 s | 1.8 s |
+
+    Two fakes: from the gun a long, close ride side-on (the cost is the ride's time; his head turns to the mesh side,
+    eyes not off the defense); under center a brief overlap with the ball shown across the body on the drop and his back
+    to the defense for about a second (the eye cost is an under-center cost). Ours rides a fixed 0.7 s for both. With 5+
+    rushers the ride is unchanged in the NFL, so the shortened ride stays parked with the blitz read.
 - **Carry posture** (`carryPosture`, one writer): the controller that owns the body writes its posture every tick it
   holds or presents the ball and clears it to `null` otherwise; nobody writes another player's posture; perception
   records it and nothing reads the field directly. Values (with the arm already shown by QB_BODY_SEEN):
