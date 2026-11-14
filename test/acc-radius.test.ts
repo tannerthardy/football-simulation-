@@ -49,6 +49,10 @@ describe('ACC_RADIUS', () => {
     // p50, 2.87 p75), none after 3.5 s; off, his check-downs on this panel came at 2.4-5.0 s, median about 3.7.
     const ts = onV.map((r) => r.t!).sort((a, b) => a - b);
     expect(ts[Math.floor(ts.length / 2)]).toBeLessThan(3.0);
-    for (const t of ts) expect(t).toBeLessThanOrEqual(3.5 + 1e-9);
+    // Restated at engine-64: with OUTLET_LAST the back is his last read, so on two plays where the first vertical is
+    // not there he now comes back to a vertical late (4.15 and 4.45 s) instead of dumping it to the back at 2.9 s.
+    // Those are 7 verticals of 10 (5 on engine-63). The on-time claim is held for the ones the flag opens: at least
+    // five leave by 3.5 s. Was "none after 3.5 s".
+    expect(ts.filter((t) => t <= 3.5 + 1e-9).length).toBeGreaterThanOrEqual(5);
   }, 180000);
 });
