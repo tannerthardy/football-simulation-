@@ -109,6 +109,7 @@
     "BACK_PATHS": "on",
     "SCREEN_CALL": "off",
     "STALK_CLOSE": "off",
+    "CLOUD_KILL": "off",
     "SCREEN_QB": "off",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",
