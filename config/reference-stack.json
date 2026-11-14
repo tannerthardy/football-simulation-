@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-59",
+  "id": "engine-60",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -181,6 +181,10 @@
     "ANCHOR_BASE": "on",
     "RUSH_ARM_BALANCE": "off",
     "PASS_SET_SEEN": "on",
+    "REP_SEEN": "on",
+    "RUSH_LEAN_BOUND": "on",
+    "THROW_HOLD": "on",
+    "POCKET_REACH": "on",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",

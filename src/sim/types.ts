@@ -95,6 +95,7 @@ export type PlayEventType =
   | 'squeeze'
   | 'carrier_contact'
   | 'tackle_wrap'
+  | 'throw_held'
   | 'snap'
   | 'handoff'
   | 'handoff_fake'
