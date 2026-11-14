@@ -60,4 +60,41 @@ under the flag; **kept** reads stay true, with the reason.
 
 ## Lane read
 
-(pending: seeds 11 / 23 x 8 with EXPORT_FACING, the fresh run set, dither with the flag on)
+Engine-64 (develop 3d445688) + ENGAGE_FELT only, seeds 11 / 23 x 8, against default; the same operators on sim exports as
+on NFL tracking (edge-rush.py, pressure-source.py, fall-proxy.py). Off is bit-identical to develop (seed 999,
+f45b8a7e377c73b2); the patch on develop and this branch give the same game with it on (d7b7c5273350f548).
+
+| | default | ENGAGE_FELT | NFL |
+|---|---|---|---|
+| the tackle at first contact, rusher aligned wide: retreat / outward p50 | 2.50 / +1.00, +0.75 | 2.25-2.50 / +0.75 | 2.50 / 0.00 |
+| the same, very wide | 2.75 / +0.50 | 2.75 / +0.50, +0.25 | 3.00 / -0.25 |
+| first contact lands wide | 26 / 27% | 28 / 24% | 49% |
+| inside at the edge win | 72 / 60% | 77 / 63% | 47% |
+| edge win (within 2 yd of the QB) | 10 / 8% | 11 / 8% | 13% |
+| pressured | 32.0 / 26.2% | 32.9 / 28.3% | |
+| interior pressure, of dropbacks | 11.4 / 8.5% | 11.1 / 9.5% | |
+| OL proxy falls (under 0.5 yd/s for 0.8 s after moving) | 5.2 / 7.0 /100 | 7.3 / 5.8 /100 | |
+| rusher off the tackle's chest at +0.4 s, p50 (outside half / wide) | | 0 / +1, 0 / 0 deg | 15 deg (engaged-yaw.py) |
+
+The fresh run set (1295 plays, paired against the reference): +0.14 (SE 0.10); every concept within its SE (OZ +0.15,
+IZ +0.29, gap +0.04, duo +0.02, toss +0.66 on 45, draw +0.04). Missed + broken 0.271 -> 0.299: broken 0.094 -> 0.127, of
+which engaged-grab breaks 0.040 -> 0.053.
+
+**Dither: over the recorded budget on one stage.** With the flag on, carrier / spacing is 0.202/s (59 events in 292
+moving s) against a budget of 0.174 (recorded 0.122 on develop 121d458b). Today's off arm on the same panel is already
+0.140/s (45 events in 323 s), so the step is 14 events, about 1.4 sigma. The blocker's own stages do not move: block /
+engagement 483 -> 484 events (0.109 -> 0.116/s on fewer moving seconds), block / spacing 277 -> 294; rush / engagement 87
+-> 79. ENGAGE_FELT does not touch the carrier's controller; his spacing re-aims follow the bodies around him, which the
+changed blocks place differently. Read: not oscillation in the felt blocks (their engaged re-aims are flat); the
+carrier panel is small (292 s). Not explained further yet.
+
+## Read
+
+- **It is honesty, and it barely moves the pass rep.** Every edge row stays within a few points of default; the rusher
+  stays on the tackle's chest (0-1 deg at +0.4 s against the NFL's 15), as expected while the request is still "face the
+  man": the felt picture is 0.06 s old while the hands are on. The facing question is the request law (the yaw note).
+- **The run game is flat to slightly up** (+0.14, SE 0.10), with broken tackles up 0.033 a run, 0.013 of it engaged
+  grabs: a run defender engaged on a blocker now acts on a picture of him 0.06-0.24 s old. Not diagnosed.
+- **Dither:** the carrier / spacing stage is over the recorded budget, 1.4 sigma over today's off arm; the blocks' own
+  re-aims are flat. It needs a decision: land as honesty with the budget re-recorded, or a targeted look at which carrier
+  reversals are new first.
