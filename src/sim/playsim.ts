@@ -835,8 +835,9 @@ export class PlaySim {
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
    * short correcting loop at TRACK_LATENCY, with no focus, stress or attention terms stacked on it (those belong to
    * recognition) and no acceleration term; teammates as in `see()`. */
-  track(observer: Agent, target: Agent, delayScale = 1): Perceived {
-    if (!PERCEIVE_TRACK || observer.team === target.team) return this.see(observer, target, delayScale);
+  track(observer: Agent, target: Agent, delayScale = 1, group = false): Perceived {
+    // `group`: the consumer group's own flag (each step is measured alone); PERCEIVE_TRACK turns on every group.
+    if (!(PERCEIVE_TRACK || group) || observer.team === target.team) return this.see(observer, target, delayScale);
     const seen = this.perception.perceive(target.idx, TRACK_LATENCY);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);

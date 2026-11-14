@@ -90,18 +90,26 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    perceived intercept. Lower pursuit ratings widen that error; they do
  *    not require every poorer pursuer to take a flat, trailing angle.
  */
+/** TRACK_PURSUIT (experimental, off; TRACK_PURSUIT=1, or PERCEIVE_TRACK=1 for every group): perception channels
+ * step 1a, pursuit's aim (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier is read through the
+ * tracking channel (`PlaySim.track`) instead of a scaled `see()` plus a two-sample acceleration burst. The tackle
+ * window (the close gather in `chase`) is its own step (1a'). */
+const TRACK_PURSUIT = process.env.TRACK_PURSUIT === '1' || process.env.PERCEIVE_TRACK === '1';
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   request?: SprintRequest): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, delay);
+  // TRACK_PURSUIT (step 1a): the carrier he pursues is tracked: a short correcting loop (`track`), re-aimed every
+  // tick, with no acceleration estimate (people do not perceive acceleration over such windows; Brouwer et al. 2002).
+  // It retires this function's own compensator, the scaled 0.12-0.24 s picture and the two-sample burst below.
+  const seen = TRACK_PURSUIT ? sim.track(a, target, 1, true) : sim.see(a, target, delay);
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
   const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
-  const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
+  const older = TRACK_PURSUIT ? seen : sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
   // Over the time actually between the two pictures he holds, which attention
   // can stretch past the 0.2 s asked for; two pictures of the same moment show
   // no acceleration.
   const interval = (older.age ?? 0) - (seen.age ?? 0);
-  const acceleration = interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
+  const acceleration = !TRACK_PURSUIT && interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
     -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau)) : 0;
   // Recent acceleration is evidence for a short burst, not a promise of full
   // speed throughout the horizon. Reassess as new motion becomes visible.
@@ -270,10 +278,16 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
     facing: travel + angleDiff(travel, near.facing!) * gather };
 }
 
+/** TRACK_TACKLE (experimental, off; TRACK_TACKLE=1, or PERCEIVE_TRACK=1 for every group): perception channels step
+ * 1a', the tackle window (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier's picture in the last
+ * yards (chase's close gather, tryTackles' window preview, the whiff margin's aim) is read through the tracking channel
+ * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
+ * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
+export const TRACK_TACKLE = process.env.TRACK_TACKLE === '1' || process.env.PERCEIVE_TRACK === '1';
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, look);
+  const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
