@@ -855,3 +855,32 @@ STALK_CLOSE on), seed 11 x 8:
     reach, or the frame rule's friction-limited steer.
 - Sacks rise a little (4.5 -> 5.0%), with more unblocked and more edge sackers, while interior pressure falls. Pressure
   is moving from the interior to the edge.
+
+### PRESS_SPRING: where the run gain comes from (matched staged IZ)
+
+iz-lever.mts, the same 120 inside-zone plays and bodies (three rosters x Under / Over x 20 seeds), control
+(HANDS_LEVER + CHEST_SHOULDERS) against PRESS_SPRING on top:
+- Yards 6.16 -> 7.14, paired +0.98 (SE 0.68): the run set's direction.
+- Missed 25 -> 23, **broken 20 -> 39**.
+- The arms diverge first at 0.5-0.6 s, in the interior (LG 41, C 38, DT_S 25, DT_W 14 plays).
+
+**The change is turning.** Under PRESS_SPRING the engaged interior pairs stay square. Median |turn| over the block:
+
+| block | blocker, control -> PRESS_SPRING | defender | duration |
+|---|---|---|---|
+| RG>DT_W | 70 -> 15 deg | 73 -> 18 | 1.90 -> 1.70 s |
+| C>DT_S | 82 -> 18 | 129 -> 60 | 1.10 -> 1.77 s |
+| LG>DT_S | 49 -> 15 | 83 -> 34 | 2.00 -> 1.80 s |
+| LT>DE_S | 70 -> 36 | 67 -> 57 | |
+| LG>DE_S | 76 -> 22 | 60 -> 46 | |
+| Y>DE_S | 98 -> 46 | 84 -> 22 | |
+
+The reference without the lever also turns them about 60 deg (RG>DT_W 61 / 53). So with one hands joint an engaged
+pair orbits about itself as the bodies move, each facing the other. With two shared springs at the bent length the pair
+holds its geometry and does not orbit: the defensive tackle is not turned out of his gap, but neither is the blocker
+spun off the block. The center's block on the shade lasts 1.10 -> 1.77 s.
+
+**Which is football is an NFL question, not a yards one:** how far an engaged interior pair rotates over a block (the
+change in the bearing between them and in each man's facing over the engagement), measured on BDB with the same pairing.
+A strong measurement (positions and facing), and the next step before PRESS_SPRING can land or be judged. Broken
+tackles doubling on the staged set (20 -> 39; the run set had them fall, 0.094 -> 0.074) is also unexplained.
