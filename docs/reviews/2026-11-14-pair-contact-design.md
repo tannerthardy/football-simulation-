@@ -454,3 +454,53 @@ achieved gap from above, never shorter than it), so the joint stays at its limit
 drives them, continuous in the load. The yaw design uses the same reading: the turn comes from where the load goes (the
 shoulder joint carrying it, or bodies off the line of centres), the load-sharing between the two joints on one gap, and
 grip shared with the motor second.
+
+## Step 1, attempt 1: ENGAGE_TRUNK read (2026-11-14)
+
+Built on claude/trunk-stage1 (3bd1b543) merged into this branch, with ENGAGE_FELT. Off is bit-identical (seed 999,
+f45b8a7e377c73b2). Seeds 11 / 23 x 8, the control is TRUNK_TWIST + ENGAGE_FELT; EXPORT_SHOULDERS=1, so `o` is the
+shoulders on both sides of every NFL comparison. The signed angle is Tools' definition (route-speed-diag f6521776),
+ported line for line (`signed-off.py`): on the NFL plays it reads -4.6 / -7.6 against Tools' -5.8 / -6.6 on the raw weeks
+1-2.
+
+| | NFL | control | ENGAGE_TRUNK |
+|---|---|---|---|
+| signed off-chest p50, the two QB sides (+ = chest on the QB side of the man) | -5.8 / -6.6 | -1.4 / -1.9, -1.6 / -2.3 | -2.4 / -3.0, -2.6 / -3.4 |
+| joint fit: facing change = a x QB frame + b x rusher bearing | 0.27 / 0.61 | 0.02 / 0.82, 0.00 / 0.81 | 0.08 / 0.52, 0.06 / 0.60 |
+| frames with the chest more than 30 deg outside the man | 20% | 16% | 23% |
+| of those, with the man inside (ball side) and in front | 40% | 20% | 48% |
+| of those, with the man outside and in front | 11% | 16% | 19% |
+| edge win / pressured | 13% / | 9, 8% / 29.3, 28.2% | 9, 9% / 28.1, 28.0% |
+| OL proxy falls /100 | | 5.7 / 4.9 | 6.4 / 5.2 |
+
+- The trailing sign and the rusher term move to the NFL's. The rusher term reaches it: 0.52-0.60 against 0.61.
+- The set-frame term barely moves: 0.06-0.08 against 0.27. That is the half that missed.
+- The trailing tail is the NFL's own pattern (worst against a man gone inside), a little heavier against a man outside.
+- The shoulders still sit on the felt man (unsigned off-chest p50 3 deg): the trunk turns at 360 deg/s within 55 deg, so
+  between them the felt delay and the hips do almost all the trailing.
+
+**Dither:** passes with the flag. Block / engagement reversals fall 479 -> 395; carrier / spacing is 0.135/s. The control
+arm (TRUNK_TWIST + ENGAGE_FELT without it) fails carrier / spacing at 0.196/s against 0.174.
+
+**Run set** (1295 plays, paired against the reference):
+
+| arm | all | OZ | IZ |
+|---|---|---|---|
+| control | +0.10 (SE 0.10) | +0.22 | +0.01 |
+| ENGAGE_TRUNK, run hips on the drive axis (as first built: a bug) | -0.13 (SE 0.12) | -0.36 | -0.14 |
+| ENGAGE_TRUNK, run hips on his feet's path | -0.12 (SE 0.11) | -0.25 | -0.51 |
+| the run blocker's half only | -0.07 (SE 0.11) | -0.17 | -0.32 |
+| the run defender's half only | +0.03 (SE 0.12) | -0.09 | +0.56 |
+
+The first build put a run blocker's hips on his drive axis, so an outside-zone blocker shuffled sideways at shuffle speed.
+That was a bug against the stated law (hips on his track) and is fixed: the hips go where his feet are asked to go.
+After it the total is still about 0.2 below the control. Neither half carries it: each costs 0.07-0.17, and the concept
+rows swing in opposite directions between the halves (IZ -0.32 against +0.56). That is within the noise of two
+unpaired arms (about 0.15). Not diagnosed further yet.
+
+**Not yet measured:**
+- The contact lever the new hips create. Tools' pair-yaw-trace scripts both bodies' facing, so it does not exercise the
+  request; the in-game yaw impulse needs Tools' World instrumentation (yaw-trace-world.patch).
+- The chest segments. On claude/trunk-stage1 itself the World's chest segments read `facing` (the hips): `chestPoints`,
+  the segment lines at world.ts 541 and 729. `shouldersOf` there is only in the report fields (`chestI` / `chestJ`). The
+  merge dropped nothing: per file, the same count of `shouldersOf` reads as 3bd1b543.
