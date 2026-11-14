@@ -14,12 +14,13 @@ for (const [k, v] of Object.entries(stack)) if (v === 'on' && process.env[k] ===
 const { contactFixture } = await import('../run-contact-technique.js');
 const { syncJoints } = await import('../../../src/sim/engagement.js');
 type Fit = 'inside' | 'outside';
-function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: number; y: number }, dv: { x: number; y: number }, side = 1, secs = 0.6, gap0 = 0.3, dMass = 0, move?: string) {
+function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: number; y: number }, dv: { x: number; y: number }, side = 1, secs = 0.6, gap0 = 0.3, dMass = 0, move?: string, bMass = 0) {
   const { sim, blocker: b, defender: d, engagement: e0 } = contactFixture({ type: type === 'pass' ? 'pass' : 'run', runBlock: 60, passBlock: 60, side });
   const e: any = e0;
   e.type = type;
   Object.assign(d.profile, structuredClone(b.profile));
   if (dMass) d.profile.massKg = dMass;
+  if (bMass) b.profile.massKg = bMass;
   const R = b.profile.radius + d.profile.radius + gap0;
   b.body.pos = { x: 40, y: 26.65 }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
   d.body.pos = { x: 40 + R, y: 26.65 }; d.body.vel = { ...dv }; d.body.facing = Math.PI;
@@ -62,6 +63,8 @@ for (const side of [1, -1]) {
   for (const fb of ['outside', 'inside'] as Fit[]) run(`turn: a rusher crossing upfield past him, blocker ${fb}`, 'pass', fb, 'outside', { x: 0, y: 0 }, { x: -1.5, y: 2.5 }, side, 0.6, 0.3, 0, 'speed');
   for (const fd of ['outside', 'inside'] as Fit[]) run(`turn: a power rusher, his hand ${fd} on the blocker`, 'pass', 'inside', fd, { x: 0, y: 0 }, { x: -2, y: 0.5 }, side, 0.6, 0.3, 0, 'bull');
   for (const fd of ['inside', 'outside'] as Fit[]) run(`gap: a reach block on a run defender, his stack ${fd}`, 'run', 'outside', fd, { x: 0.5, y: 2 }, { x: -0.5, y: 0 }, side, 0.6);
+  run('hand-over forced: a 150 kg man driving a 90 kg one (run), both inside', 'run', 'inside', 'inside', { x: -0.5, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.05, 150, undefined, 90);
+  run('hand-over forced: a 150 kg bull on a 90 kg pass-setter, both inside', 'pass', 'inside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.1, 150, 'bull', 90);
   run('hand-over: a heavy bull (150 kg) at 3 yd/s, blocker outside', 'pass', 'outside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.3, 150);
   run('hand-over: a drive started inside the base, both inside', 'run', 'inside', 'inside', { x: 1, y: 0 }, { x: -1.5, y: 0 }, side, 0.6, 0.05);
   for (const v of [3, 4]) for (const fb of ['inside', 'outside'] as Fit[]) run(`stalk: a crosser at ${v} yd/s (blocker ${fb})`, 'run', fb, 'outside', { x: 0, y: 0 }, { x: 0, y: v }, side, 0.5);

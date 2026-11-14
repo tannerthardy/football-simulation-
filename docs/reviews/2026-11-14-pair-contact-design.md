@@ -266,3 +266,14 @@ Expected under a physical yaw: the blocker turned toward the rusher's push side.
 - The other two need the man's body to turn under a moment.
 - PAIR_HANDS stays off. Its pieces (the defender's own hands, placement, control from fits, the hand-over, the fitted
   base) wait on a yaw that a moment can move.
+
+**The hand-over, forced (Integration's request; pair-staged.mts).** These rows start the pair at or inside the base.
+
+| row | separation at 0.2 / 0.4 / 0.6 s | closest | torso load | first-tick jump | his speed after |
+|---|---|---|---|---|---|
+| a 150 kg man driving a 90 kg one (run, both inside) | 0.97 / 1.30 / 1.57 | 0.73 | never | 3260 N | 2.75 yd/s |
+| a 150 kg bull on a 90 kg pass-setter (both inside) | 0.96 / 1.28 / 1.58 | 0.77 | never | 3490 N | 2.85 yd/s |
+
+The opening impact throws the lighter man back before any sustained chest-to-chest load forms. The torso contact never
+carries load in staging, so the hand-over's continuity cannot be shown there. That is another reason the parked pieces
+wait.
