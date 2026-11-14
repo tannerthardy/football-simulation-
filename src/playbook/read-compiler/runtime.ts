@@ -38,12 +38,17 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
 /** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, six concepts the compiler ran as pure orders key as taught:
  * slant_flat, stick, fade_flat, double_slants by their own sources; quick_outs and hitch_out by the family rule for a
- * two-receiver quick combination (the front-side flat defender, on the third step); dagger and levels by their own
- * sources, made explicit so a route-timing change cannot remove them. Trips stick and seam-slant stay
+ * two-receiver quick combination (the front-side flat defender, on the third step). Trips stick and seam-slant stay
  * pure progressions: no source for trips stick's alert (a keyed plan demotes it to third), and seam-slant's hook key
  * would be double slants' borrowed for a different structure. */
 export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 === '1';
-const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out', 'dagger', 'levels']);
+const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']);
+/** PLAN_KEYS_3 (experimental, off): with PLAN_KEYS, the coached key holds whatever the geometry says for dagger and
+ * levels. Their keys were the compiler's, derived from geometry (dagger's the deep safety, seam over dig, the coached
+ * key itself; levels keyed on the hook in trips only), so a route-timing change (ROUTE_SHAPE: the dig ready on the
+ * first hitch) removed them. As table entries they hold; levels from 2x2, pure on develop, is keyed too. */
+export const PLAN_KEYS_3 = process.env.PLAN_KEYS_3 === '1';
+const THIRD_KEYS = new Set(['dagger', 'levels']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
@@ -69,8 +74,8 @@ const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; 
   // Reads"). The cue is the set, not the low route's ready time.
   quick_outs: { low: 'S1', high: 'S2', role: 'flat', deep: false, danger: 'the corner over the out', onSet: true },
   hitch_out: { low: 'S2', high: 'S1', role: 'flat', deep: false, danger: 'the corner over the hitch', onSet: true },
-  // Coached keys the compiler had only derived from geometry, made explicit so a route timing change cannot remove them
-  // (with ROUTE_SHAPE the dig is ready on the first hitch and the compiler's geometry no longer picks a key here).
+  // PLAN_KEYS_3: coached keys the compiler had only derived from geometry, made explicit so a route-timing change cannot
+  // remove them (with ROUTE_SHAPE the dig is ready on the first hitch and the compiler's geometry no longer picks one).
   // Dagger: the deep safety, the seam (high) clearing for the dig (low): "confirm that the deep safety has been
   // occupied" (Weekly Spiral, Dagger Concept; FirstDown PlayBook, Dagger reads); the compiler's own key on develop.
   dagger: { low: 'S1', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the dig' },
@@ -122,7 +127,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -138,7 +143,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      const k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
+      const k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
