@@ -45,7 +45,10 @@ async function run(flag: string, seed: number) {
   // the QB. Seed 2: the RT works inside, DE_S comes free outside at 1.5 s, and he chases him at about -5 yd/s through
   // the floor in both engines (off he catches him at 2.75 s, 0.02 yd short of the floor; with set A on he does not).
   const repEnded = new Set<any>();
-  const chasing = (tk: any) => sim.defense.some((r: any) => Math.abs(r.pos.y - sim.ballY) > Math.abs(tk.pos.y - sim.ballY)
+  // Engine-61: the free rusher who beat him outside can then cut under him toward the QB (seed 2, DE_S 2 yd deeper
+  // than the RT, inside his width from 2.90 s); the chase goes on. So a free rusher already past him (deeper by more
+  // than 0.5 yd) within 4 yd is a chase whatever his width.
+  const chasing = (tk: any) => sim.defense.some((r: any) => (Math.abs(r.pos.y - sim.ballY) > Math.abs(tk.pos.y - sim.ballY) || r.pos.x < tk.pos.x - 0.5)
     && r.pos.x < tk.pos.x + 1.0 && Math.hypot(r.pos.x - tk.pos.x, r.pos.y - tk.pos.y) < 4 && !sim.engagements.some((e: any) => e.defender === r));
   while (sim.phase === 'live' && sim.t < 4 && sim.throwAt < 0 && sim.carrier === sim.qb) {
     const before = tackles.map((tk: any) => tk.pos.x);              // the spot this tick's request is made from

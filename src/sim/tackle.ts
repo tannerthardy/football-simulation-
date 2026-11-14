@@ -22,6 +22,7 @@
  * a quarterback in the grasp. Whiffed lunges and dives commit the body: a
  * defender who leaves his base to reach pays for it physically.
  */
+import { TRACK_TACKLE } from './behaviors/common.js';
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
@@ -151,6 +152,11 @@ export function tryTackles(sim: PlaySim): void {
   for (const d of sim.opponents(c)) {
     if (d.isDown(t) || t < d.nextTackleAt) continue;
     if (sim.bond && sim.bond.tacklers.includes(d)) continue;
+    const pic = HONEST_TACKLE ? sim.see(d, c) : null;
+    if (pic && pic.carrying === false) continue;
+    // His read of the carrier's motion relative to him (true geometry when off).
+    const cp = pic ? pic.pos : c.pos, cv = pic ? pic.vel : c.vel;
+    const rx = cp.x - d.pos.x, ry = cp.y - d.pos.y, rd = Math.hypot(rx, ry) || 1;
     const dx = c.pos.x - d.pos.x;
     const dy = c.pos.y - d.pos.y;
     const dd = Math.hypot(dx, dy);
@@ -174,7 +180,7 @@ export function tryTackles(sim: PlaySim): void {
       // the best shot the visible relative trajectory offers (a runner
       // passing or pulling away). While he is still closing on a better
       // shot he keeps his feet running; an assist takes whatever it gets.
-      const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
+      const closing = -((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
       // A crossing hip can already be passing without rapidly separating.
       // Outside standing reach, retain the ordinary escape exception or
       // require acquired evidence that this is the last attainable reach.
@@ -193,7 +199,8 @@ export function tryTackles(sim: PlaySim): void {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
         const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
-        const seen = sim.see(d, c, look);
+        // TRACK_TACKLE (step 1a'): the carrier in his tackle window is tracked.
+        const seen = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c, look);
         // tryTackles follows physics. Perception was sampled at tick start;
         // dead-reckon only its stale velocity to this body-state boundary.
         const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
@@ -225,8 +232,8 @@ export function tryTackles(sim: PlaySim): void {
     // Escaping carrier just out of reach: lay out for his legs. The dive is a
     // real fall; whether he trips the carrier is the hold and the physics.
     const dive = range + 0.3;
-    const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
-    const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
+    const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
+    const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
@@ -285,6 +292,13 @@ const POCKET_REACH = process.env.POCKET_REACH !== '0';
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
  * runner's seen velocity says) promised a shot 0.3 s away forever, and he never took the one he had. */
 const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
+/** HONEST_TACKLE (experimental, off; HONEST_TACKLE=1 turns it on): the tackler's
+ * decisions come from his picture of the carrier, not the true state. He reaches
+ * only for a body his picture does not show without the ball (the carrier he has
+ * not yet seen take a handoff is not his target until he sees it), and his
+ * closing, separating and behind reads for the last reach and the dive use the
+ * carrier's seen position and velocity. Reach, grip and contact stay physical. */
+const HONEST_TACKLE = process.env.HONEST_TACKLE !== '0';
 /** Whether the forecast is worth waiting for: a better shot by a margin and, with WAIT_REACHED, one it reaches inside
  * its lookahead. A best point at the horizon's edge is a slow chase still closing (or a runner faster than his seen,
  * stale velocity): the better shot keeps receding, so he takes the reach he has. */
@@ -346,7 +360,7 @@ export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, eng
   const body = c.profile.radius + d.profile.radius;
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   const w = Math.max(0.08, window * clamp((dd - body) / Math.max(0.1, limit - body), 0, 1));
-  const seenC = sim.see(d, c);
+  const seenC = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c);
   const aim = { x: seenC.pos.x + seenC.vel.x * w, y: seenC.pos.y + seenC.vel.y * w };
   const coast = { x: d.pos.x + d.vel.x * w, y: d.pos.y + d.vel.y * w };
   const redirect = 0.5 * d.profile.lateral * (engaged ? 0.3 : 1) * w * w;
