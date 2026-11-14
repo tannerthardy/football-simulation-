@@ -2193,23 +2193,25 @@ function playsFlight(a: Agent, sim: PlaySim, man: Agent | null): boolean {
 }
 /** Bit 256: his look decision for this flight (one judgment of his phase, one draw of his discipline), kept for film
  * and the witness: behind / side as he judged them, in phase or not, and whether he looks. */
-const manLookChoice = new WeakMap<Agent, { flight: unknown; behind: number; side: number; inPhase: boolean; looks: boolean; at: number }>();
+const manLookChoice = new WeakMap<Agent, { key: number | undefined; behind: number; side: number; inPhase: boolean; looks: boolean; at: number }>();
 export function manLookOf(a: Agent): { behind: number; side: number; inPhase: boolean; looks: boolean; at: number } | undefined {
   return manLookChoice.get(a);
 }
-function manLooks(a: Agent, sim: PlaySim, man: Agent): boolean {
-  const flight = sim.ball.kind === 'air' ? sim.ball.flight : null;
+function manLooks(a: Agent, sim: PlaySim, man: Agent, key: number | undefined): boolean {
+  // One choice per belief (his release belief's time, as the shoulder pick keys), not per true flight.
   const prev = manLookChoice.get(a);
-  if (prev && prev.flight === flight) return prev.looks;
-  // His picture of the man: how far behind him along the man's running line, and how far off it.
+  if (prev && prev.key === key) return prev.looks;
+  // His picture of the man: how far behind him along the man's running line, and how far off it. With no heading in
+  // his picture (the man standing, no facing seen) he cannot judge "behind" this tick and does not decide yet.
   const s = sim.see(a, man), sp = Math.hypot(s.vel.x, s.vel.y);
-  const h = sp > 1 ? Math.atan2(s.vel.y, s.vel.x) : (s.facing ?? man.facing);
+  if (sp <= 1 && s.facing === undefined) return false;
+  const h = sp > 1 ? Math.atan2(s.vel.y, s.vel.x) : s.facing!;
   const dx = a.pos.x - s.pos.x, dy = a.pos.y - s.pos.y, ux = Math.cos(h), uy = Math.sin(h);
   const dice = sim.dice('man-look', a);
   const behind = -(dx * ux + dy * uy) + dice.normal(0, phaseJudgeSd(a)), side = Math.abs(-dx * uy + dy * ux);
   const inPhase = behind <= PHASE_BEHIND && side <= PHASE_SIDE;
   const looks = inPhase || dice.chance(lookAnyway(a));
-  manLookChoice.set(a, { flight, behind, side, inPhase, looks, at: sim.t });
+  manLookChoice.set(a, { key, behind, side, inPhase, looks, at: sim.t });
   if (looks) a.tags.add(inPhase ? 'man-look' : 'man-look-trailing');
   return looks;
 }
@@ -2240,11 +2242,10 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   const rb = releaseBelief(sim, a);
   // BALL_EST (with bit 128): a ball seen once is not yet a flight he can play: with fewer than two samples his own
   // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
-  const noFlight = rb.ballAt !== undefined && estimatesFor(a) && sim.ball.kind === 'air' && !hasObservedFlight(a)
-    && !sim.ballEstimates.estimate(a, sim).length;
+  const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates.estimate(a, sim).length;
   if (rb.ballAt === undefined || noFlight) {
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
-    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && sim.ball.kind === 'air' && manLooks(a, sim, man)) return manLook(a, sim, fallback());
+    if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');
     if (!continueCoverage) return fallback();
     // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he

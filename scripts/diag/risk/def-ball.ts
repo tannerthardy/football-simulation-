@@ -12,7 +12,7 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 import { catchSpot } from '../../../src/sim/behaviors/receiver.js';
 import { manLookOf } from '../../../src/sim/behaviors/defense.js';
 const seed = Number(process.argv[2] ?? 101), games = Number(process.argv[3] ?? 16);
-const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, rows: any[] = [];
+const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, rows: any[] = [], mrows: any[] = [];
 P.tick = function () {
   const r = t0.call(this);
   if (this.offCall?.kind !== 'pass' || this.offCall?.pass?.family === 'screen') return r;
@@ -21,6 +21,7 @@ P.tick = function () {
     this.__db = { T, rel: this.t, best: Infinity, tArr: this.t, man: !!this.defCall?.coverage?.man, d0: new Map(), first: new Map(), arr: null as any };
     for (const d of this.defense) this.__db.d0.set(d, Math.hypot(d.pos.x - T.pos.x, d.pos.y - T.pos.y));
     const sp = Math.hypot(T.vel.x, T.vel.y), h = Math.atan2(T.vel.y, T.vel.x), ux = Math.cos(h), uy = Math.sin(h);
+    this.__db.M = this.defense.find((d: any) => { const b = d.behavior, m = b?.constructor?.name === 'ManCoverage' ? b : b?.sub?.constructor?.name === 'ManCoverage' ? b.sub : null; return m && m.target === T; }) ?? null;
     this.__db.ph = new Map();
     for (const d of this.defense) { const dx = d.pos.x - T.pos.x, dy = d.pos.y - T.pos.y; this.__db.ph.set(d, sp > 2 ? { behind: -(dx * ux + dy * uy), side: Math.abs(-dx * uy + dy * ux) } : null); }
   }
@@ -35,6 +36,8 @@ P.tick = function () {
     }
     if (dh < S.best) {
       S.best = dh; S.tArr = this.t;
+      if (S.M) { const M = S.M, ux = M.pos.x - T.pos.x, uy = M.pos.y - T.pos.y, n = Math.hypot(ux, uy) || 1;
+        S.marr = { dist: n, toward: ((b.x - T.pos.x) * ux + (b.y - T.pos.y) * uy) / n, ballOff: dh, depthOver: (M.pos.x - T.pos.x) * this.attackDir('O') }; }
       let D: any = null, nd = Infinity;
       for (const d of this.defense) { const x = Math.hypot(d.pos.x - T.pos.x, d.pos.y - T.pos.y); if (x < nd) { nd = x; D = d; } }
       const est = this.ballEstimates?.peek ? this.ballEstimates.peek(D, this) : [];
@@ -51,6 +54,8 @@ P.buildResult = function (...x: any[]) {
     const pbu = (this.events ?? []).some((e: any) => e.type === 'pbu' && this.defense.some((d: any) => d.idx === e.a));
     const ph = S.ph.get(D), cls = !ph ? null : ph.side > 1.5 ? 'wide' : ph.behind <= 1.0 ? 'in phase' : ph.behind <= 2.0 ? 'trail 1-2' : 'trail 2+';
     const ml = manLookOf(D);
+    const mp = S.M ? S.ph.get(S.M) : null, mcls = !mp ? null : mp.side > 1.5 ? 'wide' : mp.behind <= 1.0 ? 'in phase' : mp.behind <= 2.0 ? 'trail 1-2' : 'trail 2+';
+    if (S.M && S.marr) mrows.push({ cls: mcls, flight, ...S.marr, cmp: !!this.stats?.completed, pbu: (this.events ?? []).some((e: any) => e.type === 'pbu' && e.a === S.M.idx), int: this.stats?.interceptedBy === S.M.player.id });
     rows.push({ cls, look: ml && ml.at >= S.rel ? (ml.looks ? (ml.inPhase ? 'look' : 'look-trailing') : 'no-look') : 'none', flight, man: S.man, nd: S.arr.nd, err: S.arr.err, none: S.arr.none, first: S.first.get(D) ?? null,
       close: ((S.d0.get(D) ?? S.arr.nd) - S.arr.nd) / Math.max(0.1, flight), cmp: !!this.stats?.completed, int: !!this.stats?.interceptedBy, pbu });
   }
@@ -79,3 +84,12 @@ for (const c of ['in phase', 'trail 1-2', 'trail 2+', 'wide']) for (const [lo, h
   console.log(`man ${c.padEnd(9)} flight ${lo}-${hi}: n ${String(R.length).padStart(4)} | no estimate ${pct(R.map((r) => r.none))} | complete ${pct(R.map((r) => r.cmp))} PBU ${pct(R.map((r) => r.pbu))} INT ${pct(R.map((r) => r.int))} contested ${pct(R.map((r) => r.nd <= 1))} | nearest ${med(R.map((r) => r.nd))} | look ${Object.entries(L).map(([k, v]) => `${k} ${Math.round(100 * v / R.length)}%`).join(' ')}`);
 }
 console.log(`all: complete ${pct(rows.map((r) => r.cmp))} | INT ${pct(rows.map((r) => r.int))} | PBU ${pct(rows.map((r) => r.pbu))}`);
+
+console.log(`matched man defender (his ManCoverage target is the receiver at the release): n ${mrows.length}`);
+for (const c of ['in phase', 'trail 1-2', 'trail 2+', 'wide']) {
+  const R = mrows.filter((r) => r.cls === c);
+  if (R.length < 8) continue;
+  console.log(`  ${c.padEnd(9)} n ${String(R.length).padStart(4)} | complete ${pct(R.map((r) => r.cmp))} PBU ${pct(R.map((r) => r.pbu))} INT ${pct(R.map((r) => r.int))} contested ${pct(R.map((r) => r.dist <= 1))} | his dist at arrival ${med(R.map((r) => r.dist))} | ball toward him ${med(R.map((r) => r.toward))} yd (complete ${med(R.filter((r) => r.cmp).map((r) => r.toward))}, not ${med(R.filter((r) => !r.cmp).map((r) => r.toward))}) | ball off receiver ${med(R.map((r) => r.ballOff))} | defender over him ${med(R.map((r) => r.depthOver))}`);
+  const C = R.filter((r) => r.dist <= 1);
+  if (C.length >= 8) console.log(`     contested (<= 1 yd): n ${C.length} complete ${pct(C.map((r) => r.cmp))} PBU ${pct(C.map((r) => r.pbu))} | ball toward him ${med(C.map((r) => r.toward))}`);
+}

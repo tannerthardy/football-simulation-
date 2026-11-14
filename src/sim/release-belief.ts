@@ -59,7 +59,7 @@ export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
   // BALL_EST (this player's own estimate): the first ball he sampled (through whichever head he has) is a ball cue;
   // with bit 32 it is the only one (one perception: the cone above is skipped), without it it joins the cone's. It never
   // undoes an arm cue.
-  if (estimatesFor(a) && sim.ball.kind === 'air') {
+  if (estimatesFor(a)) {
     const at = sim.ballEstimates.firstSeenAt(a);
     if (at !== undefined) {
       b.ballAt = b.ballAt === undefined ? at : Math.min(b.ballAt, at);
