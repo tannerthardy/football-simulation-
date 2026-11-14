@@ -117,14 +117,37 @@ own consumers follow.
 
 The fake is something a player *does*, with skill and cost, not a label:
 
-- **QB at the mesh** (qb.ts PA branch, handoff branch): presentation quality from his ball-handling / play-action
-  rating and how long he rides the mesh; his eyes are off the defense for that time (existing PA cost; keep it) and
-  his drop starts later.
-- **Back carrying out the fake**: sets `carryPosture: 'tucked'` and runs his track; the better his effort/rating,
-  the more he looks like a carrier; it costs him his protection or route timing.
-- **QB carrying out after a handoff** (`pretendCarry`): the same, with his own posture and path.
-- **Real carrier**: on a give, the back's posture is tucked anyway; on a keep the QB hides the ball (posture and
-  arm), which costs him throwing readiness for that time.
+- **QB at the mesh** (QB lane's review; the QB lane writes it, behind this build's flag so the fake's benefit and
+  its cost land together):
+  - *Eyes.* Correction to the first draft: there is no eye cost today. `gazePoint()` has no fake branch, so through
+    the ride his gaze stays on the middle-of-field key and he pays only time (his drop waits; body facing to the
+    sideline, and facing is not gaze). The build adds it: during the ride his gaze goes to the mesh (the back's belly),
+    his head with it under QB_BODY_SEEN, and his picture of the defense ages.
+  - *Rating.* No play-action rating is added. `release` (hand quickness: how soon after the pull the ball is visible
+    in his hand, how cleanly it leaves the back's pocket) sets what the exchange cue shows, `consistency` its
+    rep-to-rep spread. A rating never sets anyone's belief.
+  - *Ride time* is his decision (today a fixed 0.7 s, `fakeUntil`; BLITZ_SKILL, off, already shortens it by the
+    rusher he believes is free). The exchange cue's ambiguity grows with the ride and with how far the ball goes into
+    the back's pocket; he pays the eyes and a later drop for every tick. The QB lane supplies the NFL ride-time row
+    (`scripts/diag/eyes/nfl_pa_fake_depth.py`) before calibration.
+  - `sim.presentHandoffFake(a, rb)`, called every tick of the ride, stays the single presentation call.
+- **Carry posture** (`carryPosture`, one writer): the controller that owns the body writes its posture every tick it
+  holds or presents the ball and clears it to `null` otherwise; nobody writes another player's posture; perception
+  records it and nothing reads the field directly. Values (with the arm already shown by QB_BODY_SEEN):
+  - pocket: `'up'` from the secured snap;
+  - during the ride: `null` on both bodies (not shown), so the exchange cue decides, not posture;
+  - after the ride: a dropping QB shows `'up'` (a clean ball at his chest gives the fake away to anyone who sees his
+    front); a QB hiding it on a keep or boot shows `'tucked'` with his back or hip to the defense; after a real give,
+    `pretendCarry` shows `'tucked'` on him; the faking back shows `'tucked'` on his track; a real carrier is
+    `'tucked'` (carrier.ts keeps it).
+  - *Cost of hiding it:* from `'tucked'` he cannot start a throwing motion until the ball is back up in both hands
+    (the re-raise in the QB lane's out-of-pocket spec, about 0.2 s until measured on NFL boots). A hidden ball buys
+    belief and costs throwing readiness; showing it early is ready to throw and tells everyone. No extra rule here.
+    The first user is the scramble (tuck to run, re-raise to throw), which `qbRunning` already reads.
+- **The pump is not in this store** (QB lane): the ball stays visible in his hand, which is decisive. A pump fakes the
+  throw, so it belongs with the throw read (`sawThrow`, the arm through QB_BODY_SEEN). Today's pump is an aborted
+  throw (`pullDown`), not a decision to deceive; a deliberate pump fake is on the QB lane's list.
+- **The faking back**: runs his track `'tucked'`; the cost is his protection or route timing.
 
 Presentation sets what each cue *shows* (e.g. posture tucked on both bodies), never the observer's belief directly.
 
@@ -146,6 +169,7 @@ A defender who believes a body has the ball pursues and tackles it with the ordi
   hits). The officials' judgment keys the same presented cues, not the true holder. Article numbers are to be
   checked against the rule text before they go into comments;
 - the give side: a defender who believes the QB kept it and plays him at the mesh is in the box: legal, same predicate;
+- the QB after a give is the case that needs the roughing answer before `tryTackles` on a believed holder lands (QB lane asked to be on that thread);
 - cost: the defender has spent himself (down, engaged, out of the play), plus any foul he commits;
 - evidence: the tackled body comes up empty; the tackler and those who see it update.
 
@@ -185,5 +209,5 @@ Two attempts each, after the honesty batch lands. Occlusion is SEE_SIGHT's, not 
 - **Coverage:** catch-readiness and possession reads on your side; BALL_EST interplay (a thrown ball is the
   decisive cue that the QB no longer has it).
 - **Rules + Coaching:** the non-carrier contact outcome and its legality; seen-contact (#693) as the contact cue.
-- **QB lane:** presentation at the mesh (rating, ride time, eyes and drop cost); `carryPosture` and arm/hands on a
-  keep; the pump as a related case (QB_BODY_SEEN already shows the arm).
+- **QB lane:** reviewed (presentation, posture writer and values, the pump kept out); writes the gaze cost and
+  posture in qb.ts behind this build's flag.
