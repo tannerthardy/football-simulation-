@@ -1,0 +1,624 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 11fa06a3..d1c87563 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -258,6 +258,9 @@
+     "RUSH_ONE_HAND": "0",
+     "HAND_SITE": "0",
+     "ENGAGE_FELT": "0",
++    "ENGAGE_TRUNK": "0",
++    "CHEST_SHOULDERS": "0",
++    "EXPORT_SHOULDERS": "0",
+     "PUNCH_STRIKE": "0",
+     "ANCHOR_BASE": "0",
+     "RUSH_ARM_BALANCE": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 427be75b..96e657eb 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -200,6 +200,9 @@
+     "RUSH_ONE_HAND": "off",
+     "HAND_SITE": "off",
+     "ENGAGE_FELT": "on",
++    "ENGAGE_TRUNK": "off",
++    "CHEST_SHOULDERS": "off",
++    "EXPORT_SHOULDERS": "off",
+     "PUNCH_STRIKE": "on",
+     "ANCHOR_BASE": "on",
+     "RUSH_ARM_BALANCE": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 8e5132a8..890ad74a 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 378 flags read from the environment in `src` (recounted 2026-11-14 at engine-66): 286 are on unless set to `0`, 80 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 381 flags read from the environment in `src` (recounted 2026-11-14 at engine-66, plus `ENGAGE_TRUNK`, `CHEST_SHOULDERS` and `EXPORT_SHOULDERS`): 286 are on unless set to `0`, 83 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -276,6 +276,9 @@ There are 378 flags read from the environment in `src` (recounted 2026-11-14 at
+ | `TACKLE_SET` | off | experimental (edge rush: tackle set, 2026-11-12; attempt 2: depth and width) | protection | `src/sim/engagement.ts` (`stepPassRep`, `tackleFloor`), `src/sim/behaviors/blocking.ts` (PASS_KICK edge set), `src/sim/called-drop.ts` | a tackle sets against an edge rusher to a spot: no deeper than a body width (1.0 yd) short of the called drop's launch point, and (attempt 2) no wider than a set line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd), keeping the rusher's inside half and giving him the long way round (the call, not the QB's live spot), asks for no more depth than he can brake off before it (the movement braking law) and none at it; the mirror across the rusher's line to the QB, mostly a retreat once the rusher is wide and deep, keeps the depth. No strength or anchor capacity added. edge-probe (seeds 101-104): at 3.0 s requested x -2.01 -> 0.00, achieved -2.26 -> -1.48 yd/s; tackle depth -7.97 -> -7.36, tackle minus QB +0.15 -> +0.65 (NFL about +1.0), deeper than the QB 48 -> 32%. Engaged tackles asking to hold are driven back 2.3 yd/s at 2.5 s (95% faster than 1 yd/s) and 1.15 at 3.0 s by a rusher 0.2-0.3 yd in front still driving through him (lateral achieved about 0). 2 x 16 read (seeds 201/301, off -> on): width at 3.0 s +0.9 -> -0.4 (NFL -0.6); depth -8.2 -> -7.9 (NFL -6.8); at the win past outside 9-12 -> 17-20% (NFL 26); edge win 11-15 -> 15-18% (NFL 13); sacks pooled 5.8 -> 6.9% (+-0.5; NFL 6.7), pressured 35 -> 40% (NFL 33). docs/reviews/2026-11-12-tackle-set.md |
+ | `VERTICAL_SET` | on | promoted 2026-11-14 (engine-65; `=0` restores); was experimental (edge corner, 2026-11-14) | protection | `src/sim/behaviors/blocking.ts` (PASS_KICK edge set) | the tackle's kick against an edge rusher gives ground vertically and keeps an inside-out relationship: no wider than TACKLE_SET's set line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd), and his lateral lead is only the rusher's inward motion (he mirrors the inside counter), never his outward run. TACKLE_SET's depth floor is not part of it. Off, the kick copies the rusher's lateral velocity: at first contact NFL tackles retreat 2.5-3.0 yd/s with outward speed about 0 (wide / very wide), ours +0.25..+0.75 outward (p75 +1.25..+1.5), meeting the very wide rusher at 1.3 s (NFL 1.5 s) with 27-32% wide landings (NFL 64%). Evidence: docs/reviews/2026-11-14-vertical-set.md. |
+ | `ENGAGE_FELT` | on | promoted 2026-11-14 (engine-66; `=0` restores); was honesty (information, 2026-11-14) | perception / protection / run blocking | `src/sim/engagement.ts` (`feltMan`; `stepPassRep`, `rushIntent`, `stepRunRep`, `helperIntents`, `prepareClimberFeet`) | an engaged man's requests and decisions read the man he is engaged with as he has him: by touch at the hands' delay (0.06 s, punch()'s) while either man's hands carry load, by sight (0.12-0.24 s by his read) when not; the hand-over is continuous (from the last loaded tick the picture ages toward sight over his reaction time, never stepping back in time). Covered: both men's facing (the pass set, the ride, the run drive, the run defender, the helpers), the blocker's ride trigger (the World still decides past and out of reach), lane shift and run seal offsets, gap, drive pace and leaving test; the rusher's corner, edge, stall and cleared aims off the blocker's body and his RUSH_INTENT leverage and ground read; the run defender's touch reads (local blocker, shed route, reach speed, race-over, shoulder, TOUCH_READ); a climber's flow-side test. Physics (joint and strike geometry, World reach and contact, refit timing) and the rep's outcome geometry stay true. Off, all of these read the man's true, undelayed position and velocity. Evidence: docs/reviews/2026-11-14-engage-felt.md. |
++| `ENGAGE_TRUNK` | off | experimental (the yaw note's step 1, 2026-11-14; requires `TRUNK_TWIST=1` and `ENGAGE_FELT=1`) | protection / run blocking | `src/sim/engagement.ts` (`stepPassRep`, `stepRunRep`, `chestOf`) | an engaged man's hips and shoulders are two requests: the hips are his set and ride, square to what he protects (a pass setter: from the called launch point through him; a run blocker: his track, REACH_RACE's open hips; a gap-holding run defender: square to the line of scrimmage); the shoulders (`look`) are on the man as he has him. His chest trails a man who moves by the picture's delay and each segment's own bound (the yaw motor, TRUNK_RATE). Readers of his front read the shoulders (the hand site's bearing, the ride retention, the run block's lost-behind-the-shoulders test, the run hands' sides). The World's chest segments still read the hips (attempt 1). Off, one facing at the man: NFL engaged tackles' facing follows the set frame 0.27 and the rusher 0.61, ours 0.01 / 0.80, and their chest trails the rusher by a signed -6 deg (engaged-yaw.py; Tools' signed angle). Coaching and evidence: docs/reviews/2026-11-14-pair-contact-design.md. |
++| `CHEST_SHOULDERS` | off | experimental (2026-11-14; requires `TRUNK_TWIST=1`; lives with `ENGAGE_TRUNK`) | physics | `src/physics/world.ts` (`chestHalf`, `chestPoints`, `capsuleGeom`) | a torso's chest segment (the hands' chest points, TORSO_CAPSULE's shoulder line) lies across his shoulders (hips plus the trunk twist) instead of his hips; an untwisted body is unchanged to the digit (test/chest-shoulders.test.ts). Off, the segment lies across the hips whatever the trunk does: on claude/trunk-stage1 `shouldersOf` reached only the report fields, so a blocker whose shoulders were on the man met him with his hip line. Evidence: docs/reviews/2026-11-14-pair-contact-design.md. |
++| `EXPORT_SHOULDERS` | off | diagnostic (2026-11-14) | measurement | `src/sim/playsim.ts` (replay frames) | replay frames record each man's shoulders (`shouldersOf`) instead of his hips, so a facing export (`EXPORT_FACING=1`) compares the same body part as the NFL's shoulder-pad `o`. No behaviour reads the frames; identical to the hips with no trunk. |
+ | `EDGE_ARC` | off | experimental (edge rush: the rusher's arc, 2026-11-12; two attempts, not repaired: stopped for re-diagnosis) | pass rush | `src/sim/engagement.ts` (`stepPassRep` aim, `chooseMove`, `seenOverset`), `src/sim/behaviors/defense.ts` (`PassRusher`) | an edge rusher's landmark is outside his tackle's set -- the alignment he saw at the snap plus the 0.8 yd a kick takes, plus bodies + 0.45 yd (attempt 2; attempt 1 used the tackle's live shoulder) -- at the depth he sees the QB, free and in the rep; once deeper than the tackle's hips by 0.3 yd he turns for the QB; the inside counter (spin/swim weights) comes from the tackle he sees wider than his set by more than 0.45 yd within 1.5 yd in depth (attempt 1: level with or outside his body), not the blocker's velocity. Bend sets speed and cut. Read (seed 201, 8 games; off / TACKLE_SET / EDGE_ARC / both): states at 2.0 s not level / level / past / inside 61/27/6/6, 58/27/8/7, 37/41/15/7, 37/37/19/7 (NFL 31/30/23/15); at the win past / front / inside 13/50/37, 13/51/36, 6/58/36, 10/41/48 (NFL 26/27/47); tackle depth at 3.0 s -8.2/-7.5/-8.6/-7.3 (NFL -6.8), width +0.8/+0.9/+1.2/+1.6 (NFL -0.6); sacks 3.4/4.7/3.4/4.6% (NFL 6.7), time to pressure p50 2.6/2.6/2.5/2.6 s (NFL 2.7). Attempt 2 (EDGE_ARC / both): 2.0 s states 41/35/17/7, 43/32/17/8; at the win 8/56/37, 4/44/52; width at 3.0 s +0.9/+1.3; edge share of free at 2 yd 3/2% (NFL 23); sacks 5.2/4.4%. He gets around but does not win around: re-diagnose what happens after the turn with the tackle's hands still on. docs/reviews/2026-11-12-tackle-set.md |
+ | `OPEN_HANDS` | on | promoted 2026-11-13 (engine-52; `=0` restores); was experimental (hands: open, grip, hold; 2026-11-12) | physics | `src/physics/world.ts` (hands rows: `holdLim`, tangential `slipLim`), `src/sim/engagement.ts` (`gripFor`, `FRAME_PHI`; rep, pass-helper and run-helper hands), `src/sim/contact-holding.ts` (`holdingRestriction`, capture) | two hand states in the World: fingers on cloth (`HandJoint.grip`) keep the joint's push, hold and steer limits; open hands push and slide, with no tension and |T| <= HAND_MU * max(0, N), HAND_MU = 0.42 (a sourced constant: dynamic, natural dry skin on a cotton-polyester fabric at about 15 N, Gerhardt et al. 2008, J R Soc Interface 5:1317, PMC2607440; moist skin 0.53-0.61, wet fabric 0.91; no glove-on-jersey measurement found). The controller grips inside the man's frame (the holder on his front or side by the man's own facing, and |phi| < FRAME_PHI = 1); once the man has left it (on his back, or at/past the hip) the grip lapses after the holder's release delay (reaction time x (2 - discipline)) unless he has chosen to hang on (the existing tryHold choice), and a kept grip's drag as well as its pull is judged by the ordinary achieved-restraint detector (no auto-call). A press jam's hands stay open. Evidence (open-hands-share.mts, seeds 101-102, off): over-cap tangential force at mu 0.42 by the man's frame -- run: front 30%, side 5%, back 7% of all; by the rep's phi: run at/past the hip 16% of all (38% of run's); pass: front 44%, back/hip ~0%. Fixtures `test/open-hands.test.ts`: past the hip with no grip, drag 476 N -> 0 (6.08 -> 6.71 yd/s); a kept grip unchanged; open-handed drive block steer within mu*N; a gripped drive block identical to off; gripFor's frame and release delay. docs/reviews/2026-11-12-tackle-set.md |
+ | `OPEN_HANDS_BACK_ONLY` | off | diagnostic (with OPEN_HANDS, 2026-11-12) | physics | `src/sim/engagement.ts` (`gripFor`) | sensitivity cut for Integration's frame definition: the man leaves the frame only when the holder is on his back, not when he is at/past the hip (phi >= FRAME_PHI). Read on the run report beside OPEN_HANDS |
+diff --git a/scripts/diag/effective-mass/iz-lever.mts b/scripts/diag/effective-mass/iz-lever.mts
+new file mode 100644
+index 00000000..65c1f655
+--- /dev/null
++++ b/scripts/diag/effective-mass/iz-lever.mts
+@@ -0,0 +1,45 @@
++// HANDS_LEVER's inside-zone row (Integration, 2026-11-14; the fresh run set's IZ +0.73, SE 0.24, missed per run 0.133 ->
++// 0.242). A matched staged set: inside zone (iz_strong) from ace_12 against a base 4-3 Under and Over, both flips, the
++// same generated bodies and seeds in both arms (the dither panel's construction). Per play: yards; the first tick the
++// two arms diverge and the body that diverges (and the engagement it is in); per matched block (blocker slot x
++// defender slot): its duration, each man's net facing change over it, and how it ended.
++// usage: node --import tsx scripts/diag/effective-mass/iz-lever.mts [seeds] > out.json   (run once per arm: HANDS_LEVER=0/1)
++import { readFileSync } from 'node:fs';
++const stack = JSON.parse(readFileSync('config/reference-stack.json', 'utf8')).flags;
++for (const [k, v] of Object.entries(stack)) if (v === 'on' && process.env[k] === undefined) process.env[k] = '1';
++const { Rng } = await import('../../../src/core/rng.js');
++const { generateTeam, pickDefense, pickOffense } = await import('../../../src/league/team.js');
++const { RUN_BY_ID } = await import('../../../src/playbook/concepts.js');
++const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../../../src/playbook/defense.js');
++const { FORMATION_BY_ID } = await import('../../../src/playbook/formations.js');
++const { PlaySim } = await import('../../../src/sim/playsim.js');
++const seeds = Number(process.argv[2] ?? 30);
++const out: any[] = [];
++for (const team of [101, 202, 303]) {
++  const offense = generateTeam(new Rng(team), 'IZ O', 'IZO', { strength: .55 }), defense = generateTeam(new Rng(team + 1), 'IZ D', 'IZD', { strength: .55 });
++  for (const front of ['under', 'over']) for (let seed = 1; seed <= seeds; seed++) {
++    const formation = FORMATION_BY_ID.ace_12;
++    const sim: any = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
++      offCall: { formation, flip: seed % 2 === 0, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'iz' },
++      defCall: { personnel: 'base43', front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'spot', label: 'iz' },
++      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
++    const pos: number[][] = []; const reps = new Map<any, any>();
++    const tick0 = sim.tick.bind(sim);
++    sim.tick = () => {
++      tick0();
++      pos.push(sim.agents.flatMap((a: any) => [Math.round(a.pos.x * 1000) / 1000, Math.round(a.pos.y * 1000) / 1000]));
++      for (const e of sim.engagements) {
++        const k = `${e.blocker.slot}>${e.defender.slot}`;
++        const r = reps.get(e) ?? { k, t0: sim.t, fb0: e.blocker.body.facing, fd0: e.defender.body.facing };
++        r.t1 = sim.t; r.fb1 = e.blocker.body.facing; r.fd1 = e.defender.body.facing; reps.set(e, r);
++      }
++    };
++    const res = sim.run();
++    const turn = (a: number, b: number) => Math.round(Math.atan2(Math.sin(b - a), Math.cos(b - a)) * 180 / Math.PI);
++    const blocks = [...reps.values()].map((r) => ({ k: r.k, dur: Math.round((r.t1 - r.t0) * 100) / 100, tb: turn(r.fb0, r.fb1), td: turn(r.fd0, r.fd1) }));
++    const tackler = sim.events.filter((e: any) => e.type === 'tackle').map((e: any) => sim.agents[e.b ?? e.a]?.slot)[0] ?? null;
++    out.push({ id: `${team}/${front}/${seed}`, yards: res.yards, pos, slots: sim.agents.map((a: any) => a.slot), blocks, tackler,
++      missed: sim.stats?.missedTackles ?? null, broken: sim.stats?.brokenTackles ?? null });
++  }
++}
++process.stdout.write(JSON.stringify(out));
+diff --git a/scripts/diag/pass-operators/engaged-yaw.py b/scripts/diag/pass-operators/engaged-yaw.py
+new file mode 100644
+index 00000000..461547c6
+--- /dev/null
++++ b/scripts/diag/pass-operators/engaged-yaw.py
+@@ -0,0 +1,93 @@
++"""How an engaged tackle's facing moves against his rusher (Integration, 2026-11-14, the yaw diagnosis). Same code on NFL
++tracking ('o') and sim exports with EXPORT_FACING=1.
++
++usage: python3 -I scripts/diag/pass-operators/engaged-yaw.py <plays.jsonl.gz> [...]
++
++Pairing as edge-rush.py (the outermost OL and the widest DL/LB rushing outside him). While engaged (within 1.2 yd, ball
++in, from first contact for up to 1.5 s), per 0.1 s frame:
++  - the tackle's facing rate |d(facing)/dt| (deg/s), from a 0.2 s centred difference;
++  - the rate of the bearing from him to the rusher, |d(bearing)/dt| (deg/s);
++  - the lag: the rusher off his chest (deg), signed + toward the rusher's motion around him;
++  - how much of the bearing's swing his facing follows over 0.4 s windows (the slope of facing change on bearing change).
++  - the set frame: his facing against 'back to the QB' (the direction from the QB through him), how far the rusher is off
++    that line, and how much of a swing in that frame his facing follows (the slope on the QB-frame change), beside the
++    slope on the rusher's bearing.
++Limits: NFL 'o' is the shoulder-pad sensor (noisy, a few degrees); 0.1 s frames.
++"""
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++wrap = lambda a: (a + 180) % 360 - 180
++
++
++def pairs(p, raw):
++    OL = [o for o in p.who('O', 'OL') if p.pos(o, 0)[0] is not None]
++    if len(OL) < 5: return
++    by = raw['ball_y']
++    D = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] in ('DL', 'LB')]
++    for side in (-1, 1):
++        tk = max(OL, key=lambda o: side * (p.pos(o, 0)[1] - by)); ty0 = p.pos(tk, 0)[1]
++        cand = []
++        for d in D:
++            x0, y0 = p.pos(d, 0)
++            if x0 > 1.6: continue
++            w = side * (y0 - ty0)
++            if w < 0 or w > 4: continue
++            k1 = min(p.k(1.0), p.frames - 1)
++            if p.pos(d, k1)[0] is None or x0 - p.pos(d, k1)[0] < 1.0: continue
++            cand.append((w, d))
++        if cand: yield side, tk, max(cand)[1]
++
++
++for path in sys.argv[1:]:
++    rates, brates, lag, slopes = [], [], [], []
++    offset, roff, qslopes, fits = [], [], [], []
++    signed = []
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy') or not raw.get('o'): continue
++        p = Play(raw); o = raw['o']; ev = raw['events']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw if fw is not None else p.end), len(o) - 1)
++        for side, tk, d in pairs(p, raw):
++            k0 = next((k for k in range(1, kend + 1) if p.pos(d, k)[0] is not None and p.pos(tk, k)[0] is not None and p.dist(tk, d, k) <= 1.2), None)
++            if k0 is None: continue
++            F, B, Q = {}, {}, {}
++            qb = next(iter(p.who('O', 'QB')), None)
++            for k in range(k0, min(kend, k0 + 15) + 1):
++                if p.pos(d, k)[0] is None or p.pos(tk, k)[0] is None or o[k][tk] is None or p.dist(tk, d, k) > 1.2: break
++                (rx, ry), (tx, ty) = p.pos(d, k), p.pos(tk, k)
++                F[k] = o[k][tk]; B[k] = math.degrees(math.atan2(ry - ty, rx - tx))
++                if qb is not None and p.pos(qb, k)[0] is not None:
++                    qx, qy = p.pos(qb, k); Q[k] = math.degrees(math.atan2(ty - qy, tx - qx))
++            ks = sorted(F)
++            for k in ks:
++                if k - 1 in F and k + 1 in F:
++                    rates.append(abs(wrap(F[k + 1] - F[k - 1])) / 0.2); brates.append(abs(wrap(B[k + 1] - B[k - 1])) / 0.2)
++                    lag.append(abs(wrap(B[k] - F[k])))
++                    # signed: + when his chest points outside the rusher's centre (away from the ball's side), from 0.4 s
++                    # smoothed facing (the centred 5-frame mean of the unwrapped angle) against the bearing
++                    if all(j in F for j in range(k - 2, k + 3)):
++                        sm = F[k] + sum(wrap(F[j] - F[k]) for j in range(k - 2, k + 3)) / 5
++                        signed.append(wrap(sm - B[k]) * side)
++            for k in ks:
++                if k in Q:
++                    offset.append(abs(wrap(F[k] - Q[k]))); roff.append(abs(wrap(B[k] - Q[k])))
++                if k + 4 in F and k in Q and k + 4 in Q:
++                    dq, db = wrap(Q[k + 4] - Q[k]), wrap(B[k + 4] - B[k]); df = wrap(F[k + 4] - F[k])
++                    fits.append((df, dq, db))
++                    if abs(dq) >= 10: qslopes.append(df / dq)
++            for k in ks:
++                if k + 4 in F:
++                    db = wrap(B[k + 4] - B[k])
++                    if abs(db) >= 10: slopes.append(wrap(F[k + 4] - F[k]) / db)
++    print(f"== {os.path.basename(path)}: engaged tackle frames {len(rates)}")
++    print(f"   his facing rate p50/p90 {q(rates):.0f}/{q(rates, .9):.0f} deg/s | the bearing to the rusher's rate p50/p90 {q(brates):.0f}/{q(brates, .9):.0f} deg/s | rusher off his chest p50/p90 {q(lag):.0f}/{q(lag, .9):.0f} deg")
++    print(f"   signed off-chest (0.4 s smoothed, + = his chest outside the rusher's centre) p25/50/75 {q(signed, .25):+.1f}/{q(signed):+.1f}/{q(signed, .75):+.1f} deg (n {len(signed)})")
++    print(f"   set frame: his facing off 'back to the QB' p50/p90 {q(offset):.0f}/{q(offset, .9):.0f} deg | the rusher off that line p50/p90 {q(roff):.0f}/{q(roff, .9):.0f} deg | windows where the QB frame swings 10 deg or more (n {len(qslopes)}): his facing follows p25/50/75 {q(qslopes, .25):.2f}/{q(qslopes):.2f}/{q(qslopes, .75):.2f}")
++    if len(fits) > 10:
++        # least squares df = a*dq + b*db over all 0.4 s windows: which frame his facing moves with
++        sqq = sum(x[1] * x[1] for x in fits); sbb = sum(x[2] * x[2] for x in fits); sqb = sum(x[1] * x[2] for x in fits)
++        sfq = sum(x[0] * x[1] for x in fits); sfb = sum(x[0] * x[2] for x in fits); det = sqq * sbb - sqb * sqb
++        if abs(det) > 1e-9: print(f"   joint fit over {len(fits)} windows, facing change = {(sfq * sbb - sfb * sqb) / det:.2f} x QB-frame change + {(sfb * sqq - sfq * sqb) / det:.2f} x rusher-bearing change")
++    print(f"   over 0.4 s windows where the bearing swings 10 deg or more (n {len(slopes)}): his facing follows p25/50/75 {q(slopes, .25):.2f}/{q(slopes):.2f}/{q(slopes, .75):.2f} of the swing")
+diff --git a/scripts/diag/pass-operators/interior-orbit.py b/scripts/diag/pass-operators/interior-orbit.py
+new file mode 100644
+index 00000000..a4e4c940
+--- /dev/null
++++ b/scripts/diag/pass-operators/interior-orbit.py
+@@ -0,0 +1,55 @@
++"""How far an engaged interior pair rotates over a block (Integration / Flex, 2026-11-14, PRESS_SPRING's run gain: with one
++hands joint our interior pairs orbit 60-80 deg over a block, with two shared springs about 15). Same code on NFL tracking
++('o' = shoulder pads) and sim exports (EXPORT_FACING=1).
++
++usage: python3 -I scripts/diag/pass-operators/interior-orbit.py <plays.jsonl.gz> [...] [--kind run|pass]
++
++Pairs: each interior OL (the three middle linemen by alignment) and the nearest DL within 1.2 yd at his first such frame
++(from the snap + 0.2 s); engaged while they stay within 1.2 yd, up to 1.5 s, ending at the handoff + 1.5 s or the throw.
++NFL (BDB, out/mechanics/nfl-plays.jsonl.gz): runs orbit p25/50/75/90 25/51/87/126 deg (15,954 pairs); pass sets
++18/39/70/107 (23,385). A standing witness for any contact change (Integration, 2026-11-14).
++Per pair: the engagement's length, the net change of the bearing from the blocker to the defender (the pair's orbit), the
++net change of each man's facing, and the largest |orbit| reached.
++"""
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++wrap = lambda a: (a + 180) % 360 - 180
++args = [a for a in sys.argv[1:] if not a.startswith('--')]
++kind = 'run'
++if '--kind' in sys.argv: kind = sys.argv[sys.argv.index('--kind') + 1]
++for path in args:
++    if path in ('run', 'pass'): continue
++    L, orbit, fb, fd, maxo = [], [], [], [], []
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != kind or not raw.get('xy') or not raw.get('o'): continue
++        p = Play(raw); o = raw['o']
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        if len(OL) < 5: continue
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        kend = min(p.frames - 1, len(o) - 1)
++        for b in OL[1:4]:
++            k0 = None; d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.5)) + 1):
++                if p.pos(b, k)[0] is None: continue
++                c = [(p.dist(b, x, k), x) for x in DL if p.pos(x, k)[0] is not None]
++                c = [x for x in c if x[0] <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            def brg(k):
++                (bx, by), (dx, dy) = p.pos(b, k), p.pos(d, k); return math.degrees(math.atan2(dy - by, dx - bx))
++            ks = [k0]
++            for k in range(k0 + 1, min(kend, k0 + 15) + 1):
++                if p.pos(b, k)[0] is None or p.pos(d, k)[0] is None or o[k][b] is None or o[k][d] is None or p.dist(b, d, k) > 1.2: break
++                ks.append(k)
++            if len(ks) < 3 or o[k0][b] is None or o[k0][d] is None: continue
++            k1 = ks[-1]; acc = 0; mo = 0; prev = brg(k0)
++            for k in ks[1:]:
++                cur = brg(k); acc += wrap(cur - prev); prev = cur; mo = max(mo, abs(acc))
++            L.append((k1 - k0) * p.dt); orbit.append(abs(acc)); maxo.append(mo)
++            fb.append(abs(wrap(o[k1][b] - o[k0][b]))); fd.append(abs(wrap(o[k1][d] - o[k0][d])))
++    print(f"== {os.path.basename(path)} ({kind}): engaged interior pairs {len(L)} | engaged p50 {q(L):.1f} s")
++    print(f"   the pair's orbit (net bearing change) p25/50/75/90 {q(orbit, .25):.0f}/{q(orbit):.0f}/{q(orbit, .75):.0f}/{q(orbit, .9):.0f} deg | largest reached p50 {q(maxo):.0f}")
++    print(f"   net facing change: blocker p50/p90 {q(fb):.0f}/{q(fb, .9):.0f} deg, defender {q(fd):.0f}/{q(fd, .9):.0f} deg")
+diff --git a/scripts/diag/pass-operators/signed-off.py b/scripts/diag/pass-operators/signed-off.py
+new file mode 100644
+index 00000000..81d18729
+--- /dev/null
++++ b/scripts/diag/pass-operators/signed-off.py
+@@ -0,0 +1,54 @@
++"""Tools' signed off-chest angle (claude/route-speed-diag f6521776, scripts/diag/route-speed/signed_off.py), ported line for
++line to the exported play format so the same definition reads NFL plays (out/mechanics/nfl-plays.jsonl.gz) and sim exports
++(EXPORT_FACING=1, EXPORT_SHOULDERS=1 for the shoulders).
++
++usage: python3 -I scripts/diag/pass-operators/signed-off.py <plays.jsonl.gz> [...]
++
++Frames 0.8-3.4 s after the snap on pass plays; a tackle (NFL: the outermost OL each side, the export has no position T;
++sim: slot LT / RT) with speed <= 3 yd/s and a defender within 1.5 yd (the nearest is "the man"); the QB at least 20 deg off
++the tackle-to-man line. d = wrap(bearing(tackle -> man) - o); the QB side qside = wrap(bearing(tackle -> QB) - bearing(tackle
++-> man)); away = -d if qside > 0 else d. SIGN (Tools'): POSITIVE = his chest points toward the QB's side of the man's centre
++(the inside half); NEGATIVE = toward the man's outside half. The result is the same in compass or atan2 angles (d and qside
++both flip). Rows split by which side the QB is on, so a compass-constant bias (which flips between them) separates from a
++real offset (same sign in both).
++"""
++import sys, os, json, gzip, math, statistics as st, collections as C
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++wrap = lambda a: (a + 180) % 360 - 180
++for path in sys.argv[1:]:
++    res = C.defaultdict(list)
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy') or not raw.get('o'): continue
++        p = Play(raw); o = raw['o']; by = raw['ball_y']
++        OL = [i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None]
++        slots = [pl.get('slot') for pl in p.players]
++        if any(s in ('LT', 'RT') for s in slots): tackles = [i for i in OL if slots[i] in ('LT', 'RT')]
++        elif len(OL) >= 2: tackles = [min(OL, key=lambda i: p.pos(i, 0)[1]), max(OL, key=lambda i: p.pos(i, 0)[1])]
++        else: continue
++        qbs = p.who('O', 'QB')
++        if not qbs: continue
++        q = qbs[0]; D = p.who('D')
++        for k in range(min(p.k(0.8), p.frames - 1), min(p.k(3.4), p.frames - 1, len(o) - 1) + 1):
++            if p.pos(q, k)[0] is None: continue
++            qx, qy = p.pos(q, k)
++            for t in tackles:
++                if p.pos(t, k)[0] is None or o[k][t] is None or p.speed(t, k) > 3: continue
++                tx, ty = p.pos(t, k)
++                best = None
++                for j in D:
++                    if p.pos(j, k)[0] is None: continue
++                    dd = p.dist(t, j, k)
++                    if dd < 1.5 and (best is None or dd < best[0]): best = (dd, j)
++                if not best: continue
++                mx, my = p.pos(best[1], k)
++                brg = math.degrees(math.atan2(my - ty, mx - tx))
++                d = wrap(brg - o[k][t])
++                qside = wrap(math.degrees(math.atan2(qy - ty, qx - tx)) - brg)
++                if abs(qside) < 20: continue
++                away = -d if qside > 0 else d
++                res['QB on one side' if qside > 0 else 'QB on the other side'].append(away)
++    print(f"== {os.path.basename(path)}")
++    for lr, v in sorted(res.items()):
++        v = sorted(v); print(f"   {lr:22s} n {len(v):6d} signed (chest on the QB side of the man = +) median {v[len(v)//2]:+.1f} mean {st.mean(v):+.1f} p25/p75 {v[len(v)//4]:+.1f}/{v[3*len(v)//4]:+.1f}")
+diff --git a/scripts/mechanics/sim-export.ts b/scripts/mechanics/sim-export.ts
+index 7832620a..0936efd3 100644
+--- a/scripts/mechanics/sim-export.ts
++++ b/scripts/mechanics/sim-export.ts
+@@ -54,6 +54,10 @@ export function commonPlay(p: PlayLog, id: string) {
+   const xy: number[][] = [];
+   // bxy: the ball's (x, y) on the same grid and frame (nfl_bdb2025_ball.py writes the NFL's to a side file).
+   const bxy: number[][] = [];
++  // o (opt-in, EXPORT_FACING=1, so the default export is unchanged): each body's facing in degrees in the common
++  // frame, atan2 convention as the NFL operators read 'o' (0 = +x downfield); the earlier recorded frame, no blend.
++  const facingOn = process.env.EXPORT_FACING === '1';
++  const o: number[][] = [];
+   let j = 0;
+   for (let k = 0; k * 0.1 <= lastT + 1e-9; k++) {
+     const t = k * 0.1;
+@@ -67,6 +71,14 @@ export function commonPlay(p: PlayLog, id: string) {
+       row.push(r2(X(x)), r2(Y(y)));
+     }
+     xy.push(row);
++    if (facingOn) {
++      const fr = w < 0.5 ? a : b, orow: number[] = [];
++      for (let i = 0; i < n; i++) {
++        const deg = fr.agents[i * 3 + 2] * 180 / Math.PI + (dir > 0 ? 0 : 180);
++        orow.push(r2(((deg + 180) % 360 + 360) % 360 - 180));
++      }
++      o.push(orow);
++    }
+     bxy.push([r2(X(a.ball[0] + w * (b.ball[0] - a.ball[0]))), r2(Y(a.ball[1] + w * (b.ball[1] - a.ball[1])))]);
+   }
+   const ev = rp.events;
+@@ -124,7 +136,7 @@ export function commonPlay(p: PlayLog, id: string) {
+     id, source: 'sim', kind: p.kind, yards: r2(p.yards),
+     // slot: the play's job (FS, SS, NB, ...), not the roster position; operators choose deep defenders by it.
+     players: rp.players.map((a, i) => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER', slot: a.slot, route: p.routes?.[i] ?? null })),
+-    dt: 0.1, xy, bxy, ball_y: r2(Y(ball[1])), events, carrier,
++    dt: 0.1, xy, bxy, ...(facingOn ? { o } : {}), ball_y: r2(Y(ball[1])), events, carrier,
+     target: throwEv?.b ?? null,
+     receiver,
+     blocks: [...pairs.values()],
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 96955ab2..a3f60656 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -518,6 +518,18 @@ const GRASP_PATCH = process.env.GRASP_PATCH !== '0';
+  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
+  * scripts/diag/effective-mass/shape.py. */
+ const CHEST_HALF = 0.27 - 0.15;
++/** CHEST_SHOULDERS (experimental, off; CHEST_SHOULDERS=1, needs TRUNK_TWIST=1; lives with ENGAGE_TRUNK): a torso's chest
++ * segment (the hands' chest points, HANDS_LEVER's and PAIR_HANDS' lever arms, TORSO_CAPSULE's shoulder line) lies across
++ * where his chest points, his shoulders (hips plus the trunk twist), not across his hips. With no twist the two are the
++ * same number, so an untwisted body is unchanged. Off, the segment lies across the hips (the gait heading) whatever the
++ * trunk does: a blocker whose shoulders are on the man and hips on his set met the man with his hip line (Tools' and
++ * Integration's review, 2026-11-14: on claude/trunk-stage1 shouldersOf reached only the report fields). */
++export const CHEST_SHOULDERS = process.env.CHEST_SHOULDERS === '1';
++if (CHEST_SHOULDERS && !TRUNK_TWIST) throw new Error('CHEST_SHOULDERS=1 requires TRUNK_TWIST=1');
++/** The heading the chest segment lies across (CHEST_SHOULDERS: the shoulders; off: the facing). */
++const chestHeading = (b: Body): number => CHEST_SHOULDERS ? shouldersOf(b) : b.facing;
++/** The chest segment's half-vector (CHEST_HALF long, across the chest heading); exported for its law test. */
++export function chestHalf(b: Body): Vec2 { const f = chestHeading(b); return { x: -Math.sin(f) * CHEST_HALF, y: Math.cos(f) * CHEST_HALF }; }
+ /** Experimental (TORSO_CAPSULE=1, off): a torso is wider than it is deep. For
+  * the pairs the owner names (World.capsulePair; PlaySim: the ball carrier and
+  * a defender), the torso contact is between two capsules across each man's
+@@ -538,7 +550,8 @@ const TORSO_DEPTH = 0.15 / 0.27;
+ function capsuleGeom(a: Body, b: Body): { nx: number; ny: number; s: number; R: number; rax: number; ray: number; rbx: number; rby: number } {
+   const da = a.profile.radius * TORSO_DEPTH, db = b.profile.radius * TORSO_DEPTH;
+   const la = a.profile.radius - da, lb = b.profile.radius - db;
+-  const ux = -Math.sin(a.facing), uy = Math.cos(a.facing), vx = -Math.sin(b.facing), vy = Math.cos(b.facing);
++  const fa = chestHeading(a), fb = chestHeading(b);
++  const ux = -Math.sin(fa), uy = Math.cos(fa), vx = -Math.sin(fb), vy = Math.cos(fb);
+   const rx = b.pos.x - a.pos.x, ry = b.pos.y - a.pos.y;
+   // Closest points of a.pos + sa·u (|sa| <= la) and b.pos + tb·v (|tb| <= lb).
+   const uv = ux * vx + uy * vy, ur = ux * rx + uy * ry, vr = vx * rx + vy * ry, den = 1 - uv * uv;
+@@ -726,8 +739,8 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
+ /** HANDS_CHEST: the vector from a's shoulder line to b's at their closest
+  * points (segments of half-length CHEST_HALF across each man's facing). */
+ function chestPoints(a: Body, b: Body): Vec2 {
+-  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
+-  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
++  const { x: ux, y: uy } = chestHalf(a);
++  const { x: vx, y: vy } = chestHalf(b);
+   // Segments p(s) = a + s u, q(t) = b + t v, s, t in [-1, 1].
+   const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
+   const uu = ux * ux + uy * uy, vv = vx * vx + vy * vy, uv = ux * vx + uy * vy;
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 060795b5..43c69ddb 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -439,7 +439,8 @@ export class PassProtector implements Behavior {
+       const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
+       const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
+       // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
+-      const leadY = VERTICAL_SET ? out * Math.min(0, r.vel.y * out) : wide ? 0 : r.vel.y;
++      // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
++      const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
+       return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
+     }
+     // The cutoff is an interception, not a point on which to match the
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 54b55ec8..a10ddb58 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -36,7 +36,7 @@
+ import { KEY_REACT, keyScale } from './key-read.js';
+ import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+ import { G } from '../core/units.js';
+-import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
++import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity, shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
+ import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
+ import { gapY } from '../playbook/alignment.js';
+ import { CF_FLOW } from './counterfactual.js';
+@@ -509,8 +509,8 @@ const siteState = new WeakMap<HandJoint, { len: number }>();
+ const smooth01 = (x: number) => { const u = clamp(x, 0, 1); return u * u * (3 - 2 * u); };
+ /** The hand's place on the man, by bearing: 1 on the holder's chest frame, 0 abreast or behind. */
+ function siteWeight(holder: Agent, man: Agent): number {
+-  const beta = Math.abs(Math.atan2(Math.sin(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing),
+-    Math.cos(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing)));
++  const beta = Math.abs(Math.atan2(Math.sin(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - chestOf(holder)),
++    Math.cos(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - chestOf(holder))));
+   return 1 - smooth01((beta - SITE_FRONT) / (SITE_ABREAST - SITE_FRONT));
+ }
+ /** The press a hand can put on the man at his own bearing gamma (the holder's direction off his facing). */
+@@ -1452,6 +1452,22 @@ export const REP_SEEN = process.env.REP_SEEN !== '0';
+  * Physics (joint and strike geometry, the World's contact and reach) and the rep's outcome geometry (past and out of
+  * reach, behind his shoulders, the body no longer in the way) stay on the true bodies. */
+ export const ENGAGE_FELT = process.env.ENGAGE_FELT !== '0';
++/** ENGAGE_TRUNK (experimental, off; ENGAGE_TRUNK=1, needs TRUNK_TWIST=1 and ENGAGE_FELT=1; the yaw note's step 1,
++ * docs/reviews/2026-11-14-pair-contact-design.md): an engaged man's hips and shoulders are two requests. The hips are his
++ * set and ride, square to what he protects (a pass setter: the direction from the called launch point through him; a
++ * run blocker: his track, REACH_RACE's open hips as before; a gap-holding run defender: square to the line of
++ * scrimmage); the shoulders (`look`, TRUNK_TWIST's trunk within its range) are on the man as he has him (ENGAGE_FELT).
++ * His chest then trails a man who moves by the picture's delay and each segment's own bound (the yaw motor for the
++ * hips, TRUNK_RATE for the trunk), with no blend constant. Readers that compare his front with the line to the man read
++ * the shoulders: the hand site's bearing, the pass rep's ride retention, the run block's lost-behind-the-shoulders test
++ * and the run hands' sides. Off, each engaged man asks for one facing, at the man (the NFL tackle's facing follows the
++ * set frame 0.27 and the rusher 0.61, ours 0.01 / 0.80: engaged-yaw.py). The coaching: inside-out, half a man, punch the
++ * inside half; the run block's play-side number; the gap defender's stab and grab (sources in the note). */
++export const ENGAGE_TRUNK = process.env.ENGAGE_TRUNK === '1';
++if (ENGAGE_TRUNK && !(TRUNK_TWIST && ENGAGE_FELT)) throw new Error('ENGAGE_TRUNK=1 requires TRUNK_TWIST=1 and ENGAGE_FELT=1');
++/** Where a man's chest points for the readers that mean it (ENGAGE_TRUNK: the shoulders; off: the facing, as before). */
++const chestOf = (a: Agent): number => ENGAGE_TRUNK ? shouldersOf(a.body) : a.body.facing;
++const bearing = (from: Vec2, to: Vec2): number => Math.atan2(to.y - from.y, to.x - from.x);
+ type Felt = { pos: Vec2; vel: Vec2 };
+ /** Diagnostic hook (no behaviour): each feltMan call, with whether he had the man by touch. */
+ export const feltProbe: { on?: (self: Agent, man: Agent, touch: boolean, t: number, delay?: number) => void } = {};
+@@ -1737,7 +1753,7 @@ function canRidePassContact(e: Engagement, t: number): boolean {
+   if (t < e.moveUntil && e.moveOk && e.move !== 'bull' && e.move !== 'longarm') return false;
+   const dx = d.pos.x - b.pos.x, dy = d.pos.y - b.pos.y;
+   return dy * outside > 0 && Math.hypot(dx, dy) <= hands.extension
+-    && dx * Math.cos(b.body.facing) + dy * Math.sin(b.body.facing) >= 0;
++    && dx * Math.cos(chestOf(b)) + dy * Math.sin(chestOf(b)) >= 0;
+ }
+ 
+ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+@@ -1956,6 +1972,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     cutSkill: 0.85 + 0.3 * tb.feet,
+   };
+   if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
++  // ENGAGE_TRUNK: his hips square to what he protects, from where he is; his shoulders on the man as he has him.
++  if (ENGAGE_TRUNK) intents[b.idx] = { ...intents[b.idx], facing: bearing(protectPoint(sim), b.pos), look: bearing(b.pos, dK.pos) };
+   if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
+   e.lastReqX = intents[b.idx].vel.x;
+   if (PASS_RIDE) e.riding = riding;
+@@ -1969,6 +1987,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     else intents[b.idx] = { vel: { x: dK.vel.x + away.x * RIDE_PUSH, y: dK.vel.y + away.y * RIDE_PUSH },
+       facing: Math.atan2(dK.pos.y - b.pos.y, dK.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
+     if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
++    // ENGAGE_TRUNK: the ride's hips on his path (as asked above); his shoulders on the man.
++    if (ENGAGE_TRUNK) intents[b.idx] = { ...intents[b.idx], look: bearing(b.pos, dK.pos) };
+   }
+   helperIntents(sim, e, intents, axis);
+ }
+@@ -2210,7 +2230,7 @@ function runHandDrive(sim: PlaySim, e: Engagement): void {
+   if (Math.abs(vt) < 0.5) return;
+   // Which side of the blocker's chest the defender is on, and whether his
+   // relative motion takes him further to that side.
+-  const right = { x: Math.sin(b.facing), y: -Math.cos(b.facing) };
++  const right = { x: Math.sin(chestOf(b)), y: -Math.cos(chestOf(b)) };
+   const off = (d.pos.x - b.pos.x) * right.x + (d.pos.y - b.pos.y) * right.y;
+   const dTan = other === d ? vt : -vt;
+   const moving = dTan * (tx * right.x + ty * right.y);
+@@ -2218,7 +2238,7 @@ function runHandDrive(sim: PlaySim, e: Engagement): void {
+   // Only a man committed across the blocker: one driving straight through
+   // him is fought with the feet and chest, not helped past a shoulder.
+   // His own motion decides it, not the blocker's step.
+-  const along = d.vel.x * Math.cos(b.facing) + d.vel.y * Math.sin(b.facing);
++  const along = d.vel.x * Math.cos(chestOf(b)) + d.vel.y * Math.sin(chestOf(b));
+   if (Math.abs(along) > Math.abs(d.vel.x * right.x + d.vel.y * right.y)) return;
+   j.drive = Math.sign(vt) * Math.min(3, Math.abs(vt) + 1);
+ }
+@@ -2374,7 +2394,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   // He can still bring his chest back to the man within this step, at his
+   // own turn rate; only an angle beyond that is a lost block.
+   const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
+-  const off = Math.abs(Math.atan2(Math.sin(toD - b.facing), Math.cos(toD - b.facing)));
++  const off = Math.abs(Math.atan2(Math.sin(toD - chestOf(b)), Math.cos(toD - chestOf(b))));
+   const behind = LEVER_FACING ? Math.max(0, off - b.profile.turnRate * dt) / (Math.PI / 2) : Math.abs(e.phi);
+   runContactObservers.get(sim)?.(e, 'geometry', { axis, lat, drive: e.drive, phi: e.phi,
+     off, behind, support: b.body.support, facing: b.facing, toD, baseB: e.baseB, baseD: e.baseD });
+@@ -2641,6 +2661,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     posture: 0.85,
+     cutSkill: 0.8 + 0.3 * tb.feet,
+   };
++  // ENGAGE_TRUNK: his hips on his track (opened toward the play in the race), his shoulders on the man. The track is
++  // where his feet are asked to go (a zone step runs along the line, not up the drive axis), the drive axis when he is
++  // nearly still. (Attempt 1 as first built put the hips on the drive axis: an outside-zone blocker shuffled sideways at
++  // his shuffle speed and the run set lost 0.58 yd on OZ.)
++  if (ENGAGE_TRUNK) {
++    const v = intents[b.idx].vel, track = Math.hypot(v.x, v.y) > 1 ? Math.atan2(v.y, v.x) : Math.atan2(drive.y, drive.x);
++    intents[b.idx].facing = racingSide ? openToward(track, racingSide, REACH_RACE_OPEN) : track;
++    intents[b.idx].look = bearing(b.pos, dK.pos);
++  }
+   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
+     // `forward` is retained for older diagnostic readers. Component-mode
+     // normal work is the emitted command, not that legacy drive projection.
+@@ -2856,10 +2885,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     vel: workOff ?? cf ?? (read.stack ? { x: zoneRun ? -sim.attackDir(b.team) * (RACE_LEAN ? FLAT_PRESS_STEP : 1.5) : depth, y: lateralFlow } : legacy),
+     // Running the line he opens his hips halfway toward it, off square.
+     facing: zoneRun && !workOff && !cf ? (() => {
+-      const sq = Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
++      // ENGAGE_TRUNK: square is to the line of scrimmage (his hips), not to the blocker.
++      const sq = ENGAGE_TRUNK ? (sim.attackDir(b.team) > 0 ? Math.PI : 0) : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
+       const turn = ((run - sq + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+       return sq + Math.sign(turn) * Math.min(Math.abs(turn), ZONE_RUN_OPEN);
+-    })() : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x),
++    })() : ENGAGE_TRUNK && read.stack && !workOff && !cf ? (sim.attackDir(b.team) > 0 ? Math.PI : 0) : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x),
++    // ENGAGE_TRUNK: his shoulders on the blocker as he has him.
++    ...(ENGAGE_TRUNK ? { look: bearing(d.pos, bK.pos) } : {}),
+     push: 1,
+     posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
+     cutSkill: 0.8 + 0.4 * td.bend,
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 7d2a5a46..6a45940e 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -1,3 +1,4 @@
++import { shouldersOf } from '../physics/kinematics.js';
+ /**
+  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
+  *
+@@ -64,6 +65,10 @@ import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulR
+ 
+ /** ALIGN_HABIT (experimental, off): see alignDefense. */
+ const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
++/** EXPORT_SHOULDERS (diagnostic, off; EXPORT_SHOULDERS=1): replay frames record where each man's chest points
++ * (shouldersOf: hips plus the TRUNK_TWIST trunk) instead of his hips, so a facing export compares the same body part as
++ * the NFL's shoulder-pad 'o'. No behaviour reads the frames. */
++const EXPORT_SHOULDERS = process.env.EXPORT_SHOULDERS === '1';
+ /** PlaySetup.stagedThrow (test staging only). */
+ export interface StagedThrow { at: number; slot: string; aim?: { x: number; y: number; z: number }; T?: number }
+ 
+@@ -1920,7 +1925,7 @@ export class PlaySim {
+ 
+   private recordFrame(recordedIntents?: ReadonlyArray<Intent>): void {
+     const agents: number[] = [];
+-    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(a.body.facing));
++    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(EXPORT_SHOULDERS ? shouldersOf(a.body) : a.body.facing));
+     const b = this.ballPos();
+     const c = this.carrier;
+     // The first live tick also records t=0. Replace the staged snap frame
+diff --git a/test/chest-shoulders.test.ts b/test/chest-shoulders.test.ts
+new file mode 100644
+index 00000000..666513b9
+--- /dev/null
++++ b/test/chest-shoulders.test.ts
+@@ -0,0 +1,37 @@
++/** CHEST_SHOULDERS: a torso's chest segment lies across his shoulders (hips plus the TRUNK_TWIST trunk), so a twisted body's
++ * segment rotates by the twist and an untwisted body's is unchanged to the digit; off, it lies across the hips. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function half(env: Record<string, string>, facing: number, trunk: number | undefined) {
++  vi.resetModules();
++  for (const [k, v] of Object.entries(env)) vi.stubEnv(k, v);
++  const { chestHalf } = await import('../src/physics/world.js');
++  return chestHalf({ facing, trunk } as never);
++}
++
++describe('CHEST_SHOULDERS: the chest segment across the shoulders', () => {
++  it('rotates a twisted body\'s segment by the twist', async () => {
++    const f = 0.3, tw = 0.5;
++    const h = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '1' }, f, tw);
++    const L = Math.hypot(h.x, h.y);
++    expect(Math.atan2(h.y, h.x)).toBeCloseTo(f + tw + Math.PI / 2, 12);
++    expect(L).toBeCloseTo(0.12, 12);
++  });
++  it('leaves an untwisted body unchanged to the digit', async () => {
++    for (const trunk of [undefined, 0]) {
++      const on = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '1' }, 1.1, trunk);
++      const off = await half({ TRUNK_TWIST: '1' }, 1.1, trunk);
++      expect(on.x).toBe(off.x); expect(on.y).toBe(off.y);
++    }
++  });
++  it('off, lies across the hips whatever the trunk', async () => {
++    const twisted = await half({ TRUNK_TWIST: '1' }, 0.3, 0.5), straight = await half({ TRUNK_TWIST: '1' }, 0.3, 0);
++    expect(twisted.x).toBe(straight.x); expect(twisted.y).toBe(straight.y);
++  });
++  it('requires TRUNK_TWIST', async () => {
++    vi.resetModules(); vi.stubEnv('CHEST_SHOULDERS', '1'); vi.stubEnv('TRUNK_TWIST', '0');
++    await expect(import('../src/physics/world.js')).rejects.toThrow(/requires TRUNK_TWIST/);
++  });
++});
