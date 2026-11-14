@@ -805,8 +805,18 @@ export function handUnloaded(e: Engagement): boolean {
   const h = e.hands;
   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
 }
+/** KEYED_FELT (experimental, off; requires RUSH_HANDS): the hand model's keyed moves read what he feels, not a rated
+ * coin. Whether the blocker's hand is pressing on him is his own touch (the joint's measured force, a step old):
+ * the club is keyed when it is unloaded, and only then. Off, a misread (probability 0.5 - 0.5 x recognition) of a
+ * loaded hand still keyed a club: 55% of clubs under the hand model came with the hand loaded, the club was chosen at
+ * 39% of decisions against 14% without the model, and each club tripled the interior's pass rate (club-trace.mts).
+ * The long-arm against a shorter man is not forced at every decision: it is a weight in the ordinary choice (+0.6, the
+ * cue bonuses' scale; a choice). */
+export const KEYED_FELT = RUSH_HANDS && process.env.KEYED_FELT === '1';
+if (process.env.KEYED_FELT === '1' && !RUSH_HANDS) throw new Error('KEYED_FELT=1 requires RUSH_HANDS=1 (the hand model whose keyed moves it reads)');
 function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
   const d = e.defender, b = e.blocker, rng = sim.dice('rep', b, d);
+  if (KEYED_FELT) return handUnloaded(e) ? 'club' : null;
   const recognition = 0.5 * d.r('passRushFinesse') + 0.5 * d.r('awareness');
   const read = (truth: boolean) => (rng.chance(0.5 + 0.5 * recognition) ? truth : !truth);
   if (read(handUnloaded(e))) return 'club';
@@ -823,7 +833,7 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   const fin = d.r('passRushFinesse');
   const w: Array<[RushMove, number]> = [
     ['bull', 0.2 + power * 0.9 + (e.control < 0 ? 0.4 : 0)],
-    ['longarm', 0.1 + power * 0.5 + (td.arm - 33) * 0.1],
+    ['longarm', 0.1 + power * 0.5 + (td.arm - 33) * 0.1 + (KEYED_FELT && RUSH_HANDS && e.type === 'pass' && d.player.measurables.armIn > e.blocker.player.measurables.armIn ? 0.6 : 0)],
     ['rip', 0.1 + fin * 0.5 + (e.control > 0.3 ? 0.6 : 0)],
     ['club', 0.1 + fin * 0.3 + power * 0.2 + (e.control > 0.3 ? 0.4 : 0)],
     ['swim', 0.1 + fin * 0.6 + (e.baseB < 0.6 ? 0.6 : 0)],

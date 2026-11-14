@@ -3203,3 +3203,41 @@ reaction after his arm is back, often into another club. He reacts to his own ac
 So the hand model's interior excess is mostly the club, used about 2.5x as often and tripling the interior pass rate
 each time. Proposed repair (one flag): the felt-unload counter trigger reads a change he did not cause, so an unload
 during and just after his own club (until his arm is back) is not news. Then re-read the base arm's rows.
+
+### The interior repair, attempt 1: KEYED_FELT; and what the refit says (2026-11-14)
+
+**The self-trigger hypothesis is falsified** (move-triggers.mts). Under the hand model the felt-unload trigger brought
+forward only 10% of move decisions, and only 13% of those came within 1 s after his own club. Clubs run at about 0.41
+per rep-second against 0.17 without the model, while total decisions do not rise (about 0.9-1.0 against 1.18). The
+club simply takes a larger share of his choices.
+
+**The cause of that share is a rated coin.** Under RUSH_HANDS, keyedMove runs before the weighted choice:
+`read(handUnloaded)` returns the truth with probability 0.5 + 0.5 x recognition. A misread of a loaded hand keys a club
+anyway. 55% of clubs came with the hand loaded, and the club was chosen at 39% of decisions against 14% without the
+model, with control similar at decision time (p50 0.29 vs 0.42).
+
+**KEYED_FELT (off, requires RUSH_HANDS; attempt 1).**
+- The keyed club reads his own touch (the blocker's hand unloaded on him), with no misread coin.
+- The long-arm against a shorter man becomes a weight, not forced.
+- Clubs: 39% → 31% of decisions. Clubs against a loaded hand: 55% → 38%. (PUNCH_STRIKE's held touch often reads as an
+  unloaded hand, which is now an honest club cue.)
+- Interior 'past him': 12.7 → 15.3 /100 dropbacks (8 games). Honest clubs work better, so this does not repair the
+  overshoot. It stays off-flag as an information fix in its own right.
+
+**The refit is not slow, and the club mostly does not win before it** (refit.mts):
+
+| | interior | tackle |
+|---|---|---|
+| clubs that took a hand off | 462 | 54 |
+| refit p25 / p50 / p75 | 0.35 / 0.40 / 0.55 s | 0.30 / 0.40 / 0.45 s |
+| lateral speed toward his working side while the hand is off: blocker / rusher | 0.92 / 1.32 yd/s | 1.32 / 2.19 yd/s |
+| past him before the refit | 4% | 24% |
+
+A refit of about 0.4 s is a reaction plus the hand's travel. **The interior excess is spread over end states.** By the
+interior-free table, B against A per 100 dropbacks:
+- reps ending under the rusher's long-arm: +3.1 (the blocker's hands cannot reach him while it is on);
+- reps ending with one hand off: +2.3;
+- 'past him' with both hands on: +1.3;
+- a club in flight: +1.0.
+
+So the next diagnostic is the long-arm and one-hand-off states, not the club's frequency.

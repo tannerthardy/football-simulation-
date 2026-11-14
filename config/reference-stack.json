@@ -188,6 +188,7 @@
     "RUSH_LEAN_BOUND": "on",
     "RUSH_BULL": "off",
     "RUSH_RIP": "off",
+    "KEYED_FELT": "off",
     "THROW_HOLD": "on",
     "POCKET_REACH": "on",
     "TACKLE_ANCHOR": "off",
