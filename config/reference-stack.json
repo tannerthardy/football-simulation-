@@ -181,6 +181,7 @@
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
+    "HANDS_LEVER": "off",
     "PUNCH_STRIKE": "on",
     "ANCHOR_BASE": "on",
     "RUSH_ARM_BALANCE": "off",

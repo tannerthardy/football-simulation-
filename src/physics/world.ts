@@ -510,6 +510,16 @@ const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
  * hands and torso contacts stay on the centre law (HANDS_CHEST).
  * docs/reviews/effective-mass.md, step 2 (b). */
 const GRASP_PATCH = process.env.GRASP_PATCH !== '0';
+/** Experimental (HANDS_LEVER=1, off): in centre mode with HANDS_CHEST a hands
+ * row acts at its two chest points (the closest points of the chest segments)
+ * with their lever arms, and its moment reaches each body's yaw within the
+ * solve as a patch row's does. Off, the row passes through both centres: a
+ * press on a man's outside shoulder puts no moment on him, and his yaw motor
+ * keeps him on any requested facing (docs/reviews/2026-11-12-tackle-set.md,
+ * the tackle's chest against the line to the rusher). Material contacts and
+ * patch mode are unchanged. */
+export const HANDS_LEVER = process.env.HANDS_LEVER === '1';
+if (HANDS_LEVER && !HANDS_CHEST) throw new Error('HANDS_LEVER=1 requires HANDS_CHEST (its chest points are the lever arms)');
 /** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
@@ -721,6 +731,23 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
  * beyond traction, even at zero traction. Exported for the law test. */
 /** HANDS_CHEST: the vector from a's shoulder line to b's at their closest
  * points (segments of half-length CHEST_HALF across each man's facing). */
+/** HANDS_LEVER: the chest points' offsets from each centre, and the line between them. */
+function chestArms(a: Body, b: Body): { x: number; y: number; rax: number; ray: number; rbx: number; rby: number } {
+  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
+  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  const c = chestPoints(a, b);
+  // Recover the segment parameters chestPoints chose: c = (b + t v) - (a + s u).
+  const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
+  const uu = ux * ux + uy * uy, vv = vx * vx + vy * vy, uv = ux * vx + uy * vy;
+  const ur = ux * rx + uy * ry, vr = vx * rx + vy * ry;
+  const den = uu * vv - uv * uv;
+  let sa = den > 1e-12 ? clamp((uv * vr - ur * vv) / den, -1, 1) : 0;
+  let tb = clamp((uv * sa + vr) / vv, -1, 1);
+  sa = clamp((uv * tb - ur) / uu, -1, 1);
+  tb = clamp((uv * sa + vr) / vv, -1, 1);
+  return { x: c.x, y: c.y, rax: sa * ux, ray: sa * uy, rbx: tb * vx, rby: tb * vy };
+}
+
 function chestPoints(a: Body, b: Body): Vec2 {
   const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
   const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
@@ -1252,6 +1279,10 @@ export class World {
     return value;
   }
 
+  /** HANDS_LEVER: a centre-mode hands row with chest-point lever arms. */
+  private handsLevered(jt: Joint): boolean {
+    return HANDS_LEVER && this.handContact === 'center' && jt.kind === 'hands' && !jt.contact;
+  }
   /** GRASP_PATCH: a centre-mode grasp that follows the common-patch grasp law. */
   private gripPatched(jt: Joint): boolean {
     return GRASP_PATCH && this.handContact === 'center' && jt.kind === 'grasp' && !this.attachments.get(jt)?.material;
@@ -1789,7 +1820,7 @@ export class World {
         // already centered above, while patch reels share this frozen row.
         const gripPatch = jt.kind === 'grasp' && (this.handContact === 'patch' || this.gripPatched(jt));
         const normal = r.ln - (gripPatch ? r.reel : 0);
-        if (this.handContact === 'patch' || this.gripPatched(jt)) {
+        if (this.handContact === 'patch' || this.gripPatched(jt) || this.handsLevered(jt)) {
           const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
           this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
           this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
@@ -2721,8 +2752,10 @@ export class World {
       // All rows read the pre-solve velocities; solver corrections cannot
       // manufacture another patch or rotate the frame during this interval.
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
+      let lever: ReturnType<typeof chestArms> | null = null;
       if (HANDS_CHEST && jt.kind === 'hands' && this.handContact === 'center' && !jt.contact) {
-        const c = chestPoints(a, b); dx = c.x; dy = c.y;
+        if (this.handsLevered(jt)) { lever = chestArms(a, b); dx = lever.x; dy = lever.y; }
+        else { const c = chestPoints(a, b); dx = c.x; dy = c.y; }
       }
       let px = 0, py = 0; // Material offset from the body's force-midpoint center.
       const upperPatch = jt.kind === 'grasp' && (jt.legs <= 0 && this.handContact === 'patch' || this.gripPatched(jt));
@@ -2769,6 +2802,18 @@ export class World {
           if (jt.kind === 'hands' && jt.contact?.on === 'b') { rax = dx; ray = dy; rbx = px; rby = py; }
           if (jt.kind === 'hands' && jt.contact?.on === 'a') { rax = px; ray = py; rbx = -dx; rby = -dy; }
           if (lowerPatch) { rax = dx; ray = dy; rbx = point.x-b.pos.x; rby = point.y-b.pos.y; }
+          row.ni = -(rax * ny - ray * nx);
+          row.nj = rbx * ny - rby * nx;
+          row.ri = rax * nx + ray * ny;
+          row.rj = -(rbx * nx + rby * ny);
+          row.mn = 1 / (1 / this.mass[i] + 1 / this.mass[j]
+            + row.ni * row.ni / this.inertia[i] + row.nj * row.nj / this.inertia[j]);
+          row.bodyInverseMass = 1 / row.mn;
+          row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j]
+            + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
+        }
+        if (lever) {
+          const { rax, ray, rbx, rby } = lever;
           row.ni = -(rax * ny - ray * nx);
           row.nj = rbx * ny - rby * nx;
           row.ri = rax * nx + ray * ny;
