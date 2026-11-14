@@ -323,6 +323,9 @@
     "OPEN_CARRY": "0",
     "CATCH_CARRY": "0",
     "PURSUIT_FIELD": "0",
+    "CARRIER_COMMIT": "0",
+    "SPACING_SMOOTH": "0",
+    "PURSUIT_SPACING_SMOOTH": "0",
     "PURSUIT_COMMIT": "0",
     "RUSH_PROMISE": "0",
     "WAIT_REACHED": "0"

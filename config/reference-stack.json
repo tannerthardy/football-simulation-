@@ -282,6 +282,9 @@
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on",
     "PURSUIT_FIELD": "on",
+    "CARRIER_COMMIT": "off",
+    "SPACING_SMOOTH": "off",
+    "PURSUIT_SPACING_SMOOTH": "off",
     "PURSUIT_COMMIT": "on"
   }
 }
