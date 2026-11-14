@@ -325,7 +325,8 @@
     "CATCH_CARRY": "0",
     "PURSUIT_FIELD": "0",
     "PURSUIT_COMMIT": "0",
-    "RUSH_PROMISE": "0"
+    "RUSH_PROMISE": "0",
+    "WAIT_REACHED": "0"
   },
   "worldDefaults": {
     "handContact": "center",
