@@ -132,8 +132,8 @@ A cue's strength falls with distance and with whatever `see()` says he can see. 
 SEE_SIGHT (Rules + Coaching, approved: geometry by body height and posture, no dice) is the occluder. The belief store
 consumes whatever `see()` reports, so the fake gets stronger when SEE_SIGHT lands without a second occluder. Until
 then, view cone and distance only. **Order (agreed with Rules + Coaching):** Rules + Coaching first land SEE_SIGHT's
-geometric query as plumbing (`inSight(observer, target, height?)`, default his head and shoulders; no consumer change,
-identity off). Every cue here (hands and ball at the mesh at hand height, the ball in flight or loose, the tackled
+geometric query as plumbing (#714: `lineOfSight(bodies, observer, target, height?)`, default his head and shoulders;
+no consumer change, identity off). Every cue here (hands and ball at the mesh at hand height, the ball in flight or loose, the tackled
 man's hands) is that one query, so the fake's strength is right from day one and nothing is re-read when SEE_SIGHT's
 own consumers follow.
 
@@ -233,7 +233,7 @@ behaviour (unit test per consumer group: unresolved belief equals today's unknow
 
 ## Build order (proposed)
 
-0. (Rules + Coaching) SEE_SIGHT's `inSight(observer, target, height?)` query lands as plumbing.
+0. (Rules + Coaching) the shared sight query: up as #714, `lineOfSight(bodies, observer, target, height?)` in `src/sim/sight.ts` (occlusion only; view direction is the caller's; hands and ball at about 1.1 yd or `bodyHeight(holder, frac)`; its test has a backer seeing the QB's head over a guard but not his hands).
 1. Belief store and `Perceived.carrying` from belief; every recording site stops passing the true holder. Cues:
    ball visible, exchange seen, contact outcome. Controls first: plain handoffs and dropbacks unchanged.
 1b. The release candidate (own flag; co-built with Rules + Coaching): `sawThrow` reads the belief; control: real-throw
