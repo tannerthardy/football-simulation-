@@ -12,6 +12,7 @@ import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { BALL_EST_NO_TRACKPEN } from './ball-estimate.js';
+import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
@@ -129,7 +130,8 @@ interface Opp {
 function facingBall(a: Agent, ballVel: Vec3): boolean {
   if (a.tags.has('looking')) return true;
   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
-  const c = Math.cos(a.body.facing) * (-ballVel.x / sp) + Math.sin(a.body.facing) * (-ballVel.y / sp);
+  const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
+  const c = Math.cos(f) * (-ballVel.x / sp) + Math.sin(f) * (-ballVel.y / sp);
   return c > -0.35;
 }
 
@@ -217,7 +219,14 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   const trackPen = airTime > 1.4 && !BALL_EST_NO_TRACKPEN ? (1 - R.r('ballTracking')) * 0.25 : 0;
   // Over-the-shoulder catches at speed (ball arriving from behind the receiver).
   const rs = R.speed;
-  const fromBehind = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
+  const fromBehindRun = rs > 1 ? (R.vel.x * bv.x + R.vel.y * bv.y) / (rs * (Math.hypot(bv.x, bv.y) || 1)) : 0;
+  // TRUNK_TWIST: the term is about tracking a ball he is not facing while he runs (CATCH_SPEED's own words), and the line of run
+  // stands in for "facing" because his hips were all the body he had. A receiver whose shoulders are on the ball keeps his speed and
+  // faces it: the cost is charged against where his chest points when that is more favourable than his line of run (a trunk can only
+  // lower it). Off, or with no twist, his shoulders are his hips and this is the line of run as before.
+  const fromBehind = TRUNK_TWIST && rs > 1 && R.body.trunk
+    ? Math.min(fromBehindRun, (Math.cos(shouldersOf(R.body)) * bv.x + Math.sin(shouldersOf(R.body)) * bv.y) / (Math.hypot(bv.x, bv.y) || 1))
+    : fromBehindRun;
   const shoulder = CATCH_SPEED ? runTrackTerm(rs, fromBehind, airTime, R.r('ballTracking'))
     : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - R.r('ballTracking')) : 0;
   const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen + shoulder;
@@ -386,7 +395,7 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
 function pinToHands(sim: PlaySim, R: Agent): void {
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
-  const f = R.body.facing;
+  const f = shouldersOf(R.body); // the ball is caught against the chest
   ball.flight.pos = { x: R.pos.x + Math.cos(f) * 0.35, y: R.pos.y + Math.sin(f) * 0.35, z: 1.2 };
   ball.flight.vel = { x: R.vel.x, y: R.vel.y, z: 0 };
 }
