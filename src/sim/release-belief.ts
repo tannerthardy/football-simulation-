@@ -17,6 +17,7 @@
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { releaseEvidence } from './release-evidence.js';
+import { estimatesFor } from './ball-estimate.js';
 
 export const RELEASE_BELIEF = process.env.RELEASE_BELIEF !== '0';
 
@@ -50,6 +51,15 @@ export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
       if (b.source !== 'ball') { b.loadingAt ??= cue.at; b.releasedAt ??= cue.at; b.source = 'arm'; }
     } else if (cue.kind === 'pulled') {
       if (b.source !== 'ball') { b.loadingAt = undefined; b.releasedAt = undefined; b.source = undefined; }
+    }
+  }
+  // BALL_EST (with bit 128, this player's own estimate): his sight of the ball is his own sample, one perception, so
+  // the ball cue is also the first ball he sampled (through whichever head he has); it never undoes an arm cue.
+  if (estimatesFor(a) && sim.ball.kind === 'air') {
+    const at = sim.ballEstimates.firstSeenAt(a);
+    if (at !== undefined) {
+      b.ballAt = b.ballAt === undefined ? at : Math.min(b.ballAt, at);
+      if (b.source !== 'ball') { b.releasedAt = b.releasedAt !== undefined ? Math.min(b.releasedAt, at) : at; b.source = 'ball'; }
     }
   }
   return b;

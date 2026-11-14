@@ -17,7 +17,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST_RCV as BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_TRUNK, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST_RCV as BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -265,7 +265,7 @@ export class RouteRunner implements Behavior {
     while (d > Math.PI) d -= 2 * Math.PI;
     while (d < -Math.PI) d += 2 * Math.PI;
     d = turnSide(a, sim, d, heading);
-    return lookJoints(a, cmd, heading, d);
+    return lookJoints(a, cmd, heading, d, BALL_EST_TRUNK);
   }
 
   /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
@@ -708,20 +708,6 @@ function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
   return sideOf(d, h);
 }
 
-/** BALL_EST: the joints a look uses, for a target `d` rad off his running `heading`. Without bit 64 (or TRUNK_TWIST):
- * head and neck, then the hips for the rest. Bit 64 with TRUNK_TWIST (design 7): head and neck, then the shoulders off the
- * hips for what the neck cannot reach (to TRUNK_RANGE), then the hips only for what is left. */
-function lookJoints(a: Agent, cmd: MoveCommand, heading: number, d: number): MoveCommand {
-  const over = Math.abs(d) - neckOf(a);
-  if (over <= 0) return cmd;
-  if (!(BALL_EST_TRUNK && TRUNK_TWIST)) return { ...cmd, facing: heading + Math.sign(d) * over };
-  // The shoulders' target is absolute (the trunk twists it off the hips, clamped to TRUNK_RANGE): the full bearing past
-  // the neck. The hips turn only for what the trunk cannot reach.
-  const hips = Math.max(0, over - TRUNK_RANGE);
-  const look = heading + Math.sign(d) * over;
-  return hips > 0 ? { ...cmd, look, facing: heading + Math.sign(d) * hips } : { ...cmd, look };
-}
-
 /** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
  * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
  * turned body, which the facing speed cap prices. */
@@ -735,7 +721,7 @@ function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   while (d > Math.PI) d -= 2 * Math.PI;
   while (d < -Math.PI) d += 2 * Math.PI;
   d = turnSide(a, sim, d, heading);
-  return lookJoints(a, cmd, heading, d);
+  return lookJoints(a, cmd, heading, d, BALL_EST_TRUNK);
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */

@@ -10,6 +10,7 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { catchSpot } from '../../../src/sim/behaviors/receiver.js';
+import { manLookOf } from '../../../src/sim/behaviors/defense.js';
 const seed = Number(process.argv[2] ?? 101), games = Number(process.argv[3] ?? 16);
 const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, rows: any[] = [];
 P.tick = function () {
@@ -19,6 +20,9 @@ P.tick = function () {
     const T = this.ball.target;
     this.__db = { T, rel: this.t, best: Infinity, tArr: this.t, man: !!this.defCall?.coverage?.man, d0: new Map(), first: new Map(), arr: null as any };
     for (const d of this.defense) this.__db.d0.set(d, Math.hypot(d.pos.x - T.pos.x, d.pos.y - T.pos.y));
+    const sp = Math.hypot(T.vel.x, T.vel.y), h = Math.atan2(T.vel.y, T.vel.x), ux = Math.cos(h), uy = Math.sin(h);
+    this.__db.ph = new Map();
+    for (const d of this.defense) { const dx = d.pos.x - T.pos.x, dy = d.pos.y - T.pos.y; this.__db.ph.set(d, sp > 2 ? { behind: -(dx * ux + dy * uy), side: Math.abs(-dx * uy + dy * ux) } : null); }
   }
   const S = this.__db;
   if (S && this.ball.kind === 'air') {
@@ -45,7 +49,9 @@ P.buildResult = function (...x: any[]) {
   if (S?.arr) {
     const D = S.arr.D, flight = S.tArr - S.rel;
     const pbu = (this.events ?? []).some((e: any) => e.type === 'pbu' && this.defense.some((d: any) => d.idx === e.a));
-    rows.push({ flight, man: S.man, nd: S.arr.nd, err: S.arr.err, none: S.arr.none, first: S.first.get(D) ?? null,
+    const ph = S.ph.get(D), cls = !ph ? null : ph.side > 1.5 ? 'wide' : ph.behind <= 1.0 ? 'in phase' : ph.behind <= 2.0 ? 'trail 1-2' : 'trail 2+';
+    const ml = manLookOf(D);
+    rows.push({ cls, look: ml && ml.at >= S.rel ? (ml.looks ? (ml.inPhase ? 'look' : 'look-trailing') : 'no-look') : 'none', flight, man: S.man, nd: S.arr.nd, err: S.arr.err, none: S.arr.none, first: S.first.get(D) ?? null,
       close: ((S.d0.get(D) ?? S.arr.nd) - S.arr.nd) / Math.max(0.1, flight), cmp: !!this.stats?.completed, int: !!this.stats?.interceptedBy, pbu });
   }
   return res;
@@ -65,5 +71,11 @@ for (const [lab, f] of [['all', (r: any) => true], ['man', (r: any) => r.man], [
 for (const [lo, hi] of [[0, 1], [1, 2], [2, 3], [3, 99]]) {
   const R = rows.filter((r) => r.nd >= lo && r.nd < hi);
   console.log(`nearest ${lo}-${hi === 99 ? '+' : hi} yd at arrival: n ${String(R.length).padStart(4)} | complete ${pct(R.map((r) => r.cmp))} | INT ${pct(R.map((r) => r.int))} | PBU ${pct(R.map((r) => r.pbu))}`);
+}
+for (const c of ['in phase', 'trail 1-2', 'trail 2+', 'wide']) for (const [lo, hi] of [[0, 0.8], [0.8, 1.2], [1.2, 9], [0, 9]]) {
+  const R = rows.filter((r) => r.man && r.cls === c && r.flight >= lo && r.flight < hi);
+  if (R.length < 8) continue;
+  const L: Record<string, number> = {}; for (const r of R) L[r.look] = (L[r.look] ?? 0) + 1;
+  console.log(`man ${c.padEnd(9)} flight ${lo}-${hi}: n ${String(R.length).padStart(4)} | no estimate ${pct(R.map((r) => r.none))} | complete ${pct(R.map((r) => r.cmp))} PBU ${pct(R.map((r) => r.pbu))} INT ${pct(R.map((r) => r.int))} contested ${pct(R.map((r) => r.nd <= 1))} | nearest ${med(R.map((r) => r.nd))} | look ${Object.entries(L).map(([k, v]) => `${k} ${Math.round(100 * v / R.length)}%`).join(' ')}`);
 }
 console.log(`all: complete ${pct(rows.map((r) => r.cmp))} | INT ${pct(rows.map((r) => r.int))} | PBU ${pct(rows.map((r) => r.pbu))}`);

@@ -26,6 +26,7 @@ import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
 import type { Vec3 } from '../core/vec.js';
 import { qbArmSpeed, stepFlight, type BallFlight } from '../physics/ball.js';
+import { TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../physics/kinematics.js';
 import { naturalFlightFor } from './behaviors/qb.js';
 import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
@@ -54,6 +55,32 @@ export const BALL_EST_TRUNK = (BALL_EST_BITS & 64) !== 0;
  * estimate (`acquireFlight`) and, with bit 32, play it only on their own sight; receivers keep today's tracking and the
  * incidental-catch gate (the receiver bits 2 / 4 / 8 / 16 / 64 do not apply). For carding the defense first: 129, 161. */
 export const BALL_EST_DEF_ONLY = (BALL_EST_BITS & 128) !== 0;
+/** Bit 256 (the man defender's look, 2026-11-14): a man defender who believes the ball is out from his man's eyes or
+ * hands (Defense's readsHandsAt) and has not seen it judges his phase from his own picture of the man. In phase (on his
+ * hip: even or on top) he turns and finds the ball; trailing, he stays on the man and plays the hands at the catch.
+ * His judgment of phase errs by his manCoverage, and his discipline sets how often he looks back anyway when he judges
+ * himself trailing: an out-of-phase look happens at the rate his ratings give, and costs what his body pays. */
+export const BALL_EST_MAN_LOOK = (BALL_EST_BITS & 256) !== 0;
+/** Bit 256: "on his hip" (yd): no more than PHASE_BEHIND behind him along his line and within PHASE_SIDE of it. Choices
+ * (coached as a concept, not a distance), to be read against the NFL phase split (nfl_man_phase.py) before moving. */
+export const PHASE_BEHIND = 1.0, PHASE_SIDE = 1.5;
+/** Bit 256: his error judging how far behind he is (yd, one draw a flight): 0.2 at the best man coverage, 0.8 at the
+ * worst (choice). */
+export const phaseJudgeSd = (a: Agent): number => 0.2 + 0.6 * (1 - clamp(a.r('manCoverage'), 0, 1));
+/** Bit 256: the chance he looks back anyway when he judges himself trailing (one draw a flight): 0.5 at no discipline,
+ * none at full (choice). */
+export const lookAnyway = (a: Agent): number => 0.5 * (1 - clamp(a.r('discipline'), 0, 1));
+/** The joints a look uses, for a target `d` rad off his running `heading`: head and neck (neckOf), then, with `trunk`
+ * (TRUNK_TWIST), the shoulders off the hips for what the neck cannot reach (to TRUNK_RANGE; the target is absolute,
+ * the trunk clamps it), then the hips only for what is left. Without `trunk`: head and neck, then the hips. */
+export function lookJoints(a: Agent, cmd: MoveCommand, heading: number, d: number, trunk: boolean): MoveCommand {
+  const over = Math.abs(d) - neckOf(a);
+  if (over <= 0) return cmd;
+  if (!(trunk && TRUNK_TWIST)) return { ...cmd, facing: heading + Math.sign(d) * over };
+  const hips = Math.max(0, over - TRUNK_RANGE);
+  const look = heading + Math.sign(d) * over;
+  return hips > 0 ? { ...cmd, look, facing: heading + Math.sign(d) * hips } : { ...cmd, look };
+}
 /** The estimator replaces the true flight for the receivers (off under bit 128). */
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
@@ -295,6 +322,13 @@ export class BallEstimates {
   peek(a: Agent, sim: PlaySim): PathSample[] {
     const tr = this.tracks.get(a);
     return tr?.fit && tr.flight === this.flight ? this.pathOf(sim, tr) : [];
+  }
+
+  /** Read-only: when (sim time) he first sampled this flight himself, or undefined. One perception: under BALL_EST his
+   * sight of the ball is his own sample (release-belief.ts reads it as his ball cue). */
+  firstSeenAt(a: Agent): number | undefined {
+    const tr = this.tracks.get(a);
+    return tr && tr.flight === this.flight && tr.samples.length ? tr.samples[0].t : undefined;
   }
 
   /** Read-only: his newest sample of this flight, `{ t, pos }` (t the ball's time, the position as he saw it), or null. */
