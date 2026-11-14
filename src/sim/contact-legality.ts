@@ -8,6 +8,7 @@ import type { ContactAnatomy, ContactRecord, GraspJoint, HandJoint, StepReport, 
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { PenaltyCall } from './types.js';
+import { shouldersOf } from '../physics/kinematics.js';
 
 export type ContactFoulKind = 'block_in_back' | 'blindside_block' | 'clipping' | 'peel_back'
   | 'low_block' | 'chop_block' | 'crackback' | 'roughing_passer' | 'unnecessary_roughness'
@@ -333,7 +334,8 @@ function anatomyMatches(act: AchievedRuleContact): boolean {
       if (anatomy.targetRegion !== 'above_waist') return false;
       const dx = act.actor.pos.x - act.victim.pos.x, dy = act.actor.pos.y - act.victim.pos.y;
       // Back/side collar and nameplate are not reachable as a front patch.
-      if (dx * Math.cos(act.victim.facing) + dy * Math.sin(act.victim.facing) > 0) return false;
+      const front = shouldersOf(act.victim.body); // the victim's chest
+      if (dx * Math.cos(front) + dy * Math.sin(front) > 0) return false;
     }
   }
   return true;

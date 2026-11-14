@@ -15,7 +15,8 @@ describe('CONCEPT_DROPS', () => {
   it('marks the late-first-read concepts five-step and leaves the quick game alone', async () => {
     const off = await drops('0'), on = await drops('1');
     expect(off('smash')).toBe('gun5'); expect(off('comebacks')).toBe('seven');
-    for (const id of ['smash', 'mesh', 'four_verts', 'flood', 'drive', 'comebacks']) expect(on(id)).toBe('five');
+    for (const id of ['smash', 'mesh', 'flood', 'drive', 'comebacks']) expect(on(id)).toBe('five');
+    expect(on('four_verts')).toBe('gun3');
     for (const id of ['slant_flat', 'stick', 'curl_flat', 'levels']) expect(on(id)).toBe(off(id));
   });
 });

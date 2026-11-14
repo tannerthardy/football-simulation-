@@ -102,7 +102,7 @@ for arg in args:
             eng = any(p.pos(o, ko)[0] is not None and math.hypot(p.pos(o, ko)[0] - dx, p.pos(o, ko)[1] - dy) <= 1.5 for o in BL)
             kb = max(0, ko - int(round(0.3 / p.dt))); px, py = p.pos(d, kb); qx, qy = p.pos(qb, kb)
             close = (math.hypot(px - qx, py - qy) - dd) / max(p.dt, (ko - kb) * p.dt) if px is not None and qx is not None and ko > kb else None
-            L.append(dict(t=ko * p.dt, tout=out_k * p.dt, dd=dd, eng=eng, close=close, res=res, typ=(pf['dropbackType'] if pf is not None else 'sim'), pa=(pf['playAction'] == 'TRUE' if pf is not None else bool(re.search(r'^pa_|play.?action', str((raw.get('cell') or {}).get('concept') or ''), re.I)))))
+            L.append(dict(t=ko * p.dt, tout=out_k * p.dt, dd=dd, eng=eng, close=close, res=res, typ=(pf['dropbackType'] if pf is not None else 'sim'), pa=(pf['playAction'] == 'TRUE' if pf is not None else bool(re.search(r'^pa_|\+pa$|play.?action', str((raw.get('cell') or {}).get('concept') or ''), re.I)))))
     print(f"== {name}: dropbacks {n}, left the pocket {len(L)} = {100 * len(L) / max(1, n):.1f}%")
     if not L: continue
     print(f"   onset at p25/50/75 {q([l['t'] for l in L], .25):.1f}/{q([l['t'] for l in L]):.1f}/{q([l['t'] for l in L], .75):.1f} s; onset to out of the pocket p50 {q([l['tout'] - l['t'] for l in L]):.1f} s; nearest DL/LB at the onset {q([l['dd'] for l in L], .25):.1f}/{q([l['dd'] for l in L]):.1f}/{q([l['dd'] for l in L], .75):.1f} yd, engaged {pc(sum(l['eng'] for l in L), len(L))}, closing p50 {q([l['close'] for l in L]):.1f} yd/s")
