@@ -78,6 +78,8 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
       let cost = n.cost + 0.3 * Math.max(0, at - n.t - (prev ? LOOK : 0)) + across;
       if (at > r.window.last) cost += 1.5;
       if (clearers.has(r.ref) && depth < 2) cost += 0.6;               // a clear-out is not an early read
+      // PLAN_ROLES: a declared clear-out is read after the route he clears for, at any depth of the order.
+      if (PLAN_ROLES && motifs.some((m) => m.kind === 'clearout' && m.why.includes('declared') && m.refs[0] === r.ref && !n.seq.some((x) => x.ref === m.refs[1]))) cost += 1.0;
       if (!prev && r.window.ready > qbSet + 0.9) cost += 0.5;           // nor is a route that comes open late
       if (!prev && r.settles && breakerInBeat) cost += 1.0;             // the breaking route is the primary
       // High-low within a side (the default profile): the deeper route first, then down (§10 B: the coach's
@@ -223,6 +225,8 @@ export function select(routes: RouteDescriptor[], motifs: Motif[], qbSet: number
   // 3. Triangle on the start side, all three answers early enough to be one picture.
   const tri = motifs.filter((m) => m.kind === 'triangle').map((m) => m.refs.map((ref) => R.get(ref)!))
     .filter((T) => T.filter((r) => r.side === side).length >= 2 && T.every((r) => r.window.ready <= qbSet + 0.9 && !r.isBack))
+    // PLAN_ROLES: a declared clear-out clears; he is not part of the picture the triangle reads top-down.
+    .filter((T) => !(PLAN_ROLES && T.some((r) => motifs.some((m) => m.kind === 'clearout' && m.why.includes('declared') && m.refs[0] === r.ref))))
     .sort((a, b) => Math.max(...a.map((r) => r.window.ready)) - Math.max(...b.map((r) => r.window.ready)) || a.map(refKey).join().localeCompare(b.map(refKey).join()));
   if (tri.length) {
     // Top-down: the deepest at his window first (123, 036: corner, then the middle route, then the flat).

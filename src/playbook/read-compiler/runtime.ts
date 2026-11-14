@@ -9,6 +9,7 @@ import { generateTeam, type Team } from '../../league/team.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
 import { compile } from './compile.js';
+import { PLAN_ROLES } from './candidates.js';
 import type { PlanStyle } from './types.js';
 
 export const READ_PLAN = process.env.READ_PLAN !== '0';
@@ -113,7 +114,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -129,7 +130,16 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      const k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
+      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
+      // PLAN_ROLES: a key is the coached pair of routes, so it holds in every formation: its refs are resolved by the
+      // routes the concept installs at them (S1 -> strong 1, W2 -> weak 2, B -> the back), preferring the same side.
+      if (k && PLAN_ROLES) {
+        const routeAt = (ref: string) => ref === 'B' ? concept.back : ref[0] === 'S' ? (concept.strong as any)[ref.slice(1)] : (concept.weak as any)[ref.slice(1)];
+        const find = (ref: string) => { const id = routeAt(ref); const R = compiled.routes.filter((r) => r.routeId === id);
+          return (R.find((r) => r.ref === ref) ?? R.find((r) => r.ref[0] === ref[0]) ?? R[0])?.ref; };
+        const low = find(k.low), high = find(k.high);
+        if (low && high && low !== high) k = { ...k, low: low as ReceiverRef, high: high as ReceiverRef };
+      }
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);

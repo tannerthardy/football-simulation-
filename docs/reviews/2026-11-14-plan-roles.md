@@ -109,3 +109,23 @@ Concepts whose installed plan differs in at least one formation (19): comebacks,
   next step. Those whose installed plan flips between the grounds come first: comebacks, curl_flat, double_outs,
   hitch_cross, pa_shot, sail_corner, seam_slant and trips_stick, then the empty-formation verticals (four_verts,
   seam_hitch, verts_hitch).
+
+## Follow-ups (Integration, 2026-11-14)
+
+**Keys by route.** Under PLAN_ROLES, a coached key's two receivers are resolved by the routes the concept installs at
+them (S1 is strong 1, W2 is weak 2, B is the back), preferring the same receiver, then the same side. So a key holds in
+every formation that runs those routes. Where a formation does not install one of the routes (drive from trips has no
+weak shallow), the key does not apply, and the plan is the compiler's.
+
+**A declared clear-out is never read before the route he clears for.**
+- He is left out of any triangle, which reads top-down and would put him first: trips_outs and trips_sail from trips
+  and 12p, flood from 12p.
+- In the pure order, reading him before that route costs +1.0 at any depth. The found clear-out's +0.6 applied only to
+  the first two reads, so a back inserted second let the go come third, ahead of the out.
+
+Installed plans with PLAN_ROLES, from doubles / trips / 12p / bunch:
+- **trips_outs:** S2 (out) first in all four, the go after it.
+- **trips_sail:** S2 first in all four.
+- **flood:** S2 first from doubles, 12p and bunch. From trips it is the curl-flat key, unchanged.
+
+On develop's routes, the doubles plans are unchanged.
