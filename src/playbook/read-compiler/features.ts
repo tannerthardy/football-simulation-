@@ -18,7 +18,7 @@ import { ROUTES } from '../routes.js';
 /** CROSS_OVER (routes.ts): the over climbs across on a diagonal without a sharp cut, so it declares as the comment
  * below says a crosser does (5 yd from his start, the line crossed), not as a vertical at 12 yd. Off, unchanged. */
 const CROSS_OVER = process.env.CROSS_OVER === '1';
-/** ROUTE_FILLET (src/sim/route-motion.ts): read here only for the crosser's declare. */
+/** ROUTE_FILLET (src/sim/route-motion.ts): read here only for the crosser's and a rolled screen's declare. */
 const ROUTE_FILLET_ON = process.env.ROUTE_FILLET === '1';
 /** SCREEN_DECLARE (experimental, off): a screen's receiver has shown his answer when he turns back to the catch point
  * (the break), not when he has moved 5 yd past the line, which a screen behind the line may never do in the horizon. Off,
@@ -121,8 +121,23 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     const lateralStem = Math.abs(p10.y - start.y) > Math.abs(p10.x - start.x);
     // ROUTE_FILLET leads a crosser's bends, so a rolled cross shows no 30 deg turn either: it declares the same way.
     const crosser = (CROSS_OVER || ROUTE_FILLET_ON) && !!id && ROUTES[id]?.family === 'cross';
-    const screenTurn = SCREEN_DECLARE && concept.family === 'screen' && breakT !== null;
-    const declared = screenTurn ? breakT! + 0.1
+    // SCREEN_DECLARE under ROUTE_FILLET: a rolled turn (the bubble's turn up) never shows 30 deg against the chord of a
+    // path that is already bending, so the turn is read against his first stem's heading instead: the first point where
+    // his heading over the next 0.3 s is 30 deg off it, at least 1.5 yd from his start (the break test's own stem), placed
+    // back where the bend began (8 deg).
+    let rolledT: number | null = null;
+    if (SCREEN_DECLARE && ROUTE_FILLET_ON && concept.family === 'screen' && breakT === null) {
+      const j0 = Math.min(P.length - 1, k0 + 5), h0 = heading(P[j0].x - P[k0].x, P[j0].y - P[k0].y);
+      if (Math.hypot(P[j0].x - P[k0].x, P[j0].y - P[k0].y) > 0.5) for (let i = j0; i + 3 < P.length; i++) {
+        if (Math.hypot(P[i].x - P[k0].x, P[i].y - P[k0].y) >= 1.5 && turn(h0, heading(P[i + 3].x - P[i].x, P[i + 3].y - P[i].y)) > 30) {
+          let k = i;
+          while (k > j0 && turn(h0, heading(P[k + 3].x - P[k].x, P[k + 3].y - P[k].y)) > 8) k--;
+          rolledT = P[k].t; break;
+        }
+      }
+    }
+    const screenTurn = SCREEN_DECLARE && concept.family === 'screen' && (breakT ?? rolledT) !== null;
+    const declared = screenTurn ? (breakT ?? rolledT)! + 0.1
       : (lateralStem || (crosser && breakT === null)) && moved !== null ? moved + 0.2
       : breakT !== null ? breakT + 0.1 : vertical !== null ? vertical : moved !== null ? moved + 0.2 : HORIZON;
     const ready = Math.max(qbSetAt - 0.15, declared);
