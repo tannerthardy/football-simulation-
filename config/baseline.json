@@ -90,6 +90,9 @@
     "GAZE": "0",
     "PERCEIVE_TRACK": "0",
     "QB_BODY_SEEN": "0",
+    "RCV_SEEN": "0",
+    "TRACK_PURSUIT": "0",
+    "TRACK_TACKLE": "0",
     "SIGHT_CARRIER": "0",
     "SIGHT_COVER": "0",
     "SIGHT_RECOG": "0",
@@ -254,6 +257,7 @@
     "TACKLE_ANCHOR": "0",
     "RUSH_INTENT": "0",
     "PASS_ANCHOR": "0",
+    "INFO_HONEST": "0",
     "MAN_PHASE": "0",
     "HIP_BRACE": "0",
     "THROW_REACT": "0",
@@ -327,8 +331,12 @@
     "CATCH_CARRY": "0",
     "PURSUIT_FIELD": "0",
     "PURSUIT_COMMIT": "0",
+    "HONEST_READS": "0",
+    "HONEST_FLIGHT": "0",
     "RUSH_PROMISE": "0",
-    "WAIT_REACHED": "0"
+    "WAIT_REACHED": "0",
+    "PURSUIT_SPOT": "0",
+    "HONEST_TACKLE": "0"
   },
   "worldDefaults": {
     "handContact": "center",
