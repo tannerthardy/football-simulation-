@@ -607,6 +607,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-64: `OUTLET_LAST`, `PLAN_KEYS` and `OPEN_FIELD` on (2026-11-14)
+
+**`OUTLET_LAST` and `PLAN_KEYS` (Rules+Coaching, #733 `e9ea51ca`).** The read plans put the back's outlet last, as the progressions are taught, and take their key defenders from the plan table (#732). The plan was reading the back second, which was half of the flat excess measured at engine-63. Lane read, off → on: back targets 28.4 → 12.5% of targets, FLAT 35.0 → 25.7% (NFL 14.1), air yards 5.90 → 7.45.
+
+**`OPEN_FIELD` (Defense, #735 `8d1b8fc4`).** The nearest defenders to a free runner give ground with him and close laterally instead of driving at him and being passed (engine-63's after-catch finding). Lane read: catches gaining more than 10 after the catch 0.20 → 0.13 and 0.17 → 0.12; the two nearest defenders stop him 0.29 → 0.37 (NFL 0.43); fresh run set +0.04; third-and-1 unchanged.
+
+Merged off: `CONCEPT_DROPS` (#733; drops by concept, carded next with `dropSpec('five')`), `HEAD` with its neck range (Tools, #720 `b742770d`), and Tools' diagnostics (#731 `d5ad052b`).
+
+Checks. Candidate `0964510fb`. Fresh run set 3.80 (engine-63 3.72); missed + broken open 0.271. Cards, 16 games a side, four arms (`out/e71-card-*`), seeds 11 / 23 / 31:
+
+| arm | aDOT | time to throw (s) | YAC / reception | missed + broken / play | yards / attempt | completion |
+|---|---|---|---|---|---|---|
+| plan | +1.50 / +1.20 / +1.31 (all moved) | +0.05 / +0.08 / +0.07 (all moved) | −0.65 / −0.23 / −0.86 | −0.00 / −0.01 / −0.02 | −0.43 / +0.60 / +0.05 | −6.2 (moved) / −1.8 / −2.0 |
+| field | +0.05 / −0.17 / +0.15 | +0.01 / +0.01 / −0.01 | +0.26 / −1.08 (moved) / −1.16 (moved) | +0.01 / −0.05 (moved) / −0.06 (moved) | +0.17 / −1.14 (moved) / −0.17 | +0.3 / −2.8 (moved) / +4.8 (moved) |
+| both | +1.01 / +1.13 / +1.28 (all moved) | +0.10 (moved) / +0.03 / +0.08 (moved) | −0.83 / −0.65 / −0.71 | −0.03 / −0.04 / −0.06 (all moved) | −0.13 / +0.03 / +0.53 | −1.5 / −3.5 / +0.6 |
+
+What agrees across seeds: the plan arm throws about 1.2 to 1.5 yd deeper and 0.05 to 0.08 s later, with completion down on all three (one resolved); together the candidate's YAC is 0.65 to 0.83 lower and failed tackles fall on every seed. `OPEN_FIELD` alone does nothing on seed 11 and moves YAC and failed tackles on the other two; its completion row moves in opposite directions on 23 and 31, so it is not read. Yards per attempt, sacks, interceptions and points do not agree. aDOT 6.6 to 6.8 is still under the 7.5 to 8.5 band and YAC 6.4 to 6.7 still over 4.5 to 5.9. One row with no mechanism: punt return average +3.84 (moved) on seed 11's candidate arm, +0.74 and −0.11 on the others and +0.34 / +0.19 / +0.04 in the field arm alone; left as seed noise, to be watched at engine-65.
+
+Suite: 4 failures on the first pass. Two are the known research pair. `film-pack-determinism` timed out at 240 s beside the rest of the suite and passes alone (191 s). `acc-radius`'s four-verts case moved with `OUTLET_LAST`: on two plays where the first vertical is not there he now comes back to a vertical at 4.15 and 4.45 s instead of dumping to the back at 2.9 s (7 verticals of 10, was 5); "none after 3.5 s" is restated as at least five on time. `ACC_RADIUS` stays held.
+
 ## engine-63: the quarterback's honesty, line of sight and the tackle-bond roll (2026-11-14)
 
 Eleven switches on: `QB_HONEST_FEEL`, `QB_BELIEVED_DEF`, `QB_SEEN_MAN`, `QB_SEEN_OUT`, `QB_SEEN_REC`, `TRACK_FEEL` (QB lane, `17da2caa`); `QB_RELOOK` (QB lane); `SIGHT_CARRIER`, `SIGHT_COVER`, `SIGHT_RECOG` (Rules+Coaching, #716 / #718 / #719 at `078c5a0d`); `ROLL_AXIS` (Defense, #726 `d63a92a4`).
