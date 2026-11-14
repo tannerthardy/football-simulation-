@@ -459,7 +459,7 @@ that moves the row by 0.5 is inside that spread.
 **What the candidate's defensive-honesty arm did** (`HONEST_READS`, `INFO_HONEST=63`, `HONEST_TACKLE` on; receivers and tracking
 off; 48 games an arm): uncapped rush yards a carry 4.12 -> 4.25 (+0.13, 90% -0.24 to +0.48); capped at 20 yd 3.61 -> 3.75 (+0.14, -0.09 to +0.38);
 the part beyond 20 yd 0.50 -> 0.50; runs of 20+ yd 34 -> 38, of 40+ 22 -> 23, of 60+ 12 -> 13; run share of plays 33.9% -> 33.8%, and the
-down, distance, field-zone and personnel mix agree within noise. The paired fresh run set read +0.02 to +0.04. So the capped means
+down, distance, field-zone and personnel mix agree within noise. Integration's paired fresh run set read +0.02 to +0.04 for the engine-61 candidate. So the capped means
 agree with the run set, the breakaway count did not move, and the 16-game cards that read +0.5 are samples from the same spread. One
 cell did move: runs of 0 yd or less fell from 11.6% to 9.6% (-2.0 points, 90% -3.4 to -0.5). With all six flags on (the
 tracking flags included) the same 48-game comparison read -0.33 uncapped (-0.83 to +0.10), capped -0.24.
