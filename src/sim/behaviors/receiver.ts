@@ -17,7 +17,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_TRUNK, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -244,12 +244,20 @@ export class RouteRunner implements Behavior {
 
   /** When this route was installed (the snap, or his release on a delayed route): breakTime counts from here. */
   private readonly bornAt: number;
+  /** Design 6: when he reached his deep landmark (his look starts there and lasts his count). */
+  private deepLookAt: number | undefined;
   /** BALL_EST design 4: out of his break, before the throw, he gets his head round to the QB (and his shoulders as
    * far as his head cannot reach him), so he is already looking when the ball leaves. A better route runner leaves
-   * it later. Not on a deep route, which does not expect the ball at its stem's break. */
+   * it later. Not on a deep route, which does not expect the ball at its stem's break; design 6 (bit 16) gives the
+   * deep route its own look: from his landmark depth, for his count, once. */
   private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
-    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
-    if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb) return cmd;
+    if (this.route.family === 'deep') {
+      if (!BALL_EST_DEEP_LOOK) return cmd;
+      // His own depth past the line is his cue; the release is not.
+      if (this.deepLookAt === undefined && (a.pos.x - sim.los) * sim.attackDir(a.team) >= DEEP_LOOK_DEPTH) this.deepLookAt = sim.t;
+      if (this.deepLookAt === undefined || sim.t - this.deepLookAt > DEEP_LOOK_HOLD) return cmd;
+    } else if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
     sim.ballEstimates.lookAtQB(a, sim);
     const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
     const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
@@ -257,8 +265,7 @@ export class RouteRunner implements Behavior {
     while (d > Math.PI) d -= 2 * Math.PI;
     while (d < -Math.PI) d += 2 * Math.PI;
     d = turnSide(a, sim, d, heading);
-    const over = Math.abs(d) - LOOK_NECK;
-    return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
+    return lookJoints(a, cmd, heading, d);
   }
 
   /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
@@ -674,6 +681,9 @@ export class TrackBall implements Behavior {
     // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking
     // the ball in at 6-8 yd/s is not slowed by his hips turning (the cap reads the hips). Off: the old hips request.
     // (With BALL_EST also on, the trunk branch is taken; joining the two is Coverage's design 7.)
+    // BALL_EST bit 64 (design 7): out past 3 yd his look is BALL_EST's own (the body-turn window), through the trunk;
+    // inside 3 yd the trunk branch below, on his estimate (`facing` is his estimate's bearing under BALL_EST).
+    if (TRUNK_TWIST && BALL_EST_TRUNK && BALL_EST && dist >= 3) return spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run0) : run0;
     if (TRUNK_TWIST) {
       if (dist >= 3) return run0;
       // His look reaches the trunk's range plus the neck's (HEAD's neckRange: 90 deg standing, 45 at top speed). A ball beyond it is
@@ -698,6 +708,20 @@ function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
   return sideOf(d, h);
 }
 
+/** BALL_EST: the joints a look uses, for a target `d` rad off his running `heading`. Without bit 64 (or TRUNK_TWIST):
+ * head and neck, then the hips for the rest. Bit 64 with TRUNK_TWIST (design 7): head and neck, then the shoulders off the
+ * hips for what the neck cannot reach (to TRUNK_RANGE), then the hips only for what is left. */
+function lookJoints(a: Agent, cmd: MoveCommand, heading: number, d: number): MoveCommand {
+  const over = Math.abs(d) - neckOf(a);
+  if (over <= 0) return cmd;
+  if (!(BALL_EST_TRUNK && TRUNK_TWIST)) return { ...cmd, facing: heading + Math.sign(d) * over };
+  // The shoulders' target is absolute (the trunk twists it off the hips, clamped to TRUNK_RANGE): the full bearing past
+  // the neck. The hips turn only for what the trunk cannot reach.
+  const hips = Math.max(0, over - TRUNK_RANGE);
+  const look = heading + Math.sign(d) * over;
+  return hips > 0 ? { ...cmd, look, facing: heading + Math.sign(d) * hips } : { ...cmd, look };
+}
+
 /** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
  * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
  * turned body, which the facing speed cap prices. */
@@ -711,8 +735,7 @@ function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   while (d > Math.PI) d -= 2 * Math.PI;
   while (d < -Math.PI) d += 2 * Math.PI;
   d = turnSide(a, sim, d, heading);
-  const over = Math.abs(d) - LOOK_NECK;
-  return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
+  return lookJoints(a, cmd, heading, d);
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */

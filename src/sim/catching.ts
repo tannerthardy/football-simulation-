@@ -11,7 +11,7 @@ import { DRAG_TUMBLE } from '../physics/ball.js';
 import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { BALL_EST_NO_TRACKPEN } from './ball-estimate.js';
+import { BALL_EST_INCIDENTAL, BALL_EST_NO_TRACKPEN } from './ball-estimate.js';
 import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -127,7 +127,9 @@ interface Opp {
  * ball (a look over the shoulder); trailing defenders with their back to the
  * ball are playing blind.
  */
-function facingBall(a: Agent, ballVel: Vec3): boolean {
+function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
+  // BALL_EST bit 32: he plays a ball only on his own sight of it (one perception per player).
+  if (BALL_EST_INCIDENTAL && sim) return sim.ballEstimates.seenReady(a, sim);
   if (a.tags.has('looking')) return true;
   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
@@ -155,7 +157,7 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     // Existing targeted tracking is a separate controller contract. Everyone
     // else on offense must have acquired this flight before reaching for it;
     // legal eligibility or an installed outlet alone does not provide eyes.
-    if (a.team === 'O' && !a.tags.has('onBall') && !sim.incidentalCatchReadiness.query(a, sim.t)) continue;
+    if (a.team === 'O' && !a.tags.has('onBall') && !(BALL_EST_INCIDENTAL ? sim.ballEstimates.seenReady(a, sim) : sim.incidentalCatchReadiness.query(a, sim.t))) continue;
     const tracking = a === ball.target || a.tags.has('onBall');
     const reach = a.profile.reach + (tracking ? TRACKING_REACH_BONUS : 0);
     // Receivers tracking the ball time a full leap; defenders playing it get a
@@ -193,7 +195,7 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     // window, it's a contested catch at the receiver instead.
     const off = opps.find((p) => p.a.team === 'O' && Math.abs(p.s - o.s) < 0.35);
     // CATCH_HANDS: the ball reaches his hands first and he sees it: his play.
-    if (off && !(CATCH_HANDS && facingBall(o.a, sim.ball.flight.vel) && o.s < off.s)) {
+    if (off && !(CATCH_HANDS && facingBall(o.a, sim.ball.flight.vel, sim) && o.s < off.s)) {
       receiverContest(sim, off, opps);
       return;
     }
@@ -251,7 +253,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     const range = airTime > 1.3 ? 2.2 : 1.35;
     if (dd > range && !near) continue;
     const prox = near ? 1 - near.dh / (d.profile.reach + 0.3) * 0.5 : 1 - dd / range;
-    const q = clamp(prox, 0, 1) * (facingBall(d, bv) ? 1 : 0.45);
+    const q = clamp(prox, 0, 1) * (facingBall(d, bv, sim) ? 1 : 0.45);
     if (q > bestQ) {
       bestQ = q;
       bestD = d;
@@ -265,7 +267,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     const D = bestD;
     const heightEdge = clamp(1 + (D.profile.maxCatchHeight - R.profile.maxCatchHeight) * (high > 0 ? 0.9 : 0.25), 0.5, 1.6);
     const pbu = bestQ * (0.2 + 0.45 * D.r('ballSkills')) * (1.15 - 0.55 * R.r('contestedCatch')) * heightEdge;
-    const pInt = pbu * (0.06 + 0.22 * D.r('ballSkills')) * (facingBall(D, bv) ? 1 : 0.2);
+    const pInt = pbu * (0.06 + 0.22 * D.r('ballSkills')) * (facingBall(D, bv, sim) ? 1 : 0.2);
     const roll = rng.next();
     // Playing through a receiver's hands is not the same as reaching the
     // ball. Possession requires this defender's own height/reach envelope.
@@ -342,7 +344,7 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
     .filter((d) => !d.isDown(sim.t) && !d.engagement && Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y) <= 2.5)
     .sort((a, b) => Math.hypot(a.pos.x - bp.x, a.pos.y - bp.y) - Math.hypot(b.pos.x - bp.x, b.pos.y - bp.y));
   for (const D of near) {
-    const sees = facingBall(D, bv);
+    const sees = facingBall(D, bv, sim);
     const own = opps.find((p) => p.a === D);
     if (own && sees) {
       // Through the hands at the ball: his hands meet it where it is in his window.
@@ -429,7 +431,7 @@ export function secureStep(sim: PlaySim): void {
     const rel = toBody > 1e-6 ? { x: (R.pos.x - D.pos.x) / toBody, y: (R.pos.y - D.pos.y) / toBody } : { x: 1, y: 0 };
     const closing = Math.max(0, (D.vel.x - R.vel.x) * rel.x + (D.vel.y - R.vel.y) * rel.y);
     const hand = toBall <= handReach
-      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel) || D.tags.has('looking') ? 1 : 0.6)
+      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel, sim) || D.tags.has('looking') ? 1 : 0.6)
       : 0;
     const hit = toBody <= bodyTouch ? clamp((closing - 1.5) / 6, 0, 0.8) * (0.6 + 0.4 * D.r('hitPower')) * D.profile.massKg / 90 : 0;
     const resist = (1.15 - 0.3 * R.r('hands') - 0.3 * R.r('contestedCatch')) * (1 - 0.7 * progress);
@@ -457,7 +459,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   const D = o.a;
   const rng = sim.dice('ball-play', D);
   const bv = ball.flight.vel;
-  const sees = facingBall(D, bv);
+  const sees = facingBall(D, bv, sim);
   const isBat = !!D.engagement || (tAir < 0.4 && D.pos.x < sim.los + 2);
   if (ball.deflected) {
     // A tipped ball is either caught or falls; no more volleyball.
@@ -544,3 +546,4 @@ function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', touch
 function inBounds(a: Agent): boolean {
   return a.pos.y > 0 && a.pos.y < FIELD_WIDTH && a.pos.x < 120 && a.pos.x > 0;
 }
+
