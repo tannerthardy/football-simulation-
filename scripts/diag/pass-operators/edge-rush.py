@@ -75,6 +75,18 @@ def rows(path):
                     if (t1 * 0 + t2 * side) < 0: t1, t2 = -t1, -t2
                     vx, vy = p.velocity(d, k2)
                     if vx is not None: r['vInto'] = -(vx * nx + vy * ny); r['vAcross'] = vx * t1 + vy * t2
+                    # Integration (2026-11-14): the tackle's chest against the line to the rusher, at contact and +0.2 /
+                    # +0.4 s, where the record has orientation ('o'): off = the rusher's bearing from the tackle minus
+                    # his facing, + = the rusher toward the outside of where his chest points; turn = his facing
+                    # toward the outside of downfield (0 = square to the line of scrimmage).
+                    o = raw.get('o'); r['chest'] = {}
+                    if o:
+                        for a, kk in ((0.0, k), (0.2, k + 2), (0.4, k + 4)):
+                            if kk > kend or kk >= len(o) or o[kk][tk] is None or p.pos(d, kk)[0] is None: break
+                            (rx, ry), (tx, ty) = p.pos(d, kk), p.pos(tk, kk)
+                            brg = math.degrees(math.atan2(ry - ty, rx - tx)); f = o[kk][tk]
+                            wrap = lambda a_: (a_ + 180) % 360 - 180
+                            r['chest'][a] = {'off': side * wrap(brg - f), 'turn': side * wrap(f), 'dist': p.dist(tk, d, kk)}
             for k in range(p.k(0.3), kend + 1):
                 if p.pos(d, k)[0] is not None and p.pos(qb, k)[0] is not None and p.dist(d, qb, k) <= 2.0:
                     r['win'] = k * p.dt
@@ -131,6 +143,16 @@ for path in sys.argv[1:]:
         gi = [r for r in g if 'vInto' in r]
         if g: print(f"      contact {lab:12s} velocity 0.2 s after, into the tackle {q([r['vInto'] for r in gi]):+.2f}, across him outward {q([r['vAcross'] for r in gi]):+.2f} yd/s")
         if g: print(f"      contact {lab:12s} n {len(g):5d}: speed before {q([r['vContact'] for r in g]):.2f} -> 0.2 s after {q([r['vAfter'] for r in g]):.2f} yd/s | at 2.0 s past outside {pct(sum(1 for r in g if 2.0 in r['snaps'] and r['snaps'][2.0]['state'] == 'past outside'), len(g))}")
+    for lab, f in (('head-up', lambda o: abs(o) < 0.3), ('outside half', lambda o: 0.3 <= o < 0.9), ('wide', lambda o: o >= 0.9)):
+        g = [r for r in Cn if f(r['offContact']) and r.get('chest')]
+        if not g: continue
+        parts = []
+        for a in (0.0, 0.2, 0.4):
+            h = [r['chest'][a] for r in g if a in r['chest']]
+            if not h: continue
+            offs = [x['off'] for x in h]
+            parts.append(f"+{a:.1f} s n {len(h)}: rusher off his chest p25/50/75 {q(offs, .25):+.0f}/{q(offs):+.0f}/{q(offs, .75):+.0f} deg, |off| > 30 {pct(sum(1 for v in offs if abs(v) > 30), len(h))}, > 60 {pct(sum(1 for v in offs if abs(v) > 60), len(h))}; his turn outward p50 {q([x['turn'] for x in h]):+.0f} deg; sep {q([x['dist'] for x in h]):.2f}")
+        print(f"      chest, contact {lab:12s} " + ' || '.join(parts))
     for lab, f in (('not level at 2.0 s', lambda st: st == 'not level'), ('level / past outside at 2.0 s', lambda st: st in ('level outside', 'past outside')), ('inside at 2.0 s', lambda st: st == 'inside')):
         g = [r for r in R if 2.0 in r['snaps'] and f(r['snaps'][2.0]['state'])]
         if not g: continue

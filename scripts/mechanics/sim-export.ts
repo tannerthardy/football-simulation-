@@ -54,6 +54,10 @@ export function commonPlay(p: PlayLog, id: string) {
   const xy: number[][] = [];
   // bxy: the ball's (x, y) on the same grid and frame (nfl_bdb2025_ball.py writes the NFL's to a side file).
   const bxy: number[][] = [];
+  // o (opt-in, EXPORT_FACING=1, so the default export is unchanged): each body's facing in degrees in the common
+  // frame, atan2 convention as the NFL operators read 'o' (0 = +x downfield); the earlier recorded frame, no blend.
+  const facingOn = process.env.EXPORT_FACING === '1';
+  const o: number[][] = [];
   let j = 0;
   for (let k = 0; k * 0.1 <= lastT + 1e-9; k++) {
     const t = k * 0.1;
@@ -67,6 +71,14 @@ export function commonPlay(p: PlayLog, id: string) {
       row.push(r2(X(x)), r2(Y(y)));
     }
     xy.push(row);
+    if (facingOn) {
+      const fr = w < 0.5 ? a : b, orow: number[] = [];
+      for (let i = 0; i < n; i++) {
+        const deg = fr.agents[i * 3 + 2] * 180 / Math.PI + (dir > 0 ? 0 : 180);
+        orow.push(r2(((deg + 180) % 360 + 360) % 360 - 180));
+      }
+      o.push(orow);
+    }
     bxy.push([r2(X(a.ball[0] + w * (b.ball[0] - a.ball[0]))), r2(Y(a.ball[1] + w * (b.ball[1] - a.ball[1])))]);
   }
   const ev = rp.events;
@@ -124,7 +136,7 @@ export function commonPlay(p: PlayLog, id: string) {
     id, source: 'sim', kind: p.kind, yards: r2(p.yards),
     // slot: the play's job (FS, SS, NB, ...), not the roster position; operators choose deep defenders by it.
     players: rp.players.map((a, i) => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER', slot: a.slot, route: p.routes?.[i] ?? null })),
-    dt: 0.1, xy, bxy, ball_y: r2(Y(ball[1])), events, carrier,
+    dt: 0.1, xy, bxy, ...(facingOn ? { o } : {}), ball_y: r2(Y(ball[1])), events, carrier,
     target: throwEv?.b ?? null,
     receiver,
     blocks: [...pairs.values()],
