@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 from metrics import Play  # noqa
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 pct = lambda a, b: f"{100 * a / b:.0f}%" if b else '-'
-TIMES = (1.0, 1.5, 2.0, 2.5, 3.0)
+TIMES = (0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
 
 
 def rows(path):
@@ -57,7 +57,13 @@ def rows(path):
             if not cand: continue
             w0, d = max(cand)
             align = 'head-up/shade' if w0 < 1.0 else 'wide' if w0 <= 2.5 else 'very wide'
-            r = {'align': align, 'snaps': {}, 'win': None}
+            r = {'align': align, 'snaps': {}, 'win': None, 'contact': None, 'vContact': None, 'vmax': 0.0}
+            # First contact with the tackle (within 1.2 yd) and his speed the frame before; his top speed (a speed proxy).
+            for k in range(1, kend + 1):
+                if p.pos(d, k)[0] is None or p.pos(tk, k)[0] is None: continue
+                r['vmax'] = max(r['vmax'], p.speed(d, k))
+                if r['contact'] is None and p.dist(tk, d, k) <= 1.2:
+                    r['contact'] = k * p.dt; r['vContact'] = p.speed(d, k - 1)
             for k in range(p.k(0.3), kend + 1):
                 if p.pos(d, k)[0] is not None and p.pos(qb, k)[0] is not None and p.dist(d, qb, k) <= 2.0:
                     r['win'] = k * p.dt
@@ -103,3 +109,19 @@ for path in sys.argv[1:]:
         s15 = [r['snaps'][1.5] for r in g if 1.5 in r['snaps']]
         cc = C.Counter(s['state'] for s in s15)
         print(f"   {a:13s} n {len(g):5d}: win {pct(len(wg), len(g))}, time p50 {q(wg):.2f} | at 1.5 s past outside {pct(cc['past outside'], len(s15))}, level {pct(cc['level outside'], len(s15))}, inside {pct(cc['inside'], len(s15))}")
+
+    # Integration (2026-11-14): when the rusher contacts the tackle and how fast he is then; the tackle's width by the
+    # rusher's state at 2.0 s (is the late pinch him following a rusher who got level?); our rushers by top-speed tercile.
+    Cn = [r for r in R if r['contact'] is not None]
+    print(f"   first contact with the tackle (within 1.2 yd): {pct(len(Cn), len(R))} | at p25/50/75 {q([r['contact'] for r in Cn], .25):.2f}/{q([r['contact'] for r in Cn]):.2f}/{q([r['contact'] for r in Cn], .75):.2f} s | his speed just before p50 {q([r['vContact'] for r in Cn]):.2f} yd/s | his top speed in the play p50 {q([r['vmax'] for r in R]):.2f}")
+    for lab, f in (('not level at 2.0 s', lambda st: st == 'not level'), ('level / past outside at 2.0 s', lambda st: st in ('level outside', 'past outside')), ('inside at 2.0 s', lambda st: st == 'inside')):
+        g = [r for r in R if 2.0 in r['snaps'] and f(r['snaps'][2.0]['state'])]
+        if not g: continue
+        print(f"   tackle width out by rusher {lab:30s} n {len(g):5d}: " + ' | '.join(f"{T:.1f} s {q([r['snaps'][T]['twide'] for r in g if T in r['snaps']]):+.2f}" for T in TIMES if any(T in r['snaps'] for r in g)))
+    vs = sorted(r['vmax'] for r in R)
+    if vs:
+        lo, hi = vs[len(vs) // 3], vs[2 * len(vs) // 3]
+        for lab, f in (('slowest third', lambda v: v <= lo), ('middle third', lambda v: lo < v <= hi), ('fastest third', lambda v: v > hi)):
+            g = [r for r in R if f(r['vmax'])]
+            s2 = [r['snaps'][2.0] for r in g if 2.0 in r['snaps']]; cc = C.Counter(x['state'] for x in s2)
+            print(f"   rushers by top speed, {lab:14s} (top {q([r['vmax'] for r in g]):.1f} yd/s): at 2.0 s not level {pct(cc['not level'], len(s2))}, level {pct(cc['level outside'], len(s2))}, past outside {pct(cc['past outside'], len(s2))} | speed at 0.5 / 1.0 / 1.5 s {q([r['snaps'][0.5]['speed'] for r in g if 0.5 in r['snaps']]):.1f} / {q([r['snaps'][1.0]['speed'] for r in g if 1.0 in r['snaps']]):.1f} / {q([r['snaps'][1.5]['speed'] for r in g if 1.5 in r['snaps']]):.1f}")

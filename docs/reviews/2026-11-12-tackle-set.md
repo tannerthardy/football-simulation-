@@ -3497,3 +3497,51 @@ tackle set too wide that holds its width, and a rusher who stays in front of him
 EDGE_ARC (off) is the rusher half of this, run as taught (landmark at the QB's depth outside the tackle's shoulder,
 turn past the hips). Its earlier read was 55-57% in front of the tackle against the NFL's 27%, on an older stack. It
 bears on the rusher side and should be re-read on engine-61 with the tackle's width settled first.
+
+### The edge corner: the first second, the tackle's width by the rusher's state, and speed terciles (2026-11-14)
+
+edge-rush.py extended (0.5 s, the first contact with the tackle, the width split, top-speed thirds as a speed proxy).
+NFL vs engine-61 arm A, s11 / s23:
+
+| | NFL | ours |
+|---|---|---|
+| rusher speed at 0.5 / 1.0 s | 2.3 / 3.9 | 2.5 / 4.1 |
+| tackle depth / width out at 1.0 s | -2.4 / +0.6 | -2.5 / +1.1 |
+| first contact with the tackle (within 1.2 yd), p25 / 50 / 75 | 1.20 / 1.40 / 1.60 s | 1.20 / 1.30 / 1.40 s |
+| his speed just before it | 4.27 | 4.28 / 4.37 |
+| speed at 1.5 / 2.0 s | 4.1 / 3.5 | 3.4-3.5 / 2.8-2.9 |
+| fastest third: top / 1.0 s / 1.5 s speed | 5.6 / 4.5 / **5.1** | 5.1 / 4.4-4.5 / **3.8-4.0** |
+| fastest third at 2.0 s: not level / level / past outside | 14 / 31 / 43% | 59 / 9-10 / 7-8% |
+| slowest third at 2.0 s: not level / past outside | 52 / 9% | 78-84 / 1% |
+
+**Read.**
+- **Speed is not the first cause.** Our edges get off and arrive at NFL speed (4.3 yd/s just before contact).
+- **The contact stops them.** NFL rushers keep their speed through contact and the fastest keep accelerating (4.5 →
+  5.1). Ours lose about 0.7-0.9 yd/s in the 0.2 s after contact, the fastest included.
+- **It is the model, not the roster.** Even our fastest third is 59% not level at 2.0 s, against 14%.
+- **So this is the engagement, not the approach.** Integration's second case: the tackle's hands stop him square,
+  where an NFL rusher keeps his outside half free and runs through an edge of the man. The tackle's extra width also
+  brings the contact about 0.1 s sooner.
+
+**The tackle's width out by the rusher's state at 2.0 s:**
+
+| | 0.5 | 1.0 | 1.5 | 2.0 | 2.5 | 3.0 s |
+|---|---|---|---|---|---|---|
+| NFL, rusher not level | +0.2 | +0.6 | +0.7 | +0.4 | +0.1 | -0.1 |
+| NFL, level / past outside | +0.2 | +0.6 | +0.7 | +0.3 | -0.3 | -0.9 |
+| NFL, inside | +0.2 | +0.4 | +0.4 | 0.0 | -0.4 | -0.8 |
+| ours (s11), not level | +0.4 | +1.1 | +1.1 | +1.1 | +1.0 | +1.0 |
+| ours (s11), level / past outside | +0.4 | +1.5 | +2.0 | +2.0 | +1.9 | +1.8 |
+| ours (s11), inside | +0.4 | +0.9 | +0.7 | +0.3 | -0.4 | -1.3 |
+
+The NFL tackle's late pinch is strongest when the rusher got level, so it is mostly following the rusher's bend back
+(Integration's reading). It is milder but still present when the rusher is not level. Ours holds +1.0 against a rusher
+in front and rides a level rusher out to +2.0, never back.
+
+**Next diagnostic:** the contact itself. In the 0.3 s after an edge's first contact with the tackle:
+- his request (aim, pace, push) and what he achieves;
+- the leverage he arrives with (head-up against the outside half);
+- the tackle's hands (punch, PUNCH_STRIKE's strike and hold) and the load on him along his path.
+
+That separates his stopping into his own request (aiming through the man, a power pace) and the tackle's hands
+stopping him square.
