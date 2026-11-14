@@ -11,6 +11,8 @@ import type { RouteDef } from './types.js';
 const BACK_PATHS = process.env.BACK_PATHS !== '0';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
+const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
 /** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
  * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
  * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
@@ -23,7 +25,7 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
  *   underneath him, a yard apart so they cross close enough to rub (Air Raid / Holgorsen); points at 5 and 4.
  * The deep cross is unchanged until the over's install is sourced. His freedom at the route's end is unchanged. */
 const CROSS_FLAT = process.env.CROSS_FLAT !== '0';
-export const ROUTES: Record<string, RouteDef> = {
+const ROUTE_TABLE: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
   fade: { id: 'fade', family: 'deep', depth: 25, end: 'continue', points: [{ d: 3, l: 1.6 }, { d: 50, l: 3.5 }] },
@@ -129,6 +131,42 @@ export const ROUTES: Record<string, RouteDef> = {
     : { id: 'back_out', family: 'back', depth: 4, end: 'continue', points: [{ d: 2, l: 2, s: 0.8 }, { d: 4.5, l: 4, s: 0.5 }, { d: 4.5, l: 14 }] },
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
+
+/** ROUTE_EFFORT: the break table. With effort at 1 (the stem's pace, no coached throttle), each break says how it is run:
+ * a cut (`cut: true`: plant, stick the foot and break; the follower's vertex law, no lead) or a roll (led as a fillet
+ * under ROUTE_FILLET), and the speed he brings through it (s, a fraction of his top speed), set against NFL break-aligned
+ * rows (Tools' route_break.py, BDB 2025 week 1, speed into the vertex v_in and at it v_min). Points not listed keep their
+ * authored values. Off, every route is exactly as authored above.
+ * - Cuts, square (dig, out, deep out, short in): plant at s .4. "Sink the hips" into the break (USA Football, Coaching the
+ *   Wide Receiver: the Tight Break). On a square plant the follower's corner law binds below any s above .4: s .6 left the
+ *   dig at 3.3 and the out at 4.7 yd/s at the vertex, unchanged. The NFL deep in / out (v_min 5.7 / 5.9) are 51-54 deg
+ *   rolls, not square plants: that is ROUTE_SHAPE's geometry, not s. NFL short IN v_min 3.5 is s .37 on a 9.6 yd/s body.
+ * - Cuts, sink and come back (hitch, curl, comeback, stick, hook): the authored settle s, now planted at the vertex.
+ * - The slant: a cut, the three-step plant ("three controlled steps and stick, then break"), s .35: the NFL slant comes into
+ *   its plant at 3.3 yd/s (break at 2.3 yd, 1.6 s, turn 56 deg), .35 of a 9.6 yd/s body. With the arrive law aimed at the
+ *   switch (ROUTE_FILLET) he crosses the vertex at 3.8 (at .4: 4.3).
+ * - Rolls at depth (corner, post): s 1, he carries his speed through. NFL breaks at 9 yd or deeper (week 1): corner v_in
+ *   7.2, v_min 7.2, turn 43 deg, radius 11 yd (n 23); post 7.0 / 6.4 / 45 deg / 8.5 yd (n 17). The pooled NFL rows (v_in
+ *   5.4 / 6.0) were mostly release bends at about 3 yd, not these breaks. The set at the top of the stem (AFCA, Winning
+ *   Vertically at the WR Position) is a head-and-shoulder fake, not a throttle.
+ * - Rolls (shallow, shallow high, cross): s 1 through the bend, a speed cut ("cut at full speed", USA Football, Coaching
+ *   the Wide Receiver: the Speed Cut); NFL rounded cross v_min / v_in 1.16.
+ * - The speed out (quick_out) is a roll at its authored s .4: at s 1 the radius his lateral allows at the speed he
+ *   carries (about 6 yd) is longer than its 5 yd stem, so he rolled from the line (break at 1.3 yd, 1.4 s; NFL OUT under
+ *   9 yd: 3.9 yd, 2.0 s, 51 deg). Its authored 90 deg is the route-geometry item (NFL speed outs turn about 50 deg).
+ * Backs and screens keep theirs. */
+const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>> = {
+  slant: [{ cut: true, s: 0.35 }],
+  out: [{ cut: true, s: 0.4 }], deep_out: [{ cut: true, s: 0.4 }], dig: [{ cut: true, s: 0.4 }], short_in: [{ cut: true, s: 0.4 }],
+  hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
+  corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],
+  shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
+};
+export const ROUTES: Record<string, RouteDef> = ROUTE_EFFORT
+  ? Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id, BREAKS[id]
+    ? { ...r, points: r.points.map((p, i) => ({ ...p, ...(BREAKS[id][i] ?? {}) })) }
+    : r]))
+  : ROUTE_TABLE;
 
 export function getRoute(id: string): RouteDef {
   const r = ROUTES[id];
