@@ -392,3 +392,17 @@ Seeds 11/23 x 8, engine-59, unpaired.
   receiver (`ReceiverForecast` from the QB's pictures, with his lead options), not to the receiver's route prior.
 - (c) **`trackPen`'s removal.** It double-counts ballTracking at the catch on long flights. It goes as its own bit
   with its own row (Integration).
+
+## Design 4: the pre-release look (2026-11-14)
+
+Constants, fixed before the exam. Design 2's prior and late body turn and design 3's "run the route until he has seen
+the ball" carry forward.
+
+| Constant | Value | Source |
+| --- | --- | --- |
+| When he looks | From his route's break (RouteRunner's `breakTime`, the QB's timing of the route) + 0.15 s x routeRunning: a better route runner can leave it later | coached ("get your head around out of the break"); the 0.15 s is choice |
+| Which routes | Every route family but `deep`. A deep route doesn't expect the ball at its stem's break; the late body turn (design 2) covers it | coached |
+| What he does | His head turns to the QB as he sees him (GAZE's rate, within ±90° of his body). His shoulders turn off his running line only as far as needed to bring the QB within his neck's reach, paid by the facing speed cap | engine; coached (the shoulders as far as the route allows) |
+| His view of the defender | Not modelled separately here (GAZE off). The look's cost is the turned body | stated |
+| After the release | The head he has is the head he starts the flight with. His first sample comes at his pursuit latency once the ball is in his eye range | engine |
+| `trackPen` | BALL_EST becomes a bitmask: 1 the estimator; 2 removes catching.ts's tracking penalty (it double-counts ballTracking). Read as its own row | Integration |
