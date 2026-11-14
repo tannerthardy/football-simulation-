@@ -131,6 +131,7 @@
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",
+    "OPEN_FIELD": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
