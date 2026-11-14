@@ -3994,3 +3994,44 @@ yielding. Candidates:
   of a long lever at lockout is weak);
 - the press being a strut of fixed extension (PUNCH_STRIKE's held touch) rather than an arm that yields under load;
 - the hand coming off, which RIP_CLEAR showed needs the press itself to fall.
+
+### The hands joint in the level phase: a strut (2026-11-14, measurement only)
+
+edge-level.mts, VERTICAL_SET, engine-62, seed 11 x 4, 257 DE reps at the tackle's hip. Per-tick medians.
+
+**How it is set** (setContactHands, then PUNCH / PUNCH_STRIKE):
+- extension = bodies + arm x 0.3 x (0.5 + 0.5 |control|): the elbows-bent "base";
+- push = pressForce x (0.35 + 0.65 |control|);
+- hold and steer from armForce;
+- under PUNCH_STRIKE's held touch, the hands follow the man at arm speed down to the base, and no shorter;
+- in the solver a compressed joint (closer than its extension) is a rigid constraint up to its push limit (x
+  armScale), whatever the bend.
+
+| | all (257) | went past (39) | stayed level (218) |
+|---|---|---|---|
+| set extension beyond the bodies / his arm | 0.28 / 0.96 yd (29%) | 0.20 / 0.96 | 0.30 / 0.96 |
+| normal force / push limit | 1165 / 1410 N | 879 / 1103 N | 1184 / 1478 N |
+| at the push limit | 64% of ticks | 73% | 64% |
+| his press capacity (pressForce) | 2043 N | 2043 | 2043 |
+
+The force against how far the joint is driven short of its set extension (all reps, ticks):
+
+| driven short | ticks | normal p50 |
+|---|---|---|
+| 0-0.01 yd | 135 | 1266 N |
+| 0.01-0.03 yd | 167 | 1376 N |
+| 0.03-0.06 yd | 198 | 1335 N |
+| more than 0.06 yd | 1338 | 1190 N |
+
+Negative "short" ticks (964) are an artefact: the gap is measured centre to centre, the joint between chest points.
+
+**Read:**
+- It is the strut. At a bend of 29% of his arm, the joint holds as a rod up to about 70% of a full press (the push
+  limit 1410 N of a 2043 N press), and it is at that limit on two ticks in three.
+- What it transmits does not fall as it is driven shorter.
+- A real arm at that bend is a triceps holding against the man's drive, a fraction of a locked-out press, and it
+  yields. Ours holds the gap open.
+
+**(b), where the rusher is against the tackle's base.** In this model the base has no orientation (baseRadiusAt is a
+circle), and the only directional terms are along his facing. So "beside his base" collapses to the chest angle,
+about 20 deg (edge-level above), and the base itself cannot see a man at the hip.
