@@ -79,6 +79,48 @@ while the ball is in his view, and carried forward unchanged (ballistic) while i
 | Not looking | The estimate stays at its last fit. No new information. He can still act on cues (hands, the receiver's head) | coached (Run Game §7) |
 | Skill | ballTracking (receiver) / ballSkills (defender) scale per-sample noise and the delay before the first sample | choice (the ratings' meaning: perception, not outcome) |
 
+**The estimator's constants, fixed before any NFL outcome row is read (Integration's
+condition 1).** A ballistic arc is pinned by two clean samples, so everything a player
+gets wrong comes from these. The NFL rows are the exam: the receiver's 7.6 → 6.7 yd/s,
+1.1-1.4 yd end distance and the 1.9-2.6 yd p75 tail. If the exam is missed, the next
+move is a missing mechanism, not a bigger sigma.
+
+| Constant | Value | Evidence |
+| --- | --- | --- |
+| Sample interval | One sample per 0.25 s while the ball is in view | measured, not football: mean fixation 242 ms (Aksum 2020, soccer midfielders, eye tracking) |
+| Delay | His existing perception delay, `observationDelay(reactionTime)`, the same channel every picture uses | engine (no new constant) |
+| Bearing noise (azimuth and elevation), σ | 0.5° at the best skill, 1.0° at the worst | choice: the order of positional judgement of a moving target; static acuity is arc-minutes, motion degrades it |
+| Range noise, σ | 5% of range at the best skill, 10% at the worst | choice: size and distance Weber fractions are a few to about 10% in psychophysics, and Brouwer 2006 finds depth judged poorly (from optical size, not angle) |
+| Depth : lateral error | Emerges. At 20 yd: lateral 0.17-0.35 yd, depth 1-2 yd, about 6 : 1 | follows from the two rows above |
+| What he can sample | The ball within 30° of where his head points | choice: tracking a ball needs it near fixation (Vater 2022: identification needs fixation; foveal 4-5°; 30° allows eye movement within the head) |
+| Head | Turns toward the ball at 6 rad/s, within ±90° of his body facing (GAZE's existing rates) | engine (GAZE); anatomy: cervical rotation 70-90° |
+| Skill | ballTracking (receiver) / ballSkills (defender) moves bearing and range noise linearly between best and worst | choice |
+| Fit | Generalized least squares for launch position and velocity, each sample weighted by its own covariance (range along his line of sight, bearing across it). Gravity and the ball's drag are known physics, iterated in. Needs two samples | choice (a fitted arc is the stand-in Run Game §7 calls defensible) |
+
+**The receiver's look costs him (Integration's condition 2).**
+- A receiver running away from the QB has the ball behind him. To sample it, his head
+  plus eyes must reach it: at most 120° off his body facing. A ball directly behind
+  therefore needs his shoulders turned at least 60° off his running line.
+- The existing facing cap prices that turn: `directionalSpeedFactor` at 60° costs about
+  13% of top speed for a shuffle factor of 0.7.
+- Stage 1's receiver policy is the simplest: on his ball, he turns his shoulders only as
+  far as he needs to keep the ball in view. That's "eyes up after the drive" with no
+  timer, and the per-play choice of when to look waits for the receiver lane.
+- Defenders keep today's facing; their look decision is stage 2.
+
+**The QB (Integration's condition 3).**
+- No QB code reads the flight after the release; only the defense and receiver
+  consumers above do (checked on `b9cd3628`).
+- A tip or a disturbed release (THROW_HOLD) is a new flight he must see like anyone else.
+
+**Continuity of the request (Integration's condition 4).**
+- The estimate changes only when a new sample lands, at most 4 times a second, and by
+  less as samples accumulate.
+- Between samples the receiver's aim point is fixed, so his request is continuous apart
+  from those steps.
+- Budget: aim-point jumps over 1 yd after the 3rd sample count as dither, reported per
+  flight, alongside today's dither count.
+
 **One API, every consumer.** `acquireFlight` / `rememberedFlight` return the estimated
 path instead of `sim.ballPath`, re-fitted on each call from his own samples. Everything
 downstream then changes in one place:
