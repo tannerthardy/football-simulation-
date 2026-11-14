@@ -12,7 +12,7 @@ Default flags that matter here: PASS_KICK, PRO_READ, BLOCK_SEEN, SEEN_EYES, DRIV
 This file is the single counter of information leaks (Integration, 2026-11-13; the user's rule: every information
 cheat is removed by its owner, with the honest replacement built, flagged only while measured, intended on). Each row
 gets its owner, the flag or PR that removes it, and the date it is removed (on in the reference stack). Start: **60
-active, 6 dormant**. Assignments so far: Flex (blocking, engagement, teammates' block quality), Coverage
+active, 6 dormant**; 61 with line of sight (2026-11-14, below). Assignments so far: Flex (blocking, engagement, teammates' block quality), Coverage
 (`acquireFlight`, zone lanes, the catch point via the shared ball estimator), Defense (Blitzer catchSpot, pursuit,
 tryTackles, the motion response), QB lane (felt's blind side, evade, seesIt, slide, throw evaluation, read order,
 qbmind's looks), Run Game (the ball carrier's six rows), Rules + Coaching (receivers' catch point with Coverage's
@@ -149,8 +149,8 @@ disguise it), low priority.
 | Coverage | 10 | 0 |
 | QB lane | 8 | 3 (held legacy, freeBound, screenDead/spotSatOn) |
 | Ball carrier | 6 | 0 |
-| Rules and coaching | 5 | 0 |
-| **Total** | **60** | **6** |
+| Rules and coaching | 6 (+ line of sight, below) | 0 |
+| **Total** | **61** | **6** |
 
 Highest-leverage first: the pass-protection coordinator and pass set (blocking 194-443); `acquireFlight` and the receiver catchSpot (true trajectory); Blitzer's ungated catchSpot; availableTarget's engagement/isDown; QB `felt()`; DownfieldBlocker; the rusher's engaged aim at the true QB. Another ~25 rows are the same mistake: a true `isDown`/`engagement` filter where `seen.pose` plus a seen-contact cue would do. The repo has no "engaged" perception channel yet (KNOWN_PROBLEMS INFO-1), so one shared seen-contact helper would retire most of them.
 
@@ -168,3 +168,41 @@ Highest-leverage first: the pass-protection coordinator and pass set (blocking 1
 - **defense.ts:424-426, STANCE_TELL.** Reads `man.agent.stanceLean`, the true pre-snap lean (a probabilistic stand-in for a visible tell).
 - **defense.ts:1990/2028 and 1955-1961.** `sim.windupAt`/`windupEndAt` timestamps and `perception.recorded` (undelayed QB track), gated by eyes held on the QB. A plausible visible cue, but read as an exact event time.
 - **carrier.ts:829.** `d.downUntil` scenario parking. Test fixtures only.
+
+## Line of sight: `see()` hands a picture of a man the observer cannot see (2026-11-14)
+
+Found while fixing the same leak in `track()` (#695, `inSight`; Integration's ruling: measure `see()` and put it here
+with a proposal, do not fix it inside that change). Owner: Rules + Coaching (perception's entry points).
+
+**Measured** (`scripts/diag/eyes/see-sight.ts` on scratch/wait-reached-track2, engine-59 candidate stack, seed 101 x 1,
+1 in 10 opponent `see()` calls, 2.2 M sampled): with GAZE off, `see()` has no line-of-sight term. 11.1% of calls look
+through a body (a body's centre line across the sight line, 15-85% of the way, within its radius) and 10.4% are of a
+man behind the observer's shoulder (beyond 1.8 rad of body facing). The delay is the only cost either pays.
+
+| Caller | Share of calls | Through a body | Behind the shoulder |
+|---|---|---|---|
+| possession-read `observedHolder` | 57.1% | 10.6% | 10.5% |
+| recognition `cues` | 13.7% | 11.5% | 11.5% |
+| receiver `routeCraft` | 4.1% | 5.2% | 17.1% |
+| defense `seenQbEyes` / `zonePlay` | 3.3% / 3.2% | 4.6% / 4.5% | 1.6% / 3.3% |
+| possession-read `qbRunning` | 2.3% | 13.4% | 2.2% |
+| qb `felt` (in front of his shoulders) | 1.7% | 30.2% | 2.9% |
+| recognition `seesGive` / `update` | 1.3% / 1.3% | 11.3% / 17.2% | 4.6% / 3.6% |
+| common `aroundBodies` | 1.1% | 19.8% | 56.1% |
+| qbmind `observe` | 0.8% | 25.7% | 2.5% |
+| run-fits | 0.5% | 27.1% | 11.4% |
+| defense `sawThrow` | 0.3% | 29.8% | 20.8% |
+| carrier `trafficTempo` / reads | 0.2% / 0.2% | 19.8% / 20.2% | 50.3% / 45.7% |
+| defense `coverMan` | 0.2% | 22.3% | 19.1% |
+
+**Proposal.** The same physics as `track()`'s `inSight`, inside `see()`, behind its own off flag (`SEE_SIGHT`), each
+consumer group measured: a target out of view, or behind a body, gets no new sample; his picture is the last one that
+arrived, carried forward and ageing (GAZE's `remembered()` already does this for the out-of-view half when GAZE is on,
+so the flag reuses it). Touch (contact, engagement, a bond) always counts as sight. Not a ban: a player who turns his
+head, or moves to clear the line, sees again. Open design points to settle before building: a body is not opaque to
+everything (helmets above shoulders: a 6'5" QB sees a rusher over a guard's pads part of the time; a back sees a
+linebacker through a gap), so the occluder test needs a height term or a partial-view probability for the QB and run
+fits, where the shares are highest; sound and the crowd are not a channel here. Order: the carrier's behind-reads
+(trafficTempo, the carrier's own) and `aroundBodies` first (the largest behind shares; a runner does not see a man
+behind him), then `sawThrow` and coverage, then possession-read and recognition (the volume).
+
