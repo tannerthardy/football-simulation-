@@ -9,7 +9,8 @@
  *
  * Writes <out>/by-file.json, <out>/by-flag.json and <out>/report.md; probe results are cached in <out>/probes.json,
  * so an interrupted run resumes. Pinned alone is a minimal set, not the only one: a file with two ways to pass
- * reports the first found.
+ * reports the first found. Files after the first are searched among the flags earlier files needed first (cheap), and
+ * among all promoted flags only when those do not suffice, so a result is minimal within that pool.
  */
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -58,6 +59,7 @@ async function main() {
   });
 
   const result: Record<string, { pinned: string[]; status: string; probes: number }> = {};
+  const known = new Set<string>();
   const queue = [...files];
   await Promise.all(Array.from({ length: jobs }, async () => {
     for (let file = queue.shift(); file; file = queue.shift()) {
@@ -65,7 +67,14 @@ async function main() {
       const passes = async (p: string[]) => { probes++; return probe(file, p); };
       if (!await passes(promoted)) result[file] = { pinned: [], status: 'fails even fully pinned (environment or a real defect)', probes };
       else if (await passes([])) result[file] = { pinned: [], status: 'passes with nothing pinned', probes };
-      else result[file] = { pinned: await minimalPinned(promoted, passes), status: 'ok', probes };
+      else {
+        // Most files need flags other files needed: try the flags found so far first, and search the whole list only if they do not suffice.
+        const seen = [...known].sort();
+        const pool = seen.length && await passes(seen) ? seen : promoted;
+        const found = await minimalPinned(pool, passes);
+        for (const f of found) known.add(f);
+        result[file] = { pinned: found, status: 'ok', probes };
+      }
       console.log(file, result[file]!.status, result[file]!.pinned.join(','), `(${probes} runs)`);
     }
   }));
