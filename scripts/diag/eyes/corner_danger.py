@@ -5,11 +5,16 @@ among those at least as deep as the receiver less 2 yd at the throw (over the to
 after 0.3 s more on his own present course; `need` is the speed he would need to cover the rest, less 1 yd of reach,
 in the remaining 1.2 s. Rows by `need`: routes run, targeted, rate; and completion on the targeted ones.
 NFL routes from BDB 2025 player_play routeRan (joined by nflId); sim from the export's route id.
-usage: python3 -I corner_danger.py [--nfl <bdb2025 dir>] name=a.jsonl.gz,... """
+With --downfield N the routes are instead every WR / TE / RB who is N yd or more past the line at the throw (any
+route), for the general case: is a throw downfield made less often, and completed less often, as the man over it
+comes into range?
+usage: python3 -I corner_danger.py [--nfl <bdb2025 dir>] [--downfield N] name=a.jsonl.gz,... """
 import sys, os, json, gzip, csv, math
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
-args = sys.argv[1:]; RR = {}; REC = {}
+args = sys.argv[1:]; RR = {}; REC = {}; DOWN = None
+if '--downfield' in args:
+    i = args.index('--downfield'); DOWN = float(args[i + 1]); del args[i:i + 2]
 if '--nfl' in args:
     i = args.index('--nfl'); D = args[i + 1]; del args[i:i + 2]
     for r in csv.DictReader(open(f'{D}/player_play.csv')):
@@ -26,9 +31,10 @@ for arg in args:
             fw = raw['events'].get('pass_forward')
             if fw is None: continue
             nfl = raw.get('source') != 'sim'; P = raw['players']
-            runners = [i for i, pl in enumerate(P) if pl['side'] == 'O' and ((RR.get((raw['id'], pl.get('id'))) if nfl else 'corner' in str(pl.get('route') or '').split(':')))]
-            if not runners: continue
             p = Play(raw); k = min(p.frames - 1, p.k(fw)); k0 = max(0, k - 3)
+            if DOWN is not None: runners = [i for i, pl in enumerate(P) if pl['side'] == 'O' and pl['group'] in ('WR', 'TE', 'RB') and p.pos(i, k)[0] is not None and p.pos(i, k)[0] >= DOWN]
+            else: runners = [i for i, pl in enumerate(P) if pl['side'] == 'O' and ((RR.get((raw['id'], pl.get('id'))) if nfl else 'corner' in str(pl.get('route') or '').split(':')))]
+            if not runners: continue
             if k == k0: continue
             def pv(i):
                 a, b = p.pos(i, k), p.pos(i, k0)
@@ -59,7 +65,7 @@ for arg in args:
                 rows.append((best, tg, cm, rx, short))
     print(f"   (routes whose play ended more than 0.45 s short of the 1.5 s: {sum(r[4] for r in rows)} of {len(rows)}, {sum(r[4] and r[1] for r in rows)} targeted)")
     n = len(rows); t = sum(r[1] for r in rows)
-    print(f"== {name}: corner routes in the air at a throw {n}, targeted {t} ({100 * t / max(1, n):.1f}%)")
+    print(f"== {name}: {'receivers ' + str(DOWN) + '+ yd downfield' if DOWN is not None else 'corner routes'} at a throw {n}, targeted {t} ({100 * t / max(1, n):.1f}%)")
     for lo, hi in BINS:
         B = [r for r in rows if lo <= r[0] < hi]; tb = sum(r[1] for r in B)
         print(f"   need {lo if lo > -99 else 0}-{hi if hi < 99 else '+'} yd/s: routes {len(B):5d} ({100 * len(B) / max(1, n):4.1f}%) | targeted {tb:4d} = {100 * tb / max(1, len(B)):4.1f}% | complete {100 * sum(r[2] for r in B) / max(1, tb):3.0f}%")
