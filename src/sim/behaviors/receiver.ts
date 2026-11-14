@@ -15,7 +15,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -640,6 +640,12 @@ export class TrackBall implements Behavior {
         this.choice = chooseCatchPoint(a, sim, this.judge, path) ?? this.choice; this.choseAt = sim.t;
       }
       spot = this.choice;
+      // BALL_EST bit 4 (design 5 b): the moment he chose to meet it stays his; where the ball is at that moment is
+      // re-read from his current estimate every tick, not frozen from the picture he chose it on.
+      if (BALL_EST_MOVING_CHOICE && spot && path.length) {
+        const at = path.find((p) => p.t >= spot!.t - 1e-6) ?? path[path.length - 1];
+        spot = { p: { x: at.x, y: at.y }, t: spot.t };
+      }
     }
     spot ??= catchSpot(a, { t: sim.t, ballPath: path });
     if (!spot) return BALL_EST ? lookFor(a, sim, this.fallback.update(a, sim)) : this.fallback.update(a, sim);

@@ -29,11 +29,15 @@ import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
 import type { PlaySim } from './playsim.js';
 
-/** BALL_EST is a bitmask (0 off): 1 the estimator; 2 removes catching.ts's tracking penalty (ballTracking acts through
+/** BALL_EST is a bitmask (0 off): 1 the estimator; 4 a committed catch point moves with his estimate; 8 looming; 2 removes catching.ts's tracking penalty (ballTracking acts through
  * the estimator; charging it again at the catch double-counts). */
 const BALL_EST_BITS = Number(process.env.BALL_EST ?? 0);
 export const BALL_EST = (BALL_EST_BITS & 1) !== 0;
 export const BALL_EST_NO_TRACKPEN = (BALL_EST_BITS & 2) !== 0;
+/** Design 5 (b): a committed catch point moves with his estimate (bit 4). */
+export const BALL_EST_MOVING_CHOICE = (BALL_EST_BITS & 4) !== 0;
+/** Design 5 (a): looming, a time-to-contact observation while his head is on the ball (bit 8). */
+export const BALL_EST_LOOMING = (BALL_EST_BITS & 8) !== 0;
 /** Design 4: the pre-release look starts this long after his route's break per unit of routeRunning (choice). */
 export const PRE_LOOK_LATE = 0.15;
 /** Design 4 attempt 2: his eyes come round this long before his route's break (choice). */
