@@ -29,6 +29,7 @@ import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
 import { ThrowSight, viewCone } from './throw-sight.js';
+import { BallEstimates } from './ball-estimate.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -233,6 +234,8 @@ export class PlaySim {
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   /** When each defender first had the current pass in view. */
   readonly throwSight = new ThrowSight();
+  /** BALL_EST: each player's own estimate of the ball in flight. */
+  readonly ballEstimates = new BallEstimates();
   /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
   private sightSamples?: Map<string, number>;
   /** GAZE: head direction and what each opted-in player is watching. */
@@ -703,7 +706,7 @@ export class PlaySim {
     const g = this.gaze.get(a);
     // A lapsed watch starts over: head from body facing, no memories from before.
     if (g && g.set >= this.t - this.dt - 1e-9) { g.target = target; g.set = this.t; }
-    else this.gaze.set(a, { dir: a.facing, t: this.t, target, set: this.t, since: this.t });
+    else this.gaze.set(a, { dir: a.shoulders, t: this.t, target, set: this.t, since: this.t });
   }
 
   /** GAZE: `observer`'s assignment makes these opponents his responsibility (his man, his zone's
@@ -776,10 +779,10 @@ export class PlaySim {
       const w = this.perception.perceive(g.target.idx, delay);
       const want = Math.atan2(w.pos.y - observer.pos.y, w.pos.x - observer.pos.x);
       const neck = neckRange(observer);
-      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -neck, neck);
+      const clamped = observer.shoulders + clamp(angDiff(want, observer.shoulders), -neck, neck);
       const step = GAZE_HEAD_RATE * (this.t - g.t);
       g.dir = g.dir + clamp(angDiff(clamped, g.dir), -step, step);
-      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -neck, neck);
+      g.dir = observer.shoulders + clamp(angDiff(g.dir, observer.shoulders), -neck, neck);
       g.t = this.t;
     }
     const brg = Math.atan2(picture.pos.y - observer.pos.y, picture.pos.x - observer.pos.x);
@@ -967,7 +970,7 @@ export class PlaySim {
     if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
     const sx = target.pos.x - observer.pos.x, sy = target.pos.y - observer.pos.y, l2 = sx * sx + sy * sy;
     const g = GAZE ? this.gaze.get(observer) : undefined;
-    const dir = g && g.set >= this.t - this.dt - 1e-9 ? g.dir : observer.body.facing, cone = g && g.set >= this.t - this.dt - 1e-9 ? GAZE_CONE : 1.8;
+    const dir = g && g.set >= this.t - this.dt - 1e-9 ? g.dir : observer.shoulders, cone = g && g.set >= this.t - this.dt - 1e-9 ? GAZE_CONE : 1.8;
     if (l2 > 1e-9 && Math.abs(angDiff(Math.atan2(sy, sx), dir)) > cone) return false;
     if (l2 < 0.36) return true;
     for (const o of this.agents) {
@@ -1482,6 +1485,7 @@ export class PlaySim {
     }
     this.incidentalCatchReadiness.sense(this);
     this.throwSight.sense(this);
+    this.ballEstimates.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();
