@@ -59,6 +59,8 @@ export interface RoutePoint {
   d: number;
   l: number;
   s?: number;
+  /** ROUTE_FILLET: this point is a cut (plant, stick the foot and break): the vertex law applies, no lead. Absent: inferred as before (a lead). */
+  cut?: boolean;
 }
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';

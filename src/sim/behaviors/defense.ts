@@ -2221,7 +2221,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
       // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
       // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
       // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
-      const r = sim.see(a, pick.R), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+      const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
         Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
       return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
     }
@@ -2239,6 +2239,8 @@ const SHOULDER_CONE = 25 * Math.PI / 180;
  * under-leads (seed 11: 0.57 s estimated against 0.90 s actual). To be replaced by his estimate of the throw from the
  * passer's distance and the kind of throw he expects (a dart, a touch ball), with his rating's error. */
 const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
+/** SHOULDER_LEAD (on; `=0` restores the break to the receiver's seen spot): the shoulder break leads the receiver (#758). */
+const SHOULDER_LEAD = process.env.SHOULDER_LEAD !== '0';
 /** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
  * shoulders can exploit. */
