@@ -27,7 +27,7 @@ import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { availability, comHeightAt, supportParams, TURF_MU } from '../physics/support.js';
-import { fatigueFactor } from '../physics/kinematics.js';
+import { fatigueFactor, shouldersOf } from '../physics/kinematics.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -369,7 +369,7 @@ export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, eng
   const hands = { x: coast.x + ax * k, y: coast.y + ay * k };
   let cw = { x: c.pos.x + c.vel.x * w, y: c.pos.y + c.vel.y * w };
   const seenD = sim.see(c, d);
-  const sees = Math.cos(c.body.facing - Math.atan2(seenD.pos.y - c.pos.y, seenD.pos.x - c.pos.x)) > -0.2;
+  const sees = Math.cos(shouldersOf(c.body) - Math.atan2(seenD.pos.y - c.pos.y, seenD.pos.x - c.pos.x)) > -0.2;
   if (sees && !sim.bond) {
     const tw = { x: seenD.pos.x + seenD.vel.x * w, y: seenD.pos.y + seenD.vel.y * w };
     const ex = cw.x - tw.x, ey = cw.y - tw.y, el = Math.hypot(ex, ey) || 1;
@@ -407,7 +407,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
     const overrun = clamp((d.speed - 6.5) / 3.5, 0, 1) * (cosA < 0.3 ? 1 : 0.4);
     // A QB in the pocket who sees the rusher coming can duck, spin or step up.
     const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
-    const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
+    const seesIt = pocketQB && Math.cos(shouldersOf(c.body) - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
     const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.3 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
     if ((TKL_WHIFF && !pocketQB) || (POCKET_REACH && pocketQB) ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
