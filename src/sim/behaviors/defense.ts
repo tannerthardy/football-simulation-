@@ -91,6 +91,23 @@ export const HONEST_READS = process.env.HONEST_READS === '1';
 export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
+/** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
+ * bit below, for the per-item read): coverage decisions
+ * read the defender's own picture, not true state. Items (coverage audit
+ * 2026-11-13): 3 deep help decisions freeze when he has seen the throw
+ * (judgment.ts), not at the true release; 6 a man carry stops re-squaring
+ * when he has seen the throw, not at the true release; 7 the judgment's
+ * protect-vertical carry starts its cushion from the receiver he saw, not
+ * his true spot; 8 the zone lean toward the QB's look goes to where he sees
+ * that receiver, not where he is; 9 zone lanes and facing use where he sees
+ * the QB (zone, spot underneath, wall, rob); H the hands cue needs the
+ * receiver in his view (within 100 deg of his facing). */
+const INFO_HONEST = Number(process.env.INFO_HONEST ?? 0);
+/** INFO_HONEST is a bit mask so each item can be read alone: 3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32; 63 = all. */
+const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32 };
+export function infoHonest(item: number | string): boolean {
+  return (INFO_HONEST & INFO_BITS[String(item)]) !== 0;
+}
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
@@ -1180,7 +1197,7 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
     // with the cushion not broken: he re-squares (the body turns back at its
     // own rate; the stop route is built to win in that time).
-    if (breakOn && this.hipsOpen && !crossing && sim.ball.kind !== 'air' && vx < Math.max(0, a.vel.x) - 1
+    if (breakOn && this.hipsOpen && !crossing && (infoHonest(6) ? !(sim.ball.kind === 'air' && sawThrow(a, sim, R)) : sim.ball.kind !== 'air') && vx < Math.max(0, a.vel.x) - 1
       && !broken()) { this.hipsOpen = false; a.tags.add('re-square'); }
 
     let tx = seen.pos.x;
@@ -1485,7 +1502,8 @@ export class ZoneCoverage implements Behavior {
     const qb = sim.qb;
     const lm = this.landmark;
     const [ylo, yhi] = this.band;
-    const facingQB = angleTo(a.pos, qb.pos);
+    const qbAt = infoHonest(9) ? sim.see(a, qb).pos : qb.pos;
+    const facingQB = angleTo(a.pos, qbAt);
     watch(sim, a, qb);
     const qbEyes = seenQbEyes(a, sim);
     // Zone drops are run under control, eyes on the QB.
@@ -1551,7 +1569,7 @@ export class ZoneCoverage implements Behavior {
         a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
-        if (qbEyes) tgt = lerp(lm, qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
+        if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
         // SAFETY_DEPTH: a deep safety keeps his depth over the deepest receiver he sees in his band, with his landmark
         // as a floor; the QB's eyes shade him laterally only.
         if (SAFETY_DEPTH && this.initialDepth >= 9) {
@@ -1786,10 +1804,10 @@ export class ZoneCoverage implements Behavior {
     this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
-      if (qbEyes) tgt = lerp(lm, qbEyes.pos, 0.25 * a.r('anticipation'));
+      if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
       return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
-    const lane = lerp(qb.pos, best.pos, 0.82);
+    const lane = lerp(qbAt, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
@@ -1836,7 +1854,8 @@ export class ZoneCoverage implements Behavior {
   private spotUnderneath(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand {
     const qb = sim.qb;
     const lm = this.landmark;
-    const facingQB = angleTo(a.pos, qb.pos);
+    const qbAt = infoHonest(9) ? sim.see(a, qb).pos : qb.pos;
+    const facingQB = angleTo(a.pos, qbAt);
     watch(sim, a, qb);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
     if (toSpot > 2.5 && !a.tags.has('settled') && this.settledAt < 0) {
@@ -1858,7 +1877,7 @@ export class ZoneCoverage implements Behavior {
     const looked = eyes ? inZone.find((th) => th.r === eyes) : undefined;
     if (looked) {
       // The QB is looking at a receiver in my zone: get in the throwing lane.
-      const lane = lerp(qb.pos, looked.pos, 0.82);
+      const lane = lerp(qbAt, looked.pos, 0.82);
       tgt = lerp(lm, lane, 0.45 + 0.4 * read);
     } else if (eyes) {
       // Looking elsewhere: drift that way ("rally to the eyes"), and squeeze
@@ -1867,7 +1886,7 @@ export class ZoneCoverage implements Behavior {
       tgt = lerp(lm, seen.pos, 0.15 + 0.25 * read);
       if (inZone.length) {
         const near = inZone.reduce((p, q) => (Math.hypot(p.pos.x - lm.x, p.pos.y - lm.y) < Math.hypot(q.pos.x - lm.x, q.pos.y - lm.y) ? p : q));
-        tgt = lerp(tgt, lerp(qb.pos, near.pos, 0.82), 0.3);
+        tgt = lerp(tgt, lerp(qbAt, near.pos, 0.82), 0.3);
       }
     }
     // Hold the spot's depth until the ball is thrown; stay within the zone.
@@ -2072,7 +2091,8 @@ function readsHandsAt(a: Agent, sim: PlaySim, man: Agent, seen: number | undefin
     && Math.cos(cue.facing - Math.atan2(cue.vel.y, cue.vel.x)) <= -0.2;
   let hands = lookingBack ? sim.throwSight.sawHands(a, sim.t) : sim.throwSight.handsAt(a);
   // HANDS_CUE: his man's hands coming up for the ball, seen from within 3 yd, from when they became visible.
-  if (HANDS_CUE && Math.hypot(cue.pos.x - a.pos.x, cue.pos.y - a.pos.y) <= 3) {
+  const inView = !infoHonest('H') || Math.cos(a.body.facing - Math.atan2(cue.pos.y - a.pos.y, cue.pos.x - a.pos.x)) > Math.cos(100 * Math.PI / 180);
+  if (HANDS_CUE && inView && Math.hypot(cue.pos.x - a.pos.x, cue.pos.y - a.pos.y) <= 3) {
     const up = handsUpAt(man);
     if (up !== undefined && up <= sim.t) hands = hands === undefined ? up : Math.min(hands, up);
   }
