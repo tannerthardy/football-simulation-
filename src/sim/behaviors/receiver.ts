@@ -606,7 +606,12 @@ export class TrackBall implements Behavior {
     if (BALL_EST && !path.length) return lookFor(a, sim, this.fallback.update(a, sim));
     // Design 3 attempt 2: he runs his route until he has found the ball himself (his first sample); his prior and the
     // QB's shoulder line shape his estimate and his head, but his route is the better plan until he has seen it.
-    if (BALL_EST && !sim.ballEstimates.lastSeen(a)) return this.fallback.update(a, sim);
+    if (BALL_EST && !sim.ballEstimates.lastSeen(a)) {
+      // Still on his route; late in the flight (by his estimate) he turns his body to find a ball behind him.
+      const due = catchSpot(a, { t: sim.t, ballPath: path });
+      const route = this.fallback.update(a, sim);
+      return due && due.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, route) : route;
+    }
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
       if (!this.choice || (sim.t - this.choseAt >= 0.1 - 1e-9 && this.choice.t - sim.t > 0.3)) {
