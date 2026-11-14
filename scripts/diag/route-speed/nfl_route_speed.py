@@ -7,6 +7,7 @@ TS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
 play = {}
 for r in csv.DictReader(open(f'{D}/plays.csv')):
     if r['isDropback'] in ('TRUE', 'True'): play[(r['gameId'], r['playId'])] = (float(r['absoluteYardlineNumber']), r['pff_manZone'])
+pos = {r['nflId']: r['position'] for r in csv.DictReader(open(f'{D}/players.csv'))}
 route = {}
 for r in csv.DictReader(open(f'{D}/player_play.csv')):
     k = (r['gameId'], r['playId'])
@@ -27,7 +28,7 @@ for (k, i), F in tr.items():
     by = {f: (x, s, d) for f, x, s, d in F}
     if s0 not in by: continue
     los = play[k][0]
-    row = {'route': route[(k, i)], 'cov': play[k][1], 'sp': {}}
+    row = {'route': route[(k, i)], 'cov': play[k][1], 'pos': pos.get(i, '?'), 'sp': {}}
     ok = True
     for t in TS:
         f = s0 + int(round(t * 10))
