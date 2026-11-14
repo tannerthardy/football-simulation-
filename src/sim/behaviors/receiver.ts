@@ -251,7 +251,9 @@ export class RouteRunner implements Behavior {
    * it later. Not on a deep route, which does not expect the ball at its stem's break; design 6 (bit 16) gives the
    * deep route its own look: from his landmark depth, for his count, once. */
   private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
-    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb) return cmd;
+    // His own picture, not the true ball state: he looks for the QB until he has seen the ball in the air (his own
+    // sample) or sees the QB without it.
+    if (sim.ballEstimates.lastSeen(a) || sim.see(a, sim.qb).carrying === false) return cmd;
     if (this.route.family === 'deep') {
       if (!BALL_EST_DEEP_LOOK) return cmd;
       // His own depth past the line is his cue; the release is not.
