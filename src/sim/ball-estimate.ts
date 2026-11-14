@@ -25,6 +25,7 @@ import { clamp } from '../core/vec.js';
 import type { Vec3 } from '../core/vec.js';
 import { stepFlight, type BallFlight } from '../physics/ball.js';
 import type { Agent } from './agent.js';
+import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
 import type { PlaySim } from './playsim.js';
 
 export const BALL_EST = process.env.BALL_EST === '1';
@@ -39,10 +40,20 @@ const NECK = Math.PI / 2;
 const EYE = (30 * Math.PI) / 180;
 const BEARING_BEST = (0.5 * Math.PI) / 180, BEARING_WORST = (1.0 * Math.PI) / 180;
 const RANGE_BEST = 0.05, RANGE_WORST = 0.1;
+/** Attempt 3 (spec table): the receiver's route prior, and the first estimate from the QB's release. */
+const PRIOR_ALONG = 0.12, PRIOR_ACROSS = 1.0, PRIOR_HEIGHT = 1.0, PRIOR_BROKEN = 3, PRIOR_ORIGIN = 1.0;
+const RELEASE_SD = 0.5, SHOULDER_SD = (5 * Math.PI) / 180, SHOULDER_ALONG = 15, SHOULDER_UP = 15;
+/** The ball's time to a point d yd from the passer: the QB lane's measured fit (BDB 2026), without his arm term. */
+export const expectedFlight = (d: number): number => 0.38 + 0.022 * d + 0.00065 * d * d;
+/** Each receiver's own installed route (his assignment, set at the call): his prior's source. */
+export const ownRoutes = new WeakMap<object, InstalledReceiverRoute>();
+/** When the receiver may turn his body to the ball: within this long of his estimated arrival (0.4-0.8 s by tracking). */
+export const bodyTurnLead = (a: Agent): number => 0.4 + 0.4 * (1 - skill(a));
+
 /** How far off his body facing his head can point: beyond it, watching the ball costs a turned body. */
 export const LOOK_NECK = NECK;
 
-type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number };
+type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number; sv?: number };
 export type PathSample = { t: number; x: number; y: number; z: number };
 
 interface Track {
@@ -54,8 +65,12 @@ interface Track {
   /** His current error state (range, two bearings), standard-normal units, carried between samples. */
   err: [number, number, number] | null;
   samples: Sample[];
+  /** Attempt 3: observations he did not sample (his route prior, the release and the shoulder line). */
+  pseudo: Sample[];
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
   fitT: number;
+  seeded?: boolean;
+  priorT?: number;
   path: PathSample[] | null;
   pathT: number;
   /** Aim-point jumps over 1 yd after his third sample (continuity budget). */
@@ -110,10 +125,10 @@ export class BallEstimates {
       const p: Vec3 = { x: seen.p.x + u.x * er + e1.x * ea + e2.x * eb, y: seen.p.y + u.y * er + e1.y * ea + e2.y * eb, z: seen.p.z + u.z * er + e1.z * ea + e2.z * eb };
       const inflate = Math.sqrt(Math.max(1, ERR_TAU / sim.dt));
       tr.samples.push({ t: seen.t, p, along: u, sr: sr * r * inflate, sa: sa * r * inflate });
-      if (tr.samples.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
+      if (tr.samples.length + tr.pseudo.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
         tr.fitT = sim.t;
         const before = tr.path ? landing(tr.path) : null;
-        tr.fit = fitFlight(tr.samples, (ball.flight as BallFlight).drag);
+        tr.fit = fitFlight([...tr.pseudo, ...tr.samples], (ball.flight as BallFlight).drag);
         tr.path = null;
         const after = landing(this.pathOf(sim, tr));
         if (before && after && tr.samples.length > 3 && Math.hypot(after.x - before.x, after.y - before.y) > 1) tr.jumps++;
@@ -126,11 +141,16 @@ export class BallEstimates {
   estimate(a: Agent, sim: PlaySim): PathSample[] {
     let tr = this.tracks.get(a);
     if (!tr) {
-      tr = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 };
+      tr = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 };
       this.tracks.set(a, tr);
     }
     if (tr.flight !== this.flight && sim.ball.kind === 'air' && sim.ball.flight === this.flight) { this.reset(tr); tr.flight = this.flight; }
     tr.attendT = sim.t;
+    if (!tr.seeded && sim.ball.kind === 'air' && sim.ball.flight === this.flight) {
+      tr.seeded = true;
+      this.seed(a, sim, tr);
+      if (tr.samples.length + tr.pseudo.length >= 2) { tr.fit = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); tr.fitT = sim.t; tr.path = null; }
+    }
     return tr.fit ? this.pathOf(sim, tr) : [];
   }
 
@@ -139,8 +159,48 @@ export class BallEstimates {
   samplesOf(a: Agent): number { return this.tracks.get(a)?.samples.length ?? 0; }
   jumpsOf(a: Agent): number { return this.tracks.get(a)?.jumps ?? 0; }
 
+  /** Attempt 3. Whoever had the QB in view at the release: the ball at his seen hand, and its direction from his
+   * seen shoulder line. A receiver also seeds his own route's expected catch point (the QB's model of him, run on his
+   * own installed route from his exact state). A defender has nothing more. */
+  private seed(a: Agent, sim: PlaySim, tr: Track): void {
+    if (sim.ball.kind !== 'air') return;
+    const rel = sim.ball.releaseT, qb = sim.see(a, sim.qb);
+    const toQb = Math.atan2(qb.pos.y - a.pos.y, qb.pos.x - a.pos.x);
+    const qbInView = Math.abs(angDiff(toQb, a.facing)) <= NECK + EYE;
+    const hand: Vec3 = { x: qb.pos.x, y: qb.pos.y, z: 2.0 };
+    if (qbInView) {
+      tr.pseudo.push({ t: rel, p: hand, along: { x: 1, y: 0, z: 0 }, sr: RELEASE_SD, sa: RELEASE_SD, sv: RELEASE_SD });
+      const az = qb.facing + sim.dice('ball-est:shoulder', a).normal(0, SHOULDER_SD * (1.5 - skill(a)));
+      const u: Vec3 = { x: Math.cos(az), y: Math.sin(az), z: 0 };
+      // One second out along his shoulder line: across it tight, along it and in height almost free.
+      tr.pseudo.push({ t: rel + 1, p: { x: hand.x + u.x * 15, y: hand.y + u.y * 15, z: hand.z }, along: u, sr: SHOULDER_ALONG, sa: 15 * SHOULDER_SD, sv: SHOULDER_UP });
+    }
+    const own = a.team === 'O' ? ownRoutes.get(a) : undefined;
+    if (!own) return;
+    // His prior assumes a ball from his QB: the QB's spot as he last had him, whether or not he saw the release.
+    if (!qbInView) tr.pseudo.push({ t: rel, p: hand, along: { x: 1, y: 0, z: 0 }, sr: PRIOR_ORIGIN, sa: PRIOR_ORIGIN, sv: PRIOR_ORIGIN });
+    const fc = new ReceiverForecast(a, own, sim.dt);
+    fc.acquire({ pos: { ...a.pos }, vel: { ...a.vel }, facing: a.facing, sampledAt: sim.t, acquiredAt: sim.t });
+    const broken = fc.estimate?.motion !== 'installed-route';
+    for (let T = 0.3; T <= 4.5; T += 0.05) {
+      const at = rel + T, P = fc.predict(sim.t, Math.max(0, at - sim.t));
+      if (!P) return;
+      const d = Math.hypot(P.x - hand.x, P.y - hand.y);
+      if (expectedFlight(d) > T) continue;
+      const Q = fc.predict(sim.t, Math.max(0, at - sim.t) + 0.1) ?? P;
+      const h = Math.hypot(Q.x - P.x, Q.y - P.y), u: Vec3 = h > 1e-3 ? { x: (Q.x - P.x) / h, y: (Q.y - P.y) / h, z: 0 } : { x: 1, y: 0, z: 0 };
+      const k = broken ? PRIOR_BROKEN : 1;
+      tr.pseudo.push({ t: at, p: { x: P.x, y: P.y, z: 1.5 }, along: u, sr: PRIOR_ALONG * d * k, sa: PRIOR_ACROSS * k, sv: PRIOR_HEIGHT * k });
+      tr.priorT = at;
+      return;
+    }
+  }
+
+  /** His prior's expected arrival time, if he has one. */
+  priorAt(a: Agent): number | undefined { return this.tracks.get(a)?.priorT; }
+
   private reset(tr: Track): void {
-    tr.samples = []; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
+    tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
   }
 
   private pathOf(sim: PlaySim, tr: Track): PathSample[] {
@@ -192,7 +252,8 @@ function landing(path: PathSample[]): { x: number; y: number } | null {
 /** Launch state (at the first sample's time) that best fits his samples: generalized least squares on the linear
  * drag-free model, with the drag's displacement from the current fit iterated in. Each sample's covariance is range
  * variance along his line of sight and bearing variance across it. */
-export function fitFlight(samples: Sample[], drag: number): { t0: number; p: Vec3; v: Vec3 } {
+export function fitFlight(input: Sample[], drag: number): { t0: number; p: Vec3; v: Vec3 } {
+  const samples = [...input].sort((a, b) => a.t - b.t);
   const t0 = samples[0].t;
   let p: Vec3 = { ...samples[0].p }, v: Vec3 = { x: 0, y: 0, z: 0 };
   for (let iter = 0; iter < 3; iter++) {
@@ -210,9 +271,10 @@ export function fitFlight(samples: Sample[], drag: number): { t0: number; p: Vec
       }
       const y: Vec3 = { x: s.p.x - dd.x, y: s.p.y - dd.y, z: s.p.z - dd.z + 0.5 * G * tau * tau };
       // Information matrix W = C^-1 = u u^T / sr^2 + (I - u u^T) / sa^2.
-      const u = s.along, ir = 1 / (s.sr * s.sr), ia = 1 / (s.sa * s.sa);
-      const uu = [u.x, u.y, u.z];
-      const W = [0, 1, 2].map((i) => [0, 1, 2].map((j) => uu[i] * uu[j] * (ir - ia) + (i === j ? ia : 0)));
+      // W = u u^T / sr^2 + e1 e1^T / sa^2 + e2 e2^T / sv^2 (e1 horizontal across, e2 the third axis).
+      const u = s.along, e1 = perp(u), e2 = cross(u, e1), sv = s.sv ?? s.sa;
+      const ax = [[u.x, u.y, u.z, 1 / (s.sr * s.sr)], [e1.x, e1.y, e1.z, 1 / (s.sa * s.sa)], [e2.x, e2.y, e2.z, 1 / (sv * sv)]];
+      const W = [0, 1, 2].map((i) => [0, 1, 2].map((j) => ax.reduce((acc, e) => acc + e[i] * e[j] * e[3], 0)));
       // H = [I, tau I] (3 x 6); A += H^T W H; b += H^T W y.
       const yy = [y.x, y.y, y.z];
       for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
