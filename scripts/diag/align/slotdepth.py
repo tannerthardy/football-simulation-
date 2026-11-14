@@ -63,11 +63,12 @@ for path in sys.argv[1:]:
             f = fam(P[0].get('pff_passCoverage'), manz)
             if f == 'man': f = 'man press' if dep1 < 2 else 'man off'
             sit = '1st' if dn == 1 else ('2nd/3rd short' if tg <= 3 else '2nd/3rd medium' if tg <= 7 else '2nd/3rd long')
-            for key in (('all',), ('cov', f), ('sit', sit), ('split', '3.5-5' if w < 5 else '5-6.5' if w < 6.5 else '6.5-8')):
+            lat2 = (float(d2['y']) - y2) * sgn
+            for key in (('all',), ('cov', f), ('sit', sit), ('split', '3.5-5' if w < 5 else '5-6.5' if w < 6.5 else '6.5-8'), ('cov x sit', f, sit)):
                 R[key]['d1'].append(dep1); R[key]['d2'].append(dep2); R[key]['x2'].append(dist2)
-                R[key]['over'].append(1 if over2 else 0)
+                R[key]['over'].append(1 if over2 else 0); R[key]['lat2'].append(lat2)
     print('==', path.split('/')[-1], '  p25/p50/p75 yd')
     for key in sorted(R, key=lambda k: (len(k), k)):
         r = R[key]
         if len(r['d1']) < 20: continue
-        print(f"  {'/'.join(key):22} over #1 depth {q(r['d1'])} | on #2 depth {q(r['d2'])} dist {q(r['x2'])} | over (not apex) {100*sum(r['over'])/len(r['over']):3.0f}%")
+        print(f"  {'/'.join(key):22} over #1 depth {q(r['d1'])} | on #2 depth {q(r['d2'])} dist {q(r['x2'])} | over (not apex) {100*sum(r['over'])/len(r['over']):3.0f}% | #2 man lateral (+out) {q(r['lat2'])}")
