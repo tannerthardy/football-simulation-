@@ -287,7 +287,7 @@ export const TRACK_TACKLE = process.env.TRACK_TACKLE === '1' || process.env.PERC
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
+  const seen = TRACK_TACKLE && (process.env.TT_SITES ?? 'chase,window,whiff').split(',').includes('chase') ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
