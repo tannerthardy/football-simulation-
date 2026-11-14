@@ -22,11 +22,28 @@ P.tick = function () {
     const reach = T.profile.reach + TRACKING_REACH_BONUS, top = T.profile.maxCatchHeight;
     if (b.z >= 0.1 && b.z <= top) S.bandBest = Math.min(S.bandBest, dh);
     if (dh < S.best) {
+      if (S.tgt) { const ex = T.pos.x - S.tgt.x, ey = T.pos.y - S.tgt.y; S.bodyLat = -ex * S.tgt.uy + ey * S.tgt.ux; S.ballLat = -(b.x - T.pos.x) * S.tgt.uy + (b.y - T.pos.y) * S.tgt.ux; }
       const sp = Math.hypot(T.vel.x, T.vel.y), along = sp > 0.5 ? ((b.x - T.pos.x) * T.vel.x + (b.y - T.pos.y) * T.vel.y) / sp : 0;
       S.best = dh; S.at = { z: b.z, top, reach, along, speed: sp };
+      S.sampled = !!this.ballEstimates?.lastSeen?.(T); S.chose = !!(T.behavior as any)?.choice; S.track = T.behavior?.kind;
     }
     let near = Infinity; for (const d of this.defense) near = Math.min(near, Math.hypot(d.pos.x - T.pos.x, d.pos.y - T.pos.y));
     S.near = near;
+    // Lateral read (BALL_EST): his chosen meeting point, re-read from his own estimate (read-only peek) as bit 4 does,
+    // against where the true ball is at that moment; lateral = across the ball's horizontal travel.
+    const B: any = T.behavior, ch = B?.choice;
+    if (ch && this.ballEstimates?.peek) {
+      const est = this.ballEstimates.peek(T, this), at = est.find((q: any) => q.t >= ch.t - 1e-6) ?? est[est.length - 1];
+      const tru = this.ballPath.find((q: any) => q.t >= ch.t - 1e-6) ?? this.ballPath[this.ballPath.length - 1];
+      const v = this.ball.flight.vel, L = Math.hypot(v.x, v.y) || 1, ux = v.x / L, uy = v.y / L;
+      if (at && tru) {
+        const ex = at.x - tru.x, ey = at.y - tru.y, lat = -ex * uy + ey * ux, alo = ex * ux + ey * uy;
+        const left = ch.t - this.t;
+        if (!S.c4 && left <= 0.4) S.c4 = { lat, alo };
+        if (!S.c1 && left <= 0.1) S.c1 = { lat, alo };
+        S.tgt = { x: at.x, y: at.y, ux, uy };
+      }
+    }
   }
   return r;
 };
@@ -41,7 +58,7 @@ P.buildResult = function () {
   else if (S.best <= S.at.reach && S.at.z > S.at.top) kind = 'over';
   else if (S.best <= S.at.reach && S.at.z < 0.1) kind = 'low';
   else kind = Math.abs(S.at.along) < 0.5 * S.best ? 'wide: across' : S.at.along > 0 ? 'wide: late (ahead of him)' : 'wide: past (behind him)';
-  rows.push({ kind, best: S.best, speed: S.at.speed });
+  rows.push({ kind, sampled: S.sampled, chose: S.chose, track: S.track, best: S.best, speed: S.at.speed, c4: S.c4?.lat, c4a: S.c4?.alo, c1: S.c1?.lat, c1a: S.c1?.alo, body: S.bodyLat, ball: S.ballLat });
   return res;
 };
 const rng = new Rng(seed);
@@ -50,4 +67,5 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed + g), leagu
 const q = (v: number[]) => { v = v.filter(Number.isFinite).sort((a, b) => a - b); return v.length < 3 ? '-' : [.25, .5, .75].map(f => v[Math.floor(f * (v.length - 1))].toFixed(1)).join('/'); };
 console.log(`== seed ${seed} BALL_EST=${process.env.BALL_EST ?? 0}: open targets n ${rows.length}`);
 const kinds = [...new Set(rows.map(r => r.kind))].sort();
-for (const k of kinds) { const V = rows.filter(r => r.kind === k); console.log(`   ${k}: ${V.length} | ball's closest horizontal ${q(V.map(r => r.best))} yd | his speed then ${q(V.map(r => r.speed))}`); }
+const aq = (v: any[]) => q(v.filter((x) => x !== undefined).map(Math.abs));
+for (const k of kinds) { const V = rows.filter(r => r.kind === k); console.log(`   ${k}: ${V.length} | ball's closest horizontal ${q(V.map(r => r.best))} yd | his speed then ${q(V.map(r => r.speed))} | |lateral| of his chosen point off the true ball: 0.4 s out ${aq(V.map(r => r.c4))}, 0.1 s out ${aq(V.map(r => r.c1))} (along ${aq(V.map(r => r.c1a))}) | at the closest pass: his body off his point ${aq(V.map(r => r.body))}, the ball off his body ${aq(V.map(r => r.ball))} | at the closest pass: sampled the ball ${V.filter(r => r.sampled).length}, had a chosen point ${V.filter(r => r.chose).length}, tracking ${V.filter(r => r.track === 'track').length}`); }
