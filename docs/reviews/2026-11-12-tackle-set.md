@@ -3013,3 +3013,24 @@ Next, a re-diagnosis rather than a third design. Compare matched edge contacts t
 same closing speed and masses, everything else as observed. Measure where the two diverge (his posture and base at
 arrival, his foot placement or step timing, the hit's height and angle on him, the blocker's follow-through, his
 request after the hit), to find what the standing rushers have that the fallers lack.
+
+### RUSH_LEAN_BOUND's yards per dropback (Integration, 2026-11-14)
+
+The decomposition (lb 16-game arms, s11 / s23, off → on):
+- deflections within 2.5 yd of the line: 38 → 48 and 44 → 50;
+- interceptions: 22 → 24 and 17 → 23;
+- time to throw, throw rate and completion: unchanged (2.65 / 2.55 s; 93-95%; 66-68%);
+- completed air and yards after the catch: they move on different seeds (air 5.49 → 4.99 on s11; YAC 6.83 → 5.81 on
+  s23).
+
+The consistent mechanism is the rusher who stays up: he stays in the lane and bats more balls at the line, about +16
+over 2,830 throws. That is worth about 0.05 yd per dropback. The rest of the -0.37 / -0.68 is inside the noise
+(per-play SD about 10 yd, so the SE of a 16-game difference is about 0.38; the two seeds together are about 2 SE) and
+splits by seed between air and YAC. Paired plays are not available: games diverge after the first changed play.
+
+### The matched edge comparison (stay up vs fall)
+
+The stance/base proposal (docs/reviews/2026-11-14-stance-base-proposal.md, section 2) has the table. In short, the
+fallers are hit more side-on (19-27 deg off their facing, against 13-14) while going around the man, and the blocker
+drives through. That is a base-and-recovery question: the isotropic base and recovery step treat an angled hit like a
+square one.
