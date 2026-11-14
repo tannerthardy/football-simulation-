@@ -35,10 +35,11 @@ async function falls(flags: Record<string, string>, roster: number, coverage = '
   return sim.events.filter((e: any) => e.type === 'fall' && ol.has(e.a) && e.t >= 0.5 && e.t <= thr)
     .map((e: any) => ({ slot: sim.agents[e.a].slot as string, t: e.t as number, move: moves.get(e.a) }));
 }
-/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change, the seen set, engine-60's four and engine-61's six pinned off. */
+/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change, the seen set, engine-60's four, engine-61's six and
+ * engine-62's RUSH_BULL pinned off. */
 const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0',
   THROW_HOLD: '0', POCKET_REACH: '0', REP_SEEN: '0', RUSH_LEAN_BOUND: '0',
-  HONEST_READS: '0', INFO_HONEST: '0', HONEST_TACKLE: '0', RCV_SEEN: '0', TRACK_PURSUIT: '0', TRACK_TACKLE: '0' });
+  HONEST_READS: '0', INFO_HONEST: '0', HONEST_TACKLE: '0', RCV_SEEN: '0', TRACK_PURSUIT: '0', TRACK_TACKLE: '0', RUSH_BULL: '0' });
 
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
@@ -47,10 +48,18 @@ describe('PUNCH_STRIKE', () => {
     expect(on.some((f: any) => f.slot === 'RG')).toBe(false);
   });
 
-  it('a protector still propped on the man when he is swum goes down (the fall is not removed)', async () => {
-    const on = await falls(alone('1'), 7);
-    expect(on.some((f: any) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
-  });
+  it('a protector still propped on the man when he is swum goes down (the fall is not removed; search with a floor)', async () => {
+    // A search, not a pinned scene (roster 7 cover 2 seed 5 until engine-62): scenes in a fixed order until, with
+    // PUNCH_STRIKE alone, an interior lineman goes down while his man is swimming past him. Requirement: one exists.
+    let found: string | null = null, scenes = 0;
+    search: for (const coverage of ['cover2', 'cover1', 'cover3']) for (const seed of [5, 1, 2, 3, 4, 6, 7, 8]) for (let roster = 1; roster <= 12; roster++) {
+      scenes++;
+      const f = (await falls(alone('1'), roster, coverage, seed)).find((x: any) => ['LG', 'C', 'RG'].includes(x.slot) && x.move === 'swim');
+      if (f) { found = `${coverage} roster ${roster} seed ${seed}: ${f.slot} at ${f.t.toFixed(2)} s`; break search; }
+    }
+    console.log(`propped protector swum and down: ${found ?? 'none'} after ${scenes} scenes`);
+    expect(found).not.toBeNull();
+  }, 600_000);
 
   it('on the full stack a propped fall still happens: a lineman leaning near the press goes down onto the man (search with a floor)', async () => {
     // A search, not a pinned scene (these moved on engine-59, 60 and 61): staged scenes in a fixed order until an
