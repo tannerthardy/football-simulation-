@@ -42,7 +42,7 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
   }
   return out;
 } } });
-const q = (v: number[], f = .5) => { const s = v.filter((x) => x !== null && Number.isFinite(x)).sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))].toFixed(2) : 'nan'; };
+const q = (v: (number | null)[], f = .5) => { const s = v.filter((x): x is number => x !== null && Number.isFinite(x)).sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))].toFixed(2) : 'nan'; };
 for (const inter of [true, false]) {
   const R = rows.filter((r) => r.interior === inter), slid = R.filter((r) => r.minEdge < 0.8);
   console.log(`${inter ? 'interior' : 'tackle'}: clubs with both hands kept (to 1 s or the rep's end) ${R.length} | the hand slid (edge under 0.8) ${(100 * slid.length / Math.max(1, R.length)).toFixed(0)}%, min edge p50 ${q(slid.map((r) => r.minEdge))}`
