@@ -641,3 +641,52 @@ No strike and no fold. Off is bit-identical (f45b8a7e377c73b2).
    question's next step is the strike impulses' lever (club, rip, swim at the shoulder) against the motor, measured in
    games with Tools' trace, not another hands law.
 4. HANDS_LEVER's IZ +0.73 is not answered by this attempt (no game read was taken: the staged gates failed first).
+
+## The press as a shared spring: design note before its flag (2026-11-14; Integration's ruling 1)
+
+**What it keeps from PAIR_HANDS attempt 2:**
+- both men's arms are springs about a bent working length (BASE_CENTRES, the NFL's held 0.76-0.89 yd);
+- each has the stated give (ARM_GIVE, 3 in; stiffness = strength / give, as the row's own softness) and is capped at its
+  owner's strength (press inside, arm outside);
+- fits from placement (placeHand: a motor error on the landing point, inside or outside);
+- the friction-limited outside steer: min(arm x 0.7, HAND_MU x the hand's normal force). This is the one asymmetry that
+  has passed every staging: the outside-handed blocker loses the crosser, and the stalk crosser slows 3.00 -> 2.29.
+
+**What it drops:**
+- no lockout rest length;
+- no claim that a held press turns a set man (withdrawn);
+- no fold, no strike re-fire, no torso subtraction.
+
+**1. What holds a run defender's gap.** HAND_FIT deleted his stack: the joint was the blocker's with the sign flipped,
+and the punch's length law shortened it under load, so a run defender had no arms of his own. Here his arms are his own
+spring at his bent length, capped at his press, at his fit (an inside hand on the chest plate, an outside hand at the
+shoulder with its lever). What holds his gap is that press plus his feet:
+- his feet keep him in the gap (his run-fit request, unchanged);
+- his arms keep the blocker at the bent distance, so the blocker's drive arrives through both springs, shared by
+  deflection;
+- whether he is moved is the blocker's drive and steer against his feet's traction and his press.
+- An inside-handed defender has the frame, so the blocker's steer on him is friction-limited at the shoulder (the outside
+  rule, applied to the blocker's outside hand). An outside-handed defender is steered with the blocker's full arm. That
+  is the staged asymmetry to show (inside-handed holds, outside-handed is moved). The test is the reach and the drive
+  rows of pair-staged, with the blocker driving into him, not stepping away.
+- He sheds by the existing shed logic (his feet and hands across the blocker's shoulder), not by an arm shove.
+
+**2. What a long-arm and a stack extension are: a bounded extension.** The arm's working length moves from bent toward
+lockout at ARM_SPEED, as a motion, and ends straight. While extending and once straight, the arm is the same spring
+about its current length. So it pushes only as far as something compresses it, and gives back when the load exceeds
+his cap (the spring at its ceiling yields). That is "holds at that length only while he can afford the load", with no
+second rule. It is chosen over an impulse because:
+- An impulse is instantaneous: it has no duration for the opponent to see or answer, and it needs a size with no source.
+- The extension has the arm's real time cost (lockout minus bent over ARM_SPEED, about 0.25 s for a 34 in arm), which the
+  other man can feel and counter (the long-arm counter already reads it). It reuses ARM_SPEED, already sourced, and adds
+  no constant.
+- It is a decision with a window: a long-arm move, a stack-and-shed's shed. It is not a rest length from contact on, so
+  it cannot reproduce the "lockout spring from contact" failure. Outside a window the length returns to bent at ARM_SPEED.
+
+**The flag and its gates.** One flag (PRESS_SPRING), needing HANDS_LEVER, TRUNK_TWIST and CHEST_SHOULDERS for the
+shoulder lever. Two attempts, staged first, with the gates written down before:
+- the staged bull holds steady and shared at the bent distance (720 / 446 N, 0.77 yd today);
+- the crosser asymmetry kept (2.92 / 2.35);
+- the inside-handed run defender holds against a driving blocker while the outside-handed one is moved (about 0 today);
+- a long-arm extends at arm speed and drives a blocker who does not answer it.
+Its first game read includes the run set by concept.
