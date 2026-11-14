@@ -269,3 +269,29 @@ Exam: deep targets with 1.5-2.0 s flights (`rcv-flight.ts`, seeds 11/23 x 8 leag
   - His first sample comes about 0.5 s after the release, with the look itself slowing him.
   - The next move is that steering (a late-converging estimate he must run to), not a different sigma.
 - **Not done before parking:** the defender side's reads, the short/intermediate controls and catch rate by separation.
+
+## Stage 1 attempt 3 (2026-11-14): the receiver's prior, a route-timed look, a first estimate for everyone
+
+A new design after the re-diagnosis (`rcv_prior_nfl.py` / `rcv-prior.ts`).
+- NFL deep targets leave the release line mid-flight (0.38 of the flight) but give up speed late (0.67; 29% never).
+- Attempt 2's receiver left his line on the NFL's timing but slowed at 0.42, because his look fired as soon as the
+  ball was up.
+- The controls failed: intermediate completion 57-65% → 48%, catch rate when open by 3+ yd 77-84% → 71%, and the
+  defender losing ground in the air (2.4-2.6 → 3.9 yd on 10-20 yd throws).
+
+Constants, fixed before the exam. The attempt-2 sampling, correlation, bearing and range rows above are unchanged.
+
+| Constant | Value | Source |
+| --- | --- | --- |
+| Receiver's prior | At the release, the point where a ball thrown now meets him on his own installed route. His forecast is the QB's model (`ReceiverForecast` on his installed route, at full effort), seeded with his own exact state: he knows where he is and what he runs. The ball's time to a point at distance d is the QB lane's measured fit 0.38 + 0.022 d + 0.00065 d² s. | engine (installed knowledge: his own assignment); the flight fit is measured (BDB 2026); leaving out the QB's arm term is choice |
+| Prior uncertainty | σ along his route 0.12 x the throw's distance; across it 1.0 yd; in height 1.0 yd. Entered in the same fit as one observation of the ball at the prior's time | choice |
+| Broken play | When his own forecast can no longer place him on his installed route (it falls back to his observed motion), the prior's σ is tripled | choice, kept simple |
+| Head turn | Free: the head turns toward the ball (GAZE rates) within ±90° of his body facing at no speed cost | Integration's reading (a): a look over the shoulder while the hips keep running costs little; engine (GAZE) |
+| Body turn | He turns his shoulders off his running line (paying the facing speed cap) only when his estimate says the ball arrives within T_turn = 0.4 + 0.4 x (1 − ballTracking) s, or when he has no estimate and no prior | coached ("drive first, eyes up after", late hands); the seconds are choice |
+| First estimate, everyone | Whoever saw the QB release (receiver or defender, in his view cone at the release) gets two observations: the ball at the QB's seen hand at the release (σ 0.5 yd), and the throw's direction from his seen shoulder line, an observation 1 s later along that azimuth with σ 5° across and 15 yd along | coached (HK: "a QB can only throw where his off shoulder points"); the sigmas are choice |
+| Defender | No prior beyond the first estimate. His own samples refine it | the asymmetry |
+
+The controls are part of the exam:
+- short and intermediate completion, and catch rate by separation, back to the off arm's level;
+- the defender's closing in the air moving toward the NFL's +0.65 yd;
+- the receiver's timing rows: off the release line at about 0.38 of the flight, first slowing about 0.67.
