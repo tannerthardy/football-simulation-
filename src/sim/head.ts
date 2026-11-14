@@ -74,7 +74,8 @@ export function stepHeads(sim: PlaySim): void {
   const step = HEAD_RATE * sim.dt;
   for (const a of sim.agents) {
     if (a === sim.qb) continue;
-    const facing = a.body.facing;
+    // The neck turns on the trunk: its range is about the shoulders (the hips, bit for bit, with no trunk twist).
+    const facing = a.shoulders;
     let head = a.head ?? facing;
     const w = wants.get(a);
     let toward = facing;

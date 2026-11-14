@@ -35,7 +35,8 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST } from '../ball-estimate.js';
+import { BALL_EST, lookJoints, neckOf } from '../ball-estimate.js';
+import { want as headWant } from '../head.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 
@@ -1348,6 +1349,31 @@ function safetyOver(a: Agent, r: number): number {
   const scale = clamp(9.6 / a.profile.vmax, 0.85, 1.25) * (1.1 - 0.2 * a.r('playRecognition'));
   return Math.max(2, (13.4 - 0.5 * Math.max(0, r)) * scale);
 }
+/** ZONE_EYES (experimental, off): a zone dropper opens and runs to his landmark with his eyes on the passer, as
+ * taught (a bailing deep-third corner runs half-turned, head inside on the QB; he does not turn his back). Before he
+ * believes a throw, his technique's head want is the passer (head.ts, under HEAD), and his body gives the look the
+ * joints it needs (Coverage's lookJoints): the neck first, then the shoulders through the trunk (TRUNK_RANGE), then the
+ * hips for what is left, a facing request the directional speed cap prices. Off his requested facing (or his running
+ * line when he asks none), toward the passer as he sees him. Nothing turns past neck + trunk + the hips' request; where
+ * his landmark needs his back turned further than that, he cannot see the passer. The cost is sight's own: under HEAD
+ * with SIGHT_COVER his picture of a receiver comes only from inside his head's cone, so receivers behind him age. */
+export const ZONE_EYES = process.env.ZONE_EYES === '1';
+function zoneEyes(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  if (!ZONE_EYES) return cmd;
+  headWant(sim, a, sim.qb, 'qb');
+  const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+  const base = cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
+  const q = sim.see(a, sim.qb).pos;
+  const d = angleDiff(base, Math.atan2(q.y - a.pos.y, q.x - a.pos.x));
+  let out = lookJoints(a, cmd, base, d, true);
+  // While his hips are still turning to the facing he asked for, the trunk takes the look from where they are now
+  // (the look is the shoulders' target: far enough round that the neck reaches the passer).
+  const now = angleDiff(a.body.facing, Math.atan2(q.y - a.pos.y, q.x - a.pos.x)), over = Math.abs(now) - neckOf(a);
+  if (out.look === undefined && over > 0) out = { ...out, look: a.body.facing + Math.sign(now) * over };
+  if (out !== cmd) a.tags.add('zone-eyes');
+  return out;
+}
+
 export class ZoneCoverage implements Behavior {
   readonly kind = 'zone';
   private readonly landmark: Vec2;
@@ -1426,11 +1452,13 @@ export class ZoneCoverage implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
-    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
+    // ZONE_EYES: on the arm alone (loading, or the arm through without the ball seen) his zone play goes on with his
+    // eyes on the passer until he breaks.
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => zoneEyes(a, sim, this.zonePlay(a, sim)) : undefined);
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
-    if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
-    return this.zonePlay(a, sim);
+    if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return zoneEyes(a, sim, stopDrop(sim, this.zonePlay(a, sim)));
+    return zoneEyes(a, sim, this.zonePlay(a, sim));
   }
 
   /** His zone play with the ball in the QB's hands (no throw seen). */
