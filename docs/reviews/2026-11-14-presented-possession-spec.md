@@ -58,6 +58,12 @@ until evidence drives it past an exit margin on the far side (the hysteresis CLA
 Once he believes the back has it he keeps believing it, which is what makes him step and what makes the keep work;
 re-scoring the same picture every tick is not new evidence. Only a new cue moves the weight.
 
+**Latency and calibration (Rules + Coaching).** The decision latency for the two-way exchange is the recognition
+channel's (about 0.25-0.3 s for an uncued two-alternative change), shortened by expectation (the pre-snap
+down-and-distance prior). Cue weights are calibrated to the I4 witness (PA minus no-PA on BDB 2025, same operator), not
+to a literature constant; if BDB allows splitting backers by experience or snaps, that split is the measured skill
+weighting and is taken before the build.
+
 **The observer's skill and role (I3).** Skill acts on which cues he weights and how fast he integrates them, never on a
 "bite chance": an experienced, aware defender keys what is diagnostic (the ball, the hands, the carrier's centre of
 mass, and he waits for it, as Rules + Coaching's rugby result found for experts), a raw one weights the loud cues (the
@@ -96,14 +102,16 @@ All through his own sight, with his ordinary delay and, where GAZE / SEE_SIGHT i
 | carry posture (`carryPosture`, new, set by the carrier's controller) | tucked vs open hands | moderate |
 | QB arm and hands after the mesh (QB_BODY_SEEN's arm/head) | hands on ball, empty-handed carry-out | moderate |
 | paths after the mesh (downhill back vs QB setting / booting) | consistent with give or keep | weak, accumulates |
-| contact outcome: the body he (or a teammate he sees) tackles comes up empty / with the ball | resolves it | decisive |
+| contact outcome: a body he sees taken down (seen contact, #693) with its hands and chest in his sight, close enough, for at least one latency | empty: resolves it; ball: confirms | decisive only for those who see it (R+C: seen-down with the ball unseen is no update; absence is evidence only when the ball would have been visible) |
 
 A cue's strength falls with distance and with whatever `see()` says he can see. **Occlusion is not built here (I1):**
 SEE_SIGHT (Rules + Coaching, approved: geometry by body height and posture, no dice) is the occluder. The belief store
 consumes whatever `see()` reports, so the fake gets stronger when SEE_SIGHT lands without a second occluder. Until
-then, view cone and distance only. Order: this build can land first (fakes believed at all, by distance and view);
-SEE_SIGHT then hides the mesh behind the line; the two are coordinated with Rules + Coaching so cue visibility goes
-through one `see()` query.
+then, view cone and distance only. **Order (agreed with Rules + Coaching):** Rules + Coaching first land SEE_SIGHT's
+geometric query as plumbing (`inSight(observer, target, height?)`, default his head and shoulders; no consumer change,
+identity off). Every cue here (hands and ball at the mesh at hand height, the ball in flight or loose, the tackled
+man's hands) is that one query, so the fake's strength is right from day one and nothing is re-read when SEE_SIGHT's
+own consumers follow.
 
 ### The offense's side (presentation)
 
@@ -126,10 +134,19 @@ A defender who believes a body has the ball pursues and tackles it with the ordi
 (`tryTackles` over his believed holder, not only `sim.carrier`). Physics is unchanged; the result for a non-carrier:
 
 - the tackle bond forms and he is taken to the ground or wrapped as usual; it is not a dead ball and not a sack;
-- legality: hitting a faking back behind the line is legal (rules lane to confirm edge cases: a QB after the
-  handoff carrying out a fake is a runner only while he simulates possession, and protection rules for the QB
-  apply; contact-holding.ts already knows `fakeRunners` for holding);
-- cost: the defender has spent himself (down, engaged, out of the play) — no other penalty;
+- legality (Rules + Coaching): one predicate, not a second one. contact-holding.ts:377-381 already encodes 12-1-6(a):
+  a performed presentation or carry-out (`presentedFakeRunners`, not an installed fake) behind the line and inside
+  the pocket box may be held or tackled as a runner. Tackling the faker there is a legal play. Outside it (past the
+  line, or clearly away from the play) contact on a non-runner is the ordinary foul (holding / illegal contact if he
+  grabs, unnecessary roughness if he takes him to the ground), adjudicated like any other: never forbidden in the
+  controller, its cost is the flag and the defender out of the play;
+- the QB carrying out a fake after the handoff is a runner for contact while he presents possession by the same
+  cues the defenders read (ball hidden, posture, a keep's path), inside the box; once clearly not involved, the QB
+  protections apply (after a change of possession a defenseless player: no forcible head / neck contact, no low
+  hits). The officials' judgment keys the same presented cues, not the true holder. Article numbers are to be
+  checked against the rule text before they go into comments;
+- the give side: a defender who believes the QB kept it and plays him at the mesh is in the box: legal, same predicate;
+- cost: the defender has spent himself (down, engaged, out of the play), plus any foul he commits;
 - evidence: the tackled body comes up empty; the tackler and those who see it update.
 
 ## Witnesses and controls
@@ -156,10 +173,11 @@ behaviour (unit test per consumer group: unresolved belief equals today's unknow
 
 ## Build order (proposed)
 
+0. (Rules + Coaching) SEE_SIGHT's `inSight(observer, target, height?)` query lands as plumbing.
 1. Belief store and `Perceived.carrying` from belief; every recording site stops passing the true holder. Cues:
    ball visible, exchange seen, contact outcome. Controls first: plain handoffs and dropbacks unchanged.
 2. Presentation: `carryPosture` set by carriers and fakers; the QB's hands after the mesh (with QB_BODY_SEEN).
-3. Non-carrier tackle outcome (with Rules + Coaching on legality).
+3. Non-carrier tackle outcome, on contact-holding's 12-1-6(a) predicate; outside it, ordinary fouls.
 Two attempts each, after the honesty batch lands. Occlusion is SEE_SIGHT's, not a step here (I1).
 
 ## Reviews requested
