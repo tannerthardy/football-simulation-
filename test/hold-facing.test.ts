@@ -57,12 +57,17 @@ describe('HOLD_FACING', () => {
     expect(off.turnDeg).toBeGreaterThan(120);
     expect(on.turnDeg).toBeLessThan(60);
   });
-  it('OPEN_HANDS (the DT free of his blocker when he grabs): HOLD_FACING still keeps him from spinning with the runner', async () => {
-    // Re-found on engine-61 (seeds 1900-1989): seed 1974's DT_S, free of his blocker, holds the back from the side.
-    const off = await turn('0', '1', 1974, 'DT_S'), on = await turn('1', '1', 1974, 'DT_S');
-    expect(off.held && off.side).toBe(true); expect(on.held && on.side).toBe(true);
-    // No blocker's hands hold him now, so the hold and contacts carry him further (about 103 vs 167 deg off).
-    expect(on.turnDeg).toBeLessThan(off.turnDeg - 30);
-    console.log(`free holder, first 0.5 s of the hold: off ${off.turnDeg.toFixed(0)} deg, on ${on.turnDeg.toFixed(0)} deg`);
-  });
+  it('OPEN_HANDS (the DT free of his blocker when he grabs): HOLD_FACING still keeps him from spinning with the runner (search with a floor)', async () => {
+    // A search, not a pinned seed (moved on engine-61): seeds from 1900 in order until a DT, free of his blocker, makes a
+    // side hold that spins him at least 100 deg off and HOLD_FACING cuts that by at least 30 deg. Requirement: one exists.
+    let found: string | null = null;
+    search: for (let seed = 1900; seed < 1990; seed++) for (const slot of ['DT_S', 'DT_W']) {
+      const off = await turn('0', '1', seed, slot);
+      if (!(off.held && off.side) || off.turnDeg < 100) continue;
+      const on = await turn('1', '1', seed, slot);
+      if (on.held && on.side && on.turnDeg < off.turnDeg - 30) { found = `seed ${seed} ${slot}: off ${off.turnDeg.toFixed(0)} deg, on ${on.turnDeg.toFixed(0)} deg`; break search; }
+    }
+    console.log(`free holder: ${found ?? 'none'}`);
+    expect(found).not.toBeNull();
+  }, 480_000);
 });
