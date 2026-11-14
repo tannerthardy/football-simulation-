@@ -4416,3 +4416,14 @@ blocker's bent base (arm x 0.3). Hands N / torso N are p50; "both" is the share 
 - **The default engine reaches "inside the base" more often only because its rolled length is shorter.**
 - **So the model has one object for two men's hands and has no torso path in engaged play.** A pair contact model
   needs the press to hand over to the torso as the arm reaches its bend, not to rise.
+
+**Re-taken on engine-64 (develop 3d445688 merged; seed 11 x 2): the same picture within a few percent in every cell.**
+
+| | default: touching share, hands / torso p50, both | CH + HAND_FIT: touching share; hands inside the base |
+|---|---|---|
+| edge pass | 11%: 980 / 0 N, both 42% | 1%; 1667 N |
+| interior pass | 17%: 996 / 33 N, both 47% | 1%; 1732 N |
+| OL run block | 19%: 1013 / 100 N, both 50% | 1%; 1697 N |
+| stalk | 7%: 884 / 0 N, both 38% | 4%; 1215 N |
+
+Torso p50 is 0 N in every bin but touching, in every population and on both engines.
