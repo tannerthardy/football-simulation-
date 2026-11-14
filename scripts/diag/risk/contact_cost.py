@@ -270,3 +270,33 @@ if R:
         f'breaks downhill: before the catch {sum(1 for b in B if b < 0) / len(R):.2f}, within 0.5 s after {sum(1 for b in B if 0 <= b <= 0.5) / len(R):.2f}, later or never {1 - sum(1 for b in B if b <= 0.5) / len(R):.2f}; median break {f"{st.median(B):.1f}" if B else "-"} s from the catch')
 if OT:
   print(f'  never caught (other): n {len(OT)} defenders upfield of the catcher at the catch {med(OT, "upfield", 0)} | closest any defender got after the catch {med(OT, "closest")} yd (within 1 yd {sum(1 for o in OT if o["closest"] < 1) / len(OT):.2f}) | YAC {med(OT, "yac")}')
+# Part 6, D1's reaction to the throw (all short completions, and free plays). D1 = nearest defender at the catch.
+# His velocity component toward the catch point (the catcher's spot at the catch), each frame from the release; his
+# first move = the first frame after the release with that component at least 1.5 yd/s above its release value and
+# at least 1 yd/s. Rows: time from the release to it (median; share with none before the catch), flight time, his
+# distance from the catch point at the release and at the catch, by flight time (under 0.5 s / 0.5-0.8 / 0.8+).
+P6 = []
+for p in plays:
+  F, c, d = p['frames'], p['catch'], p['dir']
+  if c < 2 or c >= len(F) - 1 or not F[c]['d']: continue
+  CP = F[c]['c']; j = min(range(len(F[c]['d'])), key=lambda k: dist(F[c]['d'][k], CP))
+  def tow(i):
+    if j >= len(F[i]['d']): return None
+    x = F[i]['d'][j]; dx, dy = CP[0] - x[0], CP[1] - x[1]; n = math.hypot(dx, dy) or 1
+    return (x[2] * dx + x[3] * dy) / n
+  v0 = tow(0)
+  if v0 is None: continue
+  mv = next((i for i in range(1, c + 1) if (lambda v: v is not None and v - v0 >= 1.5 and v >= 1)(tow(i))), None)
+  up = lambda i: (F[i]['c'][0] - F[c]['c'][0]) * d
+  f = next((i for i in range(c + 1, len(F)) if any(dist(x, F[i]['c']) < 1 for x in F[i]['d'])), None)
+  free = f is None or up(f) > 5 or (up(len(F) - 1) - up(f)) > 3
+  P6.append({'mv': None if mv is None else mv * 0.1, 'fl': c * 0.1, 'd0': dist(F[0]['d'][j], CP) if j < len(F[0]['d']) else None,
+             'dc': dist(F[c]['d'][j], CP), 'v0': v0, 'free': free, 'nr': f is None or up(f) > 5})
+print('part 6, D1 reaction to the throw (first move toward the catch point)')
+for nm, sel in (('all', lambda r: True), ('free', lambda r: r['free'])):
+  for bn, lo, hi in (('flight <0.5', 0, 0.45), ('0.5-0.8', 0.45, 0.85), ('0.8+', 0.85, 99), ('any', 0, 99)):
+    R = [r for r in P6 if sel(r) and lo <= r['fl'] < hi]
+    if not R: continue
+    M = [r['mv'] for r in R if r['mv'] is not None]
+    print(f'  {nm} {bn}: n {len(R)} flight {med(R, "fl")} | first move {f"{st.median(M):.1f}" if M else "-"} s after release (none before the catch {1 - len(M) / len(R):.2f}) | '
+          f'toward the catch point at release {med(R, "v0")} | distance from the catch point at release {med([r for r in R if r["d0"] is not None], "d0")} at the catch {med(R, "dc")} | never reached {sum(1 for r in R if r["nr"]) / len(R):.2f}')
