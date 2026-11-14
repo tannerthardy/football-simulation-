@@ -20,6 +20,10 @@
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { MoveCommand } from '../physics/kinematics.js';
+import { seenDown } from './seen-contact.js';
+
+/** HONEST_READS (behaviors/defense.ts): screen nearby bodies by his picture of them. */
+const HONEST_READS = process.env.HONEST_READS === '1';
 
 export const L2_BREAKDOWN = process.env.L2_BREAKDOWN !== '0';
 const CLOSING = 3.0, HORIZON = .5;
@@ -45,8 +49,15 @@ export function breakdownForContact(a: Agent, sim: PlaySim, cmd: MoveCommand): M
   }
   if (isDL(a.slot)) return cmd;
   for (const o of sim.offense) {
-    if (o === sim.qb || o.isDown(sim.t)) continue;
-    if (Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) > 3.5) continue;
+    if (o === sim.qb) continue;
+    if (HONEST_READS) {
+      // His picture of the body: one he sees on the ground or beyond 3.5 yd is no contact threat.
+      const seen = sim.see(a, o);
+      if (seenDown(sim, a, o) || Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) > 3.5) continue;
+    } else {
+      if (o.isDown(sim.t)) continue;
+      if (Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y) > 3.5) continue;
+    }
     const c = closingOn(a, sim, o);
     if (c.ttc <= HORIZON && c.closing > CLOSING)
       return { ...cmd, posture: Math.max((cmd as { posture?: number }).posture ?? 0, .6) } as MoveCommand;
