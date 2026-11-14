@@ -13,6 +13,9 @@ export interface TackleWindow {
   futureQuality: number;
   closest: number;
   closestAt: number;
+  /** The forecast's best point is a minimum it reaches inside the lookahead, not its last sample (still closing at the
+   * horizon: no better shot is in sight yet). */
+  reached: boolean;
 }
 
 /** Existing geometric wrap quality: torso contact versus extended fingertips. */
@@ -32,7 +35,7 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
       || Math.hypot(s.load.x, s.load.y) > 1e-6))) return null;
   let closest = Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y);
   const currentQuality = contactQuality(closest, body, arms);
-  let closestAt = 0;
+  let closestAt = 0, lastT = 0;
   // Six ordinary decision samples preserve the previous 0.3 s lookahead.
   // A useful hip passing between now and the next tick is not a reason to
   // skip this attempt: tackles can only be chosen at the decision samples.
@@ -41,9 +44,11 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
     // back to the ideal straight-line estimate. Only credit earlier upright
     // decision samples; if there are none, there is no benefit to waiting.
     if (p.support !== 'up') break;
+    lastT = p.t;
     const distance = Math.hypot(seen.pos.x + seen.vel.x * p.t - p.pos.x,
       seen.pos.y + seen.vel.y * p.t - p.pos.y);
     if (distance < closest) { closest = distance; closestAt = p.t; }
   }
-  return { currentQuality, futureQuality: contactQuality(closest, body, arms), closest, closestAt };
+  return { currentQuality, futureQuality: contactQuality(closest, body, arms), closest, closestAt,
+    reached: closestAt < lastT - 1e-9 };
 }

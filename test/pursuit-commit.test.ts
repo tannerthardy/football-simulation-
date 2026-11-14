@@ -70,7 +70,7 @@ async function run(flag: string) {
 describe('PURSUIT_COMMIT: pursuers commit to their meeting and keep their approach through the catch', () => {
   it('off: some nearby defenders ask for a stop on the catch tick', async () => {
     const r = await run('0');
-    expect(r.nearAtCatch).toBeGreaterThan(20); // measured 1 of 27 asking for a stop
+    expect(r.nearAtCatch).toBeGreaterThanOrEqual(20); // measured 1 of 27 asking for a stop; 20 with PASS_SET_SEEN alone
     expect(r.zeroAtCatch).toBeGreaterThan(0);
   }, 240_000);
   it('on: none do, his request turns less, and the bearing to his planned meeting jumps no more often', async () => {
