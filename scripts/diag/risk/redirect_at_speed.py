@@ -1,9 +1,15 @@
-# Redirect at speed after the catch, one measurement code for the NFL (BDB 2025, the after-catch population of
-# nfl_yac_stage.py: drop-back short completions, screens out, passLength under 10) and the sim (yac-dump.ts JSON lines).
-# Every defender-frame from the catch to +0.6 s (10 Hz) with his speed 4.5-5.5 yd/s, more than 2 yd from the catcher
-# and not within 1 yd of him over the next 0.4 s (no contact), by the catcher's bearing off his heading (15-30, 30-60,
-# 60-90 deg): his heading change toward that bearing over the next 0.2 and 0.4 s, and his speed dip (lowest speed over
-# the next 0.4 s minus his speed now). Sim rows also give his requested direction off his heading (the command he issued).
+# Redirect after the catch, one measurement code for the NFL (BDB 2025, the after-catch population of nfl_yac_stage.py:
+# drop-back short completions, screens out, passLength under 10) and the sim (yac-dump.ts JSON lines).
+# Part 1 (all defenders): every defender-frame from the catch to +0.6 s (10 Hz) at 4.5-5.5 yd/s, more than 2 yd from
+# the catcher and not within 1 yd of him over the next 0.4 s, by the catcher's bearing off his heading: his turn toward
+# it over 0.2 / 0.4 s and his speed dip. Diluted by defenders who are not pursuing.
+# Part 2 (D1: the defender nearest the catcher at the catch, within 8 yd, moving over 3 yd/s):
+#  - heading error against where the catcher is 0.5 s later, at the catch and at +0.2 / +0.4 s; his turn by +0.4 s;
+#  - lead at the catch: his heading against the bearing to the catcher now, signed + toward where the catcher is
+#    moving (ahead of him, his upfield/leverage side), - behind him;
+#  - the catcher: speed at the catch, heading change over 0.4 s, and his escape side: his displacement over 0.5 s across
+#    D1's heading, + to the side D1 leads toward, - back behind D1's line (across his face / against his momentum).
+# Sim rows also give D1's requested direction (the command he issued) for the lead and heading error.
 #   python3 -I scripts/diag/risk/redirect_at_speed.py nfl DATA_DIR WEEKS  |  python3 -I ... sim FILE.jsonl
 import csv, sys, os, math, json, statistics as st
 def plays_nfl(D, weeks):
@@ -68,6 +74,7 @@ for p in plays:
         req = abs(math.degrees(wrap(math.atan2(d[5], d[4]) - hd(d))))
       B.setdefault(band, []).append((turn(2), turn(4), dip, req))
 print(f'{src}: plays {len(plays)}')
+print('part 1, all defenders')
 for band in ('15-30', '30-60', '60-90'):
   R = B.get(band, [])
   if not R: continue
@@ -75,3 +82,49 @@ for band in ('15-30', '30-60', '60-90'):
   line = f'  bearing {band}: n {len(R)}  turn toward +0.2 s {med(0)} deg  +0.4 s {med(1)} deg  speed dip {med(2)} yd/s'
   if any(x[3] is not None for x in R): line += f'  request off heading {med(3)} deg'
   print(line)
+# Part 2: D1.
+def herr(v, frm, tgt):
+  if not (v[0] == v[0]) or math.hypot(v[0], v[1]) < 0.5: return None
+  return abs(math.degrees(wrap(math.atan2(v[1], v[0]) - math.atan2(tgt[1] - frm[1], tgt[0] - frm[0]))))
+D = []
+for p in plays:
+  F, c = p['frames'], p['catch']
+  if c + 9 >= len(F) or not F[c]['d']: continue
+  C0 = F[c]['c']
+  j = min(range(len(F[c]['d'])), key=lambda k: dist(F[c]['d'][k], C0))
+  d0 = F[c]['d'][j]
+  if dist(d0, C0) > 8 or spd(d0) < 3 or any(j >= len(F[c + k]['d']) for k in range(10)): continue
+  r = {}
+  for k, tag in ((0, 'e0'), (2, 'e2'), (4, 'e4')):
+    dk = F[c + k]['d'][j]; r[tag] = herr(dk[2:4], dk, F[c + k + 5]['c'] if c + k + 5 < len(F) else F[-1]['c'])
+    if len(dk) >= 6: r['q' + tag] = herr(dk[4:6], dk, F[c + k + 5]['c'] if c + k + 5 < len(F) else F[-1]['c'])
+  r['turn4'] = abs(math.degrees(wrap(hd(F[c + 4]['d'][j]) - hd(d0)))) if spd(F[c + 4]['d'][j]) > 0.5 else None
+  # lead at the catch: + toward the catcher's direction of travel
+  bear = math.atan2(C0[1] - d0[1], C0[0] - d0[0])
+  cv = (C0[2], C0[3]); perp = (-math.sin(bear), math.cos(bear))
+  side = 1 if cv[0] * perp[0] + cv[1] * perp[1] >= 0 else -1
+  r['lead'] = math.degrees(wrap(hd(d0) - bear)) * side
+  if len(d0) >= 6 and math.hypot(d0[4], d0[5]) > 1: r['qlead'] = math.degrees(wrap(math.atan2(d0[5], d0[4]) - bear)) * side
+  r['cspd'] = spd(C0)
+  r['cturn'] = abs(math.degrees(wrap(hd(F[c + 4]['c']) - hd(C0)))) if spd(F[c + 4]['c']) > 0.5 and spd(C0) > 0.5 else None
+  # escape side: catcher displacement over 0.5 s across D1's heading, + to the side D1 leads toward
+  h = hd(d0); n = (-math.sin(h), math.cos(h)); C5 = F[c + 5]['c']
+  lat = (C5[0] - C0[0]) * n[0] + (C5[1] - C0[1]) * n[1]
+  # the side D1 leads toward: the side of his heading the catcher is moving to, relative to the bearing
+  lside = 1 if math.sin(wrap(hd(d0) - bear)) * side >= 0 else -1
+  bside = 1 if (C0[0] - d0[0]) * n[0] + (C0[1] - d0[1]) * n[1] >= 0 else -1  # catcher's side of D1's line
+  r['esc'] = lat * bside  # + moving further to the side he is already on (away from D1's line), - back across D1's line
+  r['dist'] = dist(d0, C0)
+  D.append(r)
+def m(k, f=1):
+  v = [x[k] for x in D if x.get(k) is not None]
+  return f'{st.median(v):.{f}f}' if v else '-'
+def share(k, fn):
+  v = [x[k] for x in D if x.get(k) is not None]
+  return f'{sum(1 for z in v if fn(z)) / len(v):.2f}' if v else '-'
+print(f'part 2, D1 (nearest, within 8 yd, moving): n {len(D)}  distance {m("dist")} yd')
+print(f'  heading error (achieved) catch {m("e0", 0)} (>45 {share("e0", lambda z: z > 45)})  +0.2 {m("e2", 0)} ({share("e2", lambda z: z > 45)})  +0.4 {m("e4", 0)} ({share("e4", lambda z: z > 45)});  turn by +0.4 {m("turn4", 0)} deg')
+if any('qe0' in x for x in D):
+  print(f'  heading error (request)  catch {m("qe0", 0)} ({share("qe0", lambda z: z > 45)})  +0.2 {m("qe2", 0)} ({share("qe2", lambda z: z > 45)})  +0.4 {m("qe4", 0)} ({share("qe4", lambda z: z > 45)})')
+print(f'  lead at the catch (deg, + ahead of the catcher): achieved {m("lead", 0)} (share leading {share("lead", lambda z: z > 0)})' + (f'  request {m("qlead", 0)} ({share("qlead", lambda z: z > 0)})' if any('qlead' in x for x in D) else ''))
+print(f'  catcher: speed {m("cspd")} yd/s, heading change by +0.4 {m("cturn", 0)} deg;  escape across D1 line over 0.5 s {m("esc", 2)} yd (share back across his line {share("esc", lambda z: z < 0)})')
