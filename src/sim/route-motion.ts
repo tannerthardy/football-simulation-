@@ -40,7 +40,18 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
   return out;
 }
 
+/** ROUTE_EFFORT (experimental, off): every route family is run at full speed, as coached ("routes must be ran at full
+ * speed"; the stem is sold at full speed so the defender must respect the vertical, and the receiver separates at the
+ * break: "the brake is the move and the throttle is the finish"). The coached reasons to slow are already their own
+ * mechanisms here: the deceleration into a break (the route law's through-speed at a corner), the settle or sit at a
+ * route's end (`settle`, `sitVsZone`), and the timing with the drop (route depth and the break). Off, each family carries
+ * a constant under 1 (quick .78, flat .80, back .80, cross .84, intermediate .86, deep .94, plus 0.04 x (route running -
+ * 0.5)), from the 2026-10-08 movement calibration against tracking (df08fff7), with no coached reason of its own: it
+ * caps a TE's over at 7.2 yd/s against the NFL TE crosser's 7.4 at 3.0 s (Tools, docs/reviews/2026-11-14-route-speed.md).
+ * A route's own tracked `pace` (the back's check-release flat) is unchanged. */
+const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
 export function routeEffort(family: RouteDef['family'], rr: number): number {
+  if (ROUTE_EFFORT) return 1;
   const base = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
   return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
 }
