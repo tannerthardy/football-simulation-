@@ -17,7 +17,7 @@
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { releaseEvidence } from './release-evidence.js';
-import { estimatesFor } from './ball-estimate.js';
+import { BALL_EST_INCIDENTAL, estimatesFor } from './ball-estimate.js';
 
 export const RELEASE_BELIEF = process.env.RELEASE_BELIEF !== '0';
 
@@ -41,8 +41,11 @@ export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
   if (!b) { b = { loadingAt: undefined, releasedAt: undefined, source: undefined, ballAt: undefined, t: -1 }; m.set(a.idx, b); }
   if (b.t === sim.t) return b;
   b.t = sim.t;
+  // BALL_EST with bit 32 (passive sight through his head): his sight of the ball is his own sample alone, below.
+  const ownSight = estimatesFor(a) && BALL_EST_INCIDENTAL;
   for (const cue of releaseEvidence(sim, a)) {
     if (cue.kind === 'ball') {
+      if (ownSight) continue;
       b.ballAt ??= cue.at;
       if (b.source !== 'ball') { b.releasedAt = b.source === 'arm' && b.releasedAt !== undefined ? Math.min(b.releasedAt, cue.at) : cue.at; b.source = 'ball'; }
     } else if (cue.kind === 'motion') {
@@ -53,8 +56,9 @@ export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
       if (b.source !== 'ball') { b.loadingAt = undefined; b.releasedAt = undefined; b.source = undefined; }
     }
   }
-  // BALL_EST (with bit 128, this player's own estimate): his sight of the ball is his own sample, one perception, so
-  // the ball cue is also the first ball he sampled (through whichever head he has); it never undoes an arm cue.
+  // BALL_EST (this player's own estimate): the first ball he sampled (through whichever head he has) is a ball cue;
+  // with bit 32 it is the only one (one perception: the cone above is skipped), without it it joins the cone's. It never
+  // undoes an arm cue.
   if (estimatesFor(a) && sim.ball.kind === 'air') {
     const at = sim.ballEstimates.firstSeenAt(a);
     if (at !== undefined) {
