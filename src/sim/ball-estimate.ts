@@ -172,7 +172,8 @@ export class BallEstimates {
           const vl = bv.x * u.x + bv.y * u.y + bv.z * u.z, spd = Math.hypot(bv.x, bv.y, bv.z), share = spd > 1e-6 ? -vl / spd : 0;
           if (share > 0.05) {
             const tauObs = (r / -vl) * (1 + dice.normal(0, TAU_SD)), vObs = -r / Math.max(0.05, tauObs);
-            smp.vlos = vObs; smp.svlos = (Math.max(0.2, Math.abs(vObs) * TAU_SD) / (share * share)) * inflate;
+            const sv = (Math.max(0.2, Math.abs(vObs) * TAU_SD) / (share * share)) * inflate;
+            if (Number.isFinite(vObs) && Number.isFinite(sv) && tauObs > 0) { smp.vlos = vObs; smp.svlos = sv; }
           }
         }
       }
@@ -180,9 +181,11 @@ export class BallEstimates {
       if (tr.samples.length + tr.pseudo.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
         tr.fitT = sim.t;
         const before = tr.path ? landing(tr.path) : null;
-        tr.fit = fitFlight([...tr.pseudo, ...tr.samples], (ball.flight as BallFlight).drag);
+        const nf = fitFlight([...tr.pseudo, ...tr.samples], (ball.flight as BallFlight).drag);
+        // A degenerate fit (a singular or non-finite solve) keeps the last good one.
+        if (finiteFit(nf)) tr.fit = nf;
         tr.path = null;
-        const after = landing(this.pathOf(sim, tr));
+        const after = tr.fit ? landing(this.pathOf(sim, tr)) : null;
         if (before && after && tr.samples.length > 3 && Math.hypot(after.x - before.x, after.y - before.y) > 1) tr.jumps++;
       }
     }
@@ -201,7 +204,7 @@ export class BallEstimates {
     if (!tr.seeded && sim.ball.kind === 'air' && sim.ball.flight === this.flight) {
       tr.seeded = true;
       this.seed(a, sim, tr);
-      if (tr.samples.length + tr.pseudo.length >= 2) { tr.fit = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); tr.fitT = sim.t; tr.path = null; }
+      if (tr.samples.length + tr.pseudo.length >= 2) { const nf = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); if (finiteFit(nf)) { tr.fit = nf; tr.fitT = sim.t; tr.path = null; } }
     }
     return tr.fit ? this.pathOf(sim, tr) : [];
   }
@@ -299,7 +302,8 @@ export class BallEstimates {
       stepFlight(b, 0.05); t += 0.05;
     }
     out.push({ t: Math.round(t * 100) / 100, x: b.pos.x, y: b.pos.y, z: Math.max(0, b.pos.z) });
-    tr.path = out; tr.pathT = sim.t;
+    // Never hand a consumer a non-finite path.
+    tr.path = out.every((q) => Number.isFinite(q.x) && Number.isFinite(q.y) && Number.isFinite(q.z)) ? out : []; tr.pathT = sim.t;
     return out;
   }
 
@@ -324,6 +328,9 @@ export function sideOf(rel: number, headRel: number): number {
   return Math.sign(rel) === side ? rel : side * (2 * Math.PI - Math.abs(rel));
 }
 const BEHIND = (150 * Math.PI) / 180;
+
+/** A fit he can believe: finite, and no faster than a thrown football can be (50 yd/s; the hardest throws are about 30). */
+const finiteFit = (f: { p: Vec3; v: Vec3 }): boolean => [f.p.x, f.p.y, f.p.z, f.v.x, f.v.y, f.v.z].every(Number.isFinite) && Math.hypot(f.v.x, f.v.y, f.v.z) <= 50;
 
 function angDiff(a: number, b: number): number {
   let d = a - b;
