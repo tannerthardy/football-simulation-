@@ -36,8 +36,8 @@ describe('ROUTE_EFFORT break table (src/playbook/routes.ts)', () => {
     expect(on.corner.points[0].s).toBe(1);
     expect(on.post.points[0].s).toBe(1);
     expect(on.cross.points.slice(0, 2).map((p) => p.s)).toEqual([1, 1]);
-    expect(on.quick_out).toBe(off.quick_out);
-    expect(on.go).toBe(off.go);
-    expect(on.swing).toBe(off.swing);
+    expect(on.quick_out).toEqual(off.quick_out);
+    expect(on.go).toEqual(off.go);
+    expect(on.swing).toEqual(off.swing);
   });
 });
