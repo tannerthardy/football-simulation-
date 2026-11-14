@@ -277,6 +277,7 @@
     "PA_DROP": "0",
     "PA_CALL": "0",
     "BACK_PATHS": "0",
+    "SCREEN_CALL": "0",
     "SCREEN_QB": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
