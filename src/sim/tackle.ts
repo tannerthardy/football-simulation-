@@ -22,6 +22,7 @@
  * a quarterback in the grasp. Whiffed lunges and dives commit the body: a
  * defender who leaves his base to reach pays for it physically.
  */
+import { TRACK_TACKLE } from './behaviors/common.js';
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
@@ -30,7 +31,7 @@ import { fatigueFactor } from '../physics/kinematics.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { contactQuality, previewTackleWindow } from './tackle-window.js';
+import { contactQuality, previewTackleWindow, type TackleWindow } from './tackle-window.js';
 
 export interface TackleBond {
   carrier: Agent;
@@ -50,6 +51,8 @@ export interface TackleBond {
   holds?: Map<Agent, GraspJoint>;
   /** Execution draw for each hold (median 1): technique and footing on this rep. */
   execution?: Map<Agent, number>;
+  /** HOLD_SINK: since when each tackler's hold has held without slipping, s. */
+  sink?: Map<Agent, number>;
   /** Tacklers holding with one arm (ONE_ARM_HOLD): a grab with the arm a
    * blocker did not control. One hand on the man, no locked wrap, until his
    * body closes on the carrier and the second arm can come around. */
@@ -149,6 +152,11 @@ export function tryTackles(sim: PlaySim): void {
   for (const d of sim.opponents(c)) {
     if (d.isDown(t) || t < d.nextTackleAt) continue;
     if (sim.bond && sim.bond.tacklers.includes(d)) continue;
+    const pic = HONEST_TACKLE ? sim.see(d, c) : null;
+    if (pic && pic.carrying === false) continue;
+    // His read of the carrier's motion relative to him (true geometry when off).
+    const cp = pic ? pic.pos : c.pos, cv = pic ? pic.vel : c.vel;
+    const rx = cp.x - d.pos.x, ry = cp.y - d.pos.y, rd = Math.hypot(rx, ry) || 1;
     const dx = c.pos.x - d.pos.x;
     const dy = c.pos.y - d.pos.y;
     const dd = Math.hypot(dx, dy);
@@ -172,7 +180,7 @@ export function tryTackles(sim: PlaySim): void {
       // the best shot the visible relative trajectory offers (a runner
       // passing or pulling away). While he is still closing on a better
       // shot he keeps his feet running; an assist takes whatever it gets.
-      const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
+      const closing = -((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
       // A crossing hip can already be passing without rapidly separating.
       // Outside standing reach, retain the ordinary escape exception or
       // require acquired evidence that this is the last attainable reach.
@@ -191,7 +199,8 @@ export function tryTackles(sim: PlaySim): void {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
         const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
-        const seen = sim.see(d, c, look);
+        // TRACK_TACKLE (step 1a'): the carrier in his tackle window is tracked.
+        const seen = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c, look);
         // tryTackles follows physics. Perception was sampled at tick start;
         // dead-reckon only its stale velocity to this body-state boundary.
         const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
@@ -201,7 +210,7 @@ export function tryTackles(sim: PlaySim): void {
         if (window) {
           // Compare two estimates from the same observation. Actual reach and
           // the resulting grip still use current physical geometry below.
-          waitForBetter = window.futureQuality > window.currentQuality + .1;
+          waitForBetter = waitsForBetter(window);
           lastReach = observed.carrying === true && window.closestAt === 0
             && window.closest > arms && window.closest <= range;
           const keepFeet = (waitForBetter && !acquireAtReach) || (needsLastReach && !lastReach);
@@ -223,8 +232,8 @@ export function tryTackles(sim: PlaySim): void {
     // Escaping carrier just out of reach: lay out for his legs. The dive is a
     // real fall; whether he trips the carrier is the hold and the physics.
     const dive = range + 0.3;
-    const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
-    const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
+    const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
+    const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
@@ -271,6 +280,31 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
  * carrier ending outside the tackler's hand reach. Ratings enter only as
  * these capacities and the picture delay. A pocket QB keeps his escape law. */
 const TKL_WHIFF = process.env.TKL_WHIFF === '1';
+/** POCKET_REACH (experimental, off; intended on; PRO-INFO #6/#11): a reach for a QB in the pocket misses when his body
+ * is not where the tackler's hands can get to in the reach window (`whiffs`: the tackler's momentum, redirected toward
+ * his delayed picture by his cut capacity; the QB, if he sees the man, cutting away by his own), not by a roll with a
+ * rated escape (elusiveness, pocket presence) and the rusher's true bearing off his facing (`seesIt`). Diagnosis
+ * (qb-tackle-gates.mts): when our QB threw after a rusher reached a yard of him, the rusher spent 42% of those ticks on
+ * his tackle cooldown after a rolled miss at lunge range, and 49% bonded with the throw still coming out. */
+const POCKET_REACH = process.env.POCKET_REACH !== '0';
+/** WAIT_REACHED (on; WAIT_REACHED=0 turns it off): a tackler holds his reach for a better
+ * shot only when his forecast reaches that better point inside its lookahead. Each tick the forecast is redone; one
+ * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
+ * runner's seen velocity says) promised a shot 0.3 s away forever, and he never took the one he had. */
+const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
+/** HONEST_TACKLE (experimental, off; HONEST_TACKLE=1 turns it on): the tackler's
+ * decisions come from his picture of the carrier, not the true state. He reaches
+ * only for a body his picture does not show without the ball (the carrier he has
+ * not yet seen take a handoff is not his target until he sees it), and his
+ * closing, separating and behind reads for the last reach and the dive use the
+ * carrier's seen position and velocity. Reach, grip and contact stay physical. */
+const HONEST_TACKLE = process.env.HONEST_TACKLE !== '0';
+/** Whether the forecast is worth waiting for: a better shot by a margin and, with WAIT_REACHED, one it reaches inside
+ * its lookahead. A best point at the horizon's edge is a slow chase still closing (or a runner faster than his seen,
+ * stale velocity): the better shot keeps receding, so he takes the reach he has. */
+export function waitsForBetter(window: TackleWindow, reachedRule = WAIT_REACHED): boolean {
+  return window.futureQuality > window.currentQuality + .1 && (!reachedRule || window.reached);
+}
 /** Hand strike, extension to contact (model assumption, s). */
 const REACH_WINDOW = 0.2;
 /** Layout from the launch to full extension (model assumption, s). */
@@ -326,7 +360,7 @@ export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, eng
   const body = c.profile.radius + d.profile.radius;
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   const w = Math.max(0.08, window * clamp((dd - body) / Math.max(0.1, limit - body), 0, 1));
-  const seenC = sim.see(d, c);
+  const seenC = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c);
   const aim = { x: seenC.pos.x + seenC.vel.x * w, y: seenC.pos.y + seenC.vel.y * w };
   const coast = { x: d.pos.x + d.vel.x * w, y: d.pos.y + d.vel.y * w };
   const redirect = 0.5 * d.profile.lateral * (engaged ? 0.3 : 1) * w * w;
@@ -376,7 +410,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
     const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
     const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.3 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
-    if (TKL_WHIFF && !pocketQB ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
+    if ((TKL_WHIFF && !pocketQB) || (POCKET_REACH && pocketQB) ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;
       sim.event('missed_tackle', d, c);
@@ -527,6 +561,29 @@ export function gripReach(rng: { normal(m: number, s: number): number }, engaged
  * travel in proportion to his grip, and an upper grip sits at the height his
  * hands hold (shoulder line to waist). */
 const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
+/** Experimental (HOLD_SINK=1, off): sink and drag. Beside or behind the runner
+ * (the existing side/rear branch: the runner is not running into him), once
+ * his hold is not slipping he stops running with the man: he asks to stop
+ * along the runner's path and leans against the load (push), so his weight and
+ * his feet's friction act against the runner instead of his legs adding to the
+ * pair's momentum. Holding is not running with him: from the grasp his
+ * request along the runner's path never exceeds the speed he already has there
+ * (no delay: it is what his body does when it grabs, not a read of the
+ * carrier). The committed sink is executed by skill: once his hands have held
+ * (not slipping, read from his own hands) for his reaction time, longer for a
+ * poor tackler (he has to know he has him), he commits as fully as his
+ * tackling lets him (a poor one keeps half running). Until then, and while his
+ * grip slips, HOLD_FINISH's request under that cap. Third design (2026-11-12):
+ * attempts 1-2 left HOLD_FINISH's target, a speed to accelerate to, in charge
+ * during the recognition delay. The World
+ * decides the rest: a grip too weak for the anchor is torn off (a broken
+ * tackle), and a holder already off his base regains it or hangs as the
+ * physics has him; nothing forces a stance. Off, HOLD_FINISH commits his
+ * weight by grip security, which ramps from the hold's quality, so when the
+ * load arrives he still runs with the man at about half his speed (34 fast
+ * game wraps: median 55% over the first 0.3 s; side-wrap-bench.mts: asking to
+ * stop ends a side wrap in 2.5 yd and 0.5 s, running with him 3.7 yd). */
+const HOLD_SINK = process.env.HOLD_SINK === '1';
 /** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
  * the way he is being carried, not square to the runner every tick. */
 const HOLD_FACING = process.env.HOLD_FACING !== '0';
@@ -665,7 +722,28 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // gives with it and keeps his feet with the runner instead of sitting:
       // a trailing man who grabs a runner going by would otherwise sit while
       // being ripped through his hands. He sits again once it holds.
-      if (HOLD_FINISH && cs > 0.5) {
+      if (HOLD_SINK && cs > 0.5) {
+        // Sink and drag: once his hands have held (not slipping) for as long
+        // as it takes him to know he has the man -- his reaction time, longer
+        // for a poor tackler -- he commits as fully as his tackling lets him
+        // sink. Until then: his weight by his grip's security; while the grip
+        // slips he gives with it (commitment 0).
+        const since = (bond.sink ??= new Map());
+        if (joint.slipping) since.delete(d); else if (!since.has(d)) since.set(d, t);
+        const knows = since.has(d) && t - since.get(d)! >= d.profile.reactionTime * (1.5 - d.r('tackling'));
+        const full = 0.6 + 0.4 * d.r('tackling');
+        const commit = joint.slipping ? 0 : knows ? Math.max(full, clamp(next, 0, 1)) : clamp(next, 0, 1);
+        const ux = c.vel.x / cs, uy = c.vel.y / cs;
+        // Holding is not running with him: from the grasp his request along
+        // the runner's path never exceeds the speed he already has there.
+        // (HOLD_FINISH's request, the runner's speed x (1 - grip security), is
+        // a target he would accelerate to after a grab from beside or from a
+        // slower trail.) Across the path he stays tight to the hold.
+        const own = Math.max(0, d.vel.x * ux + d.vel.y * uy);
+        // Sunk (he knows he has him): his own speed less what he commits.
+        const along = knows && !joint.slipping ? Math.min(own, cs) * (1 - commit) : Math.min(own, cs * (1 - commit));
+        vel = { x: ux * along + tx * close, y: uy * along + ty * close };
+      } else if (HOLD_FINISH && cs > 0.5) {
         const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
         vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
       }

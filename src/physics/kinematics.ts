@@ -50,6 +50,10 @@ export interface MoveCommand {
   cutSkill?: number;
   /** 0–1 demand to turn shoulders through a narrow opening. */
   squeeze?: number;
+  /** 0–1 share of his start force he chooses to push with when speeding up (default 1: a full start). The body's
+   * capacity is unchanged; braking and cutting are not scaled. Used by a receiver getting off the line under
+   * control (LINE_START). */
+  drive?: number;
 }
 
 /** Output lost at an empty fast pool, and how sharply the loss grows with
@@ -168,6 +172,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   // A narrower profile costs burst/cutting control; it is not free agility.
   const narrow = 1 - 0.08 * squeeze;
   const effort = clamp(cmd.effort ?? 1, 0, 1) * narrow;
+  const drive = clamp(cmd.drive ?? 1, 0.05, 1);
   const cutSkill = (cmd.cutSkill ?? 1) * (1 - 0.12 * squeeze);
   const speed = len(body.vel);
 
@@ -213,8 +218,8 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   if (speed < 0.35) {
     // Near standstill: isotropic, limited by initial drive.
     const cap = len(desired);
-    const amax = Math.max(GAIT_STEP ? driveAccel(p, speed, p.vmax * fat) * fat
-      : driveAccel(p, speed, Math.max(cap, 0.5)) * fat * lift(Math.max(wanted, 0.5)), p.brake * 0.5) * capacity;
+    const amax = Math.max((GAIT_STEP ? driveAccel(p, speed, p.vmax * fat) * fat
+      : driveAccel(p, speed, Math.max(cap, 0.5)) * fat * lift(Math.max(wanted, 0.5))) * drive, p.brake * 0.5 * drive) * capacity;
     ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     const a = hypot2(ax, ay);
@@ -234,7 +239,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // on the sprint (force-velocity) curve or braking, and cutting, which
     // is harder at high speed. Head straight for the wanted velocity, as
     // hard as the envelope allows in that direction.
-    const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
+    const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat * drive, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
     const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat) * capacity;
     const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
     if (k > 1) {
@@ -249,7 +254,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // force-velocity curve, leveling off over a fixed time instead.
     const ease = GAIT_STEP
       ? Math.min(driveAccel(p, speed, p.vmax * fat) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
-      : driveAccel(p, speed, Math.max(cap, speed)) * fat * lift(wanted) * capacity;
+      : driveAccel(p, speed, Math.max(cap, speed)) * fat * lift(wanted) * capacity * drive;
     if (at > ease) {
       at = ease;
       const room = An * Math.sqrt(Math.max(0, 1 - (at / Math.max(At, 1e-9)) ** 2));
@@ -344,12 +349,13 @@ export function pushBody(body: Body, push: Vec2, dt: number): void {
  * Steering helper: desired velocity to arrive at `target` passing through it at
  * `throughSpeed` (0 = stop there), never exceeding `maxSpeed`.
  */
-export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0): Vec2 {
+export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0, decel?: number): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;
   const d = hypot2(dx, dy);
   if (d < 1e-3) return { x: 0, y: 0 };
-  const brake = body.profile.brake * 0.8;
+  // `decel`: the deceleration he plans to approach on (default: 0.8 of his braking).
+  const brake = decel ?? body.profile.brake * 0.8;
   const allowed = Math.sqrt(throughSpeed * throughSpeed + 2 * brake * Math.max(0, d - 0.15));
   const s = Math.min(maxSpeed, allowed);
   return { x: (dx / d) * s, y: (dy / d) * s };

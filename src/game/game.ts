@@ -24,6 +24,7 @@ import { resolveFoulClock } from './clock-rules.js';
 import { deriveOfficialPossessionStats } from './possession-stats.js';
 import { deriveOfficialPlayStats, type OfficialPlayCredit, type OfficialStatsTreatment } from './official-play-stats.js';
 import type { OffSlot, OffensivePlayCall, DefensivePlayCall } from '../playbook/types.js';
+import { routeOfAgent } from '../sim/behaviors/receiver.js';
 
 export type Side = 'home' | 'away';
 const other = (s: Side): Side => (s === 'home' ? 'away' : 'home');
@@ -65,6 +66,8 @@ export interface PlayLog {
     down: number; distance: number; stats: OfficialStatsTreatment };
   /** The calls on a scrimmage snap, for tendency analysis (same fields as the NFL extractor). */
   plan?: PlayPlan;
+  /** Recorded games only: each player's first installed route (family:id), in replay player order. */
+  routes?: Array<string | null>;
   outcome?: PlayResult['outcome'];
   /** Live time from the snap to the whistle (scrimmage plays). */
   duration?: number;
@@ -745,6 +748,8 @@ export class Game {
       shown: defCall.shown?.id,
       checkedOn: sim.defCall.check?.when,
     };
+    // Each player's first installed route (family:id; replay order), a diagnostic label no behavior reads.
+    if (this.opts.record && r.frames) logEntry.routes = sim.agents.map((a) => routeOfAgent.get(a) ?? null);
     if (this.opts.record && r.frames) {
       logEntry.replay = {
         frames: r.frames,

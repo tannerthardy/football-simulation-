@@ -5,6 +5,7 @@
  *   (feet, contacts, joints, support) → down by contact → ball → tackle
  *   attempts → whistle → record
  */
+import { recordContact } from './seen-contact.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -37,7 +38,7 @@ import { Agent, type Behavior, type Engagement, type RunContactSurface, type Tea
 import { CoverageScouting, QBMind } from './qbmind.js';
 import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
-import { resolveCatchOpportunities } from './catching.js';
+import { resolveCatchOpportunities, secureStep } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { ANTICIPATION_PRIOR } from './anticipation-prior.js';
@@ -124,6 +125,17 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
+/** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
+ * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
+ * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
+ * uses: online corrections of a movement to a moved target come at about 100-150 ms (Brenner and Smeets 1997; Aivar et
+ * al. 2015), and acceleration is not perceived directly over such windows (Brouwer, Brenner and Smeets 2002), so it adds
+ * no acceleration term. Step 0: the entry point `track()` only; off, it is exactly `see()`. No consumer calls it yet;
+ * each group moves to it in its own step with its own restage. */
+export const PERCEIVE_TRACK = process.env.PERCEIVE_TRACK === '1';
+/** PERCEIVE_TRACK: the tracking loop's latency (s). Chosen inside the evidence's 0.1-0.15 s; set from the restage of the
+ * first group that uses it, not imported as a constant. */
+const TRACK_LATENCY = 0.12;
 const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
 const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
 const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
@@ -143,6 +155,9 @@ const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a
 /** Default on (RELEASE_REDECIDE=0 for comparison): a player whose block ends
  * during the engagement update decides again in the same step (PlaySim.tick). */
 const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
+
+/** Outside the field's boundary planes (sidelines and end lines). */
+const outOfField = (p: { x: number; y: number }): boolean => p.x <= 0 || p.x >= 120 || p.y <= 0 || p.y >= FIELD_WIDTH;
 
 export class PlaySim {
   readonly dt = DT;
@@ -272,6 +287,14 @@ export class PlaySim {
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
   windupAt = -1;
+  /** When his last throwing motion was pulled down without a throw (a pump, or the arm pinned); −1 if none. */
+  windupEndAt = -1;
+  /** THROW_HOLD: the largest load on the passer since his delivery started, as a share of his arm force (0..1), and
+   * its direction (field frame, magnitude = throwDisturb); reset at the release. qbHold: the grasp's upper-body hold as a
+   * share of his arm force whenever a grasp is on him (qb.ts throwLoad). */
+  throwDisturb = 0;
+  throwPull = { x: 0, y: 0 };
+  qbHold = 0;
   /** When the passer's arm starts forward (front foot planted); the in-grasp
    * ruling does not cut off a pass already in its delivery. */
   deliveryAt = -1;
@@ -814,6 +837,68 @@ export class PlaySim {
     return seen;
   }
 
+  /** What `observer` perceives of `target` he is tracking: a continuous, attended read (the man he mirrors, the carrier
+   * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
+   * short correcting loop at TRACK_LATENCY, with no focus, stress or attention terms stacked on it (those belong to
+   * recognition) and no acceleration term; teammates as in `see()`. */
+  track(observer: Agent, target: Agent, delayScale = 1, group = false): Perceived {
+    // `group`: the consumer group's own flag (each step is measured alone); PERCEIVE_TRACK turns on every group.
+    if (!(PERCEIVE_TRACK || group) || observer.team === target.team) return this.see(observer, target, delayScale);
+    // The loop corrects only on a target in sight (touch, or in view with a clear sight line): its newest picture is
+    // the newest moment the line was clear that has had the loop's latency to arrive, carried forward on its velocity.
+    // While the line is blocked, and for one latency after it reopens, that picture ages; one older than the
+    // choice-reaction picture is no better than it, so `see()` stands in.
+    const key = `${observer.idx}>${target.idx}`, map = (this.trackSight ??= new Map());
+    let spells = map.get(key);
+    const clear = this.inSight(observer, target), last = spells?.[spells.length - 1];
+    // A pair not asked about last tick starts over: as if the line had been clear (or blocked) all along.
+    if (!spells || !last || last.asked < this.t - this.dt - 1e-9) spells = clear ? [{ from: this.t - 1, to: this.t, asked: this.t }] : [];
+    else if (clear && last.to >= this.t - this.dt - 1e-9) { last.to = this.t; last.asked = this.t; }
+    else if (clear) spells.push({ from: this.t, to: this.t, asked: this.t });
+    else last.asked = this.t;
+    while (spells.length && spells[0].to < this.t - 1) spells.shift();
+    if (!spells.length) spells.push({ from: -Infinity, to: -Infinity, asked: this.t });
+    spells[spells.length - 1].asked = this.t;
+    map.set(key, spells);
+    let tau = -Infinity;
+    for (const sp of spells) if (sp.from <= this.t - TRACK_LATENCY + 1e-9) tau = Math.max(tau, Math.min(sp.to, this.t - TRACK_LATENCY));
+    const delay = this.t - tau;
+    if (delay > TRACK_LATENCY + 1e-9) {
+      const fallback = this.see(observer, target, delayScale);
+      if (!Number.isFinite(delay) || (fallback.age ?? 0) <= delay + 1e-9) return fallback;
+    }
+    const seen = this.perception.perceive(target.idx, delay);
+    this.trace.observe(observer, target, seen, this.t);
+    this.commandTrace?.observe(observer, target, seen, this.t);
+    return seen;
+  }
+  private trackSight?: Map<string, { from: number; to: number; asked: number }[]>;
+
+  /** PERCEIVE_TRACK: whether light (or touch) reaches `observer` from `target` now: in contact, or within his view (the
+   * gaze cone under GAZE, else 1.8 rad either side of his body facing, as the QB's feel) with no body's centre line
+   * across the sight line. This is the physics of sight, not information: it decides only whether his loop gets a new
+   * sample. */
+  inSight(observer: Agent, target: Agent): boolean {
+    const e = observer.engagement;
+    if (e && (e.blocker === target || e.defender === target || e.helpers.includes(target))) return true;
+    if (target.engagement && (target.engagement.blocker === observer || target.engagement.defender === observer)) return true;
+    if (this.bond && this.bond.carrier === target && this.bond.tacklers.includes(observer)) return true;
+    if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
+    const sx = target.pos.x - observer.pos.x, sy = target.pos.y - observer.pos.y, l2 = sx * sx + sy * sy;
+    const g = GAZE ? this.gaze.get(observer) : undefined;
+    const dir = g && g.set >= this.t - this.dt - 1e-9 ? g.dir : observer.body.facing, cone = g && g.set >= this.t - this.dt - 1e-9 ? GAZE_CONE : 1.8;
+    if (l2 > 1e-9 && Math.abs(angDiff(Math.atan2(sy, sx), dir)) > cone) return false;
+    if (l2 < 0.36) return true;
+    for (const o of this.agents) {
+      if (o === observer || o === target) continue;
+      const u = ((o.pos.x - observer.pos.x) * sx + (o.pos.y - observer.pos.y) * sy) / l2;
+      if (u <= 0.15 || u >= 0.85) continue;
+      const px = observer.pos.x + sx * u - o.pos.x, py = observer.pos.y + sy * u - o.pos.y;
+      if (px * px + py * py < o.profile.radius ** 2) return false;
+    }
+    return true;
+  }
+
   ballPos(): Vec3 {
     switch (this.ball.kind) {
       case 'held':
@@ -1080,15 +1165,31 @@ export class PlaySim {
             if (event) event.note = `${ruling.rule}: teammate recovery cannot advance`;
             this.whistle('tackle', { x: ruling.deadBallX, y: a.pos.y });
           } else {
-            // A fumble spot beyond the opponent's goal line would already
-            // have been a touchdown, so the dead spot is in the own end zone.
+            // Possession beyond the opponent's goal line is ruled a touchdown
+            // before tackles (checkTouchdown), so the dead spot should be in
+            // the own end zone. If it is not, the fumbler held the ball in
+            // the end zone his team attacks: the nearest ruling is his score.
             const ownEndZone = a.team === 'O' ? ruling.deadBallX <= OWN_GOAL_X : ruling.deadBallX >= OPP_GOAL_X;
-            const endZone = ownEndZone ? restrictedRecoveryInOwnEndZone({ team: a.team,
-              fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
-              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX }) : null;
-            if (!endZone || endZone.kind === 'unresolved') {
-              throw new Error(`Unsupported NFL ${ruling.rule}: end-zone recovery impetus/momentum`);
+            if (!ownEndZone) {
+              this.ruleLimitations.add(`${ruling.rule}: dead spot in the attacked end zone; ruled a touchdown`);
+              this.scoreKind = 'TD';
+              this.event('touchdown', a, null, `${ruling.rule}: teammate recovery dead in the attacked end zone`);
+              this.whistle('touchdown', { x: ruling.deadBallX, y: a.pos.y });
+              if (a.team !== prevTeam) this.capturePossessionSnapshot();
+              return;
             }
+            const facts = { team: a.team, fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
+              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX };
+            let endZone = restrictedRecoveryInOwnEndZone(facts);
+            if (endZone.kind === 'unresolved') {
+              // The ball's history lacks the end-zone impetus or momentum
+              // facts: rule on the recorded impetus (else the recovering
+              // team's) without the momentum exception, and record the gap.
+              this.ruleLimitations.add(`${ruling.rule}: end-zone recovery lacks impetus/momentum facts; ruled on recorded impetus`);
+              endZone = restrictedRecoveryInOwnEndZone({ ...facts, impetusTeam: facts.impetusTeam ?? a.team,
+                momentumExceptionExcluded: true, momentumSpotX: undefined });
+            }
+            if (endZone.kind === 'unresolved') throw new Error('unreachable: impetus and momentum supplied');
             const note = `${ruling.rule}/${endZone.rule}: teammate recovery dead in own end zone`;
             if (endZone.kind === 'safety') {
               this.scoreKind = 'safety';
@@ -1133,7 +1234,12 @@ export class PlaySim {
       impetusTeam: this.acquisition?.team === carrier.team ? this.acquisition.impetusTeam : carrier.team,
       momentumExceptionExcluded: !this.acquisition?.momentumRetained,
       momentumSpotX: this.acquisition?.team === carrier.team && this.acquisition.momentumRetained
-        ? this.acquisition.spotX : undefined };
+        ? this.acquisition.spotX : undefined,
+      // A carrier still in bounds can hold the ball beyond the boundary's plane (his support is what puts him out).
+      // A fumble there is loose already beyond it: it crossed at the fumble's yard line, so that is where it is out
+      // if it then touches the ground or anything out of bounds. Without this the loose ball had no crossing and
+      // its out-of-bounds contact was an invariant failure (engine-50 cards, seed 23).
+      boundaryExit: outOfField(flight.pos) ? { x: clamp(flight.pos.x, 0, 120), y: clamp(flight.pos.y, 0, FIELD_WIDTH) } : undefined };
     // Statistical spot of the fumble: forward progress if he was wrapped up.
     this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
     // Offensive fumbles are the box-score stat; a returner's fumble is only an event.
@@ -1280,6 +1386,9 @@ export class PlaySim {
     commandTrace?.begin(this);
     const ledger = this.responsibility;
     ledger?.begin(this);
+    // QB_BODY_SEEN: his throwing motion shows on his body (recorded for everyone; read only through perception).
+    if (this.qb) this.qb.arm = this.windupAt < 0 ? 'set' : this.deliveryAt >= 0 && t >= this.deliveryAt ? 'deliver' : 'load';
+    recordContact(this);
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
@@ -1407,6 +1516,9 @@ export class PlaySim {
       this.afterPhysics(report);
     }
     this.updateBall(catchStarts);
+    // Possession in the opponent's end zone is a touchdown at once (11-2-1):
+    // ruled before this tick's tackles can strip the ball from the scorer.
+    if (this.phase === 'live') this.checkTouchdown();
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
     flushPassContacts(this);
@@ -1463,6 +1575,7 @@ export class PlaySim {
   private updateBall(catchStarts?: readonly Readonly<Vec2>[]): void {
     const ball = this.ball;
     if (ball.kind === 'held' || ball.kind === 'dead') return;
+    if (ball.kind === 'air' && ball.securing) { secureStep(this); return; }
     const prev = { ...ball.flight.pos };
     stepFlight(ball.flight, this.dt, this.wind);
     const cur = ball.flight.pos;
@@ -1645,6 +1758,19 @@ export class PlaySim {
     this.whistle('oob', { x: spotX, y: exit.y });
   }
 
+  /** A carrier in possession in the end zone his team attacks has scored. */
+  private checkTouchdown(): boolean {
+    const c = this.carrier;
+    if (!c || c.team !== this.possession) return false;
+    const p = c.pos;
+    // Out of bounds first, as in checkWhistle.
+    if (p.y <= 0 || p.y >= FIELD_WIDTH || (c.team === 'O' ? p.x < OPP_GOAL_X : p.x > OWN_GOAL_X)) return false;
+    this.scoreKind = 'TD';
+    this.event('touchdown', c);
+    this.whistle('touchdown', p);
+    return true;
+  }
+
   private checkWhistle(): void {
     const c = this.carrier;
     if (!c) return;
@@ -1655,19 +1781,7 @@ export class PlaySim {
       this.finishCarry('oob', { x: this.bond ? this.bond.progressX : p.x, y: p.y });
       return;
     }
-    // Touchdown / end-zone outcomes.
-    if (c.team === 'O' && this.possession === 'O' && p.x >= OPP_GOAL_X) {
-      this.scoreKind = 'TD';
-      this.event('touchdown', c);
-      this.whistle('touchdown', p);
-      return;
-    }
-    if (c.team === 'D' && this.possession === 'D' && p.x <= OWN_GOAL_X) {
-      this.scoreKind = 'TD';
-      this.event('touchdown', c);
-      this.whistle('touchdown', p);
-      return;
-    }
+    if (this.checkTouchdown()) return;
     if (p.x <= 0 || p.x >= 120) {
       this.finishCarry('oob', { x: clamp(p.x, 0, 120), y: p.y });
       return;

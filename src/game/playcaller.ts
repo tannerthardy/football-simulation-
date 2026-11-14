@@ -250,6 +250,16 @@ function installWeight(id: string, personnel: DefPersonnelId, passingDown: boole
   return 1;
 }
 
+/** PA_CALL (experimental, off; PA_CALL=1): play action as a tag on the call (see playActionTag). */
+const PA_CALL = process.env.PA_CALL !== '0';
+/** The NFL's play-action rate on drop-backs by down/distance and the QB's alignment [gun, under center or pistol]
+ * (BDB 2025 plays.csv, drop-backs, not empty, not spikes; 9,7xx plays). Under center about 80% everywhere; from the
+ * gun it falls with the situation. */
+const PA_TAG_RATE: Record<string, [number, number]> = {
+  '1st': [0.24, 0.81], '2nd_short': [0.23, 0.75], '2nd_med': [0.21, 0.79], '2nd_long': [0.16, 0.77],
+  '3rd_short': [0.11, 0.79], '3rd_med': [0.03, 0.5], '3rd_long': [0.02, 0.47], '4th': [0.06, 0.73],
+};
+
 export interface Situation {
   down: number;
   distance: number;
@@ -406,7 +416,9 @@ export class OffensiveCoordinator {
     const motion = motionEnabled() ? this.chooseMotion(formation, isPass) : undefined;
     const tag = motion ? ` (${motion.slot} ${motion.kind} motion)` : '';
     if (isPass) {
-      const concept = this.choosePass(s, formation, defense);
+      let concept = this.choosePass(s, formation, defense);
+      // PA_CALL: play action as a tag on the call, at the NFL's rate for this situation and alignment.
+      if (PA_CALL) concept = this.playActionTag(concept, s, formation);
       return { formation, flip, kind: 'pass', pass: concept, motion, label: `${formation.name} — ${concept.name}${tag}` };
     }
     const run = this.chooseRun(s, formation);
@@ -477,6 +489,26 @@ export class OffensiveCoordinator {
     }
     return pickWeighted(this.rng, weights);
   }
+
+  /**
+   * PA_CALL: play action is an action put in front of a concept, not a family of its own (docs/reviews/
+   * 2026-11-12-pa-call.md). After the concept is chosen the caller decides whether to put the run action on it, at
+   * the NFL's rate for the down and distance and the QB's alignment (PA_TAG_RATE). Quick and drop-back concepts take
+   * it from either alignment (NFL play action from the gun: 53% of throws under 5 air yards; under center 42% under 5
+   * and 32% at 15+). Screens and empty sets never do; the PA concepts already carry it. The tagged call is
+   * the same concept with the fake (the back's run track, the line's look, the QB's PA drop by alignment). Drawn on
+   * its own stream, so the rest of the call is unchanged.
+   */
+  private playActionTag(c: PassConcept, s: Situation, f: Formation): PassConcept {
+    if (c.family === 'playaction' || c.family === 'screen' || f.tags.includes('empty')) return c;
+    const gun = f.qb === 'gun';
+    const bucket = s.down === 1 ? '1st' : s.down === 2 ? (s.distance <= 3 ? '2nd_short' : s.distance <= 6 ? '2nd_med' : '2nd_long')
+      : s.down === 3 ? (s.distance <= 3 ? '3rd_short' : s.distance <= 6 ? '3rd_med' : '3rd_long') : '4th';
+    const rate = (s.hurry ? 0.25 : 1) * PA_TAG_RATE[bucket][gun ? 0 : 1];
+    if (this.rng.fork(`pa-tag:${this.paTags++}`).next() >= rate) return c;
+    return { ...c, id: `${c.id}+pa`, name: `PA ${c.name}`, family: 'playaction', drop: 'pa', fake: gun ? 'insideZone' : 'outsideZone' };
+  }
+  private paTags = 0;
 
   private choosePass(s: Situation, f: Formation, defense: Team): PassConcept {
     const qb = bestAt(this.team, 'QB');

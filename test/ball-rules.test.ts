@@ -7,7 +7,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { BallState } from '../src/sim/types.js';
-import { assessForwardPass, fumbleOutOfBounds, fumbleRecovery,
+import { assessForwardPass, fumbleOutOfBounds, fumbleRecovery, passerLoss,
   looseBallBoundaryStep, restrictedRecoveryInOwnEndZone, type FumbleRecoveryFacts } from '../src/sim/ball-rules.js';
 
 afterEach(() => vi.restoreAllMocks());
@@ -325,7 +325,7 @@ describe('native fumble boundaries and dead-ball rulings', () => {
     expect(sim.stats.fumbleLost).toBeFalsy();
   });
 
-  it('fails explicitly rather than authorizing an advance when restricted own-end-zone recovery lacks impetus/momentum facts', () => {
+  it('rules on the recorded impetus, without the momentum exception, and records the gap when restricted own-end-zone recovery lacks the facts', () => {
     const sim = nativeSim({ down: 4 }), fumbler = sim.slot('RB')!, recoverer = sim.slot('Y')!;
     fumbler.body.pos = { x: 8, y: CENTER_Y };
     sim.ball = { kind: 'held', carrier: fumbler };
@@ -333,7 +333,10 @@ describe('native fumble boundaries and dead-ball rulings', () => {
     // A restored tape without acquisition history.
     Object.assign(sim.ball, { impetusTeam: undefined, momentumExceptionExcluded: undefined });
     recoverer.body.pos = { x: 13, y: CENTER_Y };
-    expect(() => sim.possess(recoverer, 'recovery')).toThrow(/Unsupported NFL 8-7-5: end-zone recovery impetus\/momentum/);
+    sim.possess(recoverer, 'recovery');
+    expect(sim.outcome).toBe('safety');
+    expect(sim.buildResult().score).toEqual({ kind: 'safety', team: 'D' });
+    expect([...sim.ruleLimitations]).toContain('8-7-5: end-zone recovery lacks impetus/momentum facts; ruled on recorded impetus');
   });
 });
 
@@ -542,5 +545,22 @@ describe('native backward-pitch contact with an out-of-bounds person', () => {
     expect(sim.stats.fumbles).toEqual([expect.objectContaining({ playerId: from.player.id, team: 'O', lost: true,
       recoveredBy: defender.player.id })]);
     expect(sim.events.some(e => e.type === 'recovery' && e.a === defender.idx)).toBe(true);
+  });
+});
+
+describe('passerLoss (Rule 8-1-1, passer losing ball)', () => {
+  it('rules a loss during the load a fumble and one during the delivery a pass', () => {
+    expect(passerLoss({ lossAt: 1.0, forwardAt: 1.2, controlAtForward: true, tucking: false })).toBe('fumble');
+    expect(passerLoss({ lossAt: 1.3, forwardAt: 1.2, controlAtForward: true, tucking: false })).toBe('pass');
+    expect(passerLoss({ lossAt: 1.2, forwardAt: 1.2, controlAtForward: true, tucking: false })).toBe('pass');
+  });
+  it('rules an empty hand, a tuck and a throw never started a fumble', () => {
+    expect(passerLoss({ lossAt: 1.3, forwardAt: 1.2, controlAtForward: false, tucking: false })).toBe('fumble');
+    expect(passerLoss({ lossAt: 1.3, forwardAt: 1.2, controlAtForward: true, tucking: true })).toBe('fumble');
+    expect(passerLoss({ lossAt: 1.3, forwardAt: null, controlAtForward: true, tucking: false })).toBe('fumble');
+  });
+  it('lets a whistle blown first end the down', () => {
+    expect(passerLoss({ lossAt: 1.3, forwardAt: 1.2, controlAtForward: true, tucking: false, whistledAt: 1.25 })).toBe('dead');
+    expect(passerLoss({ lossAt: 1.0, forwardAt: 1.2, controlAtForward: true, tucking: false, whistledAt: 1.1 })).toBe('fumble');
   });
 });

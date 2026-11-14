@@ -44,6 +44,9 @@ import type { PlaySim } from './playsim.js';
 import { screenSpot } from './screen-spot.js';
 import { isOL } from './behaviors/blocking.js';
 
+/** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
+
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
  * (Cover 3, quarters, ...). He doesn't identify Rip/Liz from Sky before the
@@ -155,7 +158,7 @@ export class QBMind {
   private readonly memory = new Map<Agent, Memory>();
   /** Pictures already represented in the prior or a post-snap likelihood. */
   private readonly classifiedAt = new Map<Agent, number>();
-  private readonly clearHalf: number;
+  readonly clearHalf: number;
   /** Coverage frequencies he expects from this defense, and its disguise rate. */
   private readonly prior: Record<string, number> = {};
   private readonly disguiseRate: number;
@@ -443,6 +446,13 @@ export class QBMind {
     });
   }
 
+  /** Age of his picture of a defender: memory age plus its sensing latency.
+   * Zero when he has no memory of him (the estimate is then a fresh look). */
+  pictureAge(d: Agent): number {
+    const m = this.memory.get(d);
+    return m ? Math.max(0, this.sim.t - m.t) + (m.latency ?? 0) : 0;
+  }
+
   /** Where the QB thinks a defender is (and how he's moving). */
   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {
     const sim = this.sim;
@@ -629,8 +639,11 @@ export class QBMind {
    */
   private screenKill(call: OffensivePlayCall): OffensivePlayCall | null {
     const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
-    if (!spec || spec.kill !== 'press') return null;
-    if (!this.screenLook(call.pass!)?.press) return null;
+    if (!spec || !spec.kill) return null;
+    const look = this.screenLook(call.pass!);
+    if (spec.kill === 'press' && !look?.press) return null;
+    // SCREEN_QB: a numbers kill (the bubble): more of them outside than us there.
+    if (spec.kill === 'numbers' && (!SCREEN_QB || !look || look.defenders <= look.receivers)) return null;
     const quick = this.quickCheck();
     if (!quick) return null;
     this.report.audible = `kill to ${quick.name}`;

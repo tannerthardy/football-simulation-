@@ -205,3 +205,31 @@ export function looseBallBoundaryStep(previousExit: Readonly<Vec2> | undefined,
 export function momentumDeadBallSpot(acquisitionX: number, team: TeamSide): number {
   return team === 'O' ? Math.max(acquisitionX, OWN_GOAL_X + 1) : Math.min(acquisitionX, OPP_GOAL_X - 1);
 }
+
+export interface PasserLossFacts {
+  /** When the ball left his control. */
+  lossAt: number;
+  /** When his arm began its intentional forward movement (sim.deliveryAt);
+   * null if it never did. */
+  forwardAt: number | null;
+  /** Whether he still had control of the ball when the arm started forward. */
+  controlAtForward: boolean;
+  /** Losing it while bringing an aborted throw back toward his body. */
+  tucking: boolean;
+  /** A dead-ball whistle (in the grasp) blown before the loss. */
+  whistledAt?: number | null;
+}
+
+export type PasserLossRuling = 'pass' | 'fumble' | 'dead';
+
+/** Rule 8-1-1 (Passer Losing Ball, as rewritten in 2013): a pass begins with
+ * intentional forward movement of the arm while he controls the ball, wherever
+ * the ball then goes; a loss before it, an empty hand, or a loss while tucking
+ * the ball back to his body is a fumble. A whistle already blown ends the down
+ * first. Keyed to the arm (sim.deliveryAt), not to the ball's velocity. */
+export function passerLoss(f: PasserLossFacts): PasserLossRuling {
+  if (f.whistledAt != null && f.whistledAt <= f.lossAt) return 'dead';
+  if (f.tucking) return 'fumble';
+  if (f.forwardAt === null || f.lossAt < f.forwardAt) return 'fumble';
+  return f.controlAtForward ? 'pass' : 'fumble';
+}

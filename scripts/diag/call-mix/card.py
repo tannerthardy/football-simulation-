@@ -9,7 +9,7 @@ import json, sys, math, collections
 from statistics import mean, median, pstdev
 LABEL = {'hitch': 'HITCH', 'curl': 'HITCH', 'comeback': 'HITCH', 'stick': 'HITCH', 'hook': 'HITCH', 'quick_out': 'OUT', 'out': 'OUT',
          'deep_out': 'OUT', 'arrow': 'FLAT', 'flat': 'FLAT', 'back_flat': 'FLAT', 'swing': 'FLAT', 'checkdown': 'FLAT', 'checkdown*': 'FLAT',
-         'angle': 'ANGLE', 'dig': 'IN', 'short_in': 'IN', 'slant': 'SLANT', 'go': 'GO', 'fade': 'GO', 'seam': 'GO', 'seam_read': 'GO',
+         'angle': 'ANGLE', 'back_out': 'OUT', 'dig': 'IN', 'short_in': 'IN', 'slant': 'SLANT', 'go': 'GO', 'fade': 'GO', 'seam': 'GO', 'seam_read': 'GO',
          'post': 'POST', 'corner': 'CORNER', 'shallow': 'CROSS', 'shallow_high': 'CROSS', 'cross': 'CROSS', 'wheel': 'WHEEL'}
 KS = ['quick <10', 'flat/screen/angle', 'cross', 'breaking 10-19', 'vertical/deep']
 def klass(label, air):

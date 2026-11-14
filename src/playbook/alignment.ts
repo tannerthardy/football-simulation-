@@ -362,6 +362,9 @@ const ROUTE_ROOM: Record<string, [number, number]> = {
   quick_out: [14.7, 15.8], out: [14.7, 15.8], deep_out: [14.7, 15.8], corner: [15.4, 15.3],
   shallow: [15.8, 16.8], shallow_high: [15.8, 16.8], cross: [15.8, 16.8], flat: [15.1, 17.6], arrow: [15.1, 17.6],
 };
+// SCREEN_QB: the tunnel screen's #1 keeps the room of a vertical stem, to come back under it: 10.9 yd to his sideline
+// (BDB 2025 WR-in screens, n 23, all with another receiver on his side; screen_tunnel_path.py). Off: the default room.
+if (process.env.SCREEN_QB === '1') ROUTE_ROOM.tunnel = [10.9, 10.9];
 const RUN_ROOM: [number, number] = [15, 10.8];
 const ANY_ROOM: [number, number] = [13.5, 11];
 

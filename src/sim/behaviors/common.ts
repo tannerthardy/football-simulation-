@@ -3,7 +3,7 @@ import { FIELD_WIDTH } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
-import { interceptPoint, timeToReach, type SprintRequest } from '../../physics/reach.js';
+import { interceptPoint, timeToReach, timeToReachRequested, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -90,18 +90,26 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    perceived intercept. Lower pursuit ratings widen that error; they do
  *    not require every poorer pursuer to take a flat, trailing angle.
  */
+/** TRACK_PURSUIT (experimental, off; TRACK_PURSUIT=1, or PERCEIVE_TRACK=1 for every group): perception channels
+ * step 1a, pursuit's aim (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier is read through the
+ * tracking channel (`PlaySim.track`) instead of a scaled `see()` plus a two-sample acceleration burst. The tackle
+ * window (the close gather in `chase`) is its own step (1a'). */
+const TRACK_PURSUIT = process.env.TRACK_PURSUIT !== '0' || process.env.PERCEIVE_TRACK === '1';
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   request?: SprintRequest): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, delay);
+  // TRACK_PURSUIT (step 1a): the carrier he pursues is tracked: a short correcting loop (`track`), re-aimed every
+  // tick, with no acceleration estimate (people do not perceive acceleration over such windows; Brouwer et al. 2002).
+  // It retires this function's own compensator, the scaled 0.12-0.24 s picture and the two-sample burst below.
+  const seen = TRACK_PURSUIT ? sim.track(a, target, 1, true) : sim.see(a, target, delay);
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
   const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
-  const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
+  const older = TRACK_PURSUIT ? seen : sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
   // Over the time actually between the two pictures he holds, which attention
   // can stretch past the 0.2 s asked for; two pictures of the same moment show
   // no acceleration.
   const interval = (older.age ?? 0) - (seen.age ?? 0);
-  const acceleration = interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
+  const acceleration = !TRACK_PURSUIT && interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
     -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau)) : 0;
   // Recent acceleration is evidence for a short burst, not a promise of full
   // speed throughout the horizon. Reassess as new motion becomes visible.
@@ -123,7 +131,8 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const biasedTime = clamp(ip.t - bias, 0, horizon);
+  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
@@ -142,6 +151,73 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** PURSUIT_COMMIT (experimental, off): a pursuer commits to the meeting he
+ * chose. Measured (pursuit-weave.mts): re-picking the first reachable forecast
+ * sample every tick flips between a reachable meeting and the least-late
+ * fallback, and jumps the meeting time, on 9-13% of ticks; those ticks gave
+ * 35-40% of his aim-point turn and 44% of the big pass re-aims (his body
+ * heading turns 26 deg/s vs NFL 17). He keeps the meeting moment he chose, on
+ * his current picture of the carrier, until:
+ *  - it is no longer reachable by MEET_EXIT s (a reachable meeting), or a
+ *    fresh one is reachable with MEET_ENTER s to spare (a fallback);
+ *  - a fresh meeting is earlier (reachable) or less late (fallback) by
+ *    MEET_MARGIN s;
+ *  - it is under MEET_NEAR s away, past his horizon, or the target changed.
+ * The exit is on the far side of the entry. Also: a defender playing the
+ * ball holds his last approach on the flight's final tick (defense.ts). */
+export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
+const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
+const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
+/** PURSUIT_SPOT (experimental, off; PURSUIT_SPOT=1 turns it on; for TRACK_PURSUIT): PURSUIT_COMMIT's pursuer commits
+ * to the meeting spot he chose, not its moment. Under TRACK_PURSUIT the carrier is a tracked picture whose velocity the
+ * tracker corrects every tick; a meeting moment held fixed turns each correction into a shift of his aim point along
+ * the carrier's path (engine-61 candidate, pursuit-commit's 3-8 yd band: held-moment ticks turn 14.0 deg/s against the
+ * uncommitted re-solved intercept's 10.6), while a held spot only moves when the forecast path stops passing it. */
+const PURSUIT_SPOT = process.env.PURSUIT_SPOT !== '0';
+const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean }>();
+/** PURSUIT_SPOT: commit to the meeting spot, not its moment. The carrier's time to the held spot is read off
+ * his current forecast (its along-path distance over the forecast speed); released when his forecast path no longer
+ * passes the spot within reach, the pursuer can no longer reach it in time (MEET_EXIT), a fresh reachable meeting is
+ * earlier by MEET_MARGIN, or it is under MEET_NEAR away. */
+function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
+  seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
+  const freshOk = ip.estimate.status === 'estimated-feasible';
+  const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(t), ok }); return t; };
+  const held = heldSpot.get(a);
+  if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
+  const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
+  const along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
+  const t = along / V;
+  if (t < MEET_NEAR || t > horizon || miss > reach) return choose(ip.t, freshOk);
+  const slack = t - (request ? timeToReachRequested(mover, held.spot, reach, request) : timeToReach(mover, held.spot, reach));
+  if (held.ok ? slack < -MEET_EXIT : slack < MEET_ENTER && freshOk && (ip.estimate.slack ?? -Infinity) >= MEET_ENTER) return choose(ip.t, freshOk);
+  if (freshOk && ip.t < t - MEET_MARGIN) return choose(ip.t, true);
+  if (!held.ok && slack >= MEET_ENTER) held.ok = true;
+  return t;
+}
+
+function commitMeeting(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
+  mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
+  const freshOk = ip.estimate.status === 'estimated-feasible';
+  const freshSlack = ip.estimate.slack ?? -Infinity;
+  const choose = (t: number, ok: boolean) => { heldMeeting.set(a, { target, at: sim.t + t, ok }); return t; };
+  const held = heldMeeting.get(a);
+  if (!held || held.target !== target) return choose(ip.t, freshOk);
+  const t = held.at - sim.t;
+  if (t < MEET_NEAR || t > horizon) return choose(ip.t, freshOk);
+  const pt = path(t);
+  const slack = t - (request ? timeToReachRequested(mover, pt, reach, request) : timeToReach(mover, pt, reach));
+  if (held.ok) {
+    if (slack < -MEET_EXIT) return choose(ip.t, freshOk);
+    if (freshOk && ip.t < t - MEET_MARGIN) return choose(ip.t, true);
+    return t;
+  }
+  if (freshOk && freshSlack >= MEET_ENTER) return choose(ip.t, true);
+  if (slack >= MEET_ENTER) { held.ok = true; return t; }
+  if (!freshOk && freshSlack > slack + MEET_MARGIN) return choose(ip.t, false);
+  return t;
+}
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
@@ -229,10 +305,16 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
     facing: travel + angleDiff(travel, near.facing!) * gather };
 }
 
+/** TRACK_TACKLE (experimental, off; TRACK_TACKLE=1, or PERCEIVE_TRACK=1 for every group): perception channels step
+ * 1a', the tackle window (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier's picture in the last
+ * yards (chase's close gather, tryTackles' window preview, the whiff margin's aim) is read through the tracking channel
+ * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
+ * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
+export const TRACK_TACKLE = process.env.TRACK_TACKLE !== '0' || process.env.PERCEIVE_TRACK === '1';
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, look);
+  const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;

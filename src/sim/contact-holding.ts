@@ -10,11 +10,12 @@
  */
 import type { Vec2 } from '../core/vec.js';
 import type { Body } from '../physics/kinematics.js';
-import type { HandJoint, Joint, StepReport } from '../physics/world.js';
+import { OPEN_HANDS, type HandJoint, type Joint, type StepReport } from '../physics/world.js';
 import type { Agent, Engagement, TeamSide } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { FoulRecord } from './types.js';
-import { axisOf } from './engagement.js';
+import { axisOf, PAST_ALONG_PATH, pastAlongPath } from './engagement.js';
+import { officiateChance } from './pass-interference.js';
 
 /** 12-1-3(c) restricts grabbing an opponent, not blocking one. While the
  * blocker is still between the defender and where he is going (|phi| < 1 on
@@ -23,6 +24,27 @@ import { axisOf } from './engagement.js';
  * leverage past the blocker, or when it takes his feet (HOLD_LEVERAGE=0: any
  * achieved restriction of a defender moving off the block is a hold). */
 const HOLD_LEVERAGE = process.env.HOLD_LEVERAGE !== '0';
+
+/** HOLD_CALL (off; HOLD_CALL=1 turns it on; estimated, officiating): the
+ * offence's hold is judged in three stages, not by which exemption fires first.
+ * Committed: a clear restraint (the margins below) of a man who has left the
+ * blocker's frame (HOLD_LEVERAGE's test, now checked before the point-of-attack
+ * and double-team no-calls) or whose feet the grip took. Material: the
+ * restrained man had a real path to the ball and the restraint was against it
+ * -- he was at the point of attack, or he would have been the next defender to
+ * the ball (his distance over his top speed no longer than that of every
+ * standing defender nobody is blocking), he was asking to go toward it, and he
+ * was not still inside a double team. Called: material and seen. The
+ * official's look is the PI model's (OFFICIATE): the restraint's accumulated
+ * effect on the man's velocity (opposing impulse over his mass, which grows
+ * with its duration) ramps the chance from nothing at 0.3 yd/s to the seen
+ * rate 0.6 at 1.8 yd/s, one draw per pair per play; traffic hides it -- each
+ * other body within two body widths (1.5 yd) of the man divides the chance
+ * (1 / (1 + n)). Committed and material acts that are not called are kept as
+ * uncalled evidence. Off, every clear restraint that survives the exemptions
+ * is called. Not fitted. */
+const HOLD_CALL = process.env.HOLD_CALL === '1';
+export const HOLD_TRAFFIC_RADIUS = 1.5;
 
 /** Where the holder stands relative to the victim's line to his goal, in
  * quarter turns: 0 squarely in his way, ±1 beside him at the hip, beyond 1
@@ -135,7 +157,7 @@ export function captureHoldingStart(sim: PlaySim): HoldingIntervalStart {
     const victimBody = holderBody === joint.a ? joint.b : joint.a;
     const actor = byBody.get(holderBody), victim = byBody.get(victimBody);
     if (!actor || !victim || actor.team === victim.team) continue;
-    if (joint.kind === 'hands' && !(joint.hold > 0)) continue;
+    if (joint.kind === 'hands' && !(joint.hold > 0) && !(OPEN_HANDS && joint.grip)) continue;
     const rep = sim.engagements.find(e => e.hands === joint || [...(e.helperHands?.values() ?? [])].includes(joint as HandJoint))
       ?? (actor.engagement?.defender === victim ? actor.engagement : undefined);
     const actorStart = bodyStart(actor), victimStart = bodyStart(victim);
@@ -226,7 +248,10 @@ export function holdingRestriction(joint: Joint, actor: Agent, victim: Agent,
     force = { x: joint.normalForceOnB.x + joint.tangentForceOnB.x,
       y: joint.normalForceOnB.y + joint.tangentForceOnB.y };
   }
-  if (!(normalForce < -1e-6)) return null;
+  // OPEN_HANDS: a grip can restrain by dragging along his path as well as by
+  // pulling; the same achieved-restraint margins (and HOLD_LEVERAGE's frame)
+  // judge it. Open hands cannot drag (the World bounds them by friction).
+  if (!(normalForce < -1e-6) && !(OPEN_HANDS && joint.kind === 'hands' && joint.grip)) return null;
   const endRelative = minus(victim.vel, actor.vel);
   const observedSlowdown = escapeSpeed - dot(endRelative, travel);
   if (!(observedSlowdown > 1e-6)) return null;
@@ -358,10 +383,18 @@ export function observeHolding(sim: PlaySim, report: StepReport,
     const alreadyFalling = h.victim.body.support?.state !== 'up'
       && !report.falls.includes(h.victim.idx) && !tookFeet;
     const phi = offense && HOLD_LEVERAGE && !tookFeet ? holderPhi(sim, h) : null;
-    const stillInFront = phi !== null && Math.abs(phi) < 1;
+    // PAST_ALONG_PATH: the officials' 'beaten' is the same definition as the rep's and the grip's -- past along the
+    // man's own path of travel (the leverage when he is barely moving).
+    const stillInFront = phi !== null && (PAST_ALONG_PATH
+      ? !pastAlongPath(h.actorStart, { pos: h.victimStart.pos, vel: h.victimStart.vel }, Math.abs(phi))
+      : Math.abs(phi) < 1);
     const exemption = runnerException ? 'runner' : groundLooseException ? 'personal_ground_loose_ball_attempt'
       : offense && simultaneous ? 'simultaneous_runner_tackle_or_boundary'
         : offense && start.passBeyondLine ? 'after_downfield_forward_release'
+        : offense && HOLD_CALL && rip ? 'defensive_rip_exception'
+        : offense && HOLD_CALL && alreadyFalling ? 'opponent_already_falling'
+        : offense && HOLD_CALL && stillInFront ? 'blocker_still_in_front_of_opponent'
+        : offense && HOLD_CALL ? null
           : offense && !atPointOfAttack(sim, start, h) ? 'away_from_point_of_attack'
             : offense && !tookFeet && !outsideDouble(h, report, start.carrier) ? 'double_team_without_clear_split_or_outside_escape'
               : offense && rip ? 'defensive_rip_exception'
@@ -435,6 +468,18 @@ export function observeHolding(sim: PlaySim, report: StepReport,
       continue;
     }
     if (sim.penalties.some(p => p.id === id)) continue;
+    if (offense && HOLD_CALL) {
+      const stage = holdStage(sim, start, h, report, history.opposingDeltaV);
+      if (stage.stage !== 'called') {
+        const old = sim.foulRecords.findIndex(f => f.id === id);
+        const record: FoulRecord = { id, t: history.end, kind, playerId: h.actor.player.id,
+          called: false, assessment: 'unresolved' as const,
+          evidence: { ...evidence, action: `hold_${stage.stage}`, facts: { ...evidence.facts, ...stage.facts } } };
+        if (old < 0) sim.foulRecords.push(record); else sim.foulRecords[old] = record;
+        continue;
+      }
+      Object.assign(evidence.facts, stage.facts, { holdStage: 'called' });
+    }
     sim.recordFoul({ id, kind, against, playerId: h.actor.player.id,
       yards: offense ? 10 : 5, autoFirst: !offense, spotX: h.actorStart.pos.x,
       t: start.t + sim.dt, rule, reason: 'achieved grab materially restricted continuing escape',
@@ -443,4 +488,43 @@ export function observeHolding(sim: PlaySim, report: StepReport,
       playPhase: start.playPhase }, evidence);
     sim.event(offense ? 'holding' : 'defensive_holding', h.actor, h.victim, rule);
   }
+}
+
+const holdLooks = new WeakMap<PlaySim, Map<string, number>>();
+
+/** HOLD_CALL: how far a committed hold goes -- committed only, material
+ * (a real path to the ball, restrained against it), or called (material and
+ * seen). `effect` is the act's accumulated opposing velocity change (m/s). */
+export function holdStage(sim: PlaySim, start: HoldingIntervalStart, h: HoldStart, report: StepReport, effect: number):
+  { stage: 'committed' | 'material' | 'called'; facts: Record<string, number | boolean | string | null> } {
+  const v = h.victim, ball = start.carrier;
+  const poa = atPointOfAttack(sim, start, h);
+  const notDouble = outsideDouble(h, report, start.carrier);
+  let tMan: number | null = null, tFree: number | null = null, toward = false;
+  if (ball) {
+    const to = minus(ball.pos, h.victimStart.pos), d = Math.hypot(to.x, to.y);
+    tMan = d / Math.max(1e-6, v.profile.vmax);
+    toward = d > 1e-6 && dot(h.victimStart.desired, to) > 0;
+    const blocked = new Set(sim.engagements.map(e => e.defender));
+    for (const o of sim.opponents(h.actor)) {
+      if (o === v || blocked.has(o) || (o.body.support && o.body.support.state !== 'up')) continue;
+      const t = Math.hypot(ball.pos.x - o.pos.x, ball.pos.y - o.pos.y) / Math.max(1e-6, o.profile.vmax);
+      if (tFree === null || t < tFree) tFree = t;
+    }
+  }
+  const next = tMan !== null && (tFree === null || tMan <= tFree);
+  const material = (poa || next) && toward && notDouble;
+  const traffic = sim.agents.filter(a => a !== v && a !== h.actor
+    && Math.hypot(a.pos.x - v.pos.x, a.pos.y - v.pos.y) <= HOLD_TRAFFIC_RADIUS).length;
+  const effectYdPerS = effect * 1.0936;
+  const pSeen = officiateChance(effectYdPerS) / (1 + traffic);
+  let looks = holdLooks.get(sim);
+  if (!looks) { looks = new Map(); holdLooks.set(sim, looks); }
+  const key = `${h.actor.idx}>${v.idx}`;
+  let u = looks.get(key);
+  if (u === undefined) { u = sim.dice('official-hold', h.actor, v).next(); looks.set(key, u); }
+  const facts = { holdStage: !material ? 'committed' : u < pSeen ? 'called' : 'material',
+    holdPointOfAttack: poa, holdNextToBall: next, holdTowardBall: toward, holdOutsideDouble: notDouble,
+    holdManToBall: tMan, holdFreeToBall: tFree, holdTraffic: traffic, holdEffectYdPerS: effectYdPerS, holdPSeen: pSeen };
+  return { stage: facts.holdStage as 'committed' | 'material' | 'called', facts };
 }

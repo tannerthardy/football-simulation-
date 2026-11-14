@@ -4,7 +4,7 @@ import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
-import { routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
+import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
@@ -28,7 +28,7 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
   startDelay: number | null, profile: PhysicalProfile, routeRunning: number): InstalledReceiverRoute {
   const path = routePath(start, los, outside, route.points, route.end === 'continue', route.family);
   const read = installedRead(route);
-  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s })));
+  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s, ...(p.ext ? { ext: true } : {}) })));
   const copiedRead = read ? Object.freeze({ ...read, answers: Object.freeze(read.answers.map(a => Object.freeze({ ...a,
     points: Object.freeze(a.points.map(p => Object.freeze({ ...p }))) }))) }) : undefined;
   return Object.freeze({ start: Object.freeze({ ...start }),
@@ -60,13 +60,39 @@ export interface ReceiverEstimate {
   readonly answerSource?: 'own-key-picture' | 'receiver-motion' | 'installed-default';
 }
 
+/** FORECAST_BREAK (experimental, off; FORECAST_BREAK=1 turns it on): the break the quarterback expects is on
+ * the installed route, not on the continuation the path adds past it. Off, a flat, arrow, swing or back's flat
+ * (their installed cut s 0.9) takes its break from the continuation's turn at the sideline margin (s 0.75 or
+ * 0.6), so the QB expects it about 6 s after the snap and treats the receiver as not ready (a flat open at
+ * 0.77 completion was never thrown: docs/reviews/2026-11-11-forecast-break.md). */
+const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
+/** FORECAST_HOLD (experimental, off; FORECAST_HOLD=1 turns it on): a receiver a little off his drawn line is still
+ * running his route. Off, a picture is placed on the installed route only within his body radius (about 0.3 yd) of
+ * it; anything farther makes the whole forecast a straight line of his current velocity, which ignores the coming
+ * break. On the forced-concept panel, 26% of pictures of receivers moving along their routes were thrown out that
+ * way (32% at 2-3 s, the throwing time), and in league games that flip between the decision and the plant's re-check
+ * caused 18 of 30 traced pumps (docs/reviews/2026-11-12-window-defenders.md). On: placed within HOLD_TOL of the
+ * route while moving along it (about the 90th percentile of observed drift); moving against it, or farther off, is
+ * still a contradiction and falls back to his observed motion. */
+const FORECAST_HOLD = process.env.FORECAST_HOLD !== '0';
+/** FORECAST_HOLD: how far off its drawn line a run route still reads as that route, by route phase: the 90th
+ * percentile of receivers' drift while moving along the route (engine-42 forced-concept panel,
+ * scripts/diag/read-plan/forecast-drift.ts): on the stem 1.19 yd, after the break 1.63 (the cut is rounded), on a
+ * route with no break 1.46. His belief: the QB's forecast carries it (`holdTol`), so his knowledge of a receiver could
+ * hold it tighter later. */
+export interface HoldTolerance { stem: number; afterBreak: number; noBreak: number }
+export const HOLD_TOL: Readonly<HoldTolerance> = Object.freeze({ stem: 1.2, afterBreak: 1.6, noBreak: 1.5 });
+
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
  * path with no slowed waypoint (a go or seam). */
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
   const last = end === 'settle' ? path.length - 1 : path.length;
-  for (let i = 0; i < last; i++) if (path[i].s < 1 && (b === null || path[i].s < path[b].s)) b = i;
+  for (let i = 0; i < last; i++) {
+    if (FORECAST_BREAK && path[i].ext) continue;
+    if (path[i].s < 1 && (b === null || path[i].s < path[b].s)) b = i;
+  }
   return b;
 }
 
@@ -78,7 +104,14 @@ export class ReceiverForecast {
   private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate;
     route: InstalledAnswer; breakStep: number | null } | null = null;
 
+  /** FORECAST_HOLD: his belief of how far off its line this receiver's route still reads as that route. */
+  holdTol: Readonly<HoldTolerance> = HOLD_TOL;
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
+
+  /** The last acquired picture of the receiver (sample time and speed), or null if never seen. */
+  lastPicture(): { sampledAt: number; speed: number } | null {
+    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y) } : null;
+  }
 
   acquire(p: ReceiverPicture): void {
     if (this.picture && p.sampledAt < this.picture.sampledAt) return;
@@ -141,7 +174,7 @@ export class ReceiverForecast {
     const p = this.picture, prior = this.prior;
     if (!p && prior.startDelay === null) return null; // Unknown release is not stationary motion.
     const routes: InstalledAnswer[] = [{ id: 'base', path: prior.path, end: prior.end }, ...(prior.answers ?? [])];
-    const matches = p ? routes.map(route => ({ route, progress: inferProgress(p, { ...prior, ...route }) }))
+    const matches = p ? routes.map(route => ({ route, progress: inferProgress(p, { ...prior, ...route }, this.holdTol) }))
       .filter(m => m.progress !== null) : [];
     // First-stem geometry alone cannot reveal a later option. Require visible
     // motion on a uniquely matching post-break segment before overriding the
@@ -149,7 +182,7 @@ export class ReceiverForecast {
     const observed = prior.read && matches.length === 1 && matches[0].progress! > 0 ? matches[0] : null;
     const route = observed?.route ?? routes.find(r => r.id === this.choice?.answer) ?? routes[0];
     const beforeRead = prior.read && prior.readContext && p && p.pos.x < prior.readContext.los + prior.read.depth;
-    const progress = p ? inferProgress(p, beforeRead ? prior : { ...prior, ...route }) : null;
+    const progress = p ? inferProgress(p, beforeRead ? prior : { ...prior, ...route }, this.holdTol) : null;
     const estimate: ReceiverEstimate = Object.freeze({ source: p ? 'acquired' : 'installed',
       sampledAt: p?.sampledAt ?? 0, acquiredAt: p?.acquiredAt ?? null, progress,
       motion: !p || progress !== null ? 'installed-route' : 'observed-motion',
@@ -193,6 +226,10 @@ export class ReceiverForecast {
       else {
         cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill);
         if (!cmd) { done = true; cmd = { vel: active.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
+        // LINE_START: the same get-off the receiver runs, read time from his profile (his mind is not visible).
+        else if (LINE_START && inGetOff(Math.hypot(body.pos.x - prior.start.x, body.pos.y - prior.start.y),
+          c.estimate.sampledAt + i * this.dt - (prior.startDelay ?? 0), prior.profile.reactionTime))
+          cmd = { ...cmd, drive: getOffDrive(prior.routeRunning, firstBreakDepth(prior.start, prior.readContext?.los ?? prior.start.x, prior.path), 4.5) };
       }
       stepBody(body, cmd, this.dt);
       pts.push({ ...body.pos });
@@ -207,7 +244,8 @@ export class ReceiverForecast {
 /** Geometric inference from the sampled picture; never the runner's private idx.
  * Ambiguous/contradicted progress falls back to the measured motion. The body
  * radius supplies a route-centre tolerance, not a collision-clearance promise. */
-function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute): number | null {
+function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: Readonly<HoldTolerance> = HOLD_TOL): number | null {
+  const brk = FORECAST_HOLD ? pathBreak(prior.path, prior.end) : null;
   // Seeing a back at his installed starting spot does not reveal a private
   // protection/fake release. A departure can later supply progress evidence.
   if (prior.startDelay === null && Math.hypot(p.pos.x - prior.start.x, p.pos.y - prior.start.y) <= prior.profile.radius) return null;
@@ -219,7 +257,12 @@ function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute): numbe
     const u = len2 ? clamp(((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / len2, 0, 1) : 0;
     const error = Math.hypot(p.pos.x - prev.x - u * dx, p.pos.y - prev.y - u * dy);
     // Motion perpendicular/opposed to this segment is evidence of a different action.
-    if (error <= prior.profile.radius && (Math.hypot(p.vel.x, p.vel.y) < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
+    // FORECAST_HOLD: off his line he is still on the route only while running along it (heading within about 53 deg
+    // of the segment); stopped (fallen, jammed) or cutting across it, only the body radius places him.
+    const speed = Math.hypot(p.vel.x, p.vel.y), len = Math.sqrt(len2);
+    const runningAlong = speed >= 1 && len > 1e-6 && (p.vel.x * dx + p.vel.y * dy) / (speed * len) >= 0.6;
+    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak) : prior.profile.radius;
+    if (error <= tol && (speed < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
       candidates.push({ idx, error });
     }
     prev = next;

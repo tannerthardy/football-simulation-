@@ -1,0 +1,46 @@
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index d5420518..ac2ebcfe 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -337,8 +337,9 @@ export class PassRusher implements Behavior {
+       if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
+       return stand();
+     }
++    (a as any).__br = 'other';
+     const live = pursueIfLive(sim, a);
+-    if (live) return live;
++    if (live) { (a as any).__br = 'live-pursuit'; return live; }
+     // Throw in the air: peel off toward the ball.
+     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
+       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
+@@ -478,14 +479,17 @@ export class PassRusher implements Behavior {
+     const gy = gapY(sim.offAlign, this.laneGap, this.gapSign);
+     const edge = this.laneGap === 'C' || this.laneGap === 'D';
+     const bend = 0.8 + 0.45 * traits(a).bend;
++    (a as any).__br = 'power';
+     if (this.plan === 'power') {
+       const p = pursuitPoint(sim, a, qb, 1.5);
+       return runThrough(a, p, { speed: 1 });
+     }
+     if (a.pos.x > sim.los - 0.5) {
++      (a as any).__br = 'lane';
+       const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * (this.plan === 'speed' ? 1.8 : 1.0) } : { x: sim.los - 0.6, y: gy };
+       return runThrough(a, lane, { speed: 1, cutSkill: bend });
+     }
++    (a as any).__br = 'worked';
+     if (edge && this.workedLineBlock) {
+       return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
+     }
+@@ -500,10 +504,12 @@ export class PassRusher implements Behavior {
+       }
+       return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
+     }
++    (a as any).__br = 'arc';
+     if (edge && a.pos.x > qbSeen.x + 1.0) {
+       const arc = { x: qbSeen.x - 1.0, y: qbSeen.y + this.gapSign * (this.plan === 'speed' ? 1.3 : 0.8) };
+       return runThrough(a, arc, { speed: 1, cutSkill: bend });
+     }
++    (a as any).__br = 'pursuit';
+     const p = pursuitPoint(sim, a, qb, 1.5);
+     return runThrough(a, p, { speed: 1, cutSkill: bend });
+   }

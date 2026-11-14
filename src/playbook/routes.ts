@@ -6,6 +6,11 @@
  */
 import type { RouteDef } from './types.js';
 
+/** BACK_PATHS (experimental, off; BACK_PATHS=1): the back's flat, angle and out on their tracked paths (see back_flat,
+ * angle, back_out; BDB 2025 weeks 1-3, backs on non-PA drop-backs, scripts/diag/concepts/nfl_back_path.py). */
+const BACK_PATHS = process.env.BACK_PATHS !== '0';
+/** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
+const SCREEN_QB = process.env.SCREEN_QB === '1';
 export const ROUTES: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
@@ -54,8 +59,17 @@ export const ROUTES: Record<string, RouteDef> = {
   // Backs
   swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
   checkdown: { id: 'checkdown', family: 'back', depth: 4, end: 'settle', points: [{ d: 0.5, l: 1, s: 0.8 }, { d: 4.5, l: -1, s: 0 }] },
-  angle: { id: 'angle', family: 'back', depth: 4, end: 'continue', points: [{ d: 1.5, l: 3.5, s: 0.45 }, { d: 5, l: -6 }] },
-  back_flat: { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
+  // BACK_PATHS: NFL backs' ANGLE (n 429) is still 3.6 yd behind the line at 1.5 s and at it by 2.5 s, 2.4-3.0 yd wide,
+  // caught at a median +3 yd; off, the break is 1.5 yd past the line and the catch +4.4.
+  angle: BACK_PATHS
+    ? { id: 'angle', family: 'back', depth: 3, end: 'continue', points: [{ d: 0, l: 3, s: 0.45 }, { d: 3.5, l: -6 }] }
+    : { id: 'angle', family: 'back', depth: 4, end: 'continue', points: [{ d: 1.5, l: 3.5, s: 0.45 }, { d: 5, l: -6 }] },
+  // BACK_PATHS: the back's flat is run behind the line, widening, and climbs only late (NFL FLAT routes by backs on
+  // non-PA drop-backs, BDB 2025 weeks 1-3, n 968: depth -4.6 / -4.6 / -4.4 / -3.7 yd at 1.0 / 1.5 / 2.0 / 2.5 s, width
+  // from the ball 3.6 / 5.4 / 7.7 / 10.3 yd; caught at a median -1.0 yd, 56% behind the line). Off: to the line at once.
+  back_flat: BACK_PATHS
+    ? { id: 'back_flat', family: 'back', depth: -2, end: 'continue', pace: 0.55, points: [{ d: -4.5, l: 3, s: 0.9 }, { d: -4.2, l: 7, s: 0.9 }, { d: -3.5, l: 10 }, { d: -1.5, l: 13 }] }
+    : { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
   // Screens (docs/football-handbook/screens.md). Caught behind the line.
   // Slip: after selling his block the back drifts wide behind the traffic and
   // settles outside the screen-side tackle, ~3.5 yd behind the line. NFL slip
@@ -84,7 +98,18 @@ export const ROUTES: Record<string, RouteDef> = {
   // NFL in-breaking WR screens: turn inside at 1.8 s, caught 3.1 yd inside
   // and 0.6 yd behind the line (screen_wr_path_reference.py,
   // quick_screen_reference.py).
-  tunnel: { id: 'tunnel', family: 'flat', depth: -0.7, end: 'continue', points: [{ d: -0.3, l: -1.5, s: 0.5 }, { d: -0.7, l: -3, s: 0.45 }, { d: 0, l: -5 }] },
+  // SCREEN_QB: from tracking (screen_tunnel_path.py, BDB 2025 WR-in screens, n 23): after the sell he comes back
+  // under it, 0.8 yd behind the line and 1.5 inside at 2.0 s, and catches it 1.3 behind and 2.5 inside his start
+  // (off: caught at the line, 3 inside).
+  tunnel: SCREEN_QB
+    ? { id: 'tunnel', family: 'flat', depth: -1.3, end: 'continue', points: [{ d: -0.8, l: -1.5, s: 0.5 }, { d: -1.3, l: -2.5, s: 0.45 }, { d: 0, l: -4.5 }] }
+    : { id: 'tunnel', family: 'flat', depth: -0.7, end: 'continue', points: [{ d: -0.3, l: -1.5, s: 0.5 }, { d: -0.7, l: -3, s: 0.45 }, { d: 0, l: -5 }] },
+  /** The back's out: a short release to 4-5 yd, then flat to the sideline (NFL back OUT, 7.4% of drop-backs). */
+  // BACK_PATHS: NFL backs' OUT (n 204) is 2.9 yd behind the line at 1.5 s and +0.8 at 2.5 s, 3.1-5.5 yd wide, caught
+  // at a median +2 yd; off, he is out at 4.5 yd and caught at +5.3.
+  back_out: BACK_PATHS
+    ? { id: 'back_out', family: 'back', depth: 2, end: 'continue', points: [{ d: 0, l: 2, s: 0.8 }, { d: 2, l: 4, s: 0.5 }, { d: 2, l: 14 }] }
+    : { id: 'back_out', family: 'back', depth: 4, end: 'continue', points: [{ d: 2, l: 2, s: 0.8 }, { d: 4.5, l: 4, s: 0.5 }, { d: 4.5, l: 14 }] },
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
 

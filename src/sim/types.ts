@@ -72,6 +72,8 @@ export type BallState =
       arrivalT: number;
       deflected: boolean;
       throwaway: boolean;
+      /** CATCH_SECURE: in a receiver's hands but not yet a catch (securing window). */
+      securing?: { receiver: Agent; start: number; until: number; tried: Set<Agent> };
     }
   | { kind: 'loose'; flight: BallFlight; since: number; lastTeam: TeamSide; fumbledBy: Agent;
       /** Actual release spot and act; a missed backward pitch is not a fumble for advancement restrictions. */
@@ -93,6 +95,7 @@ export type PlayEventType =
   | 'squeeze'
   | 'carrier_contact'
   | 'tackle_wrap'
+  | 'throw_held'
   | 'snap'
   | 'handoff'
   | 'handoff_fake'
@@ -133,7 +136,9 @@ export type PlayEventType =
   | 'dpi'
   | 'touchback'
   | 'slide'
-  | 'fall';
+  | 'fall'
+  /** CATCH_SECURE: the ball reached the receiver's hands; the securing window opens (the catch, if any, follows). */
+  | 'secure';
 
 export interface PlayEvent {
   t: number;

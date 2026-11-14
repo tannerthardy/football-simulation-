@@ -10,15 +10,18 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
+import { CONCEPT_MENU } from '../playbook/concepts.js';
+/** PA_DROP (qb.ts): the play-action back's fake track beside the QB, not on his drop line. */
+const PA_DROP_FAKE = process.env.PA_DROP !== '0';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
-import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
+import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
-import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
+import { ConvoyCue, DownfieldBlocker, RCV_SEEN, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import { ScreenBlocker } from './behaviors/screen.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
@@ -76,7 +79,7 @@ const DEF_STANCE = process.env.DEF_STANCE === '1';
  * NFL backs on dropbacks run FLAT 48%, ANGLE 20%, OUT 10% of their routes
  * (BDB 2025 routeRan); 84% of released backs are wide of the box at the
  * throw, 15% over the middle (back_release_reference.py). */
-const BACK_RELEASE = process.env.BACK_RELEASE === '1';
+const BACK_RELEASE = process.env.BACK_RELEASE !== '0';
 /** The check-releasing back's read: how long before he trusts that no one is coming (s). */
 const CHECK_READ = 0.55;
 const STAND_GETOFF = 0.04;
@@ -167,6 +170,18 @@ export function assignBehaviors(sim: PlaySim): void {
       receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route, null, a.profile, a.r('routeRunning')));
       return () => new RouteRunner(a, sim, route, outside, 0);
     };
+    // PRO_CALL: the box count against the protectors this concept keeps in
+    // (the line, blocking and checking backs, a blocking inline end). Short of
+    // the count, a back installed on a free route stays in as a check-release.
+    const callCount = PRO_CALL && !lineRun && !concept.screen ? boxThreats(sim).length : 0;
+    let inCount = coord.protectors.length;
+    if (PRO_CALL) for (const a of sim.offense) {
+      if (a === qb || isOL(a)) continue;
+      const ref = off.refOf[a.slot as keyof typeof off.refOf];
+      // With BACK_RELEASE a checking back is in only if the call needs him (below).
+      if ((ref === 'B2' || !ref || (ref === 'B' && (concept.back === 'block' || concept.back === 'check'))) && !(BACK_RELEASE && (ref !== 'B' || concept.back === 'check'))) inCount++;
+      else if (off.spots[a.slot]?.inline && concept.teBlock && ref !== 'B') inCount++;
+    }
     for (const a of sim.offense) {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
@@ -186,22 +201,34 @@ export function assignBehaviors(sim: PlaySim): void {
       };
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
-        if (BACK_RELEASE && assign === 'check') {
+        if (BACK_RELEASE && (assign === 'check' || (CONCEPT_MENU && BACK_ROUTES.has(assign)))) {
           const route = backRelease(sim, concept, a);
-          if (protectionCount(sim, concept) <= 0) {
+          // PRO_CALL decides whether he is in the count (the call's backsIn);
+          // without it, the box count stand-in.
+          const needed = PRO_CALL ? callCount > inCount : protectionCount(sim, concept) > 0;
+          if (!needed) {
             a.behavior = mkRoute(route, 0.1)();
           } else {
             coord.add(a);
+            if (PRO_CALL) { coord.backsIn.add(a); inCount++; }
             a.behavior = new PassProtector(coord, mkRoute(route, 0, true), CHECK_READ + a.profile.reactionTime + sim.dice('check', a).range(0, 0.15));
           }
           continue;
         }
         if (assign === 'block') {
           coord.add(a);
+          if (PRO_CALL) coord.backsIn.add(a);
           a.behavior = new PassProtector(coord);
         } else if (assign === 'check') {
           coord.add(a);
+          if (PRO_CALL) coord.backsIn.add(a);
           a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown', 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
+        } else if (PRO_CALL && callCount > inCount) {
+          // Short of the count: he checks his man first, then runs his route.
+          coord.add(a);
+          coord.backsIn.add(a);
+          inCount++;
+          a.behavior = new PassProtector(coord, mkRoute(assign, 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
         } else {
           a.behavior = mkRoute(assign, 0.1)();
         }
@@ -215,6 +242,13 @@ export function assignBehaviors(sim: PlaySim): void {
       const side = ref[0] === 'S' ? concept.strong : concept.weak;
       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
+      if (PRO_CALL && spot?.inline && callCount > inCount) {
+        // Short of the count: an attached end checks his man first, then runs his route.
+        coord.add(a);
+        inCount++;
+        a.behavior = new PassProtector(coord, mkRoute(routeId, 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
+        continue;
+      }
       a.behavior = mkRoute(routeId, spot?.inline ? 0.15 : 0)();
     }
     if (concept.screen) installScreen(sim, concept, coord, mkScreenRoute);
@@ -222,7 +256,11 @@ export function assignBehaviors(sim: PlaySim): void {
     const back = sim.slot('RB');
     if ((concept.fake || lineRun) && back && back.behavior.kind !== 'idle') {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
-      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
+      // PA_DROP: a back aligned behind the QB runs his fake on a track beside him (a zone track to the B gap, strong),
+      // not on the QB's drop line; off, the fake point sat 0.4 yd off it and the QB dropped into him.
+      const behind = Math.abs(back.pos.y - qb.pos.y) < 1;
+      const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, 0.7);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;
@@ -607,7 +645,8 @@ export function onBallCaught(sim: PlaySim, r: Agent): void {
   clearPressContacts(sim);
   r.behavior = new BallCarrier({ screenCatch: !!sim.offCall?.pass?.screen, catchAt: sim.t }, r);
   // Screen blockers keep their jobs through the catch; everyone else turns to the convoy.
-  for (const a of sim.offense) if (a !== r && !(a.behavior instanceof ScreenBlocker)) a.behavior = new DownfieldBlocker();
+  for (const a of sim.offense) if (a !== r && !(a.behavior instanceof ScreenBlocker))
+    a.behavior = RCV_SEEN ? new ConvoyCue(a.behavior, r) : new DownfieldBlocker();
   // A physical catch is authoritative for the ball/rules, not a notification
   // to every opponent. Defenders retain their job and acquire their own cue.
 }
@@ -667,8 +706,10 @@ function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pa
       const target = corners.reduce((b, d) => Math.hypot(d.pos.x - receiver.pos.x, d.pos.y - receiver.pos.y)
         < Math.hypot(b.pos.x - receiver.pos.x, b.pos.y - receiver.pos.y) ? d : b);
       mkScreenRoute(receiver, routeId);
+      // SCREEN_QB: the screen receiver's sell stays behind the line, as tracked (BDB 2025 WR-in screens: 0.5 yd
+      // behind it at 1.0 and 1.5 s; screen_tunnel_path.py); off, 0.5 yd past it.
       receiver.behavior = new ReceiverBlockLook(target, spec.receiverSell + jitter(receiver), true,
-        () => new RouteRunner(receiver, sim, route, side, sim.t));
+        () => new RouteRunner(receiver, sim, route, side, sim.t), process.env.SCREEN_QB === '1' ? -0.5 : 0.5);
     }
   }
   const line = sim.offense.filter(isOL).sort((a, b) => (b.pos.y - a.pos.y) * side);
@@ -703,7 +744,11 @@ function protectionCount(sim: PlaySim, concept: PassConcept): number {
 
 /** BACK_RELEASE: the back's release into space: the flat on his side, or an
  * angle when the concept already sends a receiver to that flat. */
+const BACK_ROUTES = new Set(['angle', 'back_out', 'wheel', 'back_flat', 'swing']);
 function backRelease(sim: PlaySim, concept: PassConcept, a: Agent): string {
+  // A concept that names the back's route (CONCEPT_MENU: angle, out, wheel) gives it; the release decides only
+  // whether he is free to run it.
+  if (CONCEPT_MENU && BACK_ROUTES.has(concept.back)) return concept.back;
   const side = Math.sign(a.pos.y - sim.ballY) || sim.offAlign.strongSign;
   const routes = Object.values(side === sim.offAlign.strongSign ? concept.strong : concept.weak);
   return routes.some(r => r === 'flat' || r === 'out' || r === 'quick_out') ? 'angle' : 'back_flat';

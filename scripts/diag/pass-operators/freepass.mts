@@ -1,17 +1,24 @@
 // Free first pressures on dropbacks (game hooks): first defender within 2 yd of the QB from 0.3 s before the throw with no
 // offensive player within 1.2 yd. Truth: his slot and behaviour kind, snap spot, declared on the line by protection, ever
 // assigned and to whom, assigned at the moment; protectors, backs still in vs released (and when); spare protectors at
-// the moment (assigned to an already-engaged man, or nothing). usage: node --import tsx _freepass.mts [first seed] [games]
+// the moment (assigned to an already-engaged man, or nothing). usage: node --import tsx _freepass.mts [first seed] [games] [--league]
+// --league: league-sampled teams (leagueSample: habits and coordinators per seed) instead of the fixed IRN/COM pair.
 const W = process.cwd();
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
-const { generateTeam } = await import(`${W}/src/league/team.ts`);
+const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
+const league = process.argv.includes('--league');
 const { Rng } = await import(`${W}/src/core/rng.ts`);
 const { PassProtector } = await import(`${W}/src/sim/behaviors/blocking.ts`);
-const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 8);
+const pos = process.argv.slice(2).filter((a, i, all) => !a.startsWith('--') && all[i - 1] !== '--step');
+const first = Number(pos[0] ?? 11), games = Number(pos[1] ?? 8);
 const C: Record<string, number> = {}; const inc = (k: string) => C[k] = (C[k] ?? 0) + 1; let n = 0;
-for (let s = first; s < first + 2 * games; s += 2) {
-  const rng = new Rng(s);
-  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+// --step 1: consecutive seeds, the same games as sim-export --seed first --games N.
+const step = Number(process.argv[process.argv.indexOf('--step') + 1] ?? 2) || 2;
+for (let s = first; s < first + step * games; s += step) {
+  // With --step 1 the rosters come from the first seed, as in sim-export (one roster pair, sampled per game).
+  const rng = new Rng(step === 1 ? first : s);
+  const h0 = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), a0 = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+  const home = league ? leagueSample(h0, s) : h0, away = league ? leagueSample(a0, s) : a0;
   simulateGame(home, away, { seed: s, hooks: { playResult: (sim: any, kind: string) => {
     if (kind !== 'scrimmage' || !sim.isPass || sim.offCall?.pass?.family === 'screen') return undefined;
     n++; const dir = sim.attackDir('O'), los = sim.los;

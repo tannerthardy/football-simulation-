@@ -82,6 +82,9 @@ export interface RouteDef {
   depth: number;
   /** Route family for defensive anticipation. */
   family: 'quick' | 'intermediate' | 'deep' | 'flat' | 'cross' | 'back';
+  /** The route's coached pace between its points, as a fraction of top speed, where it is run under control rather
+   * than at the family's effort (the back's flat, timed to the drop). The receiver's route running still adjusts it. */
+  pace?: number;
 }
 
 export type ReceiverRef = `S${1 | 2 | 3 | 4}` | `W${1 | 2 | 3 | 4}` | 'B' | 'B2';
@@ -110,6 +113,9 @@ export interface PassConcept {
   fake?: string;
   /** A screen: who catches it and who releases to block for him. */
   screen?: ScreenSpec;
+  /** A plain-text note of the intended key and rule ("flat defender: sinks → #2 flat, widens → #1 corner").
+   * Not read by the quarterback, who runs `progression`, ordered to match. */
+  read?: string;
 }
 
 /**
@@ -143,8 +149,15 @@ export interface ScreenSpec {
   receiverSell?: number;
   /** Installed kill: the QB checks out of the screen at the line when he sees
    * this look on the screen receiver ('press': a defender pressed over him,
-   * so there is no cushion to catch and turn in). */
-  kill?: 'press';
+   * so there is no cushion to catch and turn in; 'numbers': more defenders outside the box to the screen's side
+   * than receivers there, the coached count for a bubble, as the run-pass option reads it). */
+  kill?: 'press' | 'numbers';
+  /** Slow screens: the released linemen's screen set, the assignment as it is coached. They show pass pro and give
+   * ground under control, taking the rusher's charge rather than kicking to a launch point, no deeper than maxDepth
+   * (yards behind the line); then they release on their own count (the called count is the earliest) and let the
+   * rusher go. maxDepth is the NFL linemen's median depth at the throw on these screens (BDB 2025,
+   * screen_line_depth_backs.py: RB 2.4, TE 1.8). Data only until the line's screen set reads it (Flex). */
+  lineSet?: { maxDepth: number };
   blocks: ScreenBlock[];
 }
 
@@ -395,6 +408,11 @@ export interface Pressure {
   droppers?: Partial<Record<DefSlot, UnderSeat>>;
   /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
   rushers?: number;
+  /** RUSH_PROMISE (experimental, off): the most rushers the call sends behind
+   * a coverage family (`cover3: 5`), so a front that already rushes an extra
+   * man does not turn the call into an unplanned six-man pressure with two
+   * underneath. */
+  maxRushers?: Partial<Record<string, number>>;
   /** Compatible coverages: the called coverage's family (or id) must be one of these. */
   coverages: string[];
   /** A zone pressure that brings its own coverage (Deuce): installed in place of the called one. */

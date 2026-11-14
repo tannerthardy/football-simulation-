@@ -4,6 +4,20 @@ The Defense lane is parked by Integration while the passing-offence work changes
 
 Re-run the tables on the recaptured sample before resuming any of them. Every sim number so far comes from IRN vs COM only, and their alignment habits are seeded from the team id. The yards and by-role tables (`docs/reviews/2026-11-10-defense-yards.md`) need re-running on the per-seed team tooling and the new pass sample.
 
+## Zone coverage: where this stands (2026-11-11, paused for the stress matrix)
+
+Tanner's focus has put Defense on zone coverage rules, with Rules + Coaching leading the rule structure; Defense owns what the defender perceives and does with his body. Paused at Integration's request until Rules + Coaching's stress matrix is reported in full.
+
+- **CUSHION_NEED** is on develop (engine-27). The leverage of the 3–10 yd run-tackle attempts it adds has not been audited.
+- **SEEN_EYES** (#562, draft): zone seats read the QB's look from what the defender sees, not `sim.qbEyes`. Integration takes it after the matrix.
+- **JUDGE_SEEN_BALL** (#562, stays off): honest, but it exposes the deep squeeze-break committing downhill on a pre-throw picture. It goes on with a deep-seat rule (audit item 4), not before.
+- **Missed and recorded on their branches, no PR:** SET_SQUEEZE (`defense/G1-set-squeeze`: no spare cushion to spend; the corner-over excess is QB timing) and ZONE_RELATE (`defense/G1-zone-backer`: the sitting backers are spread over many branches).
+- **Underneath audit** (#563, `scripts/diag/defense-yards/underaudit.mts`, `request-thrash.mts`): at the release, zone-family underneath defenders over the catcher request 7–9 yd/s toward him and achieve 2.2–2.5. The sitting branches whip: lane 11.8 deg/tick and 4.2% of ticks reversing; carry-wall 11.3 deg and 3.7%; spot-settle 7.3 deg and 3.7%. Along the request the body gets 1.2–2.5 of 5–6 yd/s; a steady spot-drop gets 3.7 of 6.7. This is the audit's item 8 (ownership re-picked each tick) as an execution symptom.
+
+**Next steps, in order, after the matrix:**
+1. Flight-window diag (Integration's lead from the matrix's first cut: our zone defenders don't close during the flight). For each zone defender within 8 yd of the eventual catch point, tick by tick from the windup to arrival: when he could see the windup and the release, when `sawThrow` latches, what he requests before and after, request vs achieved, and what stops the break. The NFL side gets the same timeline by family and role. Smallest reproducer first (a few Cover 3 and Cover 4 completions), then the table. No build before it is reported.
+2. Stable underneath ownership (audit item 8, "match the final #2 underneath"), built as a rule in Rules + Coaching's structure. Gate on request heading stability and achieved-along-request, then the backer-over state at the release vs NFL, deep yield, and hi-lo and hitch-and-go.
+
 ## Open items
 
 | Item | Branch | State | Next read |

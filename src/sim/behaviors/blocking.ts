@@ -23,7 +23,8 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
+import { paRunLook } from '../pa-look.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, PUNCH, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -82,12 +83,20 @@ export class ProtectionCoordinator {
     const seen = sim.see(this.observer(d), d);
     if (seen.pos.x < sim.los + 1.5 && seen.vel.x > 1 && seen.pos.x > sim.los + 0.5) this.dropped.add(d);
     if (seen.pos.x < sim.los + 1.5 && seen.vel.x < -0.5) this.dropped.delete(d);
+    // PRO_CALL: a walked-up threat the call declared is released once he is
+    // seen leaving the box, and is a rusher on his first seen downhill step.
+    if (PRO_CALL && this.called.has(d) && seen.vel.x > 1 && seen.pos.x > sim.los + 0.5) this.dropped.add(d);
     if (this.dropped.has(d)) return false;
     if (seen.pos.x < sim.los) return true;
+    if (PRO_CALL && this.called.has(d) && seen.pos.x < sim.los + CALL_DEPTH && seen.vel.x < -0.5) return true;
     return seen.pos.x < sim.los + 1.5 && (seen.vel.x < -0.5 || (this.declaredOn.has(d) && seen.vel.x <= 1));
   }
 
   private readonly declaredOn = new Set<Agent>();
+  /** PRO_CALL: off-ball threats the protection call declared at the snap. */
+  readonly called = new Set<Agent>();
+  /** PRO_CALL: backs the call counts in the protection (decided at install). */
+  readonly backsIn = new Set<Agent>();
 
   private isRusher(sim: PlaySim, d: Agent): boolean {
     if (PRO_READ) return this.seenRusher(sim, d);
@@ -115,7 +124,12 @@ export class ProtectionCoordinator {
     const backs = this.protectors.filter((b) => !isOL(b));
     const skipCost = (r: Agent) => {
       const near = backs.length ? Math.min(...backs.map((b) => Math.abs(b.pos.y - r.pos.y))) : Infinity;
-      return Number.isFinite(near) ? 2 + 0.6 * near : 14;
+      if (!Number.isFinite(near)) return 14;
+      // PRO_CALL: big on big. The back's man in the call is a walked-up
+      // backer, not a down lineman: leaving a called (off-ball) threat to him
+      // is cheap, leaving a man on the line to him is not.
+      if (PRO_CALL) return this.called.has(r) ? 1 + 0.6 * near : 8 + 0.6 * near;
+      return 2 + 0.6 * near;
     };
     const n = ol.length;
     const m = rs.length;
@@ -149,14 +163,23 @@ export class ProtectionCoordinator {
     }
     let i = n;
     let j = m;
+    const left: Agent[] = [];
     while (i > 0 || j > 0) {
       const h = how[i][j];
       if (h === 3) {
         this.sticky.set(ol[i - 1], rs[j - 1]);
         i--;
         j--;
-      } else if (h === 2) j--;
+      } else if (h === 2) { left.push(rs[j - 1]); j--; }
       else i--;
+    }
+    // PRO_CALL: a declared threat the line can't take is the back's at the
+    // snap (his man in the call), not whoever is nearest once he comes.
+    if (PRO_CALL) for (const r of left) {
+      const free = backs.filter((b) => ![...this.sticky.keys()].includes(b));
+      if (!free.length) break;
+      const b = free.reduce((x, y) => (Math.abs(x.pos.y - r.pos.y) <= Math.abs(y.pos.y - r.pos.y) ? x : y));
+      this.sticky.set(b, r);
     }
   }
 
@@ -167,8 +190,11 @@ export class ProtectionCoordinator {
     this.lastT = sim.t;
     // Pre-snap, the line counts the men aligned on it; that is visible.
     if (PRO_READ && !this.declared) for (const d of sim.defense) if (sim.snapX[d.idx] < sim.los + 1.5) this.declaredOn.add(d);
+    if (PRO_CALL && !this.declared) for (const d of boxThreats(sim)) if (!this.declaredOn.has(d)) this.called.add(d);
     const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && this.isRusher(sim, d));
-    const front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
+    let front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
+    // PRO_CALL: the call's threats are in the declaration before they move.
+    if (PRO_CALL && !this.declared) front = [...front, ...[...this.called].filter((d) => !front.includes(d) && !this.dropped.has(d))];
     if (!this.declared && front.length) {
       this.declared = true;
       this.declare(sim, front);
@@ -186,8 +212,11 @@ export class ProtectionCoordinator {
     // or twist — then he's passed off).
     for (const [b, r] of [...this.sticky]) {
       const home = this.homeY.get(b)!;
-      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(r.pos.y - home) > zoneOf(b) + 1.5
-        || (PRO_READ && !rushers.includes(r))) {
+      // PRO_CALL: a called threat stays the blocker's man until he is seen
+      // leaving the box (or CALL_HOLD passes without him coming).
+      const held = PRO_CALL && this.called.has(r) && !this.dropped.has(r) && sim.t < CALL_HOLD;
+      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(seenPos(sim, b, r).y - home) > zoneOf(b) + 1.5
+        || (PRO_READ && !rushers.includes(r) && !held)) {
         this.sticky.delete(b);
         continue;
       }
@@ -203,13 +232,14 @@ export class ProtectionCoordinator {
       const zone = zoneOf(b);
       for (const r of unblocked) {
         if (usedR.has(r)) continue;
-        if (Math.abs(r.pos.y - home) > zone) continue;
+        const rp = seenPos(sim, b, r);
+        if (Math.abs(rp.y - home) > zone) continue;
         // Don't chase rushers who are already past.
-        if (r.pos.x < b.pos.x - 1.5 && isOL(b)) continue;
-        let cost = Math.abs(r.pos.y - b.pos.y) + 0.35 * Math.max(0, r.pos.x - b.pos.x);
+        if (rp.x < b.pos.x - 1.5 && isOL(b)) continue;
+        let cost = Math.abs(rp.y - b.pos.y) + 0.35 * Math.max(0, rp.x - b.pos.x);
         if (!isOL(b)) cost += 0.8; // backs/TEs pick up leftovers
         // Interior first: centers and guards take A/B gap threats.
-        if (isOL(b) && Math.abs(r.pos.y - sim.ballY) < 2.5 && !isT) cost -= 0.4;
+        if (isOL(b) && Math.abs(rp.y - sim.ballY) < 2.5 && !isT) cost -= 0.4;
         pairs.push({ b, r, cost });
       }
     }
@@ -229,7 +259,7 @@ export class ProtectionCoordinator {
       for (const o of this.protectors) {
         const e = o.engagement;
         if (!e || e.helpers.length > 0) continue;
-        const dd = Math.abs(e.defender.pos.y - b.pos.y);
+        const dd = Math.abs(seenPos(sim, b, e.defender).y - b.pos.y);
         if (dd < bd) {
           bd = dd;
           best = e.defender;
@@ -279,7 +309,8 @@ export class PassProtector implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     // Play action: everyone shows a low, aggressive pad level at first.
-    a.stance = isOL(a) && sim.t < 0.35 && sim.offCall.kind === 'pass' && sim.offCall.pass?.fake ? 'low' : 'high';
+    a.stance = isOL(a) && (PUNCH ? paRunLook(a, sim, a.engagement?.defender ?? this.coord.assigned.get(a) ?? null)
+      : sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake) ? 'low' : 'high';
     const home = this.coord.homeY.get(a) ?? a.pos.y;
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
@@ -306,14 +337,14 @@ export class PassProtector implements Behavior {
       return stand();
     }
     this.coord.update(sim);
-    const r = this.coord.assigned.get(a) ?? null;
-    if (!r && this.releaseTo && sim.t > this.releaseAfter) {
+    const rA = this.coord.assigned.get(a) ?? null;
+    if (!rA && this.releaseTo && sim.t > this.releaseAfter) {
       this.released = true;
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
     const qb = sim.qb;
-    if (!r) {
+    if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
       const out = Math.sign(home - sim.ballY);
@@ -324,6 +355,8 @@ export class PassProtector implements Behavior {
       if (runLook(a, sim)) set = { x: sim.los - 0.2, y: set.y };
       return goTo(a, set, { speed: 0.7, facing: 0 });
     }
+    // PASS_SET_SEEN: the set is his, from his picture of the rusher; only the contact itself is the World's.
+    const r = PASS_SET_SEEN ? seenRusherView(sim, a, rA) : rA;
     // Pass set: stay on the line between the rusher and the QB, giving ground
     // under control. Poor footwork over-sets against speed (opening the
     // inside counter).
@@ -377,8 +410,11 @@ export class PassProtector implements Behavior {
       // beat ahead as well would keep the tackle 2-3 yd in front of a fast
       // rusher, retreating out of punching range all the way to the launch
       // point (the old start law hid this by making the tackle lag his spot).
-      const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+      const floor = TACKLE_SET ? tackleFloor(sim) : null;
+      const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
+      // TACKLE_SET: the inside half of the rusher, but never outside his set line.
+      if (TACKLE_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
@@ -386,14 +422,24 @@ export class PassProtector implements Behavior {
     // shoulder as he goes by; the rep then starts from a losing angle.
     const passing = r.speed > 4.5 && r.pos.x < a.pos.x + 0.6;
     const reachOut = edgeRusher && passing ? 0.15 + 0.3 * traits(a).feet : 0;
-    if (dd < contact + 0.15 + reachOut && sim.engage(a, r, 'pass')) return stand();
+    // Contact is physical: the bodies' true distance (his reach decision above is from his picture).
+    const ddContact = PASS_SET_SEEN ? Math.hypot(rA.pos.x - a.pos.x, rA.pos.y - a.pos.y) : dd;
+    if (ddContact < contact + 0.15 + reachOut && sim.engage(a, rA, 'pass')) return stand();
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
     if (ride) return track(a, set, r.vel, { cutSkill: quick, gain: 3 });
     // Kick with the rusher only while short of the lead. Deeper than that,
     // matching his retreat keeps whatever extra depth the start produced
     // and he never comes into range; hold and let him come.
-    if (PASS_KICK && edgeRusher && isOL(a)) return track(a, set, { x: a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
+    if (PASS_KICK && edgeRusher && isOL(a)) {
+      // TACKLE_SET: at the called set he stops kicking; the rusher comes to him.
+      const floor = TACKLE_SET ? tackleFloor(sim) : null;
+      const anchored = floor !== null && a.pos.x <= floor + 0.1;
+      // TACKLE_SET: at his set line he does not match the rusher's widening.
+      const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
+      const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
+      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: wide ? 0 : r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
+    }
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
     // already assumed by the forecast; physical movement and contact still
@@ -417,6 +463,58 @@ const PASS_KICK = process.env.PASS_KICK !== '0';
  * defender's private behavior (rush/blitz), so the line never set on a
  * dropping end and knew every blitzer by his call. */
 const PRO_READ = process.env.PRO_READ !== '0';
+/** PASS_SET_SEEN (experimental, off; intended on): a pass protector's set and his protection's assignment costs read
+ * his picture of the rusher (`sim.see`, his delayed, recognised sample; Rules+Coaching's track() replaces it when it
+ * lands), not the rusher's true position and velocity. The set point, the kick, the mirror, the cut-off, his overset
+ * fear and his reach for a man going by are his decisions; only the contact itself (the bodies' true distance at
+ * engage) is the World's. Found by the perception census (2026-11-13): the pre-contact set read the true state. */
+export const PASS_SET_SEEN = process.env.PASS_SET_SEEN !== '0';
+/** PASS_SET_SEEN: the rusher as this blocker sees him, shaped like the Agent fields the set reads. */
+function seenRusherView(sim: PlaySim, a: Agent, r: Agent): Agent {
+  const s = sim.see(a, r);
+  const view = Object.create(r) as Agent & { pos: Vec2; vel: Vec2; speed: number };
+  Object.defineProperty(view, 'pos', { value: s.pos });
+  Object.defineProperty(view, 'vel', { value: s.vel });
+  Object.defineProperty(view, 'speed', { value: Math.hypot(s.vel.x, s.vel.y) });
+  return view;
+}
+/** PASS_SET_SEEN: a rusher's position as this protector sees it (true position when off). */
+function seenPos(sim: PlaySim, b: Agent, r: Agent): Vec2 {
+  return PASS_SET_SEEN ? sim.see(b, r).pos : r.pos;
+}
+/** PRO_CALL (experimental, off; PRO_CALL=1): the protection is called at the
+ * line from what the offence sees before the snap. The line counts the box:
+ * every defender within CALL_DEPTH of the line inside the linemen's width
+ * +-CALL_WIDTH (on-line men, walked-up backers, a safety rolled into the box).
+ * Walked-up threats are declared with the men on the line, so the snap
+ * assignment slides to the extra man and leaves the one the line can't take
+ * to a back; a declared threat is a rusher on his first seen downhill step
+ * (BLITZ_READ's rule) and is released when seen leaving the box or after
+ * CALL_HOLD without coming. When the
+ * count exceeds the protectors the concept keeps in, a back installed on a
+ * free route, then an attached end, stays in as a check-release (assign.ts); the back's route when
+ * he is free is the route builder's (Run Game). A blitz disguised from depth
+ * is not in the count. Built on BLITZ_READ (docs/reviews/patches/blitz-read.patch);
+ * evidence docs/reviews/2026-11-11-protection.md: 0 of 75 free off-ball
+ * blitzers declared, free first pressure 23.2% / 38.0% at even / +1 numbers
+ * vs NFL 12.7 / 14.9, protection size 18/63/19 vs NFL 30/48/22. */
+export const PRO_CALL = process.env.PRO_CALL !== '0';
+/** How far off the ball a defender counts in the call's box (yd). */
+const CALL_DEPTH = 3.5;
+/** How far outside the linemen's width the call's box reaches (yd). */
+const CALL_WIDTH = 3.5;
+/** How long a called threat stays his blocker's man without coming (s): a
+ * lineman whose man doesn't come helps after a beat. */
+const CALL_HOLD = 0.6;
+
+/** The protection call's box count: defenders the offence sees within
+ * CALL_DEPTH of the line, inside the linemen's width +-CALL_WIDTH, at the snap. */
+export function boxThreats(sim: PlaySim): Agent[] {
+  const ys = sim.offense.filter(isOL).map((o) => o.pos.y);
+  if (!ys.length) return [];
+  const lo = Math.min(...ys) - CALL_WIDTH, hi = Math.max(...ys) + CALL_WIDTH;
+  return sim.defense.filter((d) => (sim.snapX[d.idx] ?? d.pos.x) < sim.los + CALL_DEPTH && d.pos.y >= lo && d.pos.y <= hi);
+}
 /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
 /** How far ahead on his present velocity the kick reads the rusher's width (s). */
@@ -464,6 +562,8 @@ function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null
  */
 function runLook(a: Agent, sim: PlaySim): boolean {
   const interior = a.slot === 'LG' || a.slot === 'C' || a.slot === 'RG';
+  // PUNCH: the look ends on contact, depth, his man's declared rush or his patience (pa-look.ts), not a clock.
+  if (PUNCH) return interior && a.stance === 'low';
   return interior && sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake;
 }
 
