@@ -376,6 +376,7 @@
     "RUSH_PROMISE": "0",
     "WAIT_REACHED": "0",
     "PURSUIT_SPOT": "0",
+    "RELEASE_BELIEF": "0",
     "HONEST_TACKLE": "0",
     "QB_RELEASE": "0",
     "OPEN_FIELD": "0"
