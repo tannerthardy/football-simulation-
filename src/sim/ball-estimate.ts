@@ -23,7 +23,8 @@
 import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
 import type { Vec3 } from '../core/vec.js';
-import { stepFlight, type BallFlight } from '../physics/ball.js';
+import { qbArmSpeed, stepFlight, type BallFlight } from '../physics/ball.js';
+import { naturalFlightFor } from './behaviors/qb.js';
 import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
 import type { PlaySim } from './playsim.js';
@@ -43,8 +44,9 @@ const RANGE_BEST = 0.05, RANGE_WORST = 0.1;
 /** Attempt 3 (spec table): the receiver's route prior, and the first estimate from the QB's release. */
 const PRIOR_ALONG = 0.12, PRIOR_ACROSS = 1.0, PRIOR_HEIGHT = 1.0, PRIOR_BROKEN = 3, PRIOR_ORIGIN = 1.0;
 const RELEASE_SD = 0.5, SHOULDER_SD = (5 * Math.PI) / 180, SHOULDER_ALONG = 15, SHOULDER_UP = 15;
-/** The ball's time to a point d yd from the passer: the QB lane's measured fit (BDB 2026), without his arm term. */
-export const expectedFlight = (d: number): number => 0.38 + 0.022 * d + 0.00065 * d * d;
+/** The ball's time to a point d yd from the passer: his QB's own natural flight for his arm (the QB lane's measured fit,
+ * one function shared with the QB's lead). */
+const expectedFlight = (sim: PlaySim, d: number): number => naturalFlightFor(qbArmSpeed(sim.qb.player.ratings.throwPower), d);
 /** Each receiver's own installed route (his assignment, set at the call): his prior's source. */
 export const ownRoutes = new WeakMap<object, InstalledReceiverRoute>();
 /** When the receiver may turn his body to the ball: within this long of his estimated arrival (0.4-0.8 s by tracking). */
@@ -186,7 +188,7 @@ export class BallEstimates {
       const at = rel + T, P = fc.predict(sim.t, Math.max(0, at - sim.t));
       if (!P) return;
       const d = Math.hypot(P.x - hand.x, P.y - hand.y);
-      if (expectedFlight(d) > T) continue;
+      if (expectedFlight(sim, d) > T) continue;
       const Q = fc.predict(sim.t, Math.max(0, at - sim.t) + 0.1) ?? P;
       const h = Math.hypot(Q.x - P.x, Q.y - P.y), u: Vec3 = h > 1e-3 ? { x: (Q.x - P.x) / h, y: (Q.y - P.y) / h, z: 0 } : { x: 1, y: 0, z: 0 };
       const k = broken ? PRIOR_BROKEN : 1;
