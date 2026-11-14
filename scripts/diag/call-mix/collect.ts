@@ -1,5 +1,6 @@
 // Call-mix diagnosis (docs/reviews/2026-11-11-call-mix.md): one row per scrimmage pass in league-sampled games, plus every coordinator observe().
-//   node --import tsx scripts/diag/call-mix/collect.ts [--seed 101] [--games 16] > out/call-mix/plays.jsonl
+//   node --import tsx scripts/diag/call-mix/collect.ts [--seed 101] [--games 16] [--start 0] > out/call-mix/plays.jsonl
+// --start G runs games G..G+games-1 of the same population (each game depends only on seed + game), so ranges can run in parallel.
 // Same population as sim-export.ts --seed S --games N (generateTeam IRN/COM from Rng(S), leagueSample(team, S+g): habits and coordinators).
 // Read-only: the hook calls sim.run() exactly as the game would; observe() is wrapped, not changed.
 import { Rng } from '../../../src/core/rng.js';
@@ -42,7 +43,8 @@ out({ rec: 'prog', prog: Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c.pr
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 });
 const away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
-for (game = 0; game < games; game++) {
+const start = Number(arg('--start', '0'));
+for (game = start; game < start + games; game++) {
   const res = simulateGame(leagueSample(home, seed + game), leagueSample(away, seed + game), { seed: seed + game, hooks: {
     playSetup: (_s: any, ctx: any) => { if (ctx.kind === 'scrimmage') { quarter = ctx.state.quarter; clock = ctx.state.clock; offAbbr = ctx.offense; } },
     playResult: (sim: any, kind: string) => {
@@ -56,7 +58,8 @@ for (game = 0; game < games; game++) {
         .map((a: any) => ({ slot: a.slot, ref: sim.offAlign.refOf[a.slot] ?? null, route: routeOf(sim, a) })) : [];
       const r = sim.run();
       const s = sim.stats;
-      if (!isPass && !s.attempted && !s.sacked) return r;
+      // Runs that stayed runs: one short row (the label names an RPO kept as a run).
+      if (!isPass && !s.attempted && !s.sacked) { out({ rec: 'run', game, down: sim.down, dist: +(sim.firstDownX - sim.los).toFixed(1), label: sim.offCall.label, yards: +r.yards.toFixed(2) }); return r; }
       const tgt = s.target ? sim.offense.find((a: any) => a.player.id === s.target) : null;
       const dc = sim.defCall;
       out({ rec: 'play', game, seed: seed + game, play: playNo, off: offAbbr, q: quarter, clock,
