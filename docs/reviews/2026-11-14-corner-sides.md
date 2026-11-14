@@ -1,6 +1,6 @@
 # Each corner's alignment, by his side (design, 2026-11-14)
 
-Design for Integration and Coverage's review; no build yet. When it is built: an off flag (`CORNER_SIDE`), two attempts.
+Design for Integration and Coverage's review; no build yet. When built: an off flag (`CORNER_SIDE`), two attempts. Rules + Coaching builds the call and the alignment; Coverage builds any new post-snap technique. Revised 2026-11-14 after Integration's review: the choice is the coordinator's call, confirmed at the line; techniques by family; disguise per side; expectations.
 
 **The finding** (#741). Our corners align as a pair. A play's two corners (both sides with a wideout 9+ yd from the
 ball) are both off, both pressed, or one pressed:
@@ -83,38 +83,114 @@ corner's 4 yd. A field / boundary Cover 6 is a call, not this rule; noted, not p
 4. **No field / boundary input** reaches alignment: the receiver's room to the sideline enters only the shade.
 5. **The receiver count to a corner's side** never enters his depth or press.
 
-## The proposal (CORNER_SIDE, off; a habit, not a script)
+## The proposal (CORNER_SIDE, off), revised after Integration's review
 
-**Rule 1 (the main one): a corner alone with #1 may press.** A zone or match corner whose side has no detached #2
-aligns in press (press-bail in Cover 3; press-solo in Quarters and Cover 6's quarters half; press in Cover 2 /
-cloud) when his team's habit takes it this snap. A corner whose side has a #2 keeps his zone depth. After the snap he
-plays his zone or match as now: press-bail drops to his deep third or quarter by his technique. Nothing in the coverage
-changes, only where he stands and what that costs him (a pressed corner opening to bail starts deeper in his
-backpedal debt; the physics prices it).
+This replaces the first draft's per-snap draw on each corner.
 
-**How often.** The press share is the team's alignment habit (`AlignStyle`, like `cbDepth`), drawn per snap. It is a
-coach's choice and fair to match, like the call mix: an "isolated-corner press" share per team, centred on the NFL's
-single-side rates by family. Cover 3 and Cover 4 near 45%, Cover 2 and Cover 6's cloud near 50%, against the
-multi-receiver side's 17-35%, which stays the zone depth plus the existing scatter. Not an outcome.
+### 1. Where the choice lives: the coordinator calls it, the corner confirms it
 
-**Rule 2 (second, weaker source): the boundary corner** presses a little more at equal receivers, about +7 points,
-the sideline as help. Only after Rule 1 is measured, and only if the gap remains.
+**The call.** `DefensivePlayCall` carries a corner technique per side:
+`cornerTech?: { S?: CornerTech; W?: CornerTech }`, with `CornerTech = 'off' | 'press' | 'press_bail' | 'solo'`.
+- `press_bail` is zone: Cover 3.
+- `press` is zone (Cover 2 / cloud: jam and sink) or man.
+- `solo` is MEG on #1, where the call installs it (Quarters Poach, Stubbie, Cover 6 Book).
 
-**Not proposed.**
-- **Man corners by side.** NFL Cover 1 is 70 / 56 / 49% by receivers to the side; ours is 61 / 55 / 57. The
-  trips-side man corner playing off is a pick / bunch question, not sourced here. Our banjo and lurk calls already
-  carry some of it.
-- **The 3rd-down press.** The call mix carries it partly (ours 22 to 35%).
+`DefensiveCoordinator.call` chooses it from what he knows when he calls the play:
 
-**What it must not do.**
-- It does not read the offense's call. The receiver count and split are visible at the line.
-- It does not change the coverage's post-snap rules.
-- It does not cap a press that works.
+- the offense's personnel and the formation when it is seen (the existing `formation` argument), so the likely
+  single-receiver side;
+- down and distance;
+- his corner's man rating against that receiver (the `cbMan` / `wrRoute` terms the family weights already use);
+- his team's habit: a per-team `cornerPress` share by family, how often he calls it.
+
+The NFL's single-side rates by family set the centre of that habit: Cover 3 48%, Cover 4 43%, Cover 6 50%, Cover 2
+51%. This is a coach's choice, fair to match like the call mix, not an outcome. The 3rd-down press (NFL 33% on 1st
+down vs 46-53% on 3rd) falls out here as the same call's situational weight, not as a separate item.
+
+**At the line, the corner confirms it from what he sees.**
+
+- A called `press` / `press_bail` / `solo` holds while his side shows no detached #2.
+- If a #2 appears on his side (motion or a shift), he backs off to his zone depth to read him, as the sources say
+  ("in cloud or palms the corner needs to clear the out of #2 first"). He judges this from his own picture, with his
+  delay.
+- A called `off` is never upgraded at the line.
+
+The call sets how often it is called; his eyes decide whether it holds. Built by Rules + Coaching (alignment and
+call).
+
+### 2. The technique after the snap, per family
+
+A corner aligned in press must play the press technique of his family. Playing his off technique from a press
+alignment would only make him late deep.
+
+| family / call | technique from press, as taught | in `coverage/techniques.ts` today? | who builds |
+|---|---|---|---|
+| Quarters solo / MEG (Poach, Stubbie, Cover 6 Book) | press man on #1 with his depth protected | **Yes.** `ManCoverage` press (0.8 yd cushion, PRESS_MIRROR) with `protectDepth`; the solo roles are man roles that need only `press: true`. The jam already happens in the receiver's release when `spot.press` and his man is the receiver | alignment and call only (Rules + Coaching) |
+| Cover 3 corner (deep third) | **press-bail**: align in press, at the snap open the hips and run to the deep third with eyes back to the QB, no backpedal and no jam; then the third's rules (Bowen, NFL 101: "align in press, open and sink") | **No.** A zone corner aligned at 1.3 yd just plays his zone drop from there: no bail footwork, no eyes rule. Not a `Technique` subclass (ReadRelease, Trap, Wall, Rob) | Coverage |
+| Cover 2 / Cover 6 cloud (flat, squat) corner | **jam and sink / squat**: jam #1 to re-route him, then sink to the hole or squat the flat by his read of #2 (rules.ts already has the squat corner's "eyes on #2 first, then carry #1") | **No for the jam.** The release jam fires only when the corner's man target is the receiver, so a zone corner cannot jam | Coverage (a zone jam) |
+
+**Staging, one of each, in order.**
+1. Solo / MEG press. It exists now, so this is the first arm: call, alignment and the confirm rule only.
+2. Cover 3 press-bail, after Coverage builds the bail.
+3. Cover 2 jam and sink, after Coverage builds the zone jam.
+
+Until 2 and 3 exist, the call never selects `press_bail` or a zone `press`. A press alignment without its technique
+would only measure a late corner.
+
+### 3. Disguise, per side
+
+The corner's alignment is part of the look, so it comes from the shown call's technique on his side. What he can do
+after the snap comes from the real one.
+
+- **Shown press, real press** (man or MEG): he jams, as now.
+- **Shown press, real off zone:** he aligns in press and bails at the snap. This is the press-bail used as disguise
+  (Seattle's press outside the numbers, Bowen), and it needs technique 2.
+- **Shown off, real press:** he cannot jam from 7 yd, so he plays the real call off from his shown depth, as now.
+
+The single rule `p.press = press && l.press` becomes per corner: jam only if both the shown and the real technique on
+his side are `press` or `solo`. His alignment follows the shown technique.
+
+### 4. What to expect before the read
+
+**Corner pairs.** Rule 1 applied to the same 886 sim plays, at the NFL's single-side rates on zone calls (a dry run
+on today's snaps, not a game): both off 69.5 → 55.9%, one pressed 7.0 → 19.6%, both pressed 23.5 → 24.5%. The NFL is
+43.7 / 36.4 / 19.9.
+
+So it closes about 40% of the one-press gap. The rest is the NFL's press on multi-receiver sides in zone (17-36% by
+family against our about 10%), which this proposal does not address. Stage 1 alone (MEG on the Poach / Stubbie /
+Book calls) is a small share of snaps.
+
+**#741's looks.**
+- "Clear softer side" rises (30.7% toward the NFL's 34.9%).
+- "3x1 backside pressed with no deep help" rises from 13.6%, already above the NFL's 8.4%. A risk to read: a solo
+  press corner with a safety rotated to him is not "no deep help", but the operator counts deep defenders on his side
+  at the snap only.
+
+**Targets against the pressed side.** NFL, #1's routes by his corner at the snap, traditional non-PA dropbacks,
+weeks 1-6. The labels mix man and zone, so read direction, not targets.
+
+| route | targeted (press / off) | completion (press / off) | yards a target (press / off) |
+|---|---|---|---|
+| go | 17.5 / 8.6% | 38 / 19% | 8.2 / 6.7 |
+| hitch | about even | 49 / 71% | 4.4 / 6.3 |
+| out | about even | 55 / 56% | 4.6 / 5.8 |
+| slant | 29.7 / 22.4% | 67 / 63% | |
+
+So expect:
+- more go and fade throws to the single side, and more of them caught;
+- fewer good hitches there;
+- slants to the pressed side.
+
+**Deep balls over press-bail.** These are measured only after technique 2 exists. Before it, a pressed zone corner
+would be late deep, which is a bug in the arm, not the rule.
 
 **Measurement.**
-- The same `corner-sides.py` rows on the arm: one-press share, press by receivers to his side, inside each family.
-- #741's look frequencies, which change the QB's pre-snap picture.
-- The run and pass cards for the cost: press-bail corners on verticals; quick game against a pressed single side.
+- `corner-sides.py` rows on each arm.
+- #741's look frequencies.
+- The routes table above, on the sim, with the same operator.
+- The pass card for what the press costs and buys.
+
+Off flag, two attempts.
 
 Commands:
 
