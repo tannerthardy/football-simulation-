@@ -3125,3 +3125,49 @@ already a full drive (push 0.75, his legs into the man), so a bull barely differ
 different would mean giving the rusher a real choice between moves (his weight committed through the chest against
 his feet working the edge). That is RUSH_INTENT's ground (between-moves intent), a separate item. (Raw ground given
 was confounded by the set: a tackle's kick depth dominates it.)
+
+### The hand model on engine-60, then the rip on it (four arms in one run, 2026-11-14)
+
+Arms (16 games x seeds 11 / 23, 5f6d72c7):
+- **A:** engine-60;
+- **B:** + RUSH_HANDS + RUSH_ONE_HAND + RUSH_ARM_BALANCE;
+- **C:** B + RUSH_RIP;
+- **D:** C + RUSH_BULL.
+
+| | A | B | C | D | NFL |
+|---|---|---|---|---|---|
+| pressured | 28.9 / 25.4% | 32.5 / 31.2 | 36.3 / 32.0 | 38.7 / 29.9 | 32.9 |
+| interior DL/LB | 9.7 / 7.6 | 17.0 / 15.2 | 19.1 / 13.9 | 21.5 / 13.5 | 9.8 |
+| edge past outside | 0.5 / 0.5 | 0.3 / 0.7 | 0.6 / 0.7 | 0.4 / 0.6 | 3.8 |
+| edge level / in front | 2.7 / 3.8 | 2.4 / 3.4 | 2.7 / 3.4 | 2.5 / 2.9 | 3.0 |
+| edge inside | 9.6 / 7.7 | 7.6 / 6.9 | 9.4 / 7.9 | 8.6 / 6.7 | 6.4 |
+| rusher free (funnel) | 36 / 34% | 46 / 44 | 47 / 44 | 45 / 42 | 38 |
+| within 2 yd before the ball is out | 24.1 / 21.2 | 27.9 / 26.1 | 31.0 / 26.7 | 32.9 / 24.3 | 27.6 |
+| sacked | 5.5 / 4.2 | 8.0 / 5.6 | 7.6 / 5.0 | 8.9 / 5.1 | |
+| interior come-offs from own blocker /100 (time p50) | 34 / 27 (2.8 s) | 59 / 60 (2.0-2.2 s) | 63 / 67 (2.1-2.2) | 60 / 63 (2.0-2.2) | NFL reps 3.1-3.2 s |
+| tackle come-offs /100 (time p50) | 32 / 29 (2.7-2.8 s) | 56 / 52 (2.2) | 61 / 56 (2.2) | 53 / 52 (2.2) | |
+| DL falls /100 (true) | 4.8 / 4.2 | 6.6 / 8.4 | 7.5 / 8.5 | 7.3 / 7.3 | about 1 |
+| OL falls /100 (true) | 3.6 / 3.6 | 3.5 / 4.1 | 5.8 / 4.8 | 5.1 / 4.1 | |
+
+**The base (B against A).** Integration's question was whether the hand model's old problems were the oracle pass set
+and fallen rushers, now fixed. They are not:
+- Interior pressure doubles to 1.6-1.7x the NFL's.
+- "Rusher free" rises to 44-46% (NFL 38%).
+- Come-offs from the man's own blocker nearly double and come about 0.6 s earlier (p50 2.0-2.2 s).
+- DL falls rise, even with RUSH_ARM_BALANCE and RUSH_LEAN_BOUND.
+- Overall pressure lands near the NFL's 32.9% only because the interior overshoots while the edge stays low (past
+  outside 0.3-0.7%).
+
+**The rip's increment (C against B).**
+- Pressure +3.8 / +0.8.
+- It comes from the interior (+2.1 / -1.3) and edge inside (+1.8 / +1.0), not edge past-outside (0.3 → 0.6, 0.7 →
+  0.7).
+- OL falls rise (3.5 → 5.8, 4.1 → 4.8).
+
+**The bull on top (D).** Interior pressure rises on s11 only (19.1 → 21.5). Sacks go 8.9 / 5.1.
+
+**Read.** On this engine the hand model frees interior rushers early. That has to be found and repaired before the
+moves built on it (the rip and the swim) can be read. The edge's missing past-outside win isn't a hand-clearing
+problem: the rip clears hands but its sheds go inside. The next diagnostic is the interior come-off under RUSH_HANDS
++ RUSH_ONE_HAND: what frees him at 2.0-2.2 s (a hand knocked off and not refitted, one hand opening the side, or the
+long-arm), traced as the PUNCH_STRIKE falls were.
