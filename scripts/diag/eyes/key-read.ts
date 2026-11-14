@@ -27,12 +27,15 @@ PlaySim.prototype.run = function (this: PlaySim) {
     }
   };
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, kind: (sim.qb.behavior as any)?.kind }; return tb(p, target, ...rest); };
+  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, air: target ? +Math.hypot(target.pos.x - sim.qb.pos.x, target.pos.y - sim.qb.pos.y).toFixed(1) : null,
+      brk: target ? (() => { const f = (sim.qb.behavior as any)?.receiverForecasts?.get(target), b = f?.breakAt?.(); return b == null ? null : +(b - sim.t).toFixed(2); })() : null,
+      near: target ? +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1) : null, kind: (sim.qb.behavior as any)?.kind }; return tb(p, target, ...rest); };
   const res = orig.apply(this);
   if (rec) {
     const { low, high, ...row } = rec;
     console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null,
-      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, kindAtThrow: tgt?.kind ?? null, endKind: sim.qb.behavior?.kind ?? null, desc: String((res as any).description ?? (res as any).text ?? '').slice(0, 90) }));
+      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
+      ball: tgt ? sim.events.filter((e: any) => e.t >= tgt.t && ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss'].includes(e.type)).map((e: any) => e.type) : [], kindAtThrow: tgt?.kind ?? null, endKind: sim.qb.behavior?.kind ?? null, desc: String((res as any).description ?? (res as any).text ?? '').slice(0, 90) }));
   }
   return res;
 };
