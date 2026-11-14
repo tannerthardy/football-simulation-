@@ -4188,3 +4188,65 @@ Broken tackles per run 0.110 -> 0.086.
    direction-blind base (88% of the press delivered sideways to the tackle's retreat).
 4. `control` still correlates -0.20 with edge outcomes through its remaining readers (the joint's actor by its sign,
    the move rolls and choice).
+
+### The hand model on CONTROL_HANDS, and (B) measured (2026-11-14, engine-62)
+
+**(0) The held hand model, re-read on CONTROL_HANDS.** Hand model = RUSH_HANDS + RUSH_ONE_HAND + RUSH_ARM_BALANCE +
+KEYED_FELT + LONGARM_STRUT + RIP_CLEAR. Seeds 11 / 23 x 8.
+
+| | default | CONTROL_HANDS | + hand model | NFL |
+|---|---|---|---|---|
+| pressured | 29.8 / 26.2% | 21.3 / 17.4% | 21.4 / 19.4% | |
+| interior pressure, of dropbacks | 9.3 / 9.1% | 3.7 / 2.8% | 5.5 / 4.6% | about 9.8% |
+| edge pressure, inside | 9.8 / 7.7% | 4.1 / 3.5% | 3.1 / 3.8% | |
+| sacks pooled | 5.7% | 3.4% | 3.6% | 6.7% |
+| OL proxy falls, seed 11 | 3.6 /100 | 4.4 | 3.4 | |
+| run set fresh, paired against ref | | +0.47 (0.12) | +0.44 (0.12) | |
+| edge (VERTICAL_SET): wide separation at +0.4 s | | 1.08-1.10 | 1.08-1.10 | 0.81 |
+| edge win | | 6 / 5% | 7 / 6% | 13% |
+
+The interior end states (interior-free.mts, seed 11 x 4, CONTROL_HANDS + hand model): 50 interior reps end with the ball
+held (14.9 /100):
+- "other" with both hands on: 36;
+- past him with both hands on: 6 (club 4, leverage 1.40, 5 reach the QB);
+- long-arm on: 4;
+- one hand off: 1.
+
+Hands are rarely lost (2 of 50).
+
+Body correlations (rep-bodies.mts, seed 11 x 4, the rusher's closing on the QB over the rep's first 1.5 s; the standing
+witness from here):
+
+| | edge: mass / arm / speed / roll | interior: mass / arm / speed / roll |
+|---|---|---|
+| default | 0.08 / 0.08 / 0.35 / -0.29 | -0.09 / -0.11 / 0.27 / -0.27 |
+| CONTROL_HANDS + hand model | 0.07 / 0.03 / 0.33 / -0.29 | -0.02 / 0.05 / 0.26 / -0.14 |
+| VERTICAL_SET | 0.06 / 0.10 / 0.39 / -0.42 | -0.07 / -0.07 / 0.29 / -0.23 |
+| VERTICAL_SET + CONTROL_HANDS | 0.06 / 0.07 / 0.26 / -0.20 | 0.01 / -0.03 / 0.19 / -0.05 |
+| VERTICAL_SET + CONTROL_HANDS + hand model | -0.01 / -0.02 / 0.45 / -0.24 | 0.01 / -0.04 / 0.24 / -0.15 |
+
+**Read on (0):**
+- The hand model gives back about a third of the interior pressure CONTROL_HANDS took (3.2 -> 5.0% against about
+  9.8%), through the club with both hands on, not through lost hands.
+- It does nothing on the edge.
+- Its "interior excess" was measured on a rolled share of the blocker's press. On his full press it is a shortfall.
+- Mass and arm still do not predict a rep in any arm. Speed's correlation comes back with the hand model on the
+  vertical set (0.45).
+
+**(B) measured on CONTROL_HANDS (edge-level.mts, VERTICAL_SET + CONTROL_HANDS, seed 11 x 4, the level phase).** The
+press against the rusher's angle off the tackle's line of retreat:
+
+| rusher off the retreat line | share of ticks | press p50 / limit | the tackle's speed across the push line / along it |
+|---|---|---|---|
+| 0-30 deg | 1% | 815 / 1861 N | 0.58 / -1.21 yd/s |
+| 30-60 deg | 10% | 1172 / 2080 N | 2.84 / -2.04 |
+| 60-90 deg | 89% | 1401 / 2043 N | 3.82 / -0.72 |
+
+The tackle is carried 3.8 yd/s across his own press, at near his shuffle speed, while bracing about 1400 N.
+
+Where that brace comes from (world.ts): the lean that balances a felt load is capped by pushForce x
+directionalSpeedFactor(facing vs the load), relative to his facing, and not by his travel. `unsupportedLean` checks only
+the lean beyond the felt load against the locomotion envelope (followAccel: the drive / brake / cut ellipse at his
+speed). So a man moving fast across a load braces it like a planted man. Locomotion's own cut capacity across his travel
+is lateral x cutSkill x (1 - 0.2 v/vmax), about 5-7 yd/s^2 for a tackle, 750-1000 N at 145 kg, against the 1400 N he
+braces.
