@@ -76,6 +76,25 @@ describe('decision-code information guard', () => {
     expect(gaps.match(RUNNER_HIDDEN) ?? []).toEqual([]);
   });
 
+  // QB_BODY_SEEN: the passer's throwing motion and eyes are body states read through perception; the published
+  // fields are the QB's own record (qb.ts) and telemetry's. defense.ts keeps its QB_BODY_SEEN-off branch until the
+  // flag is promoted (dated 2026-11-13; shrink to 0 then).
+  const QB_PUBLISHED = /\bsim\.(?:windupAt|windupEndAt|qbEyes)\b/g;
+  const QB_PUBLISHED_OWNERS = new Set(['src/sim/behaviors/qb.ts', 'src/sim/telemetry.ts']);
+  const QB_PUBLISHED_DEBT: Record<string, { reads: number; why: string; since: string }> = {
+    'src/sim/behaviors/defense.ts': { reads: 14, why: 'QB_BODY_SEEN off: SHOULDER_READ plant/restart, sawThrow arm key, SEEN_EYES=0', since: '2026-11-13' },
+  };
+  it('reads the passer\'s published arm and eyes only in their owners or the listed QB_BODY_SEEN-off debt', () => {
+    const over: string[] = [];
+    for (const path of sources(join(root, 'src'))) {
+      const file = relative(root, path).split('\\').join('/');
+      if (file === 'src/sim/playsim.ts' || QB_PUBLISHED_OWNERS.has(file)) continue;
+      const n = readFileSync(path, 'utf8').match(QB_PUBLISHED)?.length ?? 0;
+      if (n > (QB_PUBLISHED_DEBT[file]?.reads ?? 0)) over.push(`${file}: ${n}`);
+    }
+    expect(over).toEqual([]);
+  });
+
   it('has no defensive decision reading the private scramble flag', () => {
     // The blocker converts pass pro to run blocking when his own QB runs.
     const blockMode = 'src/sim/engagement.ts';

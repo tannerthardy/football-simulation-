@@ -1,65 +1,82 @@
 /** HOT_LOOK (behaviors/qb.ts; on since engine-41): the hot throw costs the look. docs/reviews/2026-11-12-hot-look.md.
- * Asserted as the mechanism over a named panel of plays whose rush sets off his alarm (re-surveyed engine-58), not as one play's
- * outcome: single-play fixtures moved with every engine from 42 to 45 (later releases, the window, the forecast),
- * while the mechanism held. Off: he never looks, and hot throws go to men well away from his eyes. On: he looks,
- * no hot throw goes to a man more than 60 deg from his eyes, and a throw after a look is on his eyes and later. */
+ * Asserted on the hot decision itself, staged: each play is run to 0.3 s after he sets, and his hot choice is asked for
+ * there, as his alarm would ask it. Off: the instant best of every receiver, wherever he is looking. On: a target
+ * inside his clear look is thrown; anyone else first costs the head turn and a glance.
+ *
+ * Why staged. Until engine-58 this test waited for the pass rush to set off his alarm on a named panel of plays. That
+ * panel moved with every change to pass protection: engine-52's nine lost four alarms to PUNCH_STRIKE; a re-surveyed
+ * fourteen lost twelve to PASS_SET_SEEN (engine-59 candidate: 14 alarmed with it off, 2 with it on; in five the felt
+ * time bottoms at 0.45-0.54 s against the 0.45 s threshold, in five the rusher is held off at 2-4 yd). The alarm is a
+ * threshold on a quantity that hovers near it, so a panel of natural alarms is a test of the pass rush. A placed free
+ * rusher does not fix that either: 4 yd away in his field of view and closing at 5 yd/s he raises the alarm on 5 of 12
+ * plays (he throws on rhythm first, or the man is on him before his delayed picture shows him: FREE_BOUND, off). The
+ * look logic does not depend on how the alarm arose, so it is asked directly. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-/** Gun doubles; plays where the rush reaches his alarm in both arms. Re-surveyed on the engine-58 candidate (PUNCH_STRIKE,
- * ANCHOR_BASE, PURSUIT_COMMIT on): 24 of 384 plays (every dropback and play-action concept x Cover 1 / 3 x seeds 1-4 x
- * flip) alarm with HOT_LOOK off and on; 14 are kept, 11 of them with a look when on. The engine-52 panel (9 plays) lost
- * four of its alarms to PUNCH_STRIKE (the punch keeps those rushes off him: 8 alarmed without it, 5 with it), which is
- * the scene, not the look logic: the alarm still follows his pressure read. The panel is wider than the counts asked of
- * it so one pass-protection change does not empty it. A called pressure does not stage the alarm on this engine (Mike A
- * and nickel edge: 2 and 4 of the old 9 alarmed): a free rusher is not yet felt as a hit soon (FREE_BOUND, off). */
-const PANEL: [string, string, number, boolean][] = [
-  ['pa_shot', 'cover3', 2, true], ['post_cross', 'cover1', 2, false], ['post_cross', 'cover1', 3, false], ['dagger', 'cover3', 3, false],
-  ['drive', 'cover3', 2, false], ['drive', 'cover3', 3, false], ['comebacks', 'cover1', 2, false], ['pa_flood', 'cover1', 4, true],
-  ['pa_shot', 'cover1', 4, false], ['hitch_cross', 'cover1', 3, false], ['seam_hitch', 'cover1', 4, false], ['trips_outs', 'cover1', 3, false],
-  ['smash', 'cover1', 3, false], ['corner_flat', 'cover1', 4, true],
+const PLAYS: [string, string, number, boolean][] = [
+  ['post_cross', 'cover1', 2, false], ['post_cross', 'cover1', 3, false], ['post_cross', 'cover3', 2, false], ['dagger', 'cover3', 3, false],
+  ['drive', 'cover3', 2, false], ['drive', 'cover3', 3, false], ['comebacks', 'cover1', 2, false], ['hitch_cross', 'cover1', 3, false],
+  ['seam_hitch', 'cover1', 4, false], ['smash', 'cover1', 3, false], ['corner_flat', 'cover1', 4, true], ['dagger', 'cover1', 4, true],
+  ['trips_outs', 'cover1', 3, false], ['pa_shot', 'cover1', 4, false],
 ];
 
-async function panel(hotLook: string) {
+interface Asked { kind: 'throw' | 'look' | 'none'; gaze: number | null; wait: number | null; inLook: boolean | null }
+
+async function ask(hotLook: string): Promise<Asked[]> {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('HOT_LOOK', hotLook);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-  const out: { looks: number; pick: { dt: number; gaze: number; looked: number } | null; alarmed: boolean }[] = [];
-  for (const [concept, coverage, seed, flip] of PANEL) {
+  const out: Asked[] = [];
+  for (const [concept, coverage, seed, flip] of PLAYS) {
     const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation: 'gun_doubles_11', flip }));
-    let qb: any = null;
-    const tick = sim.tick.bind(sim);
-    sim.tick = () => { tick(); if (!qb && sim.qb.behavior.kind === 'qb-pass') qb = sim.qb.behavior; };
-    sim.run();
-    const p = qb?.hotPick;
-    out.push({ alarmed: qb?.alarmAt != null, looks: qb?.hotLooks ?? 0, pick: p ? { dt: p.t - p.alarmAt, gaze: p.gazeOff, looked: p.looked } : null });
+    const a = sim.qb, qb: any = a.behavior;
+    // Run the play to 0.3 s after he sets (he still has the ball and is not in a throwing motion).
+    let setAt = -1;
+    for (let i = 0; i < 400 && sim.phase === 'live' && sim.carrier === a && a.behavior === qb; i++) {
+      sim.tick();
+      if (setAt < 0 && qb.phase === 'set') setAt = sim.t;
+      if (setAt >= 0 && sim.t >= setAt + 0.3) break;
+    }
+    if (setAt < 0 || sim.carrier !== a || a.behavior !== qb || qb.phase !== 'set') continue;
+    const gaze = qb.gazePoint(sim), off = (p: { x: number; y: number }) => {
+      const b = Math.atan2(p.y - a.pos.y, p.x - a.pos.x), g = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
+      return Math.abs(Math.atan2(Math.sin(b - g), Math.cos(b - g))) * 180 / Math.PI;
+    };
+    const r = hotLook === '1' ? qb.hotLook(a, sim) : qb.hotThrow(a, sim);
+    if (r === null) out.push({ kind: 'none', gaze: null, wait: null, inLook: null });
+    else if (r === 'look') out.push({ kind: 'look', gaze: off(qb.look.target.pos), wait: qb.look.seenAt - sim.t, inLook: qb.inClearLook(a, sim, qb.look.target) });
+    else out.push({ kind: 'throw', gaze: off(r.point), wait: 0, inLook: qb.inClearLook(a, sim, r.target) });
   }
   return out;
 }
 
 describe('HOT_LOOK', () => {
-  it('off: he never looks first, and on his alarm throws to men outside his clear look', async () => {
-    const r = await panel('0');
-    expect(r.filter((x) => x.alarmed).length).toBeGreaterThanOrEqual(6);
-    expect(r.every((x) => x.looks === 0)).toBe(true);
+  it('off: his hot choice is thrown at once, to men outside his clear look too', async () => {
+    const r = await ask('0');
+    const picks = r.filter((x) => x.kind === 'throw');
+    expect(r.length).toBeGreaterThanOrEqual(10);
+    expect(picks.length).toBeGreaterThanOrEqual(6);
+    expect(r.every((x) => x.kind !== 'look')).toBe(true);
     // Outside his clear look (its half-angle is about 19-31 deg by vision and focus): picked without his eyes there.
-    // Under ACC_BELIEF (engine-46) the two picks beyond 60 deg on engine-45 are gone (a rushed far throw priced at
-    // the release's urgency no longer clears the hot bar; the other now goes to a man 10 deg off), not a HOT_LOOK change.
-    expect(r.filter((x) => x.pick && x.pick.gaze > 30).length).toBeGreaterThanOrEqual(1);
+    expect(picks.filter((x) => x.inLook === false).length).toBeGreaterThanOrEqual(2);
   });
 
-  it('on: he looks first; no hot throw goes more than 60 deg from his eyes, and a throw after a look is on them, later', async () => {
-    const r = await panel('1');
-    expect(r.filter((x) => x.looks > 0).length).toBeGreaterThanOrEqual(3);
-    for (const x of r) if (x.pick) expect(x.pick.gaze, JSON.stringify(x)).toBeLessThanOrEqual(60);
-    for (const x of r) if (x.pick?.looked) {
-      expect(x.pick.gaze, JSON.stringify(x)).toBeLessThan(30);
-      expect(x.pick.dt, JSON.stringify(x)).toBeGreaterThanOrEqual(0.3);
+  it('on: a target in his clear look is thrown; anyone else costs the head turn and a glance first', async () => {
+    const r = await ask('1');
+    const looks = r.filter((x) => x.kind === 'look'), picks = r.filter((x) => x.kind === 'throw');
+    expect(looks.length).toBeGreaterThanOrEqual(2);
+    // Nothing is thrown at once to a man outside his clear look.
+    for (const x of picks) expect(x.inLook, JSON.stringify(x)).toBe(true);
+    // A look goes to a man who was outside it, and takes at least the glance (0.15 s) before he can throw there.
+    for (const x of looks) {
+      expect(x.inLook, JSON.stringify(x)).toBe(false);
+      expect(x.wait!, JSON.stringify(x)).toBeGreaterThanOrEqual(0.15);
     }
   });
 });

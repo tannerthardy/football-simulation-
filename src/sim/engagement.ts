@@ -1137,6 +1137,24 @@ function anchorBase(b: Agent, tb: TrenchTraits, heavy: boolean, intent: Intent):
   intent.leanCap = (1.05 - 0.55 * technique) * b.profile.massKg * w0 * w0 * criticalDeviation(sp, sup.posture, sup.feetLock, 1);
 }
 
+/** RUSH_ARM_BALANCE (experimental, off; with RUSH_HANDS): while a rusher holds a long-arm, his own locked arm is the
+ * strut between him and the blocker, and he can lose it in one tick (the blocker gives, slips the arm, or the arm comes
+ * off). A lean against his own strut buys no movement the arm's push does not already give, so he commits behind it as
+ * a protector does: no lean past the load he feels (growth 0) and no more than his base could recover from if the strut
+ * went (k m w0^2 critDev, k = 1.05 - 0.55 x technique: balance and power rush). A bull, his chest on the man, keeps its
+ * commitment, and a bull who over-commits and is dropped still falls. Diagnosis: under RUSH_HANDS, 37 of 44 rusher
+ * falls were long-arm releases; the press he leaned against was two joints summed (the guard's hands and his own arm,
+ * 1600-1900) and his lean grew to it plus the legs' 25% growth, then dumped forward when the arm ended
+ * (fall-trace.mts FALL_ROLE=DL, longarm-release.mts). */
+export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
+function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
+  const sup = d.body.support; if (!sup) return;
+  const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
+  const sp = supportParams(d.profile), w0 = omega0(sp, sup.posture);
+  intent.growth = 0;
+  intent.leanCap = (1.05 - 0.55 * technique) * d.profile.massKg * w0 * w0 * criticalDeviation(sp, sup.posture, sup.feetLock, 1);
+}
+
 /** TACKLE_RESET: the blocker's base re-set (see the flag). Edits his intent in place. */
 function baseReset(sim: PlaySim, e: Engagement, intent: Intent): void {
   const b = e.blocker, sup = b.body.support;
@@ -1704,6 +1722,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
   };
+  if (RUSH_ARM_BALANCE && e.rusherHand) armBalance(d, td, intents[d.idx]);
 
   // ---- the blocker: stay between him and the QB, give ground to set depth,
   // then anchor. Mirror with the feet; the hands steer what they control.
