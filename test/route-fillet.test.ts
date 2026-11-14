@@ -9,11 +9,11 @@ const profile: PhysicalProfile = { massKg: 90, radius: .3, reach: 1, heightYd: 2
   backpedal: .6, shuffle: .55, maxCatchHeight: 3, reactReach: 2.6, reactionTime: .25, power: 100, balance: .5 };
 const DT = 0.02;
 
-async function run(flag: '0' | '1', pts: Array<{ x: number; y: number; s: number }>) {
+async function run(flag: '0' | '1', pts: Array<{ x: number; y: number; s: number; cut?: boolean }>) {
   vi.resetModules(); vi.stubEnv('ROUTE_FILLET', flag);
   const { steerRoute } = await import('../src/sim/route-motion.js');
   const body: Body = { pos: { x: 0, y: 0 }, vel: { x: 0, y: 0 }, facing: 0, energy: 1, sprintLoad: 0, profile: { ...profile }, support: newSupport(.2) };
-  const path = pts.map((p) => ({ p: { x: p.x, y: p.y }, s: p.s }));
+  const path = pts.map((p) => ({ p: { x: p.x, y: p.y }, s: p.s, ...(p.cut ? { cut: true } : {}) }));
   const st: { idx: number; from?: { x: number; y: number }; turn?: unknown } = { idx: 0 };
   const track: Array<{ x: number; y: number; v: number }> = [];
   for (let t = 0; t < 6; t += DT) {
@@ -53,5 +53,11 @@ describe('ROUTE_FILLET', () => {
     const through = Math.min(...tr.filter((q) => q.x > 9 && q.y < 3).map((q) => q.v));
     const rolled = Math.min(...(await run('1', bend)).filter((q) => q.x > 9 && q.x < 16).map((q) => q.v));
     expect(through).toBeLessThan(rolled - 1.5);
+  });
+  it('a point declared a cut keeps the vertex law: the same path as off', async () => {
+    const cutBend = [{ x: 12, y: 0, s: .9, cut: true }, { x: 24, y: 14, s: 1 }, { x: 40, y: 30, s: 1 }];
+    const off = await run('0', cutBend), on = await run('1', cutBend);
+    expect(on.length).toBe(off.length);
+    for (let k = 0; k < on.length; k += 10) expect(Math.abs(on[k].x - off[k].x) + Math.abs(on[k].y - off[k].y)).toBeLessThan(1e-9);
   });
 });

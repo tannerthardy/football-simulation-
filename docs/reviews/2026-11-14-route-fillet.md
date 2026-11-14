@@ -16,6 +16,16 @@ The declared through speed `s` still says what the route asks (a speed cut s .4,
 The receiver keeps the turn (`RouteRunner.turn`); the QB's forecast runs the same law (`receiver-forecast.ts`). Off, nothing changes.
 Test: `test/route-fillet.test.ts` (lone body: inside the vertex, less outside carry, no corner = same path, a plant stays a plant).
 
+## Declaring a cut (added after Integration's slant read)
+
+`RoutePoint.cut?: boolean` (carried on `PathPoint`): a point declared a cut (plant, stick the foot and break) keeps the old vertex law under
+ROUTE_FILLET: no lead, the bend cap and the arrive law at the vertex. Absent, the corner is led as before, so off and on are unchanged
+until Rules marks points. The turn angle is now taken from the route's own legs (previous point or start to the vertex, then on to the next
+point), not from where his body points; witnesses unchanged. Slant row (one staged row, slant_flat, no defenders): the corner is planned at
+5.65 yd/s (s .75, radius 4.64 yd, lead 1.92 on a 3.2 yd first leg, so neither the radius rule nor the leg share binds); he arrives at 4.5
+(off 4.7) because that is the speed he has at about 1.2 s, and `s` 1.0 gives a plan of 7.3 and an arrival of 4.9; marking it a cut is what
+returns the old vertex behaviour. Tested in `test/route-fillet.test.ts`.
+
 ## Witnesses (sim bench from `scripts/diag/route-speed/` on PR #750; no defenders unless stated; WR body for speed rows)
 
 Speed by time, cross (WR body, no defenders), 1.5 / 2.0 / 2.5 / 3.0 / 3.5 s: off 6.00 / 5.47 / 6.30 / 7.29 / 7.83, on 5.77 / 6.66 / 7.50 / 7.94 /

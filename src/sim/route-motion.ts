@@ -11,13 +11,13 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 export const LINE_START = process.env.LINE_START !== '0';
 
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
-export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean }
+export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean }
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
   const endX = OPP_GOAL_X + 8.5;
   const out: PathPoint[] = pts.map(rp => ({
-    p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1,
+    p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1, ...(rp.cut ? { cut: true } : {}),
   }));
   if (extend && out.length >= 1) {
     const last = out[out.length - 1].p;
@@ -85,13 +85,16 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
     // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
     // full braking, so he carries only the speed his cutting ability lets him take through it.
     const decel = LINE_START && next ? Math.min(body.profile.brake, body.profile.lateral * cutSkill) * 0.8 : undefined;
-    if (ROUTE_FILLET && next) {
+    // A point declared a cut keeps the vertex law (a plant, no lead); every other corner is led.
+    if (ROUTE_FILLET && next && !tgt.cut) {
       const ax = (tgt.p.x - body.pos.x) / d, ay = (tgt.p.y - body.pos.y) / d;
       const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y, bl = Math.hypot(bx, by) || 1;
-      const theta = Math.acos(clamp(ax * bx / bl + ay * by / bl, -1, 1));
+      const prev = st.idx > 0 ? path[st.idx - 1].p : st.from ?? body.pos;
+      const l1 = Math.hypot(tgt.p.x - prev.x, tgt.p.y - prev.y);
+      // The turn is the route's, from its own legs, not from where his body happens to be pointing.
+      const lx = l1 > 1e-6 ? (tgt.p.x - prev.x) / l1 : ax, ly = l1 > 1e-6 ? (tgt.p.y - prev.y) / l1 : ay;
+      const theta = Math.acos(clamp(lx * bx / bl + ly * by / bl, -1, 1));
       if (theta > FILLET_MIN_TURN && bl > 1) {
-        const prev = st.idx > 0 ? path[st.idx - 1].p : st.from ?? body.pos;
-        const l1 = Math.hypot(tgt.p.x - prev.x, tgt.p.y - prev.y);
         const aLat = Math.max(0.5, body.profile.lateral * cutSkill), tn = Math.tan(theta / 2);
         // The leg he leaves the line on has no corner behind it to share it with, so he may use all of it.
         const lead = Math.min(through * through / aLat * tn, st.idx === 0 ? l1 : FILLET_LEAD * l1, FILLET_LEAD * bl), radius = lead / tn;
