@@ -398,11 +398,29 @@ export function promoteContact(e: Engagement, keeper: Agent): boolean {
 }
 
 /** The same working-distance and bounded arm law for either run blocker. */
+/** CONTROL_HANDS (experimental, off; CONTROL_HANDS=1): a man's hands work at their capacity, his press and his arm's,
+ * and what he gets of it is the World's: his fit (the joint's working length under PUNCH, HAND_SITE's bearing, the
+ * one-degree-of-freedom hand's edge), the pad levels (PAD_LEVERAGE), his base and lean behind it (the support law,
+ * ANCHOR_BASE), and the punch's timing (PUNCH_STRIKE). Off, the rep's `control` scaled them: push pressForce x (0.35 +
+ * 0.65 |c|), the bent length arm x 0.3 x (0.5 + 0.5 |c|), steer armForce x (0.15 + 0.55 c), a hold armForce x 0.25 c
+ * above 0.3. `control` is a rolled punch exchange at the rep's start and rolled move outcomes after it, and at the
+ * tackle's hip it separated the reps that held (+0.47) from those that went past (-0.28) on every tick
+ * (docs/reviews/2026-11-12-tackle-set.md). Still read from `control` (the next rolls to rebuild): whose hands the
+ * joint is (its sign), and the consumers listed in docs/FLAGS.md. */
+export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1';
 function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'run', c: number, holding: boolean): void {
   const tb = traits(b, type), td = traits(d, type);
   const sep = b.profile.radius + d.profile.radius;
   const reach = (c >= 0 ? tb.arm : td.arm) / 36;
   joint.actor = c >= 0 ? b.body : d.body;
+  if (CONTROL_HANDS) {
+    // His capacity; the World decides what he gets of it. The share his hands had at full control, not a rolled share.
+    joint.extension = sep + reach * 0.3;
+    joint.push = c >= 0 ? pressForce(b) : pressForce(d);
+    joint.hold = holding ? armForce(b) * 1.2 : 0;
+    joint.steer = c >= 0 ? armForce(b) * 0.7 : armForce(d) * 0.55;
+    return;
+  }
   joint.extension = sep + reach * 0.3 * (0.5 + 0.5 * Math.abs(c));
   joint.push = (c >= 0 ? pressForce(b) : pressForce(d)) * (0.35 + 0.65 * Math.abs(c));
   joint.hold = holding ? armForce(b) * 1.2 : c > 0.3 ? armForce(b) * 0.25 * c : 0;

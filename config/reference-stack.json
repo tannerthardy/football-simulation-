@@ -189,6 +189,7 @@
     "VERTICAL_SET": "off",
     "RIP_CLEAR": "off",
     "CORNER_AIM": "off",
+    "CONTROL_HANDS": "off",
     "PUNCH_STRIKE": "on",
     "ANCHOR_BASE": "on",
     "RUSH_ARM_BALANCE": "off",
