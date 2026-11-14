@@ -4443,3 +4443,24 @@ The tracking-side proxy (fall-proxy.py: a lineman who was moving, then stays und
 So the rise is the proxy, not falls. It also counts linemen who stop and hold, and the vertical set has more of those:
 the set ends at the rusher's depth. The tackles who do fall go down a little later in the rep, moving a little faster.
 None of them is the impact family. **It is not a cost.**
+
+### HANDS_LEVER's IZ +0.73: not reproduced (2026-11-14, Integration's ruling 3)
+
+The engine-63 fresh run set had IZ +0.73 (SE 0.24) with HANDS_LEVER on. Re-taken on this branch (engine-64 stack):
+
+| | IZ | all runs |
+|---|---|---|
+| fresh set, HANDS_LEVER on (paired against the reference) | +0.26 (SE 0.27) | +0.03 (SE 0.10) |
+| main set, the same | +0.16 (SE 0.19) | -0.16 (SE 0.09) |
+| matched staged IZ (iz-lever.mts: 120 plays, three rosters x Under / Over x 20 seeds, the same bodies, off / on) | -0.37 (SE 0.37) | |
+
+**The +0.73 does not reproduce.** It was the old engine's IZ cell, about 3 SE out, and it does not survive a re-take on
+either set or a matched staged set.
+
+What the lever does in inside zone (the staged set):
+- The arms diverge first at 0.8-0.9 s, in the interior blocks: RG on the 3-technique (RG>DT_W), C on the shade (C>DT_S).
+- With the lever those blocks last a little longer, and the defensive tackles turn more (median |turn| over the block):
+  RG>DT_W 53 -> 64 deg, LG>DT_S 64 -> 73, RT>DT_W 38 -> 86.
+- The lever turns the defender, not the blocker. After that the plays fan out (75-yard runs flip both ways), which is
+  the noise the old cell sat in.
+- Missed tackles 26 -> 25, broken 29 -> 20 on the staged set.
