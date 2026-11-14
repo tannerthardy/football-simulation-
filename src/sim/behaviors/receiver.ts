@@ -103,6 +103,21 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
 const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
 
+/** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
+ * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
+ *   from his own picture of the defenders (seen within the last 0.5 s), every tick. Against man (a defender within 2.5 yd
+ *   of him) he does not sit: he keeps separating, away from that man. Against zone he works his window: between the
+ *   nearest underneath defenders either side of him at his depth, or 4 yd off the one who is there, facing the QB, so the
+ *   squared-up shuffle's pace is his body's (the facing speed caps), not a pace number. No move toward the line or the QB
+ *   until the ball is thrown: that is the catch's. Off, a `settle` route stands on its last point; `sitVsZone` drifts once.
+ *   NFL WR hitch (not the target, BDB 2025 weeks 1-6): 3.4 / 2.0 / 1.6 yd/s at 2.0 / 2.5 / 3.0 s, no return toward the line
+ *   by 3.0 s; ours 2.9 / 0.9 / 0.8.
+ * - The flat gears down: past his route's declared points, unthrown, he runs on turned to the QB (the body pays: the
+ *   facing caps) and stops in an athletic position 2 yd from the sideline ("If a receiver is 2 yards from the sideline and
+ *   the quarterback still hasn't thrown the ball, the receiver should stop running", fourvertsfootball). NFL WR flats:
+ *   5.5 -> 4.1 yd/s from 2.0 to 3.0 s, 9.3 yd from the sideline at 3.0 s; ours accelerate to 6.8. */
+const ROUTE_END = process.env.ROUTE_END === '1';
+
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
 export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number): MoveCommand {
   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
@@ -296,6 +311,13 @@ export class RouteRunner implements Behavior {
       }
     }
 
+    // ROUTE_END (attempt 2): on his final leg within a yard or so of a settle point, he is at his route's end: a man on
+    // him otherwise keeps him creeping at the last point's zero speed and he never settles (staged Cover 1: 8 of 48
+    // hitches settled by 3.5 s).
+    if (ROUTE_END && !this.settled && this.routeEnd !== 'continue' && this.idx === this.path.length - 1) {
+      const end = this.path[this.idx].p;
+      if (Math.hypot(end.x - a.pos.x, end.y - a.pos.y) < 1.2) this.settled = true;
+    }
     if (this.settled || this.idx >= this.path.length) {
       this.settled = true;
       return this.settle(a, sim);
@@ -306,8 +328,14 @@ export class RouteRunner implements Behavior {
       return { vel: { x: Math.max(a.vel.x, 3), y: inward * 2 }, cutSkill };
     }
     const st = { idx: this.idx };
-    const cmd = this.steer(a.body, st, rr, cutSkill);
+    let cmd = this.steer(a.body, st, rr, cutSkill);
     this.idx = st.idx;
+    // ROUTE_END: a flat past his declared points runs on turned to the QB, and stops 2 yd from the sideline.
+    if (ROUTE_END && cmd && this.route.family === 'flat' && this.path[this.idx]?.ext) {
+      const room = Math.min(a.pos.y, FIELD_WIDTH - a.pos.y);
+      const facing = angleTo(a.pos, sim.see(a, sim.qb).pos);
+      cmd = room <= 2 ? { ...stand(0), facing } : { ...cmd, facing };
+    }
     if (!cmd) {
       this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);
@@ -399,6 +427,7 @@ export class RouteRunner implements Behavior {
 
   private settle(a: Agent, sim: PlaySim): MoveCommand {
     const last = this.path[this.path.length - 1]?.p ?? a.pos;
+    if (ROUTE_END && this.routeEnd !== 'continue') return this.workWindow(a, sim, last);
     if (this.routeEnd === 'continue') {
       // Ran off the end of the route: keep working toward open grass near the sideline.
       return goTo(a, { x: a.pos.x + 3, y: a.pos.y }, { speed: 0.5 });
@@ -418,6 +447,29 @@ export class RouteRunner implements Behavior {
       if (best && bd < 4) spot = { x: last.x, y: clamp(last.y + Math.sign(last.y - best.pos.y || 1) * (4 - bd) * 0.5, 1.5, FIELD_WIDTH - 1.5) };
     }
     return goTo(a, spot, { speed: 0.6, facing: angleTo(a.pos, sim.see(a, sim.qb).pos) });
+  }
+
+  /** ROUTE_END: the settled receiver works his window from his own picture, every tick (see ROUTE_END). */
+  private workWindow(a: Agent, sim: PlaySim, last: Vec2): MoveCommand {
+    const qb = sim.see(a, sim.qb).pos, facing = angleTo(a.pos, qb);
+    const seen = this.readKeys(a, sim).filter((p) => p.age <= 0.5);
+    let near: RouteKeyPicture | null = null, nd = Infinity;
+    for (const d of seen) { const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y); if (dd < nd) { nd = dd; near = d; } }
+    // Man: a defender on him. He keeps separating, away from the man, at his depth or better.
+    if (near && nd < 2.5) {
+      const away = { x: a.pos.x - near.pos.x, y: a.pos.y - near.pos.y }, n = Math.hypot(away.x, away.y) || 1;
+      const spot = { x: a.pos.x + Math.max(0, away.x / n) * 2, y: clamp(a.pos.y + (away.y / n) * 3, 1.5, FIELD_WIDTH - 1.5) };
+      return goTo(a, spot, { speed: 0.8, facing });
+    }
+    // Zone: the window between the underneath defenders either side of him, near his depth.
+    const under = seen.filter((d) => Math.abs(d.pos.x - last.x) < 4 && Math.abs(d.pos.y - a.pos.y) < 8);
+    const left = under.filter((d) => d.pos.y > a.pos.y).sort((p, q) => p.pos.y - q.pos.y)[0];
+    const right = under.filter((d) => d.pos.y <= a.pos.y).sort((p, q) => q.pos.y - p.pos.y)[0];
+    let y = a.pos.y;
+    if (left && right) y = (left.pos.y + right.pos.y) / 2;
+    else if (left) y = Math.min(a.pos.y, left.pos.y - 4);
+    else if (right) y = Math.max(a.pos.y, right.pos.y + 4);
+    return goTo(a, { x: last.x, y: clamp(y, 1.5, FIELD_WIDTH - 1.5) }, { speed: 0.8, facing });
   }
 
   /** Remove this technique's constraint before a ball event replaces its
