@@ -80,13 +80,16 @@ const SEEN_EYES = process.env.SEEN_EYES !== '0';
  * nearby bodies by his picture of them; a backer taking on a climber, and an
  * edge setting his line, treat a body as blocked when their picture shows it
  * in contact (seen contact, src/sim/seen-contact.ts),
- * not by its engagement state; a defender drives on a catch at the receiver
- * his own flight estimate brings the ball to, at the facing he sees, not at
- * the private securing state; the switch from playing the flight to the catch
- * (catch-carry, flight continuation, ball rally) comes when his own estimate
- * says the ball has arrived, not on the true end of the air state. */
+ * not by its engagement state. */
 export const HONEST_READS = process.env.HONEST_READS === '1';
-/** HONEST_READS' drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
+/** HONEST_FLIGHT (experimental, off; HONEST_FLIGHT=1 turns it on): the flight half of the audit, waiting on the ball-
+ * perception channel (acquireFlight's estimate, built with Coverage). A defender drives on a catch at the receiver his own
+ * flight estimate brings the ball to, at the facing he sees, not at the private securing state; the switch from playing
+ * the flight to the catch (catch-carry, flight continuation, ball rally) comes when his own estimate says the ball has
+ * arrived or he sees it in the air near him, not on the true end of the air state; a flight he has acquired is his to
+ * play until his estimate resolves it. */
+export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
+/** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
@@ -136,6 +139,16 @@ function underneathZone(a: Agent): boolean {
   return (a.behavior instanceof ZoneCoverage && !b?.plastersScramble) || b?.zoneEyes === true;
 }
 
+/** HONEST_FLIGHT: a ball in the air that he can see: near him (BALL_SEEN_RANGE) and inside his view. A ball popped back
+ * up off a receiver's hands next to the defender driving on the catch is in plain sight; the same ball across the field
+ * behind him is not. (The sight channel, as ThrowSight senses the throw.) */
+const BALL_SEEN_RANGE = 6, BALL_SEEN_COS = Math.cos(100 * Math.PI / 180);
+function ballSeenInAir(a: Agent, sim: PlaySim): boolean {
+  if (sim.ball.kind !== 'air') return false;
+  const b = (sim.ball as { flight?: { pos: { x: number; y: number } } }).flight?.pos ?? sim.ballPos(), dx = b.x - a.pos.x, dy = b.y - a.pos.y, d = Math.hypot(dx, dy);
+  return d <= BALL_SEEN_RANGE && (d < 0.5 || Math.cos(a.body.facing - Math.atan2(dy, dx)) >= BALL_SEEN_COS);
+}
+
 export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const read = observedHolder(a, sim);
   const preserveEdge = a.runFit?.kind === 'edge' || a.runFit?.kind === 'force' || a.runFit?.kind === 'cutback';
@@ -166,9 +179,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // end or rallying to where the ball landed. A newer picture of him without
   // the ball refutes it (dropped); a ball back in the air is played as flight;
   // an acquired holder is pursued above.
-  // HONEST_READS: the ball is out of the air when his own flight estimate
+  // HONEST_FLIGHT: the ball is out of the air when his own flight estimate
   // says it has arrived (or he never saw a throw), not on the true air state.
-  const landed = HONEST_READS ? !hasObservedFlight(a) || flightLanded(a, sim.t) : sim.ball.kind !== 'air';
+  const landed = HONEST_FLIGHT ? (!hasObservedFlight(a) || flightLanded(a, sim.t)) && !ballSeenInAir(a, sim) : sim.ball.kind !== 'air';
   if (CATCH_CARRY && landed) {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
@@ -194,10 +207,12 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       detail: 'Keep working with the possible catcher; an empty picture after the opportunity refutes it. No confirmed possession.' });
     return track(a, anticipated.cue.pos, anticipated.cue.vel);
   }
-  if (landed && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
+  if ((HONEST_FLIGHT || landed) && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
     chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
     detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
-  if (landed && path) return playObservedFlight(a, sim, path);
+  // HONEST_FLIGHT: a flight he has acquired is his to play until his own estimate resolves it, whatever the true
+  // ball does meanwhile (a catch before his estimate's arrival is not yet in his picture).
+  if ((HONEST_FLIGHT || landed) && path) return playObservedFlight(a, sim, path);
   const area = landed ? unresolvedBallArea(a) : null;
   if (area) {
     if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
@@ -2119,19 +2134,21 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
   else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // DRIVE_CATCH: the ball is in a receiver's hands but not yet his: drive
   // through his hands and body to play the catch, at full effort.
-  // HONEST_READS: the receiver his own flight estimate brings the ball to, from
+  // HONEST_FLIGHT: the receiver his own flight estimate brings the ball to, from
   // just before its arrival to the end of a catch's securing beat, and the
   // facing he sees, not the private securing state or true body.
-  const opportunity = HONEST_READS ? catchOpportunity(a) : null;
-  const securing = HONEST_READS
+  const opportunity = HONEST_FLIGHT ? catchOpportunity(a) : null;
+  const securing = HONEST_FLIGHT
     ? (opportunity && sim.t >= opportunity.t - DRIVE_LEAD && sim.t <= opportunity.t + DRIVE_SECURE ? opportunity.receiver : null)
     : (sim.ball.kind === 'air' && sim.ball.securing ? sim.ball.securing.receiver : null);
-  if (DRIVE_CATCH && securing) {
+  // HONEST_FLIGHT: a receiver he sees without the ball after the arrival is not securing it.
+  const droppedSeen = (R: Agent) => { const q = sim.see(a, R); return !!opportunity && q.carrying === false && q.age !== undefined && sim.t - q.age > opportunity.t; };
+  if (DRIVE_CATCH && securing && !(HONEST_FLIGHT && droppedSeen(securing))) {
     const R = securing, seen = sim.see(a, R);
     if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
-      const f = HONEST_READS ? seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x) : R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
+      const f = HONEST_FLIGHT ? seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x) : R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
       a.tags.add('drive-catch');
-      if (CATCH_CARRY) catchDrive.set(a, { receiver: R, t: sim.t });
+      if (CATCH_CARRY && !(HONEST_FLIGHT && catchDrive.get(a)?.receiver === R)) catchDrive.set(a, { receiver: R, t: sim.t });
       return runThrough(a, hands, { speed: 1 });
     }
   }

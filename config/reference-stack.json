@@ -206,6 +206,7 @@
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "HONEST_READS": "off",
+    "HONEST_FLIGHT": "off",
     "QB_FEEL": "off",
     "QB_RHYTHM": "on",
     "RACE_LEAN": "off",
