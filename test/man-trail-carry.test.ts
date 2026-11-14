@@ -4,8 +4,15 @@
  * ~0.55 s; on these plays he drifts away or holds. With it he closes through the catch. A control play where he
  * already closes is not slowed. The cases need the current engine defaults (stack 'on'). The throw is staged
  * (PlaySetup.stagedThrow): its start, receiver, aim point and flight time are the ones develop's QB produced on each
- * play (recorded 2026-11-14 at 45e17fcc, CATCH_CARRY off), so a change in the QB does not move a defensive fixture's
- * premise. */
+ * play, so a change in the QB does not move a defensive fixture's premise. Re-found 2026-11-14 on the engine-65 candidate
+ * (078259db, CATCH_CARRY off): with CROSS_FLAT the mesh's shallow cross runs flat at 2.5-3 yd, so the scenes recorded at
+ * 45e17fcc no longer had a trailing man defender at the catch (cover0 s3 is now an interception, cover1 trips s10 an
+ * incompletion). The cases are chosen by the premise alone, from a scan of mesh against cover0 / cover1, doubles and
+ * trips, both flips, seeds 1-12: trail cases are the first catch per coverage and formation whose man defender closes
+ * at -1 to 0 yd/s without the carry (matched speed); the control is the first cover1 doubles catch where he already
+ * closes at over 0.3. Each throw is the one the candidate's QB makes on that play. Off -> on at 078259db: -1.43 -> -0.95,
+ * -0.02 -> 0.83, -0.02 -> 1.36, -0.14 -> 0.54; control 0.43 -> 1.11 (cover0 doubles s1 flip is -0.81 natural, -1.43
+ * staged: the staging suppresses a pump). */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { StagedThrow } from '../src/sim/playsim.js';
@@ -17,11 +24,12 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 
 type Case = { coverage: string; concept: string; formation: string; seed: number; flip: boolean; staged: StagedThrow };
 const TRAIL: Case[] = [
-  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 3, flip: false, staged: { at: 1.7, slot: 'H', aim: { x: 46.813467117784064, y: 27.378647345717763, z: 1.4021466241115106 }, T: 0.7987500560135912 } },
-  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 5, flip: false, staged: { at: 1.7, slot: 'H', aim: { x: 46.630641784473625, y: 27.90120688357736, z: 1.2553959154179828 }, T: 0.7445107982581539 } },
-  { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 10, flip: true, staged: { at: 1.75, slot: 'H', aim: { x: 45.70821508789646, y: 25.079612717080366, z: 1.201432880219722 }, T: 0.7220591384695301 } },
+  { coverage: 'cover0', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: true, staged: { at: 2.7, slot: 'H', aim: { x: 47.578585789273035, y: 26.13883682831247, z: 1.0752436010533946 }, T: 0.8258310468926056 } },
+  { coverage: 'cover0', concept: 'mesh', formation: 'gun_trips_11', seed: 7, flip: false, staged: { at: 1.95, slot: 'H', aim: { x: 43.40361665017577, y: 23.6061803541274, z: 1.6052683997938129 }, T: 0.5688625619101512 } },
+  { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 10, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 43.93517692229286, y: 29.152697579963142, z: 1.203423769957923 }, T: 0.7516468371986261 } },
+  { coverage: 'cover1', concept: 'mesh', formation: 'gun_trips_11', seed: 11, flip: false, staged: { at: 2.55, slot: 'H', aim: { x: 44.66199109746469, y: 27.47384832103233, z: 1.1084586927141817 }, T: 0.7960112743105804 } },
 ];
-const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 1, flip: false, staged: { at: 1.7, slot: 'Y', aim: { x: 44.62284293422765, y: 24.94643850961164, z: 1.1075868239625482 }, T: 0.6951580120998386 } };
+const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_doubles_11', seed: 2, flip: false, staged: { at: 1.75, slot: 'Y', aim: { x: 44.342182796878774, y: 28.737207826607396, z: 1.053565279262162 }, T: 0.5741794636999107 } };
 
 /** His own man defender's closing speed on the catcher (yd/s), mean over 0.1-0.4 s after the secure event. */
 async function closing(flag: string, c: Case): Promise<number> {
