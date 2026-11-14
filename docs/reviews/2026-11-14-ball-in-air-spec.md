@@ -243,3 +243,29 @@ Each stage gets two attempts and a new flag, registered off.
 - **No dice for whether he may look.** Ball skills changes how well he finds the ball,
   not whether he is allowed to look.
 - **No catch point for a receiver before he has seen the same evidence.**
+
+## Stage 1 result (2026-11-14): parked after two attempts
+
+Code: `coverage/C14-ball-est`, flag `BALL_EST` (off).
+
+Exam: deep targets with 1.5-2.0 s flights (`rcv-flight.ts`, seeds 11/23 x 8 leagueSample games). NFL in the last column.
+
+| | off | attempt 1 | attempt 2 | NFL |
+| --- | --- | --- | --- | --- |
+| Speed, release -> arrival (yd/s) | about 7.6 held | 7.3 -> 6.3 / 7.3 | 7.5 -> 6.1 / 7.3 -> 7.6 | 7.6 -> 6.7 |
+| Off his release line (yd) | 1.1-1.7 | 2.0 / 2.1 | 1.2 / 2.2 | 2.4 |
+| To the landing point (yd) | 0.6-1.8 | 3.0 / 2.3 | 2.6 / 2.8 | 1.4 (p75 1.9-2.6) |
+| Separation at arrival (yd) | 1.9-2.2 | 2.3-2.4 | 3.0 / 2.7 | 1.6 |
+
+- **Attempt 1:** one sample per 0.25 s. Wrong evidence: a scanning fixation, not a pursued ball.
+  - Bug fixed along the way: the shoulder turn brought the ball only to the edge of his reach.
+- **Attempt 2:** continuous pursuit sampling with a serially correlated error.
+  - Also fixed: no samples while the ball is being secured. `catching.ts` carries it in his hands.
+- **His estimate at the true arrival time** is 0.7/1.5/4.3 yd from the ball (p25/50/75).
+  - That's `est-split.ts`, seed 11, flights 1.2 s+.
+  - The fitter alone, on the same geometry, gives 0.6 yd median.
+- **No hidden oracle steers him** (`est-steer.ts`). Where his catch spot and the true one differ by 3 yd or more, his heading is about equally off each (23° vs 22°).
+- **The miss is the receiver not reaching his own estimate**, not the estimate.
+  - His first sample comes about 0.5 s after the release, with the look itself slowing him.
+  - The next move is that steering (a late-converging estimate he must run to), not a different sigma.
+- **Not done before parking:** the defender side's reads, the short/intermediate controls and catch rate by separation.
