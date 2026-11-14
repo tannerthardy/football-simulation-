@@ -361,7 +361,7 @@ const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
 /** QB_BREAK (experimental, off; QB_BREAK=1; the out-of-pocket phase, first build): leaving the pocket no longer ends
  * his time as a passer. When he has no throw and feels the rush (the alarm's no-throw branch), or his clock has run
  * out, and a spot outside the rush beats every pursuer he feels by BREAK_MARGIN, he breaks to that side with the ball
- * up. Out there, at his processing interval and each held until the next, he decides: throw (his best man on his
+ * up. The pocket's own trigger does the same for a man in front who is free, or blocked and still being walked back at him. Out there, at his processing interval and each held until the next, he decides: throw (his best man on his
  * pictures at the bar he has in the pocket, lowered by the pressure he feels; the eyes gate applying), tuck and run (a lane past the line beats the pursuers and nobody is
  * near the bar; this is the old scramble), throw it away (outside the tackles, a pursuer inside one motion and one
  * processing time, nobody above half the bar; a short motion, not an instant release), stop and set (no pursuer inside
@@ -2444,9 +2444,11 @@ export class QBPass implements Behavior {
     // One slide per body until it is clearly nearer.
     const last = this.slidAt.get(by.d);
     if (last !== undefined && bd > last - POCKET_RENEW) return { edge: false, slide: null };
-    // QB_BREAK: a slide answers a man a blocker still has. A free man, or one he has already slid from who is still
-    // coming, is answered by leaving, when a spot outside beats the pursuers he feels.
-    if (QB_BREAK && (!inHands || last !== undefined) && this.tryBreak(a, sim, 'feel')) return { edge: false, slide: null, out: true };
+    // QB_BREAK: a man in front who is free, or in a blocker's hands and still coming at him, is answered by leaving
+    // when a spot outside beats the pursuers he feels; the slide is what is left when none does. NFL quarterbacks who
+    // leave do it from a man who is still blocked 87% of the time (nearest DL/LB 2.2 / 3.0 / 4.4 yd away at the onset,
+    // closing at 1.4 yd/s; scripts/diag/escape/leave-onset.py), so waiting for him to come free was waiting too long.
+    if (QB_BREAK && this.tryBreak(a, sim, 'feel')) return { edge: false, slide: null, out: true };
     this.slidAt.set(by.d, bd);
     const rp = read ? sim.see(a, read).pos : null;
     const toRead = !!rp && Math.abs(rp.y - a.pos.y) >= POCKET_READ_SIDE;
