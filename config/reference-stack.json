@@ -208,7 +208,7 @@
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "QB_FEEL": "off",
-    "WAIT_REACHED": "off",
+    "WAIT_REACHED": "on",
     "QB_RHYTHM": "on",
     "RUSH_PROMISE": "on",
     "RACE_LEAN": "off",

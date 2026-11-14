@@ -280,7 +280,7 @@ const TKL_WHIFF = process.env.TKL_WHIFF === '1';
  * shot only when his forecast reaches that better point inside its lookahead. Each tick the forecast is redone; one
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
  * runner's seen velocity says) promised a shot 0.3 s away forever, and he never took the one he had. */
-const WAIT_REACHED = process.env.WAIT_REACHED === '1';
+const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
 /** Hand strike, extension to contact (model assumption, s). */
 const REACH_WINDOW = 0.2;
 /** Layout from the launch to full extension (model assumption, s). */
