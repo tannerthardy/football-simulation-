@@ -6,6 +6,7 @@ import type { Vec3 } from '../core/vec.js';
 import type { BallFlight } from '../physics/ball.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { shouldersOf } from '../physics/kinematics.js';
 
 /** Same coarse over-shoulder field as the existing catch-facing test. Body
  * facing approximates visual attention; occlusion/head turns remain unmodeled.
@@ -41,7 +42,8 @@ export class IncidentalCatchReadiness {
       const queue = this.pending.get(a.idx) ?? [];
       const dx = flight.pos.x - a.pos.x, dy = flight.pos.y - a.pos.y;
       const distance = Math.hypot(dx, dy);
-      const facing = (Math.cos(a.facing) * dx + Math.sin(a.facing) * dy) / Math.max(1e-9, distance);
+      const front = shouldersOf(a.body);
+      const facing = (Math.cos(front) * dx + Math.sin(front) * dy) / Math.max(1e-9, distance);
       if (!a.isDown(sim.t) && facing > -.35) {
         // Reuse targeted TrackBall's acquisition scale, including this mind's
         // current attention latency. No extra per-tick execution draw.

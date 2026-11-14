@@ -396,7 +396,7 @@ const QB_RELOOK = process.env.QB_RELOOK !== '0';
  * to that man, and at the cue he reads the man's movement in his picture (sinking to the high route gives the low man, jumping
  * the low route gives the high man), or where he stands when he is not moving along the stretch. When he has no fresh
  * picture of the man, or the role names nobody, there is no key read and he runs the order as installed. */
-const QB_KEY_MAN = process.env.QB_KEY_MAN === '1';
+const QB_KEY_MAN = process.env.QB_KEY_MAN !== '0';
 /** QB_KEY_MAN: the speed along the low-high stretch (yd/s) at which the key's movement is the read, and how his
  * reading noise on a place along the stretch scales to a speed. Both chosen. */
 const KEY_MOVE = 1.0;
