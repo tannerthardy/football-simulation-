@@ -2791,3 +2791,246 @@ bodies' true distance at engage) is the World's. Off is bit-identical (seed 999 
   points.
 - Recommendation: on, with PUNCH_STRIKE and ANCHOR_BASE. The sack finish (THROW_HOLD) and the outside arc are the
   next questions.
+
+## The finish: THROW_HOLD + POCKET_REACH (16 games, engine-58 + PASS_SET_SEEN)
+
+Flex, 2026-11-13. F0 = both off, F1 = both on; seeds 11 and 23, 16 games each arm; operators finish.py and
+pass-rep-report.py (sack funnel), the same code as on NFL tracking.
+
+| | s11 F0 | s11 F1 | s23 F0 | s23 F1 | NFL |
+|---|---|---|---|---|---|
+| first contact, % of dropbacks | 13.6% | 13.9% | 12.6% | 12.4% | |
+| after contact: sacked | 19% | 27% | 15% | 27% | 47% |
+| after contact: threw | 72% (+0.10 s) | 65% (+0.05 s) | 76% (+0.10 s) | 62% (+0.05 s) | 30% |
+| after contact: escaped | 9% | 7% | 9% | 11% | 22% |
+| from the front: sacked | 11% | 17% | 10% | 19% | |
+| sacked given contact (funnel) | 18% | 30% | 17% | 30% | |
+| a rusher within 2 yd before the ball is out (control) | 21.6% | 22.1% | 21.6% | 20.9% | |
+| native sacked, % of dropbacks | 3.1% | 4.4% | 2.5% | 3.7% | |
+| INT / fumbles | 30 / 24 | 22 / 19 | 17 / 13 | 20 / 18 | |
+| throw_held events | 0 | 31 | 0 | 38 | |
+
+Read:
+- The arrival control does not move: within 2 yd 21-22% in all four arms, first contact 12-14%. The change sits
+  after contact, where it was aimed.
+- Sacked given contact goes 17-18% to 30% on both seeds. About a third of the gap to the NFL's 47-53% closes.
+- The thrown bucket shrinks (72-76% to 62-65%). The throws that remain still leave within 0.05 s of contact. These
+  are the windups already past the hold, or deliveries where no grasp formed in time. The hold stops a motion only
+  when the grasp exists; the QB lane's decision half (when to start, aborting under a closing rusher) is the remaining
+  share.
+- Escapes stay 7-11% against the NFL's 22%. That belongs to the QB lane's evade/step-up decision, not to the physics.
+- INT and fumbles move both ways between seeds; there is no consistent direction at this sample size.
+- Not computed yet: completion and air yards inside the thrown bucket, and the pre-windup finish split
+  (finish-trace.mts on the F1 flags).
+
+### The owed rows (Integration, 2026-11-13)
+
+**The thrown-after-contact bucket** (finish.py `--dump` joined to the review; off-target = the `miss` event, a ball
+that reached the receiver outside his catchable window; air = arrival x minus the line):
+
+| | s11 F0 | s11 F1 | s23 F0 | s23 F1 |
+|---|---|---|---|---|
+| thrown after contact, n | 135 | 118 | 139 | 103 |
+| completion | 46% | 37% | 63% | 39% |
+| INT | 0.7% | 0.8% | 0.0% | 0.0% |
+| off-target at the hands | 4% | 9% | 4% | 3% |
+| air p50, yd | 4.5 | 4.7 | 3.8 | 4.7 |
+| yards per attempt | 5.0 | 5.1 | 8.9 | 5.3 |
+
+On, fewer throws get out after contact (the held motions become sacks), and those that do complete less (37-39%,
+was 46-63%). Air yards don't move. The flick (`throwDisturb` at release) costs completions; it does not throw more
+interceptions. `stats.throwaway` is never set on these plays (0% in every arm), so throwaways are not in this table.
+
+**The clean-throw control.** Throws where no defender came within 2 yd before the release:
+
+| | s11 F0 | s11 F1 | s23 F0 | s23 F1 |
+|---|---|---|---|---|
+| n | 1044 | 991 | 1076 | 1050 |
+| completion | 68% | 70% | 70% | 71% |
+| INT | 2.3% | 1.5% | 1.6% | 1.7% |
+| air p50 | 5.3 | 5.0 | 5.2 | 5.4 |
+| yards per attempt | 8.4 | 8.6 | 8.7 | 9.3 |
+
+Games diverge after the first changed play, so this is a distribution check, not matched plays. The direct check is
+clean-disturb.mts (F1, 3 games): on 194 throws with no defender within 2 yd, `throwDisturb` at release is 0 on
+every one. On 61 throws with a defender within 2 yd, 22 were disturbed (max 0.98). By construction the hold reaches
+only a passer under load, and no clean throw had any.
+
+**The pre-windup split** (finish-trace.mts, seed 11, 4 games per arm; small):
+
+| at first contact | F0 | F1 |
+|---|---|---|
+| not yet in his windup | n 18: sacked 72%, escaped 22%, threw 6% | n 15: sacked 73%, escaped 27%, threw 0% |
+| windup under way | n 36: threw 34, sacked 1, escaped 1 | n 38: threw 30, sacked 8 |
+
+The change is all in the contacts made during the windup (sacked 3% → 21%). Before the windup, the outcome was
+already like the NFL's and does not move.
+
+**The fumble before the hand comes forward** is not small. It needs the strike's impulse on the ball-carrying arm
+during the load-up, read against the grip (a ball-security mechanism of its own). It follows separately.
+
+## REP_SEEN: the pass rep on what each man senses (PRO-INFO #3, #4, #7, #8)
+
+Flex, 2026-11-13. REP_SEEN (off) at a813c2bd. Off is bit-identical (seed 999: 55388863 on engine-58; c7236fb3 on the
+engine-59 merge).
+- The rusher aims at and faces the QB he sees.
+- He reads his leverage and the blocker's overset from his picture of the blocker.
+- The blocker sets and rides against the called launch point (`calledLaunchX`) and the man as he has him.
+- The blocker's sight delay follows his own hands being off the man.
+- The rep's outcome geometry (past, turned the corner) stays the World's.
+
+Read: 16 games per arm on engine-58 with PASS_SET_SEEN, THROW_HOLD and POCKET_REACH on. Control = the F1 runs above.
+
+| | s11 control | s11 REP_SEEN | s23 control | s23 REP_SEEN |
+|---|---|---|---|---|
+| a rusher within 2 yd before the ball is out | 22.1% | 23.6% | 20.9% | 20.2% |
+| rusher free (funnel) | 33% | 35% | 35% | 33% |
+| contact given 2 yd | 51% | 45% | 47% | 47% |
+| after contact: sacked / threw / escaped | 27 / 65 / 7% | 36 / 56 / 9% | 27 / 62 / 11% | 21 / 65 / 13% |
+| native sacked | 4.4% | 5.4% | 3.7% | 3.0% |
+| pressured (stats) | 11.7% | 12.5% | 10.6% | 11.3% |
+| completion | 65.9% | 68.5% | 66.3% | 67.5% |
+| scrambles | 18 | 27 | 32 | 43 |
+| yards per dropback | 7.40 | 7.16 | 7.84 | 7.63 |
+| OL falls /100 (true) | 3.9 | 4.5 | 3.8 | 5.0 |
+| DL falls /100 (true) | 8.5 | 8.6 | 10.1 | 8.5 |
+
+The removal is close to neutral. Arrival, the funnel and the finish move in opposite directions on the two seeds.
+Small shifts in the same direction on both seeds:
+- pressured +0.7-0.8 points;
+- scrambles +9 and +11;
+- OL falls +0.6 and +1.2 per 100 (still inside the 1-5 band);
+- yards per dropback -0.2.
+
+None is large enough to diagnose at this sample. The OL falls are the one to watch. The blocker now acts on a
+delayed picture of the man by sight while his hands are off (a landed move), so a late mirror can leave him leaning
+on a press that is no longer where he set it.
+
+## REP_SEEN's OL-fall drift, traced (Integration, 2026-11-14)
+
+fall-trace.mts, engine-58 + PASS_SET_SEEN + THROW_HOLD + POCKET_REACH, REP_SEEN off vs on, two windows of 8 games:
+
+| | off: falls (forward onto the man) | on: falls (forward onto the man) |
+|---|---|---|
+| seeds 11-18 | 20 (5) | 13 (3) |
+| seeds 23-30 | 3 (2) | 11 (3) |
+| both | 23 (7) | 24 (6) |
+
+- A blocker's hand was off at the fall in 0 of the 47 falls.
+- REP_SEEN's tackle falls are mostly backward (8 of 9 in the first window). The rusher is within a yard, the tackle is
+  asking to go with the press, and he has no lean before the last tick. That is a man run over, not a propped one.
+- The forward propped class does not grow. The 16-game drift (3.9→4.5, 3.8→5.0) is inside the window-to-window
+  spread (3 to 20 per 8 games).
+- ANCHOR_BASE's bound already reads his own contact: `heavy` and the lean come from `support.felt`, not his picture.
+
+## DL falls, classified (Integration, 2026-11-14)
+
+dl-falls.mts, same stack, RUSH_HANDS off, seeds 11-18: 43 falls in 647 dropbacks, 6.6 /100. The NFL bound is about 1.
+
+| class | n | what happens |
+|---|---|---|
+| interior, forward, press removed | 8 | bull 5, rip 2, long-arm 1. Lean 1420 N at a 1870 N press peak; the press drops to about 320 N; he goes forward onto the man |
+| interior, forward, press kept | 4 | bull 3. Lean 1330 N at about 1700 N; falls into the man |
+| interior, back or sideways | 9 | lean up to 1100 N, then the press goes and the release takes him off his base |
+| edge, driven over backward | 17 | bull 8, long-arm 5. Press peak 2700 N (up to 6100), lean about 140 N, the press still about 2000 N at the fall |
+| edge, other | 5 | |
+
+**Eye-check.** 12 sampled falls stayed down at least 1.45 s and travelled 0.3-1.6 yd while down. Down is down: none
+gets straight back up and nothing races off.
+
+**RUSH_ARM_BALANCE's bound generalised to every engaged rusher** (scratch, LEAN_ANY): growth 0 and leanCap = (1.05 -
+0.55 technique) m w0^2 critDev for any pass rusher in a rep. DL falls 6.6 → 3.2 /100 (43 → 23). The interior forward
+class goes 12 → 2. The edge driven-over class goes only 17 → 13. So it covers the propped rusher, not the edge.
+
+**The edge class is a collision, not a prop** (edge-arrive.mts, 10 edge falls within 0.4 s of the rep's start):
+- Before contact, 8 of 10 are balanced (availability 1.0, xi 0) at 4.8-5.5 yd/s, with no lean.
+- The first contact puts 3400-6100 N on his chest in one or two ticks.
+- His availability goes from 1.0 to 0 in 0.1-0.3 s, and he goes over backward.
+- 2 of 10 were already off balance (xi 3.5-4.2 base) the tick before the rep.
+
+He runs into a set tackle upright. Nothing in his request or his lean anticipates a contact he can see coming, because
+the World's lean is purely reactive to felt load. Coached rushers win this with pad level. They are low and into the
+man (hands and weight forward) as they arrive, so the impact goes through their legs and they get stood up, not
+knocked over.
+
+Proposal (not built): a rusher closing on a blocker he sees (`sim.see`, his closing speed and range) commits his
+posture and lean ahead of the contact. That means posture toward his pad level and a lean request sized to the
+impulse he expects (his mass times his closing speed over the contact time), bounded by ANCHOR_BASE's recoverable
+lean. Everything is from his picture, nothing from the blocker's state. Pair it with the generalised RUSH_ARM_BALANCE
+bound (the propped class). The two classes need different mechanisms; together they cover about 30 of the 43.
+
+## RUSH_LEAN_BOUND and RUSH_PAD_LEVEL (Integration's go, 2026-11-14)
+
+### RUSH_LEAN_BOUND (class (a), the propped rusher): built, ae844a63, off
+
+Off is bit-identical (seed 999 c7236fb3, engine-59). Staged search, 288 scenes: DL falls 46 → 10, and every interior
+fall is gone. Fixtures are in test/rush-lean-bound.test.ts.
+
+16 games per arm on the engine-59 stack (s11 / s23):
+
+| | off | on |
+|---|---|---|
+| DL falls /100 (true) | 7.7 / 9.6 | 3.9 / 4.6 |
+| OL falls /100 (true) | 4.5 / 3.1 | 3.7 / 2.5 |
+| after contact: sacked / threw / escaped | 21/72/7 / 17/77/6 | 17/77/6 / 16/76/7 |
+| within 2 yd before the ball is out | 21.9 / 20.6% | 22.8 / 21.1% |
+| native sacked | 4.0 / 2.4% | 3.3 / 3.0% |
+| pressured | 12.2 / 11.8% | 12.1 / 12.7% |
+| yards per dropback | 7.15 / 8.05 | 6.78 / 7.37 |
+
+Classified falls (dl-falls.mts, seeds 11-18): 41 → 24. The interior forward propped class goes 20 → 1. The edge
+driven-over class goes 11 → 14, unchanged within noise. Arrival and pressure do not move. Sacks move both ways between
+seeds. Yards per dropback are lower on both seeds (-0.4, -0.7), with no mechanism identified; it is worth a look in
+the promotion read.
+
+### The collision check (condition 1)
+
+edge-impulse.mts, 1029 first edge contacts:
+- **Rushers who stay up** lose 155 N·s of momentum along the line, against an inelastic two-body bound μ·v_close of
+  160 N·s.
+- **The contact is not too stiff.** The 9 Hz core is critically damped, so there is no bounce. Delivered in one or
+  two ticks, the impulse peaks at 1.4-2.6 kN. A softer contact would lower the peak but not the capture-point shift
+  (Δv/ω0), which depends only on the impulse.
+- **The fallers** take about 2.2× the bound. The excess comes after the hit: the blocker drives on while the rusher's
+  availability is already collapsing.
+- **The scripted failed-move punch** (resolveMove `world.strike`, about 40 N·s) is not the cause.
+
+### RUSH_PAD_LEVEL (class (b), the edge collision): two attempts, both worse, removed (PARKED)
+
+The design: a general brace (`Intent.brace` in the World's lean law, `src/sim/brace.ts`, from the player's picture),
+on for the front's rushers.
+- **Attempt 1.** It held a lean target inside his reaction time of the contact. The released lean was re-committed
+  every tick, so he fell forward: 546 staged DL falls.
+- **Attempt 2.** One commitment, sized to cancel the hit's capture-point shift (l = μ v_close w0, within the
+  recoverable bound), made when the seen contact is due inside his next decision interval.
+  - Staged: 10 → 20. The extra falls are braced interior rushers who were swum: the brace's cost, as predicted.
+  - Games (8): 24 → 34. Edge driven-over 14 → 11; interior driven-over 4 → 15.
+
+Neither repaired the edge class. So the class is not just "no lean at arrival": a forward offset committed into a
+contact does not stop the follow-through drive from taking him over.
+
+Next, a re-diagnosis rather than a third design. Compare matched edge contacts that stay up with those that fall:
+same closing speed and masses, everything else as observed. Measure where the two diverge (his posture and base at
+arrival, his foot placement or step timing, the hit's height and angle on him, the blocker's follow-through, his
+request after the hit), to find what the standing rushers have that the fallers lack.
+
+### RUSH_LEAN_BOUND's yards per dropback (Integration, 2026-11-14)
+
+The decomposition (lb 16-game arms, s11 / s23, off → on):
+- deflections within 2.5 yd of the line: 38 → 48 and 44 → 50;
+- interceptions: 22 → 24 and 17 → 23;
+- time to throw, throw rate and completion: unchanged (2.65 / 2.55 s; 93-95%; 66-68%);
+- completed air and yards after the catch: they move on different seeds (air 5.49 → 4.99 on s11; YAC 6.83 → 5.81 on
+  s23).
+
+The consistent mechanism is the rusher who stays up: he stays in the lane and bats more balls at the line, about +16
+over 2,830 throws. That is worth about 0.05 yd per dropback. The rest of the -0.37 / -0.68 is inside the noise
+(per-play SD about 10 yd, so the SE of a 16-game difference is about 0.38; the two seeds together are about 2 SE) and
+splits by seed between air and YAC. Paired plays are not available: games diverge after the first changed play.
+
+### The matched edge comparison (stay up vs fall)
+
+The stance/base proposal (docs/reviews/2026-11-14-stance-base-proposal.md, section 2) has the table. In short, the
+fallers are hit more side-on (19-27 deg off their facing, against 13-14) while going around the man, and the blocker
+drives through. That is a base-and-recovery question: the isotropic base and recovery step treat an angled hit like a
+square one.
