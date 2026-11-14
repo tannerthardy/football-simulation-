@@ -11,6 +11,8 @@ Toward each candidate, the component of that velocity along the unit vector from
           laterally ("the deepest route in his zone"); and with it his velocity along that receiver's own velocity
           (carrying it), the gap between their downfield speeds, and how much deeper the route is than he is (negative:
           he is deeper)
+facing: his body orientation against the bearing to the QB at R-5 and at the release (share within 30 / 90 deg at the
+  release): is he looking at the passer during the drop.
 best: among the three directions, the one his velocity is most aligned with (speed > 1 yd/s; 'none' when even that one is
   more than 60 deg off his velocity, e.g. a deep defender bailing away from all three), as shares.
 Rows by family (Cover-2 / Cover-3 / Quarters / Cover-6, from pff_passCoverage or the sim id) and seat, plus D1
@@ -71,16 +73,27 @@ def rows_of(path):
         cand = {k: c / sp for k, c in (('target', cT), ('eyes', cE), ('route', cR)) if c is not None}
         best = max(cand, key=cand.get) if cand else None
         if best is not None and cand[best] < 0.5: best = 'none'
-      out.append(dict(F=F, seat=seat, d1=j == d1, sp=sp, bail=v[0], lat=abs(v[1]), T=cT, E=cE, Rt=cR, carry=carry,
+      # Facing during the drop: his body orientation (BDB 'o'; the sim's body facing, its eyes when HEAD is off) against
+      # the bearing to the QB, at R-5 and at the release; the head where a record carries one is not used (NFL has none).
+      def off_qb(f):
+        fo = p.get('fo'); qq = at(f, p['qb']); me = at(f, j)
+        if not fo or f >= len(fo) or fo[f][j] is None or qq is None or me is None: return None
+        b = math.atan2(qq[1] - me[1], qq[0] - me[0]); return abs(math.degrees((fo[f][j] - b + math.pi) % (2 * math.pi) - math.pi))
+      fq0, fq1 = off_qb(R - W), off_qb(R)
+      out.append(dict(F=F, seat=seat, fq0=fq0, fq1=fq1, d1=j == d1, sp=sp, bail=v[0], lat=abs(v[1]), T=cT, E=cE, Rt=cR, carry=carry,
                       dgap=None if rv is None else rv[0] - v[0], best=best, depth=a1[0], rdepth=None if rp is None else rp[0] - a0[0]))
   return out
 def med(R, k):
   v = [r[k] for r in R if r[k] is not None]
   return f'{st.median(v):5.1f}' if v else '    -'
+def fsh(R, lim):
+  v = [r['fq1'] for r in R if r['fq1'] is not None]
+  return f'{sum(1 for x in v if x <= lim) / len(v):.2f}' if v else '-'
 def line(nm, R):
   B = [r for r in R if r['best']]
   sh = lambda k: f'{sum(1 for r in B if r["best"] == k) / len(B):.2f}' if B else '-'
   return (f'  {nm:<22} n {len(R):5d} | speed {med(R, "sp")} bail {med(R, "bail")} lateral {med(R, "lat")} | toward target {med(R, "T")} eyes {med(R, "E")} route {med(R, "Rt")}'
+          f' | facing off the QB at -0.5 s {med(R, "fq0")} at release {med(R, "fq1")} deg (within 30 {fsh(R, 30)}, 90 {fsh(R, 90)})'
           f' | carry route {med(R, "carry")} route-minus-him downfield {med(R, "dgap")} (route {med(R, "rdepth")} yd deeper) | best: target {sh("target")} eyes {sh("eyes")} route {sh("route")} none {sh("none")}')
 for arg in sys.argv[1:]:
   name, path = arg.split('=', 1); R = rows_of(path)
