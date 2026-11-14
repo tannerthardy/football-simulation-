@@ -36,7 +36,7 @@
 import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
-import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
+import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity, shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 import { availability, baseRadiusAt, criticalDeviation, omega0, recoverySpeed, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
@@ -624,8 +624,8 @@ const siteState = new WeakMap<HandJoint, { len: number }>();
 const smooth01 = (x: number) => { const u = clamp(x, 0, 1); return u * u * (3 - 2 * u); };
 /** The hand's place on the man, by bearing: 1 on the holder's chest frame, 0 abreast or behind. */
 function siteWeight(holder: Agent, man: Agent): number {
-  const beta = Math.abs(Math.atan2(Math.sin(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing),
-    Math.cos(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - holder.body.facing)));
+  const beta = Math.abs(Math.atan2(Math.sin(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - chestOf(holder)),
+    Math.cos(Math.atan2(man.pos.y - holder.pos.y, man.pos.x - holder.pos.x) - chestOf(holder))));
   return 1 - smooth01((beta - SITE_FRONT) / (SITE_ABREAST - SITE_FRONT));
 }
 /** The press a hand can put on the man at his own bearing gamma (the holder's direction off his facing). */
@@ -1643,6 +1643,22 @@ export const REP_SEEN = process.env.REP_SEEN !== '0';
  * Physics (joint and strike geometry, the World's contact and reach) and the rep's outcome geometry (past and out of
  * reach, behind his shoulders, the body no longer in the way) stay on the true bodies. */
 export const ENGAGE_FELT = process.env.ENGAGE_FELT === '1';
+/** ENGAGE_TRUNK (experimental, off; ENGAGE_TRUNK=1, needs TRUNK_TWIST=1 and ENGAGE_FELT=1; the yaw note's step 1,
+ * docs/reviews/2026-11-14-pair-contact-design.md): an engaged man's hips and shoulders are two requests. The hips are his
+ * set and ride, square to what he protects (a pass setter: the direction from the called launch point through him; a
+ * run blocker: his track, REACH_RACE's open hips as before; a gap-holding run defender: square to the line of
+ * scrimmage); the shoulders (`look`, TRUNK_TWIST's trunk within its range) are on the man as he has him (ENGAGE_FELT).
+ * His chest then trails a man who moves by the picture's delay and each segment's own bound (the yaw motor for the
+ * hips, TRUNK_RATE for the trunk), with no blend constant. Readers that compare his front with the line to the man read
+ * the shoulders: the hand site's bearing, the pass rep's ride retention, the run block's lost-behind-the-shoulders test
+ * and the run hands' sides. Off, each engaged man asks for one facing, at the man (the NFL tackle's facing follows the
+ * set frame 0.27 and the rusher 0.61, ours 0.01 / 0.80: engaged-yaw.py). The coaching: inside-out, half a man, punch the
+ * inside half; the run block's play-side number; the gap defender's stab and grab (sources in the note). */
+export const ENGAGE_TRUNK = process.env.ENGAGE_TRUNK === '1';
+if (ENGAGE_TRUNK && !(TRUNK_TWIST && ENGAGE_FELT)) throw new Error('ENGAGE_TRUNK=1 requires TRUNK_TWIST=1 and ENGAGE_FELT=1');
+/** Where a man's chest points for the readers that mean it (ENGAGE_TRUNK: the shoulders; off: the facing, as before). */
+const chestOf = (a: Agent): number => ENGAGE_TRUNK ? shouldersOf(a.body) : a.body.facing;
+const bearing = (from: Vec2, to: Vec2): number => Math.atan2(to.y - from.y, to.x - from.x);
 type Felt = { pos: Vec2; vel: Vec2 };
 /** Diagnostic hook (no behaviour): each feltMan call, with whether he had the man by touch. */
 export const feltProbe: { on?: (self: Agent, man: Agent, touch: boolean, t: number, delay?: number) => void } = {};
@@ -1928,7 +1944,7 @@ function canRidePassContact(e: Engagement, t: number): boolean {
   if (t < e.moveUntil && e.moveOk && e.move !== 'bull' && e.move !== 'longarm') return false;
   const dx = d.pos.x - b.pos.x, dy = d.pos.y - b.pos.y;
   return dy * outside > 0 && Math.hypot(dx, dy) <= hands.extension
-    && dx * Math.cos(b.body.facing) + dy * Math.sin(b.body.facing) >= 0;
+    && dx * Math.cos(chestOf(b)) + dy * Math.sin(chestOf(b)) >= 0;
 }
 
 function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
@@ -2153,6 +2169,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
   if (TACKLE_RESET && TACKLE_BRAKE && floor !== null && !riding) baseReset(sim, e, intents[b.idx]);
+  // ENGAGE_TRUNK: his hips square to what he protects, from where he is; his shoulders on the man as he has him.
+  if (ENGAGE_TRUNK) intents[b.idx] = { ...intents[b.idx], facing: bearing(protectPoint(sim), b.pos), look: bearing(b.pos, dK.pos) };
   if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
   e.lastReqX = intents[b.idx].vel.x;
   if (PASS_RIDE) e.riding = riding;
@@ -2166,6 +2184,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     else intents[b.idx] = { vel: { x: dK.vel.x + away.x * RIDE_PUSH, y: dK.vel.y + away.y * RIDE_PUSH },
       facing: Math.atan2(dK.pos.y - b.pos.y, dK.pos.x - b.pos.x), push: 1, growth, posture: 0.6, cutSkill: 0.85 + 0.3 * tb.feet };
     if (ANCHOR_BASE) anchorBase(b, tb, heavy, intents[b.idx]);
+    // ENGAGE_TRUNK: the ride's hips on his path (as asked above); his shoulders on the man.
+    if (ENGAGE_TRUNK) intents[b.idx] = { ...intents[b.idx], look: bearing(b.pos, dK.pos) };
   }
   helperIntents(sim, e, intents, axis);
 }
@@ -2407,7 +2427,7 @@ function runHandDrive(sim: PlaySim, e: Engagement): void {
   if (Math.abs(vt) < 0.5) return;
   // Which side of the blocker's chest the defender is on, and whether his
   // relative motion takes him further to that side.
-  const right = { x: Math.sin(b.facing), y: -Math.cos(b.facing) };
+  const right = { x: Math.sin(chestOf(b)), y: -Math.cos(chestOf(b)) };
   const off = (d.pos.x - b.pos.x) * right.x + (d.pos.y - b.pos.y) * right.y;
   const dTan = other === d ? vt : -vt;
   const moving = dTan * (tx * right.x + ty * right.y);
@@ -2415,7 +2435,7 @@ function runHandDrive(sim: PlaySim, e: Engagement): void {
   // Only a man committed across the blocker: one driving straight through
   // him is fought with the feet and chest, not helped past a shoulder.
   // His own motion decides it, not the blocker's step.
-  const along = d.vel.x * Math.cos(b.facing) + d.vel.y * Math.sin(b.facing);
+  const along = d.vel.x * Math.cos(chestOf(b)) + d.vel.y * Math.sin(chestOf(b));
   if (Math.abs(along) > Math.abs(d.vel.x * right.x + d.vel.y * right.y)) return;
   j.drive = Math.sign(vt) * Math.min(3, Math.abs(vt) + 1);
 }
@@ -2571,7 +2591,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // He can still bring his chest back to the man within this step, at his
   // own turn rate; only an angle beyond that is a lost block.
   const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
-  const off = Math.abs(Math.atan2(Math.sin(toD - b.facing), Math.cos(toD - b.facing)));
+  const off = Math.abs(Math.atan2(Math.sin(toD - chestOf(b)), Math.cos(toD - chestOf(b))));
   const behind = LEVER_FACING ? Math.max(0, off - b.profile.turnRate * dt) / (Math.PI / 2) : Math.abs(e.phi);
   runContactObservers.get(sim)?.(e, 'geometry', { axis, lat, drive: e.drive, phi: e.phi,
     off, behind, support: b.body.support, facing: b.facing, toD, baseB: e.baseB, baseD: e.baseD });
@@ -2838,6 +2858,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
   };
+  // ENGAGE_TRUNK: his hips on his track (opened toward the play in the race), his shoulders on the man.
+  if (ENGAGE_TRUNK) {
+    const track = Math.atan2(drive.y, drive.x);
+    intents[b.idx].facing = racingSide ? openToward(track, racingSide, REACH_RACE_OPEN) : track;
+    intents[b.idx].look = bearing(b.pos, dK.pos);
+  }
   runContactObservers.get(sim)?.(e, 'movement', { axis, lat, drive, stretch, forward,
     // `forward` is retained for older diagnostic readers. Component-mode
     // normal work is the emitted command, not that legacy drive projection.
@@ -3053,10 +3079,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     vel: workOff ?? cf ?? (read.stack ? { x: zoneRun ? -sim.attackDir(b.team) * (RACE_LEAN ? FLAT_PRESS_STEP : 1.5) : depth, y: lateralFlow } : legacy),
     // Running the line he opens his hips halfway toward it, off square.
     facing: zoneRun && !workOff && !cf ? (() => {
-      const sq = Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
+      // ENGAGE_TRUNK: square is to the line of scrimmage (his hips), not to the blocker.
+      const sq = ENGAGE_TRUNK ? (sim.attackDir(b.team) > 0 ? Math.PI : 0) : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
       const turn = ((run - sq + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
       return sq + Math.sign(turn) * Math.min(Math.abs(turn), ZONE_RUN_OPEN);
-    })() : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x),
+    })() : ENGAGE_TRUNK && read.stack && !workOff && !cf ? (sim.attackDir(b.team) > 0 ? Math.PI : 0) : Math.atan2(bK.pos.y - d.pos.y, bK.pos.x - d.pos.x),
+    // ENGAGE_TRUNK: his shoulders on the blocker as he has him.
+    ...(ENGAGE_TRUNK ? { look: bearing(d.pos, bK.pos) } : {}),
     push: 1,
     posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
