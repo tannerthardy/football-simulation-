@@ -99,6 +99,7 @@
     "SIGHT_CARRIER": "0",
     "SIGHT_COVER": "0",
     "SIGHT_RECOG": "0",
+    "HEAD": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
@@ -303,6 +304,9 @@
     "SCREEN_QB": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
+    "OUTLET_LAST": "0",
+    "PLAN_KEYS": "0",
+    "CONCEPT_DROPS": "0",
     "FORECAST_BREAK": "0",
     "FORECAST_HOLD": "0",
     "QB_RHYTHM": "0",
@@ -362,7 +366,8 @@
     "WAIT_REACHED": "0",
     "PURSUIT_SPOT": "0",
     "HONEST_TACKLE": "0",
-    "QB_RELEASE": "0"
+    "QB_RELEASE": "0",
+    "OPEN_FIELD": "0"
   },
   "worldDefaults": {
     "handContact": "center",
