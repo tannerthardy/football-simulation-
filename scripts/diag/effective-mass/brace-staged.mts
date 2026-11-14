@@ -18,7 +18,7 @@ for (const v of [2, 3, 4]) {
 }
 S.push({ name: 'pass-setter in his back-pedal (3 yd/s) taking a bull', bv: { x: -3, y: 0 }, dv: { x: -4.5, y: 0 } });
 S.push({ name: 'pass-setter planted taking the same bull', bv: { x: 0, y: 0 }, dv: { x: -4.5, y: 0 } });
-S.push({ name: 'puller arriving at 4 yd/s on a man holding', bv: { x: 4, y: 0 }, dv: { x: 0, y: 0 }, gap: 0.25 });
+for (const v of [2, 3, 4]) S.push({ name: `puller arriving at ${v} yd/s on a man holding`, bv: { x: v, y: 0 }, dv: { x: 0, y: 0 }, gap: 0.25 });
 S.push({ name: 'held in contact: puller at 4 yd/s, the man driving back', bv: { x: 4, y: 0 }, dv: { x: -1, y: 0 }, gap: 0 });
 S.push({ name: 'held in contact: moving 4 yd/s against the push', bv: { x: 4, y: 0 }, dv: { x: -2, y: 0 }, gap: 0 });
 for (const sc of S) {

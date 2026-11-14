@@ -295,6 +295,7 @@ problem), resolved.
 | [RUN-14](#run-14) | Engaged DL lose the backside shoulder; play-side DL drift away from the play | G2 | medium | open |
 | [RUN-15](#run-15) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
+| [RUN-17](#run-17) | A blocker arriving at 4 yd/s on a man who holds goes off his feet | physics | medium | logged |
 | [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
 | [RUN-18](#run-18) | An engaged edge past his containment bound kept widening on his held flow | G2 | medium | resolved |
 | [RUN-19](#run-19) | Run blockers keep a grip only by the pass-rep frame rule | G2 | medium | open |
@@ -2360,6 +2361,20 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
       three-quarters linemen.
     - Half of draw box backers are nobody's target when the carrier arrives;
       a quarter never were.
+
+<a id="run-17"></a>
+### RUN-17: A blocker arriving at 4 yd/s on a man who holds goes off his feet
+
+- **Measure** (`scripts/diag/effective-mass/brace-staged.mts`, engine-62 defaults, 2026-11-14): two equal bodies from
+  `contactFixture`, the arriving man requesting his speed straight at a man who holds his ground (push 1, posture
+  0.85), over 0.5 s:
+  - from a 0.25 yd gap, at 2 or 3 yd/s he stays up but is stopped dead (1.7 and 2.3 yd short of his request);
+  - at 4 yd/s he is off his feet at 0.20-0.25 s;
+  - started in contact at 4 yd/s, with the man driving back or not, he is off his feet at 0.05 s.
+- The same with BRACE_GAIT on or off: it is the impact and fall model, not the brace.
+- **Why it matters:** a guard meeting a backer at speed usually delivers the blow and stays on his feet. This bites
+  pulls, kickouts, lead blocks and the open-field tackle.
+- **Cause:** not diagnosed. Parked with the run game; reproduce with the staging above.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
