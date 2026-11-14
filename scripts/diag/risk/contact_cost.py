@@ -225,3 +225,48 @@ for nm in ('D1', 'D2'):
             f'{sum(1 for r in R if r["depth"] >= 2) / len(R):.2f}) lateral {med(R, "lat")} yd | toward his own goal {med(R, "back")} yd/s (retreating {sum(1 for r in R if r["back"] > 0.5) / len(R):.2f}) speed {med(R, "spd")}')
     if any('rback' in r for r in R): line += f' | requested toward own goal {med(R, "rback")} speed {med(R, "rspd")}'
     print(line)
+# Part 5, where defenders are when the ball arrives (free plays). Frames start at the release (pass_forward / the
+# sim's release). For D1/D2 (ranked at the catch) at the release, mid-flight and the catch: depth upfield of the
+# catcher's catch point (+ = between it and the goal line) and velocity toward their own goal. For the deep pair (the two
+# defenders deepest upfield of the catch point at the release): depth at the catch, velocity toward own goal at the
+# release / mid / catch / +0.5 s, and the first frame from the release with velocity toward own goal under -1 yd/s
+# (breaking downhill), against the catch. For plays that end with nobody within 1.5 yd ('other'): defenders upfield of
+# the catcher at the catch, and the closest any defender got to the catcher after the catch.
+P5 = {}; OT = []
+for p in plays:
+  F, c, d = p['frames'], p['catch'], p['dir']
+  if c >= len(F) - 2 or len(F[c]['d']) < 3: continue
+  up = lambda i: (F[i]['c'][0] - F[c]['c'][0]) * d
+  yac = up(len(F) - 1)
+  f = next((i for i in range(c + 1, len(F)) if any(dist(x, F[i]['c']) < 1 for x in F[i]['d'])), None)
+  if not (f is None or up(f) > 5 or (yac - up(f)) > 3): continue
+  CP = F[c]['c']
+  order = sorted(range(len(F[c]['d'])), key=lambda k: dist(F[c]['d'][k], CP))
+  mid = c // 2
+  for nm, j in (('D1', order[0]), ('D2', order[1])):
+    for tag, i in (('rel', 0), ('mid', mid), ('catch', c)):
+      if j >= len(F[i]['d']): continue
+      x = F[i]['d'][j]
+      P5.setdefault((nm, tag), []).append({'depth': (x[0] - CP[0]) * d, 'back': x[2] * d})
+  deep = sorted(range(len(F[0]['d'])), key=lambda k: -(F[0]['d'][k][0] - CP[0]) * d)[:2]
+  for j in deep:
+    if j >= len(F[c]['d']): continue
+    row = {'depth': (F[c]['d'][j][0] - CP[0]) * d, 'dist': dist(F[c]['d'][j], CP)}
+    for tag, i in (('rel', 0), ('mid', mid), ('catch', c), ('p5', c + 5)):
+      if i < len(F) and j < len(F[i]['d']): row['b_' + tag] = F[i]['d'][j][2] * d
+    br = next((i for i in range(0, min(len(F), c + 15)) if j < len(F[i]['d']) and F[i]['d'][j][2] * d < -1), None)
+    row['brk'] = None if br is None else (br - c) * 0.1
+    P5.setdefault(('deep', 'x'), []).append(row)
+  L = F[-1]
+  if min(dist(x, L['c']) for x in L['d']) > 1.5 and not (min(L['c'][1], 53.3 - L['c'][1]) < 1.5):
+    OT.append({'upfield': sum(1 for x in F[c]['d'] if (x[0] - CP[0]) * d > 0), 'closest': min(min(dist(x, F[i]['c']) for x in F[i]['d']) for i in range(c + 1, len(F))), 'yac': yac})
+print('part 5, where defenders are when the ball arrives (free plays)')
+for nm in ('D1', 'D2'):
+  print('  ' + nm + ': ' + ' | '.join(f'{tag} depth {med(P5.get((nm, tag), []), "depth")} toward own goal {med(P5.get((nm, tag), []), "back")}' for tag in ('rel', 'mid', 'catch')))
+R = P5.get(('deep', 'x'), [])
+if R:
+  B = [r['brk'] for r in R if r['brk'] is not None]
+  print(f'  deep pair: n {len(R)} depth at the catch {med(R, "depth")} yd (distance {med(R, "dist")}) | toward own goal rel {med(R, "b_rel")} mid {med(R, "b_mid")} catch {med(R, "b_catch")} +0.5 {med(R, "b_p5")} | '
+        f'breaks downhill: before the catch {sum(1 for b in B if b < 0) / len(R):.2f}, within 0.5 s after {sum(1 for b in B if 0 <= b <= 0.5) / len(R):.2f}, later or never {1 - sum(1 for b in B if b <= 0.5) / len(R):.2f}; median break {f"{st.median(B):.1f}" if B else "-"} s from the catch')
+if OT:
+  print(f'  never caught (other): n {len(OT)} defenders upfield of the catcher at the catch {med(OT, "upfield", 0)} | closest any defender got after the catch {med(OT, "closest")} yd (within 1 yd {sum(1 for o in OT if o["closest"] < 1) / len(OT):.2f}) | YAC {med(OT, "yac")}')
