@@ -35,6 +35,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
+import { BALL_EST } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 
@@ -2163,8 +2164,18 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
     }
     return { vel: a.vel };
   }
+  const path = acquireFlight(a, sim);
+  // BALL_EST: until he has an estimate of where it is going he keeps playing what he was playing.
+  if (BALL_EST && !path.length) {
+    if (continueCoverage) return continueCoverage();
+    if (man) {
+      const s = sim.see(a, man), inside = Math.sign(sim.ballY - s.pos.y) || 1;
+      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
+    }
+    return { vel: a.vel };
+  }
   a.tags.add('onBall');
-  return playObservedFlight(a, sim, acquireFlight(a, sim), true);
+  return playObservedFlight(a, sim, path, true);
 }
 
 /** RELEASE_BELIEF: whether he plays the throw now: his belief (sawThrow) instead of the true air state, while the

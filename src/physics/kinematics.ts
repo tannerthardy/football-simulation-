@@ -35,6 +35,9 @@ export interface Body {
   squeezeHeading?: number;
   /** Yaw rate, rad/s (physics world; contact torque can spin a body). */
   spin?: number;
+  /** TRUNK_TWIST: shoulders minus hips, radians, within ±TRUNK_RANGE. `facing` stays the hips (the gait heading the
+   * speed cap, the turn motor and the base read); the shoulders are `facing + trunk`. Absent or 0 = shoulders on the hips. */
+  trunk?: number;
   /** Body-owned balance state (physics/support.ts), created by the world. */
   support?: Support;
 }
@@ -44,6 +47,11 @@ export interface MoveCommand {
   vel: Vec2;
   /** Desired facing; defaults to direction of travel. */
   facing?: number;
+  /** TRUNK_TWIST: where he wants his shoulders to point (absolute heading, radians) while his hips stay on the gait.
+   * The trunk follows it within TRUNK_RANGE of the hips at TRUNK_RATE; undefined lets the trunk return to the hips. A
+   * look at the ball or the QB from a body running another way asks for this; a technique that turns the hips
+   * (coverage open / square / turn-and-run, a blocker's hips) keeps asking for `facing`. */
+  look?: number;
   /** 0–1 fraction of max effort (top speed scaling). */
   effort?: number;
   /** Multiplier on cutting ability from technique (route running, elusiveness). */
@@ -65,6 +73,33 @@ export const FATIGUE_SHAPE = 2.5;
 /** 1 − FATIGUE_MAX_LOSS·deficit^FATIGUE_SHAPE, tabulated: it is evaluated many times per tick. */
 const FATIGUE_STEPS = 4096;
 const FATIGUE = Float64Array.from({ length: FATIGUE_STEPS + 1 }, (_, k) => 1 - FATIGUE_MAX_LOSS * Math.pow(k / FATIGUE_STEPS, FATIGUE_SHAPE));
+
+/** TRUNK_TWIST (experimental, off; TRUNK_TWIST=1; open-run cap, docs/reviews/2026-11-14-open-run-cap.md): the shoulders
+ * twist off the hips within TRUNK_RANGE. T = 55° is a stated choice, not a fit to film: the NFL envelope (BDB 2025
+ * weeks 1-3, flipped player-plays removed) puts the twist at 52-58° for WR at 98-128° of shoulder angle off the path,
+ * and trunk rotation is about 35-45° a side standing, the rest being the pelvis turning a little off the path, which
+ * the hips' lead already allows. Sensitivity 45 / 65 via TRUNK_RANGE_DEG. The rate, 360°/s, is a stated choice of the
+ * order trunk rotation takes in a quick look over the shoulder (several hundred °/s); only transients depend on it. */
+export const TRUNK_TWIST = process.env.TRUNK_TWIST !== '0';
+export const TRUNK_RANGE = (Number(process.env.TRUNK_RANGE_DEG ?? 55) * Math.PI) / 180;
+export const TRUNK_RATE = (Number(process.env.TRUNK_RATE_DEG ?? 360) * Math.PI) / 180;
+
+/** The hips: the gait heading (the speed cap, the turn motor, the base and the anchor read this). */
+export function hipsOf(body: Body): number { return body.facing; }
+/** The shoulders: where his chest points (hand fit, a catch's alignment to the ball, his front in a hit). With no
+ * twist (TRUNK_TWIST off, or nothing asked) these are the hips, bit for bit. */
+export function shouldersOf(body: Body): number { return body.trunk ? body.facing + body.trunk : body.facing; }
+
+/** One controller tick of the trunk: toward the look he asked for within the range, at the rate; back to the hips
+ * when he asks for none. The hips do not move. Called by the World each tick and by stepBody. */
+export function updateTrunk(body: Body, look: number | undefined, dt: number): void {
+  const current = body.trunk ?? 0;
+  if (look === undefined && current === 0) return;
+  const want = look === undefined ? 0 : clamp(angleDiff(body.facing, look), -TRUNK_RANGE, TRUNK_RANGE);
+  const step = TRUNK_RATE * dt;
+  const next = current + clamp(want - current, -step, step);
+  body.trunk = Math.abs(next) < 1e-9 ? 0 : next;
+}
 
 /** Fatigue multiplier on speed/acceleration. */
 export function fatigueFactor(energy: number): number {
@@ -316,6 +351,7 @@ export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: numb
 
 export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   updateSqueeze(body, cmd, dt);
+  if (TRUNK_TWIST) updateTrunk(body, cmd.look, dt);
   // --- facing ---
   const turnRate = turnRateOf(body);
   const df = angleDiff(body.facing, commandFacing(body, cmd));

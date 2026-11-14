@@ -18,7 +18,7 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { releaseEvidence } from './release-evidence.js';
 
-export const RELEASE_BELIEF = process.env.RELEASE_BELIEF === '1';
+export const RELEASE_BELIEF = process.env.RELEASE_BELIEF !== '0';
 
 export interface ReleaseBelief {
   /** When the throwing motion he saw began (sample time), while it stands. */
