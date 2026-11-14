@@ -18,6 +18,8 @@ import { ROUTES } from '../routes.js';
 /** CROSS_OVER (routes.ts): the over climbs across on a diagonal without a sharp cut, so it declares as the comment
  * below says a crosser does (5 yd from his start, the line crossed), not as a vertical at 12 yd. Off, unchanged. */
 const CROSS_OVER = process.env.CROSS_OVER === '1';
+/** ROUTE_FILLET (src/sim/route-motion.ts): read here only for the crosser's declare. */
+const ROUTE_FILLET_ON = process.env.ROUTE_FILLET === '1';
 /** SCREEN_DECLARE (experimental, off): a screen's receiver has shown his answer when he turns back to the catch point
  * (the break), not when he has moved 5 yd past the line, which a screen behind the line may never do in the horizon. Off,
  * the tunnel's S1 window came from the fallback (no `moved`, so break + 0.1 = 1.3 s), and running him 0.1 yd/s faster
@@ -117,7 +119,8 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     // A stem that is mostly lateral (a flat, a swing, an angle's first step) declares by moving, not by a break.
     const p10 = P[Math.min(P.length - 1, 10)];
     const lateralStem = Math.abs(p10.y - start.y) > Math.abs(p10.x - start.x);
-    const crosser = CROSS_OVER && !!id && ROUTES[id]?.family === 'cross';
+    // ROUTE_FILLET leads a crosser's bends, so a rolled cross shows no 30 deg turn either: it declares the same way.
+    const crosser = (CROSS_OVER || ROUTE_FILLET_ON) && !!id && ROUTES[id]?.family === 'cross';
     const screenTurn = SCREEN_DECLARE && concept.family === 'screen' && breakT !== null;
     const declared = screenTurn ? breakT! + 0.1
       : (lateralStem || (crosser && breakT === null)) && moved !== null ? moved + 0.2
