@@ -52,3 +52,34 @@ Recommendation: (a). (b) is correct as an envelope but says nothing about why, a
 7. Before anything is built: a consumer map of the 185 `.facing` readers by meaning (hips / shoulders / gaze), so no reader changes meaning silently.
 
 Staging after the map: lone-body table (analytic here, then the real `locomotionAccel`), staged pairs (WR against a trailing DB, deep go with a look-back), then games. Not run: the sim-side rows (Coverage), the pairs, games.
+
+## 6. Lone-body table for (a) (Stage 1 read, step 1)
+
+`scripts/diag/open-run/trunk-bench.ts`: the real `stepBody` (locomotionAccel plus the traction clamp), energy 0.85, a full-speed request along the path from 6 yd/s held 5 s, with the hips set to `max(0, shoulder angle - T)`. NFL band: p95 and p99 of speed by shoulder-angle bin, BDB 2025 weeks 1-3 with flipped player-plays removed (`out/open-run/nfl-band.json`). "Within the band" = within 0.5 yd/s of [p95, p99].
+
+WR, speed (yd/s) by shoulder angle off the path:
+
+| Angle | NFL p95 / p99 | Current | T 45 | T 55 | T 65 |
+|---|---|---|---|---|---|
+| 83° | 8.0 / 9.0 | 5.9 | 8.9 | 9.2 | 9.5 |
+| 98° | 7.2 / 8.4 | 5.2 | 8.2 | 8.7 | 9.1 (out) |
+| 113° | 6.5 / 7.9 | 5.2 | 7.2 | 7.9 | 8.4 (out) |
+| 128° | 5.9 / 7.3 | 5.2 | 5.9 | 6.8 | 7.5 |
+| 143° | 5.4 / 7.0 | 5.2 | 5.2 | 5.4 | 6.4 |
+| 158-173° | 4.7-4.9 / 6.3-6.8 | 5.1 | 5.2 | 5.2 | 5.2 |
+
+The sim's top speed is above the NFL's in these frames (forward cap 9.6 against an NFL forward p95 of 8.1), so the band test is generous. Comparing ratios to the forward run removes that: RMS error of cap(theta)/cap(forward) against the NFL p95 ratio over 90-135°:
+
+| Group | Current | T 45 | T 55 | T 65 |
+|---|---|---|---|---|
+| WR | 0.275 | 0.076 | **0.017** | 0.063 |
+| TE | 0.285 | 0.087 | **0.025** | 0.059 |
+| RB | 0.358 | 0.158 | 0.083 | **0.021** |
+| CB | **0.024** | 0.186 | 0.240 | 0.286 |
+| S | **0.034** | 0.159 | 0.213 | 0.259 |
+
+T = 55° is the minimum for WR and TE, with error rising to 0.06-0.08 at 45 and 65 (the sensitivity read). RBs fit a larger twist (65-70°). CB and S are best with no twist, and they ask for none in Stage 1 (their hips techniques are unchanged), so the cap on a DB stays what it is. In absolute speed the sim's receivers still run 0.2-1 yd/s above the NFL p95 at 98-113° (the sim's top speed is higher than the NFL's in-play top speed; that is a separate calibration, not the twist).
+
+Rate: 360°/s, a stated choice. Only transients depend on it (a 55° look takes 0.15 s); the table does not.
+
+Neck on top: `GAZE_NECK` on develop is ±90° of the facing, now of the shoulders, so with T 55 the head reaches 145° off the hips. Coverage's HEAD narrowing at speed (90 to 45°, #720) gives 55 + 45 = 100° off the path for a receiver whose hips run straight; a look directly behind him (180°) needs the hips to turn about 80°, which the cap prices. That is about what a receiver looking over his shoulder at speed does (shoulders 100-130° off the path at p95).

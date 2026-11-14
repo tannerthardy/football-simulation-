@@ -44,14 +44,20 @@ for (const [grp, pos] of [['WR', 'WR'], ['TE', 'TE'], ['RB', 'RB'], ['CB', 'CB']
   lines.push(`\n${grp}: sim vmax ${profile.vmax.toFixed(2)}, shuffle ${profile.shuffle.toFixed(2)}, backpedal ${profile.backpedal.toFixed(2)} (energy ${ENERGY})`);
   lines.push('theta | NFL p95 / p99 | current | T45 | T55 | T65   (* = within 0.5 yd/s of the NFL band)');
   const table: unknown[] = [];
+  const fwdCap = holdSpeed(profile, 0), nfl0 = rows.find((r) => r.theta < 20)?.fwd95 ?? rows[0].fwd95;
+  const sq: Record<string, number[]> = { cur: [], 45: [], 55: [], 65: [] };
   for (const r of rows) {
     if (r.theta < 60) continue;
     const cur = holdSpeed(profile, r.theta);
     const tw = TS.map((T) => holdSpeed(profile, Math.max(0, r.theta - T)));
     const inBand = (v: number) => (v >= r.p95 - 0.5 && v <= r.p99 + 0.5 ? '*' : ' ');
     lines.push(`${r.theta.toFixed(0).padStart(4)} | ${r.p95.toFixed(1)} / ${r.p99.toFixed(1)} | ${cur.toFixed(1)}${inBand(cur)} | ${tw.map((v) => v.toFixed(1) + inBand(v)).join(' | ')}`);
+    // Ratios to the forward run remove the sim-vs-NFL top-speed calibration: NFL p95(theta) / p95(forward) against cap(theta) / cap(forward).
+    if (r.theta >= 90 && r.theta <= 135) { const t = r.p95 / nfl0; sq.cur.push(cur / fwdCap - t); TS.forEach((T, i) => sq[T].push(tw[i] / fwdCap - t)); }
     table.push({ theta: r.theta, p95: r.p95, p99: r.p99, current: cur, twist: Object.fromEntries(TS.map((T, i) => [T, tw[i]])) });
   }
+  const rms = (a: number[]) => Math.sqrt(a.reduce((x, y) => x + y * y, 0) / Math.max(1, a.length));
+  lines.push(`ratio-to-forward error vs NFL p95 over 90-135 deg (RMS): current ${rms(sq.cur).toFixed(3)} | T45 ${rms(sq[45]).toFixed(3)} | T55 ${rms(sq[55]).toFixed(3)} | T65 ${rms(sq[65]).toFixed(3)}   [forward cap ${fwdCap.toFixed(1)}, NFL forward p95 ${nfl0.toFixed(1)}]`);
   out[grp] = { vmax: profile.vmax, shuffle: profile.shuffle, backpedal: profile.backpedal, table };
 }
 writeFileSync('out/open-run/trunk-bench.json', JSON.stringify(out, null, 1));
