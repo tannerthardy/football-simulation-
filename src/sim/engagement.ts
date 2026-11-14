@@ -1202,7 +1202,9 @@ export const RUSH_BULL = process.env.RUSH_BULL === '1';
  * force on a hand does nothing, and attempt 1, the body alone, lost sheds: 210 -> 202). Read with RUSH_ONE_HAND (a
  * cleared hand opens the side it guarded): RUSH_HANDS + RUSH_ONE_HAND, 8 games: sheds 228 -> 283, the rip clears a
  * hand 16% of the time. */
-export const RUSH_RIP = RUSH_HANDS && process.env.RUSH_RIP === '1';
+export const RUSH_RIP = process.env.RUSH_RIP === '1';
+// A rip without the World's hand model is a silent no-op (a force on a hand does nothing): refuse it.
+if (RUSH_RIP && !RUSH_HANDS) throw new Error('RUSH_RIP=1 requires RUSH_HANDS=1 (the World hand model the rip acts through)');
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
   const sup = d.body.support; if (!sup) return;
   const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
