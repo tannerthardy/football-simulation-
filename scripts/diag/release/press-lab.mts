@@ -2,6 +2,7 @@
 // scripts/diag/release/press-release.py measures them with the same code as NFL tracking. Our league games almost
 // never press (9 pressed outside receivers in 32 games), so the sim side comes from here.
 //   npx tsx scripts/diag/release/press-lab.mts --cov cover1,cover3_mable --seeds 12 [--solo] --out out/release/lab.jsonl.gz
+// --plays form:concept,... replaces the default press plays (e.g. crossers vs man).
 // --solo calls both corners' technique 'solo' (CORNER_SIDE cornerTech; the SOLO_JAM fixture's call), where supported.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -20,7 +21,8 @@ const OUT = arg('--out', 'out/release/lab.jsonl.gz');
 const GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL', EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' };
 const offense = generateTeam(new Rng(41), 'O', 'O', { strength: .55 }), defense = generateTeam(new Rng(42), 'D', 'D', { strength: .55 });
 const lines: string[] = []; const r2 = (v: number) => Math.round(v * 100) / 100;
-for (const cov of covs) for (const [form, conc] of [['gun_trips_11', 'four_verts'], ['gun_doubles_11', 'four_verts'], ['gun_doubles_11', 'comebacks']])
+const PLAYS = process.argv.includes('--plays') ? arg('--plays', '').split(',').map((s) => s.split(':')) : [['gun_trips_11', 'four_verts'], ['gun_doubles_11', 'four_verts'], ['gun_doubles_11', 'comebacks']];
+for (const cov of covs) for (const [form, conc] of PLAYS)
   for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
     const formation = FORMATION_BY_ID[form], c = PASS_BY_ID[conc];
     if (!formation || !c || !COVERAGE_BY_ID[cov]) continue;
@@ -41,7 +43,8 @@ for (const cov of covs) for (const [form, conc] of [['gun_trips_11', 'four_verts
       if (ev.pass_forward === undefined && sim.ball.kind === 'air') ev.pass_forward = r2(sim.t); };
     const res = sim.run(); ev.end = r2(sim.t);
     lines.push(JSON.stringify({ id: `${cov}${solo ? '-solo' : ''}-${form}-${conc}-s${seed}${flip ? 'f' : ''}`, source: 'sim', kind: 'pass', yards: res.yards,
-      players: sim.agents.map((a: any, i: number) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER', slot: a.slot, route: routes[i] })),
+      players: sim.agents.map((a: any, i: number) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER', slot: a.slot, route: routes[i],
+        man: sim.defAlign.spots[a.slot]?.manTarget })),
       dt: 0.1, xy, ball_y: r2(sim.ballY), events: ev, cell: { concept: conc, coverage: cov } }));
   }
 mkdirSync(dirname(OUT), { recursive: true });

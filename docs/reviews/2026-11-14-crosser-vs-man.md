@@ -140,3 +140,73 @@ against the NFL's about 31%. So item 4 is dropped, and crossers are split by the
     depth sooner.
 - **Traffic (item 1) is not the departure.** Its effect relative to clean routes matches: shallow +0.83 vs NFL +0.82.
   The closing is on clean routes: shallow −1.45 vs −0.03 yd over 0.8 s at 1.5 s.
+
+## Deep cross, man side: why the trail man is 0.8 yd off (engine-64, staged; Integration follow-up)
+
+Population: our league deep crosses vs man are few (n 18), so staged Cover 1 reps: `press-lab.mts --plays`
+gun_doubles y_cross / hitch_cross / post_cross, gun_trips y_cross, 25 seeds × flip (200 dropbacks, 102 deep
+crosses), under `npm run ref`. The exporter now records each defender's assigned man: the nearest-shadow rule
+picks the assigned man on 244/250 crossers, so the operator measures the right pair.
+
+| deep cross vs man (p50) | NFL (382) | ours | ours, CUSHION_NEED=0 (diagnostic arm) |
+|---|---|---|---|
+| separation at 1.0 / 2.0 s | 1.46 at 2.0 s | 3.59 / 0.80 | 3.54 / 1.55 |
+| receiver speed at 1 / 2 s | 4.47 / 7.11 | 4.03 / 4.95 | 4.03 / 5.59 |
+| depth at 2 s | 6.2 | 5.0 | 5.7 |
+
+**Alignment ruled out.** Splitting by where the man started (ahead along the crosser's travel, deeper): NFL men who
+start as far ahead and as deep as ours (both 3.5 yd or more, n 138) have *more* separation at 2.0 s, 2.00 yd. Ours
+from the same start have 0.72 (n 79); from a closer start, NFL 1.22 vs ours 1.00. The gap opens after the snap.
+
+**First divergence: the man comes downhill onto the crosser's line.** NFL vs ours in that matched start group:
+
+- His speed at 1.0 s is 2.06 yd/s vs ours 0.71.
+- His speed along the crosser's travel at 1.5 s is 2.61 vs ours 1.41.
+- He is 1.0 yd ahead of the crosser at 1.5 s, vs ours 2.0.
+
+Per-tick trace (`deep-cross-probe.mts`, y_cross, 29 reps):
+
+- The man's depth over the crosser goes from 3.1 to 0.6 yd between 0.75 and 2.0 s, while he is still ahead on the
+  crosser's line.
+- A body is in the crosser's path on 97–100% of ticks from 1.5 s, and that body is his man.
+- Route-craft bends the crosser underneath (the correct side; never over him), but he decelerates. He requests
+  7.4–7.6 yd/s and achieves 4.7–5.4 from 1.5 s.
+- The NFL crosser keeps accelerating (6.4 → 7.2 yd/s) with his man 1.0 yd ahead at 1.5 s.
+
+**Mechanism.** CUSHION_NEED (on since engine-27, `defense.ts` 927) cuts the off-man cushion to the receiver's
+observed *vertical* threat once the release is seen: 1.8 yd plus closing over his flip time plus the upfield burst.
+A deep crosser threatens along his travel, toward the man sitting inside him. Early in the route the crosser's
+upfield speed is low (ours 0.7 yd deep and 3.8 yd/s at 1.0 s), so the computed need is small. The man then closes
+the "excess" cushion down onto the crosser's line, ahead of him. The crosser runs into him, bends under him, slows,
+and the man is level at 0.6–0.8 yd. With the trim off (diagnostic only), the matched-start group goes to 1.68 yd
+(NFL 2.00), all deep crosses to 1.55 (NFL 1.46), and the man's speed at 1.0 s to 2.06 (NFL 2.06).
+
+**Opening his hips at the release does not help** (probe arm HIPS_EARLY, not an engine flag): 0.75 yd at 2.0 s.
+The open-hip target is the receiver's seen position plus leverage, so he still heads for the crosser's line.
+
+**Not a recommendation to turn CUSHION_NEED off.** Its own witness, a back or tight end releasing short under a
+linebacker who should squeeze him, is real football. The proposed repair is Coverage's, in `defense.ts`:
+
+- The threat the cushion protects against is the receiver's observed velocity along his travel, toward where the
+  defender is, not only his upfield component.
+- When the receiver's line runs at or past the defender's leverage spot, the defender keeps the cushion.
+
+Controls for that change:
+
+- CUSHION_NEED's original witness: Cover 1 linebackers over a short-releasing back keep moving at him (5.1 yd/s
+  NFL).
+- The shallow-cross class: unchanged by construction or measured.
+
+**Receiver-side residue (my lane, not built).** Even with the trim off, our deep crosser is 5.6 yd/s at 2.0 s vs
+7.1. Contributors seen here:
+
+- The get-off: 4.03 vs 4.47 at 1.0 s, LINE_START.
+- The bend's speed cost: request vs achieved with route-craft active.
+
+Rules' CROSS_OVER (deep-cross release, attempt 1) is not on develop; re-read once it is.
+
+Commands: `node scripts/ref.mjs -- npx tsx scripts/diag/release/press-lab.mts --cov cover1 --seeds 25 --plays
+gun_doubles_11:y_cross,gun_doubles_11:hitch_cross,gun_doubles_11:post_cross,gun_trips_11:y_cross --out
+out/cross/c1cross.jsonl.gz` (add `--flag CUSHION_NEED=0` for the arm); `python3 -I
+scripts/diag/crosser/crosser-man.py --data <bdb2025> --class deep nfl=... lab=...`; `node scripts/ref.mjs -- npx tsx
+scripts/diag/crosser/deep-cross-probe.mts y_cross 15`.

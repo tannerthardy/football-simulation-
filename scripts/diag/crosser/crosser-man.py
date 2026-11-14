@@ -15,6 +15,8 @@ For each CROSS route on a non-designed dropback in man coverage, while the ball 
   of routes with such a moment; the shadow's speed and the separation change from 0.3 s before to 0.5 s after the
   first such moment, against the same change at the same time on routes with no traffic.
 
+  --assigned (sim labs that export each defender's man): use his assigned man as the shadow; the run always
+  reports how often the nearest-shadow rule picked the assigned man.
   --class shallow|mid|deep keeps crossers by their peak depth past the line while the ball is held (to 3.0 s):
   shallow under 6 yd, deep 8 yd or more (Rules + Coaching: compare like with like).
   python3 -I crosser-man.py --data <bdb2025 dir> [--list N] [--class C] name=a.jsonl.gz,...
@@ -24,6 +26,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 from metrics import Play
 args = sys.argv[1:]; i = args.index('--data'); D = args[i + 1]; del args[i:i + 2]
 LIST = 0
+ASSIGNED = '--assigned' in args
+if ASSIGNED: args.remove('--assigned')
 CLASS = None
 if '--class' in args:
     i = args.index('--class'); CLASS = args[i + 1]; del args[i:i + 2]
@@ -73,6 +77,10 @@ for arg in args:
                 cover = [d for d in Dd if p.players[d]['group'] in ('DB', 'LB')]
                 if not cover: continue
                 sh = min(cover, key=md)
+                mine = [d for d in Dd if p.players[d].get('man') is not None and p.players[d].get('man') == pl.get('slot')]
+                if mine:
+                    C['assigned_known'] += 1; C['shadow_is_man'] += sh == mine[0]
+                    if ASSIGNED: sh = mine[0]
                 if not math.isfinite(md(sh)) or md(sh) > 6: continue
                 peak = max((p.pos(j, k)[0] for k in range(0, kend + 1) if p.pos(j, k)[0] is not None), default=0)
                 cls = 'shallow' if peak < 6 else 'deep' if peak >= 8 else 'mid'
@@ -94,6 +102,22 @@ for arg in args:
                     L = math.hypot(*vr) or 1; ux, uy = vr[0] / L, vr[1] / L
                     (rx, ry), (dx, dy) = p.pos(j, k), p.pos(sh, k)
                     S[f'behind{t}'].append(-((dx - rx) * ux + (dy - ry) * uy)); S[f'over{t}'].append(dx - rx)
+                # Alignment split: separation at 2.0 s by where the shadow started (ahead along travel, deeper).
+                k2 = p.k(2.0)
+                if k2 <= kend and S['behind0.0'] and len(S['behind0.0']) == C['routes']:
+                    ah, ov = -S['behind0.0'][-1], S['over0.0'][-1]
+                    b = ('ahead<3.5' if ah < 3.5 else 'ahead>=3.5') + ' ' + ('over<3.5' if ov < 3.5 else 'over>=3.5')
+                    S[('al', b)].append(p.dist(j, sh, k2))
+                    if b == 'ahead>=3.5 over>=3.5':
+                        for t in (0.5, 1.0, 1.5, 2.0):
+                            k = p.k(t); vd, vr = vel(p, sh, k), vel(p, j, k)
+                            if vd is None or vr is None: continue
+                            L = math.hypot(*vr) or 1; ux, uy = vr[0] / L, vr[1] / L
+                            (rx, ry), (dx, dy) = p.pos(j, k), p.pos(sh, k)
+                            S[('dg', 'shadow speed', t)].append(math.hypot(*vd)); S[('dg', 'receiver speed', t)].append(math.hypot(*vr))
+                            S[('dg', 'ahead', t)].append((dx - rx) * ux + (dy - ry) * uy); S[('dg', 'over', t)].append(dx - rx)
+                            S[('dg', 'shadow depth vel', t)].append(vd[0])
+                            S[('dg', 'shadow vel along his travel', t)].append(vd[0] * ux + vd[1] * uy)
                 # Traffic: a third body within 1.0 yd of the shadow.
                 kt = next((k for k in range(p.k(0.5), kend + 1)
                            if any(o not in (j, sh) and p.dist(o, sh, k) <= 1.0 for o in allp)), None)
@@ -108,6 +132,10 @@ for arg in args:
                     if len(ex[key]) < LIST: ex[key].append(f"{raw['id']} rec {j} shadow {sh} t {k0 * p.dt:.1f} sep {p.dist(j, sh, ka):.1f}->{p.dist(j, sh, kb):.1f}")
     r = max(1, C['routes'])
     print(f"== {name} [{CLASS or 'all'}]: CROSS routes vs man {C['routes']} (shadow within 6 yd); with traffic {100 * C['traffic'] / r:.0f}%")
+    print('   sep at 2.0 s by shadow start: ' + '; '.join(f"{k[1]} {q(v)} (n {len(v)})" for k, v in sorted((k, v) for k, v in S.items() if isinstance(k, tuple) and k[0] == 'al')))
+    for lab in ('shadow speed', 'receiver speed', 'ahead', 'over', 'shadow depth vel', 'shadow vel along his travel'):
+        print(f"     deep-wide start, {lab} 0.5/1/1.5/2 s: " + ' | '.join(q(S[('dg', lab, t)]) for t in (0.5, 1.0, 1.5, 2.0)))
+    if C['assigned_known']: print(f"   nearest shadow is his assigned man on {C['shadow_is_man']}/{C['assigned_known']}")
     print(f"   (4) route: depth 1/2/3 s {q(S['depth1.0'])} | {q(S['depth2.0'])} | {q(S['depth3.0'])}; speed {q(S['rspeed1.0'])} | {q(S['rspeed2.0'])} | {q(S['rspeed3.0'])}; crossing speed {q(S['rlat1.0'])} | {q(S['rlat2.0'])} | {q(S['rlat3.0'])}")
     print(f"   (3) shadow speed {q(S['dspeed1.0'])} | {q(S['dspeed2.0'])} | {q(S['dspeed3.0'])}; receiver minus shadow {q(S['dv1.0'])} | {q(S['dv2.0'])} | {q(S['dv3.0'])}; sep {q(S['sep1.0'])} | {q(S['sep2.0'])} | {q(S['sep3.0'])}")
     print(f"   (2) shadow behind (along travel) snap/1/2 s {q(S['behind0.0'])} | {q(S['behind1.0'])} | {q(S['behind2.0'])}; over (+ deeper) {q(S['over0.0'])} | {q(S['over1.0'])} | {q(S['over2.0'])}")
