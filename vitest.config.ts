@@ -44,7 +44,9 @@ export default defineConfig({
       {
         test: {
           name: 'core-defaults',
-          include: enginePin.defaults,
+          // Every core file that is not pinned, so a new file runs on the real engine before the manifest lists it.
+          include: ['test/**/*.test.ts'],
+          exclude: [...integrationTests, ...workflowTests, 'test/research/**', ...enginePin.pinned],
           // The real engine: no promoted flag pinned.
           env: process.env.TEST_PIN_FLAGS === undefined ? {} : legacyEngine,
           pool: 'threads',
