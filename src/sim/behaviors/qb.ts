@@ -362,7 +362,7 @@ const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
  * his time as a passer. When he has no throw and feels the rush (the alarm's no-throw branch), or his clock has run
  * out, and a spot outside the rush beats every pursuer he feels by BREAK_MARGIN, he breaks to that side with the ball
  * up. Out there, at his processing interval and each held until the next, he decides: throw (his best man on his
- * pictures at OUT_BAR, the eyes gate applying), tuck and run (a lane past the line beats the pursuers and nobody is
+ * pictures at the bar he has in the pocket, lowered by the pressure he feels; the eyes gate applying), tuck and run (a lane past the line beats the pursuers and nobody is
  * near the bar; this is the old scramble), throw it away (outside the tackles, a pursuer inside one motion and one
  * processing time, nobody above half the bar; a short motion, not an instant release), stop and set (no pursuer inside
  * SET_ROOM for a reaction time: his new spot is his pocket), or keep moving to a destination he picked and holds
@@ -381,9 +381,6 @@ const OUT_HOLD = 0.8;
 /** QB_BREAK: his pace with the ball up, and through a throwing motion on the move (fractions of top speed). */
 const OUT_PACE = 0.8;
 const OUT_THROW_PACE = 0.45;
-/** QB_BREAK: the chance he needs on a throw from out there, and the largest pick risk (the hot path's 0.18). */
-const OUT_BAR = 0.45;
-const OUT_RISK = 0.18;
 /** QB_BREAK: he tucks only with nobody above this share of the bar. */
 const TUCK_BAR = 0.5;
 /** QB_BREAK: with no felt pursuer inside this (yd) for one reaction time he stops and sets. */
@@ -2190,7 +2187,7 @@ export class QBPass implements Behavior {
   }
 
   /** QB_BREAK: out of the pocket with the ball up: the side he broke to, his held destination, his next decision. */
-  private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null } | null = null;
+  private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number } | null = null;
   /** QB_BREAK diagnostics (no effect): what he did out there and when. */
   readonly breakRec: Array<{ t: number; what: 'break:rush' | 'break:clock' | 'break:feel' | 'tuck' | 'away' | 'set' | 'throw' }> = [];
 
@@ -2222,7 +2219,7 @@ export class QBPass implements Behavior {
     }
     this.breakTry.push({ t: sim.t, why, m: [-1, 1].map((sd) => this.spotMargin(a, { x: Math.min(a.pos.x + 1, sim.los - 1), y: clamp(a.pos.y + sd * BREAK_REACH, 1, FIELD_WIDTH - 1) }, threats)) });
     if (!dest) return false;
-    this.out = { side, since: sim.t, dest, until: sim.t + OUT_HOLD, decideAt: sim.t + this.processing(a), clearSince: null, away: null, best: null };
+    this.out = { side, since: sim.t, dest, until: sim.t + OUT_HOLD, decideAt: sim.t + this.processing(a), clearSince: null, away: null, best: null, thr: 1, risk: 0 };
     this.breakRec.push({ t: sim.t, what: `break:${why}` as const });
     this.look = null;
     sim.event('read', a, null, `breaks the pocket (${why})`);
@@ -2244,18 +2241,22 @@ export class QBPass implements Behavior {
     if (t >= o.decideAt) {
       o.decideAt = t + this.processing(a);
       const threats = this.pursuers(a, sim);
-      const best = o.best = this.lastHotBest = this.bestOption(a, sim, 1);
-      const near = Math.max(0, best ? best.P / OUT_BAR : 0);
-      // Tuck and run: a lane past the line beats every pursuer he feels, and nobody is near his bar.
-      if (near < TUCK_BAR) {
-        const ahead = [0, 2, 4].map((k) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + o.side * k, 1, FIELD_WIDTH - 1) }));
-        if (ahead.some((q) => this.spotMargin(a, q, threats) > BREAK_MARGIN)) return this.scramble(a, sim);
-      }
       // The nearest pursuer he feels: how soon, and how far.
       let soon = Infinity, dist = Infinity;
       for (const { d, seen, held } of threats) {
         soon = Math.min(soon, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + held);
         dist = Math.min(dist, Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y));
+      }
+      // His bar is the bar he has in the pocket: his own, lowered by the pressure he feels now (the same rule).
+      const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
+      const u = clamp((0.9 - soon) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
+      o.thr = 0.6 - 0.12 * aggression - 0.32 * u; o.risk = 0.025 + 0.05 * aggression + 0.08 * u;
+      const best = o.best = this.lastHotBest = this.bestOption(a, sim, u);
+      const near = Math.max(0, best ? best.P / o.thr : 0);
+      // Tuck and run: a lane past the line beats every pursuer he feels, and nobody is near his bar.
+      if (near < TUCK_BAR) {
+        const ahead = [0, 2, 4].map((k) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + o.side * k, 1, FIELD_WIDTH - 1) }));
+        if (ahead.some((q) => this.spotMargin(a, q, threats) > BREAK_MARGIN)) return this.scramble(a, sim);
       }
       // Throw it away: outside the tackles, a pursuer inside one motion and one processing time, nobody above half the bar.
       if (this.outsidePocket(a, sim) && soon < this.windup(a) + this.processing(a) && near < 0.5) {
@@ -2286,9 +2287,9 @@ export class QBPass implements Behavior {
     }
     // A throw he likes, from his last look round, priced again now; the eyes gate and the finish check apply.
     const b = o.best;
-    if (b && b.P >= OUT_BAR && b.intRisk <= OUT_RISK) {
+    if (b && b.P >= o.thr && b.intRisk <= o.risk) {
       const ev = this.evaluate(a, sim, b.target, 1);
-      if (ev && ev.P >= OUT_BAR && ev.intRisk <= OUT_RISK) {
+      if (ev && ev.P >= o.thr && ev.intRisk <= o.risk) {
         const start = this.startIfFinish(a, sim, ev);
         if (start) { this.breakRec.push({ t, what: 'throw' }); return start; }
       }
