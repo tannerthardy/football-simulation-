@@ -8,6 +8,7 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { catchSpot } from '../../../src/sim/behaviors/receiver.js';
+import { neckOf } from '../../../src/sim/ball-estimate.js';
 const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 8);
 const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, rows: any[] = [];
 const off = (a: number, b: number) => { let d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return Math.abs(d) * 180 / Math.PI; };
@@ -16,7 +17,7 @@ P.tick = function () {
   if (this.offCall?.kind !== 'pass' || this.offCall?.pass?.family === 'screen') return r;
   if (this.ball.kind === 'air' && !this.__dl && this.ball.target && !this.ball.throwaway) {
     const T = this.ball.target, rt = T.behavior?.fallback?.route ?? T.behavior?.route;
-    this.__dl = { T, deep: rt?.family === 'deep', rel: this.t, best: Infinity, log: [] as any[] };
+    this.__dl = { T, deep: rt?.family === 'deep', rel: this.t, best: Infinity, log: [] as any[], qb: { ...this.qb.pos } };
   }
   const S = this.__dl;
   if (S?.deep && this.ball.kind === 'air') {
@@ -24,7 +25,9 @@ P.tick = function () {
     if (dh < S.best) { S.best = dh; S.tArr = this.t; }
     const est = this.ballEstimates.peek(T, this), due = est.length ? catchSpot(T, { t: this.t, ballPath: est }) : null;
     const sp = Math.hypot(T.vel.x, T.vel.y);
-    S.log.push({ t: this.t, due: due?.t, turned: sp > 1 && off(T.facing, Math.atan2(T.vel.y, T.vel.x)) > 60, seen: !!this.ballEstimates.lastSeen(T), head: this.ballEstimates.headOf(T), toBall: Math.atan2(b.y - T.pos.y, b.x - T.pos.x), facing: T.facing });
+    let near = Infinity; for (const d of this.defense) near = Math.min(near, Math.hypot(d.pos.x - T.pos.x, d.pos.y - T.pos.y));
+    const reach = (neckOf(T) + Math.PI / 6) * 180 / Math.PI;
+    S.log.push({ t: this.t, sp, near, outOfView: off(T.facing, Math.atan2(b.y - T.pos.y, b.x - T.pos.x)) > reach, toQB: off(T.facing, Math.atan2(S.qb.y - T.pos.y, S.qb.x - T.pos.x)), due: due?.t, turned: sp > 1 && off(T.facing, Math.atan2(T.vel.y, T.vel.x)) > 60, seen: !!this.ballEstimates.lastSeen(T), head: this.ballEstimates.headOf(T), toBall: Math.atan2(b.y - T.pos.y, b.x - T.pos.x), facing: T.facing });
   }
   return r;
 };
@@ -33,9 +36,12 @@ P.buildResult = function () {
   if (S?.deep && S.tArr !== undefined) {
     const A = S.tArr, L = S.log, firstDue = L.find((x: any) => x.due !== undefined), late = [...L].reverse().find((x: any) => x.t <= A - 0.5 && x.due !== undefined);
     const turn = L.find((x: any) => x.turned), seen = L.find((x: any) => x.seen);
-    const atA = L.find((x: any) => x.t >= A - 1e-6) ?? L[L.length - 1];
-    rows.push({ cmp: !!this.stats?.completed, best: S.best, flight: A - S.rel, dueFirst: firstDue ? firstDue.due - A : undefined, due05: late ? late.due - A : undefined,
-      turn: turn ? turn.t - A : undefined, seen: seen ? seen.t - A : undefined, bodyAtA: atA ? off(atA.facing, atA.toBall) : undefined });
+    const atA = L.find((x: any) => x.t >= A - 1e-6) ?? L[L.length - 1], m5 = [...L].reverse().find((x: any) => x.t <= A - 0.5) ?? L[0];
+    const after = seen ? L.filter((x: any) => x.t >= seen.t && x.t <= A) : [];
+    const oov = after.length ? after.filter((x: any) => x.outOfView).length / after.length : undefined;
+    rows.push({ oov, cmp: !!this.stats?.completed, best: S.best, flight: A - S.rel, dueFirst: firstDue ? firstDue.due - A : undefined, due05: late ? late.due - A : undefined,
+      turn: turn ? turn.t - A : undefined, seen: seen ? seen.t - A : undefined, bodyAtA: atA ? off(atA.facing, atA.toBall) : undefined,
+      backM5: m5 ? m5.toQB < 90 : undefined, spRel: L[0]?.sp, spM5: m5?.sp, spA: atA?.sp, sepA: atA?.near });
   }
   return res;
 };
@@ -43,6 +49,10 @@ const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed + g), leagueSample(away, seed + g), { seed: seed + g, record: false });
 const q = (v: any[]) => { v = v.filter((x) => x !== undefined && Number.isFinite(x)).sort((a, b) => a - b); return v.length < 3 ? '-' : [.25, .5, .75].map(f => v[Math.floor(f * (v.length - 1))].toFixed(2)).join('/'); };
+const sh = (v: any[]) => { const w = v.filter((x) => x !== undefined); return w.length ? (100 * w.filter(Boolean).length / w.length).toFixed(0) + '%' : '-'; };
+console.log(`   NFL-comparable: body within 90 deg of the passer (his release spot) 0.5 s before the arrival ${sh(rows.map(r => r.backM5))} (NFL 75%) | speed release ${q(rows.map(r => r.spRel))} -> 0.5 s out ${q(rows.map(r => r.spM5))} -> arrival ${q(rows.map(r => r.spA))} (NFL turned 7.5 -> 7.0 -> 6.4) | nearest defender at the arrival ${q(rows.map(r => r.sepA))} | complete ${sh(rows.map(r => r.cmp))}`);
+for (const [lab, f] of [['turned 0.5 s out', (r: any) => r.backM5 === true], ['not turned', (r: any) => r.backM5 === false]] as const) { const V = rows.filter(f); console.log(`     ${lab}: n ${V.length} | complete ${sh(V.map(r => r.cmp))} | speed ${q(V.map(r => r.spRel))} -> ${q(V.map(r => r.spM5))} -> ${q(V.map(r => r.spA))} | separation at the arrival ${q(V.map(r => r.sepA))}`); }
+console.log(`   after his first sample, share of flight ticks with the ball outside his head range (facing + neck + eyes): all ${q(rows.map(r => r.oov))} | caught ${q(rows.filter(r => r.cmp).map(r => r.oov))} | not caught ${q(rows.filter(r => !r.cmp).map(r => r.oov))} | any out of view ${sh(rows.filter(r => r.oov !== undefined).map(r => r.oov > 0))}`);
 console.log(`== seed ${seed} BALL_EST=${process.env.BALL_EST ?? 0}: deep targets n ${rows.length}, caught ${rows.filter(r => r.cmp).length}`);
 for (const [lab, f] of [['all', (r: any) => true], ['caught', (r: any) => r.cmp], ['not caught, ball within 1.5 yd', (r: any) => !r.cmp && r.best < 1.5], ['not caught, ball 1.5+ yd away', (r: any) => !r.cmp && r.best >= 1.5]] as const) {
   const V = rows.filter(f);

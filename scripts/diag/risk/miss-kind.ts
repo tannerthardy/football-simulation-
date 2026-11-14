@@ -21,6 +21,7 @@ P.tick = function () {
   }
   if (this.__mk && this.ball.kind === 'air' && this.__mk.first === undefined && this.ballEstimates?.lastSeen?.(this.__mk.T)) this.__mk.first = this.t;
   const S = this.__mk;
+  if (S && this.ball.kind === 'air' && this.ball.deflected) S.deflected = true;
   if (S && this.ball.kind === 'air' && !this.ball.deflected) {
     const T = S.T, b = this.ball.flight.pos, dh = Math.hypot(b.x - T.pos.x, b.y - T.pos.y);
     const reach = T.profile.reach + TRACKING_REACH_BONUS, top = T.profile.maxCatchHeight;
@@ -56,7 +57,8 @@ P.tick = function () {
 };
 P.buildResult = function () {
   const res = b0.call(this), S = this.__mk; this.__mk = undefined;
-  if (!S || !S.at || S.near < 3) return res;
+  // The gate counts receiver outcomes: a flight deflected before it reached him (a bat at the line) is not one.
+  if (!S || !S.at || S.near < 3 || S.deflected) return res;
   const idx = S.T.idx, ev = this.events.filter((e: any) => e.a === idx && (e.type === 'drop' || e.type === 'miss'));
   let kind: string;
   if (this.stats?.completed) kind = 'caught';
