@@ -213,7 +213,7 @@ export class ReceiverForecast {
       // Anticipation selects a future answer, not permission to execute its
       // easier/faster stem before the receiver's installed decision landmark.
       if (!selected && body.pos.x >= prior.readContext!.los + prior.read!.depth) {
-        selected = true; st.idx = 0; st.turn = null;
+        selected = true; st.idx = 0; st.turn = null; st.plan = null;
         while (st.idx < c.route.path.length - 1 && c.route.path[st.idx].p.x < body.pos.x - .5) st.idx++;
       }
       const active = selected ? c.route : prior;

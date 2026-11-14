@@ -26,6 +26,16 @@ point), not from where his body points; witnesses unchanged. Slant row (one stag
 (off 4.7) because that is the speed he has at about 1.2 s, and `s` 1.0 gives a plan of 7.3 and an arrival of 4.9; marking it a cut is what
 returns the old vertex behaviour. Tested in `test/route-fillet.test.ts`.
 
+## Coherence fix: the lead is sized from the speed he can have at the vertex (Rules' break-aligned read)
+
+The lead and the speed through it were sized from the declared through speed, so with `s` 1.0 on the slant's short stem he planned about
+8.6 yd/s, the lead took the whole first leg and the diagonal curled to 80 deg (break operator: v_in 6.4, radius 9.2; NFL 3.4, 3.6). The plan is now made
+once per corner (a goal that persists), when he first heads for it, from `carry = min(through, speedAfter(v0, vtop, tau, d))`: his speed along the
+leg now, built under his own drive law (a = (V - v) / tau; closed form, `speedAfter`) over the distance to the vertex. A corner near the line is
+small because he is slow; there is no special case. Slant with s 1.0 (the case Rules read; 72 breaks, no defenders): v_in 2.4, v_min 3.1, radius 4.6,
+arc 2.3 (was v_in 6.4, radius 9.2). Slants are no longer later in the read compiler (slant_flat -0.05, double_slants -0.08 against +0.29 / +0.19). Price: shallow and
+cross lose speed at 2.0 s (cross 6.66 to 6.20, shallow 6.46 to 5.78 on the WR body) and cut less inside the vertex on the shortest legs (slant cut 0.24 yd).
+
 ## Witnesses (sim bench from `scripts/diag/route-speed/` on PR #750; no defenders unless stated; WR body for speed rows)
 
 Speed by time, cross (WR body, no defenders), 1.5 / 2.0 / 2.5 / 3.0 / 3.5 s: off 6.00 / 5.47 / 6.30 / 7.29 / 7.83, on 5.77 / 6.66 / 7.50 / 7.94 /
