@@ -922,6 +922,14 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
   if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
   if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
+  // RUSH_RIP: no roll; his arm's force on the blocker's hand and his body's bend through the corner.
+  if (RUSH_RIP && e.move === 'rip') {
+    if (e.hands && !e.hands.off) {
+      const lat = latOf(axis), speed = ARM_SPEED * (0.75 + 0.5 * e.defender.r('passRushFinesse')), F = armForce(e.defender);
+      sim.world.handForce(e.hands, e.defender.body, { x: -lat.x * e.side * F, y: -lat.y * e.side * F }, sim.world.time, sim.world.time + FOREARM / speed);
+    }
+    e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return;
+  }
   // RUSH_BULL: no roll; the drive is his intent (stepPassRep's power request) and the World's.
   if (RUSH_BULL && e.move === 'bull') { e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); return; }
   const b = e.blocker;
@@ -1182,6 +1190,19 @@ export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND !== '0';
  * the rusher 0.08-0.09 yd nearer the QB over 0.5 s against 0.12-0.14 engaged with no move: a move attempt was worth
  * less than none. */
 export const RUSH_BULL = process.env.RUSH_BULL === '1';
+/** RUSH_RIP (experimental, off; RUSH_RIP=1; PRO-INFO #9, the second move): the rip is his hand and his body, not a roll.
+ * His near arm comes up under the blocker's hand on his working side: a force of his arm (armForce) across the
+ * blocker's hand joint, toward the inside, for the time his hand takes to cross the forearm (FOREARM at his hand
+ * speed, ARM_SPEED by his finesse), the club's force law (RUSH_HANDS); whether the hand comes off is the World's
+ * (the joint's hold and grip against the force). At the same time his body runs the rip: he dips and turns the corner
+ * (the move's bend request: low posture, at the blocker's hip, his speed by his bend). The roll, the lost move's stall
+ * and blocker punch, and the control swing are gone together; a rip that doesn't clear the hand leaves him low on the
+ * corner with the hand still on him, and what that costs is the bodies'. Diagnosis (rep-rolls.mts, engine-61, 8
+ * games): 1126 rip rolls, 6% won, opening 3 of 210 sheds. Requires RUSH_HANDS (the World's hand model: without it a
+ * force on a hand does nothing, and attempt 1, the body alone, lost sheds: 210 -> 202). Read with RUSH_ONE_HAND (a
+ * cleared hand opens the side it guarded): RUSH_HANDS + RUSH_ONE_HAND, 8 games: sheds 228 -> 283, the rip clears a
+ * hand 16% of the time. */
+export const RUSH_RIP = RUSH_HANDS && process.env.RUSH_RIP === '1';
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
   const sup = d.body.support; if (!sup) return;
   const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
