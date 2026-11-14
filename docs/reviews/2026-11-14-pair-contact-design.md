@@ -307,7 +307,52 @@ The opening impact throws the lighter man back before any sustained chest-to-che
 carries load in staging, so the hand-over's continuity cannot be shown there. That is another reason the parked pieces
 wait.
 
+## Step 1, corrected after Tools' review (2026-11-14): hips on the set, shoulders on the felt man
+
+**The inside-number aim below is withdrawn.** Tools' review of the measurement:
+- NFL `o` is the shoulder pads; ours is the hips. They are the same body part only with no trunk.
+- The NFL's 15 deg off-chest is mostly a sensor bias, not technique. Stationary pre-snap linemen read 11.9 deg off
+  square (p50), nearly still engaged pairs 18.7 deg, frame jitter p50 0.0 / p90 1.8 deg.
+- The test a bias cannot fake is the signed angle. Tackle chests point a median 5.8-6.6 deg to the OUTSIDE of the
+  rusher's centre, the same sign with the QB on either side (n about 31,000 and 33,000). That is the opposite of the
+  +10-15 deg an inside-number aim predicts: a chest that follows the rusher late.
+- In the World a 12 deg offset moves a chest-segment end 0.025 yd. But it makes the two segments non-parallel, so the
+  closest points leave the line of centres and the press gets a 40-100 N·yd lever against the motor's 1,696. Any
+  facing-rate change has to be checked with pair-yaw-trace before it is read as the request's doing.
+
+Integration's ruling: the coaching (work the inside half) is real, but it is about **position**: half a man inside,
+between the rusher and the protect point. That is what the set and the mirror already do. It is not an angular offset of
+his nose.
+
+**The law (not built):**
+- Hips (`facing`), the set and ride requests:
+  - engaged pass set: square to the line he protects, from his inside-out position, i.e. the direction from the protect
+    point (the called launch point on the ball's line) through him;
+  - the ride: on his path, as now.
+- Shoulders (`look`, TRUNK_TWIST): on the man as he has him (ENGAGE_FELT's picture), within the trunk's ±55 deg.
+- Run blocker: hips on his track (the drive or surface axis, REACH_RACE's open hips as now), shoulders on the felt man.
+- Gap-holding run defender: hips square to the line of scrimmage, shoulders on the felt blocker.
+- Readers that compare his front with the line to the man use the shoulders: `e.phi`, `axisOf` (the blocker's frame from
+  the protect point), the run block's `off` / `behind`, `beta` in the hand site, `chestOff`.
+
+The set-frame term and the rusher term then come from two body segments, each with its own bound: the hips at the yaw
+motor's capped torque, the shoulders at TRUNK_RATE within the range. There is no blend constant. The lag is the body's
+and the picture's: the trunk turns at 360 deg/s, so most of the shoulders' trail behind a moving rusher is the felt
+delay. At 0.06 s, a rusher crossing at 3 yd/s at 1 yd sits about 10 deg ahead of the felt bearing.
+
+**How step 1 is judged** (engaged-yaw.py, the shoulders on both sides, both smoothed over the same 0.4 s):
+- the joint fit moves from 0.01 / 0.80 toward the NFL's 0.27 / 0.61 (QB frame / rusher bearing);
+- the signed off-chest angle moves toward about -6 deg (trailing the rusher's motion) from ours, with the unsigned 15 deg
+  dropped as a target;
+- pair-yaw-trace on the staged rows separates the request's effect from the contact lever the offset creates.
+
+**If TRUNK_TWIST does not land on engine-65, the one-angle version:** facing (hips, the only angle) on the felt man, as
+ENGAGE_FELT already gives. Its lag is the felt delay plus the yaw motor's bound. It cannot produce a set-frame term (a
+0.27 needs a second segment), so it would show whether the trailing sign and size come from the picture alone.
+
 ## Step 1, the request law: measured first (2026-11-14)
+
+*(Superseded by the correction above: kept for the record.)*
 
 Before writing "square to his set" into the law, the NFL was asked what an engaged tackle faces. `engaged-yaw.py` now
 also measures the set frame: his facing against "back to the QB" (the direction from the QB through him), how far the
