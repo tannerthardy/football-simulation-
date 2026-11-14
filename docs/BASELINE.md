@@ -7,6 +7,10 @@ past checkpoints. They do not select today's trunk, assign current work or
 reinstate mandatory integration-owner verification/Git-tracked receipts.
 Evidence, links and historical decisions are preserved in place.
 
+**Deleting a flag (2026-11-14).** `config/baseline.json` is a historical profile, so a flag removed from the engine may stay listed.
+`checkFlags` in `scripts/baseline.mjs` now fails only on a flag the profile lacks, not on a stale entry, so deleting a flag and its
+legacy path no longer needs an edit here.
+
 ---
 
 # Shared integration baseline
