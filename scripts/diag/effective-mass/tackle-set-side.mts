@@ -13,7 +13,8 @@ const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const { PASS_BY_ID } = await import(`${W}/src/playbook/concepts.ts`);
 const CONCEPTS = 'smash mesh flood drive sail_corner corner_flat trips_sail trips_outs double_outs comebacks dagger y_cross four_verts verts_hitch stick curl_flat'.split(' ');
 const COVS = 'cover1 cover2man cover2 tampa2 cover3 cover3_match cover4 cover6'.split(' ');
-for (const concept of CONCEPTS) for (const coverage of COVS) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
+const ONLY_R = (process.env.TSS_ROSTERS ?? '3,7,11,19').split(',').map(Number), ONLY_C = (process.env.TSS_CONCEPTS ?? '').split(',').filter(Boolean);
+for (const concept of ONLY_C.length ? ONLY_C : CONCEPTS) for (const coverage of COVS) for (const roster of ONLY_R) for (const seed of [1, 2, 3, 4, 5, 6]) {
   for (const formation of ['gun_doubles_11', 'gun_trips_11']) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
     const dir = sim.attackDir(sim.offense[0].team), strong = sim.offAlign.strongSign, by = sim.ballY;
@@ -28,11 +29,13 @@ for (const concept of CONCEPTS) for (const coverage of COVS) for (const roster o
     const tick = sim.tick.bind(sim);
     sim.tick = () => {
       tick();
-      for (const k of [1.0, 1.5, 2.0]) if (Math.abs(sim.t - k) < 0.026) for (const w of rows) {
+      for (const k of [1.0, 1.5, 2.0, 2.5, 3.0, 3.5]) if (Math.abs(sim.t - k) < 0.026) for (const w of rows) {
         const t = w.t, r = w.r;
         w.at[k] = { depth: +((w.x0 - t.pos.x) * dir).toFixed(2), width: +((t.pos.y - w.y0) * w.out).toFixed(2),
           rDepth: r ? +((w.x0 - r.pos.x) * dir).toFixed(2) : null, rOut: r ? +((r.pos.y - t.pos.y) * w.out).toFixed(2) : null,
-          beyond: r ? +((t.pos.x - r.pos.x) * dir).toFixed(2) : null, thrown: sim.throwAt >= 0 };
+          beyond: r ? +((t.pos.x - r.pos.x) * dir).toFixed(2) : null, thrown: sim.throwAt >= 0,
+          qbDepth: +((w.x0 - sim.qb.pos.x) * dir).toFixed(2), qbWidth: +((sim.qb.pos.y - by) * w.out).toFixed(2), rToQb: r ? +Math.hypot(r.pos.x - sim.qb.pos.x, r.pos.y - sim.qb.pos.y).toFixed(2) : null,
+          rSpeed: r ? +Math.hypot(r.vel.x, r.vel.y).toFixed(2) : null, engaged: !!(r && r.engagement) };
       }
     };
     let res: any; try { res = sim.run(); } catch { break; }

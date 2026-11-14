@@ -4464,3 +4464,33 @@ What the lever does in inside zone (the staged set):
 - The lever turns the defender, not the blocker. After that the plays fan out (75-yard runs flip both ways), which is
   the noise the old cell sat in.
 - Missed tackles 26 -> 25, broken 29 -> 20 on the staged set.
+
+### The fast stand-up edge at the deeper launch (Integration / QB lane, 2026-11-14; tackle-set-side.mts, engine-66)
+
+QB lane's staged plays: the twelve concepts whose drop changes, eight coverages, roster 11, seeds 1-6, CONCEPT_DROPS
+off / on. The matchup: roster 11's strong-side tackle against his stand-up edge (a linebacker body at DE_S, aligned
+about 3 yd outside him). 576 plays per arm, the same bodies and calls.
+
+| | 2.0 s | 2.5 s | 3.0 s | 3.5 s |
+|---|---|---|---|---|
+| shallow: QB / tackle / rusher depth (yd) | 6.77 / 5.03 / 5.18 | 6.69 / 7.24 / 7.59 | 5.84 / 8.86 / 8.25 | 5.39 / 10.05 / 7.97 |
+| shallow: rusher to the QB | 4.91 | 3.53 | 3.15 | 3.24 |
+| deeper: QB / tackle / rusher depth | 7.32 / 5.02 / 5.18 | 7.50 / 7.24 / 7.56 | 6.84 / 8.96 / 8.40 | 7.14 / 10.06 / 8.31 |
+| deeper: rusher to the QB | 4.83 | 3.99 | 3.76 | 3.29 |
+
+Sacks by him: 27 (p50 4.15 s) shallow, 62 (p50 3.50 s) deeper. On his sacks, at 2.5 s, the rusher is 2.54 / 2.19 yd
+from the quarterback.
+
+**Read:**
+- **The race is lost early and the drop does not change it.** The tackle's set and the rusher's path are identical
+  through 2.0 s in both arms (the same plays, before the drops diverge). By 2.0 s the rusher is at the tackle's hip
+  (5.18 against 5.03 yd deep, 0.2 yd outside); from there the tackle rides him (66% engaged at 2.5 s).
+- **The tackle's set follows the rusher, not the launch point.** He kicks with the rusher's depth and rides him on past
+  the quarterback's depth (7.2 yd at 2.5 s, 10 yd at 3.5 s). It does not stop at the shallow spot.
+- **What the deeper launch changes is the quarterback.** The arc reaches about 7.6 yd deep by 2.5 s.
+  - Shallow: he is at 6.7 yd and steps up (5.84 -> 5.39), so the arc runs behind him.
+  - Deeper: he sets at 7.3-7.5 yd, at the arc's depth, and barely steps up (7.14 at 3.5 s), so the arc lands on him.
+  - That is coached the other way: against a wide rusher who has the corner, the quarterback steps up into the pocket.
+    It is the QB lane's question (his step-up against an edge that has turned the corner), not the tackle's set.
+- The early loss (the edge at the tackle's hip by 2.0 s) is the existing edge-corner finding: wide contacts get
+  into-and-past at 1.75 against the NFL's 2.41, but this fast edge wins the corner itself.
