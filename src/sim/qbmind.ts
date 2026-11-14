@@ -46,6 +46,25 @@ import { isOL } from './behaviors/blocking.js';
 
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the bubble's numbers kill. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** QB_SEEN_MAN (experimental, off; QB_SEEN_MAN=1; information rule): three places where his picture of the defense
+ * read the field as it truly is.
+ * - A man defender he is not looking at is remembered on his receiver. Off, "his receiver" is the receiver's TRUE
+ *   position now; on, it is where the quarterback's own forecast has that receiver (the installed route run from his
+ *   last picture of him), or the defender's own canonical spot when he has no forecast of that man.
+ * - With no belief to place a defender, off falls back to the defender's true position; on, to his last picture.
+ * - The check at the line reads corner depth exactly; on, with his alignment noise like the rest of his pre-snap
+ *   picture.
+ * The canonical looks themselves (how each coverage would line up against this formation) are built from the call's
+ * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
+ * and pressure are swapped, and a disguised shell still fools him. Not changed. */
+const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
+/** CLOUD_KILL (experimental, off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
+ * screen's installed kill (and the screen RPO's read) also takes a defender he sees squatting over the screen receiver,
+ * whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review, 2026-11-14):
+ * 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside (outside leverage), with the same alignment noise as the
+ * press look, at the alignment after motion. Off, only press killed it; on the now screen against Cover 2 the squat
+ * corner made every tackle (screen-defense.mts). */
+const CLOUD_KILL = process.env.CLOUD_KILL !== '0';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -149,6 +168,8 @@ export class QBMind {
   belief: Record<string, number> = {};
   readonly report: QBReadReport;
   blitzExpected = false;
+  /** Diagnostic: the inputs of blitzExpected at his last pre-snap update. */
+  blitzInputs: { box: number; boxSoft: number; blockers: number; cover0: number; pMan: number } | null = null;
   identified = false;
   private confirmed = false;
   /** Set for one tick when the post-snap read completes. */
@@ -156,6 +177,8 @@ export class QBMind {
   readonly identifyAt: number;
   private readonly canon = new Map<string, DefenseAlignment>();
   private readonly memory = new Map<Agent, Memory>();
+  /** QB_SEEN_MAN: where the quarterback's own forecast has a receiver now (set by QBPass); null when he has none. */
+  receiverAt: ((r: Agent) => Vec2 | null) | null = null;
   /** Pictures already represented in the prior or a post-snap likelihood. */
   private readonly classifiedAt = new Map<Agent, number>();
   readonly clearHalf: number;
@@ -270,6 +293,8 @@ export class QBMind {
     const blockers = 5 + sim.offense.filter((o) => sim.offAlign.spots[o.slot]?.inline).length;
     const box = Math.round(obs[5]);
     this.blitzExpected = (this.belief.cover0 ?? 0) > 0.3 || (box >= blockers + 2 && this.pMan() > 0.5);
+    // Diagnostic only (scripts/diag/eyes/blitz-read.ts): the inputs of his blitz expectation.
+    this.blitzInputs = { box, boxSoft: +obs[5].toFixed(2), blockers, cover0: +(this.belief.cover0 ?? 0).toFixed(3), pMan: +this.pMan().toFixed(3) };
   }
 
   /**
@@ -498,7 +523,9 @@ export class QBMind {
         p = { x: sp.pos.x + (lm.x - sp.pos.x) * f, y: sp.pos.y + (lm.y - sp.pos.y) * f };
       } else if (r.kind === 'man' && sp.manTarget) {
         const t = sim.slot(sp.manTarget);
-        p = t ? { x: t.pos.x + 1, y: t.pos.y + (Math.sign(sim.ballY - t.pos.y) || 1) * 0.6 } : sp.pos;
+        // QB_SEEN_MAN: the receiver where his own forecast has him, not where he truly is.
+        const tp = t ? (QB_SEEN_MAN ? this.receiverAt?.(t) ?? null : t.pos) : null;
+        p = tp ? { x: tp.x + 1, y: tp.y + (Math.sign(sim.ballY - tp.y) || 1) * 0.6 } : sp.pos;
       } else {
         p = { x: sim.qb.pos.x + 3, y: sp.pos.y };
       }
@@ -506,7 +533,7 @@ export class QBMind {
       y += b * p.y;
       wsum += b;
     }
-    if (wsum < 1e-6) return d.pos;
+    if (wsum < 1e-6) return QB_SEEN_MAN ? this.memory.get(d)?.pos ?? d.pos : d.pos;
     return { x: x / wsum, y: y / wsum };
   }
 
@@ -598,23 +625,24 @@ export class QBMind {
   /** What the QB sees outside on a screen: press over the receiver, and the
    * defenders and receivers outside the box to that side (defenders off the
    * line and within 9 yd of it), each defender seen with his alignment noise. */
-  private screenLook(concept: PassConcept): { press: boolean; defenders: number; receivers: number } | null {
+  private screenLook(concept: PassConcept): { press: boolean; cloud: boolean; defenders: number; receivers: number } | null {
     const sim = this.sim;
     const designed = screenSpot(sim, concept);
     if (!designed) return null;
     const r = designed.receiver.pos, side = designed.side, by = sim.ballY;
     const sig = 0.3 + 1.0 * (1 - this.rec);
-    let press = false, defenders = 0;
+    let press = false, cloud = false, defenders = 0;
     for (const d of sim.defense) {
       const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
       const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
       if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
+      else if (x >= 2.2 && x <= 5 && (y - r.y) * side >= -0.5 && (y - r.y) * side <= 3) cloud = true;
       // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
       if ((y - by) * side > 5 && x >= 1.5 && x < 9) defenders++;
     }
     const receivers = sim.offense.filter((o) => o !== sim.qb && !isOL(o) && !sim.offAlign.spots[o.slot]?.backfield
       && (o.pos.y - by) * side > 5).length;
-    return { press, defenders, receivers };
+    return { press, cloud, defenders, receivers };
   }
 
   /**
@@ -625,7 +653,7 @@ export class QBMind {
   private rpoRead(call: OffensivePlayCall): OffensivePlayCall | null {
     if (call.kind !== 'run' || !call.rpo || !call.run) return null;
     const look = this.screenLook(call.rpo);
-    const throwIt = !!look && !look.press && look.defenders <= look.receivers;
+    const throwIt = !!look && !look.press && !(CLOUD_KILL && look.cloud) && look.defenders <= look.receivers;
     this.report.audible = throwIt ? `rpo: ${call.rpo.name}` : `rpo: ${call.run.name}`;
     if (!throwIt) return { ...call, rpo: undefined };
     return { ...call, kind: 'pass', pass: call.rpo, rpo: undefined, label: `${call.formation.name} — ${call.run.name} / ${call.rpo.name} (thrown)` };
@@ -641,7 +669,7 @@ export class QBMind {
     const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
     if (!spec || !spec.kill) return null;
     const look = this.screenLook(call.pass!);
-    if (spec.kill === 'press' && !look?.press) return null;
+    if (spec.kill === 'press' && !look?.press && !(CLOUD_KILL && look?.cloud)) return null;
     // SCREEN_QB: a numbers kill (the bubble): more of them outside than us there.
     if (spec.kill === 'numbers' && (!SCREEN_QB || !look || look.defenders <= look.receivers)) return null;
     const quick = this.quickCheck();
@@ -654,7 +682,9 @@ export class QBMind {
   private quickCheck(): PassConcept | null {
     const sim = this.sim;
     const cbs = sim.defense.filter((d) => d.slot === 'CB_S' || d.slot === 'CB_W');
-    const depth = cbs.length ? cbs.reduce((s, d) => s + d.pos.x - sim.los, 0) / cbs.length : 6;
+    // QB_SEEN_MAN: corner depth as he sees it, with his alignment noise.
+    const sig = QB_SEEN_MAN ? 0.3 + 1.0 * (1 - this.rec) : 0;
+    const depth = cbs.length ? cbs.reduce((s, d) => s + d.pos.x + (sig ? sim.dice('qb-mind').normal(0, sig) : 0) - sim.los, 0) / cbs.length : 6;
     const id = depth > 5 ? 'hitches' : depth < 2.5 ? 'slant_flat' : 'quick_outs';
     return PASS_BY_ID[id] ?? null;
   }

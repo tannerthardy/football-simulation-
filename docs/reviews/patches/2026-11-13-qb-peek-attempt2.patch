@@ -1,0 +1,72 @@
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index e2d9c78d..aeda2241 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -176,9 +176,9 @@ const QB_GATHER = process.env.QB_GATHER === '1';
+  * the receiver's ball skills (1.6 + 0.9 T yd), as our receivers' catches by the aim miss show, instead of a fixed
+  * 1.35 yd: the fixed radius priced a 2 s ball at a fifth of what our receivers catch. docs/reviews/2026-11-13-qb-gather.md. */
+ const ACC_RADIUS = process.env.ACC_RADIUS === '1';
+-/** QB_PEEK (experimental, off; QB_PEEK=1): the vertical peek (verticals as one look, then the back; READ_PLAN) is taken at
+- * the top of the drop: declared once he is set and the inside verticals have shown their stems (10 yd), instead of when
+- * every vertical is 12 yd downfield. docs/reviews/2026-11-13-qb-gather.md. */
++/** QB_PEEK (experimental, off; QB_PEEK=1): the vertical peek (verticals as one look, then the back; READ_PLAN) is a read
++ * of the deep defenders at the top of the drop: each vertical carried or uncarried in his picture; all carried, he checks
++ * it down after his processing time. Off: declared when every vertical is 12 yd downfield. docs/reviews/2026-11-13-qb-gather.md. */
+ const QB_PEEK = process.env.QB_PEEK === '1';
+ /** Experimental (BLOCK_SEEN=1, off): QB_FEEL's perception half on its own.
+  * The QB reads a rusher as held only from what he sees: an offensive body in
+@@ -385,6 +385,8 @@ export class QBPass implements Behavior {
+   private triDone = false;
+   /** READ_PLAN vertical peek: when every vertical was 12 yd deep (the squeeze can show), -1 before. */
+   private peekDeclared = -1;
++  /** QB_PEEK: his carried/uncarried call on each peek vertical (held between the thresholds). */
++  private peekCarried = new Map<Agent, boolean>();
+ 
+   /** Existing private state only; never evaluates a fresh throw window. */
+   recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
+@@ -786,15 +788,38 @@ export class QBPass implements Behavior {
+       let done: boolean;
+       if (this.plan!.peek) {
+         const dir = sim.attackDir(a.team);
+-        // QB_PEEK: the peek is his look at the top of the drop: once he is set and the inside verticals (the peek reads
+-        // inside-out) have shown their stems, not when the slowest vertical reaches 12 yd (a rerouted one held it to
+-        // 3.1 s and the capped check-down to 3.65 s, against the NFL's ~2.44 s to the back).
+-        const shown = QB_PEEK ? tri.slice(0, 2).every((r) => (r.pos.x - sim.los) * dir >= 10)
+-          : tri.every((r) => (r.pos.x - sim.los) * dir >= 12);
+-        if (this.peekDeclared < 0 && shown) this.peekDeclared = t;
++        // QB_PEEK: the peek is a read of the deep defenders at the top of the drop (how four verticals is taught: is the
++        // middle closed). In his own picture, each vertical is carried (the defender over him less than 3 yd deeper, or
++        // running with him) or uncarried (over 4 yd deeper and square to the QB); between, his last call holds. NFL and
++        // ours both separate open from covered verticals this way at 2.0 s (depth over: open 5.8 / 10.4 yd, covered 1.9 /
++        // 1.8; AUC 0.82 / 0.83), not by the safety widening (lateral velocity AUC 0.51 / 0.41); scripts/diag/eyes/peek-tell.
++        // Off: declared when every vertical is 12 yd downfield.
++        if (QB_PEEK) {
++          for (const r of tri) {
++            const rp = sim.see(a, r).pos;
++            let best: { over: number; dy: number; facing: number; pos: Vec2 } | null = null;
++            for (const d of sim.defense) {
++              if (d.isDown(sim.t)) continue;
++              const e = this.mind.estimate(d), over = (e.pos.x - rp.x) * dir, dy = Math.abs(e.pos.y - rp.y);
++              if (over > 0 && dy < 10 && (!best || dy < best.dy)) best = { over, dy, facing: e.facing, pos: e.pos };
++            }
++            let call = this.peekCarried.get(r);
++            if (!best) call = false;
++            else {
++              const toQB = Math.atan2(a.pos.y - best.pos.y, a.pos.x - best.pos.x);
++              const off = Math.abs(wrapAngle(best.facing - toQB));
++              if (best.over < 3 || off > 0.75 * Math.PI) call = true;
++              else if (best.over > 4 && off < Math.PI / 4) call = false;
++            }
++            if (call !== undefined) this.peekCarried.set(r, call);
++          }
++          if (this.peekDeclared < 0) this.peekDeclared = t;
++        } else if (this.peekDeclared < 0 && tri.every((r) => (r.pos.x - sim.los) * dir >= 12)) this.peekDeclared = t;
+         const processed = this.peekDeclared >= 0 && t - this.peekDeclared > 0.15 + 0.25 * (1 - a.r('decisionMaking'));
+         const close = tri.some((r) => { const e = this.ready(r, sim) ? this.evaluate(a, sim, r, u) : null; return !!e && e.P >= 0.85 * need && e.intRisk <= risk; });
+-        done = (processed && !close) || held > 2.5 * dwell;
++        // QB_PEEK: every vertical carried in his picture, he checks it down once he has processed it.
++        const allCarried = QB_PEEK && tri.every((r) => this.peekCarried.get(r) === true);
++        done = (processed && (allCarried || !close)) || held > 2.5 * dwell;
+       } else done = (held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell;
+       if (done) {
+         this.triDone = true;
