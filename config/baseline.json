@@ -328,7 +328,8 @@
     "HONEST_READS": "0",
     "HONEST_FLIGHT": "0",
     "RUSH_PROMISE": "0",
-    "WAIT_REACHED": "0"
+    "WAIT_REACHED": "0",
+    "HONEST_TACKLE": "0"
   },
   "worldDefaults": {
     "handContact": "center",
