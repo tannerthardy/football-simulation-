@@ -40,7 +40,11 @@ const run = (PlaySim.prototype as any).run;
   const tick = sim.tick.bind(sim);
   sim.tick = () => { tick(); if (t0 < 0) t0 = sim.t;
     for (const b of backs) { if (b.behavior?.kind === 'pass-pro') { chk.add(b); if (b.engagement) { eng.add(b); const ks = (b.behavior as any).keys as any[] | null; if (ks?.some((k: any) => k.d === b.engagement.defender && k.state === 'comes')) came.add(b); } }
-      if (Math.abs(sim.t - t0 - 2.5) < sim.dt / 2 && b.behavior?.kind === 'pass-pro' && !b.engagement && !(b.behavior as any).coord?.protectors?.includes(b)) stalled.add(b); }
+      // The PassProtector itself (RCV_SEEN's ConvoyCue wraps it after a catch); counted only while the QB still has the ball.
+      const inner: any = (b.behavior as any)?.prev ?? b.behavior;
+      if (Math.abs(sim.t - t0 - 2.5) < sim.dt / 2 && sim.carrier === sim.qb && inner?.kind === 'pass-pro' && !b.engagement && !inner.coord?.protectors?.includes(b)) { stalled.add(b);
+        const bh: any = inner, off = sim.attackDir(b.team);
+        console.log(`STALL ${sim.offCall?.label} ${b.slot} t ${sim.t.toFixed(2)} ball ${sim.ball.kind} carrierIsQB ${sim.carrier === sim.qb} isPass ${sim.isPass} throwAt ${sim.throwAt.toFixed(2)} rA ${bh.coord?.assigned?.get(b)?.slot ?? '-'} released ${bh.released} keys ${JSON.stringify((bh.keys ?? []).map((k: any) => { const p = sim.see(b, k.d); return { s: k.d.slot, st: k.state, toward: +(-p.vel.x * off).toFixed(2), depth: +((p.pos.x - sim.los) * off).toFixed(2), eng: !!k.d.engagement }; }))}`); } }
     if (sim.throwAt >= 0 && tgt.length >= 0 && sim.ball.kind === 'air' && !(sim as any).__tg) { (sim as any).__tg = true;
       const T = sim.ball.target; const r = T ? routeOfAgent.get(T) ?? '' : ''; if (/angle|back_out|checkdown/.test(r)) tgt.push(sim.throwAt - t0); } };
   const res = run.call(this);
