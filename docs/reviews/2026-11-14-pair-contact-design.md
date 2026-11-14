@@ -504,3 +504,53 @@ unpaired arms (about 0.15). Not diagnosed further yet.
 - The chest segments. On claude/trunk-stage1 itself the World's chest segments read `facing` (the hips): `chestPoints`,
   the segment lines at world.ts 541 and 729. `shouldersOf` there is only in the report fields (`chestI` / `chestJ`). The
   merge dropped nothing: per file, the same count of `shouldersOf` reads as 3bd1b543.
+
+## The chest on the shoulders (CHEST_SHOULDERS), and the contact lever measured (2026-11-14)
+
+Tools' follow-up (Integration): the NFL's loaded shoulders track the man with 0.1 s of lag or less, and sit the same
+against the set line engaged or not, so the trunk is not slow or locked under load. The signed angle sits inside the
+12 deg orientation floor and is no target. The set-frame term (0.07 against 0.27) would need a shoulder-to-hip spring
+with no sourced stiffness. Ruling: no attempt 2 on it; ENGAGE_TRUNK attempt 1 stands as built, pending the second run set.
+
+**CHEST_SHOULDERS** (off; needs TRUNK_TWIST): the World's chest segment lies across the shoulders, not the hips. That
+covers `chestPoints`, `chestArms`, `shoulderArms`, `capsuleGeom`, through one `chestHalf`. Its law test
+(test/chest-shoulders.test.ts):
+- a twisted body's segment rotates by the twist;
+- an untwisted body is unchanged to the digit;
+- off, the segment follows the hips whatever the trunk;
+- it refuses to run without TRUNK_TWIST.
+Off is bit-identical (f45b8a7e377c73b2).
+
+**In games, contact yaw on engaged pass-set tackles** (Tools' World trace, applied in a local worktree only; seed 11 x 2):
+
+| arm | hands rows levered | contact spin into him p50 / p90 (trace units) | motor lag p50 / p90 |
+|---|---|---|---|
+| reference stack + TRUNK_TWIST + ENGAGE_FELT | 0% | 0 / 0 | 0.6 / 11.1 deg |
+| + ENGAGE_TRUNK | 0% | 0 / 0 | 2.4 / 23.7 deg |
+| + HANDS_LEVER | 100% | 1.1 / 2.4 | 2.8 / 9.0 deg |
+| + HANDS_LEVER + ENGAGE_TRUNK | 100% | 2.0 / 3.6 | 6.5 / 43.0 deg |
+| + HANDS_LEVER + ENGAGE_TRUNK + CHEST_SHOULDERS | 100% | 1.8 / 3.3 | 4.7 / 38.4 deg |
+
+- **In the reference engine, contact never turns an engaged tackle.** No hands row is levered without HANDS_LEVER, so
+  "turn the man" has no lever at all there, whatever the request or the chest geometry.
+- With the lever, the hips-on-the-set request nearly doubles the spin contact puts into him, as Tools predicted.
+- Putting the chest on the shoulders lowers it a little: shoulders on the man make the segments more parallel. That is
+  coherent, since a chest square to the press has no lever.
+
+**Staged asymmetries** (pair-staged.mts, PAIR_HANDS + HANDS_LEVER; STAGE_TRUNK=1 asks as ENGAGE_TRUNK does):
+
+| row | no trunk | hips on the set, shoulders on the man | the same + CHEST_SHOULDERS |
+|---|---|---|---|
+| a crosser past the blocker: his speed after, blocker outside / inside | 2.94 / 1.62 | 2.81 / 1.86 | 2.93 / 2.09 |
+| a power rusher's hand outside: the blocker's hips turned | 1 deg | 0 deg | 1 deg |
+| a reach on a run defender, his stack inside / outside: the defender's lateral | 0.01 / -0.00 yd | 0.03 / -0.01 | 0.01 / -0.01 |
+
+- The shoulders now follow the man while the hips hold (55 against 0 deg on the crossing row).
+- **The rusher's hand on the outside shoulder still does not turn the blocker** (1 deg). Tools' earlier trace says why:
+  the press goes through the blocker's own joint at 2,032 N with an arm of 0.00-0.02 yd, while the rusher's shoulder
+  joint, the one with the lever, carries nothing after tick 1. With PAIR_HANDS' 2,032 / 0 chatter on top
+  (item 6, the beaten yield), the load path between the two joints is the missing piece, not the chest geometry.
+- So PAIR_HANDS' second attempt is where this goes next:
+  - the beaten arm gives only as far as the man pushed it, so it does not chatter;
+  - the rusher's hand on the shoulder carries his press;
+  - with CHEST_SHOULDERS and HANDS_LEVER, its lever then reaches the blocker's yaw.
