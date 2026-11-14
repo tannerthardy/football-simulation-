@@ -158,6 +158,10 @@ for path in sys.argv[1:]:
             offs = [x['off'] for x in h]
             parts.append(f"+{a:.1f} s n {len(h)}: rusher off his chest p25/50/75 {q(offs, .25):+.0f}/{q(offs):+.0f}/{q(offs, .75):+.0f} deg, |off| > 30 {pct(sum(1 for v in offs if abs(v) > 30), len(h))}, > 60 {pct(sum(1 for v in offs if abs(v) > 60), len(h))}; his turn outward p50 {q([x['turn'] for x in h]):+.0f} deg; sep {q([x['dist'] for x in h]):.2f}")
         print(f"      chest, contact {lab:12s} " + ' || '.join(parts))
+    for a in ('head-up/shade', 'wide', 'very wide'):
+        g = [r for r in Cn if r['align'] == a and 'tRetreat' in r]
+        if not g: continue
+        print(f"   tackle at first contact, rusher aligned {a:13s} n {len(g):5d}: retreat p25/50/75 {q([r['tRetreat'] for r in g], .25):+.2f}/{q([r['tRetreat'] for r in g]):+.2f}/{q([r['tRetreat'] for r in g], .75):+.2f}, outward p25/50/75 {q([r['tOut'] for r in g], .25):+.2f}/{q([r['tOut'] for r in g]):+.2f}/{q([r['tOut'] for r in g], .75):+.2f} yd/s | contact at {q([r['contact'] for r in g]):.2f} s, landing {q([r['offContact'] for r in g]):+.2f} yd, wide {pct(sum(1 for r in g if r['offContact'] >= 0.9), len(g))} | at 2.0 s inside {pct(sum(1 for r in g if 2.0 in r['snaps'] and r['snaps'][2.0]['state'] == 'inside'), len(g))}, past outside {pct(sum(1 for r in g if 2.0 in r['snaps'] and r['snaps'][2.0]['state'] == 'past outside'), len(g))}")
     for lab, f in (('not level at 2.0 s', lambda st: st == 'not level'), ('level / past outside at 2.0 s', lambda st: st in ('level outside', 'past outside')), ('inside at 2.0 s', lambda st: st == 'inside')):
         g = [r for r in R if 2.0 in r['snaps'] and f(r['snaps'][2.0]['state'])]
         if not g: continue

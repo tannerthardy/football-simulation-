@@ -182,6 +182,7 @@
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
     "HANDS_LEVER": "off",
+    "VERTICAL_SET": "off",
     "PUNCH_STRIKE": "on",
     "ANCHOR_BASE": "on",
     "RUSH_ARM_BALANCE": "off",
