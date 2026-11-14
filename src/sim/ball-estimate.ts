@@ -34,6 +34,9 @@ export const BALL_EST = process.env.BALL_EST === '1';
 /** Attempt 2: continuous pursuit (a sample every perception step while in eye range), the error a first-order
  * process with this time constant (choice); each sample is weighted as dt / ERR_TAU of an independent one. */
 const ERR_TAU = 0.25;
+/** Latency of continuous visual pursuit (Brenner and Smeets 1997/98: hand corrections about 110 ms behind the
+ * target's perceived position; measured outside football). Bug fix: attempts 1-3 used his decision reaction time. */
+const PURSUIT_DELAY = 0.11;
 /** Compute only: he refits at most this often (the samples between are all used). */
 const REFIT_EVERY = 0.1;
 const HEAD_RATE = 6;
@@ -106,7 +109,8 @@ export class BallEstimates {
       const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
       tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -NECK, NECK);
       tr.headT = sim.t;
-      const delay = a.mind.observationDelay(a.profile.reactionTime);
+      // Pursuit runs on the visuomotor loop (about 110 ms), not on a decision's reaction time; his attention scales it.
+      const delay = a.mind.observationDelay(PURSUIT_DELAY);
       const seen = this.ballAt(sim.t - delay);
       if (!seen) continue;
       const bearing = Math.atan2(seen.p.y - a.pos.y, seen.p.x - a.pos.x);
@@ -189,12 +193,11 @@ export class BallEstimates {
       if (!P) return;
       const d = Math.hypot(P.x - hand.x, P.y - hand.y);
       if (expectedFlight(sim, d) > T) continue;
-      const Q = fc.predict(sim.t, Math.max(0, at - sim.t) + 0.1) ?? P;
-      const h = Math.hypot(Q.x - P.x, Q.y - P.y), u: Vec3 = h > 1e-3 ? { x: (Q.x - P.x) / h, y: (Q.y - P.y) / h, z: 0 } : { x: 1, y: 0, z: 0 };
-      const k = broken ? PRIOR_BROKEN : 1;
-      // Along his route the timing of the QB's lead is uncertain too: his speed times PRIOR_TIME, in quadrature.
-      const sAlong = Math.hypot(PRIOR_ALONG * d, Math.hypot(a.vel.x, a.vel.y) * PRIOR_TIME);
-      tr.pseudo.push({ t: at, p: { x: P.x, y: P.y, z: 1.5 }, along: u, sr: sAlong * k, sa: PRIOR_ACROSS * k, sv: PRIOR_HEIGHT * k });
+      // The QB's lead time is uncertain (PRIOR_TIME): "ball at P at T" errs along the ball's own path at the ball's
+      // speed, and where he is at that time errs by his own speed. Axes: the ball's horizontal direction, across it.
+      const k = broken ? PRIOR_BROKEN : 1, h = Math.max(1e-3, d), u: Vec3 = { x: (P.x - hand.x) / h, y: (P.y - hand.y) / h, z: 0 };
+      const sAlong = Math.hypot(PRIOR_ALONG * d, (d / T) * PRIOR_TIME), sAcross = Math.hypot(PRIOR_ACROSS, Math.hypot(a.vel.x, a.vel.y) * PRIOR_TIME);
+      tr.pseudo.push({ t: at, p: { x: P.x, y: P.y, z: 1.5 }, along: u, sr: sAlong * k, sa: sAcross * k, sv: PRIOR_HEIGHT * k });
       tr.priorT = at;
       return;
     }
