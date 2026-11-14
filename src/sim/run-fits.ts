@@ -13,7 +13,8 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
-import { qbRunning, type PossessionRead } from './possession-read.js';
+import { hasObservedFlight, observedHolder, qbRunning, type PossessionRead } from './possession-read.js';
+import { seenEngaged } from './seen-contact.js';
 import { KEY_STEP_SEEN } from './key-read.js';
 
 export interface RunFitJob {
@@ -69,6 +70,8 @@ function gameGap(sim: PlaySim, d: Agent, gap: Gap, side: number): { gap: Gap; si
 
 /** FIT_BLITZ_SLIDE (experimental, off): see buildRunFits. */
 const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
+/** HONEST_READS (behaviors/defense.ts): a teammate counts on the line when seen in contact, not by his engagement state. */
+const HONEST_READS = process.env.HONEST_READS === '1';
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
@@ -429,17 +432,28 @@ const contradictedMesh = new WeakSet<Agent>();
 export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
+  // HONEST_READS: a direct caller without a read gets the one defense.runFit
+  // builds (his acquired holder, else his picture of the backfield mesh), never
+  // the true carrier or the true handoff. No production caller reaches this;
+  // edge-backside-trail and edge-fit-approach tests do, and pass explicit reads
+  // when the flag's old path is deleted.
+  if (HONEST_READS && input === undefined) {
+    const holder = observedHolder(a, sim), rb = sim.slot('RB');
+    input = holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim)) ? { possession: holder }
+      : rb && sim.offAlign.spots[rb.slot]?.backfield ? { backfield: { back: rb, backCue: sim.see(a, rb), qbCue: sim.see(a, sim.qb) } }
+      : holder ? { possession: holder } : null;
+  }
   const keyed = input && 'target' in input ? input : undefined;
   const picture = input && 'backfield' in input ? input.backfield : undefined;
   const acquired = input && 'possession' in input ? input.possession : undefined;
   const back = picture?.back ?? sim.slot('RB');
   const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
-  const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier);
+  const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? (HONEST_READS ? null : sim.carrier));
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
   let premesh = acquired ? false : picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
-    : c === sim.qb && !qbRunning(a, sim) && sim.handoffAt < 0 && !!back;
+    : c === sim.qb && !qbRunning(a, sim) && (HONEST_READS || sim.handoffAt < 0) && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
   let seen = acquired?.cue ?? (picture ? premesh || c === back ? picture.backCue : picture.qbCue
     : keyed?.cue ?? sim.see(a, premesh ? back! : c));
@@ -585,7 +599,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       if (FORCE_BOUNCE) {
         const dir = sim.attackDir(sim.offense[0].team);
         for (const o of sim.agents) {
-          if (o === a || o === c || o === sim.qb || (o.team === a.team && !o.engagement)) continue;
+          if (o === a || o === c || o === sim.qb || (o.team === a.team && !(HONEST_READS ? seenEngaged(sim, a, o) : o.engagement))) continue;
           const b = sim.see(a,o), outer = b.pos.y + job.side*o.profile.radius, depth = (b.pos.x - sim.los)*dir;
           if (depth < -2.5 || depth > 1.5 || job.side*(outer-surface) <= 0 || job.side*(outer-surface) > 4) continue;
           if (job.side*(outer-line) > 0) { line = outer; lineVel = b.vel.y; }

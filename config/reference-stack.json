@@ -207,6 +207,8 @@
     "PRO_CALL": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
+    "HONEST_READS": "off",
+    "HONEST_FLIGHT": "off",
     "QB_FEEL": "off",
     "WAIT_REACHED": "on",
     "QB_RHYTHM": "on",

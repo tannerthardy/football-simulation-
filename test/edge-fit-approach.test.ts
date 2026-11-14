@@ -35,7 +35,7 @@ function stage(side = -1, kind: 'edge' | 'force' = 'force', edge: 'box' | 'spill
     carrying: true, stance: null, facing: 0, pose: 'up' };
   const oldSee = sim.see.bind(sim);
   sim.see = (observer, target, delay) => target === r ? picture : oldSee(observer, target, delay);
-  return { sim, a, r, update: () => executeRunFit(a, sim, 'D', side),
+  return { sim, a, r, update: () => executeRunFit(a, sim, 'D', side, { possession: { target: r, cue: picture } }),
     picture: () => picture, setPicture: (next: Perceived) => { picture = next; } };
 }
 
