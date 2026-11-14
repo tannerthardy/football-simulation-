@@ -30,7 +30,7 @@ import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 
-export const OPEN_FIELD = process.env.OPEN_FIELD === '1';
+export const OPEN_FIELD = process.env.OPEN_FIELD !== '0';
 /** Depth (yd upfield of the runner) at which he takes the on-top approach, and below which he leaves it. */
 const ENTER_DEPTH = -0.3, EXIT_DEPTH = -0.8;
 /** Beyond this he is not yet in the open-field approach (yd). */
