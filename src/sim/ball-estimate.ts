@@ -14,8 +14,9 @@
  * each sample weighted by its own covariance), with gravity and the ball's drag as known physics. Two samples pin
  * it. Not looking: the estimate stays at its last fit. A new flight (a tip) is a new thing to see.
  *
- * Constants were fixed from perception evidence before any NFL outcome row was read (the spec's table): sample
- * interval 0.25 s (mean fixation 242 ms, Aksum 2020, measured outside football); bearing 0.5-1.0 deg and range
+ * Constants were fixed from perception evidence before each exam (the spec's table): attempt 2 samples on every
+ * perception step while the ball is in eye range (eyes on the ball 95% of frames, Postma 2014) with a serially
+ * correlated error (0.25 s, choice); bearing 0.5-1.0 deg and range
  * 5-10 % (choice, from psychophysics orders of magnitude); eye range 30 deg (choice); head 6 rad/s within 90 deg
  * (GAZE). Ratings: ballTracking for offense, ballSkills for defense, between best and worst.
  */
@@ -28,7 +29,11 @@ import type { PlaySim } from './playsim.js';
 
 export const BALL_EST = process.env.BALL_EST === '1';
 
-const SAMPLE_EVERY = 0.25;
+/** Attempt 2: continuous pursuit (a sample every perception step while in eye range), the error a first-order
+ * process with this time constant (choice); each sample is weighted as dt / ERR_TAU of an independent one. */
+const ERR_TAU = 0.25;
+/** Compute only: he refits at most this often (the samples between are all used). */
+const REFIT_EVERY = 0.1;
 const HEAD_RATE = 6;
 const NECK = Math.PI / 2;
 const EYE = (30 * Math.PI) / 180;
@@ -46,8 +51,11 @@ interface Track {
   headT: number;
   attendT: number;
   lastSampleT: number;
+  /** His current error state (range, two bearings), standard-normal units, carried between samples. */
+  err: [number, number, number] | null;
   samples: Sample[];
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
+  fitT: number;
   path: PathSample[] | null;
   pathT: number;
   /** Aim-point jumps over 1 yd after his third sample (continuity budget). */
@@ -80,24 +88,29 @@ export class BallEstimates {
       const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
       tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -NECK, NECK);
       tr.headT = sim.t;
-      if (sim.t - tr.lastSampleT < SAMPLE_EVERY - 1e-9) continue;
       const delay = a.mind.observationDelay(a.profile.reactionTime);
       const seen = this.ballAt(sim.t - delay);
       if (!seen) continue;
       const bearing = Math.atan2(seen.p.y - a.pos.y, seen.p.x - a.pos.x);
       if (Math.abs(angDiff(bearing, tr.head)) > EYE) continue;
+      // The error carries over from his last sample, decaying with ERR_TAU; a fresh look starts a fresh error.
+      const gap = sim.t - tr.lastSampleT, rho = Number.isFinite(gap) ? Math.exp(-gap / ERR_TAU) : 0;
       tr.lastSampleT = sim.t;
       const s = skill(a), sa = BEARING_WORST + (BEARING_BEST - BEARING_WORST) * s, sr = RANGE_WORST + (RANGE_BEST - RANGE_WORST) * s;
       const eye: Vec3 = { x: a.pos.x, y: a.pos.y, z: a.profile.heightYd * 0.93 };
       const d: Vec3 = { x: seen.p.x - eye.x, y: seen.p.y - eye.y, z: seen.p.z - eye.z };
       const r = Math.max(0.5, Math.hypot(d.x, d.y, d.z)), u: Vec3 = { x: d.x / r, y: d.y / r, z: d.z / r };
       const dice = sim.dice(`ball-est:${tr.samples.length}`, a);
+      const k = Math.sqrt(1 - rho * rho), prev = tr.err ?? [0, 0, 0];
+      tr.err = [rho * prev[0] + k * dice.normal(0, 1), rho * prev[1] + k * dice.normal(0, 1), rho * prev[2] + k * dice.normal(0, 1)];
       // Range error along the line of sight; bearing error across it (two perpendicular directions).
       const e1 = perp(u), e2 = cross(u, e1);
-      const er = dice.normal(0, sr * r), ea = dice.normal(0, sa * r), eb = dice.normal(0, sa * r);
+      const er = tr.err[0] * sr * r, ea = tr.err[1] * sa * r, eb = tr.err[2] * sa * r;
       const p: Vec3 = { x: seen.p.x + u.x * er + e1.x * ea + e2.x * eb, y: seen.p.y + u.y * er + e1.y * ea + e2.y * eb, z: seen.p.z + u.z * er + e1.z * ea + e2.z * eb };
-      tr.samples.push({ t: seen.t, p, along: u, sr: sr * r, sa: sa * r });
-      if (tr.samples.length >= 2) {
+      const inflate = Math.sqrt(Math.max(1, ERR_TAU / sim.dt));
+      tr.samples.push({ t: seen.t, p, along: u, sr: sr * r * inflate, sa: sa * r * inflate });
+      if (tr.samples.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
+        tr.fitT = sim.t;
         const before = tr.path ? landing(tr.path) : null;
         tr.fit = fitFlight(tr.samples, (ball.flight as BallFlight).drag);
         tr.path = null;
@@ -112,7 +125,7 @@ export class BallEstimates {
   estimate(a: Agent, sim: PlaySim): PathSample[] {
     let tr = this.tracks.get(a);
     if (!tr) {
-      tr = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, samples: [], fit: null, path: null, pathT: -1, jumps: 0 };
+      tr = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 };
       this.tracks.set(a, tr);
     }
     if (tr.flight !== this.flight && sim.ball.kind === 'air' && sim.ball.flight === this.flight) { this.reset(tr); tr.flight = this.flight; }
@@ -126,7 +139,7 @@ export class BallEstimates {
   jumpsOf(a: Agent): number { return this.tracks.get(a)?.jumps ?? 0; }
 
   private reset(tr: Track): void {
-    tr.samples = []; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.jumps = 0;
+    tr.samples = []; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
   }
 
   private pathOf(sim: PlaySim, tr: Track): PathSample[] {
@@ -183,13 +196,15 @@ export function fitFlight(samples: Sample[], drag: number): { t0: number; p: Vec
   let p: Vec3 = { ...samples[0].p }, v: Vec3 = { x: 0, y: 0, z: 0 };
   for (let iter = 0; iter < 3; iter++) {
     const A = Array.from({ length: 6 }, () => new Array(6).fill(0)), bvec = new Array(6).fill(0);
+    // One flight from the current fit, read at each sample's time (samples are in time order).
+    const b: BallFlight = { pos: { ...p }, vel: { ...v }, drag };
+    let bt = 0;
     for (const s of samples) {
       const tau = s.t - t0;
       // The drag's displacement relative to the drag-free arc, from the current fit.
       let dd: Vec3 = { x: 0, y: 0, z: 0 };
       if (iter > 0 && tau > 0) {
-        const b: BallFlight = { pos: { ...p }, vel: { ...v }, drag };
-        stepFlight(b, tau);
+        if (tau > bt) { stepFlight(b, tau - bt); bt = tau; }
         dd = { x: b.pos.x - (p.x + v.x * tau), y: b.pos.y - (p.y + v.y * tau), z: b.pos.z - (p.z + v.z * tau - 0.5 * G * tau * tau) };
       }
       const y: Vec3 = { x: s.p.x - dd.x, y: s.p.y - dd.y, z: s.p.z - dd.z + 0.5 * G * tau * tau };
