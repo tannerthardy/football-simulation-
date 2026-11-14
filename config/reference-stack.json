@@ -202,6 +202,7 @@
     "PAIR_HANDS": "off",
     "ENGAGE_FELT": "off",
     "ENGAGE_TRUNK": "off",
+    "CHEST_SHOULDERS": "off",
     "EXPORT_SHOULDERS": "off",
     "TRUNK_TWIST": "off",
     "PUNCH_STRIKE": "on",

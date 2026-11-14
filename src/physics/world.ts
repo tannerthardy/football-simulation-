@@ -550,6 +550,18 @@ if (HANDS_LEVER && !HANDS_CHEST) throw new Error('HANDS_LEVER=1 requires HANDS_C
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
 const CHEST_HALF = 0.27 - 0.15;
+/** CHEST_SHOULDERS (experimental, off; CHEST_SHOULDERS=1, needs TRUNK_TWIST=1; lives with ENGAGE_TRUNK): a torso's chest
+ * segment (the hands' chest points, HANDS_LEVER's and PAIR_HANDS' lever arms, TORSO_CAPSULE's shoulder line) lies across
+ * where his chest points, his shoulders (hips plus the trunk twist), not across his hips. With no twist the two are the
+ * same number, so an untwisted body is unchanged. Off, the segment lies across the hips (the gait heading) whatever the
+ * trunk does: a blocker whose shoulders are on the man and hips on his set met the man with his hip line (Tools' and
+ * Integration's review, 2026-11-14: on claude/trunk-stage1 shouldersOf reached only the report fields). */
+export const CHEST_SHOULDERS = process.env.CHEST_SHOULDERS === '1';
+if (CHEST_SHOULDERS && !TRUNK_TWIST) throw new Error('CHEST_SHOULDERS=1 requires TRUNK_TWIST=1');
+/** The heading the chest segment lies across (CHEST_SHOULDERS: the shoulders; off: the facing). */
+const chestHeading = (b: Body): number => CHEST_SHOULDERS ? shouldersOf(b) : b.facing;
+/** The chest segment's half-vector (CHEST_HALF long, across the chest heading); exported for its law test. */
+export function chestHalf(b: Body): Vec2 { const f = chestHeading(b); return { x: -Math.sin(f) * CHEST_HALF, y: Math.cos(f) * CHEST_HALF }; }
 /** Experimental (TORSO_CAPSULE=1, off): a torso is wider than it is deep. For
  * the pairs the owner names (World.capsulePair; PlaySim: the ball carrier and
  * a defender), the torso contact is between two capsules across each man's
@@ -570,7 +582,8 @@ const TORSO_DEPTH = 0.15 / 0.27;
 function capsuleGeom(a: Body, b: Body): { nx: number; ny: number; s: number; R: number; rax: number; ray: number; rbx: number; rby: number } {
   const da = a.profile.radius * TORSO_DEPTH, db = b.profile.radius * TORSO_DEPTH;
   const la = a.profile.radius - da, lb = b.profile.radius - db;
-  const ux = -Math.sin(a.facing), uy = Math.cos(a.facing), vx = -Math.sin(b.facing), vy = Math.cos(b.facing);
+  const fa = chestHeading(a), fb = chestHeading(b);
+  const ux = -Math.sin(fa), uy = Math.cos(fa), vx = -Math.sin(fb), vy = Math.cos(fb);
   const rx = b.pos.x - a.pos.x, ry = b.pos.y - a.pos.y;
   // Closest points of a.pos + sa·u (|sa| <= la) and b.pos + tb·v (|tb| <= lb).
   const uv = ux * vx + uy * vy, ur = ux * rx + uy * ry, vr = vx * rx + vy * ry, den = 1 - uv * uv;
@@ -759,8 +772,8 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
  * points (segments of half-length CHEST_HALF across each man's facing). */
 /** HANDS_LEVER: the chest points' offsets from each centre, and the line between them. */
 function chestArms(a: Body, b: Body): { x: number; y: number; rax: number; ray: number; rbx: number; rby: number } {
-  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
-  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  const { x: ux, y: uy } = chestHalf(a);
+  const { x: vx, y: vy } = chestHalf(b);
   const c = chestPoints(a, b);
   // Recover the segment parameters chestPoints chose: c = (b + t v) - (a + s u).
   const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
@@ -777,18 +790,18 @@ function chestArms(a: Body, b: Body): { x: number; y: number; rax: number; ray: 
 /** PAIR_HANDS: an outside hand on the man's near shoulder: the end of b's chest segment nearer a, from a's chest point
  * closest to it; the line between them and each point's offset from its centre (the lever arms). */
 function shoulderArms(a: Body, b: Body): { x: number; y: number; rax: number; ray: number; rbx: number; rby: number } {
-  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  const { x: vx, y: vy } = chestHalf(b);
   const sgn = (a.pos.x - b.pos.x) * vx + (a.pos.y - b.pos.y) * vy >= 0 ? 1 : -1;
   const rbx = sgn * vx, rby = sgn * vy, px = b.pos.x + rbx, py = b.pos.y + rby;
-  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
+  const { x: ux, y: uy } = chestHalf(a);
   const sa = clamp(((px - a.pos.x) * ux + (py - a.pos.y) * uy) / (ux * ux + uy * uy), -1, 1);
   const rax = sa * ux, ray = sa * uy;
   return { x: px - (a.pos.x + rax), y: py - (a.pos.y + ray), rax, ray, rbx, rby };
 }
 
 function chestPoints(a: Body, b: Body): Vec2 {
-  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
-  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  const { x: ux, y: uy } = chestHalf(a);
+  const { x: vx, y: vy } = chestHalf(b);
   // Segments p(s) = a + s u, q(t) = b + t v, s, t in [-1, 1].
   const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
   const uu = ux * ux + uy * uy, vv = vx * vx + vy * vy, uv = ux * vx + uy * vy;
