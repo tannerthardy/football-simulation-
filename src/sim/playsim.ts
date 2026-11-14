@@ -844,35 +844,42 @@ export class PlaySim {
     return seen;
   }
 
-  /** SEE_SIGHT (SIGHT_CARRIER): his picture of a man he cannot see now (out of view, or a body across the line by
-   * `lineOfSight`'s heights) is the last one he had, carried forward on its velocity and ageing: he acts on where he
-   * expects him and does not forget him. When the man comes back into sight the fresh picture takes over only once it
-   * shows a moment he was in sight (one delay later). Under GAZE the view half is GAZE's own (`remembered`); this adds
-   * the occlusion. A man he has had no picture of since this check began is the oldest record kept (about 1.2 s). */
+  /** SEE_SIGHT (SIGHT_CARRIER): his picture of a man is the newest moment, at least his ordinary delay back, at which he
+   * had the man in sight: in view (within 1.8 rad of his body facing then; under GAZE the view half is GAZE's own
+   * `remembered`, and this adds occlusion) and with no body across the line by `lineOfSight`'s heights, everyone where
+   * the perception record has him then. That moment is carried forward on the velocity it showed, so a man he cannot
+   * see now ages from when he last saw him and is picked up one delay after he is back in sight. Visibility at a past
+   * tick never changes, so it is kept per tick. Beyond the record (about 1.2 s): the last picture he had, ageing. */
   private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean): Perceived {
-    const key = `${observer.idx}>${target.idx}`, mem = (this.sightKept ??= new Map());
-    let m = mem.get(key);
-    if (m && m.asked < this.t - this.dt - 1e-9) m.since = null;
-    const inView = gazeView || Math.abs(angDiff(Math.atan2(target.pos.y - observer.pos.y, target.pos.x - observer.pos.x), observer.body.facing)) <= 1.8;
-    const visible = inView && lineOfSight(this.agents, observer, target);
-    const aged = (k: { pic: Perceived; at: number }): Perceived => {
-      const dt = this.t - k.at;
-      return { ...k.pic, pos: { x: k.pic.pos.x + k.pic.vel.x * dt, y: k.pic.pos.y + k.pic.vel.y * dt }, age: (k.pic.age ?? 0) + dt };
+    const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
+    const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
+    const visibleAt = (back: number): boolean | null => {
+      const k = `${key}@${now - back}`, hit = memo.get(k);
+      if (hit !== undefined) return hit;
+      const rec = (a: Agent) => this.perception.recorded(a.idx, back * this.dt)?.pos ?? null;
+      const ro = this.perception.recorded(observer.idx, back * this.dt), rt = rec(target);
+      if (!ro || !rt) return null;
+      const inView = gazeView || Math.abs(angDiff(Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x), ro.facing)) <= 1.8;
+      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec);
+      memo.set(k, v);
+      return v;
     };
-    if (!m) {
-      m = visible ? { pic: seen, at: this.t, since: this.t - 1, asked: this.t }
-        : { pic: this.perception.perceive(target.idx, 1.2), at: this.t, since: null, asked: this.t };
-      mem.set(key, m);
-      return visible ? seen : m.pic;
+    if (memo.size > 200000) memo.clear();
+    for (let back = Math.round((seen.age ?? 0) / this.dt); ; back++) {
+      const v = visibleAt(back);
+      if (v === null) break;
+      if (!v) continue;
+      const pic = back === Math.round((seen.age ?? 0) / this.dt) ? seen : this.perception.perceive(target.idx, back * this.dt);
+      kept.set(key, { pic, at: this.t });
+      return pic;
     }
-    m.asked = this.t;
-    if (!visible) { m.since = null; return aged(m); }
-    if (m.since === null) m.since = this.t;
-    if (this.t - m.since + 1e-9 < (seen.age ?? 0)) return aged(m);
-    m.pic = seen; m.at = this.t;
-    return seen;
+    const m = kept.get(key);
+    if (!m) return this.perception.perceive(target.idx, 1.2);
+    const dt = this.t - m.at;
+    return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
   }
-  private sightKept?: Map<string, { pic: Perceived; at: number; since: number | null; asked: number }>;
+  private sightAt?: Map<string, boolean>;
+  private sightKept?: Map<string, { pic: Perceived; at: number }>;
 
   /** What `observer` perceives of `target` he is tracking: a continuous, attended read (the man he mirrors, the carrier
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a

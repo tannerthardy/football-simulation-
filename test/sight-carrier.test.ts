@@ -39,10 +39,13 @@ describe('SIGHT_CARRIER: a man behind him is the picture he last had', () => {
     // In view: the ordinary picture.
     expect(rows[a - 1].age).toBeCloseTo(rows[a - 1].plainAge, 9);
     for (let i = a + 1; i <= z; i++) {
-      // Behind him: it ages a tick at a time and moves only on the velocity he last saw, no jump.
-      expect(rows[i].age).toBeCloseTo(rows[i - 1].age + sim.dt, 6);
+      // Behind him: once the last samples from when he could see the man have arrived (one delay), the picture ages a
+      // tick at a time and moves only on the velocity he last saw, no jump.
+      if (rows[i - 1].age > rows[i - 1].plainAge + 1e-9) expect(rows[i].age).toBeCloseTo(rows[i - 1].age + sim.dt, 6);
+      else expect(rows[i].age).toBeGreaterThanOrEqual(rows[i - 1].age - 1e-9);
       expect(Math.abs(rows[i].x - rows[i - 1].x)).toBeLessThan(7 * sim.dt + 1e-6);
     }
+    expect(rows[z].age).toBeGreaterThan(rows[z].plainAge + 0.1);
     // The plain picture keeps tracking the man he cannot see; the kept one is where he expects him, and falls behind.
     expect(rows[z].plainAge).toBeLessThan(rows[z].age);
     expect(rows[z].err).toBeGreaterThan(rows[z].plainErr);
@@ -50,12 +53,20 @@ describe('SIGHT_CARRIER: a man behind him is the picture he last had', () => {
 
   it('when he turns to face the man again, the fresh picture takes over one delay later', async () => {
     const { sim, man, d } = await scene();
-    for (let k = 0; k < 16; k++) { sim.tick(); (sim as any).sighted(man, d, sim.see(man, d), false); }
+    // Run until the man has been behind him for half a second.
+    let behindFor = 0;
+    for (let k = 0; k < 40 && behindFor < 10; k++) {
+      sim.tick(); (sim as any).sighted(man, d, sim.see(man, d), false);
+      const b = Math.atan2(d.pos.y - man.pos.y, d.pos.x - man.pos.x) - man.body.facing;
+      behindFor = Math.abs(Math.atan2(Math.sin(b), Math.cos(b))) > 1.8 ? behindFor + 1 : 0;
+    }
+    expect(behindFor).toBe(10);
     // He turns round (a glance back is his choice; here he is simply turned).
     man.body.facing = Math.PI; man.behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 }, facing: Math.PI }) } as any;
     const ages: number[] = [], plain: number[] = [];
     for (let k = 0; k < 12; k++) { sim.tick(); const p = sim.see(man, d); plain.push(p.age ?? 0); ages.push(((sim as any).sighted(man, d, p, false).age ?? 0)); }
     const back = ages.findIndex((x, i) => Math.abs(x - plain[i]) < 1e-9);
+    expect(ages[0]).toBeGreaterThan(plain[0] + 1e-9);
     expect(back).toBeGreaterThan(0);
     expect(back).toBeLessThanOrEqual(Math.ceil(plain[0] / sim.dt) + 1);
   });
