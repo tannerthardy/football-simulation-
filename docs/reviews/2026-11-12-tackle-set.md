@@ -3333,3 +3333,42 @@ longarm-switch.mts, seed 11 x 6 games, arm B:
 **KEYED_FELT's long-arm share.** Long-arm episodes fall 15% → 6% of interior decisions and 8% → 3% of tackle ones. The
 ordinary weighted list still offers it to a shorter man by his power rating, so the median arm difference stays
 -1.0 in.
+
+### The re-diagnosis: the hand model with KEYED_FELT and LONGARM_STRUT as the base (arm H), 2026-11-14
+
+Arm A is engine-61 (the candidate, 10b45831 base). Arm H is A + RUSH_HANDS + RUSH_ONE_HAND + RUSH_ARM_BALANCE +
+KEYED_FELT + LONGARM_STRUT. 16 games x seeds 11 / 23:
+
+| | A | H | NFL |
+|---|---|---|---|
+| interior DL/LB pressure | 9.3 / 9.6% | 17.0 / 12.4 | 9.8 |
+| pressured | 28.2 / 26.1 | 35.1 / 28.8 | 32.9 |
+| edge past outside | 0.4 / 0.3 | 0.7 / 0.6 | 3.8 |
+| rusher free | 36 / 35% | 41 / 37 | 38 |
+| within 2 yd before the ball is out | 23.9 / 21.6 | 30.1 / 23.6 | 27.6 |
+| sacked | 5.9 / 4.2 | 6.7 / 5.1 | |
+| interior come-offs from own blocker /100 (time p50) | 32 / 29 (2.6-2.8 s) | 48 / 47 (2.2-2.3 s) | NFL reps 3.1-3.2 s |
+| DL falls /100 | 5.7 / 5.0 | 6.1 / 6.2 | about 1 |
+| OL falls /100 | 5.3 / 3.2 | 4.5 / 4.8 | |
+
+**Interior end states** (interior-free.mts, seed 11 x 8 games), per 100 dropbacks:
+
+| end state | A | H |
+|---|---|---|
+| past him, both hands on | 9.1 (dip 21, bull 12) | 11.7 (club 61 of 78; rep 1.40 s against 1.65) |
+| past him / other, one hand off | 0 | 2.8 |
+| long-arm on | 0 | 1.7 (was 3.1 before the strut) |
+| club in flight | 0 | 0.7 |
+| all interior endings | 17.5 | 23.6 |
+
+**Long-arm by arm difference** (H, longarm-switch.mts):
+- Interior: a shorter rusher's long-arm wins no more than a longer one's (past him 2.3% vs 2.6%). The gap exceeds the
+  blocker's arm in 11% vs 13% of episodes.
+- Tackles: the longer man reaches it far more often (33% vs 14%), and both win under 2%.
+
+**Read.** The two corrections reduce the hand model's interior excess but do not remove it: interior pressure is 17.0 /
+12.4 against 9.8. Most of what is left is the club with both hands on, ending reps about 0.25 s sooner. Under
+RUSH_HANDS a struck hand that does not come off slides toward the man's edge. While it is offset, the joint's push,
+hold and steer are scaled down (`handEdge`), until he walks it back at ARM_SPEED, and only once the hand has stopped.
+The next diagnostic is that window: the blocker's steer limit over time after a club that leaves both hands on, and
+whether the rusher's pass comes while it is reduced. The hand model stays held.
