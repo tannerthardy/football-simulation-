@@ -28,21 +28,20 @@ The pin matters for the 337. Of the 474 core files, **334 already pass on the re
 
 ## (2) What fails, and why
 
-Bucketed by assertion kind first (a heuristic over the failure message, not a diagnosis): value or shape differs 70 files (162 assertions), a recorded number moved 64 files (100), an exception 5 files
-(37), premise-absent comparisons (a value that should be positive or non-empty is not) are inside the first two. The per-file list is at the end. Reading samples of each gives these causes, which no number bucket can separate:
+By assertion message first (a heuristic over the failure text, not a diagnosis): of the 392 failing assertions, 162 are a value or shape that differs, 100 a number that moved, 82 a comparison that should be positive or non-empty and is not, 37 an exception, 11 other (including the 2 Node-version errors). By file, the dominant kind is value/shape in 70 files, number in 64 and exception in 5. Reading samples gives these causes, which a message bucket cannot separate:
 
 - **Fixture API drift (stub too thin).** `press-contact.test.ts`, 15 tests: a hand-built `sim` has no `see`, and `RouteRunner.getOff` (`receiver.ts:242`) now calls it under a promoted flag. The fixture must provide the perception call.
 - **A real defect candidate.** `schematic-stress` (5), `prethrow-opi` (4) and `cov7-abandonment` (2): `sampleRoutes` (`read-compiler/features.ts:29`) throws `Cannot read properties of undefined (reading 'personnel')` because `FORMATION_BY_ID[formationId]` is undefined. The QB path calls `installedPlan(concept, sim.offCall.formation.id)` (`qb.ts:423`) and the compiler assumes a registered formation. A custom formation (lab scenes, these fixtures) crashes where it should fall back to no installed plan. Not a fixture problem: `installedPlan` should return null for an unknown formation.
 - **Premise changed by design.** `chase-arrival.test.ts`: a fresh and a tired defender now command the same chase velocity (1.959 against 1.959), so "the tired one commands less" is false. That is the requested-versus-achieved rule (the body, not the request, carries the fatigue). The lane restates the premise as achieved velocity, not as a smaller request.
-- **Staged scene whose premise no longer occurs.** `back-man-run-fit` (12: the man defender's x velocity is -2.4 where the scene expects it positive), `combo-attention` (18: -25.6 against greater than 0), `dl-games` (7: two defenders own a gap where the scene allows one). These need the owning lane to say whether the new behaviour is right.
-- **Recorded numbers that moved** (64 files): about a third are float-equality or tolerance edges; the rest are real changes in the quantity.
+- **Staged scene whose premise no longer occurs.** `back-man-run-fit` (12: a velocity the scene expects positive is -2.4), `combo-attention` (18: a value expected above 0 is -25.6), `dl-games` (7: two defenders own a gap where the scene allows one). These need the owning lane to say whether the new behaviour is right.
+- **Recorded numbers that moved** (64 files): not read yet beyond a sample. They need the owning lane to say whether the new value is right.
 
 Only one cluster (11 tests) looks like an engine defect from this pass. **Nothing in the other 128 files has been confirmed as a defect or as correct**; that is what the lane restatement decides.
 
 ## (3) Plan that does not lose coverage
 
 **Stage 0, flip what already passes (Tools, a small change).** Two vitest projects over the same file list: `core` (pinned) for the 139 files that need it, and `core-defaults` (no pin) for the 334 that pass on the real defaults, from a checked-in manifest `test/engine-defaults.json` that a script regenerates from a run. A test fails if the manifest loses a file or a pinned file is added. This puts **70% of the core suite on the real engine at once, with no number changed**, and the pin can only shrink.
-Check it against Integration's example: the QB lane's pass fixtures that do not fail on defaults move off the legacy path immediately, so `held()`'s legacy branch loses those callers on day one.
+Against Integration's example: the pass fixtures that already pass on defaults stop running `held()`'s legacy branch at once; what still blocks deleting it is the failing files that need `BLOCK_SEEN` pinned, which Stage 1 names.
 
 **Stage 1, find which flags each failing file needs pinned (Tools, a script).** For each of the 139 files, delta-debug the flag list (run the file with half the promoted flags lifted, narrow to the minimal set that breaks it). The 139 files take 761 s of test time summed over one run, and a single culprit takes about 8 runs, so a full pass is about 3 CPU-hours, under an hour on four cores. Output: per file, the flags that must stay pinned, and per flag, the files blocking its deletion. That is the actual unblock list for each removal.
 
