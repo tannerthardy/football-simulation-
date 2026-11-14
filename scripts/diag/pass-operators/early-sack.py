@@ -14,6 +14,10 @@ offensive non-QB within 1.2 yd of him, inferred from tracking, weak):
     spot was outside the outermost OL's, else interior.
   - 'crossed' (stunt/twist proxy): by the frame he came free (or 1.5 s), his order across the field among the
     rushers on the line at the snap has changed (he went across a teammate's snap spot).
+The time he can no longer throw (Integration, 2026-11-14): the start of the last unbroken stretch, ending at the sack, in
+which some defender is within 1.5 yd of him. On 12 sim sacks (seed 11-12) it falls within 0.1 s of the sim's first wrap
+on him on 10, 0.7 s early on one (a man near but not wrapping); the whistle comes 0.25-0.9 s after the wrap. Sack times
+and 'still holding' use this cut, not the play's end.
 Then the other end: the share of dropbacks still holding the ball, behind the line, at 3.0 / 4.0 / 5.0 s, and how
 those end (throw, run, sack).
 Limits: geometric proxies (alignment, not assignment; no move labels); n is small in ours.
@@ -59,10 +63,20 @@ for arg in args:
             fw = ev.get('pass_forward'); kend = held_end(raw, p, qb, min(p.frames - 1, p.k(fw if fw is not None else p.end)))
             crossed = any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1))
             res = 'throw' if fw is not None else 'run' if crossed else 'sack'
+            kcut = kend
+            if res == 'sack':
+                D = [d for d in p.who('D')]
+                def near(k):
+                    qx, qy = p.pos(qb, k)
+                    return qx is not None and any(p.pos(d, k)[0] is not None and math.hypot(p.pos(d, k)[0] - qx, p.pos(d, k)[1] - qy) <= 1.5 for d in D)
+                k = kend
+                while k > 0 and near(k - 1): k -= 1
+                if near(kend): kcut = k
             for T, c in hold.items():
                 kT = p.k(T)
-                if kT <= kend and not any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kT + 1)): c[res] += 1
+                if kT <= kend and (res != 'sack' or kT < kcut) and not any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kT + 1)): c[res] += 1
             if res != 'sack': continue
+            kend = kcut
             x, y = p.pos(qb, kend)
             RU = [d for d in p.who('D') if p.players[d]['group'] in ('DL', 'LB') and p.pos(d, kend)[0] is not None]
             if not RU or x is None: continue

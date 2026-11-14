@@ -3759,3 +3759,31 @@ leads only the rusher's inward motion (blocking.ts). Seeds 11 and 23 x 8, off ->
 
 **Next piece:** the rusher's finish once level, i.e. the corner. It is still held along the line (into-and-past 1.7
 against 2.4) and not turned past (8% against 30%).
+
+**Correction (same day): the clock stopped at the play's end, which counted the wrap.** For a sack the ball stays with
+him, so the clock ran to the whistle, and the time he was wrapped and going down counted as holding. Checked on 12
+sim sacks (seeds 11-12):
+- The first wrap on the QB comes 0.25-0.9 s before the sack event.
+- A defender within 1.5 yd falls within 0.1 s of the wrap on 10 of 12; on one it is 0.7 s early, a man near but not
+  wrapping.
+
+The cut is now the start of the last unbroken stretch, ending at the sack, with a defender within 1.5 yd, the same on
+NFL and ours:
+
+| | NFL | ours |
+|---|---|---|
+| time to sack p10/25/50/75/90 | 2.3/2.6/3.1/4.1/5.6 | 2.1/2.4/2.6/3.1/3.6 |
+| before 3.0 s, of dropbacks | 2.90% | 3.97% |
+| before 3.0 s: edge in / edge out / interior in / interior out | 35 / 22 / 24 / 18% | 28 / 13 / 35 / 24% |
+| before 3.0 s: came free p50; sacker an edge | 2.3 s; 58% | 1.9 s; 39% |
+| 3.0 s and after: came free p50 | 3.2 s | 2.7 s |
+| holding at 4.0 s, of dropbacks; ends throw / run / sack | 14%; 59 / 28 / 12% | 7%; 76 / 20 / 5% |
+| holding at 5.0 s | 7%; 51 / 36 / 14% | 1%; 37 / 63 / 0% |
+
+**What survives:**
+- Our sacks come early: p50 0.5 s, and the tail 1-2 s.
+- The rusher comes free 0.4-0.5 s early (not a second).
+- Early sackers lean interior (35% interior-inside vs 24%; edge sacker 39% vs 58%).
+
+**What does not:** "holding at 5.0 s ends in a sack 81%" was the wrap counted as holding; it is withdrawn. Ours now
+agrees with the QB lane's late-hold-ends.py on the late end (fewer still holding at 4-5 s, few of them sacked).
