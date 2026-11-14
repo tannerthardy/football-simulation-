@@ -4091,3 +4091,17 @@ do not award a block win"). It is under every edge result since the first contac
 
 The arm-yield question is moot until this is settled: the arm's capacity is real, and the roll decides how much of it
 each rep gets.
+
+**Two more on the same trace (Integration's follow-up):**
+
+| | all (257) | went past (39) | stayed level (218) |
+|---|---|---|---|
+| control changes in the 0.5 s level phase, p50 per rep | 1 | 1 | 0 |
+| reps where it changes at all | 53% | 72% | 50% |
+| share of the press delivered with the rusher more than 60 deg off the line of the tackle's retreat (his velocity) | 88% | 65% | 91% |
+
+- Nothing moves `control` at the hip except a move resolving: about one change per rep, and half the held reps none.
+  It is the rolled state from the rep's start and the last move.
+- The named gap, sized: almost all of the press that holds the rusher (88%) is delivered sideways to the tackle's line
+  of retreat, by a standing man pressing at someone beside his hip. With an isotropic base and the chest turned to
+  face, nothing prices that direction.
