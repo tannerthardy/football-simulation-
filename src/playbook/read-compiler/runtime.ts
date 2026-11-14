@@ -36,13 +36,43 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
  * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
  *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
+/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, six concepts the compiler ran as pure orders key as taught:
+ * slant_flat, stick, fade_flat, double_slants by their own sources; quick_outs and hitch_out by the family rule for a
+ * two-receiver quick combination (the front-side flat defender, on the third step). Trips stick and seam-slant stay
+ * pure progressions: no source for trips stick's alert (a keyed plan demotes it to third), and seam-slant's hook key
+ * would be double slants' borrowed for a different structure. */
+export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 !== '0';
+const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
-const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean }> = {
-  drive: { low: 'W2', high: 'S2', role: 'hook', deep: false },
-  pa_post_dig: { low: 'W1', high: 'S1', role: 'deep_free_safety', deep: true },
-  smash: { low: 'S1', high: 'S2', role: 'corner', deep: false },
-  corner_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false },
+/** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
+const FIVE_STEP_BEAT = 0.8;
+const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
+/** The coached key per concept, and the danger: the defender the coaching warns about on the answer (the window
+ * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
+ * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
+ * safety will allow"). Key and danger sources are in docs/reviews/2026-11-14-read-plan-table.md. */
+const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
+  // The four the compiler keyed on another defender.
+  drive: { low: 'W2', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' },
+  pa_post_dig: { low: 'W1', high: 'S1', role: 'deep_free_safety', deep: true, danger: 'the hook defender under the dig' },
+  smash: { low: 'S1', high: 'S2', role: 'corner', deep: false, danger: 'the half-field safety over the corner route' },
+  corner_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false, danger: 'the half-field safety over the corner route' },
+  // PLAN_KEYS_2: concepts the compiler ran as pure orders, with their sourced keys.
+  slant_flat: { low: 'S2', high: 'S1', role: 'curl_flat', deep: false, danger: 'the hook defender inside the slant' },     // Dunn, USA Football
+  stick: { low: 'S3', high: 'S2', role: 'flat', deep: false, danger: 'the Mike inside the stick' },                         // Throw Deep; Wilhite (danger: the Mike; the vertical peeked pre-snap)
+  fade_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false, danger: 'the half-field safety over the fade' },         // Cover 2 beater
+  double_slants: { low: 'S1', high: 'S2', role: 'hook', deep: false, danger: 'the next defender inside' },                // Galina, USA Football
+  // The family rule for a two-receiver quick combination, as taught: read the front-side flat defender and throw away
+  // from him, on the third step (Jenkins, "The Ten Basic Quarterback Reads"; USA Football, "Basic Knowledge About
+  // Reads"). The cue is the set, not the low route's ready time.
+  quick_outs: { low: 'S1', high: 'S2', role: 'flat', deep: false, danger: 'the corner over the out', onSet: true },
+  hitch_out: { low: 'S2', high: 'S1', role: 'flat', deep: false, danger: 'the corner over the hitch', onSet: true },
+};
+/** The danger on the keys the compiler already names correctly (PLAN_KEYS adds it; the key itself is unchanged). */
+const DANGER: Record<string, string> = {
+  curl_flat: 'the hook defender walling the curl', dagger: 'the hook defender under the dig',
+  four_verts: 'the corner over the go when the safety takes the seam',
 };
 const INSTALL_ORDER: Record<string, ReceiverRef[]> = {
   mesh: ['S1', 'S2', 'W2'],
@@ -57,7 +87,7 @@ export interface InstalledPlan {
   outlet: ReceiverRef | null;
   alert: ReceiverRef | null;
   /** Defender key: read the defender between `low` and `high` at `cueBy` s after the snap. */
-  key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number } | null;
+  key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number; danger?: string } | null;
   /** Triangle: three routes read as one picture, top-down; vertical peek: the verticals as one look, then the back. */
   triangle: ReceiverRef[] | null;
   /** The rhythm each read is installed on, for the QB lane's acceptance rule (data only; nothing reads it yet). The
@@ -83,7 +113,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -99,13 +129,14 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      const k = PLAN_KEYS ? KEYS[concept.id] : undefined;
+      const k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
-        const cueBy = +(k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
-        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy }, triangle: null,
+        const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
+        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger }, triangle: null,
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
+      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[concept.id]) plan = { ...plan, key: { ...plan.key, danger: DANGER[concept.id] } };
       // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
       const io = PLAN_KEYS ? INSTALL_ORDER[concept.id]?.filter((r) => routes.has(r)) : undefined;
       if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
@@ -113,11 +144,17 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
       if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
       // The rhythm (see InstalledPlan.rhythm): the coached step by place, and when his route is ready as installed.
+      // CONCEPT_DROPS: the five- and seven-step class reads its first answer on the hitch, and its hitch is the NFL's
+      // set-to-release at that depth ("five and a hitch": set 2.2 s, ball out 3.0, QB lane's drop-time.py), not the
+      // quick game's beat.
+      const fiveStep = CONCEPT_DROPS_RHYTHM && (concept.drop === 'five' || concept.drop === 'seven');
       const set = compiled.qbSetAt, steps = ['set', 'hitch', 'hitch2'] as const;
       const seq = [...plan.order, ...(plan.outlet && !plan.order.includes(plan.outlet) ? [plan.outlet] : [])];
+      const stepAt = (st: typeof steps[number]) => st === 'set' ? set : st === 'hitch' ? set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT)
+        : set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT) + RHYTHM_BEAT;
       plan.rhythm = seq.map((ref, i) => {
-        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(i, 2)];
-        const at = +(set + RHYTHM_BEAT * steps.indexOf(step)).toFixed(2);
+        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(fiveStep ? i + 1 : i, 2)];
+        const at = +stepAt(step).toFixed(2);
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         return { ref, step, at, ready, onTime: ready <= at + 1e-9 };
       });

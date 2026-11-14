@@ -40,7 +40,7 @@ export type CallBucket = '1st' | '2nd_short' | '2nd_med' | '2nd_long' | '3rd_sho
 const BREAK_DEPTH = 8;
 const BREAKING = new Set(['hitch', 'stick', 'hook', 'curl', 'comeback', 'quick_out', 'out', 'deep_out', 'short_in', 'dig', 'slant']);
 const FLAT = new Set(['flat', 'arrow', 'back_flat', 'swing', 'checkdown', 'angle']);
-const CROSS = new Set(['shallow', 'shallow_high', 'cross']);
+const CROSS = new Set(['shallow', 'shallow_high', 'mesh_under', 'cross']);
 
 /** The class of an installed route: label family plus its break depth. */
 export function routeClass(id: string): RouteClass {

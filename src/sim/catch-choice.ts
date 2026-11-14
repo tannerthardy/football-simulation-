@@ -28,10 +28,10 @@ export const CHOICE_SHOULDER = 0.82;
 export interface CatchChoice { p: Vec2; t: number; z: number; margin: number; latest: boolean; earliest: boolean }
 
 /** The point on the remaining path he plays, or null when no point is reachable (the caller falls back to catchSpot). */
-export function chooseCatchPoint(a: Agent, sim: PlaySim, judge: number): CatchChoice | null {
+export function chooseCatchPoint(a: Agent, sim: PlaySim, judge: number, path: PlaySim['ballPath'] = sim.ballPath): CatchChoice | null {
   const top = a.profile.maxCatchHeight * 0.92;
   const reachable: { p: Vec2; t: number; z: number }[] = [];
-  for (const s of sim.ballPath) {
+  for (const s of path) {
     if (s.t < sim.t) continue;
     if (s.z > top) { if (reachable.length) break; continue; }
     if (s.z < CHOICE_SHOULDER * a.profile.heightYd) break;
