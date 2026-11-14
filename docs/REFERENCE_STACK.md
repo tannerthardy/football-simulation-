@@ -607,6 +607,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-66: `RELEASE_BELIEF`, `ENGAGE_FELT`, `SCREEN_CALL`, `CLOUD_KILL` and `STALK_CLOSE` on (2026-11-14)
+
+**`RELEASE_BELIEF` (Defense, #738 `c6113748`).** Every defender's "the ball is out" comes from his own belief (the passer's arm as he sees it, or the ball seen), not the true air state. A defender who keyed the arm had been handed the ball's whole true path at the release with no delay (worth about 19 breakups and 3 interceptions in 8 games). In its place a zone defender with his eyes on the passer reads the passer's shoulders through the tracking channel, chooses at the delivery, and breaks to the receiver they point at (within 25 deg, one choice per belief, his read error by anticipation); a man defender stays on his man. The break goes to the right receiver about 57% of the time across three seeds: of the wrong ones, most have another receiver within 10 deg of the target, then the passer's own shoulders off the target, then the rated read error. A first build left a 0.3 s gap between "his flight has landed" and the catch carry, which put the nearest defender on a stale line (never reached 0.20 to 0.30 of short completions); with one test for both it is 0.22 / 0.26 against 0.18 to 0.20 before and the NFL's 0.20. Known residue: first move 0.5 s after release against 0.4 (NFL 0.4). **Remaining cheat, named:** once a defender has seen the ball, `acquireFlight` still gives him its true path; Coverage's `BALL_EST` replaces it (a defense-only bit is being built).
+
+**`ENGAGE_FELT` (Flex, patch from `claude/quirky-franklin-9lbwbp` `ca67eff3`).** An engaged man reads the man he is engaged with by touch at the hands' delay (0.06 s) while his hands carry load, and by sight at his sight delay when they do not, in place of the opponent's true position: facing for every engaged role, the ride trigger, the run blocker's seal and reach reads, the rusher's aims off the blocker's body, the run defender's touch reads. A first build stepped the picture back in time each time the hands' load crossed zero (about 0.5 times an engaged second); the delay now ages continuously from the last loaded tick, and the same picture serves `REP_SEEN`'s and `RUN_FEEL`'s reads, which had the step already. Outcome geometry (past and out of reach, the block lost behind his shoulders) stays on the World's bodies; the review lists what was kept true and why.
+
+**`SCREEN_CALL`, `CLOUD_KILL`, `STALK_CLOSE` (Rules+Coaching, #730 `036551cc`).** Six screens and the screen RPO were defined and never called; they are called (about 6 to 7% of attempts; NFL screens 8.5% of dropbacks), killed to the quick game against a cloud corner, and the perimeter blocker closes his man under control to a breakdown on the line to the catch and strikes the catch-side half, from his own picture. Screen defender who sheds and reaches the catcher within a second: 0.36 without `STALK_CLOSE`, 0.15 with it (NFL screens 0.13). **Stated weakness:** the block's hold is half the NFL's (engaged 0.4 s against 0.8; held half a second or more on 46% against 74%), so screens gain little against Cover 3 (the nickel wins through about 60%); that is the hands work. The RPO is thrown about 58% against the NFL's 30% (call mix, for the refit).
+
+Checks. Fresh run set 3.92 (engine-65 3.80; `ENGAGE_FELT`'s lane read was +0.10, SE 0.10); missed + broken open 0.293 (0.271; broken 0.094 to 0.119, which Flex traced in the lane to free tacklers the felt picture is never read for, within its counts' noise). Card against engine-65, 16 games a side, seeds 11 / 23 / 31 (`out/e75-card-*`):
+
+| arm | completion | yards / attempt | YAC / reception | sack rate | aDOT |
+|---|---|---|---|---|---|
+| `RELEASE_BELIEF` | -1.7 / -0.4 / +3.5 (moved) | -0.46 / +0.30 / +1.52 (moved) | -0.11 / +0.72 / +1.41 (moved) | -0.9 / -1.2 / +0.9 | +0.02 / +0.05 / -0.03 |
+| `ENGAGE_FELT` | -4.0 (moved) / -2.7 (moved) / +0.8 | -0.87 (moved) / -0.61 / +0.47 | -0.26 / -0.45 / +0.60 | +0.0 / -0.7 / +0.2 | +0.14 / +0.32 / -0.27 |
+| screens (three flags) | -2.4 / -2.9 (moved) / +2.0 | -0.79 (moved) / -0.66 / +0.28 | +0.07 / +0.11 / +0.38 | -0.1 / -0.3 / +0.5 | -0.32 (moved) / -0.30 / -0.36 (moved) |
+
+What agrees across seeds: the screens lower aDOT by about 0.3. Nothing else agrees; seed 31 is up in every arm. The two honesty changes land on the information rule.
+
+Suite on the flipped stack: the known research pair, and one fixture moved by `ENGAGE_FELT`, restated before merge (below).
+
 ## engine-65: `QB_KEY_MAN`, `PLAN_KEYS_2`, `TRUNK_TWIST`, `VERTICAL_SET`, `CROSS_FLAT` and `CUT_WALL` on (2026-11-14)
 
 **`QB_KEY_MAN` (QB lane, `claude/exciting-cori-hc8l4u` `e4f83660`).** A key read is taken on the concept's named defender and follows what that man does (his movement), not the position of whoever stands nearest the line between the two routes (the read landed on the named man on 39% of key reads before, 98% with it).
