@@ -21,11 +21,11 @@ P.tick = function () {
     const p = shoulderPickOf(d);
     if (p && p.R !== undefined && !this.__sb.has(d.idx + ':' + p.at)) {
       const q = this.qb;
-      this.__sb.set(d.idx + ':' + p.at, { p, ant: d.r('anticipation'), qpos: { ...q.pos }, qf: q.body.facing,
+      this.__sb.set(d.idx + ':' + p.at, { p, ant: d.r('anticipation'), qpos: { ...q.pos }, qf: q.body.facing, role: d.slot + ':' + (d.behavior?.constructor?.name ?? ''),
         others: this.offense.filter((o: any) => o !== q).map((o: any) => ({ o, b: Math.atan2(o.pos.y - q.pos.y, o.pos.x - q.pos.x) })) });
     }
   }
-  if (this.ball.kind === 'air' && !this.__tgt) this.__tgt = this.ball.target;
+  if (this.ball.kind === 'air' && !this.__tgt) { this.__tgt = this.ball.target; this.__rel = this.t; }
   return r;
 };
 P.buildResult = function () {
@@ -38,11 +38,17 @@ P.buildResult = function () {
       if (!v.p.R) continue;
       const tb = v.others.find((x: any) => x.o === this.__tgt)?.b;
       if (tb === undefined) continue;
+      const pb = v.others.find((x: any) => x.o === v.p.R)?.b;
       rows.push({ right: v.p.R === this.__tgt, ant: v.ant, err: v.p.read === null ? null : dif(v.p.read, tb),
-        close: v.others.some((x: any) => x.o !== this.__tgt && dif(x.b, tb) < 10), look: dif(v.qf, tb) > 15 });
+        close: v.others.some((x: any) => x.o !== this.__tgt && dif(x.b, tb) < 10), look: dif(v.qf, tb) > 15,
+        // detail for the 'neither' wrong picks: true facing vs target / vs pick, read vs true facing, target-pick gap,
+        // time from the pick to the release, target and pick distance from the passer, defender's role
+        qfT: dif(v.qf, tb), qfP: pb === undefined ? null : dif(v.qf, pb), rdF: dif(v.p.read, v.qf), dice: Math.abs(v.p.err * 180 / Math.PI), trk: dif(v.p.read - v.p.err, v.qf), sbT: v.p.seenBearing === null || pb === undefined ? null : dif(v.p.seenBearing, pb), gap: pb === undefined ? null : dif(pb, tb),
+        lead: this.__rel === undefined ? null : +(this.__rel - v.p.at).toFixed(2),
+        dT: Math.hypot(this.__tgt.pos.x - v.qpos.x, this.__tgt.pos.y - v.qpos.y).toFixed(1), role: v.role });
     }
   }
-  this.__sb = undefined; this.__tgt = undefined;
+  this.__sb = undefined; this.__tgt = undefined; this.__rel = undefined;
   return res;
 };
 const rng = new Rng(seed);
@@ -55,3 +61,7 @@ for (const [lo, hi, nm] of [[0, 0.4, 'anticipation low'], [0.4, 0.7, 'mid'], [0.
   const T = R.filter(r => r.ant >= lo && r.ant < hi); if (T.length) console.log(`SB   ${nm}: n ${T.length} right ${(T.filter(r => r.right).length / T.length).toFixed(2)}`);
 }
 console.log(`SB wrong ${W.length}: another receiver within 10 deg of the target ${W.filter(r => r.close).length}, passer's facing over 15 deg off the target ${W.filter(r => r.look).length}, neither ${W.filter(r => !r.close && !r.look).length}`);
+if (process.env.SB_NEITHER) for (const r of W.filter(r => !r.close && !r.look).slice(0, Number(process.env.SB_NEITHER)))
+  console.log(`SBN ant ${r.ant.toFixed(2)} role ${r.role} | facing off target ${r.qfT.toFixed(0)} off pick ${r.qfP?.toFixed(0)} | read off facing ${r.rdF.toFixed(0)} (draw ${r.dice.toFixed(0)}, tracked facing off true ${r.trk.toFixed(0)}) | pick's seen bearing off true ${r.sbT?.toFixed(0)} | pick-target gap ${r.gap?.toFixed(0)} | pick ${r.lead} s before release | target ${r.dT} yd`);
+{ const N = W.filter(r => !r.close && !r.look), A = R;
+  for (const [nm, T] of [['all', A], ['neither', N]] as const) console.log(`SBD ${nm} n ${T.length}: median draw ${med(T.map(r => r.dice))} deg, tracked facing off true ${med(T.map(r => r.trk))}, pick's seen bearing off true ${med(T.map(r => r.sbT).filter((x: any) => x !== null))}, release-time facing off target ${med(T.map(r => r.qfT))}`); }

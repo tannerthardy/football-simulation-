@@ -177,7 +177,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     // A newer held-body image after recognized flight supports a catch even
     // behind the line. Pass belief alone cannot turn a handoff into a catch
     // and discard an installed edge. Snap QB possession keeps the rush/fit.
-    const caught = target !== sim.qb && hasObservedFlight(a);
+    // RELEASE_BELIEF: a release he believed (the arm, without the ball seen) supports a catch the same way.
+    const caught = target !== sim.qb && (hasObservedFlight(a) || (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt !== undefined));
     // A QB seen leaving the pocket as a runner, by a defender who has not
     // read run: the scramble response, from his own QB picture. Rushers and
     // underneath zones come up; each role keeps its own contract. Under
@@ -202,7 +203,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // an acquired holder is pursued above.
   // HONEST_FLIGHT: the ball is out of the air when his own flight estimate
   // says it has arrived (or he never saw a throw), not on the true air state.
-  const landed = HONEST_FLIGHT ? (!hasObservedFlight(a) || flightLanded(a, sim.t)) && !ballSeenInAir(a, sim) : sim.ball.kind !== 'air';
+  // RELEASE_BELIEF: the same as playsThrow's exit (his own flight estimate, a ball still seen in the air keeping it
+  // open), so a defender whose flight has landed by his estimate is on the catch here, not between the two.
+  const landed = HONEST_FLIGHT || RELEASE_BELIEF ? (!hasObservedFlight(a) || flightLanded(a, sim.t)) && !ballSeenInAir(a, sim) : sim.ball.kind !== 'air';
   if (CATCH_CARRY && landed) {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
@@ -2169,7 +2172,9 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
  * state and sawThrow, as before. */
 export function playsThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   if (!RELEASE_BELIEF) return sim.ball.kind === 'air' && sawThrow(a, sim, man);
-  return sawThrow(a, sim, man) && !(hasObservedFlight(a) && flightLanded(a, sim.t));
+  // His flight is over when it has landed by his own estimate and he no longer sees the ball in the air (the same
+  // test pursueIfLive's catch carry uses, so one of the two always has him).
+  return sawThrow(a, sim, man) && !(hasObservedFlight(a) && flightLanded(a, sim.t) && !ballSeenInAir(a, sim));
 }
 /** RELEASE_BELIEF: as playsThrow, for a caller that steers on the flight itself: he must have seen the ball. */
 function playsFlight(a: Agent, sim: PlaySim, man: Agent | null): boolean {
@@ -2215,23 +2220,24 @@ const SHOULDER_CONE = 25 * Math.PI / 180;
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
  * shoulders can exploit. */
 const SHOULDER_READ_SD_MIN = 5, SHOULDER_READ_SD_SPAN = 15;
-const shoulderPick = new WeakMap<Agent, { key: number; R: Agent | null; at: number; read: number | null }>();
+const shoulderPick = new WeakMap<Agent, { key: number; R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null }>();
 /** Diagnostic: his last shoulder read (the receiver picked, null if none lined up; when; the bearing he read). */
-export function shoulderPickOf(a: Agent): { R: Agent | null; at: number; read: number | null } | undefined { return shoulderPick.get(a); }
-function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null; at: number; read: number | null } {
+export function shoulderPickOf(a: Agent): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null } | undefined { return shoulderPick.get(a); }
+function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null } {
   const prev = shoulderPick.get(a);
   if (prev && prev.key === key) return prev;
   // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
   const q = sim.track(a, sim.qb, 1, true);
   const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
   const read = q.facing === undefined ? null : q.facing + err;
-  let best: Agent | null = null, bestOff = SHOULDER_CONE;
+  let best: Agent | null = null, bestOff = SHOULDER_CONE, seenBearing: number | null = null;
   if (read !== null) for (const r of sim.offense) {
     if (r === sim.qb || isOL(r)) continue;
-    const p = sim.see(a, r).pos, off = Math.abs(angleDiff(Math.atan2(p.y - q.pos.y, p.x - q.pos.x), read));
-    if (off < bestOff) { bestOff = off; best = r; }
+    const p = sim.see(a, r).pos, b = Math.atan2(p.y - q.pos.y, p.x - q.pos.x), off = Math.abs(angleDiff(b, read));
+    if (off < bestOff) { bestOff = off; best = r; seenBearing = b; }
   }
-  const out = { key, R: best, at: sim.t, read };
+  // err and seenBearing are kept for the diagnostic probe only (the read's draw, and the pick's bearing in his picture)
+  const out = { key, R: best, at: sim.t, read, err, seenBearing };
   shoulderPick.set(a, out);
   return out;
 }
