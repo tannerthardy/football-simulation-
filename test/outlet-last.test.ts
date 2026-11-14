@@ -44,13 +44,15 @@ describe('OUTLET_LAST / PLAN_KEYS', () => {
     // Every key names its danger.
     expect(on('smash').key?.danger).toMatch(/safety/);
     expect(on('curl_flat').key?.danger).toMatch(/hook/);
-    // PLAN_KEYS_2: the four sourced keys that were pure orders key (stick needs its #3, so from trips); without it
-    // they stay pure orders. The four without a key as taught stay progressions either way.
-    for (const id of ['slant_flat', 'fade_flat', 'double_slants']) expect(on(id).style).not.toBe('defender_key');
+    // PLAN_KEYS_2: six sourced keys that were pure orders key (stick needs its #3, so from trips); without it they
+    // stay pure orders. The quick-out pair keys on the third step (the set), as the family rule teaches. Trips stick
+    // and seam-slant stay progressions either way.
+    for (const id of ['slant_flat', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']) expect(on(id).style).not.toBe('defender_key');
     const two = await plans({ OUTLET_LAST: '1', PLAN_KEYS: '1', PLAN_KEYS_2: '1', BACK_FRONT: '1' });
-    for (const id of ['slant_flat', 'fade_flat', 'double_slants']) expect(two(id).style).toBe('defender_key');
+    for (const id of ['slant_flat', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']) expect(two(id).style).toBe('defender_key');
     expect(two('stick', 'gun_trips_11').key).not.toBeNull();
-    for (const id of ['quick_outs', 'hitch_out']) expect(two(id).key).toBeNull();
+    expect(two('hitch_out').key!.cueBy).toBeLessThan(2);
+    expect(two('hitch_out').key!.cueBy).toBe(two('hitch_out').rhythm[0].at);
     for (const id of ['trips_stick', 'seam_slant']) expect(two(id, 'gun_trips_11').key).toBeNull();
     expect(two('trips_stick', 'gun_trips_11').alert).toBe('W1');
   }, 120000);

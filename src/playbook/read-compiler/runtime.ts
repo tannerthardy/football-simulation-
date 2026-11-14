@@ -36,11 +36,13 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
  * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
  *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
-/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, the four sourced keys the compiler ran as pure orders key
- * (slant_flat, stick, fade_flat, double_slants). Quick outs, hitch-out, trips stick and seam-slant stay pure
- * progressions until their key is found as taught: a key by analogy is not the sport's rule. */
+/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, six concepts the compiler ran as pure orders key as taught:
+ * slant_flat, stick, fade_flat, double_slants by their own sources; quick_outs and hitch_out by the family rule for a
+ * two-receiver quick combination (the front-side flat defender, on the third step). Trips stick and seam-slant stay
+ * pure progressions: no source for trips stick's alert (a keyed plan demotes it to third), and seam-slant's hook key
+ * would be double slants' borrowed for a different structure. */
 export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 === '1';
-const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants']);
+const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
@@ -50,17 +52,22 @@ const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
  * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
  * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
  * safety will allow"). Key and danger sources are in docs/reviews/2026-11-14-read-plan-table.md. */
-const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string }> = {
+const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
   // The four the compiler keyed on another defender.
   drive: { low: 'W2', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' },
   pa_post_dig: { low: 'W1', high: 'S1', role: 'deep_free_safety', deep: true, danger: 'the hook defender under the dig' },
   smash: { low: 'S1', high: 'S2', role: 'corner', deep: false, danger: 'the half-field safety over the corner route' },
   corner_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false, danger: 'the half-field safety over the corner route' },
-  // PLAN_KEYS_2: four the compiler ran as pure orders, with their sourced keys.
+  // PLAN_KEYS_2: concepts the compiler ran as pure orders, with their sourced keys.
   slant_flat: { low: 'S2', high: 'S1', role: 'curl_flat', deep: false, danger: 'the hook defender inside the slant' },     // Dunn, USA Football
-  stick: { low: 'S3', high: 'S2', role: 'flat', deep: false, danger: 'the hook defender inside the stick' },                // Throw Deep
+  stick: { low: 'S3', high: 'S2', role: 'flat', deep: false, danger: 'the Mike inside the stick' },                         // Throw Deep; Wilhite (danger: the Mike; the vertical peeked pre-snap)
   fade_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false, danger: 'the half-field safety over the fade' },         // Cover 2 beater
   double_slants: { low: 'S1', high: 'S2', role: 'hook', deep: false, danger: 'the next defender inside' },                // Galina, USA Football
+  // The family rule for a two-receiver quick combination, as taught: read the front-side flat defender and throw away
+  // from him, on the third step (Jenkins, "The Ten Basic Quarterback Reads"; USA Football, "Basic Knowledge About
+  // Reads"). The cue is the set, not the low route's ready time.
+  quick_outs: { low: 'S1', high: 'S2', role: 'flat', deep: false, danger: 'the corner over the out', onSet: true },
+  hitch_out: { low: 'S2', high: 'S1', role: 'flat', deep: false, danger: 'the corner over the hitch', onSet: true },
 };
 /** The danger on the keys the compiler already names correctly (PLAN_KEYS adds it; the key itself is unchanged). */
 const DANGER: Record<string, string> = {
@@ -125,7 +132,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
-        const cueBy = +(k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
+        const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
         plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger }, triangle: null,
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
