@@ -1,5 +1,9 @@
 # TACKLE_SET: the tackle's set against an edge rusher (attempt 1, stopped)
 
+> **Read this first (2026-11-13):** our "came off his own blocker and reached 2 yd" operator sees 24% of charted
+> pressures (precision 70%; `pass-rep-report.py` against BDB 2025 labels). Every come-off count compared with the NFL
+> in this review is a lower-bound sample, not a rate.
+
 Integration, 2026-11-12. The edge-rush diagnosis (`2026-11-12-edge-rush.md`) found our tackle ending deeper than the
 QB (-8.2 vs -7.8 at 3.0 s; NFL tackle -6.8) while still asking to retreat. The assignment: kick to a set depth that
 meets the arc short of the launch point, from what the tackle knows, then anchor. Add no strength or anchor capacity.
@@ -2531,3 +2535,259 @@ by his own arm, released in one tick when the long-arm ends. A lean bound cannot
 
 Stopped after one attempt at the wrong lever. Diagnosis next: the World's contact deviation on a joint release, in a
 staged long-arm, before choosing.
+
+## The rusher's falls: two attempts, stopped
+
+**The staged release** (`longarm-release.mts`, World only): a rusher holds a blocker off with a locked arm, with his
+lean about 1140 against a felt press of about 1014 (the default growth 0.25 lets it exceed the press), and the arm
+ends in one tick:
+- asking 4.5 yd/s, his capture point goes to -3.3, then -4.9 base radii;
+- asking 1.5 yd/s, -0.8.
+
+The World releases what the gait cannot absorb as planned acceleration, and a sprint request has spent that room.
+That is defensible physics.
+
+**Attempt 2, RUSH_DRIVE_PACE** (removed, not committed): in a power move the rusher asks for his current pace toward
+the man plus what his legs add within a reaction time (vmax / tau x rt), not 0.55 vmax.
+- The request does reach him: asked -2.3 / -1.7 yd/s at 0.3 / 0.1 s, against about -4 before.
+- DL falls 19.6 → 18.7 per 100 (seed 11 x 3): no real change. Tackles' rushers' falls 10 → 5, interior 34 → 35.
+
+**What the interior long-arm fall is** (`fall-trace.mts`, `FALL_ROLE=DL`, with attempt 2): the rusher is being
+driven back by the guard (velocity along the press +0.47 at 0.1 s: the way he is pushed), with his lean grown to the
+press (1520 against 1598) and the press huge (1600-1900). When the arm slips, that lean dumps forward.
+- RUSH_BALANCE's cap (0.95 + misjudgement x recoverable, about 1700-2400) never bound it.
+- The pace change does not touch a man who is not moving forward anyway.
+
+**Re-diagnosis needed before attempt 3.**
+1. Why does a guard with PUNCH_STRIKE + ANCHOR_BASE drive a long-arming rusher back with a press of 1600-1900? That
+   is more than either man's lean, and the rusher's arm is the strut.
+2. What does the long-arm's locked arm do to both men's felt loads? Each feels the other through the same joint, and
+   each grows a lean to it.
+
+A perception-based willingness ("committing buys nothing while I am being driven back") is a candidate for attempt 3,
+but only after (1) and (2) say whether the 1600-1900 is real.
+
+**Re-diagnosis (1) and (2)** (`longarm-release.mts`, which now also logs the joint force and the blocker's felt load
+and lean):
+- In a staged pair with the long-arm joint alone, the joint's force saturates at its push limit (about 1014). Each
+  man's felt load equals it, the blocker's lean settles at 0.9 of it, and the rusher's at 1.12 (the default growth
+  0.25). With the blocker's growth 0 the same. **No feedback loop:** one strut does not drive two leans upward.
+- In games the 1600-1900 is the **sum of two joints between the same pair**: the guard's hands joint (PUNCH) and the
+  rusher's long-arm joint (RUSH_HANDS). Each man feels both, and the rusher's lean grows to the sum, plus his 25%
+  growth.
+- When the long-arm ends, its share of the press goes in one tick, and the lean sized to both dumps forward.
+
+**So the rusher's long-arm fall is a commitment after all,** to a load that is partly his own arm's strut and that
+he can lose in one tick. That is the same propped-lean mechanism, with two features RUSH_BALANCE's numbers missed:
+- his growth 0.25 takes the lean past the press;
+- the cap at 0.95-1.4 x recoverable (about 1700-2400) sat above the 1500 he actually leaned.
+
+Candidate for attempt 3, for review: in a long-arm, his own arm is the strut, so what he commits behind it is bounded
+by what he can recover from losing the strut. That means growth 0 and the protector's margin while he holds a long-arm,
+because a lean against his own locked arm buys no movement that the arm's push does not already give. Approval needed
+before a third attempt.
+
+# RUSH_ARM_BALANCE (97a8b95c, off; attempt 3 on rusher falls, approved after the re-diagnosis)
+
+While a rusher holds a long-arm, his own arm is the strut, so he commits behind it as a protector does: growth 0 and
+leanCap = (1.05 - 0.55 x technique) m w0^2 critDev, with technique = balance and power rush. A bull keeps its
+commitment.
+
+Fixtures (`test/rush-arm-balance.test.ts`, four verticals):
+- roster 1, Cover 2, seed 5: DT_S falls in a held long-arm at 1.4 s with the flag off, and does not with it on;
+- roster 8, Cover 1, seed 6: DT_S still falls in a bull with the flag on.
+
+Native-play search (7 rosters x 2 concepts x 3 coverages x 6 seeds): DL falls before the throw 250 → 18.
+
+Quick read (seed 11 x 3, RUSH_HANDS + PUNCH_STRIKE + ANCHOR_BASE): DL falls 17.3 → **5.5 per 100 dropbacks**, the
+level without RUSH_HANDS (5.7); OL falls 4.2 → 3.8. Off is bit-identical (seed 999 f95d494b on engine-57). 16-game
+reads follow.
+
+**The stacked joints (Integration's question).** Two hands joints between the same pair summed to 1600-1900 while one
+saturates near 1014:
+- Each joint is bounded by its own actor's arm press: the guard's hands by his, the rusher's long-arm by the rusher's.
+- Two contacts each transmit force, so the sum is real: two men pressing palms on each other's chests feel both
+  contacts.
+- It is not free. The only external forces on either body are ground forces, which the World bounds by one budget per
+  body: leg drive and lean share traction and leg strength, with traction capping the net. When the joints' sum
+  exceeds what one man's ground force can resist, he is driven back. That is what happened to the long-arming rusher
+  (+0.47 yd/s the way he was pushed).
+- So the pair's total is bounded by the two men's legs and ground, and stacking joints does not exceed it. The defect
+  was only that his lean was sized to the sum, his own arm's share included. Nothing for the stance/base proposal from
+  this, beyond noting that a felt load can include a man's own strut.
+
+**RUSH_ARM_BALANCE read** (RUSH_HANDS + PUNCH_STRIKE + ANCHOR_BASE, seeds 11 / 23 x 16; without → with):
+
+| | without | with RUSH_ARM_BALANCE | NFL |
+|---|---|---|---|
+| engaged-rusher falls before the throw, /100 dropbacks | 20.0 / 34.8 | **5.7 / 8.2** | ~1 (DL proxy bound) |
+| blocker falls, /100 | 2.7 / 3.4 | 4.3 / 4.7 | ~1-5 |
+| pressured (pressure-source) | 35.6 / 33.8% | 37.3 / 35.5% | 32.9% |
+| interior pressure; engaged-then-free | 14.1 / 12.1%; 8.4 / 7.4% | 13.4 / 11.8%; 8.5 / 6.4% | 9.8%; 2.2% |
+| interior come-offs from own blocker, /100; time p50 | 51.6 / 59.2; 2.3 / 2.1 s | 50.3 / 55.1; 2.2 / 2.0 s | 48.6; 3.2 s |
+| tackle come-offs, /100; time p50 | 53.8 / 54.5; 2.3 / 2.2 s | 55.1 / 50.7; 2.3 / 2.2 s | 41.1; 3.1 s |
+| native sacked | 3.8 / 3.2% | 4.0 / 3.4% | band 4.6-9.4% |
+
+**Reading.**
+- Rusher falls come down to the level without RUSH_HANDS, and blocker falls stay on the NFL's bound.
+- RUSH_HANDS' interior overshoot is not falls on either side. Engaged-then-free stays at 3-4x the NFL's, and reps end
+  a second early (interior and tackles, 2.0-2.3 s against 3.1-3.2 s).
+- The come-off *counts* are now on or near the NFL's (interior 50-55 against 48.6), so the remaining gap is *when*.
+- That is RUSH_HANDS' own question (c): what a club or a cleared hand buys, in path and time. The rep-end probe put it
+  at "past him" after a club (65-81%), with the rusher leaving at about 4 yd/s against the rider's 2.5-2.8.
+
+# The standing pass-rep report (`pass-rep-report.py`; NFL against ours, same operator)
+
+The user's questions: does each lineman have NFL-realistic places every 0.5 s; are they beaten at realistic rates;
+are the D-linemen getting where they should; why doesn't our QB get sacked enough?
+
+Sources:
+- NFL: out/mechanics/nfl-plays.jsonl.gz, BDB 2025 (2022 season), with BDB 2025's PFF-derived labels.
+- BDB 2023's labels (beaten / hurry / hit allowed) are not reachable: Kaggle returns 401 for that competition on this
+  account, probably its rules not accepted. BDB 2025's per-player `pressureAllowedAsBlocker`, `causedPressure` and
+  `wasInitialPassRusher` stand in.
+- Ours: seeds 11 / 23 x 16 on three heads: engine-56 defaults (E56; engine-57 differs only by CARRY_READ, a run
+  change); + PUNCH_STRIKE (PS); + PUNCH_STRIKE + ANCHOR_BASE (AB; the engine-58 candidate without PURSUIT_COMMIT).
+
+## 3. The sack funnel: the answer to "why"
+
+| per dropback | NFL (n 9617) | E56 | PS | AB |
+|---|---|---|---|---|
+| a rusher free (from 1.0 s, within 5 yd of the QB, no blocker within 1.5 yd); first at p50 | 38%; 2.3 s | 63 / 56%; 1.9 s | 48 / 46%; 2.0 s | 45 / 46%; 2.0 / 1.9 s |
+| nearest rusher to the QB at 2.0 / 2.5 / 3.0 / 3.5 s (ball in hand) | 4.2 / 3.5 / 3.0 / 2.8 | 4.3-4.4 / 3.6-3.7 / 3.0-3.3 / 2.8 | 4.3 / 3.6 / 2.9-3.0 / 2.6-2.9 | 4.3-4.4 / 3.6-3.7 / 3.0-3.3 / 2.8-3.1 |
+| a rusher within 2 yd before the ball is out; when | 27.6%; 2.7 s | 27.5 / 25.4%; 2.6 s | 26.9 / 25.1%; 2.6-2.7 s | 25.0 / 26.6%; 2.6 s |
+| contact (within 1.0 yd), given 2 yd | 35% | 37 / 31% | 30 / 25% | 29 / 32% |
+| **sacked, given contact** | **53%** | **22 / 14%** | **18 / 14%** | **26 / 24%** |
+| sacked | 6.2% | 3.0 / 1.5% | 2.3 / 1.9% | 2.7 / 2.5% |
+| time to throw p50 | 2.70 s | 2.70 / 2.60 s | 2.70 / 2.60 s | 2.70 / 2.65 s |
+| by rush count: within 2 yd, 4 / 5 / 6+ | 26 / 36 / 39% | 23-26 / 34-35 / 42-46% | 23-24 / 34-36 / 39-52% | 22-24 / 34-35 / 41-47% |
+| by rush count: sacked, 4 / 5 / 6+ | 5.8 / 8.8 / 10.6% | 1.1-2.7 / 2.0-2.4 / 7.1-11.5% | 1.9 / 1.5-2.0 / 2.7-8.8% | 1.9 / 4.0-4.8 / 8.6-9.4% |
+
+**Which stage loses the sacks: the finish.** Our rushers get within 2 yd of the QB before the ball is out as often as
+the NFL's (25-27.5% against 27.6%), at the same time (2.6 s against 2.7 s). They make contact about as often (25-37%
+against 35%). Once a rusher is within a yard, the NFL QB is sacked 53% of the time and ours 14-26%. Neither the rush
+nor the clock is short; the take-down is. That is the QB lane's finding too (sacked with a defender inside 2 yd 20-36%
+against 38%). It belongs to the tackle and escape mechanics on the QB (tackle.ts bond and finish, the QB's escape),
+not to pass protection. Rushers also come free more often than the NFL's and a little earlier (45-63% against 38%,
+1.9-2.0 s against 2.3 s), but that does not convert, because the finish fails.
+
+## 1. The pocket map (gun, 4-man rush; depth behind the line / in front of the QB / width outward / nearest rusher, yd)
+
+| | NFL 1 s | NFL 2 s | NFL 3 s | AB 1 s | AB 2 s | AB 3 s |
+|---|---|---|---|---|---|---|
+| LT | 2.3 / +3.0 / +3.6 | 4.9 / +2.5 / +3.4 | 6.6 / +1.5 / +2.5 | 2.5 / +2.7 / +4.1 | 5.2 / +2.4 / +3.8 | 7.7 / +0.1 / +3.7 |
+| LG | 1.5 / +3.8 / +1.8 | 3.4 / +4.0 / +1.7 | 4.8 / +3.1 / +1.4 | 1.6 / +3.6 / +1.2 | 3.1 / +4.4 / +1.4 | 4.6 / +2.9 / +1.8 |
+| C | 1.3 / +4.0 / 0.0 | 3.2 / +4.2 / 0.0 | 4.3 / +3.7 / 0.0 | 1.5 / +3.7 / 0.0 | 2.5 / +4.7 / 0.0 | 4.0 / +3.4 / 0.0 |
+| RG | 1.5 / +3.8 / +1.8 | 3.5 / +3.9 / +1.8 | 4.9 / +3.1 / +1.6 | 1.7 / +3.6 / +1.2 | 3.1 / +4.4 / +1.6 | 4.6 / +2.9 / +2.1 |
+| RT | 2.3 / +3.0 / +3.6 | 5.0 / +2.5 / +3.4 | 6.7 / +1.5 / +2.5 | 2.5 / +2.7 / +4.1 | 5.1 / +2.5 / +3.9 | 7.2 / +0.6 / +3.7 |
+| edge rusher to QB; closing | 6.6; +3.1 | 4.9; +2.5 | 3.9; +1.1 | 6.5; +3.1 | 5.4; +1.6 | 4.5; +0.1 |
+| interior rusher to QB; closing | 5.2; +2.3 | 5.0; +1.8 | 4.3; +0.8 | 4.7; +1.8 | 5.7; +1.2 | 4.9; +0.5 |
+
+- Guards and the center are within 0.3 yd of the NFL at every slice. The center sits 0.7 yd shallower at 2 s.
+- **Tackles:** on the NFL's track to 2 s, then the walk-back. At 3 s they are 0.5-1.1 yd deeper, only 0.1-0.6 yd in
+  front of the QB against 1.5, and 1.2 yd wider. That is the late walk-back diagnosed above (PASS_KICK's chosen
+  retreat).
+- **Edge rushers** are stalled at 3 s (4.5 yd from the QB, closing +0.1) where the NFL's are still coming (3.9 yd,
+  +1.1). They are carried wide with the deep tackle. Interior rushers are 0.6-0.7 yd farther at 2-3 s.
+- All rush counts and under center are in the script's output; n per cell is printed.
+
+## 2. Beaten (NFL labels) and how far our inferred operators can be trusted
+
+- PFF pressure allowed as blocker, per lineman-dropback:
+  - 4-man rush: LT 10.1% (2.6 s), LG 7.6, C 5.0, RG 6.3, RT 7.9%;
+  - 5-man: 8.6-10.0%, about 2.5 s;
+  - 6+: 6.6-11.0%.
+- **Our rusher operator against `wasInitialPassRusher`**, per defender: recall 79%, precision 97%. It misses some
+  rushers, mostly late or wide, and rarely invents one.
+- **Our "came off his own blocker and reached 2 yd of the QB" operator against `pressureAllowedAsBlocker`**, per
+  lineman-dropback: recall 24%, precision 70%. When it fires, PFF mostly agrees. But it sees only a quarter of the
+  pressures PFF charges to a blocker. Most PFF pressure-allowed reps never show as a clean come-off by geometry: the
+  pressure comes while still engaged, or from a second man. Inferred "beaten" counts from this operator are a
+  lower-bound sample, not a rate.
+
+Eye-check traces (`PASS_REP_TRACE`, 12 each side) show the funnel stages per dropback. Most NFL dropbacks never have a
+free rusher or a rusher within 2 yd; those that do reach 2 yd at 2.2-2.9 s.
+
+**Reading for the plan.**
+1. The sack shortfall is the finish on the QB: sacked given contact is 53% in the NFL against 14-26% here. It is the
+   largest gap and it is not pass protection. For the QB lane and the tackle owner.
+2. The late tackle walk-back is real in positions too (0.1-0.6 yd in front of the QB at 3 s against 1.5) and stalls
+   the edge rush. Next pass-pro item, after the stance/base proposal.
+3. The club's "a second early" is a side issue for sacks: arrivals are already on the NFL's count and time.
+
+# The finish: from first contact to the outcome (`finish.py`, `finish-trace.mts`)
+
+First contact means a defender within 1.0 yd of the QB, ball in his hands, after 0.5 s. Same operator both sides.
+
+| after first contact | NFL (n 1211, 12.5% of dropbacks) | ours AB 11 / 23 (n 127 / 166, 9.5 / 10.8%) | ours E56 11 (n 158, 12.0%) |
+|---|---|---|---|
+| sacked; time after contact | **47%; 1.0 s** | **24 / 22%; 0.6 s** | 22%; 0.7 s |
+| threw; time after contact | **30%; 0.3 s** | **65 / 64%; 0.05-0.10 s** | 72%; 0.1 s |
+| escaped (neither) | 22% | 11 / 14% | 6% |
+| from the front: sacked / threw | 48 / 31% | 13 / 73-74% | 16 / 81% |
+| from the side: sacked / threw | 51 / 27% | 21-25 / 63-74% | 18 / 78% |
+| from behind: sacked / threw | 40 / 31% | 36-59 / 27-42% | 40 / 43% |
+| free / partly blocked: sacked | 45 / 51% | 24-27 / 17-20% | 25 / 19% |
+
+**The trace** (`finish-trace.mts`, PUNCH_STRIKE + ANCHOR_BASE, seed 11 x 6, 41 first contacts):
+
+| at first contact | n | outcome |
+|---|---|---|
+| already in his windup (sim.windupAt >= 0), 0.25 s into it | 25 of the 27 throws (93%) | ball out 0.10 s later; thrown before any wrap 89%; a wrap followed in 11% |
+| not yet in his windup | 16 | **sacked 69%**, threw 13% (after 0.35 s), escaped 19% |
+
+**Which stage loses the sacks: the windup.** A contact that catches our QB before he starts his throw finishes him
+more often than the NFL's 47%. A contact that arrives during his windup almost never stops the throw: the ball comes
+out about 0.1 s later, before any wrap. Our QB's windup is immune to a rusher arriving within a yard. Only a hold
+already taken during the load can pin the arm, and only by a rolled chance at the delivery's start (THROW_BODY,
+qb.ts ~580). There is no hit-as-he-throws.
+
+In the NFL, a QB with a rusher within a yard gets the ball out in 30% of cases, 0.3 s later. The rest are sacks (47%)
+or escapes (22%).
+
+Suspects from Integration's list, as the trace reads them:
+- **(a) the throw completing through contact: yes, this is the stage.** Whether that is the QB's decision (starting a
+  windup with a rusher a step away) or the throw's physics (a windup a body can't interrupt) is the next split. The
+  NFL rows say both happen: fewer throws, and later.
+- **(b) the pocket-QB escape (`seesIt`, the escape roll):** not the loss. Missed tackles on the QB after contact are
+  0% in the sacked and not-in-windup groups, and 11% among the throws.
+- **(c) and (d) the arrival geometry and the bond:** not the loss. Before the windup, contact finishes 69% of the time.
+
+Also found in the path: for a pocket QB the tackle attempt is always `rng.chance(pMiss)` with a rating-weighted escape
+(tackle.ts ~379-381), never the physical whiff path. That is PRO-INFO #11, a rating roll.
+
+# PASS_SET_SEEN (9975b844, off, intended on): the pass set from the blocker's picture (PRO-INFO #1/#2)
+
+The pass set (set point, kick, mirror, cut-off, overset fear, reach for a man going by) and protection's assignment
+costs now read each blocker's picture of the rusher (`sim.see`), not the rusher's true state. Only contact (the
+bodies' true distance at engage) is the World's. Off is bit-identical (seed 999 f95d494b).
+
+**Before/after** (PUNCH_STRIKE + ANCHOR_BASE, seeds 11 / 23 x 16, same head):
+
+| | without | with PASS_SET_SEEN | NFL |
+|---|---|---|---|
+| pressured (pressure-source) | 28.2 / 30.5% | 25.9 / 25.2% | 32.9% |
+| edge past outside | 1.8 / 2.4% | 0.4 / 0.5% | 3.8% |
+| edge level / in front | 10.3 / 10.1% | **2.6 / 3.8%** | **3.0%** |
+| edge inside | 4.7 / 4.6% | 8.1 / 6.5% | 6.4% |
+| interior pressure | 4.9 / 6.1% | 8.6 / 8.5% | 9.8% |
+| rusher free (funnel) | 44 / 43% | 37 / 33% | 38% |
+| within 2 yd before the ball is out | 24.2 / 26.6% | 21.4 / 21.0% | 27.6% |
+| contact, given 2 yd | 28 / 29% | 51 / 47% | 35% |
+| sacked, given contact | 17 / 12% | 17 / 17% | 53% |
+| native sacked | 2.0 / 1.7% | **3.2 / 2.8%** | band 4.6-9.4% |
+| tackle x-velocity 3-4 s; tackle minus QB depth | -2.0 / -2.0; -0.2 / 0.0 | -1.5 / -1.75; +0.4 / +0.4 | -0.5; +1.0 |
+| OL falls /100 (true) | 4.0 / 3.7 | 3.5 / 4.3 | ~1-5 |
+
+**Reading.**
+- Removing the leak moves most pass rows onto the NFL's. The edge "in front" class, our largest pass-rush gap all
+  week (10% against 3.0), falls to 2.6-3.8%. Edge inside and interior come up to the NFL's.
+- The tackle's late walk-back eases (+0.4 yd over the QB at 3-4 s, from about 0).
+- Sacks rise by about a point: fewer rushers reach 2 yd, but those who do make contact more often.
+- With true state, the tackle could sit exactly on a rusher's path, and the rusher stayed in front of him all the way
+  to the QB. With a delayed picture, the tackle is a beat late, and the rush resolves as a win inside or a loss. That
+  is football, not a cost.
+- Remaining gaps: edge past outside drops further below the NFL (0.4-0.5% against 3.8), and total pressure falls 3-5
+  points.
+- Recommendation: on, with PUNCH_STRIKE and ANCHOR_BASE. The sack finish (THROW_HOLD) and the outside arc are the
+  next questions.
