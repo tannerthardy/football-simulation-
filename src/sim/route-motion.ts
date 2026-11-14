@@ -11,8 +11,6 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 export const LINE_START = process.env.LINE_START !== '0';
 
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
-const angleDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
-
 export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean }
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
@@ -22,12 +20,6 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
     p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1, ...(rp.cut ? { cut: true } : {}),
   }));
   // ROUTE_EFFORT: the through speed at a declared break by its type, from the route's own geometry.
-  if (ROUTE_EFFORT && (family === 'quick' || family === 'intermediate' || family === 'deep' || family === 'cross')) for (let i = 0; i < out.length - 1; i++) {
-    const prev = i ? out[i - 1].p : start, p = out[i].p, next = out[i + 1].p;
-    const turn = Math.abs(angleDiff(Math.atan2(next.y - p.y, next.x - p.x), Math.atan2(p.y - prev.y, p.x - prev.x))) * 180 / Math.PI;
-    if (turn < SPEED_CUT_MAX) out[i] = { ...out[i], s: 1 };
-    else if (turn <= PLANT_MAX) out[i] = { ...out[i], s: PLANT_THROUGH };
-  }
   if (extend && out.length >= 1) {
     const last = out[out.length - 1].p;
     const prev = out.length >= 2 ? out[out.length - 2].p : start;
@@ -59,14 +51,8 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
  * caps a TE's over at 7.2 yd/s against the NFL TE crosser's 7.4 at 3.0 s (Tools, docs/reviews/2026-11-14-route-speed.md).
  * A route's own tracked `pace` (the back's check-release flat) is unchanged. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
-/** ROUTE_EFFORT: the declared through speed at a break, by break type (route geometry), as taught. A turn under 60 deg is a
- * speed cut ("cut violently at full speed": the slant, the post, the corner, a rolled crosser): s 1, his body's lateral
- * limit decides what he carries (the follower's corner law). A 60-110 deg turn is a plant (the square in or out, "sink
- * the hips"): one through speed for the type. A turn past 110 deg (the curl, comeback, hitch: sink and come back) keeps
- * the route's own. The receiver route tree only (quick, intermediate, deep, cross); backs and screens keep theirs. Off, each route keeps the s it was authored with (2026-10-08, engine foundation, unsourced). NFL breaks
- * at matched angles (Tools, route_break.py, BDB 2025): speed at the vertex over speed into it, rounded cross 1.03, corner
- * .98, slant .96, square in / out (75-90 deg, 8+ yd) .70. */
-const SPEED_CUT_MAX = 60, PLANT_MAX = 110, PLANT_THROUGH = 0.4;
+/** ROUTE_EFFORT: the pace of the stem only. What he brings through each break (s) and whether a break is a cut or a roll
+ * are declared per route point in the route table (src/playbook/routes.ts, ROUTE_EFFORT), each with its coaching source. */
 export function routeEffort(family: RouteDef['family'], rr: number): number {
   if (ROUTE_EFFORT) return 1;
   const base = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };

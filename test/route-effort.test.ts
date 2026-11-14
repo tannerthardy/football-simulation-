@@ -18,3 +18,26 @@ describe('ROUTE_EFFORT', () => {
     for (const f of ['quick', 'flat', 'back', 'cross', 'intermediate', 'deep'] as const) for (const rr of [0, 0.5, 1]) expect(on.routeEffort(f, rr)).toBe(1);
   });
 });
+
+describe('ROUTE_EFFORT break table (src/playbook/routes.ts)', () => {
+  async function routes(on: boolean) {
+    vi.stubEnv('ROUTE_EFFORT', on ? '1' : '0');
+    vi.resetModules();
+    return (await import('../src/playbook/routes.js')).ROUTES;
+  }
+  it('off: every route exactly as authored; on: the declared cuts and rolls', async () => {
+    const off = await routes(false);
+    expect(off.slant.points[0]).toEqual({ d: 2, l: 0, s: 0.75 });
+    expect(off.corner.points[0].s).toBe(0.65);
+    const on = await routes(true);
+    expect(on.slant.points[0]).toMatchObject({ d: 2, l: 0, s: 0.4, cut: true });
+    for (const id of ['out', 'deep_out', 'dig', 'short_in']) expect(on[id].points[0]).toMatchObject({ cut: true, s: 0.4 });
+    for (const id of ['hitch', 'curl', 'comeback', 'stick', 'hook']) expect(on[id].points[0]).toMatchObject({ cut: true, s: off[id].points[0].s });
+    expect(on.corner.points[0].s).toBe(1);
+    expect(on.post.points[0].s).toBe(1);
+    expect(on.cross.points.slice(0, 2).map((p) => p.s)).toEqual([1, 1]);
+    expect(on.quick_out).toBe(off.quick_out);
+    expect(on.go).toBe(off.go);
+    expect(on.swing).toBe(off.swing);
+  });
+});
