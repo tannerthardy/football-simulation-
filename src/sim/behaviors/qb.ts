@@ -540,6 +540,25 @@ const PATH_PICK = 0.2;
 const CATCH_PICK = 1.75;
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
+/** QB_PHASE (experimental, off; QB_PHASE=1; with DEF_BELIEF): what he believes a defender near his receiver does while
+ * the ball is in the air. Off, a man within 4 yd is carried half way with the receiver until he reacts, then has to
+ * react to the ball (1.8 reaction times when his back is to the passer) and run to it: a defender on the receiver's hip
+ * is priced as nearly out of the play (pOpen 0.84 with a man within a yard at the throw; his price runs 0.60 to 0.68
+ * from a covered receiver to a wide-open one while completion runs 50 to 77%). A man in trail plays the receiver, not
+ * the ball: on our own throws the nearest defender covers this share of the receiver's movement between the release
+ * and the arrival (scripts/diag/eyes/deep-forced.ts, mode all; engine-66, 16 games, 996 throws; mean by separation at
+ * the throw 0-1 / 1-2 / 2-3 / 3-4 / 4-6 yd): in man 0.94 / 0.88 / 0.81 / 0.66 / 0.65; in zone 0.61 / 0.49 / 0.35 /
+ * 0.46 / 0.46 (about the old 0.5). On, he believes that: the man is carried that share of the way to the catch point
+ * with the receiver (by his own man / zone belief, with his existing judgment error on it), and what is left for him
+ * to cover when the ball arrives is his margin; he can still break on the ball the old way if that is sooner. Measured
+ * values, not fitted to completion; refit when the receiver or the coverage changes. */
+const QB_PHASE = process.env.QB_PHASE === '1';
+const PHASE_MAN = [0.94, 0.88, 0.81, 0.66, 0.65, 0.65], PHASE_ZONE = [0.61, 0.49, 0.35, 0.46, 0.46, 0.46];
+/** QB_PHASE: the measured share at a separation (yd): the table's bins are 1 yd wide to 4 yd, then 4-6. */
+function phaseShare(table: number[], sep: number): number {
+  const x = clamp(sep, 0.5, 5) - 0.5, i = Math.min(Math.floor(x), 3), f = i < 3 ? x - i : clamp((x - 3) / 1.5, 0, 1);
+  return table[i] + (table[i + 1] - table[i]) * f;
+}
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
  * window, 0.12-0.45 s): his belief of that window and of how often such a defender gets it out (the receiver's hands
  * and contested-catch skill set how well he holds on; the window's grip strengthens as it goes, hence 0.65). */
@@ -1912,6 +1931,15 @@ export class QBPass implements Behavior {
         mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
           vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
       }
+      // QB_PHASE: the man near his receiver, carried with him to the catch point by the share he believes such a man
+      // covers; what he still has to cover from there is his margin at the ball's arrival.
+      let phase: { pos: Vec2; vel: Vec2; profile: PhysicalProfile; speedScale: number } | null = null;
+      const sepSeen = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y);
+      if (QB_PHASE && DEF_BELIEF && sepSeen < 6 && !tied) {
+        const k = clamp(pMan * phaseShare(PHASE_MAN, sepSeen) + (1 - pMan) * phaseShare(PHASE_ZONE, sepSeen) + (1 - know) * 0.35 * a.mind.judgment('def-phase'), 0, 1);
+        const tb = forecast?.predict(sim.t, total) ?? target, tv = forecast?.predict(sim.t, total + 0.1) ?? tb;
+        phase = { pos: { x: seen.pos.x + k * (tb.x - target.x), y: seen.pos.y + k * (tb.y - target.y) }, vel: { x: k * (tv.x - tb.x) / 0.1, y: k * (tv.y - tb.y) / 0.1 }, profile: dp, speedScale: 1 };
+      }
       const react = dp.reactionTime * (facingQB ? 1 : 1.8) + (tied ? 0.5 : 0);
       const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
       // PICTURE_AGE: how far he could be from where the QB has him, in time.
@@ -1920,7 +1948,7 @@ export class QBPass implements Behavior {
         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
       }
-      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      return { d, dp, dBall, blind, mover, phase, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
@@ -1941,8 +1969,10 @@ export class QBPass implements Behavior {
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, estimateError } of defenders) {
-        const tt = blind + timeToReach(mover, pt, dp.reach + 0.3) + react;
+      for (const { d, dp, dBall, blind, mover, phase, react, leap, spreadD, facingQB, estimateError } of defenders) {
+        const onBall = blind + timeToReach(mover, pt, dp.reach + 0.3) + react;
+        // QB_PHASE: in phase with the receiver he arrives with him, and covers what is left from there.
+        const tt = phase ? Math.min(onBall, total + timeToReach(phase, pt, dp.reach + 0.3)) : onBall;
         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
         const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;

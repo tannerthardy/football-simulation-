@@ -3,7 +3,8 @@
 // receiver on a route is 12 yd or more downfield, his own evaluation has nobody on it (pOpen x pClear >= 0.6), the
 // flight is 1.5 s or longer and his price is under 0.45 (so he would not throw it), the throw is started anyway and
 // cannot be pulled down. One forced throw a play. Rows: his price and its parts, flight, depth, and what happened.
-// mode 'ctl' forces nothing and prints the same rows for the throws he chooses to receivers 12+ yd downfield.
+// mode 'ctl' forces nothing and prints the same rows for the throws he chooses to receivers 12+ yd downfield;
+// mode 'all' the same for every throw he chooses (with the target's separation at the throw), for calibrating his price.
 // Each row also has, at the ball's arrival time (or its last moment in the air): the ball against the aim point (his
 // miss), the receiver against the aim and against the ball, the nearest defender to the ball; and the receiver's look:
 // when after the release his body first faced the ball (within 60 degrees), and whether it did at arrival. For the
@@ -23,9 +24,13 @@ PlaySim.prototype.run = function (this: PlaySim) {
       const face = Math.cos(r.body.facing - Math.atan2(bp.y - r.pos.y, bp.x - r.pos.x)) > 0.5;
       if (face && rec.lookAt == null) rec.lookAt = +(sim.t - rec.rel).toFixed(2); rec.facing = face; }
     if ((sim.t >= rec.arriveAt - 1e-6 || sim.ball.kind !== 'air') && rec.last) { const b = rec.last, a = rec.aim, h = (p: any, q: any) => +Math.hypot(p.x - q.x, p.y - q.y).toFixed(1);
-      rec.arr = { miss: h(b, a), recToAim: h(r.pos, a), recToBall: h(r.pos, b), ballZ: +b.z.toFixed(1), defToBall: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - b.x, d.pos.y - b.y))).toFixed(1), early: +(rec.arriveAt - sim.t).toFixed(2), looking: !!rec.facing, lookAt: rec.lookAt ?? null }; } };
+      rec.arr = { miss: h(b, a), recToAim: h(r.pos, a), recToBall: h(r.pos, b), ballZ: +b.z.toFixed(1), defToBall: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - b.x, d.pos.y - b.y))).toFixed(1), early: +(rec.arriveAt - sim.t).toFixed(2), looking: !!rec.facing, lookAt: rec.lookAt ?? null };
+      // How much of the receiver's movement since the release the nearest defender at the release made with him: the
+      // share of the receiver's displacement that the defender's displacement covers along it (1 = stride for stride).
+      if (rec.near && rec.r0 && rec.d0) { const rx = r.pos.x - rec.r0.x, ry = r.pos.y - rec.r0.y, dx = rec.near.pos.x - rec.d0.x, dy = rec.near.pos.y - rec.d0.y, L2 = rx * rx + ry * ry;
+        rec.arr.recMoved = +Math.sqrt(L2).toFixed(1); rec.arr.phase = L2 > 4 ? +((dx * rx + dy * ry) / L2).toFixed(2) : null; rec.arr.nearToRec = +Math.hypot(rec.near.pos.x - r.pos.x, rec.near.pos.y - r.pos.y).toFixed(1); rec.arr.nearMan = rec.near.behavior?.kind ?? null; } } };
   sim.tick = () => {
-    const b: any = sim.qb.behavior;
+    const b: any = sim.qb.behavior; if (b?.kind === 'qb-pass' && mode === 'all') b.marginProbe = true;
     if (mode === 'force' && b?.kind === 'qb-pass' && hooked !== b) {
       hooked = b; const upd = b.update.bind(b);
       b.update = (a: any, s: any) => {
@@ -47,12 +52,12 @@ PlaySim.prototype.run = function (this: PlaySim) {
   sim.throwBall = (qb: any, target: any, v0: any, intended: any, arrivalT: number, throwaway = false, ...rest: any[]) => {
     if (qb === sim.qb && target && !throwaway) {
       if (rec && !rec.thrown) { rec.thrown = target === rec.r; rec.air = +Math.hypot(intended.x - qb.pos.x, intended.y - qb.pos.y).toFixed(1); rec.rel = +sim.t.toFixed(2); rec.aim = { x: intended.x, y: intended.y }; rec.arriveAt = arrivalT; }
-      else if (!rec && (target.pos.x - sim.los) * dir >= 12) { const tr = qb.behavior?.throwRec; rec = { forced: false, thrown: true, t: +sim.t.toFixed(2), route: target.behavior?.route?.id ?? '?', depth: +((target.pos.x - sim.los) * dir).toFixed(1), P: tr ? +tr.P.toFixed(3) : null, pOpen: tr?.parts ? +tr.parts.pOpen.toFixed(2) : null, pClear: tr?.parts ? +tr.parts.pClear.toFixed(2) : null, pAcc: tr?.parts ? +tr.parts.pAcc.toFixed(2) : null, T: +(arrivalT - sim.t).toFixed(2), air: +Math.hypot(intended.x - qb.pos.x, intended.y - qb.pos.y).toFixed(1), r: target, rel: +sim.t.toFixed(2), aim: { x: intended.x, y: intended.y }, arriveAt: arrivalT }; }
+      else if (!rec && (target.pos.x - sim.los) * dir >= (mode === 'all' ? -99 : 12)) { const tr = qb.behavior?.throwRec; rec = { forced: false, thrown: true, t: +sim.t.toFixed(2), route: target.behavior?.route?.id ?? '?', depth: +((target.pos.x - sim.los) * dir).toFixed(1), P: tr ? +tr.P.toFixed(3) : null, m: (() => { const ml = qb.behavior?.marginLast as any[] | undefined; if (!ml?.length) return null; const x = ml.slice().sort((p: any, q: any) => p.m - q.m)[0]; return { m: x.m, contest: x.contest, first: x.first, facing: x.facingQB, n: ml.length }; })(), int: tr ? +tr.intRisk.toFixed(3) : null, sep: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1), pOpen: tr?.parts ? +tr.parts.pOpen.toFixed(2) : null, pClear: tr?.parts ? +tr.parts.pClear.toFixed(2) : null, pAcc: tr?.parts ? +tr.parts.pAcc.toFixed(2) : null, T: +(arrivalT - sim.t).toFixed(2), air: +Math.hypot(intended.x - qb.pos.x, intended.y - qb.pos.y).toFixed(1), r: target, rel: +sim.t.toFixed(2), aim: { x: intended.x, y: intended.y }, arriveAt: arrivalT, near: sim.defense.map((d: any) => ({ d, dist: Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y) })).sort((x: any, y: any) => x.dist - y.dist)[0]?.d ?? null, r0: { x: target.pos.x, y: target.pos.y } }; if (rec.near) rec.d0 = { x: rec.near.pos.x, y: rec.near.pos.y }; }
     }
     return tb(qb, target, v0, intended, arrivalT, throwaway, ...rest);
   };
   const res = orig.apply(this);
-  if (rec) { const { r, aim, arriveAt, last, facing, lookAt, ...row } = rec; const ev = sim.events.filter((e: any) => ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss'].includes(e.type)).map((e: any) => e.type);
+  if (rec) { const { r, aim, arriveAt, last, facing, lookAt, near, r0, d0, ...row } = rec; const ev = sim.events.filter((e: any) => ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss'].includes(e.type)).map((e: any) => e.type);
     console.log(JSON.stringify({ ...row, cmp: !!res.stats.completed, picked: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null, ball: ev })); }
   return res;
 };

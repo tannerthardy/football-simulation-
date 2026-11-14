@@ -249,6 +249,7 @@
     "QB_RELOOK": "on",
     "QB_KEY_MAN": "on",
     "QB_KEY_THROW": "off",
+    "QB_PHASE": "off",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "on",
