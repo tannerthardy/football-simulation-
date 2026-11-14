@@ -6,6 +6,7 @@ import { availability, supportParams } from '../../physics/support.js';
 import { interceptPoint, timeToReach, timeToReachRequested, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
+import { onTopCushion, onTopPoint } from '../open-field.js';
 import { withMovementObjective } from '../movement-objective.js';
 import type { PlaySim } from '../playsim.js';
 
@@ -247,7 +248,7 @@ function pursuitLeverage(a: Agent, y: number): number {
  * the same braking and achievable arrival request; no new observation,
  * decision, random draw or physical capability is introduced here. */
 export function gatheringApproach(a: Agent, seen: import('../perception.js').Perceived,
-  contact: number, offset: number): { near: MoveCommand | null; gather: number } {
+  contact: number, offset: number, upfield = 0): { near: MoveCommand | null; gather: number } {
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   let near: MoveCommand | null = null;
@@ -276,7 +277,8 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     const close = clamp((contact + Math.max(2.5, stopping) - dist) / .75, 0, 1);
     gather = Math.max(headOn, close);
     if (gather > 0) {
-      const goal = { x: seen.pos.x, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
+      // OPEN_FIELD: `upfield` (yd along x) keeps the arrival on top of the runner, shrinking to nothing at contact.
+      const goal = { x: seen.pos.x + upfield, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };
       const vel=movingArrivalVelocity(a.body,goal,seen.vel,a.profile.vmax*a.speedScale,
         contact,through,cutSkill,capacity);
       // A front tackler keeps driving through the near hip, rather than
@@ -311,7 +313,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
  * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
  * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
 export const TRACK_TACKLE = process.env.TRACK_TACKLE !== '0' || process.env.PERCEIVE_TRACK === '1';
-export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
+export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3, opts: { onTop?: boolean } = {}): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
   const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
@@ -326,7 +328,11 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const ownApproach = (command: MoveCommand): MoveCommand => withMovementObjective(command,
     { kind: 'moving', point: { x: seen.pos.x,
       y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) }, velocity: seen.vel });
-  const { near, gather } = gatheringApproach(a, seen, contact, offset);
+  // OPEN_FIELD: on a runner in space he aims on top of him (inside-out, a cushion upfield), not at the intercept,
+  // and the gather's arrival stays on top of him (onTopCushion), so it mirrors him.
+  const top = opts.onTop ? onTopPoint(sim, a, target, seen, offset) : null;
+  const topShift = opts.onTop ? onTopCushion(sim, a, target, seen, dist, contact) : 0;
+  const { near, gather } = gatheringApproach(a, seen, contact, offset, topShift);
   const trace = sim.commandTraceFor?.(a);
   if (gather >= 1 && !sim.bond?.tacklers.includes(a)) {
     const command = ownApproach(near!);
@@ -337,7 +343,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
   const request = { speed: effort, effort };
-  const p = pursuitPoint(sim, a, target, horizon, request);
+  const p = top ?? pursuitPoint(sim, a, target, horizon, request);
   const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) {
