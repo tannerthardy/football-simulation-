@@ -14,16 +14,19 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 const SCENES: [string, string][] = [['corner_flat', 'cover2'], ['smash', 'cover2'], ['drive', 'cover3'], ['corner_flat', 'cover3'], ['smash', 'cover3'], ['curl_flat', 'cover3'], ['flood', 'cover3'], ['levels', 'cover2']];
 
-async function stage(flag: string, keyThrow = '0') {
+async function stage(flag: string, keyThrow = '0', danger: '0' | '1' | null = null) {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
-  vi.stubEnv('READ_PLAN', '1'); vi.stubEnv('PLAN_KEYS', '1'); vi.stubEnv('OUTLET_LAST', '1'); vi.stubEnv('QB_KEY_MAN', flag); vi.stubEnv('QB_KEY_THROW', keyThrow);
+  vi.stubEnv('READ_PLAN', '1'); vi.stubEnv('PLAN_KEYS', '1'); vi.stubEnv('OUTLET_LAST', '1'); vi.stubEnv('QB_KEY_MAN', flag); vi.stubEnv('QB_KEY_THROW', keyThrow); vi.stubEnv('QB_KEY_DANGER', danger ?? '0');
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { goTo } = await import('../src/sim/behaviors/common.js');
-  const rows: { scene: string; mode: string; role: string; named: string; on: string | null; answer: string | null; thrown: string | null }[] = [];
-  for (const [concept, coverage] of SCENES) for (const mode of ['sink', 'jump'] as const) for (const seed of [1, 2]) {
+  const rows: { scene: string; mode: string; role: string; named: string; on: string | null; answer: string | null; thrown: string | null; shut: string[] }[] = [];
+  // The danger case: the corner concepts only, the key jumping the low route, and the deep man over the high route
+  // (the half-field safety the coaching warns about) sent to where the high route is going.
+  const scenes = danger === null ? SCENES : SCENES.filter(([c]) => c === 'corner_flat' || c === 'smash');
+  for (const [concept, coverage] of scenes) for (const mode of (danger === null ? ['sink', 'jump'] : ['jump']) as ('sink' | 'jump')[]) for (const seed of danger === null ? [1, 2] : [1, 2, 3, 4]) {
     const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
     const qb: any = sim.qb.behavior, k = qb.plan?.key;
     if (!k) continue;
@@ -31,6 +34,14 @@ async function stage(flag: string, keyThrow = '0') {
     if (!man) continue;
     const orig = man.behavior, dir = sim.attackDir(sim.offense[0].team);
     man.behavior = { kind: orig.kind, update: (a: any, s: any) => s.t < 0.25 ? orig.update(a, s) : goTo(a, mode === 'sink' ? { x: s.los + 15 * dir, y: k.high.pos.y } : { x: s.los + 2 * dir, y: k.low.pos.y }, { speed: 0.95 }) };
+    if (danger !== null) {
+      const over = qb.keyMan(sim, 'deep_defender_over_vertical', k.low, k.high);
+      if (!over || over === man) continue;
+      const o2 = over.behavior;
+      // He goes to where the route is going (the quarterback's own forecast of it 1.5 s on), not to the stem.
+      const spot = (s: any) => qb.receiverForecasts.get(k.high)?.predict(s.t, 1.5) ?? { x: k.high.pos.x + 8 * dir, y: k.high.pos.y };
+      over.behavior = { kind: o2.kind, update: (a: any, s: any) => s.t < 0.25 ? o2.update(a, s) : goTo(a, spot(s), { speed: 0.95 }) };
+    }
     for (let i = 0; i < 200 && sim.phase === 'live' && !qb.keyRead; i++) sim.tick();
     const kr = qb.keyRead;
     if (!kr) continue;
@@ -39,7 +50,7 @@ async function stage(flag: string, keyThrow = '0') {
     const tb = sim.throwBall.bind(sim);
     sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && thrown === null) thrown = target === k.low ? 'low' : target === k.high ? 'high' : 'other'; return tb(p, target, ...rest); };
     for (let i = 0; i < 300 && sim.phase === 'live' && thrown === null && sim.carrier === sim.qb; i++) sim.tick();
-    rows.push({ scene: `${concept}/${coverage}/${seed}`, mode, role: k.role, named: man.player.id, on: kr.defender, answer: kr.defender ? kr.throwTo : null, thrown });
+    rows.push({ scene: `${concept}/${coverage}/${seed}`, mode, role: k.role, named: man.player.id, on: kr.defender, answer: kr.defender ? kr.throwTo : null, thrown, shut: [...(qb.keyShut ?? [])] });
   }
   return rows;
 }
@@ -74,5 +85,17 @@ describe('QB_KEY_MAN', () => {
     const low = (rows: typeof priced) => rows.filter((r) => r.answer === 'low');
     const lowShare = (rows: typeof priced) => low(rows).filter((r) => r.thrown === 'low').length / Math.max(1, low(rows).length);
     expect(lowShare(read)).toBeGreaterThanOrEqual(lowShare(priced) - 1e-9);
+  }, 240000);
+
+  it('QB_KEY_DANGER: with the safety sitting over the corner route, the high answer is not thrown on the read', async () => {
+    const off = await stage('1', '1', '0'), on = await stage('1', '1', '1');
+    const high = (rows: typeof off) => rows.filter((r) => r.answer === 'high');
+    expect(high(off).length).toBeGreaterThanOrEqual(6);
+    expect(high(on).length).toBeGreaterThanOrEqual(6);
+    // Off, nobody names him: the window is never shut on the danger. On, it is, on most of these scenes.
+    expect(off.some((r) => r.shut.includes('danger'))).toBe(false);
+    expect(high(on).filter((r) => r.shut.includes('danger')).length / high(on).length).toBeGreaterThanOrEqual(0.5);
+    const thrownHigh = (rows: typeof off) => high(rows).filter((r) => r.thrown === 'high').length / high(rows).length;
+    expect(thrownHigh(on)).toBeLessThan(thrownHigh(off));
   }, 240000);
 });
