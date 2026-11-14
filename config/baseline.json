@@ -327,8 +327,7 @@
     "ROUTE_END": "0",
     "CROSS_OVER": "0",
     "SCREEN_DECLARE": "0",
-    "ROUTE_FILLET": "0",
-    "ROUTE_SHAPE": "0"
+    "ROUTE_SHAPE": "0",
     "FORECAST_BREAK": "0",
     "ROUTE_FILLET": "0",
     "FORECAST_HOLD": "0",
