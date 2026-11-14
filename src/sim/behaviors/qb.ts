@@ -327,6 +327,10 @@ export class QBPass implements Behavior {
   private readStart = -1;
   private setAt = -1;
   private pending: ThrowEval | null = null;
+  /** Diagnostic record (no effect): the point and flight time the last release was thrown to (test staging records it). */
+  releaseRec: { aim: Vec3; T: number } | null = null;
+  /** PlaySetup.stagedThrow: true while the staged throw starts. */
+  private staging = false;
   private releaseAt = 0;
   /** The load he would use now: shortened (a flick) when he feels a hit coming
    * before a full motion could finish. */
@@ -646,6 +650,20 @@ export class QBPass implements Behavior {
         sim.stats.pressured = true;
         sim.stats.hurriedBy = pressure.agent.player.id;
         sim.event('pressure', pressure.agent, a);
+      }
+    }
+
+    // Test staging (PlaySetup.stagedThrow; never set in games): the test fixes when and to whom the throw starts. After
+    // his pressure read, so a hurried load is the one he would have made.
+    const staged = sim.stagedThrow;
+    if (staged && t >= staged.at) {
+      const r = sim.slot(staged.slot), ev = r ? this.evaluate(a, sim, r, 0) : null;
+      if (r && ev) {
+        sim.qbEyes = r;
+        this.staging = true;
+        const cmd = this.startThrow(a, sim, ev);
+        this.staging = false;
+        return cmd;
       }
     }
 
@@ -1493,6 +1511,8 @@ export class QBPass implements Behavior {
   }
 
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
+    // Test staging: his own throws are held until the staged one (he keeps his drop and set).
+    if (sim.stagedThrow && !this.staging) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: a.body.facing };
     this.phase = 'windup';
     this.pendingSpot = null;
     this.look = null;
@@ -1552,6 +1572,7 @@ export class QBPass implements Behavior {
   /** Whether the committed throw, re-aimed as it would now leave his hand, is
    * worth less than keeping the ball. Held or about to be hit, he cannot. */
   private pullDown(a: Agent, sim: PlaySim, ev: ThrowEval): boolean {
+    if (sim.stagedThrow) return false; // test staging: the staged throw comes out
     const left = this.releaseAt - sim.t;
     const pressure = this.pressure(a, sim);
     if (heldBy(a, sim) > 0 || pressure.time < left + 0.3) return false;
@@ -1597,7 +1618,11 @@ export class QBPass implements Behavior {
       z: Math.max(0.4, point.z + dice.normal(0, sigma * 0.45)),
     };
     // Without the legs and trunk, less on the ball [D].
-    const T = Math.max(ev.T * (1 + dice.normal(0, 0.03)), minFlightTime(from, miss, this.armSpeed * (1 - 0.2 * this.flick)));
+    let T = Math.max(ev.T * (1 + dice.normal(0, 0.03)), minFlightTime(from, miss, this.armSpeed * (1 - 0.2 * this.flick)));
+    // Test staging (PlaySetup.stagedThrow with an aim): the ball goes to the recorded point in the recorded flight time.
+    const staged = sim.stagedThrow;
+    if (staged?.aim && staged.T !== undefined) { miss.x = staged.aim.x; miss.y = staged.aim.y; miss.z = staged.aim.z; T = staged.T; }
+    this.releaseRec = { aim: { ...miss }, T };
     const v0 = solveLaunch(from, miss, T, DRAG_SPIRAL, sim.wind);
     sim.throwBall(a, r, v0, point, sim.t + T);
   }
