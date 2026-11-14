@@ -181,6 +181,19 @@ const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS !== '0';
 /** SLOT_LEV (experimental, off): see alignDefense. */
 const SLOT_LEV = process.env.SLOT_LEV !== '0';
 const TIGHT_OFF = process.env.TIGHT_OFF !== '0', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
+/** MAN_SLOT (experimental, off; slot alignment, 2026-11-14; Coverage reviews): the slot defender in off man (the
+ * nickel or dime on a detached #2) takes the slot's depth, not the corner's cushion. Coached, alignment comes from the
+ * down and distance as well as the coverage ("the first down is job one" on third and four; "four yards off or six
+ * yards off" by the situation: Felder, Bleacher Report), and slot defenders play a tighter catch alignment than an
+ * outside corner's off cushion (catch-press at about 5 yd for the defender on a slot: Viqtory, weak). The numbers are
+ * tracked (slotdepth.py, BDB 2025 wk 1-6, off-man dropbacks, the man on a detached #2 at the snap, n 757): p50 3.1 yd
+ * on 1st down, 2.9 on 2nd/3rd long, 2.5 medium, 2.4 short, head-up (lateral +0.1); ours took the corner's 6 and stood
+ * 4.0-4.6 at the snap (any off-man defender on a detached #2: the nickel, a safety or a backer; corners took 6, others
+ * 4). In zone our slot depth already matches (cover 3 4.4 vs 4.3-4.5, quarters 4.3 vs 4.1). */
+const MAN_SLOT = process.env.MAN_SLOT === '1';
+const MAN_SLOT_DEPTH = { first: 3.1, long: 2.9, medium: 2.5, short: 2.4 };
+const manSlotDepth = (sit: DefSituation | undefined): number => !sit || sit.down <= 1 ? MAN_SLOT_DEPTH.first
+  : sit.distance <= 3 ? MAN_SLOT_DEPTH.short : sit.distance <= 7 ? MAN_SLOT_DEPTH.medium : MAN_SLOT_DEPTH.long;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
@@ -1314,7 +1327,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const inside = Math.sign(off.ballY - tp.y) || Math.sign(spots[d]!.pos.y - tp.y) || s;
     const mr = roles[d] as Extract<CoverageRole, { kind: 'man' }>;
     const press = (mr.press ?? cov.press) && !mr.overTop;
-    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? (DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;
+    // MAN_SLOT: the man on a detached #2, playing off, takes the slot's depth by the situation.
+    const onSlot = MAN_SLOT && !press && !mr.overTop && !off.spots[t].backfield && !off.spots[t].inline
+      && (off.numbering.S2 === t || off.numbering.W2 === t);
+    const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : onSlot ? manSlotDepth(style.situation)
+      : isCorner ? (press ? (DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;
     const shade = mr.lev === 'outside' ? -inside : mr.lev === 'head' ? 0 : inside;
     // DEF_ALIGN: a corner presses about head-up, plays the called shoulder
     // from off, and takes the inside against a receiver near the sideline.
@@ -1466,7 +1483,8 @@ function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present:
       // a detached man and pretend the rotation costs nothing.
       const target = off.spots[p.manTarget];
       const corner = slot === 'CB_S' || slot === 'CB_W' || slot === 'NB' || slot === 'DB';
-      const depth = target.backfield ? 5 : p.role.overTop ? 10 : corner ? 6 : 4;
+      const onSlot = MAN_SLOT && !target.backfield && !target.inline && (off.numbering.S2 === p.manTarget || off.numbering.W2 === p.manTarget);
+      const depth = target.backfield ? 5 : p.role.overTop ? 10 : onSlot ? manSlotDepth(style.situation) : corner ? 6 : 4;
       // SHELL_SHOW: a man safety may show the deep look and come down at the
       // snap, paying for it with his own feet (tracked: Cover 1 shows two
       // high 26% of dropbacks, Cover 0 shows someone deep 36%), when that

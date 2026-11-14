@@ -280,6 +280,7 @@
     "THROW_BODY": "on",
     "THROW_REACT": "on",
     "TIGHT_OFF": "on",
+    "MAN_SLOT": "off",
     "TKL_EXEC_STATE": "off",
     "TKL_WHIFF": "off",
     "TORSO_CAPSULE": "off",
