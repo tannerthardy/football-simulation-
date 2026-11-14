@@ -92,6 +92,12 @@ Column meanings:
 | trips_outs | U | analogue: flood | B last | triangle | | U |
 | verts_hitch | U | analogue: four verticals | B last | vertical peek S2,S1 > B 3rd | | U |
 
+### Route-timing note: four verticals
+The coached four verticals is a quick five (from the gun, a quick three) with read 1 thrown "as soon as the back foot
+hits" (Gonzalez via Smart Football). Our seam is not ready until 2.7 s as installed, so no drop puts read 1 on the last
+step. That is a route-timing question, not a plan or drop question. After the QB lane's drops are in, compare our
+seam's depth by time with NFL seams before changing either.
+
 ### Counts
 - Sourced (S or M): 15 concepts.
 - Weak only: 4.
