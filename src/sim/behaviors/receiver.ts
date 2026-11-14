@@ -15,6 +15,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
+import { BALL_EST, LOOK_NECK } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -598,25 +599,47 @@ export class TrackBall implements Behavior {
     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
     if (sim.t < this.reactAt) return this.fallback.update(a, sim);
     let spot: { p: Vec2; t: number } | null = null;
+    // BALL_EST: his own estimate from the ball he has seen; until he has one he runs his route and looks for it.
+    const path = BALL_EST ? sim.ballEstimates.estimate(a, sim) : sim.ballPath;
+    if (BALL_EST && !path.length) return lookFor(a, sim, this.fallback.update(a, sim));
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
       if (!this.choice || (sim.t - this.choseAt >= 0.1 - 1e-9 && this.choice.t - sim.t > 0.3)) {
-        this.choice = chooseCatchPoint(a, sim, this.judge) ?? this.choice; this.choseAt = sim.t;
+        this.choice = chooseCatchPoint(a, sim, this.judge, path) ?? this.choice; this.choseAt = sim.t;
       }
       spot = this.choice;
     }
-    spot ??= catchSpot(a, sim);
-    if (!spot) return this.fallback.update(a, sim);
-    const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
+    spot ??= catchSpot(a, { t: sim.t, ballPath: path });
+    if (!spot) return BALL_EST ? lookFor(a, sim, this.fallback.update(a, sim)) : this.fallback.update(a, sim);
+    // Under BALL_EST his error is his estimate's; no separate offset.
+    const target = BALL_EST ? { ...spot.p } : { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
     if (HANDS_CUE) noteHands(a, sim.t, spot.t);
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
     // Arrive on time, keep running through if the ball is leading him.
     const need = dist / dtArr;
-    const facing = angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    // BALL_EST: he faces where he believes the ball is, not where it is.
+    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
-    return { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    const run = { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    return BALL_EST && dist >= 3 ? lookFor(a, sim, run) : run;
   }
+}
+
+/** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
+ * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
+ * turned body, which the facing speed cap prices. */
+function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const est = sim.ballEstimates.estimate(a, sim);
+  const at = est.length ? est[0] : sim.see(a, sim.qb).pos;
+  const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+  const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+  const toward = Math.atan2(at.y - a.pos.y, at.x - a.pos.x);
+  let d = toward - heading;
+  while (d > Math.PI) d -= 2 * Math.PI;
+  while (d < -Math.PI) d += 2 * Math.PI;
+  const over = Math.abs(d) - LOOK_NECK;
+  return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
