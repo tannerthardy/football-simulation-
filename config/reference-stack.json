@@ -127,6 +127,7 @@
     "TRACK_PURSUIT": "on",
     "TRACK_TACKLE": "on",
     "PURSUIT_SPOT": "on",
+    "OPEN_FIELD": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
