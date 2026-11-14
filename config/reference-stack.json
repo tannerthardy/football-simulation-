@@ -288,6 +288,7 @@
     "PLAN_KEYS_2": "on",
     "CROSS_FLAT": "on",
     "PLAN_KEYS_3": "off",
+    "ROUTE_EFFORT": "off"
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
