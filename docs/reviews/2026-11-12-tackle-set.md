@@ -3459,3 +3459,41 @@ The interior rate is explained in parts but not closed. The hand model stays hel
 **The larger NFL gaps in the pass rep remain on the edge.** Edge past-outside is 0.3-0.7% in every arm against the NFL's
 3.8%, and our rushers move across less while engaged (p90 1.75 against 2.50). They may be one finding, and they are
 the next item: the edge corner, measured with EDGE_ARC's question in mind, ahead of rip and swim.
+
+## The edge corner, measured (2026-11-14; edge-rush.py, the same operator on NFL tracking and on engine-61, arm A x seeds 11 / 23)
+
+| | NFL | ours (s11 / s23) |
+|---|---|---|
+| edge rushes | 13724 | 2455 / 2643 |
+| at 1.5 s: not level / level outside / past outside / inside | 57 / 25 / 10 / 8% | 74 / 15-16 / 5 / 6-7% |
+| at 2.0 s | 31 / 30 / 23 / 15% | 70-71 / 13 / 4 / 11-12% |
+| at 2.5 s | 28 / 24 / 26 / 22% | 65-68 / 11-13 / 4 / 17-18% |
+| rusher depth against the tackle p50 at 1.5 / 2.0 / 2.5 / 3.0 s (+ = still in front of him) | +0.5 / +0.2 / +0.1 / +0.2 | +0.7 / +0.7 / +0.7 / +0.8 |
+| rusher width outside the tackle p50 at 2.0 s | +0.6 | +0.6 / +0.7 |
+| rusher speed at 1.0 / 1.5 / 2.0 / 2.5 s | 3.9 / 4.1 / 3.5 / 2.9 | 4.1 / 3.4 / 2.8 / 2.5-2.7 |
+| tackle depth at 2.0 s | -5.1 | -5.0 / -5.1 |
+| **tackle's width out from his snap spot at 1.0 / 1.5 / 2.0 / 2.5 / 3.0 s** | **+0.6 / +0.7 / +0.3 / -0.2 / -0.6** | **+1.1 / +1.3 / +1.3 / +1.2 / +1.0** |
+| win (within 2 yd of the QB before the ball is out) | 13% | 9% / 7% |
+| at the win: past outside / level or in front / inside | 26 / 27 / 47% | 4 / 31 / 66% and 3 / 28 / 69% |
+
+**Read.** The corner is lost at the tackle's width, and the rusher stalls in front of him:
+- **The tackle's width.** Ours sets about 0.5-1.0 yd wider than the NFL's from 1.0 s and stays out there (+1.0 to +1.3
+  yd). The NFL tackle widens about 0.6-0.7 yd and then gives the width back, pinching inside his snap spot by 2.5 s
+  while dropping to the same depth. He gives up width for depth, the coached "set to the launch point, make him go
+  around"; ours holds both.
+- **The rusher.** His width outside the tackle is the NFL's (+0.6), but he never gets level. He stays 0.7 yd in front
+  of the tackle from 1.5 s, 70% "not level" at 2.0 s against 31%, and slows from 1.5 s (3.4 against 4.1 yd/s).
+- **Engaged lateral speed.** Our rushers moving across less while engaged (p90 1.75 against 2.50) is part of the same
+  picture: in front of a tackle who is already wide, the rusher stalls in the rep rather than running the arc.
+
+So the two pass-rep gaps (edge past-outside 0.3-0.7% against 3.8%, and the low lateral speed) look like one finding: a
+tackle set too wide that holds its width, and a rusher who stays in front of him.
+
+**Next diagnostic, before any build:**
+- the tackle's width request over time against the set rule (passSet laneY: home + 0.8 x outside; TACKLE_SET's width
+  0.3-1.0 yd outside his alignment), and whether he ever gives the width back for depth;
+- the rusher's request in front of him: corner aim, pace, and whether moves keep him stalled.
+
+EDGE_ARC (off) is the rusher half of this, run as taught (landmark at the QB's depth outside the tackle's shoulder,
+turn past the hips). Its earlier read was 55-57% in front of the tackle against the NFL's 27%, on an older stack. It
+bears on the rusher side and should be re-read on engine-61 with the tackle's width settled first.
