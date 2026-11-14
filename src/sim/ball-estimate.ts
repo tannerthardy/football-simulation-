@@ -36,6 +36,8 @@ export const BALL_EST = (BALL_EST_BITS & 1) !== 0;
 export const BALL_EST_NO_TRACKPEN = (BALL_EST_BITS & 2) !== 0;
 /** Design 4: the pre-release look starts this long after his route's break per unit of routeRunning (choice). */
 export const PRE_LOOK_LATE = 0.15;
+/** Design 4 attempt 2: his eyes come round this long before his route's break (choice). */
+export const PRE_LOOK_EARLY = 0.1;
 
 /** Attempt 2: continuous pursuit (a sample every perception step while in eye range), the error a first-order
  * process with this time constant (choice); each sample is weighted as dt / ERR_TAU of an independent one. */

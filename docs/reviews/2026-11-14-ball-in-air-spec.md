@@ -401,6 +401,7 @@ the ball" carry forward.
 | Constant | Value | Source |
 | --- | --- | --- |
 | When he looks | From his route's break (RouteRunner's `breakTime`, the QB's timing of the route) + 0.15 s x routeRunning: a better route runner can leave it later | coached ("get your head around out of the break"); the 0.15 s is choice |
+| When he looks (attempt 2) | From 0.1 s before his route's break, + 0.15 s x routeRunning: his eyes come round through the break, so a quick-game or check-release ball thrown at the break finds him looking. Written before attempt 2's exam (attempt 1: never-sampled short throws were mostly balls thrown before break + 0.15 s) | coached ("eyes come round through the break"); the 0.1 s is choice |
 | Which routes | Every route family but `deep`. A deep route doesn't expect the ball at its stem's break; the late body turn (design 2) covers it | coached |
 | What he does | His head turns to the QB as he sees him (GAZE's rate, within ±90° of his body). His shoulders turn off his running line only as far as needed to bring the QB within his neck's reach, paid by the facing speed cap | engine; coached (the shoulders as far as the route allows) |
 | His view of the defender | Not modelled separately here (GAZE off). The look's cost is the turned body | stated |

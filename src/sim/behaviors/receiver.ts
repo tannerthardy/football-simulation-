@@ -15,7 +15,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, LOOK_NECK, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -238,7 +238,7 @@ export class RouteRunner implements Behavior {
    * it later. Not on a deep route, which does not expect the ball at its stem's break. */
   private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
-    if (sim.t - this.bornAt < this.breakTime + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
     sim.ballEstimates.lookAtQB(a, sim);
     const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
     const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
