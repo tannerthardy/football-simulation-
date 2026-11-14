@@ -120,6 +120,7 @@
     "PERCEIVE_TRACK": "off",
     "QB_BODY_SEEN": "on",
     "RCV_SEEN": "off",
+    "TRACK_PURSUIT": "off"
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
