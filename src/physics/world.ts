@@ -115,6 +115,11 @@ export interface HandJoint {
    * point). */
   handsOn?: number;
   offSide?: number;
+  /** FITTED_HANDS: the two hands, each its own one-degree-of-freedom body: [the hand on the joint tangent's -1 side,
+   * the hand on its +1 side]. `slide` is where the hand sits across the man's chest from where it was aimed (its
+   * placement error at the fit, then whatever moved it), `vel` its sliding speed, `on` whether it is on him. The
+   * aggregate fields above (handsOn, off, offSide) are kept equal to them for readers of the joint. */
+  handPair?: [HandState, HandState];
   /** RUSH_HANDS: the last step's normal force (the press a club must overcome). A plain field, so a World stays
    * structured-cloneable (lab tools and replay clone it). */
   lastN?: number;
@@ -412,6 +417,32 @@ const PRESS_SPRING_W = process.env.PRESS_SPRING === '1';
  * press, a few inches. A stated choice with that physical meaning, the same for every body, not fitted to separation;
  * it sets each arm's stiffness (strength / ARM_GIVE). */
 const ARM_GIVE = 3 / 36;
+/** FITTED_HANDS (experimental, off; FITTED_HANDS=1, requires RUSH_HANDS): the hand fight's stage 1, the physics with one
+ * move (docs/reviews/2026-11-14-hand-fight-design.md section 4). World half: the blocker's two hands are separate
+ * bodies (`handPair`). Each carries half of the joint's push, hold and steer, times its own edge factor (1 where it
+ * was aimed, 0 at the edge of the man's torso), so press, the friction on it and steer exist only through a fitted
+ * hand, hand by hand. A force on the hands acts on the hand it meets (the one on the side it comes from; the other if
+ * that one is off) and is resisted by that hand's arm alone: half the arms' steer at its lever, the friction on its
+ * half of the press, half the grip. Off, the joint is one hand-pair with both arms' hold against every strike. */
+export const FITTED_HANDS = process.env.FITTED_HANDS === '1';
+if (FITTED_HANDS && !RUSH_HANDS) throw new Error('FITTED_HANDS=1 requires RUSH_HANDS=1 (the hand body it splits into two hands)');
+export interface HandState { slide: number; vel: number; on: boolean }
+/** FITTED_HANDS: the joint's two hands, made on first use from its aggregate state. */
+export function handPairOf(jt: HandJoint): [HandState, HandState] {
+  if (!jt.handPair) {
+    const n = jt.off ? 0 : jt.handsOn ?? 2, offK = n === 1 ? ((jt.offSide ?? 1) > 0 ? 1 : 0) : -1;
+    jt.handPair = [0, 1].map(k => ({ slide: 0, vel: 0, on: n === 2 || (n === 1 && k !== offK) })) as [HandState, HandState];
+  }
+  return jt.handPair;
+}
+/** FITTED_HANDS: write the aggregate fields from the two hands. */
+export function syncHandPair(jt: HandJoint): void {
+  const p = handPairOf(jt), n = (p[0].on ? 1 : 0) + (p[1].on ? 1 : 0);
+  jt.handsOn = n; jt.off = n === 0;
+  jt.offSide = n === 1 ? (p[0].on ? 1 : -1) : undefined;
+  jt.handOffset = n === 0 ? 0 : (p[0].on ? p[0].slide : 0) + (p[1].on ? p[1].slide : 0);
+  jt.handVel = (p[0].on ? p[0].vel : 0) + (p[1].on ? p[1].vel : 0);
+}
 /** The hand as a body: RUSH_HANDS or its rip piece. */
 const HAND_BODY = RUSH_HANDS || RIP_CLEAR;
 export const ARM_MASS = 0.05;
@@ -1010,7 +1041,7 @@ export class World {
   }
 
   /** RUSH_HANDS: the arm's lateral hold at the hand (force), from its extension, the measured press and a grip. */
-  handHold(jt: HandJoint, lift = 0): number {
+  handHold(jt: HandJoint, lift = 0, k?: 0 | 1): number {
     const owner = jt.a, target = jt.b;
     const arm = Math.max(0.3, (owner.profile.reach - 0.25) / 0.85), bent = 0.25 * arm;
     const ext = Math.max(bent, jt.extension - owner.profile.radius - target.profile.radius);
@@ -1018,10 +1049,20 @@ export class World {
     // friction term rides on (never below zero), for the rip's own time.
     const press = Math.max(0, (jt.lastN ?? 0) - Math.max(0, lift));
     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
+    // FITTED_HANDS: one hand's arm: half of each term, at that hand's own edge.
+    if (FITTED_HANDS && k !== undefined) return 0.5 * (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdgeK(jt, k);
     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
   }
 
   /** RUSH_HANDS: 1 with the hand where it fitted, falling to 0 at the edge of the man's torso. */
+  /** FITTED_HANDS: hand k's edge factor (0 when it is off him). */
+  handEdgeK(jt: HandJoint, k: 0 | 1): number {
+    const hd = handPairOf(jt)[k];
+    if (!hd.on) return 0;
+    const u = hd.slide / Math.max(1e-6, jt.b.profile.radius);
+    return Math.max(0, 1 - u * u);
+  }
+
   handEdge(jt: HandJoint): number {
     const u = (jt.handOffset ?? 0) / Math.max(1e-6, jt.b.profile.radius);
     return Math.max(0, 1 - u * u);
@@ -1252,6 +1293,7 @@ export class World {
     const t0 = this.time, t1 = this.time + h;
     for (const jt of this.joints) {
       if (jt.kind !== 'hands' || jt.off) continue;
+      if (FITTED_HANDS) { this.stepHandPair(jt, h, t0, t1); continue; }
       const forces = this.handForces.filter(f => f.jt === jt && f.t1 > t0 && f.t0 < t1);
       if (!forces.length && !jt.handVel) continue;
       const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
@@ -1299,6 +1341,54 @@ export class World {
         else { jt.handsOn = on; jt.offSide = -Math.sign(jt.handOffset); jt.handOffset = 0; jt.handVel = 0; }
       }
     }
+  }
+
+  /** FITTED_HANDS: one substep of a joint's two hands. The same law as stepHands for each hand, with that hand's own
+   * hold; a force acts on the hand it meets. */
+  private stepHandPair(jt: HandJoint, h: number, t0: number, t1: number): void {
+    const forces = this.handForces.filter(f => f.jt === jt && f.t1 > t0 && f.t0 < t1);
+    const pair = handPairOf(jt);
+    if (!forces.length && !pair[0].vel && !pair[1].vel) return;
+    const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+    if (ia < 0 || ib < 0) return;
+    const dx = jt.b.pos.x - jt.a.pos.x, dy = jt.b.pos.y - jt.a.pos.y, d = hypot2(dx, dy) || 1;
+    const nx = dx / d, ny = dy / d, tx = -ny, ty = nx;
+    const mArm = ARM_MASS * this.mass[ia];
+    const ft = [0, 0], lift = [0, 0];
+    for (const f of forces) {
+      const share = (Math.min(f.t1, t1) - Math.max(f.t0, t0)) / h;
+      const fn = (f.fx * nx + f.fy * ny) * share, fT = (f.fx * tx + f.fy * ty) * share;
+      const is = this.indexOf(f.from);
+      if (is >= 0 && is !== ia && fn) this.pairImpulse(is, ia, nx * fn * h, ny * fn * h, is, 'strikes');
+      // The hand it meets: a force driving +t comes from the -t side (hand 0); if that hand is off, the other.
+      let k: 0 | 1 = fT >= 0 ? 0 : 1;
+      if (!pair[k].on) k = (1 - k) as 0 | 1;
+      if (!pair[k].on) continue;
+      if (is >= 0 && fT) { this.bodies[is].vel.x -= tx * fT * h / this.mass[is]; this.bodies[is].vel.y -= ty * fT * h / this.mass[is]; }
+      ft[k] += fT;
+      if (f.rip && is >= 0) {
+        const rise = clamp((this.padHeight[ia] - this.padHeight[is]) / Math.max(d, .3), 0, LEVERAGE_SLOPE);
+        lift[k] += hypot2(f.fx, f.fy) * share * rise;
+      }
+    }
+    for (const k of [0, 1] as const) {
+      const hd = pair[k];
+      if (!hd.on || (!ft[k] && !hd.vel)) continue;
+      const H = this.handHold(jt, lift[k], k), v = hd.vel;
+      let resisted: number;
+      if (Math.abs(v) < 1e-9) resisted = Math.abs(ft[k]) <= H ? ft[k] : Math.sign(ft[k]) * H;
+      else resisted = Math.sign(v) * H;
+      let v1 = v + (ft[k] - resisted) * h / mArm;
+      if (Math.abs(v) >= 1e-9 && Math.sign(v1) !== Math.sign(v) && Math.abs(ft[k]) <= H) { resisted = ft[k] + v * mArm / h; v1 = 0; }
+      this.bodies[ia].vel.x += tx * resisted * h / this.mass[ia]; this.bodies[ia].vel.y += ty * resisted * h / this.mass[ia];
+      hd.slide += 0.5 * (v + v1) * h; hd.vel = v1;
+      if (Math.abs(hd.slide) >= jt.b.profile.radius) {
+        // Off the edge: the arm's momentum goes to his body; the hand is off until he re-fits it.
+        this.bodies[ia].vel.x += tx * mArm * v1 / this.mass[ia]; this.bodies[ia].vel.y += ty * mArm * v1 / this.mass[ia];
+        hd.on = false; hd.vel = 0; hd.slide = 0;
+      }
+    }
+    syncHandPair(jt);
   }
 
   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
@@ -2926,7 +3016,12 @@ export class World {
         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
         if (PRESS_SPRING_W) { const sd = jt.steerDir; const st = sd ? sd.x * -ny + sd.y * nx : 0; row.steerSign = Math.abs(st) > 1e-6 ? Math.sign(st) : 0; }
-        if (HAND_BODY && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
+        if (FITTED_HANDS && jt.handPair) {
+          // FITTED_HANDS: each hand carries half, at its own edge; the press and its friction go with the hands.
+          const e = 0.5 * (this.handEdgeK(jt, 0) + this.handEdgeK(jt, 1));
+          row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
+          row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;
+        } else if (HAND_BODY && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
           const e = (jt.off ? 0 : this.handEdge(jt)) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
           row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
           row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;

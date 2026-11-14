@@ -48,7 +48,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { HAND_MU, OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+import { FITTED_HANDS, HAND_MU, OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, handPairOf, syncHandPair, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -916,11 +916,12 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
   // RIP_CLEAR: the same recovery and re-fit for a hand an edge's rip slid or took off.
-  if ((RUSH_HANDS || RIP_CLEAR) && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
+  if (FITTED_HANDS && e.type === 'pass') fightHands(sim, hands, b, d);
+  else if ((RUSH_HANDS || RIP_CLEAR) && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
     const o = hands.handOffset, step = ARM_SPEED * sim.dt;
     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
   }
-  if ((RUSH_HANDS || RIP_CLEAR) && (hands.off || (hands.handsOn ?? 2) < 2)) {
+  if (!(FITTED_HANDS && e.type === 'pass') && (RUSH_HANDS || RIP_CLEAR) && (hands.off || (hands.handsOn ?? 2) < 2)) {
     // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
     // request works past, as a landed move).
     // RUSH_ONE_HAND: one hand gone is not a landed move: only both gone frees him (the side it guarded is open, the
@@ -948,6 +949,33 @@ function setHands(sim: PlaySim, e: Engagement): void {
   if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
 }
 
+/** FITTED_HANDS: each of the blocker's hands on its own. A hand at rest on him is walked back to where he aims it (the
+ * middle of his side of the man) by his arm at ARM_SPEED. A hand that is off re-fits after his reaction to the felt
+ * loss plus its travel from his chest at ARM_SPEED (refitTime), and lands where his hand placement puts it: a motor
+ * error drawn on the landing point, PAIR_HANDS' spread by his hand technique (PLACE_SPREAD, 1 SD). A hand that lands
+ * past the edge of the man's torso has missed: it is off again and travels back. Being off his hands frees the man
+ * only through the World (no press, friction or steer from a hand that is not on him): no landed-move window. */
+const fightLost = new WeakMap<HandJoint, [number | null, number | null]>();
+function fightHands(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
+  const pair = handPairOf(hands), step = ARM_SPEED * sim.dt, R = d.profile.radius;
+  let lost = fightLost.get(hands);
+  if (!lost) { lost = [null, null]; fightLost.set(hands, lost); }
+  for (const k of [0, 1] as const) {
+    const hd = pair[k];
+    if (hd.on) {
+      lost[k] = null;
+      if (hd.slide && Math.abs(hd.vel) < 0.05) { hd.slide = Math.abs(hd.slide) <= step ? 0 : hd.slide - Math.sign(hd.slide) * step; hd.vel = 0; }
+      continue;
+    }
+    if (lost[k] === null) lost[k] = sim.t;
+    if (sim.t - lost[k]! < refitTime(b, d)) continue;
+    const sd = PLACE_SPREAD * (1 - 0.6 * clamp(b.r('handTechnique'), 0, 1));
+    const at = sim.dice('place', b, d).normal(0, sd);
+    if (Math.abs(at) >= R) { lost[k] = sim.t; continue; }
+    hd.on = true; hd.slide = at; hd.vel = 0; lost[k] = null;
+  }
+  syncHandPair(hands);
+}
 const refitState = new WeakMap<HandJoint, { lostAt: number }>();
 /** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
  * chest (the bodies' gap) at ARM_SPEED. */
@@ -1048,6 +1076,21 @@ function clearedSide(e: Engagement, lat: Vec2): number {
   return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
 }
 
+/** FITTED_HANDS: an interior pass rep (the hand fight's stage 1 is the interior fight). */
+function fightRep(e: Engagement): boolean {
+  return FITTED_HANDS && e.type === 'pass' && e.blocker.slot !== 'LT' && e.blocker.slot !== 'RT';
+}
+/** The cleared side as he feels it: a hand gone from his chest is touch, at the hands' delay (0.06 s, ENGAGE_FELT's
+ * loaded touch); off FITTED_HANDS the side as it is (RUSH_ONE_HAND, unchanged). */
+const clearedSeen = new WeakMap<Engagement, { side: number; at: number }>();
+function feltCleared(sim: PlaySim, e: Engagement, lat: Vec2): number {
+  const now = clearedSide(e, lat);
+  if (!FITTED_HANDS) return now;
+  let st = clearedSeen.get(e);
+  if (!st || st.side !== now) { st = { side: now, at: sim.t }; clearedSeen.set(e, st); }
+  return sim.t - st.at >= 0.06 ? now : 0;
+}
+
 export function handUnloaded(e: Engagement): boolean {
   const h = e.hands;
   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
@@ -1074,6 +1117,8 @@ function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
 /** Choose the next move from the state of the rep. */
 function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   const d = e.defender;
+  // FITTED_HANDS stage 1: the club is the interior rusher's one move.
+  if (fightRep(e)) return 'club';
   if (RUSH_HANDS && e.type === 'pass') { const keyed = keyedMove(sim, e); if (keyed) return keyed; }
   const td = traits(d);
   const power = d.r('passRushPower');
@@ -1191,6 +1236,14 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
 function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   const t = sim.t;
   const rng = sim.dice('rep', e.blocker, e.defender);
+  // FITTED_HANDS stage 1: an interior rusher's only move is the club, on a hand that is on him. Its next decision is when
+  // his arm is back (the club's end, then the arm's return: handsBackAt); with no hand on him there is nothing to
+  // clear and he looks again after his reaction.
+  if (fightRep(e)) {
+    if (e.hands && !e.hands.off) { const c = clubHand(sim, e, axis); e.nextMoveAt = t + c.duration; }
+    else e.nextMoveAt = t + Math.max(0.1, e.defender.profile.reactionTime);
+    return;
+  }
   // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
   if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
   if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
@@ -2153,7 +2206,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   } else if (between === 'stall') aim = { x: bK.pos.x, y: bK.pos.y };
   // RUSH_ONE_HAND: a cleared hand opens the side it guarded. He works to it, at the blocker's hip a step past toward
   // the QB, through the body and the remaining hand at whatever speed that contact allows; PAST (geometry) wins it.
-  const cleared = RUSH_ONE_HAND && !turned && !inMove ? clearedSide(e, lat) : 0;
+  const cleared = (RUSH_ONE_HAND || fightRep(e)) && !turned && !inMove ? feltCleared(sim, e, lat) : 0;
   if (cleared) aim = { x: bK.pos.x + lat.x * cleared * (sep + 0.2) + axis.x * 0.5, y: bK.pos.y + lat.y * cleared * (sep + 0.2) + axis.y * 0.5 };
   // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
   // the QB's depth outside the tackle's shoulder; past the hips he turns.
