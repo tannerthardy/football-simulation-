@@ -8,6 +8,14 @@
 > **What would re-open it** (named, not done): on BDB tracking, who goes down within about 0.5 s of a contact, by the
 > direction of the hit relative to his heading and to his facing, for set linemen, running rushers and ball carriers.
 > That gives the anisotropy as a ratio without needing forces. The outcome is at the end of this document.
+>
+> **POSTURE_FORCE (2026-11-14): one build, no effect, removed.**
+> - **The mapping.** The engine's posture 1 is 62-87 deg of knee flexion (by bend), a half squat, already at the
+>   evidence's force optimum.
+> - **Where "lower wins" comes from.** The balance model (base, w0) and the controllers' lean bounds, not leg force.
+> - **Consequences.** The coached "too low" cannot occur in the engine, and ANCHOR_BASE's sink has nothing to be
+>   re-pointed at.
+> - **Parked.** The mobility cost of a deeper crouch (POSTURE_MOBILITY, in PARKED).
 
 Integration's order item 5. This is a proposal, not built. It joins four threads:
 
