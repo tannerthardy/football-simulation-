@@ -33,6 +33,8 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
         const d = e.defender, b = e.blocker, ax = { x: sim.qb.pos.x - d.pos.x, y: sim.qb.pos.y - d.pos.y }, L = Math.hypot(ax.x, ax.y) || 1;
         const lat = { x: -ax.y / L * e.side, y: ax.x / L * e.side };
         r.lb += b.vel.x * lat.x + b.vel.y * lat.y; r.ld += d.vel.x * lat.x + d.vel.y * lat.y; r.k++;
+        const iv = sim.intents?.[b.idx]?.vel; if (iv) r.lr = (r.lr ?? 0) + iv.x * lat.x + iv.y * lat.y;
+        r.cap = (r.cap ?? 0) + b.profile.vmax * b.profile.shuffle;
         if (on >= r.on0) { r.backAt = sim.t; r.done = true; rows.push(r); }
         else if (sim.t - r.lostAt > 1.5) { r.done = true; rows.push(r); }
       }
@@ -46,5 +48,5 @@ const q = (v: number[], f = .5) => { const s = v.filter(Number.isFinite).sort((a
 for (const inter of [true, false]) {
   const R = rows.filter((r) => r.interior === inter && r.lostAt >= 0);
   const back = R.filter((r) => r.backAt >= 0);
-  console.log(`${inter ? 'interior' : 'tackle'}: clubs that took a hand off ${R.length} | refit p25/50/75 ${q(back.map((r) => r.backAt - r.lostAt), .25)}/${q(back.map((r) => r.backAt - r.lostAt))}/${q(back.map((r) => r.backAt - r.lostAt), .75)} s (${back.length} refit, ${R.filter((r) => r.backAt < 0).length} not within 1.5 s or the rep ended) | lateral speed toward his working side while the hand is off: blocker ${q(R.map((r) => r.lb / Math.max(1, r.k)))}, rusher ${q(R.map((r) => r.ld / Math.max(1, r.k)))} yd/s | past him before the refit ${(100 * R.filter((r) => r.past).length / Math.max(1, R.length)).toFixed(0)}%`);
+  console.log(`${inter ? 'interior' : 'tackle'}: clubs that took a hand off ${R.length} | refit p25/50/75 ${q(back.map((r) => r.backAt - r.lostAt), .25)}/${q(back.map((r) => r.backAt - r.lostAt))}/${q(back.map((r) => r.backAt - r.lostAt), .75)} s (${back.length} refit, ${R.filter((r) => r.backAt < 0).length} not within 1.5 s or the rep ended) | lateral speed toward his working side while the hand is off: blocker achieved ${q(R.map((r) => r.lb / Math.max(1, r.k)))} (asked ${q(R.map((r) => (r.lr ?? 0) / Math.max(1, r.k)))}, his shuffle top ${q(R.map((r) => (r.cap ?? 0) / Math.max(1, r.k)))}), rusher ${q(R.map((r) => r.ld / Math.max(1, r.k)))} yd/s | past him before the refit ${(100 * R.filter((r) => r.past).length / Math.max(1, R.length)).toFixed(0)}%`);
 }

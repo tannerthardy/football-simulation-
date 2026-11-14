@@ -3241,3 +3241,45 @@ interior-free table, B against A per 100 dropbacks:
 - a club in flight: +1.0.
 
 So the next diagnostic is the long-arm and one-hand-off states, not the club's frequency.
+
+### Attempt 2's diagnostic: the long-arm switch, arm length, the one-hand side (2026-11-14; seed 11 x 6 games, hand-model arm B)
+
+**The long-arm switch** (longarm-switch.mts). Under RUSH_HANDS, `stepLongArm` zeroes the blocker's push, hold and steer
+whenever the gap between bodies exceeds his arm. It is a step with no exit margin, but it does not flicker (toggles
+p50 0, p90 1).
+
+| | interior | tackle |
+|---|---|---|
+| long-arm episodes | 758 (15% of decisions) | 434 (8%) |
+| duration p50 | 0.60 s | 0.55 s |
+| episodes with the switch ever on | 10% | 23% |
+| countered (club on the arm) / arm knocked off | 92% / 71% | 89% / 60% |
+| past him during or within 0.5 s: switch-on episodes / never-on | 17% / 0% | 25% / 1% |
+
+Where the switch turns on, it decides the rep. That is about 13 interior sheds in 6 games, roughly a third of the
+interior excess (about 40 extra interior rep endings in 6 games).
+
+**Arm length.** In matchups at move decisions the rusher's arm minus the blocker's is p10 / 50 / 90 = -2.8 / -1.4 /
++0.4 in, and the rusher is longer in only 16%. Yet the long-arm is 15% of interior decisions, with the rusher shorter
+by a median 1 inch. Reach difference does not gate it. The keyedMove misread coin does (KEYED_FELT removes it).
+
+**The one-hand side** (refit.mts, while a club has a hand off):
+
+| | interior | tackle |
+|---|---|---|
+| blocker asked toward the rusher's working side | 1.77 yd/s | 2.61 |
+| blocker achieved | 0.98 | 1.88 |
+| his shuffle top speed | 3.89 | 4.38 |
+| rusher | 1.43 | 2.78 |
+
+He is not waiting on a picture: he asks for more than the rusher's speed. He achieves about half of it, so the limit is
+what holds him back while engaged, not his request or his footwork cap.
+
+**Read.** No single mechanism carries the interior excess:
+- the long-arm switch is about a third;
+- the club with both hands on is a part;
+- the one-hand side is a part.
+
+The hand-off case is limited by achievement, not by the decision. Before choosing attempt 2, the achievement limit
+needs one more look: what stops the engaged interior blocker reaching his asked speed (the rusher's body in the
+contact, his hands' joint, his traction or his acceleration).
