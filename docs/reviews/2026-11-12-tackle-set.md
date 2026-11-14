@@ -3715,3 +3715,47 @@ BDB 2025 weeks 1-9.
 
 Whose: (1) and (2) are the interior pass rep's (the come-off time inside, ours), and (3) the QB lane's (the late
 answers: escape, throwaway). n is 16 early sacks in ours.
+
+### VERTICAL_SET, attempt 1 (2026-11-14)
+
+The kick against an edge rusher gives ground vertically, no wider than TACKLE_SET's set line from his alignment, and
+leads only the rusher's inward motion (blocking.ts). Seeds 11 and 23 x 8, off -> on (NFL):
+
+| | off | on | NFL |
+|---|---|---|---|
+| tackle at contact, rusher aligned wide: retreat / outward p50 | 2.25-2.50 / +0.75 | 2.75 / -0.25..0.00 | 2.50 / 0.00 |
+| the same, very wide | 2.75 / +0.25..+0.50 | 3.00 / -0.25 | 3.00 / -0.25 |
+| contact time (wide / very wide) | 1.3 / 1.3 s | 1.4-1.5 / 1.5 s | 1.3 / 1.5 s |
+| landing wide (all) | 24 / 23% | 49 / 48% | 49% |
+| wide: speed before -> 0.2 s after | 4.27 -> 3.75-3.82 | 4.83 -> 4.07 | 4.74 -> 4.43 |
+| wide: into-and-past 0.2 s after | +0.92 / +1.01 | +1.70 / +1.75 | +2.41 |
+| at 2.0 s: not level / level outside / past outside / inside | 70-73 / 12-14 / 4 / 11-13% | 55-61 / 29-34 / 7-8 / 3-4% | (edge-rush NFL table) |
+| wide contact: past outside at 2.0 s | 8 / 13% | 8 / 8% | 30% |
+| at the win: inside | 68 / 70% | 37 / 46% | 47% |
+| edge win (2 yd of the QB) | 11 / 7% | 7 / 6% | 13% |
+| pressured | 32.0 / 24.9% | 26.7 / 26.5% | |
+| edge pressure inside / past outside, of dropbacks | 11.6 / 7.8%, 0.3 / 0.5% | 3.3 / 3.9%, 1.6 / 0.3% | |
+| interior pressure, of dropbacks | 10.0 / 9.0% | 10.6 / 10.8% | |
+| sacks (timing definition, pooled) | 5.9% | 4.3% | 6.7% |
+| sacks before 3.0 s, of dropbacks | 1.11% | 1.30% | 0.33% |
+
+**Read.**
+- The set is now the NFL's. At contact he is retreating straight back at the NFL's speed in both alignment
+  families, and the contact comes at 1.5 s against a very wide rusher.
+- The landing is the NFL's (49% wide).
+- The inside counter does not open; the inside share at the win falls toward the NFL's (37-46% against 47%).
+- The edge is harder, not easier, so it does not show the next piece by being too easy. Rushers get level (level
+  outside at 2.0 s 12-14% -> 29-34%), but they still do not finish the corner. After a wide contact, past outside at
+  2.0 s is unchanged at 8% (NFL 30%), and into-and-past is still short (1.7 against 2.4).
+- The inside wins it removed were most of our edge pressure. With nothing gained around the corner, edge pressure
+  falls and sacks fall (5.9 -> 4.3%).
+
+**Exposed, not chased:**
+- At wide contact the tackle is turned +124-127 deg (NFL +69), with the rusher 44-47 deg inside his chest. It is
+  gone by +0.2 s. commandFacing passes the requested facing through, so it comes from the request (the bearing to the
+  rusher in his seen picture at contact), not from locomotion.
+- The base and ANCHOR_BASE do not read facing (above), so this over-turned tackle anchors as if square. The vertical
+  set makes a turned tackle common, and a bull down the middle against him is the case to watch.
+
+**Next piece:** the rusher's finish once level, i.e. the corner. It is still held along the line (into-and-past 1.7
+against 2.4) and not turned past (8% against 30%).
