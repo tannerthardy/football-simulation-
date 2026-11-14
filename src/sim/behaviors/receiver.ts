@@ -422,6 +422,10 @@ export class RouteRunner implements Behavior {
 
   private settle(a: Agent, sim: PlaySim): MoveCommand {
     const last = this.path[this.path.length - 1]?.p ?? a.pos;
+    // ROUTE_FINISH: an outward route that finished at the margin holds there, facing the quarterback.
+    if (this.routeEnd === 'continue' && last && this.path[this.path.length - 1]?.finish) {
+      return goTo(a, last, { speed: 0.6, facing: angleTo(a.pos, sim.see(a, sim.qb).pos) });
+    }
     if (this.routeEnd === 'continue') {
       // Ran off the end of the route: keep working toward open grass near the sideline.
       return goTo(a, { x: a.pos.x + 3, y: a.pos.y }, { speed: 0.5 });
