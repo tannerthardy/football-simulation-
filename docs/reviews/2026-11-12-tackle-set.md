@@ -3100,3 +3100,28 @@ Fixture: test/rush-bull.test.ts.
   own no-move push, and leg-drive advantage helps both equally, so it may not separate them.
 - Next: rip and swim (2203 rolls, 6% won), the hand-clearing moves, on RUSH_HANDS' joint geometry. Their lost rolls
   are the bulk of the remaining penalty.
+
+### RUSH_BULL: the DL falls and the ground row (Integration's two checks, 2026-11-14)
+
+**DL falls.** dl-falls.mts, two 8-game windows, off → on. In-rep DL falls before the throw go 24 + 20 = 44 → 23 + 15 =
+38. Falls on a bull are 14 → 15. The driven-over edge class is 24 → 19. No class grows. In the 16-game reviews, DL
+contact falls before the throw that are not within 1 s after his own shed go 3.1 → 4.0 /100 on s11 and 2.9 → 2.7 on
+s23, so the true-fall rise is one seed's +0.9 /100 and is spread across classes, not the driven-over class growing. The
+dropped bull (a fixture) is in both arms. No attempt 2 is needed on this account.
+
+**Ground.** rep-rolls.mts RR_ADV=push: the blocker carried back beyond his own request (his requested x-velocity minus
+his achieved one, integrated) per second of rep, by leg-drive matchup thirds, reps with a bull vs without:
+
+| | stronger rusher: bull / no bull | weaker rusher: bull / no bull |
+|---|---|---|
+| off, s11 | 0.43 / 0.38 | 0.14 / 0.12 |
+| on, s11 | 0.38 / 0.36 | 0.11 / 0.07 |
+| off, s23 | 0.38 / 0.38 | 0.16 / 0.11 |
+| on, s23 | 0.38 / 0.36 | 0.14 / 0.19 |
+
+The bodies decide the ground: a stronger rusher carries his blocker back about 3x as fast as a weaker one. The bull
+adds little over his ordinary in-rep push (about +0.02 yd/s), with or without the roll. Our default rep request is
+already a full drive (push 0.75, his legs into the man), so a bull barely differs from not moving. Making a bull
+different would mean giving the rusher a real choice between moves (his weight committed through the chest against
+his feet working the edge). That is RUSH_INTENT's ground (between-moves intent), a separate item. (Raw ground given
+was confounded by the set: a tackle's kick depth dominates it.)

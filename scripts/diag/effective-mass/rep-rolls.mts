@@ -35,7 +35,9 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       if (e.type !== 'pass') continue;
       seen.add(e);
       let r = live.get(e);
-      if (!r) { r = { e, d: e.defender, start: sim.t, lastUntil: e.moveUntil, res: [] as any[] }; live.set(e, r); reps++; }
+      if (!r) { r = { e, d: e.defender, b: e.blocker, start: sim.t, lastUntil: e.moveUntil, res: [] as any[], bx0: e.blocker.pos.x, adv: adv(e.defender, e.blocker) }; live.set(e, r); reps++; }
+      r.bx = e.blocker.pos.x; r.tEnd = sim.t;
+      { const iv = sim.intents?.[e.blocker.idx]?.vel; if (iv) r.carried = (r.carried ?? 0) + (iv.x - e.blocker.vel.x) * sim.dt; }
       // A control sample: an engaged tick with no move in flight, 0.5 s on.
       if (!(e.moveUntil > sim.t) && Math.random() < 0.05) after.push({ t: sim.t, move: 'none', ok: false, ctrl: true, dq: Math.hypot(e.defender.pos.x - sim.qb.pos.x, e.defender.pos.y - sim.qb.pos.y), d: e.defender, edge: Math.abs(e.defender.pos.y - sim.ballY) > 3, adv: adv(e.defender, e.blocker) });
       if (e.moveUntil !== r.lastUntil && e.moveUntil > sim.t) {
@@ -52,7 +54,7 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       const shed = shedNow.has(r.d);
       const last = r.res[r.res.length - 1];
       const won = [...r.res].reverse().find((x: any) => x.ok && sim.t - x.t <= 0.6);
-      ends.push({ shed, held, last: last?.move ?? 'none', rolled: !!won, wonMove: won?.move ?? null, d: r.d, t: sim.t, pressure: false });
+      ends.push({ shed, held, last: last?.move ?? 'none', rolled: !!won, wonMove: won?.move ?? null, d: r.d, t: sim.t, pressure: false, given: r.carried ?? 0, dur: r.tEnd - r.start, adv: r.adv, bulled: r.res.some((x: any) => x.move === 'bull') });
     }
     for (const x of after) if (x.gain === undefined && sim.t - x.t >= 0.5 - 1e-9) { x.gain = x.dq - Math.hypot(x.d.pos.x - sim.qb.pos.x, x.d.pos.y - sim.qb.pos.y); gains.push(x); }
     for (const x of ends) if (x.shed && !x.pressure && sim.carrier === sim.qb && sim.throwAt < 0 && closeTo(x.d) && sim.t - x.t < 2) x.pressure = true;
@@ -88,5 +90,16 @@ for (const edge of [true, false]) {
       const M = G.filter((x) => !x.ctrl && x.move === m); return `${m} ${(Number(med(M.map((x) => x.gain))) - base).toFixed(2)} (n ${M.length})`;
     });
     console.log(`worth of a move attempt, ${lab} (gain minus no-move ${base.toFixed(2)} yd): ${rows.join(' | ')}`);
+  }
+}
+// Ground the blocker is carried back over a rep beyond his own request (his requested x-velocity minus his achieved
+// one, integrated; yd/s of rep), by matchup third, reps with a bull vs without.
+{
+  const R = ends.filter((x) => x.given !== undefined && x.dur >= 0.5);
+  const a = R.map((x) => x.adv).sort((p, q) => p - q), lo = a[Math.floor(a.length / 3)], hi = a[Math.floor(2 * a.length / 3)];
+  for (const [lab, f] of [['rusher stronger (top third)', (x: any) => x.adv >= hi], ['rusher weaker (bottom third)', (x: any) => x.adv <= lo]] as const) {
+    const G = R.filter(f), B = G.filter((x) => x.bulled), N = G.filter((x) => !x.bulled);
+    const per = (X: any[]) => X.length ? (X.reduce((t, x) => t + x.given, 0) / X.reduce((t, x) => t + x.dur, 0)).toFixed(2) : 'nan';
+    console.log(`carried back beyond his request, ${lab}: reps with a bull ${per(B)} yd/s (n ${B.length}) | without ${per(N)} yd/s (n ${N.length})`);
   }
 }
