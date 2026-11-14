@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-63",
+  "id": "engine-64",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -131,6 +131,8 @@
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",
+    "OPEN_FIELD": "on",
+    "HEAD": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
@@ -272,8 +274,8 @@
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
     "READ_PLAN": "on",
-    "OUTLET_LAST": "off",
-    "PLAN_KEYS": "off",
+    "OUTLET_LAST": "on",
+    "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",

@@ -20,7 +20,7 @@ export const READ_PLAN = process.env.READ_PLAN !== '0';
  * (slant-flat with the back in the flat, Dunn, USA Football; Walsh / Air Raid stick with the back on the shoot,
  * Ross; one mesh install with the flare first, Throw Deep); no pool concept installs those (our slant_flat back
  * blocks, stick's back checks, mesh is installed as Leach's under PLAN_KEYS), so none is exempt. */
-export const OUTLET_LAST = process.env.OUTLET_LAST === '1';
+export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
 /** PLAN_KEYS (experimental, off; same table): the coached key where the compiler's geometry names another defender,
  * and one named install where the sources disagree. Each entry carries its source.
  * - drive: the hook linebacker, dig (high) over shallow (low) (Smart Football, "Shallow cross, drag and drive"); the
@@ -35,7 +35,7 @@ export const OUTLET_LAST = process.env.OUTLET_LAST === '1';
  *   the crossing route"); alternative: Leach's go and out before the cross.
  * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
  *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
-export const PLAN_KEYS = process.env.PLAN_KEYS === '1';
+export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */

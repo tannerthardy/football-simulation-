@@ -30,6 +30,7 @@ import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
@@ -189,7 +190,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
-      return asCarrierPursuit(chase(sim, a, target));
+      return asCarrierPursuit(chase(sim, a, target, 3, { onTop: OPEN_FIELD }));
     }
   }
   // CATCH_CARRY: the ball reached a receiver he is on (he drove on the catch,
@@ -210,6 +211,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       const on = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= CATCH_CARRY_RANGE;
       if (!refuted && on) {
         a.tags.add('catch-carry');
+        // OPEN_FIELD: the ball is there; he approaches the receiver as a runner in space.
+        if (OPEN_FIELD) return asCarrierPursuit(chase(sim, a, drive.receiver, 3, { onTop: true }));
         const f = seen.facing;
         return asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 }));
       }
@@ -2182,6 +2185,14 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       const f = HONEST_FLIGHT ? seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x) : R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
       a.tags.add('drive-catch');
       if (CATCH_CARRY && !(HONEST_FLIGHT && catchDrive.get(a)?.receiver === R)) catchDrive.set(a, { receiver: R, t: sim.t });
+      // OPEN_FIELD: through the hands only while he can get there within the securing beat his own estimate of the
+      // arrival (his catch window) leaves; otherwise he takes the receiver as a runner in space.
+      if (OPEN_FIELD) {
+        const opp = window && window.receiver === R ? window : opportunity ?? catchOpportunity(a);
+        const remaining = opp && opp.receiver === R ? opp.t + DRIVE_SECURE - sim.t : DRIVE_SECURE;
+        const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, hands, a.profile.reach);
+        if (!playsBall(a, R, tt, remaining)) { a.tags.add('open-field'); return chase(sim, a, R, 3, { onTop: true }); }
+      }
       return runThrough(a, hands, { speed: 1 });
     }
   }
