@@ -408,6 +408,20 @@ export function promoteContact(e: Engagement, keeper: Agent): boolean {
  * (docs/reviews/2026-11-12-tackle-set.md). Still read from `control` (the next rolls to rebuild): whose hands the
  * joint is (its sign), and the consumers listed in docs/FLAGS.md. */
 export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1';
+/** HAND_FIT (experimental, off; HAND_FIT=1, requires CONTROL_HANDS): the blocker's hands are a state with a length and
+ * a force, not a joint owned by whoever the roll named. (1) The joint is the blocker's in every rep: `control`'s sign no
+ * longer hands it to the defender or gates PUNCH. (2) Its length follows the man on every rep, pass and run, at
+ * ARM_SPEED between the bent base and lockout: out toward the man when the hands are unloaded (a man going by is followed
+ * as far as the arm can reach), and, once the strike has landed (pass) or on contact (run, no strike), in toward the bent
+ * base as the man loads it (the recoil: elbows in, pressing only what the closing needs). The two blend continuously by
+ * the felt press (smoothstep over 0-2 x UNLOADED of his press). No new constants: ARM_SPEED, LOCKOUT, the bent base,
+ * UNLOADED, pressForce. Off: PUNCH followed only for c >= 0 on pass-set technique; held reps' hands stayed at the
+ * strike's length (closing 0.09 yd/s against about 0.75 for the NFL's 0.3 yd in 0.4 s); reps whose roll went the
+ * rusher's way met a slack joint at the base; a stalk's hands could not follow a crosser (on for 0.05-0.10 s)
+ * (docs/reviews/2026-11-12-tackle-set.md). Meanwhile the defender's own hands in a run rep (his stack and shed, carried
+ * by this joint with the sign flipped) are his only through the rolled shed and control. */
+export const HAND_FIT = process.env.HAND_FIT === '1';
+if (HAND_FIT && !CONTROL_HANDS) throw new Error('HAND_FIT=1 requires CONTROL_HANDS=1 (the hands at their capacity)');
 function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'run', c: number, holding: boolean): void {
   const tb = traits(b, type), td = traits(d, type);
   const sep = b.profile.radius + d.profile.radius;
@@ -415,6 +429,15 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   joint.actor = c >= 0 ? b.body : d.body;
   if (CONTROL_HANDS) {
     // His capacity; the World decides what he gets of it. The share his hands had at full control, not a rolled share.
+    if (HAND_FIT) {
+      // HAND_FIT: the blocker's hands, whatever the roll; his arm's base length.
+      joint.actor = b.body;
+      joint.extension = sep + (tb.arm / 36) * 0.3;
+      joint.push = pressForce(b);
+      joint.hold = holding ? armForce(b) * 1.2 : 0;
+      joint.steer = armForce(b) * 0.7;
+      return;
+    }
     joint.extension = sep + reach * 0.3;
     joint.push = c >= 0 ? pressForce(b) : pressForce(d);
     joint.hold = holding ? armForce(b) * 1.2 : 0;
@@ -471,7 +494,7 @@ function passSetTechnique(sim: PlaySim, b: Agent, e: Engagement): boolean {
   return (b.behavior as { presentingDraw?: (t: number) => boolean }).presentingDraw?.(sim.t) === true;
 }
 
-function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
+function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = false): void {
   const bodies = b.profile.radius + d.profile.radius, arm = b.player.measurables.armIn / 36;
   const base = joint.extension - bodies, lock = LOCKOUT * arm;
   let st = punchState.get(joint);
@@ -491,7 +514,17 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
     // Landed: he feels the man on his hands.
     else if (st.striking && Math.max(0, joint.normalForce ?? 0) >= UNLOADED * pressForce(b)) st.striking = false;
   }
-  const holding = PUNCH_STRIKE && !st.striking;
+  // HAND_FIT: a run block fits without the punch's strike (held touch from contact).
+  const holding = (HAND_FIT && fitOnly) || (PUNCH_STRIKE && !st.striking);
+  if (HAND_FIT && holding) {
+    // HAND_FIT: unloaded, the hands follow the man out (as far as lockout); loaded, they recoil toward the bent base,
+    // pressing only what the closing needs. Continuous in the felt press.
+    const N = Math.max(0, joint.normalForce ?? 0), u = clamp(N / (2 * UNLOADED * pressForce(b)), 0, 1), w = u * u * (3 - 2 * u);
+    const want = clamp(gap * (1 - w) + base * w, base, lock), step = ARM_SPEED * sim.dt;
+    st.ext = clamp(want, st.ext - step, st.ext + step);
+    joint.extension = bodies + Math.max(base, st.ext);
+    return;
+  }
   // Holding the fit: his hands stay at the man (the touch), giving and following at arm speed; they press only as the man
   // closes on them faster than his arms give (his press, not a drive of his own).
   const want = holding ? clamp(gap, base, lock) : clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
@@ -631,7 +664,7 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
-  if (PUNCH && state.control >= 0 && passSetTechnique(sim, h, e)) punch(sim, joint, h, e.defender);
+  if (PUNCH && (HAND_FIT || (state.control >= 0 && passSetTechnique(sim, h, e)))) punch(sim, joint, h, e.defender, !passSetTechnique(sim, h, e));
   if (HAND_SITE) handSite(sim, joint, h, e.defender);
   if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e, false);
 }
@@ -679,7 +712,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
   // PUNCH: the blocker's hands go to the man, out to lockout.
-  if (PUNCH && e.control >= 0 && passSetTechnique(sim, b, e)) punch(sim, hands, b, d);
+  if (PUNCH && (HAND_FIT || (e.control >= 0 && passSetTechnique(sim, b, e)))) punch(sim, hands, b, d, !passSetTechnique(sim, b, e));
   if (HAND_SITE) handSite(sim, hands, b, d);
   // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
   if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e, e.holding) : gripFor(sim, hands, d, b, null, false);
