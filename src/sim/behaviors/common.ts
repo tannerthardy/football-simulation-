@@ -94,7 +94,7 @@ export function angleTo(from: Vec2, to: Vec2): number {
  * step 1a, pursuit's aim (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier is read through the
  * tracking channel (`PlaySim.track`) instead of a scaled `see()` plus a two-sample acceleration burst. The tackle
  * window (the close gather in `chase`) is its own step (1a'). */
-const TRACK_PURSUIT = process.env.TRACK_PURSUIT === '1' || process.env.PERCEIVE_TRACK === '1';
+const TRACK_PURSUIT = process.env.TRACK_PURSUIT !== '0' || process.env.PERCEIVE_TRACK === '1';
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   request?: SprintRequest): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
@@ -131,7 +131,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const meetT = PURSUIT_COMMIT ? commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request) : ip.t;
+  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
   const biasedTime = clamp(meetT - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
@@ -169,6 +169,33 @@ const angleBias = new WeakMap<Agent, number>();
 export const PURSUIT_COMMIT = process.env.PURSUIT_COMMIT !== '0';
 const MEET_ENTER = 0.1, MEET_EXIT = 0.15, MEET_MARGIN = 0.3, MEET_NEAR = 0.15;
 const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean }>();
+/** PURSUIT_SPOT (experimental, off; PURSUIT_SPOT=1 turns it on; for TRACK_PURSUIT): PURSUIT_COMMIT's pursuer commits
+ * to the meeting spot he chose, not its moment. Under TRACK_PURSUIT the carrier is a tracked picture whose velocity the
+ * tracker corrects every tick; a meeting moment held fixed turns each correction into a shift of his aim point along
+ * the carrier's path (engine-61 candidate, pursuit-commit's 3-8 yd band: held-moment ticks turn 14.0 deg/s against the
+ * uncommitted re-solved intercept's 10.6), while a held spot only moves when the forecast path stops passing it. */
+const PURSUIT_SPOT = process.env.PURSUIT_SPOT !== '0';
+const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean }>();
+/** PURSUIT_SPOT: commit to the meeting spot, not its moment. The carrier's time to the held spot is read off
+ * his current forecast (its along-path distance over the forecast speed); released when his forecast path no longer
+ * passes the spot within reach, the pursuer can no longer reach it in time (MEET_EXIT), a fresh reachable meeting is
+ * earlier by MEET_MARGIN, or it is under MEET_NEAR away. */
+function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
+  seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
+  const freshOk = ip.estimate.status === 'estimated-feasible';
+  const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(t), ok }); return t; };
+  const held = heldSpot.get(a);
+  if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
+  const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
+  const along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
+  const t = along / V;
+  if (t < MEET_NEAR || t > horizon || miss > reach) return choose(ip.t, freshOk);
+  const slack = t - (request ? timeToReachRequested(mover, held.spot, reach, request) : timeToReach(mover, held.spot, reach));
+  if (held.ok ? slack < -MEET_EXIT : slack < MEET_ENTER && freshOk && (ip.estimate.slack ?? -Infinity) >= MEET_ENTER) return choose(ip.t, freshOk);
+  if (freshOk && ip.t < t - MEET_MARGIN) return choose(ip.t, true);
+  if (!held.ok && slack >= MEET_ENTER) held.ok = true;
+  return t;
+}
 
 function commitMeeting(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
   mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
@@ -278,10 +305,16 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
     facing: travel + angleDiff(travel, near.facing!) * gather };
 }
 
+/** TRACK_TACKLE (experimental, off; TRACK_TACKLE=1, or PERCEIVE_TRACK=1 for every group): perception channels step
+ * 1a', the tackle window (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier's picture in the last
+ * yards (chase's close gather, tryTackles' window preview, the whiff margin's aim) is read through the tracking channel
+ * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
+ * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
+export const TRACK_TACKLE = process.env.TRACK_TACKLE !== '0' || process.env.PERCEIVE_TRACK === '1';
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, look);
+  const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;

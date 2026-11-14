@@ -1,6 +1,7 @@
 /** RUSH_LEAN_BOUND (engagement.ts armBalance for every engaged pass rusher; experimental, off): a rusher leaning on a
  * man commits no more than his base could recover from if the press went, so having it taken away does not pitch him
- * onto the man; a fall the World earns otherwise (an edge's dip into a tackle) still happens. Fixtures: four verticals
+ * onto the man; a fall the World earns otherwise (an edge going down on a dip or bend) still happens, asserted by a
+ * search with a floor rather than one pinned scene (these move with every defaults change). Fixtures: four verticals
  * (nativeTraceSetup) on the engine defaults (the reference stack), re-found on engine-61 by a native search (288 scenes:
  * 32 DL falls off, 11 on; first found on engine-59, 46 / 10). */
 import { readFileSync } from 'node:fs';
@@ -40,10 +41,31 @@ describe('RUSH_LEAN_BOUND', () => {
     expect(on.some((f: any) => f.slot === 'DT_W')).toBe(false);
   });
 
-  it('a fall the World earns otherwise still happens: the weak end dipping into the tackle (Cover 3, roster 10, seed 4)', async () => {
-    const on = await falls('1', 10, 'cover3', 4);
-    expect(on.some((f: any) => f.slot === 'DE_W' && f.move === 'dip')).toBe(true);
-  });
+  it('a fall the World earns otherwise still happens: an edge going down on a dip or bend through the corner (search with a floor)', async () => {
+    // A search, not a pinned scene: these native cases move with every defaults change (engine-59, 60, 61 twice). Staged
+    // scenes in a fixed order until one shows the class: an end (DE) going down in his pass rep, before the throw,
+    // while dipping, ripping or running the arc (speed) with the bound on. Requirement: at least one exists.
+    vi.resetModules();
+    for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+    vi.stubEnv('RUSH_LEAN_BOUND', '1');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    let found: string | null = null, scenes = 0;
+    search: for (const coverage of ['cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+      scenes++;
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
+      const ends = new Set(sim.defense.filter((a: any) => /^DE/.test(a.slot)).map((a: any) => a.idx));
+      const moves = new Map<number, string>();
+      while (sim.phase === 'live' && sim.t < 5 && sim.throwAt < 0) {
+        for (const e of sim.engagements) if (e.type === 'pass') moves.set(e.defender.idx, e.move);
+        sim.tick();
+        const f = sim.events.find((e: any) => e.type === 'fall' && ends.has(e.a) && e.t >= 0.5 && ['dip', 'rip', 'speed'].includes(moves.get(e.a) ?? ''));
+        if (f) { found = `${coverage} roster ${roster} seed ${seed}: ${sim.agents[f.a].slot} at ${f.t.toFixed(2)} s (${moves.get(f.a)})`; break search; }
+      }
+    }
+    console.log(`earned edge fall: ${found ?? 'none'} after ${scenes} scenes`);
+    expect(found).not.toBeNull();
+  }, 240_000);
 
   it('is off unless set', async () => {
     vi.resetModules(); vi.stubEnv('RUSH_LEAN_BOUND', '0');

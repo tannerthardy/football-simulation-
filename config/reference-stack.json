@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-60",
+  "id": "engine-61",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -118,9 +118,12 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "PERCEIVE_TRACK": "off",
-    "TRACK_PURSUIT": "off",
-    "TRACK_FEEL": "off",
     "QB_BODY_SEEN": "on",
+    "RCV_SEEN": "on",
+    "TRACK_PURSUIT": "on",
+    "TRACK_TACKLE": "on",
+    "PURSUIT_SPOT": "on",
+    "TRACK_FEEL": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",
@@ -213,6 +216,9 @@
     "PRO_CALL": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
+    "HONEST_READS": "on",
+    "HONEST_FLIGHT": "off",
+    "HONEST_TACKLE": "on",
     "QB_FEEL": "off",
     "QB_GATHER": "off",
     "QB_GATHER_THROW": "off",
