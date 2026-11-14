@@ -4310,3 +4310,30 @@ The 4 yd/s contact rows go off their feet in 0.05-0.25 s on both arms (KNOWN_PRO
 - So the strut at the hip is a balance of two men's gait forces, each bounded by the same physics. Nothing in it makes
   the rusher's push toward the tackle exceed the tackle's: what closes the NFL gap is not a brace the model
   overcounts.
+
+### What closes the gap at the hip: (a), (b), (c) measured (2026-11-14, engine-63 merged; VS + CONTROL_HANDS, seed 11 x 4)
+
+| level phase | stayed level (160) | went past (31) |
+|---|---|---|
+| the hands' length beyond the bodies, start / after 0.5 s | 0.54 / 0.38 yd | 0.29 / 0.29 yd (the bent base) |
+| the bodies' gap, start / after 0.5 s | 0.49 / 0.40 yd | 0.54 / 0.47 yd |
+| closing along the joint p50 | 0.09 yd/s | 0.21 yd/s |
+| his pads minus the tackle's | -0.17 yd | -0.18 yd |
+| control's sign (seed 11 x 2) | positive on every tick (+0.43) | negative on every tick (-0.28) |
+
+**Read:**
+- **(a), the ride.** On held reps the hands do track the man: the length follows the gap in at arm speed. The closing
+  is slow (0.09 yd/s, against about 0.75 yd/s for the NFL's 0.3 yd in 0.4 s) because the joint resists any closing
+  with whatever force it needs, up to the full push limit. Nothing lets the tackle give: the length is free, the
+  force is not.
+- **The reps that go past are not a ride either.** Their joint is slack: the hands sit at the bent base (0.29 yd)
+  while the gap is 0.47-0.54 yd, so there is no press at all. PUNCH's follow, which would reach out to the man, is
+  gated on `control >= 0`, and on these reps control is negative on every tick. The joint then belongs to the
+  defender (`actor` by control's sign) at its base length.
+- **(b), the dip.** The pads do not discriminate (the rusher is 0.17-0.18 yd lower in both).
+- **(c), the hands cleared.** Not measurable on NFL tracking. In ours the hands are never off at the hip (RIP_CLEAR
+  aside).
+
+So even with CONTROL_HANDS, the rep at the hip is decided by `control`'s sign, the first remaining consumer in its
+FLAGS row: whose hands the joint is, and whether PUNCH follows and presses. A rusher whose opening roll went his way
+meets a slack joint; one whose roll did not meets a tracked full press that never gives.
