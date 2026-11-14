@@ -908,6 +908,15 @@ function counterLongArm(sim: PlaySim, e: Engagement): void {
 }
 
 /** RUSH_HANDS: the long-arm's lifetime and the blocker's reach while it is on. */
+/** LONGARM_STRUT (experimental, off; requires RUSH_HANDS): against a long-arm the blocker is not disarmed. Off, his push,
+ * hold and steer were zeroed whenever the gap between bodies exceeded his arm: a step that decided 17% (interior) and
+ * 25% (tackle) of the long-arm episodes where it turned on, against 0-1% where it never did (longarm-switch.mts). The
+ * rusher's straight arm is a strut that carries force both ways and a single point the blocker can work: his hands are
+ * on that arm, so his push carries through it unchanged, and his hold and steer act on the man through the arm, as
+ * much as a hand that far out along it controls him: x 1 at the old threshold, falling linearly to 0 at the rusher's
+ * own hand (gap beyond his arm / the rusher's arm). Continuous in the gap; the counter (a club on the arm) unchanged. */
+export const LONGARM_STRUT = RUSH_HANDS && process.env.LONGARM_STRUT === '1';
+if (process.env.LONGARM_STRUT === '1' && !RUSH_HANDS) throw new Error('LONGARM_STRUT=1 requires RUSH_HANDS=1 (the long-arm it acts on)');
 function stepLongArm(sim: PlaySim, e: Engagement): void {
   const j = e.rusherHand;
   if (!j) return;
@@ -918,7 +927,13 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
   }
   const b = e.blocker, d = e.defender, h = e.hands;
   const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
-  if (h && gap > b.player.measurables.armIn / 36) { h.push = 0; h.hold = 0; h.steer = 0; }
+  const armB = b.player.measurables.armIn / 36;
+  if (h && gap > armB) {
+    if (LONGARM_STRUT) {
+      const sc = clamp(1 - (gap - armB) / Math.max(1e-6, d.player.measurables.armIn / 36), 0, 1);
+      h.hold *= sc; h.steer *= sc;
+    } else { h.push = 0; h.hold = 0; h.steer = 0; }
+  }
   counterLongArm(sim, e);
 }
 

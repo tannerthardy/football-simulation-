@@ -3283,3 +3283,53 @@ what holds him back while engaged, not his request or his footwork cap.
 The hand-off case is limited by achievement, not by the decision. Before choosing attempt 2, the achievement limit
 needs one more look: what stops the engaged interior blocker reaching his asked speed (the rusher's body in the
 contact, his hands' joint, his traction or his acceleration).
+
+### The engaged blocker's lateral (Integration's step 1) and LONGARM_STRUT (step 2), 2026-11-14
+
+**Why he gets about half his lateral request** (engaged-lateral.mts, seed 11 x 4 games). This is a per-tick
+decomposition along his lateral request: mass x achieved acceleration = the constraint load he receives (contacts and
+joints) + his own ground force. Ticks where he lags his request by more than 0.5 yd/s:
+
+| | interior, base | interior, hand model | tackle, base | tackle, hand model |
+|---|---|---|---|---|
+| asked / got, p50 (all engaged ticks with a request) | 1.91 / 1.42 | 2.09 / 1.50 | 2.22 / 2.17 | 2.30 / 2.24 |
+| lagging share of ticks | 34% | 41% | 34% | 36% |
+| constraint load along his request p50 (- = against him) | -103 N | 0 | 0 | +43 |
+| his lateral ground force p50 | 486 N | 432 | 345 | 293 |
+| traction left after his anchor | 1503 N | 1537 | 1418 | 1456 |
+| lateral ground force / what is left | 0.35 | 0.31 | 0.27 | 0.21 |
+| load against him larger than his own lateral force | 8% | 6% | 9% | 10% |
+
+Neither the rusher's body nor traction holds him. His lateral ground force is about mass x the gait's lateral
+acceleration (shuffle speed over tau). That is the movement model's acceleration law, shared by every body. It is on
+the base engine too, so the hand model exposed it rather than made it.
+
+**Against the NFL** (engaged-lateral.py, the same operator; within 1.2 yd of a defender, 0.5 s to the pass; tracking
+resolution about 0.25 yd/s):
+
+| | lineman \|vy\| p50 / p90 | his man \|vy\| p50 / p90 |
+|---|---|---|
+| NFL interior | 0.75 / 2.00 | 1.00 / 2.50 |
+| NFL tackle | 1.00 / 2.50 | 1.25 / 3.00 |
+| sim A interior | 0.75 / 1.75 | 0.75 / 1.75 |
+| sim B interior | 0.75 / 1.50 | 0.75 / 1.75 |
+
+NFL linemen are also slower across than their man. Ours match at the median and are a little lower at p90, and our
+rushers move across less. So the lateral achievement is not clearly short against the NFL, and it does not explain
+the hand model's interior excess. Step 1 names no repair. The interior rate stays unexplained, and the hand model stays
+held.
+
+**LONGARM_STRUT (off, requires RUSH_HANDS).** The step that zeroed the blocker's push, hold and steer whenever the gap
+exceeded his arm is replaced. His push carries through the strut, and his hold and steer scale continuously with how
+far out along the rusher's arm his hands are. Off is bit-identical (seed 999 9a15a2b7, the engine-61 candidate).
+longarm-switch.mts, seed 11 x 6 games, arm B:
+
+| | interior off → on | tackle off → on |
+|---|---|---|
+| episodes (% of decisions) | 758 (15%) → 639 (13%) | 434 (8%) → 390 (8%) |
+| past him where the gap exceeded his arm | 17% → 11% | 25% → 14% |
+| past him where it never did | 0% → 1% | 1% → 0% |
+
+**KEYED_FELT's long-arm share.** Long-arm episodes fall 15% → 6% of interior decisions and 8% → 3% of tackle ones. The
+ordinary weighted list still offers it to a shorter man by his power rating, so the median arm difference stays
+-1.0 in.
