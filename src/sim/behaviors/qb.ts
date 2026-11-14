@@ -19,6 +19,7 @@ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
+import { supportParams } from '../../physics/support.js';
 import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
 import { dropSpec } from '../called-drop.js';
 import { PUNCH } from '../engagement.js';
@@ -581,7 +582,20 @@ export class QBPass implements Behavior {
       // THROW_BODY: a hold taken in the load can pin the arm. It matters at the
       // moment the arm must come forward (the delivery's start), with the hold
       // as it is then; a hold taken once the arm is moving cannot stop it.
-      if (THROW_BODY && this.pending && !this.pinRolled && sim.deliveryAt >= 0 && t >= sim.deliveryAt) {
+      // THROW_HOLD: from the delivery's start to the release, a hold on his upper body that reaches what his arm can
+      // drive stops the arm coming forward: the ball stays in his hand and the hold rules. No roll.
+      if (THROW_HOLD && this.pending && sim.deliveryAt >= 0 && t >= sim.deliveryAt) {
+        const load = throwLoad(a, sim), d = Math.min(1, load.ratio);
+        sim.throwDisturb = Math.max(sim.throwDisturb, d);
+        sim.throwPull = { x: load.dir.x * sim.throwDisturb, y: load.dir.y * sim.throwDisturb };
+      }
+      if (THROW_HOLD && this.pending && sim.deliveryAt >= 0 && t >= sim.deliveryAt && throwHold(a, sim) >= 1) {
+        this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.readStart = t;
+        sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
+        sim.event('throw_held', a);
+        return stand();
+      }
+      if (!THROW_HOLD && THROW_BODY && this.pending && !this.pinRolled && sim.deliveryAt >= 0 && t >= sim.deliveryAt) {
         this.pinRolled = true;
         const pin = throwInterference(a, sim);
         if (pin > 0) {
@@ -1571,7 +1585,8 @@ export class QBPass implements Behavior {
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1);
     let sigma = this.missSigma(a, sim, dist, urgency);
     // THROW_BODY: a hold takes the trunk and the step: an arm throw to that degree.
-    if (THROW_BODY) this.flick = Math.max(this.flick, throwInterference(a, sim));
+    if (THROW_HOLD) { this.flick = Math.max(this.flick, Math.min(1, Math.max(sim.throwDisturb, throwHold(a, sim)))); sim.throwDisturb = 0; sim.throwPull = { x: 0, y: 0 }; }
+    else if (THROW_BODY) this.flick = Math.max(this.flick, throwInterference(a, sim));
     // A flick: thrown with the arm alone, without the full coil and step [D].
     sigma *= 1 + 0.8 * this.flick;
     const dice = sim.dice('throw', a);
@@ -1962,6 +1977,38 @@ export function throwInterference(a: Agent, sim: PlaySim): number {
   let legs = 1;
   for (const j of sim.world.joints) if (j.kind === 'grasp' && !j.broken && j.b === a.body) legs = Math.min(legs, j.legs ?? 1);
   return Math.min(1, held) * (1 - Math.min(1, Math.max(0, legs)));
+}
+
+/** THROW_HOLD (experimental, off; intended on): a hold on the passer acts on the throw as a force, not a rolled pin.
+ * The hold is what the tackler's grasp joints apply to his upper body this step (the World's measured joint force,
+ * times the hold's upper-body share: a wrap at the shoulders counts fully, one at the legs not at all); the throw is
+ * what his arm and trunk can drive forward (his arm force, the bench-press capacity the trenches use). Their ratio,
+ * from the delivery's start to the release: at 1 or more the arm cannot come forward (the ball stays in his hand and
+ * the hold rules: a sack in the making); below 1 the ball comes out as an arm throw to that degree (flick: slower and
+ * wider, release()). Replaces THROW_BODY's rolled pin. Diagnosis (finish-trace.mts, windup-load.mts): after first
+ * contact our QB threw 64-72% within 0.1 s (NFL 30%, 0.3 s later); 54% of throws with a defender within a yard
+ * already had a grasp on him at the delivery's start, and came out anyway. */
+const THROW_HOLD = process.env.THROW_HOLD !== '0';
+export function throwHold(a: Agent, sim: PlaySim): number {
+  return throwLoad(a, sim).ratio;
+}
+/** THROW_HOLD: what disturbs his throwing motion this step, as a share of his arm force, and its direction. The
+ * larger of the grasp joints' hold on his upper body (force x upper-body share) and the whole contact load his body
+ * received (the support's `load`: bodies arriving, hands, grips) less what holds at his legs account for. So a man
+ * arriving at speed disturbs him with no hold taken, and a hold at the ankles does not reach the arm. Also writes
+ * sim.qbHold (the upper hold's ratio, whenever a grasp is on him). */
+export function throwLoad(a: Agent, sim: PlaySim): { ratio: number; dir: { x: number; y: number } } {
+  let upper = 0, legs = 0;
+  for (const j of sim.world.joints) {
+    if (j.kind !== 'grasp' || j.broken || j.b !== a.body) continue;
+    const f = Math.max(0, j.force ?? 0), l = Math.min(1, Math.max(0, j.legs ?? 1));
+    upper += f * (1 - l); legs += f * l;
+  }
+  const L = a.body.support?.load ?? { x: 0, y: 0 }, lm = Math.hypot(L.x, L.y);
+  const arm = Math.max(1e-6, supportParams(a.profile).armForce);
+  const force = Math.max(upper, lm - legs);
+  sim.qbHold = upper / arm;
+  return { ratio: force / arm, dir: lm > 1e-9 ? { x: L.x / lm, y: L.y / lm } : { x: 0, y: 0 } };
 }
 
 function heldBy(a: Agent, sim: PlaySim): number {
