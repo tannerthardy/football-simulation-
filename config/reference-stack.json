@@ -211,6 +211,7 @@
     "QB_BELIEVED_DEF": "off",
     "QB_SEEN_MAN": "off",
     "QB_SEEN_OUT": "off",
+    "QB_SEEN_REC": "off",
     "ACC_RADIUS": "off",
     "QB_PEEK": "off",
     "QB_COMMIT": "off",

@@ -259,6 +259,7 @@
     "QB_BELIEVED_DEF": "0",
     "QB_SEEN_MAN": "0",
     "QB_SEEN_OUT": "0",
+    "QB_SEEN_REC": "0",
     "ACC_RADIUS": "0",
     "QB_PEEK": "0",
     "QB_COMMIT": "0",

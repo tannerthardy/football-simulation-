@@ -331,6 +331,13 @@ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF === '1';
  * installed count is unchanged. A slow screen's "he has settled" is likewise read from where the quarterback has him,
  * not from the receiver's own flag and true position. Receivers with no installed picture are unchanged. */
 const QB_SEEN_OUT = process.env.QB_SEEN_OUT === '1';
+/** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
+ * state use where he has them: his forecast of the man, else his delayed picture. That is the side a receiver is on
+ * (look-off decoy, hot side), the verticals' stems for the peek, whether a man is in his clear look, the fallback
+ * target point in pricing, and in the man-coverage reorder both the receiver and the defender on him (his picture of
+ * the defense). A receiver is down when his delayed picture shows him off his feet. A receiver's block is not read
+ * from the engagement record: who blocks is the call, and a check-release man is a receiver once seen out. */
+const QB_SEEN_REC = process.env.QB_SEEN_REC === '1';
 const SCOUT0 = 0.2;
 const SCOUT_AWARE = 0.4;
 const SCOUT_EXP = 0.4;
@@ -746,15 +753,19 @@ export class QBPass implements Behavior {
       const score = (r: Agent) => {
         let d: Agent | null = null;
         let dd = Infinity;
+        const rp = this.has(sim, r);
         for (const o of sim.defense) {
-          const x = Math.hypot(o.pos.x - r.pos.x, o.pos.y - r.pos.y);
+          const op = QB_SEEN_REC ? m.estimate(o).pos : o.pos;
+          const x = Math.hypot(op.x - rp.x, op.y - rp.y);
           if (x < dd) {
             dd = x;
             d = o;
           }
         }
         if (!d) return 0;
-        return 0.5 * r.r('routeRunning') + 0.25 * (r.profile.vmax - d.profile.vmax) - 0.5 * d.r('manCoverage') + 0.15 * r.r('releaseVsPress');
+        // QB_BELIEVED_DEF: the defender's speed and man coverage as he believes them.
+        const bel = QB_BELIEVED_DEF ? this.believe(sim.qb, d) : null;
+        return 0.5 * r.r('routeRunning') + 0.25 * (r.profile.vmax - (bel ? bel.profile.vmax : d.profile.vmax)) - 0.5 * (bel ? bel.manCoverage : d.r('manCoverage')) + 0.15 * r.r('releaseVsPress');
       };
       const first3 = out.slice(0, 3);
       const best = first3.reduce((b, r) => (score(r) > score(b) ? r : b));
@@ -952,7 +963,7 @@ export class QBPass implements Behavior {
       const p = 0.08 + 0.45 * a.r('decisionMaking') * a.r('anticipation') * (0.5 + 0.5 * vet);
       if (this.concept.family !== 'quick' && this.reads.length > 1 && sim.dice('qb', a).chance(p)) {
         const side = Math.sign(this.reads[0].pos.y - sim.ballY);
-        const decoy = this.reads.find((r) => Math.sign(r.pos.y - sim.ballY) !== side);
+        const decoy = this.reads.find((r) => Math.sign(this.has(sim, r).y - sim.ballY) !== side);
         if (decoy) {
           this.lookOff = { until: t + 0.25 + 0.1 * sim.dice('qb', a).next(), decoy };
           this.readStart = this.lookOff.until;
@@ -997,7 +1008,7 @@ export class QBPass implements Behavior {
       }
       const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
       const bt = (r: Agent) => this.breakClock(r);
-      const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(r.pos.y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
+      const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
       const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : r.behavior instanceof RouteRunner)) ?? null;
       this.hot = { target, at: t };
       if (top) this.hotBy = `${top.player.position}:${top.behavior?.kind}:${top.recog?.read ?? '-'}`;
@@ -1079,8 +1090,8 @@ export class QBPass implements Behavior {
         // QB_PEEK: the peek is his look at the top of the drop: once he is set and the inside verticals (the peek reads
         // inside-out) have shown their stems, not when the slowest vertical reaches 12 yd (a rerouted one held it to
         // 3.1 s and the capped check-down to 3.65 s, against the NFL's ~2.44 s to the back).
-        const shown = QB_PEEK ? tri.slice(0, 2).every((r) => (r.pos.x - sim.los) * dir >= 10)
-          : tri.every((r) => (r.pos.x - sim.los) * dir >= 12);
+        const shown = QB_PEEK ? tri.slice(0, 2).every((r) => (this.has(sim, r).x - sim.los) * dir >= 10)
+          : tri.every((r) => (this.has(sim, r).x - sim.los) * dir >= 12);
         if (this.peekDeclared < 0 && shown) this.peekDeclared = t;
         const processed = this.peekDeclared >= 0 && t - this.peekDeclared > 0.15 + 0.25 * (1 - a.r('decisionMaking'));
         const close = tri.some((r) => { const e = this.ready(r, sim) ? this.evaluate(a, sim, r, u) : null; return !!e && e.P >= 0.85 * need && e.intRisk <= risk; });
@@ -1260,7 +1271,7 @@ export class QBPass implements Behavior {
 
   /** Whether his picture of `r` sits inside his clear look now (qbmind's clear sector). */
   private inClearLook(a: Agent, sim: PlaySim, r: Agent): boolean {
-    const gaze = this.gazePoint(sim), p = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? r.pos;
+    const gaze = this.gazePoint(sim), p = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? this.has(sim, r);
     return Math.abs(wrapAngle(angleTo(a.pos, p) - angleTo(a.pos, gaze))) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
   }
 
@@ -1302,6 +1313,11 @@ export class QBPass implements Behavior {
     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
     return read ? heldPoint(read) : { x: sim.los + 10, y: sim.ballY };
+  }
+
+  /** QB_SEEN_REC: where he has a receiver now: his forecast of him, else his delayed picture. */
+  private has(sim: PlaySim, r: Agent): Vec2 {
+    return QB_SEEN_REC ? this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? sim.see(sim.qb, r).pos : r.pos;
   }
 
   /** QB_SEEN_OUT: a man whose release is not on an installed count (a check-release from protection or a fake). */
@@ -1560,7 +1576,10 @@ export class QBPass implements Behavior {
   }
 
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
-    if (r.isDown(sim.t) || r.engagement) return null;
+    if (QB_SEEN_REC) {
+      const pose = sim.see(a, r).pose;
+      if ((pose === null ? r.isDown(sim.t) : pose !== 'up') || (this.checkRelease(r) && !this.seenOut(r))) return null;
+    } else if (r.isDown(sim.t) || r.engagement) return null;
     // SHOULDERS_SET: his motion to this man includes the turn to him (as startThrow will make it).
     const wind = (SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a))
       // QB_EYES: priced at the release after the rest of his processing on this man.
@@ -1662,7 +1681,7 @@ export class QBPass implements Behavior {
     const know = clamp(0.25 + 0.45 * a.r('decisionMaking') + 0.3 * Math.min(1, a.player.experience / 8), 0, 1);
     const total = wind + T;
     const forecast = this.receiverForecasts.get(r);
-    const target = forecast?.predict(sim.t, 0) ?? r.pos;
+    const target = forecast?.predict(sim.t, 0) ?? this.has(sim, r);
     // The man on the target runs the stem with him and learns the break only
     // when it comes: the separation a timing throw is thrown into.
     const breakAt = forecast?.breakAt() ?? null;
@@ -1820,14 +1839,15 @@ export class QBPass implements Behavior {
   }
 
   /** QB_BELIEVED_DEF: his belief of a defender's body and ball skills, fixed for the play. */
-  private believed = new Map<Agent, { profile: PhysicalProfile; ballSkills: number }>();
-  private believe(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number } {
+  private believed = new Map<Agent, { profile: PhysicalProfile; ballSkills: number; manCoverage: number }>();
+  private believe(a: Agent, d: Agent): { profile: PhysicalProfile; ballSkills: number; manCoverage: number } {
     let b = this.believed.get(d);
     if (!b) {
       const k = clamp(SCOUT0 + SCOUT_AWARE * a.r('awareness') + SCOUT_EXP * Math.min(1, a.player.experience / 8), 0, 1);
       const typ = typicalAt(d.player.position);
-      b = typ ? { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k }
-        : { profile: d.profile, ballSkills: d.r('ballSkills') };
+      b = typ ? { profile: believedProfile(d.profile, typ.profile, k), ballSkills: typ.ratings.ballSkills + (d.r('ballSkills') - typ.ratings.ballSkills) * k,
+          manCoverage: typ.ratings.manCoverage + (d.r('manCoverage') - typ.ratings.manCoverage) * k }
+        : { profile: d.profile, ballSkills: d.r('ballSkills'), manCoverage: d.r('manCoverage') };
       this.believed.set(d, b);
     }
     return b;
