@@ -407,3 +407,40 @@ the ball" carry forward.
 | His view of the defender | Not modelled separately here (GAZE off). The look's cost is the turned body | stated |
 | After the release | The head he has is the head he starts the flight with. His first sample comes at his pursuit latency once the ball is in his eye range | engine |
 | `trackPen` | BALL_EST becomes a bitmask: 1 the estimator; 2 removes catching.ts's tracking penalty (it double-counts ballTracking). Read as its own row | Integration |
+
+### Design 4 result (the pre-release look): parked after two attempts
+
+- **Attempt 1** (e51534cd): the look starts out of the break. Two bug fixes, not counted as attempts: the head goes over
+  the shoulder it is already turned to, and a receiver looking when the ball leaves keeps looking.
+- **Attempt 2** (092939cf): the look starts 0.1 s before the break.
+- Seeds 11/23 x 8, engine-59, unpaired. Bit 3 = attempt plus no `trackPen`.
+
+| | off | att. 1 | att. 1 + no trackPen | att. 2 | att. 2 + no trackPen | NFL |
+| --- | --- | --- | --- | --- | --- | --- |
+| Short completion | 72 / 70% | 68 / 68% | 66 / 65% | 64 / 68% | 64 / 64% | |
+| Intermediate | 55 / 64% | 52 / 50% | 50 / 48% | 51 / 47% | 49 / 40% | |
+| Deep 20+ | 49 / 63% | 42 / 43% | 59 / 50% | 32 / 46% | 47 / 51% | |
+| Catch rate, 3+ yd open | 83 / 80% | 72 / 71% | 72 / 69% | 71 / 69% | 70 / 67% | |
+| Deep 1.5-2 s: to the landing (yd) | 0.6 / 1.4 | 1.7 / 1.4 | 1.4 / 1.4 | 1.5 / 1.4 | 1.6 / 1.5 | 1.4 |
+| Arrival speed (yd/s) | | 8.0 / 8.5 | | 6.7 / 7.7 | | 6.7 |
+
+**Known, added to the list above:**
+8. **The pre-release look is real and works as perception.**
+   - The receiver's median first sample on short throws falls to his latency, 0.25 s (from 0.40-0.50).
+   - Never-sampled short throws fall from 22% to 12%.
+   - The deep end distance lands on the NFL's 1.4 yd.
+9. **`trackPen` double-counts.** With the estimator in, removing it is worth about 10-15 points of deep completion
+   (attempt 1: 42/43 -> 59/50%) and moves nothing else. It should go with BALL_EST, as bit 2.
+10. **When he looks no longer limits the short game.**
+    - Moving the look 0.1 s earlier changed nothing, or slightly hurt.
+    - With the true catch point reachable from his state 0.5 s before the ball's closest pass, he catches 82-83%
+      against the oracle's 92-94%.
+    - The gap is in his steering to a spot that converges in the flight's last tenths: he chases a moving estimate
+      with need-speed control and arrives late or at the edge of his reach.
+    - The oracle receiver runs to a fixed true point from 0.1-0.3 s.
+11. **Defender unchanged**, as expected: about a fifth of nearest defenders never estimate on short throws, and his
+    closing in the air goes the wrong way. That is stage 2's.
+
+**Next, if the receiver side continues:** his approach to a converging spot. Lead his estimate's movement, or run
+through the spot at speed rather than braking to arrive, the way the receiver's oracle path does by being fixed.
+Measure first: arrival timing and his reach margin at the catch on the reachable-but-missed cases.
