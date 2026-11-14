@@ -393,7 +393,7 @@ export function observePassContacts(sim: PlaySim, report: StepReport, intervalSt
     const pR = receiver === i ? first.positionI : first.positionJ;
     const vD = defender === i ? first.velocityI : first.velocityJ;
     const vR = receiver === i ? first.velocityI : first.velocityJ;
-    const rFace = receiver === i ? first.facingI : first.facingJ;
+    const rFace = receiver === i ? first.chestI ?? first.facingI : first.chestJ ?? first.facingJ; // chest: a receiver looking back is not turning his back
     const n = defender === i ? first.normal : { x: -first.normal.x, y: -first.normal.y };
     const initiatesD = vD.x * n.x + vD.y * n.y > FORCE_EPSILON
       && vR.x * n.x + vR.y * n.y >= -FORCE_EPSILON;
@@ -425,7 +425,7 @@ export function observePassContacts(sim: PlaySim, report: StepReport, intervalSt
       const vPos = victim === i ? first.positionI : first.positionJ;
       const aVel = actor === i ? first.velocityI : first.velocityJ;
       const vVel = victim === i ? first.velocityI : first.velocityJ;
-      const vFacing = victim === i ? first.facingI : first.facingJ;
+      const vFacing = victim === i ? first.chestI ?? first.facingI : first.chestJ ?? first.facingJ;
       const toward = actor === i ? first.normal : { x: -first.normal.x, y: -first.normal.y };
       if (Math.min(aPos.x - actor.profile.radius * 1.12, vPos.x - victim.profile.radius * 1.12) <= sim.los + 1) continue;
       const aPlaying = starts[actor.idx]?.playingBall ?? null, vPlaying = starts[victim.idx]?.playingBall ?? null;
