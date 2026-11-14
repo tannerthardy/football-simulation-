@@ -29,7 +29,7 @@ def q(v, p=.5):
 pc = lambda a, b: f"{100 * a / max(1, b):.0f}%"
 DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen', re.I)
 for arg in args:
-    name, paths = arg.split('=', 1); n = 0; L = []; held = {2.5: [0, 0], 3.0: [0, 0], 3.5: [0, 0]}
+    name, paths = arg.split('=', 1); n = 0; L = []; held = {2.5: [0, 0], 3.0: [0, 0], 3.5: [0, 0]}; H3 = []; sackT = []
     for path in paths.split(','):
         for line in gzip.open(path, 'rt'):
             raw = json.loads(line); raw = raw.get('common', raw)
@@ -54,6 +54,17 @@ for arg in args:
             for m in held:
                 km = int(round(m / p.dt))
                 if km <= kend and (out_k is None or out_k > km): held[m][0] += 1; held[m][1] += out_k is not None
+            # Still holding at 3.0 s (wherever he is): how the play resolves.
+            k3 = int(round(3.0 / p.dt)); lab0 = raw.get('labels') or {}
+            if fw is None and not crossed:
+                crossed0 = any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1))
+                if not crossed0: sackT.append(kend * p.dt)
+            if k3 <= kend:
+                if fw is not None:
+                    aw = (pf['passResult'] == 'I' and 'pass incomplete' in pf['playDescription'] and not re.search(r'pass incomplete \w+ \w+ to ', pf['playDescription'])) if pf is not None else bool(lab0.get('throwaway'))
+                    r3 = 'away' if aw else 'throw'
+                else: r3 = 'run' if (crossed or any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1))) else 'sack'
+                H3.append((out_k is not None and out_k > k3, out_k is not None and out_k <= k3, r3))
             if out_k is None: continue
             if fw is None: crossed = crossed or any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1))
             lab = raw.get('labels') or {}
@@ -80,7 +91,7 @@ for arg in args:
             eng = any(p.pos(o, ko)[0] is not None and math.hypot(p.pos(o, ko)[0] - dx, p.pos(o, ko)[1] - dy) <= 1.5 for o in BL)
             kb = max(0, ko - int(round(0.3 / p.dt))); px, py = p.pos(d, kb); qx, qy = p.pos(qb, kb)
             close = (math.hypot(px - qx, py - qy) - dd) / max(p.dt, (ko - kb) * p.dt) if px is not None and qx is not None and ko > kb else None
-            L.append(dict(t=ko * p.dt, tout=out_k * p.dt, dd=dd, eng=eng, close=close, res=res))
+            L.append(dict(t=ko * p.dt, tout=out_k * p.dt, dd=dd, eng=eng, close=close, res=res, typ=(pf['dropbackType'] if pf is not None else 'sim'), pa=(pf['playAction'] == 'TRUE' if pf is not None else bool(re.search(r'^pa_|play.?action', str((raw.get('cell') or {}).get('concept') or ''), re.I)))))
     print(f"== {name}: dropbacks {n}, left the pocket {len(L)} = {100 * len(L) / max(1, n):.1f}%")
     if not L: continue
     print(f"   onset at p25/50/75 {q([l['t'] for l in L], .25):.1f}/{q([l['t'] for l in L]):.1f}/{q([l['t'] for l in L], .75):.1f} s; onset to out of the pocket p50 {q([l['tout'] - l['t'] for l in L]):.1f} s; nearest DL/LB at the onset {q([l['dd'] for l in L], .25):.1f}/{q([l['dd'] for l in L]):.1f}/{q([l['dd'] for l in L], .75):.1f} yd, engaged {pc(sum(l['eng'] for l in L), len(L))}, closing p50 {q([l['close'] for l in L]):.1f} yd/s")
@@ -89,3 +100,14 @@ for arg in args:
         c = lambda r: sum(l['res'] == r for l in S)
         print(f"   {lab:26s} {pc(len(S), len(L))} of leaves = {100 * len(S) / max(1, n):.1f}% of dropbacks | onset p50 {q([l['t'] for l in S]):.1f} s | that man engaged {pc(sum(l['eng'] for l in S), len(S))}, free {pc(sum(not l['eng'] for l in S), len(S))} | ends throw {pc(c('throw'), len(S))} away {pc(c('away'), len(S))} run {pc(c('run'), len(S))} sack {pc(c('sack'), len(S))}")
     print('   still in the pocket with the ball at ' + '; '.join(f"{m:.1f} s: {v[0]} ({pc(v[0], n)} of dropbacks), of those {pc(v[1], v[0])} leave later" for m, v in held.items()))
+    import collections
+    for lab, S in (('RUSH', [l for l in L if l['dd'] <= 3]), ('NOBODY NEAR', [l for l in L if l['dd'] > 3])):
+        C = collections.Counter(l['typ'] for l in S)
+        print(f"   {lab:12s} by dropback type: " + ', '.join(f"{k} {pc(v, len(S))}" for k, v in C.most_common()) + f" | play action {pc(sum(l['pa'] for l in S), len(S))} | onset before 1.5 s {pc(sum(l['t'] < 1.5 for l in S), len(S))}")
+    if H3:
+        m = len(H3); g = lambda f: sum(1 for h in H3 if f(h))
+        print(f"   still holding at 3.0 s: {m} = {pc(m, n)} of dropbacks | already out {pc(g(lambda h: h[1]), m)}, leaves later {pc(g(lambda h: h[0]), m)}, stays in {pc(g(lambda h: not h[0] and not h[1]), m)} | ends throw {pc(g(lambda h: h[2] == 'throw'), m)} away {pc(g(lambda h: h[2] == 'away'), m)} run {pc(g(lambda h: h[2] == 'run'), m)} sack {pc(g(lambda h: h[2] == 'sack'), m)}")
+        for nm, f in (('stays in the pocket', lambda h: not h[0] and not h[1]), ('out (then or later)', lambda h: h[0] or h[1])):
+            S = [h for h in H3 if f(h)]; c = lambda r: sum(h[2] == r for h in S)
+            print(f"      {nm:20s} n {len(S):4d}: throw {pc(c('throw'), len(S))} away {pc(c('away'), len(S))} run {pc(c('run'), len(S))} sack {pc(c('sack'), len(S))}")
+    if sackT: print(f"   sacks (no pass, never past the line) {len(sackT)} = {100 * len(sackT) / max(1, n):.1f}% of dropbacks; time p10/25/50/75/90 {q(sackT, .1):.1f}/{q(sackT, .25):.1f}/{q(sackT):.1f}/{q(sackT, .75):.1f}/{q(sackT, .9):.1f} s; after 3.0 s {pc(sum(t >= 3.0 for t in sackT), len(sackT))}, after 4.0 s {pc(sum(t >= 4.0 for t in sackT), len(sackT))}")
