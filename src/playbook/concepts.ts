@@ -41,7 +41,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   },
   {
     id: 'mesh', name: 'Mesh', family: 'dropback', drop: 'gun5',
-    strong: { 1: 'corner', 2: 'shallow', 3: 'hook' }, weak: { 1: 'go', 2: 'shallow_high' }, back: 'swing',
+    // CROSS_FLAT: mesh's under crosser is its own route, a yard under the Y (routes.ts), not the drag.
+    strong: { 1: 'corner', 2: process.env.CROSS_FLAT === '1' ? 'mesh_under' : 'shallow', 3: 'hook' }, weak: { 1: 'go', 2: 'shallow_high' }, back: 'swing',
     progression: ['S2', 'W2', 'S1', 'B', 'S3'], beats: ['man', 'cover1', 'zone'],
   },
   {
