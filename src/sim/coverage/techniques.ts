@@ -148,9 +148,9 @@ export class Rob extends Technique {
 }
 
 /**
- * CUT_WALL: wall a shallow crosser from his area. He holds his window: his landmark depth, or just under the deepest
- * route he sees sitting in his window behind him (the dig or curl he robs), never the crosser's depth. Laterally he
- * goes to the crosser's line only within his area, with no lead: square to the quarterback he moves by his shuffle,
+ * CUT_WALL: wall a shallow crosser from his area. He holds his window: his current depth, never deeper than his
+ * landmark, never the crosser's depth. Laterally he walls from his window's side of the crosser's line (an arm's
+ * length off it) only within his area, with no lead: square to the quarterback he moves by his shuffle,
  * and his rate across is what that body gives (a witness, not a cap). A crosser who comes to him inside his area and
  * at his window depth he steps into (a collision physics resolves); one that would pull him off his window he walls
  * without contact. Eyes on the quarterback throughout.
@@ -165,21 +165,17 @@ export class CrossWall extends Technique {
     const rd = this.reader.read(sim, this.target);
     if (!rd) return { vel: { x: 0, y: 0 } };
     const up = sim.attackDir('O');
-    // His window depth: the landmark, or 1.5 yd under the deepest receiver he sees in his window behind him (choice:
-    // between the QB and that route), never shallower than the landmark.
-    let x = this.area.x;
-    for (const o of sim.offense) {
-      if (o === this.target || o === sim.qb) continue;
-      const ro = this.reader.read(sim, o);
-      if (!ro || Math.abs(ro.pos.y - this.area.y) > this.half) continue;
-      const behind = (ro.pos.x - this.area.x) * up;
-      if (behind > 0 && behind < 6) x = up > 0 ? Math.max(x, ro.pos.x - 1.5) : Math.min(x, ro.pos.x + 1.5);
-    }
-    const y = clamp(rd.pos.y, this.area.y - this.half, this.area.y + this.half);
+    // His window depth: where he is, never deeper than his landmark (he does not sink to it because of the crosser).
+    const x = up > 0 ? Math.min(a.pos.x, this.area.x) : Math.max(a.pos.x, this.area.x);
+    // Laterally he walls from his window's side: on the line between his landmark and the crosser, an arm's length
+    // (both bodies and his reach) off the crosser's line, never past it, within his area. Not the crosser's line.
+    const wall = a.profile.radius + rd.r.profile.radius + a.profile.reach;
+    const toWindow = Math.sign(this.area.y - rd.pos.y) || 1;
+    const y = clamp(rd.pos.y + toWindow * wall, this.area.y - this.half, this.area.y + this.half);
     const reach = a.profile.reach + a.profile.radius + rd.r.profile.radius;
     // The collision is his choice: only inside his area and at his window depth.
     const contact = Math.abs(rd.pos.y - this.area.y) < this.half && Math.abs(rd.pos.x - x) < 1.2
-      && Math.hypot(rd.pos.x - a.pos.x, rd.pos.y - a.pos.y) < reach + 1;
+      && Math.hypot(rd.pos.x - a.pos.x, rd.pos.y - a.pos.y) < reach + 0.5;
     const aim = contact ? { x: rd.pos.x, y: rd.pos.y } : { x, y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
     const qb = infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos;
     const speed = (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
