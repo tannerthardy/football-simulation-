@@ -131,6 +131,12 @@ const GAZE = process.env.GAZE === '1';
  * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
  * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
 const SIGHT_CARRIER = process.env.SIGHT_CARRIER === '1';
+/** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
+ * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
+ * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
+ * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
+ * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
+const SIGHT_COVER = process.env.SIGHT_COVER === '1';
 /** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
  * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
  * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
@@ -839,6 +845,10 @@ export class PlaySim {
       else seen = this.remembered(observer, target, seen);
     }
     if (SIGHT_CARRIER && observer === this.carrier) seen = this.sighted(observer, target, seen, !!(g && g.set >= this.t - this.dt - 1e-9));
+    // SIGHT_COVER: a man or zone defender's picture behind a body. Occlusion only: his eyes are on his man or the QB by
+    // coaching, so with GAZE off no facing bound applies (GAZE's own view half when it is on).
+    else if (SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
+      seen = this.sighted(observer, target, seen, true);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -854,7 +864,7 @@ export class PlaySim {
     const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
     const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
     const visibleAt = (back: number): boolean | null => {
-      const k = `${key}@${now - back}`, hit = memo.get(k);
+      const k = `${key}${gazeView ? 'o' : 'v'}@${now - back}`, hit = memo.get(k);
       if (hit !== undefined) return hit;
       const rec = (a: Agent) => this.perception.recorded(a.idx, back * this.dt)?.pos ?? null;
       const ro = this.perception.recorded(observer.idx, back * this.dt), rt = rec(target);

@@ -91,6 +91,7 @@
     "PERCEIVE_TRACK": "0",
     "QB_BODY_SEEN": "0",
     "SIGHT_CARRIER": "0",
+    "SIGHT_COVER": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
