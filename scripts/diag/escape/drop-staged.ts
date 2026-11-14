@@ -18,13 +18,18 @@ for (const concept of ONLY.length ? CONCEPTS.filter((c) => ONLY.includes(c)) : C
     const snap = new Map<number, any>(sim.defense.map((d: any) => [d.idx, { slot: d.slot, pos: d.player.position, wide: +Math.abs(d.pos.y - sim.ballY).toFixed(1) }]));
     sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
       if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), away, route: target?.behavior?.route?.id ?? null, depth: target ? +((target.pos.x - sim.los) * dir).toFixed(1) : null, aim: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null,
-        qb: +((p.pos.x - sim.los) * dir).toFixed(1), readIdx: p.behavior?.readIdx ?? null, P: p.behavior?.throwRec?.P ?? null,
+        qb: +((p.pos.x - sim.los) * dir).toFixed(1), qbY: +((p.pos.y - sim.ballY) * ss).toFixed(2), readIdx: p.behavior?.readIdx ?? null, P: p.behavior?.throwRec?.P ?? null,
         sep: target ? +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1) : null };
       return tb(p, target, v0, intended, arrivalT, away, ...rest);
     };
+    // His lateral position (toward the strong side positive) when he first sets, and each edge's distance from him then.
+    const ss = sim.offAlign?.strongSign ?? 1; let atSet: any = null; const tick0 = sim.tick.bind(sim);
+    sim.tick = () => { tick0(); const b: any = sim.qb.behavior; if (!atSet && b?.kind === 'qb-pass' && b.phase === 'set') {
+      const e = (slot: string) => { const d = sim.defense.find((x: any) => x.slot === slot); return d ? +Math.hypot(d.pos.x - sim.qb.pos.x, d.pos.y - sim.qb.pos.y).toFixed(1) : null; };
+      atSet = { t: +sim.t.toFixed(2), y: +((sim.qb.pos.y - sim.ballY) * ss).toFixed(2), x: +((sim.qb.pos.x - sim.los) * dir).toFixed(1), deS: e('DE_S'), deW: e('DE_W'), rbY: (() => { const rb = sim.slot?.('RB'); return rb ? +((rb.pos.y - sim.ballY) * ss).toFixed(1) : null; })() }; } };
     let res: any; try { res = sim.run(); } catch (e: any) { console.error(String(e?.stack).slice(0, 400)); break; }
     const sk = sim.events.find((e: any) => e.type === 'sack'); const qbEnd = +((sim.qb.pos.x - sim.los) * dir).toFixed(1);
-    console.log(JSON.stringify({ concept, drop: PASS_BY_ID[concept].drop, coverage, roster, seed, formation, thr, sack: sk ? { t: +sk.t.toFixed(2), by: snap.get(sk.a)?.slot ?? null, pos: snap.get(sk.a)?.pos ?? null, wide: snap.get(sk.a)?.wide ?? null, qb: qbEnd } : null, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: res.yards ?? null }));
+    console.log(JSON.stringify({ concept, drop: PASS_BY_ID[concept].drop, coverage, roster, seed, formation, thr, atSet, sack: sk ? { t: +sk.t.toFixed(2), qbY: +((sim.qb.pos.y - sim.ballY) * ss).toFixed(2), by: snap.get(sk.a)?.slot ?? null, pos: snap.get(sk.a)?.pos ?? null, wide: snap.get(sk.a)?.wide ?? null, qb: qbEnd } : null, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: res.yards ?? null }));
     break;
   }
 }
