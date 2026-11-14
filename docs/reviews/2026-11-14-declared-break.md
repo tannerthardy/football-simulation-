@@ -171,3 +171,11 @@ their side; the plan's rhythm stays in route time.
   - the compiler's `anchorLead` replaces the detector's accidental bend-start offset, with the same values, for
     team-level ordering only.
 - Nothing is folded twice. The runtime never adds `anchorLead`, and the compiler never adds the windup.
+
+**One definition of the break (from the QB lane's route-stack paired run).** In both arms, the receiver's own
+`breakTime` (`receiver.ts`: the start delay + 0.25 s + the stem at 0.85 x effort x his top speed, which is roughly where
+the break *starts*) is about 0.5 s earlier than the break his quarterback's forecast holds (`receiver-forecast.ts`
+`breakAt()`, the installed path's break vertex). So the receiver's pre-look and the QB's timing run on two different
+breaks. The build makes them one: `breakAt`, the declared vertex as reached on the installed route, used by the plan, by
+the forecast and by the receiver's own pre-look. Any lead before it is the passer's `leadFor`, or the receiver's own
+coached pre-look lead, each stated separately.
