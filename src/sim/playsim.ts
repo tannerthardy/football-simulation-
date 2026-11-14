@@ -5,6 +5,7 @@
  *   (feet, contacts, joints, support) → down by contact → ball → tackle
  *   attempts → whistle → record
  */
+import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
 import { lineOfSight } from './sight.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
@@ -1478,6 +1479,8 @@ export class PlaySim {
     this.incidentalCatchReadiness.sense(this);
     this.throwSight.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
+    // RELEASE_BELIEF: every defender's release belief, from this tick's cues (the emitter keeps per-tick memory).
+    if (RELEASE_BELIEF) for (const d of this.defense) releaseBelief(this, d);
 
     this.prepareJoinedRunBlocks();
 

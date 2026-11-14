@@ -29,6 +29,7 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
+import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
@@ -2050,6 +2051,8 @@ function stopDrop(sim: PlaySim, cmd: MoveCommand): MoveCommand {
 
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
 export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  // RELEASE_BELIEF: his own belief that the ball is gone (release-belief.ts), not the true air state.
+  if (RELEASE_BELIEF) return believesThrow(a, sim, man);
   const ball = sim.ball;
   if (ball.kind !== 'air') return false;
   const qb = sim.see(a, sim.qb).pos;
@@ -2079,6 +2082,26 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // time he never saw.
   const seen = sim.throwSight.seenAt(a);
   const cue = man ? readsHandsAt(a, sim, man, seen) : seen;
+  return cue !== undefined && sim.t - cue >= react;
+}
+
+/** RELEASE_BELIEF's sawThrow: a zone defender with his eyes on the passer keys the throwing motion he saw (loading or
+ * released in his belief: a pump he saw can make him bite, a pull-down he saw undoes it); otherwise he reacts from the
+ * first moment the ball itself was in his view (or, trailing his man, the receiver's hands), once his belief has the
+ * ball out. */
+function believesThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  const rb = releaseBelief(sim, a);
+  const qb = sim.see(a, sim.qb).pos;
+  const qbAngle = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  const zoneEyes = a.behavior instanceof ZoneCoverage || (a.behavior as { zoneEyes?: boolean }).zoneEyes === true;
+  const facingQB = Math.cos(a.body.facing - qbAngle) > (zoneEyes ? -0.2 : 0.1);
+  const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'))) + (man ? 0.05 : 0);
+  if (facingQB && zoneEyes && (rb.loadingAt !== undefined || rb.releasedAt !== undefined) && eyesHeldOnQB(a, sim, react, -0.2)) {
+    a.tags.add('readArm');
+    return true;
+  }
+  if (rb.releasedAt === undefined) return false;
+  const cue = man ? readsHandsAt(a, sim, man, rb.ballAt) : rb.ballAt;
   return cue !== undefined && sim.t - cue >= react;
 }
 
