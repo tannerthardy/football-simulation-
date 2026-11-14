@@ -12,6 +12,43 @@ import { compile } from './compile.js';
 import type { PlanStyle } from './types.js';
 
 export const READ_PLAN = process.env.READ_PLAN !== '0';
+/** OUTLET_LAST (experimental, off; read-plan table, docs/reviews/2026-11-14-read-plan-table.md): the back's release
+ * is the outlet, read last, after the field reads, not placed in the order by when he comes open (BACK_FRONT put him
+ * first or second in 11 of the 32 pool concepts and third in 10, and `initPlan`'s "outlet last" then did nothing).
+ * Every source that names the back puts him last (Hewitt, USA Football: "No. 1, then No. 2, then running back";
+ * Gonzalez via Smart Football: the back on the second hitch). The coached exceptions run the back as a designed route
+ * (slant-flat with the back in the flat, Dunn, USA Football; Walsh / Air Raid stick with the back on the shoot,
+ * Ross; one mesh install with the flare first, Throw Deep); no pool concept installs those (our slant_flat back
+ * blocks, stick's back checks, mesh is installed as Leach's under PLAN_KEYS), so none is exempt. */
+export const OUTLET_LAST = process.env.OUTLET_LAST === '1';
+/** PLAN_KEYS (experimental, off; same table): the coached key where the compiler's geometry names another defender,
+ * and one named install where the sources disagree. Each entry carries its source.
+ * - drive: the hook linebacker, dig (high) over shallow (low) (Smart Football, "Shallow cross, drag and drive"); the
+ *   compiler keyed the deep defender over the go.
+ * - pa_post_dig: the free safety, the post (high) over the dig under it (Mills post-dig; ours runs the dig from the
+ *   backside, W1, the strong #2 blocks); the compiler keyed the curl-flat on the backside dig and hook.
+ * - smash, corner_flat: the corner, corner (high) over the hitch or flat (low) (Chris Brown, Smart Football: "key
+ *   the cornerback"); the compiler's pair is already this one, so only the role changes (the read is geometric).
+ * - mesh: Leach's install, the outside route, then the mesh crosser coming to him, then the other, then the swing
+ *   (Alex Brink, Spokesman-Review); alternatives: Throw Deep's flare first, the Rams' shallow first.
+ * - y_cross: deep to short, the post, then the cross, then the flat (Throw Deep; Inside the Pylon's "deep look, then
+ *   the crossing route"); alternative: Leach's go and out before the cross.
+ * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
+ *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
+export const PLAN_KEYS = process.env.PLAN_KEYS === '1';
+/** One beat of the drop: the hitch step (the compiler's BEAT). */
+const RHYTHM_BEAT = 0.4;
+const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean }> = {
+  drive: { low: 'W2', high: 'S2', role: 'hook', deep: false },
+  pa_post_dig: { low: 'W1', high: 'S1', role: 'deep_free_safety', deep: true },
+  smash: { low: 'S1', high: 'S2', role: 'corner', deep: false },
+  corner_flat: { low: 'S2', high: 'S1', role: 'corner', deep: false },
+};
+const INSTALL_ORDER: Record<string, ReceiverRef[]> = {
+  mesh: ['S1', 'S2', 'W2'],
+  y_cross: ['W1', 'S2', 'S3'],
+  pa_flood: ['S2', 'W1', 'S3'],
+};
 
 export interface InstalledPlan {
   style: PlanStyle;
@@ -23,6 +60,13 @@ export interface InstalledPlan {
   key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number } | null;
   /** Triangle: three routes read as one picture, top-down; vertical peek: the verticals as one look, then the back. */
   triangle: ReceiverRef[] | null;
+  /** The rhythm each read is installed on, for the QB lane's acceptance rule (data only; nothing reads it yet). The
+   * coached default by place: read 1 on the last step of the drop ('set'), read 2 on a hitch ('hitch', one beat on),
+   * later reads and the outlet on the second hitch ('hitch2') (Gonzalez via Smart Football; Hewitt, USA Football).
+   * `at` is that step's time after the snap (the plan's QB set plus a beat a step); `ready` is when his route is
+   * first a throw as installed (the compiler's window), and `onTime` whether it is ready by its step. A read that is
+   * not on time is the concept's or the drop's question, not a wait (the table's rhythm column). */
+  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; at: number; ready: number; onTime: boolean }[];
 }
 
 const cache = new Map<string, InstalledPlan | null>();
@@ -39,19 +83,44 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
   let plan: InstalledPlan | null = null;
   try {
-    const c = compile(concept, formationId, false, teams.off, teams.def).chosen;
+    const compiled = compile(concept, formationId, false, teams.off, teams.def), c = compiled.chosen;
     if (c) {
       plan = {
         style: c.style, order: c.order.map((s) => s.ref), outlet: c.outlet, alert: c.alert ?? null,
         key: c.key?.low && c.key.high ? { low: c.key.low, high: c.key.high, role: c.key.role, cueBy: c.key.cueBy } : null,
-        triangle: c.triangle ?? null,
+        triangle: c.triangle ?? null, rhythm: [],
       };
+      const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
+      // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
+      // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
+      const k = PLAN_KEYS ? KEYS[concept.id] : undefined;
+      const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
+      if (k && lo && hi) {
+        const cueBy = +(k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
+        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy }, triangle: null,
+          order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
+      }
+      // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
+      const io = PLAN_KEYS ? INSTALL_ORDER[concept.id]?.filter((r) => routes.has(r)) : undefined;
+      if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
+        order: [...io, ...plan.order.filter((r) => !io.includes(r))] };
+      // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
+      if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
+      // The rhythm (see InstalledPlan.rhythm): the coached step by place, and when his route is ready as installed.
+      const set = compiled.qbSetAt, steps = ['set', 'hitch', 'hitch2'] as const;
+      const seq = [...plan.order, ...(plan.outlet && !plan.order.includes(plan.outlet) ? [plan.outlet] : [])];
+      plan.rhythm = seq.map((ref, i) => {
+        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(i, 2)];
+        const at = +(set + RHYTHM_BEAT * steps.indexOf(step)).toFixed(2);
+        const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
+        return { ref, step, at, ready, onTime: ready <= at + 1e-9 };
+      });
     }
   } finally {
     compiling--;

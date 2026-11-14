@@ -280,6 +280,8 @@
     "SCREEN_QB": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
+    "OUTLET_LAST": "0",
+    "PLAN_KEYS": "0",
     "FORECAST_BREAK": "0",
     "FORECAST_HOLD": "0",
     "QB_RHYTHM": "0",
