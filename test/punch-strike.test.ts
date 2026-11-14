@@ -35,8 +35,10 @@ async function falls(flags: Record<string, string>, roster: number, coverage = '
   return sim.events.filter((e: any) => e.type === 'fall' && ol.has(e.a) && e.t >= 0.5 && e.t <= thr)
     .map((e: any) => ({ slot: sim.agents[e.a].slot as string, t: e.t as number, move: moves.get(e.a) }));
 }
-/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change and the seen set pinned off. */
-const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0' });
+/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change, the seen set, engine-60's four and engine-61's six pinned off. */
+const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0',
+  THROW_HOLD: '0', POCKET_REACH: '0', REP_SEEN: '0', RUSH_LEAN_BOUND: '0',
+  HONEST_READS: '0', INFO_HONEST: '0', HONEST_TACKLE: '0', RCV_SEEN: '0', TRACK_PURSUIT: '0', TRACK_TACKLE: '0' });
 
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
@@ -50,9 +52,11 @@ describe('PUNCH_STRIKE', () => {
     expect(on.some((f: any) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
   });
 
-  it('on the full engine-59 stack a propped fall still happens: a guard leaning near the press goes down when it is taken away', async () => {
-    const all = await falls({}, 8, 'cover1', 9);
-    expect(all.some((f: any) => f.slot === 'LG' && f.move === 'longarm')).toBe(true);
+  it('on the full engine-61 stack a propped fall still happens: a guard leaning near the press goes down when it is taken away', async () => {
+    // Re-found on engine-61 (288 x 3 staged scenes; 5 OL falls): the left guard leans about 1100 N into a 1350-1900 N
+    // press; his man's club takes it away and he goes forward onto the man at 3.15 s (Cover 2 and Cover 3).
+    const all = await falls({}, 4, 'cover2', 17);
+    expect(all.some((f: any) => f.slot === 'LG' && f.move === 'club')).toBe(true);
   });
 
   it('needs PUNCH', async () => {
