@@ -1008,3 +1008,21 @@ criteria a worse statistic from a better mechanism is not a veto.
 28.9 / 28.7 -> 30.6 / 32.0%; interior 9.3 / 10.0 -> 10.0 / 11.9% of dropbacks; edge pressure from inside earlier (time
 p50 2.70 / 2.80 -> 2.30 / 2.60 s; by 2.5 s 2.6 -> 4.0%, seed 11); sacks 5.5 -> 5.7%. The mirror one felt delay behind
 the rusher lets inside moves land a beat earlier: the honest cost.
+
+**For the card's record** (Integration's two questions; iz-push.py and a hips export of the patch arm, seed 11):
+
+1. **Inside zone's -0.70 to -0.87: the double teams were never moving the defender.**
+   - Develop -> patch, seeds 11 / 23: a DL caught by two OL at 0.8 s is driven downfield over the next 0.8 s p50
+     0.00 / -0.10 -> -0.40 / -0.10 yd (19-34 double teams per arm). The median is about zero in both arms.
+   - IZ yards before contact p50 1.8 / 1.6 -> 1.4 / 0.9.
+   - So inside zone's yards came from the free turn (the defender turned out of his gap), not from movement on the
+     combo; the patch takes the free turn away. The missing push on doubles is its own, pre-existing gap.
+2. **The twist is not absorbing turns, in either direction.**
+   - Engaged interior DL on runs under the patch (1,116 blocks; net turn over 0.75 s from contact): shoulders p50 37
+     / p90 127 deg, hips 35 / 132; the trunk twist at the end p50 1 deg, at its 55 deg limit only at p90.
+   - Of the 366 blocks with the shoulders turned past 60 deg, the hips turned less than 20 deg in only 24, and the
+     trunk was at its limit in 47 (13%).
+   - Of the 201 with the shoulders under 10 deg, the hips were also under 10 deg in 111.
+   - Both ends are the hips. The square hold applies only while he holds his gap (`read.stack`). When he works off the
+     block his hips go with his path (ZONE_RUN's open hips, the shed), so the large turns stay large: the defender's p50
+     under the NFL's is the held-gap reps, and the tail is the working-off reps.
