@@ -152,3 +152,44 @@ if Y:
     line = f'  stop by {who:8s} share {len(R) / len(free):.2f} | YAC median {med(R, "yac")} | time to stop {med(R, "t")} s'
     if who.startswith('D'): line += f' | his distance at the catch {med(R, "sdist")} yd | closing {med(R, "close")} yd/s | lead {med(R, "lead", 0)} deg'
     print(line)
+# Part 3, the near defenders on free plays: D1 and D2 (nearest and next at the catch), at the catch and +0.5 / +1.0 /
+# +1.5 s: his speed, his closing rate on the catcher, and whether the catcher is past him (the catcher upfield of him
+# along the attack direction). Sim rows add his requested speed and his behaviour (man / zone flags in the dump; neither
+# = pursuit or another behaviour) and when he first leaves man/zone after the catch.
+T3 = (0, 5, 10, 15)
+acc = {('D1', k): [] for k in T3} | {('D2', k): [] for k in T3}
+leave = {'D1': [], 'D2': []}; kinds = {('D1', k): {} for k in T3} | {('D2', k): {} for k in T3}
+for p in plays:
+  F, c, d = p['frames'], p['catch'], p['dir']
+  if c >= len(F) - 2 or len(F[c]['d']) < 2: continue
+  up = lambda i: (F[i]['c'][0] - F[c]['c'][0]) * d
+  yac = up(len(F) - 1)
+  f = next((i for i in range(c + 1, len(F)) if any(dist(x, F[i]['c']) < 1 for x in F[i]['d'])), None)
+  if not (f is None or up(f) > 5 or (yac - up(f)) > 3): continue
+  order = sorted(range(len(F[c]['d'])), key=lambda k: dist(F[c]['d'][k], F[c]['c']))
+  for nm, j in (('D1', order[0]), ('D2', order[1])):
+    for k in T3:
+      i = c + k
+      if i >= len(F) or j >= len(F[i]['d']): continue
+      x, C = F[i]['d'][j], F[i]['c']
+      bx, by = C[0] - x[0], C[1] - x[1]; B = math.hypot(bx, by) or 1e-6
+      row = {'s': spd(x), 'close': (x[2] * bx + x[3] * by) / B - (C[2] * bx + C[3] * by) / B, 'past': (C[0] - x[0]) * d > 0, 'dist': B}
+      if len(x) >= 7 and x[4] == x[4]:
+        row['req'] = math.hypot(x[4], x[5]); kd = 'man' if x[6] & 4 else 'zone' if x[6] & 8 else 'other'
+        kinds[(nm, k)][kd] = kinds[(nm, k)].get(kd, 0) + 1
+      acc[(nm, k)].append(row)
+    if len(F[c]['d'][j]) >= 7:
+      t = next(((i - c) * 0.1 for i in range(c, len(F)) if j < len(F[i]['d']) and not (F[i]['d'][j][6] & 12)), None)
+      leave[nm].append(t if t is not None else 99)
+print('part 3, near defenders on free plays')
+for nm in ('D1', 'D2'):
+  for k in T3:
+    R = acc[(nm, k)]
+    if not R: continue
+    line = f'  {nm} +{k / 10:.1f} s: n {len(R)} speed {med(R, "s")} closing {med(R, "close")} yd/s distance {med(R, "dist")} yd catcher past him {sum(r["past"] for r in R) / len(R):.2f}'
+    if any('req' in r for r in R):
+      K = kinds[(nm, k)]; tot = sum(K.values()) or 1
+      line += f' | requested {med(R, "req")} yd/s | ' + ' '.join(f'{kk} {v / tot:.2f}' for kk, v in sorted(K.items()))
+    print(line)
+  if leave[nm]:
+    L = leave[nm]; print(f'  {nm} leaves man/zone after the catch: median {st.median(L):.1f} s (never within the play {sum(1 for x in L if x == 99) / len(L):.2f})')
