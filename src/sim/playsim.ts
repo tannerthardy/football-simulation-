@@ -6,6 +6,7 @@
  *   attempts → whistle → record
  */
 import { recordContact } from './seen-contact.js';
+import { lineOfSight } from './sight.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -137,6 +138,23 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
+/** SIGHT_CARRIER (experimental, off; SIGHT_CARRIER=1; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
+ * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
+ * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
+ * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
+const SIGHT_CARRIER = process.env.SIGHT_CARRIER !== '0';
+/** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
+ * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
+ * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
+ * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
+ * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
+const SIGHT_COVER = process.env.SIGHT_COVER !== '0';
+/** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
+ * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
+ * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
+ * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
+ * `update` 17% (`see-sight.ts`). The throw cue (`sawThrow`) is presented possession's release candidate (#713). */
+const SIGHT_RECOG = process.env.SIGHT_RECOG !== '0';
 /** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
  * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
  * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
@@ -806,7 +824,7 @@ export class PlaySim {
   }
 
   /** What `observer` perceives of `target` (delayed for opponents). */
-  see(observer: Agent, target: Agent, delayScale = 1): Perceived {
+  see(observer: Agent, target: Agent, delayScale = 1, sight?: 'recog'): Perceived {
     if (observer.team === target.team) {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
@@ -847,10 +865,54 @@ export class PlaySim {
       }
       else seen = this.remembered(observer, target, seen);
     }
+    if (SIGHT_CARRIER && observer === this.carrier) seen = this.sighted(observer, target, seen, !!(g && g.set >= this.t - this.dt - 1e-9));
+    // SIGHT_COVER: a man or zone defender's picture behind a body. Occlusion only: his eyes are on his man or the QB by
+    // coaching, so with GAZE off no facing bound applies (GAZE's own view half when it is on).
+    else if ((SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
+      // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
+      || (SIGHT_RECOG && sight === 'recog'))
+      seen = this.sighted(observer, target, seen, true);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
   }
+
+  /** SEE_SIGHT (SIGHT_CARRIER): his picture of a man is the newest moment, at least his ordinary delay back, at which he
+   * had the man in sight: in view (within 1.8 rad of his body facing then; under GAZE the view half is GAZE's own
+   * `remembered`, and this adds occlusion) and with no body across the line by `lineOfSight`'s heights, everyone where
+   * the perception record has him then. That moment is carried forward on the velocity it showed, so a man he cannot
+   * see now ages from when he last saw him and is picked up one delay after he is back in sight. Visibility at a past
+   * tick never changes, so it is kept per tick. Beyond the record (about 1.2 s): the last picture he had, ageing. */
+  private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean): Perceived {
+    const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
+    const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
+    const visibleAt = (back: number): boolean | null => {
+      const k = `${key}${gazeView ? 'o' : 'v'}@${now - back}`, hit = memo.get(k);
+      if (hit !== undefined) return hit;
+      const rec = (a: Agent) => this.perception.recorded(a.idx, back * this.dt)?.pos ?? null;
+      const ro = this.perception.recorded(observer.idx, back * this.dt), rt = rec(target);
+      if (!ro || !rt) return null;
+      const inView = gazeView || Math.abs(angDiff(Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x), ro.facing)) <= 1.8;
+      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec);
+      memo.set(k, v);
+      return v;
+    };
+    if (memo.size > 200000) memo.clear();
+    for (let back = Math.round((seen.age ?? 0) / this.dt); ; back++) {
+      const v = visibleAt(back);
+      if (v === null) break;
+      if (!v) continue;
+      const pic = back === Math.round((seen.age ?? 0) / this.dt) ? seen : this.perception.perceive(target.idx, back * this.dt);
+      kept.set(key, { pic, at: this.t });
+      return pic;
+    }
+    const m = kept.get(key);
+    if (!m) return this.perception.perceive(target.idx, 1.2);
+    const dt = this.t - m.at;
+    return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
+  }
+  private sightAt?: Map<string, boolean>;
+  private sightKept?: Map<string, { pic: Perceived; at: number }>;
 
   /** What `observer` perceives of `target` he is tracking: a continuous, attended read (the man he mirrors, the carrier
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
