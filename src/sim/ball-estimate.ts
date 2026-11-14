@@ -20,6 +20,7 @@
  * 5-10 % (choice, from psychophysics orders of magnitude); eye range 30 deg (choice); head 6 rad/s within 90 deg
  * (GAZE). Ratings: ballTracking for offense, ballSkills for defense, between best and worst.
  */
+import { HEAD as SHARED_HEAD, neckRange, want as headWant } from './head.js';
 import { INCIDENTAL_FLIGHT_MAX_AGE } from './catch-readiness.js';
 import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
@@ -86,6 +87,8 @@ export const LOOK_NECK = NECK;
  * his shoulders (choice, anatomy beside it in the spec; BALL_EST_NECK_SPRINT in degrees, sensitivity read at 60). */
 const NECK_SPRINT = (Number(process.env.BALL_EST_NECK_SPRINT ?? 45) * Math.PI) / 180;
 export function neckOf(a: Agent): number {
+  // HEAD on: one head and one neck range per player (head.ts), whoever asks for the look.
+  if (SHARED_HEAD) return neckRange(a);
   if (!BALL_EST_DEEP_LOOK) return NECK;
   const share = Math.min(1, Math.hypot(a.vel.x, a.vel.y) / Math.max(1e-6, a.profile.vmax));
   return NECK - (NECK - NECK_SPRINT) * share;
@@ -142,6 +145,8 @@ export class BallEstimates {
     if (ball.kind !== 'air') {
       for (const [a, tr] of this.tracks) {
         if (tr.preLookT === undefined || sim.t - tr.preLookT > sim.dt + 1e-9 || a.isDown(sim.t)) continue;
+        // HEAD on: the look is his technique's want on the shared head (head.ts turns it); BALL_EST reads it.
+        if (SHARED_HEAD) { headWant(sim, a, sim.qb, 'qb'); tr.head = a.head ?? a.facing; tr.headT = sim.t; continue; }
         const qb = sim.see(a, sim.qb).pos, toward = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
         const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
@@ -163,7 +168,7 @@ export class BallEstimates {
         let tr0 = this.tracks.get(a);
         if (tr0 && tr0.flight !== this.flight && tr0.preLookT === undefined) { this.reset(tr0); tr0.flight = this.flight; }
         if (tr0 && sim.t - tr0.attendT <= sim.dt + 1e-9 && tr0.flight === this.flight) continue;
-        const head = tr0 && tr0.flight === this.flight ? tr0.head : a.facing;
+        const head = SHARED_HEAD ? (a.head ?? a.facing) : tr0 && tr0.flight === this.flight ? tr0.head : a.facing;
         if (Math.abs(angDiff(Math.atan2(b.y - a.pos.y, b.x - a.pos.x), head)) > EYE) continue;
         if (!tr0) { tr0 = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 }; this.tracks.set(a, tr0); }
         else tr0.attendT = sim.t;
@@ -175,11 +180,17 @@ export class BallEstimates {
       if (sim.t - tr.attendT > sim.dt + 1e-9 || a.isDown(sim.t)) continue;
       // The head turns toward where he believes the ball is (his estimate, else where it comes from).
       const want = this.believedAt(a, sim, tr);
-      const toward = Math.atan2(want.y - a.pos.y, want.x - a.pos.x);
-      const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -neckOf(a), neckOf(a));
-      const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
-      tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -neckOf(a), neckOf(a));
-      tr.headT = sim.t;
+      if (SHARED_HEAD) {
+        // HEAD on: he asks to look where he believes the ball is; the shared head turns at its own rate and range.
+        headWant(sim, a, { x: want.x, y: want.y }, 'ball');
+        tr.head = a.head ?? a.facing; tr.headT = sim.t;
+      } else {
+        const toward = Math.atan2(want.y - a.pos.y, want.x - a.pos.x);
+        const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -neckOf(a), neckOf(a));
+        const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
+        tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -neckOf(a), neckOf(a));
+        tr.headT = sim.t;
+      }
       // Pursuit runs on the visuomotor loop (about 110 ms), not on a decision's reaction time; his attention scales it.
       const delay = a.mind.observationDelay(PURSUIT_DELAY);
       const seen = this.ballAt(sim.t - delay);
@@ -288,7 +299,7 @@ export class BallEstimates {
   }
 
   /** Where his head points, if he is attending to the ball. */
-  headOf(a: Agent): number | undefined { return this.tracks.get(a)?.head; }
+  headOf(a: Agent): number | undefined { return SHARED_HEAD ? (this.tracks.has(a) ? (a.head ?? undefined) : undefined) : this.tracks.get(a)?.head; }
   samplesOf(a: Agent): number { return this.tracks.get(a)?.samples.length ?? 0; }
   jumpsOf(a: Agent): number { return this.tracks.get(a)?.jumps ?? 0; }
 
