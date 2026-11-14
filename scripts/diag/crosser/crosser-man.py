@@ -15,13 +15,18 @@ For each CROSS route on a non-designed dropback in man coverage, while the ball 
   of routes with such a moment; the shadow's speed and the separation change from 0.3 s before to 0.5 s after the
   first such moment, against the same change at the same time on routes with no traffic.
 
-  python3 -I crosser-man.py --data <bdb2025 dir> [--list N] name=a.jsonl.gz,...
+  --class shallow|mid|deep keeps crossers by their peak depth past the line while the ball is held (to 3.0 s):
+  shallow under 6 yd, deep 8 yd or more (Rules + Coaching: compare like with like).
+  python3 -I crosser-man.py --data <bdb2025 dir> [--list N] [--class C] name=a.jsonl.gz,...
 """
 import sys, os, json, gzip, csv, math, re, collections
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
 args = sys.argv[1:]; i = args.index('--data'); D = args[i + 1]; del args[i:i + 2]
 LIST = 0
+CLASS = None
+if '--class' in args:
+    i = args.index('--class'); CLASS = args[i + 1]; del args[i:i + 2]
 if '--list' in args:
     i = args.index('--list'); LIST = int(args[i + 1]); del args[i:i + 2]
 PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(f'{D}/plays.csv'))}
@@ -69,6 +74,9 @@ for arg in args:
                 if not cover: continue
                 sh = min(cover, key=md)
                 if not math.isfinite(md(sh)) or md(sh) > 6: continue
+                peak = max((p.pos(j, k)[0] for k in range(0, kend + 1) if p.pos(j, k)[0] is not None), default=0)
+                cls = 'shallow' if peak < 6 else 'deep' if peak >= 8 else 'mid'
+                if CLASS and cls != CLASS: continue
                 C['routes'] += 1
                 for t in (1.0, 2.0, 3.0):
                     k = p.k(t)
@@ -99,7 +107,7 @@ for arg in args:
                     if va and vb: S[f'dslow_{key}'].append(math.hypot(*vb) - math.hypot(*va))
                     if len(ex[key]) < LIST: ex[key].append(f"{raw['id']} rec {j} shadow {sh} t {k0 * p.dt:.1f} sep {p.dist(j, sh, ka):.1f}->{p.dist(j, sh, kb):.1f}")
     r = max(1, C['routes'])
-    print(f"== {name}: CROSS routes vs man {C['routes']} (shadow within 6 yd); with traffic {100 * C['traffic'] / r:.0f}%")
+    print(f"== {name} [{CLASS or 'all'}]: CROSS routes vs man {C['routes']} (shadow within 6 yd); with traffic {100 * C['traffic'] / r:.0f}%")
     print(f"   (4) route: depth 1/2/3 s {q(S['depth1.0'])} | {q(S['depth2.0'])} | {q(S['depth3.0'])}; speed {q(S['rspeed1.0'])} | {q(S['rspeed2.0'])} | {q(S['rspeed3.0'])}; crossing speed {q(S['rlat1.0'])} | {q(S['rlat2.0'])} | {q(S['rlat3.0'])}")
     print(f"   (3) shadow speed {q(S['dspeed1.0'])} | {q(S['dspeed2.0'])} | {q(S['dspeed3.0'])}; receiver minus shadow {q(S['dv1.0'])} | {q(S['dv2.0'])} | {q(S['dv3.0'])}; sep {q(S['sep1.0'])} | {q(S['sep2.0'])} | {q(S['sep3.0'])}")
     print(f"   (2) shadow behind (along travel) snap/1/2 s {q(S['behind0.0'])} | {q(S['behind1.0'])} | {q(S['behind2.0'])}; over (+ deeper) {q(S['over0.0'])} | {q(S['over1.0'])} | {q(S['over2.0'])}")

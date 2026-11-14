@@ -103,3 +103,40 @@ nearest "defender" was a DL engaged with an OL at the line, which is why the sha
 
 **Next diagnostic (not a build):** isolate `getOffDrive` and the break through-speed on the shallow, with the same
 probe, against a control go route from the same alignment.
+
+## Re-read on engine-63, like with like (2026-11-14)
+
+**Rules + Coaching's correction:** our crossers follow their drawings. The depth gap is the call mix: 51% deep crosses
+against the NFL's about 31%. So item 4 is dropped, and crossers are split by their peak depth while the ball is held
+(`--class`): shallow under 6 yd, deep 8 yd or more.
+
+**Populations.**
+- **Sim:** branch 0496327e (develop 3c2f968d, engine-63, merged), same 16 games.
+- **NFL:** as above.
+
+| p50 | NFL shallow (610) | Ours shallow (56) | NFL deep (382) | Ours deep (18) |
+|---|---|---|---|---|
+| Receiver speed, 1.0 / 2.0 / 3.0 s (yd/s) | 3.61 / 6.32 / 7.00 | 3.54 / 5.41 / 6.52 | 4.47 / 7.11 / 7.91 | 4.03 / 5.59 / 6.80 |
+| His speed across the field, 2.0 s (yd/s) | 6.0 | 4.5 | 4.0 | 1.5 |
+| His depth past the line, 2.0 s (yd) | 2.2 | 3.8 | 6.2 | 5.6 |
+| Shadow speed, 2.0 s (yd/s) | 4.92 | 3.81 | 5.70 | 3.54 |
+| Receiver minus shadow, 2.0 s (yd/s) | 1.09 | 1.57 | 1.16 | 1.78 |
+| Shadow ahead along his travel, snap / 1.0 s (yd) | 2.60 / 1.08 | 3.92 / 3.00 | 2.60 / 1.22 | 4.40 / 2.93 |
+| Shadow deeper than him, snap / 1.0 s (yd) | 2.9 / 1.9 | 4.3 / 3.3 | 2.9 / 1.7 | 4.7 / 2.9 |
+| Traffic within 1 yd of the shadow | 40% | 45% | 18% | 22% |
+| Separation change across traffic / same window, clean (yd) | +0.79 / −0.03 | −0.62 / −1.45 | +1.76 / −0.36 | (4 routes) / −2.20 |
+
+**Reading, like with like.**
+- **Position (item 2) departs first, at the snap, for both classes.** Our man defender is 1.4–1.8 yd deeper and
+  1.3–1.8 yd further ahead along the crosser's path, and still well ahead at 1.0 s. The crosser runs into a defender
+  already in his lane.
+- **Speed (item 3):**
+  - Our shallow crosser is at NFL speed at 1.0 s (3.54 vs 3.61). He falls behind after his break: 5.41 vs 6.32 at
+    2.0 s, crossing at 4.5 vs 6.0.
+  - Our deep cross is slower from 1.0 s, but n = 18.
+  - The receiver still outruns his shadow by at least the NFL's margin. Our shadow is slow too, but positioned.
+  - Our shallow also runs 1.6 yd deeper at 2.0 s (3.8 vs 2.2 for NFL crossers that stay under 6). That is within the
+    drawing (2.5 → 5 yd) and inside the coached 3–6 yd range, so it is not a fault. It does put him at the defender's
+    depth sooner.
+- **Traffic (item 1) is not the departure.** Its effect relative to clean routes matches: shallow +0.83 vs NFL +0.82.
+  The closing is on clean routes: shallow −1.45 vs −0.03 yd over 0.8 s at 1.5 s.
