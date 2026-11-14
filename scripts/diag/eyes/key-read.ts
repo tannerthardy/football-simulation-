@@ -14,6 +14,14 @@ PlaySim.prototype.run = function (this: PlaySim) {
   const tick = sim.tick.bind(sim); let kts = 0, rec: any = null, named: any = undefined, tgt: any = null, qbRef: any = null;
   sim.tick = () => {
     tick();
+    if (tgt && sim.ball.kind === 'air') tgt.last = { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y, z: sim.ball.flight.pos.z };
+    if (tgt && tgt.target && tgt.aim && !tgt.arr && (sim.t >= tgt.arriveAt - 1e-6 || sim.ball.kind !== 'air')) {
+      const r = tgt.target, bp = tgt.last ?? r.pos, sp = Math.hypot(r.vel.x, r.vel.y) || 1, ux = r.vel.x / sp, uy = r.vel.y / sp;
+      const ex = tgt.aim.x - r.pos.x, ey = tgt.aim.y - r.pos.y, bx = bp.x - tgt.aim.x, by = bp.y - tgt.aim.y;
+      tgt.arr = { early: +(tgt.arriveAt - sim.t).toFixed(2), aimAlong: +(ex * ux + ey * uy).toFixed(1), aimAcross: +(ex * -uy + ey * ux).toFixed(1), aimOff: +Math.hypot(ex, ey).toFixed(1),
+        ballOffAim: +Math.hypot(bx, by).toFixed(1), ballZ: tgt.last ? +tgt.last.z.toFixed(1) : null, speed: +sp.toFixed(1),
+        looking: Math.cos(r.body.facing - Math.atan2(sim.qb.pos.y - r.pos.y, sim.qb.pos.x - r.pos.x)) > 0 };
+    }
     const q = sim.qb, b: any = q.behavior; if (b?.kind !== 'qb-pass') return;
     qbRef = b; kts = Math.max(kts, b.keyThrows ?? 0);
     const k = b.plan?.key; if (!k) return;
@@ -27,14 +35,14 @@ PlaySim.prototype.run = function (this: PlaySim) {
     }
   };
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, air: target ? +Math.hypot(target.pos.x - sim.qb.pos.x, target.pos.y - sim.qb.pos.y).toFixed(1) : null,
+  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, aim: rest[1] ? { x: rest[1].x, y: rest[1].y } : null, arriveAt: sim.t + (rest[2] ?? 0), arr: null as any, air: target ? +Math.hypot(target.pos.x - sim.qb.pos.x, target.pos.y - sim.qb.pos.y).toFixed(1) : null,
       brk: target ? (() => { const f = (sim.qb.behavior as any)?.receiverForecasts?.get(target), b = f?.breakAt?.(); return b == null ? null : +(b - sim.t).toFixed(2); })() : null,
       near: target ? +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1) : null, kind: (sim.qb.behavior as any)?.kind }; return tb(p, target, ...rest); };
   const res = orig.apply(this);
   if (rec) {
     const { low, high, ...row } = rec;
     console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null,
-      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
+      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, arr: tgt?.arr ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
       ball: tgt ? sim.events.filter((e: any) => e.t >= tgt.t && ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss'].includes(e.type)).map((e: any) => e.type) : [], kindAtThrow: tgt?.kind ?? null, endKind: sim.qb.behavior?.kind ?? null, desc: String((res as any).description ?? (res as any).text ?? '').slice(0, 90) }));
   }
   return res;
