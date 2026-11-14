@@ -56,7 +56,7 @@ if (BREAKS && process.env.BREAKS_OUT) { writeFileSync(process.env.BREAKS_OUT, JS
 const med = (v: number[]) => { v = v.filter(Number.isFinite).sort((a, b) => a - b); return v.length ? v[v.length >> 1] : NaN; };
 console.log(`defense ${defName}; env LINE_START=${process.env.LINE_START ?? 'on'} ROUTE_CRAFT=${process.env.ROUTE_CRAFT ?? 'on'} SAMEBODY=${process.env.SAMEBODY ?? 0} DIAG=${['DIAG_EFFORT', 'DIAG_THROUGH', 'DIAG_SEEK', 'DIAG_NOGETOFF'].map((k) => `${k}=${process.env[k] ?? 0}`).join(' ')}`);
 console.log('speed (yd/s, median) at ' + TS.join(' / ') + ' s | depth at 3 s | lateral at 3 s | path in 3.5 s | hips off the path (deg)');
-for (const id of ['go', 'cross', 'dig', 'short_in']) {
+for (const id of [...WANT]) {
   const V = rows.filter((r) => r.id === id); if (!V.length) continue;
   console.log(`  ${id.padEnd(9)} n ${String(V.length).padStart(3)} | ${TS.map((t) => med(V.map((r) => r.sp[String(t)])).toFixed(2)).join(' / ')} | depth ${med(V.map((r) => r.depth3)).toFixed(1)} | lateral ${med(V.map((r) => r.lat3)).toFixed(1)} | path ${med(V.map((r) => r.path3)).toFixed(1)} | hips ${med(V.map((r) => r.hips)).toFixed(0)} | vmax ${med(V.map((r) => r.vmax)).toFixed(2)} tau ${med(V.map((r) => r.tau)).toFixed(2)}`);
 }
