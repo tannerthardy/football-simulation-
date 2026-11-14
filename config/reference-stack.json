@@ -224,6 +224,7 @@
     "QB_GATHER_THROW": "off",
     "QB_POCKET": "off",
     "QB_BREAK": "off",
+    "QB_RELOOK": "off",
     "QB_HONEST_FEEL": "off",
     "THROW_PLATFORM": "off",
     "QB_BELIEVED_DEF": "off",

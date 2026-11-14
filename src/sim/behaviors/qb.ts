@@ -371,6 +371,14 @@ const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
  * until he tucks. Off: the alarm's no-throw branch scrambles, rolls a throw-away or steps back, and the clock's
  * branch scrambles. Constants are chosen (first build). docs/reviews/2026-11-13-qb-pocket.md. */
 const QB_BREAK = process.env.QB_BREAK === '1';
+/** QB_RELOOK (experimental, off; QB_RELOOK=1; information rule): running out of reads gives him nothing for free. Off,
+ * the moment his progression ends he takes the best man on the whole field, on his pictures, at his bar less 0.1: a
+ * look round the field at once that no quarterback has, standing where the real decision belongs. On, he goes back to
+ * his first read and works through them again, one look at a time at his dwell, with his eyes going to each man and at
+ * the bar he has (the list ending does not lower it); his check-down is taken on the way as before (QB_RHYTHM's outlet).
+ * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
+ * and reads on from it. */
+const QB_RELOOK = process.env.QB_RELOOK === '1';
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
 /** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
@@ -1201,6 +1209,13 @@ export class QBPass implements Behavior {
         this.readIdx++;
         this.readStart = t;
       }
+    } else if (!read && QB_RELOOK) {
+      // QB_RELOOK: his reads are done and nothing was there. He moves and reads on (QB_BREAK), or goes back to his
+      // first read and through them again, one look at a time.
+      this.relooks++;
+      if (QB_BREAK && this.tryBreak(a, sim, 'reads')) return this.outTick(a, sim);
+      this.readIdx = 0;
+      this.readStart = t;
     } else if (!read) {
       // Out of reads: take the best available.
       const best = this.bestOption(a, sim, u);
@@ -2193,6 +2208,8 @@ export class QBPass implements Behavior {
 
   /** QB_BREAK: out of the pocket with the ball up: the side he broke to, his held destination, his next decision. */
   private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number; order: Agent[]; idx: number } | null = null;
+  /** QB_RELOOK diagnostics (no effect): how many times his reads ran out on this play. */
+  relooks = 0;
   /** QB_BREAK: he has stopped and set outside the pocket on this play. */
   private hasSet = false;
   /** QB_BREAK diagnostics (no effect): what he did out there and when. */
