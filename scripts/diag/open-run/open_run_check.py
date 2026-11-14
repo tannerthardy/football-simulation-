@@ -53,9 +53,12 @@ for grp in ('WR', 'TE', 'RB', 'CB', 'S'):
         if len(s) >= 30: out.append(f'{b*15}-{b*15+15}: steady n {len(s)} {q(s,.95):.2f}/{q(s,.99):.2f} (steady {len(s)/(len(s)+len(t)):.2f})')
     print(grp + ': ' + ' | '.join(out))
 # plot samples
-import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
+try:
+    import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 random.seed(1)
-for grp, bs, name in (('WR', (7, 8), 'wr105-135'), ('CB', (5, 6), 'cb75-105')):
+for grp, bs, name in ((('WR', (7, 8), 'wr105-135'), ('CB', (5, 6), 'cb75-105')) if plt else ()):
     pool = [c for b in bs for c in cand.get((grp, b), [])]
     seen = set(); pick = []
     random.shuffle(pool)
