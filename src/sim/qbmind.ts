@@ -58,6 +58,13 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
  * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
  * and pressure are swapped, and a disguised shell still fools him. Not changed. */
 const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
+/** CLOUD_KILL (experimental, off; screens, 2026-11-14): "never throw a now screen against press or cloud". The now
+ * screen's installed kill (and the screen RPO's read) also takes a defender he sees squatting over the screen receiver,
+ * whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review, 2026-11-14):
+ * 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside (outside leverage), with the same alignment noise as the
+ * press look, at the alignment after motion. Off, only press killed it; on the now screen against Cover 2 the squat
+ * corner made every tackle (screen-defense.mts). */
+const CLOUD_KILL = process.env.CLOUD_KILL === '1';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -618,23 +625,24 @@ export class QBMind {
   /** What the QB sees outside on a screen: press over the receiver, and the
    * defenders and receivers outside the box to that side (defenders off the
    * line and within 9 yd of it), each defender seen with his alignment noise. */
-  private screenLook(concept: PassConcept): { press: boolean; defenders: number; receivers: number } | null {
+  private screenLook(concept: PassConcept): { press: boolean; cloud: boolean; defenders: number; receivers: number } | null {
     const sim = this.sim;
     const designed = screenSpot(sim, concept);
     if (!designed) return null;
     const r = designed.receiver.pos, side = designed.side, by = sim.ballY;
     const sig = 0.3 + 1.0 * (1 - this.rec);
-    let press = false, defenders = 0;
+    let press = false, cloud = false, defenders = 0;
     for (const d of sim.defense) {
       const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
       const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
       if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
+      else if (x >= 2.2 && x <= 5 && (y - r.y) * side >= -0.5 && (y - r.y) * side <= 3) cloud = true;
       // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
       if ((y - by) * side > 5 && x >= 1.5 && x < 9) defenders++;
     }
     const receivers = sim.offense.filter((o) => o !== sim.qb && !isOL(o) && !sim.offAlign.spots[o.slot]?.backfield
       && (o.pos.y - by) * side > 5).length;
-    return { press, defenders, receivers };
+    return { press, cloud, defenders, receivers };
   }
 
   /**
@@ -645,7 +653,7 @@ export class QBMind {
   private rpoRead(call: OffensivePlayCall): OffensivePlayCall | null {
     if (call.kind !== 'run' || !call.rpo || !call.run) return null;
     const look = this.screenLook(call.rpo);
-    const throwIt = !!look && !look.press && look.defenders <= look.receivers;
+    const throwIt = !!look && !look.press && !(CLOUD_KILL && look.cloud) && look.defenders <= look.receivers;
     this.report.audible = throwIt ? `rpo: ${call.rpo.name}` : `rpo: ${call.run.name}`;
     if (!throwIt) return { ...call, rpo: undefined };
     return { ...call, kind: 'pass', pass: call.rpo, rpo: undefined, label: `${call.formation.name} — ${call.run.name} / ${call.rpo.name} (thrown)` };
@@ -661,7 +669,7 @@ export class QBMind {
     const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
     if (!spec || !spec.kill) return null;
     const look = this.screenLook(call.pass!);
-    if (spec.kill === 'press' && !look?.press) return null;
+    if (spec.kill === 'press' && !look?.press && !(CLOUD_KILL && look?.cloud)) return null;
     // SCREEN_QB: a numbers kill (the bubble): more of them outside than us there.
     if (spec.kill === 'numbers' && (!SCREEN_QB || !look || look.defenders <= look.receivers)) return null;
     const quick = this.quickCheck();
