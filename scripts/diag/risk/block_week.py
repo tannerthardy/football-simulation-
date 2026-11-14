@@ -15,7 +15,7 @@ import csv, sys, os, math, json, statistics as st
 def plays_nfl(D, weeks):
   sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'pass-matrix'))
   from population import nfl_population
-  pop, _ = nfl_population(D); keep = {k for k, w in pop.items() if w == 'keep'}
+  pop, _ = nfl_population(D); keep = {k for k, w in pop.items() if w == os.environ.get('POP', 'keep')}  # POP=screen: the screens-only cut
   P = {}
   for r in csv.DictReader(open(f'{D}/plays.csv')):
     k = (r['gameId'], r['playId'])
