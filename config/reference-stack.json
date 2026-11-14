@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-61",
+  "id": "engine-62",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -187,7 +187,7 @@
     "PASS_SET_SEEN": "on",
     "REP_SEEN": "on",
     "RUSH_LEAN_BOUND": "on",
-    "RUSH_BULL": "off",
+    "RUSH_BULL": "on",
     "RUSH_RIP": "off",
     "KEYED_FELT": "off",
     "LONGARM_STRUT": "off",

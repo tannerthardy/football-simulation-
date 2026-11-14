@@ -1214,7 +1214,7 @@ export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND !== '0';
  * Diagnosis (rep-rolls.mts, engine-61, 8 games): 1475 bull rolls, 10% won, opening 4 of 210 sheds; a lost roll left
  * the rusher 0.08-0.09 yd nearer the QB over 0.5 s against 0.12-0.14 engaged with no move: a move attempt was worth
  * less than none. */
-export const RUSH_BULL = process.env.RUSH_BULL === '1';
+export const RUSH_BULL = process.env.RUSH_BULL !== '0';
 /** RUSH_RIP (experimental, off; RUSH_RIP=1; PRO-INFO #9, the second move): the rip is his hand and his body, not a roll.
  * His near arm comes up under the blocker's hand on his working side: a force of his arm (armForce) across the
  * blocker's hand joint, toward the inside, for the time his hand takes to cross the forearm (FOREARM at his hand

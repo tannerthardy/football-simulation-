@@ -21,7 +21,7 @@ import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
 
-export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 0);
+export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
 const APEX_OUTSIDE = 1.0;
 
 export type Directive =

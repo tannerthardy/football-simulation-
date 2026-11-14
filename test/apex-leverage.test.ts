@@ -44,10 +44,10 @@ async function run(flag: string | undefined, concept: string, at: number) {
 const mean = (v: number[]) => v.reduce((a, b) => a + b, 0) / v.length;
 
 describe('APEX_LEVERAGE', () => {
-  it('0 is the unset path on every tick', async () => {
-    const unset = await run(undefined, 'four_verts', 1.5), zero = await run('0', 'four_verts', 1.5);
-    expect(zero.all.length).toBeGreaterThan(1000);
-    expect(zero.all).toEqual(unset.all);
+  it('unset is all bits on (7) on every tick, the default since engine-62', async () => {
+    const unset = await run(undefined, 'four_verts', 1.5), seven = await run('7', 'four_verts', 1.5);
+    expect(seven.all.length).toBeGreaterThan(1000);
+    expect(seven.all).toEqual(unset.all);
   });
   it('1: level on the seam rather than inside it', async () => {
     const off = await run('0', 'four_verts', 1.5), on = await run('1', 'four_verts', 1.5);
