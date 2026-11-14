@@ -25,7 +25,7 @@ export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
 /** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
  * to the next dropper ("collision and pass"), square to the QB at his window depth, instead of jumping him and carrying
  * him man head-up 8 yd past his area. The low-hole rat (whose job is the crosser) keeps the jump. */
-export const CUT_WALL = process.env.CUT_WALL === '1';
+export const CUT_WALL = process.env.CUT_WALL !== '0';
 /** CUT_WALL: his area for a crosser, a side of his landmark (yd): half a hook band (zoneBand's hooks are 11-12 yd wide;
  * choice); he takes a crosser inside CUT_ENTER and passes him past CUT_EXIT (the margin is the commit rule). */
 export const CUT_ENTER = 5;

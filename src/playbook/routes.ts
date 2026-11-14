@@ -22,7 +22,7 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
  * - shallow_high and mesh_under (mesh's pair, which works at 4-6 yd and rubs): Y at the linebackers' toes, X just
  *   underneath him, a yard apart so they cross close enough to rub (Air Raid / Holgorsen); points at 5 and 4.
  * The deep cross is unchanged until the over's install is sourced. His freedom at the route's end is unchanged. */
-const CROSS_FLAT = process.env.CROSS_FLAT === '1';
+const CROSS_FLAT = process.env.CROSS_FLAT !== '0';
 export const ROUTES: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
