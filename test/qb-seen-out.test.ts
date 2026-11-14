@@ -16,6 +16,7 @@ async function stage(flag: string) {
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { PRESSURE_BY_ID } = await import('../src/playbook/defense.js');
+  const { stand } = await import('../src/sim/behaviors/common.js');
   const out: { unseenReady: boolean; unseenOut: boolean; seenOut: boolean; stays: boolean }[] = [];
   for (const [concept, coverage, seed] of PLAYS) {
     const setup = nativeTraceSetup({ coverage, concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false });
@@ -30,8 +31,8 @@ async function stage(flag: string) {
     beh.evaluate = () => null;
     for (let i = 0; i < 400 && sim.phase === 'live' && sim.carrier === qb && qb.behavior === beh && man.behavior.kind !== 'route'; i++) sim.tick();
     if (man.behavior.kind !== 'route' || sim.carrier !== qb || f.estimate?.progress != null) continue;
-    // The rush is taken out of the scene so the play lasts long enough to be read.
-    for (const d of sim.defense) d.downUntil = 1e9;
+    // The rushers stop where they are so the play lasts long enough to be read.
+    for (const d of sim.defense) if (d.behavior.kind === 'rush' || d.behavior.kind === 'blitz') d.behavior = { kind: 'idle', update: () => stand(0) };
     for (let i = 0; i < 4; i++) sim.tick(); // a few steps onto the route, still unseen
     if (sim.carrier !== qb || qb.behavior !== beh || f.estimate?.progress != null) continue;
     const unseenReady = beh.ready(man, sim) as boolean, unseenOut = beh.seenOut(man) as boolean;

@@ -1,6 +1,6 @@
 // node --import tsx scripts/diag/eyes/come-free.ts [FLAG=value ...]
 // A rusher who comes free of his block, with nothing teleported. Once the quarterback is set, the engaged rusher nearest
-// him (2.5-5 yd away) is let go: the engagement is ended and his blocker is parked on the ground where he stands. The
+// him (2.5-5 yd away) is let go: the engagement is ended and his blocker is put on the ground where he stands (given nothing to do and held down). The
 // rusher then accelerates at the quarterback from the speed the block had left him. This is the case a held-velocity
 // picture reads late (a man who speeds up or turns), unlike a placed man already at speed. Read per play and in total:
 // did the alarm fire, how long before the man was within 1 yd of him, and was he sacked with no alarm.
@@ -11,12 +11,14 @@ for (const [k, v] of Object.entries(flags)) if (v === 'on') process.env[k] = '1'
 for (const kv of process.argv.slice(2)) { const [k, v] = kv.split('='); process.env[k] = v; }
 const { PlaySim } = await import('../../../src/sim/playsim.js');
 const { nativeTraceSetup } = await import('../command-trace.js');
+const { stand } = await import('../../../src/sim/behaviors/common.js');
 const CONCEPTS = ['post_cross', 'dagger', 'drive', 'comebacks', 'hitch_cross', 'seam_hitch', 'smash', 'corner_flat'];
 let freed = 0, al = 0, sk = 0, skNo = 0, reached = 0; const lead: number[] = [], lag: number[] = [];
 for (const concept of CONCEPTS) for (const coverage of ['cover1', 'cover3']) for (const seed of [2, 3, 4]) {
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false }));
-  let qb: any = null, man: any = null, at = -1, d0 = 0, v0 = 0, contact = -1, setAt = -1; const tick = sim.tick.bind(sim);
+  const parked: any[] = []; let qb: any = null, man: any = null, at = -1, d0 = 0, v0 = 0, contact = -1, setAt = -1; const tick = sim.tick.bind(sim);
   sim.tick = () => {
+    for (const o of parked) if (o.body.support) o.body.support.state = 'down';
     tick();
     const q = sim.qb;
     if (!qb && q.behavior.kind === 'qb-pass') qb = q.behavior;
@@ -32,7 +34,8 @@ for (const concept of CONCEPTS) for (const coverage of ['cover1', 'cover3']) for
       if (man) {
         const e = man.engagement, off = [e.blocker, ...e.helpers];
         sim.disengage(e);
-        for (const o of off) o.downUntil = 1e9;
+        // downUntil alone does not stop a player acting: he is given nothing to do and held on the ground.
+        for (const o of off) { o.behavior = { kind: 'idle', update: () => stand(0) }; parked.push(o); }
         at = sim.t; d0 = best; v0 = Math.hypot(man.vel.x, man.vel.y);
       }
     }
