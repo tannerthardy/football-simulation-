@@ -177,7 +177,7 @@ export class CrossWall extends Technique {
     const contact = Math.abs(rd.pos.y - this.area.y) < this.half && Math.abs(rd.pos.x - x) < 1.2
       && Math.hypot(rd.pos.x - a.pos.x, rd.pos.y - a.pos.y) < reach + 0.5;
     const aim = contact ? { x: rd.pos.x, y: rd.pos.y } : { x, y: clamp(y, 0.5, FIELD_WIDTH - 0.5) };
-    const qb = infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos;
+    const qb = sim.see(a, sim.qb).pos;
     const speed = (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
     return withFacingTechnique(track(a, aim, { x: 0, y: 0 }, { facing: angleTo(a.pos, qb), speed, gain: 2 }),
       { label: contact ? 'cross-wall-collide' : 'cross-wall', key: rd.vel });
