@@ -123,6 +123,7 @@
     "TRACK_PURSUIT": "on",
     "TRACK_TACKLE": "on",
     "PURSUIT_SPOT": "on",
+    "BREAK_LEVERAGE": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",

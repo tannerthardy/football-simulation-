@@ -30,6 +30,7 @@ import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
+import { BREAK_LEVERAGE, leverageApproach, playsBall } from '../break-leverage.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
@@ -207,6 +208,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
       const on = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= CATCH_CARRY_RANGE;
       if (!refuted && on) {
         a.tags.add('catch-carry');
+        // BREAK_LEVERAGE: the ball is there; he takes the receiver's upfield shoulder on his line, not his hands.
+        if (BREAK_LEVERAGE) return asCarrierPursuit(leverageApproach(a, sim, seen, drive.receiver));
         const f = seen.facing;
         return asCarrierPursuit(runThrough(a, f === undefined ? seen.pos : { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 }));
       }
@@ -2169,6 +2172,14 @@ function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acqui
       const f = HONEST_FLIGHT ? seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x) : R.body.facing, hands = { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 };
       a.tags.add('drive-catch');
       if (CATCH_CARRY && !(HONEST_FLIGHT && catchDrive.get(a)?.receiver === R)) catchDrive.set(a, { receiver: R, t: sim.t });
+      // BREAK_LEVERAGE: through the hands only while he can get there within the securing beat his own estimate of
+      // the arrival leaves; otherwise the receiver's upfield shoulder.
+      if (BREAK_LEVERAGE) {
+        // His own arrival estimate: the catch window in his picture of this flight (or the remembered opportunity).
+        const opp = window && window.receiver === R ? window : opportunity ?? catchOpportunity(a);
+        const remaining = opp && opp.receiver === R ? opp.t + DRIVE_SECURE - sim.t : DRIVE_SECURE;
+        if (!playsBall(a, R, hands, remaining)) { a.tags.add('break-leverage'); return leverageApproach(a, sim, seen, R); }
+      }
       return runThrough(a, hands, { speed: 1 });
     }
   }
