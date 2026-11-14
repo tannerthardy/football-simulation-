@@ -597,7 +597,9 @@ export class TrackBall implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
-    if (sim.t < this.reactAt) return this.fallback.update(a, sim);
+    // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
+    // twice). He attends from the release; his head still has to come round at its own rate before he samples.
+    if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
     let spot: { p: Vec2; t: number } | null = null;
     // BALL_EST: his own estimate from the ball he has seen; until he has one he runs his route and looks for it.
     const path = BALL_EST ? sim.ballEstimates.estimate(a, sim) : sim.ballPath;
