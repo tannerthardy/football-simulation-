@@ -52,12 +52,40 @@ describe('PUNCH_STRIKE', () => {
     expect(on.some((f: any) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
   });
 
-  it('on the full engine-61 stack a propped fall still happens: a guard leaning near the press goes down when it is taken away', async () => {
-    // Re-found on engine-61 (288 x 3 staged scenes; 5 OL falls): the left guard leans about 1100 N into a 1350-1900 N
-    // press; his man's club takes it away and he goes forward onto the man at 3.15 s (Cover 2 and Cover 3).
-    const all = await falls({}, 4, 'cover2', 17);
-    expect(all.some((f: any) => f.slot === 'LG' && f.move === 'club')).toBe(true);
-  });
+  it('on the full stack a propped fall still happens: a lineman leaning near the press goes down onto the man (search with a floor)', async () => {
+    // A search, not a pinned scene (these moved on engine-59, 60 and 61): staged scenes in a fixed order until an
+    // offensive lineman goes down forward, onto the man (his fall against the press he felt), having leaned at least
+    // 0.6 of that press in the 0.3 s before. Requirement: at least one exists on the current stack.
+    vi.resetModules();
+    for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    const OL = ['LT', 'LG', 'C', 'RG', 'RT'];
+    let found: string | null = null, scenes = 0;
+    search: for (const coverage of ['cover2', 'cover1', 'cover3']) for (let seed = 1; seed <= 24; seed++) for (let roster = 1; roster <= 12; roster++) {
+      scenes++;
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
+      const ol = sim.offense.filter((a: any) => OL.includes(a.slot));
+      const hist = new Map<any, { t: number; ratio: number; u: { x: number; y: number } }[]>();
+      while (sim.phase === 'live' && sim.t < 5 && sim.throwAt < 0) {
+        for (const a of ol) {
+          const sup = a.body.support; if (sup?.state !== 'up') continue;
+          const fl = Math.hypot(sup.felt.x, sup.felt.y); if (fl < 300) continue;
+          const u = { x: sup.felt.x / fl, y: sup.felt.y / fl }, h = hist.get(a) ?? [];
+          h.push({ t: sim.t, ratio: -(sup.lean.x * u.x + sup.lean.y * u.y) / fl, u }); if (h.length > 7) h.shift(); hist.set(a, h);
+        }
+        sim.tick();
+        for (const a of ol) {
+          const sup = a.body.support, h = hist.get(a);
+          if (!h?.length || !sup || sup.state === 'up' || sim.t - sup.since > sim.dt + 1e-9 || sim.t < 0.5) continue;
+          const last = h[h.length - 1], forward = sup.fall.x * last.u.x + sup.fall.y * last.u.y < -0.3;
+          if (forward && h.some((r) => sim.t - r.t <= 0.3 + 1e-9 && r.ratio >= 0.6)) { found = `${coverage} roster ${roster} seed ${seed}: ${a.slot} at ${sim.t.toFixed(2)} s`; break search; }
+        }
+      }
+    }
+    console.log(`propped OL fall: ${found ?? 'none'} after ${scenes} scenes`);
+    expect(found).not.toBeNull();
+  }, 480_000);
 
   it('needs PUNCH', async () => {
     vi.resetModules(); vi.stubEnv('PUNCH', '0'); vi.stubEnv('PUNCH_STRIKE', '1');
