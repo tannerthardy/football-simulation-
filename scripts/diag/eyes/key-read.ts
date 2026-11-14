@@ -42,7 +42,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
   if (rec) {
     const { low, high, ...row } = rec;
     console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null,
-      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, arr: tgt?.arr ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
+      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: 0, sawKt: kts, shut: [], over: 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, arr: tgt?.arr ?? null, air: tgt?.air ?? null, brk: tgt?.brk ?? null, nearAtThrow: tgt?.near ?? null,
       ball: tgt ? sim.events.filter((e: any) => e.t >= tgt.t && ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss'].includes(e.type)).map((e: any) => e.type) : [], kindAtThrow: tgt?.kind ?? null, endKind: sim.qb.behavior?.kind ?? null, desc: String((res as any).description ?? (res as any).text ?? '').slice(0, 90) }));
   }
   return res;
