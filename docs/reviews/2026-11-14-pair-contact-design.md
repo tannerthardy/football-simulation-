@@ -884,3 +884,34 @@ spun off the block. The center's block on the shade lasts 1.10 -> 1.77 s.
 change in the bearing between them and in each man's facing over the engagement), measured on BDB with the same pairing.
 A strong measurement (positions and facing), and the next step before PRESS_SPRING can land or be judged. Broken
 tackles doubling on the staged set (20 -> 39; the run set had them fall, 0.094 -> 0.074) is also unexplained.
+
+### PRESS_SPRING attempt 1: failed on the orbit; the cause found (diagnostic arms, a local worktree only)
+
+**The game read fails on a mechanism.** interior-orbit.py (new): each interior OL and the nearest DL within 1.2 yd on
+run plays; the net change of the bearing between them over the block (the pair's orbit) and each man's facing change.
+Same code on BDB and the sim, seed 11 x 8.
+
+| | orbit p25 / 50 / 75 / 90 | facing change, blocker / defender p50 |
+|---|---|---|
+| NFL (15,954 pairs) | 25 / 51 / 87 / 126 deg | 33 / 30 |
+| reference | 18 / 53 / 85 / 117 | 41 / 40 |
+| PRESS_SPRING | 6 / 23 / 66 / 100 | 29 / 32 |
+| PRESS_SPRING, the defender's steer zeroed (diagnostic) | 8 / 30 / 71 / 102 | 33 / 33 |
+| PRESS_SPRING, both men's steer zeroed (diagnostic) | 29 / 62 / 94 / 124 | 47 / 41 |
+
+- The reference already orbits like the NFL. PRESS_SPRING halves it, so its run gain (+0.31; IZ +0.85) comes from
+  interior pairs too rigid sideways, and is not to be believed.
+- The matched staged IZ with the defender's steer zeroed is still +0.83 (SE 0.68).
+- The constraint is tangential. A hands row's steer is a two-way lock on the pair's sideways relative motion, up to
+  0.7 (blocker) or 0.55 (defender) of the arm's strength. With two springs always in contact both locks act at once,
+  stiffer than the reference's one, intermittent joint.
+
+**Attempt 2, proposed (the last):** hands on a man give two different tangential forces, and the row has to carry each
+as what it is.
+- **Passive:** friction on the press, both ways, at most HAND_MU x the hand's normal force (the outside-hand rule, now
+  for every hand). It resists sliding only as hard as the press allows.
+- **Active:** his steer, one way only. His arm works the man across in the direction he is steering, up to its strength
+  (the run blocker's play-side seal, the defender working toward his gap). It does not hold the man in place against
+  motion the other way beyond friction.
+
+Judged on the orbit (toward the NFL's p50 51 deg) and on the five staged gates again, then the game read.
