@@ -43,6 +43,16 @@ The corner plan used `aLat = lateral x cutSkill`, without the body's own speed d
 same expression `locomotionAccel` and `followAccel` use for their lateral half (a pure refactor: the flag-off numbers are identical), and the plan
 takes `aLat` from it at the carry speed. Effect is small (cross 6.20 to 6.34 at 2.0 s; radius 7.0 to 6.9, slant arc 2.2 to 2.9; outside carry 0.00-0.18 yd on rolled bends).
 
+## The vertex law crossed the switch early (Rules' cut slant)
+
+A slant marked `cut: true` at s .4 (planned through 3.05) crossed its 2 yd vertex at 4.1 yd/s (Rules read 4.7 against a 3.6 plan). It is not the get-off
+suppressing the cap (the get-off ends at 0.8 s here and only scales the drive). `arriveVelocity` reaches its through speed 0.15 yd short of the point it is
+given, but `steerRoute` takes him to be at the vertex at 0.6 yd and stops braking him for it; so the last 0.45 yd of the braking curve was never commanded and the
+curve's allowed speed at the switch was `through` + 0.75 yd/s (3.8 against 3.05), and the drive law then lifted him again as the target moved on. The same
+0.45 yd is in the old law for every route (it is why a plant crossed its declared speed by 0.3-1.0 yd/s), and so also for quick outs and sticks. Under ROUTE_FILLET the
+arrive law is now aimed at the switch (0.45 yd short of the vertex), so the through speed is the speed at which the corner is taken: the cut slant crosses at 3.30 against a
+planned 3.05-3.28 (NFL plant 3.3). Flag off: unchanged. Rolled and led corners, which go through the lead and not this branch, are unchanged to the digit.
+
 ## Witnesses (sim bench from `scripts/diag/route-speed/` on PR #750; no defenders unless stated; WR body for speed rows)
 
 Speed by time, cross (WR body, no defenders), 1.5 / 2.0 / 2.5 / 3.0 / 3.5 s: off 6.00 / 5.47 / 6.30 / 7.29 / 7.83, on 5.77 / 6.66 / 7.50 / 7.94 /

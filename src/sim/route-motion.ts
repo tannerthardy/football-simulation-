@@ -125,6 +125,13 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
       const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
       through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
     }
+    // ROUTE_FILLET: he is taken to be at a vertex at 0.6 yd, where nothing brakes him for it any more, but the arrive law reaches its through
+    // speed 0.15 yd short of the point it is given, so it let him cross the switch 0.45 yd of braking early (a cut planned at 3.1 yd/s was crossed
+    // at 4.1). Aim it at the switch, so the through speed is the speed at which the corner is taken.
+    if (ROUTE_FILLET && next && d > 0.6) {
+      const pull = Math.min(0.45, d - 0.15), ux = (tgt.p.x - body.pos.x) / d, uy = (tgt.p.y - body.pos.y) / d;
+      return { vel: arriveVelocity(body, { x: tgt.p.x - ux * pull, y: tgt.p.y - uy * pull }, vtop, through, decel), cutSkill };
+    }
     return { vel: arriveVelocity(body, tgt.p, vtop, through, decel), cutSkill };
   }
   return null;

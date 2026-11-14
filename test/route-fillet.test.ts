@@ -54,10 +54,15 @@ describe('ROUTE_FILLET', () => {
     const rolled = Math.min(...(await run('1', bend)).filter((q) => q.x > 9 && q.x < 16).map((q) => q.v));
     expect(through).toBeLessThan(rolled - 1.5);
   });
-  it('a point declared a cut keeps the vertex law: the same path as off', async () => {
-    const cutBend = [{ x: 12, y: 0, s: .9, cut: true }, { x: 24, y: 14, s: 1 }, { x: 40, y: 30, s: 1 }];
-    const off = await run('0', cutBend), on = await run('1', cutBend);
-    expect(on.length).toBe(off.length);
-    for (let k = 0; k < on.length; k += 10) expect(Math.abs(on[k].x - off[k].x) + Math.abs(on[k].y - off[k].y)).toBeLessThan(1e-9);
+  it('a point declared a cut keeps the vertex law, taken at the declared speed', async () => {
+    const cutBend = [{ x: 2.7, y: 0, s: .4, cut: true }, { x: 2.7, y: 20, s: 1 }];   // a cut 2.7 yd off the line, like the slant's
+    const speedAtVertex = (tr: Array<{ x: number; y: number; v: number }>) => tr.reduce((b, q) => Math.hypot(q.x - 2.7, q.y) < Math.hypot(b.x - 2.7, b.y) ? q : b).v;
+    const off = speedAtVertex(await run('0', cutBend)), on = speedAtVertex(await run('1', cutBend));
+    const through = .4 * 10 * .9 * (.82 + .3 * .6);     // s x vtop (vmax 10, effort .9) x the route-running factor
+    expect(on).toBeLessThanOrEqual(off + 1e-9);        // never faster through the cut than the old law (the sim's get-off crosses it at about +1 yd/s over; see the note)
+    expect(on).toBeLessThan(through + 0.5);
+    // and no lead: it still goes through the vertex (within the switch radius), not inside it
+    const near = (tr: Array<{ x: number; y: number }>) => Math.min(...tr.map((q) => Math.hypot(q.x - 2.7, q.y)));
+    expect(near(await run('1', cutBend))).toBeLessThan(0.7);
   });
 });
