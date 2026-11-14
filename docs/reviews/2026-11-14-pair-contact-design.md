@@ -136,3 +136,83 @@ should be decided by placement, reach, timing and the bodies.
 
 One flag (PAIR_HANDS), two attempts, read on all three populations from the first run. The swim, snatch and spin stay
 rolls whose outcomes write a fit. Rebuilding them as forces is the follow-on.
+
+## Amendments (Integration, 2026-11-14) and the build plan
+
+### 1. The hand-over agrees with the bench curve
+
+A bent arm is not weak: the bench strength curve rises toward lockout, and its weakest point is mid-range, not the
+bottom. So the press limit follows his strength through the whole arm. It is pressForce along an inside hand from the
+bent base to lockout (flat: the curve's spread is not a sourced constant, and its mid-range dip is a refinement, not a
+softening). It does not fall through the arm's range.
+
+**The span.** The hand-over happens only over the last span, where the hands are pinned at the chest and the forearm,
+not the arm, is the strut: from the bent base (arm x 0.3, elbows fully bent, the hands at his own chest) to the chests
+meeting (the bodies' gap 0).
+
+**The arm's length below the base.** Under PAIR_HANDS the length state may go below the bent base only when he is
+beaten there: the load exceeds what his arm holds at that bend, i.e. his press. HAND_FIT's coached recoil stops at the
+base. The arm gives when beaten, not because it is bent.
+
+**The law across the span.** The hands carry what the torso does not. With the bodies touching, the hands' push limit
+for that pair is his press less the torso contact's normal force on the same pair (the World's previous substep), never
+below zero. Total normal force across the gap is therefore continuous through the hand-over, by construction: the press
+limit until the chests carry it, then the chests.
+
+**Witness:** a staged drive into a set blocker, the total normal force through the hand-over: no dip, no spike beyond
+the closing impact.
+
+### 2. Placement
+
+- At each strike and each re-fit, the hand's landing point on the man is drawn once: a motor error in yards at the
+  target, its spread falling with his hand technique, the same kind of draw as a throw's accuracy (sim.dice per strike).
+- Inside or outside follows from geometry: the landing point against the man's frame (inside his shoulders, the chest
+  plate) and against the other man's hands. A hand already inside blocks the line to the chest; a later hand lands
+  outside it or must clear it.
+- Reach (arm length against the gap) and timing (the strike's travel at ARM_SPEED from his felt picture) decide who
+  arrives first, so a great technician can be beaten to the spot.
+- **Witness:** the inside share by rating gap (the rating moves placement; the rep follows the bodies).
+
+### 3. Remaining rating rolls (engine-64, seed 11 x 4, move resolutions per 100 dropbacks; move-rolls.mts)
+
+| move | interior | edge | under PAIR_HANDS |
+|---|---|---|---|
+| bull | 217.1 | 101.0 | force (RUSH_BULL) |
+| rip | 152.2 | 75.4 | force on the blocker's outside hand (RIP_CLEAR's law, edge and interior) |
+| club | 134.0 | 64.7 | force on the blocker's hand (RUSH_HANDS' law) |
+| longarm | 110.2 | 53.5 | the rusher's inside hand at lockout (RUSH_HANDS' joint) |
+| swim | 146.5 | 80.1 | **remains a roll**; writes a fit |
+| snatch | 45.3 | 17.1 | **remains a roll**; writes a fit |
+| spin | 42.5 | 43.7 | **remains a roll**; writes a fit |
+| speed / dip | 2.0 / 20.5 | 76.2 / 23.3 | **remains a roll** (the bend); writes a fit |
+
+The remaining rolls total about 236 interior and 240 edge resolutions per 100 dropbacks. That sizes the follow-on.
+
+### 4. Sequence inside attempt 1
+
+1. Staged pairs, before any game read, each with a fixed seed and its mirror:
+   - pass set: inside fit, outside fit, the strike beaten to the spot by reach;
+   - drive block: the defender's stack against the blocker's fit;
+   - stalk: a crosser at 3 and 4 yd/s;
+   - the hand-over: total force continuous.
+2. Dither budget.
+3. Games: edge, interior, falls; the fresh run set by concept; the standing correlations.
+
+Staged pairs that are wrong get fixed inside attempt 1. A failed game read spends the attempt.
+
+### 5. Off and the subsumed flags
+
+Off is bit-identical. Every subsumed flag keeps its code and stays readable as off; nothing is deleted in this PR.
+
+### 6. Expectations before the read (PAIR_HANDS against CONTROL_HANDS + HAND_FIT 2, engine-64)
+
+| witness | now | expected |
+|---|---|---|
+| interior pressure | 2-3% of dropbacks | up, to about 5-8% (rushers win placement; the long-arm and club act on a real fit) |
+| edge win | 5% | up, to about 7-10% |
+| separation at +0.4 s, wide / outside / head-up | 1.00 / 0.96 / 1.01 | closes 0.05-0.15 yd (bodies plus the base, and below when the rusher is inside) |
+| sacks | 2.2% | up, to about 3-4% |
+| OL proxy falls | 5.7 /100 | down slightly, to about 4-5 (the torso carries the load the arm was spiking on) |
+| run set (all, against ref) | +0.62 | gives back most of it: +0.0 to +0.3; toss back toward 0 (the defender's stack and shed return) |
+| stalk joint life | 0.05-0.10 s | 0.3-0.5 s; a crosser at 4 yd/s loses 1-2 yd/s |
+| roll's correlation with the rep | -0.11 edge | about 0; mass and arm above 0.1 |
