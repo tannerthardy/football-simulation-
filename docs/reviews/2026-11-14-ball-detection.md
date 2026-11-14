@@ -1,6 +1,6 @@
 # Ball detection before sampling (BALL_EST, defense): design note
 
-Coverage, 2026-11-14. Status: design for Integration; not built.
+Coverage, 2026-11-14. Status: design approved with amendment (angular-speed threshold); not built.
 
 ## Why
 With one perception per player (BALL_EST with bit 32), a defender sees the ball only through BALL_EST's sampling eye
@@ -26,16 +26,36 @@ looking at, which a real defender still notices.
    of joint limits.
 3. **Sample.** Only with the ball inside `EYE` of his head does the estimator take samples (unchanged).
 
-## Numbers and sources (choices marked)
+## Numbers and sources (revised 2026-11-14 after Integration: the sourced mechanism, not a slope)
+
+He detects the ball's **motion across his retina**: its angular speed as seen from his head (the ball's velocity
+across his line of sight divided by its distance, deg/s), against a motion threshold that rises with eccentricity off
+his head. tau0 is then only a latency. That gets the cases a field-plus-slope cannot: a ball crossing 15 yd away moves
+tens of deg/s and is found almost at once anywhere in the field; a ball thrown from 40 yd nearly at him has little
+angular motion and is found late even near the centre; a ball far off in the periphery on a line toward him may not be
+found at all.
 
 | Quantity | Value | Source / status |
 |---|---|---|
-| Visual field about the head (horizontal half-width) | 95 deg | Monocular field about 100 deg temporal and 60 deg nasal; binocular horizontal field about 190-200 deg ([visual field review](https://www.ophthalmologyreview.org/articles/visual-fields-introduction), [Visual field](https://wikipedia.com/wiki/Visual_field)); detection beyond 90 deg temporal is possible ([Springer chapter](https://doi.org/10.1007/978-1-4899-6647-6_40)). Taken as +-95 deg about the head: sourced. |
-| Eccentricity cost | detection time grows linearly with e | Motion thresholds rise linearly with eccentricity ([McKee & Nakayama 1984](https://pubmed.ncbi.nlm.nih.gov/6695503/)); RT to motion increases with eccentricity ([2023](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10659946/)), but for fast targets RT is unchanged by eccentricity ([1982](https://pesquisa.bvsalud.org/portal/resource/es/mdl-7101752)). A thrown ball is fast, so the slope is small; the slope itself is a **choice** (tau(e) = tau0 (1 + k e / 95 deg), k = 1 to start), stated as the sensitivity handle. |
-| tau0 (detection time constant at the head's centre) | 0.10 s | **Choice**, inside the visuomotor loop the estimator already uses (PURSUIT_DELAY, about 110 ms). |
-| Attention and skill | k scaled by (1 - 0.5 anticipation) / focus | Peripheral detection falls with foveal / cognitive load (Williams 1989; [UFOV](https://www.ksu.edu/psych/research/loschky/Ringer_et_al_2014_Creating_a_new_dynamic_measure_of_the_useful_field_of_view_using_gaze_contingent_displays.pdf)); team-sport players detect peripheral stimuli better ([Vater, Kredel, Hossner 2017](https://boris.unibe.ch/109022/1/Vater%2C%20Kredel%2C%20Hossner%20%282017c%29_CISS.pdf)). The rating acts on detection, not on the play. Form is a **choice**. |
-| Saccade latency to a peripheral target | 0.20 s (0.11-0.16 minimum) | [Zeevi 1979](https://pelilab.partners.org/papers/Zeevi%20JOSA%201979%20Peripheral%20saccades.pdf): about 200 ms; minimum 110-130 ms in gap tasks ([PMC6879951](https://pmc.ncbi.nlm.nih.gov/articles/PMC6879951)). Neck recruitment begins under 100 ms ([PMC4533108](https://pmc.ncbi.nlm.nih.gov/articles/PMC4533108)); head movement follows the eye's. Sourced. |
-| Detected bearing error | sd = 2 deg + 0.1 e | **Choice** (no trajectory, coarse bearing; sensitivity handle). |
+| Visual field about the head (half-width) | 95 deg | Monocular about 100 deg temporal, 60 deg nasal; binocular horizontal 190-200 deg ([review](https://www.ophthalmologyreview.org/articles/visual-fields-introduction), [Visual field](https://wikipedia.com/wiki/Visual_field)). Sourced. |
+| Motion threshold T(e), isolated target, laboratory | about 0.03 deg/s near the fovea (1.6 arcmin/s); 0.16 deg/s at 60 deg (9.5 arcmin/s); 0.55 deg/s at 53 deg, 1.15 at 73 deg, 2.15 at 90 deg (far-periphery protocol) | Rising with eccentricity ([McKee & Nakayama 1984](https://pubmed.ncbi.nlm.nih.gov/6695503/)); central and 60 deg values ([refractive-error study](https://link.springer.com/content/pdf/10.3758/BF03207271.pdf)); far periphery ([Motion detection in the far peripheral visual field](https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo84675/pdf/GOVPUB-D101-PURL-gpo84675.pdf)). The two protocols differ (60 deg: 0.16 vs about 0.4 interpolated); T(e) is taken as the far-periphery curve beyond 50 deg and linear from 0.03 at 0 to 0.5 at 50 deg. Sourced, protocol mismatch stated. |
+| Field multiplier M on T(e) | 10 (sensitivity read at 1, 10, 30) | **Choice.** Laboratory thresholds are for an isolated target with full attention; a defender is under foveal and cognitive load with many moving bodies, which narrows peripheral detection (Williams 1989; [UFOV](https://www.ksu.edu/psych/research/loschky/Ringer_et_al_2014_Creating_a_new_dynamic_measure_of_the_useful_field_of_view_using_gaze_contingent_displays.pdf)). No source gives the field factor in deg/s; it is the stated handle and is not picked by outcome. |
+| Attention and skill | M scaled by (1.5 - anticipation) / focus | Load raises peripheral thresholds; sport experts detect peripheral stimuli better ([Vater, Kredel, Hossner 2017](https://boris.unibe.ch/109022/1/Vater%2C%20Kredel%2C%20Hossner%20%282017c%29_CISS.pdf)). Acts on the threshold, which is what those studies measure. Form is a **choice**. |
+| Latency tau0 | 0.10 s | **Choice** (accepted), inside the visuomotor loop the estimator uses. Detection: the ball's angular speed over M T(e) continuously for tau0. |
+| Saccade latency (orient) | 0.20 s | [Zeevi 1979](https://pelilab.partners.org/papers/Zeevi%20JOSA%201979%20Peripheral%20saccades.pdf); minimum 0.11-0.16 s ([PMC6879951](https://pmc.ncbi.nlm.nih.gov/articles/PMC6879951)). Sourced. |
+| Detected bearing error | sd 2 deg + 0.1 e | **Choice** (accepted). |
+
+What the mapping says before any run: for most throws the ball's angular speed is far above M T(e) wherever it is in
+the field, so detection is limited by the field (behind 95 deg), occlusion and latency, not by the threshold; the
+threshold binds for balls on a line nearly toward him (small transverse motion) and at the field's edge.
+
+## Consumers (Integration's conditions)
+- Detection yields a coarse bearing only. Nothing may treat it as a flight: no `catchSpot`, no break to a spot, until
+  two samples exist. A defender who has detected but not sampled plays the arm-only branch plus the orient.
+- Orienting is a decision: zone defenders orient on detection; **man defenders do not auto-orient** (that is the man
+  look's ground, attempt 2).
+- One perception: no hips cone anywhere on the 512 path. Read twice: on the current base and after Defense's
+  eyes-on-QB lands. Main witness: time to first sample by the ball's eccentricity at the release.
 
 ## What it should do, stated before results
 - Zone: "no estimate at the arrival" falls from about 21% toward the share whose ball is behind the field or occluded.
