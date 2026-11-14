@@ -4,9 +4,13 @@
  * Fixtures: four verticals (nativeTraceSetup), on the engine defaults (the reference stack).
  *
  * The first two cases isolate PUNCH_STRIKE's own effect, so they pin ANCHOR_BASE (which bounds the protector's lean and
- * removes the spin fall the first case stages) and PURSUIT_COMMIT (which shifts the second scene) off. The third shows,
- * on the full candidate stack (PUNCH_STRIKE, ANCHOR_BASE, PURSUIT_COMMIT on), that a propped fall still happens: a
- * poor technician leaning near the whole press goes down when his man rips through. */
+ * removes the spin fall the first case stages), PURSUIT_COMMIT (which shifts the second scene) and PASS_SET_SEEN (his
+ * set on his picture of the rusher, a beat later, which shifts both) off. The third shows, on the full engine-59 stack
+ * (PUNCH_STRIKE, ANCHOR_BASE, PURSUIT_COMMIT, PASS_SET_SEEN, QB_BODY_SEEN, RUSH_PROMISE on), that a propped fall still
+ * happens: the left guard leans about 1215 N into a 1450 N press; his man goes from a club to a long-arm, the press
+ * drops to about 355 N, and he falls forward onto the man (re-found on engine-59 by a native search: 7 OL falls in 864
+ * staged scenes, 9 with PASS_SET_SEEN off; this is the one with the propped signature, lean near the press then the
+ * press taken away). */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -31,8 +35,8 @@ async function falls(flags: Record<string, string>, roster: number, coverage = '
   return sim.events.filter((e: any) => e.type === 'fall' && ol.has(e.a) && e.t >= 0.5 && e.t <= thr)
     .map((e: any) => ({ slot: sim.agents[e.a].slot as string, t: e.t as number, move: moves.get(e.a) }));
 }
-/** PUNCH_STRIKE alone: the protector's lean bound and the pursuit change pinned off. */
-const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0' });
+/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change and the seen set pinned off. */
+const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0' });
 
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
@@ -46,9 +50,9 @@ describe('PUNCH_STRIKE', () => {
     expect(on.some((f: any) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
   });
 
-  it('on the full candidate stack a propped fall still happens: a poor technician leaning near the press goes down to a rip', async () => {
-    const all = await falls({ PUNCH_STRIKE: '1', ANCHOR_BASE: '1', PURSUIT_COMMIT: '1' }, 3, 'cover2', 3);
-    expect(all.some((f: any) => f.slot === 'LG' && f.move === 'rip')).toBe(true);
+  it('on the full engine-59 stack a propped fall still happens: a guard leaning near the press goes down when it is taken away', async () => {
+    const all = await falls({}, 8, 'cover1', 9);
+    expect(all.some((f: any) => f.slot === 'LG' && f.move === 'longarm')).toBe(true);
   });
 
   it('needs PUNCH', async () => {
