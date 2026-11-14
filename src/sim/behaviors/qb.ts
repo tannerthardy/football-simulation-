@@ -410,6 +410,23 @@ const KEY_MOVE_NOISE = 5;
  * man): they doubled corner throws and put the added ones where a safety was a hard run from the ball (50% of routes
  * targeted against the NFL's 8%; docs/reviews/2026-11-13-qb-pocket.md). */
 const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
+/** QB_DROP_READ (experimental, off; QB_DROP_READ=1): the read runs in the drop, and the ball can come out on a step.
+ * Off, both hang off his set: the only throw he may start before it is to read 1 in the last load of the drop's time,
+ * and his dwell on read 1 starts at the set even when he has watched it for a second. So a set that comes later
+ * moves every decision later by the same amount (the paired read of the deeper five-step: the same play's throw
+ * 0.2-0.4 s later, sacks 9.3 -> 13.9% of plays, at the same time on the clock; scripts/diag/escape/drop-staged.ts).
+ * On: (1) his time on read 1 counts from when his eyes are up in the drop and the route is ready to be judged (its
+ * break less his lead), so he arrives at his set knowing whether it is there and goes to read 2 on the hitch;
+ * (2) from the gun, on a drop deeper than the three-step, a ready read 1 can also be thrown from the plant of the
+ * third step: he cuts the drop short where the three-step set is (a place on his drop, the existing gun3 depth; not
+ * a timer), at the same bar as the last-step throw, and the existing moving-thrower model prices the platform.
+ * Under center is left to the last step in this build: at his third step his shoulders are still turned. */
+const QB_DROP_READ = process.env.QB_DROP_READ === '1';
+/** QB_DROP_READ: how near the three-step depth he must be to plant there (yd; about one tick each side at his drop
+ * speed). Chosen. And when his eyes are up in a drop, as a share of its time: gun (existing, QB_EYES), under center
+ * (his shoulders come back square over the last two steps; chosen). */
+const STEP_WINDOW = 0.35;
+const EYES_UP_GUN = 0.5, EYES_UP_UNDER = 0.7;
 const KEY_HOLD = 1.2;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
@@ -789,6 +806,10 @@ export class QBPass implements Behavior {
    * decision-making and awareness set how cleanly he places him. */
   /** QB_KEY_THROW: the man his key read gave, and when. */
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
+  /** QB_DROP_READ: when read 1 began to be judged in the drop (null: not in the drop). */
+  private dropReadAt: number | null = null;
+  /** QB_DROP_READ diagnostic (no effect): the step a throw started in the drop was planted on. */
+  stepThrow: 'third' | 'last' | null = null;
   /** QB_KEY_THROW diagnostic (no effect): throws to the answer while he was holding on it. */
   keyThrows = 0;
 
@@ -1089,7 +1110,8 @@ export class QBPass implements Behavior {
       if (d < 0.4 || t > this.snapAt + this.drop.time + 0.4 || (pressure.time < 0.5 && t > this.snapAt + 0.4) || hotNow) {
         this.phase = 'set';
         this.setAt = t;
-        this.readStart = t;
+        // QB_DROP_READ: his time on read 1 already ran in the drop.
+        this.readStart = QB_DROP_READ && this.dropReadAt !== null ? this.dropReadAt : t;
       } else {
         // Rhythm: on the last step of his drop he can already start his load,
         // so a timing throw comes out as he hits his set point rather than
@@ -1097,12 +1119,19 @@ export class QBPass implements Behavior {
         // READ_PLAN key: read at its cue, from the drop; until then the low route is not thrown on rhythm.
         if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy) this.readKey(a, sim);
         const first = READ_PLAN && this.plan?.key && !this.keyRead ? undefined : this.reads[0];
-        if (first && t >= this.snapAt + this.drop.time - this.load(a) && this.ready(first, sim)) {
+        const inGun = sim.offCall.formation.qb !== 'under';
+        // QB_DROP_READ: read 1 is being judged from the moment his eyes are up and it is ready.
+        if (QB_DROP_READ && first && this.dropReadAt === null && t >= this.snapAt + (inGun ? EYES_UP_GUN : EYES_UP_UNDER) * this.drop.time && this.ready(first, sim)) this.dropReadAt = t;
+        // QB_DROP_READ: the plant of the third step, where the three-step set is, on a deeper gun drop.
+        const x3 = QB_DROP_READ && inGun ? dropSpec('gun3', a.pos.x, sim.los, true).x : null;
+        const onThird = x3 !== null && this.drop.x < x3 - 0.5 && Math.abs(a.pos.x - x3) <= STEP_WINDOW;
+        if (first && (onThird || t >= this.snapAt + this.drop.time - this.load(a)) && this.ready(first, sim)) {
           const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
           const ev = this.evaluate(a, sim, first, 0);
           if (ev && ev.P >= 0.6 - 0.12 * aggression && ev.intRisk <= 0.025 + 0.05 * aggression) {
             sim.qbEyes = first;
             this.setAt = t;
+            if (QB_DROP_READ) this.stepThrow = t >= this.snapAt + this.drop.time - this.load(a) ? 'last' : 'third';
             return this.startThrow(a, sim, ev);
           }
         }
