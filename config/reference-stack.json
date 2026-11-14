@@ -275,6 +275,7 @@
     "OUTLET_LAST": "on",
     "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
+    "ROUTE_EFFORT": "off",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",

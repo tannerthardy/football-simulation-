@@ -11,6 +11,8 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 export const LINE_START = process.env.LINE_START !== '0';
 
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
+const angleDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+
 export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean }
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
@@ -19,6 +21,13 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
   const out: PathPoint[] = pts.map(rp => ({
     p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1, ...(rp.cut ? { cut: true } : {}),
   }));
+  // ROUTE_EFFORT: the through speed at a declared break by its type, from the route's own geometry.
+  if (ROUTE_EFFORT && (family === 'quick' || family === 'intermediate' || family === 'deep' || family === 'cross')) for (let i = 0; i < out.length - 1; i++) {
+    const prev = i ? out[i - 1].p : start, p = out[i].p, next = out[i + 1].p;
+    const turn = Math.abs(angleDiff(Math.atan2(next.y - p.y, next.x - p.x), Math.atan2(p.y - prev.y, p.x - prev.x))) * 180 / Math.PI;
+    if (turn < SPEED_CUT_MAX) out[i] = { ...out[i], s: 1 };
+    else if (turn <= PLANT_MAX) out[i] = { ...out[i], s: PLANT_THROUGH };
+  }
   if (extend && out.length >= 1) {
     const last = out[out.length - 1].p;
     const prev = out.length >= 2 ? out[out.length - 2].p : start;
@@ -40,7 +49,26 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
   return out;
 }
 
+/** ROUTE_EFFORT (experimental, off): every route family is run at full speed, as coached ("routes must be ran at full
+ * speed"; the stem is sold at full speed so the defender must respect the vertical, and the receiver separates at the
+ * break: "the brake is the move and the throttle is the finish"). The coached reasons to slow are already their own
+ * mechanisms here: the deceleration into a break (the route law's through-speed at a corner), the settle or sit at a
+ * route's end (`settle`, `sitVsZone`), and the timing with the drop (route depth and the break). Off, each family carries
+ * a constant under 1 (quick .78, flat .80, back .80, cross .84, intermediate .86, deep .94, plus 0.04 x (route running -
+ * 0.5)), from the 2026-10-08 movement calibration against tracking (df08fff7), with no coached reason of its own: it
+ * caps a TE's over at 7.2 yd/s against the NFL TE crosser's 7.4 at 3.0 s (Tools, docs/reviews/2026-11-14-route-speed.md).
+ * A route's own tracked `pace` (the back's check-release flat) is unchanged. */
+const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
+/** ROUTE_EFFORT: the declared through speed at a break, by break type (route geometry), as taught. A turn under 60 deg is a
+ * speed cut ("cut violently at full speed": the slant, the post, the corner, a rolled crosser): s 1, his body's lateral
+ * limit decides what he carries (the follower's corner law). A 60-110 deg turn is a plant (the square in or out, "sink
+ * the hips"): one through speed for the type. A turn past 110 deg (the curl, comeback, hitch: sink and come back) keeps
+ * the route's own. The receiver route tree only (quick, intermediate, deep, cross); backs and screens keep theirs. Off, each route keeps the s it was authored with (2026-10-08, engine foundation, unsourced). NFL breaks
+ * at matched angles (Tools, route_break.py, BDB 2025): speed at the vertex over speed into it, rounded cross 1.03, corner
+ * .98, slant .96, square in / out (75-90 deg, 8+ yd) .70. */
+const SPEED_CUT_MAX = 60, PLANT_MAX = 110, PLANT_THROUGH = 0.4;
 export function routeEffort(family: RouteDef['family'], rr: number): number {
+  if (ROUTE_EFFORT) return 1;
   const base = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
   return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
 }
