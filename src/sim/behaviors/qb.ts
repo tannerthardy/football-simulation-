@@ -386,16 +386,6 @@ const QB_BREAK = process.env.QB_BREAK === '1';
  * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
  * and reads on from it. */
 const QB_RELOOK = process.env.QB_RELOOK === '1';
-/** QB_READ_BEAT (experimental, off; QB_READ_BEAT=1): a read gets its beat. Off, his look at a read lasts a fixed dwell
- * from when his eyes arrive, whatever the route is doing: a man whose break is still coming gets the same glance as
- * one who has broken and is covered, so his eyes reach the back with the route ahead of him not yet open (58% of
- * throws to the plan's outlet had a man ahead whose break had not come; scripts/diag/eyes/throw-role.ts). On, he stays
- * on the man his eyes are on through that man's break, as he forecasts it, plus his glance at what it shows, when the
- * break is no more than BEAT_WAIT away. Pressure or his clock (urgency at or above BEAT_URGENCY) ends the wait, and a
- * man whose break is behind him and who is covered still gets only the glance. Constants are chosen. */
-const QB_READ_BEAT = process.env.QB_READ_BEAT === '1';
-const BEAT_WAIT = 1.0;
-const BEAT_URGENCY = 0.5;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
 /** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
@@ -1185,13 +1175,6 @@ export class QBPass implements Behavior {
     // READ_PLAN alert: a yes/no glance, not a full read.
     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
     const readDwell = READ_PLAN && this.plan?.alert && read === this.plan.alert && this.readIdx === 0 ? glance : dwell;
-    // QB_READ_BEAT: the break he is still waiting on, on the man his eyes are on.
-    let beat = false;
-    if (QB_READ_BEAT && read && u < BEAT_URGENCY) {
-      const f = this.receiverForecasts.get(read), brk = f?.hasBreak && f.estimate?.motion === 'installed-route' ? f.breakAt() : null;
-      beat = brk !== null && brk !== undefined && brk + glance > t && brk - t <= BEAT_WAIT;
-      if (beat) this.beats++;
-    }
     if (tri) {
       let pick: ThrowEval | null = null;
       for (const r of tri) {
@@ -1240,7 +1223,7 @@ export class QBPass implements Behavior {
       // moves on after a glance rather than waiting out the read.
       const forecast = this.receiverForecasts.get(read);
       const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
-      if (!beat && (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance))) {
+      if (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
         // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
         // outlet that is there now is the throw, in rhythm, not at the end.
         // READ_PLAN: the back is a read in the plan, at his window on the side he releases to (HonestNFL 224,
@@ -1267,7 +1250,7 @@ export class QBPass implements Behavior {
       // the first second, upfield 0.0), then hold the ball 2.1 s more and throw 66% of the time
       // (scripts/diag/escape/clean-leave.py).
       else if (QB_BREAK && this.tryBreak(a, sim, 'reads')) return this.outTick(a, sim);
-    } else if (!beat && t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
+    } else if (t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
     }
@@ -2255,8 +2238,6 @@ export class QBPass implements Behavior {
 
   /** QB_BREAK: out of the pocket with the ball up: the side he broke to, his held destination, his next decision. */
   private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number; order: Agent[]; idx: number } | null = null;
-  /** QB_READ_BEAT diagnostics (no effect): ticks he stayed on a read for its break. */
-  beats = 0;
   /** QB_RELOOK diagnostics (no effect): how many times his reads ran out on this play. */
   relooks = 0;
   /** QB_BREAK: he has stopped and set outside the pocket on this play. */
