@@ -6,6 +6,8 @@
 import type { ReceiverRef } from '../types.js';
 import type { Candidate, Motif, ReadStep, RouteDescriptor } from './types.js';
 import { afterBreak } from './motifs.js';
+/** PLAN_ROLES (experimental, off; compile.ts CLEAR_OUTS): declared clear-outs are not read as the high of a high-low. */
+export const PLAN_ROLES = process.env.PLAN_ROLES === '1';
 
 /** A coach's preference for each plan style, added to the shared plan-quality score (log-odds-like priors; the
  * weights are engine calibration, not NFL numbers). The default leans pure (§17): an alert, key or half-field plan
@@ -80,7 +82,8 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
       if (!prev && r.settles && breakerInBeat) cost += 1.0;             // the breaking route is the primary
       // High-low within a side (the default profile): the deeper route first, then down (§10 B: the coach's
       // ordering among feasible sequences).
-      if (prev && side(prev) === side(r) && r.depthAtReady > prev.depthAtReady + 2) cost += 0.35;
+      // PLAN_ROLES: a clear-out is not the high of a high-low (he clears; he is not the deep read first).
+      if (prev && side(prev) === side(r) && r.depthAtReady > prev.depthAtReady + 2 && !(PLAN_ROLES && clearers.has(r.ref))) cost += 0.35;
       next.push({ seq: [...n.seq, r], t: at, cost });
     }
     if (!next.length) break;

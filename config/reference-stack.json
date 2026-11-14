@@ -286,6 +286,7 @@
     "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
     "PLAN_KEYS_2": "on",
+    "PLAN_ROLES": "off",
     "CROSS_FLAT": "on",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
