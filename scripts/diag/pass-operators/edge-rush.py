@@ -79,6 +79,9 @@ def rows(path):
                     # +0.4 s, where the record has orientation ('o'): off = the rusher's bearing from the tackle minus
                     # his facing, + = the rusher toward the outside of where his chest points; turn = his facing
                     # toward the outside of downfield (0 = square to the line of scrimmage).
+                    # The tackle's own velocity at contact: depth (+ = retreating toward his own goal) and outward.
+                    tvx, tvy = p.velocity(tk, k)
+                    if tvx is not None: r['tRetreat'] = -tvx; r['tOut'] = side * tvy; r['tSpeed'] = math.hypot(tvx, tvy)
                     o = raw.get('o'); r['chest'] = {}
                     if o:
                         for a, kk in ((0.0, k), (0.2, k + 2), (0.4, k + 4)):
@@ -142,6 +145,8 @@ for path in sys.argv[1:]:
         g = [r for r in Cn if f(r['offContact'])]
         gi = [r for r in g if 'vInto' in r]
         if g: print(f"      contact {lab:12s} velocity 0.2 s after, into the tackle {q([r['vInto'] for r in gi]):+.2f}, across him outward {q([r['vAcross'] for r in gi]):+.2f} yd/s")
+        gt = [r for r in g if 'tRetreat' in r]
+        if gt: print(f"      contact {lab:12s} the tackle at contact: retreat p25/50/75 {q([r['tRetreat'] for r in gt], .25):+.2f}/{q([r['tRetreat'] for r in gt]):+.2f}/{q([r['tRetreat'] for r in gt], .75):+.2f}, outward {q([r['tOut'] for r in gt]):+.2f}, speed {q([r['tSpeed'] for r in gt]):.2f} yd/s, under 0.5 yd/s {pct(sum(1 for r in gt if r['tSpeed'] < 0.5), len(gt))}")
         if g: print(f"      contact {lab:12s} n {len(g):5d}: speed before {q([r['vContact'] for r in g]):.2f} -> 0.2 s after {q([r['vAfter'] for r in g]):.2f} yd/s | at 2.0 s past outside {pct(sum(1 for r in g if 2.0 in r['snaps'] and r['snaps'][2.0]['state'] == 'past outside'), len(g))}")
     for lab, f in (('head-up', lambda o: abs(o) < 0.3), ('outside half', lambda o: 0.3 <= o < 0.9), ('wide', lambda o: o >= 0.9)):
         g = [r for r in Cn if f(r['offContact']) and r.get('chest')]
