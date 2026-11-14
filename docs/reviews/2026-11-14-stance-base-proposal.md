@@ -164,3 +164,38 @@ little it costs across. Those could come from instrumented stance or perturbatio
 tracking of who goes down by direction of the hit. They would replace an area-preserving reshape. The edge
 driven-over row (about 2 /100) stays open. POSTURE_FORCE is next only with Integration's go. It does not depend on
 this result.
+
+## Outcome: POSTURE_FORCE, one build, no effect; removed; the premise does not hold at the engine's posture range (2026-11-14)
+
+**The witness** (test/posture-witness.test.ts) is staged four-vertical pass reps (rosters 1-6, seeds 1-2, Cover 1).
+Every OL's posture request is held at 0.7 or 1.0. Ground the line gives up from 0.8 s to 2.5 s or the throw: 2.81 yd
+at 0.7, 2.73 at 1.0. Lower wins, as Run Game said, but by 0.08 yd. In the World alone the push does not depend on
+posture: two bodies driving chest to chest moved identically (0.710 yd) at 0.7 and 1.0. So "lower wins" is the
+balance model (base and w0 grow) and the controller's lean bounds, not leg force.
+
+**The posture-to-knee-flexion mapping (stated).** comHeightAt drops the COM by d = 0.25 x posture x (0.4 + 0.6 x bend).
+With the trunk upright, thigh and shank of equal length and hip height 0.5 of stature (COM 0.55), d is about 0.91 x
+(1 - cos(theta/2)):
+
+| | posture 0.6 | posture 0.7 | posture 1.0 |
+|---|---|---|---|
+| bend 0.2 | 48 deg | 52 deg | 62 deg |
+| bend 0.5 | 56 deg | 60 deg | 72 deg |
+| bend 1.0 | 67 deg | 72 deg | 87 deg |
+
+**The build.** Leg drive x 1 to 70 deg, falling linearly to 0.84 at 110 deg (squat-jump F0), plus the isometric
+charge x 2^((theta - 60)/30). At posture 1 it removes at most 7% of leg drive (bend 1). The witness did not move:
+2.807 / 2.726 yd on, against 2.807 / 2.726 off.
+
+**Why.** The engine's deepest posture is a half squat, where the evidence puts the force optimum and where coaching
+says "low man wins" is right. The coached "too low" failure (past about 90-100 deg of flexion, the COM behind the feet)
+cannot occur in the engine, because posture never goes that deep. Run Game's note assumed a 25% COM drop is a deep
+squat (over 100 deg). By this geometry it is about 87 deg at most. I did not spend a second attempt on a mechanism with
+nothing to act on.
+
+**What would make posture matter.** Either the posture range extends past a half squat (then the force-angle and
+COM-behind-the-base costs apply there), or a cost at the engine's own range is found. The low-posture research
+suggests the next candidate is mobility: first-step and lateral quickness fall in a deeper crouch, even within a half
+squat (Takayama: 70/70 slower off the mark than 30/30). That is a movement-rate cost, not a force one. **ANCHOR_BASE's
+sink re-point** depends on there being an optimum inside the range. By this mapping the optimum is posture 1 for most
+bodies, so the re-point has nothing to move to unless the mobility cost is added.
