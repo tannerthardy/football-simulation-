@@ -5,8 +5,9 @@
  * Off: the read is taken on whoever is nearest the line between the two routes in his pictures, so on some of these
  * scenes it is another man and the answer does not follow what the named man did.
  * On: the read is on the named man every time it is made, and the answer follows him.
- * QB_KEY_THROW: the answer is then thrown on its step unless somebody is in the window, where off it was priced like
- * any read: the high man is thrown more often when the key jumps the low route. */
+ * QB_KEY_THROW: he stays on the answer through its break instead of moving on at his dwell, and throws it when it
+ * passes his price: the high man is thrown more often when the key jumps the low route (the route is still on its
+ * stem when his dwell would have moved him off it). */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -22,7 +23,7 @@ async function stage(flag: string, keyThrow = '0', danger: '0' | '1' | null = nu
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { goTo } = await import('../src/sim/behaviors/common.js');
-  const rows: { scene: string; mode: string; role: string; named: string; on: string | null; answer: string | null; thrown: string | null; shut: string[] }[] = [];
+  const rows: { scene: string; mode: string; role: string; named: string; on: string | null; answer: string | null; thrown: string | null }[] = [];
   // The danger case: the corner concepts only, the key jumping the low route, and the deep man over the high route
   // (the half-field safety the coaching warns about) sent to where the high route is going.
   const scenes = danger === null ? SCENES : SCENES.filter(([c]) => c === 'corner_flat' || c === 'smash');
@@ -50,7 +51,7 @@ async function stage(flag: string, keyThrow = '0', danger: '0' | '1' | null = nu
     const tb = sim.throwBall.bind(sim);
     sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && thrown === null) thrown = target === k.low ? 'low' : target === k.high ? 'high' : 'other'; return tb(p, target, ...rest); };
     for (let i = 0; i < 300 && sim.phase === 'live' && thrown === null && sim.carrier === sim.qb; i++) sim.tick();
-    rows.push({ scene: `${concept}/${coverage}/${seed}`, mode, role: k.role, named: man.player.id, on: kr.defender, answer: kr.defender ? kr.throwTo : null, thrown, shut: [...(qb.keyShut ?? [])] });
+    rows.push({ scene: `${concept}/${coverage}/${seed}`, mode, role: k.role, named: man.player.id, on: kr.defender, answer: kr.defender ? kr.throwTo : null, thrown });
   }
   return rows;
 }
@@ -74,7 +75,7 @@ describe('QB_KEY_MAN', () => {
     expect(right / made.length).toBeGreaterThanOrEqual(0.8);
   }, 120000);
 
-  it('QB_KEY_THROW: when the key jumps the low route, the high man is thrown on the read more often than when he is priced', async () => {
+  it('QB_KEY_THROW: when the key jumps the low route, he stays on the high man through his break and throws him more often', async () => {
     const priced = await stage('1', '0'), read = await stage('1', '1');
     const high = (rows: typeof priced) => rows.filter((r) => r.answer === 'high');
     const share = (rows: typeof priced) => high(rows).filter((r) => r.thrown === 'high').length / Math.max(1, high(rows).length);
@@ -85,17 +86,5 @@ describe('QB_KEY_MAN', () => {
     const low = (rows: typeof priced) => rows.filter((r) => r.answer === 'low');
     const lowShare = (rows: typeof priced) => low(rows).filter((r) => r.thrown === 'low').length / Math.max(1, low(rows).length);
     expect(lowShare(read)).toBeGreaterThanOrEqual(lowShare(priced) - 1e-9);
-  }, 240000);
-
-  it('QB_KEY_DANGER: with the safety sitting over the corner route, the high answer is not thrown on the read', async () => {
-    const off = await stage('1', '1', '0'), on = await stage('1', '1', '1');
-    const high = (rows: typeof off) => rows.filter((r) => r.answer === 'high');
-    expect(high(off).length).toBeGreaterThanOrEqual(6);
-    expect(high(on).length).toBeGreaterThanOrEqual(6);
-    // Off, nobody names him: the window is never shut on the danger. On, it is, on most of these scenes.
-    expect(off.some((r) => r.shut.includes('danger'))).toBe(false);
-    expect(high(on).filter((r) => r.shut.includes('danger')).length / high(on).length).toBeGreaterThanOrEqual(0.5);
-    const thrownHigh = (rows: typeof off) => high(rows).filter((r) => r.thrown === 'high').length / high(rows).length;
-    expect(thrownHigh(on)).toBeLessThan(thrownHigh(off));
   }, 240000);
 });

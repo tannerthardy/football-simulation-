@@ -13,7 +13,7 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
-  let rows: any[] | null = null; const tb = sim.throwBall.bind(sim);
+  let rows = null as any[] | null; const tb = sim.throwBall.bind(sim);
   sim.throwBall = (qb: any, target: any, v0: any, intended: any, arrivalT: number, throwaway = false, ...rest: any[]) => {
     const b: any = qb.behavior;
     if (qb === sim.qb && target && !throwaway && !rows && b?.kind === 'qb-pass') {
@@ -32,7 +32,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
     return tb(qb, target, v0, intended, arrivalT, throwaway, ...rest);
   };
   const res = orig.apply(this);
-  if (rows) for (const r of rows) console.log(JSON.stringify({ ...r, cmp: r.tg ? !!res.stats.completed : null, picked: r.tg ? !!res.stats.interceptedBy : null }));
+  for (const r of (rows ?? []) as any[]) console.log(JSON.stringify({ ...r, cmp: r.tg ? !!res.stats.completed : null, picked: r.tg ? !!res.stats.interceptedBy : null }));
   return res;
 };
 const seed = Number(process.argv[2] ?? 101);
