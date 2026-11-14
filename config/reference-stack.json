@@ -277,6 +277,7 @@
     "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
     "ROUTE_EFFORT": "off",
+    "ROUTE_SHAPE": "off",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",

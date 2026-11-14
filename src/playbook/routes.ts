@@ -13,6 +13,8 @@ const BACK_PATHS = process.env.BACK_PATHS !== '0';
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
+/** ROUTE_SHAPE (experimental, off): the in and out breaks as rolls, as taught (see SHAPES below). */
+const ROUTE_SHAPE = process.env.ROUTE_SHAPE === '1';
 const ROUTE_TABLE: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
@@ -115,6 +117,30 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
 
+/** ROUTE_SHAPE: the in and out breaks rolled, as taught and as the NFL runs them. A square plant is taught under about 8-10 yd
+ * ("Square Break": drop, break, line), but past about 8 yd "he has too much momentum to run a Square Break": in and out
+ * routes at 10 yd or deeper are a speed drop or speed cut, "round the corner without losing any speed", and the 6 yd speed
+ * out is a speed cut on the 2nd inside step (USA Football, Coaching the Wide Receiver: Square Break, Speed Drop, Speed
+ * Cut). The dig: "push vertical to ten yards before planting on his outside foot to make a speed cut", "working to
+ * flatten out at 12", and "does not gain ground once he has hit his depth" (Viqtory Sports, Complete Coaching Guide to
+ * Football Routes). The speed out: "push vertical to about 4 yards and then bend out to the sideline" (ibid.).
+ * NFL (BDB 2025 weeks 1-3, route_break.py, WR, matched on vertex depth from his start): deep IN (vertex 13.1) turns 53 deg
+ * in the operator's windows and 72 deg 0.8-1.5 s later, v_in 6.6, v_min / v_in .88; deep OUT (11.4) 51 / 74 deg, .89;
+ * short OUT (5.0) 52 / 68 deg, 1.01. Read by eye (12 deep INs, week 1): one roll of about a second, gaining its depth
+ * in the roll, then flat or losing a little; a few still climb when the track ends at the throw.
+ * The short in stays a square cut (under 10 yd). Each point is a roll led by the fillet under ROUTE_FILLET (no `cut`) at s 1:
+ * the radius his lateral allows at the speed he carries gives the dip (v_min / v_in .89 deep, .97 on the speed out; NFL
+ * .88-.89 and 1.01). s .6 / .42, set from the NFL's through speed over his top speed, gave .87 and .83. */
+const SHAPES: Record<string, RouteDef['points']> = {
+  quick_out: [{ d: 4, l: 0, s: 1 }, { d: 5.5, l: 3 }, { d: 6.5, l: 10 }],
+  out: [{ d: 9, l: 0, s: 1 }, { d: 11, l: 3 }, { d: 11.5, l: 12 }],
+  deep_out: [{ d: 12, l: 0, s: 1 }, { d: 14, l: 3 }, { d: 14.5, l: 12 }],
+  dig: [{ d: 10, l: 0, s: 1 }, { d: 12, l: -3.5 }, { d: 12.3, l: -24 }],
+};
+const SHAPED: Record<string, RouteDef> = ROUTE_SHAPE
+  ? Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id, SHAPES[id] ? { ...r, points: SHAPES[id] } : r]))
+  : ROUTE_TABLE;
+
 /** ROUTE_EFFORT: the break table. With effort at 1 (the stem's pace, no coached throttle), each break says how it is run:
  * a cut (`cut: true`: plant, stick the foot and break; the follower's vertex law, no lead) or a roll (led as a fillet
  * under ROUTE_FILLET), and the speed he brings through it (s, a fraction of his top speed), set against NFL break-aligned
@@ -146,10 +172,10 @@ const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>
   shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
 };
 export const ROUTES: Record<string, RouteDef> = ROUTE_EFFORT
-  ? Object.fromEntries(Object.entries(ROUTE_TABLE).map(([id, r]) => [id, BREAKS[id]
+  ? Object.fromEntries(Object.entries(SHAPED).map(([id, r]) => [id, BREAKS[id] && !(ROUTE_SHAPE && SHAPES[id])
     ? { ...r, points: r.points.map((p, i) => ({ ...p, ...(BREAKS[id][i] ?? {}) })) }
     : r]))
-  : ROUTE_TABLE;
+  : SHAPED;
 
 export function getRoute(id: string): RouteDef {
   const r = ROUTES[id];
