@@ -263,7 +263,7 @@ export class Recognition {
     if (this.sawPass) ball = 4;
     else if (this.sawGive) ball = -3;
     else {
-      const qb = sim.see(a, sim.qb);
+      const qb = sim.see(a, sim.qb, 1, 'recog');
       if (qb.carrying === true && qb.pos.x > sim.los + 0.5) ball = -3;
     }
 
@@ -317,7 +317,7 @@ export class Recognition {
     const scale = this.group === 'DL' ? 0.6 : 1;
     for (const o of sim.offense) {
       if (o === sim.qb || !sim.offAlign.spots[o.slot]?.backfield) continue;
-      const seen = sim.see(a, o, scale);
+      const seen = sim.see(a, o, scale, 'recog');
       if (seen.carrying === true && seen.pos.x <= sim.los + 1) return true;
     }
     return false;
@@ -350,7 +350,7 @@ export class Recognition {
     for (const slot of OL_SLOTS) {
       const o = sim.slot(slot);
       if (!o) continue;
-      const s = sim.see(a, o);
+      const s = sim.see(a, o, 1, 'recog');
       back += (sim.snapX[o.idx] - s.pos.x) * 1.1 - s.vel.x * 0.3;
       if (seenAfter && s.stance) hat += s.stance === 'high' ? 1 : -1;
       if (Math.abs(s.vel.y) > 3 && s.pos.x < sim.los - 0.2 && s.vel.x < 1.5) pull++;
@@ -371,11 +371,11 @@ export class Recognition {
     // DEF_STANCE: a hand-down lineman's eyes are on the man in front; the
     // backfield reaches him later than a man standing up.
     const bf = a.setStance === 'down' ? DOWN_BACKFIELD_DELAY : 1;
-    const qb = sim.see(a, sim.qb, bf);
+    const qb = sim.see(a, sim.qb, bf, 'recog');
     const meshDepth = sim.offCall.formation.qb === 'under' ? 3.6 : sim.offCall.formation.qb === 'pistol' ? 4.6 : 5.2;
     const depth = sim.los - qb.pos.x;
     const rbAgent = sim.slot('RB');
-    const rb = rbAgent ? sim.see(a, rbAgent, bf) : null;
+    const rb = rbAgent ? sim.see(a, rbAgent, bf, 'recog') : null;
     let qbCue = depth > meshDepth + 0.4 ? clamp((depth - meshDepth - 0.4) / 1.0, 0, 1.2) : 0;
     // Bailing straight back from under center is a dropback.
     if (qb.vel.x < -1.5 && Math.abs(qb.vel.y) < 0.6 * -qb.vel.x) qbCue = Math.max(qbCue, 0.6);
@@ -403,7 +403,7 @@ export class Recognition {
       let bd = Infinity;
       if (!best) for (const o of sim.offense) {
         if (o === sim.qb || o === rbAgent || OL_SLOTS.includes(o.slot as (typeof OL_SLOTS)[number])) continue;
-        const seen = sim.see(a, o);
+        const seen = sim.see(a, o, 1, 'recog');
         const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
         if (d < bd) {
           bd = d;
@@ -411,7 +411,7 @@ export class Recognition {
         }
       }
       if (best) {
-        const s = sim.see(a, best);
+        const s = sim.see(a, best, 1, 'recog');
         // A slow release or a stopped route is not a block declaration.
         // Use the same acquired pad/contact evidence as coverage technique;
         // never infer the receiver's intent from his private assignment.

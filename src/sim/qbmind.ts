@@ -57,7 +57,7 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
  * The canonical looks themselves (how each coverage would line up against this formation) are built from the call's
  * front, personnel and alignment tags, all of which are what the alignment in front of him shows; only the coverage
  * and pressure are swapped, and a disguised shell still fools him. Not changed. */
-const QB_SEEN_MAN = process.env.QB_SEEN_MAN === '1';
+const QB_SEEN_MAN = process.env.QB_SEEN_MAN !== '0';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family

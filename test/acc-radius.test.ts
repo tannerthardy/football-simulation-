@@ -38,8 +38,13 @@ describe('ACC_RADIUS', () => {
   it('four verts against two-high with a seam open: off he checks down, on he throws the vertical on time', async () => {
     const off = await throws('0'), on = await throws('1');
     expect(off.filter((r) => r.slot === 'RB').length).toBeGreaterThanOrEqual(6);
-    const onV = on.filter((r) => vertical(r.slot));
-    expect(onV.length).toBeGreaterThanOrEqual(8);
+    const onV = on.filter((r) => vertical(r.slot)), offV = off.filter((r) => vertical(r.slot));
+    // Restated at engine-63 as a comparison with the off arm (was an absolute 8 of 10). The panel was chosen because
+    // the seam was open on the defense of the time; APEX_LEVERAGE now walls it and the sight flags change what he sees,
+    // so fewer of the ten are there to throw (7 on engine-61, 6 on engine-62, 5 here). What the flag does is unchanged:
+    // off he throws no vertical on this panel, on he throws several. ACC_RADIUS itself is held and will be replaced by
+    // a belief fitted to receivers without the ball-path oracle (docs/REFERENCE_STACK.md, engine-63).
+    expect(onV.length).toBeGreaterThanOrEqual(offV.length + 4);
     // On time: the median vertical leaves before 3.0 s (the NFL's other targets on four-verts shapes leave at 2.47 s
     // p50, 2.87 p75), none after 3.5 s; off, his check-downs on this panel came at 2.4-5.0 s, median about 3.7.
     const ts = onV.map((r) => r.t!).sort((a, b) => a - b);
