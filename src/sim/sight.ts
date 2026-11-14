@@ -30,16 +30,22 @@ export function bodyHeight(a: Agent, frac: number): number {
 }
 
 /** Whether `observer`'s eyes have a clear line to `target` at `height` (yd; default his eyes, the head). View direction
- * (body facing, gaze) is the caller's: this is occlusion only. `bodies` defaults to everyone else on the field. */
-export function lineOfSight(bodies: readonly Agent[], observer: Agent, target: Agent, height?: number): boolean {
+ * (body facing, gaze) is the caller's: this is occlusion only. `posOf` places the bodies (default: where they are now;
+ * a recorded moment for a past sight line, with null for a body not recorded there). Heights and postures are now's. */
+export function lineOfSight(bodies: readonly Agent[], observer: Agent, target: Agent, height?: number,
+  posOf: (a: Agent) => { x: number; y: number } | null = (a) => a.pos): boolean {
   const eye = bodyHeight(observer, EYE), h = height ?? bodyHeight(target, EYE);
-  const sx = target.pos.x - observer.pos.x, sy = target.pos.y - observer.pos.y, l2 = sx * sx + sy * sy;
+  const o = posOf(observer), t = posOf(target);
+  if (!o || !t) return true;
+  const sx = t.x - o.x, sy = t.y - o.y, l2 = sx * sx + sy * sy;
   if (l2 < 1e-9) return true;
   for (const b of bodies) {
     if (b === observer || b === target) continue;
-    const u = ((b.pos.x - observer.pos.x) * sx + (b.pos.y - observer.pos.y) * sy) / l2;
+    const bp = posOf(b);
+    if (!bp) continue;
+    const u = ((bp.x - o.x) * sx + (bp.y - o.y) * sy) / l2;
     if (u <= 0 || u >= 1) continue;
-    const px = observer.pos.x + sx * u - b.pos.x, py = observer.pos.y + sy * u - b.pos.y, d = Math.hypot(px, py);
+    const px = o.x + sx * u - bp.x, py = o.y + sy * u - bp.y, d = Math.hypot(px, py);
     // A body touching either end cannot stand between them.
     const along = Math.sqrt(l2) * Math.min(u, 1 - u);
     if (along < b.profile.radius) continue;
