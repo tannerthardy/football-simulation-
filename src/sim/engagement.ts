@@ -1640,9 +1640,24 @@ export const REP_SEEN = process.env.REP_SEEN !== '0';
  * reach, behind his shoulders, the body no longer in the way) stay on the true bodies. */
 export const ENGAGE_FELT = process.env.ENGAGE_FELT === '1';
 type Felt = { pos: Vec2; vel: Vec2 };
-function feltMan(sim: PlaySim, self: Agent, man: Agent, e: Engagement, read: number): Felt {
-  const on = !!(e.hands?.normalForce || e.hands?.tangentForce || e.defHands?.normalForce || e.defHands?.tangentForce);
-  return sim.see(self, man, (on ? 0.06 : 0.12 + 0.12 * (1 - read)) / Math.max(0.1, self.profile.reactionTime));
+/** Diagnostic hook (no behaviour): each feltMan call, with whether he had the man by touch. */
+export const feltProbe: { on?: (self: Agent, man: Agent, touch: boolean, t: number, delay?: number) => void } = {};
+const lastTouch = new WeakMap<PlaySim, Map<string, number>>();
+/** The hand-over from touch to sight is continuous: a hand that carries no load for a tick is still on the man, so from
+ * the last loaded tick his picture ages from the touch delay toward his sight delay over his reaction time (a step
+ * between the two each time the load crossed zero was 86% single-tick sight stretches, about one a second engaged:
+ * felt-switch.mts). The picture never steps back in time: it ages at most at the touch-to-sight rate, and a reloaded hand
+ * is fresh information at once. Delays are held to 0.01 s. `off` (a landed hand move) is unloaded hands. */
+function feltMan(sim: PlaySim, self: Agent, man: Agent, e: Engagement, read: number, off = false): Felt {
+  const on = !off && !!(e.hands?.normalForce || e.hands?.tangentForce || e.defHands?.normalForce || e.defHands?.tangentForce);
+  // Per pair in the play, not per rep: a man re-engaged on the same man keeps the touch he had a moment ago.
+  const rt = Math.max(0.1, self.profile.reactionTime), m = lastTouch.get(sim) ?? new Map<string, number>(), key = `${self.idx}>${man.idx}`;
+  lastTouch.set(sim, m);
+  if (on) m.set(key, sim.t);
+  const sight = 0.12 + 0.12 * (1 - read), u = clamp((sim.t - (m.get(key) ?? -Infinity)) / rt, 0, 1);
+  const delay = Math.round((0.06 + (sight - 0.06) * u) * 100) / 100;
+  feltProbe.on?.(self, man, on, sim.t, delay);
+  return sim.see(self, man, delay / rt);
 }
 /** Room outside the tackle's shoulder the arc's landmark leaves (yd): the corner's existing offset. */
 export const ARC_ROOM = 0.45;
@@ -2062,7 +2077,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // REP_SEEN: by touch while his own hands are on the man, by sight when they are off.
   const handsOff = REP_SEEN ? !(e.hands?.normalForce || e.hands?.tangentForce) : inMove && e.move !== 'bull' && e.move !== 'longarm';
   const rt = Math.max(0.1, b.profile.reactionTime);
-  const known = PASS_FEEL || REP_SEEN ? sim.see(b, d, (handsOff ? 0.12 + 0.12 * (1 - tb.read) : 0.06) / rt) : d;
+  // ENGAGE_FELT: the same felt picture as his other reads (its touch / sight hand-over continuous).
+  const known = ENGAGE_FELT ? dK : PASS_FEEL || REP_SEEN ? sim.see(b, d, (handsOff ? 0.12 + 0.12 * (1 - tb.read) : 0.06) / rt) : d;
   if (REP_SEEN) {
     // His front: on the man's line to the launch point, the TACKLE_ANCHOR / lane shift carried over.
     const axB = norm(sub(qbB, known.pos)), base = { x: d.pos.x + axis.x * (sep + 0.15), y: d.pos.y + axis.y * (sep + 0.15) };
@@ -2604,11 +2620,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A landed hand move has his hands off the man for its window (setHands):
   // he follows him by sight, as a pass blocker does after a landed move.
   const handsOff = RUN_HAND_MOVE && t < e.moveUntil && e.moveOk;
-  const runSeen = RUN_FEEL ? sim.see(b, d, ((e.hands?.normalForce || e.hands?.tangentForce) && !handsOff
+  const runSeen = ENGAGE_FELT ? feltMan(sim, b, d, e, tb.read, handsOff) : RUN_FEEL ? sim.see(b, d, ((e.hands?.normalForce || e.hands?.tangentForce) && !handsOff
     ? 0.06 : 0.12 + 0.12 * (1 - tb.read)) / Math.max(0.1, b.profile.reactionTime)) : d;
   const dv = runSeen.vel;
   // ENGAGE_FELT: the defender as the blocker has him, for his offsets, drive and facing.
-  const dK: Felt = ENGAGE_FELT ? (RUN_FEEL ? runSeen : feltMan(sim, b, d, e, tb.read)) : d;
+  const dK: Felt = ENGAGE_FELT ? runSeen : d;
   const dLat = dv.x * lat.x + dv.y * lat.y;
   // Seal target as a lateral offset of the blocker from the defender, where
   // the defender is heading in a beat.
