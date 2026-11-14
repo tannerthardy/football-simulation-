@@ -71,23 +71,6 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * is the one, in his own delayed picture, nearest the QB's perceived facing,
  * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
 const SEEN_EYES = process.env.SEEN_EYES !== '0';
-/** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
- * bit below, for the per-item read): coverage decisions
- * read the defender's own picture, not true state. Items (coverage audit
- * 2026-11-13): 3 deep help decisions freeze when he has seen the throw
- * (judgment.ts), not at the true release; 6 a man carry stops re-squaring
- * when he has seen the throw, not at the true release; 7 the judgment's
- * protect-vertical carry starts its cushion from the receiver he saw, not
- * his true spot; 8 the zone lean toward the QB's look goes to where he sees
- * that receiver, not where he is; 9 zone lanes and facing use where he sees
- * the QB (zone, spot underneath, wall, rob); H the hands cue needs the
- * receiver in his view (within 100 deg of his facing). */
-const INFO_HONEST = Number(process.env.INFO_HONEST ?? 0);
-/** INFO_HONEST is a bit mask so each item can be read alone: 3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32; 63 = all. */
-const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32 };
-export function infoHonest(item: number | string): boolean {
-  return (INFO_HONEST & INFO_BITS[String(item)]) !== 0;
-}
 /** HONEST_READS (experimental, off; HONEST_READS=1 turns it on): removes
  * true-state reads found by the 2026-11-13 defense audit. A blitzer peels to
  * the ball only once he has seen the throw, on his acquired flight; the ball
@@ -108,6 +91,23 @@ export const HONEST_READS = process.env.HONEST_READS === '1';
 export const HONEST_FLIGHT = process.env.HONEST_FLIGHT === '1';
 /** HONEST_FLIGHT's drive on a catch: from this long before his estimate's arrival to this long after (a catch's securing beat). */
 const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
+/** INFO_HONEST (off; INFO_HONEST=63 turns every item on; single items by their
+ * bit below, for the per-item read): coverage decisions
+ * read the defender's own picture, not true state. Items (coverage audit
+ * 2026-11-13): 3 deep help decisions freeze when he has seen the throw
+ * (judgment.ts), not at the true release; 6 a man carry stops re-squaring
+ * when he has seen the throw, not at the true release; 7 the judgment's
+ * protect-vertical carry starts its cushion from the receiver he saw, not
+ * his true spot; 8 the zone lean toward the QB's look goes to where he sees
+ * that receiver, not where he is; 9 zone lanes and facing use where he sees
+ * the QB (zone, spot underneath, wall, rob); H the hands cue needs the
+ * receiver in his view (within 100 deg of his facing). */
+const INFO_HONEST = Number(process.env.INFO_HONEST ?? 0);
+/** INFO_HONEST is a bit mask so each item can be read alone: 3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32; 63 = all. */
+const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32 };
+export function infoHonest(item: number | string): boolean {
+  return (INFO_HONEST & INFO_BITS[String(item)]) !== 0;
+}
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
