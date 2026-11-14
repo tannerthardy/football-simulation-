@@ -1205,6 +1205,11 @@ export class QBPass implements Behavior {
       // Out of reads: take the best available.
       const best = this.bestOption(a, sim, u);
       if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) { const go = this.startIfFinish(a, sim, best); if (go) return go; }
+      // QB_BREAK: his reads are done and nothing is there. He moves to buy time and change the picture, ball up, and
+      // goes on reading out there. NFL quarterbacks who leave a clean pocket after the drop go sideways (60%; 2.7 yd in
+      // the first second, upfield 0.0), then hold the ball 2.1 s more and throw 66% of the time
+      // (scripts/diag/escape/clean-leave.py).
+      else if (QB_BREAK && this.tryBreak(a, sim, 'reads')) return this.outTick(a, sim);
     } else if (t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
@@ -2188,8 +2193,10 @@ export class QBPass implements Behavior {
 
   /** QB_BREAK: out of the pocket with the ball up: the side he broke to, his held destination, his next decision. */
   private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null; thr: number; risk: number; order: Agent[]; idx: number } | null = null;
+  /** QB_BREAK: he has stopped and set outside the pocket on this play. */
+  private hasSet = false;
   /** QB_BREAK diagnostics (no effect): what he did out there and when. */
-  readonly breakRec: Array<{ t: number; what: 'break:rush' | 'break:clock' | 'break:feel' | 'tuck' | 'away' | 'set' | 'throw' }> = [];
+  readonly breakRec: Array<{ t: number; what: 'break:rush' | 'break:clock' | 'break:feel' | 'break:reads' | 'tuck' | 'away' | 'set' | 'throw' }> = [];
 
   /** QB_BREAK diagnostics (no effect): each time he looked to break, and the time each side would have left him. */
   readonly breakTry: Array<{ t: number; why: string; m: number[] }> = [];
@@ -2208,8 +2215,11 @@ export class QBPass implements Behavior {
   }
 
   /** QB_BREAK: the break. True when he is out (now or already). */
-  private tryBreak(a: Agent, sim: PlaySim, why: 'rush' | 'clock' | 'feel'): boolean {
+  private tryBreak(a: Agent, sim: PlaySim, why: 'rush' | 'clock' | 'feel' | 'reads'): boolean {
     if (this.out) return true;
+    // Once he has stopped and set out there, only the rush moves him again: his clock and his reads have had their
+    // answer, and leaving and setting in turn on the same picture is not a decision.
+    if (this.hasSet && (why === 'clock' || why === 'reads')) return false;
     const threats = this.pursuers(a, sim);
     let side = 0, best = BREAK_MARGIN, dest: Vec2 | null = null;
     for (const s of [-1, 1]) {
@@ -2279,7 +2289,7 @@ export class QBPass implements Behavior {
         o.clearSince ??= t;
         if (t - o.clearSince >= a.profile.reactionTime) {
           this.breakRec.push({ t, what: 'set' });
-          this.out = null; this.drop = { ...this.drop, x: a.pos.x }; this.dropY = a.pos.y; this.readStart = t;
+          this.out = null; this.hasSet = true; this.drop = { ...this.drop, x: a.pos.x }; this.dropY = a.pos.y; this.readIdx = 0; this.readStart = t;
           return stand();
         }
       } else o.clearSince = null;
