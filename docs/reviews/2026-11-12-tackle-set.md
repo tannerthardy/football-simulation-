@@ -4035,3 +4035,26 @@ Negative "short" ticks (964) are an artefact: the gap is measured centre to cent
 **(b), where the rusher is against the tackle's base.** In this model the base has no orientation (baseRadiusAt is a
 circle), and the only directional terms are along his facing. So "beside his base" collapses to the chest angle,
 about 20 deg (edge-level above), and the base itself cannot see a man at the hip.
+
+**The NFL bend: separation centre to centre after first contact, NFL against ours (edge-rush.py; ours engine-62 +
+VERTICAL_SET, seeds 11 and 23 x 8).**
+
+| landing | NFL contact / +0.2 / +0.4 s | ours s11 | ours s23 |
+|---|---|---|---|
+| wide | 1.12 / 0.91 / 0.81 | 1.10 / 0.89 / 0.91 | 1.10 / 0.94 / 0.94 |
+| outside half | 1.08 / 0.86 / 0.76 | 1.06 / 0.81 / 0.81 | 1.08 / 0.86 / 0.85 |
+| head-up | 1.10 / 0.92 / 0.89 | 1.10 / 0.73 / 0.80 | 1.10 / 0.81 / 0.73 |
+
+On wide and outside-half landings ours stops closing at 0.81-0.94 yd, while the NFL keeps closing to 0.76-0.81 by
++0.4 s. Head-up, ours is tighter than the NFL.
+
+**A caution before ARM_YIELD.**
+- A bench-press 1RM is pressed from the chest, with the elbows deeply bent, and the strength curve rises toward
+  lockout (the sticking point is mid-range).
+- So a lineman holding about 70% of his pressForce at 29% of his arm is not beyond what a bench-strong man can hold.
+  Isometric and eccentric holds exceed the concentric 1RM.
+- "Weak when bent" is not what that reference supports.
+- The joint is at its push limit on 64% of level ticks: there it is yielding, not rigid. The gap holds because the
+  rusher's drive about equals the limit.
+- A curve from the bench reference would cut a capacity that is physically there. The question to settle first is
+  why our rusher's drive does not exceed it, or what else lets the NFL rusher close.
