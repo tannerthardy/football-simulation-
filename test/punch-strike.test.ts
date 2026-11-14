@@ -35,8 +35,9 @@ async function falls(flags: Record<string, string>, roster: number, coverage = '
   return sim.events.filter((e: any) => e.type === 'fall' && ol.has(e.a) && e.t >= 0.5 && e.t <= thr)
     .map((e: any) => ({ slot: sim.agents[e.a].slot as string, t: e.t as number, move: moves.get(e.a) }));
 }
-/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change and the seen set pinned off. */
-const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0' });
+/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change, the seen set and engine-61's four pinned off. */
+const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0',
+  THROW_HOLD: '0', POCKET_REACH: '0', REP_SEEN: '0', RUSH_LEAN_BOUND: '0' });
 
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
@@ -50,7 +51,7 @@ describe('PUNCH_STRIKE', () => {
     expect(on.some((f: any) => f.slot === 'LG' && f.move === 'swim')).toBe(true);
   });
 
-  it('on the full engine-59 stack a propped fall still happens: a guard leaning near the press goes down when it is taken away', async () => {
+  it('on the full engine-61 stack a propped fall still happens: a guard leaning near the press goes down when it is taken away', async () => {
     const all = await falls({}, 8, 'cover1', 9);
     expect(all.some((f: any) => f.slot === 'LG' && f.move === 'longarm')).toBe(true);
   });
