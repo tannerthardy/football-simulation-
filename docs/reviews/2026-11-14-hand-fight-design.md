@@ -1,0 +1,152 @@
+# The interior pass-rush hand fight: measured, then designed (Flex, 2026-11-14, engine-65 / 66; no build before Integration reads it)
+
+PRESS_SPRING stopped on the finding that a continuous press holds an engaged pair by friction alone. The NFL's pairs orbit
+with hands on, so their press comes and goes, and the moves that should make it come and go write to a `control` that
+decides nothing. The reference's own interior pass-rush pairs barely orbit (11 deg against the NFL's 39): a pre-existing
+gap that every hands flag has tried to cover from the wrong side. This note measures the fight first, then designs it from
+how it is taught.
+
+## 1. Measured
+
+Operators: `interior-fight.py` and `interior-orbit.py` (the same code on BDB and sim exports; pairs are each of the three
+middle OL and the nearest DL within 1.2 yd from the snap + 0.2 s, engaged while within 1.2 yd, to the throw), and
+`moves-fight.mts` (ours only: per interior pass rep, the moves fired, whether they land, the hands joint's load).
+Sim: engine-65 reference stack, seed 11 x 8 (and 23 x 8 for the reference); RUSH_HANDS is the existing hand model, off.
+
+**The fight by time since first contact** (orbit = net change of the bearing between them; offset = the rusher across
+the blocker's line to the QB, + toward the side he started on):
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| orbit p50 / p90, NFL (23,733 pairs) | 5 / 26 deg | 25 / 70 | 34 / 93 | 39 / 119 |
+| reference | 3 / 17 | 6 / 36 | 9 / 47 | 11 / 52 |
+| RUSH_HANDS | 3 / 25 | 11 / 61 | 17 / 80 | 21 / 83 |
+| offset p25 / 50 / 75, NFL | +0.16 / +0.39 / +0.64 yd | -0.04 / +0.30 / +0.59 | -0.18 / +0.24 / +0.56 | -0.33 / +0.13 / +0.52 |
+| reference | +0.08 / +0.29 / +0.57 | +0.02 / +0.21 / +0.53 | -0.02 / +0.15 / +0.51 | -0.11 / +0.21 / +0.58 |
+| separation p50, NFL | 0.99 yd | 0.81 | 0.80 | 0.81 |
+| reference | 0.91 | 0.85 | 0.92 | 0.92 |
+
+**First release** (separation past 1.2 yd, or the rusher's bearing past 70 deg off the blocker's line to the QB):
+
+| | p25 / 50 / 75 | released by 1.0 s / 2.0 s | never |
+|---|---|---|---|
+| NFL | 0.3 / 0.7 / 1.2 s | 43% / 60% | 37% |
+| reference | 0.2 / 0.9 / 1.4 | 30% / 46% | 49% |
+| RUSH_HANDS | 0.3 / 0.7 / 1.2 | 44% / 61% | 36% |
+
+**Ours, per interior pass rep** (moves-fight.mts, seed 11 x 4, 926 reps, rep p50 2.1 s):
+- 3 move decisions a rep (p90 4), 1.24 a second.
+- Landed: bull 100%, dip 33%, rip 22%, club 21%, swim 18%, long-arm 9%, spin 6%, snatch 3%.
+- The hands joint is loaded 91% of the rep (p50), in one continuous stretch of 1.5 s (p50).
+- **In every move's window the hands' load rises, not falls**: rip 795 -> 1,009 N, swim 775 -> 964, club 671 -> 967,
+  spin 668 -> 1,032. A move that "lands" scales the blocker's steer (x 0.1) and push (x 0.2 for spin and swim) for its
+  window and fires a centre strike (PHY-STRIKE). It never takes a hand off the man.
+- Under RUSH_HANDS the hands are loaded 83% of the rep (1.15 s stretch). The club, a force on the blocker's hand, leaves
+  0 N in its window: the one move that clears a hand. Swim, rip, snatch, spin and dip are still rolls and still raise the
+  load.
+
+**Read:**
+1. The NFL fight happens between 0.5 and 1.0 s: the pair turns 20 deg there (5 -> 25), the rusher's offset spreads to the
+   other half (p25 +0.16 -> -0.04, and on to -0.33: the counters), and the pair closes to 0.81 yd. Ours barely moves
+   then (3 -> 6 deg), stays wider (0.85-0.92), and its rusher rarely crosses to the other half (p25 -0.11).
+2. **RUSH_HANDS already gets the release timing right** (44 / 61 / 36% against 43 / 60 / 37), and half the orbit. Its
+   known overshoot (interior pressure 20% of dropbacks on this read, NFL about 9.8) therefore comes after the release:
+   the released rusher reaches the QB more often than the NFL's. That is the come-off question (a beaten blocker's ride,
+   the next blocker's help, the QB's movement), not the fight's.
+3. So the hand fight is RUSH_HANDS' model finished: every move acting on the hands, not just the club.
+
+## 2. How the fight is taught
+
+**The rusher** clears the blocker's hands first, then wins with the body. A clear is a strike on the blocker's hand or
+arm, at the wrist, forearm or elbow:
+- the chop and the swipe knock a hand off or across (one hand, or a double swipe with both);
+- the rip comes up under the blocker's arm through his armpit with the inside arm, the shoulder dipped;
+- the swim brings the arm over the blocker's shoulder as the near hand is pressed down;
+- the cross chop attacks the blocker's control arm across the rusher's body.
+A clear alone does not win the rep: the feet still have to shorten the path and the shoulder still has to turn the
+corner. A rusher stays light on his hands to recover and reset when the blocker swipes at him.
+([Pass rush moves handbook](https://dlineexamples.substack.com/p/pass-rush-moves-handbook);
+[The beginner's guide to rushing the passer](https://jayarnold.substack.com/p/the-beginners-guide-to-rushing-the);
+[VIQTORY: pass rush moves for DL coaches](https://www.viqtorysports.com/pass-rush-moves/);
+[What is a cross chop](https://www.footballnationusa.com/post/what-is-a-cross-chop-how-pass-rushers-clear-the-tackle-s-hands).)
+
+**The blocker** strikes, re-strikes and replaces:
+- independent hands on a 45-degree set: one hand can strike while the other is held, and a "flash" of one hand draws
+  the rusher's move early;
+- set with the hands at chest height to invite the slap-down, then drop them to the waist as he comes and re-punch, or
+  punch to half extension, draw back and re-punch;
+- the snatch-and-trap: the blocker chops or swipes the rusher's wrist, forearm or elbow to take his balance, the counter
+  the rusher answers with a long arm;
+- patience on the punch: don't lean on the hands, keep the head back.
+([USA Football, the art of the strike](https://blogs.usafootball.com/blog/6283/the-art-of-the-strike-3-techniques-offensive-linemen-can-use-to-fend-off-pass-rushers);
+[USA Football, snatch and trap](https://blogs.usafootball.com/blog/6349/how-nfl-offensive-linemen-use-the-snatch-and-trap-technique-to-stop-pass-rushers);
+[X&O Labs, 4 ways to improve pass protection](https://www.xandolabs.com/?p=6437);
+[Coaches Insider, the elements of pass protection](https://coachesinsider.com/football/the-elements-of-pass-protection-article/).)
+
+The sources are coaching blogs and clinic notes, not one authority; the aiming points vary by scheme.
+
+## 3. The design (not built)
+
+Built on RUSH_HANDS' hand: the blocker's hand is a one-degree-of-freedom body on the hands joint. A force on it over its
+contact time is resisted by the arm's hold (steer x bent / extension + friction on the measured press + a grip's hold).
+The excess slides the hand, falling to nothing at the edge of the man's torso, where the hand is off. A hand that is off
+re-fits after the blocker's reaction plus the arm's travel from his chest at ARM_SPEED.
+
+The properties Integration set, and how each is met:
+
+1. **A move acts on a hand's fit, never on an outcome.** Each move is a force on one of the blocker's hands (or both),
+   for the time the rusher's arm takes across it, from his own arm and hand speed:
+   - **chop / swipe / club**: across the blocker's hand at the wrist (RUSH_HANDS' club law, unchanged);
+   - **rip**: up and across the blocker's outside hand from below, for his arm's time across the forearm (RUSH_RIP's
+     force law, which needs RUSH_HANDS), while his body dips (the bend request);
+   - **swim**: down and across the blocker's near hand as the swimming arm passes over the shoulder, for the same time;
+     the arm over the top is the body's path, not a rule;
+   - **snatch / trap**: the rusher grips the blocker's wrist and pulls it across (a grasp row on the hand, its hold his
+     grip strength); the hand is trapped while he holds it;
+   - **spin and dip**: body moves. The rusher's chest turns or drops away from the blocker's hands, the contact point
+     leaves the torso, and handEdge takes the hand off by geometry. No hand rule of their own.
+   - **bull and long-arm**: no clear. The bull drives through the press; the long-arm is the rusher's own hands joint at
+     his lockout (RUSH_HANDS), countered by the blocker's club on it.
+   Whether a hand comes off is then the World's: the force against the arm's hold. No roll, no landed window, no
+   `control` swing.
+2. **The blocker's re-fit takes his reaction plus arm travel and can be late.** RUSH_HANDS' refit: after his reaction to
+   the felt loss, the hand travels from his chest to the man at ARM_SPEED and lands where his hand placement puts it
+   (the placement error by his hand technique, as PAIR_HANDS' placeHand drew it). Independent hands: each hand re-fits
+   on its own, so one can be on while the other travels. The replace and re-punch is a new strike with its own
+   landing.
+3. **Skill sets timing and placement on both sides.** The rusher's hand speed sets how long his arm takes across the
+   blocker's forearm, so a quicker hand delivers its force in less time. His arm strength sets the force. The blocker's
+   hand technique sets his re-fit's placement error, and his reaction sets the delay. Ratings set capacities and errors,
+   never an outcome.
+4. **The press and its friction exist only while a hand is fitted.** The hands row's push, hold and steer scale with the
+   hands on (RUSH_HANDS' handEdge and handsOn), so while a hand is off or travelling its press and its friction are gone.
+   That is what lets the pair orbit (PRESS_SPRING's lesson). It needs no second friction law: the row's own limits are
+   already the fitted hands'.
+5. **It replaces the rated move rolls, not sits beside them.** resolveMove's remaining rolls (speed, dip, spin, swim,
+   rip, snatch; the bull's landed window) and the `control` swing go. A move is a decision (the rusher's keys: a hand
+   unloaded by touch, the blocker's arm advantage by sight, RUSH_HANDS') and its physics.
+
+**The open question RUSH_HANDS left** (a cleared hand freed the path: interior pressure 12-14%, now 20%) is not the
+fight's. The release timing is already the NFL's, so the overshoot is what a released rusher gets. That is two things
+this design keeps separate:
+- RUSH_ONE_HAND's rule that one hand gone opens one side, not the rep (the body and the other hand are still in front);
+- the come-off: the beaten blocker's ride (PASS_RIDE), the next blocker's help, the QB's movement.
+The first is in the design. The second is measured and decided after it, with the come-off operator against the NFL's.
+
+**Flags it retires** when it lands:
+- RUSH_HANDS' remaining rolls;
+- RUSH_RIP and RIP_CLEAR (folded in: the rip's force law is one of the moves);
+- RUSH_ONE_HAND (folded in);
+- CONTROL_HANDS and HAND_FIT (the rolled `control` they work around no longer exists);
+- the parked pair-contact flags stay parked: PAIR_HANDS, PRESS_SPRING, HANDS_LEVER. PHY-STRIKE (strikes at the line of
+  centres) is fixed for the hand strikes by construction, since they act on the hand body.
+
+**Gates, written before any build:**
+1. interior-fight by time: orbit at 0.5-1.0 s toward the NFL's 25 deg (today 6), the rusher's offset reaching the
+   other half (p25 at 1.5-2.5 s toward -0.33, today -0.11), separation toward 0.81;
+2. release timing kept at the NFL's (43 / 60 / 37%);
+3. moves-fight: in a cleared move's window the hands' load falls (today it rises in every window);
+4. interior pressure no higher than today's reference (12.9 / 11.5% of dropbacks; NFL about 9.8), then the
+   come-off measured;
+5. interior-orbit on pass sets toward 39 deg (today 11), runs unchanged (53);
+6. the run set by concept, falls, sacks and dither.
