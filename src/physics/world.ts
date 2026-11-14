@@ -33,7 +33,7 @@
 import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
-import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
+import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, PLANT_SPEED, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
@@ -385,6 +385,15 @@ export const RUSH_HANDS = process.env.RUSH_HANDS === '1';
  * keyed moves, one hand). It is the part of RUSH_HANDS' rip that survives: when the hand model returns, RUSH_HANDS
  * includes it and RIP_CLEAR is retired. engagement.ts: an edge's rip is a force on the tackle's hand (RUSH_RIP's law). */
 export const RIP_CLEAR = process.env.RIP_CLEAR === '1';
+/** BRACE_GAIT (experimental, off; BRACE_GAIT=1): the force his feet can drive into a felt load is what his gait can
+ * produce in that direction at his velocity, not a planted man's. The lean's capacity (pushForce by direction against
+ * his facing, force-velocity along the load) is bounded, moving, by the locomotion envelope in the load's direction at
+ * his speed (followAccel: drive or brake along his travel, the cut across it) less the gait's own planned share there,
+ * times his mass. Blended continuously with his ground speed, smoothstep from planted (0: today's capacity) to
+ * PLANT_SPEED (the envelope), so a man who stops to anchor has his strength and one carried across a load does not.
+ * No new constants. Off, a tackle carried 3.8 yd/s across his own press braced about 1400 N against a gait envelope
+ * of 750-1000 N across his travel (docs/reviews/2026-11-12-tackle-set.md, (B)). */
+export const BRACE_GAIT = process.env.BRACE_GAIT === '1';
 /** The hand as a body: RUSH_HANDS or its rip piece. */
 const HAND_BODY = RUSH_HANDS || RIP_CLEAR;
 export const ARM_MASS = 0.05;
@@ -2162,7 +2171,15 @@ export class World {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
+            let capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
+            if (BRACE_GAIT) {
+              const speed = hypot2(b.vel.x, b.vel.y), u01 = clamp(speed / PLANT_SPEED, 0, 1), w = u01 * u01 * (3 - 2 * u01);
+              if (w > 0) {
+                const env = followAccel(b, { x: ux * 1e3, y: uy * 1e3 }, plan.cut, a);
+                const gaitF = Math.max(0, hypot2(env.x, env.y) - Math.max(0, plan.ax * ux + plan.ay * uy)) * m * push;
+                capacity -= w * Math.max(0, capacity - gaitF);
+              }
+            }
             const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h, intent.leanCap ?? Infinity);
             tx = ux * mag; ty = uy * mag;
           }
