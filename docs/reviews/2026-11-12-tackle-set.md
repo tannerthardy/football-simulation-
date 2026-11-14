@@ -3316,7 +3316,7 @@ resolution about 0.25 yd/s):
 
 NFL linemen are also slower across than their man. Ours match at the median and are a little lower at p90, and our
 rushers move across less. So the lateral achievement is not clearly short against the NFL, and it does not explain
-the hand model's interior excess. Step 1 names no repair. The interior rate stays unexplained, and the hand model stays
+the hand model's interior excess. The one row that differs is the rusher's: ours move across less (interior p90 1.75 against 2.50, tackles 2.00 against 3.00), which belongs to the edge / EDGE_ARC question, not to the blocker. Step 1 names no repair. The interior rate stays unexplained, and the hand model stays
 held.
 
 **LONGARM_STRUT (off, requires RUSH_HANDS).** The step that zeroed the blocker's push, hold and steer whenever the gap

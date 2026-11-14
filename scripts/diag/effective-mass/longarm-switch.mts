@@ -45,3 +45,9 @@ for (const inter of [true, false]) {
   const R = eps.filter((r) => r.interior === inter);
   console.log(`${inter ? 'interior' : 'tackle'} long-arm episodes ${R.length} (${(R.length / Math.max(1, decisions) * 100).toFixed(0)}% of decisions) | duration p50 ${q(R.map((r) => (r.t1 ?? r.t0) - r.t0))} s | switch on (blocker disarmed) ${q(R.map((r) => r.on / Math.max(1, r.ticks)))} of ticks p50, any ${(100 * R.filter((r) => r.on > 0).length / Math.max(1, R.length)).toFixed(0)}% | toggles p50 ${q(R.map((r) => r.toggles))}, p90 ${q(R.map((r) => r.toggles), .9)} | arm diff p50 ${q(R.map((r) => r.armD - r.armB))} in | countered ${(100 * R.filter((r) => r.countered).length / Math.max(1, R.length)).toFixed(0)}%, arm knocked off ${(100 * R.filter((r) => r.armOff).length / Math.max(1, R.length)).toFixed(0)}% | past him during or within 0.5 s ${(100 * R.filter((r) => r.past).length / Math.max(1, R.length)).toFixed(0)}% (switch-on episodes ${(100 * R.filter((r) => r.past && r.on > 0).length / Math.max(1, R.filter((r) => r.on > 0).length)).toFixed(0)}%, never ${(100 * R.filter((r) => r.past && r.on === 0).length / Math.max(1, R.filter((r) => r.on === 0).length)).toFixed(0)}%)`);
 }
+// Split by arm difference (Integration: a shorter man may choose it; check it then fails physically): past him and the
+// switch's share, rusher shorter vs longer than the blocker.
+for (const inter of [true, false]) for (const [lab, f] of [['shorter', (r: any) => r.armD < r.armB], ['longer', (r: any) => r.armD > r.armB]] as const) {
+  const R = eps.filter((r) => r.interior === inter && f(r));
+  console.log(`  ${inter ? 'interior' : 'tackle'} rusher ${lab}: episodes ${R.length} | gap beyond the blocker's arm at all ${(100 * R.filter((r) => r.on > 0).length / Math.max(1, R.length)).toFixed(0)}% | past him during or within 0.5 s ${(100 * R.filter((r) => r.past).length / Math.max(1, R.length)).toFixed(1)}%`);
+}
