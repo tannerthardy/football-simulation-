@@ -3940,3 +3940,19 @@ Per substep of a rip (instrumented once, not committed), p50:
 - Re-diagnosis question: what sets a press of about one body weight on a bent arm at the hip, and is it what a real
   arm can deliver there? NFL separation at +0.4 s is 0.81 yd, tighter than ours (0.89-0.94), so the NFL rusher is
   body on body at the hip, not held off by a bent arm's press.
+
+**Re-diagnosis: where the press comes from (edge-level.mts, VERTICAL_SET, seed 11 x 4, the level phase).**
+
+| | all level (257) | went past (39) | stayed level (218) |
+|---|---|---|---|
+| his request into the tackle / past him | 4.72 / 5.47 yd/s | 3.41 / 5.66 | 4.87 / 5.41 |
+| the straight line from him to the QB passes through the tackle's body | 100% of ticks | 82% | 100% |
+
+- The press of about one body weight is the tackle stopping the rusher's own drive into him. Once the rusher is
+  "turned" (phi x side > 0.5), stepPassRep aims him at the QB (`aim = power || turned ? qbD : corner`).
+- At the tackle's hip, that line runs through the tackle's body on every tick, so he asks 4.7 yd/s into the man.
+- A rusher at the hip turns the corner around the man, on a path tangent to his back hip, and flattens to the QB once
+  he is past him. Ours runs through him and is held off by the arm.
+- This is a controller defect (the request), not the press law and not the rip. It explains three things together:
+  the strut (along the line), the rip that cannot clear against the press his own drive creates, and the separation
+  held at arm's length.

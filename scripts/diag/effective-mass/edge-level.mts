@@ -45,6 +45,12 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       r.ln += Ld.x * n.x + Ld.y * n.y; r.lt += -(Ld.x * t.x + Ld.y * t.y); r.n++;
       const h = e.hands; if (h && !h.off) { r.on++; r.jn += Math.max(0, h.normalForce ?? 0); r.jt += Math.abs(h.tangentForce ?? 0); }
       if (Math.hypot(vel.x, vel.y) > 0.3) r.reqQB += deg(Math.atan2(vel.y, vel.x) - toQB);
+      // His request split on the line to the tackle: into him (-n) and past him (along t), yd/s.
+      r.reqInto = (r.reqInto ?? 0) - (vel.x * n.x + vel.y * n.y); r.reqPast = (r.reqPast ?? 0) + (vel.x * t.x + vel.y * t.y);
+      // Does the straight line from him to the QB pass through the tackle's body (within the two radii)?
+      { const ux = Math.cos(toQB), uy = Math.sin(toQB), bx = b.pos.x - d.pos.x, by = b.pos.y - d.pos.y, along = bx * ux + by * uy;
+        const perp = Math.abs(-bx * uy + by * ux), Q = Math.hypot(qb.pos.x - d.pos.x, qb.pos.y - d.pos.y);
+        if (along > 0 && along < Q && perp < b.profile.radius + d.profile.radius) r.through = (r.through ?? 0) + 1; }
       r.gotQB += deg(Math.atan2(d.vel.y, d.vel.x) - toQB); r.v += Math.hypot(d.vel.x, d.vel.y);
       const lean = Math.hypot(d.body.support?.lean?.x ?? 0, d.body.support?.lean?.y ?? 0); r.lean += lean;
       if (Number.isFinite(iv.leanCap)) { r.cap += iv.leanCap; r.capN++; if (lean >= 0.95 * iv.leanCap) r.bind++; }
@@ -64,6 +70,7 @@ for (const [lab, f] of [['all level', (r: any) => true], ['went past by 0.5 s', 
   console.log(`${lab.padEnd(20)} n ${String(R.length).padStart(4)} (past ${(100 * R.filter((r) => r.past).length / R.length).toFixed(0)}%)`);
   console.log(`   1 strut: load along the line p50 ${q(m('ln'))} N, across ${q(m('lt'))} N | tackle's hands on ${q(R.map((r) => 100 * r.on / Math.max(1, r.n)))}% of ticks, normal ${q(m('jn', 'on'))} N, tangential ${q(m('jt', 'on'))} N`);
   console.log(`   2 bend: request off the QB bearing p50 ${q(m('reqQB'))} deg, achieved ${q(m('gotQB'))} deg; speed ${q(m('v'), .5, 2)} yd/s; turn ${q(R.map((r) => r.turn))} deg/s | lean ${q(m('lean'))} N, cap ${q(m('cap', 'capN'))} N, cap binding ${q(R.map((r) => 100 * r.bind / Math.max(1, r.capN)))}% of capped ticks (capped on ${q(R.map((r) => 100 * r.capN / Math.max(1, r.n)))}% of ticks)`);
+  console.log(`   request into the tackle p50 ${q(m('reqInto'), .5, 2)} yd/s, past him ${q(m('reqPast'), .5, 2)} yd/s | the line to the QB through the tackle's body on ${q(R.map((r) => 100 * (r.through ?? 0) / Math.max(1, r.n)))}% of ticks`);
   console.log(`   3 hands: moves ${Object.entries(mv).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${(100 * v / tot).toFixed(0)}%`).join(', ')}`);
   console.log(`   4 tackle: rusher off his chest p50 ${q(m('offChest'))} deg, yaw rate ${q(m('yaw'))} deg/s`);
 }
