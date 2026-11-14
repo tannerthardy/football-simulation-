@@ -9,7 +9,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function run(flag: string | undefined, concept: string, at: number) {
   vi.resetModules();
-  if (flag !== undefined) vi.stubEnv('APEX_LEVERAGE', flag);
+  // The unset arm must really be unset, whatever the ambient environment holds.
+  if (flag !== undefined) vi.stubEnv('APEX_LEVERAGE', flag); else vi.stubEnv('APEX_LEVERAGE', undefined as unknown as string);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
