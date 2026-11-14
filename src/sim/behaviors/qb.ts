@@ -1988,7 +1988,7 @@ export function throwInterference(a: Agent, sim: PlaySim): number {
  * wider, release()). Replaces THROW_BODY's rolled pin. Diagnosis (finish-trace.mts, windup-load.mts): after first
  * contact our QB threw 64-72% within 0.1 s (NFL 30%, 0.3 s later); 54% of throws with a defender within a yard
  * already had a grasp on him at the delivery's start, and came out anyway. */
-const THROW_HOLD = process.env.THROW_HOLD === '1';
+const THROW_HOLD = process.env.THROW_HOLD !== '0';
 export function throwHold(a: Agent, sim: PlaySim): number {
   return throwLoad(a, sim).ratio;
 }

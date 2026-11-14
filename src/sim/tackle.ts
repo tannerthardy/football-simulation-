@@ -279,7 +279,7 @@ const TKL_WHIFF = process.env.TKL_WHIFF === '1';
  * rated escape (elusiveness, pocket presence) and the rusher's true bearing off his facing (`seesIt`). Diagnosis
  * (qb-tackle-gates.mts): when our QB threw after a rusher reached a yard of him, the rusher spent 42% of those ticks on
  * his tackle cooldown after a rolled miss at lunge range, and 49% bonded with the throw still coming out. */
-const POCKET_REACH = process.env.POCKET_REACH === '1';
+const POCKET_REACH = process.env.POCKET_REACH !== '0';
 /** WAIT_REACHED (on; WAIT_REACHED=0 turns it off): a tackler holds his reach for a better
  * shot only when his forecast reaches that better point inside its lookahead. Each tick the forecast is redone; one
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the

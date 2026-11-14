@@ -1167,7 +1167,7 @@ export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
  * long-arm case (RUSH_ARM_BALANCE) generalised: the interior rusher leaning about 1400 N into an 1800 N press went
  * forward onto the man when it was taken away (12 of 21 interior falls; dl-falls.mts). A bull still keeps the
  * commitment his bound allows and can still be dropped. */
-export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND === '1';
+export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND !== '0';
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
   const sup = d.body.support; if (!sup) return;
   const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
@@ -1375,7 +1375,7 @@ export const EDGE_ARC = process.env.EDGE_ARC === '1';
  * the QB's live spot behind him; his ride runs with the man as he has him (touch or sight), and his hands-off delay
  * is keyed on his own hands being off the man, not on the rusher's move record. The rep's outcome geometry (past,
  * turned the corner) stays the World's. */
-export const REP_SEEN = process.env.REP_SEEN === '1';
+export const REP_SEEN = process.env.REP_SEEN !== '0';
 /** Room outside the tackle's shoulder the arc's landmark leaves (yd): the corner's existing offset. */
 export const ARC_ROOM = 0.45;
 /** Past the tackle's hips: deeper than him by this much (yd). */

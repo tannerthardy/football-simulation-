@@ -13,6 +13,8 @@ async function falls(flag: string, roster: number, coverage: string, seed: numbe
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
   for (const k of ['RUSH_HANDS', 'PUNCH_STRIKE', 'ANCHOR_BASE']) vi.stubEnv(k, '1');
+  // RUSH_LEAN_BOUND (engine-61) bounds every engaged rusher, the long-arm case included: pinned off to isolate this one.
+  vi.stubEnv('RUSH_LEAN_BOUND', '0');
   vi.stubEnv('RUSH_ARM_BALANCE', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
