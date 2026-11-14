@@ -2958,3 +2958,58 @@ posture and lean ahead of the contact. That means posture toward his pad level a
 impulse he expects (his mass times his closing speed over the contact time), bounded by ANCHOR_BASE's recoverable
 lean. Everything is from his picture, nothing from the blocker's state. Pair it with the generalised RUSH_ARM_BALANCE
 bound (the propped class). The two classes need different mechanisms; together they cover about 30 of the 43.
+
+## RUSH_LEAN_BOUND and RUSH_PAD_LEVEL (Integration's go, 2026-11-14)
+
+### RUSH_LEAN_BOUND (class (a), the propped rusher): built, ae844a63, off
+
+Off is bit-identical (seed 999 c7236fb3, engine-59). Staged search, 288 scenes: DL falls 46 → 10, and every interior
+fall is gone. Fixtures are in test/rush-lean-bound.test.ts.
+
+16 games per arm on the engine-59 stack (s11 / s23):
+
+| | off | on |
+|---|---|---|
+| DL falls /100 (true) | 7.7 / 9.6 | 3.9 / 4.6 |
+| OL falls /100 (true) | 4.5 / 3.1 | 3.7 / 2.5 |
+| after contact: sacked / threw / escaped | 21/72/7 / 17/77/6 | 17/77/6 / 16/76/7 |
+| within 2 yd before the ball is out | 21.9 / 20.6% | 22.8 / 21.1% |
+| native sacked | 4.0 / 2.4% | 3.3 / 3.0% |
+| pressured | 12.2 / 11.8% | 12.1 / 12.7% |
+| yards per dropback | 7.15 / 8.05 | 6.78 / 7.37 |
+
+Classified falls (dl-falls.mts, seeds 11-18): 41 → 24. The interior forward propped class goes 20 → 1. The edge
+driven-over class goes 11 → 14, unchanged within noise. Arrival and pressure do not move. Sacks move both ways between
+seeds. Yards per dropback are lower on both seeds (-0.4, -0.7), with no mechanism identified; it is worth a look in
+the promotion read.
+
+### The collision check (condition 1)
+
+edge-impulse.mts, 1029 first edge contacts:
+- **Rushers who stay up** lose 155 N·s of momentum along the line, against an inelastic two-body bound μ·v_close of
+  160 N·s.
+- **The contact is not too stiff.** The 9 Hz core is critically damped, so there is no bounce. Delivered in one or
+  two ticks, the impulse peaks at 1.4-2.6 kN. A softer contact would lower the peak but not the capture-point shift
+  (Δv/ω0), which depends only on the impulse.
+- **The fallers** take about 2.2× the bound. The excess comes after the hit: the blocker drives on while the rusher's
+  availability is already collapsing.
+- **The scripted failed-move punch** (resolveMove `world.strike`, about 40 N·s) is not the cause.
+
+### RUSH_PAD_LEVEL (class (b), the edge collision): two attempts, both worse, removed (PARKED)
+
+The design: a general brace (`Intent.brace` in the World's lean law, `src/sim/brace.ts`, from the player's picture),
+on for the front's rushers.
+- **Attempt 1.** It held a lean target inside his reaction time of the contact. The released lean was re-committed
+  every tick, so he fell forward: 546 staged DL falls.
+- **Attempt 2.** One commitment, sized to cancel the hit's capture-point shift (l = μ v_close w0, within the
+  recoverable bound), made when the seen contact is due inside his next decision interval.
+  - Staged: 10 → 20. The extra falls are braced interior rushers who were swum: the brace's cost, as predicted.
+  - Games (8): 24 → 34. Edge driven-over 14 → 11; interior driven-over 4 → 15.
+
+Neither repaired the edge class. So the class is not just "no lean at arrival": a forward offset committed into a
+contact does not stop the follow-through drive from taking him over.
+
+Next, a re-diagnosis rather than a third design. Compare matched edge contacts that stay up with those that fall:
+same closing speed and masses, everything else as observed. Measure where the two diverge (his posture and base at
+arrival, his foot placement or step timing, the hit's height and angle on him, the blocker's follow-through, his
+request after the hit), to find what the standing rushers have that the fallers lack.
