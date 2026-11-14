@@ -324,3 +324,71 @@ Code: `coverage/C14-ball-est` 650b7237. Seeds 11/23 x 8 leagueSample games, engi
   - But his body is 1.9 yd from it and turned 67° off its line (catches: 1.0 yd, 20°).
   - He knows where the ball is and doesn't get there. The next design is his final approach: the late body turn, and running to a converging spot. The perception is no longer the problem.
 - **The defender's opening** doesn't move with any receiver change. That is his own late information and decision: stage 2 (LOOK_PHASE), and the release belief now planned with #713.
+
+### Design 3 result (the receiver's final approach): parked after two attempts
+
+- **Attempt 1** (5ed916ac): the receiver's legacy reaction gate (`reactAt`) no longer runs in series with his own
+  perception. He attends from the release; his head comes round at GAZE's rate.
+- **Attempt 2** (0fa96dd7): additionally, he runs his route until his own first sample, with the late body turn still
+  finding a ball behind him.
+
+Seeds 11/23 x 8, engine-59, unpaired.
+
+| | off | design 2 att. 4 | design 3 att. 1 | design 3 att. 2 |
+| --- | --- | --- | --- | --- |
+| Short completion | 72 / 70% | 70 / 66% | 69 / 67% | 65 / 63% |
+| Intermediate completion | 55 / 64% | 50 / 55% | 37 / 51% | 49 / 58% |
+| Catch rate, 3+ yd open | 83 / 80% | 74 / 70% | 70 / 72% | 69 / 67% |
+| Out of reach at the closest pass (open) | 12-16% | 23-24% | 22-24% | 25% |
+| Deep: off the release line at | 0.40-0.42 | 0.43 / 0.37 | 0.28 / 0.29 | 0.30 / 0.29 |
+| Deep: first slows at | 0.31-0.35 | 0.77 / 0.69 | 0.24 / 0.78 | 0.38 / 0.86 |
+
+### What is now known to be true (six receiver builds, Integration's request)
+
+1. **The honest estimator works as perception.**
+   - Fitted from his own delayed samples, his estimate's error falls with the ball's range: 0.6-0.9 yd for receivers
+     and 0.9-1.2 yd for defenders under 2 yd (`est-range.ts`).
+   - The two bugs that hid this are fixed: pursuit on a decision's reaction time, and the prior's timing in the wrong
+     frame.
+   - Perception, not the fit, sets the residual: 0.15-0.2 s latency x his velocity error.
+2. **A route prior plus a late body turn reproduces the NFL's in-flight timing.** In design 2 he left the line at
+   0.37-0.43 of the flight (NFL 0.38) and slowed at 0.69-0.77 (NFL 0.67). Nothing in the oracle arm does: it slows at
+   0.31-0.35. Running the route as the expectation is the right mechanism.
+3. **The catch model has no frontal cone.**
+   - The receiver's catch needs only the ball inside his reach envelope.
+   - Over-the-shoulder catches are allowed and priced; body angle costs little in either arm.
+   - Misses are reach: he is not there.
+4. **The capacity is there; the information is late.**
+   - From his state 0.5 s before the ball's closest pass, the true catch point is physically reachable about as often
+     honest as with the oracle: 85% vs 88% on short throws.
+   - The oracle receiver steers to the exact point from 0.08-0.33 s after the release. The honest one has his first
+     sample at a median 0.40 s on short throws, in a 0.75 s flight.
+5. **Why the short throw's first sample is late** (`no-sample.ts`, seed 11):
+   - Of short throws, 17% end with no sample at all.
+   - About half of those are geometry: his believed ball is right (3° off the truth) but 110-160° off his body facing.
+     These are flats, back flats and quick outs with the QB behind-inside him. Head plus eyes reach 120°, so he must
+     rotate his body, and the arrival-timed body turn comes too late on a 0.45 s flight.
+   - About a third are flights shorter than his latency plus head turn (under 0.3 s).
+   - The QB's shoulder line is sound: his facing at the release is a median 1° off his throw (p90 11-15°).
+6. **What does not work.**
+   - Steering on an estimate before he has seen the ball (design 3 attempt 1): the early fit pulls him off a better
+     route.
+   - Running the route until the first sample with arrival-timed turns (attempt 2): short throws arrive before he
+     finds them.
+   - The NFL receiver on these routes has his eyes on the QB before the throw. The coached point is "find the QB at
+     the break", a look the engine's receiver never takes before the release: his head starts at his body facing when
+     the ball leaves.
+7. **The defender is late too, separately.**
+   - About a fifth of the nearest defenders never hold an estimate on short throws.
+   - His closing in the air goes the wrong way under BALL_EST (10-20 yd throws: opens 0.1-0.5 yd vs closing 0.2-0.5
+     off; the NFL closes about 0.65).
+   - That is stage 2's (his look, and the release belief), unchanged by any receiver build.
+
+**Open, for the next design, not built:**
+- (a) **The pre-release look.** On routes that break toward or across the QB's face, his head (and, where his route
+  allows, his shoulders) comes to the QB at the break, before the throw, so he holds the QB and the ball from the
+  release. Route-timed, coached; he pays for it in his route's speed only where his shoulders turn.
+- (b) **The QB's lead and the receiver's prior as one expectation.** The QB still throws to his own forecast of the
+  receiver (`ReceiverForecast` from the QB's pictures, with his lead options), not to the receiver's route prior.
+- (c) **`trackPen`'s removal.** It double-counts ballTracking at the catch on long flights. It goes as its own bit
+  with its own row (Integration).
