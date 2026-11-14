@@ -145,7 +145,7 @@ export class CoverageDefender implements Behavior {
           { ...d.opts, protectDepth: isDeepZone(this.zone) });
       case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
-      case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign);
+      case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign, d.inside, d.flat);
       case 'rob': return new Rob(d.r, this.reader, this.gap, this.gapSign);
     }
   }
@@ -155,6 +155,7 @@ function directiveKey(d: Directive): string {
   switch (d.t) {
     case 'zone': return `zone:${d.zone}:${d.style}`;
     case 'man': return `man:${d.r.slot}:${d.opts.lev ?? 'inside'}:${d.opts.overTop ? 'top' : ''}${d.opts.trail ? 'trail' : ''}`;
+    case 'wall': return `wall:${d.r.slot}:${d.inside ?? ''}:${d.flat?.slot ?? ''}`;
     default: return `${d.t}:${d.r.slot}`;
   }
 }
