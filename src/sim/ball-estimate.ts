@@ -56,6 +56,8 @@ const NECK = Math.PI / 2;
 const EYE = (30 * Math.PI) / 180;
 const BEARING_BEST = (0.5 * Math.PI) / 180, BEARING_WORST = (1.0 * Math.PI) / 180;
 const RANGE_BEST = 0.05, RANGE_WORST = 0.1;
+/** Design 5 (a): time-to-contact precision, sigma_tau / tau (choice; TTC discrimination thresholds run about 5-15%). */
+const TAU_SD = Number(process.env.BALL_EST_TAU_SD ?? 0.07);
 /** Attempt 3 (spec table): the receiver's route prior, and the first estimate from the QB's release. */
 const PRIOR_ALONG = 0.12, PRIOR_ACROSS = 1.0, PRIOR_HEIGHT = 1.0, PRIOR_BROKEN = 3, PRIOR_ORIGIN = 1.0, PRIOR_TIME = 0.3;
 const RELEASE_SD = 0.5, SHOULDER_SD = (5 * Math.PI) / 180, SHOULDER_ALONG = 15, SHOULDER_UP = 15;
@@ -70,7 +72,10 @@ export const bodyTurnLead = (a: Agent): number => 0.4 + 0.4 * (1 - skill(a));
 /** How far off his body facing his head can point: beyond it, watching the ball costs a turned body. */
 export const LOOK_NECK = NECK;
 
-type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number; sv?: number };
+type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number; sv?: number;
+  /** Design 5 (a) looming: his time-to-contact reading as an observation of the ball's velocity along his line of
+   * sight (u, negative while it closes), and its sigma. */
+  vlos?: number; svlos?: number };
 export type PathSample = { t: number; x: number; y: number; z: number };
 
 interface Track {
@@ -157,7 +162,21 @@ export class BallEstimates {
       const er = tr.err[0] * sr * r, ea = tr.err[1] * sa * r, eb = tr.err[2] * sa * r;
       const p: Vec3 = { x: seen.p.x + u.x * er + e1.x * ea + e2.x * eb, y: seen.p.y + u.y * er + e1.y * ea + e2.y * eb, z: seen.p.z + u.z * er + e1.z * ea + e2.z * eb };
       const inflate = Math.sqrt(Math.max(1, ERR_TAU / sim.dt));
-      tr.samples.push({ t: seen.t, p, along: u, sr: sr * r * inflate, sa: sa * r * inflate });
+      const smp: Sample = { t: seen.t, p, along: u, sr: sr * r * inflate, sa: sa * r * inflate };
+      // Design 5 (a): a ball closing on his eyes looms; its time to contact r / closing speed reads the velocity along
+      // his line of sight. Its weight falls continuously as the ball's motion turns across his line (closing share^2).
+      if (BALL_EST_LOOMING) {
+        const prev = this.ballAt(seen.t - sim.dt + 1e-9 - 1e-6);
+        if (prev && prev.t < seen.t) {
+          const k2 = 1 / (seen.t - prev.t), bv = { x: (seen.p.x - prev.p.x) * k2, y: (seen.p.y - prev.p.y) * k2, z: (seen.p.z - prev.p.z) * k2 };
+          const vl = bv.x * u.x + bv.y * u.y + bv.z * u.z, spd = Math.hypot(bv.x, bv.y, bv.z), share = spd > 1e-6 ? -vl / spd : 0;
+          if (share > 0.05) {
+            const tauObs = (r / -vl) * (1 + dice.normal(0, TAU_SD)), vObs = -r / Math.max(0.05, tauObs);
+            smp.vlos = vObs; smp.svlos = (Math.max(0.2, Math.abs(vObs) * TAU_SD) / (share * share)) * inflate;
+          }
+        }
+      }
+      tr.samples.push(smp);
       if (tr.samples.length + tr.pseudo.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
         tr.fitT = sim.t;
         const before = tr.path ? landing(tr.path) : null;
@@ -356,6 +375,13 @@ export function fitFlight(input: Sample[], drag: number): { t0: number; p: Vec3;
         A[i][j] += w; A[i][j + 3] += w * tau; A[i + 3][j] += w * tau; A[i + 3][j + 3] += w * tau * tau;
       }
       for (let i = 0; i < 3; i++) { let wy = 0; for (let j = 0; j < 3; j++) wy += W[i][j] * yy[j]; bvec[i] += wy; bvec[i + 3] += wy * tau; }
+      // Looming row: u . v(t) = vlos, with v(t) = v0 - g t z (+ the drag's change from the current fit).
+      if (s.vlos !== undefined && s.svlos) {
+        const dv: Vec3 = iter > 0 && tau > 0 ? { x: b.vel.x - v.x, y: b.vel.y - v.y, z: b.vel.z - (v.z - G * tau) } : { x: 0, y: 0, z: 0 };
+        const uu = [u.x, u.y, u.z], w = 1 / (s.svlos * s.svlos);
+        const yv = s.vlos - (u.x * dv.x + u.y * dv.y + u.z * dv.z) + G * tau * u.z;
+        for (let i = 0; i < 3; i++) { for (let j = 0; j < 3; j++) A[i + 3][j + 3] += w * uu[i] * uu[j]; bvec[i + 3] += w * uu[i] * yv; }
+      }
     }
     const th = solve(A, bvec);
     if (!th) break;

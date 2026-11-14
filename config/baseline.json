@@ -29,6 +29,8 @@
     "FLAT_PRESS": "0",
     "ROUTE_CRAFT": "0",
     "CARRY_READ": "0",
+    "BALL_EST": "0",
+    "BALL_EST_TAU_SD": "0.07",
     "CATCH_HANDS": "0",
     "CATCH_POINT": "0",
     "CATCH_SECURE": "0",
