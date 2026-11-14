@@ -137,6 +137,12 @@ const SIGHT_CARRIER = process.env.SIGHT_CARRIER === '1';
  * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
  * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
 const SIGHT_COVER = process.env.SIGHT_COVER === '1';
+/** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
+ * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
+ * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
+ * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
+ * `update` 17% (`see-sight.ts`). The throw cue (`sawThrow`) is presented possession's release candidate (#713). */
+const SIGHT_RECOG = process.env.SIGHT_RECOG === '1';
 /** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
  * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
  * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
@@ -803,7 +809,7 @@ export class PlaySim {
   }
 
   /** What `observer` perceives of `target` (delayed for opponents). */
-  see(observer: Agent, target: Agent, delayScale = 1): Perceived {
+  see(observer: Agent, target: Agent, delayScale = 1, sight?: 'recog'): Perceived {
     if (observer.team === target.team) {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
@@ -847,7 +853,9 @@ export class PlaySim {
     if (SIGHT_CARRIER && observer === this.carrier) seen = this.sighted(observer, target, seen, !!(g && g.set >= this.t - this.dt - 1e-9));
     // SIGHT_COVER: a man or zone defender's picture behind a body. Occlusion only: his eyes are on his man or the QB by
     // coaching, so with GAZE off no facing bound applies (GAZE's own view half when it is on).
-    else if (SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
+    else if ((SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
+      // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
+      || (SIGHT_RECOG && sight === 'recog'))
       seen = this.sighted(observer, target, seen, true);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
