@@ -33,7 +33,9 @@ function stage(side: number, carrying: boolean | null) {
   const picture: Perceived = { pos: { ...r.pos }, vel: { ...r.vel }, age: .25, carrying, stance: null, facing: 0, pose: 'up' };
   const oldSee = sim.see.bind(sim);
   sim.see = (observer, target, delay) => target === r ? picture : oldSee(observer, target, delay);
-  return executeRunFit(e, sim, 'D', side);
+  // An explicit read: his picture of this runner (carrying or not), not the
+  // true carrier a no-read fallback once supplied.
+  return executeRunFit(e, sim, 'D', side, { possession: { target: r, cue: picture } });
 }
 
 describe('backside edge trail', () => {

@@ -21,7 +21,7 @@ import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
-import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
+import { ConvoyCue, DownfieldBlocker, RCV_SEEN, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import { ScreenBlocker } from './behaviors/screen.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
@@ -645,7 +645,8 @@ export function onBallCaught(sim: PlaySim, r: Agent): void {
   clearPressContacts(sim);
   r.behavior = new BallCarrier({ screenCatch: !!sim.offCall?.pass?.screen, catchAt: sim.t }, r);
   // Screen blockers keep their jobs through the catch; everyone else turns to the convoy.
-  for (const a of sim.offense) if (a !== r && !(a.behavior instanceof ScreenBlocker)) a.behavior = new DownfieldBlocker();
+  for (const a of sim.offense) if (a !== r && !(a.behavior instanceof ScreenBlocker))
+    a.behavior = RCV_SEEN ? new ConvoyCue(a.behavior, r) : new DownfieldBlocker();
   // A physical catch is authoritative for the ball/rules, not a notification
   // to every opponent. Defenders retain their job and acquire their own cue.
 }

@@ -13,7 +13,7 @@ import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
-import { believesRun, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
+import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
 
@@ -97,7 +97,7 @@ export class Wall extends Technique {
     const turnTime = Math.PI / a.profile.turnRate;
     if (rd.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - rd.pos.x < 1.2 + closing * turnTime) this.opened = true;
     const speed = this.opened ? 0.92 + 0.08 * a.r('zoneCoverage') : (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
-    const req = track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, sim.qb.pos), speed, gain: 2 });
+    const req = track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos), speed, gain: 2 });
     // OPEN_CARRY: an opened wall rides the vertical as square to the QB as the run allows.
     if (OPEN_CARRY && this.opened) {
       a.tags.add('open-carry');
@@ -117,12 +117,12 @@ export class Rob extends Technique {
     const rd = this.reader.read(sim, this.target);
     if (!rd) return { vel: { x: 0, y: 0 } };
     const ahead = { x: rd.pos.x + rd.vel.x * 0.5, y: rd.pos.y + rd.vel.y * 0.5 };
-    const lane = lerp(sim.qb.pos, ahead, 0.85);
+    const lane = lerp(infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos, ahead, 0.85);
     const floor = sim.los + Math.min(7, Math.max(1, rd.depth - 0.5));
     const aim = { x: clamp(lane.x, floor, Math.max(floor, rd.pos.x + 1)), y: clamp(lane.y, 0.5, FIELD_WIDTH - 0.5) };
     const carry = Math.abs(rd.vel.y) > 3 && Math.abs(rd.vel.y) > Math.abs(rd.vel.x);
     const speed = carry ? 1 : (0.75 + 0.2 * a.r('zoneCoverage')) * unsureFactor(a);
-    return withFacingTechnique(track(a, aim, { x: rd.vel.x * 0.5, y: rd.vel.y * 0.7 }, { facing: carry ? Math.atan2(rd.vel.y, rd.vel.x) : angleTo(a.pos, sim.qb.pos), speed, gain: 1.8 }),
+    return withFacingTechnique(track(a, aim, { x: rd.vel.x * 0.5, y: rd.vel.y * 0.7 }, { facing: carry ? Math.atan2(rd.vel.y, rd.vel.x) : angleTo(a.pos, infoHonest(9) ? sim.see(a, sim.qb).pos : sim.qb.pos), speed, gain: 1.8 }),
       { label: carry ? 'rob-carry' : 'rob', key: rd.vel });
   }
 }

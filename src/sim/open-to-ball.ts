@@ -9,7 +9,7 @@
 import { angleDiff } from '../core/vec.js';
 import { commandFacing, type MoveCommand } from '../physics/kinematics.js';
 import type { Agent } from './agent.js';
-import { believesRun } from './behaviors/defense.js';
+import { believesRun, HONEST_READS } from './behaviors/defense.js';
 import type { PlaySim } from './playsim.js';
 import { observedHolder, qbRunning } from './possession-read.js';
 
@@ -21,7 +21,7 @@ const STEP = 2 * Math.PI / 3;
 const RANGE = 10;
 
 export function openToBall(a: Agent, sim: PlaySim, command: MoveCommand): MoveCommand {
-  if (sim.ball.kind !== 'held' || a.engagement || a.isDown(sim.t)) return command;
+  if ((!HONEST_READS && sim.ball.kind !== 'held') || a.engagement || a.isDown(sim.t)) return command;
   if (sim.bond?.tacklers.includes(a)) return command;
   // He opens to the ball he has seen, not to the true possession: a fake or
   // a handoff he hasn't picked up leaves his turn as requested.

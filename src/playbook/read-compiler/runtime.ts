@@ -6,6 +6,7 @@
  */
 import { Rng } from '../../core/rng.js';
 import { generateTeam, type Team } from '../../league/team.js';
+import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
 import { compile } from './compile.js';
 import type { PlanStyle } from './types.js';
@@ -31,10 +32,13 @@ let teams: { off: Team; def: Team } | null = null;
 /** True while a plan is being compiled: the sampling sim's own quarterback must not compile one in turn. */
 export function compilingPlan(): boolean { return compiling > 0; }
 
-/** The installed plan for a concept from a formation (either flip: the plan is symmetric), or null for a screen or
- * when nothing compiles. */
+/** The installed plan for a concept from a formation (either flip: the plan is symmetric), or null for a screen, for
+ * a formation that is not registered, or when nothing compiles. */
 export function installedPlan(concept: PassConcept, formationId: string): InstalledPlan | null {
   if (concept.family === 'screen' || concept.screen) return null;
+  // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
+  // was installed for it, so he runs the play without a plan.
+  if (!FORMATION_BY_ID[formationId]) return null;
   const key = `${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
