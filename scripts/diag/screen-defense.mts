@@ -39,7 +39,7 @@ const job = (d: any): string => {
   if (inner.kind === 'man' || inner.target?.idx !== undefined && inner.kind?.includes('man')) return 'man';
   return inner.kind ?? '?';
 };
-type Row = { call: string; cov: string; killed: boolean; caught: boolean; yards: number; yac: number | null; near?: { slot: string; job: string; d: number };
+type Row = { call: string; cov: string; seed: number; flip: boolean; killed: boolean; caught: boolean; yards: number; yac: number | null; near?: { slot: string; job: string; d: number };
   tackler?: { slot: string; job: string }; blocks: { job: string; on: string | null; onJob: string | null; result: string }[] };
 const rows: Row[] = [];
 for (const call of CALLS.filter((c) => !ONLY.length || ONLY.includes(c.id))) for (const cov of COVS) for (let seed = 1; seed <= SEEDS; seed++) for (const flip of [false, true]) {
@@ -52,7 +52,7 @@ for (const call of CALLS.filter((c) => !ONLY.length || ONLY.includes(c.id))) for
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[cov], pressure: null, label: cov },
     los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7 + (flip ? 1 : 0),
   });
-  if (sim.offCall.pass?.id !== screen.id) { rows.push({ call: call.id, cov, killed: true, caught: false, yards: sim.run().yards, yac: null, blocks: [] }); continue; }
+  if (sim.offCall.pass?.id !== screen.id) { rows.push({ call: call.id, cov, seed, flip, killed: true, caught: false, yards: sim.run().yards, yac: null, blocks: [] }); continue; }
   const jobAtSnap = new Map<number, string>();
   let catchT = -1, catchX = 0, near: Row['near'], carrier: any = null;
   const blockers = new Map<number, { job: string; on: any; closeWhileOn: boolean }>();
@@ -79,7 +79,7 @@ for (const call of CALLS.filter((c) => !ONLY.length || ONLY.includes(c.id))) for
   const tk = wrap ? sim.agents[wrap.a] : null;
   const endX = sim.endSpot?.x ?? (carrier ? carrier.pos.x : sim.los);
   const yards = (endX - sim.los) * dir;
-  rows.push({ call: call.id, cov, killed: false, caught: catchT >= 0, yards, yac: catchT >= 0 ? (endX - catchX) * dir : null, near,
+  rows.push({ call: call.id, cov, seed, flip, killed: false, caught: catchT >= 0, yards, yac: catchT >= 0 ? (endX - catchX) * dir : null, near,
     tackler: tk ? { slot: tk.slot, job: jobAtSnap.get(tk.idx) ?? '?' } : undefined,
     blocks: [...blockers.values()].map((b) => ({ job: String(b.job), on: b.on?.slot ?? null, onJob: b.on ? jobAtSnap.get(b.on.idx) ?? '?' : null,
       result: !b.on ? 'no block' : tk && b.on === tk ? 'won through' : b.closeWhileOn ? 'shed late' : 'held' })) });
