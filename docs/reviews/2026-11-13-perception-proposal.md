@@ -110,6 +110,11 @@ constants: they set the scale and shape, and each constant the build uses is mar
      rusher he blocks or feels).
    - **What he sees:** the target's centre of mass (position and velocity) at a short latency, the time constant of a
      continuous correction. Chosen in the 0.1-0.15 s range, by the restage, not imported.
+     Quantisation: the perception record is sampled in whole ticks, so TRACK_LATENCY 0.12 s acts as 0.10 s at dt 0.05
+     (Integration, 2026-11-14: fine for now).
+   - **Sight** (2026-11-14, Integration's ruling): the loop corrects only on a target in sight (touch, or in view with
+     a clear sight line, `inSight`); behind a body its picture ages from the last clear sample and re-acquires after
+     one latency, never older than `see()`'s. `see()` itself has no line-of-sight term yet: SEE_SIGHT, below.
    - **Error:** grows with eccentricity, distance, occlusion and the number of tracked targets.
    - **No acceleration term.** The existing local patches (pursuit trend, feltClosing, seenAcceleration,
      RouteObservation's ageing) are retired on that consumer when it moves to tracking, not stacked.
@@ -374,3 +379,25 @@ and wrong in those places.
 
 When `PERCEIVE_ANTICIPATE` is built, an apex or flat defender's early commit on a back must be this wager, with the NFL's
 error rate and its false alarms, not a sure read.
+
+## 12. SEE_SIGHT: line of sight for `see()` (approved 2026-11-14; next after the track() re-reads)
+
+Measured (information-leak sweep, line of sight): 11.1% of opponent `see()` pictures look through a body and 10.4% are
+of a man behind the observer's shoulder; about 30% through a body for the QB's feel and `sawThrow`, about half behind
+the carrier for his traffic reads. Integration's design conditions:
+
+1. **Geometry, no dice.** Each body has a height and a posture. An occluder blocks the sight line below his own
+   (postured) shoulder height at the point the line passes him; a target is seen if enough of him clears it (head and
+   shoulders over a crouched lineman; a back through a gap wider than a body). The observer's eye height matters too:
+   a short QB sees less.
+2. **Out of sight is not out of mind.** The picture is the last one that arrived and it ages; he acts on where he
+   expects the man; re-acquisition takes a latency. Nobody who loses a man freezes or forgets him.
+3. **Behind the shoulder.** The head turns (GAZE), so who he can see depends on where he looks, which is a decision
+   with a cost. With GAZE off, keep the body-facing bound, and state what turning GAZE on would take: SEE_SIGHT
+   without it blinds people who would simply have looked.
+4. **Order by consequence, one group per flag step,** each with a matched restage and the fresh set, expecting real
+   movement (YAC, pursuit, the QB): the carrier's behind-reads and `aroundBodies`, then `sawThrow` and coverage, then
+   possession-read and recognition.
+5. **The guard.** Tools' decision-information guard treats a `see()` of an occluded man as the leak it is once the
+   flag is on.
+
