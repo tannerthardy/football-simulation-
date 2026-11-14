@@ -274,6 +274,7 @@
     "READ_PLAN": "on",
     "OUTLET_LAST": "off",
     "PLAN_KEYS": "off",
+    "CONCEPT_DROPS": "off",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",

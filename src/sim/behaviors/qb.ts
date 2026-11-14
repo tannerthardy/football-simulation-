@@ -794,14 +794,20 @@ export class QBPass implements Behavior {
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
   /** QB_KEY_THROW diagnostics (no effect): throws started on the read, and times the window was shut and by what. */
   keyThrows = 0;
+  keyPulled = 0;
+  /** QB_KEY_THROW: the throw in his hand was started on the key read's window test, and is rechecked by it. */
+  private pendingKey = false;
+  keyOver = 0;
   readonly keyShut: string[] = [];
 
   /** QB_KEY_THROW: whether his picture shows nobody in the window of the answer's throw: not the key defender coming
    * back to it, not a defender who will be within KEY_WINDOW of the catch point when his motion ends, not one in the
-   * ball's lane. Positions and movement in his pictures only. */
-  private keyWindow(a: Agent, sim: PlaySim, ev: ThrowEval): string | null {
-    const k = this.plan!.key!, wind = this.windup(a);
+   * ball's lane at a height he can reach (the ball's arc for this throw against the reach his pricing gives the man).
+   * Positions and movement in his pictures only. */
+  private keyWindow(a: Agent, sim: PlaySim, ev: ThrowEval, wind = this.windup(a)): string | null {
+    const k = this.plan!.key!;
     const px = ev.point.x - a.pos.x, py = ev.point.y - a.pos.y, L = Math.hypot(px, py) || 1;
+    const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, v0 = dragFreeLaunch(from, ev.point, ev.T);
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
       const m = this.mind.estimate(d);
@@ -814,7 +820,14 @@ export class QBPass implements Behavior {
       }
       if (dist < KEY_WINDOW) return 'near';
       const along = ((at.x - a.pos.x) * px + (at.y - a.pos.y) * py) / L, off = Math.abs((at.x - a.pos.x) * py - (at.y - a.pos.y) * px) / L;
-      if (along > 3 && along < L - KEY_WINDOW && off < KEY_LANE) return 'lane';
+      if (along > 3 && along < L - KEY_WINDOW && off < KEY_LANE) {
+        // In the lane on the ground; the ball has a height there. A man it passes over (above the reach his pricing
+        // gives him: half way from his standing reach to his jump, as in window) is not in the window.
+        const dp = QB_BELIEVED_DEF ? this.believe(a, d).profile : d.profile;
+        const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
+        if (arcPoint(from, v0, ev.T * along / L).z > leap + 0.1) { this.keyOver++; continue; }
+        return 'lane';
+      }
     }
     return null;
   }
@@ -1005,7 +1018,7 @@ export class QBPass implements Behavior {
         sim.throwPull = { x: load.dir.x * sim.throwDisturb, y: load.dir.y * sim.throwDisturb };
       }
       if (THROW_HOLD && this.pending && sim.deliveryAt >= 0 && t >= sim.deliveryAt && throwHold(a, sim) >= 1) {
-        this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.readStart = t;
+        this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.pendingKey = false; this.readStart = t;
         sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
         sim.event('throw_held', a);
         return stand();
@@ -1015,7 +1028,7 @@ export class QBPass implements Behavior {
         const pin = throwInterference(a, sim);
         if (pin > 0) {
           if (sim.dice('throw', a).chance(pin)) {
-            this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.readStart = t;
+            this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.pendingKey = false; this.readStart = t;
             sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
             return stand();
           }
@@ -1320,7 +1333,7 @@ export class QBPass implements Behavior {
       // QB_KEY_THROW: the key read's answer is thrown on its step unless somebody is in the window in his picture.
       if (QB_KEY_THROW && ev && this.keyAnswer?.target === read && t <= this.keyAnswer.at + KEY_HOLD && u < 0.8) {
         const shut = this.keyWindow(a, sim, ev);
-        if (!shut) { const go = this.startIfFinish(a, sim, ev); if (go) { this.keyThrows++; this.keyAnswer = null; return go; } }
+        if (!shut) { const go = this.startIfFinish(a, sim, ev); if (go) { this.keyThrows++; this.keyAnswer = null; this.pendingKey = true; return go; } }
         else if (this.keyShut[this.keyShut.length - 1] !== shut) this.keyShut.push(shut);
       }
       if (ev && ev.P >= need && ev.intRisk <= risk) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
@@ -2129,7 +2142,7 @@ export class QBPass implements Behavior {
     // Test staging: his own throws are held until the staged one (he keeps his drop and set).
     if (sim.stagedThrow && !this.staging) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: a.body.facing };
     this.phase = 'windup';
-    this.pendingSpot = null;
+    this.pendingSpot = null; this.pendingKey = false;
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
@@ -2202,6 +2215,13 @@ export class QBPass implements Behavior {
     const p = this.receiverForecasts.get(ev.target)?.predict(sim.t, left + ev.T);
     if (!p) return false;
     const point: Vec3 = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
+    // QB_KEY_THROW: a throw started on the key read is rechecked by the rule it was started on (somebody now in the
+    // window in his picture), not re-priced: the price is what the read stands in for, and re-pricing pumped it.
+    if (this.pendingKey) {
+      const pull = !!this.keyWindow(a, sim, { ...ev, point }, left);
+      if (pull) { this.pendingKey = false; this.keyPulled++; }
+      return pull;
+    }
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const w = this.window(a, sim, ev.target, { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, point, ev.T, left, urgency);
     // QB_COMMIT: a started throw holds unless what he now sees clears a margin beyond what he started on: the window
@@ -2219,6 +2239,7 @@ export class QBPass implements Behavior {
     // SCREEN_QB: a throw to the spot goes to the spot; his forecast of a receiver still selling points the wrong way.
     const p = this.pendingSpot ? null : this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
     this.pendingSpot = null;
+    this.pendingKey = false;
     if (p) {
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }

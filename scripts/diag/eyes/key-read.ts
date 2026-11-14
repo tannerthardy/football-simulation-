@@ -11,11 +11,11 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
-  const tick = sim.tick.bind(sim); let rec: any = null, named: any = undefined, tgt: any = null, qbRef: any = null;
+  const tick = sim.tick.bind(sim); let kts = 0, rec: any = null, named: any = undefined, tgt: any = null, qbRef: any = null;
   sim.tick = () => {
     tick();
     const q = sim.qb, b: any = q.behavior; if (b?.kind !== 'qb-pass') return;
-    qbRef = b;
+    qbRef = b; kts = Math.max(kts, b.keyThrows ?? 0);
     const k = b.plan?.key; if (!k) return;
     if (named === undefined) named = k.man ?? b.keyMan(sim, k.role, k.low, k.high);
     if (!rec && b.keyRead) {
@@ -27,12 +27,12 @@ PlaySim.prototype.run = function (this: PlaySim) {
     }
   };
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2) }; return tb(p, target, ...rest); };
+  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2), kt: (sim.qb.behavior as any)?.keyThrows ?? null, kind: (sim.qb.behavior as any)?.kind }; return tb(p, target, ...rest); };
   const res = orig.apply(this);
   if (rec) {
     const { low, high, ...row } = rec;
     console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null,
-      onRead: (sim.qb.behavior?.keyThrows ?? qbRef?.keyThrows ?? 0) > 0, shut: qbRef?.keyShut ?? [], thrownAt: tgt?.t ?? null }));
+      onRead: (qbRef?.keyThrows ?? 0) > 0, pulled: qbRef?.keyPulled ?? 0, sawKt: kts, shut: qbRef?.keyShut ?? [], over: qbRef?.keyOver ?? 0, thrownAt: tgt?.t ?? null, ktAtThrow: tgt?.kt ?? null, kindAtThrow: tgt?.kind ?? null, endKind: sim.qb.behavior?.kind ?? null, desc: String((res as any).description ?? (res as any).text ?? '').slice(0, 90) }));
   }
   return res;
 };
