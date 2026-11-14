@@ -121,12 +121,13 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
  * rows (Tools' route_break.py, BDB 2025 week 1, speed into the vertex v_in and at it v_min). Points not listed keep their
  * authored values. Off, every route is exactly as authored above.
  * - Cuts, square (dig, out, deep out, short in): plant at s .4. "Sink the hips" into the break (USA Football, Coaching the
- *   Wide Receiver: the Tight Break). NFL IN / OUT 75-110 deg: v_min / v_in .73 / .78; ours at s .4, .61-.70 (rolled), to be
- *   re-read as cuts.
+ *   Wide Receiver: the Tight Break). On a square plant the follower's corner law binds below any s above .4: s .6 left the
+ *   dig at 3.3 and the out at 4.7 yd/s at the vertex, unchanged. The NFL deep in / out (v_min 5.7 / 5.9) are 51-54 deg
+ *   rolls, not square plants: that is ROUTE_SHAPE's geometry, not s. NFL short IN v_min 3.5 is s .37 on a 9.6 yd/s body.
  * - Cuts, sink and come back (hitch, curl, comeback, stick, hook): the authored settle s, now planted at the vertex.
- * - The slant: a cut, the three-step plant ("three controlled steps and stick, then break at 45"), s .4 as the other
- *   cuts: the speed he brings to the plant. NFL slant (break at 2.3 yd, 1.6 s) v_in 3.3, turn 56 deg, radius 3.7 yd,
- *   v_min / v_in 1.08; at the authored .75 the cap did not bind and he reached the vertex at 5.2.
+ * - The slant: a cut, the three-step plant ("three controlled steps and stick, then break"), s .35: the NFL slant comes into
+ *   its plant at 3.3 yd/s (break at 2.3 yd, 1.6 s, turn 56 deg), .35 of a 9.6 yd/s body. With the arrive law aimed at the
+ *   switch (ROUTE_FILLET) he crosses the vertex at 3.8 (at .4: 4.3).
  * - Rolls at depth (corner, post): s 1, he carries his speed through. NFL breaks at 9 yd or deeper (week 1): corner v_in
  *   7.2, v_min 7.2, turn 43 deg, radius 11 yd (n 23); post 7.0 / 6.4 / 45 deg / 8.5 yd (n 17). The pooled NFL rows (v_in
  *   5.4 / 6.0) were mostly release bends at about 3 yd, not these breaks. The set at the top of the stem (AFCA, Winning
@@ -138,7 +139,7 @@ const ROUTE_TABLE: Record<string, RouteDef> = {
  *   9 yd: 3.9 yd, 2.0 s, 51 deg). Its authored 90 deg is the route-geometry item (NFL speed outs turn about 50 deg).
  * Backs and screens keep theirs. */
 const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>> = {
-  slant: [{ cut: true, s: 0.4 }],
+  slant: [{ cut: true, s: 0.35 }],
   out: [{ cut: true, s: 0.4 }], deep_out: [{ cut: true, s: 0.4 }], dig: [{ cut: true, s: 0.4 }], short_in: [{ cut: true, s: 0.4 }],
   hitch: [{ cut: true }], curl: [{ cut: true }], comeback: [{ cut: true }], stick: [{ cut: true }], hook: [{ cut: true }],
   corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],

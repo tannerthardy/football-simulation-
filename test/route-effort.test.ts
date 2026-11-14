@@ -30,7 +30,7 @@ describe('ROUTE_EFFORT break table (src/playbook/routes.ts)', () => {
     expect(off.slant.points[0]).toEqual({ d: 2, l: 0, s: 0.75 });
     expect(off.corner.points[0].s).toBe(0.65);
     const on = await routes(true);
-    expect(on.slant.points[0]).toMatchObject({ d: 2, l: 0, s: 0.4, cut: true });
+    expect(on.slant.points[0]).toMatchObject({ d: 2, l: 0, s: 0.35, cut: true });
     for (const id of ['out', 'deep_out', 'dig', 'short_in']) expect(on[id].points[0]).toMatchObject({ cut: true, s: 0.4 });
     for (const id of ['hitch', 'curl', 'comeback', 'stick', 'hook']) expect(on[id].points[0]).toMatchObject({ cut: true, s: off[id].points[0].s });
     expect(on.corner.points[0].s).toBe(1);
