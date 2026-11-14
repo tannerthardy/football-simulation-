@@ -414,6 +414,8 @@ const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
 const KEY_HOLD = 1.2;
 const KEY_WINDOW = 3.0;
 const KEY_LANE = 1.2;
+/** QB_KEY_THROW: how far off the ball's line a defender is considered for getting to its path (yd). Chosen. */
+const KEY_REACH = 8;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
 /** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
@@ -820,13 +822,22 @@ export class QBPass implements Behavior {
       }
       if (dist < KEY_WINDOW) return 'near';
       const along = ((at.x - a.pos.x) * px + (at.y - a.pos.y) * py) / L, off = Math.abs((at.x - a.pos.x) * py - (at.y - a.pos.y) * px) / L;
-      if (along > 3 && along < L - KEY_WINDOW && off < KEY_LANE) {
-        // In the lane on the ground; the ball has a height there. A man it passes over (above the reach his pricing
-        // gives him: half way from his standing reach to his jump, as in window) is not in the window.
+      // The ball's path: can he get a hand to it? He keeps his course until the ball is out, then goes to it; at
+      // each point of this throw's arc that is within the reach his pricing gives him (half way from his standing
+      // reach to his jump), whether he is there before the ball. A man the ball is over when it passes, who cannot
+      // get under it where it comes down, is not in the window. (A man standing in the lane with the ball over his
+      // head at that moment was first tested alone: all 29 such throws were incomplete, 4 picked; he sinks under it.)
+      if (along > 0 && off < KEY_REACH) {
         const dp = QB_BELIEVED_DEF ? this.believe(a, d).profile : d.profile;
         const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
-        if (arcPoint(from, v0, ev.T * along / L).z > leap + 0.1) { this.keyOver++; continue; }
-        return 'lane';
+        const mover = { pos: at, vel: m.vel, profile: dp, speedScale: 1 };
+        let over = false;
+        for (const f of [0.3, 0.45, 0.6, 0.75, 0.88]) {
+          const b = arcPoint(from, v0, ev.T * f);
+          if (b.z > leap + 0.1) { over = true; continue; }
+          if (timeToReach(mover, b, dp.reach) + dp.reactionTime < ev.T * f) return 'lane';
+        }
+        if (over && along > 3 && along < L - KEY_WINDOW && off < KEY_LANE) this.keyOver++;
       }
     }
     return null;
