@@ -85,7 +85,7 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos((QB_BODY_SEEN ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos((QB_BODY_SEEN && process.env.SCRATCH_HEAD !== '0' ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
       if (cos > best) { best = cos; r = o; }
     }
   }
