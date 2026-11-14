@@ -293,7 +293,8 @@
     "ROUTE_END": "off",
     "CROSS_OVER": "off",
     "SCREEN_DECLARE": "off",
-    "ROUTE_FILLET": "off"
+    "ROUTE_FILLET": "off",
+    "ROUTE_SHAPE": "off"
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
