@@ -57,7 +57,8 @@ const EYE = (30 * Math.PI) / 180;
 const BEARING_BEST = (0.5 * Math.PI) / 180, BEARING_WORST = (1.0 * Math.PI) / 180;
 const RANGE_BEST = 0.05, RANGE_WORST = 0.1;
 /** Design 5 (a): time-to-contact precision, sigma_tau / tau (choice; TTC discrimination thresholds run about 5-15%). */
-const TAU_SD = Number(process.env.BALL_EST_TAU_SD ?? 0.07);
+// Percent (an integer default, as the provenance reader requires): sigma_tau / tau = BALL_EST_TAU_SD / 100.
+const TAU_SD = Number(process.env.BALL_EST_TAU_SD ?? 7) / 100;
 /** Attempt 3 (spec table): the receiver's route prior, and the first estimate from the QB's release. */
 const PRIOR_ALONG = 0.12, PRIOR_ACROSS = 1.0, PRIOR_HEIGHT = 1.0, PRIOR_BROKEN = 3, PRIOR_ORIGIN = 1.0, PRIOR_TIME = 0.3;
 const RELEASE_SD = 0.5, SHOULDER_SD = (5 * Math.PI) / 180, SHOULDER_ALONG = 15, SHOULDER_UP = 15;

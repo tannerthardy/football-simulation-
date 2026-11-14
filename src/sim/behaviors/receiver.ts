@@ -13,6 +13,7 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
+import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
@@ -41,6 +42,15 @@ interface PressContact {
  * into a tackle setting deep (3.5 to 1.9 yd/s at 0.9 s, KNOWN_PROBLEMS
  * PRO-1). Receivers at the line keep their release and press contact. */
 const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
+/** RCV_SEEN (experimental, off; intended on once measured; the user's information rule): receivers' and downfield
+ * blockers' reads of opponents come from what they see (`seen-contact.ts`): a defender is down when his picture shows
+ * him down, and taken when it shows him in contact with one of the observer's teammates, not from his true support
+ * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender, and a teammate
+ * turns to the convoy when his picture shows the catcher with the ball (`ConvoyCue`), not at the true catch. Contact
+ * itself stays physics. Off: the true reads (docs/reviews/2026-11-13-information-leak-sweep.md, Rules + Coaching). */
+export const RCV_SEEN = process.env.RCV_SEEN !== '0';
+const isDownFor = (a: Agent, sim: PlaySim, o: Agent): boolean => RCV_SEEN ? seenDown(sim, a, o) : o.isDown(sim.t);
+const isTakenFor = (a: Agent, sim: PlaySim, d: Agent): boolean => RCV_SEEN ? seenTaken(sim, a, d, 'my-team') : !!d.engagement;
 
 /** Bend a route request around the nearest body seen in the lane ahead
  * (where it will be when the runner gets there), passing it at bodies' width
@@ -57,7 +67,7 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   if (a.pos.x >= sim.los) return cmd;
   const bodies: Array<{ p: Vec2; clear: number; ahead: number; off: number }> = [];
   for (const o of sim.agents) {
-    if (o === a || o.isDown(sim.t)) continue;
+    if (o === a || (o.team === a.team ? o.isDown(sim.t) : isDownFor(a, sim as PlaySim, o))) continue;
     const seen = sim.see(a, o);
     if (o.team !== a.team && seen.vel.x > -1) continue;
     const reach = Math.max(0, (seen.pos.x - a.pos.x) * u.x + (seen.pos.y - a.pos.y) * u.y) / pace;
@@ -103,7 +113,7 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   const look = pace * (0.25 + 0.2 * rr) + 1.2;
   let block: { p: Vec2; ahead: number; off: number; clear: number } | null = null;
   for (const d of sim.defense) {
-    if (d.isDown(sim.t)) continue;
+    if (isDownFor(a, sim as PlaySim, d)) continue;
     const seen = sim.see(a, d);
     const rel = { x: seen.pos.x - a.pos.x, y: seen.pos.y - a.pos.y };
     const closing = Math.max(0.5, pace - (seen.vel.x * u.x + seen.vel.y * u.y));
@@ -712,6 +722,19 @@ export function catchSpot(a: Agent, sim: Pick<PlaySim, 'ballPath' | 't'>): { p: 
   return last;
 }
 
+/** RCV_SEEN: a teammate keeps his job after a catch until his own picture shows the catcher with the ball (the catch is
+ * a discrete event: recognition, on his reaction time and focus), then turns to the convoy. Off: everyone turns at
+ * the true catch. */
+export class ConvoyCue implements Behavior {
+  constructor(private readonly prev: Behavior, private readonly catcher: Agent) {}
+  get kind(): Behavior['kind'] { return this.prev.kind; }
+  update(a: Agent, sim: PlaySim): MoveCommand {
+    const seen = sim.perception.perceive(this.catcher.idx, a.mind.observationDelay(a.profile.reactionTime));
+    if (seen.carrying === true) { a.behavior = new DownfieldBlocker(); return a.behavior.update(a, sim); }
+    return this.prev.update(a, sim);
+  }
+}
+
 /** After the catch (or on runs): block the most dangerous unblocked defender. */
 export class DownfieldBlocker implements Behavior {
   readonly kind = 'downfield-block';
@@ -722,15 +745,16 @@ export class DownfieldBlocker implements Behavior {
     const c = sim.carrier;
     if (!c || c.team !== a.team || c === a) return stand();
     if (a.engagement) return stand();
-    if (sim.t >= this.retargetAt || !this.target || this.target.engagement || this.target.isDown(sim.t)) {
+    if (sim.t >= this.retargetAt || !this.target || isTakenFor(a, sim, this.target) || isDownFor(a, sim, this.target)) {
       this.retargetAt = sim.t + 0.3;
       this.target = pickBlockTarget(a, sim, c);
     }
     const d = this.target;
     if (!d) return goTo(a, { x: c.pos.x + 4 * sim.attackDir(a.team), y: c.pos.y }, { speed: 0.8 });
-    // Fit between the defender and the carrier.
-    const toC = norm(sub(c.pos, d.pos));
-    const fit = { x: d.pos.x + toC.x * 0.8, y: d.pos.y + toC.y * 0.8 };
+    // Fit between the defender (as he sees him) and the carrier.
+    const dp = RCV_SEEN ? sim.see(a, d).pos : d.pos;
+    const toC = norm(sub(c.pos, dp));
+    const fit = { x: dp.x + toC.x * 0.8, y: dp.y + toC.y * 0.8 };
     const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
     if (dd < a.profile.radius + d.profile.radius + 0.25) {
       const drive = norm(sub(d.pos, c.pos));
@@ -751,9 +775,10 @@ export function pickBlockTarget(a: Agent, sim: PlaySim, c: Agent): Agent | null 
     if (b && 'target' in b && b.target) claimed.add(b.target);
   }
   for (const d of sim.opponents(a)) {
-    if (d.engagement || d.isDown(sim.t) || claimed.has(d)) continue;
-    const toCarrier = timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile, speedScale: d.speedScale }, c.pos, 1);
-    const toMe = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) / a.profile.vmax;
+    if (isTakenFor(a, sim, d) || isDownFor(a, sim, d) || claimed.has(d)) continue;
+    const seen = RCV_SEEN ? sim.see(a, d) : d;
+    const toCarrier = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, c.pos, 1);
+    const toMe = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) / a.profile.vmax;
     if (toMe > toCarrier + 0.6) continue; // can't get there in time
     const score = toCarrier + 0.6 * toMe;
     if (score < bestScore) {
