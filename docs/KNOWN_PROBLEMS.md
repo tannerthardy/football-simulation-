@@ -302,6 +302,7 @@ problem), resolved.
 | [RUN-15](#run-15) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [RUN-20](#run-20) | A blocker arriving at 4 yd/s on a man who holds goes off his feet | physics | medium | logged |
+| [PHY-ROUND](#phy-round) | The torso is a circle: no depth separate from its width | Tools | medium | logged |
 | [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
 | [RUN-18](#run-18) | An engaged edge past his containment bound kept widening on his held flow | G2 | medium | resolved |
 | [RUN-19](#run-19) | Run blockers keep a grip only by the pass-rep frame rule | G2 | medium | open |
@@ -2381,6 +2382,17 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
 - **Why it matters:** a guard meeting a backer at speed usually delivers the blow and stays on his feet. This bites
   pulls, kickouts, lead blocks and the open-field tackle.
 - **Cause:** not diagnosed. Parked with the run game; reproduce with the staging above.
+
+<a id="phy-round"></a>
+### PHY-ROUND: The torso is a circle: no depth separate from its width
+
+- **Measure** (2026-11-14, Flex/Integration): a body's collision radius is a shoulder half-width (radii sum 0.73 yd for two
+  linemen, 0.365 yd from centre to chest). A real lineman's centre to sternum is about 0.14-0.17 yd.
+- **Consequence:** real men on bent arms (about 0.5 yd between chests) stand about 0.8 yd centre to centre, the NFL's
+  held separation at +0.4 s (0.76-0.89). In our geometry that distance leaves only about 0.08 yd for the arms.
+  PAIR_HANDS therefore fits its bent-base centre distance to the NFL's (BASE_CENTRES) instead of to an arm length.
+- **Fix (for Tools, not done here):** a torso with depth separate from its width (an oval or capsule), so arms can be
+  arm-length and chests meet at about 0.3 yd. TORSO_CAPSULE exists for the carrier only.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him

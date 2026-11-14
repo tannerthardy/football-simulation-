@@ -158,6 +158,12 @@ for path in sys.argv[1:]:
             offs = [x['off'] for x in h]
             parts.append(f"+{a:.1f} s n {len(h)}: rusher off his chest p25/50/75 {q(offs, .25):+.0f}/{q(offs):+.0f}/{q(offs, .75):+.0f} deg, |off| > 30 {pct(sum(1 for v in offs if abs(v) > 30), len(h))}, > 60 {pct(sum(1 for v in offs if abs(v) > 60), len(h))}; his turn outward p50 {q([x['turn'] for x in h]):+.0f} deg; sep {q([x['dist'] for x in h]):.2f}")
         print(f"      chest, contact {lab:12s} " + ' || '.join(parts))
+    # Integration (2026-11-14): separation at +0.4 s on reps the rusher did not win (no win by 2.5 s) against those he did.
+    for lab, f in (('head-up', lambda o: abs(o) < 0.3), ('outside half', lambda o: 0.3 <= o < 0.9), ('wide', lambda o: o >= 0.9)):
+        g = [r for r in Cn if f(r['offContact']) and 0.4 in r.get('chest', {})]
+        held = [r['chest'][0.4]['dist'] for r in g if r['win'] is None or r['win'] > 2.5]
+        won = [r['chest'][0.4]['dist'] for r in g if r['win'] is not None and r['win'] <= 2.5]
+        if g: print(f"      sep at +0.4 s, contact {lab:12s}: held (no win by 2.5 s) n {len(held):5d} p50 {q(held):.2f} | won by 2.5 s n {len(won):4d} p50 {q(won):.2f}")
     for a in ('head-up/shade', 'wide', 'very wide'):
         g = [r for r in Cn if r['align'] == a and 'tRetreat' in r]
         if not g: continue

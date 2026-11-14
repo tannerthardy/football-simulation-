@@ -420,6 +420,12 @@ export function promoteContact(e: Engagement, keeper: Agent): boolean {
  * Off, the joint is one object named by the roll. */
 export const PAIR_HANDS = process.env.PAIR_HANDS === '1';
 export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1' || PAIR_HANDS;
+/** PAIR_HANDS: the bent-base centre distance (yd): the NFL's centre-to-centre separation 0.4 s after first contact on
+ * edge reps the rusher did not win by 2.5 s (BDB 2025: head-up 0.89, outside half 0.76, wide 0.82; edge-rush.py). Our
+ * torso is a circle whose radius is a shoulder half-width (0.365 yd to the chest against a real lineman's 0.14-0.17), so
+ * a real arm's working length would hold real men far wider than the NFL does. The base length is therefore what our
+ * radii leave of the NFL's distance: a consequence of the round body, not anatomy (KNOWN_PROBLEMS PHY-ROUND). */
+const BASE_CENTRES = 0.80;
 /** PAIR_HANDS: the spread of a hand's landing point at the man for a hand technique of 0 (yd, 1 SD), falling to 0.4 of
  * it at a technique of 1. A choice, not a sourced number: about a hand's width off the chest plate for a poor
  * technician. */
@@ -467,7 +473,7 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
     if (HAND_FIT) {
       // HAND_FIT: the blocker's hands, whatever the roll; his arm's base length.
       joint.actor = b.body;
-      joint.extension = sep + (tb.arm / 36) * 0.3;
+      joint.extension = PAIR_HANDS ? Math.max(sep + 0.02, BASE_CENTRES) : sep + (tb.arm / 36) * 0.3;
       // PAIR_HANDS: an inside hand presses through a straight arm; an outside hand (on a shoulder or arm) only with the arm.
       joint.push = PAIR_HANDS && joint.fit === 'outside' ? armForce(b) : pressForce(b);
       joint.hold = holding ? armForce(b) * 1.2 : 0;
@@ -771,7 +777,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     e.control = (e.hands.fit === 'inside' && !e.hands.off ? 0.5 : 0) - (e.defHands.fit === 'inside' && !e.defHands.off ? 0.5 : 0);
     // The defender's own hands: his press inside, his arm outside; his length follows and recoils as the blocker's.
     const dj = e.defHands, sep = b.profile.radius + d.profile.radius;
-    dj.actor = d.body; dj.extension = sep + traits(d, e.type).arm / 36 * 0.3;
+    dj.actor = d.body; dj.extension = Math.max(sep + 0.02, BASE_CENTRES);
     // His hands press along the line only when his technique is to press: a run defender's stack, a power rush (bull,
     // long-arm). Rushing on speed or a finesse move, his hands work the blocker's hands and arms, not his chest.
     const pressing = e.type === 'run' || e.move === 'bull' || e.move === 'longarm';

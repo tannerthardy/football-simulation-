@@ -15,7 +15,8 @@ const { contactFixture } = await import('../run-contact-technique.js');
 const { syncJoints } = await import('../../../src/sim/engagement.js');
 type Fit = 'inside' | 'outside';
 function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: number; y: number }, dv: { x: number; y: number }, side = 1, secs = 0.6, gap0 = 0.3, dMass = 0, move?: string) {
-  const { sim, blocker: b, defender: d, engagement: e } = contactFixture({ type: type === 'pass' ? 'pass' : 'run', runBlock: 60, passBlock: 60, side });
+  const { sim, blocker: b, defender: d, engagement: e0 } = contactFixture({ type: type === 'pass' ? 'pass' : 'run', runBlock: 60, passBlock: 60, side });
+  const e: any = e0;
   e.type = type;
   Object.assign(d.profile, structuredClone(b.profile));
   if (dMass) d.profile.massKg = dMass;
@@ -23,6 +24,8 @@ function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: 
   b.body.pos = { x: 40, y: 26.65 }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
   d.body.pos = { x: 40 + R, y: 26.65 }; d.body.vel = { ...dv }; d.body.facing = Math.PI;
   if (move) e.move = move as any;
+  // A fresh hands joint after the bodies are placed (the fixture's was set up at its own positions).
+  e.hands = undefined; e.defHands = undefined;
   syncJoints(sim, e);
   if (e.hands) e.hands.fit = fitB; if (e.defHands) e.defHands.fit = fitD;
   const fb0 = b.body.facing, fd0 = d.body.facing, dy0 = d.body.pos.y;
