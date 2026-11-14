@@ -80,7 +80,7 @@ for arg in sys.argv[1:]:
             R.append(dict(band=band((ka - kr) * 0.1), d0=math.hypot(dx0 - lx, dy0 - ly), da=math.hypot(xa - lx, ya - ly) if xa is not None else None,
                           prof={s: closing(kr + s) if kr + s <= ka else None for s in STEPS}, react=react, aim=aim, posc=posc, orient=orient,
                           caught=p.get('catch') is not None, fam=p.get('manzone') or '?',
-                          any_a=DA[0] if DA else None, n3=sum(1 for x in DA if x <= 3), second_a=DA[1] if len(DA) > 1 else None, other0=o0))
+                          any_a=DA[0] if DA else None, n3=sum(1 for x in DA if x <= 3), second_a=DA[1] if len(DA) > 1 else None, other0=o0, grp=p['players'][d]['group'], over0=over, cov=(p.get('coverage') or '?')))
     print(f'== {name}: the defender nearest the landing point at the release (n {len(R)})')
     for b in ('<0.8', '0.8-1.2', '1.2-1.8', '1.8+'):
         V = [r for r in R if r['band'] == b]
@@ -94,3 +94,20 @@ for arg in sys.argv[1:]:
                 W = [r for r in V if r[key] == v]
                 if len(W) < 8: continue
                 print(f'        {v:<16} n {len(W):4d} ({100 * len(W) / len(V):3.0f}%) | at the release {q([r["d0"] for r in W])} -> arrival {q([r["da"] for r in W])} yd | reaction {q([r["react"] for r in W])} s | closing 0 / 0.4 / 0.8 s {mean([r["prof"][0] for r in W])} / {mean([r["prof"][4] for r in W])} / {mean([r["prof"][8] for r in W])} | aim ball {100 * sum(r["aim"] == "ball" for r in W) / max(1, sum(r["aim"] is not None for r in W)):.0f}%')
+
+    # Deep and medium balls (1.2 s+ flights): by who the defender nearest the landing point at the release is and where
+    # he is on the receiver, and completion by separation at the arrival (any defender to the landing point).
+    W = [r for r in R if r['band'] in ('1.2-1.8', '1.8+')]
+    if W:
+        print(f'   1.2 s+ flights n {len(W)}: complete {100 * sum(r["caught"] for r in W) / len(W):.0f}%')
+        for lab, F in (('DB on top (1-6 yd deeper)', lambda r: r['grp'] == 'DB' and r['posc'] == 'on top'), ('DB over the top (6+ yd off, deeper)', lambda r: r['grp'] == 'DB' and r['posc'] == 'off' and (r['over0'] or 0) > 1),
+                       ('DB on the hip', lambda r: r['grp'] == 'DB' and r['posc'] == 'hip'), ('DB trailing', lambda r: r['grp'] == 'DB' and r['posc'] == 'trailing'),
+                       ('DB off, not deeper', lambda r: r['grp'] == 'DB' and r['posc'] == 'off' and (r['over0'] or 0) <= 1), ('LB / DL', lambda r: r['grp'] != 'DB')):
+            X = [r for r in W if F(r)]
+            if X: print(f'      {lab:<36} n {len(X):4d} ({100 * len(X) / len(W):3.0f}%) | complete {100 * sum(r["caught"] for r in X) / len(X):3.0f}% | at the release {q([r["d0"] for r in X])} -> his own at the arrival {q([r["da"] for r in X])} | any defender at the arrival {q([r["any_a"] for r in X])} yd')
+        for lo, hi in ((0, 1), (1, 2), (2, 3), (3, 99)):
+            X = [r for r in W if r['any_a'] is not None and lo <= r['any_a'] < hi]
+            if X: print(f'      any defender {lo}-{hi if hi < 99 else "+"} yd from the landing point at the arrival: n {len(X):4d} ({100 * len(X) / len(W):3.0f}%) | complete {100 * sum(r["caught"] for r in X) / len(X):3.0f}%')
+        for fam in ('Man', 'Zone'):
+            X = [r for r in W if r['fam'] == fam]
+            if X: print(f'      {fam}: n {len(X)} | complete {100 * sum(r["caught"] for r in X) / len(X):.0f}% | any defender at the arrival {q([r["any_a"] for r in X])} yd | within 3 yd {100 * sum(r["n3"] >= 1 for r in X) / len(X):.0f}%')

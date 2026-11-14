@@ -32,7 +32,7 @@ const rows = new Map<string, any>(), cues = new Map<string, Map<string, number[]
 for (const R of recs) {
   const S = R.T; if (S.length < 3) continue;
   const s0 = S[0], end = at(S, 2.5) ?? S[S.length - 1], side = end.y - s0.y >= 0 ? 1 : -1;
-  if (/flat|out|swing|wheel/.test(R.route)) {
+  if (/flat|out|swing|wheel|angle/.test(R.route)) {
     const m = rows.get(R.route) ?? new Map(); rows.set(R.route, m);
     for (const t of TS) { const p = at(S, t); if (p) (m.get(t) ?? m.set(t, []).get(t)).push([p.x, (p.y - R.ly) * side]); }
   }
