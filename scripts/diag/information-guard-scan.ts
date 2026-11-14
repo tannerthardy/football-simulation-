@@ -27,7 +27,7 @@ export const AGENT_HIDDEN = new Set([
 export const SIM_TRUTH = new Set([
   'ball', 'ballPath', 'carrier', 'scrambled', 'scrambleDrill', 'catchAt', 'handoffAt', 'throwAt', 'catchX', 'crossedLOS',
   'stats', 'engagements', 'bond', 'intents', 'endSpot', 'outcome', 'possession', 'firstContactX', 'deliveryAt', 'touchedAt',
-  'lastStep', 'scoreKind', 'segments', 'presentedFakeRunners',
+  'lastStep', 'scoreKind', 'segments', 'presentedFakeRunners', 'windupAt', 'windupEndAt', 'qbEyes',
 ]);
 
 /**
@@ -62,6 +62,13 @@ export const PHYSICS: Record<string, string> = {
   'src/sim/engagement.ts': 'hand-fight and block-lifecycle physics',
 };
 export const INTENT = new Set(['behavior', 'passSet', 'runFit', 'recog', 'mind', 'eyes', 'keyStep', 'readAt', 'snapReadyAt', 'shedBy']);
+
+/** The files that own a published field: its own record may read it (the passer's windup and eyes are qb.ts's). */
+export const SIM_OWNERS: Record<string, string[]> = {
+  windupAt: ['src/sim/behaviors/qb.ts'],
+  windupEndAt: ['src/sim/behaviors/qb.ts'],
+  qbEyes: ['src/sim/behaviors/qb.ts'],
+};
 
 export interface Read { file: string; line: number; rule: 'agent' | 'sim'; member: string; receiver: string; text: string }
 
@@ -100,7 +107,7 @@ export function scan(root: string): Read[] {
         if (AGENT_HIDDEN.has(member) && (isAgentType(t, 'Agent') || declaredOn === 'Agent')) {
           const mine = actors[actors.length - 1] ?? new Set(['a']);
           if (!mine.has(receiver) && (!physics || INTENT.has(member))) out.push({ file: rel, line: where, rule: 'agent', member, receiver, text });
-        } else if (SIM_TRUTH.has(member) && (isAgentType(t, 'PlaySim') || declaredOn === 'PlaySim') && !physics) {
+        } else if (SIM_TRUTH.has(member) && (isAgentType(t, 'PlaySim') || declaredOn === 'PlaySim') && !physics && !SIM_OWNERS[member]?.includes(rel)) {
           out.push({ file: rel, line: where, rule: 'sim', member, receiver, text });
         }
       }
