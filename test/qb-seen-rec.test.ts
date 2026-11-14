@@ -16,12 +16,16 @@ async function stage(flag: string) {
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'curl_flat', seed: 1, roster: 1, formation: 'gun_doubles_11', flip: false }));
   const qb = sim.qb, beh: any = qb.behavior;
+  // No throw while the scene is staged (he prices nobody), so the play reaches his set point on any engine.
+  const evaluate = beh.evaluate;
+  beh.evaluate = () => null;
   let setAt = -1;
   for (let i = 0; i < 400 && sim.phase === 'live' && sim.carrier === qb && qb.behavior === beh; i++) {
     sim.tick();
     if (setAt < 0 && beh.phase === 'set') setAt = sim.t;
     if (setAt >= 0 && sim.t >= setAt + 0.3) break;
   }
+  beh.evaluate = evaluate;
   expect(setAt).toBeGreaterThan(0);
   const r = sim.offense.find((o: any) => o !== qb && o.slot !== 'RB' && beh.evaluate(qb, sim, o, 0));
   expect(r).toBeTruthy();

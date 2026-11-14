@@ -49,9 +49,15 @@ async function scene(flag: string) {
     const s = man === 'elite' ? 1 : man === 'poor' ? -1 : 0;
     d.profile = { ...typ.profile, vmax: typ.profile.vmax + 0.7 * s, reactionTime: typ.profile.reactionTime - 0.06 * s, reach: typ.profile.reach + 0.12 * s };
     d.r = (k: string) => (k === 'ballSkills' ? typ.ratings.ballSkills + 0.3 * s : rate(k));
+    // His knowledge of the opponent is set only while the belief is formed (it is then fixed for the play), so nothing
+    // else that reads his awareness or experience differs between the two quarterbacks.
+    const was = { awareness: qb.player.ratings.awareness, experience: qb.player.experience };
     qb.player.ratings.awareness = knows ? 99 : 1;
     qb.player.experience = knows ? 8 : 0;
     beh.believed.clear();
+    for (const x of sim.defense) beh.believe(qb, x);
+    qb.player.ratings.awareness = was.awareness;
+    qb.player.experience = was.experience;
     return beh.evaluate(qb, sim, r, 0).P as number;
   };
   return { price };
