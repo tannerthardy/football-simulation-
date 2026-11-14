@@ -4105,3 +4105,86 @@ each rep gets.
 - The named gap, sized: almost all of the press that holds the rusher (88%) is delivered sideways to the tackle's line
   of retreat, by a standing man pressing at someone beside his hip. With an isotropic base and the chest turned to
   face, nothing prices that direction.
+
+### CONTROL_HANDS, attempt 1 (2026-11-14, engine-62; every rep)
+
+setContactHands no longer takes magnitudes from the rolled `control`:
+- push is pressForce;
+- steer is armForce x 0.7 (a defender's 0.55);
+- the working length is arm x 0.3;
+- the grip comes only when holding.
+
+What a man gets of that is the World's. The remaining readers of `control` are listed in the FLAGS row. Off is
+bit-identical to develop.
+
+**Pass game, engine-62 default -> + CONTROL_HANDS (seeds 11 / 23 x 8):**
+
+| | default | + CONTROL_HANDS | NFL |
+|---|---|---|---|
+| pressured | 29.8 / 26.2% | 21.3 / 17.4% | |
+| interior pressure, of dropbacks | 9.3 / 9.1% | 3.7 / 2.8% | about 9.8% |
+| edge pressure, inside | 9.8 / 7.7% | 4.1 / 3.5% | |
+| sacks (timing definition, pooled) | 5.7% | 3.4% | 6.7% |
+| sacks before 3.0 s, of dropbacks | 3.73% | 2.22% | 2.90% |
+| holding at 4.0 s, of dropbacks | 7% | 9% | 14% |
+| OL proxy falls, seed 11 (was moving, 1.0 s) | 3.6 /100 | 4.4 /100 | |
+
+**Edge, VERTICAL_SET -> + CONTROL_HANDS:**
+
+| | VERTICAL_SET | + CONTROL_HANDS | NFL |
+|---|---|---|---|
+| landing wide | 54 / 50% | 56 / 55% | 49% |
+| wide: into-and-past | +1.77 / +1.75 | +1.50 / +1.52 | +2.41 |
+| wide: separation contact / +0.2 / +0.4 s | 1.10 / 0.89-0.94 / 0.91-0.94 | 1.10 / 1.00-1.03 / 1.08-1.10 | 1.12 / 0.91 / 0.81 |
+| wide: past outside at 2.0 s | 10 / 8% | 7 / 9% | 30% |
+| inside at the win | 47 / 40% | 34 / 27% | 47% |
+| edge win | 7 / 8% | 6 / 5% | 13% |
+
+**Run set fresh, paired (1295 plays), ref -> candidate:**
+
+| | ref -> candidate | paired (SE) | stuffed (0 or less) |
+|---|---|---|---|
+| all | 3.75 -> 4.22 | +0.47 (0.12) | 10.1 -> 7.7% |
+| gap | | +0.83 (0.19) | |
+| duo | | +0.85 (0.40) | |
+| OZ | | +0.33 (0.28) | |
+| IZ | | +0.10 (0.26) | |
+| toss | | -0.19 (0.73) | |
+| draw | | +0.01 (0.38) | |
+
+Broken tackles per run 0.110 -> 0.086.
+
+**The prediction rows (rep-bodies.mts, VERTICAL_SET, seed 11 x 4; the rusher's closing on the QB in a rep's first
+1.5 s):**
+
+| | edge off / on | interior off / on |
+|---|---|---|
+| outcome SD | 1.06 / 0.95 yd | 1.31 / 1.13 yd |
+| correlation with the rolled control at the start | -0.42 / -0.20 | -0.23 / -0.05 |
+| with mass difference | 0.06 / 0.06 | -0.07 / 0.01 |
+| with arm difference | 0.10 / 0.07 | -0.07 / -0.03 |
+| with his speed at the start | 0.39 / 0.26 | 0.29 / 0.19 |
+
+**RIP_CLEAR re-read on top (VERTICAL_SET + CONTROL_HANDS + RIP_CLEAR, seed 11 x 4):**
+- 121 rips (0.22 a rep).
+- Came off 7% (2% before); 8% with the rusher's pads lower.
+- Tight 2%, mid 15%, full extension 22%.
+- The hold at a bent arm is now 994 N against the rip's 994 N, with the steer at full armForce x 0.7.
+- 25% of the clears go past within 0.6 s.
+
+**Read.**
+1. The predictions held in direction. Every block is stronger: the run set is +0.47 yd, most on the drive and double
+   concepts (gap +0.83, duo +0.85), with stuffs down. Pressure falls, the interior most (9 -> 3%). The outcome spread
+   at equal ratings falls by 10-14%, and the roll's correlation with the outcome halves at the edge and goes to about
+   zero inside.
+2. The outcomes do not follow the bodies more. The correlations with mass and arm stay at about zero, and speed's
+   falls. What the roll did, nothing physical yet does: the spread fell, but it was not replaced by bodies.
+3. What is missing, each time:
+   - inside, the interior rusher has no physical way to beat a full-capacity block (the bull is a drive, the hand
+     moves are rolls that no longer reach the capacity);
+   - on the edge, the press now holds him out to 1.08-1.10 yd, further from the NFL's 0.81;
+   - the rip clears a little more but not in proportion.
+   It is the bodies' shortfall the roll was hiding: the rusher's tools (hands, rip, swim as forces) and the
+   direction-blind base (88% of the press delivered sideways to the tackle's retreat).
+4. `control` still correlates -0.20 with edge outcomes through its remaining readers (the joint's actor by its sign,
+   the move rolls and choice).
