@@ -307,6 +307,45 @@ The opening impact throws the lighter man back before any sustained chest-to-che
 carries load in staging, so the hand-over's continuity cannot be shown there. That is another reason the parked pieces
 wait.
 
+## Step 1, the request law: measured first (2026-11-14)
+
+Before writing "square to his set" into the law, the NFL was asked what an engaged tackle faces. `engaged-yaw.py` now
+also measures the set frame: his facing against "back to the QB" (the direction from the QB through him), how far the
+rusher is off that line, and a joint least-squares fit of his facing change over 0.4 s windows on the QB-frame change and
+the rusher-bearing change. NFL BDB (94,573 engaged tackle frames) against ours (engine-64 + ENGAGE_FELT, seed 11 x 8):
+
+| | NFL | ours |
+|---|---|---|
+| his facing off "back to the QB", p50 / p90 | 32 / 90 deg | 22 / 65 deg |
+| the rusher off that line, p50 / p90 | 32 / 92 deg | 20 / 67 deg |
+| the rusher off his chest, p50 / p90 | 15 / 43 deg | 3 / 15 deg |
+| facing change = a x QB-frame change + b x rusher-bearing change | a 0.27, b 0.61 | a 0.01, b 0.80 |
+| his facing rate, p50 / p90 | 44 / 126 deg/s | 6 / 106 deg/s |
+
+So **the NFL tackle does not keep his back to the QB**: he is as far off that line as the rusher is (32 deg), and his
+facing moves mostly with the rusher (0.61) and partly with the set frame (0.27). A pure "square to the set" request would
+put the rusher about 32 deg off his chest; the NFL has 15. The coached rule that fits is the one the handbook teaches for
+the hands and eyes: **his nose on the man's inside number** (the near half of his chest toward the QB), from his felt
+picture of the man. That is a point on the man, not the man's centre: it is offset from the bearing by about half a chest
+width at the hands' distance (0.2-0.25 yd at 0.9-1.1 yd centre to centre, 10-15 deg) to the QB's side, and it moves with
+the man and with the QB frame both.
+
+**The law proposed for step 1 (not built):**
+- Engaged pass set: facing = the bearing from him to the man's inside number (the felt man's centre, plus his chest
+  half-width toward the protect point, perpendicular to the line between them). The inside-out relationship is what the
+  number encodes; no constant blend of frames, no cap.
+- The ride (already a decision with margins): facing on his path, as now.
+- Run block: the bearing to the man's play-side number (the reach's open facing as now: REACH_RACE_OPEN off that).
+  Run defender holding a gap: the bearing to the blocker's gap-side number (his outside arm free).
+- What stays the World's: how fast he turns (the yaw motor's bounded torque), what turns him (where the load goes,
+  step 3).
+
+**How step 1 is judged** (engaged-yaw.py, the same operator on both): the rusher-off-chest angle should rise from 3 deg
+toward the 10-15 deg the number gives, with no motor change. If the offset alone accounts for the NFL's 15 deg and the
+joint fit moves toward the NFL's (a up from 0.01, b down from 0.80), the request was the missing piece; what is left
+between the facing rates (6 against 44 deg/s p50, partly the NFL sensor's noise) and the slope's spread is the contact
+turning him (steps 2-3). If the off-chest angle overshoots far past 15, the motor is losing nothing it should.
+
 ## Tools' yaw trace (2026-11-14), and item 6 resolved: the 2,032 / 0 N chatter is PAIR_HANDS's beaten yield
 
 Tools' trace (PR #745, `pair-yaw-trace.mts`) on the staged power-rusher rows: the rusher's shoulder joint carries load only
