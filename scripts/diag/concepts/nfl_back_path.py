@@ -1,6 +1,7 @@
 import csv,statistics as st
+import os
 from collections import defaultdict
-root='/home/user/football-simulation-/data/raw/bdb2025/big-data-bowl-data'
+root=os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'data', 'raw', 'bdb2025', 'big-data-bowl-data')
 pos={r['nflId']:r['position'] for r in csv.DictReader(open(f'{root}/players.csv'))}
 plays={(r['gameId'],r['playId']):r for r in csv.DictReader(open(f'{root}/plays.csv')) if r['isDropback'] in ('TRUE','True','1') and r['playAction'] not in ('TRUE','True','1')}
 who={}
