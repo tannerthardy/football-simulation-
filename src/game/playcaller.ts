@@ -917,24 +917,24 @@ export class DefensiveCoordinator {
       else if (u < .06) dlGame = { kind: 'pinch', dir }; else if (u < .09) dlGame = { kind: 'twist', dir, pair: g.weighted(['TE', 'ET', 'TT'] as const, [.4, .35, .25]) };
     }
     const gameTag = dlGame ? ` [${dlGame.kind}${dlGame.pair ? ' ' + dlGame.pair : ''} ${dlGame.dir}]` : '';
-    // CORNER_SIDE (experimental, off): the corner technique by side, called where the coverage installs a solo
-    // corner. His corner (CB_S the better by overall, CB_W the next, as the depth chart fills them) against the
-    // receiver he expects alone on that side: the seen formation's only receiver on its short side (W), else the
-    // wideouts' average; his team's habit (pressHabit, from his man rate) moves how often.
-    const cornerTech = CORNER_SIDE ? callCornerTech(coverage, pressHabit(coach.manRate), (side) => {
+    // CORNER_SIDE (experimental, off): the corner technique by side, on a zone family that can install a solo corner.
+    // The receivers he expects to each side and the one alone there come from the seen formation (W its short side,
+    // S its long); his corner is CB_S the better by overall, CB_W the next, as the depth chart fills them; unseen, the
+    // wideouts' average and the lone corner's rate. His team's habit (pressHabit, from his man rate) moves how often.
+    let cornerTech: DefensivePlayCall['cornerTech'];
+    if (CORNER_SIDE) {
+      const bySide: Record<string, string[]> = { L: [], R: [] };
+      if (formation) for (const [slot, a] of Object.entries(formation.slots)) if (a && a.side !== 'C' && a.split !== 'core') bySide[a.side].push(slot);
+      const [short, long] = bySide.L.length <= bySide.R.length ? [bySide.L, bySide.R] : [bySide.R, bySide.L];
+      const at = (side: 'S' | 'W') => (side === 'W' ? short : long);
       const byCorner = this.team.roster.filter((p) => p.position === 'CB').sort((a, b) => overallAt(b) - overallAt(a));
-      const cb = byCorner[side === 'S' ? 0 : 1]?.ratings.manCoverage ?? cbMan;
-      let wr = wrRoute;
-      if (formation) {
-        const bySide: Record<string, string[]> = { L: [], R: [] };
-        for (const [slot, a] of Object.entries(formation.slots)) if (a && a.side !== 'C' && a.split !== 'core') bySide[a.side].push(slot);
-        const [short, long] = bySide.L.length <= bySide.R.length ? [bySide.L, bySide.R] : [bySide.R, bySide.L];
-        const lone = (side === 'W' ? short : long).length === 1 ? (side === 'W' ? short : long)[0] : undefined;
-        const p = lone ? offSlots[lone as OffSlot] : undefined;
-        if (p) wr = (p.ratings.routeRunning + p.ratings.releaseVsPress) / 2;
-      }
-      return Math.exp(((cb - CB_NORM) - (wr - (WR_NORM[offPersonnel] ?? 72))) / 25);
-    }, (side) => own.fork(`corner-tech:${side}`).next()) : undefined;
+      cornerTech = callCornerTech(coverage, pressHabit(coach.manRate), (side) => {
+        const cb = byCorner[side === 'S' ? 0 : 1]?.ratings.manCoverage ?? cbMan;
+        const lone = at(side).length === 1 ? offSlots[at(side)[0] as OffSlot] : undefined;
+        const wr = lone ? (lone.ratings.routeRunning + lone.ratings.releaseVsPress) / 2 : wrRoute;
+        return Math.exp(((cb - CB_NORM) - (wr - (WR_NORM[offPersonnel] ?? 72))) / 25);
+      }, (side) => own.fork(`corner-tech:${side}`).next(), (side) => (formation ? at(side).length || undefined : undefined));
+    }
     return {
       call: { personnel, front, coverage, pressure, shown, zoneStyle, ...(cornerTech ? { cornerTech } : {}), frontStem, creep: creepCalled, checkPick: coach.checkPick,
         checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, samOn, ...(dlGame ? { dlGame } : {}),

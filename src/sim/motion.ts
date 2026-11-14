@@ -518,18 +518,12 @@ export class MotionRuntime {
   private lock: DefSlot | null | undefined;
   /** MOTION_CHECK: the locked defender's lateral offset from the motion man at the last re-sort. */
   private leverage = 0;
-  /** CORNER_SIDE: the alignment at the defense's last look (a corner's press confirmation keeps its state). */
-  private last?: DefenseAlignment;
 
   /** The call and alignment for the formation `off`: the front held, a lock kept and the bump handed out by kind. */
   private answer(sim: MotionHost, off: OffenseAlignment): { call: DefensivePlayCall; align: DefenseAlignment } {
     const slots = sim.defense.map(d => d.slot as DefSlot);
     const installed = installCoverage(this.called, off);
-    if (!motionCheckEnabled()) {
-      const align = alignDefense(installed, off, slots, this.prefs, this.style, this.last ?? this.initial);
-      this.last = align;
-      return { call: installed, align };
-    }
+    if (!motionCheckEnabled()) return { call: installed, align: alignDefense(installed, off, slots, this.prefs, this.style) };
     const held = frontSign(this.called, sim.offAlign);
     const call: DefensivePlayCall = { ...installed, strength: frontSign({ ...installed, strength: 'passing' }, off) === held ? 'passing' : 'opposite' };
     if (this.lock === undefined) {
@@ -537,8 +531,7 @@ export class MotionRuntime {
       this.lock = had && this.called.coverage.man && (this.rng?.chance(LOCK[this.plan.kind]) ?? false) ? had : null;
     }
     const prefs = this.lock ? { ...this.prefs, overrides: { ...this.prefs?.overrides, [this.lock]: this.plan.slot } } : this.prefs;
-    const align = alignDefense(call, off, slots, prefs, this.style, this.last ?? this.initial);
-    this.last = align;
+    const align = alignDefense(call, off, slots, prefs, this.style);
     return { call, align: exchange(align, slot => sim.slot(slot)?.pos, this.lock, target => sim.slot(target)?.player.position === 'WR') };
   }
 

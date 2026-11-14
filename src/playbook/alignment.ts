@@ -9,7 +9,7 @@
  *    are resolved after alignment. Spreading the offense therefore physically
  *    pulls defenders out of the box.
  */
-import { aloneWithOne, cornerTechOf, pressedBefore } from './corner-side.js';
+import { cornerTechOf } from './corner-side.js';
 import { CENTER_Y, END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { Coverage, CoverageRole, DefSlot, DefensivePlayCall, Formation, Gap, OffSlot, PassConcept, ReceiverRef, Side, SkillSlot, Technique, ZoneId, UnderSeat, FormationKey } from './types.js';
@@ -866,9 +866,8 @@ function zoneSpot(zone: ZoneId | undefined, slot: boolean): { depth: number; sha
   return slot ? { depth: 4.5, shade: -0.5 } : { depth: 7, shade: 0.7 };
 }
 
-/** `prev` (CORNER_SIDE): the alignment at the defense's last look, for the corner's confirmation at the line. */
-export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, present: DefSlot[], prefs: ManPreference = {}, style: AlignStyle = {}, prev?: DefenseAlignment): DefenseAlignment {
-  if (call.shown && call.shown.id !== call.coverage.id) return alignDisguised(call, off, present, prefs, style, prev);
+export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, present: DefSlot[], prefs: ManPreference = {}, style: AlignStyle = {}): DefenseAlignment {
+  if (call.shown && call.shown.id !== call.coverage.id) return alignDisguised(call, off, present, prefs, style);
   const s = off.strongSign;
   const los = off.los;
   const cov = call.coverage;
@@ -1316,9 +1315,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const inside = Math.sign(off.ballY - tp.y) || Math.sign(spots[d]!.pos.y - tp.y) || s;
     const mr = roles[d] as Extract<CoverageRole, { kind: 'man' }>;
     let press = (mr.press ?? cov.press) && !mr.overTop;
-    // CORNER_SIDE: a solo corner called to press presses while he is alone with his #1 at the line.
-    if (cornerTechOf(call, d) === 'solo' && !mr.overTop && !off.spots[t].backfield
-      && aloneWithOne(off, d === 'CB_S' ? s : -s, t, pressedBefore(prev, d))) press = true;
+    // CORNER_SIDE: a solo corner called to press presses (the receiver count acted through the call).
+    if (cornerTechOf(call, d) === 'solo' && !mr.overTop && !off.spots[t].backfield) press = true;
     const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? (DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;
     const shade = mr.lev === 'outside' ? -inside : mr.lev === 'head' ? 0 : inside;
     // DEF_ALIGN: a corner presses about head-up, plays the called shoulder
@@ -1457,8 +1455,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
  * would put them and rotate at the snap. Linemen and blitzers align as played.
  * Press only survives if both looks press (you can't jam from 7 yards).
  */
-function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present: DefSlot[], prefs: ManPreference, style: AlignStyle, prev?: DefenseAlignment): DefenseAlignment {
-  const played = alignDefense({ ...call, shown: undefined }, off, present, prefs, style, prev);
+function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present: DefSlot[], prefs: ManPreference, style: AlignStyle): DefenseAlignment {
+  const played = alignDefense({ ...call, shown: undefined }, off, present, prefs, style);
   const look = alignDefense({ ...call, coverage: call.shown!, pressure: null, shown: undefined }, off, present, prefs, style);
   for (const slot of present) {
     const p = played.spots[slot]!;

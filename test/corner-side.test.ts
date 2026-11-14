@@ -37,21 +37,16 @@ describe('CORNER_SIDE', () => {
     expect(m.callCornerTech(COVERAGE_BY_ID.cover3_mable, 1, () => 0.8, () => 0.47)).toEqual({ S: 'off', W: 'off' });
   });
 
-  it('at the line: a #2 near the line keeps the previous state (no hop)', async () => {
+  it('the call: the receiver count moves the share (lone 48%, two 27%, three or more 19% in Cover 3)', async () => {
     const m = await load(true);
-    const off = m.alignOffense(FORMATION_BY_ID.gun_trips_11, false, 40, CENTER_Y);
-    const sign = -off.strongSign, man = off.numbering.W1!;
-    const others = Object.keys(off.spots).filter((k) => k !== man && !off.spots[k].backfield && !off.spots[k].inline && !['LT', 'LG', 'C', 'RG', 'RT', 'QB'].includes(k));
-    // Put one receiver on the corner's side at a given lateral distance from the ball.
-    const withTwo = (lat: number) => ({ ...off, spots: { ...off.spots, [others[0]]: { ...off.spots[others[0]], pos: { x: off.spots[others[0]].pos.x, y: off.ballY + sign * lat } } } });
-    expect(m.aloneWithOne(off, sign, man, undefined)).toBe(true);           // trips: the backside corner is alone
-    expect(m.aloneWithOne(withTwo(6), sign, man, true)).toBe(false);        // a detached #2 appears: he backs off
-    expect(m.aloneWithOne(withTwo(3), sign, man, false)).toBe(true);        // well inside: alone again
-    expect(m.aloneWithOne(withTwo(4), sign, man, true)).toBe(true);         // between the lines: he keeps his press
-    expect(m.aloneWithOne(withTwo(4), sign, man, false)).toBe(false);       // ... and his off
+    const edge = () => 1, at = (n: number) => () => n;
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3, 1, edge, () => 0.4, at(1))).toEqual({ S: 'solo', W: 'solo' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3, 1, edge, () => 0.4, at(2))).toEqual({ S: 'off', W: 'off' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3, 1, edge, () => 0.2, at(2))).toEqual({ S: 'solo', W: 'solo' });
+    expect(m.callCornerTech(COVERAGE_BY_ID.cover3, 1, edge, () => 0.2, at(3))).toEqual({ S: 'off', W: 'off' });
   });
 
-  it('alignment: the solo corner presses alone with #1, not with a #2 to his side, not when called off or flag off', async () => {
+  it('alignment: the called solo corner presses at the line with or without a #2; not when called off or flag off', async () => {
     const slots = Object.keys(DEF_PERSONNEL.nickel) as DefSlot[];
     const on = await load(true);
     const trips = on.alignOffense(FORMATION_BY_ID.gun_trips_11, false, 40, CENTER_Y);
@@ -60,7 +55,9 @@ describe('CORNER_SIDE', () => {
     expect(solo.press).toBe(true);
     expect(solo.pos.x - 40).toBeLessThan(2);
     expect(on.alignDefense(call('cover3_mable', { W: 'off' }), trips, slots).spots.CB_W!.press).toBeFalsy();
-    expect(on.alignDefense(call('cover3_mable', { W: 'solo' }), doubles, slots).spots.CB_W!.press).toBeFalsy();
+    // No check by count at the line: the count acted through the call.
+    const mableVsDoubles = on.alignDefense(call('cover3_mable', { W: 'solo' }), doubles, slots).spots.CB_W!;
+    if (mableVsDoubles.role.kind === 'man') expect(mableVsDoubles.press).toBe(true);
     // The strong-side corner is unchanged.
     expect(on.alignDefense(call('cover3_mable', { W: 'solo' }), trips, slots).spots.CB_S)
       .toEqual(on.alignDefense(call('cover3_mable'), trips, slots).spots.CB_S);
