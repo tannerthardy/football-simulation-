@@ -45,6 +45,7 @@
     "DL_SNAP_TIME": "0",
     "HOLD_FINISH": "0",
     "HOLD_SINK": "0",
+    "ROLL_AXIS": "0",
     "HANG_AIRBORNE": "0",
     "HANG_GRIP": "0",
     "EXTEND": "0",

@@ -142,6 +142,7 @@
     "CUSHION_BREAK": "on",
     "HOLD_FINISH": "on",
     "HOLD_SINK": "off",
+    "ROLL_AXIS": "off",
     "HANG_AIRBORNE": "off",
     "HANG_GRIP": "off",
     "EXTEND": "off",
