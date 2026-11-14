@@ -607,6 +607,28 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-60: `THROW_HOLD`, `POCKET_REACH`, `REP_SEEN` and `RUSH_LEAN_BOUND` on (2026-11-14)
+
+All four are Flex's (`claude/quirky-franklin-9lbwbp` at `1b76a93f`).
+
+**`THROW_HOLD` and `POCKET_REACH`: the finish.** The pass-rep report had located the missing sacks after contact: sacked given contact 53% in the NFL against 14 to 26%, with arrivals matching; 93% of our post-contact throws were already in a windup nothing could interrupt, and 42% of the time the contact defender was on a tackle cooldown, having "missed" at lunge range by a rated roll (`rng.chance(pMiss)`). `THROW_HOLD`: the load on the passer's body during the delivery (a grasp's upper-body hold or the contact load, over his arm force) disturbs the release continuously and stops the arm at 1; it replaces `THROW_BODY`'s rolled pin. `POCKET_REACH`: a tackle on a pocket quarterback misses by reach geometry (the tackler's momentum toward his delayed picture, the quarterback cutting away if he sees him), not by the roll; this removes the `seesIt` true-bearing read with it. Lane read, 16 games a seed, off → on (NFL): sacked given contact 18 / 17 → 30 / 30% (53); after first contact sacked 19 / 15 → 27 / 27% (47), threw 72 / 76 → 65 / 62% (30), escaped 9 / 9 → 7 / 11% (22). Arrivals unchanged in every arm (within 2 yd 21 to 22%, first contact 12 to 14%). The thrown-after-contact bucket: completion 46 → 37% and 63 → 39%, air yards unchanged, no added interceptions. `throwDisturb` was 0 on all 194 clean throws checked. The whole change is where the windup was under way at contact (sacked 1/36 → 8/38); not yet in the windup he was already sacked 72 to 73%. Owed separately: the fumble on a hit before the hand comes forward. The rest of the gap is the quarterback's (throws leaving 0.05 s after contact; escapes), with `throwDisturb`, `throwPull` and `qbHold` exposed for it.
+
+**`REP_SEEN`.** Four information reads inside the pass rep: the rusher aims at and faces the quarterback he sees; he reads his leverage and the blocker's overset from his own picture; the blocker sets and rides against the called launch point and the man as he has him; the blocker's sight delay follows his own hands being off. Near neutral on two seeds. The OL-fall drift it showed (3.9 → 4.5, 3.8 → 5.0 per 100) was traced: 23 against 24 falls over two 8-game windows, 0 of 47 with a blocker's hand off; inside the window spread.
+
+**`RUSH_LEAN_BOUND`.** A rusher leaning on his man commits no more lean than his base can recover from, as a protector does under `ANCHOR_BASE`. DL falls 7.7 / 9.6 → 3.9 / 4.6 per 100 drop-backs (NFL about 1, by the same proxy, eye-checked that down means down); interior propped falls 20 → 1; OL falls 4.5 / 3.1 → 3.7 / 2.5. A rusher who stays up bats more balls at the line (deflections 38 → 48, 44 → 50). Still open: about 2 edge falls per 100, driven over backward after an honest collision. Two attempts at a forward brace (`RUSH_PAD_LEVEL`) and two at an oriented base (`BASE_ORIENT`) made falls worse and are parked: an equal-area ellipse loses more on its short axis than it saves on its long one. `POSTURE_FORCE` had nothing to act on: the engine's posture 1 is 62 to 87° of knee flexion, already at the force optimum.
+
+Checks. Candidate `a5c9f35c` (with the QB lane's `installedPlan` fix `bfd2e201`: an unregistered formation now has no installed plan instead of a throw): full suite 4451 pass with only the two known research failures. Fixtures moved by the new defaults were restated before the head was sent (`punch-strike`, `rush-arm-balance`, `rush-lean-bound` re-found on this stack; `pursuit-commit`'s jump rate asserted at 3 to 8 yd, Defense `1bf06d2b`). Fresh run set 3.79, identical to engine-59's; missed + broken 0.305. Cards, 16 games a side, four arms (`out/e64-card-*`), sack rate:
+
+| seed | reference | finish pair | lean bound | all four |
+|---|---|---|---|---|
+| 11 | 3.9% | 5.5% (moved) | 3.4% | 4.8% |
+| 23 | 3.3% | 5.4% (moved) | 3.1% | 4.8% (moved) |
+| 31 | 3.5% | 4.8% (moved) | 2.9% | 3.6% |
+
+The finish pair moves sacks on every seed, into the bottom of the band (4.61 to 9.36). With the lean bound alone sacks are a little lower on all three, inside the interval each time, and the four together land below the finish pair alone; the bound takes some push off a leaning rusher as well as his falls. Rush yards a carry rose in the lean-bound arm on two seeds (one moved) on diverged games, with the paired run set unchanged. Nothing else agrees across seeds.
+
+**The rating rolls** (Flex, `rep-rolls.mts`, 8 games on this stack, 6,506 move rolls): only 11% of sheds follow a won roll; 89% are bodies alone. About 92% of rolls are lost, and each lost roll scripts a stall, a blocker strike and a control swing, so that a move attempt gains the rusher less than not trying (edge 0.09 yd over 0.5 s after a lost roll, 0.46 after a won one, 0.12 with no move). A rated penalty on effort; the moves are being rebuilt as forces, bull first (`RUSH_BULL`, candidate).
+
 ## engine-59: `PASS_SET_SEEN`, `QB_BODY_SEEN`, `RUSH_PROMISE` and `WAIT_REACHED` on (2026-11-14)
 
 The first removals under the owner's rule of 2026-11-13: every information cheat found is removed and given an honest replacement. The count of what remains is the leak sweep (`docs/reviews/2026-11-13-information-leak-sweep.md`, 60 active decision reads at engine-57) and, once it lands, the guard's allowlist (#699).
