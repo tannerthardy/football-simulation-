@@ -61,3 +61,13 @@ for arg in args:
             if len(B) < 5: continue
             m = lambda f: sum(f(r) for r in B) / len(B)
             print(f"   {l:8s} n {len(B):4d} comp {100 * m(lambda r: r['cmp']):3.0f}% | sep snap+1/+2/+3 s {q([r['s1'] for r in B if 's1' in r])} > {q([r['s2'] for r in B if 's2' in r])} > {q([r['s3'] for r in B if 's3' in r])} | release {q([r['rel'] for r in B])} | arrival {q([r['arr'] for r in B])} | depth {q([r['depth'] for r in B])} | target settled {100 * m(lambda r: r['tspd'] < 1.5):.0f}% | QB moving {100 * m(lambda r: r['qspd'] > 2):.0f}%, depth {q([r['qx'] for r in B])}")
+    # Completion within depth bin within time bin (throws only; depth = the target's depth at the arrival).
+    DB = ((-99, 5), (5, 10), (10, 20), (20, 99)); TB = (('<3.0 s', lambda r: r['bin'] <= 2), ('3.0+ s', lambda r: r['bin'] >= 3))
+    print('  -- completion by depth at arrival x release time (n in brackets); QB moving share in the late cell')
+    for lo, hi in DB:
+        cells = []
+        for tl, tf in TB:
+            B = [r for r in rows if tf(r) and lo <= r['depth'] < hi]
+            cells.append(f"{tl}: {100 * sum(r['cmp'] for r in B) / len(B):.0f}% (n {len(B)})" if B else f'{tl}: -')
+            if tl == '3.0+ s' and B: cells.append(f"QB moving {100 * sum(r['qspd'] > 2 for r in B) / len(B):.0f}%")
+        print(f"   depth {lo if lo > -99 else '<'}..{hi if hi < 99 else ''} yd | " + ' | '.join(cells))
