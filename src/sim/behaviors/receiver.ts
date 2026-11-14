@@ -15,7 +15,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, LOOK_NECK, bodyTurnLead } from '../ball-estimate.js';
+import { BALL_EST, LOOK_NECK, PRE_LOOK_LATE, bodyTurnLead } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -199,6 +199,7 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
+    this.bornAt = sim.t;
     if (!routeOfAgent.has(a)) routeOfAgent.set(a, `${route.family}:${route.id}`);
     this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = route.pace !== undefined ? route.pace + 0.04 * (a.r('routeRunning') - 0.5) : routeEffort(route.family, a.r('routeRunning'));
@@ -226,7 +227,26 @@ export class RouteRunner implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const cmd = this.routeCommand(a, sim);
-    return LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    const out = LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    return BALL_EST ? this.preLook(a, sim, out) : out;
+  }
+
+  /** When this route was installed (the snap, or his release on a delayed route): breakTime counts from here. */
+  private readonly bornAt: number;
+  /** BALL_EST design 4: out of his break, before the throw, he gets his head round to the QB (and his shoulders as
+   * far as his head cannot reach him), so he is already looking when the ball leaves. A better route runner leaves
+   * it later. Not on a deep route, which does not expect the ball at its stem's break. */
+  private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
+    if (sim.t - this.bornAt < this.breakTime + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    sim.ballEstimates.lookAtQB(a, sim);
+    const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+    const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+    let d = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x) - heading;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    const over = Math.abs(d) - LOOK_NECK;
+    return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
   }
 
   /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */

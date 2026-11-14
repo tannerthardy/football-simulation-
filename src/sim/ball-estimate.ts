@@ -29,7 +29,13 @@ import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
 import type { PlaySim } from './playsim.js';
 
-export const BALL_EST = process.env.BALL_EST === '1';
+/** BALL_EST is a bitmask (0 off): 1 the estimator; 2 removes catching.ts's tracking penalty (ballTracking acts through
+ * the estimator; charging it again at the catch double-counts). */
+const BALL_EST_BITS = Number(process.env.BALL_EST ?? 0);
+export const BALL_EST = (BALL_EST_BITS & 1) !== 0;
+export const BALL_EST_NO_TRACKPEN = (BALL_EST_BITS & 2) !== 0;
+/** Design 4: the pre-release look starts this long after his route's break per unit of routeRunning (choice). */
+export const PRE_LOOK_LATE = 0.15;
 
 /** Attempt 2: continuous pursuit (a sample every perception step while in eye range), the error a first-order
  * process with this time constant (choice); each sample is weighted as dt / ERR_TAU of an independent one. */
@@ -75,6 +81,8 @@ interface Track {
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
   fitT: number;
   seeded?: boolean;
+  /** Design 4: when he last looked for the QB before the throw. */
+  preLookT?: number;
   priorT?: number;
   path: PathSample[] | null;
   pathT: number;
@@ -95,6 +103,19 @@ export class BallEstimates {
     if (!BALL_EST || sim.t <= this.lastSenseAt) return;
     this.lastSenseAt = sim.t;
     const ball = sim.ball;
+    // Design 4: before the throw, a receiver looking for the QB turns his head to him (the head he will start the
+    // flight with). No ball, no samples.
+    if (ball.kind !== 'air') {
+      for (const [a, tr] of this.tracks) {
+        if (tr.preLookT === undefined || sim.t - tr.preLookT > sim.dt + 1e-9 || a.isDown(sim.t)) continue;
+        const qb = sim.see(a, sim.qb).pos, toward = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+        const lim = a.facing + clamp(angDiff(toward, a.facing), -NECK, NECK);
+        const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
+        tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -NECK, NECK);
+        tr.headT = sim.t;
+      }
+      return;
+    }
     // A ball being secured is in someone's hands (catching.ts carries it with him): no longer a flight to fit.
     if (ball.kind !== 'air' || ball.securing) return;
     if (ball.flight !== this.flight) { this.flight = ball.flight; this.history.length = 0; }
@@ -158,6 +179,18 @@ export class BallEstimates {
       if (tr.samples.length + tr.pseudo.length >= 2) { tr.fit = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); tr.fitT = sim.t; tr.path = null; }
     }
     return tr.fit ? this.pathOf(sim, tr) : [];
+  }
+
+  /** Design 4: before the throw he is looking for the QB this tick (his head turns to him in sense()). */
+  lookAtQB(a: Agent, sim: PlaySim): void {
+    let tr = this.tracks.get(a);
+    if (!tr) {
+      tr = { flight: null, head: a.facing, headT: sim.t, attendT: -Infinity, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 };
+      this.tracks.set(a, tr);
+    }
+    tr.preLookT = sim.t;
+    // Pre-release attention carries into the flight's first tick.
+    tr.attendT = sim.t;
   }
 
   /** Read-only: his last fitted path (the `ballPath` shape) as of now, without attending, turning his head or
