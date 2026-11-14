@@ -47,7 +47,7 @@ const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants'
  * levels. Their keys were the compiler's, derived from geometry (dagger's the deep safety, seam over dig, the coached
  * key itself; levels keyed on the hook in trips only), so a route-timing change (ROUTE_SHAPE: the dig ready on the
  * first hitch) removed them. As table entries they hold; levels from 2x2, pure on develop, is keyed too. */
-export const PLAN_KEYS_3 = process.env.PLAN_KEYS_3 === '1';
+export const PLAN_KEYS_3 = process.env.PLAN_KEYS_3 !== '0';
 const THIRD_KEYS = new Set(['dagger', 'levels']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
