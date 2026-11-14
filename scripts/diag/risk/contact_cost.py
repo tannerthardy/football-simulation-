@@ -103,3 +103,52 @@ for label, R0 in (('all', rows), ('tail YAC > 10', [r for r in rows if r['yac'] 
   for nm, sel in (('glance (1 frame)', lambda r: r['held'] == 1), ('held 2+ frames', lambda r: r['held'] >= 2)):
     S_ = [r for r in F_ if sel(r)]
     if S_: print(f'      failed, {nm}: n {len(S_)} speed before {med(S_, "s0")} dip {med(S_, "dip")} +0.3 s {med(S_, "s3")} after contact mean {mean(S_, "after")}')
+# Part 2, free plays (never reached or failed): who gets the free runner down, and when. The stopper is the defender
+# nearest the catcher on the last frame if within 1.5 yd (by his rank at the catch: D1, D2, D3+); otherwise the play
+# ended at the sideline (catcher within 1.5 yd of it) or otherwise (score, other). His closing speed and lead (heading
+# ahead of the bearing to the catcher, signed toward the catcher's motion) are medians over the catch to the stop.
+W = 53.3
+free = []
+for p in plays:
+  F, c, d = p['frames'], p['catch'], p['dir']
+  if c >= len(F) - 2 or not F[c]['d']: continue
+  up = lambda i: (F[i]['c'][0] - F[c]['c'][0]) * d
+  yac = up(len(F) - 1)
+  f = next((i for i in range(c + 1, len(F)) if any(dist(x, F[i]['c']) < 1 for x in F[i]['d'])), None)
+  if not (f is None or up(f) > 5 or (yac - up(f)) > 3): continue
+  order = sorted(range(len(F[c]['d'])), key=lambda k: dist(F[c]['d'][k], F[c]['c']))
+  L = F[-1]; near = min(range(len(L['d'])), key=lambda k: dist(L['d'][k], L['c']))
+  if dist(L['d'][near], L['c']) <= 1.5:
+    rank = order.index(near) if near in order else 9
+    who = 'D1' if rank == 0 else 'D2' if rank == 1 else 'D3+'
+  else: who = 'sideline' if min(L['c'][1], W - L['c'][1]) < 1.5 else 'other'
+  r = {'yac': yac, 'who': who, 't': (len(F) - 1 - c) * 0.1}
+  for k, tag in ((5, 'v05'), (10, 'v10'), (15, 'v15')):
+    if c + k < len(F): r[tag] = spd(F[c + k]['c'])
+  r['v00'] = spd(F[c]['c'])
+  if who in ('D1', 'D2', 'D3+'):
+    r['sdist'] = dist(F[c]['d'][near], F[c]['c'])
+    cl, ld = [], []
+    for i in range(c, len(F) - 1):
+      if near >= len(F[i]['d']): break
+      x, C = F[i]['d'][near], F[i]['c']
+      bx, by = C[0] - x[0], C[1] - x[1]; B = math.hypot(bx, by) or 1e-6
+      cl.append((x[2] * bx + x[3] * by) / B - (C[2] * bx + C[3] * by) / B)
+      if spd(x) > 1:
+        b = math.atan2(by, bx); side = 1 if (C[2] * -by + C[3] * bx) >= 0 else -1
+        ld.append(math.degrees(wrap(math.atan2(x[3], x[2]) - b)) * side)
+    if cl: r['close'] = st.median(cl)
+    if ld: r['lead'] = st.median(ld)
+  free.append(r)
+q = lambda v, x: sorted(v)[min(len(v) - 1, int(x * len(v)))]
+Y = [r['yac'] for r in free]
+print(f'part 2, free plays (never reached or failed): n {len(free)} ({len(free) / max(1, len(rows)):.2f} of completions)')
+if Y:
+  print(f'  YAC p25/50/75/90 {q(Y, .25):.1f}/{q(Y, .5):.1f}/{q(Y, .75):.1f}/{q(Y, .9):.1f}  mean {sum(Y) / len(Y):.2f}  over 10 {sum(1 for y in Y if y > 10) / len(Y):.2f}')
+  print(f'  catcher speed at the catch {med(free, "v00")}  +0.5 s {med(free, "v05")}  +1.0 s {med(free, "v10")}  +1.5 s {med(free, "v15")} yd/s')
+  for who in ('D1', 'D2', 'D3+', 'sideline', 'other'):
+    R = [r for r in free if r['who'] == who]
+    if not R: continue
+    line = f'  stop by {who:8s} share {len(R) / len(free):.2f} | YAC median {med(R, "yac")} | time to stop {med(R, "t")} s'
+    if who.startswith('D'): line += f' | his distance at the catch {med(R, "sdist")} yd | closing {med(R, "close")} yd/s | lead {med(R, "lead", 0)} deg'
+    print(line)
