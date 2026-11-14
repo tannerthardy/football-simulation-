@@ -2193,10 +2193,14 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   if (rb.ballAt === undefined) {
     a.tags.add('arm-bite');
     if (!continueCoverage) return fallback();
-    // A zone defender breaks on the passer's shoulders: toward the receiver they point at in his picture (chosen once
-    // for this belief); with none lined up, he plants (stops his drop) until he sees the ball or the pull-down.
-    const R = shoulderTarget(a, sim, rb.releasedAt ?? rb.loadingAt ?? sim.t);
-    if (R) { a.tags.add('shoulder-break'); return runThrough(a, sim.see(a, R).pos, { speed: 0.9 }); }
+    // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
+    // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
+    // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
+    // drop) until he sees the ball or the pull-down.
+    if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
+    const pick = shoulderTarget(a, sim, rb.releasedAt);
+    const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
+    if (pick.R && sim.t - pick.at >= react - 1e-9) { a.tags.add('shoulder-break'); return runThrough(a, sim.see(a, pick.R).pos, { speed: 0.9 }); }
     return stopDrop(sim, continueCoverage());
   }
   a.tags.add('onBall');
@@ -2211,22 +2215,25 @@ const SHOULDER_CONE = 25 * Math.PI / 180;
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
  * shoulders can exploit. */
 const SHOULDER_READ_SD_MIN = 5, SHOULDER_READ_SD_SPAN = 15;
-const shoulderPick = new WeakMap<Agent, { key: number; R: Agent | null }>();
-/** Diagnostic: the receiver his last shoulder read picked (null: none lined up). */
-export function shoulderPickOf(a: Agent): Agent | null | undefined { return shoulderPick.get(a)?.R; }
-function shoulderTarget(a: Agent, sim: PlaySim, key: number): Agent | null {
+const shoulderPick = new WeakMap<Agent, { key: number; R: Agent | null; at: number; read: number | null }>();
+/** Diagnostic: his last shoulder read (the receiver picked, null if none lined up; when; the bearing he read). */
+export function shoulderPickOf(a: Agent): { R: Agent | null; at: number; read: number | null } | undefined { return shoulderPick.get(a); }
+function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null; at: number; read: number | null } {
   const prev = shoulderPick.get(a);
-  if (prev && prev.key === key) return prev.R;
-  const q = sim.see(a, sim.qb);
+  if (prev && prev.key === key) return prev;
+  // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
+  const q = sim.track(a, sim.qb, 1, true);
   const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
+  const read = q.facing === undefined ? null : q.facing + err;
   let best: Agent | null = null, bestOff = SHOULDER_CONE;
-  if (q.facing !== undefined) for (const r of sim.offense) {
+  if (read !== null) for (const r of sim.offense) {
     if (r === sim.qb || isOL(r)) continue;
-    const p = sim.see(a, r).pos, off = Math.abs(angleDiff(Math.atan2(p.y - q.pos.y, p.x - q.pos.x), q.facing + err));
+    const p = sim.see(a, r).pos, off = Math.abs(angleDiff(Math.atan2(p.y - q.pos.y, p.x - q.pos.x), read));
     if (off < bestOff) { bestOff = off; best = r; }
   }
-  shoulderPick.set(a, { key, R: best });
-  return best;
+  const out = { key, R: best, at: sim.t, read };
+  shoulderPick.set(a, out);
+  return out;
 }
 
 /** Same catch approach, seeded only by this defender's acquired trajectory.
