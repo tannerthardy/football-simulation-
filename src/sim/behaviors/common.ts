@@ -278,10 +278,16 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
     facing: travel + angleDiff(travel, near.facing!) * gather };
 }
 
+/** TRACK_TACKLE (experimental, off; TRACK_TACKLE=1, or PERCEIVE_TRACK=1 for every group): perception channels step
+ * 1a', the tackle window (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier's picture in the last
+ * yards (chase's close gather, tryTackles' window preview, the whiff margin's aim) is read through the tracking channel
+ * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
+ * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
+export const TRACK_TACKLE = process.env.TRACK_TACKLE === '1' || process.env.PERCEIVE_TRACK === '1';
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  const seen = sim.see(a, target, look);
+  const seen = TRACK_TACKLE ? sim.track(a, target, 1, true) : sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;

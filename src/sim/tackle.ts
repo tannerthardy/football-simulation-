@@ -22,6 +22,7 @@
  * a quarterback in the grasp. Whiffed lunges and dives commit the body: a
  * defender who leaves his base to reach pays for it physically.
  */
+import { TRACK_TACKLE } from './behaviors/common.js';
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
@@ -198,7 +199,8 @@ export function tryTackles(sim: PlaySim): void {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
         const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
-        const seen = sim.see(d, c, look);
+        // TRACK_TACKLE (step 1a'): the carrier in his tackle window is tracked.
+        const seen = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c, look);
         // tryTackles follows physics. Perception was sampled at tick start;
         // dead-reckon only its stale velocity to this body-state boundary.
         const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
@@ -358,7 +360,7 @@ export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, eng
   const body = c.profile.radius + d.profile.radius;
   const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
   const w = Math.max(0.08, window * clamp((dd - body) / Math.max(0.1, limit - body), 0, 1));
-  const seenC = sim.see(d, c);
+  const seenC = TRACK_TACKLE ? sim.track(d, c, 1, true) : sim.see(d, c);
   const aim = { x: seenC.pos.x + seenC.vel.x * w, y: seenC.pos.y + seenC.vel.y * w };
   const coast = { x: d.pos.x + d.vel.x * w, y: d.pos.y + d.vel.y * w };
   const redirect = 0.5 * d.profile.lateral * (engaged ? 0.3 : 1) * w * w;
