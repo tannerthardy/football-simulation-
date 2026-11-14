@@ -2244,7 +2244,15 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
     if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
     const pick = shoulderTarget(a, sim, rb.releasedAt);
     const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
-    if (pick.R && sim.t - pick.at >= react - 1e-9) { a.tags.add('shoulder-break'); return runThrough(a, sim.see(a, pick.R).pos, { speed: 0.9 }); }
+    if (pick.R && sim.t - pick.at >= react - 1e-9) {
+      a.tags.add('shoulder-break');
+      // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
+      // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
+      // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
+      const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+        Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+      return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
+    }
     return stopDrop(sim, continueCoverage());
   }
   a.tags.add('onBall');
@@ -2255,14 +2263,20 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
 /** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
  * the arm (smallest bearing off the passer's seen facing, within SHOULDER_CONE), chosen once per belief. */
 const SHOULDER_CONE = 25 * Math.PI / 180;
+/** The shoulder break's lead: his crude estimate of a throw's speed (yd/s) and the longest flight he projects for. It
+ * under-leads (seed 11: 0.57 s estimated against 0.90 s actual). To be replaced by his estimate of the throw from the
+ * passer's distance and the kind of throw he expects (a dart, a touch ball), with his rating's error. */
+const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
+/** SHOULDER_LEAD (on; `=0` restores the break to the receiver's seen spot): the shoulder break leads the receiver (#758). */
+const SHOULDER_LEAD = process.env.SHOULDER_LEAD !== '0';
 /** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
  * shoulders can exploit. */
 const SHOULDER_READ_SD_MIN = 5, SHOULDER_READ_SD_SPAN = 15;
-const shoulderPick = new WeakMap<Agent, { key: number; R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null }>();
+const shoulderPick = new WeakMap<Agent, { key: number } & { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null; from: { x: number; y: number } }>();
 /** Diagnostic: his last shoulder read (the receiver picked, null if none lined up; when; the bearing he read). */
-export function shoulderPickOf(a: Agent): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null } | undefined { return shoulderPick.get(a); }
-function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null } {
+export function shoulderPickOf(a: Agent): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null; from: { x: number; y: number } } | undefined { return shoulderPick.get(a); }
+function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null; from: { x: number; y: number } } {
   const prev = shoulderPick.get(a);
   if (prev && prev.key === key) return prev;
   // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
@@ -2276,7 +2290,7 @@ function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null;
     if (off < bestOff) { bestOff = off; best = r; seenBearing = b; }
   }
   // err and seenBearing are kept for the diagnostic probe only (the read's draw, and the pick's bearing in his picture)
-  const out = { key, R: best, at: sim.t, read, err, seenBearing };
+  const out = { key, R: best, at: sim.t, read, err, seenBearing, from: { x: q.pos.x, y: q.pos.y } };
   shoulderPick.set(a, out);
   return out;
 }

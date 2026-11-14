@@ -21,7 +21,9 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function falls(flags: Record<string, string>, roster: number, coverage = 'cover2', seed = 5) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
+  vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
@@ -71,6 +73,7 @@ describe('PUNCH_STRIKE', () => {
     // 0.6 of that press in the 0.3 s before. Requirement: at least one exists on the current stack.
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+    vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     const OL = ['LT', 'LG', 'C', 'RG', 'RT'];
