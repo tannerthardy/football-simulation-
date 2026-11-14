@@ -340,6 +340,39 @@ the man and with the QB frame both.
 - What stays the World's: how fast he turns (the yaw motor's bounded torque), what turns him (where the load goes,
   step 3).
 
+**The coaching each request comes from** (retrieved 2026-11-14; coaching blogs and clinic notes, not one authority,
+and the aiming points vary by scheme):
+- *Pass set: inside-out, half a man, punch the inside half.* The tackle beats the rusher to a spot that gives him a
+  half-man relationship, playing inside-out; the spot is between the rusher and where the QB sets up, which makes the
+  rusher choose inside or outside; the punch goes to the defender's inside half, staying as square as he can, and his
+  inside hand into the rusher's chest keeps the inside leverage
+  ([Coaches Insider, the elements of pass protection](https://coachesinsider.com/football/the-elements-of-pass-protection-article/);
+  [USA Football, how offensive tackles keep edge rushers on their toes](https://blogs.usafootball.com/blog/6729/how-offensive-tackles-keep-edge-rushers-on-their-toes);
+  [USA Football, the art of the strike](https://blogs.usafootball.com/blog/6283/the-art-of-the-strike-3-techniques-offensive-linemen-can-use-to-fend-off-pass-rushers);
+  [Gridiron Strategies, five keys of drop-back protection](https://gridironstrategies.com/article/drop-back-pass-protection-centers-around-5-basic-keys)).
+  "As square as he can" and "the inside half" are both in it: shoulders square to where he is going, nose and hands on
+  the man's inside half. The NFL fit (0.61 on the rusher, 0.27 on the set frame) is that.
+- *Run block: the play-side number, by scheme.* The reach targets the play-side number, the blocker staying square
+  ([X&O Labs, reach technique](https://www.xandolabs.com/?p=10086)); for covered linemen in wide and mid zone most coaches
+  teach the far (play-side) armpit, uncovered linemen the near number of the next play-side down lineman
+  ([X&O Labs, zone aiming points survey](https://www.xandolabs.com/?p=11804);
+  [X&O Labs, uncovered technique](https://www.xandolabs.com/?p=21795)). So the run blocker's point is the side his
+  engaged goal already names (the seal target's side, `e.sealTarget`), not a new choice.
+- *Run defender holding a gap: hands on the blocker, leverage in the gap.* Stab and grab: the inside hand to the
+  blocker's chest, the outside hand to his outside shoulder pad, a body on a body with the leverage kept in the gap; an
+  edge keeps his outside shoulder free
+  ([USA Football, defeating one-on-one blocks](https://blogs.usafootball.com/blog/583/defensive-line-techniques-for-defeating-one-on-one-blocks);
+  [Hoops King, gap responsibility](https://hoopsking.com/blogs/default-blog/youth-football-gap-responsibility-stop-the-run)).
+  His point is the blocker's gap-side half (his fit's side), his outside arm the free one.
+
+**What "toward the QB" means without the true quarterback.** The inside number is the man's half toward the place the
+blocker protects: the launch point of the called protection on the ball's line (`protectPoint`, the called drop he
+knows from the huddle; already REP_SEEN's `qbB`), never `sim.qb.pos`. A scramble or a moved launch changes it only
+through what he can know: the call, or the quarterback as he last saw him when he turned to look. The rep's frame
+(`axisOf`, the true QB's line from the rusher, kept true in ENGAGE_FELT for this reason) moves with this law: for the
+blocker's reads it becomes the felt rusher's line to the protect point; the rusher's own frame stays his picture of the
+QB (`qbD`). The outcome tests that use `e.phi` stay on the World's bodies.
+
 **How step 1 is judged** (engaged-yaw.py, the same operator on both): the rusher-off-chest angle should rise from 3 deg
 toward the 10-15 deg the number gives, with no motor change. If the offset alone accounts for the NFL's 15 deg and the
 joint fit moves toward the NFL's (a up from 0.01, b down from 0.80), the request was the missing piece; what is left
