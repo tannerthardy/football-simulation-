@@ -29,9 +29,10 @@ for arg in args:
             if fw is None or t is None or lab.get('throwaway'): continue
             p = Play(raw); qbs = p.who('O', 'QB')
             if not qbs or p.pos(qbs[0], 0)[0] is None: continue
-            ka = min(p.frames - 1, p.k(ev.get('pass_arrived', ev.get('end')))); x = p.pos(t, ka)[0]
+            ka = min(p.frames - 1, p.k(ev.get('pass_arrived', ev.get('end')))); x, ty = p.pos(t, ka)
             if x is None: continue
-            R.append((fw, x, 'gun' if p.pos(qbs[0], 0)[0] < -3 else 'under', bool(pf and pf.get('playAction') == 'TRUE') if pf is not None else bool(re.search(r'^pa_', str((raw.get('cell') or {}).get('concept') or '')))))
+            R.append((fw, x, 'gun' if p.pos(qbs[0], 0)[0] < -3 else 'under', bool(pf and pf.get('playAction') == 'TRUE') if pf is not None else bool(re.search(r'^pa_|\+pa$', str((raw.get('cell') or {}).get('concept') or ''))),
+                      p.players[t].get('group') or p.players[t].get('pos') or '?', abs(ty - raw['ball_y']), bool(pf is not None and pf.get('pff_runPassOption') == '1')))
     n = len(R); print(f"== {name}: targeted throws {n}; under 2.0 s {100 * sum(r[0] < 2 for r in R) / max(1, n):.0f}%; release p25/50/75 {q([r[0] for r in R], .25):.2f}/{q([r[0] for r in R]):.2f}/{q([r[0] for r in R], .75):.2f}")
     for lab, lo, hi in BINS:
         S = [r for r in R if lo <= r[1] < hi]
@@ -41,3 +42,14 @@ for arg in args:
         if S: print(f"   {a:16s} {100 * len(S) / n:4.0f}% of throws | release p25/50/75 {q([r[0] for r in S], .25):.2f}/{q([r[0] for r in S]):.2f}/{q([r[0] for r in S], .75):.2f} s | under 2.0 s {100 * sum(r[0] < 2 for r in S) / len(S):.0f}%")
     S = [r for r in R if r[3]]
     print(f"   play action      {100 * len(S) / max(1, n):4.0f}% of throws | release p50 {q([r[0] for r in S]):.2f} s")
+    # The behind-the-line bin, split: who it goes to and how wide (receiver screens and RPO throws against the back).
+    S = [r for r in R if r[1] < 0]
+    if S:
+        m = len(S); print(f"   behind the line, n {m}:")
+        for g in sorted({r[4] for r in S}, key=lambda g: -sum(r[4] == g for r in S))[:4]:
+            G = [r for r in S if r[4] == g]; print(f"      to {g:3s} {100 * len(G) / m:3.0f}% | release p25/50/75 {q([r[0] for r in G], .25):.2f}/{q([r[0] for r in G]):.2f}/{q([r[0] for r in G], .75):.2f} s")
+        for lab, lo, hi in (('within 8 yd of the ball', 0, 8), ('8-16 yd wide', 8, 16), ('16+ yd wide', 16, 99)):
+            G = [r for r in S if lo <= r[5] < hi]
+            if G: print(f"      {lab:24s} {100 * len(G) / m:3.0f}% | release p50 {q([r[0] for r in G]):.2f} s")
+        G = [r for r in S if r[6]]
+        print(f"      RPO-tagged (NFL only)    {100 * len(G) / m:3.0f}%" + (f" | release p50 {q([r[0] for r in G]):.2f} s" if G else ''))
