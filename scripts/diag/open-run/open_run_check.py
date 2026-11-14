@@ -102,6 +102,7 @@ def implied_hips(sh, bp, share_ratio):
     for d in range(0, 181):
         if dsf(sh, bp, d) <= share_ratio: return d
     return 180
+BAND = {}
 print('\nCAP vs NFL p95 in yd/s by shoulder angle (bin centre): current cap | NFL p95 | NFL p99 | implied trunk twist T = shoulder angle - hips angle that would put the current cap at NFL p95 (forward-bin p95 = 1.0)')
 for grp in ('WR', 'TE', 'RB', 'CB', 'S'):
     p = PR[grp]
@@ -112,5 +113,8 @@ for grp in ('WR', 'TE', 'RB', 'CB', 'S'):
         if len(A) < 30: continue
         th = b * 15 + 7.5; cur = p['vmax'] * dsf(p['shuffle'], p['backpedal'], th)
         ratio = q(A, .95) / f95; h = implied_hips(p['shuffle'], p['backpedal'], ratio)
+        BAND.setdefault(grp, []).append({'theta': th, 'p95': q(A, .95), 'p99': q(A, .99), 'fwd95': f95, 'n': len(A)})
         out.append(f'{th:.0f}: cur {cur:.1f} | p95 {q(A,.95):.1f} (x{ratio:.2f} of fwd {f95:.1f}) p99 {q(A,.99):.1f} | hips {h} T {th-h:.0f}')
     print(f'{grp} (sim vmax {p["vmax"]:.1f}, shuffle {p["shuffle"]:.2f}, backpedal {p["backpedal"]:.2f}): ' + ' || '.join(out))
+
+json.dump(BAND, open(S + '/nfl-band.json', 'w'))
