@@ -8,7 +8,9 @@ const CONCEPTS = 'smash mesh flood drive sail_corner corner_flat trips_sail trip
 const COVS = 'cover1 cover2man cover2 tampa2 cover3 cover3_match cover4 cover6'.split(' ');
 // STAGED_FIVE_DEEP=dagger,y_cross: put these concepts on the deeper set for this run only (the twelve-concept arm).
 for (const id of (process.env.STAGED_FIVE_DEEP ?? '').split(',').filter(Boolean)) if (PASS_BY_ID[id]) PASS_BY_ID[id].drop = 'five_deep';
-for (const concept of CONCEPTS) for (const coverage of COVS) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
+// STAGED_CONCEPTS=a,b: only these concepts (to run the set in chunks and append the rows).
+const ONLY = (process.env.STAGED_CONCEPTS ?? '').split(',').filter(Boolean);
+for (const concept of ONLY.length ? CONCEPTS.filter((c) => ONLY.includes(c)) : CONCEPTS) for (const coverage of COVS) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
   for (const formation of ['gun_doubles_11', 'gun_trips_11']) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
     let thr: any = null; const tb = sim.throwBall.bind(sim), dir = sim.attackDir(sim.offense[0].team);
