@@ -106,11 +106,14 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
 /** MESH_TIME (experimental, off; with CROSS_FLAT, whose mesh_under it adjusts): mesh as coordinated. Y (shallow_high)
  * sets the depth at the linebackers' toes and does not adjust; X (mesh_under) runs "just underneath the Y as tightly
  * as they can" (Air Raid / Holgorsen). From his own picture of Y (seen position and velocity, his delay), while they
- * close laterally and within 1.5 s of meeting, X steers his depth to pass under Y's depth at the meeting by a margin
- * his route running sets: 0.8 yd centre to centre at the best, 1.4 at the worst. His lateral speed is kept and his
+ * close laterally and within 2.0 s of meeting, X steers his depth to pass under Y's depth at the meeting by a margin
+ * his route running sets, the hand-slap geometry: 0.8 yd centre to centre at the best, 1.4 at the worst. His lateral speed is kept and his
  * speed never rises. A trailing defender who is picked is the physics of the two bodies, not a scripted rub. Off, X
  * runs his points (staged against Cover 1: closest approach 2.2 yd, no defender contact with the other crosser). */
 const MESH_TIME = process.env.MESH_TIME === '1';
+/** How far out he starts setting up under Y (s to the meeting): as taught he gets under Y on the way, not at the mesh.
+ * Attempt 1 started at 1.5 s and missed his own margin by 0.24 yd (p50; 0.73 at p75) against a still-climbing Y. */
+const MESH_LEAD = 2.0;
 export function meshTime(a: Agent, sim: Pick<PlaySim, 'offense' | 'see' | 'los' | 'attackDir'>, cmd: MoveCommand, rr: number): MoveCommand {
   const y = sim.offense.find((o) => o !== a && (o.behavior as unknown as { route?: RouteDef })?.route?.id === 'shallow_high');
   if (!y) return cmd;
@@ -118,7 +121,7 @@ export function meshTime(a: Agent, sim: Pick<PlaySim, 'offense' | 'see' | 'los' 
   const gap = seen.pos.y - a.pos.y, closing = (a.vel.y - seen.vel.y) * Math.sign(gap);
   if (closing < 0.5 || Math.abs(gap) < 0.3) return cmd;
   const tm = Math.abs(gap) / closing;
-  if (tm > 1.5) return cmd;
+  if (tm > MESH_LEAD) return cmd;
   const yDepth = (seen.pos.x + seen.vel.x * tm - sim.los) * dir, myDepth = (a.pos.x - sim.los) * dir;
   const want = yDepth - (0.8 + 0.6 * (1 - rr));
   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
