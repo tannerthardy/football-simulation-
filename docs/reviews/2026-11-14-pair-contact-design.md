@@ -690,3 +690,39 @@ shoulder lever. Two attempts, staged first, with the gates written down before:
 - the inside-handed run defender holds against a driving blocker while the outside-handed one is moved (about 0 today);
 - a long-arm extends at arm speed and drives a blocker who does not answer it.
 Its first game read includes the run set by concept.
+
+## Turning as a strike question: measured (2026-11-14; Integration's ruling 2)
+
+`strike-moments.mts`, seed 11 x 4, engine-65 reference stack (ENGAGE_TRUNK off), every strike on an engaged pass-set
+blocker before the throw. World strikes act at the line of centres (`pairImpulse` with x, y only), so **no move puts any
+moment on the blocker today, by construction**. The question is whether giving them a lever would matter. The
+counterfactual moment is the strike's impulse across the line times CHEST_HALF (0.12 yd), at his shoulder, against his
+yaw motor's budget over the same tick (traction x base radius x dt; and at 80% of traction in use).
+
+| move | n | impulse across the line p50 / p90 (kg yd/s) | moment / one-tick budget p50 / p90 (standing; at 80% in use) | over budget |
+|---|---|---|---|---|
+| club | 457 | 5 / 31 | 0.04 / 0.21; 0.06 / 0.35 | 0% |
+| swim | 456 | 7 / 24 | 0.05 / 0.17; 0.08 / 0.29 | 0% |
+| rip | 452 | 5 / 17 | 0.03 / 0.12; 0.05 / 0.20 | 0% |
+| long-arm | 319 | 6 / 24 | 0.04 / 0.17; 0.07 / 0.28 | 0% |
+| snatch | 213 | 6 / 21 | 0.04 / 0.15; 0.07 / 0.25 | 0% |
+| spin | 171 | 10 / 33 | 0.07 / 0.23; 0.11 / 0.38 | 0% |
+| dip | 79 | 27 / 39 | 0.20 / 0.28; 0.34 / 0.46 | 0% |
+
+**The feet's race:** on ticks where the rusher holds a half-man (|phi| 0.4-0.7) and moves faster than 2 yd/s (n 3,179):
+- the blocker's hips turn p50 / p90 30 / 133 deg/s, against the bearing to the rusher at 16 / 112;
+- the bearing outruns his hips on 27% of ticks;
+- he is never at his turn-rate cap (0%).
+
+**Read:**
+- A lever on the moves would not turn a set man: even at the shoulder, every move's moment stays under half his motor's
+  one-tick budget, at 80% of traction in use.
+- His feet never lose the race: his hips keep up with the rusher's bearing and never reach their cap.
+- So in this engine nothing can take a set blocker's facing from him: not the press (54 N·yd against 190-360), not a
+  strike, not the race.
+- If being turned is real football, the missing piece is not a lever. It is either:
+  - the turn-rate cap and the yaw motor's budget being too generous for a man whose traction is spent on holding ground
+    (grip shared between holding ground and holding facing: the yaw note's second item, still unbuilt); or
+  - the facing request itself (ENGAGE_TRUNK's hips on the set make the race real, where the default's "face the man" never
+    races).
+- Next, if asked: the same race on ENGAGE_TRUNK, and the motor's budget with the shared grip.
