@@ -37,12 +37,31 @@ describe('RUSH_ARM_BALANCE', () => {
     expect(on.some((f: any) => f.slot === 'DT_S')).toBe(false);
   });
 
-  it('a bull keeps its commitment: the over-committed bull who is dropped still falls (Cover 1, seed 4, roster 3)', async () => {
-    // Re-found on the engine-59 stack (PASS_SET_SEEN, QB_BODY_SEEN, RUSH_PROMISE on) by a native search: 216 staged
-    // scenes, 3 bull falls among 33 DL falls; this one (the strong tackle at about 1.65 s) falls under all three coverages.
-    const on = await falls('1', 3, 'cover1', 4);
-    expect(on.some((f: any) => f.slot === 'DT_S' && f.move === 'bull')).toBe(true);
-  });
+  it('a bull keeps its commitment: an over-committed bull who is dropped still falls (search with a floor)', async () => {
+    // A search, not a pinned scene (moved on engine-58, 59 and 61): staged scenes in a fixed order until a DL goes down
+    // on a bull with RUSH_ARM_BALANCE on (the bull is outside its bound). Requirement: at least one exists.
+    vi.resetModules();
+    for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+    for (const k of ['RUSH_HANDS', 'PUNCH_STRIKE', 'ANCHOR_BASE', 'RUSH_ARM_BALANCE']) vi.stubEnv(k, '1');
+    vi.stubEnv('RUSH_LEAN_BOUND', '0');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    let found: string | null = null, scenes = 0;
+    search: for (const coverage of ['cover1', 'cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+      scenes++;
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
+      const dl = new Set(sim.defense.filter((a: any) => /^(DE|DT|NT)/.test(a.slot)).map((a: any) => a.idx));
+      const moves = new Map<number, string>();
+      while (sim.phase === 'live' && sim.t < 5 && sim.throwAt < 0) {
+        for (const e of sim.engagements) if (e.type === 'pass') moves.set(e.defender.idx, e.rusherHand ? 'longarm-held' : e.move);
+        sim.tick();
+        const f = sim.events.find((e: any) => e.type === 'fall' && dl.has(e.a) && e.t >= 0.5 && moves.get(e.a) === 'bull');
+        if (f) { found = `${coverage} roster ${roster} seed ${seed}: ${sim.agents[f.a].slot} at ${f.t.toFixed(2)} s`; break search; }
+      }
+    }
+    console.log(`dropped bull: ${found ?? 'none'} after ${scenes} scenes`);
+    expect(found).not.toBeNull();
+  }, 480_000);
 
   it('is off unless set', async () => {
     vi.resetModules(); vi.stubEnv('RUSH_ARM_BALANCE', '0');

@@ -12,7 +12,11 @@
  *   npm run ref -- --list
  *
  * Every flag named in the stack file is set explicitly (on -> 1, else 0), so
- * ambient environment never leaks into a measurement.
+ * ambient environment never leaks into a measurement. Numeric flags (a mask or
+ * level read as `Number(process.env.NAME ?? default)`, listed under `numeric` in
+ * the stack file with their default and their legacy value) are set explicitly
+ * too: the default, or the legacy value under `--off`, or what `--flag NAME=n`
+ * says (a non-negative integer).
  */
 import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -29,6 +33,15 @@ export const reads = () => { const out = {};
   return out; };
 /** Flags the source reads as `=== '1'` (off unless set). */
 export const experimental = () => Object.entries(reads()).filter(([, v]) => v === 'off').map(([k]) => k).sort();
+/** Numeric flags in src: `Number(process.env.NAME ?? default)` -> default. */
+export const numericReads = () => { const out = {};
+  for (const p of files('src')) for (const m of readFileSync(join(root, p), 'utf8').matchAll(/Number\(process\.env\.([A-Z][A-Z0-9_]*) \?\? (\d+(?:\.\d+)?)\)/g)) out[m[1]] = Number(m[2]);
+  return out; };
+/** Declared numeric flags whose source default differs, or that src no longer reads; empty when the file is the code default. */
+export function numericMismatches() {
+  const r = numericReads(), declared = stack.numeric ?? {};
+  return { notInSrc: Object.keys(declared).filter(n => !(n in r)), wrongDefault: Object.keys(declared).filter(n => n in r && r[n] !== declared[n].default) };
+}
 /** Where the stack file and src disagree; empty when the stack is the code default. */
 export function mismatches() {
   const r = reads(), known = Object.keys(stack.flags);
@@ -38,10 +51,17 @@ export function mismatches() {
 
 export function environment(ambient, overrides = [], off = false) {
   const env = { ...ambient }, known = Object.keys(stack.flags);
+  const numeric = stack.numeric ?? {};
   for (const name of known) env[name] = stack.flags[name] === 'on' && !off ? '1' : '0';
+  for (const [name, n] of Object.entries(numeric)) env[name] = String(off ? n.legacy : n.default);
   for (const setting of overrides) {
     const [name, value] = setting.split('=');
-    if (!known.includes(name) || !['0', '1'].includes(value)) throw new Error(`Use --flag NAME=0|1 with a flag from the stack file: ${setting}`);
+    if (name in numeric) {
+      if (!/^\d+$/.test(value ?? '')) throw new Error(`${name} is numeric: use --flag ${name}=<non-negative integer>: ${setting}`);
+      env[name] = value;
+      continue;
+    }
+    if (!known.includes(name) || !['0', '1'].includes(value)) throw new Error(`Use --flag NAME=0|1 with a flag from the stack file (or NAME=n for a numeric flag): ${setting}`);
     if (value === '1' && stack.flags[name] === 'retired') throw new Error(`${name} is retired (docs/REFERENCE_STACK.md); it stays off`);
     env[name] = value;
   }
@@ -59,6 +79,9 @@ async function main() {
     else { command = [a, ...args.splice(0)]; break; }
   }
   const known = Object.keys(stack.flags), bad = mismatches();
+  const num = numericMismatches();
+  if (num.notInSrc.length || num.wrongDefault.length)
+    throw new Error(`numeric flags in config/reference-stack.json differ from src: not in src [${num.notInSrc}], default differs [${num.wrongDefault}]`);
   if (bad.undeclared.length || bad.notInSrc.length || bad.wrongDefault.length)
     throw new Error(`config/reference-stack.json differs from src: undeclared [${bad.undeclared}], not in src [${bad.notInSrc}], default differs from the stack [${bad.wrongDefault}]`);
   if (list) { for (const s of ['on', 'off', 'retired']) console.log(`${s}: ${known.filter(n => stack.flags[n] === s).join(' ')}`); return; }
