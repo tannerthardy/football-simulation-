@@ -201,6 +201,23 @@ export const MENU_CONCEPTS: PassConcept[] = [
   },
 ];
 
+/** CONCEPT_DROPS (experimental, off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
+ * `dropSpec`): each pool concept's coached drop class, so its first read's route is ready on its step. Our gun drops
+ * were 68% at 2-3.5 yd behind the snap against the NFL's 43%, and 10% at 3.5-5 yd against 28% (the NFL setting there at
+ * 2.2 s and throwing at 3.0, a hitch after the drop; QB lane, drop-time.py). With the plan's rhythm (OUTLET_LAST's
+ * `rhythm`), the concepts whose first read is not ready until 2.4-2.9 s take the five-step ('five': the deeper set
+ * and read 1 on the hitch); the rest keep theirs. Sourced classes: the shallow cross needs a full five-step (Smart
+ * Football; mesh, drive), the slant is three-step (Smart Football), stick from one to three steps (Throw Deep),
+ * comebacks five steps and a hitch (Coiner; ours had seven), four verticals a quick five (Gonzalez via Smart
+ * Football: read 1 on the last step; ours is not ready until 2.7, a route timing question noted for the QB lane);
+ * the rest by the table's analogues (docs/reviews/2026-11-14-read-plan-table.md). This flag only marks the class:
+ * 'five' and 'gun5' are the same drop in the gun today, until the QB lane sets 'five' to the NFL's depth and time. */
+const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
+const COACHED_DROP: Record<string, PassConcept['drop']> = {
+  smash: 'five', mesh: 'five', four_verts: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
+  trips_sail: 'five', trips_outs: 'five', verts_hitch: 'five', double_outs: 'five', comebacks: 'five',
+};
+if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
 
 export const RUN_CONCEPTS: RunConcept[] = [
