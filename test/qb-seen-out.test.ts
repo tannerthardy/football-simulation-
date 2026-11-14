@@ -8,7 +8,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 // A mugged look puts the back in the protection count; his man does not come, so he releases late (about 2.9 s).
-const PLAYS: [string, string, number, string][] = [['smash', 'cover3', 2, 'mug_both'], ['dagger', 'cover3', 2, 'mug_both'], ['drive', 'cover3', 2, 'mug_both'], ['smash', 'cover3', 2, 'mug_fire'], ['drive', 'cover3', 2, 'mug_fire']];
+// Which calls put a back in the count and then let him go moves with the engine's defaults, so the panel is searched:
+// the first three calls that stage are used.
+const PLAYS: [string, string, number, string][] = [];
+for (const pressure of ['mug_both', 'mug_fire', 'zero_6']) for (const seed of [2, 3, 4]) for (const concept of ['smash', 'dagger', 'drive', 'comebacks']) PLAYS.push([concept, 'cover3', seed, pressure]);
 
 async function stage(flag: string) {
   vi.resetModules();
@@ -19,6 +22,7 @@ async function stage(flag: string) {
   const { stand } = await import('../src/sim/behaviors/common.js');
   const out: { unseenReady: boolean; unseenOut: boolean; seenOut: boolean; stays: boolean }[] = [];
   for (const [concept, coverage, seed, pressure] of PLAYS) {
+    if (out.length >= 3) break;
     const setup = nativeTraceSetup({ coverage, concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false });
     const sim: any = new PlaySim({ ...setup, defCall: { ...setup.defCall, pressure: PRESSURE_BY_ID[pressure] } });
     const qb = sim.qb, beh: any = qb.behavior;
