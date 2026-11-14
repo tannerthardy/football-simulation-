@@ -3462,6 +3462,9 @@ function backerShows(observer: Agent, sim: PlaySim, backer: Perceived): boolean 
 }
 
 /** Angle between a blocker's chest and the man, in units of a right angle. */
+/** SHOULDERS BY MEANING, reads the hips for now (TRUNK_TWIST Stage 1, docs/reviews/2026-11-14-facing-consumer-map.md):
+ * this is where a man's chest points, so it will read `shouldersOf(body)` in the stage that gives linemen a trunk. Until
+ * then a lineman has none (trunk 0), so hips and shoulders are the same number here. Do not mistake it for done. */
 function chestOff(facing: number, from: Vec2, to: Vec2): number {
   const toMan = Math.atan2(to.y - from.y, to.x - from.x);
   return Math.abs(Math.atan2(Math.sin(toMan - facing), Math.cos(toMan - facing))) / (Math.PI / 2);
