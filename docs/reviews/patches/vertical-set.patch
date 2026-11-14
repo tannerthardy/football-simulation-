@@ -1,0 +1,168 @@
+From a581641d6bc93464870b333afb5a8db0fdc6ba7d Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sat, 14 Nov 2026 14:38:20 +0000
+Subject: [PATCH] VERTICAL_SET (off): the tackle's kick gives ground
+ vertically, no wider than the set line from his alignment, leading only the
+ rusher's inward motion; lane read on engine-64
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ config/baseline.json                    |  1 +
+ config/reference-stack.json             |  1 +
+ docs/FLAGS.md                           |  3 +-
+ docs/reviews/2026-11-14-vertical-set.md | 56 +++++++++++++++++++++++++
+ src/sim/behaviors/blocking.ts           | 15 ++++++-
+ 5 files changed, 73 insertions(+), 3 deletions(-)
+ create mode 100644 docs/reviews/2026-11-14-vertical-set.md
+
+diff --git a/config/baseline.json b/config/baseline.json
+index c9ebcaa2..6eafd63b 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -239,6 +239,7 @@
+     "SHOULDERS_SET": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
++    "VERTICAL_SET": "0",
+     "OPEN_HANDS": "0",
+     "OPEN_HANDS_BACK_ONLY": "0",
+     "PAST_ALONG_PATH": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 997eb3a2..23776782 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -181,6 +181,7 @@
+     "SHOULDERS_SET": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
++    "VERTICAL_SET": "off",
+     "OPEN_HANDS": "on",
+     "OPEN_HANDS_BACK_ONLY": "off",
+     "PAST_ALONG_PATH": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 56e4609c..269ec069 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 361 flags read from the environment in `src` (recounted 2026-11-14 at engine-64): 275 are on unless set to `0`, 79 are off unless set to `1`, and 7 are numeric scales or modes. The rows below carry each flag's history.
++There are 362 flags read from the environment in `src` (recounted 2026-11-14 at engine-64, plus `VERTICAL_SET`): 275 are on unless set to `0`, 80 are off unless set to `1`, and 7 are numeric scales or modes. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -266,6 +266,7 @@ There are 361 flags read from the environment in `src` (recounted 2026-11-14 at
+ | `FREE_BOUND` | off | experimental (QB pocket: free-rusher blind spot, 2026-11-12) | quarterback | `src/sim/behaviors/qb.ts` (`freeBound`, in `pressure`) | for a rusher he sees unblocked (no offensive body within arm's length) within 3 yd, his felt time is at most how soon that man could hit him: a typical rusher's burst (5 yd/s^2, estimated) from where he sees him to within a hand (1.0 yd) of his body, speed toward him as a head start and none of the picture's speed away or across counted against him; behind his shoulder a poor pocket presence applies it up to 0.5 s late. Off, a free end drifting past at 1.6 yd on a 0.3 s old picture read 1-2 s off (Rules + Coaching repro under READ_PLAN). Test: test/free-bound.test.ts |
+ | `EXTEND` | off | experimental (QB in the pocket: no throw in time, 2026-11-12) | quarterback | `src/sim/behaviors/qb.ts` (`noThrow`, `feetTarget`, `setDecide` pace) | with no acceptable throw and a rusher he feels (the hook the throw decision falls through to; today the hot path's no-throw branch), he moves first: to the reachable spot with the most felt time (SET_DECIDE's spot choice, judged with the same felt time as his alarm, at his mobility's pace 2.2 + 2.8 mobility yd/s), a lane past the line from there being a scramble; with nobody open (best option P < 0.15) a sound decision maker (>= 0.3) throws it away from outside the box beyond the sideline, or trapped inside at an eligible's feet; a poor one throws it away regardless and the rules call grounding; otherwise he protects the ball (evade). Off, the branch as it was (scramble check, the veteran throw-away dice, evade). Read with FREE_BOUND and HOT_LOOK on. Test: test/extend.test.ts; diag: no-throw-reach.mts, pass-operators/free-rush.py |
+ | `TACKLE_SET` | off | experimental (edge rush: tackle set, 2026-11-12; attempt 2: depth and width) | protection | `src/sim/engagement.ts` (`stepPassRep`, `tackleFloor`), `src/sim/behaviors/blocking.ts` (PASS_KICK edge set), `src/sim/called-drop.ts` | a tackle sets against an edge rusher to a spot: no deeper than a body width (1.0 yd) short of the called drop's launch point, and (attempt 2) no wider than a set line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd), keeping the rusher's inside half and giving him the long way round (the call, not the QB's live spot), asks for no more depth than he can brake off before it (the movement braking law) and none at it; the mirror across the rusher's line to the QB, mostly a retreat once the rusher is wide and deep, keeps the depth. No strength or anchor capacity added. edge-probe (seeds 101-104): at 3.0 s requested x -2.01 -> 0.00, achieved -2.26 -> -1.48 yd/s; tackle depth -7.97 -> -7.36, tackle minus QB +0.15 -> +0.65 (NFL about +1.0), deeper than the QB 48 -> 32%. Engaged tackles asking to hold are driven back 2.3 yd/s at 2.5 s (95% faster than 1 yd/s) and 1.15 at 3.0 s by a rusher 0.2-0.3 yd in front still driving through him (lateral achieved about 0). 2 x 16 read (seeds 201/301, off -> on): width at 3.0 s +0.9 -> -0.4 (NFL -0.6); depth -8.2 -> -7.9 (NFL -6.8); at the win past outside 9-12 -> 17-20% (NFL 26); edge win 11-15 -> 15-18% (NFL 13); sacks pooled 5.8 -> 6.9% (+-0.5; NFL 6.7), pressured 35 -> 40% (NFL 33). docs/reviews/2026-11-12-tackle-set.md |
++| `VERTICAL_SET` | off | experimental (edge corner, 2026-11-14) | protection | `src/sim/behaviors/blocking.ts` (PASS_KICK edge set) | the tackle's kick against an edge rusher gives ground vertically and keeps an inside-out relationship: no wider than TACKLE_SET's set line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd), and his lateral lead is only the rusher's inward motion (he mirrors the inside counter), never his outward run. TACKLE_SET's depth floor is not part of it. Off, the kick copies the rusher's lateral velocity: at first contact NFL tackles retreat 2.5-3.0 yd/s with outward speed about 0 (wide / very wide), ours +0.25..+0.75 outward (p75 +1.25..+1.5), meeting the very wide rusher at 1.3 s (NFL 1.5 s) with 27-32% wide landings (NFL 64%). Evidence: docs/reviews/2026-11-14-vertical-set.md. |
+ | `EDGE_ARC` | off | experimental (edge rush: the rusher's arc, 2026-11-12; two attempts, not repaired: stopped for re-diagnosis) | pass rush | `src/sim/engagement.ts` (`stepPassRep` aim, `chooseMove`, `seenOverset`), `src/sim/behaviors/defense.ts` (`PassRusher`) | an edge rusher's landmark is outside his tackle's set -- the alignment he saw at the snap plus the 0.8 yd a kick takes, plus bodies + 0.45 yd (attempt 2; attempt 1 used the tackle's live shoulder) -- at the depth he sees the QB, free and in the rep; once deeper than the tackle's hips by 0.3 yd he turns for the QB; the inside counter (spin/swim weights) comes from the tackle he sees wider than his set by more than 0.45 yd within 1.5 yd in depth (attempt 1: level with or outside his body), not the blocker's velocity. Bend sets speed and cut. Read (seed 201, 8 games; off / TACKLE_SET / EDGE_ARC / both): states at 2.0 s not level / level / past / inside 61/27/6/6, 58/27/8/7, 37/41/15/7, 37/37/19/7 (NFL 31/30/23/15); at the win past / front / inside 13/50/37, 13/51/36, 6/58/36, 10/41/48 (NFL 26/27/47); tackle depth at 3.0 s -8.2/-7.5/-8.6/-7.3 (NFL -6.8), width +0.8/+0.9/+1.2/+1.6 (NFL -0.6); sacks 3.4/4.7/3.4/4.6% (NFL 6.7), time to pressure p50 2.6/2.6/2.5/2.6 s (NFL 2.7). Attempt 2 (EDGE_ARC / both): 2.0 s states 41/35/17/7, 43/32/17/8; at the win 8/56/37, 4/44/52; width at 3.0 s +0.9/+1.3; edge share of free at 2 yd 3/2% (NFL 23); sacks 5.2/4.4%. He gets around but does not win around: re-diagnose what happens after the turn with the tackle's hands still on. docs/reviews/2026-11-12-tackle-set.md |
+ | `OPEN_HANDS` | on | promoted 2026-11-13 (engine-52; `=0` restores); was experimental (hands: open, grip, hold; 2026-11-12) | physics | `src/physics/world.ts` (hands rows: `holdLim`, tangential `slipLim`), `src/sim/engagement.ts` (`gripFor`, `FRAME_PHI`; rep, pass-helper and run-helper hands), `src/sim/contact-holding.ts` (`holdingRestriction`, capture) | two hand states in the World: fingers on cloth (`HandJoint.grip`) keep the joint's push, hold and steer limits; open hands push and slide, with no tension and |T| <= HAND_MU * max(0, N), HAND_MU = 0.42 (a sourced constant: dynamic, natural dry skin on a cotton-polyester fabric at about 15 N, Gerhardt et al. 2008, J R Soc Interface 5:1317, PMC2607440; moist skin 0.53-0.61, wet fabric 0.91; no glove-on-jersey measurement found). The controller grips inside the man's frame (the holder on his front or side by the man's own facing, and |phi| < FRAME_PHI = 1); once the man has left it (on his back, or at/past the hip) the grip lapses after the holder's release delay (reaction time x (2 - discipline)) unless he has chosen to hang on (the existing tryHold choice), and a kept grip's drag as well as its pull is judged by the ordinary achieved-restraint detector (no auto-call). A press jam's hands stay open. Evidence (open-hands-share.mts, seeds 101-102, off): over-cap tangential force at mu 0.42 by the man's frame -- run: front 30%, side 5%, back 7% of all; by the rep's phi: run at/past the hip 16% of all (38% of run's); pass: front 44%, back/hip ~0%. Fixtures `test/open-hands.test.ts`: past the hip with no grip, drag 476 N -> 0 (6.08 -> 6.71 yd/s); a kept grip unchanged; open-handed drive block steer within mu*N; a gripped drive block identical to off; gripFor's frame and release delay. docs/reviews/2026-11-12-tackle-set.md |
+ | `OPEN_HANDS_BACK_ONLY` | off | diagnostic (with OPEN_HANDS, 2026-11-12) | physics | `src/sim/engagement.ts` (`gripFor`) | sensitivity cut for Integration's frame definition: the man leaves the frame only when the holder is on his back, not when he is at/past the hip (phi >= FRAME_PHI). Read on the run report beside OPEN_HANDS |
+diff --git a/docs/reviews/2026-11-14-vertical-set.md b/docs/reviews/2026-11-14-vertical-set.md
+new file mode 100644
+index 00000000..f136b49d
+--- /dev/null
++++ b/docs/reviews/2026-11-14-vertical-set.md
+@@ -0,0 +1,56 @@
++# VERTICAL_SET: the tackle's vertical set (Flex, 2026-11-14, engine-64)
++
++## The change (off; VERTICAL_SET=1)
++
++The tackle's kick against an edge rusher gives ground vertically and keeps an inside-out relationship, as it is taught:
++- he kicks no wider than TACKLE_SET's set line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0
++  yd): a wider rusher gets a wider, deeper set, a tight one a flatter set;
++- his lateral lead is only the rusher's inward motion (the inside counter he mirrors), never the rusher's outward run.
++
++TACKLE_SET's depth floor is not part of it. Off, the kick copied the rusher's lateral velocity, so at first contact the
++tackle was still sliding out across the rusher's path.
++
++## Lane read
++
++Develop 3d445688 + VERTICAL_SET only, seeds 11 / 23 x 8, against default. Off is bit-identical to develop (seed 999,
++f45b8a7e377c73b2). The dither budget passes with it on. Operators are the same code on NFL BDB 2025 tracking and sim
++exports (scripts/diag/pass-operators/edge-rush.py, pressure-source.py, early-sack.py, fall-proxy.py).
++
++| | default | VERTICAL_SET | NFL |
++|---|---|---|---|
++| the tackle at first contact, rusher aligned wide: retreat / outward p50 | 2.50 / +0.75..+1.00 yd/s | 2.75 / 0.00 | 2.50 / 0.00 |
++| the same, very wide | 2.75 / +0.50 | 3.00 / -0.25 | 3.00 / -0.25 |
++| contact time against a very wide rusher | 1.3 s | 1.5 s | 1.5 s |
++| first contact lands wide (> 0.9 yd outside the tackle) | 26 / 27% | 54 / 50% | 49% |
++| wide contact: the rusher's speed before -> 0.2 s after | 4.25 -> 3.75 | 4.83 -> 4.12 | 4.74 -> 4.43 |
++| wide contact: into-and-past, 0.2 s after | +0.99 / +1.12 | +1.77 / +1.75 | +2.41 |
++| inside at the edge win | 72 / 60% | 54 / 41% | 47% |
++| edge win (within 2 yd of the QB) | 10 / 8% | 9 / 8% | 13% |
++| pressured | 32.0 / 26.2% | 29.2 / 29.6% | |
++| edge pressure, inside / past outside, of dropbacks | 11.4 / 7.4%, 1.0 / 0.7% | 7.2 / 4.9%, 1.2 / 0.4% | |
++| interior pressure, of dropbacks | 11.4 / 8.5% | 10.5 / 12.4% | |
++| sacks (timing definition, pooled) | 5.5% | 5.4% | 6.7% |
++| OL proxy falls (still under 0.5 yd/s for 1.0 s after moving) | 4.2 / 5.9 /100 | 5.8 / 6.8 /100 | |
++
++The fresh run set (1295 plays, paired): +0.02 (SE 0.02), every concept within 0.06; missed + broken 0.271 -> 0.272.
++
++## Read
++
++- **The set and the landing are now the NFL's** in both alignment families, from one coached rule. At contact the
++  tackle is retreating straight back at the NFL's speed, contact against a very wide rusher comes at 1.5 s, and half the
++  first contacts land wide.
++- **The inside counter does not open.** The inside share at the win falls to 41-54% (NFL 47%), so the old edge
++  pressure was the tackle's wrong set.
++- **The corner still does not finish:**
++  - wide contacts get into-and-past 1.75-1.77 against 2.41;
++  - edge win is unchanged at 8-9% against 13%;
++  - the rusher at the hip is held at the tackle's arm (the edge review on claude/quirky-franklin-9lbwbp has the
++    diagnosis).
++- **Sacks and run game:** sacks are unchanged on engine-64; the run game is untouched.
++- **Falls:** OL proxy falls rise 1-1.6 per 100, a cost to watch.
++
++**What to expect on a card:**
++- the landing and set rows move to the NFL's;
++- pressure is about flat, its mix shifted from the edge's inside to the interior;
++- sacks flat, the run game flat;
++- OL falls up slightly.
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 65c25bd4..3d19569b 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -414,7 +414,7 @@ export class PassProtector implements Behavior {
+       const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
+       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
+-      if (TACKLE_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
++      if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
+     }
+     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
+     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
+@@ -438,7 +438,9 @@ export class PassProtector implements Behavior {
+       // TACKLE_SET: at his set line he does not match the rusher's widening.
+       const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
+       const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
+-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: wide ? 0 : r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
++      // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
++      const leadY = VERTICAL_SET ? out * Math.min(0, r.vel.y * out) : wide ? 0 : r.vel.y;
++      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
+     }
+     // The cutoff is an interception, not a point on which to match the
+     // rusher's present velocity. Approach through it at the kick-slide speed
+@@ -458,6 +460,15 @@ export class PassProtector implements Behavior {
+  * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
+  * claude/run-game-v3 (docs/PARKED.md). */
+ const PASS_KICK = process.env.PASS_KICK !== '0';
++/** VERTICAL_SET (experimental, off; VERTICAL_SET=1): the tackle's kick against an edge rusher gives ground vertically
++ * and keeps an inside-out relationship instead of matching the rusher's width. He kicks no wider than TACKLE_SET's set
++ * line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd: a wider rusher gets a wider, deeper
++ * set, a tight one a flatter set), and his lateral lead is only the rusher's inward motion (the inside counter he
++ * mirrors), never his outward run. Off, the kick copies the rusher's lateral velocity: at first contact the NFL
++ * tackle retreats 2.5-3.0 yd/s with outward speed about 0 (wide / very wide alignments, IQR -0.75..+0.75), ours 2.25-2.75
++ * with +0.25..+0.75 (p75 +1.25..+1.5), and meets the very wide rusher at 1.3 s against 1.5 s, landing wide 27-32% vs
++ * 64% (docs/reviews/2026-11-12-tackle-set.md). Depth (TACKLE_SET's floor) is not part of it. */
++const VERTICAL_SET = process.env.VERTICAL_SET === '1';
+ /** PRO_READ (default on; PRO_READ=0 restores the old read): protection reads
+  * who rushes from what the line sees. Off, the coordinator read each
+  * defender's private behavior (rush/blitz), so the line never set on a
+-- 
+2.43.0
+
