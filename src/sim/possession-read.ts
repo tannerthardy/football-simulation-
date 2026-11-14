@@ -150,3 +150,21 @@ export function qbRunning(a: Agent, sim: PlaySim): boolean {
   if (running) qbRuns.set(a, { settledSince: null });
   return running;
 }
+
+/** QB_RELEASE (experimental, off; QB_RELEASE=1 turns it on): a QB seen
+ * running outside the pocket is still a passer to a coverage player until he
+ * commits to the line. An underneath zone defender comes up only when his own
+ * picture shows the running QB within QB_RELEASE_LINE of the line moving at
+ * it (QB_RUN_SPEED), or past it; once released he stays released while the
+ * QB is still seen running. Rushers and contain players keep qbRunning. */
+export const QB_RELEASE = process.env.QB_RELEASE === '1';
+const QB_RELEASE_LINE = 3;   // yd behind the line of scrimmage
+const qbCommits = new WeakMap<Agent, true>();
+export function qbRunningAtLine(a: Agent, sim: PlaySim): boolean {
+  if (!qbRunning(a, sim)) { qbCommits.delete(a); return false; }
+  if (qbCommits.has(a)) return true;
+  const cue = sim.see(a, sim.qb);
+  const committed = cue.pos.x > sim.los || (cue.pos.x >= sim.los - QB_RELEASE_LINE && cue.vel.x > QB_RUN_SPEED);
+  if (committed) qbCommits.set(a, true);
+  return committed;
+}

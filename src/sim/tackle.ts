@@ -587,6 +587,18 @@ const HOLD_SINK = process.env.HOLD_SINK === '1';
 /** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
  * the way he is being carried, not square to the runner every tick. */
 const HOLD_FACING = process.env.HOLD_FACING !== '0';
+/** ROLL_AXIS (experimental, off; ROLL_AXIS=1 turns it on): a secure wrap's roll takes its axis from the runner's
+ * travel blended into the attack direction by ROLL_AXIS_SPEED, continuously, instead of switching to the attack
+ * direction below 0.3 yd/s. The commitment rule: a post-decision stage must not flip the request as a step function
+ * of motion it causes. */
+const ROLL_AXIS = process.env.ROLL_AXIS !== '0';
+/** Runner speed at which his travel and the attack direction weigh equally in the roll axis (yd/s; choice: a walk). */
+const ROLL_AXIS_SPEED = 1;
+/** ROLL_AXIS's unit axis for a runner moving at `vel` attacking toward `dir` (±1): continuous in `vel`. */
+export function rollAxis(vel: { x: number; y: number }, dir: number): { x: number; y: number } {
+  const ax = vel.x + dir * ROLL_AXIS_SPEED, ay = vel.y, an = Math.hypot(ax, ay);
+  return an > 1e-9 ? { x: ax / an, y: ay / an } : { x: dir, y: 0 };
+}
 /** Shoulder line as a share of stature (Flex's bench: 1.60 yd). */
 const SHOULDER = 0.79;
 /** Height of an upper hold, yd, for the runner's current posture: the shoulder
@@ -789,7 +801,10 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
     const cs = Math.hypot(c.vel.x, c.vel.y);
-    const ux = cs > .3 ? c.vel.x / cs : dir, uy = cs > .3 ? c.vel.y / cs : 0;
+    // ROLL_AXIS: the axis is his travel blended continuously into the attack direction as he slows, not a switch at
+    // 0.3 yd/s. At a walk the runner's velocity direction swings with every push of the roll itself, so the holder's
+    // side of it (and his roll) flipped every tick.
+    const { x: ux, y: uy } = ROLL_AXIS ? rollAxis(c.vel, dir) : cs > .3 ? { x: c.vel.x / cs, y: c.vel.y / cs } : { x: dir, y: 0 };
     // Across his travel, toward the holder's own side. A square-on holder has
     // no side to roll him over: the sideways part grows with the holder's
     // actual lateral offset, so a square wrap only sits down (and mirrored

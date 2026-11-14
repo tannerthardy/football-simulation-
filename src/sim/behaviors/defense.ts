@@ -34,7 +34,7 @@ import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST } from '../ball-estimate.js';
-import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
@@ -179,10 +179,12 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     const caught = target !== sim.qb && hasObservedFlight(a);
     // A QB seen leaving the pocket as a runner, by a defender who has not
     // read run: the scramble response, from his own QB picture. Rushers and
-    // underneath zones come up; each role keeps its own contract.
+    // underneath zones come up; each role keeps its own contract. Under
+    // QB_RELEASE an underneath zone waits for the QB to commit to the line.
     // Man and deep defenders keep plastering until he crosses the line.
     const plaster = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
-    const scramble = target === sim.qb && !plaster && !believesRun(sim, a) && qbRunning(a, sim);
+    const scramble = target === sim.qb && !plaster && !believesRun(sim, a)
+      && (QB_RELEASE && underneathZone(a) ? qbRunningAtLine(a, sim) : qbRunning(a, sim));
     if (caught || ((past || scramble) && (sim.t >= a.readAt || cue.pos.x > sim.los + 2))) {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
