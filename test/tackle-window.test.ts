@@ -59,7 +59,7 @@ function ordinaryWindow(setup: ReturnType<typeof stage>, now = 2) {
   const { d, seen, command, body, arms } = setup;
   const predicted = structuredClone(d.body), world = new World([predicted]);
   world.time = now;
-  let closest = Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y), closestAt = 0;
+  let closest = Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y), closestAt = 0, lastT = 0;
   const quality = (distance: number) => Math.max(0, Math.min(1,
     1 - (distance - body - .25) / Math.max(.2, arms - body - .25)));
   const currentQuality = quality(closest);
@@ -67,11 +67,12 @@ function ordinaryWindow(setup: ReturnType<typeof stage>, now = 2) {
     world.step([command], .05);
     if (predicted.support!.state !== 'up') break;
     const t = (k + 1) * .05;
+    lastT = t;
     const distance = Math.hypot(seen.pos.x + seen.vel.x * t - predicted.pos.x,
       seen.pos.y + seen.vel.y * t - predicted.pos.y);
     if (distance < closest) { closest = distance; closestAt = t; }
   }
-  return { currentQuality, futureQuality: quality(closest), closest, closestAt };
+  return { currentQuality, futureQuality: quality(closest), closest, closestAt, reached: closestAt < lastT - 1e-9 };
 }
 
 describe('attainable tackle opportunity', () => {
