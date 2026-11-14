@@ -915,3 +915,47 @@ as what it is.
   motion the other way beyond friction.
 
 Judged on the orbit (toward the NFL's p50 51 deg) and on the five staged gates again, then the game read.
+
+### PRESS_SPRING attempt 2: failed at gate 1 (the orbit); stopped
+
+**Built** (PRESS_SPRING, off; bit-identical off, f45b8a7e... -> engine-65 7225da15f3023012): each hands row's tangential
+bounds are passive friction both ways (HAND_MU 0.42 x its press), widened to the owner's steer on one side only, the side
+he is working the man toward. That side comes from each man's own intent, held with a margin:
+- the run blocker: his seal side (e.sealTarget);
+- the run defender and the pass rusher: off the side they work (e.side);
+- the pass setter: the rusher outside-in, held until the man is 0.2 yd across the line to the protect point.
+
+**Gate 1, the orbit** (interior-orbit.py, seeds 11 / 23 x 8):
+
+| | runs: orbit p25 / 50 / 75 / 90 | pass sets: orbit p25 / 50 / 75 / 90 |
+|---|---|---|
+| NFL | 25 / 51 / 87 / 126 deg | 18 / 39 / 70 / 107 |
+| reference | 18 / 53 / 85 / 117 (s11); 16 / 46 / 86 / 114 (s23) | 4 / 11 / 27 / 67; 4 / 11 / 28 / 66 |
+| PRESS_SPRING attempt 1 | 6 / 23 / 66 / 100 | 3 / 7 / 20 / 43 |
+| PRESS_SPRING attempt 2 | 6 / 21 / 60 / 95; 5 / 22 / 61 / 98 | 3 / 9 / 23 / 50; 3 / 9 / 24 / 51 |
+
+**It fails, and the remaining gates were not read.**
+
+The one-way steer did not free the pair. Passive friction alone holds it. Under PRESS_SPRING both springs sit compressed
+at the bent length through the whole block, carrying the legs' drive, so two hands' friction (0.42 x about 700-1,300 N
+each) acts on every tick. The diagnostic that freed the orbit (both steers zeroed: 62 deg) also removed that friction,
+because the World's tangential row then had no limit at all. The reference's one joint carries load only part of the
+time, which is why it orbits like the NFL.
+
+**Re-diagnosis:**
+1. The NFL's pairs orbit 51 deg with hands on and loaded. So either real hand friction on a jersey and pads is much lower
+   than 0.42 of the press while the bodies are driving (a hand on a moving chest rolls and slides; the press is carried
+   at the heel of the hand, not a gripping palm), or the press is not continuous: hands come off and re-fit, which is
+   what a hand fight is. The second is the real football. Hands are replaced, swiped and re-placed many times a block;
+   none of that exists here, so a sound press never lets go.
+2. That is the "remaining rolls write a fit" item: moves that act on the blocker's hands (swim, rip, club, swipe) taking
+   them off and making him re-fit. With them the press is intermittent, the friction comes and goes, and the pair can
+   move. It is also the answer to Integration's question (1): under PRESS_SPRING the moves still write to a `control`
+   that no longer decides anything. The thing they acted on is gone, so they do nothing to a sound press.
+3. **A pre-existing gap the operator found:** the reference's interior pass-rush pairs already barely orbit (11 deg
+   against the NFL's 39). That is the interior pass rush's own "rigid pair", there before PRESS_SPRING, and the same
+   missing hand fight is the likely reason.
+
+**PRESS_SPRING is stopped after two attempts.** It stays behind its flag, off; interior-orbit.py stays as a standing
+witness (runs and pass sets, the NFL rows in its header). What would make a third design sound is the hand fight
+(moves that clear and re-place hands), not a further change to the press.

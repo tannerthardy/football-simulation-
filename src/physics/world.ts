@@ -78,6 +78,9 @@ export interface ContactAnatomy {
 /** Arm's-length hand fight between two bodies (block, jam, stiff arm). */
 export interface HandJoint {
   kind: 'hands';
+  /** PRESS_SPRING attempt 2: the direction (world, unit or zero) the owner (a) is working the man (b) relative to himself:
+   * his active steer acts only that way; both ways the hand gives only friction on its press. */
+  steerDir?: Vec2;
   a: Body;
   b: Body;
   /** PAIR_HANDS: where the owner's hands landed on the man (inside his frame on the chest plate, or outside it). */
@@ -404,6 +407,7 @@ export const BRACE_GAIT = process.env.BRACE_GAIT === '1';
  * also took the torso contact's previous-step normal off the push limit; attempt 2 does not (each man's strut presses
  * with his own press, engagement.ts pressStrut). */
 const PAIR_HANDS_W = process.env.PAIR_HANDS === '1' || process.env.PRESS_SPRING === '1';
+const PRESS_SPRING_W = process.env.PRESS_SPRING === '1';
 /** PAIR_HANDS: how far an arm gives under its full load before its force ceiling (yd): elbow flexion under a maximal
  * press, a few inches. A stated choice with that physical meaning, the same for every body, not fitted to separation;
  * it sets each arm's stiffness (strength / ARM_GIVE). */
@@ -710,6 +714,8 @@ interface JointRow {
   steerLim: number;
   /** RUSH_HANDS: one hand off, the vacated side's tangent sign (0 for none): steer resisting motion that way is cut. */
   steerSide?: number;
+  /** PRESS_SPRING attempt 2: +1 / -1 the tangent side the owner's active steer works toward (0: none, friction only). */
+  steerSign?: number;
   actor: number;
   steerActor: number;
   /** Active reel transmitted through this grip in the substep. */
@@ -2919,6 +2925,7 @@ export class World {
         }
         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
         row.steerLim = Math.max(0, jt.steer) * h * scale;
+        if (PRESS_SPRING_W) { const sd = jt.steerDir; const st = sd ? sd.x * -ny + sd.y * nx : 0; row.steerSign = Math.abs(st) > 1e-6 ? Math.sign(st) : 0; }
         if (HAND_BODY && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
           const e = (jt.off ? 0 : this.handEdge(jt)) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
           row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
@@ -3019,6 +3026,15 @@ export class World {
       r.ln+=dn*fraction;
     }
     // OPEN_HANDS: an open hand's steer is friction on the push it carries.
+    if (PRESS_SPRING_W) {
+      // PRESS_SPRING attempt 2: passive friction on the press both ways (HAND_MU x the hand's normal), and his active
+      // steer, up to his arm, one way only: toward the side he is working the man. A steer is not a lock against motion
+      // the other way (two two-way locks on one gap held the pair from orbiting: interior orbit p50 23 deg, NFL 51).
+      const F = HAND_MU * Math.max(0, r.ln), A = Math.max(F, r.steerLim), sg = r.steerSign ?? 0;
+      const lo = sg < 0 ? -A : -F, hi = sg > 0 ? A : F;
+      if (hi > 0 || lo < 0) this.solveTangent(r, a, b, Math.max(-lo, hi), 0, r.steerSide ?? 0, lo, hi);
+      return;
+    }
     const slipLim = OPEN_HANDS && !(r.joint as HandJoint).grip ? Math.min(r.steerLim, HAND_MU * Math.max(0, r.ln)) : r.steerLim;
     if (slipLim > 0) this.solveTangent(r, a, b, slipLim, 0, r.steerSide ?? 0);
   }
@@ -3112,7 +3128,7 @@ export class World {
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip
    * around a torso does not let him roll past like two touching pads. */
-  private solveTangent(r: JointRow, a: Body, b: Body, lim: number, h = 0, side = 0): void {
+  private solveTangent(r: JointRow, a: Body, b: Body, lim: number, h = 0, side = 0, lo0?: number, hi0?: number): void {
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     const tx = -r.ny, ty = r.nx;
     const ri = r.ri ?? 0, rj = r.rj ?? 0;
@@ -3123,7 +3139,7 @@ export class World {
     const drive = r.joint.kind === 'hands' ? r.drive ?? 0 : 0;
     // RUSH_HANDS: with one hand off, the impulse resisting the man toward the vacated side (side > 0: he moves +t, the
     // resisting impulse is negative) is ONE_HAND_SIDE of the remaining hand's.
-    const lo = side > 0 ? -ONE_HAND_SIDE * lim : -lim, hi = side < 0 ? ONE_HAND_SIDE * lim : lim;
+    const lo = lo0 ?? (side > 0 ? -ONE_HAND_SIDE * lim : -lim), hi = hi0 ?? (side < 0 ? ONE_HAND_SIDE * lim : lim);
     const lt = clamp(r.lt - (r.mt ?? r.mn) * (vt - drive), lo, hi);
     const dt = lt - r.lt;
     const angA = r.joint.kind === 'grasp' && h > 0 ? this.armMoment(r.i, -ri * dt, h) : -ri * dt;

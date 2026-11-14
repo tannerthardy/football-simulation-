@@ -6,6 +6,8 @@ usage: python3 -I scripts/diag/pass-operators/interior-orbit.py <plays.jsonl.gz>
 
 Pairs: each interior OL (the three middle linemen by alignment) and the nearest DL within 1.2 yd at his first such frame
 (from the snap + 0.2 s); engaged while they stay within 1.2 yd, up to 1.5 s, ending at the handoff + 1.5 s or the throw.
+NFL (BDB, out/mechanics/nfl-plays.jsonl.gz): runs orbit p25/50/75/90 25/51/87/126 deg (15,954 pairs); pass sets
+18/39/70/107 (23,385). A standing witness for any contact change (Integration, 2026-11-14).
 Per pair: the engagement's length, the net change of the bearing from the blocker to the defender (the pair's orbit), the
 net change of each man's facing, and the largest |orbit| reached.
 """

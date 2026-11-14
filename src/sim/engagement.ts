@@ -841,6 +841,32 @@ function defenderLength(sim: PlaySim, joint: HandJoint, d: Agent, b: Agent, e: E
   joint.extension = Math.max(bodies, len);
 }
 
+/** PRESS_SPRING attempt 2: the direction each man is working the other (his active steer acts only that way; both ways a
+ * hand gives only friction on its press). From his own intent and picture, each held with a margin:
+ *   - run blocker: toward his seal side (e.sealTarget, his engaged goal: he wants the man on the far side of him);
+ *   - run defender and pass rusher: the blocker moved off the side he is working (e.side: his aim's side, which changes
+ *     only past 0.1 of preferred lateral the other way);
+ *   - pass setter: keeping the rusher outside-in: further to the side of the line from him to the protect point that the
+ *     man (as he feels him) is on, which changes only once the man is 0.2 yd across that line. */
+const setterSide = new WeakMap<Engagement, number>();
+function setSteerDirs(sim: PlaySim, e: Engagement): void {
+  const b = e.blocker, d = e.defender, lat = latOf(axisOf(sim, e));
+  if (e.defHands) e.defHands.steerDir = e.side ? { x: -lat.x * e.side, y: -lat.y * e.side } : undefined;
+  if (!e.hands) return;
+  if (e.type === 'run') {
+    const st = Math.sign(e.sealTarget ?? 0);
+    e.hands.steerDir = st ? { x: lat.x * st, y: lat.y * st } : undefined;
+    return;
+  }
+  const felt = sim.see(b, d, 0.06 / Math.max(0.1, b.profile.reactionTime)).pos, pp = protectPoint(sim);
+  const ux = pp.x - b.pos.x, uy = pp.y - b.pos.y, L = Math.hypot(ux, uy) || 1, px = -uy / L, py = ux / L;
+  const off = (felt.x - b.pos.x) * px + (felt.y - b.pos.y) * py;
+  let side = setterSide.get(e) ?? (Math.sign(off) || 1);
+  if (off * side < -0.2) side = -side;
+  setterSide.set(e, side);
+  e.hands.steerDir = { x: px * side, y: py * side };
+}
+
 function setHands(sim: PlaySim, e: Engagement): void {
   const b = e.blocker, d = e.defender;
   const t = sim.t;
@@ -869,6 +895,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // with the friction his hand's press gives him at the shoulder (the outside-hand rule, now for the defender's inside fit).
   if (PRESS_SPRING && e.defHands?.fit === 'inside' && !e.defHands.off)
     hands.steer = Math.min(hands.steer, HAND_MU * Math.max(0, hands.normalForce ?? 0));
+  if (PRESS_SPRING) setSteerDirs(sim, e);
   // PAIR_HANDS: the blocker's joint is his own arm whoever controls the hands (the defender has his own joint).
   if (PAIR_HANDS) hands.actor = b.body;
   // PUNCH: the blocker's hands go to the man, out to lockout.
