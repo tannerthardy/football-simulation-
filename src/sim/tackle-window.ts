@@ -13,8 +13,12 @@ export interface TackleWindow {
   futureQuality: number;
   closest: number;
   closestAt: number;
-  /** The forecast's best point is a minimum it reaches inside the lookahead, not its last sample (still closing at the
-   * horizon: no better shot is in sight yet). */
+  /** The forecast's best point is a minimum it reaches inside the lookahead, not its last upright sample. False has
+   * two football causes, and both mean "take the reach you have": (1) still closing at the horizon, so the better
+   * shot keeps receding (a slow chase, or a runner faster than his seen velocity); (2) the forecast stops early
+   * because his support would no longer be 'up' after that sample: the shot is real, but his feet are going, so he
+   * reaches now rather than after losing his base. Both give the same decision today; if one is refined (e.g.
+   * telling a fast late closure from a receding one), split them rather than changing the other. */
   reached: boolean;
 }
 

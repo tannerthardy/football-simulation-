@@ -30,7 +30,7 @@ import { fatigueFactor } from '../physics/kinematics.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { contactQuality, previewTackleWindow } from './tackle-window.js';
+import { contactQuality, previewTackleWindow, type TackleWindow } from './tackle-window.js';
 
 export interface TackleBond {
   carrier: Agent;
@@ -203,10 +203,7 @@ export function tryTackles(sim: PlaySim): void {
         if (window) {
           // Compare two estimates from the same observation. Actual reach and
           // the resulting grip still use current physical geometry below.
-          // WAIT_REACHED: wait only for a better point the forecast reaches inside its lookahead. A best point at the
-          // horizon's edge is a slow chase still closing (or a runner faster than his seen, stale velocity): the better
-          // shot keeps receding, so he takes the reach he has.
-          waitForBetter = window.futureQuality > window.currentQuality + .1 && (!WAIT_REACHED || window.reached);
+          waitForBetter = waitsForBetter(window);
           lastReach = observed.carrying === true && window.closestAt === 0
             && window.closest > arms && window.closest <= range;
           const keepFeet = (waitForBetter && !acquireAtReach) || (needsLastReach && !lastReach);
@@ -276,11 +273,17 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
  * carrier ending outside the tackler's hand reach. Ratings enter only as
  * these capacities and the picture delay. A pocket QB keeps his escape law. */
 const TKL_WHIFF = process.env.TKL_WHIFF === '1';
-/** WAIT_REACHED (experimental, off, intended on; WAIT_REACHED=1 turns it on): a tackler holds his reach for a better
+/** WAIT_REACHED (on; WAIT_REACHED=0 turns it off): a tackler holds his reach for a better
  * shot only when his forecast reaches that better point inside its lookahead. Each tick the forecast is redone; one
  * whose best point always sits at its last sample (a slow chase on a runner as fast as he is, or faster than the
  * runner's seen velocity says) promised a shot 0.3 s away forever, and he never took the one he had. */
 const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
+/** Whether the forecast is worth waiting for: a better shot by a margin and, with WAIT_REACHED, one it reaches inside
+ * its lookahead. A best point at the horizon's edge is a slow chase still closing (or a runner faster than his seen,
+ * stale velocity): the better shot keeps receding, so he takes the reach he has. */
+export function waitsForBetter(window: TackleWindow, reachedRule = WAIT_REACHED): boolean {
+  return window.futureQuality > window.currentQuality + .1 && (!reachedRule || window.reached);
+}
 /** Hand strike, extension to contact (model assumption, s). */
 const REACH_WINDOW = 0.2;
 /** Layout from the launch to full extension (model assumption, s). */

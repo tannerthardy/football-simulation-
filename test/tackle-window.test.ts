@@ -12,7 +12,7 @@ import { World, type GraspJoint, type Intent } from '../src/physics/world.js';
 import type { Engagement } from '../src/sim/agent.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
-import { tryTackles } from '../src/sim/tackle.js';
+import { tryTackles, waitsForBetter } from '../src/sim/tackle.js';
 import { previewTackleWindow } from '../src/sim/tackle-window.js';
 
 function stage(side = 1, record = false) {
@@ -240,5 +240,45 @@ describe('attainable tackle opportunity', () => {
     const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
     try { tryTackles(sim); expect(preview).not.toHaveBeenCalled(); }
     finally { preview.mockRestore(); }
+  });
+});
+
+// WAIT_REACHED's gate, asserted on geometry rather than on a mirror of the implementation.
+describe('waiting for a better shot needs a minimum the forecast reaches', () => {
+  function chase(carrierSpeed: number) {
+    // A slow chase from behind: he runs 7 yd/s with an 8 yd/s command, the runner (seen) a little slower, 1.2 yd ahead.
+    const setup = stage();
+    setup.d.body.pos = { x: 50, y: CENTER_Y }; setup.d.body.vel = { x: 7, y: 0 }; setup.d.body.facing = 0;
+    setup.seen = { ...setup.seen, pos: { x: 51.2, y: CENTER_Y }, vel: { x: carrierSpeed, y: 0 } };
+    setup.command = { vel: { x: 8, y: 0 }, facing: 0 };
+    return previewTackleWindow(setup.d, setup.seen, setup.command, setup.body, setup.arms, 2)!;
+  }
+
+  it('an equal-speed chase still closing at the horizon is not worth waiting for', () => {
+    const w = chase(6.8);
+    // The forecast is better, by more than the margin, but only at its last sample: the shot keeps receding.
+    expect(w.futureQuality).toBeGreaterThan(w.currentQuality + .1);
+    expect(w.closestAt).toBeCloseTo(.3, 10);
+    expect(w.reached).toBe(false);
+    expect(waitsForBetter(w, true)).toBe(false);
+    expect(waitsForBetter(w, false)).toBe(true);
+  });
+
+  it.each([-1, 1])('a crossing runner whose closest pass is mid-horizon is still worth waiting for, side %s', side => {
+    const setup = stage(side);
+    setup.d.body.pos = { x: 50, y: CENTER_Y }; setup.d.body.vel = { x: 0, y: 0 }; setup.d.body.facing = 0;
+    setup.seen = { ...setup.seen, pos: { x: 51, y: CENTER_Y - side }, vel: { x: 0, y: side * 7 } };
+    setup.command = { vel: { x: 0, y: 0 }, facing: 0 };
+    const w = previewTackleWindow(setup.d, setup.seen, setup.command, setup.body, setup.arms, 2)!;
+    expect(w.closestAt).toBeGreaterThan(.05); expect(w.closestAt).toBeLessThan(.25);
+    expect(w.reached).toBe(true);
+    expect(waitsForBetter(w, true)).toBe(true);
+    expect(waitsForBetter(w, false)).toBe(true);
+  });
+
+  it('no better shot in sight means no wait, with or without the rule', () => {
+    const w = chase(9);
+    expect(w.futureQuality).toBeLessThanOrEqual(w.currentQuality + .1);
+    expect(waitsForBetter(w, true)).toBe(false); expect(waitsForBetter(w, false)).toBe(false);
   });
 });
