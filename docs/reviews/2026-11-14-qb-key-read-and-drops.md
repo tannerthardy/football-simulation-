@@ -90,6 +90,33 @@ Paired on engine-66 (the ten): reference 8.19 yd a play; deeper set 8.97; QB_DRO
 So "reads do not run in the drop" was not a loss, and the flag was removed rather than landed doing nothing. The
 premise came from engine-64, where the wait was being sacked; on an engine where it is not, the wait is the value.
 
+## Later the same day: the drops on other grounds, the clock, and the price on a covered man
+
+- Drops. On the route card's stack (stems at full pace) the deeper set is worth +0.14 yd a play on the ten, not +0.78,
+  and varies by concept (drive +5.9, smash -3.7): the marking went back to Rules. Drive's gain is one throw, the
+  shallow, 0.75 s later against quarters and cover 6 with nobody underneath (23 yd a play): a defensive fault being
+  exploited. The "strong-side edge" sacks were one stand-up edge on one of four rosters; by-slot rows from four
+  rosters are four individuals. `VERTS_QUICK` holds on both grounds (8.21 -> 9.95 and 6.98 -> 10.17 yd a play) and
+  is delivered as `docs/reviews/patches/2026-11-14-verts-quick.patch`.
+- The clock (`QB_COUNT`) was designed and not built. `ends-by-time.py` (how dropbacks end by time after the snap,
+  no count assumed): of dropbacks alive at 3.0 s the NFL's are sacked 12%, ours 4%. What differs late is the answer:
+  alive at 3.5 s, ours end at a back or short outlet 31% (NFL 11), downfield 29% (34), scramble 27% (38). The
+  every-tick throwaway rolls are the pressure throwaway written as dice; they become one decision with QB_BREAK.
+- The information guard's ten new reads of true state came out (a man he sees down; the body he believes a defender
+  has and no fatigue scale; the dead `hotBy` label).
+- Forced long throws by receiver engine: default receiver 53% complete whatever the miss (he is 0.4 yd from the ball
+  at arrival in every miss band); `BALL_EST=7` receiver 25%, and only within a yard of the aim. The deep half of the
+  belief waits for a receiver who tracks the long ball; fitting it now would fit his belief to a cheat.
+- The price is calibrated on average and blind to coverage: by the target's true separation at the throw, priced
+  0.60 / 0.61 / 0.62 / 0.66 / 0.68 against 50 / 57 / 66 / 72 / 77% complete (26% under a yard on the BALL_EST
+  receiver). He believes a man within a yard is 0.37 s late, because a defender with his back to the passer is made
+  to react to the ball. `QB_PHASE` (off) tried twice: a measured share of the receiver's movement (little effect),
+  then the observable cue, closeness x velocity match with leverage, with `phase_fit.py`'s constants (targets under
+  1 yd 6.7 -> 4.8% of throws, but INT 18 -> 30 on one unpaired arm, and the price did not open). The trace: his
+  picture has the man at the right distance; the velocity match fails, a 0.25 s old defender velocity against the
+  receiver's forecast velocity. Not carded. Next form, if ruled: closeness sustained over his recent pictures plus
+  leverage, read on a paired staged instrument that does not yet exist.
+
 ## Open, in order
 
 1. The paired set on the route card's branch (stems at full pace move when routes are ready).
