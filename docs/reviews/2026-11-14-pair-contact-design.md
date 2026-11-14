@@ -216,3 +216,53 @@ Off is bit-identical. Every subsumed flag keeps its code and stays readable as o
 | run set (all, against ref) | +0.62 | gives back most of it: +0.0 to +0.3; toss back toward 0 (the defender's stack and shed return) |
 | stalk joint life | 0.05-0.10 s | 0.3-0.5 s; a crosser at 4 yd/s loses 1-2 yd/s |
 | roll's correlation with the rep | -0.11 edge | about 0; mass and arm above 0.1 |
+
+## Attempt 1: stopped at the staged step (2026-11-14, engine-64)
+
+The fit was reshaped three times inside attempt 1:
+1. magnitude (inside press, outside arm);
+2. geometry (an outside hand acting at the near shoulder, with lever arms and yaw);
+3. friction (an outside hand steers only by HAND_MU x its own press).
+
+Also inside attempt 1:
+- the rusher presses only on a power rush;
+- the arm starts at the gap;
+- the yield is continuous in load against capacity (85-100%);
+- the bent-base centre distance is fit to the NFL's held separation (BASE_CENTRES 0.80 yd: held edge reps at +0.4 s
+  0.89 / 0.76 / 0.82 by landing; KNOWN_PROBLEMS PHY-ROUND).
+
+Off is bit-identical to develop (engine-64, f45b8a7e377c73b2), and the dither budget passes with it on. No game read
+was run.
+
+**The three coached asymmetries, staged (pair-staged.mts, side +/-1 identical):**
+
+| asymmetry | blocker or defender outside | inside | shows it |
+|---|---|---|---|
+| an outside-handed blocker loses the crosser: stalk, crosser at 3 yd/s, his speed after 0.5 s | 3.00 yd/s (not slowed) | 1.94 yd/s | yes |
+| the same, a rusher crossing upfield past him: rusher lateral | 1.44 yd | 1.04 yd | yes |
+| a rusher with a hand on the blocker's outside shoulder gets the corner: power rusher, rusher lateral / blocker turned | 0.13 yd / 1 deg | 0.13 yd / 0 deg | **no** |
+| an inside-handed run defender holds his gap, an outside one is moved: reach block, defender lateral | -0.00 yd | 0.01 yd | **no** |
+
+**The blocker is yaw.**
+- In the power-rusher rows the rusher's hand presses 2032 N at the blocker's near shoulder: the outside fit's row,
+  0.12 yd off his centre (CHEST_HALF), a moment of about 240 N.yd. The blocker turns 1 deg in 0.6 s, the same as the
+  inside fit (0 deg).
+- In the reach rows both men turn about 25-29 deg alike: their facing follows their own requests.
+- In every row the two men's facing changes are identical, because facing is the controller's request held by a yaw
+  motor (turnBodyResponse, torque up to traction x base radius). No moment applied to a body turns it against his
+  request.
+- HANDS_LEVER found the same: a staged shoulder press turned the man 0.9 -> 7.1 deg against his motor.
+
+"Turn the man" is half of line play and of tackling. It cannot exist while the yaw is the request's. Integration is
+logging this with Tools.
+
+**Reproducer for Tools.** `PAIR_HANDS=1 node --import tsx scripts/diag/effective-mass/pair-staged.mts`, the rows
+"turn: a power rusher, his hand outside / inside on the blocker" (two equal bodies, the rusher at 2 yd/s with a 0.5
+yd/s cross component, his hand at the blocker's near shoulder at 2032 N; the blocker requesting to face the rusher).
+Expected under a physical yaw: the blocker turned toward the rusher's push side. Observed: 0-1 deg.
+
+**What attempt 1 leaves.**
+- The friction-limited outside steer is a real mechanism and shows the first asymmetry.
+- The other two need the man's body to turn under a moment.
+- PAIR_HANDS stays off. Its pieces (the defender's own hands, placement, control from fits, the hand-over, the fitted
+  base) wait on a yaw that a moment can move.

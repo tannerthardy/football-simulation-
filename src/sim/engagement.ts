@@ -44,7 +44,7 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+import { HAND_MU, OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -477,7 +477,10 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
       // PAIR_HANDS: an inside hand presses through a straight arm; an outside hand (on a shoulder or arm) only with the arm.
       joint.push = PAIR_HANDS && joint.fit === 'outside' ? armForce(b) : pressForce(b);
       joint.hold = holding ? armForce(b) * 1.2 : 0;
-      joint.steer = armForce(b) * 0.7;
+      // PAIR_HANDS: an inside hand on the chest plate has the frame: it steers with his arm. An outside hand on a shoulder
+      // or arm has only what friction on its own press gives (HAND_MU x the press it carries), and slides when the man
+      // turns or crosses.
+      joint.steer = PAIR_HANDS && joint.fit === 'outside' ? Math.min(armForce(b) * 0.7, HAND_MU * Math.max(0, joint.normalForce ?? 0)) : armForce(b) * 0.7;
       return;
     }
     joint.extension = sep + reach * 0.3;
@@ -781,7 +784,8 @@ function setHands(sim: PlaySim, e: Engagement): void {
     // His hands press along the line only when his technique is to press: a run defender's stack, a power rush (bull,
     // long-arm). Rushing on speed or a finesse move, his hands work the blocker's hands and arms, not his chest.
     const pressing = e.type === 'run' || e.move === 'bull' || e.move === 'longarm';
-    dj.push = !pressing ? 0 : dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.steer = armForce(d) * 0.55; dj.hold = 0;
+    dj.push = !pressing ? 0 : dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.hold = 0;
+    dj.steer = dj.fit === 'outside' ? Math.min(armForce(d) * 0.55, HAND_MU * Math.max(0, dj.normalForce ?? 0)) : armForce(d) * 0.55;
     if (PUNCH) punch(sim, dj, d, b, true);
   }
   const inMove = t < e.moveUntil && e.moveOk;
