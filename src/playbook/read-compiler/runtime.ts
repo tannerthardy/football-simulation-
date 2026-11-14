@@ -36,6 +36,9 @@ export const OUTLET_LAST = process.env.OUTLET_LAST !== '0';
  * - pa_flood: the sail, then the cross, then the flat (weak source, a dropback play-action read); alternative: the
  *   boot's flat first, low to high (DeBerry, Glazier), for a bootleg, which ours is not. */
 export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
+/** PLAN_KEYS_2 (experimental, off): with PLAN_KEYS, the eight sourced keys the compiler ran as pure orders key. */
+export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 === '1';
+const SECOND_KEYS = new Set(['slant_flat', 'stick', 'quick_outs', 'fade_flat', 'double_slants', 'hitch_out', 'trips_stick', 'seam_slant']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
@@ -105,7 +108,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -121,7 +124,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      const k = PLAN_KEYS ? KEYS[concept.id] : undefined;
+      const k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) ? KEYS[concept.id] : undefined;
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
