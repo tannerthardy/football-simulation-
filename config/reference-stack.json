@@ -40,6 +40,9 @@
     "digest": "585239d2fdf23d140e3d56bf775e092402d9bd2583ed0830937d172962aecb25",
     "note": "Captured 2026-11-13 on the engine-55 default engine (develop 2478e998) with new seeds; not a benchmark any flag was promoted on. Use for run-set deltas (ref:report --set fresh); runSet stays for continuity."
   },
+  "numeric": {
+    "INFO_HONEST": { "default": 63, "legacy": 0 }
+  },
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
