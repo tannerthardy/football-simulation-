@@ -26,7 +26,7 @@ import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
 import type { Vec3 } from '../core/vec.js';
 import { qbArmSpeed, stepFlight, type BallFlight } from '../physics/ball.js';
-import { TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../physics/kinematics.js';
+import { shouldersOf, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../physics/kinematics.js';
 import { naturalFlightFor } from './behaviors/qb.js';
 import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
@@ -188,9 +188,10 @@ export class BallEstimates {
         // HEAD on: the look is his technique's want on the shared head (head.ts turns it); BALL_EST reads it.
         if (SHARED_HEAD) { headWant(sim, a, sim.qb, 'qb'); tr.head = a.head ?? a.facing; tr.headT = sim.t; continue; }
         const qb = sim.see(a, sim.qb).pos, toward = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
-        const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -neckOf(a), neckOf(a));
+        const base = shouldersOf(a.body); // the neck sits on the shoulders (the trunk), not the hips
+        const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
-        tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -neckOf(a), neckOf(a));
+        tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
         tr.headT = sim.t;
       }
       return;
@@ -226,9 +227,10 @@ export class BallEstimates {
         tr.head = a.head ?? a.facing; tr.headT = sim.t;
       } else {
         const toward = Math.atan2(want.y - a.pos.y, want.x - a.pos.x);
-        const lim = a.facing + clamp(sideOf(angDiff(toward, a.facing), angDiff(tr.head, a.facing)), -neckOf(a), neckOf(a));
+        const base = shouldersOf(a.body); // the neck sits on the shoulders (the trunk), not the hips
+        const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
-        tr.head = a.facing + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), a.facing), -neckOf(a), neckOf(a));
+        tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
         tr.headT = sim.t;
       }
       // Pursuit runs on the visuomotor loop (about 110 ms), not on a decision's reaction time; his attention scales it.
