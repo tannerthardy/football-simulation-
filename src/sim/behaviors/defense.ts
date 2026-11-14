@@ -2224,7 +2224,9 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
 /** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
  * the arm (smallest bearing off the passer's seen facing, within SHOULDER_CONE), chosen once per belief. */
 const SHOULDER_CONE = 25 * Math.PI / 180;
-/** The shoulder break's lead: a rule-of-thumb ball speed (yd/s) and the longest flight he projects for. */
+/** The shoulder break's lead: his crude estimate of a throw's speed (yd/s) and the longest flight he projects for. It
+ * under-leads (seed 11: 0.57 s estimated against 0.90 s actual). To be replaced by his estimate of the throw from the
+ * passer's distance and the kind of throw he expects (a dart, a touch ball), with his rating's error. */
 const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
 /** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
  * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
