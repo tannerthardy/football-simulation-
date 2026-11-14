@@ -43,6 +43,7 @@ def pairs(p, raw):
 for path in sys.argv[1:]:
     rates, brates, lag, slopes = [], [], [], []
     offset, roff, qslopes, fits = [], [], [], []
+    signed = []
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw)
         if raw.get('kind') != 'pass' or not raw.get('xy') or not raw.get('o'): continue
@@ -64,6 +65,11 @@ for path in sys.argv[1:]:
                 if k - 1 in F and k + 1 in F:
                     rates.append(abs(wrap(F[k + 1] - F[k - 1])) / 0.2); brates.append(abs(wrap(B[k + 1] - B[k - 1])) / 0.2)
                     lag.append(abs(wrap(B[k] - F[k])))
+                    # signed: + when his chest points outside the rusher's centre (away from the ball's side), from 0.4 s
+                    # smoothed facing (the centred 5-frame mean of the unwrapped angle) against the bearing
+                    if all(j in F for j in range(k - 2, k + 3)):
+                        sm = F[k] + sum(wrap(F[j] - F[k]) for j in range(k - 2, k + 3)) / 5
+                        signed.append(wrap(sm - B[k]) * side)
             for k in ks:
                 if k in Q:
                     offset.append(abs(wrap(F[k] - Q[k]))); roff.append(abs(wrap(B[k] - Q[k])))
@@ -77,6 +83,7 @@ for path in sys.argv[1:]:
                     if abs(db) >= 10: slopes.append(wrap(F[k + 4] - F[k]) / db)
     print(f"== {os.path.basename(path)}: engaged tackle frames {len(rates)}")
     print(f"   his facing rate p50/p90 {q(rates):.0f}/{q(rates, .9):.0f} deg/s | the bearing to the rusher's rate p50/p90 {q(brates):.0f}/{q(brates, .9):.0f} deg/s | rusher off his chest p50/p90 {q(lag):.0f}/{q(lag, .9):.0f} deg")
+    print(f"   signed off-chest (0.4 s smoothed, + = his chest outside the rusher's centre) p25/50/75 {q(signed, .25):+.1f}/{q(signed):+.1f}/{q(signed, .75):+.1f} deg (n {len(signed)})")
     print(f"   set frame: his facing off 'back to the QB' p50/p90 {q(offset):.0f}/{q(offset, .9):.0f} deg | the rusher off that line p50/p90 {q(roff):.0f}/{q(roff, .9):.0f} deg | windows where the QB frame swings 10 deg or more (n {len(qslopes)}): his facing follows p25/50/75 {q(qslopes, .25):.2f}/{q(qslopes):.2f}/{q(qslopes, .75):.2f}")
     if len(fits) > 10:
         # least squares df = a*dq + b*db over all 0.4 s windows: which frame his facing moves with
