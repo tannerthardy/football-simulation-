@@ -205,6 +205,7 @@
     "PULL_PLAN": "off",
     "QB_FEEL": "off",
     "QB_GATHER": "off",
+    "QB_GATHER_THROW": "off",
     "QB_POCKET": "off",
     "QB_HONEST_FEEL": "off",
     "THROW_PLATFORM": "off",

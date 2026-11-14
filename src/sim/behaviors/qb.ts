@@ -156,6 +156,14 @@ const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
  * windup (p75 0.00). Under pressure his pocket movement (QB_FEEL, SET_DECIDE) takes over.
  * docs/reviews/2026-11-13-qb-gather.md. */
 const QB_GATHER = process.env.QB_GATHER === '1';
+/** QB_GATHER_THROW (experimental, off; QB_GATHER_THROW=1; acts only with QB_GATHER and QB_EYES): one hitch, into the
+ * throw. QB_GATHER hitched up toward every read his eyes reached, so a quarterback holding the ball crept up the
+ * pocket (still holding at 3.0 s he stood 6.8 yd deep against the NFL's 8.0, at 3.5 s 5.8 against 7.7;
+ * scripts/diag/escape/qb-hold-depth.py). With this on he holds his set point while he reads, and steps once toward
+ * the man he has decided to throw to, during the look that precedes the motion (QB_EYES' gate). The step is toward
+ * the target, not forced upfield: on NFL throws held 2.5-3.5 s the last 0.6 s is 0.5 yd of net movement with a median
+ * change in depth of 0.0 (p25 -0.3, p75 +0.3). */
+const QB_GATHER_THROW = process.env.QB_GATHER_THROW === '1';
 /** ACC_RADIUS (experimental, off; ACC_RADIUS=1): his accuracy belief's catchable radius grows with the flight time and
  * the receiver's ball skills (1.6 + 0.9 T yd), as our receivers' catches by the aim miss show, instead of a fixed
  * 1.35 yd: the fixed radius priced a 2 s ball at a fifth of what our receivers catch. docs/reviews/2026-11-13-qb-gather.md. */
@@ -2180,7 +2188,19 @@ export class QBPass implements Behavior {
     }
     // QB_GATHER: a hitch to the read his eyes are on, from where he is when they get there; no hitch with an edge
     // rusher he feels (he slides off him as before).
-    if (QB_GATHER && read && !edge) {
+    if (QB_GATHER && QB_GATHER_THROW) {
+      // One hitch, toward the man he has decided on, while his eyes finish on him. No hitch while he only reads.
+      const to = edge ? null : this.gateFor;
+      if (to) {
+        if (this.hitchFor !== to) {
+          this.hitchFor = to;
+          const seen = sim.see(a, to).pos, dx = seen.x - a.pos.x, dy = seen.y - a.pos.y, L = Math.hypot(dx, dy) || 1;
+          const len = 0.5 + 0.3 * (1 - a.r('release')) + 0.2 * (1 - Math.min(1, a.player.experience / 8));
+          this.hitchTo = { x: Math.min(a.pos.x + dx / L * len, sim.los - 2.5), y: a.pos.y + dy / L * len };
+        }
+        return goTo(a, this.hitchTo!, { speed: 0.35, facing });
+      }
+    } else if (QB_GATHER && read && !edge) {
       if (this.hitchFor !== read) {
         this.hitchFor = read;
         const seen = sim.see(a, read).pos, dx = seen.x - a.pos.x, dy = seen.y - a.pos.y, L = Math.hypot(dx, dy) || 1;
