@@ -4387,3 +4387,32 @@ The run defender has lost his own hands meanwhile: the joint was his, with the s
 - Two attempts are spent. The re-diagnosis question: below the bent base, does a real blocker's press go into the body
   contact (hands inside, elbows folded, chests meeting)? If so, the base is not a floor but the point where the press
   starts to hand over to the torso, and our torso contact has to carry a man driving through.
+
+### Hands vs torso across one gap (2026-11-14, engine-63; measurement before the pair contact model)
+
+contact-share.mts, seed 11 x 2. Per engaged pair tick: the gap beyond the bodies' radii, the hands joint's normal force,
+and the torso contact's normal force for the same pair (world.report.contacts, impulse / dt). Bins against the
+blocker's bent base (arm x 0.3). Hands N / torso N are p50; "both" is the share of ticks with both above 100 N.
+
+| population, engine | beyond the base | at the base | inside the base, apart | bodies touching |
+|---|---|---|---|---|
+| edge pass, default | 49%: 1082 / 0 | 18%: 1060 / 0 | 21%: 1081 / 0 | 12%: 981 / 0, both 41% |
+| edge pass, CH + HAND_FIT | 39%: 1107 / 0 | 53%: 1144 / 0 | 7%: 1661 / 0 | 1%: 1655 / 0, both 14% |
+| interior pass, default | 48%: 957 / 0 | 14%: 955 / 0 | 21%: 1061 / 0 | 18%: 1003 / 63, both 48% |
+| interior pass, CH + HAND_FIT | 45%: 421 / 0 | 48%: 1153 / 0 | 7%: 1801 / 0 | 0% |
+| OL run block, default | 24%: 0 / 0 | 26%: 757 / 0 | 31%: 1056 / 0 | 18%: 1046 / 74, both 48% |
+| OL run block, CH + HAND_FIT | 46%: 571 / 0 | 46%: 1186 / 0 | 7%: 1703 / 0 | 1%: 1806 / 0, both 27% |
+| stalk (WR/TE on a DB), default | 23%: 0 / 0 | 30%: 325 / 0 | 37%: 766 / 0 | 11%: 756 / 0, both 31% |
+| stalk, CH + HAND_FIT | 71%: 16 / 0 | 13%: 614 / 0 | 13%: 1313 / 0 | 3%: 1369 / 917, both 58% |
+
+**Read.**
+- **The load path is the hands joint, on both sides of the ball.** The torso contact carries essentially nothing
+  while engaged (p50 0 N in every bin but touching, and 0-74 N there).
+- **When the bodies do touch, the solver lets both constraints act across one gap.** On 14-58% of touching ticks both
+  carry more than 100 N, and the hands still carry 750-1800 N with the chests in contact.
+- **Inside the bent base there is no hand-over.** Under HAND_FIT the hands' force rises as the gap closes (1100 N at
+  the base, 1650-1800 N inside it), so the arm takes the load all the way in and the bodies almost never meet
+  (0-3% of ticks).
+- **The default engine reaches "inside the base" more often only because its rolled length is shorter.**
+- **So the model has one object for two men's hands and has no torso path in engaged play.** A pair contact model
+  needs the press to hand over to the torso as the arm reaches its bend, not to rise.
