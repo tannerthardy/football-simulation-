@@ -19,6 +19,16 @@ def held_end(raw, p, qb, kend):
         if x is None or not bb or bb[0] is None: continue
         if math.hypot(bb[0] - x, bb[1] - y) > 2.5: return max(0, k - 1)
     return kend
+def wrap_start(p, qb, kend):
+    """A sack's time is when the last unbroken stretch with a defender within 1.5 yd of him begins (the wrap), not the
+    whistle: going down in a defender's arms is not holding the ball. The cut Flex's early-sack.py uses, so one
+    definition serves both lanes."""
+    k = kend
+    while k > 0:
+        x, y = p.pos(qb, k)
+        if x is None or not any(p.pos(d, k)[0] is not None and math.hypot(p.pos(d, k)[0] - x, p.pos(d, k)[1] - y) <= 1.5 for d in p.who('D')): break
+        k -= 1
+    return min(kend, k + 1)
 args = sys.argv[1:]; PFF = {}
 if '--plays-csv' in args:
     i = args.index('--plays-csv')
@@ -45,6 +55,7 @@ for arg in args:
             n += 1
             width = max(abs(p.pos(o, 0)[1] - by) for o in OL) + 0.5; y0 = p.pos(qb, 0)[1]
             fw = ev.get('pass_forward'); kend = held_end(raw, p, qb, min(p.frames - 1, p.k(fw if fw is not None else p.end)))
+            if fw is None and not any(p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0 for k in range(kend + 1)): kend = wrap_start(p, qb, kend)
             out_k = None; crossed = False
             for k in range(p.k(0.3), kend + 1):
                 x, y = p.pos(qb, k)

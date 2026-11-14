@@ -7,6 +7,16 @@ usage: python3 -I late-hold-ends.py name=a.jsonl.gz,... [--plays-csv plays.csv]"
 import sys, os, json, gzip, math, re, csv
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
+def wrap_start(p, qb, kend):
+    """A sack's time is when the last unbroken stretch with a defender within 1.5 yd of him begins (the wrap), not the
+    whistle: going down in a defender's arms is not holding the ball. The cut Flex's early-sack.py uses, so one
+    definition serves both lanes."""
+    k = kend
+    while k > 0:
+        x, y = p.pos(qb, k)
+        if x is None or not any(p.pos(d, k)[0] is not None and math.hypot(p.pos(d, k)[0] - x, p.pos(d, k)[1] - y) <= 1.5 for d in p.who('D')): break
+        k -= 1
+    return min(kend, k + 1)
 args = sys.argv[1:]; PFF = {}
 if '--plays-csv' in args:
     i = args.index('--plays-csv')
@@ -33,6 +43,7 @@ for arg in args:
                     x, y = p.pos(qb, k); bb = b[k]
                     if x is not None and bb and bb[0] is not None and math.hypot(bb[0] - x, bb[1] - y) > 2.5: kend = max(0, k - 1); break
             cross = next((k for k in range(kend + 1) if p.pos(qb, k)[0] is not None and p.pos(qb, k)[0] > 0), None)
+            if fw is None and cross is None: kend = wrap_start(p, qb, kend)
             if fw is not None:
                 away = (pf['passResult'] == 'I' and 'pass incomplete' in pf['playDescription'] and not re.search(r'pass incomplete \w+ \w+ to ', pf['playDescription'])) if pf is not None else bool(lab.get('throwaway'))
                 res = 'away' if away else 'throw'
