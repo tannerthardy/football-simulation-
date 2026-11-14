@@ -160,6 +160,19 @@ export class BallEstimates {
     return tr.fit ? this.pathOf(sim, tr) : [];
   }
 
+  /** Read-only: his last fitted path (the `ballPath` shape) as of now, without attending, turning his head or
+   * sampling; empty if he never had an estimate of this flight. For beliefs that must not move his gaze. */
+  peek(a: Agent, sim: PlaySim): PathSample[] {
+    const tr = this.tracks.get(a);
+    return tr?.fit && tr.flight === this.flight ? this.pathOf(sim, tr) : [];
+  }
+
+  /** Read-only: his newest sample of this flight, `{ t, pos }` (t the ball's time, the position as he saw it), or null. */
+  lastSeen(a: Agent): { t: number; pos: Vec3 } | null {
+    const tr = this.tracks.get(a), s = tr && tr.flight === this.flight ? tr.samples.at(-1) : undefined;
+    return s ? { t: s.t, pos: { ...s.p } } : null;
+  }
+
   /** Where his head points, if he is attending to the ball. */
   headOf(a: Agent): number | undefined { return this.tracks.get(a)?.head; }
   samplesOf(a: Agent): number { return this.tracks.get(a)?.samples.length ?? 0; }

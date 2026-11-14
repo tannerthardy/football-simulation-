@@ -66,3 +66,27 @@ describe('BALL_EST estimator', () => {
     expect(zero).toEqual(unset);
   });
 });
+
+describe('BALL_EST read-only accessors', () => {
+  it('peek and lastSeen read his belief without attending to the ball', async () => {
+    vi.resetModules();
+    vi.stubEnv('BALL_EST', '1');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3_match', concept: 'curl_flat', seed: 1, roster: 1, formation: 'gun_doubles_11', flip: false }));
+    let checked = false;
+    const tick = sim.tick.bind(sim);
+    sim.tick = () => {
+      tick();
+      if (checked || sim.ball.kind !== 'air') return;
+      const d = sim.defense[0];
+      // Never attended: nothing to peek, no track created.
+      expect(sim.ballEstimates.peek(d, sim)).toEqual([]);
+      expect(sim.ballEstimates.lastSeen(d)).toBeNull();
+      expect(sim.ballEstimates.headOf(d)).toBeUndefined();
+      checked = true;
+    };
+    sim.run();
+    expect(checked).toBe(true);
+  });
+});
