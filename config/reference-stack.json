@@ -122,6 +122,7 @@
     "SIGHT_CARRIER": "off",
     "SIGHT_COVER": "off",
     "SIGHT_RECOG": "off",
+    "HEAD": "off",
     "GRAB_CONNECT": "off",
     "GRASP_ARM_MOMENT": "on",
     "GRASP_JEOPARDY": "on",

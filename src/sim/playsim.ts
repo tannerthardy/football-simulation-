@@ -7,6 +7,7 @@
  */
 import { recordContact } from './seen-contact.js';
 import { lineOfSight } from './sight.js';
+import { HEAD, inHeadCone, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -856,7 +857,7 @@ export class PlaySim {
     else if ((SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
       // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
       || (SIGHT_RECOG && sight === 'recog'))
-      seen = this.sighted(observer, target, seen, true);
+      seen = this.sighted(observer, target, seen, true, HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'));
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -868,16 +869,19 @@ export class PlaySim {
    * the perception record has him then. That moment is carried forward on the velocity it showed, so a man he cannot
    * see now ages from when he last saw him and is picked up one delay after he is back in sight. Visibility at a past
    * tick never changes, so it is kept per tick. Beyond the record (about 1.2 s): the last picture he had, ageing. */
-  private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean): Perceived {
+  private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView = false): Perceived {
     const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
     const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
     const visibleAt = (back: number): boolean | null => {
-      const k = `${key}${gazeView ? 'o' : 'v'}@${now - back}`, hit = memo.get(k);
+      const k = `${key}${headView ? 'h' : gazeView ? 'o' : 'v'}@${now - back}`, hit = memo.get(k);
       if (hit !== undefined) return hit;
       const rec = (a: Agent) => this.perception.recorded(a.idx, back * this.dt)?.pos ?? null;
       const ro = this.perception.recorded(observer.idx, back * this.dt), rt = rec(target);
       if (!ro || !rt) return null;
-      const inView = gazeView || Math.abs(angDiff(Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x), ro.facing)) <= 1.8;
+      // HEAD: in view = inside the cone of where his head pointed then (recorded), not a body-facing bound.
+      const rh = headView ? this.perception.perceive(observer.idx, back * this.dt).head : null;
+      const brg = Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x);
+      const inView = rh !== null && rh !== undefined ? inHeadCone(rh, brg) : gazeView || Math.abs(angDiff(brg, ro.facing)) <= 1.8;
       const v = inView && lineOfSight(this.agents, observer, target, undefined, rec);
       memo.set(k, v);
       return v;
@@ -1401,6 +1405,7 @@ export class PlaySim {
     // QB_BODY_SEEN: his throwing motion shows on his body (recorded for everyone; read only through perception).
     if (this.qb) this.qb.arm = this.windupAt < 0 ? 'set' : this.deliveryAt >= 0 && t >= this.deliveryAt ? 'deliver' : 'load';
     recordContact(this);
+    stepHeads(this);
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
