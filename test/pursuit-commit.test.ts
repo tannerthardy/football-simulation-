@@ -11,10 +11,33 @@
  *    1.5 SE, is not claimed). Requests only; no outcome is asserted. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { StagedThrow } from '../src/sim/playsim.js';
 
 const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags as Record<string, string>)
   .filter(([, v]) => v === 'on').map(([k]) => k);
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+
+/** Staged throws (PlaySetup.stagedThrow): the start, receiver, aim point and flight time develop's QB produced on each
+ * play (recorded 2026-11-14 at 45e17fcc, PURSUIT_COMMIT off; at 99: no throw), so a change in the QB does not move this defensive
+ * panel. */
+const STAGED: Record<string, StagedThrow> = {
+  'stick 1': { at: 1.6, slot: 'Y', aim: { x: 42.75510797494996, y: 19.56064538246492, z: 1.0617966851885154 }, T: 1.0038315902082997 },
+  'stick 2': { at: 1.35, slot: 'RB', aim: { x: 31.566080146794768, y: 15.033085414000364, z: 1.095868306707627 }, T: 0.7375395488129338 },
+  'stick 3': { at: 1.55, slot: 'Y', aim: { x: 42.39777877124171, y: 21.864315326031523, z: 1.3867151684517571 }, T: 0.7546031063889594 },
+  'stick 4': { at: 1.35, slot: 'RB', aim: { x: 31.294126280679468, y: 14.263973820793652, z: 1.4188859185720468 }, T: 0.6871359663365784 },
+  'slant_flat 1': { at: 1.1, slot: 'Z', aim: { x: 41.87525352910347, y: 13.187197312041814, z: 1.0349938060562471 }, T: 0.9333439890033726 },
+  'slant_flat 2': { at: 1.1, slot: 'Y', aim: { x: 36.08687886071956, y: 37.22118183844065, z: 1.0968151616651893 }, T: 0.5696560916000534 },
+  'slant_flat 3': { at: 1.1, slot: 'Z', aim: { x: 40.83064438996887, y: 13.066943231920494, z: 1.401552263886263 }, T: 0.6908680027925088 },
+  'slant_flat 4': { at: 1.35, slot: 'Y', aim: { x: 36.86115866977673, y: 38.672702323154965, z: 1.4328650604242776 }, T: 0.6054246106133248 },
+  'curl_flat 1': { at: 1.7, slot: 'Y', aim: { x: 39.52890174545266, y: 7.648628322167302, z: 0.986535531061994 }, T: 1.2515707703976044 },
+  'curl_flat 2': { at: 2, slot: 'Y', aim: { x: 39.554781992583365, y: 46.377836809413424, z: 0.9744159632558849 }, T: 1.153914281959143 },
+  'curl_flat 3': { at: 2.05, slot: 'Y', aim: { x: 40.135029453344714, y: 7.756267865079531, z: 1.424660443283833 }, T: 1.1720412069515953 },
+  'curl_flat 4': { at: 2.95, slot: 'RB', aim: { x: 36.17892265022016, y: 22.57096213437279, z: 1.404454026342276 }, T: 0.6629691249798597 },
+  'smash 1': { at: 1.7, slot: 'Z', aim: { x: 40.5839897767163, y: 13.179147270062776, z: 1.031538954835249 }, T: 0.9538884309894303 },
+  'smash 2': { at: 2.95, slot: 'RB', aim: { x: 39.669248892479175, y: 4.5887248109032575, z: 0.9037783194737418 }, T: 1.5175505304840282 },
+  'smash 3': { at: 2.05, slot: 'Z', aim: { x: 40.468541498598256, y: 14.56410788108467, z: 1.3997505859604271 }, T: 0.9401310837056995 },
+  'smash 4': { at: 99, slot: 'X' },
+};
 
 async function run(flag: string) {
   const flagName = flag;
@@ -36,7 +59,7 @@ async function run(flag: string) {
     const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
       offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 't' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never) as any;
+      los: 35, ballY: 26.65, firstDownX: 45, seed, stagedThrow: STAGED[`${pass} ${seed}`] } as never) as any;
     const meet = new Map<unknown, number>(), seen = new Map<unknown, number>(), head = new Map<unknown, number>(), tgt = new Map<unknown, any>();
     const tc0 = sim.commandTraceFor.bind(sim);
     sim.commandTraceFor = (a: unknown) => { const inner = tc0(a); return new Proxy(inner ?? {}, { get: (o: any, k) => k === 'pursuit'
@@ -71,7 +94,10 @@ async function run(flag: string) {
 describe('PURSUIT_COMMIT: pursuers commit to their meeting and keep their approach through the catch', () => {
   it('off: some nearby defenders ask for a stop on the catch tick', async () => {
     const r = await run('0');
-    expect(r.nearAtCatch).toBeGreaterThanOrEqual(20); // measured 1 of 27 asking for a stop; 20 with PASS_SET_SEEN alone
+    // Premise floor (a sample for the claim, not a mechanism): enough defenders near the catch. With the throws staged
+    // the count still moves with what defenders saw of the passer before the throw (his eyes and body under QB_EYES:
+    // develop 21, the QB lane's engine-63 arm 19), so the floor is 15. Measured 1 of 27 asking for a stop before staging.
+    expect(r.nearAtCatch).toBeGreaterThanOrEqual(15);
     expect(r.zeroAtCatch).toBeGreaterThan(0);
   }, 240_000);
   it('on: none do, his request turns less, and the bearing to his planned meeting jumps no more often', async () => {

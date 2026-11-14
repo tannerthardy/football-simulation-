@@ -805,8 +805,18 @@ export function handUnloaded(e: Engagement): boolean {
   const h = e.hands;
   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
 }
+/** KEYED_FELT (experimental, off; requires RUSH_HANDS): the hand model's keyed moves read what he feels, not a rated
+ * coin. Whether the blocker's hand is pressing on him is his own touch (the joint's measured force, a step old):
+ * the club is keyed when it is unloaded, and only then. Off, a misread (probability 0.5 - 0.5 x recognition) of a
+ * loaded hand still keyed a club: 55% of clubs under the hand model came with the hand loaded, the club was chosen at
+ * 39% of decisions against 14% without the model, and each club tripled the interior's pass rate (club-trace.mts).
+ * The long-arm against a shorter man is not forced at every decision: it is a weight in the ordinary choice (+0.6, the
+ * cue bonuses' scale; a choice). */
+export const KEYED_FELT = RUSH_HANDS && process.env.KEYED_FELT === '1';
+if (process.env.KEYED_FELT === '1' && !RUSH_HANDS) throw new Error('KEYED_FELT=1 requires RUSH_HANDS=1 (the hand model whose keyed moves it reads)');
 function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
   const d = e.defender, b = e.blocker, rng = sim.dice('rep', b, d);
+  if (KEYED_FELT) return handUnloaded(e) ? 'club' : null;
   const recognition = 0.5 * d.r('passRushFinesse') + 0.5 * d.r('awareness');
   const read = (truth: boolean) => (rng.chance(0.5 + 0.5 * recognition) ? truth : !truth);
   if (read(handUnloaded(e))) return 'club';
@@ -823,7 +833,7 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   const fin = d.r('passRushFinesse');
   const w: Array<[RushMove, number]> = [
     ['bull', 0.2 + power * 0.9 + (e.control < 0 ? 0.4 : 0)],
-    ['longarm', 0.1 + power * 0.5 + (td.arm - 33) * 0.1],
+    ['longarm', 0.1 + power * 0.5 + (td.arm - 33) * 0.1 + (KEYED_FELT && RUSH_HANDS && e.type === 'pass' && d.player.measurables.armIn > e.blocker.player.measurables.armIn ? 0.6 : 0)],
     ['rip', 0.1 + fin * 0.5 + (e.control > 0.3 ? 0.6 : 0)],
     ['club', 0.1 + fin * 0.3 + power * 0.2 + (e.control > 0.3 ? 0.4 : 0)],
     ['swim', 0.1 + fin * 0.6 + (e.baseB < 0.6 ? 0.6 : 0)],
@@ -898,6 +908,15 @@ function counterLongArm(sim: PlaySim, e: Engagement): void {
 }
 
 /** RUSH_HANDS: the long-arm's lifetime and the blocker's reach while it is on. */
+/** LONGARM_STRUT (experimental, off; requires RUSH_HANDS): against a long-arm the blocker is not disarmed. Off, his push,
+ * hold and steer were zeroed whenever the gap between bodies exceeded his arm: a step that decided 17% (interior) and
+ * 25% (tackle) of the long-arm episodes where it turned on, against 0-1% where it never did (longarm-switch.mts). The
+ * rusher's straight arm is a strut that carries force both ways and a single point the blocker can work: his hands are
+ * on that arm, so his push carries through it unchanged, and his hold and steer act on the man through the arm, as
+ * much as a hand that far out along it controls him: x 1 at the old threshold, falling linearly to 0 at the rusher's
+ * own hand (gap beyond his arm / the rusher's arm). Continuous in the gap; the counter (a club on the arm) unchanged. */
+export const LONGARM_STRUT = RUSH_HANDS && process.env.LONGARM_STRUT === '1';
+if (process.env.LONGARM_STRUT === '1' && !RUSH_HANDS) throw new Error('LONGARM_STRUT=1 requires RUSH_HANDS=1 (the long-arm it acts on)');
 function stepLongArm(sim: PlaySim, e: Engagement): void {
   const j = e.rusherHand;
   if (!j) return;
@@ -908,7 +927,13 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
   }
   const b = e.blocker, d = e.defender, h = e.hands;
   const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
-  if (h && gap > b.player.measurables.armIn / 36) { h.push = 0; h.hold = 0; h.steer = 0; }
+  const armB = b.player.measurables.armIn / 36;
+  if (h && gap > armB) {
+    if (LONGARM_STRUT) {
+      const sc = clamp(1 - (gap - armB) / Math.max(1e-6, d.player.measurables.armIn / 36), 0, 1);
+      h.hold *= sc; h.steer *= sc;
+    } else { h.push = 0; h.hold = 0; h.steer = 0; }
+  }
   counterLongArm(sim, e);
 }
 
@@ -922,6 +947,16 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
   if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
   if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
+  // RUSH_RIP: no roll; his arm's force on the blocker's hand and his body's bend through the corner.
+  if (RUSH_RIP && e.move === 'rip') {
+    if (e.hands && !e.hands.off) {
+      const lat = latOf(axis), speed = ARM_SPEED * (0.75 + 0.5 * e.defender.r('passRushFinesse')), F = armForce(e.defender);
+      sim.world.handForce(e.hands, e.defender.body, { x: -lat.x * e.side * F, y: -lat.y * e.side * F }, sim.world.time, sim.world.time + FOREARM / speed);
+    }
+    e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return;
+  }
+  // RUSH_BULL: no roll; the drive is his intent (stepPassRep's power request) and the World's.
+  if (RUSH_BULL && e.move === 'bull') { e.moveUntil = t + 0.3; e.moveOk = true; e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); return; }
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);
@@ -1168,6 +1203,33 @@ export const RUSH_ARM_BALANCE = process.env.RUSH_ARM_BALANCE === '1';
  * forward onto the man when it was taken away (12 of 21 interior falls; dl-falls.mts). A bull still keeps the
  * commitment his bound allows and can still be dropped. */
 export const RUSH_LEAN_BOUND = process.env.RUSH_LEAN_BOUND !== '0';
+/** RUSH_BULL (experimental, off; RUSH_BULL=1; PRO-INFO #9 and #10, the first move): the bull rush is the rusher's
+ * drive, not a roll. He asks to go through the man's chest to the QB (power: push 1 at 0.55 of his top speed, his pad
+ * level), and the World resolves his legs, mass, lean and base against the blocker's anchor; nothing else. The roll
+ * (logistic of rated skill against the blocker's rated counter), the scripted strikes (a won bull's 0.9 x the
+ * blocker's mass, a lost one's blocker punch), the lost move's stall and both control swings are gone together. What
+ * a bull that doesn't move the man costs comes from the bodies: he spent his drive and his weight is forward on the
+ * man; the blocker's counter is his own anchor and hands. With it the pass rep's control no longer drifts toward the
+ * better hands rating (#10): it changes only through the hand events still in the rep.
+ * Diagnosis (rep-rolls.mts, engine-61, 8 games): 1475 bull rolls, 10% won, opening 4 of 210 sheds; a lost roll left
+ * the rusher 0.08-0.09 yd nearer the QB over 0.5 s against 0.12-0.14 engaged with no move: a move attempt was worth
+ * less than none. */
+export const RUSH_BULL = process.env.RUSH_BULL !== '0';
+/** RUSH_RIP (experimental, off; RUSH_RIP=1; PRO-INFO #9, the second move): the rip is his hand and his body, not a roll.
+ * His near arm comes up under the blocker's hand on his working side: a force of his arm (armForce) across the
+ * blocker's hand joint, toward the inside, for the time his hand takes to cross the forearm (FOREARM at his hand
+ * speed, ARM_SPEED by his finesse), the club's force law (RUSH_HANDS); whether the hand comes off is the World's
+ * (the joint's hold and grip against the force). At the same time his body runs the rip: he dips and turns the corner
+ * (the move's bend request: low posture, at the blocker's hip, his speed by his bend). The roll, the lost move's stall
+ * and blocker punch, and the control swing are gone together; a rip that doesn't clear the hand leaves him low on the
+ * corner with the hand still on him, and what that costs is the bodies'. Diagnosis (rep-rolls.mts, engine-61, 8
+ * games): 1126 rip rolls, 6% won, opening 3 of 210 sheds. Requires RUSH_HANDS (the World's hand model: without it a
+ * force on a hand does nothing, and attempt 1, the body alone, lost sheds: 210 -> 202). Read with RUSH_ONE_HAND (a
+ * cleared hand opens the side it guarded): RUSH_HANDS + RUSH_ONE_HAND, 8 games: sheds 228 -> 283, the rip clears a
+ * hand 16% of the time. */
+export const RUSH_RIP = process.env.RUSH_RIP === '1';
+// A rip without the World's hand model is a silent no-op (a force on a hand does nothing): refuse it.
+if (RUSH_RIP && !RUSH_HANDS) throw new Error('RUSH_RIP=1 requires RUSH_HANDS=1 (the World hand model the rip acts through)');
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
   const sup = d.body.support; if (!sup) return;
   const technique = clamp(0.5 * td.balance + 0.5 * d.r('passRushPower'), 0, 1);
@@ -1712,7 +1774,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const stalled = t < e.moveUntil && !e.moveOk;
   e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
   // Hand fight drifts toward the better hands; arm length keeps you off the body.
-  e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
+  // RUSH_BULL (#10): no drift toward the better hands rating.
+  if (!RUSH_BULL) e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
   setHands(sim, e);
 
   const sep = b.profile.radius + d.profile.radius;
