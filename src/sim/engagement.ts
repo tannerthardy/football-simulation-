@@ -1749,7 +1749,7 @@ export const REP_SEEN = process.env.REP_SEEN !== '0';
  * between-moves intent, the run defender's touch reads of the blocker, the helpers' and climbers' reads of the man.
  * Physics (joint and strike geometry, the World's contact and reach) and the rep's outcome geometry (past and out of
  * reach, behind his shoulders, the body no longer in the way) stay on the true bodies. */
-export const ENGAGE_FELT = process.env.ENGAGE_FELT === '1';
+export const ENGAGE_FELT = process.env.ENGAGE_FELT !== '0';
 /** ENGAGE_TRUNK (experimental, off; ENGAGE_TRUNK=1, needs TRUNK_TWIST=1 and ENGAGE_FELT=1; the yaw note's step 1,
  * docs/reviews/2026-11-14-pair-contact-design.md): an engaged man's hips and shoulders are two requests. The hips are his
  * set and ride, square to what he protects (a pass setter: the direction from the called launch point through him; a
