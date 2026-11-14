@@ -628,7 +628,10 @@ Card, 16 games x 2 leagues, seeds 11 / 23 / 31, against the same tree with the t
 | 20+ yd completions / att | -2.2 (moved), -0.7, -0.6 | -1.7 (moved), +0.1, +0.4 | -1.0, 0.0, +0.6 |
 | yd / attempt | -0.35, +0.62, -0.16 | -0.40, +0.91 (moved), +0.05 | -0.13, +0.46, -0.02 |
 
-Run set unchanged: 3.92 capped, missed + broken 0.293 a run. Suite: the two known research failures only.
+Run set unchanged: 3.92 capped, missed + broken 0.293 a run. Suite: the two known research failures only, after four
+fixtures moved by `VERTS_QUICK` were restated to pin it off (`acc-radius`, `punch-strike`, `rush-lean-bound`,
+`tackle-set`: each is a four_verts scene on the reference stack recorded on the five-step set; all four pass with the
+flag off).
 
 Reads. `SHOULDER_LEAD`: yards after the catch and long completions fall on all three seeds, as a defender arriving
 where the receiver will be should produce; completion does not fall (seed 23's reference arm is low: `PLAN_KEYS_3`
