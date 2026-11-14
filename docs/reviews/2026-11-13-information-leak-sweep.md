@@ -206,3 +206,15 @@ fits, where the shares are highest; sound and the crowd are not a channel here. 
 (trafficTempo, the carrier's own) and `aroundBodies` first (the largest behind shares; a runner does not see a man
 behind him), then `sawThrow` and coverage, then possession-read and recognition (the volume).
 
+**Progress (2026-11-14).**
+- Step 1, the carrier's reads: `SIGHT_CARRIER` (#716, off). The picture is the newest moment he had the man in sight by
+  the recorded geometry. Read: run set inside its floor; short-catch YAC 6.47 -> 5.66 pooled (NFL 3.91).
+- `aroundBodies`: measured, not built (`scripts/diag/eyes/around-sight.ts`, rules/sight-carrier, seed 101 x 1, 1 in
+  10 calls). Of 24,125 sampled calls, 295 (1.2%) are of a body that could decide the steer (ahead on his path within
+  4 yd, inside his corridor), and 20 of those (6.8%; 18 behind his shoulders) are of a body he cannot see: about 0.08%
+  of its calls. The 56% "behind" share is pictures it discards. No decision to change, so no flag; it can join a
+  later group if a witness finds one.
+- `sawThrow`: built with Defense as the release candidate in presented possession (#713): arm and ball cues through
+  `lineOfSight` at the sample's moment.
+- Next: coverage (`coverMan` 22% / 19%, `coverage/reads` 15% / 18%, `zonePlay`, `trackReceiver`).
+
