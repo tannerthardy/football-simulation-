@@ -3034,3 +3034,381 @@ The stance/base proposal (docs/reviews/2026-11-14-stance-base-proposal.md, secti
 fallers are hit more side-on (19-27 deg off their facing, against 13-14) while going around the man, and the blocker
 drives through. That is a base-and-recovery question: the isotropic base and recovery step treat an angled hit like a
 square one.
+
+## The rating rolls (PRO-INFO #9/#10): ranking, then RUSH_BULL (2026-11-14)
+
+### Ranking (rep-rolls.mts, engine-61, RUSH_HANDS off, 8 games)
+
+662 dropbacks, 2669 pass reps, 6506 move rolls. The rusher shed his blocker in 210 reps (7.9%), and 164 of those
+became pressure.
+- Only 11% of sheds (23) followed a won roll within 0.6 s. 89% were bodies alone.
+- About 92% of rolls were lost. Each lost roll scripted a 0.3 s stall, a blocker punch (`world.strike`) and +0.35 of
+  `control` (#10's rated drift then scales push, hold and steer).
+- The rusher's gain on the QB over 0.5 s, edge / interior:
+
+| | edge | interior |
+|---|---|---|
+| after a lost roll | 0.09 yd | 0.08 yd |
+| after a won roll | 0.46 | 0.36 |
+| engaged, no move in flight | 0.12 | 0.14 |
+
+  So attempting a move gained him less than not trying: a rated penalty on effort.
+- Rolls by move: bull 1475 (10% won), rip 1126 (6%), swim 1077 (6%), club 988 (6%), long-arm 637 (9%), spin 547 (6%),
+  snatch 396 (3%), dip 260 (27%).
+
+### RUSH_BULL (attempt 1; f56aeaa1, off)
+
+The bull is the rusher's drive: push 1 through the chest to the QB at 0.55 vmax, at his pad level, resolved by the
+World against the blocker's anchor. Removed together: the roll, both scripted strikes, the stall, the control swings,
+and (#10) the pass rep's drift of `control` toward the better hands rating. Off is bit-identical (seed 999 e401972b).
+Fixture: test/rush-bull.test.ts.
+
+**8 games (rep-rolls):**
+- Sheds 210 → 225, and those that became pressure 164 → 183.
+- The bull opened 36 sheds (16%), against 4.
+- What a move attempt is worth (gain minus no move, over 0.5 s):
+
+| matchup | bull, off | bull, on |
+|---|---|---|
+| rusher's leg drive better (top third) | -0.06 yd | -0.02 yd |
+| rusher's leg drive worse (bottom third) | -0.01 yd | +0.01 yd |
+| by ratings: rusher better / worse | -0.02 / +0.10 | +0.01 / +0.05 |
+
+**16 games x seeds 11 / 23, off → on:**
+
+| | s11 | s23 |
+|---|---|---|
+| pressured | 28.9 → 29.5% | 25.4 → 27.6% |
+| edge past outside | 0.5 → 0.8% | 0.5 → 0.6% |
+| edge level / in front | 2.7 → 3.0% | 3.8 → 4.1% |
+| edge inside | 9.6 → 10.6% | 7.7 → 7.7% |
+| interior | 9.7 → 9.2% | 7.6 → 8.8% |
+| within 2 yd before the ball is out | 24.1 → 24.2% | 21.2 → 23.4% |
+| sacked | 5.5 → 5.7% | 4.2 → 4.2% |
+| tackle come-offs (own blocker) /100 | 32.3 → 35.9 | 28.9 → 29.7 |
+| interior come-offs /100 | 34.2 → 31.3 | 27.0 → 31.9 |
+| come-off time p50 | 2.7-2.8 s, unchanged | |
+| OL falls /100 (true) | 3.6 → 4.0 | 3.6 → 3.7 |
+| DL falls /100 (true) | 4.8 → 6.1 | 4.2 → 4.7 |
+
+**Read.**
+- The penalty is gone, and pressure moves the right way on both seeds (+0.6, +2.2), modestly: the bull is one move
+  of eight, and the other seven still script their losses.
+- Edge past-outside barely moves. Those rushers work the corner with speed, dip, rip and swim, not the bull.
+- DL falls rise (+1.3, +0.5). A committed bull leans more, within RUSH_LEAN_BOUND's bound.
+- The worth row is about zero in both matchups, not positive for the better rusher. The measure is relative to his
+  own no-move push, and leg-drive advantage helps both equally, so it may not separate them.
+- Next: rip and swim (2203 rolls, 6% won), the hand-clearing moves, on RUSH_HANDS' joint geometry. Their lost rolls
+  are the bulk of the remaining penalty.
+
+### RUSH_BULL: the DL falls and the ground row (Integration's two checks, 2026-11-14)
+
+**DL falls.** dl-falls.mts, two 8-game windows, off → on. In-rep DL falls before the throw go 24 + 20 = 44 → 23 + 15 =
+38. Falls on a bull are 14 → 15. The driven-over edge class is 24 → 19. No class grows. In the 16-game reviews, DL
+contact falls before the throw that are not within 1 s after his own shed go 3.1 → 4.0 /100 on s11 and 2.9 → 2.7 on
+s23, so the true-fall rise is one seed's +0.9 /100 and is spread across classes, not the driven-over class growing. The
+dropped bull (a fixture) is in both arms. No attempt 2 is needed on this account.
+
+**Ground.** rep-rolls.mts RR_ADV=push: the blocker carried back beyond his own request (his requested x-velocity minus
+his achieved one, integrated) per second of rep, by leg-drive matchup thirds, reps with a bull vs without:
+
+| | stronger rusher: bull / no bull | weaker rusher: bull / no bull |
+|---|---|---|
+| off, s11 | 0.43 / 0.38 | 0.14 / 0.12 |
+| on, s11 | 0.38 / 0.36 | 0.11 / 0.07 |
+| off, s23 | 0.38 / 0.38 | 0.16 / 0.11 |
+| on, s23 | 0.38 / 0.36 | 0.14 / 0.19 |
+
+The bodies decide the ground: a stronger rusher carries his blocker back about 3x as fast as a weaker one. The bull
+adds little over his ordinary in-rep push (about +0.02 yd/s), with or without the roll. Our default rep request is
+already a full drive (push 0.75, his legs into the man), so a bull barely differs from not moving. Making a bull
+different would mean giving the rusher a real choice between moves (his weight committed through the chest against
+his feet working the edge). That is RUSH_INTENT's ground (between-moves intent), a separate item. (Raw ground given
+was confounded by the set: a tackle's kick depth dominates it.)
+
+### The hand model on engine-60, then the rip on it (four arms in one run, 2026-11-14)
+
+Arms (16 games x seeds 11 / 23, 5f6d72c7):
+- **A:** engine-60;
+- **B:** + RUSH_HANDS + RUSH_ONE_HAND + RUSH_ARM_BALANCE;
+- **C:** B + RUSH_RIP;
+- **D:** C + RUSH_BULL.
+
+| | A | B | C | D | NFL |
+|---|---|---|---|---|---|
+| pressured | 28.9 / 25.4% | 32.5 / 31.2 | 36.3 / 32.0 | 38.7 / 29.9 | 32.9 |
+| interior DL/LB | 9.7 / 7.6 | 17.0 / 15.2 | 19.1 / 13.9 | 21.5 / 13.5 | 9.8 |
+| edge past outside | 0.5 / 0.5 | 0.3 / 0.7 | 0.6 / 0.7 | 0.4 / 0.6 | 3.8 |
+| edge level / in front | 2.7 / 3.8 | 2.4 / 3.4 | 2.7 / 3.4 | 2.5 / 2.9 | 3.0 |
+| edge inside | 9.6 / 7.7 | 7.6 / 6.9 | 9.4 / 7.9 | 8.6 / 6.7 | 6.4 |
+| rusher free (funnel) | 36 / 34% | 46 / 44 | 47 / 44 | 45 / 42 | 38 |
+| within 2 yd before the ball is out | 24.1 / 21.2 | 27.9 / 26.1 | 31.0 / 26.7 | 32.9 / 24.3 | 27.6 |
+| sacked | 5.5 / 4.2 | 8.0 / 5.6 | 7.6 / 5.0 | 8.9 / 5.1 | |
+| interior come-offs from own blocker /100 (time p50) | 34 / 27 (2.8 s) | 59 / 60 (2.0-2.2 s) | 63 / 67 (2.1-2.2) | 60 / 63 (2.0-2.2) | NFL reps 3.1-3.2 s |
+| tackle come-offs /100 (time p50) | 32 / 29 (2.7-2.8 s) | 56 / 52 (2.2) | 61 / 56 (2.2) | 53 / 52 (2.2) | |
+| DL falls /100 (true) | 4.8 / 4.2 | 6.6 / 8.4 | 7.5 / 8.5 | 7.3 / 7.3 | about 1 |
+| OL falls /100 (true) | 3.6 / 3.6 | 3.5 / 4.1 | 5.8 / 4.8 | 5.1 / 4.1 | |
+
+**The base (B against A).** Integration's question was whether the hand model's old problems were the oracle pass set
+and fallen rushers, now fixed. They are not:
+- Interior pressure doubles to 1.6-1.7x the NFL's.
+- "Rusher free" rises to 44-46% (NFL 38%).
+- Come-offs from the man's own blocker nearly double and come about 0.6 s earlier (p50 2.0-2.2 s).
+- DL falls rise, even with RUSH_ARM_BALANCE and RUSH_LEAN_BOUND.
+- Overall pressure lands near the NFL's 32.9% only because the interior overshoots while the edge stays low (past
+  outside 0.3-0.7%).
+
+**The rip's increment (C against B).**
+- Pressure +3.8 / +0.8.
+- It comes from the interior (+2.1 / -1.3) and edge inside (+1.8 / +1.0), not edge past-outside (0.3 → 0.6, 0.7 →
+  0.7).
+- OL falls rise (3.5 → 5.8, 4.1 → 4.8).
+
+**The bull on top (D).** Interior pressure rises on s11 only (19.1 → 21.5). Sacks go 8.9 / 5.1.
+
+**Read.** On this engine the hand model frees interior rushers early. That has to be found and repaired before the
+moves built on it (the rip and the swim) can be read. The edge's missing past-outside win isn't a hand-clearing
+problem: the rip clears hands but its sheds go inside. The next diagnostic is the interior come-off under RUSH_HANDS
++ RUSH_ONE_HAND: what frees him at 2.0-2.2 s (a hand knocked off and not refitted, one hand opening the side, or the
+long-arm), traced as the PUNCH_STRIKE falls were.
+
+### What frees the interior under the hand model (interior-free.mts, club-trace.mts; seed 11 x 6-8 games)
+
+**Interior reps that end with the ball held, after 0.5 s:**
+
+| | engine-60 | + RUSH_HANDS / ONE_HAND / ARM_BALANCE |
+|---|---|---|
+| ended, per 100 dropbacks | 17.2 | 25.7 |
+| 'past him' (beat()), per 100 dropbacks | 10.9 | 12.2, plus 4.6 more in the hands-1 / long-arm / club classes |
+| ended at, p50 | 2.45 s | 2.00 s |
+| rep length, p50 | 1.70 s | 1.30 s |
+| last move before 'past him' | dip 34 of 72 | **club 56 of 77** |
+
+At the end of those reps the blocker had both hands on again: the club wins by what it does before his hands are back,
+not by leaving him with fewer. 34 of the 77 had lost a hand about 1.1 s before.
+
+**Per club, against a clean no-move control** (engaged, no move in flight, none in the last 0.6 s):
+
+| | after a club | no move (clean control) | engine-60, no move |
+|---|---|---|---|
+| interior: past him within 1 s | **6%** | 2% | 3% |
+| interior: a hand off within 0.3 s | 21% | 6% | 0% |
+| tackle: past him within 1 s | 8% | 7% | 5% |
+
+**Frequency.** About 315 clubs a game under the hand model (1893 in 6 games: 1332 interior, 561 tackle), against about
+124 club rolls a game on engine-60. Under RUSH_HANDS a hand that goes unloaded on him is a felt change that brings his
+next move decision forward to his reaction time. His own club unloads the blocker's hand, so he re-decides about a
+reaction after his arm is back, often into another club. He reacts to his own action as if it were news.
+
+So the hand model's interior excess is mostly the club, used about 2.5x as often and tripling the interior pass rate
+each time. Proposed repair (one flag): the felt-unload counter trigger reads a change he did not cause, so an unload
+during and just after his own club (until his arm is back) is not news. Then re-read the base arm's rows.
+
+### The interior repair, attempt 1: KEYED_FELT; and what the refit says (2026-11-14)
+
+**The self-trigger hypothesis is falsified** (move-triggers.mts). Under the hand model the felt-unload trigger brought
+forward only 10% of move decisions, and only 13% of those came within 1 s after his own club. Clubs run at about 0.41
+per rep-second against 0.17 without the model, while total decisions do not rise (about 0.9-1.0 against 1.18). The
+club simply takes a larger share of his choices.
+
+**The cause of that share is a rated coin.** Under RUSH_HANDS, keyedMove runs before the weighted choice:
+`read(handUnloaded)` returns the truth with probability 0.5 + 0.5 x recognition. A misread of a loaded hand keys a club
+anyway. 55% of clubs came with the hand loaded, and the club was chosen at 39% of decisions against 14% without the
+model, with control similar at decision time (p50 0.29 vs 0.42).
+
+**KEYED_FELT (off, requires RUSH_HANDS; attempt 1).**
+- The keyed club reads his own touch (the blocker's hand unloaded on him), with no misread coin.
+- The long-arm against a shorter man becomes a weight, not forced.
+- Clubs: 39% → 31% of decisions. Clubs against a loaded hand: 55% → 38%. (PUNCH_STRIKE's held touch often reads as an
+  unloaded hand, which is now an honest club cue.)
+- Interior 'past him': 12.7 → 15.3 /100 dropbacks (8 games). Honest clubs work better, so this does not repair the
+  overshoot. It stays off-flag as an information fix in its own right.
+
+**The refit is not slow, and the club mostly does not win before it** (refit.mts):
+
+| | interior | tackle |
+|---|---|---|
+| clubs that took a hand off | 462 | 54 |
+| refit p25 / p50 / p75 | 0.35 / 0.40 / 0.55 s | 0.30 / 0.40 / 0.45 s |
+| lateral speed toward his working side while the hand is off: blocker / rusher | 0.92 / 1.32 yd/s | 1.32 / 2.19 yd/s |
+| past him before the refit | 4% | 24% |
+
+A refit of about 0.4 s is a reaction plus the hand's travel. **The interior excess is spread over end states.** By the
+interior-free table, B against A per 100 dropbacks:
+- reps ending under the rusher's long-arm: +3.1 (the blocker's hands cannot reach him while it is on);
+- reps ending with one hand off: +2.3;
+- 'past him' with both hands on: +1.3;
+- a club in flight: +1.0.
+
+So the next diagnostic is the long-arm and one-hand-off states, not the club's frequency.
+
+### Attempt 2's diagnostic: the long-arm switch, arm length, the one-hand side (2026-11-14; seed 11 x 6 games, hand-model arm B)
+
+**The long-arm switch** (longarm-switch.mts). Under RUSH_HANDS, `stepLongArm` zeroes the blocker's push, hold and steer
+whenever the gap between bodies exceeds his arm. It is a step with no exit margin, but it does not flicker (toggles
+p50 0, p90 1).
+
+| | interior | tackle |
+|---|---|---|
+| long-arm episodes | 758 (15% of decisions) | 434 (8%) |
+| duration p50 | 0.60 s | 0.55 s |
+| episodes with the switch ever on | 10% | 23% |
+| countered (club on the arm) / arm knocked off | 92% / 71% | 89% / 60% |
+| past him during or within 0.5 s: switch-on episodes / never-on | 17% / 0% | 25% / 1% |
+
+Where the switch turns on, it decides the rep. That is about 13 interior sheds in 6 games, roughly a third of the
+interior excess (about 40 extra interior rep endings in 6 games).
+
+**Arm length.** In matchups at move decisions the rusher's arm minus the blocker's is p10 / 50 / 90 = -2.8 / -1.4 /
++0.4 in, and the rusher is longer in only 16%. Yet the long-arm is 15% of interior decisions, with the rusher shorter
+by a median 1 inch. Reach difference does not gate it. The keyedMove misread coin does (KEYED_FELT removes it).
+
+**The one-hand side** (refit.mts, while a club has a hand off):
+
+| | interior | tackle |
+|---|---|---|
+| blocker asked toward the rusher's working side | 1.77 yd/s | 2.61 |
+| blocker achieved | 0.98 | 1.88 |
+| his shuffle top speed | 3.89 | 4.38 |
+| rusher | 1.43 | 2.78 |
+
+He is not waiting on a picture: he asks for more than the rusher's speed. He achieves about half of it, so the limit is
+what holds him back while engaged, not his request or his footwork cap.
+
+**Read.** No single mechanism carries the interior excess:
+- the long-arm switch is about a third;
+- the club with both hands on is a part;
+- the one-hand side is a part.
+
+The hand-off case is limited by achievement, not by the decision. Before choosing attempt 2, the achievement limit
+needs one more look: what stops the engaged interior blocker reaching his asked speed (the rusher's body in the
+contact, his hands' joint, his traction or his acceleration).
+
+### The engaged blocker's lateral (Integration's step 1) and LONGARM_STRUT (step 2), 2026-11-14
+
+**Why he gets about half his lateral request** (engaged-lateral.mts, seed 11 x 4 games). This is a per-tick
+decomposition along his lateral request: mass x achieved acceleration = the constraint load he receives (contacts and
+joints) + his own ground force. Ticks where he lags his request by more than 0.5 yd/s:
+
+| | interior, base | interior, hand model | tackle, base | tackle, hand model |
+|---|---|---|---|---|
+| asked / got, p50 (all engaged ticks with a request) | 1.91 / 1.42 | 2.09 / 1.50 | 2.22 / 2.17 | 2.30 / 2.24 |
+| lagging share of ticks | 34% | 41% | 34% | 36% |
+| constraint load along his request p50 (- = against him) | -103 N | 0 | 0 | +43 |
+| his lateral ground force p50 | 486 N | 432 | 345 | 293 |
+| traction left after his anchor | 1503 N | 1537 | 1418 | 1456 |
+| lateral ground force / what is left | 0.35 | 0.31 | 0.27 | 0.21 |
+| load against him larger than his own lateral force | 8% | 6% | 9% | 10% |
+
+Neither the rusher's body nor traction holds him. His lateral ground force is about mass x the gait's lateral
+acceleration (shuffle speed over tau). That is the movement model's acceleration law, shared by every body. It is on
+the base engine too, so the hand model exposed it rather than made it.
+
+**Against the NFL** (engaged-lateral.py, the same operator; within 1.2 yd of a defender, 0.5 s to the pass; tracking
+resolution about 0.25 yd/s):
+
+| | lineman \|vy\| p50 / p90 | his man \|vy\| p50 / p90 |
+|---|---|---|
+| NFL interior | 0.75 / 2.00 | 1.00 / 2.50 |
+| NFL tackle | 1.00 / 2.50 | 1.25 / 3.00 |
+| sim A interior | 0.75 / 1.75 | 0.75 / 1.75 |
+| sim B interior | 0.75 / 1.50 | 0.75 / 1.75 |
+
+NFL linemen are also slower across than their man. Ours match at the median and are a little lower at p90, and our
+rushers move across less. So the lateral achievement is not clearly short against the NFL, and it does not explain
+the hand model's interior excess. The one row that differs is the rusher's: ours move across less (interior p90 1.75 against 2.50, tackles 2.00 against 3.00), which belongs to the edge / EDGE_ARC question, not to the blocker. Step 1 names no repair. The interior rate stays unexplained, and the hand model stays
+held.
+
+**LONGARM_STRUT (off, requires RUSH_HANDS).** The step that zeroed the blocker's push, hold and steer whenever the gap
+exceeded his arm is replaced. His push carries through the strut, and his hold and steer scale continuously with how
+far out along the rusher's arm his hands are. Off is bit-identical (seed 999 9a15a2b7, the engine-61 candidate).
+longarm-switch.mts, seed 11 x 6 games, arm B:
+
+| | interior off → on | tackle off → on |
+|---|---|---|
+| episodes (% of decisions) | 758 (15%) → 639 (13%) | 434 (8%) → 390 (8%) |
+| past him where the gap exceeded his arm | 17% → 11% | 25% → 14% |
+| past him where it never did | 0% → 1% | 1% → 0% |
+
+**KEYED_FELT's long-arm share.** Long-arm episodes fall 15% → 6% of interior decisions and 8% → 3% of tackle ones. The
+ordinary weighted list still offers it to a shorter man by his power rating, so the median arm difference stays
+-1.0 in.
+
+### The re-diagnosis: the hand model with KEYED_FELT and LONGARM_STRUT as the base (arm H), 2026-11-14
+
+Arm A is engine-61 (the candidate, 10b45831 base). Arm H is A + RUSH_HANDS + RUSH_ONE_HAND + RUSH_ARM_BALANCE +
+KEYED_FELT + LONGARM_STRUT. 16 games x seeds 11 / 23:
+
+| | A | H | NFL |
+|---|---|---|---|
+| interior DL/LB pressure | 9.3 / 9.6% | 17.0 / 12.4 | 9.8 |
+| pressured | 28.2 / 26.1 | 35.1 / 28.8 | 32.9 |
+| edge past outside | 0.4 / 0.3 | 0.7 / 0.6 | 3.8 |
+| rusher free | 36 / 35% | 41 / 37 | 38 |
+| within 2 yd before the ball is out | 23.9 / 21.6 | 30.1 / 23.6 | 27.6 |
+| sacked | 5.9 / 4.2 | 6.7 / 5.1 | |
+| interior come-offs from own blocker /100 (time p50) | 32 / 29 (2.6-2.8 s) | 48 / 47 (2.2-2.3 s) | NFL reps 3.1-3.2 s |
+| DL falls /100 | 5.7 / 5.0 | 6.1 / 6.2 | about 1 |
+| OL falls /100 | 5.3 / 3.2 | 4.5 / 4.8 | |
+
+**Interior end states** (interior-free.mts, seed 11 x 8 games), per 100 dropbacks:
+
+| end state | A | H |
+|---|---|---|
+| past him, both hands on | 9.1 (dip 21, bull 12) | 11.7 (club 61 of 78; rep 1.40 s against 1.65) |
+| past him / other, one hand off | 0 | 2.8 |
+| long-arm on | 0 | 1.7 (was 3.1 before the strut) |
+| club in flight | 0 | 0.7 |
+| all interior endings | 17.5 | 23.6 |
+
+**Long-arm by arm difference** (H, longarm-switch.mts):
+- Interior: a shorter rusher's long-arm wins no more than a longer one's (past him 2.3% vs 2.6%). The gap exceeds the
+  blocker's arm in 11% vs 13% of episodes.
+- Tackles: the longer man reaches it far more often (33% vs 14%), and both win under 2%.
+
+**Read.** The two corrections reduce the hand model's interior excess but do not remove it: interior pressure is 17.0 /
+12.4 against 9.8. Most of what is left is the club with both hands on, ending reps about 0.25 s sooner. Under
+RUSH_HANDS a struck hand that does not come off slides toward the man's edge. While it is offset, the joint's push,
+hold and steer are scaled down (`handEdge`), until he walks it back at ARM_SPEED, and only once the hand has stopped.
+The next diagnostic is that window: the blocker's steer limit over time after a club that leaves both hands on, and
+whether the rusher's pass comes while it is reduced. The hand model stays held.
+
+### Arm H's residual: the halves, and the hand's slide after a club (2026-11-14, diagnostic only)
+
+**Sampling.** Interior pressure by 8-game half (pressure-source.py, % of dropbacks):
+
+| | s11 half 1 | s11 half 2 | s23 half 1 | s23 half 2 |
+|---|---|---|---|---|
+| A | 10.0 | 8.8 | 9.0 | 10.2 |
+| H | 18.9 | 15.4 | 13.3 | 11.5 |
+| H - A | +8.9 | +6.6 | +4.3 | +1.3 |
+
+The excess is positive in every half, so it is real. Its size is about +5 points, with a range of +1.3 to +8.9: it
+depends strongly on which games. A is stable (8.8-10.2, NFL 9.8).
+
+**The hand's slide after a club that leaves both hands on** (club-slide.mts, seed 11 x 6 games):
+
+| | interior | tackle |
+|---|---|---|
+| clubs (followed to 1 s or the rep's end) | 843 | 369 |
+| the hand slid (handEdge under 0.8) | 22% | 11% |
+| minimum edge p50 | 0.57 | 0.63 |
+| slide stopped / edge back over 0.9 | +0.05 / +0.10 s | +0.05 / +0.10 s |
+| past him within 1 s: slid / not slid | 8% / 10% | 13% / 10% |
+| past him inside the low-edge window | 2% | 8% |
+
+The reduced window lasts about 0.1 s. The walk-back's gate (only once the hand has stopped) costs about one tick. On
+the interior a slid hand leads to a pass no more often than an unslid one. So the slide and the blocker's response to
+it are not the interior residual, and his recovery starting on the felt slide would buy about a tick.
+
+**Where a club lands.** The model does not distinguish it. A club is one force on a one-degree-of-freedom hand, so
+wrist and forearm against elbow and upper arm are the same; only the hold it meets differs.
+
+**Read.**
+- What the club does with both hands on is not the slide.
+- What is left to measure is the club's push on the blocker's body (the hand's resisted share reaches his body through
+  his shoulder) against his mirror.
+- The remaining question is why a club raises the interior pass rate within 1 s (6% vs 2%, club-trace.mts) when the
+  hands stay on and the slide is brief.
+
+The hand model stays held.
