@@ -297,3 +297,30 @@ The controls are part of the exam:
 - short and intermediate completion, and catch rate by separation, back to the off arm's level;
 - the defender's closing in the air moving toward the NFL's +0.65 yd;
 - the receiver's timing rows: off the release line at about 0.38 of the flight, first slowing about 0.67.
+
+### Design 2 result (attempts 3-4): parked
+
+Code: `coverage/C14-ball-est` 650b7237. Seeds 11/23 x 8 leagueSample games, engine-59, unpaired; off = the same base.
+
+| | off | attempt 3 | attempt 4 | NFL |
+| --- | --- | --- | --- | --- |
+| Deep 1.5-2.0 s: off the release line at (fraction of flight) | 0.40-0.42 | 0.33 / 0.43 | 0.43 / 0.37 | 0.38 |
+| first slows at | 0.31-0.35 | 0.65 / 0.81 | 0.77 / 0.69 | 0.67 |
+| arrival speed (yd/s) | 7.3-7.5 | 5.3 / 6.9 | 6.7 / 6.2 | 6.7 |
+| to the landing point (yd) | 0.6 / 1.4 | 2.2 / 2.8 | 2.0 / 2.2 | 1.4 |
+| Short (<10 air yd) completion | 72 / 70% | 63 / 66% | 70 / 66% | |
+| Intermediate (10-20) completion | 55 / 64% | 53 / 44% | 50 / 55% | |
+| Catch rate, 3+ yd open | 83 / 80% | 70 / 68% | 74 / 70% | |
+| Defender gap on 10-20 yd throws, release -> end (yd) | 2.8 -> 2.3 / 2.8 -> 2.6 | 2.6 -> 3.1 / 3.0 -> 3.1 | 2.4 -> 2.5 / 2.7 -> 3.1 | closes about 0.65 |
+
+- **Fixed:** the receiver's timing (deviation mid-flight, slowing late) now matches the NFL.
+- **Bug fixes found by Integration's range check** (`est-range.ts`), counted as fixes, not attempts:
+  - Pursuit had used his decision reaction time, so his newest sample was always 0.35 s old.
+  - The prior's timing term was stated in his frame rather than the ball's.
+  - After both, the estimate's error falls with the ball's range: 0.6-0.9 yd for receivers and 0.9-1.2 for defenders under 2 yd.
+- **Still failing:** open receivers miss more, and defenders lose ground in the air.
+- **Where the receiver's failure now lies** (`open-miss.ts`, seed 11, attempt 4):
+  - On open misses his estimate is 0.8 yd from the ball at its closest pass (0.5 on catches).
+  - But his body is 1.9 yd from it and turned 67° off its line (catches: 1.0 yd, 20°).
+  - He knows where the ball is and doesn't get there. The next design is his final approach: the late body turn, and running to a converging spot. The perception is no longer the problem.
+- **The defender's opening** doesn't move with any receiver change. That is his own late information and decision: stage 2 (LOOK_PHASE), and the release belief now planned with #713.
