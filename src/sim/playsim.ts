@@ -54,6 +54,7 @@ import { BACKER_CREEP, planBackerCreeps, type CreepPlan } from './backer-creep.j
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
 import { CommandTrace, type BlockingSink, type CommandTraceSelection } from './command-trace.js';
+import { presentedCarrying } from './possession-belief.js';
 import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
@@ -832,6 +833,7 @@ export class PlaySim {
       }
       else seen = this.remembered(observer, target, seen);
     }
+    seen = presentedCarrying(this, observer, target, seen, delay);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -867,7 +869,7 @@ export class PlaySim {
       const fallback = this.see(observer, target, delayScale);
       if (!Number.isFinite(delay) || (fallback.age ?? 0) <= delay + 1e-9) return fallback;
     }
-    const seen = this.perception.perceive(target.idx, delay);
+    const seen = presentedCarrying(this, observer, target, this.perception.perceive(target.idx, delay), delay);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
