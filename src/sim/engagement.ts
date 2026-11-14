@@ -1,6 +1,10 @@
 /**
  * Trench model: blocking engagements as technical reps on shared physics.
  *
+ * `facing` here is read as the CHEST (a blocker's pads toward a man, `beta`, `off`): shoulders by meaning, hips in the code
+ * until a stage that gives linemen a trunk (TRUNK_TWIST Stage 1 gives it to receivers only; trunk is 0 for everyone else,
+ * so the two are the same number).
+ *
  * A rep keeps a small state that line coaches would recognize:
  *
  *   control  — hand position. +1: the blocker's hands are inside and latched
