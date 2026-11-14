@@ -219,12 +219,12 @@ const COACHED_DROP: Record<string, PassConcept['drop']> = {
   trips_sail: 'five', trips_outs: 'five', double_outs: 'five', comebacks: 'five',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
-/** VERTS_QUICK (experimental, off; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a
+/** VERTS_QUICK (on since engine-67; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a
  * quick five-step drop (from shotgun, a quick three-steps)" (Gonzalez via Smart Football), so four_verts and
  * verts_hitch take the gun three-step instead of 'gun5'. Paired staged read, the same 384 plays off and on
  * (scripts/diag/escape/drop-staged.ts on the QB lane branch), engine-66: 8.21 -> 9.95 yd a play, time to throw
  * 3.60 -> 3.25 s, sacks 52 -> 35, INT 2 -> 2; on the route card's stack: 6.98 -> 10.17, sacks 52 -> 35, INT 4 -> 2. */
-const VERTS_QUICK = process.env.VERTS_QUICK === '1';
+const VERTS_QUICK = process.env.VERTS_QUICK !== '0';
 if (VERTS_QUICK) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.id === 'four_verts' || c.id === 'verts_hitch') c.drop = 'gun3';
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
 

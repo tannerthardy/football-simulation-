@@ -286,7 +286,7 @@
     "OUTLET_LAST": "on",
     "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
-    "VERTS_QUICK": "off",
+    "VERTS_QUICK": "on",
     "SHOULDER_LEAD": "on",
     "PLAN_KEYS_2": "on",
     "CROSS_FLAT": "on",
