@@ -9,6 +9,15 @@ import type { RouteDef } from './types.js';
 /** BACK_PATHS (experimental, off; BACK_PATHS=1): the back's flat, angle and out on their tracked paths (see back_flat,
  * angle, back_out; BDB 2025 weeks 1-3, backs on non-PA drop-backs, scripts/diag/concepts/nfl_back_path.py). */
 const BACK_PATHS = process.env.BACK_PATHS !== '0';
+/** BACK_SHAPE (experimental, off; BACK_SHAPE=1): the back's wheel, out and angle drawn as they are coached and run (BDB
+ * 2025 weeks 1-3, backs on non-PA drop-backs from the gun, Coverage's back_flat_nfl.py; sim twin back-cue.ts).
+ * - Wheel: a flat that bends up the sideline. NFL width from the ball 3.4 / 5.2 / 8.0 / 10.5 / 13.1 yd at 0.5-2.5 s,
+ *   still 2.7 yd behind the line at 1.5 s; ours turned up from a point at the line, 4.2 / 7.5 yd wide at 1.5 / 2.5 s.
+ * - Out: he holds his depth behind the line before the break (NFL -2.8 / -0.9 / +0.9 yd at 1.5 / 2.0 / 2.5 s; ours
+ *   -1.9 / +0.2 / +2.1, climbing about a yard early).
+ * The angle is left as drawn: its gap to the NFL (still 4.4 yd behind the line at 1.0 s and 3.5 at 1.5 s) is his
+ * check before he releases, which is the execution layer's, not the drawing's. */
+const BACK_SHAPE = process.env.BACK_SHAPE === '1';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 export const ROUTES: Record<string, RouteDef> = {
@@ -107,10 +116,14 @@ export const ROUTES: Record<string, RouteDef> = {
   /** The back's out: a short release to 4-5 yd, then flat to the sideline (NFL back OUT, 7.4% of drop-backs). */
   // BACK_PATHS: NFL backs' OUT (n 204) is 2.9 yd behind the line at 1.5 s and +0.8 at 2.5 s, 3.1-5.5 yd wide, caught
   // at a median +2 yd; off, he is out at 4.5 yd and caught at +5.3.
-  back_out: BACK_PATHS
+  back_out: BACK_SHAPE
+    ? { id: 'back_out', family: 'back', depth: 1, end: 'continue', points: [{ d: -2.2, l: 1.5, s: 0.8 }, { d: 0.8, l: 3.5, s: 0.5 }, { d: 1.2, l: 14 }] }
+    : BACK_PATHS
     ? { id: 'back_out', family: 'back', depth: 2, end: 'continue', points: [{ d: 0, l: 2, s: 0.8 }, { d: 2, l: 4, s: 0.5 }, { d: 2, l: 14 }] }
     : { id: 'back_out', family: 'back', depth: 4, end: 'continue', points: [{ d: 2, l: 2, s: 0.8 }, { d: 4.5, l: 4, s: 0.5 }, { d: 4.5, l: 14 }] },
-  wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
+  wheel: BACK_SHAPE
+    ? { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: -3, l: 5.5, s: 0.9 }, { d: -0.5, l: 9, s: 0.85 }, { d: 2.5, l: 11, s: 0.8 }, { d: 40, l: 12 }] }
+    : { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
 
 export function getRoute(id: string): RouteDef {

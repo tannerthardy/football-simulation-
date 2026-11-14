@@ -15,7 +15,7 @@ import { CONCEPT_MENU } from '../playbook/concepts.js';
 const PA_DROP_FAKE = process.env.PA_DROP !== '0';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
-import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
+import { BACK_CHECK, boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
@@ -82,6 +82,10 @@ const DEF_STANCE = process.env.DEF_STANCE === '1';
 const BACK_RELEASE = process.env.BACK_RELEASE !== '0';
 /** The check-releasing back's read: how long before he trusts that no one is coming (s). */
 const CHECK_READ = 0.55;
+/** BACK_CHECK: the routes a back checks before (a check-release): the angle, out and checkdown. The flat, wheel and swing
+ * are free releases. NFL backs on an ANGLE are still 4.4 yd behind the line and 2.1 yd wide at 1.0 s; on a FLAT they are
+ * already 3.6 yd wide and widening (BDB 2025, Coverage's back_flat_nfl.py). */
+const CHECK_ROUTES = new Set(['angle', 'back_out', 'checkdown']);
 const STAND_GETOFF = 0.04;
 function setFrontStance(sim: PlaySim, d: Agent, role: string): void {
   const k = d.slot.split('_')[0];
@@ -207,7 +211,8 @@ export function assignBehaviors(sim: PlaySim): void {
           // without it, the box count stand-in.
           const needed = PRO_CALL ? callCount > inCount : protectionCount(sim, concept) > 0;
           if (!needed) {
-            a.behavior = mkRoute(route, 0.1)();
+            // BACK_CHECK: not counted in, he still scans his keys before he releases (and is counted in if one comes).
+            a.behavior = BACK_CHECK && CHECK_ROUTES.has(route) ? new PassProtector(coord, mkRoute(route, 0, true), 0) : mkRoute(route, 0.1)();
           } else {
             coord.add(a);
             if (PRO_CALL) { coord.backsIn.add(a); inCount++; }
@@ -230,7 +235,7 @@ export function assignBehaviors(sim: PlaySim): void {
           inCount++;
           a.behavior = new PassProtector(coord, mkRoute(assign, 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
         } else {
-          a.behavior = mkRoute(assign, 0.1)();
+          a.behavior = BACK_CHECK && CHECK_ROUTES.has(assign) ? new PassProtector(coord, mkRoute(assign, 0, true), 0) : mkRoute(assign, 0.1)();
         }
         continue;
       }
