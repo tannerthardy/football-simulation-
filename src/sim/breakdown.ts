@@ -23,7 +23,7 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import { seenDown } from './seen-contact.js';
 
 /** HONEST_READS (behaviors/defense.ts): screen nearby bodies by his picture of them. */
-const HONEST_READS = process.env.HONEST_READS === '1';
+const HONEST_READS = process.env.HONEST_READS !== '0';
 
 export const L2_BREAKDOWN = process.env.L2_BREAKDOWN !== '0';
 const CLOSING = 3.0, HORIZON = .5;

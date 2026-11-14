@@ -81,7 +81,7 @@ const SEEN_EYES = process.env.SEEN_EYES !== '0';
  * edge setting his line, treat a body as blocked when their picture shows it
  * in contact (seen contact, src/sim/seen-contact.ts),
  * not by its engagement state. */
-export const HONEST_READS = process.env.HONEST_READS === '1';
+export const HONEST_READS = process.env.HONEST_READS !== '0';
 /** HONEST_FLIGHT (experimental, off; HONEST_FLIGHT=1 turns it on): the flight half of the audit, waiting on the ball-
  * perception channel (acquireFlight's estimate, built with Coverage). A defender drives on a catch at the receiver his own
  * flight estimate brings the ball to, at the facing he sees, not at the private securing state; the switch from playing
@@ -102,7 +102,7 @@ const DRIVE_LEAD = 0.05, DRIVE_SECURE = 0.4;
  * that receiver, not where he is; 9 zone lanes and facing use where he sees
  * the QB (zone, spot underneath, wall, rob); H the hands cue needs the
  * receiver in his view (within 100 deg of his facing). */
-const INFO_HONEST = Number(process.env.INFO_HONEST ?? 0);
+const INFO_HONEST = Number(process.env.INFO_HONEST ?? 63);
 /** INFO_HONEST is a bit mask so each item can be read alone: 3 = 1, 6 = 2, 7 = 4, 8 = 8, 9 = 16, H = 32; 63 = all. */
 const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32 };
 export function infoHonest(item: number | string): boolean {

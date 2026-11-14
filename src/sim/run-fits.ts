@@ -71,7 +71,7 @@ function gameGap(sim: PlaySim, d: Agent, gap: Gap, side: number): { gap: Gap; si
 /** FIT_BLITZ_SLIDE (experimental, off): see buildRunFits. */
 const FIT_BLITZ_SLIDE = process.env.FIT_BLITZ_SLIDE !== '0';
 /** HONEST_READS (behaviors/defense.ts): a teammate counts on the line when seen in contact, not by his engagement state. */
-const HONEST_READS = process.env.HONEST_READS === '1';
+const HONEST_READS = process.env.HONEST_READS !== '0';
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();

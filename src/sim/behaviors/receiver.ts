@@ -47,7 +47,7 @@ const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
  * state or engagement record; the convoy's target choice, its fit and its timing use the seen defender, and a teammate
  * turns to the convoy when his picture shows the catcher with the ball (`ConvoyCue`), not at the true catch. Contact
  * itself stays physics. Off: the true reads (docs/reviews/2026-11-13-information-leak-sweep.md, Rules + Coaching). */
-export const RCV_SEEN = process.env.RCV_SEEN === '1';
+export const RCV_SEEN = process.env.RCV_SEEN !== '0';
 const isDownFor = (a: Agent, sim: PlaySim, o: Agent): boolean => RCV_SEEN ? seenDown(sim, a, o) : o.isDown(sim.t);
 const isTakenFor = (a: Agent, sim: PlaySim, d: Agent): boolean => RCV_SEEN ? seenTaken(sim, a, d, 'my-team') : !!d.engagement;
 

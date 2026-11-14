@@ -94,7 +94,7 @@ export function angleTo(from: Vec2, to: Vec2): number {
  * step 1a, pursuit's aim (docs/reviews/2026-11-13-perception-proposal.md). The pursued carrier is read through the
  * tracking channel (`PlaySim.track`) instead of a scaled `see()` plus a two-sample acceleration burst. The tackle
  * window (the close gather in `chase`) is its own step (1a'). */
-const TRACK_PURSUIT = process.env.TRACK_PURSUIT === '1' || process.env.PERCEIVE_TRACK === '1';
+const TRACK_PURSUIT = process.env.TRACK_PURSUIT !== '0' || process.env.PERCEIVE_TRACK === '1';
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   request?: SprintRequest): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
@@ -283,7 +283,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
  * yards (chase's close gather, tryTackles' window preview, the whiff margin's aim) is read through the tracking channel
  * (`PlaySim.track`) instead of a scaled `see()` (0.12-0.24 s by awareness, plus the focus and stress terms added after
  * the scale). Who he tackles (observedHolder) and the commit reads are Defense's. */
-export const TRACK_TACKLE = process.env.TRACK_TACKLE === '1' || process.env.PERCEIVE_TRACK === '1';
+export const TRACK_TACKLE = process.env.TRACK_TACKLE !== '0' || process.env.PERCEIVE_TRACK === '1';
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
   sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);

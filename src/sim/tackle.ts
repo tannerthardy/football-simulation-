@@ -298,7 +298,7 @@ const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
  * not yet seen take a handoff is not his target until he sees it), and his
  * closing, separating and behind reads for the last reach and the dive use the
  * carrier's seen position and velocity. Reach, grip and contact stay physical. */
-const HONEST_TACKLE = process.env.HONEST_TACKLE === '1';
+const HONEST_TACKLE = process.env.HONEST_TACKLE !== '0';
 /** Whether the forecast is worth waiting for: a better shot by a margin and, with WAIT_REACHED, one it reaches inside
  * its lookahead. A best point at the horizon's edge is a slow chase still closing (or a runner faster than his seen,
  * stale velocity): the better shot keeps receding, so he takes the reach he has. */
