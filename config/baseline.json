@@ -99,6 +99,7 @@
     "SIGHT_CARRIER": "0",
     "SIGHT_COVER": "0",
     "SIGHT_RECOG": "0",
+    "HEAD": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
@@ -365,7 +366,8 @@
     "WAIT_REACHED": "0",
     "PURSUIT_SPOT": "0",
     "HONEST_TACKLE": "0",
-    "QB_RELEASE": "0"
+    "QB_RELEASE": "0",
+    "OPEN_FIELD": "0"
   },
   "worldDefaults": {
     "handContact": "center",
