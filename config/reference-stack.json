@@ -277,6 +277,7 @@
     "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
     "CROSS_FLAT": "off",
+    "CROSS_OVER": "off",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
