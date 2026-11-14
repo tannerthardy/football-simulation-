@@ -5,6 +5,28 @@ Tanner. Feeds Flex's stance/base physics proposal and finding 4 of
 `docs/football-handbook/pass-protection-base-anchor-sources.md` (1f81a8f9,
 branch `claude/admiring-bell-t3ji19`).
 
+> **Correction (2026-11-14, from Flex's build).** Section 6 assumed the engine's posture 1
+> (a COM drop of up to 25%) is a deep squat past 100° of knee flexion. By geometry it is a
+> half squat:
+> - With an upright trunk, equal thigh and shank and hip height 0.5 of stature, the drop
+>   d = 0.25·posture·(0.4 + 0.6·bend) gives about **62 / 72 / 87° of knee flexion at
+>   posture 1** for bend 0.2 / 0.5 / 1.0, and **48–67° at posture 0.6**.
+> - So the engine's whole posture range lies at or before the force optimum (about
+>   50–75°) in the evidence below. The proposed force-angle factor cost at most 7%.
+>
+> Flex built it as `POSTURE_FORCE` and it changed nothing on the staged pass-rep witness
+> (OL posture 0.7 vs 1.0: 2.81 vs 2.73 yd given up, with and without it), so it was
+> removed.
+>
+> In the World alone, pushing does not depend on posture: "lower wins" comes from the
+> balance model (base and ω0 grow with posture) and the controllers' lean bounds, not leg
+> force. So the coached "too low" cannot occur in the engine at all.
+>
+> What survives inside the range is mobility (Takayama, section 3), parked as
+> `POSTURE_MOBILITY` in `docs/PARKED.md`. See
+> `docs/reviews/2026-11-14-stance-base-proposal.md` on `claude/quirky-franklin-9lbwbp`
+> (1b76a93f). The evidence below stands; the mapping and the proposal in section 6 do not.
+
 **Question.** Our engine treats a lower posture as better for balance. Line coaches
 describe an optimum: past about 90 degrees of knee flexion "the center of mass sits too
 far behind" (Bentley). What makes a lower posture cost something?
