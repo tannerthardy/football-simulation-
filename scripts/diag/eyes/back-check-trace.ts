@@ -30,27 +30,27 @@ C.update = function (sim: any) {
   this.__keyComesTickPrev = !!this.__keyComesTick; this.__keyComesTick = false;
   return r;
 };
-let checking = 0, stalls = 0, blocked = 0; const tgt: number[] = [];
+let checking = 0, stalls = 0, blocked = 0, blockedCame = 0; const tgt: number[] = [];
 const run = (PlaySim.prototype as any).run;
 (PlaySim.prototype as any).run = function (this: any) {
   const sim = this, pass = sim.offCall?.kind === 'pass' ? sim.offCall.pass : null;
   if (!pass || pass.family === 'screen' || pass.family === 'playaction') return run.call(this);
   const backs = sim.offense.filter((o: any) => sim.offAlign.spots[o.slot]?.backfield && o !== sim.qb);
-  const chk = new Set<any>(), eng = new Set<any>(); let t0 = -1, stalled = new Set<any>();
+  const chk = new Set<any>(), eng = new Set<any>(), came = new Set<any>(); let t0 = -1, stalled = new Set<any>();
   const tick = sim.tick.bind(sim);
   sim.tick = () => { tick(); if (t0 < 0) t0 = sim.t;
-    for (const b of backs) { if (b.behavior?.kind === 'pass-pro') { chk.add(b); if (b.engagement) eng.add(b); }
+    for (const b of backs) { if (b.behavior?.kind === 'pass-pro') { chk.add(b); if (b.engagement) { eng.add(b); const ks = (b.behavior as any).keys as any[] | null; if (ks?.some((k: any) => k.d === b.engagement.defender && k.state === 'comes')) came.add(b); } }
       if (Math.abs(sim.t - t0 - 2.5) < sim.dt / 2 && b.behavior?.kind === 'pass-pro' && !b.engagement && !(b.behavior as any).coord?.protectors?.includes(b)) stalled.add(b); }
     if (sim.throwAt >= 0 && tgt.length >= 0 && sim.ball.kind === 'air' && !(sim as any).__tg) { (sim as any).__tg = true;
       const T = sim.ball.target; const r = T ? routeOfAgent.get(T) ?? '' : ''; if (/angle|back_out|checkdown/.test(r)) tgt.push(sim.throwAt - t0); } };
   const res = run.call(this);
-  checking += chk.size; stalls += stalled.size; blocked += eng.size;
+  checking += chk.size; stalls += stalled.size; blocked += eng.size; blockedCame += came.size;
   return res;
 };
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed + g), leagueSample(away, seed + g), { seed: seed + g, record: false });
 tgt.sort((a, b) => a - b); const q = (f: number) => tgt.length ? tgt[Math.floor(f * (tgt.length - 1))].toFixed(2) : '-';
-console.log(`BACK_CHECK=${process.env.BACK_CHECK ?? 0}: backs in pass-pro ${checking}, ended blocking ${blocked} (${(100 * blocked / Math.max(1, checking)).toFixed(0)}%), stalled at 2.5 s ${stalls}`);
+console.log(`BACK_CHECK=${process.env.BACK_CHECK ?? 0}: backs in pass-pro ${checking}, ended blocking ${blocked} (${(100 * blocked / Math.max(1, checking)).toFixed(0)}%; a key who came ${blockedCame}), stalled at 2.5 s ${stalls}`);
 console.log(`  lineman assignment changes on the solve after a key comes: ${comesChanges} / ${comesSolves} (${(comesChanges / Math.max(1, comesSolves)).toFixed(2)} a solve) vs other solves ${(solveChanges / Math.max(1, solves)).toFixed(3)} (n ${solves})`);
 console.log(`  check routes' first target time p25/50/75 ${q(.25)}/${q(.5)}/${q(.75)} s (n ${tgt.length})`);

@@ -344,7 +344,8 @@ export class PassProtector implements Behavior {
       const comes = toward > 1.5 && (depth < 2.5 || depth / toward <= toGap);
       // Dropping is decisive; not coming (anything short of `comes`, a creeping key included) says nothing until the count
       // has run (a delayed blitz shows by then), and then clears at any depth: a check-release goes if no one comes.
-      const away = -toward > 1 || sim.t >= BACK_CHECK_COUNT;
+      // A key who has come keeps its far-side exit: he must be seen dropping (or engaged with another blocker, above).
+      const away = -toward > 1 || (k.state !== 'comes' && sim.t >= BACK_CHECK_COUNT);
       // A key who comes and is seen engaged with another of his blockers is someone else's: clear for him.
       const on = comes || k.state === 'comes' ? seenEngagedWith(sim, a, k.d) : null;
       if (on && on !== a && on.team === a.team) { k.state = 'clear'; k.awaySince = null; continue; }
