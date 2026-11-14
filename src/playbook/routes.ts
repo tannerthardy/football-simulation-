@@ -11,6 +11,18 @@ import type { RouteDef } from './types.js';
 const BACK_PATHS = process.env.BACK_PATHS !== '0';
 /** SCREEN_QB (experimental, off; behaviors/qb.ts): the tunnel's route from tracking. */
 const SCREEN_QB = process.env.SCREEN_QB === '1';
+/** CROSS_FLAT (experimental, off): the shallow crossers reach their depth in the first leg and run flat across, as
+ * taught ("run under the linebackers, flat across"; docs/reviews/2026-11-14-crosser-depth.md). Off, the shallow
+ * climbs on a diagonal from a 2.5 yd stem to 5 yd across 22 yd: still rising at 3.0 s (4.7 yd median against zone, ball
+ * held) and slow across (3.2 yd from his spot at 2.0 s). NFL WR / TE crossers under 4 yd at 2.0 s (55% of crossers vs
+ * zone, BDB 2025 weeks 1-6): 2.2 / 2.9 / 3.1 yd deep at 2.0 / 2.5 / 3.0 s, 5.1 yd across at 2.0 s, flat once there.
+ * - shallow (the drag: drive, flood, dagger, hitch-cross, PA flood): a flatter release to 2.5 yd by 4.5 yd across,
+ *   then flat ("no deeper than three yards", in front of the linebackers). The points sit half a yard under the depth
+ *   he runs: following the path he carries past the corner (staged, 3.0-3.4 yd at 2.5-3.0 s).
+ * - shallow_high and mesh_under (mesh's pair, which works at 4-6 yd and rubs): Y at the linebackers' toes, X just
+ *   underneath him, a yard apart so they cross close enough to rub (Air Raid / Holgorsen); points at 5 and 4.
+ * The deep cross is unchanged until the over's install is sourced. His freedom at the route's end is unchanged. */
+const CROSS_FLAT = process.env.CROSS_FLAT !== '0';
 export const ROUTES: Record<string, RouteDef> = {
   // Verticals
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
@@ -53,8 +65,13 @@ export const ROUTES: Record<string, RouteDef> = {
   corner: { id: 'corner', family: 'deep', depth: 18, end: 'continue', points: [{ d: 11, l: 0, s: 0.65 }, { d: 24, l: 11 }, { d: 34, l: 14 }] },
   deep_out: { id: 'deep_out', family: 'intermediate', depth: 14, end: 'continue', points: [{ d: 14, l: 0, s: 0.4 }, { d: 13.5, l: 12, s: 0.9 }] },
   // Crossers
-  shallow: { id: 'shallow', family: 'cross', depth: 5, end: 'continue', points: [{ d: 2.5, l: -2, s: 0.9 }, { d: 5, l: -24 }] },
-  shallow_high: { id: 'shallow_high', family: 'cross', depth: 6, end: 'continue', points: [{ d: 3, l: -2, s: 0.9 }, { d: 6.5, l: -24 }] },
+  shallow: CROSS_FLAT
+    ? { id: 'shallow', family: 'cross', depth: 3, end: 'continue', points: [{ d: 1.5, l: -2.5, s: 0.95 }, { d: 2.5, l: -4.5 }, { d: 2.75, l: -26 }] }
+    : { id: 'shallow', family: 'cross', depth: 5, end: 'continue', points: [{ d: 2.5, l: -2, s: 0.9 }, { d: 5, l: -24 }] },
+  shallow_high: CROSS_FLAT
+    ? { id: 'shallow_high', family: 'cross', depth: 5.5, end: 'continue', points: [{ d: 2.5, l: -2, s: 0.9 }, { d: 4.5, l: -4.5 }, { d: 5, l: -26 }] }
+    : { id: 'shallow_high', family: 'cross', depth: 6, end: 'continue', points: [{ d: 3, l: -2, s: 0.9 }, { d: 6.5, l: -24 }] },
+  ...(CROSS_FLAT ? { mesh_under: { id: 'mesh_under', family: 'cross', depth: 4.5, end: 'continue', points: [{ d: 2, l: -2, s: 0.9 }, { d: 3.5, l: -4.5 }, { d: 4, l: -26 }] } as RouteDef } : {}),
   cross: { id: 'cross', family: 'cross', depth: 14, end: 'continue', points: [{ d: 6, l: -1, s: 0.9 }, { d: 14, l: -16, s: 0.85 }, { d: 18, l: -34 }] },
   // Backs
   swing: { id: 'swing', family: 'back', depth: 0, end: 'continue', points: [{ d: -1.5, l: 4, s: 0.9 }, { d: -0.5, l: 9, s: 0.9 }, { d: 3, l: 13 }] },
