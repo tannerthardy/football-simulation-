@@ -108,6 +108,8 @@ export interface Engagement {
   moveOk: boolean;
   /** RIP_CLEAR: the end of an edge's rip (his arm across the tackle's hand; his bend request until then). */
   ripUntil?: number;
+  /** CORNER_AIM: the side he goes round the blocker (1 / -1), chosen once while the blocker is in his way. */
+  cornerSide?: number;
   nextMoveAt: number;
   /** Bonus push while a power move is landing. */
   pushBoost: number;

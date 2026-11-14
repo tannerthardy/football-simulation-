@@ -1241,6 +1241,35 @@ export const RUSH_BULL = process.env.RUSH_BULL !== '0';
  * cleared hand opens the side it guarded): RUSH_HANDS + RUSH_ONE_HAND, 8 games: sheds 228 -> 283, the rip clears a
  * hand 16% of the time. */
 export const RUSH_RIP = process.env.RUSH_RIP === '1';
+/** CORNER_AIM (experimental, off; CORNER_AIM=1): a rusher who has turned the corner runs around the blocker, not through
+ * him. While the straight line from him to the QB (as he sees the QB) passes through the blocker's body (as he sees the
+ * blocker: the bodies' contact radius around his picture of the blocker's centre), he aims along the tangent to that
+ * body on the QB's side, at the blocker's back hip, and his hips follow his path; as the line clears he turns to the QB.
+ * Continuous: the aim slides from the tangent to the QB with the clearance (smoothstep over CORNER_BLEND either side of
+ * contact). The side he goes round is chosen once (the QB's side of the blocker when first blocked) and kept for the
+ * rep. Off, a turned rusher aims at the QB: at the tackle's hip that line ran through the tackle's body on every tick,
+ * he asked 4.7 yd/s into him, and the press that held him (about 1150 N) was the tackle stopping his own drive
+ * (edge-level.mts; docs/reviews/2026-11-12-tackle-set.md). */
+export const CORNER_AIM = process.env.CORNER_AIM === '1';
+const CORNER_BLEND = 0.15;
+/** CORNER_AIM: his direction around the blocker's body to the QB (unit), from his picture of both. */
+function cornerAim(e: Engagement, p: Vec2, blocker: Vec2, qb: Vec2, R: number): Vec2 {
+  const q = norm(sub(qb, p)), v = sub(blocker, p), L = Math.hypot(v.x, v.y) || 1e-6, vh = { x: v.x / L, y: v.y / L };
+  const along = v.x * q.x + v.y * q.y, perp = Math.abs(v.x * q.y - v.y * q.x);
+  const Q = Math.hypot(qb.x - p.x, qb.y - p.y);
+  // Clear when the blocker is not between him and the QB, or the line misses his body.
+  const clearW = along <= 0 || along >= Q ? 1 : smooth01((perp - (R - CORNER_BLEND)) / (2 * CORNER_BLEND));
+  if (clearW >= 1) { e.cornerSide = undefined; return q; }
+  // The side: the QB's side of the line to the blocker, chosen once while blocked.
+  if (e.cornerSide === undefined) { const c = vh.x * q.y - vh.y * q.x; e.cornerSide = c >= 0 ? 1 : -1; }
+  const sg = e.cornerSide;
+  // The tangent to his body (radius R) on that side; in contact or closer, along the body's edge.
+  const a = L > R ? Math.asin(R / L) : Math.PI / 2;
+  const ca = Math.cos(sg * a), sa = Math.sin(sg * a);
+  const tan = { x: vh.x * ca - vh.y * sa, y: vh.x * sa + vh.y * ca };
+  const dir = { x: (1 - clearW) * tan.x + clearW * q.x, y: (1 - clearW) * tan.y + clearW * q.y };
+  return norm(dir);
+}
 // A rip without the World's hand model is a silent no-op (a force on a hand does nothing): refuse it.
 if (RUSH_RIP && !RUSH_HANDS) throw new Error('RUSH_RIP=1 requires RUSH_HANDS=1 (the World hand model the rip acts through)');
 function armBalance(d: Agent, td: TrenchTraits, intent: Intent): void {
@@ -1819,12 +1848,16 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const qbSeen = sim.see(d, sim.qb, 0.5).pos;
     aim = d.pos.x < b.pos.x - ARC_PAST ? qbSeen : { x: Math.min(qbSeen.x, b.pos.x - ARC_PAST - 0.2), y: arcLandmark(sim, b, d).y };
   }
+  // CORNER_AIM: turned, he runs around the blocker's body (as he sees it) to the QB, not through it; hips on his path.
+  const around = CORNER_AIM && turned && !power && !cleared && between === null
+    ? cornerAim(e, d.pos, sim.see(d, b).pos, qbD, sep) : null;
+  if (around) aim = { x: d.pos.x + around.x, y: d.pos.y + around.y };
   const toAim = norm(sub(aim, d.pos));
   const rush = cleared ? d.profile.vmax * (0.8 + 0.15 * td.bend) : between === 'stall' ? RUSH_STALL_PACE : between === 'edge' ? d.profile.vmax * (0.6 + 0.25 * td.bend)
     : d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
   intents[d.idx] = {
     vel: { x: toAim.x * rush, y: toAim.y * rush },
-    facing: Math.atan2(qbD.y - d.pos.y, qbD.x - d.pos.x),
+    facing: around ? Math.atan2(around.y, around.x) : Math.atan2(qbD.y - d.pos.y, qbD.x - d.pos.x),
     push: cleared ? 0.75 : between === 'stall' ? 0.6 : between === 'edge' ? 0.5 : between === 'power' ? 0.75 + 0.25 * (0.5 * d.r('passRushPower') + 0.5 * clamp((d.profile.massKg - 110) / 40, 0, 1)) : power ? 1 : inMove ? 0.35 : 0.75,
     posture: bend ? 0.95 : 0.75,
     cutSkill: 0.8 + 0.5 * td.bend,
