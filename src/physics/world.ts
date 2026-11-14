@@ -822,7 +822,7 @@ export class World {
   substeps?: number;
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
-  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number }> = [];
+  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number; rip?: boolean }> = [];
   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
   private readonly reels = new Map<GraspJoint, number>();
   /** Reference adjustment preserves the held point when a grip slides down. */
@@ -948,17 +948,19 @@ export class World {
   /** RUSH_HANDS: a force (kg*yd/s^2, world frame) on joint `jt`'s hand from body `from`, acting between world
    * times t0 and t1 (its contact time). Only the component along the joint's tangent moves the hand; the rest is an
    * ordinary push between the bodies. */
-  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number): void {
+  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number, rip = false): void {
     if (!HAND_BODY || !(t1 > t0) || !Number.isFinite(f.x + f.y)) return;
-    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1 });
+    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1, rip });
   }
 
   /** RUSH_HANDS: the arm's lateral hold at the hand (force), from its extension, the measured press and a grip. */
-  handHold(jt: HandJoint): number {
+  handHold(jt: HandJoint, lift = 0): number {
     const owner = jt.a, target = jt.b;
     const arm = Math.max(0.3, (owner.profile.reach - 0.25) / 0.85), bent = 0.25 * arm;
     const ext = Math.max(bent, jt.extension - owner.profile.radius - target.profile.radius);
-    const press = Math.max(0, jt.lastN ?? 0);
+    // RIP_CLEAR (attempt 2): a rip from under the hand lifts it off the chest: its upward part unloads the press the
+    // friction term rides on (never below zero), for the rip's own time.
+    const press = Math.max(0, (jt.lastN ?? 0) - Math.max(0, lift));
     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
   }
@@ -1199,9 +1201,19 @@ export class World {
       const dx = jt.b.pos.x - jt.a.pos.x, dy = jt.b.pos.y - jt.a.pos.y, d = hypot2(dx, dy) || 1;
       const nx = dx / d, ny = dy / d, tx = -ny, ty = nx;
       const mArm = ARM_MASS * this.mass[ia];
-      let ft = 0;
+      let ft = 0, lift = 0;
       for (const f of forces) {
         const share = (Math.min(f.t1, t1) - Math.max(f.t0, t0)) / h;
+        // RIP_CLEAR (attempt 2): a rip comes up from under the hand. Its line of action rises from the striker's pads to
+        // the hand's owner's as PAD_LEVERAGE's push does (the height difference over their distance, at most
+        // LEVERAGE_SLOPE); only a striker under the owner's pads lifts.
+        if (f.rip) {
+          const is = this.indexOf(f.from);
+          if (is >= 0) {
+            const rise = clamp((this.padHeight[ia] - this.padHeight[is]) / Math.max(d, .3), 0, LEVERAGE_SLOPE);
+            lift += hypot2(f.fx, f.fy) * share * rise;
+          }
+        }
         const fn = (f.fx * nx + f.fy * ny) * share, fT = (f.fx * tx + f.fy * ty) * share;
         ft += fT;
         // The normal part is an ordinary push between the striker and the hand's owner.
@@ -1210,7 +1222,7 @@ export class World {
         // The striker's reaction to the tangential part (his arm pushes the blocker's arm).
         if (is >= 0 && fT) { this.bodies[is].vel.x -= tx * fT * h / this.mass[is]; this.bodies[is].vel.y -= ty * fT * h / this.mass[is]; }
       }
-      const H = this.handHold(jt);
+      const H = this.handHold(jt, lift);
       let v = jt.handVel ?? 0, resisted: number;
       if (Math.abs(v) < 1e-9) resisted = Math.abs(ft) <= H ? ft : Math.sign(ft) * H;
       else resisted = Math.sign(v) * H;

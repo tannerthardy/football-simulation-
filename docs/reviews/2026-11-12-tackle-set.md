@@ -3905,3 +3905,38 @@ the rusher-to-tackle line. On engine-62:
    that is the move being the wrong one there, not a defect.
 5. The named gap (an isotropic base) stays open. It would show as a push arriving off his chest, and with the
    tackle turning to face, that is 0-3% of bulls.
+
+### RIP_CLEAR, attempt 2: the rip's lift (2026-11-14, engine-62)
+
+**The change.**
+- A rip's line of action rises from the striker's pads to the hand owner's, using PAD_LEVERAGE's geometry: the height
+  difference over their distance, at most LEVERAGE_SLOPE. Only a striker under the owner's pads lifts.
+- Its upward part (the rip force x that rise) unloads the press that the hold's friction term rides on, for the rip's
+  time.
+- Only forces marked as a rip lift; the club and the rest of RUSH_HANDS are unchanged.
+- Off is bit-identical to develop (seed 999, 1b712813a60cfac2).
+
+**rip-witness.mts, VERTICAL_SET + RIP_CLEAR, seed 11 x 4 (590 DE reps against a tackle, 141 rips, 0.24 a rep):**
+
+| | n | came off | slid past half |
+|---|---|---|---|
+| rusher's pads lower by more than 0.1 yd (p50 -0.18) | 120 | 3% | 3% |
+| level pads | 21 | 0% | 5% |
+| rusher higher | 0 | - | - |
+| tight / mid / full extension | 122 / 16 / 3 | 2 / 6 / 0% | |
+
+Per substep of a rip (instrumented once, not committed), p50:
+- lift 165 N;
+- the hold 997 -> 914 N;
+- the rip's tangential part 906 N;
+- the press under the hand 1132 N.
+
+**Read.**
+- The lift does what it should (about 80 N less friction), and the rip still sits at the hold. Rips at a bent arm do
+  not clear in proportion.
+- Two attempts are spent. RIP_CLEAR stops here (off) for re-diagnosis.
+- The quantity that decides it is the press under the hand: about 1130-1160 N while the rusher is level at his hip, at
+  a bent arm (gap 0.34 yd), on every tick. Both the strut and the rip's failure come back to that press.
+- Re-diagnosis question: what sets a press of about one body weight on a bent arm at the hip, and is it what a real
+  arm can deliver there? NFL separation at +0.4 s is 0.81 yd, tighter than ours (0.89-0.94), so the NFL rusher is
+  body on body at the hip, not held off by a bent arm's press.

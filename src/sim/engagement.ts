@@ -964,7 +964,7 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
     const speed = ARM_SPEED * (0.75 + 0.5 * e.defender.r('passRushFinesse'));
     if (e.hands && !e.hands.off) {
       const lat = latOf(axis), F = armForce(e.defender);
-      sim.world.handForce(e.hands, e.defender.body, { x: -lat.x * e.side * F, y: -lat.y * e.side * F }, sim.world.time, sim.world.time + FOREARM / speed);
+      sim.world.handForce(e.hands, e.defender.body, { x: -lat.x * e.side * F, y: -lat.y * e.side * F }, sim.world.time, sim.world.time + FOREARM / speed, true);
     }
     e.ripUntil = t + FOREARM / speed; e.moveUntil = t; e.moveOk = false; e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return;
   }

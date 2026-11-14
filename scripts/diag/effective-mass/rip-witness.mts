@@ -8,6 +8,8 @@ const W = process.cwd();
 const { simulateGame } = await import(`${W}/src/game/game.ts`);
 const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
 const { Rng } = await import(`${W}/src/core/rng.ts`);
+const { padHeightAt, supportParams } = await import(`${W}/src/physics/support.ts`);
+const pad = (a: any) => padHeightAt(supportParams(a.profile), a.body.support?.posture ?? 0.5);
 const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 2);
 const rng = new Rng(first); const rips: any[] = []; let reps = 0;
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
@@ -21,7 +23,7 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       const b = e.blocker, d = e.defender;
       const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
       const H = sim.world.handHold(jt), steerPart = Math.max(0, jt.steer), press = Math.max(0, jt.lastN ?? 0);
-      open.push({ F: Math.hypot(f.x, f.y), H, steerPart, press, e, jt, t: sim.t, ext: gap / Math.max(1e-6, b.player.measurables.armIn / 36), slid: false, off: false, back: null as number | null, past: false });
+      open.push({ padDiff: pad(d) - pad(b), F: Math.hypot(f.x, f.y), H, steerPart, press, e, jt, t: sim.t, ext: gap / Math.max(1e-6, b.player.measurables.armIn / 36), slid: false, off: false, back: null as number | null, past: false });
     }
     return hf(jt, from, f, t0, t1);
   };
@@ -49,6 +51,10 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
 const pc = (a: number, b: number) => b ? `${(100 * a / b).toFixed(0)}%` : '-';
 const q = (v: number[], f = .5) => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))].toFixed(2) : 'nan'; };
 console.log(`DE reps against a tackle ${reps}; rips ${rips.length} (${(rips.length / Math.max(1, reps)).toFixed(2)} a rep)`);
+for (const [lab, f] of [['rusher lower by > 0.1 yd', (r: any) => r.padDiff < -0.1], ['level pads (within 0.1)', (r: any) => Math.abs(r.padDiff) <= 0.1], ['rusher higher by > 0.1 yd', (r: any) => r.padDiff > 0.1]] as const) {
+  const R = rips.filter(f); if (!R.length) continue;
+  console.log(`${lab.padEnd(26)} n ${String(R.length).padStart(4)}: came off ${pc(R.filter((r) => r.off).length, R.length)}, slid past half ${pc(R.filter((r) => r.slid).length, R.length)} | pad difference p50 ${q(R.map((r) => r.padDiff))} yd`);
+}
 for (const [lab, f] of [['all', (r: any) => true], ['tight (< 0.6 of his arm)', (r: any) => r.ext < 0.6], ['mid', (r: any) => r.ext >= 0.6 && r.ext < 0.9], ['full extension (>= 0.9)', (r: any) => r.ext >= 0.9]] as const) {
   const R = rips.filter(f); if (!R.length) continue;
   const off = R.filter((r) => r.off);
