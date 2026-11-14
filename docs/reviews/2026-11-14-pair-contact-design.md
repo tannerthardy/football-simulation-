@@ -808,3 +808,50 @@ does not change his traction (0.23 / 0.23 yd moved back with either hands).
 | G5 the stalk as played, 3 yd/s, blocker inside / outside: joint life, crosser's speed after | 0.05 s, 2.99 | 0.75 / 0.70 s, 2.53 / 2.92 | passes (NFL screens-only 0.8 s median, 74% held 0.5 s+) |
 | G5 at 4 yd/s, inside / outside | 0.05 s, 3.76 | 0.80 / 0.45 s, 3.44 / 3.73 | the outside-handed blocker short of 0.5 s at 4 yd/s |
 | the reach's cost: a crosser who stems at the reach and cuts back at 0.25 s, blocker inside / outside: his lateral, joint life | 1.42 / 1.42 yd, 0.15 s | 0.94 / 1.62 yd, 0.80 / 0.60 s | the outside-handed reaching blocker gives up 0.2 yd more than the reference: his extended hands are late back |
+
+### PRESS_SPRING attempt 1: the first game read (engine-65)
+
+Seeds 11 / 23 x 8, the reference stack against PRESS_SPRING + HANDS_LEVER + CHEST_SHOULDERS. Unpaired games; the run set
+is paired.
+
+| | reference | PRESS_SPRING | NFL |
+|---|---|---|---|
+| pressured | 30.9 / 30.0% | 29.9 / 25.4% | |
+| interior pressure, of dropbacks | 12.9 / 11.5% | 7.0 / 6.7% | |
+| edge pressure from inside, of dropbacks | 5.9 / 4.8% | 4.4 / 3.5% | |
+| inside at the edge win | 51 / 37% | 35 / 33% | 47% |
+| edge win (within 2 yd of the QB) | 8 / 8% | 8 / 7% | 13% |
+| first contact lands wide | 52 / 49% | 49 / 46% | 49% |
+| sacks (timing definition, pooled) | 4.5% | 5.0% | 6.7% |
+| sacks before 3.0 s: unblocked; the sacker an edge | 7%; 23% | 11%; 35% | |
+| OL proxy falls /100 | 6.0 / 5.6 | 7.5 / 2.9 | |
+| dither | | passes | |
+
+**Run set (fresh, 1,295 plays, paired against the reference): +0.31 (SE 0.14).**
+- By concept: OZ +0.39 (SE 0.27), **IZ +0.85 (SE 0.33)**, gap +0.03, duo +0.48, toss +0.03, draw -0.15.
+- Missed + broken 0.271 -> 0.233; engaged-grab breaks 0.040 -> 0.023.
+- HANDS_LEVER alone on the same set was IZ +0.26, so most of this is PRESS_SPRING's.
+
+**The screens' block_lane row**, in a scratch tree with Integration's honesty candidate (SCREEN_CALL, CLOUD_KILL,
+STALK_CLOSE on), seed 11 x 8:
+
+| | screens only | + PRESS_SPRING | NFL screens |
+|---|---|---|---|
+| engaged within 1.2 yd | 0.4 s | 0.3 s | 0.8 s |
+| held 0.5 s or more | 43% | 32% | 74% |
+| the defender reaches the catcher within 1 s of contact | 24% | 14% | 13% |
+
+- The outcome (reaching the catcher) moves to the NFL's; the proximity category (engaged within 1.2 yd) moves away.
+- That is consistent with the blocker holding the man at arm's length, outside the 1.2 yd radius, but it is an inferred
+  category against an outcome. A few plays need to be looked at before either is leaned on. The sample is about 95
+  contacts per arm.
+
+**Read:**
+- The blocks got stronger everywhere: interior pressure nearly halves, the run game gains 0.31 with inside zone +0.85,
+  and screens keep the defender off the catcher.
+- That is a material change, and more yards alone prove nothing. It needs its mechanism found before it lands:
+  - which blocks change (the matched staged IZ set, PRESS_SPRING off / on, the same bodies);
+  - whether it is the run defender's arms (his own springs at bent length, the shed's extension window), the blocker's
+    reach, or the frame rule's friction-limited steer.
+- Sacks rise a little (4.5 -> 5.0%), with more unblocked and more edge sackers, while interior pressure falls. Pressure
+  is moving from the interior to the edge.
