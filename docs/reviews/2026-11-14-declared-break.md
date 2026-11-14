@@ -179,3 +179,36 @@ the break *starts*) is about 0.5 s earlier than the break his quarterback's fore
 breaks. The build makes them one: `breakAt`, the declared vertex as reached on the installed route, used by the plan, by
 the forecast and by the receiver's own pre-look. Any lead before it is the passer's `leadFor`, or the receiver's own
 coached pre-look lead, each stated separately.
+
+## Follow-up: the quarterback's forecast of a seen-open route (y_cross's late ball)
+
+**The cause.** y_cross's ball left at 3.6-4.0 s (staged pairing: hook 73, back 45, post 16, cross **0** of 139 throws).
+- His eyes are on the cross from the snap to about 2.55 s. But his readiness test (`qb.ts` `ready()`) was false for it on
+  185 of 192 plays, so the cross was never evaluated as a throw. He moved off it at the end of his dwell.
+- `ready()` waits for the break in his forecast of the installed route. For a route with no declared vertex, the forecast
+  still used the old rule: the waypoint that slows him most. On the cross that is the s 0.85 point at 14 yd, across the
+  field, which the forecast reaches at about 4.8 s.
+
+**The fix (DECLARED_BREAK only).**
+- A seen-open route (`moved`, `vertical`, `now`) now breaks in the forecast where the body he forecasts meets its declared
+  rule. That is the read compiler's own rule: 5 yd from his start with the line crossed (a back excepted), 12 yd of
+  vertical, or the snap.
+- It is timed on his forecast of the installed route from his own picture, as a vertex is.
+- No QB code changes: `ready()` is true once the forecast break is behind the receiver.
+
+**Measured.** Staged pairing on develop + #756, 192 plays per concept, off → on:
+
+| concept | throws | the cross thrown | ttt | sacks | int | yd/play | cmp |
+|---|---|---|---|---|---|---|---|
+| y_cross | 139 → 165 | 0 → 65 | 3.88 → 3.20 | 36 → 17 | 4 → 4 | 6.36 → 7.01 | 67% → 60% |
+| dagger | 146 → 155 | (no cross) | 3.45 → 3.50 | 33 → 27 | 5 → 3 | 5.43 → 5.36 | 45% → 47% |
+
+y_cross's completion falls because the cross is a tighter window (sep 3.8 → 2.4) than the late hook it replaces.
+
+**Left for the QB lane.**
+- When the forecast has lost the route (observed motion), `ready()` falls back to the receiver's own
+  `RouteRunner.breakTime`. That is the runner's private start delay plus his stem at his true top speed (4.2 s on the
+  cross).
+- So the quarterback reads the receiver's live object, not his own picture. That is an information leak.
+- The repair is a break time the forecast computes at the install, from the installed route and the nominal profile,
+  kept for the play. The QB's readiness falls back to that, not to the runner.
