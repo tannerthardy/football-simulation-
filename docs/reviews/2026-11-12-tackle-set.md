@@ -4058,3 +4058,36 @@ On wide and outside-half landings ours stops closing at 0.81-0.94 yd, while the 
   rusher's drive about equals the limit.
 - A curve from the bench reference would cut a capacity that is physically there. The question to settle first is
   why our rusher's drive does not exceed it, or what else lets the NFL rusher close.
+
+**Candidates 1 and 2 measured (edge-level.mts, the level phase, VERTICAL_SET, engine-62, seed 11 x 4).**
+
+| | all (257) | went past (39) | stayed level (218) |
+|---|---|---|---|
+| the rep's `control` p50 (+ = the tackle's) | +0.41 | **-0.28** | **+0.47** |
+| ticks with control positive | 100% | 0% | 100% |
+| his push intent / posture | 0.75 / 0.75 | 0.64 / 0.80 | 0.75 / 0.75 |
+| his lean / its cap | 414 / 1203 N | 327 / 1206 | 422 / 1202 |
+
+`control` separates the outcome completely. It is not physics. It is set:
+- when the rep starts, by a rolled punch exchange (`punchB = hands + 0.12 x armEdge + rng.normal(0, 0.18)` against
+  the rusher's swipe or strike, `engagement.ts` at the rep's creation);
+- then by each rolled move outcome (`resolveMove`: a landed rip sets it to -0.2 or less, a landed swim to -0.4, a
+  failed move adds +0.35).
+
+With RUSH_BULL on nothing drifts it afterwards. setContactHands then scales the tackle's hands by it:
+- push limit pressForce x (0.35 + 0.65 |c|);
+- extension bodies + arm x 0.3 x (0.5 + 0.5 |c|);
+- hold armForce x 0.25 x c above 0.3;
+- steer armForce x (0.15 + 0.55 c).
+
+The press that holds the rusher at the hip (about 1165 of a 1410 N limit) is that rolled control's share of his press,
+and a rusher whose roll went his way is held to 879 of 1103 N and goes past.
+
+This is a rating-and-roll state awarding the rep through the hands' capacity: what CLAUDE.md rules out ("Ratings ...
+do not award a block win"). It is under every edge result since the first contact table:
+- the strut's size;
+- why the rip's force sits at the hold;
+- why the tangent cannot be reached.
+
+The arm-yield question is moot until this is settled: the arm's capacity is real, and the roll decides how much of it
+each rep gets.

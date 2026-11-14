@@ -68,6 +68,8 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       r.offChest += deg(Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x) - b.body.facing); r.yaw += Math.abs(b.body.spin ?? 0) * 180 / Math.PI;
       if ((e.phi ?? 0) * e.side > 0.5) r.turnedN = (r.turnedN ?? 0) + 1;
       if (e.move === 'bull' || e.move === 'longarm') r.powerN = (r.powerN ?? 0) + 1;
+      r.ctl = (r.ctl ?? 0) + (e.control ?? 0); r.ctlPos = (r.ctlPos ?? 0) + ((e.control ?? 0) > 0 ? 1 : 0);
+      r.pushI = (r.pushI ?? 0) + (iv.push ?? 0); r.post = (r.post ?? 0) + (iv.posture ?? 0);
       r.moves[e.move ?? 'none'] = (r.moves[e.move ?? 'none'] ?? 0) + 1;
       if (depth < -0.3 && width >= -0.3) r.past = true;
     }
@@ -87,6 +89,7 @@ for (const [lab, f] of [['all level', (r: any) => true], ['went past by 0.5 s', 
   console.log(`   branch: turned (phi x side > 0.5) on ${q(R.map((r) => 100 * (r.turnedN ?? 0) / Math.max(1, r.n)))}% of ticks, power move ${q(R.map((r) => 100 * (r.powerN ?? 0) / Math.max(1, r.n)))}%`);
   console.log(`   joint: set extension beyond the bodies p50 ${q(m('ext', 'cN'), .5, 2)} yd, the bodies' gap ${q(m('gap', 'cN'), .5, 2)} yd (his arm ${q(R.map((r) => r.armL), .5, 2)}), driven short of it ${q(m('short', 'cN'), .5, 3)} yd | normal ${q(m('Nn', 'cN'))} N of push limit ${q(m('pushN', 'cN'))} N, at the limit on ${q(R.map((r) => 100 * (r.atLim ?? 0) / Math.max(1, r.cN)))}% of ticks | his press capacity (push / control share) ${q(m('pf', 'cN'))} N`);
   { const P = R.flatMap((r) => r.pairs ?? []); for (const [lo, hi] of [[-1, 0], [0, 0.01], [0.01, 0.03], [0.03, 0.06], [0.06, 1]]) { const S = P.filter((p: number[]) => p[0] >= lo && p[0] < hi); if (S.length) console.log(`      driven short ${lo.toFixed(2)}-${hi.toFixed(2)} yd: ${S.length} ticks, normal p50 ${q(S.map((p: number[]) => p[1]))} N`); } }
+  console.log(`   rep state: control p50 ${q(m('ctl'), .5, 2)} (positive = the tackle's) on ${q(R.map((r) => 100 * (r.ctlPos ?? 0) / Math.max(1, r.n)))}% of ticks positive | his push intent ${q(m('pushI'), .5, 2)}, posture ${q(m('post'), .5, 2)}`);
   console.log(`   3 hands: moves ${Object.entries(mv).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${(100 * v / tot).toFixed(0)}%`).join(', ')}`);
   console.log(`   4 tackle: rusher off his chest p50 ${q(m('offChest'))} deg, yaw rate ${q(m('yaw'))} deg/s`);
 }
