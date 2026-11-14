@@ -30,6 +30,16 @@ import { LATE, carrierLane, fitOn, meetOnTrack, matchThreats, threatOf, type Can
 const RETARGET = 0.3;
 /** Inside this he is on his man: he keeps him and mirrors (yd). */
 const ON_MAN = 4;
+/** STALK_CLOSE (experimental, off; STALK_CLOSE=1): the stalk as coached. Before the ball is out a receiver's stalk
+ * does not wait at his alignment for the man to come: he closes the cushion under control to a breakdown point on
+ * the man's line to the catch (STALK_BREAK off him, from what he sees of the man), and from there mirrors and puts his
+ * hands on the man's catch-side half once he is within reach. NFL perimeter stalks (BDB 2025 WR/TE screens, blocker on
+ * a DB, stalk_reference.py): gap 3.7 yd at the snap, 2.0 at 0.9 s, 1.1 at 1.2 s, first contact 1.0 s before the
+ * catch, never 1 of 18; ours off: 5.5, 5.1, 4.7, at the catch, never 50 of 263. */
+export const STALK_CLOSE = process.env.STALK_CLOSE !== '0';
+/** Where he breaks down: this far off the man, on the man's line to the catch (yd). A coaching figure (about a yard
+ * and a half), not a fit. */
+const STALK_BREAK = 1.5;
 
 export class ScreenBlocker implements Behavior {
   readonly kind = 'screen-block';
@@ -94,6 +104,19 @@ export class ScreenBlocker implements Behavior {
       if (Math.hypot(seen.pos.x - near.x, seen.pos.y - near.y) < 6) goal = near;
     }
     const toGoal = norm(sub(goal, seen.pos));
+    // STALK_CLOSE: close the cushion to the breakdown point, then hands on (see STALK_CLOSE).
+    if (STALK_CLOSE && this.job === 'stalk' && !this.lineman) {
+      const facingMan = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
+      if (dist > STALK_BREAK + 0.5) {
+        const brk = { x: seen.pos.x + toGoal.x * STALK_BREAK, y: seen.pos.y + toGoal.y * STALK_BREAK };
+        const far = Math.hypot(brk.x - a.pos.x, brk.y - a.pos.y);
+        // Run while far, gather as he nears it: under control at the breakdown, never parked in front of a man coming.
+        return track(a, brk, { x: seen.vel.x * 0.5, y: seen.vel.y * 0.5 }, { gain: 1.6, cutSkill: 1, facing: facingMan, speed: far > 3 ? 0.9 : far > 1 ? 0.6 : 0.35 });
+      }
+      // Mirror and strike: his hands go to the man's catch-side half, where the man is going, a beat ahead.
+      const hit = { x: seen.pos.x + toGoal.x * 0.4 + seen.vel.x * 0.15, y: seen.pos.y + toGoal.y * 0.4 + seen.vel.y * 0.15 };
+      return track(a, hit, seen.vel, { gain: 2.4, cutSkill: 1, facing: facingMan });
+    }
     // A receiver's stalk or crack does not release like a route: he works to
     // leverage, between his man and the catch point near his own depth, and
     // lets the man come to him; he attacks once the ball is out. NFL screen

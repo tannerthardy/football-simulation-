@@ -9,7 +9,7 @@ import type { Agent } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { hasObservedFlight, observedHolder } from '../possession-read.js';
-import { infoHonest, sawThrow } from '../behaviors/defense.js';
+import { infoHonest, playsThrow } from '../behaviors/defense.js';
 import type { ReceiverRead, ReleaseReader } from './reads.js';
 import type { Directive } from './rules.js';
 
@@ -34,7 +34,7 @@ export class CoverageJudgment {
     // Release is not a cue to undo a help decision. Keep the current job
     // until its technique sees the ball and transitions to playing it.
     const seenBall = JUDGE_SEEN_BALL || infoHonest(3);
-    if (seenBall && !this.sawBall && sim.ball.kind === 'air' && sawThrow(a, sim, null)) this.sawBall = true;
+    if (seenBall && !this.sawBall && playsThrow(a, sim, null)) this.sawBall = true;
     if (seenBall ? this.sawBall : sim.ball.kind === 'air') return this.override ?? primary;
     const key = primary.t === 'zone' ? `zone:${primary.zone}` : `${primary.t}:${primary.r.slot}`;
     if (sim.t < this.nextRead && key === this.primaryKey) return this.override ?? primary;
