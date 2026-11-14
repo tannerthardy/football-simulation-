@@ -540,25 +540,25 @@ const PATH_PICK = 0.2;
 const CATCH_PICK = 1.75;
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
-/** QB_PHASE (experimental, off; QB_PHASE=1; with DEF_BELIEF): what he believes a defender near his receiver does while
- * the ball is in the air. Off, a man within 4 yd is carried half way with the receiver until he reacts, then has to
- * react to the ball (1.8 reaction times when his back is to the passer) and run to it: a defender on the receiver's hip
- * is priced as nearly out of the play (pOpen 0.84 with a man within a yard at the throw; his price runs 0.60 to 0.68
- * from a covered receiver to a wide-open one while completion runs 50 to 77%). A man in trail plays the receiver, not
- * the ball: on our own throws the nearest defender covers this share of the receiver's movement between the release
- * and the arrival (scripts/diag/eyes/deep-forced.ts, mode all; engine-66, 16 games, 996 throws; mean by separation at
- * the throw 0-1 / 1-2 / 2-3 / 3-4 / 4-6 yd): in man 0.94 / 0.88 / 0.81 / 0.66 / 0.65; in zone 0.61 / 0.49 / 0.35 /
- * 0.46 / 0.46 (about the old 0.5). On, he believes that: the man is carried that share of the way to the catch point
- * with the receiver (by his own man / zone belief, with his existing judgment error on it), and what is left for him
- * to cover when the ball arrives is his margin; he can still break on the ball the old way if that is sooner. Measured
- * values, not fitted to completion; refit when the receiver or the coverage changes. */
+/** QB_PHASE (experimental, off; QB_PHASE=1; with DEF_BELIEF): the price on a receiver with a defender running with
+ * him. Off, a defender with his back to the passer has to react to the ball (1.8 reaction times) and then run to it,
+ * so a man on the receiver's hip is believed 0.37 s late and nearly out of the play: his price runs 0.60 to 0.68 from
+ * a receiver with a man within a yard to a wide-open one, while completion runs 50 to 77% (26 to 69% on the BALL_EST
+ * receiver). A man in phase does not react to the ball; he plays the receiver and arrives with him. On, from his own
+ * pictures: `phase` = closeness (1 at 1 yd of separation or less, 0 at 3 yd) x velocity match (1 when the defender's
+ * seen velocity is the receiver's, 0 when it differs by the larger of the receiver's speed and 3 yd/s); leverage = the
+ * defender's offset along the receiver's line to the catch point (1 at 1.5 yd toward it, 0.5 level, 0 trailing). A
+ * defender in phase takes  phase x (TRAIL + (LEVER - TRAIL) x leverage)  of the window, whatever the old terms say.
+ * A defender he has not looked at counts where his stale picture has him: he can be wrong about it.
+ * TRAIL and LEVER are his experience of his own world: fitted by scripts/diag/eyes/phase_fit.py to our own outcomes
+ * on each receiver engine (engine-66, 16 games: default receiver 0.30 / 0.76 on 1,317 throws; BALL_EST receiver
+ * 0.42 / 1.00 on 1,358), never to an NFL number. They go stale whenever the receiver or the coverage at the catch
+ * changes (our in-phase defenders finish farther from the receiver than the NFL's; when that is repaired a man on the
+ * hip will cost more): rerun the probe (deep-forced.ts, mode all) and the fit, and replace them. His decision-making
+ * and experience set his error around them: the less he knows, the noisier and the more hopeful. (An earlier form of
+ * this flag used a measured table of how far such a man is carried; it moved little and is gone.) */
 const QB_PHASE = process.env.QB_PHASE === '1';
-const PHASE_MAN = [0.94, 0.88, 0.81, 0.66, 0.65, 0.65], PHASE_ZONE = [0.61, 0.49, 0.35, 0.46, 0.46, 0.46];
-/** QB_PHASE: the measured share at a separation (yd): the table's bins are 1 yd wide to 4 yd, then 4-6. */
-function phaseShare(table: number[], sep: number): number {
-  const x = clamp(sep, 0.5, 5) - 0.5, i = Math.min(Math.floor(x), 3), f = i < 3 ? x - i : clamp((x - 3) / 1.5, 0, 1);
-  return table[i] + (table[i + 1] - table[i]) * f;
-}
+const PHASE_FIT = Number(process.env.BALL_EST ?? 0) !== 0 ? { trail: 0.42, lever: 1.0 } : { trail: 0.30, lever: 0.76 };
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
  * window, 0.12-0.45 s): his belief of that window and of how often such a defender gets it out (the receiver's hands
  * and contested-catch skill set how well he holds on; the window's grip strengthens as it goes, hence 0.65). */
@@ -1931,14 +1931,17 @@ export class QBPass implements Behavior {
         mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
           vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
       }
-      // QB_PHASE: the man near his receiver, carried with him to the catch point by the share he believes such a man
-      // covers; what he still has to cover from there is his margin at the ball's arrival.
-      let phase: { pos: Vec2; vel: Vec2; profile: PhysicalProfile; speedScale: number } | null = null;
-      const sepSeen = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y);
-      if (QB_PHASE && DEF_BELIEF && sepSeen < 6 && !tied) {
-        const k = clamp(pMan * phaseShare(PHASE_MAN, sepSeen) + (1 - pMan) * phaseShare(PHASE_ZONE, sepSeen) + (1 - know) * 0.35 * a.mind.judgment('def-phase'), 0, 1);
-        const tb = forecast?.predict(sim.t, total) ?? target, tv = forecast?.predict(sim.t, total + 0.1) ?? tb;
-        phase = { pos: { x: seen.pos.x + k * (tb.x - target.x), y: seen.pos.y + k * (tb.y - target.y) }, vel: { x: k * (tv.x - tb.x) / 0.1, y: k * (tv.y - tb.y) / 0.1 }, profile: dp, speedScale: 1 };
+      // QB_PHASE: is this man running with his receiver, in his own pictures, and with what leverage on the throw?
+      let inPhase = 0;
+      if (QB_PHASE && DEF_BELIEF && !tied) {
+        const sepSeen = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y);
+        const t1 = forecast?.predict(sim.t, 0.1) ?? target, rvx = (t1.x - target.x) / 0.1, rvy = (t1.y - target.y) / 0.1;
+        const close = clamp((3 - sepSeen) / 2, 0, 1), match = clamp(1 - Math.hypot(seen.vel.x - rvx, seen.vel.y - rvy) / Math.max(Math.hypot(rvx, rvy), 3), 0, 1);
+        const ux = point.x - target.x, uy = point.y - target.y, L = Math.hypot(ux, uy) || 1;
+        const lever = clamp(0.5 + ((seen.pos.x - target.x) * ux + (seen.pos.y - target.y) * uy) / L / 3, 0, 1);
+        // His sense of what such a man costs: the fit, hopeful and noisy by how little he knows.
+        const sense = clamp(1 - (1 - know) * (0.25 + 0.25 * a.mind.judgment('def-phase')), 0.3, 1.2);
+        inPhase = clamp(close * match * (PHASE_FIT.trail + (PHASE_FIT.lever - PHASE_FIT.trail) * lever) * sense, 0, 0.95);
       }
       const react = dp.reactionTime * (facingQB ? 1 : 1.8) + (tied ? 0.5 : 0);
       const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
@@ -1948,7 +1951,7 @@ export class QBPass implements Behavior {
         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
       }
-      return { d, dp, dBall, blind, mover, phase, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      return { d, dp, dBall, blind, mover, inPhase, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
@@ -1969,10 +1972,8 @@ export class QBPass implements Behavior {
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, dp, dBall, blind, mover, phase, react, leap, spreadD, facingQB, estimateError } of defenders) {
-        const onBall = blind + timeToReach(mover, pt, dp.reach + 0.3) + react;
-        // QB_PHASE: in phase with the receiver he arrives with him, and covers what is left from there.
-        const tt = phase ? Math.min(onBall, total + timeToReach(phase, pt, dp.reach + 0.3)) : onBall;
+      for (const { d, dp, dBall, blind, mover, inPhase, react, leap, spreadD, facingQB, estimateError } of defenders) {
+        const tt = blind + timeToReach(mover, pt, dp.reach + 0.3) + react;
         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
         const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(dp.vmax, 1e-3)) : 0.13;
@@ -1980,7 +1981,8 @@ export class QBPass implements Behavior {
         const contest = 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
-        pOpen *= 1 - contest * (0.55 + 0.3 * dBall);
+        // QB_PHASE: a man running with the receiver takes his share of the window whether or not he could react to the ball.
+        pOpen *= 1 - Math.max(contest * (0.55 + 0.3 * dBall), inPhase);
         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
         if (DEF_BELIEF) {
           const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
@@ -2003,7 +2005,7 @@ export class QBPass implements Behavior {
         const iJump = first * (0.15 + 0.35 * dBall), iContest = Math.max(0, contest - first) * 0.08 * dBall;
         intRisk += iPath + iJump + iContest;
         intPath += iPath; intJump += iJump; intContest += iContest;
-        if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
+        if (marginTrace && pt === point && (contest > 0.05 || inPhase > 0 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, ph: +inPhase.toFixed(3), age: +this.mind.pictureAge(d).toFixed(2), sepSeen: +Math.hypot(this.mind.estimate(d).pos.x - target.x, this.mind.estimate(d).pos.y - target.y).toFixed(1), m: +m.toFixed(3), first: +first.toFixed(3),
           contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
           iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
         if (INT_BELIEF) {
