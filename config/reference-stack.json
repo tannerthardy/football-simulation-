@@ -124,6 +124,7 @@
     "PERCEIVE_TRACK": "off",
     "QB_BODY_SEEN": "on",
     "RCV_SEEN": "on",
+    "SOLO_JAM": "off",
     "TRACK_PURSUIT": "on",
     "TRACK_TACKLE": "on",
     "PURSUIT_SPOT": "on",

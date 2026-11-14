@@ -749,6 +749,14 @@ export interface ManOptions {
  * receivers are 0.62 yd lateral by their first yard and reach 5 yd at 1.90 s;
  * ours went straight (0.00 yd) and reached 5 yd at 1.65 s (BDB 2025). */
 const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
+/** SOLO_JAM (experimental, off; SOLO_JAM=1): a pressed corner with no help over him (protectDepth) plays patient press
+ * and catch-jams: as the receiver commits his release past him within reach, he holds square for a jab (an off-hand to
+ * the near shoulder) before opening. He never steps downhill. The jab's commitment is the cost: if the hand misses, he
+ * opens that much later (about half a step). Ratings act on the jab's timing (press) and the hand's grip (the existing
+ * press contact physics), not on whether it wins. */
+export const SOLO_JAM = process.env.SOLO_JAM === '1';
+/** SOLO_JAM: the jab's commitment, s (choice: about half a step), shortened by press technique. */
+const JAB_TIME = 0.15;
 /** MAN_PHASE (off; MAN_PHASE=1 turns it on): once his hips are open and the
  * receiver is past the release (2+ yd deep), a man defender runs in phase an
  * arm's length off the receiver's hip on his leverage side (their two body
@@ -995,6 +1003,8 @@ export class ManCoverage implements Behavior {
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
+  /** SOLO_JAM: when he threw his off-hand jab (-1: not yet). */
+  private jabAt = -1;
   private releaseObserved = false;
   private routeRead = false;
   private stemHeading: number | null = null;
@@ -1198,7 +1208,17 @@ export class ManCoverage implements Behavior {
     const consumed = breakOn ? broken()
       : a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
     const crossing = Math.abs(seen.vel.y) > 3 && Math.abs(seen.vel.y) > Math.abs(vx);
-    if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
+    // SOLO_JAM: the catch-jam. As the receiver commits his release within his reach (still level with or in front of
+    // him), the no-help press corner throws the off hand and holds square for the jab before opening.
+    const jabWindow = JAB_TIME * (1.25 - 0.5 * a.r('press'));
+    if (SOLO_JAM && this.press && o.protectDepth && this.jabAt < 0 && !this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5
+      && Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.7 + 0.3
+      && (seen.pos.x - a.pos.x) * sim.attackDir('O') <= a.profile.radius) {
+      this.jabAt = sim.t; a.tags.add('jab');
+    }
+    const jabbing = SOLO_JAM && this.jabAt >= 0 && sim.t - this.jabAt < jabWindow;
+    if (SOLO_JAM && this.jabAt >= 0 && !jabbing) a.tags.delete('jab');
+    if (!jabbing && !this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
     // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
     // with the cushion not broken: he re-squares (the body turns back at its
     // own rate; the stop route is built to win in that time).
@@ -1210,6 +1230,10 @@ export class ManCoverage implements Behavior {
     if (this.press && vx >= 0) {
       const developing = clamp(deep / 4, 0, 1);
       tx += this.initialCushion * (1 - developing) + 0.6 * developing;
+      // SOLO_JAM: patient press. Until the receiver has committed past the line he holds his ground (soft-shoe, no
+      // retreat to keep the alignment cushion) and mirrors laterally, so the release comes to his hands; he still
+      // never steps downhill (protectDepth below).
+      if (SOLO_JAM && o.protectDepth && !this.hipsOpen && deep < 1.5) tx = a.pos.x;
     }
     else if (vx > 3 && deep > 3) tx = Math.max(tx, seen.pos.x + cushion * 0.5);
     else if (!this.hipsOpen) {
@@ -1263,6 +1287,12 @@ export class ManCoverage implements Behavior {
     // cushion against the burst he sees): he spends cushion only as fast as it
     // allows and never comes downhill at a climber. As the receiver throttles
     // the hold fades and the roof / cushion need bring him down.
+    // SOLO_JAM: patient press holds his ground until the release commits past the line: the carry floor and the
+    // depth pedal start once he opens (the jab, then the run), not before the receiver reaches his hands.
+    if (SOLO_JAM && this.press && o.protectDepth && !this.hipsOpen && deep < 1.5) {
+      a.tags.add('patient-press');
+      return withFacingTechnique(command, { label: 'patient-press', key: seen.vel });
+    }
     const hold = CARRY_READ ? holdWeight(vx, this.depth.seenAcceleration) : 0;
     if (hold > 0) {
       const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, !o.protectDepth, R.profile.radius, this.depth.seenAcceleration);
@@ -1288,7 +1318,7 @@ export class ManCoverage implements Behavior {
       a.tags.add('open-carry');
       return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
     }
-    if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
+    if (selected.facing === undefined && vx > 1.5 && !(SOLO_JAM && a.tags.has('jab'))) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
   }

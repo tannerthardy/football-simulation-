@@ -19,6 +19,8 @@ import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choic
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
+/** SOLO_JAM (experimental, off; read also in behaviors/defense.ts): a no-help press corner's catch-jam. */
+const SOLO_JAM = process.env.SOLO_JAM === '1';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
  * torso is still a compact body: the small hand slide below is the part of
@@ -450,6 +452,10 @@ export class RouteRunner implements Behavior {
       return (Math.cos(d.facing) * relative.x + Math.sin(d.facing) * relative.y) / dist > 0.3;
     };
     const stop = () => this.clearPressContact(sim);
+    const facingAtLeast = (d: Agent, relative: Vec2, cos: number): boolean => {
+      const dist = Math.hypot(relative.x, relative.y) || 1;
+      return (Math.cos(d.facing) * relative.x + Math.sin(d.facing) * relative.y) / dist > cos;
+    };
 
     // Beyond five yards the defender must cover rather than initiate or
     // sustain a release jam. A thrown ball also changes the players' task.
@@ -487,7 +493,9 @@ export class RouteRunner implements Behavior {
         const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
         if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || d.engagement || a.engagement || usable(d) === 0) continue;
         const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
-        if (dist > reach(d) || a.pos.x > d.pos.x + a.profile.radius || !facingReceiver(d, relative)) continue;
+        // SOLO_JAM: a no-help press corner's off-hand jab while he opens reaches a receiver beside him, not only in front.
+        const jab = SOLO_JAM && d.tags.has('jab');
+        if (dist > reach(d) || a.pos.x > d.pos.x + a.profile.radius + (jab ? 0.3 : 0) || !(facingReceiver(d, relative) || (jab && facingAtLeast(d, relative, -0.2)))) continue;
         // Two hands cannot simultaneously jam one player and grasp/block
         // another. Contacts owned by another technique have priority.
         if (sim.world.joints.some((j) => j.a === d.body || j.b === d.body || j.a === a.body || j.b === a.body)) continue;
