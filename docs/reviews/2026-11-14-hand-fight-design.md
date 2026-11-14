@@ -209,3 +209,19 @@ acts on the same contact. The order is the patch first, the hands on top:
 
 **Retirements** (accepted in principle): RUSH_HANDS' rolls, RUSH_RIP, RIP_CLEAR, RUSH_ONE_HAND, CONTROL_HANDS and
 HAND_FIT. Each is executed only when the stage that replaces it has carded.
+
+**A second witness for stage 1** (the QB lane's ends-by-time measurement, engine-66, 16 games; one code path on BDB and
+our exports; non-designed gun dropbacks, no play action or screens; sacks timed at the wrap):
+
+| | common drop 2-3.5 yd: NFL / ours | deeper drop 3.5-5 yd: NFL / ours |
+|---|---|---|
+| sacked, all | 7% / 4% | 9% / 12% |
+| alive at 3.0 s, ending in a sack | 12% / 4% | 10% / 6% |
+| alive at 3.5 s | 12% / 5% | 12% / 4% |
+| alive at 4.0 s | 11% / 6% | |
+
+Our rush gets home early about as often but does not finish late: a quarterback still holding at 3 s is sacked a third
+as often as the NFL's. That fits the orbit finding (the pairs do not rotate, and a rusher who has not won by about
+1.5 s never wins). Added as a reported row, not a target: **the share of dropbacks alive at 3.0 s that end in a sack**.
+Late NFL sacks also include coverage sacks, where a moving quarterback runs into a rusher who came off his block.
+Whether ours come off a block toward a moving quarterback at all is the come-off question, measured after stage 1.
