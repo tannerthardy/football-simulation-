@@ -215,7 +215,7 @@ export class ProtectionCoordinator {
       // PRO_CALL: a called threat stays the blocker's man until he is seen
       // leaving the box (or CALL_HOLD passes without him coming).
       const held = PRO_CALL && this.called.has(r) && !this.dropped.has(r) && sim.t < CALL_HOLD;
-      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(r.pos.y - home) > zoneOf(b) + 1.5
+      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(seenPos(sim, b, r).y - home) > zoneOf(b) + 1.5
         || (PRO_READ && !rushers.includes(r) && !held)) {
         this.sticky.delete(b);
         continue;
@@ -232,13 +232,14 @@ export class ProtectionCoordinator {
       const zone = zoneOf(b);
       for (const r of unblocked) {
         if (usedR.has(r)) continue;
-        if (Math.abs(r.pos.y - home) > zone) continue;
+        const rp = seenPos(sim, b, r);
+        if (Math.abs(rp.y - home) > zone) continue;
         // Don't chase rushers who are already past.
-        if (r.pos.x < b.pos.x - 1.5 && isOL(b)) continue;
-        let cost = Math.abs(r.pos.y - b.pos.y) + 0.35 * Math.max(0, r.pos.x - b.pos.x);
+        if (rp.x < b.pos.x - 1.5 && isOL(b)) continue;
+        let cost = Math.abs(rp.y - b.pos.y) + 0.35 * Math.max(0, rp.x - b.pos.x);
         if (!isOL(b)) cost += 0.8; // backs/TEs pick up leftovers
         // Interior first: centers and guards take A/B gap threats.
-        if (isOL(b) && Math.abs(r.pos.y - sim.ballY) < 2.5 && !isT) cost -= 0.4;
+        if (isOL(b) && Math.abs(rp.y - sim.ballY) < 2.5 && !isT) cost -= 0.4;
         pairs.push({ b, r, cost });
       }
     }
@@ -258,7 +259,7 @@ export class ProtectionCoordinator {
       for (const o of this.protectors) {
         const e = o.engagement;
         if (!e || e.helpers.length > 0) continue;
-        const dd = Math.abs(e.defender.pos.y - b.pos.y);
+        const dd = Math.abs(seenPos(sim, b, e.defender).y - b.pos.y);
         if (dd < bd) {
           bd = dd;
           best = e.defender;
@@ -336,14 +337,14 @@ export class PassProtector implements Behavior {
       return stand();
     }
     this.coord.update(sim);
-    const r = this.coord.assigned.get(a) ?? null;
-    if (!r && this.releaseTo && sim.t > this.releaseAfter) {
+    const rA = this.coord.assigned.get(a) ?? null;
+    if (!rA && this.releaseTo && sim.t > this.releaseAfter) {
       this.released = true;
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
     const qb = sim.qb;
-    if (!r) {
+    if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
       const out = Math.sign(home - sim.ballY);
@@ -354,6 +355,8 @@ export class PassProtector implements Behavior {
       if (runLook(a, sim)) set = { x: sim.los - 0.2, y: set.y };
       return goTo(a, set, { speed: 0.7, facing: 0 });
     }
+    // PASS_SET_SEEN: the set is his, from his picture of the rusher; only the contact itself is the World's.
+    const r = PASS_SET_SEEN ? seenRusherView(sim, a, rA) : rA;
     // Pass set: stay on the line between the rusher and the QB, giving ground
     // under control. Poor footwork over-sets against speed (opening the
     // inside counter).
@@ -419,7 +422,9 @@ export class PassProtector implements Behavior {
     // shoulder as he goes by; the rep then starts from a losing angle.
     const passing = r.speed > 4.5 && r.pos.x < a.pos.x + 0.6;
     const reachOut = edgeRusher && passing ? 0.15 + 0.3 * traits(a).feet : 0;
-    if (dd < contact + 0.15 + reachOut && sim.engage(a, r, 'pass')) return stand();
+    // Contact is physical: the bodies' true distance (his reach decision above is from his picture).
+    const ddContact = PASS_SET_SEEN ? Math.hypot(rA.pos.x - a.pos.x, rA.pos.y - a.pos.y) : dd;
+    if (ddContact < contact + 0.15 + reachOut && sim.engage(a, rA, 'pass')) return stand();
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
     if (ride) return track(a, set, r.vel, { cutSkill: quick, gain: 3 });
@@ -458,6 +463,25 @@ const PASS_KICK = process.env.PASS_KICK !== '0';
  * defender's private behavior (rush/blitz), so the line never set on a
  * dropping end and knew every blitzer by his call. */
 const PRO_READ = process.env.PRO_READ !== '0';
+/** PASS_SET_SEEN (experimental, off; intended on): a pass protector's set and his protection's assignment costs read
+ * his picture of the rusher (`sim.see`, his delayed, recognised sample; Rules+Coaching's track() replaces it when it
+ * lands), not the rusher's true position and velocity. The set point, the kick, the mirror, the cut-off, his overset
+ * fear and his reach for a man going by are his decisions; only the contact itself (the bodies' true distance at
+ * engage) is the World's. Found by the perception census (2026-11-13): the pre-contact set read the true state. */
+export const PASS_SET_SEEN = process.env.PASS_SET_SEEN !== '0';
+/** PASS_SET_SEEN: the rusher as this blocker sees him, shaped like the Agent fields the set reads. */
+function seenRusherView(sim: PlaySim, a: Agent, r: Agent): Agent {
+  const s = sim.see(a, r);
+  const view = Object.create(r) as Agent & { pos: Vec2; vel: Vec2; speed: number };
+  Object.defineProperty(view, 'pos', { value: s.pos });
+  Object.defineProperty(view, 'vel', { value: s.vel });
+  Object.defineProperty(view, 'speed', { value: Math.hypot(s.vel.x, s.vel.y) });
+  return view;
+}
+/** PASS_SET_SEEN: a rusher's position as this protector sees it (true position when off). */
+function seenPos(sim: PlaySim, b: Agent, r: Agent): Vec2 {
+  return PASS_SET_SEEN ? sim.see(b, r).pos : r.pos;
+}
 /** PRO_CALL (experimental, off; PRO_CALL=1): the protection is called at the
  * line from what the offence sees before the snap. The line counts the box:
  * every defender within CALL_DEPTH of the line inside the linemen's width

@@ -91,6 +91,7 @@
     "PERCEIVE_TRACK": "0",
     "TRACK_PURSUIT": "0",
     "TRACK_FEEL": "0",
+    "QB_BODY_SEEN": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "CATCH_CHOICE": "0",
@@ -243,6 +244,8 @@
     "HAND_SITE": "0",
     "PUNCH_STRIKE": "0",
     "ANCHOR_BASE": "0",
+    "RUSH_ARM_BALANCE": "0",
+    "PASS_SET_SEEN": "0",
     "TACKLE_ANCHOR": "0",
     "RUSH_INTENT": "0",
     "PASS_ANCHOR": "0",
@@ -334,7 +337,9 @@
     "OPEN_CARRY": "0",
     "CATCH_CARRY": "0",
     "PURSUIT_FIELD": "0",
-    "PURSUIT_COMMIT": "0"
+    "PURSUIT_COMMIT": "0",
+    "RUSH_PROMISE": "0",
+    "WAIT_REACHED": "0"
   },
   "worldDefaults": {
     "handContact": "center",

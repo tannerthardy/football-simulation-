@@ -110,6 +110,12 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 
 | `QB_COMMIT` | At the delivery recheck a started throw holds unless his re-forecast falls well below his entry (the window at half the P he threw at, or pick risk up 0.12). | `rules/qb-gather` `src/sim/behaviors/qb.ts` (`pullDown`) | Parked off, not carded (2026-11-13). The pump split (`scripts/diag/eyes/pump-split.ts`, 1,731 rechecks): pulled throws were started into tighter windows (nearest defender to the catch point 4.4 against 6.7 yd) and the same defender (97%) closed on the catch point during the windup (0.25 yd in 0.2 s at p50, 0.83 at p75, in his picture); his forecast error was small (0.12 yd p50). So most pumps are the right response to a defender breaking on his motion; the cure is the earlier, anticipated decision (QB_EYES / decision timing). Re-read pumps per drop-back and what follows a pump on QB_EYES when the QB set is carded. docs/reviews/2026-11-13-qb-gather.md. |
 
+## Pressure installs (Defense, 2026-11-13)
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `MAX_ZONE_6` | (Idea, not built.) A designed six-man, three-deep, two-under zone pressure: two hot droppers (seam/flat or hot-hook players) named by the call, three deep behind them; the rare max zone pressure, called on purpose. | `src/playbook/defense.ts` `PRESSURES` | Not built. RUSH_PROMISE (FLAGS.md) stops this shape arising by accident (Mike-A / Will-B / Nickel Edge in Cover 3 from fronts that already rush an extra man: two curl-flat players, no one in the middle). A designed install names its two droppers and their hot rules, so it is a legitimate future call, not the accident. |
+
 ## G5 Edge protection gives way
 
 | Flag | What it does | Where | Status |
