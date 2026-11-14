@@ -268,6 +268,12 @@ Small samples are common. Same-seed arms are identical until the first
 changed play and then diverge, so an 8-game comparison is closer to 8 paired
 observations than to 1,000 plays (`scripts/diag/arm-power.py`, #191).
 
+## Perception (reference)
+
+How a player's picture of an opponent works (a delayed sample; position extrapolated, velocity held; no distance or
+looming term; the QB's periphery ×1.7) is written up in [PERCEPTION.md](PERCEPTION.md). Several "reacts late" findings
+may share it: check there before diagnosing a late reaction from scratch.
+
 ## Index
 
 Severity says how much the problem distorts ordinary football: **high**
@@ -323,6 +329,7 @@ problem), resolved.
 | [COV-9](#cov-9) | A man defender overruns a turning receiver once nothing slows his pedal | G3 | medium | open (logged with #394; Coverage paused) |
 | [REC-1](#rec-1) | Receiver options and continuation can contradict available information or route intent | G3, G10 | medium | candidate: acquired route reads; catch/release limits remain |
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
+| [COV-11](#cov-11) | Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier | C14 | medium | flag (`APEX_LEVERAGE`, #702) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -3229,6 +3236,39 @@ From the issue register:
   per team-game (3.5–4.5). Kicking hasn't been reviewed against tracking.
 - **Open:** distance bins for field goals; punts may follow from drive
   outcomes rather than the kicking game.
+
+### COV-11: Quarters apex with a flat back: level with No. 2 rather than outside him; the seam is roomier
+
+- **Symptom:** against No. 2's vertical with a back releasing to the flat, the
+  NFL quarters apex stays about 6 yd deep, 2 yd outside No. 2 and just outside
+  the back. `APEX_LEVERAGE` (#702) fixes his depth but not his width: he gets
+  level with No. 2, and a seam inside him is roomier than before.
+- **Measure** (NFL BDB 2025 PFF CF, n 275, `apex_leverage_nfl.py`; sim
+  `APEX_LEVERAGE=7`, seeds 11/23/37/51 x 8 leagueSample games, unpaired,
+  `scripts/diag/risk/apex-out.ts` on `coverage/C14-int-diag`). At 2.5 s:
+
+  | | NFL | sim off | sim on |
+  | --- | --- | --- | --- |
+  | depth | 6.2 | 7.9-8.5 | 6.0-6.7 |
+  | out vs No. 2 | +2.1 | -0.7 to -0.9 | -0.3 to +0.2 |
+  | out vs the back | +0.6 | -2.2 to -3.8 | -0.7 to -2.6 |
+
+  Staged seam vs quarters with the back's flat (`apex-fixture.ts`, cover4 /
+  cover4_meg / cover6, 32 seeds x both flips, 192 plays): No. 2's nearest
+  defender at the throw 2.1 -> 3.0 yd. Throws to him are unchanged (12 -> 12)
+  and games show no cost (No. 2 vertical targeted 5 of 85 sides at 16.4 yd ->
+  6 of 77 at 8.6). The QB will find it once he reads it.
+- **Cause:** *likely.* Widening outside a climbing No. 2 is slower than the
+  NFL apex's: he commits on the back's seen release at 1.4-1.5 s (true motion
+  1.1 s plus perception lag) and has under a second to widen. The NFL's
+  earliest outward tell (0.8 s) is a flat-side release only 52-55% of the time,
+  so an earlier commit would be a wager wrong about half the time; that belongs
+  in the anticipation channel (Rules+Coaching perception proposal).
+- **Where:** `src/sim/coverage/rules.ts` (`apexWall`, `flatThreat`),
+  `src/sim/coverage/techniques.ts` (`Wall`); the standing seam row is
+  `apex-fixture.ts` seam_flat.
+- **Open:** whether the width comes with the anticipation commit; whether
+  the seam row moves when the QB reads the apex.
 
 ## Pre-snap
 

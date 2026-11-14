@@ -21,13 +21,26 @@ import type { PlaySim } from '../playsim.js';
 import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
 
+export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
+/** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
+ * to the next dropper ("collision and pass"), square to the QB at his window depth, instead of jumping him and carrying
+ * him man head-up 8 yd past his area. The low-hole rat (whose job is the crosser) keeps the jump. */
+export const CUT_WALL = process.env.CUT_WALL !== '0';
+/** CUT_WALL: his area for a crosser, a side of his landmark (yd): half a hook band (zoneBand's hooks are 11-12 yd wide;
+ * choice); he takes a crosser inside CUT_ENTER and passes him past CUT_EXIT (the margin is the commit rule). */
+export const CUT_ENTER = 5;
+export const CUT_EXIT = 6;
+const APEX_OUTSIDE = 1.0;
+
 export type Directive =
   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
   | { t: 'man'; r: Agent; opts: ManOptions }
   | { t: 'read'; r: Agent; initialPosition: Vec2 }
   | { t: 'trap'; r: Agent }
-  | { t: 'wall'; r: Agent }
-  | { t: 'rob'; r: Agent };
+  | { t: 'wall'; r: Agent; inside?: number; flat?: Agent }
+  | { t: 'rob'; r: Agent }
+  /** CUT_WALL: wall a shallow crosser from his own area (landmark `area`, half-width `half`), square to the QB. */
+  | { t: 'crossWall'; r: Agent; area: Vec2; half: number };
 
 export interface RuleState {
   /** Locked branch of the rule after a declaration ("zoned off", "trap", "carry #2"). */
@@ -38,6 +51,8 @@ export interface RuleState {
   match?: Agent;
   /** When a pending call (a corner's "In") was first seen. */
   pendingAt?: number;
+  /** APEX_LEVERAGE: the back the apex has committed to as a flat threat under him. */
+  flatBack?: Agent;
 }
 
 export interface RuleCtx {
@@ -200,6 +215,8 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
  */
 function cut(c: RuleCtx, area?: Vec2): Directive | null {
   const st = c.state;
+  // CUT_WALL: a hook (not the rat, who is given his low-hole area) walls a crosser from his own area.
+  if (CUT_WALL && !area) return cutWall(c);
   const center = area ?? c.a.pos;
   // The shared man producer supplies the acquired entry picture for every match.
   const carry = (rd: ReceiverRead) => man(rd, { lev: 'head' });
@@ -231,6 +248,33 @@ function cut(c: RuleCtx, area?: Vec2): Directive | null {
   return carry(best);
 }
 
+/** CUT_WALL: the hook's crosser rule as taught. A shallow crosser (under, 7 yd or less) coming into his area is walled
+ * from his area square to the QB, and passed once he is through it; the next dropper walls him the same way. His area is
+ * his landmark, not where he stands, so it does not travel with the crosser. */
+function cutWall(c: RuleCtx): Directive | null {
+  const st = c.state;
+  const lm = zoneLandmark(c.zone, c.sim.offAlign);
+  const wall = (rd: ReceiverRead): Directive => ({ t: 'crossWall', r: rd.r, area: lm, half: CUT_ENTER });
+  if (st.cut) {
+    const rd = c.reader.read(c.sim, st.cut);
+    if (rd && rd.release === 'under' && rd.depth < 8 && Math.abs(rd.pos.y - lm.y) < CUT_EXIT) return wall(rd);
+    st.cut = undefined;
+    return null;
+  }
+  let best: ReceiverRead | null = null;
+  let bd = Infinity;
+  for (const r of c.sim.offense) {
+    const rd = c.reader.read(c.sim, r);
+    if (!rd || rd.release !== 'under' || rd.depth > 7 || Math.abs(rd.pos.y - lm.y) >= CUT_ENTER) continue;
+    const toward = Math.sign(lm.y - rd.pos.y) * rd.vel.y > 1.5 || Math.abs(rd.vel.y) > 1.5;
+    const d = Math.abs(rd.pos.y - lm.y);
+    if (toward && d < bd) { best = rd; bd = d; }
+  }
+  if (!best) return null;
+  st.cut = best.r;
+  return wall(best);
+}
+
 /** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot.
  * On a Push (fast #3 to the flat while #2 climbs) he takes #2, the new #3, up the seam. */
 function c3Hook(c: RuleCtx): Directive {
@@ -255,10 +299,28 @@ function c3Hook(c: RuleCtx): Directive {
 function mike3(c: RuleCtx): Directive {
   const b = c.reader.readRef(c.sim, 'B');
   if (b && c.state.mode !== 'zoned' && (b.release === 'vertical' || b.release === 'in' || (b.release === 'under' && b.depth > 1.5))) {
+    if (c.state.mode === 'widen') c.state.mode = undefined;
     if (b.depth < 15) return man(b, { lev: 'inside' });
     c.state.mode = 'zoned';
   }
-  return cut(c) ?? zoneOf(c);
+  return cut(c) ?? (APEX_LEVERAGE & 4 ? mikeWiden(c, b) : null) ?? zoneOf(c);
+}
+
+/** APEX_LEVERAGE 4: the quarters Mike widens to the hook on the side he sees the back release flat, so the apex
+ * can stay over #2 and the flat. A commitment on his own read: enter once the back is declared flat and 2+ yd
+ * outside his alignment; hold it until the back is seen back inside 1 yd (a flat-then-under back is the counter, and
+ * an under/in/vertical declaration returns him to the back above). Measured, not coached: the NFL Mike's lateral
+ * shift with a flat back (apex_leverage_nfl.py), stand-in debt. */
+const MIKE_WIDEN_IN = 2, MIKE_WIDEN_OUT = 1;
+function mikeWiden(c: RuleCtx, b: ReceiverRead | null): Directive | null {
+  const fam = c.sim.defAlign.coverage.family;
+  if (!b || c.state.mode === 'zoned' || (fam !== 'cover4' && fam !== 'cover6')) return null;
+  if (c.state.mode === 'widen' ? b.outward < MIKE_WIDEN_OUT : !(b.release === 'flat' && b.outward >= MIKE_WIDEN_IN)) {
+    if (c.state.mode === 'widen') c.state.mode = undefined;
+    return null;
+  }
+  c.state.mode = 'widen';
+  return zoneOf(c, b.outSign === c.sim.offAlign.strongSign ? 'hook_s' : 'hook_w');
 }
 
 /** Quarters corner. MEG: man on #1 wherever he goes. MOD: man on #1 unless he declares shallow, then zone the quarter. */
@@ -291,13 +353,13 @@ function qSafety(c: RuleCtx): Directive {
 }
 
 /** Apex (nickel/Sam/curl-flat) next to a #2 read: wall #2's vertical to 10 yards for the safety, otherwise play curl-flat. */
-function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
+function wallTwo(c: RuleCtx, handoff: number, readStem = false, apex = false): Directive {
   const two = ref(c, 2);
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
   // Other wall callers have their own cut/deep-help contracts.
   if (readStem && (two.release === 'none' || (two.release === 'vertical' && two.depth < 2))) return readRelease(two);
   if (vertical(two, 2)) {
-    if (two.depth < handoff) return { t: 'wall', r: two.r };
+    if (two.depth < handoff) return apex && APEX_LEVERAGE ? apexWall(c, two) : { t: 'wall', r: two.r };
     c.state.mode = 'zoned';
     return zoneOf(c);
   }
@@ -339,7 +401,40 @@ function quarterFlat(c: RuleCtx): Directive {
     c.state.mode = 'two';
     return man(two, { lev: 'head' });
   }
-  return wallTwo(c, 10, true);
+  return wallTwo(c, 10, true, true);
+}
+
+/** APEX_LEVERAGE (bitmask, off at 0): the quarters apex's wall on #2's vertical.
+ * 1: level on #2 rather than 0.8 yd inside (the deep-quarter safety owns the
+ *    seam's inside; the apex keeps #2 from flattening outside and stays square).
+ * 2: once he commits to the back as a flat threat to his side, he stops
+ *    leading #2 (the safety has him over the top), widens to #2's outside and
+ *    holds a cushion over the back he sees instead of carrying #2 to the hand-off.
+ * Measured, not coached: level leverage, 1 yd outside with a flat back and the
+ * cushion over the back are the NFL quarters apex's medians
+ * (apex_leverage_nfl.py), stand-in debt. */
+function apexWall(c: RuleCtx, two: ReceiverRead): Directive {
+  const flat = APEX_LEVERAGE & 2 ? flatThreat(c) : undefined;
+  return { t: 'wall', r: two.r, inside: flat ? -APEX_OUTSIDE : APEX_LEVERAGE & 1 ? 0 : undefined, flat };
+}
+
+/** A back he sees threatening the flat under him: moving outward to his side, before the release is declared (the
+ * declaration needs ~3 yd of width, too late for the apex to stay over it). Committed: enter at 1.5 yd outward and
+ * 1.5 yd/s outward speed (the flat_position.py "showed" cue); exit when seen back inside 0.5 yd or declared
+ * under / in / vertical. */
+const FLAT_IN = 1.5, FLAT_OUT = 0.5;
+function flatThreat(c: RuleCtx): Agent | undefined {
+  for (const ref of ['B', 'B2'] as const) {
+    const rd = c.reader.readRef(c.sim, ref);
+    if (!rd || rd.outSign !== c.sign) continue;
+    const declaredAway = rd.release === 'under' || rd.release === 'in' || rd.release === 'vertical' || rd.release === 'block';
+    if (c.state.flatBack === rd.r) {
+      if (declaredAway || rd.outward < FLAT_OUT) { c.state.flatBack = undefined; continue; }
+      return rd.r;
+    }
+    if (!declaredAway && rd.outward >= FLAT_IN && rd.vel.y * rd.outSign >= 1.5) { c.state.flatBack = rd.r; return rd.r; }
+  }
+  return undefined;
 }
 
 /** Palms/2-Read corner: trap #2's quick out; otherwise MOD on #1. */

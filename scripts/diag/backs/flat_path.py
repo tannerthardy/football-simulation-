@@ -3,6 +3,7 @@ routeRan FLAT, BDB 2025; sim players[].route back:back_flat in the common export
 thrown: depth past the LOS, distance from his start toward the flat side, distance from the sideline he runs to.
    python3 -I scripts/diag/backs/flat_path.py nfl=<bdb2025 dir>:1,2  sim-name=<export.jsonl.gz> ..."""
 import csv, sys, gzip, json
+import os
 from collections import defaultdict
 STEPS = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
 def q(v):
@@ -43,7 +44,7 @@ def nfl(root, weeks):
             out.append(path)
     return out
 def sim(path):
-    sys.path.insert(0, '/home/user/fb-back/scripts/mechanics')
+    sys.path.insert(0, os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'scripts', 'mechanics'))
     from metrics import Play
     out = []
     for line in gzip.open(path, 'rt'):

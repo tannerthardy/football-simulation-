@@ -5,6 +5,7 @@
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
+import { BALL_EST } from './ball-estimate.js';
 
 export interface PossessionRead { target: Agent; cue: Perceived }
 type FlightSample = PlaySim['ballPath'][number];
@@ -14,7 +15,9 @@ const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
 /** Called only after the existing throw-recognition gate. Copy the acquired
  * trajectory, never an intended receiver or a private catch result. */
 export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
-  const path = sim.ballPath.map(p => ({ ...p }));
+  // BALL_EST: his own estimate from the ball he has seen (empty until he has two samples), not the true path.
+  const path = BALL_EST ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
+  if (BALL_EST && !path.length) return path;
   flights.set(a, { acquiredAt: sim.t, path });
   return path;
 }
@@ -146,4 +149,22 @@ export function qbRunning(a: Agent, sim: PlaySim): boolean {
   }
   if (running) qbRuns.set(a, { settledSince: null });
   return running;
+}
+
+/** QB_RELEASE (experimental, off; QB_RELEASE=1 turns it on): a QB seen
+ * running outside the pocket is still a passer to a coverage player until he
+ * commits to the line. An underneath zone defender comes up only when his own
+ * picture shows the running QB within QB_RELEASE_LINE of the line moving at
+ * it (QB_RUN_SPEED), or past it; once released he stays released while the
+ * QB is still seen running. Rushers and contain players keep qbRunning. */
+export const QB_RELEASE = process.env.QB_RELEASE === '1';
+const QB_RELEASE_LINE = 3;   // yd behind the line of scrimmage
+const qbCommits = new WeakMap<Agent, true>();
+export function qbRunningAtLine(a: Agent, sim: PlaySim): boolean {
+  if (!qbRunning(a, sim)) { qbCommits.delete(a); return false; }
+  if (qbCommits.has(a)) return true;
+  const cue = sim.see(a, sim.qb);
+  const committed = cue.pos.x > sim.los || (cue.pos.x >= sim.los - QB_RELEASE_LINE && cue.vel.x > QB_RUN_SPEED);
+  if (committed) qbCommits.set(a, true);
+  return committed;
 }

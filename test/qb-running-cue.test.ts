@@ -93,3 +93,35 @@ describe('qbRunning: a scramble from what a defender can see', () => {
     expect(s.show({ vel: { x: 0, y: 0 }, carrying: null }, 3.0)).toBe(true);
   });
 });
+
+// QB_RELEASE: the underneath zone's release asks the running QB to commit to
+// the line (within 3 yd moving at it at 2.5+ yd/s, or past it).
+describe('qbRunningAtLine: a coverage player waits for the QB to commit to the line', () => {
+  async function lineScene() {
+    const { qbRunningAtLine } = await import('../src/sim/possession-read.js');
+    const s = scene();
+    return { ...s, atLine(p: Partial<Picture>, t: number) { s.show(p, t); return qbRunningAtLine(s.defender, s.sim); } };
+  }
+
+  it('a rollout drifting downfield outside the tackles runs to the rusher, not to coverage', async () => {
+    const s = await lineScene();
+    // Outside the box, drifting downfield 1.6 yd/s 6.5 yd deep: qbRunning's cue fires.
+    expect(s.show({ pos: { x: 43.5, y: 34.5 }, vel: { x: 1.6, y: 1.5 } }, 2.6)).toBe(true);
+    expect(s.atLine({ pos: { x: 43.5, y: 34.5 }, vel: { x: 1.6, y: 1.5 } }, 2.6)).toBe(false);
+    expect(s.atLine({ pos: { x: 44.5, y: 36 }, vel: { x: 1.8, y: 1.2 } }, 3.2)).toBe(false);
+  });
+
+  it('a true scramble at the line releases him', async () => {
+    const s = await lineScene();
+    expect(s.atLine({ pos: { x: 48.5, y: 26.67 }, vel: { x: 3.5, y: 0 } }, 2.0)).toBe(true);
+  });
+
+  it('drift then run: released when he commits within 3 yd, and stays released', async () => {
+    const s = await lineScene();
+    expect(s.atLine({ pos: { x: 44, y: 35 }, vel: { x: 1.5, y: 1.5 } }, 2.6)).toBe(false);
+    expect(s.atLine({ pos: { x: 46, y: 36 }, vel: { x: 3.0, y: 0.5 } }, 3.2)).toBe(false); // 4 yd off: not yet
+    expect(s.atLine({ pos: { x: 47.2, y: 36.3 }, vel: { x: 3.4, y: 0.4 } }, 3.6)).toBe(true);
+    expect(s.atLine({ pos: { x: 47.4, y: 36.4 }, vel: { x: 1.2, y: 0.4 } }, 3.7)).toBe(true); // Latched while running.
+    expect(s.atLine({ pos: { x: 47.4, y: 36.4 }, vel: { x: 0, y: 0 }, carrying: false }, 3.9)).toBe(false); // Thrown.
+  });
+});

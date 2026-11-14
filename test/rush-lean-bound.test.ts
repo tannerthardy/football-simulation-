@@ -29,17 +29,32 @@ async function falls(flag: string, roster: number, coverage: string, seed: numbe
 }
 
 describe('RUSH_LEAN_BOUND', () => {
-  it('a weak-side tackle leaning on his long-arm no longer goes down when the press goes (Cover 1, roster 4, seed 6)', async () => {
-    const off = await falls('0', 4, 'cover1', 6), on = await falls('1', 4, 'cover1', 6);
-    expect(off.some((f: any) => f.slot === 'DT_W' && f.move === 'longarm')).toBe(true);
-    expect(on.some((f: any) => f.slot === 'DT_W')).toBe(false);
-  });
-
-  it('nor one swum past his press (Cover 2, roster 6, seed 6)', async () => {
-    const off = await falls('0', 6, 'cover2', 6), on = await falls('1', 6, 'cover2', 6);
-    expect(off.some((f: any) => f.slot === 'DT_W' && f.move === 'swim')).toBe(true);
-    expect(on.some((f: any) => f.slot === 'DT_W')).toBe(false);
-  });
+  // A paired search, not two pinned scenes: these moved with every defaults change (engine-59, 60, 61 twice, and 62 with
+  // RUSH_BULL on). Scenes in a fixed order; the first scene in which an interior DL goes down off his long-arm with the
+  // bound off is replayed with the bound on, and that man must not go down. Requirement: one is found, and the bound
+  // removes it. (engine-62: found at cover1 roster 2 seed 2, DT_S. The swum-past-his-press class of the old second case
+  // no longer occurs with the bound off: none in all 288 scenes, so there is nothing for it to guard.)
+  it('an interior rusher leaning on his long-arm no longer goes down when the press goes (paired search)', async () => {
+    const want = ['longarm'], found = new Map<string, string>();
+    let scenes = 0;
+    search: for (const coverage of ['cover1', 'cover2', 'cover3']) for (let seed = 1; seed <= 8; seed++) for (let roster = 1; roster <= 12; roster++) {
+      if (found.size === want.length) break search;
+      scenes++;
+      const off = await falls('0', roster, coverage, seed);
+      for (const move of want) {
+        if (found.has(move)) continue;
+        const f = off.find((x: any) => /^(DT|NT)/.test(x.slot) && x.move === move);
+        if (!f) continue;
+        const on = await falls('1', roster, coverage, seed);
+        found.set(move, `${coverage} roster ${roster} seed ${seed}: ${f.slot}; on: ${on.some((x: any) => x.slot === f.slot) ? 'still falls' : 'stays up'}`);
+      }
+    }
+    console.log(`paired lean-bound falls after ${scenes} scenes:`, Object.fromEntries(found));
+    for (const move of want) {
+      expect(found.get(move), move).toBeDefined();
+      expect(found.get(move), move).toMatch(/stays up$/);
+    }
+  }, 600_000);
 
   it('a fall the World earns otherwise still happens: an edge going down on a dip or bend through the corner (search with a floor)', async () => {
     // A search, not a pinned scene: these native cases move with every defaults change (engine-59, 60, 61 twice). Staged
