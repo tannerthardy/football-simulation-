@@ -87,7 +87,8 @@ move is a missing mechanism, not a bigger sigma.
 
 | Constant | Value | Evidence |
 | --- | --- | --- |
-| Sample interval | One sample per 0.25 s while the ball is in view | measured, not football: mean fixation 242 ms (Aksum 2020, soccer midfielders, eye tracking) |
+| Sample interval (attempt 2) | A sample on every perception step while the ball is within his eye range (smooth pursuit) | measured, not football: eyes on the ball in 95.5% of frames while catching (Postma 2014). Attempt 1 used one sample per 0.25 s from scanning-between-players fixations (Aksum 2020, 242 ms), the wrong evidence for a pursued ball |
+| Error correlation (attempt 2) | Each sample's error is serially correlated: a first-order process with a 0.25 s time constant, so ticks inside it do not average the error away. In the fit, each sample counts as dt / 0.25 s of an independent one | choice. The order is a fixation's length, but no source gives a pursuit-error correlation time. Fixed before attempt 2's exam |
 | Delay | His existing perception delay, `observationDelay(reactionTime)`, the same channel every picture uses | engine (no new constant) |
 | Bearing noise (azimuth and elevation), σ | 0.5° at the best skill, 1.0° at the worst | choice: the order of positional judgement of a moving target; static acuity is arc-minutes, motion degrades it |
 | Range noise, σ | 5% of range at the best skill, 10% at the worst | choice: size and distance Weber fractions are a few to about 10% in psychophysics, and Brouwer 2006 finds depth judged poorly (from optical size, not angle) |
