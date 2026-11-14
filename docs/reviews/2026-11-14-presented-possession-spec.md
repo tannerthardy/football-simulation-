@@ -86,10 +86,19 @@ from his existing key / gaze, not a new rating.
 | coverage/defender.ts:124 back run support, force-track.ts:21 | `=== true` / `!== true` | no run support / no outward boundary |
 | tackle.ts:155 (HONEST_TACKLE) skip, :207 last reach | `=== false` skip; `=== true` last reach | not skipped (unknown still counts); no last-reach upgrade |
 | blocker-work-picture.ts:21 (offense) | truthy | not a carrier |
+| defense.ts `sawThrow` (Coverage: gates `Technique.update`, `playBall`, ManCoverage, judgment's `sawBall`) | **not `carrying`:** `sim.ball.kind !== 'air'` returns false first | the throw-side twin of the mesh leak: "has the QB still got it?" answered by truth, so no pump can be believed by a coverage player |
 
 So `null` already means "not confirmed" everywhere: a defender whose belief is unresolved at the mesh holds his
 pre-mesh fit and takes no carrier action. That is the freeze the fake should produce, and it needs no consumer change.
 What changes is that `true` can now be wrong (the believed holder), which is what makes him step and tackle the back.
+
+### The QB's candidate covers the throw (Coverage)
+
+"The QB released" is the same belief: entered on a seen ball in flight (decisive) or a seen arm-through with no ball
+seen after (weak, decays). `sawThrow` reads that belief instead of `sim.ball.kind`, so a pump holds a deep defender the
+way PA holds a backer (experts wait for the ball; raw players bite on the arm). This absorbs the audit's windup item
+(QB_BODY_SEEN consumed in `sawThrow`). Coverage's LOOK_PHASE then consumes "the ball is out" from it, so this is built
+first.
 
 ### Evidence (what moves the belief)
 
@@ -97,7 +106,9 @@ All through his own sight, with his ordinary delay and, where GAZE / SEE_SIGHT i
 
 | cue | what it shows | strength (to calibrate) |
 |---|---|---|
-| ball visible in a hand or in flight | that body has it / no one has it | decisive when seen |
+| ball in flight (BALL_EST: Coverage's read-only `peek(a)` / `lastSeen(a)`, never `estimate()`, which turns his head) | the QB no longer has it | decisive |
+| his newest ball sample within a receiver's reach, nothing after | that receiver has it | strong (BALL_EST stops sampling while the ball is secured, so "in his hands" comes from posture and contact) |
+| ball visible in a hand | that body has it | decisive when seen |
 | exchange seen (both bodies' hands at the mesh, unoccluded, in view) | ball moved / stayed | strong, by distance and view |
 | carry posture (`carryPosture`, new, set by the carrier's controller) | tucked vs open hands | moderate |
 | QB arm and hands after the mesh (QB_BODY_SEEN's arm/head) | hands on ball, empty-handed carry-out | moderate |
@@ -218,8 +229,9 @@ Two attempts each, after the honesty batch lands. Occlusion is SEE_SIGHT's, not 
 
 ## Reviews requested
 
-- **Coverage:** catch-readiness and possession reads on your side; BALL_EST interplay (a thrown ball is the
-  decisive cue that the QB no longer has it).
+- **Coverage:** reviewed (the throw gate added to the consumer table and to the belief; `peek` / `lastSeen` as the
+  ball-sighting source; LOOK_PHASE not a prerequisite). Remaining coverage-side leaks stay on their lists: decoy hands
+  (Coverage item 12), `catch-readiness.ts`'s true flight.
 - **Rules + Coaching:** the non-carrier contact outcome and its legality; seen-contact (#693) as the contact cue.
 - **QB lane:** reviewed (presentation, posture writer and values, the pump kept out); writes the gaze cost and
   posture in qb.ts behind this build's flag.
