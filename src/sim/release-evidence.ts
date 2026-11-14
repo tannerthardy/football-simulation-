@@ -8,7 +8,8 @@
  *            evidence against a release.
  * - ball:    the ball in flight. Decisive.
  *
- * Every cue is judged at the moment its sample shows: he saw it only if it was in view then (within 1.8 rad of his
+ * The arm cues come through his sighting of the passer; the ball is its own percept, at his own delay. Every cue is
+ * judged at the moment its sample shows: he saw it only if it was in view then (within 1.8 rad of his
  * recorded body facing, or the cone of his recorded head under HEAD) and nothing stood across the line by
  * `lineOfSight`'s heights (the arm and the ball in hand at the passer's shoulder, the ball in flight at its own
  * height). Nothing seen is no cue: absence is not evidence. The arm comes through his ordinary `see()` of the passer,
@@ -20,7 +21,7 @@ import { bodyHeight, lineOfSight, SHOULDER } from './sight.js';
 
 export type ReleaseCue =
   | { kind: 'motion' | 'through' | 'pulled'; at: number }
-  | { kind: 'ball'; at: number; pos: Vec3; vel: Vec3 };
+  | { kind: 'ball'; at: number; pos: Vec3 };
 
 type Arm = 'set' | 'load' | 'deliver';
 interface Memo { arm: Arm | null; at: number }
@@ -76,8 +77,14 @@ export function releaseEvidence(sim: PlaySim, observer: Agent): ReleaseCue[] {
     }
     memo.set(observer.idx, { arm: now, at });
   }
-  // The ball in flight, as it was at the sample's moment.
-  const b = flight.find((f) => Math.abs(f.t - at) < sim.dt / 2);
-  if (b && sawAt(sim, observer, back, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z)) out.push({ kind: 'ball', at, pos: b.pos, vel: b.vel });
+  // The ball in flight is its own percept, not part of his sighting of the passer: the ball as it was his own
+  // perception delay ago (the base delay of his `see()`; no keys, since a ball in the air is not a man he is reading),
+  // seen if it was in his view and nothing stood across the line then. Timed on the passer's sighting, a defender who
+  // had lost the passer behind bodies looked for the ball before the throw and could not see one in front of him.
+  // (BALL_EST bit 32 replaces this with his estimator's own sample through his head.)
+  const ballDelay = observer.mind.observationDelay(observer.profile.reactionTime);
+  const ballBack = Math.round(ballDelay / sim.dt), ballAt = sim.t - ballBack * sim.dt;
+  const b = flight.find((f) => Math.abs(f.t - ballAt) < sim.dt / 2);
+  if (b && sawAt(sim, observer, ballBack, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z)) out.push({ kind: 'ball', at: ballAt, pos: b.pos });
   return out;
 }

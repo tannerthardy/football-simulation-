@@ -2274,7 +2274,11 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   // him; that is not a reason to stop. Hold the approach he last chose.
   if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
   const last = lastFlightApproach.get(a);
-  return last && sim.t - last.t <= 0.3 ? { ...last.cmd } : stand();
+  if (last && sim.t - last.t <= 0.3) return { ...last.cmd };
+  // No catchable sample left on his flight and no recent approach: he keeps his ball responsibility and goes to where
+  // he believes it came down (pursueIfLive's ball rally), not a stop. A newer holder picture takes over there.
+  const area = unresolvedBallArea(a);
+  return area ? goTo(a, area) : stand();
 }
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
