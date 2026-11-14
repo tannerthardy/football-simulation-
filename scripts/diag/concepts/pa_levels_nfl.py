@@ -6,6 +6,7 @@ pass) and his depth at the throw; the throw's air yards (passLength), time to th
    python3 -I scripts/diag/concepts/pa_levels_nfl.py <bdb2025 dir> [weeks]  -> prints the summary table
 """
 import csv, sys, json, statistics as st
+import os
 from collections import defaultdict
 root = sys.argv[1]; weeks = [int(w) for w in (sys.argv[2] if len(sys.argv) > 2 else '1,2,3').split(',')]
 plays = {}
@@ -47,5 +48,5 @@ for k, P in tr.items():
             if turn is None and d0 - mn >= 0.3 and v >= 0.5: turn = (f - sf) / 10
         groups[g].append({'snap': d0, 'at': at, 'bite': d0 - mn, 'biteT': (mt - sf) / 10, 'turn': turn, 'throwD': dep(fr[rf][0]) if rf and rf in fr else None})
     rows.append({**plays[k], **groups})
-json.dump(rows, open('/tmp/claude-0/-home-user-football-simulation-/da394129-5cff-5f9c-a470-5d59064c1c67/scratchpad/nfl_levels.json', 'w'))
+json.dump(rows, open(os.path.join(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')), 'out', 'nfl_levels.json'), 'w'))
 print('saved', len(rows))
