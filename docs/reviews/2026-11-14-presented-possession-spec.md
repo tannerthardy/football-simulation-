@@ -113,6 +113,23 @@ first.
   recorded by QB_BODY_SEEN).
 - The read-only `peek` / `lastSeen` contract is fixed.
 
+**The release interface (Rules + Coaching writes the cues; Defense writes the store and the `sawThrow` read).**
+`releaseEvidence(sim, observer): ReleaseCue[]`, called once per tick per observer, returns the cues he received this
+tick, already delayed by his own picture of the QB, each stamped with the sim time it shows:
+
+| cue | what he saw | strength (the store's job; the emitter gives no weights) |
+|---|---|---|
+| `{ kind: 'motion', at }` | the arm go set → load (QB_BODY_SEEN's `arm`) | starts a release candidate; weak |
+| `{ kind: 'through', at }` | load → deliver (a pump is a through with no ball after it) | supports a release; moderate; decays when no ball follows (named decay) |
+| `{ kind: 'pulled', at }` | deliver or load → set with the ball still held (the pump's pull-down) | strong against a release; the defender who saw it restarts quickly |
+| `{ kind: 'ball', at, pos, vel }` | the ball in flight | decisive |
+
+All go through #714's `lineOfSight` (arm and ball in hand at `bodyHeight(qb, SHOULDER)`; the ball itself as the target
+for `'ball'`, so a ball released from behind a lineman is unseen for its first frames) plus the caller's view direction.
+Nothing seen, no cue: absence is not evidence. Skill on the emitter side is only perception (his own delay; the tracking
+loop when he keys the QB, QB_BODY_SEEN's `keysQB`), never a bite chance. Control: with `'ball'` decisive, a real throw
+resolves no later than today's `ball.kind === 'air'` plus his delay. The arm cues sit behind their own flag.
+
 ### Evidence (what moves the belief)
 
 All through his own sight, with his ordinary delay and, where GAZE / SEE_SIGHT is on, his head and occlusion:
