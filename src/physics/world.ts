@@ -33,7 +33,7 @@
 import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
-import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
+import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, shouldersOf, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
@@ -215,6 +215,10 @@ export interface ContactSnapshot {
   positionJ: Vec2;
   facingI: number;
   facingJ: number;
+  /** TRUNK_TWIST: where each man's chest pointed (shoulders = hips + trunk); equal to facing with no twist. Readers that mean
+   * the front of the body (a hit from behind, a receiver's back to a defender) read these; the gait and wraps read facing. */
+  chestI?: number;
+  chestJ?: number;
   velocityI: Vec2;
   velocityJ: Vec2;
   /** The reduced contact-height load actually used by this World row. */
@@ -976,6 +980,8 @@ export class World {
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
       impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
     this.report = report; this.tickDt = dt;
+    // TRUNK_TWIST: the shoulders follow the look each body asked for, within the range, before the gait is planned.
+    if (TRUNK_TWIST) for (let i = 0; i < n; i++) updateTrunk(bs[i], intents[i]?.look, dt);
     this.joints = this.joints.filter((j) => !(j.kind === 'grasp' && j.broken) && this.indexOf(j.a) >= 0 && this.indexOf(j.b) >= 0 && j.a !== j.b
       && (j.kind!=='hands'||(this.indexOf(j.actor??j.a)>=0&&this.indexOf(j.holder??j.a)>=0)));
     this.syncHeldSupport();
@@ -1661,7 +1667,7 @@ export class World {
           observed = { time: this.time, intervalEnd: this.time + h,
             normal: { x: dx / length, y: dy / length },
             positionI: { ...p.a.pos }, positionJ: { ...p.b.pos },
-            facingI: p.a.facing, facingJ: p.b.facing,
+            facingI: p.a.facing, facingJ: p.b.facing, chestI: shouldersOf(p.a), chestJ: shouldersOf(p.b),
             velocityI: { ...p.a.vel }, velocityJ: { ...p.b.vel },
             supportI: p.a.support!.state, supportJ: p.b.support!.state,
             height: clamp(p.height ?? Math.min(this.padHeight[ia], this.padHeight[ib]), 0,
@@ -2601,7 +2607,7 @@ export class World {
           guard, bias: guard ? (s + GUARD_DEPTH) / h : Math.max(soft.biasRate * s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
           observed: { time: this.time, intervalEnd: this.time + h, normal: { x: nx, y: ny },
             positionI: { ...a.pos }, positionJ: { ...b.pos },
-            facingI: a.facing, facingJ: b.facing,
+            facingI: a.facing, facingJ: b.facing, chestI: shouldersOf(a), chestJ: shouldersOf(b),
             velocityI: { ...a.vel }, velocityJ: { ...b.vel },
             supportI: a.support!.state, supportJ: b.support!.state,
             height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0,
@@ -2620,7 +2626,7 @@ export class World {
     const row: Contact = { i, j, nx: g.nx, ny: g.ny, R: g.R, ri: 0, rj: 0, ni: 0, nj: 0, mn: 0, mt: 0, capsule: true,
       guard: false, bias: Math.max(soft.biasRate * g.s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
       observed: { time: this.time, intervalEnd: this.time + h, normal: { x: g.nx, y: g.ny },
-        positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing,
+        positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing, chestI: shouldersOf(a), chestJ: shouldersOf(b),
         velocityI: { ...a.vel }, velocityJ: { ...b.vel }, supportI: a.support!.state, supportJ: b.support!.state,
         height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0, Math.min(a.profile.heightYd, b.profile.heightYd)) } };
     this.capsuleArms(row, g);

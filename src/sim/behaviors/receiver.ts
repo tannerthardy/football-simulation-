@@ -5,7 +5,7 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { arriveVelocity, fatigueFactor, type Body, type MoveCommand } from '../../physics/kinematics.js';
+import { arriveVelocity, fatigueFactor, TRUNK_TWIST, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint } from '../../physics/world.js';
@@ -625,7 +625,11 @@ export class TrackBall implements Behavior {
     const need = dist / dtArr;
     const facing = angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
-    return { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    const run = runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) });
+    // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking
+    // the ball in at 6-8 yd/s is not slowed by his hips turning (the cap reads the hips). Off: the old hips request.
+    if (TRUNK_TWIST) return dist < 3 ? { ...run, look: facing } : run;
+    return { ...run, facing: dist < 3 ? facing : undefined };
   }
 }
 
