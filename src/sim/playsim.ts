@@ -6,6 +6,7 @@
  *   attempts → whistle → record
  */
 import { recordContact } from './seen-contact.js';
+import { lineOfSight } from './sight.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -125,6 +126,11 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
+/** SIGHT_CARRIER (experimental, off; SIGHT_CARRIER=1; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
+ * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
+ * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
+ * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
+const SIGHT_CARRIER = process.env.SIGHT_CARRIER === '1';
 /** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
  * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
  * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
@@ -832,10 +838,41 @@ export class PlaySim {
       }
       else seen = this.remembered(observer, target, seen);
     }
+    if (SIGHT_CARRIER && observer === this.carrier) seen = this.sighted(observer, target, seen, !!(g && g.set >= this.t - this.dt - 1e-9));
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
   }
+
+  /** SEE_SIGHT (SIGHT_CARRIER): his picture of a man he cannot see now (out of view, or a body across the line by
+   * `lineOfSight`'s heights) is the last one he had, carried forward on its velocity and ageing: he acts on where he
+   * expects him and does not forget him. When the man comes back into sight the fresh picture takes over only once it
+   * shows a moment he was in sight (one delay later). Under GAZE the view half is GAZE's own (`remembered`); this adds
+   * the occlusion. A man he has had no picture of since this check began is the oldest record kept (about 1.2 s). */
+  private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean): Perceived {
+    const key = `${observer.idx}>${target.idx}`, mem = (this.sightKept ??= new Map());
+    let m = mem.get(key);
+    if (m && m.asked < this.t - this.dt - 1e-9) m.since = null;
+    const inView = gazeView || Math.abs(angDiff(Math.atan2(target.pos.y - observer.pos.y, target.pos.x - observer.pos.x), observer.body.facing)) <= 1.8;
+    const visible = inView && lineOfSight(this.agents, observer, target);
+    const aged = (k: { pic: Perceived; at: number }): Perceived => {
+      const dt = this.t - k.at;
+      return { ...k.pic, pos: { x: k.pic.pos.x + k.pic.vel.x * dt, y: k.pic.pos.y + k.pic.vel.y * dt }, age: (k.pic.age ?? 0) + dt };
+    };
+    if (!m) {
+      m = visible ? { pic: seen, at: this.t, since: this.t - 1, asked: this.t }
+        : { pic: this.perception.perceive(target.idx, 1.2), at: this.t, since: null, asked: this.t };
+      mem.set(key, m);
+      return visible ? seen : m.pic;
+    }
+    m.asked = this.t;
+    if (!visible) { m.since = null; return aged(m); }
+    if (m.since === null) m.since = this.t;
+    if (this.t - m.since + 1e-9 < (seen.age ?? 0)) return aged(m);
+    m.pic = seen; m.at = this.t;
+    return seen;
+  }
+  private sightKept?: Map<string, { pic: Perceived; at: number; since: number | null; asked: number }>;
 
   /** What `observer` perceives of `target` he is tracking: a continuous, attended read (the man he mirrors, the carrier
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
