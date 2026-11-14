@@ -41,7 +41,7 @@ export const PLAN_KEYS = process.env.PLAN_KEYS !== '0';
  * two-receiver quick combination (the front-side flat defender, on the third step). Trips stick and seam-slant stay
  * pure progressions: no source for trips stick's alert (a keyed plan demotes it to third), and seam-slant's hook key
  * would be double slants' borrowed for a different structure. */
-export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 === '1';
+export const PLAN_KEYS_2 = process.env.PLAN_KEYS_2 !== '0';
 const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants', 'quick_outs', 'hitch_out']);
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;

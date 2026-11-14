@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-64",
+  "id": "engine-65",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -182,6 +182,8 @@
     "SHOULDERS_SET": "off",
     "TACKLE_SET": "off",
     "EDGE_ARC": "off",
+    "TRUNK_TWIST": "off",
+    "VERTICAL_SET": "off",
     "OPEN_HANDS": "on",
     "OPEN_HANDS_BACK_ONLY": "off",
     "PAST_ALONG_PATH": "on",
@@ -240,7 +242,7 @@
     "QB_POCKET": "off",
     "QB_BREAK": "off",
     "QB_RELOOK": "on",
-    "QB_KEY_MAN": "off",
+    "QB_KEY_MAN": "on",
     "QB_KEY_THROW": "off",
     "QB_HONEST_FEEL": "on",
     "THROW_PLATFORM": "off",
@@ -278,7 +280,7 @@
     "OUTLET_LAST": "on",
     "PLAN_KEYS": "on",
     "CONCEPT_DROPS": "off",
-    "PLAN_KEYS_2": "off",
+    "PLAN_KEYS_2": "on",
     "CROSS_FLAT": "off",
     "READ_RISK_TRACE": "off",
     "RECEIVER_DEPTH": "on",

@@ -414,7 +414,7 @@ export class PassProtector implements Behavior {
       const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
-      if (TACKLE_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
+      if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
@@ -438,7 +438,9 @@ export class PassProtector implements Behavior {
       // TACKLE_SET: at his set line he does not match the rusher's widening.
       const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
       const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: wide ? 0 : r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
+      // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
+      const leadY = VERTICAL_SET ? out * Math.min(0, r.vel.y * out) : wide ? 0 : r.vel.y;
+      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
@@ -458,6 +460,15 @@ export class PassProtector implements Behavior {
  * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
  * claude/run-game-v3 (docs/PARKED.md). */
 const PASS_KICK = process.env.PASS_KICK !== '0';
+/** VERTICAL_SET (experimental, off; VERTICAL_SET=1): the tackle's kick against an edge rusher gives ground vertically
+ * and keeps an inside-out relationship instead of matching the rusher's width. He kicks no wider than TACKLE_SET's set
+ * line from his alignment (0.4 of the rusher's snap width outside him, 0.3-1.0 yd: a wider rusher gets a wider, deeper
+ * set, a tight one a flatter set), and his lateral lead is only the rusher's inward motion (the inside counter he
+ * mirrors), never his outward run. Off, the kick copies the rusher's lateral velocity: at first contact the NFL
+ * tackle retreats 2.5-3.0 yd/s with outward speed about 0 (wide / very wide alignments, IQR -0.75..+0.75), ours 2.25-2.75
+ * with +0.25..+0.75 (p75 +1.25..+1.5), and meets the very wide rusher at 1.3 s against 1.5 s, landing wide 27-32% vs
+ * 64% (docs/reviews/2026-11-12-tackle-set.md). Depth (TACKLE_SET's floor) is not part of it. */
+const VERTICAL_SET = process.env.VERTICAL_SET === '1';
 /** PRO_READ (default on; PRO_READ=0 restores the old read): protection reads
  * who rushes from what the line sees. Off, the coordinator read each
  * defender's private behavior (rush/blitz), so the line never set on a
