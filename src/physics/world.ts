@@ -403,7 +403,7 @@ export const BRACE_GAIT = process.env.BRACE_GAIT === '1';
 /** PAIR_HANDS (the World's half): an outside hand acts at the man's shoulder with its lever (shoulderArms). Attempt 1
  * also took the torso contact's previous-step normal off the push limit; attempt 2 does not (each man's strut presses
  * with his own press, engagement.ts pressStrut). */
-const PAIR_HANDS_W = process.env.PAIR_HANDS === '1';
+const PAIR_HANDS_W = process.env.PAIR_HANDS === '1' || process.env.PRESS_SPRING === '1';
 /** PAIR_HANDS: how far an arm gives under its full load before its force ceiling (yd): elbow flexion under a maximal
  * press, a few inches. A stated choice with that physical meaning, the same for every body, not fitted to separation;
  * it sets each arm's stiffness (strength / ARM_GIVE). */

@@ -726,3 +726,16 @@ yaw motor's budget over the same tick (traction x base radius x dt; and at 80% o
   - the facing request itself (ENGAGE_TRUNK's hips on the set make the race real, where the default's "face the man" never
     races).
 - Next, if asked: the same race on ENGAGE_TRUNK, and the motor's budget with the shared grip.
+
+## PRESS_SPRING attempt 1: gates written before the read (2026-11-14)
+
+The reference engine today (pair-staged.mts STAGE_TRUNK=1, side 1, equal 144 kg bodies unless stated). PRESS_SPRING is
+read with HANDS_LEVER, TRUNK_TWIST and CHEST_SHOULDERS:
+
+| gate | reference today | to pass |
+|---|---|---|
+| G1 the bull (pass set, blocker inside, rusher outside) | one joint 1,668 N, the pair pushed out to 1.13 yd by 0.6 s | no period-2 cycle; both arms carry load; 0.76-0.89 yd centre to centre at 0.6 s (the NFL's held separation) |
+| G2 the crosser upfield, blocker outside / inside | his speed after 2.14 / 2.14 (no asymmetry) | the outside-handed blocker's crosser at least 0.3 yd/s faster |
+| G3 a blocker driving into a run defender holding his gap, his hands inside / outside | moved back 0.15 / 0.15 yd | the inside-handed man moved at least 0.1 yd less |
+| G4 a long-arm on a blocker who does not answer it | separation 0.89 -> 1.24 yd (0.2 / 0.6 s) | the extension reaches lockout at arm speed (0.25-0.35 s) and the separation grows at least 0.3 yd |
+| G5 the stalk: a crosser at 3 yd/s past a standing blocker | joint life 0.05 s | at least 0.5 s (Tools' screens-only NFL: engaged 0.8 s median, 74% held 0.5 s or more) |

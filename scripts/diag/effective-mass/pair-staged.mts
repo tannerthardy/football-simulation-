@@ -35,7 +35,7 @@ function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: 
   e.hands = undefined; e.defHands = undefined;
   syncJoints(sim, e);
   if (e.hands) e.hands.fit = fitB; if (e.defHands) e.defHands.fit = fitD;
-  const fb0 = b.body.facing, fd0 = d.body.facing, dy0 = d.body.pos.y, sb0 = shouldersOf(b.body), sd0 = shouldersOf(d.body);
+  const dx0 = d.body.pos.x, fb0 = b.body.facing, fd0 = d.body.facing, dy0 = d.body.pos.y, sb0 = shouldersOf(b.body), sd0 = shouldersOf(d.body);
   const out: string[] = []; let prevTot: number | null = null, maxJump = 0, life = 0, overJump = 0, torsoOn = false, minSep = Infinity; const tot: number[] = [];
   for (let k = 0; k < Math.round(secs / sim.dt); k++) {
     if (move) e.move = move as any;
@@ -59,7 +59,7 @@ function run(name: string, type: 'pass' | 'run', fitB: Fit, fitD: Fit, bv: { x: 
   }
   const v = Math.hypot(d.body.vel.x, d.body.vel.y);
   const turn = (f1: number, f0: number) => (Math.atan2(Math.sin(f1 - f0), Math.cos(f1 - f0)) * 180 / Math.PI).toFixed(0);
-  out.push(`turned: defender ${turn(d.body.facing, fd0)} deg, blocker ${turn(b.body.facing, fb0)} deg (shoulders ${turn(shouldersOf(d.body), sd0)} / ${turn(shouldersOf(b.body), sb0)}); defender lateral ${(d.body.pos.y - dy0).toFixed(2)} yd`);
+  out.push(`turned: defender ${turn(d.body.facing, fd0)} deg, blocker ${turn(b.body.facing, fb0)} deg (shoulders ${turn(shouldersOf(d.body), sd0)} / ${turn(shouldersOf(b.body), sb0)}); defender lateral ${(d.body.pos.y - dy0).toFixed(2)} yd, moved back ${(d.body.pos.x - dx0).toFixed(2)} yd`);
   console.log(`${name.padEnd(60)} ${out.join(' | ')} | largest tick change in the total ${maxJump.toFixed(0)} N, in the hand-over ${torsoOn ? overJump.toFixed(0) + ' N' : 'not reached'} | closest ${minSep.toFixed(2)} (bodies ${(b.profile.radius + d.profile.radius).toFixed(2)}) | joint life ${life.toFixed(2)} s | his speed after ${v.toFixed(2)}`);
 }
 for (const side of [1, -1]) {
@@ -71,6 +71,8 @@ for (const side of [1, -1]) {
   for (const fb of ['outside', 'inside'] as Fit[]) run(`turn: a rusher crossing upfield past him, blocker ${fb}`, 'pass', fb, 'outside', { x: 0, y: 0 }, { x: -1.5, y: 2.5 }, side, 0.6, 0.3, 0, 'speed');
   for (const fd of ['outside', 'inside'] as Fit[]) run(`turn: a power rusher, his hand ${fd} on the blocker`, 'pass', 'inside', fd, { x: 0, y: 0 }, { x: -2, y: 0.5 }, side, 0.6, 0.3, 0, 'bull');
   for (const fd of ['inside', 'outside'] as Fit[]) run(`gap: a reach block on a run defender, his stack ${fd}`, 'run', 'outside', fd, { x: 0.5, y: 2 }, { x: -0.5, y: 0 }, side, 0.6);
+  run('long-arm on a blocker who does not answer it (he stands)', 'pass', 'inside', 'inside', { x: 0, y: 0 }, { x: -1, y: 0 }, side, 0.8, 0.05, 0, 'longarm');
+  for (const fd of ['inside', 'outside'] as Fit[]) run(`drive into a run defender holding his gap, his hands ${fd}`, 'run', 'inside', fd, { x: 2, y: 0 }, { x: 0, y: 0 }, side, 0.8, 0.05);
   run('hand-over forced: a 150 kg man driving a 90 kg one (run), both inside', 'run', 'inside', 'inside', { x: -0.5, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.05, 150, undefined, 90);
   run('hand-over forced: a 150 kg bull on a 90 kg pass-setter, both inside', 'pass', 'inside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.1, 150, 'bull', 90);
   run('hand-over: a heavy bull (150 kg) at 3 yd/s, blocker outside', 'pass', 'outside', 'inside', { x: 0, y: 0 }, { x: -3, y: 0 }, side, 0.8, 0.3, 150);

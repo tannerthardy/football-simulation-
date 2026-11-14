@@ -205,6 +205,7 @@
     "ENGAGE_FELT": "off",
     "ENGAGE_TRUNK": "off",
     "CHEST_SHOULDERS": "off",
+    "PRESS_SPRING": "off",
     "EXPORT_SHOULDERS": "off",
     "PUNCH_STRIKE": "on",
     "ANCHOR_BASE": "on",

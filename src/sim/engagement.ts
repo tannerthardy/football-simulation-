@@ -422,7 +422,17 @@ export function promoteContact(e: Engagement, keeper: Agent): boolean {
  * - the arm below its bent base only when beaten;
  * - in the World, the hands carry what the torso contact does not (the hand-over).
  * Off, the joint is one object named by the roll. */
-export const PAIR_HANDS = process.env.PAIR_HANDS === '1';
+/** PRESS_SPRING (experimental, off; PRESS_SPRING=1; needs HANDS_LEVER, TRUNK_TWIST and CHEST_SHOULDERS for the shoulder lever;
+ * docs/reviews/2026-11-14-pair-contact-design.md, "The press as a shared spring"): the press as a shared spring, built on
+ * PAIR_HANDS' two joints (each man's own hands, fits from placement, the friction-limited outside steer) and its attempt-2
+ * arm law (each arm a spring about the length he holds, stiffness strength / ARM_GIVE, capped at his strength), without the
+ * claims that failed: no lockout rest length, no press that turns a man. Both men hold the bent length (BASE_CENTRES). A
+ * long-arm, and a run defender's stack-and-shed while he is shedding, is a bounded extension: the arm's length moves from
+ * bent toward lockout at ARM_SPEED inside the move's window and ends straight, the same spring about its length as it goes,
+ * and returns to bent at ARM_SPEED after. A run defender's gap is his own bent press plus his feet. */
+export const PRESS_SPRING = process.env.PRESS_SPRING === '1';
+export const PAIR_HANDS = process.env.PAIR_HANDS === '1' || PRESS_SPRING;
+if (PRESS_SPRING && !(process.env.HANDS_LEVER === '1' && process.env.TRUNK_TWIST !== '0' && process.env.CHEST_SHOULDERS === '1')) throw new Error('PRESS_SPRING=1 requires HANDS_LEVER=1, TRUNK_TWIST and CHEST_SHOULDERS=1 (the shoulder lever)');
 export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1' || PAIR_HANDS;
 /** PAIR_HANDS: the bent-base centre distance (yd): the NFL's centre-to-centre separation 0.4 s after first contact on
  * edge reps the rusher did not win by 2.5 s (BDB 2025: head-up 0.89, outside half 0.76, wide 0.82; edge-rush.py). Our
@@ -789,10 +799,22 @@ export function syncJoints(sim: PlaySim, e: Engagement): void {
  *   - a long-arm, and a run defender's stack (arms extended to keep the blocker off): his lockout;
  *   - the blocker, pass set or run: bent, elbows in (the bent base).
  */
-function defenderLength(joint: HandJoint, d: Agent, b: Agent, e: Engagement): void {
+const extLen = new WeakMap<HandJoint, number>();
+function defenderLength(sim: PlaySim, joint: HandJoint, d: Agent, b: Agent, e: Engagement): void {
   const bodies = d.profile.radius + b.profile.radius, lock = bodies + LOCKOUT * d.player.measurables.armIn / 36;
-  // The spring is about his length: compressed below it, his arm pushes back by its deflection (capped at his strength).
-  joint.extension = e.type === 'run' || e.move === 'longarm' ? lock : Math.max(bodies, BASE_CENTRES);
+  const bent = Math.max(bodies, BASE_CENTRES);
+  if (!PRESS_SPRING) {
+    // The spring is about his length: compressed below it, his arm pushes back by its deflection (capped at his strength).
+    joint.extension = e.type === 'run' || e.move === 'longarm' ? lock : bent;
+    return;
+  }
+  // PRESS_SPRING: an extension is a bounded motion inside its window (a long-arm's, a run defender's shed), at arm speed,
+  // ending straight; the arm is the same spring about its current length throughout. Outside the window it returns to bent.
+  const extending = (e.move === 'longarm' && sim.t < e.moveUntil) || (e.type === 'run' && (runSheds.get(e)?.until ?? -Infinity) > sim.t);
+  const prev = extLen.get(joint) ?? bent, target = extending ? lock : bent, step = ARM_SPEED * sim.dt;
+  const len = clamp(target, prev - step, prev + step);
+  extLen.set(joint, len);
+  joint.extension = Math.max(bodies, len);
 }
 
 function setHands(sim: PlaySim, e: Engagement): void {
@@ -810,7 +832,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     dj.push = !pressing ? 0 : dj.fit === 'inside' ? pressForce(d) : armForce(d); dj.hold = 0;
     dj.steer = dj.fit === 'outside' ? Math.min(armForce(d) * 0.55, HAND_MU * Math.max(0, dj.normalForce ?? 0)) : armForce(d) * 0.55;
     // PAIR_HANDS attempt 2: his arms hold the length his technique wants (defenderLength).
-    defenderLength(dj, d, b, e);
+    defenderLength(sim, dj, d, b, e);
   }
   const inMove = t < e.moveUntil && e.moveOk;
   // Inside hands lock out at the controlling player's arm length; neither in
