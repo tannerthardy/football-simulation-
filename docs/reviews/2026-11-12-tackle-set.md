@@ -4250,3 +4250,63 @@ the lean beyond the felt load against the locomotion envelope (followAccel: the 
 speed). So a man moving fast across a load braces it like a planted man. Locomotion's own cut capacity across his travel
 is lateral x cutSkill x (1 - 0.2 v/vmax), about 5-7 yd/s^2 for a tackle, 750-1000 N at 145 kg, against the 1400 N he
 braces.
+
+### BRACE_GAIT, attempt 1 (2026-11-14, engine-62)
+
+The lean's capacity, moving, is bounded by the gait envelope in the load's direction at his speed (followAccel less
+the gait's planned share there, x mass). It blends in by a smoothstep of his ground speed from 0 to PLANT_SPEED. Off
+is bit-identical. Dither budget passes on the default and the CONTROL_HANDS bases.
+
+**Staged (brace-staged.mts):**
+- planted: unchanged (1090 N);
+- carried across the push at 3 yd/s: brace 1101 -> 375 N;
+- retreating with it at 3 yd/s: 908 -> 379 N;
+- back-pedal against a bull 379 N against 1290 N planted.
+
+The 4 yd/s contact rows go off their feet in 0.05-0.25 s on both arms (KNOWN_PROBLEMS RUN-17).
+
+**Pass game (seeds 11 / 23 x 8):**
+
+| | default | BRACE_GAIT | CONTROL_HANDS | CH + BG | NFL |
+|---|---|---|---|---|---|
+| pressured | 29.8 / 26.2% | 26.5 / 26.5% | 21.3 / 17.4% | 23.3 / 21.5% | |
+| interior pressure | 9.3 / 9.1% | 6.6 / 6.8% | 3.7 / 2.8% | 3.2 / 4.3% | about 9.8% |
+| sacks pooled | 5.7% | 4.3% | 3.4% | 2.4% | 6.7% |
+| OL proxy falls (was moving, 1.0 s) | 3.6 / 6.7 | 3.3 / 2.5 | 4.4 / 5.4 | 0.9 / 2.0 | |
+
+**Edge (VS + CH -> VS + CH + BG):**
+- wide separation at +0.4 s: 1.08-1.10 -> 1.12-1.14 (NFL 0.81);
+- edge win: 6 / 5 -> 6 / 8%;
+- inside at the win: 34 / 27 -> 26 / 21%.
+
+**Level phase, the leans (edge-level.mts, VS + CH -> + BG):**
+
+| | VS + CH | + BG |
+|---|---|---|
+| the tackle's lean toward the rusher | 407 N | 159 N |
+| the rusher's lean | 368 N | 79 N |
+| the press, 60-90 deg bin | 1401 N | 1077 N |
+| the tackle's speed across the push line | 3.82 yd/s | 3.83 yd/s |
+
+**Correlations (rep-bodies.mts, VS + CH -> + BG; edge mass / arm / speed, interior mass / speed):**
+- edge 0.06 / 0.07 / 0.26 -> 0.00 / -0.01 / 0.29;
+- interior 0.01 / 0.19 -> -0.10 / 0.29.
+
+**Run set fresh, paired:**
+- BRACE_GAIT alone +0.07 (0.10): OZ +0.01, IZ +0.25, gap -0.12, duo +0.45, toss +0.30, draw +0.05. Missed + broken
+  0.266 -> 0.273.
+- CH + BG +0.81 (0.13), against CH alone +0.47: OZ +1.03, IZ +0.72, gap +0.68, duo +1.20.
+
+**Read.**
+- It does what the law says, but the predictions fail where it matters.
+- The edge does not close, because the lean was the minor channel: about 400 N of each man's 1100-1400 N exchange. The
+  rest is each man's gait force, his locomotion tracking his request, and that was already bounded by the same
+  envelope.
+- BRACE_GAIT cut both men's lean (the rusher is the moving man too: 368 -> 79 N), so the press fell (1401 -> 1077 N)
+  with no net closing.
+- The pass rush weakens everywhere for the same reason.
+- The run game is neutral alone. On CONTROL_HANDS it adds +0.34, the defenders' braces falling too.
+- Mass still does not predict a rep.
+- So the strut at the hip is a balance of two men's gait forces, each bounded by the same physics. Nothing in it makes
+  the rusher's push toward the tackle exceed the tackle's: what closes the NFL gap is not a brace the model
+  overcounts.
