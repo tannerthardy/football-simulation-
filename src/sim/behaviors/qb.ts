@@ -37,6 +37,13 @@ import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forec
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
 
+/** TRACK_FEEL (experimental, off; TRACK_FEEL=1, or PERCEIVE_TRACK=1 for every group): perception channels step 1b,
+ * the QB's feel for the rush (docs/reviews/2026-11-13-perception-proposal.md; built with the QB lane, who own the
+ * shoulder test and every consumer). A rusher in front of his shoulders is read through the tracking channel
+ * (`PlaySim.track`: a 0.12 s correcting loop, no focus or stress terms stacked on a scaled delay, no acceleration term)
+ * instead of `see()`; `feltClosing`'s seen-acceleration extrapolation retires with it. Behind his shoulders the
+ * non-visual term (pocket presence) stands. Teammates are seen as before (`track` returns `see` for them). */
+const TRACK_FEEL = process.env.TRACK_FEEL === '1' || process.env.PERCEIVE_TRACK === '1';
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
 
@@ -1469,6 +1476,9 @@ export class QBPass implements Behavior {
     const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
     const ang = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
     const blind = ang > 1.8;
+    // TRACK_FEEL (step 1b): a rusher in front of his shoulders is read through the tracking channel (a short
+    // correcting loop); behind them the existing non-visual term stands (the QB lane's).
+    if (TRACK_FEEL && !blind) return sim.track(a, d, 1, true);
     return sim.see(a, d, blind ? 2.2 - 1.4 * a.r('pocketPresence') : 1);
   }
 
@@ -2269,7 +2279,8 @@ export class QBPass implements Behavior {
    * him about 0.15 s later than he arrives. Capped at the rusher's top speed. */
   private feltClosing(a: Agent, sim: PlaySim, d: Agent): { pos: Vec2; vel: Vec2 } {
     const seen = this.felt(a, sim, d), age = seen.age ?? 0;
-    if (age <= 0) return seen;
+    // TRACK_FEEL: the tracking channel carries no acceleration term; this compensator for the stale picture retires.
+    if (TRACK_FEEL || age <= 0) return seen;
     const older = sim.perception.perceive(d.idx, age + sim.dt);
     const ax = (seen.vel.x - older.vel.x) / sim.dt, ay = (seen.vel.y - older.vel.y) / sim.dt;
     let vx = seen.vel.x + ax * age, vy = seen.vel.y + ay * age;
