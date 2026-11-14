@@ -64,6 +64,17 @@ def rows(path):
                 r['vmax'] = max(r['vmax'], p.speed(d, k))
                 if r['contact'] is None and p.dist(tk, d, k) <= 1.2:
                     r['contact'] = k * p.dt; r['vContact'] = p.speed(d, k - 1)
+                    # Where it lands: the rusher's center outside the tackle's center, across the field (+ = outside).
+                    r['offContact'] = side * (p.pos(d, k)[1] - p.pos(tk, k)[1])
+                    r['vAfter'] = p.speed(d, min(kend, k + 2))
+                    # His velocity 0.2 s on, in the tackle-to-rusher frame at contact: into the tackle (-n) and across
+                    # him toward the outside (t, oriented outward).
+                    k2 = min(kend, k + 2); (dx0, dy0), (tx0, ty0) = p.pos(d, k), p.pos(tk, k)
+                    nx, ny = dx0 - tx0, dy0 - ty0; L = math.hypot(nx, ny) or 1e-6; nx, ny = nx / L, ny / L
+                    t1, t2 = -ny, nx
+                    if (t1 * 0 + t2 * side) < 0: t1, t2 = -t1, -t2
+                    vx, vy = p.velocity(d, k2)
+                    if vx is not None: r['vInto'] = -(vx * nx + vy * ny); r['vAcross'] = vx * t1 + vy * t2
             for k in range(p.k(0.3), kend + 1):
                 if p.pos(d, k)[0] is not None and p.pos(qb, k)[0] is not None and p.dist(d, qb, k) <= 2.0:
                     r['win'] = k * p.dt
@@ -114,6 +125,12 @@ for path in sys.argv[1:]:
     # rusher's state at 2.0 s (is the late pinch him following a rusher who got level?); our rushers by top-speed tercile.
     Cn = [r for r in R if r['contact'] is not None]
     print(f"   first contact with the tackle (within 1.2 yd): {pct(len(Cn), len(R))} | at p25/50/75 {q([r['contact'] for r in Cn], .25):.2f}/{q([r['contact'] for r in Cn]):.2f}/{q([r['contact'] for r in Cn], .75):.2f} s | his speed just before p50 {q([r['vContact'] for r in Cn]):.2f} yd/s | his top speed in the play p50 {q([r['vmax'] for r in R]):.2f}")
+    print(f"   where first contact lands: rusher center outside the tackle's p25/50/75 {q([r['offContact'] for r in Cn], .25):+.2f}/{q([r['offContact'] for r in Cn]):+.2f}/{q([r['offContact'] for r in Cn], .75):+.2f} yd | head-up (|offset| < 0.3) {pct(sum(1 for r in Cn if abs(r['offContact']) < 0.3), len(Cn))}, outside half (0.3-0.9) {pct(sum(1 for r in Cn if 0.3 <= r['offContact'] < 0.9), len(Cn))}, wide (> 0.9) {pct(sum(1 for r in Cn if r['offContact'] >= 0.9), len(Cn))} | his speed 0.2 s after contact p50 {q([r['vAfter'] for r in Cn]):.2f}")
+    for lab, f in (('head-up', lambda o: abs(o) < 0.3), ('outside half', lambda o: 0.3 <= o < 0.9), ('wide', lambda o: o >= 0.9)):
+        g = [r for r in Cn if f(r['offContact'])]
+        gi = [r for r in g if 'vInto' in r]
+        if g: print(f"      contact {lab:12s} velocity 0.2 s after, into the tackle {q([r['vInto'] for r in gi]):+.2f}, across him outward {q([r['vAcross'] for r in gi]):+.2f} yd/s")
+        if g: print(f"      contact {lab:12s} n {len(g):5d}: speed before {q([r['vContact'] for r in g]):.2f} -> 0.2 s after {q([r['vAfter'] for r in g]):.2f} yd/s | at 2.0 s past outside {pct(sum(1 for r in g if 2.0 in r['snaps'] and r['snaps'][2.0]['state'] == 'past outside'), len(g))}")
     for lab, f in (('not level at 2.0 s', lambda st: st == 'not level'), ('level / past outside at 2.0 s', lambda st: st in ('level outside', 'past outside')), ('inside at 2.0 s', lambda st: st == 'inside')):
         g = [r for r in R if 2.0 in r['snaps'] and f(r['snaps'][2.0]['state'])]
         if not g: continue

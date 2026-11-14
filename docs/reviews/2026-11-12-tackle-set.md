@@ -3545,3 +3545,53 @@ in front and rides a level rusher out to +2.0, never back.
 
 That separates his stopping into his own request (aiming through the man, a power pace) and the tackle's hands
 stopping him square.
+
+### The edge's first contact: where it lands, and what stops him (2026-11-14)
+
+**Where it lands** (edge-rush.py; the rusher's center outside the tackle's, across the field, at the first frame
+within 1.2 yd):
+
+| | NFL | ours s11 / s23 |
+|---|---|---|
+| offset p25 / 50 / 75 | +0.7 / +0.9 / +1.0 yd | +0.4 / +0.7 / +0.9 and +0.5 / +0.8 / +0.9 |
+| head-up / outside half / wide | 6 / 43 / 49% | 15-17 / 54-57 / 25% |
+| speed before → 0.2 s after: outside half | 3.88 → 3.72 | 4.30 → 3.51 and 4.32 → 3.54 |
+| speed before → 0.2 s after: wide | 4.74 → 4.43 | 4.26 → 3.72 and 4.28 → 3.78 |
+| past outside at 2.0 s after a wide contact | 30% | 11-12% |
+
+**What stops him** (the same operator; his velocity 0.2 s after contact in the tackle-to-rusher frame at contact;
+"into" = toward and past the tackle's body, "across" = outward):
+
+| landing | NFL into / across | ours into / across |
+|---|---|---|
+| head-up | +2.64 / -1.83 | +2.41-2.50 / -2.00-2.04 |
+| outside half | +2.97 / +1.51 | +2.40-2.46 / +2.30-2.35 |
+| wide | **+2.41** / +3.22 | **+0.96-1.03** / +3.17-3.30 |
+
+**The load on him in our sim** (edge-contact.mts, seed 11 x 6 games, the 0.3 s after his pass rep with the tackle
+starts):
+
+| landing | n | asked: into / across | load along the line (away) p50 | load across against his travel p50 (p75) | the tackle's hands: normal / tangential |
+|---|---|---|---|---|---|
+| head-up | 177 | 3.79 / 3.16 (87% power-move ticks) | 948 N | 309 (441) N | 959 / 296 N |
+| outside half | 279 | 6.32 / 3.68 | 1127 N | 60 (211) N | 1051 / 220 N |
+| wide | 358 | 5.83 / 5.21 | 1228 N | 252 (415) N | 1192 / 253 N |
+
+**Read.** Both halves Integration named are present:
+1. **The aim half** (EDGE_ARC's question). Ours lands less wide: wide 25% against 49%, head-up 15-17% against 6%.
+2. **The hands half.** At the same landing ours is held off where the NFL rusher is not. It is not a tangential grab:
+   resistance across his travel is small (60-250 N p50), so the joint is not a legal grab. It is the press along the
+   line. The tackle's hand joint holds the rusher at arm's length at about one body weight (normal 1050-1190 N, the
+   PUNCH_STRIKE-held touch), so his into-and-past component dies (wide 1.0 against 2.4 yd/s) while his across speed is
+   kept.
+
+The NFL rusher gets to the tackle's hip and by, so a punch on a rusher who is going by does not hold him at arm's
+length. Ours acts as a strut along the line whatever the angle the rusher takes past him.
+
+**Candidates** (diagnostic first, nothing built):
+- (a) The punch's press against a man going by. The hand's push should fall with the angle between the line and the
+  rusher's travel past the tackle's frame (a press works on a man in front, not on one at the edge of the arm going
+  by), as RUSH_HANDS' hand edge does for the hand's position.
+- (b) The aim: the corner landmark and the half-man start (EDGE_ARC), so more contacts land wide.
+
+(a) is the one an outside landing still runs into, and (b) changes how often it applies.
