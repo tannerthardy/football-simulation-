@@ -3872,3 +3872,36 @@ Back on him after a clear: p50 0.60 s; half are not back within 1.5 s.
 
 A turned tackle is common now, and he is harder to bull than a square one: the base and ANCHOR_BASE do not read
 facing, so the price of being turned (a bull into his narrow side) does not exist. This is the named gap.
+
+**The bull against a turned tackle, measurement checked (engine-62, RUSH_BULL on; VERTICAL_SET, seed 23 x 4;
+bull-turned.mts).** The table above ran before engine-62 (the bull was then a roll) and measured "driven back" along
+the rusher-to-tackle line. On engine-62:
+
+| DE bulls against a tackle | turned > 60 deg (n 100) | within 60 deg (138) |
+|---|---|---|
+| the push off the tackle's chest p50 / p90; over 45 deg | 3 / 14 deg; 3% | 2 / 9 deg; 0% |
+| the rusher's request into the man (cos) | 0.92 | 0.90 |
+| the rusher's chest off the man | 21 deg | 16 deg |
+| the tackle's request along the push | -0.11 yd/s | +0.11 |
+| displaced beyond his request (driven) | 0.87 yd/s | 1.77 |
+| load on the tackle along the push | 1071 N | 970 N |
+| the rusher's lean into him / the tackle's lean against | 810 / 766 N | 490 / 596 N |
+| the rusher's speed along the push | 0.68 yd/s | 2.44 yd/s |
+| tackle down within 1.0 s | 0% | 0% |
+| rusher within 2 yd of the QB | 4% | 12% (seed 11: 6 / 5%) |
+
+**Read:**
+1. The push arrives at a turned tackle's chest (p90 14 deg). He turned to face the rusher, so a bull does not come
+   across his feet. "Turned" against downfield is not "turned" against the push, and the base-facing gap is not what
+   these bulls exercise.
+2. The forces are the same or larger on the turned tackle: load along the push 1071 against 970 N, the rusher's lean
+   810 against 490 N.
+3. What differs is momentum and geometry:
+   - Against a square tackle the bull continues the rusher's run: he arrives at 2.44 yd/s along the push.
+   - Against a turned tackle the push runs across the field while the rusher's momentum runs downfield (0.68 yd/s
+     along it).
+   - Driving a sideline-facing tackle "back" moves him across the field, not into the QB.
+4. So a turned tackle is not harder to bull in force. A bull from beside him has no run-up and no line to the QB;
+   that is the move being the wrong one there, not a defect.
+5. The named gap (an isotropic base) stays open. It would show as a push arriving off his chest, and with the
+   tackle turning to face, that is 0-3% of bulls.
