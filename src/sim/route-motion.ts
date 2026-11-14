@@ -51,7 +51,7 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * (docs/reviews/2026-11-14-route-speed.md: cut 0.5-0.8 yd, radius 6-10 yd on a rolled bend, about 3 yd on a 90 degree plant).
  * With the flag the declared through speed `s` still says what the route asks (a speed cut s .4, a rolled bend s .85-.9), and
  * the corner is a fillet: on his usable lateral acceleration aLat = lateral * cutSkill the radius at that speed is v^2 / aLat, he
- * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of the shorter adjacent leg), and if the legs do
+ * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of an adjacent leg shared with a neighbouring corner; the first leg is his alone), and if the legs do
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
@@ -93,7 +93,8 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
         const prev = st.idx > 0 ? path[st.idx - 1].p : st.from ?? body.pos;
         const l1 = Math.hypot(tgt.p.x - prev.x, tgt.p.y - prev.y);
         const aLat = Math.max(0.5, body.profile.lateral * cutSkill), tn = Math.tan(theta / 2);
-        const lead = Math.min(through * through / aLat * tn, FILLET_LEAD * Math.min(l1, bl)), radius = lead / tn;
+        // The leg he leaves the line on has no corner behind it to share it with, so he may use all of it.
+        const lead = Math.min(through * through / aLat * tn, st.idx === 0 ? l1 : FILLET_LEAD * l1, FILLET_LEAD * bl), radius = lead / tn;
         const speed = Math.min(through, Math.sqrt(aLat * radius));
         if (d <= lead) { st.turn = { idx: st.idx, exit: { x: tgt.p.x + bx / bl * lead, y: tgt.p.y + by / bl * lead }, speed }; continue; }
         const entry = { x: body.pos.x + ax * (d - lead), y: body.pos.y + ay * (d - lead) };
