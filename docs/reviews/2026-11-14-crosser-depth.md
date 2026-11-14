@@ -103,3 +103,51 @@ flat.
 
 **Witness:** the same `crosser-class.py` rows by class and by concept, then Coverage's re-read of CUT_WALL on the
 corrected crossers.
+
+## Built: CROSS_FLAT (off), and its witnesses (2026-11-14)
+
+The drag (`shallow`) releases flatter to 2.5 yd by 4.5 across, then runs flat. Mesh has its own pair, as Integration
+ruled: `shallow_high` at the linebackers' toes and a new `mesh_under` a yard under him. `cross` is unchanged.
+
+**Population.** Paired exports on the same code (rules/crosser-depth 9d2bc96d) and seeds: 201 and 205, 4 games each,
+flag off and on. Plays re-roll after the first change, so the arms are unpaired, small cells.
+
+**Class rows** (crosser-class.py, against zone, ball held), depth at 2.0 / 2.5 / 3.0 s and across at 2.0 / 3.0 s:
+
+| | depth | across |
+|---|---|---|
+| shallow class, off | 3.5 / 4.5 / 4.9 | 2.9 / 7.8 |
+| shallow class, on | **3.0 / 3.5 / 3.4** | **4.2 / 10.4** |
+| shallow class, NFL | 2.2 / 2.9 / 3.1 | 5.1 / 11.3 |
+| mid class, off | 5.4 / 7.6 / 9.7 | |
+| mid class, on | 5.3 / 7.6 / 9.5 | |
+
+- The mid class is unchanged, as intended.
+- With the flag on, the drag in drive, flood, dagger and hitch_cross is flat at 3.1-3.4 yd by 3.0 s.
+- Mesh in the games: `mesh_under` 3.5 / 4.6 / 4.8, `shallow_high` 4.5 / 5.9 / 6.6, about a yard and a half apart at
+  2.5-3.0 s.
+
+**Separation**, nearest defender p50 at 2.0 / 2.5 / 3.0 s, by class:
+
+| | zone (NFL) | zone (off) | zone (on) | man (NFL) | man (off) | man (on) |
+|---|---|---|---|---|---|---|
+| shallow class | 3.7 / 3.9 / 3.6 | 3.2 / 3.5 / 2.9 | 3.6 / 3.4 / 3.9 | 2.1 / 2.0 / 1.9 | 2.2 / 2.0 / 1.0 | 1.5 / 1.9 / 2.6 |
+| mid+ class | 3.0 / 3.1 / 3.3 | 2.2 / 2.0 / 1.9 | 1.9 / 1.7 / 1.8 | 1.6 / 1.4 / 1.6 | 0.9 / 0.9 / 0.7 | 1.0 / 0.9 / 0.6 |
+
+The zone shallow-class sample is n 38 off and 52 on; man is n 13-18.
+
+- The flat drag's zone separation reaches the NFL's at 3.0 s (3.9 vs 3.6), without any coverage change: under the
+  hooks, he is off their line.
+- The mid+ class (the unchanged deep cross) keeps its gap: 1.8-2.0 against 3.0-3.3 in zone, and about 0.6-1.0 against
+  1.4-1.6 in man. That is the next crosser defect, and it is the over's, not the drag's.
+
+**Targets, of 392 / 397 throws.** These are catches as recorded, small n.
+
+- Shallow class: off 17 targets, 9 caught, 7.1 yd a target; on 18 targets, 13 caught, 4.5 yd a target.
+- NFL shallow class: 27.7% of the routes run are targeted, 73% complete.
+- Mid+: 5 targets per arm.
+
+**The mesh rub in man:** 7 off, 4 on, too few to read; it needs a staged man set (mesh vs Cover 1, seeds 1-24).
+
+**For Coverage:** CUT_WALL re-read on the corrected drag. On the zone shallow class, the gap it was built for is now
+mostly gone at 3.0 s, so read the deep cross separately.

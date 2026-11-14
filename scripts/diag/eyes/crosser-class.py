@@ -14,7 +14,7 @@ PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(f'{D}/play
 RR = {}
 for r in csv.DictReader(open(f'{D}/player_play.csv')):
     if r['routeRan'] == 'CROSS': RR[(f"{r['gameId']}-{r['playId']}", r['nflId'])] = 'CROSS'
-SIMX = {'cross', 'shallow', 'shallow_high'}
+SIMX = {'cross', 'shallow', 'shallow_high', 'mesh_under'}
 DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen', re.I)
 T = (1.0, 1.5, 2.0, 2.5, 3.0)
 def q(v, p=.5):
@@ -62,7 +62,7 @@ for arg in args:
         R = [r for r in C if klass(r[2][2.0]) == c]
         print(line(f"class {c} ({100 * len(R) / max(1, len(C)):.0f}%)", R))
     if any(r[1] for r in rows):
-        for rid in ('shallow', 'shallow_high', 'cross'):
+        for rid in ('shallow', 'shallow_high', 'mesh_under', 'cross'):
             R = [r for r in rows if r[0] == rid]
             print(line(f"id {rid}", R))
         cc = collections.Counter(r[1] for r in rows if r[0] == 'shallow')
