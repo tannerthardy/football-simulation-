@@ -569,11 +569,14 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent, fitOnly = fal
     const N = Math.max(0, joint.normalForce ?? 0), u = clamp(N / (2 * UNLOADED * pressForce(b)), 0, 1), w = u * u * (3 - 2 * u);
     // PAIR_HANDS: beaten at his bend (the joint at its push limit), the forearm folds toward his chest, so the bodies can
     // meet and the torso take the load. Otherwise the recoil stops at the bent base.
-    const beaten = PAIR_HANDS && joint.push > 0 && N >= 0.95 * joint.push;
-    // PAIR_HANDS: inside his base he extends back toward it at arm speed, never in one step.
-    const floor = beaten ? 0 : PAIR_HANDS ? Math.min(base, st.ext + ARM_SPEED * sim.dt) : base;
+    // PAIR_HANDS: how beaten he is, continuous in the load against what his arm holds: none below 85% of it, all at it.
+    const ub = PAIR_HANDS && joint.push > 0 ? clamp((N / joint.push - 0.85) / 0.15, 0, 1) : 0, beat = ub * ub * (3 - 2 * ub);
+    const beaten = beat > 0;
+    // The floor his arm folds to falls smoothly from the bent base toward his chest as he is beaten; inside his base he
+    // extends back toward it at arm speed, never in one step.
+    const floor = PAIR_HANDS ? Math.min(base * (1 - beat), st.ext + ARM_SPEED * sim.dt) : base;
     const want = clamp(gap * (1 - w) + base * w, floor, lock), step = ARM_SPEED * sim.dt;
-    st.ext = clamp(beaten ? Math.min(want, st.ext) - step : want, st.ext - step, st.ext + step);
+    st.ext = clamp(beaten ? Math.min(want, st.ext) - step * beat : want, st.ext - step, st.ext + step);
     joint.extension = bodies + Math.max(floor, st.ext);
     return;
   }
