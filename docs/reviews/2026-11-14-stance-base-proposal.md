@@ -1,5 +1,14 @@
 # Stance and base: proposal (Flex, 2026-11-14)
 
+> **Result first (BASE_ORIENT, 2026-11-14): two attempts, both worse, removed.**
+> - **Keeping the area is not neutral.** With pushes spread over directions, an equal-area ellipse loses more falls on
+>   its short axis than its long one saves, whichever way it points.
+> - **The stagger axis.** A set fighting stance is staggered along his facing, not across it.
+>
+> **What would re-open it** (named, not done): on BDB tracking, who goes down within about 0.5 s of a contact, by the
+> direction of the hit relative to his heading and to his facing, for set linemen, running rushers and ball carriers.
+> That gives the anisotropy as a ratio without needing forces. The outcome is at the end of this document.
+
 Integration's order item 5. This is a proposal, not built. It joins four threads:
 
 - the remaining edge rusher falls;
