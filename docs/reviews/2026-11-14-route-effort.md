@@ -73,11 +73,26 @@ Effort 1 moves route speed by only 0.1-0.5 yd/s, because a receiver is under the
 
 | finding | routes | the mechanism | owner |
 |---|---|---|---|
-| above the NFL at the current effort | go (WR +0.7 / +1.1 at 2.0 / 3.0 s as-is) | the body's top end and acceleration on a straight | Tools |
 | above the NFL at the current effort | slant (WR +1.3 / +1.0); flat (WR +1.0 / +2.0, TE +1.9 / +0.9) | missing coached mechanisms (candidates: the slant vs press and vs zone, his release and throttle in the window; the TE's flat after a chip or bluff release; a flat runner turned to the QB) | candidates; sources to find |
-| under the NFL after the break (3.0 s) | dig, out, curl, corner (-1.7 to -2.6) | the follower's point-turn corner law | Tools (ROUTE_FILLET) |
 | stops dead at the route's end | hitch (0.9 vs 2.8 yd/s at 2.5 s), curl (2.1-2.3 vs 4.6 at 3.0 s) | the settle | route end (Rules + Coaching) |
-| the TE under on every route | cross, corner, out, seam TE (-0.5 to -1.4) | the body, and the corner law | Tools |
 | near the NFL | post, seam WR, shallow WR, short_in, quick_out TE | | |
 
-**Proposed table.** Effort 1 for every family: no family has a coached throttle over the whole route. The tracked `pace` overrides stay, because they carry a measured reason (the back's check-release flat). The named mechanisms above are each their own item, not reasons to keep a fitted constant. Off, the constants are unchanged.
+**Corrected 2026-11-14 (Tools' three reads, #750).** Three rows of the first reading were wrong.
+
+1. **"Under the NFL after the break at 3.0 s" (dig, curl, out, corner) is timing, not the corner law.**
+   - Every one of ours breaks at nearly the same time, while NFL break times spread. Our dig breaks at 3.2-3.6 s (p10-p90) and our out at 2.8-3.0. The NFL IN breaks at 2.4 / 2.6 / 2.9 / 3.2 / 3.5 s (p10 / 25 / 50 / 75 / 90) and the OUT at 2.5-3.7. So at 3.0 s many NFL receivers are already out of their break and ours are in it.
+   - Break-aligned (IN / OUT, depth 8+, 75-90 deg), the NFL is v_in 5.6 / v_min 3.9 / v_out 4.9 and ours 5.2 / 3.8 / 6.7: we exit faster.
+   - Matched on break depth (9 yd or more, route_break.py), the break time is the same: NFL IN 3.1 s at 11.6 yd, our dig 3.0 s at 12.6.
+   - What remains is shape: the NFL deep in and out turn 55-57 deg (v_min / v_in .84-.90, radius 6.5-7.4 yd); ours, authored square, turn 69-80 deg (.59-.69, radius 2.3-3.5).
+   - That is a route-points question with sources, its own item.
+   - The spread in when a man breaks has to come from his release, his get-off and the coverage he works, since every break here is at a fixed depth.
+2. **"Go above the NFL" was selection, not the body.**
+   - The NFL GO label includes many that stop at 10-13 yd or track the ball.
+   - Matched on depth 14 yd or more at 3.0 s with a free release, ours minus NFL is -0.25 / -0.09 / +0.03 / +0.11 yd/s at 1.5 / 2.0 / 2.5 / 3.0 s.
+   - There is no capacity issue. The slant's early lead needs the same matched re-read before it is called acceleration.
+3. **The TE is not slow.**
+   - The median generated TE is within 0.3 yd/s of NFL TEs on straights.
+   - The staged bench's TE (team seed 51) is a below-median body (vmax 8.60 against 9.00).
+   - The over's gap is that body, plus effort .84, plus the get-off. Bench rows should use the median TE or several team seeds.
+
+**Proposed table.** Effort 1 for every family: no family has a coached throttle over the whole route. What a receiver brings through each break, and whether the break is a cut or a roll, is declared per route point in the route table (`rules/route-table`, on ROUTE_FILLET's cut field), set against break-aligned NFL rows matched on break depth. The tracked `pace` overrides stay, because they carry a measured reason (the back's check-release flat). The named mechanisms above are each their own item, not reasons to keep a fitted constant. Off, the constants are unchanged.
