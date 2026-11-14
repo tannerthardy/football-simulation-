@@ -343,7 +343,7 @@ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF === '1';
  * no longer read from the man's behaviour object. He is out once the quarterback's own picture has placed him on his
  * installed release route (the forecast's progress, from a look or his peripheral view), and he then stays out. It
  * gates the rhythm outlet, whether that man is ready, and his place in the hot order. A man whose route starts on an
- * installed count is unchanged. A slow screen's "he has settled" is likewise read from where the quarterback has him,
+ * installed count is unchanged, and so is a screen's receiver (his release is the called count). A slow screen's "he has settled" is likewise read from where the quarterback has him,
  * not from the receiver's own flag and true position. Receivers with no installed picture are unchanged. */
 const QB_SEEN_OUT = process.env.QB_SEEN_OUT === '1';
 /** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
@@ -1339,6 +1339,8 @@ export class QBPass implements Behavior {
 
   /** QB_SEEN_OUT: a man whose release is not on an installed count (a check-release from protection or a fake). */
   private checkRelease(r: Agent): boolean {
+    // A screen's receiver leaves his block on the called count: that is the call, which he knows, not a check.
+    if (this.concept.family === 'screen' || this.concept.screen) return false;
     return this.receiverForecasts.get(r)?.prior.startDelay === null;
   }
 
