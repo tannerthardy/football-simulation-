@@ -42,7 +42,7 @@ const EYE = (30 * Math.PI) / 180;
 const BEARING_BEST = (0.5 * Math.PI) / 180, BEARING_WORST = (1.0 * Math.PI) / 180;
 const RANGE_BEST = 0.05, RANGE_WORST = 0.1;
 /** Attempt 3 (spec table): the receiver's route prior, and the first estimate from the QB's release. */
-const PRIOR_ALONG = 0.12, PRIOR_ACROSS = 1.0, PRIOR_HEIGHT = 1.0, PRIOR_BROKEN = 3, PRIOR_ORIGIN = 1.0;
+const PRIOR_ALONG = 0.12, PRIOR_ACROSS = 1.0, PRIOR_HEIGHT = 1.0, PRIOR_BROKEN = 3, PRIOR_ORIGIN = 1.0, PRIOR_TIME = 0.3;
 const RELEASE_SD = 0.5, SHOULDER_SD = (5 * Math.PI) / 180, SHOULDER_ALONG = 15, SHOULDER_UP = 15;
 /** The ball's time to a point d yd from the passer: his QB's own natural flight for his arm (the QB lane's measured fit,
  * one function shared with the QB's lead). */
@@ -192,7 +192,9 @@ export class BallEstimates {
       const Q = fc.predict(sim.t, Math.max(0, at - sim.t) + 0.1) ?? P;
       const h = Math.hypot(Q.x - P.x, Q.y - P.y), u: Vec3 = h > 1e-3 ? { x: (Q.x - P.x) / h, y: (Q.y - P.y) / h, z: 0 } : { x: 1, y: 0, z: 0 };
       const k = broken ? PRIOR_BROKEN : 1;
-      tr.pseudo.push({ t: at, p: { x: P.x, y: P.y, z: 1.5 }, along: u, sr: PRIOR_ALONG * d * k, sa: PRIOR_ACROSS * k, sv: PRIOR_HEIGHT * k });
+      // Along his route the timing of the QB's lead is uncertain too: his speed times PRIOR_TIME, in quadrature.
+      const sAlong = Math.hypot(PRIOR_ALONG * d, Math.hypot(a.vel.x, a.vel.y) * PRIOR_TIME);
+      tr.pseudo.push({ t: at, p: { x: P.x, y: P.y, z: 1.5 }, along: u, sr: sAlong * k, sa: PRIOR_ACROSS * k, sv: PRIOR_HEIGHT * k });
       tr.priorT = at;
       return;
     }
