@@ -76,6 +76,14 @@ export function fatigueFactor(energy: number): number {
   return FATIGUE[k] + (FATIGUE[k + 1] - FATIGUE[k]) * (x - k);
 }
 
+/** The lateral (cutting) acceleration the legs can give at `speed` before the drive takes its share (the friction ellipse's
+ * lateral half, shared by `locomotionAccel`, `followAccel` and the route follower's corner plan): harder to cut at high speed,
+ * and a tired body gives a little less. */
+export function lateralEnvelope(body: Body, speed: number, cutSkill = 1, capacity = 1): number {
+  const p = body.profile;
+  return p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fatigueFactor(body.energy)) * capacity;
+}
+
 /**
  * Speed cap multiplier from the angle between facing and travel direction:
  * 1 running forward, `shuffle` sideways, `backpedal` straight back.
@@ -240,7 +248,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     // is harder at high speed. Head straight for the wanted velocity, as
     // hard as the envelope allows in that direction.
     const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat * drive, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
-    const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat) * capacity;
+    const An = lateralEnvelope(body, speed, cutSkill, capacity);
     const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
     if (k > 1) {
       const s = 1 / Math.sqrt(k);
@@ -285,7 +293,7 @@ export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Ve
   const tx = body.vel.x / speed, ty = body.vel.y / speed;
   const at = a.x * tx + a.y * ty, an = -a.x * ty + a.y * tx;
   const At = (at >= 0 ? Math.max(driveAccel(p, speed, p.vmax * fat) * fat, 0.01) : p.brake * (0.85 + 0.15 * fat)) * capacity;
-  const An = p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fat) * capacity;
+  const An = lateralEnvelope(body, speed, cutSkill, capacity);
   const k = (at / Math.max(At, 1e-9)) ** 2 + (an / Math.max(An, 1e-9)) ** 2;
   if (k <= 1) return { x: a.x, y: a.y };
   const s = 1 / Math.sqrt(k);

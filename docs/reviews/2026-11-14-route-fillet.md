@@ -36,6 +36,13 @@ small because he is slow; there is no special case. Slant with s 1.0 (the case R
 arc 2.3 (was v_in 6.4, radius 9.2). Slants are no longer later in the read compiler (slant_flat -0.05, double_slants -0.08 against +0.29 / +0.19). Price: shallow and
 cross lose speed at 2.0 s (cross 6.66 to 6.20, shallow 6.46 to 5.78 on the WR body) and cut less inside the vertex on the shortest legs (slant cut 0.24 yd).
 
+## The plan asks for what the body gives (bug fix)
+
+The corner plan used `aLat = lateral x cutSkill`, without the body's own speed derate and fatigue factor, so at 7.8 yd/s it planned a radius about
+17% tighter than the legs allow (9.1 yd against about 11). `kinematics.ts` now exports `lateralEnvelope(body, speed, cutSkill, capacity)`, the
+same expression `locomotionAccel` and `followAccel` use for their lateral half (a pure refactor: the flag-off numbers are identical), and the plan
+takes `aLat` from it at the carry speed. Effect is small (cross 6.20 to 6.34 at 2.0 s; radius 7.0 to 6.9, slant arc 2.2 to 2.9; outside carry 0.00-0.18 yd on rolled bends).
+
 ## Witnesses (sim bench from `scripts/diag/route-speed/` on PR #750; no defenders unless stated; WR body for speed rows)
 
 Speed by time, cross (WR body, no defenders), 1.5 / 2.0 / 2.5 / 3.0 / 3.5 s: off 6.00 / 5.47 / 6.30 / 7.29 / 7.83, on 5.77 / 6.66 / 7.50 / 7.94 /
