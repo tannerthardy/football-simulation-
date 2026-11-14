@@ -214,8 +214,10 @@ export const MENU_CONCEPTS: PassConcept[] = [
  * 'five' and 'gun5' are the same drop in the gun today, until the QB lane sets 'five' to the NFL's depth and time. */
 const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
 const COACHED_DROP: Record<string, PassConcept['drop']> = {
-  smash: 'five', mesh: 'five', four_verts: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
-  trips_sail: 'five', trips_outs: 'five', verts_hitch: 'five', double_outs: 'five', comebacks: 'five',
+  smash: 'five', mesh: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
+  trips_sail: 'five', trips_outs: 'five', double_outs: 'five', comebacks: 'five',
+  // Four verticals is "a quick five-step drop (from shotgun, a quick three-steps)" (Gonzalez via Smart Football).
+  four_verts: 'gun3', verts_hitch: 'gun3',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;

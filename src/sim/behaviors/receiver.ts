@@ -16,6 +16,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
+import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -208,6 +209,7 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
+    this.bornAt = sim.t;
     if (!routeOfAgent.has(a)) routeOfAgent.set(a, `${route.family}:${route.id}`);
     this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = route.pace !== undefined ? route.pace + 0.04 * (a.r('routeRunning') - 0.5) : routeEffort(route.family, a.r('routeRunning'));
@@ -235,7 +237,27 @@ export class RouteRunner implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const cmd = this.routeCommand(a, sim);
-    return LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    const out = LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    return BALL_EST ? this.preLook(a, sim, out) : out;
+  }
+
+  /** When this route was installed (the snap, or his release on a delayed route): breakTime counts from here. */
+  private readonly bornAt: number;
+  /** BALL_EST design 4: out of his break, before the throw, he gets his head round to the QB (and his shoulders as
+   * far as his head cannot reach him), so he is already looking when the ball leaves. A better route runner leaves
+   * it later. Not on a deep route, which does not expect the ball at its stem's break. */
+  private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
+    if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    sim.ballEstimates.lookAtQB(a, sim);
+    const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+    const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+    let d = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x) - heading;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    d = turnSide(a, sim, d, heading);
+    const over = Math.abs(d) - LOOK_NECK;
+    return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
   }
 
   /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
@@ -606,27 +628,78 @@ export class TrackBall implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
-    if (sim.t < this.reactAt) return this.fallback.update(a, sim);
+    // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
+    // twice). He attends from the release; his head still has to come round at its own rate before he samples.
+    if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
     let spot: { p: Vec2; t: number } | null = null;
+    // BALL_EST: his own estimate from the ball he has seen; until he has one he runs his route and looks for it.
+    const path = BALL_EST ? sim.ballEstimates.estimate(a, sim) : sim.ballPath;
+    if (BALL_EST && !path.length) return lookFor(a, sim, this.fallback.update(a, sim));
+    // Design 3 attempt 2: he runs his route until he has found the ball himself (his first sample); his prior and the
+    // QB's shoulder line shape his estimate and his head, but his route is the better plan until he has seen it.
+    if (BALL_EST && !sim.ballEstimates.lastSeen(a)) {
+      // Still on his route; late in the flight (by his estimate) he turns his body to find a ball behind him.
+      const due = catchSpot(a, { t: sim.t, ballPath: path });
+      const route = this.fallback.update(a, sim);
+      // Design 4: if he was already looking for the ball when it left, he keeps looking until he finds it.
+      return (due && due.t - sim.t <= bodyTurnLead(a)) || sim.ballEstimates.lookedAtRelease(a, sim) ? lookFor(a, sim, route) : route;
+    }
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
       if (!this.choice || (sim.t - this.choseAt >= 0.1 - 1e-9 && this.choice.t - sim.t > 0.3)) {
-        this.choice = chooseCatchPoint(a, sim, this.judge) ?? this.choice; this.choseAt = sim.t;
+        this.choice = chooseCatchPoint(a, sim, this.judge, path) ?? this.choice; this.choseAt = sim.t;
       }
       spot = this.choice;
+      // BALL_EST bit 4 (design 5 b): the moment he chose to meet it stays his; where the ball is at that moment is
+      // re-read from his current estimate every tick, not frozen from the picture he chose it on.
+      if (BALL_EST_MOVING_CHOICE && spot && path.length) {
+        const at = path.find((p) => p.t >= spot!.t - 1e-6) ?? path[path.length - 1];
+        spot = { p: { x: at.x, y: at.y }, t: spot.t };
+      }
     }
-    spot ??= catchSpot(a, sim);
-    if (!spot) return this.fallback.update(a, sim);
-    const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
+    spot ??= catchSpot(a, { t: sim.t, ballPath: path });
+    if (!spot) return BALL_EST ? lookFor(a, sim, this.fallback.update(a, sim)) : this.fallback.update(a, sim);
+    // Under BALL_EST his error is his estimate's; no separate offset.
+    const target = BALL_EST ? { ...spot.p } : { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
     if (HANDS_CUE) noteHands(a, sim.t, spot.t);
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
     // Arrive on time, keep running through if the ball is leading him.
     const need = dist / dtArr;
-    const facing = angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    // BALL_EST: he faces where he believes the ball is, not where it is.
+    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
-    return { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    const run = { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    // BALL_EST attempt 3: his head finds the ball for free; his body turns to it only late (route-timed, by skill).
+    return BALL_EST && dist >= 3 && spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run) : run;
   }
+}
+
+/** BALL_EST: a turn toward something almost behind him goes over the shoulder his head is already turned to. */
+function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
+  const head = sim.ballEstimates.headOf(a);
+  if (head === undefined) return d;
+  let h = head - heading;
+  while (h > Math.PI) h -= 2 * Math.PI;
+  while (h < -Math.PI) h += 2 * Math.PI;
+  return sideOf(d, h);
+}
+
+/** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
+ * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
+ * turned body, which the facing speed cap prices. */
+function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const est = sim.ballEstimates.estimate(a, sim);
+  const at = est.length ? est[0] : sim.see(a, sim.qb).pos;
+  const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+  const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+  const toward = Math.atan2(at.y - a.pos.y, at.x - a.pos.x);
+  let d = toward - heading;
+  while (d > Math.PI) d -= 2 * Math.PI;
+  while (d < -Math.PI) d += 2 * Math.PI;
+  d = turnSide(a, sim, d, heading);
+  const over = Math.abs(d) - LOOK_NECK;
+  return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
