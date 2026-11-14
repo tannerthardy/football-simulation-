@@ -74,7 +74,7 @@ const SEEN_EYES = process.env.SEEN_EYES !== '0';
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
-  if (!SEEN_EYES) return sim.qbEyes;
+  if (!SEEN_EYES && !QB_BODY_SEEN) return sim.qbEyes;
   const c = eyesCache.get(a);
   if (c && c.t === sim.t) return c.r;
   let r: Agent | null = null;
@@ -86,7 +86,7 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos(q.facing - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos((QB_BODY_SEEN ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
       if (cos > best) { best = cos; r = o; }
     }
   }
@@ -775,7 +775,7 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
-/** CARRY_READ (experimental, off; CARRY_READ=1 turns it on): a deep carry
+/** CARRY_READ (on since engine-57; `CARRY_READ=0` restores the old carry): a deep carry
  * plays off what the receiver can still become, read from what he shows: his
  * seen upfield speed vx and the acceleration in the defender's picture
  * (DeepCoverage's seen-velocity change), continued as a burst that fades over
@@ -1944,6 +1944,14 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
+ * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
+ * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
+ * known to every defender) and `sim.qbEyes`. SHOULDER_READ's plant and restart, sawThrow's arm key and SEEN_EYES's
+ * look read the picture. Off: the published fields, as before. */
+const QB_BODY_SEEN = process.env.QB_BODY_SEEN !== '0';
+/** QB_BODY_SEEN: whether this picture of the passer shows a throwing motion (loading or delivering). */
+const throwingShown = (q: { arm?: 'set' | 'load' | 'deliver' }) => q.arm === 'load' || q.arm === 'deliver';
 /** SHOULDER_READ: the throwing motion each defender planted on (by its windupAt), per play. */
 const plants = new WeakMap<Agent, { sim: PlaySim; windup: number }>();
 /** SHOULDER_READ: whether he is planted on a throwing motion he has seen. */
@@ -1952,6 +1960,17 @@ function underneathPlant(a: Agent, sim: PlaySim): boolean {
   const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
   let p = plants.get(a);
   if (p && p.sim !== sim) { plants.delete(a); p = undefined; }
+  if (QB_BODY_SEEN) {
+    // His picture of the passer, on the same anticipation-shortened delay: planted while it shows a throwing motion
+    // (a new one after a restart), restarting once it shows him set again.
+    const q = sim.see(a, sim.qb, 1 - 0.4 * a.r('anticipation'));
+    if (p && !throwingShown(q)) { plants.delete(a); p = undefined; a.tags.add('plant-restart'); }
+    if (!p && throwingShown(q) && Math.cos(a.body.facing - Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x)) > -0.2
+      && eyesHeldOnQB(a, sim, react, -0.2)) {
+      p = { sim, windup: sim.t }; plants.set(a, p); a.tags.add('plant');
+    }
+    return !!p;
+  }
   // The motion he planted on was pulled down: once he has seen that, he restarts his drop.
   if (p && sim.windupAt !== p.windup && sim.windupEndAt >= p.windup && sim.t - sim.windupEndAt >= react) {
     plants.delete(a); p = undefined; a.tags.add('plant-restart');
@@ -1988,7 +2007,9 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // motion, or when his eyes reached the QB if that was later. Motion he did
   // not see gives him nothing. He still learns where it goes only from the
   // visible flight.
-  const keysQB = facingQB && zoneEyes && sim.windupAt >= 0 && sim.t - sim.windupAt >= react
+  const keysQB = facingQB && zoneEyes
+    && (QB_BODY_SEEN ? throwingShown(sim.see(a, sim.qb, (1 - 0.4 * a.r('anticipation')) + (man ? 0.05 / a.profile.reactionTime : 0)))
+      : sim.windupAt >= 0 && sim.t - sim.windupAt >= react)
     && eyesHeldOnQB(a, sim, react, -0.2);
   if (keysQB) {
     a.tags.add('readArm');

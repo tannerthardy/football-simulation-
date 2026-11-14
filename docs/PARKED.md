@@ -107,6 +107,12 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | `IN_STRIDE_CATCH` | A tracking receiver plays the reachable catchable point nearest his current running line instead of the earliest reachable point. | removed from develop after engine-47; last on `d6e3f56f` `src/sim/behaviors/receiver.ts` (`strideCatchSpot`) | Retired, superseded: `CATCH_CHOICE` (on) plays the same `TrackBall` path as a choice over the reachable segment against the defenders he sees, which includes this point. Revive only if a fixed running-line point is wanted as a control arm. |
 | `BALL_EST` | Each player holds his own estimate of a ball in flight, fitted to the ball positions he has seen (delayed, range error along his line of sight larger than bearing error); the receiver turns his shoulders to keep it in view, paying the facing speed cap. Replaces the defender's copy of the true path (`acquireFlight`) and the receiver's per-tick read of it (`TrackBall`, `catchSpot`, `chooseCatchPoint`). | `coverage/C14-ball-est` `src/sim/ball-estimate.ts`; spec `docs/reviews/2026-11-14-ball-in-air-spec.md` | Parked 2026-11-14 after two attempts (Coverage). The look's cost moved the receiver's slowing and path toward the NFL (1.5-2.0 s flights: off his release line 1.1-1.7 -> 1.2-2.2 yd, NFL 2.4; arrival speed 6.1-7.6, NFL 6.7), and his estimate is a median 1.5 yd from the ball at arrival (`est-split.ts`). But he ends 2.6-2.8 yd from the landing point (NFL 1.4) with separation opening (2.7-3.0, NFL 1.6): he does not get to where his own estimate says. Next: diagnose his steering to an estimate that converges late (first sample about 0.5 s after the release), not the noise. Constants were fixed before each exam. |
 
+## Pressure installs (Defense, 2026-11-13)
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `MAX_ZONE_6` | (Idea, not built.) A designed six-man, three-deep, two-under zone pressure: two hot droppers (seam/flat or hot-hook players) named by the call, three deep behind them; the rare max zone pressure, called on purpose. | `src/playbook/defense.ts` `PRESSURES` | Not built. RUSH_PROMISE (FLAGS.md) stops this shape arising by accident (Mike-A / Will-B / Nickel Edge in Cover 3 from fronts that already rush an extra man: two curl-flat players, no one in the middle). A designed install names its two droppers and their hot rules, so it is a legitimate future call, not the accident. |
+
 ## G5 Edge protection gives way
 
 | Flag | What it does | Where | Status |

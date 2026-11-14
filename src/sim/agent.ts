@@ -159,6 +159,22 @@ export class Agent {
   keyStep: { from: Agent; side: number } | null = null;
   /** DEF_STANCE: a front defender's pre-snap stance, hand(s) down or standing up. */
   setStance: 'down' | 'up' | null = null;
+  /** QB_BODY_SEEN: the passer's visible throwing motion: set, loading (shoulders turned, ball back) or delivering
+   * (the arm coming through). His own throw phase, shown by his body; opponents read it only through perception. */
+  arm: 'set' | 'load' | 'deliver' = 'set';
+  /** QB_BODY_SEEN: the passer's visible head direction (rad, field frame): where his eyes are, shown by his head, not
+   * his hips. Null: not modelled for this player (others show their body facing). */
+  head: number | null = null;
+  /** The carry posture a ball holder shows: the ball up in both hands, ready to throw, or tucked to run. Null: not
+   * shown (not holding, or not modelled). Set by its owner's controller (the QB lane's out-of-pocket work); opponents
+   * read it only through perception. */
+  carryPosture: 'up' | 'tucked' | null = null;
+  /** Seen contact: the opponents his body is in physical contact with this tick (a block, a hand fight, a grip or a
+   * tackle hold), strongest first, at most two (a double); and whether an opponent is holding him. Written from
+   * physics in `PlaySim.tick`; others read it only through perception (`src/sim/seen-contact.ts`). The two men in
+   * contact feel it directly (touch); this is what everyone else sees. */
+  contactWith: number[] = [];
+  held = false;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */
