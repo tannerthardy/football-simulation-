@@ -358,6 +358,38 @@ const SCOUT0 = 0.2;
 const SCOUT_AWARE = 0.4;
 const SCOUT_EXP = 0.4;
 const THROW_PLATFORM = process.env.THROW_PLATFORM === '1';
+/** QB_BREAK (experimental, off; QB_BREAK=1; the out-of-pocket phase, first build): leaving the pocket no longer ends
+ * his time as a passer. When he has no throw and feels the rush (the alarm's no-throw branch), or his clock has run
+ * out, and a spot outside the rush beats every pursuer he feels by BREAK_MARGIN, he breaks to that side with the ball
+ * up. Out there, at his processing interval and each held until the next, he decides: throw (his best man on his
+ * pictures at OUT_BAR, the eyes gate applying), tuck and run (a lane past the line beats the pursuers and nobody is
+ * near the bar; this is the old scramble), throw it away (outside the tackles, a pursuer inside one motion and one
+ * processing time, nobody above half the bar; a short motion, not an instant release), stop and set (no pursuer inside
+ * SET_ROOM for a reaction time: his new spot is his pocket), or keep moving to a destination he picked and holds
+ * (flat, up and out, or deeper and out, the one that keeps the most time on the pursuers and stays behind the line).
+ * A throw from there is made on the move (THROW_PLATFORM prices it) instead of planting. He shows carryPosture 'up'
+ * until he tucks. Off: the alarm's no-throw branch scrambles, rolls a throw-away or steps back, and the clock's
+ * branch scrambles. Constants are chosen (first build). docs/reviews/2026-11-13-qb-pocket.md. */
+const QB_BREAK = process.env.QB_BREAK === '1';
+/** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
+const BREAK_MARGIN = 0.35;
+/** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
+const BREAK_REACH = 5.5;
+/** QB_BREAK: how far ahead he picks a destination (yd) and how long he holds it at most (s). */
+const OUT_STEP = 4;
+const OUT_HOLD = 0.8;
+/** QB_BREAK: his pace with the ball up, and through a throwing motion on the move (fractions of top speed). */
+const OUT_PACE = 0.8;
+const OUT_THROW_PACE = 0.45;
+/** QB_BREAK: the chance he needs on a throw from out there, and the largest pick risk (the hot path's 0.18). */
+const OUT_BAR = 0.45;
+const OUT_RISK = 0.18;
+/** QB_BREAK: he tucks only with nobody above this share of the bar. */
+const TUCK_BAR = 0.5;
+/** QB_BREAK: with no felt pursuer inside this (yd) for one reaction time he stops and sets. */
+const SET_ROOM = 4.5;
+/** QB_BREAK: the throw-away's motion as a share of his load. */
+const AWAY_LOAD = 0.6;
 /** THROW_PLATFORM constants. PLATFORM_STRIDE, yd/s: NFL quarterbacks release moving at 0.7 / 1.1 / 1.9 yd/s (p25/50/75,
  * BDB 2026); ours at 0.4 (STRIDE_SPEED). PLATFORM_QUIET, yd/s: chosen, above a planted body's sway. PLATFORM_RESID0 /
  * PLATFORM_RESID_SKILL: chosen (the best mover leaves a twelfth of his motion in the ball, the worst a third).
@@ -483,8 +515,8 @@ export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
   private readonly snapAt: number;
-  private readonly drop: { x: number; time: number };
-  private readonly dropY: number;
+  private drop: { x: number; time: number };
+  private dropY: number;
   private reads: Agent[] = [];
   private readIdx = 0;
   /** Diagnostics only (no effect on play): set by a probe, the window records each defender's believed arrival margin. */
@@ -823,7 +855,7 @@ export class QBPass implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const t = sim.t;
-    if (sim.carrier !== a) return stand();
+    if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
     const facingDown = 0;
     // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
     // still can); a throw already on its way comes out, wobbling.
@@ -905,12 +937,23 @@ export class QBPass implements Behavior {
       const facing = this.pending ? this.motionFacing(a, sim, this.pending) : facingDown;
       // Weight transfer: his weight starts toward the target with the load and
       // reaches stride speed as the front foot plants for the delivery.
+      if (QB_BREAK && this.out && this.pending) {
+        // On the move: he keeps going where he was going, gathered, with his shoulders to the target.
+        const o = this.out, dx = o.dest.x - a.pos.x, dy = o.dest.y - a.pos.y, L = Math.hypot(dx, dy) || 1, v = OUT_THROW_PACE * a.profile.vmax;
+        return { vel: { x: dx / L * v, y: dy / L * v }, facing };
+      }
       if (this.pending) {
         const loadTime = this.releaseAt - this.delivery(a) - this.motionAt;
         const s = STRIDE_SPEED * (1 - this.flick) * clamp((t - this.motionAt) / Math.max(loadTime, sim.dt), 0, 1);
         return { vel: { x: Math.cos(facing) * s, y: Math.sin(facing) * s }, facing };
       }
       return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
+    }
+
+    // QB_BREAK: out of the pocket with the ball up, his decisions are the out-of-pocket ones.
+    if (QB_BREAK) {
+      a.carryPosture = 'up';
+      if (this.out) return this.outTick(a, sim);
     }
 
     const pressure = this.pressure(a, sim);
@@ -1204,13 +1247,14 @@ export class QBPass implements Behavior {
     // get rid of it — escape, find someone uncovering, or throw it away.
     if (clockUrgency >= 1) {
       sim.scrambleDrill = true;
-      if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
+      if (QB_BREAK) { if (this.tryBreak(a, sim, 'clock')) return this.outTick(a, sim); }
+      else if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
       const over = timeSet + this.snapAt + this.drop.time - this.clock;
       if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.dice('qb', a).chance(0.06)) return this.throwAway(a, sim);
       if ((over > 0.8 && sim.dice('qb', a).chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
     }
     // Mobile QBs leave the pocket when coverage holds and the lane is there.
-    if (timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.dice('qb', a).chance(0.06 + 0.14 * a.r('elusiveness'))) {
+    if (!QB_BREAK && timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.dice('qb', a).chance(0.06 + 0.14 * a.r('elusiveness'))) {
       return this.scramble(a, sim);
     }
 
@@ -1276,7 +1320,8 @@ export class QBPass implements Behavior {
    * below the bar (null when none). Today: the existing branch. */
   private noThrow(a: Agent, sim: PlaySim, ctx: NoThrowContext): MoveCommand {
     if (EXTEND) return this.extend(a, sim, ctx);
-    if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
+    if (QB_BREAK && this.tryBreak(a, sim, 'rush')) return this.outTick(a, sim);
+    if (!QB_BREAK && this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
     // Veterans throw it away (or at a back's feet) rather than eat a sack.
     if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
     return this.evade(a, sim, ctx.pressure.agent);
@@ -1958,7 +2003,8 @@ export class QBPass implements Behavior {
     // the ball, front shoulder to the target.
     sim.windupAt = sim.t;
     sim.deliveryAt = this.releaseAt - this.delivery(a);
-    return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: this.motionFacing(a, sim, ev) };
+    const keep = QB_BREAK && this.out ? 0.85 : 0.5;
+    return { vel: { x: a.vel.x * keep, y: a.vel.y * keep }, facing: this.motionFacing(a, sim, ev) };
   }
 
   /** SHOULDERS_SET: how long a throwing turn from his current facing to `p` takes. */
@@ -2135,11 +2181,121 @@ export class QBPass implements Behavior {
 
   private scramble(a: Agent, sim: PlaySim): MoveCommand {
     sim.scrambled = true;
+    if (QB_BREAK) { a.carryPosture = 'tucked'; if (this.out) this.breakRec.push({ t: sim.t, what: 'tuck' }); this.out = null; }
     sim.stats.scramble = true;
     sim.stats.rusher = a.player.id;
     sim.event('scramble', a);
     a.behavior = new BallCarrier({ qb: true }, a);
     return a.behavior.update(a, sim);
+  }
+
+  /** QB_BREAK: out of the pocket with the ball up: the side he broke to, his held destination, his next decision. */
+  private out: { side: number; since: number; dest: Vec2; until: number; decideAt: number; clearSince: number | null; away: number | null; best: ThrowEval | null } | null = null;
+  /** QB_BREAK diagnostics (no effect): what he did out there and when. */
+  readonly breakRec: Array<{ t: number; what: 'break:rush' | 'break:clock' | 'break:feel' | 'tuck' | 'away' | 'set' | 'throw' }> = [];
+
+  /** QB_BREAK diagnostics (no effect): each time he looked to break, and the time each side would have left him. */
+  readonly breakTry: Array<{ t: number; why: string; m: number[] }> = [];
+
+  /** QB_BREAK: the pursuers as he feels them, with the hold he sees on each. */
+  private pursuers(a: Agent, sim: PlaySim): Array<{ d: Agent; seen: Perceived; held: number }> {
+    return sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
+  }
+
+  /** QB_BREAK: the time a spot leaves him on the nearest felt pursuer, running to it from where he is. */
+  private spotMargin(a: Agent, q: Vec2, threats: Array<{ d: Agent; seen: Perceived; held: number }>): number {
+    const myT = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q);
+    let margin = Infinity;
+    for (const { d, seen, held } of threats) margin = Math.min(margin, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + held - myT);
+    return margin;
+  }
+
+  /** QB_BREAK: the break. True when he is out (now or already). */
+  private tryBreak(a: Agent, sim: PlaySim, why: 'rush' | 'clock' | 'feel'): boolean {
+    if (this.out) return true;
+    const threats = this.pursuers(a, sim);
+    let side = 0, best = BREAK_MARGIN, dest: Vec2 | null = null;
+    for (const s of [-1, 1]) {
+      const q = { x: Math.min(a.pos.x + 1, sim.los - 1), y: clamp(a.pos.y + s * BREAK_REACH, 1, FIELD_WIDTH - 1) };
+      const m = this.spotMargin(a, q, threats);
+      if (m > best) { best = m; side = s; dest = q; }
+    }
+    this.breakTry.push({ t: sim.t, why, m: [-1, 1].map((sd) => this.spotMargin(a, { x: Math.min(a.pos.x + 1, sim.los - 1), y: clamp(a.pos.y + sd * BREAK_REACH, 1, FIELD_WIDTH - 1) }, threats)) });
+    if (!dest) return false;
+    this.out = { side, since: sim.t, dest, until: sim.t + OUT_HOLD, decideAt: sim.t + this.processing(a), clearSince: null, away: null, best: null };
+    this.breakRec.push({ t: sim.t, what: `break:${why}` as const });
+    this.look = null;
+    sim.event('read', a, null, `breaks the pocket (${why})`);
+    return true;
+  }
+
+  /** QB_BREAK: one tick out of the pocket with the ball up. */
+  private outTick(a: Agent, sim: PlaySim): MoveCommand {
+    const o = this.out!, t = sim.t;
+    const go = (pace: number, facing: number): MoveCommand => {
+      const dx = o.dest.x - a.pos.x, dy = o.dest.y - a.pos.y, L = Math.hypot(dx, dy) || 1, v = pace * a.profile.vmax;
+      return { vel: { x: dx / L * v, y: dy / L * v }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
+    };
+    // A throw-away under way: the short motion, then the ball goes.
+    if (o.away !== null) {
+      if (t >= o.away) { this.breakRec.push({ t, what: 'away' }); this.out = null; return this.throwAway(a, sim); }
+      return go(OUT_THROW_PACE, o.side * Math.PI / 2);
+    }
+    if (t >= o.decideAt) {
+      o.decideAt = t + this.processing(a);
+      const threats = this.pursuers(a, sim);
+      const best = o.best = this.lastHotBest = this.bestOption(a, sim, 1);
+      const near = Math.max(0, best ? best.P / OUT_BAR : 0);
+      // Tuck and run: a lane past the line beats every pursuer he feels, and nobody is near his bar.
+      if (near < TUCK_BAR) {
+        const ahead = [0, 2, 4].map((k) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + o.side * k, 1, FIELD_WIDTH - 1) }));
+        if (ahead.some((q) => this.spotMargin(a, q, threats) > BREAK_MARGIN)) return this.scramble(a, sim);
+      }
+      // The nearest pursuer he feels: how soon, and how far.
+      let soon = Infinity, dist = Infinity;
+      for (const { d, seen, held } of threats) {
+        soon = Math.min(soon, timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + held);
+        dist = Math.min(dist, Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y));
+      }
+      // Throw it away: outside the tackles, a pursuer inside one motion and one processing time, nobody above half the bar.
+      if (this.outsidePocket(a, sim) && soon < this.windup(a) + this.processing(a) && near < 0.5) {
+        o.away = t + AWAY_LOAD * this.load(a);
+        return go(OUT_THROW_PACE, o.side * Math.PI / 2);
+      }
+      // Stop and set: nobody inside SET_ROOM for a reaction time. Where he stands is his pocket now.
+      if (dist >= SET_ROOM) {
+        o.clearSince ??= t;
+        if (t - o.clearSince >= a.profile.reactionTime) {
+          this.breakRec.push({ t, what: 'set' });
+          this.out = null; this.drop = { ...this.drop, x: a.pos.x }; this.dropY = a.pos.y; this.readStart = t;
+          return stand();
+        }
+      } else o.clearSince = null;
+      // His destination: held until reached, lapsed, or closed by a pursuer; then the candidate that keeps the most
+      // time on them and stays behind the line while the ball is up.
+      const left = Math.hypot(o.dest.x - a.pos.x, o.dest.y - a.pos.y);
+      if (left < 0.75 || t >= o.until || this.spotMargin(a, o.dest, threats) <= 0) {
+        let pick: Vec2 | null = null, pm = -Infinity;
+        for (const [hx, hy] of [[0, 1], [0.57, 0.82], [-0.4, 0.92]] as const) {
+          const q = { x: Math.min(a.pos.x + hx * OUT_STEP, sim.los - 1), y: clamp(a.pos.y + o.side * hy * OUT_STEP, 1.5, FIELD_WIDTH - 1.5) };
+          const m = this.spotMargin(a, q, threats);
+          if (m > pm) { pm = m; pick = q; }
+        }
+        if (pick) { o.dest = pick; o.until = t + OUT_HOLD; }
+      }
+    }
+    // A throw he likes, from his last look round, priced again now; the eyes gate and the finish check apply.
+    const b = o.best;
+    if (b && b.P >= OUT_BAR && b.intRisk <= OUT_RISK) {
+      const ev = this.evaluate(a, sim, b.target, 1);
+      if (ev && ev.P >= OUT_BAR && ev.intRisk <= OUT_RISK) {
+        const start = this.startIfFinish(a, sim, ev);
+        if (start) { this.breakRec.push({ t, what: 'throw' }); return start; }
+      }
+    }
+    // Keep moving, eyes downfield (toward the man he likes, else up the field).
+    const eye = b ? Math.atan2(b.point.y - a.pos.y, b.point.x - a.pos.x) : 0;
+    return go(OUT_PACE, eye);
   }
 
   private evade(a: Agent, sim: PlaySim, threat: Agent | null): MoveCommand {
@@ -2184,6 +2340,7 @@ export class QBPass implements Behavior {
     let slideMove: Vec2 | null = null;
     if (QB_POCKET) {
       const d = this.pocketDecide(a, sim, read);
+      if (d.out) return this.outTick(a, sim);
       edge = d.edge;
       slideMove = d.slide;
     }
@@ -2246,7 +2403,7 @@ export class QBPass implements Behavior {
   /** QB_POCKET: the one decision for his feet, on his pictures (felt() for defenders, see() for teammates and the
    * read). Returns whether the nearest body inside POCKET_NEAR is at the edge (the caller climbs), and the slide
    * destination while a slide is decided or under way. */
-  private pocketDecide(a: Agent, sim: PlaySim, read: Agent | undefined): { edge: boolean; slide: Vec2 | null } {
+  private pocketDecide(a: Agent, sim: PlaySim, read: Agent | undefined): { edge: boolean; slide: Vec2 | null; out?: boolean } {
     const t = sim.t;
     const felt = sim.defense.filter((d) => !d.isDown(t)).map((d) => { const f = this.felt(a, sim, d); return { d, pos: f.pos, vel: f.vel }; });
     const clearOf = (q: Vec2) => felt.every(({ pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) >= POCKET_CLEAR);
@@ -2275,6 +2432,9 @@ export class QBPass implements Behavior {
     // One slide per body until it is clearly nearer.
     const last = this.slidAt.get(by.d);
     if (last !== undefined && bd > last - POCKET_RENEW) return { edge: false, slide: null };
+    // QB_BREAK: a slide answers a man a blocker still has. A free man, or one he has already slid from who is still
+    // coming, is answered by leaving, when a spot outside beats the pursuers he feels.
+    if (QB_BREAK && (!inHands || last !== undefined) && this.tryBreak(a, sim, 'feel')) return { edge: false, slide: null, out: true };
     this.slidAt.set(by.d, bd);
     const rp = read ? sim.see(a, read).pos : null;
     const toRead = !!rp && Math.abs(rp.y - a.pos.y) >= POCKET_READ_SIDE;
