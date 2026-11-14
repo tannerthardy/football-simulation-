@@ -591,7 +591,7 @@ const HOLD_FACING = process.env.HOLD_FACING !== '0';
  * travel blended into the attack direction by ROLL_AXIS_SPEED, continuously, instead of switching to the attack
  * direction below 0.3 yd/s. The commitment rule: a post-decision stage must not flip the request as a step function
  * of motion it causes. */
-const ROLL_AXIS = process.env.ROLL_AXIS === '1';
+const ROLL_AXIS = process.env.ROLL_AXIS !== '0';
 /** Runner speed at which his travel and the attack direction weigh equally in the roll axis (yd/s; choice: a walk). */
 const ROLL_AXIS_SPEED = 1;
 /** ROLL_AXIS's unit axis for a runner moving at `vel` attacking toward `dir` (±1): continuous in `vel`. */

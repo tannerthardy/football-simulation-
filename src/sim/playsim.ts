@@ -142,19 +142,19 @@ const GAZE = process.env.GAZE === '1';
  * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
  * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
  * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
-const SIGHT_CARRIER = process.env.SIGHT_CARRIER === '1';
+const SIGHT_CARRIER = process.env.SIGHT_CARRIER !== '0';
 /** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
  * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
  * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
  * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
  * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
-const SIGHT_COVER = process.env.SIGHT_COVER === '1';
+const SIGHT_COVER = process.env.SIGHT_COVER !== '0';
 /** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
  * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
  * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
  * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
  * `update` 17% (`see-sight.ts`). The throw cue (`sawThrow`) is presented possession's release candidate (#713). */
-const SIGHT_RECOG = process.env.SIGHT_RECOG === '1';
+const SIGHT_RECOG = process.env.SIGHT_RECOG !== '0';
 /** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
  * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
  * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`

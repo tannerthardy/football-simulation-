@@ -44,7 +44,7 @@ import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runti
  * (`PlaySim.track`: a 0.12 s correcting loop, no focus or stress terms stacked on a scaled delay, no acceleration term)
  * instead of `see()`; `feltClosing`'s seen-acceleration extrapolation retires with it. Behind his shoulders the
  * non-visual term (pocket presence) stands. Teammates are seen as before (`track` returns `see` for them). */
-const TRACK_FEEL = process.env.TRACK_FEEL === '1' || process.env.PERCEIVE_TRACK === '1';
+const TRACK_FEEL = process.env.TRACK_FEEL !== '0' || process.env.PERCEIVE_TRACK === '1';
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
 
@@ -312,7 +312,7 @@ const QB_POCKET = process.env.QB_POCKET === '1';
  * time; and where evade() steps away from. On: the shoulder test uses his plain picture of the man (see() at 1x), the
  * distance is to the felt position, and he evades the felt position. Expect him to feel pressure a little later and
  * less exactly; a loss is repaired by better perception (PERCEIVE_TRACK step 1b), not by the leak. */
-const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
+const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL !== '0';
 /** THROW_PLATFORM (experimental, off; THROW_PLATFORM=1): what moving costs a throw, as one continuous mechanism. Off, a
  * throw from a mover is 1.15-1.6x wider in every direction once his speed passes 2.2 yd/s and costs nothing below it: a
  * step on his own speed, with no direction. On, the cost comes from the part of his velocity the throw cannot use:
@@ -339,21 +339,21 @@ const QB_HONEST_FEEL = process.env.QB_HONEST_FEEL === '1';
  *   pictures; the same in screenDead() and the rush belief.
  * A loss from this is repaired by preparation as a mechanism (film study raising how well he knows them), not by the
  * leak. SCOUT constants are chosen. */
-const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF === '1';
+const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
 /** QB_SEEN_OUT (experimental, off; QB_SEEN_OUT=1; information rule): whether a check-release man is out on his route is
  * no longer read from the man's behaviour object. He is out once the quarterback's own picture has placed him on his
  * installed release route (the forecast's progress, from a look or his peripheral view), and he then stays out. It
  * gates the rhythm outlet, whether that man is ready, and his place in the hot order. A man whose route starts on an
  * installed count is unchanged, and so is a screen's receiver (his release is the called count). A slow screen's "he has settled" is likewise read from where the quarterback has him,
  * not from the receiver's own flag and true position. Receivers with no installed picture are unchanged. */
-const QB_SEEN_OUT = process.env.QB_SEEN_OUT === '1';
+const QB_SEEN_OUT = process.env.QB_SEEN_OUT !== '0';
 /** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
  * state use where he has them: his forecast of the man, else his delayed picture. That is the side a receiver is on
  * (look-off decoy, hot side), the verticals' stems for the peek, whether a man is in his clear look, the fallback
  * target point in pricing, and in the man-coverage reorder both the receiver and the defender on him (his picture of
  * the defense). A receiver is down when his delayed picture shows him off his feet. A receiver's block is not read
  * from the engagement record: who blocks is the call, and a check-release man is a receiver once seen out. */
-const QB_SEEN_REC = process.env.QB_SEEN_REC === '1';
+const QB_SEEN_REC = process.env.QB_SEEN_REC !== '0';
 const SCOUT0 = 0.2;
 const SCOUT_AWARE = 0.4;
 const SCOUT_EXP = 0.4;
@@ -378,7 +378,7 @@ const QB_BREAK = process.env.QB_BREAK === '1';
  * the bar he has (the list ending does not lower it); his check-down is taken on the way as before (QB_RHYTHM's outlet).
  * With QB_BREAK, moving is the other answer at that moment: he leaves with the ball up when a spot outside is there,
  * and reads on from it. */
-const QB_RELOOK = process.env.QB_RELOOK === '1';
+const QB_RELOOK = process.env.QB_RELOOK !== '0';
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
 /** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
