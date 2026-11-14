@@ -29,7 +29,7 @@ import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, p
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
-import { goTo, runThrough, stand, track } from './common.js';
+import { goTo, runThrough, stand, track, ttr } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
@@ -320,7 +320,10 @@ export class PassProtector implements Behavior {
    * first. A key comes when, in his picture, he is moving at the line (over 1.5 yd/s) within 2.5 yd of it or past it;
    * he is clear once he has been moving away (over 1 yd/s) or holding off the line (3+ yd deep, not coming) for one
    * decision interval. A key who has come is clear again only after he is seen dropping for 0.25 s (the exit margin).
-   * No keys: nothing to check, he goes once he has a picture of the box. */
+   * No keys: nothing to check, he goes once he has a picture of the box. Keys are fixed at his first look, as coached
+   * keys are read before the snap; a rotation into the box after it is the protection count's problem, not his read.
+   * Candidates at the same distance from his gap are ordered by that distance only (the deeper is more often a cover
+   * player). */
   private keys: { d: Agent; state: 'unread' | 'comes' | 'clear'; awaySince: number | null }[] | null = null;
   private keysClear(a: Agent, sim: PlaySim): boolean {
     const off = sim.attackDir(a.team), side = Math.sign(a.pos.y - sim.ballY);
@@ -332,11 +335,16 @@ export class PassProtector implements Behavior {
       this.keys = cands.map((c) => ({ d: c.d, state: 'unread', awaySince: null }));
     }
     const dwell = a.mind.decisionInterval;
+    // His time to his check gap (a yard behind the line at it), for a key's projected arrival.
+    const gapY = side ? sim.ballY + side * 2.5 : sim.ballY;
+    const toGap = ttr(a, { x: sim.los - off * 1, y: gapY });
     for (const k of this.keys) {
       const p = sim.see(a, k.d), depth = (p.pos.x - sim.los) * off, toward = -p.vel.x * off;
-      const comes = toward > 1.5 && depth < 2.5;
-      // Dropping is decisive; holding off the line says nothing until the count has run (a delayed blitz shows by then).
-      const away = -toward > 1 || (depth >= 3 && toward < 1 && sim.t >= BACK_CHECK_COUNT);
+      // Comes: heading at the line over 1.5 yd/s, and there before he could get to his gap (or already within 2.5 yd).
+      const comes = toward > 1.5 && (depth < 2.5 || depth / toward <= toGap);
+      // Dropping is decisive; not coming (anything short of `comes`, a creeping key included) says nothing until the count
+      // has run (a delayed blitz shows by then), and then clears at any depth: a check-release goes if no one comes.
+      const away = -toward > 1 || sim.t >= BACK_CHECK_COUNT;
       // A key who comes and is seen engaged with another of his blockers is someone else's: clear for him.
       const on = comes || k.state === 'comes' ? seenEngagedWith(sim, a, k.d) : null;
       if (on && on !== a && on.team === a.team) { k.state = 'clear'; k.awaySince = null; continue; }
