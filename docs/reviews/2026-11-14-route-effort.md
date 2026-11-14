@@ -90,6 +90,12 @@ Effort 1 moves route speed by only 0.1-0.5 yd/s, because a receiver is under the
    - The NFL GO label includes many that stop at 10-13 yd or track the ball.
    - Matched on depth 14 yd or more at 3.0 s with a free release, ours minus NFL is -0.25 / -0.09 / +0.03 / +0.11 yd/s at 1.5 / 2.0 / 2.5 / 3.0 s.
    - There is no capacity issue. The slant's early lead needs the same matched re-read before it is called acceleration.
+   - That read was at the fitted effort (.94). At effort 1, a full-vertical WR runs 6.71 / 7.83 / 8.51 / 8.93 yd/s at
+     1.5 / 2.0 / 2.5 / 3.0 s against the NFL's 6.82 / 7.71 / 8.21 / 8.50: -0.11 / +0.12 / +0.30 / +0.43. So effort 1
+     puts a deep stem 0.3-0.4 yd/s above the NFL late, and our corner and post enter their breaks at 7.8-8.0 against 7.0-7.2.
+     Effort stays 1: a fitted .94 with no coached reason is what this removes, and this row is its stated cost. Whether
+     defensive backs are equally fast late (nothing relative changes) or only receivers (the profile's approach to top
+     speed, a body question) is Tools' next read.
 3. **The TE is not slow.**
    - The median generated TE is within 0.3 yd/s of NFL TEs on straights.
    - The staged bench's TE (team seed 51) is a below-median body (vmax 8.60 against 9.00).
