@@ -15,7 +15,11 @@ const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, rows: any[] =
 P.tick = function () {
   const r = t0.call(this);
   if (this.offCall?.kind !== 'pass' || this.offCall?.pass?.family === 'screen') return r;
-  if (this.ball.kind === 'air' && !this.__mk && this.ball.target && !this.ball.throwaway) this.__mk = { T: this.ball.target, best: Infinity, bandBest: Infinity };
+  if (this.ball.kind === 'air' && !this.__mk && this.ball.target && !this.ball.throwaway) {
+    const T = this.ball.target, rt = T.behavior?.fallback?.route ?? T.behavior?.route;
+    this.__mk = { T, best: Infinity, bandBest: Infinity, rel: this.t, fam: String(rt?.family ?? '-'), preLook: !!this.ballEstimates?.lookedAtRelease?.(T, this) };
+  }
+  if (this.__mk && this.ball.kind === 'air' && this.__mk.first === undefined && this.ballEstimates?.lastSeen?.(this.__mk.T)) this.__mk.first = this.t;
   const S = this.__mk;
   if (S && this.ball.kind === 'air' && !this.ball.deflected) {
     const T = S.T, b = this.ball.flight.pos, dh = Math.hypot(b.x - T.pos.x, b.y - T.pos.y);
@@ -25,7 +29,10 @@ P.tick = function () {
       if (S.tgt) { const ex = T.pos.x - S.tgt.x, ey = T.pos.y - S.tgt.y; S.bodyLat = -ex * S.tgt.uy + ey * S.tgt.ux; S.ballLat = -(b.x - T.pos.x) * S.tgt.uy + (b.y - T.pos.y) * S.tgt.ux; }
       const sp = Math.hypot(T.vel.x, T.vel.y), along = sp > 0.5 ? ((b.x - T.pos.x) * T.vel.x + (b.y - T.pos.y) * T.vel.y) / sp : 0;
       S.best = dh; S.at = { z: b.z, top, reach, along, speed: sp };
-      S.sampled = !!this.ballEstimates?.lastSeen?.(T); S.chose = !!(T.behavior as any)?.choice; S.track = T.behavior?.kind;
+      S.sampled = !!this.ballEstimates?.lastSeen?.(T); S.tBest = this.t;
+      const hd = this.ballEstimates?.headOf?.(T);
+      if (hd !== undefined) { let d = Math.atan2(b.y - T.pos.y, b.x - T.pos.x) - hd; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; S.headOff = Math.abs(d) * 180 / Math.PI; } else S.headOff = undefined;
+      { let d = Math.atan2(b.y - T.pos.y, b.x - T.pos.x) - T.facing; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; S.bodyOff = Math.abs(d) * 180 / Math.PI; } S.chose = !!(T.behavior as any)?.choice; S.track = T.behavior?.kind;
     }
     let near = Infinity; for (const d of this.defense) near = Math.min(near, Math.hypot(d.pos.x - T.pos.x, d.pos.y - T.pos.y));
     S.near = near;
@@ -58,7 +65,7 @@ P.buildResult = function () {
   else if (S.best <= S.at.reach && S.at.z > S.at.top) kind = 'over';
   else if (S.best <= S.at.reach && S.at.z < 0.1) kind = 'low';
   else kind = Math.abs(S.at.along) < 0.5 * S.best ? 'wide: across' : S.at.along > 0 ? 'wide: late (ahead of him)' : 'wide: past (behind him)';
-  rows.push({ kind, sampled: S.sampled, chose: S.chose, track: S.track, best: S.best, speed: S.at.speed, c4: S.c4?.lat, c4a: S.c4?.alo, c1: S.c1?.lat, c1a: S.c1?.alo, body: S.bodyLat, ball: S.ballLat });
+  rows.push({ kind, fam: S.fam, preLook: S.preLook, flight: S.tBest - S.rel, firstLead: S.first !== undefined ? S.tBest - S.first : undefined, headOff: S.headOff, bodyOff: S.bodyOff, sampled: S.sampled, chose: S.chose, track: S.track, best: S.best, speed: S.at.speed, c4: S.c4?.lat, c4a: S.c4?.alo, c1: S.c1?.lat, c1a: S.c1?.alo, body: S.bodyLat, ball: S.ballLat });
   return res;
 };
 const rng = new Rng(seed);
@@ -69,3 +76,12 @@ console.log(`== seed ${seed} BALL_EST=${process.env.BALL_EST ?? 0}: open targets
 const kinds = [...new Set(rows.map(r => r.kind))].sort();
 const aq = (v: any[]) => q(v.filter((x) => x !== undefined).map(Math.abs));
 for (const k of kinds) { const V = rows.filter(r => r.kind === k); console.log(`   ${k}: ${V.length} | ball's closest horizontal ${q(V.map(r => r.best))} yd | his speed then ${q(V.map(r => r.speed))} | |lateral| of his chosen point off the true ball: 0.4 s out ${aq(V.map(r => r.c4))}, 0.1 s out ${aq(V.map(r => r.c1))} (along ${aq(V.map(r => r.c1a))}) | at the closest pass: his body off his point ${aq(V.map(r => r.body))}, the ball off his body ${aq(V.map(r => r.ball))} | at the closest pass: sampled the ball ${V.filter(r => r.sampled).length}, had a chosen point ${V.filter(r => r.chose).length}, tracking ${V.filter(r => r.track === 'track').length}`); }
+
+console.log('   by route family x kind (n): caught / wide past / wide late / wide across | for wide past: flight time, first sample lead before the closest pass, his head off the ball then, his body off the ball then, pre-release look share');
+for (const fam of [...new Set(rows.map(r => r.fam))].sort()) {
+  const F = rows.filter(r => r.fam === fam); if (F.length < 8) continue;
+  const c = (k: string) => F.filter(r => r.kind === k).length, P = F.filter(r => r.kind.startsWith('wide: past'));
+  console.log(`   ${fam}: n ${F.length} | ${c('caught')} / ${P.length} / ${c('wide: late (ahead of him)')} / ${c('wide: across')} | past: flight ${q(P.map(r => r.flight))} s, first sample lead ${q(P.map(r => r.firstLead))} (none ${P.filter(r => r.firstLead === undefined).length}), head off ${q(P.map(r => r.headOff))} deg, body off ${q(P.map(r => r.bodyOff))} deg, pre-look ${P.filter(r => r.preLook).length}`);
+}
+const PA = rows.filter(r => r.kind.startsWith('wide: past')), CA = rows.filter(r => r.kind === 'caught');
+console.log(`   all past: flight ${q(PA.map(r => r.flight))} | head off the ball at the closest pass ${q(PA.map(r => r.headOff))} deg (no head track ${PA.filter(r => r.headOff === undefined).length}) | body off ${q(PA.map(r => r.bodyOff))} || caught: flight ${q(CA.map(r => r.flight))}, first sample lead ${q(CA.map(r => r.firstLead))}, head off ${q(CA.map(r => r.headOff))}, body off ${q(CA.map(r => r.bodyOff))}`);
