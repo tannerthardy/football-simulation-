@@ -352,3 +352,25 @@ The two sources conflict.
 - **Shallow cross needs a full drop.** Smart Football: the shallow "takes a full five-step drop", and the QB waits for the receiver to "cross the centerline". The slant, by contrast, is three-step. The back: "if neither is open the runningback should be open."
   https://smartfootball.blogspot.com/2009/06/shallow-cross-drag-and-drive-in-west.html (MODERATE)
 
+
+## Addendum (2026-11-14, later the same day): what was built from the table
+
+All behind off flags; the QB lane builds the execution (the acceptance rule, the key throw, the drops).
+
+- **#733 (OUTLET_LAST + PLAN_KEYS; carded in engine-64 at e9ea51ca):** the back's release is read last; drive keys
+  the hook, pa_post_dig the free safety (post over the backside dig; our strong #2 blocks), smash and corner_flat the
+  corner; mesh is Leach's install, y_cross deep to short, pa_flood sail-cross-flat. Every plan carries `rhythm`.
+  CONCEPT_DROPS marks each concept's drop class.
+- **#737 (on top of #733):** every key names its danger (the defender who limits where and how high the ball goes,
+  not a reopening of the key's decision: "if the cornerback sinks... throw the hitch; if he comes up... throw the
+  corner", Brown); the eight sourced keys the compiler ran as pure orders now key; four verticals and verticals-hitch
+  go back to the gun three-step ("a quick five-step drop (from shotgun, a quick three-steps)", Gonzalez); the five-step
+  class reads its first answer on the hitch, 0.8 s after the set (the NFL's set-to-release at 3.5-5 yd).
+- **Route timing (route-time.py, BDB 2025 wk 1-6 vs engine default, same operator):** our routes are not ready late;
+  depth past the line at 2.0 / 2.5 s GO 7.2 / 11.1 vs NFL 6.2 / 9.6, POST 7.3 / 11.1 vs 7.3 / 10.7, CORNER 7.3 / 11.0
+  vs 7.1 / 10.4, IN 6.7 / 9.7 vs 6.1 / 9.2, OUT 5.5 / 6.9 vs 5.2 / 7.7. The four-verticals note above stands as a
+  question about the compiler's "ready" window for verticals, not the route.
+- **Crossers:** the drag is not drawn (the sources treat drag and shallow as one route at 3-6 yd; "35% of NFL crosses
+  under 3 yd" was an operator cutting at the throw). The crosser gap against zone is the defense's (the droppers sit
+  on the crosser's line; Coverage's CUT_WALL) and the mix (51% of our crossers are deep crosses against about 31%),
+  which goes into the call-mix refit.
