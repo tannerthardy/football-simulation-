@@ -401,6 +401,19 @@ const QB_KEY_MAN = process.env.QB_KEY_MAN === '1';
  * reading noise on a place along the stretch scales to a speed. Both chosen. */
 const KEY_MOVE = 1.0;
 const KEY_MOVE_NOISE = 5;
+/** QB_KEY_THROW (experimental, off; QB_KEY_THROW=1; with QB_KEY_MAN): the answer from a key read is thrown on its step.
+ * "Read the corner: he sinks, throw the flat; he squats, throw the corner" is an instruction to throw, on time, to the
+ * space the key defender has left: the one place where a coached read stands in for his own pricing. Off, the answer
+ * only ordered his first two looks and the man was then priced like any read, so the high answer (a 10-20 yd ball he
+ * prices at 0.2-0.5) was thrown on 14% of the plays the read gave it. On, he holds on the answer through its break
+ * (up to KEY_HOLD after the read) and throws it out of the break unless his picture shows somebody in the window:
+ * the key defender himself coming back to it, a defender who will be within KEY_WINDOW of the catch point when the
+ * motion ends, or one in the ball's lane. That is a test of who is there, in his picture, not of a chance. Constants
+ * are chosen. */
+const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
+const KEY_HOLD = 1.2;
+const KEY_WINDOW = 3.0;
+const KEY_LANE = 1.2;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
 /** QB_BREAK: how far outside him the break point is (yd); the existing panic lane. */
@@ -777,6 +790,35 @@ export class QBPass implements Behavior {
    * by looking there, with their age), placed along the line from the low route (0) to the high one (1) where he
    * is heading; playing the high route (0.5 or more) gives the low throw, the low one the high throw. His
    * decision-making and awareness set how cleanly he places him. */
+  /** QB_KEY_THROW: the man his key read gave, and when. */
+  private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
+  /** QB_KEY_THROW diagnostics (no effect): throws started on the read, and times the window was shut and by what. */
+  keyThrows = 0;
+  readonly keyShut: string[] = [];
+
+  /** QB_KEY_THROW: whether his picture shows nobody in the window of the answer's throw: not the key defender coming
+   * back to it, not a defender who will be within KEY_WINDOW of the catch point when his motion ends, not one in the
+   * ball's lane. Positions and movement in his pictures only. */
+  private keyWindow(a: Agent, sim: PlaySim, ev: ThrowEval): string | null {
+    const k = this.plan!.key!, wind = this.windup(a);
+    const px = ev.point.x - a.pos.x, py = ev.point.y - a.pos.y, L = Math.hypot(px, py) || 1;
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const m = this.mind.estimate(d);
+      const at = { x: m.pos.x + m.vel.x * wind, y: m.pos.y + m.vel.y * wind };
+      const dist = Math.hypot(at.x - ev.point.x, at.y - ev.point.y);
+      if (d === k.man) {
+        // The key himself: turned back toward the answer's route since the read.
+        const toward = ((ev.point.x - m.pos.x) * m.vel.x + (ev.point.y - m.pos.y) * m.vel.y) / (Math.hypot(ev.point.x - m.pos.x, ev.point.y - m.pos.y) || 1);
+        if (dist < KEY_WINDOW + 1.5 && toward >= KEY_MOVE) return 'key';
+      }
+      if (dist < KEY_WINDOW) return 'near';
+      const along = ((at.x - a.pos.x) * px + (at.y - a.pos.y) * py) / L, off = Math.abs((at.x - a.pos.x) * py - (at.y - a.pos.y) * px) / L;
+      if (along > 3 && along < L - KEY_WINDOW && off < KEY_LANE) return 'lane';
+    }
+    return null;
+  }
+
   /** QB_KEY_MAN: the defender a role names, picked from the alignment before the snap (everyone is in view then). */
   private keyMan(sim: PlaySim, role: string, low: Agent, high: Agent): Agent | null {
     const dir = sim.attackDir(sim.qb.team), midY = (low.pos.y + high.pos.y) / 2, side = Math.sign(midY - sim.ballY) || 1;
@@ -812,6 +854,7 @@ export class QBPass implements Behavior {
       this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
       this.readIdx = 0;
       this.readStart = sim.t;
+      this.keyAnswer = { target: first, toHigh: throwTo === 'high', at: sim.t };
       return;
     }
     // The stretch is where the two routes are going (he knows the installed routes): the high route about half a
@@ -1225,6 +1268,12 @@ export class QBPass implements Behavior {
     // READ_PLAN alert: a yes/no glance, not a full read.
     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
     const readDwell = READ_PLAN && this.plan?.alert && read === this.plan.alert && this.readIdx === 0 ? glance : dwell;
+    // QB_KEY_THROW: he stays on the key read's answer through its break (he throws it out of the break, not before).
+    let keyHold = false;
+    if (QB_KEY_THROW && read && this.keyAnswer?.target === read && t <= this.keyAnswer.at + KEY_HOLD && u < 0.8) {
+      const f = this.receiverForecasts.get(read), brk = f?.hasBreak && f.estimate?.motion === 'installed-route' ? f.breakAt() : null;
+      keyHold = brk !== null && brk !== undefined && brk + glance > t;
+    }
     if (tri) {
       let pick: ThrowEval | null = null;
       for (const r of tri) {
@@ -1268,12 +1317,18 @@ export class QBPass implements Behavior {
         const go = this.startIfFinish(a, sim, ev);
         if (go) { this.pendingSpot = toSpotNow.spot; return go; }
       }
+      // QB_KEY_THROW: the key read's answer is thrown on its step unless somebody is in the window in his picture.
+      if (QB_KEY_THROW && ev && this.keyAnswer?.target === read && t <= this.keyAnswer.at + KEY_HOLD && u < 0.8) {
+        const shut = this.keyWindow(a, sim, ev);
+        if (!shut) { const go = this.startIfFinish(a, sim, ev); if (go) { this.keyThrows++; this.keyAnswer = null; return go; } }
+        else if (this.keyShut[this.keyShut.length - 1] !== shut) this.keyShut.push(shut);
+      }
       if (ev && ev.P >= need && ev.intRisk <= risk) { const go = this.startIfFinish(a, sim, ev); if (go) return go; }
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
       const forecast = this.receiverForecasts.get(read);
       const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
-      if (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
+      if (!keyHold && (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance))) {
         // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
         // outlet that is there now is the throw, in rhythm, not at the end.
         // READ_PLAN: the back is a read in the plan, at his window on the side he releases to (HonestNFL 224,
@@ -1300,7 +1355,7 @@ export class QBPass implements Behavior {
       // the first second, upfield 0.0), then hold the ball 2.1 s more and throw 66% of the time
       // (scripts/diag/escape/clean-leave.py).
       else if (QB_BREAK && this.tryBreak(a, sim, 'reads')) return this.outTick(a, sim);
-    } else if (t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
+    } else if (!keyHold && t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
     }

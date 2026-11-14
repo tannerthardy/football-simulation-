@@ -2,7 +2,8 @@
 // One row per dropback whose installed plan has a defender key: the concept, the key's role, the man QB_KEY_MAN's
 // alignment rule names (computed here for both arms, from the snap alignment), the man the read was taken on, his
 // answer, where that man truly was along the low-high stretch at the read (0 = on the low route, 1 = on the high one),
-// who was thrown to (low, high, or another), and the result. Passive.
+// who was thrown to (low, high, or another), whether the throw was started on the read (QB_KEY_THROW) and what shut
+// the window when it was not, and the result. Passive.
 import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam } from '../../../src/league/team.js';
@@ -10,10 +11,11 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
-  const tick = sim.tick.bind(sim); let rec: any = null, named: any = undefined, tgt: any = null;
+  const tick = sim.tick.bind(sim); let rec: any = null, named: any = undefined, tgt: any = null, qbRef: any = null;
   sim.tick = () => {
     tick();
     const q = sim.qb, b: any = q.behavior; if (b?.kind !== 'qb-pass') return;
+    qbRef = b;
     const k = b.plan?.key; if (!k) return;
     if (named === undefined) named = k.man ?? b.keyMan(sim, k.role, k.low, k.high);
     if (!rec && b.keyRead) {
@@ -25,11 +27,12 @@ PlaySim.prototype.run = function (this: PlaySim) {
     }
   };
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3] }; return tb(p, target, ...rest); };
+  sim.throwBall = (p: any, target: any, ...rest: any[]) => { if (p === sim.qb && !tgt) tgt = { target, away: !!rest[3], t: +sim.t.toFixed(2) }; return tb(p, target, ...rest); };
   const res = orig.apply(this);
   if (rec) {
     const { low, high, ...row } = rec;
-    console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked }));
+    console.log(JSON.stringify({ ...row, thrown: !tgt || tgt.away || !tgt.target ? null : tgt.target === low ? 'low' : tgt.target === high ? 'high' : 'other', cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: (res as any).yards ?? null,
+      onRead: (sim.qb.behavior?.keyThrows ?? qbRef?.keyThrows ?? 0) > 0, shut: qbRef?.keyShut ?? [], thrownAt: tgt?.t ?? null }));
   }
   return res;
 };
