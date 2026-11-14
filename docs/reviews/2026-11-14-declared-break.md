@@ -136,3 +136,38 @@ So about 6% of windows on develop are wrong by more than 0.4 s because of the de
 - ready_diff of the flag against develop, and against the route-card stack.
 - The anticipation lead per family, with its source, as decision 5 settles.
 - No change to the QB's runtime throw logic: it reads the windows the compiler gives it.
+
+## Interface with the QB lane (agreed 2026-11-14, via Integration)
+
+Two things are kept separate: the route's fact, and the passer's lead.
+
+**What the plan carries, per read:**
+- `breakAt`: the declared break as the route is *installed for the team*. It is route time from the installed geometry,
+  timed on the compiler's own sample of the installed route. It is never read off the live play or the receiver's true
+  position. At runtime the quarterback reads the break from his own forecast of the receiver (QB_SEEN_REC,
+  `receiverForecasts.get(r).breakAt()`), and the plan's number must not become a second, truer source.
+- `throwFamily`: `'onBreak'` (hitch, out, comeback, curl, dig, slant: thrown as he plants) or `'seenOpen'` (crossers,
+  verticals, screens, the backs' releases: thrown to a man seen open). For `'seenOpen'` his readiness is his picture of
+  separation, not a time, and the QB lane branches on the tag.
+- `anchorLead`: the plan's team-level lead for ordering and rhythm. The first build uses the values that reproduce
+  today's windows (hitch 0.20, out / hook / comeback 0.30, curl 0.40, slant and dig 0.00, `seenOpen` 0), labelled as the
+  anchor, so nothing moves by construction.
+
+**What the QB lane owns:** `leadFor(passer, throwFamily, route) -> s`, which reads the passer's `anticipation`. It is
+called when a read is checked (their readiness test runs every tick for the man his eyes are on). The ready time
+ready = breakAt - leadFor(...) means *the moment to start the throw*. The throwing motion is theirs and is added on
+their side; the plan's rhythm stays in route time.
+
+**Is today's lead standing in for the motion? No; it is a third thing.**
+- The compiler's 0.2-0.4 s offset on plants is geometric: the detector places the break where the bend *begins*
+  (walked back to 8 deg), which on a plant is 0.2-0.4 s before the vertex.
+- It is used only for ordering and rhythm in the plan (and a key's cue). The runtime QB does not read it.
+- The runtime already separates motion and anticipation (`qb.ts`, `ready()`): a timing throw starts when
+  t + windup >= breakAt - 0.3 x anticipation, with the break from his forecast of the installed route. The windup is the
+  motion; 0.3 x anticipation is today's passer lead.
+- So the build has three parts:
+  - `leadFor` replaces the runtime's `0.3 x anticipation` term;
+  - the windup stays as is;
+  - the compiler's `anchorLead` replaces the detector's accidental bend-start offset, with the same values, for
+    team-level ordering only.
+- Nothing is folded twice. The runtime never adds `anchorLead`, and the compiler never adds the windup.
