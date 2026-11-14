@@ -13,7 +13,7 @@ import type { Vec2 } from '../../core/vec.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
-import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
+import { believesRun, infoHonest, ManCoverage, OPEN_CARRY, openCarryFacing, playBall, pursueIfLive, runFit, sawThrow, playsThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
 import { withFacingTechnique } from './orientation.js';
 
@@ -33,7 +33,7 @@ abstract class Technique implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) return live;
-    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
     return this.move(a, sim);
   }

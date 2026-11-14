@@ -400,7 +400,7 @@ export class PassRusher implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Throw in the air: peel off toward the ball.
-    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
+    if (playsFlight(a, sim, null)) {
       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
@@ -600,7 +600,7 @@ export class Blitzer implements Behavior {
       }
       return runFit(a, sim, this.gap, this.gapSign);
     }
-    if (HONEST_READS ? sim.ball.kind === 'air' && sawThrow(a, sim, null) : sim.ball.kind === 'air') {
+    if (HONEST_READS ? playsFlight(a, sim, null) : sim.ball.kind === 'air') {
       // HONEST_READS: the ball he has seen thrown, on his acquired flight.
       const spot = HONEST_READS ? catchSpot(a, { t: sim.t, ballPath: acquireFlight(a, sim) }) : catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
@@ -1203,7 +1203,7 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
     // with the cushion not broken: he re-squares (the body turns back at its
     // own rate; the stop route is built to win in that time).
-    if (breakOn && this.hipsOpen && !crossing && (infoHonest(6) ? !(sim.ball.kind === 'air' && sawThrow(a, sim, R)) : sim.ball.kind !== 'air') && vx < Math.max(0, a.vel.x) - 1
+    if (breakOn && this.hipsOpen && !crossing && (infoHonest(6) ? !playsThrow(a, sim, R) : sim.ball.kind !== 'air') && vx < Math.max(0, a.vel.x) - 1
       && !broken()) { this.hipsOpen = false; a.tags.add('re-square'); }
 
     let tx = seen.pos.x;
@@ -1422,7 +1422,7 @@ export class ZoneCoverage implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
-    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
@@ -2103,7 +2103,13 @@ function believesThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
     a.tags.add('readArm');
     return true;
   }
-  if (rb.releasedAt === undefined) return false;
+  // A man defender who saw neither the arm nor the ball (his back to the passer, trailing his man) still reads his
+  // man looking back for it, as before.
+  if (rb.releasedAt === undefined) {
+    if (!man) return false;
+    const hands = readsHandsAt(a, sim, man, undefined);
+    return hands !== undefined && sim.t - hands >= react;
+  }
   const cue = man ? readsHandsAt(a, sim, man, rb.ballAt) : rb.ballAt;
   return cue !== undefined && sim.t - cue >= react;
 }
@@ -2139,6 +2145,7 @@ function eyesHeldOnQB(a: Agent, sim: PlaySim, span: number, cosMin: number): boo
 
 export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
   continueCoverage?: () => MoveCommand): MoveCommand {
+  if (RELEASE_BELIEF) return playBelievedBall(a, sim, man, continueCoverage);
   const ball = sim.ball;
   if (ball.kind !== 'air') return stand();
   if (!sawThrow(a, sim, man)) {
@@ -2155,6 +2162,71 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
   }
   a.tags.add('onBall');
   return playObservedFlight(a, sim, acquireFlight(a, sim), true);
+}
+
+/** RELEASE_BELIEF: whether he plays the throw now: his belief (sawThrow) instead of the true air state, while the
+ * flight he saw has not landed by his own estimate (then the holder and carry channels take over). Off: the true air
+ * state and sawThrow, as before. */
+export function playsThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  if (!RELEASE_BELIEF) return sim.ball.kind === 'air' && sawThrow(a, sim, man);
+  return sawThrow(a, sim, man) && !(hasObservedFlight(a) && flightLanded(a, sim.t));
+}
+/** RELEASE_BELIEF: as playsThrow, for a caller that steers on the flight itself: he must have seen the ball. */
+function playsFlight(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  return playsThrow(a, sim, man) && (!RELEASE_BELIEF || releaseBelief(sim, a).ballAt !== undefined);
+}
+/** RELEASE_BELIEF's playBall: with the ball seen, the flight he acquired; on a belief from the arm alone (the motion
+ * tells him when, not where) he bites: a zone defender plants (stops his drop, the rest of his zone play goes on), a
+ * man defender stays on his man, until he sees the ball or the pull-down. */
+function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCoverage?: () => MoveCommand): MoveCommand {
+  const fallback = (): MoveCommand => {
+    if (continueCoverage) return continueCoverage();
+    if (man) {
+      const s = sim.see(a, man);
+      const inside = Math.sign(sim.ballY - s.pos.y) || 1;
+      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
+    }
+    return { vel: a.vel };
+  };
+  if (!sawThrow(a, sim, man)) return fallback();
+  const rb = releaseBelief(sim, a);
+  if (rb.ballAt === undefined) {
+    a.tags.add('arm-bite');
+    if (!continueCoverage) return fallback();
+    // A zone defender breaks on the passer's shoulders: toward the receiver they point at in his picture (chosen once
+    // for this belief); with none lined up, he plants (stops his drop) until he sees the ball or the pull-down.
+    const R = shoulderTarget(a, sim, rb.releasedAt ?? rb.loadingAt ?? sim.t);
+    if (R) { a.tags.add('shoulder-break'); return runThrough(a, sim.see(a, R).pos, { speed: 0.9 }); }
+    return stopDrop(sim, continueCoverage());
+  }
+  a.tags.add('onBall');
+  const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
+  return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
+}
+
+/** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
+ * the arm (smallest bearing off the passer's seen facing, within SHOULDER_CONE), chosen once per belief. */
+const SHOULDER_CONE = 25 * Math.PI / 180;
+/** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
+ * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
+ * shoulders can exploit. */
+const SHOULDER_READ_SD_MIN = 5, SHOULDER_READ_SD_SPAN = 15;
+const shoulderPick = new WeakMap<Agent, { key: number; R: Agent | null }>();
+/** Diagnostic: the receiver his last shoulder read picked (null: none lined up). */
+export function shoulderPickOf(a: Agent): Agent | null | undefined { return shoulderPick.get(a)?.R; }
+function shoulderTarget(a: Agent, sim: PlaySim, key: number): Agent | null {
+  const prev = shoulderPick.get(a);
+  if (prev && prev.key === key) return prev.R;
+  const q = sim.see(a, sim.qb);
+  const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
+  let best: Agent | null = null, bestOff = SHOULDER_CONE;
+  if (q.facing !== undefined) for (const r of sim.offense) {
+    if (r === sim.qb || isOL(r)) continue;
+    const p = sim.see(a, r).pos, off = Math.abs(angleDiff(Math.atan2(p.y - q.pos.y, p.x - q.pos.x), q.facing + err));
+    if (off < bestOff) { bestOff = off; best = r; }
+  }
+  shoulderPick.set(a, { key, R: best });
+  return best;
 }
 
 /** Same catch approach, seeded only by this defender's acquired trajectory.
@@ -2315,7 +2387,7 @@ export class Pursuit implements Behavior {
     if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     const holder = observedHolder(a, sim);
     if (holder) return chase(sim, a, holder.target);
-    if (sim.ball.kind === 'air' && (!HONEST_READS || sawThrow(a, sim, null))) return playBall(a, sim, null);
+    if (HONEST_READS ? playsThrow(a, sim, null) : sim.ball.kind === 'air') return playBall(a, sim, null);
     return pursueIfLive(sim, a) ?? stand();
   }
 }

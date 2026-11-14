@@ -8,7 +8,7 @@
 import type { MoveCommand } from '../../physics/kinematics.js';
 import type { Gap, MatchRule, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
-import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, playsThrow, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
@@ -116,7 +116,7 @@ export class CoverageDefender implements Behavior {
         // The acquired Quarters flat match retains this same body's force
         // duty (and any installed inside option); it does not create a fitter.
         || (a.runFit?.kind === 'force' && this.rule === 'q_apex' && this.state.mode === 'flat'))
-      && (sim.ball.kind !== 'air' || !sawThrow(a, sim, this.sub.target))) {
+      && !playsThrow(a, sim, this.sub.target)) {
       for (const back of sim.offense) {
         if (!sim.offAlign.spots[back.slot]?.backfield
           || (back.player.position !== 'RB' && back.player.position !== 'FB')) continue;
