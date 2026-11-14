@@ -35,11 +35,15 @@ async function falls(flags: Record<string, string>, roster: number, coverage = '
   return sim.events.filter((e: any) => e.type === 'fall' && ol.has(e.a) && e.t >= 0.5 && e.t <= thr)
     .map((e: any) => ({ slot: sim.agents[e.a].slot as string, t: e.t as number, move: moves.get(e.a) }));
 }
-/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change, the seen set, engine-60's four, engine-61's six and
- * engine-62's RUSH_BULL pinned off. */
+/** PUNCH_STRIKE alone: the protector's lean bound, the pursuit change, the seen set, engine-60's four, engine-61's six,
+ * engine-62's RUSH_BULL and engine-65's VERTICAL_SET pinned off. VERTICAL_SET (the tackle's vertical set) changes the
+ * scene beside the right guard: with it on, the first case's spin on the guard who keeps driving is not staged
+ * (attributed on the engine-65 candidate by turning one stack flag off at a time). The case isolates PUNCH_STRIKE, so the
+ * tackle's set is held at the old one. */
 const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PURSUIT_COMMIT: '0', PASS_SET_SEEN: '0',
   THROW_HOLD: '0', POCKET_REACH: '0', REP_SEEN: '0', RUSH_LEAN_BOUND: '0',
-  HONEST_READS: '0', INFO_HONEST: '0', HONEST_TACKLE: '0', RCV_SEEN: '0', TRACK_PURSUIT: '0', TRACK_TACKLE: '0', RUSH_BULL: '0' });
+  HONEST_READS: '0', INFO_HONEST: '0', HONEST_TACKLE: '0', RCV_SEEN: '0', TRACK_PURSUIT: '0', TRACK_TACKLE: '0', RUSH_BULL: '0',
+  VERTICAL_SET: '0' });
 
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
