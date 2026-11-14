@@ -67,4 +67,33 @@ describe('sim mechanism export', () => {
     expect(exported.events.catch).toBe(0.15);
     expect(exported.carrier).toBeNull();
   });
+
+  it('exports a strip-sack fumble and the change of possession although no ball was thrown', () => {
+    const p = play(1);
+    p.kind = 'pass';
+    p.replay!.events = [
+      { t: 0.1, type: 'sack', a: 2, b: 0 },
+      { t: 0.1, type: 'fumble', a: 0, b: 2 },
+      { t: 0.15, type: 'recovery', a: 2 },
+    ];
+    const exported = commonPlay(p, 'strip-sack')!;
+    expect(exported.events.fumble).toBe(0.1);
+    expect(exported.events.possession_change).toBe(0.15);
+    expect(exported.events.end).toBe(0.1);
+    expect(exported.labels.ballEvents).toEqual([]);
+    expect(exported.labels.ballSecurity).toEqual([
+      { t: 0.1, type: 'fumble', a: 0, side: 'O' },
+      { t: 0.15, type: 'recovery', a: 2, side: 'D' },
+    ]);
+    expect(exported.labels.possessionChanges).toEqual([{ t: 0.15, to: 'D', by: 2 }]);
+  });
+
+  it('does not call an offensive recovery of its own fumble a change of possession', () => {
+    const p = play(1);
+    p.replay!.events = [{ t: 0.1, type: 'fumble', a: 1, b: 2 }, { t: 0.2, type: 'recovery', a: 0 }, { t: 0.2, type: 'tackle', a: 2, b: 0 }];
+    const exported = commonPlay(p, 'own-recovery')!;
+    expect(exported.events.fumble).toBe(0.1);
+    expect(exported.events.possession_change).toBeUndefined();
+    expect(exported.labels.possessionChanges).toEqual([]);
+  });
 });

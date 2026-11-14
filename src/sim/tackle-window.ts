@@ -13,6 +13,15 @@ export interface TackleWindow {
   futureQuality: number;
   closest: number;
   closestAt: number;
+  /** The forecast's best shot (wrap quality, which saturates at form-tackle range) is first attained before its last
+   * upright sample, so the better shot is reached inside the lookahead. A runner he is closing on fast reaches it even
+   * while the distance keeps falling through form range. False has
+   * two football causes, and both mean "take the reach you have": (1) still closing at the horizon, so the better
+   * shot keeps receding (a slow chase, or a runner faster than his seen velocity); (2) the forecast stops early
+   * because his support would no longer be 'up' after that sample: the shot is real, but his feet are going, so he
+   * reaches now rather than after losing his base. Both give the same decision today; if one is refined (e.g.
+   * telling a fast late closure from a receding one), split them rather than changing the other. */
+  reached: boolean;
 }
 
 /** Existing geometric wrap quality: torso contact versus extended fingertips. */
@@ -32,7 +41,7 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
       || Math.hypot(s.load.x, s.load.y) > 1e-6))) return null;
   let closest = Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y);
   const currentQuality = contactQuality(closest, body, arms);
-  let closestAt = 0;
+  let closestAt = 0, lastT = 0, best = currentQuality, bestAt = 0;
   // Six ordinary decision samples preserve the previous 0.3 s lookahead.
   // A useful hip passing between now and the next tick is not a reason to
   // skip this attempt: tackles can only be chosen at the decision samples.
@@ -41,9 +50,15 @@ export function previewTackleWindow(d: Agent, seen: Perceived,
     // back to the ideal straight-line estimate. Only credit earlier upright
     // decision samples; if there are none, there is no benefit to waiting.
     if (p.support !== 'up') break;
+    lastT = p.t;
     const distance = Math.hypot(seen.pos.x + seen.vel.x * p.t - p.pos.x,
       seen.pos.y + seen.vel.y * p.t - p.pos.y);
     if (distance < closest) { closest = distance; closestAt = p.t; }
+    // The shot is the wrap quality, not the distance: closing on through form-tackle range still reaches the best
+    // shot at the first sample that attains it.
+    const quality = contactQuality(distance, body, arms);
+    if (quality > best + 1e-9) { best = quality; bestAt = p.t; }
   }
-  return { currentQuality, futureQuality: contactQuality(closest, body, arms), closest, closestAt };
+  return { currentQuality, futureQuality: contactQuality(closest, body, arms), closest, closestAt,
+    reached: bestAt < lastT - 1e-9 };
 }

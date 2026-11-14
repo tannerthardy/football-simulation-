@@ -20,7 +20,7 @@ import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
-import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
+import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
 import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
@@ -73,7 +73,7 @@ const SEEN_EYES = process.env.SEEN_EYES !== '0';
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
-  if (!SEEN_EYES) return sim.qbEyes;
+  if (!SEEN_EYES && !QB_BODY_SEEN) return sim.qbEyes;
   const c = eyesCache.get(a);
   if (c && c.t === sim.t) return c.r;
   let r: Agent | null = null;
@@ -85,7 +85,7 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos(q.facing - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos((QB_BODY_SEEN ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
       if (cos > best) { best = cos; r = o; }
     }
   }
@@ -762,12 +762,68 @@ function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: bool
  * cushion breaks and he turns. a is his own: the propulsion his legs give
  * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
  * tau, so a slow-footed defender has to start earlier. */
-function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): number {
+function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number,
+  seenAccel?: number): number {
   const vx = Math.max(0, receiverVx), p = a.profile;
+  if (CARRY_READ && seenAccel !== undefined) {
+    const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+    return spare <= 0 ? vx : burstNeed(a, spare, vx, seenAccel);
+  }
   const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
   const accel = Math.max(0.1, (1 - Math.max(0, a.vel.x) / cap) * p.vmax / p.tau);
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
+}
+/** CARRY_READ (on since engine-57; `CARRY_READ=0` restores the old carry): a deep carry
+ * plays off what the receiver can still become, read from what he shows: his
+ * seen upfield speed vx and the acceleration in the defender's picture
+ * (DeepCoverage's seen-velocity change), continued as a burst that fades over
+ * BURST_TAU: v(t) = vx + a tau (1 - e^(-t / tau)). Three parts:
+ * 1. A man carry with installed deep responsibility asks for no ground back
+ *    toward a receiver who will still be climbing (`holdWeight`, continuous in
+ *    that projection, scales the downhill part of his request); he may still
+ *    spend cushion by pedalling slower than the receiver climbs, and comes
+ *    downhill as the receiver throttles.
+ * 2. The carry need (`carrySpeedNeed`, both call sites) is the slowest speed
+ *    now that keeps the gap he gives up within his spare cushion while the
+ *    receiver bursts and he accelerates with his own tau, toward his facing's
+ *    cap until a rounded turn to the run would be done and toward his top
+ *    speed after: a slower or squarer defender needs more, so he opens sooner.
+ * Off: on No. 1's go vs a Cover 3 match corner, as No. 1 passed 3 yd/s at
+ * about 0.8 s the over-the-top roof asked a corner 6-9 yd over him to come
+ * downhill at 4-6 yd/s; then the need (from vx alone) kept him square at a
+ * pedal while No. 1 burst 6.1 -> 8.3 yd/s. Over him at 1.5 / 2.0 / 2.85 s NFL
+ * 4.9 / 3.3 / +1.2 yd, sim 3.9 / 2.1 / -0.8; his speed at 1.5 s 3.1 vs about 2
+ * yd/s; on top at 2.85 s 54% vs 0% (BDB 2025 weeks 1-3 n 37 vs seeds 11/23;
+ * scripts/diag/risk/vert-pos.ts, vert_sep_nfl.py --pos). */
+const CARRY_READ = process.env.CARRY_READ !== '0';
+/** CARRY_READ: how fast a seen burst fades (s), and how far ahead his cushion must last (s). Estimated, stand-in debt. */
+const BURST_TAU = 1.0, BURST_HORIZON = 2.0;
+/** CARRY_READ: receiver speed t s ahead, from what the defender sees. */
+const projected = (vx: number, accel: number, t: number) => Math.max(0, vx + accel * BURST_TAU * (1 - Math.exp(-t / BURST_TAU)));
+/** CARRY_READ: how fully he holds his depth: 1 while the receiver will be climbing 0.5 s on (3+ yd/s), easing to 0 as
+ * that projection falls to 1 yd/s (a throttle, a plant). */
+const holdWeight = (vx: number, accel: number) => clamp((projected(vx, accel, 0.5) - 1) / 2, 0, 1);
+function burstNeed(a: Agent, spare: number, vx: number, accel: number): number {
+  const p = a.profile, dt = 0.05;
+  // Square, his body cannot reach his top speed: until a rounded turn from his
+  // facing to the run would be done, he accelerates only toward his facing's cap.
+  const turn = roundedTurnTime(a, angleDiff(a.body.facing, 0));
+  const square = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
+  const keeps = (v0: number) => {
+    let gap = 0, vd = v0;
+    for (let t = dt; t <= BURST_HORIZON + 1e-9; t += dt) {
+      vd += Math.max(0, (t < turn ? square : p.vmax) - vd) / p.tau * dt;
+      gap += (projected(vx, accel, t) - vd) * dt;
+      if (gap > spare) return false;
+    }
+    return true;
+  };
+  if (keeps(0)) return 0;
+  if (!keeps(p.vmax)) return p.vmax;
+  let lo = 0, hi = p.vmax;
+  for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (keeps(mid)) hi = mid; else lo = mid; }
+  return hi;
 }
 /** OPEN_CARRY (experimental, off; OPEN_CARRY=1 turns it on): an underneath
  * zone or match defender carrying a route keeps his hips as square to the QB
@@ -1135,13 +1191,27 @@ export class ManCoverage implements Behavior {
     // to the QB as his request allows (pure man and deep carries unchanged).
     const underCarry = OPEN_CARRY && openReq && !sim.defCall.coverage.man && !o.protectDepth;
     if (underCarry) a.tags.add('open-carry');
-    const command = openReq
+    let command = openReq
       ? underCarry
         ? withFacingTechnique({ ...openReq, facing: openCarryFacing(a, sim, R, openReq, vx > 3) }, { label: 'open-carry', key: seen.vel })
         : withFacingTechnique(openReq, { label: 'man-open', key: seen.vel })
       : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
         { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
+    // CARRY_READ: while the receiver will still be climbing, he asks for at
+    // least the upfield speed his carry needs (the slowest that keeps his spare
+    // cushion against the burst he sees): he spends cushion only as fast as it
+    // allows and never comes downhill at a climber. As the receiver throttles
+    // the hold fades and the roof / cushion need bring him down.
+    const hold = CARRY_READ ? holdWeight(vx, this.depth.seenAcceleration) : 0;
+    if (hold > 0) {
+      const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, !o.protectDepth, R.profile.radius, this.depth.seenAcceleration);
+      const floor = hold * need;
+      if (command.vel.x < floor) {
+        command = { ...command, vel: { x: floor, y: command.vel.y } };
+        a.tags.add('carry-hold');
+      }
+    }
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
     // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
@@ -1152,7 +1222,7 @@ export class ManCoverage implements Behavior {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
       const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
-        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius));
+        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration));
       const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
       if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
       a.tags.add('open-carry');
@@ -1524,7 +1594,7 @@ export class ZoneCoverage implements Behavior {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
         const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
-          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius));
+          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
         if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
         a.tags.add('open-carry');
@@ -1873,6 +1943,14 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
+ * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
+ * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,
+ * known to every defender) and `sim.qbEyes`. SHOULDER_READ's plant and restart, sawThrow's arm key and SEEN_EYES's
+ * look read the picture. Off: the published fields, as before. */
+const QB_BODY_SEEN = process.env.QB_BODY_SEEN !== '0';
+/** QB_BODY_SEEN: whether this picture of the passer shows a throwing motion (loading or delivering). */
+const throwingShown = (q: { arm?: 'set' | 'load' | 'deliver' }) => q.arm === 'load' || q.arm === 'deliver';
 /** SHOULDER_READ: the throwing motion each defender planted on (by its windupAt), per play. */
 const plants = new WeakMap<Agent, { sim: PlaySim; windup: number }>();
 /** SHOULDER_READ: whether he is planted on a throwing motion he has seen. */
@@ -1881,6 +1959,17 @@ function underneathPlant(a: Agent, sim: PlaySim): boolean {
   const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')));
   let p = plants.get(a);
   if (p && p.sim !== sim) { plants.delete(a); p = undefined; }
+  if (QB_BODY_SEEN) {
+    // His picture of the passer, on the same anticipation-shortened delay: planted while it shows a throwing motion
+    // (a new one after a restart), restarting once it shows him set again.
+    const q = sim.see(a, sim.qb, 1 - 0.4 * a.r('anticipation'));
+    if (p && !throwingShown(q)) { plants.delete(a); p = undefined; a.tags.add('plant-restart'); }
+    if (!p && throwingShown(q) && Math.cos(a.body.facing - Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x)) > -0.2
+      && eyesHeldOnQB(a, sim, react, -0.2)) {
+      p = { sim, windup: sim.t }; plants.set(a, p); a.tags.add('plant');
+    }
+    return !!p;
+  }
   // The motion he planted on was pulled down: once he has seen that, he restarts his drop.
   if (p && sim.windupAt !== p.windup && sim.windupEndAt >= p.windup && sim.t - sim.windupEndAt >= react) {
     plants.delete(a); p = undefined; a.tags.add('plant-restart');
@@ -1917,7 +2006,9 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // motion, or when his eyes reached the QB if that was later. Motion he did
   // not see gives him nothing. He still learns where it goes only from the
   // visible flight.
-  const keysQB = facingQB && zoneEyes && sim.windupAt >= 0 && sim.t - sim.windupAt >= react
+  const keysQB = facingQB && zoneEyes
+    && (QB_BODY_SEEN ? throwingShown(sim.see(a, sim.qb, (1 - 0.4 * a.r('anticipation')) + (man ? 0.05 / a.profile.reactionTime : 0)))
+      : sim.windupAt >= 0 && sim.t - sim.windupAt >= react)
     && eyesHeldOnQB(a, sim, react, -0.2);
   if (keysQB) {
     a.tags.add('readArm');
@@ -1983,6 +2074,18 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
 /** Same catch approach, seeded only by this defender's acquired trajectory.
  * A newer body-possession picture takes priority in pursueIfLive. */
 function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
+  const c = flightApproach(a, sim, path, acquired);
+  if (!PURSUIT_COMMIT) return c ?? stand();
+  // PURSUIT_COMMIT: on the flight's last tick no sample of it is left ahead of
+  // him; that is not a reason to stop. Hold the approach he last chose.
+  if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
+  const last = lastFlightApproach.get(a);
+  return last && sim.t - last.t <= 0.3 ? { ...last.cmd } : stand();
+}
+
+const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
+
+function flightApproach(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand | null {
   const spot = catchSpot(a, { t: sim.t, ballPath: path });
   const window = observedCatchWindow(a, sim, path);
   if (acquired) rememberCatchOpportunity(a, window);
@@ -2059,7 +2162,7 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
     return movingCatchApproach(a,sim,withMovementObjective({vel:{x:(dx/d)*sp,y:(dy/d)*sp}},
       { kind: 'fixed', point: tgt }),window,spot);
   }
-  return spot ? runThrough(a, spot.p, { speed: 0.9 }) : stand();
+  return spot ? runThrough(a, spot.p, { speed: 0.9 }) : null;
 }
 
 /** First plausible receiver catch from the defender's delayed picture and

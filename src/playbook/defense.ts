@@ -217,13 +217,19 @@ export const FRONTS: Front[] = ALL_FRONTS.filter((f) => NICKEL_FRONTS || !['penn
 export { COVERAGES, COVERAGE_BY_ID } from './coverages.js';
 
 export const PRESSURES: Pressure[] = [
+  // maxRushers (RUSH_PROMISE): a single added rusher behind three-deep is a
+  // five-man zone pressure with three under. Where the front already rushes an
+  // extra man (an on-line Sam, a 3-4's fifth lineman, Penny's Will) the call
+  // would become six rush and two curl-flat players with no one in the middle,
+  // by accident. A designed three-deep, two-under six-man pressure (two hot
+  // droppers) is a separate, future install (docs/PARKED.md).
   {
     id: 'mike_a', name: 'Mike A-Gap', blitzers: { LB_M: { gap: 'A', side: 'S' } },
-    coverages: ['cover1', 'cover3', 'cover0'],
+    coverages: ['cover1', 'cover3', 'cover0'], maxRushers: { cover3: 5 },
   },
   {
     id: 'will_b', name: 'Will B-Gap', blitzers: { LB_W: { gap: 'B', side: 'W' } },
-    coverages: ['cover1', 'cover3'],
+    coverages: ['cover1', 'cover3'], maxRushers: { cover3: 5 },
   },
   {
     id: 'double_a', name: 'Double-A Mug', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'A', side: 'W' } },
@@ -233,7 +239,7 @@ export const PRESSURES: Pressure[] = [
   },
   {
     id: 'nickel_edge', name: 'Nickel Edge', blitzers: { NB: { gap: 'D', side: 'S' } },
-    coverages: ['cover1', 'cover3'],
+    coverages: ['cover1', 'cover3'], maxRushers: { cover3: 5 },
   },
   {
     // Ringo/Lucky "Freeze" (HNFL-064): the dropped end is a seam/flat

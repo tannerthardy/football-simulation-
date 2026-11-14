@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-56`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-59`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,74 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-59: `PASS_SET_SEEN`, `QB_BODY_SEEN`, `RUSH_PROMISE` and `WAIT_REACHED` on (2026-11-14)
+
+The first removals under the owner's rule of 2026-11-13: every information cheat found is removed and given an honest replacement. The count of what remains is the leak sweep (`docs/reviews/2026-11-13-information-leak-sweep.md`, 60 active decision reads at engine-57) and, once it lands, the guard's allowlist (#699).
+
+**`PASS_SET_SEEN`** (Flex, `2f45ebee`). The pre-contact pass set (set point, kick, mirror, cut-off, overset fear) and protection's assignment costs read the rusher's true position and velocity. They now read each blocker's own picture (`sim.see`). The lane's read, two seeds, off → on (NFL): edge pressure from in front of the tackle 10.3 / 10.1 → 2.6 / 3.8% of drop-backs (3.0); edge inside 4.7 / 4.6 → 8.1 / 6.5% (6.4); interior 4.9 / 6.1 → 8.6 / 8.5% (9.8); a rusher free 44 / 43 → 37 / 33% (38). The edge-in-front class was an oracle tackle sitting exactly on the rusher's path. Left: edge past-outside 0.4 to 0.5% (3.8), pressured 25 to 26% (32.9), contact given 2 yd 47 to 51% (35). The propped fall is not removed by it: 7 OL falls in 864 staged scenes on against 9 off, and games 3.5 / 4.3 against 4.0 / 3.7 per 100 drop-backs.
+
+**`QB_BODY_SEEN`** (Rules+Coaching #692, `3c823989`). The quarterback's arm phase, head direction and carry posture are recorded on his body and read through perception; defenders no longer read the tick his motion began (`sim.windupAt`) or take his eyes from his hips. With it the pump bites as a real load does: defenders see the motion with their own delay, so about four times as many plant on a pump (1.0 against 0.26 a pump); each restarts 0.2 s after he sees the ball come down. Completion on pump plays 55 → 51% over four seed sets, within noise. A doubling of pooled post-catch pursuit turn on the `pursuit-commit` staged set was traced by both lanes to two long breakaways (3,384 of 5,017 off-arm ticks) that end in tackles with the head read on; without those two plays turn p50 is 29.6 / 30.6 / 28.8 °/s off / on / arm only, and `PURSUIT_COMMIT`'s gain holds at matched range. Open, not a gate: commit-on meeting-bearing jumps at 0 to 3 yd 19 → 32% (n 247).
+
+**`RUSH_PROMISE`** (Defense #690, `088d8084`). `mike_a`, `will_b` and `nickel_edge` in Cover 3 promise five rushers, so fronts that would make them six (two underneath, no hook) send the call elsewhere; Penny's walked-up backer is counted as the rusher he is. Accidental six-rush Cover 3 installs 60 → 0. In games the removed calls are about 0.9 a game (1.0% of pass snaps), so no card movement is expected. A designed three-deep, two-under pressure is parked as `MAX_ZONE_6`.
+
+**`WAIT_REACHED`** (Defense #704 + #708, `dae0ddb1`). A tackler waited for a better shot whenever his 0.3 s forecast put the best wrap at its last sample, every tick, so against a runner as fast as he is he never reached (the receding horizon; `man-trail-carry` s5 first wrapped at 3.55 s where 2.95 s was available). He now waits only for a wrap quality the forecast attains inside the lookahead. The first version judged it on distance and dropped fast closures that had a form tackle 0.1 to 0.3 s ahead (290 of 521 dropped waits); Rules+Coaching's review caught it and #708 judges it on the shot. Paired fresh run set, rule off vs on: +0.01 (SE 0.01), every family within ±0.03, 6% of plays change, missed + broken 0.305 vs 0.304. Opportunity to contact p50 0.20 → 0.15 s; keeps his feet 92.2 → 89.7%; first contact a miss 21/381 → 29/374, not distinguishable from noise at this n.
+
+Merged off for the lanes to build on: the `track()` entry point (#691, `PERCEIVE_TRACK`; identical to `see()` when off) and the seen-contact record (#693). Note for #691: as merged, `track()` has only its latency and no line-of-sight or in-view test; Rules+Coaching found it and is fixing it in the entry point before any tracking group is turned on.
+
+Checks. First candidate `5531e189`: eight fixture failures beside the two known research ones, each traced before landing: `punch-strike` ×3 and `rush-arm-balance` (scenes moved by `PASS_SET_SEEN`; isolating cases pin it off, and a real propped fall and a real dropped bull were re-found on this stack: Flex `9bf9c064`); `hot-look` ×2 (the 14-play panel sat on the 0.45 s alarm threshold and `PASS_SET_SEEN` took 12 of its alarms; the test now asks the hot decision directly, QB lane `e598e741`); `pursuit-commit` (premise, #704); `man-trail-carry` (the `WAIT_REACHED` defect above, a real one). Final tree `dae0ddb1`: full suite 4442 pass with only the two known research failures. Fresh run set 3.80 / 3.81; missed + broken 0.304 to 0.305 a run. Cards, 16 games a side.
+
+`PASS_SET_SEEN` alone, then all three first flags (`out/e61-card-*`):
+
+| seed | sack rate, set alone | sack rate, all three | yards an attempt, all three | completion, all three | INT, all three |
+|---|---|---|---|---|---|
+| 11 | 3.0 → 4.0% | 3.0 → 3.8% | 7.60 → 8.10 | 64.3 → 67.6% (moved) | 1.2 → 1.7% (moved) |
+| 23 | 2.0 → 3.3% (moved) | 2.0 → 3.7% (moved) | 8.19 → 7.91 | 67.2 → 65.9% | 1.8 → 1.0% (moved) |
+| 31 | 2.4 → 3.5% (moved) | 2.4 → 3.2% | 8.46 → 7.77 | 67.5 → 66.3% | 1.5 → 2.4% |
+
+Sacks rise about a point on every seed with the pass set honest; nothing else agrees across seeds. `WAIT_REACHED` 0 → 1 on the final tree (`out/e63-card-*`): sack rate 3.8 → 3.9, 3.7 → 3.3, 3.2 → 3.5%; yards an attempt 8.10 → 7.81, 7.91 → 7.25 (moved), 7.77 → 7.48; rush yards a carry 3.96 → 4.32, 3.77 → 3.95, 3.98 → 4.14 on diverged games, against +0.01 paired.
+
+**What the quarterback does not feel** (QB lane, seed 101 × 4, `PASS_SET_SEEN` off → on): alarmed drop-backs 3.4 → 2.4% while a defender within 1 yd with the ball in his hand goes 3.1 → 7.3% and sacks 0.8 → 3.0%. More of the pressure that arrives is pressure he does not see coming; `TRACK_FEEL` (#703) and the blind-side work are the follow-ups.
+
+## engine-58: `PUNCH_STRIKE`, `ANCHOR_BASE` and `PURSUIT_COMMIT` on (2026-11-13)
+
+**`PUNCH_STRIKE` and `ANCHOR_BASE`** (Flex, `claude/quirky-franklin-9lbwbp` at `cbed1224`). Pass protectors fell about 30 times per 100 drop-backs (NFL about 1 to 5 by the same fall proxy) from a propped lean: a blocker resting his weight on the rusher goes down when the rusher moves. engine-54's `PUNCH` made it worse: its standing `PRESS_INTO` drive doubled lineman falls, a mechanism regression that I landed without measuring falls. `PUNCH_STRIKE` makes the press a strike that is taken back; `ANCHOR_BASE` bounds the lean a protector commits to what his base can recover from (`Intent.leanCap = k m w0^2 critDev`, `k = 1.05 - 0.55 x technique`) and sinks him under a heavy press. Lane read, two seeds: OL falls 18.4 / 13.0 with `PUNCH_STRIKE` alone → 3.9 / 3.5 per 100 with both; by technique third, bottom 1.4% and top 0.7% of reps. Falls are reduced, not removed: `test/punch-strike.test.ts` now carries a native play on this stack (roster 3, four verts vs Cover 2, seed 3) where a poor technician leans to 0.89 of the press and goes down when his man rips through.
+
+**`PURSUIT_COMMIT`** (Defense #666, `c32f9d20`): a pursuer keeps a chosen meeting point until the picture changes by a margin. My earlier cards (`out/e57-*`) showed rush yards a carry up on two of three seeds; Defense's paired read on the fresh run set is +0.00 (SE 0.05), missed + broken 0.306 → 0.307 a run, and at close-range cuts 289 vs 285 tackles. After-catch record (16 games, not paired): YAC mean 6.76 → 6.98, open catches 5.6 → 7.0% (about 1.3 SE). It steadies the request; it does not change who is in front of a wide catch.
+
+Checks. Candidate `bd94a26d`: full suite 4419 pass; four new failures beside the two known research ones, all fixtures moved by the new defaults and fixed before landing: `test/punch-strike.test.ts` (two cases now pin `ANCHOR_BASE` and `PURSUIT_COMMIT` off to isolate the strike; Flex `6677e9e1`) and `test/hot-look.test.ts` (`PUNCH_STRIKE` takes alarmed snaps from 8 to 5 of the old nine because the rush no longer arrives before the throw on four of them; re-surveyed to a 14-play panel, QB lane `44b169db`). Fresh run set 3.80 (3.81; placebo +0.02 ± 0.09): no run effect. Cards, 16 games a side, five arms (`out/e60-card-*`); reference → all three on:
+
+| seed | sack rate | yards an attempt | completion | 20+ yd completions | YAC | rush yards a carry | missed + broken a play | points a team-game |
+|---|---|---|---|---|---|---|---|---|
+| 11 | 3.0 → 3.0% | 8.26 → 7.60 | 66.3 → 64.3% | 11.0 → 9.7% | 6.83 → 6.39 | 4.59 → 4.37 | 0.21 → 0.21 | 28.3 → 28.5 |
+| 23 | 3.0 → 2.0% (moved) | 7.60 → 8.19 | 67.5 → 67.2% | 9.6 → 10.3% | 6.45 → 6.55 | 3.89 → 3.71 | 0.22 → 0.23 | 26.2 → 30.8 |
+| 31 | 2.4 → 2.4% | 7.75 → 8.46 | 66.0 → 67.5% | 9.9 → 12.8% (moved) | 6.53 → 7.34 | 3.89 → 3.61 | 0.22 → 0.22 | 26.3 → 27.7 |
+
+Nothing agrees across the seeds. The sack move on seed 23 is in the combined arm only (strike alone 2.4%, strike + anchor 2.9%, pursuit alone 3.3%). Sacks stay near 3% against 4.61 to 9.36.
+
+**Where the sacks are** (Flex, `scripts/diag/pass-operators/pass-rep-report.py` and `finish.py`, same code on BDB 2025 and ours). A rusher within 2 yd before the ball is out: NFL 27.6%, ours 25 to 27.5%. Contact given 2 yd: 35% vs 25 to 37%. Sacked given contact: 53% vs 14 to 26%. After first contact the NFL quarterback is sacked 47%, throws 30% (0.3 s later), escapes 22%; ours 22 to 24 / 64 to 72 (0.05 to 0.10 s later) / 6 to 14. 93% of our post-contact throws were already in the windup, which nothing can interrupt; not yet in the windup he is sacked 69%. The repair is contact acting on the throw (Flex) and what he chooses when the hit is coming (QB lane).
+
+**Inferred come-off counts are a partial sample.** Scored against PFF's `pressureAllowedAsBlocker` on BDB 2025, "came off his own blocker and reached 2 yd" has recall 24% and precision 70%; the rusher operator against `wasInitialPassRusher` has recall 79%, precision 97%. Every come-off count compared with the NFL in the engine-54 to engine-56 sections, and the statement that come-offs were on the NFL's count and timing after `ANCHOR_BASE`, is a lower-bound sample, not a rate.
+
+Also merged: Tools #685 (the BDB 2027 archive fetches from the registered Drive copy) and the sim-export fumble and change-of-possession events (`claude/sim-export-ball-security` `8f5b14b3`).
+
+## engine-57: `CARRY_READ` on: the man corner stays on top of a vertical (2026-11-13)
+
+**`CARRY_READ`** (Coverage #676, `56b6da06`; built in Defense's `CUSHION_BREAK` code). A man corner carrying a vertical route sat on the receiver's hip instead of on top of him. The lane's read, off → on (NFL): corner on top of a vertical 17 to 25 → 27 to 40% (54); the hitch still completes at 3.5 yd of cushion and 71% caught (3.2 yd, 68%); completion on medium flights 67 → 61% (58). It closes about a third of the on-top gap and is a stand-in for the corner's read of the stem; that debt stays with Coverage.
+
+Checks. Candidate `2e66174d`: full suite 4412 pass with only the two known research failures. Fresh run set 3.81 (3.80, placebo ± 0.03): no run effect. Cards, 16 games a side, `CARRY_READ` 0 → 1:
+
+| seed | completion | 20+ yd completions an attempt | aDOT | INT | YAC | sack rate | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 65.4 → 66.3% | 11.2 → 11.0% | 5.78 → 5.97 | 1.6 → 1.4% | 6.85 → 6.83 | 3.1 → 3.0% | 28.8 → 28.3 |
+| 23 | 66.7 → 67.5% | 10.4 → 9.6% | 5.81 → 5.35 (moved) | 1.9 → 2.1% | 6.30 → 6.45 | 3.0 → 3.0% | 24.8 → 26.2 |
+| 31 | 66.0 → 66.0% | 10.1 → 9.9% | 5.29 → 5.61 (moved) | 1.4 → 1.6% | 6.72 → 6.53 | 2.8 → 2.4% | 24.8 → 26.3 |
+
+Nothing moves at the game level (the two aDOT moves disagree in sign); 20+ yd completions fall on all three seeds, inside the interval each time. It lands on the corner's position, not on a game number.
+
+**Held beside it: `ACC_RADIUS` and `BACK_CHECKDOWN`** (rules/qb-gather, #669). Carded with `CARRY_READ` as a set of three (`out/e58-*`): points 25 to 29 → 35 to 38 a team-game, aDOT 5.8 → 11.2, 9.2 to 9.7 yards an attempt, 20+ yd completions 14 to 16%. Rules+Coaching's deep-window read on that tree (370 deep targets, BDB 2025 GO + POST) says why: separation at the throw matches the NFL (p50 1.90 vs 1.80 yd), but completion is flat near 50% across separation (NFL 29% under 1 yd → 52% at 5+), interceptions under 2 yd are 0 to 1% (4 to 5%), and completion does not fall with flight time (NFL halves past 1.8 s). A covered deep ball costs nothing, so a quarterback who throws deep more prints points. The two flags wait on the catch point of a covered ball (Coverage). On that tree `acc-radius` fails because `CARRY_READ` holds a seam a beat longer (re-record its ceiling when `ACC_RADIUS` is carded) and `hot-look` "off" moves with `ACC_RADIUS`.
+
+**`PURSUIT_COMMIT` cleared for the next engine** (Defense #666). My cards (`out/e57-*`) showed rush yards a carry up on two of three seeds; on the fresh run set, paired, it is +0.00 (SE 0.05) with missed + broken 0.306 → 0.307 a run, and at close-range cuts 289 vs 285 tackles with 1 vs 0 missed. The card rise was diverged games, not the mechanism.
 
 ## engine-56: `PASS_RIDE` on: the block becomes a ride (2026-11-13)
 
