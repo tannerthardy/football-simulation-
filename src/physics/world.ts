@@ -34,7 +34,7 @@ import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
-import { advanceRecovery, availability, legDrive, baseRadiusAt, baseShape, BASE_ORIENT, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, shapeRadius, supportParams, type OrientScale, type Support, type SupportParams } from './support.js';
+import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -804,9 +804,6 @@ export class World {
   private readonly mass: Float64Array;
   private readonly inertia: Float64Array;
   private readonly fat: Float64Array;
-  /** BASE_ORIENT: each body's base shape tensor this step (xx, xy, yy per body). */
-  private readonly shape: Float64Array;
-  private readonly orientOut: OrientScale = { base: 1, step: 1 };
   private readonly impX: Float64Array;
   private readonly impY: Float64Array;
   /** Grip a hold on his legs puts against his stride (see the ground forces). */
@@ -900,7 +897,6 @@ export class World {
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
     this.recovery = f();
-    this.shape = new Float64Array(3 * n);
     this.plans = bodies.map(b => ({ ax: 0, ay: 0, facing: b.facing, cut: 1, free: false, dive: null, launch: 0,
       activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 }));
     this.near = new Uint8Array(n);
@@ -1005,7 +1001,6 @@ export class World {
       b.pos = { x: b.pos.x, y: b.pos.y };
       b.vel = { x: b.vel.x, y: b.vel.y };
       this.fat[i] = fatigueFactor(b.energy);
-      if (BASE_ORIENT) baseShape(b.facing, b.vel, b.profile.vmax, this.shape, 3 * i);
       this.leanX[i] = 0; this.leanY[i] = 0;
       this.armCap[i] = this.sp[i].armForce * this.fat[i] * (b.support!.state === 'up' ? 1 : .7);
       report.armImpulseLimit[i] = this.armCap[i] * dt;
@@ -1458,20 +1453,6 @@ export class World {
     return fraction;
   }
 
-  /** BASE_ORIENT: the base and step multipliers for a deviation in direction (ux, uy); undefined when off. Shared
-   * scratch object: read it before the next call. */
-  private orient(i: number, ux: number, uy: number): OrientScale | undefined {
-    if (!BASE_ORIENT) return undefined;
-    const d = Math.hypot(ux, uy);
-    if (d < 1e-12) { this.orientOut.base = 1; this.orientOut.step = 1; return this.orientOut; }
-    // The effective base (Hof & Curtze 2016: the base with the time recovery takes) is oriented as a whole: the
-    // recovery step reaches as far as the base extends that way. Movement's directional factor (shuffle, backpedal)
-    // describes running speed, not a recovery step, and would make a set stance fall first sideways, against the
-    // stagger evidence.
-    this.orientOut.base = this.orientOut.step = shapeRadius(this.shape, 3 * i, ux / d, uy / d);
-    return this.orientOut;
-  }
-
   /** Common recovery allocation, including the analytic unheld path. The
    * body's finite compliance comes from its profile, not unused effort:
    * exhausting active drive cannot make a weak grip infinitely effective. */
@@ -1479,11 +1460,9 @@ export class World {
     const b = this.bodies[i], sup = b.support!, foot = sup.foot;
     const sp = this.sp[i];
     const mobility = sp.pushForce > 0 ? sp.stepSpeed / sp.pushForce : 0;
-    const sc = this.orient(i, sup.xi.x, sup.xi.y);
-    const speed = Math.min(sp.stepSpeed * this.fat[i], mobility * capacity) * (sc ? sc.step : 1);
-    const rbScale = sc ? sc.base : 1;
+    const speed = Math.min(sp.stepSpeed * this.fat[i], mobility * capacity);
     if (!foot) return speed;
-    const e = hypot2(sup.xi.x, sup.xi.y), rb = baseRadiusAt(sp, sup.posture) * rbScale;
+    const e = hypot2(sup.xi.x, sup.xi.y), rb = baseRadiusAt(sp, sup.posture);
     foot.capacity = capacity;
     foot.mobility = mobility;
     foot.state = e > rb ? 'placing' : 'supported';
@@ -1521,7 +1500,7 @@ export class World {
       plan.launch = Math.min(1, l);
       return plan;
     }
-    const a = availability(sup, this.sp[i], this.fat[i], this.orient(i, sup.xi.x, sup.xi.y));
+    const a = availability(sup, this.sp[i], this.fat[i]);
     updateSqueeze(b, intent, dt);
     const tr = turnRateOf(b);
     const requestedFacing = commandFacing(b, intent);
@@ -2098,7 +2077,7 @@ export class World {
         this.alpha[i] = 0; this.cut[i] = 1;
       } else {
         const fat = this.fat[i];
-        let a = availability(sup, sp, fat, this.orient(i, sup.xi.x, sup.xi.y));
+        let a = availability(sup, sp, fat);
         this.alpha[i] = a;
         this.cut[i] = plan.cut;
         // Pad level moves at a finite rate. Contact geometry affects support,
@@ -2158,7 +2137,7 @@ export class World {
             report.leanRelease[i].x += dx; report.leanRelease[i].y += dy;
             leanX -= hx * conv; leanY -= hy * conv;
             // Transferred geometry changes what the same feet can absorb.
-            a = availability(sup, sp, fat, this.orient(i, sup.xi.x, sup.xi.y)); this.alpha[i] = a;
+            a = availability(sup, sp, fat); this.alpha[i] = a;
             conv = unsupportedLean(b, plan, leanX, leanY, a, m); iterations++;
           }
           // Expose any unresolved local solve instead of silently claiming
@@ -2479,9 +2458,8 @@ export class World {
     // the substep to grow or be recovered.
     let xx = sup.xi.x + 0.5 * dx, xy = sup.xi.y + 0.5 * dy;
     let e = hypot2(xx, xy);
-    const sc = this.orient(i, xx, xy);
-    const rb = baseRadiusAt(sp, sup.posture) * (sc ? sc.base : 1);
-    const rec = recoverySpeed(sp, 0, fat) * (sc ? sc.step : 1);
+    const rb = baseRadiusAt(sp, sup.posture);
+    const rec = recoverySpeed(sp, 0, fat);
     // Recovery step speed ramps over the response latency while gravity acts
     // on a deviation beyond the base.
     const outsideBefore = sup.out;

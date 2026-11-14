@@ -127,3 +127,31 @@ earned from the body, not set.
 - No rating awards a stand-up. Balance and mass keep their present totals, only distributed by direction.
 - RUSH_PAD_LEVEL stays parked. If BASE_ORIENT leaves the edge class standing, the matched comparison above is the
   starting point again.
+
+## Outcome: BASE_ORIENT, two attempts, both worse; removed (2026-11-14)
+
+The engine-61 stack (RUSH_LEAN_BOUND, THROW_HOLD, POCKET_REACH, REP_SEEN on), 16 games x seeds 11 / 23. True falls
+per 100 dropbacks (fall-proxy.py), off → on:
+
+| | OL | DL |
+|---|---|---|
+| off | 3.6 / 2.8 | 4.8 / 3.9 |
+| attempt 1: set wide across his facing (a parallel stance) | 8.5 / 6.7 | 8.2 / 7.7 |
+| attempt 2: set staggered along his facing (a fighting stance) | 6.7 / 4.5 | 7.4 / 4.2 |
+
+Lineman falls on runs rose under both attempts (all fall events: OL 27 → 43 and 31 → 35 on runs in attempt 1).
+
+**Attempt 1** made head-on contact, the linemen's main load, meet the set ellipse's short axis. The stagger evidence I
+had cited (van Mierlo's stance was 0.40 m long by 0.15 m wide) points the other way, so attempt 2 staggered the set
+along his facing. **Attempt 2** made both shapes weakest across. Falls still rose, by less.
+
+**Why it fails either way.** A fall is a threshold crossed in the direction of the push. With pushes spread over many
+directions (rips, swims, angled hits, drives), an equal-area ellipse loses more falls on its short axis than its long
+axis saves, whichever way it points. Keeping the area while taking only the direction dependence from the evidence is
+not neutral. It costs on the weak side.
+
+**What re-opening needs.** Measured magnitudes: how much a lineman's stagger adds along the line of force, and how
+little it costs across. Those could come from instrumented stance or perturbation work on athletes, or from NFL
+tracking of who goes down by direction of the hit. They would replace an area-preserving reshape. The edge
+driven-over row (about 2 /100) stays open. POSTURE_FORCE is next only with Integration's go. It does not depend on
+this result.

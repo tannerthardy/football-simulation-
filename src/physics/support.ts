@@ -212,65 +212,8 @@ export function advanceRecovery(e: number, rb: number, w: number, speed: number,
     weight: Math.exp(-w * (h - crossing)) * Math.expm1(w * crossing) / w + after.weight };
 }
 
-/**
- * BASE_ORIENT (experimental, off; BASE_ORIENT=1): the base and the recovery step depend on direction.
- *
- * The base is an ellipse of the same area as today's circle (baseRadiusAt), described by a shape tensor P (symmetric,
- * det 1; the radius in direction u is baseRadiusAt / sqrt(u^T P^-1 u)). Two shapes are blended:
- * - set: a fighting stance, staggered along his facing (SET_ASPECT along : across);
- * - stride: long along his velocity (STRIDE_ASPECT along : across).
- * The weight on the stride shape rises smoothly with his speed (smoothstep of speed / (STRIDE_SPEED x vmax)). A tensor
- * has no sign, so a velocity that reverses (a backpedal, a man being driven, a cut through a stop) does not flip it;
- * at no speed the stride weight is zero, and through a cut it rotates with his velocity. A backpedalling DB is long
- * along his path (his facing too), a shuffling blocker long across his facing at speed and along it when set, a man
- * being driven long along the drive. Both shapes are weakest across: a man is easiest to move sideways.
- *
- * The effective base is oriented as a whole: the recovery step's reach in direction u scales with the base's extent that
- * way (world.ts orient), so the point of no return is base(u) + step(u) / w0. Movement's directional factor (shuffle,
- * backpedal) is not used: it describes running speed, not a recovery step, and would make a set stance fall first
- * sideways, against the stagger evidence.
- *
- * The aspects and the blend speed are choices. The evidence is only for the direction dependence: in a staggered stance,
- * pushes across the feet need a recovery step far more often than pushes along them (van Mierlo et al. 2023), and
- * stability is the extrapolated COM's distance from the base's edge, not its distance from a centre (Hof 2005).
- */
-export const BASE_ORIENT = process.env.BASE_ORIENT === '1';
-/** Set stance: along his facing : across it (a choice). Attempt 1 had the set wide across (a parallel stance): head-on
- * contact met its short axis and lineman falls doubled. A fighting stance is staggered along the line of force, as the
- * evidence's stance was (0.40 m long, 0.15 m wide). */
-export const SET_ASPECT = 1.3;
-/** Running stride: along his velocity : across it (a choice). */
-export const STRIDE_ASPECT = 1.5;
-/** The stride shape is fully his at this share of his top speed (a choice). */
-export const STRIDE_SPEED = 0.5;
-
-/** The ellipse's shape tensor P (xx, xy, yy; det 1) for a body facing `facing` and moving at `vel`. */
-export function baseShape(facing: number, vel: Vec2, vmax: number, out: Float64Array, o: number): void {
-  const add = (ang: number, along: number, across: number, w: number) => {
-    const c = Math.cos(ang), sn = Math.sin(ang), a2 = along * along, b2 = across * across;
-    out[o] += w * (a2 * c * c + b2 * sn * sn); out[o + 1] += w * (a2 - b2) * c * sn; out[o + 2] += w * (a2 * sn * sn + b2 * c * c);
-  };
-  out[o] = 0; out[o + 1] = 0; out[o + 2] = 0;
-  const sp = hypot2(vel.x, vel.y), x = clamp(sp / Math.max(1e-6, STRIDE_SPEED * vmax), 0, 1), w = x * x * (3 - 2 * x);
-  if (w < 1) add(facing, Math.sqrt(SET_ASPECT), 1 / Math.sqrt(SET_ASPECT), 1 - w);
-  if (w > 0) add(Math.atan2(vel.y, vel.x), Math.sqrt(STRIDE_ASPECT), 1 / Math.sqrt(STRIDE_ASPECT), w);
-  const det = Math.sqrt(Math.max(1e-12, out[o] * out[o + 2] - out[o + 1] * out[o + 1]));
-  out[o] /= det; out[o + 1] /= det; out[o + 2] /= det;
-}
-
-/** The base's radius in direction (ux, uy) as a share of baseRadiusAt, for shape P at offset o. */
-export function shapeRadius(P: Float64Array, o: number, ux: number, uy: number): number {
-  // P^-1 = [yy, -xy; -xy, xx] (det 1).
-  const q = P[o + 2] * ux * ux - 2 * P[o + 1] * ux * uy + P[o] * uy * uy;
-  return 1 / Math.sqrt(Math.max(1e-9, q));
-}
-
-/** BASE_ORIENT: multipliers on the base radius and the recovery step for the current direction (absent: today's). */
-export interface OrientScale { base: number; step: number }
-
 /** Deviation beyond which gravity outruns stepping: the point of no return. */
-export function criticalDeviation(s: SupportParams, posture: number, feetLock: number, fatigue: number, scale?: OrientScale): number {
-  if (scale) return baseRadiusAt(s, posture) * scale.base + recoverySpeed(s, feetLock, fatigue) * scale.step / omega0(s, posture);
+export function criticalDeviation(s: SupportParams, posture: number, feetLock: number, fatigue: number): number {
   return baseRadiusAt(s, posture) + recoverySpeed(s, feetLock, fatigue) / omega0(s, posture);
 }
 
@@ -279,12 +222,12 @@ export function criticalDeviation(s: SupportParams, posture: number, feetLock: n
  * movement. Recovering steps use the feet; a player near the point of no
  * return can do little else. A player off his feet has nothing.
  */
-export function availability(sup: Support, s: SupportParams, fatigue: number, scale?: OrientScale): number {
+export function availability(sup: Support, s: SupportParams, fatigue: number): number {
   if (sup.state !== 'up') return 0;
   const e = hypot2(sup.xi.x, sup.xi.y);
-  const rb = scale ? baseRadiusAt(s, sup.posture) * scale.base : baseRadiusAt(s, sup.posture);
+  const rb = baseRadiusAt(s, sup.posture);
   if (e <= rb) return 1;
-  const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue, scale);
+  const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
   if (crit <= rb + 1e-9) return 0.1;
   return clamp(1 - ((e - rb) / (crit - rb)) ** 1.5, 0.1, 1);
 }
