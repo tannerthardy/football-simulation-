@@ -1074,3 +1074,63 @@ never released within 2.5 s): the rusher's velocity toward the QB / across his l
   - RUSH_INTENT (off; its 'stall' intent) and the between-moves task are the existing home for it.
   - Measure before building: in held pairs after 1.0 s, his requested velocity across against the NFL's achieved
     across, and whether a held rusher's request ever settles.
+
+## 19. The held rusher's request, by position, and the get-off (2026-11-15; measured, nothing built)
+
+**Requested against achieved** (held-request.mts, engine-68 default, seed 11 x 2; pass pairs held through 2.5 s;
+p50 yd/s, requested / achieved):
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| interior, toward the QB | 4.49 / 1.46 | 4.52 / 1.02 | 4.49 / 1.33 | 4.49 / 1.10 |
+| interior, across | **0.10 / 0.37** | **0.12 / 0.75** | **0.18 / 0.99** | 1.68 / 1.30 |
+| edge, toward the QB | 5.82 / 2.75 | 4.89 / 1.40 | 4.96 / 0.51 | 4.73 / -0.14 |
+| edge, across | 4.04 / 2.61 | 3.11 / 2.64 | 3.65 / 2.53 | 3.87 / 2.22 |
+
+- **Interior:** the held rusher asks to go straight at the QB through the whole rep (4.5 yd/s, never settling), and
+  asks almost nothing across until 1.5 s. Yet he is carried across more and more (0.37 -> 0.99) while asking for
+  0.1-0.2.
+  - So until 1.5 s the slide is not his request. It is the pair's contact carrying him: what the trench group's terms
+    do together (section 18).
+  - After 1.5 s he does ask across (1.68): the corner between moves.
+  - His request toward the QB never settles. Nothing in ours stops pressing.
+- **Edge:** working across (around) at 3-4 yd/s requested, 2.2-2.6 achieved, is his job. The shape is not the
+  interior's, so the interior model must not be built on the edge.
+
+**The get-off** (dl-getoff.py, the same code on BDB and our exports; DL speed after the snap, p50 yd/s):
+
+| | 0.1 s | 0.2 s | 0.3 s | 0.5 s | 0.8 s | first past 1 yd/s |
+|---|---|---|---|---|---|---|
+| NFL interior | 0.50 | 1.00 | 1.12 | 1.80 | 2.50 | 0.30 s |
+| ours interior (base) | 0.00 | 0.71 | 1.12 | 2.06 | 2.06 | 0.30 s |
+| NFL edge | 0.50 | 1.00 | 1.12 | 2.06 | 3.16 | 0.30 s |
+| ours edge (base) | 0.00 | 0.71 | 1.12 | 2.50 | 3.54 | 0.30 s |
+
+- **The start is the NFL's:** the same reaction (past 1 yd/s at 0.30 s), the first step requested flat out (8.6 yd/s,
+  snap reaction p50 0.12 s), and achieved speed at 0.5 s at or above the NFL's.
+- **The difference is at contact.** Our interior rusher stops accelerating at about 0.5 s (2.06 at 0.5 and 0.8 s),
+  where the NFL's is still accelerating into the blocker (2.50 at 0.8 s).
+- So "slower at contact" is the meeting with the blocker, not the get-off. It is probably not shared with Defense's
+  slow first second for deep defenders: the DL's start is not slow.
+
+**The coached reason, sourced:**
+- Rush-lane integrity. An interior rusher who leaves his lane, or an edge washed inside, opens the QB an escape.
+  Programs trace four or five lanes on the ground (one outside each tackle and guard, one down the centre) and keep
+  them balanced.
+- Rushers restrict the QB's vision with hands and bodies.
+- After a failed move he resets and counters or converts to power.
+- Sources:
+  - [X&O Labs (Coniglio)](https://www.xandolabs.com/?p=13996);
+  - [AFCA: Christian Smith, Northwestern, pass rush scheme](https://www.afca.com/35-under-35-presents-christian-smith-northwestern-b-to-a-and-a-to-b-pass-rush-scheme/);
+  - [The beginner's guide to rushing the passer](https://jayarnold.substack.com/p/the-beginners-guide-to-rushing-the).
+- The sources do not spell out a cue for collapsing the pocket with the blocker. That stays a coaching statement until
+  sourced.
+
+**The candidate mechanism for the interior** (Integration's framing; not built):
+- A lane-bound target: his lane as called and kept, not the corner every tick.
+- A between-moves state as a decision on what he perceives (his progress against the blocker, the QB, his lane):
+  press the lane, reset and counter, or convert to power. Hands up when he can't get home, which ties to BAT_HANDS'
+  raise decision.
+- Not an effort-decay timer. Fatigue is a capacity the tracking cannot separate.
+- The contact-carried slide before 1.5 s is the other half. That is the trench group's terms acting together on a pass
+  pair, and it needs its own split (which terms move a held pair when neither man asks it to) before any build.
