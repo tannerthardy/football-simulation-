@@ -460,6 +460,13 @@ const BAT_ONCE = process.env.BAT_ONCE !== '0';
 /** BAT_ONCE: the defenders who have tried to bat this pass (keyed by its release time). */
 const batTried = new WeakMap<PlaySim, { at: number; who: Set<Agent> }>();
 
+/** PLAY_ONCE (default on; PLAY_ONCE=0 restores the old law): the same defect as BAT_ONCE's in a defender's play on a
+ * ball he sees (defenderPlay's interception and breakup roll): one try per defender per pass, not one each tick the
+ * ball is within his reach. A defect fix; the rolls themselves are Coverage's (in-phase work). */
+const PLAY_ONCE = process.env.PLAY_ONCE !== '0';
+/** PLAY_ONCE: the defenders who have played this pass (keyed by its release time). */
+const playTried = new WeakMap<PlaySim, { at: number; who: Set<Agent> }>();
+
 /** Returns true if the defender ended the flight (INT) or altered it. */
 function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   const ball = sim.ball;
@@ -517,6 +524,14 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
       return true;
     }
     return false;
+  }
+  // PLAY_ONCE: one try at the ball per defender per pass, the first tick it is within his reach and he sees it, not a
+  // roll each tick it stays there (his chance of an interception or a breakup depended on the tick length and on how
+  // long the ball stayed near him).
+  if (PLAY_ONCE) {
+    const key = ball.releaseT, done = playTried.get(sim);
+    if (done && done.at === key && done.who.has(D)) return false;
+    if (!done || done.at !== key) playTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
   }
   const stretch = o.dh / (D.profile.reach + 0.3);
   const high = o.z > D.profile.heightYd * 1.1 ? 0.15 : 0;
