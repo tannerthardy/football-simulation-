@@ -191,6 +191,31 @@ const RELEASE_TIGHT_DEPTH = 2.5, RELEASE_TIGHT_WIDTH = 1.5;
  * four_verts/cover1 fixture. The release itself (its step, width and clearance
  * at the line) is unchanged. */
 const RELEASE_THROUGH = process.env.RELEASE_THROUGH !== '0';
+/** RELEASE_READ (off; RELEASE_READ=1 turns it on; Run Game, docs/reviews/2026-11-14-press-release.md): the pressed
+ * receiver's release side is a decision made once, from the corner as he sees him after the snap, and held until he
+ * is level with the corner or beaten; the place he releases to is fixed when he decides, not re-aimed at a corner who
+ * mirrors him. His lean is his route's side (DECLARED_BREAK: the side his break turns to; outside on a vertical or a
+ * stop with no lateral break). A corner shaded away from that side gets a speed release there. A head-up corner, or one
+ * sitting on that side, gets a jab first (one quick step, RELEASE_JAB_STEP, the other way when head-up, toward the
+ * shade when he sits on the lean), and then the read as taught: a square corner who jumped his lean (moved his feet
+ * that way since the jab, RELEASE_JUMP) gets the jab side, else the lean (a corner who bit or sat leaves the lean open
+ * past his leverage); a corner still sitting on the lean gets the other side. He decides one reaction time after the
+ * snap, having seen the man's first steps (until then his first step is unchanged). A man he sees rushing (hand down,
+ * past the line or moving into the backfield) is not pressing him: no release is aimed round him (Rules, engine-68 mesh seed 2: an end
+ * 0.9 yd off the line steered a tight end's release until 1.05 s). Nothing awards the side: whether the jab moves the corner is the
+ * corner's own mirror and delay, and the step costs its upfield drive. His feet (cutSkill from releaseVsPress) and
+ * his delayed picture are his; the side is never re-chosen tick by tick. Off, PRESS_RELEASE re-aimed every tick at a
+ * point one clearance outside the corner's current position: a mirroring corner carried that point with him, the
+ * release never let go before 5 yd (32 degrees outward from 0.3 to 1.9 s) and every pressed outside receiver vs a
+ * head-up corner released outside (NFL go 75%, hitch 62%), hitches 4.2 yd off the stem at 5 yd (NFL +1.2). */
+const RELEASE_READ = process.env.RELEASE_READ === '1';
+/** RELEASE_READ: one jab step's lateral width (yd), and the longest a jab may take before he reads (s) if the step
+ * cannot be made (a jam, a stumble); the release point lies RELEASE_PAST yd beyond the corner's depth as he saw it
+ * (the coached aiming point: 1-2 yd past the corner's leverage). Estimated. */
+const RELEASE_JAB_STEP = 0.35, RELEASE_JAB_MAX = 0.6, RELEASE_PAST = 1.0;
+/** RELEASE_READ: how far the corner's feet must have moved toward his lean, as he sees him, to read that the corner jumped
+ * it (yd; a visible step). Estimated. */
+const RELEASE_JUMP = 0.25;
 /** LINE_START (off; LINE_START=1 turns it on; estimated, C14 release): a receiver's first steps are a get-off, not a
  * sprint start. Out of a two-point stance, eyes on the defender over him and his release plan in mind, he does not
  * push off with his full start force: until he has declared his stem (out of his stance, his first step, and with time
@@ -214,6 +239,9 @@ export class RouteRunner implements Behavior {
   private readonly releasedCorners = new Set<Agent>();
   /** RELEASE_THROUGH: the side of his press release (0 if he had none); kept for the rest of the route. */
   private releaseSide = 0;
+  /** RELEASE_READ: his release against one corner: lean, jab side (0 none), chosen side (0 until read), fixed target. */
+  private rel: { corner: Agent; lean: number; jab: number; jabY0: number; cornerY0: number; shadeOnLean: boolean; at: number;
+    side: number; target: Vec2 | null; done: boolean } | null = null;
   private converted = false;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
   private routeEnd: RouteEnd;
@@ -543,6 +571,55 @@ export class RouteRunner implements Behavior {
     }
   }
 
+  /** RELEASE_READ: the man, as he sees him, is rushing (hand down, past the line, or moving into the backfield at 1+ yd/s). */
+  private seenRushing(a: Agent, sim: PlaySim, d: Agent): boolean {
+    const s = sim.see(a, d);
+    return s.stance === 'low' || s.pos.x < sim.los || s.vel.x < -1;
+  }
+
+  /** RELEASE_READ: his route's side (a y sign): where his declared break turns, else outside. */
+  private routeLean(a: Agent): number {
+    const at = BREAK_DECL[this.route.id]?.at;
+    if (typeof at === 'number' && this.path[at]) {
+      const brk = this.path[at].p, nxt = this.path[at + 1]?.p;
+      if (nxt && Math.abs(nxt.y - brk.y) > 0.75) return Math.sign(nxt.y - brk.y);
+      if (Math.abs(brk.y - a.pos.y) > 0.75) return Math.sign(brk.y - a.pos.y);
+    }
+    return this.outside;
+  }
+
+  /** RELEASE_READ: plan, jab, read once and run to a fixed release point; null once level with the corner. */
+  private readRelease(a: Agent, sim: PlaySim, d: Agent): MoveCommand | null {
+    const cutSkill = 0.8 + 0.4 * a.r('releaseVsPress');
+    const dp = sim.see(a, d).pos;
+    let r = this.rel;
+    if (!r || r.corner !== d) {
+      const lean = this.routeLean(a), off = dp.y - a.pos.y, shade = Math.abs(off) > 0.3 ? Math.sign(off) : 0;
+      const jab = shade === -lean ? 0 : shade === lean ? lean : -lean;
+      r = this.rel = { corner: d, lean, jab, jabY0: a.pos.y, cornerY0: dp.y, shadeOnLean: shade === lean, at: sim.t,
+        side: jab === 0 ? lean : 0, target: null, done: false };
+    }
+    if (r.side === 0) {
+      // The jab: one quick step to the jab side, giving up its upfield drive; then the read.
+      if ((a.pos.y - r.jabY0) * r.jab < RELEASE_JAB_STEP && sim.t - r.at < RELEASE_JAB_MAX) {
+        a.tags.add('release-jab');
+        return runThrough(a, { x: a.pos.x + 0.5, y: a.pos.y + r.jab }, { speed: this.effort * 0.7, cutSkill });
+      }
+      // The read (as taught): against a square corner he releases to his lean unless the corner jumped it (moved his
+      // feet that way since the jab began); against a corner sitting on his lean, away from him if he still sits there.
+      const off = dp.y - a.pos.y, moved = dp.y - r.cornerY0;
+      r.side = r.shadeOnLean ? (Math.sign(off) === r.lean && Math.abs(off) > 0.3 ? -r.lean : r.lean)
+        : moved * r.lean > RELEASE_JUMP ? -r.lean : r.lean;
+    }
+    this.releaseSide = r.side;
+    if (!r.target) {
+      const reach = d.player.measurables.armIn / 36 * 0.7;
+      r.target = { x: dp.x + RELEASE_PAST, y: dp.y + r.side * (a.profile.radius + d.profile.radius + 0.2 + reach) };
+    }
+    if (a.pos.x >= dp.x || a.pos.x >= r.target.x || a.pos.x > sim.los + 5) { r.done = true; return null; }
+    return runThrough(a, r.target, { speed: this.effort, cutSkill });
+  }
+
   private handleRelease(a: Agent, sim: PlaySim): MoveCommand | null {
     const usable = (p: Agent): number => p.isDown(sim.t) ? 0 : p.body.support
       ? availability(p.body.support, supportParams(p.profile), fatigueFactor(p.body.energy)) : 1;
@@ -594,7 +671,8 @@ export class RouteRunner implements Behavior {
         // another. Contacts owned by another technique have priority.
         if (sim.world.joints.some((j) => j.a === d.body || j.b === d.body || j.a === a.body || j.b === a.body)) continue;
         const desired = this.path[this.idx]?.p.y ?? a.pos.y;
-        const side = Math.sign(desired - a.pos.y) || Math.sign(a.pos.y - d.pos.y) || this.outside;
+        const side = RELEASE_READ && this.rel?.corner === d && this.rel.side !== 0 ? this.rel.side
+          : Math.sign(desired - a.pos.y) || Math.sign(a.pos.y - d.pos.y) || this.outside;
         const hands: HandJoint = { kind: 'hands', a: d.body, b: a.body,
           extension: d.profile.radius + a.profile.radius + d.player.measurables.armIn / 36 * 0.45, push: 0, hold: 0, steer: 0 };
         this.pressContact = { corner: d, hands, side, tangent: { x: -relative.y / (dist || 1), y: relative.x / (dist || 1) },
@@ -609,6 +687,8 @@ export class RouteRunner implements Behavior {
       // in his way: he releases around the corner on his route's side
       // before the hands meet, not up through him.
       if (!PRESS_MIRROR) return null;
+      if (RELEASE_READ && this.rel && !this.rel.done && this.seenRushing(a, sim, this.rel.corner)) this.rel.done = true;
+      if (RELEASE_READ && this.rel && !this.rel.done && usable(this.rel.corner) > 0) return this.readRelease(a, sim, this.rel.corner);
       // RELEASE_SEEN: the defenders he releases around are the ones he saw tight over him at the snap, whoever
       // they are and whatever they were called to do; their positions are as he sees them.
       if (RELEASE_SEEN && this.tightAtSnap === null) {
@@ -632,6 +712,14 @@ export class RouteRunner implements Behavior {
         const reach = d.player.measurables.armIn / 36 * 0.7;
         const clearance = a.profile.radius + d.profile.radius + 0.2 + (PRESS_RELEASE ? reach : 0);
         if (ahead < 0 || ahead > (PRESS_RELEASE ? 5 : 2.5) || Math.abs(lateral) > clearance + 0.1) continue;
+        // RELEASE_READ: a release already made against this corner is not re-aimed at him.
+        if (RELEASE_READ && this.rel?.corner === d && this.rel.done) continue;
+        // RELEASE_READ: he decides once he has seen the man's first steps (his own reaction time from the snap; until
+        // then his first step is today's). A man he sees with a hand down, past the line or moving into the backfield
+        // is rushing past him, not pressing him: his release is not aimed round a rusher.
+        const firstLook = RELEASE_READ && sim.t - this.bornAt >= a.profile.reactionTime;
+        if (firstLook && this.seenRushing(a, sim, d)) continue;
+        if (firstLook && PRESS_RELEASE && !this.rel) return this.readRelease(a, sim, d);
         let side: number;
         if (PRESS_RELEASE) {
           // The side his route breaks to (its first real lateral move); a

@@ -17,6 +17,9 @@ const sim: any = new PlaySim({ offense: pickOffense(offense, formation.personnel
   defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1, pressure: null, label: 'C1' },
   los: 35, ballY: CENTER_Y, firstDownX: 45, seed });
 const R = sim.offense.find((a: any) => a.slot === slot); const B = R.behavior;
+const SH = process.env.SHADE !== undefined ? Number(process.env.SHADE) : null;
+if (SH !== null) { const c0 = sim.defense.find((d: any) => sim.defAlign.spots[d.slot]?.manTarget === slot); if (c0) c0.body.pos.y = R.pos.y + SH * (Math.sign(R.pos.y - sim.ballY) || 1);
+  for (let k = 0; k < 64; k++) sim.perception.record(sim.agents, sim.carrier?.idx ?? null); }
 const cb = sim.defense.find((d: any) => sim.defAlign.spots[d.slot]?.manTarget === slot);
 const out = Math.sign(R.pos.y - sim.ballY) || 1, y0 = R.pos.y;
 console.log(`seed ${seed} ${slot} route ${B.route?.id} at y ${y0.toFixed(1)}; corner ${cb?.slot} press ${sim.defAlign.spots[cb?.slot]?.press}; path`,
@@ -29,5 +32,5 @@ const t0 = sim.tick.bind(sim); let next = 0.1;
 sim.tick = () => { t0(); if (sim.t < next - 1e-9 || sim.t > 3.01) return; next += 0.1;
   const dy = cb ? (cb.pos.y - R.pos.y) * out : NaN, dx = cb ? cb.pos.x - R.pos.x : NaN;
   console.log(`t ${sim.t.toFixed(1)} x ${(R.pos.x - sim.los).toFixed(1)} off-stem ${((R.pos.y - y0) * out).toFixed(2)} v (${R.vel.x.toFixed(1)},${(R.vel.y * out).toFixed(1)})`
-    + ` req (${req.x.toFixed(1)},${(req.y * out).toFixed(1)}) ${stage} side ${B.releaseSide * out} idx ${B.idx} | corner ahead ${dx.toFixed(2)} out ${dy.toFixed(2)}${sim.ball.kind !== 'held' ? ' [ball ' + sim.ball.kind + ']' : ''}`); };
+    + ` req (${req.x.toFixed(1)},${(req.y * out).toFixed(1)}) ${stage}${R.tags.has('release-jab') ? '+jab' : ''}${B.rel ? ` rel[jab ${B.rel.jab * out} side ${B.rel.side * out} done ${B.rel.done}]` : ''} side ${B.releaseSide * out} idx ${B.idx} | corner ahead ${dx.toFixed(2)} out ${dy.toFixed(2)}${sim.ball.kind !== 'held' ? ' [ball ' + sim.ball.kind + ']' : ''}`); };
 sim.run();

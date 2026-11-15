@@ -235,3 +235,82 @@ re-aimed at a mirroring corner.
 
 The fixed target is also the held side that removes the left-right dither Flex found. Built off on engine-68 when
 it lands.
+
+## RELEASE_READ, attempt 1: staged gates (engine-68, fbeeef9b merged as 7708be31), 2026-11-15
+
+**Build.** `src/sim/behaviors/receiver.ts`: `readRelease`, `routeLean`, `seenRushing`; flag `RELEASE_READ` (off;
+FLAGS.md row, reference-stack off, baseline "0"). Inside the PRESS_RELEASE branch of `handleRelease`:
+
+- **Timing.** He decides once, one reaction time after the snap (until then his first step is unchanged).
+- **Lean.** His lean is the route's declared break side (DECLARED_BREAK), else outside.
+- **Plan.** Speed release when the corner is shaded away from the lean. Otherwise one jab step (0.35 yd; 0.6 s at
+  most if the step cannot be made: the other way vs a square corner, toward a corner sitting on the lean), then
+  the read, as taught:
+  - a square corner who jumped the lean (0.25 yd toward it, as seen) gets the other side, else the lean;
+  - a corner still sitting on the lean gets the other side.
+- **Release point.** Fixed when he decides: one clearance to the side, 1 yd past the corner's seen depth. The
+  release ends when he is level with the corner as seen, or at the point. It is never re-aimed, and the old loop
+  does not pick that corner up again.
+- **Jam.** The jam side is the held side.
+- **Rushers.** A man he sees with a hand down, past the line or moving into the backfield is a rusher: no release
+  is aimed round him. This is Rules' engine-68 mesh seed 2 finding, folded in.
+
+**Gate, staged.** `press-lab.mts --cov cover1 --shade S` puts each press-man corner at S yd (0 head-up, +0.8
+outside, −0.8 inside) and re-records the pre-snap picture there. Hitches, double slants, double outs, four verts,
+comebacks; gun doubles; 10 seeds × flip; 100 dropbacks per cell. Same operator as the NFL tables (pressed = DB
+within 3 yd, holds). Release side is judged where he passes the corner's depth.
+
+| released outside / n | head-up off | head-up on | NFL head-up | outside shade off | on | NFL | inside shade off | on | NFL |
+|---|---|---|---|---|---|---|---|---|---|
+| GO | 51/51 | 37/37 | 75% | 2/52 | 44/44 | 56% | 52/52 | 57/57 | 90% |
+| HITCH | 88/89 | 50/81 | 62% | 0/91 | 19/92 | 14% | 93/93 | 37/95 | 79% |
+| OUT | 18/18 | 18/18 | 46% | 0/19 | 19/19 | 43% | 19/19 | 19/19 | 86% |
+| SLANT | – | – | 6% | 0/8 | – | 0% | 9/9 | 0/10 | 20% |
+
+| p50 | head-up off | head-up on | outside shade off | on | inside shade off | on | NFL press |
+|---|---|---|---|---|---|---|---|
+| time to 5 yd (s) | 2.10 | 2.50 | 2.10 | 2.10 | 2.10 | 2.00 | 2.00 (stutter 2.20) |
+| hitch lateral at 5 yd | +4.1 | +2.1 | −3.8 | +0.8 | +3.8 | +0.2 | +1.2 |
+| out lateral at 5 yd | +4.2 | +1.9 | −3.8 | +2.2 | +3.8 | +1.2 | +0.7 |
+| go lateral at 10 yd | +5.0 | +3.3 | −5.8 | +3.6 | +4.9 | +2.8 | +4.7 |
+
+**Controls.**
+
+- *Off-coverage* (Cover 3 and Cover 2, same plays, 200 dropbacks). Receivers with nobody tight over them change on
+  0 plays. 40 plays differ, every one first at the Y tight end, 0.3–0.5 s, with the end DE_S aligned tight over
+  him; that is the intended rusher correction.
+  - The first build changed 136 of 200 through defenders' sight of the tight end's earlier first step. Deciding
+    one reaction time after the snap removed that.
+- *Flag off.* The code path is unchanged; `npm test` passed: 532 files, 4,321 tests.
+
+**Read.**
+
+1. **The re-aim fault is gone.** Stop routes no longer ride the corner to the sideline: hitches at 5 yd are +2.1
+   head-up, +0.8 against an outside shade and +0.2 against an inside shade, vs +4.1/−3.8/+3.8 off. Stop routes
+   now release narrower than gos (hitch 2.1, go 3.3).
+2. **Shade now moves the release where it opposes the lean:** hitches against an outside shade go inside (19/92
+   outside, NFL 14%).
+3. **Where the ours-vs-NFL gap remains, it comes from our corner, not the receiver's read.**
+   - PRESS_MIRROR plays every pressed receiver head-up from the snap, so by the read an outside-shaded corner is
+     head-up again. The receiver then takes his lean: gos and outs vs an outside shade are 100% outside, NFL 56%
+     and 43%.
+   - The mirror also follows every jab, so the corner always "bites". A square corner never jumps the lean, so
+     head-up gos and outs are 100% to the lean (NFL 75% and 46%).
+   - Both are Coverage's controller (the corner's patience and leverage after the snap), not something to tune in
+     the receiver.
+4. **Inside-shade hitches release outside only 39% (NFL 79%).** The label is judged where he passes the corner's
+   depth. After a correct outside speed release, the hitch now comes back to its stem in front of the corner and
+   is counted "inside" at that frame. His lateral at 5 yd is +0.2, NFL +1.2. Not a wrong release; a label
+   artifact of the stack.
+5. **The jab's cost.** Time to 5 yd vs head-up is 2.5 s (off 2.1). An NFL stutter costs +0.2–0.3 over a speed
+   release; ours costs +0.4, because the read waits one reaction time and the jab is a step from a standstill
+   get-off. Physical, not tuned; worth a look if the game read shows hitches thrown late.
+6. **Spread.** Every cell is the same rep (one body pair, deterministic). NFL spread is many players. The gate shows
+   the decision, not a distribution.
+
+**Next.**
+
+- The game read for RELEASE_READ (press is rare in league games: 9 pressed outside receivers in 32 games, so the
+  read will be thin by construction).
+- RESTEM, on the same gates.
+- Two items for Coverage: the corner's shade erased by PRESS_MIRROR, and the corner always following a jab.
