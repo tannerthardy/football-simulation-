@@ -10,6 +10,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function cornerFlat(flag: string, seed: number) {
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('DECLARED_BREAK', '0'); // engine-68: this file tests the legacy forecast's break; DECLARED_BREAK replaces that path
   vi.stubEnv('FORECAST_BREAK', flag);
   // Pinned off: with the back released he is a progression read, the leftover W2 route lands last, and QB_RHYTHM's
   // rhythm outlet (the last read) throws W2 as the "outlet" on moving off the corner (seeds 2 and 6: W2 open at

@@ -41,3 +41,22 @@ describe('ROUTE_EFFORT break table (src/playbook/routes.ts)', () => {
     expect(on.swing).toEqual(off.swing);
   });
 });
+
+describe('break table columns follow their flags', () => {
+  async function routes(fillet: boolean, effort: boolean) {
+    vi.stubEnv('ROUTE_FILLET', fillet ? '1' : '0'); vi.stubEnv('ROUTE_EFFORT', effort ? '1' : '0');
+    vi.resetModules();
+    return (await import('../src/playbook/routes.js')).ROUTES;
+  }
+  it('ROUTE_FILLET alone plants the cuts at their authored s; ROUTE_EFFORT adds the s column', async () => {
+    const fillet = await routes(true, false), both = await routes(true, true), none = await routes(false, false);
+    expect(none.slant.points[0]).toEqual({ d: 2, l: 0, s: 0.75 });
+    expect(fillet.slant.points[0]).toMatchObject({ cut: true, s: 0.75 });
+    expect(fillet.dig.points[0]).toMatchObject({ cut: true, s: 0.4 });
+    expect(fillet.corner.points[0].s).toBe(0.65);
+    expect(fillet.corner.points[0].cut).toBeUndefined();
+    expect(both.slant.points[0]).toMatchObject({ cut: true, s: 0.35 });
+    expect(both.corner.points[0].s).toBe(1);
+  });
+});
+

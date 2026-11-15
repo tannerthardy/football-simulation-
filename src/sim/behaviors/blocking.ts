@@ -439,7 +439,8 @@ export class PassProtector implements Behavior {
       const line = TACKLE_SET ? tackleSetLine(sim, a, r) : null;
       const wide = !!line && (a.pos.y - line.y) * line.out >= -0.1 && r.vel.y * line.out > 0;
       // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
-      const leadY = VERTICAL_SET ? out * Math.min(0, r.vel.y * out) : wide ? 0 : r.vel.y;
+      // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
+      const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
       return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
