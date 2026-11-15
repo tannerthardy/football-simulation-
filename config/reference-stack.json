@@ -204,6 +204,7 @@
     "FIGHT_MENU": "off",
     "BAT_HANDS": "off",
     "MIRROR_REF": "off",
+    "SET_SPOT": "off",
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",

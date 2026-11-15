@@ -24,7 +24,7 @@ import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { paRunLook } from '../pa-look.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, PUNCH, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -313,7 +313,7 @@ export class PassProtector implements Behavior {
       : sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake) ? 'low' : 'high';
     const home = this.coord.homeY.get(a) ?? a.pos.y;
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
-    a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
+    a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside, spotY: home };
     if (sim.t < startOf(a)) return stand(0);
     // A called release: a lineman or attached end leaves his man on the count;
     // a back stays in while a free rusher is coming at him (a blitz kills the screen).
@@ -343,7 +343,8 @@ export class PassProtector implements Behavior {
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
-    const qb = sim.qb;
+    // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
+    const qb = SET_SPOT ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
@@ -380,6 +381,15 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
+    // SET_SPOT: an interior set goes to its spot (his set depth straight back off his alignment), with its width where
+    // the rusher's line to the launch point crosses that depth, kept to his zone. He meets the rusher there.
+    const spotSet = SET_SPOT && !isT && isOL(a) && !this.calledRelease && !runLook(a, sim);
+    let spotFrac = 0;
+    if (spotSet) {
+      const sx = sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
+      const tg = setSpotTarget(sim, a, rp, sx);
+      set = { x: sx, y: tg.y }; spotFrac = tg.frac;
+    }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle
     // who sets on that line sits on the chord, a couple of yards inside him,
     // all the way back. Kick to cut the arc off instead — meet him at the
@@ -448,6 +458,8 @@ export class PassProtector implements Behavior {
     // already assumed by the forecast; physical movement and contact still
     // decide whether the tackle can arrive and obtain useful protection.
     if (cuttingOff) return goTo(a, set, { speed: 0.75, through: a.profile.vmax * 0.75, facing, cutSkill: quick });
+    // SET_SPOT: his spot does not move with the rusher's depth; across, it moves by its own share of his motion.
+    if (spotSet) return track(a, set, { x: 0, y: r.vel.y * spotFrac }, { facing, cutSkill: quick, gain: 2.5 });
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
 }

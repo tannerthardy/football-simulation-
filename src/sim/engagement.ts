@@ -197,7 +197,40 @@ const latOf = (a: Vec2): Vec2 => ({ x: -a.y, y: a.x });
 export function passSetDepth(sim: PlaySim, b: Agent): number {
   const tackle = b.slot === 'LT' || b.slot === 'RT';
   const clearance = tackle ? 2.8 : 3.8;
-  return Math.max(tackle ? 1.4 : 1, sim.los - sim.qb.pos.x - clearance);
+  // SET_SPOT: from the call (the drop he knows is coming), or the QB's alignment at the snap; never the QB's live
+  // position behind him.
+  const qx = SET_SPOT ? calledLaunchX(sim) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
+  return Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
+}
+
+/** SET_SPOT (experimental, off; SET_SPOT=1): the pass set's reference is the pocket, not the man (Integration,
+ * 2026-11-15; hand-fight note sections 21-23).
+ * - **Information removed.** The set no longer reads the QB's live position (behind the blocker, unseen):
+ *   passSetDepth and the line he protects come from the call (calledLaunchX: the drop every lineman knows) or the QB's
+ *   alignment at the snap.
+ * - **The interior set as taught** (the short set: the guard sets back two steps, the tackle three; guards hold the
+ *   pocket's depth, tackles its width; fight at the line and give little ground): from the snap he goes to his set
+ *   spot, his set depth straight back off his own alignment, at his set pace, and meets the rusher there. Off, he sat
+ *   at punching distance in front of the rusher on the rusher's line to the live QB, so he barely moved until the
+ *   rusher came (0.2 yd/s of retreat requested to 0.5 s; NFL interior OL 0.80 yd deep at 1.0 s, ours 0.50).
+ * - **The lateral reference** (setSpotTarget): where the rusher's line to the launch point crosses his own depth,
+ *   clamped to his zone about his alignment (half a split: no gap opened to the man inside), with its feed-forward the
+ *   target's own motion (a fraction of the rusher's, nothing when clamped). Off, his target was a step in front of the
+ *   rusher on the rusher's line, moving with the man he was carrying: a self-starting slide (staged: 1.28 yd/s by
+ *   1.5 s from no drift at all).
+ * Interior linemen (no outside set); the tackles' kick keeps its own law, with the live-QB reads removed. */
+export const SET_SPOT = process.env.SET_SPOT === '1';
+/** SET_SPOT: half an interior split (yd): his zone about his alignment. */
+const SET_ZONE = 0.65;
+/** SET_SPOT: his lateral target and its share of the rusher's lateral motion (0 when clamped to his zone). */
+export function setSpotTarget(sim: PlaySim, b: Agent, rPos: Vec2, atX: number): { y: number; frac: number } {
+  const ref = protectPoint(sim), dx = rPos.x - ref.x;
+  const frac = dx > 0.3 ? clamp((atX - ref.x) / dx, 0, 1) : 1;
+  const y = ref.y + (rPos.y - ref.y) * frac, spot = b.passSet?.spotY ?? b.pos.y;
+  // His zone around the spot bounds the target smoothly (a soft saturation, not a clamp), and the rusher's lateral
+  // velocity feeds forward by the same slope, so neither the target nor the request steps at the zone's edge.
+  const u = (y - spot) / SET_ZONE, th = Math.tanh(u);
+  return { y: spot + SET_ZONE * th, frac: frac * (1 - th * th) };
 }
 
 /** Signed phi from current positions (blocker relative to the defender). */
@@ -214,8 +247,8 @@ function rusherPhi(sim: PlaySim, d: Agent, bPos: Vec2): number {
 }
 
 /** REP_SEEN: where a pass blocker protects: the launch point he knows from the call, on the ball's line. */
-function protectPoint(sim: PlaySim): Vec2 {
-  return { x: calledLaunchX(sim) ?? sim.qb.pos.x, y: sim.ballY };
+export function protectPoint(sim: PlaySim): Vec2 {
+  return { x: calledLaunchX(sim) ?? (SET_SPOT ? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x), y: sim.ballY };
 }
 
 /** Balance available to a player's technique, from his body. */
@@ -2454,8 +2487,15 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // MIRROR_REF: he mirrors the man's move relative to himself (the rusher's velocity less his own), not the pair's
   // common motion, which his own slide, carrying the man through the hands, is part of.
   const mv = MIRROR_REF ? { x: known.vel.x - b.vel.x, y: known.vel.y - b.vel.y } : known.vel;
-  const offLat = (front.x + mv.x * lead - b.pos.x) * lat.x + (front.y + mv.y * lead - b.pos.y) * lat.y;
-  const dLat = mv.x * lat.x + mv.y * lat.y;
+  let offLat = (front.x + mv.x * lead - b.pos.x) * lat.x + (front.y + mv.y * lead - b.pos.y) * lat.y;
+  let dLat = mv.x * lat.x + mv.y * lat.y;
+  // SET_SPOT: an interior blocker's lateral target is the pocket's (setSpotTarget), not a step in front of the man he
+  // is carrying; its feed-forward is the target's own motion.
+  if (SET_SPOT && !b.passSet?.outside) {
+    const tg = setSpotTarget(sim, b, known.pos, b.pos.x);
+    offLat = (tg.y - b.pos.y) * lat.y;
+    dLat = tg.frac * known.vel.y * lat.y;
+  }
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const vLat = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + offLat * (3 + 3 * tb.feet), -mirror, mirror);
   const depth = sim.los - b.pos.x;

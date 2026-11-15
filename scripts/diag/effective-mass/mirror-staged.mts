@@ -19,7 +19,9 @@ for (const side of [1, -1]) for (const dir of [0, 1, -1]) {
   let breq = 0;
   sim.world.step = (intents: any[], dt: number) => {
     const qx = sim.qb.pos.x - d.pos.x, qy = sim.qb.pos.y - d.pos.y, L = Math.hypot(qx, qy) || 1, sp = 0.55 * d.profile.vmax;
-    intents[d.idx] = { ...intents[d.idx], vel: { x: qx / L * sp, y: qy / L * sp }, push: 1 };
+    // STAGE_RUSHER_LAT: a real lateral move by the rusher (yd/s across, toward his side), on top of the drive.
+    const latMove = Number(process.env.STAGE_RUSHER_LAT ?? 0) * side;
+    intents[d.idx] = { ...intents[d.idx], vel: { x: qx / L * sp, y: qy / L * sp + latMove }, push: 1 };
     breq = intents[b.idx]?.vel?.y ?? 0;
     return step(intents, dt);
   };
@@ -28,7 +30,7 @@ for (const side of [1, -1]) for (const dir of [0, 1, -1]) {
     sim.tick();
     const dt = sim.t - t0;
     for (const m of [0.25, 0.5, 1.0, 1.5, 2.0]) if (Math.abs(dt - m) < 0.026)
-      out.push(`${m.toFixed(2)} s: pair ${((b.vel.y + d.vel.y) / 2 * sgn).toFixed(2)}, blocker asks ${(breq * sgn).toFixed(2)}, engaged ${!!d.engagement}`);
+      out.push(`${m.toFixed(2)} s: pair ${((b.vel.y + d.vel.y) / 2 * sgn).toFixed(2)}, blocker asks ${(breq * sgn).toFixed(2)}, rusher - blocker across ${((d.pos.y - b.pos.y) * sgn).toFixed(2)} yd, engaged ${!!d.engagement}`);
   }
   console.log(`MIRROR_REF=${process.env.MIRROR_REF ?? '0'} side ${side > 0 ? '+' : '-'} drift ${dir === 0 ? 'none' : dir > 0 ? 'toward' : 'away'} (signed along the side): ${out.join(' | ')}`);
 }

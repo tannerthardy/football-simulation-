@@ -51,6 +51,8 @@ export interface PassSetIntent {
   laneY: number;
   /** Outside direction for an edge set, zero for an interior/backup block. */
   outside: number;
+  /** SET_SPOT: his set spot's width (his alignment), the reference his lateral target is kept about. */
+  spotY?: number;
 }
 
 /** Installed run-contact shoulder, separate from the displacement request. */
