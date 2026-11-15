@@ -27,8 +27,8 @@ for (const [coverage, roster, seed, formation] of keys) {
         parts: r?.parts ? Object.fromEntries(Object.entries(r.parts).map(([k, v]: any) => [k, +(+v).toFixed(3)])) : null,
         arrive: r ? +(sim.t + wind + r.T).toFixed(2) : null, pt: r ? { x: +r.point.x.toFixed(1), y: +r.point.y.toFixed(1) } : null,
         bar: qb.barNow ? { thr: +qb.barNow.thr.toFixed(3), maxInt: +qb.barNow.maxInt.toFixed(3) } : null, top,
-        onStep: qb.onStep ? qb.onStep(sim.qb, dig, args[3] ?? 0) : null, landed: qb.landedSteps ?? null, need: qb.stepOf?.get(dig)?.n ?? null,
-        step: qb.step ? { n: qb.step.n, since: +qb.step.since.toFixed(2), landed: qb.step.landed, left: +Math.hypot(qb.step.to.x - sim.qb.pos.x, qb.step.to.y - sim.qb.pos.y).toFixed(2) } : null });
+        onStep: qb.onStep ? qb.onStep(sim.qb, dig, args[3] ?? 0, sim.t) : null, landed: qb.landedSteps ?? null, need: qb.stepOf?.get(dig)?.n ?? null,
+        step: qb.step ? { n: qb.step.n, since: +qb.step.since.toFixed(2), landed: qb.step.landed, left: +(qb.step.since + qb.stride() - sim.t).toFixed(2) } : null });
     }
     return r;
   };

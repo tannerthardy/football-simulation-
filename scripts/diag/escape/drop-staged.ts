@@ -29,7 +29,7 @@ for (const concept of ONLY.length ? CONCEPTS.filter((c) => ONLY.includes(c)) : C
       atSet = { t: +sim.t.toFixed(2), y: +((sim.qb.pos.y - sim.ballY) * ss).toFixed(2), x: +((sim.qb.pos.x - sim.los) * dir).toFixed(1), deS: e('DE_S'), deW: e('DE_W'), rbY: (() => { const rb = sim.slot?.('RB'); return rb ? +((rb.pos.y - sim.ballY) * ss).toFixed(1) : null; })() }; } };
     let res: any; try { res = sim.run(); } catch (e: any) { console.error(String(e?.stack).slice(0, 400)); break; }
     const sk = sim.events.find((e: any) => e.type === 'sack'); const qbEnd = +((sim.qb.pos.x - sim.los) * dir).toFixed(1);
-    console.log(JSON.stringify({ concept, drop: PASS_BY_ID[concept].drop, coverage, roster, seed, formation, thr, atSet, sack: sk ? { t: +sk.t.toFixed(2), qbY: +((sim.qb.pos.y - sim.ballY) * ss).toFixed(2), by: snap.get(sk.a)?.slot ?? null, pos: snap.get(sk.a)?.pos ?? null, wide: snap.get(sk.a)?.wide ?? null, qb: qbEnd } : null, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: res.yards ?? null }));
+    console.log(JSON.stringify({ concept, drop: PASS_BY_ID[concept].drop, coverage, roster, seed, formation, thr, atSet, sack: sk ? { t: +sk.t.toFixed(2), qbY: +((sim.qb.pos.y - sim.ballY) * ss).toFixed(2), by: snap.get(sk.a)?.slot ?? null, pos: snap.get(sk.a)?.pos ?? null, wide: snap.get(sk.a)?.wide ?? null, qb: qbEnd } : null, cmp: !!res.stats.completed, int: !!res.stats.interceptedBy, sacked: !!res.stats.sacked, yards: res.yards ?? null, held: sim.events.filter((e: any) => e.type === 'throw_held').length, pumps: sim.events.filter((e: any) => e.type === 'pump').length }));
     break;
   }
 }

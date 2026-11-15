@@ -478,17 +478,19 @@ const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency
  * answer on the hitch), each step landing a beat after the last, counted from his own set. His eyes go to a read when
  * the hitch that lands on its beat starts, not when a dwell runs out, but not before he has given the read he is on
  * his yes/no glance (attempt one moved them at the set + 0.1 s, before a read-1 throw on the plant could start: off,
- * read-1 throws leave 0.40-0.55 s after his set, a windup after the plant); the hitch is up and toward that read; a read
- * can be thrown once its step has landed (or with the landing inside his load, which the last step carries). Under
+ * read-1 throws leave 0.40-0.55 s after his set, a windup after the plant); the hitch is a base reset at depth, one stride of his
+ * own drop, turned to that read; a read can be thrown once its step has landed (or with the landing inside his load, which the last step carries). Under
  * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps (reads after the second hitch, or
  * no plan), the dwell moves him on as before. Triangle, peek, key and hot reads are unchanged by this bit.
  * Bits 2 (the open-hip drop) and 4 (climb / slide / reset) are not built. */
 const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
 const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
-/** QB_FOOTWORK: a hitch's time from its start to its landing (s; a 0.5-0.8 yd step at the hitch's pace), so his eyes
- * leave for the next read that long before its beat; and the longest a hitch is given before it counts as landed.
- * Chosen. */
-const HITCH_TIME = 0.3, HITCH_MAX = 0.6;
+/** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
+ * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
+ * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
+ * game's catch-and-throw, the gun three and five, the five and seven from under center; play action counts the
+ * fake's step as one more of five). Coached counts, not fitted. */
+const DROP_STEPS: Record<string, number> = { quick: 1, gun3: 3, gun5: 5, five: 5, five_deep: 5, seven: 7, pa: 5, boot: 5 };
 /** QB_AVOID: the look he still needs beyond his motion when his dwell is not known (s; otherwise his own dwell on a
  * read), and the margin by which the man's time must clear his need
  * before he stops (s): exit on the far side of the entry. Chosen. */
@@ -1495,7 +1497,7 @@ export class QBPass implements Behavior {
         const go = this.startIfFinish(a, sim, ev);
         if (go) { this.pendingSpot = toSpotNow.spot; return go; }
       }
-      if (ev && ev.P >= need && ev.intRisk <= risk && (!FW_STEPS || this.onStep(a, read, u))) { const go = this.startIfFinish(a, sim, ev); if (go) { if (QB_KEY_THROW && this.keyAnswer?.target === read) { this.keyThrows++; this.keyAnswer = null; } return go; } }
+      if (ev && ev.P >= need && ev.intRisk <= risk && (!FW_STEPS || this.onStep(a, read, u, t))) { const go = this.startIfFinish(a, sim, ev); if (go) { if (QB_KEY_THROW && this.keyAnswer?.target === read) { this.keyThrows++; this.keyAnswer = null; } return go; } }
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
       const forecast = this.receiverForecasts.get(read);
@@ -1735,29 +1737,31 @@ export class QBPass implements Behavior {
   private beatDue(read: Agent | undefined, t: number, glance: number): boolean {
     const sn = this.stepOf.get(this.nextRead(read)!)!;
     // A read gets at least his yes/no glance (a throw on read 1 is started at the plant and must be decided there).
-    return t >= this.setAt + sn.beat - HITCH_TIME && t - this.readStart >= glance;
+    return t >= this.setAt + sn.beat - this.stride() && t - this.readStart >= glance;
   }
+  /** One stride of his own drop (s): the hitch's length in time. */
+  private stride(): number { return this.drop.time / (DROP_STEPS[this.concept.drop] ?? 5); }
   /** The step his current read is installed on: started when its beat's hitch is due, landed when he reaches it. */
   private footwork(a: Agent, sim: PlaySim, read: Agent | undefined): void {
     const st = this.step;
-    if (st && !st.landed && (Math.hypot(st.to.x - a.pos.x, st.to.y - a.pos.y) < 0.15 || sim.t - st.since >= HITCH_MAX)) { st.landed = true; this.landedSteps = st.n; }
+    if (st && !st.landed && sim.t - st.since >= this.stride() - 1e-9) { st.landed = true; this.landedSteps = st.n; }
     const s = read ? this.stepOf.get(read) : undefined;
     if (!read || !s || this.setAt < 0 || s.n <= this.landedSteps || (st && !st.landed)) return;
-    if (sim.t < this.setAt + s.beat - HITCH_TIME) return;
-    // Up and toward him, never back; the length as QB_GATHER's hitch (release and experience).
-    const seen = this.has(sim, read), dx = seen.x - a.pos.x, dy = seen.y - a.pos.y, L = Math.hypot(dx, dy) || 1;
-    const len = 0.5 + 0.3 * (1 - a.r('release')) + 0.2 * (1 - Math.min(1, a.player.experience / 8));
-    const ux = Math.max(0.35, dx / L), uy = dy / L, n = Math.hypot(ux, uy);
-    this.step = { n: this.landedSteps + 1, since: sim.t, landed: false,
-      to: { x: Math.min(a.pos.x + ux / n * len, sim.los - 2.5, this.drop.x + 2.5), y: a.pos.y + uy / n * len } };
+    if (sim.t < this.setAt + s.beat - this.stride()) return;
+    // A base reset at depth: he gathers where he stands, turned to the read (his body facing follows his read). Whether
+    // a hitch gains ground is a pressure decision (the climb, bit 4), not the hitch's. Attempt one stepped 0.5-1.0 yd
+    // up toward the read on every beat; it carried him up into the interior rush (dagger: 0.56 yd nearer the line at
+    // 3.0 s than the off arm, 0.97 at 3.5 s; 6 of 13 new sacks a rusher on his arm from there; NFL net upfield plant to
+    // release p50 0.00 yd).
+    this.step = { n: this.landedSteps + 1, since: sim.t, landed: false, to: { x: a.pos.x, y: a.pos.y } };
   }
   /** A throw to this read leaves on its step: landed, or landing inside his load. Under pressure, from where he is. */
-  private onStep(a: Agent, read: Agent, u: number): boolean {
+  private onStep(a: Agent, read: Agent, u: number, t: number): boolean {
     const s = this.stepOf.get(read);
     if (!s || u >= 0.8 || s.n <= this.landedSteps) return true;
     const st = this.step;
     if (!st || st.landed || st.n < s.n) return false;
-    return Math.hypot(st.to.x - a.pos.x, st.to.y - a.pos.y) / Math.max(0.35 * a.profile.vmax, 0.5) <= this.load(a);
+    return st.since + this.stride() - t <= this.load(a);
   }
 
   /** QB_SEEN_OUT: whether he has seen a check-release man on his release route. Once out, he stays out. */
