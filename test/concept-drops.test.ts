@@ -1,5 +1,6 @@
-/** CONCEPT_DROPS (src/playbook/concepts.ts; experimental, off): the concepts whose first read is not ready until
- * 2.4-2.9 s are marked five-step ('five'); the rest keep their drops; off, nothing changes. */
+/** CONCEPT_DROPS (src/playbook/concepts.ts; experimental, off): concepts whose first read is a square-in, post, corner,
+ * crosser or deep comeback are marked 'five' (read 1 on the hitch); those whose first read is an out, curl, flat or hitch
+ * keep the gun five-step and read on the set (docs/reviews/2026-11-15-concept-drops.md); off, nothing changes. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
@@ -12,13 +13,15 @@ async function drops(flag: string) {
 }
 
 describe('CONCEPT_DROPS', () => {
-  it('marks the late-first-read concepts five-step and leaves the quick game alone', async () => {
+  it('marks the concepts read on the hitch five-step and leaves those read on the set, and the quick game, alone', async () => {
     const off = await drops('0'), on = await drops('1');
     expect(off('smash')).toBe('gun5'); expect(off('comebacks')).toBe('seven');
-    for (const id of ['smash', 'mesh', 'flood', 'drive', 'comebacks']) expect(on(id)).toBe('five');
+    for (const id of ['smash', 'mesh', 'drive', 'corner_flat', 'levels', 'comebacks']) expect(on(id)).toBe('five');
+    // First read an out or the flat: read on the set, as installed.
+    for (const id of ['flood', 'sail_corner', 'double_outs', 'trips_sail', 'trips_outs']) expect(on(id)).toBe(off(id));
     // The verticals are VERTS_QUICK's, not this flag's.
     for (const id of ['four_verts', 'verts_hitch']) expect(on(id)).toBe(off(id));
-    for (const id of ['slant_flat', 'stick', 'curl_flat', 'levels']) expect(on(id)).toBe(off(id));
+    for (const id of ['slant_flat', 'stick', 'curl_flat']) expect(on(id)).toBe(off(id));
   });
   it('VERTS_QUICK moves the two verticals to the gun three-step and nothing else', async () => {
     const at = async (flag: string) => { vi.resetModules(); vi.stubEnv('CONCEPT_DROPS', '0'); vi.stubEnv('VERTS_QUICK', flag); const { PASS_BY_ID } = await import('../src/playbook/concepts.js'); return (id: string) => PASS_BY_ID[id].drop; };
