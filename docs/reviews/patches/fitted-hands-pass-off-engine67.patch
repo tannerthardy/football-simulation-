@@ -1,0 +1,1275 @@
+From 1fd930f432b0bd552c6201e9308432d664f5260f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 15 Nov 2026 01:57:08 +0000
+Subject: [PATCH] FITTED_HANDS (hand-fight stage 1: two hands as bodies, the
+ club with its approach, the blocker's read) and PASS_OFF (the pass-off: at
+ the shed and on the helper's seen cue), off; registered; come-off operators
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ config/baseline.json                          |   2 +
+ config/reference-stack.json                   |   2 +
+ docs/FLAGS.md                                 |   4 +-
+ node_modules                                  |   1 +
+ scripts/diag/effective-mass/club-fight.mts    |  71 +++++++
+ scripts/diag/effective-mass/comeoff-film.mts  |  95 +++++++++
+ scripts/diag/effective-mass/moves-fight.mts   |  51 +++++
+ scripts/diag/pass-operators/comeoff-frames.py | 122 +++++++++++
+ .../diag/pass-operators/interior-comeoff.py   | 131 ++++++++++++
+ scripts/diag/pass-operators/interior-fight.py |  62 ++++++
+ scripts/diag/pass-operators/late-sacker.py    |  32 +++
+ src/physics/world.ts                          | 111 +++++++++-
+ src/sim/agent.ts                              |   5 +-
+ src/sim/engagement.ts                         | 190 +++++++++++++++++-
+ test/fitted-hands.test.ts                     | 104 ++++++++++
+ 15 files changed, 972 insertions(+), 11 deletions(-)
+ create mode 120000 node_modules
+ create mode 100644 scripts/diag/effective-mass/club-fight.mts
+ create mode 100644 scripts/diag/effective-mass/comeoff-film.mts
+ create mode 100644 scripts/diag/effective-mass/moves-fight.mts
+ create mode 100644 scripts/diag/pass-operators/comeoff-frames.py
+ create mode 100644 scripts/diag/pass-operators/interior-comeoff.py
+ create mode 100644 scripts/diag/pass-operators/interior-fight.py
+ create mode 100644 scripts/diag/pass-operators/late-sacker.py
+ create mode 100644 test/fitted-hands.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 8f953eae..3aa8b989 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -254,6 +254,8 @@
+     "TACKLE_BRAKE": "0",
+     "TACKLE_RESET": "0",
+     "RUSH_HANDS": "0",
++    "FITTED_HANDS": "0",
++    "PASS_OFF": "0",
+     "PASS_RIDE": "0",
+     "RUSH_ONE_HAND": "0",
+     "HAND_SITE": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 6c7b59fb..81fb2df8 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -197,6 +197,8 @@
+     "TACKLE_BRAKE": "off",
+     "TACKLE_RESET": "off",
+     "RUSH_HANDS": "off",
++    "FITTED_HANDS": "off",
++    "PASS_OFF": "off",
+     "PASS_RIDE": "on",
+     "RUSH_ONE_HAND": "off",
+     "HAND_SITE": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 8101e706..61c9cadd 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 390 flags read from the environment in `src` (recounted 2026-11-14 at engine-67, plus `ENGAGE_TRUNK`, `CHEST_SHOULDERS` and `EXPORT_SHOULDERS`): 289 are on unless set to `0`, 89 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 392 flags read from the environment in `src` (recounted 2026-11-14 at engine-67, plus `ENGAGE_TRUNK`, `CHEST_SHOULDERS`, `EXPORT_SHOULDERS`, `FITTED_HANDS` and `PASS_OFF`): 289 are on unless set to `0`, 91 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -313,6 +313,8 @@ There are 390 flags read from the environment in `src` (recounted 2026-11-14 at
+ | `TACKLE_RESET` | off | experimental (the anchor's base re-set, 2026-11-12) | trenches | `src/sim/engagement.ts` (`baseReset`) | with TACKLE_SET and TACKLE_BRAKE: cue = the felt press beyond his base limit at his stance (m w0^2 x base radius) while carried past his request, acted on after 0.5-1.5 reaction times by passBlock; a short replacement step (sunk-stance base radius over recovery stepping speed) with light feet (no braking, no drive: a stand-in for per-foot load, debt) while he sinks (posture 0.95); on landing his lean is set to his base limit at his posture (x 0.5-1 by balance), no more than the press; sunk while pressed; lean growth PUSH_GROWTH only while still carried, 0 once stopped. Sources: OL protection textbook §7.6-7.7, §8.4, §20.5. No capacity added. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_ONE_HAND` | off | experimental (with `RUSH_HANDS`; RUSH_HANDS attempt 3, 2026-11-13) | trenches | `src/sim/engagement.ts` (`setHands`, `clearedSide`, the rusher's aim) | a cleared hand opens the side it guarded, not the rep: with one hand off and the other unloaded the rusher no longer gets the landed-move request (work past at 0.8-1.0 vmax, hands' steer cut); he works to the cleared side (the blocker's hip, a step past toward the QB) at his ordinary rush with push 0.75, through the body and the remaining hand. Only both hands gone is a landed move; PAST along his path declares the win. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_HANDS` | off | experimental (physical pass-rush moves, stage 1: the hand, 2026-11-13) | physics / trenches | `src/physics/world.ts` (`handForce`, `handHold`, `handEdge`, `stepHands`), `src/sim/engagement.ts` (`refit`, `refitTime`) | the blocker's hand as a one-degree-of-freedom body on the hands joint: a force on the hand over its contact time (step-independent) is resisted by the arm's lateral hold (steer x bent / actual extension + HAND_MU x measured press + a grip's hold), falling to 0 at the edge of the man's torso (his radius; vertical not modelled); the excess moves only the arm (ARM_MASS 0.05, Winter's segment tables), the striker pays the full reaction, the arm's momentum returns to the blocker's body; past the edge the hand is off (no push, hold or steer) until it re-fits after his reaction plus the travel from his chest at ARM_SPEED. Stage 2: the club is a force on the blocker's hand (his arm force over the time his hand crosses a forearm, FOREARM 0.1 yd at his hand speed) and the long-arm is his own hand joint at his lockout (the blocker's hands cannot reach while the man is beyond his arm), countered by the blocker's club on it after his reaction time. Two hands (attempt 2): a clear takes one hand (push, hold and the arm's hold halve; steer resisting the man toward the vacated side is ONE_HAND_SIDE 0.25 of the remaining hand's; the turning moment about the remaining hand is not modelled); a second clear takes both; re-fit one hand at a time. Keys: the rusher reads an unloaded hand by touch and his arm advantage by sight, with recognition error. Still rating rolls: bull, speed, dip, spin, swim, rip, snatch. Test `test/rush-hands.test.ts`. docs/reviews/2026-11-12-tackle-set.md |
++| `FITTED_HANDS` | off | experimental (hand fight stage 1, 2026-11-14; requires RUSH_HANDS) | physics / trenches | `src/physics/world.ts` (`handPair`, `stepHandPair`, `handHold(k)`, the hands row), `src/sim/engagement.ts` (`fightHands`, `fightRep`, `feltCleared`, `chooseMove`, `resolveMove`) | the blocker's two hands are separate one-degree-of-freedom bodies: each carries half the joint's push, hold and steer at its own edge factor, so press, its friction and steer exist only through a fitted hand; a strike acts on the hand it meets, held by that arm alone. A lost hand re-fits after reaction plus travel (refitTime) and lands with a placement error (PLACE_SPREAD by hand technique; past the torso's edge it missed and goes again). Pass reps: no landed-move window from a lost hand (the man is freed only by the World). Interior pass reps: the club is the rusher's one move, thrown when a hand is on him and his arm is back; he works to the side he feels cleared (touch, 0.06 s). Design: docs/reviews/2026-11-14-hand-fight-design.md section 4. |
++| `PASS_OFF` | off | experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. |
+ | `PASS_RIDE` | on | promoted 2026-11-13 (engine-56; `=0` restores); was experimental (the block becomes a ride, 2026-11-13) | trenches | `src/sim/engagement.ts` (`rideIntent`; stepPassRep's PAST branch) | one ride rule for every pass blocker: a man past along his path (PAST_ALONG_PATH) is ridden -- the blocker runs with him on his QB side (a body's width across his path toward the QB), matching his velocity and closing on that spot (gain 2.5 /s), pushing through his hands (the joint's push flattens the man away from the QB); once riding he stays on him until the man is clearly back in front (along his path by more than PAST_MARGIN); the rep still ends when the man is beyond his arm. Off, the ride asked for the man's velocity less 1 yd/s toward the QB, so blockers fell behind by design (guards 1.9 vs 3.4 yd/s; ride-probe.mts). A grip from behind stays the holding detector's. docs/reviews/2026-11-12-tackle-set.md |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+diff --git a/node_modules b/node_modules
+new file mode 120000
+index 00000000..24574179
+--- /dev/null
++++ b/node_modules
+@@ -0,0 +1 @@
++/home/user/football-simulation-/node_modules
+\ No newline at end of file
+diff --git a/scripts/diag/effective-mass/club-fight.mts b/scripts/diag/effective-mass/club-fight.mts
+new file mode 100644
+index 00000000..70cd4195
+--- /dev/null
++++ b/scripts/diag/effective-mass/club-fight.mts
+@@ -0,0 +1,71 @@
++// FITTED_HANDS stage 1 gate: per interior pass rep (LG / C / RG, to the throw), each club the rusher throws (e.club set:
++// RUSH_HANDS' clubHand), the blocker's hands on before it and after it, the hands joint's load the tick before and
++// 0.1 / 0.25 s after, and the share of the rep with 2 / 1 / 0 hands on. The club lasts about 0.03 s (shorter than a
++// tick), so its window is read around it, not inside it (moves-fight.mts reads windows by moveUntil, which a club ends
++// inside one tick).
++// usage: node --import tsx scripts/diag/effective-mass/club-fight.mts [seed] [games]
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']);
++const clubs: any[] = []; const reps: any[] = []; const holds: any[] = []; let passPlays = 0;
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  passPlays++;
++  const st = new Map<any, any>(); const open: any[] = [];
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    const pre = new Map<any, any>();
++    for (const e of sim.engagements) if (e.type === 'pass' && IN.has(e.blocker.slot)) pre.set(e, { N: Math.max(0, e.hands?.normalForce ?? 0), on: e.hands?.off ? 0 : e.hands?.handsOn ?? 2, club: e.club });
++    tick();
++    if (sim.throwAt >= 0) return;
++    for (const e of sim.engagements) {
++      if (e.type !== 'pass' || !IN.has(e.blocker.slot)) continue;
++      const s = st.get(e) ?? { ticks: 0, on: [0, 0, 0], clubs: 0, lastClear: -Infinity, rel: null, offAt: null, offDur: [] as number[] }; st.set(e, s);
++      const on = e.hands?.off ? 0 : e.hands?.handsOn ?? 2; s.ticks++; s.on[on]++;
++      const pv = pre.get(e)?.on ?? 2;
++      if (on < pv) { s.lastClear = sim.t; s.offAt ??= sim.t; }
++      if (on === 2 && s.offAt !== null) { s.offDur.push(sim.t - s.offAt); s.offAt = null; }
++      // First release, as interior-fight.py: separation past 1.2 yd (centres) after they were within it.
++      const sep = Math.hypot(e.defender.pos.x - e.blocker.pos.x, e.defender.pos.y - e.blocker.pos.y);
++      if (sep <= 1.2) s.touched = true;
++      if (!s.rel && s.touched && sep > 1.2) s.rel = { t: sim.t - e.start, on, since: sim.t - s.lastClear, ext: e.hands?.extension };
++      const p = pre.get(e);
++      if (e.club && (!p || p.club !== e.club)) { s.clubs++; open.push({ e, club: e.club, t: sim.t, N0: p?.N ?? 0, on0: p?.on ?? 2, on1: undefined, N1: undefined, N2: undefined }); }
++    }
++    for (const c of open) {
++      const dt = sim.t - c.t, on = c.e.hands?.off ? 0 : c.e.hands?.handsOn ?? 2, N = Math.max(0, c.e.hands?.normalForce ?? 0);
++      if (c.on1 === undefined && dt > 0) c.on1 = on, c.minOn = on;
++      if (dt > 0) c.minOn = Math.min(c.minOn, on);
++      if (c.N1 === undefined && dt >= 0.1 - 1e-9) c.N1 = N;
++      if (c.N2 === undefined && dt >= 0.25 - 1e-9) { c.N2 = N; c.club0 = c.club; clubs.push(c); c.done = true; }
++    }
++    for (let i = open.length - 1; i >= 0; i--) if (open[i].done) open.splice(i, 1);
++  };
++  const res = sim.run();
++  for (const pen of [sim.penalty, ...(sim.penalties ?? [])]) if (pen && pen.kind === 'holding') holds.push(pen);
++  for (const s of st.values()) reps.push(s);
++  return res;
++} } });
++const q = (a: number[], p: number) => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))] : NaN; };
++const secs = reps.reduce((s, r) => s + r.ticks, 0) * 0.05;
++console.log(`interior pass reps ${reps.length} | clubs ${clubs.length} (${(clubs.length / Math.max(1e-9, secs)).toFixed(2)} a second of rep; per rep p50 ${q(reps.map(r => r.clubs), 0.5)} p90 ${q(reps.map(r => r.clubs), 0.9)})`);
++const tot = reps.reduce((s, r) => [s[0] + r.on[0], s[1] + r.on[1], s[2] + r.on[2]], [0, 0, 0]), T = tot[0] + tot[1] + tot[2];
++console.log(`hands on, share of rep ticks: 2 ${(100 * tot[2] / T).toFixed(0)}% | 1 ${(100 * tot[1] / T).toFixed(0)}% | 0 ${(100 * tot[0] / T).toFixed(0)}%`);
++const cleared = clubs.filter(c => c.minOn < c.on0);
++console.log(`clubs on hands: from 2 ${clubs.filter(c => c.on0 === 2).length}, from 1 ${clubs.filter(c => c.on0 === 1).length} | a hand cleared within 0.25 s ${cleared.length} (${(100 * cleared.length / Math.max(1, clubs.length)).toFixed(0)}%)`);
++console.log(`hands' load before / 0.1 s after / 0.25 s after the club, p50: ${q(clubs.map(c => c.N0), .5).toFixed(0)} / ${q(clubs.map(c => c.N1), .5).toFixed(0)} / ${q(clubs.map(c => c.N2), .5).toFixed(0)} N`);
++const rel = reps.filter(r => r.rel);
++console.log(`released past 1.2 yd: ${rel.length} of ${reps.length} | hands on at the release: 2 ${rel.filter(r => r.rel.on === 2).length}, 1 ${rel.filter(r => r.rel.on === 1).length}, 0 ${rel.filter(r => r.rel.on === 0).length} | within 0.5 s of a hand cleared ${rel.filter(r => r.rel.since <= 0.5).length}`);
++console.log(`time with a hand off (until both on again) p50 / p90: ${q(reps.flatMap(r => r.offDur), .5).toFixed(2)} / ${q(reps.flatMap(r => r.offDur), .9).toFixed(2)} s`);
++console.log(`  share of clubs where the load fell by 0.1 s: ${(100 * clubs.filter(c => c.N1 < c.N0).length / Math.max(1, clubs.length)).toFixed(0)}%`);
++for (const c of clubs) { c.answer = c.club0.answer; c.air = c.club0.air; }
++const ans: Record<string, number> = {};
++for (const c of clubs) ans[c.answer ?? 'n/a'] = (ans[c.answer ?? 'n/a'] ?? 0) + 1;
++console.log(`the blocker's answer: ${Object.entries(ans).map(([k, v]) => `${k} ${v} (${(100 * v / Math.max(1, clubs.length)).toFixed(0)}%)`).join(', ')} | through air ${clubs.filter(c => c.air).length}`);
++for (const a of ['away', 'firm', 'late', 'unseen']) { const g = clubs.filter(c => c.answer === a); if (g.length) console.log(`  ${a}: a hand cleared within 0.25 s ${(100 * g.filter(c => c.minOn < c.on0).length / g.length).toFixed(0)}%`); }
++console.log(`holding calls on pass plays: ${holds.length} of ${passPlays} (${(100 * holds.length / Math.max(1, passPlays)).toFixed(1)}%)`);
+diff --git a/scripts/diag/effective-mass/comeoff-film.mts b/scripts/diag/effective-mass/comeoff-film.mts
+new file mode 100644
+index 00000000..c0664271
+--- /dev/null
++++ b/scripts/diag/effective-mass/comeoff-film.mts
+@@ -0,0 +1,95 @@
++// The come-off on film, ours (Integration, 2026-11-15; hand-fight note section 7): interior pass rushers who release
++// (interior-fight.py's definition: separation past 1.2 yd or the rusher past 70 deg off the blocker's line to the QB,
++// within 2.5 s of contact, before the throw) and whose blocker is past 1.2 yd at +0.5 s. For each, from the release
++// to +2.0 s (or the throw), every 0.1 s:
++//   the rusher: speed, closing on the QB, his request's heading against the true QB and against the QB as he sees him
++//     (sim.see at the pursuit delay), engaged or not, his tags;
++//   the helper (the nearest other OL): distance, engaged with him (as blocker or helper), his velocity toward him, his
++//     facing against the bearing to him, his perception's error on him (sim.see), whom he is blocking;
++//   the QB: speed, his velocity's component away from the rusher, toward the line, his request's heading.
++// Only cases whose blocker is past 1.2 yd at +0.5 s are written.
++// usage: node --import tsx scripts/diag/effective-mass/comeoff-film.mts [seed] [games] [examples] > rows.jsonl
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4), nex = Number(process.argv[4] ?? 12);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']), OLS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
++const cases: any[] = [];
++const deg = (a: number) => a * 180 / Math.PI, wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
++let play = 0;
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  play++;
++  const pairs = new Map<string, any>();
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    tick();
++    const qb = sim.qb; if (!qb) return;
++    const thrown = sim.throwAt >= 0;
++    // New pairs: an interior OL and the nearest DL within 1.2 yd, from 0.2 s.
++    if (sim.t >= 0.2 && sim.t <= 2.0 && !thrown) for (const b of sim.offense) {
++      if (!IN.has(b.slot)) continue;
++      if ([...pairs.values()].some(p => p.b === b)) continue;
++      const dl = sim.defense.filter((d: any) => d.behavior?.kind === 'rush')
++        .map((d: any) => ({ d, r: Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) })).filter((x: any) => x.r <= 1.2).sort((x: any, y: any) => x.r - y.r)[0];
++      if (dl) pairs.set(b.slot, { b, d: dl.d, t0: sim.t, rel: null, frames: [] });
++    }
++    for (const p of pairs.values()) {
++      const { b, d } = p;
++      if (p.done) continue;
++      const bx = b.pos.x, by = b.pos.y, qx = qb.pos.x, qy = qb.pos.y;
++      const ux = qx - bx, uy = qy - by, L = Math.hypot(ux, uy) || 1, rx = d.pos.x - bx, ry = d.pos.y - by;
++      const sep = Math.hypot(rx, ry), ang = deg(Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L));
++      if (!p.rel) {
++        if (thrown || sim.t - p.t0 > 2.5) { p.done = true; continue; }
++        if (sep > 1.2 || Math.abs(ang) > 70) p.rel = { t: sim.t, by: sep > 1.2 ? 'sep' : 'shoulder' };
++        else continue;
++      }
++      const dt = sim.t - p.rel.t;
++      if (dt > 2.0 + 1e-9 || thrown) { p.done = true; continue; }
++      if (Math.abs(dt / 0.1 - Math.round(dt / 0.1)) > 0.01) continue;
++      const dq = Math.hypot(d.pos.x - qx, d.pos.y - qy);
++      const toQb = Math.atan2(qy - d.pos.y, qx - d.pos.x);
++      const seenQb = sim.see(d, qb, 0.5).pos, toSeen = Math.atan2(seenQb.y - d.pos.y, seenQb.x - d.pos.x);
++      const iv = sim.intents?.[d.idx]?.vel ?? { x: 0, y: 0 }, req = Math.atan2(iv.y, iv.x);
++      const helpers = sim.offense.filter((o: any) => OLS.has(o.slot) && o !== b)
++        .map((o: any) => ({ o, r: Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) })).sort((x: any, y: any) => x.r - y.r);
++      const h = helpers[0]?.o;
++      let help: any = null;
++      if (h) {
++        const hb = Math.atan2(d.pos.y - h.pos.y, d.pos.x - h.pos.x), hr = Math.hypot(d.pos.x - h.pos.x, d.pos.y - h.pos.y) || 1;
++        const seen = sim.see(h, d);
++        const eng = sim.engagements.find((e: any) => e.defender === d && (e.blocker === h || e.helpers?.includes(h)));
++        help = { slot: h.slot, r: +hr.toFixed(2), engaged: eng ? (eng.blocker === h ? 'blocker' : 'helper') : null,
++          vToward: +(((h.vel.x * (d.pos.x - h.pos.x) + h.vel.y * (d.pos.y - h.pos.y)) / hr)).toFixed(2),
++          faceOff: +Math.abs(deg(wrap(h.body.facing - hb))).toFixed(0),
++          seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
++          busy: h.engagement ? h.engagement.defender.slot : null };
++      }
++      const qv = qb.vel, away = (qv.x * (qx - d.pos.x) + qv.y * (qy - d.pos.y)) / (dq || 1);
++      const qiv = sim.intents?.[qb.idx]?.vel ?? { x: 0, y: 0 };
++      const up = -(qv.x) * sim.attackDir(qb.team) * -1;
++      p.frames.push({ dt: +dt.toFixed(1), bR: +sep.toFixed(2), dq: +dq.toFixed(2), rSpeed: +Math.hypot(d.vel.x, d.vel.y).toFixed(2),
++        closing: +(-((d.vel.x - qv.x) * (qx - d.pos.x) + (d.vel.y - qv.y) * (qy - d.pos.y)) / (dq || 1) * -1).toFixed(2),
++        reqOffTrue: +Math.abs(deg(wrap(req - toQb))).toFixed(0), reqOffSeen: +Math.abs(deg(wrap(req - toSeen))).toFixed(0),
++        seenQbErr: +Math.hypot(seenQb.x - qx, seenQb.y - qy).toFixed(2), rEngaged: !!d.engagement, rWith: d.engagement ? `${d.engagement.blocker.slot}${d.engagement.helpers?.length ? '+' + d.engagement.helpers.map((x: any) => x.slot).join('+') : ''}` : null, rTags: [...d.tags].slice(-4).join(','),
++        help, qbSpeed: +Math.hypot(qv.x, qv.y).toFixed(2), qbAway: +away.toFixed(2), qbUp: +(qv.x * sim.attackDir(qb.team)).toFixed(2),
++        qbReqSpeed: +Math.hypot(qiv.x, qiv.y).toFixed(2), qbTags: [...qb.tags].slice(-4).join(',') });
++      void up;
++    }
++  };
++  const res = sim.run();
++  for (const p of pairs.values()) {
++    if (!p.rel) continue;
++    const f5 = p.frames.find((f: any) => f.dt === 0.5);
++    if (!f5) continue;
++    if (f5.bR <= 1.2) continue;
++    cases.push({ id: `S${first}-G${g}-P${play}`, slot: p.b.slot, rusher: p.d.slot, by: p.rel.by, t: +(p.rel.t - p.t0).toFixed(1), frames: p.frames });
++  }
++  return res;
++} } });
++for (const c of cases) console.log(JSON.stringify(c));
++void nex;
+diff --git a/scripts/diag/effective-mass/moves-fight.mts b/scripts/diag/effective-mass/moves-fight.mts
+new file mode 100644
+index 00000000..34ef1670
+--- /dev/null
++++ b/scripts/diag/effective-mass/moves-fight.mts
+@@ -0,0 +1,51 @@
++// The interior pass-rush hand fight in ours (Integration, 2026-11-14, before the hand-fight note): per interior pass rep
++// (LG / C / RG against his man, until the throw): how many move decisions fire and which, how many land (moveOk), what
++// each changes physically while it lasts (the blocker's hands' steer and push scaled, a World strike's impulse, the hands
++// joint's load), and the share of the rep the hands joint is loaded (normal > 0) and loaded continuously.
++// usage: node --import tsx scripts/diag/effective-mass/moves-fight.mts [seed] [games]
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']);
++const reps: any[] = []; const moves: Record<string, { n: number; landed: number; strike: number[]; nDuring: number[]; nBefore: number[] }> = {};
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  const st = new Map<any, any>();
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    tick();
++    if (sim.throwAt >= 0) return;
++    const rep: any = sim.world.report;
++    for (const e of sim.engagements) {
++      if (e.type !== 'pass' || !IN.has(e.blocker.slot)) continue;
++      const s = st.get(e) ?? { ticks: 0, loaded: 0, run: 0, maxRun: 0, moves: 0, last: undefined, lastStart: -1, moveRec: null };
++      s.ticks++;
++      const N = Math.max(0, e.hands?.normalForce ?? 0);
++      if (N > 0) { s.loaded++; s.run++; s.maxRun = Math.max(s.maxRun, s.run); } else s.run = 0;
++      // A new move decision: the move's window starts again.
++      if (e.moveUntil > sim.t && e.moveUntil !== s.lastStart) {
++        s.moves++; s.lastStart = e.moveUntil; s.last = e.move;
++        const r = (moves[e.move] ??= { n: 0, landed: 0, strike: [], nDuring: [], nBefore: [] }); r.n++; if (e.moveOk) r.landed++;
++        s.moveRec = { r, until: e.moveUntil, N0: N, Ns: [] as number[] }; r.nBefore.push(N);
++      }
++      if (s.moveRec && sim.t <= s.moveRec.until) {
++        s.moveRec.Ns.push(N);
++        for (const k of rep?.strikes ?? []) if ((k.i === e.defender.idx && k.j === e.blocker.idx) || (k.i === e.blocker.idx && k.j === e.defender.idx)) s.moveRec.r.strike.push(Math.hypot(k.impulse.x, k.impulse.y));
++      } else if (s.moveRec) { const a = s.moveRec.Ns; if (a.length) s.moveRec.r.nDuring.push(a.reduce((x: number, y: number) => x + y, 0) / a.length); s.moveRec = null; }
++      st.set(e, s);
++    }
++  };
++  const res = sim.run();
++  for (const s of st.values()) reps.push(s);
++  return res;
++} } });
++const q = (v: number[], f = .5) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))] : NaN; };
++const dt = 0.05;
++console.log(`interior pass reps ${reps.length} | rep length p50 ${q(reps.map((r) => r.ticks * dt)).toFixed(2)} s | move decisions per rep p50/p90 ${q(reps.map((r) => r.moves))}/${q(reps.map((r) => r.moves), .9)} | per second of rep ${(reps.reduce((a, r) => a + r.moves, 0) / Math.max(1e-9, reps.reduce((a, r) => a + r.ticks * dt, 0))).toFixed(2)}`);
++console.log(`hands joint loaded: share of the rep p50 ${(100 * q(reps.map((r) => r.loaded / Math.max(1, r.ticks)))).toFixed(0)}% | longest continuous loaded stretch p50 ${(q(reps.map((r) => r.maxRun)) * dt).toFixed(2)} s`);
++for (const [m, r] of Object.entries(moves).sort((a, b) => b[1].n - a[1].n))
++  console.log(`  ${m.padEnd(8)} n ${String(r.n).padStart(4)} | landed ${(100 * r.landed / r.n).toFixed(0)}% | hands' load before / during p50 ${q(r.nBefore).toFixed(0)} / ${q(r.nDuring).toFixed(0)} N | strikes in the window ${r.strike.length}, impulse p50 ${q(r.strike).toFixed(0)}`);
+diff --git a/scripts/diag/pass-operators/comeoff-frames.py b/scripts/diag/pass-operators/comeoff-frames.py
+new file mode 100644
+index 00000000..36b80e3a
+--- /dev/null
++++ b/scripts/diag/pass-operators/comeoff-frames.py
+@@ -0,0 +1,122 @@
++"""The come-off frame by frame, as tracking sees it (Integration, 2026-11-15, hand-fight note section 7). Same code on
++NFL tracking and sim exports. Cases are interior-comeoff.py's: interior pairs that release (interior-fight.py's
++definition) and whose blocker is past 1.2 yd at release + 0.5 s. From the release to the throw (at most 2.0 s), every
++0.1 s frame:
++  - reach: the rusher within 1.5 yd of the QB;
++  - the helper (the nearest other OL): the first frame he is within 1.0 yd by +0.5 s; then his velocity toward the
++    rusher, his facing (tracking 'o'; absent in sim exports without EXPORT_FACING) against the bearing to the rusher,
++    and how much of the next 0.5 s he stays within 1.0 yd (held on him);
++  - the rusher: speed and closing on the QB (yd/s) while no OL is within 1.0 yd of him (free frames);
++  - the QB: speed, his velocity's part away from the rusher, and up (toward the line), in the last 0.6 s before a reach,
++    and in every frame where he moves faster than 1.5 yd/s in the first 1.0 s.
++
++usage: python3 -I scripts/diag/pass-operators/comeoff-frames.py <plays.jsonl.gz> [...] [--examples N] [--plays-csv plays.csv]
++"""
++import sys, os, json, gzip, math, re, csv
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++pct = lambda a, n: f"{100 * a / max(1, n):.0f}%"
++wrap = lambda a: (a + 180) % 360 - 180
++args = list(sys.argv[1:]); nex = 0
++if '--examples' in args:
++    i = args.index('--examples'); nex = int(args[i + 1]); del args[i:i + 2]
++# --plays-csv: the QB lane's population (early-sack.py): NFL dropbacks by PFF that are not designed movement, not play
++# action and not a spike; ours without a boot / roll / sprint / waggle / naked / screen or play-action concept.
++PFF = None; DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|\+pa', re.I)
++if '--plays-csv' in args:
++    i = args.index('--plays-csv'); PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(args[i + 1]))}; del args[i:i + 2]
++def keep(raw):
++    if PFF is None: return True
++    if raw.get('source') == 'sim': return not DES.search(str((raw.get('cell') or {}).get('concept') or ''))
++    pf = PFF.get(str(raw.get('id')))
++    return pf is not None and pf['isDropback'] == 'TRUE' and not pf['dropbackType'].startswith('DESIGNED') and pf['playAction'] != 'TRUE' and pf['qbSpike'] != 'TRUE'
++
++for path in args:
++    C = []
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy') or not keep(raw): continue
++        p = Play(raw); ev = raw.get('events', {}); O = raw.get('o')
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        qbs = p.who('O', 'QB')
++        if len(OL) < 5 or not qbs: continue
++        qb = qbs[0]
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw) if fw is not None else p.frames - 1)
++        ok = lambda i, k: 0 <= k < p.frames and p.pos(i, k)[0] is not None
++        vel = lambda i, k: ((p.pos(i, k + 1)[0] - p.pos(i, k - 1)[0]) / (2 * p.dt), (p.pos(i, k + 1)[1] - p.pos(i, k - 1)[1]) / (2 * p.dt)) if ok(i, k - 1) and ok(i, k + 1) else None
++        for b in OL[1:4]:
++            k0 = d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.0)) + 1):
++                if not ok(b, k): continue
++                c = [(p.dist(b, x, k), x) for x in DL if ok(x, k) and p.dist(b, x, k) <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            kr = None
++            for k in range(k0, min(kend, k0 + 25) + 1):
++                if not (ok(b, k) and ok(d, k) and ok(qb, k)): break
++                (bx, by), (dx, dy), (qx, qy) = p.pos(b, k), p.pos(d, k), p.pos(qb, k)
++                ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1; ux, uy = ux / L, uy / L
++                rx, ry = dx - bx, dy - by
++                if math.hypot(rx, ry) > 1.2 or abs(math.degrees(math.atan2(rx * -uy + ry * ux, -(rx * ux + ry * uy)))) > 70: kr = k; break
++            if kr is None: continue
++            k5 = kr + 5
++            if k5 > kend or not (ok(b, k5) and ok(d, k5)) or p.dist(b, d, k5) <= 1.2: continue
++            c = {'id': raw.get('id'), 'frames': []}
++            others = [o for o in OL if o != b]
++            for k in range(kr, min(kend, kr + 20) + 1):
++                if not (ok(d, k) and ok(qb, k)): break
++                vd, vq = vel(d, k), vel(qb, k)
++                if vd is None or vq is None: continue
++                dq = p.dist(d, qb, k); (dx, dy), (qx, qy) = p.pos(d, k), p.pos(qb, k)
++                near = sorted([(p.dist(o, d, k), o) for o in others if ok(o, k)])
++                hr, h = near[0] if near else (None, None)
++                f = {'dt': round((k - kr) * p.dt, 1), 'dq': dq, 'rS': math.hypot(*vd),
++                     'close': -((vd[0] - vq[0]) * (dx - qx) + (vd[1] - vq[1]) * (dy - qy)) / (dq or 1),
++                     'qS': math.hypot(*vq), 'qAway': (vq[0] * (qx - dx) + vq[1] * (qy - dy)) / (dq or 1), 'qUp': vq[0],
++                     'hr': hr, 'h': h, 'olNear': any(p.dist(o, d, k) <= 1.0 for o in OL if ok(o, k))}
++                if h is not None:
++                    vh = vel(h, k); hx, hy = p.pos(h, k)
++                    f['hToward'] = (vh[0] * (dx - hx) + vh[1] * (dy - hy)) / (hr or 1) if vh else None
++                    o = O[k][h] if O and k < len(O) and O[k] and h < len(O[k]) else None
++                    f['hFace'] = abs(wrap(o - math.degrees(math.atan2(dy - hy, dx - hx)))) if o is not None else None
++                c['frames'].append(f)
++            if c['frames']: C.append(c)
++    reach = lambda c: next((f['dt'] for f in c['frames'] if f['dq'] <= 1.5), None)
++    first = lambda c: next((i for i, f in enumerate(c['frames']) if f['dt'] <= 0.5 and f['hr'] is not None and f['hr'] <= 1.0), None)
++    H = [c for c in C if first(c) is not None]; N = [c for c in C if first(c) is None]
++    print(f"== {os.path.basename(path)}: off-blocker cases {len(C)}, reached {pct(sum(1 for c in C if reach(c) is not None), len(C))} | helped {len(H)} reached {pct(sum(1 for c in H if reach(c) is not None), len(H))} | no help {len(N)} reached {pct(sum(1 for c in N if reach(c) is not None), len(N))}")
++    F0 = [c['frames'][first(c)] for c in H]
++    held = []
++    for c in H:
++        i = first(c); h = c['frames'][i]['h']; nxt = [f for f in c['frames'][i:i + 6]]
++        held.append(sum(1 for f in nxt if f['h'] == h and f['hr'] is not None and f['hr'] <= 1.0) / max(1, len(nxt)))
++    fa = [f['hFace'] for f in F0 if f.get('hFace') is not None]
++    print(f"   (a) helper at his first frame within 1.0 yd: velocity toward the rusher p25/50/75 {q([f['hToward'] for f in F0 if f.get('hToward') is not None], .25):.2f}/{q([f['hToward'] for f in F0 if f.get('hToward') is not None]):.2f}/{q([f['hToward'] for f in F0 if f.get('hToward') is not None], .75):.2f} yd/s | facing off the bearing to him p50 {q(fa) if fa else float('nan'):.0f} deg (n {len(fa)}) | held within 1.0 yd over the next 0.5 s p50 {q(held):.0%}, all of it {pct(sum(1 for x in held if x >= 0.99), len(held))}")
++    for name, G in [('helped, reached', [c for c in H if reach(c) is not None]), ('helped, not', [c for c in H if reach(c) is None])]:
++        hh = [held[H.index(c)] for c in G]
++        print(f"       {name} ({len(G)}): held p50 {q(hh):.0%}, all of it {pct(sum(1 for x in hh if x >= 0.99), len(hh))}")
++    fr = [f for c in C for f in c['frames'] if f['dt'] > 0 and not f['olNear']]
++    print(f"   (b) free frames (no OL within 1.0 yd) {len(fr)}: rusher speed p50 {q([f['rS'] for f in fr]):.2f} | closing p25/50/75 {q([f['close'] for f in fr], .25):.2f}/{q([f['close'] for f in fr]):.2f}/{q([f['close'] for f in fr], .75):.2f} yd/s")
++    for lo, hi in [(3, 99), (1.5, 3)]:
++        g = [f for f in fr if lo < f['dq'] <= hi]
++        print(f"       at {lo}-{hi if hi < 99 else ''} yd from the QB ({len(g)}): rusher speed p50 {q([f['rS'] for f in g]):.2f}, closing p50 {q([f['close'] for f in g]):.2f}, QB speed {q([f['qS'] for f in g]):.2f}, away {q([f['qAway'] for f in g]):.2f}")
++    fq = [f for c in C for f in c['frames'] if 0 < f['dt'] <= 1.0 and f['qS'] > 1.5]
++    print(f"   (c) QB moving (>1.5 yd/s) in the first 1.0 s ({len(fq)} frames): away from the rusher p25/50/75 {q([f['qAway'] for f in fq], .25):.2f}/{q([f['qAway'] for f in fq]):.2f}/{q([f['qAway'] for f in fq], .75):.2f} | up p50 {q([f['qUp'] for f in fq]):.2f}")
++    R = [c for c in C if reach(c) is not None]
++    l6 = [f for c in R for f in c['frames'] if max(0, reach(c) - 0.6) < f['dt'] <= reach(c)]
++    print(f"       last 0.6 s before a reach ({len(R)}): QB speed p50 {q([f['qS'] for f in l6]):.2f}, away {q([f['qAway'] for f in l6]):.2f}, up {q([f['qUp'] for f in l6]):.2f} | rusher speed {q([f['rS'] for f in l6]):.2f}, closing {q([f['close'] for f in l6]):.2f}")
++    # Integration's split for (b): the rusher's last-0.6-s speed by the QB's speed at that frame (still / moving), and
++    # free frames 1.5-3 yd from the QB likewise. Cause or effect: does a rusher gather against a QB who is standing?
++    for name, G in [('last 0.6 s before a reach', l6), ('free, 1.5-3 yd from the QB', [f for f in fr if 1.5 < f['dq'] <= 3])]:
++        for lab, lo, hi in [('QB still (<0.5 yd/s)', 0, 0.5), ('QB slow (0.5-1.5)', 0.5, 1.5), ('QB moving (>1.5)', 1.5, 99)]:
++            g = [f for f in G if lo <= f['qS'] < hi]
++            print(f"   (b) {name}, {lab}: {len(g)} frames | rusher speed p25/50/75 {q([f['rS'] for f in g], .25):.2f}/{q([f['rS'] for f in g]):.2f}/{q([f['rS'] for f in g], .75):.2f} | closing p50 {q([f['close'] for f in g]):.2f}")
++    # The QB lane's dozen: off the blocker, no help, reached.
++    ids = [c['id'] for c in N if reach(c) is not None]
++    print(f"   no help, reached ({len(ids)}): {' '.join(str(x) for x in ids[:max(12, nex)])}")
++    for c in C[:nex]:
++        r = reach(c)
++        s = ' '.join(f"{f['dt']:.1f}:{f['dq']:.1f}/{f['rS']:.1f}/{'h%.1f' % f['hr'] if f['hr'] is not None else '-'}/q{f['qS']:.1f}{'+' if f['qAway'] > 0 else '-'}" for f in c['frames'][::3])
++        print(f"     {c['id']} reach {r}: dt:dist-to-QB/rusher speed/helper dist/QB speed(+ away) {s}")
+diff --git a/scripts/diag/pass-operators/interior-comeoff.py b/scripts/diag/pass-operators/interior-comeoff.py
+new file mode 100644
+index 00000000..a29672c7
+--- /dev/null
++++ b/scripts/diag/pass-operators/interior-comeoff.py
+@@ -0,0 +1,131 @@
++"""After an interior rusher releases: what happens before he reaches the QB (Integration, 2026-11-15, after the hand
++fight's stage 1). Same code on NFL tracking and sim exports (common play format).
++
++usage: python3 -I scripts/diag/pass-operators/interior-comeoff.py <plays.jsonl.gz> [...] [--examples N] [--plays-csv plays.csv]
++
++Pairs and release exactly as interior-fight.py: each of the three middle OL and the nearest DL within 1.2 yd from the
++snap + 0.2 s; release is the first frame within 2.5 s of contact, before the throw, where the separation opens past
++1.2 yd or the rusher's bearing from the blocker passes 70 deg off the blocker's line to the QB. From the release to the
++throw (or the play's end with no throw):
++
++  1. Reach: the first frame the rusher is within 1.5 yd of the QB; the time from release; the share that reach before
++     the throw. Path: his heading over the first 0.5 s after release against the line from him to the QB at the
++     release (0 = straight at him); flattened past 45 deg.
++  2. What is near him in the 0.5 s after the release (each a share of released rushers, split by reach / not):
++     - blocker attached: his own blocker within 1.2 yd of him at release + 0.3 s (and + 0.5 s);
++     - help: another offensive lineman within 1.0 yd of him at some frame;
++     - back: another offensive non-lineman, not the QB, within 1.0 yd of him at some frame;
++     - QB moved: the QB's displacement over those 0.5 s past 1.0 yd; and the rusher's line wrong: the angle at the
++       rusher between the QB at the release and the QB 0.5 s later, past 20 deg.
++  3. What a release is: which test fired (separation or past the shoulder), the separation at the release, and the
++     blocker's distance at + 0.3 s: clean (past 1.5 yd), at his hip (within 1.2), between. --examples N prints N
++     releases with those numbers (the first N in file order, so the same each run).
++"""
++import sys, os, json, gzip, math, re, csv
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++pct = lambda a, n: f"{100 * a / max(1, n):.0f}%"
++wrap = lambda a: (a + 180) % 360 - 180
++args = [a for a in sys.argv[1:]]
++nex = 0
++if '--examples' in args:
++    i = args.index('--examples'); nex = int(args[i + 1]); del args[i:i + 2]
++# --plays-csv: the QB lane's population (early-sack.py): NFL dropbacks by PFF that are not designed movement, not play
++# action and not a spike; ours without a boot / roll / sprint / waggle / naked / screen or play-action concept.
++PFF = None; DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|\+pa', re.I)
++if '--plays-csv' in args:
++    i = args.index('--plays-csv'); PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(args[i + 1]))}; del args[i:i + 2]
++def keep(raw):
++    if PFF is None: return True
++    if raw.get('source') == 'sim': return not DES.search(str((raw.get('cell') or {}).get('concept') or ''))
++    pf = PFF.get(str(raw.get('id')))
++    return pf is not None and pf['isDropback'] == 'TRUE' and not pf['dropbackType'].startswith('DESIGNED') and pf['playAction'] != 'TRUE' and pf['qbSpike'] != 'TRUE'
++
++for path in args:
++    R = []; pairs = 0
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy') or not keep(raw): continue
++        p = Play(raw); ev = raw.get('events', {})
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        qbs = p.who('O', 'QB')
++        if len(OL) < 5 or not qbs: continue
++        qb = qbs[0]
++        others = [i for i in p.who('O') if i != qb and i not in OL]
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw) if fw is not None else p.frames - 1)
++        ok = lambda i, k: p.pos(i, k)[0] is not None
++        for b in OL[1:4]:
++            k0 = d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.0)) + 1):
++                if not ok(b, k): continue
++                c = [(p.dist(b, x, k), x) for x in DL if ok(x, k) and p.dist(b, x, k) <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            pairs += 1
++            def geo(k):
++                (bx, by), (dx, dy), (qx, qy) = p.pos(b, k), p.pos(d, k), p.pos(qb, k)
++                ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1; ux, uy = ux / L, uy / L
++                rx, ry = dx - bx, dy - by
++                ang = math.degrees(math.atan2(rx * -uy + ry * ux, -(rx * ux + ry * uy)))
++                return math.hypot(rx, ry), ang
++            kr = None; why = None
++            for k in range(k0, min(kend, k0 + 25) + 1):
++                if not (ok(b, k) and ok(d, k) and ok(qb, k)): break
++                s, a = geo(k)
++                if s > 1.2 or abs(a) > 70: kr = k; why = 'sep' if s > 1.2 else 'shoulder'; break
++            if kr is None: continue
++            r = {'id': raw.get('id'), 't': round((kr - k0) * p.dt, 2), 'why': why, 'sep': geo(kr)[0], 'ang': geo(kr)[1]}
++            # 1. reach and path
++            reach = None
++            for k in range(kr, kend + 1):
++                if ok(d, k) and ok(qb, k) and p.dist(d, qb, k) <= 1.5: reach = k; break
++            r['reach'] = None if reach is None else round((reach - kr) * p.dt, 2)
++            k5 = min(kend, kr + p.k(0.5) - p.k(0))
++            (dx0, dy0), (qx0, qy0) = p.pos(d, kr), p.pos(qb, kr)
++            if k5 > kr and ok(d, k5):
++                hx, hy = p.pos(d, k5)[0] - dx0, p.pos(d, k5)[1] - dy0
++                r['path'] = abs(wrap(math.degrees(math.atan2(hy, hx) - math.atan2(qy0 - dy0, qx0 - dx0)))) if math.hypot(hx, hy) > 0.2 else None
++            else: r['path'] = None
++            # 2. what is near him
++            def bd(dtk):
++                k = kr + dtk
++                return p.dist(b, d, k) if k <= kend and ok(b, k) and ok(d, k) else None
++            r['b3'] = bd(p.k(0.3) - p.k(0)); r['b5'] = bd(p.k(0.5) - p.k(0))
++            near = lambda grp: any(ok(x, k) and ok(d, k) and p.dist(x, d, k) <= 1.0 for k in range(kr, k5 + 1) for x in grp)
++            r['help'] = near([o for o in OL if o != b]); r['back'] = near(others)
++            if k5 > kr and ok(qb, k5):
++                qx5, qy5 = p.pos(qb, k5)
++                r['qbmove'] = math.hypot(qx5 - qx0, qy5 - qy0)
++                r['qbline'] = abs(wrap(math.degrees(math.atan2(qy5 - dy0, qx5 - dx0) - math.atan2(qy0 - dy0, qx0 - dx0))))
++            else: r['qbmove'] = r['qbline'] = None
++            r['left'] = round((kend - kr) * p.dt, 2); r['thrown'] = fw is not None
++            # Distance to the QB at the release and its closing rate over the next 0.5 s (yd/s, + = closing).
++            r['dq'] = p.dist(d, qb, kr)
++            r['close'] = (r['dq'] - p.dist(d, qb, k5)) / ((k5 - kr) * p.dt) if k5 > kr and ok(d, k5) and ok(qb, k5) else None
++            R.append(r)
++    n = len(R); hit = [r for r in R if r['reach'] is not None]; miss = [r for r in R if r['reach'] is None]
++    print(f"== {os.path.basename(path)}: interior pairs {pairs}, released {n} ({pct(n, pairs)}), reached the QB (1.5 yd) before the throw {len(hit)} ({pct(len(hit), n)} of released)")
++    print(f"   1. release to reach p25/50/75 {q([r['reach'] for r in hit], .25):.1f}/{q([r['reach'] for r in hit]):.1f}/{q([r['reach'] for r in hit], .75):.1f} s | path off his line to the QB p50 {q([r['path'] for r in R if r['path'] is not None]):.0f} deg, flattened past 45: {pct(sum(1 for r in R if r['path'] is not None and r['path'] > 45), sum(1 for r in R if r['path'] is not None))} (reach {pct(sum(1 for r in hit if r['path'] is not None and r['path'] > 45), sum(1 for r in hit if r['path'] is not None))}, not {pct(sum(1 for r in miss if r['path'] is not None and r['path'] > 45), sum(1 for r in miss if r['path'] is not None))})")
++    for name, f in [('blocker attached at +0.3 s (1.2 yd)', lambda r: r['b3'] is not None and r['b3'] <= 1.2),
++                    ('blocker attached at +0.5 s', lambda r: r['b5'] is not None and r['b5'] <= 1.2),
++                    ('help: another OL within 1.0 yd by +0.5 s', lambda r: r['help']),
++                    ('back: an RB/TE within 1.0 yd by +0.5 s', lambda r: r['back']),
++                    ('QB moved past 1.0 yd in 0.5 s', lambda r: r['qbmove'] is not None and r['qbmove'] > 1.0),
++                    ("QB's move turns the rusher's line past 20 deg", lambda r: r['qbline'] is not None and r['qbline'] > 20)]:
++        print(f"   2. {name}: all {pct(sum(1 for r in R if f(r)), n)} | reached {pct(sum(1 for r in hit if f(r)), len(hit))} | not {pct(sum(1 for r in miss if f(r)), len(miss))}")
++    for name, G in [('blocker still on him at +0.5 s (<=1.2 yd)', [r for r in R if r['b5'] is not None and r['b5'] <= 1.2]),
++                    ('blocker off him at +0.5 s (>1.2 yd)', [r for r in R if r['b5'] is not None and r['b5'] > 1.2])]:
++        gh = [r for r in G if r['reach'] is not None]
++        print(f"   2b. {name}: {pct(len(G), n)} of released | reached {pct(len(gh), len(G))} | help {pct(sum(1 for r in G if r['help']), len(G))} | QB moved {pct(sum(1 for r in G if r['qbmove'] is not None and r['qbmove'] > 1.0), len(G))} | release to throw / end p25/50/75 {q([r['left'] for r in G], .25):.1f}/{q([r['left'] for r in G]):.1f}/{q([r['left'] for r in G], .75):.1f} s (thrown {pct(sum(1 for r in G if r['thrown']), len(G))}) | to the QB at release p50 {q([r['dq'] for r in G]):.1f} yd, closing p25/50/75 {q([r['close'] for r in G if r['close'] is not None], .25):.1f}/{q([r['close'] for r in G if r['close'] is not None]):.1f}/{q([r['close'] for r in G if r['close'] is not None], .75):.1f} yd/s")
++    off5 = [r for r in R if r['b5'] is not None and r['b5'] > 1.2]
++    for name, G in [('off, help came', [r for r in off5 if r['help']]), ('off, no help', [r for r in off5 if not r['help']]),
++                    ('off, no help, QB moved', [r for r in off5 if not r['help'] and r['qbmove'] is not None and r['qbmove'] > 1.0]),
++                    ('off, no help, QB still', [r for r in off5 if not r['help'] and r['qbmove'] is not None and r['qbmove'] <= 1.0])]:
++        cl = [r['close'] for r in G if r['close'] is not None]
++        print(f"   2c. {name}: {pct(len(G), len(off5))} of them | reached {pct(sum(1 for r in G if r['reach'] is not None), len(G))} | closing p50 {q(cl):.1f} yd/s")
++    print(f"   3. release by separation {pct(sum(1 for r in R if r['why'] == 'sep'), n)}, past the shoulder {pct(sum(1 for r in R if r['why'] == 'shoulder'), n)} | separation at it p50 {q([r['sep'] for r in R]):.2f} yd | blocker at +0.3 s: clean (>1.5) {pct(sum(1 for r in R if r['b3'] is not None and r['b3'] > 1.5), n)}, at his hip (<=1.2) {pct(sum(1 for r in R if r['b3'] is not None and r['b3'] <= 1.2), n)}, between {pct(sum(1 for r in R if r['b3'] is not None and 1.2 < r['b3'] <= 1.5), n)}, gone (play over) {pct(sum(1 for r in R if r['b3'] is None), n)}")
++    for r in R[:nex]:
++        f = lambda v, s='{:.2f}': '-' if v is None else s.format(v)
++        print(f"     {r['id']}: at {r['t']:.1f} s by {r['why']}, sep {r['sep']:.2f}, bearing {r['ang']:+.0f} | blocker +0.3 {f(r['b3'])} +0.5 {f(r['b5'])} | help {int(r['help'])} back {int(r['back'])} | QB moved {f(r['qbmove'])} line {f(r['qbline'], '{:.0f}')} | path {f(r['path'], '{:.0f}')} | reach {f(r['reach'], '{:.1f}')}")
+diff --git a/scripts/diag/pass-operators/interior-fight.py b/scripts/diag/pass-operators/interior-fight.py
+new file mode 100644
+index 00000000..f7ddf892
+--- /dev/null
++++ b/scripts/diag/pass-operators/interior-fight.py
+@@ -0,0 +1,62 @@
++"""The interior pass-rush hand fight, as tracking can see it (Integration, 2026-11-14, before the hand-fight design note).
++Same code on NFL tracking and sim exports.
++
++usage: python3 -I scripts/diag/pass-operators/interior-fight.py <plays.jsonl.gz> [...]
++
++Pairs as interior-orbit.py on pass plays (each of the three middle OL and the nearest DL within 1.2 yd from the snap +
++0.2 s; engaged while within 1.2 yd, up to 2.5 s, ending at the throw). Per pair, by time since first contact (0-0.5,
++0.5-1.0, 1.0-1.5, 1.5-2.5 s):
++  - the pair's orbit so far (net bearing change from contact);
++  - the rusher's offset across the blocker's line to the QB (yd, + = toward the side he started on): where his half-man is;
++  - the centre-to-centre separation.
++And per pair: the time to first release, the first frame where either the separation opens past 1.2 yd or the rusher's
++bearing from the blocker passes 70 deg off the blocker's line to the QB (past his shoulder); never if neither within the
++rep; with the share released by 1.0 / 2.0 s.
++"""
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++wrap = lambda a: (a + 180) % 360 - 180
++BINS = [(0, .5), (.5, 1.0), (1.0, 1.5), (1.5, 2.5)]
++for path in sys.argv[1:]:
++    orb = {b: [] for b in BINS}; off = {b: [] for b in BINS}; sep = {b: [] for b in BINS}; rel = []; n = 0
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy'): continue
++        p = Play(raw); ev = raw.get('events', {})
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        qbs = p.who('O', 'QB')
++        if len(OL) < 5 or not qbs: continue
++        qb = qbs[0]
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw) if fw is not None else p.frames - 1)
++        for b in OL[1:4]:
++            k0 = d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.0)) + 1):
++                if p.pos(b, k)[0] is None: continue
++                c = [(p.dist(b, x, k), x) for x in DL if p.pos(x, k)[0] is not None and p.dist(b, x, k) <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            n += 1
++            def geo(k):
++                (bx, by), (dx, dy), (qx, qy) = p.pos(b, k), p.pos(d, k), p.pos(qb, k)
++                ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1; ux, uy = ux / L, uy / L
++                rx, ry = dx - bx, dy - by
++                lat = rx * -uy + ry * ux                     # across his line to the QB
++                ang = math.degrees(math.atan2(lat, -(rx * ux + ry * uy)))   # 0 = the rusher straight in front, away from the QB
++                return math.degrees(math.atan2(ry, rx)), lat, math.hypot(rx, ry), ang
++            g0 = geo(k0); side = 1 if g0[1] >= 0 else -1; acc = 0; prev = g0[0]; released = None
++            for k in range(k0, min(kend, k0 + 25) + 1):
++                if p.pos(b, k)[0] is None or p.pos(d, k)[0] is None or p.pos(qb, k)[0] is None: break
++                g = geo(k); acc += wrap(g[0] - prev); prev = g[0]; t = (k - k0) * p.dt
++                if released is None and (g[2] > 1.2 or abs(g[3]) > 70): released = t
++                for bn in BINS:
++                    if bn[0] <= t < bn[1]: orb[bn].append(abs(acc)); off[bn].append(g[1] * side); sep[bn].append(g[2])
++                if g[2] > 1.2 and released is not None: break
++            rel.append(released)
++    print(f"== {os.path.basename(path)}: engaged interior pass-rush pairs {n}")
++    for bn in BINS:
++        print(f"   {bn[0]:.1f}-{bn[1]:.1f} s: orbit p50/p90 {q(orb[bn]):.0f}/{q(orb[bn], .9):.0f} deg | his offset across the blocker's line to the QB p25/50/75 {q(off[bn], .25):+.2f}/{q(off[bn]):+.2f}/{q(off[bn], .75):+.2f} yd | separation p50 {q(sep[bn]):.2f} (n {len(sep[bn])})")
++    R = [r for r in rel if r is not None]
++    print(f"   first release (separation past 1.2 yd or past his shoulder, 70 deg): p25/50/75 {q(R, .25):.1f}/{q(R):.1f}/{q(R, .75):.1f} s | released by 1.0 s {100 * sum(1 for r in R if r <= 1.0) / max(1, len(rel)):.0f}%, by 2.0 s {100 * sum(1 for r in R if r <= 2.0) / max(1, len(rel)):.0f}% | never {100 * sum(1 for r in rel if r is None) / max(1, len(rel)):.0f}%")
+diff --git a/scripts/diag/pass-operators/late-sacker.py b/scripts/diag/pass-operators/late-sacker.py
+new file mode 100644
+index 00000000..a180a708
+--- /dev/null
++++ b/scripts/diag/pass-operators/late-sacker.py
+@@ -0,0 +1,32 @@
++"""Who makes the late sack (Integration, 2026-11-15): of dropbacks (five or more OL) still alive at 3.0 s (no forward pass
++by then), those ending with no forward pass behind the line (a sack proxy: it includes QB runs for a loss, not fumbles),
++by the defender nearest the QB at his last frame: interior (a DL whose snap spot is between the tackles) or edge (any
++other DL or LB). Same code on NFL tracking and sim exports.
++
++usage: python3 -I scripts/diag/pass-operators/late-sacker.py <plays.jsonl.gz> [...]
++"""
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++for path in sys.argv[1:]:
++    n=a3=0; c={'interior':0,'edge':0,'other':0}
++    for line in gzip.open(path,'rt'):
++        raw=json.loads(line); raw=raw.get('common',raw)
++        if raw.get('kind')!='pass' or not raw.get('xy'): continue
++        p=Play(raw); ev=raw.get('events',{}); qbs=p.who('O','QB')
++        OL=sorted([i for i in p.who('O','OL') if p.pos(i,0)[0] is not None], key=lambda i:p.pos(i,0)[1])
++        if len(OL)<5 or not qbs: continue
++        n+=1; tend=ev.get('pass_forward', ev.get('end'))
++        if tend is None or tend<=3.0: continue
++        a3+=1
++        if 'pass_forward' in ev or raw.get('yards',0)>=0 or 'fumble' in ev: continue
++        k=p.frames-1
++        while k>0 and p.pos(qbs[0],k)[0] is None: k-=1
++        D=[d for d in p.who('D') if p.pos(d,k)[0] is not None and p.pos(d,0)[0] is not None]
++        if not D: continue
++        d=min(D,key=lambda d:p.dist(d,qbs[0],k))
++        y0=p.pos(d,0)[1]; lo=p.pos(OL[0],0)[1]; hi=p.pos(OL[-1],0)[1]
++        g=p.players[d]['group']
++        c['interior' if lo<y0<hi and g=='DL' else 'edge' if g in('DL','LB') else 'other']+=1
++    tot=sum(c.values())
++    print(os.path.basename(path), 'dropbacks',n,'alive at 3 s',a3,'sacked',tot,f'({100*tot/max(1,a3):.1f}%)', {k:f'{v} ({100*v/max(1,a3):.1f}% of alive)' for k,v in c.items()})
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index a3f60656..682470cb 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -110,6 +110,11 @@ export interface HandJoint {
+    * point). */
+   handsOn?: number;
+   offSide?: number;
++  /** FITTED_HANDS: the two hands, each its own one-degree-of-freedom body: [the hand on the joint tangent's -1 side,
++   * the hand on its +1 side]. `slide` is where the hand sits across the man's chest from where it was aimed (its
++   * placement error at the fit, then whatever moved it), `vel` its sliding speed, `on` whether it is on him. The
++   * aggregate fields above (handsOn, off, offSide) are kept equal to them for readers of the joint. */
++  handPair?: [HandState, HandState];
+   /** RUSH_HANDS: the last step's normal force (the press a club must overcome). A plain field, so a World stays
+    * structured-cloneable (lab tools and replay clone it). */
+   lastN?: number;
+@@ -388,6 +393,37 @@ export const ARM_MASS = 0.05;
+ /** RUSH_HANDS: with one hand off, the share of the remaining hand's steer left to resist the man toward the vacated
+  * side (his body has to turn on the remaining hand to stop him there: most of it is lost). */
+ export const ONE_HAND_SIDE = 0.25;
++/** FITTED_HANDS (experimental, off; FITTED_HANDS=1, requires RUSH_HANDS): the hand fight's stage 1, the physics with one
++ * move (docs/reviews/2026-11-14-hand-fight-design.md section 4). World half: the blocker's two hands are separate
++ * bodies (`handPair`). Each carries half of the joint's push, hold and steer, times its own edge factor (1 where it
++ * was aimed, 0 at the edge of the man's torso), so press, the friction on it and steer exist only through a fitted
++ * hand, hand by hand. A force on the hands acts on the hand it meets (the one on the side it comes from; the other if
++ * that one is off) and is resisted by that hand's arm alone: half the arms' steer at its lever, the friction on its
++ * half of the press, half the grip. Off, the joint is one hand-pair with both arms' hold against every strike. */
++export const FITTED_HANDS = process.env.FITTED_HANDS === '1';
++if (FITTED_HANDS && !RUSH_HANDS) throw new Error('FITTED_HANDS=1 requires RUSH_HANDS=1 (the hand body it splits into two hands)');
++export interface HandState {
++  slide: number; vel: number; on: boolean;
++  /** FITTED_HANDS attempt 2: the blocker has firmed this hand against a club he saw coming. Until world time
++   * `firmUntil` its arm holds with `firmGrip` of cloth (force) in place of its share of the joint's grip. */
++  firmUntil?: number; firmGrip?: number;
++}
++/** FITTED_HANDS: the joint's two hands, made on first use from its aggregate state. */
++export function handPairOf(jt: HandJoint): [HandState, HandState] {
++  if (!jt.handPair) {
++    const n = jt.off ? 0 : jt.handsOn ?? 2, offK = n === 1 ? ((jt.offSide ?? 1) > 0 ? 1 : 0) : -1;
++    jt.handPair = [0, 1].map(k => ({ slide: 0, vel: 0, on: n === 2 || (n === 1 && k !== offK) })) as [HandState, HandState];
++  }
++  return jt.handPair;
++}
++/** FITTED_HANDS: write the aggregate fields from the two hands. */
++export function syncHandPair(jt: HandJoint): void {
++  const p = handPairOf(jt), n = (p[0].on ? 1 : 0) + (p[1].on ? 1 : 0);
++  jt.handsOn = n; jt.off = n === 0;
++  jt.offSide = n === 1 ? (p[0].on ? 1 : -1) : undefined;
++  jt.handOffset = n === 0 ? 0 : (p[0].on ? p[0].slide : 0) + (p[1].on ? p[1].slide : 0);
++  jt.handVel = (p[0].on ? p[0].vel : 0) + (p[1].on ? p[1].vel : 0);
++}
+ /** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
+  * A push runs from the pusher's pads to the other man's; when one man's pads
+  * are lower, the line of action tilts up into the higher man. Its vertical
+@@ -805,7 +841,7 @@ export class World {
+   substeps?: number;
+   private readonly index = new Map<Body, number>();
+   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
+-  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number }> = [];
++  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number; hand?: 0 | 1 }> = [];
+   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
+   private readonly reels = new Map<GraspJoint, number>();
+   /** Reference adjustment preserves the held point when a grip slides down. */
+@@ -931,21 +967,34 @@ export class World {
+   /** RUSH_HANDS: a force (kg*yd/s^2, world frame) on joint `jt`'s hand from body `from`, acting between world
+    * times t0 and t1 (its contact time). Only the component along the joint's tangent moves the hand; the rest is an
+    * ordinary push between the bodies. */
+-  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number): void {
++  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number, hand?: 0 | 1): void {
+     if (!RUSH_HANDS || !(t1 > t0) || !Number.isFinite(f.x + f.y)) return;
+-    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1 });
++    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1, hand });
+   }
+ 
+   /** RUSH_HANDS: the arm's lateral hold at the hand (force), from its extension, the measured press and a grip. */
+-  handHold(jt: HandJoint): number {
++  handHold(jt: HandJoint, k?: 0 | 1): number {
+     const owner = jt.a, target = jt.b;
+     const arm = Math.max(0.3, (owner.profile.reach - 0.25) / 0.85), bent = 0.25 * arm;
+     const ext = Math.max(bent, jt.extension - owner.profile.radius - target.profile.radius);
+     const press = Math.max(0, jt.lastN ?? 0);
+     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
++    // FITTED_HANDS: one hand's arm: half of each term, at that hand's own edge; a firmed hand holds with its cloth.
++    if (FITTED_HANDS && k !== undefined) {
++      const hd = handPairOf(jt)[k], firm = (hd.firmUntil ?? -Infinity) > this.time;
++      return (0.5 * (Math.max(0, jt.steer) * bent / ext + HAND_MU * press) + (firm ? Math.max(0, hd.firmGrip ?? 0) : 0.5 * grip)) * this.handEdgeK(jt, k);
++    }
+     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
+   }
+ 
++  /** FITTED_HANDS: hand k's edge factor (0 when it is off him). */
++  handEdgeK(jt: HandJoint, k: 0 | 1): number {
++    const hd = handPairOf(jt)[k];
++    if (!hd.on) return 0;
++    const u = hd.slide / Math.max(1e-6, jt.b.profile.radius);
++    return Math.max(0, 1 - u * u);
++  }
++
+   /** RUSH_HANDS: 1 with the hand where it fitted, falling to 0 at the edge of the man's torso. */
+   handEdge(jt: HandJoint): number {
+     const u = (jt.handOffset ?? 0) / Math.max(1e-6, jt.b.profile.radius);
+@@ -1177,6 +1226,7 @@ export class World {
+     const t0 = this.time, t1 = this.time + h;
+     for (const jt of this.joints) {
+       if (jt.kind !== 'hands' || jt.off) continue;
++      if (FITTED_HANDS) { this.stepHandPair(jt, h, t0, t1); continue; }
+       const forces = this.handForces.filter(f => f.jt === jt && f.t1 > t0 && f.t0 < t1);
+       if (!forces.length && !jt.handVel) continue;
+       const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+@@ -1216,6 +1266,52 @@ export class World {
+     }
+   }
+ 
++  /** FITTED_HANDS: one substep of a joint's two hands. The same law as stepHands for each hand, with that hand's own
++   * hold; a force acts on the hand it meets. */
++  private stepHandPair(jt: HandJoint, h: number, t0: number, t1: number): void {
++    const forces = this.handForces.filter(f => f.jt === jt && f.t1 > t0 && f.t0 < t1);
++    const pair = handPairOf(jt);
++    if (!forces.length && !pair[0].vel && !pair[1].vel) return;
++    const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
++    if (ia < 0 || ib < 0) return;
++    const dx = jt.b.pos.x - jt.a.pos.x, dy = jt.b.pos.y - jt.a.pos.y, d = hypot2(dx, dy) || 1;
++    const nx = dx / d, ny = dy / d, tx = -ny, ty = nx;
++    const mArm = ARM_MASS * this.mass[ia];
++    const ft = [0, 0];
++    for (const f of forces) {
++      const share = (Math.min(f.t1, t1) - Math.max(f.t0, t0)) / h;
++      const fn = (f.fx * nx + f.fy * ny) * share, fT = (f.fx * tx + f.fy * ty) * share;
++      const is = this.indexOf(f.from);
++      // Attempt 2: a club aimed at one hand meets that hand or nothing: a hand taken away is air (no contact at all).
++      if (f.hand !== undefined && !pair[f.hand].on) continue;
++      if (is >= 0 && is !== ia && fn) this.pairImpulse(is, ia, nx * fn * h, ny * fn * h, is, 'strikes');
++      // The hand it meets: a force driving +t comes from the -t side (hand 0); if that hand is off, the other.
++      let k: 0 | 1 = f.hand ?? (fT >= 0 ? 0 : 1);
++      if (!pair[k].on) k = (1 - k) as 0 | 1;
++      if (!pair[k].on) continue;
++      if (is >= 0 && fT) { this.bodies[is].vel.x -= tx * fT * h / this.mass[is]; this.bodies[is].vel.y -= ty * fT * h / this.mass[is]; }
++      ft[k] += fT;
++    }
++    for (const k of [0, 1] as const) {
++      const hd = pair[k];
++      if (!hd.on || (!ft[k] && !hd.vel)) continue;
++      const H = this.handHold(jt, k), v = hd.vel;
++      let resisted: number;
++      if (Math.abs(v) < 1e-9) resisted = Math.abs(ft[k]) <= H ? ft[k] : Math.sign(ft[k]) * H;
++      else resisted = Math.sign(v) * H;
++      let v1 = v + (ft[k] - resisted) * h / mArm;
++      if (Math.abs(v) >= 1e-9 && Math.sign(v1) !== Math.sign(v) && Math.abs(ft[k]) <= H) { resisted = ft[k] + v * mArm / h; v1 = 0; }
++      this.bodies[ia].vel.x += tx * resisted * h / this.mass[ia]; this.bodies[ia].vel.y += ty * resisted * h / this.mass[ia];
++      hd.slide += 0.5 * (v + v1) * h; hd.vel = v1;
++      if (Math.abs(hd.slide) >= jt.b.profile.radius) {
++        // Off the edge: the arm's momentum goes to his body; the hand is off until he re-fits it.
++        this.bodies[ia].vel.x += tx * mArm * v1 / this.mass[ia]; this.bodies[ia].vel.y += ty * mArm * v1 / this.mass[ia];
++        hd.on = false; hd.vel = 0; hd.slide = 0;
++      }
++    }
++    syncHandPair(jt);
++  }
++
+   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
+     kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number },
+     angularA = 0, angularB = 0, armUnits = 1): number {
+@@ -2805,7 +2901,12 @@ export class World {
+         row.pushLim = Math.max(0, jt.push) * h * scale;
+         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
+         row.steerLim = Math.max(0, jt.steer) * h * scale;
+-        if (RUSH_HANDS && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
++        if (FITTED_HANDS && jt.handPair) {
++          // FITTED_HANDS: each hand carries half, at its own edge; the press and its friction go with the hands.
++          const e = 0.5 * (this.handEdgeK(jt, 0) + this.handEdgeK(jt, 1));
++          row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
++          row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;
++        } else if (RUSH_HANDS && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
+           const e = (jt.off ? 0 : this.handEdge(jt)) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
+           row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
+           row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index 768aecb3..3dea9451 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -79,7 +79,10 @@ export interface Engagement {
+   riding?: boolean;
+   /** RUSH_HANDS: his last club (its end, the blocker's hands on before it, his hand speed) and when his hands are
+    * back from it: no move, keyed or not, before then. */
+-  club?: { end: number; handsBefore: number; speed: number };
++  club?: { end: number; handsBefore: number; speed: number;
++    /** FITTED_HANDS attempt 2: when the arm started, when its force begins, the hand it is aimed at, when the blocker
++     * sees it start (Infinity if not in his view), his answer, and whether it met air. */
++    start?: number; onset?: number; hand?: 0 | 1; seenAt?: number; answer?: 'away' | 'firm' | 'late' | 'unseen'; air?: boolean; side?: Vec2 };
+   handsBackAt?: number;
+   counterAt?: number;
+   lastReqX?: number;
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index a10ddb58..880eee90 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -48,8 +48,9 @@ import { lineRead, pullers } from './run-fits.js';
+ import { observedHolder } from './possession-read.js';
+ import { runContactObservers } from './run-contact-observer.js';
+ import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
+-import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
++import { syncHandPair, handPairOf, FITTED_HANDS, ARM_MASS, OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+ import { ARM_SPEED } from '../physics/actuation.js';
++import { inHeadCone } from './head.js';
+ import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ 
+@@ -673,11 +674,17 @@ function setHands(sim: PlaySim, e: Engagement): void {
+   // from his chest to the man at arm speed, then is on him again where it lands.
+   // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
+   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
+-  if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
++  if (FITTED_HANDS && e.type === 'pass') {
++    fightAnswer(sim, e); fightHands(sim, hands, b, d);
++    // A firmed hand has cloth: on the joint as a grip and its hold, where the holding detector reads it.
++    const pr = handPairOf(hands), firm = pr.find(h => h.on && (h.firmUntil ?? -Infinity) > sim.world.time);
++    if (firm) { hands.grip = true; hands.hold = Math.max(hands.hold, firm.firmGrip ?? 0); }
++  }
++  else if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
+     const o = hands.handOffset, step = ARM_SPEED * sim.dt;
+     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
+   }
+-  if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
++  if (!(FITTED_HANDS && e.type === 'pass') && RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
+     // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
+     // request works past, as a landed move).
+     // RUSH_ONE_HAND: one hand gone is not a landed move: only both gone frees him (the side it guarded is open, the
+@@ -705,6 +712,95 @@ function setHands(sim: PlaySim, e: Engagement): void {
+   if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
+ }
+ 
++/** FITTED_HANDS: the spread of a hand's landing point at the man for a hand technique of 0 (yd, 1 SD), falling to 0.4 of
++ * it at a technique of 1 (PAIR_HANDS' value on the Flex branch). A choice, not a sourced number: about a hand's width off
++ * the chest plate for a poor technician. */
++const PLACE_SPREAD = 0.2;
++/** FITTED_HANDS: each of the blocker's hands on its own. A hand at rest on him is walked back to where he aims it (the
++ * middle of his side of the man) by his arm at ARM_SPEED. A hand that is off re-fits after his reaction to the felt
++ * loss plus its travel from his chest at ARM_SPEED (refitTime), and lands where his hand placement puts it: a motor
++ * error drawn on the landing point, PAIR_HANDS' spread by his hand technique (PLACE_SPREAD, 1 SD). A hand that lands
++ * past the edge of the man's torso has missed: it is off again and travels back. Being off his hands frees the man
++ * only through the World (no press, friction or steer from a hand that is not on him): no landed-move window. */
++/** When each of a joint's hands that is off lands again (sim time; null while it is on). */
++const fightReady = new WeakMap<HandJoint, [number | null, number | null]>();
++function fightHands(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
++  const pair = handPairOf(hands), step = ARM_SPEED * sim.dt, R = d.profile.radius;
++  let ready = fightReady.get(hands);
++  if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
++  for (const k of [0, 1] as const) {
++    const hd = pair[k];
++    if (hd.on) {
++      ready[k] = null;
++      if (hd.slide && Math.abs(hd.vel) < 0.05) { hd.slide = Math.abs(hd.slide) <= step ? 0 : hd.slide - Math.sign(hd.slide) * step; hd.vel = 0; }
++      continue;
++    }
++    // Knocked off: he feels it go and re-fits after his reaction and the hand's travel.
++    if (ready[k] === null) ready[k] = sim.t + refitTime(b, d);
++    if (sim.t < ready[k]!) continue;
++    const sd = PLACE_SPREAD * (1 - 0.6 * clamp(b.r('handTechnique'), 0, 1));
++    const at = sim.dice('place', b, d).normal(0, sd);
++    if (Math.abs(at) >= R) { ready[k] = sim.t + refitTime(b, d); continue; }
++    hd.on = true; hd.slide = at; hd.vel = 0; ready[k] = null;
++  }
++  syncHandPair(hands);
++}
++
++/** FITTED_HANDS attempt 2: the blocker against a club he can see coming. He sees the rusher's arm start at his sight
++ * delay (0.12 + 0.12 x (1 - his read): the pass rep's sight delay with his hands off), and only with the rusher in the
++ * view cone about where his eyes point (head.ts: his head, or his body facing without HEAD). What he can do is what
++ * he has time for before the club's force arrives (its onset):
++ * - time to move the hand a forearm's width at his hand speed: he takes it away (the club meets air) and re-punches it
++ *   as the club passes, landing with his placement error after that same travel;
++ * - less, but before the onset: he firms the hand, taking cloth (one hand's share of a holding grip, armForce x 0.6)
++ *   for the club's time, raising that arm's hold against it; the grip is on the joint (grip and hold), so the holding
++ *   detector sees it;
++ * - after the onset: it lands as thrown.
++ * No roll: the times decide. */
++function fightAnswer(sim: PlaySim, e: Engagement): void {
++  const c = e.club, b = e.blocker, d = e.defender, hands = e.hands;
++  if (!c || c.onset === undefined || c.hand === undefined || !hands) return;
++  const pair = handPairOf(hands), t = sim.t;
++  if (c.air === undefined && t >= c.onset) c.air = !pair[c.hand].on;
++  if (c.answer !== undefined) return;
++  if (c.seenAt === Infinity) { c.answer = 'unseen'; return; }
++  if (t < c.seenAt!) return;
++  const left = c.onset - t, speed = ARM_SPEED * (0.75 + 0.5 * clamp(b.r('handTechnique'), 0, 1)), away = FOREARM / speed;
++  if (left >= away && pair[c.hand].on) {
++    c.answer = 'away';
++    pair[c.hand].on = false; pair[c.hand].slide = 0; pair[c.hand].vel = 0; syncHandPair(hands);
++    let ready = fightReady.get(hands);
++    if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
++    ready[c.hand] = c.end + away;
++  } else if (left >= 0 && pair[c.hand].on) {
++    c.answer = 'firm';
++    pair[c.hand].firmUntil = sim.world.time + (c.end - t); pair[c.hand].firmGrip = 0.6 * armForce(b);
++  } else c.answer = 'late';
++}
++/** FITTED_HANDS attempt 2: the club, with its approach. His near hand travels to the blocker's wrist (0.45 of his arm,
++ * the sweep its return takes, at his hand speed) before its force acts; then the force of RUSH_HANDS' club for its time
++ * across the forearm. It is aimed at the hand on his working side (the one a force across toward his inside meets
++ * first), or at the other if that one is off him. */
++function fightClub(sim: PlaySim, e: Engagement, axis: Vec2): number {
++  const d = e.defender, b = e.blocker, lat = latOf(axis), hands = e.hands!;
++  const speed = ARM_SPEED * (0.75 + 0.5 * d.r('passRushFinesse'));
++  const approach = 0.45 * d.player.measurables.armIn / 36 / speed, duration = FOREARM / speed, F = armForce(d);
++  const force = { x: -lat.x * e.side * F, y: -lat.y * e.side * F };
++  const dx = d.body.pos.x - b.body.pos.x, dy = d.body.pos.y - b.body.pos.y, L = Math.hypot(dx, dy) || 1;
++  const fT = force.x * (-dy / L) + force.y * (dx / L), pair = handPairOf(hands);
++  let k: 0 | 1 = fT >= 0 ? 0 : 1;
++  if (!pair[k].on) k = (1 - k) as 0 | 1;
++  const wt = sim.world.time;
++  sim.world.handForce(hands, d.body, force, wt + approach, wt + approach + duration, k);
++  const t = sim.t, onset = t + approach, end = onset + duration;
++  // His view: the rusher inside the cone about his eyes.
++  const look = b.head ?? b.body.facing, inView = inHeadCone(look, Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x));
++  const seenAt = inView ? t + 0.12 + 0.12 * (1 - traits(b).read) : Infinity;
++  e.moveOk = false; e.moveUntil = end;
++  e.club = { end, handsBefore: hands.off ? 0 : hands.handsOn ?? 2, speed, start: t, onset, hand: k, seenAt, side: force };
++  return end - t;
++}
++
+ const refitState = new WeakMap<HandJoint, { lostAt: number }>();
+ /** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
+  * chest (the bodies' gap) at ARM_SPEED. */
+@@ -805,6 +901,21 @@ function clearedSide(e: Engagement, lat: Vec2): number {
+   return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
+ }
+ 
++/** FITTED_HANDS: an interior pass rep (the hand fight's stage 1 is the interior fight). */
++function fightRep(e: Engagement): boolean {
++  return FITTED_HANDS && e.type === 'pass' && e.blocker.slot !== 'LT' && e.blocker.slot !== 'RT';
++}
++/** The cleared side as he feels it: a hand gone from his chest is touch, at the hands' delay (0.06 s, ENGAGE_FELT's
++ * loaded touch); off FITTED_HANDS the side as it is (RUSH_ONE_HAND, unchanged). */
++const clearedSeen = new WeakMap<Engagement, { side: number; at: number }>();
++function feltCleared(sim: PlaySim, e: Engagement, lat: Vec2): number {
++  const now = clearedSide(e, lat);
++  if (!FITTED_HANDS) return now;
++  let st = clearedSeen.get(e);
++  if (!st || st.side !== now) { st = { side: now, at: sim.t }; clearedSeen.set(e, st); }
++  return sim.t - st.at >= 0.06 ? now : 0;
++}
++
+ export function handUnloaded(e: Engagement): boolean {
+   const h = e.hands;
+   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
+@@ -831,6 +942,8 @@ function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
+ /** Choose the next move from the state of the rep. */
+ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
+   const d = e.defender;
++  // FITTED_HANDS stage 1: the club is the interior rusher's one move.
++  if (fightRep(e)) return 'club';
+   if (RUSH_HANDS && e.type === 'pass') { const keyed = keyedMove(sim, e); if (keyed) return keyed; }
+   const td = traits(d);
+   const power = d.r('passRushPower');
+@@ -948,6 +1061,14 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
+ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
+   const t = sim.t;
+   const rng = sim.dice('rep', e.blocker, e.defender);
++  // FITTED_HANDS stage 1: an interior rusher's only move is the club, on a hand that is on him. Its next decision is when
++  // his arm is back (the club's end, then the arm's return: handsBackAt); with no hand on him there is nothing to
++  // clear and he looks again after his reaction.
++  if (fightRep(e)) {
++    if (e.hands && !e.hands.off) e.nextMoveAt = t + fightClub(sim, e, axis);
++    else e.nextMoveAt = t + Math.max(0.1, e.defender.profile.reactionTime);
++    return;
++  }
+   // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
+   if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
+   if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
+@@ -1803,6 +1924,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     return;
+   }
+   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
++  // PASS_OFF attempt 2: a helper who sees the man come off his blocker takes him; the rep goes on as his next tick.
++  if (passOff(sim, e, true)) return;
+ 
+   // ---- moves at decision points
+   // RUSH_HANDS: a move takes his arm away; he throws no other until it is back. After a club his arm returns across
+@@ -1812,9 +1935,18 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   if (RUSH_HANDS && e.type === 'pass') {
+     const rt = Math.max(0.1, d.profile.reactionTime);
+     if (e.club && t >= e.club.end) {
++      // FITTED_HANDS attempt 2: a club he had not yet seen when it ended was late.
++      if (e.club.onset !== undefined && e.club.answer === undefined) e.club.answer = 'late';
+       const h = e.hands, now = !h || h.off ? 0 : h.handsOn ?? 2, cleared = now < e.club.handsBefore;
+       const sweep = 0.45 * d.player.measurables.armIn / 36 / e.club.speed;
+       e.handsBackAt = e.club.end + sweep + rt + (cleared ? 0 : sweep) + (baseOf(d) < 0.9 ? rt : 0);
++      // FITTED_HANDS attempt 2: a club through air carries his arm across his own body: it comes back twice as far,
++      // and his reaction again for the balance it cost; the arm's momentum goes to his body.
++      if (e.club.air) {
++        e.handsBackAt = e.club.end + 2 * sweep + 2 * rt + (baseOf(d) < 0.9 ? rt : 0);
++        const f = e.club.side!, F = Math.hypot(f.x, f.y) || 1, mv = ARM_MASS * e.club.speed;
++        d.body.vel.x += f.x / F * mv; d.body.vel.y += f.y / F * mv;
++      }
+       e.nextMoveAt = Math.max(e.nextMoveAt, e.handsBackAt);
+       e.club = undefined;
+     }
+@@ -1854,7 +1986,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   } else if (between === 'stall') aim = { x: bK.pos.x, y: bK.pos.y };
+   // RUSH_ONE_HAND: a cleared hand opens the side it guarded. He works to it, at the blocker's hip a step past toward
+   // the QB, through the body and the remaining hand at whatever speed that contact allows; PAST (geometry) wins it.
+-  const cleared = RUSH_ONE_HAND && !turned && !inMove ? clearedSide(e, lat) : 0;
++  const cleared = (RUSH_ONE_HAND || fightRep(e)) && !turned && !inMove ? feltCleared(sim, e, lat) : 0;
+   if (cleared) aim = { x: bK.pos.x + lat.x * cleared * (sep + 0.2) + axis.x * 0.5, y: bK.pos.y + lat.y * cleared * (sep + 0.2) + axis.y * 0.5 };
+   // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
+   // the QB's depth outside the tackle's shoulder; past the hips he turns.
+@@ -3055,7 +3187,57 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
+ }
+ 
+ /** Defender wins: the hands come apart. Run sheds throw the blocker aside. */
++/** PASS_OFF (experimental, off; PASS_OFF=1): the pass-off. A pass rusher who beats his blocker while a helper's hands are
++ * on him (the helper's joint carried load last step: he feels the man on his hands) is the helper's man from there: the
++ * helper keeps him as his own block, as coached on a pass-off, instead of losing him with the beaten man's rep. The
++ * engagement goes on with the helper as its blocker and his own hands joint (a fresh fight: neither man in control, no
++ * hold carried over, the rusher's move state reset, his long-arm on the beaten man gone). The beaten blocker leaves it,
++ * with the ordinary 0.6 s before he can grab the same man again; then his own blocking decides whether he recovers to
++ * double him or finds other work, by what he sees. Off, beating the primary ended the rep for everyone on it: a helper
++ * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
++ * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
++export const PASS_OFF = process.env.PASS_OFF === '1';
++function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
++  if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
++  const d = e.defender;
++  const keeper = e.helpers.find((h) => {
++    const j = e.helperHands?.get(h);
++    if (!j || h.isDown(sim.t) || !inBlockReach(h, d, 'pass')) return false;
++    return seen ? seesComeFree(sim, e, h) : Math.max(0, j.normalForce ?? 0) > 0 || Math.abs(j.tangentForce ?? 0) > 0;
++  });
++  if (!keeper) return false;
++  const old = e.blocker, joint = e.helperHands!.get(keeper)!;
++  old.shedBy.set(d, sim.t + 0.6);
++  old.engagement = null;
++  if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
++  e.blocker = keeper; e.hands = joint;
++  e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
++  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
++  syncJoints(sim, e);
++  keeper.tags.add('pass-off');
++  d.tags.add('shed');
++  sim.event('shed', d, old, 'pass: passed off');
++  return true;
++}
++
++/** PASS_OFF attempt 2: the helper sees the man come off the blocker he is helping, as he has them both (his own sight
++ * delay), with the man in his view cone: the man beyond the blocker's working reach (the bodies plus 0.85 of the
++ * blocker's arm, the punch's lockout) or past his shoulder (70 deg off the blocker's line to the launch point, the
++ * release the operators use). Then he takes him. Attempt 1 handed off only at beat(): under FITTED_HANDS most rushers
++ * who reach the QB are still in the first man's rep at arm's length (51% of the frames to the reach), so it fired 3
++ * times in 2 games. */
++function seesComeFree(sim: PlaySim, e: Engagement, h: Agent): boolean {
++  const b = e.blocker, d = e.defender, sd = sim.see(h, d), sb = sim.see(h, b);
++  if (!inHeadCone(h.head ?? h.body.facing, Math.atan2(sd.pos.y - h.pos.y, sd.pos.x - h.pos.x))) return false;
++  const rx = sd.pos.x - sb.pos.x, ry = sd.pos.y - sb.pos.y, sep = Math.hypot(rx, ry);
++  if (sep > b.profile.radius + d.profile.radius + 0.85 * b.player.measurables.armIn / 36) return true;
++  const pp = protectPoint(sim), ux = pp.x - sb.pos.x, uy = pp.y - sb.pos.y, L = Math.hypot(ux, uy) || 1;
++  const ang = Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L);
++  return Math.abs(ang) > (70 * Math.PI) / 180;
++}
++
+ function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, why = ''): void {
++  if (!run && passOff(sim, e)) return;
+   const d = e.defender;
+   const b = e.blocker;
+   if (run) runContactObservers.get(sim)?.(e, 'end', { reason: why });
+diff --git a/test/fitted-hands.test.ts b/test/fitted-hands.test.ts
+new file mode 100644
+index 00000000..a927c0e8
+--- /dev/null
++++ b/test/fitted-hands.test.ts
+@@ -0,0 +1,104 @@
++/** FITTED_HANDS (physics/world.ts handPair / stepHandPair / handHold(k); experimental, off; requires RUSH_HANDS): the
++ * hand fight's stage 1. The blocker's two hands are separate one-degree-of-freedom bodies. A strike acts on the hand it
++ * meets and only that arm holds against it; each hand carries half the joint's press, friction and steer at its own
++ * edge; with no force on the hands every joint force is RUSH_HANDS' (and so today's); momentum is conserved; the
++ * result does not depend on the substep count. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import type { Vec2 } from '../src/core/vec.js';
++import type { PhysicalProfile } from '../src/players/physical.js';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function load(flags: Record<string, string>) {
++  vi.resetModules();
++  for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
++  const { newSupport } = await import('../src/physics/support.js');
++  const W = await import('../src/physics/world.js');
++  const body = (mass: number, pos: Vec2, facing = 0) => {
++    const profile: PhysicalProfile = { massKg: mass, radius: 0.3, reach: 0.25 + 0.95 * 0.85, heightYd: 2.05, vmax: 9, tau: 1.3,
++      brake: 6, lateral: 6, turnRate: 8, backpedal: 0.6, shuffle: 0.55, maxCatchHeight: 3, reactReach: 2.6,
++      reactionTime: 0.25, power: mass, balance: 0.5, bend: 0.5, stepSpeed: 3.4, getUp: 0.9 };
++    return { pos, vel: { x: 0, y: 0 }, facing, energy: 1, profile, support: newSupport(0.4) } as any;
++  };
++  return { W, body };
++}
++
++async function scene(opts: { ext: number; press: number; F: number; dur: number; substeps?: number; flags: Record<string, string>; steps?: number }) {
++  const { W, body } = await load({ RUSH_HANDS: '1', ...opts.flags });
++  const a = body(140, { x: 0, y: 0 }, 0), b = body(120, { x: 0.6 + opts.ext, y: 0 }, Math.PI);
++  const w = new W.World([a, b], { substeps: opts.substeps ?? 12 });
++  const j: any = { kind: 'hands', a, b, extension: 0.6 + opts.ext, push: 1500, hold: 0, steer: 700 };
++  w.joints.push(j);
++  const rows: { N: number; T: number }[] = [];
++  let p0 = { x: 0, y: 0 }; const ground = { x: 0, y: 0 };
++  const mom = () => ({ x: a.profile.massKg * a.vel.x + b.profile.massKg * b.vel.x, y: a.profile.massKg * a.vel.y + b.profile.massKg * b.vel.y });
++  for (let k = 0; k < (opts.steps ?? 12); k++) {
++    if (k === 2 && opts.F) { p0 = mom(); w.handForce(j, b, { x: 0, y: opts.F }, w.time, w.time + opts.dur); }
++    const rep = w.step([{ vel: { x: 0, y: 0 }, push: 1 }, { vel: { x: -1.5 * opts.press, y: 0 }, push: opts.press }], 0.05);
++    if (k >= 2) { ground.x += (rep.groundImpulse[0]?.x ?? 0) + (rep.groundImpulse[1]?.x ?? 0); ground.y += (rep.groundImpulse[0]?.y ?? 0) + (rep.groundImpulse[1]?.y ?? 0); }
++    rows.push({ N: j.normalForce ?? 0, T: j.tangentForce ?? 0 });
++  }
++  const pair = j.handPair as { slide: number; vel: number; on: boolean }[] | undefined;
++  const armV = pair ? pair.reduce((s, h) => s + (h.on ? h.vel : 0), 0) : j.handVel ?? 0;
++  const p1 = mom(), arm = W.ARM_MASS * a.profile.massKg * armV;
++  return { j, pair, rows, residualY: p1.y + arm - p0.y - ground.y, scaleY: Math.abs(opts.F * opts.dur) };
++}
++
++describe('FITTED_HANDS: the two hands', () => {
++  it('a strike takes off the hand it meets; the other stays on (the sweep after the clear barely moves it)', async () => {
++    const r = await scene({ ext: 0.6 * 0.95, press: 0, F: 900, dur: 0.08, flags: { FITTED_HANDS: '1' } });
++    console.log(`hand 0 on ${r.pair![0].on} slide ${r.pair![0].slide.toFixed(3)} | hand 1 on ${r.pair![1].on} slide ${r.pair![1].slide.toFixed(3)} | handsOn ${r.j.handsOn} offSide ${r.j.offSide}`);
++    expect(r.pair![1].on).toBe(true); expect(Math.abs(r.pair![1].slide)).toBeLessThan(0.05);
++    expect(r.pair![0].on).toBe(false);
++    expect(r.j.handsOn).toBe(1); expect(r.j.offSide).toBe(-1); expect(r.j.off).toBe(false);
++  });
++
++  it('one arm holds less than the pair: a strike the joint holds takes one fitted hand off', async () => {
++    const F = 1200, base = { ext: 0.25 * 0.95, press: 1, dur: 0.08 };
++    const pairHold = await scene({ ...base, F, flags: {} });
++    const oneArm = await scene({ ...base, F, flags: { FITTED_HANDS: '1' } });
++    console.log(`RUSH_HANDS handsOn ${pairHold.j.handsOn ?? 2} | FITTED_HANDS handsOn ${oneArm.j.handsOn}`);
++    expect(pairHold.j.handsOn ?? 2).toBe(2);
++    expect(oneArm.j.handsOn).toBe(1);
++  });
++
++  it('with one hand off, the joint carries half its press', async () => {
++    const both = await scene({ ext: 0.25 * 0.95, press: 1, F: 0, dur: 0.08, flags: { FITTED_HANDS: '1' }, steps: 1 });
++    const { W, body } = await load({ RUSH_HANDS: '1', FITTED_HANDS: '1' });
++    expect(W.FITTED_HANDS).toBe(true);
++    const a = body(140, { x: 0, y: 0 }, 0), b = body(120, { x: 0.6 + 0.25 * 0.95, y: 0 }, Math.PI);
++    const w = new W.World([a, b], { substeps: 12 });
++    const j: any = { kind: 'hands', a, b, extension: 0.6 + 0.25 * 0.95, push: 1500, hold: 0, steer: 700 };
++    W.handPairOf(j)[1].on = false; W.syncHandPair(j);
++    w.joints.push(j);
++    let maxN = 0;
++    for (let k = 0; k < 8; k++) { w.step([{ vel: { x: 0, y: 0 }, push: 1 }, { vel: { x: -1.5, y: 0 }, push: 1 }], 0.05); maxN = Math.max(maxN, Math.abs(j.normalForce ?? 0)); }
++    console.log(`one hand: |N| max ${maxN.toFixed(0)} (push 1500 -> 750 cap)`);
++    expect(maxN).toBeLessThanOrEqual(750 + 1);
++    expect(both.j.handsOn ?? 2).toBe(2);
++  });
++
++  it('with no force on the hands every joint force is RUSH_HANDS\'', async () => {
++    const off = await scene({ ext: 0.6 * 0.95, press: 0.7, F: 0, dur: 0.08, flags: {} });
++    const on = await scene({ ext: 0.6 * 0.95, press: 0.7, F: 0, dur: 0.08, flags: { FITTED_HANDS: '1' } });
++    expect(on.rows).toEqual(off.rows);
++  });
++
++  it('momentum is conserved and the slide does not depend on the substep count', async () => {
++    const r = await scene({ ext: 0.6 * 0.95, press: 0.5, F: 800, dur: 0.08, flags: { FITTED_HANDS: '1' } });
++    console.log(`momentum residual y ${r.residualY.toFixed(3)} against ${r.scaleY.toFixed(1)}`);
++    expect(Math.abs(r.residualY)).toBeLessThan(0.02 * r.scaleY + 0.5);
++    const coarse = await scene({ ext: 0.6 * 0.95, press: 0, F: 300, dur: 0.08, substeps: 6, steps: 6, flags: { FITTED_HANDS: '1' } });
++    const fine = await scene({ ext: 0.6 * 0.95, press: 0, F: 300, dur: 0.08, substeps: 24, steps: 6, flags: { FITTED_HANDS: '1' } });
++    const sc = coarse.pair![0].slide, sf = fine.pair![0].slide;
++    console.log(`substeps 6: ${sc.toFixed(4)} | 24: ${sf.toFixed(4)} | on ${coarse.pair![0].on}/${fine.pair![0].on}`);
++    expect(coarse.pair![0].on && fine.pair![0].on).toBe(true);
++    expect(Math.abs(sc)).toBeGreaterThan(0.01);
++    expect(Math.abs(sc - sf)).toBeLessThan(0.1 * Math.abs(sf) + 0.005);
++  });
++
++  it('FITTED_HANDS without RUSH_HANDS is refused', async () => {
++    vi.resetModules(); vi.stubEnv('FITTED_HANDS', '1');
++    await expect(import('../src/physics/world.js')).rejects.toThrow(/requires RUSH_HANDS/);
++  });
++});
+-- 
+2.43.0
+
