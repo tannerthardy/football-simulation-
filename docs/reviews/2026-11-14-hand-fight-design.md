@@ -846,3 +846,38 @@ With one hand off he moves across the joint toward the vacated side in 74% of ti
   - So the feet belong with stage 2: the menu restored as forces, with each move's feet as coached (the bull's drive,
     the rip's dip and bend, the swim's step through).
   - Not a speed cap on the club.
+
+## 16. BLOCK_ANTICIPATE attempt 1 read (2026-11-15; 1c2dafa9; seed 11 x 8, on FH + PO)
+
+Built to section 13, with Integration's conditions:
+- the cocked arm as an observable at sight delay, in view;
+- a slid hand re-punched at the cost of its travel and placement (it can miss);
+- the rusher's fake left to the between-moves stage.
+
+The firm was changed before any game read. With cloth for as long as the arm was away, it held the jersey through half
+the rep: holding on 16 of 92 pass plays in a one-game staging read. The coached firm is the arm, so the anticipation's
+firm is a brace: the hand holds at the lever of the bent arm (steer x 1), with no cloth.
+
+| | FH + PO | FH + PO + BA |
+|---|---|---|
+| clubs met by a hand braced in advance | 0% | **54%** |
+| a hand off within 0.25 s of a club: braced / not | - / 39% | 43 / 52% |
+| clubs a second; hands on 2 / 1 | 1.29; 80 / 20% | 1.26; 86 / 14% |
+| orbit p50 0.5-1.0 / 1.0-1.5 s | 18 / 34 deg | 18 / 34 |
+| released by 1.0 / 2.0 s, never | 42 / 65 / 32% | 43 / 65 / 32% |
+| off-blocker reach | 12% | 19% |
+| interior pressure; sack proxy | 19.0; 9.1 | 19.5; 8.2 |
+| alive at 3 s ending in a sack: interior / edge | 10.2 / 8.5 | 13.6 / 8.3 |
+| holding calls (club-fight, 4 games) | 0 of 367 | 0 of 356 |
+
+**Read so far:**
+- **Gate 1 passes:** the blocker answers in time on 54% of clubs, by what he saw. Holding stays at 0: the brace has no
+  cloth.
+- **Gate 3 holds:** orbit and release timing are unchanged.
+- **Gate 2 is confounded** in the probe. A hand "off within 0.25 s" counts the blocker's own re-punch (he pulls a slid
+  hand), so the overall rate rising 39 -> 47% is partly his own hands. Braced against not braced (43 against 52%) is
+  the cleaner row: the brace takes a modest share off the club. The physics answer for an arm with no grip is that it
+  holds only a little better.
+- **Off-blocker reach 12 -> 19%** is the same direction as both RUSH_GATHER attempts (18, 16%) from the same
+  FH + PO arm. Three different small changes all moving one row the same way suggests the arm's 12% is a low draw. A
+  second seed set (23 x 8: FH + PO, + BA, + RG2) is running before anything is concluded from it.
