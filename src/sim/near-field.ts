@@ -27,10 +27,10 @@ export const NEAR_FELT = (BITS & 1) !== 0;
 export const NEAR_PERIPHERAL = (BITS & 2) !== 0;
 export const NEAR_ON = BITS !== 0;
 
-const TOUCH_LATENCY = Number(process.env.NEAR_LATENCY ?? 0.15), HOLD = 0.5, FELT_POS_SD = 0.3;
+const TOUCH_LATENCY = 0.15, HOLD = 0.5, FELT_POS_SD = 0.3;
 const BEARING_SD0 = 2, BEARING_SD_PER_DEG = 0.1;
-const RANGE_ERR = Number(process.env.NEAR_RANGE_ERR ?? 0.1);
-const CENTRAL = (Number(process.env.NEAR_CENTRAL_DEG ?? 30) * Math.PI) / 180, FADE = (30 * Math.PI) / 180;
+const RANGE_ERR = 0.1;
+const CENTRAL = (30 * Math.PI) / 180, FADE = (30 * Math.PI) / 180;
 const NOISE_BIN = 0.25;
 
 /** A smooth, deterministic standard-normal-ish value for (a, b, t): linear between hashed bin values, so no jump and no random stream is drawn. */
