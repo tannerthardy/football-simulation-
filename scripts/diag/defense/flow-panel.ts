@@ -67,12 +67,13 @@ function execute(i: Input, trace: boolean) {
   let stage = 'tick';
   if (trace) {
     const see = sim.see.bind(sim);
-    sim.see = (a, b, scale) => {
-      const seen = see(a, b, scale);
+    // Pass every argument through (the fourth, e.g. `sight: 'recog'`, changes what he sees): an observed play must match the plain one.
+    sim.see = ((a: Parameters<typeof see>[0], b: Parameters<typeof see>[1], ...rest: unknown[]) => {
+      const seen = (see as (...q: unknown[]) => ReturnType<typeof see>)(a, b, ...rest);
       if ((a.team === 'D' && b.team === 'O') || (contactTrace && a.team === 'O' && b.team === 'D')) cues.push({ t: sim.t, stage, defender: a.idx, opponent: b.idx,
         slot: b.slot, seen: copy(seen), actual: { pos: copy(b.pos), vel: copy(b.vel), stance: b.stance } });
       return seen;
-    };
+    }) as typeof sim.see;
     for (const a of sim.defense) if (a.recog) {
       const update = a.recog.update.bind(a.recog);
       a.recog.update = (actor, s) => { stage = 'recognition'; update(actor, s); stage = 'tick'; };
