@@ -820,3 +820,29 @@ Free frames (no OL within 1.0 yd) of off-blocker interior rushers, speed p50 / p
 - So the gap is in the late fight. An engaged NFL rusher who has not won by 1 s is held nearly in place. Ours, with a
   hand off half the time, runs around the blocker at his rush pace. That is where his speed out of the release comes
   from.
+
+## 15. Feet or hold (2026-11-15; one-hand-sep.mts, seed 11 x 4, interior pass reps after 1.0 s, before the throw)
+
+| | ticks | requested speed p50 (share of vmax) | achieved p50 / p75 | across the joint p50 | joint load p50 |
+|---|---|---|---|---|---|
+| base, both hands | 20,811 | 4.85 (55%) | 2.03 / 2.57 | 0.01 yd/s | 988 N |
+| FH + PO, both hands | 15,234 | **7.05 (88%)** | **3.16** / 3.77 | 0.50 | 817 N |
+| FH + PO, one hand | 5,051 | 7.25 (90%) | 3.17 / 3.84 | **0.79** | 402 N |
+
+With one hand off he moves across the joint toward the vacated side in 74% of ticks (p50 +0.61 yd/s).
+
+**Read: both, with the feet the larger** (Integration's expectation).
+- **The feet:** under FH the rusher asks for 88-90% of his top speed through the fight, against the base's 55%, and
+  gets 3.2 yd/s even with both hands on him (base 2.0).
+  - Part of this is stage 1's own construction. With the club the interior rusher's only move, he never takes a power
+    move (the bull or the long-arm, whose request is 0.55 of vmax with full push). Between clubs his request is the
+    corner at rush pace (0.8 + 0.15 x bend of vmax).
+  - The base's rusher spends much of the rep in a power move.
+  - The coached rusher plants and drives while his hands work: his feet are in the move.
+- **The hold:** one hand off adds the slide. Across the joint 0.50 -> 0.79 yd/s, toward the vacated side three times
+  in four (ONE_HAND_SIDE: 0.25 of the remaining hand's steer that way). It does not add speed (3.16 -> 3.17).
+- **Next for the feet:** the rusher's request while his hands work is the between-moves intent (task 13), and stage
+  2's moves (rip, swim, bull back on the menu) bring the power requests back.
+  - So the feet belong with stage 2: the menu restored as forces, with each move's feet as coached (the bull's drive,
+    the rip's dip and bend, the swim's step through).
+  - Not a speed cap on the club.
