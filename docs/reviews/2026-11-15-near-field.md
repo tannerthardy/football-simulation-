@@ -240,3 +240,6 @@ pictures cost him 0.14 yd (he reads the men at his side less well).
 position noise alone fails (coverage 0.441, 1,876 events); velocity noise alone passes (0.397); recognition loss alone passes (0.376). **The position error is what the thresholds cannot absorb**: a decision that reads a pictured
 position against a distance (leverage, gap, in-range tests in `coverage`, `defense.ts` and `carrier.ts`) flips as the picture drifts a few tenths of a yard, with no hysteresis on those tests. I have not attributed it to individual
 sites; the consumers of a pictured position are the 84 `see` and `track` call sites in `defense.ts`, `run-fits.ts`, `coverage/*`, `common.ts`, `tackle.ts` and `carrier.ts`. That is a finding about those thresholds.
+
+**Scorecard (16 games per arm, 2 leagues, seed 23, paired off against `NEAR_FIELD=2`, engine-68):** completion 67.4 to 70.0%, against man 54.6 to 59.3% (zone 73.5 to 74.0%), yards per attempt 8.98 to 9.55, **YAC per reception 7.58 to 7.75 (+0.17; the first form moved it +3.0)**, designed rush yd per carry 3.99 to 3.78, missed + broken
+352 to 323. One seed. The rebuilt form is a moderate move: the pass game gains about half a yard per attempt and 4.7 points of completion against man, the run game loses a fifth of a yard.
