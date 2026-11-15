@@ -64,6 +64,9 @@ export const BALL_EST_MAN_LOOK = (BALL_EST_BITS & 256) !== 0;
 /** Bit 256: "on his hip" (yd): no more than PHASE_BEHIND behind him along his line and within PHASE_SIDE of it. Choices
  * (coached as a concept, not a distance), to be read against the NFL phase split (nfl_man_phase.py) before moving. */
 export const PHASE_BEHIND = 1.0, PHASE_SIDE = 1.5;
+/** Gaze search (s): with no sample yet, his look moves from the passer to where his prior puts the ball now over this
+ * long (choice: about two fixations at the visuomotor loop's pace; a receiver 'looks it in from the hand'). */
+export const GAZE_SEARCH = 0.4;
 /** Bit 256: his error judging how far behind he is (yd, one draw a flight): 0.2 at the best man coverage, 0.8 at the
  * worst (choice). */
 export const phaseJudgeSd = (a: Agent): number => 0.2 + 0.6 * (1 - clamp(a.r('manCoverage'), 0, 1));
@@ -149,6 +152,8 @@ interface Track {
   /** His current error state (range, two bearings), standard-normal units, carried between samples. */
   err: [number, number, number] | null;
   samples: Sample[];
+  /** When he began looking for this flight without a sample of it (his gaze search from the passer's end). */
+  searchAt?: number;
   /** Attempt 3: observations he did not sample (his route prior, the release and the shoulder line). */
   pseudo: Sample[];
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
@@ -326,6 +331,12 @@ export class BallEstimates {
     return tr?.fit && tr.flight === this.flight ? this.pathOf(sim, tr) : [];
   }
 
+  /** Where his look aims now (his gaze target): the passer before he has the ball, then the ball's seen motion. */
+  gazeAt(a: Agent, sim: PlaySim): { x: number; y: number } {
+    const tr = this.tracks.get(a);
+    return tr ? this.believedAt(a, sim, tr) : sim.see(a, sim.qb).pos;
+  }
+
   /** Read-only: when (sim time) he first sampled this flight himself, or undefined. One perception: under BALL_EST his
    * sight of the ball is his own sample (release-belief.ts reads it as his ball cue). */
   firstSeenAt(a: Agent): number | undefined {
@@ -395,6 +406,7 @@ export class BallEstimates {
   priorAt(a: Agent): number | undefined { return this.tracks.get(a)?.priorT; }
 
   private reset(tr: Track): void {
+    tr.searchAt = undefined;
     tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
     tr.deliberate = false; tr.passiveAt = undefined;
   }
@@ -417,9 +429,23 @@ export class BallEstimates {
   }
 
   private believedAt(a: Agent, sim: PlaySim, tr: Track): { x: number; y: number } {
-    if (tr.fit) { const p = this.pathOf(sim, tr); if (p.length) return p[0]; }
-    // No estimate yet: the ball comes from the quarterback, as he last saw him.
-    return sim.see(a, sim.qb).pos;
+    // His gaze follows the ball, not where he thinks it will land. Once he has sampled it, the ball's seen motion. Before his first sample he looks where the ball comes from (the passer as he sees him), and if it is not
+    // there he searches along his believed flight from the passer's end toward where his prior puts it now, over
+    // GAZE_SEARCH seconds. A prior (route, release, shoulder line) aims his feet, never his eyes past the ball.
+    const qb = sim.see(a, sim.qb).pos;
+    // Pursuit: once he has the ball, his eyes follow its seen motion (the last two samples, extrapolated to now), not
+    // the fit's prediction, which off two early samples can sit yards off the ball and lose it.
+    const n = tr.samples.length;
+    if (n >= 2) {
+      const b = tr.samples[n - 1], c = tr.samples[n - 2], dt = b.t - c.t;
+      if (dt > 1e-6) { const k = sim.t - b.t; return { x: b.p.x + (b.p.x - c.p.x) / dt * k, y: b.p.y + (b.p.y - c.p.y) / dt * k }; }
+    }
+    if (n === 1) { if (tr.fit) { const p = this.pathOf(sim, tr); if (p.length) return p[0]; } return { x: tr.samples[0].p.x, y: tr.samples[0].p.y }; }
+    tr.searchAt ??= sim.t;
+    const now = tr.fit ? this.pathOf(sim, tr)[0] : undefined;
+    if (!now) return qb;
+    const k = clamp((sim.t - tr.searchAt) / GAZE_SEARCH, 0, 1);
+    return { x: qb.x + (now.x - qb.x) * k, y: qb.y + (now.y - qb.y) * k };
   }
 
   private ballAt(t: number): { t: number; p: Vec3 } | null {

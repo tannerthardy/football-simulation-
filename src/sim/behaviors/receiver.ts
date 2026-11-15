@@ -685,7 +685,7 @@ export class TrackBall implements Behavior {
     // (With BALL_EST also on, the trunk branch is taken; joining the two is Coverage's design 7.)
     // BALL_EST bit 64 (design 7): out past 3 yd his look is BALL_EST's own (the body-turn window), through the trunk;
     // inside 3 yd the trunk branch below, on his estimate (`facing` is his estimate's bearing under BALL_EST).
-    if (TRUNK_TWIST && BALL_EST_TRUNK && BALL_EST && dist >= 3) return spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run0) : run0;
+    if (TRUNK_TWIST && BALL_EST_TRUNK && BALL_EST && dist >= 3) return sim.ballEstimates.lastSeen(a) || spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run0) : run0;
     if (TRUNK_TWIST) {
       if (dist >= 3) return run0;
       // His look reaches the trunk's range plus the neck's (HEAD's neckRange: 90 deg standing, 45 at top speed). A ball beyond it is
@@ -696,7 +696,8 @@ export class TrackBall implements Behavior {
     }
     const run = { ...run0, facing: dist < 3 ? facing : undefined };
     // BALL_EST attempt 3: his head finds the ball for free; his body turns to it only late (route-timed, by skill).
-    return BALL_EST && dist >= 3 && spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run) : run;
+    // Once he has the ball he keeps tracking it the whole way (the look and its body cost), not only in the late window.
+    return BALL_EST && dist >= 3 && (sim.ballEstimates.lastSeen(a) || spot.t - sim.t <= bodyTurnLead(a)) ? lookFor(a, sim, run) : run;
   }
 }
 
@@ -714,8 +715,9 @@ function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
  * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
  * turned body, which the facing speed cap prices. */
 function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
-  const est = sim.ballEstimates.estimate(a, sim);
-  const at = est.length ? est[0] : sim.see(a, sim.qb).pos;
+  // His look aims where his eyes are pursuing (the passer before he has the ball, then the ball's seen motion).
+  sim.ballEstimates.estimate(a, sim);
+  const at = sim.ballEstimates.gazeAt(a, sim);
   const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
   const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
   const toward = Math.atan2(at.y - a.pos.y, at.x - a.pos.x);

@@ -10,6 +10,9 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { routeOfAgent } from '../../../src/sim/behaviors/receiver.js';
+import { DeepCoverage } from '../../../src/sim/coverage-leverage.js';
+import { RouteObservation } from '../../../src/sim/coverage-read.js';
+{ const O: any = RouteObservation.prototype, r0 = O.read; O.read = function (cue: any, ...r: any[]) { const out = r0.call(this, cue, ...r); this.__last = { inX: cue.pos.x, outX: out.pos.x, age: cue.age, inVx: cue.vel.x }; return out; }; }
 import { facingTechnique as facingTechniqueOf } from '../../../src/sim/coverage/orientation.js';
 const seed = Number(process.argv[2] ?? 101), games = Number(process.argv[3] ?? 16);
 const FAM: Record<string, string> = {};
@@ -17,6 +20,7 @@ for (const r of ['go', 'fade', 'seam', 'bender', 'wheel', 'post', 'corner', 'sai
 for (const r of ['slant', 'dig', 'in', 'short_in', 'cross', 'shallow', 'shallow_high', 'mesh_under', 'drag', 'over']) FAM[r] = 'in';
 for (const r of ['out', 'deep_out', 'flat', 'quick_out', 'speed_out', 'arrow', 'swing']) FAM[r] = 'out';
 for (const r of ['curl', 'hitch', 'comeback', 'stick', 'hook', 'stop', 'sit', 'spot']) FAM[r] = 'back';
+{ const D: any = DeepCoverage.prototype, c0 = D.choose; D.choose = function (a: any, ...r: any[]) { const out = c0.call(this, a, ...r); a.__deepOverride = out !== r[4] ? (out.vel ? +Math.hypot(out.vel.x, out.vel.y).toFixed(1) : 1) : 0; return out; }; }
 const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, plays: any[] = [];
 const ang = (a: number, b: number) => { let d = a - b; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; };
 const label = (d: any) => { const b = d.behavior; const n = b?.constructor?.name ?? '?'; const sub = b?.sub?.constructor?.name; return `${n}${sub ? '/' + sub : ''}${b?.job ? ':' + String(b.job).split(':')[0] : ''}${d.tags?.has('onBall') ? '+onBall' : ''}${d.tags?.has('arm-bite') ? '+armBite' : ''}${d.tags?.has('looking') ? '+looking' : ''}`; };
@@ -52,7 +56,7 @@ P.tick = function () {
       const req = S.cmd?.vel ?? null, toR = { x: -dx / (dist || 1), y: -dy / (dist || 1) };
       S.trace.push({ dt: +(this.t - S.rel).toFixed(2), dist, behind: -(dx * ux + dy * uy), side: Math.abs(-dx * uy + dy * ux), over: (M.pos.x - T.pos.x) * this.attackDir('O'),
         rsp: Math.hypot(T.vel.x, T.vel.y), dsp: Math.hypot(M.vel.x, M.vel.y), rturn: Math.abs(ang(h, S.h0)) * 180 / Math.PI,
-        req: req ? Math.hypot(req.x, req.y) : null, reqTo: req ? req.x * toR.x + req.y * toR.y : null, achTo: M.vel.x * toR.x + M.vel.y * toR.y, lab: label(M) + (S.cmd ? '[' + (facingTechniqueOf(S.cmd)?.label ?? '-') + (M.tags?.has('carry-hold') ? ',hold' : '') + (() => { const mc = M.behavior?.constructor?.name === 'ManCoverage' ? M.behavior : M.behavior?.sub; return mc ? `,rel${mc.releaseObserved ? 1 : 0},pd${mc.opts?.protectDepth ? 1 : 0},ot${mc.opts?.overTop ? 1 : 0},open${mc.hipsOpen ? 1 : 0}` : ''; })() + ']' : ''), seenErr: (() => { const sv = this.see(M, T); return +Math.hypot(sv.pos.x - T.pos.x, sv.pos.y - T.pos.y).toFixed(1); })() });
+        req: req ? Math.hypot(req.x, req.y) : null, reqTo: req ? req.x * toR.x + req.y * toR.y : null, achTo: M.vel.x * toR.x + M.vel.y * toR.y, lab: label(M) + (S.cmd ? '[' + (facingTechniqueOf(S.cmd)?.label ?? '-') + (M.tags?.has('carry-hold') ? ',hold' : '') + (M.__deepOverride ? `,deep${M.__deepOverride}` : '') + (M.__deepDbg ? `,dbg${JSON.stringify(M.__deepDbg)}` : '') + (() => { const mc = M.behavior?.constructor?.name === 'ManCoverage' ? M.behavior : M.behavior?.sub; const l = mc?.observation?.__last; return l ? `,tgt ${mc.target?.slot}/T ${T.slot},obs in${(l.inX - T.pos.x).toFixed(1)} vsTgt${(l.inX - (mc.target?.pos.x ?? 0)).toFixed(1)} out${(l.outX - T.pos.x).toFixed(1)} age${(l.age ?? 0).toFixed(2)} vx${l.inVx.toFixed(1)}` : ''; })() + (() => { const mc = M.behavior?.constructor?.name === 'ManCoverage' ? M.behavior : M.behavior?.sub; return mc ? `,rel${mc.releaseObserved ? 1 : 0},pd${mc.opts?.protectDepth ? 1 : 0},ot${mc.opts?.overTop ? 1 : 0},open${mc.hipsOpen ? 1 : 0}` : ''; })() + ']' : ''), seenErr: (() => { const sv = this.see(M, T); return +Math.hypot(sv.pos.x - T.pos.x, sv.pos.y - T.pos.y).toFixed(1); })() });
     }
   }
   return r;
