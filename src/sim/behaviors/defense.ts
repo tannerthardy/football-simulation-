@@ -2421,12 +2421,15 @@ function arrivalPoint(sim: PlaySim, path: PlaySim['ballPath']): Vec2 | null {
   return last;
 }
 
+/** LOOSE_SEEN (see behaviors/loose-seen.ts): read here to keep the module free of an import cycle. */
+const LOOSE_SEEN_PURSUIT = process.env.LOOSE_SEEN === '1';
 /** Generic pursuit of the ball carrier. */
 export class Pursuit implements Behavior {
   readonly kind = 'pursuit';
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (a.engagement) return stand();
-    if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    // LOOSE_SEEN: a loose ball reaches him through his own recognition (LooseCue), not through the ball's true state.
+    if (sim.ball.kind === 'loose' && !LOOSE_SEEN_PURSUIT) return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     const holder = observedHolder(a, sim);
     if (holder) return chase(sim, a, holder.target);
     if (HONEST_READS ? playsThrow(a, sim, null) : sim.ball.kind === 'air') return playBall(a, sim, null);
