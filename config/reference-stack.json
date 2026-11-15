@@ -113,6 +113,7 @@
     "SCREEN_QB": "off",
     "ROUTE_CRAFT": "on",
     "ROUTE_FILLET": "on",
+    "DIR_CAP": "off",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
