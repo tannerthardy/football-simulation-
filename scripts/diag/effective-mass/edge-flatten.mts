@@ -21,7 +21,11 @@ const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 function hands(sim: any, t: any, d: any) {
   const j = sim.world.joints.find((j: any) => j.kind === 'hands' && ((j.a === t.body && j.b === d.body) || (j.a === d.body && j.b === t.body)));
   const e = d.engagement && d.engagement.blocker === t ? d.engagement : null;
-  return { joint: !!j, tackleHands: j ? (j.actor ?? j.a) === t.body : false, force: j?.normalForce ?? 0,
+  // The joint's owner is a (the actor may differ under technique); its capacities push / steer / hold (N); lastN is the
+  // last step's normal force (RUSH_HANDS only); handsOn (2 when unset); grip (OPEN_HANDS: fingers on cloth).
+  const N = 0.9144;
+  return { joint: !!j, tackleHands: j ? j.a === t.body : false, force: j?.lastN != null ? j.lastN * N : NaN,
+    steerCap: j ? j.steer * N : NaN, holdCap: j ? j.hold * N : NaN, handsOn: j ? (j.handsOn ?? 2) : 0, grip: !!j?.grip,
     move: e?.move ?? null, live: e ? sim.t < e.moveUntil && !!e.moveOk : false, holding: !!e?.holding };
 }
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
@@ -74,6 +78,6 @@ for (const [lab, f] of [['hands on at +0.25 s', (e: any) => e.rows[0.25].joint],
   const G = E0.filter(f); if (!G.length) continue;
   const m = (o: number, k: string) => q(G.map((e) => e.rows[o][k])).toFixed(1);
   const mv: Record<string, number> = {}; for (const e of G) for (const o of [0, 0.25, 0.5]) { const r = e.rows[o]; if (r.move) { const k = `${r.move}${r.live ? '*' : ''}`; mv[k] = (mv[k] ?? 0) + 1; } }
-  console.log(`  ${lab} (n ${G.length}, ${pc(G.length, E0.length)}): at the hip joint ${pc(G.filter((e) => e.rows[0].joint).length, G.length)}, tackle's hands ${pc(G.filter((e) => e.rows[0].tackleHands).length, G.length)}, force ${q(G.map((e) => e.rows[0].force)).toFixed(0)} N, holding ${pc(G.filter((e) => e.rows[0.25].holding).length, G.length)}`
+  console.log(`  ${lab} (n ${G.length}, ${pc(G.length, E0.length)}): at the hip joint ${pc(G.filter((e) => e.rows[0].joint).length, G.length)}, tackle's hands ${pc(G.filter((e) => e.rows[0].tackleHands).length, G.length)}, normal ${q(G.map((e) => e.rows[0].force)).toFixed(0)} N, steer cap ${q(G.map((e) => e.rows[0].steerCap)).toFixed(0)} N, hands on ${q(G.map((e) => e.rows[0].handsOn)).toFixed(0)}, grip ${pc(G.filter((e) => e.rows[0].grip).length, G.length)}, holding ${pc(G.filter((e) => e.rows[0.25].holding).length, G.length)}`
     + ` | at +1.0 s runs ${m(1.0, 'ach')} deg at ${m(1.0, 'as')} yd/s, to the QB ${m(0, 'toQB')} -> ${m(1.0, 'toQB')} yd | moves 0-0.5 s (* live) ${JSON.stringify(mv)}`);
 }
