@@ -706,3 +706,74 @@ from his picture of the QB, his braking and his tackling's arrival speed. Off id
   - The next look: the free interior rusher's speed against his own vmax by time since release, NFL against ours.
   - Is ours faster everywhere after the release, or only into the QB?
   - That separates a capacity read from a controller one.
+
+## 13. The blocker's anticipation stage: design for Integration's read (2026-11-15; not built)
+
+**What the measurement says it must do.** Under FITTED_HANDS attempt 2 the blocker's read of a club came late 93% of
+the time: his sight delay (0.12-0.24 s) is as long as the arm's travel to his wrist (0.11-0.19 s). Reacting to an
+arm already swinging cannot work, and the coaching does not ask him to. It asks him to act on what comes before the
+swing, and on his own rhythm.
+
+**How it is taught** (sources below):
+- **The rusher's move needs his hands and feet in sync.** "Rushers succeed when they are able to sync their hands and
+  feet together during their chosen pass-rush move." The blocker's tools work on that sync.
+  - **Bait (flash):** a hand flashed at the rusher early in the rep draws his move before he is ready; the move then
+    misses or shows itself, and the blocker sits on what is left (Lane Johnson against a cross-chop).
+  - **Alternate hands:** inside strike, outside strike, alternated, "keeps rushers guessing and off-balance".
+  - (USA Football, the art of the strike.)
+- **Point and counterpoint hands.** The inside hand is the point hand on the inside shoulder. The outside hand is the
+  counterpoint: "the counter point hand is going to counter any moves by DL to get his hands off of you". Strong with
+  the inside hand, soft with the outside. (McNally clinic notes.)
+- **Set the hands to invite, then re-punch.** Hands at chest height to invite the slap-down, then dropped to the waist
+  as he comes, and re-punched. Or punch to half extension, draw back, and re-punch. Patience on the punch: do not lean
+  on the hands, head back. (X&O Labs; Coaches Insider.)
+- **Snatch-and-trap is keyed on what he sees of the rusher's weight.**
+  - It works on a rusher whose weight is too far forward on an arm (a long-arm or bull thrown without the feet), "ideally
+    deployed prior to contact being established".
+  - It needs "quick mental processing skills to key and diagnose when these moves are coming".
+  - Swiping that arm away takes his support: "a sudden, abrupt collapse". (USA Football, snatch-and-trap.)
+
+**The cue that comes before the swing, and is observable.** A club starts from a cocked arm: the rusher's near hand
+comes off the blocker and draws back before it sweeps. In ours that state exists (the arm away on its return, then
+ready: `handsBackAt`) but no one can see it.
+
+**Proposed build** (`BLOCK_ANTICIPATE`, off; on FITTED_HANDS):
+1. **The rusher's near arm is an observable.** Each tick the perception record holds its state: on the blocker /
+   drawn back / sweeping. Others perceive it at their sight delay, as any body state. No new information: it is his
+   arm, in view.
+2. **The blocker's answers to a cocked arm he sees**, chosen by what he has time for (no roll):
+   - firm the counterpoint hand on that side (OPEN_HANDS' cloth, attempt 2's firm, visible to the holding detector),
+     held while the arm is away;
+   - or re-punch the side the cocked arm has opened (his chest is open while his arm is back): a strike that lands with
+     his placement error, at the cost of the reach (his arm extended, late back to bent);
+   - or nothing, if he sees it late.
+3. **His own rhythm (bait)**, the coached flash: a hand flashed at the rusher's face early in the rep. Our rusher's
+   club is keyed on his own felt cue (a hand on him, his arm back), so a flash that leaves his chest light for a moment
+   draws the club early into a hand that is not there. That is the club through air, already costed (double return,
+   balance).
+   - Whether and when he flashes is the blocker's decision from his own state. That needs its own care: a timer would
+     be the convenient-timer rule broken.
+   - Proposed: offered after 1-2 have read, not with them.
+4. **Snatch-and-trap** stays for the long-arm / bull stage (stage 3), keyed on the rusher's lean, which the support
+   model has.
+
+**The rusher's side** stays as built. His answer to a blocker who firms against his cocked arm is his choice of when to
+club. That is the between-moves question (task 13), not this stage.
+
+**Gates, written before building:**
+1. The blocker's answers: in time on a material share of clubs (today 0.1%), by what he saw.
+2. Club clearing rate falls from 35% for the clubs he answered, and not for the ones he did not.
+3. The orbit at 0.5-1.0 s and the release timing kept near the NFL's (20 deg, 42 / 62 / 35%).
+4. Reported: interior pressure, off-blocker reach, holding calls (the firm's cloth), sacks.
+
+**Order and cost.** The arm observable is the larger piece (perception record, a field per rusher); the answers reuse
+attempt 2's firm and the existing strike. One stage, two attempts at its game read, as before.
+
+**Sources:**
+- [USA Football: the art of the strike](https://blogs.usafootball.com/blog/6283/the-art-of-the-strike-3-techniques-offensive-linemen-can-use-to-fend-off-pass-rushers)
+- [USA Football: snatch-and-trap](https://blogs.usafootball.com/blog/6349/how-nfl-offensive-linemen-use-the-snatch-and-trap-technique-to-stop-pass-rushers)
+- [Jim McNally pass / run clinic notes](https://www.scribd.com/doc/305124327/Jim-McNally-Pass-Run-Clinic-Notes)
+- [X&O Labs: 4 ways to improve pass protection](https://www.xandolabs.com/?p=6437)
+- [Coaches Insider: the elements of pass protection](https://coachesinsider.com/football/the-elements-of-pass-protection-article/)
+
+These are coaching blogs and clinic notes, not one authority.
