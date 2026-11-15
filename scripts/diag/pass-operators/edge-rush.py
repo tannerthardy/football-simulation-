@@ -179,3 +179,6 @@ for path in sys.argv[1:]:
             g = [r for r in R if f(r['vmax'])]
             s2 = [r['snaps'][2.0] for r in g if 2.0 in r['snaps']]; cc = C.Counter(x['state'] for x in s2)
             print(f"   rushers by top speed, {lab:14s} (top {q([r['vmax'] for r in g]):.1f} yd/s): at 2.0 s not level {pct(cc['not level'], len(s2))}, level {pct(cc['level outside'], len(s2))}, past outside {pct(cc['past outside'], len(s2))} | speed at 0.5 / 1.0 / 1.5 s {q([r['snaps'][0.5]['speed'] for r in g if 0.5 in r['snaps']]):.1f} / {q([r['snaps'][1.0]['speed'] for r in g if 1.0 in r['snaps']]):.1f} / {q([r['snaps'][1.5]['speed'] for r in g if 1.5 in r['snaps']]):.1f}")
+            # 2026-11-15 (Integration: the corner, start from what stops him): the race, per tercile. The rusher's depth
+            # against the tackle's (+ = he is still shallower), his width outside the tackle, the tackle's own depth.
+            print(f"      race, {lab:14s}: " + ' | '.join(f"{T:.1f} s gap {q([r['snaps'][T]['depth'] for r in g if T in r['snaps']]):+.2f} out {q([r['snaps'][T]['width'] for r in g if T in r['snaps']]):+.2f} tackle {q([-r['snaps'][T]['tset'] for r in g if T in r['snaps']]):.2f}" for T in (1.0, 1.5, 2.0)))
