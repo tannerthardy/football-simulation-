@@ -214,8 +214,8 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
  *   at punching distance in front of the rusher on the rusher's line to the live QB, so he barely moved until the
  *   rusher came (0.2 yd/s of retreat requested to 0.5 s; NFL interior OL 0.80 yd deep at 1.0 s, ours 0.50).
  * - **The lateral reference** (setSpotTarget): where the rusher's line to the launch point crosses his own depth,
- *   clamped to his zone about his alignment (half a split: no gap opened to the man inside), with its feed-forward the
- *   target's own motion (a fraction of the rusher's, nothing when clamped). Off, his target was a step in front of the
+ *   kept to his zone about his alignment (half a split: no gap opened to the man inside) by a smooth saturation, with
+ *   its feed-forward the target's own motion (a fraction of the rusher's, fading as the target nears the zone's edge). Off, his target was a step in front of the
  *   rusher on the rusher's line, moving with the man he was carrying: a self-starting slide (staged: 1.28 yd/s by
  *   1.5 s from no drift at all).
  * Interior linemen (no outside set); the tackles' kick keeps its own law, with the live-QB reads removed. */
