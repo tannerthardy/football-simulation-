@@ -846,7 +846,7 @@ export class QBPass implements Behavior {
       const v = this.avoid, left = Math.hypot(v.to.x - a.pos.x, v.to.y - a.pos.y);
       // Kept until the spot is reached or the man is back outside his need by a margin.
       if (left > 0.3 && this.felt(a, sim, v.body).pose !== 'down' && timeOf(v.body) < need + AVOID_EXIT) {
-        if (process.env.AVOID_DIAG_NOFREEZE !== '1') this.readStart += sim.dt; // his read waits while he moves
+        this.readStart += sim.dt; // his read waits while he moves
         return goTo(a, v.to, { speed: Math.min(1, v.pace / a.profile.vmax), facing, cutSkill: cut });
       }
       this.avoid = null;
@@ -854,7 +854,7 @@ export class QBPass implements Behavior {
     const p = this.pressure(a, sim), d = p.agent;
     if (!d || p.time >= need || this.held(a, d, sim) > 0) return null;
     const f = this.felt(a, sim, d).pos, dy = f.y - a.pos.y, body = this.bodyOf(a, d);
-    const step = (body.radius + a.profile.radius + body.reach) * Number(process.env.AVOID_DIAG_STEP ?? 1);
+    const step = body.radius + a.profile.radius + body.reach;
     const fromEdge = Math.abs(dy) > 1.5 && f.x <= a.pos.x + 1;
     let to: Vec2;
     if (fromEdge) to = { x: Math.min(a.pos.x + step, sim.los - 2.5), y: a.pos.y - Math.sign(dy) * 0.3 * step };
@@ -868,7 +868,7 @@ export class QBPass implements Behavior {
     const pace = clamp(step / Math.max(p.time - 0.1, 0.2), 1.5, 0.75 * a.profile.vmax);
     this.avoid = { body: d, to, pace, kind: fromEdge ? 'climb' : 'slide' };
     this.avoidCount[this.avoid.kind]++;
-    if (process.env.AVOID_DIAG_NOFREEZE !== '1') this.readStart += sim.dt;
+    this.readStart += sim.dt;
     return goTo(a, to, { speed: Math.min(1, pace / a.profile.vmax), facing, cutSkill: cut });
   }
   /** QB_KEY_THROW diagnostic (no effect): throws to the answer while he was holding on it. */
