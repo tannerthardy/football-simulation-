@@ -83,3 +83,27 @@ Scorecard, 16 games per arm, 2 leagues, paired, `--arm off:SPACING_HOLD=0 --arm 
 Unexplained: sacks fall on both seeds (about 2.4 sigma pooled) with scrambles flat. The hold does reach the quarterback while he holds the ball in
 `carrier` mode (860 bend ticks on 96 pass plays, ball held, 3 to 9 s), where it keeps his step around his own linemen and backs; that is the candidate
 mechanism, not shown. YAC (the pass-game read of the post-catch carrier) is flat: -0.13 pooled, unresolved.
+
+## On engine-68 (fbeeef9b), and the choice of side (Integration's question)
+
+Merged into engine-68. Dither panel (135 plays), `SPACING_HOLD` off, on, and on with `HEAD=1`: carrier / spacing 0.1486 (51 events), 0.0742 (25), 0.0669 (22); block / spacing 0.0684, 0.0681, 0.0711;
+rush / engagement 0.0332, 0.0344, 0.0330. The test passes in all three; the budget is not raised.
+
+Run set (1,321 plays, paired, `ref:report --flag SPACING_HOLD=1`): mean yards capped at 20 3.30 to 3.23 (-0.07, SE 0.07); stuffs (<= 0) **13.1 to 17.1%** (+4.0 points: gain to stuff 83 plays, stuff to
+gain 30); 10+ yd 5.4 to 5.8; missed + broken open 0.260 to 0.254. By part: bend only 16.0% (+2.9), limit only 14.6% (+1.5); bend only on the ball carrier (no lead blocker) 15.7%, so the lead blockers
+are not the cost: the carrier's held bend is.
+
+**Was the bend he holds the first-feasible one where a better side existed?** Instrumented bend entries (`scripts/diag/bend-choice-replay.mts`, the replay is bit-identical to the candidate arm:
+1,321 of 1,321 plays):
+
+* 73 of the 83 gain-to-stuff plays (88%) have a carrier bend, against 50% of all other plays (601 of 1,208). These are the plays where he bent around a teammate at all.
+* The choice is first-feasible and the ordering is `+0.2, -0.2, +0.4, ...`, so a tie goes to the + side: he chose + at 68% of entries in gain-to-stuff plays, 58% in the rest.
+* In 60% of the gain-to-stuff entries the other side also cleared. Taking the free space along a 4 yd ray down each bent heading (true defender positions, a diagnostic of what was there, not something he has),
+  the chosen side had more than 1 yd LESS free space than the other in 14% of those (9 of 63) and more than 1 yd MORE in 21%; the rest within a yard. The rest of the plays: 11% and 18%. So the choice is
+  not worse than usual in the stuffed plays, it is arbitrary in all of them (60% of entries have a free choice and the + side wins it).
+* **Oracle (diagnostic only, not a candidate: it reads true defender positions).** Choosing the side with more free space where both clear, bend hold on the carrier only: stuffs 15.7% to 14.6%, mean
+  yards 3.28 to 3.40 (+0.10 against the reference, SE 0.07), 10+ yd 6.4%. It recovers about 40% of the stuff cost and a tenth of a yard, so the side matters.
+
+So the decision to fix next is the side: pick it from where the space and his blockers are in HIS picture (the carrier's `sighted()` picture of the defenders, with his cone), not the first angle that
+clears. That needs the bend search to take a `space(heading)` read from the play (spacing.ts has no `see`), which is a design change, not built; with it the hold's stuff cost should fall toward what the
+oracle shows. Until then the cost is +4.0 points of stuffs on this set.
