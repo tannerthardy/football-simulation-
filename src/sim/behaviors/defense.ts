@@ -1375,7 +1375,10 @@ function zoneEyes(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     base = cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
     // A Cover-3 corner bails by the call: from the snap he runs half-turned to the outside (about 45 deg off the
     // passer) with his head inside on the QB, not square and not hips to the goal line; a vertical's carry takes over
-    // when his technique turns him further.
+    // when his technique turns him further. Sources: press-bail "align in press, open and sink" to the deep outside
+    // third (Bleacher Report, NFL 101: Cover 3, 2014); "straight into a crossover run at the snap" (Steelers Depot,
+    // Football 101: bail technique, 2016). Neither states the eyes or the angle: 45 deg (the zone turn, a half-turn)
+    // is a stated choice.
     if (z.zone?.startsWith('deep_third_') && Math.abs(angleDiff(base, toQB)) < BAIL_OPEN) {
       const out = a.pos.y < FIELD_WIDTH / 2 ? -1 : 1, rel = angleDiff(toQB, Math.PI / 2 * out) >= 0 ? 1 : -1;
       base = toQB + rel * BAIL_OPEN;
