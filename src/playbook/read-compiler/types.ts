@@ -28,6 +28,9 @@ export interface RouteDescriptor {
   isBack: boolean;
   /** His route ends settled (a hitch, hook, stick, curl or sit: nearly stopped at the end of the horizon). */
   settles: boolean;
+  /** DECLARED_BREAK: the route's declared break as reached on this sample (null if not reached), its throw family and
+   * the plan's anchor lead, the rule it was timed by, and the detector's ready time it replaced (warned past 0.4 s). */
+  declaredBreak?: { t: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number; rule: string; detectedReady: number; breakWarn: boolean };
 }
 
 export type MotifKind = 'vertical_high_low' | 'horizontal_stretch' | 'flood' | 'triangle' | 'cross_post' | 'levels'
