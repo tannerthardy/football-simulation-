@@ -16,7 +16,9 @@ Checked first, so perfect coupling is not coupling to stale timing (`scripts/dia
 compiled one is p25/50/75 -0.20 / -0.05 / +0.15 s (pressed receivers later). But `planBreakAt` added the
 snap-secured time to a time already on the play clock, so his belief of every installed break was 0.49 s late
 (p50) wherever his forecast could not place it. That is a clock bug in DECLARED_BREAK's readiness, not a design
-choice. It is fixed behind its own flag and read as its own arm before stage 1 is built on it.
+choice. It is fixed behind its own flag and read as its own arm. With it on, his belief minus the true break is
+p25/50/75 -0.15 / +0.10 / +0.25 s (off +0.29 / +0.49 / +0.69). Stage 1 is built and read on `PLAN_CLOCK=1`, so it
+is not measured against the late belief.
 
 ## What exists to build on
 
