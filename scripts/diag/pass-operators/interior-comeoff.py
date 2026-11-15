@@ -1,7 +1,7 @@
 """After an interior rusher releases: what happens before he reaches the QB (Integration, 2026-11-15, after the hand
 fight's stage 1). Same code on NFL tracking and sim exports (common play format).
 
-usage: python3 -I scripts/diag/pass-operators/interior-comeoff.py <plays.jsonl.gz> [...] [--examples N]
+usage: python3 -I scripts/diag/pass-operators/interior-comeoff.py <plays.jsonl.gz> [...] [--examples N] [--plays-csv plays.csv]
 
 Pairs and release exactly as interior-fight.py: each of the three middle OL and the nearest DL within 1.2 yd from the
 snap + 0.2 s; release is the first frame within 2.5 s of contact, before the throw, where the separation opens past
@@ -21,7 +21,7 @@ throw (or the play's end with no throw):
      blocker's distance at + 0.3 s: clean (past 1.5 yd), at his hip (within 1.2), between. --examples N prints N
      releases with those numbers (the first N in file order, so the same each run).
 """
-import sys, os, json, gzip, math
+import sys, os, json, gzip, math, re, csv
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play  # noqa
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
@@ -31,12 +31,22 @@ args = [a for a in sys.argv[1:]]
 nex = 0
 if '--examples' in args:
     i = args.index('--examples'); nex = int(args[i + 1]); del args[i:i + 2]
+# --plays-csv: the QB lane's population (early-sack.py): NFL dropbacks by PFF that are not designed movement, not play
+# action and not a spike; ours without a boot / roll / sprint / waggle / naked / screen or play-action concept.
+PFF = None; DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|\+pa', re.I)
+if '--plays-csv' in args:
+    i = args.index('--plays-csv'); PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(args[i + 1]))}; del args[i:i + 2]
+def keep(raw):
+    if PFF is None: return True
+    if raw.get('source') == 'sim': return not DES.search(str((raw.get('cell') or {}).get('concept') or ''))
+    pf = PFF.get(str(raw.get('id')))
+    return pf is not None and pf['isDropback'] == 'TRUE' and not pf['dropbackType'].startswith('DESIGNED') and pf['playAction'] != 'TRUE' and pf['qbSpike'] != 'TRUE'
 
 for path in args:
     R = []; pairs = 0
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw)
-        if raw.get('kind') != 'pass' or not raw.get('xy'): continue
+        if raw.get('kind') != 'pass' or not raw.get('xy') or not keep(raw): continue
         p = Play(raw); ev = raw.get('events', {})
         OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
         qbs = p.who('O', 'QB')

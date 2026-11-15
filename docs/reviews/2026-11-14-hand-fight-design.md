@@ -462,3 +462,82 @@ The stand-up edge at the deeper launch is being read (tackle-set-side.mts, roste
    Each needs its own look on film before a build.
 2. **The blocker's anticipation stage**: acting before the arm starts, from the rusher's set-up he can see. Section
    6's list, to be sourced.
+
+## 8. The come-off on film (2026-11-15, Integration's three looks; diagnosis only)
+
+**Population** (all rows below): the QB lane's (early-sack.py).
+- NFL: PFF dropbacks, not designed movement, no play action, no spikes.
+- Ours: no boot / roll / sprint / waggle / naked / screen or play-action concept.
+- The section 7 numbers hold on it: the off-blocker rusher reaches the QB 9% of the time in the NFL (BDB 2022,
+  17,027 interior pairs), 12% in the base and 21% under FH. Unhelped, with the QB moving: 13% (-0.4 yd/s) in the NFL
+  against 41% (+0.5) under FH.
+
+**Operators:**
+- `comeoff-frames.py`: the same code on BDB and ours, every 0.1 s from the release to the throw (at most 2.0 s), on
+  interior-comeoff.py's off-blocker cases.
+- `comeoff-film.mts`: ours only; the internal state (the rusher's request against the true and the seen QB, whom he is
+  engaged with, the helper's perception and engagement); seed 11 x 4.
+
+**(a) The helper.**
+
+| | NFL | base | FH |
+|---|---|---|---|
+| off-blocker rushers helped (an OL within 1.0 yd by +0.5 s) | 61% | 62% | 53% |
+| reached, helped | **5%** | 7% | **13%** |
+| helper's velocity toward him at first touch, p50 | -1.12 yd/s | -0.69 | -0.85 |
+| helper's facing off the bearing to him | 17 deg (tracking 'o') | | 11 deg (internal) |
+| helper held within 1.0 yd the whole next 0.5 s: all / of those who still reached | 70 / **63%** | 69 / 64% | 65 / **36%** |
+
+- The NFL helper and ours arrive as near and as fast, and face him as square.
+- The difference is what he holds. Of helped rushers who still reach the QB, the NFL's helper is still on him the whole
+  0.5 s in 63% of cases (he is ridden home), ours in 36% (he is lost).
+- Internal state (FH): when a helper is on him, the rusher's engagement is mostly the original block with the helper
+  added (48% of frames) or a new block by the helper (20%). In 162 helped cases the helper took him as his own blocker
+  29 times; he joined as a helper 88 times and never engaged 45 times.
+- A helper on an engagement is a support joint (push 0.8 of his press x support, steer 0.4 of his arm), not a block.
+  Under FH the original blocker's hands are often off, so the man is held by the weaker joint: the rusher moves at
+  3.1 yd/s while engaged under FH, against 1.9 in the base.
+- The helper's perception of him is accurate (error p50 0.19 yd) and timely. The gap is in what the pickup becomes,
+  not in what he sees.
+
+**(b) The free rusher** (frames with no OL within 1.0 yd of him):
+
+| | NFL | base | FH |
+|---|---|---|---|
+| more than 3 yd from the QB: rusher speed / closing (yd/s) | 2.92 / -0.01 | 2.12 / +0.81 | 3.61 / +1.36 |
+| ... the QB's speed / away from him | 2.24 / 1.13 | 1.00 / 0.00 | 1.41 / 0.40 |
+| 1.5-3 yd: rusher speed / closing | **4.00** / 1.63 | 4.30 / 2.49 | **4.74** / 3.00 |
+| ... the QB's speed / away | **3.16** / 0.98 | 1.50 / 0.54 | **1.00** / 0.37 |
+| the last 0.6 s before a reach: rusher speed / closing | **3.91** / 3.19 | 5.00 / 3.56 | **5.22** / 4.28 |
+
+- He aims at the QB as he sees him, and that picture is right: request off the seen QB p50 14 deg, off the true QB
+  13; the seen QB's error p50 0.08 yd (pursuitPoint at 0.5 of the delay).
+- Two differences:
+  - most of the closing gap is the QB moving (c);
+  - in the last yards ours runs in about 1.2 yd/s faster (5.2 against 3.9). The NFL's slows into the QB (breakdown to
+    tackle under control, or re-finding a QB who has moved); ours runs through at speed.
+
+**(c) The QB.**
+- In the last 0.6 s before a free rusher reaches him, the NFL QB moves at 2.0 yd/s, mostly up and across (up +0.5,
+  away 0.06): the step-up and slide. Ours stands: 0.7 yd/s (base 1.4), up 0.0.
+- At 1.5-3 yd from a free interior rusher: the NFL QB moves at 3.2 yd/s, ours at 1.0.
+- What he could have seen: an interior rusher in front of him, 1.5-3 yd away and closing at 3-4 yd/s, inside his view
+  of the field, for 0.3-0.6 s before the reach.
+- That is the QB lane's controller: the same finding as no step-up from the deeper set.
+- Play ids, ours, off the blocker, unhelped, reached:
+  - FH (48): S11-P35, S11-P74, S11-P88, S11-P93, S11-P96, S11-P115, S11-P123, S11-P134, S12-P12, S12-P18;
+  - base (24): S11-P81, S11-P158, S12-P88, S12-P108, S13-P37, S13-P75, S13-P91, S13-P119, S14-P60, S14-P84, S14-P136,
+    S14-P168.
+
+**Which carries it.** Of FH's 12-point excess in off-blocker reach (21 against 9%):
+- helped (13 against 5%, on 53% of them): about 4 points;
+- unhelped (25 against 11%, on 47%): about 7 points. The QB's standing carries most of this; the rusher's speed into
+  him adds to it.
+So (c) first by size, then (a), then (b). (a) and (b) are mine; (c) is the QB lane's.
+
+**The stand-up edge at the deeper launch** (tackle-set-side.mts, roster 11, the twelve changed concepts, 576
+matchups an arm; engine-67 patch base): sacks by the strong-side stand-up edge are 33 shallow / 13 deeper in the base
+and 12 / 7 under FH.
+- On engine-66 without the patch it was 27 / 62. The deeper-launch excess is gone on this base before the hand fight.
+- Which of the patch (ENGAGE_TRUNK + CHEST_SHOULDERS) and engine-67 (VERTS_QUICK and the rest) took it is not read.
+- FH lowers both: the interior gets there first.
