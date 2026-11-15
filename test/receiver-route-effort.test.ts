@@ -5,7 +5,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { RouteDef } from '../src/playbook/types.js';
-import { RouteRunner } from '../src/sim/behaviors/receiver.js';
+import { ConvoyCue, RouteRunner } from '../src/sim/behaviors/receiver.js';
 import { onBallCaught } from '../src/sim/assign.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
@@ -62,10 +62,14 @@ describe('installed route effort during unrelated flight', () => {
         expect(cmd.effort ?? 1).toBe(1);
       }
     }
+    // Re-recorded on the engine defaults (2026-11-15): with ROUTE_CRAFT the receiver looks at the defenders in his lane
+    // (sim.see, his own delayed picture), so he does consult perception; what must not change with the hidden target is
+    // what he looks at, so every arm makes the same reads of the same players.
+    const looks = (i: number) => see[i].mock.calls.map(([obs, tgt]) => `${(obs as any).idx}>${(tgt as any).idx}`);
     for (const [i, f] of arms.entries()) {
       expect(f.sim.rng).toEqual(initial[i].rng);
       expect(f.sim.perception).toEqual(initial[i].perception);
-      expect(see[i]).not.toHaveBeenCalled();
+      expect(looks(i)).toEqual(looks(0));
     }
   });
 
@@ -98,7 +102,13 @@ describe('installed route effort during unrelated flight', () => {
     const defenders = f.sim.defense.map(a => a.behavior);
     onBallCaught(f.sim, f.r);
     expect(f.r.behavior.kind).toBe('carrier');
-    expect(f.sim.offense.filter(a => a !== f.r).every(a => a.behavior.kind === 'downfield-block')).toBe(true);
+    // Re-recorded on the engine defaults (2026-11-15): with RCV_SEEN a teammate turns to the convoy when his own picture
+    // shows the catcher with the ball (ConvoyCue), not at the true catch: each holds his job until he sees it.
+    const mates = f.sim.offense.filter(a => a !== f.r);
+    expect(mates.every(a => a.behavior instanceof ConvoyCue)).toBe(true);
+    for (let i = 0; i < 24; i++) { f.sim.perception.record(f.sim.agents, f.r.idx); f.sim.t += 0.05; }
+    for (const a of mates) a.behavior.update(a, f.sim);
+    expect(mates.every(a => a.behavior.kind === 'downfield-block')).toBe(true);
     // INFO-1: the physical catch no longer notifies every opponent. Their
     // installed controllers retain ownership until their own evidence acts.
     expect(f.sim.defense.map(a => a.behavior)).toEqual(defenders);
