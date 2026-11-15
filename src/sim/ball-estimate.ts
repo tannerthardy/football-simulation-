@@ -145,7 +145,10 @@ type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number; sv?: nu
   eye?: Vec3; at?: number;
   /** Design 5 (a) looming: his time-to-contact reading as an observation of the ball's velocity along his line of
    * sight (u, negative while it closes), and its sigma. */
-  vlos?: number; svlos?: number };
+  vlos?: number; svlos?: number;
+  /** Bit 1024: his closing speed on the ball read from its looming (his range / its optical time to contact, relative
+   * to his own eyes; TAU_SD on the time to contact), for the feet servo's lateral law. */
+  closing?: number };
 export type PathSample = { t: number; x: number; y: number; z: number };
 
 interface Track {
@@ -288,6 +291,19 @@ export class BallEstimates {
           }
         }
       }
+      if (BALL_EST_SERVO) {
+        const prev = this.ballAt(seen.t - sim.dt + 1e-9 - 1e-6);
+        if (prev && prev.t < seen.t) {
+          const k2 = 1 / (seen.t - prev.t);
+          const rel = { x: (seen.p.x - prev.p.x) * k2 - a.vel.x, y: (seen.p.y - prev.p.y) * k2 - a.vel.y, z: (seen.p.z - prev.p.z) * k2 };
+          const cl = -(rel.x * u.x + rel.y * u.y + rel.z * u.z);
+          if (cl > 0.5) {
+            const tau = (r / cl) * (1 + sim.dice(`ball-servo:${tr.samples.length}`, a).normal(0, TAU_SD));
+            const rHis = Math.hypot(p.x - eye.x, p.y - eye.y, p.z - eye.z);
+            if (tau > 0.05) smp.closing = rHis / tau;
+          }
+        }
+      }
       tr.samples.push(smp);
       if (tr.samples.length + tr.pseudo.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
         tr.fitT = sim.t;
@@ -352,15 +368,15 @@ export class BallEstimates {
   }
 
   /** His own samples of this flight as angles from his eyes (sim time of each look, azimuth, elevation): what the feet
-   * servo reads. Angles carry only his bearing error; range error lies along the line of sight. */
-  anglesOf(a: Agent): Array<{ t: number; az: number; el: number; rg: number }> {
+   * servo reads, with his ground range and his looming closing speed. Angles carry only his bearing error. */
+  anglesOf(a: Agent): Array<{ t: number; az: number; el: number; rg: number; closing?: number }> {
     const tr = this.tracks.get(a);
     if (!tr || tr.flight !== this.flight) return [];
-    const out: Array<{ t: number; az: number; el: number; rg: number }> = [];
+    const out: Array<{ t: number; az: number; el: number; rg: number; closing?: number }> = [];
     for (const q of tr.samples) {
       if (!q.eye || q.at === undefined) continue;
       const dx = q.p.x - q.eye.x, dy = q.p.y - q.eye.y, dz = q.p.z - q.eye.z, rg = Math.hypot(dx, dy);
-      out.push({ t: q.at, az: Math.atan2(dy, dx), el: Math.atan2(dz, Math.max(0.3, rg)), rg });
+      out.push({ t: q.at, az: Math.atan2(dy, dx), el: Math.atan2(dz, Math.max(0.3, rg)), rg, closing: q.closing });
     }
     return out;
   }

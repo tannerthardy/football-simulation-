@@ -27,6 +27,8 @@ import type { Agent } from './agent.js';
 export const SERVO_WINDOW = 1.0;
 /** Fewest samples, and the shortest span, the filter will run on: below this the rates are noise and he keeps his line. */
 export const SERVO_MIN_SAMPLES = 8, SERVO_MIN_SPAN = 0.5;
+/** Looming average (s): his closing speed is the mean of his looming reads over this (choice; one reaction time). */
+export const SERVO_LOOM_WINDOW = 0.25;
 /** Handover (s): with less than a reaction and a step left there is nothing to servo (choice). */
 export const SERVO_HANDOVER = 0.35;
 /** Gains (stated choices; no published gain maps to yd and s; sensitivity read at half and double).
@@ -35,7 +37,7 @@ export const SERVO_HANDOVER = 0.35;
 export const SERVO_K_DEPTH = Number(process.env.BALL_SERVO_KD ?? 15);
 export const SERVO_K_LAT = Number(process.env.BALL_SERVO_KB ?? 30) / 10;
 
-type Angle = { t: number; az: number; el: number; rg?: number };
+type Angle = { t: number; az: number; el: number; rg?: number; closing?: number };
 const wrap = (d: number) => { while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; };
 
 /** Least-squares polynomial (degree 1 or 2) of y(t) about the last time; returns coefficients [c0, c1, c2]. */
@@ -59,7 +61,10 @@ export function imageRates(angles: Angle[], now: number): { optAcc: number; bear
   const ts = w.map((q) => q.t), tan = w.map((q) => Math.tan(clamp(q.el, -1.4, 1.4)));
   const az: number[] = [w[0].az];
   for (let i = 1; i < w.length; i++) az.push(az[i - 1] + wrap(w[i].az - w[i - 1].az));
-  const azFit = fit(ts, az, 1), rgs = w.map((q) => q.rg ?? NaN), closing = rgs.every(Number.isFinite) ? -fit(ts, rgs, 1)[1] : 0;
+  // Closing speed from looming (range / optical time to contact) over his last SERVO_LOOM_WINDOW, not from differencing
+  // his range, his worst measurement (5-10%): differenced, a low-skill receiver's misses grow (toy: max 1.6 -> 2.75 yd).
+  const azFit = fit(ts, az, 1), cls = w.filter((q) => q.t >= now - SERVO_LOOM_WINDOW && q.closing !== undefined).map((q) => q.closing as number);
+  const closing = cls.length ? cls.reduce((x, y) => x + y, 0) / cls.length : 0;
   return { optAcc: 2 * fit(ts, tan, 2)[2], bearingRate: azFit[1], bearing: azFit[0], closing };
 }
 
