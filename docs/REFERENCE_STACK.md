@@ -607,11 +607,11 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
-## engine-69: `BAT_ONCE`, `BALL_CUE_OWN`, `LOOSE_SEEN`, `DIR_CAP`, `CRAFT_HOLD` and `RELEASE_SIDE` on (2026-11-15)
+## engine-69: `BAT_ONCE`, `BALL_CUE_OWN`, `LOOSE_SEEN` and `DIR_CAP` on (2026-11-15)
 
-Engine-68 plus #766 (the defender's own ball cue, behind the `BALL_CUE_OWN` switch added at integration), #770 (`LOOSE_SEEN`), #771 (`DIR_CAP`), #773 (`CRAFT_HOLD`, `RELEASE_SIDE`) and Flex's `BAT_ONCE`. #769 (`SPACING_HOLD`) is merged and stays off.
+Engine-68 plus #766 (the defender's own ball cue, behind the `BALL_CUE_OWN` switch added at integration), #770 (`LOOSE_SEEN`), #771 (`DIR_CAP`), #773 (`CRAFT_HOLD`, `RELEASE_SIDE`) and Flex's `BAT_ONCE`. #769 (`SPACING_HOLD`) and #773 (`CRAFT_HOLD`, `RELEASE_SIDE`) are merged and stay off.
 
-**Card.** 16 games per arm over 2 leagues, seeds 11 / 23 / 31, each arm against engine-68 with all seven off (`out/e82-card-*.md`). Change per seed; "all" on seeds 23 / 31 is exactly this engine (on seed 11 it also carried `SPACING_HOLD`).
+**Card.** 16 games per arm over 2 leagues, seeds 11 / 23 / 31, each arm against engine-68 with all seven off (`out/e82-card-*.md`). Change per seed; "all" on seeds 23 / 31 is this engine plus `CRAFT_HOLD` and `RELEASE_SIDE` (on seed 11 it also carried `SPACING_HOLD`).
 
 | arm | completion (pts) | yards / attempt | capped rush yd / carry | run stuffs (pts) |
 |---|---|---|---|---|
@@ -628,12 +628,14 @@ Engine-68 plus #766 (the defender's own ball cue, behind the `BALL_CUE_OWN` swit
   - `BALL_CUE_OWN`: the defender's ball in flight is his own percept at his own delay, not timed by his sighting of the passer, and it no longer carries the ball's true velocity. Information honesty.
   - `LOOSE_SEEN`: a fumble, recovery or interception is recognized player by player, from sight or a teammate's call. Information honesty.
   - `DIR_CAP`: the speed cap by hip angle is monotone (the legacy curve had side-on slower than the backpedal). Seed 31's completion -4.2 does not repeat (-0.2, +1.1) and the "all" arm on the same seed is -1.3; logged, not explained.
-  - `CRAFT_HOLD`, `RELEASE_SIDE`: the route craft and the release round a teammate commit to a side and hold it (the commit rule). Two seeds only, because seed 11's arm also carried `SPACING_HOLD`.
+- **`CRAFT_HOLD` and `RELEASE_SIDE` stay off: held on the dither budget.** With all four flipped, `test/dither-budget.test.ts` fails on the carrier (controller 0.478/s against a budget of 0.476; carrier / spacing 0.196/s, 64 events, against 0.174). By flag, on the same panel: `DIR_CAP` off 0.160 (53 events), `CRAFT_HOLD` off 0.171 (54), `LOOSE_SEEN` off 0.198, `RELEASE_SIDE` off 0.191. So `DIR_CAP` and `CRAFT_HOLD` each add about ten reversed re-aims to a stage that already re-chooses its spacing every tick (engine-68: 0.149, 51 events), and either alone stays inside the budget. `DIR_CAP` is a capacity several lanes already measure on; `CRAFT_HOLD` rests on two seeds and has no explanation yet for why a route-side hold moves the carrier's spacing re-aims. It goes back to Rules for that attribution (dither-core, on vs off), and `RELEASE_SIDE` waits with it because they were carded as a pair. The counts are small (two standard deviations on 51 events is 14), so this is a hold for an explanation, not a finding against the flag. The durable fix for the stage is `SPACING_HOLD` with a chosen side (0.149 -> 0.074 on Tools' panel).
 - **`SPACING_HOLD` stays off.** Run stuffs +3.5 points on seed 11 with it on, and Tools' paired run set has 13.1 -> 17.1%: 88% of the plays that became stuffs carry a held bend, and the bend's side is arbitrary (ties go one way; first angle that clears). Holding the bend is right; holding an arbitrary one is the defect. It waits for the side chosen from the carrier's own picture.
 
-**Suite.** `npm run test:all` on the candidate (flags as carded): 4,599 of 4,602; the two known `continued-recovery-world` research failures and `film-pack-determinism` timing out at 240 s under load (passes alone in 222 s). Re-run after the flips: see the PR.
+**Suite.** `npm run test:all` on the candidate (flags as carded): 4,599 of 4,602; the two known `continued-recovery-world` research failures and `film-pack-determinism` timing out at 240 s under load (passes alone in 222 s). With all four flipped: five more, the dither budget above, `man-trail-carry` and `read-plan` (both pass with `CRAFT_HOLD` and `RELEASE_SIDE` off), and two fixtures moved by `DIR_CAP` (below). Final re-run: see the PR.
 
-**Test-only.** Flex's re-record of `hold-facing` (seed 1957 DT_S) and `punch-strike` (case 1 on roster 10) on the engaged trunk; the `ENGAGE_TRUNK` / `CHEST_SHOULDERS` pins added at engine-68 are removed.
+**Run set** (`npm run ref:report`, 1,295 plays, with all four on): capped mean 3.59 (engine-68: 3.70), stuffs 13.5%, 10+ yd 7.3%, missed + broken open 0.270 a run.
+
+**Test-only.** `acc-radius` and `loose-seen` pin `DIR_CAP` '0' (their scenes were found before the monotone cap: 5 of the 6 needed check-downs, 2 of the 3 needed fumbles; both pass with the pin). Flex's re-record of `hold-facing` (seed 1957 DT_S) and `punch-strike` (case 1 on roster 10) on the engaged trunk; the `ENGAGE_TRUNK` / `CHEST_SHOULDERS` pins added at engine-68 are removed.
 
 ## engine-68: `ROUTE_FILLET`, `ROUTE_END`, `SCREEN_DECLARE`, `DECLARED_BREAK`, `ENGAGE_TRUNK` and `CHEST_SHOULDERS` on (2026-11-15)
 

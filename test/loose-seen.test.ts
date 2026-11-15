@@ -17,6 +17,7 @@ const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19
 
 async function fumbles(on: boolean): Promise<{ first: number[]; atOnce: number; lateAt25: number; n: number; lost: number; others: number }[]> {
   for (const f of stackOn) vi.stubEnv(f, '1');
+  vi.stubEnv('DIR_CAP', '0'); // engine-69: these fumble scenes were found before the monotone direction cap; re-find with DIR_CAP on
   vi.stubEnv('LOOSE_SEEN', on ? '1' : '0');
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
