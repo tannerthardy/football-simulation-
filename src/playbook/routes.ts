@@ -13,6 +13,8 @@ const BACK_PATHS = process.env.BACK_PATHS !== '0';
 const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
+/** ROUTE_FILLET (experimental, off; src/sim/route-motion.ts): the break table's cut / roll column applies with it. */
+const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
 /** CROSS_OVER (experimental, off): the deep cross (the over, Y-cross) released inside on a diagonal, "inside of the
  * Sam LB, and over the Mike LB", to its "landmark ... 18-22 yards" (Throw Deep, Y Cross; Shanahan's 1994 dover breaks in
  * at about 20). Off, it climbs 6 yd nearly straight up (1 yd inside) before crossing: 1.2 yd across at 2.0 s against
@@ -200,9 +202,17 @@ const BREAKS: Record<string, ReadonlyArray<{ cut?: boolean; s?: number } | null>
   corner: [{ s: 1 }, { s: 1 }], post: [{ s: 1 }],
   shallow: [{ s: 1 }], shallow_high: [{ s: 1 }], cross: [{ s: 1 }, { s: 1 }],
 };
-export const ROUTES: Record<string, RouteDef> = ROUTE_EFFORT
+/** The table's two columns follow their own flags: a point's break type (`cut`: planted, no lead; absent: led as a roll)
+ * is ROUTE_FILLET's, since cuts planted and rolls led is the fillet as designed; the speed through it (`s`) is
+ * ROUTE_EFFORT's, set against full-pace stems. With ROUTE_FILLET alone, the cuts are planted at their authored s. */
+const BREAK_CUTS = ROUTE_FILLET || ROUTE_EFFORT;
+export const ROUTES: Record<string, RouteDef> = BREAK_CUTS
   ? Object.fromEntries(Object.entries(SHAPED).map(([id, r]) => [id, BREAKS[id] && !(ROUTE_SHAPE && SHAPES[id])
-    ? { ...r, points: r.points.map((p, i) => ({ ...p, ...(BREAKS[id][i] ?? {}) })) }
+    ? { ...r, points: r.points.map((p, i) => {
+      const b = BREAKS[id][i];
+      if (!b) return p;
+      return { ...p, ...(b.cut ? { cut: true } : {}), ...(ROUTE_EFFORT && b.s !== undefined ? { s: b.s } : {}) };
+    }) }
     : r]))
   : SHAPED;
 
