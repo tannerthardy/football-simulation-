@@ -280,3 +280,31 @@ first sourced piece of touch.
 Before the grass read is built, check his long-flight accuracy belief against the spread his throw model actually
 produces at that distance and platform with the default receiver (Integration's caution). If they agree, the receiver
 (BALL_EST) is what moves the witness, not the belief.
+
+## Bit 1 on the card's base: develop + #780 at 385bb69f (2026-11-15)
+
+**What was wrong with the earlier reads.** On develop, CONCEPT_DROPS=1 makes 'five' itself the deeper set (8.8 yd,
+1.8 s). On this branch the deeper set had its own name, so the reads above ran the five-step concepts at gun5 depth.
+Re-read on the card's base, the deeper set exposed two faults in bit 1, both fixed:
+1. **The feet now keep the plan's clock** (a17e4600). Step k lands k strides after his set, whatever read his eyes are
+   on. Before, a step was taken only when the read his eyes were on needed it. With his eyes held on a keyed pair and
+   then moved to the outlet, he waited a stride: dagger, 11 of 13 new sacks the back thrown off at 3.40-3.55 s.
+2. **The gather is a step in time, not a command that pins him** (668a7539). The pinned gather skipped the pocket
+   spring's push off a nearby rusher for most of his time in the pocket. Dagger then had 10 throw_held on its 11 new
+   sacks.
+
+**Paired staged at the card's base, off -> on** (CONCEPT_DROPS=1 PLAN_CLOCK=1 QB_TICK_PICTURE=1, 192 plays a concept):
+
+| Concept | Yd/play | Sacks |
+| --- | --- | --- |
+| dagger | 5.51 -> 6.07 | 18 -> 17 |
+| smash | 8.90 -> 8.41 | 14 -> 12 |
+| drive | 12.58 -> 12.40 | 6 -> 9 |
+| mesh | 10.06 -> 7.97 | 1 -> 0 |
+| double_outs | 9.37 -> 12.46 | 0 -> 1 |
+| flood | 13.52 -> 22.39 | 7 -> 0 |
+
+Mesh's loss is still its corner (the grass read, unbuilt). Flood's gain is the coverage fault on the dig.
+
+**Patches.** The stack is in docs/reviews/patches/engine69-780-stack/: five layers on 385bb69f, plus all-five. The
+QB / blitz / hot / read-plan / concept-drops core tests pass at the top (27 files, 117 tests).
