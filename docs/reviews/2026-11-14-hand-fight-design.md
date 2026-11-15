@@ -906,3 +906,56 @@ firm is a brace: the hand holds at the lever of the bent arm (steer x 1), with n
   only part way (4.92 against 4.12).
   - It stays parked. Section 15 shows the feet in the fight are the cause, so a finish law is the wrong piece.
 - For later reads of this row: 16 games (two seed sets) at least.
+
+## 17. FIGHT_MENU: stage 2's minimum, two attempts (2026-11-15; two seed sets, 11 and 23 x 8, on FH + PO)
+
+The bull and long-arm back on the interior rusher's menu with their feet (Integration's gate: engaged speed toward
+the NFL's shape, requested speed share near the base's, orbit / offset / release kept).
+
+**Attempt 1** (06675bbf):
+- The keys: a light hand -> club; otherwise a power rusher long-arms (longer arm) or bulls, a finesse rusher clubs.
+- Staging: requested 55% of vmax with both hands on (stage 1 88%).
+- Game read: engaged speed flat at about 2.0 (good), but the bull held 66% of rep ticks and the club fell to 0.72 a
+  second, since a light hand is rare under load. The orbit went back to the base's (9 / 12 / 18 and 10 / 14 / 20 deg),
+  and so did the offset (p25 -0.05 / -0.08 at 1.5-2.5 s).
+- Fails the orbit gate.
+
+**Attempt 2** (36e155c1):
+- Every rusher clubs a hand on him when his arm is ready. A power rusher with the longer arm long-arms a pressing
+  blocker instead.
+- Between moves, his feet are the bull's drive. After a club that cleared a hand, he runs the opened side.
+- Staging: clubs 1.33 a second, requested 55% of vmax with both hands, achieved 2.35.
+
+| | NFL | FH + PO (11 / 23) | FM2 seed 11 | FM2 seed 23 |
+|---|---|---|---|---|
+| engaged speed p50 by time since contact | 2.55 / 2.50 / 2.06 / 1.80 | 2.24 / 2.24 / 2.92 / 3.20 (s11) | 2.06 / 1.80 / 2.24 / 2.50 | 2.06 / 1.80 / 2.24 / 2.50 |
+| orbit p50 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s | 25 / 34 / 39 | 18 / 34 / 50; 19 / 36 / 56 | 14 / 19 / 28 | 12 / 19 / 31 |
+| offset p25, same | -0.04 / -0.18 / -0.33 | -0.01 / -0.18 / -0.33; -0.04 / -0.25 / -0.41 | -0.01 / -0.07 / -0.20 | +0.01 / -0.05 / -0.14 |
+| released by 1.0 / 2.0 s, never | 43 / 60 / 37 | 42 / 65 / 32; 43 / 64 / 32 | 36 / 55 / 41 | 47 / 63 / 34 |
+| off-blocker reach | 9% | 12; 15% | 18% | 9% |
+| interior pressure, % of dropbacks | about 9.8 | 19.0; 18.5 | 16.2 | 11.9 |
+| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 10.2 / 8.5; 10.7 / 6.1 | 4.5 / 8.6 | 5.2 / 6.7 |
+| sack proxy | 7 | 9.1; 6.0 | 6.2 | 4.4 |
+
+**Read: a partial pass, and the last attempt.**
+- **Met:**
+  - the requested speed (55%, the base's);
+  - the release timing (42 / 59 / 37 averaged over the two seed sets, against 43 / 60 / 37);
+  - late interior sacks at the NFL's (4.5 / 5.2 against 4.1);
+  - interior pressure down (14.0 averaged against FH + PO's 18.8; base 10.9).
+- **Not met:**
+  - Engaged speed still rises late (1.80 -> 2.50 after 1.0 s) where the NFL's falls (-> 1.80).
+  - The orbit is only partly kept: 13 / 19 / 30 deg averaged, against FH's 18 / 35 / 53 and the NFL's 25 / 34 / 39.
+    The offset is the same.
+
+**Re-diagnosis before a third idea.** The orbit and the rusher's speed move together in every arm. Stage 1 had both
+high, attempt 1 both low, attempt 2 both between. In ours the pair rotates because the rusher moves around the
+blocker. The NFL's pairs rotate 34 deg by 1.0-1.5 s with the rusher at 2.06 yd/s, slower than ours. So in the NFL the
+rotation must come from both bodies turning together: the blocker turned by the rusher's leverage and his own kick and
+mirror, not a rusher running a lap.
+- The next measurement: the orbit split into each man's motion (the blocker's angular displacement about the pair's
+  centre against the rusher's), NFL against ours.
+- If the NFL's blocker is turned and ours stands, the missing piece is the blocker being turned: the rusher's force on
+  him through the hands and the shared-grip yaw budget (the turning measurements queued after stage 1). It is not
+  more rusher speed.
+- FITTED_HANDS + FIGHT_MENU attempt 2 is the best shape so far for the card question, with that named.

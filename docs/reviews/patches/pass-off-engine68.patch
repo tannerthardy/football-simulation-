@@ -1,0 +1,576 @@
+From fe7616f76d9de205c31689df722831225ad97dce Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 15 Nov 2026 15:05:11 +0000
+Subject: [PATCH] PASS_OFF (off): the pass-off. A pass rusher who beats his
+ blocker while a helper's hands are on him, or whom the helper sees come off
+ the blocker he is helping (his view, his sight delay: beyond the blocker's
+ working reach or past his shoulder), is the helper's block from there (the
+ engagement passes, a fresh fight on the helper's own joint); the beaten
+ blocker leaves with the ordinary 0.6 s shed window. Off identical to
+ engine-68 (763db5c8fa3d4671); come-off operators
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ config/baseline.json                          |   1 +
+ config/reference-stack.json                   |   1 +
+ docs/FLAGS.md                                 |   3 +-
+ scripts/diag/effective-mass/comeoff-film.mts  |  95 ++++++++++++
+ scripts/diag/pass-operators/comeoff-frames.py | 139 ++++++++++++++++++
+ .../diag/pass-operators/interior-comeoff.py   | 131 +++++++++++++++++
+ scripts/diag/pass-operators/late-sacker.py    |  32 ++++
+ src/sim/engagement.ts                         |  53 +++++++
+ 8 files changed, 454 insertions(+), 1 deletion(-)
+ create mode 100644 scripts/diag/effective-mass/comeoff-film.mts
+ create mode 100644 scripts/diag/pass-operators/comeoff-frames.py
+ create mode 100644 scripts/diag/pass-operators/interior-comeoff.py
+ create mode 100644 scripts/diag/pass-operators/late-sacker.py
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 4149bf33..c0056e24 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -255,6 +255,7 @@
+     "TACKLE_RESET": "0",
+     "RUSH_HANDS": "0",
+     "PASS_RIDE": "0",
++    "PASS_OFF": "0",
+     "RUSH_ONE_HAND": "0",
+     "HAND_SITE": "0",
+     "ENGAGE_FELT": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 9157bcd9..360ddc77 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -198,6 +198,7 @@
+     "TACKLE_RESET": "off",
+     "RUSH_HANDS": "off",
+     "PASS_RIDE": "on",
++    "PASS_OFF": "off",
+     "RUSH_ONE_HAND": "off",
+     "HAND_SITE": "off",
+     "ENGAGE_FELT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 020795d7..dce035b9 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 393 flags read from the environment in `src` (recounted 2026-11-15 at engine-68): 295 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 394 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus `PASS_OFF`): 295 are on unless set to `0`, 87 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -317,6 +317,7 @@ There are 393 flags read from the environment in `src` (recounted 2026-11-15 at
+ | `RUSH_ONE_HAND` | off | experimental (with `RUSH_HANDS`; RUSH_HANDS attempt 3, 2026-11-13) | trenches | `src/sim/engagement.ts` (`setHands`, `clearedSide`, the rusher's aim) | a cleared hand opens the side it guarded, not the rep: with one hand off and the other unloaded the rusher no longer gets the landed-move request (work past at 0.8-1.0 vmax, hands' steer cut); he works to the cleared side (the blocker's hip, a step past toward the QB) at his ordinary rush with push 0.75, through the body and the remaining hand. Only both hands gone is a landed move; PAST along his path declares the win. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_HANDS` | off | experimental (physical pass-rush moves, stage 1: the hand, 2026-11-13) | physics / trenches | `src/physics/world.ts` (`handForce`, `handHold`, `handEdge`, `stepHands`), `src/sim/engagement.ts` (`refit`, `refitTime`) | the blocker's hand as a one-degree-of-freedom body on the hands joint: a force on the hand over its contact time (step-independent) is resisted by the arm's lateral hold (steer x bent / actual extension + HAND_MU x measured press + a grip's hold), falling to 0 at the edge of the man's torso (his radius; vertical not modelled); the excess moves only the arm (ARM_MASS 0.05, Winter's segment tables), the striker pays the full reaction, the arm's momentum returns to the blocker's body; past the edge the hand is off (no push, hold or steer) until it re-fits after his reaction plus the travel from his chest at ARM_SPEED. Stage 2: the club is a force on the blocker's hand (his arm force over the time his hand crosses a forearm, FOREARM 0.1 yd at his hand speed) and the long-arm is his own hand joint at his lockout (the blocker's hands cannot reach while the man is beyond his arm), countered by the blocker's club on it after his reaction time. Two hands (attempt 2): a clear takes one hand (push, hold and the arm's hold halve; steer resisting the man toward the vacated side is ONE_HAND_SIDE 0.25 of the remaining hand's; the turning moment about the remaining hand is not modelled); a second clear takes both; re-fit one hand at a time. Keys: the rusher reads an unloaded hand by touch and his arm advantage by sight, with recognition error. Still rating rolls: bull, speed, dip, spin, swim, rip, snatch. Test `test/rush-hands.test.ts`. docs/reviews/2026-11-12-tackle-set.md |
+ | `PASS_RIDE` | on | promoted 2026-11-13 (engine-56; `=0` restores); was experimental (the block becomes a ride, 2026-11-13) | trenches | `src/sim/engagement.ts` (`rideIntent`; stepPassRep's PAST branch) | one ride rule for every pass blocker: a man past along his path (PAST_ALONG_PATH) is ridden -- the blocker runs with him on his QB side (a body's width across his path toward the QB), matching his velocity and closing on that spot (gain 2.5 /s), pushing through his hands (the joint's push flattens the man away from the QB); once riding he stays on him until the man is clearly back in front (along his path by more than PAST_MARGIN); the rep still ends when the man is beyond his arm. Off, the ride asked for the man's velocity less 1 yd/s toward the QB, so blockers fell behind by design (guards 1.9 vs 3.4 yd/s; ride-probe.mts). A grip from behind stays the holding detector's. docs/reviews/2026-11-12-tackle-set.md |
++| `PASS_OFF` | off | experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+ | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+diff --git a/scripts/diag/effective-mass/comeoff-film.mts b/scripts/diag/effective-mass/comeoff-film.mts
+new file mode 100644
+index 00000000..c0664271
+--- /dev/null
++++ b/scripts/diag/effective-mass/comeoff-film.mts
+@@ -0,0 +1,95 @@
++// The come-off on film, ours (Integration, 2026-11-15; hand-fight note section 7): interior pass rushers who release
++// (interior-fight.py's definition: separation past 1.2 yd or the rusher past 70 deg off the blocker's line to the QB,
++// within 2.5 s of contact, before the throw) and whose blocker is past 1.2 yd at +0.5 s. For each, from the release
++// to +2.0 s (or the throw), every 0.1 s:
++//   the rusher: speed, closing on the QB, his request's heading against the true QB and against the QB as he sees him
++//     (sim.see at the pursuit delay), engaged or not, his tags;
++//   the helper (the nearest other OL): distance, engaged with him (as blocker or helper), his velocity toward him, his
++//     facing against the bearing to him, his perception's error on him (sim.see), whom he is blocking;
++//   the QB: speed, his velocity's component away from the rusher, toward the line, his request's heading.
++// Only cases whose blocker is past 1.2 yd at +0.5 s are written.
++// usage: node --import tsx scripts/diag/effective-mass/comeoff-film.mts [seed] [games] [examples] > rows.jsonl
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4), nex = Number(process.argv[4] ?? 12);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']), OLS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
++const cases: any[] = [];
++const deg = (a: number) => a * 180 / Math.PI, wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
++let play = 0;
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  play++;
++  const pairs = new Map<string, any>();
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    tick();
++    const qb = sim.qb; if (!qb) return;
++    const thrown = sim.throwAt >= 0;
++    // New pairs: an interior OL and the nearest DL within 1.2 yd, from 0.2 s.
++    if (sim.t >= 0.2 && sim.t <= 2.0 && !thrown) for (const b of sim.offense) {
++      if (!IN.has(b.slot)) continue;
++      if ([...pairs.values()].some(p => p.b === b)) continue;
++      const dl = sim.defense.filter((d: any) => d.behavior?.kind === 'rush')
++        .map((d: any) => ({ d, r: Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) })).filter((x: any) => x.r <= 1.2).sort((x: any, y: any) => x.r - y.r)[0];
++      if (dl) pairs.set(b.slot, { b, d: dl.d, t0: sim.t, rel: null, frames: [] });
++    }
++    for (const p of pairs.values()) {
++      const { b, d } = p;
++      if (p.done) continue;
++      const bx = b.pos.x, by = b.pos.y, qx = qb.pos.x, qy = qb.pos.y;
++      const ux = qx - bx, uy = qy - by, L = Math.hypot(ux, uy) || 1, rx = d.pos.x - bx, ry = d.pos.y - by;
++      const sep = Math.hypot(rx, ry), ang = deg(Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L));
++      if (!p.rel) {
++        if (thrown || sim.t - p.t0 > 2.5) { p.done = true; continue; }
++        if (sep > 1.2 || Math.abs(ang) > 70) p.rel = { t: sim.t, by: sep > 1.2 ? 'sep' : 'shoulder' };
++        else continue;
++      }
++      const dt = sim.t - p.rel.t;
++      if (dt > 2.0 + 1e-9 || thrown) { p.done = true; continue; }
++      if (Math.abs(dt / 0.1 - Math.round(dt / 0.1)) > 0.01) continue;
++      const dq = Math.hypot(d.pos.x - qx, d.pos.y - qy);
++      const toQb = Math.atan2(qy - d.pos.y, qx - d.pos.x);
++      const seenQb = sim.see(d, qb, 0.5).pos, toSeen = Math.atan2(seenQb.y - d.pos.y, seenQb.x - d.pos.x);
++      const iv = sim.intents?.[d.idx]?.vel ?? { x: 0, y: 0 }, req = Math.atan2(iv.y, iv.x);
++      const helpers = sim.offense.filter((o: any) => OLS.has(o.slot) && o !== b)
++        .map((o: any) => ({ o, r: Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) })).sort((x: any, y: any) => x.r - y.r);
++      const h = helpers[0]?.o;
++      let help: any = null;
++      if (h) {
++        const hb = Math.atan2(d.pos.y - h.pos.y, d.pos.x - h.pos.x), hr = Math.hypot(d.pos.x - h.pos.x, d.pos.y - h.pos.y) || 1;
++        const seen = sim.see(h, d);
++        const eng = sim.engagements.find((e: any) => e.defender === d && (e.blocker === h || e.helpers?.includes(h)));
++        help = { slot: h.slot, r: +hr.toFixed(2), engaged: eng ? (eng.blocker === h ? 'blocker' : 'helper') : null,
++          vToward: +(((h.vel.x * (d.pos.x - h.pos.x) + h.vel.y * (d.pos.y - h.pos.y)) / hr)).toFixed(2),
++          faceOff: +Math.abs(deg(wrap(h.body.facing - hb))).toFixed(0),
++          seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
++          busy: h.engagement ? h.engagement.defender.slot : null };
++      }
++      const qv = qb.vel, away = (qv.x * (qx - d.pos.x) + qv.y * (qy - d.pos.y)) / (dq || 1);
++      const qiv = sim.intents?.[qb.idx]?.vel ?? { x: 0, y: 0 };
++      const up = -(qv.x) * sim.attackDir(qb.team) * -1;
++      p.frames.push({ dt: +dt.toFixed(1), bR: +sep.toFixed(2), dq: +dq.toFixed(2), rSpeed: +Math.hypot(d.vel.x, d.vel.y).toFixed(2),
++        closing: +(-((d.vel.x - qv.x) * (qx - d.pos.x) + (d.vel.y - qv.y) * (qy - d.pos.y)) / (dq || 1) * -1).toFixed(2),
++        reqOffTrue: +Math.abs(deg(wrap(req - toQb))).toFixed(0), reqOffSeen: +Math.abs(deg(wrap(req - toSeen))).toFixed(0),
++        seenQbErr: +Math.hypot(seenQb.x - qx, seenQb.y - qy).toFixed(2), rEngaged: !!d.engagement, rWith: d.engagement ? `${d.engagement.blocker.slot}${d.engagement.helpers?.length ? '+' + d.engagement.helpers.map((x: any) => x.slot).join('+') : ''}` : null, rTags: [...d.tags].slice(-4).join(','),
++        help, qbSpeed: +Math.hypot(qv.x, qv.y).toFixed(2), qbAway: +away.toFixed(2), qbUp: +(qv.x * sim.attackDir(qb.team)).toFixed(2),
++        qbReqSpeed: +Math.hypot(qiv.x, qiv.y).toFixed(2), qbTags: [...qb.tags].slice(-4).join(',') });
++      void up;
++    }
++  };
++  const res = sim.run();
++  for (const p of pairs.values()) {
++    if (!p.rel) continue;
++    const f5 = p.frames.find((f: any) => f.dt === 0.5);
++    if (!f5) continue;
++    if (f5.bR <= 1.2) continue;
++    cases.push({ id: `S${first}-G${g}-P${play}`, slot: p.b.slot, rusher: p.d.slot, by: p.rel.by, t: +(p.rel.t - p.t0).toFixed(1), frames: p.frames });
++  }
++  return res;
++} } });
++for (const c of cases) console.log(JSON.stringify(c));
++void nex;
+diff --git a/scripts/diag/pass-operators/comeoff-frames.py b/scripts/diag/pass-operators/comeoff-frames.py
+new file mode 100644
+index 00000000..aae556fa
+--- /dev/null
++++ b/scripts/diag/pass-operators/comeoff-frames.py
+@@ -0,0 +1,139 @@
++"""The come-off frame by frame, as tracking sees it (Integration, 2026-11-15, hand-fight note section 7). Same code on
++NFL tracking and sim exports. Cases are interior-comeoff.py's: interior pairs that release (interior-fight.py's
++definition) and whose blocker is past 1.2 yd at release + 0.5 s. From the release to the throw (at most 2.0 s), every
++0.1 s frame:
++  - reach: the rusher within 1.5 yd of the QB;
++  - the helper (the nearest other OL): the first frame he is within 1.0 yd by +0.5 s; then his velocity toward the
++    rusher, his facing (tracking 'o'; absent in sim exports without EXPORT_FACING) against the bearing to the rusher,
++    and how much of the next 0.5 s he stays within 1.0 yd (held on him);
++  - the rusher: speed and closing on the QB (yd/s) while no OL is within 1.0 yd of him (free frames);
++  - the QB: speed, his velocity's part away from the rusher, and up (toward the line), in the last 0.6 s before a reach,
++    and in every frame where he moves faster than 1.5 yd/s in the first 1.0 s.
++
++usage: python3 -I scripts/diag/pass-operators/comeoff-frames.py <plays.jsonl.gz> [...] [--examples N] [--plays-csv plays.csv]
++"""
++import sys, os, json, gzip, math, re, csv
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++pct = lambda a, n: f"{100 * a / max(1, n):.0f}%"
++wrap = lambda a: (a + 180) % 360 - 180
++args = list(sys.argv[1:]); nex = 0
++if '--examples' in args:
++    i = args.index('--examples'); nex = int(args[i + 1]); del args[i:i + 2]
++# --plays-csv: the QB lane's population (early-sack.py): NFL dropbacks by PFF that are not designed movement, not play
++# action and not a spike; ours without a boot / roll / sprint / waggle / naked / screen or play-action concept.
++PFF = None; DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|\+pa', re.I)
++if '--plays-csv' in args:
++    i = args.index('--plays-csv'); PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(args[i + 1]))}; del args[i:i + 2]
++def keep(raw):
++    if PFF is None: return True
++    if raw.get('source') == 'sim': return not DES.search(str((raw.get('cell') or {}).get('concept') or ''))
++    pf = PFF.get(str(raw.get('id')))
++    return pf is not None and pf['isDropback'] == 'TRUE' and not pf['dropbackType'].startswith('DESIGNED') and pf['playAction'] != 'TRUE' and pf['qbSpike'] != 'TRUE'
++
++for path in args:
++    C = []
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy') or not keep(raw): continue
++        p = Play(raw); ev = raw.get('events', {}); O = raw.get('o')
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        qbs = p.who('O', 'QB')
++        if len(OL) < 5 or not qbs: continue
++        qb = qbs[0]
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw) if fw is not None else p.frames - 1)
++        ok = lambda i, k: 0 <= k < p.frames and p.pos(i, k)[0] is not None
++        vel = lambda i, k: ((p.pos(i, k + 1)[0] - p.pos(i, k - 1)[0]) / (2 * p.dt), (p.pos(i, k + 1)[1] - p.pos(i, k - 1)[1]) / (2 * p.dt)) if ok(i, k - 1) and ok(i, k + 1) else None
++        for b in OL[1:4]:
++            k0 = d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.0)) + 1):
++                if not ok(b, k): continue
++                c = [(p.dist(b, x, k), x) for x in DL if ok(x, k) and p.dist(b, x, k) <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            kr = None
++            for k in range(k0, min(kend, k0 + 25) + 1):
++                if not (ok(b, k) and ok(d, k) and ok(qb, k)): break
++                (bx, by), (dx, dy), (qx, qy) = p.pos(b, k), p.pos(d, k), p.pos(qb, k)
++                ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1; ux, uy = ux / L, uy / L
++                rx, ry = dx - bx, dy - by
++                if math.hypot(rx, ry) > 1.2 or abs(math.degrees(math.atan2(rx * -uy + ry * ux, -(rx * ux + ry * uy)))) > 70: kr = k; break
++            if kr is None: continue
++            k5 = kr + 5
++            if k5 > kend or not (ok(b, k5) and ok(d, k5)) or p.dist(b, d, k5) <= 1.2: continue
++            c = {'id': raw.get('id'), 'frames': []}
++            others = [o for o in OL if o != b]
++            for k in range(kr, min(kend, kr + 20) + 1):
++                if not (ok(d, k) and ok(qb, k)): break
++                vd, vq = vel(d, k), vel(qb, k)
++                if vd is None or vq is None: continue
++                dq = p.dist(d, qb, k); (dx, dy), (qx, qy) = p.pos(d, k), p.pos(qb, k)
++                near = sorted([(p.dist(o, d, k), o) for o in others if ok(o, k)])
++                hr, h = near[0] if near else (None, None)
++                f = {'dt': round((k - kr) * p.dt, 1), 'dq': dq, 'rS': math.hypot(*vd),
++                     'close': -((vd[0] - vq[0]) * (dx - qx) + (vd[1] - vq[1]) * (dy - qy)) / (dq or 1),
++                     'qS': math.hypot(*vq), 'qAway': (vq[0] * (qx - dx) + vq[1] * (qy - dy)) / (dq or 1), 'qUp': vq[0],
++                     'hr': hr, 'h': h, 'olNear': any(p.dist(o, d, k) <= 1.0 for o in OL if ok(o, k))}
++                if h is not None:
++                    vh = vel(h, k); hx, hy = p.pos(h, k)
++                    f['hToward'] = (vh[0] * (dx - hx) + vh[1] * (dy - hy)) / (hr or 1) if vh else None
++                    o = O[k][h] if O and k < len(O) and O[k] and h < len(O[k]) else None
++                    f['hFace'] = abs(wrap(o - math.degrees(math.atan2(dy - hy, dx - hx)))) if o is not None else None
++                c['frames'].append(f)
++            c['thrown'] = fw is not None
++            if c['frames']: C.append(c)
++    reach = lambda c: next((f['dt'] for f in c['frames'] if f['dq'] <= 1.5), None)
++    first = lambda c: next((i for i, f in enumerate(c['frames']) if f['dt'] <= 0.5 and f['hr'] is not None and f['hr'] <= 1.0), None)
++    H = [c for c in C if first(c) is not None]; N = [c for c in C if first(c) is None]
++    print(f"== {os.path.basename(path)}: off-blocker cases {len(C)}, reached {pct(sum(1 for c in C if reach(c) is not None), len(C))} | helped {len(H)} reached {pct(sum(1 for c in H if reach(c) is not None), len(H))} | no help {len(N)} reached {pct(sum(1 for c in N if reach(c) is not None), len(N))}")
++    F0 = [c['frames'][first(c)] for c in H]
++    held = []
++    for c in H:
++        i = first(c); h = c['frames'][i]['h']; nxt = [f for f in c['frames'][i:i + 6]]
++        held.append(sum(1 for f in nxt if f['h'] == h and f['hr'] is not None and f['hr'] <= 1.0) / max(1, len(nxt)))
++    fa = [f['hFace'] for f in F0 if f.get('hFace') is not None]
++    print(f"   (a) helper at his first frame within 1.0 yd: velocity toward the rusher p25/50/75 {q([f['hToward'] for f in F0 if f.get('hToward') is not None], .25):.2f}/{q([f['hToward'] for f in F0 if f.get('hToward') is not None]):.2f}/{q([f['hToward'] for f in F0 if f.get('hToward') is not None], .75):.2f} yd/s | facing off the bearing to him p50 {q(fa) if fa else float('nan'):.0f} deg (n {len(fa)}) | held within 1.0 yd over the next 0.5 s p50 {q(held):.0%}, all of it {pct(sum(1 for x in held if x >= 0.99), len(held))}")
++    for name, G in [('helped, reached', [c for c in H if reach(c) is not None]), ('helped, not', [c for c in H if reach(c) is None])]:
++        hh = [held[H.index(c)] for c in G]
++        print(f"       {name} ({len(G)}): held p50 {q(hh):.0%}, all of it {pct(sum(1 for x in hh if x >= 0.99), len(hh))}")
++    fr = [f for c in C for f in c['frames'] if f['dt'] > 0 and not f['olNear']]
++    print(f"   (b) free frames (no OL within 1.0 yd) {len(fr)}: rusher speed p50 {q([f['rS'] for f in fr]):.2f} | closing p25/50/75 {q([f['close'] for f in fr], .25):.2f}/{q([f['close'] for f in fr]):.2f}/{q([f['close'] for f in fr], .75):.2f} yd/s")
++    for lo, hi in [(3, 99), (1.5, 3)]:
++        g = [f for f in fr if lo < f['dq'] <= hi]
++        print(f"       at {lo}-{hi if hi < 99 else ''} yd from the QB ({len(g)}): rusher speed p50 {q([f['rS'] for f in g]):.2f}, closing p50 {q([f['close'] for f in g]):.2f}, QB speed {q([f['qS'] for f in g]):.2f}, away {q([f['qAway'] for f in g]):.2f}")
++    fq = [f for c in C for f in c['frames'] if 0 < f['dt'] <= 1.0 and f['qS'] > 1.5]
++    print(f"   (c) QB moving (>1.5 yd/s) in the first 1.0 s ({len(fq)} frames): away from the rusher p25/50/75 {q([f['qAway'] for f in fq], .25):.2f}/{q([f['qAway'] for f in fq]):.2f}/{q([f['qAway'] for f in fq], .75):.2f} | up p50 {q([f['qUp'] for f in fq]):.2f}")
++    R = [c for c in C if reach(c) is not None]
++    l6 = [f for c in R for f in c['frames'] if max(0, reach(c) - 0.6) < f['dt'] <= reach(c)]
++    print(f"       last 0.6 s before a reach ({len(R)}): QB speed p50 {q([f['qS'] for f in l6]):.2f}, away {q([f['qAway'] for f in l6]):.2f}, up {q([f['qUp'] for f in l6]):.2f} | rusher speed {q([f['rS'] for f in l6]):.2f}, closing {q([f['close'] for f in l6]):.2f}")
++    # Integration's split for (b): the rusher's last-0.6-s speed by the QB's speed at that frame (still / moving), and
++    # free frames 1.5-3 yd from the QB likewise. Cause or effect: does a rusher gather against a QB who is standing?
++    for name, G in [('last 0.6 s before a reach', l6), ('free, 1.5-3 yd from the QB', [f for f in fr if 1.5 < f['dq'] <= 3])]:
++        for lab, lo, hi in [('QB still (<0.5 yd/s)', 0, 0.5), ('QB slow (0.5-1.5)', 0.5, 1.5), ('QB moving (>1.5)', 1.5, 99)]:
++            g = [f for f in G if lo <= f['qS'] < hi]
++            print(f"   (b) {name}, {lab}: {len(g)} frames | rusher speed p25/50/75 {q([f['rS'] for f in g], .25):.2f}/{q([f['rS'] for f in g]):.2f}/{q([f['rS'] for f in g], .75):.2f} | closing p50 {q([f['close'] for f in g]):.2f}")
++    # After a reach: his distance to the QB 0.3 s on, the closest he gets, how long he stays within 1.5 yd, and whether
++    # the ball was thrown (RUSH_GATHER's read: a gathering rusher may hover near the QB instead of finishing).
++    after = []
++    for c in R:
++        r = reach(c); fs = [f for f in c['frames'] if f['dt'] >= r]
++        f3 = next((f for f in fs if f['dt'] >= r + 0.3 - 1e-6), None)
++        after.append((f3['dq'] if f3 else None, min(f['dq'] for f in fs), sum(1 for f in fs if f['dq'] <= 1.5) * 0.1))
++    print(f"   after a reach ({len(R)}): distance at +0.3 s p50 {q([x[0] for x in after if x[0] is not None]):.2f} yd (frames left {sum(1 for x in after if x[0] is not None)}) | closest p50 {q([x[1] for x in after]):.2f} | time within 1.5 yd p50 {q([x[2] for x in after]):.1f} s | thrown {pct(sum(1 for c in R if c['thrown']), len(R))}")
++    # Capacity or choice (hand-fight note 12): the free rusher's speed by time since the release, and by his distance to
++    # the QB, every frame with no OL within 1.0 yd.
++    print("   speed by time since release (free frames), p50 / p75: " + ' | '.join(
++        f"{lo:.1f}-{hi:.1f} s {q([f['rS'] for f in fr if lo <= f['dt'] < hi]):.2f} / {q([f['rS'] for f in fr if lo <= f['dt'] < hi], .75):.2f} (n {sum(1 for f in fr if lo <= f['dt'] < hi)})"
++        for lo, hi in [(0.1, 0.5), (0.5, 1.0), (1.0, 1.5), (1.5, 2.1)]))
++    print("   speed by distance to the QB (free frames), p50 / p75: " + ' | '.join(
++        f"{lo:.0f}-{hi:.0f} yd {q([f['rS'] for f in fr if lo <= f['dq'] < hi]):.2f} / {q([f['rS'] for f in fr if lo <= f['dq'] < hi], .75):.2f}"
++        for lo, hi in [(1.5, 3), (3, 5), (5, 7), (7, 12)]))
++    # The QB lane's dozen: off the blocker, no help, reached.
++    ids = [c['id'] for c in N if reach(c) is not None]
++    print(f"   no help, reached ({len(ids)}): {' '.join(str(x) for x in ids[:max(12, nex)])}")
++    for c in C[:nex]:
++        r = reach(c)
++        s = ' '.join(f"{f['dt']:.1f}:{f['dq']:.1f}/{f['rS']:.1f}/{'h%.1f' % f['hr'] if f['hr'] is not None else '-'}/q{f['qS']:.1f}{'+' if f['qAway'] > 0 else '-'}" for f in c['frames'][::3])
++        print(f"     {c['id']} reach {r}: dt:dist-to-QB/rusher speed/helper dist/QB speed(+ away) {s}")
+diff --git a/scripts/diag/pass-operators/interior-comeoff.py b/scripts/diag/pass-operators/interior-comeoff.py
+new file mode 100644
+index 00000000..a29672c7
+--- /dev/null
++++ b/scripts/diag/pass-operators/interior-comeoff.py
+@@ -0,0 +1,131 @@
++"""After an interior rusher releases: what happens before he reaches the QB (Integration, 2026-11-15, after the hand
++fight's stage 1). Same code on NFL tracking and sim exports (common play format).
++
++usage: python3 -I scripts/diag/pass-operators/interior-comeoff.py <plays.jsonl.gz> [...] [--examples N] [--plays-csv plays.csv]
++
++Pairs and release exactly as interior-fight.py: each of the three middle OL and the nearest DL within 1.2 yd from the
++snap + 0.2 s; release is the first frame within 2.5 s of contact, before the throw, where the separation opens past
++1.2 yd or the rusher's bearing from the blocker passes 70 deg off the blocker's line to the QB. From the release to the
++throw (or the play's end with no throw):
++
++  1. Reach: the first frame the rusher is within 1.5 yd of the QB; the time from release; the share that reach before
++     the throw. Path: his heading over the first 0.5 s after release against the line from him to the QB at the
++     release (0 = straight at him); flattened past 45 deg.
++  2. What is near him in the 0.5 s after the release (each a share of released rushers, split by reach / not):
++     - blocker attached: his own blocker within 1.2 yd of him at release + 0.3 s (and + 0.5 s);
++     - help: another offensive lineman within 1.0 yd of him at some frame;
++     - back: another offensive non-lineman, not the QB, within 1.0 yd of him at some frame;
++     - QB moved: the QB's displacement over those 0.5 s past 1.0 yd; and the rusher's line wrong: the angle at the
++       rusher between the QB at the release and the QB 0.5 s later, past 20 deg.
++  3. What a release is: which test fired (separation or past the shoulder), the separation at the release, and the
++     blocker's distance at + 0.3 s: clean (past 1.5 yd), at his hip (within 1.2), between. --examples N prints N
++     releases with those numbers (the first N in file order, so the same each run).
++"""
++import sys, os, json, gzip, math, re, csv
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++pct = lambda a, n: f"{100 * a / max(1, n):.0f}%"
++wrap = lambda a: (a + 180) % 360 - 180
++args = [a for a in sys.argv[1:]]
++nex = 0
++if '--examples' in args:
++    i = args.index('--examples'); nex = int(args[i + 1]); del args[i:i + 2]
++# --plays-csv: the QB lane's population (early-sack.py): NFL dropbacks by PFF that are not designed movement, not play
++# action and not a spike; ours without a boot / roll / sprint / waggle / naked / screen or play-action concept.
++PFF = None; DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|^pa_|\+pa', re.I)
++if '--plays-csv' in args:
++    i = args.index('--plays-csv'); PFF = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(args[i + 1]))}; del args[i:i + 2]
++def keep(raw):
++    if PFF is None: return True
++    if raw.get('source') == 'sim': return not DES.search(str((raw.get('cell') or {}).get('concept') or ''))
++    pf = PFF.get(str(raw.get('id')))
++    return pf is not None and pf['isDropback'] == 'TRUE' and not pf['dropbackType'].startswith('DESIGNED') and pf['playAction'] != 'TRUE' and pf['qbSpike'] != 'TRUE'
++
++for path in args:
++    R = []; pairs = 0
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy') or not keep(raw): continue
++        p = Play(raw); ev = raw.get('events', {})
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        qbs = p.who('O', 'QB')
++        if len(OL) < 5 or not qbs: continue
++        qb = qbs[0]
++        others = [i for i in p.who('O') if i != qb and i not in OL]
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw) if fw is not None else p.frames - 1)
++        ok = lambda i, k: p.pos(i, k)[0] is not None
++        for b in OL[1:4]:
++            k0 = d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.0)) + 1):
++                if not ok(b, k): continue
++                c = [(p.dist(b, x, k), x) for x in DL if ok(x, k) and p.dist(b, x, k) <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            pairs += 1
++            def geo(k):
++                (bx, by), (dx, dy), (qx, qy) = p.pos(b, k), p.pos(d, k), p.pos(qb, k)
++                ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1; ux, uy = ux / L, uy / L
++                rx, ry = dx - bx, dy - by
++                ang = math.degrees(math.atan2(rx * -uy + ry * ux, -(rx * ux + ry * uy)))
++                return math.hypot(rx, ry), ang
++            kr = None; why = None
++            for k in range(k0, min(kend, k0 + 25) + 1):
++                if not (ok(b, k) and ok(d, k) and ok(qb, k)): break
++                s, a = geo(k)
++                if s > 1.2 or abs(a) > 70: kr = k; why = 'sep' if s > 1.2 else 'shoulder'; break
++            if kr is None: continue
++            r = {'id': raw.get('id'), 't': round((kr - k0) * p.dt, 2), 'why': why, 'sep': geo(kr)[0], 'ang': geo(kr)[1]}
++            # 1. reach and path
++            reach = None
++            for k in range(kr, kend + 1):
++                if ok(d, k) and ok(qb, k) and p.dist(d, qb, k) <= 1.5: reach = k; break
++            r['reach'] = None if reach is None else round((reach - kr) * p.dt, 2)
++            k5 = min(kend, kr + p.k(0.5) - p.k(0))
++            (dx0, dy0), (qx0, qy0) = p.pos(d, kr), p.pos(qb, kr)
++            if k5 > kr and ok(d, k5):
++                hx, hy = p.pos(d, k5)[0] - dx0, p.pos(d, k5)[1] - dy0
++                r['path'] = abs(wrap(math.degrees(math.atan2(hy, hx) - math.atan2(qy0 - dy0, qx0 - dx0)))) if math.hypot(hx, hy) > 0.2 else None
++            else: r['path'] = None
++            # 2. what is near him
++            def bd(dtk):
++                k = kr + dtk
++                return p.dist(b, d, k) if k <= kend and ok(b, k) and ok(d, k) else None
++            r['b3'] = bd(p.k(0.3) - p.k(0)); r['b5'] = bd(p.k(0.5) - p.k(0))
++            near = lambda grp: any(ok(x, k) and ok(d, k) and p.dist(x, d, k) <= 1.0 for k in range(kr, k5 + 1) for x in grp)
++            r['help'] = near([o for o in OL if o != b]); r['back'] = near(others)
++            if k5 > kr and ok(qb, k5):
++                qx5, qy5 = p.pos(qb, k5)
++                r['qbmove'] = math.hypot(qx5 - qx0, qy5 - qy0)
++                r['qbline'] = abs(wrap(math.degrees(math.atan2(qy5 - dy0, qx5 - dx0) - math.atan2(qy0 - dy0, qx0 - dx0))))
++            else: r['qbmove'] = r['qbline'] = None
++            r['left'] = round((kend - kr) * p.dt, 2); r['thrown'] = fw is not None
++            # Distance to the QB at the release and its closing rate over the next 0.5 s (yd/s, + = closing).
++            r['dq'] = p.dist(d, qb, kr)
++            r['close'] = (r['dq'] - p.dist(d, qb, k5)) / ((k5 - kr) * p.dt) if k5 > kr and ok(d, k5) and ok(qb, k5) else None
++            R.append(r)
++    n = len(R); hit = [r for r in R if r['reach'] is not None]; miss = [r for r in R if r['reach'] is None]
++    print(f"== {os.path.basename(path)}: interior pairs {pairs}, released {n} ({pct(n, pairs)}), reached the QB (1.5 yd) before the throw {len(hit)} ({pct(len(hit), n)} of released)")
++    print(f"   1. release to reach p25/50/75 {q([r['reach'] for r in hit], .25):.1f}/{q([r['reach'] for r in hit]):.1f}/{q([r['reach'] for r in hit], .75):.1f} s | path off his line to the QB p50 {q([r['path'] for r in R if r['path'] is not None]):.0f} deg, flattened past 45: {pct(sum(1 for r in R if r['path'] is not None and r['path'] > 45), sum(1 for r in R if r['path'] is not None))} (reach {pct(sum(1 for r in hit if r['path'] is not None and r['path'] > 45), sum(1 for r in hit if r['path'] is not None))}, not {pct(sum(1 for r in miss if r['path'] is not None and r['path'] > 45), sum(1 for r in miss if r['path'] is not None))})")
++    for name, f in [('blocker attached at +0.3 s (1.2 yd)', lambda r: r['b3'] is not None and r['b3'] <= 1.2),
++                    ('blocker attached at +0.5 s', lambda r: r['b5'] is not None and r['b5'] <= 1.2),
++                    ('help: another OL within 1.0 yd by +0.5 s', lambda r: r['help']),
++                    ('back: an RB/TE within 1.0 yd by +0.5 s', lambda r: r['back']),
++                    ('QB moved past 1.0 yd in 0.5 s', lambda r: r['qbmove'] is not None and r['qbmove'] > 1.0),
++                    ("QB's move turns the rusher's line past 20 deg", lambda r: r['qbline'] is not None and r['qbline'] > 20)]:
++        print(f"   2. {name}: all {pct(sum(1 for r in R if f(r)), n)} | reached {pct(sum(1 for r in hit if f(r)), len(hit))} | not {pct(sum(1 for r in miss if f(r)), len(miss))}")
++    for name, G in [('blocker still on him at +0.5 s (<=1.2 yd)', [r for r in R if r['b5'] is not None and r['b5'] <= 1.2]),
++                    ('blocker off him at +0.5 s (>1.2 yd)', [r for r in R if r['b5'] is not None and r['b5'] > 1.2])]:
++        gh = [r for r in G if r['reach'] is not None]
++        print(f"   2b. {name}: {pct(len(G), n)} of released | reached {pct(len(gh), len(G))} | help {pct(sum(1 for r in G if r['help']), len(G))} | QB moved {pct(sum(1 for r in G if r['qbmove'] is not None and r['qbmove'] > 1.0), len(G))} | release to throw / end p25/50/75 {q([r['left'] for r in G], .25):.1f}/{q([r['left'] for r in G]):.1f}/{q([r['left'] for r in G], .75):.1f} s (thrown {pct(sum(1 for r in G if r['thrown']), len(G))}) | to the QB at release p50 {q([r['dq'] for r in G]):.1f} yd, closing p25/50/75 {q([r['close'] for r in G if r['close'] is not None], .25):.1f}/{q([r['close'] for r in G if r['close'] is not None]):.1f}/{q([r['close'] for r in G if r['close'] is not None], .75):.1f} yd/s")
++    off5 = [r for r in R if r['b5'] is not None and r['b5'] > 1.2]
++    for name, G in [('off, help came', [r for r in off5 if r['help']]), ('off, no help', [r for r in off5 if not r['help']]),
++                    ('off, no help, QB moved', [r for r in off5 if not r['help'] and r['qbmove'] is not None and r['qbmove'] > 1.0]),
++                    ('off, no help, QB still', [r for r in off5 if not r['help'] and r['qbmove'] is not None and r['qbmove'] <= 1.0])]:
++        cl = [r['close'] for r in G if r['close'] is not None]
++        print(f"   2c. {name}: {pct(len(G), len(off5))} of them | reached {pct(sum(1 for r in G if r['reach'] is not None), len(G))} | closing p50 {q(cl):.1f} yd/s")
++    print(f"   3. release by separation {pct(sum(1 for r in R if r['why'] == 'sep'), n)}, past the shoulder {pct(sum(1 for r in R if r['why'] == 'shoulder'), n)} | separation at it p50 {q([r['sep'] for r in R]):.2f} yd | blocker at +0.3 s: clean (>1.5) {pct(sum(1 for r in R if r['b3'] is not None and r['b3'] > 1.5), n)}, at his hip (<=1.2) {pct(sum(1 for r in R if r['b3'] is not None and r['b3'] <= 1.2), n)}, between {pct(sum(1 for r in R if r['b3'] is not None and 1.2 < r['b3'] <= 1.5), n)}, gone (play over) {pct(sum(1 for r in R if r['b3'] is None), n)}")
++    for r in R[:nex]:
++        f = lambda v, s='{:.2f}': '-' if v is None else s.format(v)
++        print(f"     {r['id']}: at {r['t']:.1f} s by {r['why']}, sep {r['sep']:.2f}, bearing {r['ang']:+.0f} | blocker +0.3 {f(r['b3'])} +0.5 {f(r['b5'])} | help {int(r['help'])} back {int(r['back'])} | QB moved {f(r['qbmove'])} line {f(r['qbline'], '{:.0f}')} | path {f(r['path'], '{:.0f}')} | reach {f(r['reach'], '{:.1f}')}")
+diff --git a/scripts/diag/pass-operators/late-sacker.py b/scripts/diag/pass-operators/late-sacker.py
+new file mode 100644
+index 00000000..a180a708
+--- /dev/null
++++ b/scripts/diag/pass-operators/late-sacker.py
+@@ -0,0 +1,32 @@
++"""Who makes the late sack (Integration, 2026-11-15): of dropbacks (five or more OL) still alive at 3.0 s (no forward pass
++by then), those ending with no forward pass behind the line (a sack proxy: it includes QB runs for a loss, not fumbles),
++by the defender nearest the QB at his last frame: interior (a DL whose snap spot is between the tackles) or edge (any
++other DL or LB). Same code on NFL tracking and sim exports.
++
++usage: python3 -I scripts/diag/pass-operators/late-sacker.py <plays.jsonl.gz> [...]
++"""
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++for path in sys.argv[1:]:
++    n=a3=0; c={'interior':0,'edge':0,'other':0}
++    for line in gzip.open(path,'rt'):
++        raw=json.loads(line); raw=raw.get('common',raw)
++        if raw.get('kind')!='pass' or not raw.get('xy'): continue
++        p=Play(raw); ev=raw.get('events',{}); qbs=p.who('O','QB')
++        OL=sorted([i for i in p.who('O','OL') if p.pos(i,0)[0] is not None], key=lambda i:p.pos(i,0)[1])
++        if len(OL)<5 or not qbs: continue
++        n+=1; tend=ev.get('pass_forward', ev.get('end'))
++        if tend is None or tend<=3.0: continue
++        a3+=1
++        if 'pass_forward' in ev or raw.get('yards',0)>=0 or 'fumble' in ev: continue
++        k=p.frames-1
++        while k>0 and p.pos(qbs[0],k)[0] is None: k-=1
++        D=[d for d in p.who('D') if p.pos(d,k)[0] is not None and p.pos(d,0)[0] is not None]
++        if not D: continue
++        d=min(D,key=lambda d:p.dist(d,qbs[0],k))
++        y0=p.pos(d,0)[1]; lo=p.pos(OL[0],0)[1]; hi=p.pos(OL[-1],0)[1]
++        g=p.players[d]['group']
++        c['interior' if lo<y0<hi and g=='DL' else 'edge' if g in('DL','LB') else 'other']+=1
++    tot=sum(c.values())
++    print(os.path.basename(path), 'dropbacks',n,'alive at 3 s',a3,'sacked',tot,f'({100*tot/max(1,a3):.1f}%)', {k:f'{v} ({100*v/max(1,a3):.1f}% of alive)' for k,v in c.items()})
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 079d09b2..eaf94418 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -50,6 +50,7 @@ import { runContactObservers } from './run-contact-observer.js';
+ import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
+ import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+ import { ARM_SPEED } from '../physics/actuation.js';
++import { inHeadCone } from './head.js';
+ import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ 
+@@ -1803,6 +1804,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+     return;
+   }
+   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
++  // PASS_OFF attempt 2: a helper who sees the man come off his blocker takes him; the rep goes on as his next tick.
++  if (passOff(sim, e, true)) return;
+ 
+   // ---- moves at decision points
+   // RUSH_HANDS: a move takes his arm away; he throws no other until it is back. After a club his arm returns across
+@@ -3055,7 +3058,57 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
+ }
+ 
+ /** Defender wins: the hands come apart. Run sheds throw the blocker aside. */
++/** PASS_OFF (experimental, off; PASS_OFF=1): the pass-off. A pass rusher who beats his blocker while a helper's hands are
++ * on him (the helper's joint carried load last step: he feels the man on his hands) is the helper's man from there: the
++ * helper keeps him as his own block, as coached on a pass-off, instead of losing him with the beaten man's rep. The
++ * engagement goes on with the helper as its blocker and his own hands joint (a fresh fight: neither man in control, no
++ * hold carried over, the rusher's move state reset, his long-arm on the beaten man gone). The beaten blocker leaves it,
++ * with the ordinary 0.6 s before he can grab the same man again; then his own blocking decides whether he recovers to
++ * double him or finds other work, by what he sees. Off, beating the primary ended the rep for everyone on it: a helper
++ * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
++ * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
++export const PASS_OFF = process.env.PASS_OFF === '1';
++function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
++  if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
++  const d = e.defender;
++  const keeper = e.helpers.find((h) => {
++    const j = e.helperHands?.get(h);
++    if (!j || h.isDown(sim.t) || !inBlockReach(h, d, 'pass')) return false;
++    return seen ? seesComeFree(sim, e, h) : Math.max(0, j.normalForce ?? 0) > 0 || Math.abs(j.tangentForce ?? 0) > 0;
++  });
++  if (!keeper) return false;
++  const old = e.blocker, joint = e.helperHands!.get(keeper)!;
++  old.shedBy.set(d, sim.t + 0.6);
++  old.engagement = null;
++  if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
++  e.blocker = keeper; e.hands = joint;
++  e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
++  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
++  syncJoints(sim, e);
++  keeper.tags.add('pass-off');
++  d.tags.add('shed');
++  sim.event('shed', d, old, 'pass: passed off');
++  return true;
++}
++
++/** PASS_OFF attempt 2: the helper sees the man come off the blocker he is helping, as he has them both (his own sight
++ * delay), with the man in his view cone: the man beyond the blocker's working reach (the bodies plus 0.85 of the
++ * blocker's arm, the punch's lockout) or past his shoulder (70 deg off the blocker's line to the launch point, the
++ * release the operators use). Then he takes him. Attempt 1 handed off only at beat(): under FITTED_HANDS most rushers
++ * who reach the QB are still in the first man's rep at arm's length (51% of the frames to the reach), so it fired 3
++ * times in 2 games. */
++function seesComeFree(sim: PlaySim, e: Engagement, h: Agent): boolean {
++  const b = e.blocker, d = e.defender, sd = sim.see(h, d), sb = sim.see(h, b);
++  if (!inHeadCone(h.head ?? h.body.facing, Math.atan2(sd.pos.y - h.pos.y, sd.pos.x - h.pos.x))) return false;
++  const rx = sd.pos.x - sb.pos.x, ry = sd.pos.y - sb.pos.y, sep = Math.hypot(rx, ry);
++  if (sep > b.profile.radius + d.profile.radius + 0.85 * b.player.measurables.armIn / 36) return true;
++  const pp = protectPoint(sim), ux = pp.x - sb.pos.x, uy = pp.y - sb.pos.y, L = Math.hypot(ux, uy) || 1;
++  const ang = Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L);
++  return Math.abs(ang) > (70 * Math.PI) / 180;
++}
++
+ function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, why = ''): void {
++  if (!run && passOff(sim, e)) return;
+   const d = e.defender;
+   const b = e.blocker;
+   if (run) runContactObservers.get(sim)?.(e, 'end', { reason: why });
+-- 
+2.43.0
+
