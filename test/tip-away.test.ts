@@ -25,16 +25,22 @@ async function breakupThenTip(flag: string) {
     los: 40, ballY: 26, firstDownX: 50, seed: 1 });
   const r = sim.slot('X')!, d = sim.slot('CB_W')!;
   for (const a of sim.agents) a.body.pos = { x: 20, y: 10 };
-  r.body.pos = { x: 50, y: 26 }; d.body.pos = { x: 52, y: 26 };
+  // Re-staged on the engine defaults (2026-11-15): with CATCH_HANDS a defender plays the ball only inside his own
+  // envelope with his hands, so the breakup is a real one: the corner in front of the receiver, turned to the ball,
+  // which reaches his hands first (a roll at which he gets a hand on it but does not secure it). The tumbling ball then comes back
+  // through the same hands 0.3 s later, every roll low.
+  r.body.pos = { x: 50, y: 26 }; d.body.pos = { x: 49.3, y: 26 }; d.body.facing = Math.PI;
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
   d.tags.add('looking');
   sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 2 }, 1.5);
   sim.t = 1.5;
-  sim.rng.next = () => 0;
-  resolveCatchOpportunities(sim, { x: 49.9, y: 26, z: 2 }, { x: 50.1, y: 26, z: 2 });
+  sim.rng.next = () => 0.6;
+  resolveCatchOpportunities(sim, { x: 49.1, y: 26, z: 1.6 }, { x: 49.5, y: 26, z: 1.6 });
   const brokeUp = sim.stats.passDefendedBy === d.player.id && sim.ball.kind === 'air' && sim.ball.deflected;
   // The tumbling ball comes through the same defender's hands a beat later.
   sim.t = 1.8;
-  resolveCatchOpportunities(sim, { x: 51.9, y: 26, z: 1.2 }, { x: 52.1, y: 26, z: 1.2 });
+  sim.rng.next = () => 0;
+  resolveCatchOpportunities(sim, { x: 49.2, y: 26, z: 1.2 }, { x: 49.4, y: 26, z: 1.2 });
   return { brokeUp, intercepted: sim.stats.interceptedBy === d.player.id };
 }
 
