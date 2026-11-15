@@ -293,3 +293,67 @@ is the blocker's half, not more rusher moves.
 
 No roll, no cooldown, no cap on clubs. Whether the club still works is then the World's, against a hold set by a man
 who saw it.
+
+## 6. Stage 1, attempt 2: the club's approach and the blocker's read (2026-11-15, `FITTED_HANDS`, 54a595c2, engine-67)
+
+Integration's conditions, as built:
+1. **The approach is physics.** His near hand travels 0.45 of his arm at his hand speed (0.11-0.19 s) to the
+   blocker's wrist before the force acts, aimed at one hand. If that hand is not there at the onset, the club meets
+   air: no contact at all.
+2. **The blocker's read is perception.** He sees the arm start at his sight delay (0.12 + 0.12 x (1 - read)), and only
+   with the rusher in the view cone about his eyes (head.ts; his facing without HEAD). His answer is what he has time
+   for before the onset, with no roll:
+   - a forearm's width of hand travel: take the hand away (the club meets air) and re-punch as it passes;
+   - less: firm the hand with cloth (armForce x 0.6) for the club's time;
+   - none: it lands.
+3. **The rusher pays.** A held club costs RUSH_HANDS' second sweep. A club through air costs a double return, his
+   reaction again for the balance, and his arm's momentum into his body.
+4. **Cloth is on the joint** (grip and hold), where the holding detector reads it.
+
+Off identical (engine-67 7c0603676f346494). Attempt 1 re-read on the same engine from a worktree.
+
+**Read:** seed 11 x 8, the patch base.
+
+| | NFL | base | + RUSH_HANDS | attempt 1 | **attempt 2** |
+|---|---|---|---|---|---|
+| orbit p50 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s (deg) | 25 / 34 / 39 | 7 / 8 / 11 | 10 / 13 / 15 | 27 / 41 / 41 | **20 / 35 / 43** |
+| offset p25, same windows (yd) | -0.04 / -0.18 / -0.33 | +0.02 / -0.02 / -0.09 | +0.01 / -0.05 / -0.09 | -0.11 / -0.38 / -0.36 | **-0.01 / -0.17 / -0.33** |
+| separation p50 0.5-1.0 s (yd) | 0.81 | 0.85 | 0.89 | 0.85 | **0.85** |
+| released by 1.0 / 2.0 s, never | 43 / 60%, 37% | 30 / 44%, 51% | 46 / 62%, 35% | 55 / 73%, 25% | **42 / 62%, 35%** |
+| clubs a second / clearing a hand within 0.25 s | | | | 1.52 / 54% | **1.26 / 35%** |
+| hands' load before / 0.25 s after a club (N) | | | | 879 / 536 | **855 / 625** |
+| hands on, share of rep: 2 / 1 / 0 | | | | 64 / 34 / 2% | **78 / 22 / 0%** |
+| interior pressure, % of dropbacks (reported) | about 9.8 | 10.9 | 21.9 | 38.8 | **23.1** |
+| sack proxy; alive at 3.0 s ending in one (reported) | 7; 12 | 5.4; 12.7 | 10.1; 18.0 | 15.1; 35.8 | **8.7; 19.8** |
+| holding calls on pass plays (club-fight, 4 games) | | | | 0 of 365 | **2 of 366** |
+
+The load at 0.1 s after a club now rises (855 -> 885 N): the force has not yet arrived (the approach). It has fallen by
+0.25 s.
+
+**Gates:**
+1. The club's window: pass (the load falls once the force acts).
+2. The orbit at 0.5-1.0 s: pass (20 against 25; 35 / 43 against 34 / 39 later).
+3. The offset p25: pass, on the NFL's in every window.
+4. **Release timing: pass** (42 / 62 / 35 against 43 / 60 / 37).
+
+**What did it.** The approach, not the blocker's read.
+- The blocker's answer: late 93%, unseen 6%, firm 3 of 2,031, away none (30 clubs met air, on hands already off at
+  the onset).
+- His sight delay (0.12-0.24 s) is as long as the arm's travel (0.11-0.19 s), so a reactive read almost never beats a
+  club.
+- What changed is that the force arrives after the travel, aimed at a hand that has had that time to move with the
+  bodies. Clears fall from 54 to 35% of clubs, and the rate from 1.52 to 1.26 a second, with no cooldown.
+
+**What the blocker still lacks** (for the later stages, not stage 1). His half as coached is anticipation and timing,
+not reaction to an arm already moving. That is the set and the hands' rhythm:
+- hands at chest height to invite the slap, then dropped and re-punched;
+- a punch drawn back and re-thrown;
+- independent hands, one held while the other strikes.
+
+He can only act on a club before it starts if he acts on cues earlier than the arm. The rusher's set-up (his feet, his
+shoulder, the near arm's position) or his own rhythm are what the coaching describes. Built from perceived cues, that
+is the blocker's stage. The snatch-back is the same.
+
+**Interior pressure is still high** (23.1% against base 10.9 and the NFL's about 9.8, with the release timing on the
+NFL's). By Integration's rule that is the come-off, and stage 1 is done. The come-off is the next measured question:
+the beaten blocker's ride, the next blocker's help, the QB's movement.
