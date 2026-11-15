@@ -18,7 +18,7 @@ movement was when the ball leaves.
      still (under 0.4 yd), up (upfield the largest part), across away from the man, across toward him, back.
      By the man's place: edge (more than 1.5 yd across and not in front of him) or in front / interior.
 (4, the read index against the footwork, is sim-only: drop-reads.ts.)
-usage: python3 -I drop-steps.py name=a.jsonl.gz,... [--plays-csv plays.csv] [--show N]"""
+usage: python3 -I drop-steps.py name=a.jsonl.gz,... [--plays-csv plays.csv] [--show N] [--pa: play action only, instead of none]"""
 import sys, os, json, gzip, csv, re, math
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
@@ -27,6 +27,8 @@ if '--plays-csv' in args:
     i = args.index('--plays-csv')
     for r in csv.DictReader(open(args[i + 1])): PFF[f"{r['gameId']}-{r['playId']}"] = r
     del args[i:i + 2]
+PA = '--pa' in args
+if PA: args.remove('--pa')
 if '--show' in args:
     i = args.index('--show'); SHOW = int(args[i + 1]); del args[i:i + 2]
 DES = re.compile(r'boot|roll|sprint|waggle|naked|move_pocket|screen|bubble|tunnel|slip|now_', re.I)
@@ -103,8 +105,10 @@ for arg in args:
             raw = json.loads(line); raw = raw.get('common', raw)
             if raw.get('kind') != 'pass' or not raw.get('xy'): continue
             pf = PFF.get(raw['id']); con = str((raw.get('cell') or {}).get('concept') or '')
-            if pf is not None and (pf['dropbackType'].startswith('DESIGNED') or pf['qbSpike'] == 'TRUE' or pf['isDropback'] != 'TRUE' or pf['playAction'] == 'TRUE'): continue
-            if raw.get('source') == 'sim' and (DES.search(con) or 'pa' in con.split('+') or con.startswith('pa_')): continue
+            isPA = (pf is not None and pf['playAction'] == 'TRUE') or (raw.get('source') == 'sim' and ('pa' in con.split('+') or con.startswith('pa_')))
+            if pf is not None and (pf['dropbackType'].startswith('DESIGNED') or pf['qbSpike'] == 'TRUE' or pf['isDropback'] != 'TRUE'): continue
+            if raw.get('source') == 'sim' and DES.search(con): continue
+            if isPA != PA: continue
             if raw.get('source') == 'sim' and (raw.get('labels') or {}).get('throwaway'): continue
             r = one(raw)
             if r: rows.append(r)
