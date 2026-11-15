@@ -362,6 +362,18 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
         &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
         &&!s.foot&&!s.strike&&hypot2(s.lean.x,s.lean.y)<=1e-6&&hypot2(s.load.x,s.load.y)<=1e-6;
       spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };
+      // RELEASE_SIDE: the spaced request's part across the line to the one teammate restricting him is the side he
+      // passes on. When his route goes the other way from its declared break, he passes on his route's side instead:
+      // the same speed, mirrored across that line. Only with a single restricting teammate, so no other limit moves.
+      const side = limits.length === 1 ? a.behavior.routeSide?.() ?? null : null;
+      if (side) {
+        const l = limits[0], along = spaced.vel.x * l.nx + spaced.vel.y * l.ny;
+        const tx = spaced.vel.x - along * l.nx, ty = spaced.vel.y - along * l.ny;
+        // Which side of the teammate he goes round is the sign of the request across the line to him.
+        const cross = (x: number, y: number) => l.nx * y - l.ny * x;
+        const goes = cross(tx, ty), wants = cross(side.x, side.y);
+        if (Math.abs(wants) > 0.2 && goes * wants < 0) spaced = { ...spaced, vel: { x: spaced.vel.x - 2 * tx, y: spaced.vel.y - 2 * ty } };
+      }
     }
     // Both selectors may ask about the same request. The body/time are fixed
     // throughout this call and previews return detached samples. Share only

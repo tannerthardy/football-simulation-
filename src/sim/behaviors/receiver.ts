@@ -44,6 +44,8 @@ interface PressContact {
  * into a tackle setting deep (3.5 to 1.9 yd/s at 0.9 s, KNOWN_PROBLEMS
  * PRO-1). Receivers at the line keep their release and press contact. */
 const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
+/** RELEASE_SIDE (experimental, off; docs: RouteRunner.routeSide): spacing passes a teammate on his route's side. */
+export const RELEASE_SIDE = process.env.RELEASE_SIDE === '1';
 /** RCV_SEEN (experimental, off; intended on once measured; the user's information rule): receivers' and downfield
  * blockers' reads of opponents come from what they see (`seen-contact.ts`): a defender is down when his picture shows
  * him down, and taken when it shows him in contact with one of the observer's teammates, not from his true support
@@ -227,6 +229,16 @@ export class RouteRunner implements Behavior {
   /** DECLARED_BREAK (src/playbook/route-breaks.ts): the point on his installed path that is his route's declared break
    * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
    * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
+  /** RELEASE_SIDE (experimental, off; with DECLARED_BREAK): the direction his route goes from its declared vertex, until
+   * he reaches it (the leg leaving it, unit). Spacing passes a teammate on this side instead of the side the geometry
+   * leaves him: a wing's slant goes under the end it lines up behind, as taught, not round his outside. */
+  routeSide(): { x: number; y: number } | null {
+    if (!RELEASE_SIDE || !(process.env.DECLARED_BREAK === '1')) return null;
+    const at = BREAK_DECL[this.route.id]?.at;
+    if (typeof at !== 'number' || this.idx > at || !this.path[at + 1]) return null;
+    const v = this.path[at].p, n = this.path[at + 1].p, l = Math.hypot(n.x - v.x, n.y - v.y);
+    return l > 1e-6 ? { x: (n.x - v.x) / l, y: (n.y - v.y) / l } : null;
+  }
   get declaredBreak(): { x: number; y: number } | null {
     if (!(process.env.DECLARED_BREAK === '1')) return null;
     const at = BREAK_DECL[this.route.id]?.at;
