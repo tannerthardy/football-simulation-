@@ -1,7 +1,7 @@
 /** Shared route geometry/control. No agent, perception or live route state. */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../core/vec.js';
-import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
+import { arriveVelocity, lateralEnvelope, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 
@@ -11,14 +11,15 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 export const LINE_START = process.env.LINE_START !== '0';
 
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
-export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean }
+export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean }
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
   const endX = OPP_GOAL_X + 8.5;
   const out: PathPoint[] = pts.map(rp => ({
-    p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1,
+    p: { x: Math.min(endX, los + rp.d), y: clamp(start.y + rp.l * outside, 1.2, FIELD_WIDTH - 1.2) }, s: rp.s ?? 1, ...(rp.cut ? { cut: true } : {}),
   }));
+  // ROUTE_EFFORT: the through speed at a declared break by its type, from the route's own geometry.
   if (extend && out.length >= 1) {
     const last = out[out.length - 1].p;
     const prev = out.length >= 2 ? out[out.length - 2].p : start;
@@ -40,33 +41,125 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
   return out;
 }
 
+/** ROUTE_EFFORT (experimental, off): every route family is run at full speed, as coached ("routes must be ran at full
+ * speed"; the stem is sold at full speed so the defender must respect the vertical, and the receiver separates at the
+ * break: "the brake is the move and the throttle is the finish"). The coached reasons to slow are already their own
+ * mechanisms here: the deceleration into a break (the route law's through-speed at a corner), the settle or sit at a
+ * route's end (`settle`, `sitVsZone`), and the timing with the drop (route depth and the break). Off, each family carries
+ * a constant under 1 (quick .78, flat .80, back .80, cross .84, intermediate .86, deep .94, plus 0.04 x (route running -
+ * 0.5)), from the 2026-10-08 movement calibration against tracking (df08fff7), with no coached reason of its own: it
+ * caps a TE's over at 7.2 yd/s against the NFL TE crosser's 7.4 at 3.0 s (Tools, docs/reviews/2026-11-14-route-speed.md).
+ * A route's own tracked `pace` (the back's check-release flat) is unchanged. */
+const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
+/** ROUTE_EFFORT: the pace of the stem only. What he brings through each break (s) and whether a break is a cut or a roll
+ * are declared per route point in the route table (src/playbook/routes.ts, ROUTE_EFFORT), each with its coaching source. */
 export function routeEffort(family: RouteDef['family'], rr: number): number {
+  if (ROUTE_EFFORT) return 1;
   const base = { quick: 0.78, flat: 0.8, back: 0.8, cross: 0.84, intermediate: 0.86, deep: 0.94 };
   return clamp(base[family] + 0.04 * (rr - 0.5), 0.7, 0.98);
 }
 
-export function steerRoute(body: Body, st: { idx: number }, path: readonly PathPoint[], end: RouteEnd,
+/** ROUTE_FILLET (experimental, off; ROUTE_FILLET=1 turns it on): a corner is led, not point-turned. The follower used to steer
+ * at each vertex with a speed cap that assumes a 1.3 yd corner, so a rolled bend was taken slowly and the body then swung
+ * about 2 yd outside the next leg; an NFL receiver starts the turn before the vertex and passes inside it
+ * (docs/reviews/2026-11-14-route-speed.md: cut 0.5-0.8 yd, radius 6-10 yd on a rolled bend, about 3 yd on a 90 degree plant).
+ * With the flag the declared through speed `s` still says what the route asks (a speed cut s .4, a rolled bend s .85-.9), and
+ * the corner is a fillet: on his usable lateral acceleration aLat = lateral * cutSkill the radius at that speed is v^2 / aLat, he
+ * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of an adjacent leg shared with a neighbouring corner; the first leg is his alone), at the speed he can have at the vertex (his speed along the leg under his own acceleration over the distance to it, up to the declared through speed), planned once per corner, and if the legs do
+ * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
+ * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
+export const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
+/** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
+const FILLET_LEAD = 0.6;
+/** A turn this small is followed straight; there is nothing to lead. */
+const FILLET_MIN_TURN = 12 * Math.PI / 180;
+export interface FilletTurn { readonly idx: number; readonly exit: Readonly<Vec2>; readonly speed: number }
+/** The corner he has planned (made once, when he first heads for it): the lead and the speed he plans to carry into the turn. */
+export interface FilletPlan { readonly idx: number; readonly lead: number; readonly speed: number }
+export interface RouteCursor { idx: number; from?: Vec2; turn?: FilletTurn | null; plan?: FilletPlan | null }
+
+export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint[], end: RouteEnd,
   effort: number, rr: number, cutSkill: number): MoveCommand | null {
+  if (ROUTE_FILLET && st.idx === 0 && !st.from) st.from = { x: body.pos.x, y: body.pos.y };
+  if (st.turn && st.turn.idx !== st.idx) st.turn = null; // something else moved his place on the route: that turn is over
+  if (st.plan && st.plan.idx !== st.idx) st.plan = null;
   for (let guard = 0; guard < 6; guard++) {
-    if (st.idx >= path.length) return null;
     const tgt = path[st.idx], next = path[st.idx + 1];
-    const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
-    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; continue; }
-    const isLast = st.idx === path.length - 1;
+    if (!tgt) return null;
     const vtop = body.profile.vmax * effort;
+    if (ROUTE_FILLET && st.turn && st.turn.idx === st.idx && next) {
+      // Carry the turn he began to its exit point on the next leg.
+      const E = st.turn.exit, dE = Math.hypot(E.x - body.pos.x, E.y - body.pos.y);
+      const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y, bl = Math.hypot(bx, by) || 1;
+      const beyond = (body.pos.x - E.x) * bx / bl + (body.pos.y - E.y) * by / bl > 0;
+      if (dE < 0.6 || (beyond && dE < 2)) { st.idx++; st.turn = null; continue; }
+      return { vel: { x: (E.x - body.pos.x) / dE * st.turn.speed, y: (E.y - body.pos.y) / dE * st.turn.speed }, cutSkill };
+    }
+    const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
+    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
+    const isLast = st.idx === path.length - 1;
     let through = isLast && end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
+    // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
+    // full braking, so he carries only the speed his cutting ability lets him take through it.
+    const decel = LINE_START && next ? Math.min(body.profile.brake, body.profile.lateral * cutSkill) * 0.8 : undefined;
+    // A point declared a cut keeps the vertex law (a plant, no lead); every other corner is led.
+    if (ROUTE_FILLET && next && !tgt.cut) {
+      const ax = (tgt.p.x - body.pos.x) / d, ay = (tgt.p.y - body.pos.y) / d;
+      const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y, bl = Math.hypot(bx, by) || 1;
+      const prev = st.idx > 0 ? path[st.idx - 1].p : st.from ?? body.pos;
+      const l1 = Math.hypot(tgt.p.x - prev.x, tgt.p.y - prev.y);
+      // The turn is the route's, from its own legs, not from where his body happens to be pointing.
+      const lx = l1 > 1e-6 ? (tgt.p.x - prev.x) / l1 : ax, ly = l1 > 1e-6 ? (tgt.p.y - prev.y) / l1 : ay;
+      const theta = Math.acos(clamp(lx * bx / bl + ly * by / bl, -1, 1));
+      if (theta > FILLET_MIN_TURN && bl > 1) {
+        const tn = Math.tan(theta / 2);
+        if (!st.plan) {
+          // The speed he will carry into the corner is the speed he can have there: his speed along the leg now, built under his own
+          // acceleration over the distance to the vertex, never above the declared through speed. A corner near the line is
+          // small because he is slow.
+          const v0 = Math.max(0, body.vel.x * lx + body.vel.y * ly);
+          const reach = speedAfter(v0, vtop, body.profile.tau, d);
+          const carry = Math.min(through, reach);
+          // What the legs will give him at that speed (the body's own envelope: the high-speed derate and fatigue included), so the
+          // plan never asks for more turn than he has.
+          const aLat = Math.max(0.5, lateralEnvelope(body, carry, cutSkill));
+          // The leg he leaves the line on has no corner behind it to share it with, so he may use all of it.
+          const lead = Math.min(carry * carry / aLat * tn, st.idx === 0 ? l1 : FILLET_LEAD * l1, FILLET_LEAD * bl);
+          st.plan = { idx: st.idx, lead, speed: Math.min(carry, Math.sqrt(aLat * lead / tn)) };
+        }
+        const { lead, speed } = st.plan;
+        if (d <= lead) { st.turn = { idx: st.idx, exit: { x: tgt.p.x + bx / bl * lead, y: tgt.p.y + by / bl * lead }, speed }; continue; }
+        const entry = { x: body.pos.x + ax * (d - lead), y: body.pos.y + ay * (d - lead) };
+        return { vel: arriveVelocity(body, entry, vtop, speed, decel), cutSkill };
+      }
+    }
     if (next) {
       const ax = tgt.p.x - body.pos.x, ay = tgt.p.y - body.pos.y;
       const bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y;
       const cosT = (ax * bx + ay * by) / ((Math.hypot(ax, ay) || 1) * (Math.hypot(bx, by) || 1));
       through = Math.min(through, Math.sqrt((body.profile.lateral * cutSkill * 1.3) / Math.max(0.04, 1 - cosT)));
     }
-    // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
-    // full braking, so he carries only the speed his cutting ability lets him take through it.
-    const decel = LINE_START && next ? Math.min(body.profile.brake, body.profile.lateral * cutSkill) * 0.8 : undefined;
+    // ROUTE_FILLET: he is taken to be at a vertex at 0.6 yd, where nothing brakes him for it any more, but the arrive law reaches its through
+    // speed 0.15 yd short of the point it is given, so it let him cross the switch 0.45 yd of braking early (a cut planned at 3.1 yd/s was crossed
+    // at 4.1). Aim it at the switch, so the through speed is the speed at which the corner is taken.
+    if (ROUTE_FILLET && next && d > 0.6) {
+      const pull = Math.min(0.45, d - 0.15), ux = (tgt.p.x - body.pos.x) / d, uy = (tgt.p.y - body.pos.y) / d;
+      return { vel: arriveVelocity(body, { x: tgt.p.x - ux * pull, y: tgt.p.y - uy * pull }, vtop, through, decel), cutSkill };
+    }
     return { vel: arriveVelocity(body, tgt.p, vtop, through, decel), cutSkill };
   }
   return null;
+}
+
+/** His speed after covering `d` yd from speed v0 under the body's own drive law (a = (V - v) / tau, which `stepBody`'s sprint
+ * is built on): v(t) = V - (V - v0) e^(-t/tau), distance V t - (V - v0) tau (1 - e^(-t/tau)); the t that covers d, found by bisection. */
+export function speedAfter(v0: number, V: number, tau: number, d: number): number {
+  if (V <= v0 || d <= 0) return v0;
+  const dist = (t: number) => V * t - (V - v0) * tau * (1 - Math.exp(-t / tau));
+  let lo = 0, hi = 1;
+  while (dist(hi) < d && hi < 60) hi *= 2;
+  for (let i = 0; i < 40; i++) { const mid = 0.5 * (lo + hi); if (dist(mid) < d) lo = mid; else hi = mid; }
+  return V - (V - v0) * Math.exp(-0.5 * (lo + hi) / tau);
 }
 
 function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
