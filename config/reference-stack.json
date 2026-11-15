@@ -42,7 +42,8 @@
   },
   "numeric": {
     "INFO_HONEST": { "default": 63, "legacy": 0 },
-    "APEX_LEVERAGE": { "default": 7, "legacy": 0 }
+    "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
+    "NEAR_FIELD": { "default": 0, "legacy": 0 }
   },
   "flags": {
     "ALIGN_HABIT": "on",

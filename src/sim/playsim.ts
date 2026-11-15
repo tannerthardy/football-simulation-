@@ -8,6 +8,7 @@ import { shouldersOf } from '../physics/kinematics.js';
  */
 import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
+import { NEAR_ON, NearField } from './near-field.js';
 import { lineOfSight } from './sight.js';
 import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
@@ -248,6 +249,7 @@ export class PlaySim {
   private gaze = new Map<Agent, { dir: number; t: number; target: Agent; set: number; since: number }>();
   /** GAZE: last in-view picture per observer>target, with when it was taken. */
   private sightMemory = new Map<string, { seen: Perceived; at: number; acc?: Vec2; snapT?: number }>();
+  private readonly nearField = new NearField();
   /** GAZE: opponents an observer's own assignment makes his responsibility this play. */
   private assigned = new Map<Agent, Set<Agent>>();
   readonly trace: ReplayTrace;
@@ -882,6 +884,9 @@ export class PlaySim {
       // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
       || (SIGHT_RECOG && sight === 'recog'))
       seen = this.sighted(observer, target, seen, true, HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'));
+    // NEAR_FIELD (off): for the players whose pictures are gated above, a touch is felt and the outer field is coarse.
+    if (NEAR_ON && ((SIGHT_CARRIER && observer === this.carrier) || (SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))))
+      seen = this.nearField.apply(this, observer, target, seen, HEAD ? this.perception.perceive(observer.idx, 0).head ?? null : null);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -1587,6 +1592,7 @@ export class PlaySim {
       const report = this.world.step(this.intents, this.dt);
       this.snapActionIntervals = (this.snapActionIntervals ?? 0) + 1;
       this.lastStep = report;
+      if (NEAR_ON) this.nearField.recordContacts(this);
       observeTeamContactRules(this, report, teamContactStart);
       if (blockStarts) observePrethrowBlocks(this, report, t, blockStarts);
       observePassContacts(this, report, t, passContactStarts);
