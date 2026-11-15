@@ -1,3 +1,4 @@
+import { shouldersOf } from '../physics/kinematics.js';
 /**
  * The play simulator: 22 agents on a continuous field, ticked at 20 Hz.
  *
@@ -64,6 +65,10 @@ import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulR
 
 /** ALIGN_HABIT (experimental, off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
+/** EXPORT_SHOULDERS (diagnostic, off; EXPORT_SHOULDERS=1): replay frames record where each man's chest points
+ * (shouldersOf: hips plus the TRUNK_TWIST trunk) instead of his hips, so a facing export compares the same body part as
+ * the NFL's shoulder-pad 'o'. No behaviour reads the frames. */
+const EXPORT_SHOULDERS = process.env.EXPORT_SHOULDERS === '1';
 /** PlaySetup.stagedThrow (test staging only). */
 export interface StagedThrow { at: number; slot: string; aim?: { x: number; y: number; z: number }; T?: number }
 
@@ -1920,7 +1925,7 @@ export class PlaySim {
 
   private recordFrame(recordedIntents?: ReadonlyArray<Intent>): void {
     const agents: number[] = [];
-    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(a.body.facing));
+    for (const a of this.agents) agents.push(round2(a.pos.x), round2(a.pos.y), round2(EXPORT_SHOULDERS ? shouldersOf(a.body) : a.body.facing));
     const b = this.ballPos();
     const c = this.carrier;
     // The first live tick also records t=0. Replace the staged snap frame

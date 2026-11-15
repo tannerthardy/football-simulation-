@@ -38,14 +38,18 @@ describe('SCRAMBLE_RULE', () => {
     expect(off.rec.every((r: any) => r.behavior.scramble === null)).toBe(true);
     const rules = on.rec.map((r: any) => r.behavior.scramble).filter(Boolean);
     expect(rules.length).toBeGreaterThan(0);
-    // Only while he is looking: a receiver who has not taken his rule has the QB outside what his shoulders and neck
-    // bring into view.
+    // Only on what he sees: a receiver who has not taken his rule either has the QB outside what his shoulders and neck
+    // bring into view, or still sees him inside the box, or first saw him leave less than his reaction time ago.
     const { shouldersOf } = await import('../src/physics/kinematics.js');
     const { HEAD_CONE, neckRange } = await import('../src/sim/head.js');
     const { angleDiff } = await import('../src/core/vec.js');
+    const { scrambleSeen } = await import('../src/sim/behaviors/receiver.js');
     for (const r of on.rec.filter((x: any) => !x.behavior.scramble)) {
       const qb = on.sim.see(r, on.sim.qb).pos;
-      expect(Math.abs(angleDiff(shouldersOf(r.body), Math.atan2(qb.y - r.pos.y, qb.x - r.pos.x)))).toBeGreaterThan(neckRange(r) + HEAD_CONE / 2);
+      const looking = Math.abs(angleDiff(shouldersOf(r.body), Math.atan2(qb.y - r.pos.y, qb.x - r.pos.x))) <= neckRange(r) + HEAD_CONE / 2;
+      const seenOut = looking && scrambleSeen(qb, on.sim.ballY) !== 0;
+      const since = r.behavior.scrambleSeenAt ? on.sim.t - r.behavior.scrambleSeenAt.t : 0;
+      expect(seenOut && since >= r.profile.reactionTime).toBe(false);
     }
     for (const r of rules) {
       expect(r.side).toBe(1);

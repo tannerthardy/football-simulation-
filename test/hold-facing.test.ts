@@ -22,6 +22,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function turn(flag: string, openHands = '0', seed = 1921, slot = 'DT_S') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('ENGAGE_TRUNK', '0'); vi.stubEnv('CHEST_SHOULDERS', '0'); // engine-68: recorded before the engaged trunk; the scene is re-recorded with the hand-fight work
   vi.stubEnv('HOLD_FACING', flag);
   // The reproducer's play: the DT makes the hold still engaged with the C, whose hands are on him. OPEN_HANDS
   // changes the play, not the hold: his open-handed C lets him slip off at 1.75 s and he makes the hold free at

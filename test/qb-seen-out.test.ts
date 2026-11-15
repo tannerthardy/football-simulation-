@@ -16,6 +16,9 @@ for (const pressure of ['mug_both', 'mug_fire', 'zero_6']) for (const seed of [2
 async function stage(flag: string) {
   vi.resetModules();
   vi.stubEnv('QB_SEEN_OUT', flag);
+  // The off arm shows the leak through the legacy readiness path; DECLARED_BREAK closes that path whatever this flag
+  // is (his picture must have the man out and running), so the off arm is staged without it.
+  if (flag === '0') vi.stubEnv('DECLARED_BREAK', '0');
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { PRESSURE_BY_ID } = await import('../src/playbook/defense.js');
