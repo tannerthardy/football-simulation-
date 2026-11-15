@@ -918,6 +918,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
   // RIP_CLEAR: the same recovery and re-fit for a hand an edge's rip slid or took off.
   if (FITTED_HANDS && e.type === 'pass') {
+    if (BLOCK_ANTICIPATE && fightRep(e)) anticipate(sim, e);
     fightAnswer(sim, e); fightHands(sim, hands, b, d);
     // A firmed hand has cloth: on the joint as a grip and its hold, where the holding detector reads it.
     const pr = handPairOf(hands), firm = pr.find(h => h.on && (h.firmUntil ?? -Infinity) > sim.world.time);
@@ -985,6 +986,71 @@ function fightHands(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
   syncHandPair(hands);
 }
 
+/** BLOCK_ANTICIPATE (experimental, off; BLOCK_ANTICIPATE=1, on FITTED_HANDS): the blocker acts on the rusher's arm
+ * before it swings (hand-fight note section 13). The rusher's near arm is an observable: each tick its state is logged
+ * (on the blocker, drawn back on its return after a club, or sweeping), and the blocker has it at his sight delay
+ * (0.12 + 0.12 x (1 - read)), only with the rusher in his view cone, like any body state he sees. Seeing it drawn back
+ * or sweeping, he answers on the hand it will meet (the one fightClub aims at):
+ * - a hand seated where he aimed it (slid less than half the man's torso): he braces it (elbow locked to the frame, the
+ *   arm holding at its bent lever whatever its extension), as long as he sees the arm away. No cloth: a firm with
+ *   cloth for the whole time the arm was away held his jersey through half the rep and drew holding on 16 of 92 pass
+ *   plays in a one-game staging read; the coached firm is the arm, not a grab;
+ * - a hand already slid off its spot: he pulls it and re-punches (the point/counterpoint hands as coached), the hand off
+ *   for its travel back and out (twice a forearm's width at his hand speed), landing with his placement error: if the
+ *   man is not where he punched, the hand misses and goes again (fightHands).
+ * The rusher's answer to it (cocking without throwing: the fake) is the between-moves stage's, not built: until then a
+ * firmed hand is an answer he cannot test. */
+export const BLOCK_ANTICIPATE = FITTED_HANDS && process.env.BLOCK_ANTICIPATE === '1';
+if (process.env.BLOCK_ANTICIPATE === '1' && !FITTED_HANDS) throw new Error('BLOCK_ANTICIPATE=1 requires FITTED_HANDS=1 (the two hands it answers with)');
+type ArmState = 'on' | 'back' | 'sweep';
+const armLog = new WeakMap<Agent, { t: number; s: ArmState }[]>();
+/** The rusher's near arm now, from his rep's club state. */
+function armState(e: Engagement, t: number): ArmState {
+  if (e.club && e.club.start !== undefined && t >= e.club.start) return 'sweep';
+  return t < (e.handsBackAt ?? -Infinity) ? 'back' : 'on';
+}
+function logArm(sim: PlaySim, e: Engagement): void {
+  const log = armLog.get(e.defender) ?? [];
+  const s = armState(e, sim.t);
+  if (!log.length || log[log.length - 1].s !== s) { log.push({ t: sim.t, s }); if (log.length > 64) log.shift(); }
+  armLog.set(e.defender, log);
+}
+/** The arm as the observer has it: its state at his sight delay ago. */
+function seenArm(sim: PlaySim, rusher: Agent, delay: number): ArmState {
+  const log = armLog.get(rusher);
+  if (!log) return 'on';
+  let s: ArmState = 'on';
+  for (const x of log) { if (x.t <= sim.t - delay + 1e-9) s = x.s; else break; }
+  return s;
+}
+function anticipate(sim: PlaySim, e: Engagement): void {
+  logArm(sim, e);
+  const b = e.blocker, d = e.defender, hands = e.hands;
+  if (!hands || hands.off) return;
+  if (!inHeadCone(b.head ?? b.body.facing, Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x))) return;
+  const seen = seenArm(sim, d, 0.12 + 0.12 * (1 - traits(b).read));
+  if (seen === 'on') return;
+  // The hand his arm will meet: fightClub's aim, from where the bodies are.
+  const lat = latOf(axisOf(sim, e)), F = { x: -lat.x * e.side, y: -lat.y * e.side };
+  const dx = d.body.pos.x - b.body.pos.x, dy = d.body.pos.y - b.body.pos.y, L = Math.hypot(dx, dy) || 1;
+  const pair = handPairOf(hands);
+  // The hand on his working side; if it is off (knocked off, or already re-punching), he has nothing to set there.
+  const k: 0 | 1 = F.x * (-dy / L) + F.y * (dx / L) >= 0 ? 0 : 1;
+  const hd = pair[k];
+  if (!hd.on) return;
+  if (Math.abs(hd.slide) < 0.5 * d.profile.radius) {
+    hd.braceUntil = sim.world.time + 1.5 * sim.dt;
+    b.tags.add('anticipate-brace');
+  } else {
+    const speed = ARM_SPEED * (0.75 + 0.5 * clamp(b.r('handTechnique'), 0, 1));
+    hd.on = false; hd.slide = 0; hd.vel = 0; syncHandPair(hands);
+    let ready = fightReady.get(hands);
+    if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
+    ready[k] = sim.t + 2 * FOREARM / speed;
+    b.tags.add('anticipate-repunch');
+  }
+}
+
 /** FITTED_HANDS attempt 2: the blocker against a club he can see coming. He sees the rusher's arm start at his sight
  * delay (0.12 + 0.12 x (1 - his read): the pass rep's sight delay with his hands off), and only with the rusher in the
  * view cone about where his eyes point (head.ts: his head, or his body facing without HEAD). What he can do is what
@@ -1000,7 +1066,7 @@ function fightAnswer(sim: PlaySim, e: Engagement): void {
   const c = e.club, b = e.blocker, d = e.defender, hands = e.hands;
   if (!c || c.onset === undefined || c.hand === undefined || !hands) return;
   const pair = handPairOf(hands), t = sim.t;
-  if (c.air === undefined && t >= c.onset) c.air = !pair[c.hand].on;
+  if (c.air === undefined && t >= c.onset) { c.air = !pair[c.hand].on; c.firmAtOnset = Math.max(pair[c.hand].firmUntil ?? -Infinity, pair[c.hand].braceUntil ?? -Infinity) > sim.world.time; }
   if (c.answer !== undefined) return;
   if (c.seenAt === Infinity) { c.answer = 'unseen'; return; }
   if (t < c.seenAt!) return;

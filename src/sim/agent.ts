@@ -82,7 +82,9 @@ export interface Engagement {
   club?: { end: number; handsBefore: number; speed: number;
     /** FITTED_HANDS attempt 2: when the arm started, when its force begins, the hand it is aimed at, when the blocker
      * sees it start (Infinity if not in his view), his answer, and whether it met air. */
-    start?: number; onset?: number; hand?: 0 | 1; seenAt?: number; answer?: 'away' | 'firm' | 'late' | 'unseen'; air?: boolean; side?: Vec2 };
+    start?: number; onset?: number; hand?: 0 | 1; seenAt?: number; answer?: 'away' | 'firm' | 'late' | 'unseen'; air?: boolean; side?: Vec2;
+    /** BLOCK_ANTICIPATE: the hand it was aimed at was firmed when the force began. */
+    firmAtOnset?: boolean };
   handsBackAt?: number;
   counterAt?: number;
   lastReqX?: number;

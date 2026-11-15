@@ -431,6 +431,9 @@ export interface HandState {
   /** FITTED_HANDS attempt 2: the blocker has firmed this hand against a club he saw coming. Until world time
    * `firmUntil` its arm holds with `firmGrip` of cloth (force) in place of its share of the joint's grip. */
   firmUntil?: number; firmGrip?: number;
+  /** BLOCK_ANTICIPATE: until world time `braceUntil` the arm is braced against a club he expects: it holds at the lever
+   * of his bent arm (steer x 1) whatever its extension, without cloth. */
+  braceUntil?: number;
 }
 /** FITTED_HANDS: the joint's two hands, made on first use from its aggregate state. */
 export function handPairOf(jt: HandJoint): [HandState, HandState] {
@@ -1056,8 +1059,8 @@ export class World {
     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
     // FITTED_HANDS: one hand's arm: half of each term, at that hand's own edge.
     if (FITTED_HANDS && k !== undefined) {
-      const hd = handPairOf(jt)[k], firm = (hd.firmUntil ?? -Infinity) > this.time;
-      return (0.5 * (Math.max(0, jt.steer) * bent / ext + HAND_MU * press) + (firm ? Math.max(0, hd.firmGrip ?? 0) : 0.5 * grip)) * this.handEdgeK(jt, k);
+      const hd = handPairOf(jt)[k], firm = (hd.firmUntil ?? -Infinity) > this.time, brace = (hd.braceUntil ?? -Infinity) > this.time;
+      return (0.5 * (Math.max(0, jt.steer) * (brace ? 1 : bent / ext) + HAND_MU * press) + (firm ? Math.max(0, hd.firmGrip ?? 0) : 0.5 * grip)) * this.handEdgeK(jt, k);
     }
     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
   }
