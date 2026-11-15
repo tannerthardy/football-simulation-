@@ -1,8 +1,8 @@
 diff --git a/config/baseline.json b/config/baseline.json
-index 4149bf33..2a6c87ab 100644
+index 7fb1b824..4f0db522 100644
 --- a/config/baseline.json
 +++ b/config/baseline.json
-@@ -293,6 +293,7 @@
+@@ -296,6 +296,7 @@
      "QB_RELOOK": "0",
      "QB_KEY_MAN": "0",
      "QB_KEY_THROW": "0",
@@ -11,10 +11,10 @@ index 4149bf33..2a6c87ab 100644
      "THROW_PLATFORM": "0",
      "QB_BELIEVED_DEF": "0",
 diff --git a/config/reference-stack.json b/config/reference-stack.json
-index 9157bcd9..1f7762fe 100644
+index a49496b0..fc3b8db4 100644
 --- a/config/reference-stack.json
 +++ b/config/reference-stack.json
-@@ -253,6 +253,7 @@
+@@ -258,6 +258,7 @@
      "QB_RELOOK": "on",
      "QB_KEY_MAN": "on",
      "QB_KEY_THROW": "off",
@@ -23,19 +23,19 @@ index 9157bcd9..1f7762fe 100644
      "THROW_PLATFORM": "off",
      "QB_BELIEVED_DEF": "on",
 diff --git a/docs/FLAGS.md b/docs/FLAGS.md
-index 020795d7..618f7a91 100644
+index d1561c61..50827ef3 100644
 --- a/docs/FLAGS.md
 +++ b/docs/FLAGS.md
 @@ -2,7 +2,7 @@
  
  Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
  
--There are 393 flags read from the environment in `src` (recounted 2026-11-15 at engine-68): 295 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
-+There are 394 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus experimental PLAN_CLOCK): 295 are on unless set to `0`, 87 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+-There are 400 flags read from the environment in `src` (recounted 2026-11-15, engine-69): 299 are on unless set to `0`, 89 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 401 flags read from the environment in `src` (recounted 2026-11-15, engine-69, plus experimental PLAN_CLOCK): 299 are on unless set to `0`, 90 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
  
  **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
  
-@@ -186,6 +186,7 @@ There are 393 flags read from the environment in `src` (recounted 2026-11-15 at
+@@ -188,6 +188,7 @@ There are 400 flags read from the environment in `src` (recounted 2026-11-15, en
  | `QB_RELOOK` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; staged test `test/qb-relook.test.ts`; read once on engine-61) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's out-of-reads branch) | Running out of reads gives him nothing for free. Off: the best man on the whole field at his bar less 0.1, the moment his progression ends. On: back to his first read and through them again one look at a time, at his own bar; with `QB_BREAK`, leaving with the ball up is the other answer at that moment. |
  | `QB_KEY_MAN` | on | promoted 2026-11-14 (engine-65; `=0` restores); was experimental (QB lane with Rules+Coaching's `PLAN_KEYS`, 2026-11-14; first build; staged test `test/qb-key-man.test.ts`) | quarterback | `src/sim/behaviors/qb.ts` (`keyMan`, `readKey`, `gazePoint`) | His key read is taken on the defender the concept names (picked before the snap by the role's alignment rule: the corner, the apex, the hook player, the deep man), not on whoever is nearest the line between the two routes. His eyes go to that man in the drop; at the cue he reads the man's movement (sinking gives the low man, jumping the low route gives the high man), or where he stands if he is not moving along the stretch. No fresh picture of him, or nobody named: no key read, and the order stands. |
  | `QB_KEY_THROW` | off | experimental (QB lane, 2026-11-14; the re-diagnosed design after two window-test forms; acts with `QB_KEY_MAN`) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's `keyHold`) | He stays on the key read's answer through its break (up to 1.2 s after the read) instead of moving on at his dwell, and throws it when it passes his price like any read. The key chooses the look; it does not stand in for the price. The earlier forms threw the answer on window tests in place of the price and are removed with `QB_KEY_DANGER` (corner routes targeted on 26-30% of routes against the NFL's 14%, the added throws where the deep man was a hard run from the ball). Decided by corner targets per route by the over-the-top man's reach (`scripts/diag/eyes/corner_danger.py`) and time to throw on keyed concepts. |
