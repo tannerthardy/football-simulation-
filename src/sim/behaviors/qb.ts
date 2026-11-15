@@ -1648,7 +1648,6 @@ export class QBPass implements Behavior {
    * his own forecast, are his only sources for a break: never the receiver's own break time, which carries the man's
    * private start delay and his true speed (off, the legacy path still reads it; that path goes with the flag's). */
   private planReads = new Map<Agent, { breakAt: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number }>();
-  private lastBreak = new Map<Agent, number>();
   /** How far ahead of a route's break he starts the throw, beyond his motion (s). Today the plan's anchor; his own
    * (anticipation, his read of the receiver) is to come, which is why it is asked for at each check. */
   private leadFor(_passer: Agent, _family: 'onBreak' | 'seenOpen', anchor: number): number { return anchor; }
@@ -1710,9 +1709,7 @@ export class QBPass implements Behavior {
       if (brk === null && (!rd || rd.throwFamily === 'seenOpen' || rd.breakAt === null)) return this.seenRunning(sim, r);
       // A route thrown on its break: the break he expects (his forecast's while it can place the man, else the
       // plan's), less the lead and his motion.
-      // (His forecast's last word comes before the plan's: it keeps a pressed receiver's late release.)
-      if (brk !== null) this.lastBreak.set(r, brk);
-      const at = brk ?? this.lastBreak.get(r) ?? this.planBreakAt(r)!;
+      const at = brk ?? this.planBreakAt(r)!;
       return sim.t + this.windup(sim.qb) >= at - (rd ? this.leadFor(sim.qb, rd.throwFamily, rd.anchorLead) : 0.3 * antic);
     }
     return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
