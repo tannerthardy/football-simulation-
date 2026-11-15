@@ -151,3 +151,17 @@ Offence is omniscient with a delay today (section 1). Gating it with a head fiel
 So the large pieces are blockers (62, 43%) and the QB (39, 27%): about 70% of the sites. The receivers (18) and the carrier (10) are smaller. A gated offence needs, at minimum, wants for: the QB on a progression (the receiver he reads and a
 scan), the receiver's QB look and his defender, the lineman's man and his climb target, the pull path, and a twist scan. None of these exists as a want today (`HEAD`'s `want` exists for the ball and the passer's release belief); without them
 a gated lineman is blind to his own combo partner's man. That is the size of stage 2: a head want per technique (a rough guess of the order of 20, not counted), not a change to the 145 reads.
+
+## 10. Lane read: the run set (1,321 plays, paired, engine-68)
+
+| | mean yards (capped at 20) | stuffs | 10+ yd | 20+ yd | missed + broken open, a run |
+| --- | --- | --- | --- | --- | --- |
+| reference | 3.30 | 13.1% | 5.4% | 1.4% | 0.260 |
+| `NEAR_FIELD=1` (felt) | 3.30 (-0.01, SE 0.01) | 13.2% | 5.5% | 1.4% | 0.260 |
+| `NEAR_FIELD=2` (peripheral) | 3.57 (+0.26, SE 0.11) | 13.4% | 7.0% | 2.3% | 0.270 |
+| `NEAR_FIELD=3` (both) | 3.58 (+0.27, SE 0.12) | 13.3% | 7.3% | 2.3% | 0.266 |
+
+The felt channel does nothing on this set: a touch on the carrier is rare and the touched picture is already about as good (the 6 yd probe, section 8). The peripheral bit moves the run game by a quarter of a yard and
+puts 10+ yd runs from 5.4 to 7.0%: the carrier and the defenders see the outer field with error and without velocity, and the defenders, who read blockers and the runner at the side, pursue worse. That is the card's risk,
+as predicted, and it is a bigger change than the information floor suggested: **bit 2 is an information removal that raises yards**, and it is not the flag to promote without the defenders' reads designed for it.
+Dither panel: `=1` passes; `=3` fails coverage / mode switch (0.044 against 0.039).
