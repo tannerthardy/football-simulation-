@@ -452,6 +452,12 @@ const PATH_FRESH = 0.5, PATH_MARGIN = 0.35;
  * rhythm throw. Off, it was rolled once at the set (by decision-making, anticipation and experience) and held read 1
  * for 0.25-0.35 s whether or not read 1 was already open (mesh's 1.85 s look-off on the route package). */
 const QB_LOOKOFF_RHYTHM = process.env.QB_LOOKOFF_RHYTHM === '1';
+/** PLAN_CLOCK (experimental, off; PLAN_CLOCK=1): DECLARED_BREAK's installed break time read on the play clock. The
+ * read compiler times each break as the sampled play's sim.t (from the start of the play); planBreakAt added the
+ * snap-secured time (0.3 s, GUN_SNAP ~0.5 s) to it again. On engine-68 (scripts/diag/escape/rhythm-check.ts, 157 read
+ * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s. Where his forecast
+ * cannot place the break, the plan's time is the one his readiness waits for. */
+const PLAN_CLOCK = process.env.PLAN_CLOCK === '1';
 /** QB_AVOID: the look he still needs beyond his motion when his dwell is not known (s; otherwise his own dwell on a
  * read), and the margin by which the man's time must clear his need
  * before he stops (s): exit on the far side of the entry. Chosen. */
@@ -1678,7 +1684,9 @@ export class QBPass implements Behavior {
   /** DECLARED_BREAK: the break he holds for a man from the install: the plan's, in play time; null when it has none. */
   private planBreakAt(r: Agent): number | null {
     const rd = this.planReads.get(r);
-    return rd && rd.breakAt !== null ? this.snapAt + rd.breakAt : null;
+    // PLAN_CLOCK: the compiler's break times are already on the play clock (its sampled sim.t), so adding the snap
+    // put every installed break 0.3-0.5 s late (the snap-secured time) in his belief.
+    return rd && rd.breakAt !== null ? (PLAN_CLOCK ? rd.breakAt : this.snapAt + rd.breakAt) : null;
   }
   /** DECLARED_BREAK: his picture has the man out and running on a route (acquired, placed on it or moving at a run). */
   private seenRunning(sim: PlaySim, r: Agent): boolean {
