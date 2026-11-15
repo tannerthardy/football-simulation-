@@ -34,7 +34,11 @@ import type { PlaySim } from './playsim.js';
 
 /** BALL_EST is a bitmask (0 off): 1 the estimator; 4 a committed catch point moves with his estimate; 8 looming; 2 removes catching.ts's tracking penalty (ballTracking acts through
  * the estimator; charging it again at the catch double-counts). */
-const BALL_EST_BITS = Number(process.env.BALL_EST ?? 0);
+const BALL_EST_RAW = Number(process.env.BALL_EST ?? 0);
+/** Bit 1024 is the receiver's one meaning for a card: the receiver on his own sight of the ball. It carries the receiver
+ * bits it was built on (2 no tracking penalty, 4 moving choice, 16 deep look, 64 trunk look), so 1025 = 1111; the
+ * single bits stay for the parked designs' reads only. */
+const BALL_EST_BITS = BALL_EST_RAW & 1024 ? BALL_EST_RAW | 2 | 4 | 16 | 64 : BALL_EST_RAW;
 export const BALL_EST = (BALL_EST_BITS & 1) !== 0;
 export const BALL_EST_NO_TRACKPEN = (BALL_EST_BITS & 2) !== 0;
 /** Design 5 (b): a committed catch point moves with his estimate (bit 4). */
