@@ -458,6 +458,19 @@ const QB_LOOKOFF_RHYTHM = process.env.QB_LOOKOFF_RHYTHM === '1';
  * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s. Where his forecast
  * cannot place the break, the plan's time is the one his readiness waits for. */
 const PLAN_CLOCK = process.env.PLAN_CLOCK === '1';
+/** QB_TICK_PICTURE (experimental, off; QB_TICK_PICTURE=1): his pictures of the defense are taken once a tick, as time
+ * passes, not when a decision asks for them. Off, `felt` and his plain picture call the perception layer on demand,
+ * and that layer's state advances with the asking: under SIGHT_CARRIER the per-tick visibility memo (`sighted`'s
+ * `sightAt`) freezes a past tick's line of sight at the moment it is first asked (with the bodies' heights then), and
+ * TRACK_FEEL's loop starts over for a pair not asked about last tick. So an extra `evaluate` (an observer scoring a
+ * receiver every tick) changed the play: Rules' cov7 observer case, bisected to `sightAt` (restoring it after the
+ * observer's call makes the arms identical; restoring `believed`, `outSeen` and the forecast caches does not). On: at
+ * the start of each of his updates he takes his plain and felt picture of every defender, and advances `outSeen`;
+ * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
+ * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
+const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE === '1';
+/** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
+const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_AVOID: the look he still needs beyond his motion when his dwell is not known (s; otherwise his own dwell on a
  * read), and the margin by which the man's time must clear his need
  * before he stops (s): exit on the far side of the entry. Chosen. */
@@ -1079,6 +1092,7 @@ export class QBPass implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const t = sim.t;
     if (sim.carrier !== a) { if (QB_BREAK) a.carryPosture = null; return stand(); }
+    if (QB_TICK_PICTURE) this.takePictures(a, sim);
     const facingDown = 0;
     // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
     // still can); a throw already on its way comes out, wobbling.
@@ -1666,6 +1680,10 @@ export class QBPass implements Behavior {
   /** QB_SEEN_OUT: whether he has seen a check-release man on his release route. Once out, he stays out. */
   private outSeen = new Set<Agent>();
   private seenOut(r: Agent): boolean {
+    if (QB_TICK_PICTURE) return this.outSeen.has(r);
+    return this.seenOutLive(r);
+  }
+  private seenOutLive(r: Agent): boolean {
     if (this.outSeen.has(r)) return true;
     const e = this.receiverForecasts.get(r)?.estimate;
     if (!e || e.source !== 'acquired' || e.progress === null) return false;
@@ -1822,11 +1840,33 @@ export class QBPass implements Behavior {
   /** A defender as the QB has him. Blind-side rushers are sensed late by
    * QBs with poor pocket presence. */
   private felt(a: Agent, sim: PlaySim, d: Agent): Perceived {
+    if (QB_TICK_PICTURE) { const p = this.pics.get(d); if (p) return p.felt; }
+    return this.feltLive(a, sim, d);
+  }
+  /** QB_TICK_PICTURE: his plain picture of a defender (this tick's, once taken). */
+  private plainOf(a: Agent, sim: PlaySim, d: Agent): Perceived {
+    if (QB_TICK_PICTURE) { const p = this.pics.get(d); if (p) return p.plain; }
+    return sim.see(a, d);
+  }
+  /** QB_TICK_PICTURE: this tick's pictures of every defender, taken as time passes; `outSeen` advanced; his beliefs about
+   * the defenders and his pricing judgments created at the first update. */
+  private pics = new Map<Agent, { plain: Perceived; felt: Perceived }>();
+  private picsMade = false;
+  private takePictures(a: Agent, sim: PlaySim): void {
+    if (!this.picsMade) {
+      this.picsMade = true;
+      for (const d of sim.defense) { if (QB_BELIEVED_DEF) this.believe(a, d); a.mind.judgment(`reach:${d.slot}`); }
+      for (const k of PRICE_JUDGMENTS) a.mind.judgment(k);
+    }
+    for (const d of sim.defense) { const plain = sim.see(a, d); this.pics.set(d, { plain, felt: this.feltLive(a, sim, d, plain) }); }
+    for (const r of sim.offense) if (r !== a && !this.outSeen.has(r) && this.checkRelease(r)) this.seenOutLive(r);
+  }
+  private feltLive(a: Agent, sim: PlaySim, d: Agent, plain?: Perceived): Perceived {
     // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
     // beyond 1.8 rad (about 103 deg) either side.
     // QB_HONEST_FEEL: which side of his shoulder the man is on comes from his own plain picture of him, not from where
     // the man truly is.
-    const at = QB_HONEST_FEEL ? sim.see(a, d).pos : d.pos;
+    const at = QB_HONEST_FEEL ? (plain ?? sim.see(a, d)).pos : d.pos;
     const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
     const ang = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
     const blind = ang > 1.8;
@@ -1922,7 +1962,7 @@ export class QBPass implements Behavior {
       const v = Math.max(0, (seen.vel.x * dx + seen.vel.y * dy) / R);
       t = (-v + Math.sqrt(v * v + 2 * FREE_BURST * D)) / FREE_BURST;
     }
-    const at0 = QB_HONEST_FEEL ? sim.see(a, d).pos : d.pos;
+    const at0 = QB_HONEST_FEEL ? this.plainOf(a, sim, d).pos : d.pos;
     const raw = Math.atan2(at0.y - a.pos.y, at0.x - a.pos.x) - a.body.facing;
     const blind = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
     return t + (blind ? FREE_BLIND_LAG * (1 - a.r('pocketPresence')) : 0);
