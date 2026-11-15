@@ -313,7 +313,7 @@ export class PassProtector implements Behavior {
       : sim.t < 0.35 && sim.offCall.kind === 'pass' && !!sim.offCall.pass?.fake) ? 'low' : 'high';
     const home = this.coord.homeY.get(a) ?? a.pos.y;
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
-    a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside, spotY: home };
+    a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
     if (sim.t < startOf(a)) return stand(0);
     // A called release: a lineman or attached end leaves his man on the count;
     // a back stays in while a free rusher is coming at him (a blitz kills the screen).
@@ -383,12 +383,12 @@ export class PassProtector implements Behavior {
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
     // SET_SPOT: an interior set goes to its spot (his set depth straight back off his alignment), with its width where
-    // the rusher's line to the launch point crosses that depth, kept to his zone. He meets the rusher there.
+    // the rusher's line to the launch point crosses that depth. He meets the rusher there.
     const spotSet = SET_SPOT && !isT && isOL(a) && !this.calledRelease && !runLook(a, sim);
     let spotFrac = 0;
     if (spotSet) {
       const sx = sim.los - setDepth; // setDepth already counts from his snap spot (passSetDepth, SET_SPOT)
-      const tg = setSpotTarget(sim, a, rp, sx);
+      const tg = setSpotTarget(sim, rp, sx);
       set = { x: sx, y: tg.y }; spotFrac = tg.frac;
     }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle

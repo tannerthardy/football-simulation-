@@ -15,10 +15,10 @@ for (const side of [1, -1]) for (const dir of [0, 1, -1]) {
   const sgn = side;
   const { sim, blocker: b, defender: d } = contactFixture({ type: 'pass', runBlock: 60, passBlock: 60, side }) as any;
   // The fixture does not run the pass protector: his set (as PassProtector sets it each tick in a game: depth, lane,
-  // and under SET_SPOT his spot, his alignment) is staged here from his start, or the zone would follow him.
+  // ) is staged here from his start.
   const { passSetDepth } = await import('../../../src/sim/engagement.js');
   const home = b.pos.y;
-  const setPass = () => { b.passSet = { depth: passSetDepth(sim, b), laneY: home, outside: 0, spotY: home }; };
+  const setPass = () => { b.passSet = { depth: passSetDepth(sim, b), laneY: home, outside: 0 }; };
   setPass();
   b.body.vel = { x: 0, y: side * dir * v0 }; d.body.vel = { x: 0, y: side * dir * v0 };
   const step = sim.world.step.bind(sim.world);
@@ -36,7 +36,7 @@ for (const side of [1, -1]) for (const dir of [0, 1, -1]) {
     sim.tick();
     const dt = sim.t - t0;
     for (const m of [0.25, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]) if (Math.abs(dt - m) < 0.026)
-      out.push(`${m.toFixed(2)} s: pair ${((b.vel.y + d.vel.y) / 2 * sgn).toFixed(2)}, blocker asks ${(breq * sgn).toFixed(2)}, rusher - blocker across ${((d.pos.y - b.pos.y) * sgn).toFixed(2)} yd, engaged ${!!d.engagement}${process.env.STAGE_DEBUG ? `, blocker - spot ${(((b.pos.y - (b.passSet?.spotY ?? NaN))) * sgn).toFixed(2)}, depth ${(sim.los - b.pos.x).toFixed(2)}, setDepth ${b.passSet?.depth?.toFixed(2)}, rusher - qb ${(d.pos.x - sim.qb.pos.x).toFixed(2)}` : ''}`);
+      out.push(`${m.toFixed(2)} s: pair ${((b.vel.y + d.vel.y) / 2 * sgn).toFixed(2)}, blocker asks ${(breq * sgn).toFixed(2)}, rusher - blocker across ${((d.pos.y - b.pos.y) * sgn).toFixed(2)} yd, engaged ${!!d.engagement}${process.env.STAGE_DEBUG ? `, blocker - start ${((b.pos.y - home) * sgn).toFixed(2)}, depth ${(sim.los - b.pos.x).toFixed(2)}, setDepth ${b.passSet?.depth?.toFixed(2)}, rusher - qb ${(d.pos.x - sim.qb.pos.x).toFixed(2)}` : ''}`);
   }
   console.log(`MIRROR_REF=${process.env.MIRROR_REF ?? '0'} side ${side > 0 ? '+' : '-'} drift ${dir === 0 ? 'none' : dir > 0 ? 'toward' : 'away'} (signed along the side): ${out.join(' | ')}`);
 }

@@ -216,55 +216,41 @@ const SHORT_SET = 2 * 0.45;
 
 /** SET_SPOT (experimental, off; SET_SPOT=1): the pass set's reference is the pocket, not the man (Integration,
  * 2026-11-15; hand-fight note sections 21-23).
- * - **Information removed.** The set no longer reads the QB's live position (behind the blocker, unseen):
- *   passSetDepth and the line he protects come from the call (calledLaunchX: the drop every lineman knows) or the QB's
- *   alignment at the snap.
- * - **The interior set as taught** (the short set: the guard sets back two steps, the tackle three; guards hold the
- *   pocket's depth, tackles its width; fight at the line and give little ground): from the snap he goes to his set
- *   spot, his set depth straight back off his own alignment, at his set pace, and meets the rusher there. Off, he sat
- *   at punching distance in front of the rusher on the rusher's line to the live QB, so he barely moved until the
- *   rusher came (0.2 yd/s of retreat requested to 0.5 s; NFL interior OL 0.80 yd deep at 1.0 s, ours 0.50).
- * - **The lateral reference** (setSpotTarget): where the rusher's line to the launch point crosses his own depth,
- *   kept to his zone about his alignment (half a split: no gap opened to the man inside) by a smooth saturation, with
- *   its feed-forward the target's own motion (a fraction of the rusher's, fading as the target nears the zone's edge). Off, his target was a step in front of the
- *   rusher on the rusher's line, moving with the man he was carrying: a self-starting slide (staged: 1.28 yd/s by
- *   1.5 s from no drift at all).
- * Interior linemen (no outside set); the tackles' kick keeps its own law, with the live-QB reads removed. */
+ * - **Information removed** (interior OL). The set no longer reads the QB's live position, which is behind the
+ *   blocker and unseen. passSetDepth and the point he protects come from the call (calledLaunchX: the drop every
+ *   lineman knows), or from the QB's alignment at the snap.
+ * - **The interior short set, as taught.** The guard sets back two steps; guards hold the pocket's depth, fight at the
+ *   line and give little ground.
+ *   - From the snap he goes two set steps straight back off his snap spot, no deeper than the pocket's front, and
+ *     meets the rusher there. Further ground is what the rusher wins against him.
+ *   - Off, he sat at punching distance in front of the rusher, on the rusher's line to the live QB. He barely moved
+ *     until the rusher came (0.2 yd/s of retreat requested to 0.5 s); NFL interior OL are 0.80 yd deep at 1.0 s,
+ *     ours were 0.50.
+ * - **The lateral reference** (setSpotTarget): inside-out on the man at his own depth, unbounded.
+ *   - Off, his target was a step in front of the rusher on the rusher's line, moving with the man he was carrying:
+ *     a self-starting slide (staged: 1.28 yd/s by 1.5 s from no drift at all).
+ * - **Tackles.** They keep their own kick and, unless SET_SPOT_TACKLE, the live-QB read: a known leak, owed
+ *   (KNOWN_PROBLEMS PRO-INFO #12). */
 export const SET_SPOT = process.env.SET_SPOT === '1';
 /** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed too, their clearance and the
  * point they protect from the called drop's schedule (calledPocketX). Two attempts did not repair it (tackles 4.6 yd deep
  * at 2 s against the NFL's 3.7, edge level/in-front pressure 6.5% -> 12-17% of dropbacks): the call's launch depth sits
  * about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor. */
 export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
-/** SET_SPOT: half an interior split (yd): how far beyond his own split from a neighbor he may drift. */
-const SET_ZONE = 0.65;
-const OL_SLOTS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
-/** SET_SPOT: his lateral target and its share of the rusher's lateral motion.
- * - The target is inside-out on the man: where the rusher's line to the launch point crosses his own depth.
- * - **No gap to the man beside him** (attempt 2; attempt 1 was a fixed zone about his alignment, which let the man go
- *   when he worked across it). He may follow his man until he would drift more than SET_ZONE beyond his own split from
- *   a neighbor, as he sees him. When the line slides together, he goes with it.
- * - Each bound is one-sided and smooth (a softplus), and the rusher's lateral velocity feeds forward by the same
- *   slope, so neither the target nor the request steps at a bound. */
-export function setSpotTarget(sim: PlaySim, b: Agent, rPos: Vec2, atX: number): { y: number; frac: number } {
+/** SET_SPOT: his lateral target and its share of the rusher's lateral motion: inside-out on the man, where the
+ * rusher's line to the launch point crosses his own depth, fed forward by that point's own motion (frac of the
+ * rusher's), not a step in front of the man he is carrying.
+ * - **No bound.** Two bounds were tried and dropped. The first was a fixed zone of half a split about his alignment;
+ *   the second was no drift beyond his split from the neighbors he sees.
+ * - Each let the man go when he worked across it: interior "engaged, then free" pressers went 7.0% of dropbacks
+ *   (off) -> 11.0 (zone) and -> 17.7 / 18.6 (neighbors).
+ * - The reference limits the drift by itself. As the pair leaves the launch line, the target pulls back toward the
+ *   ball. Staged, a drift turns back within about 2.5 s and 1 yd, and a real lateral move is mirrored throughout
+ *   (hand-fight note section 23). */
+export function setSpotTarget(sim: PlaySim, rPos: Vec2, atX: number): { y: number; frac: number } {
   const ref = protectPoint(sim), dx = rPos.x - ref.x;
   const frac = dx > 0.3 ? clamp((atX - ref.x) / dx, 0, 1) : 1;
-  const y = ref.y + (rPos.y - ref.y) * frac, home = b.passSet?.spotY ?? b.pos.y;
-  let hi = Infinity, lo = -Infinity;
-  const ol = sim.agents.filter((n) => n.team === b.team && n !== b && OL_SLOTS.has(n.slot));
-  let below: Agent | null = null, above: Agent | null = null;
-  for (const n of ol) {
-    const h = n.passSet?.spotY ?? n.pos.y;
-    if (h < home && (!below || h > (below.passSet?.spotY ?? below.pos.y))) below = n;
-    if (h > home && (!above || h < (above.passSet?.spotY ?? above.pos.y))) above = n;
-  }
-  if (below) hi = sim.see(b, below).pos.y + (home - (below.passSet?.spotY ?? below.pos.y)) + SET_ZONE;
-  if (above) lo = sim.see(b, above).pos.y - ((above.passSet?.spotY ?? above.pos.y) - home) - SET_ZONE;
-  const sp = (z: number) => (z > 30 ? z : Math.log1p(Math.exp(z))), sg = (z: number) => 1 / (1 + Math.exp(-z));
-  let t = y, slope = 1;
-  if (Number.isFinite(hi)) { slope *= 1 - sg((t - hi) / SET_ZONE); t = t - SET_ZONE * sp((t - hi) / SET_ZONE); }
-  if (Number.isFinite(lo)) { slope *= 1 - sg((lo - t) / SET_ZONE); t = t + SET_ZONE * sp((lo - t) / SET_ZONE); }
-  return { y: t, frac: frac * slope };
+  return { y: ref.y + (rPos.y - ref.y) * frac, frac };
 }
 
 /** Signed phi from current positions (blocker relative to the defender). */
@@ -2526,7 +2512,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // SET_SPOT: an interior blocker's lateral target is the pocket's (setSpotTarget), not a step in front of the man he
   // is carrying; its feed-forward is the target's own motion.
   if (SET_SPOT && !b.passSet?.outside) {
-    const tg = setSpotTarget(sim, b, known.pos, b.pos.x);
+    const tg = setSpotTarget(sim, known.pos, b.pos.x);
     offLat = (tg.y - b.pos.y) * lat.y;
     dLat = tg.frac * known.vel.y * lat.y;
   }
