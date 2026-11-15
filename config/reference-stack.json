@@ -201,6 +201,7 @@
     "PASS_OFF": "off",
     "RUSH_GATHER": "off",
     "BLOCK_ANTICIPATE": "off",
+    "FIGHT_MENU": "off",
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",

@@ -1206,6 +1206,31 @@ function clearedSide(e: Engagement, lat: Vec2): number {
   return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
 }
 
+/** FIGHT_MENU (experimental, off; FIGHT_MENU=1, on FITTED_HANDS): the hand fight's stage 2, its minimum (Integration,
+ * 2026-11-15): the bull and the long-arm back on the interior rusher's menu, as forces through the fitted hands with
+ * their coached feet, so that between clubs he is in a move or resetting, not sprinting the corner (under stage 1 he
+ * asked for 88% of his top speed through the fight against the base's 55%: hand-fight note section 15). The move is a
+ * decision from his keys, no roll:
+ * - a blocker's hand light on him (by touch: handUnloaded, KEYED_FELT's key): the club, to clear it;
+ * - otherwise a power rusher (his pass-rush power at least his finesse) takes the long-arm when his arm is the longer
+ *   (seen: RUSH_HANDS' key), else the bull: drive through. A finesse rusher clubs.
+ * Bull and long-arm carry the power request (0.55 of his top speed, full push: stepPassRep's power feet), held for
+ * FIGHT_COMMIT or until a hand goes light on him. A club that cleared nothing leaves him resetting on the bull's feet
+ * while his arm comes back. The long-arm works through the blocker's fitted hands as a strut (LONGARM_STRUT's law, not
+ * the disarm). */
+export const FIGHT_MENU = FITTED_HANDS && process.env.FIGHT_MENU === '1';
+if (process.env.FIGHT_MENU === '1' && !FITTED_HANDS) throw new Error('FIGHT_MENU=1 requires FITTED_HANDS=1 (the fitted hands its moves act through)');
+/** FIGHT_MENU: how long a power move is held before he decides again, unless a hand goes light on him first (s): the
+ * base engine's bull and long-arm commitment (0.75 s), without its random extension. */
+const FIGHT_COMMIT = 0.75;
+function fightMove(e: Engagement): RushMove {
+  const d = e.defender, b = e.blocker;
+  if (e.hands && !e.hands.off && handUnloaded(e)) return 'club';
+  if (d.r('passRushPower') >= d.r('passRushFinesse'))
+    return d.player.measurables.armIn > b.player.measurables.armIn ? 'longarm' : 'bull';
+  return 'club';
+}
+
 /** FITTED_HANDS: an interior pass rep (the hand fight's stage 1 is the interior fight). */
 function fightRep(e: Engagement): boolean {
   return FITTED_HANDS && e.type === 'pass' && e.blocker.slot !== 'LT' && e.blocker.slot !== 'RT';
@@ -1248,7 +1273,7 @@ function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
 function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   const d = e.defender;
   // FITTED_HANDS stage 1: the club is the interior rusher's one move.
-  if (fightRep(e)) return 'club';
+  if (fightRep(e)) return FIGHT_MENU ? fightMove(e) : 'club';
   if (RUSH_HANDS && e.type === 'pass') { const keyed = keyedMove(sim, e); if (keyed) return keyed; }
   const td = traits(d);
   const power = d.r('passRushPower');
@@ -1351,7 +1376,7 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
   const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
   const armB = b.player.measurables.armIn / 36;
   if (h && gap > armB) {
-    if (LONGARM_STRUT) {
+    if (LONGARM_STRUT || FIGHT_MENU) {
       const sc = clamp(1 - (gap - armB) / Math.max(1e-6, d.player.measurables.armIn / 36), 0, 1);
       h.hold *= sc; h.steer *= sc;
     } else { h.push = 0; h.hold = 0; h.steer = 0; }
@@ -1370,6 +1395,10 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   // his arm is back (the club's end, then the arm's return: handsBackAt); with no hand on him there is nothing to
   // clear and he looks again after his reaction.
   if (fightRep(e)) {
+    // FIGHT_MENU: the bull and the long-arm, committed until the next decision point (his commitment, or a felt
+    // change: a hand going light on him, which brings the next decision forward).
+    if (FIGHT_MENU && e.move === 'bull') { e.moveOk = false; e.moveUntil = t; e.nextMoveAt = t + FIGHT_COMMIT; return; }
+    if (FIGHT_MENU && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + FIGHT_COMMIT; longArm(sim, e); return; }
     if (e.hands && !e.hands.off) e.nextMoveAt = t + fightClub(sim, e, axis);
     else e.nextMoveAt = t + Math.max(0.1, e.defender.profile.reactionTime);
     return;
@@ -2308,6 +2337,9 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         d.body.vel.x += f.x / F * mv; d.body.vel.y += f.y / F * mv;
       }
       e.nextMoveAt = Math.max(e.nextMoveAt, e.handsBackAt);
+      // FIGHT_MENU: a club that cleared nothing leaves him resetting on his drive (the bull's feet) while the arm comes
+      // back, not sprinting the corner against hands still on him.
+      if (FIGHT_MENU && fightRep(e) && !cleared && !e.club.air) e.move = 'bull';
       e.club = undefined;
     }
     const loaded = !handUnloaded(e);
