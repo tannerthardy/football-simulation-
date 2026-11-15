@@ -50,6 +50,7 @@ import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
+import { inHeadCone } from './head.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -1803,6 +1804,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     return;
   }
   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
+  // PASS_OFF attempt 2: a helper who sees the man come off his blocker takes him; the rep goes on as his next tick.
+  if (passOff(sim, e, true)) return;
 
   // ---- moves at decision points
   // RUSH_HANDS: a move takes his arm away; he throws no other until it is back. After a club his arm returns across
@@ -3055,7 +3058,57 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
 }
 
 /** Defender wins: the hands come apart. Run sheds throw the blocker aside. */
+/** PASS_OFF (experimental, off; PASS_OFF=1): the pass-off. A pass rusher who beats his blocker while a helper's hands are
+ * on him (the helper's joint carried load last step: he feels the man on his hands) is the helper's man from there: the
+ * helper keeps him as his own block, as coached on a pass-off, instead of losing him with the beaten man's rep. The
+ * engagement goes on with the helper as its blocker and his own hands joint (a fresh fight: neither man in control, no
+ * hold carried over, the rusher's move state reset, his long-arm on the beaten man gone). The beaten blocker leaves it,
+ * with the ordinary 0.6 s before he can grab the same man again; then his own blocking decides whether he recovers to
+ * double him or finds other work, by what he sees. Off, beating the primary ended the rep for everyone on it: a helper
+ * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
+ * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
+export const PASS_OFF = process.env.PASS_OFF === '1';
+function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
+  if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
+  const d = e.defender;
+  const keeper = e.helpers.find((h) => {
+    const j = e.helperHands?.get(h);
+    if (!j || h.isDown(sim.t) || !inBlockReach(h, d, 'pass')) return false;
+    return seen ? seesComeFree(sim, e, h) : Math.max(0, j.normalForce ?? 0) > 0 || Math.abs(j.tangentForce ?? 0) > 0;
+  });
+  if (!keeper) return false;
+  const old = e.blocker, joint = e.helperHands!.get(keeper)!;
+  old.shedBy.set(d, sim.t + 0.6);
+  old.engagement = null;
+  if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
+  e.blocker = keeper; e.hands = joint;
+  e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
+  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
+  syncJoints(sim, e);
+  keeper.tags.add('pass-off');
+  d.tags.add('shed');
+  sim.event('shed', d, old, 'pass: passed off');
+  return true;
+}
+
+/** PASS_OFF attempt 2: the helper sees the man come off the blocker he is helping, as he has them both (his own sight
+ * delay), with the man in his view cone: the man beyond the blocker's working reach (the bodies plus 0.85 of the
+ * blocker's arm, the punch's lockout) or past his shoulder (70 deg off the blocker's line to the launch point, the
+ * release the operators use). Then he takes him. Attempt 1 handed off only at beat(): under FITTED_HANDS most rushers
+ * who reach the QB are still in the first man's rep at arm's length (51% of the frames to the reach), so it fired 3
+ * times in 2 games. */
+function seesComeFree(sim: PlaySim, e: Engagement, h: Agent): boolean {
+  const b = e.blocker, d = e.defender, sd = sim.see(h, d), sb = sim.see(h, b);
+  if (!inHeadCone(h.head ?? h.body.facing, Math.atan2(sd.pos.y - h.pos.y, sd.pos.x - h.pos.x))) return false;
+  const rx = sd.pos.x - sb.pos.x, ry = sd.pos.y - sb.pos.y, sep = Math.hypot(rx, ry);
+  if (sep > b.profile.radius + d.profile.radius + 0.85 * b.player.measurables.armIn / 36) return true;
+  const pp = protectPoint(sim), ux = pp.x - sb.pos.x, uy = pp.y - sb.pos.y, L = Math.hypot(ux, uy) || 1;
+  const ang = Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L);
+  return Math.abs(ang) > (70 * Math.PI) / 180;
+}
+
 function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, why = ''): void {
+  if (!run && passOff(sim, e)) return;
   const d = e.defender;
   const b = e.blocker;
   if (run) runContactObservers.get(sim)?.(e, 'end', { reason: why });

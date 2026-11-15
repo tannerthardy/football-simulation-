@@ -206,6 +206,7 @@
     "BAT_ONCE": "on",
     "BALL_CUE_OWN": "on",
     "PLAY_ONCE": "on",
+    "PASS_OFF": "off",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
     "ENGAGE_FELT": "on",
