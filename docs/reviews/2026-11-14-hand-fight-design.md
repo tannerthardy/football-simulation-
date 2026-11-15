@@ -285,8 +285,8 @@ is the blocker's half, not more rusher moves.
 **Proposed attempt 2** (the last for stage 1), from section 4's blocker half and the rusher's costs:
 1. **The club's approach.** His hand travels to the blocker's wrist (0.45 of his arm at his hand speed, the same sweep
    as its return) before the force acts.
-2. **The blocker reads the arm coming**, at his sight delay (ENGAGE_FELT's felt man while loaded? no: sight, 0.12-0.24
-   s by his read).
+2. **The blocker reads the arm coming** by sight (an arm is seen, not felt), at his sight delay of 0.12-0.24 s by his
+   read.
    - Seen before the force arrives: he sets that hand's hold. The arm bends toward his bent length (the lever term
      rises) and he takes cloth: a grip, OPEN_HANDS' hold, for the club's time.
    - Seen late: it lands as now.
