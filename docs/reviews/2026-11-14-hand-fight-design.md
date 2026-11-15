@@ -1255,3 +1255,21 @@ and slower.
     1.0-1.5 s is not reached.
   - Measured only. Which part to change (the target, which the QB's drop sets late, or the set's early pace) is for the
     next design step.
+
+## 23. The set reference: SET_SPOT (2026-11-15; built, read)
+
+The full write-up is [the SET_SPOT note](2026-11-15-set-spot.md). It covers four decisions:
+- **Information.** The live-QB read is removed from the interior set, not replaced.
+- **Tackles.** They keep it, recorded as owed: KNOWN_PROBLEMS PRO-INFO #12. Two call-only attempts failed
+  (`SET_SPOT_TACKLE`), and the rusher-paced kick-slide is approved next.
+- **Depth.** The interior depth is the two-step short set, with further ground the rusher's.
+- **Lateral reference.** It is inside-out on the man and unbounded. Two bounds each let the man go.
+
+The result:
+- **The meeting.** It now happens at the NFL's depth (0.85 against 0.80 yd at 1.0 s), and the held pair stalls instead
+  of sliding.
+- **Pressure.** Pressure is unchanged; interior pressure is a little lower.
+- **The late pocket.** It is shallow (1.75 against 2.70 yd at 2.0 s), mostly the rusher's drive. Our held rusher is
+  stopped where the NFL's keeps moving.
+- **On top of the hand fight.** The late speed-up is gone, the orbit and releases move toward the NFL's, and interior
+  pressure stays at about twice the NFL's: the hand fight's own come-off.
