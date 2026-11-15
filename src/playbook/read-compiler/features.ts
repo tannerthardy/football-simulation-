@@ -16,6 +16,19 @@ import type { RouteDescriptor } from './types.js';
 import { BREAK_DECL } from '../route-breaks.js';
 import { ROUTES } from '../routes.js';
 
+/** CROSS_OVER (routes.ts): the over climbs across on a diagonal without a sharp cut, so it declares as the comment
+ * below says a crosser does (5 yd from his start, the line crossed), not as a vertical at 12 yd. Off, unchanged. */
+const CROSS_OVER = process.env.CROSS_OVER === '1';
+/** ROUTE_FILLET (src/sim/route-motion.ts): read here only for the crosser's and a rolled screen's declare. */
+const ROUTE_FILLET_ON = process.env.ROUTE_FILLET === '1';
+/** SCREEN_DECLARE (experimental, off): a screen's receiver has shown his answer when he turns back to the catch point
+ * (the break), not when he has moved 5 yd past the line, which a screen behind the line may never do in the horizon. Off,
+ * the tunnel's S1 window came from the fallback (no `moved`, so break + 0.1 = 1.3 s), and running him 0.1 yd/s faster
+ * upfield at the end (ROUTE_EFFORT) crossed +0.5 at 3.9 s and declared him at 4.1 s. With the flag a route in a screen
+ * concept that has a break declares on it, ahead of `moved`. The screen QB's own throw timing (SCREEN_QB) does not read
+ * these windows. */
+const SCREEN_DECLARE = process.env.SCREEN_DECLARE === '1';
+
 const DT = 0.1, HORIZON = 4.0;
 /** DECLARED_BREAK (experimental, off; src/playbook/route-breaks.ts): a receiver is ready when he reaches his route's
  * declared break on this sample of the installed route (the first sample within 1 yd of the vertex, else his closest
@@ -118,7 +131,26 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     // A stem that is mostly lateral (a flat, a swing, an angle's first step) declares by moving, not by a break.
     const p10 = P[Math.min(P.length - 1, 10)];
     const lateralStem = Math.abs(p10.y - start.y) > Math.abs(p10.x - start.x);
-    const declared = lateralStem && moved !== null ? moved + 0.2
+    // ROUTE_FILLET leads a crosser's bends, so a rolled cross shows no 30 deg turn either: it declares the same way.
+    const crosser = (CROSS_OVER || ROUTE_FILLET_ON) && !!id && ROUTES[id]?.family === 'cross';
+    // SCREEN_DECLARE under ROUTE_FILLET: a rolled turn (the bubble's turn up) never shows 30 deg against the chord of a
+    // path that is already bending, so the turn is read against his first stem's heading instead: the first point where
+    // his heading over the next 0.3 s is 30 deg off it, at least 1.5 yd from his start (the break test's own stem), placed
+    // back where the bend began (8 deg).
+    let rolledT: number | null = null;
+    if (SCREEN_DECLARE && ROUTE_FILLET_ON && concept.family === 'screen' && breakT === null) {
+      const j0 = Math.min(P.length - 1, k0 + 5), h0 = heading(P[j0].x - P[k0].x, P[j0].y - P[k0].y);
+      if (Math.hypot(P[j0].x - P[k0].x, P[j0].y - P[k0].y) > 0.5) for (let i = j0; i + 3 < P.length; i++) {
+        if (Math.hypot(P[i].x - P[k0].x, P[i].y - P[k0].y) >= 1.5 && turn(h0, heading(P[i + 3].x - P[i].x, P[i + 3].y - P[i].y)) > 30) {
+          let k = i;
+          while (k > j0 && turn(h0, heading(P[k + 3].x - P[k].x, P[k + 3].y - P[k].y)) > 8) k--;
+          rolledT = P[k].t; break;
+        }
+      }
+    }
+    const screenTurn = SCREEN_DECLARE && concept.family === 'screen' && (breakT ?? rolledT) !== null;
+    const declared = screenTurn ? (breakT ?? rolledT)! + 0.1
+      : (lateralStem || (crosser && breakT === null)) && moved !== null ? moved + 0.2
       : breakT !== null ? breakT + 0.1 : vertical !== null ? vertical : moved !== null ? moved + 0.2 : HORIZON;
     const detectedReady = Math.max(qbSetAt - 0.15, declared);
     let ready = detectedReady, settles = P.length > 3 && P[P.length - 1].speed < 1.5, declaredBreak: RouteDescriptor['declaredBreak'] = undefined;
