@@ -219,10 +219,12 @@ const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
 // square-in and the post on "five big steps and a hitch" take 'five' (read 1 on the hitch); the deep comeback, a
 // seven-step with a hitch under center, is 'five' from the gun (a seven-step concept takes the five from the gun,
 // Pina, Viqtory Sports). flood, sail_corner, double_outs, trips_sail and trips_outs read an out or the flat first
-// (ready 1.9-2.3 s) and go back to 'gun5'; levels reads its square-in first (ready 2.9-3.0) and joins 'five'.
+// (ready 1.9-2.3 s) and go back to 'gun5'; levels reads its square-in first (ready 2.9-3.0) and joins 'five'. Mesh
+// reads the corner on the fifth step and the two crossers on the reset (Win With The Pass, Mesh): 'gun5', the crossers one
+// look (read-compiler ONE_LOOK).
 // docs/reviews/2026-11-15-concept-drops.md.
 const COACHED_DROP: Record<string, PassConcept['drop']> = {
-  smash: 'five', mesh: 'five', drive: 'five', corner_flat: 'five', levels: 'five', comebacks: 'five',
+  smash: 'five', drive: 'five', corner_flat: 'five', levels: 'five', comebacks: 'five',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
 /** VERTS_QUICK (on since engine-67; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a

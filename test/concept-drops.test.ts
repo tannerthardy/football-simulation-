@@ -16,9 +16,11 @@ describe('CONCEPT_DROPS', () => {
   it('marks the concepts read on the hitch five-step and leaves those read on the set, and the quick game, alone', async () => {
     const off = await drops('0'), on = await drops('1');
     expect(off('smash')).toBe('gun5'); expect(off('comebacks')).toBe('seven');
-    for (const id of ['smash', 'mesh', 'drive', 'corner_flat', 'levels', 'comebacks']) expect(on(id)).toBe('five');
+    for (const id of ['smash', 'drive', 'corner_flat', 'levels', 'comebacks']) expect(on(id)).toBe('five');
     // First read an out or the flat: read on the set, as installed.
     for (const id of ['flood', 'sail_corner', 'double_outs', 'trips_sail', 'trips_outs']) expect(on(id)).toBe(off(id));
+    // Mesh reads the corner on the fifth step and the two crossers in one look on the reset: the gun five-step.
+    expect(on('mesh')).toBe(off('mesh'));
     // The verticals are VERTS_QUICK's, not this flag's.
     for (const id of ['four_verts', 'verts_hitch']) expect(on(id)).toBe(off(id));
     for (const id of ['slant_flat', 'stick', 'curl_flat']) expect(on(id)).toBe(off(id));

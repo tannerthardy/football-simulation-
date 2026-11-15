@@ -111,6 +111,52 @@ but screens, gun doubles (trips concepts from gun trips).
   place is the low route on time at the beat, and the high open within a hitch after it.
 - Scoring the keyed place that way, and the step's duration, belong to the QB lane's footwork reads.
 
+## The QB lane's two faults, and the hand-over (2026-11-15, after QB_FOOTWORK bit 1's read of this PR)
+
+**The two faults.**
+- **Smash:** the keyed hitch / corner sat on the five-step hitch (about 2.7 s) and the low (the hitch, ready 2.0) waited
+  for it. On 6 of 9 new sacks the uncoupled QB threw that hitch at 2.2.
+- **Mesh:** read 2 (mesh_under) was on the second hitch (3.3 s) but ready about 2.1. All 6 new sacks were him waiting for
+  that landing.
+
+**The rules now** (`runtime.ts`, behind CONCEPT_DROPS):
+- **A keyed place's beat is its low's time.** The first step at which the low is on time (within 0.2 s of ready), never
+  ahead of its place in the order, and the key's `cueBy` is that beat.
+  - The places after a keyed first place follow on from its step; a serial five-step order still reads its first
+    answer on the hitch.
+  - Sources: "if the corner gains depth... throw the hitch on time" (Throw Deep, Smash); Brown.
+  - Smash: the key on the five-step set at 2.1 s, the hitch on time (ready 2.0), the corner (ready 2.6) opening by the
+    hitch.
+- **Reads on one look share a place.**
+  - The keyed pair always.
+  - Mesh's two crossers too (`ONE_LOOK`): after the corner on the fifth step, "he resets and looks the mesh point to see
+    which receiver breaks open" (Win With The Pass, Mesh, checked against the page). Throw Deep's mesh, with a
+    different install (flare, shallow, deep drag), reads the drags in turn; ours is the corner-mesh-swing install.
+  - Mesh goes back to `gun5`: the corner on the set, both crossers on the first hitch at 2.3 s (ready 2.0 / 2.1).
+  - The corner, ready 2.7 by the compiler's break rule, is the anticipated throw into grass ("read the grass", same
+    source), which is the vertical-ready question again (2026-11-15-vertical-ready.md).
+- **Steps never go back along the order.**
+
+**Places** (a shared place is scored by its first-ready member at the beat), ok / EARLY > 0.2 s / LATE > 0.4 s:
+
+| marking | first place | second place | later places |
+|---|---|---|---|
+| CONCEPT_DROPS off | 14 / 18 / 0 | 17 / 15 / 0 | 40 / 12 / 34 |
+| develop's CONCEPT_DROPS | 19 / 10 / 3 | 11 / 11 / 10 | 29 / 12 / 45 |
+| this PR | 23 / 8 / 1 | 13 / 14 / 5 | 28 / 9 / 32 |
+
+The second places still early are mostly the verticals and the PA beat (stated above), plus 0.3–0.5 s on deep second
+reads in gun-five concepts. The late ones are backside second looks (smash W1, dagger W1, corner_flat W2) and y_cross's
+underneath (+1.3).
+
+**What the plan hands over.**
+- Each read's step **index** `n` (0 the set, 1 the first hitch, 2 the second), and the members of a shared place
+  (`group`). The QB times a step from his own drop (a stride of it).
+- `at` stays only as this compile's estimate in seconds for diagnostics and the existing tests. It goes, with
+  RHYTHM_BEAT / FIVE_STEP_BEAT, once the QB lane reads `n`.
+- The compile still uses those constants to choose a keyed place's step (the low's on-time step). That is a choice of
+  index, made at install; the QB's own step time decides when it falls.
+
 ## Not changed
 
 - The quick game (slant_flat, double_slants, quick_outs, stick, hitches, hitch_out, trips_stick) and the gun-five concepts
