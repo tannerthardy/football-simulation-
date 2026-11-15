@@ -434,13 +434,15 @@ const QB_AVOID = process.env.QB_AVOID === '1';
  * on the stand probe's events): the drift that put him deeper as the man arrived. Against an edge it is unchanged. */
 const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
 /** BLITZ_SECOND (experimental, off; BLITZ_SECOND=1; with BLITZ_READ): the coached second look. A blitzer keeps coming
- * through the line; a linebacker in man on the back comes toward the backfield only as far as the back's depth and
- * goes where the back goes (second form: whose path is he on, from his pictures). On engine-68, 44 of 125 false hots on non-blitz plays (10.3% of them) were linebackers in
- * man on the back (scripts/diag/eyes/free-rusher.ts), and 24 more were called on now screens, where a hot has no
- * meaning. On: while the back has released (moving away from him in his picture), a defender within 3 yd of the back
- * who is not deeper into the backfield than him by a yard has his step toward the quarterback counted as following the
- * back, not as a rush, in the belief's update; and no hot is called on a screen. Both from his own pictures of the two
- * men taken at the same moment. The look costs time by construction: the belief waits for the man to pass the back. */
+ * at the quarterback; a linebacker in man on the back goes where the back goes. On engine-68, 44 of 125 false hots on
+ * non-blitz plays (10.3% of them) were linebackers in man on the back (scripts/diag/eyes/free-rusher.ts), and 24 more
+ * were called on now screens, where a hot has no meaning. On: while the back has released in his picture (moving away
+ * from him), each off-ball defender's path is classified from a fresh picture of him (no older than PATH_FRESH):
+ * 'follow' when his velocity points nearer the released back's forecast point half a second on than at the
+ * quarterback by PATH_MARGIN, back to 'rush' when it points nearer the quarterback by the same margin (enter and exit
+ * on opposite sides); a man following the back has his step toward the quarterback not counted as a rush in the
+ * belief's update. If the back stayed in, a man who comes is a rusher. No hot is called on a screen. The look costs
+ * time by construction: the belief waits for the man's path to declare itself. */
 const BLITZ_SECOND = process.env.BLITZ_SECOND === '1';
 /** BLITZ_SECOND: how fresh his picture of a man must be to classify his path (s), and the angular margin (rad) by which
  * one bearing must beat the other to enter or leave 'following the back'. Chosen; not tuned to a rate. */
