@@ -433,6 +433,15 @@ const QB_AVOID = process.env.QB_AVOID === '1';
  * against an interior rusher it is a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield
  * on the stand probe's events): the drift that put him deeper as the man arrived. Against an edge it is unchanged. */
 const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
+/** BLITZ_SECOND (experimental, off; BLITZ_SECOND=1; with BLITZ_READ): the coached second look. A blitzer keeps coming
+ * through the line; a linebacker in man on the back comes toward the backfield only as far as the back's depth and
+ * goes where the back goes. On engine-68, 44 of 125 false hots on non-blitz plays (10.3% of them) were linebackers in
+ * man on the back (scripts/diag/eyes/free-rusher.ts), and 24 more were called on now screens, where a hot has no
+ * meaning. On: while the back has released (moving away from him in his picture), a defender within 3 yd of the back
+ * who is not deeper into the backfield than him by a yard has his step toward the quarterback counted as following the
+ * back, not as a rush, in the belief's update; and no hot is called on a screen. Both from his own pictures of the two
+ * men taken at the same moment. The look costs time by construction: the belief waits for the man to pass the back. */
+const BLITZ_SECOND = process.env.BLITZ_SECOND === '1';
 /** QB_LOOKOFF_RHYTHM (experimental, off; QB_LOOKOFF_RHYTHM=1): a look-off is taken only when his first read will
  * not be ready until after it. A look-off moves a safety with his eyes in the drop; as taught it never costs the
  * rhythm throw. Off, it was rolled once at the set (by decision-making, anticipation and experience) and held read 1
@@ -711,6 +720,11 @@ export class QBPass implements Behavior {
     const dir = sim.attackDir(a.team), DLINE = ['DE', 'DT', 'NT', 'EDGE'];
     const tau = 0.1 + 0.4 * (1 - a.r('awareness')), k = Math.min(1, sim.dt / tau);
     let lineMen = 0, believed = 0;
+    // BLITZ_SECOND: his picture of the back now (a teammate's picture, the same moment as the defenders' felt ones), and
+    // whether the back is out on a release (moving away from him).
+    const rb = BLITZ_SECOND ? sim.slot('RB') : null;
+    const back = rb ? sim.see(a, rb) : null;
+    const backOut = !!back && ((back.pos.x - a.pos.x) * back.vel.x + (back.pos.y - a.pos.y) * back.vel.y) > 0 && Math.hypot(back.vel.x, back.vel.y) > 1.5;
     for (const d of sim.defense) {
       // A man he sees on the ground is out of the count (his felt picture's pose, not the man's true state).
       const fd = this.felt(a, sim, d);
@@ -729,6 +743,12 @@ export class QBPass implements Behavior {
       // BLITZ_DEPTH: a step at him counts as a rush only at or past the line (1 yd off it), where a run fitter or a
       // coverage player stops; above it, a quarter of it (a backer filling on a fake, a man coming up on a route).
       if (BLITZ_DEPTH && toward > 0 && (p.x - sim.los) * dir > 1) toward *= 0.25;
+      // BLITZ_SECOND: following a released back is not a rush, until he comes past the back's depth.
+      if (BLITZ_SECOND && toward > 0 && back) {
+        const bp = back.pos, nearBack = Math.hypot(p.x - bp.x, p.y - bp.y) < 3;
+        const pastBack = ((bp.x - p.x) * dir) > 1; // closer to the quarterback's end than the back, by a yard
+        if (nearBack && backOut && !pastBack) toward = 0;
+      }
       const target = logistic(Math.log(r.prior / (1 - r.prior)) + 2.5 * toward);
       r.p += (target - r.p) * k;
       if (this.seenTied(a, sim, d, p)) r.p = Math.min(r.p, 0.5);
@@ -1267,7 +1287,7 @@ export class QBPass implements Behavior {
     // BLITZ_READ: believing more rushers than his protection has, his eyes go first to where the space is vacated: the
     // quickest-breaking route on the side of the man he believes is coming (the concept's built-in answer). The throw
     // itself comes from his ordinary window valuation, in which a believed rusher is discounted as a coverage defender.
-    if (BLITZ_READ && !this.hot && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a)) {
+    if (BLITZ_READ && !this.hot && this.hotSeenAt !== null && t - this.hotSeenAt >= this.processing(a) && !(BLITZ_SECOND && (this.concept.family === 'screen' || this.concept.screen))) {
       let top: Agent | null = BLITZ_SKILL ? this.freeThreat?.d ?? null : null;
       if (!top) for (const [d, r] of this.rushB) if (!top || r.p > this.rushOf(top)) top = d;
       // BLITZ_SKILL: a prepared answer takes one short look at the vacated seat (where the replacement comes from).
