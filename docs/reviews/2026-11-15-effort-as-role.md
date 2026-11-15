@@ -15,22 +15,22 @@ Rules + Coaching, for Integration. Design only: nothing here is built. This note
 
 ## What the sources say
 
-Tags: **page** = checked against the page; **snippet** = search summary only, check before quoting further.
+Tags: **page** = checked against the page; **unverified** = the page could not be retrieved, so the point is paraphrased and not cited for the build.
 
-- **Coaches teach full speed as the rule, and selling as the reason.**
-  - "Routes must be ran at full speed" (route-effort review, 2026-11-14).
-  - A go route's receiver "should always be trying his hardest to get open -- whether he's serving as a decoy or the primary receiving target" (snippet; route explainer).
-  - The clear-out "has to go DEEPER than your money route", and "the deep receiver is a bodyguard" for the route underneath (snippet).
-  - "The Y must get his depth and sell a vertical route" (Coiner, PlaybookTech, Teach Receiver Tempo; page).
-- **Coaches also teach tempo, from the coverage he sees.**
-  - Against man, "staying on the move with speed is the correct thing". Against zone, "a good receiver will come across with a little pace ... so he does not run out of the opening" (Coiner; page).
-  - Speed cut against zone: "tempo his speed and settle right in the DBs hip pocket before breaking" (USA Football, The Speed Cut; snippet).
-  - Tight break: not a route for "maximum speed unless he can maintain his efficiency in the break area" (USA Football, The Tight Break; snippet; the page timed out).
-  - Speed work: "controlled and relaxed on the way in, fast on the way out" (Gifford, SimpliFaster; snippet).
-- **What players do: effort follows the player's own reading of his role.**
-  - All-22 of George Pickens, 2024: "When he was part of Fields' core progression, Pickens ran his routes hard, and when he didn't expect the ball to be thrown his way he jogged through his routes" (Steelers Depot; snippet; the page refused the fetch).
-  - Aikman on lazy Cowboys route running: it made quarterbacking harder because routes were not run as expected (PFT; snippet).
-  - Coaches criticise this. It still happens, and it costs the play: the defender reads it, and the quarterback cannot trust the timing.
+**1. Speed control against the coverage he sees (the common case).** This is not less effort: it is the speed he chooses for what the coverage lets him do.
+- Coiner (PlaybookTech, Teach Receiver Tempo, 2021; page):
+  - against man, "staying on the move with speed is the correct thing";
+  - against zone, "a good receiver will come across with a little pace" so "he does not run out of the opening".
+- USA Football's receiver series (unverified: the pages timed out): against zone the speed cut is tempoed so he settles in the defender's hip pocket before breaking; a tight break is not run at maximum speed unless he keeps his efficiency in the break.
+
+**2. Selling the route.**
+- "The Y must get his depth and sell a vertical route" (Coiner; page).
+- A clear-out runs deeper than the route it clears for (route explainers; unverified, general).
+
+**3. Effort on a late or backside role.** Full speed is the coaches' rule. Players don't always give it.
+- Aikman on the Cowboys' receivers: "As a quarterback, if you're not certain where guys are going to be consistently, it's hard to play the position" (PFT, Charean Williams, 2024-10-17; page).
+- Pickens, October 2024: reporting described him jogging on some routes, and Tomlin said his effort was not in question. One film piece (Steelers Depot, unverified: 403) is reported to say his effort followed whether he was in the progression.
+- Small and optional: see the role table.
 
 ## The model this suggests
 
@@ -38,13 +38,26 @@ Effort is the receiver's intent, chosen by the player from what he knows and see
 - **What he knows.** The call is his to know: his route, his role in the concept (clear-out, the high or low of a key, a progression number, the backside alert), and the timing the play is installed with. That is coached knowledge, not another player's private assignment.
 - **What he sees.** The coverage he is reading (man or zone, from his own picture, as ROUTE_END already reads it), whether the ball is gone and where, and the quarterback when he looks at him. The quarterback's body facing is not his gaze.
 
+**Speed control first.** The common case is row 2 of the table below, and it carries the first build:
+- He stays on the move against man.
+- He comes into a zone window with a little pace and settles in it (ROUTE_END's window).
+- He comes into a break under control and goes out of it fast.
+
+**The stem's tempo and the break's entry are one decision:** the speed he can carry into the cut he has to make.
+- The break's type (a plant or a rolled bend) and his body set that speed. ROUTE_EFFORT's break table declares it per route point, and ROUTE_FILLET's planned entry (`speedAfter`, `lateralEnvelope`) computes it.
+- The stem's pace then follows from it: he runs the stem at the pace from which he can still slow to that entry speed by the vertex, and no faster.
+- So the stem's effort is not a second number beside the break table. It is the same plan read backwards from the cut.
+- Tools' plant-brake row shows the cost today: ours arrive at the vertex too fast and short of it (1.5 yd out at 2.5 yd/s, against the NFL's 0.5 yd at 1.4). A stem paced to the cut is what fixes that.
+- Against zone, the "cut" is the window: the speed he can stop at inside the opening.
+- Against man, it is the break he wins on.
+
 **By role** (the coached intent; execution and freedom follow below):
 
 | role | coached intent | what changes it |
 |---|---|---|
 | clear-out (declared, PLAN_ROLES) | full pace until his defender must carry him, then stay deeper than the money route | the defender passes him off or turns his back: the sell has done its job |
 | a key's high or low, early progression | full pace through the stem, burst out of the break (ROUTE_EFFORT's break table) | zone seen: tempo into the window and settle (ROUTE_END's window); man: stay on the move |
-| late progression or backside alert | the coach's rule is still full pace | the player's own freedom (next section) |
+| late progression or backside alert (small, optional tail) | the coach's rule is still full pace | the player's own freedom (next section); not in the first build |
 | ball thrown elsewhere (observable) | not a route any more: block or pursue | already its own behaviour |
 
 **Execution and freedom: never ban, never script.**
@@ -54,7 +67,7 @@ Effort is the receiver's intent, chosen by the player from what he knows and see
   - **Benefit:** the defender reads his speed. Our coverage reads velocity (`reads.ts` release classes, the Topper's "still climbing past 8 yd"), so a clear-out that eases is passed off sooner. That emerges, and is not authored.
   - **The quarterback:** his forecast uses the route law (`receiver-forecast.ts`). A receiver who eases off what the forecast assumes costs the timing throw. That is Aikman's point, and it should emerge too.
 - **What the player uses to decide:** his role and the time since his read in the installed timing (he knows both), the ball, and the coverage he sees.
-- **Who decides differently:** a player trait could set how much the late roles ease (none exists today; `routeRunning` is technique, not effort). Adding one is a roster decision for Integration, not part of this note.
+- **Who decides differently:** a player trait could set how much the late roles ease (none exists today; `routeRunning` is technique, not effort). It is left out of the first build. It is a roster decision, and Integration is putting it to the user once the mechanism exists.
 - **What must not happen:** no role is capped below what works. If easing off on the backside never pays, the player keeps running.
 
 ## Named case: the tight end releasing inside past an end
@@ -77,20 +90,22 @@ Each item needs the operator checked on a few plays first:
   - This is Tools' go measurement, split by role.
 - **The same split on the sim:** off (per-family constants), on (ROUTE_EFFORT), and the role model, if built.
 - **The package split in games** (next item for me): which of ROUTE_EFFORT / PLAN_ROLES / ROUTE_FINISH carries the completion drop.
-  - If it is ROUTE_EFFORT, check where the throws change: the timing throw to a late role, or the clear-out not passed off.
+  - If it is ROUTE_EFFORT, check two places where the throws change:
+    - zone windows run through at full pace (Coiner's point);
+    - timing throws to routes that arrive early.
+- **NFL split** (Tools, asked by Integration): route speed with the ball held, by targeted or not, man or zone, early or late in the down, and into the break. The same operator runs on ours, off and with ROUTE_EFFORT.
 
 ## Open
 
 - Whether the coverage's read of a receiver's speed is strong enough for an eased clear-out to cost anything. If it never does, the model has no reason to keep him running, and the right repair is in coverage, not in the receiver.
-- The quarterback's side: whether his forecast should use the receiver's tendency or the coached route. The coached route is the installed timing, and that is what the QB is taught.
-- The snippet-only sources above need checking in a browser before they are quoted again.
+- The quarterback's side, decided (Integration): his forecast uses the coached route and installed timing, not the receiver's tendency. A receiver who eases off it costs the timing throw.
+- The unverified sources above need checking in a browser before the build cites them.
 
 ## Sources
 
 - Charlie Coiner, "Teach Receiver Tempo", PlaybookTech First Down, 2021-08-06 (page): https://firstdown.playbooktech.com/coaches-community/teach-receiver-tempo
-- USA Football, "Coaching the Wide Receiver - The Speed Cut" (snippet): https://blogs.usafootball.com/blog/7085/coaching-the-wide-receiver-the-speed-cut
-- USA Football, "Coaching the Wide Receiver - The Tight Break" (snippet; timed out): https://blogs.usafootball.com/blog/7066/blank
-- Steelers Depot, Pickens effort piece, 2024-10 (snippet; 403): https://steelersdepot.com/2024/10/george-pickens-dismisses-questions-about-effort-i-wouldnt-be-able-to-get-past-dbs-running-go-balls-if-i-was-actually-lazy
-- PFT, Aikman on Cowboys receivers' route running (snippet): https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/troy-aikman-calls-cowboys-wide-receivers-lazy-in-criticism-of-their-route-running
-- SimpliFaster, Gifford on coaching speed (snippet): https://simplifaster.com/?p=44178
+- Charean Williams, "Troy Aikman calls Cowboys wide receivers lazy in criticism of their route running", PFT, 2024-10-17 (page): https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/troy-aikman-calls-cowboys-wide-receivers-lazy-in-criticism-of-their-route-running
 - Taylor Kolste, "WR Play: the art of route running" (page; speed cut and speed release only): https://rileykolstefootball.com/2018/05/18/wr-play-the-art-of-route-running/
+- USA Football, "The Speed Cut" and "The Tight Break" (unverified; timed out): https://blogs.usafootball.com/blog/7085/coaching-the-wide-receiver-the-speed-cut, https://blogs.usafootball.com/blog/7066/blank
+- Steelers Depot, Pickens effort piece, 2024-10 (unverified; 403): https://steelersdepot.com/2024/10/george-pickens-dismisses-questions-about-effort-i-wouldnt-be-able-to-get-past-dbs-running-go-balls-if-i-was-actually-lazy
+- Tomlin on Pickens' effort, ESPN, 2024-10 (search result; not fetched): https://global.espn.com/nfl/story/_/id/41683856/steelers-tomlin-says-question-george-pickens-effort
