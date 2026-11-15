@@ -11,10 +11,11 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
-  const tick = sim.tick.bind(sim), dir = sim.attackDir(sim.qb.team); let ev: any = null, hooked: any = null, br = '-', done = false;
+  const tick = sim.tick.bind(sim), dir = sim.attackDir(sim.qb.team); let ev: any = null, hooked: any = null, br = '-', done = false, lastCmd: any = null;
   sim.tick = () => {
     const b: any = sim.qb.behavior;
     if (b?.kind === 'qb-pass' && hooked !== b) { hooked = b;
+      const up0 = b.update.bind(b); b.update = (a: any, s: any) => { const c = up0(a, s); lastCmd = c?.vel ? { x: c.vel.x, y: c.vel.y } : null; return c; };
       for (const k of ['pocketMove', 'noThrow', 'evade', 'scramble', 'startThrow', 'whileLooking', 'throwAway']) { const f = b[k]?.bind(b); if (f) b[k] = (...xs: any[]) => { br = br === '-' || k === 'evade' || k === 'startThrow' || k === 'throwAway' || k === 'scramble' ? k : br; return f(...xs); }; } }
     br = '-'; tick();
     if (done || b?.kind !== 'qb-pass') return;
@@ -27,7 +28,8 @@ PlaySim.prototype.run = function (this: PlaySim) {
     }
     const d = ev.d, dist = Math.hypot(d.pos.x - q.pos.x, d.pos.y - q.pos.y), p = b.pressure(q, sim), f = b.felt(q, sim, d);
     const closing = ((d.vel.x - q.vel.x) * (q.pos.x - d.pos.x) + (d.vel.y - q.vel.y) * (q.pos.y - d.pos.y)) / (dist || 1);
-    ev.ticks.push({ br, sp: Math.hypot(q.vel.x, q.vel.y), up: q.vel.x * dir, dist, closing, pt: p.time, mine: p.agent === d, feltD: Math.hypot(f.pos.x - q.pos.x, f.pos.y - q.pos.y), engaged: !!d.engagement, phase: b.phase });
+    const fin = sim.cmds?.[q.idx]?.vel ?? null;
+    ev.ticks.push({ cmdUp: lastCmd ? lastCmd.x * dir : null, cmdLat: lastCmd ? Math.abs(lastCmd.y) : null, finUp: fin ? fin.x * dir : null, avoidOn: !!b.avoid, br, sp: Math.hypot(q.vel.x, q.vel.y), up: q.vel.x * dir, dist, closing, pt: p.time, mine: p.agent === d, feltD: Math.hypot(f.pos.x - q.pos.x, f.pos.y - q.pos.y), engaged: !!d.engagement, phase: b.phase });
     if (!holding || dist <= 1.0 || sim.t - ev.t0 >= 1.2) {
       done = true; const T = ev.ticks, n = T.length, mean = (k: string) => +(T.reduce((s: number, x: any) => s + x[k], 0) / n).toFixed(2), cnt: Record<string, number> = {};
       for (const x of T) cnt[x.br] = (cnt[x.br] ?? 0) + 1;
@@ -36,7 +38,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
       console.log(JSON.stringify({ t0: +ev.t0.toFixed(2), slot: d.slot, dur: +(sim.t - ev.t0).toFixed(2), end: !holding ? 'ball gone' : dist <= 1.0 ? 'reached' : 'time', branches: cnt, phase0: ev.phase0,
         qbSpeed: mean('sp'), qbUp: mean('up'), qbSpeedMid: mid.length ? +(mid.reduce((s: number, x: any) => s + x.sp, 0) / mid.length).toFixed(2) : null, closing0: +first.closing.toFixed(1),
         pressure0: +first.pt.toFixed(2), names0: first.mine, feltMinusTrue0: +(first.feltD - first.dist).toFixed(2), alarmTicks: T.filter((x: any) => x.pt < 0.45).length, ticks: n,
-        reEngaged: T.some((x: any) => x.engaged), phases: T.reduce((c: any, x: any) => (c[x.phase] = (c[x.phase] ?? 0) + 1, c), {}), avoid: b.avoidCount ?? null, needNow: +(b.windup(q) + (b.dwellNow ?? 0.25)).toFixed(2), heldNow: +b.held(q, d, sim).toFixed(2) }));
+        reEngaged: T.some((x: any) => x.engaged), tick: T.map((x: any) => [x.br, x.phase, x.avoidOn ? 1 : 0, x.cmdUp === null ? null : +x.cmdUp.toFixed(2), x.finUp === null ? null : +x.finUp.toFixed(2), +x.up.toFixed(2), +x.dist.toFixed(1)]), phases: T.reduce((c: any, x: any) => (c[x.phase] = (c[x.phase] ?? 0) + 1, c), {}), avoid: b.avoidCount ?? null, needNow: +(b.windup(q) + (b.dwellNow ?? 0.25)).toFixed(2), heldNow: +b.held(q, d, sim).toFixed(2) }));
     }
   };
   return orig.apply(this);

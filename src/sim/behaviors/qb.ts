@@ -423,9 +423,16 @@ const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
  * the man's body and reach take (his radius, the quarterback's, his reach); the pace is the step over the time he
  * has, no more than three quarters of his own top speed (a pace he can throw from: the moving-thrower model prices
  * the throw). It ends when he has reached the spot or the man's time to him is back outside his need by a margin.
- * While he moves his read does not progress (his dwell waits). A man he does not feel does not move him. The alarm
+ * His read keeps running while he moves (the costs are the moving-thrower price and his pictures aging where his eyes
+ * are not; a first form froze the read and that was the largest cost in the system). Against an interior man the step
+ * is up and off his line, from his set point. A man he does not feel does not move him. The alarm
  * under 0.45 s stays as the trapped case. To replace QB_FEEL, QB_POCKET and POCKET_CLIMB (all off). */
 const QB_AVOID = process.env.QB_AVOID === '1';
+/** QB_EVADE_UP (experimental, off; QB_EVADE_UP=1): the trapped case (under the 0.45 s alarm with no throw) steps off a
+ * man in front of him to the side and up, not straight away from him. Off, evade steps directly away from the man, so
+ * against an interior rusher it is a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield
+ * on the stand probe's events): the drift that put him deeper as the man arrived. Against an edge it is unchanged. */
+const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
 /** QB_AVOID: the look he still needs beyond his motion when his dwell is not known (s; otherwise his own dwell on a
  * read), and the margin by which the man's time must clear his need
  * before he stops (s): exit on the far side of the entry. Chosen. */
@@ -846,7 +853,6 @@ export class QBPass implements Behavior {
       const v = this.avoid, left = Math.hypot(v.to.x - a.pos.x, v.to.y - a.pos.y);
       // Kept until the spot is reached or the man is back outside his need by a margin.
       if (left > 0.3 && this.felt(a, sim, v.body).pose !== 'down' && timeOf(v.body) < need + AVOID_EXIT) {
-        this.readStart += sim.dt; // his read waits while he moves
         return goTo(a, v.to, { speed: Math.min(1, v.pace / a.profile.vmax), facing, cutSkill: cut });
       }
       this.avoid = null;
@@ -863,12 +869,13 @@ export class QBPass implements Behavior {
       const awayY = -Math.sign(dy) || Math.sign(a.pos.y - sim.ballY) || 1;
       const readY = read ? Math.sign(this.has(sim, read).y - a.pos.y) : 0;
       const side = Math.abs(dy) < 0.5 && readY ? readY : awayY;
-      to = { x: a.pos.x, y: a.pos.y + side * step };
+      // Up and off his line: into the space in front of him, from his set point (not from where the drop's momentum
+      // has carried him), never past the pocket's front.
+      to = { x: Math.min(Math.max(a.pos.x, this.drop.x) + 0.5 * step, sim.los - 2.5), y: a.pos.y + side * step };
     }
     const pace = clamp(step / Math.max(p.time - 0.1, 0.2), 1.5, 0.75 * a.profile.vmax);
     this.avoid = { body: d, to, pace, kind: fromEdge ? 'climb' : 'slide' };
     this.avoidCount[this.avoid.kind]++;
-    this.readStart += sim.dt;
     return goTo(a, to, { speed: Math.min(1, pace / a.profile.vmax), facing, cutSkill: cut });
   }
   /** QB_KEY_THROW diagnostic (no effect): throws to the answer while he was holding on it. */
@@ -2584,7 +2591,8 @@ export class QBPass implements Behavior {
     const away = { x: a.pos.x - tp.x, y: a.pos.y - tp.y };
     const l = Math.hypot(away.x, away.y) || 1;
     const fromEdge = Math.abs(tp.y - a.pos.y) > 1.5 && tp.x < a.pos.x + 1;
-    const dir = fromEdge ? { x: 0.8, y: (away.y / l) * 0.6 } : { x: away.x / l, y: away.y / l };
+    const side = Math.sign(away.y) || Math.sign(a.pos.y - sim.ballY) || 1;
+    const dir = fromEdge ? { x: 0.8, y: (away.y / l) * 0.6 } : QB_EVADE_UP ? { x: 0.45, y: side * 0.9 } : { x: away.x / l, y: away.y / l };
     const elus = 0.5 + 0.5 * a.r('elusiveness');
     return { vel: { x: dir.x * a.profile.vmax * 0.7 * elus, y: dir.y * a.profile.vmax * 0.7 * elus }, facing: 0, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
