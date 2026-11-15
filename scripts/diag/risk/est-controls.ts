@@ -19,9 +19,10 @@ P.tick = function () {
   }
   const S = this.__ec;
   if (S && S.T.tags?.has?.('ball-servo')) S.servo = true;
+  if (S && this.ball.kind === 'air' && this.ball.flight?.pos) S.lastAir = { x: this.ball.flight.pos.x, y: this.ball.flight.pos.y };
   if (S && S.sepEnd === undefined && (this.ball.kind !== 'air' || this.ball.securing)) {
     const D = nearest(this, S.T); S.sepEnd = Math.hypot(D.pos.x - S.T.pos.x, D.pos.y - S.T.pos.y); S.dSpeed = Math.hypot(D.vel.x, D.vel.y);
-    S.flight = this.t - S.rel; const bp = this.ball.flight?.pos ?? this.ball.pos; S.recBall = bp ? Math.hypot(bp.x - S.T.pos.x, bp.y - S.T.pos.y) : NaN; S.arrDepth = bp ? (bp.x - this.los) * this.attackDir(this.offense[0].team) : NaN;
+    S.flight = this.t - S.rel; const bp = S.lastAir ?? this.ball.flight?.pos ?? this.ball.pos; S.recBall = bp ? Math.hypot(bp.x - S.T.pos.x, bp.y - S.T.pos.y) : NaN; S.arrDepth = bp ? (bp.x - this.los) * this.attackDir(this.offense[0].team) : NaN;
   }
   return r;
 };
