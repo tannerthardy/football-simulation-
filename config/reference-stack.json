@@ -115,7 +115,7 @@
     "ROUTE_CRAFT": "on",
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "off",
-    "DIR_CAP": "off"
+    "DIR_CAP": "off",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
@@ -201,6 +201,8 @@
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",
     "PASS_RIDE": "on",
+    "BAT_ONCE": "on",
+    "BALL_CUE_OWN": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
     "ENGAGE_FELT": "on",

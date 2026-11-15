@@ -19,6 +19,11 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { bodyHeight, lineOfSight, SHOULDER } from './sight.js';
 
+/** BALL_CUE_OWN (on; `=0` restores the ball cue timed on his sighting of the passer, and the stand in
+ * `playObservedFlight`): the ball in flight is his own percept at his own delay (#766). The switch was added at
+ * integration so the card can attribute it. */
+export const BALL_CUE_OWN = process.env.BALL_CUE_OWN !== '0';
+
 export type ReleaseCue =
   | { kind: 'motion' | 'through' | 'pulled'; at: number }
   | { kind: 'ball'; at: number; pos: Vec3 };
@@ -83,7 +88,7 @@ export function releaseEvidence(sim: PlaySim, observer: Agent): ReleaseCue[] {
   // had lost the passer behind bodies looked for the ball before the throw and could not see one in front of him.
   // (BALL_EST bit 32 replaces this with his estimator's own sample through his head.)
   const ballDelay = observer.mind.observationDelay(observer.profile.reactionTime);
-  const ballBack = Math.round(ballDelay / sim.dt), ballAt = sim.t - ballBack * sim.dt;
+  const ballBack = BALL_CUE_OWN ? Math.round(ballDelay / sim.dt) : back, ballAt = BALL_CUE_OWN ? sim.t - ballBack * sim.dt : at;
   const b = flight.find((f) => Math.abs(f.t - ballAt) < sim.dt / 2);
   if (b && sawAt(sim, observer, ballBack, { pos: { x: b.pos.x, y: b.pos.y } }, b.pos.z)) out.push({ kind: 'ball', at: ballAt, pos: b.pos });
   return out;

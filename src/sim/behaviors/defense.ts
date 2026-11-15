@@ -38,6 +38,7 @@ import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
+import { BALL_CUE_OWN } from '../release-evidence.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -2279,7 +2280,7 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   if (last && sim.t - last.t <= 0.3) return { ...last.cmd };
   // No catchable sample left on his flight and no recent approach: he keeps his ball responsibility and goes to where
   // he believes it came down (pursueIfLive's ball rally), not a stop. A newer holder picture takes over there.
-  const area = unresolvedBallArea(a);
+  const area = BALL_CUE_OWN ? unresolvedBallArea(a) : null;
   return area ? goTo(a, area) : stand();
 }
 
