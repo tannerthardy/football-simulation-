@@ -107,7 +107,9 @@ describe('Two-deep man: Pounder', () => {
     const vert = filmScene({ formation: 'gun_spread_10', coverage: 'pounder', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 2.6 });
     expect(jobsOf(vert, 'SS')).toContain(`man:${vert.numbering.S2}`);
     expect(jobsOf(vert, 'NB')).toEqual([`man:${vert.numbering.S2}`]);
-    const out = filmScene({ formation: 'gun_spread_10', coverage: 'pounder', strong: { 1: 'go', 2: 'quick_out' }, weak: { 1: 'go', 2: 'seam' }, until: 2.6 });
+    // Re-recorded on the engine defaults (2026-11-15): WR_SNAP starts a wide receiver on the ball he sees move (about
+    // 0.15 s after the cadence), so #2's quick out breaks later and the inside-quarter safety takes #1 by 2.8 s, not 2.6.
+    const out = filmScene({ formation: 'gun_spread_10', coverage: 'pounder', strong: { 1: 'go', 2: 'quick_out' }, weak: { 1: 'go', 2: 'seam' }, until: 2.8 });
     expect(modeOf(out, 'SS')).toBe('one');
   });
 });
