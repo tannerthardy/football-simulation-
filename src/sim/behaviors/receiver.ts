@@ -44,8 +44,6 @@ interface PressContact {
  * into a tackle setting deep (3.5 to 1.9 yd/s at 0.9 s, KNOWN_PROBLEMS
  * PRO-1). Receivers at the line keep their release and press contact. */
 const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
-/** RELEASE_SIDE (experimental, off; docs: RouteRunner.routeSide): spacing passes a teammate on his route's side. */
-export const RELEASE_SIDE = process.env.RELEASE_SIDE === '1';
 /** RCV_SEEN (experimental, off; intended on once measured; the user's information rule): receivers' and downfield
  * blockers' reads of opponents come from what they see (`seen-contact.ts`): a defender is down when his picture shows
  * him down, and taken when it shows him in contact with one of the observer's teammates, not from his true support
@@ -130,51 +128,31 @@ const ROUTE_END = process.env.ROUTE_END === '1';
 /** ROUTE_END: how far a settled receiver slides from his settle point, against man and in a zone window (yd; a choice). */
 const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
-/** CRAFT_CROSS (experimental, off; with ROUTE_CRAFT): his lane check also sees a man coming across his path. ROUTE_CRAFT
- * looks only ahead on his line, at where a defender will be when he gets there, so a rusher closing from the side on an
- * inside release (a wing's slant, a mesh crosser) is never in it and the two run into each other (cover6-half-side: the
- * wing and the end both fall at 1.2 s; mesh under ROUTE_EFFORT: the crosser stays in the end's body 0.3 s longer). With the
- * flag, from his own picture (seen position and velocity), the closest approach of the two if each keeps going: inside his
- * clearance before he has run his look, the craft's own response (bend around it, to his route's side if it has one, else
- * behind the man, the side he is coming from). */
-/** CRAFT_HOLD (experimental, off; with ROUTE_CRAFT): the craft keeps the side it chose round a man until he is clear of
- * him. Off, the side and the block are recomputed on each tick's picture, and a wing pressed against an end flips his
- * request ±6 yd/s across nearly every tick (gun_wing_12 cover6, 1.0-1.7 s; Flex): re-aiming and taking it back. */
+
+/** CRAFT_HOLD (experimental, off; with ROUTE_CRAFT): the craft commits to the side it chose round a man in his lane and
+ * keeps it until he is clear. Off, the side and the block are recomputed on each tick's picture, and the side comes from
+ * a break side re-derived each tick from his velocity, so a wing pressed against an end flips his request +-7 yd/s across
+ * nearly every tick (gun_wing_12 cover6, 1.0-1.7 s; Flex): re-aiming and taking it back. With the flag: the side is his
+ * route's from the snap when it is clear (the declared break's leg, routeSide, with DECLARED_BREAK), else the side he
+ * already holds; held for the episode as a field direction, across whichever man is in the lane, until he has been clear
+ * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
+ * 0.3 of his pace along it) or across to the other side of the man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
-const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number }>();
-const CRAFT_CROSS = process.env.CRAFT_CROSS === '1';
+const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2 }>();
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
-export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number): MoveCommand {
+export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null): MoveCommand {
   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
   if (speed < 1) return cmd;
   const u = { x: cmd.vel.x / speed, y: cmd.vel.y / speed }, n = { x: -u.y, y: u.x };
   const pace = Math.max(1, (Math.hypot(a.vel.x, a.vel.y) + speed) / 2);
   const look = pace * (0.25 + 0.2 * rr) + 1.2;
-  let block: { p: Vec2; ahead: number; off: number; clear: number; behind?: number; d?: Agent } | null = null;
+  let block: { p: Vec2; ahead: number; off: number; clear: number; d?: Agent } | null = null;
   for (const d of sim.defense) {
     if (isDownFor(a, sim as PlaySim, d)) continue;
     const seen = sim.see(a, d);
     const rel = { x: seen.pos.x - a.pos.x, y: seen.pos.y - a.pos.y };
     const closing = Math.max(0.5, pace - (seen.vel.x * u.x + seen.vel.y * u.y));
-    // CRAFT_CROSS: a man coming across his path (a rusher crossing an inside release), in his own picture: where the
-    // two of them are closest if each keeps going, and whether that is inside his clearance before he has run his look.
-    if (CRAFT_CROSS) {
-      const clearX = a.profile.radius + d.profile.radius + 0.15 + 0.25 * rr;
-      const vr = { x: seen.vel.x - u.x * pace, y: seen.vel.y - u.y * pace }, vv = vr.x * vr.x + vr.y * vr.y;
-      if (vv >= 1e-6) {
-      const tc = -(rel.x * vr.x + rel.y * vr.y) / vv;
-      if (tc > 0 && tc * pace <= look) {
-      const miss = Math.hypot(rel.x + vr.x * tc, rel.y + vr.y * tc);
-      if (miss < clearX) {
-      const q = { x: seen.pos.x + seen.vel.x * tc, y: seen.pos.y + seen.vel.y * tc };
-      const qa = (q.x - a.pos.x) * u.x + (q.y - a.pos.y) * u.y, qo = (q.x - a.pos.x) * n.x + (q.y - a.pos.y) * n.y;
-      // Going behind him: the side he is coming from (against his motion across the line).
-      const across = seen.vel.x * n.x + seen.vel.y * n.y;
-      const behind = Math.abs(across) > 0.5 ? -Math.sign(across) : 0;
-      if (qa > 0 && (!block || qa < block.ahead)) block = { p: q, ahead: qa, off: qo, clear: clearX, behind, d };
-      } } }
-    }
     const ahead0 = rel.x * u.x + rel.y * u.y;
     if (ahead0 <= 0) continue;
     // Where he will be when the receiver gets there, on the receiver's line.
@@ -191,15 +169,18 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
     const seen = sim.see(a, held.d), rel = { x: seen.pos.x - a.pos.x, y: seen.pos.y - a.pos.y };
     const ahead = rel.x * u.x + rel.y * u.y, off = rel.x * n.x + rel.y * n.y;
     if (ahead > -0.2 && Math.abs(off) < held.clear + 0.5) block = { p: seen.pos, ahead: Math.max(ahead, 0.1), off, clear: held.clear, d: held.d };
-    else if (sim.t - held.at > 0.2) craftHeld.delete(a);
+    // Just clear of him: the bend he committed to runs out its 0.2 s before his route takes back over.
+    else if (sim.t - held.at <= 0.2 && held.out) return { ...cmd, vel: { x: held.out.x * speed, y: held.out.y * speed } };
+    else craftHeld.delete(a);
   }
   if (!block) return cmd;
   const keep = CRAFT_HOLD ? craftHeld.get(a) : undefined;
-  // The held side is a direction on the field (his route command turns under him; a sign against its normal would flip).
-  // His route's own break side wins when it is known; a side held from before he knew it does not hold him against it.
-  const side = breakSide !== 0 ? breakSide : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
-    : block.behind ? block.behind : (block.off >= 0 ? -1 : 1);
-  if (CRAFT_HOLD && block.d) craftHeld.set(a, { d: block.d, across: breakSide !== 0 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t });
+  // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
+  // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
+  const declared = CRAFT_HOLD && routeDir ? routeDir.x * n.x + routeDir.y * n.y : 0;
+  const side = Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
+    : breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
+  if (CRAFT_HOLD && block.d) craftHeld.set(a, { d: block.d, across: Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out });
   const around = { x: block.p.x + n.x * side * block.clear, y: block.p.y + n.y * side * block.clear };
   const dx = around.x - a.pos.x, dy = around.y - a.pos.y, l = Math.hypot(dx, dy) || 1;
   const ease = 0.94 + 0.04 * rr;
@@ -217,6 +198,7 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
     const f = Math.max(0.3, ox * u.x + oy * u.y), lean = 0.2, m = Math.hypot(f, lean);
     ox = (f * u.x + lean * n.x * side) / m; oy = (f * u.y + lean * n.y * side) / m;
   }
+  if (CRAFT_HOLD) { const h = craftHeld.get(a); if (h) h.out = { x: ox * ease, y: oy * ease }; }
   return { ...cmd, vel: { x: ox * speed * ease, y: oy * speed * ease } };
 }
 
@@ -287,11 +269,11 @@ export class RouteRunner implements Behavior {
   /** DECLARED_BREAK (src/playbook/route-breaks.ts): the point on his installed path that is his route's declared break
    * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
    * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
-  /** RELEASE_SIDE (experimental, off; with DECLARED_BREAK): the direction his route goes from its declared vertex, until
+  /** DECLARED_BREAK (read by RELEASE_SIDE and CRAFT_HOLD): the direction his route goes from its declared vertex, until
    * he reaches it (the leg leaving it, unit). Spacing passes a teammate on this side instead of the side the geometry
    * leaves him: a wing's slant goes under the end it lines up behind, as taught, not round his outside. */
   routeSide(): { x: number; y: number } | null {
-    if (!RELEASE_SIDE || !(process.env.DECLARED_BREAK === '1')) return null;
+    if (!(process.env.DECLARED_BREAK === '1')) return null;
     const at = BREAK_DECL[this.route.id]?.at;
     if (typeof at !== 'number' || this.idx > at || !this.path[at + 1]) return null;
     const v = this.path[at].p, n = this.path[at + 1].p, l = Math.hypot(n.x - v.x, n.y - v.y);
@@ -453,7 +435,7 @@ export class RouteRunner implements Behavior {
       return this.settle(a, sim);
     }
     if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
-    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a));
+    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null);
     return cmd;
   }
 
