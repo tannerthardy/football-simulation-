@@ -33,7 +33,7 @@
 import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
-import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, PLANT_SPEED, spendEnergy, shouldersOf, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
+import { commandFacing, legDriveFactor, trunkPrice, fatigueFactor, followAccel, locomotionAccel, PLANT_SPEED, spendEnergy, shouldersOf, TRUNK_TWIST, turnRateOf, updateSqueeze, updateTrunk, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
@@ -2322,7 +2322,7 @@ export class World {
           if (ex > 0) {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
-            const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
+            const dir = legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux))) * trunkPrice(b);
             let capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
             if (BRACE_GAIT) {
               const speed = hypot2(b.vel.x, b.vel.y), u01 = clamp(speed / PLANT_SPEED, 0, 1), w = u01 * u01 * (3 - 2 * u01);
@@ -2392,7 +2392,7 @@ export class World {
         // below. Without the law, a strength gap is a constant net force and
         // a carry keeps building.
         const tf = hypot2(tfx, tfy);
-        const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
+        const along = tf > 1e-9 ? legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) * trunkPrice(b) : 1;
         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
         const strength = pushForce * fv * along * a;
         const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);

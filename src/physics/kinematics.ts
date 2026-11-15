@@ -119,11 +119,52 @@ export function lateralEnvelope(body: Body, speed: number, cutSkill = 1, capacit
   return p.lateral * cutSkill * (1 - 0.2 * clamp(speed / p.vmax, 0, 1)) * (0.85 + 0.15 * fatigueFactor(body.energy)) * capacity;
 }
 
+/** DIR_CAP (experimental, off; DIR_CAP=1; docs/reviews/2026-11-15-dir-cap.md): the speed cap by the angle of the hips off the line of travel is MONOTONE, and the
+ * trunk's twist is priced once, in the same cap.
+ *
+ * Why: BDB 2025 weeks 1-9, 322 zone-coverage DBs, ball held, top-decile speed over each man's own p98 by the angle of his shoulders off his travel (15 deg
+ * bins, nfl_dir_capacity.py): 1.00 to 30 deg, 0.91 at 52, 0.81 at 82, 0.75 at 97, 0.65 at 127, 0.625 at 135 deg and beyond, relative to forward. The legacy curve
+ * has side-on (90 deg) as the slowest point, 0.60, below the square backpedal at 0.68; the NFL curve has the backpedal slowest and side-on in between.
+ * This curve is a straight line from full speed at DIR_FULL (20 deg) to the backpedal's share at DIR_BACK (130 deg), flat beyond. `shuffle` is no longer
+ * read by this cap (it is still the pace of a square lateral shuffle where a controller reads it directly).
+ *
+ * The trunk: a body whose hips run down the line of travel while his shoulders look 22 / 45 / 55 deg off pays about 4 / 8 / 10 percent in the NFL
+ * (twist_price.py: -0.26, -0.54 and -1.11 yd/s at 15-30, 30-60 and 60+ deg against a 6.5 yd/s cruise; and the shoulder curve above up to 55 deg). TRUNK_PRICE is
+ * 0.0018 per degree of trunk twist, linear, no term for the line or the wobble (the cut found none). Where it comes from, plainly: it is a STATED CHOICE
+ * (Coverage's: 10 percent at the 55 deg limit), checked against an observational NFL curve, NOT a fitted constant. The curve carries the confound that a
+ * receiver looking back may be throttling by choice, so it is an upper bound on the capacity cost. The likely mechanism is the arm drive (running
+ * propulsion uses counter-rotation of the shoulders against the hips, which a trunk held twisted off the line of the pelvis cannot do with the stride), but I
+ * have not verified a gait source that puts a number on it, so the number is not derived from one. Hips are
+ * charged by the curve above and the trunk by this term; the NFL shoulder curve cannot split them (`o` is the shoulders), so the pair is checked
+ * against it only where the trunk is the whole of the angle (hips on the path), and in the sim's own shoulder bins. */
+export const DIR_CAP = process.env.DIR_CAP !== '0';
+const DIR_FULL = (20 * Math.PI) / 180, DIR_BACK = (130 * Math.PI) / 180;
+/** Fraction of the cap lost per radian of trunk twist (0.0018 per degree). */
+export const TRUNK_PRICE = 0.0018 * (180 / Math.PI);
+/** The trunk's share of the speed cap (1 with no twist, or DIR_CAP off). */
+export function trunkPrice(body: Body): number { return DIR_CAP && body.trunk ? 1 - TRUNK_PRICE * Math.abs(body.trunk) : 1; }
+
 /**
  * Speed cap multiplier from the angle between facing and travel direction:
  * 1 running forward, `shuffle` sideways, `backpedal` straight back.
  */
 export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: number): number {
+  return DIR_CAP ? speedCapFactor(profile, relAngle) : legDriveFactor(profile, relAngle);
+}
+/** DIR_CAP's top-speed curve: monotone (see DIR_CAP). */
+function speedCapFactor(profile: PhysicalProfile, relAngle: number): number {
+  const a = Math.abs(relAngle);
+  {
+    // Monotone: full speed within DIR_FULL of the line of travel, then a straight fall to the backpedal's share at DIR_BACK, flat beyond.
+    if (a <= DIR_FULL) return 1;
+    if (a >= DIR_BACK) return profile.backpedal;
+    return 1 - (1 - profile.backpedal) * (a - DIR_FULL) / (DIR_BACK - DIR_FULL);
+  }
+}
+/** The legs' directional DRIVE (force) share, unchanged by DIR_CAP: full ahead, `shuffle` sideways, `backpedal` straight back. world.ts's push and leg-drive
+ * laws read this, since DIR_CAP's curve is a measure of top-speed capacity and not of the force the legs give a hand fight or a push (which moved the
+ * pass rush's engagement dither over its budget when the curve was applied there too). */
+export function legDriveFactor(profile: PhysicalProfile, relAngle: number): number {
   const a = Math.abs(relAngle);
   const half = Math.PI / 2;
   if (a <= half) {
@@ -137,7 +178,7 @@ export function directionalSpeedFactor(profile: PhysicalProfile, relAngle: numbe
 /** Effective top speed of a body moving in direction `heading`. */
 export function effectiveVmax(body: Body, heading: number, effort = 1): number {
   const rel = angleDiff(body.facing, heading);
-  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * (1 - 0.08 * (body.squeeze ?? 0)) * directionalSpeedFactor(body.profile, rel) * effort;
+  return body.profile.vmax * fatigueFactor(body.energy) * enduranceFactor(body) * (1 - 0.08 * (body.squeeze ?? 0)) * directionalSpeedFactor(body.profile, rel) * trunkPrice(body) * effort;
 }
 
 /** Long sprints fade: after ~3.5 s near top speed, up to 10% slower. */
@@ -231,7 +272,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const start = p.vmax * fat * enduranceFactor(body);
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
-    full = start * directionalSpeedFactor(p, angleDiff(body.facing, heading));
+    full = start * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * trunkPrice(body);
     const cap = full * effort;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
     wanted = Math.min(dmag, cap);

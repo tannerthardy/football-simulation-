@@ -486,7 +486,7 @@ export function promoteContact(e: Engagement, keeper: Agent): boolean {
  * and returns to bent at ARM_SPEED after. A run defender's gap is his own bent press plus his feet. */
 export const PRESS_SPRING = process.env.PRESS_SPRING === '1';
 export const PAIR_HANDS = process.env.PAIR_HANDS === '1' || PRESS_SPRING;
-if (PRESS_SPRING && !(process.env.HANDS_LEVER === '1' && process.env.TRUNK_TWIST !== '0' && process.env.CHEST_SHOULDERS === '1')) throw new Error('PRESS_SPRING=1 requires HANDS_LEVER=1, TRUNK_TWIST and CHEST_SHOULDERS=1 (the shoulder lever)');
+if (PRESS_SPRING && !(process.env.HANDS_LEVER === '1' && process.env.TRUNK_TWIST !== '0' && process.env.CHEST_SHOULDERS !== '0')) throw new Error('PRESS_SPRING=1 requires HANDS_LEVER=1, TRUNK_TWIST and CHEST_SHOULDERS (the shoulder lever)');
 export const CONTROL_HANDS = process.env.CONTROL_HANDS === '1' || PAIR_HANDS;
 /** PAIR_HANDS: the bent-base centre distance (yd): the NFL's centre-to-centre separation 0.4 s after first contact on
  * edge reps the rusher did not win by 2.5 s (BDB 2025: head-up 0.89, outside half 0.76, wide 0.82; edge-rush.py). Our
