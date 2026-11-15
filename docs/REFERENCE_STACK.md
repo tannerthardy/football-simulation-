@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-68`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-69`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,34 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-69: `BAT_ONCE`, `BALL_CUE_OWN`, `LOOSE_SEEN`, `DIR_CAP`, `CRAFT_HOLD` and `RELEASE_SIDE` on (2026-11-15)
+
+Engine-68 plus #766 (the defender's own ball cue, behind the `BALL_CUE_OWN` switch added at integration), #770 (`LOOSE_SEEN`), #771 (`DIR_CAP`), #773 (`CRAFT_HOLD`, `RELEASE_SIDE`) and Flex's `BAT_ONCE`. #769 (`SPACING_HOLD`) is merged and stays off.
+
+**Card.** 16 games per arm over 2 leagues, seeds 11 / 23 / 31, each arm against engine-68 with all seven off (`out/e82-card-*.md`). Change per seed; "all" on seeds 23 / 31 is exactly this engine (on seed 11 it also carried `SPACING_HOLD`).
+
+| arm | completion (pts) | yards / attempt | capped rush yd / carry | run stuffs (pts) |
+|---|---|---|---|---|
+| `BAT_ONCE` | +2.6 / +2.2 / -0.6 | +0.23 / +0.04 / +0.06 | -0.20 / +0.03 / -0.02 | +0.8 / -2.3 / +0.8 |
+| `BALL_CUE_OWN` + `LOOSE_SEEN` | -1.9 / -0.2 / -1.1 | -0.76 / +0.08 / +0.15 | +0.05 / 0.00 / -0.20 | -0.2 / -1.7 / -1.3 |
+| `CRAFT_HOLD` + `RELEASE_SIDE` | n/a / -0.5 / -1.6 | n/a / -0.46 / -0.11 | n/a / -0.23 / +0.24 | n/a / +0.5 / -1.6 |
+| `DIR_CAP` | -0.2 / +1.1 / -4.2 | -0.14 / +0.04 / -0.08 | -0.27 / -0.13 / -0.16 | +1.0 / +0.6 / +0.4 |
+| all | (with `SPACING_HOLD`) / -0.1 / -1.3 | / +0.28 / -0.56 | / +0.23 / +0.01 | / -1.0 / -0.8 |
+
+**Reading.**
+- **The card resolves no outcome for any arm.** No row keeps its sign and size across the three seeds. The noise floor is visible in the `BAT_ONCE` arm: it "moved" capped rush yards by -0.20 on seed 11 and run stuffs by -2.3 on seed 23, and a bat at the line cannot touch a run. Whole-game pairing diverges after the first changed play, so a single-seed "moved" flag is not a finding here.
+- **So each flag is on by what it is, not by the card.**
+  - `BAT_ONCE`: a defect fix. The chance of a bat per pass depended on the tick length. Its size on engine-68 is small: the trunk pair already took bats from 5.0% to about 0.6% of passes through the roll's facing term (Flex, 2026-11-15), which is not the hands; the roll itself is replaced with BAT_HANDS, parked.
+  - `BALL_CUE_OWN`: the defender's ball in flight is his own percept at his own delay, not timed by his sighting of the passer, and it no longer carries the ball's true velocity. Information honesty.
+  - `LOOSE_SEEN`: a fumble, recovery or interception is recognized player by player, from sight or a teammate's call. Information honesty.
+  - `DIR_CAP`: the speed cap by hip angle is monotone (the legacy curve had side-on slower than the backpedal). Seed 31's completion -4.2 does not repeat (-0.2, +1.1) and the "all" arm on the same seed is -1.3; logged, not explained.
+  - `CRAFT_HOLD`, `RELEASE_SIDE`: the route craft and the release round a teammate commit to a side and hold it (the commit rule). Two seeds only, because seed 11's arm also carried `SPACING_HOLD`.
+- **`SPACING_HOLD` stays off.** Run stuffs +3.5 points on seed 11 with it on, and Tools' paired run set has 13.1 -> 17.1%: 88% of the plays that became stuffs carry a held bend, and the bend's side is arbitrary (ties go one way; first angle that clears). Holding the bend is right; holding an arbitrary one is the defect. It waits for the side chosen from the carrier's own picture.
+
+**Suite.** `npm run test:all` on the candidate (flags as carded): 4,599 of 4,602; the two known `continued-recovery-world` research failures and `film-pack-determinism` timing out at 240 s under load (passes alone in 222 s). Re-run after the flips: see the PR.
+
+**Test-only.** Flex's re-record of `hold-facing` (seed 1957 DT_S) and `punch-strike` (case 1 on roster 10) on the engaged trunk; the `ENGAGE_TRUNK` / `CHEST_SHOULDERS` pins added at engine-68 are removed.
 
 ## engine-68: `ROUTE_FILLET`, `ROUTE_END`, `SCREEN_DECLARE`, `DECLARED_BREAK`, `ENGAGE_TRUNK` and `CHEST_SHOULDERS` on (2026-11-15)
 

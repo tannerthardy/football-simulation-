@@ -2423,7 +2423,7 @@ function arrivalPoint(sim: PlaySim, path: PlaySim['ballPath']): Vec2 | null {
 }
 
 /** LOOSE_SEEN (see behaviors/loose-seen.ts): read here to keep the module free of an import cycle. */
-const LOOSE_SEEN_PURSUIT = process.env.LOOSE_SEEN === '1';
+const LOOSE_SEEN_PURSUIT = process.env.LOOSE_SEEN !== '0';
 /** Generic pursuit of the ball carrier. */
 export class Pursuit implements Behavior {
   readonly kind = 'pursuit';

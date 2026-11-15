@@ -30,7 +30,7 @@ import { goTo, runThrough } from './common.js';
 import { Pursuit } from './defense.js';
 import { DownfieldBlocker } from './receiver.js';
 
-export const LOOSE_SEEN = process.env.LOOSE_SEEN === '1';
+export const LOOSE_SEEN = process.env.LOOSE_SEEN !== '0';
 const CALL_RANGE = 20;
 const LEAD = 0.2;
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-68",
+  "id": "engine-69",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -49,7 +49,7 @@
     "ANCHOR_GRADE": "on",
     "ARRIVE_LEAD": "on",
     "ATTACK_LANDMARK": "off",
-    "LOOSE_SEEN": "off",
+    "LOOSE_SEEN": "on",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
     "BACKFIELD_DEPTH": "on",
@@ -115,7 +115,7 @@
     "ROUTE_CRAFT": "on",
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "off",
-    "DIR_CAP": "off",
+    "DIR_CAP": "on",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
@@ -305,8 +305,8 @@
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
-    "CRAFT_HOLD": "off",
-    "RELEASE_SIDE": "off",
+    "CRAFT_HOLD": "on",
+    "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
     "READ_RISK_TRACE": "off",

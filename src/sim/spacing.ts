@@ -356,7 +356,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
  * route goes from its declared break (RouteRunner.routeSide), as taught; a teammate sitting on his route line (a wing
  * behind the end on a slant or a drag) he passes under, round the back hip, the side away from the line of scrimmage.
  * The side is held while that teammate restricts him. Off, the side is whatever the geometry of the closing cut leaves. */
-const RELEASE_SIDE = process.env.RELEASE_SIDE === '1';
+const RELEASE_SIDE = process.env.RELEASE_SIDE !== '0';
 const passSide = new WeakMap<Agent, { peer: number; sign: number }>();
 
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
