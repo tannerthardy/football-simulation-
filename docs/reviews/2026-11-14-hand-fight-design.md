@@ -225,3 +225,71 @@ as often as the NFL's. That fits the orbit finding (the pairs do not rotate, and
 1.5 s never wins). Added as a reported row, not a target: **the share of dropbacks alive at 3.0 s that end in a sack**.
 Late NFL sacks also include coverage sacks, where a moving quarterback runs into a rusher who came off his block.
 Whether ours come off a block toward a moving quarterback at all is the come-off question, measured after stage 1.
+
+## 5. Stage 1, attempt 1: built and read (2026-11-15, `FITTED_HANDS`, branch 7037d163)
+
+Built as section 4's stage 1 on RUSH_HANDS' hand (requires RUSH_HANDS; the name HAND_FIGHT is the run fight's flag):
+- **Two hands, each its own one-DOF body** (`handPair`). Each carries half the joint's push, hold and steer at its own
+  edge factor: press, its friction and steer exist only through a fitted hand, hand by hand. A strike acts on the
+  hand it meets and is held by that arm alone (half each term). RUSH_HANDS' joint held a club with both arms.
+- **Re-fit:** after reaction plus travel (refitTime), landing with a placement error by hand technique (PLACE_SPREAD);
+  past the torso's edge it missed and goes again.
+- **No landed-move window** from a lost hand on pass reps: the man is freed only by the World.
+- **The club is the interior rusher's one move**, thrown when a hand is on him and his arm is back (RUSH_HANDS' return
+  cost); no rolled cooldown. He works the side he feels cleared, by touch at 0.06 s. RUSH_ONE_HAND's aim read the
+  joint's state with no delay; under the flag that is removed.
+- Off identical (seed 999 287b9553c2e9b709). World tests: test/fitted-hands.test.ts.
+
+**Read:** seed 11 x 8, on the patch base (ENGAGE_TRUNK + CHEST_SHOULDERS). Operators: interior-fight.py,
+pressure-source.py, club-fight.mts (seed 11 x 4; new: moves-fight.mts reads a window by moveUntil, and the club, about
+0.03 s, ends inside one tick).
+
+| | NFL | base | + RUSH_HANDS | + FITTED_HANDS |
+|---|---|---|---|---|
+| orbit p50 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s (deg) | 25 / 34 / 39 | 7 / 9 / 12 | 11 / 15 / 20 | **26 / 39 / 37** |
+| offset p25 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s (yd) | -0.04 / -0.18 / -0.33 | +0.02 / -0.03 / -0.07 | 0.00 / -0.06 / -0.09 | **-0.07 / -0.34 / -0.25** |
+| separation p50 0.5-1.0 s (yd) | 0.81 | 0.85 | 0.89 | **0.81** |
+| released by 1.0 / 2.0 s, never | 43 / 60%, 37% | 32 / 47%, 48% | 46 / 61%, 35% | **53 / 73%, 25%** |
+| hands' load before / 0.1 s after a club (N) | | | 322 / 616 | **868 / 541** |
+| clubs a second / clearing a hand | | | 0.45 / 35% | 1.54 / 54% |
+| hands on, share of rep: 2 / 1 / 0 | | | 92 / 8 / 0% | 62 / 36 / 2% |
+| interior pressure, % of dropbacks (reported) | about 9.8 | 12.0 | 21.7 | **38.5** |
+| sack proxy, % of dropbacks; alive at 3.0 s ending in one (reported) | 7; 12 | 6.1; 12.7 | 7.2; 15.2 | **15.2; 31.6** |
+
+The sack proxy counts a dropback with no forward pass ending behind the line (it includes QB runs for a loss); it is
+a comparison between arms, not the QB lane's operator.
+
+**Gates:**
+1. **The club's window: pass.** The load falls after it (868 -> 541 N); under RUSH_HANDS alone it rises
+   (322 -> 616 N).
+2. **The orbit at 0.5-1.0 s: pass**, at the NFL's (26 against 25 deg), and on through 1.0-2.5 s.
+3. **The offset p25: pass.** The rusher reaches the other half (-0.34 at 1.0-1.5 s against the NFL's -0.18 to -0.33),
+   and separation is at the NFL's 0.81.
+4. **Release timing: fail, overshot.** 53 / 73% by 1.0 / 2.0 s against 43 / 60%; never released 25% against 37%.
+
+**Where the releases come from** (club-fight.mts, separation past 1.2 yd after contact): 533 of 810 reps
+(RUSH_HANDS 417 of 780).
+- 391 come with both hands on; 141 with one hand off (RUSH_HANDS 29); 194 within 0.5 s of a clear (RUSH_HANDS 37).
+- A hand is off 0.35 s p50 (p90 0.55) before both are back.
+
+So the clears now free the man, as taught. The overshoot is that they come too often and cost him nothing the blocker
+makes him pay:
+- 1.54 clubs a second, every time his arm is back, and 54% clear.
+- The blocker never sees one coming: the club is a force from the instant it is thrown, with no arm travel to the
+  hand before it. The return travel is modelled (RUSH_HANDS' sweep) but the approach is not.
+- The blocker has none of section 4's half: no read of the arm, no hold set against it, no snatch back.
+
+One move plus honest hands gives all of the orbit: section 4's test of the theory comes out for it. What is missing
+is the blocker's half, not more rusher moves.
+
+**Proposed attempt 2** (the last for stage 1), from section 4's blocker half and the rusher's costs:
+1. **The club's approach.** His hand travels to the blocker's wrist (0.45 of his arm at his hand speed, the same sweep
+   as its return) before the force acts.
+2. **The blocker reads the arm coming**, at his sight delay (ENGAGE_FELT's felt man while loaded? no: sight, 0.12-0.24
+   s by his read).
+   - Seen before the force arrives: he sets that hand's hold. The arm bends toward his bent length (the lever term
+     rises) and he takes cloth: a grip, OPEN_HANDS' hold, for the club's time.
+   - Seen late: it lands as now.
+
+No roll, no cooldown, no cap on clubs. Whether the club still works is then the World's, against a hold set by a man
+who saw it.
