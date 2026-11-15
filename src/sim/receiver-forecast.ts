@@ -147,6 +147,8 @@ export class ReceiverForecast {
     if (this.prior.startDelay === null && this.releaseSeenAt === null
       && Math.hypot(p.pos.x - this.prior.start.x, p.pos.y - this.prior.start.y) > this.prior.profile.radius) this.releaseSeenAt = p.sampledAt;
     this.picture = Object.freeze({ ...p, pos: Object.freeze({ ...p.pos }), vel: Object.freeze({ ...p.vel }) });
+    // The last picture that places him on his installed route (cheap: progress inference, no forecast run).
+    if (this.build()?.estimate.motion === 'installed-route') this.lastOnRoute = this.picture;
   }
 
   /** Reuse the quarterback's already acquired defensive memory. Never ask a
@@ -188,6 +190,22 @@ export class ReceiverForecast {
     this.extend(c, Math.ceil(8 / this.dt)); // far enough to reach any installed break
     return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
   }
+
+  /** The break he last expected from his own picture of the man on his installed route: `breakAt` from the last
+   * picture that placed him on it, held once the forecast can no longer place him (observed motion); null if no
+   * picture ever did. */
+  get lastExpectedBreak(): number | null {
+    const p = this.lastOnRoute;
+    if (!p) return null;
+    if (this.lastExpected?.picture !== p) {
+      const f = new ReceiverForecast(this.observer, this.prior, this.dt);
+      f.holdTol = this.holdTol; f.choice = this.choice; f.acquire(p);
+      this.lastExpected = { picture: p, at: f.breakAt() };
+    }
+    return this.lastExpected.at;
+  }
+  private lastOnRoute: ReceiverPicture | null = null;
+  private lastExpected: { picture: ReceiverPicture; at: number | null } | null = null;
 
   /** When he expects the break on the route as installed, from the snap: the installed route run with the body he
    * believes (no picture), the same run `breakAt` makes from a picture. For a route with no break, when that run has
