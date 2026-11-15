@@ -804,3 +804,19 @@ Free frames (no OL within 1.0 yd) of off-blocker interior rushers, speed p50 / p
 - **So the next piece is the rusher's request during the fight: his feet in the move.** That is the between-moves
   intent (task 13) and the rush's pace while his hands work. Measure first: the NFL's engaged interior rusher's speed
   (pairs within 1.2 yd, interior-fight's pairs) against ours by time since contact, base and FH.
+
+**The engaged rusher's speed** (interior-fight.py's pairs, frames within 1.2 yd), p50 / p75 by time since contact:
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| NFL | 2.55 / 3.20 | 2.50 / 3.16 | 2.06 / 2.92 | **1.80 / 2.69** |
+| base | 2.00 / 2.55 | 1.58 / 2.24 | 2.06 / 2.69 | 2.06 / 2.69 |
+| FH | 2.12 / 2.69 | 2.12 / 2.92 | 2.83 / 3.54 | 2.69 / 3.64 |
+| FH + PO | 2.24 / 2.83 | 2.24 / 2.92 | 2.92 / 3.61 | **3.20 / 4.00** |
+
+- The NFL's engaged rusher is fastest at contact and slows as the rep goes on (2.55 -> 1.80): the fight stalls him.
+- Ours starts slower (2.1-2.2) and speeds up through the rep under FH (to 2.9-3.2 after 1.0 s): the engaged rusher is
+  moving, not stalled, as the press comes and goes.
+- So the gap is in the late fight. An engaged NFL rusher who has not won by 1 s is held nearly in place. Ours, with a
+  hand off half the time, runs around the blocker at his rush pace. That is where his speed out of the release comes
+  from.
