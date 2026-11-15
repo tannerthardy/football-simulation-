@@ -42,7 +42,7 @@ import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
-import { calledLaunchX } from './called-drop.js';
+import { calledLaunchX, calledPocketX } from './called-drop.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
@@ -199,7 +199,9 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   const clearance = tackle ? 2.8 : 3.8;
   // SET_SPOT: from the call (the drop he knows is coming), or the QB's alignment at the snap; never the QB's live
   // position behind him.
-  const qx = SET_SPOT ? calledLaunchX(sim) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
+  // The tackle's clearance follows the called drop's schedule (where the call puts the QB now), as the live QB did; the
+  // final launch point from the snap sent him 5 yd deep at once (SET_SPOT's first tackle read).
+  const qx = SET_SPOT ? (tackle ? calledPocketX(sim, sim.t) : calledLaunchX(sim)) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
   const pocket = Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
   // front. Further ground is what the rusher wins against him, not his request.
