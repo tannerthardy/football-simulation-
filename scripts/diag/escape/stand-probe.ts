@@ -36,7 +36,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
       console.log(JSON.stringify({ t0: +ev.t0.toFixed(2), slot: d.slot, dur: +(sim.t - ev.t0).toFixed(2), end: !holding ? 'ball gone' : dist <= 1.0 ? 'reached' : 'time', branches: cnt, phase0: ev.phase0,
         qbSpeed: mean('sp'), qbUp: mean('up'), qbSpeedMid: mid.length ? +(mid.reduce((s: number, x: any) => s + x.sp, 0) / mid.length).toFixed(2) : null, closing0: +first.closing.toFixed(1),
         pressure0: +first.pt.toFixed(2), names0: first.mine, feltMinusTrue0: +(first.feltD - first.dist).toFixed(2), alarmTicks: T.filter((x: any) => x.pt < 0.45).length, ticks: n,
-        reEngaged: T.some((x: any) => x.engaged), sacked: false }));
+        reEngaged: T.some((x: any) => x.engaged), phases: T.reduce((c: any, x: any) => (c[x.phase] = (c[x.phase] ?? 0) + 1, c), {}), avoid: b.avoidCount ?? null, needNow: +(b.windup(q) + (b.dwellNow ?? 0.25)).toFixed(2), heldNow: +b.held(q, d, sim).toFixed(2) }));
     }
   };
   return orig.apply(this);

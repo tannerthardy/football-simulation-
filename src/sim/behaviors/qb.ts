@@ -411,6 +411,25 @@ const KEY_MOVE_NOISE = 5;
  * man): they doubled corner throws and put the added ones where a safety was a hard run from the ball (50% of routes
  * targeted against the NFL's 8%; docs/reviews/2026-11-13-qb-pocket.md). */
 const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
+/** QB_AVOID (experimental, off; QB_AVOID=1): he moves off a free rusher he feels coming, when he feels him. Off, his
+ * pocket movement does not read his pressure estimate: it holds his set point on a spring, pushed a little by bodies
+ * within 3.5 yd, and the only movement that answers a rusher (evade) is reachable under the 0.45 s alarm, after the hot
+ * throw has found nothing. On a free interior rusher who got to him he had the man named at a median 0.55 s out and
+ * moved 1.1 yd/s, drifting back (scripts/diag/escape/stand-probe.ts); from the deeper set he did not step up inside an
+ * edge that had the corner. On: when the nearest man in his pressure estimate is free in his own picture (no blocker
+ * he sees between them) and will reach him inside the time his throw still needs (his motion plus a look), he makes
+ * one decision and keeps it: against a man in front or inside, slide off his line, to his read's side when that is
+ * away from the man; against a man from the edge at or behind his depth, step up inside the arc. The step is the room
+ * the man's body and reach take (his radius, the quarterback's, his reach); the pace is the step over the time he
+ * has, no more than three quarters of his own top speed (a pace he can throw from: the moving-thrower model prices
+ * the throw). It ends when he has reached the spot or the man's time to him is back outside his need by a margin.
+ * While he moves his read does not progress (his dwell waits). A man he does not feel does not move him. The alarm
+ * under 0.45 s stays as the trapped case. To replace QB_FEEL, QB_POCKET and POCKET_CLIMB (all off). */
+const QB_AVOID = process.env.QB_AVOID === '1';
+/** QB_AVOID: the look he still needs beyond his motion when his dwell is not known (s; otherwise his own dwell on a
+ * read), and the margin by which the man's time must clear his need
+ * before he stops (s): exit on the far side of the entry. Chosen. */
+const AVOID_LOOK = 0.25, AVOID_EXIT = 0.35;
 const KEY_HOLD = 1.2;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
@@ -814,6 +833,44 @@ export class QBPass implements Behavior {
    * decision-making and awareness set how cleanly he places him. */
   /** QB_KEY_THROW: the man his key read gave, and when. */
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
+  /** QB_AVOID: the decision in force: the man, the spot, the pace; and diagnostics (no effect). */
+  private avoid: { body: Agent; to: Vec2; pace: number; kind: 'slide' | 'climb' } | null = null;
+  /** His dwell on a read this tick (the look a throw still needs), for QB_AVOID. */
+  private dwellNow: number | null = null;
+  avoidCount = { slide: 0, climb: 0 };
+  /** QB_AVOID: move off a free rusher he feels, or null when there is none to answer (see the flag). */
+  private avoidMove(a: Agent, sim: PlaySim, read: Agent | undefined, facing: number): MoveCommand | null {
+    const need = this.windup(a) + (this.dwellNow ?? AVOID_LOOK), cut = 0.8 + 0.4 * a.r('elusiveness');
+    const timeOf = (d: Agent) => { const f = this.felt(a, sim, d); return timeToReach({ pos: f.pos, vel: f.vel, profile: this.bodyOf(a, d), speedScale: 1 }, a.pos, 0.8) + this.held(a, d, sim); };
+    if (this.avoid) {
+      const v = this.avoid, left = Math.hypot(v.to.x - a.pos.x, v.to.y - a.pos.y);
+      // Kept until the spot is reached or the man is back outside his need by a margin.
+      if (left > 0.3 && this.felt(a, sim, v.body).pose !== 'down' && timeOf(v.body) < need + AVOID_EXIT) {
+        this.readStart += sim.dt; // his read waits while he moves
+        return goTo(a, v.to, { speed: Math.min(1, v.pace / a.profile.vmax), facing, cutSkill: cut });
+      }
+      this.avoid = null;
+    }
+    const p = this.pressure(a, sim), d = p.agent;
+    if (!d || p.time >= need || this.held(a, d, sim) > 0) return null;
+    const f = this.felt(a, sim, d).pos, dy = f.y - a.pos.y, body = this.bodyOf(a, d);
+    const step = body.radius + a.profile.radius + body.reach;
+    const fromEdge = Math.abs(dy) > 1.5 && f.x <= a.pos.x + 1;
+    let to: Vec2;
+    if (fromEdge) to = { x: Math.min(a.pos.x + step, sim.los - 2.5), y: a.pos.y - Math.sign(dy) * 0.3 * step };
+    else {
+      // Off his line: to the read's side when that is away from the man, else away from him.
+      const awayY = -Math.sign(dy) || Math.sign(a.pos.y - sim.ballY) || 1;
+      const readY = read ? Math.sign(this.has(sim, read).y - a.pos.y) : 0;
+      const side = Math.abs(dy) < 0.5 && readY ? readY : awayY;
+      to = { x: a.pos.x, y: a.pos.y + side * step };
+    }
+    const pace = clamp(step / Math.max(p.time - 0.1, 0.2), 1.5, 0.75 * a.profile.vmax);
+    this.avoid = { body: d, to, pace, kind: fromEdge ? 'climb' : 'slide' };
+    this.avoidCount[this.avoid.kind]++;
+    this.readStart += sim.dt;
+    return goTo(a, to, { speed: Math.min(1, pace / a.profile.vmax), facing, cutSkill: cut });
+  }
   /** QB_KEY_THROW diagnostic (no effect): throws to the answer while he was holding on it. */
   keyThrows = 0;
 
@@ -1144,6 +1201,7 @@ export class QBPass implements Behavior {
     // Quick game is rhythm: one look per read. Dropback reads take longer.
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
     const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus)) * (1 - 0.3 * this.narrow(a));
+    this.dwellNow = dwell;
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
@@ -1558,6 +1616,7 @@ export class QBPass implements Behavior {
    * his own forecast, are his only sources for a break: never the receiver's own break time, which carries the man's
    * private start delay and his true speed (off, the legacy path still reads it; that path goes with the flag's). */
   private planReads = new Map<Agent, { breakAt: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number }>();
+  private lastBreak = new Map<Agent, number>();
   /** How far ahead of a route's break he starts the throw, beyond his motion (s). Today the plan's anchor; his own
    * (anticipation, his read of the receiver) is to come, which is why it is asked for at each check. */
   private leadFor(_passer: Agent, _family: 'onBreak' | 'seenOpen', anchor: number): number { return anchor; }
@@ -1619,7 +1678,9 @@ export class QBPass implements Behavior {
       if (brk === null && (!rd || rd.throwFamily === 'seenOpen' || rd.breakAt === null)) return this.seenRunning(sim, r);
       // A route thrown on its break: the break he expects (his forecast's while it can place the man, else the
       // plan's), less the lead and his motion.
-      const at = brk ?? this.planBreakAt(r)!;
+      // (His forecast's last word comes before the plan's: it keeps a pressed receiver's late release.)
+      if (brk !== null) this.lastBreak.set(r, brk);
+      const at = brk ?? this.lastBreak.get(r) ?? this.planBreakAt(r)!;
       return sim.t + this.windup(sim.qb) >= at - (rd ? this.leadFor(sim.qb, rd.throwFamily, rd.anchorLead) : 0.3 * antic);
     }
     return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
@@ -2565,6 +2626,10 @@ export class QBPass implements Behavior {
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
     const facing = this.bodyFacing(a, sim, (QB_EYES && this.eyesOn) || read);
+    if (QB_AVOID) {
+      const mv = this.avoidMove(a, sim, read, facing);
+      if (mv) return mv;
+    }
     if (slideMove) return goTo(a, slideMove, { speed: Math.min(1, POCKET_SLIDE_PACE / a.profile.vmax), facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') });
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a
