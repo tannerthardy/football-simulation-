@@ -63,7 +63,12 @@ export function imageRates(angles: Angle[], now: number): { optAcc: number; bear
   for (let i = 1; i < w.length; i++) az.push(az[i - 1] + wrap(w[i].az - w[i - 1].az));
   // Closing speed from looming (range / optical time to contact) over his last SERVO_LOOM_WINDOW, not from differencing
   // his range, his worst measurement (5-10%): differenced, a low-skill receiver's misses grow (toy: max 1.6 -> 2.75 yd).
-  const azFit = fit(ts, az, 1), cls = w.filter((q) => q.t >= now - SERVO_LOOM_WINDOW && q.closing !== undefined).map((q) => q.closing as number);
+  // Looming reads his 3-D closing; the law runs on the ground bearing and needs the ground closing. Projected with what
+  // he sees: c_ground = c_3D cos(el) + range_ground tan(el) d(el)/dt (exact for a straight line of sight; the elevation
+  // rate from his own samples' quadratic fit at the latest look). Uncorrected, it ran ~10% low early and high late.
+  const elRate = fit(ts, w.map((q) => q.el), 2)[1];
+  const azFit = fit(ts, az, 1), cls = w.filter((q) => q.t >= now - SERVO_LOOM_WINDOW && q.closing !== undefined && q.rg !== undefined)
+    .map((q) => (q.closing as number) * Math.cos(q.el) + (q.rg as number) * Math.tan(clamp(q.el, -1.4, 1.4)) * elRate);
   const closing = cls.length ? cls.reduce((x, y) => x + y, 0) / cls.length : 0;
   return { optAcc: 2 * fit(ts, tan, 2)[2], bearingRate: azFit[1], bearing: azFit[0], closing };
 }
