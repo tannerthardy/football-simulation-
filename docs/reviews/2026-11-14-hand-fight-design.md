@@ -1134,3 +1134,48 @@ p50 yd/s, requested / achieved):
 - Not an effort-decay timer. Fatigue is a capacity the tracking cannot separate.
 - The contact-carried slide before 1.5 s is the other half. That is the trench group's terms acting together on a pass
   pair, and it needs its own split (which terms move a held pair when neither man asks it to) before any build.
+
+## 20. The contact half is the blocker's request; the meeting (2026-11-15; measured, nothing built)
+
+**The blocker's request across** (held-request.mts, held interior pairs, engine-68 default; p50 requested / achieved,
+across the line between them):
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| blocker across | 0.70 / 0.40 | 0.92 / 0.70 | 1.26 / 1.08 | 1.47 / 1.36 |
+| moving the same way as the rusher | 89% | 94% | 97% | 96% |
+| rusher across (for comparison) | 0.10 / 0.37 | 0.12 / 0.75 | 0.18 / 0.99 | 1.68 / 1.30 |
+
+- **The contact-carried half is the blocker's controller, not contact.** He asks to slide (0.7 -> 1.5 yd/s), and the
+  rusher, asking almost nothing across, goes with him.
+- **It is not an offset chase.** The blocker sits close to the rusher's line to the QB (|offset| p50 0.12-0.23 yd), and
+  late his request closes it only 37-50% of the time.
+- **The mirror check finds no sign bias in the field, but a symmetric outward drift.** The pairs' field-y velocity,
+  signed toward the field's centre:
+  - LG: +0.42 (0-0.5 s), then -0.15 / -0.55 / -0.58;
+  - RG: +0.36, then -0.34 / -0.65 / -1.01;
+  - C: 0.03-0.11.
+  - After 0.5 s both guards' pairs drift away from the centre, as mirror images (LG and RG are not equal: 0.58
+    against 1.01 late).
+- **The candidate loop: the mirror term.** His lateral request is the rusher's lateral velocity as he has it (dLat),
+  plus the felt load, plus the offset times its gain (stepPassRep's vLat). With the two coupled through the hands, any
+  drift he mirrors carries the rusher on, and he mirrors that in turn. It is marginally stable, so a small outward
+  start (the rusher's lane, the C's spacing) can grow.
+- **The next staged question:** a held pair where neither asks across except the blocker's mirror term, both
+  directions. Does an initial drift die or grow? Then the same with the mirror's feed-forward (dLat) off.
+
+**The meeting** (interior-fight.py, all engaged interior pairs, the same code on BDB and ours; p50 velocity toward the
+QB, blocker / rusher):
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| NFL | +1.17 / +2.01 | +1.47 / +1.75 | +1.35 / +1.43 | +0.85 / +0.99 |
+| base | +0.67 / +1.57 | +1.03 / +0.98 | +1.35 / +1.31 | +1.05 / +1.11 |
+
+- The NFL's blocker gives ground faster early (1.17 / 1.47 against 0.67 / 1.03), and his rusher keeps his speed into
+  him (2.01 against 1.57).
+- Ours stops the rusher harder at first contact. The blocker retreating less in the first second points at his set
+  (how fast he gets depth, his anchor), not the rusher's drive.
+- Later the two match (1.35 / 1.31 against 1.35 / 1.43).
+- Next: the blocker's retreat request against achieved in the first second (his set depth target and his kick), on
+  the same pairs.

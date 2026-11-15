@@ -20,7 +20,7 @@ q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 wrap = lambda a: (a + 180) % 360 - 180
 BINS = [(0, .5), (.5, 1.0), (1.0, 1.5), (1.5, 2.5)]
 for path in sys.argv[1:]:
-    orb = {b: [] for b in BINS}; off = {b: [] for b in BINS}; sep = {b: [] for b in BINS}; spd = {b: [] for b in BINS}; tb = {b: [] for b in BINS}; td = {b: [] for b in BINS}; shb = {b: [] for b in BINS}; grp = {g: {b: [] for b in BINS} for g in ('held', 'released')}; tq = {b: [] for b in BINS}; ax = {b: [] for b in BINS}; rel = []; n = 0
+    orb = {b: [] for b in BINS}; off = {b: [] for b in BINS}; sep = {b: [] for b in BINS}; spd = {b: [] for b in BINS}; tb = {b: [] for b in BINS}; td = {b: [] for b in BINS}; shb = {b: [] for b in BINS}; grp = {g: {b: [] for b in BINS} for g in ('held', 'released')}; tq = {b: [] for b in BINS}; ax = {b: [] for b in BINS}; bret = {b: [] for b in BINS}; dadv = {b: [] for b in BINS}; rel = []; n = 0
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw)
         if raw.get('kind') != 'pass' or not raw.get('xy'): continue
@@ -66,6 +66,10 @@ for path in sys.argv[1:]:
                                 ql = math.hypot(qx0 - rx0, qy0 - ry0) or 1
                                 vdx = (p.pos(d, k + 1)[0] - p.pos(d, k - 1)[0]) / (2 * p.dt); vdy = (p.pos(d, k + 1)[1] - p.pos(d, k - 1)[1]) / (2 * p.dt)
                                 mq[bn].append((vdx * (qx0 - rx0) + vdy * (qy0 - ry0)) / ql); ma[bn].append(abs((vdx * -(qy0 - ry0) + vdy * (qx0 - rx0)) / ql))
+                                # The meeting: the blocker's velocity toward the QB (his retreat) and the rusher's.
+                                if p.pos(b, k - 1)[0] is not None and p.pos(b, k + 1)[0] is not None:
+                                    vbx = (p.pos(b, k + 1)[0] - p.pos(b, k - 1)[0]) / (2 * p.dt); vby = (p.pos(b, k + 1)[1] - p.pos(b, k - 1)[1]) / (2 * p.dt)
+                                    bret[bn].append((vbx * (qx0 - rx0) + vby * (qy0 - ry0)) / ql); dadv[bn].append(mq[bn][-1])
                             # The orbit split: each man's velocity across the line between them (perpendicular), and
                             # the blocker's share of their relative motion across it (+: he turns with the pair).
                             if p.pos(b, k - 1)[0] is not None and p.pos(b, k + 1)[0] is not None:
@@ -85,6 +89,7 @@ for path in sys.argv[1:]:
     for bn in BINS:
         print(f"   {bn[0]:.1f}-{bn[1]:.1f} s: orbit p50/p90 {q(orb[bn]):.0f}/{q(orb[bn], .9):.0f} deg | his offset across the blocker's line to the QB p25/50/75 {q(off[bn], .25):+.2f}/{q(off[bn]):+.2f}/{q(off[bn], .75):+.2f} yd | separation p50 {q(sep[bn]):.2f} (n {len(sep[bn])})")
     print("   across the line between them (engaged), |blocker| / |rusher| p50 yd/s and the blocker's share of their relative motion p50: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(tb[bn]):.2f} / {q(td[bn]):.2f}, {q(shb[bn]):+.2f}" for bn in BINS))
+    print("   the meeting, all engaged pairs: the blocker's / the rusher's velocity toward the QB (the blocker's retreat), p50 yd/s: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(bret[bn]):+.2f} / {q(dadv[bn]):+.2f}" for bn in BINS))
     print("   held pairs: the rusher's velocity toward the QB / across his line to the QB, p50 yd/s: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(tq[bn]):+.2f} / {q(ax[bn]):.2f}" for bn in BINS))
     for gname in ('held', 'released'):
         print(f"   engaged rusher speed, pairs {gname} (never released / released within 2.5 s), p50 (n): " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(grp[gname][bn]):.2f} ({len(grp[gname][bn])})" for bn in BINS))

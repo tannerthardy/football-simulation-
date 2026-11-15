@@ -34,7 +34,15 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       if (sep > 1.2 || Math.abs(ang) > 70) { p.rel = true; p.done = true; continue; }
       const qx = qb.pos.x - d.pos.x, qy = qb.pos.y - d.pos.y, ql = Math.hypot(qx, qy) || 1, toq = (v: any) => (v.x * qx + v.y * qy) / ql, acr = (v: any) => Math.abs((v.x * -qy + v.y * qx) / ql);
       const iv = sim.intents?.[d.idx]?.vel ?? { x: 0, y: 0 };
-      p.f.push({ dt, rq: toq(iv), ra: acr(iv), aq: toq(d.vel), aa: acr(d.vel) });
+      const bv = sim.intents?.[b.idx]?.vel ?? { x: 0, y: 0 }, tx = -ry / (sep || 1), ty = rx / (sep || 1);
+      // The blocker too, across the line between them: is he asking to slide (a set landmark, a mirror)?
+      p.f.push({ dt, rq: toq(iv), ra: acr(iv), aq: toq(d.vel), aa: acr(d.vel), bra: Math.abs(bv.x * tx + bv.y * ty), baa: Math.abs(b.vel.x * tx + b.vel.y * ty),
+        bsr: Math.sign(bv.x * tx + bv.y * ty), dsa: Math.sign(d.vel.x * tx + d.vel.y * ty), bsa: Math.sign(b.vel.x * tx + b.vel.y * ty),
+        // The blocker's offset from the rusher's line to the QB (yd; his set aims him onto it), whether his request
+        // across that line closes it, and the pair's field-y velocity signed toward the field centre (the mirror check).
+        off: (() => { const lx = -qy / ql, ly = qx / ql; return (b.pos.x - d.pos.x) * lx + (b.pos.y - d.pos.y) * ly; })(),
+        closes: (() => { const lx = -qy / ql, ly = qx / ql, o = (b.pos.x - d.pos.x) * lx + (b.pos.y - d.pos.y) * ly; return Math.sign(bv.x * lx + bv.y * ly) === -Math.sign(o); })(),
+        slot: b.slot, vyc: (b.vel.y + d.vel.y) / 2 * Math.sign(sim.ballY - b.pos.y || 1), vy: (b.vel.y + d.vel.y) / 2 });
     } };
   const res = sim.run();
   for (const p of pairs.values()) if (!p.rel && p.f.length) held[p.cls].push(...p.f);
@@ -45,6 +53,8 @@ const q = (v: number[], f = .5) => { const s = v.filter(Number.isFinite).sort((a
 for (const cls of ['interior', 'edge']) {
   console.log(`${cls} held pairs (requested / achieved, toward the QB then across), p50 yd/s:`);
   for (const [a, b] of BINS) { const F = held[cls].filter(f => f.dt >= a && f.dt < b);
-    console.log(`  ${a.toFixed(1)}-${b.toFixed(1)} s (${F.length}): toward ${q(F.map(f => f.rq)).toFixed(2)} / ${q(F.map(f => f.aq)).toFixed(2)} | across ${q(F.map(f => f.ra)).toFixed(2)} / ${q(F.map(f => f.aa)).toFixed(2)}`); }
+    console.log(`  ${a.toFixed(1)}-${b.toFixed(1)} s (${F.length}): toward ${q(F.map(f => f.rq)).toFixed(2)} / ${q(F.map(f => f.aq)).toFixed(2)} | across ${q(F.map(f => f.ra)).toFixed(2)} / ${q(F.map(f => f.aa)).toFixed(2)} | blocker across ${q(F.map(f => f.bra)).toFixed(2)} / ${q(F.map(f => f.baa)).toFixed(2)}, moving the same way as the rusher ${(100 * F.filter(f => f.dsa !== 0 && f.dsa === f.bsa).length / Math.max(1, F.length)).toFixed(0)}%`); }
 }
+for (const cls of ['interior']) for (const [a, b] of BINS) { const F = held[cls].filter(f => f.dt >= a && f.dt < b);
+  console.log(`  ${cls} ${a.toFixed(1)}-${b.toFixed(1)} s: the blocker's |offset| from the rusher's line to the QB p50 ${q(F.map(f => Math.abs(f.off))).toFixed(2)} yd, his request closing it ${(100 * F.filter(f => f.closes).length / Math.max(1, F.length)).toFixed(0)}% | pair field-y velocity p50: LG ${q(F.filter(f => f.slot === 'LG').map(f => f.vy)).toFixed(2)}, C ${q(F.filter(f => f.slot === 'C').map(f => f.vy)).toFixed(2)}, RG ${q(F.filter(f => f.slot === 'RG').map(f => f.vy)).toFixed(2)} (toward the field centre: LG ${q(F.filter(f => f.slot === 'LG').map(f => f.vyc)).toFixed(2)}, RG ${q(F.filter(f => f.slot === 'RG').map(f => f.vyc)).toFixed(2)})`); }
 console.log(`get-off (rushers, first 0.5 s after the snap): snap reaction p50 ${q(getoff.map(s => s.ready)).toFixed(2)} s | requested speed p50 over the window ${q(getoff.map(s => q(s.req))).toFixed(2)} | achieved speed p50 ${q(getoff.map(s => q(s.got))).toFixed(2)}, at 0.5 s ${q(getoff.map(s => s.got[s.got.length - 1])).toFixed(2)} yd/s`);
