@@ -18,7 +18,8 @@ perception model. Probes: `scripts/diag/effective-mass/see-probe.mts` (what `sim
 
 **Probe** (`see-probe.mts`: a stick concept, cover 3, the inside receiver Y, the outside receiver X and the QB asking for their nearest rusher every 0.4 s, seed 2; `HEAD`, `GAZE` on or off give the
 same numbers): Y to DE_S true 1.9 yd, pictured 2.2 yd, age 0.30 s; true 0.6 yd, pictured 0.8; X to the far end true 11.6 yd, pictured 11.6; QB to DT_W true 5.2, pictured 5.3. Over 4.9 s the picture
-is within 0.5 yd and 0.3 s of the truth except twice (Y to DT_W, 1.4 yd at age 1.15 s and 2.0 yd at 1.05 s, while that tackle was not the one nearest to him: the plain path with a larger delay scale).
+is within 0.5 yd and 0.3 s of the truth at every sample but four, all Y to DT_W at 3.0 to 4.5 s: error 0.9 to 2.0 yd at ages 0.65 to 1.15 s. That is the plain path's `recog.read === 'run'` branch (a
+man outside the observer's blocking view gets 0.15 s more delay and a held sample), the only stale offensive picture I found, and it is bounded at about 1.2 s and a couple of yards.
 **An offensive non-carrier on engine-67 defaults is omniscient with a delay: nothing is "never fixated" for him through `sim.see`.** A picture 59 yd away and stationary at 1.6 s cannot come from this
 path on this engine. I could not reproduce it; it has to be a path on Rules' branch (a gated picture for the receiver, a different stack, or a read that does not go through `see`). Rules: which
 branch and flags, and which call returned it? Without that I am describing the information the engine gives, not the trace.
