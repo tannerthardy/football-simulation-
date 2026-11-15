@@ -40,8 +40,10 @@ async function scene(flag: string, place: Place) {
     const events: string[] = []; const ev = sim.event.bind(sim);
     (sim as any).event = (type: string, a: any, ...rest: any[]) => { events.push(type + (a === cb ? '@D' : a === r ? '@R' : '')); return (ev as any)(type, a, ...rest); };
     resolveCatchOpportunities(sim, { x: 48.4, y: 26, z: 1.3 }, { x: 50.3, y: 26, z: 1.3 });
-    const caught = sim.ball.kind === 'held' && sim.ball.carrier === r;
-    const picked = sim.ball.kind === 'held' && sim.ball.carrier === cb;
+    // Re-recorded on the engine defaults (2026-11-15): with CATCH_SECURE a ball into a player's hands starts his secure
+    // phase (the catch completes over the next ticks), so winning the hands at the ball is that start, for either man.
+    const caught = (sim.ball.kind === 'held' && sim.ball.carrier === r) || events.includes('secure@R');
+    const picked = (sim.ball.kind === 'held' && sim.ball.carrier === cb) || events.includes('secure@D');
     out.push(caught ? 'catch' : picked ? 'int' : events.find(e => e.endsWith('@D')) ?? events.find(e => e.endsWith('@R')) ?? 'none');
   }
   const share = (k: string) => out.filter(x => x.startsWith(k)).length / out.length;
@@ -155,9 +157,12 @@ async function straightIn(flag: string) {
     sim.t = 1.0;
     sim.rng.next = () => u;
     const edge = r.profile.reach + 0.3 - 0.1;
+    // CATCH_SECURE (engine default, re-recorded 2026-11-15): the ball into his hands starts his secure phase.
+    let securing = false; const ev = sim.event.bind(sim);
+    (sim as any).event = (type: string, a: any, ...rest: any[]) => { if (type === 'secure' && a === r) securing = true; return (ev as any)(type, a, ...rest); };
     resolveCatchOpportunities(sim, { x: 50 - edge - 1.2, y: 26, z: 1.3 }, { x: 50 - edge, y: 26, z: 1.3 });
-    if (sim.ball.kind === 'air' && !sim.ball.deflected) { sim.t += sim.dt; resolveCatchOpportunities(sim, { x: 50 - edge, y: 26, z: 1.3 }, { x: 50.4, y: 26, z: 1.3 }); }
-    if (sim.ball.kind === 'held' && sim.ball.carrier === r) caught++;
+    if (sim.ball.kind === 'air' && !sim.ball.deflected && !securing) { sim.t += sim.dt; resolveCatchOpportunities(sim, { x: 50 - edge, y: 26, z: 1.3 }, { x: 50.4, y: 26, z: 1.3 }); }
+    if ((sim.ball.kind === 'held' && sim.ball.carrier === r) || securing) caught++;
   }
   return caught / 40;
 }
@@ -201,7 +206,8 @@ async function lowBall(flag: string) {
     const edge = r.profile.reach + 0.3 - 0.1;
     // Dropping fast: inside his envelope at the end of this tick, on the ground a tick on.
     resolveCatchOpportunities(sim, { x: 50 - edge - 1.2, y: 26, z: 0.55 }, { x: 50 - edge, y: 26, z: 0.3 });
-    if (sim.ball.kind !== 'air' || events.some(e => ['catch', 'miss', 'drop'].includes(e))) reached++;
+    // CATCH_SECURE (engine default, re-recorded 2026-11-15): reaching it may start his secure phase rather than end it.
+    if (sim.ball.kind !== 'air' || events.some(e => ['catch', 'miss', 'drop', 'secure'].includes(e))) reached++;
   }
   return reached / 20;
 }
