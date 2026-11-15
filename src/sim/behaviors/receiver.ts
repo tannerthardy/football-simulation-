@@ -266,19 +266,19 @@ export class RouteRunner implements Behavior {
   private readonly fromBackfield: boolean;
   /** Time at which the route's final break is expected (for QB timing). */
   readonly breakTime: number;
-  /** DECLARED_BREAK (src/playbook/route-breaks.ts): the point on his installed path that is his route's declared break
-   * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
-   * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
   /** DECLARED_BREAK (read by RELEASE_SIDE and CRAFT_HOLD): the direction his route goes from its declared vertex, until
    * he reaches it (the leg leaving it, unit). Spacing passes a teammate on this side instead of the side the geometry
    * leaves him: a wing's slant goes under the end it lines up behind, as taught, not round his outside. */
   routeSide(): { x: number; y: number } | null {
-    if (!(process.env.DECLARED_BREAK === '1')) return null;
+    if (!(process.env.DECLARED_BREAK !== '0')) return null;
     const at = BREAK_DECL[this.route.id]?.at;
     if (typeof at !== 'number' || this.idx > at || !this.path[at + 1]) return null;
     const v = this.path[at].p, n = this.path[at + 1].p, l = Math.hypot(n.x - v.x, n.y - v.y);
     return l > 1e-6 ? { x: (n.x - v.x) / l, y: (n.y - v.y) / l } : null;
   }
+  /** DECLARED_BREAK (src/playbook/route-breaks.ts): the point on his installed path that is his route's declared break
+   * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
+   * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
   get declaredBreak(): { x: number; y: number } | null {
     if (!(process.env.DECLARED_BREAK !== '0')) return null;
     const at = BREAK_DECL[this.route.id]?.at;
