@@ -305,6 +305,7 @@
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
+    "PLANT_REACH": "off",
     "CRAFT_HOLD": "off",
     "RELEASE_SIDE": "off",
     "SCREEN_DECLARE": "on",

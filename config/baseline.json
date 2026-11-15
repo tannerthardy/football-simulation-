@@ -341,6 +341,7 @@
     "ROUTE_EFFORT": "0",
     "ROUTE_END": "0",
     "CROSS_OVER": "0",
+    "PLANT_REACH": "0",
     "CRAFT_HOLD": "0",
     "RELEASE_SIDE": "0",
     "SCREEN_DECLARE": "0",
