@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-66`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-67`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,59 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-67: `PLAN_KEYS_3`, `SHOULDER_LEAD` and `VERTS_QUICK` on (2026-11-14)
+
+On: `PLAN_KEYS_3` (Rules+Coaching, #737: the coached keys for dagger and levels), `SHOULDER_LEAD` (Defense, #758: the
+zone shoulder break runs to where the picked receiver will be when the ball arrives; the switch was added at
+integration so the card could attribute a change that had none) and `VERTS_QUICK` (QB lane with Rules' sourcing: four
+verticals and verts-hitch from the quick gun drop). Also landed, no flag: the QB lane's removal of the ten true-state
+reads engines 62-65 added to `behaviors/qb.ts` (72369e4d), Coverage's `lookJoints` / `neckOf` exports with CrossWall's
+last true read of the passer removed (708b266b). Merged off because they ride in the same files: `ROUTE_FILLET`,
+`ROUTE_EFFORT` with the route table, `ROUTE_END`, `SCREEN_DECLARE`, `ROUTE_SHAPE`, `CROSS_OVER`.
+
+Card, 16 games x 2 leagues, seeds 11 / 23 / 31, against the same tree with the three off:
+
+| row | `SHOULDER_LEAD` alone | + `PLAN_KEYS_3` | + `VERTS_QUICK` |
+| --- | --- | --- | --- |
+| completion % | +1.0, +4.9 (moved), -0.7 | -0.1, +4.4 (moved), +0.8 | 0.0, +1.8, -0.9 |
+| INT of attempts | 18 -> 17, 18 -> 16, 18 -> 17 | 18 -> 21, 18 -> 15, 18 -> 19 | 18 -> 21, 18 -> 16, 18 -> 23 |
+| sack rate | -0.4, 0.0, -1.4 (moved) | -0.5, -0.2, -0.4 | -1.2 (moved), +0.2, -0.7 |
+| YAC / reception | -0.68, -0.13, -0.20 | -0.47, +0.15, +0.06 | -0.08, -0.14, +0.34 |
+| 20+ yd completions / att | -2.2 (moved), -0.7, -0.6 | -1.7 (moved), +0.1, +0.4 | -1.0, 0.0, +0.6 |
+| yd / attempt | -0.35, +0.62, -0.16 | -0.40, +0.91 (moved), +0.05 | -0.13, +0.46, -0.02 |
+
+Run set unchanged: 3.92 capped, missed + broken 0.293 a run. Suite: the two known research failures only, after four
+fixtures moved by `VERTS_QUICK` were restated to pin it off (`acc-radius`, `punch-strike`, `rush-lean-bound`,
+`tackle-set`: each is a four_verts scene on the reference stack recorded on the five-step set; all four pass with the
+flag off).
+
+Reads. `SHOULDER_LEAD`: yards after the catch and long completions fall on all three seeds, as a defender arriving
+where the receiver will be should produce; completion does not fall (seed 23's reference arm is low: `PLAN_KEYS_3`
+alone moved it +3.9 on the route card too). Its lead uses a stated crude ball speed (17 yd/s, under-leads) and a
+straight-line projection of a receiver who may be about to break; both are named for replacement with the
+release-evidence ball-cue fix. `VERTS_QUICK`: whole-game rows are small because two concepts are a small share of
+calls; its evidence is the paired staged read (384 plays an arm: 8.21 -> 9.95 yd a play, sacks 52 -> 35, time to
+throw 3.60 -> 3.25 s). `PLAN_KEYS_3` alone was read on the route card: interceptions 21 -> 17, 20 -> 14, 19 -> 17.
+
+Held, with the reason. The route stack (`ROUTE_FILLET` + `ROUTE_EFFORT` + `ROUTE_END` + `SCREEN_DECLARE`) on the game
+card: completion -2.3, -1.8, -6.2 (moved); sacks 5.3 -> 4.5 on all three seeds; YAC +0.8 to +1.5; interceptions flat.
+Rules+Coaching's per-flag staged split found the routes separate as well or better; the losses are in the read plans:
+`ROUTE_EFFORT` moves a clear-out go 0.3 yd and a geometric high-low threshold makes it the first read (the out is then
+thrown late at the sideline), and unthrown outs and backs' flats turn up the field at full pace with the passer's
+lead following them. Fixes in flight: `PLAN_ROLES` (#762, declared clear-outs, with an audit showing 14 concepts
+ordered by geometry within a yard of a threshold), `ROUTE_FINISH` (#763), declared breaks (#756). `ROUTE_FILLET` with
+its cut marks split from the effort values (#754 e9f1a180) cards next without `ROUTE_EFFORT`.
+
+Corrections to earlier sections. Engine-65 gave `TRUNK_TWIST` +3.5 completion on two seeds; Tools' three-arm
+attribution puts it at about +2.2 pooled, all of it the catch-at-speed term reading the trunk. "Reads do not run in
+the drop" (engine-65/66 notes) was not a real loss: read 1 comes ready at about the set (median 0.00 s), and
+`QB_DROP_READ` was removed on the QB lane's branch. `CONCEPT_DROPS` is not carded as a block: on full-pace stems the
+deeper set is +0.14 yd a play on the ten with large swings by concept, and its marking returns to Rules. The default
+receiver reads the true ball path and is under a long ball wherever it lands (a 3.5+ yd miss is caught half the
+time), so deep-ball rows on this engine are inflated; the honest receiver's gaze target is being rebuilt first.
+Information-guard debt: engines 62-65 let in 18 net-new reads of true state; the guard's two tests now run on every
+candidate.
 
 ## engine-66: `RELEASE_BELIEF`, `ENGAGE_FELT`, `SCREEN_CALL`, `CLOUD_KILL` and `STALK_CLOSE` on (2026-11-14)
 
