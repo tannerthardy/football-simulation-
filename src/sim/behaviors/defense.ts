@@ -1358,11 +1358,16 @@ function safetyOver(a: Agent, r: number): number {
  * his landmark needs his back turned further than that, he cannot see the passer. The cost is sight's own: under HEAD
  * with SIGHT_COVER his picture of a receiver comes only from inside his head's cone, so receivers behind him age. */
 export const ZONE_EYES = process.env.ZONE_EYES === '1';
+/** ZONE_EYES: above this asked speed (yd/s) he opens and runs (hips on his line); a stated choice. */
+const ZONE_EYES_RUN = 1.5;
 function zoneEyes(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   if (!ZONE_EYES) return cmd;
   headWant(sim, a, sim.qb, 'qb');
   const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
-  const base = cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
+  // Open and run: dropping (asking over ZONE_EYES_RUN yd/s), his hips go with his running line, not square to the passer,
+  // and the look takes the trunk and head round to him (the NFL dropper's torso is open about 40 deg off the passer at the
+  // release). Slower, the technique's own facing stands.
+  const base = sp > ZONE_EYES_RUN ? Math.atan2(cmd.vel.y, cmd.vel.x) : cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
   const q = sim.see(a, sim.qb).pos;
   const d = angleDiff(base, Math.atan2(q.y - a.pos.y, q.x - a.pos.x));
   let out = lookJoints(a, cmd, base, d, true);
