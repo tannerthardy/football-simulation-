@@ -549,6 +549,10 @@ export class BallEstimates {
     // Pursuit: once he has the ball, his eyes follow its seen motion (the last two samples, extrapolated to now), not
     // the fit's prediction, which off two early samples can sit yards off the ball and lose it.
     const n = tr.samples.length;
+    // Bit 2048: once he knows the flight, his eyes follow the ball where he believes it is now, not the last two
+    // samples differenced. Differenced, each sample's 5-10% range error is several yd/s of velocity noise, harmless at
+    // 15-20 yd but tens of degrees at 2-4 yd: his gaze swung 50-150 deg off the ball in the last 0.3 s and he lost it.
+    if (BALL_EST_GLANCE && this.glanceKnows(a, sim)) { const g = this.glancePath(a, sim, tr); if (g && g.length) return { x: g[0].x, y: g[0].y }; }
     if (n >= 2) {
       const b = tr.samples[n - 1], c = tr.samples[n - 2], dt = b.t - c.t;
       if (dt > 1e-6) { const k = sim.t - b.t; return { x: b.p.x + (b.p.x - c.p.x) / dt * k, y: b.p.y + (b.p.y - c.p.y) / dt * k }; }
