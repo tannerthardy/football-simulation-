@@ -37,6 +37,7 @@ import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
+import { DECLARED_BREAK } from '../../playbook/read-compiler/features.js';
 
 /** TRACK_FEEL (experimental, off; TRACK_FEEL=1, or PERCEIVE_TRACK=1 for every group): perception channels step 1b,
  * the QB's feel for the rush (docs/reviews/2026-11-13-perception-proposal.md; built with the QB lane, who own the
@@ -800,6 +801,8 @@ export class QBPass implements Behavior {
     const low = ag(p.key?.low ?? null), high = ag(p.key?.high ?? null);
     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
     const peek = p.style === 'vertical_peek';
+    // DECLARED_BREAK: what the plan says of each read's break (route time, as installed) and how it is thrown.
+    if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
     this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
       triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
@@ -1550,9 +1553,30 @@ export class QBPass implements Behavior {
     return true;
   }
 
+  /** DECLARED_BREAK: the plan's word on each read: the route's declared break as installed (seconds after the snap),
+   * whether it is thrown on the break or to a man seen open, and the plan's anchor lead. With the flag on these, and
+   * his own forecast, are his only sources for a break: never the receiver's own break time, which carries the man's
+   * private start delay and his true speed (off, the legacy path still reads it; that path goes with the flag's). */
+  private planReads = new Map<Agent, { breakAt: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number }>();
+  /** How far ahead of a route's break he starts the throw, beyond his motion (s). Today the plan's anchor; his own
+   * (anticipation, his read of the receiver) is to come, which is why it is asked for at each check. */
+  private leadFor(_passer: Agent, _family: 'onBreak' | 'seenOpen', anchor: number): number { return anchor; }
+  /** DECLARED_BREAK: the break he holds for a man from the install: the plan's, in play time; null when it has none. */
+  private planBreakAt(r: Agent): number | null {
+    const rd = this.planReads.get(r);
+    return rd && rd.breakAt !== null ? this.snapAt + rd.breakAt : null;
+  }
+  /** DECLARED_BREAK: his picture has the man out and running on a route (acquired, placed on it or moving at a run). */
+  private seenRunning(sim: PlaySim, r: Agent): boolean {
+    const e = this.receiverForecasts.get(r)?.estimate;
+    if (!e || e.source !== 'acquired') return false;
+    const v = sim.see(sim.qb, r).vel;
+    return e.progress !== null || Math.hypot(v.x, v.y) > 2;
+  }
   /** When a receiver's break comes, for ordering quick answers: the installed time; 9 for a man not out on a route. */
   private breakClock(r: Agent): number {
     if (QB_SEEN_OUT && this.checkRelease(r)) return this.seenOut(r) ? this.receiverForecasts.get(r)!.breakAt() ?? 0 : 9;
+    if (DECLARED_BREAK) return r.behavior instanceof RouteRunner ? (this.planBreakAt(r) ?? this.receiverForecasts.get(r)?.breakAt() ?? 9) - this.snapAt : 9;
     return r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9;
   }
 
@@ -1588,6 +1612,16 @@ export class QBPass implements Behavior {
     const forecast = this.receiverForecasts.get(r);
     const brk = forecast ? forecast.breakAt() : null;
     if (forecast && brk === null && forecast.estimate?.motion === 'installed-route' && forecast.hasBreak) return true;
+    if (DECLARED_BREAK) {
+      const rd = this.planReads.get(r);
+      // A route thrown to a man seen open, or one the plan says nothing of: ready when his forecast has its break
+      // behind it (above), and otherwise when his picture has the man out and running; never on a clock.
+      if (brk === null && (!rd || rd.throwFamily === 'seenOpen' || rd.breakAt === null)) return this.seenRunning(sim, r);
+      // A route thrown on its break: the break he expects (his forecast's while it can place the man, else the
+      // plan's), less the lead and his motion.
+      const at = brk ?? this.planBreakAt(r)!;
+      return sim.t + this.windup(sim.qb) >= at - (rd ? this.leadFor(sim.qb, rd.throwFamily, rd.anchorLead) : 0.3 * antic);
+    }
     return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
   }
 
