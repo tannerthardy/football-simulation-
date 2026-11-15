@@ -79,7 +79,10 @@ export interface Engagement {
   riding?: boolean;
   /** RUSH_HANDS: his last club (its end, the blocker's hands on before it, his hand speed) and when his hands are
    * back from it: no move, keyed or not, before then. */
-  club?: { end: number; handsBefore: number; speed: number };
+  club?: { end: number; handsBefore: number; speed: number;
+    /** FITTED_HANDS attempt 2: when the arm started, when its force begins, the hand it is aimed at, when the blocker
+     * sees it start (Infinity if not in his view), his answer, and whether it met air. */
+    start?: number; onset?: number; hand?: 0 | 1; seenAt?: number; answer?: 'away' | 'firm' | 'late' | 'unseen'; air?: boolean; side?: Vec2 };
   handsBackAt?: number;
   counterAt?: number;
   lastReqX?: number;

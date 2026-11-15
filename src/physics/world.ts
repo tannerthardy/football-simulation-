@@ -426,7 +426,12 @@ const ARM_GIVE = 3 / 36;
  * half of the press, half the grip. Off, the joint is one hand-pair with both arms' hold against every strike. */
 export const FITTED_HANDS = process.env.FITTED_HANDS === '1';
 if (FITTED_HANDS && !RUSH_HANDS) throw new Error('FITTED_HANDS=1 requires RUSH_HANDS=1 (the hand body it splits into two hands)');
-export interface HandState { slide: number; vel: number; on: boolean }
+export interface HandState {
+  slide: number; vel: number; on: boolean;
+  /** FITTED_HANDS attempt 2: the blocker has firmed this hand against a club he saw coming. Until world time
+   * `firmUntil` its arm holds with `firmGrip` of cloth (force) in place of its share of the joint's grip. */
+  firmUntil?: number; firmGrip?: number;
+}
 /** FITTED_HANDS: the joint's two hands, made on first use from its aggregate state. */
 export function handPairOf(jt: HandJoint): [HandState, HandState] {
   if (!jt.handPair) {
@@ -909,7 +914,7 @@ export class World {
   substeps?: number;
   private readonly index = new Map<Body, number>();
   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
-  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number; rip?: boolean }> = [];
+  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number; rip?: boolean; hand?: 0 | 1 }> = [];
   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
   private readonly reels = new Map<GraspJoint, number>();
   /** Reference adjustment preserves the held point when a grip slides down. */
@@ -1035,9 +1040,9 @@ export class World {
   /** RUSH_HANDS: a force (kg*yd/s^2, world frame) on joint `jt`'s hand from body `from`, acting between world
    * times t0 and t1 (its contact time). Only the component along the joint's tangent moves the hand; the rest is an
    * ordinary push between the bodies. */
-  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number, rip = false): void {
+  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number, rip = false, hand?: 0 | 1): void {
     if (!HAND_BODY || !(t1 > t0) || !Number.isFinite(f.x + f.y)) return;
-    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1, rip });
+    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1, rip, hand });
   }
 
   /** RUSH_HANDS: the arm's lateral hold at the hand (force), from its extension, the measured press and a grip. */
@@ -1050,7 +1055,10 @@ export class World {
     const press = Math.max(0, (jt.lastN ?? 0) - Math.max(0, lift));
     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
     // FITTED_HANDS: one hand's arm: half of each term, at that hand's own edge.
-    if (FITTED_HANDS && k !== undefined) return 0.5 * (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdgeK(jt, k);
+    if (FITTED_HANDS && k !== undefined) {
+      const hd = handPairOf(jt)[k], firm = (hd.firmUntil ?? -Infinity) > this.time;
+      return (0.5 * (Math.max(0, jt.steer) * bent / ext + HAND_MU * press) + (firm ? Math.max(0, hd.firmGrip ?? 0) : 0.5 * grip)) * this.handEdgeK(jt, k);
+    }
     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
   }
 
@@ -1359,9 +1367,11 @@ export class World {
       const share = (Math.min(f.t1, t1) - Math.max(f.t0, t0)) / h;
       const fn = (f.fx * nx + f.fy * ny) * share, fT = (f.fx * tx + f.fy * ty) * share;
       const is = this.indexOf(f.from);
+      // Attempt 2: a club aimed at one hand meets that hand or nothing: a hand taken away is air (no contact at all).
+      if (f.hand !== undefined && !pair[f.hand].on) continue;
       if (is >= 0 && is !== ia && fn) this.pairImpulse(is, ia, nx * fn * h, ny * fn * h, is, 'strikes');
       // The hand it meets: a force driving +t comes from the -t side (hand 0); if that hand is off, the other.
-      let k: 0 | 1 = fT >= 0 ? 0 : 1;
+      let k: 0 | 1 = f.hand ?? (fT >= 0 ? 0 : 1);
       if (!pair[k].on) k = (1 - k) as 0 | 1;
       if (!pair[k].on) continue;
       if (is >= 0 && fT) { this.bodies[is].vel.x -= tx * fT * h / this.mass[is]; this.bodies[is].vel.y -= ty * fT * h / this.mass[is]; }

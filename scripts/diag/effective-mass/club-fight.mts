@@ -12,9 +12,10 @@ const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4
 const rng = new Rng(first);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 const IN = new Set(['LG', 'C', 'RG']);
-const clubs: any[] = []; const reps: any[] = [];
+const clubs: any[] = []; const reps: any[] = []; const holds: any[] = []; let passPlays = 0;
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
   if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
+  passPlays++;
   const st = new Map<any, any>(); const open: any[] = [];
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -34,18 +35,19 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       if (sep <= 1.2) s.touched = true;
       if (!s.rel && s.touched && sep > 1.2) s.rel = { t: sim.t - e.start, on, since: sim.t - s.lastClear, ext: e.hands?.extension };
       const p = pre.get(e);
-      if (e.club && (!p || p.club !== e.club)) { s.clubs++; open.push({ e, t: sim.t, N0: p?.N ?? 0, on0: p?.on ?? 2, on1: undefined, N1: undefined, N2: undefined }); }
+      if (e.club && (!p || p.club !== e.club)) { s.clubs++; open.push({ e, club: e.club, t: sim.t, N0: p?.N ?? 0, on0: p?.on ?? 2, on1: undefined, N1: undefined, N2: undefined }); }
     }
     for (const c of open) {
       const dt = sim.t - c.t, on = c.e.hands?.off ? 0 : c.e.hands?.handsOn ?? 2, N = Math.max(0, c.e.hands?.normalForce ?? 0);
       if (c.on1 === undefined && dt > 0) c.on1 = on, c.minOn = on;
       if (dt > 0) c.minOn = Math.min(c.minOn, on);
       if (c.N1 === undefined && dt >= 0.1 - 1e-9) c.N1 = N;
-      if (c.N2 === undefined && dt >= 0.25 - 1e-9) { c.N2 = N; clubs.push(c); c.done = true; }
+      if (c.N2 === undefined && dt >= 0.25 - 1e-9) { c.N2 = N; c.club0 = c.club; clubs.push(c); c.done = true; }
     }
     for (let i = open.length - 1; i >= 0; i--) if (open[i].done) open.splice(i, 1);
   };
   const res = sim.run();
+  for (const pen of [sim.penalty, ...(sim.penalties ?? [])]) if (pen && pen.kind === 'holding') holds.push(pen);
   for (const s of st.values()) reps.push(s);
   return res;
 } } });
@@ -61,3 +63,9 @@ const rel = reps.filter(r => r.rel);
 console.log(`released past 1.2 yd: ${rel.length} of ${reps.length} | hands on at the release: 2 ${rel.filter(r => r.rel.on === 2).length}, 1 ${rel.filter(r => r.rel.on === 1).length}, 0 ${rel.filter(r => r.rel.on === 0).length} | within 0.5 s of a hand cleared ${rel.filter(r => r.rel.since <= 0.5).length}`);
 console.log(`time with a hand off (until both on again) p50 / p90: ${q(reps.flatMap(r => r.offDur), .5).toFixed(2)} / ${q(reps.flatMap(r => r.offDur), .9).toFixed(2)} s`);
 console.log(`  share of clubs where the load fell by 0.1 s: ${(100 * clubs.filter(c => c.N1 < c.N0).length / Math.max(1, clubs.length)).toFixed(0)}%`);
+for (const c of clubs) { c.answer = c.club0.answer; c.air = c.club0.air; }
+const ans: Record<string, number> = {};
+for (const c of clubs) ans[c.answer ?? 'n/a'] = (ans[c.answer ?? 'n/a'] ?? 0) + 1;
+console.log(`the blocker's answer: ${Object.entries(ans).map(([k, v]) => `${k} ${v} (${(100 * v / Math.max(1, clubs.length)).toFixed(0)}%)`).join(', ')} | through air ${clubs.filter(c => c.air).length}`);
+for (const a of ['away', 'firm', 'late', 'unseen']) { const g = clubs.filter(c => c.answer === a); if (g.length) console.log(`  ${a}: a hand cleared within 0.25 s ${(100 * g.filter(c => c.minOn < c.on0).length / g.length).toFixed(0)}%`); }
+console.log(`holding calls on pass plays: ${holds.length} of ${passPlays} (${(100 * holds.length / Math.max(1, passPlays)).toFixed(1)}%)`);

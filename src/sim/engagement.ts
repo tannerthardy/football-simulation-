@@ -48,8 +48,9 @@ import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
-import { FITTED_HANDS, HAND_MU, OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, handPairOf, syncHandPair, type HandJoint, type Intent } from '../physics/world.js';
+import { ARM_MASS, FITTED_HANDS, HAND_MU, OPEN_HANDS, PUSH_GROWTH, RIP_CLEAR, RUSH_HANDS, handPairOf, syncHandPair, type HandJoint, type Intent } from '../physics/world.js';
 import { ARM_SPEED } from '../physics/actuation.js';
+import { inHeadCone } from './head.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
 
@@ -916,7 +917,12 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
   // RIP_CLEAR: the same recovery and re-fit for a hand an edge's rip slid or took off.
-  if (FITTED_HANDS && e.type === 'pass') fightHands(sim, hands, b, d);
+  if (FITTED_HANDS && e.type === 'pass') {
+    fightAnswer(sim, e); fightHands(sim, hands, b, d);
+    // A firmed hand has cloth: on the joint as a grip and its hold, where the holding detector reads it.
+    const pr = handPairOf(hands), firm = pr.find(h => h.on && (h.firmUntil ?? -Infinity) > sim.world.time);
+    if (firm) { hands.grip = true; hands.hold = Math.max(hands.hold, firm.firmGrip ?? 0); }
+  }
   else if ((RUSH_HANDS || RIP_CLEAR) && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
     const o = hands.handOffset, step = ARM_SPEED * sim.dt;
     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
@@ -955,27 +961,85 @@ function setHands(sim: PlaySim, e: Engagement): void {
  * error drawn on the landing point, PAIR_HANDS' spread by his hand technique (PLACE_SPREAD, 1 SD). A hand that lands
  * past the edge of the man's torso has missed: it is off again and travels back. Being off his hands frees the man
  * only through the World (no press, friction or steer from a hand that is not on him): no landed-move window. */
-const fightLost = new WeakMap<HandJoint, [number | null, number | null]>();
+/** When each of a joint's hands that is off lands again (sim time; null while it is on). */
+const fightReady = new WeakMap<HandJoint, [number | null, number | null]>();
 function fightHands(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
   const pair = handPairOf(hands), step = ARM_SPEED * sim.dt, R = d.profile.radius;
-  let lost = fightLost.get(hands);
-  if (!lost) { lost = [null, null]; fightLost.set(hands, lost); }
+  let ready = fightReady.get(hands);
+  if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
   for (const k of [0, 1] as const) {
     const hd = pair[k];
     if (hd.on) {
-      lost[k] = null;
+      ready[k] = null;
       if (hd.slide && Math.abs(hd.vel) < 0.05) { hd.slide = Math.abs(hd.slide) <= step ? 0 : hd.slide - Math.sign(hd.slide) * step; hd.vel = 0; }
       continue;
     }
-    if (lost[k] === null) lost[k] = sim.t;
-    if (sim.t - lost[k]! < refitTime(b, d)) continue;
+    // Knocked off: he feels it go and re-fits after his reaction and the hand's travel.
+    if (ready[k] === null) ready[k] = sim.t + refitTime(b, d);
+    if (sim.t < ready[k]!) continue;
     const sd = PLACE_SPREAD * (1 - 0.6 * clamp(b.r('handTechnique'), 0, 1));
     const at = sim.dice('place', b, d).normal(0, sd);
-    if (Math.abs(at) >= R) { lost[k] = sim.t; continue; }
-    hd.on = true; hd.slide = at; hd.vel = 0; lost[k] = null;
+    if (Math.abs(at) >= R) { ready[k] = sim.t + refitTime(b, d); continue; }
+    hd.on = true; hd.slide = at; hd.vel = 0; ready[k] = null;
   }
   syncHandPair(hands);
 }
+
+/** FITTED_HANDS attempt 2: the blocker against a club he can see coming. He sees the rusher's arm start at his sight
+ * delay (0.12 + 0.12 x (1 - his read): the pass rep's sight delay with his hands off), and only with the rusher in the
+ * view cone about where his eyes point (head.ts: his head, or his body facing without HEAD). What he can do is what
+ * he has time for before the club's force arrives (its onset):
+ * - time to move the hand a forearm's width at his hand speed: he takes it away (the club meets air) and re-punches it
+ *   as the club passes, landing with his placement error after that same travel;
+ * - less, but before the onset: he firms the hand, taking cloth (one hand's share of a holding grip, armForce x 0.6)
+ *   for the club's time, raising that arm's hold against it; the grip is on the joint (grip and hold), so the holding
+ *   detector sees it;
+ * - after the onset: it lands as thrown.
+ * No roll: the times decide. */
+function fightAnswer(sim: PlaySim, e: Engagement): void {
+  const c = e.club, b = e.blocker, d = e.defender, hands = e.hands;
+  if (!c || c.onset === undefined || c.hand === undefined || !hands) return;
+  const pair = handPairOf(hands), t = sim.t;
+  if (c.air === undefined && t >= c.onset) c.air = !pair[c.hand].on;
+  if (c.answer !== undefined) return;
+  if (c.seenAt === Infinity) { c.answer = 'unseen'; return; }
+  if (t < c.seenAt!) return;
+  const left = c.onset - t, speed = ARM_SPEED * (0.75 + 0.5 * clamp(b.r('handTechnique'), 0, 1)), away = FOREARM / speed;
+  if (left >= away && pair[c.hand].on) {
+    c.answer = 'away';
+    pair[c.hand].on = false; pair[c.hand].slide = 0; pair[c.hand].vel = 0; syncHandPair(hands);
+    let ready = fightReady.get(hands);
+    if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
+    ready[c.hand] = c.end + away;
+  } else if (left >= 0 && pair[c.hand].on) {
+    c.answer = 'firm';
+    pair[c.hand].firmUntil = sim.world.time + (c.end - t); pair[c.hand].firmGrip = 0.6 * armForce(b);
+  } else c.answer = 'late';
+}
+/** FITTED_HANDS attempt 2: the club, with its approach. His near hand travels to the blocker's wrist (0.45 of his arm,
+ * the sweep its return takes, at his hand speed) before its force acts; then the force of RUSH_HANDS' club for its time
+ * across the forearm. It is aimed at the hand on his working side (the one a force across toward his inside meets
+ * first), or at the other if that one is off him. */
+function fightClub(sim: PlaySim, e: Engagement, axis: Vec2): number {
+  const d = e.defender, b = e.blocker, lat = latOf(axis), hands = e.hands!;
+  const speed = ARM_SPEED * (0.75 + 0.5 * d.r('passRushFinesse'));
+  const approach = 0.45 * d.player.measurables.armIn / 36 / speed, duration = FOREARM / speed, F = armForce(d);
+  const force = { x: -lat.x * e.side * F, y: -lat.y * e.side * F };
+  const dx = d.body.pos.x - b.body.pos.x, dy = d.body.pos.y - b.body.pos.y, L = Math.hypot(dx, dy) || 1;
+  const fT = force.x * (-dy / L) + force.y * (dx / L), pair = handPairOf(hands);
+  let k: 0 | 1 = fT >= 0 ? 0 : 1;
+  if (!pair[k].on) k = (1 - k) as 0 | 1;
+  const wt = sim.world.time;
+  sim.world.handForce(hands, d.body, force, wt + approach, wt + approach + duration, false, k);
+  const t = sim.t, onset = t + approach, end = onset + duration;
+  // His view: the rusher inside the cone about his eyes.
+  const look = b.head ?? b.body.facing, inView = inHeadCone(look, Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x));
+  const seenAt = inView ? t + 0.12 + 0.12 * (1 - traits(b).read) : Infinity;
+  e.moveOk = false; e.moveUntil = end;
+  e.club = { end, handsBefore: hands.off ? 0 : hands.handsOn ?? 2, speed, start: t, onset, hand: k, seenAt, side: force };
+  return end - t;
+}
+
 const refitState = new WeakMap<HandJoint, { lostAt: number }>();
 /** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
  * chest (the bodies' gap) at ARM_SPEED. */
@@ -1240,7 +1304,7 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   // his arm is back (the club's end, then the arm's return: handsBackAt); with no hand on him there is nothing to
   // clear and he looks again after his reaction.
   if (fightRep(e)) {
-    if (e.hands && !e.hands.off) { const c = clubHand(sim, e, axis); e.nextMoveAt = t + c.duration; }
+    if (e.hands && !e.hands.off) e.nextMoveAt = t + fightClub(sim, e, axis);
     else e.nextMoveAt = t + Math.max(0.1, e.defender.profile.reactionTime);
     return;
   }
@@ -2163,9 +2227,18 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (RUSH_HANDS && e.type === 'pass') {
     const rt = Math.max(0.1, d.profile.reactionTime);
     if (e.club && t >= e.club.end) {
+      // FITTED_HANDS attempt 2: a club he had not yet seen when it ended was late.
+      if (e.club.onset !== undefined && e.club.answer === undefined) e.club.answer = 'late';
       const h = e.hands, now = !h || h.off ? 0 : h.handsOn ?? 2, cleared = now < e.club.handsBefore;
       const sweep = 0.45 * d.player.measurables.armIn / 36 / e.club.speed;
       e.handsBackAt = e.club.end + sweep + rt + (cleared ? 0 : sweep) + (baseOf(d) < 0.9 ? rt : 0);
+      // FITTED_HANDS attempt 2: a club through air carries his arm across his own body: it comes back twice as far,
+      // and his reaction again for the balance it cost; the arm's momentum goes to his body.
+      if (e.club.air) {
+        e.handsBackAt = e.club.end + 2 * sweep + 2 * rt + (baseOf(d) < 0.9 ? rt : 0);
+        const f = e.club.side!, F = Math.hypot(f.x, f.y) || 1, mv = ARM_MASS * e.club.speed;
+        d.body.vel.x += f.x / F * mv; d.body.vel.y += f.y / F * mv;
+      }
       e.nextMoveAt = Math.max(e.nextMoveAt, e.handsBackAt);
       e.club = undefined;
     }
