@@ -697,7 +697,16 @@ export class QBPass implements Behavior {
   private hitchFor: Agent | null = null;
   /** QB_FOOTWORK bit 1: each read's installed step (0 the set, 1 the hitch, 2 the second hitch), its beat after his set,
    * the steps he has landed since his set, and the step he is taking. */
-  private stepOf = new Map<Agent, { n: number; beat: number }>();
+  private placeSteps: { n: number; beat: number }[] = [];
+  private outletStep: { agent: Agent; n: number; beat: number } | null = null;
+  /** The step a read is installed on, by its place in his current order (the coached rule is by place: read 1 on the
+   * set, read 2 on the hitch; a key read reorders the reads, so a receiver's step is not fixed). The outlet keeps his. */
+  private stepOf = { get: (r: Agent | undefined): { n: number; beat: number } | undefined => {
+    if (!r || !this.placeSteps.length) return undefined;
+    if (this.outletStep && r === this.outletStep.agent) return this.outletStep;
+    const i = this.reads.indexOf(r);
+    return i < 0 ? undefined : this.placeSteps[Math.min(i, this.placeSteps.length - 1)];
+  } };
   private landedSteps = 0;
   private step: { n: number; to: Vec2; since: number; landed: boolean } | null = null;
   /** THROW_PLATFORM diagnostics (no effect): what his motion added to the last release. */
@@ -912,9 +921,11 @@ export class QBPass implements Behavior {
     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
     const peek = p.style === 'vertical_peek';
     // DECLARED_BREAK: what the plan says of each read's break (route time, as installed) and how it is thrown.
-    if (FW_STEPS && p.rhythm.length && p.rhythmSet !== undefined) for (const rh of p.rhythm) {
-      const r = ag(rh.ref);
-      if (r && !this.stepOf.has(r)) this.stepOf.set(r, { n: rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2, beat: rh.at - p.rhythmSet });
+    if (FW_STEPS && p.rhythm.length && p.rhythmSet !== undefined) {
+      const st = (rh: { step: string; at: number }) => ({ n: rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2, beat: rh.at - p.rhythmSet! });
+      this.placeSteps = p.rhythm.filter((rh) => rh.ref !== p.outlet).map(st);
+      const o = p.rhythm.find((rh) => rh.ref === p.outlet), oa = outlet;
+      this.outletStep = o && oa ? { agent: oa, ...st(o) } : null;
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
     this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
