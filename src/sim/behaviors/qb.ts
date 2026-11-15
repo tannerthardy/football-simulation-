@@ -2857,11 +2857,11 @@ export class QBPass implements Behavior {
       const climb = this.climb(a, sim, facing);
       if (climb) return climb;
     }
-    // QB_FOOTWORK bit 1: the step his read is installed on. With an edge rusher he feels, the climb is the step.
-    if (FW_STEPS && this.step && !this.step.landed) {
-      if (edge) { this.step.landed = true; this.landedSteps = this.step.n; }
-      else return goTo(a, this.step.to, { speed: 0.35, facing });
-    }
+    // QB_FOOTWORK bit 1: the gather is a step of his footwork in time, not a command that holds him: while it lasts his
+    // body does what the pocket does (the spring and its push off a body near him; the climb with an edge rusher).
+    // A first form pinned him to the spot for the stride; with his feet on the plan's clock he was in a gather most
+    // of his time in the pocket, the push off a rusher never acted, and the arm was held (dagger on develop's deeper
+    // five: 10 throw_held on 11 new sacks). Replacing that movement is bit 4's.
     // QB_GATHER: a hitch to the read his eyes are on, from where he is when they get there; no hitch with an edge
     // rusher he feels (he slides off him as before).
     if (QB_GATHER && QB_GATHER_THROW) {
