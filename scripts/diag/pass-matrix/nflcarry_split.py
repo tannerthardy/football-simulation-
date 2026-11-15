@@ -1,5 +1,5 @@
 """nflcarry.py split by the climber's route and position (Defense, C9 attempt 3; report only). Raw BDB 2025.
-Groups: WR go (routeRan GO), WR post/corner/wheel, WR other (a route that breaks), TE/RB any. Otherwise as nflcarry.py:
+Groups: WR go (routeRan GO), split by the climber's downfield pace at 2.7 s (or the last frame before a release after 2.5 s), WR post/corner/wheel, WR other (a route that breaks), TE/RB any. Otherwise as nflcarry.py:
 Pairs as nflcue.py: CB/S 2+ yd over a receiver within 8 yd at 1.0 s; the receiver climbing over 3 yd/s at 1.5 s;
 zone families C2/C3/C4/C6. Help: another DB 3+ yd deeper within 12 yd laterally at 1.0 s.
 At 1.50, 1.75, ... s after the snap (before the release) and at the release: medians of his body angle off the line to
@@ -22,7 +22,7 @@ def group(g, p, n):
 plays = plays[(plays.isDropback == True) & (plays.playAction == False) & plays.pff_passCoverage.isin(ZONE)]
 cov = {(r.gameId, r.playId) for r in plays.itertuples()}
 DB = {'CB', 'S', 'FS', 'SS', 'DB'}; REC = {'WR', 'TE', 'RB', 'FB'}
-MARKS = [15, 17, 20, 22, 25, 27, 30]  # frames after the snap (0.1 s); 17/22/27 stand for 1.75/2.25/2.75
+MARKS = [0, 5, 10, 15, 17, 20, 22, 25, 27, 30]  # frames after the snap (0.1 s); 17/22/27 stand for 1.75/2.25/2.75
 S = C.defaultdict(list)
 for w in weeks:
     df = pd.read_csv(f'{bdb}/tracking_week_{w}.csv', usecols=['gameId', 'playId', 'nflId', 'frameId', 'x', 'y', 'o', 'event'])
@@ -46,6 +46,12 @@ for w in weeks:
             cand = [(dd, r) for dd, r in cand if dd < 8 and (d1.x - P[r].loc[f1].x) * dirx > 2]
             if not cand: continue
             rn = min(cand)[1]; Rr = P[rn]; k15 = fs + 15; grp = group(g, p, rn)
+            if grp == 'WR go':
+                kp = min(fs + 27, fr - 1)
+                if kp >= fs + 25 and kp in Rr.index and kp - 1 in Rr.index:
+                    pv = (Rr.loc[kp].x - Rr.loc[kp - 1].x) / 0.1 * dirx
+                    grp = 'WR go, climber under 7.5' if pv < 7.5 else 'WR go, climber 7.5-8.2' if pv <= 8.2 else 'WR go, climber over 8.2'
+                else: grp = 'WR go, released before 2.5 s'
             if k15 not in Rr.index or k15 - 1 not in Rr.index or (Rr.loc[k15].x - Rr.loc[k15 - 1].x) / 0.1 * dirx <= 3: continue
             help_ = any((P[m].loc[f1].x - d1.x) * dirx >= 3 and abs(P[m].loc[f1].y - d1.y) <= 12 for m in dbs if m != n)
             for lab, k in [(f'{m / 10:.2f}'.replace('1.70', '1.75').replace('2.20', '2.25').replace('2.70', '2.75'), fs + m) for m in MARKS if fs + m < fr] + [('release', fr)]:
@@ -57,11 +63,11 @@ for w in weeks:
                                         (dk.x - rk.x) * dirx, abs(dk.y - rk.y), inside))
     print(f'week {w} done', file=sys.stderr)
 q = lambda v: sorted(v)[len(v) // 2] if v else float('nan')
-for grp in ('WR go', 'WR post/corner/wheel', 'WR other', 'TE/RB'):
+for grp in ('WR go, climber under 7.5', 'WR go, climber 7.5-8.2', 'WR go, climber over 8.2', 'WR go, released before 2.5 s', 'WR post/corner/wheel', 'WR other', 'TE/RB'):
   for h in (False, True):
     print(f"NFL zone deep defenders over a climber, {grp}, {'help behind' if h else 'no help'} (weeks {weeks})")
     print('    t        n   angle off QB  his speed  receiver vx  cushion  lateral  inside | square / 45-90 / 90-135 / turned')
-    for lab in ['1.50', '1.75', '2.00', '2.25', '2.50', '2.75', '3.00', 'release']:
+    for lab in ['0.00', '0.50', '1.00', '1.50', '1.75', '2.00', '2.25', '2.50', '2.75', '3.00', 'release']:
         V = S.get((h, grp, lab), [])
         if not V: continue
         cl = [sum(lo < v[0] <= hi for v in V) / len(V) for lo, hi in ((-1, 45), (45, 90), (90, 135), (135, 181))]
