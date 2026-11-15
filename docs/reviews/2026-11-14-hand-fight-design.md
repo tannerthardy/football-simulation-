@@ -1215,3 +1215,43 @@ The pair's lateral velocity, signed along the rusher's side (yd/s), with the blo
     cancel.
   - The guards' sizes differ (0.58 against 1.01 late) by the shade and the men.
 - MIRROR_REF stays in the tree, off, as the staging switch. It is not the fix.
+
+## 22. The meeting is the set (2026-11-15; measured, nothing built)
+
+**Interior OL depth by time** (ol-set-depth.py, the same code on BDB and our exports; depth behind his snap spot, p50
+yd; retreat speed p50 yd/s):
+
+| | 0.3 s | 0.5 s | 0.8 s | 1.0 s | 1.5 s | 2.0 s | retreat 0-0.5 / 0.5-1.0 / 1.0-1.5 s |
+|---|---|---|---|---|---|---|---|
+| NFL | 0.10 | 0.20 | 0.50 | **0.80** | **1.70** | 2.70 | 0.40 / 1.20 / 1.80 |
+| base | 0.00 | 0.10 | 0.20 | **0.50** | **1.10** | 2.00 | 0.20 / 0.80 / 1.40 |
+
+The NFL's interior blocker gives ground about half again as fast in the first 1.5 s. Ours meets the rusher shallower
+and slower.
+
+**Our set's request** (set-retreat.mts, engine-68 default, seed 11 x 2; LG / C / RG on dropbacks; retreat +):
+
+| | requested / achieved | depth | set target behind the line | engaged | engaged: req / got | not engaged: req / got |
+|---|---|---|---|---|---|---|
+| 0-0.3 s | 0.23 / 0.14 | 0.01 | 1.00 | 5% | 1.04 / 0.57 | 0.22 / 0.12 |
+| 0.3-0.5 s | 0.19 / 0.16 | 0.05 | 1.00 | 9% | 0.80 / 0.72 | 0.17 / 0.15 |
+| 0.5-0.8 s | 0.46 / 0.41 | 0.11 | 1.00 | 48% | 0.34 / 0.40 | 0.55 / 0.42 |
+| 0.8-1.0 s | 0.62 / 0.96 | 0.28 | 1.00 | 78% | 0.28 / 0.87 | 1.69 / 1.15 |
+| 1.0-1.5 s | 0.95 / 1.34 | 0.74 | 1.61 | 83% | 0.82 / 1.29 | 2.15 / 1.62 |
+
+- **The meeting is our set's own request, not the rusher's drive or the contact.**
+  - Through 0.5 s our blocker asks for almost no retreat (0.2 yd/s), toward a target 1.0 yd behind the line
+    (passSetDepth: the QB's live position less 3.8 yd, at least 1).
+  - The rusher meets him at about 0.1 yd of depth, where he has stopped. Engaged after 0.8 s, he asks for 0.28 yd/s of
+    retreat and is pushed back at 0.87.
+- **The NFL's interior pair retreats more nearly as a unit.** Blocker against rusher toward the QB: 1.17 / 2.01 at
+  0-0.5 s, then 1.47 / 1.75 (section 20).
+  - The blocker gives ground while the rusher closes, then both move at about the same speed.
+  - Ours: 0.67 / 1.57, then 1.03 / 0.98. The blocker has stopped, so the rusher is stopped dead at the meeting, then the
+    pair moves back together.
+- **The coached set** for interior linemen is a short set: gain depth off the ball to the set point, keep the base,
+  meet the rusher with the punch, then anchor. Sources on depth by step vary by scheme.
+  - In ours, the set target (1.0 yd until the QB has dropped) and its early request are where the NFL's depth by
+    1.0-1.5 s is not reached.
+  - Measured only. Which part to change (the target, which the QB's drop sets late, or the set's early pace) is for the
+    next design step.
