@@ -74,6 +74,43 @@ but screens, gun doubles (trips concepts from gun trips).
 4. **trips_outs from doubles:** with PLAN_ROLES off the go (a declared clear-out) is read first. It is a PLAN_ROLES
    dependency, not a drop.
 
+## Integration's two questions (2026-11-15, after the QB lane's beat-vs-ready table)
+
+**1. How long a hitch is.**
+- No source found gives it in seconds. Coaches state it as one step: "stab your fifth step... take one hitch step
+  (shuffle) up in the pocket... If the first read... is open, then the ball should leave your hands after that one
+  hitch" (a coaching guide's five-step; search summary, not fetched).
+- Walsh's "five big steps and a hitch" is the same unit.
+- So a taught hitch is about one stride of the drop, not two. The rhythm's first five-step hitch at set + 0.8 s is about
+  two strides: the 0.8 is the NFL's set-to-release at 3.5–5 yd (QB lane, drop-time.py), which includes the throw.
+- Against the QB lane's measured plant-to-release (median 0.50 s), the beats are slow. Part of "read 2 is late" is that
+  clock, not the marking.
+- The step's duration in seconds is the QB lane's measurement (a stride of their own drops). This note doesn't set it.
+
+**2. Which reads share a beat.**
+- A keyed high-low is one read on one defender. The two routes now share one place in the rhythm (the place of
+  whichever comes first in the order), and the reads after it move up a place (`runtime.ts`, behind CONCEPT_DROPS).
+- A pure progression still steps one place a read.
+- With the QB lane's thresholds (EARLY > 0.2 s, LATE > 0.4 s), the home formation, every pass concept but screens
+  (ok / EARLY / LATE):
+
+  | marking | read 1 | read 2 | reads 3+ |
+  |---|---|---|---|
+  | off | 14 / 18 / 0 | 17 / 15 / 0 | 28 / 10 / 24 |
+  | develop's CONCEPT_DROPS | 19 / 10 / 3 | 11 / 11 / 10 | 19 / 10 / 33 |
+  | re-marked, serial | 22 / 10 / 0 | 13 / 13 / 6 | 21 / 10 / 31 |
+  | re-marked, keyed pairs on one beat | 22 / 10 / 0 | 9 / 17 / 6 | 19 / 13 / 30 |
+
+- The keyed `five` concepts' read 2 comes in (smash's hitch +1.3 → +0.9 s).
+- But on keyed concepts read on the set (curl_flat, sail_corner, quick_outs, slant_flat, hitch_out, trips_sail,
+  trips_outs), the high route now shares read 1's beat and is not ready by it (−0.5 to −0.8 s).
+- **That is not a fault in a key read.** He reads the defender at that beat, throws the low on time, and throws the
+  high when the defender commits and the route opens (Brown, via the plan table: "if the cornerback sinks... throw the
+  hitch; if he comes up... throw the corner").
+- So the key's high route should not be scored against the shared beat as a serial read is. The check for a keyed
+  place is the low route on time at the beat, and the high open within a hitch after it.
+- Scoring the keyed place that way, and the step's duration, belong to the QB lane's footwork reads.
+
 ## Not changed
 
 - The quick game (slant_flat, double_slants, quick_outs, stick, hitches, hitch_out, trips_stick) and the gun-five concepts

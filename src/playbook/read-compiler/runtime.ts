@@ -211,8 +211,14 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const seq = [...plan.order, ...(plan.outlet && !plan.order.includes(plan.outlet) ? [plan.outlet] : [])];
       const stepAt = (st: typeof steps[number]) => st === 'set' ? set : st === 'hitch' ? set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT)
         : set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT) + RHYTHM_BEAT;
+      // CONCEPT_DROPS: a keyed high-low is one read on one defender, so its two routes share one beat (the place of
+      // whichever comes first); the reads after it move up a place. A serial order steps a place a read.
+      const key = plan.key, keyed = CONCEPT_DROPS_RHYTHM && !!key && seq.includes(key.low) && seq.includes(key.high);
+      const firstOfKey = keyed ? seq.find((r) => r === key!.low || r === key!.high) : undefined;
+      let place = -1;
+      const places = seq.map((ref) => (keyed && ref !== firstOfKey && (ref === key!.low || ref === key!.high) ? place : ++place));
       plan.rhythm = seq.map((ref, i) => {
-        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(fiveStep ? i + 1 : i, 2)];
+        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(fiveStep ? places[i] + 1 : places[i], 2)];
         const at = +stepAt(step).toFixed(2);
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         return { ref, step, at, ready, onTime: ready <= at + 1e-9 };
