@@ -11,7 +11,7 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { directionalSpeedFactor, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
+import { DIR_CAP, directionalSpeedFactor, TRUNK_PRICE, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -816,11 +816,7 @@ export const CARRY_POSTURE = process.env.CARRY_POSTURE === '1';
 function carryReach(a: Agent): number {
   return neckOf(a) + (TRUNK_TWIST ? TRUNK_RANGE : 0);
 }
-/** CARRY_POSTURE: the share of the pace the reach angle gives that his need must fall below before a turned carry
- * comes back half-open (the exit margin of the turn decision). */
-const CARRY_TURN_EXIT = 0.85;
-/** CARRY_POSTURE decisions per carrier: the side he opened to (kept for this receiver until he is square again) and
- * whether he has turned his back (no angle within reach gave the pace). */
+/** CARRY_POSTURE: the side each carrier opened to (kept for this receiver until he is square again). */
 const carryState = new WeakMap<Agent, { r: Agent; side: number; turned: boolean }>();
 /** CARRY_POSTURE attempt 3: the taught half turn of a bail seat (Cover-3 corner, quarters corner in bail), deg. */
 const CARRY_BAIL = (45 * Math.PI) / 180;
@@ -836,19 +832,21 @@ function readOpen(a: Agent, qb: Vec2, threat: Vec2, bail: boolean): number {
   return Math.max(bail ? CARRY_BAIL : 0, Math.abs(angleDiff(toQB, toT)) / 2);
 }
 /** CARRY_POSTURE: the hips' facing for this carry, or undefined for the full turn (face the run). */
-function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number, bail = false): number | undefined {
+function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number, bail = false): number {
   const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(receiver.y - a.pos.y, receiver.x - a.pos.x);
   let m = carryState.get(a);
   if (!m || m.r !== r) {
     m = { r, side: Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1, turned: false };
     carryState.set(a, m);
   }
+  // Attempt 3b: the pace need is a bound on the request, never what turns him. It is capped at what the half-open
+  // posture can give at the head's reach (the facing cap there, and DIR_CAP's price of the trunk's twist at its range):
+  // short of the break he concedes the step half-open. The turn is CUSHION_BREAK's seen-cushion decision (callers).
   const reach = carryReach(a), p = a.profile;
-  const capAtReach = p.vmax * directionalSpeedFactor(p, angleDiff(toQB + m.side * reach, heading));
-  if (m.turned && need > CARRY_TURN_EXIT * capAtReach) return undefined;
-  m.turned = false;
-  const facing = openTo(a, qb, receiver, heading, need, reach, m.side, Math.min(reach, readOpen(a, qb, receiver, bail)));
-  if (facing === undefined) { m.turned = true; return undefined; }
+  const capAtReach = p.vmax * directionalSpeedFactor(p, angleDiff(toQB + m.side * reach, heading))
+    * (DIR_CAP && TRUNK_TWIST ? 1 - TRUNK_PRICE * TRUNK_RANGE : 1);
+  const facing = openTo(a, qb, receiver, heading, Math.min(need, capAtReach), reach, m.side, Math.min(reach, readOpen(a, qb, receiver, bail)))
+    ?? toQB + m.side * reach;
   // Square again: the next opening chooses its side afresh.
   if (Math.abs(angleDiff(facing, toQB)) < 1e-6) carryState.delete(a);
   return facing;
@@ -1361,22 +1359,21 @@ export class ManCoverage implements Behavior {
     // in view) at the speed the depth check asks for.
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
     if (breakOn && CARRY_POSTURE) {
-      // CARRY_POSTURE: one posture before and after the break for a carry with deep responsibility: half-open within
-      // his head's reach of the QB, look on the QB; the full turn only when no angle within reach gives the pace.
-      const req = selected.facing === undefined ? selected : command;
-      const qbSeen = sim.see(a, sim.qb).pos, open = this.hipsOpen || broken();
-      const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration, open,
-        Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
-      const facing = carryFacing(a, R, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x), need,
-        bailSeat(a, (a.behavior as { zone?: string } | undefined)?.zone));
-      if (facing !== undefined) {
+      // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (hipsOpen, his seen cushion and closing), one half-open posture
+      // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
+      if (!this.hipsOpen) {
+        const req = selected.facing === undefined ? selected : command;
+        const qbSeen = sim.see(a, sim.qb).pos;
+        const need = carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration, false,
+          Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
+        const facing = carryFacing(a, R, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x), need,
+          bailSeat(a, (a.behavior as { zone?: string } | undefined)?.zone));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
-        if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command && !open) return command;
+        if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
         a.tags.add('open-carry');
         return withFacingTechnique(lookJoints(a, { ...req, facing }, facing, angleDiff(facing, toQB), true),
           { label: 'man-open-carry', key: seen.vel });
       }
-      this.hipsOpen = true;
     } else if (breakOn && !this.hipsOpen && !broken()) {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
@@ -1751,22 +1748,20 @@ export class ZoneCoverage implements Behavior {
       // when the pedal cannot keep it.
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
       if (CUSHION_BREAK && CARRY_POSTURE) {
-        // One posture before and after the break: half-open within his head's reach of the QB, look on the QB.
-        const req = selected.facing === undefined ? selected : command;
-        const qbSeen = sim.see(a, sim.qb).pos, heading = Math.atan2(req.vel.y, req.vel.x);
-        const open = this.turnedWith === deepest.r || deepBroken();
-        const need = carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration, open,
-          Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
-        const facing = carryFacing(a, deepest.r, qbSeen, deepest.pos, heading, need, bailSeat(a, this.zone));
-        if (facing !== undefined) {
+        // CARRY_POSTURE 3b: short of CUSHION_BREAK's turn (turnedWith: his seen cushion broken), one half-open posture
+        // within his head's reach of the QB, look on the QB, at a pace bounded by what that posture gives.
+        if (this.turnedWith !== deepest.r) {
+          const req = selected.facing === undefined ? selected : command;
+          const qbSeen = sim.see(a, sim.qb).pos, heading = Math.atan2(req.vel.y, req.vel.x);
+          const need = carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration, false,
+            Math.hypot(qbSeen.x - a.pos.x, qbSeen.y - a.pos.y));
+          const facing = carryFacing(a, deepest.r, qbSeen, deepest.pos, heading, need, bailSeat(a, this.zone));
           const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
-          if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command && !open) return command;
+          if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
           a.tags.add('open-carry');
           return withFacingTechnique(lookJoints(a, { ...req, facing }, facing, angleDiff(facing, toQB), true),
             { label: 'deep-open-carry', key: deepest.vel });
         }
-        // No angle within reach gives the pace: he turns and runs (below).
-        this.turnedWith = deepest.r;
       } else if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
