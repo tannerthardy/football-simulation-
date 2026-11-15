@@ -553,3 +553,12 @@ Ours: +0.8 with no defender, +0.8 vs Cover 3 off, +4.8 vs Cover 1 press.
 - So the path mechanism is a rule about the perceived defender ahead (his distance and position), not a press-only
   branch.
 - Witness added: outward drift by cushion bin, ours vs these rows.
+
+## RELEASE_READ with RELEASE_SIDE (engine-69, develop 1538db2d merged as 972e9c82), 2026-11-15
+
+Staged gates (Cover 1 press, head-up / outside / inside shade, 100 dropbacks each) with RELEASE_READ=1, and with
+RELEASE_READ=1 RELEASE_SIDE=1. The files differ: RELEASE_SIDE moves other players, in teammate spacing. Every pressed
+outside receiver's number is identical between the two arms in every shade: time to 5 yd, lateral at 1 yd, release
+side by route, break laterals. They also equal attempt 2's engine-68 gates. The two mechanisms do not meet on a
+pressed outside receiver: RELEASE_SIDE acts on a free man restricted by a teammate; RELEASE_READ acts on a man with a
+press corner tight over him.
