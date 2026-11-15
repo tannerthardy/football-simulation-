@@ -223,12 +223,13 @@ export class ReceiverForecast {
       if (c) {
         f.extend(c, Math.ceil(8 / this.dt));
         const total = this.prior.path.reduce((acc, p, i, arr) => acc + Math.hypot(p.p.x - (i ? arr[i - 1].p.x : this.prior.start.x), p.p.y - (i ? arr[i - 1].p.y : this.prior.start.y)), 0);
-        const need = Math.min(8, total);
-        let run = 0;
-        for (let i = 1; i < c.pts.length; i++) {
-          run += Math.hypot(c.pts[i].x - c.pts[i - 1].x, c.pts[i].y - c.pts[i - 1].y);
-          if (run >= need) { t = c.estimate.sampledAt + i * this.dt; break; }
-        }
+        // A short route (a screen's step) can stop just short of its last point, so the mark is 8 yd or, on a shorter
+        // path, nine tenths of what the run covers.
+        const runs = [0];
+        for (let i = 1; i < c.pts.length; i++) runs.push(runs[i - 1] + Math.hypot(c.pts[i].x - c.pts[i - 1].x, c.pts[i].y - c.pts[i - 1].y));
+        const need = Math.min(8, total, 0.9 * runs[runs.length - 1]);
+        const i = runs.findIndex((r) => r >= need);
+        if (i >= 0) t = c.estimate.sampledAt + i * this.dt;
       }
     }
     if (delayed && t !== null) t += this.releaseSeenAt!;

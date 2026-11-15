@@ -18,7 +18,10 @@ PlaySim.recordedSingleStream = true;
 // set; this file pins the cutoff. (Under PASS_KICK, P019's tackles meet both
 // ends at 1.25 s and lose them at the hip at 1.9 s: KNOWN_PROBLEMS PRO-1.)
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.PASS_FEEL = '0'; process.env.PASS_KICK = '0'; process.env.ARM_PRESS = '0'; });
+// FORECAST_BREAK (the engine default): P019's pre-3.5 s throw to the back's flat came only from the QB's readiness falling
+// back to the receiver's own breakTime; on the legacy forecast the flat's break is its sideline extension (6.1 s). With
+// that read removed (2026-11-15, route package), the scene keeps its throw on the engine's own forecast of the break.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.PASS_FEEL = '0'; process.env.PASS_KICK = '0'; process.env.ARM_PRESS = '0'; process.env.FORECAST_BREAK = '1'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync('test/fixtures/pass-cutoff-inputs.json.gz')).toString());
 function saved(index:number):PlaySim {
