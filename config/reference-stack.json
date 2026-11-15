@@ -332,6 +332,7 @@
     "SHOULDER_READ": "on",
     "CURL_FLAT_BACK": "on",
     "CURL_SINK": "off",
+    "SETTLE_DEPTH": "off",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",

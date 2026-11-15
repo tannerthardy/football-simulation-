@@ -86,3 +86,28 @@ crosser passed to nobody (rate, and its yards).
 
 Stated choices: the call's delay and its link to playRecognition; ZONE_SETTLE's 2 / 1 yd margins; the lateral margin on
 the zone's half-width. Each is named in the code beside its use.
+
+## Built so far: SETTLE_DEPTH (part ii), measured
+
+Integration's ruling split the work: flag 1, depth, is (ii) and (v); flag 2, the hand-off, is (i), (iii) and (iv).
+Sourcing (v) per coverage moved part of it: in match Cover 3 the apex is taught "man on #2 unless under" with a square
+"scootch" back for three steps (Rip/Liz, USA Football and Soran), which our pre-release man pedal approximates when No.
+2 goes vertical (staged: 984 cases, `man-pedal` at 5.1-5.5 yd through 1.5 s, 6.9 yd at 2.0 s). The case it gets wrong is
+No. 2 under (38 cases): he carries No. 2 inside at 3.6 yd (`open-carry-seam` 63% at 2.0 s) where he is taught to call
+"Under", zone to the curl and rob No. 1. That is a hand-off and moves to flag 2. (v) for the spot and quarters seats
+waits for the NFL apex row (`underneath.py` part B).
+
+`SETTLE_DEPTH` staged gates (`scripts/diag/defense/under-gates.mts 2`: every pass concept but screens against cover2,
+cover3, cover3_match, cover3_seam, cover4, cover6; three formations; seeds 1-2, both flips; off → on):
+
+- All throws 2054 → 2044: completion 0.703 → 0.706, 10.35 → 10.28 yd per throw.
+- Depth at the throw (p50): hook 8.1 → 8.3, curl-flat 7.0 → 7.1.
+- In-breakers (dig, in): 168 → 153 throws, completion 0.82 → 0.82, 18.8 → 17.9 yd per throw; the underneath defender on
+  their side at the throw 7.6 → 8.5 yd.
+- Its costs, the quick game underneath: hitch / curl 0.75 → 0.75 (5.4 → 5.4 yd), slant 0.67 → 0.68 (10.0 → 9.8), flat
+  0.62 → 0.63 (8.3 → 8.2), out 0.60 → 0.60 (8.4 → 8.5), short in unchanged. Shallow and mesh crossers 0.89 → 0.89.
+- It acts only after his own pass read and the QB's seen set, so the run fit is not reached.
+
+The fix does what it says and moves the hook under the in-breaker by a yard; the QB throws there less. The larger part
+of the dig and crosser hole is in the carry branches (the hook's `open-carry-cross`, the curl-flat's carry of an under
+No. 2), which flag 2 addresses.
