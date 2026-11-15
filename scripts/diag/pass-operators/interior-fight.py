@@ -20,7 +20,7 @@ q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 wrap = lambda a: (a + 180) % 360 - 180
 BINS = [(0, .5), (.5, 1.0), (1.0, 1.5), (1.5, 2.5)]
 for path in sys.argv[1:]:
-    orb = {b: [] for b in BINS}; off = {b: [] for b in BINS}; sep = {b: [] for b in BINS}; spd = {b: [] for b in BINS}; tb = {b: [] for b in BINS}; td = {b: [] for b in BINS}; shb = {b: [] for b in BINS}; rel = []; n = 0
+    orb = {b: [] for b in BINS}; off = {b: [] for b in BINS}; sep = {b: [] for b in BINS}; spd = {b: [] for b in BINS}; tb = {b: [] for b in BINS}; td = {b: [] for b in BINS}; shb = {b: [] for b in BINS}; grp = {g: {b: [] for b in BINS} for g in ('held', 'released')}; rel = []; n = 0
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw)
         if raw.get('kind') != 'pass' or not raw.get('xy'): continue
@@ -47,6 +47,7 @@ for path in sys.argv[1:]:
                 ang = math.degrees(math.atan2(lat, -(rx * ux + ry * uy)))   # 0 = the rusher straight in front, away from the QB
                 return math.degrees(math.atan2(ry, rx)), lat, math.hypot(rx, ry), ang
             g0 = geo(k0); side = 1 if g0[1] >= 0 else -1; acc = 0; prev = g0[0]; released = None
+            mine = {b: [] for b in BINS}
             for k in range(k0, min(kend, k0 + 25) + 1):
                 if p.pos(b, k)[0] is None or p.pos(d, k)[0] is None or p.pos(qb, k)[0] is None: break
                 g = geo(k); acc += wrap(g[0] - prev); prev = g[0]; t = (k - k0) * p.dt
@@ -57,6 +58,7 @@ for path in sys.argv[1:]:
                         # The rusher's speed while engaged (within 1.2 yd), central difference over 0.2 s.
                         if g[2] <= 1.2 and p.pos(d, k - 1)[0] is not None and k + 1 < p.frames and p.pos(d, k + 1)[0] is not None:
                             spd[bn].append(math.hypot(p.pos(d, k + 1)[0] - p.pos(d, k - 1)[0], p.pos(d, k + 1)[1] - p.pos(d, k - 1)[1]) / (2 * p.dt))
+                            mine[bn].append(spd[bn][-1])
                             # The orbit split: each man's velocity across the line between them (perpendicular), and
                             # the blocker's share of their relative motion across it (+: he turns with the pair).
                             if p.pos(b, k - 1)[0] is not None and p.pos(b, k + 1)[0] is not None:
@@ -69,10 +71,13 @@ for path in sys.argv[1:]:
                                 if abs(ud - ub) > 0.3: shb[bn].append(-ub / (ud - ub))
                 if g[2] > 1.2 and released is not None: break
             rel.append(released)
+            for bn in BINS: grp['held' if released is None else 'released'][bn].extend(mine[bn])
     print(f"== {os.path.basename(path)}: engaged interior pass-rush pairs {n}")
     for bn in BINS:
         print(f"   {bn[0]:.1f}-{bn[1]:.1f} s: orbit p50/p90 {q(orb[bn]):.0f}/{q(orb[bn], .9):.0f} deg | his offset across the blocker's line to the QB p25/50/75 {q(off[bn], .25):+.2f}/{q(off[bn]):+.2f}/{q(off[bn], .75):+.2f} yd | separation p50 {q(sep[bn]):.2f} (n {len(sep[bn])})")
     print("   across the line between them (engaged), |blocker| / |rusher| p50 yd/s and the blocker's share of their relative motion p50: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(tb[bn]):.2f} / {q(td[bn]):.2f}, {q(shb[bn]):+.2f}" for bn in BINS))
+    for gname in ('held', 'released'):
+        print(f"   engaged rusher speed, pairs {gname} (never released / released within 2.5 s), p50 (n): " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(grp[gname][bn]):.2f} ({len(grp[gname][bn])})" for bn in BINS))
     print("   the rusher's speed while engaged (within 1.2 yd), p50 / p75: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(spd[bn]):.2f} / {q(spd[bn], .75):.2f}" for bn in BINS))
     R = [r for r in rel if r is not None]
     print(f"   first release (separation past 1.2 yd or past his shoulder, 70 deg): p25/50/75 {q(R, .25):.1f}/{q(R):.1f}/{q(R, .75):.1f} s | released by 1.0 s {100 * sum(1 for r in R if r <= 1.0) / max(1, len(rel)):.0f}%, by 2.0 s {100 * sum(1 for r in R if r <= 2.0) / max(1, len(rel)):.0f}% | never {100 * sum(1 for r in rel if r is None) / max(1, len(rel)):.0f}%")

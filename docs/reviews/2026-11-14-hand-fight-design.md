@@ -981,3 +981,22 @@ the rusher, mirroring):
   stalemates (a held rusher, a blocker sitting on him) while ours are the moving rides.
   - The next cut: the same rows split by whether the pair is still within 1.2 yd at 2.5 s (held throughout) or
     releases later. Then compare like with like.
+
+**Survivorship ruled out.** The engaged rusher's speed, pairs held throughout (never released within 2.5 s) against
+pairs that release later, p50 by time since contact:
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| NFL held | 2.55 | 2.24 | 2.00 | **1.58** |
+| NFL released later | 2.69 | 2.55 | 2.50 | 2.24 |
+| base held | 1.80 | 1.50 | 2.00 | 2.06 |
+| FM2 held | 2.06 | 1.80 | 2.24 | **2.50** |
+| FM2 released later | 2.12 | 1.80 | 2.50 | 2.55 |
+
+- Compared like with like, the NFL's held pairs slow through the rep (2.55 -> 1.58). Ours speed up (2.06 -> 2.50),
+  and so does the base (1.80 -> 2.06).
+- The late drift is an older property of our engaged pairs, not the new hands. A held pair keeps sliding (across the
+  line at about 1.7 yd/s, both men) where the NFL's settles.
+- Ours also start slower at contact (2.06 against 2.55).
+- **What moves a held pair late in ours** is the next look, after BAT_HANDS: whose request carries the slide (the
+  rusher's aim between moves against the blocker's mirror and kick: PASS_KICK's set depth follows the rusher on).
