@@ -154,6 +154,8 @@ interface Track {
   samples: Sample[];
   /** When he began looking for this flight without a sample of it (his gaze search from the passer's end). */
   searchAt?: number;
+  /** When he saw the passer's arm come through (sample time, his own picture): his belief of the release. */
+  armSeenAt?: number;
   /** Attempt 3: observations he did not sample (his route prior, the release and the shoulder line). */
   pseudo: Sample[];
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
@@ -184,6 +186,13 @@ export class BallEstimates {
   sense(sim: PlaySim): void {
     if (!BALL_EST || sim.t <= this.lastSenseAt) return;
     this.lastSenseAt = sim.t;
+    // His own release belief: the passer's arm coming through, as he sees it while he is looking at him.
+    for (const [a, tr] of this.tracks) {
+      if (tr.armSeenAt !== undefined || a.isDown(sim.t)) continue;
+      const head = SHARED_HEAD ? (a.head ?? a.facing) : tr.head, q = sim.see(a, sim.qb);
+      if (q.arm !== 'deliver' || Math.abs(angDiff(Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), head)) > EYE) continue;
+      tr.armSeenAt = sim.t - (q.age ?? 0);
+    }
     const ball = sim.ball;
     // Design 4: before the throw, a receiver looking for the QB turns his head to him (the head he will start the
     // flight with). No ball, no samples.
@@ -318,10 +327,10 @@ export class BallEstimates {
     tr.attendT = sim.t; tr.deliberate = true;
   }
 
-  /** Design 4: was he looking for the QB when this flight left the hand (his pre-release look)? */
+  /** Design 4: did he see the passer's arm come through (his own release belief)? */
   lookedAtRelease(a: Agent, sim: PlaySim): boolean {
     const tr = this.tracks.get(a);
-    return sim.ball.kind === 'air' && tr?.preLookT !== undefined && sim.ball.releaseT - tr.preLookT <= 2 * sim.dt + 1e-9;
+    return tr?.armSeenAt !== undefined;
   }
 
   /** Read-only: his last fitted path (the `ballPath` shape) as of now, without attending, turning his head or
@@ -367,8 +376,8 @@ export class BallEstimates {
    * seen shoulder line. A receiver also seeds his own route's expected catch point (the QB's model of him, run on his
    * own installed route from his exact state). A defender has nothing more. */
   private seed(a: Agent, sim: PlaySim, tr: Track): void {
-    if (sim.ball.kind !== 'air') return;
-    const rel = sim.ball.releaseT, qb = sim.see(a, sim.qb);
+    // When the ball left, as he knows it: the throw he saw, else his first sample, else now (no true release time).
+    const rel = tr.armSeenAt ?? tr.samples[0]?.t ?? sim.t, qb = sim.see(a, sim.qb);
     const toQb = Math.atan2(qb.pos.y - a.pos.y, qb.pos.x - a.pos.x);
     const qbInView = Math.abs(angDiff(toQb, a.facing)) <= neckOf(a) + EYE;
     const hand: Vec3 = { x: qb.pos.x, y: qb.pos.y, z: 2.0 };
@@ -406,7 +415,7 @@ export class BallEstimates {
   priorAt(a: Agent): number | undefined { return this.tracks.get(a)?.priorT; }
 
   private reset(tr: Track): void {
-    tr.searchAt = undefined;
+    tr.searchAt = undefined; // armSeenAt is his belief of this play's release: a tip is a new flight of the same throw.
     tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
     tr.deliberate = false; tr.passiveAt = undefined;
   }
