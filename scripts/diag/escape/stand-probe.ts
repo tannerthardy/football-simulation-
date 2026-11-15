@@ -1,4 +1,7 @@
 // node --import tsx scripts/diag/escape/stand-probe.ts [seed] [games] > rows.jsonl
+// Each row's id is the game's seed and the play's number in that game (every PlaySim.run, kicks included), so a
+// play can be replayed by running the same games; `tick` carries per tick [branch, phase, avoid in force, commanded
+// upfield velocity, final command's upfield velocity, achieved upfield velocity, rusher distance].
 // Why he stands with a free interior rusher coming. On each dropback, the first interior defender (DT / NT slot) who
 // is off any blocker and comes within 3 yd of the quarterback while he holds the ball behind the line: from that
 // moment until the man is within 1 yd, the ball is gone, or 1.2 s pass, per tick: which branch of his update moved
@@ -8,9 +11,10 @@ import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+let gameSeed = 0, playNo = 0;
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
-  const sim: any = this; if (!sim.isPass) return orig.apply(this);
+  const sim: any = this; playNo++; const id = `seed ${gameSeed} play ${playNo}`; if (!sim.isPass) return orig.apply(this);
   const tick = sim.tick.bind(sim), dir = sim.attackDir(sim.qb.team); let ev: any = null, hooked: any = null, br = '-', done = false, lastCmd: any = null;
   sim.tick = () => {
     const b: any = sim.qb.behavior;
@@ -35,7 +39,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
       for (const x of T) cnt[x.br] = (cnt[x.br] ?? 0) + 1;
       const first = T[0], at = (lo: number, hi: number) => T.filter((x: any) => x.dist > lo && x.dist <= hi);
       const mid = at(1.5, 3);
-      console.log(JSON.stringify({ t0: +ev.t0.toFixed(2), slot: d.slot, dur: +(sim.t - ev.t0).toFixed(2), end: !holding ? 'ball gone' : dist <= 1.0 ? 'reached' : 'time', branches: cnt, phase0: ev.phase0,
+      console.log(JSON.stringify({ id, t0: +ev.t0.toFixed(2), slot: d.slot, dur: +(sim.t - ev.t0).toFixed(2), end: !holding ? 'ball gone' : dist <= 1.0 ? 'reached' : 'time', branches: cnt, phase0: ev.phase0,
         qbSpeed: mean('sp'), qbUp: mean('up'), qbSpeedMid: mid.length ? +(mid.reduce((s: number, x: any) => s + x.sp, 0) / mid.length).toFixed(2) : null, closing0: +first.closing.toFixed(1),
         pressure0: +first.pt.toFixed(2), names0: first.mine, feltMinusTrue0: +(first.feltD - first.dist).toFixed(2), alarmTicks: T.filter((x: any) => x.pt < 0.45).length, ticks: n,
         reEngaged: T.some((x: any) => x.engaged), tick: T.map((x: any) => [x.br, x.phase, x.avoidOn ? 1 : 0, x.cmdUp === null ? null : +x.cmdUp.toFixed(2), x.finUp === null ? null : +x.finUp.toFixed(2), +x.up.toFixed(2), +x.dist.toFixed(1)]), phases: T.reduce((c: any, x: any) => (c[x.phase] = (c[x.phase] ?? 0) + 1, c), {}), avoid: b.avoidCount ?? null, needNow: +(b.windup(q) + (b.dwellNow ?? 0.25)).toFixed(2), heldNow: +b.held(q, d, sim).toFixed(2) }));
@@ -45,4 +49,4 @@ PlaySim.prototype.run = function (this: PlaySim) {
 };
 const seed = Number(process.argv[2] ?? 11);
 const rng = new Rng(seed); const home = generateTeam(rng, 'Home', 'HOM'), away = generateTeam(rng, 'Away', 'AWY');
-for (let g = 0; g < Number(process.argv[3] ?? 4); g++) simulateGame(home, away, { seed: seed + g });
+for (let g = 0; g < Number(process.argv[3] ?? 4); g++) { gameSeed = seed + g; playNo = 0; simulateGame(home, away, { seed: seed + g }); }
