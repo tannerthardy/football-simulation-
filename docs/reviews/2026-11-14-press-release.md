@@ -461,3 +461,62 @@ Corner's shade at the snap, pressed outside receivers reaching 5 yd (same operat
   corner is over-weighted against the NFL's mix.
 - With attempt 1's jab-on-every-head-up, part of the 6%-vs-all jab gap was this alignment. That is the third
   Coverage/alignment item, noted for Integration.
+
+## RELEASE_READ attempt 2: gates and 16-game read (clean tree, 6d57e74b), 2026-11-15
+
+Both arms ran from 6d57e74b with `src/` untouched (the exporter's source check passed). The off arm reproduces the
+earlier off read exactly (634 pressed, same tables), so the off engine is the same. Split by the corner's shade at
+the snap, as Integration asked. Our corners are head-up on 464 of 550 pressed reps (84%), NFL 58%, so the head-up
+rows carry our pooled numbers.
+
+**Games, pressed outside receivers (16 games each arm):**
+
+| p50 | off | attempt 1 | attempt 2 | NFL |
+|---|---|---|---|---|
+| time to 5 yd, pooled | 2.00 | 2.20 | **2.00** | 2.00 |
+| head-up / outside shade / inside shade | 2.00 / 1.90 / 1.90 | 2.30 / 2.10 / 1.80 | 1.90 / 2.00 / 1.90 | 2.00 / 2.00 / 2.00 |
+| reached 5 yd before the throw | 88% | 77% | **88%** | 66% |
+| lateral at 1 yd, head-up | +1.2 | −0.3 | **+0.9** | +0.2 (−0.8–1.1) |
+| lateral at 1 yd, outside shade | −0.1 | – | +1.0 | −0.2 |
+| lateral at 1 yd, inside shade | +0.6 | – | +0.2 | +0.5 |
+| jab rate, GO head-up | 1/189 | ≈127/153 (attempt 1 gate) | 0/176 | 27/634 (4%) |
+| GO head-up, released outside | 95% | 78% | 94% | 75% |
+| HITCH at 5 yd (break lateral) | +3.9 | +2.0 | **+1.6** | +1.2 |
+| OUT at 5 yd | +3.8 | +2.0 | +2.3 | +0.7 |
+| SLANT at 2 yd | −1.7 | −0.6 | −1.1 | −0.8 |
+| GO at 10 yd | +4.5 | +2.8 | +3.0 | +4.7 |
+| yards per dropback (n 1,641 / 1,529 / 1,582) | 9.40 | 8.87 | 9.34 | – |
+
+- The jab column counts hitches by the operator's sideways-reversal rule. For hitches that counts the turn back to
+  the stem (88/152 on, 22/157 off), so hitch jab rates are not reported as jabs.
+- Gates (staged Cover 1, head-up / outside / inside): time to 5 yd 2.0 / 2.1 / 2.0; lateral at 1 yd +0.9 / +1.7 /
+  +0.4; hitch at 5 yd +1.4 / +0.8 / +0.2.
+
+**Against the stop rule** ("if it does not repair time to 5 yd and the 1 yd position, stop and re-diagnose"):
+
+- **Time to 5 yd: repaired.** 2.00 pooled and 1.9–2.0 in every shade, the NFL's 2.00. 88% reach 5 yd before the
+  throw, as off. The jab is gone where no corner sat on his side (GO head-up 0/176; NFL 4%).
+- **The 1 yd position: not repaired.** Against a head-up corner he is +0.9 yd outward at 1 yd. Off is +1.2, attempt 1
+  −0.3, the NFL +0.2. Against an outside shade (one sitting on his lean) he is +1.0 vs the NFL's −0.2.
+  The departure has moved from inside to outside but not closed. **Stopping RELEASE_READ attempts here; diagnosis
+  below.**
+- Kept: stop routes break much closer to the stem (hitch +1.6, NFL +1.2; slant −1.1, NFL −0.8). Outs remain wide
+  (+2.3, NFL +0.7) and gos narrow (+3.0, NFL +4.7). Of the go's width, about 2.3 yd is the corner's ride and 1.2 yd
+  the route stem; see the section above. Yards per dropback are unchanged (9.34 vs 9.40).
+
+**Diagnosis of the 1 yd position (not built).** NFL receivers against a head-up press spend their lateral move late,
+near the corner. Ours spend it from the first step.
+
+- **NFL.** The middle of the NFL head-up distribution at 1 yd is +0.2. Its sideways speed is small until the corner
+  is close; the coaching is "eat space, don't dance", get up into the corner and win at his hands.
+- **Ours.** The release point is fixed one clearance (about 1.4 yd) to the side, at 1 yd past the corner's depth
+  (about 2.3 yd ahead). He runs a straight line there from his stance, so a third of the width is spent by 1 yd,
+  wherever the corner is.
+- **So the fault is the release path's shape, not the side decision.** The side shares are now within the corner's
+  limits: head-up gos 94% outside against a mirror that never jumps the lean.
+- **The question for whoever owns the next step.** Should the release go vertical first, closing the cushion, and
+  turn the shoulder past the corner's hands only once inside arm's reach? That repairs the 1 yd position by when
+  the width is taken, not by how much. It is a third attempt at the release, so it needs a fresh decision: this one
+  is not built.
+
+**RESTEM.** Its own arm comes next, on this clean head, per Integration.
