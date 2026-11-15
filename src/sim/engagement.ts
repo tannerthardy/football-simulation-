@@ -1211,9 +1211,11 @@ function clearedSide(e: Engagement, lat: Vec2): number {
  * their coached feet, so that between clubs he is in a move or resetting, not sprinting the corner (under stage 1 he
  * asked for 88% of his top speed through the fight against the base's 55%: hand-fight note section 15). The move is a
  * decision from his keys, no roll:
- * - a blocker's hand light on him (by touch: handUnloaded, KEYED_FELT's key): the club, to clear it;
- * - otherwise a power rusher (his pass-rush power at least his finesse) takes the long-arm when his arm is the longer
- *   (seen: RUSH_HANDS' key), else the bull: drive through. A finesse rusher clubs.
+ * - a hand on him and his arm ready: the club (attempt 2), or, for a power rusher (pass-rush power at least his
+ *   finesse) whose arm is the longer (seen: RUSH_HANDS' key) against a blocker pressing him (not light by touch), the
+ *   long-arm;
+ * - between moves his feet are the bull's drive (at the rep's start, and after a club that cleared nothing); after a
+ *   club that cleared a hand he runs the side it opened.
  * Bull and long-arm carry the power request (0.55 of his top speed, full push: stepPassRep's power feet), held for
  * FIGHT_COMMIT or until a hand goes light on him. A club that cleared nothing leaves him resetting on the bull's feet
  * while his arm comes back. The long-arm works through the blocker's fitted hands as a strut (LONGARM_STRUT's law, not
@@ -1225,9 +1227,13 @@ if (process.env.FIGHT_MENU === '1' && !FITTED_HANDS) throw new Error('FIGHT_MENU
 const FIGHT_COMMIT = 0.75;
 function fightMove(e: Engagement): RushMove {
   const d = e.defender, b = e.blocker;
-  if (e.hands && !e.hands.off && handUnloaded(e)) return 'club';
-  if (d.r('passRushPower') >= d.r('passRushFinesse'))
-    return d.player.measurables.armIn > b.player.measurables.armIn ? 'longarm' : 'bull';
+  // Attempt 2: every rusher clubs a hand that is on him when his arm is ready (stage 1's decision, the clearing rhythm
+  // the orbit came from); a power rusher with the longer arm long-arms instead into a blocker whose hands are pressing
+  // him. Between moves his feet are the bull's drive (the reset below and at the rep's start), not the corner's run.
+  // Attempt 1 (a club only on a light hand, else bull or long-arm for a power rusher) left the bull on 66% of rep ticks
+  // and the club at 0.72 a second (stage 1 1.26): the orbit fell back to the base's (9 against 18 deg at 0.5-1.0 s).
+  if (d.r('passRushPower') >= d.r('passRushFinesse') && d.player.measurables.armIn > b.player.measurables.armIn
+    && e.hands && !e.hands.off && !handUnloaded(e)) return 'longarm';
   return 'club';
 }
 
