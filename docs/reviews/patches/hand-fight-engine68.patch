@@ -1,0 +1,2045 @@
+From 70c230d074fef8dcab39847a7ae8c574b7573adc Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 15 Nov 2026 15:55:35 +0000
+Subject: [PATCH] The hand fight (off): FITTED_HANDS (two hands as bodies, the
+ club with its approach, the blocker's read), BLOCK_ANTICIPATE (the cocked arm
+ as an observable, braced against), FIGHT_MENU attempt 2 (the bull and
+ long-arm by his keys, the bull's feet between moves); registered; card note
+ with the two-seed table and the stated residual. Off identical to engine-68
+ (763db5c8fa3d4671); on 3ef83ef6924bedb4 = the Flex branch
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ config/baseline.json                          |    3 +
+ config/reference-stack.json                   |    3 +
+ docs/FLAGS.md                                 |    5 +-
+ docs/reviews/2026-11-14-hand-fight-design.md  | 1002 +++++++++++++++++
+ docs/reviews/2026-11-15-hand-fight-card.md    |   44 +
+ scripts/diag/effective-mass/club-fight.mts    |   73 ++
+ scripts/diag/effective-mass/moves-fight.mts   |   51 +
+ scripts/diag/effective-mass/one-hand-sep.mts  |   43 +
+ scripts/diag/pass-operators/interior-fight.py |   83 ++
+ src/physics/world.ts                          |  114 +-
+ src/sim/agent.ts                              |    7 +-
+ src/sim/engagement.ts                         |  243 +++-
+ test/fitted-hands.test.ts                     |  104 ++
+ 13 files changed, 1763 insertions(+), 12 deletions(-)
+ create mode 100644 docs/reviews/2026-11-14-hand-fight-design.md
+ create mode 100644 docs/reviews/2026-11-15-hand-fight-card.md
+ create mode 100644 scripts/diag/effective-mass/club-fight.mts
+ create mode 100644 scripts/diag/effective-mass/moves-fight.mts
+ create mode 100644 scripts/diag/effective-mass/one-hand-sep.mts
+ create mode 100644 scripts/diag/pass-operators/interior-fight.py
+ create mode 100644 test/fitted-hands.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index c0056e24..39f647b3 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -256,6 +256,9 @@
+     "RUSH_HANDS": "0",
+     "PASS_RIDE": "0",
+     "PASS_OFF": "0",
++    "FITTED_HANDS": "0",
++    "BLOCK_ANTICIPATE": "0",
++    "FIGHT_MENU": "0",
+     "RUSH_ONE_HAND": "0",
+     "HAND_SITE": "0",
+     "ENGAGE_FELT": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 360ddc77..90c3ecb5 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -199,6 +199,9 @@
+     "RUSH_HANDS": "off",
+     "PASS_RIDE": "on",
+     "PASS_OFF": "off",
++    "FITTED_HANDS": "off",
++    "BLOCK_ANTICIPATE": "off",
++    "FIGHT_MENU": "off",
+     "RUSH_ONE_HAND": "off",
+     "HAND_SITE": "off",
+     "ENGAGE_FELT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index dce035b9..d9d4bb41 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 394 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus `PASS_OFF`): 295 are on unless set to `0`, 87 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 397 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus `PASS_OFF`, `FITTED_HANDS`, `BLOCK_ANTICIPATE` and `FIGHT_MENU`): 295 are on unless set to `0`, 90 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -318,6 +318,9 @@ There are 394 flags read from the environment in `src` (recounted 2026-11-15 at
+ | `RUSH_HANDS` | off | experimental (physical pass-rush moves, stage 1: the hand, 2026-11-13) | physics / trenches | `src/physics/world.ts` (`handForce`, `handHold`, `handEdge`, `stepHands`), `src/sim/engagement.ts` (`refit`, `refitTime`) | the blocker's hand as a one-degree-of-freedom body on the hands joint: a force on the hand over its contact time (step-independent) is resisted by the arm's lateral hold (steer x bent / actual extension + HAND_MU x measured press + a grip's hold), falling to 0 at the edge of the man's torso (his radius; vertical not modelled); the excess moves only the arm (ARM_MASS 0.05, Winter's segment tables), the striker pays the full reaction, the arm's momentum returns to the blocker's body; past the edge the hand is off (no push, hold or steer) until it re-fits after his reaction plus the travel from his chest at ARM_SPEED. Stage 2: the club is a force on the blocker's hand (his arm force over the time his hand crosses a forearm, FOREARM 0.1 yd at his hand speed) and the long-arm is his own hand joint at his lockout (the blocker's hands cannot reach while the man is beyond his arm), countered by the blocker's club on it after his reaction time. Two hands (attempt 2): a clear takes one hand (push, hold and the arm's hold halve; steer resisting the man toward the vacated side is ONE_HAND_SIDE 0.25 of the remaining hand's; the turning moment about the remaining hand is not modelled); a second clear takes both; re-fit one hand at a time. Keys: the rusher reads an unloaded hand by touch and his arm advantage by sight, with recognition error. Still rating rolls: bull, speed, dip, spin, swim, rip, snatch. Test `test/rush-hands.test.ts`. docs/reviews/2026-11-12-tackle-set.md |
+ | `PASS_RIDE` | on | promoted 2026-11-13 (engine-56; `=0` restores); was experimental (the block becomes a ride, 2026-11-13) | trenches | `src/sim/engagement.ts` (`rideIntent`; stepPassRep's PAST branch) | one ride rule for every pass blocker: a man past along his path (PAST_ALONG_PATH) is ridden -- the blocker runs with him on his QB side (a body's width across his path toward the QB), matching his velocity and closing on that spot (gain 2.5 /s), pushing through his hands (the joint's push flattens the man away from the QB); once riding he stays on him until the man is clearly back in front (along his path by more than PAST_MARGIN); the rep still ends when the man is beyond his arm. Off, the ride asked for the man's velocity less 1 yd/s toward the QB, so blockers fell behind by design (guards 1.9 vs 3.4 yd/s; ride-probe.mts). A grip from behind stays the holding detector's. docs/reviews/2026-11-12-tackle-set.md |
+ | `PASS_OFF` | off | experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. |
++| `FITTED_HANDS` | off | experimental (hand fight stage 1, 2026-11-14; requires RUSH_HANDS) | physics / trenches | `src/physics/world.ts` (`handPair`, `stepHandPair`, `handHold(k)`, the hands row), `src/sim/engagement.ts` (`fightHands`, `fightRep`, `feltCleared`, `chooseMove`, `resolveMove`) | the blocker's two hands are separate one-degree-of-freedom bodies: each carries half the joint's push, hold and steer at its own edge factor, so press, its friction and steer exist only through a fitted hand; a strike acts on the hand it meets, held by that arm alone. A lost hand re-fits after reaction plus travel (refitTime) and lands with a placement error (PLACE_SPREAD by hand technique; past the torso's edge it missed and goes again). Pass reps: no landed-move window from a lost hand (the man is freed only by the World). Interior pass reps: the club is the rusher's one move, thrown when a hand is on him and his arm is back; he works to the side he feels cleared (touch, 0.06 s). Design: docs/reviews/2026-11-14-hand-fight-design.md section 4. |
++| `BLOCK_ANTICIPATE` | off | experimental (hand-fight: the blocker's anticipation, 2026-11-15; requires FITTED_HANDS) | trenches / perception | `src/sim/engagement.ts` (`anticipate`, `armLog`, `seenArm`) | the rusher's near arm is an observable (on the blocker / drawn back / sweeping), logged each tick and seen by the blocker at his sight delay in his view cone. Seeing it away, he braces the hand it will meet (its hold at the bent arm's lever, no cloth) or, if that hand has slid off its spot, pulls and re-punches it (off for twice a forearm at his hand speed, landing with placement error, missing if the man is not there). The rusher's fake is the between-moves stage's, not built. Design: docs/reviews/2026-11-14-hand-fight-design.md section 13. |
++| `FIGHT_MENU` | off | experimental (hand-fight stage 2's minimum, 2026-11-15; requires FITTED_HANDS) | trenches | `src/sim/engagement.ts` (`fightMove`, `resolveMove`, the club's end) | the bull and long-arm back on the interior rusher's menu, decided by his keys (a light hand on him: club; else a power rusher long-arms with the longer arm or bulls; a finesse rusher clubs), with the power feet (0.55 vmax, full push) held 0.75 s or until a hand goes light; a club that cleared nothing resets on the bull's feet; the long-arm works through the fitted hands as a strut. Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 15-17. |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+ | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+diff --git a/docs/reviews/2026-11-14-hand-fight-design.md b/docs/reviews/2026-11-14-hand-fight-design.md
+new file mode 100644
+index 00000000..07114dde
+--- /dev/null
++++ b/docs/reviews/2026-11-14-hand-fight-design.md
+@@ -0,0 +1,1002 @@
++# The interior pass-rush hand fight: measured, then designed (Flex, 2026-11-14, engine-65 / 66; no build before Integration reads it)
++
++PRESS_SPRING stopped on the finding that a continuous press holds an engaged pair by friction alone. The NFL's pairs orbit
++with hands on, so their press comes and goes, and the moves that should make it come and go write to a `control` that
++decides nothing. The reference's own interior pass-rush pairs barely orbit (11 deg against the NFL's 39): a pre-existing
++gap that every hands flag has tried to cover from the wrong side. This note measures the fight first, then designs it from
++how it is taught.
++
++## 1. Measured
++
++Operators: `interior-fight.py` and `interior-orbit.py` (the same code on BDB and sim exports; pairs are each of the three
++middle OL and the nearest DL within 1.2 yd from the snap + 0.2 s, engaged while within 1.2 yd, to the throw), and
++`moves-fight.mts` (ours only: per interior pass rep, the moves fired, whether they land, the hands joint's load).
++Sim: engine-65 reference stack, seed 11 x 8 (and 23 x 8 for the reference); RUSH_HANDS is the existing hand model, off.
++
++**The fight by time since first contact** (orbit = net change of the bearing between them; offset = the rusher across
++the blocker's line to the QB, + toward the side he started on):
++
++| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
++|---|---|---|---|---|
++| orbit p50 / p90, NFL (23,733 pairs) | 5 / 26 deg | 25 / 70 | 34 / 93 | 39 / 119 |
++| reference | 3 / 17 | 6 / 36 | 9 / 47 | 11 / 52 |
++| RUSH_HANDS | 3 / 25 | 11 / 61 | 17 / 80 | 21 / 83 |
++| offset p25 / 50 / 75, NFL | +0.16 / +0.39 / +0.64 yd | -0.04 / +0.30 / +0.59 | -0.18 / +0.24 / +0.56 | -0.33 / +0.13 / +0.52 |
++| reference | +0.08 / +0.29 / +0.57 | +0.02 / +0.21 / +0.53 | -0.02 / +0.15 / +0.51 | -0.11 / +0.21 / +0.58 |
++| separation p50, NFL | 0.99 yd | 0.81 | 0.80 | 0.81 |
++| reference | 0.91 | 0.85 | 0.92 | 0.92 |
++
++**First release** (separation past 1.2 yd, or the rusher's bearing past 70 deg off the blocker's line to the QB):
++
++| | p25 / 50 / 75 | released by 1.0 s / 2.0 s | never |
++|---|---|---|---|
++| NFL | 0.3 / 0.7 / 1.2 s | 43% / 60% | 37% |
++| reference | 0.2 / 0.9 / 1.4 | 30% / 46% | 49% |
++| RUSH_HANDS | 0.3 / 0.7 / 1.2 | 44% / 61% | 36% |
++
++**Ours, per interior pass rep** (moves-fight.mts, seed 11 x 4, 926 reps, rep p50 2.1 s):
++- 3 move decisions a rep (p90 4), 1.24 a second.
++- Landed: bull 100%, dip 33%, rip 22%, club 21%, swim 18%, long-arm 9%, spin 6%, snatch 3%.
++- The hands joint is loaded 91% of the rep (p50), in one continuous stretch of 1.5 s (p50).
++- **In every move's window the hands' load rises, not falls**: rip 795 -> 1,009 N, swim 775 -> 964, club 671 -> 967,
++  spin 668 -> 1,032. A move that "lands" scales the blocker's steer (x 0.1) and push (x 0.2 for spin and swim) for its
++  window and fires a centre strike (PHY-STRIKE). It never takes a hand off the man.
++- Under RUSH_HANDS the hands are loaded 83% of the rep (1.15 s stretch). The club, a force on the blocker's hand, leaves
++  0 N in its window: the one move that clears a hand. Swim, rip, snatch, spin and dip are still rolls and still raise the
++  load.
++
++**Read:**
++1. The NFL fight happens between 0.5 and 1.0 s: the pair turns 20 deg there (5 -> 25), the rusher's offset spreads to the
++   other half (p25 +0.16 -> -0.04, and on to -0.33: the counters), and the pair closes to 0.81 yd. Ours barely moves
++   then (3 -> 6 deg), stays wider (0.85-0.92), and its rusher rarely crosses to the other half (p25 -0.11).
++2. **RUSH_HANDS already gets the release timing right** (44 / 61 / 36% against 43 / 60 / 37), and half the orbit. Its
++   known overshoot (interior pressure 20% of dropbacks on this read, NFL about 9.8) therefore comes after the release:
++   the released rusher reaches the QB more often than the NFL's. That is the come-off question (a beaten blocker's ride,
++   the next blocker's help, the QB's movement), not the fight's.
++3. So the hand fight is RUSH_HANDS' model finished: every move acting on the hands, not just the club.
++
++## 2. How the fight is taught
++
++**The rusher** clears the blocker's hands first, then wins with the body. A clear is a strike on the blocker's hand or
++arm, at the wrist, forearm or elbow:
++- the chop and the swipe knock a hand off or across (one hand, or a double swipe with both);
++- the rip comes up under the blocker's arm through his armpit with the inside arm, the shoulder dipped;
++- the swim brings the arm over the blocker's shoulder as the near hand is pressed down;
++- the cross chop attacks the blocker's control arm across the rusher's body.
++A clear alone does not win the rep: the feet still have to shorten the path and the shoulder still has to turn the
++corner. A rusher stays light on his hands to recover and reset when the blocker swipes at him.
++([Pass rush moves handbook](https://dlineexamples.substack.com/p/pass-rush-moves-handbook);
++[The beginner's guide to rushing the passer](https://jayarnold.substack.com/p/the-beginners-guide-to-rushing-the);
++[VIQTORY: pass rush moves for DL coaches](https://www.viqtorysports.com/pass-rush-moves/);
++[What is a cross chop](https://www.footballnationusa.com/post/what-is-a-cross-chop-how-pass-rushers-clear-the-tackle-s-hands).)
++
++**The blocker** strikes, re-strikes and replaces:
++- independent hands on a 45-degree set: one hand can strike while the other is held, and a "flash" of one hand draws
++  the rusher's move early;
++- set with the hands at chest height to invite the slap-down, then drop them to the waist as he comes and re-punch, or
++  punch to half extension, draw back and re-punch;
++- the snatch-and-trap: the blocker chops or swipes the rusher's wrist, forearm or elbow to take his balance, the counter
++  the rusher answers with a long arm;
++- patience on the punch: don't lean on the hands, keep the head back.
++([USA Football, the art of the strike](https://blogs.usafootball.com/blog/6283/the-art-of-the-strike-3-techniques-offensive-linemen-can-use-to-fend-off-pass-rushers);
++[USA Football, snatch and trap](https://blogs.usafootball.com/blog/6349/how-nfl-offensive-linemen-use-the-snatch-and-trap-technique-to-stop-pass-rushers);
++[X&O Labs, 4 ways to improve pass protection](https://www.xandolabs.com/?p=6437);
++[Coaches Insider, the elements of pass protection](https://coachesinsider.com/football/the-elements-of-pass-protection-article/).)
++
++The sources are coaching blogs and clinic notes, not one authority; the aiming points vary by scheme.
++
++## 3. The design (not built)
++
++Built on RUSH_HANDS' hand: the blocker's hand is a one-degree-of-freedom body on the hands joint. A force on it over its
++contact time is resisted by the arm's hold (steer x bent / extension + friction on the measured press + a grip's hold).
++The excess slides the hand, falling to nothing at the edge of the man's torso, where the hand is off. A hand that is off
++re-fits after the blocker's reaction plus the arm's travel from his chest at ARM_SPEED.
++
++The properties Integration set, and how each is met:
++
++1. **A move acts on a hand's fit, never on an outcome.** Each move is a force on one of the blocker's hands (or both),
++   for the time the rusher's arm takes across it, from his own arm and hand speed:
++   - **chop / swipe / club**: across the blocker's hand at the wrist (RUSH_HANDS' club law, unchanged);
++   - **rip**: up and across the blocker's outside hand from below, for his arm's time across the forearm (RUSH_RIP's
++     force law, which needs RUSH_HANDS), while his body dips (the bend request);
++   - **swim**: down and across the blocker's near hand as the swimming arm passes over the shoulder, for the same time;
++     the arm over the top is the body's path, not a rule;
++   - **snatch / trap**: the rusher grips the blocker's wrist and pulls it across (a grasp row on the hand, its hold his
++     grip strength); the hand is trapped while he holds it;
++   - **spin and dip**: body moves. The rusher's chest turns or drops away from the blocker's hands, the contact point
++     leaves the torso, and handEdge takes the hand off by geometry. No hand rule of their own.
++   - **bull and long-arm**: no clear. The bull drives through the press; the long-arm is the rusher's own hands joint at
++     his lockout (RUSH_HANDS), countered by the blocker's club on it.
++   Whether a hand comes off is then the World's: the force against the arm's hold. No roll, no landed window, no
++   `control` swing.
++2. **The blocker's re-fit takes his reaction plus arm travel and can be late.** RUSH_HANDS' refit: after his reaction to
++   the felt loss, the hand travels from his chest to the man at ARM_SPEED and lands where his hand placement puts it
++   (the placement error by his hand technique, as PAIR_HANDS' placeHand drew it). Independent hands: each hand re-fits
++   on its own, so one can be on while the other travels. The replace and re-punch is a new strike with its own
++   landing.
++3. **Skill sets timing and placement on both sides.** The rusher's hand speed sets how long his arm takes across the
++   blocker's forearm, so a quicker hand delivers its force in less time. His arm strength sets the force. The blocker's
++   hand technique sets his re-fit's placement error, and his reaction sets the delay. Ratings set capacities and errors,
++   never an outcome.
++4. **The press and its friction exist only while a hand is fitted.** The hands row's push, hold and steer scale with the
++   hands on (RUSH_HANDS' handEdge and handsOn), so while a hand is off or travelling its press and its friction are gone.
++   That is what lets the pair orbit (PRESS_SPRING's lesson). It needs no second friction law: the row's own limits are
++   already the fitted hands'.
++5. **It replaces the rated move rolls, not sits beside them.** resolveMove's remaining rolls (speed, dip, spin, swim,
++   rip, snatch; the bull's landed window) and the `control` swing go. A move is a decision (the rusher's keys: a hand
++   unloaded by touch, the blocker's arm advantage by sight, RUSH_HANDS') and its physics.
++
++**The open question RUSH_HANDS left** (a cleared hand freed the path: interior pressure 12-14%, now 20%) is not the
++fight's. The release timing is already the NFL's, so the overshoot is what a released rusher gets. That is two things
++this design keeps separate:
++- RUSH_ONE_HAND's rule that one hand gone opens one side, not the rep (the body and the other hand are still in front);
++- the come-off: the beaten blocker's ride (PASS_RIDE), the next blocker's help, the QB's movement.
++The first is in the design. The second is measured and decided after it, with the come-off operator against the NFL's.
++
++**Flags it retires** when it lands:
++- RUSH_HANDS' remaining rolls;
++- RUSH_RIP and RIP_CLEAR (folded in: the rip's force law is one of the moves);
++- RUSH_ONE_HAND (folded in);
++- CONTROL_HANDS and HAND_FIT (the rolled `control` they work around no longer exists);
++- the parked pair-contact flags stay parked: PAIR_HANDS, PRESS_SPRING, HANDS_LEVER. PHY-STRIKE (strikes at the line of
++  centres) is fixed for the hand strikes by construction, since they act on the hand body.
++
++**Gates, written before any build:**
++1. interior-fight by time: orbit at 0.5-1.0 s toward the NFL's 25 deg (today 6), the rusher's offset reaching the
++   other half (p25 at 1.5-2.5 s toward -0.33, today -0.11), separation toward 0.81;
++2. release timing kept at the NFL's (43 / 60 / 37%);
++3. moves-fight: in a cleared move's window the hands' load falls (today it rises in every window);
++4. interior pressure no higher than today's reference (12.9 / 11.5% of dropbacks; NFL about 9.8), then the
++   come-off measured;
++5. interior-orbit on pass sets toward 39 deg (today 11), runs unchanged (53);
++6. the run set by concept, falls, sacks and dither.
++
++## 4. After Integration's read (2026-11-14): staged, both sides, no outcome gates
++
++**Stages, each with its own two attempts at the game read:**
++1. **The physics, one move.**
++   - Press, friction and steer exist only through a fitted hand, per hand.
++   - The re-fit is the blocker's reaction plus arm travel, with placement error.
++   - The club, which already clears, is the only move.
++   - Gates: the hands' load falls in the club's window; the orbit at 0.5-1.0 s moves; the offset p25 moves; release
++     timing is kept.
++   - If one move plus honest hands gives most of the orbit, the remaining moves are detail. If it gives none, the theory
++     is wrong, and six more moves would have hidden that.
++2. Rip and swim, as forces on a fit.
++3. Snatch, spin and dip by geometry, and retiring the rolls.
++
++**The blocker's half** (written before building, so the law is not rusher-sided):
++- **What he perceives:** he sees the arm come, at his sight delay. A move he reads late lands, because the clear's force
++  arrives before his hold can be set against it. He feels a hand go light by touch at the hands' delay.
++- **What he does besides re-fit:**
++  - independent hands: one strikes or holds while the other re-fits;
++  - re-punch: a new strike with its own landing;
++  - snatch back: his own grip on the rusher's wrist, the coached snatch-and-trap, a grasp on the rusher's arm that holds
++    it out of position;
++  - anchor: sink against a bull (ANCHOR_BASE's lean on the felt load);
++  - give ground: his set's kick, already the mirror's.
++- **What a miss costs him:** a re-punch that misses leaves the hand extended and late back to bent (the reach's cost,
++  measured in PRESS_SPRING's stem-and-cut row). A snatch that misses leaves his hand off the man for its travel back.
++
++**The rusher's symmetric costs and commitment:**
++- A failed clear leaves his arm out of position for its return travel (RUSH_HANDS' sweep: reaction plus the arm's
++  return at ARM_SPEED, twice if the club stopped on a hand). A clear that left him off balance costs his reaction again.
++  He throws no other move until the arm is back.
++- A committed move is committed. Today he makes 1.24 decisions a second; under the new law a decision is made only at
++  a decision point (the arm back, or a felt change: a hand going light by touch) and is never re-rolled on the same
++  picture. The dither guard covers his requests.
++
++**Gates corrected:**
++- Interior pressure is a reported row, not a gate. If the fight's timing, orbit and offset are right and pressure is
++  high, the fault is after the release (the come-off: ride, help, the QB's response), its own piece of work. A hand
++  force is never sized to hold pressure down.
++- "Toward 25 deg / 39 deg" are places to look, not targets. The forces come from arm strength and hand speed, and the
++  orbit that results is the result.
++
++**Never ban what works.** No move is made to fail by a roll or a cooldown once this exists. If the club clears every
++time under the new law, the answer is the blocker's counter (he reads it, sets his hold, snatches back) or the club's
++cost (his arm out of position), found from how it is coached.
++
++**Interaction with ENGAGE_TRUNK / CHEST_SHOULDERS and the yaw findings.** Stage 1's "press only through a fitted hand"
++acts on the same contact. The order is the patch first, the hands on top:
++- The patch assumes nothing of the hands: hips on the set, shoulders on the felt man, the chest segment across the
++  shoulders. All hold whether the press is continuous or comes and goes.
++- The hands stage assumes the patch: the hand body's contact point is the chest segment, so the shoulders decide where
++  a hand lands and where its edge is.
++- The yaw findings stand under both: no moment on a set blocker from a press or a strike, and grip not shared with the
++  yaw motor. An intermittent press changes how often there is a press to share grip with, not the motor's law. The
++  shared-grip budget is measured after stage 1, on the new contact.
++
++**Retirements** (accepted in principle): RUSH_HANDS' rolls, RUSH_RIP, RIP_CLEAR, RUSH_ONE_HAND, CONTROL_HANDS and
++HAND_FIT. Each is executed only when the stage that replaces it has carded.
++
++**A second witness for stage 1** (the QB lane's ends-by-time measurement, engine-66, 16 games; one code path on BDB and
++our exports; non-designed gun dropbacks, no play action or screens; sacks timed at the wrap):
++
++| | common drop 2-3.5 yd: NFL / ours | deeper drop 3.5-5 yd: NFL / ours |
++|---|---|---|
++| sacked, all | 7% / 4% | 9% / 12% |
++| alive at 3.0 s, ending in a sack | 12% / 4% | 10% / 6% |
++| alive at 3.5 s | 12% / 5% | 12% / 4% |
++| alive at 4.0 s | 11% / 6% | |
++
++Our rush gets home early about as often but does not finish late: a quarterback still holding at 3 s is sacked a third
++as often as the NFL's. That fits the orbit finding (the pairs do not rotate, and a rusher who has not won by about
++1.5 s never wins). Added as a reported row, not a target: **the share of dropbacks alive at 3.0 s that end in a sack**.
++Late NFL sacks also include coverage sacks, where a moving quarterback runs into a rusher who came off his block.
++Whether ours come off a block toward a moving quarterback at all is the come-off question, measured after stage 1.
++
++## 5. Stage 1, attempt 1: built and read (2026-11-15, `FITTED_HANDS`, branch 7037d163)
++
++Built as section 4's stage 1 on RUSH_HANDS' hand (requires RUSH_HANDS; the name HAND_FIGHT is the run fight's flag):
++- **Two hands, each its own one-DOF body** (`handPair`). Each carries half the joint's push, hold and steer at its own
++  edge factor: press, its friction and steer exist only through a fitted hand, hand by hand. A strike acts on the
++  hand it meets and is held by that arm alone (half each term). RUSH_HANDS' joint held a club with both arms.
++- **Re-fit:** after reaction plus travel (refitTime), landing with a placement error by hand technique (PLACE_SPREAD);
++  past the torso's edge it missed and goes again.
++- **No landed-move window** from a lost hand on pass reps: the man is freed only by the World.
++- **The club is the interior rusher's one move**, thrown when a hand is on him and his arm is back (RUSH_HANDS' return
++  cost); no rolled cooldown. He works the side he feels cleared, by touch at 0.06 s. RUSH_ONE_HAND's aim read the
++  joint's state with no delay; under the flag that is removed.
++- Off identical (seed 999 287b9553c2e9b709). World tests: test/fitted-hands.test.ts.
++
++**Read:** seed 11 x 8, on the patch base (ENGAGE_TRUNK + CHEST_SHOULDERS). Operators: interior-fight.py,
++pressure-source.py, club-fight.mts (seed 11 x 4; new: moves-fight.mts reads a window by moveUntil, and the club, about
++0.03 s, ends inside one tick).
++
++| | NFL | base | + RUSH_HANDS | + FITTED_HANDS |
++|---|---|---|---|---|
++| orbit p50 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s (deg) | 25 / 34 / 39 | 7 / 9 / 12 | 11 / 15 / 20 | **26 / 39 / 37** |
++| offset p25 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s (yd) | -0.04 / -0.18 / -0.33 | +0.02 / -0.03 / -0.07 | 0.00 / -0.06 / -0.09 | **-0.07 / -0.34 / -0.25** |
++| separation p50 0.5-1.0 s (yd) | 0.81 | 0.85 | 0.89 | **0.81** |
++| released by 1.0 / 2.0 s, never | 43 / 60%, 37% | 32 / 47%, 48% | 46 / 61%, 35% | **53 / 73%, 25%** |
++| hands' load before / 0.1 s after a club (N) | | | 322 / 616 | **868 / 541** |
++| clubs a second / clearing a hand | | | 0.45 / 35% | 1.54 / 54% |
++| hands on, share of rep: 2 / 1 / 0 | | | 92 / 8 / 0% | 62 / 36 / 2% |
++| interior pressure, % of dropbacks (reported) | about 9.8 | 12.0 | 21.7 | **38.5** |
++| sack proxy, % of dropbacks; alive at 3.0 s ending in one (reported) | 7; 12 | 6.1; 12.7 | 7.2; 15.2 | **15.2; 31.6** |
++
++The sack proxy counts a dropback with no forward pass ending behind the line (it includes QB runs for a loss); it is
++a comparison between arms, not the QB lane's operator.
++
++**Gates:**
++1. **The club's window: pass.** The load falls after it (868 -> 541 N); under RUSH_HANDS alone it rises
++   (322 -> 616 N).
++2. **The orbit at 0.5-1.0 s: pass**, at the NFL's (26 against 25 deg), and on through 1.0-2.5 s.
++3. **The offset p25: pass.** The rusher reaches the other half (-0.34 at 1.0-1.5 s against the NFL's -0.18 to -0.33),
++   and separation is at the NFL's 0.81.
++4. **Release timing: fail, overshot.** 53 / 73% by 1.0 / 2.0 s against 43 / 60%; never released 25% against 37%.
++
++**Where the releases come from** (club-fight.mts, separation past 1.2 yd after contact): 533 of 810 reps
++(RUSH_HANDS 417 of 780).
++- 391 come with both hands on; 141 with one hand off (RUSH_HANDS 29); 194 within 0.5 s of a clear (RUSH_HANDS 37).
++- A hand is off 0.35 s p50 (p90 0.55) before both are back.
++
++So the clears now free the man, as taught. The overshoot is that they come too often and cost him nothing the blocker
++makes him pay:
++- 1.54 clubs a second, every time his arm is back, and 54% clear.
++- The blocker never sees one coming: the club is a force from the instant it is thrown, with no arm travel to the
++  hand before it. The return travel is modelled (RUSH_HANDS' sweep) but the approach is not.
++- The blocker has none of section 4's half: no read of the arm, no hold set against it, no snatch back.
++
++One move plus honest hands gives all of the orbit: section 4's test of the theory comes out for it. What is missing
++is the blocker's half, not more rusher moves.
++
++**Proposed attempt 2** (the last for stage 1), from section 4's blocker half and the rusher's costs:
++1. **The club's approach.** His hand travels to the blocker's wrist (0.45 of his arm at his hand speed, the same sweep
++   as its return) before the force acts.
++2. **The blocker reads the arm coming** by sight (an arm is seen, not felt), at his sight delay of 0.12-0.24 s by his
++   read.
++   - Seen before the force arrives: he sets that hand's hold. The arm bends toward his bent length (the lever term
++     rises) and he takes cloth: a grip, OPEN_HANDS' hold, for the club's time.
++   - Seen late: it lands as now.
++
++No roll, no cooldown, no cap on clubs. Whether the club still works is then the World's, against a hold set by a man
++who saw it.
++
++## 6. Stage 1, attempt 2: the club's approach and the blocker's read (2026-11-15, `FITTED_HANDS`, 54a595c2, engine-67)
++
++Integration's conditions, as built:
++1. **The approach is physics.** His near hand travels 0.45 of his arm at his hand speed (0.11-0.19 s) to the
++   blocker's wrist before the force acts, aimed at one hand. If that hand is not there at the onset, the club meets
++   air: no contact at all.
++2. **The blocker's read is perception.** He sees the arm start at his sight delay (0.12 + 0.12 x (1 - read)), and only
++   with the rusher in the view cone about his eyes (head.ts; his facing without HEAD). His answer is what he has time
++   for before the onset, with no roll:
++   - a forearm's width of hand travel: take the hand away (the club meets air) and re-punch as it passes;
++   - less: firm the hand with cloth (armForce x 0.6) for the club's time;
++   - none: it lands.
++3. **The rusher pays.** A held club costs RUSH_HANDS' second sweep. A club through air costs a double return, his
++   reaction again for the balance, and his arm's momentum into his body.
++4. **Cloth is on the joint** (grip and hold), where the holding detector reads it.
++
++Off identical (engine-67 7c0603676f346494). Attempt 1 re-read on the same engine from a worktree.
++
++**Read:** seed 11 x 8, the patch base.
++
++| | NFL | base | + RUSH_HANDS | attempt 1 | **attempt 2** |
++|---|---|---|---|---|---|
++| orbit p50 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s (deg) | 25 / 34 / 39 | 7 / 8 / 11 | 10 / 13 / 15 | 27 / 41 / 41 | **20 / 35 / 43** |
++| offset p25, same windows (yd) | -0.04 / -0.18 / -0.33 | +0.02 / -0.02 / -0.09 | +0.01 / -0.05 / -0.09 | -0.11 / -0.38 / -0.36 | **-0.01 / -0.17 / -0.33** |
++| separation p50 0.5-1.0 s (yd) | 0.81 | 0.85 | 0.89 | 0.85 | **0.85** |
++| released by 1.0 / 2.0 s, never | 43 / 60%, 37% | 30 / 44%, 51% | 46 / 62%, 35% | 55 / 73%, 25% | **42 / 62%, 35%** |
++| clubs a second / clearing a hand within 0.25 s | | | | 1.52 / 54% | **1.26 / 35%** |
++| hands' load before / 0.25 s after a club (N) | | | | 879 / 536 | **855 / 625** |
++| hands on, share of rep: 2 / 1 / 0 | | | | 64 / 34 / 2% | **78 / 22 / 0%** |
++| interior pressure, % of dropbacks (reported) | about 9.8 | 10.9 | 21.9 | 38.8 | **23.1** |
++| sack proxy; alive at 3.0 s ending in one (reported) | 7; 12 | 5.4; 12.7 | 10.1; 18.0 | 15.1; 35.8 | **8.7; 19.8** |
++| holding calls on pass plays (club-fight, 4 games) | | | | 0 of 365 | **2 of 366** |
++
++The load at 0.1 s after a club now rises (855 -> 885 N): the force has not yet arrived (the approach). It has fallen by
++0.25 s.
++
++**Gates:**
++1. The club's window: pass (the load falls once the force acts).
++2. The orbit at 0.5-1.0 s: pass (20 against 25; 35 / 43 against 34 / 39 later).
++3. The offset p25: pass, on the NFL's in every window.
++4. **Release timing: pass** (42 / 62 / 35 against 43 / 60 / 37).
++
++**What did it.** The approach, not the blocker's read.
++- The blocker's answer: late 93%, unseen 6%, firm 3 of 2,031, away none (30 clubs met air, on hands already off at
++  the onset).
++- His sight delay (0.12-0.24 s) is as long as the arm's travel (0.11-0.19 s), so a reactive read almost never beats a
++  club.
++- What changed is that the force arrives after the travel, aimed at a hand that has had that time to move with the
++  bodies. Clears fall from 54 to 35% of clubs, and the rate from 1.52 to 1.26 a second, with no cooldown.
++
++**What the blocker still lacks** (for the later stages, not stage 1). His half as coached is anticipation and timing,
++not reaction to an arm already moving. That is the set and the hands' rhythm:
++- hands at chest height to invite the slap, then dropped and re-punched;
++- a punch drawn back and re-thrown;
++- independent hands, one held while the other strikes.
++
++He can only act on a club before it starts if he acts on cues earlier than the arm. The rusher's set-up (his feet, his
++shoulder, the near arm's position) or his own rhythm are what the coaching describes. Built from perceived cues, that
++is the blocker's stage. The snatch-back is the same.
++
++**Interior pressure is still high** (23.1% against base 10.9 and the NFL's about 9.8, with the release timing on the
++NFL's). By Integration's rule that is the come-off, and stage 1 is done. The come-off is the next measured question:
++the beaten blocker's ride, the next blocker's help, the QB's movement.
++
++## 7. After the release: the come-off, measured (2026-11-15, Integration's questions; diagnosis only)
++
++Operators, the same code on BDB 2022 (23,733 interior pairs) and our exports:
++- `interior-comeoff.py`: pairs and release exactly as interior-fight.py; from the release to the throw: reach (within
++  1.5 yd of the QB), path, what is near him at +0.3 / +0.5 s, and the QB's movement.
++- `late-sacker.py`: the late sack by who made it.
++
++Sim: seed 11 x 8 on the patch base, engine-67. Base, and FITTED_HANDS attempt 2 ("FH").
++
++**1. Release to the QB.**
++
++| | NFL | base | FH |
++|---|---|---|---|
++| interior pairs released | 63% | 49% | 65% |
++| of released, reached the QB before the throw | **8%** | 10% | **15%** |
++| reached, per pair | **4.8%** | 4.8% | **10.0%** |
++| release to reach p25 / 50 / 75 | 0.9 / 1.4 / 2.3 s | 1.0 / 1.3 / 1.5 | 1.1 / 1.3 / 1.6 |
++| path off his line to the QB over 0.5 s, p50; flattened past 45 deg | 40 deg; 45% | 39; 43% | 42; 44% |
++
++The base reaches the QB per pair at the NFL's rate (it releases less, and more of its releases get there). FH releases
++at the NFL's rate, and twice as many of its released rushers get there. The whole excess is after the release. The
++path out of the release is the same; the NFL's reachers take longer (p75 2.3 s against 1.6).
++
++**2. What stops a released NFL rusher.**
++
++| | NFL | base | FH |
++|---|---|---|---|
++| blocker within 1.2 yd at +0.3 / +0.5 s | 48 / 37% | 39 / 32% | 45 / 30% |
++| another OL within 1.0 yd by +0.5 s | 56% | 56% | 54% |
++| a back within 1.0 yd | 2% | 5% | 7% |
++| QB moved past 1.0 yd in 0.5 s | 44% | 34% | 37% |
++
++Split by whether his blocker is still on him at +0.5 s:
++
++| | NFL | base | FH |
++|---|---|---|---|
++| blocker still on (within 1.2 yd): reached | 12% | 13% | 14% |
++| **blocker off (past 1.2 yd): reached** | **7%** | 12% | **22%** |
++| blocker off: closing on the QB over 0.5 s, p50 | **-0.2 yd/s** | +0.2 | **+0.7** |
++| blocker off, help came (60 / 60 / 53% of them): reached; closing | 7%; -0.1 | 7%; +0.2 | 16%; +0.2 |
++| blocker off, no help: reached; closing | **8%; -0.4** | 20%; +0.5 | **28%; +1.0** |
++| ... and the QB moved past 1 yd: reached; closing | **9%; -1.4** | 27%; -0.2 | **41%; +0.2** |
++| ... and the QB still: reached; closing | 8%; +0.5 | 15%; +0.8 | 19%; +1.7 |
++| blocker off: release to throw p50 | 1.4 s | 1.2 | 1.3 |
++
++- A rusher still on his blocker reaches the QB at the NFL's rate in both arms.
++- The excess is the rusher who has got off his blocker. The NFL's reaches the QB 7% of the time, ours 22%, with
++  help as near (53 against 60%) and the same time to the throw.
++- The NFL's off-blocker rusher on average does not close on the QB at all (-0.2 yd/s); ours does (+0.7).
++- Two things carry it:
++  - **The QB's movement escapes him in the NFL and not in ours.** With no help, a QB who moves takes the NFL's rusher
++    off him (-1.4 yd/s; reached 9%). Ours keeps closing (+0.2) and reaches 41%: our QB's movement takes him along or
++    toward the rusher.
++  - **Help that arrives stops the NFL's rusher and only half-stops ours** (reached 7 against 16%, with help within
++    a yard).
++- Even unhelped against a still QB, ours closes faster (+1.7 against +0.5 yd/s).
++- By count, the off-blocker class is all of the excess: reached, per pair, 7.3% in FH against the NFL's 1.9%, the
++  5.2 points between FH and the NFL.
++
++**3. Whether a release means the same thing.** The aggregates agree:
++
++| | NFL | base | FH |
++|---|---|---|---|
++| fired by separation / by past-the-shoulder | 39 / 61% | 60 / 40% | 36 / 64% |
++| separation at it, p50 | 1.08 yd | 1.20 | 1.02 |
++| blocker at +0.3 s: clean (past 1.5) / at his hip (within 1.2) / between | 21 / 48 / 20% | 18 / 39 / 32% | 15 / 45 / 31% |
++
++Fourteen each (`--examples 14`, the first in file order) read the same way.
++- NFL: 9 by separation (1.20-1.35 yd, the blocker 1.2-1.8 yd at +0.3 s) and 5 past the shoulder (0.7-1.0 yd, the
++  blocker 0.8-1.1).
++- FH: 6 and 8, with the same distances.
++- Clean runners (the blocker past 2 yd at +0.5 s): 3 in each. FH moved the release's character from the base's (separation, a clean break) to the NFL's
++(past the shoulder, the blocker on his hip). The release gate did not pass on a label: the fight is not too decisive.
++What is too decisive is what happens after it.
++
++**4. The late sacks.** Of dropbacks alive at 3.0 s, ending with no forward pass behind the line, by the defender
++nearest the QB at the end (`late-sacker.py`):
++
++| | NFL | base | FH |
++|---|---|---|---|
++| alive at 3.0 s ending in a sack | 14.6% | 12.7% | 19.8% |
++| by an interior DL | **4.1%** | 5.7% | **14.0%** |
++| by an edge (other DL / LB) | **9.5%** | 6.6% | **5.8%** |
++
++The FH excess is all interior, from (2): the off-blocker rusher who keeps closing on a moving QB. The NFL's late sacks
++are mostly the edge's, and ours are short there in both arms. That is the late-sack gap the QB lane found (12 against
++4% on engine-66), and the hand fight does not touch it.
++
++**Edges.** The two-hand physics applies to every pass rep, but edge outcomes barely move (edge-rush.py, base -> FH):
++- wide-aligned: past outside at 2.0 s 7 -> 12%, inside 6 -> 5%;
++- very wide: 8 -> 8%, inside 1 -> 3%;
++- by top speed: the fastest third past outside 18 -> 19%;
++- edge pressure, % of dropbacks: past outside 1.1 -> 1.0, level / in front 5.3 -> 6.5, inside 8.2 -> 6.2.
++The stand-up edge at the deeper launch is being read (tackle-set-side.mts, roster 11, both drops, base / FH).
++
++**What follows** (Integration's two pieces, in this order on this evidence):
++1. **The come-off**, first: it is where the excess is.
++   - The QB's escape from a free interior rusher: his movement takes him toward or along the rusher in ours and away
++     in the NFL's. That is the QB lane's controller, the same finding as the edge sack's step-up, from the other side.
++   - The helper's pickup: as near as the NFL's, half as effective.
++   - The rusher's closing speed when free.
++   Each needs its own look on film before a build.
++2. **The blocker's anticipation stage**: acting before the arm starts, from the rusher's set-up he can see. Section
++   6's list, to be sourced.
++
++## 8. The come-off on film (2026-11-15, Integration's three looks; diagnosis only)
++
++**Population** (all rows below): the QB lane's (early-sack.py).
++- NFL: PFF dropbacks, not designed movement, no play action, no spikes.
++- Ours: no boot / roll / sprint / waggle / naked / screen or play-action concept.
++- The section 7 numbers hold on it: the off-blocker rusher reaches the QB 9% of the time in the NFL (BDB 2022,
++  17,027 interior pairs), 12% in the base and 21% under FH. Unhelped, with the QB moving: 13% (-0.4 yd/s) in the NFL
++  against 41% (+0.5) under FH.
++
++**Operators:**
++- `comeoff-frames.py`: the same code on BDB and ours, every 0.1 s from the release to the throw (at most 2.0 s), on
++  interior-comeoff.py's off-blocker cases.
++- `comeoff-film.mts`: ours only; the internal state (the rusher's request against the true and the seen QB, whom he is
++  engaged with, the helper's perception and engagement); seed 11 x 4.
++
++**(a) The helper.**
++
++| | NFL | base | FH |
++|---|---|---|---|
++| off-blocker rushers helped (an OL within 1.0 yd by +0.5 s) | 61% | 62% | 53% |
++| reached, helped | **5%** | 7% | **13%** |
++| helper's velocity toward him at first touch, p50 | -1.12 yd/s | -0.69 | -0.85 |
++| helper's facing off the bearing to him | 17 deg (tracking 'o') | | 11 deg (internal) |
++| helper held within 1.0 yd the whole next 0.5 s: all / of those who still reached | 70 / **63%** | 69 / 64% | 65 / **36%** |
++
++- The NFL helper and ours arrive as near and as fast, and face him as square.
++- The difference is what he holds. Of helped rushers who still reach the QB, the NFL's helper is still on him the whole
++  0.5 s in 63% of cases (he is ridden home), ours in 36% (he is lost).
++- Internal state (FH): when a helper is on him, the rusher's engagement is mostly the original block with the helper
++  added (48% of frames) or a new block by the helper (20%). In 162 helped cases the helper took him as his own blocker
++  29 times; he joined as a helper 88 times and never engaged 45 times.
++- A helper on an engagement is a support joint (push 0.8 of his press x support, steer 0.4 of his arm), not a block.
++  Under FH the original blocker's hands are often off, so the man is held by the weaker joint: the rusher moves at
++  3.1 yd/s while engaged under FH, against 1.9 in the base.
++- The helper's perception of him is accurate (error p50 0.19 yd) and timely. The gap is in what the pickup becomes,
++  not in what he sees.
++
++**(b) The free rusher** (frames with no OL within 1.0 yd of him):
++
++| | NFL | base | FH |
++|---|---|---|---|
++| more than 3 yd from the QB: rusher speed / closing (yd/s) | 2.92 / -0.01 | 2.12 / +0.81 | 3.61 / +1.36 |
++| ... the QB's speed / away from him | 2.24 / 1.13 | 1.00 / 0.00 | 1.41 / 0.40 |
++| 1.5-3 yd: rusher speed / closing | **4.00** / 1.63 | 4.30 / 2.49 | **4.74** / 3.00 |
++| ... the QB's speed / away | **3.16** / 0.98 | 1.50 / 0.54 | **1.00** / 0.37 |
++| the last 0.6 s before a reach: rusher speed / closing | **3.91** / 3.19 | 5.00 / 3.56 | **5.22** / 4.28 |
++
++- He aims at the QB as he sees him, and that picture is right: request off the seen QB p50 14 deg, off the true QB
++  13; the seen QB's error p50 0.08 yd (pursuitPoint at 0.5 of the delay).
++- Two differences:
++  - most of the closing gap is the QB moving (c);
++  - in the last yards ours runs in about 1.2 yd/s faster (5.2 against 3.9). The NFL's slows into the QB (breakdown to
++    tackle under control, or re-finding a QB who has moved); ours runs through at speed.
++
++**(c) The QB.**
++- In the last 0.6 s before a free rusher reaches him, the NFL QB moves at 2.0 yd/s, mostly up and across (up +0.5,
++  away 0.06): the step-up and slide. Ours stands: 0.7 yd/s (base 1.4), up 0.0.
++- At 1.5-3 yd from a free interior rusher: the NFL QB moves at 3.2 yd/s, ours at 1.0.
++- What he could have seen: an interior rusher in front of him, 1.5-3 yd away and closing at 3-4 yd/s, inside his view
++  of the field, for 0.3-0.6 s before the reach.
++- That is the QB lane's controller: the same finding as no step-up from the deeper set.
++- Play ids, ours, off the blocker, unhelped, reached:
++  - FH (48): S11-P35, S11-P74, S11-P88, S11-P93, S11-P96, S11-P115, S11-P123, S11-P134, S12-P12, S12-P18;
++  - base (24): S11-P81, S11-P158, S12-P88, S12-P108, S13-P37, S13-P75, S13-P91, S13-P119, S14-P60, S14-P84, S14-P136,
++    S14-P168.
++
++**Which carries it.** Of FH's 12-point excess in off-blocker reach (21 against 9%):
++- helped (13 against 5%, on 53% of them): about 4 points;
++- unhelped (25 against 11%, on 47%): about 7 points. The QB's standing carries most of this; the rusher's speed into
++  him adds to it.
++So (c) first by size, then (a), then (b). (a) and (b) are mine; (c) is the QB lane's.
++
++**The stand-up edge at the deeper launch** (tackle-set-side.mts, roster 11, the twelve changed concepts, 576
++matchups an arm; engine-67 patch base): sacks by the strong-side stand-up edge are 33 shallow / 13 deeper in the base
++and 12 / 7 under FH.
++- On engine-66 without the patch it was 27 / 62. The deeper-launch excess is gone on this base before the hand fight.
++- Which of the patch (ENGAGE_TRUNK + CHEST_SHOULDERS) and engine-67 (VERTS_QUICK and the rest) took it is not read.
++- FH lowers both: the interior gets there first.
++
++## 9. Integration's rulings on section 8 (2026-11-15)
++
++**The stand-up edge's deeper-launch excess: which change took it.** tackle-set-side.mts, roster 11, the twelve
++changed concepts, 576 matchups an arm. Sacks by the strong-side stand-up edge, shallow / deeper:
++
++| arm | shallow | deeper | QB depth at 3.0 s, shallow / deeper |
++|---|---|---|---|
++| engine-66, no patch (section 5 of the tackle-set review) | 27 | 62 | 5.84 / 6.84 |
++| engine-67, no patch | 28 | 62 | 5.76 / 6.84 |
++| engine-67 + patch, VERTS_QUICK off | 46 | 26 | 5.94 / 6.67 |
++| engine-67 + patch | 33 | 13 | 5.77 / 6.65 |
++
++- **The patch (ENGAGE_TRUNK + CHEST_SHOULDERS) takes it**: deeper 62 -> 13 on engine-67. VERTS_QUICK alone does not
++  move it (62 -> 62 without the patch).
++- Off the patch, the deeper launch's sacks came across the concepts (comebacks 10, trips_outs 9, verts_hitch 7, ...).
++  With it they are only on the verticals and comebacks.
++- **The QB's step-up fault is still there underneath.** At 3.0 s the deeper QB is still 0.9 yd deeper than the
++  shallow one (6.65 against 5.77) in every arm. The patch's tackle, holding his hips on the set, keeps the edge off him;
++  the QB has not changed.
++- This is a row for the patch's card.
++
++**(b), Integration's split: does the NFL rusher gather against a QB who is standing?** comeoff-frames.py, the QB
++lane's population, off-blocker cases:
++
++| rusher speed p25 / 50 / 75 (yd/s), QB still (< 0.5 yd/s) | NFL | base | FH |
++|---|---|---|---|
++| the last 0.6 s before a reach | 3.35 / **4.12** / 4.61 | 4.50 / 5.15 / 5.59 | 4.74 / **5.22** / 5.59 |
++| free, 1.5-3 yd from the QB | 2.55 / **3.81** / 4.50 | 2.06 / 5.00 / 5.59 | 4.27 / **5.00** / 5.41 |
++| ... QB moving (> 1.5 yd/s), last 0.6 s | 2.83 / 3.91 / 5.00 | 4.47 / 5.02 / 5.59 | 4.92 / 5.15 / 5.70 |
++
++The NFL's rusher gathers even against a QB who is standing: 4.1 yd/s into a still QB against our 5.2. That is not an
++effect of (c), so (b) is its own build: his approach as a tackler's, his response to what the QB he sees can do, from
++the tackle approach's law, not a speed bound near a QB. Our p75 sits at 5.59 in every row, a capacity ceiling the
++NFL's p75 (4.5-5.0) does not reach.
++
++**(a) the pass-off: built** (`PASS_OFF`, off, e346168e).
++- Found in the code: `beat()` disengaged the whole engagement when the primary was beaten, helper included. A helper
++  with his hands on the man lost him at that instant. That is the 36% against 63%.
++- The build: when a helper's hands are on him (his joint loaded last step: touch), the helper keeps him as his own block
++  on his own joint, a fresh fight. The beaten blocker leaves the rep with the ordinary 0.6 s shed window; then his own
++  blocking decides whether he recovers to double or finds work.
++- **Why 45 of 162 helped rushers were never engaged by the nearest OL:**
++  - 20 were blocking their own man;
++  - 25 were free but faced away (55 deg p50 off the bearing to the rusher), 20 of the 45 tackles looking outside;
++  - none was out of reach (within 1.0 yd for 8 frames p50).
++  The pass-off does not touch these. Whether the free ones should have turned to him is the "looking for work"
++  question: whom a free blocker watches and when.
++
++Noted, not built (Integration, 2026-11-15): the 25 free helpers facing away. As coached, a free lineman looks for work
++inside-out and helps the nearest threat. Whom a free blocker watches and when is its own question.
++
++## 10. PASS_OFF read (2026-11-15; seed 11 x 8, engine-67 patch base; the QB lane's population for the come-off rows)
++
++**Attempt 1** (e346168e: the hand-off only at `beat()`) barely fired: 3 hand-offs against 82 sheds in 2 games.
++- FH: helped off-blocker reach 16 -> 15%, interior pressure 23.1 -> 23.6%.
++- Base: helped reach 7 -> 4%.
++- Most FH rushers who reach the QB are never beaten in the code: they are still in the first man's rep at arm's length.
++
++**Attempt 2** (a9b509f2) adds the coached cue: the helper takes him when he sees him come off the blocker he is
++helping (his view cone, his sight delay: beyond the blocker's working reach or past his shoulder). 160 hand-offs in 2
++games. Off identical (7c0603676f346494); the dither budget passes with it on.
++
++| | NFL | base | base + PASS_OFF | FH | **FH + PASS_OFF** |
++|---|---|---|---|---|---|
++| off-blocker rushers reaching the QB | 9% | 12% | 12% | 21% | **12%** |
++| ... helped: reached | 5% | 7% | 8% | 16% | **7%** |
++| ... unhelped: reached | 11% | 20% | 16% | 25% | **19%** |
++| helped rushers who still reached: helper on him the whole 0.5 s | 63% | 64% | 58% | 36% | **65%** |
++| released by 1.0 / 2.0 s, never | 43 / 60 / 37% | 30 / 44 / 51% | 32 / 48 / 47% | 42 / 62 / 35% | 42 / 65 / 32% |
++| orbit p50 0.5-1.0 s | 25 deg | 7 | 7 | 20 | 18 |
++| interior pressure, % of dropbacks | about 9.8 | 10.9 | 11.9 | 23.1 | **19.0** |
++| edge pressure: past outside / level / inside | | 1.1 / 5.3 / 8.2 | 0.6 / 5.7 / 5.2 | 1.0 / 6.5 / 6.2 | 1.6 / 5.1 / **8.3** |
++| other pressure | | 5.0 | 6.4 | 7.2 | 5.6 |
++| sack proxy | 7 | 5.4 | 5.2 | 8.7 | 9.1 |
++| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5% | 5.7 / 6.6 | 6.5 / 3.0 | 14.0 / 5.8 | **10.2 / 8.5** |
++
++**Read:**
++- **Under FH the pass-off does (a)'s job.** Helped reach is at the NFL's (7 against 5%), and so is the helper's hold
++  (65 against 63%). Off-blocker reach falls most of the way (21 -> 12 against 9).
++- The residual is the unhelped rusher (19 against 11%): (b) his finish, then (c) the QB.
++- **The cost shows, as Integration asked:**
++  - The helper who takes the interior man leaves the edge's inside. Edge pressure from inside the tackle rises
++    6.2 -> 8.3% of dropbacks, and late edge sacks 5.8 -> 8.5% of those alive at 3 s, toward the NFL's 9.5.
++  - Late interior sacks fall 14.0 -> 10.2 (NFL 4.1).
++  - The sack proxy is unchanged (8.7 -> 9.1).
++  - The pressure moves from the interior to the edge rather than going away.
++- **On the base it changes little.** The base's releases are clean breaks, not men coming off a helped block: helped
++  reach 7 -> 8%.
++- The release timing barely moves under FH (never 35 -> 32%). The hand-off continues reps that would have counted
++  as a release.
++
++## 11. RUSH_GATHER attempt 1 read (2026-11-15; seed 11 x 8, engine-67 patch base; QB lane's population)
++
++`RUSH_GATHER` (800c6da8): the free pass rusher finishes on the QB with chase()'s close gather (gatheringApproach)
++from his picture of the QB, his braking and his tackling's arrival speed. Off identical.
++
++| | NFL | base | base + RG | FH + PO | FH + PO + RG |
++|---|---|---|---|---|---|
++| rusher speed, last 0.6 s before a reach, QB still: p50 | **4.12** | 5.15 | 5.00 | 5.41 | **4.74** |
++| free 1.5-3 yd from a still QB: p50 | 3.81 | 5.00 | 3.00 | 5.39 | 4.72 |
++| off-blocker reach | 9% | 12% | 12% | 12% | **18%** |
++| ... helped / unhelped | 5 / 11% | 7 / 20% | 7 / 22% | 7 / 19% | 12 / 27% |
++| after a reach: distance at +0.3 s p50; time within 1.5 yd; thrown | 0.82 yd; 0.5 s; 35% | 0.64; 0.3; 71% | 0.57; 0.3; 66% | 0.85; 0.3; 52% | 0.58; 0.3; 65% |
++| interior pressure, % of dropbacks | about 9.8 | 10.9 | 13.9 | 19.0 | 20.6 |
++| sack proxy; sacked per pressure | 7; | 5.4; 18.3% | 4.6; 15.7% | 9.1; 23.6% | **7.0; 20.5%** |
++| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 5.7 / 6.6 | 3.8 / 7.1 | 10.2 / 8.5 | 11.3 / 3.9 |
++
++**Read:**
++- **The finish moves toward the NFL's.** At a still QB in the last 0.6 s: 5.41 -> 4.74 yd/s against 4.12.
++- Sacks fall (9.1 -> 7.0; per pressure 23.6 -> 20.5%), and the QB gets the ball out more often once reached (52 -> 65%
++  thrown).
++- **It is not a hover.** After a reach the gathered rusher is as close (0.58 yd at +0.3 s) and no longer within
++  1.5 yd than before.
++- **The adverse result:** more off-blocker rushers reach 1.5 yd (12 -> 18% under FH + PO; unchanged on the base),
++  helped and unhelped alike, and interior pressure rises 19.0 -> 20.6.
++  - Not yet explained.
++  - A candidate in the law as ported: chase()'s gather aims at the seen QB's position (the goal is his picture,
++    offset 0), while the sprint it blends into aims at pursuitPoint's intercept. A rusher gathering at 2.5 yd plus
++    his stopping distance turns from the intercept toward where the QB is, which may take him around a helper's
++    line rather than through it.
++  - Needs its own look (the gather onset's position against the helper and the QB, the reached against the not)
++    before an attempt 2.
++- Not for the card yet. FITTED_HANDS + PASS_OFF go as a patch without it.
++
++## 12. RUSH_GATHER attempt 2, and stop (2026-11-15)
++
++**Attempt 1's adverse row, on film** (comeoff-film.mts, FH + PO with and without RG, seed 11 x 4, off-blocker cases):
++- The rusher's request points more straight at the QB (13 -> 10 deg off the true QB).
++- He closes faster though he runs slower (closing p50 1.78 -> 2.68 yd/s, speed 4.24 -> 4.06).
++- He is free more often in helped cases (11 -> 18% of frames), and the helper takes him less (46 -> 40%).
++- Cause: chase()'s gather begins at contact plus his stopping distance (about 4-4.5 yd, so near the release) and aims
++  its arrival at the QB's seen spot. Blended into his sprint, it re-aimed him off his intercept line, around the helper.
++
++**Integration's second check: reach against contact and outcome.**
++- After a reach, attempt 1's rusher was as close to the QB (0.58 yd at +0.3 s) for as long (0.3 s) as before.
++- The ball came out more often (52 -> 65% thrown) and sacks fell (9.1 -> 7.0).
++- So the extra reaches were real arrivals, not a slower man hovering at 1.5 yd. They ended in throws more often than
++  sacks.
++
++**Attempt 2** (4b934202): the gather sets his speed only, on his own line (the sprint's direction).
++
++| | NFL | base | base + RG2 | FH + PO | FH + PO + RG1 | FH + PO + RG2 |
++|---|---|---|---|---|---|---|
++| rusher speed, last 0.6 s, QB still: p50 | 4.12 | 5.15 | 5.00 | 5.41 | 4.74 | **4.92** |
++| off-blocker reach | 9% | 12% | 10% | 12% | 18% | **16%** |
++| ... helped / unhelped | 5 / 11 | 7 / 20 | 6 / 16 | 7 / 19 | 12 / 27 | 10 / 24 |
++| after a reach: thrown | 35% | 71% | 71% | 52% | 65% | 53% |
++| interior pressure | about 9.8 | 10.9 | 12.1 | 19.0 | 20.6 | **22.6** |
++| sack proxy | 7 | 5.4 | 4.8 | 9.1 | 7.0 | 8.8 |
++| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 5.7 / 6.6 | 4.7 / 4.3 | 10.2 / 8.5 | 11.3 / 3.9 | 14.7 / 6.8 |
++
++**Attempt 2 fails.**
++- Under FH + PO the finish barely moves toward the NFL's (4.92 against 4.12).
++- Off-blocker reach still rises (16 against 12), and so do interior pressure (22.6) and late interior sacks (14.7).
++- On the base it is close to neutral.
++
++**Two attempts: stopped. RUSH_GATHER stays off and is parked.** What to re-diagnose before any third idea:
++- Both versions raise reach under FH + PO. A rusher who slows near the QB is reached by the 1.5 yd operator no less
++  often, and the helper does not get him back either way. The arrival speed may not be the variable that matters.
++- Our free rusher's speed sits near his capacity (p75 5.6-5.8 yd/s in every arm), where the NFL's p75 is 4.5-5.0 even
++  against a moving QB. That may be a capability (top speed or acceleration out of a fight), not a choice.
++  - The next look: the free interior rusher's speed against his own vmax by time since release, NFL against ours.
++  - Is ours faster everywhere after the release, or only into the QB?
++  - That separates a capacity read from a controller one.
++
++## 13. The blocker's anticipation stage: design for Integration's read (2026-11-15; not built)
++
++**What the measurement says it must do.** Under FITTED_HANDS attempt 2 the blocker's read of a club came late 93% of
++the time: his sight delay (0.12-0.24 s) is as long as the arm's travel to his wrist (0.11-0.19 s). Reacting to an
++arm already swinging cannot work, and the coaching does not ask him to. It asks him to act on what comes before the
++swing, and on his own rhythm.
++
++**How it is taught** (sources below):
++- **The rusher's move needs his hands and feet in sync.** "Rushers succeed when they are able to sync their hands and
++  feet together during their chosen pass-rush move." The blocker's tools work on that sync.
++  - **Bait (flash):** a hand flashed at the rusher early in the rep draws his move before he is ready; the move then
++    misses or shows itself, and the blocker sits on what is left (Lane Johnson against a cross-chop).
++  - **Alternate hands:** inside strike, outside strike, alternated, "keeps rushers guessing and off-balance".
++  - (USA Football, the art of the strike.)
++- **Point and counterpoint hands.** The inside hand is the point hand on the inside shoulder. The outside hand is the
++  counterpoint: "the counter point hand is going to counter any moves by DL to get his hands off of you". Strong with
++  the inside hand, soft with the outside. (McNally clinic notes.)
++- **Set the hands to invite, then re-punch.** Hands at chest height to invite the slap-down, then dropped to the waist
++  as he comes, and re-punched. Or punch to half extension, draw back, and re-punch. Patience on the punch: do not lean
++  on the hands, head back. (X&O Labs; Coaches Insider.)
++- **Snatch-and-trap is keyed on what he sees of the rusher's weight.**
++  - It works on a rusher whose weight is too far forward on an arm (a long-arm or bull thrown without the feet), "ideally
++    deployed prior to contact being established".
++  - It needs "quick mental processing skills to key and diagnose when these moves are coming".
++  - Swiping that arm away takes his support: "a sudden, abrupt collapse". (USA Football, snatch-and-trap.)
++
++**The cue that comes before the swing, and is observable.** A club starts from a cocked arm: the rusher's near hand
++comes off the blocker and draws back before it sweeps. In ours that state exists (the arm away on its return, then
++ready: `handsBackAt`) but no one can see it.
++
++**Proposed build** (`BLOCK_ANTICIPATE`, off; on FITTED_HANDS):
++1. **The rusher's near arm is an observable.** Each tick the perception record holds its state: on the blocker /
++   drawn back / sweeping. Others perceive it at their sight delay, as any body state. No new information: it is his
++   arm, in view.
++2. **The blocker's answers to a cocked arm he sees**, chosen by what he has time for (no roll):
++   - firm the counterpoint hand on that side (OPEN_HANDS' cloth, attempt 2's firm, visible to the holding detector),
++     held while the arm is away;
++   - or re-punch the side the cocked arm has opened (his chest is open while his arm is back): a strike that lands with
++     his placement error, at the cost of the reach (his arm extended, late back to bent);
++   - or nothing, if he sees it late.
++3. **His own rhythm (bait)**, the coached flash: a hand flashed at the rusher's face early in the rep. Our rusher's
++   club is keyed on his own felt cue (a hand on him, his arm back), so a flash that leaves his chest light for a moment
++   draws the club early into a hand that is not there. That is the club through air, already costed (double return,
++   balance).
++   - Whether and when he flashes is the blocker's decision from his own state. That needs its own care: a timer would
++     be the convenient-timer rule broken.
++   - Proposed: offered after 1-2 have read, not with them.
++4. **Snatch-and-trap** stays for the long-arm / bull stage (stage 3), keyed on the rusher's lean, which the support
++   model has.
++
++**The rusher's side** stays as built. His answer to a blocker who firms against his cocked arm is his choice of when to
++club. That is the between-moves question (task 13), not this stage.
++
++**Gates, written before building:**
++1. The blocker's answers: in time on a material share of clubs (today 0.1%), by what he saw.
++2. Club clearing rate falls from 35% for the clubs he answered, and not for the ones he did not.
++3. The orbit at 0.5-1.0 s and the release timing kept near the NFL's (20 deg, 42 / 62 / 35%).
++4. Reported: interior pressure, off-blocker reach, holding calls (the firm's cloth), sacks.
++
++**Order and cost.** The arm observable is the larger piece (perception record, a field per rusher); the answers reuse
++attempt 2's firm and the existing strike. One stage, two attempts at its game read, as before.
++
++**Sources:**
++- [USA Football: the art of the strike](https://blogs.usafootball.com/blog/6283/the-art-of-the-strike-3-techniques-offensive-linemen-can-use-to-fend-off-pass-rushers)
++- [USA Football: snatch-and-trap](https://blogs.usafootball.com/blog/6349/how-nfl-offensive-linemen-use-the-snatch-and-trap-technique-to-stop-pass-rushers)
++- [Jim McNally pass / run clinic notes](https://www.scribd.com/doc/305124327/Jim-McNally-Pass-Run-Clinic-Notes)
++- [X&O Labs: 4 ways to improve pass protection](https://www.xandolabs.com/?p=6437)
++- [Coaches Insider: the elements of pass protection](https://coachesinsider.com/football/the-elements-of-pass-protection-article/)
++
++These are coaching blogs and clinic notes, not one authority.
++
++## 14. Capacity or choice: the free rusher's speed out of the fight (2026-11-15; comeoff-frames.py, QB lane's population)
++
++Free frames (no OL within 1.0 yd) of off-blocker interior rushers, speed p50 / p75 (yd/s):
++
++| | NFL | base | FH + PO |
++|---|---|---|---|
++| 0.1-0.5 s after the release | 2.55 / 3.54 | 2.24 / 2.92 | **3.64 / 4.50** |
++| 0.5-1.0 s | 3.00 / 4.00 | 2.50 / 3.54 | **3.54 / 4.61** |
++| 1.0-1.5 s | 3.16 / 4.47 | 2.50 / 3.35 | 4.03 / 4.92 |
++| 1.5-2.1 s | 3.54 / 5.00 | 1.80 / 2.55 | 3.54 / 4.30 |
++| 2-3 yd from the QB | 4.00 / 4.92 | 4.30 / 5.39 | 4.92 / 5.59 |
++| 3-5 yd | 3.16 / 4.12 | 2.06 / 3.54 | **4.12 / 4.72** |
++| 5-7 yd | 2.55 / 3.54 | 2.12 / 2.55 | **3.20 / 3.64** |
++
++**Read:**
++- **Under FH the rusher leaves the fight about 1 yd/s faster than the NFL's** (3.64 against 2.55 in the first 0.5 s)
++  and stays faster all the way in. It is not a finish chosen near the QB, so a gather could not fix it (section 12).
++- **Nor is it a top-speed capacity.** The base, with the same bodies, leaves the fight slower than the NFL's (2.24).
++- **It is the fight's exit speed under the new hands.** While the press comes and goes, the rusher's request in the
++  rep stays at his rush pace (0.8 of vmax, stepPassRep). Each time a hand comes off he converts that request into speed
++  at once: engaged FH rushers already move at 3.1 yd/s against the base's 1.9 (section 8).
++- An NFL rusher fighting hands is not running at 80% of his top speed while he fights: his feet and hands are synced
++  to the move ("rushers succeed when they sync their hands and feet").
++- **So the next piece is the rusher's request during the fight: his feet in the move.** That is the between-moves
++  intent (task 13) and the rush's pace while his hands work. Measure first: the NFL's engaged interior rusher's speed
++  (pairs within 1.2 yd, interior-fight's pairs) against ours by time since contact, base and FH.
++
++**The engaged rusher's speed** (interior-fight.py's pairs, frames within 1.2 yd), p50 / p75 by time since contact:
++
++| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
++|---|---|---|---|---|
++| NFL | 2.55 / 3.20 | 2.50 / 3.16 | 2.06 / 2.92 | **1.80 / 2.69** |
++| base | 2.00 / 2.55 | 1.58 / 2.24 | 2.06 / 2.69 | 2.06 / 2.69 |
++| FH | 2.12 / 2.69 | 2.12 / 2.92 | 2.83 / 3.54 | 2.69 / 3.64 |
++| FH + PO | 2.24 / 2.83 | 2.24 / 2.92 | 2.92 / 3.61 | **3.20 / 4.00** |
++
++- The NFL's engaged rusher is fastest at contact and slows as the rep goes on (2.55 -> 1.80): the fight stalls him.
++- Ours starts slower (2.1-2.2) and speeds up through the rep under FH (to 2.9-3.2 after 1.0 s): the engaged rusher is
++  moving, not stalled, as the press comes and goes.
++- So the gap is in the late fight. An engaged NFL rusher who has not won by 1 s is held nearly in place. Ours, with a
++  hand off half the time, runs around the blocker at his rush pace. That is where his speed out of the release comes
++  from.
++
++## 15. Feet or hold (2026-11-15; one-hand-sep.mts, seed 11 x 4, interior pass reps after 1.0 s, before the throw)
++
++| | ticks | requested speed p50 (share of vmax) | achieved p50 / p75 | across the joint p50 | joint load p50 |
++|---|---|---|---|---|---|
++| base, both hands | 20,811 | 4.85 (55%) | 2.03 / 2.57 | 0.01 yd/s | 988 N |
++| FH + PO, both hands | 15,234 | **7.05 (88%)** | **3.16** / 3.77 | 0.50 | 817 N |
++| FH + PO, one hand | 5,051 | 7.25 (90%) | 3.17 / 3.84 | **0.79** | 402 N |
++
++With one hand off he moves across the joint toward the vacated side in 74% of ticks (p50 +0.61 yd/s).
++
++**Read: both, with the feet the larger** (Integration's expectation).
++- **The feet:** under FH the rusher asks for 88-90% of his top speed through the fight, against the base's 55%, and
++  gets 3.2 yd/s even with both hands on him (base 2.0).
++  - Part of this is stage 1's own construction. With the club the interior rusher's only move, he never takes a power
++    move (the bull or the long-arm, whose request is 0.55 of vmax with full push). Between clubs his request is the
++    corner at rush pace (0.8 + 0.15 x bend of vmax).
++  - The base's rusher spends much of the rep in a power move.
++  - The coached rusher plants and drives while his hands work: his feet are in the move.
++- **The hold:** one hand off adds the slide. Across the joint 0.50 -> 0.79 yd/s, toward the vacated side three times
++  in four (ONE_HAND_SIDE: 0.25 of the remaining hand's steer that way). It does not add speed (3.16 -> 3.17).
++- **Next for the feet:** the rusher's request while his hands work is the between-moves intent (task 13), and stage
++  2's moves (rip, swim, bull back on the menu) bring the power requests back.
++  - So the feet belong with stage 2: the menu restored as forces, with each move's feet as coached (the bull's drive,
++    the rip's dip and bend, the swim's step through).
++  - Not a speed cap on the club.
++
++## 16. BLOCK_ANTICIPATE attempt 1 read (2026-11-15; 1c2dafa9; seed 11 x 8, on FH + PO)
++
++Built to section 13, with Integration's conditions:
++- the cocked arm as an observable at sight delay, in view;
++- a slid hand re-punched at the cost of its travel and placement (it can miss);
++- the rusher's fake left to the between-moves stage.
++
++The firm was changed before any game read. With cloth for as long as the arm was away, it held the jersey through half
++the rep: holding on 16 of 92 pass plays in a one-game staging read. The coached firm is the arm, so the anticipation's
++firm is a brace: the hand holds at the lever of the bent arm (steer x 1), with no cloth.
++
++| | FH + PO | FH + PO + BA |
++|---|---|---|
++| clubs met by a hand braced in advance | 0% | **54%** |
++| a hand off within 0.25 s of a club: braced / not | - / 39% | 43 / 52% |
++| clubs a second; hands on 2 / 1 | 1.29; 80 / 20% | 1.26; 86 / 14% |
++| orbit p50 0.5-1.0 / 1.0-1.5 s | 18 / 34 deg | 18 / 34 |
++| released by 1.0 / 2.0 s, never | 42 / 65 / 32% | 43 / 65 / 32% |
++| off-blocker reach | 12% | 19% |
++| interior pressure; sack proxy | 19.0; 9.1 | 19.5; 8.2 |
++| alive at 3 s ending in a sack: interior / edge | 10.2 / 8.5 | 13.6 / 8.3 |
++| holding calls (club-fight, 4 games) | 0 of 367 | 0 of 356 |
++
++**Read so far:**
++- **Gate 1 passes:** the blocker answers in time on 54% of clubs, by what he saw. Holding stays at 0: the brace has no
++  cloth.
++- **Gate 3 holds:** orbit and release timing are unchanged.
++- **Gate 2 is confounded** in the probe. A hand "off within 0.25 s" counts the blocker's own re-punch (he pulls a slid
++  hand), so the overall rate rising 39 -> 47% is partly his own hands. Braced against not braced (43 against 52%) is
++  the cleaner row: the brace takes a modest share off the club. The physics answer for an arm with no grip is that it
++  holds only a little better.
++- **Off-blocker reach 12 -> 19%** is the same direction as both RUSH_GATHER attempts (18, 16%) from the same
++  FH + PO arm. Three different small changes all moving one row the same way suggests the arm's 12% is a low draw. A
++  second seed set (23 x 8: FH + PO, + BA, + RG2) is running before anything is concluded from it.
++
++**Seed 23 x 8: the noise check.**
++
++| off-blocker reach | seed 11 | seed 23 |
++|---|---|---|
++| FH + PO | 12% | 15% |
++| + BLOCK_ANTICIPATE | 19% | 16% |
++| + RUSH_GATHER attempt 2 | 16% | 12% |
++
++| interior pressure | seed 11 | seed 23 |
++|---|---|---|
++| FH + PO | 19.0% | 18.5% |
++| + BLOCK_ANTICIPATE | 19.5% | 18.1% |
++| + RUSH_GATHER attempt 2 | 22.6% | 17.7% |
++
++- On 8 games the off-blocker reach row moves 3-4 points between seed sets and reverses between arms. The "adverse"
++  readings above were within that.
++- **BLOCK_ANTICIPATE attempt 1 is neutral on outcomes and works as a mechanism.** 54% of clubs are answered in
++  advance, holding stays at 0, orbit and release are kept. Its effect on the club is modest, because a braced arm
++  without a grip holds only a little better (the World's answer).
++- **RUSH_GATHER's park rests partly on one seed set** for its reach row. Attempt 1's re-aim off the intercept was seen
++  on film and stands. The adverse reach of attempt 2 (16 against 12) is not distinguishable from noise. Its finish moved
++  only part way (4.92 against 4.12).
++  - It stays parked. Section 15 shows the feet in the fight are the cause, so a finish law is the wrong piece.
++- For later reads of this row: 16 games (two seed sets) at least.
++
++## 17. FIGHT_MENU: stage 2's minimum, two attempts (2026-11-15; two seed sets, 11 and 23 x 8, on FH + PO)
++
++The bull and long-arm back on the interior rusher's menu with their feet (Integration's gate: engaged speed toward
++the NFL's shape, requested speed share near the base's, orbit / offset / release kept).
++
++**Attempt 1** (06675bbf):
++- The keys: a light hand -> club; otherwise a power rusher long-arms (longer arm) or bulls, a finesse rusher clubs.
++- Staging: requested 55% of vmax with both hands on (stage 1 88%).
++- Game read: engaged speed flat at about 2.0 (good), but the bull held 66% of rep ticks and the club fell to 0.72 a
++  second, since a light hand is rare under load. The orbit went back to the base's (9 / 12 / 18 and 10 / 14 / 20 deg),
++  and so did the offset (p25 -0.05 / -0.08 at 1.5-2.5 s).
++- Fails the orbit gate.
++
++**Attempt 2** (36e155c1):
++- Every rusher clubs a hand on him when his arm is ready. A power rusher with the longer arm long-arms a pressing
++  blocker instead.
++- Between moves, his feet are the bull's drive. After a club that cleared a hand, he runs the opened side.
++- Staging: clubs 1.33 a second, requested 55% of vmax with both hands, achieved 2.35.
++
++| | NFL | FH + PO (11 / 23) | FM2 seed 11 | FM2 seed 23 |
++|---|---|---|---|---|
++| engaged speed p50 by time since contact | 2.55 / 2.50 / 2.06 / 1.80 | 2.24 / 2.24 / 2.92 / 3.20 (s11) | 2.06 / 1.80 / 2.24 / 2.50 | 2.06 / 1.80 / 2.24 / 2.50 |
++| orbit p50 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s | 25 / 34 / 39 | 18 / 34 / 50; 19 / 36 / 56 | 14 / 19 / 28 | 12 / 19 / 31 |
++| offset p25, same | -0.04 / -0.18 / -0.33 | -0.01 / -0.18 / -0.33; -0.04 / -0.25 / -0.41 | -0.01 / -0.07 / -0.20 | +0.01 / -0.05 / -0.14 |
++| released by 1.0 / 2.0 s, never | 43 / 60 / 37 | 42 / 65 / 32; 43 / 64 / 32 | 36 / 55 / 41 | 47 / 63 / 34 |
++| off-blocker reach | 9% | 12; 15% | 18% | 9% |
++| interior pressure, % of dropbacks | about 9.8 | 19.0; 18.5 | 16.2 | 11.9 |
++| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 10.2 / 8.5; 10.7 / 6.1 | 4.5 / 8.6 | 5.2 / 6.7 |
++| sack proxy | 7 | 9.1; 6.0 | 6.2 | 4.4 |
++
++**Read: a partial pass, and the last attempt.**
++- **Met:**
++  - the requested speed (55%, the base's);
++  - the release timing (42 / 59 / 37 averaged over the two seed sets, against 43 / 60 / 37);
++  - late interior sacks at the NFL's (4.5 / 5.2 against 4.1);
++  - interior pressure down (14.0 averaged against FH + PO's 18.8; base 10.9).
++- **Not met:**
++  - Engaged speed still rises late (1.80 -> 2.50 after 1.0 s) where the NFL's falls (-> 1.80).
++  - The orbit is only partly kept: 13 / 19 / 30 deg averaged, against FH's 18 / 35 / 53 and the NFL's 25 / 34 / 39.
++    The offset is the same.
++
++**Re-diagnosis before a third idea.** The orbit and the rusher's speed move together in every arm. Stage 1 had both
++high, attempt 1 both low, attempt 2 both between. In ours the pair rotates because the rusher moves around the
++blocker. The NFL's pairs rotate 34 deg by 1.0-1.5 s with the rusher at 2.06 yd/s, slower than ours. So in the NFL the
++rotation must come from both bodies turning together: the blocker turned by the rusher's leverage and his own kick and
++mirror, not a rusher running a lap.
++- The next measurement: the orbit split into each man's motion (the blocker's angular displacement about the pair's
++  centre against the rusher's), NFL against ours.
++- If the NFL's blocker is turned and ours stands, the missing piece is the blocker being turned: the rusher's force on
++  him through the hands and the shared-grip yaw budget (the turning measurements queued after stage 1). It is not
++  more rusher speed.
++- FITTED_HANDS + FIGHT_MENU attempt 2 is the best shape so far for the card question, with that named.
++
++**The orbit split** (interior-fight.py, engaged frames: each man's velocity across the line between them, p50
++|blocker| / |rusher| yd/s; then the blocker's share of their relative motion across it, - = he moves the same way as
++the rusher, mirroring):
++
++| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
++|---|---|---|---|---|
++| NFL | 1.14 / 1.48, -0.31 | 1.29 / 1.60, -0.90 | 1.20 / 1.41, -0.50 | 1.00 / 1.23, -0.30 |
++| base | 0.63 / 0.76, 0.00 | 0.89 / 0.99, 0.00 | 1.20 / 1.29, +0.20 | 1.33 / 1.40, +0.16 |
++| FH + PO | 0.74 / 1.15, -0.43 | 1.25 / 1.90, -0.93 | 1.80 / 2.55, -1.24 | 2.07 / 2.79, -1.56 |
++| FM2 | 0.69 / 1.03, -0.31 | 1.12 / 1.41, -0.51 | 1.64 / 1.79, -0.47 | 1.67 / 1.79, -0.22 |
++
++- **The "both bodies turn" hypothesis is refuted.** The NFL's blocker mirrors: he moves across with the rusher at
++  about 80% of his speed. He is not turned against him.
++- FM2's speeds across the line are near the NFL's through 1.0 s (rusher 1.41 against 1.60, blocker 1.12 against
++  1.29).
++- After 1.0 s both men keep moving across at about 1.7 yd/s, where the NFL's slow to 1.0-1.2. That is the late fight
++  that does not stall (the engaged speed's late rise).
++- **Open: what stalls an NFL pair late.** The late bins hold only the pairs still engaged, so the NFL's may be the
++  stalemates (a held rusher, a blocker sitting on him) while ours are the moving rides.
++  - The next cut: the same rows split by whether the pair is still within 1.2 yd at 2.5 s (held throughout) or
++    releases later. Then compare like with like.
++
++**Survivorship ruled out.** The engaged rusher's speed, pairs held throughout (never released within 2.5 s) against
++pairs that release later, p50 by time since contact:
++
++| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
++|---|---|---|---|---|
++| NFL held | 2.55 | 2.24 | 2.00 | **1.58** |
++| NFL released later | 2.69 | 2.55 | 2.50 | 2.24 |
++| base held | 1.80 | 1.50 | 2.00 | 2.06 |
++| FM2 held | 2.06 | 1.80 | 2.24 | **2.50** |
++| FM2 released later | 2.12 | 1.80 | 2.50 | 2.55 |
++
++- Compared like with like, the NFL's held pairs slow through the rep (2.55 -> 1.58). Ours speed up (2.06 -> 2.50),
++  and so does the base (1.80 -> 2.06).
++- The late drift is an older property of our engaged pairs, not the new hands. A held pair keeps sliding (across the
++  line at about 1.7 yd/s, both men) where the NFL's settles.
++- Ours also start slower at contact (2.06 against 2.55).
++- **What moves a held pair late in ours** is the next look, after BAT_HANDS: whose request carries the slide (the
++  rusher's aim between moves against the blocker's mirror and kick: PASS_KICK's set depth follows the rusher on).
+diff --git a/docs/reviews/2026-11-15-hand-fight-card.md b/docs/reviews/2026-11-15-hand-fight-card.md
+new file mode 100644
+index 00000000..47e75382
+--- /dev/null
++++ b/docs/reviews/2026-11-15-hand-fight-card.md
+@@ -0,0 +1,44 @@
++# The hand fight for the card (Flex, 2026-11-15; engine-68)
++
++Arms: **RUSH_HANDS + FITTED_HANDS + PASS_OFF + BLOCK_ANTICIPATE + FIGHT_MENU** (the full hand fight), all off in the
++tree. The design and every read are in [the hand-fight note](2026-11-14-hand-fight-design.md), sections 4-17.
++
++What each adds:
++- `FITTED_HANDS`, stage 1 (section 6):
++  - the blocker's two hands as separate bodies;
++  - press, friction and steer only through a fitted hand;
++  - the club with its approach, aimed at one hand;
++  - a lost hand re-fit after reaction and travel, with placement error.
++- `PASS_OFF` (section 10): the helper keeps the man he sees come off the blocker he is helping.
++- `BLOCK_ANTICIPATE` (section 16): the rusher's cocked arm as an observable, braced against in advance. 54% of clubs are
++  answered; the effect is modest and holding stays at 0.
++- `FIGHT_MENU` attempt 2 (section 17): the bull and long-arm on the interior menu by his keys, his feet the bull's drive
++  between moves. The requested speed is back to the base's 55% of vmax, against stage 1's 88%.
++
++**Two seed sets** (11 and 23 x 8, engine-67 patch base: ENGAGE_TRUNK + CHEST_SHOULDERS on, now engine-68's default;
++FITTED_HANDS + PASS_OFF + FIGHT_MENU; BLOCK_ANTICIPATE was read separately and is neutral on these rows):
++
++| | NFL | FH + PO (s11 / s23) | + FIGHT_MENU attempt 2 (s11 / s23) |
++|---|---|---|---|
++| engaged rusher speed p50, 0-0.5 / 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s | 2.55 / 2.50 / 2.06 / 1.80 | 2.24 / 2.24 / 2.92 / 3.20 (s11) | 2.06 / 1.80 / 2.24 / 2.50 (both) |
++| orbit p50, 0.5-1.0 / 1.0-1.5 / 1.5-2.5 s | 25 / 34 / 39 | 18 / 34 / 50; 19 / 36 / 56 | 14 / 19 / 28; 12 / 19 / 31 |
++| offset p25 at 1.5-2.5 s | -0.33 | -0.33; -0.41 | -0.20; -0.14 |
++| released by 1.0 / 2.0 s, never | 43 / 60 / 37 | 42 / 65 / 32; 43 / 64 / 32 | 36 / 55 / 41; 47 / 63 / 34 |
++| off-blocker reach | 9% | 12; 15% | 18; 9% |
++| interior pressure, % of dropbacks (base 10.9) | about 9.8 | 19.0; 18.5 | 16.2; 11.9 |
++| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 10.2 / 8.5; 10.7 / 6.1 | 4.5 / 8.6; 5.2 / 6.7 |
++| sack proxy | 7 | 9.1; 6.0 | 6.2; 4.4 |
++
++**The residual, as stated:**
++1. The engaged rusher's speed still rises late (1.80 -> 2.50 after 1.0 s) where the NFL's falls (-> 1.80).
++2. The orbit is about half kept (13 / 19 / 30 deg averaged, against stage 1's 18 / 35 / 53 and the NFL's 25 / 34 / 39).
++
++Both have measurements behind them:
++- The orbit split: the NFL blocker mirrors the rusher at about 80% of his speed. He is not turned against him.
++- The survivorship cut: compared like with like, the NFL's held pairs slow 2.55 -> 1.58 while ours speed up
++  (2.06 -> 2.50), and the base does the same (1.80 -> 2.06). The late slide is an older property of our engaged pairs,
++  not the new hands.
++- It is the next look (the held pair's lateral slide), not a reason to hold the arm.
++
++Off: seed 999 equals engine-68 (763db5c8fa3d4671). On (the five flags): 3ef83ef6924bedb4, the same game as on the Flex
++branch.
+diff --git a/scripts/diag/effective-mass/club-fight.mts b/scripts/diag/effective-mass/club-fight.mts
+new file mode 100644
+index 00000000..dbecc224
+--- /dev/null
++++ b/scripts/diag/effective-mass/club-fight.mts
+@@ -0,0 +1,73 @@
++// FITTED_HANDS stage 1 gate: per interior pass rep (LG / C / RG, to the throw), each club the rusher throws (e.club set:
++// RUSH_HANDS' clubHand), the blocker's hands on before it and after it, the hands joint's load the tick before and
++// 0.1 / 0.25 s after, and the share of the rep with 2 / 1 / 0 hands on. The club lasts about 0.03 s (shorter than a
++// tick), so its window is read around it, not inside it (moves-fight.mts reads windows by moveUntil, which a club ends
++// inside one tick).
++// usage: node --import tsx scripts/diag/effective-mass/club-fight.mts [seed] [games]
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']);
++const clubs: any[] = []; const reps: any[] = []; const holds: any[] = []; let passPlays = 0;
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  passPlays++;
++  const st = new Map<any, any>(); const open: any[] = [];
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    const pre = new Map<any, any>();
++    for (const e of sim.engagements) if (e.type === 'pass' && IN.has(e.blocker.slot)) pre.set(e, { N: Math.max(0, e.hands?.normalForce ?? 0), on: e.hands?.off ? 0 : e.hands?.handsOn ?? 2, club: e.club });
++    tick();
++    if (sim.throwAt >= 0) return;
++    for (const e of sim.engagements) {
++      if (e.type !== 'pass' || !IN.has(e.blocker.slot)) continue;
++      const s = st.get(e) ?? { ticks: 0, on: [0, 0, 0], clubs: 0, lastClear: -Infinity, rel: null, offAt: null, offDur: [] as number[] }; st.set(e, s);
++      const on = e.hands?.off ? 0 : e.hands?.handsOn ?? 2; s.ticks++; s.on[on]++;
++      const pv = pre.get(e)?.on ?? 2;
++      if (on < pv) { s.lastClear = sim.t; s.offAt ??= sim.t; }
++      if (on === 2 && s.offAt !== null) { s.offDur.push(sim.t - s.offAt); s.offAt = null; }
++      // First release, as interior-fight.py: separation past 1.2 yd (centres) after they were within it.
++      const sep = Math.hypot(e.defender.pos.x - e.blocker.pos.x, e.defender.pos.y - e.blocker.pos.y);
++      if (sep <= 1.2) s.touched = true;
++      if (!s.rel && s.touched && sep > 1.2) s.rel = { t: sim.t - e.start, on, since: sim.t - s.lastClear, ext: e.hands?.extension };
++      const p = pre.get(e);
++      if (e.club && (!p || p.club !== e.club)) { s.clubs++; open.push({ e, club: e.club, t: sim.t, N0: p?.N ?? 0, on0: p?.on ?? 2, on1: undefined, N1: undefined, N2: undefined }); }
++    }
++    for (const c of open) {
++      const dt = sim.t - c.t, on = c.e.hands?.off ? 0 : c.e.hands?.handsOn ?? 2, N = Math.max(0, c.e.hands?.normalForce ?? 0);
++      if (c.on1 === undefined && dt > 0) c.on1 = on, c.minOn = on;
++      if (dt > 0) c.minOn = Math.min(c.minOn, on);
++      if (c.N1 === undefined && dt >= 0.1 - 1e-9) c.N1 = N;
++      if (c.N2 === undefined && dt >= 0.25 - 1e-9) { c.N2 = N; c.club0 = c.club; clubs.push(c); c.done = true; }
++    }
++    for (let i = open.length - 1; i >= 0; i--) if (open[i].done) open.splice(i, 1);
++  };
++  const res = sim.run();
++  for (const pen of [sim.penalty, ...(sim.penalties ?? [])]) if (pen && pen.kind === 'holding') holds.push(pen);
++  for (const s of st.values()) reps.push(s);
++  return res;
++} } });
++const q = (a: number[], p: number) => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))] : NaN; };
++const secs = reps.reduce((s, r) => s + r.ticks, 0) * 0.05;
++console.log(`interior pass reps ${reps.length} | clubs ${clubs.length} (${(clubs.length / Math.max(1e-9, secs)).toFixed(2)} a second of rep; per rep p50 ${q(reps.map(r => r.clubs), 0.5)} p90 ${q(reps.map(r => r.clubs), 0.9)})`);
++const tot = reps.reduce((s, r) => [s[0] + r.on[0], s[1] + r.on[1], s[2] + r.on[2]], [0, 0, 0]), T = tot[0] + tot[1] + tot[2];
++console.log(`hands on, share of rep ticks: 2 ${(100 * tot[2] / T).toFixed(0)}% | 1 ${(100 * tot[1] / T).toFixed(0)}% | 0 ${(100 * tot[0] / T).toFixed(0)}%`);
++const cleared = clubs.filter(c => c.minOn < c.on0);
++console.log(`clubs on hands: from 2 ${clubs.filter(c => c.on0 === 2).length}, from 1 ${clubs.filter(c => c.on0 === 1).length} | a hand cleared within 0.25 s ${cleared.length} (${(100 * cleared.length / Math.max(1, clubs.length)).toFixed(0)}%)`);
++console.log(`hands' load before / 0.1 s after / 0.25 s after the club, p50: ${q(clubs.map(c => c.N0), .5).toFixed(0)} / ${q(clubs.map(c => c.N1), .5).toFixed(0)} / ${q(clubs.map(c => c.N2), .5).toFixed(0)} N`);
++const rel = reps.filter(r => r.rel);
++console.log(`released past 1.2 yd: ${rel.length} of ${reps.length} | hands on at the release: 2 ${rel.filter(r => r.rel.on === 2).length}, 1 ${rel.filter(r => r.rel.on === 1).length}, 0 ${rel.filter(r => r.rel.on === 0).length} | within 0.5 s of a hand cleared ${rel.filter(r => r.rel.since <= 0.5).length}`);
++console.log(`time with a hand off (until both on again) p50 / p90: ${q(reps.flatMap(r => r.offDur), .5).toFixed(2)} / ${q(reps.flatMap(r => r.offDur), .9).toFixed(2)} s`);
++console.log(`  share of clubs where the load fell by 0.1 s: ${(100 * clubs.filter(c => c.N1 < c.N0).length / Math.max(1, clubs.length)).toFixed(0)}%`);
++for (const c of clubs) { c.answer = c.club0.answer; c.air = c.club0.air; c.firm = !!c.club0.firmAtOnset; }
++const ans: Record<string, number> = {};
++for (const c of clubs) ans[c.answer ?? 'n/a'] = (ans[c.answer ?? 'n/a'] ?? 0) + 1;
++console.log(`the blocker's answer: ${Object.entries(ans).map(([k, v]) => `${k} ${v} (${(100 * v / Math.max(1, clubs.length)).toFixed(0)}%)`).join(', ')} | through air ${clubs.filter(c => c.air).length}`);
++for (const a of ['away', 'firm', 'late', 'unseen']) { const g = clubs.filter(c => c.answer === a); if (g.length) console.log(`  ${a}: a hand cleared within 0.25 s ${(100 * g.filter(c => c.minOn < c.on0).length / g.length).toFixed(0)}%`); }
++console.log(`holding calls on pass plays: ${holds.length} of ${passPlays} (${(100 * holds.length / Math.max(1, passPlays)).toFixed(1)}%)`);
++const fm = clubs.filter(c => c.firm), nf = clubs.filter(c => !c.firm);
++console.log(`BLOCK_ANTICIPATE: clubs met by a hand firmed in advance ${fm.length} (${(100 * fm.length / Math.max(1, clubs.length)).toFixed(0)}%) | a hand cleared within 0.25 s: firmed ${(100 * fm.filter(c => c.minOn < c.on0).length / Math.max(1, fm.length)).toFixed(0)}%, not ${(100 * nf.filter(c => c.minOn < c.on0).length / Math.max(1, nf.length)).toFixed(0)}%`);
+diff --git a/scripts/diag/effective-mass/moves-fight.mts b/scripts/diag/effective-mass/moves-fight.mts
+new file mode 100644
+index 00000000..34ef1670
+--- /dev/null
++++ b/scripts/diag/effective-mass/moves-fight.mts
+@@ -0,0 +1,51 @@
++// The interior pass-rush hand fight in ours (Integration, 2026-11-14, before the hand-fight note): per interior pass rep
++// (LG / C / RG against his man, until the throw): how many move decisions fire and which, how many land (moveOk), what
++// each changes physically while it lasts (the blocker's hands' steer and push scaled, a World strike's impulse, the hands
++// joint's load), and the share of the rep the hands joint is loaded (normal > 0) and loaded continuously.
++// usage: node --import tsx scripts/diag/effective-mass/moves-fight.mts [seed] [games]
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']);
++const reps: any[] = []; const moves: Record<string, { n: number; landed: number; strike: number[]; nDuring: number[]; nBefore: number[] }> = {};
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  const st = new Map<any, any>();
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    tick();
++    if (sim.throwAt >= 0) return;
++    const rep: any = sim.world.report;
++    for (const e of sim.engagements) {
++      if (e.type !== 'pass' || !IN.has(e.blocker.slot)) continue;
++      const s = st.get(e) ?? { ticks: 0, loaded: 0, run: 0, maxRun: 0, moves: 0, last: undefined, lastStart: -1, moveRec: null };
++      s.ticks++;
++      const N = Math.max(0, e.hands?.normalForce ?? 0);
++      if (N > 0) { s.loaded++; s.run++; s.maxRun = Math.max(s.maxRun, s.run); } else s.run = 0;
++      // A new move decision: the move's window starts again.
++      if (e.moveUntil > sim.t && e.moveUntil !== s.lastStart) {
++        s.moves++; s.lastStart = e.moveUntil; s.last = e.move;
++        const r = (moves[e.move] ??= { n: 0, landed: 0, strike: [], nDuring: [], nBefore: [] }); r.n++; if (e.moveOk) r.landed++;
++        s.moveRec = { r, until: e.moveUntil, N0: N, Ns: [] as number[] }; r.nBefore.push(N);
++      }
++      if (s.moveRec && sim.t <= s.moveRec.until) {
++        s.moveRec.Ns.push(N);
++        for (const k of rep?.strikes ?? []) if ((k.i === e.defender.idx && k.j === e.blocker.idx) || (k.i === e.blocker.idx && k.j === e.defender.idx)) s.moveRec.r.strike.push(Math.hypot(k.impulse.x, k.impulse.y));
++      } else if (s.moveRec) { const a = s.moveRec.Ns; if (a.length) s.moveRec.r.nDuring.push(a.reduce((x: number, y: number) => x + y, 0) / a.length); s.moveRec = null; }
++      st.set(e, s);
++    }
++  };
++  const res = sim.run();
++  for (const s of st.values()) reps.push(s);
++  return res;
++} } });
++const q = (v: number[], f = .5) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))] : NaN; };
++const dt = 0.05;
++console.log(`interior pass reps ${reps.length} | rep length p50 ${q(reps.map((r) => r.ticks * dt)).toFixed(2)} s | move decisions per rep p50/p90 ${q(reps.map((r) => r.moves))}/${q(reps.map((r) => r.moves), .9)} | per second of rep ${(reps.reduce((a, r) => a + r.moves, 0) / Math.max(1e-9, reps.reduce((a, r) => a + r.ticks * dt, 0))).toFixed(2)}`);
++console.log(`hands joint loaded: share of the rep p50 ${(100 * q(reps.map((r) => r.loaded / Math.max(1, r.ticks)))).toFixed(0)}% | longest continuous loaded stretch p50 ${(q(reps.map((r) => r.maxRun)) * dt).toFixed(2)} s`);
++for (const [m, r] of Object.entries(moves).sort((a, b) => b[1].n - a[1].n))
++  console.log(`  ${m.padEnd(8)} n ${String(r.n).padStart(4)} | landed ${(100 * r.landed / r.n).toFixed(0)}% | hands' load before / during p50 ${q(r.nBefore).toFixed(0)} / ${q(r.nDuring).toFixed(0)} N | strikes in the window ${r.strike.length}, impulse p50 ${q(r.strike).toFixed(0)}`);
+diff --git a/scripts/diag/effective-mass/one-hand-sep.mts b/scripts/diag/effective-mass/one-hand-sep.mts
+new file mode 100644
+index 00000000..1352984a
+--- /dev/null
++++ b/scripts/diag/effective-mass/one-hand-sep.mts
+@@ -0,0 +1,43 @@
++// Feet or hold (Integration, 2026-11-15; hand-fight note 14): in interior pass reps (LG / C / RG) more than 1.0 s after
++// the rep began, before the throw, the rusher's requested speed (his intent this tick) against his achieved speed, and
++// his motion along the hands joint's tangent toward the vacated side, by the blocker's hands on him (2 / 1 / 0). If he
++// moves as fast as he asks and toward the open side with one hand off, the hold lets him; if he asks for rush pace and
++// is held to less, the request is the part that differs from a man who plants and drives.
++// usage: node --import tsx scripts/diag/effective-mass/one-hand-sep.mts [seed] [games]
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 4);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const IN = new Set(['LG', 'C', 'RG']);
++const rows: any[] = [];
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  const tick = sim.tick.bind(sim);
++  sim.tick = () => {
++    tick();
++    if (sim.throwAt >= 0) return;
++    for (const e of sim.engagements) {
++      if (e.type !== 'pass' || !IN.has(e.blocker.slot) || sim.t - e.start < 1.0 || !e.hands) continue;
++      const b = e.blocker, d = e.defender, j = e.hands;
++      const on = j.off ? 0 : j.handsOn ?? 2;
++      const iv = sim.intents?.[d.idx]?.vel ?? { x: 0, y: 0 };
++      const dx = d.pos.x - b.pos.x, dy = d.pos.y - b.pos.y, L = Math.hypot(dx, dy) || 1, tx = -dy / L, ty = dx / L;
++      const rvx = d.vel.x - b.vel.x, rvy = d.vel.y - b.vel.y, vt = rvx * tx + rvy * ty;
++      rows.push({ on, req: Math.hypot(iv.x, iv.y), got: Math.hypot(d.vel.x, d.vel.y), vmax: d.profile.vmax,
++        // + toward the vacated side (offSide is the vacated side's sign along the tangent), for one hand off
++        toVacated: on === 1 && j.offSide ? vt * j.offSide : null, vtAbs: Math.abs(vt), N: Math.max(0, j.normalForce ?? 0),
++        push: sim.intents?.[d.idx]?.push ?? null });
++    }
++  };
++  return sim.run();
++} } });
++const q = (v: number[], f = .5) => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))] : NaN; };
++for (const on of [2, 1, 0]) {
++  const R = rows.filter(r => r.on === on);
++  if (!R.length) continue;
++  console.log(`hands on ${on}: ${R.length} ticks | requested speed p50 ${q(R.map(r => r.req)).toFixed(2)} (${(100 * q(R.map(r => r.req / r.vmax))).toFixed(0)}% of vmax) | achieved p50 ${q(R.map(r => r.got)).toFixed(2)} / p75 ${q(R.map(r => r.got), .75).toFixed(2)} | achieved / requested p50 ${q(R.map(r => r.got / Math.max(.1, r.req))).toFixed(2)} | |relative motion across the joint| p50 ${q(R.map(r => r.vtAbs)).toFixed(2)} | joint load p50 ${q(R.map(r => r.N)).toFixed(0)} N | push request p50 ${q(R.map(r => r.push)).toFixed(2)}`);
++  if (on === 1) { const v = R.map(r => r.toVacated).filter((x: any) => x !== null); console.log(`   across the joint toward the vacated side p25/50/75 ${q(v, .25).toFixed(2)} / ${q(v).toFixed(2)} / ${q(v, .75).toFixed(2)} yd/s; toward it ${(100 * v.filter((x: number) => x > 0).length / Math.max(1, v.length)).toFixed(0)}%`); }
++}
+diff --git a/scripts/diag/pass-operators/interior-fight.py b/scripts/diag/pass-operators/interior-fight.py
+new file mode 100644
+index 00000000..9445f76c
+--- /dev/null
++++ b/scripts/diag/pass-operators/interior-fight.py
+@@ -0,0 +1,83 @@
++"""The interior pass-rush hand fight, as tracking can see it (Integration, 2026-11-14, before the hand-fight design note).
++Same code on NFL tracking and sim exports.
++
++usage: python3 -I scripts/diag/pass-operators/interior-fight.py <plays.jsonl.gz> [...]
++
++Pairs as interior-orbit.py on pass plays (each of the three middle OL and the nearest DL within 1.2 yd from the snap +
++0.2 s; engaged while within 1.2 yd, up to 2.5 s, ending at the throw). Per pair, by time since first contact (0-0.5,
++0.5-1.0, 1.0-1.5, 1.5-2.5 s):
++  - the pair's orbit so far (net bearing change from contact);
++  - the rusher's offset across the blocker's line to the QB (yd, + = toward the side he started on): where his half-man is;
++  - the centre-to-centre separation.
++And per pair: the time to first release, the first frame where either the separation opens past 1.2 yd or the rusher's
++bearing from the blocker passes 70 deg off the blocker's line to the QB (past his shoulder); never if neither within the
++rep; with the share released by 1.0 / 2.0 s.
++"""
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++wrap = lambda a: (a + 180) % 360 - 180
++BINS = [(0, .5), (.5, 1.0), (1.0, 1.5), (1.5, 2.5)]
++for path in sys.argv[1:]:
++    orb = {b: [] for b in BINS}; off = {b: [] for b in BINS}; sep = {b: [] for b in BINS}; spd = {b: [] for b in BINS}; tb = {b: [] for b in BINS}; td = {b: [] for b in BINS}; shb = {b: [] for b in BINS}; grp = {g: {b: [] for b in BINS} for g in ('held', 'released')}; rel = []; n = 0
++    for line in gzip.open(path, 'rt'):
++        raw = json.loads(line); raw = raw.get('common', raw)
++        if raw.get('kind') != 'pass' or not raw.get('xy'): continue
++        p = Play(raw); ev = raw.get('events', {})
++        OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++        qbs = p.who('O', 'QB')
++        if len(OL) < 5 or not qbs: continue
++        qb = qbs[0]
++        DL = [d for d in p.who('D') if p.pos(d, 0)[0] is not None and p.players[d]['group'] == 'DL']
++        fw = ev.get('pass_forward'); kend = min(p.frames - 1, p.k(fw) if fw is not None else p.frames - 1)
++        for b in OL[1:4]:
++            k0 = d = None
++            for k in range(p.k(0.2), min(kend, p.k(2.0)) + 1):
++                if p.pos(b, k)[0] is None: continue
++                c = [(p.dist(b, x, k), x) for x in DL if p.pos(x, k)[0] is not None and p.dist(b, x, k) <= 1.2]
++                if c: k0 = k; d = min(c)[1]; break
++            if k0 is None: continue
++            n += 1
++            def geo(k):
++                (bx, by), (dx, dy), (qx, qy) = p.pos(b, k), p.pos(d, k), p.pos(qb, k)
++                ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1; ux, uy = ux / L, uy / L
++                rx, ry = dx - bx, dy - by
++                lat = rx * -uy + ry * ux                     # across his line to the QB
++                ang = math.degrees(math.atan2(lat, -(rx * ux + ry * uy)))   # 0 = the rusher straight in front, away from the QB
++                return math.degrees(math.atan2(ry, rx)), lat, math.hypot(rx, ry), ang
++            g0 = geo(k0); side = 1 if g0[1] >= 0 else -1; acc = 0; prev = g0[0]; released = None
++            mine = {b: [] for b in BINS}
++            for k in range(k0, min(kend, k0 + 25) + 1):
++                if p.pos(b, k)[0] is None or p.pos(d, k)[0] is None or p.pos(qb, k)[0] is None: break
++                g = geo(k); acc += wrap(g[0] - prev); prev = g[0]; t = (k - k0) * p.dt
++                if released is None and (g[2] > 1.2 or abs(g[3]) > 70): released = t
++                for bn in BINS:
++                    if bn[0] <= t < bn[1]:
++                        orb[bn].append(abs(acc)); off[bn].append(g[1] * side); sep[bn].append(g[2])
++                        # The rusher's speed while engaged (within 1.2 yd), central difference over 0.2 s.
++                        if g[2] <= 1.2 and p.pos(d, k - 1)[0] is not None and k + 1 < p.frames and p.pos(d, k + 1)[0] is not None:
++                            spd[bn].append(math.hypot(p.pos(d, k + 1)[0] - p.pos(d, k - 1)[0], p.pos(d, k + 1)[1] - p.pos(d, k - 1)[1]) / (2 * p.dt))
++                            mine[bn].append(spd[bn][-1])
++                            # The orbit split: each man's velocity across the line between them (perpendicular), and
++                            # the blocker's share of their relative motion across it (+: he turns with the pair).
++                            if p.pos(b, k - 1)[0] is not None and p.pos(b, k + 1)[0] is not None:
++                                (bx0, by0), (dx0, dy0) = p.pos(b, k), p.pos(d, k)
++                                L = math.hypot(dx0 - bx0, dy0 - by0) or 1; tx, ty = -(dy0 - by0) / L, (dx0 - bx0) / L
++                                vb = ((p.pos(b, k + 1)[0] - p.pos(b, k - 1)[0]) / (2 * p.dt), (p.pos(b, k + 1)[1] - p.pos(b, k - 1)[1]) / (2 * p.dt))
++                                vd = ((p.pos(d, k + 1)[0] - p.pos(d, k - 1)[0]) / (2 * p.dt), (p.pos(d, k + 1)[1] - p.pos(d, k - 1)[1]) / (2 * p.dt))
++                                ub, ud = vb[0] * tx + vb[1] * ty, vd[0] * tx + vd[1] * ty
++                                tb[bn].append(abs(ub)); td[bn].append(abs(ud))
++                                if abs(ud - ub) > 0.3: shb[bn].append(-ub / (ud - ub))
++                if g[2] > 1.2 and released is not None: break
++            rel.append(released)
++            for bn in BINS: grp['held' if released is None else 'released'][bn].extend(mine[bn])
++    print(f"== {os.path.basename(path)}: engaged interior pass-rush pairs {n}")
++    for bn in BINS:
++        print(f"   {bn[0]:.1f}-{bn[1]:.1f} s: orbit p50/p90 {q(orb[bn]):.0f}/{q(orb[bn], .9):.0f} deg | his offset across the blocker's line to the QB p25/50/75 {q(off[bn], .25):+.2f}/{q(off[bn]):+.2f}/{q(off[bn], .75):+.2f} yd | separation p50 {q(sep[bn]):.2f} (n {len(sep[bn])})")
++    print("   across the line between them (engaged), |blocker| / |rusher| p50 yd/s and the blocker's share of their relative motion p50: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(tb[bn]):.2f} / {q(td[bn]):.2f}, {q(shb[bn]):+.2f}" for bn in BINS))
++    for gname in ('held', 'released'):
++        print(f"   engaged rusher speed, pairs {gname} (never released / released within 2.5 s), p50 (n): " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(grp[gname][bn]):.2f} ({len(grp[gname][bn])})" for bn in BINS))
++    print("   the rusher's speed while engaged (within 1.2 yd), p50 / p75: " + ' | '.join(f"{bn[0]:.1f}-{bn[1]:.1f} s {q(spd[bn]):.2f} / {q(spd[bn], .75):.2f}" for bn in BINS))
++    R = [r for r in rel if r is not None]
++    print(f"   first release (separation past 1.2 yd or past his shoulder, 70 deg): p25/50/75 {q(R, .25):.1f}/{q(R):.1f}/{q(R, .75):.1f} s | released by 1.0 s {100 * sum(1 for r in R if r <= 1.0) / max(1, len(rel)):.0f}%, by 2.0 s {100 * sum(1 for r in R if r <= 2.0) / max(1, len(rel)):.0f}% | never {100 * sum(1 for r in rel if r is None) / max(1, len(rel)):.0f}%")
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 375865e1..a3a86ae7 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -110,6 +110,11 @@ export interface HandJoint {
+    * point). */
+   handsOn?: number;
+   offSide?: number;
++  /** FITTED_HANDS: the two hands, each its own one-degree-of-freedom body: [the hand on the joint tangent's -1 side,
++   * the hand on its +1 side]. `slide` is where the hand sits across the man's chest from where it was aimed (its
++   * placement error at the fit, then whatever moved it), `vel` its sliding speed, `on` whether it is on him. The
++   * aggregate fields above (handsOn, off, offSide) are kept equal to them for readers of the joint. */
++  handPair?: [HandState, HandState];
+   /** RUSH_HANDS: the last step's normal force (the press a club must overcome). A plain field, so a World stays
+    * structured-cloneable (lab tools and replay clone it). */
+   lastN?: number;
+@@ -388,6 +393,40 @@ export const ARM_MASS = 0.05;
+ /** RUSH_HANDS: with one hand off, the share of the remaining hand's steer left to resist the man toward the vacated
+  * side (his body has to turn on the remaining hand to stop him there: most of it is lost). */
+ export const ONE_HAND_SIDE = 0.25;
++/** FITTED_HANDS (experimental, off; FITTED_HANDS=1, requires RUSH_HANDS): the hand fight's stage 1, the physics with one
++ * move (docs/reviews/2026-11-14-hand-fight-design.md section 4). World half: the blocker's two hands are separate
++ * bodies (`handPair`). Each carries half of the joint's push, hold and steer, times its own edge factor (1 where it
++ * was aimed, 0 at the edge of the man's torso), so press, the friction on it and steer exist only through a fitted
++ * hand, hand by hand. A force on the hands acts on the hand it meets (the one on the side it comes from; the other if
++ * that one is off) and is resisted by that hand's arm alone: half the arms' steer at its lever, the friction on its
++ * half of the press, half the grip. Off, the joint is one hand-pair with both arms' hold against every strike. */
++export const FITTED_HANDS = process.env.FITTED_HANDS === '1';
++if (FITTED_HANDS && !RUSH_HANDS) throw new Error('FITTED_HANDS=1 requires RUSH_HANDS=1 (the hand body it splits into two hands)');
++export interface HandState {
++  slide: number; vel: number; on: boolean;
++  /** FITTED_HANDS attempt 2: the blocker has firmed this hand against a club he saw coming. Until world time
++   * `firmUntil` its arm holds with `firmGrip` of cloth (force) in place of its share of the joint's grip. */
++  firmUntil?: number; firmGrip?: number;
++  /** BLOCK_ANTICIPATE: until world time `braceUntil` the arm is braced against a club he expects: it holds at the lever
++   * of his bent arm (steer x 1) whatever its extension, without cloth. */
++  braceUntil?: number;
++}
++/** FITTED_HANDS: the joint's two hands, made on first use from its aggregate state. */
++export function handPairOf(jt: HandJoint): [HandState, HandState] {
++  if (!jt.handPair) {
++    const n = jt.off ? 0 : jt.handsOn ?? 2, offK = n === 1 ? ((jt.offSide ?? 1) > 0 ? 1 : 0) : -1;
++    jt.handPair = [0, 1].map(k => ({ slide: 0, vel: 0, on: n === 2 || (n === 1 && k !== offK) })) as [HandState, HandState];
++  }
++  return jt.handPair;
++}
++/** FITTED_HANDS: write the aggregate fields from the two hands. */
++export function syncHandPair(jt: HandJoint): void {
++  const p = handPairOf(jt), n = (p[0].on ? 1 : 0) + (p[1].on ? 1 : 0);
++  jt.handsOn = n; jt.off = n === 0;
++  jt.offSide = n === 1 ? (p[0].on ? 1 : -1) : undefined;
++  jt.handOffset = n === 0 ? 0 : (p[0].on ? p[0].slide : 0) + (p[1].on ? p[1].slide : 0);
++  jt.handVel = (p[0].on ? p[0].vel : 0) + (p[1].on ? p[1].vel : 0);
++}
+ /** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
+  * A push runs from the pusher's pads to the other man's; when one man's pads
+  * are lower, the line of action tilts up into the higher man. Its vertical
+@@ -805,7 +844,7 @@ export class World {
+   substeps?: number;
+   private readonly index = new Map<Body, number>();
+   /** Technique impulses queued for the next step: equal and opposite between two bodies. */
+-  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number }> = [];
++  private handForces: Array<{ jt: HandJoint; from: Body; fx: number; fy: number; t0: number; t1: number; hand?: 0 | 1 }> = [];
+   private pending: Array<{ a: Body; b: Body; x: number; y: number; height?: number; contactAnatomy?: Readonly<ContactAnatomy>; requestedAt: number; delivered?: StrikeRecord }> = [];
+   private readonly reels = new Map<GraspJoint, number>();
+   /** Reference adjustment preserves the held point when a grip slides down. */
+@@ -931,21 +970,34 @@ export class World {
+   /** RUSH_HANDS: a force (kg*yd/s^2, world frame) on joint `jt`'s hand from body `from`, acting between world
+    * times t0 and t1 (its contact time). Only the component along the joint's tangent moves the hand; the rest is an
+    * ordinary push between the bodies. */
+-  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number): void {
++  handForce(jt: HandJoint, from: Body, f: Vec2, t0: number, t1: number, hand?: 0 | 1): void {
+     if (!RUSH_HANDS || !(t1 > t0) || !Number.isFinite(f.x + f.y)) return;
+-    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1 });
++    this.handForces.push({ jt, from, fx: f.x, fy: f.y, t0, t1, hand });
+   }
+ 
+   /** RUSH_HANDS: the arm's lateral hold at the hand (force), from its extension, the measured press and a grip. */
+-  handHold(jt: HandJoint): number {
++  handHold(jt: HandJoint, k?: 0 | 1): number {
+     const owner = jt.a, target = jt.b;
+     const arm = Math.max(0.3, (owner.profile.reach - 0.25) / 0.85), bent = 0.25 * arm;
+     const ext = Math.max(bent, jt.extension - owner.profile.radius - target.profile.radius);
+     const press = Math.max(0, jt.lastN ?? 0);
+     const grip = OPEN_HANDS ? (jt.grip ? Math.max(0, jt.hold) : 0) : Math.max(0, jt.hold);
++    // FITTED_HANDS: one hand's arm: half of each term, at that hand's own edge.
++    if (FITTED_HANDS && k !== undefined) {
++      const hd = handPairOf(jt)[k], firm = (hd.firmUntil ?? -Infinity) > this.time, brace = (hd.braceUntil ?? -Infinity) > this.time;
++      return (0.5 * (Math.max(0, jt.steer) * (brace ? 1 : bent / ext) + HAND_MU * press) + (firm ? Math.max(0, hd.firmGrip ?? 0) : 0.5 * grip)) * this.handEdgeK(jt, k);
++    }
+     return (Math.max(0, jt.steer) * bent / ext + HAND_MU * press + grip) * this.handEdge(jt) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
+   }
+ 
++  /** FITTED_HANDS: hand k's edge factor (0 when it is off him). */
++  handEdgeK(jt: HandJoint, k: 0 | 1): number {
++    const hd = handPairOf(jt)[k];
++    if (!hd.on) return 0;
++    const u = hd.slide / Math.max(1e-6, jt.b.profile.radius);
++    return Math.max(0, 1 - u * u);
++  }
++
+   /** RUSH_HANDS: 1 with the hand where it fitted, falling to 0 at the edge of the man's torso. */
+   handEdge(jt: HandJoint): number {
+     const u = (jt.handOffset ?? 0) / Math.max(1e-6, jt.b.profile.radius);
+@@ -1177,6 +1229,7 @@ export class World {
+     const t0 = this.time, t1 = this.time + h;
+     for (const jt of this.joints) {
+       if (jt.kind !== 'hands' || jt.off) continue;
++      if (FITTED_HANDS) { this.stepHandPair(jt, h, t0, t1); continue; }
+       const forces = this.handForces.filter(f => f.jt === jt && f.t1 > t0 && f.t0 < t1);
+       if (!forces.length && !jt.handVel) continue;
+       const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+@@ -1216,6 +1269,52 @@ export class World {
+     }
+   }
+ 
++  /** FITTED_HANDS: one substep of a joint's two hands. The same law as stepHands for each hand, with that hand's own
++   * hold; a force acts on the hand it meets. */
++  private stepHandPair(jt: HandJoint, h: number, t0: number, t1: number): void {
++    const forces = this.handForces.filter(f => f.jt === jt && f.t1 > t0 && f.t0 < t1);
++    const pair = handPairOf(jt);
++    if (!forces.length && !pair[0].vel && !pair[1].vel) return;
++    const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
++    if (ia < 0 || ib < 0) return;
++    const dx = jt.b.pos.x - jt.a.pos.x, dy = jt.b.pos.y - jt.a.pos.y, d = hypot2(dx, dy) || 1;
++    const nx = dx / d, ny = dy / d, tx = -ny, ty = nx;
++    const mArm = ARM_MASS * this.mass[ia];
++    const ft = [0, 0];
++    for (const f of forces) {
++      const share = (Math.min(f.t1, t1) - Math.max(f.t0, t0)) / h;
++      const fn = (f.fx * nx + f.fy * ny) * share, fT = (f.fx * tx + f.fy * ty) * share;
++      const is = this.indexOf(f.from);
++      // Attempt 2: a club aimed at one hand meets that hand or nothing: a hand taken away is air (no contact at all).
++      if (f.hand !== undefined && !pair[f.hand].on) continue;
++      if (is >= 0 && is !== ia && fn) this.pairImpulse(is, ia, nx * fn * h, ny * fn * h, is, 'strikes');
++      // The hand it meets: a force driving +t comes from the -t side (hand 0); if that hand is off, the other.
++      let k: 0 | 1 = f.hand ?? (fT >= 0 ? 0 : 1);
++      if (!pair[k].on) k = (1 - k) as 0 | 1;
++      if (!pair[k].on) continue;
++      if (is >= 0 && fT) { this.bodies[is].vel.x -= tx * fT * h / this.mass[is]; this.bodies[is].vel.y -= ty * fT * h / this.mass[is]; }
++      ft[k] += fT;
++    }
++    for (const k of [0, 1] as const) {
++      const hd = pair[k];
++      if (!hd.on || (!ft[k] && !hd.vel)) continue;
++      const H = this.handHold(jt, k), v = hd.vel;
++      let resisted: number;
++      if (Math.abs(v) < 1e-9) resisted = Math.abs(ft[k]) <= H ? ft[k] : Math.sign(ft[k]) * H;
++      else resisted = Math.sign(v) * H;
++      let v1 = v + (ft[k] - resisted) * h / mArm;
++      if (Math.abs(v) >= 1e-9 && Math.sign(v1) !== Math.sign(v) && Math.abs(ft[k]) <= H) { resisted = ft[k] + v * mArm / h; v1 = 0; }
++      this.bodies[ia].vel.x += tx * resisted * h / this.mass[ia]; this.bodies[ia].vel.y += ty * resisted * h / this.mass[ia];
++      hd.slide += 0.5 * (v + v1) * h; hd.vel = v1;
++      if (Math.abs(hd.slide) >= jt.b.profile.radius) {
++        // Off the edge: the arm's momentum goes to his body; the hand is off until he re-fits it.
++        this.bodies[ia].vel.x += tx * mArm * v1 / this.mass[ia]; this.bodies[ia].vel.y += ty * mArm * v1 / this.mass[ia];
++        hd.on = false; hd.vel = 0; hd.slide = 0;
++      }
++    }
++    syncHandPair(jt);
++  }
++
+   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
+     kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number },
+     angularA = 0, angularB = 0, armUnits = 1): number {
+@@ -2805,7 +2904,12 @@ export class World {
+         row.pushLim = Math.max(0, jt.push) * h * scale;
+         row.holdLim = OPEN_HANDS && !jt.grip ? 0 : Math.max(0, jt.hold) * h * this.armScale[holder];
+         row.steerLim = Math.max(0, jt.steer) * h * scale;
+-        if (RUSH_HANDS && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
++        if (FITTED_HANDS && jt.handPair) {
++          // FITTED_HANDS: each hand carries half, at its own edge; the press and its friction go with the hands.
++          const e = 0.5 * (this.handEdgeK(jt, 0) + this.handEdgeK(jt, 1));
++          row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
++          row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;
++        } else if (RUSH_HANDS && (jt.off || jt.handOffset || (jt.handsOn ?? 2) < 2)) {
+           const e = (jt.off ? 0 : this.handEdge(jt)) * ((jt.handsOn ?? 2) === 1 ? 0.5 : 1);
+           row.pushLim *= e; row.holdLim *= e; row.steerLim *= e;
+           row.steerSide = (jt.handsOn ?? 2) === 1 ? jt.offSide ?? 0 : 0;
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index 768aecb3..8a20cf71 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -79,7 +79,12 @@ export interface Engagement {
+   riding?: boolean;
+   /** RUSH_HANDS: his last club (its end, the blocker's hands on before it, his hand speed) and when his hands are
+    * back from it: no move, keyed or not, before then. */
+-  club?: { end: number; handsBefore: number; speed: number };
++  club?: { end: number; handsBefore: number; speed: number;
++    /** FITTED_HANDS attempt 2: when the arm started, when its force begins, the hand it is aimed at, when the blocker
++     * sees it start (Infinity if not in his view), his answer, and whether it met air. */
++    start?: number; onset?: number; hand?: 0 | 1; seenAt?: number; answer?: 'away' | 'firm' | 'late' | 'unseen'; air?: boolean; side?: Vec2;
++    /** BLOCK_ANTICIPATE: the hand it was aimed at was firmed when the force began. */
++    firmAtOnset?: boolean };
+   handsBackAt?: number;
+   counterAt?: number;
+   lastReqX?: number;
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index eaf94418..262668bc 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -48,7 +48,7 @@ import { lineRead, pullers } from './run-fits.js';
+ import { observedHolder } from './possession-read.js';
+ import { runContactObservers } from './run-contact-observer.js';
+ import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
+-import { OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
++import { syncHandPair, handPairOf, FITTED_HANDS, ARM_MASS, OPEN_HANDS, PUSH_GROWTH, RUSH_HANDS, type HandJoint, type Intent } from '../physics/world.js';
+ import { ARM_SPEED } from '../physics/actuation.js';
+ import { inHeadCone } from './head.js';
+ import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
+@@ -674,11 +674,18 @@ function setHands(sim: PlaySim, e: Engagement): void {
+   // from his chest to the man at arm speed, then is on him again where it lands.
+   // RUSH_HANDS: a hand slid but still on him is walked back to where he wants it (the middle of the man) by his own
+   // arm, at arm speed, once it is no longer being driven (at rest on the chest).
+-  if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
++  if (FITTED_HANDS && e.type === 'pass') {
++    if (BLOCK_ANTICIPATE && fightRep(e)) anticipate(sim, e);
++    fightAnswer(sim, e); fightHands(sim, hands, b, d);
++    // A firmed hand has cloth: on the joint as a grip and its hold, where the holding detector reads it.
++    const pr = handPairOf(hands), firm = pr.find(h => h.on && (h.firmUntil ?? -Infinity) > sim.world.time);
++    if (firm) { hands.grip = true; hands.hold = Math.max(hands.hold, firm.firmGrip ?? 0); }
++  }
++  else if (RUSH_HANDS && !hands.off && hands.handOffset && Math.abs(hands.handVel ?? 0) < 0.05) {
+     const o = hands.handOffset, step = ARM_SPEED * sim.dt;
+     hands.handOffset = Math.abs(o) <= step ? 0 : o - Math.sign(o) * step; hands.handVel = 0;
+   }
+-  if (RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
++  if (!(FITTED_HANDS && e.type === 'pass') && RUSH_HANDS && (hands.off || (hands.handsOn ?? 2) < 2)) {
+     // He feels the hands gone (both, or the last one not pressing him): he is free of them until one re-fits (his
+     // request works past, as a landed move).
+     // RUSH_ONE_HAND: one hand gone is not a landed move: only both gone frees him (the side it guarded is open, the
+@@ -706,6 +713,160 @@ function setHands(sim: PlaySim, e: Engagement): void {
+   if (RUSH_HANDS && e.rusherHand) stepLongArm(sim, e);
+ }
+ 
++/** FITTED_HANDS: the spread of a hand's landing point at the man for a hand technique of 0 (yd, 1 SD), falling to 0.4 of
++ * it at a technique of 1 (PAIR_HANDS' value on the Flex branch). A choice, not a sourced number: about a hand's width off
++ * the chest plate for a poor technician. */
++const PLACE_SPREAD = 0.2;
++/** FITTED_HANDS: each of the blocker's hands on its own. A hand at rest on him is walked back to where he aims it (the
++ * middle of his side of the man) by his arm at ARM_SPEED. A hand that is off re-fits after his reaction to the felt
++ * loss plus its travel from his chest at ARM_SPEED (refitTime), and lands where his hand placement puts it: a motor
++ * error drawn on the landing point, PAIR_HANDS' spread by his hand technique (PLACE_SPREAD, 1 SD). A hand that lands
++ * past the edge of the man's torso has missed: it is off again and travels back. Being off his hands frees the man
++ * only through the World (no press, friction or steer from a hand that is not on him): no landed-move window. */
++/** When each of a joint's hands that is off lands again (sim time; null while it is on). */
++const fightReady = new WeakMap<HandJoint, [number | null, number | null]>();
++function fightHands(sim: PlaySim, hands: HandJoint, b: Agent, d: Agent): void {
++  const pair = handPairOf(hands), step = ARM_SPEED * sim.dt, R = d.profile.radius;
++  let ready = fightReady.get(hands);
++  if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
++  for (const k of [0, 1] as const) {
++    const hd = pair[k];
++    if (hd.on) {
++      ready[k] = null;
++      if (hd.slide && Math.abs(hd.vel) < 0.05) { hd.slide = Math.abs(hd.slide) <= step ? 0 : hd.slide - Math.sign(hd.slide) * step; hd.vel = 0; }
++      continue;
++    }
++    // Knocked off: he feels it go and re-fits after his reaction and the hand's travel.
++    if (ready[k] === null) ready[k] = sim.t + refitTime(b, d);
++    if (sim.t < ready[k]!) continue;
++    const sd = PLACE_SPREAD * (1 - 0.6 * clamp(b.r('handTechnique'), 0, 1));
++    const at = sim.dice('place', b, d).normal(0, sd);
++    if (Math.abs(at) >= R) { ready[k] = sim.t + refitTime(b, d); continue; }
++    hd.on = true; hd.slide = at; hd.vel = 0; ready[k] = null;
++  }
++  syncHandPair(hands);
++}
++
++/** BLOCK_ANTICIPATE (experimental, off; BLOCK_ANTICIPATE=1, on FITTED_HANDS): the blocker acts on the rusher's arm
++ * before it swings (hand-fight note section 13). The rusher's near arm is an observable: each tick its state is logged
++ * (on the blocker, drawn back on its return after a club, or sweeping), and the blocker has it at his sight delay
++ * (0.12 + 0.12 x (1 - read)), only with the rusher in his view cone, like any body state he sees. Seeing it drawn back
++ * or sweeping, he answers on the hand it will meet (the one fightClub aims at):
++ * - a hand seated where he aimed it (slid less than half the man's torso): he braces it (elbow locked to the frame, the
++ *   arm holding at its bent lever whatever its extension), as long as he sees the arm away. No cloth: a firm with
++ *   cloth for the whole time the arm was away held his jersey through half the rep and drew holding on 16 of 92 pass
++ *   plays in a one-game staging read; the coached firm is the arm, not a grab;
++ * - a hand already slid off its spot: he pulls it and re-punches (the point/counterpoint hands as coached), the hand off
++ *   for its travel back and out (twice a forearm's width at his hand speed), landing with his placement error: if the
++ *   man is not where he punched, the hand misses and goes again (fightHands).
++ * The rusher's answer to it (cocking without throwing: the fake) is the between-moves stage's, not built: until then a
++ * firmed hand is an answer he cannot test. */
++export const BLOCK_ANTICIPATE = FITTED_HANDS && process.env.BLOCK_ANTICIPATE === '1';
++if (process.env.BLOCK_ANTICIPATE === '1' && !FITTED_HANDS) throw new Error('BLOCK_ANTICIPATE=1 requires FITTED_HANDS=1 (the two hands it answers with)');
++type ArmState = 'on' | 'back' | 'sweep';
++const armLog = new WeakMap<Agent, { t: number; s: ArmState }[]>();
++/** The rusher's near arm now, from his rep's club state. */
++function armState(e: Engagement, t: number): ArmState {
++  if (e.club && e.club.start !== undefined && t >= e.club.start) return 'sweep';
++  return t < (e.handsBackAt ?? -Infinity) ? 'back' : 'on';
++}
++function logArm(sim: PlaySim, e: Engagement): void {
++  const log = armLog.get(e.defender) ?? [];
++  const s = armState(e, sim.t);
++  if (!log.length || log[log.length - 1].s !== s) { log.push({ t: sim.t, s }); if (log.length > 64) log.shift(); }
++  armLog.set(e.defender, log);
++}
++/** The arm as the observer has it: its state at his sight delay ago. */
++function seenArm(sim: PlaySim, rusher: Agent, delay: number): ArmState {
++  const log = armLog.get(rusher);
++  if (!log) return 'on';
++  let s: ArmState = 'on';
++  for (const x of log) { if (x.t <= sim.t - delay + 1e-9) s = x.s; else break; }
++  return s;
++}
++function anticipate(sim: PlaySim, e: Engagement): void {
++  logArm(sim, e);
++  const b = e.blocker, d = e.defender, hands = e.hands;
++  if (!hands || hands.off) return;
++  if (!inHeadCone(b.head ?? b.body.facing, Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x))) return;
++  const seen = seenArm(sim, d, 0.12 + 0.12 * (1 - traits(b).read));
++  if (seen === 'on') return;
++  // The hand his arm will meet: fightClub's aim, from where the bodies are.
++  const lat = latOf(axisOf(sim, e)), F = { x: -lat.x * e.side, y: -lat.y * e.side };
++  const dx = d.body.pos.x - b.body.pos.x, dy = d.body.pos.y - b.body.pos.y, L = Math.hypot(dx, dy) || 1;
++  const pair = handPairOf(hands);
++  // The hand on his working side; if it is off (knocked off, or already re-punching), he has nothing to set there.
++  const k: 0 | 1 = F.x * (-dy / L) + F.y * (dx / L) >= 0 ? 0 : 1;
++  const hd = pair[k];
++  if (!hd.on) return;
++  if (Math.abs(hd.slide) < 0.5 * d.profile.radius) {
++    hd.braceUntil = sim.world.time + 1.5 * sim.dt;
++    b.tags.add('anticipate-brace');
++  } else {
++    const speed = ARM_SPEED * (0.75 + 0.5 * clamp(b.r('handTechnique'), 0, 1));
++    hd.on = false; hd.slide = 0; hd.vel = 0; syncHandPair(hands);
++    let ready = fightReady.get(hands);
++    if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
++    ready[k] = sim.t + 2 * FOREARM / speed;
++    b.tags.add('anticipate-repunch');
++  }
++}
++
++/** FITTED_HANDS attempt 2: the blocker against a club he can see coming. He sees the rusher's arm start at his sight
++ * delay (0.12 + 0.12 x (1 - his read): the pass rep's sight delay with his hands off), and only with the rusher in the
++ * view cone about where his eyes point (head.ts: his head, or his body facing without HEAD). What he can do is what
++ * he has time for before the club's force arrives (its onset):
++ * - time to move the hand a forearm's width at his hand speed: he takes it away (the club meets air) and re-punches it
++ *   as the club passes, landing with his placement error after that same travel;
++ * - less, but before the onset: he firms the hand, taking cloth (one hand's share of a holding grip, armForce x 0.6)
++ *   for the club's time, raising that arm's hold against it; the grip is on the joint (grip and hold), so the holding
++ *   detector sees it;
++ * - after the onset: it lands as thrown.
++ * No roll: the times decide. */
++function fightAnswer(sim: PlaySim, e: Engagement): void {
++  const c = e.club, b = e.blocker, d = e.defender, hands = e.hands;
++  if (!c || c.onset === undefined || c.hand === undefined || !hands) return;
++  const pair = handPairOf(hands), t = sim.t;
++  if (c.air === undefined && t >= c.onset) { c.air = !pair[c.hand].on; c.firmAtOnset = Math.max(pair[c.hand].firmUntil ?? -Infinity, pair[c.hand].braceUntil ?? -Infinity) > sim.world.time; }
++  if (c.answer !== undefined) return;
++  if (c.seenAt === Infinity) { c.answer = 'unseen'; return; }
++  if (t < c.seenAt!) return;
++  const left = c.onset - t, speed = ARM_SPEED * (0.75 + 0.5 * clamp(b.r('handTechnique'), 0, 1)), away = FOREARM / speed;
++  if (left >= away && pair[c.hand].on) {
++    c.answer = 'away';
++    pair[c.hand].on = false; pair[c.hand].slide = 0; pair[c.hand].vel = 0; syncHandPair(hands);
++    let ready = fightReady.get(hands);
++    if (!ready) { ready = [null, null]; fightReady.set(hands, ready); }
++    ready[c.hand] = c.end + away;
++  } else if (left >= 0 && pair[c.hand].on) {
++    c.answer = 'firm';
++    pair[c.hand].firmUntil = sim.world.time + (c.end - t); pair[c.hand].firmGrip = 0.6 * armForce(b);
++  } else c.answer = 'late';
++}
++/** FITTED_HANDS attempt 2: the club, with its approach. His near hand travels to the blocker's wrist (0.45 of his arm,
++ * the sweep its return takes, at his hand speed) before its force acts; then the force of RUSH_HANDS' club for its time
++ * across the forearm. It is aimed at the hand on his working side (the one a force across toward his inside meets
++ * first), or at the other if that one is off him. */
++function fightClub(sim: PlaySim, e: Engagement, axis: Vec2): number {
++  const d = e.defender, b = e.blocker, lat = latOf(axis), hands = e.hands!;
++  const speed = ARM_SPEED * (0.75 + 0.5 * d.r('passRushFinesse'));
++  const approach = 0.45 * d.player.measurables.armIn / 36 / speed, duration = FOREARM / speed, F = armForce(d);
++  const force = { x: -lat.x * e.side * F, y: -lat.y * e.side * F };
++  const dx = d.body.pos.x - b.body.pos.x, dy = d.body.pos.y - b.body.pos.y, L = Math.hypot(dx, dy) || 1;
++  const fT = force.x * (-dy / L) + force.y * (dx / L), pair = handPairOf(hands);
++  let k: 0 | 1 = fT >= 0 ? 0 : 1;
++  if (!pair[k].on) k = (1 - k) as 0 | 1;
++  const wt = sim.world.time;
++  sim.world.handForce(hands, d.body, force, wt + approach, wt + approach + duration, k);
++  const t = sim.t, onset = t + approach, end = onset + duration;
++  // His view: the rusher inside the cone about his eyes.
++  const look = b.head ?? b.body.facing, inView = inHeadCone(look, Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x));
++  const seenAt = inView ? t + 0.12 + 0.12 * (1 - traits(b).read) : Infinity;
++  e.moveOk = false; e.moveUntil = end;
++  e.club = { end, handsBefore: hands.off ? 0 : hands.handsOn ?? 2, speed, start: t, onset, hand: k, seenAt, side: force };
++  return end - t;
++}
++
+ const refitState = new WeakMap<HandJoint, { lostAt: number }>();
+ /** RUSH_HANDS: the time a lost hand takes back to the man (s): reaction to the loss plus the hand's travel from his
+  * chest (the bodies' gap) at ARM_SPEED. */
+@@ -806,6 +967,52 @@ function clearedSide(e: Engagement, lat: Vec2): number {
+   return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
+ }
+ 
++/** FIGHT_MENU (experimental, off; FIGHT_MENU=1, on FITTED_HANDS): the hand fight's stage 2, its minimum (Integration,
++ * 2026-11-15): the bull and the long-arm back on the interior rusher's menu, as forces through the fitted hands with
++ * their coached feet, so that between clubs he is in a move or resetting, not sprinting the corner (under stage 1 he
++ * asked for 88% of his top speed through the fight against the base's 55%: hand-fight note section 15). The move is a
++ * decision from his keys, no roll:
++ * - a hand on him and his arm ready: the club (attempt 2), or, for a power rusher (pass-rush power at least his
++ *   finesse) whose arm is the longer (seen: RUSH_HANDS' key) against a blocker pressing him (not light by touch), the
++ *   long-arm;
++ * - between moves his feet are the bull's drive (at the rep's start, and after a club that cleared nothing); after a
++ *   club that cleared a hand he runs the side it opened.
++ * Bull and long-arm carry the power request (0.55 of his top speed, full push: stepPassRep's power feet), held for
++ * FIGHT_COMMIT or until a hand goes light on him. A club that cleared nothing leaves him resetting on the bull's feet
++ * while his arm comes back. The long-arm works through the blocker's fitted hands as a strut (LONGARM_STRUT's law, not
++ * the disarm). */
++export const FIGHT_MENU = FITTED_HANDS && process.env.FIGHT_MENU === '1';
++if (process.env.FIGHT_MENU === '1' && !FITTED_HANDS) throw new Error('FIGHT_MENU=1 requires FITTED_HANDS=1 (the fitted hands its moves act through)');
++/** FIGHT_MENU: how long a power move is held before he decides again, unless a hand goes light on him first (s): the
++ * base engine's bull and long-arm commitment (0.75 s), without its random extension. */
++const FIGHT_COMMIT = 0.75;
++function fightMove(e: Engagement): RushMove {
++  const d = e.defender, b = e.blocker;
++  // Attempt 2: every rusher clubs a hand that is on him when his arm is ready (stage 1's decision, the clearing rhythm
++  // the orbit came from); a power rusher with the longer arm long-arms instead into a blocker whose hands are pressing
++  // him. Between moves his feet are the bull's drive (the reset below and at the rep's start), not the corner's run.
++  // Attempt 1 (a club only on a light hand, else bull or long-arm for a power rusher) left the bull on 66% of rep ticks
++  // and the club at 0.72 a second (stage 1 1.26): the orbit fell back to the base's (9 against 18 deg at 0.5-1.0 s).
++  if (d.r('passRushPower') >= d.r('passRushFinesse') && d.player.measurables.armIn > b.player.measurables.armIn
++    && e.hands && !e.hands.off && !handUnloaded(e)) return 'longarm';
++  return 'club';
++}
++
++/** FITTED_HANDS: an interior pass rep (the hand fight's stage 1 is the interior fight). */
++function fightRep(e: Engagement): boolean {
++  return FITTED_HANDS && e.type === 'pass' && e.blocker.slot !== 'LT' && e.blocker.slot !== 'RT';
++}
++/** The cleared side as he feels it: a hand gone from his chest is touch, at the hands' delay (0.06 s, ENGAGE_FELT's
++ * loaded touch); off FITTED_HANDS the side as it is (RUSH_ONE_HAND, unchanged). */
++const clearedSeen = new WeakMap<Engagement, { side: number; at: number }>();
++function feltCleared(sim: PlaySim, e: Engagement, lat: Vec2): number {
++  const now = clearedSide(e, lat);
++  if (!FITTED_HANDS) return now;
++  let st = clearedSeen.get(e);
++  if (!st || st.side !== now) { st = { side: now, at: sim.t }; clearedSeen.set(e, st); }
++  return sim.t - st.at >= 0.06 ? now : 0;
++}
++
+ export function handUnloaded(e: Engagement): boolean {
+   const h = e.hands;
+   return !!h && !h.off && Math.max(0, h.normalForce ?? 0) < UNLOADED * pressForce(e.blocker);
+@@ -832,6 +1039,8 @@ function keyedMove(sim: PlaySim, e: Engagement): RushMove | null {
+ /** Choose the next move from the state of the rep. */
+ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
+   const d = e.defender;
++  // FITTED_HANDS stage 1: the club is the interior rusher's one move (FIGHT_MENU: his menu, by his keys).
++  if (fightRep(e)) return FIGHT_MENU ? fightMove(e) : 'club';
+   if (RUSH_HANDS && e.type === 'pass') { const keyed = keyedMove(sim, e); if (keyed) return keyed; }
+   const td = traits(d);
+   const power = d.r('passRushPower');
+@@ -934,7 +1143,7 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
+   const gap = Math.hypot(b.pos.x - d.pos.x, b.pos.y - d.pos.y) - b.profile.radius - d.profile.radius;
+   const armB = b.player.measurables.armIn / 36;
+   if (h && gap > armB) {
+-    if (LONGARM_STRUT) {
++    if (LONGARM_STRUT || FIGHT_MENU) {
+       const sc = clamp(1 - (gap - armB) / Math.max(1e-6, d.player.measurables.armIn / 36), 0, 1);
+       h.hold *= sc; h.steer *= sc;
+     } else { h.push = 0; h.hold = 0; h.steer = 0; }
+@@ -949,6 +1158,18 @@ function stepLongArm(sim: PlaySim, e: Engagement): void {
+ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
+   const t = sim.t;
+   const rng = sim.dice('rep', e.blocker, e.defender);
++  // FITTED_HANDS stage 1: an interior rusher's only move is the club, on a hand that is on him. Its next decision is when
++  // his arm is back (the club's end, then the arm's return: handsBackAt); with no hand on him there is nothing to
++  // clear and he looks again after his reaction.
++  if (fightRep(e)) {
++    // FIGHT_MENU: the bull and the long-arm, committed until the next decision point (his commitment, or a felt
++    // change: a hand going light on him, which brings the next decision forward).
++    if (FIGHT_MENU && e.move === 'bull') { e.moveOk = false; e.moveUntil = t; e.nextMoveAt = t + FIGHT_COMMIT; return; }
++    if (FIGHT_MENU && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + FIGHT_COMMIT; longArm(sim, e); return; }
++    if (e.hands && !e.hands.off) e.nextMoveAt = t + fightClub(sim, e, axis);
++    else e.nextMoveAt = t + Math.max(0.1, e.defender.profile.reactionTime);
++    return;
++  }
+   // RUSH_HANDS: the club is a force on the blocker's hand, not a roll.
+   if (RUSH_HANDS && e.move === 'club' && e.hands && !e.hands.off) { clubHand(sim, e, axis); e.nextMoveAt = t + 0.55 + rng.range(0, 0.45); return; }
+   if (RUSH_HANDS && e.move === 'longarm' && e.hands) { e.nextMoveAt = t + 0.75 + rng.range(0, 0.45); longArm(sim, e); return; }
+@@ -1815,10 +2036,22 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   if (RUSH_HANDS && e.type === 'pass') {
+     const rt = Math.max(0.1, d.profile.reactionTime);
+     if (e.club && t >= e.club.end) {
++      // FITTED_HANDS attempt 2: a club he had not yet seen when it ended was late.
++      if (e.club.onset !== undefined && e.club.answer === undefined) e.club.answer = 'late';
+       const h = e.hands, now = !h || h.off ? 0 : h.handsOn ?? 2, cleared = now < e.club.handsBefore;
+       const sweep = 0.45 * d.player.measurables.armIn / 36 / e.club.speed;
+       e.handsBackAt = e.club.end + sweep + rt + (cleared ? 0 : sweep) + (baseOf(d) < 0.9 ? rt : 0);
++      // FITTED_HANDS attempt 2: a club through air carries his arm across his own body: it comes back twice as far,
++      // and his reaction again for the balance it cost; the arm's momentum goes to his body.
++      if (e.club.air) {
++        e.handsBackAt = e.club.end + 2 * sweep + 2 * rt + (baseOf(d) < 0.9 ? rt : 0);
++        const f = e.club.side!, F = Math.hypot(f.x, f.y) || 1, mv = ARM_MASS * e.club.speed;
++        d.body.vel.x += f.x / F * mv; d.body.vel.y += f.y / F * mv;
++      }
+       e.nextMoveAt = Math.max(e.nextMoveAt, e.handsBackAt);
++      // FIGHT_MENU: a club that cleared nothing leaves him resetting on his drive (the bull's feet) while the arm comes
++      // back, not sprinting the corner against hands still on him.
++      if (FIGHT_MENU && fightRep(e) && !cleared && !e.club.air) e.move = 'bull';
+       e.club = undefined;
+     }
+     const loaded = !handUnloaded(e);
+@@ -1857,7 +2090,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   } else if (between === 'stall') aim = { x: bK.pos.x, y: bK.pos.y };
+   // RUSH_ONE_HAND: a cleared hand opens the side it guarded. He works to it, at the blocker's hip a step past toward
+   // the QB, through the body and the remaining hand at whatever speed that contact allows; PAST (geometry) wins it.
+-  const cleared = RUSH_ONE_HAND && !turned && !inMove ? clearedSide(e, lat) : 0;
++  const cleared = (RUSH_ONE_HAND || fightRep(e)) && !turned && !inMove ? feltCleared(sim, e, lat) : 0;
+   if (cleared) aim = { x: bK.pos.x + lat.x * cleared * (sep + 0.2) + axis.x * 0.5, y: bK.pos.y + lat.y * cleared * (sep + 0.2) + axis.y * 0.5 };
+   // EDGE_ARC: working the outside of a tackle, the corner is his landmark at
+   // the QB's depth outside the tackle's shoulder; past the hips he turns.
+diff --git a/test/fitted-hands.test.ts b/test/fitted-hands.test.ts
+new file mode 100644
+index 00000000..a927c0e8
+--- /dev/null
++++ b/test/fitted-hands.test.ts
+@@ -0,0 +1,104 @@
++/** FITTED_HANDS (physics/world.ts handPair / stepHandPair / handHold(k); experimental, off; requires RUSH_HANDS): the
++ * hand fight's stage 1. The blocker's two hands are separate one-degree-of-freedom bodies. A strike acts on the hand it
++ * meets and only that arm holds against it; each hand carries half the joint's press, friction and steer at its own
++ * edge; with no force on the hands every joint force is RUSH_HANDS' (and so today's); momentum is conserved; the
++ * result does not depend on the substep count. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import type { Vec2 } from '../src/core/vec.js';
++import type { PhysicalProfile } from '../src/players/physical.js';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function load(flags: Record<string, string>) {
++  vi.resetModules();
++  for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
++  const { newSupport } = await import('../src/physics/support.js');
++  const W = await import('../src/physics/world.js');
++  const body = (mass: number, pos: Vec2, facing = 0) => {
++    const profile: PhysicalProfile = { massKg: mass, radius: 0.3, reach: 0.25 + 0.95 * 0.85, heightYd: 2.05, vmax: 9, tau: 1.3,
++      brake: 6, lateral: 6, turnRate: 8, backpedal: 0.6, shuffle: 0.55, maxCatchHeight: 3, reactReach: 2.6,
++      reactionTime: 0.25, power: mass, balance: 0.5, bend: 0.5, stepSpeed: 3.4, getUp: 0.9 };
++    return { pos, vel: { x: 0, y: 0 }, facing, energy: 1, profile, support: newSupport(0.4) } as any;
++  };
++  return { W, body };
++}
++
++async function scene(opts: { ext: number; press: number; F: number; dur: number; substeps?: number; flags: Record<string, string>; steps?: number }) {
++  const { W, body } = await load({ RUSH_HANDS: '1', ...opts.flags });
++  const a = body(140, { x: 0, y: 0 }, 0), b = body(120, { x: 0.6 + opts.ext, y: 0 }, Math.PI);
++  const w = new W.World([a, b], { substeps: opts.substeps ?? 12 });
++  const j: any = { kind: 'hands', a, b, extension: 0.6 + opts.ext, push: 1500, hold: 0, steer: 700 };
++  w.joints.push(j);
++  const rows: { N: number; T: number }[] = [];
++  let p0 = { x: 0, y: 0 }; const ground = { x: 0, y: 0 };
++  const mom = () => ({ x: a.profile.massKg * a.vel.x + b.profile.massKg * b.vel.x, y: a.profile.massKg * a.vel.y + b.profile.massKg * b.vel.y });
++  for (let k = 0; k < (opts.steps ?? 12); k++) {
++    if (k === 2 && opts.F) { p0 = mom(); w.handForce(j, b, { x: 0, y: opts.F }, w.time, w.time + opts.dur); }
++    const rep = w.step([{ vel: { x: 0, y: 0 }, push: 1 }, { vel: { x: -1.5 * opts.press, y: 0 }, push: opts.press }], 0.05);
++    if (k >= 2) { ground.x += (rep.groundImpulse[0]?.x ?? 0) + (rep.groundImpulse[1]?.x ?? 0); ground.y += (rep.groundImpulse[0]?.y ?? 0) + (rep.groundImpulse[1]?.y ?? 0); }
++    rows.push({ N: j.normalForce ?? 0, T: j.tangentForce ?? 0 });
++  }
++  const pair = j.handPair as { slide: number; vel: number; on: boolean }[] | undefined;
++  const armV = pair ? pair.reduce((s, h) => s + (h.on ? h.vel : 0), 0) : j.handVel ?? 0;
++  const p1 = mom(), arm = W.ARM_MASS * a.profile.massKg * armV;
++  return { j, pair, rows, residualY: p1.y + arm - p0.y - ground.y, scaleY: Math.abs(opts.F * opts.dur) };
++}
++
++describe('FITTED_HANDS: the two hands', () => {
++  it('a strike takes off the hand it meets; the other stays on (the sweep after the clear barely moves it)', async () => {
++    const r = await scene({ ext: 0.6 * 0.95, press: 0, F: 900, dur: 0.08, flags: { FITTED_HANDS: '1' } });
++    console.log(`hand 0 on ${r.pair![0].on} slide ${r.pair![0].slide.toFixed(3)} | hand 1 on ${r.pair![1].on} slide ${r.pair![1].slide.toFixed(3)} | handsOn ${r.j.handsOn} offSide ${r.j.offSide}`);
++    expect(r.pair![1].on).toBe(true); expect(Math.abs(r.pair![1].slide)).toBeLessThan(0.05);
++    expect(r.pair![0].on).toBe(false);
++    expect(r.j.handsOn).toBe(1); expect(r.j.offSide).toBe(-1); expect(r.j.off).toBe(false);
++  });
++
++  it('one arm holds less than the pair: a strike the joint holds takes one fitted hand off', async () => {
++    const F = 1200, base = { ext: 0.25 * 0.95, press: 1, dur: 0.08 };
++    const pairHold = await scene({ ...base, F, flags: {} });
++    const oneArm = await scene({ ...base, F, flags: { FITTED_HANDS: '1' } });
++    console.log(`RUSH_HANDS handsOn ${pairHold.j.handsOn ?? 2} | FITTED_HANDS handsOn ${oneArm.j.handsOn}`);
++    expect(pairHold.j.handsOn ?? 2).toBe(2);
++    expect(oneArm.j.handsOn).toBe(1);
++  });
++
++  it('with one hand off, the joint carries half its press', async () => {
++    const both = await scene({ ext: 0.25 * 0.95, press: 1, F: 0, dur: 0.08, flags: { FITTED_HANDS: '1' }, steps: 1 });
++    const { W, body } = await load({ RUSH_HANDS: '1', FITTED_HANDS: '1' });
++    expect(W.FITTED_HANDS).toBe(true);
++    const a = body(140, { x: 0, y: 0 }, 0), b = body(120, { x: 0.6 + 0.25 * 0.95, y: 0 }, Math.PI);
++    const w = new W.World([a, b], { substeps: 12 });
++    const j: any = { kind: 'hands', a, b, extension: 0.6 + 0.25 * 0.95, push: 1500, hold: 0, steer: 700 };
++    W.handPairOf(j)[1].on = false; W.syncHandPair(j);
++    w.joints.push(j);
++    let maxN = 0;
++    for (let k = 0; k < 8; k++) { w.step([{ vel: { x: 0, y: 0 }, push: 1 }, { vel: { x: -1.5, y: 0 }, push: 1 }], 0.05); maxN = Math.max(maxN, Math.abs(j.normalForce ?? 0)); }
++    console.log(`one hand: |N| max ${maxN.toFixed(0)} (push 1500 -> 750 cap)`);
++    expect(maxN).toBeLessThanOrEqual(750 + 1);
++    expect(both.j.handsOn ?? 2).toBe(2);
++  });
++
++  it('with no force on the hands every joint force is RUSH_HANDS\'', async () => {
++    const off = await scene({ ext: 0.6 * 0.95, press: 0.7, F: 0, dur: 0.08, flags: {} });
++    const on = await scene({ ext: 0.6 * 0.95, press: 0.7, F: 0, dur: 0.08, flags: { FITTED_HANDS: '1' } });
++    expect(on.rows).toEqual(off.rows);
++  });
++
++  it('momentum is conserved and the slide does not depend on the substep count', async () => {
++    const r = await scene({ ext: 0.6 * 0.95, press: 0.5, F: 800, dur: 0.08, flags: { FITTED_HANDS: '1' } });
++    console.log(`momentum residual y ${r.residualY.toFixed(3)} against ${r.scaleY.toFixed(1)}`);
++    expect(Math.abs(r.residualY)).toBeLessThan(0.02 * r.scaleY + 0.5);
++    const coarse = await scene({ ext: 0.6 * 0.95, press: 0, F: 300, dur: 0.08, substeps: 6, steps: 6, flags: { FITTED_HANDS: '1' } });
++    const fine = await scene({ ext: 0.6 * 0.95, press: 0, F: 300, dur: 0.08, substeps: 24, steps: 6, flags: { FITTED_HANDS: '1' } });
++    const sc = coarse.pair![0].slide, sf = fine.pair![0].slide;
++    console.log(`substeps 6: ${sc.toFixed(4)} | 24: ${sf.toFixed(4)} | on ${coarse.pair![0].on}/${fine.pair![0].on}`);
++    expect(coarse.pair![0].on && fine.pair![0].on).toBe(true);
++    expect(Math.abs(sc)).toBeGreaterThan(0.01);
++    expect(Math.abs(sc - sf)).toBeLessThan(0.1 * Math.abs(sf) + 0.005);
++  });
++
++  it('FITTED_HANDS without RUSH_HANDS is refused', async () => {
++    vi.resetModules(); vi.stubEnv('FITTED_HANDS', '1');
++    await expect(import('../src/physics/world.js')).rejects.toThrow(/requires RUSH_HANDS/);
++  });
++});
+-- 
+2.43.0
+

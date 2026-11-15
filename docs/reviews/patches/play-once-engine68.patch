@@ -1,6 +1,6 @@
-From 328928900dc92873f7b2ab6d34154405c07ebd06 Mon Sep 17 00:00:00 2001
+From c9135a36445bf13a00d41417a5ca1147e19dd483 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
-Date: Sun, 15 Nov 2026 14:42:00 +0000
+Date: Sun, 15 Nov 2026 15:56:14 +0000
 Subject: [PATCH] PLAY_ONCE (default on; PLAY_ONCE=0 restores): one
  interception / breakup try per defender per pass on a ball he sees, not a
  roll each tick it is within his reach (4 games: 31 defender-pass plays, 13
@@ -9,76 +9,65 @@ Subject: [PATCH] PLAY_ONCE (default on; PLAY_ONCE=0 restores): one
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
 ---
- config/baseline.json        |  2 ++
- config/reference-stack.json |  2 ++
- docs/FLAGS.md               |  4 +++-
- src/sim/catching.ts         | 30 ++++++++++++++++++++++++++++++
- 4 files changed, 37 insertions(+), 1 deletion(-)
+ config/baseline.json        |  1 +
+ config/reference-stack.json |  1 +
+ docs/FLAGS.md               |  3 ++-
+ src/sim/catching.ts         | 15 +++++++++++++++
+ 4 files changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/config/baseline.json b/config/baseline.json
-index 4149bf33..1639fb2e 100644
+index 5162dd97..1639fb2e 100644
 --- a/config/baseline.json
 +++ b/config/baseline.json
-@@ -255,6 +255,8 @@
-     "TACKLE_RESET": "0",
+@@ -256,6 +256,7 @@
      "RUSH_HANDS": "0",
      "PASS_RIDE": "0",
-+    "BAT_ONCE": "0",
+     "BAT_ONCE": "0",
 +    "PLAY_ONCE": "0",
      "RUSH_ONE_HAND": "0",
      "HAND_SITE": "0",
      "ENGAGE_FELT": "0",
 diff --git a/config/reference-stack.json b/config/reference-stack.json
-index 9157bcd9..18dcdb2b 100644
+index 76d373f5..18dcdb2b 100644
 --- a/config/reference-stack.json
 +++ b/config/reference-stack.json
-@@ -198,6 +198,8 @@
-     "TACKLE_RESET": "off",
+@@ -199,6 +199,7 @@
      "RUSH_HANDS": "off",
      "PASS_RIDE": "on",
-+    "BAT_ONCE": "on",
+     "BAT_ONCE": "on",
 +    "PLAY_ONCE": "on",
      "RUSH_ONE_HAND": "off",
      "HAND_SITE": "off",
      "ENGAGE_FELT": "on",
 diff --git a/docs/FLAGS.md b/docs/FLAGS.md
-index 020795d7..502fcce8 100644
+index cb7fe3eb..502fcce8 100644
 --- a/docs/FLAGS.md
 +++ b/docs/FLAGS.md
 @@ -2,7 +2,7 @@
  
  Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
  
--There are 393 flags read from the environment in `src` (recounted 2026-11-15 at engine-68): 295 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+-There are 394 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus `BAT_ONCE`): 296 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
 +There are 395 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus `BAT_ONCE` and `PLAY_ONCE`): 297 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
  
  **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
  
-@@ -317,6 +317,8 @@ There are 393 flags read from the environment in `src` (recounted 2026-11-15 at
- | `RUSH_ONE_HAND` | off | experimental (with `RUSH_HANDS`; RUSH_HANDS attempt 3, 2026-11-13) | trenches | `src/sim/engagement.ts` (`setHands`, `clearedSide`, the rusher's aim) | a cleared hand opens the side it guarded, not the rep: with one hand off and the other unloaded the rusher no longer gets the landed-move request (work past at 0.8-1.0 vmax, hands' steer cut); he works to the cleared side (the blocker's hip, a step past toward the QB) at his ordinary rush with push 0.75, through the body and the remaining hand. Only both hands gone is a landed move; PAST along his path declares the win. docs/reviews/2026-11-12-tackle-set.md |
+@@ -318,6 +318,7 @@ There are 394 flags read from the environment in `src` (recounted 2026-11-15 at
  | `RUSH_HANDS` | off | experimental (physical pass-rush moves, stage 1: the hand, 2026-11-13) | physics / trenches | `src/physics/world.ts` (`handForce`, `handHold`, `handEdge`, `stepHands`), `src/sim/engagement.ts` (`refit`, `refitTime`) | the blocker's hand as a one-degree-of-freedom body on the hands joint: a force on the hand over its contact time (step-independent) is resisted by the arm's lateral hold (steer x bent / actual extension + HAND_MU x measured press + a grip's hold), falling to 0 at the edge of the man's torso (his radius; vertical not modelled); the excess moves only the arm (ARM_MASS 0.05, Winter's segment tables), the striker pays the full reaction, the arm's momentum returns to the blocker's body; past the edge the hand is off (no push, hold or steer) until it re-fits after his reaction plus the travel from his chest at ARM_SPEED. Stage 2: the club is a force on the blocker's hand (his arm force over the time his hand crosses a forearm, FOREARM 0.1 yd at his hand speed) and the long-arm is his own hand joint at his lockout (the blocker's hands cannot reach while the man is beyond his arm), countered by the blocker's club on it after his reaction time. Two hands (attempt 2): a clear takes one hand (push, hold and the arm's hold halve; steer resisting the man toward the vacated side is ONE_HAND_SIDE 0.25 of the remaining hand's; the turning moment about the remaining hand is not modelled); a second clear takes both; re-fit one hand at a time. Keys: the rusher reads an unloaded hand by touch and his arm advantage by sight, with recognition error. Still rating rolls: bull, speed, dip, spin, swim, rip, snatch. Test `test/rush-hands.test.ts`. docs/reviews/2026-11-12-tackle-set.md |
  | `PASS_RIDE` | on | promoted 2026-11-13 (engine-56; `=0` restores); was experimental (the block becomes a ride, 2026-11-13) | trenches | `src/sim/engagement.ts` (`rideIntent`; stepPassRep's PAST branch) | one ride rule for every pass blocker: a man past along his path (PAST_ALONG_PATH) is ridden -- the blocker runs with him on his QB side (a body's width across his path toward the QB), matching his velocity and closing on that spot (gain 2.5 /s), pushing through his hands (the joint's push flattens the man away from the QB); once riding he stays on him until the man is clearly back in front (along his path by more than PAST_MARGIN); the rep still ends when the man is beyond his arm. Off, the ride asked for the man's velocity less 1 yd/s toward the QB, so blockers fell behind by design (guards 1.9 vs 3.4 yd/s; ride-probe.mts). A grip from behind stays the holding detector's. docs/reviews/2026-11-12-tackle-set.md |
-+| `BAT_ONCE` | on | defect fix (bat at the line, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `batTried`) | a defender gets one try at batting a pass at the line per pass, the first tick its flight passes through his window, not a roll each tick it stays there (the chance per pass depended on the tick length: free defenders batted 29% of their chances against an 18% per-roll ceiling). Seed 11 x 4: batted 16 -> 7 of about 318 passes (5.0 -> 2.2%), per opportunity engaged 7.1 -> 2.1%, free 29.0 -> 19.2%. `BAT_ONCE=0` restores the per-tick roll. The roll itself goes with BAT_HANDS. Evidence: docs/reviews/2026-11-15-bat-at-the-line.md. |
+ | `BAT_ONCE` | on | defect fix (bat at the line, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `batTried`) | a defender gets one try at batting a pass at the line per pass, the first tick its flight passes through his window, not a roll each tick it stays there (the chance per pass depended on the tick length: free defenders batted 29% of their chances against an 18% per-roll ceiling). Seed 11 x 4: batted 16 -> 7 of about 318 passes (5.0 -> 2.2%), per opportunity engaged 7.1 -> 2.1%, free 29.0 -> 19.2%. `BAT_ONCE=0` restores the per-tick roll. The roll itself goes with BAT_HANDS. Evidence: docs/reviews/2026-11-15-bat-at-the-line.md. |
 +| `PLAY_ONCE` | on | defect fix (a defender's play on a ball he sees, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `playTried`) | one interception / breakup try per defender per pass, the first tick the ball is within his reach and he sees it, not a roll each tick it stays there. `PLAY_ONCE=0` restores. The same defect as BAT_ONCE's, downfield. The contested catch will be too easy until Coverage's in-phase work lands. |
  | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
  | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
  | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
 diff --git a/src/sim/catching.ts b/src/sim/catching.ts
-index d6af942f..4375ccdb 100644
+index cfa3defd..4375ccdb 100644
 --- a/src/sim/catching.ts
 +++ b/src/sim/catching.ts
-@@ -450,6 +450,21 @@ export function secureStep(sim: PlaySim): void {
-   }
- }
+@@ -458,6 +458,13 @@ const BAT_ONCE = process.env.BAT_ONCE !== '0';
+ /** BAT_ONCE: the defenders who have tried to bat this pass (keyed by its release time). */
+ const batTried = new WeakMap<PlaySim, { at: number; who: Set<Agent> }>();
  
-+/** BAT_ONCE (default on; BAT_ONCE=0 restores the old law): a defender gets one try at batting a pass at the line,
-+ * the first tick its flight passes through his window, not one each tick it stays there. A plain defect fix (an
-+ * outcome that depended on the tick length): docs/reviews/2026-11-15-bat-at-the-line.md. The roll itself stays until
-+ * BAT_HANDS replaces it with his hands. */
-+const BAT_ONCE = process.env.BAT_ONCE !== '0';
-+/** BAT_ONCE: the defenders who have tried to bat this pass (keyed by its release time). */
-+const batTried = new WeakMap<PlaySim, { at: number; who: Set<Agent> }>();
-+
 +/** PLAY_ONCE (default on; PLAY_ONCE=0 restores the old law): the same defect as BAT_ONCE's in a defender's play on a
 + * ball he sees (defenderPlay's interception and breakup roll): one try per defender per pass, not one each tick the
 + * ball is within his reach. A defect fix; the rolls themselves are Coverage's (in-phase work). */
@@ -89,21 +78,7 @@ index d6af942f..4375ccdb 100644
  /** Returns true if the defender ended the flight (INT) or altered it. */
  function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
    const ball = sim.ball;
-@@ -475,6 +490,13 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
-     return false;
-   }
-   if (isBat) {
-+    // BAT_ONCE: one try per defender per pass. The ball stays in his window for several ticks; a roll each tick made his
-+    // chance per pass depend on the tick length (free defenders batted 29% of their chances against an 18% ceiling).
-+    if (BAT_ONCE) {
-+      const key = ball.releaseT, done = batTried.get(sim);
-+      if (done && done.at === key && done.who.has(D)) return false;
-+      if (!done || done.at !== key) batTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
-+    }
-     // Linemen only bat it if they read the release and get their hands up.
-     const pBat = (D.engagement ? 0.04 : 0.12) * (sees ? 1 : 0.2) * (0.5 + D.r('playRecognition'));
-     if (rng.chance(pBat)) {
-@@ -501,6 +523,14 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
+@@ -516,6 +523,14 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
      }
      return false;
    }

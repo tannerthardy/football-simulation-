@@ -123,3 +123,18 @@ population; the closest horizontal distance from the ball to any DL in its first
     ball's release).
 - Not for the card. Engine-68's 0.6% is under the NFL's per crossing (1.5% engaged against 5%), BAT_HANDS' 7.0% is
   over it, and the honest decision sits between.
+
+## BAT_HANDS parked (Integration, 2026-11-15, option (b))
+
+- **Engine-68's rate is near the NFL's per pass for a reason that is not the hands:** the roll's facing term, which
+  the trunk pair's look (an engaged rusher's shoulders on his blocker) now catches.
+- **Per crossing we are now under:** engaged 1.5% of chances against about 5% per crossing in the NFL. The BDB tipped
+  flag is on 2.57% of passes, against our 0.6% batted.
+- **The bat comes back when the roll is replaced, not before.** BAT_HANDS stays in the tree, off. Its next step is the
+  raise decision:
+  - his hands come off the blocker first (his reaction, then the arm's travel back from the blocker's chest, before
+    they can rise);
+  - then the judgment "if you can't get there, get your hands up", from his own time to the QB against the release he
+    sees.
+- The lane-crossing rate (ours 8.4 / 26.2% within 0.55 / 0.95 yd, against the NFL's 5.9 / 18.0%) has gone to the QB
+  lane.

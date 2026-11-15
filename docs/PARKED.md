@@ -179,3 +179,13 @@ Both raised off-blocker reach under FITTED_HANDS + PASS_OFF (12 -> 18 / 16%) whi
 to the NFL's (5.41 -> 4.74 / 4.92 against 4.12). Stopped at two. Re-diagnose first: whether the free interior rusher's
 speed is a capacity (top speed and acceleration out of a fight) or a choice. docs/reviews/2026-11-14-hand-fight-design.md
 sections 11-12.
+
+## BAT_HANDS (Flex, 2026-11-15; off, in the tree)
+
+The bat at the line as the rusher's hands meeting the ball, replacing the pBat roll. Staging bats 7.0% of passes,
+engaged 14% per chance, against the NFL's about 5% per crossing: every rusher who sees the windup raises his hands.
+Parked with its next step stated:
+- his hands off the blocker first;
+- then the get-there judgment from his own time to the QB against the release he sees.
+
+Engine-68's 0.6% batted comes from the roll's facing term, not the hands. docs/reviews/2026-11-15-bat-at-the-line.md.
