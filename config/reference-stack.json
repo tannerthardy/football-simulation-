@@ -115,6 +115,7 @@
     "ROUTE_CRAFT": "on",
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "off",
+    "DIR_CAP": "off"
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
