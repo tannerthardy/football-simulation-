@@ -103,3 +103,28 @@ Rules; stage 1 does not touch it.
 The coupling's error, one mechanism, its own flag: his read progress and his footwork run on separate clocks, held
 together by experience and decision-making and pulled apart by pressure. A young quarterback's eyes lag his feet (a
 read not finished when its step lands is thrown late or skipped) or lock (the next step lands, his eyes stay).
+
+## Bit 1, built and read (2026-11-15)
+
+Built at 7d7e8e32 and 72d662cb. Paired staged set (`drop-staged.ts`, 192 plays a concept, PLAN_CLOCK=1 and
+QB_TICK_PICTURE=1 in both arms).
+- Attempt one moved his eyes off read 1 at the set + 0.1 s, before a read-1 throw on the plant could start (off,
+  read-1 throws leave 0.40-0.55 s after the set). Attempt two gives each read his yes/no glance first.
+- An implementation bug mapped steps by receiver. A key read reorders his reads, so read 1 waited for read 2's hitch.
+  Steps now go by place in his current order, as coached.
+
+| Concept | Yd/play off -> on | Sacks | INT | Time to throw |
+| --- | --- | --- | --- | --- |
+| stick | 8.67 -> 9.93 | 1 -> 1 | 6 -> 5 | 2.60 -> 2.65 |
+| curl_flat | 9.30 -> 9.77 | 2 -> 1 | 5 -> 2 | 2.85 -> 2.75 |
+| smash | 8.19 -> 7.48 | 15 -> 16 | 7 -> 6 | 3.15 -> 2.90 |
+| dagger | 6.84 -> 6.42 | 13 -> 18 | 1 -> 6 | 3.50 -> 3.45 |
+| smash, CONCEPT_DROPS=1 | 6.96 -> 8.16 | 12 -> 15 | 6 -> 6 | 3.25 -> 3.50 |
+| dagger, CONCEPT_DROPS=1 | 6.84 -> 5.63 | 13 -> 24 | 1 -> 3 | 3.50 -> 3.60 |
+
+- **Where beats fit their routes, bit 1 gains**: stick, curl_flat, and smash once its read 1 fits under CONCEPT_DROPS.
+- **Dagger's losses are its install.** Its dig, read 1 after the key, is first open at 3.0 s. Its beat is the set at
+  1.9 s (or the hitch at 2.7 s), so his eyes leave it before it opens. The off arm's dwell held him on the dig or
+  brought him back to it (3.55-3.95 s), or took the back at 3.5 s. That is the install's EARLY fault
+  ([the beat list](2026-11-15-beat-vs-ready.md), for Rules' drop marking), and stage two's veteran holding a beat on
+  what he sees. It is not a reason to loosen stage one (Integration's ruling).
