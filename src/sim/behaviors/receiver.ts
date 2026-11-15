@@ -21,6 +21,7 @@ import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_L
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
+import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
  * torso is still a compact body: the small hand slide below is the part of
@@ -123,7 +124,7 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
  *   facing caps) and stops in an athletic position 2 yd from the sideline ("If a receiver is 2 yards from the sideline and
  *   the quarterback still hasn't thrown the ball, the receiver should stop running", fourvertsfootball). NFL WR flats:
  *   5.5 -> 4.1 yd/s from 2.0 to 3.0 s, 9.3 yd from the sideline at 3.0 s; ours accelerate to 6.8. */
-const ROUTE_END = process.env.ROUTE_END === '1';
+const ROUTE_END = process.env.ROUTE_END !== '0';
 /** ROUTE_END: how far a settled receiver slides from his settle point, against man and in a zone window (yd; a choice). */
 const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
@@ -223,6 +224,14 @@ export class RouteRunner implements Behavior {
   private readonly fromBackfield: boolean;
   /** Time at which the route's final break is expected (for QB timing). */
   readonly breakTime: number;
+  /** DECLARED_BREAK (src/playbook/route-breaks.ts): the point on his installed path that is his route's declared break
+   * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
+   * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
+  get declaredBreak(): { x: number; y: number } | null {
+    if (!(process.env.DECLARED_BREAK !== '0')) return null;
+    const at = BREAK_DECL[this.route.id]?.at;
+    return typeof at === 'number' && this.path[at] ? { ...this.path[at].p } : null;
+  }
   /** Fraction of top speed the route is run at: quick game is rhythm, verticals are races. */
   private readonly effort: number;
 
@@ -460,6 +469,10 @@ export class RouteRunner implements Behavior {
 
   private settle(a: Agent, sim: PlaySim): MoveCommand {
     const last = this.path[this.path.length - 1]?.p ?? a.pos;
+    // ROUTE_FINISH: an outward route that finished at the margin holds there, facing the quarterback.
+    if (this.routeEnd === 'continue' && last && this.path[this.path.length - 1]?.finish) {
+      return goTo(a, last, { speed: 0.6, facing: angleTo(a.pos, sim.see(a, sim.qb).pos) });
+    }
     if (ROUTE_END && this.routeEnd !== 'continue') return this.workWindow(a, sim, last);
     if (this.routeEnd === 'continue') {
       // Ran off the end of the route: keep working toward open grass near the sideline.
@@ -654,8 +667,10 @@ export class RouteRunner implements Behavior {
 }
 
 /** LINE_START: the nearest defender to him at installation (yd), for his expected get-off. */
+/** The nearest defender as the receiver sees him at the install (his own picture: pre-snap he is looking right at him),
+ * for his get-off loss; not the defender's true position. */
 function nearestDefender(a: Agent, sim: PlaySim): number {
-  return sim.defense.reduce((m, d) => Math.min(m, Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y)), 12);
+  return sim.defense.reduce((m, d) => { const p = sim.see(a, d).pos; return Math.min(m, Math.hypot(p.x - a.pos.x, p.y - a.pos.y)); }, 12);
 }
 
 /** Each agent's first installed route on this play (family:id), for replay labels only; no behavior reads it. */
