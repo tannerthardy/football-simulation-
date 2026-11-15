@@ -116,6 +116,8 @@
     "ROUTE_FILLET": "on",
     "SPACING_HOLD": "off",
     "DIR_CAP": "on",
+    "CARRY_POSTURE": "off",
+    "CORNER_DROP": "off",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
