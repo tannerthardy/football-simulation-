@@ -21,7 +21,7 @@ P.tick = function () {
   if (S && S.T.tags?.has?.('ball-servo')) S.servo = true;
   if (S && S.sepEnd === undefined && (this.ball.kind !== 'air' || this.ball.securing)) {
     const D = nearest(this, S.T); S.sepEnd = Math.hypot(D.pos.x - S.T.pos.x, D.pos.y - S.T.pos.y); S.dSpeed = Math.hypot(D.vel.x, D.vel.y);
-    S.flight = this.t - S.rel; const bp = this.ball.flight?.pos ?? this.ball.pos; S.recBall = bp ? Math.hypot(bp.x - S.T.pos.x, bp.y - S.T.pos.y) : NaN;
+    S.flight = this.t - S.rel; const bp = this.ball.flight?.pos ?? this.ball.pos; S.recBall = bp ? Math.hypot(bp.x - S.T.pos.x, bp.y - S.T.pos.y) : NaN; S.arrDepth = bp ? (bp.x - this.los) * this.attackDir(this.offense[0].team) : NaN;
   }
   return r;
 };
@@ -44,3 +44,4 @@ for (const [a, b] of [[-99, 10], [10, 20], [20, 99]]) {
 }
 console.log(`   catch rate by separation at the end: ` + [[0, 1], [1, 2], [2, 3], [3, 99]].map(([a, b]) => { const V = rows.filter(r => r.sepEnd >= a && r.sepEnd < b); return `${a}-${b < 99 ? b : '+'} yd ${pc(V)} (n ${V.length})`; }).join(' | '));
 for (const [a, b] of [[0, 0.6], [0.6, 0.9], [0.9, 1.3], [1.3, 1.8], [1.8, 9]]) { const V = rows.filter(r => r.flight >= a && r.flight < b); console.log(`   flight ${a}-${b} s: n ${V.length}, complete ${pc(V)}, rec->ball ${q(V.map(r => r.recBall))}, servo engaged ${V.filter(r => r.servo).length} | open 3+ yd: ${pc(V.filter(r => r.sepEnd >= 3))} (n ${V.filter(r => r.sepEnd >= 3).length})`); }
+for (const [a, b] of [[-99, 10], [10, 20], [20, 99]]) { const V = rows.filter(r => r.arrDepth >= a && r.arrDepth < b); console.log(`   arrival depth ${a < 0 ? '<' : a}${b < 99 ? '-' + b : '+'} yd: n ${V.length}, complete ${pc(V)}`); }
