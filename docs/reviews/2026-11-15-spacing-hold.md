@@ -55,4 +55,31 @@ Reported, not widened.
 
 ## Football read
 
-See the PR description for the run set and YAC rows.
+Run set (`npm run ref:report -- --flag SPACING_HOLD=1`, 1,321 plays, paired; `out/hold/refreport*.md`):
+
+| | ref | hold | paired |
+| --- | --- | --- | --- |
+| mean yards, capped at 20 | 3.68 | 3.64 | -0.04 (SE 0.08) |
+| stuffs (<= 0) | 11.2% | 12.9% | +1.7 pts; gain to stuff 61, stuff to gain 38 (sign test p about 0.02) |
+| 10+ yd / 20+ yd | 7.5% / 2.2% | 7.5% / 2.6% | |
+| missed + broken open, per run | 0.248 | 0.253 | |
+
+The 4 to 8 yd bin goes from 304 to 276 and the 8+ yd runs rise (8 to 20: 118 to 126; 20+: 29 to 35): the same mean with fatter tails, the shape of a held
+decision that is sometimes wrong. Bend only: stuffs 12.3%, yards -0.07 (SE 0.07). Limit only: stuffs 12.0%, yards +0.07 (SE 0.05). Each part adds about a
+point. Hitter-back and first-contact depth operators are within noise.
+
+Scorecard, 16 games per arm, 2 leagues, paired, `--arm off:SPACING_HOLD=0 --arm on:SPACING_HOLD=1`:
+
+| | seed 23 off / on | seed 31 off / on | pooled |
+| --- | --- | --- | --- |
+| YAC per reception | 7.04 / 7.14 | 7.90 / 7.49 | 7.45 / 7.32 (unresolved on either seed) |
+| completion % | 67.2 / 66.1 | 67.5 / 64.7 | |
+| yards per attempt | 9.01 / 8.68 | 9.29 / 8.90 | |
+| designed rush yards per carry (uncapped / capped at 20) | 3.93 / 4.26, 3.43 / 3.56 | 3.98 / 3.82, 3.76 / 3.49 | |
+| yards before contact | 0.64 / 0.84 (moved) | 0.91 / 0.75 | |
+| stuff rate | 10.4 / 11.4 | 8.9 / 11.9 (moved) | |
+| sack rate | 5.5 / 4.2 (moved) | 5.1 / 3.7 (moved) | sacks 154 -> 114; scrambles flat (113 -> 123) |
+
+Unexplained: sacks fall on both seeds (about 2.4 sigma pooled) with scrambles flat. The hold does reach the quarterback while he holds the ball in
+`carrier` mode (860 bend ticks on 96 pass plays, ball held, 3 to 9 s), where it keeps his step around his own linemen and backs; that is the candidate
+mechanism, not shown. YAC (the pass-game read of the post-catch carrier) is flat: -0.13 pooled, unresolved.
