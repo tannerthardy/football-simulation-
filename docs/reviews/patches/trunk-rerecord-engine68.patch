@@ -1,0 +1,85 @@
+From 676830f256442ef03688ad389fcc3da98a28fe71 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 15 Nov 2026 15:47:51 +0000
+Subject: [PATCH] Re-record hold-facing and punch-strike on the engaged trunk
+ (engine-68): hold-facing re-pinned to seed 1957 DT_S (200 -> 21 deg; 9 side
+ holds over 120 off in the 1900-1989 scan, 6 under 60 on); punch-strike's
+ first case to roster 10 (cover 2 seed 5; 6 interior spin falls off, 5 stay up
+ on); the trunk-pair pins removed, VERTS_QUICK's kept
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ test/hold-facing.test.ts  |  8 ++++++--
+ test/punch-strike.test.ts | 11 ++++++-----
+ 2 files changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/test/hold-facing.test.ts b/test/hold-facing.test.ts
+index 2b744d57..321ef379 100644
+--- a/test/hold-facing.test.ts
++++ b/test/hold-facing.test.ts
+@@ -12,6 +12,11 @@
+  * 4 stay under 60 (1908 DT_S 123 -> 17, 1921 DT_S 206 -> 36, 1937 DT_W 145 -> 59, 1963
+  * DT_W 175 -> 14). 1921 is pinned for its margin on both bounds. The free-holder case
+  * (OPEN_HANDS) stays on 1916 / DT_S.
++ * Re-pinned on engine-68 (ENGAGE_TRUNK and CHEST_SHOULDERS on) to seed 1957, DT_S. With the engaged trunk, 1921's DT_S
++ * no longer makes the same hold. The same scan (1900-1989, DT_S and DT_W) found 9 side holds spinning him over 120 deg
++ * in the first 0.5 s with HOLD_FACING off; on, 1907 DT_S 199 -> 49, 1931 DT_W 151 -> 6, 1933 DT_W 190 -> 0, 1957 DT_S
++ * 200 -> 21, 1960 DT_W 148 -> 1, 1985 DT_W 151 -> 18, and three that stay over 90 (1908, 1932, 1940). 1957 is pinned
++ * for its margin on both bounds.
+  * Runs on the engine defaults (the reference stack), not the legacy pin. */
+ import { readFileSync } from 'node:fs';
+ import { afterEach, describe, expect, it, vi } from 'vitest';
+@@ -19,10 +24,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
+ const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
+ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+ 
+-async function turn(flag: string, openHands = '0', seed = 1921, slot = 'DT_S') {
++async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
+   vi.resetModules();
+   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+-  vi.stubEnv('ENGAGE_TRUNK', '0'); vi.stubEnv('CHEST_SHOULDERS', '0'); // engine-68: recorded before the engaged trunk; the scene is re-recorded with the hand-fight work
+   vi.stubEnv('HOLD_FACING', flag);
+   // The reproducer's play: the DT makes the hold still engaged with the C, whose hands are on him. OPEN_HANDS
+   // changes the play, not the hold: his open-handed C lets him slip off at 1.75 s and he makes the hold free at
+diff --git a/test/punch-strike.test.ts b/test/punch-strike.test.ts
+index a3b1f74e..22f2e908 100644
+--- a/test/punch-strike.test.ts
++++ b/test/punch-strike.test.ts
+@@ -21,10 +21,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+ async function falls(flags: Record<string, string>, roster: number, coverage = 'cover2', seed = 5) {
+   vi.resetModules();
+   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+-  vi.stubEnv('ENGAGE_TRUNK', '0'); vi.stubEnv('CHEST_SHOULDERS', '0'); // engine-68: recorded before the engaged trunk; the scene is re-recorded with the hand-fight work
+   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
+   for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
+-  vi.stubEnv('ENGAGE_TRUNK', '0'); vi.stubEnv('CHEST_SHOULDERS', '0'); // engine-68: recorded before the engaged trunk; the scene is re-recorded with the hand-fight work
+   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
+   const { PlaySim } = await import('../src/sim/playsim.js');
+   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+@@ -51,7 +49,11 @@ const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PUR
+ 
+ describe('PUNCH_STRIKE', () => {
+   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
+-    const off = await falls(alone('0'), 2), on = await falls(alone('1'), 2);
++    // Re-pinned on engine-68 (ENGAGE_TRUNK and CHEST_SHOULDERS on) from roster 2 to roster 10, cover 2 seed 5: with the
++    // engaged trunk, roster 2's guard is no longer spun down. A scan of cover 2 / 1 / 3 x 8 seeds x 12 rosters found 6
++    // interior spin falls with PUNCH_STRIKE off; on, 5 of them stay up (cover2 5/10, cover2 1/6, cover2 2/3 (LG),
++    // cover1 5/10, cover1 1/5) and one still falls (cover1 5/8).
++    const off = await falls(alone('0'), 10), on = await falls(alone('1'), 10);
+     expect(off.some((f: any) => f.slot === 'RG' && f.move === 'spin')).toBe(true);
+     expect(on.some((f: any) => f.slot === 'RG')).toBe(false);
+   });
+@@ -75,8 +77,7 @@ describe('PUNCH_STRIKE', () => {
+     // 0.6 of that press in the 0.3 s before. Requirement: at least one exists on the current stack.
+     vi.resetModules();
+     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+-    vi.stubEnv('ENGAGE_TRUNK', '0'); vi.stubEnv('CHEST_SHOULDERS', '0'); // engine-68: recorded before the engaged trunk; the scene is re-recorded with the hand-fight work
+-    vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
++      vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
+     const { PlaySim } = await import('../src/sim/playsim.js');
+     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+     const OL = ['LT', 'LG', 'C', 'RG', 'RT'];
+-- 
+2.43.0
+
