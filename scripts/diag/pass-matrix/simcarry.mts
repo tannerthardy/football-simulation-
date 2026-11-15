@@ -27,7 +27,7 @@ PlaySim.prototype.tick = function (this: any) {
   const air = sim.ball?.kind === 'air';
   const snapAt = (lab: string) => { for (const p of s.pairs) { if (!s.climb?.has(p)) continue; const { d, r } = p;
     const toQB = Math.atan2(sim.qb.pos.y - d.pos.y, sim.qb.pos.x - d.pos.x);
-    const a = Math.abs(Math.atan2(Math.sin(d.body.facing - toQB), Math.cos(d.body.facing - toQB))) * 180 / Math.PI;
+    const a = Math.abs(Math.atan2(Math.sin(d.shoulders - toQB), Math.cos(d.shoulders - toQB))) * 180 / Math.PI;
     add(`${p.help}|${lab}`, [a, Math.hypot(d.vel.x, d.vel.y), r.vel.x, d.pos.x - r.pos.x, Math.abs(d.pos.y - r.pos.y), (d.pos.y - r.pos.y) * (sim.ballY - r.pos.y) > 0]); } };
   if (air) { snapAt('release'); s.done = true; return; }
   for (const m of MARKS) if (!s.marks.has(m) && sim.t >= m - 1e-9) { s.marks.add(m); snapAt(m.toFixed(2)); }
