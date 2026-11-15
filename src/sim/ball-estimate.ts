@@ -115,9 +115,12 @@ export function glanceSd(range: number, skillV: number, held: number, age: numbe
   return { depth: GLANCE_DEPTH * range * k, across: GLANCE_ACROSS * range * k };
 }
 /** The estimator replaces the true flight for the receivers (off under bit 128). */
+/** Bit 4096 (receivers only, 2026-11-15): the estimator for the offense alone; defenders keep today's read of the
+ * flight. The mirror of bit 128, so the receiver's side can be carded without changing the defense's. */
+export const BALL_EST_RCV_ONLY = (BALL_EST_BITS & 4096) !== 0 && !BALL_EST_DEF_ONLY;
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
-export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (!BALL_EST_DEF_ONLY || a.team === 'D');
+export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (BALL_EST_DEF_ONLY ? a.team === 'D' : BALL_EST_RCV_ONLY ? a.team === 'O' : true);
 /** Design 6: landmark depth past the line (yd; measured, the NFL deep receiver's turn depth, GO/POST median 12.3/12.2). */
 export const DEEP_LOOK_DEPTH = 12;
 /** Design 6: how long he holds the look without a throw (s; choice, a coached count). */
