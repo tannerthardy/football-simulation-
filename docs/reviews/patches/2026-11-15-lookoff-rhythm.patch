@@ -1,0 +1,76 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 4149bf33..041bb75a 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -293,6 +293,7 @@
+     "QB_RELOOK": "0",
+     "QB_KEY_MAN": "0",
+     "QB_KEY_THROW": "0",
++    "QB_LOOKOFF_RHYTHM": "0",
+     "QB_HONEST_FEEL": "0",
+     "THROW_PLATFORM": "0",
+     "QB_BELIEVED_DEF": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 9157bcd9..49b692de 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -253,6 +253,7 @@
+     "QB_RELOOK": "on",
+     "QB_KEY_MAN": "on",
+     "QB_KEY_THROW": "off",
++    "QB_LOOKOFF_RHYTHM": "off",
+     "QB_HONEST_FEEL": "on",
+     "THROW_PLATFORM": "off",
+     "QB_BELIEVED_DEF": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 020795d7..bae008a8 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 393 flags read from the environment in `src` (recounted 2026-11-15 at engine-68): 295 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 394 flags read from the environment in `src` (recounted 2026-11-15 at engine-68): 295 are on unless set to `0`, 87 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -186,6 +186,7 @@ There are 393 flags read from the environment in `src` (recounted 2026-11-15 at
+ | `QB_RELOOK` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; staged test `test/qb-relook.test.ts`; read once on engine-61) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's out-of-reads branch) | Running out of reads gives him nothing for free. Off: the best man on the whole field at his bar less 0.1, the moment his progression ends. On: back to his first read and through them again one look at a time, at his own bar; with `QB_BREAK`, leaving with the ball up is the other answer at that moment. |
+ | `QB_KEY_MAN` | on | promoted 2026-11-14 (engine-65; `=0` restores); was experimental (QB lane with Rules+Coaching's `PLAN_KEYS`, 2026-11-14; first build; staged test `test/qb-key-man.test.ts`) | quarterback | `src/sim/behaviors/qb.ts` (`keyMan`, `readKey`, `gazePoint`) | His key read is taken on the defender the concept names (picked before the snap by the role's alignment rule: the corner, the apex, the hook player, the deep man), not on whoever is nearest the line between the two routes. His eyes go to that man in the drop; at the cue he reads the man's movement (sinking gives the low man, jumping the low route gives the high man), or where he stands if he is not moving along the stretch. No fresh picture of him, or nobody named: no key read, and the order stands. |
+ | `QB_KEY_THROW` | off | experimental (QB lane, 2026-11-14; the re-diagnosed design after two window-test forms; acts with `QB_KEY_MAN`) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's `keyHold`) | He stays on the key read's answer through its break (up to 1.2 s after the read) instead of moving on at his dwell, and throws it when it passes his price like any read. The key chooses the look; it does not stand in for the price. The earlier forms threw the answer on window tests in place of the price and are removed with `QB_KEY_DANGER` (corner routes targeted on 26-30% of routes against the NFL's 14%, the added throws where the deep man was a hard run from the ball). Decided by corner targets per route by the over-the-top man's reach (`scripts/diag/eyes/corner_danger.py`) and time to throw on keyed concepts. |
++| `QB_LOOKOFF_RHYTHM` | off | experimental (QB lane, 2026-11-15) | quarterback | `src/sim/behaviors/qb.ts` (look-off) | A look-off is taken only when his first read will not be ready before it would end; as taught it never costs the rhythm throw. Off, it was rolled at the set and held read 1 for 0.25-0.35 s whether or not read 1 was open. Paired staged read (3,072 plays): 671 change; 8.29 -> 8.47 yd a play, complete 67.7 -> 68.4%, sacks 198 -> 195, INT 34 -> 35. (The look-off's side now reads his picture of read 1, not the receiver's true position, on both paths.) |
+ | `QB_HONEST_FEEL` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; read on engine-57 and engine-59, flat; in the honesty batch) | quarterback | `src/sim/behaviors/qb.ts` (`felt`, `freeBound`, `pressure`, `evade`) | set at first review. His pressure picture reads only what he has perceived: the behind-his-shoulder test uses his plain picture of the man, pressure's distance is to the felt position, and he evades the felt position. Off, all four read the rusher's true position. Decided by its own row (alarm rate, felt against true time to contact at the alarm, sacks), expecting him to feel pressure later; a loss is repaired by perception, not by the leak |
+ | `THROW_PLATFORM` | off | experimental (QB lane, throw mechanics, 2026-11-13; first build, not yet read) | quarterback | `src/sim/behaviors/qb.ts` (`platform`, `missSigma`, `release`) | set at first review. What moving costs a throw, continuously: stepping toward the target is free up to a stride; the rest of his velocity is carried by the ball and the share he does not correct (by throw-on-run) is a miss along his motion, growing with flight time; moving across or away from the target takes his base out (an arm throw). Replaces the 1.15-1.6x step at 2.2 yd/s. Decided by ball against aim by platform (`scripts/diag/eyes/deep-split.ts`) and the ordering set < stepping in < drifting away < across the body; a set throw is unchanged. Never fitted to completions |
+ | `QB_BELIEVED_DEF` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-believed-def.test.ts`; game rows flat) | quarterback | `src/sim/behaviors/qb.ts` (`believe`, `seenTied`, in `window`, `screenDead`, `updateRush`), `src/sim/believed.ts` | set at first review. In pricing a throw he no longer reads each defender's true physical profile and exact ball-skills rating, or the sim's engagement record: body and ball skills are the position's typical values corrected toward the man's own by how well he knows the opponent (awareness and experience), fixed for the play; tied up is an offensive body within arm's length of the defender in his pictures. Decided by its own row (his priced chance against outcomes by defender quality, completion, INT); a loss is repaired by preparation as a mechanism, not by the leak |
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 6140be33..7bd2c35c 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -411,6 +411,13 @@ const KEY_MOVE_NOISE = 5;
+  * man): they doubled corner throws and put the added ones where a safety was a hard run from the ball (50% of routes
+  * targeted against the NFL's 8%; docs/reviews/2026-11-13-qb-pocket.md). */
+ const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
++/** QB_LOOKOFF_RHYTHM (experimental, off; QB_LOOKOFF_RHYTHM=1): a look-off is taken only when his first read will
++ * not be ready until after it. A look-off moves a safety with his eyes in the drop; as taught it never costs the
++ * rhythm throw. Off, it was rolled once at the set (by decision-making, anticipation and experience) and held read 1
++ * for 0.25-0.35 s whether or not read 1 was already open (mesh's 1.85 s look-off on the route package). Paired staged
++ * read (scripts/diag/escape/drop-staged.ts on the QB lane branch, 3,072 plays, engine-67): 671 plays change; 8.29 ->
++ * 8.47 yd a play, complete 67.7 -> 68.4%, sacks 198 -> 195, INT 34 -> 35, throwaways 46 -> 56. */
++const QB_LOOKOFF_RHYTHM = process.env.QB_LOOKOFF_RHYTHM === '1';
+ const KEY_HOLD = 1.2;
+ /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
+ const BREAK_MARGIN = 0.35;
+@@ -1137,8 +1144,10 @@ export class QBPass implements Behavior {
+       this.lookOffChecked = true;
+       const vet = Math.min(1, a.player.experience / 6);
+       const p = 0.08 + 0.45 * a.r('decisionMaking') * a.r('anticipation') * (0.5 + 0.5 * vet);
+-      if (this.concept.family !== 'quick' && this.reads.length > 1 && sim.dice('qb', a).chance(p)) {
+-        const side = Math.sign(this.reads[0].pos.y - sim.ballY);
++      // QB_LOOKOFF_RHYTHM: not when read 1 will be a throw before the look-off would end (judged as his readiness test does).
++      const r1SoonReady = QB_LOOKOFF_RHYTHM && !!this.reads[0] && (this.ready(this.reads[0], sim) || ((this.receiverForecasts.get(this.reads[0])?.breakAt() ?? Infinity) - this.windup(a) <= t + 0.35));
++      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && sim.dice('qb', a).chance(p)) {
++        const side = Math.sign(this.has(sim, this.reads[0]).y - sim.ballY);
+         const decoy = this.reads.find((r) => Math.sign(this.has(sim, r).y - sim.ballY) !== side);
+         if (decoy) {
+           this.lookOff = { until: t + 0.25 + 0.1 * sim.dice('qb', a).next(), decoy };
