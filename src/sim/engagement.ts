@@ -201,7 +201,10 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   // position behind him.
   // The tackle's clearance follows the called drop's schedule (where the call puts the QB now), as the live QB did; the
   // final launch point from the snap sent him 5 yd deep at once (SET_SPOT's first tackle read).
-  const qx = SET_SPOT ? (tackle ? calledPocketX(sim, sim.t) : calledLaunchX(sim)) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
+  // SET_SPOT_TACKLE (with SET_SPOT): the tackle's clearance from the call's schedule too. Without it the tackle keeps the
+  // live-QB read (a known leak, kept: from the call he sets about a yard deeper; hand-fight note section 23).
+  const fromCall = SET_SPOT && (!tackle || SET_SPOT_TACKLE);
+  const qx = fromCall ? (tackle ? calledPocketX(sim, sim.t) : calledLaunchX(sim)) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
   const pocket = Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
   // front. Further ground is what the rusher wins against him, not his request.
@@ -228,6 +231,11 @@ const SHORT_SET = 2 * 0.45;
  *   1.5 s from no drift at all).
  * Interior linemen (no outside set); the tackles' kick keeps its own law, with the live-QB reads removed. */
 export const SET_SPOT = process.env.SET_SPOT === '1';
+/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed too, their clearance and the
+ * point they protect from the called drop's schedule (calledPocketX). Two attempts did not repair it (tackles 4.6 yd deep
+ * at 2 s against the NFL's 3.7, edge level/in-front pressure 6.5% -> 12-17% of dropbacks): the call's launch depth sits
+ * about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor. */
+export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
 /** SET_SPOT: half an interior split (yd): his zone about his alignment. */
 const SET_ZONE = 0.65;
 /** SET_SPOT: his lateral target and its share of the rusher's lateral motion (0 when clamped to his zone). */

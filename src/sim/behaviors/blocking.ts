@@ -24,7 +24,7 @@ import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { paRunLook } from '../pa-look.js';
-import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, protectPoint, PUNCH, SET_SPOT, SET_SPOT_TACKLE, setSpotTarget, TACKLE_SET, tackleFloor, tackleSetLine, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -344,7 +344,8 @@ export class PassProtector implements Behavior {
       return a.behavior.update(a, sim);
     }
     // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
-    const qb = SET_SPOT ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
+    const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
+    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
