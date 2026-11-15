@@ -292,6 +292,7 @@
     "CROSS_FLAT": "on",
     "PLAN_KEYS_3": "on",
     "ROUTE_EFFORT": "off",
+    "SCRAMBLE_RULE": "off",
     "ROUTE_END": "off",
     "CROSS_OVER": "off",
     "SCREEN_DECLARE": "off",
