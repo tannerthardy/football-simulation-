@@ -24,6 +24,31 @@ import { localTrafficRoute } from './traffic-route.js';
  * request runs into a teammate first tries bending the same request around him at speed; only
  * when no bend clears does he slow down or gather. */
 export const RB_STEER = process.env.RB_STEER !== '0';
+/** SPACING_HOLD (experimental, off; SPACING_HOLD=1): a carrier who bends around a teammate keeps that bend. The bend was re-chosen from scratch every
+ * tick: once it cleared, the held request was clear on the next forecast and was handed back (he ran at the teammate again), and the first feasible of
+ * +-0.2..+-0.8 rad changed size and side tick to tick (docs/reviews/2026-11-15-carrier-spacing-dither.md). With the flag he keeps his side and size while the
+ * held request still conflicts with a peer he bent around, grows it smoothly if the conflict worsens, and returns to the held request only when it clears by
+ * a body width or he has passed the peer; a new choice needs a peer or conflict he was not already bending around. */
+export const SPACING_HOLD = process.env.SPACING_HOLD === '1';
+/** The bend he is holding, by teammate key (not a remembered intention: his own committed choice). */
+export interface BendHold { readonly off: number; readonly keys: readonly number[] }
+const BEND_STEP = 0.2, BEND_MAX = 0.8;
+/** What a bend-holder does this tick, from the held request's clearance against the peers he bent around.
+ * `worst`: that clearance (yd); `exit`: the margin it must clear by to release; `passed`: he is past them all; `clears(off)`: whether this bend clears every peer.
+ * Returns the offset to run (0 = the held request) and the hold to keep (null = released, or none works and the caller chooses afresh). */
+export function holdBend(hold: BendHold, worst: number, exit: number, passed: boolean, clears: (off: number) => boolean): { off: number | null; hold: BendHold | null } {
+  if (passed || worst > exit) return { off: 0, hold: null };
+  const sign = Math.sign(hold.off) || 1;
+  for (let m = Math.abs(hold.off); m <= BEND_MAX + 1e-9; m += BEND_STEP) {
+    const off = sign * m;
+    if (clears(off)) return { off, hold: { off, keys: hold.keys } };
+  }
+  return { off: null, hold: null };
+}
+const bendHolds = new WeakMap<Agent, BendHold>();
+// SPACING_HOLD, headway side: a carrier that is braking for a teammate keeps that limit until the closing line clears him by a body width (enter at the touch
+// distance, exit a body width beyond it), instead of dropping and re-taking it as the line's offset crosses the touch distance tick to tick.
+const limitHolds = new WeakMap<Agent, ReadonlySet<number>>();
 /** LINE_STEP (default off): headway against a teammate on an announced step
  * (linemen stepping together on a zone track) is budgeted against where his
  * step takes him over the closing horizon, not his current speed: the inside
@@ -166,20 +191,46 @@ function forecastPeers(a:Agent, original:Intent, peers:readonly PeerPicture[], c
 }
 
 function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[], forecast:MotionForecast, context?:SpacingContext):Intent {
+  const bender=RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead');
+  if(SPACING_HOLD&&bender){
+    const hold=bendHolds.get(a);
+    if(hold){
+      // He is bending around these peers: judge the HELD request against them whether or not the bend has carried them out of the near set.
+      const held=peers.filter(peer=>hold.keys.includes(peer.key)),speed=hypot2(a.vel.x,a.vel.y);
+      const gone=!held.length||!context||!Number.isFinite(context.now)||speed<2||a.isDown(context.now)||!!a.engagement;
+      if(gone)bendHolds.delete(a);
+      else{
+        const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x),samples=forecast(original);
+        const worst=Math.min(...held.map(peer=>sweptClearance(a,samples,peer)));
+        const passed=held.every(peer=>(peer.pos.x-a.pos.x)*Math.cos(h0)+(peer.pos.y-a.pos.y)*Math.sin(h0)<-peer.touch);
+        const bendAt=(off:number):Intent=>({...original,vel:{x:Math.cos(h0+off)*sp,y:Math.sin(h0+off)*sp}});
+        const kept=holdBend(hold,worst,2*a.profile.radius,passed,off=>{
+          const path=forecast(bendAt(off));
+          return path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0);
+        });
+        if(kept.hold){bendHolds.set(a,kept.hold);return bendAt(kept.off!);}
+        bendHolds.delete(a);
+        if(kept.off===0)return original;
+      }
+    }
+  }
   const near=forecastPeers(a,original,peers,context);
   if(!near.length)return original;
   const samples=forecast(original);
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
-  if(RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead')){
+  if(bender){
     // Bend around the teammate at the requested pace: the smallest bend
     // that clears every peer and still makes progress along the request.
     const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x);
     for(const off of [.2,-.2,.4,-.4,.6,-.6,.8,-.8]){
       const h=h0+off,bent:Intent={...original,vel:{x:Math.cos(h)*sp,y:Math.sin(h)*sp}};
       const path=forecast(bent);
-      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0))return bent;
+      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0)){
+        if(SPACING_HOLD)bendHolds.set(a,{off,keys:near.filter((peer,i)=>clearances[i]<0).map(peer=>peer.key)});
+        return bent;
+      }
     }
   }
   // Yield speed while continuing the turn when that already clears traffic.
@@ -313,6 +364,9 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
     const limits:ClosingLimit[]=[];
+    const holdLimits=SPACING_HOLD&&a.behavior.kind==='carrier';
+    const heldKeys=holdLimits?limitHolds.get(a):undefined,limitedNow=holdLimits?new Set<number>():undefined;
+    const exitMargin=2*a.profile.radius;
     for (let j = 0; j < n; j++) {
       if (j === i) continue;
       const b = agents[j];
@@ -329,7 +383,8 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const decel=Math.max(.1,-brake.x*nx-brake.y*ny);
       const current=Math.max(0,(a.vel.x-seen.vel.x)*nx+(a.vel.y-seen.vel.y)*ny);
       const stopping=current*CLOSE_HORIZON+current*current/(2*decel);
-      if(gap>Math.max(AWARE_GAP,stopping))continue;
+      const held=heldKeys?.has(b.idx)??false;
+      if(gap>Math.max(AWARE_GAP,stopping)+(held?exitMargin:0))continue;
       // Closing he plans, relative to where the teammate is going now
       // (LINE_STEP: where the teammate's announced step takes him).
       const goes=(LINE_STEP?context?.calledAhead?.(a,b,CLOSE_HORIZON):null)??seen.vel;
@@ -340,17 +395,19 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // narrow, passable crease from becoming a radial repulsion field.
       const speed2=rx*rx+ry*ry;
       const closest=speed2>1e-9?Math.max(0,(dx*rx+dy*ry)/speed2):0;
-      if(gap>0&&hypot2(dx-rx*closest,dy-ry*closest)>touch)continue;
+      if(gap>0&&hypot2(dx-rx*closest,dy-ry*closest)>touch+(held?exitMargin:0))continue;
       // Budget headway plus the distance this body needs to remove relative
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
       limits.push({key:b.idx,nx,ny,speed:allowed+goes.x*nx+goes.y*ny});
+      if(closing>0)limitedNow?.add(b.idx);
       if (closing > allowed) {
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
       }
     }
+    if(holdLimits)limitHolds.set(a,limitedNow!);
     let spaced=ia;
     if (vx !== ia.vel.x || vy !== ia.vel.y) {
       const speed=hypot2(vx,vy),cap=a.profile.vmax*a.speedScale,scale=Math.min(1,cap/Math.max(1e-9,speed));
@@ -388,7 +445,9 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     // preview clears EVERY acquired peer; unknown or loaded pictures keep
     // the ordinary response. No peer's future choice is predicted here.
     let selected=ordinary;
-    if(free&&a.behavior.kind==='carrier'
+    // SPACING_HOLD: while he is holding a bend around a peer the preview does not hand the raw request back (that flipped with the horizon's end);
+    // the hold itself releases it when the request clears by a margin or he has passed the peer.
+    if(free&&a.behavior.kind==='carrier'&&!(SPACING_HOLD&&bendHolds.has(a))
       &&(ordinary.vel.x!==ia.vel.x||ordinary.vel.y!==ia.vel.y)
       &&peers.every(p=>Number.isFinite(p.age)&&p.age!>=0
         &&[p.pos.x,p.pos.y,p.vel.x,p.vel.y,p.touch].every(Number.isFinite))){
