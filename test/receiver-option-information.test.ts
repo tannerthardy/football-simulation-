@@ -15,9 +15,12 @@ function scene(side = 1, keySide = -1) {
   r.body.pos = { x: 40, y: FIELD_WIDTH / 2 }; r.body.vel = { x: 0, y: 0 };
   const runner = new RouteRunner(r, sim, ROUTES.stick, side);
   r.behavior = runner;
-  r.body.pos.x = 44; r.body.vel.x = 5;
+  // Re-staged on the engine defaults (2026-11-15): RELEASE_SEEN gives a receiver inside 5 yd of the line a release around
+  // a defender tight in front of him, which owns his command there; the option read is staged past it (5.6 yd), the
+  // key the same 2 yd in front.
+  r.body.pos.x = 45.6; r.body.vel.x = 5;
   for (const d of sim.defense) { d.body.pos = { x: 30, y: 1 }; d.body.vel = { x: 0, y: 0 }; }
-  key.body.pos = { x: 46, y: r.pos.y + side * keySide };
+  key.body.pos = { x: 47.6, y: r.pos.y + side * keySide };
   for (let i = 0; i < 24; i++) sim.perception.record(sim.agents, sim.qb.idx);
   sim.t = 2;
   return { sim, r, key, runner };
