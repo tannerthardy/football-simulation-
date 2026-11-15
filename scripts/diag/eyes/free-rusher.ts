@@ -40,7 +40,11 @@ PlaySim.prototype.run = function (this: any) {
   };
   let qbB: any = null; const t2 = sim.tick.bind(sim); sim.tick = () => { t2(); if (!qbB && sim.qb.behavior?.kind === 'qb-pass') qbB = sim.qb.behavior; };
   const res = run.call(this);
-  const hot = qbB?.hot ? { at: +qbB.hot.at.toFixed(2), target: qbB.hot.target?.slot ?? null } : null;
+  // The man the hot was called on: his slot, his job as the defense gave it (truth, for the diagnosis only), whether he
+  // was man on the back, and where he was at the end of the play against the quarterback.
+  const hd = qbB?.hotDef ?? null, job = hd?.behavior?.kind ?? null, mark = hd?.behavior?.target ?? hd?.behavior?.man ?? null;
+  const hot = qbB?.hot ? { at: +qbB.hot.at.toFixed(2), target: qbB.hot.target?.slot ?? null, route: qbB.hot.target ? routes.get(qbB.hot.target) ?? null : null,
+    by: hd ? { slot: hd.slot, pos: hd.player.position, job, onBack: !!mark && mark.slot === 'RB', read: hd.recog?.read ?? null } : null } : null;
   process.stdout.write(JSON.stringify({ concept: sim.offCall.pass?.id, pressure: sim.defCall?.pressure?.id ?? null, int: sim.events.some((e: any) => e.type === 'interception'), hot, at, thr, sack: sim.events.some((e: any) => e.type === 'sack'), caught: !!sim.stats.completed, outcome: res.outcome }) + '\n');
   return res;
 };

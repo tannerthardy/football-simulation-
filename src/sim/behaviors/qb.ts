@@ -845,6 +845,8 @@ export class QBPass implements Behavior {
    * decision-making and awareness set how cleanly he places him. */
   /** QB_KEY_THROW: the man his key read gave, and when. */
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
+  /** BLITZ_READ diagnostic (no effect): the defender his hot was called on. */
+  hotDef: Agent | null = null;
   /** QB_AVOID: the decision in force: the man, the spot, the pace; and diagnostics (no effect). */
   private avoid: { body: Agent; to: Vec2; pace: number; kind: 'slide' | 'climb' } | null = null;
   /** His dwell on a read this tick (the look a throw still needs), for QB_AVOID. */
@@ -1278,6 +1280,7 @@ export class QBPass implements Behavior {
       const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
       const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : r.behavior instanceof RouteRunner)) ?? null;
       this.hot = { target, at: t };
+      this.hotDef = top; // diagnostic (no effect): the man the hot was called on
       const k = target ? this.reads.indexOf(target) : -1;
       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
