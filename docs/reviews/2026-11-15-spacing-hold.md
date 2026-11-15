@@ -107,3 +107,39 @@ are not the cost: the carrier's held bend is.
 So the decision to fix next is the side: pick it from where the space and his blockers are in HIS picture (the carrier's `sighted()` picture of the defenders, with his cone), not the first angle that
 clears. That needs the bend search to take a `space(heading)` read from the play (spacing.ts has no `see`), which is a design change, not built; with it the hold's stuff cost should fall toward what the
 oracle shows. Until then the cost is +4.0 points of stuffs on this set.
+
+## The side of the bend, chosen from his picture (Integration's requirements, 2026-11-15)
+
+`pickBendSide` (spacing.ts): one decision at bend entry, held by the hold until a perceived change clears a margin. The smallest clearing bend is found on each side; where one side clears, that side; where both do, the side with more
+free space ahead in HIS picture (`SpacingContext.space`, built by the play from `see`, never from true positions, with his vision in it as a smooth seeded error that shrinks as he reads space better, sd 0.6 x (1 - vision) yd);
+where that is no better by 0.1 yd, or he has no picture of space (a lead blocker), the smaller bend, then the side away from the teammate he bends around. The first-feasible `+` tie-break is gone under the flag. Blockers enter
+through the peers the bend already must clear. Unit test `test/spacing-hold-side.test.ts`.
+
+Gates (engine-68): dither panel passes, carrier / spacing 0.1034 (35 events) and with `HEAD=1` 0.0966 (32), against 0.0742 for the first-feasible hold and 0.1486 off.
+
+Run set (1,321 plays, paired; the oracle is a diagnostic that reads true defender positions, the ceiling and not a target):
+
+| | mean yards (capped 20) | stuffs | 10+ yd |
+| --- | --- | --- | --- |
+| reference | 3.30 | 13.1% | 5.4% |
+| first-feasible hold (both parts) | 3.23 (-0.07, SE 0.07) | 17.1% | 5.8% |
+| **side from his picture (both parts)** | **3.44 (+0.14, SE 0.08)** | **16.0%** | 6.4% |
+| bend only, first-feasible | 3.26 | 16.0% | 5.8% |
+| **bend only, side from his picture** | **3.43 (+0.13, SE 0.07)** | **14.8%** | 6.4% |
+| bend only, oracle (true positions, carrier only) | 3.40 (+0.10, SE 0.07) | 14.6% | 6.4% |
+
+On the bend alone the picture-based side reaches the oracle: stuffs 14.8% against 14.6%, mean yards 3.43 against 3.40. (The oracle was carrier-only and the picture arm also gives a lead blocker the away-from-peer tie rule.)
+The limit hold still adds about 1.2 points of stuffs on top (16.0% with both parts), as before.
+
+Scorecard (16 games per arm, 2 leagues, seeds 23 and 31, paired off against on):
+
+| | seed 23 | seed 31 | pooled |
+| --- | --- | --- | --- |
+| YAC per reception | 7.58 to 7.91 | 7.53 to 7.45 | 7.56 to 7.69 (+0.13, within noise) |
+| designed rush yd per carry (uncapped) | 3.99 to 4.34 | 3.92 to 4.05 | |
+| yards before contact (runs) | 0.73 to 0.72 | 0.80 to 0.62 | 0.77 to 0.67 |
+| run stuff rate | 12.0 to 12.6% | 12.1 to 15.3% | 12.0 to 14.0% |
+| missed + broken | 352 to 337 | 384 to 341 | |
+| completion | 67.4 to 67.8% | 67.9 to 66.1% | |
+
+The pass game after the catch is unmoved (YAC +0.13 pooled, opposite signs on the two seeds); the first-contact distance falls a tenth of a yard on the pooled runs (one seed carries it).
