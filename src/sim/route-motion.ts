@@ -92,6 +92,8 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
 export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
 const PLANT_REACH = process.env.PLANT_REACH === '1';
+/** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
+const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */
@@ -123,11 +125,31 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
     // `passed` asks only that he be within 2 yd and ahead of it along the NEXT leg; an exit leg that comes back toward the
     // line (out 10 -> 9.5 yd, deep out, comeback, curl) puts every point short of the vertex ahead of it, so the cursor left
     // the out's plant 1.7 yd early and he asked for 8.9 yd/s into the cut (staged double_outs: arrives 4.7 yd/s, the dig 3.75).
-    const reached = !(PLANT_REACH && tgt.cut) || (() => {
+    // Only where the exit leg comes back (its direction against the leg in): a cut whose exit goes on (the slant) is
+    // still passed by `passed`, so a release that already carried him onto the next leg is not taken back to the plant.
+    const reached = !(PLANT_REACH && tgt.cut && next) || (() => {
       const prev = st.idx > 0 ? path[st.idx - 1].p : st.from;
-      return !prev || (body.pos.x - tgt.p.x) * (tgt.p.x - prev.x) + (body.pos.y - tgt.p.y) * (tgt.p.y - prev.y) > 0;
+      if (!prev) return true;
+      const returns = (next.p.x - tgt.p.x) * (tgt.p.x - prev.x) + (next.p.y - tgt.p.y) * (tgt.p.y - prev.y) < 0;
+      return !returns || (body.pos.x - tgt.p.x) * (tgt.p.x - prev.x) + (body.pos.y - tgt.p.y) * (tgt.p.y - prev.y) > 0;
     })();
     if (d < 0.6 || (next && reached && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
+    // CRAFT_HOLD: a receiver bent off his stem round a man rejoins his route on the leg ahead. He is past a point he is
+    // beyond along both its legs, however far to the side, and a point the route runs straight through (a turn too small
+    // to lead) is only a marker on his stem once he is a yard off it: he runs for the next point, not flat back to the
+    // marker (gun_wing_12 cover6 seam, released 2.9 yd outside the end: cut back flat to his 4-yd point at 2.9 yd/s,
+    // then ran back down his route to it at 2.8 s).
+    if (CRAFT_HOLD && next && !tgt.cut) {
+      const prev = st.idx > 0 ? path[st.idx - 1].p : st.from;
+      if (prev) {
+        const lx = tgt.p.x - prev.x, ly = tgt.p.y - prev.y, l1 = Math.hypot(lx, ly), bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y;
+        const straight = l1 > 1e-6 && Math.acos(clamp((lx * bx + ly * by) / (l1 * (Math.hypot(bx, by) || 1)), -1, 1)) < FILLET_MIN_TURN;
+        const offLeg = l1 > 1e-6 ? Math.abs((body.pos.x - prev.x) * ly - (body.pos.y - prev.y) * lx) / l1 : 0;
+        if ((beyond(body.pos, tgt.p, prev, tgt.p) && beyond(body.pos, tgt.p, tgt.p, next.p)) || (straight && offLeg > 1)) {
+          st.idx++; st.turn = null; continue;
+        }
+      }
+    }
     const isLast = st.idx === path.length - 1;
     let through = isLast && end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
     // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
@@ -191,6 +213,11 @@ export function speedAfter(v0: number, V: number, tau: number, d: number): numbe
   while (dist(hi) < d && hi < 60) hi *= 2;
   for (let i = 0; i < 40; i++) { const mid = 0.5 * (lo + hi); if (dist(mid) < d) lo = mid; else hi = mid; }
   return V - (V - v0) * Math.exp(-0.5 * (lo + hi) / tau);
+}
+
+/** He is past `wp` along the direction from `a` to `b`. */
+function beyond(pos: Vec2, wp: Vec2, a: Vec2, b: Vec2): boolean {
+  return (pos.x - wp.x) * (b.x - a.x) + (pos.y - wp.y) * (b.y - a.y) > 0;
 }
 
 function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
