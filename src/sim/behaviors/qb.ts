@@ -1755,6 +1755,30 @@ export class QBPass implements Behavior {
     // release p50 0.00 yd).
     this.step = { n: this.landedSteps + 1, since: sim.t, landed: false, to: { x: a.pos.x, y: a.pos.y } };
   }
+  /** QB_FOOTWORK bit 1: a vertical's readable event (Rules + Coaching, docs/reviews/2026-11-15-vertical-ready.md on
+   * #780: the seam thrown as the back foot hits, the cue whether he defeats the collision; the fade read on the
+   * defender's position after the escape). From his own pictures: the receiver is out of the collision (2+ yd past
+   * the line, running) and even with or past the man over him along the stem (the nearest defender he believes within
+   * 4 yd across and not more than 2 yd shallower), or there is no such man. His awareness sets how cleanly he reads the
+   * margin (a judgment draw, his own, scaled by 1 - awareness, in yards). Once read it holds: the release is decided.
+   * Whether anyone over the top can reach the throw is the window's (the aim point), not this cue's. */
+  private vertRead = new Set<Agent>();
+  private vertReadable(sim: PlaySim, r: Agent): boolean {
+    if (this.vertRead.has(r)) return true;
+    const a = sim.qb, dir = sim.attackDir(a.team), p = sim.see(a, r);
+    const depth = (p.pos.x - sim.los) * dir;
+    if (depth < 2 || Math.hypot(p.vel.x, p.vel.y) < 4) return false;
+    let lead: number | null = null, best = Infinity;
+    for (const d of sim.defense) {
+      const e = this.mind.estimate(d).pos, across = Math.abs(e.y - p.pos.y), dd = (e.x - sim.los) * dir;
+      if (across > 4 || dd < depth - 2) continue;
+      if (across < best) { best = across; lead = depth - dd; }
+    }
+    const noise = a.mind.judgment(`vert:${r.slot}`) * 0.6 * (1 - a.r('awareness'));
+    if (lead !== null && lead + noise < 0) return false;
+    this.vertRead.add(r);
+    return true;
+  }
   /** A throw to this read leaves on its step: landed, or landing inside his load. Under pressure, from where he is. */
   private onStep(a: Agent, read: Agent, u: number, t: number): boolean {
     const s = this.stepOf.get(read);
@@ -1816,6 +1840,8 @@ export class QBPass implements Behavior {
     }
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     if (!rr) return r.behavior.kind === 'route';
+    // QB_FOOTWORK bit 1: a vertical is readable when its release is decided, not at 12 yd.
+    if (FW_STEPS && this.receiverForecasts.get(r)?.prior.declRule === 'vertical' && this.vertReadable(sim, r)) return true;
     // A slow screen is thrown once the receiver has settled behind his blockers.
     if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
       // Thrown on anticipation as he turns for the ball: NFL slow screens leave
