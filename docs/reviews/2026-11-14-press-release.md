@@ -520,3 +520,36 @@ near the corner. Ours spend it from the first step.
   is not built.
 
 **RESTEM.** Its own arm comes next, on this clean head, per Integration.
+
+## RESTEM, game arm (RELEASE_READ attempt 2 + RESTEM, clean tree 6d57e74b, 16 games), 2026-11-15
+
+Compared with attempt 2's on arm, same seeds (the exporter's source check passed).
+
+| pressed outside receivers, p50 | RELEASE_READ | + RESTEM |
+|---|---|---|
+| time to 5 yd | 2.00 | 1.90 |
+| lateral at 1 yd, head-up | +0.9 | +0.9 |
+| HITCH at 5 yd | +1.6 | +1.6 |
+| OUT at 5 yd | +2.3 | +2.0 |
+| SLANT at 2 yd | −1.1 | −1.1 |
+| GO at 10 yd | +3.0 | +3.0 |
+| yards per dropback (n 1,582 / 1,570) | 9.34 | 9.00 (sd 13.7 / 12.4; −0.34, under 1 SE) |
+
+**Read.** RESTEM changes nothing measurable at the break: within 0.3 yd on every route; the out's 0.3 is n 24 vs
+28. Its gate showed why: once RELEASE_READ stopped carrying stop routes to the sideline, the cases where the corner
+is still between him and his stem at the break are few, and those already broke from where they were.
+
+**Recommendation.** Leave RESTEM off and out of the RELEASE_READ PR. It carries no evidence for its code. Revisit only
+if the release-path work (next) leaves stop routes wide of their stem against a corner still on the hip.
+
+## Input for the release-path design (Rules, BDB 2025 weeks 1–2, non-PA GO routes, n 1,257)
+
+The go's outward drift at 10 yd by the nearest downfield defender's cushion at the snap: +3.3 (under 2.5 yd), +3.9
+(2.5–5), +2.8 (5–7), +1.4 (7–10), +1.1 (10+). By depth it is steady: +0.4 at 2 yd, +1.1 at 5, +2.6 at 10, +3.8 at 15.
+Ours: +0.8 with no defender, +0.8 vs Cover 3 off, +4.8 vs Cover 1 press.
+
+- NFL receivers widen against any defender inside about 7 yd, soft press and off man included. Width is taken
+  steadily with depth, not at the line.
+- So the path mechanism is a rule about the perceived defender ahead (his distance and position), not a press-only
+  branch.
+- Witness added: outward drift by cushion bin, ours vs these rows.
