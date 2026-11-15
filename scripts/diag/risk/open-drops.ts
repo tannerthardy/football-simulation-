@@ -8,6 +8,7 @@ import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { shouldersOf } from '../../../src/physics/kinematics.js';
 import { neckOf } from '../../../src/sim/ball-estimate.js';
+import { catchSpot } from '../../../src/sim/behaviors/receiver.js';
 const seed = Number(process.argv[2] ?? 23), games = Number(process.argv[3] ?? 8);
 const P: any = PlaySim.prototype, t0 = P.tick, b0 = P.buildResult, rows: any[] = [];
 P.tick = function () {
@@ -31,6 +32,12 @@ P.tick = function () {
       const head = this.ballEstimates.headOf(T) ?? T.facing, sh = shouldersOf(T.body);
       (S.fine ??= []).push({ t: this.t - S.rel, s: `ball-h ${d(brg - head)} gaze-ball ${d(gz - brg)} h-shoulders ${d(head - sh)}/${Math.round(neckOf(T) * 180 / Math.PI)} sh-hips ${d(sh - T.facing)} r ${Math.hypot(b.x - T.pos.x, b.y - T.pos.y).toFixed(1)} beh ${T.behavior?.kind}` });
     }
+    if (this.ball.kind === 'air' && Math.abs((this.t - S.rel) * 10 - Math.round((this.t - S.rel) * 10)) < 1e-6) {
+      const dd = (p: any, q: any) => (p && q ? Math.hypot(p.x - q.x, p.y - q.y).toFixed(1) : '-');
+      const bel = this.ballEstimates?.peek?.(T, this) ?? [], bSpot = bel.length ? catchSpot(T, { t: this.t, ballPath: bel }) : null, tSpot = catchSpot(T, this);
+      const ch = T.behavior?.choice, goal = ch?.p ?? null, committed = ch ? (ch.t - this.t <= 0.3 + 1e-9) : false;
+      (S.goal ??= []).push(`${(this.t - S.rel).toFixed(1)}: goal-belief ${dd(goal, bSpot?.p)} goal-true ${dd(goal, tSpot?.p)} belief-true ${dd(bSpot?.p, tSpot?.p)} him-goal ${dd(T.pos, goal)} goalT-beliefT ${goal && bSpot ? (ch.t - bSpot.t).toFixed(2) : '-'}${committed ? ' C' : ''}`);
+    }
     if (S.first === undefined && this.ballEstimates?.firstSeenAt?.(T) !== undefined) S.first = this.ballEstimates.firstSeenAt(T) - S.rel;
     if (S.armSeen === undefined) S.armSeen = this.ballEstimates?.lookedAtRelease?.(T, this) ?? null;
     if (this.ball.kind === 'air' && b && b.z >= 0.1 && b.z <= T.profile.maxCatchHeight) {
@@ -46,7 +53,7 @@ P.tick = function () {
 };
 P.buildResult = function () {
   const res = b0.call(this), S = this.__od;
-  if (S && S.end !== undefined) rows.push({ flight: S.flight, sep: S.sep, min: S.min, along: S.along, across: S.across, reach: S.reach, n: S.n, servo: S.servo, fine: S.fine, first: S.first, eyeShare: S.ticks ? (S.eyeTicks ?? 0) / S.ticks : 0, firstLost: S.firstLost, armSeen: S.armSeen, look: S.look, route: S.route, cmp: !!this.stats?.completed, ev: this.events.filter((e: any) => ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection'].includes(e.type)).map((e: any) => e.type).join(',') });
+  if (S && S.end !== undefined) rows.push({ flight: S.flight, sep: S.sep, min: S.min, along: S.along, across: S.across, reach: S.reach, n: S.n, servo: S.servo, fine: S.fine, goal: S.goal, first: S.first, eyeShare: S.ticks ? (S.eyeTicks ?? 0) / S.ticks : 0, firstLost: S.firstLost, armSeen: S.armSeen, look: S.look, route: S.route, cmp: !!this.stats?.completed, ev: this.events.filter((e: any) => ['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection'].includes(e.type)).map((e: any) => e.type).join(',') });
   this.__od = undefined;
   return res;
 };
@@ -74,4 +81,8 @@ for (const [a, b] of [[0, 0.9], [0.9, 1.3], [1.3, 1.8]]) {
 if (process.env.OD_FINE) for (const r of rows.filter(r => r.sep >= 3 && !r.cmp && r.min > r.reach && r.flight >= 1.3 && r.flight < 1.8 && r.first !== undefined).slice(0, 5)) {
   console.log(`== miss, flight ${r.flight.toFixed(2)}: last 0.6 s`);
   for (const q of (r.fine ?? []).filter((q: any) => q.t >= r.flight - 0.6)) console.log(`   ${q.t.toFixed(2)} ${q.s}`);
+}
+if (process.env.OD_GOAL) for (const r of rows.filter(r => r.sep >= 3 && !r.cmp && r.min > r.reach && r.flight >= 1.3 && r.flight < 1.8).slice(0, 12)) {
+  console.log(`== never in reach, flight ${r.flight.toFixed(2)}, passed ${r.min.toFixed(1)} yd`);
+  for (const q of r.goal ?? []) console.log(`   ${q}`);
 }
