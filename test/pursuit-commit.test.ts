@@ -40,7 +40,17 @@ const STAGED: Record<string, StagedThrow> = {
   'smash 2': { at: 99, slot: 'X' },
   'smash 3': { at: 2.05, slot: 'Z', aim: { x: 40.504534255649816, y: 14.65027724392218, z: 1.409590867927052 }, T: 0.9401310837056995 },
   'smash 4': { at: 2.3, slot: 'RB', aim: { x: 34.65166493483928, y: 8.341046466472683, z: 1.5354225662507992 }, T: 0.8849477816930452 },
+  // Premise plays (see PREMISE below): natural plays whose off arm has a catch-tick stop, staged the same way.
+  'slant_flat 5': { at: 1.35, slot: 'Z', aim: { x: 42.712774723645296, y: 16.092459987041924, z: 1.2570290013056966 }, T: 0.8652268329094622 },
+  'slant_flat 11': { at: 1.35, slot: 'Z', aim: { x: 41.11439456150391, y: 14.140593254025129, z: 1.096593306435676 }, T: 0.7136210866143071 },
+  'curl_flat 11': { at: 2.5, slot: 'Y', aim: { x: 41.32099469724703, y: 4.159674473686895, z: 0.9943495088177103 }, T: 1.6418439913806147 },
 };
+/** The panel: four passes against seeds 1-4, and premise plays. Re-recorded 2026-11-14 on the ball-cue fix (the ball is
+ * its own percept in release-evidence.ts, at his own delay): the one off-arm catch-tick stop on seeds 1-4 (slant_flat 3)
+ * was gone (0 of 23 near the catch). Rather than move the claim, the panel adds the natural plays (same passes, seeds
+ * 1-16, the QB's own throws) whose off arm has a stop: slant_flat 5, slant_flat 11, curl_flat 11. */
+const PANEL: [string, number][] = [...['stick', 'slant_flat', 'curl_flat', 'smash'].flatMap(p => [1, 2, 3, 4].map(s => [p, s] as [string, number])),
+  ['slant_flat', 5], ['slant_flat', 11], ['curl_flat', 11]];
 
 async function run(flag: string) {
   const flagName = flag;
@@ -58,7 +68,7 @@ async function run(flag: string) {
   // more), so a change in which pursuits a stack produces must not read as a change in steadiness.
   const bandOf = (a: any, t: any) => { const d = t ? Math.hypot(t.pos.x - a.pos.x, t.pos.y - a.pos.y) : 99; return d < 3 ? '0-3' : d < 8 ? '3-8' : d < 15 ? '8-15' : '15+'; };
   let zeroAtCatch = 0, nearAtCatch = 0, jumps = 0, ticks = 0; const turns: number[] = []; const band: Record<string, number[]> = {}; const bandJ: Record<string, [number, number]> = {};
-  for (const pass of ['stick', 'slant_flat', 'curl_flat', 'smash']) for (let seed = 1; seed <= 4; seed++) {
+  for (const [pass, seed] of PANEL) {
     const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
       offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 't' },
