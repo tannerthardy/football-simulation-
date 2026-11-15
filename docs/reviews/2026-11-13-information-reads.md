@@ -223,3 +223,18 @@ The two conditions from Integration are met in code and held by `test/perception
   exported or called a second time, if the flight map leaves it, or if any file other than `release-belief.ts` reads `releaseEvidence`.
 
 Still not covered by the scan, as before: the known holes above.
+
+## Two scanner holes fixed (2026-11-15, Rules found them, Integration asked)
+
+1. **The actor rule.** The scan took the enclosing function's first Agent parameter as the actor, so in a class method such as `ready(r: Agent, sim)` in `qb.ts` the receiver `r` was the
+   "actor" and every `r.*` read, another player's true state read by the QB, went unlisted. The actor is the behaviour's owner: inside a class `this` and `a`; only a free function's
+   first Agent parameter is the actor by convention. Under that rule 63 more reads are visible (698 to 761): blocking.ts +23 (behavior 10, engagement 3, isDown 3, pos 6, vel 1),
+   qb.ts +24 (behavior 7, isDown 8, pos 7, engagement 1, speedScale 1), carrier.ts +5, receiver.ts +6 (body 3, facing 2, isDown 1), qbmind.ts +4, screen.ts +1; the receivers
+   hidden were `d` (28), `o` (10), `r` (10), `b` (7) and `p` (4). Twelve of the 63 hand-checked: all another player.
+2. **Fields of another player's behaviour object** (new rule `behavior`): a member of a class that `implements Behavior` read from a file other than the class's own, reported as
+   `Class.member`, excluding `this.*` delegates (`this.sub`, `this.movement` are the owner's own composition). 10 reads: `qb.ts` reads `RouteRunner.breakTime` (2), `path` (2), `route`,
+   `settled` (the receiver's private start delay, true stem speed and path through `ready()` and `breakClock()`), `assign.ts` reads `RunBlocker.plan` (3) and `QBPass.init`.
+   `RouteRunner.breakTime` also reads a true defender position at install (`getOffLoss(.., nearestDefender(a, sim))`); that one is with Rules.
+
+All 73 reads are listed under the new class `surfaced` (a read made visible by a scanner fix, not new code), by file, with the owner of the file. Nothing existing was raised. Debt now:
+leak 173, unreviewed 480, physics 41, officiating 1, perception 3, surfaced 73. `ball-estimate.ts`'s header carries Coverage's 2026-11-15 audit date (the `releaseT` leak removed in #760).

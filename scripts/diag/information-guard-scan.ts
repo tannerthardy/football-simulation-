@@ -11,6 +11,9 @@
  * Rule `agent`: a property of an `Agent`-typed expression that is not the acting agent. The
  *   actor is the enclosing function's first Agent-typed parameter, or `a`, `this.agent`.
  * Rule `sim`:   a play-truth property of a `PlaySim`-typed expression.
+ * Rule `behavior`: a member of ANOTHER player's behaviour object (a class that `implements Behavior`: `RouteRunner.breakTime`, the receiver's private start delay and
+ *   true stem speed) read from a file other than the class's own. Reaching into another agent's behaviour instance is a true-state read by construction. The member is
+ *   reported as `Class.member`; the members of the `Behavior` interface itself (`kind`, `command`) are the published surface and are not.
  * Perceived values (`Perceived` from `sim.see`) are not Agents and are never reported.
  */
 import { relative, resolve } from 'node:path';
@@ -71,8 +74,10 @@ export const SIM_OWNERS: Record<string, string[]> = {
   qbEyes: ['src/sim/behaviors/qb.ts'],
 };
 
-export interface Read { file: string; line: number; rule: 'agent' | 'sim'; member: string; receiver: string; text: string }
+export interface Read { file: string; line: number; rule: 'agent' | 'sim' | 'behavior'; member: string; receiver: string; text: string }
 
+/** The actor rule that counts a method's first Agent parameter as another player (default on; STRICT_ACTOR=0 is the 2026-11-13 rule). */
+export const STRICT_ACTOR = process.env.STRICT_ACTOR !== '0';
 const isAgentType = (t: ts.Type, name: string) => (t.symbol?.name ?? t.aliasSymbol?.name) === name;
 
 export function scan(root: string): Read[] {
@@ -82,6 +87,17 @@ export function scan(root: string): Read[] {
   const program = ts.createProgram(parsed.fileNames.filter(f => /\/src\//.test(f)), parsed.options);
   const checker = program.getTypeChecker();
   const out: Read[] = [];
+  // Behaviour classes (`implements Behavior`), by name, with the file that owns them.
+  const behaviorClass = new Map<string, string>();
+  for (const f of program.getSourceFiles()) {
+    if (!/\/src\//.test(f.fileName)) continue;
+    ts.forEachChild(f, function find(n) {
+      if (ts.isClassDeclaration(n) && n.name && n.heritageClauses?.some(h => h.token === ts.SyntaxKind.ImplementsKeyword && h.types.some(t => t.expression.getText(f) === 'Behavior')))
+        behaviorClass.set(n.name.text, relative(root, f.fileName).split('\\').join('/'));
+      ts.forEachChild(n, find);
+    });
+  }
+  const BEHAVIOR_PUBLIC = new Set(['kind', 'command']);
   for (const path of files) {
     const rel = relative(root, path).split('\\').join('/');
     if (rel in EXEMPT) continue;
@@ -94,7 +110,10 @@ export function scan(root: string): Read[] {
       if (isFn) {
         const names = new Set<string>(['a', 'this', 'this.agent']);
         const first = (n as ts.SignatureDeclaration).parameters.find(p => ts.isIdentifier(p.name) && isAgentType(checker.getTypeAtLocation(p), 'Agent'));
-        if (first && ts.isIdentifier(first.name)) names.add(first.name.text);
+        // The actor is the behaviour's owner. Inside a method of a class, `this` is the owner and an Agent parameter that is not `a` is another player (`ready(r: Agent, sim)`
+        // reads the receiver r, it is not r's decision); only in a free function is the first Agent parameter the actor by convention (`(d: Agent, ...)`).
+        let inClass = false; for (let up: ts.Node | undefined = n.parent; up; up = up.parent) if (ts.isClassLike(up)) { inClass = true; break; }
+        if (first && ts.isIdentifier(first.name) && !(STRICT_ACTOR && inClass)) names.add(first.name.text);
         actors.push(names);
       }
       if (ts.isPropertyAccessExpression(n)) {
@@ -105,7 +124,10 @@ export function scan(root: string): Read[] {
         const receiver = n.expression.getText(sf);
         const where = sf.getLineAndCharacterOfPosition(n.name.getStart(sf)).line + 1;
         const text = n.parent.getText(sf).split('\n')[0]!.slice(0, 110);
-        if (AGENT_HIDDEN.has(member) && (isAgentType(t, 'Agent') || declaredOn === 'Agent')) {
+        const cls = t.symbol?.name;
+        if (cls && behaviorClass.has(cls) && behaviorClass.get(cls) !== rel && !BEHAVIOR_PUBLIC.has(member) && receiver !== 'this' && !receiver.startsWith('this.') && !physics) {
+          out.push({ file: rel, line: where, rule: 'behavior', member: `${cls}.${member}`, receiver, text });
+        } else if (AGENT_HIDDEN.has(member) && (isAgentType(t, 'Agent') || declaredOn === 'Agent')) {
           const mine = actors[actors.length - 1] ?? new Set(['a']);
           if (!mine.has(receiver) && (!physics || INTENT.has(member))) out.push({ file: rel, line: where, rule: 'agent', member, receiver, text });
         } else if (SIM_TRUTH.has(member) && (isAgentType(t, 'PlaySim') || declaredOn === 'PlaySim') && !physics && !SIM_OWNERS[member]?.includes(rel)) {
@@ -197,7 +219,7 @@ export function emitMarkdown(reads: Read[], since: string, classOf: (file: strin
   }
   out.push('## Known holes (leaks this scan cannot see)', '',
     '- A helper that takes an Agent and returns a plain number reads true state out of sight of the caller; only the helper body is scanned.',
-    '- The actor is the enclosing function\'s first Agent parameter, so a helper such as `(r: Agent, d: Agent)` under-reports on `r`.',
+    '- (Fixed 2026-11-15) The actor used to be the enclosing function\'s first Agent parameter, which hid `r.*` in `ready(r: Agent, sim)`; inside a class the owner is `this`/`a` and an Agent parameter is another player. Members of another player\'s behaviour object are rule `behavior`.',
     '- Referee and contact files are scanned for intent and belief only, so decisions that sit inside them (the QB escape check `seesIt` in tackle.ts, the engaged rusher\'s aim at the true QB in engagement.ts) are in `docs/reviews/2026-11-13-information-leak-sweep.md` (#691) and not here.', '');
   return out.join('\n');
 }

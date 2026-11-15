@@ -29,7 +29,7 @@ describe('decision-code information scan (type-aware)', () => {
   }, 180_000);
 
   it('names a class, an owner, a date and a reason for every row, once', () => {
-    const classes = new Set(['leak', 'touch', 'physics', 'officiating', 'unreviewed', 'perception']);
+    const classes = new Set(['leak', 'touch', 'physics', 'officiating', 'unreviewed', 'perception', 'surfaced']);
     const bad = INFORMATION_DEBT.filter(d => !classes.has(d.class) || !d.owner || !/^\d{4}-\d{2}-\d{2}$/.test(d.since) || !d.why);
     const keys = INFORMATION_DEBT.map(d => `${d.file} ${d.key} ${d.class}`);
     expect(bad).toEqual([]);
@@ -39,7 +39,7 @@ describe('decision-code information scan (type-aware)', () => {
   it('reports the number to drive to zero', () => {
     const total = (c: string) => INFORMATION_DEBT.filter(d => d.class === c).reduce((n, d) => n + d.reads, 0);
     const rows = (c: string) => INFORMATION_DEBT.filter(d => d.class === c).length;
-    const line = ['leak', 'unreviewed', 'touch', 'physics', 'officiating', 'perception']
+    const line = ['leak', 'unreviewed', 'touch', 'physics', 'officiating', 'perception', 'surfaced']
       .map(c => `${c} ${total(c)} reads in ${rows(c)} rows`).join(' | ');
     console.info(`information debt: ${line}`);
     expect(total('leak') + total('unreviewed')).toBeGreaterThanOrEqual(0);

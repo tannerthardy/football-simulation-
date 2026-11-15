@@ -5,6 +5,11 @@
  * player's own estimate. No export returns the true ball or its path; consumers get an estimate, and only playsim.ts (the owner
  * of the state) may import `BallEstimates`.
  *
+ * Inputs audited 2026-11-15 (Coverage, coverage/C14-ball-def, #760, commit 3532bcc0): the one leak found, the receiver's prior and `lookedAtRelease` timed by the true
+ * `sim.ball.releaseT`, now runs on his own release belief (the passer's arm seen coming through, else his first sample's time, else now). The true-ball reads that
+ * remain here are the sensing itself: `sense` records the flight it samples, `ballAt(t)` is the ball's own history, and the flight identity tells a tip from a new throw.
+ * Until #760 merges, `releaseT` is still read on develop; the exemption depends on it going.
+ *
  * BALL_EST (experimental, off; BALL_EST=1 turns it on): each player's own estimate of a ball in flight, built only
  * from the ball positions he has seen (docs/reviews/2026-11-14-ball-in-air-spec.md, stage 1).
  *
