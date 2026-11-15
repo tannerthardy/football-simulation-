@@ -433,12 +433,6 @@ const QB_AVOID = process.env.QB_AVOID === '1';
  * against an interior rusher it is a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield
  * on the stand probe's events): the drift that put him deeper as the man arrived. Against an edge it is unchanged. */
 const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
-/** QB_HELD_ANSWER (experimental, off; QB_HELD_ANSWER=1): a throw stopped by a hold (THROW_HOLD) leaves him in his
- * answers to a man on him, not in his progression. Off, the stopped throw put him back to 'set' with his dwell
- * restarted, so with the man still on him he read on and stood until the sack (mesh, cover1/19/2 and a dozen more on
- * the route package). On: while the man who stopped it still has hands on him he is in the no-throw answers (protect
- * the ball, evade, throw it away if the rule lets him); once free, his reads resume where they were. */
-const QB_HELD_ANSWER = process.env.QB_HELD_ANSWER === '1';
 /** QB_LOOKOFF_RHYTHM (experimental, off; QB_LOOKOFF_RHYTHM=1): a look-off is taken only when his first read will
  * not be ready until after it. A look-off moves a safety with his eyes in the drop; as taught it never costs the
  * rhythm throw. Off, it was rolled once at the set (by decision-making, anticipation and experience) and held read 1
@@ -851,8 +845,6 @@ export class QBPass implements Behavior {
    * decision-making and awareness set how cleanly he places him. */
   /** QB_KEY_THROW: the man his key read gave, and when. */
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
-  /** QB_HELD_ANSWER: when a hold stopped his throw (null: none, or he is free of it). */
-  private heldThrowAt: number | null = null;
   /** QB_AVOID: the decision in force: the man, the spot, the pace; and diagnostics (no effect). */
   private avoid: { body: Agent; to: Vec2; pace: number; kind: 'slide' | 'climb' } | null = null;
   /** His dwell on a read this tick (the look a throw still needs), for QB_AVOID. */
@@ -1082,7 +1074,6 @@ export class QBPass implements Behavior {
       if (THROW_HOLD && this.pending && sim.deliveryAt >= 0 && t >= sim.deliveryAt && throwHold(a, sim) >= 1) {
         this.phase = 'set'; this.pending = null; this.pendingSpot = null; this.readStart = t;
         sim.windupAt = -1; sim.deliveryAt = -1; sim.windupEndAt = t;
-        if (QB_HELD_ANSWER) this.heldThrowAt = t;
         sim.event('throw_held', a);
         return stand();
       }
@@ -1218,15 +1209,6 @@ export class QBPass implements Behavior {
       }
     }
 
-    // QB_HELD_ANSWER: his throw was stopped by a man still on him: his answers to that man, not his progression.
-    if (QB_HELD_ANSWER && this.heldThrowAt !== null) {
-      if (heldBy(a, sim) > 0 || throwHold(a, sim) > 0.3) {
-        const pr = this.pressure(a, sim);
-        this.readStart += sim.dt; // his progression waits; it resumes where it was once he is free
-        return this.noThrow(a, sim, this.noThrowContext(sim, pr, 1, 'alarm'));
-      }
-      this.heldThrowAt = null;
-    }
     // ---- set: reading the field ----
     // Quick game is rhythm: one look per read. Dropback reads take longer.
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
