@@ -1360,14 +1360,31 @@ function safetyOver(a: Agent, r: number): number {
 export const ZONE_EYES = process.env.ZONE_EYES === '1';
 /** ZONE_EYES: above this asked speed (yd/s) he opens and runs (hips on his line); a stated choice. */
 const ZONE_EYES_RUN = 1.5;
+/** ZONE_EYES: a Cover-3 corner's bail, how far his hips open off the passer (the zone turn, about 45 deg; coached). */
+const BAIL_OPEN = Math.PI / 4;
 function zoneEyes(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   if (!ZONE_EYES) return cmd;
   headWant(sim, a, sim.qb, 'qb');
   const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
-  // Open and run: dropping (asking over ZONE_EYES_RUN yd/s), his hips go with his running line, not square to the passer,
-  // and the look takes the trunk and head round to him (the NFL dropper's torso is open about 40 deg off the passer at the
-  // release). Slower, the technique's own facing stands.
-  const base = sp > ZONE_EYES_RUN ? Math.atan2(cmd.vel.y, cmd.vel.x) : cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
+  const z = a.behavior as { deep?: boolean; zone?: string };
+  const q0 = sim.see(a, sim.qb).pos, toQB = Math.atan2(q0.y - a.pos.y, q0.x - a.pos.x);
+  let base: number;
+  if (z.deep) {
+    // Deep seats keep their technique's body (CUSHION_BREAK: square in the pedal while nothing breaks his cushion, opened
+    // by the speed he needs on a vertical, the full turn only when the cushion is broken); the look turns trunk and head.
+    base = cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
+    // A Cover-3 corner bails by the call: from the snap he runs half-turned to the outside (about 45 deg off the
+    // passer) with his head inside on the QB, not square and not hips to the goal line; a vertical's carry takes over
+    // when his technique turns him further.
+    if (z.zone?.startsWith('deep_third_') && Math.abs(angleDiff(base, toQB)) < BAIL_OPEN) {
+      const out = a.pos.y < FIELD_WIDTH / 2 ? -1 : 1, rel = angleDiff(toQB, Math.PI / 2 * out) >= 0 ? 1 : -1;
+      base = toQB + rel * BAIL_OPEN;
+    }
+  } else {
+    // Underneath: open and run. Dropping (asking over ZONE_EYES_RUN yd/s), his hips go with his running line, not square
+    // to the passer, and the look takes the trunk and head round to him. Slower, the technique's own facing stands.
+    base = sp > ZONE_EYES_RUN ? Math.atan2(cmd.vel.y, cmd.vel.x) : cmd.facing ?? (sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : a.facing);
+  }
   const q = sim.see(a, sim.qb).pos;
   const d = angleDiff(base, Math.atan2(q.y - a.pos.y, q.x - a.pos.x));
   let out = lookJoints(a, cmd, base, d, true);
