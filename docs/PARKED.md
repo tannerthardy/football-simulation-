@@ -168,3 +168,14 @@ proposed to land. The rest stay here with their state. Evidence is in `docs/revi
 | `EXTEND` | The QB with no throw in time extends the play (noThrow body). | `src/sim/behaviors/qb.ts` | As it stood: built, no measurable effect; waits on Rules+Coaching's window repair. |
 | `HANG_GRIP` | A hanging grip slides down to the ankles and holds or tears. | `src/physics/world.ts` | Parked: the grip law under a hanging load is the open question. |
 | `HOLD_CALL` | The offence's hold judged committed (a clear restraint of a man past the blocker's frame, checked before the point-of-attack and double no-calls) → material (at the point of attack or the next defender to the ball, asking toward it, not inside a double) → called (material and seen: OFFICIATE's ramp on the act's accumulated Δv, ÷ (1 + bodies within 1.5 yd)). Uncalled stages kept as evidence. | `src/sim/contact-holding.ts` (`holdStage`) | Parked (Integration, 2026-11-12): the right structure, not fitted. With A, per team-game (seeds 101-108): run committed 1.69 / material 0.69 / called 0.06; pass 0.06 / 0 / 0. Pass holds wait on edge rushers winning the corner (the anchor, the rusher's work); do not loosen the frame. Holding's visibility needs its own basis (see the rusher-intent review). |
+
+## RUSH_GATHER (Flex, 2026-11-15; off, in the tree)
+
+The free pass rusher finishes on the QB with chase()'s close gather.
+- Attempt 1: the whole arrival.
+- Attempt 2: the speed only, on his own line.
+
+Both raised off-blocker reach under FITTED_HANDS + PASS_OFF (12 -> 18 / 16%) while the finish speed moved only part way
+to the NFL's (5.41 -> 4.74 / 4.92 against 4.12). Stopped at two. Re-diagnose first: whether the free interior rusher's
+speed is a capacity (top speed and acceleration out of a fight) or a choice. docs/reviews/2026-11-14-hand-fight-design.md
+sections 11-12.

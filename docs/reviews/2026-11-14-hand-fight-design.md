@@ -665,3 +665,44 @@ from his picture of the QB, his braking and his tackling's arrival speed. Off id
   - Needs its own look (the gather onset's position against the helper and the QB, the reached against the not)
     before an attempt 2.
 - Not for the card yet. FITTED_HANDS + PASS_OFF go as a patch without it.
+
+## 12. RUSH_GATHER attempt 2, and stop (2026-11-15)
+
+**Attempt 1's adverse row, on film** (comeoff-film.mts, FH + PO with and without RG, seed 11 x 4, off-blocker cases):
+- The rusher's request points more straight at the QB (13 -> 10 deg off the true QB).
+- He closes faster though he runs slower (closing p50 1.78 -> 2.68 yd/s, speed 4.24 -> 4.06).
+- He is free more often in helped cases (11 -> 18% of frames), and the helper takes him less (46 -> 40%).
+- Cause: chase()'s gather begins at contact plus his stopping distance (about 4-4.5 yd, so near the release) and aims
+  its arrival at the QB's seen spot. Blended into his sprint, it re-aimed him off his intercept line, around the helper.
+
+**Integration's second check: reach against contact and outcome.**
+- After a reach, attempt 1's rusher was as close to the QB (0.58 yd at +0.3 s) for as long (0.3 s) as before.
+- The ball came out more often (52 -> 65% thrown) and sacks fell (9.1 -> 7.0).
+- So the extra reaches were real arrivals, not a slower man hovering at 1.5 yd. They ended in throws more often than
+  sacks.
+
+**Attempt 2** (4b934202): the gather sets his speed only, on his own line (the sprint's direction).
+
+| | NFL | base | base + RG2 | FH + PO | FH + PO + RG1 | FH + PO + RG2 |
+|---|---|---|---|---|---|---|
+| rusher speed, last 0.6 s, QB still: p50 | 4.12 | 5.15 | 5.00 | 5.41 | 4.74 | **4.92** |
+| off-blocker reach | 9% | 12% | 10% | 12% | 18% | **16%** |
+| ... helped / unhelped | 5 / 11 | 7 / 20 | 6 / 16 | 7 / 19 | 12 / 27 | 10 / 24 |
+| after a reach: thrown | 35% | 71% | 71% | 52% | 65% | 53% |
+| interior pressure | about 9.8 | 10.9 | 12.1 | 19.0 | 20.6 | **22.6** |
+| sack proxy | 7 | 5.4 | 4.8 | 9.1 | 7.0 | 8.8 |
+| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 5.7 / 6.6 | 4.7 / 4.3 | 10.2 / 8.5 | 11.3 / 3.9 | 14.7 / 6.8 |
+
+**Attempt 2 fails.**
+- Under FH + PO the finish barely moves toward the NFL's (4.92 against 4.12).
+- Off-blocker reach still rises (16 against 12), and so do interior pressure (22.6) and late interior sacks (14.7).
+- On the base it is close to neutral.
+
+**Two attempts: stopped. RUSH_GATHER stays off and is parked.** What to re-diagnose before any third idea:
+- Both versions raise reach under FH + PO. A rusher who slows near the QB is reached by the 1.5 yd operator no less
+  often, and the helper does not get him back either way. The arrival speed may not be the variable that matters.
+- Our free rusher's speed sits near his capacity (p75 5.6-5.8 yd/s in every arm), where the NFL's p75 is 4.5-5.0 even
+  against a moving QB. That may be a capability (top speed or acceleration out of a fight), not a choice.
+  - The next look: the free interior rusher's speed against his own vmax by time since release, NFL against ours.
+  - Is ours faster everywhere after the release, or only into the QB?
+  - That separates a capacity read from a controller one.
