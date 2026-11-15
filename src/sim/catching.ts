@@ -450,6 +450,14 @@ export function secureStep(sim: PlaySim): void {
   }
 }
 
+/** BAT_ONCE (default on; BAT_ONCE=0 restores the old law): a defender gets one try at batting a pass at the line,
+ * the first tick its flight passes through his window, not one each tick it stays there. A plain defect fix (an
+ * outcome that depended on the tick length): docs/reviews/2026-11-15-bat-at-the-line.md. The roll itself stays until
+ * BAT_HANDS replaces it with his hands. */
+const BAT_ONCE = process.env.BAT_ONCE !== '0';
+/** BAT_ONCE: the defenders who have tried to bat this pass (keyed by its release time). */
+const batTried = new WeakMap<PlaySim, { at: number; who: Set<Agent> }>();
+
 /** Returns true if the defender ended the flight (INT) or altered it. */
 function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   const ball = sim.ball;
@@ -475,6 +483,13 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     return false;
   }
   if (isBat) {
+    // BAT_ONCE: one try per defender per pass. The ball stays in his window for several ticks; a roll each tick made his
+    // chance per pass depend on the tick length (free defenders batted 29% of their chances against an 18% ceiling).
+    if (BAT_ONCE) {
+      const key = ball.releaseT, done = batTried.get(sim);
+      if (done && done.at === key && done.who.has(D)) return false;
+      if (!done || done.at !== key) batTried.set(sim, { at: key, who: new Set([D]) }); else done.who.add(D);
+    }
     // Linemen only bat it if they read the release and get their hands up.
     const pBat = (D.engagement ? 0.04 : 0.12) * (sees ? 1 : 0.2) * (0.5 + D.r('playRecognition'));
     if (rng.chance(pBat)) {
