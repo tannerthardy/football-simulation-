@@ -54,3 +54,9 @@ if (process.env.OD_DUMP) for (const [a, b] of [[0.9, 1.3], [1.3, 1.8]]) {
   for (const r of rows.filter(r => r.sep >= 3 && !r.cmp && r.min > r.reach && r.flight >= a && r.flight < b).slice(0, 12))
     console.log(`   ${r.flight.toFixed(2)} ${r.route} | ${r.min.toFixed(1)} | ${r.along?.toFixed(1)}/${r.across?.toFixed(1)} | ${r.first?.toFixed(2) ?? '-'} | ${r.armSeen} | ${r.look.join(' ')}`);
 }
+console.log('-- open targets, first sample (s after release) and closest pass (yd), caught / not caught');
+for (const [a, b] of [[0, 0.9], [0.9, 1.3], [1.3, 1.8]]) {
+  const O = rows.filter(r => r.sep >= 3 && r.flight >= a && r.flight < b);
+  const f = (V: any[]) => `n ${V.length} first ${med(V.map(r => r.first))} (none ${V.filter(r => r.first === undefined).length}) left-at-first ${med(V.filter(r => r.first !== undefined).map(r => r.flight - r.first))} closest ${med(V.map(r => r.min))} samples ${med(V.map(r => r.n))}`;
+  console.log(`   ${a}-${b} s | caught: ${f(O.filter(r => r.cmp))} | not: ${f(O.filter(r => !r.cmp))}`);
+}
