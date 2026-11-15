@@ -1,0 +1,124 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 4149bf33..2a6c87ab 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -293,6 +293,7 @@
+     "QB_RELOOK": "0",
+     "QB_KEY_MAN": "0",
+     "QB_KEY_THROW": "0",
++    "PLAN_CLOCK": "0",
+     "QB_HONEST_FEEL": "0",
+     "THROW_PLATFORM": "0",
+     "QB_BELIEVED_DEF": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 9157bcd9..1f7762fe 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -253,6 +253,7 @@
+     "QB_RELOOK": "on",
+     "QB_KEY_MAN": "on",
+     "QB_KEY_THROW": "off",
++    "PLAN_CLOCK": "off",
+     "QB_HONEST_FEEL": "on",
+     "THROW_PLATFORM": "off",
+     "QB_BELIEVED_DEF": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 020795d7..618f7a91 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 393 flags read from the environment in `src` (recounted 2026-11-15 at engine-68): 295 are on unless set to `0`, 86 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
++There are 394 flags read from the environment in `src` (recounted 2026-11-15 at engine-68, plus experimental PLAN_CLOCK): 295 are on unless set to `0`, 87 are off unless set to `1`, and 12 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -186,6 +186,7 @@ There are 393 flags read from the environment in `src` (recounted 2026-11-15 at
+ | `QB_RELOOK` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-14; staged test `test/qb-relook.test.ts`; read once on engine-61) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's out-of-reads branch) | Running out of reads gives him nothing for free. Off: the best man on the whole field at his bar less 0.1, the moment his progression ends. On: back to his first read and through them again one look at a time, at his own bar; with `QB_BREAK`, leaving with the ball up is the other answer at that moment. |
+ | `QB_KEY_MAN` | on | promoted 2026-11-14 (engine-65; `=0` restores); was experimental (QB lane with Rules+Coaching's `PLAN_KEYS`, 2026-11-14; first build; staged test `test/qb-key-man.test.ts`) | quarterback | `src/sim/behaviors/qb.ts` (`keyMan`, `readKey`, `gazePoint`) | His key read is taken on the defender the concept names (picked before the snap by the role's alignment rule: the corner, the apex, the hook player, the deep man), not on whoever is nearest the line between the two routes. His eyes go to that man in the drop; at the cue he reads the man's movement (sinking gives the low man, jumping the low route gives the high man), or where he stands if he is not moving along the stretch. No fresh picture of him, or nobody named: no key read, and the order stands. |
+ | `QB_KEY_THROW` | off | experimental (QB lane, 2026-11-14; the re-diagnosed design after two window-test forms; acts with `QB_KEY_MAN`) | quarterback | `src/sim/behaviors/qb.ts` (the read loop's `keyHold`) | He stays on the key read's answer through its break (up to 1.2 s after the read) instead of moving on at his dwell, and throws it when it passes his price like any read. The key chooses the look; it does not stand in for the price. The earlier forms threw the answer on window tests in place of the price and are removed with `QB_KEY_DANGER` (corner routes targeted on 26-30% of routes against the NFL's 14%, the added throws where the deep man was a hard run from the ball). Decided by corner targets per route by the over-the-top man's reach (`scripts/diag/eyes/corner_danger.py`) and time to throw on keyed concepts. |
++| `PLAN_CLOCK` | off | experimental (QB lane, 2026-11-15; a clock bug in DECLARED_BREAK's readiness, found checking the plan's step times before footwork-keyed reads) | quarterback | `src/sim/behaviors/qb.ts` (`planBreakAt`) | The installed break time is read on the play clock. The compiler times breaks as its sampled play's sim.t; `planBreakAt` added the snap-secured time again, so where his forecast could not place a break he believed it 0.3-0.5 s late (engine-68, `scripts/diag/escape/rhythm-check.ts`: true minus compiled p50 -0.05 s; his belief minus true p50 +0.49 s off, +0.10 s on). |
+ | `QB_HONEST_FEEL` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; read on engine-57 and engine-59, flat; in the honesty batch) | quarterback | `src/sim/behaviors/qb.ts` (`felt`, `freeBound`, `pressure`, `evade`) | set at first review. His pressure picture reads only what he has perceived: the behind-his-shoulder test uses his plain picture of the man, pressure's distance is to the felt position, and he evades the felt position. Off, all four read the rusher's true position. Decided by its own row (alarm rate, felt against true time to contact at the alarm, sacks), expecting him to feel pressure later; a loss is repaired by perception, not by the leak |
+ | `THROW_PLATFORM` | off | experimental (QB lane, throw mechanics, 2026-11-13; first build, not yet read) | quarterback | `src/sim/behaviors/qb.ts` (`platform`, `missSigma`, `release`) | set at first review. What moving costs a throw, continuously: stepping toward the target is free up to a stride; the rest of his velocity is carried by the ball and the share he does not correct (by throw-on-run) is a miss along his motion, growing with flight time; moving across or away from the target takes his base out (an arm throw). Replaces the 1.15-1.6x step at 2.2 yd/s. Decided by ball against aim by platform (`scripts/diag/eyes/deep-split.ts`) and the ordering set < stepping in < drifting away < across the body; a set throw is unchanged. Never fitted to completions |
+ | `QB_BELIEVED_DEF` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-believed-def.test.ts`; game rows flat) | quarterback | `src/sim/behaviors/qb.ts` (`believe`, `seenTied`, in `window`, `screenDead`, `updateRush`), `src/sim/believed.ts` | set at first review. In pricing a throw he no longer reads each defender's true physical profile and exact ball-skills rating, or the sim's engagement record: body and ball skills are the position's typical values corrected toward the man's own by how well he knows the opponent (awareness and experience), fixed for the play; tied up is an offensive body within arm's length of the defender in his pictures. Decided by its own row (his priced chance against outcomes by defender quality, completion, INT); a loss is repaired by preparation as a mechanism, not by the leak |
+diff --git a/scripts/diag/escape/rhythm-check.ts b/scripts/diag/escape/rhythm-check.ts
+new file mode 100644
+index 00000000..02efbda6
+--- /dev/null
++++ b/scripts/diag/escape/rhythm-check.ts
+@@ -0,0 +1,45 @@
++// node --import tsx scripts/diag/escape/rhythm-check.ts [seed] [games] > rows.jsonl
++// Before footwork-keyed reads: are the installed break times (the read compiler's, from an unopposed run on this
++// engine; the QB's planReads) the times the routes actually break in games? One row per read receiver whose route
++// declares its break at a path vertex (BREAK_DECL) on a pass play: the concept, the coverage, the route, the
++// installed break (s after the snap) and the true one (the first tick his route runner is past that vertex), and
++// whether he was pressed. Passive.
++import { Rng } from '../../../src/core/rng.js';
++import { simulateGame } from '../../../src/game/game.js';
++import { generateTeam } from '../../../src/league/team.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { BREAK_DECL } from '../../../src/playbook/route-breaks.js';
++import { RouteRunner } from '../../../src/sim/behaviors/receiver.js';
++const orig = PlaySim.prototype.run;
++PlaySim.prototype.run = function (this: PlaySim) {
++  const sim: any = this; if (!sim.isPass) return orig.apply(this);
++  const tick = sim.tick.bind(sim);
++  let qb: any = null, snap: number | null = null, done = false;
++  const seen = new Map<any, { route: string; at: number; plan: number | null; true: number | null; pressed: boolean }>();
++  sim.tick = () => {
++    tick();
++    if (done) return;
++    const b: any = sim.qb.behavior;
++    if (b?.kind === 'qb-pass' && !qb) qb = b;
++    if (!qb) return;
++    if (snap === null && qb.snapAt !== undefined && sim.t >= qb.snapAt) snap = qb.snapAt;
++    if (snap === null) return;
++    if (sim.ball?.kind === 'air' || sim.qb.behavior !== qb) { done = true; return; }
++    for (const [r, pr] of qb.planReads ?? new Map()) {
++      const rr = r.behavior; if (!(rr instanceof RouteRunner)) continue;
++      const id = (rr as any).route?.id ?? null, d = id ? BREAK_DECL[id] : undefined;
++      if (!d || typeof d.at !== 'number') continue;
++      let row = seen.get(r);
++      if (!row) { row = { route: id, at: d.at, plan: pr.breakAt, true: null, pressed: false }; seen.set(r, row); }
++      if ((rr as any).pressContact) row.pressed = true;
++      if (row.true === null && (rr as any).idx > d.at) { row.true = +(sim.t - snap).toFixed(2); (row as any).abs = +sim.t.toFixed(2); (row as any).snap = snap; (row as any).qbBelief = +(qb.planBreakAt(r) ?? NaN).toFixed(2); }
++    }
++  };
++  const res = orig.apply(this);
++  const c = sim.offCall?.pass;
++  for (const [, row] of seen) console.log(JSON.stringify({ concept: c?.id ?? '?', coverage: sim.defCall?.coverage?.id ?? '?', ...row }));
++  return res;
++};
++const seed = Number(process.argv[2] ?? 101);
++const rng = new Rng(seed); const home = generateTeam(rng, 'Home', 'HOM'), away = generateTeam(rng, 'Away', 'AWY');
++for (let g = 0; g < Number(process.argv[3] ?? 4); g++) simulateGame(home, away, { seed: seed + g });
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 6140be33..eb1fd845 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -411,6 +411,12 @@ const KEY_MOVE_NOISE = 5;
+  * man): they doubled corner throws and put the added ones where a safety was a hard run from the ball (50% of routes
+  * targeted against the NFL's 8%; docs/reviews/2026-11-13-qb-pocket.md). */
+ const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
++/** PLAN_CLOCK (experimental, off; PLAN_CLOCK=1): DECLARED_BREAK's installed break time read on the play clock. The
++ * read compiler times each break as the sampled play's sim.t (from the start of the play); planBreakAt added the
++ * snap-secured time (0.3 s, GUN_SNAP ~0.5 s) to it again. On engine-68 (scripts/diag/escape/rhythm-check.ts, 157 read
++ * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s off, +0.10 s on. Where
++ * his forecast cannot place the break, the plan's time is the one his readiness waits for. */
++const PLAN_CLOCK = process.env.PLAN_CLOCK === '1';
+ const KEY_HOLD = 1.2;
+ /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
+ const BREAK_MARGIN = 0.35;
+@@ -1545,7 +1551,9 @@ export class QBPass implements Behavior {
+   /** DECLARED_BREAK: the break he holds for a man from the install: the plan's, in play time; null when it has none. */
+   private planBreakAt(r: Agent): number | null {
+     const rd = this.planReads.get(r);
+-    return rd && rd.breakAt !== null ? this.snapAt + rd.breakAt : null;
++    // PLAN_CLOCK: the compiler's break times are already on the play clock (its sampled sim.t), so adding the snap
++    // put every installed break 0.3-0.5 s late (the snap-secured time) in his belief.
++    return rd && rd.breakAt !== null ? (PLAN_CLOCK ? rd.breakAt : this.snapAt + rd.breakAt) : null;
+   }
+   /** DECLARED_BREAK: his picture has the man out and running on a route (acquired, placed on it or moving at a run). */
+   private seenRunning(sim: PlaySim, r: Agent): boolean {
