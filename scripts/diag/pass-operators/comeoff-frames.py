@@ -107,6 +107,12 @@ for path in args:
     R = [c for c in C if reach(c) is not None]
     l6 = [f for c in R for f in c['frames'] if max(0, reach(c) - 0.6) < f['dt'] <= reach(c)]
     print(f"       last 0.6 s before a reach ({len(R)}): QB speed p50 {q([f['qS'] for f in l6]):.2f}, away {q([f['qAway'] for f in l6]):.2f}, up {q([f['qUp'] for f in l6]):.2f} | rusher speed {q([f['rS'] for f in l6]):.2f}, closing {q([f['close'] for f in l6]):.2f}")
+    # Integration's split for (b): the rusher's last-0.6-s speed by the QB's speed at that frame (still / moving), and
+    # free frames 1.5-3 yd from the QB likewise. Cause or effect: does a rusher gather against a QB who is standing?
+    for name, G in [('last 0.6 s before a reach', l6), ('free, 1.5-3 yd from the QB', [f for f in fr if 1.5 < f['dq'] <= 3])]:
+        for lab, lo, hi in [('QB still (<0.5 yd/s)', 0, 0.5), ('QB slow (0.5-1.5)', 0.5, 1.5), ('QB moving (>1.5)', 1.5, 99)]:
+            g = [f for f in G if lo <= f['qS'] < hi]
+            print(f"   (b) {name}, {lab}: {len(g)} frames | rusher speed p25/50/75 {q([f['rS'] for f in g], .25):.2f}/{q([f['rS'] for f in g]):.2f}/{q([f['rS'] for f in g], .75):.2f} | closing p50 {q([f['close'] for f in g]):.2f}")
     # The QB lane's dozen: off the blocker, no help, reached.
     ids = [c['id'] for c in N if reach(c) is not None]
     print(f"   no help, reached ({len(ids)}): {' '.join(str(x) for x in ids[:max(12, nex)])}")

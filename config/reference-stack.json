@@ -198,6 +198,7 @@
     "TACKLE_RESET": "off",
     "RUSH_HANDS": "off",
     "FITTED_HANDS": "off",
+    "PASS_OFF": "off",
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",

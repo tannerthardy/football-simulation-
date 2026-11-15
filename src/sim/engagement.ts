@@ -3485,7 +3485,41 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
 }
 
 /** Defender wins: the hands come apart. Run sheds throw the blocker aside. */
+/** PASS_OFF (experimental, off; PASS_OFF=1): the pass-off. A pass rusher who beats his blocker while a helper's hands are
+ * on him (the helper's joint carried load last step: he feels the man on his hands) is the helper's man from there: the
+ * helper keeps him as his own block, as coached on a pass-off, instead of losing him with the beaten man's rep. The
+ * engagement goes on with the helper as its blocker and his own hands joint (a fresh fight: neither man in control, no
+ * hold carried over, the rusher's move state reset, his long-arm on the beaten man gone). The beaten blocker leaves it,
+ * with the ordinary 0.6 s before he can grab the same man again; then his own blocking decides whether he recovers to
+ * double him or finds other work, by what he sees. Off, beating the primary ended the rep for everyone on it: a helper
+ * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
+ * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
+export const PASS_OFF = process.env.PASS_OFF === '1';
+function passOff(sim: PlaySim, e: Engagement): boolean {
+  if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
+  const d = e.defender;
+  const keeper = e.helpers.find((h) => {
+    const j = e.helperHands?.get(h);
+    return !!j && !h.isDown(sim.t) && inBlockReach(h, d, 'pass') && (Math.max(0, j.normalForce ?? 0) > 0 || Math.abs(j.tangentForce ?? 0) > 0);
+  });
+  if (!keeper) return false;
+  const old = e.blocker, joint = e.helperHands!.get(keeper)!;
+  old.shedBy.set(d, sim.t + 0.6);
+  old.engagement = null;
+  if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
+  e.blocker = keeper; e.hands = joint;
+  e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
+  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
+  if (e.defHands) e.defHands.b = keeper.body;
+  syncJoints(sim, e);
+  keeper.tags.add('pass-off');
+  d.tags.add('shed');
+  sim.event('shed', d, old, 'pass: passed off');
+  return true;
+}
+
 function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, why = ''): void {
+  if (!run && passOff(sim, e)) return;
   const d = e.defender;
   const b = e.blocker;
   if (run) runContactObservers.get(sim)?.(e, 'end', { reason: why });
