@@ -357,3 +357,106 @@ is the blocker's stage. The snatch-back is the same.
 **Interior pressure is still high** (23.1% against base 10.9 and the NFL's about 9.8, with the release timing on the
 NFL's). By Integration's rule that is the come-off, and stage 1 is done. The come-off is the next measured question:
 the beaten blocker's ride, the next blocker's help, the QB's movement.
+
+## 7. After the release: the come-off, measured (2026-11-15, Integration's questions; diagnosis only)
+
+Operators, the same code on BDB 2022 (23,733 interior pairs) and our exports:
+- `interior-comeoff.py`: pairs and release exactly as interior-fight.py; from the release to the throw: reach (within
+  1.5 yd of the QB), path, what is near him at +0.3 / +0.5 s, and the QB's movement.
+- `late-sacker.py`: the late sack by who made it.
+
+Sim: seed 11 x 8 on the patch base, engine-67. Base, and FITTED_HANDS attempt 2 ("FH").
+
+**1. Release to the QB.**
+
+| | NFL | base | FH |
+|---|---|---|---|
+| interior pairs released | 63% | 49% | 65% |
+| of released, reached the QB before the throw | **8%** | 10% | **15%** |
+| reached, per pair | **4.8%** | 4.8% | **10.0%** |
+| release to reach p25 / 50 / 75 | 0.9 / 1.4 / 2.3 s | 1.0 / 1.3 / 1.5 | 1.1 / 1.3 / 1.6 |
+| path off his line to the QB over 0.5 s, p50; flattened past 45 deg | 40 deg; 45% | 39; 43% | 42; 44% |
+
+The base reaches the QB per pair at the NFL's rate (it releases less, and more of its releases get there). FH releases
+at the NFL's rate, and twice as many of its released rushers get there. The whole excess is after the release. The
+path out of the release is the same; the NFL's reachers take longer (p75 2.3 s against 1.6).
+
+**2. What stops a released NFL rusher.**
+
+| | NFL | base | FH |
+|---|---|---|---|
+| blocker within 1.2 yd at +0.3 / +0.5 s | 48 / 37% | 39 / 32% | 45 / 30% |
+| another OL within 1.0 yd by +0.5 s | 56% | 56% | 54% |
+| a back within 1.0 yd | 2% | 5% | 7% |
+| QB moved past 1.0 yd in 0.5 s | 44% | 34% | 37% |
+
+Split by whether his blocker is still on him at +0.5 s:
+
+| | NFL | base | FH |
+|---|---|---|---|
+| blocker still on (within 1.2 yd): reached | 12% | 13% | 14% |
+| **blocker off (past 1.2 yd): reached** | **7%** | 12% | **22%** |
+| blocker off: closing on the QB over 0.5 s, p50 | **-0.2 yd/s** | +0.2 | **+0.7** |
+| blocker off, help came (60 / 60 / 53% of them): reached; closing | 7%; -0.1 | 7%; +0.2 | 16%; +0.2 |
+| blocker off, no help: reached; closing | **8%; -0.4** | 20%; +0.5 | **28%; +1.0** |
+| ... and the QB moved past 1 yd: reached; closing | **9%; -1.4** | 27%; -0.2 | **41%; +0.2** |
+| ... and the QB still: reached; closing | 8%; +0.5 | 15%; +0.8 | 19%; +1.7 |
+| blocker off: release to throw p50 | 1.4 s | 1.2 | 1.3 |
+
+- A rusher still on his blocker reaches the QB at the NFL's rate in both arms.
+- The excess is the rusher who has got off his blocker. The NFL's reaches the QB 7% of the time, ours 22%, with
+  help as near (53 against 60%) and the same time to the throw.
+- The NFL's off-blocker rusher on average does not close on the QB at all (-0.2 yd/s); ours does (+0.7).
+- Two things carry it:
+  - **The QB's movement escapes him in the NFL and not in ours.** With no help, a QB who moves takes the NFL's rusher
+    off him (-1.4 yd/s; reached 9%). Ours keeps closing (+0.2) and reaches 41%: our QB's movement takes him along or
+    toward the rusher.
+  - **Help that arrives stops the NFL's rusher and only half-stops ours** (reached 7 against 16%, with help within
+    a yard).
+- Even unhelped against a still QB, ours closes faster (+1.7 against +0.5 yd/s).
+- By count, the off-blocker class is all of the excess: reached, per pair, 7.3% in FH against the NFL's 1.9%, the
+  5.2 points between FH and the NFL.
+
+**3. Whether a release means the same thing.** The aggregates agree:
+
+| | NFL | base | FH |
+|---|---|---|---|
+| fired by separation / by past-the-shoulder | 39 / 61% | 60 / 40% | 36 / 64% |
+| separation at it, p50 | 1.08 yd | 1.20 | 1.02 |
+| blocker at +0.3 s: clean (past 1.5) / at his hip (within 1.2) / between | 21 / 48 / 20% | 18 / 39 / 32% | 15 / 45 / 31% |
+
+Fourteen each (`--examples 14`, the first in file order) read the same way: NFL and FH releases are mostly a rusher
+past the shoulder at 0.7-1.0 yd with the blocker at 0.8-1.3 yd 0.3 s later; clean runners (blocker past 2 yd at
++0.5 s) are a few in each. FH moved the release's character from the base's (separation, a clean break) to the NFL's
+(past the shoulder, the blocker on his hip). The release gate did not pass on a label: the fight is not too decisive.
+What is too decisive is what happens after it.
+
+**4. The late sacks.** Of dropbacks alive at 3.0 s, ending with no forward pass behind the line, by the defender
+nearest the QB at the end (`late-sacker.py`):
+
+| | NFL | base | FH |
+|---|---|---|---|
+| alive at 3.0 s ending in a sack | 14.6% | 12.7% | 19.8% |
+| by an interior DL | **4.1%** | 5.7% | **14.0%** |
+| by an edge (other DL / LB) | **9.5%** | 6.6% | **5.8%** |
+
+The FH excess is all interior, from (2): the off-blocker rusher who keeps closing on a moving QB. The NFL's late sacks
+are mostly the edge's, and ours are short there in both arms. That is the late-sack gap the QB lane found (12 against
+4% on engine-66), and the hand fight does not touch it.
+
+**Edges.** The two-hand physics applies to every pass rep, but edge outcomes barely move (edge-rush.py, base -> FH):
+- wide-aligned: past outside at 2.0 s 7 -> 12%, inside 6 -> 5%;
+- very wide: 8 -> 8%, inside 1 -> 3%;
+- by top speed: the fastest third past outside 18 -> 19%;
+- edge pressure, % of dropbacks: past outside 1.1 -> 1.0, level / in front 5.3 -> 6.5, inside 8.2 -> 6.2.
+The stand-up edge at the deeper launch is being read (tackle-set-side.mts, roster 11, both drops, base / FH).
+
+**What follows** (Integration's two pieces, in this order on this evidence):
+1. **The come-off**, first: it is where the excess is.
+   - The QB's escape from a free interior rusher: his movement takes him toward or along the rusher in ours and away
+     in the NFL's. That is the QB lane's controller, the same finding as the edge sack's step-up, from the other side.
+   - The helper's pickup: as near as the NFL's, half as effective.
+   - The rusher's closing speed when free.
+   Each needs its own look on film before a build.
+2. **The blocker's anticipation stage**: acting before the arm starts, from the rusher's set-up he can see. Section
+   6's list, to be sourced.
