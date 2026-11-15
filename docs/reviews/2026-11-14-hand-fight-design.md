@@ -589,3 +589,6 @@ NFL's p75 (4.5-5.0) does not reach.
   - none was out of reach (within 1.0 yd for 8 frames p50).
   The pass-off does not touch these. Whether the free ones should have turned to him is the "looking for work"
   question: whom a free blocker watches and when.
+
+Noted, not built (Integration, 2026-11-15): the 25 free helpers facing away. As coached, a free lineman looks for work
+inside-out and helps the nearest threat. Whom a free blocker watches and when is its own question.
