@@ -1,5 +1,6 @@
 /** QB-local receiver estimate. Installed expectation is not measured progress. */
 import { clamp, type Vec2 } from '../core/vec.js';
+import { BREAK_DECL } from '../playbook/route-breaks.js';
 import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
@@ -18,6 +19,13 @@ export interface InstalledReceiverRoute {
   readonly profile: Readonly<PhysicalProfile>;
   readonly routeRunning: number;
   readonly effort: number;
+  /** DECLARED_BREAK: the route's declared break vertex (an index into `path`), when it has one. */
+  readonly breakIdx?: number;
+  /** DECLARED_BREAK: a route with no vertex (thrown seen open) declares on its rule instead: 5 yd moved with the line
+   * crossed (a back from the backfield needs no line), 12 yd of vertical, or the snap. `declLos` is the line it is
+   * timed against. */
+  readonly declRule?: 'moved' | 'vertical' | 'now';
+  readonly declLos?: number;
   readonly read?: RouteRead;
   readonly readContext?: { readonly los: number; readonly outside: number };
   readonly answers?: readonly InstalledAnswer[];
@@ -28,13 +36,16 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
   startDelay: number | null, profile: PhysicalProfile, routeRunning: number): InstalledReceiverRoute {
   const path = routePath(start, los, outside, route.points, route.end === 'continue', route.family);
   const read = installedRead(route);
-  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s, ...(p.ext ? { ext: true } : {}), ...(p.cut ? { cut: true } : {}) })));
+  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s, ...(p.ext ? { ext: true } : {}), ...(p.cut ? { cut: true } : {}), ...(p.finish ? { finish: true } : {}) })));
   const copiedRead = read ? Object.freeze({ ...read, answers: Object.freeze(read.answers.map(a => Object.freeze({ ...a,
     points: Object.freeze(a.points.map(p => Object.freeze({ ...p }))) }))) }) : undefined;
   return Object.freeze({ start: Object.freeze({ ...start }),
     path: freezePath(path),
     end: route.end, startDelay, profile: Object.freeze({ ...profile }), routeRunning,
     effort: routeEffort(route.family, routeRunning),
+    ...(DECLARED_BREAK && typeof BREAK_DECL[route.id]?.at === 'number' ? { breakIdx: BREAK_DECL[route.id].at as number } : {}),
+    ...(DECLARED_BREAK && BREAK_DECL[route.id] && typeof BREAK_DECL[route.id].at !== 'number'
+      ? { declRule: BREAK_DECL[route.id].at as 'moved' | 'vertical' | 'now', declLos: los } : {}),
     ...(copiedRead ? { read: copiedRead, readContext: Object.freeze({ los, outside }),
       answers: Object.freeze(copiedRead.answers.map(a => Object.freeze({ id: a.id, end: a.end,
         path: freezePath(routePath(start, los, outside, a.points, a.end === 'continue', route.family)) }))) } : {}) });
@@ -86,6 +97,22 @@ export const HOLD_TOL: Readonly<HoldTolerance> = Object.freeze({ stem: 1.2, afte
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
  * path with no slowed waypoint (a go or seam). */
+/** DECLARED_BREAK (experimental, off; src/playbook/route-breaks.ts): the break the quarterback expects on an installed
+ * route is its declared vertex, the same one the read plan times; off, the waypoint that slows him most. */
+const DECLARED_BREAK = process.env.DECLARED_BREAK === '1';
+/** DECLARED_BREAK: whether a body at `pos` has met a seen-open route's declare rule (the read compiler's own rule,
+ * features.ts: 5 yd from his start with the line crossed by 0.5 yd, a back excepted; 12 yd of vertical; the snap). */
+function ruleMet(prior: InstalledReceiverRoute, pos: Readonly<Vec2>): boolean {
+  const los = prior.declLos ?? prior.start.x, depth = pos.x - los;
+  if (prior.declRule === 'now') return true;
+  if (prior.declRule === 'vertical') return depth >= 12;
+  const back = prior.start.x <= los - 2;
+  return Math.hypot(pos.x - prior.start.x, pos.y - prior.start.y) >= 5 && (back || depth >= 0.5);
+}
+function priorBreak(prior: InstalledReceiverRoute): number | null {
+  return prior.breakIdx !== undefined ? prior.breakIdx : pathBreak(prior.path, prior.end);
+}
+
 export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
   let b: number | null = null;
   const last = end === 'settle' ? path.length - 1 : path.length;
@@ -142,8 +169,8 @@ export class ReceiverForecast {
    * inferred for an option route) has a break. */
   get hasBreak(): boolean {
     const c = this.build();
-    const r = c?.route ?? { path: this.prior.path, end: this.prior.end };
-    return pathBreak(r.path, r.end) !== null;
+    if (!c?.route || c.route.path === this.prior.path) return this.prior.declRule !== undefined || priorBreak(this.prior) !== null;
+    return pathBreak(c.route.path, c.route.end) !== null;
   }
 
   /** When he expects the receiver to make his break: the expected route run
@@ -206,8 +233,10 @@ export class ReceiverForecast {
     c.breakStep = null;
     // The break that counts is the expected route's: before the read only the
     // shared stem is run, so a break is looked for once the answer is active.
-    const brk = (on: boolean) => on ? pathBreak(c.route.path, c.route.end) : prior.read ? null : pathBreak(prior.path, prior.end);
-    let past = brk(selected) !== null && st.idx > brk(selected)!;
+    const brk = (on: boolean) => on ? (c.route.path === prior.path ? priorBreak(prior) : pathBreak(c.route.path, c.route.end)) : prior.read ? null : priorBreak(prior);
+    // DECLARED_BREAK: a seen-open route on its installed path breaks when the body he forecasts meets its rule.
+    const rule = (on: boolean) => prior.declRule !== undefined && (!on || c.route.path === prior.path);
+    let past = rule(selected) ? ruleMet(prior, body.pos) : brk(selected) !== null && st.idx > brk(selected)!;
     // Rebuild only when a longer horizon is requested, preserving exact prefixes.
     for (let i = 0; i < Math.max(70, steps + 1); i++) {
       // Anticipation selects a future answer, not permission to execute its
@@ -233,6 +262,10 @@ export class ReceiverForecast {
       }
       stepBody(body, cmd, this.dt);
       pts.push({ ...body.pos });
+      if (rule(selected)) {
+        if (c.breakStep === null && !past && ruleMet(prior, body.pos)) { c.breakStep = i + 1; past = true; }
+        continue;
+      }
       const b = brk(selected);
       if (c.breakStep === null && b !== null && !past && st.idx > b) c.breakStep = i + 1;
       if (b !== null && st.idx > b) past = true;
@@ -245,7 +278,7 @@ export class ReceiverForecast {
  * Ambiguous/contradicted progress falls back to the measured motion. The body
  * radius supplies a route-centre tolerance, not a collision-clearance promise. */
 function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: Readonly<HoldTolerance> = HOLD_TOL): number | null {
-  const brk = FORECAST_HOLD ? pathBreak(prior.path, prior.end) : null;
+  const brk = FORECAST_HOLD ? priorBreak(prior) : null;
   // Seeing a back at his installed starting spot does not reveal a private
   // protection/fake release. A departure can later supply progress evidence.
   if (prior.startDelay === null && Math.hypot(p.pos.x - prior.start.x, p.pos.y - prior.start.y) <= prior.profile.radius) return null;
