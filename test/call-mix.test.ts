@@ -6,8 +6,9 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
 const config = JSON.parse(readFileSync('config/call-mix.json', 'utf8'));
 
 describe('CALL_MIX: route-class preference by down and distance', () => {
-  it('is off by default', () => {
-    expect(CALL_MIX).toBe(false);
+  // Re-recorded on the engine defaults (2026-11-15): CALL_MIX was promoted at run-ref-20 (`=0` restores).
+  it('is on by default (promoted)', () => {
+    expect(CALL_MIX).toBe(true);
   });
 
   it('keeps the generated table equal to config/call-mix.json', () => {

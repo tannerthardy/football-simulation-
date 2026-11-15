@@ -62,7 +62,10 @@ describe('the front menu', () => {
     const early = calls('4-3', '11', { down: 1, distance: 10 }), third = calls('4-3', '11', { down: 3, distance: 8 });
     const even = (cs: DefensivePlayCall[]) => cs.filter((c) => c.front.id === 'even').length / cs.length;
     expect(even(third)).toBeGreaterThan(2 * even(early));
-    expect(early.some((c) => c.mug)).toBe(false);
+    // Re-recorded on the engine defaults (2026-11-15): MUG_CALLS calls A-gap mugs on every down at league rates (nickel
+    // 1st & 10 1.3%, 3rd & long 19%), not on third down only, so early mugs are rare rather than absent.
+    const mug = (cs: DefensivePlayCall[]) => cs.filter((c) => c.mug).length / cs.length;
+    expect(mug(early)).toBeLessThan(mug(third) / 3);
     expect(third.some((c) => c.mug)).toBe(true);
   });
   it('off: backers keep the front\'s installed techniques', async () => {

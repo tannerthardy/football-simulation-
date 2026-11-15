@@ -47,7 +47,9 @@ describe('OL_SPLITS / OL_STAGGER line alignment', () => {
     expect(depth('C')).toBeCloseTo(.43, 9); // clear of the line for the widest body (0.42)
     for (const s of ['LG', 'RG']) expect(depth(s)).toBeCloseTo(.83, 9);
     for (const s of ['LT', 'RT']) expect(depth(s)).toBeCloseTo(.98, 9);
-    expect(depth('Y')).toBeCloseTo(1.19, 9);
+    // Re-recorded on the engine defaults (2026-11-15): RECEIVER_DEPTH sets an inline end on the line at the tracked tight
+    // end depth (0.83, n 1,500), ahead of OL_STAGGER's installed 1.19.
+    expect(depth('Y')).toBeCloseTo(0.83, 9);
     expect(depth('Y')).toBeLessThan(depth('QB'));
     expect(Math.abs(y('RT'))).toBeCloseTo(2.6, 9);
   });
