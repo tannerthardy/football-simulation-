@@ -41,7 +41,7 @@ PlaySim.prototype.run = function (this: PlaySim) {
       const face = Math.cos(r.body.facing - Math.atan2(bp.y - r.pos.y, bp.x - r.pos.x)) > 0.5;
       if (face && rec.lookAt == null) rec.lookAt = +(sim.t - rec.rel).toFixed(2); rec.facing = face; }
     if ((sim.t >= rec.arriveAt - 1e-6 || sim.ball.kind !== 'air') && rec.last) { const b = rec.last, a = rec.aim, h = (p: any, q: any) => +Math.hypot(p.x - q.x, p.y - q.y).toFixed(1);
-      rec.arr = { miss: h(b, a), recToAim: h(r.pos, a), recToBall: h(r.pos, b), ballZ: +b.z.toFixed(1), defToBall: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - b.x, d.pos.y - b.y))).toFixed(1), early: +(rec.arriveAt - sim.t).toFixed(2), looking: !!rec.facing, lookAt: rec.lookAt ?? null }; } };
+      rec.arr = { miss: h(b, a), recToAim: h(r.pos, a), recToBall: h(r.pos, b), ballZ: +b.z.toFixed(1), defToBall: +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - b.x, d.pos.y - b.y))).toFixed(1), early: +(rec.arriveAt - sim.t).toFixed(2), looking: !!rec.facing, lookAt: rec.lookAt ?? null, ...(() => { const u = Math.atan2(r.vel.y, r.vel.x), dx = b.x - r.pos.x, dy = b.y - r.pos.y; return { along: +(dx * Math.cos(u) + dy * Math.sin(u)).toFixed(2), across: +(-dx * Math.sin(u) + dy * Math.cos(u)).toFixed(2) }; })() }; } };
   sim.tick = () => {
     const b: any = sim.qb.behavior;
     if (mode === 'force' && b?.kind === 'qb-pass' && hooked !== b) {

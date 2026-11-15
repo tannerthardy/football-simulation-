@@ -7,7 +7,10 @@
  * samples' angles from his eyes (bearing and elevation, to under a degree), at his own visuomotor delay:
  *  - along his line: his speed changes with the optical acceleration of tan(elevation) (OAC): positive (the image
  *    speeding up) means the ball will carry past him, so he speeds up; negative, he throttles;
- *  - across: his heading turns with the drift of the ball's bearing (constant bearing).
+ *  - across: he accelerates perpendicular to his line of sight in proportion to the drift of the ball's bearing times
+ *    his closing speed on it (constant bearing as proportional navigation, N = 3; Zarchan, Tactical and Strategic
+ *    Missile Guidance: N > 2 to converge, 3-5 in use). A heading-rate form of the same law has the wrong sign when the
+ *    ball comes from behind him (attempt 1 fault 4, 2026-11-15).
  * No change in the image means no change in his running: an on-target ball leaves him on his line. The filter is a
  * least-squares fit over his last SERVO_WINDOW of samples (smooth pursuit), never a deadband step. Too few samples, or
  * too little time left for a reaction and a step, and the servo hands over: he holds his running and his hands do the
@@ -27,12 +30,12 @@ export const SERVO_MIN_SAMPLES = 8, SERVO_MIN_SPAN = 0.5;
 /** Handover (s): with less than a reaction and a step left there is nothing to servo (choice). */
 export const SERVO_HANDOVER = 0.35;
 /** Gains (stated choices; no published gain maps to yd and s; sensitivity read at half and double).
- * Depth: yd of acceleration per unit of optical acceleration of tan(elevation) (1/s^2). Lateral: heading rate per
- * bearing rate (dimensionless). */
+ * Depth: yd of acceleration per unit of optical acceleration of tan(elevation) (1/s^2). Lateral: the navigation
+ * constant N in tenths (30 = 3, sourced above; read at 2 and 4). */
 export const SERVO_K_DEPTH = Number(process.env.BALL_SERVO_KD ?? 15);
-export const SERVO_K_LAT = Number(process.env.BALL_SERVO_KB ?? 15) / 10;
+export const SERVO_K_LAT = Number(process.env.BALL_SERVO_KB ?? 30) / 10;
 
-type Angle = { t: number; az: number; el: number };
+type Angle = { t: number; az: number; el: number; rg?: number };
 const wrap = (d: number) => { while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; return d; };
 
 /** Least-squares polynomial (degree 1 or 2) of y(t) about the last time; returns coefficients [c0, c1, c2]. */
@@ -50,23 +53,25 @@ function fit(ts: number[], ys: number[], degree: 1 | 2): number[] {
 }
 
 /** What the servo reads from his recent samples: the optical acceleration of tan(elevation) and the bearing rate. */
-export function imageRates(angles: Angle[], now: number): { optAcc: number; bearingRate: number } | null {
+export function imageRates(angles: Angle[], now: number): { optAcc: number; bearingRate: number; bearing: number; closing: number } | null {
   const w = angles.filter((q) => q.t >= now - SERVO_WINDOW - 1e-9);
   if (w.length < SERVO_MIN_SAMPLES || w[w.length - 1].t - w[0].t < SERVO_MIN_SPAN) return null;
   const ts = w.map((q) => q.t), tan = w.map((q) => Math.tan(clamp(q.el, -1.4, 1.4)));
   const az: number[] = [w[0].az];
   for (let i = 1; i < w.length; i++) az.push(az[i - 1] + wrap(w[i].az - w[i - 1].az));
-  return { optAcc: 2 * fit(ts, tan, 2)[2], bearingRate: fit(ts, az, 1)[1] };
+  const azFit = fit(ts, az, 1), rgs = w.map((q) => q.rg ?? NaN), closing = rgs.every(Number.isFinite) ? -fit(ts, rgs, 1)[1] : 0;
+  return { optAcc: 2 * fit(ts, tan, 2)[2], bearingRate: azFit[1], bearing: azFit[0], closing };
 }
 
 /** The servo's own commanded running (speed, heading), held between ticks: "no correction" keeps what he intended,
  * not what his body achieved (a speed lost to a turned hip must not lower the next command, or every loss compounds). */
-const held = new WeakMap<Agent, { speed: number; heading: number; t: number; flight: unknown }>();
+const held = new WeakMap<Agent, { vx: number; vy: number; t: number; flight: unknown }>();
 
 /** His running command under the ball. While the image is not yet readable (too few samples) or within the handover,
  * null: the caller keeps his route / holds his running. Otherwise his commanded running, seeded from `base` (his route
  * command) when the servo engages and changed as a rate by the image: dv/dt = SERVO_K_DEPTH x optical acceleration,
- * heading rate = SERVO_K_LAT x bearing rate. His legs (acceleration, braking, the facing cap) bound what he gets. */
+ * a_across = N x closing x bearing rate. Each is capped at what his legs can do (lateral, brake, vmax / tau), so the
+ * command never winds up past his body; his legs (and the facing cap) bound what he gets. */
 export function servoCommand(a: Agent, angles: Angle[], now: number, left: number, base: MoveCommand, flight: unknown): MoveCommand | null {
   if (left < SERVO_HANDOVER) return null;
   const r = imageRates(angles, now);
@@ -74,12 +79,20 @@ export function servoCommand(a: Agent, angles: Angle[], now: number, left: numbe
   let st = held.get(a);
   if (!st || st.flight !== flight) {
     const v = Math.hypot(base.vel.x, base.vel.y) > 1 ? base.vel : a.vel;
-    st = { speed: Math.hypot(v.x, v.y), heading: Math.atan2(v.y, v.x), t: now, flight };
+    st = { vx: v.x, vy: v.y, t: now, flight };
     held.set(a, st);
   }
   const dt = clamp(now - st.t, 0, 0.1);
   st.t = now;
-  st.speed = clamp(st.speed + SERVO_K_DEPTH * r.optAcc * dt, 0, a.profile.vmax);
-  st.heading += clamp(SERVO_K_LAT * r.bearingRate, -2, 2) * dt;
-  return { vel: { x: Math.cos(st.heading) * st.speed, y: Math.sin(st.heading) * st.speed } };
+  const sp = Math.hypot(st.vx, st.vy), ux = sp > 0.1 ? st.vx / sp : Math.cos(r.bearing), uy = sp > 0.1 ? st.vy / sp : Math.sin(r.bearing);
+  // Across: proportional navigation, perpendicular to his line of sight in the world (sign-correct with the ball behind
+  // him, where a heading-rate law turns him away). Along: OAC. Each bounded by what his legs can do (no wind-up).
+  const nx = -Math.sin(r.bearing), ny = Math.cos(r.bearing);
+  const aLat = clamp(SERVO_K_LAT * Math.max(0, r.closing) * r.bearingRate, -a.profile.lateral, a.profile.lateral);
+  const aDep = clamp(SERVO_K_DEPTH * r.optAcc, -a.profile.brake, a.profile.vmax / a.profile.tau);
+  let vx = st.vx + (aLat * nx + aDep * ux) * dt, vy = st.vy + (aLat * ny + aDep * uy) * dt;
+  const s2 = Math.hypot(vx, vy);
+  if (s2 > a.profile.vmax) { vx *= a.profile.vmax / s2; vy *= a.profile.vmax / s2; }
+  st.vx = vx; st.vy = vy;
+  return { vel: { x: vx, y: vy } };
 }

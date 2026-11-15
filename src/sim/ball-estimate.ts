@@ -353,14 +353,14 @@ export class BallEstimates {
 
   /** His own samples of this flight as angles from his eyes (sim time of each look, azimuth, elevation): what the feet
    * servo reads. Angles carry only his bearing error; range error lies along the line of sight. */
-  anglesOf(a: Agent): Array<{ t: number; az: number; el: number }> {
+  anglesOf(a: Agent): Array<{ t: number; az: number; el: number; rg: number }> {
     const tr = this.tracks.get(a);
     if (!tr || tr.flight !== this.flight) return [];
-    const out: Array<{ t: number; az: number; el: number }> = [];
+    const out: Array<{ t: number; az: number; el: number; rg: number }> = [];
     for (const q of tr.samples) {
       if (!q.eye || q.at === undefined) continue;
-      const dx = q.p.x - q.eye.x, dy = q.p.y - q.eye.y, dz = q.p.z - q.eye.z;
-      out.push({ t: q.at, az: Math.atan2(dy, dx), el: Math.atan2(dz, Math.max(0.3, Math.hypot(dx, dy))) });
+      const dx = q.p.x - q.eye.x, dy = q.p.y - q.eye.y, dz = q.p.z - q.eye.z, rg = Math.hypot(dx, dy);
+      out.push({ t: q.at, az: Math.atan2(dy, dx), el: Math.atan2(dz, Math.max(0.3, rg)), rg });
     }
     return out;
   }
