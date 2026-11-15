@@ -128,3 +128,50 @@ QB_TICK_PICTURE=1 in both arms).
   brought him back to it (3.55-3.95 s), or took the back at 3.5 s. That is the install's EARLY fault
   ([the beat list](2026-11-15-beat-vs-ready.md), for Rules' drop marking), and stage two's veteran holding a beat on
   what he sees. It is not a reason to loosen stage one (Integration's ruling).
+
+## Bit 1 with the hitch as a base reset, against #780's marking (2026-11-15)
+
+**Integration's ruling, and the build (139dac55).** The hitch is a base reset at depth, one stride of his own drop:
+the drop's time over its taught steps. It is turned to the read; the forward version belongs to bit 4's pressure
+decision. The paired staged set used CONCEPT_DROPS=1 with #780's COACHED_DROP, in a scratch worktree (not committed).
+
+Paired staged results:
+
+| Concept | Yd/play off / step-up / reset | Sacks off / step-up / reset | throw_held off / reset |
+| --- | --- | --- | --- |
+| dagger | 6.84 / 6.14 / 6.57 | 13 / 26 / 16 | 1 / 1 |
+| mesh | 11.32 / 13.34 / 14.98 | 7 / 18 / 12 | 0 / 5 |
+| smash | 8.19 / 7.35 / 8.08 | 15 / 21 / 21 | 2 / 3 |
+| drive | 12.28 / 13.47 / 14.44 | 2 / 4 / 4 | 1 / 2 |
+| double_outs | 9.45 / 12.82 / 12.72 | 1 / 2 / 1 | 1 / 1 |
+| flood | 13.16 / 19.98 / 19.44 | 4 / 7 / 5 | 4 / 5 |
+
+Flood's gain is a coverage fault: the dig, 27 yd a throw at 86%, sent to Defense.
+
+**What remains is LATE marking: a beat that trails an open route.**
+- Smash's keyed hitch/corner is on the five-step hitch, so the key's low (the hitch, ready 2.0 s) waits for a landing
+  at about 2.7 s. On 6 of its 9 new sacks the off arm threw it at 2.2 s.
+- Mesh's read 2 (the mesh_under, ready about 2.1 s) is on the second hitch at 3.3 s. On all 6 new sacks the off arm
+  threw it at 2.7-3.3 s.
+
+**Trajectories (games, unpaired, about 240 gun dropbacks a side):**
+
+| | Net upfield plant -> release p25/50/75/90 (yd) | Plays with a hitch run |
+| --- | --- | --- |
+| NFL | -0.15 / 0.00 / +0.12 / +0.93 | 21% |
+| Off | -0.04 / +0.04 / +0.41 / +1.50 | 27% |
+| Reset | -0.03 / +0.03 / +0.48 / +1.60 | 30% |
+
+The excess over the NFL is the existing pocket spring and edge climb (bit 4's to replace), not bit 1.
+
+Plant to release, like with like, p25/50/75 (s):
+
+| | Short gun drops | 3.5-6 yd gun drops |
+| --- | --- | --- |
+| NFL | 0.2 / 0.5 / 0.7 | 0.3 / 0.6 / 1.1 |
+| Off | 0.3 / 0.6 / 1.0 | 0.6 / 0.8 / 1.1 |
+| Bit 1 | 0.3 / 0.7 / 1.1 | 0.5 / 1.2 / 1.5 (n 24) |
+
+- On deeper drops the five-step beat (set + 0.8) plus the windup releases about 0.6 s later than the NFL's median, on a
+  small cell.
+- He still releases set (under 1 yd/s) on 98% of short drops (NFL 60%): the in-place gather is a stop.
