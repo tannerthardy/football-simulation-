@@ -700,12 +700,20 @@ export class QBPass implements Behavior {
   private placeSteps: { n: number; beat: number }[] = [];
   private outletStep: { agent: Agent; n: number; beat: number } | null = null;
   /** The step a read is installed on, by its place in his current order (the coached rule is by place: read 1 on the
-   * set, read 2 on the hitch; a key read reorders the reads, so a receiver's step is not fixed). The outlet keeps his. */
+   * set, read 2 on the hitch; a key read reorders the reads, so a receiver's step is not fixed). The two routes of a
+   * keyed high-low share one place (Rules + Coaching, #780: one look on one beat). The outlet keeps his. */
   private stepOf = { get: (r: Agent | undefined): { n: number; beat: number } | undefined => {
     if (!r || !this.placeSteps.length) return undefined;
     if (this.outletStep && r === this.outletStep.agent) return this.outletStep;
     const i = this.reads.indexOf(r);
-    return i < 0 ? undefined : this.placeSteps[Math.min(i, this.placeSteps.length - 1)];
+    if (i < 0) return undefined;
+    // A keyed high-low is one look on one beat (the key picks the answer; the feet do not advance between the two).
+    const k = this.plan?.key, isKey = (x: Agent) => !!k && (x === k.low || x === k.high);
+    let place = -1, keyPlace = -1;
+    for (let j = 0; j <= i; j++) {
+      if (isKey(this.reads[j])) { if (keyPlace < 0) keyPlace = ++place; } else place++;
+    }
+    return this.placeSteps[Math.min(isKey(r) ? keyPlace : place, this.placeSteps.length - 1)];
   } };
   private landedSteps = 0;
   private step: { n: number; to: Vec2; since: number; landed: boolean } | null = null;
