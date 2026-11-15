@@ -264,6 +264,7 @@
     "MIRROR_REF": "0",
     "SET_SPOT": "0",
     "SET_SPOT_TACKLE": "0",
+    "POCKET_LEVEL": "0",
     "PASS_RIDE": "0",
     "BAT_ONCE": "0",
     "BALL_CUE_OWN": "0",

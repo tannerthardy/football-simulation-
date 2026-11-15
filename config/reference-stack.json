@@ -209,6 +209,7 @@
     "MIRROR_REF": "off",
     "SET_SPOT": "off",
     "SET_SPOT_TACKLE": "off",
+    "POCKET_LEVEL": "off",
     "PASS_RIDE": "on",
     "BAT_ONCE": "on",
     "BALL_CUE_OWN": "on",

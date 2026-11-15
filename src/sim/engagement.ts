@@ -205,12 +205,46 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   const snapDepth = sim.los - (sim.snapX[b.idx] ?? b.pos.x);
   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
   // front. Further ground is what the rusher wins against him, not his request.
-  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, snapDepth + SHORT_SET);
+  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) {
+    const short = Math.min(pocket, snapDepth + SHORT_SET);
+    // POCKET_LEVEL: then level with the pocket, a request with a pace (his neighbors'), bounded by the short set and
+    // the pocket's front from the call.
+    const level = POCKET_LEVEL ? pocketLevelDepth(sim, b) : null;
+    return level === null ? short : Math.min(pocket, Math.max(short, level));
+  }
   // SET_SPOT_TACKLE: his own set is the three-step vertical set as taught, no deeper than the pocket's front from the
   // call. Further depth is the rusher's: the kick keeps him deeper than the man up his arc (PASS_KICK), never past the
   // launch point he knows from the call.
   if (SET_SPOT_TACKLE && tackle) return Math.min(pocket, snapDepth + TACKLE_STEPS);
   return pocket;
+}
+/** POCKET_LEVEL (experimental, off; POCKET_LEVEL=1, needs SET_SPOT): the interior set's second phase. The NFL's
+ * uncovered guard or center goes back 0.2 / 0.9 / 1.9 / 2.9 yd at 0.5 / 1.0 / 1.5 / 2.0 s with nobody on him, as far as
+ * an engaged one (0.2 / 0.8 / 1.7 / 2.7; ol-set-depth.py --uncovered): the retreat is his set, keeping level with the
+ * pocket, not the push. The pocket is the cup the line forms around the launch point he knows from the call, never
+ * the QB.
+ * - **"Level with":** his distance from the launch point matches the median of three distances: his two neighbors'
+ *   (as he sees them, beside him) and the tackles' mean (the honest tackles set the pocket's edges from the rusher and
+ *   the call).
+ * - **One outlier doesn't drag him:** a neighbor beaten cleanly is outvoted. A stunt, or two men driven back together,
+ *   moves the median.
+ * - **His target** is the point at that distance from the launch point at his own width, no shallower than his short
+ *   set and no deeper than the pocket's front.
+ * - **The pace** is the set's own track and the rep's kick toward it. Engaged, he gives that ground under control with
+ *   his man in front (stepPassRep's lateral reference is unchanged).
+ * Null when it gives no depth (his neighbors still at the line). */
+export const POCKET_LEVEL = process.env.SET_SPOT === '1' && process.env.POCKET_LEVEL === '1';
+const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
+function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {
+  const L = protectPoint(sim), i = LINE_ORDER.indexOf(b.slot);
+  const at = (slot: string) => { const n = sim.slot(slot); if (!n) return null; const p = sim.see(b, n).pos; return Math.hypot(p.x - L.x, p.y - L.y); };
+  const nA = at(LINE_ORDER[i - 1]), nB = at(LINE_ORDER[i + 1]), lt = at('LT'), rt = at('RT');
+  const tk = lt !== null && rt !== null ? (lt + rt) / 2 : lt ?? rt;
+  const r = [nA, nB, tk].filter((v): v is number => v !== null).sort((u, v) => u - v);
+  if (!r.length) return null;
+  const R = r[Math.floor((r.length - 1) / 2)], dy = b.pos.y - L.y;
+  if (R <= Math.abs(dy)) return null;
+  return sim.los - (L.x + Math.sqrt(R * R - dy * dy));
 }
 /** SET_SPOT_TACKLE: the tackle's vertical set, three set steps (yd). */
 const TACKLE_STEPS = 3 * 0.45;

@@ -61,6 +61,5 @@ for (const [a, c] of BINS) {
   const eng = R.filter((r) => r.eng).length / Math.max(1, R.length), up = R.filter((r) => r.up).length / Math.max(1, R.length);
   console.log(`  ${a.toFixed(1)}-${c.toFixed(1)} s (${R.length}): pair toward the QB ${f('pair').toFixed(2)} yd/s, rusher asks ${f('rq').toFixed(2)} | felt rusher ${f('dFelt').toFixed(0)} / blocker ${f('bFelt').toFixed(0)} | lean rusher ${f('dLean').toFixed(0)} of capacity ${f('dCap').toFixed(0)} / blocker ${f('bLean').toFixed(0)} | posture rusher ${f('dPost').toFixed(2)} / blocker ${f('bPost').toFixed(2)} | blocker depth ${f('depth').toFixed(2)} yd | engaged ${(100 * eng).toFixed(0)}%, both up ${(100 * up).toFixed(0)}%`);
   for (const [lab, S] of [['no move', R.filter((r) => r.move === 'none' || !r.moveIn)], ['bull in flight', R.filter((r) => r.move === 'bull' && r.moveIn)], ['other move in flight', R.filter((r) => r.move !== 'bull' && r.move !== 'none' && r.moveIn)]] as [string, any[]][])
-    void 0;
     console.log(`      ${lab.padEnd(21)} ${(100 * S.length / Math.max(1, R.length)).toFixed(0)}%: pair ${f('pair', S).toFixed(2)} | rusher asks ${f('rq', S).toFixed(2)} | felt ${f('dFelt', S).toFixed(0)} | lean rusher ${f('dLean', S).toFixed(0)} / blocker ${f('bLean', S).toFixed(0)}`);
 }
