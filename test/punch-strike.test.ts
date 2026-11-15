@@ -49,7 +49,11 @@ const alone = (strike: string) => ({ PUNCH_STRIKE: strike, ANCHOR_BASE: '0', PUR
 
 describe('PUNCH_STRIKE', () => {
   it('punched and held the touch: the right guard is not pitched over by the spin that drops the guard who keeps driving', async () => {
-    const off = await falls(alone('0'), 2), on = await falls(alone('1'), 2);
+    // Re-pinned on engine-68 (ENGAGE_TRUNK and CHEST_SHOULDERS on) from roster 2 to roster 10, cover 2 seed 5: with the
+    // engaged trunk, roster 2's guard is no longer spun down. A scan of cover 2 / 1 / 3 x 8 seeds x 12 rosters found 6
+    // interior spin falls with PUNCH_STRIKE off; on, 5 of them stay up (cover2 5/10, cover2 1/6, cover2 2/3 (LG),
+    // cover1 5/10, cover1 1/5) and one still falls (cover1 5/8).
+    const off = await falls(alone('0'), 10), on = await falls(alone('1'), 10);
     expect(off.some((f: any) => f.slot === 'RG' && f.move === 'spin')).toBe(true);
     expect(on.some((f: any) => f.slot === 'RG')).toBe(false);
   });
@@ -73,7 +77,7 @@ describe('PUNCH_STRIKE', () => {
     // 0.6 of that press in the 0.3 s before. Requirement: at least one exists on the current stack.
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
-    vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
+      vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     const OL = ['LT', 'LG', 'C', 'RG', 'RT'];
