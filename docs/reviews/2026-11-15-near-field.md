@@ -178,3 +178,27 @@ One seed: `=1` moves YAC by +0.19 and the card's rush row by +0.6 on one seed (t
 attempt from 8.7 to 10.9. That is the cost of defenders who read the carrier at their sides and behind from a coarse picture with no velocity: the pursuit angle and the tackle are late, and the yards after the catch
 grow by three yards. Bit 2 is far too large a change to land as a perception detail; it needs the defenders' reads designed for coarse pictures (a tracked, attended picture of the man he is pursuing, as `sim.track`
 gives, rather than the plain gated one) before it can be judged on its own merits.
+
+## 12. Stage 2: the head wants, ordered by how often the consumer would be blind without one (`near-field-blind.mts`, 7 dropback concepts and 6 runs, 4 seeds, 0.1 s samples, body facing as the head)
+
+The share of samples in which the thing a consumer reads lies outside +-95 deg of his body facing (the sim's head by default):
+
+| Order | Head want (consumer to target) | Outside the field | n | Whose |
+| --- | --- | --- | --- | --- |
+| 1 | receiver to the QB, on the route with the ball held (`receiver.ts` 288, 378, 474, 495, 500, 787) | **73%** | 5,872 | Rules / receiver |
+| 2 | back to the nearest defender within 6 yd (flow, the second level) | 65% | 1,051 | Run Game |
+| 3 | run blocker to his lineman teammate within 3.5 yd (combo mate, `blocking.ts` 670, 3193, 3378, 3476) | 43% | 5,019 | Flex |
+| 4 | receiver to the defender he is beating, within 12 yd (get-off, release side, the crosser scan: `receiver.ts` 141, 309, 413, 616, 627, 673) | 37% | 5,710 | Rules / receiver |
+| 5 | run blocker to the down lineman within 3 yd (an unengaged man) | 23% | 4,845 | Flex |
+| 6 | QB to the nearest defender within 6 yd (rush, `felt()`) | 15% | 1,364 | **QB lane** |
+| 7 | pass blocker to the nearest rusher within 4 yd, free of a block (the twist scan: `blocking.ts` 2727, 2728, 2949) | 14% | 6,552 | Flex |
+| 8 | run blocker to the second-level man within 9 yd (the climb: `blocking.ts` 3379, 3508, 3727, 3758) | 13% | 5,280 | Flex |
+| 9 | QB to each other receiver on a progression (`qb.ts` 1627, 1660, 2300, 2568, 2577, 2626, 2629, 2679) | 10% | 7,340 | **QB lane** (his progression) |
+
+Not measured here (the relation needs a play-level assignment this probe does not read): a puller's kick-out man and his hole (`blocking.ts` 2427, 2818); the handoff mesh (`assign.ts` 556, `qb.ts` 2828, 2850); a downfield
+blocker's pursuer (`receiver.ts` 849, 873); a screen blocker's lane (`screen.ts` 86, 102, 217, 304); the carrier's open-field defender read (`open-field.ts`) and the play-action look (`pa-look.ts`); the QB's coverage shell
+read (`qbmind.ts` 420, 429, 485: the QB lane's). The ball itself is `BALL_EST`'s and `HEAD`'s own want already.
+
+The first want dominates: a receiver running a route faces away from the QB 73% of the time, so a gated receiver that reads the QB's position for facing and settling is blind without a head want to the QB (turned at the
+break, as a receiver does). The QB's two rows (6, 9) go to the QB lane's eyes-and-feet design, since his head wants are his progression. The roughly 20 wants are these nine families plus the unmeasured ones; the counts above say
+where a gated offence would be blind first.
