@@ -42,7 +42,7 @@ import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
-import { calledLaunchX, calledPocketX } from './called-drop.js';
+import { calledLaunchX } from './called-drop.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
@@ -198,19 +198,22 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   const tackle = b.slot === 'LT' || b.slot === 'RT';
   const clearance = tackle ? 2.8 : 3.8;
   // SET_SPOT: from the call (the drop he knows is coming), or the QB's alignment at the snap; never the QB's live
-  // position behind him.
-  // The tackle's clearance follows the called drop's schedule (where the call puts the QB now), as the live QB did; the
-  // final launch point from the snap sent him 5 yd deep at once (SET_SPOT's first tackle read).
-  // SET_SPOT_TACKLE (with SET_SPOT): the tackle's clearance from the call's schedule too. Without it the tackle keeps the
-  // live-QB read (a known leak, kept: from the call he sets about a yard deeper; hand-fight note section 23).
+  // position behind him. The tackles keep the live read unless SET_SPOT_TACKLE (KNOWN_PROBLEMS PRO-INFO #12).
   const fromCall = SET_SPOT && (!tackle || SET_SPOT_TACKLE);
-  const qx = fromCall ? (tackle ? calledPocketX(sim, sim.t) : calledLaunchX(sim)) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
+  const qx = fromCall ? calledLaunchX(sim) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
   const pocket = Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
+  const snapDepth = sim.los - (sim.snapX[b.idx] ?? b.pos.x);
   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
   // front. Further ground is what the rusher wins against him, not his request.
-  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, sim.los - (sim.snapX[b.idx] ?? b.pos.x) + SHORT_SET);
+  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, snapDepth + SHORT_SET);
+  // SET_SPOT_TACKLE: his own set is the three-step vertical set as taught, no deeper than the pocket's front from the
+  // call. Further depth is the rusher's: the kick keeps him deeper than the man up his arc (PASS_KICK), never past the
+  // launch point he knows from the call.
+  if (SET_SPOT_TACKLE && tackle) return Math.min(pocket, snapDepth + TACKLE_STEPS);
   return pocket;
 }
+/** SET_SPOT_TACKLE: the tackle's vertical set, three set steps (yd). */
+const TACKLE_STEPS = 3 * 0.45;
 /** SET_SPOT: the interior short set, two set steps (yd; about 16 in each). */
 const SHORT_SET = 2 * 0.45;
 
@@ -232,10 +235,12 @@ const SHORT_SET = 2 * 0.45;
  * - **Tackles.** They keep their own kick and, unless SET_SPOT_TACKLE, the live-QB read: a known leak, owed
  *   (KNOWN_PROBLEMS PRO-INFO #12). */
 export const SET_SPOT = process.env.SET_SPOT === '1';
-/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed too, their clearance and the
- * point they protect from the called drop's schedule (calledPocketX). Two attempts did not repair it (tackles 4.6 yd deep
- * at 2 s against the NFL's 3.7, edge level/in-front pressure 6.5% -> 12-17% of dropbacks): the call's launch depth sits
- * about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor. */
+/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed (attempt 3, a different
+ * mechanism; Integration, 2026-11-15). He takes the three-step vertical set off his snap spot, and further depth is
+ * paced by the rusher: PASS_KICK keeps him deeper than the man up his arc. The call is the floor only: the launch
+ * point he protects and the pocket's front. Two call-only spots failed before (the final launch point from the snap,
+ * then the called drop's schedule): tackles set 4.6-5.0 yd deep at 2 s against the NFL's 3.7. Never from the QB's
+ * measured depth (the QB lane is rebuilding the drop). */
 export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
 /** SET_SPOT: his lateral target and its share of the rusher's lateral motion: inside-out on the man, where the
  * rusher's line to the launch point crosses his own depth, fed forward by that point's own motion (frac of the

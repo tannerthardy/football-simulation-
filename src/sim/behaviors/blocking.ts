@@ -422,7 +422,9 @@ export class PassProtector implements Behavior {
       // rusher, retreating out of punching range all the way to the launch
       // point (the old start law hid this by making the tackle lag his spot).
       const floor = TACKLE_SET ? tackleFloor(sim) : null;
-      const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+      // SET_SPOT_TACKLE: setDepth already counts from his snap spot (the three-step set).
+      const ownSet = SET_SPOT_TACKLE ? sim.los - setDepth : sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
+      const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, ownSet));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
       if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
