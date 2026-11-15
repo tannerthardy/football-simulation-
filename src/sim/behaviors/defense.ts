@@ -852,6 +852,31 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
   if (Math.abs(angleDiff(facing, toQB)) < 1e-6) carryState.delete(a);
   return facing;
 }
+/** CORNER_DROP (experimental, off; CORNER_DROP=1 turns it on; needs CARRY_POSTURE=1 and DIR_CAP=1;
+ * docs/reviews/2026-11-15-corner-drop-design.md): a deep-third corner in a zone call drops on the snap. Taught: the
+ * Cover-3 corner clears a quick run/pass key and sinks with a bail to the outside third (Bleacher Report, NFL 101:
+ * Cover 3; Steelers Depot, Football 101: Bail Technique). Before, before his receiver's release was in his picture he
+ * played the match carry's man pedal, holding the off-man cushion and giving ground only as the stem came: first
+ * request above 1 yd/s at 0.70 s, 1.45 yd/s at 1.0 s (engine-68), where the deep safeties request a sprint at 0.15 s.
+ * With it, from his snap reaction he drops toward his landmark's depth at the deep zone drop's pace (zs), in the bail's
+ * half turn to the outside (CARRY_POSTURE's 45 deg) with his head on the QB, until he sees the release; then the match
+ * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
+ * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
+export const CORNER_DROP = process.env.CORNER_DROP === '1';
+function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
+  return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
+}
+function cornerDrop(a: Agent, sim: PlaySim, zone: string): MoveCommand {
+  const lm = zoneLandmark(zone as ZoneId, sim.offAlign);
+  const qb = sim.see(a, sim.qb).pos, toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  // The bail opens to the outside: the half turn whose facing points away from the ball's side of the field.
+  const out = Math.sign(a.pos.y - sim.ballY) || 1;
+  const f1 = toQB + CARRY_BAIL, f2 = toQB - CARRY_BAIL;
+  const facing = Math.sin(f1) * out >= Math.sin(f2) * out ? f1 : f2;
+  const zs = 0.65 + 0.2 * a.r('zoneCoverage');
+  const cmd = goTo(a, { x: Math.max(lm.x, a.pos.x), y: lm.y }, { speed: zs, facing });
+  return withFacingTechnique(lookJoints(a, cmd, facing, angleDiff(facing, toQB), true), { label: 'corner-drop' });
+}
 /** CARRY_POSTURE attempt 3: a deep zone defender with no vertical to carry reads the deepest threat in his band (as he
  * sees it) and opens toward it by readOpen, head on the QB (lookJoints); with no threat he stays as his technique asks. */
 function deepReadPosture(a: Agent, sim: PlaySim, threats: { pos: Vec2 }[], zone: string, cmd: MoveCommand): MoveCommand {
@@ -1332,6 +1357,11 @@ export class ManCoverage implements Behavior {
     // to the QB as his request allows (pure man and deep carries unchanged).
     const underCarry = OPEN_CARRY && openReq && !sim.defCall.coverage.man && !o.protectDepth;
     if (underCarry) a.tags.add('open-carry');
+    // CORNER_DROP: a deep-third corner in a zone call drops on the snap; the match carry takes over on the seen release.
+    if (CORNER_DROP && !openReq && !this.releaseObserved && o.protectDepth && !sim.defCall.coverage.man) {
+      const zone = (a.behavior as { zone?: string } | undefined)?.zone;
+      if (cornerDropSeat(a, zone)) return cornerDrop(a, sim, zone!);
+    }
     let command = openReq
       ? underCarry
         ? withFacingTechnique({ ...openReq, facing: openCarryFacing(a, sim, R, openReq, vx > 3) }, { label: 'open-carry', key: seen.vel })
