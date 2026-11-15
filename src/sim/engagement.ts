@@ -236,17 +236,35 @@ export const SET_SPOT = process.env.SET_SPOT === '1';
  * at 2 s against the NFL's 3.7, edge level/in-front pressure 6.5% -> 12-17% of dropbacks): the call's launch depth sits
  * about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor. */
 export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
-/** SET_SPOT: half an interior split (yd): his zone about his alignment. */
+/** SET_SPOT: half an interior split (yd): how far beyond his own split from a neighbor he may drift. */
 const SET_ZONE = 0.65;
-/** SET_SPOT: his lateral target and its share of the rusher's lateral motion (0 when clamped to his zone). */
+const OL_SLOTS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** SET_SPOT: his lateral target and its share of the rusher's lateral motion.
+ * - The target is inside-out on the man: where the rusher's line to the launch point crosses his own depth.
+ * - **No gap to the man beside him** (attempt 2; attempt 1 was a fixed zone about his alignment, which let the man go
+ *   when he worked across it). He may follow his man until he would drift more than SET_ZONE beyond his own split from
+ *   a neighbor, as he sees him. When the line slides together, he goes with it.
+ * - Each bound is one-sided and smooth (a softplus), and the rusher's lateral velocity feeds forward by the same
+ *   slope, so neither the target nor the request steps at a bound. */
 export function setSpotTarget(sim: PlaySim, b: Agent, rPos: Vec2, atX: number): { y: number; frac: number } {
   const ref = protectPoint(sim), dx = rPos.x - ref.x;
   const frac = dx > 0.3 ? clamp((atX - ref.x) / dx, 0, 1) : 1;
-  const y = ref.y + (rPos.y - ref.y) * frac, spot = b.passSet?.spotY ?? b.pos.y;
-  // His zone around the spot bounds the target smoothly (a soft saturation, not a clamp), and the rusher's lateral
-  // velocity feeds forward by the same slope, so neither the target nor the request steps at the zone's edge.
-  const u = (y - spot) / SET_ZONE, th = Math.tanh(u);
-  return { y: spot + SET_ZONE * th, frac: frac * (1 - th * th) };
+  const y = ref.y + (rPos.y - ref.y) * frac, home = b.passSet?.spotY ?? b.pos.y;
+  let hi = Infinity, lo = -Infinity;
+  const ol = sim.agents.filter((n) => n.team === b.team && n !== b && OL_SLOTS.has(n.slot));
+  let below: Agent | null = null, above: Agent | null = null;
+  for (const n of ol) {
+    const h = n.passSet?.spotY ?? n.pos.y;
+    if (h < home && (!below || h > (below.passSet?.spotY ?? below.pos.y))) below = n;
+    if (h > home && (!above || h < (above.passSet?.spotY ?? above.pos.y))) above = n;
+  }
+  if (below) hi = sim.see(b, below).pos.y + (home - (below.passSet?.spotY ?? below.pos.y)) + SET_ZONE;
+  if (above) lo = sim.see(b, above).pos.y - ((above.passSet?.spotY ?? above.pos.y) - home) - SET_ZONE;
+  const sp = (z: number) => (z > 30 ? z : Math.log1p(Math.exp(z))), sg = (z: number) => 1 / (1 + Math.exp(-z));
+  let t = y, slope = 1;
+  if (Number.isFinite(hi)) { slope *= 1 - sg((t - hi) / SET_ZONE); t = t - SET_ZONE * sp((t - hi) / SET_ZONE); }
+  if (Number.isFinite(lo)) { slope *= 1 - sg((lo - t) / SET_ZONE); t = t + SET_ZONE * sp((lo - t) / SET_ZONE); }
+  return { y: t, frac: frac * slope };
 }
 
 /** Signed phi from current positions (blocker relative to the defender). */
