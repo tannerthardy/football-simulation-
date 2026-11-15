@@ -1000,3 +1000,44 @@ pairs that release later, p50 by time since contact:
 - Ours also start slower at contact (2.06 against 2.55).
 - **What moves a held pair late in ours** is the next look, after BAT_HANDS: whose request carries the slide (the
   rusher's aim between moves against the blocker's mirror and kick: PASS_KICK's set depth follows the rusher on).
+
+## 18. The held pair's late slide, by flag (2026-11-15; held-slide.mts, engine-68, seed 11 x 2)
+
+Interior pass pairs held through 2.5 s (never past 1.2 yd or 70 deg off the blocker's line to the QB), after 1.0 s since
+contact: p50 of each man's speed across the line between them (body velocities, in-sim) and the rusher's speed.
+These compare arms with one another; the NFL comparison goes through the export operator (section 17).
+
+| arm (flag off) | ticks | across: blocker / rusher | rusher speed |
+|---|---|---|---|
+| engine-68 default | 4,170 | 1.22 / 1.18 | 2.02 |
+| LEGACY_ALL | 4,519 | 0.58 / 0.74 | 1.56 |
+| ENGAGED_DEFENDER | 4,277 | 1.00 / 1.03 | 1.96 |
+| OPEN_HANDS | 4,010 | 1.14 / 1.07 | 2.03 |
+| PASS_SET_SEEN | 4,161 | 1.06 / 1.12 | 1.86 |
+| TRUNK_TWIST | 3,638 | 1.12 / 1.13 | 2.04 |
+| ANCHOR_BASE | 3,068 | 1.11 / 1.14 | 2.09 |
+| VERTICAL_SET | 3,233 | 1.17 / 1.14 | 1.96 |
+| RUN_HAND_MOVE | 3,730 | 1.13 / 1.19 | 2.03 |
+| ENGAGE_FELT | 3,890 | 1.19 / 1.20 | 2.12 |
+| FEET_SETTLE | 3,921 | 1.24 / 1.20 | 2.01 |
+| ENGAGED_TECHNIQUE | 3,591 | 1.25 / 1.23 | 2.05 |
+| ENGAGE_TRUNK+CHEST | 4,191 | 1.29 / 1.25 | 2.05 |
+| RUSH_BULL | 4,568 | 1.25 / 1.25 | 2.10 |
+| ZONE_RUN | 4,198 | 1.27 / 1.27 | 2.06 |
+| RUSH_LEAN_BOUND | 4,405 | 1.25 / 1.27 | 2.06 |
+| LEAN_PITCH | 4,039 | 1.31 / 1.29 | 2.12 |
+| HANDS_CHEST | 5,944 | 1.31 / 1.30 | 2.12 |
+| PASS_RIDE | 4,023 | 1.38 / 1.33 | 2.06 |
+| PASS_ANCHOR | 3,800 | 1.35 / 1.37 | 2.15 |
+| ZONE_ARMS | 3,693 | 1.36 / 1.38 | 2.04 |
+| BLOCK_SEEN | 3,472 | 1.44 / 1.43 | 2.17 |
+| SHED_PAST | 4,091 | 1.42 / 1.45 | 2.12 |
+| GRIP_REACH | 4,186 | 1.42 / 1.51 | 2.17 |
+
+**Read:**
+- No single flag carries the slide. With each off alone, the speed across stays within about 0.2 of the default
+  either way. That is about this read's noise on two games.
+- The largest single drops: ENGAGED_DEFENDER (1.00 / 1.03) and PASS_SET_SEEN (1.06 / 1.12, rusher speed 1.86).
+- With the whole reference stack off the slide halves (0.58 / 0.74, rusher speed 1.56): it accumulated across the
+  promoted stack.
+- Bisection by quarters of the stack is next, to find which group of terms carries it.
