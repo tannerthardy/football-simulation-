@@ -117,6 +117,20 @@ premise came from engine-64, where the wait was being sacked; on an engine where
   receiver's forecast velocity. Not carded. Next form, if ruled: closeness sustained over his recent pictures plus
   leverage, read on a paired staged instrument that does not yet exist.
 
+## The blitz read on engine-68 (2026-11-15)
+
+`scripts/diag/eyes/free-rusher.ts`, 16 games (seeds 11, 23 x 8). Half our blitzes have a rusher free of the
+protection's accounting by 1.0 s, a median 7.9 yd away, and the quarterback's picture of him is 0.26 yd off: he is
+visible. The stack (`BLITZ_READ`, `BLITZ_DEPTH`, `BLITZ_SKILL`) gets the free-rusher half right (quick throws 7 ->
+19% against the NFL's 18%; sacks there 12.3 -> 9.3%). Its false hots on non-blitz plays (10.3%) were mostly real:
+rushing linebackers 38 and, under the second look, 25 green dogs (a man on a back who stays in comes); the rest were
+linebackers in man on the back, and 24 now screens. `BLITZ_SECOND` attempt two (whose path is he on, toward the
+released back's path or at the quarterback, from fresh pictures, with hysteresis; no hot on screens) brings hots on
+men not rushing to 3.6% of non-blitz plays with the free-rusher row kept (18% quick, 9.2% sacked) and non-blitz picks
+16 against the reference's 14. `QB_EVADE_UP` rides with it.
+For Rules (no build): concepts whose hot answer is none on the free man's side: post_cross, trips_outs, pa_post_dig,
+pa_shot (and screens by design). A real install gives each protection a hot, a sight adjust, or keeps a back in.
+
 ## Open, in order
 
 1. The paired set on the route card's branch (stems at full pace move when routes are ready).
