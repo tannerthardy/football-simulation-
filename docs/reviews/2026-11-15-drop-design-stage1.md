@@ -185,3 +185,28 @@ throw from the reset by the same mechanism.
 **Ownership with Rules (Integration, 2026-11-15).** The plan hands over a step index per read, with a keyed pair as one
 place. The quarterback derives its time from his own stride (his drop's time over its steps), which retires
 FIVE_STEP_BEAT / RHYTHM_BEAT as seconds. Bit 1's own keyed-place merge (fd9f8c41) is deleted when that lands.
+
+## The vertical cue (bit 1, a8133e5e)
+
+**The cue.** A vertical is readable when its release is decided in his pictures:
+- the receiver is out of the collision (2+ yd past the line, running), and
+- he is even with or past the man over him along the stem (the nearest defender he believes within 4 yd across and no
+  more than 2 yd shallower), or there is no such man.
+
+The margin is read with his own judgment draw x 0.6 x (1 - awareness) yd, and once read it holds. Rules' readable event
+plus the aim point (docs/reviews/2026-11-15-vertical-ready.md on #780): the window prices the throw to the aim point.
+
+**Paired staged result** (four_verts and verts_hitch, PLAN_CLOCK=1 QB_TICK_PICTURE=1):
+
+| | Vertical targets | Receiver depth at release p25/50/75 (yd) | Throw time p50 |
+| --- | --- | --- | --- |
+| NFL go | - | 6.2 / 9.2 / 13.1 | 2.6 s |
+| Off | 82 of 384 | 12.4 / 13.7 / 14.6 | 3.15 s |
+| On | 95 of 384 | 11.5 / 13.2 / 14.6 | 3.05 s |
+
+Completion held (67 -> 66%). Readiness was not the binding constraint: the price is.
+
+**Before touching the price** (Integration's caution): his accuracy belief should be his knowledge of his own spread.
+Compute the spread his throw model produces at that distance and platform, against the default receiver's catch
+radius. If the belief matches it, the receiver is the fault (BALL_EST), and the belief is re-derived on that receiver.
+The Marinelli ball placement by the defender's position is for the touch note (not built).
