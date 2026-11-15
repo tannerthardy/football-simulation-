@@ -1726,19 +1726,22 @@ export class QBPass implements Behavior {
   }
   /** One stride of his own drop (s): the hitch's length in time. */
   private stride(): number { return this.drop.time / (DROP_STEPS[this.concept.drop] ?? 5); }
-  /** The step his current read is installed on: started when its beat's hitch is due, landed when he reaches it. */
-  private footwork(a: Agent, sim: PlaySim, read: Agent | undefined): void {
+  /** His feet keep the plan's clock: step k starts one stride before it lands, at k strides after his set, up to the
+   * plan's last step, whatever read his eyes are on; it lands when its stride is done. (A first form took a step only
+   * when the read his eyes were on needed it, so eyes held on a keyed pair and then moved to the outlet waited a
+   * stride for a step that should already have landed: dagger on develop's deeper five, 11 of 13 new sacks the back
+   * thrown at 3.40-3.55 s off.) */
+  private footwork(a: Agent, sim: PlaySim, _read: Agent | undefined): void {
     const st = this.step;
     if (st && !st.landed && sim.t - st.since >= this.stride() - 1e-9) { st.landed = true; this.landedSteps = st.n; }
-    const s = read ? this.stepOf.get(read) : undefined;
-    if (!read || !s || this.setAt < 0 || s.n <= this.landedSteps || (st && !st.landed)) return;
-    if (sim.t < this.setAt + s.beat - this.stride()) return;
+    if (this.setAt < 0 || (st && !st.landed)) return;
+    let last = 0;
+    for (const n of this.readStep.values()) last = Math.max(last, n);
+    const k = this.landedSteps + 1;
+    if (k > last || sim.t < this.setAt + (k - 1) * this.stride()) return;
     // A base reset at depth: he gathers where he stands, turned to the read (his body facing follows his read). Whether
-    // a hitch gains ground is a pressure decision (the climb, bit 4), not the hitch's. Attempt one stepped 0.5-1.0 yd
-    // up toward the read on every beat; it carried him up into the interior rush (dagger: 0.56 yd nearer the line at
-    // 3.0 s than the off arm, 0.97 at 3.5 s; 6 of 13 new sacks a rusher on his arm from there; NFL net upfield plant to
-    // release p50 0.00 yd).
-    this.step = { n: this.landedSteps + 1, since: sim.t, landed: false, to: { x: a.pos.x, y: a.pos.y } };
+    // a hitch gains ground is a pressure decision (the climb, bit 4), not the hitch's.
+    this.step = { n: k, since: sim.t, landed: false, to: { x: a.pos.x, y: a.pos.y } };
   }
   /** QB_FOOTWORK bit 1: a vertical's readable event (Rules + Coaching, docs/reviews/2026-11-15-vertical-ready.md on
    * #780: the seam thrown as the back foot hits, the cue whether he defeats the collision; the fade read on the
