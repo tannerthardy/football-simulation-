@@ -124,7 +124,7 @@ const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
  *   facing caps) and stops in an athletic position 2 yd from the sideline ("If a receiver is 2 yards from the sideline and
  *   the quarterback still hasn't thrown the ball, the receiver should stop running", fourvertsfootball). NFL WR flats:
  *   5.5 -> 4.1 yd/s from 2.0 to 3.0 s, 9.3 yd from the sideline at 3.0 s; ours accelerate to 6.8. */
-const ROUTE_END = process.env.ROUTE_END === '1';
+const ROUTE_END = process.env.ROUTE_END !== '0';
 /** ROUTE_END: how far a settled receiver slides from his settle point, against man and in a zone window (yd; a choice). */
 const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
@@ -228,7 +228,7 @@ export class RouteRunner implements Behavior {
    * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
    * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
   get declaredBreak(): { x: number; y: number } | null {
-    if (!(process.env.DECLARED_BREAK === '1')) return null;
+    if (!(process.env.DECLARED_BREAK !== '0')) return null;
     const at = BREAK_DECL[this.route.id]?.at;
     return typeof at === 'number' && this.path[at] ? { ...this.path[at].p } : null;
   }

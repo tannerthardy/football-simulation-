@@ -99,7 +99,7 @@ export const HOLD_TOL: Readonly<HoldTolerance> = Object.freeze({ stem: 1.2, afte
  * path with no slowed waypoint (a go or seam). */
 /** DECLARED_BREAK (experimental, off; src/playbook/route-breaks.ts): the break the quarterback expects on an installed
  * route is its declared vertex, the same one the read plan times; off, the waypoint that slows him most. */
-const DECLARED_BREAK = process.env.DECLARED_BREAK === '1';
+const DECLARED_BREAK = process.env.DECLARED_BREAK !== '0';
 /** DECLARED_BREAK: whether a body at `pos` has met a seen-open route's declare rule (the read compiler's own rule,
  * features.ts: 5 yd from his start with the line crossed by 0.5 yd, a back excepted; 12 yd of vertical; the snap). */
 function ruleMet(prior: InstalledReceiverRoute, pos: Readonly<Vec2>): boolean {

@@ -89,7 +89,7 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * starts the turn T = R tan(theta / 2) before the vertex (never more than LEAD of an adjacent leg shared with a neighbouring corner; the first leg is his alone), at the speed he can have at the vertex (his speed along the leg under his own acceleration over the distance to it, up to the declared through speed), planned once per corner, and if the legs do
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
-export const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
+export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */

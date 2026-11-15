@@ -14,7 +14,7 @@ const SCREEN_QB = process.env.SCREEN_QB === '1';
 /** ROUTE_EFFORT (experimental, off; src/sim/route-motion.ts): every route's stem at full pace, with the break table below. */
 const ROUTE_EFFORT = process.env.ROUTE_EFFORT === '1';
 /** ROUTE_FILLET (experimental, off; src/sim/route-motion.ts): the break table's cut / roll column applies with it. */
-const ROUTE_FILLET = process.env.ROUTE_FILLET === '1';
+const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** CROSS_OVER (experimental, off): the deep cross (the over, Y-cross) released inside on a diagonal, "inside of the
  * Sam LB, and over the Mike LB", to its "landmark ... 18-22 yards" (Throw Deep, Y Cross; Shanahan's 1994 dover breaks in
  * at about 20). Off, it climbs 6 yd nearly straight up (1 yd inside) before crossing: 1.2 yd across at 2.0 s against
