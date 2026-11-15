@@ -314,3 +314,43 @@ within 3 yd, holds). Release side is judged where he passes the corner's depth.
   read will be thin by construction).
 - RESTEM, on the same gates.
 - Two items for Coverage: the corner's shade erased by PRESS_MIRROR, and the corner always following a jab.
+
+## RESTEM, attempt 1: staged gates (with RELEASE_READ), 2026-11-15
+
+**Build.** `restem` in `receiver.ts`; flag `RESTEM` (off; requires RELEASE_READ; FLAGS row, stack off, baseline "0").
+After his press release ends, a route with a declared break decides once, when his picture of the corner settles it:
+
+- **Won:** he is a body past the corner along his stem, or the corner is not between him and the stem. He stacks:
+  the route as installed, back onto the stem in front of the corner.
+- **Not won:** 1.5 yd short of his break the corner is still between him and the stem. The rest of his route moves
+  across with him, and he breaks from where he is.
+
+Gos, seams and crossers are excluded. A first form decided at the instant the release ended (level with the corner)
+and so called every rep "not won"; this is the corrected form.
+
+**Gate (same staged cells, 10 seeds × flip; decisions per route):**
+
+| corner | hitch stack / shift | out stack / shift | comeback stack / shift | slant stack / shift |
+|---|---|---|---|---|
+| head-up | 4 / 78 | 38 / 0 | 35 / 3 | 4 / 1 |
+| outside shade +0.8 | 97 / 0 | 20 / 18 | 32 / 6 | 4 / 17 |
+| inside shade −0.8 | 99 / 0 | 0 / 38 | 34 / 4 | 4 / 19 |
+
+| lateral at break depth (p50, yd) | RELEASE_READ only | + RESTEM | NFL press |
+|---|---|---|---|
+| hitch head-up / outside / inside shade | +2.1 / +0.8 / +0.2 | +2.2 / +0.8 / +0.2 | +1.2 (all shades) |
+| out head-up / outside / inside shade | +1.9 / +2.2 / +1.2 | +1.9 / +2.2 / +1.2 | +0.7 |
+
+**Read.**
+
+- The decision now depends on the corner: hitches against a shaded corner win and stack, head-up hitches mostly do
+  not.
+- The break point barely moves. RELEASE_READ alone already broke those hitches from about +2 yd, because the corner's
+  body kept him from crossing back. What RESTEM changes is the request: he no longer asks to run back across the
+  corner. The lateral outcome is the same within 0.1 yd.
+- The remaining head-up width (+2.1 vs NFL +1.2) is the release itself: one clearance (bodies + 0.2 + his reach, about
+  1.4 yd) plus the jab against a corner who mirrors him head-up all the way. That is the release width and the
+  corner's mirror, not the restem.
+- RESTEM is kept off as built: no gate change beyond the request; no game read yet.
+- Before any second attempt, decide whether the release clearance should be his body and the corner's hands rather
+  than the corner's full reach. That is a RELEASE_READ question for the next attempt, not a RESTEM one.

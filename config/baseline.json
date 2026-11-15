@@ -285,6 +285,7 @@
     "PRESS_RELEASE": "0",
     "LINE_START": "0",
     "RELEASE_READ": "0",
+    "RESTEM": "0",
     "RELEASE_SEEN": "0",
     "RELEASE_THROUGH": "0",
     "PRESS_MIRROR": "0",

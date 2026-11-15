@@ -55,7 +55,7 @@ for (const cov of covs) for (const [form, conc] of PLAYS)
     const res = sim.run(); ev.end = r2(sim.t);
     lines.push(JSON.stringify({ id: `${cov}${solo ? '-solo' : ''}-${form}-${conc}-s${seed}${flip ? 'f' : ''}`, source: 'sim', kind: 'pass', yards: res.yards,
       players: sim.agents.map((a: any, i: number) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER', slot: a.slot, route: routes[i],
-        man: sim.defAlign.spots[a.slot]?.manTarget })),
+        man: sim.defAlign.spots[a.slot]?.manTarget, tags: [...(a.tags ?? [])].filter((t: any) => /^(release-jab|restem-)/.test(String(t))) })),
       dt: 0.1, xy, ball_y: r2(sim.ballY), events: ev, cell: { concept: conc, coverage: cov } }));
   }
 mkdirSync(dirname(OUT), { recursive: true });

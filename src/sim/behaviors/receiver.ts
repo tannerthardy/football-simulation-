@@ -216,6 +216,18 @@ const RELEASE_JAB_STEP = 0.35, RELEASE_JAB_MAX = 0.6, RELEASE_PAST = 1.0;
 /** RELEASE_READ: how far the corner's feet must have moved toward his lean, as he sees him, to read that the corner jumped
  * it (yd; a visible step). Estimated. */
 const RELEASE_JUMP = 0.25;
+/** RESTEM (off; RESTEM=1 turns it on, with RELEASE_READ; Run Game, docs/reviews/2026-11-14-press-release.md): once his
+ * press release is over (the held release ended, or the jam let go), a route with a declared break (not a vertical, a
+ * seam or a crosser) gets back on its route from what he sees of the corner. Won (he is a body past the corner along
+ * his stem, or the corner, as he sees him, is not between him and his stem line): he stacks, working back onto the stem
+ * in front of the corner (the route as installed). Not won (RESTEM_COMMIT short of his break the corner is still between
+ * him and his stem): he does not fight across him; the rest of his route moves across with him, so he breaks from where
+ * he is and the break point moves. One decision per play, taken when his picture settles it. Off (RELEASE_READ on), a hitch released outside a mirroring corner requested -6 to -7.5 yd/s
+ * back inside across the corner's body to its installed stem (pressed hitches at 5 yd: NFL +1.2 yd outward of
+ * alignment, a quarter coming back inside). */
+const RESTEM = process.env.RESTEM === '1';
+/** RESTEM: how far short of his break depth (yd) he commits to breaking from where he is. Estimated (about two strides). */
+const RESTEM_COMMIT = 1.5;
 /** LINE_START (off; LINE_START=1 turns it on; estimated, C14 release): a receiver's first steps are a get-off, not a
  * sprint start. Out of a two-point stance, eyes on the defender over him and his release plan in mind, he does not
  * push off with his full start force: until he has declared his stem (out of his stance, his first step, and with time
@@ -240,6 +252,8 @@ export class RouteRunner implements Behavior {
   /** RELEASE_THROUGH: the side of his press release (0 if he had none); kept for the rest of the route. */
   private releaseSide = 0;
   /** RELEASE_READ: his release against one corner: lean, jab side (0 none), chosen side (0 until read), fixed target. */
+  /** RESTEM: decided once per play. */
+  private restemmed = false;
   private rel: { corner: Agent; lean: number; jab: number; jabY0: number; cornerY0: number; shadeOnLean: boolean; at: number;
     side: number; target: Vec2 | null; done: boolean } | null = null;
   private converted = false;
@@ -356,6 +370,7 @@ export class RouteRunner implements Behavior {
 
     const release = this.handleRelease(a, sim);
     if (release) return release;
+    if (RESTEM && RELEASE_READ && !this.restemmed && !this.pressContact && (this.rel?.done || this.releasedCorners.size > 0)) this.restem(a, sim);
     if (RELEASE_THROUGH && this.releaseSide !== 0) this.skipReleasedStem(a, this.releaseSide);
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
     // Keep the installed route's pace and progress. Private throw attribution
@@ -568,6 +583,27 @@ export class RouteRunner implements Behavior {
       p.loaded = true;
       const receiver = sim.offense.find((a) => a.body === p.hands.b);
       if (receiver) sim.event('jam', p.corner, receiver);
+    }
+  }
+
+  /** RESTEM: after the release, decided once when his picture settles it: stack back onto the stem (won: he is a body
+   * past the corner along his stem, or the corner is not between him and it) or, reaching his break with the corner
+   * still between him and his stem (not won), carry the rest of the route across and break from where he is. */
+  private restem(a: Agent, sim: PlaySim): void {
+    const at = BREAK_DECL[this.route.id]?.at;
+    const corner = this.rel?.corner ?? [...this.releasedCorners][0];
+    const stem = this.path[this.idx]?.p;
+    if (typeof at !== 'number' || !corner || !stem) { this.restemmed = true; return; }
+    const cp = sim.see(a, corner).pos, toStem = stem.y - a.pos.y;
+    const between = Math.abs(toStem) >= 0.5 && Math.sign(cp.y - a.pos.y) === Math.sign(toStem) && Math.abs(cp.y - a.pos.y) < Math.abs(toStem) + 1;
+    if (!between || a.pos.x - cp.x >= a.profile.radius + corner.profile.radius) { this.restemmed = true; a.tags.add('restem-stack'); return; }
+    const brk = this.path[at]?.p;
+    if (!brk || a.pos.x < brk.x - RESTEM_COMMIT) return;
+    this.restemmed = true;
+    a.tags.add('restem-shift');
+    for (let k = this.idx; k < this.path.length; k++) {
+      const q = this.path[k].p;
+      this.path[k] = { ...this.path[k], p: { x: q.x, y: clamp(q.y - toStem, 1, FIELD_WIDTH - 1) } };
     }
   }
 

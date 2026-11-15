@@ -308,6 +308,7 @@
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
     "RELEASE_READ": "off",
+    "RESTEM": "off",
     "RELEASE_SEEN": "on",
     "RELEASE_THROUGH": "on",
     "RUN_BLITZ": "on",
