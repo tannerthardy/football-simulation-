@@ -11,7 +11,21 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 export const LINE_START = process.env.LINE_START !== '0';
 
 /** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
-export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean }
+export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean; readonly cut?: boolean; readonly finish?: boolean }
+
+/** ROUTE_FINISH (experimental, off): how an unthrown outward route finishes at the sideline. Off, every `continue` route
+ * that runs out of field turns up 40 yd at full speed at 5 yd from the sideline (the flat family 5 yd at .6); at full
+ * pace the out, quick out and the back's flat are on that climb by the time a late throw comes, and the quarterback's
+ * forecast leads them upfield into the deep defender (route-card staged pairing: 19 of the 47 interceptions ROUTE_EFFORT
+ * added had the target on his extension; the verticals' late check-down to the back). As taught, a receiver near the
+ * sideline with no throw stops in an athletic position, in bounds, eyes on the quarterback ("If a receiver is 2 yards
+ * from the sideline and the quarterback still hasn't thrown the ball, the receiver should stop running and get into an
+ * athletic position", fourvertsfootball, the flat route; the out is thrown "as the wide receiver reaches the sideline",
+ * fourvertsfootball, the out route); the back on his flat "throttles his route down once he reaches the numbers" and
+ * waits there as the check-down (CoachTube, Winning Running Back Drills: the flat route; fourvertsfootball, the check
+ * down). Crossers, ins and the flat family keep their extensions (their finish is a separate item, and ROUTE_END's flat
+ * rule covers the flat family); what any route does when the quarterback breaks the pocket is the scramble rule's. */
+export const ROUTE_FINISH = process.env.ROUTE_FINISH === '1';
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
@@ -32,6 +46,13 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
     // Turn up from there; a negative extension retraces the completed route.
     k = Math.max(0, k);
     const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
+    // ROUTE_FINISH: an outward route that runs out of field (the out, quick out, deep out; the back's flat, out and swing)
+    // finishes at the margin: he stops there, in bounds and facing his quarterback, instead of turning up 40 yd.
+    if (ROUTE_FINISH && k < 39 && d.y * outside > 1e-6 && (family === 'quick' || family === 'intermediate' || family === 'back')) {
+      if (k > 0) out.push({ p: edge, s: 0, ext: true, finish: true });
+      else out[out.length - 1] = { ...out[out.length - 1], s: 0, finish: true };
+      return out;
+    }
     if (k < 39) {
       const up = family === 'flat' ? 5 : 40;
       if (k > 0) out.push({ p: edge, s: 0.75, ext: true });

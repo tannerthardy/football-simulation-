@@ -36,7 +36,7 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
   startDelay: number | null, profile: PhysicalProfile, routeRunning: number): InstalledReceiverRoute {
   const path = routePath(start, los, outside, route.points, route.end === 'continue', route.family);
   const read = installedRead(route);
-  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s, ...(p.ext ? { ext: true } : {}), ...(p.cut ? { cut: true } : {}) })));
+  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s, ...(p.ext ? { ext: true } : {}), ...(p.cut ? { cut: true } : {}), ...(p.finish ? { finish: true } : {}) })));
   const copiedRead = read ? Object.freeze({ ...read, answers: Object.freeze(read.answers.map(a => Object.freeze({ ...a,
     points: Object.freeze(a.points.map(p => Object.freeze({ ...p }))) }))) }) : undefined;
   return Object.freeze({ start: Object.freeze({ ...start }),
