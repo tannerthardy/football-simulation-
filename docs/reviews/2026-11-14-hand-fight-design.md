@@ -541,3 +541,51 @@ and 12 / 7 under FH.
 - On engine-66 without the patch it was 27 / 62. The deeper-launch excess is gone on this base before the hand fight.
 - Which of the patch (ENGAGE_TRUNK + CHEST_SHOULDERS) and engine-67 (VERTS_QUICK and the rest) took it is not read.
 - FH lowers both: the interior gets there first.
+
+## 9. Integration's rulings on section 8 (2026-11-15)
+
+**The stand-up edge's deeper-launch excess: which change took it.** tackle-set-side.mts, roster 11, the twelve
+changed concepts, 576 matchups an arm. Sacks by the strong-side stand-up edge, shallow / deeper:
+
+| arm | shallow | deeper | QB depth at 3.0 s, shallow / deeper |
+|---|---|---|---|
+| engine-66, no patch (section 5 of the tackle-set review) | 27 | 62 | 5.84 / 6.84 |
+| engine-67, no patch | 28 | 62 | 5.76 / 6.84 |
+| engine-67 + patch, VERTS_QUICK off | 46 | 26 | 5.94 / 6.67 |
+| engine-67 + patch | 33 | 13 | 5.77 / 6.65 |
+
+- **The patch (ENGAGE_TRUNK + CHEST_SHOULDERS) takes it**: deeper 62 -> 13 on engine-67. VERTS_QUICK alone does not
+  move it (62 -> 62 without the patch).
+- Off the patch, the deeper launch's sacks came across the concepts (comebacks 10, trips_outs 9, verts_hitch 7, ...).
+  With it they are only on the verticals and comebacks.
+- **The QB's step-up fault is still there underneath.** At 3.0 s the deeper QB is still 0.9 yd deeper than the
+  shallow one (6.65 against 5.77) in every arm. The patch's tackle, holding his hips on the set, keeps the edge off him;
+  the QB has not changed.
+- This is a row for the patch's card.
+
+**(b), Integration's split: does the NFL rusher gather against a QB who is standing?** comeoff-frames.py, the QB
+lane's population, off-blocker cases:
+
+| rusher speed p25 / 50 / 75 (yd/s), QB still (< 0.5 yd/s) | NFL | base | FH |
+|---|---|---|---|
+| the last 0.6 s before a reach | 3.35 / **4.12** / 4.61 | 4.50 / 5.15 / 5.59 | 4.74 / **5.22** / 5.59 |
+| free, 1.5-3 yd from the QB | 2.55 / **3.81** / 4.50 | 2.06 / 5.00 / 5.59 | 4.27 / **5.00** / 5.41 |
+| ... QB moving (> 1.5 yd/s), last 0.6 s | 2.83 / 3.91 / 5.00 | 4.47 / 5.02 / 5.59 | 4.92 / 5.15 / 5.70 |
+
+The NFL's rusher gathers even against a QB who is standing: 4.1 yd/s into a still QB against our 5.2. That is not an
+effect of (c), so (b) is its own build: his approach as a tackler's, his response to what the QB he sees can do, from
+the tackle approach's law, not a speed bound near a QB. Our p75 sits at 5.59 in every row, a capacity ceiling the
+NFL's p75 (4.5-5.0) does not reach.
+
+**(a) the pass-off: built** (`PASS_OFF`, off, e346168e).
+- Found in the code: `beat()` disengaged the whole engagement when the primary was beaten, helper included. A helper
+  with his hands on the man lost him at that instant. That is the 36% against 63%.
+- The build: when a helper's hands are on him (his joint loaded last step: touch), the helper keeps him as his own block
+  on his own joint, a fresh fight. The beaten blocker leaves the rep with the ordinary 0.6 s shed window; then his own
+  blocking decides whether he recovers to double or finds work.
+- **Why 45 of 162 helped rushers were never engaged by the nearest OL:**
+  - 20 were blocking their own man;
+  - 25 were free but faced away (55 deg p50 off the bearing to the rusher), 20 of the 45 tackles looking outside;
+  - none was out of reach (within 1.0 yd for 8 frames p50).
+  The pass-off does not touch these. Whether the free ones should have turned to him is the "looking for work"
+  question: whom a free blocker watches and when.
