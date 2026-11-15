@@ -435,13 +435,16 @@ const QB_AVOID = process.env.QB_AVOID === '1';
 const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
 /** BLITZ_SECOND (experimental, off; BLITZ_SECOND=1; with BLITZ_READ): the coached second look. A blitzer keeps coming
  * through the line; a linebacker in man on the back comes toward the backfield only as far as the back's depth and
- * goes where the back goes. On engine-68, 44 of 125 false hots on non-blitz plays (10.3% of them) were linebackers in
+ * goes where the back goes (second form: whose path is he on, from his pictures). On engine-68, 44 of 125 false hots on non-blitz plays (10.3% of them) were linebackers in
  * man on the back (scripts/diag/eyes/free-rusher.ts), and 24 more were called on now screens, where a hot has no
  * meaning. On: while the back has released (moving away from him in his picture), a defender within 3 yd of the back
  * who is not deeper into the backfield than him by a yard has his step toward the quarterback counted as following the
  * back, not as a rush, in the belief's update; and no hot is called on a screen. Both from his own pictures of the two
  * men taken at the same moment. The look costs time by construction: the belief waits for the man to pass the back. */
 const BLITZ_SECOND = process.env.BLITZ_SECOND === '1';
+/** BLITZ_SECOND: how fresh his picture of a man must be to classify his path (s), and the angular margin (rad) by which
+ * one bearing must beat the other to enter or leave 'following the back'. Chosen; not tuned to a rate. */
+const PATH_FRESH = 0.5, PATH_MARGIN = 0.35;
 /** QB_LOOKOFF_RHYTHM (experimental, off; QB_LOOKOFF_RHYTHM=1): a look-off is taken only when his first read will
  * not be ready until after it. A look-off moves a safety with his eyes in the drop; as taught it never costs the
  * rhythm throw. Off, it was rolled once at the set (by decision-making, anticipation and experience) and held read 1
@@ -725,6 +728,8 @@ export class QBPass implements Behavior {
     const rb = BLITZ_SECOND ? sim.slot('RB') : null;
     const back = rb ? sim.see(a, rb) : null;
     const backOut = !!back && ((back.pos.x - a.pos.x) * back.vel.x + (back.pos.y - a.pos.y) * back.vel.y) > 0 && Math.hypot(back.vel.x, back.vel.y) > 1.5;
+    // Where the released back is going: his forecast half a second on (his installed release), else his picture carried on.
+    const backAhead = rb && backOut ? this.receiverForecasts.get(rb)?.predict(sim.t, 0.5) ?? { x: back!.pos.x + back!.vel.x * 0.5, y: back!.pos.y + back!.vel.y * 0.5 } : null;
     for (const d of sim.defense) {
       // A man he sees on the ground is out of the count (his felt picture's pose, not the man's true state).
       const fd = this.felt(a, sim, d);
@@ -743,11 +748,21 @@ export class QBPass implements Behavior {
       // BLITZ_DEPTH: a step at him counts as a rush only at or past the line (1 yd off it), where a run fitter or a
       // coverage player stops; above it, a quarter of it (a backer filling on a fake, a man coming up on a route).
       if (BLITZ_DEPTH && toward > 0 && (p.x - sim.los) * dir > 1) toward *= 0.25;
-      // BLITZ_SECOND: following a released back is not a rush, until he comes past the back's depth.
-      if (BLITZ_SECOND && toward > 0 && back) {
-        const bp = back.pos, nearBack = Math.hypot(p.x - bp.x, p.y - bp.y) < 3;
-        const pastBack = ((bp.x - p.x) * dir) > 1; // closer to the quarterback's end than the back, by a yard
-        if (nearBack && backOut && !pastBack) toward = 0;
+      // BLITZ_SECOND: whose path is he on? Toward where the released back is going (a man on the back), or at the
+      // quarterback. Recognition: it is updated only from a fresh picture of the man, and once made it holds until
+      // his path changes past a margin (enter and exit on opposite sides).
+      if (BLITZ_SECOND) {
+        const prev = this.pathOf.get(d) ?? 'rush';
+        let cls = prev;
+        const sp = Math.hypot(fd.vel.x, fd.vel.y);
+        if (backAhead && sp > 1 && this.mind.pictureAge(d) <= PATH_FRESH) {
+          const ang = (x: number, y: number) => Math.abs(Math.atan2(fd.vel.x * y - fd.vel.y * x, fd.vel.x * x + fd.vel.y * y));
+          const toQb = ang(a.pos.x - p.x, a.pos.y - p.y), toBack = ang(backAhead.x - p.x, backAhead.y - p.y);
+          if (prev === 'rush' && toBack < toQb - PATH_MARGIN) cls = 'follow';
+          else if (prev === 'follow' && toQb < toBack - PATH_MARGIN) cls = 'rush';
+        } else if (!backAhead) cls = 'rush'; // the back stayed in: a man on him who comes is a rusher
+        this.pathOf.set(d, cls);
+        if (cls === 'follow' && toward > 0) toward = 0;
       }
       const target = logistic(Math.log(r.prior / (1 - r.prior)) + 2.5 * toward);
       r.p += (target - r.p) * k;
@@ -865,6 +880,8 @@ export class QBPass implements Behavior {
    * decision-making and awareness set how cleanly he places him. */
   /** QB_KEY_THROW: the man his key read gave, and when. */
   private keyAnswer: { target: Agent; toHigh: boolean; at: number } | null = null;
+  /** BLITZ_SECOND: his classification of each off-ball defender's path. */
+  private pathOf = new Map<Agent, 'rush' | 'follow'>();
   /** BLITZ_READ diagnostic (no effect): the defender his hot was called on. */
   hotDef: Agent | null = null;
   /** QB_AVOID: the decision in force: the man, the spot, the pace; and diagnostics (no effect). */
