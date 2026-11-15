@@ -57,8 +57,9 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
   let row: any;
   if (observe) {
     const see = sim.see.bind(sim);
-    sim.see = (observer, target, scale) => {
-      const cue = see(observer, target, scale);
+    // Every argument passes through (see's `sight` included): an observer that drops one changes the play it records.
+    sim.see = (observer, target, scale, sight) => {
+      const cue = see(observer, target, scale, sight);
       if (row && observer === a) row.observations.push({ target: actor(target), scale, cue: copySaved(cue) });
       return cue;
     };
