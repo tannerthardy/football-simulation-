@@ -592,3 +592,43 @@ NFL's p75 (4.5-5.0) does not reach.
 
 Noted, not built (Integration, 2026-11-15): the 25 free helpers facing away. As coached, a free lineman looks for work
 inside-out and helps the nearest threat. Whom a free blocker watches and when is its own question.
+
+## 10. PASS_OFF read (2026-11-15; seed 11 x 8, engine-67 patch base; the QB lane's population for the come-off rows)
+
+**Attempt 1** (e346168e: the hand-off only at `beat()`) barely fired: 3 hand-offs against 82 sheds in 2 games.
+- FH: helped off-blocker reach 16 -> 15%, interior pressure 23.1 -> 23.6%.
+- Base: helped reach 7 -> 4%.
+- Most FH rushers who reach the QB are never beaten in the code: they are still in the first man's rep at arm's length.
+
+**Attempt 2** (a9b509f2) adds the coached cue: the helper takes him when he sees him come off the blocker he is
+helping (his view cone, his sight delay: beyond the blocker's working reach or past his shoulder). 160 hand-offs in 2
+games. Off identical (7c0603676f346494); the dither budget passes with it on.
+
+| | NFL | base | base + PASS_OFF | FH | **FH + PASS_OFF** |
+|---|---|---|---|---|---|
+| off-blocker rushers reaching the QB | 9% | 12% | 12% | 21% | **12%** |
+| ... helped: reached | 5% | 7% | 8% | 16% | **7%** |
+| ... unhelped: reached | 11% | 20% | 16% | 25% | **19%** |
+| helped rushers who still reached: helper on him the whole 0.5 s | 63% | 64% | 58% | 36% | **65%** |
+| released by 1.0 / 2.0 s, never | 43 / 60 / 37% | 30 / 44 / 51% | 32 / 48 / 47% | 42 / 62 / 35% | 42 / 65 / 32% |
+| orbit p50 0.5-1.0 s | 25 deg | 7 | 7 | 20 | 18 |
+| interior pressure, % of dropbacks | about 9.8 | 10.9 | 11.9 | 23.1 | **19.0** |
+| edge pressure: past outside / level / inside | | 1.1 / 5.3 / 8.2 | 0.6 / 5.7 / 5.2 | 1.0 / 6.5 / 6.2 | 1.6 / 5.1 / **8.3** |
+| other pressure | | 5.0 | 6.4 | 7.2 | 5.6 |
+| sack proxy | 7 | 5.4 | 5.2 | 8.7 | 9.1 |
+| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5% | 5.7 / 6.6 | 6.5 / 3.0 | 14.0 / 5.8 | **10.2 / 8.5** |
+
+**Read:**
+- **Under FH the pass-off does (a)'s job.** Helped reach is at the NFL's (7 against 5%), and so is the helper's hold
+  (65 against 63%). Off-blocker reach falls most of the way (21 -> 12 against 9).
+- The residual is the unhelped rusher (19 against 11%): (b) his finish, then (c) the QB.
+- **The cost shows, as Integration asked:**
+  - The helper who takes the interior man leaves the edge's inside. Edge pressure from inside the tackle rises
+    6.2 -> 8.3% of dropbacks, and late edge sacks 5.8 -> 8.5% of those alive at 3 s, toward the NFL's 9.5.
+  - Late interior sacks fall 14.0 -> 10.2 (NFL 4.1).
+  - The sack proxy is unchanged (8.7 -> 9.1).
+  - The pressure moves from the interior to the edge rather than going away.
+- **On the base it changes little.** The base's releases are clean breaks, not men coming off a helped block: helped
+  reach 7 -> 8%.
+- The release timing barely moves under FH (never 35 -> 32%). The hand-off continues reps that would have counted
+  as a release.
