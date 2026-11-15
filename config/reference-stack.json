@@ -331,6 +331,7 @@
     "SHORT_BASE": "on",
     "SHOULDER_READ": "on",
     "CURL_FLAT_BACK": "on",
+    "CURL_SINK": "off",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",

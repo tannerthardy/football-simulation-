@@ -1324,6 +1324,12 @@ export class ManCoverage implements Behavior {
  * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
  * wide-owner.ts). */
 const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
+/** CURL_SINK (experimental, off; CURL_SINK=1 turns it on; docs/reviews/2026-11-15-curl-sink.md): CURL_FLAT_BACK's
+ * stated design, sink to the curl window while widening toward the back. Its target depth was the shallower of the
+ * window and where he stood, so a back who showed to the flat before the curl-flat defender had dropped held him at his
+ * alignment depth (4.4 yd against an 8.5 yd window on staged flood) for the rest of the play. On, he drops to the
+ * window's depth while he widens, eyes on the QB, and breaks on the throw: high to low. */
+export const CURL_SINK = process.env.CURL_SINK === '1';
 /** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at
@@ -1759,7 +1765,9 @@ export class ZoneCoverage implements Behavior {
         const crossed = sign * (flat.pos.y - a.pos.y) > 0;
         const base = eyes === flat.r ? 0.55 + 0.3 * rec : inCurl ? 0.1 : crossed ? 0.35 + 0.2 * rec : 0.15;
         const cheat = clamp(base + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.9);
-        const tgt = { x: Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
+        // CURL_SINK: he sinks to his curl window (its landmark depth) as he widens; off, the shallower of the window and
+        // where he stands, which held a curl-flat defender at his alignment depth when the back showed before he dropped.
+        const tgt = { x: CURL_SINK ? lm.x : Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
       }
     }
