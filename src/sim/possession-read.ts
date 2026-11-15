@@ -5,7 +5,7 @@
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
-import { BALL_EST } from './ball-estimate.js';
+import { estimatesFor } from './ball-estimate.js';
 
 export interface PossessionRead { target: Agent; cue: Perceived }
 type FlightSample = PlaySim['ballPath'][number];
@@ -16,8 +16,9 @@ const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
  * trajectory, never an intended receiver or a private catch result. */
 export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
   // BALL_EST: his own estimate from the ball he has seen (empty until he has two samples), not the true path.
-  const path = BALL_EST ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
-  if (BALL_EST && !path.length) return path;
+  const own = estimatesFor(a);
+  const path = own ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
+  if (own && !path.length) return path;
   flights.set(a, { acquiredAt: sim.t, path });
   return path;
 }
