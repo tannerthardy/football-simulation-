@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-69`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-70`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,30 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-70: `PLANT_REACH`, `COMPILE_PICTURE`, `ROUTE_FINISH` and `PLAN_ROLES` on (2026-11-15)
+
+Engine-69 plus Rules' #775 (`PLANT_REACH`) and #781 (`COMPILE_PICTURE`), with `ROUTE_FINISH` (#763) and `PLAN_ROLES` (#762), already on develop, flipped. Coverage's #760 is merged with every `BALL_EST` mode off (the default receiver and defense are unchanged).
+
+**Card.** 16 games per arm over 2 leagues, seeds 11 / 23 / 31, each arm against engine-69 (`out/e85-card-*.md`). Change per seed.
+
+| arm | completion (pts) | yards / attempt | YAC / reception | 20+ yd completions (pts) | sack rate (pts) |
+|---|---|---|---|---|---|
+| `PLANT_REACH` | -0.7 / +0.5 / +0.7 | -1.10 / +0.23 / +0.66 | -1.47 / +0.17 / +0.99 | -1.4 / +0.6 / +2.2 | +0.2 / +0.2 / +0.6 |
+| `COMPILE_PICTURE` | -0.6 / -1.6 / -0.4 | -0.43 / -0.29 / +0.21 | -0.48 / -0.24 / +0.46 | +0.1 / -1.0 / -0.2 | -0.9 / 0.0 / +0.8 |
+| `ROUTE_FINISH` | +2.2 / +1.1 / +0.6 | -0.24 / -0.31 / +0.53 | -0.69 / -0.25 / +0.81 | -0.6 / -0.7 / +0.7 | -0.6 / -0.6 / +1.1 |
+| `PLAN_ROLES` | -0.2 / +0.3 / -0.5 | +0.08 / -0.18 / +0.32 | 0.00 / -0.19 / +0.52 | +0.6 / -0.1 / +0.8 | 0.0 / -0.5 / +1.1 |
+| `BALL_EST=2049` (both sides) | -1.1 / -3.7 / -4.7 | +2.44 / +4.56 / +3.77 | +4.50 / +8.35 / +7.56 | +6.1 / +9.9 / +8.1 | -0.8 / -0.3 / +1.2 |
+
+**Reading.**
+- **The four flipped flags resolve no outcome.** No row keeps its sign across the seeds (`PLANT_REACH`'s -1.10 yd/att and -1.47 YAC on seed 11 are +0.23 / +0.66 and +0.17 / +0.99 on the other two). Each is on by what it is:
+  - `PLANT_REACH`: a defect fix. `steerRoute`'s `passed()` advanced the cursor off a declared cut about 1.7 yd early on the seven routes whose exit leg comes back toward the line (hitch, stick, out, curl, comeback, hook, deep out), so the plant was skipped. Staged: the out reaches 0.10 yd from its cut at 3.07 yd/s (was 0.44 yd at 4.52; NFL 3.7 yd/s), curl and comeback 1.2-1.7 yd/s (NFL 1.1). The dig is unchanged and still brakes earlier and arrives slower than the NFL's.
+  - `COMPILE_PICTURE`: an information leak in the read compiler. Sampled routes ran against a defence parked 60 yd away whose perception record still held it at its alignment, so receivers released round men who were not there; 6 of 192 installed plans change. A 0.1 s mirror asymmetry on one route remains, stated in #781.
+  - `ROUTE_FINISH`: outward routes stop at the margin instead of running up the sideline at full speed. Rules' split by flag (16 games an arm) put its cost at 20+ yd completions on flats and outs that should not exist (out 19% -> 5.6% of targets, NFL 5.0%); this card shows no resolved cost at all.
+  - `PLAN_ROLES`: declared read orders in six concepts' installed plans.
+- **`BALL_EST=2049` is held, and it is not the receiver.** YAC +4.5 to +8.4 yd on every seed. Coverage's split on seed 11 (yac-split.ts): receivers only 6.74 against the oracle's 7.50; defense only 14.10. Under the default every defender past throw recognition is given the true flight at once; with the estimator on, he never records a flight and never starts the post-catch path. That is information cheating on the defensive side, to be replaced by cues he can see (docs/reviews/2026-11-15-defender-throw-picture.md). The receiver's glance is carded next as receivers only (`BALL_EST=6145`).
+
+**Suite.** `npm run test:all` on the candidate with the four off: 4,604 of 4,607; the two known `continued-recovery-world` research failures and `concept-menu` timing out at 60 s under load (5 of 5 alone). After the flips: see the PR.
 
 ## engine-69: `BAT_ONCE`, `BALL_CUE_OWN`, `LOOSE_SEEN` and `DIR_CAP` on (2026-11-15)
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-69",
+  "id": "engine-70",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -298,15 +298,15 @@
     "SHOULDER_LEAD": "on",
     "PLAN_KEYS_2": "on",
     "DECLARED_BREAK": "on",
-    "PLAN_ROLES": "off",
-    "ROUTE_FINISH": "off",
+    "PLAN_ROLES": "on",
+    "ROUTE_FINISH": "on",
     "CROSS_FLAT": "on",
     "PLAN_KEYS_3": "on",
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
-    "PLANT_REACH": "off",
-    "COMPILE_PICTURE": "off",
+    "PLANT_REACH": "on",
+    "COMPILE_PICTURE": "on",
     "CRAFT_HOLD": "off",
     "RELEASE_SIDE": "off",
     "SCREEN_DECLARE": "on",

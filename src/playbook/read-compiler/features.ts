@@ -37,7 +37,7 @@ const DT = 0.1, HORIZON = 4.0;
  * when it is installed to (`settle`, `sitVsZone`), not when it happens to be slow at the end of the horizon. */
 export const DECLARED_BREAK = process.env.DECLARED_BREAK !== '0';
 /** COMPILE_PICTURE (experimental, off): the route sample's pictures show the parked defence (see `sampleRoutes`). */
-const COMPILE_PICTURE = process.env.COMPILE_PICTURE === '1';
+const COMPILE_PICTURE = process.env.COMPILE_PICTURE !== '0';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 
 export interface Sampled { qbSetAt: number; routes: RouteDescriptor[]; excluded: Array<{ ref: string; why: string }> }

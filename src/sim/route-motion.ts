@@ -25,7 +25,7 @@ export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; rea
  * waits there as the check-down (CoachTube, Winning Running Back Drills: the flat route; fourvertsfootball, the check
  * down). Crossers, ins and the flat family keep their extensions (their finish is a separate item, and ROUTE_END's flat
  * rule covers the flat family); what any route does when the quarterback breaks the pocket is the scramble rule's. */
-export const ROUTE_FINISH = process.env.ROUTE_FINISH === '1';
+export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
@@ -91,7 +91,7 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
-const PLANT_REACH = process.env.PLANT_REACH === '1';
+const PLANT_REACH = process.env.PLANT_REACH !== '0';
 /** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
