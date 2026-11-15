@@ -210,3 +210,26 @@ Completion held (67 -> 66%). Readiness was not the binding constraint: the price
 Compute the spread his throw model produces at that distance and platform, against the default receiver's catch
 radius. If the belief matches it, the receiver is the fault (BALL_EST), and the belief is re-derived on that receiver.
 The Marinelli ball placement by the defender's position is for the touch note (not built).
+
+## Bit 1 on the plan's step index, against #780 at 4ceba657 (engine-69)
+
+**The build (f56ed6b3).** Bit 1 reads each read's `n` from the plan and lands step n at n strides of his own drop. It no
+longer reads the plan's `at`, RHYTHM_BEAT or FIVE_STEP_BEAT.
+
+**Paired staged, off -> on:**
+
+| Concept | Sacks | throw_held | Yd/play |
+| --- | --- | --- | --- |
+| smash | 12 -> 14 | 5 -> 0 | 7.94 -> 7.82 |
+| mesh | 1 -> 2 | 4 -> 2 | 10.06 -> 7.37 |
+| dagger | 22 -> 21 | 10 -> 9 | 5.38 -> 5.18 |
+| drive | 6 -> 4 | 5 -> 3 | 12.41 -> 13.23 |
+| flood | 7 -> 0 | 8 -> 0 | 13.52 -> 20.24 (the Defense dig) |
+| double_outs | 0 -> 1 | 0 -> 1 | 9.37 -> 11.92 |
+
+**Mesh's loss is the corner.** Off threw it 14 times for 53.0 yd at 86%. On never threw it: on #780's `gun5` marking
+the corner is read 1 on the set (about 2.0 s) and first open at about 2.7 s, so his eyes leave it before it opens. That
+is an EARLY marking fault, and the corner's 53 yd at 86% is a coverage fault of its own.
+
+**y_cross's late underneath** (ready 1.9-2.0 s, read 2 at the second hitch at 3.1 s) is the coached order (the
+check-down after the cross), not a step fault. Whether it is still a throw at 3.1 s is to be measured.
