@@ -29,6 +29,7 @@ function capturePreSpacing() {
 async function run(flag: string, seed: number) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
+  vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   vi.stubEnv('TACKLE_SET', flag);
   capturePreSpacing();
   const { PlaySim } = await import('../src/sim/playsim.js');
@@ -89,6 +90,7 @@ describe('TACKLE_SET', () => {
     for (const seed of [1, 2, 3]) {
       vi.resetModules();
       for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
+      vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
       vi.stubEnv('TACKLE_SET', '1');
       capturePreSpacing();
       const { PlaySim } = await import('../src/sim/playsim.js');
@@ -116,6 +118,7 @@ describe('TACKLE_SET', () => {
   it('off, the switch is off (bit-identity of the off engine is the seed-999 export hash, not a test here)', async () => {
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
+    vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
     vi.stubEnv('TACKLE_SET', '0');
     const { TACKLE_SET } = await import('../src/sim/engagement.js');
     expect(TACKLE_SET).toBe(false);
