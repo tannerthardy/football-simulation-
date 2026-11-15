@@ -2715,6 +2715,26 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   3.23 yd (`dev-12`), NFL 2.8–3.2.
 - **Cause:** *likely* COV-1 and TKL-3. YAC is measured per catch, so it moves
   with both coverage and tackling.
+- **Flats and outs (2026-11-15, develop fbeeef9b; Rules + Coaching's package split).** The share of throws that gain
+  20+ yd, by the route thrown:
+  - **Sources:**
+    - sim: 16 games, seeds 11 and 23 × 8, the targeted receiver's installed route;
+    - NFL: BDB 2025 weeks 1–6, the targeted receiver's `routeRan`, 20+ yd completions per target.
+  - **Flat (ours: flat + back's flat):**
+    - defaults 15.6% (48 of 308), and 9.1 / 9.4 yd per target;
+    - ROUTE_FINISH 11.6% (31 of 267);
+    - NFL 4.2% (5.3 yd per target).
+  - **Out:**
+    - defaults 19% (10 of 53);
+    - ROUTE_FINISH 5.6% (2 of 36);
+    - NFL 5.0%.
+  - **All targets:** defaults 12.5%, ROUTE_FINISH 10.0%, NFL 9.7%.
+  - **Cause:** ROUTE_FINISH (off) removes the flat or out that runs up the sideline at full speed and is caught in
+    stride: *confirmed* for the outs. With it on, flats are still about three times the NFL's big-play rate.
+  - **Caveats:**
+    - Our route labels are not the NFL's, and the NFL's FLAT includes backs.
+    - Both populations are unpaired games: read the direction, not the size.
+  - **Open:** yards after the catch on flats, and when the flat defender arrives (Coverage; Tools' carrier-bend work).
 
 <a id="cov-3"></a>
 ### COV-3: Coverage rules and calls not yet complete

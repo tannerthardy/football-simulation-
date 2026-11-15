@@ -1,8 +1,34 @@
-# Effort as the receiver's role in the declared plan (design note, 2026-11-15)
+# Effort as the receiver's role in the declared plan (design note, 2026-11-15; withdrawn for WRs, see the result)
 
-Rules + Coaching, for Integration. Design only: nothing here is built. This note sits behind the release work.
+Rules + Coaching, for Integration. Design only: nothing here is built.
 
-## Why now
+## Result (2026-11-15): the premise is not supported for wide receivers
+
+Tools measured the NFL against this note's premise. Source: `scripts/diag/route-speed/nfl_effort.py` and
+`sim_effort.ts` on `claude/route-speed-diag`.
+- **Operator:** speed with the ball held, as a share of the receiver's own top-decile speed.
+- **Data:** BDB 2025 weeks 1–9, drop-backs, charted man / zone.
+
+| question | NFL |
+|---|---|
+| targeted vs not, WRs | no difference: 0.88 vs 0.89 at 2.0–2.5 s; 0.91 vs 0.90 at 2.5–3.0 s |
+| targeted vs not, TEs | not targeted ease 0.04–0.08 late |
+| targeted vs not, RBs | not separable |
+| man vs zone | 0.03–0.04 apart |
+| time since the snap | the ramp dominates: 0.33 → 0.63 → 0.79 → 0.88, then a 0.89–0.91 plateau |
+| breaking routes | cruise only 0.71–0.83 of top (0.9 on gos); braking from 0.7–0.8 s / 2.6–3.1 yd before the vertex |
+
+**What this means:**
+- The NFL median sits under capacity because of the acceleration ramp and the tempo into breaks: route structure, not effort by role.
+- Effort by role, as scoped below, does not show for WRs. It is not built. The model, role table and named case below are kept as the record of what was proposed and why. They are not a plan.
+- **What the data does support is narrower:**
+  - **Stem tempo on breaking routes.** Ours is already close: not-targeted man 0.74 / zone 0.89, NFL 0.71 / 0.83. It is the same plan as the break's entry speed (see the model below), and so a route-table item, not an effort mechanism.
+  - **A small late ease for TEs** who are not the target: 0.04–0.08, too small to build now.
+- **ROUTE_EFFORT:** keep its break table's `s` column as a route-table item, measured break by break against the NFL's entry speed. Its other half, every stem at effort 1, has no support here and can be retired. ROUTE_FILLET already carries the cut / roll column on develop.
+  - One exception: if the staged window-settle read shows a zone window run through at full pace, the stem half has a case. That read has not been made.
+- **The larger finding** in the same table is the QB lane's, not this note's (Integration has sent it on). Our targeted receiver has slowed to 0.77 / 0.68 / 0.45 of his top speed at 2.0 / 2.5–3.0 / 3.5 s before the throw, where the NFL's is still at 0.88–0.91. Our QB throws to receivers who have already settled.
+
+## Why it was proposed
 
 - **The route package as an arm on the card** (ROUTE_EFFORT + PLAN_ROLES + ROUTE_FINISH, seeds 11 / 23, Integration 2026-11-15):
   - completion −3.8 / −2.3;
