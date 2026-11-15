@@ -204,6 +204,10 @@ export interface OffensivePlayCall {
   receiverBlockLook?: Partial<Record<SkillSlot, { until: number }>>;
   /** Pre-snap motion (played only with MOTION=1). */
   motion?: MotionCall;
+  /** SCRAMBLE_RULE: the coordinator's install for the scramble side's deep receiver once the quarterback leaves the
+   * pocket. Coaching splits: 'back' (the majority: "short goes deep, deep comes back", at about 10 yd) or 'stay' (the
+   * outermost deep man keeps the deep third). Undefined is 'back'. */
+  scrambleDeep?: 'back' | 'stay';
   /** Display label. */
   label: string;
 }

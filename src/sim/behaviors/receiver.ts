@@ -4,9 +4,9 @@
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
-import { neckRange } from '../head.js';
+import { HEAD_CONE, neckRange } from '../head.js';
 import { angleDiff, clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { arriveVelocity, fatigueFactor, TRUNK_RANGE, TRUNK_TWIST, type Body, type MoveCommand } from '../../physics/kinematics.js';
+import { arriveVelocity, fatigueFactor, shouldersOf, TRUNK_RANGE, TRUNK_TWIST, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint } from '../../physics/world.js';
@@ -21,6 +21,28 @@ import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_L
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
+
+/** SCRAMBLE_RULE (experimental, off; docs/reviews/2026-11-15-scramble-rule.md): the receivers' coached scramble rules.
+ * Off, every receiver goes to the scramble drill when the quarterback's internal clock expires (`sim.scrambleDrill`, his
+ * private state, set whether or not he has left the pocket), and the drill picks open grass on every defender's true
+ * position. With the flag each receiver goes to his rule when his own picture shows the quarterback outside the tackle
+ * box (4.5 yd off the ball, the QB's own pocket edge) while he is looking (the QB inside what his shoulders and neck
+ * can bring into view), a reaction time later, anchored to where he is then:
+ * - scramble side, 10 yd or deeper: by the call's install (`scrambleDeep`). 'back', the default and the majority
+ *   ("short goes deep, deep comes back"): 10-18 yd stay on their level toward the sideline the QB runs to, deeper
+ *   come back to 15 ("don't outrun your QB's arm"). 'stay': as 'back', except the outermost deep man keeps the deep
+ *   third, upfield toward the sideline;
+ * - under 10 yd: short goes deep, to 12 yd (ODU: under 10 deep, 10 or more back);
+ * - the backside: comes across toward the quarterback at his depth (6-15 yd), short of his line of travel;
+ * - a back from the backfield: flows with him underneath, 3-5 yd past the line, ahead of him.
+ * Each spot is chosen from his pictures: away from the defenders he sees, and not where a teammate he sees already is
+ * ("two or three guys standing in the same area", McDaniels), re-chosen every half second, eyes on the quarterback. */
+const SCRAMBLE_RULE = process.env.SCRAMBLE_RULE === '1';
+/** SCRAMBLE_RULE: the quarterback is out of the pocket in this picture of him. */
+export function scrambleSeen(qb: Readonly<Vec2>, ballY: number): number {
+  const off = qb.y - ballY;
+  return Math.abs(off) > 4.5 ? Math.sign(off) : 0;
+}
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
  * torso is still a compact body: the small hand slide below is the part of
@@ -320,7 +342,7 @@ export class RouteRunner implements Behavior {
     const release = this.handleRelease(a, sim);
     if (release) return release;
     if (RELEASE_THROUGH && this.releaseSide !== 0) this.skipReleasedStem(a, this.releaseSide);
-    if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
+    if (SCRAMBLE_RULE ? this.scrambleTriggered(a, sim) : sim.scrambleDrill) return SCRAMBLE_RULE ? this.scrambleRule(a, sim) : this.scrambleDrill(a, sim);
     // Keep the installed route's pace and progress. Private throw attribution
     // does not tell this receiver that his responsibility has ended; the
     // existing catch/assignment transition owns the change to blocking.
@@ -415,6 +437,64 @@ export class RouteRunner implements Behavior {
         y: picture.pos.y + picture.vel.y * elapsed } });
     }
     return pictures;
+  }
+
+  /** SCRAMBLE_RULE: when he first saw the quarterback out (and to which side), and his rule once it takes over. */
+  private scrambleSeenAt: { t: number; side: number } | null = null;
+  private scramble: { side: number; role: 'deep' | 'level' | 'back_to' | 'up' | 'across' | 'flow'; depth: number; at: number; spot: Vec2 } | null = null;
+
+  /** SCRAMBLE_RULE: his own picture of the quarterback is out of the pocket, held for a reaction time. */
+  private scrambleTriggered(a: Agent, sim: PlaySim): boolean {
+    if (this.scramble) return true;
+    if (sim.ball.kind !== 'held') return false;
+    const qb = sim.see(a, sim.qb).pos;
+    // Only while he is looking: the QB inside what his shoulders and neck bring into view (a man running away from
+    // him does not see him leave).
+    const looking = Math.abs(angleDiff(shouldersOf(a.body), Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x))) <= neckRange(a) + HEAD_CONE / 2;
+    const side = looking ? scrambleSeen(qb, sim.ballY) : 0;
+    if (!side) { this.scrambleSeenAt = null; return false; }
+    if (!this.scrambleSeenAt || this.scrambleSeenAt.side !== side) this.scrambleSeenAt = { t: sim.t, side };
+    if (sim.t - this.scrambleSeenAt.t < a.profile.reactionTime) return false;
+    const depth = a.pos.x - sim.los, back = this.start.x < sim.los - 2;
+    let role: NonNullable<RouteRunner['scramble']>['role'];
+    if (back) role = 'flow';
+    else if (this.outside !== side) role = 'across';
+    else if (depth < 10) role = 'up';
+    else {
+      // The outermost man on the scramble side, in his own pictures of his teammates.
+      const wide = (p: Readonly<Vec2>) => (p.y - sim.ballY) * side;
+      // Teammates out on routes are the call's, known to him; where they are is his picture of them.
+      const outermost = sim.offense.every((o) => o === a || o.behavior.kind !== 'route' || wide(sim.see(a, o).pos) <= wide(a.pos));
+      role = outermost && sim.offCall.scrambleDeep === 'stay' ? 'deep' : depth > 18 ? 'back_to' : 'level';
+    }
+    this.scramble = { side, role, depth, at: -Infinity, spot: { ...a.pos } };
+    return true;
+  }
+
+  /** SCRAMBLE_RULE: his rule's spot, re-chosen from his pictures every half second. */
+  private scrambleRule(a: Agent, sim: PlaySim): MoveCommand {
+    const r = this.scramble!, qb = sim.see(a, sim.qb).pos;
+    if (sim.t >= r.at) {
+      const sl = r.side > 0 ? FIELD_WIDTH : 0; // the scramble side's sideline
+      const base: Vec2 = r.role === 'deep' ? { x: a.pos.x + 5, y: sl - r.side * 8 }
+        : r.role === 'level' ? { x: sim.los + r.depth, y: a.pos.y + r.side * 4 }
+        : r.role === 'back_to' ? { x: sim.los + 15, y: a.pos.y + (qb.y - a.pos.y) * 0.3 }
+        : r.role === 'up' ? { x: sim.los + 12, y: a.pos.y + r.side * 3 }
+        : r.role === 'across' ? { x: sim.los + clamp(r.depth, 6, 15), y: qb.y - r.side * 3 }
+        : { x: sim.los + 4, y: qb.y + r.side * 4 };
+      const seenD = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => sim.see(a, d).pos);
+      const seenO = sim.offense.filter((o) => o !== a && o !== sim.qb && o.behavior.kind === 'route').map((o) => sim.see(a, o).pos);
+      let best = base, bestScore = -Infinity;
+      for (const [dx, dy] of [[0, 0], [0, 3], [0, -3], [2, 0], [-2, 0], [2, 3], [2, -3]]) {
+        const p = { x: Math.min(OPP_GOAL_X + 8, Math.max(sim.los + 1, base.x + dx)), y: clamp(base.y + dy, 3, FIELD_WIDTH - 3) };
+        let near = 6; for (const d of seenD) near = Math.min(near, Math.hypot(d.x - p.x, d.y - p.y));
+        let crowd = 0; for (const o of seenO) crowd += Math.max(0, 5 - Math.hypot(o.x - p.x, o.y - p.y));
+        const score = near - 0.5 * crowd - 0.15 * Math.hypot(p.x - a.pos.x, p.y - a.pos.y);
+        if (score > bestScore) { bestScore = score; best = p; }
+      }
+      this.scramble = { ...r, at: sim.t + 0.5, spot: best };
+    }
+    return goTo(a, this.scramble!.spot, { speed: 0.9, facing: angleTo(a.pos, qb) });
   }
 
   private drill: { at: number; spot: Vec2 } | null = null;
@@ -542,7 +622,7 @@ export class RouteRunner implements Behavior {
 
     // Beyond five yards the defender must cover rather than initiate or
     // sustain a release jam. A thrown ball also changes the players' task.
-    if (a.pos.x > sim.los + 5 || sim.ball.kind !== 'held' || sim.scrambleDrill || usable(a) === 0) {
+    if (a.pos.x > sim.los + 5 || sim.ball.kind !== 'held' || (SCRAMBLE_RULE ? this.scramble !== null : sim.scrambleDrill) || usable(a) === 0) {
       if (this.pressContact) stop();
       return null;
     }
