@@ -5,7 +5,7 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { neckRange } from '../head.js';
-import { servoCommand, SERVO_HANDOVER } from '../ball-servo.js';
+import { servoCommand, servoEngaged } from '../ball-servo.js';
 import { angleDiff, clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, TRUNK_RANGE, TRUNK_TWIST, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -739,16 +739,17 @@ export class TrackBall implements Behavior {
     // Under BALL_EST his error is his estimate's; no separate offset.
     const target = BALL_EST ? { ...spot.p } : { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
     if (HANDS_CUE) noteHands(a, sim.t, spot.t);
-    // BALL_EST bit 1024: his feet run on what he sees of the ball (ball-servo.ts), not to the fitted point. Before the
-    // servo has enough of the ball he keeps running his route (no correction); under the handover he holds his running
-    // and his hands do the rest. His look keeps tracking the ball throughout (lookFor: neck, trunk, hips).
+    // BALL_EST bit 1024: once the servo has enough of the ball, his feet run on what he sees of it (ball-servo.ts), not
+    // to the fitted point; once it has steered him, the handover holds his running and his hands do the rest. Until then
+    // (and on a flight too short for it ever to) he runs his route, through the last 0.35 s too: holding his running
+    // there when the servo never steered froze him through his break (seed 23, open 3+ yd 0-0.6 s 87 vs 97%). His
+    // look tracks the ball throughout.
     if (BALL_EST && BALL_EST_SERVO && sim.ballEstimates.lastSeen(a)) {
       const left = spot.t - sim.t;
       const route = this.fallback.update(a, sim);
       const servo = servoCommand(a, sim.ballEstimates.anglesOf(a), sim.t, left, route, this);
-      const base: MoveCommand = servo ?? (left < SERVO_HANDOVER ? { vel: { ...a.vel } } : route);
-      if (servo) a.tags.add('ball-servo');
-      return lookFor(a, sim, { ...base, facing: undefined });
+      if (servo) { a.tags.add('ball-servo'); return lookFor(a, sim, { ...servo, facing: undefined }); }
+      return lookFor(a, sim, { ...(servoEngaged(a, this) ? { vel: { ...a.vel } } : route), facing: undefined });
     }
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);

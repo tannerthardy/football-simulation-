@@ -71,6 +71,8 @@ export function imageRates(angles: Angle[], now: number): { optAcc: number; bear
 /** The servo's own commanded running (speed, heading), held between ticks: "no correction" keeps what he intended,
  * not what his body achieved (a speed lost to a turned hip must not lower the next command, or every loss compounds). */
 const held = new WeakMap<Agent, { vx: number; vy: number; t: number; flight: unknown }>();
+/** Has the servo steered him on this flight? Before it has, his feet stay with what he had (his own estimate's point). */
+export const servoEngaged = (a: Agent, flight: unknown): boolean => held.get(a)?.flight === flight;
 
 /** His running command under the ball. While the image is not yet readable (too few samples) or within the handover,
  * null: the caller keeps his route / holds his running. Otherwise his commanded running, seeded from `base` (his route
