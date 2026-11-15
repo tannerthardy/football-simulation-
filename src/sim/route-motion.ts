@@ -90,6 +90,8 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
+/** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
+const PLANT_REACH = process.env.PLANT_REACH === '1';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */
@@ -117,7 +119,15 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
       return { vel: { x: (E.x - body.pos.x) / dE * st.turn.speed, y: (E.y - body.pos.y) / dE * st.turn.speed }, cutSkill };
     }
     const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
-    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
+    // PLANT_REACH: a planted break (a declared cut) is passed only once he has reached it along the leg he is on.
+    // `passed` asks only that he be within 2 yd and ahead of it along the NEXT leg; an exit leg that comes back toward the
+    // line (out 10 -> 9.5 yd, deep out, comeback, curl) puts every point short of the vertex ahead of it, so the cursor left
+    // the out's plant 1.7 yd early and he asked for 8.9 yd/s into the cut (staged double_outs: arrives 4.7 yd/s, the dig 3.75).
+    const reached = !(PLANT_REACH && tgt.cut) || (() => {
+      const prev = st.idx > 0 ? path[st.idx - 1].p : st.from;
+      return !prev || (body.pos.x - tgt.p.x) * (tgt.p.x - prev.x) + (body.pos.y - tgt.p.y) * (tgt.p.y - prev.y) > 0;
+    })();
+    if (d < 0.6 || (next && reached && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
     const isLast = st.idx === path.length - 1;
     let through = isLast && end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
     // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his

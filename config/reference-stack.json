@@ -300,6 +300,7 @@
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
+    "PLANT_REACH": "off",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
     "READ_RISK_TRACE": "off",
