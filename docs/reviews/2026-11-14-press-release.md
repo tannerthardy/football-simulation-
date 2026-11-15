@@ -402,3 +402,62 @@ Read:
   and back.
 
 Both act on the receiver's own plan. Neither touches the corner.
+
+## What is the NFL's +4.7 yd on pressed gos? (Integration's question before any go-width change), 2026-11-15
+
+`scripts/diag/release/go-width.py`, same selection as above (pressed gos reaching 10 yd).
+
+- **Width** is his y change from his own alignment (outward +) at 10 yd.
+- **Sideline room** is his distance to his own sideline.
+- **Split:** "on hip" means the corner is within arm's reach (centres 1.2 yd or less) on his inside for 0.3 s or
+  more between 3 and 10 yd; otherwise "beaten/off".
+
+| pressed gos, p50 (p25–p75) | n | width at 10 yd | room at snap | room at 10 yd | slope room10 on room0 |
+|---|---|---|---|---|---|
+| NFL, corner on his hip | 340 | +5.6 (4.6–7.0) | 10.0 | 4.6 | 0.74 |
+| NFL, beaten / off | 543 | +3.3 (−1.2–5.5) | 10.2 | 7.3 | 1.04 |
+| ours off, on hip | 86 | +5.1 | 10.6 | 5.5 | 0.94 |
+| ours off, beaten / off | 114 | +4.3 | 10.6 | 7.1 | 1.11 |
+| ours RELEASE_READ (attempt 1), on hip | 86 | +3.0 | 10.6 | 7.6 | 1.02 |
+| ours RELEASE_READ (attempt 1), beaten / off | 60 | +0.1 | 10.6 | 10.4 | 1.14 |
+
+NFL room at 10 yd by alignment band:
+
+| aligned (yd from sideline) | 0–8 | 8–11 | 11–14 | 14+ |
+|---|---|---|---|---|
+| on hip | 1.9 | 4.3 | 5.3 | 7.5 |
+| beaten / off | 3.0 | 5.9 | 8.9 | 14.1 |
+
+**Answer.**
+
+1. **Not a landmark.** Room at 10 yd grows with his alignment in both splits (slope 0.74 on the hip, 1.04
+   beaten/off). There is no common "red line" that receivers converge on from any alignment.
+2. **About half of the +4.7 is the corner.** With the corner on his inside hip the go is +5.6 wide; beaten or off,
+   +3.3. The corner in phase rides him about 2.3 yd wider. That is Coverage's part, the third corner item.
+3. **The receiver's own part is about +1.3, added to his route's stem width.**
+   - NFL off-coverage gos are +2.0 at 10 yd (the route as run); pressed and free, +3.3.
+   - Ours: off-coverage +0.8 (the installed go line, 0.6 → 1.5); pressed and free +0.1 under attempt 1.
+   - So two separate things:
+     - The installed go stem is about 1.2 yd narrower than the NFL's off coverage. That is the route drawing, Rules'
+       lane.
+     - After an outside release ours works back inside to that line (−0.7 vs off coverage, against NFL +1.3).
+       RELEASE_THROUGH runs the go back to its installed line. The receiver's piece is to hold the release line he
+       made, not to be given a 4.7-yd target.
+4. **Not built.** The receiver's piece goes in attempt 3 of the release only if the attempt-2 read leaves it open.
+   The stem width goes to Rules; the ride goes to Coverage.
+
+## Head-up share of our pressed snaps vs the NFL's (Integration item 4)
+
+Corner's shade at the snap, pressed outside receivers reaching 5 yd (same operator, ±0.3 yd band):
+
+| | head-up | outside shade | inside shade |
+|---|---|---|---|
+| NFL (2,534) | 1,463 (58%) | 735 (29%) | 336 (13%) |
+| ours, 16 games, off (553) | 475 (86%) | 71 (13%) | 7 (1%) |
+
+- Our corners align head-up 86% of the time vs the NFL's 58%, and almost never inside (1% vs 13%). Alignment
+  `shade 0.15` in `src/playbook/alignment.ts` press spots sits inside the ±0.3 band.
+- So the head-up case dominates our press reps by construction, and anything a receiver does against a head-up
+  corner is over-weighted against the NFL's mix.
+- With attempt 1's jab-on-every-head-up, part of the 6%-vs-all jab gap was this alignment. That is the third
+  Coverage/alignment item, noted for Integration.
