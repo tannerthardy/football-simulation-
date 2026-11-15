@@ -33,6 +33,7 @@
     "BALL_EST": "0",
     "BALL_EST_NECK_SPRINT": "45",
     "BALL_EST_TAU_SD": "7",
+    "BALL_GLANCE_DEPTH": "10",
     "BALL_SERVO_KB": "30",
     "BALL_SERVO_KD": "15",
     "CATCH_HANDS": "0",

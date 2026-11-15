@@ -38,7 +38,7 @@ const BALL_EST_RAW = Number(process.env.BALL_EST ?? 0);
 /** Bit 1024 is the receiver's one meaning for a card: the receiver on his own sight of the ball. It carries the receiver
  * bits it was built on (2 no tracking penalty, 4 moving choice, 16 deep look, 64 trunk look), so 1025 = 1111; the
  * single bits stay for the parked designs' reads only. */
-const BALL_EST_BITS = BALL_EST_RAW & 1024 ? BALL_EST_RAW | 2 | 4 | 16 | 64 : BALL_EST_RAW;
+const BALL_EST_BITS = BALL_EST_RAW & (1024 | 2048) ? BALL_EST_RAW | 2 | 4 | 16 | 64 : BALL_EST_RAW;
 export const BALL_EST = (BALL_EST_BITS & 1) !== 0;
 export const BALL_EST_NO_TRACKPEN = (BALL_EST_BITS & 2) !== 0;
 /** Design 5 (b): a committed catch point moves with his estimate (bit 4). */
@@ -90,7 +90,30 @@ export function lookJoints(a: Agent, cmd: MoveCommand, heading: number, d: numbe
 }
 /** Bit 1024 (the feet servo, 2026-11-15, attempt 1): a player tracking the ball runs on what he sees of it (ball-servo.ts:
  * optical acceleration cancellation along his line, constant bearing across it), not to a fitted landing point. */
-export const BALL_EST_SERVO = (BALL_EST_BITS & 1024) !== 0;
+export const BALL_EST_SERVO = (BALL_EST_BITS & 1024) !== 0 && (BALL_EST_BITS & 2048) === 0;
+/** Bit 2048 (the glance rule, 2026-11-15; the simple honest version, the user's direction via Integration): a player who
+ * has had the ball in his eyes for a short dwell knows its trajectory with an error, in place of the slow fit for "where
+ * it comes down". It needs the look (his own head, the sight gate) and a dwell; it is wrong by an amount set by what he
+ * misjudges: depth along his line of sight more than across it, in proportion to his range, shrinking the longer he has
+ * held it and growing again once he looks away. One correlated error per look (no fresh noise each tick). His skill
+ * scales the error and the dwell, never the catch. With no look, nothing. Carries the receiver bits 2/4/16/64; the
+ * servo (1024) is off under it. Card: 2049. The fit and the servo stay on the branch as the deeper version. */
+export const BALL_EST_GLANCE = (BALL_EST_BITS & 2048) !== 0;
+/** Glance constants (all choices, stated; read at two or three values, never fitted to completion):
+ * dwell before he knows it: the intended target, who expects it on his route's timing, 0.10 s; anyone else 0.15 s
+ * (about one and a half fixation-to-pursuit latencies); both x (1.5 - skill).
+ * error sd at a look's start: along his line of sight (depth, the hard axis) GLANCE_DEPTH of his range (percent, flag
+ * BALL_GLANCE_DEPTH, 10; read at 5 / 20), across it 2% (about a degree of direction plus its drift); x (1.5 - skill);
+ * shrinking with the time he has held it as sqrt(0.3 / (0.3 + held)); growing with the time since he last had it as
+ * (1 + age / 0.5). */
+export const GLANCE_DWELL_TARGET = 0.10, GLANCE_DWELL_OTHER = 0.15;
+export const GLANCE_DEPTH = Number(process.env.BALL_GLANCE_DEPTH ?? 10) / 100, GLANCE_ACROSS = 0.02;
+export const GLANCE_HOLD_REF = 0.3, GLANCE_AGE_TAU = 0.5;
+/** The glance error's sd (yd) along and across his line of sight, for his range, skill, time held and time since. */
+export function glanceSd(range: number, skillV: number, held: number, age: number): { depth: number; across: number } {
+  const k = (1.5 - clamp(skillV, 0, 1)) * Math.sqrt(GLANCE_HOLD_REF / (GLANCE_HOLD_REF + Math.max(0, held))) * (1 + Math.max(0, age) / GLANCE_AGE_TAU);
+  return { depth: GLANCE_DEPTH * range * k, across: GLANCE_ACROSS * range * k };
+}
 /** The estimator replaces the true flight for the receivers (off under bit 128). */
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
@@ -168,6 +191,8 @@ interface Track {
   searchAt?: number;
   /** When he saw the passer's arm come through (sample time, his own picture): his belief of the release. */
   armSeenAt?: number;
+  /** Bit 2048: the current look (seen-time it began, last seen-time in his eyes, its error draw), and time held. */
+  lookStart?: number; lookLast?: number; lookZ?: [number, number]; held?: number; looks?: number; gPath?: PathSample[]; gPathT?: number;
   /** Attempt 3: observations he did not sample (his route prior, the release and the shoulder line). */
   pseudo: Sample[];
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
@@ -308,6 +333,15 @@ export class BallEstimates {
           }
         }
       }
+      if (BALL_EST_GLANCE) {
+        // A gap of more than a tick ends the look; the next one starts with a fresh error draw.
+        if (tr.lookLast === undefined || seen.t - tr.lookLast > sim.dt * 1.5 + 1e-9) {
+          tr.looks = (tr.looks ?? 0) + 1;
+          const dz = sim.dice(`ball-glance:${tr.looks}`, a);
+          tr.lookStart = seen.t; tr.lookZ = [dz.normal(0, 1), dz.normal(0, 1)];
+        } else tr.held = (tr.held ?? 0) + (seen.t - tr.lookLast);
+        tr.lookLast = seen.t;
+      }
       tr.samples.push(smp);
       if (tr.samples.length + tr.pseudo.length >= 2 && (!tr.fit || sim.t - tr.fitT >= REFIT_EVERY - 1e-9)) {
         tr.fitT = sim.t;
@@ -337,7 +371,7 @@ export class BallEstimates {
       this.seed(a, sim, tr);
       if (tr.samples.length + tr.pseudo.length >= 2) { const nf = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); if (finiteFit(nf)) { tr.fit = nf; tr.fitT = sim.t; tr.path = null; } }
     }
-    return tr.fit ? this.pathOf(sim, tr) : [];
+    return this.glancePath(a, sim, tr) ?? (tr.fit ? this.pathOf(sim, tr) : []);
   }
 
   /** Design 4: before the throw he is looking for the QB this tick (his head turns to him in sense()). */
@@ -362,7 +396,8 @@ export class BallEstimates {
    * sampling; empty if he never had an estimate of this flight. For beliefs that must not move his gaze. */
   peek(a: Agent, sim: PlaySim): PathSample[] {
     const tr = this.tracks.get(a);
-    return tr?.fit && tr.flight === this.flight ? this.pathOf(sim, tr) : [];
+    if (!tr || tr.flight !== this.flight) return [];
+    return this.glancePath(a, sim, tr) ?? (tr.fit ? this.pathOf(sim, tr) : []);
   }
 
   /** Where his look aims now (his gaze target): the passer before he has the ball, then the ball's seen motion. */
@@ -455,8 +490,38 @@ export class BallEstimates {
 
   private reset(tr: Track): void {
     tr.searchAt = undefined; // armSeenAt is his belief of this play's release: a tip is a new flight of the same throw.
+    tr.lookStart = undefined; tr.lookLast = undefined; tr.lookZ = undefined; tr.held = undefined; tr.looks = undefined; tr.gPath = undefined;
     tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
     tr.deliberate = false; tr.passiveAt = undefined;
+  }
+
+  /** Bit 2048: has he held this flight in his eyes for his dwell (this look, or an earlier one of the same flight)? */
+  glanceKnows(a: Agent, sim: PlaySim): boolean {
+    const tr = this.tracks.get(a);
+    if (!BALL_EST_GLANCE || !tr || tr.flight !== this.flight || tr.lookStart === undefined || tr.lookLast === undefined) return false;
+    const dwell = (sim.ball.kind === 'air' && sim.ball.target === a ? GLANCE_DWELL_TARGET : GLANCE_DWELL_OTHER) * (1.5 - skill(a));
+    return (tr.held ?? 0) + 1e-9 >= dwell;
+  }
+
+  /** Bit 2048: his believed flight once he knows it: the flight from now, displaced by his look's error along and
+   * across his line of sight to the ball as he last had it. Null until his dwell (no knowledge without looking). */
+  private glancePath(a: Agent, sim: PlaySim, tr: Track): PathSample[] | null {
+    if (!this.glanceKnows(a, sim) || sim.ball.kind !== 'air' || sim.ball.flight !== this.flight) return null;
+    if (tr.gPath && tr.gPathT === sim.t) return tr.gPath;
+    const b: BallFlight = { pos: { ...sim.ball.flight.pos }, vel: { ...sim.ball.flight.vel }, drag: sim.ball.flight.drag };
+    const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y, g = Math.max(0.5, Math.hypot(dx, dy)), range = Math.hypot(dx, dy, b.pos.z - a.profile.heightYd * 0.93);
+    const sd = glanceSd(range, skill(a), tr.held ?? 0, sim.t - (tr.lookLast ?? sim.t));
+    const z = tr.lookZ ?? [0, 0], ux = dx / g, uy = dy / g;
+    const ox = z[0] * sd.depth * ux - z[1] * sd.across * uy, oy = z[0] * sd.depth * uy + z[1] * sd.across * ux;
+    const out: PathSample[] = [];
+    let t = sim.t;
+    for (let k = 0; k < 120 && b.pos.z > 0; k++) {
+      out.push({ t: Math.round(t * 100) / 100, x: b.pos.x + ox, y: b.pos.y + oy, z: b.pos.z });
+      stepFlight(b, 0.05); t += 0.05;
+    }
+    out.push({ t: Math.round(t * 100) / 100, x: b.pos.x + ox, y: b.pos.y + oy, z: Math.max(0, b.pos.z) });
+    tr.gPath = out.every((q) => Number.isFinite(q.x) && Number.isFinite(q.y)) ? out : []; tr.gPathT = sim.t;
+    return tr.gPath;
   }
 
   private pathOf(sim: PlaySim, tr: Track): PathSample[] {
