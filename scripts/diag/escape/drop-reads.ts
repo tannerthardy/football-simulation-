@@ -33,12 +33,19 @@ PlaySim.prototype.run = function (this: PlaySim) {
     if (triEnd === null && b.triDone && b.plan?.triangle) triEnd = +sim.t.toFixed(2);
   };
   const tb = sim.throwBall.bind(sim);
-  sim.throwBall = (p: any, ...rest: any[]) => { if (p === sim.qb && rel === null) rel = +sim.t.toFixed(2); return tb(p, ...rest); };
+  let thrIdx: number | null = null, thrStep: number | null = null, thrRdy: number | null = null;
+  sim.throwBall = (p: any, target: any, ...rest: any[]) => {
+    if (p === sim.qb && rel === null) {
+      rel = +sim.t.toFixed(2);
+      if (b0) { thrIdx = b0.reads?.indexOf(target) ?? null; thrStep = b0.stepOf?.get(target)?.n ?? null; }
+    }
+    return tb(p, target, ...rest);
+  };
   const res = orig.apply(this);
   if (b0) {
     const c = sim.offCall?.pass;
     console.log(JSON.stringify({ concept: c?.id ?? '?', family: c?.family ?? null, drop: c?.drop ?? null, coverage: sim.defCall?.coverage?.id ?? '?',
-      gun: xs[0] !== undefined ? xs[0] <= -3 : null, xs, adv, eyes, kind, triEnd, set: setT, rel: rel !== null && rel >= 0 ? rel : null, reads: b0.reads?.length ?? null,
+      gun: xs[0] !== undefined ? xs[0] <= -3 : null, xs, adv, eyes, kind, triEnd, set: setT, rel: rel !== null && rel >= 0 ? rel : null, thrIdx, thrStep, qbSet: b0.setAt ?? null, reads: b0.reads?.length ?? null,
       sacked: !!res.stats.sacked, cmp: !!res.stats.completed }));
   }
   return res;

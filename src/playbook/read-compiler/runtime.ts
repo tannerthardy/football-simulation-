@@ -137,6 +137,9 @@ export interface InstalledPlan {
    * first a throw as installed (the compiler's window), and `onTime` whether it is ready by its step. A read that is
    * not on time is the concept's or the drop's question, not a wait (the table's rhythm column). */
   rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; at: number; ready: number; onTime: boolean }[];
+  /** The plan's QB set (s after the snap) that `rhythm`'s step times count from (data; the QB lane's QB_FOOTWORK anchors
+   * the same offsets on his own set). */
+  rhythmSet?: number;
   /** DECLARED_BREAK: per read, the route's declared break as installed (route time from this compile's sample of the
    * installed route, never a live play), its throw family, and the plan's anchor lead. The quarterback lane's
    * `leadFor(passer, throwFamily, route)` replaces the anchor with his own lead when a read is checked; the throwing
@@ -211,6 +214,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const seq = [...plan.order, ...(plan.outlet && !plan.order.includes(plan.outlet) ? [plan.outlet] : [])];
       const stepAt = (st: typeof steps[number]) => st === 'set' ? set : st === 'hitch' ? set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT)
         : set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT) + RHYTHM_BEAT;
+      plan.rhythmSet = set;
       plan.rhythm = seq.map((ref, i) => {
         const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(fiveStep ? i + 1 : i, 2)];
         const at = +stepAt(step).toFixed(2);
