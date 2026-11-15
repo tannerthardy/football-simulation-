@@ -133,6 +133,7 @@
     "TRACK_TACKLE": "on",
     "PURSUIT_SPOT": "on",
     "RELEASE_BELIEF": "on",
+    "OPEN_EARLY": "off",
     "TRACK_FEEL": "on",
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",

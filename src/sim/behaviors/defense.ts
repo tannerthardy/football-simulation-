@@ -838,6 +838,36 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
   const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
   return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
 }
+/** OPEN_EARLY (experimental, off): a deep defender over a climber opens by the pace he must match before his cushion
+ * is spent, not after. carrySpeedNeed asks for the speed he needs now, so he pedals square (spending the spare cushion)
+ * until the pedal cap is not enough and then jumps to the full turn; NFL deep men over a climber open about 33 deg by
+ * 1.5 s and 62 deg by 3.0 s as they speed up, turned at most 11% (nflcarry.py); ours stay square to 2.0 s, the cushion
+ * goes 4.3 -> 0.6 yd and 45-66% are turned by 2.5-3.0 s with no help (simcarry.mts). His pedal cannot reach the
+ * climber's pace, so with it, once the time until his spare cushion is spent (at the closure in his own picture) is
+ * inside his turn time plus his read's lead (0.4 s at no anticipation, 1.0 s at full: a good reader sees the climber
+ * coming earlier), his speed need is the climber's pace; the opening is the same speed match
+ * (openTo), and once opened he holds it while the receiver keeps at least OPEN_EARLY_EXIT of the pace he opened to, so
+ * a stutter does not open and close him; a receiver who throttles or breaks off releases it. A stem that sells vertical
+ * and breaks under the open hips is still the way to beat him. */
+export const OPEN_EARLY = process.env.OPEN_EARLY === '1';
+const OPEN_EARLY_EXIT = 0.7;
+/** OPEN_EARLY: the time a deep defender's open and run takes to come up to pace (s; a stated choice, of the order of a
+ * hip turn and two crossover steps). */
+const OPEN_EARLY_TURN = 0.5;
+const openEarly = new WeakMap<Agent, { r: Agent; need: number; vx0: number }>();
+function openEarlyNeed(a: Agent, r: Agent, need: number, cushion: number, vx: number, help: boolean): number {
+  if (!OPEN_EARLY) return need;
+  // He must end up running at the climber's pace (the pedal cannot get there), so he opens once the time until his spare
+  // cushion is spent, at the closure he sees, is inside the time a turn and the run take him plus his read's lead.
+  const spare = cushion - cushionThreshold(a, vx, help, r.profile.radius);
+  const closure = Math.max(0.1, vx - Math.max(0, a.vel.x));
+  const horizon = OPEN_EARLY_TURN + 0.4 + 0.6 * clamp(a.r('anticipation'), 0, 1);
+  const want = spare <= 0 || spare / closure <= horizon ? Math.max(need, Math.max(0, vx)) : need;
+  const m = openEarly.get(a);
+  if (m && m.r === r && vx >= OPEN_EARLY_EXIT * m.vx0) { m.need = Math.max(m.need, want); return m.need; }
+  openEarly.set(a, { r, need: want, vx0: Math.max(1, vx) });
+  return want;
+}
 /** CARRY_READ (on since engine-57; `CARRY_READ=0` restores the old carry): a deep carry
  * plays off what the receiver can still become, read from what he shows: his
  * seen upfield speed vx and the acceleration in the defender's picture
@@ -1287,7 +1317,7 @@ export class ManCoverage implements Behavior {
       const req = selected.facing === undefined ? selected : command;
       const qbSeen = sim.see(a, sim.qb).pos;
       const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
-        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration));
+        openEarlyNeed(a, R, carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius, this.depth.seenAcceleration), a.pos.x - seen.pos.x, vx, help));
       const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
       if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
       a.tags.add('open-carry');
@@ -1660,7 +1690,7 @@ export class ZoneCoverage implements Behavior {
         const req = selected.facing === undefined ? selected : command;
         const qbSeen = sim.see(a, sim.qb).pos;
         const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
-          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration));
+          openEarlyNeed(a, deepest.r, carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius, depth.seenAcceleration), a.pos.x - deepest.pos.x, deepest.vel.x, false));
         const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
         if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
         a.tags.add('open-carry');
