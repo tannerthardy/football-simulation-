@@ -38,6 +38,7 @@ import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
+import { BALL_CUE_OWN } from '../release-evidence.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -2276,7 +2277,11 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   // him; that is not a reason to stop. Hold the approach he last chose.
   if (c) { lastFlightApproach.set(a, { cmd: c, t: sim.t }); return c; }
   const last = lastFlightApproach.get(a);
-  return last && sim.t - last.t <= 0.3 ? { ...last.cmd } : stand();
+  if (last && sim.t - last.t <= 0.3) return { ...last.cmd };
+  // No catchable sample left on his flight and no recent approach: he keeps his ball responsibility and goes to where
+  // he believes it came down (pursueIfLive's ball rally), not a stop. A newer holder picture takes over there.
+  const area = BALL_CUE_OWN ? unresolvedBallArea(a) : null;
+  return area ? goTo(a, area) : stand();
 }
 
 const lastFlightApproach = new WeakMap<Agent, { cmd: MoveCommand; t: number }>();
@@ -2417,12 +2422,15 @@ function arrivalPoint(sim: PlaySim, path: PlaySim['ballPath']): Vec2 | null {
   return last;
 }
 
+/** LOOSE_SEEN (see behaviors/loose-seen.ts): read here to keep the module free of an import cycle. */
+const LOOSE_SEEN_PURSUIT = process.env.LOOSE_SEEN !== '0';
 /** Generic pursuit of the ball carrier. */
 export class Pursuit implements Behavior {
   readonly kind = 'pursuit';
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (a.engagement) return stand();
-    if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    // LOOSE_SEEN: a loose ball reaches him through his own recognition (LooseCue), not through the ball's true state.
+    if (sim.ball.kind === 'loose' && !LOOSE_SEEN_PURSUIT) return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     const holder = observedHolder(a, sim);
     if (holder) return chase(sim, a, holder.target);
     if (HONEST_READS ? playsThrow(a, sim, null) : sim.ball.kind === 'air') return playBall(a, sim, null);
