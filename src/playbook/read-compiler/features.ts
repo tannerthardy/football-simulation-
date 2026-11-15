@@ -36,6 +36,8 @@ const DT = 0.1, HORIZON = 4.0;
  * heading test is kept as a check: `breakWarn` when the two ready times differ by more than 0.4 s. A route settles
  * when it is installed to (`settle`, `sitVsZone`), not when it happens to be slow at the end of the horizon. */
 export const DECLARED_BREAK = process.env.DECLARED_BREAK !== '0';
+/** COMPILE_PICTURE (experimental, off): the route sample's pictures show the parked defence (see `sampleRoutes`). */
+const COMPILE_PICTURE = process.env.COMPILE_PICTURE === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 
 export interface Sampled { qbSetAt: number; routes: RouteDescriptor[]; excluded: Array<{ ref: string; why: string }> }
@@ -55,6 +57,12 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
   sim.throwBall = () => undefined;
   const park = () => sim.defense.forEach((d, i) => { d.body.pos = { x: sim.los + 60 + i * 2, y: 1 }; d.body.vel = { x: 0, y: 0 }; });
   park();
+  // COMPILE_PICTURE (experimental, off): the defence was recorded where it lined up before it was parked, and every
+  // picture is delayed, so the receivers release round defenders who are not there, on one side only (PRESS_MIRROR /
+  // RELEASE_SEEN's tight-at-snap men: pa_flood's S2 releases round his parked DE_S unflipped and not flipped), and the
+  // sample is not mirror-symmetric (read-compiler's mirror case on the engine defaults). With the flag the record's
+  // delay window is filled with the parked defence, so his pictures show what is on the field.
+  if (COMPILE_PICTURE) for (let i = 0; i < 12; i++) sim.perception.record(sim.agents, null);
   const dir = sim.attackDir(sim.offense[0].team), ss = sim.offAlign.strongSign;
   const tick = sim as unknown as { tick(): void };
   const skill = sim.offense.filter((a) => a !== sim.qb && !OL.has(a.slot));
