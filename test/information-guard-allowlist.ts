@@ -15,8 +15,10 @@
  * physics     the contact / hand-fight / catch resolution itself, not a player's decision
  * officiating the referee's rules
  * unreviewed  not yet looked at; its owner classifies it
+ * perception  a record kept so one player's own delayed, sight-gated read can consume it; the row names the only reader and
+ *             test/perception-producers.test.ts fails if a second reader appears (2026-11-15)
  */
-export type InformationClass = 'leak' | 'touch' | 'physics' | 'officiating' | 'unreviewed';
+export type InformationClass = 'leak' | 'touch' | 'physics' | 'officiating' | 'unreviewed' | 'perception';
 export interface InformationDebt { file: string; key: string; reads: number; class: InformationClass; owner: string; since: string; why: string }
 
 export const INFORMATION_DEBT: InformationDebt[] = [
@@ -59,14 +61,14 @@ export const INFORMATION_DEBT: InformationDebt[] = [
   { file: 'src/sim/behaviors/defense.ts', key: 'sim.qbEyes', reads: 1, class: 'leak', owner: 'Defense', since: '2026-11-13', why: "QB_BODY_SEEN off branch: SHOULDER_READ plant/restart, sawThrow arm key, SEEN_EYES=0; goes to 0 when the legacy path is deleted" },
   { file: 'src/sim/behaviors/defense.ts', key: 'sim.windupAt', reads: 7, class: 'leak', owner: 'Defense', since: '2026-11-13', why: "QB_BODY_SEEN off branch: SHOULDER_READ plant/restart, sawThrow arm key, SEEN_EYES=0; goes to 0 when the legacy path is deleted" },
   { file: 'src/sim/behaviors/defense.ts', key: 'sim.windupEndAt', reads: 2, class: 'leak', owner: 'Defense', since: '2026-11-13', why: "QB_BODY_SEEN off branch: SHOULDER_READ plant/restart, sawThrow arm key, SEEN_EYES=0; goes to 0 when the legacy path is deleted" },
-  { file: 'src/sim/behaviors/qb.ts', key: 'agent.behavior', reads: 4, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's assignment or intent, which is private until he shows it" },
-  { file: 'src/sim/behaviors/qb.ts', key: 'agent.engagement', reads: 6, class: 'leak', owner: 'QB', since: '2026-11-13', why: "whether another player is engaged and with whom; he sees contact only through his own pictures" },
+  { file: 'src/sim/behaviors/qb.ts', key: 'agent.behavior', reads: 3, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's assignment or intent, which is private until he shows it" },
+  { file: 'src/sim/behaviors/qb.ts', key: 'agent.engagement', reads: 5, class: 'leak', owner: 'QB', since: '2026-11-13', why: "whether another player is engaged and with whom; he sees contact only through his own pictures" },
   { file: 'src/sim/behaviors/qb.ts', key: 'agent.engagement', reads: 2, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "whether another player is engaged and with whom; he sees contact only through his own pictures" },
-  { file: 'src/sim/behaviors/qb.ts', key: 'agent.isDown', reads: 7, class: 'leak', owner: 'QB', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
+  { file: 'src/sim/behaviors/qb.ts', key: 'agent.isDown', reads: 3, class: 'leak', owner: 'QB', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
   { file: 'src/sim/behaviors/qb.ts', key: 'agent.isDown', reads: 6, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true off-feet state; sim.see(...).pose is the delayed cue" },
   { file: 'src/sim/behaviors/qb.ts', key: 'agent.pos', reads: 8, class: 'leak', owner: 'QB', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
   { file: 'src/sim/behaviors/qb.ts', key: 'agent.pos', reads: 11, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
-  { file: 'src/sim/behaviors/qb.ts', key: 'agent.speedScale', reads: 12, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true fatigue; a defender sees a fade, not the tank" },
+  { file: 'src/sim/behaviors/qb.ts', key: 'agent.speedScale', reads: 9, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true fatigue; a defender sees a fade, not the tank" },
   { file: 'src/sim/behaviors/qb.ts', key: 'agent.vel', reads: 4, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "another player's true velocity; read it through sim.see(a, other)" },
   { file: 'src/sim/behaviors/qb.ts', key: 'sim.bond', reads: 1, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "the true tackle bond" },
   { file: 'src/sim/behaviors/qb.ts', key: 'sim.carrier', reads: 2, class: 'unreviewed', owner: 'QB', since: '2026-11-13', why: "the true holder" },
@@ -108,7 +110,7 @@ export const INFORMATION_DEBT: InformationDebt[] = [
   { file: 'src/sim/coverage/judgment.ts', key: 'sim.ball', reads: 1, class: 'leak', owner: 'Coverage', since: '2026-11-13', why: "the true ball state and flight; the ball is seen in flight, delayed, through possession-read and ball-tracking" },
   { file: 'src/sim/coverage/reads.ts', key: 'agent.pos', reads: 2, class: 'unreviewed', owner: 'Coverage', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
   { file: 'src/sim/coverage/rules.ts', key: 'agent.pos', reads: 4, class: 'unreviewed', owner: 'Coverage', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
-  { file: 'src/sim/coverage/techniques.ts', key: 'agent.pos', reads: 4, class: 'unreviewed', owner: 'Coverage', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
+  { file: 'src/sim/coverage/techniques.ts', key: 'agent.pos', reads: 3, class: 'unreviewed', owner: 'Coverage', since: '2026-11-13', why: "another player's true position; read it through sim.see(a, other)" },
   { file: 'src/sim/engagement.ts', key: 'agent.behavior', reads: 8, class: 'physics', owner: 'Flex', since: '2026-11-13', why: "another player's assignment or intent, which is private until he shows it" },
   { file: 'src/sim/engagement.ts', key: 'agent.keyStep', reads: 2, class: 'physics', owner: 'Flex', since: '2026-11-13', why: "true state" },
   { file: 'src/sim/engagement.ts', key: 'agent.mind', reads: 10, class: 'physics', owner: 'Flex', since: '2026-11-13', why: "another player's private decision state" },
@@ -139,7 +141,6 @@ export const INFORMATION_DEBT: InformationDebt[] = [
   { file: 'src/sim/seen-contact.ts', key: 'sim.engagements', reads: 1, class: 'unreviewed', owner: 'Integration', since: '2026-11-14', why: "the true engagement list" },
   { file: 'src/sim/snap-count.ts', key: 'agent.mind', reads: 1, class: 'unreviewed', owner: 'Flex', since: '2026-11-13', why: "another player's private decision state" },
   { file: 'src/sim/throw-sight.ts', key: 'sim.ball', reads: 3, class: 'unreviewed', owner: 'Coverage', since: '2026-11-13', why: "the true ball state and flight; the ball is seen in flight, delayed, through possession-read and ball-tracking" },
-  { file: 'src/sim/behaviors/qb.ts', key: 'agent.recog', reads: 1, class: 'unreviewed', owner: 'QB', since: '2026-11-14', why: "added after the 2026-11-13 listing: repair this read, do not raise the row" },
   { file: 'src/sim/behaviors/receiver.ts', key: 'sim.ballPath', reads: 1, class: 'unreviewed', owner: 'Rules+Coaching', since: '2026-11-14', why: "added after the 2026-11-13 listing: repair this read, do not raise the row" },
-  { file: 'src/sim/release-evidence.ts', key: 'sim.ball', reads: 3, class: 'unreviewed', owner: 'Integration', since: '2026-11-14', why: "added after the 2026-11-13 listing: repair this read, do not raise the row" },
+  { file: 'src/sim/release-evidence.ts', key: 'sim.ball', reads: 3, class: 'perception', owner: 'Defense', since: '2026-11-15', why: "`recordBall`: the ball's flight, one sample a tick, kept because the perception record does not hold it; the only reader is `releaseEvidence`, which turns it into a cue only at the sample's own moment (his delay) and only if the ball was in his view and unblocked (`sawAt`); a second reader fails test/perception-producers.test.ts" },
 ];

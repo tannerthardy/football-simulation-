@@ -1,4 +1,10 @@
 /**
+ * PERCEPTION PRODUCER (exempt from the information scan, scripts/diag/information-guard-scan.ts; test/perception-producers.test.ts holds it to this):
+ * the one place the true ball is read for perception. It reads the true ball only as it was one perception delay ago, through that
+ * player's own head and sight gate (neck range, eye range, one fixation per sample), with angular and range error, into that
+ * player's own estimate. No export returns the true ball or its path; consumers get an estimate, and only playsim.ts (the owner
+ * of the state) may import `BallEstimates`.
+ *
  * BALL_EST (experimental, off; BALL_EST=1 turns it on): each player's own estimate of a ball in flight, built only
  * from the ball positions he has seen (docs/reviews/2026-11-14-ball-in-air-spec.md, stage 1).
  *

@@ -196,3 +196,30 @@ Integration/Rules to confirm that exemption. Row changes (a repair lowers a row;
 New since the listing, by file: `behaviors/qb.ts` +10 (isDown +4, speedScale +3, behavior, engagement, recog: `hotBy` stores `top.recog?.read` in a label nothing reads), `release-evidence.ts` +3
 (`sim.ball` flight history; owner to classify), `behaviors/receiver.ts` +3, `behaviors/blocking.ts` +1, `coverage/techniques.ts` +1 (agent.pos). Repaired since the listing: `behaviors/qb.ts` agent.pos
 -7 net, `qbmind.ts` -2, `defense.ts` -2, and one each in `coverage/defender.ts`, `coverage/judgment.ts` and `coverage/techniques.ts` (sim.ball).
+
+## Refresh on engine-67 (2026-11-15, develop 0f5f7645)
+
+Merged develop into the guard and recounted: 698 raw reads in decision code (722 at engine-65; 31 files), all listed. Nothing was raised. Repairs lower six rows (the reads added after the
+2026-11-13 listing, now repaired by QB's and Coverage's changes):
+
+```
+-1 src/sim/behaviors/qb.ts agent.behavior
+-1 src/sim/behaviors/qb.ts agent.engagement
+-4 src/sim/behaviors/qb.ts agent.isDown
+-3 src/sim/behaviors/qb.ts agent.speedScale
+-1 src/sim/behaviors/qb.ts agent.recog   (row deleted)
+-1 src/sim/coverage/techniques.ts agent.pos
+```
+
+Debt: leak 173 reads in 31 rows, unreviewed 480 in 81, physics 41 in 7, officiating 1 in 1, perception 3 in 1.
+
+The two conditions from Integration are met in code and held by `test/perception-producers.test.ts`:
+
+* `ball-estimate.ts` stays EXEMPT as a perception producer. Its header now states what makes it one: it reads the true ball only as it was one perception delay ago, through that
+  player's own head and sight gate, with error, into that player's own estimate. The test fails if the header loses that statement, if the file gains an export (a new export is
+  reviewed in the test before it is used), or if any file other than `playsim.ts` holds `BallEstimates`.
+* `release-evidence.ts` is reclassified (new class `perception`, owner Defense, 3 reads of `sim.ball`): `recordBall` is a perception record whose only reader is
+  `releaseEvidence`, which turns it into a cue only at the sample's own moment and only if the ball was in the observer's view and unblocked (`sawAt`). The test fails if `recordBall` is
+  exported or called a second time, if the flight map leaves it, or if any file other than `release-belief.ts` reads `releaseEvidence`.
+
+Still not covered by the scan, as before: the known holes above.
