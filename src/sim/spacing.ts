@@ -352,6 +352,13 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
   return chosen;
 }
 
+/** RELEASE_SIDE (experimental, off; with DECLARED_BREAK): a free man restricted by one teammate passes him on the side his
+ * route goes from its declared break (RouteRunner.routeSide), as taught; a teammate sitting on his route line (a wing
+ * behind the end on a slant or a drag) he passes under, round the back hip, the side away from the line of scrimmage.
+ * The side is held while that teammate restricts him. Off, the side is whatever the geometry of the closing cut leaves. */
+const RELEASE_SIDE = process.env.RELEASE_SIDE === '1';
+const passSide = new WeakMap<Agent, { peer: number; sign: number }>();
+
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
   observe: (a:Agent,b:Agent)=>Pick<Perceived,'pos'|'vel'> = (_a,b)=>b,
   context?:SpacingContext): void {
@@ -419,6 +426,25 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
         &&!ia.lunge&&(ia.push??0)<=1e-6&&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6
         &&!s.foot&&!s.strike&&hypot2(s.lean.x,s.lean.y)<=1e-6&&hypot2(s.load.x,s.load.y)<=1e-6;
       spaced = { ...ia, vel: free?jointClosingRequest(ia.vel,ordinary,limits,cap):ordinary };
+      // RELEASE_SIDE: the spaced request's part across the line to the one teammate restricting him is the side he
+      // passes on. When his route goes the other way from its declared break, he passes on his route's side instead:
+      // the same speed, mirrored across that line. Only with a single restricting teammate, so no other limit moves.
+      const side = RELEASE_SIDE && limits.length === 1 ? a.behavior.routeSide?.() ?? null : null;
+      if (side) {
+        const l = limits[0], along = spaced.vel.x * l.nx + spaced.vel.y * l.ny;
+        const tx = spaced.vel.x - along * l.nx, ty = spaced.vel.y - along * l.ny;
+        // Which side of the teammate he goes round is the sign of the request across the line to him.
+        const cross = (x: number, y: number) => l.nx * y - l.ny * x;
+        let wants = cross(side.x, side.y);
+        // A teammate on his route line (a wing behind the end on an inside route): under him, round his back hip, the
+        // side away from the line of scrimmage (his route leg runs downfield, so back is against its x), then on.
+        if (Math.abs(wants) < 0.35) wants = cross(-Math.sign(side.x) || -1, 0);
+        // Held until that teammate no longer restricts him: the same commit as the craft.
+        const held = passSide.get(a);
+        if (held && held.peer === l.key) wants = held.sign; else passSide.set(a, { peer: l.key, sign: Math.sign(wants) });
+        const goes = cross(tx, ty);
+        if (goes * wants < 0) spaced = { ...spaced, vel: { x: spaced.vel.x - 2 * tx, y: spaced.vel.y - 2 * ty } };
+      } else if (RELEASE_SIDE) passSide.delete(a);
     }
     // Both selectors may ask about the same request. The body/time are fixed
     // throughout this call and previews return detached samples. Share only

@@ -303,6 +303,8 @@
     "ROUTE_EFFORT": "off",
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
+    "CRAFT_HOLD": "off",
+    "RELEASE_SIDE": "off",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
     "READ_RISK_TRACE": "off",

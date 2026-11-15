@@ -35,6 +35,9 @@ export interface Behavior {
   /** Motion his teammates know from the call itself (a rehearsed track on the
    * snap count), not his private live decision; null when there is none. */
   calledMotion?(): Vec2 | null;
+  /** RELEASE_SIDE: the direction his installed route goes from its declared break (a fact of the call, not his live
+   * choice), until he reaches it; null when there is none. Spacing passes a teammate on this side. */
+  routeSide?(): Vec2 | null;
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent, work?: 'reach' | 'runoff' | 'prepare'): Vec2 | null;
