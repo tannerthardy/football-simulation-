@@ -200,8 +200,14 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   // SET_SPOT: from the call (the drop he knows is coming), or the QB's alignment at the snap; never the QB's live
   // position behind him.
   const qx = SET_SPOT ? calledLaunchX(sim) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
-  return Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
+  const pocket = Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
+  // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
+  // front. Further ground is what the rusher wins against him, not his request.
+  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, sim.los - (sim.snapX[b.idx] ?? b.pos.x) + SHORT_SET);
+  return pocket;
 }
+/** SET_SPOT: the interior short set, two set steps (yd; about 16 in each). */
+const SHORT_SET = 2 * 0.45;
 
 /** SET_SPOT (experimental, off; SET_SPOT=1): the pass set's reference is the pocket, not the man (Integration,
  * 2026-11-15; hand-fight note sections 21-23).

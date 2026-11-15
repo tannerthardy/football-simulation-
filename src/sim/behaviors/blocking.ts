@@ -386,7 +386,7 @@ export class PassProtector implements Behavior {
     const spotSet = SET_SPOT && !isT && isOL(a) && !this.calledRelease && !runLook(a, sim);
     let spotFrac = 0;
     if (spotSet) {
-      const sx = sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
+      const sx = sim.los - setDepth; // setDepth already counts from his snap spot (passSetDepth, SET_SPOT)
       const tg = setSpotTarget(sim, a, rp, sx);
       set = { x: sx, y: tg.y }; spotFrac = tg.frac;
     }
