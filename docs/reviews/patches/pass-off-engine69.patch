@@ -1,4 +1,4 @@
-From 47b57c60a779b5bdc85df39e7188bdb2fdab0e7b Mon Sep 17 00:00:00 2001
+From ae664d3d40220edb03644a18aab758f7794508d6 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Sun, 15 Nov 2026 18:39:47 +0000
 Subject: [PATCH] PASS_OFF (off): the helper keeps the man he sees come off the
@@ -12,12 +12,14 @@ Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
  config/baseline.json                          |   1 +
  config/reference-stack.json                   |   1 +
  docs/FLAGS.md                                 |   3 +-
+ docs/reviews/2026-11-15-pass-off.md           |  30 ++++
  scripts/diag/effective-mass/comeoff-film.mts  |  95 ++++++++++++
  scripts/diag/pass-operators/comeoff-frames.py | 139 ++++++++++++++++++
  .../diag/pass-operators/interior-comeoff.py   | 131 +++++++++++++++++
  scripts/diag/pass-operators/late-sacker.py    |  32 ++++
  src/sim/engagement.ts                         |  53 +++++++
- 8 files changed, 454 insertions(+), 1 deletion(-)
+ 9 files changed, 484 insertions(+), 1 deletion(-)
+ create mode 100644 docs/reviews/2026-11-15-pass-off.md
  create mode 100644 scripts/diag/effective-mass/comeoff-film.mts
  create mode 100644 scripts/diag/pass-operators/comeoff-frames.py
  create mode 100644 scripts/diag/pass-operators/interior-comeoff.py
@@ -68,6 +70,42 @@ index d1561c61..8f5b4eb4 100644
  | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
  | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
  | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+diff --git a/docs/reviews/2026-11-15-pass-off.md b/docs/reviews/2026-11-15-pass-off.md
+new file mode 100644
+index 00000000..89827efc
+--- /dev/null
++++ b/docs/reviews/2026-11-15-pass-off.md
+@@ -0,0 +1,30 @@
++# PASS_OFF alone on engine-69 (Flex, 2026-11-15)
++
++`PASS_OFF` (off): a pass rusher who beats his blocker while a helper's hands are on him is kept by the helper, who
++has seen him come off (`passOff`, `beat` in `src/sim/engagement.ts`). It was designed and first read with
++FITTED_HANDS, in section 10 of the hand-fight design note on the Flex branch (`claude/quirky-franklin-9lbwbp`). This
++note is its own read, alone, on engine-69 (1538db2d).
++
++**Read.** Seeds 11 and 23 x 8 games, engine-69 defaults, `PASS_OFF=1` against off. These are the same operators the
++come-off diagnosis used, run on NFL and sim: `pressure-source.py`, `sack-room.py` and `interior-comeoff.py`, all in
++`scripts/diag/pass-operators/`.
++
++| (s11 / s23) | engine-69 | PASS_OFF |
++|---|---|---|
++| pressured, % of dropbacks | 33.9 / 33.9 | 31.4 / 34.2 |
++| interior DL/LB pressure, % of dropbacks | 15.5 / 14.4 | 9.7 / 12.3 |
++| sacked, % of dropbacks | 6 / 7 | 7 / 6 |
++| blocker off him at +0.5 s: reached the QB (NFL 9%) | 14% / 13% | 7% / 7% |
++| off, help came: reached | 8% / 7% | 5% / 4% |
++| off, no help: reached | 21% / 21% | 11% / 11% |
++| release by separation / past the shoulder | 55 / 45% | 61 / 39% |
++
++**What it does:**
++- The interior man who comes off his blocker reaches the QB about half as often.
++- The help case shows the mechanism directly.
++- The no-help case falls as well. Presumably that is through the next blocker's pickup, but this read did not
++  separate it.
++- Overall pressure and sacks are about unchanged. Interior pressure moves to the other sources; the
++  pressure-source rows show where.
++
++Identity: off equals engine-69 (seed 999 `eac983e7a0b20fc9`); on `0aa2ed0c23ff72d2`.
 diff --git a/scripts/diag/effective-mass/comeoff-film.mts b/scripts/diag/effective-mass/comeoff-film.mts
 new file mode 100644
 index 00000000..c0664271
