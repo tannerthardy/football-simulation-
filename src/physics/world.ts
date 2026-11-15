@@ -603,7 +603,7 @@ const CHEST_HALF = 0.27 - 0.15;
  * same number, so an untwisted body is unchanged. Off, the segment lies across the hips (the gait heading) whatever the
  * trunk does: a blocker whose shoulders are on the man and hips on his set met the man with his hip line (Tools' and
  * Integration's review, 2026-11-14: on claude/trunk-stage1 shouldersOf reached only the report fields). */
-export const CHEST_SHOULDERS = process.env.CHEST_SHOULDERS === '1';
+export const CHEST_SHOULDERS = process.env.CHEST_SHOULDERS !== '0';
 if (CHEST_SHOULDERS && !TRUNK_TWIST) throw new Error('CHEST_SHOULDERS=1 requires TRUNK_TWIST=1');
 /** The heading the chest segment lies across (CHEST_SHOULDERS: the shoulders; off: the facing). */
 const chestHeading = (b: Body): number => CHEST_SHOULDERS ? shouldersOf(b) : b.facing;

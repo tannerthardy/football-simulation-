@@ -1979,7 +1979,7 @@ export const ENGAGE_FELT = process.env.ENGAGE_FELT !== '0';
  * and the run hands' sides. Off, each engaged man asks for one facing, at the man (the NFL tackle's facing follows the
  * set frame 0.27 and the rusher 0.61, ours 0.01 / 0.80: engaged-yaw.py). The coaching: inside-out, half a man, punch the
  * inside half; the run block's play-side number; the gap defender's stab and grab (sources in the note). */
-export const ENGAGE_TRUNK = process.env.ENGAGE_TRUNK === '1';
+export const ENGAGE_TRUNK = process.env.ENGAGE_TRUNK !== '0';
 if (ENGAGE_TRUNK && !(TRUNK_TWIST && ENGAGE_FELT)) throw new Error('ENGAGE_TRUNK=1 requires TRUNK_TWIST=1 and ENGAGE_FELT=1');
 /** Where a man's chest points for the readers that mean it (ENGAGE_TRUNK: the shoulders; off: the facing, as before). */
 const chestOf = (a: Agent): number => ENGAGE_TRUNK ? shouldersOf(a.body) : a.body.facing;
