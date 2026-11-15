@@ -472,17 +472,16 @@ const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE === '1';
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
- * docs/reviews/2026-11-15-drop-design-stage1.md). Built and read on PLAN_CLOCK=1 and QB_TICK_PICTURE=1.
- * Bit 1: reads on steps and the release on a step. The plan installs each read on a step (`plan.rhythm`: read 1 on
- * the set, read 2 on a hitch, later reads and the outlet on the second hitch; a five-step concept reads its first
- * answer on the hitch), each step landing a beat after the last, counted from his own set. His eyes go to a read when
- * the hitch that lands on its beat starts, not when a dwell runs out, but not before he has given the read he is on
- * his yes/no glance (attempt one moved them at the set + 0.1 s, before a read-1 throw on the plant could start: off,
- * read-1 throws leave 0.40-0.55 s after his set, a windup after the plant); the hitch is a base reset at depth, one stride of his
- * own drop, turned to that read; a read can be thrown once its step has landed (or with the landing inside his load, which the last step carries). Under
- * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps (reads after the second hitch, or
- * no plan), the dwell moves him on as before. Triangle, peek, key and hot reads are unchanged by this bit.
- * Bits 2 (the open-hip drop) and 4 (climb / slide / reset) are not built. */
+ * docs/reviews/2026-11-15-drop-design-stage1.md). Read on CONCEPT_DROPS=1, PLAN_CLOCK=1 and QB_TICK_PICTURE=1.
+ * Bit 1: reads on steps and the release on a step. The plan gives each read its step index (`plan.rhythm[].n`, Rules
+ * + Coaching's hand-over: 0 the set, 1 the first hitch, 2 the second; reads on one look share it); he lands step n n
+ * strides of his own drop after his set. His eyes go to the next read when the step that lands for it starts, not
+ * when a dwell runs out, but not before he has given the read he is on his yes/no glance (attempt one moved them at
+ * the set + 0.1 s, before a read-1 throw on the plant could start). The hitch is a base reset at depth, one stride,
+ * turned to the read. A read can be thrown once its step has landed (or with the landing inside his load). Under
+ * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps the dwell moves him on as before.
+ * Triangle, peek, key and hot reads are unchanged by this bit. Bits 2 (the open-hip drop, drop pacing) and 4 (climb /
+ * slide / reset) are not built. */
 const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
 const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
 /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and

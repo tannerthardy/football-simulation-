@@ -233,3 +233,50 @@ is an EARLY marking fault, and the corner's 53 yd at 86% is a coverage fault of 
 
 **y_cross's late underneath** (ready 1.9-2.0 s, read 2 at the second hitch at 3.1 s) is the coached order (the
 check-down after the cross), not a step fault. Whether it is still a throw at 3.1 s is to be measured.
+
+## Design: the grass read (not built)
+
+Rules + Coaching (docs/reviews/2026-11-15-vertical-ready.md on #780; Win With The Pass on mesh; Gonzalez, Wilhite and
+Marinelli on the vertical) and Integration's rulings. A route thrown before its break, into space (a vertical, mesh's
+corner, a post, a deep out), is read on the grass it is going to, during the drop.
+
+**Why it is needed.** Bit 1's vertical cue was a first piece: it reads the man over the receiver, and only from his
+set. Mesh's corner shows the general case. It is a first read decided by the last step with no dwell: "on his fifth
+step, the ball should be gone or he should be on to his mesh read". He is told to "look at the area he is going" (a
+point about 20 yd past the break), not at the receiver. Under bit 1 his eyes leave it at the set, before it opens, so
+it is thrown 0 times in 192 (off: 14, at 53 yd a throw, which is also a coverage fault).
+
+**The read: two events, in his own pictures.**
+1. *Readable.* The landing area is decided: no defender in his picture sits in it or can reach it before the ball (a
+   safety on top, a hook player under it), and the man on the receiver is beaten or under him (the leverage cue,
+   generalized: even or past on a vertical, inside or underneath on a corner or post).
+2. *Aim point.* The landing area itself: the forecast's point where the route will be at the ball's arrival.
+   The window prices the throw between them (anticipation: throwing before the receiver is there, to where he will
+   be). The window's own defender terms do the pricing at the aim point; the readable event only allows the look to be
+   a throw.
+
+**When he reads it.** A concept's first read can be read during the drop, not from the set. His eyes go to the landing
+area from the drop's start (QB_EYES's halfway-through-the-drop rule becomes "the drop", for a grass read). The look is
+a stage-one look: decided by his last step, no dwell. That is also what bit 2's open-hip drop toward read 1 is for: the
+hips and eyes face the read's side while the feet go back.
+
+**Who decides what.**
+- The plan marks which reads are grass reads: routes thrown before their break into space. Today these are the
+  'vertical' declare rule plus the corner and post families when they are read 1; Rules to confirm the list.
+- The quarterback reads the grass from his pictures, never from the geometric truth. His awareness sets how
+  cleanly he sees the landing area (a judgment draw on the margin, as the vertical cue); his experience sets how
+  early in the drop he can take it.
+
+**Placement** (for the touch note, not built). On the fade, Marinelli's read of the defender after the escape picks the
+ball: behind him, the hole shot; even, over the top to the outside shoulder; over the top, low and outside. This is the
+first sourced piece of touch.
+
+**Witnesses**, ours against the NFL:
+- mesh's corner thrown (0 of 192 today; off 14);
+- receiver depth at release on go balls (NFL p50 9.2 yd; ours 13.2 with the cue);
+- throw time on gos (NFL 2.6 s; ours 3.05).
+
+**The price, before it is touched.** The vertical cue showed readiness was not what held the vertical: the price was.
+Before the grass read is built, check his long-flight accuracy belief against the spread his throw model actually
+produces at that distance and platform with the default receiver (Integration's caution). If they agree, the receiver
+(BALL_EST) is what moves the witness, not the belief.
