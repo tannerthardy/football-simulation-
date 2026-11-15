@@ -697,25 +697,13 @@ export class QBPass implements Behavior {
   private moveDir: Vec2 | null = null;
   /** QB_GATHER: the read his current hitch is to, and where it takes his feet. */
   private hitchFor: Agent | null = null;
-  /** QB_FOOTWORK bit 1: each read's installed step (0 the set, 1 the hitch, 2 the second hitch), its beat after his set,
-   * the steps he has landed since his set, and the step he is taking. */
-  private placeSteps: { n: number; beat: number }[] = [];
-  private outletStep: { agent: Agent; n: number; beat: number } | null = null;
-  /** The step a read is installed on, by its place in his current order (the coached rule is by place: read 1 on the
-   * set, read 2 on the hitch; a key read reorders the reads, so a receiver's step is not fixed). The two routes of a
-   * keyed high-low share one place (Rules + Coaching, #780: one look on one beat). The outlet keeps his. */
+  /** QB_FOOTWORK bit 1: each read's installed step, from the plan (Rules + Coaching's hand-over, #780: `n`, 0 the set,
+   * 1 the first hitch, 2 the second; reads on one look, a keyed high-low or mesh's two crossers, share an `n`). The
+   * plan says which step; he times it from his own drop: step n lands n strides after his set (`beat`). */
+  private readStep = new Map<Agent, number>();
   private stepOf = { get: (r: Agent | undefined): { n: number; beat: number } | undefined => {
-    if (!r || !this.placeSteps.length) return undefined;
-    if (this.outletStep && r === this.outletStep.agent) return this.outletStep;
-    const i = this.reads.indexOf(r);
-    if (i < 0) return undefined;
-    // A keyed high-low is one look on one beat (the key picks the answer; the feet do not advance between the two).
-    const k = this.plan?.key, isKey = (x: Agent) => !!k && (x === k.low || x === k.high);
-    let place = -1, keyPlace = -1;
-    for (let j = 0; j <= i; j++) {
-      if (isKey(this.reads[j])) { if (keyPlace < 0) keyPlace = ++place; } else place++;
-    }
-    return this.placeSteps[Math.min(isKey(r) ? keyPlace : place, this.placeSteps.length - 1)];
+    const n = r ? this.readStep.get(r) : undefined;
+    return n === undefined ? undefined : { n, beat: n * this.stride() };
   } };
   private landedSteps = 0;
   private step: { n: number; to: Vec2; since: number; landed: boolean } | null = null;
@@ -931,11 +919,9 @@ export class QBPass implements Behavior {
     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
     const peek = p.style === 'vertical_peek';
     // DECLARED_BREAK: what the plan says of each read's break (route time, as installed) and how it is thrown.
-    if (FW_STEPS && p.rhythm.length && p.rhythmSet !== undefined) {
-      const st = (rh: { step: string; at: number }) => ({ n: rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2, beat: rh.at - p.rhythmSet! });
-      this.placeSteps = p.rhythm.filter((rh) => rh.ref !== p.outlet).map(st);
-      const o = p.rhythm.find((rh) => rh.ref === p.outlet), oa = outlet;
-      this.outletStep = o && oa ? { agent: oa, ...st(o) } : null;
+    if (FW_STEPS) for (const rh of p.rhythm as { ref: ReceiverRef; step: string; n?: number }[]) {
+      const r = ag(rh.ref);
+      if (r && !this.readStep.has(r)) this.readStep.set(r, rh.n ?? (rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2));
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
     this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
