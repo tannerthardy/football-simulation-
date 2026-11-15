@@ -193,6 +193,8 @@ interface Track {
   armSeenAt?: number;
   /** Bit 2048: the current look (seen-time it began, last seen-time in his eyes, its error draw), and time held. */
   lookStart?: number; lookLast?: number; lookZ?: [number, number]; held?: number; looks?: number; gPath?: PathSample[]; gPathT?: number;
+  /** His eye's place and his head over the last few ticks: a sample is what his eye took in when the ball was there. */
+  eyeHist?: Array<{ t: number; x: number; y: number; head: number }>;
   /** Attempt 3: observations he did not sample (his route prior, the release and the shoulder line). */
   pseudo: Sample[];
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
@@ -286,15 +288,22 @@ export class BallEstimates {
       }
       // Pursuit runs on the visuomotor loop (about 110 ms), not on a decision's reaction time; his attention scales it.
       const delay = a.mind.observationDelay(PURSUIT_DELAY);
+      (tr.eyeHist ??= []).push({ t: sim.t, x: a.pos.x, y: a.pos.y, head: tr.head });
+      if (tr.eyeHist.length > 16) tr.eyeHist.shift();
       const seen = this.ballAt(sim.t - delay);
       if (!seen) continue;
-      const bearing = Math.atan2(seen.p.y - a.pos.y, seen.p.x - a.pos.x);
-      if (Math.abs(angDiff(bearing, tr.head)) > EYE) continue;
+      // What his eye took in at the moment the ball was there (light is instant; the processing is the delay): the
+      // ball's bearing from where his eye was then, against where his head pointed then. Judged against his eye and
+      // head now, a close ball (15 yd/s at 2-3 yd moves 30+ deg in the delay) fell out of his eye range although he
+      // was looking right at it.
+      const then = [...tr.eyeHist].reverse().find((q) => q.t <= seen.t + 1e-9) ?? tr.eyeHist[0];
+      const bearing = Math.atan2(seen.p.y - then.y, seen.p.x - then.x);
+      if (Math.abs(angDiff(bearing, then.head)) > EYE) continue;
       // The error carries over from his last sample, decaying with ERR_TAU; a fresh look starts a fresh error.
       const gap = sim.t - tr.lastSampleT, rho = Number.isFinite(gap) ? Math.exp(-gap / ERR_TAU) : 0;
       tr.lastSampleT = sim.t;
       const s = skill(a), sa = BEARING_WORST + (BEARING_BEST - BEARING_WORST) * s, sr = RANGE_WORST + (RANGE_BEST - RANGE_WORST) * s;
-      const eye: Vec3 = { x: a.pos.x, y: a.pos.y, z: a.profile.heightYd * 0.93 };
+      const eye: Vec3 = { x: then.x, y: then.y, z: a.profile.heightYd * 0.93 };
       const d: Vec3 = { x: seen.p.x - eye.x, y: seen.p.y - eye.y, z: seen.p.z - eye.z };
       const r = Math.max(0.5, Math.hypot(d.x, d.y, d.z)), u: Vec3 = { x: d.x / r, y: d.y / r, z: d.z / r };
       const dice = sim.dice(`ball-est:${tr.samples.length}`, a);
@@ -490,7 +499,7 @@ export class BallEstimates {
 
   private reset(tr: Track): void {
     tr.searchAt = undefined; // armSeenAt is his belief of this play's release: a tip is a new flight of the same throw.
-    tr.lookStart = undefined; tr.lookLast = undefined; tr.lookZ = undefined; tr.held = undefined; tr.looks = undefined; tr.gPath = undefined;
+    tr.lookStart = undefined; tr.lookLast = undefined; tr.lookZ = undefined; tr.held = undefined; tr.looks = undefined; tr.gPath = undefined; tr.eyeHist = undefined;
     tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
     tr.deliberate = false; tr.passiveAt = undefined;
   }
