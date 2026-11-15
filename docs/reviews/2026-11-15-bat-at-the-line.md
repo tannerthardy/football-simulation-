@@ -57,3 +57,27 @@ half (throwing through an occupied lane he can see) is the QB lane's.
 
 The per-tick re-roll is also a defect on its own (a dt dependence in an outcome), worth fixing even before BAT_HANDS:
 one roll per opportunity, as the receiver contest already does with `tried`.
+
+## PLAY_ONCE: the same defect downfield (2026-11-15; engine-68, play-once-rows.mts in the patch tree, seed 11 x 8)
+
+defenderPlay's interception / breakup roll for a defender who sees the ball also re-rolled each tick it stayed within
+his reach. In 4 games only 31 defender-pass plays reach that roll at all (most contests go through receiverContest);
+13 of them rolled more than once, up to 3 times. `PLAY_ONCE` (default on, `=0` restores): one try per defender per
+pass. Patch: docs/reviews/patches/play-once-engine68.patch, stacked on bat-once-engine68.patch.
+
+Per attempt, PLAY_ONCE=0 -> on:
+
+| | attempts | complete | intercepted | broken up |
+|---|---|---|---|---|
+| all | 658 -> 624 | 67.2 -> 67.8% | 1.8 -> 1.3% | 10.0 -> 10.4% |
+| man | 215 -> 208 | 55.3 -> 55.3% | 3.7 -> 2.4% | 15.3 -> 18.3% |
+| zone | 443 -> 416 | 72.9 -> 74.0% | 0.9 -> 0.7% | 7.4 -> 6.5% |
+| short < 5 yd | 322 -> 310 | 76.1 -> 75.5% | 0.9 -> 1.3% | 7.1 -> 6.1% |
+| medium 5-15 | 300 -> 281 | 63.0 -> 64.8% | 2.7 -> 1.1% | 14.3 -> 16.0% |
+
+- PBUs by the defender's position relative to the receiver: in front / beside / behind 22 / 22 / 22 -> 20 / 25 / 20.
+- Deep (> 15 yd at the aim) is too small to read (13 / 10 attempts).
+- The effect is small, as the footprint predicted: interceptions down about half a point. The rest is within an
+  8-game read's noise.
+- Per-opportunity rates would need a counter inside defenderPlay. The footprint (31 plays in 4 games) says they would
+  move little.
