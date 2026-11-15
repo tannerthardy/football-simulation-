@@ -203,6 +203,7 @@
     "BLOCK_ANTICIPATE": "off",
     "FIGHT_MENU": "off",
     "BAT_HANDS": "off",
+    "MIRROR_REF": "off",
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",

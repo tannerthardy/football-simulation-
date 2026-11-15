@@ -1206,6 +1206,14 @@ function clearedSide(e: Engagement, lat: Vec2): number {
   return Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
 }
 
+/** MIRROR_REF (experimental, off; MIRROR_REF=1): the pass blocker's mirror is of the rusher's move relative to himself.
+ * Off, his lateral request fed forward the rusher's lateral velocity as he has it (dLat, and the offset's lead). With
+ * the two coupled through the hands, that includes the pair's common drift his own slide causes, so any drift he
+ * mirrors carries the man on and is mirrored again: held interior pairs slid outward at up to 1.5 yd/s, the blocker
+ * asking for it, the rusher asking almost nothing (hand-fight note section 20). Staging question first; the reference
+ * that does not move with the pair (his set spot, the QB) is the fuller fix. */
+export const MIRROR_REF = process.env.MIRROR_REF === '1';
+
 /** FIGHT_MENU (experimental, off; FIGHT_MENU=1, on FITTED_HANDS): the hand fight's stage 2, its minimum (Integration,
  * 2026-11-15): the bull and the long-arm back on the interior rusher's menu, as forces through the fitted hands with
  * their coached feet, so that between clubs he is in a move or resetting, not sprinting the corner (under stage 1 he
@@ -2443,8 +2451,11 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const axB = norm(sub(qbB, known.pos)), base = { x: d.pos.x + axis.x * (sep + 0.15), y: d.pos.y + axis.y * (sep + 0.15) };
     front = { x: front.x - base.x + known.pos.x + axB.x * (sep + 0.15), y: front.y - base.y + known.pos.y + axB.y * (sep + 0.15) };
   } else if (PASS_FEEL) { front.x += known.pos.x - d.pos.x; front.y += known.pos.y - d.pos.y; }
-  const offLat = (front.x + known.vel.x * lead - b.pos.x) * lat.x + (front.y + known.vel.y * lead - b.pos.y) * lat.y;
-  const dLat = known.vel.x * lat.x + known.vel.y * lat.y;
+  // MIRROR_REF: he mirrors the man's move relative to himself (the rusher's velocity less his own), not the pair's
+  // common motion, which his own slide, carrying the man through the hands, is part of.
+  const mv = MIRROR_REF ? { x: known.vel.x - b.vel.x, y: known.vel.y - b.vel.y } : known.vel;
+  const offLat = (front.x + mv.x * lead - b.pos.x) * lat.x + (front.y + mv.y * lead - b.pos.y) * lat.y;
+  const dLat = mv.x * lat.x + mv.y * lat.y;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const vLat = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + offLat * (3 + 3 * tb.feet), -mirror, mirror);
   const depth = sim.los - b.pos.x;

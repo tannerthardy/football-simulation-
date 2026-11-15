@@ -1179,3 +1179,39 @@ QB, blocker / rusher):
 - Later the two match (1.35 / 1.31 against 1.35 / 1.43).
 - Next: the blocker's retreat request against achieved in the first second (his set depth target and his kick), on
   the same pairs.
+
+## 21. The mirror loop, staged (2026-11-15; mirror-staged.mts)
+
+contactFixture's pass pair (the C and DT_W, the engine's own stepPassRep for both, the reference stack on). The rusher
+is set 0.2 yd off to one side, as the fixture places him. His request is replaced each tick by a straight drive at the
+QB (0.55 of his top speed, full push: no lateral request). Both bodies are given an initial drift across of 0.6 yd/s,
+toward his side, away from it, or none. The fixture's side is flipped for the true mirror.
+
+The pair's lateral velocity, signed along the rusher's side (yd/s), with the blocker's lateral request:
+
+| | 0.25 s | 0.5 s | 1.0 s | 1.5 s | 2.0 s |
+|---|---|---|---|---|---|
+| no drift | 0.34 (asks 0.81) | 0.65 (1.68) | 1.09 (2.06) | **1.28 (1.94)** | 1.05 (1.21) |
+| drift toward | 0.79 (1.67) | 1.03 (1.68) | 1.11 (1.67) | 0.94 (1.04) | 0.26 (0.08) |
+| drift away | -0.25 (-0.03) | 0.00 (0.92) | 0.11 (0.75) | 0.72 (1.72) | **1.23 (2.05)** |
+| MIRROR_REF, no drift | 0.33 (0.51) | 0.48 (1.28) | 0.33 (0.71) | 0.36 (0.72) | 0.28 (1.03) |
+| MIRROR_REF, toward | 0.57 (1.73) | 0.56 (0.52) | 0.43 (0.52) | 0.26 (0.21) | 0.07 (-0.42) |
+| MIRROR_REF, away | -0.14 (0.72) | 0.23 (0.91) | 0.23 (0.66) | 0.46 (0.86) | 0.48 (1.23) |
+
+- **No sign bias.** Side + and side - give identical signed results.
+- **The loop is real and self-starting.** With no drift at all, the pair slides toward the rusher's side, growing to
+  1.28 yd/s by 1.5 s, with the blocker asking for up to 2.06.
+  - Started the other way, it reverses and grows toward his side (1.23 by 2.0 s).
+  - The blocker wants to be in front of the man on the man's line to the QB. He slides toward the man's offset,
+    carries the man with him through the hands, and never arrives, because his target moves with the man he moves.
+- **MIRROR_REF (mirroring the man's motion relative to himself) cuts the slide to 0.3-0.5 but does not remove it.**
+  The offset term's reference, the rusher's own position, still moves with the pair. A smaller gain would only slow the
+  same loop. **The honest fix is the reference:** where he wants to be, from something that does not move with the
+  pair (his set spot in the pocket, the QB, the men beside him), as Integration said.
+- **Why guards drift outward and the C does not:**
+  - Interior rushers line up shaded outside a guard (a 3-technique on his outside shoulder), and the C's man head-up or
+    shaded either way.
+  - The loop slides each pair toward its rusher's side, so the guards' pairs go outward, as mirror images, and the C's
+    cancel.
+  - The guards' sizes differ (0.58 against 1.01 late) by the shade and the men.
+- MIRROR_REF stays in the tree, off, as the staging switch. It is not the fix.
