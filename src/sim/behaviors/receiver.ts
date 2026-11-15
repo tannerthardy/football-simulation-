@@ -667,8 +667,10 @@ export class RouteRunner implements Behavior {
 }
 
 /** LINE_START: the nearest defender to him at installation (yd), for his expected get-off. */
+/** The nearest defender as the receiver sees him at the install (his own picture: pre-snap he is looking right at him),
+ * for his get-off loss; not the defender's true position. */
 function nearestDefender(a: Agent, sim: PlaySim): number {
-  return sim.defense.reduce((m, d) => Math.min(m, Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y)), 12);
+  return sim.defense.reduce((m, d) => { const p = sim.see(a, d).pos; return Math.min(m, Math.hypot(p.x - a.pos.x, p.y - a.pos.y)); }, 12);
 }
 
 /** Each agent's first installed route on this play (family:id), for replay labels only; no behavior reads it. */
