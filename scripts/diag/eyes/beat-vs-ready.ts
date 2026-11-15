@@ -8,6 +8,6 @@ const CONCEPTS = 'smash mesh flood drive sail_corner corner_flat trips_sail trip
 for (const concept of CONCEPTS) for (const formation of ['gun_doubles_11', 'gun_trips_11']) {
   let p: any = null; try { p = installedPlan(PASS_BY_ID[concept], formation); } catch { /* not installable */ }
   if (!p) { console.log(JSON.stringify({ concept, formation, installed: false })); continue; }
-  console.log(JSON.stringify({ concept, formation, installed: true, drop: PASS_BY_ID[concept].drop, style: p.style, set: p.rhythmSet ?? null,
+  console.log(JSON.stringify({ concept, formation, installed: true, drop: PASS_BY_ID[concept].drop, style: p.style, set: p.rhythmSet ?? null, key: p.key ? [p.key.low, p.key.high] : null,
     reads: p.rhythm.map((r: any, i: number) => ({ place: r.ref === p.outlet ? 'outlet' : i + 1, ref: r.ref, step: r.step, beat: r.at, ready: r.ready })) }));
 }

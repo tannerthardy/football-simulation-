@@ -22,6 +22,18 @@ Off, read 1 arrives at a closed route on 21 of 32 installs (dagger, smash, mesh,
 fits on 20 of 32, but read 2's beat (the second hitch, set + 1.2 s) comes after a route already open on 20 of 32
 (smash, mesh, drive: 1.1-1.3 s late): the five-step's second answer is installed a full hitch after the route it reads.
 
+## Rescored (Rules' keyed place) and #780's marking
+
+A keyed high-low is one look on one beat (Rules + Coaching, #780): he reads the defender on the beat, throws the low on
+time and the high when the man commits and it opens within a hitch after. Its two routes are now EARLY only past a
+hitch (0.6 s). The plan's rhythm here is develop's (serial steps); Rules' own keyed-place rhythm is on #780.
+
+| | Read 1 ok / EARLY / LATE | Read 2 | Reads 3+ | Outlet |
+| --- | --- | --- | --- | --- |
+| CONCEPT_DROPS off | 11 / 21 / 0 | 23 / 9 / 0 | 32 / 1 / 31 | 12 / 0 / 18 |
+| CONCEPT_DROPS on, develop's marking | 20 / 4 / 8 | 7 / 5 / 20 | 21 / 1 / 42 | 8 / 0 / 22 |
+| CONCEPT_DROPS on, #780's marking | 23 / 8 / 1 | 17 / 6 / 9 | 32 / 1 / 31 | 12 / 0 / 18 |
+
 ## Full list
 
 ```
