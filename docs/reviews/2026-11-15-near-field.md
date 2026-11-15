@@ -165,3 +165,16 @@ The felt channel does nothing on this set: a touch on the carrier is rare and th
 puts 10+ yd runs from 5.4 to 7.0%: the carrier and the defenders see the outer field with error and without velocity, and the defenders, who read blockers and the runner at the side, pursue worse. That is the card's risk,
 as predicted, and it is a bigger change than the information floor suggested: **bit 2 is an information removal that raises yards**, and it is not the flag to promote without the defenders' reads designed for it.
 Dither panel: `=1` passes; `=3` fails coverage / mode switch (0.044 against 0.039).
+
+## 11. Lane read: the scorecard (16 games per arm, 2 leagues, seed 23, paired off / `NEAR_FIELD=1` / `=3`, engine-68)
+
+| | completion | vs man | vs zone | yards / attempt | YAC / reception | designed rush yd / carry (uncapped) | missed + broken | sacks |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| off | 67.4% (1,235 att) | 54.6% | 73.5% | 8.74 | 7.58 | 3.99 | 352 | 68 |
+| `=1` felt | 67.1% | 58.0% | 70.9% | 8.73 | 7.77 | 4.59 | 344 | 82 |
+| `=3` both | 68.3% | 59.4% | 72.3% | 10.88 | **10.61** | 4.19 | 344 | 79 |
+
+One seed: `=1` moves YAC by +0.19 and the card's rush row by +0.6 on one seed (the run set, 1,321 plays paired, says -0.01: noise); the peripheral bit moves YAC per reception from 7.6 to 10.6 and yards per
+attempt from 8.7 to 10.9. That is the cost of defenders who read the carrier at their sides and behind from a coarse picture with no velocity: the pursuit angle and the tackle are late, and the yards after the catch
+grow by three yards. Bit 2 is far too large a change to land as a perception detail; it needs the defenders' reads designed for coarse pictures (a tracked, attended picture of the man he is pursuing, as `sim.track`
+gives, rather than the plain gated one) before it can be judged on its own merits.
