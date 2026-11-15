@@ -83,7 +83,7 @@ for arg in args:
                 rel = 'outside' if (p.pos(j, kp)[1] - p.pos(cb, kp)[1]) * out > 0 else 'inside'
                 C[(levc, rel)] += 1
                 rfam = (RR.get((raw['id'], str(P[j].get('id')))) if pf is not None else str(P[j].get('route')).split(':')[-1]) or '?'
-                rfam = {'go': 'GO', 'vertical': 'GO', 'hitch': 'HITCH', 'comeback': 'HITCH', 'curl': 'HITCH'}.get(rfam.lower(), rfam.upper())
+                rfam = {'go': 'GO', 'vertical': 'GO', 'fade': 'GO', 'hitch': 'HITCH', 'comeback': 'HITCH', 'curl': 'HITCH', 'quick_out': 'OUT'}.get(rfam.lower(), rfam.upper())
                 S[('rt', rfam)].append(((p.pos(j, k5)[1] - y0) * out, rel, levc))
                 sp = [p.speed(j, k) for k in range(0, min(p.frames - 1, p.k(1.2)) + 1)]
                 # A jab or stutter: his sideways velocity (0.2 s centred) goes past 0.8 yd/s one way, then past 0.8 the
@@ -99,6 +99,8 @@ for arg in args:
                 contact = maxc * p.dt >= 0.2
                 cls = 'stutter' if stut else 'through' if contact else 'speed'
                 C[cls] += 1; S[('t5', cls)].append(k5 * p.dt); C[('contact', cls)] += contact
+                C[('lev', levc, rfam)] += 1; C[('levstut', levc, rfam)] += cls == 'stutter'
+                S[('t5lev', levc, rfam)].append(k5 * p.dt)
                 for t in (0.3, 0.5, 0.7, 0.9, 1.1):
                     k = p.k(t)
                     if k < len(sp): S[('v', cls, t)].append(sp[k])
@@ -119,6 +121,12 @@ for arg in args:
         hu = [r for _, r, l in v if l == 'head-up']
         lv = ' '.join(f"{L} {sum(r == 'outside' for _, r, l in v if l == L)}/{sum(l == L for _, _, l in v)}" for L in ('outside', 'head-up', 'inside'))
         print(f"   route {key[1]:8s} n {len(v):4d}: lateral at 5 yd {q([a for a, _, _ in v])}; released outside by corner shade: {lv}")
+    for rf in ('GO', 'HITCH', 'OUT', 'SLANT'):
+        row = []
+        for L in ('outside', 'head-up', 'inside'):
+            n_ = C[('lev', L, rf)]
+            if n_: row.append(f"{L} jab {C[('levstut', L, rf)]}/{n_} t5 {q(S[('t5lev', L, rf)]).split(' ')[0]}")
+        if row: print(f"   {rf:5s} by corner shade: " + '; '.join(row))
     for cls in ('speed', 'stutter', 'through'):
         print(f"   {cls:8s} {C[cls]} ({100 * C[cls] / n:.0f}%), contact on {C[('contact', cls)]}; t5 {q(S[('t5', cls)])}; speed 0.3/0.5/0.7/0.9/1.1 s " +
               ' | '.join(q(S[('v', cls, t)]).split(' ')[0] for t in (0.3, 0.5, 0.7, 0.9, 1.1)))
