@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 404 flags read from the environment in `src` (recounted 2026-11-15, engine-69, plus `BALL_EST_NECK_SPRINT`, `BALL_SERVO_KD`, `BALL_SERVO_KB` and `BALL_GLANCE_DEPTH`): 299 are on unless set to `0`, 89 are off unless set to `1`, and 16 are numeric scales or modes at their identity value. The rows below carry each flag's history.
+There are 406 flags read from the environment in `src` (recounted 2026-11-15, engine-69, plus `BALL_EST_NECK_SPRINT`, `BALL_SERVO_KD`, `BALL_SERVO_KB` and `BALL_GLANCE_DEPTH`): 299 are on unless set to `0`, 91 are off unless set to `1`, and 16 are numeric scales or modes at their identity value. The rows below carry each flag's history.
 
 **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
 

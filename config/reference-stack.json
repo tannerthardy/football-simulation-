@@ -306,7 +306,7 @@
     "ROUTE_END": "on",
     "CROSS_OVER": "off",
     "PLANT_REACH": "off",
-    "COMPILE_PICTURE": "off"
+    "COMPILE_PICTURE": "off",
     "CRAFT_HOLD": "off",
     "RELEASE_SIDE": "off",
     "SCREEN_DECLARE": "on",
