@@ -90,6 +90,8 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
+/** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
+const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */
@@ -118,6 +120,22 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
     }
     const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
     if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
+    // CRAFT_HOLD: a receiver bent off his stem round a man rejoins his route on the leg ahead. He is past a point he is
+    // beyond along both its legs, however far to the side, and a point the route runs straight through (a turn too small
+    // to lead) is only a marker on his stem once he is a yard off it: he runs for the next point, not flat back to the
+    // marker (gun_wing_12 cover6 seam, released 2.9 yd outside the end: cut back flat to his 4-yd point at 2.9 yd/s,
+    // then ran back down his route to it at 2.8 s).
+    if (CRAFT_HOLD && next && !tgt.cut) {
+      const prev = st.idx > 0 ? path[st.idx - 1].p : st.from;
+      if (prev) {
+        const lx = tgt.p.x - prev.x, ly = tgt.p.y - prev.y, l1 = Math.hypot(lx, ly), bx = next.p.x - tgt.p.x, by = next.p.y - tgt.p.y;
+        const straight = l1 > 1e-6 && Math.acos(clamp((lx * bx + ly * by) / (l1 * (Math.hypot(bx, by) || 1)), -1, 1)) < FILLET_MIN_TURN;
+        const offLeg = l1 > 1e-6 ? Math.abs((body.pos.x - prev.x) * ly - (body.pos.y - prev.y) * lx) / l1 : 0;
+        if ((beyond(body.pos, tgt.p, prev, tgt.p) && beyond(body.pos, tgt.p, tgt.p, next.p)) || (straight && offLeg > 1)) {
+          st.idx++; st.turn = null; continue;
+        }
+      }
+    }
     const isLast = st.idx === path.length - 1;
     let through = isLast && end !== 'continue' ? 0 : tgt.s * vtop * clamp(0.82 + 0.3 * rr, 0, 1);
     // LINE_START: into a break he slows on what he can cut on (his lateral control, by technique), not on his
@@ -181,6 +199,11 @@ export function speedAfter(v0: number, V: number, tau: number, d: number): numbe
   while (dist(hi) < d && hi < 60) hi *= 2;
   for (let i = 0; i < 40; i++) { const mid = 0.5 * (lo + hi); if (dist(mid) < d) lo = mid; else hi = mid; }
   return V - (V - v0) * Math.exp(-0.5 * (lo + hi) / tau);
+}
+
+/** He is past `wp` along the direction from `a` to `b`. */
+function beyond(pos: Vec2, wp: Vec2, a: Vec2, b: Vec2): boolean {
+  return (pos.x - wp.x) * (b.x - a.x) + (pos.y - wp.y) * (b.y - a.y) > 0;
 }
 
 function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
