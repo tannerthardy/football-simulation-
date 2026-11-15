@@ -425,10 +425,11 @@ export class PassProtector implements Behavior {
       const floor = TACKLE_SET ? tackleFloor(sim) : null;
       // SET_SPOT_TACKLE: setDepth already counts from his snap spot (the three-step set).
       const ownSet = SET_SPOT_TACKLE ? sim.los - setDepth : sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
-      // SET_SPOT_TACKLE: beat him to the spot. At the rusher's upfield speed he reaches the launch depth (the call's
-      // floor) in T; the tackle kicks at the pace that covers his own way there in that time, a look ahead.
+      // SET_SPOT_TACKLE: beat him to the spot. The spot is the pocket's front, the tackle's clearance in front of the
+      // launch point he knows from the call (passSetDepth's 2.8 yd), not the floor. At the rusher's upfield speed the
+      // rusher reaches that depth in T; the tackle kicks at the pace that covers his own way there in that time.
       const lowX = Math.max(qb.pos.x + 0.5, floor ?? -Infinity);
-      kickPace = SET_SPOT_TACKLE ? racePace(a.pos.x, r.pos.x, -r.vel.x, lowX) : 0;
+      kickPace = SET_SPOT_TACKLE ? racePace(a.pos.x, r.pos.x, -r.vel.x, Math.max(lowX, qb.pos.x + TACKLE_CLEARANCE)) : 0;
       const x = Math.max(lowX, Math.min(a.pos.x, r.pos.x - KICK_LEAD, ownSet, a.pos.x - kickPace * KICK_LOOK));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
@@ -550,6 +551,8 @@ export function boxThreats(sim: PlaySim): Agent[] {
 }
 /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
+/** SET_SPOT_TACKLE: the pocket's front in front of the launch point for a tackle (passSetDepth's tackle clearance). */
+const TACKLE_CLEARANCE = 2.8;
 /** SET_SPOT_TACKLE: the kick's pace to beat the rusher to the launch depth (yd/s, retreat +): the tackle's way to the
  * floor over the rusher's time there at his upfield speed. Zero when he is already at the floor. */
 function racePace(tx: number, rx: number, rUp: number, floorX: number): number {
