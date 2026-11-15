@@ -15,6 +15,7 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { catchSpot } from '../../../src/sim/behaviors/receiver.js';
+import { fitFlight } from '../../../src/sim/ball-estimate.js';
 const mode = process.argv[4] ?? 'force';
 const orig = PlaySim.prototype.run;
 PlaySim.prototype.run = function (this: PlaySim) {
@@ -25,11 +26,15 @@ PlaySim.prototype.run = function (this: PlaySim) {
     if (sim.ball.kind === 'air' && rec.rel != null && sim.t - rec.rel >= (rec.nextS ?? 0) - 1e-6) {
       rec.nextS = (rec.nextS ?? 0) + 0.25; rec.ts ??= [];
       const tru = catchSpot(r, sim), est = sim.ballEstimates?.peek ? sim.ballEstimates.peek(r, sim) : [], es = est.length ? catchSpot(r, { t: sim.t, ballPath: est }) : null;
+      const landAt = (path: any[]) => { for (const q of path) if (q.t >= sim.t && q.z <= 1.3) return q; return path.length ? path[path.length - 1] : null; };
+      const tl = landAt(sim.ballPath ?? []), el = est.length ? landAt(est) : null;
+      const trk = sim.ballEstimates?.tracks?.get(r); let ownLand: any = null, drag = sim.ball.flight.drag ?? 0;
+      if (trk && trk.samples.length >= 3) { const f = fitFlight(trk.samples, 0); const vz = f.v.z, pz = f.p.z - 1.3; const tt = (vz + Math.sqrt(Math.max(0, vz * vz + 2 * 10.72 * pz))) / 10.72; ownLand = { x: f.p.x + f.v.x * tt, y: f.p.y + f.v.y * tt }; }
       const ch = r.behavior?.choice?.p ?? null, d = (p: any, q: any) => p && q ? +Math.hypot(p.x - q.x, p.y - q.y).toFixed(1) : null;
       const bp = sim.ball.flight.pos, head = r.head ?? sim.ballEstimates?.headOf?.(r) ?? r.facing;
       const off = Math.abs(((Math.atan2(bp.y - r.pos.y, bp.x - r.pos.x) - head) * 180 / Math.PI + 540) % 360 - 180);
       const toT = tru ? Math.atan2(tru.p.y - r.pos.y, tru.p.x - r.pos.x) : 0;
-      rec.ts.push({ dt: +(sim.t - rec.rel).toFixed(2), n: sim.ballEstimates?.samplesOf?.(r) ?? null, estErr: d(es?.p, tru?.p), goalErr: d(ch, tru?.p), goalVsEst: d(ch, es?.p), rToTrue: d(r.pos, tru?.p), vTo: tru ? +(r.vel.x * Math.cos(toT) + r.vel.y * Math.sin(toT)).toFixed(1) : null, sp: +Math.hypot(r.vel.x, r.vel.y).toFixed(1), inEye: off <= 30, beh: r.behavior?.kind ?? '?' });
+      rec.ts.push({ dt: +(sim.t - rec.rel).toFixed(2), landErr: d(el, tl), ownErr: d(ownLand, tl), drag, pri: sim.ballEstimates?.tracks?.get(r)?.pseudo?.length ?? null, n: sim.ballEstimates?.samplesOf?.(r) ?? null, estErr: d(es?.p, tru?.p), goalErr: d(ch, tru?.p), goalVsEst: d(ch, es?.p), rToTrue: d(r.pos, tru?.p), vTo: tru ? +(r.vel.x * Math.cos(toT) + r.vel.y * Math.sin(toT)).toFixed(1) : null, sp: +Math.hypot(r.vel.x, r.vel.y).toFixed(1), inEye: off <= 30, beh: r.behavior?.kind ?? '?' });
     }
     if (sim.ball.kind === 'air') { const bp = sim.ball.flight.pos; rec.last = { x: bp.x, y: bp.y, z: bp.z };
       const face = Math.cos(r.body.facing - Math.atan2(bp.y - r.pos.y, bp.x - r.pos.x)) > 0.5;
