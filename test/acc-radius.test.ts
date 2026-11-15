@@ -20,6 +20,7 @@ async function throws(flag: string) {
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('DECLARED_BREAK', '0'); // engine-68: recorded on the legacy readiness path; re-record on declared breaks with the quick drop
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
+  vi.stubEnv('DIR_CAP', '0'); // engine-69: fixture recorded before the monotone direction cap; re-record with DIR_CAP on
   vi.stubEnv('ACC_RADIUS', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
