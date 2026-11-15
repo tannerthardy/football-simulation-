@@ -6,6 +6,8 @@
 import type { ReceiverRef } from '../types.js';
 import type { Candidate, Motif, ReadStep, RouteDescriptor } from './types.js';
 import { afterBreak } from './motifs.js';
+/** PLAN_ROLES (experimental, off; compile.ts CLEAR_OUTS): declared clear-outs are not read as the high of a high-low. */
+export const PLAN_ROLES = process.env.PLAN_ROLES === '1';
 
 /** A coach's preference for each plan style, added to the shared plan-quality score (log-odds-like priors; the
  * weights are engine calibration, not NFL numbers). The default leans pure (§17): an alert, key or half-field plan
@@ -76,11 +78,14 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
       let cost = n.cost + 0.3 * Math.max(0, at - n.t - (prev ? LOOK : 0)) + across;
       if (at > r.window.last) cost += 1.5;
       if (clearers.has(r.ref) && depth < 2) cost += 0.6;               // a clear-out is not an early read
+      // PLAN_ROLES: a declared clear-out is read after the route he clears for, at any depth of the order.
+      if (PLAN_ROLES && motifs.some((m) => m.kind === 'clearout' && m.why.includes('declared') && m.refs[0] === r.ref && !n.seq.some((x) => x.ref === m.refs[1]))) cost += 1.0;
       if (!prev && r.window.ready > qbSet + 0.9) cost += 0.5;           // nor is a route that comes open late
       if (!prev && r.settles && breakerInBeat) cost += 1.0;             // the breaking route is the primary
       // High-low within a side (the default profile): the deeper route first, then down (§10 B: the coach's
       // ordering among feasible sequences).
-      if (prev && side(prev) === side(r) && r.depthAtReady > prev.depthAtReady + 2) cost += 0.35;
+      // PLAN_ROLES: a clear-out is not the high of a high-low (he clears; he is not the deep read first).
+      if (prev && side(prev) === side(r) && r.depthAtReady > prev.depthAtReady + 2 && !(PLAN_ROLES && clearers.has(r.ref))) cost += 0.35;
       next.push({ seq: [...n.seq, r], t: at, cost });
     }
     if (!next.length) break;
@@ -220,6 +225,8 @@ export function select(routes: RouteDescriptor[], motifs: Motif[], qbSet: number
   // 3. Triangle on the start side, all three answers early enough to be one picture.
   const tri = motifs.filter((m) => m.kind === 'triangle').map((m) => m.refs.map((ref) => R.get(ref)!))
     .filter((T) => T.filter((r) => r.side === side).length >= 2 && T.every((r) => r.window.ready <= qbSet + 0.9 && !r.isBack))
+    // PLAN_ROLES: a declared clear-out clears; he is not part of the picture the triangle reads top-down.
+    .filter((T) => !(PLAN_ROLES && T.some((r) => motifs.some((m) => m.kind === 'clearout' && m.why.includes('declared') && m.refs[0] === r.ref))))
     .sort((a, b) => Math.max(...a.map((r) => r.window.ready)) - Math.max(...b.map((r) => r.window.ready)) || a.map(refKey).join().localeCompare(b.map(refKey).join()));
   if (tri.length) {
     // Top-down: the deepest at his window first (123, 036: corner, then the middle route, then the flat).
