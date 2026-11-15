@@ -107,3 +107,47 @@ than the gated stack gives them, never less than today's (only the carrier and d
 1. Rules' trace: which branch and flags returned a 59 yd stationary picture. On engine-67 defaults it cannot.
 2. Whether the floor applies to the carrier and defenders first (the only gated players today), or waits for the offence to be gated.
 3. The tactile latency and the 10% range error need sources; I will not pick them from memory. If you have a perception source for either, send it.
+
+## 8. Stage 1 as built (2026-11-15), and what it found
+
+`NEAR_FIELD` (off; bits 1 felt, 2 peripheral, 3 both; `src/sim/near-field.ts`, wired in `PlaySim.see` after the gated pictures and in the tick after the World step). Reads the physics contact and the delayed record only; the error
+is a smooth seeded function of time, so the sim's random stream is untouched and flag off is the same engine. Sources: the touch latency 0.15 s is a stated choice anchored on a **secondhand** 155 ms simple reaction time to
+touch (Robinson 1934, as cited in a review of factors affecting reaction time; I could not open the source); Holmes et al., *Exp Brain Res* 238:995 (2020), https://pmc.ncbi.nlm.nih.gov/articles/PMC7181441, measured 580 to 700 ms for
+weak vibrotactile detection, a different task. Range error 10%, central zone 30 deg: stated choices (read 5 / 10 / 20 percent and 20 / 30 / 45 deg); I found no clean source for peripheral range error. Not built: Coverage's detection
+test (M T(e)): inside the field a near body moves at tens of deg/s, far over it everywhere, so the field and the existing delay decide.
+
+**What I found about the design.** The gated pictures' view (1.8 rad, or the head cone) IS the visual field, at full quality to its edge. So a vision-only notice has nothing to add for a body inside it and nothing for a body behind;
+the real additions are the bump (bit 1) and the loss of exactness in the outer field (bit 2).
+
+**Picture error, the 6 yd probe (`near-field-probe.mts`, 13 concepts x 4 seeds; position error against truth now, median / p90, yd).**
+
+| | NEAR_FIELD=0 | =1 felt | =2 peripheral | =3 |
+| --- | --- | --- | --- | --- |
+| carrier, touched in the last 0.15 to 0.65 s | 0.22 / 2.24 (n 128) | 0.24 / **0.81** (n 121) | 0.24 / 1.50 | 0.40 / 1.94 |
+| carrier, behind (> 103 deg) | 0.48 / 2.26 | 0.48 / 2.21 | 0.80 / 2.25 | 0.86 / 2.49 |
+| carrier, 60 to 103 deg | 0.21 / 0.85 | 0.21 / 0.82 | 0.57 / 1.53 | 0.55 / 1.54 |
+| carrier, within 30 deg | 0.16 / 0.61 | 0.16 / 0.62 | 0.27 / 0.79 | 0.27 / 0.81 |
+| man or zone defender, behind | 0.27 / 0.53 | 0.27 / 0.53 | 0.40 / 1.14 | 0.64 / 1.60 (before the key fix) |
+| defender, 60 to 103 deg | 0.22 / 0.45 | 0.22 / 0.45 | 0.36 / 0.95 | |
+
+Defenders have no view bound at all under `SIGHT_COVER` (occlusion only), so behind and beside are full quality today; the carrier's picture of a man behind him is the stale one (age 0.55 s, p90 2.3 yd).
+Bit 1 cuts the touched carrier's p90 error from 2.2 to 0.8 yd; it does nothing for defenders (their pictures are already good). Bit 2 roughly doubles the error outside 30 deg and removes the velocity beyond 60 deg.
+
+**Dither panel (135 plays):** `NEAR_FIELD=1` passes (carrier / spacing 0.1487, coverage / spacing 0.1089); `NEAR_FIELD=3` fails coverage / mode switch (0.044 against 0.039): noise on the picture is noise on every threshold that reads it. Bit 2 is a real
+information reduction with a dither cost, not a free floor.
+
+## 9. Stage 2 (design only): every offensive `sim.see` consumer
+
+Offence is omniscient with a delay today (section 1). Gating it with a head field (HEAD) and occlusion touches 145 call sites in 14 files (count by `grep` for `sim.see(`, `.see(`, `track(`, `felt(`, `seenDown`, `seenTaken`, `seenEngaged`):
+
+| Consumer (sites) | What it reads, at what range | Without a head want of its own it would be blind to |
+| --- | --- | --- |
+| Blockers, `blocking.ts` (62) + `screen.ts` (4) + `space-block.ts` (2) + `block-look.ts` (1) + `assign.ts` (1) + `blocker-work-picture.ts` (1) | His assigned man's position and velocity at 1 to 4 yd (engaged or about to be); the next defender in a combo (the backer) 4 to 10 yd; a twist or stunt partner 2 to 3 yd; teammates' positions within 6 yd (combo mates, the pull path); the runner (3.5, 3449, 3512); pull targets 3 to 8 yd; the pass set's rusher (486, 495) | A lineman scanning for a twist (two rushers, one peripheral: 2949, 2727, 2728); a climbing lineman reaching for the backer while engaged on the DT (3379, 3476, 3508, 3727, 3758); a puller's kick-out man and his hole; the combo's second man |
+| QB, `qb.ts` (36) + `qbmind.ts` (3) | Rushers through `felt()` (all-round with a blind-side delay, already special); receivers' positions and poses through `see` for the read (1627, 1660, 2300, 2568, 2577, 2626, 2629, 2679) at 5 to 40 yd; the back at the mesh (2828, 2850); defenders for the coverage read (qbmind 420, 429, 485) | Every receiver outside the head's field while he is on the progression: the checkdown, the hot receiver, the back, a safety shell at 15 to 25 yd. He needs a scan behaviour (a head want per read) |
+| Receivers, `receiver.ts` (18) | The QB's position (288, 378, 474, 495, 500, 787) at 5 to 25 yd for facing and settle; defenders for route craft (141, 309, 413, 616, 627, 673) within 12 yd: get-off, release side, the crosser scan, `nearestDefender`; downfield-block targets and pursuers (849, 873) at 5 to 30 yd; a teammate's down or taken state (54, 55) | The QB at the break (a head want 'qb' on the settle); the defender he is beating (a head want on the man); a crosser at the side; a downfield blocker's pursuer |
+| Ball carrier, `carrier.ts` (10) | The run key (165), the kick-out man (169), blockers (177, 522, 571, 816) and defenders (477, 559, 820) within 6 to 8 yd | Already gated by `SIGHT_CARRIER`; stage 1 covers him |
+| `pa-look.ts`, `open-field.ts`, `catch-choice.ts` (1 each) and `common.ts` (4, shared with defence) | Play-action look, open-field defender read, catch-point choice, pursuit and tackle reads | Each needs a want; `common.ts` is the defender's, covered by `SIGHT_COVER` |
+
+So the large pieces are blockers (62, 43%) and the QB (39, 27%): about 70% of the sites. The receivers (18) and the carrier (10) are smaller. A gated offence needs, at minimum, wants for: the QB on a progression (the receiver he reads and a
+scan), the receiver's QB look and his defender, the lineman's man and his climb target, the pull path, and a twist scan. None of these exists as a want today (`HEAD`'s `want` exists for the ball and the passer's release belief); without them
+a gated lineman is blind to his own combo partner's man. That is the size of stage 2: a head want per technique (about 20), not a change to the 145 reads.
