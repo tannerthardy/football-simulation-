@@ -249,12 +249,22 @@ The closure reads where he is relative to the ball when it arrives. On the glanc
 `open-drops.ts` OD_GOAL, seed 23 x 8), 8 open targets on 1.3-1.8 s flights never came within his reach. Every 0.1 s
 the trace logged his goal, his belief's catch spot and the true flight's catch spot. Two kinds:
 
-**2 of 8: a stale committed choice. A bug, fixed in c12aa91c under bit 2048.**
+**2 of 8: a stale committed choice.**
 
 - The catch-point choice was made about 0.2 s into the flight on a belief 4-5 yd off.
 - When a later re-read found no reachable point, `?? this.choice` kept the old choice.
 - Its time stayed 0.20-0.45 s earlier than his current belief's catch time for the whole flight.
 - Under bit 4, his target was his believed ball at that stale time: up the flight from where he could meet it.
+- **Tried and reverted.** c12aa91c dropped the stale choice when the re-read found none (bit 2048), and it made things
+  worse (est-controls, seeds 23 / 11):
+
+  | row | with c12aa91c | before |
+  |---|---|---|
+  | open 3+ yd | 67 / 71% | 71 / 75% |
+  | open, 0.9-1.3 s | 57 / 69% | 66 / 71% |
+
+  Without the choice he falls back to `catchSpot` re-chosen every tick: the weaker targeting below. So the stale choice
+  is not the bug to fix alone. Both kinds belong to one design question: when he commits, and to what.
 
 **6 of 8: no choice, an accurate belief, and the feet still don't get there. A design question.**
 
