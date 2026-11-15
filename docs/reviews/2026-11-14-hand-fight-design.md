@@ -632,3 +632,36 @@ games. Off identical (7c0603676f346494); the dither budget passes with it on.
   reach 7 -> 8%.
 - The release timing barely moves under FH (never 35 -> 32%). The hand-off continues reps that would have counted
   as a release.
+
+## 11. RUSH_GATHER attempt 1 read (2026-11-15; seed 11 x 8, engine-67 patch base; QB lane's population)
+
+`RUSH_GATHER` (800c6da8): the free pass rusher finishes on the QB with chase()'s close gather (gatheringApproach)
+from his picture of the QB, his braking and his tackling's arrival speed. Off identical.
+
+| | NFL | base | base + RG | FH + PO | FH + PO + RG |
+|---|---|---|---|---|---|
+| rusher speed, last 0.6 s before a reach, QB still: p50 | **4.12** | 5.15 | 5.00 | 5.41 | **4.74** |
+| free 1.5-3 yd from a still QB: p50 | 3.81 | 5.00 | 3.00 | 5.39 | 4.72 |
+| off-blocker reach | 9% | 12% | 12% | 12% | **18%** |
+| ... helped / unhelped | 5 / 11% | 7 / 20% | 7 / 22% | 7 / 19% | 12 / 27% |
+| after a reach: distance at +0.3 s p50; time within 1.5 yd; thrown | 0.82 yd; 0.5 s; 35% | 0.64; 0.3; 71% | 0.57; 0.3; 66% | 0.85; 0.3; 52% | 0.58; 0.3; 65% |
+| interior pressure, % of dropbacks | about 9.8 | 10.9 | 13.9 | 19.0 | 20.6 |
+| sack proxy; sacked per pressure | 7; | 5.4; 18.3% | 4.6; 15.7% | 9.1; 23.6% | **7.0; 20.5%** |
+| alive at 3 s ending in a sack: interior / edge | 4.1 / 9.5 | 5.7 / 6.6 | 3.8 / 7.1 | 10.2 / 8.5 | 11.3 / 3.9 |
+
+**Read:**
+- **The finish moves toward the NFL's.** At a still QB in the last 0.6 s: 5.41 -> 4.74 yd/s against 4.12.
+- Sacks fall (9.1 -> 7.0; per pressure 23.6 -> 20.5%), and the QB gets the ball out more often once reached (52 -> 65%
+  thrown).
+- **It is not a hover.** After a reach the gathered rusher is as close (0.58 yd at +0.3 s) and no longer within
+  1.5 yd than before.
+- **The adverse result:** more off-blocker rushers reach 1.5 yd (12 -> 18% under FH + PO; unchanged on the base),
+  helped and unhelped alike, and interior pressure rises 19.0 -> 20.6.
+  - Not yet explained.
+  - A candidate in the law as ported: chase()'s gather aims at the seen QB's position (the goal is his picture,
+    offset 0), while the sprint it blends into aims at pursuitPoint's intercept. A rusher gathering at 2.5 yd plus
+    his stopping distance turns from the intercept toward where the QB is, which may take him around a helper's
+    line rather than through it.
+  - Needs its own look (the gather onset's position against the helper and the QB, the reached against the not)
+    before an attempt 2.
+- Not for the card yet. FITTED_HANDS + PASS_OFF go as a patch without it.

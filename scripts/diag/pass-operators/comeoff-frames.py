@@ -82,6 +82,7 @@ for path in args:
                     o = O[k][h] if O and k < len(O) and O[k] and h < len(O[k]) else None
                     f['hFace'] = abs(wrap(o - math.degrees(math.atan2(dy - hy, dx - hx)))) if o is not None else None
                 c['frames'].append(f)
+            c['thrown'] = fw is not None
             if c['frames']: C.append(c)
     reach = lambda c: next((f['dt'] for f in c['frames'] if f['dq'] <= 1.5), None)
     first = lambda c: next((i for i, f in enumerate(c['frames']) if f['dt'] <= 0.5 and f['hr'] is not None and f['hr'] <= 1.0), None)
@@ -113,6 +114,14 @@ for path in args:
         for lab, lo, hi in [('QB still (<0.5 yd/s)', 0, 0.5), ('QB slow (0.5-1.5)', 0.5, 1.5), ('QB moving (>1.5)', 1.5, 99)]:
             g = [f for f in G if lo <= f['qS'] < hi]
             print(f"   (b) {name}, {lab}: {len(g)} frames | rusher speed p25/50/75 {q([f['rS'] for f in g], .25):.2f}/{q([f['rS'] for f in g]):.2f}/{q([f['rS'] for f in g], .75):.2f} | closing p50 {q([f['close'] for f in g]):.2f}")
+    # After a reach: his distance to the QB 0.3 s on, the closest he gets, how long he stays within 1.5 yd, and whether
+    # the ball was thrown (RUSH_GATHER's read: a gathering rusher may hover near the QB instead of finishing).
+    after = []
+    for c in R:
+        r = reach(c); fs = [f for f in c['frames'] if f['dt'] >= r]
+        f3 = next((f for f in fs if f['dt'] >= r + 0.3 - 1e-6), None)
+        after.append((f3['dq'] if f3 else None, min(f['dq'] for f in fs), sum(1 for f in fs if f['dq'] <= 1.5) * 0.1))
+    print(f"   after a reach ({len(R)}): distance at +0.3 s p50 {q([x[0] for x in after if x[0] is not None]):.2f} yd (frames left {sum(1 for x in after if x[0] is not None)}) | closest p50 {q([x[1] for x in after]):.2f} | time within 1.5 yd p50 {q([x[2] for x in after]):.1f} s | thrown {pct(sum(1 for c in R if c['thrown']), len(R))}")
     # The QB lane's dozen: off the blocker, no help, reached.
     ids = [c['id'] for c in N if reach(c) is not None]
     print(f"   no help, reached ({len(ids)}): {' '.join(str(x) for x in ids[:max(12, nex)])}")
