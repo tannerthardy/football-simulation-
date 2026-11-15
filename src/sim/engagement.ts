@@ -2218,6 +2218,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     return;
   }
   if (b.body.support?.state !== 'up') b.tags.add('anchor-lost');
+  // PASS_OFF attempt 2: a helper who sees the man come off his blocker takes him; the rep goes on as his next tick.
+  if (passOff(sim, e, true)) return;
 
   // ---- moves at decision points
   // RUSH_HANDS: a move takes his arm away; he throws no other until it is back. After a club his arm returns across
@@ -3495,12 +3497,13 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
  * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
  * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
 export const PASS_OFF = process.env.PASS_OFF === '1';
-function passOff(sim: PlaySim, e: Engagement): boolean {
+function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
   const d = e.defender;
   const keeper = e.helpers.find((h) => {
     const j = e.helperHands?.get(h);
-    return !!j && !h.isDown(sim.t) && inBlockReach(h, d, 'pass') && (Math.max(0, j.normalForce ?? 0) > 0 || Math.abs(j.tangentForce ?? 0) > 0);
+    if (!j || h.isDown(sim.t) || !inBlockReach(h, d, 'pass')) return false;
+    return seen ? seesComeFree(sim, e, h) : Math.max(0, j.normalForce ?? 0) > 0 || Math.abs(j.tangentForce ?? 0) > 0;
   });
   if (!keeper) return false;
   const old = e.blocker, joint = e.helperHands!.get(keeper)!;
@@ -3516,6 +3519,22 @@ function passOff(sim: PlaySim, e: Engagement): boolean {
   d.tags.add('shed');
   sim.event('shed', d, old, 'pass: passed off');
   return true;
+}
+
+/** PASS_OFF attempt 2: the helper sees the man come off the blocker he is helping, as he has them both (his own sight
+ * delay), with the man in his view cone: the man beyond the blocker's working reach (the bodies plus 0.85 of the
+ * blocker's arm, the punch's lockout) or past his shoulder (70 deg off the blocker's line to the launch point, the
+ * release the operators use). Then he takes him. Attempt 1 handed off only at beat(): under FITTED_HANDS most rushers
+ * who reach the QB are still in the first man's rep at arm's length (51% of the frames to the reach), so it fired 3
+ * times in 2 games. */
+function seesComeFree(sim: PlaySim, e: Engagement, h: Agent): boolean {
+  const b = e.blocker, d = e.defender, sd = sim.see(h, d), sb = sim.see(h, b);
+  if (!inHeadCone(h.head ?? h.body.facing, Math.atan2(sd.pos.y - h.pos.y, sd.pos.x - h.pos.x))) return false;
+  const rx = sd.pos.x - sb.pos.x, ry = sd.pos.y - sb.pos.y, sep = Math.hypot(rx, ry);
+  if (sep > b.profile.radius + d.profile.radius + 0.85 * b.player.measurables.armIn / 36) return true;
+  const pp = protectPoint(sim), ux = pp.x - sb.pos.x, uy = pp.y - sb.pos.y, L = Math.hypot(ux, uy) || 1;
+  const ang = Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L);
+  return Math.abs(ang) > (70 * Math.PI) / 180;
 }
 
 function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, why = ''): void {
