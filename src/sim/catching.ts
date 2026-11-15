@@ -12,6 +12,8 @@ import { closestCatchOpportunity } from '../physics/catch-opportunity.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { BALL_EST_NO_TRACKPEN } from './ball-estimate.js';
+import { BAT_HANDS, handsLevel, handsTop } from './bat-hands.js';
+import { bodyHeight, SHOULDER } from './sight.js';
 import { shouldersOf, TRUNK_TWIST } from '../physics/kinematics.js';
 
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -474,6 +476,25 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     D.noCatchUntil = sim.t + 1;
     return false;
   }
+  if (isBat && BAT_HANDS) {
+    // BAT_HANDS: his hands, where they are. A ball through his raised hands is tipped; one below his shoulders on his
+    // body comes off it; over or wide of them, nothing.
+    const lvl = handsLevel(D);
+    if (lvl > 0 && o.dh <= D.profile.radius + 0.25 && o.z <= handsTop(D) && o.z >= bodyHeight(D, SHOULDER) - 0.1) {
+      sim.event('deflection', D, null, 'batted at the line');
+      sim.stats.passDefendedBy = D.player.id;
+      D.noCatchUntil = touchedUntil(sim, 0.3);
+      tipOffHands(sim, D, o, lvl);
+      return true;
+    }
+    if (o.z <= bodyHeight(D, SHOULDER) && o.dh <= D.profile.radius + BALL_HALF_WIDTH) {
+      sim.event('deflection', D, ball.target, 'off his body');
+      D.noCatchUntil = touchedUntil(sim, 0.25);
+      deflect(sim, 0.3, 'tip', D);
+      return true;
+    }
+    return false;
+  }
   if (isBat) {
     // Linemen only bat it if they read the release and get their hands up.
     const pBat = (D.engagement ? 0.04 : 0.12) * (sees ? 1 : 0.2) * (0.5 + D.r('playRecognition'));
@@ -519,6 +540,27 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     return true;
   }
   return false;
+}
+
+/** BAT_HANDS: a ball tipped off raised hands goes where the contact sends it: its speed cut to a quarter, the part of
+ * its horizontal motion into his hands (toward his centre) reversed at a third, popping up by how high his hands
+ * reached it (the hands meet it from below). Live, as any tipped ball. */
+function tipOffHands(sim: PlaySim, D: Agent, o: Opp, lvl: number): void {
+  if (!sim.touchPass(D)) return;
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return;
+  const f = ball.flight, keep = 0.25;
+  const nx = o.b.x - D.pos.x, ny = o.b.y - D.pos.y, nl = Math.hypot(nx, ny);
+  let vx = f.vel.x, vy = f.vel.y;
+  if (nl > 1e-6) {
+    const ux = nx / nl, uy = ny / nl, into = vx * ux + vy * uy;
+    if (into < 0) { vx -= (1 + 0.3) * into * ux; vy -= (1 + 0.3) * into * uy; }
+  }
+  f.vel = { x: vx * keep, y: vy * keep, z: 0.5 + 1.5 * lvl };
+  f.drag = DRAG_TUMBLE;
+  ball.deflected = true;
+  ball.target = null;
+  sim.computeBallPath();
 }
 
 function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', toucher?: Agent, solid?: number): void {

@@ -202,6 +202,7 @@
     "RUSH_GATHER": "off",
     "BLOCK_ANTICIPATE": "off",
     "FIGHT_MENU": "off",
+    "BAT_HANDS": "off",
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",

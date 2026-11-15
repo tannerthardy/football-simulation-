@@ -10,6 +10,7 @@ import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
 import { lineOfSight } from './sight.js';
 import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
+import { BAT_HANDS, stepBatHands } from './bat-hands.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -1540,6 +1541,8 @@ export class PlaySim {
     if (this.bond) updateBond(this, this.bond, this.intents);
     commandTrace?.stage('tackle-bond', this.intents);
     ledger?.stageAll('tackle-bond', this.intents);
+    // BAT_HANDS: hands up on reading the throw, and what that costs his request.
+    if (BAT_HANDS) stepBatHands(this, this.intents);
     // Constraint ownership and last-step touch are felt by the actor. Free
     // movement forecasts must not pretend these loads or joints are absent.
     const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
