@@ -9,6 +9,7 @@ import { generateTeam, type Team } from '../../league/team.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
 import { compile } from './compile.js';
+import { DECLARED_BREAK } from './features.js';
 import type { PlanStyle } from './types.js';
 
 export const READ_PLAN = process.env.READ_PLAN !== '0';
@@ -111,6 +112,11 @@ export interface InstalledPlan {
    * first a throw as installed (the compiler's window), and `onTime` whether it is ready by its step. A read that is
    * not on time is the concept's or the drop's question, not a wait (the table's rhythm column). */
   rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; at: number; ready: number; onTime: boolean }[];
+  /** DECLARED_BREAK: per read, the route's declared break as installed (route time from this compile's sample of the
+   * installed route, never a live play), its throw family, and the plan's anchor lead. The quarterback lane's
+   * `leadFor(passer, throwFamily, route)` replaces the anchor with his own lead when a read is checked; the throwing
+   * motion is theirs. Absent with the flag off. */
+  reads?: { ref: ReceiverRef; breakAt: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number }[];
 }
 
 const cache = new Map<string, InstalledPlan | null>();
@@ -127,7 +133,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -172,6 +178,8 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         return { ref, step, at, ready, onTime: ready <= at + 1e-9 };
       });
+      const decl = seq.map((ref) => ({ ref, d: routes.get(ref)?.declaredBreak })).filter((x) => x.d);
+      if (decl.length) plan.reads = decl.map(({ ref, d }) => ({ ref, breakAt: d!.t, throwFamily: d!.throwFamily, anchorLead: d!.anchorLead }));
     }
   } finally {
     compiling--;

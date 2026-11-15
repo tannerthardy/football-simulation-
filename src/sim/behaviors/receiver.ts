@@ -21,6 +21,7 @@ import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_L
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
+import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
  * torso is still a compact body: the small hand slide below is the part of
@@ -223,6 +224,14 @@ export class RouteRunner implements Behavior {
   private readonly fromBackfield: boolean;
   /** Time at which the route's final break is expected (for QB timing). */
   readonly breakTime: number;
+  /** DECLARED_BREAK (src/playbook/route-breaks.ts): the point on his installed path that is his route's declared break
+   * (null with the flag off, or for a route timed by a declare rule rather than a vertex). Exposed for the receiver's look
+   * timing to key on; this build does not change when he looks (Coverage's rebuild of the receiver's look owns that). */
+  get declaredBreak(): { x: number; y: number } | null {
+    if (!(process.env.DECLARED_BREAK === '1')) return null;
+    const at = BREAK_DECL[this.route.id]?.at;
+    return typeof at === 'number' && this.path[at] ? { ...this.path[at].p } : null;
+  }
   /** Fraction of top speed the route is run at: quick game is rhythm, verticals are races. */
   private readonly effort: number;
 
