@@ -1041,3 +1041,36 @@ These compare arms with one another; the NFL comparison goes through the export 
 - With the whole reference stack off the slide halves (0.58 / 0.74, rusher speed 1.56): it accumulated across the
   promoted stack.
 - Bisection by quarters of the stack is next, to find which group of terms carries it.
+
+**Bisection by quarters of the stack** (each quarter off as one arm; same probe):
+- Quarters 1, 2 and 4 off: 1.19-1.39 across, the default's.
+- **Quarter 3 off** (the trench and pass-set group: LEGS_HELD ... RB_TEMPO, 56 flags): **0.85 / 0.86, rusher speed
+  1.67**.
+- Its four sub-groups, each off alone, land at 1.09-1.22 across:
+  - BLOCK_SEEN ... PASS_SET_SEEN: 1.13 / 1.10, speed 1.76;
+  - REP_SEEN ... NICKEL_FRONTS: 1.22 / 1.26;
+  - NO_CROSS ... QB_KEY_MAN: 1.10 / 1.10;
+  - QB_HONEST_FEEL ... RB_TEMPO: 1.09 / 1.12.
+- So the slide is cumulative across the trench group's terms. No single run-era term leaks into pass sets. The user's
+  candidate in its single-term form is not supported.
+
+**The user's other candidates, on tracking: does the held rusher stop driving?** Held pairs (interior-fight.py's,
+never released within 2.5 s): the rusher's velocity toward the QB / across his line to the QB, p50 yd/s:
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| NFL | +2.03 / 1.12 | +1.74 / 1.07 | +1.39 / 0.91 | **+0.85 / 0.89** |
+| base | +1.56 / 0.45 | +0.99 / 0.85 | +1.32 / 1.04 | +1.16 / 1.21 |
+| FM2 | +1.58 / 0.85 | +1.13 / 1.25 | +1.38 / 1.79 | **+1.06 / 2.04** |
+
+- **The NFL's held rusher stalls on both axes.** His drive at the QB falls by more than half (2.03 -> 0.85) and his
+  work across falls too (1.12 -> 0.89). That is a stalemate, or effort or the rush going: the user's three candidates,
+  all one shape on tracking.
+- **Ours keeps driving and works across more and more** (base 0.45 -> 1.21; FM2 0.85 -> 2.04).
+- Ours starts the drive slower at contact (1.56-1.58 against 2.03): the get-off into the blocker.
+- **Where it points:** the rusher's request between moves.
+  - Between moves, stepPassRep aims him at the corner beside the blocker's hip at rush pace, every tick, for the
+    whole rep. Nothing in ours ever stops asking to move across.
+  - RUSH_INTENT (off; its 'stall' intent) and the between-moves task are the existing home for it.
+  - Measure before building: in held pairs after 1.0 s, his requested velocity across against the NFL's achieved
+    across, and whether a held rusher's request ever settles.
