@@ -1,6 +1,7 @@
 # Where does TRUNK_TWIST's completion gain sit? Saved scorecard records (npm run scorecard --out ...) with arms off / on / on_oldterm
 # (on_oldterm = TRUNK_TWIST on with the catch-at-speed term reading the line of run, as before the trunk). Completion, attempts and yards per attempt
-# by intended air-yards band and by concept, per arm, and the on-minus-off and on-minus-on_oldterm differences.
+# by air-yards band (the records' `air`: nflverse convention, LOS-to-catch depth on completions and LOS-to-aim-point on every other attempt; NOT one quantity: a completion
+# arriving deeper or shallower than its aim changes band, an incompletion keeps its aim's) and by concept, per arm, and the on-minus-off and on-minus-on_oldterm differences.
 #   python3 -I scripts/diag/route-speed/trunk_attr.py out/trunk-attr/s23.json [out/trunk-attr/s31.json ...]
 import json, sys, collections as C
 arms = C.OrderedDict(); 
@@ -37,6 +38,6 @@ def air(p):
     for k in ('air', 'airYards', 'airY'):
         if p.get(k) is not None: return p[k]
 show('all attempts', lambda p: 'all')
-show('air-yards band', lambda p: None if air(p) is None else band(air(p)))
+show('air-yards band (catch depth if completed, else aim point)', lambda p: None if air(p) is None else band(air(p)))
 show('concept', lambda p: p.get('concept'), 40)
 show('coverage family', lambda p: p.get('family'))
