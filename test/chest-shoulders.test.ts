@@ -27,7 +27,8 @@ describe('CHEST_SHOULDERS: the chest segment across the shoulders', () => {
     }
   });
   it('off, lies across the hips whatever the trunk', async () => {
-    const twisted = await half({ TRUNK_TWIST: '1' }, 0.3, 0.5), straight = await half({ TRUNK_TWIST: '1' }, 0.3, 0);
+    // Off is asked for, not inherited from the legacy pin (CHEST_SHOULDERS is on by default since engine-68).
+    const twisted = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '0' }, 0.3, 0.5), straight = await half({ TRUNK_TWIST: '1', CHEST_SHOULDERS: '0' }, 0.3, 0);
     expect(twisted.x).toBe(straight.x); expect(twisted.y).toBe(straight.y);
   });
   it('requires TRUNK_TWIST', async () => {
