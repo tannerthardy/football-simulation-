@@ -881,3 +881,28 @@ firm is a brace: the hand holds at the lever of the bent arm (steer x 1), with n
 - **Off-blocker reach 12 -> 19%** is the same direction as both RUSH_GATHER attempts (18, 16%) from the same
   FH + PO arm. Three different small changes all moving one row the same way suggests the arm's 12% is a low draw. A
   second seed set (23 x 8: FH + PO, + BA, + RG2) is running before anything is concluded from it.
+
+**Seed 23 x 8: the noise check.**
+
+| off-blocker reach | seed 11 | seed 23 |
+|---|---|---|
+| FH + PO | 12% | 15% |
+| + BLOCK_ANTICIPATE | 19% | 16% |
+| + RUSH_GATHER attempt 2 | 16% | 12% |
+
+| interior pressure | seed 11 | seed 23 |
+|---|---|---|
+| FH + PO | 19.0% | 18.5% |
+| + BLOCK_ANTICIPATE | 19.5% | 18.1% |
+| + RUSH_GATHER attempt 2 | 22.6% | 17.7% |
+
+- On 8 games the off-blocker reach row moves 3-4 points between seed sets and reverses between arms. The "adverse"
+  readings above were within that.
+- **BLOCK_ANTICIPATE attempt 1 is neutral on outcomes and works as a mechanism.** 54% of clubs are answered in
+  advance, holding stays at 0, orbit and release are kept. Its effect on the club is modest, because a braced arm
+  without a grip holds only a little better (the World's answer).
+- **RUSH_GATHER's park rests partly on one seed set** for its reach row. Attempt 1's re-aim off the intercept was seen
+  on film and stands. The adverse reach of attempt 2 (16 against 12) is not distinguishable from noise. Its finish moved
+  only part way (4.92 against 4.12).
+  - It stays parked. Section 15 shows the feet in the fight are the cause, so a finish law is the wrong piece.
+- For later reads of this row: 16 games (two seed sets) at least.
