@@ -84,6 +84,9 @@ export function lookJoints(a: Agent, cmd: MoveCommand, heading: number, d: numbe
   const look = heading + Math.sign(d) * over;
   return hips > 0 ? { ...cmd, look, facing: heading + Math.sign(d) * hips } : { ...cmd, look };
 }
+/** Bit 1024 (the feet servo, 2026-11-15, attempt 1): a player tracking the ball runs on what he sees of it (ball-servo.ts:
+ * optical acceleration cancellation along his line, constant bearing across it), not to a fitted landing point. */
+export const BALL_EST_SERVO = (BALL_EST_BITS & 1024) !== 0;
 /** The estimator replaces the true flight for the receivers (off under bit 128). */
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
@@ -138,6 +141,8 @@ export function neckOf(a: Agent): number {
 }
 
 type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number; sv?: number;
+  /** Where his eyes were when he took it (sim time `at`): the servo reads the ball's angles from here. */
+  eye?: Vec3; at?: number;
   /** Design 5 (a) looming: his time-to-contact reading as an observation of the ball's velocity along his line of
    * sight (u, negative while it closes), and its sigma. */
   vlos?: number; svlos?: number };
@@ -268,7 +273,7 @@ export class BallEstimates {
       const er = tr.err[0] * sr * r, ea = tr.err[1] * sa * r, eb = tr.err[2] * sa * r;
       const p: Vec3 = { x: seen.p.x + u.x * er + e1.x * ea + e2.x * eb, y: seen.p.y + u.y * er + e1.y * ea + e2.y * eb, z: seen.p.z + u.z * er + e1.z * ea + e2.z * eb };
       const inflate = Math.sqrt(Math.max(1, ERR_TAU / sim.dt));
-      const smp: Sample = { t: seen.t, p, along: u, sr: sr * r * inflate, sa: sa * r * inflate };
+      const smp: Sample = { t: seen.t, p, along: u, sr: sr * r * inflate, sa: sa * r * inflate, eye, at: sim.t };
       // Design 5 (a): a ball closing on his eyes looms; its time to contact r / closing speed reads the velocity along
       // his line of sight. Its weight falls continuously as the ball's motion turns across his line (closing share^2).
       if (BALL_EST_LOOMING) {
@@ -344,6 +349,20 @@ export class BallEstimates {
   gazeAt(a: Agent, sim: PlaySim): { x: number; y: number } {
     const tr = this.tracks.get(a);
     return tr ? this.believedAt(a, sim, tr) : sim.see(a, sim.qb).pos;
+  }
+
+  /** His own samples of this flight as angles from his eyes (sim time of each look, azimuth, elevation): what the feet
+   * servo reads. Angles carry only his bearing error; range error lies along the line of sight. */
+  anglesOf(a: Agent): Array<{ t: number; az: number; el: number }> {
+    const tr = this.tracks.get(a);
+    if (!tr || tr.flight !== this.flight) return [];
+    const out: Array<{ t: number; az: number; el: number }> = [];
+    for (const q of tr.samples) {
+      if (!q.eye || q.at === undefined) continue;
+      const dx = q.p.x - q.eye.x, dy = q.p.y - q.eye.y, dz = q.p.z - q.eye.z;
+      out.push({ t: q.at, az: Math.atan2(dy, dx), el: Math.atan2(dz, Math.max(0.3, Math.hypot(dx, dy))) });
+    }
+    return out;
   }
 
   /** Read-only: when (sim time) he first sampled this flight himself, or undefined. One perception: under BALL_EST his
