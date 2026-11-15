@@ -243,6 +243,34 @@ the note says so plainly: it is a choice, not a derivation.
 "High" today starts at heightYd x 1.02, the top of his head, although the code calls it the chest. It moves to the
 pocket's own body frame: the chest is about 0.72 x height. This will move fixtures, and the PR will say so.
 
+## Input honesty: the feet's goal (diagnosed 2026-11-15, design question open)
+
+The closure reads where he is relative to the ball when it arrives. On the glance receiver (BALL_EST=2049,
+`open-drops.ts` OD_GOAL, seed 23 x 8), 8 open targets on 1.3-1.8 s flights never came within his reach. Every 0.1 s
+the trace logged his goal, his belief's catch spot and the true flight's catch spot. Two kinds:
+
+**2 of 8: a stale committed choice. A bug, fixed in c12aa91c under bit 2048.**
+
+- The catch-point choice was made about 0.2 s into the flight on a belief 4-5 yd off.
+- When a later re-read found no reachable point, `?? this.choice` kept the old choice.
+- Its time stayed 0.20-0.45 s earlier than his current belief's catch time for the whole flight.
+- Under bit 4, his target was his believed ball at that stale time: up the flight from where he could meet it.
+
+**6 of 8: no choice, an accurate belief, and the feet still don't get there. A design question.**
+
+- His belief is 0.1-0.4 yd from the true catch spot by mid to late flight, yet the ball passes 1.5-2.5 yd from him.
+- He steers to `catchSpot` on his belief: the earliest point on the path he can reach by its time, judged with
+  `timeToReach` at reach x 0.8, re-chosen every tick.
+- Two candidates, to be distinguished on these plays before anything is built:
+  - **Targeting the earliest reachable point.** It sits at the edge of his capability by construction. Any shortfall
+    in what his legs achieve against `timeToReach`'s prediction leaves him short of it. That includes the trunk's
+    speed price (DIR_CAP), which `timeToReach` may not include.
+  - **Re-choosing every tick.** The earliest reachable point jumps as his belief and his own motion change, so he
+    chases a moving target.
+- **The question:** when does he commit, and to what (the earliest reachable point, a point with margin, or a point
+  where the ball is at his hands' height)? This is the catch-point choice's design (CATCH_CHOICE, `catch-choice.ts`).
+  It needs `timeToReach` against his achieved arrival on these plays before it is changed.
+
 ## Flags
 
 - `CATCH_CLOSURE` (off): stage one.
