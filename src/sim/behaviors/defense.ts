@@ -75,6 +75,15 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
  * opposite sides. */
 export const SETTLE_DEPTH = process.env.SETTLE_DEPTH === '1';
+/** HIGH_LOW (experimental, off; HIGH_LOW=1 turns it on; docs/reviews/2026-11-15-underneath-handoff-design.md, flag 2):
+ * the hook and curl-flat play high to low. With a route at 6-16 yd in or entering his zone and a shallow one (under
+ * 5 yd) under it, he honors the deeper one: he plays its window, on the QB's line just under it, keeps the shallow in
+ * front of him, and breaks down on it when the ball is thrown there (the existing sawThrow / playBall). Without it his
+ * zone threat was the one nearest his landmark and his lane depth the crosser's, so a shallow pulled him down under
+ * the dig (Bowen, Cover 3 hooks: "cushion the seam and dig, drive on the shallow"). The choice is committed: the
+ * honored route stays his until it leaves his zone by a wider margin than it entered (radius + 2 in, radius + 4 out).
+ * It declines to chase the crosser; it does not pass him to anyone (the hand-off, with its call, is separate). */
+export const HIGH_LOW = process.env.HIGH_LOW === '1';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -1388,6 +1397,8 @@ export class ZoneCoverage implements Behavior {
   private settledAt = -1;
   /** SETTLE_DEPTH: short of his landmark's depth past the enter margin, still sinking (exit inside SINK_EXIT). */
   private sinkingToDepth = false;
+  /** HIGH_LOW: the deeper route he is honoring over a shallow one under it, kept until it clears the exit margin. */
+  private highLow: Agent | null = null;
   private shortOfDepth(a: Agent): boolean {
     if (!SETTLE_DEPTH) return false;
     const short = this.landmark.x - a.pos.x;
@@ -1837,6 +1848,19 @@ export class ZoneCoverage implements Behavior {
             speed: across ? 1 : zs * 1.05, gain: 1.8 }), { label: across ? 'flat-across' : 'flat-expand', key: flat.vel });
         }
       }
+    }
+    if (HIGH_LOW && !this.deep && knowsPass(sim, a) && /^(hook|curl_flat)/.test(this.zone)) {
+      const depthOf = (th: (typeof threats)[number]) => th.pos.x - sim.los;
+      const near = (th: (typeof threats)[number], m: number) => Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y) < this.radius + m;
+      const highs = threats.filter((th) => depthOf(th) >= 6 && depthOf(th) <= 16 && near(th, th.r === this.highLow ? 4 : 2));
+      const lows = threats.filter((th) => depthOf(th) < 5 && th.pos.x > sim.los && near(th, 2));
+      if (highs.length && lows.length && (!best || depthOf(best) < 5 || best.r === this.highLow)) {
+        const keep = highs.find((th) => th.r === this.highLow);
+        const hi = keep ?? highs.reduce((p, q) => (Math.hypot(p.fut.x - lm.x, p.fut.y - lm.y) <= Math.hypot(q.fut.x - lm.x, q.fut.y - lm.y) ? p : q));
+        if (best?.r !== hi.r) a.tags.add('high-low');
+        this.highLow = hi.r;
+        best = hi;
+      } else this.highLow = null;
     }
     this.selectTarget(a, best?.r ?? null);
     if (!best) {

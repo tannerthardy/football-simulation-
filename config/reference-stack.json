@@ -333,6 +333,7 @@
     "CURL_FLAT_BACK": "on",
     "CURL_SINK": "off",
     "SETTLE_DEPTH": "off",
+    "HIGH_LOW": "off",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",

@@ -111,3 +111,53 @@ cover3, cover3_match, cover3_seam, cover4, cover6; three formations; seeds 1-2, 
 The fix does what it says and moves the hook under the in-breaker by a yard; the QB throws there less. The larger part
 of the dig and crosser hole is in the carry branches (the hook's `open-carry-cross`, the curl-flat's carry of an under
 No. 2), which flag 2 addresses.
+
+## Flag 2, first part: HIGH_LOW (the threat he honors), traced first
+
+Integration's ruling: build the high-low threat rule now, since it needs no reversal from the body, and hold the
+hand-off pieces (i, iii, iv) until the NFL break row (`deep_break.py`, deep and 2-10 yd) is in. This is the second
+attempt at the crosser problem: attempt 1 (CROSS_PASS) passed the crosser off; this one declines to chase him.
+
+The trace (`out/diag/db/hl-trace.mts`, drive / flood / mesh / y_cross against six zone calls, four formations, seeds
+1-4, both flips, CURL_SINK and SETTLE_DEPTH on): 56 plays where a hook or curl-flat targeted a shallow crosser (under 5
+yd) with an in-breaker (6-16 yd) near his zone. In them:
+
+- **What carries the crosser.** On drive against Cover 3 the weak hook walls and then carries the shallow downhill
+  (`open-carry-cross`, about 2 yd/s down, 6.5 → 4 yd). The shallow leaves his band, his `best` becomes none, and he
+  settles at 3.6-6 yd (`zone-settle`; SETTLE_DEPTH turns him back, late). Nothing re-grabs the crosser: the carry ends
+  because the crosser leaves his band. The dig there is in the strong hook's zone, and he already honors it (`lane` on
+  Y at 5.5-7.3 yd), so on drive the shallow is passed to nobody and the quarterback throws it: 29 of the 56 (completion
+  0.93, 10.2 yd), the dig twice. That is drive winning as designed; the cost is in the shallow's yards after the catch.
+- **What the passer does after letting go.** He has no target and settles where the carry left him, coming downhill at
+  2 yd/s; the body then needs about 0.5 s to reverse (the break row), which is why "sink after the pass" waits on it.
+
+HIGH_LOW: an underneath zone defender (hook, curl-flat) with a route at 6-16 yd in or entering his zone (its seen future
+position within his radius + 2 of the landmark) and a shallow one (under 5 yd, past the line) in it honors the deeper
+one: his lane is then the QB's line to that route, just under it, so he keeps the shallow in front of him; he breaks
+down on the shallow when the ball is thrown there (the existing sawThrow / playBall). The choice is committed: the
+honored route stays his until it leaves by radius + 4. Without a deeper route he plays the lane as before.
+
+On staged plays it changes a defender's threat on 69 of 640 (0.108; seed 1, five zone calls, two formations): double
+outs 7, flood 6, hitch-post 6, trips outs 6, smash 5, mesh 5, others 1-4. Many are the quick game: a hitch or out under
+a deeper route, where the taught answer is the same (Bowen's curl-flat: "hold off the curl, then widen with the flat").
+Its cost is the throw underneath him: gates report each route family's share of throws, completion, yards, yards after
+the catch and missed or broken tackles per catch.
+
+### HIGH_LOW, measured: a miss (attempt 2 of the crosser problem)
+
+`under-gates.mts 2`, off → on (2054 → 2053 throws): completion 0.703 → 0.707, 10.35 → 10.39 yd per throw; hook and
+curl-flat depth at the throw unchanged (8.1, 7.0). In-breakers 168 → 168 throws, 0.82 → 0.82, 18.8 → 18.7 yd, the
+underneath man beside them 7.6 → 7.6 yd. Shallow / mesh 113 → 115 throws, 0.89 → 0.92, 15.5 → 15.9 yd, yards after the
+catch p50 7.3 → 7.3 (mean 13.6 → 13.5), missed or broken tackles per catch 0.11 → 0.14. Quick game unchanged.
+
+It fires (11% of plays) but moves nothing: when it fires the deeper route is itself at 6-9 yd, so the lane on it puts
+him where the lane on the shallow already had him, and the quarterback's choices do not change. By the two-attempt
+rule this stops here, without a PR, for re-diagnosis.
+
+What the gates say instead: the hole in these families is not the catch but what follows it. Yards after the catch
+are long-tailed (shallow / mesh p50 7.3, mean 13.6; in-breakers p50 4.3, mean 9.1; crossers p50 7.8, mean 12.0) with
+few missed tackles (0.11-0.21 per catch): the catcher runs away from defenders who do not arrive, not through them.
+That is the same signature as #127 (the safety level with the catch, 5-7 yd inside, never closing) and the slow
+redirect in `deep_break.py` (deep and 2-10 yd defenders alike carry their old velocity for about 0.5 s). The next
+diagnosis is the rally to a short catch on these routes, by first-defender arrival time against the NFL, with the break
+row deciding whether it is the body or the decision.
