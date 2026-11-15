@@ -24,4 +24,25 @@ describe('PLAN_ROLES', () => {
     const go = on.routes.find((r) => r.routeId === 'go' && r.side === 'S')!.ref, out = on.routes.find((r) => r.routeId === 'out')!.ref;
     expect(order.indexOf(out)).toBeLessThan(order.indexOf(go));
   }, 120000);
+  it('declares the sourced keys and orders (docs/reviews/2026-11-15-plan-orders.md)', async () => {
+    const plan = async (on: boolean, id: string) => {
+      vi.stubEnv('PLAN_ROLES', on ? '1' : '0');
+      // The engine default (the suites pin the legacy engine): the keys and the outlet last are on.
+      vi.stubEnv('PLAN_KEYS', '1'); vi.stubEnv('PLAN_KEYS_2', '1'); vi.stubEnv('PLAN_KEYS_3', '1'); vi.stubEnv('OUTLET_LAST', '1');
+      vi.resetModules();
+      const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+      const { installedPlan } = await import('../src/playbook/read-compiler/runtime.js');
+      return installedPlan(PASS_BY_ID[id], 'gun_doubles_11')!;
+    };
+    // Hitch-cross keys the Mike between the shallow (low) and the cross (high), as Drive does.
+    const hc = await plan(true, 'hitch_cross');
+    expect(hc.key).toMatchObject({ role: 'hook', low: 'W2', high: 'S2' });
+    expect((await plan(false, 'hitch_cross')).key).toBeNull();
+    // Curl-flat: the strong side's pair, then the back, then the backside.
+    const cf = await plan(true, 'curl_flat');
+    expect(cf.order.slice(0, 3)).toEqual(['S2', 'S1', 'B']);
+    expect((await plan(false, 'curl_flat')).order).not.toContain('B');
+    // Comebacks (analogue): the authored progression as a declared pure order.
+    expect((await plan(true, 'comebacks')).order.slice(0, 3)).toEqual(['S1', 'W1', 'S2']);
+  }, 120000);
 });
