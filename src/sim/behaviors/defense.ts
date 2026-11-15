@@ -20,7 +20,7 @@ import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
-import { angleTo, chase, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, track, watch } from './common.js';
+import { angleTo, blendApproach, chase, gatheringApproach, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, TRACK_TACKLE, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
 import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
@@ -544,14 +544,14 @@ export class PassRusher implements Behavior {
     const bend = 0.8 + 0.45 * traits(a).bend;
     if (this.plan === 'power') {
       const p = pursuitPoint(sim, a, qb, 1.5);
-      return runThrough(a, p, { speed: 1 });
+      return rushFinish(sim, a, runThrough(a, p, { speed: 1 }));
     }
     if (a.pos.x > sim.los - 0.5) {
       const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * (this.plan === 'speed' ? 1.8 : 1.0) } : { x: sim.los - 0.6, y: gy };
       return runThrough(a, lane, { speed: 1, cutSkill: bend });
     }
     if (edge && this.workedLineBlock) {
-      return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
+      return rushFinish(sim, a, runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend }));
     }
     // EDGE_ARC: the landmark is outside his key's outside shoulder at the QB's
     // depth; past the key's hips he turns for the QB; a key he sees oversetting
@@ -562,15 +562,34 @@ export class PassRusher implements Behavior {
         a.tags.add('edge-arc');
         return runThrough(a, { x: Math.min(qbSeen.x, tk.x - ARC_PAST - 0.2), y: arc.y }, { speed: 1, cutSkill: bend });
       }
-      return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
+      return rushFinish(sim, a, runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend }));
     }
     if (edge && a.pos.x > qbSeen.x + 1.0) {
       const arc = { x: qbSeen.x - 1.0, y: qbSeen.y + this.gapSign * (this.plan === 'speed' ? 1.3 : 0.8) };
       return runThrough(a, arc, { speed: 1, cutSkill: bend });
     }
     const p = pursuitPoint(sim, a, qb, 1.5);
-    return runThrough(a, p, { speed: 1, cutSkill: bend });
+    return rushFinish(sim, a, runThrough(a, p, { speed: 1, cutSkill: bend }));
   }
+}
+
+/** RUSH_GATHER (experimental, off; RUSH_GATHER=1): a free pass rusher finishes on the QB as a tackler finishes on a
+ * carrier. The same law as chase()'s close gather (gatheringApproach): from his own picture of the QB (the tackle
+ * window's: the tracking channel under TRACK_TACKLE, else the pursuit sight delay), his braking capacity and the
+ * arrival speed his tackling skill allows (2.5-4.5 yd/s), he gathers once the QB is within his stopping distance (at
+ * least 2.5 yd) beyond contact, or when the QB comes at him head-on, and blends that arrival into his sprint. So he
+ * arrives under control at a QB who can still move, and runs through one who cannot, by the same arrival law. Not a
+ * speed bound near a QB: off, the free rusher sprinted his pursuit point into the QB at his top speed (5.2 yd/s in the
+ * last 0.6 s against the NFL's 4.1 at a QB standing still: hand-fight note section 9). */
+const RUSH_GATHER = process.env.RUSH_GATHER === '1';
+function rushFinish(sim: PlaySim, a: Agent, far: MoveCommand): MoveCommand {
+  if (!RUSH_GATHER) return far;
+  const qb = sim.qb;
+  const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+  const seen = TRACK_TACKLE ? sim.track(a, qb, 1, true) : sim.see(a, qb, look);
+  const contact = a.profile.radius + qb.profile.radius + a.profile.reach * .65;
+  const { near, gather } = gatheringApproach(a, seen, contact, 0);
+  return blendApproach(far, near, gather);
 }
 
 export class Blitzer implements Behavior {

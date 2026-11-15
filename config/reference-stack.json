@@ -199,6 +199,7 @@
     "RUSH_HANDS": "off",
     "FITTED_HANDS": "off",
     "PASS_OFF": "off",
+    "RUSH_GATHER": "off",
     "PASS_RIDE": "on",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
