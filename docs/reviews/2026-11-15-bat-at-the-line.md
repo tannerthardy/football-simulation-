@@ -138,3 +138,12 @@ population; the closest horizontal distance from the ball to any DL in its first
     sees.
 - The lane-crossing rate (ours 8.4 / 26.2% within 0.55 / 0.95 yd, against the NFL's 5.9 / 18.0%) has gone to the QB
   lane.
+
+**Which path the interceptions and breakups come through** (engine-68 + BAT_ONCE + PLAY_ONCE, seed 11 x 8, 624
+attempts; a counter in defenderPlay's roll):
+- interceptions: 8, of which 2 come through defenderPlay's roll (the path PLAY_ONCE fixes); the other 6 through the
+  receiver contest;
+- breakups: 67 PBU events, of which 28 come through defenderPlay's roll; the other 39 through receiverContest and the
+  securing window (secureStep).
+So PLAY_ONCE governs about two fifths of the breakups and a quarter of the interceptions. Its effect on the totals is
+small because only the repeated rolls change: 13 of 31 defender-pass plays in 4 games.
