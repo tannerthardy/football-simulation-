@@ -53,10 +53,13 @@ async function stage(flag: string) {
 }
 
 describe('QB_SEEN_OUT', () => {
-  it('off: the man is ready the moment his behaviour changes, though the quarterback has not seen him', async () => {
+  // 2026-11-15 (route package): off, the man was ready the moment his behaviour changed, though the quarterback had not
+  // seen him: readiness fell back to the receiver's own RouteRunner.breakTime. That read is gone; a released man's
+  // break is timed from when the quarterback sees him leave his spot, so off he is no longer ready unseen either.
+  it('off: an unseen released man is not ready (no fallback to the receiver\'s own clock)', async () => {
     const rows = await stage('0');
     expect(rows.length).toBeGreaterThanOrEqual(2);
-    expect(rows.some((r) => r.unseenReady)).toBe(true);
+    expect(rows.some((r) => r.unseenReady)).toBe(false);
   });
 
   it('on: unseen he is not out or ready; seen on his route he is out, and stays out', async () => {

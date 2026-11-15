@@ -142,6 +142,10 @@ export class ReceiverForecast {
 
   acquire(p: ReceiverPicture): void {
     if (this.picture && p.sampledAt < this.picture.sampledAt) return;
+    // A route whose release is not installed (a back or a blocker released later) starts, for him, when he first sees
+    // the man leave his spot.
+    if (this.prior.startDelay === null && this.releaseSeenAt === null
+      && Math.hypot(p.pos.x - this.prior.start.x, p.pos.y - this.prior.start.y) > this.prior.profile.radius) this.releaseSeenAt = p.sampledAt;
     this.picture = Object.freeze({ ...p, pos: Object.freeze({ ...p.pos }), vel: Object.freeze({ ...p.vel }) });
   }
 
@@ -184,6 +188,37 @@ export class ReceiverForecast {
     this.extend(c, Math.ceil(8 / this.dt)); // far enough to reach any installed break
     return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
   }
+
+  /** When he expects the break on the route as installed, from the snap: the installed route run with the body he
+   * believes (no picture), the same run `breakAt` makes from a picture. For a route with no break, when that run has
+   * gone 8 yd along it (the depth a stem shows its answer by). Fixed for the play; it is what his readiness falls back
+   * to once a released receiver is off his installed line and the forecast can no longer place him on the route. */
+  installedBreakAt(): number | null {
+    if (this.installedBreak !== undefined) return this.installedBreak;
+    // A later release: the installed route's own timing, from when he saw the man go.
+    const delayed = this.prior.startDelay === null;
+    if (delayed && this.releaseSeenAt === null) return null;
+    const f = new ReceiverForecast(this.observer, delayed ? { ...this.prior, startDelay: 0 } : this.prior, this.dt);
+    let t = f.breakAt();
+    if (t === null) {
+      const c = f.build();
+      if (c) {
+        f.extend(c, Math.ceil(8 / this.dt));
+        const total = this.prior.path.reduce((acc, p, i, arr) => acc + Math.hypot(p.p.x - (i ? arr[i - 1].p.x : this.prior.start.x), p.p.y - (i ? arr[i - 1].p.y : this.prior.start.y)), 0);
+        const need = Math.min(8, total);
+        let run = 0;
+        for (let i = 1; i < c.pts.length; i++) {
+          run += Math.hypot(c.pts[i].x - c.pts[i - 1].x, c.pts[i].y - c.pts[i - 1].y);
+          if (run >= need) { t = c.estimate.sampledAt + i * this.dt; break; }
+        }
+      }
+    }
+    if (delayed && t !== null) t += this.releaseSeenAt!;
+    this.installedBreak = t;
+    return t;
+  }
+  private installedBreak: number | null | undefined = undefined;
+  private releaseSeenAt: number | null = null;
 
   /** Forecast at absolute time. A held picture ages; it never refreshes itself. */
   predict(now: number, ahead: number): Vec2 | null {

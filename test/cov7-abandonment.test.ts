@@ -242,9 +242,12 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // With the receivers' route reads and flat release (#420) as well, the baseline still throws to Z at 3.15 and
     // completes (caught at 4.75); the support arm throws to Z at 2.35, with the corner away, and it falls
     // incomplete at 3.2 with no defender credited (#420's open catch-opportunity boundary).
+    // 2026-11-15, the QB's readiness without the receiver's clock (route package): a released man's break is timed
+    // from when the QB sees him leave his spot plus the installed route, not from the runner's own breakTime. The
+    // baseline still throws to Z at 3.15 and completes; the support arm's throw moves 2.35 -> 2.85 s and completes.
     expect(kind(pass.baseline)).toBe('completion');
     expect(pass.baseline.execution.result.stats.receiver).toBe('OFF-WR2');
-    expect(kind(pass.alternative)).toBe('incomplete');
+    expect(kind(pass.alternative)).toBe('completion');
     expect(pass.alternative.execution.result.stats.target).toBe('OFF-WR2');
     expect(pass.alternative.execution.result.stats.passDefendedBy).toBeUndefined();
     for (const arm of [pass.baseline, pass.alternative]) expect(arm.execution.result.stats.interceptedBy).toBeUndefined();

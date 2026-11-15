@@ -1569,7 +1569,10 @@ export class QBPass implements Behavior {
     const forecast = this.receiverForecasts.get(r);
     const brk = forecast ? forecast.breakAt() : null;
     if (forecast && brk === null && forecast.estimate?.motion === 'installed-route' && forecast.hasBreak) return true;
-    return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
+    // Off his installed line (observed motion) the forecast cannot place him on the route; he falls back to the break
+    // he expects on the route as installed, not the receiver's own clock.
+    const at = brk ?? forecast?.installedBreakAt() ?? null;
+    return at !== null && sim.t + this.windup(sim.qb) >= at - 0.3 * antic;
   }
 
   /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
