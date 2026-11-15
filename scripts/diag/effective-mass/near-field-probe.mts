@@ -22,7 +22,9 @@ function watch(sim: any) {
         const e = Math.abs(Math.atan2(Math.sin(Math.atan2(d.pos.y - o.pos.y, d.pos.x - o.pos.x) - o.body.facing), Math.cos(Math.atan2(d.pos.y - o.pos.y, d.pos.x - o.pos.x) - o.body.facing))) * 180 / Math.PI;
         const touched = sim.t - (lastTouch.get(`${o.idx}>${d.idx}`) ?? -9) >= 0.15 && sim.t - (lastTouch.get(`${o.idx}>${d.idx}`) ?? -9) <= 0.65;
         const who = o === sim.carrier ? 'carrier' : 'defender', band = e < 30 ? 'ecc<30' : e < 60 ? 'ecc30-60' : e < 103 ? 'ecc60-103' : 'behind(>103)';
-        for (const key of [`${who} ${band}`, `${who} ${touched ? 'touched' : 'not touched'}`]) { const c = cell(key); c.n++; c.err.push(err); c.age.push(p.age ?? 0); c.vel.push(Math.hypot(p.vel.x, p.vel.y)); } } } };
+        const keys: any[] = o.eyes?.keys?.length ? o.eyes.keys : o.behavior?.kind === 'man' && o.behavior.target ? [o.behavior.target] : o.behavior?.kind === 'zone' && sim.qb ? [sim.qb] : [];
+        const attended = keys.includes(d) || (o.team === 'D' && d === sim.carrier);
+        for (const key of [`${who} ${band}`, `${who} ${touched ? 'touched' : 'not touched'}`, `${who} ${attended ? 'ATTENDED (key / the carrier)' : 'everyone else'}`]) { const c = cell(key); c.n++; c.err.push(err); c.age.push(p.age ?? 0); c.vel.push(Math.hypot(p.vel.x, p.vel.y)); } } } };
   sim.run();
 }
 for (const pass of ['curl_flat', 'stick', 'mesh', 'smash', 'four_verts', 'y_cross', 'flood']) for (let seed = 1; seed <= N; seed++) { const formation = FORMATION_BY_ID.gun_doubles_11;
