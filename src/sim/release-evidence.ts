@@ -42,7 +42,7 @@ function recordBall(sim: PlaySim): { t: number; pos: Vec3; vel: Vec3 }[] {
 }
 
 /** Whether `observer` had a clear, in-view line to a point `back` ticks ago (recorded positions, facing and head). */
-function sawAt(sim: PlaySim, observer: Agent, back: number, target: Agent | { pos: { x: number; y: number } }, height: number): boolean {
+export function sawAt(sim: PlaySim, observer: Agent, back: number, target: Agent | { pos: { x: number; y: number } }, height: number): boolean {
   const ro = sim.perception.recorded(observer.idx, back * sim.dt);
   if (!ro) return false;
   const tp = 'idx' in target ? sim.perception.recorded((target as Agent).idx, back * sim.dt)?.pos : target.pos;

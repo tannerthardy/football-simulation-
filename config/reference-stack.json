@@ -49,6 +49,7 @@
     "ANCHOR_GRADE": "on",
     "ARRIVE_LEAD": "on",
     "ATTACK_LANDMARK": "off",
+    "LOOSE_SEEN": "off",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
     "BACKFIELD_DEPTH": "on",
