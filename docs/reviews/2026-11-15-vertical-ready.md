@@ -64,6 +64,22 @@ BDB 2025 weeks 1–2, non-PA drop-backs, the targeted receiver's `routeRan`, at 
 - Whether the readable event should be the receiver passing the collision in his own route (geometric) or in the QB's
   picture of the defender (perception). Coaching's cue is what the QB sees, so the second.
 
+## The same question: mesh's corner (2026-11-15)
+
+- In our mesh (corner, mesh, swing) the corner is the first read, read during the drop and decided by its last step,
+  with no dwell.
+  - "As he takes his five step drop, his eyes go to that corner route... Look at the area he is going".
+  - "If that grass is open he throws the ball on his 5th... If the Z is covered or there is a safety sitting in that
+    grass, he resets and looks the mesh point".
+  - The named error: "They do not read the first route in their progression during their drop" (Win With The Pass,
+    Mesh; checked against the page).
+- It is not a pre-snap alert: pre-snap he only picks which corner. So it stays on the set (n0), the crossers in one look
+  on the reset (n1).
+- What it waits on is this note's contract. Readable is the grass (a safety in the corner's landing area, in his picture
+  during the drop); the aim point is the landing area about 20 yd past the break.
+- With QB_FOOTWORK the corner is thrown 0 of 192, because his window judges it by the break (ready about 2.7 s), not by
+  the grass.
+
 ## Open
 
 - The collision depth for a seam against each front: the overhang's depth, not a constant.
