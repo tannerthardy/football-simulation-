@@ -24,6 +24,8 @@ import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
 import type { Vec3 } from '../core/vec.js';
 import { qbArmSpeed, stepFlight, type BallFlight } from '../physics/ball.js';
+import { TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../physics/kinematics.js';
+import { HEAD as SHARED_HEAD, neckRange } from './head.js';
 import { naturalFlightFor } from './behaviors/qb.js';
 import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
@@ -72,6 +74,25 @@ export const bodyTurnLead = (a: Agent): number => 0.4 + 0.4 * (1 - skill(a));
 
 /** How far off his body facing his head can point: beyond it, watching the ball costs a turned body. */
 export const LOOK_NECK = NECK;
+
+/** How far off his body facing his head can point (rad): HEAD's neckRange when the shared head is on (one head and one
+ * neck range per player, whoever asks for the look), else LOOK_NECK. */
+export function neckOf(a: Agent): number {
+  return SHARED_HEAD ? neckRange(a) : NECK;
+}
+
+/** The joints a look uses, for a target `d` rad off his running `heading`: head and neck (neckOf), then, with `trunk`
+ * (and TRUNK_TWIST on), the shoulders off the hips for what the neck cannot reach (up to TRUNK_RANGE: the `look` target
+ * is absolute and the trunk clamps it), then the hips only for what is left. Without the trunk: head and neck, then the
+ * hips for the rest. The hips' turn is priced by the facing speed cap as any facing request is. */
+export function lookJoints(a: Agent, cmd: MoveCommand, heading: number, d: number, trunk: boolean): MoveCommand {
+  const over = Math.abs(d) - neckOf(a);
+  if (over <= 0) return cmd;
+  if (!(trunk && TRUNK_TWIST)) return { ...cmd, facing: heading + Math.sign(d) * over };
+  const hips = Math.max(0, over - TRUNK_RANGE);
+  const look = heading + Math.sign(d) * over;
+  return hips > 0 ? { ...cmd, look, facing: heading + Math.sign(d) * hips } : { ...cmd, look };
+}
 
 type Sample = { t: number; p: Vec3; along: Vec3; sr: number; sa: number; sv?: number;
   /** Design 5 (a) looming: his time-to-contact reading as an observation of the ball's velocity along his line of
