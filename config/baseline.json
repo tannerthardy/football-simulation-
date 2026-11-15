@@ -264,6 +264,8 @@
     "BALL_CUE_OWN": "0",
     "PLAY_ONCE": "0",
     "PASS_OFF": "0",
+    "SET_SPOT": "0",
+    "SET_SPOT_TACKLE": "0",
     "RUSH_ONE_HAND": "0",
     "HAND_SITE": "0",
     "ENGAGE_FELT": "0",

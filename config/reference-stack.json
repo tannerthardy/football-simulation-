@@ -207,6 +207,8 @@
     "BALL_CUE_OWN": "on",
     "PLAY_ONCE": "on",
     "PASS_OFF": "off",
+    "SET_SPOT": "off",
+    "SET_SPOT_TACKLE": "off",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
     "ENGAGE_FELT": "on",
