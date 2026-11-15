@@ -41,7 +41,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   },
   {
     id: 'mesh', name: 'Mesh', family: 'dropback', drop: 'gun5',
-    strong: { 1: 'corner', 2: 'shallow', 3: 'hook' }, weak: { 1: 'go', 2: 'shallow_high' }, back: 'swing',
+    // CROSS_FLAT: mesh's under crosser is its own route, a yard under the Y (routes.ts), not the drag.
+    strong: { 1: 'corner', 2: process.env.CROSS_FLAT !== '0' ? 'mesh_under' : 'shallow', 3: 'hook' }, weak: { 1: 'go', 2: 'shallow_high' }, back: 'swing',
     progression: ['S2', 'W2', 'S1', 'B', 'S3'], beats: ['man', 'cover1', 'zone'],
   },
   {
@@ -201,6 +202,30 @@ export const MENU_CONCEPTS: PassConcept[] = [
   },
 ];
 
+/** CONCEPT_DROPS (experimental, off; read plans, 2026-11-14; the QB lane owns the drops' depths and times in
+ * `dropSpec`): each pool concept's coached drop class, so its first read's route is ready on its step. Our gun drops
+ * were 68% at 2-3.5 yd behind the snap against the NFL's 43%, and 10% at 3.5-5 yd against 28% (the NFL setting there at
+ * 2.2 s and throwing at 3.0, a hitch after the drop; QB lane, drop-time.py). With the plan's rhythm (OUTLET_LAST's
+ * `rhythm`), the concepts whose first read is not ready until 2.4-2.9 s take the five-step ('five': the deeper set
+ * and read 1 on the hitch); the rest keep theirs. Sourced classes: the shallow cross needs a full five-step (Smart
+ * Football; mesh, drive), the slant is three-step (Smart Football), stick from one to three steps (Throw Deep),
+ * comebacks five steps and a hitch (Coiner; ours had seven), four verticals a quick five (Gonzalez via Smart
+ * Football: read 1 on the last step; ours is not ready until 2.7, a route timing question noted for the QB lane);
+ * the rest by the table's analogues (docs/reviews/2026-11-14-read-plan-table.md). This flag only marks the class:
+ * 'five' and 'gun5' are the same drop in the gun today, until the QB lane sets 'five' to the NFL's depth and time. */
+const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
+const COACHED_DROP: Record<string, PassConcept['drop']> = {
+  smash: 'five', mesh: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
+  trips_sail: 'five', trips_outs: 'five', double_outs: 'five', comebacks: 'five',
+};
+if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
+/** VERTS_QUICK (on since engine-67; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a
+ * quick five-step drop (from shotgun, a quick three-steps)" (Gonzalez via Smart Football), so four_verts and
+ * verts_hitch take the gun three-step instead of 'gun5'. Paired staged read, the same 384 plays off and on
+ * (scripts/diag/escape/drop-staged.ts on the QB lane branch), engine-66: 8.21 -> 9.95 yd a play, time to throw
+ * 3.60 -> 3.25 s, sacks 52 -> 35, INT 2 -> 2; on the route card's stack: 6.98 -> 10.17, sacks 52 -> 35, INT 4 -> 2. */
+const VERTS_QUICK = process.env.VERTS_QUICK !== '0';
+if (VERTS_QUICK) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.id === 'four_verts' || c.id === 'verts_hitch') c.drop = 'gun3';
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
 
 export const RUN_CONCEPTS: RunConcept[] = [

@@ -28,10 +28,13 @@ function fixture(form: string, box: number, flip = false) {
     : { x: sim.los + 10, y: sim.ballY + 15 }; });
   return { sim, authority, noise };
 }
-function check(f: ReturnType<typeof fixture>) {
+/** QB_SEEN_MAN: on a check that reaches his quick look at the corners, he draws his noise on each corner's depth:
+ * two more draws (24 with the flag on, 22 off). */
+const SEEN_MAN_DRAWS = process.env.QB_SEEN_MAN === '1' ? 2 : 0;
+function check(f: ReturnType<typeof fixture>, quickLook = false) {
   const result = f.sim.qbMind.preSnapCheck(f.sim.offCall, { hurry: false, down: 1, distance: 10 });
   expect(f.authority).toHaveBeenCalledTimes(1);
-  expect(f.noise).toHaveBeenCalledTimes(f.sim.defense.length * 2);
+  expect(f.noise).toHaveBeenCalledTimes(f.sim.defense.length * 2 + (quickLook ? SEEN_MAN_DRAWS : 0));
   expect(f.sim.t).toBe(0);
   return result;
 }
@@ -56,14 +59,14 @@ describe('pre-snap numbers include installed fullback work once', () => {
 
   it('still checks out against a genuine ten-versus-seven overload, without double-counting centered F', () => {
     const f = fixture('i_pro_21', 10);
-    expect(check(f).kind).toBe('pass');
+    expect(check(f, true).kind).toBe('pass');
     expect(f.sim.qbMind.report.audible).toMatch(/^check to /);
   });
 
   it('retains the nine-versus-six singleback overload control', () => {
     const f = fixture('ace_11', 9);
     expect(f.sim.slot('F')).toBeUndefined();
-    expect(check(f).kind).toBe('pass');
+    expect(check(f, true).kind).toBe('pass');
     expect(f.sim.qbMind.report.audible).toMatch(/^check to /);
   });
 

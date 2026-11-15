@@ -5,7 +5,10 @@
  *   (feet, contacts, joints, support) → down by contact → ball → tackle
  *   attempts → whistle → record
  */
+import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
+import { lineOfSight } from './sight.js';
+import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
@@ -27,6 +30,7 @@ import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
 import { ThrowSight, viewCone } from './throw-sight.js';
+import { BallEstimates } from './ball-estimate.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -60,8 +64,20 @@ import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulR
 
 /** ALIGN_HABIT (experimental, off): see alignDefense. */
 const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
+/** PlaySetup.stagedThrow (test staging only). */
+export interface StagedThrow { at: number; slot: string; aim?: { x: number; y: number; z: number }; T?: number }
+
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
+  /** Test staging only (never set in games): the passer starts his throw to `slot` at sim time `at` (or the first
+   * tick after it on which the receiver can be thrown to), and makes no other throw or pump. His motion and release
+   * are his own. With `aim` and `T` the ball goes to that point in that flight time (his accuracy draw is replaced).
+   * Defensive tests use it so a change in the QB does not move their scene. It suppresses any pump the natural QB
+   * would have made before it (a pulled-down load), which changes what defenders saw: a staged play reproduces its
+   * natural play exactly only when that play had no earlier pump: 52 of the 56 recorded panel plays; the 4 others
+   * pumped first, and on 2 of them the outcome changes (arrival-lead slant_flat seed 3, a pump at 1.35-1.55 s and then
+   * a miss, is a catch when staged). */
+  stagedThrow?: StagedThrow;
   /** The defense's scouting of this offense (run/pass tendencies so far). */
   scouting?: ScoutingReport;
   /** The offense's scouting of this defense (coverage mix, disguise). */
@@ -125,6 +141,23 @@ const BALL_LENGTH = 0.31;
  * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
  * neck range and cone half-angle below. */
 const GAZE = process.env.GAZE === '1';
+/** SIGHT_CARRIER (experimental, off; SIGHT_CARRIER=1; SEE_SIGHT step 1, docs/reviews/2026-11-13-perception-proposal.md
+ * section 12): the ball carrier's picture of an opponent he cannot see (behind his shoulders, or behind a body by
+ * `lineOfSight`'s heights) is the last one he had, ageing (`sighted`), not a fresh delayed picture through his back.
+ * Before it, half his traffic reads were of men behind him (scripts/diag/eyes/see-sight.ts). */
+const SIGHT_CARRIER = process.env.SIGHT_CARRIER !== '0';
+/** SIGHT_COVER (experimental, off; SIGHT_COVER=1; SEE_SIGHT step 3): a man or zone defender's picture of an opponent
+ * behind a body (`lineOfSight`'s heights) is the newest moment he had him in sight, as SIGHT_CARRIER's. Occlusion only:
+ * a man defender's head is on his man and a zone defender's on the QB by coaching, so with GAZE off no facing bound
+ * applies; when GAZE lands for coverage, its head (shared with BALL_EST's ball head, Coverage 2026-11-14) gives the view
+ * half. Before it, coverMan read 22% of its pictures through a body, coverage/reads 15%, trackReceiver 10%. */
+const SIGHT_COVER = process.env.SIGHT_COVER !== '0';
+/** SIGHT_RECOG (experimental, off; SIGHT_RECOG=1; SEE_SIGHT step 4): a defender's run / pass recognition reads its keys
+ * (the five linemen, the QB's depth and the back at the mesh, the receiver he keys) by SIGHT_CARRIER's rule, occlusion
+ * only: he faces the offense while he reads, and a back or QB behind the line is seen over it or through a gap by
+ * `lineOfSight`'s heights, or not at all. Before it, recognition's `cues` read 11.5% of its pictures through a body and
+ * `update` 17% (`see-sight.ts`). The throw cue (`sawThrow`) is presented possession's release candidate (#713). */
+const SIGHT_RECOG = process.env.SIGHT_RECOG !== '0';
 /** PERCEIVE_TRACK (experimental, off; PERCEIVE_TRACK=1): the tracking channel of perception
  * (docs/reviews/2026-11-13-perception-proposal.md). A target the observer is already attending to (his man, the carrier
  * he pursues, the rusher he sets on) is seen through a short correcting loop, not the choice reaction time `see()`
@@ -137,7 +170,6 @@ export const PERCEIVE_TRACK = process.env.PERCEIVE_TRACK === '1';
  * first group that uses it, not imported as a constant. */
 const TRACK_LATENCY = 0.12;
 const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
-const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
 const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
 /** Anticipation from motion alone helps to about 1.0 s on NFL tracking. */
 const ANTICIPATION_HORIZON = 1.0;
@@ -203,6 +235,8 @@ export class PlaySim {
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   /** When each defender first had the current pass in view. */
   readonly throwSight = new ThrowSight();
+  /** BALL_EST: each player's own estimate of the ball in flight. */
+  readonly ballEstimates = new BallEstimates();
   /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
   private sightSamples?: Map<string, number>;
   /** GAZE: head direction and what each opted-in player is watching. */
@@ -298,6 +332,8 @@ export class PlaySim {
   /** When the passer's arm starts forward (front foot planted); the in-grasp
    * ruling does not cut off a pass already in its delivery. */
   deliveryAt = -1;
+  /** PlaySetup.stagedThrow (test staging). */
+  readonly stagedThrow: StagedThrow | null;
   /** SNAP_REACT: the count's start plans and the pre-snap acts they produced. */
   snapCount?: SnapCount;
   snapActs?: { falseStarts: Set<string>; incidents: SnapIncident[]; inZone: Set<string>; cause?: string };
@@ -316,6 +352,7 @@ export class PlaySim {
     // Normalize once before alignment, actor indices and any ordered consumer.
     const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
+    this.stagedThrow = setup.stagedThrow ?? null;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
     this.ballY = setup.ballY;
@@ -670,7 +707,7 @@ export class PlaySim {
     const g = this.gaze.get(a);
     // A lapsed watch starts over: head from body facing, no memories from before.
     if (g && g.set >= this.t - this.dt - 1e-9) { g.target = target; g.set = this.t; }
-    else this.gaze.set(a, { dir: a.facing, t: this.t, target, set: this.t, since: this.t });
+    else this.gaze.set(a, { dir: a.shoulders, t: this.t, target, set: this.t, since: this.t });
   }
 
   /** GAZE: `observer`'s assignment makes these opponents his responsibility (his man, his zone's
@@ -742,10 +779,11 @@ export class PlaySim {
       // The head turns toward the watched man's delayed picture, within the neck range.
       const w = this.perception.perceive(g.target.idx, delay);
       const want = Math.atan2(w.pos.y - observer.pos.y, w.pos.x - observer.pos.x);
-      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -GAZE_NECK, GAZE_NECK);
+      const neck = neckRange(observer);
+      const clamped = observer.shoulders + clamp(angDiff(want, observer.shoulders), -neck, neck);
       const step = GAZE_HEAD_RATE * (this.t - g.t);
       g.dir = g.dir + clamp(angDiff(clamped, g.dir), -step, step);
-      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -GAZE_NECK, GAZE_NECK);
+      g.dir = observer.shoulders + clamp(angDiff(g.dir, observer.shoulders), -neck, neck);
       g.t = this.t;
     }
     const brg = Math.atan2(picture.pos.y - observer.pos.y, picture.pos.x - observer.pos.x);
@@ -791,7 +829,7 @@ export class PlaySim {
   }
 
   /** What `observer` perceives of `target` (delayed for opponents). */
-  see(observer: Agent, target: Agent, delayScale = 1): Perceived {
+  see(observer: Agent, target: Agent, delayScale = 1, sight?: 'recog'): Perceived {
     if (observer.team === target.team) {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
@@ -832,10 +870,57 @@ export class PlaySim {
       }
       else seen = this.remembered(observer, target, seen);
     }
+    if (SIGHT_CARRIER && observer === this.carrier) seen = this.sighted(observer, target, seen, !!(g && g.set >= this.t - this.dt - 1e-9));
+    // SIGHT_COVER: a man or zone defender's picture behind a body. Occlusion only: his eyes are on his man or the QB by
+    // coaching, so with GAZE off no facing bound applies (GAZE's own view half when it is on).
+    else if ((SIGHT_COVER && observer.team === 'D' && (observer.behavior?.kind === 'man' || observer.behavior?.kind === 'zone'))
+      // SIGHT_RECOG: his run / pass read's keys (the line, the QB, the back, the receiver he keys), occlusion only.
+      || (SIGHT_RECOG && sight === 'recog'))
+      seen = this.sighted(observer, target, seen, true, HEAD && observer.behavior?.kind !== undefined && (observer.behavior.kind === 'man' || observer.behavior.kind === 'zone'));
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
   }
+
+  /** SEE_SIGHT (SIGHT_CARRIER): his picture of a man is the newest moment, at least his ordinary delay back, at which he
+   * had the man in sight: in view (within 1.8 rad of his body facing then; under GAZE the view half is GAZE's own
+   * `remembered`, and this adds occlusion) and with no body across the line by `lineOfSight`'s heights, everyone where
+   * the perception record has him then. That moment is carried forward on the velocity it showed, so a man he cannot
+   * see now ages from when he last saw him and is picked up one delay after he is back in sight. Visibility at a past
+   * tick never changes, so it is kept per tick. Beyond the record (about 1.2 s): the last picture he had, ageing. */
+  private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView = false): Perceived {
+    const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
+    const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
+    const visibleAt = (back: number): boolean | null => {
+      const k = `${key}${headView ? 'h' : gazeView ? 'o' : 'v'}@${now - back}`, hit = memo.get(k);
+      if (hit !== undefined) return hit;
+      const rec = (a: Agent) => this.perception.recorded(a.idx, back * this.dt)?.pos ?? null;
+      const ro = this.perception.recorded(observer.idx, back * this.dt), rt = rec(target);
+      if (!ro || !rt) return null;
+      // HEAD: in view = inside the cone of where his head pointed then (recorded), not a body-facing bound.
+      const rh = headView ? this.perception.perceive(observer.idx, back * this.dt).head : null;
+      const brg = Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x);
+      const inView = rh !== null && rh !== undefined ? inHeadCone(rh, brg) : gazeView || Math.abs(angDiff(brg, ro.facing)) <= 1.8;
+      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec);
+      memo.set(k, v);
+      return v;
+    };
+    if (memo.size > 200000) memo.clear();
+    for (let back = Math.round((seen.age ?? 0) / this.dt); ; back++) {
+      const v = visibleAt(back);
+      if (v === null) break;
+      if (!v) continue;
+      const pic = back === Math.round((seen.age ?? 0) / this.dt) ? seen : this.perception.perceive(target.idx, back * this.dt);
+      kept.set(key, { pic, at: this.t });
+      return pic;
+    }
+    const m = kept.get(key);
+    if (!m) return this.perception.perceive(target.idx, 1.2);
+    const dt = this.t - m.at;
+    return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
+  }
+  private sightAt?: Map<string, boolean>;
+  private sightKept?: Map<string, { pic: Perceived; at: number }>;
 
   /** What `observer` perceives of `target` he is tracking: a continuous, attended read (the man he mirrors, the carrier
    * he pursues, the rusher he sets on or feels). PERCEIVE_TRACK off: exactly `see(observer, target, delayScale)`. On: a
@@ -886,7 +971,7 @@ export class PlaySim {
     if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
     const sx = target.pos.x - observer.pos.x, sy = target.pos.y - observer.pos.y, l2 = sx * sx + sy * sy;
     const g = GAZE ? this.gaze.get(observer) : undefined;
-    const dir = g && g.set >= this.t - this.dt - 1e-9 ? g.dir : observer.body.facing, cone = g && g.set >= this.t - this.dt - 1e-9 ? GAZE_CONE : 1.8;
+    const dir = g && g.set >= this.t - this.dt - 1e-9 ? g.dir : observer.shoulders, cone = g && g.set >= this.t - this.dt - 1e-9 ? GAZE_CONE : 1.8;
     if (l2 > 1e-9 && Math.abs(angDiff(Math.atan2(sy, sx), dir)) > cone) return false;
     if (l2 < 0.36) return true;
     for (const o of this.agents) {
@@ -1389,6 +1474,7 @@ export class PlaySim {
     // QB_BODY_SEEN: his throwing motion shows on his body (recorded for everyone; read only through perception).
     if (this.qb) this.qb.arm = this.windupAt < 0 ? 'set' : this.deliveryAt >= 0 && t >= this.deliveryAt ? 'deliver' : 'load';
     recordContact(this);
+    stepHeads(this);
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
@@ -1400,7 +1486,10 @@ export class PlaySim {
     }
     this.incidentalCatchReadiness.sense(this);
     this.throwSight.sense(this);
+    this.ballEstimates.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
+    // RELEASE_BELIEF: every defender's release belief, from this tick's cues (the emitter keeps per-tick memory).
+    if (RELEASE_BELIEF) for (const d of this.defense) releaseBelief(this, d);
 
     this.prepareJoinedRunBlocks();
 
