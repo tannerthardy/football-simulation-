@@ -398,6 +398,7 @@ export class PassProtector implements Behavior {
     // shoulder — and let the hands decide the rep.
     let ride = false;
     let cuttingOff = false;
+    let kickPace = 0;
     if (edgeRusher && isOL(a) && !this.calledRelease) {
       const meet = PASS_KICK ? null : cutOffPoint(a, r, qb.pos, contact);
       if (meet) {
@@ -424,7 +425,11 @@ export class PassProtector implements Behavior {
       const floor = TACKLE_SET ? tackleFloor(sim) : null;
       // SET_SPOT_TACKLE: setDepth already counts from his snap spot (the three-step set).
       const ownSet = SET_SPOT_TACKLE ? sim.los - setDepth : sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
-      const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, ownSet));
+      // SET_SPOT_TACKLE: beat him to the spot. At the rusher's upfield speed he reaches the launch depth (the call's
+      // floor) in T; the tackle kicks at the pace that covers his own way there in that time, a look ahead.
+      const lowX = Math.max(qb.pos.x + 0.5, floor ?? -Infinity);
+      kickPace = SET_SPOT_TACKLE ? racePace(a.pos.x, r.pos.x, -r.vel.x, lowX) : 0;
+      const x = Math.max(lowX, Math.min(a.pos.x, r.pos.x - KICK_LEAD, ownSet, a.pos.x - kickPace * KICK_LOOK));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
       if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
@@ -454,7 +459,8 @@ export class PassProtector implements Behavior {
       // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
       // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
       const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
+      const followX = anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x);
+      return track(a, set, { x: anchored ? 0 : Math.min(followX, -kickPace), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
     }
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
@@ -544,6 +550,13 @@ export function boxThreats(sim: PlaySim): Agent[] {
 }
 /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
+/** SET_SPOT_TACKLE: the kick's pace to beat the rusher to the launch depth (yd/s, retreat +): the tackle's way to the
+ * floor over the rusher's time there at his upfield speed. Zero when he is already at the floor. */
+function racePace(tx: number, rx: number, rUp: number, floorX: number): number {
+  const way = tx - floorX; if (way <= 0) return 0;
+  const T = Math.max(0.2, (rx - floorX) / Math.max(0.5, rUp));
+  return way / T;
+}
 /** How far ahead on his present velocity the kick reads the rusher's width (s). */
 const KICK_LOOK = 0.4;
 
