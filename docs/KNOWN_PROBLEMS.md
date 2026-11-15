@@ -3101,6 +3101,33 @@ From the issue register:
   release shape by route first, then re-run the false-trip table
   (`scripts/mechanics/release_falsetrip.py`) before any release-keyed read is
   built.
+- **The go's width (2026-11-15, Rules + Coaching; for Run Game's release path and Coverage's squeeze).**
+  - **Data:** NFL BDB 2025 weeks 1–2, non-PA drop-backs, `routeRan` GO, 6–20 yd from the sideline at the snap
+    (n 1,257). "Outward" is lateral movement toward his sideline from his snap spot.
+  - **By depth (steady, not a release step):** +0.4 at 2 yd, +1.1 at 5, +2.6 at 10, +3.8 at 15, +4.3 at 20.
+    Targeted +4.1 at 10 yd (n 141); not targeted +2.4 (n 1,116).
+  - **By the nearest defender's cushion at the snap:**
+
+    | cushion | n | outward at 10 yd: median (p25 / p75) |
+    |---|---|---|
+    | under 2.5 yd | 479 | +3.3 (+0.7 / +5.8) |
+    | 2.5–5 | 326 | +3.9 (+1.7 / +6.2) |
+    | 5–7 | 152 | +2.8 (+1.3 / +5.2) |
+    | 7–10 | 271 | +1.4 (+0.5 / +2.5) |
+    | 10+ | 29 | +1.1 (+0.2 / +1.9) |
+
+  - **Leverage:** inside +2.0 / +1.9 (press / off); outside +1.8 / +3.0; head-up press +5.0 (the release round
+    him); head-up off +2.5.
+  - **The split, the landmark and the sim:**
+    - Not the split: from 6–9 yd off the sideline +2.2 at 10 yd; from 15–20 yd, +3.0.
+    - Not the coached landmark: Hancock (Gridiron Strategies) has him run "just inside the numbers", and the NFL
+      does not.
+    - Ours (Tools' `sim_route_speed.ts`, four_verts / smash / curl_flat / flood × 24 seeds): lateral at 3.0 s
+      (about 16 yd deep) is 0.8 with no defenders and with Cover 3 (identical), and 4.8 against Cover 1 press.
+  - **Cause:** *likely* the receiver's response to a near off defender (the release round him), and the corner's
+    squeeze to the sideline (Pope, AFCA: DBs are coached to "squeeze" a vertical). With nobody near, the NFL go is
+    nearly straight (+1.1 to +1.4), and ours is +0.7 at 10 yd. It is not the route table: no table change.
+  - **Next:** Run Game (the release path) and Coverage (the squeeze), via Integration.
 
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions
