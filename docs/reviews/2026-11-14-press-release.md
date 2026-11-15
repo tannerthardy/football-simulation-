@@ -183,3 +183,55 @@ his read delay. Better route runners read and step sooner; they are not given th
 - Throw timing and completion on hitches vs press are read, not tuned.
 
 **Controls.** Off-coverage receivers; Cover 3 hitches (0.0 off the stem now); pressed gos; a placebo seed pair.
+
+## Mechanism check on Rules' trace (engine-67, before any build), 2026-11-15
+
+`scripts/diag/release/hitch-trace.mts`: hitches vs Cover 1, gun doubles. Seed 1 X, plus seeds 2, 3 and 5 for X and
+Z. Per 0.1 s it prints:
+
+- where he is against his stem line;
+- the corner's offset (ahead, and outward + relative to him);
+- his request;
+- which stage produced the request: jam contact, route-craft, the PRESS_RELEASE path, or plain route.
+
+Seed 1 X (others identical within 0.1–0.3 yd):
+
+| t (s) | depth | off stem | request (up, out) | stage | corner ahead / outward of him |
+|---|---|---|---|---|---|
+| 0.3 | −1.0 | 0.0 | 6.5, +4.4 | press release | 2.25 / +0.14 |
+| 1.0 | 0.2 | 0.7 | 6.7, +4.1 | press release | 1.52 / −0.40 |
+| 1.5 | 2.1 | 1.9 | 6.6, +4.3 | press release | 0.81 / −0.75 |
+| 1.9 | 3.9 | 3.3 | 6.1, +4.9 | press release | 0.35 / −1.01 |
+| 2.0 | 4.4 | 3.6 | 2.4, −7.5 | jam (hands) | 0.28 / −1.10 |
+| 2.3 | 5.6 | 4.6 | −2.7, −6.2 | route-craft | 0.27 / −1.07 |
+| 2.5 | 6.2 | 5.0 | −3.3, −6.4 | route-craft | ball thrown |
+
+The three-step mechanism I proposed was wrong in two steps:
+
+1. **Confirmed, and it is the whole story.** The release target is recomputed every tick as a point one clearance
+   (bodies, plus 0.2, plus his reach, about 1.4 yd) outside the corner's *current* position. The corner mirrors
+   head-up, so that target slides outward with him. He sits 0.8–1.1 yd outside the corner, inside the clearance
+   still to be gained, while the corner gives ground (still "ahead"). So the PRESS_RELEASE branch never lets go:
+   from 0.3 s to 1.9 s he runs at about 32° outward. He reaches 5 yd at 2.1 s, 3.6 yd off his stem, with the
+   corner on his inside hip.
+2. **Refuted.** Route-craft does not bend him outward. When it acts (2.3–2.5 s) it bends him inward, toward his
+   stem.
+3. **Refuted.** He does try to come back. From the jam at 2.0 s he requests −6 to −7.5 yd/s inward. The corner's
+   body and hands are on his inside, so he cannot get there before the break, and the break is run from 4.5–5 yd
+   wide.
+
+**Consequence for the build.** Both halves change one thing: the release side and target are chosen once, not
+re-aimed at a mirroring corner.
+
+- **RELEASE_READ:** the side is decided once from his delayed picture after the snap (and after a jab when he
+  makes one), and held until he is past or beaten. The target is a fixed point past the corner's leverage as he
+  saw it (the "short arm", 1–2 yd beyond it), not the corner's running position. A route's own side, from
+  DECLARED_BREAK's `declaredBreak`, is the default lean.
+- **The release ends** when he is level with the corner's hips, or at that point. A go keeps its width (it
+  matches the NFL). A route with a break turns up its stem from there. That is RESTEM's "won the release → stack
+  back onto the stem in front of the corner".
+- **Not won** (the corner is still ahead and on his line at the release point): he breaks from where he is
+  (RESTEM).
+
+The fixed target is also the held side that removes the left-right dither Flex found. Built off on engine-68 when
+it lands.
