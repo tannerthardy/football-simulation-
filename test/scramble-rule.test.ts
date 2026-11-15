@@ -48,7 +48,7 @@ describe('SCRAMBLE_RULE', () => {
       const qb = on.sim.see(r, on.sim.qb).pos;
       const looking = Math.abs(angleDiff(shouldersOf(r.body), Math.atan2(qb.y - r.pos.y, qb.x - r.pos.x))) <= neckRange(r) + HEAD_CONE / 2;
       const seenOut = looking && scrambleSeen(qb, on.sim.ballY) !== 0;
-      const since = r.behavior.scrambleSeenAt ? on.sim.t - r.behavior.scrambleSeenAt.t : 0;
+      const since = (r.behavior as { scrambleSeenAt?: { t: number } | null }).scrambleSeenAt ? on.sim.t - (r.behavior as { scrambleSeenAt?: { t: number } | null }).scrambleSeenAt.t : 0;
       expect(seenOut && since >= r.profile.reactionTime).toBe(false);
     }
     for (const r of rules) {
