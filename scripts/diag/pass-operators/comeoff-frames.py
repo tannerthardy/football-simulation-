@@ -122,6 +122,14 @@ for path in args:
         f3 = next((f for f in fs if f['dt'] >= r + 0.3 - 1e-6), None)
         after.append((f3['dq'] if f3 else None, min(f['dq'] for f in fs), sum(1 for f in fs if f['dq'] <= 1.5) * 0.1))
     print(f"   after a reach ({len(R)}): distance at +0.3 s p50 {q([x[0] for x in after if x[0] is not None]):.2f} yd (frames left {sum(1 for x in after if x[0] is not None)}) | closest p50 {q([x[1] for x in after]):.2f} | time within 1.5 yd p50 {q([x[2] for x in after]):.1f} s | thrown {pct(sum(1 for c in R if c['thrown']), len(R))}")
+    # Capacity or choice (hand-fight note 12): the free rusher's speed by time since the release, and by his distance to
+    # the QB, every frame with no OL within 1.0 yd.
+    print("   speed by time since release (free frames), p50 / p75: " + ' | '.join(
+        f"{lo:.1f}-{hi:.1f} s {q([f['rS'] for f in fr if lo <= f['dt'] < hi]):.2f} / {q([f['rS'] for f in fr if lo <= f['dt'] < hi], .75):.2f} (n {sum(1 for f in fr if lo <= f['dt'] < hi)})"
+        for lo, hi in [(0.1, 0.5), (0.5, 1.0), (1.0, 1.5), (1.5, 2.1)]))
+    print("   speed by distance to the QB (free frames), p50 / p75: " + ' | '.join(
+        f"{lo:.0f}-{hi:.0f} yd {q([f['rS'] for f in fr if lo <= f['dq'] < hi]):.2f} / {q([f['rS'] for f in fr if lo <= f['dq'] < hi], .75):.2f}"
+        for lo, hi in [(1.5, 3), (3, 5), (5, 7), (7, 12)]))
     # The QB lane's dozen: off the blocker, no help, reached.
     ids = [c['id'] for c in N if reach(c) is not None]
     print(f"   no help, reached ({len(ids)}): {' '.join(str(x) for x in ids[:max(12, nex)])}")

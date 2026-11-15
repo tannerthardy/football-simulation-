@@ -777,3 +777,30 @@ attempt 2's firm and the existing strike. One stage, two attempts at its game re
 - [Coaches Insider: the elements of pass protection](https://coachesinsider.com/football/the-elements-of-pass-protection-article/)
 
 These are coaching blogs and clinic notes, not one authority.
+
+## 14. Capacity or choice: the free rusher's speed out of the fight (2026-11-15; comeoff-frames.py, QB lane's population)
+
+Free frames (no OL within 1.0 yd) of off-blocker interior rushers, speed p50 / p75 (yd/s):
+
+| | NFL | base | FH + PO |
+|---|---|---|---|
+| 0.1-0.5 s after the release | 2.55 / 3.54 | 2.24 / 2.92 | **3.64 / 4.50** |
+| 0.5-1.0 s | 3.00 / 4.00 | 2.50 / 3.54 | **3.54 / 4.61** |
+| 1.0-1.5 s | 3.16 / 4.47 | 2.50 / 3.35 | 4.03 / 4.92 |
+| 1.5-2.1 s | 3.54 / 5.00 | 1.80 / 2.55 | 3.54 / 4.30 |
+| 2-3 yd from the QB | 4.00 / 4.92 | 4.30 / 5.39 | 4.92 / 5.59 |
+| 3-5 yd | 3.16 / 4.12 | 2.06 / 3.54 | **4.12 / 4.72** |
+| 5-7 yd | 2.55 / 3.54 | 2.12 / 2.55 | **3.20 / 3.64** |
+
+**Read:**
+- **Under FH the rusher leaves the fight about 1 yd/s faster than the NFL's** (3.64 against 2.55 in the first 0.5 s)
+  and stays faster all the way in. It is not a finish chosen near the QB, so a gather could not fix it (section 12).
+- **Nor is it a top-speed capacity.** The base, with the same bodies, leaves the fight slower than the NFL's (2.24).
+- **It is the fight's exit speed under the new hands.** While the press comes and goes, the rusher's request in the
+  rep stays at his rush pace (0.8 of vmax, stepPassRep). Each time a hand comes off he converts that request into speed
+  at once: engaged FH rushers already move at 3.1 yd/s against the base's 1.9 (section 8).
+- An NFL rusher fighting hands is not running at 80% of his top speed while he fights: his feet and hands are synced
+  to the move ("rushers succeed when they sync their hands and feet").
+- **So the next piece is the rusher's request during the fight: his feet in the move.** That is the between-moves
+  intent (task 13) and the rush's pace while his hands work. Measure first: the NFL's engaged interior rusher's speed
+  (pairs within 1.2 yd, interior-fight's pairs) against ours by time since contact, base and FH.
