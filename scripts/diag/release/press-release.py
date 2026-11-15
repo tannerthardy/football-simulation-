@@ -101,6 +101,7 @@ for arg in args:
                 C[cls] += 1; S[('t5', cls)].append(k5 * p.dt); C[('contact', cls)] += contact
                 C[('lev', levc, rfam)] += 1; C[('levstut', levc, rfam)] += cls == 'stutter'
                 S[('t5lev', levc, rfam)].append(k5 * p.dt)
+                if S['lat1'][-1] is not None: S[('lat1lev', levc)].append(S['lat1'][-1])
                 for t in (0.3, 0.5, 0.7, 0.9, 1.1):
                     k = p.k(t)
                     if k < len(sp): S[('v', cls, t)].append(sp[k])
@@ -114,6 +115,7 @@ for arg in args:
     print(f"== {name}{' [holds]' if HOLD else ''}: outside receivers {C['pressed'] + C['off']}, pressed {C['pressed']} ({100 * C['pressed'] / max(1, C['pressed'] + C['off']):.0f}%); reached 5 yd {n}")
     print(f"   time to 5 yd: all {q(S[('t5', 'all')])}; by leverage outside {q(S[('t5', 'outside')])} head-up {q(S[('t5', 'head-up')])} inside {q(S[('t5', 'inside')])}")
     print(f"   lateral (outward +) at 1 yd {q(S['lat1'])}, at 5 yd {q(S['lat5'])}")
+    print('   lateral at 1 yd by corner shade: ' + '; '.join(f"{L} {q(S[('lat1lev', L)])}" for L in ('outside', 'head-up', 'inside')))
     print('   release side by leverage: ' + '; '.join(f"{l}: in {C[(l, 'inside')]} out {C[(l, 'outside')]}" for l in ('outside', 'head-up', 'inside')))
     for key in sorted(k for k in S if isinstance(k, tuple) and k[0] == 'rt'):
         v = S[key]
