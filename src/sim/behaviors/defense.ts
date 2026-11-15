@@ -20,7 +20,7 @@ import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
 import { asCarrierPursuit } from '../coverage-space.js';
-import { angleTo, blendApproach, chase, gatheringApproach, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, TRACK_TACKLE, track, watch } from './common.js';
+import { angleTo, chase, gatheringApproach, goTo, leverage, PURSUIT_COMMIT, pursuitPoint, runThrough, stand, TRACK_TACKLE, track, watch } from './common.js';
 import { creepPace } from '../backer-creep.js';
 import { ARC_PAST, EDGE_ARC, arcLandmark, seenOverset, traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
@@ -589,7 +589,16 @@ function rushFinish(sim: PlaySim, a: Agent, far: MoveCommand): MoveCommand {
   const seen = TRACK_TACKLE ? sim.track(a, qb, 1, true) : sim.see(a, qb, look);
   const contact = a.profile.radius + qb.profile.radius + a.profile.reach * .65;
   const { near, gather } = gatheringApproach(a, seen, contact, 0);
-  return blendApproach(far, near, gather);
+  if (!near || gather <= 0) return far;
+  // Attempt 2: the gather sets his speed, not his line. He breaks down on the path he chose (his sprint's direction to
+  // his intercept); the arrival's speed is blended in by the gather. Attempt 1 blended the arrival's whole velocity,
+  // which aims at the QB's seen spot: from 4-4.5 yd out (contact plus his stopping distance, about at the release) it
+  // re-aimed him off his intercept, straighter at the QB and away from a helper's line (off-blocker reach 12 -> 18%
+  // under FITTED_HANDS + PASS_OFF: hand-fight note section 11).
+  const fs = Math.hypot(far.vel.x, far.vel.y), ns = Math.hypot(near.vel.x, near.vel.y);
+  if (fs < 1e-6) return far;
+  const sp = fs + (ns - fs) * gather;
+  return { ...far, vel: { x: far.vel.x / fs * sp, y: far.vel.y / fs * sp }, posture: Math.max((far as { posture?: number }).posture ?? 0, (near as { posture?: number }).posture ?? 0) } as MoveCommand;
 }
 
 export class Blitzer implements Behavior {
