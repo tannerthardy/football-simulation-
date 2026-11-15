@@ -959,3 +959,25 @@ mirror, not a rusher running a lap.
   him through the hands and the shared-grip yaw budget (the turning measurements queued after stage 1). It is not
   more rusher speed.
 - FITTED_HANDS + FIGHT_MENU attempt 2 is the best shape so far for the card question, with that named.
+
+**The orbit split** (interior-fight.py, engaged frames: each man's velocity across the line between them, p50
+|blocker| / |rusher| yd/s; then the blocker's share of their relative motion across it, - = he moves the same way as
+the rusher, mirroring):
+
+| | 0-0.5 s | 0.5-1.0 s | 1.0-1.5 s | 1.5-2.5 s |
+|---|---|---|---|---|
+| NFL | 1.14 / 1.48, -0.31 | 1.29 / 1.60, -0.90 | 1.20 / 1.41, -0.50 | 1.00 / 1.23, -0.30 |
+| base | 0.63 / 0.76, 0.00 | 0.89 / 0.99, 0.00 | 1.20 / 1.29, +0.20 | 1.33 / 1.40, +0.16 |
+| FH + PO | 0.74 / 1.15, -0.43 | 1.25 / 1.90, -0.93 | 1.80 / 2.55, -1.24 | 2.07 / 2.79, -1.56 |
+| FM2 | 0.69 / 1.03, -0.31 | 1.12 / 1.41, -0.51 | 1.64 / 1.79, -0.47 | 1.67 / 1.79, -0.22 |
+
+- **The "both bodies turn" hypothesis is refuted.** The NFL's blocker mirrors: he moves across with the rusher at
+  about 80% of his speed. He is not turned against him.
+- FM2's speeds across the line are near the NFL's through 1.0 s (rusher 1.41 against 1.60, blocker 1.12 against
+  1.29).
+- After 1.0 s both men keep moving across at about 1.7 yd/s, where the NFL's slow to 1.0-1.2. That is the late fight
+  that does not stall (the engaged speed's late rise).
+- **Open: what stalls an NFL pair late.** The late bins hold only the pairs still engaged, so the NFL's may be the
+  stalemates (a held rusher, a blocker sitting on him) while ours are the moving rides.
+  - The next cut: the same rows split by whether the pair is still within 1.2 yd at 2.5 s (held throughout) or
+    releases later. Then compare like with like.
