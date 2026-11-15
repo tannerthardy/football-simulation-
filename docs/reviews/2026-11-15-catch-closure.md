@@ -23,11 +23,14 @@ each targeted, non-screen pass. n = 560 with the true flight (the oracle) and 59
 
 Notes on the rows:
 
-- Contest: right in aggregate (Tools' arrival cut agrees).
+- Contest: right in aggregate (Tools' arrival cut agrees). The under-1-yd row stays as a witness.
 - Pace step: this is the single +0.08 difficulty above 24 yd/s.
 - Securing window: nearly every loss was "dislodged through the hands". The contest lives in the roll before the
   catch.
 - Uncontested drops and the hands rating: the rating awards the result.
+  - In the new model, hands acts on closure timing variance and placement.
+  - The uncontested drop rate must fall out of that, never be set.
+- The pace step at 24 yd/s goes.
 
 What each stage-one input is today:
 
@@ -80,8 +83,20 @@ any pace. Pace matters only by shrinking the time left.
 
 ### 2. Where are the hands, and when do they close?
 
-The hands go to where he believed the ball would be at his last correction, about 0.1 s before arrival, after which
-he is open-loop. Two errors follow.
+The hands go to where he believed the ball would be at his last correction, after which he is open-loop. The last
+correction is when his eyes left the ball.
+
+- For a receiver who looks it in, that is about 0.1-0.12 s before arrival, the floor (Cesqui 2015).
+- It is older for one who:
+  - turns upfield early;
+  - peeks at the coming hit;
+  - lost the ball mid-flight.
+
+  Each has a larger error. That is "look it in" as a mechanism.
+- The early look-away is his own choice, with a payoff: he sees the defender, braces, and turns sooner. It is not a
+  rating roll.
+
+Two errors follow.
 
 **Placement error.** His belief's error at that moment, plus motor noise. The belief error comes from the glance or
 estimator error: large in depth, smaller across, growing with time looked away.
@@ -155,9 +170,11 @@ He chooses from what he perceives, as coached:
 - Diamond above the waist, basket below it and over the shoulder.
 - His body when the hands cannot get there and the ball is at his torso.
 
-A receiver with poor hands leans on his body. His larger hands-timing noise makes the body's wider tolerance worth
-more to him; the threshold is his judgment, noisy by skill. Catching away from the body keeps the ball away from a
-defender, which is stage two's input.
+The choice uses his own estimate of his reliability: his self-estimate of his timing noise, which can be wrong. There
+is no hands threshold on the catch type. A receiver with poor hands who knows it leans on his body, because the body's
+wider tolerance is worth more to him; one who overrates his hands reaches and pays for it.
+
+Catching away from the body keeps the ball away from a defender, which is stage two's input.
 
 ## What the ratings act on (never the result)
 
@@ -193,6 +210,38 @@ pad rebound, stopping-force drop) before any card.
 - placement error past the pocket: a fingertip touch and a bobble.
 
 No rating appears in any outcome path.
+
+## The state stage one leaves for stage two
+
+So that stage two needs no redesign, every secured ball carries:
+
+- the catch type (hands, basket or body);
+- the points of pressure n now;
+- since when (the closure's time);
+- where the ball sits relative to his body (away from it or against the torso);
+- whether his eyes are still on it (when they left).
+
+Stage two's jolt reads these. A defender's hand at the ball, or a hit through his arms, works against `F_hold` at that
+`n`. A body catch has the ball against his torso, so a hit arrives through his arms into the ball.
+
+## Sensitivity before any game
+
+Each stated choice is read at two or three levels on the staged scenarios, before any game:
+
+- hand speed;
+- pocket radius;
+- latency;
+- restitution;
+- give;
+- squeeze.
+
+The report says which one the uncontested drop rate is most sensitive to. If that rate is mostly one chosen constant,
+the note says so plainly: it is a choice, not a derivation.
+
+## The fix in passing
+
+"High" today starts at heightYd x 1.02, the top of his head, although the code calls it the chest. It moves to the
+pocket's own body frame: the chest is about 0.72 x height. This will move fixtures, and the PR will say so.
 
 ## Flags
 
