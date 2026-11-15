@@ -202,3 +202,41 @@ read (`qbmind.ts` 420, 429, 485: the QB lane's). The ball itself is `BALL_EST`'s
 The first want dominates: a receiver running a route faces away from the QB 73% of the time, so a gated receiver that reads the QB's position for facing and settling is blind without a head want to the QB (turned at the
 break, as a receiver does). The QB's two rows (6, 9) go to the QB lane's eyes-and-feet design, since his head wants are his progression. The roughly 20 wants are these nine families plus the unmeasured ones; the counts above say
 where a gated offence would be blind first.
+
+## 13. Bit 2 rebuilt (Integration's rulings, 2026-11-15)
+
+The first form dropped velocity beyond 30 deg and switched on a central zone. It is rebuilt: **everything is a smooth function of the eccentricity e off his head (his key; his body facing for the carrier), out to the edge of the field (95 deg), with
+nothing switching at any angle, and time-correlated** (hashed noise bins of 0.25 s with linear interpolation, no random stream).
+* Position: bearing sd 2 deg + 0.1 deg per deg of e (Coverage's form; their form was built for the first detection of the ball, which has no velocity to carry, so I did not inherit its lack of velocity); range sd 10% x e/95.
+* **Velocity kept at every eccentricity**: direction sd 5 deg + 0.2 deg per deg of e, speed sd 25% x e/95. Stated choices: I found no clean source for peripheral motion error; read them at half and double.
+* **What is lost outright is recognition**: stance, `carrying`, carry posture, head and arm are each unknown with probability (e/95)^2 (flickering slowly with the same noise), and his hips are shown by his direction of travel.
+  The gated side does read these: `carrying` in `run-fits.ts`, `possession-read.ts`, `defense.ts` 691, 1065, 2303, `coverage/defender.ts` 127, `tackle.ts` 156 and `recognition.ts` 267, 321; `stance` in `recognition.ts` 355 and
+  `defense.ts` 446; `facing` in `defense.ts` 220, 2307 and `carrier.ts` 853. So the recognition loss is read, and it is mostly the possession cue.
+* **What he attends is central quality by construction**: his key (the man a man defender covers, the QB for a zone defender, `eyes.keys`) and, for any defender, the ball carrier (a pursuer's eyes are on the man he chases).
+
+**Picture error, the 6 yd probe, attended against everyone else (position error vs truth now, median / p90, yd):**
+
+| | NEAR_FIELD=0 | NEAR_FIELD=2 |
+| --- | --- | --- |
+| defender, ATTENDED (his key or the carrier), n 7,400 | 0.29 / 0.47 | **0.28 / 0.46** |
+| defender, everyone else | 0.20 / 0.46 | 0.33 / 0.91 |
+| carrier, everyone else | 0.24 / 1.37 | 0.49 / 1.60 |
+
+Pursuit is not degraded through the back door: the attended man's error is unchanged. The picture speed medians are now kept (2.2 to 3.3 yd/s, as at off) instead of going to 0.
+
+**Run set (1,321 plays, paired, engine-68)**
+
+| | mean yards | 10+ yd | 20+ yd | missed per run | missed + broken open |
+| --- | --- | --- | --- | --- | --- |
+| reference | 3.30 | 5.4% | 1.4% | 0.200 | 0.260 |
+| `=2` both | 3.34 (+0.04, SE 0.10) | 6.2% | 1.7% | 0.227 | 0.279 |
+| `=6` carrier only | 3.16 (-0.14, SE 0.09) | 4.6% | 1.2% | 0.202 | 0.250 |
+| `=10` defenders only | 3.40 (+0.09, SE 0.09) | 6.0% | 1.6% | 0.226 | 0.276 |
+
+So the rebuilt form moves the run set by +0.04 yd (was +0.26) and the 20+ rate by 0.3 points (was 0.9). The yards that moved come from the defenders (+0.09, and 0.026 more missed tackles per run); the carrier's own coarse
+pictures cost him 0.14 yd (he reads the men at his side less well).
+
+**Dither panel (135 plays)**, `NEAR_FIELD=3`: fails at the controller level: coverage 0.448 against its budget of 0.440 (1,823 events, from 1,678), carrier 0.524 against 0.476. By part (`NEAR_PARTS` toggles, not committed):
+position noise alone fails (coverage 0.441, 1,876 events); velocity noise alone passes (0.397); recognition loss alone passes (0.376). **The position error is what the thresholds cannot absorb**: a decision that reads a pictured
+position against a distance (leverage, gap, in-range tests in `coverage`, `defense.ts` and `carrier.ts`) flips as the picture drifts a few tenths of a yard, with no hysteresis on those tests. I have not attributed it to individual
+sites; the consumers of a pictured position are the 130 or so `see(...).pos` reads in `defense.ts`, `run-fits.ts`, `coverage/*`, `common.ts`, `tackle.ts` and `carrier.ts`. That is a finding about those thresholds.
