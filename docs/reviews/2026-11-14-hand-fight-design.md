@@ -425,9 +425,11 @@ Split by whether his blocker is still on him at +0.5 s:
 | separation at it, p50 | 1.08 yd | 1.20 | 1.02 |
 | blocker at +0.3 s: clean (past 1.5) / at his hip (within 1.2) / between | 21 / 48 / 20% | 18 / 39 / 32% | 15 / 45 / 31% |
 
-Fourteen each (`--examples 14`, the first in file order) read the same way: NFL and FH releases are mostly a rusher
-past the shoulder at 0.7-1.0 yd with the blocker at 0.8-1.3 yd 0.3 s later; clean runners (blocker past 2 yd at
-+0.5 s) are a few in each. FH moved the release's character from the base's (separation, a clean break) to the NFL's
+Fourteen each (`--examples 14`, the first in file order) read the same way.
+- NFL: 9 by separation (1.20-1.35 yd, the blocker 1.2-1.8 yd at +0.3 s) and 5 past the shoulder (0.7-1.0 yd, the
+  blocker 0.8-1.1).
+- FH: 6 and 8, with the same distances.
+- Clean runners (the blocker past 2 yd at +0.5 s): 3 in each. FH moved the release's character from the base's (separation, a clean break) to the NFL's
 (past the shoulder, the blocker on his hip). The release gate did not pass on a label: the fight is not too decisive.
 What is too decisive is what happens after it.
 
