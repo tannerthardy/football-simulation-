@@ -195,11 +195,11 @@ const RELEASE_THROUGH = process.env.RELEASE_THROUGH !== '0';
  * receiver's release side is a decision made once, from the corner as he sees him after the snap, and held until he
  * is level with the corner or beaten; the place he releases to is fixed when he decides, not re-aimed at a corner who
  * mirrors him. His lean is his route's side (DECLARED_BREAK: the side his break turns to; outside on a vertical or a
- * stop with no lateral break). A corner shaded away from that side gets a speed release there. A head-up corner, or one
- * sitting on that side, gets a jab first (one quick step, RELEASE_JAB_STEP, the other way when head-up, toward the
- * shade when he sits on the lean), and then the read as taught: a square corner who jumped his lean (moved his feet
- * that way since the jab, RELEASE_JUMP) gets the jab side, else the lean (a corner who bit or sat leaves the lean open
- * past his leverage); a corner still sitting on the lean gets the other side. He decides one reaction time after the
+ * stop with no lateral break). His estimate of the corner's shade is the corner as he sees him one reaction time after
+ * the snap, with a held bearing error (0.5-1.0 deg). A corner head-up or shaded away has given him his side: a speed
+ * release to it (attempt 2, 2026-11-15; attempt 1 jabbed against every head-up corner and cost 0.2 s to 5 yd in games,
+ * where the NFL jabs on 6% of pressed releases). A corner sitting on his side gets a jab toward him (one quick step,
+ * RELEASE_JAB_STEP) and the read: still sitting there, the other side; moved off it, the lean. He decides one reaction time after the
  * snap, having seen the man's first steps (until then his first step is unchanged). A man he sees rushing (hand down,
  * past the line or moving into the backfield) is not pressing him: no release is aimed round him (Rules, engine-68 mesh seed 2: an end
  * 0.9 yd off the line steered a tight end's release until 1.05 s). Nothing awards the side: whether the jab moves the corner is the
@@ -630,8 +630,16 @@ export class RouteRunner implements Behavior {
     const dp = sim.see(a, d).pos;
     let r = this.rel;
     if (!r || r.corner !== d) {
-      const lean = this.routeLean(a), off = dp.y - a.pos.y, shade = Math.abs(off) > 0.3 ? Math.sign(off) : 0;
-      const jab = shade === -lean ? 0 : shade === lean ? lean : -lean;
+      // His estimate of the corner's shade: the corner as he sees him one reaction time after the snap (alignment and
+      // first steps), with a held judgment error of his bearing on the corner (0.5-1.0 deg by route running, the ball
+      // estimator's bearing error) at the corner's distance.
+      const lean = this.routeLean(a), dist = Math.hypot(dp.x - a.pos.x, dp.y - a.pos.y);
+      const bearing = (0.5 + 0.5 * (1 - a.r('routeRunning'))) * Math.PI / 180;
+      const off = dp.y - a.pos.y + sim.dice('release-read', a).normal(0, dist * Math.tan(bearing));
+      const shade = Math.abs(off) > 0.3 ? Math.sign(off) : 0;
+      // Attempt 2: the jab is for a corner sitting on his side; a head-up corner or one shaded away has given him his
+      // side, and he speed-releases to it (attack the short arm: head-up or outside, attack outside).
+      const jab = shade === lean ? lean : 0;
       r = this.rel = { corner: d, lean, jab, jabY0: a.pos.y, cornerY0: dp.y, shadeOnLean: shade === lean, at: sim.t,
         side: jab === 0 ? lean : 0, target: null, done: false };
     }
