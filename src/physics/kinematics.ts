@@ -137,7 +137,7 @@ export function lateralEnvelope(body: Body, speed: number, cutSkill = 1, capacit
  * have not verified a gait source that puts a number on it, so the number is not derived from one. Hips are
  * charged by the curve above and the trunk by this term; the NFL shoulder curve cannot split them (`o` is the shoulders), so the pair is checked
  * against it only where the trunk is the whole of the angle (hips on the path), and in the sim's own shoulder bins. */
-export const DIR_CAP = process.env.DIR_CAP === '1';
+export const DIR_CAP = process.env.DIR_CAP !== '0';
 const DIR_FULL = (20 * Math.PI) / 180, DIR_BACK = (130 * Math.PI) / 180;
 /** Fraction of the cap lost per radian of trunk twist (0.0018 per degree). */
 export const TRUNK_PRICE = 0.0018 * (180 / Math.PI);
