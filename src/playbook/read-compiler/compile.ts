@@ -4,13 +4,28 @@
  */
 import type { Team } from '../../league/team.js';
 import type { PassConcept } from '../types.js';
-import { candidates, DEFAULT_PROFILE, select, type CoachProfile } from './candidates.js';
+import { candidates, DEFAULT_PROFILE, PLAN_ROLES, select, type CoachProfile } from './candidates.js';
 import { sampleRoutes } from './features.js';
 import { findMotifs } from './motifs.js';
 import type { CompiledPlay } from './types.js';
 
 export const COMPILER_VERSION = 'phase1-1';
 
+/** PLAN_ROLES (experimental, off): a coached clear-out is the concept's role, not a geometric finding. In a flood or a
+ * trips out / sail, the outside vertical clears for the out under it, and the out is the route the quarterback looks for
+ * first ("the intermediate sideline route is the route many quarterbacks are taught to look for first ... the deep
+ * layer is usually the outside receiver's vertical", Youth Football Online, Flood Passing Concepts; three levels to one
+ * side, deep / intermediate / flat). The compiler found clear-outs from geometry (a vertical 12 yd or deeper at its
+ * ready time over a shorter same-side route) and read a same-side pair deeper-first past a 2 yd gap; a go at 11.6-11.9
+ * yd fell on both thresholds, so a 0.3 yd change in where he was at his ready time put the clear-out ahead of the out
+ * (docs/reviews/2026-11-14-plan-roles.md). Declared clear-outs enter as motifs and are not read as the high of a high-low. */
+/** PLAN_ROLES: the clear-outs (the clearer's route, the route he clears for), by route so that they hold in every
+ * formation, from the concept's install. */
+export const CLEAR_OUTS: Record<string, [string, string][]> = {
+  flood: [['go', 'out']],
+  trips_outs: [['go', 'out']],
+  trips_sail: [['go', 'out']],
+};
 export function compile(concept: PassConcept, formation: string, flip: boolean, off: Team, def: Team, profile: CoachProfile = DEFAULT_PROFILE): CompiledPlay {
   if (concept.family === 'screen' || concept.screen) {
     return { conceptId: concept.id, formation, flip, qbSetAt: 0, routes: [], excluded: [], motifs: [], candidates: [], chosen: null,
@@ -32,6 +47,12 @@ export function compile(concept: PassConcept, formation: string, flip: boolean, 
   }
   s.qbSetAt = +((s.qbSetAt + m.qbSetAt) / 2).toFixed(2);
   const motifs = findMotifs(s.routes);
+  if (PLAN_ROLES) for (const [clearRoute, underRoute] of CLEAR_OUTS[concept.id] ?? []) {
+    // Same side: the clearer and the route he clears for.
+    for (const c of s.routes) for (const u of s.routes) if (c.routeId === clearRoute && u.routeId === underRoute && c.side === u.side
+      && !motifs.some((m) => m.kind === 'clearout' && m.refs[0] === c.ref && m.refs[1] === u.ref))
+      motifs.push({ kind: 'clearout', refs: [c.ref, u.ref], confidence: 1, why: `${c.ref} clears for ${u.ref} (declared)` });
+  }
   const cands = candidates(s.routes, motifs, s.qbSetAt, profile);
   // Phase 1: the plan is chosen by the structural rules (`select`); the scored candidates stay for the audit.
   const sel = select(s.routes, motifs, s.qbSetAt, profile);
