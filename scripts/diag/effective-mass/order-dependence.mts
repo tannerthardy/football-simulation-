@@ -69,6 +69,6 @@ function crowd(order: number[] | null) {
 const c0 = crowd(null); let worst = 0, differ = 0;
 const rng2 = new Rng(11);
 for (let k = 0; k < N; k++) { const p = [...idx]; for (let i = p.length - 1; i > 0; i--) { const j = Math.floor(rng2.next() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }
-  const c = crowd(p); const d = Math.max(...c.map((v, i) => Math.abs(v - c0[i]))); worst = Math.max(worst, d); if (d > 1e-9) differ++; }
+  const c = crowd(p); const d = Math.max(...c.map((v: number, i: number) => Math.abs(v - c0[i]))); worst = Math.max(worst, d); if (d > 1e-9) differ++; }
 console.log(`crowd of 6 bodies in mutual contact, 40 steps, ${N} body orders: largest position difference from the agent-order run ${worst.toExponential(2)} yd; ${differ} of ${N} orders differ by more than 1e-9`);
 console.log('crowd final x,y of the six: ' + c0.map((v: number) => v.toFixed(2)).join(' '));
