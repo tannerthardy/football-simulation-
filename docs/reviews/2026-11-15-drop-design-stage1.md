@@ -175,3 +175,13 @@ Plant to release, like with like, p25/50/75 (s):
 - On deeper drops the five-step beat (set + 0.8) plus the windup releases about 0.6 s later than the NFL's median, on a
   small cell.
 - He still releases set (under 1 yd/s) on 98% of short drops (NFL 60%): the in-place gather is a stop.
+
+**Who owns the release on the move.** "Ball out as the foot lands, with momentum" is not stage one's gather. In bit 1
+he is set at release on 98% of short drops (NFL 60%). It needs the throw on the move: the last drop step or the gather
+carrying his weight into the throw, priced by the moving-thrower model (THROW_PLATFORM). Bit 2 owns it, because bit 2
+paces the drop's steps, and the step into the throw is the drop's last stride. Bit 4's moves (climb, slide, reset)
+throw from the reset by the same mechanism.
+
+**Ownership with Rules (Integration, 2026-11-15).** The plan hands over a step index per read, with a keyed pair as one
+place. The quarterback derives its time from his own stride (his drop's time over its steps), which retires
+FIVE_STEP_BEAT / RHYTHM_BEAT as seconds. Bit 1's own keyed-place merge (fd9f8c41) is deleted when that lands.
