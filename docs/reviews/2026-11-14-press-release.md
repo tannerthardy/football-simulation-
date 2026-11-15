@@ -354,3 +354,51 @@ and so called every rep "not won"; this is the corrected form.
 - RESTEM is kept off as built: no gate change beyond the request; no game read yet.
 - Before any second attempt, decide whether the release clearance should be his body and the corner's hands rather
   than the corner's full reach. That is a RELEASE_READ question for the next attempt, not a RESTEM one.
+
+## RELEASE_READ, game read (16 games, seed 101, engine-68 + RELEASE_READ at 52ca6fdd), 2026-11-15
+
+`sim-export.ts --seed 101 --games 16` under `npm run ref`, off vs `--flag RELEASE_READ=1`. Both arms ran all 16
+games and wrote complete files. The exporter's end-of-run source check then failed because RESTEM was added to the
+working tree mid-run. Each process had loaded 52ca6fdd at start, and RESTEM is off and absent from it, so the data are
+52ca6fdd's. At engine-68 our defenses press: 634 (off) and 575 (on) pressed outside receivers in 16 games, 20% (NFL
+24% at the same 3-yd definition).
+
+| pressed outside receivers, p50 (p25–p75) | off | on | NFL |
+|---|---|---|---|
+| time to 5 yd (s) | 2.00 | 2.20 | 2.00 (stutter 2.20) |
+| reached 5 yd before the throw | 561/634 (88%) | 445/575 (77%) | 2,584/3,903 (66%) |
+| lateral at 1 yd (outward +) | +1.20 (−0.1–1.3) | −0.30 (−0.5–0.0) | +0.10 (−0.8–1.0) |
+| lateral at 5 yd | +3.50 | +1.80 | 0.00 |
+| GO, head-up corner, released outside | 180/189 (95%) | 120/153 (78%) | 75% |
+| HITCH, head-up corner, released outside | 127/157 (81%) | 83/136 (61%) | 62% |
+| HITCH at 5 yd (break lateral) | +3.9 | +2.0 | +1.2 |
+| OUT at 5 yd | +3.8 | +2.0 | +0.7 |
+| SLANT at 2 yd | −1.7 | −0.6 | −0.8 |
+| GO at 10 yd | +4.5 | +2.8 | +4.7 |
+| yards per dropback (all, n 1,641 / 1,529) | 9.40 | 8.87 | – |
+
+Read:
+
+- **In games, where corners differ, the release side moves toward the NFL by route.** Head-up gos 95 → 78% outside,
+  head-up hitches 81 → 61%. Stop routes break much closer to their stem: hitch +3.9 → +2.0, out +3.8 → +2.0; NFL
+  +1.2 and +0.7.
+- **The cost is time at the line.** Time to 5 yd is 2.00 → 2.20 s, and fewer pressed receivers reach 5 yd before the
+  throw. The NFL's average is 2.00 because only 6% of its releases jab. Ours jab on every head-up or same-side
+  shade, so the share of jabs is the open question, not the jab's price (+0.2 s, the NFL stutter's).
+- **One departure introduced:** at 1 yd the receiver is now 0.3 yd *inside* (the jab), where the NFL is +0.1. That
+  is the same question: every receiver jabs.
+- **Pressed gos are now narrower than the NFL (+2.8 vs +4.7 at 10 yd).** The fixed release point is one clearance
+  beside the corner, and RELEASE_THROUGH then runs the go back toward its installed line. Before, the re-aim carried
+  gos wide (+4.5), which matched the NFL for the wrong reason. A go wants its width (the coached "keep the fade's
+  room to the sideline"). Worth a look in attempt 2.
+- **Yards per dropback −0.53, about 1.1 SE** (sd 13.5, unpaired: plays diverge after the first change). No finding.
+
+**Proposed attempt 2 (not built; to approve).**
+
+- (a) **The jab is a choice, not a default.** A speed release where the lean already wins, i.e. the corner as he
+  sees him is not on the lean side. A jab only where the corner sits on the lean or he cannot see the corner's
+  leverage.
+- (b) **A go's release point keeps its width.** The installed release target outside the corner, not one clearance
+  and back.
+
+Both act on the receiver's own plan. Neither touches the corner.
