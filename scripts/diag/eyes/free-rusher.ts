@@ -38,12 +38,17 @@ PlaySim.prototype.run = function (this: any) {
     }
     if (!thr && was !== 'air' && sim.ball.kind === 'air') thr = { t: +sim.t.toFixed(2), slot: sim.ball.target?.slot ?? null, route: sim.ball.target ? routes.get(sim.ball.target) ?? null : null, away: !!sim.ball.throwaway };
   };
-  let qbB: any = null; const t2 = sim.tick.bind(sim); sim.tick = () => { t2(); if (!qbB && sim.qb.behavior?.kind === 'qb-pass') qbB = sim.qb.behavior; };
+  let qbB: any = null, atHot: any = null; const t2 = sim.tick.bind(sim); sim.tick = () => { t2(); if (!qbB && sim.qb.behavior?.kind === 'qb-pass') qbB = sim.qb.behavior;
+    // At the tick the hot is called: the back (true state, for the diagnosis), the man it was called on, and the quarterback.
+    if (qbB?.hot && !atHot) { const rb = sim.offense.find((o: any) => o.slot === 'RB'), d = qbB.hotDef, Q = sim.qb.pos, dir = sim.attackDir('O');
+      atHot = { t: +sim.t.toFixed(2), back: rb ? { job: rb.behavior?.kind ?? null, away: +(((rb.pos.x - Q.x) * rb.vel.x + (rb.pos.y - Q.y) * rb.vel.y) / (Math.hypot(rb.pos.x - Q.x, rb.pos.y - Q.y) || 1)).toFixed(1), speed: +Math.hypot(rb.vel.x, rb.vel.y).toFixed(1) } : null,
+        dToBack: rb && d ? +Math.hypot(d.pos.x - rb.pos.x, d.pos.y - rb.pos.y).toFixed(1) : null, dPastBack: rb && d ? +(((rb.pos.x - d.pos.x) * dir)).toFixed(1) : null,
+        dToQb: d ? +Math.hypot(d.pos.x - Q.x, d.pos.y - Q.y).toFixed(1) : null, dDepth: d ? +((d.pos.x - sim.los) * dir).toFixed(1) : null }; } };
   const res = run.call(this);
   // The man the hot was called on: his slot, his job as the defense gave it (truth, for the diagnosis only), whether he
   // was man on the back, and where he was at the end of the play against the quarterback.
   const hd = qbB?.hotDef ?? null, job = hd?.behavior?.kind ?? null, mark = hd?.behavior?.target ?? hd?.behavior?.man ?? null;
-  const hot = qbB?.hot ? { at: +qbB.hot.at.toFixed(2), target: qbB.hot.target?.slot ?? null, route: qbB.hot.target ? routes.get(qbB.hot.target) ?? null : null,
+  const hot = qbB?.hot ? { atHot, at: +qbB.hot.at.toFixed(2), target: qbB.hot.target?.slot ?? null, route: qbB.hot.target ? routes.get(qbB.hot.target) ?? null : null,
     by: hd ? { slot: hd.slot, pos: hd.player.position, job, onBack: !!mark && mark.slot === 'RB', read: hd.recog?.read ?? null } : null } : null;
   process.stdout.write(JSON.stringify({ concept: sim.offCall.pass?.id, pressure: sim.defCall?.pressure?.id ?? null, int: sim.events.some((e: any) => e.type === 'interception'), hot, at, thr, sack: sim.events.some((e: any) => e.type === 'sack'), caught: !!sim.stats.completed, outcome: res.outcome }) + '\n');
   return res;
