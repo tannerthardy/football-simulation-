@@ -10,6 +10,8 @@ import { pickDefense, pickOffense } from '../../league/team.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../defense.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import { PlaySim } from '../../sim/playsim.js';
+import { alignOffense } from '../alignment.js';
+import { CENTER_Y, FIELD_WIDTH } from '../../core/field.js';
 import { RouteRunner } from '../../sim/behaviors/receiver.js';
 import { stand } from '../../sim/behaviors/common.js';
 import type { RouteDescriptor } from './types.js';
@@ -48,14 +50,31 @@ const turn = (a: number, b: number) => Math.abs(((b - a + 540) % 360) - 180);
 
 export function sampleRoutes(concept: PassConcept, formationId: string, flip: boolean, off: Team, def: Team): Sampled {
   const formation = FORMATION_BY_ID[formationId];
+  const offense = pickOffense(off, formation.personnel), defense = pickDefense(def, 'nickel');
+  const offCall = { formation, flip, kind: 'pass' as const, pass: concept, label: concept.id };
+  // COMPILE_PICTURE: the sample is the offence's alone, so it is the same whichever way it is flipped. The ball is in the
+  // middle of the field, the parked defence sits on the ball's line, and every body starts on its installed spot by hand:
+  // the defenders' alignment draws (their alignment error, ALIGN_HABIT's scatter) and anything the offence lines up off
+  // them (RECEIVER_DEPTH's press back-off) would otherwise put the sample's receivers on spots set by defenders who are
+  // not in it, on one side only.
+  const los = 40, ballY = COMPILE_PICTURE ? CENTER_Y : 26.65;
+  // In pairs on the two sidelines at the same depth (the odd one out on the ball's line), so the parked set is its own
+  // mirror; parked across the ball's line it would sit in front of every player's view and double the sample's cost.
+  const parkAt = (i: number) => COMPILE_PICTURE
+    ? { x: los + 60 + 2 * Math.floor(i / 2), y: i === 10 ? ballY : i % 2 ? FIELD_WIDTH - 1 : 1 }
+    : { x: los + 60 + i * 2, y: 1 };
+  const installed = alignOffense(formation, flip, los, ballY, { kind: 'pass', pass: concept, distance: 10 });
+  const alignment = COMPILE_PICTURE ? [
+    ...Object.keys(offense).map((slot) => ({ team: 'O' as const, slot, pos: { ...installed.spots[slot].pos } })),
+    ...Object.keys(defense).map((slot, i) => ({ team: 'D' as const, slot, pos: parkAt(i) })),
+  ] : undefined;
   const sim = new PlaySim({
-    offense: pickOffense(off, formation.personnel), defense: pickDefense(def, 'nickel'),
-    offCall: { formation, flip, kind: 'pass', pass: concept, label: concept.id },
+    offense, defense, offCall,
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'none' },
-    los: 40, ballY: 26.65, firstDownX: 50, seed: 1,
+    los, ballY, firstDownX: 50, seed: 1, alignment,
   });
   sim.throwBall = () => undefined;
-  const park = () => sim.defense.forEach((d, i) => { d.body.pos = { x: sim.los + 60 + i * 2, y: 1 }; d.body.vel = { x: 0, y: 0 }; });
+  const park = () => sim.defense.forEach((d, i) => { d.body.pos = parkAt(i); d.body.vel = { x: 0, y: 0 }; });
   park();
   // COMPILE_PICTURE (experimental, off): the defence was recorded where it lined up before it was parked, and every
   // picture is delayed, so the receivers release round defenders who are not there, on one side only (PRESS_MIRROR /
