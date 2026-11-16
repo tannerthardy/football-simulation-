@@ -61,12 +61,6 @@ const THIRD_KEYS = new Set(['dagger', 'levels']);
  *   unreadable verticals by 2.1 s, at the hitch out of rhythm, then a run).
  */
 export const VERTS_KEYS = process.env.VERTS_KEYS === '1';
-/** FOUR_VERTS_SEAMS (experimental, off; with PLAN_KEYS; not carded until traced): four_verts reads its seams first, then
- * the outside gos: "the first read must be thrown as soon as the back foot hits"; else "hitch up and move his eyes to the
- * seam read" (the seam reader in the other slot), and the outside receivers "win deep if you can" (Gonzalez via Smart
- * Football). Off, the second seam (W2 from 2x2) was read after the strong go. Staged from 2x2 it made the play worse
- * (completions 68 -> 61, no throw 59 -> 64): the second seam on the first hitch may not be past the hook either. */
-export const FOUR_VERTS_SEAMS = process.env.FOUR_VERTS_SEAMS === '1';
 const VERTS_KEY_TABLE: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean; after: ReceiverRef[] }> = {
   verts_hitch: { low: 'S3', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the seam', onSet: true, after: ['W1', 'S1'] },
 };
@@ -183,7 +177,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${VERTS_KEYS ? 1 : 0}${FOUR_VERTS_SEAMS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${VERTS_KEYS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -226,11 +220,6 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       if (vk && plan.key && plan.key.low === vk.low && plan.key.high === vk.high) {
         const after = vk.after.filter((r) => routes.has(r));
         plan = { ...plan, order: [vk.high, vk.low, ...after, ...plan.order.filter((r) => r !== vk.high && r !== vk.low && !after.includes(r))] };
-      }
-      // FOUR_VERTS_SEAMS: four_verts reads its seams first, in their compiled order, then the outside gos.
-      if (FOUR_VERTS_SEAMS && PLAN_KEYS && concept.id === 'four_verts') {
-        const seams = plan.order.filter((r) => routes.get(r)?.routeId === 'seam');
-        plan = { ...plan, order: [...seams, ...plan.order.filter((r) => !seams.includes(r))] };
       }
       // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
       const io = PLAN_KEYS ? (INSTALL_ORDER[concept.id] ?? (PLAN_ROLES ? ROLE_ORDER[concept.id] : undefined))?.filter((r) => routes.has(r)) : undefined;
