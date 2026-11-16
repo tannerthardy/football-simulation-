@@ -48,7 +48,7 @@ plays a cell, develop defaults. Off is the 2x2 call as it was made before CONCEP
 | cell | completions | sacks | INT | no throw | yards a play | throw p50 | to the back |
 |---|---|---|---|---|---|---|---|
 | stick off → on | 129 → 163 | 0 → 0 | 4 → 0 | 0 → 1 | 9.19 → 6.31 | 2.65 → 2.50 s | 11 → 94 |
-| flood off → on | 144 → 145 | 12 → 1 | 1 → 0 | 4 → 3 | 16.02 → 6.82 | 3.35 → 2.90 s | 11 → 156 |
+| flood off → on | 144 → 152 | 12 → 3 | 1 → 1 | 4 → – | 16.02 → 8.18 | 3.35 → – | 11 → 140 |
 
 **Stick.** The stick (S2: 82 → 90 throws, 7.3 → 8.1 yd) and the back's flat (94 throws, 3.6 yd) now make the concept,
 in place of the outside receivers' routes (W1 94 → 5).
@@ -78,6 +78,42 @@ in place of the outside receivers' routes (W1 94 → 5).
 | flat | 10.9% | 10.8% |
 | quick | 37.3% | 36.6% |
 | vertical | 34.4% | 34.0% |
+
+## Before the card: why the flat is thrown so often (Integration's check)
+**Trace.** `back-three-staged.ts` records the plan, the key read, the eyes and #2 when the eyes leave him. Run on
+gun_trips_11 too (`STAGED_FORM`).
+
+**The plan, from 2x2: fixed here.**
+- Flood from 2x2 compiled to a pure order: S2, then the back. Flood from trips compiles to a key on the playside
+  curl-flat defender (out high, #3 flat low).
+- From 2x2 the back's flat starts in the backfield, and the compiler's geometry no longer finds the pair. So the key is
+  now declared for the back-as-#3 call (`BACK_THREE_KEYS.flood`: B low, S2 high).
+- **Keyed flood:**
+
+| | completions | sacks | INT | yards a play | to the back | to the out |
+|---|---|---|---|---|---|---|
+| unkeyed | 145 | 1 | 0 | 6.82 | 156 | 25 |
+| keyed | 152 | 3 | 1 | 8.18 | 140 | 30 |
+
+**What is left is the key read and the window, not the plan order.**
+- **From 2x2:**
+  - The flood key reads "high" (the out) on 164 of 192 plays.
+  - He looks at the out, and it is covered when his eyes leave it: median separation 1.1 yd at 2.55 s, under 1.5 yd
+    on 94 of 112.
+  - Then he throws the flat. That is the right next throw.
+  - The key's call is the doubtful part. Its low route now starts in the backfield, so the apex standing over #2 sits at
+    the "low" end of the stretch, and he is read as having jumped the flat while he still covers the out.
+  - Stick from 2x2 is the same: key high 135 (the stick thrown 72, the flat 56; the stick about 1.5 yd covered when
+    left), plus no key read at all on 46 (no fresh picture of the man).
+- **From trips, on develop as it is (no flag):**
+  - The flood key reads "low" (the flat) on 182 of 192 plays and stick on 166 of 192, in every coverage. The flat is
+    thrown 157 and 147 times.
+  - The key man (`keyMan`, `flat`/`curl_flat` roles: the second-widest defender within 8 yd) is the nickel over #2/#3
+    in every coverage, including cover 2, where the flat defender is the squatting corner.
+  - A nickel who barely moves (cover 4: 3.5 → 4.1 yd deep by 1.2 s) is read by where he stands, which is past
+    halfway, so "low".
+- So the flat's share is the QB key read's: who the key man is, and how a man standing still is read. It goes to the QB
+  lane with this trace. The 2x2 cells only inherit it.
 
 ## Notes
 - **A pre-existing gap**, not changed here. The read compiler looks up its tables (KEYS, INSTALL_ORDER, ONE_LOOK,

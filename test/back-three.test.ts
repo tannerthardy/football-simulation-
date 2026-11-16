@@ -42,6 +42,10 @@ describe('BACK_AS_THREE', () => {
     expect(plan.style).toBe('defender_key');
     expect(plan.key).toMatchObject({ low: 'B', high: 'S2' });
     expect(plan.outlet).toBeNull();
+    // Flood keeps the key it compiles to from trips (the curl-flat defender: the out high, the flat low), declared.
+    const flood = installedPlan(fit.asBackThree(PASS_BY_ID.flood), 'gun_doubles_11')!;
+    expect(flood.style).toBe('defender_key');
+    expect(flood.key).toMatchObject({ low: 'B', high: 'S2' });
     const pa = installedPlan(fit.asBackThree(PASS_BY_ID.pa_flood), 'ace_12')!;
     expect(pa.order.slice(0, 3)).toEqual(['S2', 'W1', 'B']);
     expect(pa.outlet).toBeNull();

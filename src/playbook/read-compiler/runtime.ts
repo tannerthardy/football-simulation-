@@ -62,6 +62,11 @@ const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
  * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
  * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
  * safety will allow"). Key and danger sources are in docs/reviews/2026-11-14-read-plan-table.md. */
+/** BACK_AS_THREE: the keys a concept's compiled plan carries from trips, declared for the call with the back as #3
+ * (flood from trips compiles to a key on the playside curl-flat defender: the out high, the #3 flat low). */
+const BACK_THREE_KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
+  flood: { low: 'B', high: 'S2', role: 'playside_curl_flat', deep: false, danger: 'the corner over the out' },
+};
 const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
   // The four the compiler keyed on another defender.
   drive: { low: 'W2', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' },
@@ -192,7 +197,11 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const low = find(k.low), high = find(k.high);
         if (low && high && low !== high) k = { ...k, low: low as ReceiverRef, high: high as ReceiverRef };
       }
-      // BACK_AS_THREE: the back is #3 on this call: #3's place in the key is his, and he is a read, not the outlet.
+      // BACK_AS_THREE: the back is #3 on this call: #3's place in the key is his, and he is a read, not the outlet. A
+      // concept whose key the compiler finds from trips' geometry (flood: the curl-flat defender, the out high, the flat
+      // low) keeps it when the back is the flat: from 2x2 his flat starts in the backfield and the geometry no longer
+      // finds the pair, so it is declared.
+      if (concept.backIsThree && PLAN_KEYS && !k && !plan.key) k = BACK_THREE_KEYS[tableId];
       if (concept.backIsThree) {
         if (k) k = { ...k, low: k.low === 'S3' ? 'B' : k.low, high: k.high === 'S3' ? 'B' : k.high };
         if (plan.outlet === 'B') plan = { ...plan, outlet: null };
