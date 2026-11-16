@@ -1,0 +1,280 @@
+From 9892e1798015b54b64d5bcf04a2d5140dfe30430 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 09:11:05 +0000
+Subject: [PATCH 1/2] called-drop: plannedDropX and plannedSnapAt, the QB's
+ planned drop for the line (QB lane 7ff89985, applied on the card head; the
+ design note hunk left out)
+
+---
+ src/sim/behaviors/qb.ts   |  6 +++---
+ src/sim/called-drop.ts    | 18 ++++++++++++++++
+ test/planned-drop.test.ts | 45 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 66 insertions(+), 3 deletions(-)
+ create mode 100644 test/planned-drop.test.ts
+
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index eca95167..d06c80d3 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -21,13 +21,13 @@ import type { MoveCommand } from '../../physics/kinematics.js';
+ import { timeToReach } from '../../physics/reach.js';
+ import { supportParams } from '../../physics/support.js';
+ import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
+-import { dropSpec } from '../called-drop.js';
++import { dropSpec, plannedSnapAt } from '../called-drop.js';
+ import { PUNCH } from '../engagement.js';
+ import type { Agent, Behavior } from '../agent.js';
+ import type { Perceived } from '../perception.js';
+ import type { PlaySim } from '../playsim.js';
+ import { BallCarrier } from './carrier.js';
+-import { GUN_SNAP, handoffReach, snapSecured } from '../ball-transfer.js';
++import { handoffReach } from '../ball-transfer.js';
+ import { angleTo, goTo, stand } from './common.js';
+ import { RouteRunner } from './receiver.js';
+ import type { QBMind } from '../qbmind.js';
+@@ -836,7 +836,7 @@ export class QBPass implements Behavior {
+   ) {
+     const gun = sim.offCall.formation.qb !== 'under';
+     // GUN_SNAP: his drop starts when the snap is secured in his hands.
+-    this.snapAt = gun ? (GUN_SNAP ? snapSecured(a.pos, { x: sim.los, y: sim.ballY }) : 0.3) : 0.1;
++    this.snapAt = plannedSnapAt(gun, a.pos, { x: sim.los, y: sim.ballY });
+     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
+     this.dropY = a.pos.y;
+     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
+diff --git a/src/sim/called-drop.ts b/src/sim/called-drop.ts
+index 16df482a..924b12f6 100644
+--- a/src/sim/called-drop.ts
++++ b/src/sim/called-drop.ts
+@@ -1,5 +1,6 @@
+ import type { DropType } from '../playbook/types.js';
+ import type { PlaySim } from './playsim.js';
++import { GUN_SNAP, snapSecured } from './ball-transfer.js';
+ 
+ /** PA_DROP (on; PA_DROP=0 restores one drop for both alignments). Also read in qb.ts and assign.ts. */
+ const PA_DROP = process.env.PA_DROP !== '0';
+@@ -53,3 +54,20 @@ export function calledLaunchX(sim: PlaySim): number | null {
+   return dropSpec(concept.drop, sim.snapX[sim.qb.idx] ?? sim.los, sim.los, sim.offCall.formation.qb !== 'under').x;
+ }
+ 
++/** When the quarterback has the ball and starts his drop (s after the snap), from the call: from the gun, when the
++ * snap is secured at his alignment (GUN_SNAP; off, 0.3 s); under center, 0.1 s. The QB's own drop clock reads this. */
++export function plannedSnapAt(gun: boolean, qbSnap: { x: number; y: number }, ballSpot: { x: number; y: number }): number {
++  return gun ? (GUN_SNAP ? snapSecured(qbSnap, ballSpot) : 0.3) : 0.1;
++}
++
++/** The quarterback's planned depth (field x) at t seconds after the snap for the called drop: what a lineman knows of
++ * the drop from practice, never the live QB. At his snap spot until he has the ball, then even over the drop's time to
++ * the set point (dropSpec, under the running flags: CONCEPT_DROPS, PA_DROP), then there. This is the QB's own plan: his
++ * drop is timed to arrive at the set point at snap + the drop's time (QB_FOOTWORK bit 2 paces it evenly, the distance
++ * left over the time left; without it he may get there sooner), and his hitches re-set his base at that depth (bit 1)
++ * without moving it. Monotone in t. Play action's fake (a mesh, then the drop) is not modelled within the window. */
++export function plannedDropX(drop: DropType, gun: boolean, qbSnap: { x: number; y: number }, ballSpot: { x: number; y: number }, t: number): number {
++  const los = ballSpot.x, spec = dropSpec(drop, qbSnap.x, los, gun), t0 = plannedSnapAt(gun, qbSnap, ballSpot);
++  const f = Math.min(1, Math.max(0, (t - t0) / Math.max(spec.time, 0.1)));
++  return qbSnap.x + (spec.x - qbSnap.x) * f;
++}
+diff --git a/test/planned-drop.test.ts b/test/planned-drop.test.ts
+new file mode 100644
+index 00000000..8354b555
+--- /dev/null
++++ b/test/planned-drop.test.ts
+@@ -0,0 +1,45 @@
++/** plannedDropX (called-drop.ts): the QB's planned depth for the call, the line's source for the drop (Flex's interior
++ * set). Pure: from the call alone. At the snap spot until he has the ball, even to the set point over the drop's time,
++ * then there; monotone. And it is his plan: the QB's drop clock starts at plannedSnapAt, and with QB_FOOTWORK bit 2
++ * (the paced drop) his staged depth tracks the plan within a yard through the drop. */
++import { readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++describe('plannedDropX', () => {
++  it('is the called drop: snap spot, even to the set point, then there; monotone', async () => {
++    vi.resetModules();
++    const { plannedDropX, plannedSnapAt, dropSpec } = await import('../src/sim/called-drop.js');
++    const ball = { x: 30, y: 26.65 }, qb = { x: 25.4, y: 26.65 };
++    for (const drop of ['quick', 'gun3', 'gun5', 'five', 'seven', 'pa'] as const) {
++      const spec = dropSpec(drop, qb.x, ball.x, true), t0 = plannedSnapAt(true, qb, ball);
++      expect(plannedDropX(drop, true, qb, ball, 0)).toBe(qb.x);
++      expect(plannedDropX(drop, true, qb, ball, t0 + spec.time)).toBeCloseTo(spec.x, 9);
++      expect(plannedDropX(drop, true, qb, ball, t0 + spec.time + 2)).toBeCloseTo(spec.x, 9);
++      let prev = Infinity;
++      for (let t = 0; t <= 4; t += 0.05) { const x = plannedDropX(drop, true, qb, ball, t); expect(x).toBeLessThanOrEqual(prev + 1e-12); prev = x; }
++    }
++  });
++  it('is his plan: with the paced drop his depth stays within a yard of it', async () => {
++    vi.resetModules();
++    const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
++    for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
++    vi.stubEnv('CONCEPT_DROPS', '1'); vi.stubEnv('QB_FOOTWORK', '3');
++    const { PlaySim } = await import('../src/sim/playsim.js');
++    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++    const { plannedDropX } = await import('../src/sim/called-drop.js');
++    let worst = 0, n = 0;
++    for (const concept of ['smash', 'dagger', 'four_verts', 'stick']) for (const coverage of ['cover1', 'cover3']) {
++      const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false }));
++      const snap = { x: sim.qb.pos.x, y: sim.qb.pos.y }, ball = { x: sim.los, y: sim.ballY }, drop = sim.offCall.pass.drop;
++      for (let i = 0; i < 80 && sim.phase === 'live' && sim.carrier === sim.qb; i++) {
++        sim.tick(); const b: any = sim.qb.behavior;
++        if (b?.kind !== 'qb-pass' || b.phase !== 'drop') continue;
++        worst = Math.max(worst, Math.abs(sim.qb.pos.x - plannedDropX(drop, true, snap, ball, sim.t))); n++;
++      }
++    }
++    expect(n).toBeGreaterThan(50);
++    expect(worst).toBeLessThan(1);
++  }, 300_000);
++});
+-- 
+2.43.0
+
+
+From 49456633e72ad86603f5a5ca06595b66b540572f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 09:12:51 +0000
+Subject: [PATCH 2/2] POCKET_DROP (off; needs SET_SPOT): from the gun the
+ interior set is the cup in front of the planned drop, on its clock
+
+---
+ config/baseline.json                      |  1 +
+ config/reference-stack.json               |  1 +
+ docs/FLAGS.md                             |  3 ++-
+ scripts/diag/pass-operators/pocket-gap.py | 30 +++++++++++++++++++++++
+ src/sim/engagement.ts                     | 26 +++++++++++++++++++-
+ 5 files changed, 59 insertions(+), 2 deletions(-)
+ create mode 100644 scripts/diag/pass-operators/pocket-gap.py
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 87c617bd..e364f191 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -278,6 +278,7 @@
+     "SET_SPOT": "0",
+     "SET_SPOT_TACKLE": "0",
+     "POCKET_LEVEL": "0",
++    "POCKET_DROP": "0",
+     "RUSH_ONE_HAND": "0",
+     "HAND_SITE": "0",
+     "ENGAGE_FELT": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 6181ed31..da7a6af2 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -219,6 +219,7 @@
+     "SET_SPOT": "on",
+     "SET_SPOT_TACKLE": "on",
+     "POCKET_LEVEL": "on",
++    "POCKET_DROP": "off",
+     "RUSH_ONE_HAND": "off",
+     "HAND_SITE": "off",
+     "ENGAGE_FELT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index c6a1eaee..ada4b56e 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 434 flags read from the environment in `src` (recounted 2026-11-16, engine-72): 326 are on unless set to `0`, 88 are off unless set to `1`, and 20 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 435 flags read from the environment in `src` (recounted 2026-11-16, engine-72, plus `POCKET_DROP` off): 326 are on unless set to `0`, 89 are off unless set to `1`, and 20 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -345,6 +345,7 @@ There are 434 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `SET_SPOT` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (the pass set's reference, 2026-11-15; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`, `protectPoint`, `setSpotTarget`, stepPassRep's lateral request), `src/sim/behaviors/blocking.ts` (the pass set) | the interior set no longer reads the QB's live position (removed, not replaced: information the blocker does not have); the point he protects comes from the called drop or the QB's alignment at the snap. He takes the two-step short set straight back off his snap spot (no deeper than the pocket's front; further ground is what the rusher wins) and aims inside-out on his man, where the rusher's line to the launch point crosses his depth, unbounded, fed forward by that point's own motion. The tackles keep the live-QB read unless `SET_SPOT_TACKLE` (KNOWN_PROBLEMS PRO-INFO #12). |
+ | `SET_SPOT_TACKLE` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (SET_SPOT's tackle half, 2026-11-15; needs `SET_SPOT`; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`), `src/sim/behaviors/blocking.ts` (the vertical set, `racePace`) | the tackles' live-QB reads are removed. He takes the three-step vertical set off his snap spot, then beats the rusher to the pocket's front (the tackle clearance in front of the call's launch point) at the pace the race against the rusher's seen upfield speed needs; the call is only his floor. Tackle depth matches the old live-QB law; edge pressure is near the NFL's, but fast rushers win the corner far less (7% against 43%). |
+ | `POCKET_LEVEL` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (SET_SPOT's interior second phase, 2026-11-15; needs `SET_SPOT`; `=1` turns on) | protection | `src/sim/engagement.ts` (`passSetDepth`, `pocketLevelDepth`) | after the short set an interior lineman keeps level with the pocket, the cup around the launch point he knows from the call. His distance from it is the median of his two neighbors' (seen) and the tackles' mean, so one beaten neighbor doesn't drag him. Bounded by the short set and the pocket's front; never the QB. Evidence: the NFL's uncovered interior OL retreat as far as the engaged (ol-set-depth.py --uncovered). |
++| `POCKET_DROP` | off | experimental (Flex, 2026-11-16; POCKET_LEVEL's next bit, Integration ruling (a)) | protection | `src/sim/engagement.ts` (`passSetDepth`, `pocketDropDepth`), `src/sim/called-drop.ts` (`plannedDropX`, the QB lane's) | set at first review. Needs SET_SPOT. From the gun the interior set is the cup in front of the drop, on the drop's clock: his depth target at t is the QB's planned depth for the call at t (plannedDropX: the QB lane's plan from the call alone, never the live QB) less the interior clearance passSetDepth already uses at the launch point (3.8 yd, the same constant along the way), no shallower than his snap spot, no deeper than the pocket's front. It replaces the short set and the neighbour level while it applies; he still plays his man. Under centre unchanged (the NFL gap opens there as ours does). NFL gun gap QB minus interior OL 3.8 / 3.8 / 3.9 / 4.0 / 4.1 / 4.0 / 3.8 yd at 0.5-2.5 s (pocket-gap.py); seed 11 x 4 with SET_SPOT + SET_SPOT_TACKLE + POCKET_LEVEL, off -> on: 3.2 / 3.3 / 3.5 / 4.0 / 4.3 / 4.4 / 3.7 -> 3.6 / 3.8 / 3.9 / 4.2 / 4.4 / 4.3 / 3.5; covered interior retreat 0.8 / 1.0 / 1.2 -> 0.0 / 0.8 / 1.6 yd/s (NFL 0.4 / 1.2 / 1.8; ol-set-depth.py). |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+ | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+diff --git a/scripts/diag/pass-operators/pocket-gap.py b/scripts/diag/pass-operators/pocket-gap.py
+new file mode 100644
+index 00000000..a3d44248
+--- /dev/null
++++ b/scripts/diag/pass-operators/pocket-gap.py
+@@ -0,0 +1,30 @@
++# The pocket's depth against the drop (Integration, 2026-11-16, POCKET_LEVEL's engaged bit): on dropbacks to the throw,
++# shotgun and under center separately (the QB's snap depth > 3 yd = gun), the QB's depth behind the line and the three
++# middle OL's depth behind the line (p50 of the three) at 0.5 / 0.8 / 1.0 / 1.3 / 1.5 / 2.0 / 2.5 s, and the gap between
++# them (QB minus interior). Same code on NFL tracking and sim exports.
++# usage: python3 scripts/diag/pass-operators/pocket-gap.py <plays.jsonl.gz> ...
++import sys, os, json, gzip
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++T = [0.5, 0.8, 1.0, 1.3, 1.5, 2.0, 2.5]
++for path in sys.argv[1:]:
++    A = {g: {t: ([], [], []) for t in T} for g in ('gun', 'under')}
++    for line in gzip.open(path, 'rt'):
++        r = json.loads(line); r = r.get('common', r)
++        if r.get('kind') != 'pass' or not r.get('xy'): continue
++        p = Play(r); dt = r['dt']; n = len(r['xy'])
++        at = lambda i, t: p.pos(i, min(n - 1, int(round(t / dt))))
++        qb = p.who('O', 'QB'); OL = [i for i in p.who('O', 'OL') if at(i, 0)[0] is not None]
++        if not qb or len(OL) < 5 or at(qb[0], 0)[0] is None: continue
++        end = min((r['events'].get(k) for k in ('pass', 'pass_forward', 'sack') if r['events'].get(k) is not None), default=(n - 1) * dt)
++        mid = sorted(OL, key=lambda i: at(i, 0)[1])[1:4]
++        g = 'gun' if -at(qb[0], 0)[0] > 3 else 'under'
++        for t in T:
++            if t > end: continue
++            qd = -at(qb[0], t)[0]; ods = [-at(i, t)[0] for i in mid if at(i, t)[0] is not None]
++            if qd is None or len(ods) < 3: continue
++            od = sorted(ods)[1]
++            A[g][t][0].append(qd); A[g][t][1].append(od); A[g][t][2].append(qd - od)
++    for g in ('gun', 'under'):
++        print(f"{os.path.basename(path)} {g}: " + ' | '.join(f"{t} s QB {q(A[g][t][0]):.2f} OL {q(A[g][t][1]):.2f} gap {q(A[g][t][2]):.2f} (n {len(A[g][t][0])})" for t in T))
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 45415cbf..5b6e815e 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -42,7 +42,7 @@ import { gapY } from '../playbook/alignment.js';
+ import { CF_FLOW } from './counterfactual.js';
+ import { connectionGap, contactMotion } from './contact-motion.js';
+ import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
+-import { calledLaunchX } from './called-drop.js';
++import { calledLaunchX, plannedDropX } from './called-drop.js';
+ import { requestToCover } from './motion-plan.js';
+ import { lineRead, pullers } from './run-fits.js';
+ import { observedHolder } from './possession-read.js';
+@@ -209,6 +209,9 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
+     const short = Math.min(pocket, snapDepth + SHORT_SET);
+     // POCKET_LEVEL: then level with the pocket, a request with a pace (his neighbors'), bounded by the short set and
+     // the pocket's front from the call.
++    // POCKET_DROP: from the gun, the cup in front of the drop he knows from the call, on its clock.
++    const onDrop = POCKET_DROP ? pocketDropDepth(sim, clearance) : null;
++    if (onDrop !== null) return Math.min(pocket, Math.max(snapDepth, onDrop));
+     const level = POCKET_LEVEL ? pocketLevelDepth(sim, b) : null;
+     return level === null ? short : Math.min(pocket, Math.max(short, level));
+   }
+@@ -234,6 +237,27 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
+  *   his man in front (stepPassRep's lateral reference is unchanged).
+  * Null when it gives no depth (his neighbors still at the line). */
+ export const POCKET_LEVEL = process.env.SET_SPOT !== '0' && process.env.POCKET_LEVEL !== '0';
++/** POCKET_DROP (experimental, off; POCKET_DROP=1, needs SET_SPOT, on since engine-72; POCKET_LEVEL's next bit; Integration, 2026-11-16): from
++ * the gun the interior set is the cup in front of the drop, on the drop's clock. NFL dropbacks from the gun hold the
++ * middle three OL a near-constant 3.8-4.1 yd in front of the QB through the whole drop (QB minus interior depth p50
++ * 3.8 / 3.8 / 3.9 / 4.0 / 4.1 / 4.0 / 3.8 yd at 0.5 / 0.8 / 1.0 / 1.3 / 1.5 / 2.0 / 2.5 s; scripts/diag/pass-operators/
++ * pocket-gap.py). His depth target at t is the QB's planned depth for the call at t (plannedDropX: the QB lane's plan,
++ * from the call alone, never the live QB behind him) less the interior clearance passSetDepth already uses (3.8 yd: the
++ * pocket's front at the launch point, the same constant along the way), no shallower than his snap spot and no deeper
++ * than the pocket's front. It replaces the short set and the neighbour level as his depth target while it applies; he
++ * still plays his man (the rep gives ground at that rate under control; a man who beats or drives him is physics).
++ * Under centre the NFL line does not follow the drop (the gap opens 1.1 -> 5.5 yd, as ours does), so it is gun only.
++ * Off (POCKET_LEVEL on), ours reached its short set early (1.3 vs the NFL's 0.9 yd at 0.5 s) and then lagged the drop
++ * (2.8 vs 3.5 yd at 2.0 s): retreat 0.8 / 1.0 / 1.2 yd/s over 0-0.5 / 0.5-1.0 / 1.0-1.5 s against the NFL's
++ * 0.4 / 1.2 / 1.8. */
++export const POCKET_DROP = process.env.SET_SPOT !== '0' && process.env.POCKET_DROP === '1';
++function pocketDropDepth(sim: PlaySim, clearance: number): number | null {
++  const concept = sim.offCall.pass, gun = sim.offCall.formation.qb !== 'under';
++  if (!concept || !gun) return null;
++  const spot = sim.offAlign.spots[sim.qb.slot as keyof typeof sim.offAlign.spots]?.pos;
++  const qbSnap = { x: sim.snapX[sim.qb.idx] ?? sim.qb.pos.x, y: spot?.y ?? sim.ballY };
++  return sim.los - plannedDropX(concept.drop, gun, qbSnap, { x: sim.los, y: sim.ballY }, sim.t) - clearance;
++}
+ const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
+ function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {
+   const L = protectPoint(sim), i = LINE_ORDER.indexOf(b.slot);
+-- 
+2.43.0
+
