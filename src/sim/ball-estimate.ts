@@ -28,6 +28,7 @@ import type { Vec3 } from '../core/vec.js';
 import { qbArmSpeed, stepFlight, type BallFlight } from '../physics/ball.js';
 import { shouldersOf, TRUNK_RANGE, TRUNK_TWIST, type MoveCommand } from '../physics/kinematics.js';
 import { naturalFlightFor } from './behaviors/qb.js';
+import { releaseBelief } from './release-belief.js';
 import type { Agent } from './agent.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from './receiver-forecast.js';
 import type { PlaySim } from './playsim.js';
@@ -238,6 +239,8 @@ interface Track {
   deliberate?: boolean;
   /** Bit 32: when the ball caught his eye without his looking for it (his hands are ready a reaction time later). */
   passiveAt?: number;
+  /** ARM_LOOK: his search line from the arm (the passer where he saw him, the shoulder bearing he read, the release). */
+  armLook?: { from: { x: number; y: number }; dir: number; at: number };
 }
 
 const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 'ballSkills'), 0, 1);
@@ -261,6 +264,19 @@ export const SEEN_EMPTY = process.env.SEEN_EMPTY !== '0';
  * within 10 deg of their hips (median) and 63 deg off that stale head (def-nosample.ts, engine-71). HEAD on already
  * works this way (one shared head per player). No new information: his own body. */
 export const HEAD_RIDE = process.env.HEAD_RIDE === '1';
+
+/** ARM_LOOK (experimental, off; ARM_LOOK=1; with BALL_EST): a defender who saw the passer's arm come through (his release
+ * belief from the arm) and has no sample of the ball yet looks for it: his estimator head is wanted along the passer's
+ * shoulder line as he reads it (the passer through his tracking channel, a read error drawn once by anticipation, the
+ * shoulder break's own draw), sweeping out from the passer at ARM_LOOK_SPEED. He knows nothing of the flight until the
+ * ball is in his eyes (a sample); his feet keep his assignment. Without it, an arm belief drove no look: under bit 32,
+ * 292 of 330 never-sampled rushers and 68 of 87 zone defenders held one at the catch and were still running away from
+ * the catcher (def-late.ts (D), engine-71). */
+export const ARM_LOOK = process.env.ARM_LOOK === '1';
+/** ARM_LOOK's sweep along the shoulder line (yd/s): the coached rule-of-thumb ball speed of the shoulder break
+ * (defense.ts SHOULDER_BALL_SPEED), out to ARM_LOOK_REACH yd. Stated choices; read at 12 and 22 yd/s. */
+const ARM_LOOK_SPEED = Number(process.env.ARM_LOOK_SPEED ?? 17), ARM_LOOK_REACH = 45;
+const ARM_READ_SD_MIN = 5, ARM_READ_SD_SPAN = 15;
 
 export class BallEstimates {
   private readonly tracks = new Map<Agent, Track>();
@@ -327,6 +343,23 @@ export class BallEstimates {
         else tr0.attendT = sim.t;
         if (!tr0.deliberate && tr0.passiveAt === undefined) tr0.passiveAt = sim.t;
       }
+    }
+    // ARM_LOOK: a defender with an arm belief and no sample of the ball looks for it along the passer's shoulder line.
+    if (ARM_LOOK) for (const a of sim.defense) {
+      if (a.isDown(sim.t) || !estimatesFor(a)) continue;
+      const rb = releaseBelief(sim, a);
+      if (rb.source !== 'arm' || rb.releasedAt === undefined) continue;
+      let tr = this.tracks.get(a);
+      if (tr && tr.flight !== this.flight) { this.reset(tr); tr.flight = this.flight; }
+      if (tr && tr.samples.length) continue;
+      if (!tr?.armLook) {
+        const q = sim.track(a, sim.qb, 1, true);
+        if (q.facing === undefined) continue;
+        const err = sim.dice('shoulder', a).normal(0, (ARM_READ_SD_MIN + ARM_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
+        if (!tr) { tr = { flight: this.flight, head: a.facing, headT: sim.t, attendT: sim.t, lastSampleT: -Infinity, err: null, samples: [], pseudo: [], fit: null, fitT: -1, path: null, pathT: -1, jumps: 0 }; this.tracks.set(a, tr); }
+        tr.armLook = { from: { x: q.pos.x, y: q.pos.y }, dir: q.facing + err, at: rb.releasedAt };
+      }
+      tr.attendT = sim.t; tr.deliberate = true;
     }
     for (const [a, tr] of this.tracks) {
       if (tr.flight !== this.flight) { this.reset(tr); tr.flight = this.flight; }
@@ -564,7 +597,7 @@ export class BallEstimates {
     tr.searchAt = undefined; // armSeenAt is his belief of this play's release: a tip is a new flight of the same throw.
     tr.lookStart = undefined; tr.lookLast = undefined; tr.lookZ = undefined; tr.held = undefined; tr.looks = undefined; tr.gPath = undefined; tr.eyeHist = undefined;
     tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
-    tr.deliberate = false; tr.passiveAt = undefined;
+    tr.deliberate = false; tr.passiveAt = undefined; tr.armLook = undefined;
   }
 
   /** Bit 2048: has he held this flight in his eyes for his dwell (this look, or an earlier one of the same flight)? */
@@ -631,6 +664,11 @@ export class BallEstimates {
     }
     if (n === 1) { if (tr.fit) { const p = this.pathOf(sim, tr); if (p.length) return p[0]; } return { x: tr.samples[0].p.x, y: tr.samples[0].p.y }; }
     tr.searchAt ??= sim.t;
+    // ARM_LOOK: with no fit, his search runs out from the passer along the shoulder line he read.
+    if (ARM_LOOK && tr.armLook && !tr.fit) {
+      const L = tr.armLook, d = Math.min(ARM_LOOK_REACH, Math.max(1, ARM_LOOK_SPEED * (sim.t - L.at)));
+      return { x: L.from.x + Math.cos(L.dir) * d, y: L.from.y + Math.sin(L.dir) * d };
+    }
     const now = tr.fit ? this.pathOf(sim, tr)[0] : undefined;
     if (!now) return qb;
     const k = clamp((sim.t - tr.searchAt) / GAZE_SEARCH, 0, 1);

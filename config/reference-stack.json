@@ -124,6 +124,7 @@
     "HEAD_RIDE": "off",
     "ACQ_SEEN": "off",
     "TRACKED_CATCH": "off",
+    "ARM_LOOK": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
