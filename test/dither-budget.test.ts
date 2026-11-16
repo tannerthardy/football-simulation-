@@ -20,6 +20,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
+/** DITHER_PANEL_SEED=100 (a multiple of 2) re-draws every play's random numbers with the same calls and flips: for measuring how far a row moves with the draw alone (docs/reviews/2026-11-16-dither-small-sample.md). 0 is the recorded panel. */
+const PANEL_SEED = Number(process.env.DITHER_PANEL_SEED ?? 0);
 const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags as Record<string, string>)
   .filter(([, v]) => v === 'on').map(([k]) => k);
 
@@ -58,7 +60,7 @@ async function measure() {
     const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
       offCall: { formation, flip: seed % 2 === 0, kind: 'run', run: RUN_BY_ID[run], label: run },
       defCall: { personnel: 'base43', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'spot', label: 'u3' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
     core.watch(sim, acc); sim.run();
   }
   for (const pass of ['curl_flat', 'stick', 'mesh', 'smash', 'slant_flat', 'four_verts']) for (let seed = 1; seed <= 5; seed++) {
@@ -66,7 +68,7 @@ async function measure() {
     const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 'o31' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
     core.watch(sim, acc); sim.run();
   }
   for (const pass of ['bubble_screen', 'rb_slip_screen', 'tunnel_screen', 'wide_now_screen', 'four_verts', 'y_cross', 'flood', 'pa_shot', 'pa_flood'])
@@ -76,7 +78,7 @@ async function measure() {
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: deep ? PASS_BY_ID[pass] : SCREEN_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: pass.startsWith('pa_') ? COVERAGE_BY_ID.cover1 : deep ? COVERAGE_BY_ID.cover2 : seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1,
         pressure: null, zoneStyle: 'spot', label: 'scr' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
     core.watch(sim, acc); sim.run();
   }
   return core.rates(acc);
@@ -121,7 +123,7 @@ describe('dither budget: players do not re-aim and take it back more often than 
       const sim: any = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, pers),
         offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
         defCall: { personnel: pers, front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 'rel' },
-        los: 35, ballY: 26.65, firstDownX: 45, seed } as never);
+        los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
       const dir = sim.attackDir('O'), hist = new Map<unknown, { t: number; h: number }[]>(), tick = sim.tick.bind(sim);
       sim.tick = () => {
         tick();
