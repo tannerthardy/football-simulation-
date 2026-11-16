@@ -1,6 +1,7 @@
 /** QB_FOOTWORK bit 8 (behaviors/qb.ts; with bits 1 and 2, on CONCEPT_DROPS): the grass read. When his first read is a
  * route into space (go, fade, corner, post, deep out), it is decided by the plant: readable (out of the collision, nobody
- * he sees between the man and where the ball lands, a man under the throw not counting) and priced worth it, it leaves
+ * readable on its step (its release won; on a vertical also his leverage on the man over him: the vertical cue) and
+ * priced worth it by the window (no geometric veto), it leaves
  * on the plant; otherwise he is on to his next read with no dwell. Staged on mesh against cover 2 and tampa 2 (the corner
  * in the hole between the cloud and the safety).
  * 1. No dwell: with it on, once he is a tick past his plant his read is never the grass read again (off: he dwells on it).

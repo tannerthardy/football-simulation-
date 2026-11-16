@@ -1826,7 +1826,11 @@ export class QBPass implements Behavior {
    * arrives), no geometric veto: whether a deep safety gets there before the ball is the window's timing question. The
    * first form vetoed on any defender within 2 yd of the path to the landing area (four verts from trips: sacks 6 -> 21). */
   private grassReadable(sim: PlaySim, r: Agent): boolean {
-    return this.vertReadable(sim, r);
+    // A vertical: its release and the leverage on the man over him (the vertical cue). A corner: its release only; the
+    // deep half defender over it is the window's timing question (the hole shot goes before he gets there).
+    if (this.receiverForecasts.get(r)?.prior.declRule === 'vertical') return this.vertReadable(sim, r);
+    const p = sim.see(sim.qb, r);
+    return (p.pos.x - sim.los) * sim.attackDir(sim.qb.team) >= 2 && Math.hypot(p.vel.x, p.vel.y) >= 4;
   }
   private vertReadable(sim: PlaySim, r: Agent): boolean {
     if (this.vertRead.has(r)) return true;
