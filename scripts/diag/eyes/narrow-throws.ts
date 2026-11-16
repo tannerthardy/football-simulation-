@@ -20,7 +20,14 @@ PlaySim.prototype.run = function (this: PlaySim) {
       try { narrow = typeof b?.narrow === 'function' ? b.narrow(p) : null; } catch { narrow = null; }
       row = { t: +sim.t.toFixed(2), away, kind: b?.kind ?? null, narrow: narrow === null ? null : +narrow.toFixed(3), freeU: b?.freeU !== undefined ? +b.freeU.toFixed(3) : null,
         bar: b?.barNow ? { u: +b.barNow.u.toFixed(3), thr: +b.barNow.thr.toFixed(3), maxInt: +b.barNow.maxInt.toFixed(3), thr0: +b.barNow.thr0.toFixed(3) } : null,
-        P: b?.throwRec?.P ?? null, hot: !!b?.hot, target: target?.slot ?? null };
+        P: b?.throwRec?.P ?? null, hot: !!b?.hot, target: target?.slot ?? null,
+        // Who he believed was coming free, from his rush belief (prior and current), BLITZ_SECOND's path class, and
+        // (diagnostic truth only) what that man was really doing: his behavior, and his speed toward the QB.
+        threat: (() => { const ft = b?.freeThreat; if (!ft?.d) return null; const d = ft.d, r = b.rushB?.get(d);
+          const dx = p.pos.x - d.pos.x, dy = p.pos.y - d.pos.y, dist = Math.hypot(dx, dy) || 1;
+          return { slot: d.slot, pos: d.player?.position ?? null, p: +ft.p.toFixed(2), arr: +ft.arr.toFixed(2), prior: r ? +r.prior.toFixed(2) : null,
+            path: b.pathOf?.get(d) ?? null, trueKind: d.behavior?.kind ?? null, trueToward: +((d.vel.x * dx + d.vel.y * dy) / dist).toFixed(1), trueDist: +dist.toFixed(1),
+            rushersCalled: sim.defCall?.pressure?.id ?? null }; })() };
     }
     return tb(p, target, ...rest);
   };
