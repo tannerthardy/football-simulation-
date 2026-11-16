@@ -44,7 +44,9 @@ export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
   const own = estimatesFor(a) && !!sim.ballEstimates;
   const path = own ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
   if (own && !path.length) return path;
-  const seenAt = own && ACQ_SEEN ? sim.ballEstimates.lastSeen(a)?.t : undefined;
+  // ACQ_SEEN: his last sample of the ball; with none yet (a flight from his release prior alone), the moment he first
+  // acquired it, kept, not refreshed.
+  const seenAt = own && ACQ_SEEN ? sim.ballEstimates.lastSeen(a)?.t ?? flights.get(a)?.acquiredAt : undefined;
   flights.set(a, { acquiredAt: seenAt ?? sim.t, path });
   return path;
 }
