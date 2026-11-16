@@ -3724,7 +3724,7 @@ export const PASS_OFF = process.env.PASS_OFF !== '0';
  * - **Off balance:** off his feet he does not fit (at most -0.5, the missed punch).
  * The old pairing's rep edge is not carried. */
 export const PASS_HANDOVER = PASS_OFF && process.env.PASS_HANDOVER === '1';
-function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent, seen: boolean): number {
+function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
   const d = e.defender, tb = traits(keeper, 'pass'), td = traits(d, 'pass'), rng = sim.dice('handover', keeper, d);
   const armEdge = (tb.arm - td.arm) / 3, punchB = tb.hands + 0.12 * armEdge + rng.normal(0, 0.18);
   let c: number;
@@ -3744,7 +3744,10 @@ function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent, seen: boole
   // already fitted (the hand-over's other precondition: force on his helper joint) has nothing left to land, so his fit
   // is the exchange alone. (Attempt 2 charged every keeper a landing time at his closing speed: a fitted, slowly
   // closing keeper got a near miss; staged, in reach -0.44.)
-  if (!seen) return (keeper.body.support?.state ?? 'up') !== 'up' ? Math.min(c, -0.5) : c;
+  // Loaded is the load on his own hands joint, not the path that found him: the seen check runs first each tick, so it
+  // also finds keepers whose hands are already on (the first cut keyed on the path and changed nothing).
+  const hj = e.hands, loaded = !!hj && (Math.max(0, hj.normalForce ?? 0) > 0 || Math.abs(hj.tangentForce ?? 0) > 0);
+  if (loaded) return (keeper.body.support?.state ?? 'up') !== 'up' ? Math.min(c, -0.5) : c;
   const dx = d.pos.x - keeper.pos.x, dy = d.pos.y - keeper.pos.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
   const contact = keeper.profile.radius + d.profile.radius, reach = contact + tb.arm / 36 * 0.3;
   const closing = Math.max(0.1, (keeper.vel.x - d.vel.x) * ux + (keeper.vel.y - d.vel.y) * uy);
@@ -3771,7 +3774,7 @@ function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   e.blocker = keeper; e.hands = joint;
   e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
   // PASS_HANDOVER: the keeper's control from the first-contact law, not a scripted 0.
-  e.control = PASS_HANDOVER ? handoverControl(sim, e, keeper, seen) : 0;
+  e.control = PASS_HANDOVER ? handoverControl(sim, e, keeper) : 0;
   e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
   if (e.defHands) e.defHands.b = keeper.body;
   syncJoints(sim, e);

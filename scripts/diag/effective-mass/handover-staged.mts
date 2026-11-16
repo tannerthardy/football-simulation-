@@ -19,7 +19,8 @@ for (const concept of ['four_verts', 'smash', 'dagger']) for (const coverage of 
       if (!sim.engagements.includes(e) || e.blocker === p.blocker) continue;
       const k = e.blocker, d = e.defender, tk = traits(k, 'pass');
       const dist = Math.hypot(d.pos.x - k.pos.x, d.pos.y - k.pos.y), reach = k.profile.radius + d.profile.radius + tk.arm / 36 * 0.3;
-      open.push({ t: sim.t, k, d, before: p.control, after: e.control, late: dist - reach, up: (k.body.support?.state ?? 'up') === 'up', move: e.move, released: false, reached: false });
+      const hj = e.hands, loaded = !!hj && (Math.max(0, hj.normalForce ?? 0) > 0 || Math.abs(hj.tangentForce ?? 0) > 0);
+      open.push({ loaded, t: sim.t, k, d, before: p.control, after: e.control, late: dist - reach, up: (k.body.support?.state ?? 'up') === 'up', move: e.move, released: false, reached: false });
     }
     for (const h of open) {
       if (sim.t - h.t > 0.5 || h.released) continue;
@@ -32,7 +33,7 @@ for (const concept of ['four_verts', 'smash', 'dagger']) for (const coverage of 
 const q = (v: number[], f = .5) => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))] : NaN; };
 const pc = (n: number, d: number) => `${(100 * n / Math.max(1, d)).toFixed(0)}%`;
 console.log(`hand-overs: ${H.length} | control after p10/50/90 ${q(H.map((h) => h.after), .1).toFixed(2)}/${q(H.map((h) => h.after)).toFixed(2)}/${q(H.map((h) => h.after), .9).toFixed(2)} (exactly 0: ${pc(H.filter((h) => h.after === 0).length, H.length)}) | before p50 ${q(H.map((h) => h.before)).toFixed(2)}`);
-for (const [lab, f] of [['keeper in reach (late <= 0)', (h: any) => h.late <= 0 && h.up], ['keeper late (> 0.1 yd)', (h: any) => h.late > 0.1 && h.up], ['keeper off his feet', (h: any) => !h.up]] as [string, (h: any) => boolean][]) {
+for (const [lab, f] of [['hands loaded (fitted)', (h: any) => h.loaded && h.up], ['hands not loaded, in reach', (h: any) => !h.loaded && h.late <= 0 && h.up], ['hands not loaded, late (> 0.1 yd)', (h: any) => !h.loaded && h.late > 0.1 && h.up], ['keeper in reach (late <= 0)', (h: any) => h.late <= 0 && h.up], ['keeper late (> 0.1 yd)', (h: any) => h.late > 0.1 && h.up], ['keeper off his feet', (h: any) => !h.up]] as [string, (h: any) => boolean][]) {
   const S = H.filter(f); if (!S.length) { console.log(`  ${lab}: none`); continue; }
   console.log(`  ${lab} (n ${S.length}): control after p50 ${q(S.map((h) => h.after)).toFixed(2)} (p25 ${q(S.map((h) => h.after), .25).toFixed(2)}) | released within 0.5 s ${pc(S.filter((h) => h.released).length, S.length)} | reached the QB ${pc(S.filter((h) => h.reached).length, S.length)}`);
 }
