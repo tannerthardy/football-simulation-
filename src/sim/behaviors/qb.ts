@@ -459,6 +459,15 @@ const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency
  * slide / reset) are not built. */
 const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
 const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
+/** QB_FOOTWORK bit 2 (first part: his facing). The drop opens his hips: his chest turns from downfield toward his
+ * picture of read 1 as he gives ground, in proportion to the depth he has dropped (the coached crossover drop, hips
+ * open to the throw's side; NFL chest off downfield 22 / 41 / 55 / 59 deg at 25 / 50 / 75 / 90% of a short gun drop, ours
+ * 0 throughout: docs/reviews/2026-11-15-drop-measurements.md). From under center the same, in place of a fixed 75 deg
+ * to one side. In the pocket his shoulders set on a step, not on a look: they turn to a read at the plant and when a
+ * footwork step lands (bit 1's), toward his picture of the man; a look moves his eyes and head only (his facing
+ * re-aimed with every look and came back within 0.3 s on 68 of 186 reversals, scripts/diag/eyes/facing-swing.ts).
+ * Read with bit 1. Not built yet in bit 2: drop pacing from the rhythm, the step into the throw. */
+const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
 /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
  * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
  * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
@@ -1088,6 +1097,7 @@ export class QBPass implements Behavior {
     if (this.phase === 'snap') {
       if (t < this.snapAt) return stand(facingDown);
       this.phase = 'drop';
+      this.dropStartX = a.pos.x;
     }
     // BLITZ_READ: his rush belief, from the snap on, through his drop.
     if (BLITZ_READ && this.phase !== 'windup' && t <= this.snapAt + 2.5) {
@@ -1219,6 +1229,8 @@ export class QBPass implements Behavior {
         this.phase = 'set';
         this.setAt = t;
         this.readStart = t;
+        // QB_FOOTWORK bit 2: his shoulders set at the plant, to the read he is on.
+        if (FW_HIPS) this.shoulderOn = this.reads[this.readIdx] ?? this.reads[0] ?? null;
       } else {
         // Rhythm: on the last step of his drop he can already start his load,
         // so a timing throw comes out as he hits his set point rather than
@@ -1239,7 +1251,14 @@ export class QBPass implements Behavior {
         if (a.r('decisionMaking') < 0.45) sim.qbEyes = this.reads[0] ?? null;
         const gun = sim.offCall.formation.qb !== 'under';
         // Drop: backpedal from gun, turn-and-drop from under center.
-        const facing = gun ? 0 : Math.PI / 2.4;
+        let facing = gun ? 0 : Math.PI / 2.4;
+        // QB_FOOTWORK bit 2: the hips open toward read 1 as he gives ground (his picture of the man).
+        if (FW_HIPS && this.reads[0]) {
+          const dirX = sim.attackDir(a.team), down = dirX > 0 ? 0 : Math.PI;
+          const depthNow = (this.dropStartX - a.pos.x) * dirX, depthAll = Math.max(0.5, (this.dropStartX - this.drop.x) * dirX);
+          const k = clamp(depthNow / depthAll, 0, 1), to = angleTo(a.pos, this.has(sim, this.reads[0]));
+          facing = down + k * wrapAngle(to - down);
+        }
         return goTo(a, target, { facing, through: 0 });
       }
     }
@@ -1673,7 +1692,11 @@ export class QBPass implements Behavior {
    * thrown at 3.40-3.55 s off.) */
   private footwork(a: Agent, sim: PlaySim, _read: Agent | undefined): void {
     const st = this.step;
-    if (st && !st.landed && sim.t - st.since >= this.stride() - 1e-9) { st.landed = true; this.landedSteps = st.n; }
+    if (st && !st.landed && sim.t - st.since >= this.stride() - 1e-9) {
+      st.landed = true; this.landedSteps = st.n;
+      // QB_FOOTWORK bit 2: a step that lands sets his shoulders to the read he is on.
+      if (FW_HIPS && _read) this.shoulderOn = _read;
+    }
     if (this.setAt < 0 || (st && !st.landed)) return;
     let last = 0;
     for (const n of this.readStep.values()) last = Math.max(last, n);
@@ -2421,7 +2444,13 @@ export class QBPass implements Behavior {
   /** SHOULDERS_SET: the facing his feet hold while he reads. His shoulders go
    * to a read once his eyes have held it for SHOULDER_SETTLE; until then they
    * stay where they were set. Off: square to the read. */
+  /** QB_FOOTWORK bit 2: the read his shoulders are set to (at the plant, then at each landed step). */
+  private shoulderOn: Agent | null = null;
+  /** QB_FOOTWORK bit 2: where his drop started (his x at the snap). */
+  private dropStartX = NaN;
   private bodyFacing(a: Agent, sim: PlaySim, read: Agent | null | undefined): number {
+    // QB_FOOTWORK bit 2: shoulders on a step, toward his picture of the man; a look alone does not turn them.
+    if (FW_HIPS) { const r = this.shoulderOn ?? read; return r ? angleTo(a.pos, this.has(sim, r)) : a.body.facing; }
     const at = (r: Agent) => QB_FACE_SEEN ? this.has(sim, r) : r.pos;
     if (!SHOULDERS_SET) return read ? angleTo(a.pos, at(read)) : 0;
     const eyes = read ?? null;
