@@ -1,0 +1,423 @@
+From 5bdf2e3f9e0bf22fdcf8130d0414711fadd067c9 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 06:51:46 +0000
+Subject: [PATCH] RELEASE_COMMIT (off): the route craft keeps the release's
+ side round the man he released round (#35 item 2)
+
+---
+ config/baseline.json                          |  1 +
+ config/reference-stack.json                   |  1 +
+ docs/FLAGS.md                                 |  3 +-
+ .../diag/pass-operators/attached-contact.mts  | 36 +++++++++++++
+ .../pass-operators/attached-craft-who.mts     | 21 ++++++++
+ .../diag/pass-operators/attached-release.mts  | 43 +++++++++++++++
+ .../diag/pass-operators/attached-release.py   | 54 +++++++++++++++++++
+ scripts/diag/pass-operators/box-count.py      | 41 ++++++++++++++
+ src/sim/behaviors/receiver.ts                 | 26 +++++++--
+ test/release-commit.test.ts                   | 44 +++++++++++++++
+ 10 files changed, 265 insertions(+), 5 deletions(-)
+ create mode 100644 scripts/diag/pass-operators/attached-contact.mts
+ create mode 100644 scripts/diag/pass-operators/attached-craft-who.mts
+ create mode 100644 scripts/diag/pass-operators/attached-release.mts
+ create mode 100644 scripts/diag/pass-operators/attached-release.py
+ create mode 100644 scripts/diag/pass-operators/box-count.py
+ create mode 100644 test/release-commit.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 8ffa276e..5c39bc25 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -354,6 +354,7 @@
+     "PLANT_REACH": "0",
+     "COMPILE_PICTURE": "0",
+     "CRAFT_HOLD": "0",
++    "RELEASE_COMMIT": "0",
+     "RELEASE_SIDE": "0",
+     "SCREEN_DECLARE": "0",
+     "ROUTE_SHAPE": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 2bfe38ad..6826e28c 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -319,6 +319,7 @@
+     "PLANT_REACH": "on",
+     "COMPILE_PICTURE": "on",
+     "CRAFT_HOLD": "off",
++    "RELEASE_COMMIT": "off",
+     "RELEASE_SIDE": "on",
+     "SCREEN_DECLARE": "on",
+     "ROUTE_SHAPE": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 8e205ade..23689ce1 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 418 flags read from the environment in `src` (recounted 2026-11-16, engine-71): 308 are on unless set to `0`, 93 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 419 flags read from the environment in `src` (recounted 2026-11-16, engine-71, plus `RELEASE_COMMIT` off): 308 are on unless set to `0`, 94 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -244,6 +244,7 @@ There are 418 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `COMPILE_PICTURE` | on | promoted 2026-11-15 (engine-70; `=0` restores); was experimental (read plans, 2026-11-15; found re-recording the pins) | QB (plan) | `src/playbook/read-compiler/features.ts` (`sampleRoutes`) | set at first review. The read compiler times each concept's routes in an offence-only sample with the defence parked 60 yd away; it was recorded where it lined up before it was parked, and every picture is delayed, so in the first ticks a receiver acted on defenders who are not there: PRESS_MIRROR / RELEASE_SEEN's tight-at-snap men (pa_flood, gun doubles: unflipped S2 releases round his parked DE_S, flipped he does not), and the sample was not mirror-symmetric (read-compiler's mirror case fails on the engine defaults; bisected over the 223 promoted flags to PRESS_MIRROR alone). With the flag the record's delay window is filled with the parked defence (12 frames) before the first tick. Installed plans, 32 concepts x 6 formations: 6 of 192 change (four_verts and pa_flood from empty; hitch_post, hitch_cross, trips_stick and trips_sail from wing 12). Test `test/compile-picture.test.ts`. |
+ | `CRAFT_HOLD` | off | turned back off 2026-11-16 (engine-71) after one engine on: it bends receivers off the quarterback\'s aim and overrides the stick\'s break (Coverage, 289 paired throws: 20 catches lost, 6 won); second attempt with Rules; was experimental (routes, 2026-11-15; Flex's dither, Integration ruling 1) | routes | `src/sim/behaviors/receiver.ts` (`routeCraft`, `RouteRunner.routeSide`), `src/sim/route-motion.ts` (`steerRoute`) | set at first review. The route craft commits to the side it chose round a man in his lane and keeps it until he has been clear of him for 0.2 s: the side is his route's from the snap when it is clear (the declared break's leg, with DECLARED_BREAK), else the side he already holds (kept as a field direction), else the per-tick break side. The bend never takes him back down his route (at least 0.3 of his pace along it) or across to the other side of the man. Off, the side came from a break side re-derived every tick from his velocity, so a wing pressed against an end flipped his request +-7 yd/s across nearly every tick (gun_wing_12 cover6, 1.0-1.7 s). A receiver bent off his stem rejoins his route ahead: a point he is beyond along both its legs is passed however far to the side, and a straight-through marker (a turn under 12 deg) is skipped once he is a yard off its leg (the cover6 seam released 2.9 yd outside the end and cut back flat to his 4-yd point, then ran back down his route to it). Release slice (50 plays: slant_flat, drive, mesh, y_cross, hitch_cross; gun_wing_12 vs base 4-3, gun_trey_11 vs nickel; Over; cover 3 / 1; seeds 1-5; engine-68), off -> on: reversed re-aims inside 5 yd with the ball held 37 -> 13 (0.084 -> 0.029/s), route controller 0.152 -> 0.091/s, receiver falls before 2.5 s 5 -> 4, time to 5 yd p25/50/75 1.70/1.90/1.95 unchanged. cover6 seam scene: 8.6 -> 11.9 yd up at 3.0 s. Dither panel: carrier / spacing 0.149 -> 0.177/s (budget 0.174), composition: four plays with no catch off are completions on (stick 4, 5, slant_flat 1, 2; +10 events), mesh 4 -2. Test `test/craft-hold.test.ts`. |
+ | `RELEASE_SIDE` | on | promoted 2026-11-16 (engine-70; `=0` restores); was experimental (routes, 2026-11-15; Integration ruling 2) | routes | `src/sim/spacing.ts` (`spaceTeammates`, after `jointClosingRequest`), `RouteRunner.routeSide` | set at first review. When a teammate sits on his route line in his release, he passes on the side away from the line of scrimmage (under the end, round the back hip), then toward his route; an outside route keeps its own side (the cross product of his route's declared leg across the line to the teammate; under the end when the leg is within 0.35 of square to it); the side is held per teammate until he is clear. Needs DECLARED_BREAK (his route's leg). cover6 exchange scene (gun_wing_12, the wing's slant behind the end's flat), with CRAFT_HOLD: the wing 0.13 yd outside -> 2.43 yd inside at 2.8 s; alone -0.03 (the craft still flips him back). The scene's hook exchange (hook takes the wing man) then needs 3.55 s: the wing is held on the rushing DE 1.0-1.7 s and his slant passes the coverage read's 30 deg line at 2.6 s. Release slice (as CRAFT_HOLD's), alone: reversed re-aims 37 -> 40, falls 5 -> 5, time to 5 yd unchanged; with CRAFT_HOLD 17, falls 4. Test `test/craft-hold.test.ts`. |
++| `RELEASE_COMMIT` | off | experimental (Flex, 2026-11-16; Integration #35 item 2) | routes | `src/sim/behaviors/receiver.ts` (`routeCraft`, `RouteRunner.releaseMan`) | set at first review. One decision per man: when the route craft's man in his lane is the man he has just released round (the press release, RELEASE_SEEN's man tight over him at the snap, or a jam he worked off), the craft goes round him on the release's side (a field side; when his line runs mostly across the field, the side of the man he is already on) instead of re-deciding it from the route's leg; a new man is a new decision. Off, an attached end released round the end over him and then, when that end was no longer ahead of him, the craft took him back across the same man's body. Staged double_outs (gun_trey_11, ace_11, ace_12, gun_wing_12 x cover1/2/3/4 x rosters 1-6 x seeds 1-2; 240 attached ends on routes, 96 hit by a rusher), off -> on: lateral request reversed within 0.6 s of contact 54 -> 14 ends (two or more reversals 19 -> 0), touched ends' depth at 1.5 / 2.0 s -0.08 / 1.09 -> 0.17 / 1.64 yd (untouched 2.36 / 4.4), downfield speed 0.5 s after contact 0.46 -> 1.04 yd/s, falls 4 -> 4. The rest of the cost is the collision: about 2 ticks, normal impulse p50 241 kg yd/s on a 112 kg end, -1.5 yd/s downfield, met nearly head-on (scripts/diag/pass-operators/attached-release.mts, attached-contact.mts). NFL-matched operator attached-release.py. |
+ | `SCREEN_DECLARE` | on | promoted 2026-11-15 (engine-68; `=0` restores); was experimental (read compiler, 2026-11-14) | routes | `src/playbook/read-compiler/features.ts` (a screen route's declared time) | set at first review. A screen's receiver has shown his answer when he turns back to the catch point (the break), so in a `screen`-family concept a route with a break declares on it (break + 0.1 s), ahead of `moved` (5 yd from his start with the line crossed), which a screen behind the line may never reach in the horizon. Off, the tunnel's S1 window of 1.35 s was the fallback's accident (no `moved`, so break + 0.1), and ROUTE_EFFORT, running him 0.1 yd/s faster upfield at the end, crossed +0.5 yd at 3.9 s and declared him at 4.1 s with the track unchanged. With the flag (865 windows, every concept x 5 formation families): only the trips / bunch / empty / 12 bubble's S2 moves, 2.7-3.1 to 1.15-1.8 s (its turn up); the tunnel stays at 1.35-1.4 s with ROUTE_EFFORT and ROUTE_FILLET on. The screen QB's throw timing (SCREEN_QB) does not read these windows: staged tunnel and bubble, seeds 1-3, released at 1.85 and 1.50 s in both arms. Under ROUTE_FILLET the bubble's turn up is rolled and shows no 30 deg break against the chord of his bending path, so a screen route with no break is read against his first stem's heading (30 deg off it, at least 1.5 yd from his start, placed back to 8 deg): on the route-card stack only the 12-personnel bubble's S2 changes, 2.9 -> 1.4 s (1.8 with the fillet off). Test `test/screen-declare.test.ts`. |
+ | `ROUTE_SHAPE` | off | experimental (routes, 2026-11-14; attempt 1 of 2) | routes | `src/playbook/routes.ts` (`SHAPES`) | set at first review. The in and out breaks as taught past about 8 yd and on the speed out: rolls, not square plants (USA Football, Coaching the Wide Receiver: Square Break, Speed Drop, Speed Cut; Viqtory Sports' dig: push to 10, speed cut, flatten at 12). speed out 4 yd stem bending out (4 / 5.5 / 6.5 deep), out 9 / 11 / 11.5, deep out 12 / 14 / 14.5, dig 10 / 12 / 12.3, each at s 1 under the fillet; the short in stays a square cut. Matched breaks (route_break.py, Cover 3, fillet + effort on), NFL WR weeks 1-3 in brackets: dig and out v_min / v_in .89 (.88 / .89), heading 0.8-1.5 s after the break 70-76 deg (72-74), break at 2.7 s (2.8); speed out .97 (1.01), 71 deg (68). Off: .59-.81, 78-86 deg. Open: the turn inside the operator's windows is 66-67 deg against the NFL's 52-53 (our roll is tighter in its first half); v_in into the deep break 5.6 against 6.6. Read times: the dig and out concepts (drive, dagger, levels, pa_post_dig, comebacks, flood, pa_shot) become ready 0.5-0.7 s earlier, the break starting at 9-10 yd where it was planted at 10-12. The out's closest approach to the sideline by 3.5 s p10 9.2 yd (off 9.4). Test `test/route-shape.test.ts`. |
+ | `FORECAST_BREAK` | on | promoted 2026-11-11 (engine-32; `=0` restores); was experimental (2026-11-11; found in read-compiler Phase 1) | QB | `src/sim/receiver-forecast.ts` (`pathBreak`); `src/sim/route-motion.ts` (`ext` on continuation points) | set at first review. The break the QB expects is on the installed route, not on the continuation the path adds past it. Off, a flat, arrow, swing or back's flat takes its break from the continuation's turn at the sideline margin, so the QB expects it about 6 s after the snap and the receiver is not "ready" until the hand-written order runs out (a flat open at 0.77 completion went unthrown; the concept-menu report's unexecuted fade-flat and corner-flat). Evidence in `docs/reviews/2026-11-11-forecast-break.md`. Test `test/forecast-break.test.ts`. |
+diff --git a/scripts/diag/pass-operators/attached-contact.mts b/scripts/diag/pass-operators/attached-contact.mts
+new file mode 100644
+index 00000000..442d6396
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-contact.mts
+@@ -0,0 +1,36 @@
++// The body contact between an attached end and the rusher who hits him (#35 item 2): over the 0.6 s after first
++// contact (staged double_outs, as attached-release.mts), the World's normal impulse on the end from that rusher, its
++// downfield and lateral components (on the end; + downfield = toward the line he is releasing past), the Coulomb
++// friction bound on it (CONTACT_FRICTION 0.35 x N), and the Δv they could give his mass, against his achieved Δv.
++// usage: [RELEASE_COMMIT=1] node --import tsx scripts/diag/pass-operators/attached-contact.mts
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const rows: any[] = [];
++for (const formation of ['gun_trey_11', 'ace_11', 'ace_12', 'gun_wing_12']) for (const coverage of ['cover1', 'cover3', 'cover2', 'cover4']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'double_outs', seed, roster, formation, flip: false }));
++  const dir = sim.attackDir(sim.offense[0].team);
++  const ends = sim.offense.filter((a: any) => sim.offAlign.spots[a.slot]?.inline);
++  const st = new Map<any, any>();
++  while (sim.phase === 'live' && sim.t < 2.0) {
++    sim.tick();
++    for (const a of ends) {
++      if (!st.has(a)) for (const d of sim.defense) if ((d.player.position === 'EDGE' || d.player.position === 'DT') && Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) <= a.profile.radius + d.profile.radius + 0.15) { st.set(a, { d, t: sim.t, v0: { ...a.vel }, Nx: 0, Ny: 0, N: 0, ticks: 0 }); break; }
++      const s = st.get(a); if (!s || sim.t - s.t > 0.6 || s.done) continue;
++      const ia = sim.world.bodies.indexOf(a.body), id = sim.world.bodies.indexOf(s.d.body);
++      for (const c of sim.lastStep?.contacts ?? []) {
++        if (!((c.i === ia && c.j === id) || (c.i === id && c.j === ia)) || !c.first) continue;
++        // normal points from i to j: the impulse on j is +normal, on i -normal.
++        const sgn = c.j === ia ? 1 : -1;
++        s.Nx += sgn * c.normal?.x * c.impulse || sgn * c.first.normal.x * c.impulse; s.Ny += sgn * c.first.normal.y * c.impulse; s.N += c.impulse; s.ticks++;
++      }
++      if (sim.t - s.t > 0.58) { s.done = true; s.v1 = { ...a.vel }; s.m = sim.world.mass[ia]; s.lat = Math.sign(s.d.pos.y - a.pos.y); }
++    }
++  }
++  for (const [a, s] of st) if (s.done) rows.push({ m: s.m, N: s.N, down: s.Nx * dir, across: -s.Ny * s.lat, dvDown: (s.v1.x - s.v0.x) * dir, ticks: s.ticks });
++}
++const q = (v: number[], f = .5) => { const z = v.filter(Number.isFinite).sort((a, b) => a - b); return z.length ? z[Math.floor(f * (z.length - 1))] : NaN; };
++const f = (k: string, g = (r: any) => r[k]) => `${q(rows.map(g), .25).toFixed(2)}/${q(rows.map(g)).toFixed(2)}/${q(rows.map(g), .75).toFixed(2)}`;
++console.log(`ends ${rows.length} | mass p50 ${q(rows.map((r) => r.m)).toFixed(0)} | ticks in contact p50 ${q(rows.map((r) => r.ticks))} of ~24`);
++console.log(`normal impulse on the end over 0.6 s p25/50/75 ${f('N')} kg·yd/s | its downfield part ${f('down')} | its lateral part away from the rusher ${f('across')}`);
++console.log(`Δv the normal could give him downfield ${f('', (r) => r.down / r.m)} yd/s | friction bound 0.35N/m ${f('', (r) => 0.35 * r.N / r.m)} | achieved Δv downfield ${f('dvDown')}`);
+diff --git a/scripts/diag/pass-operators/attached-craft-who.mts b/scripts/diag/pass-operators/attached-craft-who.mts
+new file mode 100644
+index 00000000..280bdf96
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-craft-who.mts
+@@ -0,0 +1,21 @@
++// Which man the route craft bends an attached end around in the 0.6 s after a rusher hits him (double_outs, staged).
++// Needs a temporary export of receiver.ts craftHeld as globalThis.__craftHeld (not committed); 2026-11-16: the rusher
++// who hit him 60 of 62.
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const C: Record<string, number> = {};
++for (const formation of ['gun_trey_11', 'ace_11', 'ace_12', 'gun_wing_12']) for (const coverage of ['cover1', 'cover3', 'cover2', 'cover4']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'double_outs', seed, roster, formation, flip: false }));
++  const ends = sim.offense.filter((a: any) => sim.offAlign.spots[a.slot]?.inline);
++  const first = new Map<any, any>(); const seen = new Set<string>();
++  while (sim.phase === 'live' && sim.t < 2.0) {
++    sim.tick();
++    for (const a of ends) {
++      if (!first.has(a)) for (const d of sim.defense) if (Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) <= a.profile.radius + d.profile.radius + 0.15 && (d.player.position === 'EDGE' || d.player.position === 'DT')) { first.set(a, { d, t: sim.t }); break; }
++      const f = first.get(a), h = (globalThis as any).__craftHeld.get(a);
++      if (f && h && sim.t - f.t <= 0.6) { const k = `${formation}${coverage}${roster}${seed}${a.slot}`; if (!seen.has(k)) { seen.add(k); const who = h.d === f.d ? 'the rusher who hit him' : h.d.player.position; C[who] = (C[who] ?? 0) + 1; } }
++    }
++  }
++}
++console.log(C);
+diff --git a/scripts/diag/pass-operators/attached-release.mts b/scripts/diag/pass-operators/attached-release.mts
+new file mode 100644
+index 00000000..6281baeb
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-release.mts
+@@ -0,0 +1,43 @@
++// An attached end's release against a rusher (Integration #35 item 2: double_outs' attached Y is met by the end at
++// 0.7 s and driven back). Staged pass plays with an inline end on a route (not kept in): per end, the first defender
++// whose body comes within contact (radii + 0.15 yd) before 2.0 s, who he is (DL / LB, rushing or not), the time; then
++// over the next 0.6 s the end's requested velocity and achieved velocity along his route's first leg (+ = upfield), his
++// behaviour tags (route-craft, press release), whether a press/jam contact or an engagement touches him, and his depth
++// past the line at 1.0 / 1.5 / 2.0 s. Same for ends never touched (control). Rows to stdout as JSON lines.
++// usage: node --import tsx scripts/diag/pass-operators/attached-release.mts [concepts] > rows.jsonl
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const CONCEPTS = (process.argv[2] ?? 'double_outs,curl_flat,smash,stick,y_cross,hitch_cross').split(',');
++const FORMS = ['gun_trey_11', 'ace_11', 'ace_12', 'gun_wing_12'];
++const COVS = ['cover1', 'cover3', 'cover2', 'cover4'];
++for (const concept of CONCEPTS) for (const formation of FORMS) for (const coverage of COVS) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
++  const dir = sim.attackDir(sim.offense[0].team), los = sim.los;
++  const ends = sim.offense.filter((a: any) => sim.offAlign.spots[a.slot]?.inline);
++  const rec = ends.map((a: any) => ({ a, slot: a.slot, beh0: null as any, first: null as any, win: [] as any[], depth: {} as any, y0: a.pos.y }));
++  while (sim.phase === 'live' && sim.t < 2.05) {
++    const tStart = sim.t;
++    sim.tick();
++    for (const r of rec) {
++      const a = r.a, b = a.behavior;
++      if (r.beh0 === null) r.beh0 = b?.kind ?? null;
++      if (!r.first) for (const d of sim.defense) {
++        const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
++        if (dd <= a.profile.radius + d.profile.radius + 0.15) {
++          r.first = { t: +sim.t.toFixed(2), slot: d.slot, pos: d.player.position, beh: d.behavior?.kind ?? null, rushing: !!d.tags?.has?.('rusher') || d.behavior?.kind === 'rush', dMass: d.profile.mass, aMass: a.profile.mass, depth: +((a.pos.x - los) * dir).toFixed(2) };
++          r.d = d; break;
++        }
++      }
++      if (r.first && sim.t - r.first.t <= 0.6) {
++        const d = r.d, cmd = sim.cmds[sim.agents.indexOf(a)]?.vel;
++        r.win.push({ t: +(sim.t - r.first.t).toFixed(2), kind: b?.kind, tags: [...(a.tags ?? [])].filter((x: string) => /craft|press|release|jam|block/.test(x)),
++          reqX: cmd ? +(cmd.x * dir).toFixed(2) : null, reqY: cmd ? +cmd.y.toFixed(2) : null, vX: +(a.vel.x * dir).toFixed(2), vY: +a.vel.y.toFixed(2),
++          dvX: +(d.vel.x * dir).toFixed(2), gap: +Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y).toFixed(2), eng: !!a.engagement, dEng: d.engagement ? (d.engagement.blocker === a ? 'me' : 'other') : null,
++          aUp: a.body?.support?.state ?? 'up', ahead: +((d.pos.x - a.pos.x) * dir).toFixed(2), side: +((d.pos.y - a.pos.y)).toFixed(2) });
++      }
++      for (const k of [1.0, 1.5, 2.0]) if (tStart < k && sim.t >= k) r.depth[k] = +((a.pos.x - los) * dir).toFixed(2);
++    }
++  }
++  for (const r of rec) console.log(JSON.stringify({ concept, formation, coverage, roster, seed, slot: r.slot, beh0: r.beh0, first: r.first, depth: r.depth, win: r.win }));
++}
+diff --git a/scripts/diag/pass-operators/attached-release.py b/scripts/diag/pass-operators/attached-release.py
+new file mode 100644
+index 00000000..c6531554
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-release.py
+@@ -0,0 +1,54 @@
++# An attached end's release on pass plays, NFL tracking vs sim exports with one operator (#35 item 2). Common format
++# (offense +x, line at x = 0). Attached end: a TE at the snap within 1.5 yd of the line and 0.5-2.5 yd outside the
++# outermost lineman on his side. On a route: past 5 yd downfield by 3.0 s (or the pass/end, whichever is first) -
++# a kept-in or chipping end that never gets there is left out. "Covered": a DL or LB at the snap 0-2.5 yd ahead of
++# him and within 1.5 yd laterally (receiver.ts RELEASE_SEEN's tight box). Contact: centres within 1.0 yd.
++# Per class: depth past the line at 0.5 / 1.0 / 1.5 / 2.0 s; first contact with a DL/LB within 1.2 s and its time;
++# the end's downfield speed over the 0.3 s after that contact; the covering man's depth at 1.0 s (rushing = behind
++# the line). usage: python3 scripts/diag/pass-operators/attached-release.py <plays.jsonl.gz> ...
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++for path in sys.argv[1:]:
++    rows = []
++    for line in gzip.open(path, 'rt'):
++        r = json.loads(line); r = r.get('common', r)
++        if r.get('kind') != 'pass' or not r.get('xy'): continue
++        p = Play(r); dt = r['dt']; n = len(r['xy'])
++        at = lambda i, t: p.pos(i, min(n - 1, int(round(t / dt))))
++        OL = [i for i in p.who('O', 'OL') if at(i, 0)[0] is not None]
++        if len(OL) < 5: continue
++        ys = [at(i, 0)[1] for i in OL]
++        end_t = min((r['events'].get(k) for k in ('pass', 'pass_forward', 'sack', 'end') if r['events'].get(k) is not None), default=(n - 1) * dt)
++        DEF = [i for i in p.who('D') if r['players'][i]['group'] in ('DL', 'LB') and at(i, 0)[0] is not None]
++        for i in p.who('O', 'TE'):
++            x0, y0 = at(i, 0)
++            if x0 is None or x0 < -1.5: continue
++            out = 1 if y0 > (min(ys) + max(ys)) / 2 else -1
++            w = (y0 - (max(ys) if out > 0 else min(ys))) * out
++            if not (0.5 <= w <= 2.5): continue
++            tr = min(3.0, end_t)
++            if max((at(i, k * dt)[0] or -9) for k in range(int(tr / dt) + 1)) < 5: continue
++            cov = [d for d in DEF if 0 <= at(d, 0)[0] - x0 <= 2.5 and abs(at(d, 0)[1] - y0) <= 1.5]
++            first = None
++            for k in range(int(min(1.2, end_t) / dt) + 1):
++                for d in DEF:
++                    a, b = at(i, k * dt), at(d, k * dt)
++                    if a[0] is not None and b[0] is not None and math.hypot(a[0] - b[0], a[1] - b[1]) <= 1.0: first = (k * dt, d); break
++                if first: break
++            after = None
++            if first:
++                t0 = first[0]; t1 = min(t0 + 0.3, end_t)
++                if t1 > t0 + dt / 2 and at(i, t1)[0] is not None: after = (at(i, t1)[0] - at(i, t0)[0]) / (t1 - t0)
++            dep = {t: at(i, t)[0] for t in (0.5, 1.0, 1.5, 2.0) if t <= end_t}
++            rows.append({'cov': bool(cov), 'covRush': bool(cov) and all((at(d, 1.0)[0] or 9) < 0.5 for d in cov), 'first': first[0] if first else None,
++                         'firstCov': bool(first and first[1] in cov), 'after': after, 'dep': dep, 'x0': x0})
++    print(f'{os.path.basename(path)}: attached ends on a route {len(rows)}')
++    for lab, S in (('covered (DL/LB over him)', [r for r in rows if r['cov']]), ('  covering man rushes', [r for r in rows if r['covRush']]), ('uncovered', [r for r in rows if not r['cov']])):
++        if not S: print(f'  {lab}: none'); continue
++        c = [r for r in S if r['first'] is not None]
++        deps = ' '.join(f"{t}s {q([r['dep'][t] for r in S if t in r['dep']]):.2f}" for t in (0.5, 1.0, 1.5, 2.0))
++        print(f"  {lab} n {len(S)} ({100*len(S)/len(rows):.0f}%) | stance x0 {q([r['x0'] for r in S]):.2f} | depth {deps} | contact by 1.2 s {100*len(c)/len(S):.0f}% "
++              f"(the covering man {100*sum(r['firstCov'] for r in c)/max(1,len(c)):.0f}%), at p50 {q([r['first'] for r in c]):.2f} s | downfield speed 0.3 s after p25/50 "
++              f"{q([r['after'] for r in c if r['after'] is not None], .25):.2f}/{q([r['after'] for r in c if r['after'] is not None]):.2f}")
+diff --git a/scripts/diag/pass-operators/box-count.py b/scripts/diag/pass-operators/box-count.py
+new file mode 100644
+index 00000000..89cf9711
+--- /dev/null
++++ b/scripts/diag/pass-operators/box-count.py
+@@ -0,0 +1,41 @@
++# usage: python3 scripts/diag/pass-operators/box-count.py out/mechanics/nfl-plays.jsonl.gz <sim export.jsonl.gz> ... (#35, PRO_CALL's 3.5-yd count)
++# Box count at the snap: defenders inside the OL width +- 3.5 yd, by depth off the line (common format, offense +x,
++# line at x = 0). Off-ball defenders (DL excluded) depth distribution; and on dropbacks, the share where the box at
++# 5.0 / 6.0 yd holds more than at 3.5 yd, and whether the back runs a route (sim exports carry 'route').
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++q = lambda v, f=.5: sorted(v)[int(f*(len(v)-1))] if v else float('nan')
++for path in sys.argv[1:]:
++    deps=[]; n=0; more5=0; more6=0; rbroute=0; rbroute_more5=0; extra_rush_free=0; extra_n=0
++    for line in gzip.open(path,'rt'):
++        r=json.loads(line); r=r.get('common',r)
++        if r.get('kind')!='pass' or not r.get('xy'): continue
++        p=Play(r); OL=[i for i in p.who('O','OL') if p.pos(i,0)[0] is not None]
++        if len(OL)<5: continue
++        ys=[p.pos(i,0)[1] for i in OL]; lo,hi=min(ys)-3.5,max(ys)+3.5
++        D=[i for i in p.who('D') if p.pos(i,0)[0] is not None and lo<=p.pos(i,0)[1]<=hi]
++        for i in D:
++            if r['players'][i].get('group')!='DL': deps.append(p.pos(i,0)[0])
++        c35=sum(1 for i in D if p.pos(i,0)[0] < 3.5); c5=sum(1 for i in D if p.pos(i,0)[0] < 5.0); c6=sum(1 for i in D if p.pos(i,0)[0] < 6.0)
++        n+=1; more5+= c5>c35; more6+= c6>c35
++        rbs=[i for i in p.who('O','RB')]
++        routed=any(r['players'][i].get('route') for i in rbs)
++        rbroute+=routed
++        if c5>c35 and routed:
++            rbroute_more5+=1
++            # did a 3.5-5 yd backer come (within 2 yd of the QB before the throw, no offensive body within 1 yd then)?
++            qb=p.who('O','QB')[0]; fw=r.get('events',{}).get('pass_forward'); end=fw if fw is not None else p.end
++            extra=[i for i in D if 3.5<=p.pos(i,0)[0]<5.0]
++            for i in extra:
++                extra_n+=1
++                for k in range(0,min(p.k(end),p.frames-1)):
++                    if p.pos(i,k)[0] is None or p.pos(qb,k)[0] is None: continue
++                    if p.dist(i,qb,k)<=2.0:
++                        O=[o for o in p.who('O') if o!=qb and p.pos(o,k)[0] is not None]
++                        if not any(p.dist(o,i,k)<=1.0 for o in O): extra_rush_free+=1
++                        break
++    print(f"== {os.path.basename(path)}: dropbacks {n} | off-ball box defenders' depth at the snap p25/50/75 {q(deps,.25):.1f}/{q(deps):.1f}/{q(deps,.75):.1f} yd"
++          f" | box at 5.0 yd holds more than at 3.5: {100*more5/max(1,n):.0f}% (at 6.0: {100*more6/max(1,n):.0f}%)"
++          f" | back on a route {100*rbroute/max(1,n):.0f}%, and with the box at 5.0 > 3.5: {100*rbroute_more5/max(1,n):.0f}% of dropbacks"
++          f" | of those 3.5-5 yd men, reaching the QB free: {extra_rush_free} of {extra_n}")
+diff --git a/src/sim/behaviors/receiver.ts b/src/sim/behaviors/receiver.ts
+index b4b27ed2..d54bcdf9 100644
+--- a/src/sim/behaviors/receiver.ts
++++ b/src/sim/behaviors/receiver.ts
+@@ -140,9 +140,19 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
+  * 0.3 of his pace along it) or across to the other side of the man. */
+ const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
+ const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2 }>();
++/** RELEASE_COMMIT (experimental, off; RELEASE_COMMIT=1; with ROUTE_CRAFT; #35): one decision per man. When the craft's man
++ * in his lane is the man he has just released round (his press release, RELEASE_SEEN's man tight over him at the snap,
++ * or a jam he worked off), the craft goes round him on the release's side (a field side; when his line runs mostly
++ * across the field, the side of the man he is already on) instead of re-deciding it from the route's leg. A new man in
++ * his lane is a new decision, as before. Off, an attached end released round the end over him and then, once the end
++ * was no longer ahead of him, the craft took him back across that same man's body: staged double_outs, his lateral
++ * request reversed within 0.6 s of contact on 54 of 96 touched ends, 46 of them at the hand-off from release to craft,
++ * the craft's man the rusher who hit him on 60 of 62 (scripts/diag/pass-operators/attached-release.mts). */
++const RELEASE_COMMIT = process.env.RELEASE_COMMIT === '1';
+ 
+ /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
+-export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null): MoveCommand {
++export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null,
++  released: { d: Agent; side: number } | null = null): MoveCommand {
+   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
+   if (speed < 1) return cmd;
+   const u = { x: cmd.vel.x / speed, y: cmd.vel.y / speed }, n = { x: -u.y, y: u.x };
+@@ -179,9 +189,12 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
+   // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
+   // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
+   const declared = CRAFT_HOLD && routeDir ? routeDir.x * n.x + routeDir.y * n.y : 0;
+-  const side = Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
++  // RELEASE_COMMIT: round the man he released round, on the release's side.
++  const committed = RELEASE_COMMIT && released && released.side !== 0 && block.d === released.d
++    ? (Math.abs(n.y) >= 0.5 ? Math.sign(n.y * released.side) : block.off >= 0 ? -1 : 1) : 0;
++  const side = committed !== 0 ? committed : Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
+     : breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
+-  if (CRAFT_HOLD && block.d) craftHeld.set(a, { d: block.d, across: Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out });
++  if (CRAFT_HOLD && block.d) craftHeld.set(a, { d: block.d, across: committed !== 0 || Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out });
+   const around = { x: block.p.x + n.x * side * block.clear, y: block.p.y + n.y * side * block.clear };
+   const dx = around.x - a.pos.x, dy = around.y - a.pos.y, l = Math.hypot(dx, dy) || 1;
+   const ease = 0.94 + 0.04 * rr;
+@@ -257,6 +270,8 @@ export class RouteRunner implements Behavior {
+   private readonly releasedCorners = new Set<Agent>();
+   /** RELEASE_THROUGH: the side of his press release (0 if he had none); kept for the rest of the route. */
+   private releaseSide = 0;
++  /** RELEASE_COMMIT: the man his release went round (null if none). */
++  private releaseMan: Agent | null = null;
+   private converted = false;
+   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
+   private routeEnd: RouteEnd;
+@@ -446,7 +461,8 @@ export class RouteRunner implements Behavior {
+       return this.settle(a, sim);
+     }
+     if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
+-    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null);
++    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null,
++      RELEASE_COMMIT && this.releaseMan ? { d: this.releaseMan, side: this.releaseSide } : null);
+     return cmd;
+   }
+ 
+@@ -707,6 +723,7 @@ export class RouteRunner implements Behavior {
+           side = Math.sign(desired - dp.y) || -Math.sign(lateral) || this.outside;
+         }
+         this.releaseSide = side;
++        if (RELEASE_COMMIT) this.releaseMan = d;
+         return runThrough(a, { x: dp.x, y: dp.y + side * clearance },
+           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
+       }
+@@ -723,6 +740,7 @@ export class RouteRunner implements Behavior {
+     const clearance = a.profile.radius + d.profile.radius + 0.2;
+     // The jam's side is toward his path; a release he already made keeps its own side.
+     if (this.releaseSide === 0) this.releaseSide = p.side;
++    if (RELEASE_COMMIT && !this.releaseMan) this.releaseMan = d;
+     return runThrough(a, { x: d.pos.x + a.profile.radius, y: d.pos.y + p.side * clearance },
+       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
+   }
+diff --git a/test/release-commit.test.ts b/test/release-commit.test.ts
+new file mode 100644
+index 00000000..d3036d78
+--- /dev/null
++++ b/test/release-commit.test.ts
+@@ -0,0 +1,44 @@
++/** RELEASE_COMMIT (receiver.ts routeCraft; experimental, off; #35 item 2): one decision per man. On the engine defaults
++ * (the reference stack), staged double_outs from gun_trey_11 against Cover 1: the attached end released round the end
++ * over him; off, once that end is no longer ahead of him the route craft takes him back across the same man's body (his
++ * lateral request reverses); on, the craft keeps the release's side round that man. */
++import { readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function reversals(flag: string) {
++  vi.resetModules();
++  for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
++  vi.stubEnv('RELEASE_COMMIT', flag);
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  let touched = 0, reversed = 0;
++  for (let roster = 1; roster <= 6; roster++) {
++    const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover1', concept: 'double_outs', seed: 2, roster, formation: 'gun_trey_11', flip: false }));
++    const end = sim.offense.find((a: any) => sim.offAlign.spots[a.slot]?.inline);
++    let hit: { d: any; t: number } | null = null; const sides: number[] = [];
++    while (sim.phase === 'live' && sim.t < 2.0) {
++      sim.tick();
++      if (!hit) for (const d of sim.defense) {
++        if ((d.player.position === 'EDGE' || d.player.position === 'DT') && Math.hypot(d.pos.x - end.pos.x, d.pos.y - end.pos.y) <= end.profile.radius + d.profile.radius + 0.15) { hit = { d, t: sim.t }; break; }
++      }
++      if (hit && sim.t - hit.t <= 0.6) { const vy = sim.cmds[sim.agents.indexOf(end)].vel.y; if (Math.abs(vy) > 3) sides.push(Math.sign(vy)); }
++    }
++    if (!hit) continue;
++    touched++;
++    if (sides.some((s, i) => i > 0 && s !== sides[i - 1])) reversed++;
++  }
++  return { touched, reversed };
++}
++
++describe('RELEASE_COMMIT', () => {
++  it('on: the attached end keeps his release side round the rusher who hit him; off, the craft takes him back across', async () => {
++    const off = await reversals('0'), on = await reversals('1');
++    console.log(`touched off ${off.touched} on ${on.touched}; reversed off ${off.reversed} on ${on.reversed}`);
++    expect(off.touched).toBeGreaterThanOrEqual(3);
++    expect(off.reversed).toBeGreaterThanOrEqual(2);
++    expect(on.reversed).toBeLessThan(off.reversed);
++  }, 240_000);
++});
+-- 
+2.43.0
+
