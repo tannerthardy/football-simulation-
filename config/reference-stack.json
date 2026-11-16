@@ -44,7 +44,8 @@
     "INFO_HONEST": { "default": 63, "legacy": 0 },
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
     "ZONE_HOLD": { "default": 0, "legacy": 0 },
-    "SIGHT_STALE": { "default": 0, "legacy": 0 }
+    "SIGHT_STALE": { "default": 0, "legacy": 0 },
+    "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 }
   },
   "flags": {
     "ALIGN_HABIT": "on",
@@ -148,6 +149,7 @@
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",
     "SIGHT_PURE": "off",
+    "HAND_MOMENT": "off",
     "OPEN_FIELD": "on",
     "HEAD": "off",
     "GRAB_CONNECT": "off",

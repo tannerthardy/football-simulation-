@@ -181,6 +181,8 @@
     "DL_SQUEEZE": "1",
     "DEF_GETOFF": "1",
     "TURF_MU_SCALE": "1",
+    "HAND_MOMENT": "0",
+    "HAND_MOMENT_CAP": "150",
     "FRONT_STRENGTH": "1",
     "FRONT_MENU": "1",
     "BOX_ALIGN": "1",
