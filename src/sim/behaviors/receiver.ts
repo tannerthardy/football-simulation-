@@ -138,10 +138,11 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * already holds; held for the episode as a field direction, across whichever man is in the lane, until he has been clear
  * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
  * 0.3 of his pace along it) or across to the other side of the man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
+const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** CRAFT_EXIT (experimental, off; with CRAFT_HOLD): the held side is a commitment about one man and ends with him. It ends
- * when he is past that man (level or behind, in his picture), with no run-out, and at his route's declared break, which
- * the craft never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
+ * when he is past that man in his picture (level or behind; within a clearance of level and out of his lane; or stepped
+ * across his line onto the held side and out of his lane), with no run-out, and at his route's declared break, which the
+ * craft never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
  * seam held a 73-degree bend round a nickel already level with him and carried it into the ball's flight, and a stick ran
  * straight up its stem through its own break. */
 const CRAFT_EXIT = process.env.CRAFT_EXIT === '1';
