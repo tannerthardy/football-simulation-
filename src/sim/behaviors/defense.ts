@@ -67,6 +67,15 @@ export function believesRun(_sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** SETTLE_DEPTH (experimental, off; SETTLE_DEPTH=1 turns it on; docs/reviews/2026-11-15-underneath-handoff-design.md,
+ * part ii): ZONE_SETTLE plants an underneath dropper at the depth he has when he sees the QB set, which is right for a
+ * man who reached his drop and wrong for one a route pulled down (a hook who walled or carried the shallow settled at
+ * 5-6 yd against a 10 yd landmark, under the dig). Under the flag, a dropper who is short of his landmark's depth by
+ * more than SINK_ENTER keeps gaining depth toward it while he reads the QB, until he is within SINK_EXIT; one at depth
+ * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
+ * opposite sides. */
+export const SETTLE_DEPTH = process.env.SETTLE_DEPTH === '1';
+const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
  * read target (sim.qbEyes, the exact receiver, instantly, for every defender
@@ -112,6 +121,28 @@ const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32
 export function infoHonest(item: number | string): boolean {
   return (INFO_HONEST & INFO_BITS[String(item)]) !== 0;
 }
+/** ZONE_HOLD (experimental, numeric bitmask, 0 off; docs/reviews/2026-11-16-zone-hold.md): two commit-rule holds on
+ * a zone defender's choices, each its own bit so each reads alone. Bit 1 (band): a receiver joins his threat set when
+ * his pictured future is inside the zone's lateral band by ZONE_HOLD_IN and leaves only when it is outside the band by
+ * ZONE_HOLD_OUT; the deep zones' vertical test has the same pair (enter past 7.5 yd or climbing over 1.5 yd/s, exit
+ * inside 6.5 yd and under 0.5 yd/s). Bit 2 (eyes): whom he reads the QB looking at is kept until another receiver's
+ * bearing beats it by ZONE_HOLD_EYES_BEAT or the QB's pictured head has turned clear of the current cone by
+ * ZONE_HOLD_EYES_OUT. Bit 16 (pick): the underneath lane pick (receiver nearest his landmark, eyes-weighted) keeps the
+ * receiver he is playing until another's score beats it by ZONE_HOLD_PICK_BEAT (1.5 yd). Without them both were re-picked every tick on a knife edge (exact pictures: the eyes' target
+ * changing 1.6-2.0 times a second, a tenth reversing inside 0.3 s; the flat defender reversing 27% of his target
+ * changes). Margins: band in 0.5 / out 1.5 yd, vertical in 7.5 yd or 1.5 yd/s / out 6.5 yd and 0.5 yd/s, eyes beat 4 deg /
+ * out 6 deg beyond the cone; stated choices. */
+const ZONE_HOLD_BITS = Number(process.env.ZONE_HOLD ?? 0);
+export const ZONE_HOLD_BAND = (ZONE_HOLD_BITS & 1) !== 0;
+export const ZONE_HOLD_EYES = (ZONE_HOLD_BITS & 2) !== 0;
+export const ZONE_HOLD_PICK = (ZONE_HOLD_BITS & 16) !== 0;
+/** Margin level, read at three levels: bit 4 halves the margins, bit 8 doubles them (stated choices, not fitted). */
+const ZONE_HOLD_SCALE = (ZONE_HOLD_BITS & 4) !== 0 ? 0.5 : (ZONE_HOLD_BITS & 8) !== 0 ? 2 : 1;
+const ZONE_HOLD_IN = 0.5 * ZONE_HOLD_SCALE, ZONE_HOLD_OUT = 1.5 * ZONE_HOLD_SCALE;
+const ZONE_HOLD_EYES_BEAT = (4 * ZONE_HOLD_SCALE * Math.PI) / 180;
+const ZONE_HOLD_EYES_OUT = (6 * ZONE_HOLD_SCALE * Math.PI) / 180;
+const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
+const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
@@ -122,15 +153,26 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   const q = sim.see(a, sim.qb);
   const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), dist = Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y);
   if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
-    const tol = Math.cos((dist > 20 ? 12 : 20) * Math.PI / 180);
+    const cone = (dist > 20 ? 12 : 20) * Math.PI / 180, tol = Math.cos(cone);
     let best = tol;
+    const look = QB_BODY_SEEN ? q.head ?? q.facing : q.facing;
+    const off = new Map<Agent, number>();
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos((QB_BODY_SEEN ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos(look - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      if (ZONE_HOLD_EYES) off.set(o, Math.acos(Math.max(-1, Math.min(1, cos))));
       if (cos > best) { best = cos; r = o; }
     }
+    if (ZONE_HOLD_EYES) {
+      const held = eyesHeld.get(a), ho = held ? off.get(held) : undefined;
+      // Keep the held receiver while the head stays inside his cone widened by the exit margin and no other receiver
+      // sits closer to the head's line by the beat margin.
+      if (held && ho !== undefined && ho < cone + ZONE_HOLD_EYES_OUT
+        && ![...off.entries()].some(([o, v]) => o !== held && v < cone && v < ho - ZONE_HOLD_EYES_BEAT)) r = held;
+    }
   }
+  if (ZONE_HOLD_EYES) { if (r) eyesHeld.set(a, r); else eyesHeld.delete(a); }
   eyesCache.set(a, { t: sim.t, r });
   return r;
 }
@@ -812,7 +854,27 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * climber with no help (BDB 2025 weeks 1-2, nflcarry.py) spend the cushion 5.1 -> 1.6 yd from 1.5 to 3.0 s running
  * 3.3 -> 4.7 yd/s under a 6.0-6.5 yd/s climber, torso 33 -> 62 deg off the QB, turned at most 11%. Under HEAD the head
  * and its cone follow the look; without HEAD the trunk carries it. */
-export const CARRY_POSTURE = process.env.CARRY_POSTURE === '1';
+export const CARRY_POSTURE = process.env.CARRY_POSTURE !== '0';
+/** CARRY_TURN (experimental, off; CARRY_TURN=1 turns it on; needs CARRY_POSTURE; docs/reviews/2026-11-16-carry-posture-3c.md):
+ * CUSHION_BREAK's turn opens him; it does not turn him. With the cushion broken he runs with the climber hips on his
+ * line of travel and his look back on the QB within his head's reach (neck plus trunk), the posture DIR_CAP and the
+ * trunk price charge for. He turns fully (look off the QB, to his receiver and the ball) on a seen event: the receiver
+ * even with or past him in his own picture (signed cushion at or under 0; back above +0.5 yd to undo), or his seen
+ * throw toward his receiver (playsThrow, the cue interface). The full turn holds until both have cleared. */
+export const CARRY_TURN = process.env.CARRY_TURN !== '0';
+const CARRY_TURN_EXIT = 0.5;
+/** CARRY_TURN: the open-and-run posture on the turned command, or null when a seen event has turned him fully. */
+function carryOpenRun(a: Agent, sim: PlaySim, cmd: MoveCommand, R: Agent, seenRec: Vec2, state: { full: Agent | null }): MoveCommand | null {
+  const cushion = a.pos.x - seenRec.x, thrown = playsThrow(a, sim, R);
+  if (state.full === R ? !(cushion > CARRY_TURN_EXIT && !thrown) : cushion <= 0 || thrown) { state.full = R; return null; }
+  state.full = null;
+  if (Math.hypot(cmd.vel.x, cmd.vel.y) < 1) return null;
+  const heading = Math.atan2(cmd.vel.y, cmd.vel.x), qbSeen = sim.see(a, sim.qb).pos;
+  const d = angleDiff(heading, Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x));
+  const reach = Math.max(0, carryReach(a) - 1e-3);
+  a.tags.add('open-run');
+  return lookJoints(a, { ...cmd, facing: heading }, heading, Math.sign(d) * Math.min(Math.abs(d), reach), true);
+}
 /** CARRY_POSTURE: how far off the QB his hips may face with his look still on the QB (rad). */
 function carryReach(a: Agent): number {
   return neckOf(a) + (TRUNK_TWIST ? TRUNK_RANGE : 0);
@@ -862,7 +924,7 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
  * half turn to the outside (CARRY_POSTURE's 45 deg) with his head on the QB, until he sees the release; then the match
  * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
  * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
-export const CORNER_DROP = process.env.CORNER_DROP === '1';
+export const CORNER_DROP = process.env.CORNER_DROP !== '0';
 
 /** OFF_PEDAL (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-off-pedal.md): a repair of the
  * existing off-man pedal (ManCoverage; off-man corners in man calls, the quarters MOD corner, match carriers in zone
@@ -1116,6 +1178,8 @@ export class ManCoverage implements Behavior {
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
+  /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+  private carryTurn: { full: Agent | null } = { full: null };
   private releaseObserved = false;
   /** OFF_PEDAL: the stem-stop read (coverage-leverage `stemStopped`) on his own delayed sight of the stem. */
   private readonly stemAccel = new StemAcceleration();
@@ -1443,6 +1507,11 @@ export class ManCoverage implements Behavior {
       return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
     }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
+    if (CARRY_TURN && CARRY_POSTURE && breakOn && this.hipsOpen) {
+      const run = selected.facing === undefined ? selected : command;
+      const open = carryOpenRun(a, sim, run, R, seen.pos, this.carryTurn);
+      if (open) return withFacingTechnique(open, { label: 'man-open-run', key: seen.vel });
+    }
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
   }
@@ -1472,6 +1541,12 @@ export class ManCoverage implements Behavior {
  * catcher (RB wide nobody-in-front 50% vs NFL 12%: outside_wide.py,
  * wide-owner.ts). */
 const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
+/** CURL_SINK (experimental, off; CURL_SINK=1 turns it on; docs/reviews/2026-11-15-curl-sink.md): CURL_FLAT_BACK's
+ * stated design, sink to the curl window while widening toward the back. Its target depth was the shallower of the
+ * window and where he stood, so a back who showed to the flat before the curl-flat defender had dropped held him at his
+ * alignment depth (4.4 yd against an 8.5 yd window on staged flood) for the rest of the play. On, he drops to the
+ * window's depth while he widens, eyes on the QB, and breaks on the throw: high to low. */
+export const CURL_SINK = process.env.CURL_SINK === '1';
 /** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at
@@ -1514,11 +1589,24 @@ export class ZoneCoverage implements Behavior {
   private patternHesitationUntil = -1;
   private readonly initialDepth: number;
   private turnedWith: Agent | null = null;
+  /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+  private carryTurn: { full: Agent | null } = { full: null };
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
   /** ZONE_SETTLE: when this underneath dropper saw the QB set (-1 not yet). */
   private settledAt = -1;
+  /** SETTLE_DEPTH: short of his landmark's depth past the enter margin, still sinking (exit inside SINK_EXIT). */
+  private sinkingToDepth = false;
+  /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
+  private bandHeld = new Set<Agent>();
+  private vertHeld = new Set<Agent>();
+  private shortOfDepth(a: Agent): boolean {
+    if (!SETTLE_DEPTH) return false;
+    const short = this.landmark.x - a.pos.x;
+    if (this.sinkingToDepth ? short < SINK_EXIT : short > SINK_ENTER) this.sinkingToDepth = !this.sinkingToDepth;
+    return this.sinkingToDepth;
+  }
   /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
   private qbDeepest = Infinity;
   /** A box backer has left his read step for his drop. */
@@ -1682,7 +1770,13 @@ export class ZoneCoverage implements Behavior {
       const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
-      if (fut.y < ylo || fut.y > yhi) continue;
+      if (ZONE_HOLD_BAND) {
+        // Held membership: in by ZONE_HOLD_IN inside the band, out only by ZONE_HOLD_OUT outside it.
+        const held = this.bandHeld.has(r);
+        const inBand = held ? fut.y >= ylo - ZONE_HOLD_OUT && fut.y <= yhi + ZONE_HOLD_OUT : fut.y >= ylo + ZONE_HOLD_IN && fut.y <= yhi - ZONE_HOLD_IN;
+        if (inBand) this.bandHeld.add(r); else this.bandHeld.delete(r);
+        if (!inBand) continue;
+      } else if (fut.y < ylo || fut.y > yhi) continue;
       threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
     }
 
@@ -1698,12 +1792,21 @@ export class ZoneCoverage implements Behavior {
       const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
       if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
     }
-    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
+    const sinking = this.settledAt >= 0 && this.shortOfDepth(a);
+    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 && !sinking ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
     const settle = (t: Vec2): Vec2 => settled(t);
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
-      let vert = threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
+      let vert = ZONE_HOLD_BAND
+        ? threats.filter((th) => {
+          const held = this.vertHeld.has(th.r);
+          const v = held ? th.fut.x - sim.los > 6.5 || (th.vel.x > 0.5 && th.pos.x > sim.los)
+            : th.fut.x - sim.los > 7.5 || (th.vel.x > 1.5 && th.pos.x > sim.los);
+          if (v) this.vertHeld.add(th.r); else this.vertHeld.delete(th.r);
+          return v;
+        })
+        : threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
       // A deep-third corner stays over verticals in the outside third; a seam
       // on the hash is the middle safety's. He only takes #2 if #2 works out to him.
       if (this.zone === 'deep_third_s' || this.zone === 'deep_third_w') {
@@ -1831,6 +1934,11 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...req, facing }, { label: 'deep-open-carry', key: deepest.vel });
       }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
+      if (CARRY_TURN && CARRY_POSTURE && this.turnedWith === deepest.r) {
+        const run = selected.facing === undefined ? selected : command;
+        const open = carryOpenRun(a, sim, run, deepest.r, deepest.pos, this.carryTurn);
+        if (open) return withFacingTechnique(open, { label: 'deep-open-run', key: deepest.vel });
+      }
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
     }
@@ -1922,7 +2030,9 @@ export class ZoneCoverage implements Behavior {
         const crossed = sign * (flat.pos.y - a.pos.y) > 0;
         const base = eyes === flat.r ? 0.55 + 0.3 * rec : inCurl ? 0.1 : crossed ? 0.35 + 0.2 * rec : 0.15;
         const cheat = clamp(base + 0.15 * clamp((a.profile.vmax - 8) / 2, 0, 1), 0, 0.9);
-        const tgt = { x: Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
+        // CURL_SINK: he sinks to his curl window (its landmark depth) as he widens; off, the shallower of the window and
+        // where he stands, which held a curl-flat defender at his alignment depth when the back showed before he dropped.
+        const tgt = { x: CURL_SINK ? lm.x : Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
         return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
       }
     }
@@ -1933,6 +2043,9 @@ export class ZoneCoverage implements Behavior {
       if (depth > 16) continue;
       let dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
       if (qbEyes === th.r) dd -= 3 * a.r('anticipation');
+      // ZONE_HOLD bit 16 (pick): the receiver he is already playing keeps him until another's lane score beats his by
+      // ZONE_HOLD_PICK_BEAT, and stays eligible that far past the radius; re-scoring the same picture is not a new read.
+      if (ZONE_HOLD_PICK && th.r === this.target) dd -= ZONE_HOLD_PICK_BEAT;
       if (dd < bd && dd < this.radius + 2) {
         bd = dd;
         best = th;
@@ -2066,7 +2179,7 @@ export class ZoneCoverage implements Behavior {
     // Hold the spot's depth until the ball is thrown; stay within the zone.
     // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
-    if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
+    if (this.settledAt >= 0 && !this.shortOfDepth(a)) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };

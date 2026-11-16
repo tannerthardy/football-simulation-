@@ -17,7 +17,7 @@
 import type { Vec3 } from '../core/vec.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
-import { bodyHeight, lineOfSight, SHOULDER } from './sight.js';
+import { bodyHeight, lineOfSight, SHOULDER, SIGHT_PURE } from './sight.js';
 
 /** BALL_CUE_OWN (on; `=0` restores the ball cue timed on his sighting of the passer, and the stand in
  * `playObservedFlight`): the ball in flight is his own percept at his own delay (#766). The switch was added at
@@ -61,7 +61,8 @@ export function sawAt(sim: PlaySim, observer: Agent, back: number, target: Agent
   const point = 'idx' in target ? (target as Agent)
     : ({ pos: tp, profile: { radius: 0, heightYd: height / 0.936 }, body: { support: { state: 'up', posture: 0 } } } as unknown as Agent);
   const posOf = (a: Agent) => a === point && !('idx' in target) ? tp : sim.perception.recorded(a.idx, back * sim.dt)?.pos ?? null;
-  return lineOfSight(sim.agents, observer, point, height, posOf);
+  const poseOf = SIGHT_PURE ? (a: Agent) => a === point && !('idx' in target) ? null : sim.perception.recorded(a.idx, back * sim.dt)?.pose ?? null : undefined;
+  return lineOfSight(sim.agents, observer, point, height, posOf, poseOf);
 }
 
 /** This tick's release cues for `observer` (a defender), each at the sim time its sample shows. */

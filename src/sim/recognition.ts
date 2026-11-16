@@ -19,7 +19,7 @@ import type { PlaySim } from './playsim.js';
 import { showsBlock } from './coverage-cues.js';
 import { sawThrow } from './behaviors/defense.js';
 /** CORNER_DROP (see behaviors/defense.ts); read here to keep the import graph as it is. */
-const CORNER_DROP_RECOG = process.env.CORNER_DROP === '1';
+const CORNER_DROP_RECOG = process.env.CORNER_DROP !== '0';
 
 // ------------------------------------------------------------ expectations
 
