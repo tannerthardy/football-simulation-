@@ -197,9 +197,11 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   const keep = HOLD ? craftHeld.get(a) : undefined;
   // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
   // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
-  // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook or curl settling) names no side round a man in his
-  // stem: its lateral part is a few tenths of a yard, and read as a side it sent the stick inside the nickel over him.
-  const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > 0) ? routeDir : null;
+  // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook, curl or comeback settling: its downfield part at least
+  // 0.3 of it backward) names no side round a man in his stem: its lateral part is a few tenths of a yard, and read as a
+  // side it sent the stick inside the nickel over him. An out's leg (10 yd, then 9.5 yd 12 yd across: 0.04 backward) is
+  // a break toward the sideline, and names its side.
+  const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > -0.3) ? routeDir : null;
   const declared = HOLD && sideLeg ? sideLeg.x * n.x + sideLeg.y * n.y : 0;
   const side = Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
     : breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
