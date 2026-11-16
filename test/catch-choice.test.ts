@@ -19,6 +19,10 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function meetings(flag: string) {
   for (const k of stackOn) vi.stubEnv(k, '1');
+  // The claim is about the choice on the receiver who reads the true flight. Since engine-70 the default receiver reads
+  // his own sight (BALL_EST 6145); the choice on that receiver is an open design question (docs/reviews/
+  // 2026-11-15-catch-closure.md, the feet's goal), so this test pins the estimator off.
+  vi.stubEnv('BALL_EST', '0');
   vi.stubEnv('CATCH_CHOICE', flag); vi.resetModules();
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
