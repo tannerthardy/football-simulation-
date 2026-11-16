@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
+import { legacyEnv } from './config/legacy-env';
 
 // Keep expensive native scenarios out of the everyday loop without moving or
 // rewriting their assertions. Every entry is excluded from core and included
@@ -27,13 +28,7 @@ const workflowTests = [
 // TEST_ENGINE_DEFAULTS=1 (173 core tests then need re-recording; the list is
 // in docs/REFERENCE_STACK.md). Remove a flag from this pin when its tests are
 // re-recorded.
-const stackFile = JSON.parse(readFileSync(new URL('./config/reference-stack.json', import.meta.url), 'utf8'));
-const stackFlags: Record<string, string> = stackFile.flags;
-// Numeric flags (`Number(process.env.NAME ?? default)`, listed under `numeric` with a default and a legacy value) are pinned too: the legacy engine runs them at
-// their legacy value, so a default that is not the identity (SIGHT_STALE, BALL_EST, INFO_HONEST, ...) does not leak into the suites recorded before it.
-const numericLegacy = Object.fromEntries(Object.entries((stackFile.numeric ?? {}) as Record<string, { default: number; legacy: number }>).map(([k, v]) => [k, String(v.legacy)]));
-const legacyEngine = process.env.TEST_ENGINE_DEFAULTS === '1' ? {}
-  : { ...Object.fromEntries(Object.entries(stackFlags).filter(([, v]) => v === 'on').map(([k]) => [k, '0'])), ...numericLegacy };
+const legacyEngine = legacyEnv(JSON.parse(readFileSync(new URL('./config/reference-stack.json', import.meta.url), 'utf8')), { engineDefaults: process.env.TEST_ENGINE_DEFAULTS === '1' });
 
 export default defineConfig({
   test: {
