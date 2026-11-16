@@ -852,7 +852,10 @@ export class QBPass implements Behavior {
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
-    if (concept.family === 'playaction') this.fakeUntil = 0.7;
+    // QB_FOOTWORK bit 2: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
+    // scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s, ridden
+    // 0.2 s), not an absolute 0.7 s that in the gun left a 0.2 s turn after he had the ball (nobody bites on that).
+    if (concept.family === 'playaction') this.fakeUntil = FW_HIPS ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
     this.mind = sim.qbMind;
     for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
     this.mind.receiverAt = (r) => this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? null;
