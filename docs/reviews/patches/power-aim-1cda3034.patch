@@ -1,0 +1,381 @@
+From c78326f98f9c77ebf0caca8e7ffc526192010ea2 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 07:55:23 +0000
+Subject: [PATCH] POWER_AIM (off): the power rush aims down the middle of the
+ lineman setting to him, on his picture (#35 item 2b)
+
+---
+ config/baseline.json                          |  1 +
+ config/reference-stack.json                   |  1 +
+ docs/FLAGS.md                                 |  3 +-
+ scripts/diag/pass-operators/attached-align.py | 44 +++++++++++++
+ .../pass-operators/attached-rusher-lane.mts   | 40 ++++++++++++
+ .../pass-operators/attached-rusher-plan.mts   | 17 +++++
+ scripts/diag/pass-operators/power-rep.mts     | 44 +++++++++++++
+ src/sim/behaviors/defense.ts                  | 63 +++++++++++++++++++
+ test/power-aim.test.ts                        | 46 ++++++++++++++
+ 9 files changed, 258 insertions(+), 1 deletion(-)
+ create mode 100644 scripts/diag/pass-operators/attached-align.py
+ create mode 100644 scripts/diag/pass-operators/attached-rusher-lane.mts
+ create mode 100644 scripts/diag/pass-operators/attached-rusher-plan.mts
+ create mode 100644 scripts/diag/pass-operators/power-rep.mts
+ create mode 100644 test/power-aim.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 87c617bd..5e3a9ba2 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -258,6 +258,7 @@
+     "SHOULDERS_SET": "0",
+     "TACKLE_SET": "0",
+     "EDGE_ARC": "0",
++    "POWER_AIM": "0",
+     "TRUNK_RANGE_DEG": "55",
+     "TRUNK_RATE_DEG": "360",
+     "TRUNK_TWIST": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index c237c13b..e8df4dbc 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -200,6 +200,7 @@
+     "SHOULDERS_SET": "off",
+     "TACKLE_SET": "off",
+     "EDGE_ARC": "off",
++    "POWER_AIM": "off",
+     "TRUNK_TWIST": "on",
+     "VERTICAL_SET": "on",
+     "OPEN_HANDS": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 6ce8e9e4..695484bb 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 434 flags read from the environment in `src` (recounted 2026-11-16, engine-71 with the next card's candidates merged off): 308 are on unless set to `0`, 106 are off unless set to `1`, and 20 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 435 flags read from the environment in `src` (recounted 2026-11-16, engine-71 with the next card's candidates merged off, plus `POWER_AIM` off): 308 are on unless set to `0`, 107 are off unless set to `1`, and 20 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -313,6 +313,7 @@ There are 434 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `CHEST_SHOULDERS` | on | promoted 2026-11-15 (engine-68; `=0` restores); was experimental (2026-11-14; requires `TRUNK_TWIST=1`; lives with `ENGAGE_TRUNK`) | physics | `src/physics/world.ts` (`chestHalf`, `chestPoints`, `capsuleGeom`) | a torso's chest segment (the hands' chest points, TORSO_CAPSULE's shoulder line) lies across his shoulders (hips plus the trunk twist) instead of his hips; an untwisted body is unchanged to the digit (test/chest-shoulders.test.ts). Off, the segment lies across the hips whatever the trunk does: on claude/trunk-stage1 `shouldersOf` reached only the report fields, so a blocker whose shoulders were on the man met him with his hip line. Evidence: docs/reviews/2026-11-14-pair-contact-design.md. |
+ | `EXPORT_SHOULDERS` | off | diagnostic (2026-11-14) | measurement | `src/sim/playsim.ts` (replay frames) | replay frames record each man's shoulders (`shouldersOf`) instead of his hips, so a facing export (`EXPORT_FACING=1`) compares the same body part as the NFL's shoulder-pad `o`. No behaviour reads the frames; identical to the hips with no trunk. |
+ | `EDGE_ARC` | off | experimental (edge rush: the rusher's arc, 2026-11-12; two attempts, not repaired: stopped for re-diagnosis) | pass rush | `src/sim/engagement.ts` (`stepPassRep` aim, `chooseMove`, `seenOverset`), `src/sim/behaviors/defense.ts` (`PassRusher`) | an edge rusher's landmark is outside his tackle's set -- the alignment he saw at the snap plus the 0.8 yd a kick takes, plus bodies + 0.45 yd (attempt 2; attempt 1 used the tackle's live shoulder) -- at the depth he sees the QB, free and in the rep; once deeper than the tackle's hips by 0.3 yd he turns for the QB; the inside counter (spin/swim weights) comes from the tackle he sees wider than his set by more than 0.45 yd within 1.5 yd in depth (attempt 1: level with or outside his body), not the blocker's velocity. Bend sets speed and cut. Read (seed 201, 8 games; off / TACKLE_SET / EDGE_ARC / both): states at 2.0 s not level / level / past / inside 61/27/6/6, 58/27/8/7, 37/41/15/7, 37/37/19/7 (NFL 31/30/23/15); at the win past / front / inside 13/50/37, 13/51/36, 6/58/36, 10/41/48 (NFL 26/27/47); tackle depth at 3.0 s -8.2/-7.5/-8.6/-7.3 (NFL -6.8), width +0.8/+0.9/+1.2/+1.6 (NFL -0.6); sacks 3.4/4.7/3.4/4.6% (NFL 6.7), time to pressure p50 2.6/2.6/2.5/2.6 s (NFL 2.7). Attempt 2 (EDGE_ARC / both): 2.0 s states 41/35/17/7, 43/32/17/8; at the win 8/56/37, 4/44/52; width at 3.0 s +0.9/+1.3; edge share of free at 2 yd 3/2% (NFL 23); sacks 5.2/4.4%. He gets around but does not win around: re-diagnose what happens after the turn with the tackle's hands still on. docs/reviews/2026-11-12-tackle-set.md |
++| `POWER_AIM` | off | experimental (Flex, 2026-11-16; Integration #35 item 2b) | pass rush | `src/sim/behaviors/defense.ts` (`PassRusher.powerMark`) | set at first review. A power rush aims down the middle of the lineman setting to him, not at the QB: "straight down the middle of the tackle" (viqtorysports, pass rush moves); the end keys the tackle's pass set and keeps the QB on his inside shoulder (gridironstrategies, defensive end reads in a forty front). On his own picture: before any lineman has shown him a set he takes his lane's first step (the finesse lane point); his mark is the nearest offensive lineman he sees in front of him on his way to the QB, inside 4 yd and within a body of that line, setting (seen moving back off the line faster than 0.3 yd/s) or already within 1.5 yd; aimed 0.3 s ahead of the man's seen motion; kept until he is level with him on the way to the QB (beaten: then the QB) or the man leaves his way. Ends and backs are never his mark; a body crossing his line meets him in the world. pursuitPoint already reads the QB from the rusher's picture (sim.see / sim.track), so the old line was not information cheating. Off, the power plan ran from the snap at its pursuit point on the QB: staged double_outs, all 96 hits on an attached end were DE_S on the power plan (power 96 / 96 reps, speed 0 / 96; attached-rusher-plan.mts); on, 0 / 96. Reads: scripts/diag/pass-operators/power-rep.mts. |
+ | `OPEN_HANDS` | on | promoted 2026-11-13 (engine-52; `=0` restores); was experimental (hands: open, grip, hold; 2026-11-12) | physics | `src/physics/world.ts` (hands rows: `holdLim`, tangential `slipLim`), `src/sim/engagement.ts` (`gripFor`, `FRAME_PHI`; rep, pass-helper and run-helper hands), `src/sim/contact-holding.ts` (`holdingRestriction`, capture) | two hand states in the World: fingers on cloth (`HandJoint.grip`) keep the joint's push, hold and steer limits; open hands push and slide, with no tension and |T| <= HAND_MU * max(0, N), HAND_MU = 0.42 (a sourced constant: dynamic, natural dry skin on a cotton-polyester fabric at about 15 N, Gerhardt et al. 2008, J R Soc Interface 5:1317, PMC2607440; moist skin 0.53-0.61, wet fabric 0.91; no glove-on-jersey measurement found). The controller grips inside the man's frame (the holder on his front or side by the man's own facing, and |phi| < FRAME_PHI = 1); once the man has left it (on his back, or at/past the hip) the grip lapses after the holder's release delay (reaction time x (2 - discipline)) unless he has chosen to hang on (the existing tryHold choice), and a kept grip's drag as well as its pull is judged by the ordinary achieved-restraint detector (no auto-call). A press jam's hands stay open. Evidence (open-hands-share.mts, seeds 101-102, off): over-cap tangential force at mu 0.42 by the man's frame -- run: front 30%, side 5%, back 7% of all; by the rep's phi: run at/past the hip 16% of all (38% of run's); pass: front 44%, back/hip ~0%. Fixtures `test/open-hands.test.ts`: past the hip with no grip, drag 476 N -> 0 (6.08 -> 6.71 yd/s); a kept grip unchanged; open-handed drive block steer within mu*N; a gripped drive block identical to off; gripFor's frame and release delay. docs/reviews/2026-11-12-tackle-set.md |
+ | `OPEN_HANDS_BACK_ONLY` | off | diagnostic (with OPEN_HANDS, 2026-11-12) | physics | `src/sim/engagement.ts` (`gripFor`) | sensitivity cut for Integration's frame definition: the man leaves the frame only when the holder is on his back, not when he is at/past the hip (phi >= FRAME_PHI). Read on the run report beside OPEN_HANDS |
+ | `PAST_ALONG_PATH` | on | promoted 2026-11-13 (engine-52; `=0` restores); was experimental (beaten = past along his path, 2026-11-12) | trenches / physics | `src/sim/engagement.ts` (`pastAlongPath`, `PAST_MARGIN`; `stepPassRep` beat and ride; `gripFor`) | a blocker is beaten when the man is past him along the man's own path of travel (the blocker more than 0.3 yd behind him along his velocity; below 1 yd/s the old phi test), not |phi| >= 1 against the man's line to the QB. Past but within reach (bodies + arm), the pass rep goes on as a ride: the blocker keeps up and pushes him on past, away from the QB (+1.0 yd/s); it ends when the man is out of reach. OPEN_HANDS's frame uses the same test, carried forward by the holder's lead. Evidence (beat-probe.mts, seeds 101-103): corner beats with the rusher still level along his path off 47%, TACKLE_SET 10%, anchored 2%; past but within reach and hands on 98-100% (anchored: released free 4-5 yd from the QB, inside at the win 64-69%). level-hold.py: NFL rusher level-outside a stationary engaged tackle 0.16 spells a dropback, ends past 9%; ours anchored 0.54, past 58%. docs/reviews/2026-11-12-tackle-set.md |
+diff --git a/scripts/diag/pass-operators/attached-align.py b/scripts/diag/pass-operators/attached-align.py
+new file mode 100644
+index 00000000..1965c80c
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-align.py
+@@ -0,0 +1,44 @@
++# Alignment over an attached end at the snap, NFL tracking vs sim exports, one operator (#35 item 2; Integration: is the
++# collision angle alignment?). Common format (offense +x, line at x = 0). Attached end as attached-release.py (a TE <= 1.5
++# yd off the line, 0.5-2.5 yd outside the last lineman), every pass play (on a route or not). His man: the defender (DL or
++# LB) at the snap 0-3 yd ahead of him whose lateral offset from him (+ = outside the end) is the outermost within -1.5 ..
++# +3.5 yd, i.e. the man on the edge of the attached side. Reported: that man's offset and depth (p10/25/50/75/90), the
++# share with nobody there, his group (DL / LB), and the same split by the defense's front where the export has one (sim
++# rows carry 'front' in cell when present; NFL rows by the number of DL at the snap: 3, 4, 5+).
++# usage: python3 scripts/diag/pass-operators/attached-align.py <plays.jsonl.gz> ...
++import sys, os, json, gzip, collections
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++for path in sys.argv[1:]:
++    rows = []
++    for line in gzip.open(path, 'rt'):
++        r = json.loads(line); r = r.get('common', r)
++        if r.get('kind') != 'pass' or not r.get('xy'): continue
++        p = Play(r)
++        OL = [i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None]
++        if len(OL) < 5: continue
++        ys = [p.pos(i, 0)[1] for i in OL]
++        D = [i for i in p.who('D') if r['players'][i]['group'] in ('DL', 'LB') and p.pos(i, 0)[0] is not None]
++        ndl = sum(1 for i in D if r['players'][i]['group'] == 'DL')
++        for i in p.who('O', 'TE'):
++            x0, y0 = p.pos(i, 0)
++            if x0 is None or x0 < -1.5: continue
++            out = 1 if y0 > (min(ys) + max(ys)) / 2 else -1
++            w = (y0 - (max(ys) if out > 0 else min(ys))) * out
++            if not (0.5 <= w <= 2.5): continue
++            C = [(d, (p.pos(d, 0)[1] - y0) * out, p.pos(d, 0)[0] - x0) for d in D]
++            C = [c for c in C if 0 <= c[2] <= 3 and -1.5 <= c[1] <= 3.5]
++            man = max(C, key=lambda c: c[1]) if C else None
++            rows.append({'off': man[1] if man else None, 'depth': man[2] if man else None, 'grp': r['players'][man[0]]['group'] if man else None,
++                         'front': (r.get('cell') or {}).get('front') or f'{min(ndl, 5)}DL'})
++    def line(lab, S):
++        M = [x for x in S if x['off'] is not None]
++        if not S: return f'  {lab}: none'
++        g = collections.Counter(x['grp'] for x in M)
++        return (f"  {lab} n {len(S)}: nobody {100*(len(S)-len(M))/len(S):.0f}% | outside the end p10/25/50/75/90 " + '/'.join(f"{q([x['off'] for x in M], f):.2f}" for f in (.1, .25, .5, .75, .9))
++                + f" yd | depth p25/50/75 " + '/'.join(f"{q([x['depth'] for x in M], f):.2f}" for f in (.25, .5, .75)) + f" | DL {100*g['DL']/max(1,len(M)):.0f}% LB {100*g['LB']/max(1,len(M)):.0f}%")
++    print(f'{os.path.basename(path)}: attached ends on pass plays {len(rows)}')
++    print(line('all', rows))
++    for fr, n in collections.Counter(x['front'] for x in rows).most_common(6):
++        if n >= 20: print(line(f'front {fr}', [x for x in rows if x['front'] == fr]))
+diff --git a/scripts/diag/pass-operators/attached-rusher-lane.mts b/scripts/diag/pass-operators/attached-rusher-lane.mts
+new file mode 100644
+index 00000000..c8c68b47
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-rusher-lane.mts
+@@ -0,0 +1,40 @@
++// Where the rusher who hits an attached end was going (#35 item 2 (b)). Staged double_outs (as attached-release.mts):
++// for the first DL whose body touches the end before 2 s, his rush gap and plan, his lane point's lateral offset from
++// the end's snap spot (+ = outside the end), his own snap offset from the end, and the bearing of his requested velocity
++// against the line to the end in the 0.3 s before the touch (0 = straight at him).
++// usage: [RELEASE_COMMIT=1 ...] node --import tsx scripts/diag/pass-operators/attached-rusher-lane.mts
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const { gapY } = await import(`${W}/src/playbook/alignment.ts`);
++const rows: any[] = [];
++for (const formation of ['gun_trey_11', 'ace_11', 'ace_12', 'gun_wing_12']) for (const coverage of ['cover1', 'cover3', 'cover2', 'cover4']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'double_outs', seed, roster, formation, flip: false }));
++  const ends = sim.offense.filter((a: any) => sim.offAlign.spots[a.slot]?.inline);
++  const st = new Map<any, any>(); const hist = new Map<any, any[]>();
++  const by = sim.ballY;
++  const y0 = new Map<any, number>(sim.agents.map((x: any) => [x, x.pos.y]));
++  while (sim.phase === 'live' && sim.t < 2.0) {
++    sim.tick();
++    for (const a of ends) {
++      const H = hist.get(a) ?? []; hist.set(a, H);
++      H.push(sim.defense.map((d: any) => ({ d, req: sim.cmds[sim.agents.indexOf(d)]?.vel, dp: { ...d.pos }, ap: { ...a.pos } })));
++      if (H.length > 13) H.shift();
++      if (st.has(a)) continue;
++      for (const d of sim.defense) if ((d.player.position === 'EDGE' || d.player.position === 'DT') && Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) <= a.profile.radius + d.profile.radius + 0.15) {
++        const b = d.behavior, out = Math.sign(y0.get(a)! - by) || 1;
++        let lane = NaN; try { if (gapY && b?.laneGap) lane = (gapY(sim.offAlign, b.laneGap, b.gapSign) - y0.get(a)!) * out; } catch {}
++        const bear = H.map((fr) => fr.find((f: any) => f.d === d)).filter((f: any) => f?.req && Math.hypot(f.req.x, f.req.y) > 1).map((f: any) => {
++          const tx = f.ap.x - f.dp.x, ty = f.ap.y - f.dp.y; return Math.acos(Math.max(-1, Math.min(1, (tx * f.req.x + ty * f.req.y) / (Math.hypot(tx, ty) * Math.hypot(f.req.x, f.req.y))))) * 180 / Math.PI; });
++        st.set(a, { slot: d.slot, gap: b?.gap, laneGap: b?.laneGap, plan: b?.plan, kind: b?.kind, tags: [...d.tags].filter((x: string) => /rush|arc|twist|game|key|squeeze/.test(x)).join(','), snapOff: +((y0.get(d)! - y0.get(a)!) * out).toFixed(2), lane: +lane.toFixed(2), bearing: bear.length ? +bear.sort((p: number, q: number) => p - q)[Math.floor(bear.length / 2)].toFixed(0) : null });
++        break;
++      }
++    }
++  }
++  for (const v of st.values()) rows.push(v);
++}
++const C = (k: string) => rows.reduce((m: any, r) => (m[r[k]] = (m[r[k]] ?? 0) + 1, m), {});
++const q = (v: number[], f = .5) => { const z = v.filter(Number.isFinite).sort((a, b) => a - b); return z.length ? z[Math.floor(f * (z.length - 1))] : NaN; };
++console.log(`touches ${rows.length} | by slot ${JSON.stringify(C('slot'))} | lane gap ${JSON.stringify(C('laneGap'))} | plan ${JSON.stringify(C('plan'))} | tags ${JSON.stringify(C('tags'))}`);
++console.log(`rusher's snap offset from the end (+ outside) p25/50/75 ${q(rows.map((r) => r.snapOff), .25)}/${q(rows.map((r) => r.snapOff))}/${q(rows.map((r) => r.snapOff), .75)} | his lane point's offset ${q(rows.map((r) => r.lane), .25)}/${q(rows.map((r) => r.lane))}/${q(rows.map((r) => r.lane), .75)} | request's bearing off the line to the end, 0.3 s before p25/50/75 ${q(rows.map((r) => r.bearing), .25)}/${q(rows.map((r) => r.bearing))}/${q(rows.map((r) => r.bearing), .75)} deg`);
++for (const p of Object.keys(C('plan'))) { const S = rows.filter((r) => String(r.plan) === p); console.log(`  plan ${p} n ${S.length}: snap ${q(S.map((r) => r.snapOff))}, lane ${q(S.map((r) => r.lane))}, bearing ${q(S.map((r) => r.bearing))}`); }
+diff --git a/scripts/diag/pass-operators/attached-rusher-plan.mts b/scripts/diag/pass-operators/attached-rusher-plan.mts
+new file mode 100644
+index 00000000..0d95e79e
+--- /dev/null
++++ b/scripts/diag/pass-operators/attached-rusher-plan.mts
+@@ -0,0 +1,17 @@
++// Ends over / near an attached end (within 2.5 yd across, 3 deep at the snap), by slot and rush plan: how many touch the
++// attached end before 2 s (staged double_outs). 2026-11-16: DE_S power 96 / 96, DE_S speed 0 / 96, DE_W 0 / 48.
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const C: any = {};
++for (const formation of ['gun_trey_11', 'ace_11', 'ace_12', 'gun_wing_12']) for (const coverage of ['cover1', 'cover3', 'cover2', 'cover4']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++  const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept: 'double_outs', seed, roster, formation, flip: false }));
++  const ends = sim.offense.filter((a: any) => sim.offAlign.spots[a.slot]?.inline);
++  const de = sim.defense.filter((d: any) => d.slot === 'DE_S' || d.slot === 'DE_W');
++  const hit = new Set<string>();
++  const near = (a: any) => de.filter((d: any) => Math.abs(d.pos.y - a.pos.y) < 2.5 && Math.abs(d.pos.x - a.pos.x) < 3);
++  const pairs = ends.flatMap((a: any) => near(a).map((d: any) => [a, d]));
++  while (sim.phase === 'live' && sim.t < 2.0) { sim.tick(); for (const [a, d] of pairs) if (Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) <= a.profile.radius + d.profile.radius + 0.15) hit.add(a.slot + d.slot); }
++  for (const [a, d] of pairs) { const k = `${d.slot} ${d.behavior?.plan ?? d.behavior?.kind}`; C[k] = C[k] ?? [0, 0]; C[k][0]++; if (hit.has(a.slot + d.slot)) C[k][1]++; }
++}
++console.log('end over / near an attached end: [n, touched]', C);
+diff --git a/scripts/diag/pass-operators/power-rep.mts b/scripts/diag/pass-operators/power-rep.mts
+new file mode 100644
+index 00000000..968c294e
+--- /dev/null
++++ b/scripts/diag/pass-operators/power-rep.mts
+@@ -0,0 +1,44 @@
++// POWER_AIM's reads (#35 item 2b; Integration's gate 4). Staged pass plays, two sets: attached-end looks (double_outs,
++// curl_flat from gun_trey_11 / ace_11 / ace_12 / gun_wing_12) and spread looks (four_verts, smash, dagger from
++// gun_doubles_11), cover1/2/3/4, rosters 1-6, seeds 1-2. Per edge rusher (DE_S, DE_W) by plan: his first pass
++// engagement (time, the blocker's slot), where on the blocker it lands (the rusher's offset across the blocker's chest
++// at the engagement, + = outside the blocker, and his bearing off the blocker's facing), the rep's control 0.5 s later,
++// whether he is past his blocker (beyond him toward the QB) at 1.5 / 2.5 s, whether he gets within 2 yd of the QB
++// before the ball is out (pressure) and sacks (he is the sacker). Plus every attached end hit by him.
++// usage: [POWER_AIM=1] node --import tsx scripts/diag/pass-operators/power-rep.mts
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const rows: any[] = [];
++const SETS: [string[], string[]][] = [[['double_outs', 'curl_flat'], ['gun_trey_11', 'ace_11', 'ace_12', 'gun_wing_12']], [['four_verts', 'smash', 'dagger'], ['gun_doubles_11']]];
++for (const [concepts, forms] of SETS) for (const concept of concepts) for (const formation of forms) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
++  const dir = sim.attackDir(sim.offense[0].team);
++  const ends = sim.offense.filter((a: any) => sim.offAlign.spots[a.slot]?.inline);
++  const R = sim.defense.filter((d: any) => (d.slot === 'DE_S' || d.slot === 'DE_W') && d.behavior?.kind === 'rush').map((d: any) => ({ d, plan: d.behavior.plan, set: formation === 'gun_doubles_11' ? 'spread' : 'attached', eng: null as any, ctl: null as any, past: {} as any, pressure: false, sack: false, hitEnd: false }));
++  while (sim.phase === 'live' && sim.t < 4) {
++    sim.tick();
++    for (const r of R) {
++      const d = r.d, e = d.engagement;
++      if (!r.eng && e && e.type === 'pass' && e.defender === d) {
++        const b = e.blocker, rx = d.pos.x - b.pos.x, ry = d.pos.y - b.pos.y, out = Math.sign(b.pos.y - sim.ballY) || 1;
++        const fx = Math.cos(b.facing), fy = Math.sin(b.facing);
++        r.eng = { t: +sim.t.toFixed(2), slot: b.slot, across: +(ry * out).toFixed(2), bearing: +(Math.atan2(rx * fy - ry * fx, rx * fx + ry * fy) * 180 / Math.PI * -out).toFixed(0), e, b };
++      }
++      if (r.eng && r.ctl === null && sim.t - r.eng.t >= 0.5) r.ctl = sim.engagements.includes(r.eng.e) ? +r.eng.e.control.toFixed(2) : 'ended';
++      for (const k of [1.5, 2.5]) if (r.eng && r.past[k] === undefined && sim.t >= k) r.past[k] = (r.eng.b.pos.x - d.pos.x) * dir > 0;
++      if (sim.throwAt < 0 && Math.hypot(d.pos.x - sim.qb.pos.x, d.pos.y - sim.qb.pos.y) <= 2) r.pressure = true;
++      for (const en of ends) if (Math.hypot(d.pos.x - en.pos.x, d.pos.y - en.pos.y) <= d.profile.radius + en.profile.radius + 0.15 && sim.t < 2) r.hitEnd = true;
++    }
++  }
++  for (const r of R) rows.push({ set: r.set, slot: r.d.slot, plan: r.plan, eng: r.eng && { t: r.eng.t, slot: r.eng.slot, across: r.eng.across, bearing: r.eng.bearing }, ctl: r.ctl, past: r.past, pressure: r.pressure,
++    sack: sim.events.some((ev: any) => ev.type === 'sack' && ev.a === r.d.idx), hitEnd: r.hitEnd });
++}
++const q = (v: number[], f = .5) => { const z = v.filter(Number.isFinite).sort((a, b) => a - b); return z.length ? z[Math.floor(f * (z.length - 1))] : NaN; };
++const pc = (n: number, d: number) => `${(100 * n / Math.max(1, d)).toFixed(0)}%`;
++for (const set of ['attached', 'spread']) for (const plan of ['power', 'finesse', 'speed']) {
++  const S = rows.filter((r) => r.set === set && r.plan === plan); if (!S.length) continue;
++  const E = S.filter((r) => r.eng);
++  const slots = E.reduce((m: any, r) => (m[r.eng.slot] = (m[r.eng.slot] ?? 0) + 1, m), {});
++  console.log(`${set} ${plan} n ${S.length}: engaged ${pc(E.length, S.length)} at p50 ${q(E.map((r) => r.eng.t)).toFixed(2)} s on ${JSON.stringify(slots)} | across the blocker p25/50/75 ${q(E.map((r) => r.eng.across), .25).toFixed(2)}/${q(E.map((r) => r.eng.across)).toFixed(2)}/${q(E.map((r) => r.eng.across), .75).toFixed(2)} yd, bearing p50 ${q(E.map((r) => r.eng.bearing))} deg | control +0.5 s p50 ${q(E.map((r) => r.ctl).filter((c: any) => typeof c === 'number')).toFixed(2)} (ended ${pc(E.filter((r) => r.ctl === 'ended').length, E.length)}) | past his blocker 1.5 / 2.5 s ${pc(E.filter((r) => r.past[1.5]).length, E.length)} / ${pc(E.filter((r) => r.past[2.5]).length, E.length)} | pressure ${pc(S.filter((r) => r.pressure).length, S.length)} | sacks ${S.filter((r) => r.sack).length} | hit the attached end ${S.filter((r) => r.hitEnd).length}`);
++}
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 2edf8b90..677edcb5 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -361,7 +361,27 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number
+   return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
+ }
+ 
++/** POWER_AIM (experimental, off; POWER_AIM=1; #35 item 2b): a power rush aims down the middle of the blocker setting to
++ * him, not at the quarterback. "Straight down the middle of the tackle", the outside foot in the ground, under his pads
++ * (viqtorysports, pass rush moves); the end keys the tackle's pass set and rushes with the QB on his inside shoulder
++ * (gridironstrategies, defensive end reads in a forty front). Off, from the snap the power plan ran straight at its
++ * pursuit point on the QB, so a strong-side end aligned outside an attached end ran his line through that end's release:
++ * staged double_outs, all 96 hits on an attached end were DE_S on the power plan (96 of 96 power reps, 0 of 96 speed;
++ * scripts/diag/pass-operators/attached-rusher-plan.mts). On his own picture: before any lineman has shown him a set he
++ * takes his lane's first step (the finesse plan's lane point); the man he aims at is the nearest offensive lineman he
++ * sees in front of him on his way to the QB, inside 4 yd and within a body of his line to the QB, who is setting (seen
++ * moving back off the line) or already within 1.5 yd. He keeps that man until he has beaten him (he is level with him on
++ * the way to the QB) or loses him from his way; a beaten or never-declared rush (past the line, nobody setting to him)
++ * goes at the QB as before. A man who is not a lineman (a releasing end, a back) is never his mark: if one crosses his
++ * line, the contact is the world's. */
++const POWER_AIM = process.env.POWER_AIM === '1';
++/** POWER_AIM: how far ahead of a set lineman's seen position he aims (s of the man's seen motion), and the windows. */
++const POWER_LEAD = 0.3, POWER_REACH = 4, POWER_NEAR = 1.5, POWER_SET = 0.3;
++
+ export class PassRusher implements Behavior {
++  /** POWER_AIM: the lineman he is rushing down the middle of, and whether he has beaten his man (then the QB). */
++  private powerMan: Agent | null = null;
++  private powerFree = false;
+   readonly kind = 'rush';
+   private readonly getOff: number;
+   /** STANCE_TELL: he picked up his key's pre-snap lean (his recognition). */
+@@ -586,6 +606,17 @@ export class PassRusher implements Behavior {
+     const edge = this.laneGap === 'C' || this.laneGap === 'D';
+     const bend = 0.8 + 0.45 * traits(a).bend;
+     if (this.plan === 'power') {
++      if (POWER_AIM && !this.powerFree) {
++        const mark = this.powerMark(a, sim, qbSeen);
++        if (mark) { a.tags.add('power-aim'); return runThrough(a, mark, { speed: 1 }); }
++        // Nobody has shown him a set yet: his lane's first step, as a finesse rush takes it.
++        if (a.pos.x > sim.los - 0.5) {
++          const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * 1.0 } : { x: sim.los - 0.6, y: gy };
++          a.tags.add('power-lane');
++          return runThrough(a, lane, { speed: 1, cutSkill: bend });
++        }
++        this.powerFree = true;
++      }
+       const p = pursuitPoint(sim, a, qb, 1.5);
+       return runThrough(a, p, { speed: 1 });
+     }
+@@ -614,6 +645,38 @@ export class PassRusher implements Behavior {
+     const p = pursuitPoint(sim, a, qb, 1.5);
+     return runThrough(a, p, { speed: 1, cutSkill: bend });
+   }
++
++  /** POWER_AIM: the middle of the lineman setting to him, as he sees him (null: nobody, or he has beaten him). */
++  private powerMark(a: Agent, sim: PlaySim, qbSeen: Vec2): Vec2 | null {
++    const tq = { x: qbSeen.x - a.pos.x, y: qbSeen.y - a.pos.y }, lq = Math.hypot(tq.x, tq.y);
++    if (lq < 0.5) return null;
++    const u = { x: tq.x / lq, y: tq.y / lq }, back = -sim.attackDir(sim.offense[0].team);
++    const inWay = (o: Agent) => {
++      const s = sim.see(a, o), rx = s.pos.x - a.pos.x, ry = s.pos.y - a.pos.y;
++      const along = rx * u.x + ry * u.y, off = Math.abs(rx * u.y - ry * u.x);
++      return { s, along, off, dist: Math.hypot(rx, ry), body: a.profile.radius + o.profile.radius + 0.3 };
++    };
++    if (this.powerMan) {
++      const w = inWay(this.powerMan);
++      // Level with him on the way to the QB (beaten), or he has left the way: the rush goes on at the QB.
++      if (w.along <= 0.2) { this.powerMan = null; this.powerFree = true; return null; }
++      if (w.off > w.body + 0.5 || w.dist > POWER_REACH + 1) this.powerMan = null;
++      else return { x: w.s.pos.x + w.s.vel.x * POWER_LEAD, y: w.s.pos.y + w.s.vel.y * POWER_LEAD };
++    }
++    let best: { o: Agent; d: number } | null = null;
++    for (const o of sim.offense) {
++      if (!isOL(o) || o.isDown(sim.t)) continue;
++      const w = inWay(o);
++      if (w.along <= 0.2 || w.dist > POWER_REACH || w.off > w.body) continue;
++      const setting = w.s.vel.x * back > POWER_SET;
++      if (!setting && w.dist > POWER_NEAR) continue;
++      if (!best || w.dist < best.d) best = { o, d: w.dist };
++    }
++    if (!best) return null;
++    this.powerMan = best.o;
++    const s = sim.see(a, best.o).pos, v = sim.see(a, best.o).vel;
++    return { x: s.x + v.x * POWER_LEAD, y: s.y + v.y * POWER_LEAD };
++  }
+ }
+ 
+ export class Blitzer implements Behavior {
+diff --git a/test/power-aim.test.ts b/test/power-aim.test.ts
+new file mode 100644
+index 00000000..ceb91566
+--- /dev/null
++++ b/test/power-aim.test.ts
+@@ -0,0 +1,46 @@
++/** POWER_AIM (defense.ts PassRusher.powerMark; experimental, off; #35 item 2b): a power rush aims down the middle of the
++ * lineman setting to him, not at the QB. On the engine defaults (the reference stack), staged double_outs (seed 2, whose
++ * dice give the strong-side end the power plan) from
++ * gun_trey_11 against Cover 1: off, the strong-side end on the power plan ran his line at the QB through the attached
++ * end's release and hit him; on, he takes his lane's first step and then the tackle, so he meets an offensive lineman
++ * and not the end. */
++import { readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function reps(flag: string) {
++  vi.resetModules();
++  for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
++  vi.stubEnv('POWER_AIM', flag);
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  let power = 0, hitEnd = 0, engagedOL = 0;
++  for (let roster = 1; roster <= 6; roster++) {
++    const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover1', concept: 'double_outs', seed: 2, roster, formation: 'gun_trey_11', flip: false }));
++    const de = sim.defense.find((d: any) => d.slot === 'DE_S');
++    if (de?.behavior?.plan !== 'power') continue;
++    power++;
++    const end = sim.offense.find((a: any) => sim.offAlign.spots[a.slot]?.inline);
++    let hit = false, eng = false;
++    while (sim.phase === 'live' && sim.t < 2.0) {
++      sim.tick();
++      if (Math.hypot(de.pos.x - end.pos.x, de.pos.y - end.pos.y) <= de.profile.radius + end.profile.radius + 0.15) hit = true;
++      if (de.engagement?.type === 'pass' && de.engagement.defender === de && ['LT', 'LG', 'C', 'RG', 'RT'].includes(de.engagement.blocker.slot)) eng = true;
++    }
++    hitEnd += +hit; engagedOL += +eng;
++  }
++  return { power, hitEnd, engagedOL };
++}
++
++describe('POWER_AIM', () => {
++  it('on: the power end rushes the tackle, not through the attached end; off, he runs through the end', async () => {
++    const off = await reps('0'), on = await reps('1');
++    console.log(`power reps ${off.power}; hit the end off ${off.hitEnd} on ${on.hitEnd}; engaged a lineman by 2 s off ${off.engagedOL} on ${on.engagedOL}`);
++    expect(off.power).toBeGreaterThanOrEqual(2);
++    expect(off.hitEnd).toBeGreaterThanOrEqual(2);
++    expect(on.hitEnd).toBe(0);
++    expect(on.engagedOL).toBe(on.power);
++  }, 240_000);
++});
+-- 
+2.43.0
+
