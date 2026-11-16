@@ -319,7 +319,27 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number 
   return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
 }
 
+/** POWER_AIM (experimental, off; POWER_AIM=1; #35 item 2b): a power rush aims down the middle of the blocker setting to
+ * him, not at the quarterback. "Straight down the middle of the tackle", the outside foot in the ground, under his pads
+ * (viqtorysports, pass rush moves); the end keys the tackle's pass set and rushes with the QB on his inside shoulder
+ * (gridironstrategies, defensive end reads in a forty front). Off, from the snap the power plan ran straight at its
+ * pursuit point on the QB, so a strong-side end aligned outside an attached end ran his line through that end's release:
+ * staged double_outs, all 96 hits on an attached end were DE_S on the power plan (96 of 96 power reps, 0 of 96 speed;
+ * scripts/diag/pass-operators/attached-rusher-plan.mts). On his own picture: before any lineman has shown him a set he
+ * takes his lane's first step (the finesse plan's lane point); the man he aims at is the nearest offensive lineman he
+ * sees in front of him on his way to the QB, inside 4 yd and within a body of his line to the QB, who is setting (seen
+ * moving back off the line) or already within 1.5 yd. He keeps that man until he has beaten him (he is level with him on
+ * the way to the QB) or loses him from his way; a beaten or never-declared rush (past the line, nobody setting to him)
+ * goes at the QB as before. A man who is not a lineman (a releasing end, a back) is never his mark: if one crosses his
+ * line, the contact is the world's. */
+const POWER_AIM = process.env.POWER_AIM === '1';
+/** POWER_AIM: how far ahead of a set lineman's seen position he aims (s of the man's seen motion), and the windows. */
+const POWER_LEAD = 0.3, POWER_REACH = 4, POWER_NEAR = 1.5, POWER_SET = 0.3;
+
 export class PassRusher implements Behavior {
+  /** POWER_AIM: the lineman he is rushing down the middle of, and whether he has beaten his man (then the QB). */
+  private powerMan: Agent | null = null;
+  private powerFree = false;
   readonly kind = 'rush';
   private readonly getOff: number;
   /** STANCE_TELL: he picked up his key's pre-snap lean (his recognition). */
@@ -544,6 +564,17 @@ export class PassRusher implements Behavior {
     const edge = this.laneGap === 'C' || this.laneGap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
     if (this.plan === 'power') {
+      if (POWER_AIM && !this.powerFree) {
+        const mark = this.powerMark(a, sim, qbSeen);
+        if (mark) { a.tags.add('power-aim'); return runThrough(a, mark, { speed: 1 }); }
+        // Nobody has shown him a set yet: his lane's first step, as a finesse rush takes it.
+        if (a.pos.x > sim.los - 0.5) {
+          const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * 1.0 } : { x: sim.los - 0.6, y: gy };
+          a.tags.add('power-lane');
+          return runThrough(a, lane, { speed: 1, cutSkill: bend });
+        }
+        this.powerFree = true;
+      }
       const p = pursuitPoint(sim, a, qb, 1.5);
       return rushFinish(sim, a, runThrough(a, p, { speed: 1 }));
     }
@@ -571,6 +602,38 @@ export class PassRusher implements Behavior {
     }
     const p = pursuitPoint(sim, a, qb, 1.5);
     return rushFinish(sim, a, runThrough(a, p, { speed: 1, cutSkill: bend }));
+  }
+
+  /** POWER_AIM: the middle of the lineman setting to him, as he sees him (null: nobody, or he has beaten him). */
+  private powerMark(a: Agent, sim: PlaySim, qbSeen: Vec2): Vec2 | null {
+    const tq = { x: qbSeen.x - a.pos.x, y: qbSeen.y - a.pos.y }, lq = Math.hypot(tq.x, tq.y);
+    if (lq < 0.5) return null;
+    const u = { x: tq.x / lq, y: tq.y / lq }, back = -sim.attackDir(sim.offense[0].team);
+    const inWay = (o: Agent) => {
+      const s = sim.see(a, o), rx = s.pos.x - a.pos.x, ry = s.pos.y - a.pos.y;
+      const along = rx * u.x + ry * u.y, off = Math.abs(rx * u.y - ry * u.x);
+      return { s, along, off, dist: Math.hypot(rx, ry), body: a.profile.radius + o.profile.radius + 0.3 };
+    };
+    if (this.powerMan) {
+      const w = inWay(this.powerMan);
+      // Level with him on the way to the QB (beaten), or he has left the way: the rush goes on at the QB.
+      if (w.along <= 0.2) { this.powerMan = null; this.powerFree = true; return null; }
+      if (w.off > w.body + 0.5 || w.dist > POWER_REACH + 1) this.powerMan = null;
+      else return { x: w.s.pos.x + w.s.vel.x * POWER_LEAD, y: w.s.pos.y + w.s.vel.y * POWER_LEAD };
+    }
+    let best: { o: Agent; d: number } | null = null;
+    for (const o of sim.offense) {
+      if (!isOL(o) || o.isDown(sim.t)) continue;
+      const w = inWay(o);
+      if (w.along <= 0.2 || w.dist > POWER_REACH || w.off > w.body) continue;
+      const setting = w.s.vel.x * back > POWER_SET;
+      if (!setting && w.dist > POWER_NEAR) continue;
+      if (!best || w.dist < best.d) best = { o, d: w.dist };
+    }
+    if (!best) return null;
+    this.powerMan = best.o;
+    const s = sim.see(a, best.o).pos, v = sim.see(a, best.o).vel;
+    return { x: s.x + v.x * POWER_LEAD, y: s.y + v.y * POWER_LEAD };
   }
 }
 
