@@ -42,7 +42,6 @@
   },
   "numeric": {
     "INFO_HONEST": { "default": 63, "legacy": 0 },
-    "BALL_EST": { "default": 6145, "legacy": 0 },
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 }
   },
   "flags": {
