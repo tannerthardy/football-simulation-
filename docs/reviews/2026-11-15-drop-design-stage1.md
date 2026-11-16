@@ -392,3 +392,23 @@ Deeper drops' plant to release is now the NFL's: 0.3 / 0.6 / 1.0 s against 0.3 /
 
 About half the remaining speed excess is distance and start: the drop covers 3.4 yd (NFL 3.1) and starts 0.1 s later
 (0.7 s against 0.6).
+
+## Part 3's facing, checked against the tracking; part 4 retired (2026-11-16)
+
+**The crossover, by drop depth** (BDB 2025 gun, non-PA, chest off downfield p50):
+
+| Depth | 1-2 yd | 2-3 | 3-4 | 4-5 | 5-6 | 6+ |
+| --- | --- | --- | --- | --- | --- | --- |
+| At the plant | 59 | 58 | 61 | 58 | 58 | 54 |
+| Most open in the drop | 62 | 65 | 69 | 69 | 75 | 89 |
+
+So he opens on the crossover steps, further the longer the drop, and comes back to about 58-60 deg at the plant
+whatever the depth. Ours (d61ab662: side-on in the first third, then turned to read 1 on the plant stride): at the plant
+46 / 36 / 32 deg, most open 79 / 90 / 90 deg (1-3 / 3-4 / 4+ yd). The shape is right; the angles need a per-step turn
+and a partial square that are not sourced. Integration to rule.
+
+**Part 4, the step into the throw, is retired into bit 4.** The windup already steps him toward the aim point
+(STRIDE_SPEED by the delivery). That step is visible as arm 'load' -> 'deliver' plus his seen velocity, and is Defense's
+front-foot rung. The NFL's speed at release (p50 0.9 yd/s short, 1.4 deeper; ours 0.4) is mostly not forward: set
+35-60%, forward 8-16%, sideways 15-30%, back 18-19%. It is drift and reset, so it is pocket movement thrown from the
+move: bit 4's.
