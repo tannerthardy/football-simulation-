@@ -1032,7 +1032,7 @@ export class QBPass implements Behavior {
   /** QB_KEY_READ: the key man named pre-snap from the shell as he reads it, from his picture of the alignment. */
   private keySnap: Vec2 | null = null;
   private keyManShell(sim: PlaySim, role: string, low: Agent, high: Agent): Agent | null {
-    const qb = sim.qb, dir = sim.attackDir(qb.team), midY = (low.pos.y + high.pos.y) / 2, side = Math.sign(midY - sim.ballY) || 1;
+    const qb = sim.qb, dir = sim.attackDir(qb.team), highY = sim.see(qb, high).pos.y, midY = (sim.see(qb, low).pos.y + highY) / 2, side = Math.sign(midY - sim.ballY) || 1;
     // Coverage players in his picture: off the ball, or detached wide. A man on the line in a stance is a rusher.
     const D = sim.defense.map((d) => { const p = sim.see(qb, d).pos; return { d, p, depth: (p.x - sim.los) * dir, out: (p.y - sim.ballY) * side, y: p.y }; })
       .filter((x) => x.depth >= 2 || Math.abs(x.y - sim.ballY) > 9);
@@ -1045,7 +1045,7 @@ export class QBPass implements Behavior {
       // Two-high with a hard corner: the corner is the flat player. Otherwise the overhang, the next man inside him.
       pick = corner && twoHigh && corner.depth <= 6 ? corner : side[1] ?? null;
     } else if (/hook/.test(role)) pick = best(D.filter((x) => x.depth >= 2.5 && x.depth <= 8), (x) => Math.abs(x.y - sim.ballY) + (role !== 'middle_hook' && x.out < 0 ? 2 : 0));
-    else if (/safety|deep/.test(role)) pick = best(D.filter((x) => x.depth >= 8), (x) => Math.abs(x.y - (/over_vertical/.test(role) ? high.pos.y : sim.ballY)) - 0.1 * x.depth);
+    else if (/safety|deep/.test(role)) pick = best(D.filter((x) => x.depth >= 8), (x) => Math.abs(x.y - (/over_vertical/.test(role) ? highY : sim.ballY)) - 0.1 * x.depth);
     this.keySnap = pick ? { ...pick.p } : null;
     return pick?.d ?? null;
   }
@@ -1757,7 +1757,7 @@ export class QBPass implements Behavior {
     if (this.look) {
       // QB_HEAD: his eyes are on the man once his head points at him; then the glance.
       if (QB_HEAD && this.look.seenAt === Infinity) {
-        const p = this.receiverForecasts.get(this.look.target)?.predict(sim.t, 0) ?? this.look.target.pos;
+        const p = this.receiverForecasts.get(this.look.target)?.predict(sim.t, 0) ?? this.has(sim, this.look.target);
         if (a.head !== null && Math.abs(wrapAngle(angleTo(a.pos, p) - a.head)) < 0.15) this.look.seenAt = sim.t + (this.look.glance ?? 0);
       }
       if (sim.t < this.look.seenAt) return 'look';
@@ -3069,8 +3069,10 @@ export class QBPass implements Behavior {
       const dir = sim.attackDir(a.team);
       let room = Infinity;
       for (const o of [...sim.offense, ...sim.defense]) {
-        if (o === a || o.isDown(sim.t)) continue;
-        const p = o.team === a.team ? sim.see(a, o).pos : this.felt(a, sim, o).pos;
+        if (o === a) continue;
+        const so = sim.see(a, o);
+        if (so.pose === 'down' || so.pose === 'rising') continue;
+        const p = o.team === a.team ? so.pos : this.felt(a, sim, o).pos;
         const ax = (p.x - a.pos.x) * dir, ay = p.y - a.pos.y;
         if (ax > 0 && Math.abs(Math.atan2(ay, ax)) < Math.PI / 6) room = Math.min(room, Math.hypot(ax, ay));
       }

@@ -717,8 +717,9 @@ export class PassRusher implements Behavior {
     }
     let best: { o: Agent; d: number } | null = null;
     for (const o of sim.offense) {
-      if (!isOL(o) || o.isDown(sim.t)) continue;
+      if (!isOL(o)) continue;
       const w = inWay(o);
+      if (w.s.pose === 'down' || w.s.pose === 'rising') continue;
       if (w.along <= 0.2 || w.dist > POWER_REACH || w.off > w.body) continue;
       const setting = w.s.vel.x * back > POWER_SET;
       if (!setting && w.dist > POWER_NEAR) continue;

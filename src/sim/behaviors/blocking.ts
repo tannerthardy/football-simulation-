@@ -348,13 +348,14 @@ export class PassProtector implements Behavior {
     if (PA_HINGE && (isOL(a) || !!sim.offAlign.spots[a.slot]?.inline)) {
       const side = paFakeSide.get(sim) ?? 0;
       const line = this.coord.protectors.filter((p) => isOL(p) || !!sim.offAlign.spots[p.slot]?.inline);
-      const endMan = !!side && line.length > 0 && line.reduce((m, p) => ((this.coord.homeY.get(p) ?? p.pos.y) - sim.ballY) * -side
-        > ((this.coord.homeY.get(m) ?? m.pos.y) - sim.ballY) * -side ? p : m) === a;
+      const endMan = !!side && line.length > 0 && line.reduce((m, p) => ((this.coord.homeY.get(p) ?? sim.see(a, p).pos.y) - sim.ballY) * -side
+        > ((this.coord.homeY.get(m) ?? sim.see(a, m).pos.y) - sim.ballY) * -side ? p : m) === a;
       const spot = paHingeSpot(sim, home, sim.snapX[a.idx] ?? a.pos.x, endMan, a.idx, a.pos);
       if (spot) {
         if (rA) {
           const contactPA = a.profile.radius + rA.profile.radius + 0.1 + a.player.measurables.armIn / 36 * 0.55;
-          if (Math.hypot(rA.pos.x - a.pos.x, rA.pos.y - a.pos.y) < contactPA + 0.15 && sim.engage(a, rA, 'pass')) return stand();
+          const sr = sim.see(a, rA).pos;
+          if (Math.hypot(sr.x - a.pos.x, sr.y - a.pos.y) < contactPA + 0.15 && sim.engage(a, rA, 'pass')) return stand();
         }
         a.tags.add(endMan ? 'pa-hinge' : 'pa-reach');
         return goTo(a, spot, { speed: 0.8, facing: spot.facing });
