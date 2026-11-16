@@ -5,13 +5,18 @@
 // the strength) per play: who the protection first assigns him (slot, time), who first engages him (slot, time), the
 // back's fake side and where the back is at 0.8 s relative to DE_W (lateral yd), when DE_W first gets within 2 yd of the
 // QB (before the ball is out), and whether he sacks.
-// usage: node --import tsx scripts/diag/pass-operators/pa-backside.mts
+// usage: [PAB_GRID=qb] [CONCEPT_DROPS=1 QB_FOOTWORK=1] node --import tsx scripts/diag/pass-operators/pa-backside.mts
 const W = process.cwd();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const rows: any[] = [];
-for (const concept of ['pa_flood', 'pa_post_dig', 'pa_shot', 'post_cross', 'seam_slant', 'flood']) for (const formation of ['gun_doubles_11', 'ace_11', 'gun_trey_11', 'ace_12'])
-  for (const coverage of ['cover1', 'cover3']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
+// PAB_GRID=qb: the QB lane's drop-staged.ts grid (gun_doubles_11; eight coverages; rosters 3 / 7 / 11 / 19; seeds 1-6).
+const QBG = process.env.PAB_GRID === 'qb';
+const FORMS = QBG ? ['gun_doubles_11'] : ['gun_doubles_11', 'ace_11', 'gun_trey_11', 'ace_12'];
+const COVS = QBG ? ['cover1', 'cover2man', 'cover2', 'tampa2', 'cover3', 'cover3_match', 'cover4', 'cover6'] : ['cover1', 'cover3'];
+const ROSTERS = QBG ? [3, 7, 11, 19] : [1, 2, 3, 4, 5, 6], SEEDS = QBG ? [1, 2, 3, 4, 5, 6] : [1, 2];
+for (const concept of ['pa_flood', 'pa_post_dig', 'pa_shot', 'post_cross', 'seam_slant', 'flood']) for (const formation of FORMS)
+  for (const coverage of COVS) for (const roster of ROSTERS) for (const seed of SEEDS) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
     const de = sim.defense.find((d: any) => d.slot === 'DE_W'); if (!de) continue;
     const back = sim.slot('RB');
