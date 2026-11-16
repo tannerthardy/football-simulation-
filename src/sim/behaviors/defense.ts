@@ -330,6 +330,14 @@ const SET_DEPTH = 0.4;
  * nearest one laterally, read as his key. An interior man keys the blocker
  * within a yard and a half; an edge keys the end of the line inside him,
  * however wide he aligns (a wide 9 still reads his tackle). */
+const OL_SLOTS_SET = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** END_KEY (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-end-key.md). Bit 2 (key through the
+ * triangle): an edge rusher whose keyed surface man releases (no blocking stance in his picture) keys on through to the
+ * tackle inside, and the existing key reads play that man's step (a hinge or zone step away: squeeze / END_CHASE with
+ * the boot check; a pass set: the rush). Sourced (Gridiron Strategies, "Defensive End Reads in a Forty Front"): "once
+ * you read release, look for the next part of triangle"; the release itself is not a pass read. Bit 1 (the key's
+ * stance as a run/pass cue) was tried and removed: on play action it made the fake-side end fit inside harder. */
+const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 0) & 2) !== 0;
 function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = null): (Perceived & { home: Vec2; agent: Agent }) | null {
   let best: Agent | null = held, bd = Infinity;
   if (!best) for (const b of linePicture(sim, a).surface) {
@@ -392,7 +400,7 @@ export class PassRusher implements Behavior {
   /** The end of the line an edge keyed: he keeps reading that man. A down
    * block steps away from him, and that step is the cue, not a reason to
    * lose his key. */
-  private keyed: Agent | null = null;
+  keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   /** DL_GAMES: a called angle/slant/pinch moved his gap; until this clock he
@@ -503,6 +511,18 @@ export class PassRusher implements Behavior {
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
     const onEdge = this.gap === 'C' || this.gap === 'D';
+    // END_KEY bit 2: the surface man he keyed released (no blocking stance in his picture): his eyes go on through the
+    // triangle to the next part of it, the tackle inside (Gridiron Strategies: "once you read release, look for the next
+    // part of triangle"; the release itself is not a pass read).
+    if (END_KEY_THROUGH && onEdge && this.keyed && !OL_SLOTS_SET.has(this.keyed.slot) && sim.see(a, this.keyed).stance == null) {
+      let best: Agent | null = null, bd = Infinity;
+      for (const o of sim.offense) {
+        if (!OL_SLOTS_SET.has(o.slot)) continue;
+        const dy = Math.abs(sim.see(a, o).pos.y - a.pos.y);
+        if (dy < bd) { bd = dy; best = o; }
+      }
+      if (best) { this.keyed = best; a.tags.add('key-through'); }
+    }
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
     watch(sim, a, man?.agent);

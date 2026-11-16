@@ -45,6 +45,7 @@
     "SIGHT_STALE": { "default": 7, "legacy": 0 },
     "BALL_EST": { "default": 6145, "legacy": 0 },
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
+    "END_KEY": { "default": 0, "legacy": 0 },
     "ZONE_HOLD": { "default": 0, "legacy": 0 },
     "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 }
   },
