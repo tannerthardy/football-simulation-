@@ -62,7 +62,7 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
   // RELEASE_SEEN's tight-at-snap men: pa_flood's S2 releases round his parked DE_S unflipped and not flipped), and the
   // sample is not mirror-symmetric (read-compiler's mirror case on the engine defaults). With the flag the record's
   // delay window is filled with the parked defence, so his pictures show what is on the field.
-  if (COMPILE_PICTURE) for (let i = 0; i < 12; i++) sim.perception.record(sim.agents, null);
+  if (COMPILE_PICTURE) for (let i = 0; i < 12; i++) sim.recordPerception(null);
   const dir = sim.attackDir(sim.offense[0].team), ss = sim.offAlign.strongSign;
   const tick = sim as unknown as { tick(): void };
   const skill = sim.offense.filter((a) => a !== sim.qb && !OL.has(a.slot));
