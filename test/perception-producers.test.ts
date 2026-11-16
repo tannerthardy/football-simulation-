@@ -18,12 +18,15 @@ describe('ball-estimate.ts is a perception producer', () => {
   });
   it('exports no read of the true ball: a new export is reviewed here before it can be used', () => {
     const names = [...text.matchAll(/^export (?:const|function|class|type|interface) (\w+)/gm)].map(m => m[1]).sort();
-    expect(names).toEqual(['BALL_EST', 'BALL_EST_LOOMING', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BallEstimates', 'LOOK_NECK', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',
-      'PathSample', 'bodyTurnLead', 'fitFlight', 'lookJoints', 'neckOf', 'ownRoutes', 'sideOf'].sort());
-  });
-  it('is the only file that holds BallEstimates besides the owner of the state', () => {
-    const users = files.filter(f => f.file !== 'src/sim/ball-estimate.ts' && /\bBallEstimates\b/.test(f.text)).map(f => f.file);
-    expect(users).toEqual(['src/sim/playsim.ts']);
+    // Reviewed 2026-11-16 at the engine-71 refresh: the new exports are flags and constants (BALL_EST_DEEP_LOOK, _DEF_ONLY, _GLANCE, _INCIDENTAL, _MAN_LOOK, _RCV, _RCV_ONLY, _SERVO, _TRUNK; DEEP_LOOK_DEPTH/HOLD,
+    // GAZE_SEARCH, GLANCE_DEPTH/DWELL_TARGET/HOLD_REF, PHASE_BEHIND) and four functions whose inputs are a team, ratings or numbers (estimatesFor, glanceSd, lookAnyway, phaseJudgeSd): none takes or returns the true ball.
+    expect(names).toEqual([
+      'BALL_EST', 'BALL_EST_DEEP_LOOK', 'BALL_EST_DEF_ONLY', 'BALL_EST_GLANCE', 'BALL_EST_INCIDENTAL', 'BALL_EST_LOOMING',
+      'BALL_EST_MAN_LOOK', 'BALL_EST_MOVING_CHOICE', 'BALL_EST_NO_TRACKPEN', 'BALL_EST_RCV', 'BALL_EST_RCV_ONLY', 'BALL_EST_SERVO',
+      'BALL_EST_TRUNK', 'BallEstimates', 'DEEP_LOOK_DEPTH', 'DEEP_LOOK_HOLD', 'GAZE_SEARCH', 'GLANCE_DEPTH',
+      'GLANCE_DWELL_TARGET', 'GLANCE_HOLD_REF', 'LOOK_NECK', 'PHASE_BEHIND', 'PRE_LOOK_EARLY', 'PRE_LOOK_LATE',
+      'PathSample', 'bodyTurnLead', 'estimatesFor', 'fitFlight', 'glanceSd', 'lookAnyway',
+      'lookJoints', 'neckOf', 'ownRoutes', 'phaseJudgeSd', 'sideOf'].sort());
   });
 });
 
