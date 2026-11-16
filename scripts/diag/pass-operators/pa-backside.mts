@@ -1,4 +1,5 @@
-// Play action's backside end (Integration, 2026-11-16, from the QB lane's paired staged runs: PA sacks 15-20% vs 5% on
+// LABELS (2026-11-16): DE_W in gun_doubles_11 is the FAKE-SIDE end (the offset back fakes to his own side); 'backside' below
+// was a mislabel. Play action's DE_W (Integration, 2026-11-16, from the QB lane's paired staged runs: PA sacks 15-20% vs 5% on
 // dropbacks, DE_W the sacker on most). Staged plays on develop, the same fronts on PA (pa_flood, pa_post_dig, pa_shot)
 // and on straight dropbacks with the same back job (post_cross / seam_slant: back 'block'; flood: back on a route), from
 // gun_doubles_11 / ace_11 / gun_trey_11 / ace_12 x cover1 / cover3 x rosters 1-6 x seeds 1-2. For DE_W (the end away from

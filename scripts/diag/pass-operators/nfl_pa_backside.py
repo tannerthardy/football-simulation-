@@ -63,9 +63,12 @@ for w in weeks:
             eid = e.nflId
             E = P[P.nflId == eid].set_index('t'); Q = P[P.nflId == qb.nflId.iloc[0]].set_index('t')
             r = {'side': which, 'pa': bool(pa[(g, p)]), 'rusher': rusher.get((g, p, eid)), 'at': {}}
+            olids = set(ol.nflId)
             for k in (1.0, 1.5, 2.0):
                 if k in E.index and k in Q.index:
-                    r['at'][k] = {'depth': los - E.loc[k, 'X'], 'toward': (e.Y - E.loc[k, 'Y']) * back, 'qb': los - Q.loc[k, 'X']}
+                    F = P[(P.t == k) & P.nflId.isin(olids)]
+                    near = float(np.min(np.hypot(F.X.values - E.loc[k, 'X'], F.Y.values - E.loc[k, 'Y']))) if len(F) else float('nan')
+                    r['at'][k] = {'depth': los - E.loc[k, 'X'], 'toward': (e.Y - E.loc[k, 'Y']) * back, 'qb': los - Q.loc[k, 'X'], 'ol': near}
             rows.append(r)
 q = lambda v: float(np.median(v)) if len(v) else float('nan')
 for side, pa_ in (('away', True), ('away', False), ('fake', True), ('fake', False)):
@@ -75,6 +78,6 @@ for side, pa_ in (('away', True), ('away', False), ('fake', True), ('fake', Fals
     print(f"{side}-side end, {'play action' if pa_ else 'no play action'} (gun traditional dropbacks, n {len(S)}): initial pass rusher {100*sum(1 for r in ru if r['rusher'])/max(1,len(ru)):.0f}%")
     for k in (1.0, 1.5, 2.0):
         R = [r['at'][k] for r in S if k in r['at']]
-        line = f"  {k} s (n {len(R)}): end's depth past the line {q([x['depth'] for x in R]):.2f} | toward the ball {q([x['toward'] for x in R]):.2f} | QB depth {q([x['qb'] for x in R]):.2f}"
+        line = f"  {k} s (n {len(R)}): end's depth past the line {q([x['depth'] for x in R]):.2f} | toward the ball {q([x['toward'] for x in R]):.2f} | QB depth {q([x['qb'] for x in R]):.2f} | nearest OL {q([x['ol'] for x in R]):.2f} yd (within 1.5 yd {100*sum(1 for x in R if x['ol'] <= 1.5)/max(1,len(R)):.0f}%)"
         if k == 1.5: line += f" | upfield (> 2.0 yd past) {100*sum(1 for x in R if x['depth'] > 2.0)/max(1,len(R)):.0f}%"
         print(line)
