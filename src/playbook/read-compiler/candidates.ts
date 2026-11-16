@@ -5,7 +5,7 @@
  */
 import type { ReceiverRef } from '../types.js';
 import type { Candidate, Motif, ReadStep, RouteDescriptor } from './types.js';
-import { afterBreak } from './motifs.js';
+import { afterBreak, isVerticalRoute } from './motifs.js';
 /** PLAN_ROLES (experimental, off; compile.ts CLEAR_OUTS): declared clear-outs are not read as the high of a high-low. */
 export const PLAN_ROLES = process.env.PLAN_ROLES !== '0';
 
@@ -155,7 +155,7 @@ export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: nu
   return out.sort((x, y) => Number(y.valid) - Number(x.valid) || y.score - x.score);
 }
 
-const isVertical = (r: RouteDescriptor) => { const d = afterBreak(r); return d.down > 1.5 && Math.abs(d.out) < 0.6 * d.down; };
+const isVertical = isVerticalRoute;
 const live = (a: RouteDescriptor, b: RouteDescriptor) => Math.min(a.window.last, b.window.last) - Math.max(a.window.ready, b.window.ready);
 
 /**

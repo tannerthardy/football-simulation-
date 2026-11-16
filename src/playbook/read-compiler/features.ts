@@ -38,6 +38,13 @@ const DT = 0.1, HORIZON = 4.0;
 export const DECLARED_BREAK = process.env.DECLARED_BREAK !== '0';
 /** COMPILE_PICTURE (experimental, off): the route sample's pictures show the parked defence (see `sampleRoutes`). */
 const COMPILE_PICTURE = process.env.COMPILE_PICTURE !== '0';
+/** DECL_CLASS (experimental, off; with DECLARED_BREAK): a route with a declared break takes its class (vertical or
+ * breaking) from its declaration, as its timing does: a declared vertical (go, fade, seam) is a vertical; a route cut at a
+ * declared vertex is a vertical only if the leg leaving the vertex on his installed path runs downfield (its lateral part
+ * under 0.6 of its downfield part, the geometric test's ratio). Otherwise the compiler measures the half second after the
+ * break, which on pa_flood's deep out (a rolled exit still climbing 1.47-1.51 yd) sat on the edge of `down > 1.5` and
+ * flipped the installed plan on a 0.23 yd difference in one receiver's start (Run Game's mirror trace, 2026-11-16). */
+const DECL_CLASS = process.env.DECL_CLASS === '1';
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 
 export interface Sampled { qbSetAt: number; routes: RouteDescriptor[]; excluded: Array<{ ref: string; why: string }> }
@@ -161,7 +168,7 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
       : (lateralStem || (crosser && breakT === null)) && moved !== null ? moved + 0.2
       : breakT !== null ? breakT + 0.1 : vertical !== null ? vertical : moved !== null ? moved + 0.2 : HORIZON;
     const detectedReady = Math.max(qbSetAt - 0.15, declared);
-    let ready = detectedReady, settles = P.length > 3 && P[P.length - 1].speed < 1.5, declaredBreak: RouteDescriptor['declaredBreak'] = undefined;
+    let ready = detectedReady, settles = P.length > 3 && P[P.length - 1].speed < 1.5, declaredBreak: RouteDescriptor['declaredBreak'] = undefined, declaredClass: RouteDescriptor['declaredClass'] = undefined;
     const decl = DECLARED_BREAK ? BREAK_DECL[id] : undefined;
     if (decl) {
       let t: number | null = null;
@@ -182,12 +189,22 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
       settles = end === 'settle' || end === 'sitVsZone';
       declaredBreak = { t, throwFamily: decl.throwFamily, anchorLead: decl.anchorLead, rule: typeof decl.at === 'number' ? 'vertex' : decl.at,
         detectedReady: +detectedReady.toFixed(2), breakWarn: Math.abs(ready - detectedReady) > 0.4 };
+      if (DECL_CLASS) {
+        if (decl.at === 'vertical') declaredClass = 'vertical';
+        else if (typeof decl.at === 'number') {
+          const path = pathOf.get(a), v = path?.[decl.at], w = path?.[decl.at + 1];
+          if (v && w) {
+            const down = w.x - v.x, out = (w.y - v.y) * (Math.sign(start.y) || 1);
+            declaredClass = down > 0 && Math.abs(out) < 0.6 * down ? 'vertical' : 'breaking';
+          }
+        }
+      }
     }
     const last = settles ? Math.min(HORIZON, ready + 1.2) : Math.min(HORIZON, ready + 1.6);
     const yEnd = P[P.length - 1].y;
     routes.push({
       ref, slot: a.slot, routeId: id, startDepth: -start.x, startWidth: start.y, side, family: id,
-      trajectory: P, breakT, breakAt, ...(declaredBreak ? { declaredBreak } : {}),
+      trajectory: P, breakT, breakAt, ...(declaredBreak ? { declaredBreak } : {}), ...(declaredClass ? { declaredClass } : {}),
       window: { ready: +ready.toFixed(2), best: +Math.min(last, ready + 0.25).toFixed(2), last: +last.toFixed(2) },
       depthAtReady: +at(ready).x.toFixed(1), crossesField: Math.sign(yEnd) !== Math.sign(start.y) && Math.abs(yEnd - start.y) > 8,
       isBack, settles,
