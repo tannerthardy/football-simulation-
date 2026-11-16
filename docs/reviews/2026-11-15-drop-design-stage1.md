@@ -699,3 +699,14 @@ cost.
 
 Corner grass reads: readable is the release won only (`declRule` not vertical); the deep half defender over a corner
 is the window's timing question. Mesh unchanged (20 corners at 2.42 s, 9.4 yd); smash as off (its corner is keyed).
+
+### Bit 16's pair: the PA read on the plant (2026-11-16, state)
+
+Built under bit 16 (FW_PA_READ): read 1 of an unkeyed play-action concept is decided on the plant out of the fake (thrown
+if ready and priced, else read 2 at once; no dwell, no look-off). Staged, 576 PA plays, CONCEPT_DROPS=1: sacks bit 1
+14.8%, bits 1+2 with the fake 27.1%, bits 1+2 without it 20.0%, bits 1+2+16 24.1%; completions 259 / 230 / 245 / 264,
+yd 7.12 / 6.08 / 7.32 / 7.46; median throw 3.05 / 3.30 / 3.10 / 3.40 s (NFL gun PA 2.3). Read 1 left on the plant on
+0 of 424 throws. Why: pa_post_dig and pa_shot are keyed (the key read's cue, not the plant, decides them), and pa_flood's
+read 1 (the deep out) is not ready at the 2.5 s plant (9.2 yd, before its break; priced 0.67 against his 0.52 bar):
+the plan's PA rhythm and the routes are timed for the old 0.7 s fake. The pair needs the plan compiled on the honest
+fake (Rules: read 1 the window the fake makes, on the plant step) and the key cued on the plant; not carded until then.
