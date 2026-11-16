@@ -1,0 +1,32 @@
+diff --git a/src/sim/near-field.ts b/src/sim/near-field.ts
+index 9c3c196d..83a6ae16 100644
+--- a/src/sim/near-field.ts
++++ b/src/sim/near-field.ts
+@@ -65,6 +65,19 @@ export class NearField {
+   }
+ 
+   /** The gated observer's picture of `target`, `seen` being what the gated path gave. */
++  /** Diagnostic (uncommitted): the first caller frame outside playsim's own see wrappers. */
++  private static site(): string {
++    const old = Error.prepareStackTrace, lim = Error.stackTraceLimit; Error.stackTraceLimit = 9; Error.prepareStackTrace = (_e, cs) => cs;
++    const o: { stack?: unknown } = {}; Error.captureStackTrace(o, NearField.site);
++    const cs = o.stack as { getFunctionName(): string | null; getTypeName(): string | null; getFileName(): string | null }[]; Error.prepareStackTrace = old; Error.stackTraceLimit = lim;
++    for (const c of cs) {
++      const file = (c.getFileName() ?? '?').replace(/.*[\\/]/, ''), fn = c.getFunctionName() ?? '<anonymous>', ty = c.getTypeName();
++      const name = ty && ty !== 'Object' && !fn.includes('.') ? `${ty}.${fn}` : fn;
++      if (file.startsWith('near-field') || (file.startsWith('playsim') && /(^|\.)(see|track|sighted|seeAs|seen)$/.test(name))) continue;
++      return `${file}:${name}`;
++    }
++    return '?';
++  }
+   apply(sim: PlaySim, observer: Agent, target: Agent, seen: Perceived, headDir: number | null): Perceived {
+     const t = sim.t;
+     if (NEAR_FELT) {
+@@ -84,6 +97,7 @@ export class NearField {
+         : observer.behavior?.kind === 'man' && (observer.behavior as unknown as { target?: Agent }).target ? [(observer.behavior as unknown as { target: Agent }).target]
+         : observer.behavior?.kind === 'zone' && sim.qb ? [sim.qb] : [];
+       if (keys.includes(target) || (observer.team === 'D' && target === sim.carrier)) return seen;
++      if (process.env.NF_SITE || process.env.NF_ENUM) { const site = NearField.site(); if (process.env.NF_ENUM) { const g = (globalThis as any).__nfEnum ??= new Map<string, number>(); const k = `${observer === sim.carrier ? 'carrier' : 'defender'} ${site}`; g.set(k, (g.get(k) ?? 0) + 1); } if (process.env.NF_SITE) { const inList = process.env.NF_SITE.split(',').includes(`${observer === sim.carrier ? 'carrier' : 'defender'} ${site}`); if (process.env.NF_REST ? inList : !inList) return seen; } }
+       let dir = headDir ?? observer.body.facing;
+       if (headDir == null && keys.length) { const kp = sim.perception.perceive(keys[0].idx, 0.2).pos; dir = Math.atan2(kp.y - observer.pos.y, kp.x - observer.pos.x); }
+       if (r > 1e-6) {

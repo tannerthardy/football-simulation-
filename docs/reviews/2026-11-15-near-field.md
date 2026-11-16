@@ -243,3 +243,40 @@ sites; the consumers of a pictured position are the 84 `see` and `track` call si
 
 **Scorecard (16 games per arm, 2 leagues, seed 23, paired off against `NEAR_FIELD=2`, engine-68):** completion 67.4 to 70.0%, against man 54.6 to 59.3% (zone 73.5 to 74.0%), yards per attempt 8.98 to 9.55, **YAC per reception 7.58 to 7.75 (+0.17; the first form moved it +3.0)**, designed rush yd per carry 3.99 to 3.78, missed + broken
 352 to 323. One seed. The rebuilt form is a moderate move: the pass game gains about half a yard per attempt and 4.7 points of completion against man, the run game loses a fifth of a yard.
+
+## 14. Which call sites carry the dither (Tools, 2026-11-16; Integration's ordering item (3); sites only listed, none changed)
+
+Bit 2 alone (`NEAR_FIELD=2`) on the dither panel, engine-68 stack of this branch, three times the usual plays (seeds 1 to 15 of each call: 405 plays) so the counts carry. `scripts/diag/effective-mass/nf-site-panel.mts` is the panel with the picture error applied only where `see()` was called from one site (`NF_SITE`), found from the call stack (hook in `docs/reviews/patches/2026-11-16-nf-site-hooks.patch`, not in `src`). 49 sites supply a noised picture (6.2 million reads over the panel; the attended man and, for a defender, the carrier are untouched). Reversed re-aims per moving second, off against on:
+
+| controller | off | bit 2 | delta | z | events off to on |
+| --- | --- | --- | --- | --- | --- |
+| coverage | 0.378 | 0.440 | **+0.061** | 7.7 | 4,872 to 5,614 |
+| carrier | 0.412 | 0.498 | **+0.086** | 2.9 | 421 to 487 |
+| route | 0.110 | 0.123 | +0.014 | 1.9 | 455 to 516 |
+| QB | 0.090 | 0.111 | +0.021 | 1.5 | 86 to 105 |
+| block, rush, pursuit | | | within 1 sigma | | |
+
+Whose reads: carrier-only (`NEAR_FIELD=6`) moves the carrier (+0.061, 2.1 sigma) and nothing else; defenders-only (`=10`) moves coverage (+0.055, 6.9 sigma) and route (+0.013, 1.7 sigma) and not the carrier. So coverage's rise is the defenders' own reads and the carrier's is his own. The re-aims are charged to the behaviour stage (the decision), which the post-decision stage table does not list, which is why the controller rate rises while every stage rate falls or holds.
+
+Sites, by added coverage re-aims (each arm adds noise at that site only; z is the delta over the sampling error of the two counts; only the first is distinguishable from the panel's noise, the rest are listed in order with what they do):
+
+| # | site | coverage | carrier | what the picture is tested against, and what it switches | exit margin |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `defense.ts` `ZoneCoverage.zonePlay` | **+0.0286 (3.7)** | -0.008 | each receiver's forecast `pos + vel * 0.7` against the zone's lateral band `[ylo, yhi]`: in the band he is a threat and the dropper plays him, out he is dropped from the list; then `fut.x - los > 7` or `vel.x > 1` makes him a vertical. The threat set sets the drop target | none: rebuilt every tick; only `settledAt` latches |
+| 2 | `defense.ts` anonymous callbacks | +0.0102 (1.3) | -0.009 | several closures (not resolved to one by name) | not read |
+| 3 | `defense.ts` `seenQbEyes` | +0.0045 (0.6) | -0.020 | the pictured bearing to the QB against 100 deg of his facing (does he see the QB at all), then the QB's pictured eye direction against each pictured receiver's bearing within 12 deg (over 20 yd) or 20 deg: which receiver he thinks the QB is looking at | none: argmax each tick, cached per tick |
+| 4 | `qb.ts` `QBPass.felt` | +0.0030 | +0.012 | the QB's own picture of each rusher: bearing off his facing against 1.8 rad (behind his shoulder is a different, slower channel) | none |
+| 5 | `qbmind.ts` `QBMind.observe(gaze)` | +0.0022 | +0.018 | the QB's pictured bearing to each defender against his clear-look sector `clearHalf * (0.65 + 0.35 focus)`, or distance under 3 yd: inside, the memory is updated from the clear picture, outside it is the peripheral one | none: the sector edge is the threshold |
+| 6 | `breakdown.ts` `breakdownForContact` | -0.0007 | -0.003 | the defender's pictured distance to each offensive body against 3.5 yd (a contact threat), then closing and time to contact against fixed limits: lowers his posture to 0.6 | none |
+| 7 | `recognition.ts` `Recognition.cues` | -0.0067 | -0.021 | the linemen's pictured stance, drift off the snap, and a pull test (`|vel.y| > 3`, behind the line, `vel.x < 1.5`), summed into the run / pass read | the sum is continuous; the pull test is a hard threshold, the read accumulates after it |
+| 8 | `live-gaps.ts` `linePicture` | -0.0029 | -0.003 | which of the line's bodies has "departed" his spot (vacancy), and the outward order by pictured y | none |
+| 9 | `carrier.ts` `BallCarrier.trafficTempo` | -0.0017 | -0.009 | each pictured defender within 8 yd and 45 deg of his heading, and whether another body stands within a radius sum plus 0.25 yd of him: caps his speed from the time the gap closes (a speed bound, not a direction) | none: hard edges at 8 yd and 45 deg |
+| 10 | `run-fits.ts` anonymous | -0.0054 | -0.007 | run-fit geometry against pictured bodies | not read |
+
+`possession-read.ts` `observedHolder` (36% of the noised reads, 2.2 million) changes nothing in any controller: its test is whether a pictured body is `carrying`, a recognition field that the periphery loses with probability (e/95)^2; the holder it names is the same. The carrier's +0.086 has no single site: the largest are `QBMind.observe` (+0.018) and `QBPass.felt` (+0.012), neither distinguishable, and the carrier-only arm gives +0.061 (2.1 sigma), so it is the sum of many small ones, or the carrier's own spacing and read stages reacting to each other. The panel (405 plays) cannot resolve single sites for the carrier (421 events); ten times the plays would.
+
+What the sites share, for the owners: each tests a pictured position, bearing, forecast or velocity against a fixed distance, angle or band, once per tick, and switches a set (the threat list, the sector memory, the contact list, the attended receiver) with no margin and no latch. The commit rule's third clause needs an enter and an exit margin on exactly these. `zonePlay`'s band test and `seenQbEyes`'s cone are the two where the margin would act on a decision (who the dropper plays, whom he thinks the QB looks at). `QBMind.observe`'s sector is the QB's own acquisition.
+
+### Receiver's QB look and the ball look
+
+They are one head slot with two targets in sequence, not one want. Before the throw the receiver's look at the QB (`receiver.ts` 288, 378, 474, 495, 500, 787: his facing and settle against where the passer is, and the QB's release cue) is a look at a body in a known place; once the release shows on the QB (the `arm` cue, `QB_BODY_SEEN`) the target is the ball, which has `HEAD`'s `want` today. Coverage's glance (`coverage/judgment.ts`, a zone player glancing over his shoulder at a threat behind him) is a defender's look and a third target. So the head model needs one slot per player with a target that changes on a visible cue (QB, then ball; for a defender, his key, then the ball, then a glance), with `HEAD_RATE` and the neck range shared. The receiver's QB look at the break does not need a separate mechanism; it needs the target and the rule for when it switches.
