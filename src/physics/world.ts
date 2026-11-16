@@ -401,6 +401,16 @@ const PAD_LEVERAGE = process.env.PAD_LEVERAGE !== '0';
  * force. Yielding legs, driven backward, keep up to this multiple of their
  * isometric strength (multi-joint eccentric force is about 1.1-1.3x). */
 const ECCENTRIC_GAIN = 1.2;
+/** STEP_CREDIT (experimental, off; STEP_CREDIT=1): a man whose legs yield against his own motion under a felt load (driven backward by a push) is stepping, not
+ * double-planted, so he does not hold his leg force continuously. Moving at v the base has to be relocated as fast as he moves; his base can be relocated at `stepSpeed`
+ * (support.ts, the gait's own recovery stepping speed), and while a foot is being placed the other carries the load alone. So his force falls from both legs' to
+ * one leg's share as he steps harder: share = 1 - (1 - STEP_FLOOR) * min(1, v / stepSpeed). `STEP_FLOOR` (percent) is a stated choice, the one-leg share of two (50; read at
+ * 50, 75 and off). It multiplies his leg force `fv`, credit included. `STEP_SPEED_SCALE` (identity 1, not a law) reads stepSpeed at other values.
+ * Off, he holds the full credit continuously as if double-planted (docs/reviews/2026-11-16-push-contest-law.md). */
+const STEP_CREDIT = process.env.STEP_CREDIT === '1';
+const STEP_FLOOR = Number(process.env.STEP_FLOOR ?? 50) / 100;
+const STEP_SPEED_SCALE = Number(process.env.STEP_SPEED_SCALE ?? 1);
+const stepShare = (v: number, stepSpeed: number): number => 1 - (1 - STEP_FLOOR) * clamp(Math.max(0, -v) / (stepSpeed * STEP_SPEED_SCALE), 0, 1);
 /** Diagnostic scale (TURF_MU_SCALE, identity 1; not a law): multiplies the
  * turf traction cap, and the traction-capped leg drive, of a body held in a
  * hands joint (an engaged block). It measures how much of the engaged push
@@ -2131,7 +2141,7 @@ export class World {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux))) * trunkPrice(b);
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
+            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * (STEP_CREDIT && vp < 0 ? stepShare(vp, sp.stepSpeed) : 1) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h, intent.leanCap ?? Infinity);
             tx = ux * mag; ty = uy * mag;
           }
@@ -2193,7 +2203,8 @@ export class World {
         // a carry keeps building.
         const tf = hypot2(tfx, tfy);
         const along = tf > 1e-9 ? legDriveFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) * trunkPrice(b) : 1;
-        const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
+        const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN)
+          * (STEP_CREDIT && L > 1e-6 && b.vel.x * tfx + b.vel.y * tfy < 0 ? stepShare((b.vel.x * tfx + b.vel.y * tfy) / tf, sp.stepSpeed) : 1) : 1;
         const strength = pushForce * fv * along * a;
         const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);
         // Availability already limits gait during recovery. Reserve actual

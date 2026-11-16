@@ -140,6 +140,7 @@
     "SIGHT_CARRIER": "on",
     "SIGHT_COVER": "on",
     "SIGHT_RECOG": "on",
+    "STEP_CREDIT": "off",
     "OPEN_FIELD": "on",
     "HEAD": "off",
     "GRAB_CONNECT": "off",
