@@ -21,13 +21,13 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { supportParams } from '../../physics/support.js';
 import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
-import { dropSpec } from '../called-drop.js';
+import { dropSpec, plannedSnapAt } from '../called-drop.js';
 import { PUNCH } from '../engagement.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
-import { GUN_SNAP, handoffReach, snapSecured } from '../ball-transfer.js';
+import { handoffReach } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
@@ -872,7 +872,7 @@ export class QBPass implements Behavior {
   ) {
     const gun = sim.offCall.formation.qb !== 'under';
     // GUN_SNAP: his drop starts when the snap is secured in his hands.
-    this.snapAt = gun ? (GUN_SNAP ? snapSecured(a.pos, { x: sim.los, y: sim.ballY }) : 0.3) : 0.1;
+    this.snapAt = plannedSnapAt(gun, a.pos, { x: sim.los, y: sim.ballY });
     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);

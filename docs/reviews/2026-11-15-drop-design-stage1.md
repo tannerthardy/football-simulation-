@@ -564,3 +564,9 @@ shown to overrate those throws, so no change is proposed. (The open class, 5+ yd
 against 0.79 real.) The mesh crosser thrown 0.36 s earlier into traffic is priced 0.77 and completes less often; that is
 one cell, against a zone of facing defenders, and is left as a witness, not a mechanism.
 
+**On #802 at 10fdfe65 (the seam's entry on the hitch, the reads after it moved with it).** verts_hitch sacks / cmp / yd
+14 / 85 / 8.91, no throw 61 (453f1660: 12 / 87 / 9.29, 60); four verts 19 / 71 / 10.57, verticals 2.80 s and 10.8 yd
+(453f1660: 11 / 76 / 11.35). The same as the diagnostic switch: the seam on its hitch does not repair verts_hitch, whose
+cause is the drop class above, and it costs four verts eight sacks. The coached rule stands (the seam decided past
+the hook); the four verts sacks are for the card's read.
+
