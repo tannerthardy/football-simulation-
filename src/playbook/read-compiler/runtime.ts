@@ -8,7 +8,7 @@ import { Rng } from '../../core/rng.js';
 import { generateTeam, type Team } from '../../league/team.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
-import { compile } from './compile.js';
+import { compile, PA_TABLES, tableId } from './compile.js';
 import { DECLARED_BREAK } from './features.js';
 import { PLAN_ROLES } from './candidates.js';
 import type { PlanStyle } from './types.js';
@@ -164,12 +164,14 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${PA_TABLES ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
   let plan: InstalledPlan | null = null;
   try {
+    // PA_TABLES: a play-action-tagged call is installed from its concept's tables.
+    const tid = tableId(concept);
     const compiled = compile(concept, formationId, false, teams.off, teams.def), c = compiled.chosen;
     if (c) {
       plan = {
@@ -180,7 +182,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(concept.id)) ? KEYS[concept.id] ?? (PLAN_ROLES ? ROLE_KEYS[concept.id] : undefined) : undefined;
+      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(tid)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(tid)) ? KEYS[tid] ?? (PLAN_ROLES ? ROLE_KEYS[tid] : undefined) : undefined;
       // PLAN_ROLES: a key is the coached pair of routes, so it holds in every formation: its refs are resolved by the
       // routes the concept installs at them (S1 -> strong 1, W2 -> weak 2, B -> the back), preferring the same side.
       if (k && PLAN_ROLES) {
@@ -196,15 +198,15 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger }, triangle: null,
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
-      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[concept.id]) plan = { ...plan, key: { ...plan.key, danger: DANGER[concept.id] } };
+      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[tid]) plan = { ...plan, key: { ...plan.key, danger: DANGER[tid] } };
       // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
-      const io = PLAN_KEYS ? (INSTALL_ORDER[concept.id] ?? (PLAN_ROLES ? ROLE_ORDER[concept.id] : undefined))?.filter((r) => routes.has(r)) : undefined;
+      const io = PLAN_KEYS ? (INSTALL_ORDER[tid] ?? (PLAN_ROLES ? ROLE_ORDER[tid] : undefined))?.filter((r) => routes.has(r)) : undefined;
       if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
         order: [...io, ...plan.order.filter((r) => !io.includes(r))] };
       // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
       if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
       // PLAN_ROLES: a half-field read's back comes after the key pair, ahead of the backside.
-      if (PLAN_ROLES && plan.outlet && plan.key && BACK_AFTER_KEY.has(concept.id)) {
+      if (PLAN_ROLES && plan.outlet && plan.key && BACK_AFTER_KEY.has(tid)) {
         const front = plan.order.filter((r) => r === plan!.key!.low || r === plan!.key!.high);
         plan = { ...plan, order: [...front, plan.outlet, ...plan.order.filter((r) => !front.includes(r) && r !== plan!.outlet)] };
       }
@@ -226,7 +228,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const key = plan.key;
       const groups: ReceiverRef[][] = [];
       if (CONCEPT_DROPS_RHYTHM && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
-      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[concept.id] : undefined;
+      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[tid] : undefined;
       if (look && look.every((r) => seq.includes(r))) groups.push(look);
       const groupOf = (r: ReceiverRef) => groups.find((g) => g.includes(r));
       let place = -1;
