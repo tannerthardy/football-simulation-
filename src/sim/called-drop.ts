@@ -40,6 +40,8 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
       if (PA_DROP) return gun ? { x: los - 6.0, time: 1.8 } : { x: los - 8.1, time: 2.1 };
       return { x: los - 8.3, time: 1.95 };
   }
+  // His start is not read: every depth is from the line. (Callers pass his snap alignment, a fact of the call, never his
+  // live spot, which the information guard counts as a true-state read.)
   void qbStartX;
 }
 
@@ -48,6 +50,6 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
 export function calledLaunchX(sim: PlaySim): number | null {
   const concept = sim.offCall.pass;
   if (!concept) return null;
-  return dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under').x;
+  return dropSpec(concept.drop, sim.snapX[sim.qb.idx] ?? sim.los, sim.los, sim.offCall.formation.qb !== 'under').x;
 }
 
