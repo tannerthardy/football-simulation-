@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y } from '../src/core/field.js';
 import { alignOffense } from '../src/playbook/alignment.js';
-import { FORMATIONS, FORMATION_BY_ID } from '../src/playbook/formations.js';
+import { FORMATIONS, FORMATION_BY_ID, UNDER_TAILBACK_EXTRA } from '../src/playbook/formations.js';
 
 const offsetGun = FORMATIONS.filter(f => f.qb === 'gun' && typeof f.slots.RB?.split === 'number' && !f.tags.includes('split-backs'));
 
@@ -26,7 +26,10 @@ describe('offset shotgun back alignment', () => {
     for (const id of ['pistol_11', 'pistol_12', 'ace_11', 'ace_12', 'i_pro_21']) {
       const f = FORMATION_BY_ID[id], a = alignOffense(f, false, 40, CENTER_Y);
       expect(a.spots.RB.pos.y).toBe(CENTER_Y);
-      expect(a.spots.RB.pos.x).toBe(40 - f.slots.RB!.depth);
+      // Re-recorded on the engine defaults (2026-11-15): BACKFIELD_DEPTH puts an under-center tailback at his tracked
+      // depth (installed 6.8 + 0.5 = 7.3); the pistol and gun backs keep the installed depth.
+      const extra = f.qb === 'under' && f.slots.RB!.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0;
+      expect(a.spots.RB.pos.x).toBeCloseTo(40 - f.slots.RB!.depth - extra, 9);
       expect(a.numbering.B).toBe('RB');
     }
   });

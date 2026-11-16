@@ -69,7 +69,11 @@ describe('lineup input experiment identity', () => {
     }
     for (const personnel of Object.keys(DEF_PERSONNEL) as DefPersonnelId[]) {
       const lineup = pickDefense(defense, personnel);
-      const expected = Object.entries(lineup);
+      // Re-recorded on the engine defaults (2026-11-15): DB_SLOTS seats FS and SS before the nickel and dime, so the
+      // picker's insertion order is no longer the actor order. The actors run in DEFENSE_ACTOR_ORDER whatever the
+      // insertion order, with the picker's player in each seat.
+      const expected = DEFENSE_ACTOR_ORDER.filter((slot) => slot in lineup).map((slot) => [slot, lineup[slot]] as [string, unknown]);
+      expect(Object.fromEntries(expected)).toEqual(lineup);
       expect(orderedDefense(lineup), personnel).toEqual(expected);
       expect(orderedDefense(Object.fromEntries([...expected].reverse())), personnel).toEqual(expected);
       for (const [slot, player] of orderedDefense(lineup)) expect(player).toBe(lineup[slot]);

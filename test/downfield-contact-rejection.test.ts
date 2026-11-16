@@ -27,6 +27,9 @@ function stage() {
   b.body.pos = { x: 52, y: CENTER_Y }; b.body.facing = 0;
   d.body.pos = { x: 52 + b.profile.radius + d.profile.radius + .1, y: CENTER_Y };
   sim.ball = { kind: 'held', carrier: c }; sim.t = 2;
+  // Re-recorded on the engine defaults (2026-11-15): with RCV_SEEN the blocker acts on his delayed picture, so the
+  // staged bodies are recorded into perception before he looks (as a held scene, not teleported into his eyes).
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
   const behavior = new DownfieldBlocker(); b.behavior = behavior;
   return { sim, b, d, behavior };
 }

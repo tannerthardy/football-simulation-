@@ -45,6 +45,9 @@ describe('receiver eligibility on native snaps with installed motion', () => {
     const lbm = sim.slot('LB_M')!;
     expect(Math.abs(lbm.pos.x - sim.los)).toBeLessThan(1.8);
     expect(stalk('X')).not.toBe('LB_M');
-    expect(stalk('X')).toBe('FS');
+    // Engine-70: the backside X, 8 yd split with the man corner pressed over him at 2.5 yd, stalks that corner (the rule
+    // receiver-run-eligibility asserts: a receiver split wide stalks the corner over him); on engine-61 he took the
+    // middle safety 11.5 yd deep.
+    expect(stalk('X')).toBe('CB_W');
   });
 });

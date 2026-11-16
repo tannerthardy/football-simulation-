@@ -57,8 +57,9 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
   let row: any;
   if (observe) {
     const see = sim.see.bind(sim);
-    sim.see = (observer, target, scale) => {
-      const cue = see(observer, target, scale);
+    // Every argument passes through (see's `sight` included): an observer that drops one changes the play it records.
+    sim.see = (observer, target, scale, sight) => {
+      const cue = see(observer, target, scale, sight);
       if (row && observer === a) row.observations.push({ target: actor(target), scale, cue: copySaved(cue) });
       return cue;
     };
@@ -183,18 +184,53 @@ function atRelease(run: ReturnType<typeof runAbandonment>) {
     zEvaluations: run.qbEvaluations.filter(e => e.at <= r.at && e.target.slot === 'Z' && e.evaluation).length };
 }
 
+/** The first path at which two saved records differ, or null when equal. A failure names one field and both values
+ * (shortened) instead of diffing whole executions, which are megabytes and ran the process out of memory. */
+export function firstDifference(a: unknown, b: unknown, path = ''): string | null {
+  if (Object.is(a, b)) return null;
+  if (a instanceof Map || a instanceof Set || b instanceof Map || b instanceof Set) {
+    if ((a instanceof Map) !== (b instanceof Map) || (a instanceof Set) !== (b instanceof Set)) return `${path || '(root)'}: different collection types`;
+    return firstDifference([...(a as Map<unknown, unknown>)], [...(b as Map<unknown, unknown>)], path);
+  }
+  const short = (v: unknown) => { const t = JSON.stringify(v); return t === undefined ? String(v) : t.length > 120 ? t.slice(0, 117) + '...' : t; };
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null || Array.isArray(a) !== Array.isArray(b))
+    return `${path || '(root)'}: ${short(a)} vs ${short(b)}`;
+  const keys = Array.isArray(a) ? [...Array(Math.max(a.length, (b as unknown[]).length)).keys()].map(String)
+    : [...new Set([...Object.keys(a as object), ...Object.keys(b as object)])];
+  for (const k of keys) {
+    const d = firstDifference((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k], Array.isArray(a) ? `${path}[${k}]` : path ? `${path}.${k}` : k);
+    if (d) return d;
+  }
+  return null;
+}
+/** Two executions: the first differing frame (its tick, time and field) when both carry frames, else the first field. */
+export function firstExecutionDifference(a: any, b: any): string | null {
+  const fa = a?.result?.frames, fb = b?.result?.frames;
+  if (Array.isArray(fa) && Array.isArray(fb)) {
+    for (let i = 0; i < Math.max(fa.length, fb.length); i++) {
+      const d = firstDifference(fa[i], fb[i]);
+      if (d) return `frame ${i} (t ${fa[i]?.t ?? fb[i]?.t ?? '?'}): ${d}`;
+    }
+  }
+  return firstDifference(a, b);
+}
+function assertSame(a: unknown, b: unknown, message: string) {
+  const d = (a as any)?.result && (b as any)?.result ? firstExecutionDifference(a, b) : firstDifference(a, b);
+  assert(d === null, `${message}: first difference at ${d}`);
+}
+
 export function compareAbandonment(kind: 'run' | 'deception', until = BLOCK_LOOK_UNTIL) {
   const bytes = captureSetup(abandonmentSetup(kind, until));
   const plain = runAbandonment(bytes, false, false), baseline = runAbandonment(bytes, false, true);
   const alternative = runAbandonment(bytes, true, true), alternativePlain = runAbandonment(bytes, true, false);
-  assert.deepEqual(baseline.execution, plain.execution, 'baseline observer changed execution');
-  assert.deepEqual(alternative.execution, alternativePlain.execution, 'support observer changed execution');
-  assert.deepEqual(baseline.installed, alternative.installed);
+  assertSame(baseline.execution, plain.execution, 'baseline observer changed execution');
+  assertSame(alternative.execution, alternativePlain.execution, 'support observer changed execution');
+  assertSame(baseline.installed, alternative.installed, 'policy arms installed differently');
   const supportRows = alternative.rows.filter(r => r.branch === 'blockingSupport');
   const first = supportRows[0];
   assert(first, `${kind}: support did not activate`);
   const same = baseline.rows.find(r => r.at === first.at)!;
-  assert.deepEqual(first.body, same.body, 'policy arms differ before support');
+  assertSame(first.body, same.body, 'policy arms differ before support');
   assert.deepEqual(first.observations.slice(0, 2), same.observations.slice(0, 2));
   assert(alternative.rows.every(r => r.retainedPrimary.playerId === baseline.installed.primary.playerId));
   const reacquired = alternative.rows.find(r => r.at > first.at && r.branch === 'trackReceiver');

@@ -33,12 +33,15 @@ describe('situational depth of the deep secondary', () => {
   });
 
   it('moves the aligned quarters safeties and Cover 3 post/corners, and nothing on 1st & 10 vs 11', () => {
+    // Re-recorded on the engine defaults (2026-11-15): ALIGN_HABIT gives each off-ball defender his own depth habit and
+    // a per-snap scatter (here SS sits 1.36 yd shallow at 1st & 10), the same for one player and seed in every call,
+    // so the table is read as each situation's change from 1st & 10 vs 11 personnel.
     const base = depths('cover4', 'gun_doubles_11', 1, 10);
-    expect(base.FS).toBe(12); expect(base.SS).toBe(12);
+    expect(base.FS).toBe(12); expect(Math.abs(base.SS - 12)).toBeLessThanOrEqual(2.0);
     const short = depths('cover4', 'gun_doubles_11', 3, 1);
-    expect(short.FS).toBeCloseTo(10.9); expect(short.SS).toBeCloseTo(10.9);
+    expect(short.FS - base.FS).toBeCloseTo(-1.1); expect(short.SS - base.SS).toBeCloseTo(-1.1);
     const heavy = depths('cover4', 'i_pro_21', 1, 10);
-    expect(heavy.FS).toBeCloseTo(11.0);
+    expect(heavy.FS - base.FS).toBeCloseTo(-1.0);
     const c3 = depths('cover3', 'gun_doubles_11', 3, 12), c3base = depths('cover3', 'gun_doubles_11', 1, 10);
     expect(c3.CB_S - c3base.CB_S).toBeCloseTo(0.6);
     expect(c3.FS).toBeCloseTo(c3base.FS); // the post holds on 3rd & long

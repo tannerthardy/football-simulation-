@@ -65,8 +65,11 @@ describe('RUN_CONFIRM: the pass expectation asks for a clearer run picture, it d
 
 describe('LB_READ_STEP: an undecided box backer reads from a short downhill step', () => {
   it('steps toward the line at no more than half speed, and stands without the flag', async () => {
+    // Re-recorded on the engine defaults (2026-11-15): READ_LEAN (promoted) decides an unsure backer's pace first (his
+    // lean x 1.5 yd/s toward the line on a run lean; a pass lean, as on this dropback, no step), so the read step this
+    // case is about is the branch READ_LEAN leaves; it is read with READ_LEAN off.
     for (const [flag, expectStep] of [['1', true], ['0', false]] as const) {
-      const { nativeTraceSetup, PlaySim } = await engine({ LB_READ_STEP: flag });
+      const { nativeTraceSetup, PlaySim } = await engine({ LB_READ_STEP: flag, READ_LEAN: '0' });
       const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'dagger', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false }));
       const dir = sim.attackDir(sim.offense[0].team);
       const lb = sim.defense.find((d: any) => d.slot === 'LB_M' && d.behavior?.kind === 'zone');

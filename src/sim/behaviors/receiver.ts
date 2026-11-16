@@ -5,6 +5,7 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { neckRange } from '../head.js';
+import { servoCommand, servoEngaged } from '../ball-servo.js';
 import { angleDiff, clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, TRUNK_RANGE, TRUNK_TWIST, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -17,7 +18,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST_RCV as BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -137,7 +138,7 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * already holds; held for the episode as a field direction, across whichever man is in the lane, until he has been clear
  * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
  * 0.3 of his pace along it) or across to the other side of the man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
+const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2 }>();
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
@@ -330,12 +331,23 @@ export class RouteRunner implements Behavior {
 
   /** When this route was installed (the snap, or his release on a delayed route): breakTime counts from here. */
   private readonly bornAt: number;
+  /** Design 6: when he reached his deep landmark (his look starts there and lasts his count). */
+  private deepLookAt: number | undefined;
   /** BALL_EST design 4: out of his break, before the throw, he gets his head round to the QB (and his shoulders as
    * far as his head cannot reach him), so he is already looking when the ball leaves. A better route runner leaves
-   * it later. Not on a deep route, which does not expect the ball at its stem's break. */
+   * it later. Not on a deep route, which does not expect the ball at its stem's break; design 6 (bit 16) gives the
+   * deep route its own look: from his landmark depth, for his count, once. */
   private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
-    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
-    if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    // His own picture, not the true ball state: he looks for the QB until he has seen the ball in the air (his own
+    // sample) or sees the QB without it.
+    // A sim without the estimator's store (partial fixtures) has no picture to look for: his route as it was.
+    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || sim.see(a, sim.qb).carrying === false) return cmd;
+    if (this.route.family === 'deep') {
+      if (!BALL_EST_DEEP_LOOK) return cmd;
+      // His own depth past the line is his cue; the release is not.
+      if (this.deepLookAt === undefined && (a.pos.x - sim.los) * sim.attackDir(a.team) >= DEEP_LOOK_DEPTH) this.deepLookAt = sim.t;
+      if (this.deepLookAt === undefined || sim.t - this.deepLookAt > DEEP_LOOK_HOLD) return cmd;
+    } else if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
     sim.ballEstimates.lookAtQB(a, sim);
     const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
     const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
@@ -343,8 +355,7 @@ export class RouteRunner implements Behavior {
     while (d > Math.PI) d -= 2 * Math.PI;
     while (d < -Math.PI) d += 2 * Math.PI;
     d = turnSide(a, sim, d, heading);
-    const over = Math.abs(d) - LOOK_NECK;
-    return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
+    return lookJoints(a, cmd, heading, d, BALL_EST_TRUNK);
   }
 
   /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
@@ -765,6 +776,8 @@ export class TrackBall implements Behavior {
     // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
     // twice). He attends from the release; his head still has to come round at its own rate before he samples.
     if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
+    // A sim without the estimator's store (partial fixtures): no picture of the ball, so he runs his route.
+    if (BALL_EST && !sim.ballEstimates) return this.fallback.update(a, sim);
     let spot: { p: Vec2; t: number } | null = null;
     // BALL_EST: his own estimate from the ball he has seen; until he has one he runs his route and looks for it.
     const path = BALL_EST ? sim.ballEstimates.estimate(a, sim) : sim.ballPath;
@@ -796,6 +809,18 @@ export class TrackBall implements Behavior {
     // Under BALL_EST his error is his estimate's; no separate offset.
     const target = BALL_EST ? { ...spot.p } : { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
     if (HANDS_CUE) noteHands(a, sim.t, spot.t);
+    // BALL_EST bit 1024: once the servo has enough of the ball, his feet run on what he sees of it (ball-servo.ts), not
+    // to the fitted point; once it has steered him, the handover holds his running and his hands do the rest. Until then
+    // (and on a flight too short for it ever to) he runs his route, through the last 0.35 s too: holding his running
+    // there when the servo never steered froze him through his break (seed 23, open 3+ yd 0-0.6 s 87 vs 97%). His
+    // look tracks the ball throughout.
+    if (BALL_EST && BALL_EST_SERVO && sim.ballEstimates.lastSeen(a)) {
+      const left = spot.t - sim.t;
+      const route = this.fallback.update(a, sim);
+      const servo = servoCommand(a, sim.ballEstimates.anglesOf(a), sim.t, left, route, this);
+      if (servo) { a.tags.add('ball-servo'); return lookFor(a, sim, { ...servo, facing: undefined }); }
+      return lookFor(a, sim, { ...(servoEngaged(a, this) ? { vel: { ...a.vel } } : route), facing: undefined });
+    }
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
     // Arrive on time, keep running through if the ball is leading him.
@@ -807,6 +832,9 @@ export class TrackBall implements Behavior {
     // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking
     // the ball in at 6-8 yd/s is not slowed by his hips turning (the cap reads the hips). Off: the old hips request.
     // (With BALL_EST also on, the trunk branch is taken; joining the two is Coverage's design 7.)
+    // BALL_EST bit 64 (design 7): out past 3 yd his look is BALL_EST's own (the body-turn window), through the trunk;
+    // inside 3 yd the trunk branch below, on his estimate (`facing` is his estimate's bearing under BALL_EST).
+    if (TRUNK_TWIST && BALL_EST_TRUNK && BALL_EST && dist >= 3) return sim.ballEstimates.lastSeen(a) || spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run0) : run0;
     if (TRUNK_TWIST) {
       if (dist >= 3) return run0;
       // His look reaches the trunk's range plus the neck's (HEAD's neckRange: 90 deg standing, 45 at top speed). A ball beyond it is
@@ -817,7 +845,8 @@ export class TrackBall implements Behavior {
     }
     const run = { ...run0, facing: dist < 3 ? facing : undefined };
     // BALL_EST attempt 3: his head finds the ball for free; his body turns to it only late (route-timed, by skill).
-    return BALL_EST && dist >= 3 && spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run) : run;
+    // Once he has the ball he keeps tracking it the whole way (the look and its body cost), not only in the late window.
+    return BALL_EST && dist >= 3 && (sim.ballEstimates.lastSeen(a) || spot.t - sim.t <= bodyTurnLead(a)) ? lookFor(a, sim, run) : run;
   }
 }
 
@@ -835,8 +864,9 @@ function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
  * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
  * turned body, which the facing speed cap prices. */
 function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
-  const est = sim.ballEstimates.estimate(a, sim);
-  const at = est.length ? est[0] : sim.see(a, sim.qb).pos;
+  // His look aims where his eyes are pursuing (the passer before he has the ball, then the ball's seen motion).
+  sim.ballEstimates.estimate(a, sim);
+  const at = sim.ballEstimates.gazeAt(a, sim);
   const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
   const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
   const toward = Math.atan2(at.y - a.pos.y, at.x - a.pos.x);
@@ -844,8 +874,7 @@ function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   while (d > Math.PI) d -= 2 * Math.PI;
   while (d < -Math.PI) d += 2 * Math.PI;
   d = turnSide(a, sim, d, heading);
-  const over = Math.abs(d) - LOOK_NECK;
-  return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
+  return lookJoints(a, cmd, heading, d, BALL_EST_TRUNK);
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
