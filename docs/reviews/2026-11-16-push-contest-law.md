@@ -33,7 +33,7 @@ This is two things at once:
 | rusher power x0.85 / x1.15 | 0.94 / 1.15 | 1.10 / 1.34 | 1.49 / 1.85 |
 | rusher mass x0.9 / x1.1 | 0.95 / 1.15 | 1.14 / 1.33 | 1.65 / 1.83 |
 
-At 1.0 the blocker's strength moves the pair by 0.03 yd/s for -15%; at 0.8 by 0.18; at 0.6 by 0.39. Strength starts to count for the resister as soon as `1.2 * credit * legDrive < traction`, i.e. below about 0.9 for a lineman at 0.93 of traction. Mass sensitivity falls (blocker mass x0.9 to x1.1: 0.61 to 0.52 to 0.45 yd/s). The rusher's own power at +15% still does nothing at any level (he is traction-limited by his lift), a separate effect of `PAD_LEVERAGE` that the walk-back does not depend on.
+At 1.0 the blocker's strength moves the pair by 0.03 yd/s for -15%; at 0.8 by 0.18; at 0.6 by 0.39. Strength starts to count for the resister as soon as `1.2 * credit * legDrive < traction`, i.e. below about 0.9 for a lineman at 0.93 of traction. Mass sensitivity falls (blocker mass x0.9 to x1.1: 0.61, 0.34, 0.45 yd/s; not monotone, the 0.6 arm is mostly the base rising). The rusher's own power at +15% still does nothing at any level (he is traction-limited by his lift), a separate effect of `PAD_LEVERAGE` that the walk-back does not depend on.
 
 The values 0.8 and 0.6 are not claims. They show where the law's strength dependence switches on.
 
