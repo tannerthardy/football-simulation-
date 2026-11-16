@@ -3717,13 +3717,14 @@ export const PASS_OFF = process.env.PASS_OFF !== '0';
  * - **The exchange** (createEngagement's pass branch): his punch (hands, arm edge) against the rusher's current move.
  *   A finesse move meets it with his swipe (a swipe that beats the punch leaves the keeper reaching: -0.5); a power
  *   move with his strike.
- * - **Late** (attempt 2): his hands must land before the man clears his reach. If they land after, it is a miss (the
+ * - **Late** (attempt 2, corrected; only when he sees the man come free without his hands loaded on him): his hands
+ *   must land before the man clears his reach. If they land after, it is a miss (the
  *   swiped punch's -0.5); between, the fit falls smoothly with the share of that window he used. (Attempt 1 bounded it by
  *   firstHands, which compares both men's landing over the same distance and so never penalised a late keeper.)
  * - **Off balance:** off his feet he does not fit (at most -0.5, the missed punch).
  * The old pairing's rep edge is not carried. */
 export const PASS_HANDOVER = PASS_OFF && process.env.PASS_HANDOVER === '1';
-function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
+function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent, seen: boolean): number {
   const d = e.defender, tb = traits(keeper, 'pass'), td = traits(d, 'pass'), rng = sim.dice('handover', keeper, d);
   const armEdge = (tb.arm - td.arm) / 3, punchB = tb.hands + 0.12 * armEdge + rng.normal(0, 0.18);
   let c: number;
@@ -3739,6 +3740,11 @@ function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
   // the bodies' contact over his closing speed on the man. Clear: the reach the man has left over the man's speed away
   // from him. Landing after the man has cleared is a miss (the swiped punch's -0.5); between, the fit falls smoothly
   // with the share of the window he used.
+  // Attempt 2 corrected: only on the `seen` path, where his hands are not loaded on the man. A keeper whose hands are
+  // already fitted (the hand-over's other precondition: force on his helper joint) has nothing left to land, so his fit
+  // is the exchange alone. (Attempt 2 charged every keeper a landing time at his closing speed: a fitted, slowly
+  // closing keeper got a near miss; staged, in reach -0.44.)
+  if (!seen) return (keeper.body.support?.state ?? 'up') !== 'up' ? Math.min(c, -0.5) : c;
   const dx = d.pos.x - keeper.pos.x, dy = d.pos.y - keeper.pos.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
   const contact = keeper.profile.radius + d.profile.radius, reach = contact + tb.arm / 36 * 0.3;
   const closing = Math.max(0.1, (keeper.vel.x - d.vel.x) * ux + (keeper.vel.y - d.vel.y) * uy);
@@ -3765,7 +3771,7 @@ function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   e.blocker = keeper; e.hands = joint;
   e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
   // PASS_HANDOVER: the keeper's control from the first-contact law, not a scripted 0.
-  e.control = PASS_HANDOVER ? handoverControl(sim, e, keeper) : 0;
+  e.control = PASS_HANDOVER ? handoverControl(sim, e, keeper, seen) : 0;
   e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
   if (e.defHands) e.defHands.b = keeper.body;
   syncJoints(sim, e);
