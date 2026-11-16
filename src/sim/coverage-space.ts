@@ -38,12 +38,11 @@ export function containCoverage(a: Agent, command: MoveCommand): MoveCommand {
     if (position < lo) return Math.max(requested, Math.min(a.profile.vmax, 0.5 + 2 * (lo - position)));
     if (requested > 0) {
       const distance = Math.max(0, hi - position);
-      if (velocity > 0 && velocity * velocity / (2 * brake) >= distance) return 0;
+      // The stopping-speed cap alone: continuous in his room, never a step on his own speed (commit rule).
       return Math.min(requested, Math.sqrt(2 * brake * distance));
     }
     if (requested < 0) {
       const distance = Math.max(0, position - lo);
-      if (velocity < 0 && velocity * velocity / (2 * brake) >= distance) return 0;
       return Math.max(requested, -Math.sqrt(2 * brake * distance));
     }
     return requested;
