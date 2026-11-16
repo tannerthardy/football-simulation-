@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { PhysicalProfile } from '../src/players/physical.js';
-import { shouldersOf, stepBody, TRUNK_RANGE, TRUNK_RATE, updateTrunk, type Body } from '../src/physics/kinematics.js';
+import { DIR_CAP, shouldersOf, stepBody, TRUNK_PRICE, TRUNK_RANGE, TRUNK_RATE, updateTrunk, type Body } from '../src/physics/kinematics.js';
 import { newSupport } from '../src/physics/support.js';
 
 // TRUNK_TWIST Stage 1 (docs/reviews/2026-11-14-open-run-cap.md): the shoulders twist off the hips within a range at a
@@ -69,7 +69,21 @@ describe('the gait reads the hips, not the trunk', () => {
   it('a twisted trunk on a body whose hips are on the path holds the same speed as one with no twist', () => {
     const plain = body(0), twisted = body(0);
     twisted.trunk = TRUNK_RANGE;
-    expect(hold(twisted)).toBe(hold(plain));
+    const a = hold(plain), b = hold(twisted);
+    // Re-recorded 2026-11-16 (DIR_CAP on by default): the gait still reads the hips, but the trunk is priced once (docs/reviews/2026-11-15-dir-cap.md): a twisted
+    // trunk costs TRUNK_PRICE * |twist| of the cap while it is twisted. With no look asked the trunk returns to the hips, so the body that starts at the full range
+    // pays it for the release only and has the same speed at 4 s to a thousandth. Under the legacy curve the price is zero and the speed is the same bit for bit.
+    if (DIR_CAP) { expect(b).toBeLessThanOrEqual(a); expect(a - b).toBeGreaterThan(0); expect(a - b).toBeLessThan(.01); }
+    else expect(b).toBe(a);
+  });
+  it('a trunk held at the range is priced once, and the hips are still what the cap reads', () => {
+    const plain = body(0), held = body(0);
+    held.trunk = TRUNK_RANGE;
+    const run = (b: Body, twist: boolean) => { for (let k = 0; k < Math.round(4 / DT); k++) stepBody(b, { vel: { x: profile.vmax, y: 0 }, facing: b.facing, effort: 1, look: twist ? TRUNK_RANGE : undefined }, DT); return b.vel.x; };
+    const a = run(plain, false), h = run(held, true);
+    // The cap falls by the price; the speed after 4 s of lag toward it sits between the cap and the unpriced speed.
+    if (DIR_CAP) { const price = TRUNK_PRICE * TRUNK_RANGE; expect(h).toBeGreaterThanOrEqual(a * (1 - price) - 1e-9); expect(h).toBeLessThan(a * (1 - price / 2)); }
+    else expect(h).toBe(a);
   });
   it('the same angle in the hips is what costs speed', () => {
     const forward = hold(body(0)), turned = hold(body(TRUNK_RANGE));

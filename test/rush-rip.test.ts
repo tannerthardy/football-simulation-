@@ -12,6 +12,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function rips(flag: string) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('PASS_OFF', '0'); // engine-70: as rush-bull; Flex to restate with PASS_OFF on
   vi.stubEnv('RUSH_HANDS', '1'); vi.stubEnv('RUSH_RIP', flag);
   // RUSH_BULL removes the pass rep's rated control drift (#10), so a control change at a rip is the rip's.
   vi.stubEnv('RUSH_BULL', '1');
