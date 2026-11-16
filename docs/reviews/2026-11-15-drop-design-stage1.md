@@ -521,3 +521,46 @@ The landing depth (Rules, #802 at 453f1660): verticals 20 yd, the middle of Gonz
 corner's 20 yd along its path is a stated choice. The fallback set (without the plan's fields) follows: go, fade, and
 the unkeyed corner, read 1 only.
 
+### On #802 at 453f1660 (verticals land at 20 yd), and the verts_hitch cell (2026-11-16)
+
+Re-run, `QB_FOOTWORK=11 GRASS_READ=1` against `=3`, 192 plays a concept:
+
+| concept | =3 | 741f9af5 (NFL medians) | 453f1660 (taught 20 yd) |
+|---|---|---|---|
+| four_verts sacks / cmp / yd | 20 / 65 / 9.98 | 11 / 79 / 11.21 | 11 / 76 / 11.35 |
+| four_verts verticals t, depth | 3.01 s, 12.8 | 2.69 s, 10.1 | 2.79 s, 10.9 (NFL 2.6, 9.2) |
+| verts_hitch sacks / cmp / yd | 14 / 90 / 9.84 | 16 / 84 / 9.16 | 12 / 87 / 9.29 |
+| dagger, mesh, smash | | | as on 741f9af5 |
+
+**verts_hitch, diagnosed.** The plan (gun 3 drop) has the seam on n0, the gos on n1 and n2, the hitch on n2. With bit 8
+none of the three verticals is readable on its step (the seam still under the hook at the set, 1.70 s; the gos at
+1.80 and 2.10 s), and with no dwell he is through them by 2.1 s. He reaches the hitch at 2.45 s (off: 3.60 s, after it
+had settled in the hole), before it is open; its dwell runs out, he checks down, then leaves: of the 37 plays that lose
+their throw, 29 become his runs and 8 sacks. Moving the seam's decision to the hitch (a diagnostic switch, n >= 1 for
+seams) does not repair it (verts_hitch cmp 85, no throw 61; four verts sacks 11 -> 19), so the seam's step is not the
+cause. The cause is the drop class against the verticals' timing: a three-step drop sets about a second before a
+vertical can be past the hook (Rules' misfit 1 in the vertical-ready note), and moving on from a vertical that has not
+won is itself taught (Wilhite: "don't wait for the WR... move on"). The quarterback's rule is doing what it is told on
+a plan whose drop does not fit its reads; that is the plan's drop (CONCEPT_DROPS / Rules), not a QB repair.
+
+### The window's trailing-defender terms: not confirmed (2026-11-16)
+
+Integration's question: is a man trailing the receiver (on him, not facing the QB) priced as late to the ball, because
+the window gives a defender not facing the QB a blind time and 1.8x his reaction? scripts/diag/eyes/trail-margin.ts, 423
+staged throws (ten concepts, cover 1 / 2-man / 3 / 4): his believed completion (P) against the real completion by the
+nearest defender's class in his picture:
+
+| nearest defender | n | believed P | real completion |
+|---|---|---|---|
+| trailing, < 1.5 yd | 61 | 0.46 | 0.43 |
+| trailing, 1.5-3 yd | 46 | 0.53 | 0.48 |
+| facing him, < 1.5 yd | 36 | 0.54 | 0.50 |
+| facing him, 1.5-3 yd | 105 | 0.61 | 0.67 |
+| facing him, 5+ yd | 71 | 0.56 | 0.79 |
+
+A man on the target after the break has no blind time already (`blind = min(untilBreak, wind)`), and DEF_BELIEF carries
+him with the receiver; the price on hip-pocket throws is within 0.05 of the result. The extra reaction (1.8x) is not
+shown to overrate those throws, so no change is proposed. (The open class, 5+ yd, is conservative: 0.56 believed
+against 0.79 real.) The mesh crosser thrown 0.36 s earlier into traffic is priced 0.77 and completes less often; that is
+one cell, against a zone of facing defenders, and is left as a witness, not a mechanism.
+
