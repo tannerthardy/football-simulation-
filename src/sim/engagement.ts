@@ -42,7 +42,7 @@ import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
-import { calledLaunchX, calledPocketX } from './called-drop.js';
+import { calledLaunchX } from './called-drop.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
@@ -198,19 +198,56 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
   const tackle = b.slot === 'LT' || b.slot === 'RT';
   const clearance = tackle ? 2.8 : 3.8;
   // SET_SPOT: from the call (the drop he knows is coming), or the QB's alignment at the snap; never the QB's live
-  // position behind him.
-  // The tackle's clearance follows the called drop's schedule (where the call puts the QB now), as the live QB did; the
-  // final launch point from the snap sent him 5 yd deep at once (SET_SPOT's first tackle read).
-  // SET_SPOT_TACKLE (with SET_SPOT): the tackle's clearance from the call's schedule too. Without it the tackle keeps the
-  // live-QB read (a known leak, kept: from the call he sets about a yard deeper; hand-fight note section 23).
+  // position behind him. The tackles keep the live read unless SET_SPOT_TACKLE (KNOWN_PROBLEMS PRO-INFO #12).
   const fromCall = SET_SPOT && (!tackle || SET_SPOT_TACKLE);
-  const qx = fromCall ? (tackle ? calledPocketX(sim, sim.t) : calledLaunchX(sim)) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
+  const qx = fromCall ? calledLaunchX(sim) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
   const pocket = Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
+  const snapDepth = sim.los - (sim.snapX[b.idx] ?? b.pos.x);
   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
   // front. Further ground is what the rusher wins against him, not his request.
-  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, sim.los - (sim.snapX[b.idx] ?? b.pos.x) + SHORT_SET);
+  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) {
+    const short = Math.min(pocket, snapDepth + SHORT_SET);
+    // POCKET_LEVEL: then level with the pocket, a request with a pace (his neighbors'), bounded by the short set and
+    // the pocket's front from the call.
+    const level = POCKET_LEVEL ? pocketLevelDepth(sim, b) : null;
+    return level === null ? short : Math.min(pocket, Math.max(short, level));
+  }
+  // SET_SPOT_TACKLE: his own set is the three-step vertical set as taught, no deeper than the pocket's front from the
+  // call. Further depth is the rusher's: the kick keeps him deeper than the man up his arc (PASS_KICK), never past the
+  // launch point he knows from the call.
+  if (SET_SPOT_TACKLE && tackle) return Math.min(pocket, snapDepth + TACKLE_STEPS);
   return pocket;
 }
+/** POCKET_LEVEL (experimental, off; POCKET_LEVEL=1, needs SET_SPOT): the interior set's second phase. The NFL's
+ * uncovered guard or center goes back 0.2 / 0.9 / 1.9 / 2.9 yd at 0.5 / 1.0 / 1.5 / 2.0 s with nobody on him, as far as
+ * an engaged one (0.2 / 0.8 / 1.7 / 2.7; ol-set-depth.py --uncovered): the retreat is his set, keeping level with the
+ * pocket, not the push. The pocket is the cup the line forms around the launch point he knows from the call, never
+ * the QB.
+ * - **"Level with":** his distance from the launch point matches the median of three distances: his two neighbors'
+ *   (as he sees them, beside him) and the tackles' mean (the honest tackles set the pocket's edges from the rusher and
+ *   the call).
+ * - **One outlier doesn't drag him:** a neighbor beaten cleanly is outvoted. A stunt, or two men driven back together,
+ *   moves the median.
+ * - **His target** is the point at that distance from the launch point at his own width, no shallower than his short
+ *   set and no deeper than the pocket's front.
+ * - **The pace** is the set's own track and the rep's kick toward it. Engaged, he gives that ground under control with
+ *   his man in front (stepPassRep's lateral reference is unchanged).
+ * Null when it gives no depth (his neighbors still at the line). */
+export const POCKET_LEVEL = process.env.SET_SPOT === '1' && process.env.POCKET_LEVEL === '1';
+const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
+function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {
+  const L = protectPoint(sim), i = LINE_ORDER.indexOf(b.slot);
+  const at = (slot: string) => { const n = sim.slot(slot); if (!n) return null; const p = sim.see(b, n).pos; return Math.hypot(p.x - L.x, p.y - L.y); };
+  const nA = at(LINE_ORDER[i - 1]), nB = at(LINE_ORDER[i + 1]), lt = at('LT'), rt = at('RT');
+  const tk = lt !== null && rt !== null ? (lt + rt) / 2 : lt ?? rt;
+  const r = [nA, nB, tk].filter((v): v is number => v !== null).sort((u, v) => u - v);
+  if (!r.length) return null;
+  const R = r[Math.floor((r.length - 1) / 2)], dy = b.pos.y - L.y;
+  if (R <= Math.abs(dy)) return null;
+  return sim.los - (L.x + Math.sqrt(R * R - dy * dy));
+}
+/** SET_SPOT_TACKLE: the tackle's vertical set, three set steps (yd). */
+const TACKLE_STEPS = 3 * 0.45;
 /** SET_SPOT: the interior short set, two set steps (yd; about 16 in each). */
 const SHORT_SET = 2 * 0.45;
 
@@ -232,10 +269,12 @@ const SHORT_SET = 2 * 0.45;
  * - **Tackles.** They keep their own kick and, unless SET_SPOT_TACKLE, the live-QB read: a known leak, owed
  *   (KNOWN_PROBLEMS PRO-INFO #12). */
 export const SET_SPOT = process.env.SET_SPOT === '1';
-/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed too, their clearance and the
- * point they protect from the called drop's schedule (calledPocketX). Two attempts did not repair it (tackles 4.6 yd deep
- * at 2 s against the NFL's 3.7, edge level/in-front pressure 6.5% -> 12-17% of dropbacks): the call's launch depth sits
- * about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor. */
+/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed (attempt 3, a different
+ * mechanism; Integration, 2026-11-15). He takes the three-step vertical set off his snap spot, and further depth is
+ * paced by the rusher: PASS_KICK keeps him deeper than the man up his arc. The call is the floor only: the launch
+ * point he protects and the pocket's front. Two call-only spots failed before (the final launch point from the snap,
+ * then the called drop's schedule): tackles set 4.6-5.0 yd deep at 2 s against the NFL's 3.7. Never from the QB's
+ * measured depth (the QB lane is rebuilding the drop). */
 export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
 /** SET_SPOT: his lateral target and its share of the rusher's lateral motion: inside-out on the man, where the
  * rusher's line to the launch point crosses his own depth, fed forward by that point's own motion (frac of the
@@ -3128,6 +3167,52 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
  * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
  * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
 export const PASS_OFF = process.env.PASS_OFF === '1';
+/** PASS_OFF's hand-over (folded in, 2026-11-16): the hand-over's control is the keeper's own
+ * fit, the same first-contact law as any new pass engagement, not a scripted 0 (Integration, 2026-11-16: every
+ * hand-over had gone to exactly 0 from -0.41..+0.75, giving the keeper the grip and the punch by assignment).
+ * - **The exchange** (createEngagement's pass branch): his punch (hands, arm edge) against the rusher's current move.
+ *   A finesse move meets it with his swipe (a swipe that beats the punch leaves the keeper reaching: -0.5); a power
+ *   move with his strike.
+ * - **Late** (attempt 2, corrected; only when he sees the man come free without his hands loaded on him): his hands
+ *   must land before the man clears his reach. If they land after, it is a miss (the
+ *   swiped punch's -0.5); between, the fit falls smoothly with the share of that window he used. (Attempt 1 bounded it by
+ *   firstHands, which compares both men's landing over the same distance and so never penalised a late keeper.)
+ * - **Off balance:** off his feet he does not fit (at most -0.5, the missed punch).
+ * The old pairing's rep edge is not carried. */
+function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
+  const d = e.defender, tb = traits(keeper, 'pass'), td = traits(d, 'pass'), rng = sim.dice('handover', keeper, d);
+  const armEdge = (tb.arm - td.arm) / 3, punchB = tb.hands + 0.12 * armEdge + rng.normal(0, 0.18);
+  let c: number;
+  if (e.move === 'swim' || e.move === 'club' || e.move === 'rip' || e.move === 'speed') {
+    const swipe = td.hands + 0.15 * td.bend + rng.normal(0, 0.18);
+    c = swipe - punchB > 0.18 ? -0.5 : clamp(0.35 + (punchB - swipe), -0.2, 0.9);
+  } else {
+    const strike = 0.5 * td.hands + 0.5 * d.r('passRushPower') - 0.12 * armEdge + rng.normal(0, 0.18);
+    c = clamp(punchB - strike, -0.8, 0.8);
+  }
+  // Late (attempt 2; attempt 1 bounded by firstHands, which compares both men's landing over the same distance and so
+  // never penalised a late keeper): his hands must land before the man clears his reach. Land: his distance beyond
+  // the bodies' contact over his closing speed on the man. Clear: the reach the man has left over the man's speed away
+  // from him. Landing after the man has cleared is a miss (the swiped punch's -0.5); between, the fit falls smoothly
+  // with the share of the window he used.
+  // Attempt 2 corrected: only on the `seen` path, where his hands are not loaded on the man. A keeper whose hands are
+  // already fitted (the hand-over's other precondition: force on his helper joint) has nothing left to land, so his fit
+  // is the exchange alone. (Attempt 2 charged every keeper a landing time at his closing speed: a fitted, slowly
+  // closing keeper got a near miss; staged, in reach -0.44.)
+  // Loaded is the load on his own hands joint, not the path that found him: the seen check runs first each tick, so it
+  // also finds keepers whose hands are already on (the first cut keyed on the path and changed nothing).
+  const hj = e.hands, loaded = !!hj && (Math.max(0, hj.normalForce ?? 0) > 0 || Math.abs(hj.tangentForce ?? 0) > 0);
+  if (loaded) return (keeper.body.support?.state ?? 'up') !== 'up' ? Math.min(c, -0.5) : c;
+  const dx = d.pos.x - keeper.pos.x, dy = d.pos.y - keeper.pos.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
+  const contact = keeper.profile.radius + d.profile.radius, reach = contact + tb.arm / 36 * 0.3;
+  const closing = Math.max(0.1, (keeper.vel.x - d.vel.x) * ux + (keeper.vel.y - d.vel.y) * uy);
+  const away = Math.max(0.1, (d.vel.x - keeper.vel.x) * ux + (d.vel.y - keeper.vel.y) * uy);
+  const land = Math.max(0, dist - contact) / closing, clear = Math.max(0, reach - dist) / away;
+  const used = land / Math.max(1e-3, land + clear);
+  c = c + (-0.5 - c) * clamp(used, 0, 1) ** 2;
+  if ((keeper.body.support?.state ?? 'up') !== 'up') c = Math.min(c, -0.5);
+  return c;
+}
 function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
   const d = e.defender;
@@ -3143,7 +3228,9 @@ function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
   e.blocker = keeper; e.hands = joint;
   e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
-  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
+  // The keeper's control from the first-contact law, from his own fit (not a scripted 0).
+  e.control = handoverControl(sim, e, keeper);
+  e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
   syncJoints(sim, e);
   keeper.tags.add('pass-off');
   d.tags.add('shed');

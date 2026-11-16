@@ -26,7 +26,8 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 /** Measured 2026-11-12 on develop 121d458b (engine-49, PURSUIT_FIELD on). */
 const MEASURED: { controller: Record<string, [number, number, number]>; stage: Record<string, [number, number, number]> } = { // [reversed re-aims /s, moving s, reversed events]
   controller: { // budget = rate x 1.10 + 2 sqrt(events) / moving s
-    QB: [0.1051, 333, 35], block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
+    QB: [0.1051, 333, 35], 'QB facing': [0.2052, 297, 61], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
+    block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
     carrier: [0.3686, 296, 109], route: [0.1648, 1311, 216], pursuit: [0.4110, 102, 42],
   },
   stage: {
