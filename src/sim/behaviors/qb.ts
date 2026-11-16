@@ -477,6 +477,19 @@ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
  * 3.2 s against the NFL's 2.3), and PA sacks go 14.8 -> 27.1% staged; it lands with PA reads decided on the plant out
  * of the fake. */
 const FW_PA_FAKE = (QB_FOOTWORK & 16) !== 0;
+/** QB_EDGE_THREAT (experimental, off; QB_EDGE_THREAT=1; Integration's ruling 2026-11-16, Flex's long-hold measurement):
+ * the step-up answers an edge rusher who threatens him, into room. pocketMove's edge test (his home 1.8 + 1.2 pp yd up)
+ * fired on any defender he felt wide and level within 2.5 + 3 pp yd, blocked or not, closing or not: on long holds the
+ * edge rushers ridden past by the tackles kept it true for most of a second a play, and he walked 1.4 yd up into the
+ * interior (staged QB depth 7.85 -> 6.70 yd from 2.0 to 3.5 s, NFL 7.4 -> 7.7; scripts/diag/escape/long-hold-climb.ts).
+ * With it, a rusher counts only if, in his felt picture (felt(): the blind side lagged as his feel allows, never the true
+ * position), he is not tied up by a blocker he sees (seenTied: his plain picture of his own players) and is closing on
+ * him; the forward home holds only while his picture has room ahead (nearest body within 30 deg ahead: teammates seen,
+ * defenders felt). Enter and exit margins on both, the exit on the far side: once he steps up it is a committed move
+ * until the threat or the room clears its exit margin. Margins chosen. */
+const QB_EDGE_THREAT = process.env.QB_EDGE_THREAT === '1';
+const EDGE_CLOSE_IN = 1.5, EDGE_CLOSE_OUT = 0.5; // yd/s toward him (chosen)
+const EDGE_ROOM_IN = 2.0, EDGE_ROOM_OUT = 1.4; // yd ahead (chosen)
 /** QB_FOOTWORK bit 8: the grass read (docs/reviews/2026-11-15-drop-design-stage1.md, "Design: the grass read"; Rules +
  * Coaching's vertical-ready note on #780). A first read thrown before its break into space (a vertical, a corner, a
  * post, a deep out) is read on the grass it is going to, during the drop: his eyes go to the landing area from the
@@ -1807,23 +1820,13 @@ export class QBPass implements Behavior {
     for (let i = 0; i < 2; i++) at = f.predict(sim.t, w + naturalFlightFor(this.armSpeed, Math.hypot(at.x - qb.pos.x, at.y - qb.pos.y))) ?? at;
     return at;
   }
-  /** Readable: out of the collision, and nobody he sees between the man and the landing area (beaten or under him). */
-  private grassRead = new Set<Agent>();
+  /** Readable (Integration's ruling, 2026-11-16, the last form): only what he can judge of the receiver on the step:
+   * the release won (out of the collision) and his leverage on the man over him, from his pictures (the vertical cue,
+   * vertReadable). Whether to throw is the window's price on that step (the ball to where the man will be when it
+   * arrives), no geometric veto: whether a deep safety gets there before the ball is the window's timing question. The
+   * first form vetoed on any defender within 2 yd of the path to the landing area (four verts from trips: sacks 6 -> 21). */
   private grassReadable(sim: PlaySim, r: Agent): boolean {
-    if (this.grassRead.has(r)) return true;
-    const a = sim.qb, dir = sim.attackDir(a.team), p = sim.see(a, r), land = this.grassLanding(sim, r);
-    if ((p.pos.x - sim.los) * dir < 2 || Math.hypot(p.vel.x, p.vel.y) < 4) return false;
-    const ux = land.x - p.pos.x, uy = land.y - p.pos.y, L = Math.hypot(ux, uy) || 1;
-    const noise = a.mind.judgment(`grass:${r.slot}`) * 0.6 * (1 - a.r('awareness'));
-    for (const d of sim.defense) {
-      const e = this.mind.estimate(d).pos, along = ((e.x - p.pos.x) * ux + (e.y - p.pos.y) * uy) / L;
-      const across = Math.abs((e.x - p.pos.x) * uy - (e.y - p.pos.y) * ux) / L;
-      // A man shallower than the receiver is under the throw: the ball goes over him (the seam over the hook defender).
-      if ((e.x - p.pos.x) * dir < -0.5) continue;
-      if (along > 0.5 && along < L + 2 && across < 2 + noise) return false;
-    }
-    this.grassRead.add(r);
-    return true;
+    return this.vertReadable(sim, r);
   }
   private vertReadable(sim: PlaySim, r: Agent): boolean {
     if (this.vertRead.has(r)) return true;
@@ -2880,6 +2883,8 @@ export class QBPass implements Behavior {
     return { vel: { x: dir.x * a.profile.vmax * 0.7 * elus, y: dir.y * a.profile.vmax * 0.7 * elus }, facing: 0, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
 
+  /** QB_EDGE_THREAT: whether he is stepping up from an edge threat (for the exit margins). */
+  private edgeOn = false;
   private pocketMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
     // Hold the set point, sliding away from nearby rushers. When an edge rusher
     // gets to his depth outside him — the tackle riding him past — he climbs
@@ -2890,15 +2895,22 @@ export class QBPass implements Behavior {
     let fx = 0;
     let fy = 0;
     let edge = false;
+    let threat = false;
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      const seen = this.felt(a, sim, d).pos;
+      const fd = this.felt(a, sim, d), seen = fd.pos;
       const dx = a.pos.x - seen.x;
       const dy = a.pos.y - seen.y;
       const dd = Math.hypot(dx, dy);
       if (dd < 1e-3) continue;
       if (QB_POCKET) continue; // the nearest body decides, below; no drift
-      if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
+      if (QB_EDGE_THREAT) {
+        // QB_EDGE_THREAT: wide and level as before (a little farther once stepping), untied in his picture, closing on him.
+        if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp + (this.edgeOn ? 0.5 : 0)) {
+          const closing = (fd.vel.x * dx + fd.vel.y * dy) / dd;
+          if (closing > (this.edgeOn ? EDGE_CLOSE_OUT : EDGE_CLOSE_IN) && !this.seenTied(a, sim, d, seen)) threat = true;
+        }
+      } else if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
       if (dd > 3.5) continue;
       const w = (3.5 - dd) / 3.5;
       fx += (dx / dd) * w;
@@ -2906,6 +2918,19 @@ export class QBPass implements Behavior {
     }
     // QB_POCKET: the nearest body he feels inside POCKET_NEAR decides. At the edge: the climb below, unchanged. In
     // front or inside: a slide (returned here while it lasts).
+    if (QB_EDGE_THREAT && !QB_POCKET) {
+      // Room ahead in his picture: the nearest body within 30 deg of straight ahead (teammates seen, defenders felt).
+      const dir = sim.attackDir(a.team);
+      let room = Infinity;
+      for (const o of [...sim.offense, ...sim.defense]) {
+        if (o === a || o.isDown(sim.t)) continue;
+        const p = o.team === a.team ? sim.see(a, o).pos : this.felt(a, sim, o).pos;
+        const ax = (p.x - a.pos.x) * dir, ay = p.y - a.pos.y;
+        if (ax > 0 && Math.abs(Math.atan2(ay, ax)) < Math.PI / 6) room = Math.min(room, Math.hypot(ax, ay));
+      }
+      edge = threat && room > (this.edgeOn ? EDGE_ROOM_OUT : EDGE_ROOM_IN);
+      this.edgeOn = edge;
+    }
     let slideMove: Vec2 | null = null;
     if (QB_POCKET) {
       const d = this.pocketDecide(a, sim, read);

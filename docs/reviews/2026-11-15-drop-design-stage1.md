@@ -658,3 +658,33 @@ So the dropback cost is one fast edge rusher (roster 11) reaching a set that is 
 coverages, against other matchups the later set helps: the drop's timing, not a fault in one concept. Not excluded:
 whether the crossover's facing, side-on toward read 1's side, also delays his feel of the backside rusher (his blind
 side); the mesh case reads like timing (the rusher inside his urgency), but it is untested.
+
+### The grass readable test, last form, gated (2026-11-16)
+
+Integration's ruling: readable is only what he can judge of the receiver on the step (the release won, his leverage on
+the man over him: the vertical cue, `vertReadable`); whether to throw is the window's price on that step, no
+geometric veto, no dwell. Gate (staged, CONCEPT_DROPS=1, VERTS_KEYS=1 with #802 51d9be85 and #804 06e85783, 192 a
+cell; sacks / ints / cmp / yd, verticals thrown at t and depth):
+
+| cell | =3 | =11 GRASS_READ | =11 GRASS_READ ACC_RADIUS |
+|---|---|---|---|
+| verts_hitch trips | 4 / 0 / 116 / 8.21 | 2 / 0 / 124 / 8.27 | 1 / 0 / 122 / 9.10 |
+| four_verts trips | 13 / 0 / 89 / 11.32; 70 at 2.39 s | 22 / 0 / 75 / 12.37; 35 | 7 / 3 / 88 / 16.24; 103 at 3.06 s, 13.1 yd |
+| verts_hitch doubles | 14 / 3 / 90 / 9.84 | 11 / 3 / 85 / 9.19 | 6 / 5 / 82 / 14.64 |
+| four_verts doubles | 20 / 4 / 65 / 9.98 | 11 / 3 / 75 / 11.13 | 13 / 4 / 85 / 16.48 |
+
+Condition (a), the price: a grass throw is priced by the same window as any throw, so its accuracy term is pAcc at the
+fixed 1.35 yd radius (ACC_RADIUS off), with his base miss at the distance (about 1.6 yd believed at 20-25 yd at that
+radius, where the real release error is about 0.8). That underrating is what still costs four verts from trips (sacks
+13 -> 22): the verticals are readable on their step and declined on price, and with no dwell he is then to the back.
+With ACC_RADIUS the cell turns (7 sacks, 103 verticals thrown) and the doubles cells gain 4-6 yd a play, with
+interceptions up (7 -> 12 over the four cells), ACC_RADIUS's known overrating of covered balls. So bit 8 has a stated
+dependency on ACC_RADIUS (and on its covered-ball fix, held for Coverage's BALL_EST bit 8192); nothing about the price is
+patched inside bit 8.
+
+### QB_EDGE_THREAT, attempt 1 (2026-11-16)
+
+Built as its own off flag (FLAGS.md). Long holds (scripts/diag/escape/long-hold-climb.ts, Flex's panel, SET_SPOT +
+SET_SPOT_TACKLE + POCKET_LEVEL): QB depth p50 at 2.0 / 2.5 / 3.0 / 3.5 s off 7.82 / 7.58 / 6.37 / 5.50 yd, on 7.82 /
+7.90 / 7.90 / 7.86 (NFL 7.4 / 7.9 / 8.0 / 7.7); forward 2.0-3.5 s off +1.81 yd, on -0.23. Long holds 211 -> 194. The
+short-hold gate (sacks by edge rushers, staged dropbacks off vs on) follows.
