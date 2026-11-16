@@ -126,6 +126,7 @@
     "TRACKED_CATCH": "off",
     "ARM_LOOK": "off",
     "RUSH_ARM": "off",
+    "BALL_CALL": "off",
     "CATCH_CLOSE": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",

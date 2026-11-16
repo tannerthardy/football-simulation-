@@ -350,7 +350,7 @@ export class BallEstimates {
     if (ARM_LOOK) for (const a of sim.defense) {
       if (a.isDown(sim.t) || !estimatesFor(a)) continue;
       const rb = releaseBelief(sim, a);
-      if (rb.source !== 'arm' || rb.releasedAt === undefined) continue;
+      if ((rb.source !== 'arm' && rb.source !== 'call' && rb.source !== 'man') || rb.releasedAt === undefined) continue;
       let tr = this.tracks.get(a);
       if (tr && tr.flight !== this.flight) { this.reset(tr); tr.flight = this.flight; }
       if (tr && tr.samples.length) continue;

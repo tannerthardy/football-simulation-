@@ -21,12 +21,62 @@ import { BALL_EST_INCIDENTAL, estimatesFor } from './ball-estimate.js';
 
 export const RELEASE_BELIEF = process.env.RELEASE_BELIEF !== '0';
 
+/** BALL_CALL (off; C14 honest defender, 2026-11-16, attempt 1): a defender who never saw the release learns the ball is
+ * up from what he can perceive, never its place. (1) The call: a teammate who has the flight in his own samples yells
+ * 'ball' after his reaction; within BALL_CALL_RANGE the sound reaches him at its travel time and he takes it in after his
+ * own observation delay (LOOSE_SEEN's heard call). Hearers do not call on: only a man with the ball in his eyes has it.
+ * (2) His own man: a man defender whose receiver, in his view, has eased off (seen speed under EASE_FRAC of his best in
+ * the last second, held EASE_HOLD) with his body turned away from the passer takes it as gone elsewhere, after his
+ * recognition delay. A receiver who sits facing the passer, or sells a break and goes again, gives nothing. Either way
+ * he then looks for the ball (ARM_LOOK's search) and knows only what his own samples give. Constants are stated choices. */
+export const BALL_CALL = process.env.BALL_CALL === '1';
+const BALL_CALL_RANGE = 20, SOUND_YDS = 375, EASE_FRAC = 0.5, EASE_HOLD = 0.4;
+const ease = new WeakMap<PlaySim, Map<number, { man: number; hist: { t: number; sp: number }[]; lowSince?: number }>>();
+
+function heardCallAt(sim: PlaySim, a: Agent): number | undefined {
+  const E = sim.ballEstimates;
+  if (!E || sim.ball.kind !== 'air') return undefined;
+  const take = a.mind.observationDelay(a.profile.reactionTime);
+  let best: number | undefined;
+  for (const o of sim.defense) {
+    if (o === a || !estimatesFor(o)) continue;
+    const f = E.firstSeenAt(o);
+    if (f === undefined) continue;
+    const d = Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y);
+    if (d > BALL_CALL_RANGE) continue;
+    const heard = f + o.profile.reactionTime + d / SOUND_YDS;
+    if (heard + take <= sim.t + 1e-9 && (best === undefined || heard < best)) best = heard;
+  }
+  return best;
+}
+
+function manEasedAt(sim: PlaySim, a: Agent): number | undefined {
+  const man = a.behavior?.kind === 'man' ? (a.behavior as { target?: Agent }).target : undefined;
+  if (!man || man.team === a.team) return undefined;
+  let m = ease.get(sim);
+  if (!m) { m = new Map(); ease.set(sim, m); }
+  let h = m.get(a.idx);
+  if (!h || h.man !== man.idx) { h = { man: man.idx, hist: [] }; m.set(a.idx, h); }
+  const seen = sim.see(a, man), brg = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
+  // Only what is in his view of his man.
+  if (Math.cos(a.body.facing - brg) <= Math.cos(100 * Math.PI / 180)) { h.lowSince = undefined; return undefined; }
+  const sp = Math.hypot(seen.vel.x, seen.vel.y);
+  if (!h.hist.length || h.hist[h.hist.length - 1].t < sim.t - 1e-9) h.hist.push({ t: sim.t, sp });
+  while (h.hist.length && sim.t - h.hist[0].t > 1 + 1e-9) h.hist.shift();
+  const top = Math.max(...h.hist.map((x) => x.sp)), q = sim.see(a, sim.qb);
+  const away = Math.cos(seen.facing - Math.atan2(q.pos.y - seen.pos.y, q.pos.x - seen.pos.x)) < 0;
+  if (top >= 4 && sp < EASE_FRAC * top && away) h.lowSince ??= sim.t; else h.lowSince = undefined;
+  if (h.lowSince === undefined || sim.t - h.lowSince < EASE_HOLD - 1e-9) return undefined;
+  const recog = a.mind.observationDelay(a.profile.reactionTime);
+  return sim.t - h.lowSince >= EASE_HOLD + recog - 1e-9 ? h.lowSince + EASE_HOLD : undefined;
+}
+
 export interface ReleaseBelief {
   /** When the throwing motion he saw began (sample time), while it stands. */
   loadingAt: number | undefined;
   /** When he believes the ball came out (sample time), and from what. */
   releasedAt: number | undefined;
-  source: 'arm' | 'ball' | undefined;
+  source: 'arm' | 'ball' | 'call' | 'man' | undefined;
   /** When the ball itself was first in his view (sample time). */
   ballAt: number | undefined;
 }
@@ -65,6 +115,13 @@ export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
       b.ballAt = b.ballAt === undefined ? at : Math.min(b.ballAt, at);
       if (b.source !== 'ball') { b.releasedAt = b.releasedAt !== undefined ? Math.min(b.releasedAt, at) : at; b.source = 'ball'; }
     }
+  }
+  // BALL_CALL: with no release believed yet, the heard call, then his own man easing off.
+  // No gate on the ball's true state: his man easing off before a throw is a false alarm he pays for.
+  if (BALL_CALL && a.team === 'D' && b.releasedAt === undefined) {
+    const heard = heardCallAt(sim, a);
+    if (heard !== undefined) { b.releasedAt = heard; b.source = 'call'; }
+    else { const eased = manEasedAt(sim, a); if (eased !== undefined) { b.releasedAt = eased; b.source = 'man'; } }
   }
   return b;
 }

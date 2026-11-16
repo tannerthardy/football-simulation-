@@ -462,7 +462,7 @@ export class PassRusher implements Behavior {
     // defender's shoulder break: one read per belief, its error by anticipation, after his reaction time.
     if (RUSH_ARM && !a.engagement) {
       const rb = releaseBelief(sim, a);
-      if (rb.source === 'arm' && rb.releasedAt !== undefined && rb.ballAt === undefined) {
+      if ((rb.source === 'arm' || rb.source === 'call') && rb.releasedAt !== undefined && rb.ballAt === undefined) {
         const pick = shoulderTarget(a, sim, rb.releasedAt);
         if (pick.R && sim.t - pick.at >= a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')) - 1e-9) {
           a.tags.add('rush-arm');

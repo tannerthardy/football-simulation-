@@ -50,3 +50,35 @@ describe('BALL_EST glance (bit 2048)', () => {
     expect(glanceSd(20, 1, 0, 0).depth).toBeLessThan(glanceSd(20, 0, 0, 0).depth);
   });
 });
+
+describe('BALL_CALL heard call', () => {
+  it('a call reaches only a defender within earshot of a teammate with the ball in his own samples, after the sound and his delay', async () => {
+    vi.stubEnv('BALL_EST', '26657'); vi.stubEnv('HEAD_RIDE', '1'); vi.stubEnv('ACQ_SEEN', '1'); vi.stubEnv('TRACKED_CATCH', '1');
+    vi.stubEnv('ARM_LOOK', '1'); vi.stubEnv('BALL_CALL', '1');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    const { releaseBelief } = await import('../src/sim/release-belief.js');
+    let calls = 0, deaf = 0;
+    for (const concept of ['four_verts', 'curl_flat', 'mesh']) for (let seed = 1; seed <= 4; seed++) {
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3_match', concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false }));
+      const tick = sim.tick.bind(sim);
+      sim.tick = () => {
+        tick();
+        if (sim.ball.kind !== 'air') return;
+        const E = sim.ballEstimates;
+        for (const d of sim.defense) {
+          const rb = releaseBelief(sim, d);
+          const callers = sim.defense.filter((o: any) => o !== d && E.firstSeenAt(o) !== undefined
+            && Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) <= 20 && E.firstSeenAt(o) + o.profile.reactionTime <= sim.t);
+          if (rb.source === 'call') { calls++; expect(callers.length).toBeGreaterThan(0); expect(rb.releasedAt!).toBeGreaterThan(Math.min(...callers.map((o: any) => E.firstSeenAt(o)))); }
+          // Deaf range and no sight: nothing heard, and the call never gives the flight itself.
+          if (!callers.length && E.samplesOf(d) === 0) { deaf++; expect(rb.source).not.toBe('call'); }
+          if (rb.source === 'call' && E.samplesOf(d) === 0) expect(E.glanceKnows(d, sim)).toBe(false);
+        }
+      };
+      sim.run();
+    }
+    expect(calls).toBeGreaterThan(0);
+    expect(deaf).toBeGreaterThan(0);
+  }, 120000);
+});
