@@ -220,6 +220,7 @@
     "SET_SPOT": "on",
     "SET_SPOT_TACKLE": "on",
     "POCKET_LEVEL": "on",
+    "POCKET_DROP": "off",
     "RUSH_ONE_HAND": "off",
     "HAND_SITE": "off",
     "ENGAGE_FELT": "on",
