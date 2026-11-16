@@ -428,6 +428,16 @@ const PLAN_CLOCK = process.env.PLAN_CLOCK !== '0';
  * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
  * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
 const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
+/** QB_FELT_EDGE (experimental, off; QB_FELT_EDGE=1; with QB_TICK_PICTURE): whether a rusher is behind his shoulder has
+ * an enter and an exit: he goes behind past FELT_IN of his facing and comes back in front inside FELT_OUT. Off, one
+ * edge at 1.8 rad decides it each time it is asked, and it is a step function of his own facing: on engine-70 (seeds
+ * 11 / 23, 392 pass plays, scripts/diag/eyes/threshold-flips.ts) it flipped 2,217 times, 20% undone within 0.3 s, on
+ * 41% of plays. The two channels' pictures of the man agree at the flip (jump p50 0.02 yd, as an ordinary tick); the
+ * step is in time: behind him, freeBound adds the blind-side lag to the man's believed arrival, and the felt picture
+ * comes from the delayed non-visual channel instead of the tracking loop. The state advances once a tick, with his
+ * pictures (takePictures); feltLive and freeBound read it. Chosen margin. */
+const QB_FELT_EDGE = process.env.QB_FELT_EDGE === '1';
+const FELT_IN = 1.8, FELT_OUT = 1.65;
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
@@ -1882,8 +1892,28 @@ export class QBPass implements Behavior {
       for (const d of sim.defense) { if (QB_BELIEVED_DEF) this.believe(a, d); a.mind.judgment(`reach:${d.slot}`); }
       for (const k of PRICE_JUDGMENTS) a.mind.judgment(k);
     }
-    for (const d of sim.defense) { const plain = sim.see(a, d); this.pics.set(d, { plain, felt: this.feltLive(a, sim, d, plain) }); }
+    for (const d of sim.defense) {
+      const plain = sim.see(a, d);
+      // QB_FELT_EDGE: behind his shoulder or not, with an enter and an exit, advanced here once a tick.
+      if (QB_FELT_EDGE) {
+        const at = QB_HONEST_FEEL ? plain.pos : d.pos, ang = this.offFacing(a, at), was = this.behind.get(d);
+        this.behind.set(d, was === undefined ? ang > FELT_IN : was ? ang > FELT_OUT : ang > FELT_IN);
+      }
+      this.pics.set(d, { plain, felt: this.feltLive(a, sim, d, plain) });
+    }
     for (const r of sim.offense) if (r !== a && !this.outSeen.has(r) && this.checkRelease(r)) this.seenOutLive(r);
+  }
+  /** QB_FELT_EDGE: each defender behind his shoulder or not, as of his last update. */
+  private behind = new Map<Agent, boolean>();
+  /** A point's bearing off his facing, wrapped to [0, pi]. */
+  private offFacing(a: Agent, at: Vec2): number {
+    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
+    return Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
+  }
+  /** Behind his shoulder: QB_FELT_EDGE's held state when it has one, else the single 1.8 rad edge. */
+  private isBehind(a: Agent, d: Agent, at: Vec2): boolean {
+    if (QB_FELT_EDGE) { const b = this.behind.get(d); if (b !== undefined) return b; }
+    return this.offFacing(a, at) > 1.8;
   }
   private feltLive(a: Agent, sim: PlaySim, d: Agent, plain?: Perceived): Perceived {
     // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
@@ -1891,9 +1921,7 @@ export class QBPass implements Behavior {
     // QB_HONEST_FEEL: which side of his shoulder the man is on comes from his own plain picture of him, not from where
     // the man truly is.
     const at = QB_HONEST_FEEL ? (plain ?? sim.see(a, d)).pos : d.pos;
-    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
-    const ang = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
-    const blind = ang > 1.8;
+    const blind = this.isBehind(a, d, at);
     // TRACK_FEEL (step 1b): a rusher in front of his shoulders is read through the tracking channel (a short
     // correcting loop); behind them the existing non-visual term stands (the QB lane's).
     if (TRACK_FEEL && !blind) return sim.track(a, d, 1, true);
@@ -1987,8 +2015,7 @@ export class QBPass implements Behavior {
       t = (-v + Math.sqrt(v * v + 2 * FREE_BURST * D)) / FREE_BURST;
     }
     const at0 = QB_HONEST_FEEL ? this.plainOf(a, sim, d).pos : d.pos;
-    const raw = Math.atan2(at0.y - a.pos.y, at0.x - a.pos.x) - a.body.facing;
-    const blind = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
+    const blind = this.isBehind(a, d, at0);
     return t + (blind ? FREE_BLIND_LAG * (1 - a.r('pocketPresence')) : 0);
   }
 

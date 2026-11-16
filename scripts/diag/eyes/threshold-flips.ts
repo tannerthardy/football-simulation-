@@ -18,7 +18,8 @@ PlaySim.prototype.run = function (this: PlaySim) {
   const sim: any = this; if (!sim.isPass) return orig.apply(this);
   const tick = sim.tick.bind(sim);
   let qb: any = null;
-  const lastT = new Map<any, number>();
+  const lastT = new Map<any, number>(), prevFelt = new Map<any, any>();
+  const jumps = { flip: [] as number[], steady: [] as number[], flipDist: [] as number[] };
   const hist = { felt: new Map<any, [number, boolean][]>(), sector: new Map<any, [number, boolean][]>() };
   sim.tick = () => {
     tick();
@@ -31,8 +32,21 @@ PlaySim.prototype.run = function (this: PlaySim) {
       const p = b.pics.get(d)?.plain;
       if (p) {
         const raw = Math.atan2(p.pos.y - a.pos.y, p.pos.x - a.pos.x) - a.body.facing;
-        const blind = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
-        const h = hist.felt.get(d) ?? []; h.push([sim.t, blind]); hist.felt.set(d, h);
+        // With QB_FELT_EDGE, his held state (enter and exit); else the single edge, recomputed.
+        const held = b.behind?.get(d);
+        const blind = held !== undefined ? held : Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
+        const h = hist.felt.get(d) ?? [];
+        // The felt picture's jump this tick beyond where last tick's felt picture carried him: at a flip this is how far
+        // apart the two channels' pictures of the same rusher are.
+        const f = b.pics.get(d)?.felt, pf = prevFelt.get(d);
+        if (f && pf) {
+          const jump = Math.hypot(f.pos.x - (pf.pos.x + pf.vel.x * sim.dt), f.pos.y - (pf.pos.y + pf.vel.y * sim.dt));
+          const flip = h.length > 0 && h[h.length - 1][1] !== blind;
+          (flip ? jumps.flip : jumps.steady).push(jump);
+          if (flip) jumps.flipDist.push(Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y));
+        }
+        if (f) prevFelt.set(d, { pos: { ...f.pos }, vel: { ...f.vel } });
+        h.push([sim.t, blind, a.body.facing] as any); hist.felt.set(d, h);
       }
       const m = b.mind?.memory?.get(d);
       // observe stamps the memory before the tick's clock advances: in the sector this tick = the stamp moved.
@@ -42,17 +56,27 @@ PlaySim.prototype.run = function (this: PlaySim) {
   };
   const res = orig.apply(this);
   if (qb) {
-    const out: any = { concept: sim.offCall?.pass?.id ?? '?' };
+    const out: any = { concept: sim.offCall?.pass?.id ?? '?', jumps: { flip: jumps.flip.map((x) => +x.toFixed(2)), flipDist: jumps.flipDist.map((x) => +x.toFixed(1)), steadyN: jumps.steady.length, steadyP50: jumps.steady.length ? +jumps.steady.sort((x, y) => x - y)[jumps.steady.length >> 1].toFixed(3) : null, steadyP90: jumps.steady.length ? +jumps.steady[Math.floor(jumps.steady.length * 0.9)].toFixed(3) : null } };
     for (const site of ['felt', 'sector'] as const) {
-      let ticks = 0, flips = 0, back = 0, secs = 0;
+      let ticks = 0, flips = 0, back = 0, secs = 0; const turns: number[] = [];
       for (const h of hist[site].values()) {
         ticks += h.length; if (h.length) secs += h[h.length - 1][0] - h[0][0];
         const f: number[] = [];
         for (let i = 1; i < h.length; i++) if (h[i][1] !== h[i - 1][1]) f.push(h[i][0]);
         flips += f.length;
         for (let i = 1; i < f.length; i++) if (f[i] - f[i - 1] <= BACK + 1e-9) back++;
+        // For the felt site: how far his facing turned between a flip and its undoing (rad), for flips undone in 0.3 s.
+        if (site === 'felt') {
+          const fi: number[] = [];
+          for (let i = 1; i < h.length; i++) if (h[i][1] !== h[i - 1][1]) fi.push(i);
+          for (let j = 1; j < fi.length; j++) if (h[fi[j]][0] - h[fi[j - 1]][0] <= BACK + 1e-9) {
+            let lo = Infinity, hi = -Infinity;
+            for (let k = fi[j - 1] - 1; k <= fi[j]; k++) { const v = (h[k] as any)[2]; lo = Math.min(lo, v); hi = Math.max(hi, v); }
+            turns.push(+(hi - lo).toFixed(3));
+          }
+        }
       }
-      out[site] = { ticks, flips, back, defSecs: +secs.toFixed(2) };
+      out[site] = { ticks, flips, back, defSecs: +secs.toFixed(2), turns };
     }
     console.log(JSON.stringify(out));
   }
