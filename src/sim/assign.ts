@@ -3,6 +3,7 @@
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
 import { ownRoutes } from './ball-estimate.js';
+import { PA_FAKE_TIME, paFakeSide } from './pa-look.js';
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
@@ -265,7 +266,9 @@ export function assignBehaviors(sim: PlaySim): void {
       // not on the QB's drop line; off, the fake point sat 0.4 yd off it and the QB dropped into him.
       const behind = Math.abs(back.pos.y - qb.pos.y) < 1;
       const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
-      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, 0.7);
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, PA_FAKE_TIME);
+      // PA_HINGE: the line knows the fake's side from the call.
+      paFakeSide.set(sim, Math.sign(fakeY - sim.ballY) || off.strongSign);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;
