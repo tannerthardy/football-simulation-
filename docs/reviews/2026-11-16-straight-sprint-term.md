@@ -51,7 +51,16 @@ The NFL's best forward drive falls by about 29% from straight to a 6 to 8 yd/s²
 
 The World's 74: +0.70 at +0.25 s and +0.95 at +0.5 s from 4.0. The NFL defender from 4.0 gains +0.24 and +0.44; Defense's wider row (all velocity-off-line bins together, `rally.py`) is 5.29 at +0.25 s and 4.97 at +0.5 s for back-to-QB under 45 deg (n 1,619). Nobody in the NFL bin is at 6 by +0.5 s. They are closing on a carrier, arrival and the tackle stop the acceleration, and the sprint curve is not what a pursuing defender does.
 
-Where the sim sits against the NFL in this row (rally.py at the throw, all families, ours from Defense: first to arrive 5.8 yd from the catcher, 2.6 yd/s, heading 83 deg off, closing 0.2): the NFL first to arrive is 6.3 yd, 3.5 yd/s, 78 deg, closing 0.6 at the throw, and at the catch 3.0 yd, 5.3 yd/s, 34 deg, closing 4.1 (ours 3.3 yd, 4.4 yd/s, 22 deg). The NFL man is 0.5 yd closer and 0.9 yd/s faster at the throw and 0.9 yd/s faster at the catch. The second to arrive is 10.0 yd, 3.1 yd/s at the throw and 7.3 yd, 4.5 yd/s at the catch (ours 9.1 / 8.0 yd; speeds 3.9 at the catch). Full table in `out/defense-batch/rally_nfl.txt` and sent to Defense.
+Where the sim sits against the NFL in the rally row (`rally.py`, all families; ours from Defense's message, 8 games):
+
+| | at the throw: distance / speed / heading off the line / closing | at the catch |
+| --- | --- | --- |
+| NFL first to arrive | 6.3 yd / 3.5 yd/s / 78 deg / 0.6 | 3.0 yd / 5.3 / 34 deg / 4.1 |
+| ours first to arrive | 5.8 / 2.6 / 83 / 0.2 | 3.3 / 4.4 / 22 / not given |
+| NFL second | 10.0 / 3.1 / 90 / 0.0 | 7.3 / 4.5 / 30 / 3.5 |
+| ours second | 9.1 / not given / 103 / -0.3 | 8.0 / 3.9 / 26 / not given |
+
+The NFL first man is 0.5 yd farther at the throw but 0.9 yd/s faster and already closing; at the catch he is 0.3 yd closer and 0.9 yd/s faster. His speed at the throw is the difference (3.5 against 2.6 yd/s), not what the body does after the catch. Full table: `out/defense-batch/rally_nfl.txt` (my container), sent to Defense.
 
 ## 6. Verdict
 
