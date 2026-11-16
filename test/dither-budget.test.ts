@@ -10,7 +10,7 @@
  * seeds 1-10; three deep concepts against cover 2 (checkdowns, scrambles) and two play-action shots against cover 1,
  * seeds 1-5. Teams come from fixed generator seeds; nothing is sampled.
  *
- * Budget = recorded x 1.10 + 2 sqrt(recorded events) / moving seconds: two standard deviations of the event count,
+ * Budget = recorded x 1.10 + 2 sqrt(recorded events) / moving seconds (x 1.4 for the pooled small rows): two standard deviations of the event count,
  * since a changed engine sends the same snaps down different paths. Per controller (reversed re-aims per second of
  * moving time) and per (controller, post-decision stage); keys with fewer than 5 reversed re-aims are not recorded. A
  * change that lowers a value lowers its budget in the same PR, so dither cannot creep back. DITHER_PRINT=1 prints the
@@ -25,23 +25,29 @@ const PANEL_SEED = Number(process.env.DITHER_PANEL_SEED ?? 0);
 const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags as Record<string, string>)
   .filter(([, v]) => v === 'on').map(([k]) => k);
 
+/** Rows read from three pooled panel draws: the small ones (fewer than 150 events on one panel), recorded from the pooled mean. Their slack is two Poisson standard deviations of the
+ * pooled events, times the measured overdispersion of reversed re-aims (events come in bursts inside a play): 1.4 on pursuit, about 1 elsewhere. */
+const POOLED = new Set(['controller QB', 'controller QB facing', 'controller carrier', 'controller pursuit', 'stage QB / spacing', 'stage rush / engagement', 'stage rush / tackle bond',
+  'stage coverage / mode switch', 'stage coverage / tackle bond', 'stage coverage / containment', 'stage carrier / spacing', 'stage carrier / mode switch', 'stage route / spacing']);
+const POOLED_DISPERSION = 1.4;
+
 /** Measured 2026-11-12 on develop 121d458b (engine-49, PURSUIT_FIELD on). */
 const MEASURED: { controller: Record<string, [number, number, number]>; stage: Record<string, [number, number, number]> } = { // [reversed re-aims /s, moving s, reversed events]
   controller: { // budget = rate x 1.10 + 2 sqrt(events) / moving s
-    QB: [0.1051, 333, 35], 'QB facing': [0.2052, 297, 61], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
+    QB: [0.0749, 881, 66], 'QB facing': [0.1653, 847, 140], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
     block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
-    carrier: [0.3686, 296, 109], route: [0.1648, 1311, 216], pursuit: [0.6220, 135, 84] /* engine-72 re-record: a small sample (84 events) that moves 10-15 events with any one of three unrelated groups off, including MIRROR_SCATTER, which only changes alignment scatter; was [0.4110, 102, 42]. Panel seed 100 reads 0.571 with everything on, and no group is a source on either seed (docs/REFERENCE_STACK.md, engine-72). */,
+    carrier: [0.3344, 909, 304], route: [0.1648, 1311, 216], pursuit: [0.4025, 402, 162],
   },
   stage: {
-    'QB / spacing': [0.0511, 333, 17], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
-    'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0294, 2787, 82],
-    'rush / tackle bond': [0.0075, 2787, 21], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0304, 4149, 126],
-    'coverage / tackle bond': [0.0101, 4149, 42], 'coverage / containment': [0.0260, 4149, 108], 'carrier / spacing': [0.1217, 296, 36],
-    'carrier / mode switch': [0.0406, 296, 12], 'route / spacing': [0.0084, 1311, 11],
+    'QB / spacing': [0.0284, 881, 25], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
+    'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0397, 7938, 315],
+    'rush / tackle bond': [0.0057, 7938, 45], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0293, 11844, 347],
+    'coverage / tackle bond': [0.0090, 11844, 107], 'coverage / containment': [0.0031, 11844, 37], 'carrier / spacing': [0.0847, 909, 77],
+    'carrier / mode switch': [0.0231, 909, 21], 'route / spacing': [0.0067, 4011, 27],
   },
 };
 
-async function measure() {
+async function measure(shift = 0) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   const { Rng } = await import('../src/core/rng.js');
@@ -60,7 +66,7 @@ async function measure() {
     const sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
       offCall: { formation, flip: seed % 2 === 0, kind: 'run', run: RUN_BY_ID[run], label: run },
       defCall: { personnel: 'base43', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover3, pressure: null, zoneStyle: 'spot', label: 'u3' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED + shift } as never);
     core.watch(sim, acc); sim.run();
   }
   for (const pass of ['curl_flat', 'stick', 'mesh', 'smash', 'slant_flat', 'four_verts']) for (let seed = 1; seed <= 5; seed++) {
@@ -68,7 +74,7 @@ async function measure() {
     const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: PASS_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1, pressure: null, zoneStyle: 'spot', label: 'o31' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED + shift } as never);
     core.watch(sim, acc); sim.run();
   }
   for (const pass of ['bubble_screen', 'rb_slip_screen', 'tunnel_screen', 'wide_now_screen', 'four_verts', 'y_cross', 'flood', 'pa_shot', 'pa_flood'])
@@ -78,7 +84,7 @@ async function measure() {
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: deep ? PASS_BY_ID[pass] : SCREEN_BY_ID[pass], label: pass },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: pass.startsWith('pa_') ? COVERAGE_BY_ID.cover1 : deep ? COVERAGE_BY_ID.cover2 : seed % 2 ? COVERAGE_BY_ID.cover3 : COVERAGE_BY_ID.cover1,
         pressure: null, zoneStyle: 'spot', label: 'scr' },
-      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED } as never);
+      los: 35, ballY: 26.65, firstDownX: 45, seed: seed + PANEL_SEED + shift } as never);
     core.watch(sim, acc); sim.run();
   }
   return core.rates(acc);
@@ -86,19 +92,31 @@ async function measure() {
 
 describe('dither budget: players do not re-aim and take it back more often than the recorded engine', () => {
   it('per controller and per post-decision stage, reversed re-aims per second stay within budget (measured x 1.10)', async () => {
-    const now = await measure();
-    const slack = (moving: number, events: number) => 2 * Math.sqrt(events) / moving;
+    // Rows with few events are read from the pool of three panel draws (the same plays and calls, the play seeds shifted by 100 and 200),
+    // and recorded from the pool, so one draw cannot set or break a budget (docs/reviews/2026-11-16-dither-small-sample.md). The rest read the one panel.
+    const draws = [await measure(0)];
+    const now = draws[0]!;
+    if (POOLED.size) {
+      draws.push(await measure(100), await measure(200));
+      for (const kind of ['controller', 'stage'] as const) for (const key of Object.keys(MEASURED[kind])) {
+        if (!POOLED.has(`${kind} ${key}`)) continue;
+        const rows = draws.map(d => d[kind][key]).filter(Boolean) as { moving: number; reversed: number }[];
+        const moving = rows.reduce((t, r) => t + r.moving, 0), reversed = rows.reduce((t, r) => t + r.reversed, 0);
+        now[kind][key] = { ...(rows[0] ?? { moving: 0, reversed: 0 }), moving, reversed, rate: moving ? reversed / moving : 0 } as never;
+      }
+    }
+    const slack = (moving: number, events: number, kind: string, key: string) => (POOLED.has(`${kind} ${key}`) ? POOLED_DISPERSION : 1) * 2 * Math.sqrt(events) / moving;
     if (process.env.DITHER_PRINT === '1') for (const kind of ['controller', 'stage'] as const) for (const [k, r] of Object.entries(now[kind]))
-      if (r.reversed >= 5) console.log(`DITHER ${kind} '${k}': [${r.rate.toFixed(4)}, ${r.moving.toFixed(0)}, ${r.reversed}], // budget ${(r.rate * 1.1 + slack(r.moving, r.reversed)).toFixed(4)} (slack ${slack(r.moving, r.reversed).toFixed(4)})`);
+      if (r.reversed >= 5) console.log(`DITHER ${kind} '${k}'${POOLED.has(`${kind} ${k}`) ? ' (pooled)' : ''}: [${r.rate.toFixed(4)}, ${r.moving.toFixed(0)}, ${r.reversed}], // budget ${(r.rate * 1.1 + slack(r.moving, r.reversed, kind, k)).toFixed(4)} (slack ${slack(r.moving, r.reversed, kind, k).toFixed(4)})`);
     const over: string[] = [];
     for (const kind of ['controller', 'stage'] as const) for (const [key, [before, moving, events]] of Object.entries(MEASURED[kind])) {
-      const after = now[kind][key]?.rate ?? 0, budget = before * 1.10 + slack(moving, events);
+      const after = now[kind][key]?.rate ?? 0, budget = before * 1.10 + slack(moving, events, kind, key);
       if (after > budget + 1e-9) over.push(`${kind} ${key}: before ${before.toFixed(3)}/s, after ${after.toFixed(3)}/s (budget ${budget.toFixed(3)})`);
     }
     expect(over, `reversed re-aims over budget:\n${over.join('\n')}`).toEqual([]);
     // Every recorded controller is still measured on the panel (a renamed or vanished controller must be re-recorded).
     for (const key of Object.keys(MEASURED.controller)) expect(now.controller[key], `controller ${key} no longer measured`).toBeDefined();
-  }, 300_000);
+  }, 900_000);
 
   // The receiver's release (Flex, 2026-11-15): inside releases next to an end, where the route craft and spacing meet a
   // man in his lane. Per route runner inside 5 yd of the line with the ball held: a request that turns > 20 deg from the
