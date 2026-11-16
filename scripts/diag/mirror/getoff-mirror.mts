@@ -30,13 +30,15 @@ function sample(flip: boolean) {
   const park = () => sim.defense.forEach((d: any, i: number) => { d.body.pos = { x: sim.los + 60 + i * 2, y: PARK_Y === null ? 1 : sim.ballY + ss * PARK_Y }; d.body.vel = { x: 0, y: 0 }; });
   park();
   if (process.env.COMPILE_PICTURE !== '0') for (let i = 0; i < 12; i++) sim.perception.record(sim.agents, null);
-  const skill = sim.offense.filter((a: any) => a !== sim.qb && !OL.has(a.slot));
+  // WITH_OL=1: also compare the line (a flipped LT's mirror is the unflipped RT; names swapped below).
+  const skill = sim.offense.filter((a: any) => process.env.WITH_OL === '1' ? true : a !== sim.qb && !OL.has(a.slot));
+  const SWAP: Record<string, string> = { LT: 'RT', RT: 'LT', LG: 'RG', RG: 'LG' };
   const cmds = new Map<any, any>();
   for (const a of skill) { const b = a.behavior, up = b.update.bind(b); b.update = (ag: any, s: any) => { const c = up(ag, s); cmds.set(ag, c); return c; }; }
   const rows: any[] = [];
   while (sim.phase === 'live' && sim.t <= 2.0 + 1e-9) {
     sim.tick(); park();
-    rows.push(Object.fromEntries(skill.map((a: any) => { const c = cmds.get(a) ?? {}; return [a.slot, {
+    rows.push(Object.fromEntries(skill.map((a: any) => { const c = cmds.get(a) ?? {}; return [(flip && SWAP[a.slot]) || a.slot, {
       x: a.pos.x - sim.los, y: (a.pos.y - sim.ballY) * ss, vx: a.vel.x, vy: a.vel.y * ss, f: Math.atan2(Math.sin(a.facing) * ss, Math.cos(a.facing)),
       cvx: c.vel?.x ?? 0, cvy: (c.vel?.y ?? 0) * ss, drive: c.drive ?? 1, cf: c.facing === undefined ? null : Math.atan2(Math.sin(c.facing) * ss, Math.cos(c.facing)),
       beh: a.behavior?.kind, tags: [...a.tags].sort().join(','),
