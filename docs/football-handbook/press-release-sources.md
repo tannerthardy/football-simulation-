@@ -63,3 +63,47 @@ jam with the off hand. Over-extending (the two-hand jam) loses leverage. Double 
 - Viqtory Sports, "How to beat press coverage" (speed release = no hesitation): https://www.viqtorysports.com/?p=543
 - CoachUp (hesitation first step to make the corner bite): https://www.coachup.com/nation/?p=6317
 - XandOLabs, survey on stance and hands vs press (inside foot up ~74%): https://www.xandolabs.com/?p=5574
+
+## The release path: when the width is taken (for the path-shape design), 2026-11-16
+
+What coaches teach about the shape of the release, not its side:
+
+- **Close the space first.**
+  - Against press, soft press or a squat defender, the receiver closes the space to set his release point. Against
+    an off or bailing defender he bursts and closes the cushion (Kolste).
+  - Full steps (the back foot crosses) eat up space against cushion. Quick steps (it does not) for tighter press,
+    "while still attacking vertically" (USA Football, part 2).
+- **Win vertically, don't run around him.** The two-hand-jam release is a step through and a stack, getting on top of
+  the defender; the fault is "running the hump", a release around him that lets the defender catch up (Gridiron
+  Strategies). Parallel feet "must step out and around the DB, which is less efficient" and give him time to recover
+  (USA Football, part 2).
+- **The width is aimed at his leverage, at short range.** "Attack the short arm": aim 1–2 yd beyond the defender's
+  leverage, which makes him declare (USA Football, part 1 and the slot-release piece). The stem neutralises the
+  defender's leverage within the first five yards and keeps his hips square (Viqtory, stem and stack).
+- **After the release, stack.** Work back onto the defender's line so he ends up behind; without the stack the
+  defender sits between the receiver and the ball (AFCA, "Winning vertically"; Viqtory).
+- **Against loose coverage, the same rule at a distance.** Take the blind spot he gives: if he turns his shoulders,
+  attack the near hip (USA Football, "Beating loose coverage").
+
+What this means for a model (not implemented):
+
+- The lateral part of the release is taken as a function of the defender as he sees him (distance ahead, the
+  defender's hands and hips), not from the first step and not at a fixed depth.
+- Far from him the receiver drives upfield, closing the cushion. Inside the defender's reach he takes the width past
+  the leverage he sees. Past him he stacks.
+- The same rule covers a corner at 4–6 yd. Rules' drift by cushion shows NFL gos widen against any defender inside
+  about 7 yd, steadily with depth.
+
+Sources:
+
+- USA Football, "Coaching the Wide Receiver – The Press Release" parts 1 and 2:
+  https://blogs.usafootball.com/blog/7121/coaching-the-wide-receiver-the-press-release ,
+  https://blogs.usafootball.com/blog/7150/coaching-the-wide-receiver-the-press-release-part-2
+- USA Football, "2nd level slot releases" (short arm, 1–2 yd past leverage):
+  https://blogs.usafootball.com/blog/7237/coaching-the-wide-receiver-2nd-level-slot-releases
+- USA Football, "Beating loose coverage": https://blogs.usafootball.com/blog/7192/here
+- Gridiron Strategies, "Defeating press coverage": https://gridironstrategies.com/article/defeating-press-coverage
+- AFCA, "Winning vertically at the WR position": https://www.afca.com/winning-vertically-at-the-wr-position/
+- Viqtory Sports, "Learn to stem & stack": https://www.viqtorysports.com/?p=463
+- Riley Kolste, "WR play: the art of route running":
+  https://rileykolstefootball.com/2018/05/18/wr-play-the-art-of-route-running/
