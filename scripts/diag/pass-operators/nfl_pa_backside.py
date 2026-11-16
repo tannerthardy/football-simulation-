@@ -13,9 +13,17 @@ import numpy as np
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')
 D = os.path.join(ROOT, 'data', 'raw', 'bdb2025', 'big-data-bowl-data')
 weeks = [int(w) for w in (sys.argv[1] if len(sys.argv) > 1 else '1,2,3').split(',')]
-plays = pd.read_csv(os.path.join(D, 'plays.csv'), usecols=['gameId', 'playId', 'offenseFormation', 'playAction', 'isDropback', 'possessionTeam', 'dropbackType'])
-plays = plays[(plays.isDropback == True) & plays.offenseFormation.isin(['SHOTGUN', 'PISTOL'])]
-plays = plays[plays.dropbackType.isin(['TRADITIONAL'])]
+# NFL_POP=oz (Defense, 2026-11-16): real outside-zone runs instead (pff_runConceptPrimary OUTSIDE ZONE, not dropbacks), all
+# formations ('pa' column = gun / pistol, so the rows split gun vs under centre / singleback); 'fake side' is then the play
+# side (the back's first lateral move), the end the reach comes at.
+POP = os.environ.get('NFL_POP', 'pa')
+plays = pd.read_csv(os.path.join(D, 'plays.csv'), usecols=['gameId', 'playId', 'offenseFormation', 'playAction', 'isDropback', 'possessionTeam', 'dropbackType', 'pff_runConceptPrimary'])
+if POP == 'oz':
+    plays = plays[(plays.isDropback == False) & (plays.pff_runConceptPrimary == 'OUTSIDE ZONE')]
+    plays['playAction'] = plays.offenseFormation.isin(['SHOTGUN', 'PISTOL'])
+else:
+    plays = plays[(plays.isDropback == True) & plays.offenseFormation.isin(['SHOTGUN', 'PISTOL'])]
+    plays = plays[plays.dropbackType.isin(['TRADITIONAL'])]
 players = pd.read_csv(os.path.join(D, 'players.csv'), usecols=['nflId', 'position'])
 pp = pd.read_csv(os.path.join(D, 'player_play.csv'), usecols=['gameId', 'playId', 'nflId', 'wasInitialPassRusher'])
 pos = dict(zip(players.nflId, players.position))
@@ -75,7 +83,9 @@ for side, pa_ in (('away', True), ('away', False), ('fake', True), ('fake', Fals
     S = [r for r in rows if r['pa'] == pa_ and r['side'] == side]
     if not S: continue
     ru = [r for r in S if r['rusher'] is not None]
-    print(f"{side}-side end, {'play action' if pa_ else 'no play action'} (gun traditional dropbacks, n {len(S)}): initial pass rusher {100*sum(1 for r in ru if r['rusher'])/max(1,len(ru)):.0f}%")
+    lab = (f"{'play' if side == 'fake' else 'back'}-side end, outside zone {'gun / pistol' if pa_ else 'other formations'}" if POP == 'oz'
+           else f"{side}-side end, {'play action' if pa_ else 'no play action'} (gun traditional dropbacks")
+    print(f"{lab}, n {len(S)}): initial pass rusher {100*sum(1 for r in ru if r['rusher'])/max(1,len(ru)):.0f}%")
     for k in (1.0, 1.5, 2.0):
         R = [r['at'][k] for r in S if k in r['at']]
         line = f"  {k} s (n {len(R)}): end's depth past the line {q([x['depth'] for x in R]):.2f} | toward the ball {q([x['toward'] for x in R]):.2f} | QB depth {q([x['qb'] for x in R]):.2f} | nearest OL {q([x['ol'] for x in R]):.2f} yd (within 1.5 yd {100*sum(1 for x in R if x['ol'] <= 1.5)/max(1,len(R)):.0f}%)"

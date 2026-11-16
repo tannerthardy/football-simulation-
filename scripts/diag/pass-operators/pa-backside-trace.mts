@@ -5,20 +5,23 @@
 // behind the line and his width toward DE_W's side of the ball (+ = toward DE_W), the LT's (DE_W's blocker's) depth and
 // width from his snap spot (+ = outside), DE_W's depth past the line and his offset outside the LT (+ = outside him),
 // DE_W's distance to the QB; the share where the engagement has ended by 2.0 s, and the LT's stance at 0.3 s.
-// usage: CONCEPT_DROPS=1 QB_FOOTWORK=1 node --import tsx scripts/diag/pass-operators/pa-backside-trace.mts
+// usage: [PAB_CONCEPTS=oz_weak] CONCEPT_DROPS=1 QB_FOOTWORK=1 node --import tsx scripts/diag/pass-operators/pa-backside-trace.mts
 const W = process.cwd();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
 const T = [1.0, 1.5, 2.0];
 const rows: any[] = [];
-for (const concept of ['pa_flood', 'pa_post_dig', 'pa_shot', 'post_cross', 'seam_slant', 'flood'])
+// PAB_CONCEPTS: a comma list instead (Defense, 2026-11-16: oz_weak = outside zone toward DE_W, oz_strong = toward DE_S);
+// rows group as 'PA' when the concept is a pass with a fake or any run, else 'dropback'.
+const CONCEPTS = process.env.PAB_CONCEPTS ? process.env.PAB_CONCEPTS.split(',') : ['pa_flood', 'pa_post_dig', 'pa_shot', 'post_cross', 'seam_slant', 'flood'];
+for (const concept of CONCEPTS)
   for (const coverage of ['cover1', 'cover2man', 'cover2', 'tampa2', 'cover3', 'cover3_match', 'cover4', 'cover6']) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip: false })); } catch { continue; }
     const de = sim.defense.find((d: any) => d.slot === 'DE_W'), lt = sim.slot('LT'); if (!de || !lt) continue;
     const dir = sim.attackDir(sim.offense[0].team), side = Math.sign(de.pos.y - sim.ballY) || 1, lt0 = { ...lt.pos };
     const ds = sim.defense.find((d: any) => d.slot === 'DE_S'), ds0y = ds?.pos.y ?? 0;
     const ol = sim.offense.filter((a: any) => ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot));
-    const r: any = { pa: concept.startsWith('pa_'), at: {}, stance: null, ended: false };
+    const r: any = { pa: concept.startsWith('pa_') || !!process.env.PAB_CONCEPTS, at: {}, stance: null, ended: false };
     while (sim.phase === 'live' && sim.t < 2.05) {
       const t0 = sim.t; sim.tick();
       if (r.stance === null && sim.t >= 0.3) r.stance = lt.stance;
