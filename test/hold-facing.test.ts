@@ -27,6 +27,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Flex to re-record with MIRROR_SCATTER on
   vi.stubEnv('HOLD_FACING', flag);
   // The reproducer's play: the DT makes the hold still engaged with the C, whose hands are on him. OPEN_HANDS
   // changes the play, not the hold: his open-handed C lets him slip off at 1.75 s and he makes the hold free at

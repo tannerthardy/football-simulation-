@@ -3,6 +3,7 @@
  *  SLOT_LEV   a zone slot DB takes his final seat's shade (curl-flat head-up, not the hook default inside);
  *  ALIGN_HABIT off-ball defenders carry a personal habit and per-snap scatter; front men do not move. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.MIRROR_SCATTER = '0'; }); // engine-72: fixture recorded on the old alignment scatter; the lane that owns it re-records with MIRROR_SCATTER on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { CENTER_Y } from '../src/core/field.js';
 import { DEF_PERSONNEL, type DefSlot } from '../src/playbook/types.js';
 

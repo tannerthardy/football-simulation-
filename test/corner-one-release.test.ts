@@ -6,7 +6,8 @@
  * first five yards). A short stop zones him off only until #1 turns upfield.
  * Film: node --import tsx scripts/corner-one-film.ts > out/corner-one-film.json
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.SET_SPOT = '0'; }); // engine-72: fixture recorded on the old pass set; the lane that owns it re-records with SET_SPOT on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { CENTER_Y } from '../src/core/field.js';
 // Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
 import '../src/lab/coverage-scene.js';

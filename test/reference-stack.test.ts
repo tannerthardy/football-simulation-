@@ -26,5 +26,7 @@ describe('reference stack', () => {
     for (const [name, v] of Object.entries(stack.flags as Record<string, string>)) expect(env[name], name).toBe(v === 'on' ? '0' : undefined);
     expect(legacyEnv(stack, { engineDefaults: true })).toEqual({});
     expect(legacyEnv(stack, { pinOnly: 'KEY_REACT,ZONE_RUN' })).toEqual({ KEY_REACT: '0', ZONE_RUN: '0' });
+    expect(legacyEnv(stack, { pinOnly: 'KEY_REACT,BALL_EST' })).toEqual({ KEY_REACT: '0', BALL_EST: String(stack.numeric!.BALL_EST!.legacy) });
+    expect(legacyEnv(stack, { pinOnly: '' })).toEqual({});
   });
 });

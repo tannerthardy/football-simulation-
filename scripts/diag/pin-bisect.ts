@@ -5,7 +5,7 @@
  * For each, this finds a minimal set of flags that, pinned alone, makes the file pass (delta debugging over the flag
  * list; about 8 runs per culprit). Those are the files blocking deletion of each of those flags.
  *
- *   node --import tsx scripts/diag/pin-bisect.ts [--jobs 4] [--files test/a.test.ts,test/b.test.ts] [--out out/pin-bisect]
+ *   node --import tsx scripts/diag/pin-bisect.ts [--jobs 4] [--files test/a.test.ts,test/b.test.ts] [--pool FLAG_A,FLAG_B] [--out out/pin-bisect]
  *
  * Writes <out>/by-file.json, <out>/by-flag.json and <out>/report.md; probe results are cached in <out>/probes.json,
  * so an interrupted run resumes. Pinned alone is a minimal set, not the only one: a file with two ways to pass
@@ -43,7 +43,9 @@ async function main() {
   const out = join(root, arg('--out', 'out/pin-bisect'));
   mkdirSync(out, { recursive: true });
   const stack: Record<string, string> = JSON.parse(readFileSync(join(root, 'config/reference-stack.json'), 'utf8')).flags;
-  const promoted = Object.entries(stack).filter(([, v]) => v === 'on').map(([k]) => k).sort();
+  const numeric = Object.keys(JSON.parse(readFileSync(join(root, 'config/reference-stack.json'), 'utf8')).numeric ?? {});
+  // The pool: every promoted boolean and numeric flag, or --pool a,b,c to bisect among a given few (the flags a landing changed).
+  const promoted = arg('--pool', '') ? arg('--pool', '').split(',').sort() : [...Object.entries(stack).filter(([, v]) => v === 'on').map(([k]) => k), ...numeric].sort();
   const manifest: { pinned: string[] } = JSON.parse(readFileSync(join(root, 'test/engine-pin.json'), 'utf8'));
   const files = arg('--files', '') ? arg('--files', '').split(',') : manifest.pinned;
   const jobs = Number(arg('--jobs', '4'));

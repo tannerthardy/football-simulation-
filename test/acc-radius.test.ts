@@ -22,6 +22,8 @@ async function throws(flag: string) {
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   vi.stubEnv('DIR_CAP', '0'); // engine-69: fixture recorded before the monotone direction cap; re-record with DIR_CAP on
   vi.stubEnv('ROUTE_FINISH', '0'); // engine-70: the check-down count was recorded with outward routes running on; re-record with ROUTE_FINISH on
+  // engine-72: these small counts (4-6 plays) move with each of the engine-72 groups; recorded on engine-71. QB lane to re-record when ACC_RADIUS is carded with the grass read.
+  for (const k of ['SET_SPOT', 'SET_SPOT_TACKLE', 'POCKET_LEVEL', 'PASS_OFF', 'BLITZ_READ', 'BLITZ_DEPTH', 'BLITZ_SKILL', 'BLITZ_SECOND', 'QB_EVADE_UP', 'QB_FACE_SEEN', 'CARRY_POSTURE', 'CORNER_DROP', 'CARRY_TURN', 'MIRROR_SCATTER', 'LEVEL2_TRACK', 'SIGHT_PURE', 'BREAK_LOOK', 'SEEN_EMPTY']) vi.stubEnv(k, '0');
   vi.stubEnv('ACC_RADIUS', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

@@ -2,6 +2,7 @@
  * him at the snap, whoever that defender is, instead of only the one the defence's call made his press-man corner
  * (an assignment he cannot know). The true press-man release keeps its technique. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.MIRROR_SCATTER = '0'; }); // engine-72: fixture recorded on the old alignment scatter; the lane that owns it re-records with MIRROR_SCATTER on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

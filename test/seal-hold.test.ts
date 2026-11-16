@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.MIRROR_SCATTER = '0'; }); // engine-72: fixture recorded on the old alignment scatter; the lane that owns it re-records with MIRROR_SCATTER on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { G } from '../src/core/units.js';
 import { PlaySim } from '../src/sim/playsim.js';

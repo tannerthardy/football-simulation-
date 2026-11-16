@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-71`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-72`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,40 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-72: protection set, blitz reads, carry technique, receiver glance and four information repairs (2026-11-16)
+
+On: `SET_SPOT`, `SET_SPOT_TACKLE`, `POCKET_LEVEL` (Flex: the pass set's reference is the call's spot, not the live quarterback), `BLITZ_READ`, `BLITZ_DEPTH`, `BLITZ_SKILL`, `BLITZ_SECOND`, `QB_EVADE_UP` (QB), `CARRY_POSTURE`, `CORNER_DROP`, `CARRY_TURN` (Defense), `MIRROR_SCATTER`, `LEVEL2_TRACK` (Run Game), `SIGHT_PURE` (Tools), `PASS_OFF` with the honest hand-over (Flex), `QB_FACE_SEEN` (QB: his body faced the receiver's true position), `BREAK_LOOK`, `SEEN_EMPTY` (Coverage). Numeric defaults: `SIGHT_STALE` 7 (no picture of a man never sighted) and `BALL_EST` 6145 (receivers play the ball from their own looks, not the true flight). Defenders still read the true flight; the honest defender is on the Coverage branch.
+
+Test config: the legacy pin now sets every numeric flag in the stack to its legacy value (`config/legacy-env.ts`, Tools). Tools ran the 547 core files one by one with the pin and both new numeric defaults: the same single environment failure as without them.
+
+Card (16 games, 2 leagues, seeds 23 / 37 / 11, against engine-71; `out/e98-card-*.md`), the landing set with both numeric defaults:
+
+| | seed 23 | seed 37 | seed 11 |
+|---|---|---|---|
+| Completion % (ref → arm) | 68.4 → 68.4 | 70.4 → 67.9 | 67.7 → 66.1 |
+| Sack rate | 5.8 → 5.5 | 5.5 → 4.9 | 5.3 → 4.6 |
+| INT rate | 1.3 → 1.0 | 1.1 → 0.9 | 1.2 → 1.3 |
+| YAC / reception | 7.64 → 7.30 | 6.87 → 6.98 | 8.43 → 6.78 |
+
+Without the glance the set reads completion +2.4 / -1.0 / -0.4 and sacks -0.5 / -1.9 / -0.8; the glance's completion cost (about -1.5 to -3 pts across the cards it was read on) is the receiver steering to a ball he has seen late (a 90 degree redirect at 5 yd/s takes 0.7 s, in ours and in the NFL: `docs/reviews/2026-11-16-redirect-law.md`) and the catch model, not the estimator.
+
+Reads by set on the 18-arm card (`out/e97-card-*.md`): protection trio sacks -0.9 / -2.0 / -1.9 pts; blitz stack time to throw -0.08 / -0.05 / -0.10 s and sacks -0.9 / -1.3 / -0.9. Yards after catch moved with opposite signs across seeds on several arms and is not read from one card.
+
+Listed, not vetoes: sack rate on the set reaches 3.5 to 4.6% on some seeds, at or under the low end of the NFL band, because the pocket now holds against a rush whose push contest and play-action reads are still short (Flex, Defense in progress). `PASS_OFF`'s effect in games is small.
+
+Suite on the landing head: 4,622 passed; ten fixtures moved and one timed out under load (film-pack-determinism, passes alone), beside the two long-standing research failures. Test-only changes, each attributed by turning the group off in the stack file:
+
+- `SET_SPOT` pinned off in `punch-strike`, `rush-lean-bound`, `pa-drop` (recorded on the old pass set; Flex and QB to re-record).
+- `MIRROR_SCATTER` pinned off in `man-trail-carry`, `craft-exit`, `hold-facing` (recorded on the old alignment scatter).
+- `BLITZ_READ` pinned off in `qb-footwork-drop` (the gun play-action fake timing; QB lane re-records with its footwork re-cut).
+- `SIGHT_PURE` pinned off in `qb-tick-picture`: that test demonstrates the order-dependence `SIGHT_PURE` removes, so with it on its off arm has nothing to show; to be restated.
+- `acc-radius` pins the whole engine-72 boolean set: its counts of 4 to 6 plays move with each group; QB lane re-records when `ACC_RADIUS` is carded.
+- `dither-budget`: the pursuit row re-recorded 0.411 → 0.622 (84 events in 135 s). Turning off the protection trio, the carry set or `MIRROR_SCATTER` alone each brings it to 0.52 to 0.56; `MIRROR_SCATTER` only changes alignment scatter, so the row is moving with which plays the panel produces, not with a new re-aim source. Defense ran the row on panel seeds 1 and 100 (same head): seed 100 reads 0.571 with everything on, under the old 0.579 budget; turning the protection trio or `MIRROR_SCATTER` off raises the rate on both seeds, and the carry set off is identical on seed 100 (71 events, 124 s). No group is a source; the rise on seed 1 is that panel's draw.
+
+Run set (`npm run ref:report`, 1,295 plays): capped mean 3.50, stuffs 15.4% (engine-70: 3.49, 14.4%).
+
+Held from this card: the zone set (waits for `ZONE_HOLD` 114), `CRAFT_HOLD` + `CRAFT_EXIT` + `RELEASE_COMMIT` (newer heads), `HAND_MOMENT` (no consistent effect, capacity unsourced), `QB_LOOKOFF_RHYTHM` (timing depends on `QB_HEAD`), `CONCEPT_DROPS` + `QB_FOOTWORK` (re-cut with the play-action fake split out).
 
 ## engine-71: `CRAFT_HOLD` and `PASS_OFF` back off (2026-11-16)
 
