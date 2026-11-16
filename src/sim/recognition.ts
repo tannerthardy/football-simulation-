@@ -18,6 +18,8 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { showsBlock } from './coverage-cues.js';
 import { sawThrow } from './behaviors/defense.js';
+/** CORNER_DROP (see behaviors/defense.ts); read here to keep the import graph as it is. */
+const CORNER_DROP_RECOG = process.env.CORNER_DROP === '1';
 
 // ------------------------------------------------------------ expectations
 
@@ -334,7 +336,12 @@ export class Recognition {
    * on its own, and a cue that says nothing doesn't dilute the others.
    */
   private cues(a: Agent, sim: PlaySim): number {
-    const w = KEYS[this.group];
+    // CORNER_DROP: a deep-third corner in a zone call keys as taught, a near-line key through to the QB with his
+    // receiver in his vision (Bleacher Report, NFL 101: Cover 3: he clears the tight end, then bails). The weights
+    // are the safety's (line 0.8, QB 0.6, receiver 0.7): a stated choice for that key, not a fit.
+    const zone = (a.behavior as { zone?: string } | undefined)?.zone;
+    const dropCorner = CORNER_DROP_RECOG && this.group === 'CB' && !!zone && zone.startsWith('deep_third_') && !sim.defCall.coverage.man;
+    const w = dropCorner ? KEYS.S : KEYS[this.group];
     let sum = 0;
     const add = (v: number, weight: number) => {
       sum += v * weight;
@@ -419,6 +426,9 @@ export class Recognition {
         // perception remains a separate migration; do not expand its use here.
         const stalk = sim.t > 0.6 && showsBlock(a, sim, best, s, [a]);
         if (stalk) add(-1, w.wr);
+        // CORNER_DROP: to a deep-third corner a receiver releasing vertically off the line is pass evidence at any
+        // pace (his stem in his picture), not only once seen above 3.5 yd/s.
+        else if (dropCorner && s.vel.x > 1) add(clamp(s.vel.x / 3.5, 0, 1), w.wr);
         else if (s.vel.x > 3.5) add(clamp((s.vel.x - 3.5) / 3, 0, 1), w.wr);
         else if (sim.t > 0.6) add(0, w.wr * 0.5);
       }
