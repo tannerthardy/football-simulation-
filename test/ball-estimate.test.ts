@@ -46,24 +46,21 @@ describe('BALL_EST estimator', () => {
     }
     expect(Math.sqrt(along / 200)).toBeGreaterThan(2 * Math.sqrt(across / 200));
   });
-  it('off: the unset path on every tick', async () => {
-    const trace = async (flag?: string) => {
-      vi.resetModules();
-      if (flag !== undefined) vi.stubEnv('BALL_EST', flag);
-      const { PlaySim } = await import('../src/sim/playsim.js');
-      const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-      const out: number[] = [];
-      for (const concept of ['four_verts', 'curl_flat']) for (let seed = 1; seed <= 3; seed++) {
-        const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3_match', concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false }));
-        const tick = sim.tick.bind(sim);
-        sim.tick = () => { tick(); for (const a of sim.agents) out.push(a.pos.x, a.pos.y); };
-        sim.run();
-      }
-      return out;
-    };
-    const unset = await trace(), zero = await trace('0');
-    expect(zero.length).toBeGreaterThan(1000);
-    expect(zero).toEqual(unset);
+  it('BALL_EST=0: no player attends to a ball estimate on any tick (the estimator-free path)', async () => {
+    // Since engine-70 the unset default is 6145 (receivers on their own sight), so "off" is the explicit 0.
+    vi.resetModules();
+    vi.stubEnv('BALL_EST', '0');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    let ticks = 0, attended = 0;
+    for (const concept of ['four_verts', 'curl_flat']) for (let seed = 1; seed <= 3; seed++) {
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3_match', concept, seed, roster: seed, formation: 'gun_doubles_11', flip: false }));
+      const tick = sim.tick.bind(sim);
+      sim.tick = () => { tick(); ticks++; for (const a of sim.agents) if (sim.ballEstimates.samplesOf(a) > 0) attended++; };
+      sim.run();
+    }
+    expect(ticks).toBeGreaterThan(100);
+    expect(attended).toBe(0);
   });
 });
 
