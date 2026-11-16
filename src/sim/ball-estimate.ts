@@ -125,6 +125,19 @@ export const BALL_EST_RCV_ONLY = (BALL_EST_BITS & 4096) !== 0 && !BALL_EST_DEF_O
  * he kept trailing at his offset: under the defense's estimator (2049) man defenders near the catch closed at 2.9 yd/s
  * (p25 0.7) against the oracle's 4.3 (p25 2.4), and YAC per catch was 13.7 against 7.9 (yac-ladder.ts, engine-71). */
 export const BALL_EST_DEF_PICTURE = (BALL_EST_BITS & 8192) !== 0;
+/** Bit 16384 (FLIGHT_SETTLE, off; with defenders estimating): a defender acts on his own flight as a catch point only
+ * once it has settled; before that he breaks on the ball's direction. `settled`: the catch point his estimate gives has
+ * moved less than his reach over his last FLIGHT_SETTLE_SPAN of flight play (a test on the estimate itself; its spread
+ * shrinks with his samples, so his tracking skill sets how soon). Until then: a man defender stays on his man; anyone
+ * else runs to the point on the ball's ground line, as his estimate draws it, nearest him ahead of the ball. Once
+ * settled he plays the flight (playObservedFlight) and stays committed: a later jump of the catch point beyond his reach
+ * (a tip) starts the test again. Off, he re-aimed every tick at a catch point fitted from one or two looks: in the first
+ * third of the flight it was 10.6 yd off (p50) and jumped up to 4.8 yd a tick (p75), and the wrong first step cost him
+ * the rest of the flight (zone run toward the true point cos 0.47 in the middle third against the oracle's 0.86;
+ * def-flight.ts, engine-71). */
+export const BALL_EST_FLIGHT_SETTLE = (BALL_EST_BITS & 16384) !== 0;
+/** FLIGHT_SETTLE's window (s): a stated choice, read at 0.1 and 0.25. */
+export const FLIGHT_SETTLE_SPAN = Number(process.env.FLIGHT_SETTLE_SPAN ?? 15) / 100;
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
 export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (BALL_EST_DEF_ONLY ? a.team === 'D' : BALL_EST_RCV_ONLY ? a.team === 'O' : true);

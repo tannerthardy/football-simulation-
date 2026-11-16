@@ -35,7 +35,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_FLIGHT_SETTLE, BALL_EST_MAN_LOOK, FLIGHT_SETTLE_SPAN, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
@@ -2419,7 +2419,50 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   }
   a.tags.add('onBall');
   const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
-  return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
+  const flight = path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []);
+  // Bit 16384: on his own estimate, a catch point only once it has settled; until then the ball's direction.
+  if (BALL_EST_FLIGHT_SETTLE && estimatesFor(a) && flight.length && !settledFlight(a, sim, flight)) {
+    a.tags.add('flight-unsettled');
+    if (man) return fallback();
+    if (a.engagement) return { vel: a.vel };
+    const line = ballLinePoint(a, sim, flight);
+    return line ? runThrough(a, line, { speed: 1 }) : fallback();
+  }
+  return playObservedFlight(a, sim, flight, !path);
+}
+
+/** Bit 16384: the catch points his own flight gave in his recent flight play, and whether he has committed to one. */
+const settleHist = new WeakMap<Agent, { flight: unknown; pts: { t: number; x: number; y: number }[]; committed?: { x: number; y: number } }>();
+/** Bit 16384: has his estimate's catch point held within his reach over the last FLIGHT_SETTLE_SPAN? Once it has he is
+ * committed; a later jump past his reach (a tip, a re-fit) puts him back on the direction until it settles again. */
+function settledFlight(a: Agent, sim: PlaySim, flight: PlaySim['ballPath']): boolean {
+  const spot = catchSpot(a, { t: sim.t, ballPath: flight });
+  if (!spot) return false;
+  let h = settleHist.get(a);
+  // Keyed on his own belief of this release (never the true flight object).
+  const fl = releaseBelief(sim, a).releasedAt;
+  if (!h || h.flight !== fl) { h = { flight: fl, pts: [] }; settleHist.set(a, h); }
+  h.pts.push({ t: sim.t, x: spot.p.x, y: spot.p.y });
+  while (h.pts.length && sim.t - h.pts[0].t > FLIGHT_SETTLE_SPAN + 1e-9) h.pts.shift();
+  const reach = a.profile.reach;
+  if (h.committed) {
+    if (Math.hypot(spot.p.x - h.committed.x, spot.p.y - h.committed.y) <= reach) return true;
+    h.committed = undefined; h.pts = [{ t: sim.t, x: spot.p.x, y: spot.p.y }];
+    return false;
+  }
+  const span = h.pts.length ? sim.t - h.pts[0].t : 0;
+  if (span < FLIGHT_SETTLE_SPAN - sim.dt / 2) return false;
+  if (h.pts.every((p) => Math.hypot(p.x - spot.p.x, p.y - spot.p.y) <= reach)) { h.committed = { x: spot.p.x, y: spot.p.y }; return true; }
+  return false;
+}
+/** Bit 16384: the point on the ball's ground line (his estimate's next half second) nearest him, not behind the ball. */
+function ballLinePoint(a: Agent, sim: PlaySim, flight: PlaySim['ballPath']): { x: number; y: number } | null {
+  const now = flight.find((p) => p.t >= sim.t - 1e-9), later = flight.find((p) => p.t >= sim.t + 0.5 - 1e-9) ?? flight[flight.length - 1];
+  if (!now || !later || later === now) return null;
+  const ux = later.x - now.x, uy = later.y - now.y, l = Math.hypot(ux, uy);
+  if (l < 0.3) return { x: now.x, y: now.y };
+  const k = Math.max(0, ((a.pos.x - now.x) * ux + (a.pos.y - now.y) * uy) / (l * l));
+  return { x: now.x + ux * k, y: now.y + uy * k };
 }
 
 /** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
