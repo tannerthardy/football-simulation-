@@ -199,6 +199,10 @@ export interface InstalledPlan {
   alert: ReceiverRef | null;
   /** Defender key: read the defender between `low` and `high` at `cueBy` s after the snap. */
   key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number; danger?: string; sits?: ReceiverRef } | null;
+  /** Play action: when he plants out of the fake and snaps his head around (the compile's QB set, after the fake and
+   * the drop that follows it, as the flags in force run them). Data for the QB lane's bit 16, which cues a keyed play
+   * action's read on it; `key.cueBy` stays the dropback's. */
+  plantAt?: number;
   /** Triangle: three routes read as one picture, top-down; vertical peek: the verticals as one look, then the back. */
   triangle: ReceiverRef[] | null;
   /** The rhythm each read is installed on, for the QB lane's acceptance rule (data only; nothing reads it yet). The
@@ -212,6 +216,10 @@ export interface InstalledPlan {
    * diagnostics, and goes once the QB lane reads `n`. Reads on one look (a keyed high-low; mesh's two crossers) share a
    * place and an `n`; `group` names the place's members. */
   rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; n: 0 | 1 | 2; at: number; ready: number; onTime: boolean; group?: ReceiverRef[];
+    /** Play action (data for the QB lane's bit 16): read 1 is decided on the plant out of the fake ("pull the ball out
+     * from the ball-carrier and snap his head around to identify his first read", Bleacher Report, Football 101: play
+     * action) and thrown on its own ready, the hitch, never skipped for being unready at the plant. */
+    decided?: 'plant';
     /** GRASS_READ: a read thrown before its break into space. `landing` is where the route is going, in the plan's frame
      * (x yd past the line, y yd from the ball toward the strength, as the compiler's trajectories), and `t` the route time
      * he reaches it. `decided` is 'step': readable or not by his step `n`, no dwell (the mesh corner's "throws the ball on
@@ -383,8 +391,10 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         const g = groupOf(ref);
         const grass = GRASS_READ ? grassOf(routes.get(ref), placeOf.get(ref) === 0 && ref !== plan!.outlet, !!keyedRef || !!(key && (ref === key.low || ref === key.high))) : null;
-        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}), ...(grass ? { grass } : {}) };
+        const plant = concept.family === 'playaction' && ref !== plan!.outlet && placeOf.get(ref) === 0;
+        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}), ...(grass ? { grass } : {}), ...(plant ? { decided: 'plant' as const } : {}) };
       });
+      if (concept.family === 'playaction') plan.plantAt = +set.toFixed(2);
       // CONCEPT_DROPS: the key is read on its place's beat.
       if (keyStep !== null && plan.key) plan = { ...plan, key: { ...plan.key, cueBy: +stepAt(steps[keyStep]).toFixed(2) } };
       const decl = seq.map((ref) => ({ ref, d: routes.get(ref)?.declaredBreak })).filter((x) => x.d);
