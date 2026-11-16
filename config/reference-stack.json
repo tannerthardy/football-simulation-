@@ -318,6 +318,8 @@
     "CROSS_OVER": "off",
     "PLANT_REACH": "on",
     "COMPILE_PICTURE": "on",
+    "VERTS_KEYS": "off",
+    "FOUR_VERTS_SEAMS": "off",
     "CRAFT_HOLD": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
