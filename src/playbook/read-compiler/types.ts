@@ -30,6 +30,9 @@ export interface RouteDescriptor {
   settles: boolean;
   /** DECLARED_BREAK: the route's declared break as reached on this sample (null if not reached), its throw family and
    * the plan's anchor lead, the rule it was timed by, and the detector's ready time it replaced (warned past 0.4 s). */
+  /** DECL_CLASS: the route's class from its declared break (a declared vertical, or the leg leaving its declared vertex);
+   * absent for routes without one, which keep the geometric test. */
+  declaredClass?: 'vertical' | 'breaking';
   declaredBreak?: { t: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number; rule: string; detectedReady: number; breakWarn: boolean };
 }
 

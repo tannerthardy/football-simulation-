@@ -30,7 +30,13 @@ export function going(r: RouteDescriptor): { down: number; out: number } {
 const overlap = (a: RouteDescriptor, b: RouteDescriptor) => Math.min(a.window.last, b.window.last) - Math.max(a.window.ready, b.window.ready);
 const sameSide = (a: RouteDescriptor, b: RouteDescriptor) => a.side === b.side && a.side !== 'B';
 const deep = (r: RouteDescriptor) => !r.isBack && r.depthAtReady >= 12;
-const vertical = (r: RouteDescriptor) => { const d = afterBreak(r); return d.down > 1.5 && Math.abs(d.out) < 0.6 * d.down; };
+/** A vertical: its declared class where it has one (DECL_CLASS), else straight on downfield in the half second after its
+ * break. */
+export const isVerticalRoute = (r: RouteDescriptor) => {
+  if (r.declaredClass) return r.declaredClass === 'vertical';
+  const d = afterBreak(r); return d.down > 1.5 && Math.abs(d.out) < 0.6 * d.down;
+};
+const vertical = isVerticalRoute;
 
 export function findMotifs(routes: RouteDescriptor[]): Motif[] {
   const out: Motif[] = [];
