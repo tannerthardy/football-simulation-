@@ -80,3 +80,12 @@ export function plannedDropX(drop: DropType, gun: boolean, qbSnap: { x: number; 
   const f = Math.min(1, Math.max(0, (t - t0) / Math.max(spec.time, 0.1)));
   return qbSnap.x + (spec.x - qbSnap.x) * f;
 }
+
+/** When the play-action fake ends (s after the snap), from the call: what the back, the QB and the line's run look
+ * share (Flex's PA_HINGE reads it). QB_FOOTWORK bit 16 holds it to the measured mesh plus half its ride (BDB 2025 play
+ * action, scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s,
+ * ridden 0.2 s); off, 0.7 s. */
+const FW_PA_FAKE = (Number(process.env.QB_FOOTWORK ?? 0) & 16) !== 0;
+export function plannedFakeEnd(gun: boolean): number {
+  return FW_PA_FAKE ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
+}

@@ -21,7 +21,7 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { supportParams } from '../../physics/support.js';
 import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
-import { dropSpec, plannedSnapAt } from '../called-drop.js';
+import { dropSpec, plannedFakeEnd, plannedSnapAt } from '../called-drop.js';
 import { PUNCH } from '../engagement.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
@@ -495,7 +495,7 @@ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
  * to land alone: with it a gun PA plants at 2.3 s (the NFL's 2.2) but his read after the plant is a dropback's (throw
  * 3.2 s against the NFL's 2.3), and PA sacks go 14.8 -> 27.1% staged; it lands with PA reads decided on the plant out
  * of the fake. */
-const FW_PA_FAKE = (QB_FOOTWORK & 16) !== 0;
+// (FW_PA_FAKE is read in called-drop.ts's plannedFakeEnd, which the back, the QB and the line share.)
 /** QB_EDGE_THREAT (experimental, off; QB_EDGE_THREAT=1; Integration's ruling 2026-11-16, Flex's long-hold measurement):
  * the step-up answers an edge rusher who threatens him, into room. pocketMove's edge test (his home 1.8 + 1.2 pp yd up)
  * fired on any defender he felt wide and level within 2.5 + 3 pp yd, blocked or not, closing or not: on long holds the
@@ -924,7 +924,7 @@ export class QBPass implements Behavior {
     // QB_FOOTWORK bit 16: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
     // scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s, ridden
     // 0.2 s), not an absolute 0.7 s that in the gun left a 0.2 s turn after he had the ball (nobody bites on that).
-    if (concept.family === 'playaction') this.fakeUntil = FW_PA_FAKE ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
+    if (concept.family === 'playaction') this.fakeUntil = plannedFakeEnd(gun);
     this.mind = sim.qbMind;
     for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
     this.mind.receiverAt = (r) => this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? null;

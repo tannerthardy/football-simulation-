@@ -1,3 +1,4 @@
+import { plannedFakeEnd } from './called-drop.js';
 /**
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
@@ -265,7 +266,8 @@ export function assignBehaviors(sim: PlaySim): void {
       // not on the QB's drop line; off, the fake point sat 0.4 yd off it and the QB dropped into him.
       const behind = Math.abs(back.pos.y - qb.pos.y) < 1;
       const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
-      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, 0.7);
+      // The fake ends when the call says (called-drop.ts plannedFakeEnd: the back, the QB and the line share it).
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, plannedFakeEnd(sim.offCall.formation.qb !== 'under'));
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;
