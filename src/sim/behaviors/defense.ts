@@ -142,6 +142,21 @@ const ZONE_HOLD_IN = 0.5 * ZONE_HOLD_SCALE, ZONE_HOLD_OUT = 1.5 * ZONE_HOLD_SCAL
 const ZONE_HOLD_EYES_BEAT = (4 * ZONE_HOLD_SCALE * Math.PI) / 180;
 const ZONE_HOLD_EYES_OUT = (6 * ZONE_HOLD_SCALE * Math.PI) / 180;
 const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
+
+/** QB_INTENT (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-qb-intent.md): an underneath zone dropper
+ * breaks on the quarterback's shown intention before the ball, as taught ("read the QB, break on his eyes and front
+ * foot"), the rungs above the release belief's arm and ball cues. Rung 1: his picture of the QB's eyes has held on one
+ * receiver in or entering his window (seenQbEyes, held under ZONE_HOLD bit 2) for his read dwell, and he has seen the
+ * QB set (a drop seen, then stopped). Rung 2: the windup start in his picture (the release belief's loadingAt) with the
+ * eyes on that receiver. Either commits him: he drives at the receiver's throwing lane, undercutting it, until his
+ * picture of the eyes leaves that receiver (a look-off pulls him and he pays for it) or he sees the ball. How early he
+ * reads is his playRecognition: the dwell runs 0.15 s (1.0) to 0.75 s (0.0); bit 2 halves it, bit 4 doubles it (stated
+ * choices, read at three levels). Measured before building (prethrow.py, one operator): the NFL zone first arriver turns
+ * from -0.8 to +0.9 yd/s closing and speeds 2.8 -> 3.3 yd/s over the last half second; ours -0.6 -> 0.0, 2.6 -> 2.5. */
+const QB_INTENT_BITS = Number(process.env.QB_INTENT ?? 0);
+export const QB_INTENT = (QB_INTENT_BITS & 1) !== 0;
+const QB_INTENT_SCALE = (QB_INTENT_BITS & 2) !== 0 ? 0.5 : (QB_INTENT_BITS & 4) !== 0 ? 2 : 1;
+const qbIntentDwell = (a: Agent): number => (0.15 + 0.6 * (1 - clamp(a.r('playRecognition'), 0, 1))) * QB_INTENT_SCALE;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
@@ -1553,6 +1568,12 @@ export class ZoneCoverage implements Behavior {
   }
   /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
   private qbDeepest = Infinity;
+  /** QB_INTENT: the receiver whose eyes he has been reading and since when; his own seen set; the committed break. */
+  private intentEyes: Agent | null = null;
+  private intentEyesSince = -1;
+  private intentSetAt = -1;
+  private intentQbDeepest = Infinity;
+  private intentOn: Agent | null = null;
   /** A box backer has left his read step for his drop. */
   private dropping = false;
 
@@ -1740,6 +1761,11 @@ export class ZoneCoverage implements Behavior {
     const settled = (t: Vec2): Vec2 => this.settledAt >= 0 && !sinking ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
     const settle = (t: Vec2): Vec2 => settled(t);
 
+    // QB_INTENT: an underneath dropper breaks on what the QB shows him before the ball (see QB_INTENT).
+    if (QB_INTENT && !this.deep && knowsPass(sim, a)) {
+      const brk = this.qbIntent(a, sim, threats, qbEyes, facingQB);
+      if (brk) return brk;
+    }
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
       let vert = ZONE_HOLD_BAND
@@ -2069,6 +2095,35 @@ export class ZoneCoverage implements Behavior {
     }
     return withFacingTechnique(laneReq,
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
+  }
+
+  /** QB_INTENT's read and break (null: no break this tick). Everything is from his own picture. */
+  private qbIntent(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>, qbEyes: Agent | null, facingQB: number): MoveCommand | null {
+    const q = sim.see(a, sim.qb);
+    // His seen set: the QB gave ground (a yard or more behind where he took the snap), then stopped.
+    this.intentQbDeepest = Math.min(this.intentQbDeepest, q.pos.x * sim.attackDir(sim.qb.team));
+    const snapX = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) * sim.attackDir(sim.qb.team);
+    if (this.intentSetAt < 0 && snapX - this.intentQbDeepest >= 1 && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.intentSetAt = sim.t;
+    if (qbEyes !== this.intentEyes) { this.intentEyes = qbEyes; this.intentEyesSince = sim.t; }
+    const lm = this.landmark;
+    const inWindow = (r: Agent | null) => r && threats.find((th) => th.r === r && Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y) < this.radius + 2);
+    // Committed: he stays on it until his picture of the eyes leaves that receiver.
+    if (this.intentOn && qbEyes !== this.intentOn) { this.intentOn = null; a.tags.delete('qb-intent'); }
+    if (!this.intentOn && qbEyes) {
+      const th = inWindow(qbEyes);
+      const rb = RELEASE_BELIEF ? releaseBelief(sim, a) : null;
+      const windup = rb?.loadingAt !== undefined;
+      const held = this.intentSetAt >= 0 && sim.t - this.intentEyesSince >= qbIntentDwell(a);
+      if (th && (held || windup)) { this.intentOn = qbEyes; a.tags.add('qb-intent'); }
+    }
+    if (!this.intentOn) return null;
+    const th = threats.find((t) => t.r === this.intentOn);
+    if (!th) return null;
+    // Drive at the throwing lane just in front of the receiver (between him and the QB), eyes on the QB.
+    const toQb = sub(q.pos, th.pos), l = Math.hypot(toQb.x, toQb.y) || 1;
+    const aim = { x: th.pos.x + (toQb.x / l) * 1.0, y: clamp(th.pos.y + (toQb.y / l) * 1.0, 0.5, FIELD_WIDTH - 0.5) };
+    return withFacingTechnique(track(a, aim, { x: th.vel.x * 0.5, y: th.vel.y * 0.8 }, { facing: facingQB, speed: 1, gain: 1.8 }),
+      { label: 'qb-intent', key: th.vel });
   }
 
   /**

@@ -17,7 +17,7 @@ for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))
     for (const formation of ['gun_doubles_11', 'gun_trips_11', 'ace_11'])
       for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
         let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip })); } catch { continue; }
-        let thr: any = null, catchDepth: number | null = null; const dpt = (a: any) => (a.pos.x - sim.los) * sim.attackDir(sim.offense[0].team);
+        let thr: any = null, catchDepth: number | null = null, defl = false; const dpt = (a: any) => (a.pos.x - sim.los) * sim.attackDir(sim.offense[0].team);
         const tick = sim.tick.bind(sim);
         sim.tick = () => {
           tick();
@@ -27,13 +27,14 @@ for (const concept of Object.keys(PASS_BY_ID).filter((id) => !/screen/.test(id))
             for (const u of und) (under[u.job] ??= []).push(u.depth);
             thr = { route: rt?.id ?? '?', und: und.filter((u: any) => u.side) };
           }
+          if (sim.ball.deflected) defl = true;
           if (thr && catchDepth === null && sim.catchAt >= 0 && sim.ball.kind === 'held') catchDepth = dpt(sim.ball.carrier);
         };
         const res = sim.run();
-        if (thr) rows.push({ fam: FAM[thr.route] ?? 'other', cmp: !!sim.stats.completed, yards: res.yards ?? 0, und: thr.und, yac: sim.stats.completed && catchDepth !== null ? (res.yards ?? 0) - catchDepth : null, missed: (sim.stats.missedTackles ?? 0) + (sim.stats.brokenTackles ?? 0) });
+        if (thr) rows.push({ fam: FAM[thr.route] ?? 'other', cmp: !!sim.stats.completed, yards: res.yards ?? 0, und: thr.und, yac: sim.stats.completed && catchDepth !== null ? (res.yards ?? 0) - catchDepth : null, missed: (sim.stats.missedTackles ?? 0) + (sim.stats.brokenTackles ?? 0), int: !!sim.stats.interceptedBy, pbu: defl });
       }
 const q = (v: number[], p: number) => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? s[Math.floor(p * (s.length - 1))].toFixed(1) : '-'; };
-console.log(`throws ${rows.length}: comp ${(rows.filter((r) => r.cmp).length / rows.length).toFixed(3)} yd/throw ${(rows.reduce((s, r) => s + r.yards, 0) / rows.length).toFixed(2)}`);
+console.log(`throws ${rows.length}: comp ${(rows.filter((r) => r.cmp).length / rows.length).toFixed(3)} yd/throw ${(rows.reduce((s, r) => s + r.yards, 0) / rows.length).toFixed(2)} | INT ${(rows.filter((r) => r.int).length / rows.length).toFixed(3)} deflected ${(rows.filter((r) => r.pbu).length / rows.length).toFixed(3)} 20+ ${(rows.filter((r) => r.yards >= 20).length / rows.length).toFixed(3)}`);
 for (const [job, v] of Object.entries(under)) console.log(`  ${job} depth at the throw p25/p50/p75 ${q(v, .25)}/${q(v, .5)}/${q(v, .75)} (n ${v.length})`);
 for (const fam of ['in-breaker', 'crosser 10+', 'shallow / mesh', 'flat', 'hitch / curl', 'slant', 'short in', 'out', 'vertical', 'corner', 'other']) {
   const S = rows.filter((r) => r.fam === fam); if (!S.length) continue;
