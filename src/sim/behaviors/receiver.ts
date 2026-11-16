@@ -4,8 +4,9 @@
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
-import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
-import { arriveVelocity, fatigueFactor, type Body, type MoveCommand } from '../../physics/kinematics.js';
+import { neckRange } from '../head.js';
+import { angleDiff, clamp, norm, sub, type Vec2 } from '../../core/vec.js';
+import { arriveVelocity, fatigueFactor, TRUNK_RANGE, TRUNK_TWIST, type Body, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint } from '../../physics/world.js';
@@ -16,6 +17,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
+import { BALL_EST, BALL_EST_MOVING_CHOICE, LOOK_NECK, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -102,6 +104,28 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
  * 53%) and their bodies touched 40% of the time within 5 yd of the line (NFL
  * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
 const ROUTE_CRAFT = process.env.ROUTE_CRAFT !== '0';
+
+/** ROUTE_END (experimental, off; docs/reviews/2026-11-14-route-end.md): the route's end as coached.
+ * - The settle stays alive (hitch, curl, comeback, any `settle` or `sitVsZone` end). After the break he keeps working
+ *   from his own picture of the defenders (seen within the last 0.5 s), every tick. Against man (a defender within 2.5 yd
+ *   of him) he settles and shields: he slides off the man's side, at his settle depth, then holds with the man on his
+ *   back (separating is what a route that keeps running does, not a hitch). Against zone he works his window: between
+ *   the nearest underneath defenders either side of him at his depth, or 4 yd off the one who is there, facing the QB, so
+ *   the squared-up shuffle's pace is his body's (the facing speed caps), not a pace number. Both goals are placed from
+ *   his settle point, not from where he stands (fix 2026-11-14: a goal moved with him each tick, so he never arrived and
+ *   ran 3.3-3.6 yd/s after the settle against the NFL's 1.6-2.0). How far he may slide is a choice, not a measurement:
+ *   it is how far a settled receiver can move before he is no longer where the quarterback expects him, SETTLE_SHIELD
+ *   against man (a body width and a step) and SETTLE_WINDOW in zone (within that, the window he sees decides). No move toward the line or the QB
+ *   until the ball is thrown: that is the catch's. Off, a `settle` route stands on its last point; `sitVsZone` drifts once.
+ *   NFL WR hitch (not the target, BDB 2025 weeks 1-6): 3.4 / 2.0 / 1.6 yd/s at 2.0 / 2.5 / 3.0 s, no return toward the line
+ *   by 3.0 s; ours 2.9 / 0.9 / 0.8.
+ * - The flat gears down: past his route's declared points, unthrown, he runs on turned to the QB (the body pays: the
+ *   facing caps) and stops in an athletic position 2 yd from the sideline ("If a receiver is 2 yards from the sideline and
+ *   the quarterback still hasn't thrown the ball, the receiver should stop running", fourvertsfootball). NFL WR flats:
+ *   5.5 -> 4.1 yd/s from 2.0 to 3.0 s, 9.3 yd from the sideline at 3.0 s; ours accelerate to 6.8. */
+const ROUTE_END = process.env.ROUTE_END === '1';
+/** ROUTE_END: how far a settled receiver slides from his settle point, against man and in a zone window (yd; a choice). */
+const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
 export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number): MoveCommand {
@@ -211,6 +235,7 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
+    this.bornAt = sim.t;
     if (!routeOfAgent.has(a)) routeOfAgent.set(a, `${route.family}:${route.id}`);
     this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = route.pace !== undefined ? route.pace + 0.04 * (a.r('routeRunning') - 0.5) : routeEffort(route.family, a.r('routeRunning'));
@@ -238,7 +263,27 @@ export class RouteRunner implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const cmd = this.routeCommand(a, sim);
-    return LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    const out = LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    return BALL_EST ? this.preLook(a, sim, out) : out;
+  }
+
+  /** When this route was installed (the snap, or his release on a delayed route): breakTime counts from here. */
+  private readonly bornAt: number;
+  /** BALL_EST design 4: out of his break, before the throw, he gets his head round to the QB (and his shoulders as
+   * far as his head cannot reach him), so he is already looking when the ball leaves. A better route runner leaves
+   * it later. Not on a deep route, which does not expect the ball at its stem's break. */
+  private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (sim.ball.kind !== 'held' || sim.ball.carrier !== sim.qb || this.route.family === 'deep') return cmd;
+    if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+    sim.ballEstimates.lookAtQB(a, sim);
+    const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+    const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+    let d = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x) - heading;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    while (d < -Math.PI) d += 2 * Math.PI;
+    d = turnSide(a, sim, d, heading);
+    const over = Math.abs(d) - LOOK_NECK;
+    return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
   }
 
   /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
@@ -299,6 +344,13 @@ export class RouteRunner implements Behavior {
       }
     }
 
+    // ROUTE_END (attempt 2): on his final leg within a yard or so of a settle point, he is at his route's end: a man on
+    // him otherwise keeps him creeping at the last point's zero speed and he never settles (staged Cover 1: 8 of 48
+    // hitches settled by 3.5 s).
+    if (ROUTE_END && !this.settled && this.routeEnd !== 'continue' && this.idx === this.path.length - 1) {
+      const end = this.path[this.idx].p;
+      if (Math.hypot(end.x - a.pos.x, end.y - a.pos.y) < 1.2) this.settled = true;
+    }
     if (this.settled || this.idx >= this.path.length) {
       this.settled = true;
       return this.settle(a, sim);
@@ -309,8 +361,14 @@ export class RouteRunner implements Behavior {
       return { vel: { x: Math.max(a.vel.x, 3), y: inward * 2 }, cutSkill };
     }
     const st: RouteCursor = { idx: this.idx, from: this.start, turn: this.turn, plan: this.plan };
-    const cmd = this.steer(a.body, st, rr, cutSkill);
+    let cmd = this.steer(a.body, st, rr, cutSkill);
     this.idx = st.idx; this.turn = st.turn ?? null; this.plan = st.plan ?? null;
+    // ROUTE_END: a flat past his declared points runs on turned to the QB, and stops 2 yd from the sideline.
+    if (ROUTE_END && cmd && this.route.family === 'flat' && this.path[this.idx]?.ext) {
+      const room = Math.min(a.pos.y, FIELD_WIDTH - a.pos.y);
+      const facing = angleTo(a.pos, sim.see(a, sim.qb).pos);
+      cmd = room <= 2 ? { ...stand(0), facing } : { ...cmd, facing };
+    }
     if (!cmd) {
       this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);
@@ -402,6 +460,7 @@ export class RouteRunner implements Behavior {
 
   private settle(a: Agent, sim: PlaySim): MoveCommand {
     const last = this.path[this.path.length - 1]?.p ?? a.pos;
+    if (ROUTE_END && this.routeEnd !== 'continue') return this.workWindow(a, sim, last);
     if (this.routeEnd === 'continue') {
       // Ran off the end of the route: keep working toward open grass near the sideline.
       return goTo(a, { x: a.pos.x + 3, y: a.pos.y }, { speed: 0.5 });
@@ -421,6 +480,33 @@ export class RouteRunner implements Behavior {
       if (best && bd < 4) spot = { x: last.x, y: clamp(last.y + Math.sign(last.y - best.pos.y || 1) * (4 - bd) * 0.5, 1.5, FIELD_WIDTH - 1.5) };
     }
     return goTo(a, spot, { speed: 0.6, facing: angleTo(a.pos, sim.see(a, sim.qb).pos) });
+  }
+
+  /** ROUTE_END: the settled receiver works his window from his own picture, every tick (see ROUTE_END). */
+  private workWindow(a: Agent, sim: PlaySim, last: Vec2): MoveCommand {
+    const qb = sim.see(a, sim.qb).pos, facing = angleTo(a.pos, qb);
+    const seen = this.readKeys(a, sim).filter((p) => p.age <= 0.5);
+    let near: RouteKeyPicture | null = null, nd = Infinity;
+    for (const d of seen) { const dd = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y); if (dd < nd) { nd = dd; near = d; } }
+    // Both goals are placed from his settle point `last`, never from where he stands, so he arrives and sits.
+    // Man: a defender on him. He settles and shields: he slides off the man's side at his settle depth, at most
+    // SETTLE_SHIELD from the point, then holds there with the man on his back.
+    if (near && nd < 2.5) {
+      const side = Math.sign(last.y - near.pos.y) || 1;
+      return goTo(a, { x: last.x, y: clamp(last.y + side * SETTLE_SHIELD, 1.5, FIELD_WIDTH - 1.5) }, { speed: 0.8, facing });
+    }
+    // Zone: the window between the underneath defenders either side of him, near his depth.
+    const under = seen.filter((d) => Math.abs(d.pos.x - last.x) < 4 && Math.abs(d.pos.y - a.pos.y) < 8);
+    const left = under.filter((d) => d.pos.y > a.pos.y).sort((p, q) => p.pos.y - q.pos.y)[0];
+    const right = under.filter((d) => d.pos.y <= a.pos.y).sort((p, q) => q.pos.y - p.pos.y)[0];
+    // Zone: the window as he sees it (midway between them, or 4 yd off the one who is there), no farther than
+    // SETTLE_WINDOW from the settle point.
+    let y = last.y;
+    if (left && right) y = (left.pos.y + right.pos.y) / 2;
+    else if (left) y = Math.min(last.y, left.pos.y - 4);
+    else if (right) y = Math.max(last.y, right.pos.y + 4);
+    y = clamp(y, last.y - SETTLE_WINDOW, last.y + SETTLE_WINDOW);
+    return goTo(a, { x: last.x, y: clamp(y, 1.5, FIELD_WIDTH - 1.5) }, { speed: 0.8, facing });
   }
 
   /** Remove this technique's constraint before a ball event replaces its
@@ -609,27 +695,90 @@ export class TrackBall implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
-    if (sim.t < this.reactAt) return this.fallback.update(a, sim);
+    // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
+    // twice). He attends from the release; his head still has to come round at its own rate before he samples.
+    if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
     let spot: { p: Vec2; t: number } | null = null;
+    // BALL_EST: his own estimate from the ball he has seen; until he has one he runs his route and looks for it.
+    const path = BALL_EST ? sim.ballEstimates.estimate(a, sim) : sim.ballPath;
+    if (BALL_EST && !path.length) return lookFor(a, sim, this.fallback.update(a, sim));
+    // Design 3 attempt 2: he runs his route until he has found the ball himself (his first sample); his prior and the
+    // QB's shoulder line shape his estimate and his head, but his route is the better plan until he has seen it.
+    if (BALL_EST && !sim.ballEstimates.lastSeen(a)) {
+      // Still on his route; late in the flight (by his estimate) he turns his body to find a ball behind him.
+      const due = catchSpot(a, { t: sim.t, ballPath: path });
+      const route = this.fallback.update(a, sim);
+      // Design 4: if he was already looking for the ball when it left, he keeps looking until he finds it.
+      return (due && due.t - sim.t <= bodyTurnLead(a)) || sim.ballEstimates.lookedAtRelease(a, sim) ? lookFor(a, sim, route) : route;
+    }
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
       if (!this.choice || (sim.t - this.choseAt >= 0.1 - 1e-9 && this.choice.t - sim.t > 0.3)) {
-        this.choice = chooseCatchPoint(a, sim, this.judge) ?? this.choice; this.choseAt = sim.t;
+        this.choice = chooseCatchPoint(a, sim, this.judge, path) ?? this.choice; this.choseAt = sim.t;
       }
       spot = this.choice;
+      // BALL_EST bit 4 (design 5 b): the moment he chose to meet it stays his; where the ball is at that moment is
+      // re-read from his current estimate every tick, not frozen from the picture he chose it on.
+      if (BALL_EST_MOVING_CHOICE && spot && path.length) {
+        const at = path.find((p) => p.t >= spot!.t - 1e-6) ?? path[path.length - 1];
+        spot = { p: { x: at.x, y: at.y }, t: spot.t };
+      }
     }
-    spot ??= catchSpot(a, sim);
-    if (!spot) return this.fallback.update(a, sim);
-    const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
+    spot ??= catchSpot(a, { t: sim.t, ballPath: path });
+    if (!spot) return BALL_EST ? lookFor(a, sim, this.fallback.update(a, sim)) : this.fallback.update(a, sim);
+    // Under BALL_EST his error is his estimate's; no separate offset.
+    const target = BALL_EST ? { ...spot.p } : { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
     if (HANDS_CUE) noteHands(a, sim.t, spot.t);
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
     // Arrive on time, keep running through if the ball is leading him.
     const need = dist / dtArr;
-    const facing = angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
+    // BALL_EST: he faces where he believes the ball is, not where it is.
+    const facing = BALL_EST ? angleTo(a.pos, path[0]) : angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
-    return { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
+    const run0 = runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) });
+    // TRUNK_TWIST: within 3 yd he turns his shoulders to the ball and keeps the gait on his path, so a receiver looking
+    // the ball in at 6-8 yd/s is not slowed by his hips turning (the cap reads the hips). Off: the old hips request.
+    // (With BALL_EST also on, the trunk branch is taken; joining the two is Coverage's design 7.)
+    if (TRUNK_TWIST) {
+      if (dist >= 3) return run0;
+      // His look reaches the trunk's range plus the neck's (HEAD's neckRange: 90 deg standing, 45 at top speed). A ball beyond it is
+      // a body turn: the hips turn just enough to bring it to the limit, and the cap prices that turn as it does now.
+      const reach = TRUNK_RANGE + neckRange(a);
+      const off = angleDiff(a.body.facing, facing);
+      return Math.abs(off) <= reach ? { ...run0, look: facing } : { ...run0, look: facing, facing: facing - Math.sign(off) * reach };
+    }
+    const run = { ...run0, facing: dist < 3 ? facing : undefined };
+    // BALL_EST attempt 3: his head finds the ball for free; his body turns to it only late (route-timed, by skill).
+    return BALL_EST && dist >= 3 && spot.t - sim.t <= bodyTurnLead(a) ? lookFor(a, sim, run) : run;
   }
+}
+
+/** BALL_EST: a turn toward something almost behind him goes over the shoulder his head is already turned to. */
+function turnSide(a: Agent, sim: PlaySim, d: number, heading: number): number {
+  const head = sim.ballEstimates.headOf(a);
+  if (head === undefined) return d;
+  let h = head - heading;
+  while (h > Math.PI) h -= 2 * Math.PI;
+  while (h < -Math.PI) h += 2 * Math.PI;
+  return sideOf(d, h);
+}
+
+/** BALL_EST: to keep sampling the ball he turns his shoulders off his running line only as far as his head cannot
+ * point at it (LOOK_NECK; his eyes' range is the slack for his error and his turn lag): a ball behind him costs a
+ * turned body, which the facing speed cap prices. */
+function lookFor(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const est = sim.ballEstimates.estimate(a, sim);
+  const at = est.length ? est[0] : sim.see(a, sim.qb).pos;
+  const sp = Math.hypot(cmd.vel.x, cmd.vel.y);
+  const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
+  const toward = Math.atan2(at.y - a.pos.y, at.x - a.pos.x);
+  let d = toward - heading;
+  while (d > Math.PI) d -= 2 * Math.PI;
+  while (d < -Math.PI) d += 2 * Math.PI;
+  d = turnSide(a, sim, d, heading);
+  const over = Math.abs(d) - LOOK_NECK;
+  return over > 0 ? { ...cmd, facing: heading + Math.sign(d) * over } : cmd;
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */

@@ -22,6 +22,14 @@ import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
 
 export const APEX_LEVERAGE = Number(process.env.APEX_LEVERAGE ?? 7);
+/** CUT_WALL (experimental, off; CUT_WALL=1): a hook defender walls a shallow crosser from his own area and passes him
+ * to the next dropper ("collision and pass"), square to the QB at his window depth, instead of jumping him and carrying
+ * him man head-up 8 yd past his area. The low-hole rat (whose job is the crosser) keeps the jump. */
+export const CUT_WALL = process.env.CUT_WALL !== '0';
+/** CUT_WALL: his area for a crosser, a side of his landmark (yd): half a hook band (zoneBand's hooks are 11-12 yd wide;
+ * choice); he takes a crosser inside CUT_ENTER and passes him past CUT_EXIT (the margin is the commit rule). */
+export const CUT_ENTER = 5;
+export const CUT_EXIT = 6;
 const APEX_OUTSIDE = 1.0;
 
 export type Directive =
@@ -30,7 +38,9 @@ export type Directive =
   | { t: 'read'; r: Agent; initialPosition: Vec2 }
   | { t: 'trap'; r: Agent }
   | { t: 'wall'; r: Agent; inside?: number; flat?: Agent }
-  | { t: 'rob'; r: Agent };
+  | { t: 'rob'; r: Agent }
+  /** CUT_WALL: wall a shallow crosser from his own area (landmark `area`, half-width `half`), square to the QB. */
+  | { t: 'crossWall'; r: Agent; area: Vec2; half: number };
 
 export interface RuleState {
   /** Locked branch of the rule after a declaration ("zoned off", "trap", "carry #2"). */
@@ -205,6 +215,8 @@ function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
  */
 function cut(c: RuleCtx, area?: Vec2): Directive | null {
   const st = c.state;
+  // CUT_WALL: a hook (not the rat, who is given his low-hole area) walls a crosser from his own area.
+  if (CUT_WALL && !area) return cutWall(c);
   const center = area ?? c.a.pos;
   // The shared man producer supplies the acquired entry picture for every match.
   const carry = (rd: ReceiverRead) => man(rd, { lev: 'head' });
@@ -234,6 +246,33 @@ function cut(c: RuleCtx, area?: Vec2): Directive | null {
   if (!best) return null;
   st.cut = best.r;
   return carry(best);
+}
+
+/** CUT_WALL: the hook's crosser rule as taught. A shallow crosser (under, 7 yd or less) coming into his area is walled
+ * from his area square to the QB, and passed once he is through it; the next dropper walls him the same way. His area is
+ * his landmark, not where he stands, so it does not travel with the crosser. */
+function cutWall(c: RuleCtx): Directive | null {
+  const st = c.state;
+  const lm = zoneLandmark(c.zone, c.sim.offAlign);
+  const wall = (rd: ReceiverRead): Directive => ({ t: 'crossWall', r: rd.r, area: lm, half: CUT_ENTER });
+  if (st.cut) {
+    const rd = c.reader.read(c.sim, st.cut);
+    if (rd && rd.release === 'under' && rd.depth < 8 && Math.abs(rd.pos.y - lm.y) < CUT_EXIT) return wall(rd);
+    st.cut = undefined;
+    return null;
+  }
+  let best: ReceiverRead | null = null;
+  let bd = Infinity;
+  for (const r of c.sim.offense) {
+    const rd = c.reader.read(c.sim, r);
+    if (!rd || rd.release !== 'under' || rd.depth > 7 || Math.abs(rd.pos.y - lm.y) >= CUT_ENTER) continue;
+    const toward = Math.sign(lm.y - rd.pos.y) * rd.vel.y > 1.5 || Math.abs(rd.vel.y) > 1.5;
+    const d = Math.abs(rd.pos.y - lm.y);
+    if (toward && d < bd) { best = rd; bd = d; }
+  }
+  if (!best) return null;
+  st.cut = best.r;
+  return wall(best);
 }
 
 /** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot.

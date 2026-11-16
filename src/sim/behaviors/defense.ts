@@ -29,11 +29,13 @@ import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '..
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
+import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
+import { BALL_EST } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 
@@ -176,7 +178,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     // A newer held-body image after recognized flight supports a catch even
     // behind the line. Pass belief alone cannot turn a handoff into a catch
     // and discard an installed edge. Snap QB possession keeps the rush/fit.
-    const caught = target !== sim.qb && hasObservedFlight(a);
+    // RELEASE_BELIEF: a release he believed (the arm, without the ball seen) supports a catch the same way.
+    const caught = target !== sim.qb && (hasObservedFlight(a) || (RELEASE_BELIEF && releaseBelief(sim, a).releasedAt !== undefined));
     // A QB seen leaving the pocket as a runner, by a defender who has not
     // read run: the scramble response, from his own QB picture. Rushers and
     // underneath zones come up; each role keeps its own contract. Under
@@ -201,7 +204,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   // an acquired holder is pursued above.
   // HONEST_FLIGHT: the ball is out of the air when his own flight estimate
   // says it has arrived (or he never saw a throw), not on the true air state.
-  const landed = HONEST_FLIGHT ? (!hasObservedFlight(a) || flightLanded(a, sim.t)) && !ballSeenInAir(a, sim) : sim.ball.kind !== 'air';
+  // RELEASE_BELIEF: the same as playsThrow's exit (his own flight estimate, a ball still seen in the air keeping it
+  // open), so a defender whose flight has landed by his estimate is on the catch here, not between the two.
+  const landed = HONEST_FLIGHT || RELEASE_BELIEF ? (!hasObservedFlight(a) || flightLanded(a, sim.t)) && !ballSeenInAir(a, sim) : sim.ball.kind !== 'air';
   if (CATCH_CARRY && landed) {
     const drive = catchDrive.get(a) ?? catchOpportunity(a);
     if (drive) {
@@ -399,7 +404,7 @@ export class PassRusher implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Throw in the air: peel off toward the ball.
-    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
+    if (playsFlight(a, sim, null)) {
       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
@@ -599,7 +604,7 @@ export class Blitzer implements Behavior {
       }
       return runFit(a, sim, this.gap, this.gapSign);
     }
-    if (HONEST_READS ? sim.ball.kind === 'air' && sawThrow(a, sim, null) : sim.ball.kind === 'air') {
+    if (HONEST_READS ? playsFlight(a, sim, null) : sim.ball.kind === 'air') {
       // HONEST_READS: the ball he has seen thrown, on his acquired flight.
       const spot = HONEST_READS ? catchSpot(a, { t: sim.t, ballPath: acquireFlight(a, sim) }) : catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
@@ -1202,7 +1207,7 @@ export class ManCoverage implements Behavior {
     // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
     // with the cushion not broken: he re-squares (the body turns back at its
     // own rate; the stop route is built to win in that time).
-    if (breakOn && this.hipsOpen && !crossing && (infoHonest(6) ? !(sim.ball.kind === 'air' && sawThrow(a, sim, R)) : sim.ball.kind !== 'air') && vx < Math.max(0, a.vel.x) - 1
+    if (breakOn && this.hipsOpen && !crossing && (infoHonest(6) ? !playsThrow(a, sim, R) : sim.ball.kind !== 'air') && vx < Math.max(0, a.vel.x) - 1
       && !broken()) { this.hipsOpen = false; a.tags.add('re-square'); }
 
     let tx = seen.pos.x;
@@ -1421,7 +1426,7 @@ export class ZoneCoverage implements Behavior {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
-    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
+    if (playsThrow(a, sim, null)) return playBall(a, sim, null, RELEASE_BELIEF ? () => this.zonePlay(a, sim) : undefined);
     // SHOULDER_READ: an underneath defender reading the QB stops his drop on
     // the throwing motion he has seen; the rest of his zone play goes on.
     if (SHOULDER_READ && !this.deep && underneathPlant(a, sim)) return stopDrop(sim, this.zonePlay(a, sim));
@@ -2053,6 +2058,8 @@ function stopDrop(sim: PlaySim, cmd: MoveCommand): MoveCommand {
 
 /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
 export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  // RELEASE_BELIEF: his own belief that the ball is gone (release-belief.ts), not the true air state.
+  if (RELEASE_BELIEF) return believesThrow(a, sim, man);
   const ball = sim.ball;
   if (ball.kind !== 'air') return false;
   const qb = sim.see(a, sim.qb).pos;
@@ -2082,6 +2089,32 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // time he never saw.
   const seen = sim.throwSight.seenAt(a);
   const cue = man ? readsHandsAt(a, sim, man, seen) : seen;
+  return cue !== undefined && sim.t - cue >= react;
+}
+
+/** RELEASE_BELIEF's sawThrow: a zone defender with his eyes on the passer keys the throwing motion he saw (loading or
+ * released in his belief: a pump he saw can make him bite, a pull-down he saw undoes it); otherwise he reacts from the
+ * first moment the ball itself was in his view (or, trailing his man, the receiver's hands), once his belief has the
+ * ball out. */
+function believesThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  const rb = releaseBelief(sim, a);
+  const qb = sim.see(a, sim.qb).pos;
+  const qbAngle = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x);
+  const zoneEyes = a.behavior instanceof ZoneCoverage || (a.behavior as { zoneEyes?: boolean }).zoneEyes === true;
+  const facingQB = Math.cos(a.body.facing - qbAngle) > (zoneEyes ? -0.2 : 0.1);
+  const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'))) + (man ? 0.05 : 0);
+  if (facingQB && zoneEyes && (rb.loadingAt !== undefined || rb.releasedAt !== undefined) && eyesHeldOnQB(a, sim, react, -0.2)) {
+    a.tags.add('readArm');
+    return true;
+  }
+  // A man defender who saw neither the arm nor the ball (his back to the passer, trailing his man) still reads his
+  // man looking back for it, as before.
+  if (rb.releasedAt === undefined) {
+    if (!man) return false;
+    const hands = readsHandsAt(a, sim, man, undefined);
+    return hands !== undefined && sim.t - hands >= react;
+  }
+  const cue = man ? readsHandsAt(a, sim, man, rb.ballAt) : rb.ballAt;
   return cue !== undefined && sim.t - cue >= react;
 }
 
@@ -2116,6 +2149,7 @@ function eyesHeldOnQB(a: Agent, sim: PlaySim, span: number, cosMin: number): boo
 
 export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
   continueCoverage?: () => MoveCommand): MoveCommand {
+  if (RELEASE_BELIEF) return playBelievedBall(a, sim, man, continueCoverage);
   const ball = sim.ball;
   if (ball.kind !== 'air') return stand();
   if (!sawThrow(a, sim, man)) {
@@ -2130,8 +2164,107 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
     }
     return { vel: a.vel };
   }
+  const path = acquireFlight(a, sim);
+  // BALL_EST: until he has an estimate of where it is going he keeps playing what he was playing.
+  if (BALL_EST && !path.length) {
+    if (continueCoverage) return continueCoverage();
+    if (man) {
+      const s = sim.see(a, man), inside = Math.sign(sim.ballY - s.pos.y) || 1;
+      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
+    }
+    return { vel: a.vel };
+  }
   a.tags.add('onBall');
-  return playObservedFlight(a, sim, acquireFlight(a, sim), true);
+  return playObservedFlight(a, sim, path, true);
+}
+
+/** RELEASE_BELIEF: whether he plays the throw now: his belief (sawThrow) instead of the true air state, while the
+ * flight he saw has not landed by his own estimate (then the holder and carry channels take over). Off: the true air
+ * state and sawThrow, as before. */
+export function playsThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  if (!RELEASE_BELIEF) return sim.ball.kind === 'air' && sawThrow(a, sim, man);
+  // His flight is over when it has landed by his own estimate and he no longer sees the ball in the air (the same
+  // test pursueIfLive's catch carry uses, so one of the two always has him).
+  return sawThrow(a, sim, man) && !(hasObservedFlight(a) && flightLanded(a, sim.t) && !ballSeenInAir(a, sim));
+}
+/** RELEASE_BELIEF: as playsThrow, for a caller that steers on the flight itself: he must have seen the ball. */
+function playsFlight(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+  return playsThrow(a, sim, man) && (!RELEASE_BELIEF || releaseBelief(sim, a).ballAt !== undefined);
+}
+/** RELEASE_BELIEF's playBall: with the ball seen, the flight he acquired; on a belief from the arm alone (the motion
+ * tells him when, not where) he bites: a zone defender plants (stops his drop, the rest of his zone play goes on), a
+ * man defender stays on his man, until he sees the ball or the pull-down. */
+function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCoverage?: () => MoveCommand): MoveCommand {
+  const fallback = (): MoveCommand => {
+    if (continueCoverage) return continueCoverage();
+    if (man) {
+      const s = sim.see(a, man);
+      const inside = Math.sign(sim.ballY - s.pos.y) || 1;
+      return track(a, { x: s.pos.x, y: s.pos.y + inside * 0.7 }, s.vel, { cutSkill: 0.85 + 0.35 * a.r('manCoverage') });
+    }
+    return { vel: a.vel };
+  };
+  if (!sawThrow(a, sim, man)) return fallback();
+  const rb = releaseBelief(sim, a);
+  if (rb.ballAt === undefined) {
+    a.tags.add('arm-bite');
+    if (!continueCoverage) return fallback();
+    // A zone defender breaks on the passer's shoulders at the delivery (the arm coming through; on the load alone he
+    // plants): toward the receiver they point at, read through the tracking channel of the passer he is watching,
+    // chosen once for this belief, with his reaction time after the choice. With none lined up, he plants (stops his
+    // drop) until he sees the ball or the pull-down.
+    if (rb.releasedAt === undefined) return stopDrop(sim, continueCoverage());
+    const pick = shoulderTarget(a, sim, rb.releasedAt);
+    const react = a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'));
+    if (pick.R && sim.t - pick.at >= react - 1e-9) {
+      a.tags.add('shoulder-break');
+      // He breaks to where that receiver will be when the ball gets there: the receiver as he now sees him, carried
+      // along his seen velocity for the rest of the throw's flight, judged from the passer's distance (a coached
+      // rule-of-thumb ball speed). One receiver per belief; his projected spot updates as his picture does.
+      const r = sim.see(a, pick.R), left = !SHOULDER_LEAD ? 0 : Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+        Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+      return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
+    }
+    return stopDrop(sim, continueCoverage());
+  }
+  a.tags.add('onBall');
+  const path = hasObservedFlight(a) ? rememberedFlight(a, sim.t) : null;
+  return playObservedFlight(a, sim, path ?? (sim.ball.kind === 'air' ? acquireFlight(a, sim) : []), !path);
+}
+
+/** RELEASE_BELIEF: the receiver the passer's shoulders point at in this defender's picture when his belief came from
+ * the arm (smallest bearing off the passer's seen facing, within SHOULDER_CONE), chosen once per belief. */
+const SHOULDER_CONE = 25 * Math.PI / 180;
+/** The shoulder break's lead: his crude estimate of a throw's speed (yd/s) and the longest flight he projects for. It
+ * under-leads (seed 11: 0.57 s estimated against 0.90 s actual). To be replaced by his estimate of the throw from the
+ * passer's distance and the kind of throw he expects (a dart, a touch ball), with his rating's error. */
+const SHOULDER_BALL_SPEED = 17, SHOULDER_FLIGHT_MAX = 1.5;
+/** SHOULDER_LEAD (on; `=0` restores the break to the receiver's seen spot): the shoulder break leads the receiver (#758). */
+const SHOULDER_LEAD = process.env.SHOULDER_LEAD !== '0';
+/** His read of the passer's shoulders: a bearing error drawn once per belief, its spread by anticipation (deg). The
+ * rating acts on the read, not on the break's result; a misread sends him to the wrong man, which the passer's eyes and
+ * shoulders can exploit. */
+const SHOULDER_READ_SD_MIN = 5, SHOULDER_READ_SD_SPAN = 15;
+const shoulderPick = new WeakMap<Agent, { key: number } & { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null; from: { x: number; y: number } }>();
+/** Diagnostic: his last shoulder read (the receiver picked, null if none lined up; when; the bearing he read). */
+export function shoulderPickOf(a: Agent): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null; from: { x: number; y: number } } | undefined { return shoulderPick.get(a); }
+function shoulderTarget(a: Agent, sim: PlaySim, key: number): { R: Agent | null; at: number; read: number | null; err: number; seenBearing: number | null; from: { x: number; y: number } } {
+  const prev = shoulderPick.get(a);
+  if (prev && prev.key === key) return prev;
+  // The passer he is watching, through the tracking channel (his gaze is on him: the arm key requires it).
+  const q = sim.track(a, sim.qb, 1, true);
+  const err = sim.dice('shoulder', a).normal(0, (SHOULDER_READ_SD_MIN + SHOULDER_READ_SD_SPAN * (1 - a.r('anticipation'))) * Math.PI / 180);
+  const read = q.facing === undefined ? null : q.facing + err;
+  let best: Agent | null = null, bestOff = SHOULDER_CONE, seenBearing: number | null = null;
+  if (read !== null) for (const r of sim.offense) {
+    if (r === sim.qb || isOL(r)) continue;
+    const p = sim.see(a, r).pos, b = Math.atan2(p.y - q.pos.y, p.x - q.pos.x), off = Math.abs(angleDiff(b, read));
+    if (off < bestOff) { bestOff = off; best = r; seenBearing = b; }
+  }
+  // err and seenBearing are kept for the diagnostic probe only (the read's draw, and the pick's bearing in his picture)
+  const out = { key, R: best, at: sim.t, read, err, seenBearing, from: { x: q.pos.x, y: q.pos.y } };
+  shoulderPick.set(a, out);
+  return out;
 }
 
 /** Same catch approach, seeded only by this defender's acquired trajectory.
@@ -2292,7 +2425,7 @@ export class Pursuit implements Behavior {
     if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
     const holder = observedHolder(a, sim);
     if (holder) return chase(sim, a, holder.target);
-    if (sim.ball.kind === 'air' && (!HONEST_READS || sawThrow(a, sim, null))) return playBall(a, sim, null);
+    if (HONEST_READS ? playsThrow(a, sim, null) : sim.ball.kind === 'air') return playBall(a, sim, null);
     return pursueIfLive(sim, a) ?? stand();
   }
 }

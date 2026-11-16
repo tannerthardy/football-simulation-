@@ -41,7 +41,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   },
   {
     id: 'mesh', name: 'Mesh', family: 'dropback', drop: 'gun5',
-    strong: { 1: 'corner', 2: 'shallow', 3: 'hook' }, weak: { 1: 'go', 2: 'shallow_high' }, back: 'swing',
+    // CROSS_FLAT: mesh's under crosser is its own route, a yard under the Y (routes.ts), not the drag.
+    strong: { 1: 'corner', 2: process.env.CROSS_FLAT !== '0' ? 'mesh_under' : 'shallow', 3: 'hook' }, weak: { 1: 'go', 2: 'shallow_high' }, back: 'swing',
     progression: ['S2', 'W2', 'S1', 'B', 'S3'], beats: ['man', 'cover1', 'zone'],
   },
   {
@@ -214,10 +215,17 @@ export const MENU_CONCEPTS: PassConcept[] = [
  * 'five' and 'gun5' are the same drop in the gun today, until the QB lane sets 'five' to the NFL's depth and time. */
 const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
 const COACHED_DROP: Record<string, PassConcept['drop']> = {
-  smash: 'five', mesh: 'five', four_verts: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
-  trips_sail: 'five', trips_outs: 'five', verts_hitch: 'five', double_outs: 'five', comebacks: 'five',
+  smash: 'five', mesh: 'five', flood: 'five', drive: 'five', sail_corner: 'five', corner_flat: 'five',
+  trips_sail: 'five', trips_outs: 'five', double_outs: 'five', comebacks: 'five',
 };
 if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (COACHED_DROP[c.id]) c.drop = COACHED_DROP[c.id];
+/** VERTS_QUICK (experimental, off; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a
+ * quick five-step drop (from shotgun, a quick three-steps)" (Gonzalez via Smart Football), so four_verts and
+ * verts_hitch take the gun three-step instead of 'gun5'. Paired staged read, the same 384 plays off and on
+ * (scripts/diag/escape/drop-staged.ts on the QB lane branch), engine-66: 8.21 -> 9.95 yd a play, time to throw
+ * 3.60 -> 3.25 s, sacks 52 -> 35, INT 2 -> 2; on the route card's stack: 6.98 -> 10.17, sacks 52 -> 35, INT 4 -> 2. */
+const VERTS_QUICK = process.env.VERTS_QUICK === '1';
+if (VERTS_QUICK) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.id === 'four_verts' || c.id === 'verts_hitch') c.drop = 'gun3';
 export const PASS_CONCEPTS: PassConcept[] = CONCEPT_MENU ? [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS] : BASE_PASS_CONCEPTS;
 
 export const RUN_CONCEPTS: RunConcept[] = [
