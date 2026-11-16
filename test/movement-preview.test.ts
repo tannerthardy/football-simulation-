@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Body } from '../src/physics/kinematics.js';
+import { DIR_CAP, type Body } from '../src/physics/kinematics.js';
 import { previewFreeMovement, type MovementSample } from '../src/physics/movement-preview.js';
 import { newSupport } from '../src/physics/support.js';
 import { newVirtualFoot } from '../src/physics/virtual-foot.js';
@@ -190,7 +190,11 @@ describe('free-movement controller previews', () => {
       expect(source).toEqual(before); expect(command).toEqual(commandBefore);
       // This checks a real mode difference, rather than an equality between
       // two fixtures in which the selected physics happen to be inactive.
-      expect(expected).not.toEqual(independent(source, command, 9.2));
+      // Re-recorded 2026-11-16: the 'attained yaw' fixture differed between the modes only because the legacy directional cap read the plan's prospective
+      // facing in 'center' and the attained facing in 'patch'. DIR_CAP's cap reads the hips as they are in both, so with it on the two modes plan the same free
+      // movement (the contract this test exists for) and the equality, not a difference, is the correct reading; the other two fixtures still differ.
+      if (DIR_CAP && kind === 'attained yaw') expect(expected).toEqual(independent(source, command, 9.2));
+      else expect(expected).not.toEqual(independent(source, command, 9.2));
     });
 
   it.each(['center', 'patch'] as const)('isolates scratch models regardless of caller order, starting %s', firstMode => {
