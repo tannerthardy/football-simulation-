@@ -688,3 +688,14 @@ Built as its own off flag (FLAGS.md). Long holds (scripts/diag/escape/long-hold-
 SET_SPOT_TACKLE + POCKET_LEVEL): QB depth p50 at 2.0 / 2.5 / 3.0 / 3.5 s off 7.82 / 7.58 / 6.37 / 5.50 yd, on 7.82 /
 7.90 / 7.90 / 7.86 (NFL 7.4 / 7.9 / 8.0 / 7.7); forward 2.0-3.5 s off +1.81 yd, on -0.23. Long holds 211 -> 194. The
 short-hold gate (sacks by edge rushers, staged dropbacks off vs on) follows.
+
+QB_EDGE_THREAT short-hold gate (staged dropbacks, all 16 staged concepts, 3072 plays, SET_SPOT + SET_SPOT_TACKLE +
+POCKET_LEVEL, off vs on): sacks 180 -> 109 (by edge rushers 172 -> 109; 113 gone, 42 new: DE_W 32, DE_S 10, roster 19
+in 21 of them), completions 2016 / 2017, yd 7.90 / 7.88, interceptions 28 -> 43 (25 new, 10 gone: mostly checkdowns
+to the back in the flat thrown from his set depth, about 9 yd, where off he had climbed to about 5.5 yd; a few play
+shapes repeated across coverages, some identical throws whose rolls diverged). The old step-up walked into the edge
+rushers' paths more often than it escaped them; the escape from a real edge win stays, with roster 19's weak edge the
+cost.
+
+Corner grass reads: readable is the release won only (`declRule` not vertical); the deep half defender over a corner
+is the window's timing question. Mesh unchanged (20 corners at 2.42 s, 9.4 yd); smash as off (its corner is keyed).
