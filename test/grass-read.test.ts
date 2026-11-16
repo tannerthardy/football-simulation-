@@ -47,17 +47,6 @@ describe('GRASS_READ', () => {
     for (const r of p.double_outs.rhythm) expect(r.grass).toBeUndefined();
   }, 120_000);
 
-  it("a seam's grass read is on the hitch, past the hook: never on the set, and the reads after it do not go back", async () => {
-    const p = await plans(true, ['verts_hitch', 'dagger', 'four_verts']);
-    for (const plan of Object.values(p)) {
-      let floor = 0;
-      for (const r of plan.rhythm.filter((x) => x.ref !== plan.outlet)) { expect(r.n).toBeGreaterThanOrEqual(floor); floor = r.n; }
-    }
-    // verts_hitch's and dagger's seams (S2 from gun doubles) were read on the set; now on the hitch.
-    expect(p.verts_hitch.rhythm.find((r) => r.ref === 'S2')!.n).toBe(1);
-    expect(p.dagger.rhythm.find((r) => r.ref === 'S2')!.n).toBe(1);
-  }, 120_000);
-
   it('off, no read carries a grass entry', async () => {
     const p = await plans(false, ['mesh', 'four_verts']);
     for (const plan of Object.values(p)) for (const r of plan.rhythm) expect(r.grass).toBeUndefined();

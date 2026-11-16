@@ -65,8 +65,6 @@ const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
  * - the corner when it is the first read and not one half of a key: "as he takes his five step drop, his eyes go to that
  *   corner route... If that grass is open he throws the ball on his 5th" (Win With The Pass, Mesh). A keyed corner
  *   (smash) is thrown off its defender, not the grass.
- * A seam's grass read is on the hitch, not the set: it is decided "as he passes by the linebacker" (Gonzalez), past the
- * hook, and at the set he is under it (QB lane, staged).
  * The post and the deep out are not: Walsh's flanker post is "five big steps and a hitch" and the outs are timed to the
  * break (49ers notes via Smart Football), thrown on the break, not into grass before it.
  * The landing area is the point on his installed route at the depth the throw is taught to: for a vertical, the ball
@@ -309,18 +307,6 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const grass = GRASS_READ ? grassOf(routes.get(ref), placeOf.get(ref) === 0 && ref !== plan!.outlet, !!keyedRef || !!(key && (ref === key.low || ref === key.high))) : null;
         return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}), ...(grass ? { grass } : {}) };
       });
-      // GRASS_READ: a seam is decided "as he passes by the linebacker" (Gonzalez), past the hook, which he is not at the
-      // set: its grass read goes on the hitch, and the reads after it that were on the set with it (steps never go back
-      // along the order).
-      if (GRASS_READ) {
-        let bump = false;
-        plan.rhythm = plan.rhythm.map((r) => {
-          const route = routes.get(r.ref)?.routeId;
-          if (r.grass && route === 'seam' && r.n === 0) { bump = true; return { ...r, step: 'hitch' as const, n: 1 as const, at: +stepAt('hitch').toFixed(2), onTime: r.ready <= stepAt('hitch') + 1e-9 }; }
-          if (bump && r.n === 0 && r.ref !== plan!.outlet) return { ...r, step: 'hitch' as const, n: 1 as const, at: +stepAt('hitch').toFixed(2), onTime: r.ready <= stepAt('hitch') + 1e-9 };
-          return r;
-        });
-      }
       // CONCEPT_DROPS: the key is read on its place's beat.
       if (keyStep !== null && plan.key) plan = { ...plan, key: { ...plan.key, cueBy: +stepAt(steps[keyStep]).toFixed(2) } };
       const decl = seq.map((ref) => ({ ref, d: routes.get(ref)?.declaredBreak })).filter((x) => x.d);
