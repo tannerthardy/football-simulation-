@@ -96,6 +96,41 @@ The closure's stage two jolt reads:
 
 All three are outputs of this picture, so stage two needs no other input from the defense.
 
+## The honest arm is 26657, not 26625 (gate, 2026-11-16)
+
+Measured with seed 11 on the engine-71 head. Receivers have BREAK_LOOK and SEEN_EMPTY on, with HEAD_RIDE, ACQ_SEEN and TRACKED_CATCH. The witness scripts are `scripts/diag/risk/def-late.ts`, `yac-split.ts` and `scripts/diag/catch/paired-throws.ts`.
+
+| arm | YAC per catch (16 games) | YAC, separation 3-5 / 5+ yd | first contact, p50 | paired 305 caught |
+|---|---|---|---|---|
+| oracle (0) | 7.92 | 8.86 / 14.80 | 1.15 s | 218 |
+| 26625 (glance + hands + settle) | 12.84 | 13.77 / 21.44 | 1.35 s | 202 |
+| 26657 (+ bit 32, passive sight) | 14.58 | 14.91 / 27.01 | 1.50 s | 212 |
+
+**Why 26625's lower YAC is not the honest level.** Without bit 32, a defender who never sampled the ball still believes the release. release-belief's and ThrowSight's "ball" cue tests the true ball position against a cone about his body facing (`viewCone`). That cue sets his `ballAt` and `releasedAt`. His estimator then seeds a flight from the release prior alone, and the settle runs him to that flight's ball line before he has seen the ball. Body facing is not gaze, so this is a cheat. Bit 32 removes it: his sight of the ball is his own sample alone.
+
+The never-sampled defenders, release belief at the catch (2 games):
+- **26625:** zone defenders were 97 ball+motion and 9 none; rushers were 225 ball+motion and 67 ball.
+- **26657:** zone defenders were 68 arm+motion and 16 none; rushers were 292 arm+motion and 38 none.
+
+Their closing on the catcher at the catch, p50 (yd/s):
+
+| role | 26625 | 26657 |
+|---|---|---|
+| zone | +1.96 | -0.32 |
+| rush | +1.02 | -0.94 |
+| man | -1.08 | -2.64 |
+
+On 26657, ACQ_SEEN (with its prior-only fix) puts the catch in their picture at 0.30-0.35 s after the catch. They start on the carrier at 0.75 s (zone), 1.15 s (man) and 1.05 s (rush). The gap after the picture is a body moving away that has to stop and turn, not a held branch.
+
+**The missing mechanism.** On 26657 most of the never-sampled rushers and zone defenders saw the arm come through. That arm belief starts no look and no flight. The estimator's prior seeds only from `ballAt`, so a rusher keeps rushing.
+
+**Next attempt (approved in principle, not started; new work paused 2026-11-16).** On an arm belief with no sample, his head is wanted along the seen passer's shoulder bearing, with a read error by rating as in SHOULDER_READ, and the ball is searched there. Nothing is known until the ball is in his eyes, and he keeps his assignment until then. Gate:
+- start by release-belief source;
+- def-late by role;
+- YAC by separation band;
+- paired 305;
+- ball-glance's no-knowledge test.
+
 ## Witnesses
 
 - **YAC:** `yac-split.ts`'s defense arm against the oracle, YAC by separation band. Not tuned to any number; the
