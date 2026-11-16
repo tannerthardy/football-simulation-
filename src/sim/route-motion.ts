@@ -93,7 +93,7 @@ export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
 const PLANT_REACH = process.env.PLANT_REACH !== '0';
 /** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
+const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */
