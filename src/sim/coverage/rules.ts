@@ -33,6 +33,7 @@ export const CUT_EXIT = 6;
 const APEX_OUTSIDE = 1.0;
 
 export type Directive =
+  | { t: 'qshort'; r: Agent }
   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
   | { t: 'man'; r: Agent; opts: ManOptions }
   | { t: 'read'; r: Agent; initialPosition: Vec2 }
@@ -93,6 +94,10 @@ const vertical = (rd: ReceiverRead | null, depth = 4): boolean => !!rd && rd.rel
 const climbing = (rd: ReceiverRead | null): boolean => !!rd && (rd.release === 'vertical' || rd.climbed);
 /** The "no cover zone": a match corner owns any route by #1 whose stem gets past it. */
 const NO_COVER = 5;
+/** QCORNER (experimental, numeric bitmask, default 0): bit 4, the quarters MOD corner who zoned off a short #1 plays
+ * #1's path (QuarterShort in techniques.ts) instead of the deep quarter's drop. */
+const QCORNER_BITS = Number(process.env.QCORNER ?? 0);
+export const QCORNER_SHORT = (QCORNER_BITS & 4) !== 0;
 /** How long a shallow break must hold before a corner commits to zoning off it (s). */
 const DECLARE = 0.35;
 
@@ -328,7 +333,7 @@ function qCorner(c: RuleCtx, meg: boolean): Directive {
   const one = ref(c, 1);
   if (!one) return zoneOf(c);
   if (meg) return man(one, { lev: 'outside' });
-  if (zoneOffOne(c, one, !!ref(c, 2))) return zoneOf(c);
+  if (zoneOffOne(c, one, !!ref(c, 2))) return QCORNER_SHORT ? { t: 'qshort', r: one.r } : zoneOf(c);
   return man(one, { lev: 'outside' });
 }
 

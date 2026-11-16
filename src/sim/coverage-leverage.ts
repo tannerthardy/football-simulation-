@@ -9,15 +9,16 @@ import type { PhysicalProfile } from '../players/physical.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 
-export class DeepCoverage {
+/** The receiver's upfield acceleration in this defender's own picture: the change in his seen upfield speed between
+ * his delayed sight samples (each at its own stamp, over at most 0.3 s), bounded by the receiver's braking and his
+ * remaining acceleration toward top speed. One form for every reader of the stem (CARRY_READ through DeepCoverage,
+ * and the stem-stop read). */
+export class StemAcceleration {
   private previous: { stamp: number; vx: number } | null = null;
   private acceleration = 0;
-  /** The receiver's upfield acceleration in this defender's picture (the last estimate choose made). */
-  get seenAcceleration(): number { return this.acceleration; }
-
-  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
-    cushion: number, original: MoveCommand, now: number,
-    model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
+  get value(): number { return this.acceleration; }
+  /** Fold in this tick's sight of him (no change unless it is a newer sample). */
+  observe(cue: Perceived, receiver: PhysicalProfile, now: number): number {
     const stamp = now - (cue.age ?? 0), previous = this.previous;
     if (!previous || stamp > previous.stamp + 1e-9) {
       const dt = previous ? stamp - previous.stamp : 0;
@@ -26,6 +27,30 @@ export class DeepCoverage {
           Math.max(0, (receiver.vmax - cue.vel.x) / receiver.tau)) : 0;
       this.previous = { stamp, vx: cue.vel.x };
     }
+    return this.acceleration;
+  }
+}
+
+/** CARRY_READ's projection: the receiver's upfield speed t s ahead from his seen speed and seen acceleration. */
+export const STEM_BURST_TAU = 1.0;
+export const projectedStem = (vx: number, accel: number, t: number): number =>
+  Math.max(0, vx + accel * STEM_BURST_TAU * (1 - Math.exp(-t / STEM_BURST_TAU)));
+/** The stem-stop read (one stated form): his stem, projected 0.5 s ahead in his picture, has stopped below 1 yd/s, and
+ * is climbing again only above 3 (CARRY_READ's endpoints). `held` is the previous state; the exit is on the far side. */
+export const stemStopped = (vx: number, accel: number, held: boolean): boolean => {
+  const p = projectedStem(vx, accel, 0.5);
+  return held ? p < 3 : p < 1;
+};
+
+export class DeepCoverage {
+  private readonly stem = new StemAcceleration();
+  /** The receiver's upfield acceleration in this defender's picture (the last estimate choose made). */
+  get seenAcceleration(): number { return this.stem.value; }
+
+  choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
+    cushion: number, original: MoveCommand, now: number,
+    model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
+    this.stem.observe(cue, receiver, now);
     const s = a.body.support;
     if (seen.vel.x <= 1.5 || seen.vel.x <= Math.abs(seen.vel.y)
       || a.engagement || a.isDown(now)
@@ -39,7 +64,7 @@ export class DeepCoverage {
     // also supplies the missing correction to constant-velocity dead reckoning.
     // Re-querying an aging picture cannot renew its transient plant/burst.
     // Use the same .4 s image-age bound as RouteObservation's correction.
-    const acceleration = (cue.age ?? 0) > .4 ? 0 : this.acceleration;
+    const acceleration = (cue.age ?? 0) > .4 ? 0 : this.stem.value;
     const age = acceleration < 0 ? 0 : clamp(cue.age ?? 0, 0, .4);
     const burst = acceleration < 0 ? Math.min(.25, seen.vel.x / -acceleration) : .25;
     const extra = (t: number) => {
