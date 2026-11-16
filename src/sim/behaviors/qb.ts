@@ -1267,6 +1267,11 @@ export class QBPass implements Behavior {
           const k = clamp(depthNow / (depthAll / 3), 0, 1), side = Math.sign(this.has(sim, this.reads[0]).y - a.pos.y) || 1;
           facing = down + side * k * Math.PI / 2;
           const left = Math.max(this.snapAt + this.drop.time - t, 0.15);
+          // The plant step: he plants to throw read 1, so on the drop's last stride he turns to his picture of the man
+          // (part-square). NFL gun drops (BDB 2025): chest off downfield at the plant p50 58-61 deg at every depth from 1 to
+          // 6 yd, while the most open he gets in the drop rises with depth, 62 to 89 deg: open on the crossover steps,
+          // part-square on the plant step.
+          if (left <= this.stride()) facing = angleTo(a.pos, this.has(sim, this.reads[0]));
           return goTo(a, target, { facing, through: 0, speed: clamp(d / left / a.profile.vmax, 0.25, 1) });
         }
         return goTo(a, target, { facing, through: 0 });
