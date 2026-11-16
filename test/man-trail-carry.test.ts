@@ -35,7 +35,7 @@ const CONTROL: Case = { coverage: 'cover1', concept: 'mesh', formation: 'gun_dou
 async function closing(flag: string, c: Case): Promise<number> {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
-  vi.stubEnv('CRAFT_HOLD', '0'); // engine-70: the staged aims were recorded where mesh crossers ran without the hold; Coverage to re-record with CRAFT_HOLD on
+  vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Defense to re-record with MIRROR_SCATTER on
   vi.stubEnv('CATCH_CARRY', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

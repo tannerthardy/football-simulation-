@@ -21,9 +21,9 @@ for (const r of runs) for (const fId of forms) for (const front of FRONTS) for (
   const formation = FORMATION_BY_ID[fId];
   let sim: any;
   try {
-    sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, (Array.isArray(front.personnel) ? front.personnel[0] : front.personnel) ?? 'nickel'),
+    sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, front.personnel[0] ?? 'nickel'),
       offCall: { formation, flip, kind: 'run', run: RUN_BY_ID[r], label: r },
-      defCall: { personnel: (Array.isArray(front.personnel) ? front.personnel[0] : front.personnel) ?? 'nickel', front, coverage: COVERAGE_BY_ID[cov], pressure: pr ? PRESSURE_BY_ID[pr] : null, label: 'x' },
+      defCall: { personnel: front.personnel[0] ?? 'nickel', front, coverage: COVERAGE_BY_ID[cov], pressure: pr ? PRESSURE_BY_ID[pr] : null, label: 'x' },
       los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 11, audibles: false } as any);
   } catch { continue; }
   let plans: Map<any, any>;

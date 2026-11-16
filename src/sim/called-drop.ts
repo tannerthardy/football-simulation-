@@ -40,6 +40,8 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
       if (PA_DROP) return gun ? { x: los - 6.0, time: 1.8 } : { x: los - 8.1, time: 2.1 };
       return { x: los - 8.3, time: 1.95 };
   }
+  // His start is not read: every depth is from the line. (Callers pass his snap alignment, a fact of the call, never his
+  // live spot, which the information guard counts as a true-state read.)
   void qbStartX;
 }
 
@@ -48,16 +50,6 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
 export function calledLaunchX(sim: PlaySim): number | null {
   const concept = sim.offCall.pass;
   if (!concept) return null;
-  return dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under').x;
+  return dropSpec(concept.drop, sim.snapX[sim.qb.idx] ?? sim.los, sim.los, sim.offCall.formation.qb !== 'under').x;
 }
 
-/** SET_SPOT: where the called drop puts the QB at time t after the snap, from the call alone (his snap alignment, the
- * drop's depth and its time): the pocket's schedule every lineman knows. Not the QB's live spot. Null without a pass
- * concept. Linear from the snap spot to the launch point over the drop's time, then the launch point. */
-export function calledPocketX(sim: PlaySim, t: number): number | null {
-  const concept = sim.offCall.pass;
-  if (!concept) return null;
-  const spec = dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
-  const x0 = sim.snapX[sim.qb.idx] ?? spec.x, f = Math.min(1, Math.max(0, t / Math.max(spec.time, 0.1)));
-  return x0 + (spec.x - x0) * f;
-}
