@@ -466,7 +466,8 @@ const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
  * to one side. In the pocket his shoulders set on a step, not on a look: they turn to a read at the plant and when a
  * footwork step lands (bit 1's), toward his picture of the man; a look moves his eyes and head only (his facing
  * re-aimed with every look and came back within 0.3 s on 68 of 186 reversals, scripts/diag/eyes/facing-swing.ts).
- * Read with bit 1. Not built yet in bit 2: drop pacing from the rhythm, the step into the throw. */
+ * Part 3: the crossover drop, hips side-on to travel toward read 1's side over the first third of the depth, and the
+ * drop paced to its measured time. Read with bit 1. Not built yet in bit 2: the step into the throw. */
 const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
 /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
  * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
@@ -1255,12 +1256,18 @@ export class QBPass implements Behavior {
         const gun = sim.offCall.formation.qb !== 'under';
         // Drop: backpedal from gun, turn-and-drop from under center.
         let facing = gun ? 0 : Math.PI / 2.4;
-        // QB_FOOTWORK bit 2: the hips open toward read 1 as he gives ground (his picture of the man).
+        // QB_FOOTWORK bit 2, part 3: the coached crossover drop. His hips open side-on to his travel toward read 1's side
+        // (his picture of the man) over the first third of the depth he gives, and hold; he squares in the hitch and the
+        // windup. And the drop is paced to its time: he arrives at the set point at the drop's measured time (the distance
+        // left over the time left), not at a sprint (ours was about 40% faster back than the NFL's at every share of a
+        // short gun drop, docs/reviews/2026-11-15-drop-measurements.md).
         if (FW_HIPS && this.reads[0]) {
           const dirX = sim.attackDir(a.team), down = dirX > 0 ? 0 : Math.PI;
           const depthNow = (this.dropStartX - a.pos.x) * dirX, depthAll = Math.max(0.5, (this.dropStartX - this.drop.x) * dirX);
-          const k = clamp(depthNow / depthAll, 0, 1), to = angleTo(a.pos, this.has(sim, this.reads[0]));
-          facing = down + k * wrapAngle(to - down);
+          const k = clamp(depthNow / (depthAll / 3), 0, 1), side = Math.sign(this.has(sim, this.reads[0]).y - a.pos.y) || 1;
+          facing = down + side * k * Math.PI / 2;
+          const left = Math.max(this.snapAt + this.drop.time - t, 0.15);
+          return goTo(a, target, { facing, through: 0, speed: clamp(d / left / a.profile.vmax, 0.25, 1) });
         }
         return goTo(a, target, { facing, through: 0 });
       }
