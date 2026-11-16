@@ -51,12 +51,25 @@ const ZONE_FAKES = new Set(['insideZone', 'outsideZone', 'wideZone', 'splitZone'
 export const paFakeSide = new WeakMap<PlaySim, number>();
 /** PA_HINGE: one set step (yd). */
 const STEP = 0.45;
-/** PA_HINGE: where this lineman's run-look steps put him at time t, or null once the fake is over (or no zone fake).
- * `homeY` is his alignment; `snapX` his stance at the snap; `endMan` whether he is the backside end man. */
-export function paHingeSpot(sim: PlaySim, homeY: number, snapX: number, endMan: boolean): { x: number; y: number; facing: number } | null {
+/** PA_HINGE: his steps are done when his body is this close to the spot (yd). */
+const STEP_DONE = 0.2;
+/** PA_HINGE: the linemen (agent idx) whose steps are done this play. */
+const stepsDone = new WeakMap<PlaySim, Set<number>>();
+/** PA_HINGE: where this lineman's run-look steps put him, or null once his steps are done (or no zone fake).
+ * `homeY` is his alignment; `snapX` his stance at the snap; `endMan` whether he is the backside end man; `idx` / `pos`
+ * his own body. His look ends when his own steps are done (his body within STEP_DONE of the spot: he knows where his
+ * feet are), latched, and never later than the fake's end. Attempt 2 (Integration, 2026-11-16): attempt 1 held the look
+ * until plannedFakeEnd, and with QB_FOOTWORK bit 16's measured mesh (gun 1.45 s) the line set too late: PA sacks 25 -> 285
+ * on the QB lane's grid, the fake-side end unengaged on 114 of 192 pa_post_dig plays. The install teaches the steps,
+ * then the set; the look is not held through the mesh. */
+export function paHingeSpot(sim: PlaySim, homeY: number, snapX: number, endMan: boolean, idx: number, pos: { x: number; y: number }): { x: number; y: number; facing: number } | null {
   if (!PA_HINGE || sim.offCall.kind !== 'pass' || !ZONE_FAKES.has(sim.offCall.pass?.fake ?? '') || sim.t >= plannedFakeEnd(sim.offCall.formation.qb !== 'under')) return null;
   const side = paFakeSide.get(sim); if (!side) return null;
   const dir = sim.attackDir(sim.offense[0].team);
-  if (endMan) return { x: snapX - dir * 2 * STEP, y: homeY + side * STEP, facing: Math.atan2(side, dir) };
-  return { x: snapX, y: homeY + side * 2 * STEP, facing: Math.atan2(side * 0.5, dir) };
+  let done = stepsDone.get(sim); if (!done) stepsDone.set(sim, done = new Set());
+  if (done.has(idx)) return null;
+  const spot = endMan ? { x: snapX - dir * 2 * STEP, y: homeY + side * STEP, facing: Math.atan2(side, dir) }
+    : { x: snapX, y: homeY + side * 2 * STEP, facing: Math.atan2(side * 0.5, dir) };
+  if (Math.hypot(pos.x - spot.x, pos.y - spot.y) <= STEP_DONE) { done.add(idx); return null; }
+  return spot;
 }

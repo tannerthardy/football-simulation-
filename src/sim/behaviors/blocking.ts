@@ -343,14 +343,14 @@ export class PassProtector implements Behavior {
       a.behavior = this.releaseTo();
       return a.behavior.update(a, sim);
     }
-    // PA_HINGE: on a zone fake the line shows the zone until the fake's end, then converts to its protection. A man
+    // PA_HINGE: on a zone fake the line shows the zone with its steps, then converts to its protection (pa-look.ts). A man
     // who meets his rusher on the way engages as in any set.
     if (PA_HINGE && (isOL(a) || !!sim.offAlign.spots[a.slot]?.inline)) {
       const side = paFakeSide.get(sim) ?? 0;
       const line = this.coord.protectors.filter((p) => isOL(p) || !!sim.offAlign.spots[p.slot]?.inline);
       const endMan = !!side && line.length > 0 && line.reduce((m, p) => ((this.coord.homeY.get(p) ?? p.pos.y) - sim.ballY) * -side
         > ((this.coord.homeY.get(m) ?? m.pos.y) - sim.ballY) * -side ? p : m) === a;
-      const spot = paHingeSpot(sim, home, sim.snapX[a.idx] ?? a.pos.x, endMan);
+      const spot = paHingeSpot(sim, home, sim.snapX[a.idx] ?? a.pos.x, endMan, a.idx, a.pos);
       if (spot) {
         if (rA) {
           const contactPA = a.profile.radius + rA.profile.radius + 0.1 + a.player.measurables.armIn / 36 * 0.55;
