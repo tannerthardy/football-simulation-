@@ -42,7 +42,7 @@ import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
-import { calledLaunchX } from './called-drop.js';
+import { calledLaunchX, plannedDropX } from './called-drop.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
@@ -209,6 +209,9 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
     const short = Math.min(pocket, snapDepth + SHORT_SET);
     // POCKET_LEVEL: then level with the pocket, a request with a pace (his neighbors'), bounded by the short set and
     // the pocket's front from the call.
+    // POCKET_DROP: from the gun, the cup in front of the drop he knows from the call, on its clock.
+    const onDrop = POCKET_DROP ? pocketDropDepth(sim, clearance) : null;
+    if (onDrop !== null) return Math.min(pocket, Math.max(snapDepth, onDrop));
     const level = POCKET_LEVEL ? pocketLevelDepth(sim, b) : null;
     return level === null ? short : Math.min(pocket, Math.max(short, level));
   }
@@ -234,6 +237,27 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
  *   his man in front (stepPassRep's lateral reference is unchanged).
  * Null when it gives no depth (his neighbors still at the line). */
 export const POCKET_LEVEL = process.env.SET_SPOT !== '0' && process.env.POCKET_LEVEL !== '0';
+/** POCKET_DROP (experimental, off; POCKET_DROP=1, needs SET_SPOT, on since engine-72; POCKET_LEVEL's next bit; Integration, 2026-11-16): from
+ * the gun the interior set is the cup in front of the drop, on the drop's clock. NFL dropbacks from the gun hold the
+ * middle three OL a near-constant 3.8-4.1 yd in front of the QB through the whole drop (QB minus interior depth p50
+ * 3.8 / 3.8 / 3.9 / 4.0 / 4.1 / 4.0 / 3.8 yd at 0.5 / 0.8 / 1.0 / 1.3 / 1.5 / 2.0 / 2.5 s; scripts/diag/pass-operators/
+ * pocket-gap.py). His depth target at t is the QB's planned depth for the call at t (plannedDropX: the QB lane's plan,
+ * from the call alone, never the live QB behind him) less the interior clearance passSetDepth already uses (3.8 yd: the
+ * pocket's front at the launch point, the same constant along the way), no shallower than his snap spot and no deeper
+ * than the pocket's front. It replaces the short set and the neighbour level as his depth target while it applies; he
+ * still plays his man (the rep gives ground at that rate under control; a man who beats or drives him is physics).
+ * Under centre the NFL line does not follow the drop (the gap opens 1.1 -> 5.5 yd, as ours does), so it is gun only.
+ * Off (POCKET_LEVEL on), ours reached its short set early (1.3 vs the NFL's 0.9 yd at 0.5 s) and then lagged the drop
+ * (2.8 vs 3.5 yd at 2.0 s): retreat 0.8 / 1.0 / 1.2 yd/s over 0-0.5 / 0.5-1.0 / 1.0-1.5 s against the NFL's
+ * 0.4 / 1.2 / 1.8. */
+export const POCKET_DROP = process.env.SET_SPOT !== '0' && process.env.POCKET_DROP !== '0';
+function pocketDropDepth(sim: PlaySim, clearance: number): number | null {
+  const concept = sim.offCall.pass, gun = sim.offCall.formation.qb !== 'under';
+  if (!concept || !gun) return null;
+  const spot = sim.offAlign.spots[sim.qb.slot as keyof typeof sim.offAlign.spots]?.pos;
+  const qbSnap = { x: sim.snapX[sim.qb.idx] ?? sim.qb.pos.x, y: spot?.y ?? sim.ballY };
+  return sim.los - plannedDropX(concept.drop, gun, qbSnap, { x: sim.los, y: sim.ballY }, sim.t) - clearance;
+}
 const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
 function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {
   const L = protectPoint(sim), i = LINE_ORDER.indexOf(b.slot);

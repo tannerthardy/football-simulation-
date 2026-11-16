@@ -5,6 +5,7 @@
  * and closes. A back climbing straight up the field still has the backer
  * giving ground at about his speed. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.OFF_PEDAL = '0'; }); // engine-73: fixture recorded before OFF_PEDAL; Defense to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit --incremental --tsBuildInfoFile out/typescript/typecheck.tsbuildinfo",
-    "test": "vitest run --project core",
+    "test": "vitest run --project core --project core-defaults",
     "test:workflows": "vitest run --project workflows --maxWorkers=1",
     "test:integration": "vitest run --project workflows --project integration --maxWorkers=2",
     "test:research": "vitest run --project research",

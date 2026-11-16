@@ -1,8 +1,10 @@
+import { plannedFakeEnd } from './called-drop.js';
 /**
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
 import { ownRoutes } from './ball-estimate.js';
+import { paFakeSide } from './pa-look.js';
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
@@ -189,7 +191,8 @@ export function assignBehaviors(sim: PlaySim): void {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
       const spot = off.spots[a.slot];
-      const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+      // BACK_AS_THREE: the back who is #3 runs #3's flat, on the strong side.
+      const outside = ref === 'B' && concept.backIsThree ? off.strongSign : Math.sign(a.pos.y - sim.ballY) || off.strongSign;
       const blockLook = call.receiverBlockLook?.[a.slot as SkillSlot];
       const mkRoute = (id: string, delay = 0, conditional = false) => {
         const route = getRoute(id);
@@ -204,6 +207,11 @@ export function assignBehaviors(sim: PlaySim): void {
         return () => installBlockLook(a, sim, () => new RouteRunner(a, sim, route, outside,
           blockLook ? sim.t + delay : delay), true);
       };
+      // BACK_AS_THREE: the back is #3 in the route: on the snap to the flat on the strong side, out of the protection.
+      if (ref === 'B' && concept.backIsThree) {
+        a.behavior = mkRoute(concept.back, 0.1)();
+        continue;
+      }
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
         if (BACK_RELEASE && (assign === 'check' || (CONCEPT_MENU && BACK_ROUTES.has(assign)))) {
@@ -265,7 +273,10 @@ export function assignBehaviors(sim: PlaySim): void {
       // not on the QB's drop line; off, the fake point sat 0.4 yd off it and the QB dropped into him.
       const behind = Math.abs(back.pos.y - qb.pos.y) < 1;
       const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
-      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, 0.7);
+      // The fake ends when the call says (called-drop.ts plannedFakeEnd: the back, the QB and the line share it).
+      back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, plannedFakeEnd(sim.offCall.formation.qb !== 'under'));
+      // PA_HINGE: the line knows the fake's side from the call.
+      paFakeSide.set(sim, Math.sign(fakeY - sim.ballY) || off.strongSign);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;

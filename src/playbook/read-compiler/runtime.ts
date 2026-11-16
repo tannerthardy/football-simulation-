@@ -8,8 +8,9 @@ import { Rng } from '../../core/rng.js';
 import { generateTeam, type Team } from '../../league/team.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
-import { compile } from './compile.js';
+import { compile, PA_TABLES, tableId as tableIdOf } from './compile.js';
 import { DECLARED_BREAK } from './features.js';
+import { BREAK_DECL } from '../route-breaks.js';
 import { PLAN_ROLES } from './candidates.js';
 import type { PlanStyle } from './types.js';
 
@@ -51,17 +52,85 @@ const SECOND_KEYS = new Set(['slant_flat', 'stick', 'fade_flat', 'double_slants'
  * first hitch) removed them. As table entries they hold; levels from 2x2, pure on develop, is keyed too. */
 export const PLAN_KEYS_3 = process.env.PLAN_KEYS_3 !== '0';
 const THIRD_KEYS = new Set(['dagger', 'levels']);
+/** VERTS_KEYS (experimental, off; with PLAN_KEYS): the vertical concepts read as installed.
+ * - verts_hitch: its own read ("the middle-of-field safety: he stays middle: #2 seam; he shades to #2: #3 hitch under
+ *   the seam, then the backside seam") is a key on the defender over the seam: high the #2 seam, low the #3 hitch, one
+ *   look on the set; the backside vertical next; the back last (Gonzalez: "If he hitches again he has to move his eyes
+ *   to the back"). The QB reads the key on his own picture, as every PLAN_KEYS key. Drawn for trips: from 2x2 there is
+ *   no #3 on the seam's side, and the row does not apply (a misfit: the concept from a formation it is not drawn for).
+ *   Off, it compiled as a vertical peek with the hitch, ready 1.8 s, read last at 2.5 s (QB lane: through three
+ *   unreadable verticals by 2.1 s, at the hitch out of rhythm, then a run).
+ */
+export const VERTS_KEYS = process.env.VERTS_KEYS !== '0';
+const VERTS_KEY_TABLE: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean; after: ReceiverRef[] }> = {
+  verts_hitch: { low: 'S3', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the seam', onSet: true, after: ['W1', 'S1'] },
+};
 /** One beat of the drop: the hitch step (the compiler's BEAT). */
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
 const FIVE_STEP_BEAT = 0.8;
-const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
+const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS !== '0';
+/** GRASS_READ (experimental, off): the plan marks the reads thrown before their break into space, for the QB lane's grass
+ * read (QB_FOOTWORK bit 8), with the landing area as installed. Which reads, from the sources:
+ * - a declared vertical (go, seam, fade): read at the release and thrown to a spot downfield, "the moment his back foot
+ *   hits", "well before the receiver hits the 18-22 yard mark" (Gonzalez, four verticals, via Smart Football); the fade
+ *   read during the drop steps after the escape (Marinelli, Gridiron Strategies);
+ * - the corner when it is the first read and not one half of a key: "as he takes his five step drop, his eyes go to that
+ *   corner route... If that grass is open he throws the ball on his 5th" (Win With The Pass, Mesh). A keyed corner
+ *   (smash) is thrown off its defender, not the grass.
+ * The post and the deep out are not: Walsh's flanker post is "five big steps and a hitch" and the outs are timed to the
+ * break (49ers notes via Smart Football), thrown on the break, not into grass before it.
+ * The landing area is the point on his installed route at the depth the throw is taught to: for a vertical, the ball
+ * leaves "well before the receiver hits the 18-22 yard mark" (Gonzalez), so it is thrown to that band, at its middle,
+ * 20 yd. No source gives the corner a spot ("look at the area he is going", Win With The Pass): the same 20 yd along
+ * his installed path is a stated choice. `t` is the route time he reaches it in this compile's sample (extrapolated
+ * along his last half second when the sample ends first). */
+const GRASS_READ = process.env.GRASS_READ === '1';
+/** GRASS_READ: the landing depth past the line (yd): the middle of Gonzalez's 18-22 yd band for a vertical; the corner's
+ * the same, a stated choice (above). */
+const GRASS_DEPTH: Readonly<Record<string, number>> = { go: 20, seam: 20, fade: 20, corner: 20 };
 /** CONCEPT_DROPS: reads taken in one look besides a key (the members share a place in the rhythm). */
 const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
 /** The coached key per concept, and the danger: the defender the coaching warns about on the answer (the window
  * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
  * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
  * safety will allow"). Key and danger sources are in docs/reviews/2026-11-14-read-plan-table.md. */
+/** BACK_AS_THREE: the keys a concept's compiled plan carries from trips, declared for the call with the back as #3
+ * (flood from trips compiles to a key on the playside curl-flat defender: the out high, the #3 flat low). */
+const BACK_THREE_KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
+  flood: { low: 'B', high: 'S2', role: 'playside_curl_flat', deep: false, danger: 'the corner over the out' },
+};
+/** The key's sitter default (2026-11-16, for the QB lane's key-man repair; data, read by nobody else): when the key man
+ * neither sinks nor jumps by the cue, the route he is not standing on, as the concept's read line names it. Per concept,
+ * not per role: the same role defaults low in one concept and high in another, by where that defender stands between
+ * the two. The plan carries it as `key.sits`, resolved with the key's own refs (PLAN_ROLES, the back as #3). Sources are
+ * the read lines in concepts.ts unless noted; `analogue` marks a default no source gives for the sit case. It is the
+ * default for a man between the two routes: a man who has not moved but stands on one of them has taken it, and the
+ * throw is the other (the QB lane's QB_KEY_READ; cover 2's squatting corner on smash's hitch). */
+const SITS: Record<string, { side: 'low' | 'high'; analogue?: true; why: string }> = {
+  // Hook key.
+  double_slants: { side: 'high', why: 'read: "he holds: #2 slant"' },
+  seam_slant: { side: 'high', why: 'read: "he stays inside: #2 slant"' },
+  hitch_cross: { side: 'high', why: 'read: "he sits: the cross past him"' },
+  drive: { side: 'low', why: 'the shallow is the primary (Throw Deep, Drive): a Mike who stays at his depth leaves it under him' },
+  levels: { side: 'low', analogue: true, why: 'only "drops: the in; squeezes the in: the dig" is sourced (Football Nation USA); the in, on time' },
+  // Deep key over a vertical / the free safety.
+  verts_hitch: { side: 'high', why: 'read: "he stays middle: #2 seam"' },
+  dagger: { side: 'low', analogue: true, why: 'only "confirm the deep safety has been cleared" is sourced; a safety who stays deep keeps the seam: the dig' },
+  pa_shot: { side: 'low', why: '"If the FS plays low, he can throw the post": a free safety who stays deep keeps it: the dig' },
+  pa_post_dig: { side: 'low', why: 'as pa_shot: a free safety who stays deep keeps the post: the dig' },
+  // Flat / curl-flat.
+  hitch_out: { side: 'low', why: 'read: "he sits on the hitch: #2 out"' },
+  stick: { side: 'low', why: 'the QB lane\'s flat rule, as taught: he does not widen, throw the flat (Throw Deep, Stick)' },
+  slant_flat: { side: 'low', why: 'as stick: the curl-flat defender who does not widen leaves the flat' },
+  quick_outs: { side: 'low', why: 'as stick: the flat defender who does not widen leaves the out' },
+  double_outs: { side: 'low', analogue: true, why: 'read covers drops / jumps only; the flat rule: #2\'s quick out' },
+  flood: { side: 'low', why: 'the flat rule (the back as #3\'s flat under the out)' },
+  // Corner key: by the shell (the QB lane's corner reads are sound); the hitch or flat on time.
+  smash: { side: 'low', why: '"if the cornerback sinks... throw the hitch" on time (Brown, Throw Deep): the corner needs him to come up' },
+  corner_flat: { side: 'low', analogue: true, why: 'read covers sinks / jumps only; the flat on time, as smash' },
+  fade_flat: { side: 'low', analogue: true, why: 'read covers sinks / squats only; the flat on time, as smash' },
+};
 const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
   // The four the compiler keyed on another defender.
   drive: { low: 'W2', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' },
@@ -129,7 +198,11 @@ export interface InstalledPlan {
   outlet: ReceiverRef | null;
   alert: ReceiverRef | null;
   /** Defender key: read the defender between `low` and `high` at `cueBy` s after the snap. */
-  key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number; danger?: string } | null;
+  key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number; danger?: string; sits?: ReceiverRef } | null;
+  /** Play action: when he plants out of the fake and snaps his head around (the compile's QB set, after the fake and
+   * the drop that follows it, as the flags in force run them). Data for the QB lane's bit 16, which cues a keyed play
+   * action's read on it; `key.cueBy` stays the dropback's. */
+  plantAt?: number;
   /** Triangle: three routes read as one picture, top-down; vertical peek: the verticals as one look, then the back. */
   triangle: ReceiverRef[] | null;
   /** The rhythm each read is installed on, for the QB lane's acceptance rule (data only; nothing reads it yet). The
@@ -142,12 +215,45 @@ export interface InstalledPlan {
    * (QB lane, 2026-11-15), who times a step from his own drop. `at` is this compile's estimate in seconds, for
    * diagnostics, and goes once the QB lane reads `n`. Reads on one look (a keyed high-low; mesh's two crossers) share a
    * place and an `n`; `group` names the place's members. */
-  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; n: 0 | 1 | 2; at: number; ready: number; onTime: boolean; group?: ReceiverRef[] }[];
+  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; n: 0 | 1 | 2; at: number; ready: number; onTime: boolean; group?: ReceiverRef[];
+    /** Play action (data for the QB lane's bit 16): read 1 is decided on the plant out of the fake ("pull the ball out
+     * from the ball-carrier and snap his head around to identify his first read", Bleacher Report, Football 101: play
+     * action) and thrown on its own ready, the hitch, never skipped for being unready at the plant. */
+    decided?: 'plant';
+    /** GRASS_READ: a read thrown before its break into space. `landing` is where the route is going, in the plan's frame
+     * (x yd past the line, y yd from the ball toward the strength, as the compiler's trajectories), and `t` the route time
+     * he reaches it. `decided` is 'step': readable or not by his step `n`, no dwell (the mesh corner's "throws the ball on
+     * his 5th" and the seam's "the moment his back foot hits" are the same rule). */
+    grass?: { landing: { x: number; y: number }; t: number; decided: 'step' } }[];
   /** DECLARED_BREAK: per read, the route's declared break as installed (route time from this compile's sample of the
    * installed route, never a live play), its throw family, and the plan's anchor lead. The quarterback lane's
    * `leadFor(passer, throwFamily, route)` replaces the anchor with his own lead when a read is checked; the throwing
    * motion is theirs. Absent with the flag off. */
   reads?: { ref: ReceiverRef; breakAt: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number }[];
+}
+
+/** GRASS_READ: the grass read for a route, or null when it is not one (see GRASS_READ). */
+function grassOf(r: { routeId: string; trajectory: Array<{ t: number; x: number; y: number }> } | undefined, first: boolean, keyed: boolean):
+  { landing: { x: number; y: number }; t: number; decided: 'step' } | null {
+  // Half of a key (smash's corner, dagger's and VERTS_KEYS' seam) is thrown off the key defender, never into grass.
+  if (!r || keyed) return null;
+  const vertical = BREAK_DECL[r.routeId]?.at === 'vertical';
+  if (!vertical && !(r.routeId === 'corner' && first)) return null;
+  const depth = GRASS_DEPTH[r.routeId] ?? 20, P = r.trajectory;
+  if (P.length < 2) return null;
+  const i = P.findIndex((p) => p.x >= depth);
+  if (i === 0) return { landing: { x: +P[0].x.toFixed(1), y: +P[0].y.toFixed(1) }, t: +P[0].t.toFixed(2), decided: 'step' };
+  if (i > 0) {
+    // Where he crosses the landing depth, between the two samples either side of it.
+    const a = P[i - 1], b = P[i], w = (depth - a.x) / (b.x - a.x);
+    return { landing: { x: depth, y: +(a.y + (b.y - a.y) * w).toFixed(1) }, t: +(a.t + (b.t - a.t) * w).toFixed(2), decided: 'step' };
+  }
+  // The sample ended short of the landing depth: carry him on along his last half second.
+  const b = P[P.length - 1], a = P.find((p) => p.t >= b.t - 0.5) ?? P[P.length - 2];
+  const dt = b.t - a.t, vx = dt > 0 ? (b.x - a.x) / dt : 0, vy = dt > 0 ? (b.y - a.y) / dt : 0;
+  if (vx <= 0.5) return null;
+  const k = (depth - b.x) / vx;
+  return { landing: { x: depth, y: +(b.y + vy * k).toFixed(1) }, t: +(b.t + k).toFixed(2), decided: 'step' };
 }
 
 const cache = new Map<string, InstalledPlan | null>();
@@ -164,12 +270,14 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}${VERTS_KEYS ? 1 : 0}${PA_TABLES ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}|${concept.backIsThree ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
   let plan: InstalledPlan | null = null;
   try {
+    // BACK_AS_THREE's and PA_TABLES' tagged calls are installed from their concept's tables (its key, order and looks).
+    const tableId = tableIdOf(concept);
     const compiled = compile(concept, formationId, false, teams.off, teams.def), c = compiled.chosen;
     if (c) {
       plan = {
@@ -180,7 +288,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const routes = new Map(compiled.routes.map((r) => [r.ref, r]));
       // PLAN_KEYS: the coached key, its cue at the top of the drop when the low route is first a throw (the
       // compiler's own rule: at the set, or 0.2 s before the low route is ready); the pair leads the order.
-      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(concept.id)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(concept.id)) ? KEYS[concept.id] ?? (PLAN_ROLES ? ROLE_KEYS[concept.id] : undefined) : undefined;
+      let k = PLAN_KEYS && (PLAN_KEYS_2 || !SECOND_KEYS.has(tableId)) && (PLAN_KEYS_3 || !THIRD_KEYS.has(tableId)) ? KEYS[tableId] ?? (PLAN_ROLES ? ROLE_KEYS[tableId] : undefined) : undefined;
       // PLAN_ROLES: a key is the coached pair of routes, so it holds in every formation: its refs are resolved by the
       // routes the concept installs at them (S1 -> strong 1, W2 -> weak 2, B -> the back), preferring the same side.
       if (k && PLAN_ROLES) {
@@ -190,21 +298,47 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const low = find(k.low), high = find(k.high);
         if (low && high && low !== high) k = { ...k, low: low as ReceiverRef, high: high as ReceiverRef };
       }
+      // VERTS_KEYS: the vertical concepts' installed key, only where both routes are on one side (trips for verts_hitch).
+      const vk = VERTS_KEYS && PLAN_KEYS ? VERTS_KEY_TABLE[tableId] : undefined;
+      if (vk) {
+        const vlo = routes.get(vk.low), vhi = routes.get(vk.high);
+        if (vlo && vhi && vlo.side === vhi.side && vlo.routeId === (concept.strong as any)[3] && vhi.routeId === (concept.strong as any)[2]) k = vk;
+      }
+      // BACK_AS_THREE: the back is #3 on this call: #3's place in the key is his, and he is a read, not the outlet. A
+      // concept whose key the compiler finds from trips' geometry (flood: the curl-flat defender, the out high, the flat
+      // low) keeps it when the back is the flat: from 2x2 his flat starts in the backfield and the geometry no longer
+      // finds the pair, so it is declared.
+      if (concept.backIsThree && PLAN_KEYS && !k && !plan.key) k = BACK_THREE_KEYS[tableId];
+      if (concept.backIsThree) {
+        if (k) k = { ...k, low: k.low === 'S3' ? 'B' : k.low, high: k.high === 'S3' ? 'B' : k.high };
+        if (plan.outlet === 'B') plan = { ...plan, outlet: null };
+        if (!plan.order.includes('B')) {
+          const before = concept.progression.slice(0, concept.progression.indexOf('B')).filter((r) => plan!.order.includes(r)).pop();
+          const at = before ? plan.order.indexOf(before) + 1 : 0;
+          plan = { ...plan, order: [...plan.order.slice(0, at), 'B', ...plan.order.slice(at)] };
+        }
+      }
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
-        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger }, triangle: null,
+        const sit = SITS[tableId];
+        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger, ...(sit ? { sits: sit.side === 'low' ? k.low : k.high } : {}) }, triangle: null,
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
-      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[concept.id]) plan = { ...plan, key: { ...plan.key, danger: DANGER[concept.id] } };
+      if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[tableId]) plan = { ...plan, key: { ...plan.key, danger: DANGER[tableId] } };
+      // VERTS_KEYS: after verts_hitch's key, the backside vertical, then the strong go (the back is the outlet).
+      if (vk && plan.key && plan.key.low === vk.low && plan.key.high === vk.high) {
+        const after = vk.after.filter((r) => routes.has(r));
+        plan = { ...plan, order: [vk.high, vk.low, ...after, ...plan.order.filter((r) => r !== vk.high && r !== vk.low && !after.includes(r))] };
+      }
       // PLAN_KEYS: one named install where the sources disagree (a pure order: his eyes go in this order).
-      const io = PLAN_KEYS ? (INSTALL_ORDER[concept.id] ?? (PLAN_ROLES ? ROLE_ORDER[concept.id] : undefined))?.filter((r) => routes.has(r)) : undefined;
+      const io = PLAN_KEYS ? (INSTALL_ORDER[tableId] ?? (PLAN_ROLES ? ROLE_ORDER[tableId] : undefined))?.map((r) => (concept.backIsThree && r === 'S3' ? 'B' : r)).filter((r) => routes.has(r)) : undefined;
       if (io?.length) plan = { ...plan, style: 'pure', key: null, triangle: null, alert: null,
         order: [...io, ...plan.order.filter((r) => !io.includes(r))] };
       // OUTLET_LAST: the outlet leaves the field order; initPlan reads him after everyone else.
       if (OUTLET_LAST && plan.outlet) plan = { ...plan, order: plan.order.filter((r) => r !== plan!.outlet) };
       // PLAN_ROLES: a half-field read's back comes after the key pair, ahead of the backside.
-      if (PLAN_ROLES && plan.outlet && plan.key && BACK_AFTER_KEY.has(concept.id)) {
+      if (PLAN_ROLES && plan.outlet && plan.key && BACK_AFTER_KEY.has(tableId)) {
         const front = plan.order.filter((r) => r === plan!.key!.low || r === plan!.key!.high);
         plan = { ...plan, order: [...front, plan.outlet, ...plan.order.filter((r) => !front.includes(r) && r !== plan!.outlet)] };
       }
@@ -225,8 +359,8 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       // is on the set, not the hitch.
       const key = plan.key;
       const groups: ReceiverRef[][] = [];
-      if (CONCEPT_DROPS_RHYTHM && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
-      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[concept.id] : undefined;
+      if ((CONCEPT_DROPS_RHYTHM || (vk && key?.low === vk.low && key?.high === vk.high)) && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
+      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[tableId] : undefined;
       if (look && look.every((r) => seq.includes(r))) groups.push(look);
       const groupOf = (r: ReceiverRef) => groups.find((g) => g.includes(r));
       let place = -1;
@@ -256,8 +390,11 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const at = +stepAt(step).toFixed(2);
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         const g = groupOf(ref);
-        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}) };
+        const grass = GRASS_READ ? grassOf(routes.get(ref), placeOf.get(ref) === 0 && ref !== plan!.outlet, !!keyedRef || !!(key && (ref === key.low || ref === key.high))) : null;
+        const plant = concept.family === 'playaction' && ref !== plan!.outlet && placeOf.get(ref) === 0;
+        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}), ...(grass ? { grass } : {}), ...(plant ? { decided: 'plant' as const } : {}) };
       });
+      if (concept.family === 'playaction') plan.plantAt = +set.toFixed(2);
       // CONCEPT_DROPS: the key is read on its place's beat.
       if (keyStep !== null && plan.key) plan = { ...plan, key: { ...plan.key, cueBy: +stepAt(steps[keyStep]).toFixed(2) } };
       const decl = seq.map((ref) => ({ ref, d: routes.get(ref)?.declaredBreak })).filter((x) => x.d);

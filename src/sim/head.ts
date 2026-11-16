@@ -83,12 +83,18 @@ export function stepHeads(sim: PlaySim): void {
       const p = isAgent(w.target) ? sim.perception.perceive(w.target.idx, a.profile.reactionTime).pos : w.target;
       toward = Math.atan2(p.y - a.pos.y, p.x - a.pos.x);
     }
-    const neck = neckRange(a);
-    const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
-    head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
-    head = facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
-    a.head = head;
+    a.head = turnHead(a, head, toward, step);
   }
+}
+
+/** The one head turn: from `head` toward the bearing `toward` (rad, field frame) by at most `step` rad, within the
+ * neck's range off his body facing, over the shoulder for a target behind him. stepHeads turns every head with it; the
+ * QB lane turns the passer's with it (QB_HEAD). */
+export function turnHead(a: Agent, head: number, toward: number, step: number): number {
+  const facing = a.body.facing, neck = neckRange(a);
+  const lim = facing + Math.max(-neck, Math.min(neck, sideOf(angDiff(toward, facing), angDiff(head, facing))));
+  head = head + Math.max(-step, Math.min(step, angDiff(lim, head)));
+  return facing + Math.max(-neck, Math.min(neck, angDiff(head, facing)));
 }
 
 /** Whether `bearing` (rad, field frame) is inside the cone of a head pointing `head`. */

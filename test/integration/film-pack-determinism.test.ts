@@ -29,7 +29,7 @@ describe('native film pack reproducibility', () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
-  }, 240_000); // Two required native games; no broad campaign or statistical gate.
+  }, 480_000); // Two required native games (about 190 s alone, 240 s was too tight on a loaded runner); no broad campaign or statistical gate.
   // Raised from 180 s (CEO, 2026-10-28): develop already took 163 s on a 4-core cloud container, and the
   // engaged-flow law (#347) gives seed 101 more plays (134 -> 142) at 0.635 s each (was 0.596): 90 s per build.
 });

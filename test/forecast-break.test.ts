@@ -10,6 +10,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function cornerFlat(flag: string, seed: number) {
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
   vi.stubEnv('DECLARED_BREAK', '0'); // engine-68: this file tests the legacy forecast's break; DECLARED_BREAK replaces that path
   vi.stubEnv('FORECAST_BREAK', flag);
   // Pinned off: with the back released he is a progression read, the leftover W2 route lands last, and QB_RHYTHM's

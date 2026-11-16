@@ -13,6 +13,7 @@
  * look logic does not depend on how the alarm arose, so it is asked directly. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; }); // engine-73: fixture recorded before QB_FOOTWORK; QB to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

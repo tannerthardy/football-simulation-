@@ -21,13 +21,14 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { supportParams } from '../../physics/support.js';
 import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
-import { dropSpec } from '../called-drop.js';
+import { dropSpec, plannedFakeEnd, plannedSnapAt } from '../called-drop.js';
 import { PUNCH } from '../engagement.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
-import { GUN_SNAP, handoffReach, snapSecured } from '../ball-transfer.js';
+import { handoffReach } from '../ball-transfer.js';
+import { HEAD_RATE as SHARED_HEAD_RATE, turnHead } from '../head.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
@@ -355,6 +356,9 @@ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
  * installed count is unchanged, and so is a screen's receiver (his release is the called count). A slow screen's "he has settled" is likewise read from where the quarterback has him,
  * not from the receiver's own flag and true position. Receivers with no installed picture are unchanged. */
 const QB_SEEN_OUT = process.env.QB_SEEN_OUT !== '0';
+/** QB_CALL_ROUTES (information rule, 2026-11-16): who is on a route and which route is his call (the play's install,
+ * known from the huddle; a check-release man once his picture has him out), never the receiver's live behavior object. */
+const QB_CALL_ROUTES = process.env.QB_CALL_ROUTES !== '0';
 /** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
  * state use where he has them: his forecast of the man, else his delayed picture. That is the side a receiver is on
  * (look-off decoy, hot side), the verticals' stems for the peek, whether a man is in his clear look, the fallback
@@ -402,6 +406,24 @@ const QB_KEY_MAN = process.env.QB_KEY_MAN !== '0';
  * reading noise on a place along the stretch scales to a speed. Both chosen. */
 const KEY_MOVE = 1.0;
 const KEY_MOVE_NOISE = 5;
+/** QB_KEY_READ (experimental, off; QB_KEY_READ=1; with QB_KEY_MAN; docs/reviews/2026-11-16-key-man.md, Integration's
+ * ruling): the key read as taught. (a) The key man is named pre-snap from the shell as he reads it, among coverage
+ * players in his picture (2 yd or more off the ball, or detached wide; never a man on the line in a stance): a flat /
+ * curl-flat key is the corner under a two-high read with a hard corner (6 yd or shallower), else the overhang inside
+ * him; a disguise that fools his shell read names the wrong man, and that error stays. Off, the second-widest man
+ * within 8 yd from the true alignment, the strong-side end from doubles on 42 of 48 plays. (b) The read is the man's
+ * movement after the snap in his picture: his displacement along the low-high stretch since the snap; past the commit
+ * margin toward the high route he has taken it (throw low), toward the low route he has jumped it (throw high). A man
+ * who has not committed by the cue gets the concept's coached default for a sitter (the plan's `key.sits`, Rules'
+ * SITS table, #813; without it, a flat / curl-flat key's "if he doesn't widen, throw the flat", the low route). Off,
+ * where he stands against the stretch's midpoint. Once made the read is committed: it changes once at most, only on a
+ * perceived move past the margin the other way before the throw. */
+const QB_KEY_READ = process.env.QB_KEY_READ !== '0';
+/** QB_KEY_READ: the commit margin (yd of displacement along the stretch since the snap), chosen; the exit is half.
+ * Numeric so the staged gate reads it a level either side. */
+const KEY_COMMIT = Number(process.env.QB_KEY_COMMIT ?? 1);
+/** QB_KEY_READ: a man within this share of the stretch of a route is standing on it (chosen). */
+const KEY_ON_ROUTE = 0.25;
 /** QB_KEY_THROW (experimental, off; QB_KEY_THROW=1; with QB_KEY_MAN): he stays on the key read's answer through its
  * break. The key tells him which side of the stretch the conflict defender left; it does not tell him the top is
  * open. So the read chooses where he looks and removes the wait for a second look at the other half: he holds on the
@@ -428,10 +450,22 @@ const PLAN_CLOCK = process.env.PLAN_CLOCK !== '0';
  * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
  * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
 const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
+/** QB_FELT_EDGE (experimental, off; QB_FELT_EDGE=1): the blind-side lag is continuous in the rusher's bearing off his
+ * facing. Off, freeBound adds FREE_BLIND_LAG x (1 - pocket presence) to a rusher's believed arrival the moment his
+ * bearing passes 1.8 rad, a step function of his own facing: on engine-70 (seeds 11 / 23, 392 pass plays,
+ * scripts/diag/eyes/threshold-flips.ts) the edge flipped 2,217 times, 20% undone within 0.3 s. The two channels'
+ * pictures of the man agree at the edge (jump p50 0.02 yd, as an ordinary tick), so the channel choice in feltLive
+ * stays a single edge; the step that mattered is the lag. On: the lag rises smoothly from 0 at FELT_IN_VIEW to its
+ * full value at FELT_BLIND (a smoothstep), so pressure() and urgency are continuous across the edge of his view. No
+ * state: it is a function of what he sees now. The band is chosen (the edge of his field less 0.15 rad). Most of the
+ * edge's flips are his facing swinging 0.4-0.8 rad and back within 0.3 s, a controller question this does not
+ * address. */
+const QB_FELT_EDGE = process.env.QB_FELT_EDGE === '1';
 /** QB_FACE_SEEN (experimental, off; QB_FACE_SEEN=1; information rule): his pocket facing turns to his picture of the
  * read (his forecast of the man, `has`), not the receiver's true position. Off, bodyFacing aimed at `read.pos` and the
  * shoulder read's `.pos`: the truth, however small the difference (found measuring his facing swing, 2026-11-16). */
 const QB_FACE_SEEN = process.env.QB_FACE_SEEN !== '0';
+const FELT_IN_VIEW = 1.65, FELT_BLIND = 1.8;
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
@@ -445,7 +479,7 @@ const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency
  * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps the dwell moves him on as before.
  * Triangle, peek, key and hot reads are unchanged by this bit. Bits 2 (the open-hip drop, drop pacing) and 4 (climb /
  * slide / reset) are not built. */
-const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
+const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 3) | 0;
 const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
 /** QB_FOOTWORK bit 2 (first part: his facing). The drop opens his hips: his chest turns from downfield toward his
  * picture of read 1 as he gives ground, in proportion to the depth he has dropped (the coached crossover drop, hips
@@ -457,6 +491,52 @@ const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
  * Part 3: the crossover drop, hips side-on to travel toward read 1's side over the first third of the depth, and the
  * drop paced to its measured time. Read with bit 1. Not built yet in bit 2: the step into the throw. */
 const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
+/** QB_FOOTWORK bit 16 (split from bit 2, Integration 2026-11-16): the play-action fake held to the measured mesh. Not
+ * to land alone: with it a gun PA plants at 2.3 s (the NFL's 2.2) but his read after the plant is a dropback's (throw
+ * 3.2 s against the NFL's 2.3), and PA sacks go 14.8 -> 27.1% staged; it lands with PA reads decided on the plant out
+ * of the fake. */
+// (FW_PA_FAKE is read in called-drop.ts's plannedFakeEnd, which the back, the QB and the line share.)
+/** QB_EDGE_THREAT (experimental, off; QB_EDGE_THREAT=1; Integration's ruling 2026-11-16, Flex's long-hold measurement):
+ * the step-up answers an edge rusher who threatens him, into room. pocketMove's edge test (his home 1.8 + 1.2 pp yd up)
+ * fired on any defender he felt wide and level within 2.5 + 3 pp yd, blocked or not, closing or not: on long holds the
+ * edge rushers ridden past by the tackles kept it true for most of a second a play, and he walked 1.4 yd up into the
+ * interior (staged QB depth 7.85 -> 6.70 yd from 2.0 to 3.5 s, NFL 7.4 -> 7.7; scripts/diag/escape/long-hold-climb.ts).
+ * With it, a rusher counts only if, in his felt picture (felt(): the blind side lagged as his feel allows, never the true
+ * position), he is not tied up by a blocker he sees (seenTied: his plain picture of his own players) and is closing on
+ * him; the forward home holds only while his picture has room ahead (nearest body within 30 deg ahead: teammates seen,
+ * defenders felt). Enter and exit margins on both, the exit on the far side: once he steps up it is a committed move
+ * until the threat or the room clears its exit margin. Margins chosen. */
+const QB_EDGE_THREAT = process.env.QB_EDGE_THREAT !== '0';
+const EDGE_CLOSE_IN = 1.5, EDGE_CLOSE_OUT = 0.5; // yd/s toward him (chosen)
+const EDGE_ROOM_IN = 2.0, EDGE_ROOM_OUT = 1.4; // yd ahead (chosen)
+/** QB_FOOTWORK bit 8: the grass read (docs/reviews/2026-11-15-drop-design-stage1.md, "Design: the grass read"; Rules +
+ * Coaching's vertical-ready note on #780). A first read thrown before its break into space (a vertical, a corner, a
+ * post, a deep out) is read on the grass it is going to, during the drop: his eyes go to the landing area from the
+ * drop's start; it is readable when, in his pictures, the receiver is out of the collision and no defender stands between
+ * him and the landing area (beaten or under him); the throw goes by his last drop step if it clears his price (the
+ * window prices the throw to the aim point: anticipation), and if it has not gone by the set he is on to his next read at
+ * once ("on his fifth step, the ball should be gone or he should be on to his mesh read", Win With The Pass). The plan's
+ * own fields (grass reads, landing areas) are taken when it hands them over; until then the grass routes and the landing
+ * area are his own (installed route families; his forecast of the man at the ball's arrival: his wind-up plus its flight). Read with bits 1+2. */
+const FW_GRASS = (QB_FOOTWORK & 8) !== 0;
+/** QB_FOOTWORK bit 16 (with the fake held to the measured mesh, called-drop.ts plannedFakeEnd): the play-action read
+ * decided on the plant out of the fake, as taught ("pull the ball out from the ball-carrier and snap his head around to
+ * identify his first read"; not there, he "operates as if it is a passing play": Bleacher Report, via Rules). Read 1 is
+ * decided on the plant: a keyed play action's key is read at the plan's plant (`plan.plantAt`, Rules #819), not the
+ * dropback's cue, and there is no look-off before read 1; read 1 is thrown on its own ready (the hitch after the plant),
+ * never skipped for being unready at the plant (the first build did, and threw read 1 on the plant 0 of 424 times). The
+ * fake alone (a dropback's read after a 2.3 s plant) took staged PA sacks 14.8 -> 27.1%; the pair is carded together. */
+const FW_PA_READ = (QB_FOOTWORK & 16) !== 0;
+/** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids). Chosen; GRASS_READ's plan
+ * fields replace it. */
+// The set agreed with Rules from the sources (2026-11-16): go and fade (Gonzalez; Marinelli); the corner as read 1 and
+// not half of a key (Win With The Pass, mesh). Not the seam at the plant (decided "as he passes by the linebacker":
+// the plan's later step carries it); not the post or the deep out (Walsh: thrown on the break).
+const GRASS_ROUTES = new Set(['go', 'fade', 'corner']);
+/** GRASS_READ (Rules, #802): the plan marks grass reads (`rhythm[i].grass`: landing in the plan's frame, the route time
+ * there, decided on the entry's step n). With it, the plan is the source of which reads are grass reads and where they
+ * land; without it, the fallbacks above (read 1 only, decided on the plant). */
+const GRASS_FIELDS = process.env.GRASS_READ === '1';
 /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
  * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
  * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
@@ -626,6 +706,13 @@ const SECURE_T = 0.3;
 const DISLODGE = 0.5;
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
+/** QB_HEAD (experimental, off; QB_HEAD=1; Integration's go 2026-11-16, Defense's zone trace): his head turns to where
+ * he wants to look at the shared head's rate within the shared neck range (head.ts's turnHead, the one head model), and
+ * his picture is taken along where his head points, not at the point he wants. Off, his head is set to his gaze point
+ * every tick, so it jumped between reads in a tick and the zone defenders who lean on his eyes stepped with it. The
+ * hot look's timed turn (HEAD_RATE, 400 deg/s) is a double count under it and comes out: his eyes are there when his
+ * head is, then the glance. */
+const QB_HEAD = process.env.QB_HEAD !== '0';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -651,7 +738,7 @@ export class QBPass implements Behavior {
   private lastHotBest: ThrowEval | null = null;
   private noThrowSince = -1;
   private noThrowLast = -99;
-  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
+  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number; glance?: number } | null = null;
   hotPick: { t: number; slot: string; alarmAt: number | null; looked: number; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
   private readStart = -1;
   private setAt = -1;
@@ -715,7 +802,7 @@ export class QBPass implements Behavior {
   private lookOffChecked = false;
   private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
   /** READ_PLAN: the installed plan this play runs (null: the hand-written progression). */
-  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean; role: string; man: Agent | null } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
+  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean; role: string; man: Agent | null; sits?: Agent | null } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
   /** READ_PLAN: the key read once made (diagnostic): the defender he read (null: none in the stretch), where he
    * put him between the low (0) and high (1) routes, and the throw it gave. */
   keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
@@ -797,7 +884,8 @@ export class QBPass implements Behavior {
       believed += r.p;
     }
     const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[]; assigned?: Map<Agent, Agent | null> } }).coord).find((c) => c?.protectors);
-    const blockers = coord ? coord.protectors.length : 5;
+    // QB_CALL_ROUTES: his protection count is the call's, taken once (the snap), not the live protector list.
+    const blockers = QB_CALL_ROUTES ? (this.callBlockers ??= coord ? coord.protectors.length : 5) : coord ? coord.protectors.length : 5;
     this.rushExcess = lineMen + believed - blockers;
     if (BLITZ_SKILL) {
       // The call he knows: who has a blocker at the snap (read once, as his protection call; not the rep's later truth).
@@ -836,15 +924,15 @@ export class QBPass implements Behavior {
   ) {
     const gun = sim.offCall.formation.qb !== 'under';
     // GUN_SNAP: his drop starts when the snap is secured in his hands.
-    this.snapAt = gun ? (GUN_SNAP ? snapSecured(a.pos, { x: sim.los, y: sim.ballY }) : 0.3) : 0.1;
+    this.snapAt = plannedSnapAt(gun, a.pos, { x: sim.los, y: sim.ballY });
     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
-    // QB_FOOTWORK bit 2: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
+    // QB_FOOTWORK bit 16: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
     // scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s, ridden
     // 0.2 s), not an absolute 0.7 s that in the gun left a 0.2 s turn after he had the ball (nobody bites on that).
-    if (concept.family === 'playaction') this.fakeUntil = FW_HIPS ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
+    if (concept.family === 'playaction') this.fakeUntil = plannedFakeEnd(gun);
     this.mind = sim.qbMind;
     for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
     this.mind.receiverAt = (r) => this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? null;
@@ -860,7 +948,7 @@ export class QBPass implements Behavior {
     const seen = new Set<Agent>();
     for (const ref of refs) {
       const r = this.receiverFor(sim, ref);
-      if (r?.behavior.passOption && !seen.has(r)) {
+      if (r && (QB_CALL_ROUTES ? this.receiverForecasts.has(r) : r.behavior.passOption) && !seen.has(r)) {
         this.reads.push(r);
         seen.add(r);
       }
@@ -868,7 +956,7 @@ export class QBPass implements Behavior {
     // Anyone else running a route is a late option (not on a screen: the
     // other routes clear coverage).
     if (this.concept.family !== 'screen') for (const o of sim.offense) {
-      if (!seen.has(o) && o.behavior instanceof RouteRunner) {
+      if (!seen.has(o) && (QB_CALL_ROUTES ? this.receiverForecasts.has(o) : o.behavior instanceof RouteRunner)) {
         this.reads.push(o);
         seen.add(o);
       }
@@ -882,7 +970,7 @@ export class QBPass implements Behavior {
     if (!p) return false;
     const ag = (ref: ReceiverRef | null) => {
       const r = ref ? this.receiverFor(sim, ref) : null;
-      return r?.behavior.passOption ? r : null;
+      return r && (QB_CALL_ROUTES ? this.receiverForecasts.has(r) : r.behavior.passOption) ? r : null;
     };
     const seen = new Set<Agent>(), reads: Agent[] = [];
     const push = (r: Agent | null) => { if (r && !seen.has(r)) { reads.push(r); seen.add(r); } };
@@ -890,7 +978,7 @@ export class QBPass implements Behavior {
     push(alert);
     for (const ref of p.order) push(ag(ref));
     const outlet = ag(p.outlet);
-    for (const o of sim.offense) if (o !== outlet && o.behavior instanceof RouteRunner) push(o);
+    for (const o of sim.offense) if (o !== outlet && (QB_CALL_ROUTES ? this.receiverForecasts.has(o) : o.behavior instanceof RouteRunner)) push(o);
     push(outlet);
     if (!reads.length) return false;
     this.reads = reads;
@@ -901,9 +989,16 @@ export class QBPass implements Behavior {
     if (FW_STEPS) for (const rh of p.rhythm as { ref: ReceiverRef; step: string; n?: number }[]) {
       const r = ag(rh.ref);
       if (r && !this.readStep.has(r)) this.readStep.set(r, rh.n ?? (rh.step === 'set' ? 0 : rh.step === 'hitch' ? 1 : 2));
+      // QB_FOOTWORK bit 8 with GRASS_READ: the plan's landing area, from the plan's frame to the field (his own call).
+      const g = (rh as { grass?: { landing: { x: number; y: number }; t: number } }).grass;
+      if (FW_GRASS && GRASS_FIELDS && r && g && !this.grassPlan.has(r)) {
+        const dir = sim.attackDir(sim.qb.team), ss = sim.offAlign?.strongSign ?? 1;
+        this.grassPlan.set(r, { x: sim.los + dir * g.landing.x, y: sim.ballY + ss * g.landing.y });
+      }
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
-    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
+    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: FW_PA_READ && this.concept.family === 'playaction' && typeof (p as { plantAt?: number }).plantAt === 'number' ? (p as { plantAt?: number }).plantAt! : p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? (QB_KEY_READ ? this.keyManShell(sim, p.key.role, low, high) : this.keyMan(sim, p.key.role, low, high)) : null,
+      ...(QB_KEY_READ ? { sits: ag(((p.key as { sits?: ReceiverRef | null }).sits) ?? null) } : {}) } : null,
       triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
   }
@@ -934,8 +1029,92 @@ export class QBPass implements Behavior {
     return null;
   }
 
+  /** QB_KEY_READ: the key man named pre-snap from the shell as he reads it, from his picture of the alignment. */
+  private keySnap: Vec2 | null = null;
+  private keyManShell(sim: PlaySim, role: string, low: Agent, high: Agent): Agent | null {
+    const qb = sim.qb, dir = sim.attackDir(qb.team), highY = sim.see(qb, high).pos.y, midY = (sim.see(qb, low).pos.y + highY) / 2, side = Math.sign(midY - sim.ballY) || 1;
+    // Coverage players in his picture: off the ball, or detached wide. A man on the line in a stance is a rusher.
+    const D = sim.defense.map((d) => { const p = sim.see(qb, d).pos; return { d, p, depth: (p.x - sim.los) * dir, out: (p.y - sim.ballY) * side, y: p.y }; })
+      .filter((x) => x.depth >= 2 || Math.abs(x.y - sim.ballY) > 9);
+    const best = (S: typeof D, cost: (x: typeof D[number]) => number) => S.reduce<typeof D[number] | null>((b, x) => (!b || cost(x) < cost(b) ? x : b), null);
+    let pick: typeof D[number] | null = null;
+    if (/corner/.test(role)) pick = best(D.filter((x) => x.depth <= 10 && x.out > 0), (x) => -x.out);
+    else if (/apex|flat/.test(role)) {
+      const side = D.filter((x) => x.depth <= 10 && x.out > 0).sort((x, y) => y.out - x.out);
+      const corner = side[0] ?? null, twoHigh = this.mind.pSingleHigh() < 0.5;
+      // Two-high with a hard corner: the corner is the flat player. Otherwise the overhang, the next man inside him.
+      pick = corner && twoHigh && corner.depth <= 6 ? corner : side[1] ?? null;
+    } else if (/hook/.test(role)) pick = best(D.filter((x) => x.depth >= 2.5 && x.depth <= 8), (x) => Math.abs(x.y - sim.ballY) + (role !== 'middle_hook' && x.out < 0 ? 2 : 0));
+    else if (/safety|deep/.test(role)) pick = best(D.filter((x) => x.depth >= 8), (x) => Math.abs(x.y - (/over_vertical/.test(role) ? highY : sim.ballY)) - 0.1 * x.depth);
+    this.keySnap = pick ? { ...pick.p } : null;
+    return pick?.d ?? null;
+  }
+  /** QB_KEY_READ: the key man's displacement along the stretch since the snap, in his picture (null with no fresh one). */
+  private keyDisp(a: Agent, sim: PlaySim): number | null {
+    const k = this.plan!.key!;
+    if (!k.man || !this.keySnap) return null;
+    const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
+    const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+    const p = this.mind.routeKeyPictures().find((x) => x.id === k.man!.player.id && x.age <= 0.8);
+    if (!p || !lo || !hi) return null;
+    const sx = hi.x - lo.x, sy = hi.y - lo.y, L = Math.max(1, Math.hypot(sx, sy));
+    return ((p.pos.x - this.keySnap.x) * sx + (p.pos.y - this.keySnap.y) * sy) / L;
+  }
+  /** QB_KEY_READ: where the key man stands along the low-high stretch now in his picture (0 low, 1 high). */
+  private keyPlace(sim: PlaySim): number | null {
+    const k = this.plan!.key!;
+    if (!k.man) return null;
+    const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
+    const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+    const p = this.mind.routeKeyPictures().find((x) => x.id === k.man!.player.id && x.age <= 0.8);
+    if (!p || !lo || !hi) return null;
+    const sx = hi.x - lo.x, sy = hi.y - lo.y, L2 = Math.max(1, sx * sx + sy * sy);
+    return ((p.pos.x - lo.x) * sx + (p.pos.y - lo.y) * sy) / L2;
+  }
+  private keyFlipped = false;
+  private readKeyShell(a: Agent, sim: PlaySim): void {
+    const k = this.plan!.key!;
+    const d = this.keyDisp(a, sim);
+    const noise = 0.15 + 0.4 * (1 - a.r('decisionMaking')) + 0.15 * (1 - a.r('awareness'));
+    const m = d === null ? null : d + sim.dice('readkey', a).normal(0, noise);
+    // Where he stands along the stretch now (0 the low route, 1 the high), for a man who has not moved: one standing on
+    // a route has taken it (Rules: "throw the route he is not standing on"; smash's squatting corner, already on the
+    // hitch, gives the corner route). Only a man between them gets the concept's sitter default. Bands chosen.
+    const sNow = this.keyPlace(sim);
+    let throwTo: 'low' | 'high', mode: string;
+    if (m !== null && Math.abs(m) >= KEY_COMMIT) { throwTo = m > 0 ? 'low' : 'high'; mode = 'move'; }
+    else if (sNow !== null && sNow <= KEY_ON_ROUTE) { throwTo = 'high'; mode = 'on-low'; }
+    else if (sNow !== null && sNow >= 1 - KEY_ON_ROUTE) { throwTo = 'low'; mode = 'on-high'; }
+    else if (k.sits === k.high) { throwTo = 'high'; mode = 'sits'; }
+    else { throwTo = 'low'; mode = k.sits === k.low ? 'sits' : 'role'; }
+    this.keyRead = { at: sim.t, defender: k.man?.player.id ?? null, s: m === null ? null : +m.toFixed(3), throwTo, mode } as typeof this.keyRead;
+    this.applyKey(sim, throwTo);
+  }
+  /** QB_KEY_READ: once made the read stands; it changes once, on a perceived move past the margin the other way. */
+  private rekey(a: Agent, sim: PlaySim): void {
+    if (this.keyFlipped || !this.keyRead || this.phase === 'windup' || !this.keyAnswer) return;
+    const d = this.keyDisp(a, sim);
+    if (d === null) return;
+    const now = this.keyRead.throwTo;
+    const flip = now === 'low' ? d <= -KEY_COMMIT : d >= KEY_COMMIT;
+    if (!flip) return;
+    this.keyFlipped = true;
+    const to = now === 'low' ? 'high' : 'low';
+    this.keyRead = { ...this.keyRead, throwTo: to, at: sim.t } as typeof this.keyRead;
+    this.applyKey(sim, to);
+  }
+  private applyKey(sim: PlaySim, throwTo: 'low' | 'high'): void {
+    const k = this.plan!.key!;
+    const first = throwTo === 'low' ? k.low : k.high, second = first === k.low ? k.high : k.low;
+    this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
+    this.readIdx = 0;
+    this.readStart = sim.t;
+    this.keyAnswer = { target: first, toHigh: throwTo === 'high', at: sim.t };
+  }
+
   private readKey(a: Agent, sim: PlaySim): void {
     const k = this.plan!.key!;
+    if (QB_KEY_READ && QB_KEY_MAN) { this.readKeyShell(a, sim); return; }
     if (QB_KEY_MAN) {
       // The named man, as his picture has him now. No fresh picture, or nobody named: no key read; the order stands.
       const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
@@ -1074,10 +1253,16 @@ export class QBPass implements Behavior {
     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
-    const gaze = this.gazePoint(sim);
+    let gaze = this.gazePoint(sim);
+    if (QB_HEAD) {
+      // QB_HEAD: his head turns toward the gaze at its rate; what he sees is along where it points, at the gaze's range.
+      const want = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x), range = Math.hypot(gaze.x - a.pos.x, gaze.y - a.pos.y);
+      a.head = turnHead(a, a.head ?? a.body.facing, want, SHARED_HEAD_RATE * sim.dt);
+      gaze = { x: a.pos.x + range * Math.cos(a.head), y: a.pos.y + range * Math.sin(a.head) };
+    }
     this.mind.observe(gaze);
     // QB_BODY_SEEN: his head shows where he is looking.
-    a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
+    if (!QB_HEAD) a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
     const routeKeys = this.mind.routeKeyPictures();
     for (const [r, forecast] of this.receiverForecasts) {
       const picture = this.mind.receiverLook(r, gaze);
@@ -1284,7 +1469,8 @@ export class QBPass implements Behavior {
       const p = 0.08 + 0.45 * a.r('decisionMaking') * a.r('anticipation') * (0.5 + 0.5 * vet);
       // QB_LOOKOFF_RHYTHM: not when read 1 will be a throw before the look-off would end (judged as his readiness test does).
       const r1SoonReady = QB_LOOKOFF_RHYTHM && !!this.reads[0] && (this.ready(this.reads[0], sim) || ((this.receiverForecasts.get(this.reads[0])?.breakAt() ?? Infinity) - this.windup(a) <= t + 0.35));
-      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && sim.dice('qb', a).chance(p)) {
+      // QB_FOOTWORK bit 8: not before a grass read; his eyes were on its landing area through the drop and it is decided now.
+      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && !this.isGrass(this.reads[0]) && !this.isPaPlant(this.reads[0]) && sim.dice('qb', a).chance(p)) {
         const side = Math.sign(this.has(sim, this.reads[0]).y - sim.ballY);
         const decoy = this.reads.find((r) => Math.sign(this.has(sim, r).y - sim.ballY) !== side);
         if (decoy) {
@@ -1300,6 +1486,7 @@ export class QBPass implements Behavior {
 
     // READ_PLAN: the key, read at the plan's cue unless the rush has already taken over.
     if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy && u <= 0.5) this.readKey(a, sim);
+    else if (QB_KEY_READ && QB_KEY_MAN && READ_PLAN && this.plan?.key && this.keyRead) this.rekey(a, sim);
 
     // QB_RHYTHM: with the rush or his clock telling him time is up, his eyes go
     // to the outlet (the last read) instead of finishing the order.
@@ -1332,13 +1519,18 @@ export class QBPass implements Behavior {
       const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
       const bt = (r: Agent) => this.breakClock(r);
       const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
-      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : r.behavior instanceof RouteRunner)) ?? null;
+      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : this.onRoute(r))) ?? null;
       this.hot = { target, at: t };
       this.hotDef = top; // diagnostic (no effect): the man the hot was called on
       const k = target ? this.reads.indexOf(target) : -1;
       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
-    const read = this.reads[this.readIdx];
+    let read = this.reads[this.readIdx];
+    // QB_FOOTWORK bit 8: a grass read is decided by its step (the plant for read 1), with no dwell: not thrown by then,
+    // he is on to his next read.
+    if (FW_GRASS && this.isGrass(read) && t - this.grassDue(read) > sim.dt + 1e-9 && this.setAt >= 0 && this.readIdx < this.reads.length - 1) {
+      this.readIdx++; this.readStart = t; read = this.reads[this.readIdx];
+    }
     if (FW_STEPS) this.footwork(a, sim, read);
     // QB_EYES: his eyes are on the man he is gating a throw to; otherwise on his read (from when they got there).
     if (QB_EYES) {
@@ -1563,6 +1755,11 @@ export class QBPass implements Behavior {
   private hotLook(a: Agent, sim: PlaySim): ThrowEval | 'look' | null {
     const ok = (ev: ThrowEval | null) => !!ev && ev.P > 0.3 && ev.intRisk < 0.18;
     if (this.look) {
+      // QB_HEAD: his eyes are on the man once his head points at him; then the glance.
+      if (QB_HEAD && this.look.seenAt === Infinity) {
+        const p = this.receiverForecasts.get(this.look.target)?.predict(sim.t, 0) ?? this.has(sim, this.look.target);
+        if (a.head !== null && Math.abs(wrapAngle(angleTo(a.pos, p) - a.head)) < 0.15) this.look.seenAt = sim.t + (this.look.glance ?? 0);
+      }
       if (sim.t < this.look.seenAt) return 'look';
       const r = this.look.target;
       const ev = this.evaluate(a, sim, r, 1);
@@ -1577,7 +1774,7 @@ export class QBPass implements Behavior {
     const gaze = this.gazePoint(sim), to = this.receiverForecasts.get(best.target)?.predict(sim.t, 0) ?? best.target.pos;
     const turn = Math.abs(wrapAngle(angleTo(a.pos, to) - angleTo(a.pos, gaze))) / HEAD_RATE;
     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking')) + 0.1 * (1 - a.r('awareness'));
-    this.look = { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
+    this.look = QB_HEAD ? { target: best.target, from: gaze, eyesAt: sim.t, seenAt: Infinity, glance } : { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
     this.hotLooks++;
     return 'look';
   }
@@ -1616,7 +1813,9 @@ export class QBPass implements Behavior {
   /** Whether his picture of `r` sits inside his clear look now (qbmind's clear sector). */
   private inClearLook(a: Agent, sim: PlaySim, r: Agent): boolean {
     const gaze = this.gazePoint(sim), p = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? this.has(sim, r);
-    return Math.abs(wrapAngle(angleTo(a.pos, p) - angleTo(a.pos, gaze))) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
+    // QB_HEAD: his clear look is about where his head points.
+    const eyes = QB_HEAD && a.head !== null ? a.head : angleTo(a.pos, gaze);
+    return Math.abs(wrapAngle(angleTo(a.pos, p) - eyes)) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
   }
 
   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
@@ -1625,7 +1824,7 @@ export class QBPass implements Behavior {
     const last = this.reads.length - 1;
     if (this.readIdx >= last - 1 || last < 1) return null;
     const outlet = this.reads[last];
-    if (!outlet || (QB_SEEN_OUT && this.checkRelease(outlet) ? !this.seenOut(outlet) : outlet.behavior.kind === 'pass-pro') || !this.ready(outlet, sim)) return null;
+    if (!outlet || (QB_SEEN_OUT && this.checkRelease(outlet) ? !this.seenOut(outlet) : QB_CALL_ROUTES ? !this.onRoute(outlet) : outlet.behavior.kind === 'pass-pro') || !this.ready(outlet, sim)) return null;
     const ev = this.evaluate(a, sim, outlet, u);
     return ev && ev.P >= need && ev.intRisk <= risk ? ev : null;
   }
@@ -1650,6 +1849,9 @@ export class QBPass implements Behavior {
       const lo = heldPoint(k.low), hi = heldPoint(k.high);
       return { x: (lo.x + hi.x) / 2, y: (lo.y + hi.y) / 2 };
     }
+    // QB_FOOTWORK bit 8: in the drop, his eyes on his grass read's landing area ("look at the area he is going").
+    if (FW_GRASS && this.phase === 'drop' && this.readIdx === 0 && this.isGrass(this.reads[0])) return this.grassLanding(sim, this.reads[0]);
+    if (FW_GRASS && this.phase === 'set' && this.isGrass(this.reads[this.readIdx])) return this.grassLanding(sim, this.reads[this.readIdx]);
     const tri = this.plan?.triangle;
     if (tri && !this.triDone && this.phase === 'set') {
       const P = tri.map(heldPoint);
@@ -1671,6 +1873,14 @@ export class QBPass implements Behavior {
     // A screen's receiver leaves his block on the called count: that is the call, which he knows, not a check.
     if (this.concept.family === 'screen' || this.concept.screen) return false;
     return this.receiverForecasts.get(r)?.prior.startDelay === null;
+  }
+  /** Whether a man is on a route, as he knows it: QB_CALL_ROUTES, his call (installed, and out in his picture if he is a
+   * check-release); off, the receiver's live behavior (a leak: it tells him who converted to a block or released). */
+  private callBlockers: number | null = null;
+  private onRoute(r: Agent): boolean {
+    if (!QB_CALL_ROUTES) return r.behavior instanceof RouteRunner;
+    if (!this.receiverForecasts.has(r)) return false;
+    return QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : true;
   }
 
   /** QB_FOOTWORK bit 1: the next read in his order. */
@@ -1717,6 +1927,48 @@ export class QBPass implements Behavior {
    * margin (a judgment draw, his own, scaled by 1 - awareness, in yards). Once read it holds: the release is decided.
    * Whether anyone over the top can reach the throw is the window's (the aim point), not this cue's. */
   private vertRead = new Set<Agent>();
+  /** QB_FOOTWORK bit 8: whether a read is his grass read (read 1, a route into space) and where its landing area is. */
+  private grassPlan = new Map<Agent, Vec2>();
+  /** QB_FOOTWORK bit 16: read 1 of a play-action concept, decided on the plant out of the fake (no look-off before it). */
+  private isPaPlant(r: Agent | undefined): boolean {
+    return FW_PA_READ && !!r && this.concept.family === 'playaction' && this.readIdx === 0 && this.reads[0] === r;
+  }
+  private isGrass(r: Agent | undefined): boolean {
+    if (!FW_GRASS || !r) return false;
+    // Half of a key is thrown off the key defender, not the grass (the agreed set; Rules' VERTS_KEYS keys the trips
+    // seam): the key read decides it.
+    if (this.plan?.key && (this.plan.key.low === r || this.plan.key.high === r)) return false;
+    if (GRASS_FIELDS) return this.grassPlan.has(r);
+    if (this.reads[0] !== r) return false;
+    const id = this.receiverForecasts.get(r)?.prior.routeId ?? null;
+    return !!id && GRASS_ROUTES.has(id);
+  }
+  /** When a grass read is decided: his step n for it (n strides after his set; the plant for n = 0). */
+  private grassDue(r: Agent): number { return this.setAt + (this.stepOf.get(r)?.n ?? 0) * this.stride(); }
+  private grassLanding(sim: PlaySim, r: Agent): Vec2 {
+    const planned = this.grassPlan.get(r);
+    if (planned) return planned;
+    // Without the plan's landing: where his forecast has the man when a ball started now arrives (his wind-up plus the
+    // flight to that point at his natural speed), solved by two passes from the wind-up alone.
+    const f = this.receiverForecasts.get(r);
+    if (!f) return this.has(sim, r);
+    const qb = sim.qb, w = this.windup(qb);
+    let at = f.predict(sim.t, w) ?? this.has(sim, r);
+    for (let i = 0; i < 2; i++) at = f.predict(sim.t, w + naturalFlightFor(this.armSpeed, Math.hypot(at.x - qb.pos.x, at.y - qb.pos.y))) ?? at;
+    return at;
+  }
+  /** Readable (Integration's ruling, 2026-11-16, the last form): only what he can judge of the receiver on the step:
+   * the release won (out of the collision) and his leverage on the man over him, from his pictures (the vertical cue,
+   * vertReadable). Whether to throw is the window's price on that step (the ball to where the man will be when it
+   * arrives), no geometric veto: whether a deep safety gets there before the ball is the window's timing question. The
+   * first form vetoed on any defender within 2 yd of the path to the landing area (four verts from trips: sacks 6 -> 21). */
+  private grassReadable(sim: PlaySim, r: Agent): boolean {
+    // A vertical: its release and the leverage on the man over him (the vertical cue). A corner: its release only; the
+    // deep half defender over it is the window's timing question (the hole shot goes before he gets there).
+    if (this.receiverForecasts.get(r)?.prior.declRule === 'vertical') return this.vertReadable(sim, r);
+    const p = sim.see(sim.qb, r);
+    return (p.pos.x - sim.los) * sim.attackDir(sim.qb.team) >= 2 && Math.hypot(p.vel.x, p.vel.y) >= 4;
+  }
   private vertReadable(sim: PlaySim, r: Agent): boolean {
     if (this.vertRead.has(r)) return true;
     const a = sim.qb, dir = sim.attackDir(a.team), p = sim.see(a, r);
@@ -1781,7 +2033,8 @@ export class QBPass implements Behavior {
   /** When a receiver's break comes, for ordering quick answers: the installed time; 9 for a man not out on a route. */
   private breakClock(r: Agent): number {
     if (QB_SEEN_OUT && this.checkRelease(r)) return this.seenOut(r) ? this.receiverForecasts.get(r)!.breakAt() ?? 0 : 9;
-    if (DECLARED_BREAK) return r.behavior instanceof RouteRunner ? (this.planBreakAt(r) ?? this.receiverForecasts.get(r)?.breakAt() ?? 9) - this.snapAt : 9;
+    if (DECLARED_BREAK) return this.onRoute(r) ? (this.planBreakAt(r) ?? this.receiverForecasts.get(r)?.breakAt() ?? 9) - this.snapAt : 9;
+    if (QB_CALL_ROUTES) return this.onRoute(r) ? (this.receiverForecasts.get(r)?.breakAt() ?? this.snapAt + 9) - this.snapAt : 9;
     return r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9;
   }
 
@@ -1792,21 +2045,26 @@ export class QBPass implements Behavior {
       const brk = this.receiverForecasts.get(r)!.breakAt();
       return brk === null || sim.t + this.windup(sim.qb) >= brk - 0.3 * sim.qb.r('anticipation');
     }
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
-    if (!rr) return r.behavior.kind === 'route';
+    // QB_CALL_ROUTES: the route as called (his install), not the receiver's live behavior.
+    const rr = QB_CALL_ROUTES ? null : r.behavior instanceof RouteRunner ? r.behavior : null;
+    const called = this.receiverForecasts.get(r)?.prior;
+    if (QB_CALL_ROUTES ? !this.onRoute(r) : !rr) return QB_CALL_ROUTES ? false : r.behavior.kind === 'route';
+    const routeEnd = rr ? rr.route.end : called!.end, routePath = rr ? rr.path : called!.path;
     // QB_FOOTWORK bit 1: a vertical is readable when its release is decided, not at 12 yd.
     if (FW_STEPS && this.receiverForecasts.get(r)?.prior.declRule === 'vertical' && this.vertReadable(sim, r)) return true;
+    // QB_FOOTWORK bit 8: a grass read is ready when it is readable, not at its break.
+    if (this.isGrass(r)) return this.grassReadable(sim, r);
     // A slow screen is thrown once the receiver has settled behind his blockers.
-    if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
+    if (this.concept.family === 'screen' && routeEnd === 'settle' && this.concept.screen?.tempo === 'slow') {
       // Thrown on anticipation as he turns for the ball: NFL slow screens leave
       // the hand with the receiver still ~2.3-2.9 yd from where he catches it
       // (BDB 2025, screen_reference), lofted over the rush he let through.
-      const last = rr.path[rr.path.length - 1]?.p;
+      const last = routePath[routePath.length - 1]?.p;
       if (QB_SEEN_OUT) {
         const at = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? sim.see(sim.qb, r).pos;
         return !!last && Math.hypot(at.x - last.x, at.y - last.y) < 3.5;
       }
-      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
+      return !!rr?.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
     }
     // A quick screen after a sell is thrown to its spot: once the ball,
     // floated if need be, can get there with the receiver.
@@ -1829,7 +2087,7 @@ export class QBPass implements Behavior {
       const at = brk ?? this.planBreakAt(r)!;
       return sim.t + this.windup(sim.qb) >= at - (rd ? this.leadFor(sim.qb, rd.throwFamily, rd.anchorLead) : 0.3 * antic);
     }
-    return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
+    return sim.t + this.windup(sim.qb) >= (brk ?? rr?.breakTime ?? 9) - 0.3 * antic;
   }
 
   /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
@@ -1933,13 +2191,24 @@ export class QBPass implements Behavior {
   }
   /** A point's bearing off his facing, wrapped to [0, pi]. */
   private offFacing(a: Agent, at: Vec2): number {
-    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
+    // QB_FOOTWORK bit 2: his blind side is behind where his eyes are (his head), not his chest: with bit 2 his shoulders
+    // hold side-on in the crossover and on a step while his head moves, and the backside rusher sat 111-125 deg off his
+    // chest, felt as behind him, while his head was 36-40 deg from him (scripts/diag/eyes/feel-facing.ts, mesh cover 2
+    // roster 11). Off, his chest (it follows his look).
+    const look = FW_HIPS && a.head !== null && Number.isFinite(a.head) ? a.head : a.body.facing;
+    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - look;
     return Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
   }
   /** Behind his shoulder: the single 1.8 rad edge (the channel choice; the two channels agree at it). */
   private isBehind(a: Agent, _d: Agent, at: Vec2): boolean { return this.offFacing(a, at) > 1.8; }
-  /** How far behind his view a point is, for the blind-side lag: 0 or 1 at the 1.8 rad edge. */
-  private blindShare(a: Agent, at: Vec2): number { return this.offFacing(a, at) > 1.8 ? 1 : 0; }
+  /** How far behind his view a point is, for the blind-side lag: 0 or 1 at the 1.8 rad edge, or with QB_FELT_EDGE a
+   * smoothstep from FELT_IN_VIEW to FELT_BLIND. */
+  private blindShare(a: Agent, at: Vec2): number {
+    const ang = this.offFacing(a, at);
+    if (!QB_FELT_EDGE) return ang > 1.8 ? 1 : 0;
+    const x = clamp((ang - FELT_IN_VIEW) / (FELT_BLIND - FELT_IN_VIEW), 0, 1);
+    return x * x * (3 - 2 * x);
+  }
   private feltLive(a: Agent, sim: PlaySim, d: Agent, plain?: Perceived): Perceived {
     // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
     // beyond 1.8 rad (about 103 deg) either side.
@@ -2398,7 +2667,7 @@ export class QBPass implements Behavior {
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
-    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null,
+    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null, at: { x: a.pos.x, y: a.pos.y }, aim: { x: ev.point.x, y: ev.point.y }, T: ev.T,
       u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
       clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
     this.pending = ev;
@@ -2760,6 +3029,8 @@ export class QBPass implements Behavior {
     return { vel: { x: dir.x * a.profile.vmax * 0.7 * elus, y: dir.y * a.profile.vmax * 0.7 * elus }, facing: 0, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
 
+  /** QB_EDGE_THREAT: whether he is stepping up from an edge threat (for the exit margins). */
+  private edgeOn = false;
   private pocketMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
     // Hold the set point, sliding away from nearby rushers. When an edge rusher
     // gets to his depth outside him — the tackle riding him past — he climbs
@@ -2770,15 +3041,22 @@ export class QBPass implements Behavior {
     let fx = 0;
     let fy = 0;
     let edge = false;
+    let threat = false;
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      const seen = this.felt(a, sim, d).pos;
+      const fd = this.felt(a, sim, d), seen = fd.pos;
       const dx = a.pos.x - seen.x;
       const dy = a.pos.y - seen.y;
       const dd = Math.hypot(dx, dy);
       if (dd < 1e-3) continue;
       if (QB_POCKET) continue; // the nearest body decides, below; no drift
-      if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
+      if (QB_EDGE_THREAT) {
+        // QB_EDGE_THREAT: wide and level as before (a little farther once stepping), untied in his picture, closing on him.
+        if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp + (this.edgeOn ? 0.5 : 0)) {
+          const closing = (fd.vel.x * dx + fd.vel.y * dy) / dd;
+          if (closing > (this.edgeOn ? EDGE_CLOSE_OUT : EDGE_CLOSE_IN) && !this.seenTied(a, sim, d, seen)) threat = true;
+        }
+      } else if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
       if (dd > 3.5) continue;
       const w = (3.5 - dd) / 3.5;
       fx += (dx / dd) * w;
@@ -2786,6 +3064,21 @@ export class QBPass implements Behavior {
     }
     // QB_POCKET: the nearest body he feels inside POCKET_NEAR decides. At the edge: the climb below, unchanged. In
     // front or inside: a slide (returned here while it lasts).
+    if (QB_EDGE_THREAT && !QB_POCKET) {
+      // Room ahead in his picture: the nearest body within 30 deg of straight ahead (teammates seen, defenders felt).
+      const dir = sim.attackDir(a.team);
+      let room = Infinity;
+      for (const o of [...sim.offense, ...sim.defense]) {
+        if (o === a) continue;
+        const so = sim.see(a, o);
+        if (so.pose === 'down' || so.pose === 'rising') continue;
+        const p = o.team === a.team ? so.pos : this.felt(a, sim, o).pos;
+        const ax = (p.x - a.pos.x) * dir, ay = p.y - a.pos.y;
+        if (ax > 0 && Math.abs(Math.atan2(ay, ax)) < Math.PI / 6) room = Math.min(room, Math.hypot(ax, ay));
+      }
+      edge = threat && room > (this.edgeOn ? EDGE_ROOM_OUT : EDGE_ROOM_IN);
+      this.edgeOn = edge;
+    }
     let slideMove: Vec2 | null = null;
     if (QB_POCKET) {
       const d = this.pocketDecide(a, sim, read);

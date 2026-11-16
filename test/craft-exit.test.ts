@@ -17,7 +17,6 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function load(exit: boolean) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
-  vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Rules to re-record with MIRROR_SCATTER on
   vi.stubEnv('CRAFT_HOLD', '1');
   vi.stubEnv('CRAFT_EXIT', exit ? '1' : '0');
   const { Rng } = await import('../src/core/rng.js');
@@ -35,15 +34,20 @@ async function load(exit: boolean) {
     los: 40, ballY: 26, firstDownX: 50, seed: 1 });
   for (const a of sim.agents) { a.body.pos = { x: 10, y: 5 + a.idx }; a.body.vel = { x: 0, y: 0 }; }
   const r = sim.slot('X')!, cb = sim.defense.find((d) => d.player.position === 'CB')!;
-  return { sim, routeCraft, r, cb };
+  // His picture starts as the scene: the perception's delay window is filled with the staged positions before the first
+  // tick (engine-72: off, his first pictures were the pre-scene placement, which MIRROR_SCATTER moves, and the hold arm
+  // bent round a man where he no longer was).
+  const settle = () => { const t0 = sim.t; for (let k = 0; k < 12; k++) { sim.t += sim.dt; sim.perception.record(sim.agents, null); } sim.t = t0; };
+  return { sim, routeCraft, r, cb, settle };
 }
 
 /** He runs a straight stem at 6 yd/s past a man standing 0.4 yd to his inside, 3 yd ahead. His lateral request on each
  * tick once the man is level with him or behind, in his picture. */
 async function pastTheMan(exit: boolean) {
-  const { sim, routeCraft, r, cb } = await load(exit);
+  const { sim, routeCraft, r, cb, settle } = await load(exit);
   r.body.pos = { x: 45, y: 20 }; r.body.vel = { x: 6, y: 0 }; r.body.facing = 0;
   cb.body.pos = { x: 48, y: 19.6 }; cb.body.vel = { x: 0, y: 0 }; cb.body.facing = Math.PI;
+  settle();
   const after: number[] = [];
   for (let k = 0; k < 40; k++) {
     sim.t += sim.dt;
@@ -59,9 +63,10 @@ async function pastTheMan(exit: boolean) {
 /** A man in his lane 2.5 yd ahead, a hair to his outside (+y); his declared leg settles back toward the line and 0.6 yd
  * inside (-y), as the stick's does against zone; the per-tick break side is outside (+1). The side of his first bend. */
 async function settleSide(exit: boolean) {
-  const { sim, routeCraft, r, cb } = await load(exit);
+  const { sim, routeCraft, r, cb, settle } = await load(exit);
   r.body.pos = { x: 45, y: 20 }; r.body.vel = { x: 5, y: 0 }; r.body.facing = 0;
   cb.body.pos = { x: 47.5, y: 20.1 }; cb.body.vel = { x: 0, y: 0 }; cb.body.facing = Math.PI;
+  settle();
   sim.t += sim.dt;
   sim.perception.record(sim.agents, null);
   const leg = { x: -0.64, y: -0.77 };
@@ -72,9 +77,10 @@ async function settleSide(exit: boolean) {
 /** The break side handed to the craft flips every tick round a man on his line (craft-hold.test.ts's dither scene), past
  * his declared break. Sign changes of his request across the lane. */
 async function flipsPastBreak(exit: boolean) {
-  const { sim, routeCraft, r, cb } = await load(exit);
+  const { sim, routeCraft, r, cb, settle } = await load(exit);
   r.body.pos = { x: 45, y: 20 }; r.body.vel = { x: 5, y: 0 }; r.body.facing = 0;
   cb.body.pos = { x: 47.5, y: 20 }; cb.body.vel = { x: 0, y: 0 }; cb.body.facing = Math.PI;
+  settle();
   let changes = 0, last = 0;
   for (let k = 0; k < 12; k++) {
     sim.t += sim.dt;

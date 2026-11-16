@@ -118,6 +118,17 @@ export interface PassConcept {
   /** A plain-text note of the intended key and rule ("flat defender: sinks → #2 flat, widens → #1 corner").
    * Not read by the quarterback, who runs `progression`, ordered to match. */
   read?: string;
+  /** CONCEPT_FIT (src/game/concept-fit.ts): the receivers its read names, which the formation must have on the field at
+   * the snap (after motion) for the concept to be called; an inner list is "any one of". From the `read` line where the
+   * concept has one, else its coached key (read-compiler KEYS / ROLE_KEYS), else the structure its order is drawn on
+   * (docs/reviews/2026-11-16-concept-fit.md). */
+  needs?: ReadonlyArray<ReceiverRef | readonly ReceiverRef[]>;
+  /** BACK_AS_THREE (src/game/concept-fit.ts): the route the back runs as #3 when the field has no #3 (stick, flood and
+   * pa_flood from 2x2: the back to the flat). */
+  backThree?: string;
+  /** Set on a call whose back is #3 in the route (BACK_AS_THREE): he releases to the strong side on the snap and is
+   * not in the protection, which is the line (and a blocking inline end) alone. */
+  backIsThree?: boolean;
 }
 
 /**

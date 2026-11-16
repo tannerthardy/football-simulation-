@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-72`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-73`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -27,6 +27,7 @@ The stack was published on 2026-11-09 as a reference only, because the first com
 What was done:
 - The 90 `on` flags are read as `!== '0'` in `src` (95 sites). No other code changed. Checked on the 1,321-run set: the stack arm, the legacy arm (`--off`) and a bare run with an empty environment give the same per-play results as before the change, the bare run now matching the stack.
 - **The test suites still run on the legacy engine.** `vitest.config.ts` pins every promoted flag to `0` for all four tiers, so no recorded case moved and nothing was re-recorded. `TEST_ENGINE_DEFAULTS=1 npm test` runs them on the real defaults: 173 core tests in 61 files then fail because they pin legacy behaviour (most in `responsibility-ledger` 16, `combo-transfer` 15, `support-work-off` 9, `support-escape-objective` 9, `man-run-continuity` 8, `runner-side-recovery` 7, `combo-attention` 7). Each lane re-records its files and removes flags from the pin as it goes; a new test should be written for the real defaults (stub the pin off for the flags it needs).
+- **Since 2026-11-14 most of the core suite runs on the real engine.** `test/engine-pin.json` splits the core files: `defaults` run with no flag pinned, `pinned` still run with every promoted flag at `0`. The pinned list may only shrink (`test/engine-pin-manifest.test.ts`): a file leaves it when it passes on the defaults, and a new test file is a defaults file. `node --import tsx scripts/diag/pin-bisect.ts` names, per pinned file, the flags it needs pinned, so a lane can see what blocks deleting a flag and its legacy path; `TEST_PIN_FLAGS=A,B` pins only those flags.
 - `config/baseline.json` is unchanged: it remains the historical profile, with these flags at `0`.
 
 What the promotion does not fix, in order of size at the game level:
@@ -606,6 +607,30 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-73: the QB's key read and drop, route rules, play-action hinge, edge set and zone holds (2026-11-16)
+
+On: `QB_KEY_READ`, `CONCEPT_FIT`, `BACK_AS_THREE`, `PA_TABLES`, `CONCEPT_DROPS`, `QB_EDGE_THREAT`, `QB_HEAD`, `QB_CALL_ROUTES` (QB and Rules: the key man is the real flat player in his picture of the shell; a call fits the formation; drops come from the concept; his head turns at a rate; he reads forecasts of the called routes), `QUICK_HITCH`, `VERTS_KEYS`, `CURL_SINK`, `SETTLE_DEPTH`, `CRAFT_HOLD`, `CRAFT_EXIT`, `ROUTE_LANDMARK`, `RELEASE_COMMIT` (Rules: route rules as taught), `PA_HINGE` (attempt 2), `EDGE_SET`, `POCKET_DROP`, `POWER_AIM` (Flex and Defense: the play-side tackle hinges on the fake; the end sets the edge at a depth; the blocker gives ground in the pocket; the power rush aims through the man setting to him), `LOOSE_OWN` (Defense). Numeric defaults: `QB_FOOTWORK` 3 (the realistic drop), `ZONE_HOLD` 114, `END_KEY` 2, `OFF_PEDAL` 3. Not flagged: a back in protection references the quarterback as he sees him, not the line's set spot (Flex; the engine-72 `pa-drop` failure was this bug, not a fixture move).
+
+Held off: `QB_FOOTWORK` bits 8 (grass read) and 16 (long play-action fake and plant read: sacks +2.5 points on all three seeds, and with the hinge the away-side end beats the hinging tackle), `GRASS_READ`, `HAND_MOMENT`, `QB_LOOKOFF_RHYTHM`, `QCORNER`, `FOUR_VERTS_SEAMS`, `DECL_CLASS`, the honest-defender flags on Coverage's branch.
+
+Card (16 games, 2 leagues, seeds 23 / 37 / 11, against engine-72; `out/e101-card-*.md`), the landing set as one arm:
+
+| | seed 23 | seed 37 | seed 11 |
+|---|---|---|---|
+| Completion % (ref → arm) | 68.7 → 69.8 | 69.0 → 69.2 | 65.0 → 69.6 |
+| Sack rate | 4.3 → 6.7 | 4.2 → 5.0 | 4.3 → 4.9 |
+| Yards per attempt | 8.35 → 8.10 | 8.83 → 8.50 | 7.93 → 8.09 |
+
+Interceptions flat. By arm: the corner's pedal raises completions (+4.4 / +1.1 / +2.8) with yards per attempt down, the corner conceding the short throw as the NFL corner does (6.87 yd off at the throw). The realistic drop adds 0.10 to 0.12 s to the time to throw, which is the sack rise; it is the drop as taught and the rise is explained by it. The other arms show no consistent signal on a whole-game card and land on their staged evidence.
+
+Run set (`npm run ref:report -- --skip-operators --set fresh`): all runs capped mean 3.71, stuffs 13.4% (engine-72: 3.50, 15.4%); outside zone 3.34 (2.72), inside zone 3.79, gap 3.75, duo 4.38. The outside-zone move is `EDGE_SET`: the end no longer over-widens.
+
+Information repairs made at the landing (the type-aware scan, `test/decision-information-scan.test.ts`, found seven new true-state reads in the merged lane work): `POWER_AIM` and the quarterback's room-ahead check skip a man on the ground from the pose seen, not his true state; the key read, the head-turn target, the hinge's end-man fallback and its contact check read positions through `sim.see`. These went in after the card; the mechanisms' own tests pass with them.
+
+Commit-rule repair, not flagged: `containCoverage` (`src/sim/coverage-space.ts`) returned a zero request whenever the defender's own stopping distance reached his room to the boundary and the stopping-speed cap once he had slowed, a step on his own velocity. `RELEASE_COMMIT` sends screen corners at the sideline and exposed it (coverage / containment reversed re-aims 23 → 76 events over three panel draws; Tools). The step is removed and the cap alone bounds the request; the row returns inside budget. The dither record's pooled rows are re-recorded on the real engine-72 defaults (they had been recorded with `BALL_EST` and `SIGHT_STALE` at 0): pursuit 0.4025 → 0.5950, an honest high row.
+
+Test-only: twenty fixtures recorded before this landing are pinned in-file to the group that moved them, each with its owner (`acc-radius`, `pa-plant`, `hot-look`, `read-plan`, `qb-gather-throw`, `qb-rhythm`: QB; `forecast-break`, `hold-facing`, `release-commit`, `rush-lean-bound`, `punch-strike`, `past-along-path`: Flex; `loose-own`, `loose-seen`, `curl-flat-back`, `cushion-need`, `edge-reach`: Defense; `man-trail-carry`, `release-through`, `route-end`: Rules). `release-commit`, `loose-own` and `loose-seen` are the promoted mechanisms' own scenes: they pass with the line group (`PA_HINGE`, `EDGE_SET`, `POCKET_DROP`, `POWER_AIM`, `END_KEY`) off, so the scenes moved, not the mechanisms. `test/engine-pin.json` lists eighteen new files as defaults files. `visible-help` fails on the real engine at engine-72 as well and joins the files owed to their lanes.
 
 ## engine-72: protection set, blitz reads, carry technique, receiver glance and four information repairs (2026-11-16)
 
