@@ -340,7 +340,8 @@ export class RouteRunner implements Behavior {
   private preLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     // His own picture, not the true ball state: he looks for the QB until he has seen the ball in the air (his own
     // sample) or sees the QB without it.
-    if (sim.ballEstimates.lastSeen(a) || sim.see(a, sim.qb).carrying === false) return cmd;
+    // A sim without the estimator's store (partial fixtures) has no picture to look for: his route as it was.
+    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || sim.see(a, sim.qb).carrying === false) return cmd;
     if (this.route.family === 'deep') {
       if (!BALL_EST_DEEP_LOOK) return cmd;
       // His own depth past the line is his cue; the release is not.
@@ -775,6 +776,8 @@ export class TrackBall implements Behavior {
     // BALL_EST design 3: his own perception replaces the legacy reaction gate (in series with it, it delayed him
     // twice). He attends from the release; his head still has to come round at its own rate before he samples.
     if (!BALL_EST && sim.t < this.reactAt) return this.fallback.update(a, sim);
+    // A sim without the estimator's store (partial fixtures): no picture of the ball, so he runs his route.
+    if (BALL_EST && !sim.ballEstimates) return this.fallback.update(a, sim);
     let spot: { p: Vec2; t: number } | null = null;
     // BALL_EST: his own estimate from the ball he has seen; until he has one he runs his route and looks for it.
     const path = BALL_EST ? sim.ballEstimates.estimate(a, sim) : sim.ballPath;

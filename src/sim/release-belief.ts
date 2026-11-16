@@ -60,7 +60,7 @@ export function releaseBelief(sim: PlaySim, a: Agent): ReleaseBelief {
   // with bit 32 it is the only one (one perception: the cone above is skipped), without it it joins the cone's. It never
   // undoes an arm cue.
   if (estimatesFor(a)) {
-    const at = sim.ballEstimates.firstSeenAt(a);
+    const at = sim.ballEstimates?.firstSeenAt(a);
     if (at !== undefined) {
       b.ballAt = b.ballAt === undefined ? at : Math.min(b.ballAt, at);
       if (b.source !== 'ball') { b.releasedAt = b.releasedAt !== undefined ? Math.min(b.releasedAt, at) : at; b.source = 'ball'; }
