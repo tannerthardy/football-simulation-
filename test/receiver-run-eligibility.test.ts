@@ -33,7 +33,13 @@ describe('receiver run candidates follow actual installed ownership', () => {
     expect(new Set(stalks.map(p => p.target)).size).toBe(stalks.length);
     // Preserve the actual end threat responsible for the saved runner contact.
     expect(plans.get(sim.slot('RT')!)?.target).toBe(sim.slot('DE_S'));
-    expect(plans.get(sim.slot('LG')!)?.climbTo).toBe(sim.slot('LB_M'));
+    // The play-side backer is owned by someone (a target, a climb or a double's backer), whichever lineman it is
+    // (ZONE_GAP's ownership moves the double), and any backer left free is backside of the ball.
+    const lbm = sim.slot('LB_M')!, owners = [...plans.values()].filter(p => p.target === lbm || p.climbTo === lbm || p.combination?.backer === lbm);
+    expect(owners.length).toBeGreaterThan(0);
+    const ps = Math.sign(sim.slot('DE_S')!.pos.y - sim.ballY);
+    const owned = new Set([...plans.values()].flatMap(p => [p.target, p.climbTo, p.combination?.backer]).filter(Boolean));
+    for (const l of ['LB_M', 'LB_W'].map(s => sim.slot(s)!).filter(l => !owned.has(l))) expect((l.pos.y - sim.ballY) * ps).toBeLessThan(0);
   });
 
   it.each([false, true])('does not let receivers steal a real inline down threat or an installed combo backer (mirror=%s)', mirror => {
