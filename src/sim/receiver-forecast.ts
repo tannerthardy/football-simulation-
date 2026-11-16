@@ -16,6 +16,8 @@ export interface InstalledReceiverRoute {
   readonly end: RouteEnd;
   /** Null: protection/fake must release first; activation is not known. */
   readonly startDelay: number | null;
+  /** The called route's id: the play's install, which the quarterback knows from the huddle. */
+  readonly routeId?: string;
   readonly profile: Readonly<PhysicalProfile>;
   readonly routeRunning: number;
   readonly effort: number;
@@ -43,7 +45,7 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
     points: Object.freeze(a.points.map(p => Object.freeze({ ...p }))) }))) }) : undefined;
   return Object.freeze({ start: Object.freeze({ ...start }),
     path: freezePath(path),
-    end: route.end, startDelay, profile: Object.freeze({ ...profile }), routeRunning,
+    end: route.end, startDelay, routeId: route.id, profile: Object.freeze({ ...profile }), routeRunning,
     effort: routeEffort(route.family, routeRunning),
     ...(DECLARED_BREAK && typeof BREAK_DECL[route.id]?.at === 'number' ? { breakIdx: BREAK_DECL[route.id].at as number } : {}),
     ...(ROUTE_LANDMARK && typeof BREAK_DECL[route.id]?.at === 'number' && breaksInside(path, BREAK_DECL[route.id].at as number, outside) ? { breaksIn: true } : {}),
