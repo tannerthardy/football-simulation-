@@ -628,6 +628,17 @@ Reads by set on the 18-arm card (`out/e97-card-*.md`): protection trio sacks -0.
 
 Listed, not vetoes: sack rate on the set reaches 3.5 to 4.6% on some seeds, at or under the low end of the NFL band, because the pocket now holds against a rush whose push contest and play-action reads are still short (Flex, Defense in progress). `PASS_OFF`'s effect in games is small.
 
+Suite on the landing head: 4,622 passed; ten fixtures moved and one timed out under load (film-pack-determinism, passes alone), beside the two long-standing research failures. Test-only changes, each attributed by turning the group off in the stack file:
+
+- `SET_SPOT` pinned off in `punch-strike`, `rush-lean-bound`, `pa-drop` (recorded on the old pass set; Flex and QB to re-record).
+- `MIRROR_SCATTER` pinned off in `man-trail-carry`, `craft-exit`, `hold-facing` (recorded on the old alignment scatter).
+- `BLITZ_READ` pinned off in `qb-footwork-drop` (the gun play-action fake timing; QB lane re-records with its footwork re-cut).
+- `SIGHT_PURE` pinned off in `qb-tick-picture`: that test demonstrates the order-dependence `SIGHT_PURE` removes, so with it on its off arm has nothing to show; to be restated.
+- `acc-radius` pins the whole engine-72 boolean set: its counts of 4 to 6 plays move with each group; QB lane re-records when `ACC_RADIUS` is carded.
+- `dither-budget`: the pursuit row re-recorded 0.411 → 0.622 (84 events in 135 s). Turning off the protection trio, the carry set or `MIRROR_SCATTER` alone each brings it to 0.52 to 0.56; `MIRROR_SCATTER` only changes alignment scatter, so the row is moving with which plays the panel produces, not with a new re-aim source. A second panel seed is owed (Defense or Tools) before this row is trusted as a budget again.
+
+Run set (`npm run ref:report`, 1,295 plays): capped mean 3.50, stuffs 15.4% (engine-70: 3.49, 14.4%).
+
 Held from this card: the zone set (waits for `ZONE_HOLD` 114), `CRAFT_HOLD` + `CRAFT_EXIT` + `RELEASE_COMMIT` (newer heads), `HAND_MOMENT` (no consistent effect, capacity unsourced), `QB_LOOKOFF_RHYTHM` (timing depends on `QB_HEAD`), `CONCEPT_DROPS` + `QB_FOOTWORK` (re-cut with the play-action fake split out).
 
 ## engine-71: `CRAFT_HOLD` and `PASS_OFF` back off (2026-11-16)
