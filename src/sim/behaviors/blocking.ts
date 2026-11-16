@@ -345,7 +345,13 @@ export class PassProtector implements Behavior {
     }
     // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
     const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
-    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
+    // SET_SPOT's information rule is a lineman's: the QB is behind him, unseen, so his reference is the call's launch point.
+    // A back in protection sees the QB (beside him after the mesh, in front of him on a set): his reference is the QB as he
+    // sees him. With the launch point, a back released from a play-action fake under center set beside the final launch
+    // point (8.1 yd) while the QB was still dropping to it, and the QB stopped behind him (5.65 yd at 2.0 s against 7.0 off;
+    // pa-drop.test.ts, ace_11 pa_post_dig roster 1 seed 1).
+    const qb = SET_SPOT && isOL(a) && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb
+      : SET_SPOT && !isOL(a) ? { ...sim.qb, pos: sim.see(a, sim.qb).pos } as typeof sim.qb : sim.qb;
     if (!rA) {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
