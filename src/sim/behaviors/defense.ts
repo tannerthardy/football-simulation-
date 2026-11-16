@@ -2356,6 +2356,7 @@ function manLooks(a: Agent, sim: PlaySim, man: Agent, key: number | undefined): 
  * him, until he has an estimate) and his body gives the look the joints it needs: neck, the shoulders through the trunk,
  * the hips for what is left, priced by the facing cap. His picture of the man runs on the same eyes meanwhile. */
 function manLook(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  if (!sim.ballEstimates) return cmd;
   sim.ballEstimates.estimate(a, sim);
   const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
   const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
@@ -2379,7 +2380,7 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   const rb = releaseBelief(sim, a);
   // BALL_EST (with bit 128): a ball seen once is not yet a flight he can play: with fewer than two samples his own
   // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
-  const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates.estimate(a, sim).length;
+  const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates?.estimate(a, sim).length;
   if (rb.ballAt === undefined || noFlight) {
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());

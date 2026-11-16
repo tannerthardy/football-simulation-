@@ -129,7 +129,7 @@ interface Opp {
  */
 function facingBall(a: Agent, ballVel: Vec3, sim?: PlaySim): boolean {
   // BALL_EST bit 32: he plays a ball only on his own sight of it (one perception per player).
-  if (BALL_EST_INCIDENTAL && sim && estimatesFor(a)) return sim.ballEstimates.seenReady(a, sim);
+  if (BALL_EST_INCIDENTAL && sim && estimatesFor(a)) return sim.ballEstimates?.seenReady(a, sim) ?? false;
   if (a.tags.has('looking')) return true;
   const sp = Math.hypot(ballVel.x, ballVel.y) || 1;
   const f = shouldersOf(a.body); // a look over the shoulder is the shoulders turned, not the hips
@@ -157,7 +157,7 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     // Existing targeted tracking is a separate controller contract. Everyone
     // else on offense must have acquired this flight before reaching for it;
     // legal eligibility or an installed outlet alone does not provide eyes.
-    if (a.team === 'O' && !a.tags.has('onBall') && !(BALL_EST_INCIDENTAL && !BALL_EST_DEF_ONLY ? sim.ballEstimates.seenReady(a, sim) : sim.incidentalCatchReadiness.query(a, sim.t))) continue;
+    if (a.team === 'O' && !a.tags.has('onBall') && !(BALL_EST_INCIDENTAL && !BALL_EST_DEF_ONLY ? (sim.ballEstimates?.seenReady(a, sim) ?? false) : sim.incidentalCatchReadiness.query(a, sim.t))) continue;
     const tracking = a === ball.target || a.tags.has('onBall');
     const reach = a.profile.reach + (tracking ? TRACKING_REACH_BONUS : 0);
     // Receivers tracking the ball time a full leap; defenders playing it get a

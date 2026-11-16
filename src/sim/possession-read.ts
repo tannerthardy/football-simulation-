@@ -16,7 +16,7 @@ const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
  * trajectory, never an intended receiver or a private catch result. */
 export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
   // BALL_EST: his own estimate from the ball he has seen (empty until he has two samples), not the true path.
-  const own = estimatesFor(a);
+  const own = estimatesFor(a) && !!sim.ballEstimates;
   const path = own ? sim.ballEstimates.estimate(a, sim).map(p => ({ ...p })) : sim.ballPath.map(p => ({ ...p }));
   if (own && !path.length) return path;
   flights.set(a, { acquiredAt: sim.t, path });
