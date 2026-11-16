@@ -22,6 +22,7 @@ async function panel(defBelief: string) {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('PASS_OFF', '1'); // engine-71: the panel's interception count (on 1, off 1) was last recorded with PASS_OFF on; with it off the on arm throws 2. QB lane to re-record on the engine's defaults
   vi.stubEnv('DEF_BELIEF', defBelief);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
