@@ -205,12 +205,12 @@ const QB_EYES = process.env.QB_EYES === '1';
  * time, sends his eyes and the ball to the hot (the quickest-breaking route on that side, else the back). NFL QBs throw
  * quick on 18% of blitzes (9% otherwise), 69% to wideouts; ours 7% (6%); on our blitzes with a free rusher (34%) he
  * threw quick on 5% and was sacked on 13%. docs/reviews/2026-11-13-qb-gather.md. */
-const BLITZ_READ = process.env.BLITZ_READ === '1';
+const BLITZ_READ = process.env.BLITZ_READ !== '0';
 /** BLITZ_DEPTH (experimental, off; BLITZ_DEPTH=1, read with BLITZ_READ): attempt 2 of the rush belief. Its prior is
  * keyed by alignment and role, from the NFL's realized rush rates of non-linemen (BDB 2025 wk1-3, dropbacks without
  * play action, OLBs excluded: `nfl_rush_by_align.py`), and a step at him raises it fully only at or past the line;
  * above it a quarter (a box backer stepping up on a fake or a man coming up on a route is where those stop). */
-const BLITZ_DEPTH = process.env.BLITZ_DEPTH === '1';
+const BLITZ_DEPTH = process.env.BLITZ_DEPTH !== '0';
 /** BLITZ_SKILL (experimental, off; BLITZ_SKILL=1, read with BLITZ_READ): the blitz read's skill levels (the user's
  * direction, 2026-11-13). (a) His clock is per threat, from the protection call he knows (the blockers' assignments at
  * the snap, declared backers included): a man he believes is coming whom the call has nobody for is a free rusher,
@@ -220,7 +220,7 @@ const BLITZ_DEPTH = process.env.BLITZ_DEPTH === '1';
  * answer (awareness and decision-making): on the hot call he first takes one short look at the vacated seat, where
  * the replacement comes from, before the ball can go; an unprepared one goes straight to the throw on the picture
  * he has (stares down the vacated space). */
-const BLITZ_SKILL = process.env.BLITZ_SKILL === '1';
+const BLITZ_SKILL = process.env.BLITZ_SKILL !== '0';
 /** BLITZ_DEPTH's prior: on the line off the ball LB 0.54 / DB 0.27, box 0.11 / 0.13, edge 0.32 / 0.18, else 0.03 / 0.01. */
 function rushPrior(depth: number, wide: number, lb: boolean): number {
   if (depth <= 1.5 && wide <= 9.5) return lb ? 0.54 : 0.27;
@@ -431,7 +431,7 @@ const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
 /** QB_FACE_SEEN (experimental, off; QB_FACE_SEEN=1; information rule): his pocket facing turns to his picture of the
  * read (his forecast of the man, `has`), not the receiver's true position. Off, bodyFacing aimed at `read.pos` and the
  * shoulder read's `.pos`: the truth, however small the difference (found measuring his facing swing, 2026-11-16). */
-const QB_FACE_SEEN = process.env.QB_FACE_SEEN === '1';
+const QB_FACE_SEEN = process.env.QB_FACE_SEEN !== '0';
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
@@ -467,7 +467,7 @@ const DROP_STEPS: Record<string, number> = { quick: 1, gun3: 3, gun5: 5, five: 5
  * man in front of him to the side and up, not straight away from him. Off, evade steps directly away from the man, so
  * against an interior rusher it is a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield
  * on the stand probe's events): the drift that put him deeper as the man arrived. Against an edge it is unchanged. */
-const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
+const QB_EVADE_UP = process.env.QB_EVADE_UP !== '0';
 /** BLITZ_SECOND (experimental, off; BLITZ_SECOND=1; with BLITZ_READ): the coached second look. A blitzer keeps coming
  * at the quarterback; a linebacker in man on the back goes where the back goes. On engine-68, 44 of 125 false hots on
  * non-blitz plays (10.3% of them) were linebackers in man on the back (scripts/diag/eyes/free-rusher.ts), and 24 more
@@ -478,7 +478,7 @@ const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
  * on opposite sides); a man following the back has his step toward the quarterback not counted as a rush in the
  * belief's update. If the back stayed in, a man who comes is a rusher. No hot is called on a screen. The look costs
  * time by construction: the belief waits for the man's path to declare itself. */
-const BLITZ_SECOND = process.env.BLITZ_SECOND === '1';
+const BLITZ_SECOND = process.env.BLITZ_SECOND !== '0';
 /** BLITZ_SECOND: how fresh his picture of a man must be to classify his path (s), and the angular margin (rad) by which
  * one bearing must beat the other to enter or leave 'following the back'. Chosen; not tuned to a rate. */
 const PATH_FRESH = 0.5, PATH_MARGIN = 0.35;

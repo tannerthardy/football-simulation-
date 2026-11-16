@@ -83,7 +83,7 @@ export const PRESS_BACKOFF = 0.23;
  * a mirrored formation met an unmirrored defence (the read compiler's offence-only sample: DE_S 6.08 vs 6.41 yd from the
  * ball, LB_M 2.36 vs 2.90, FS +0.40 vs -0.40; RECEIVER_DEPTH then backed the Y off 0.23 yd on one side only and LINE_START
  * carried it into his readiness, tipping pa_flood and trips_sail between plans). */
-export const MIRROR_SCATTER = process.env.MIRROR_SCATTER === '1';
+export const MIRROR_SCATTER = process.env.MIRROR_SCATTER !== '0';
 /** MIRROR_SCATTER: +1 if a defender at `y` widens toward +y (his own side of the ball), -1 toward -y. */
 export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>, y: number): number {
   return Math.abs(y - off.ballY) > 0.05 ? Math.sign(y - off.ballY) : off.strongSign;
