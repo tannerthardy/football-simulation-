@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fatigueFactor, locomotionAccel, type Body } from '../src/physics/kinematics.js';
+import { directionalSpeedFactor, fatigueFactor, locomotionAccel, type Body } from '../src/physics/kinematics.js';
 import { availability, newSupport, supportParams } from '../src/physics/support.js';
 import { World, type HandJoint, type Intent, type StepReport } from '../src/physics/world.js';
 
@@ -18,12 +18,16 @@ interface Observer {
 }
 function run(mode: 'center' | 'patch', side: number, substeps = 12, loaded = false,
   posture = .2, below = false, observe = true, fixed = false, free = false) {
-  const low = 1 - .12 * Math.max(0, posture - .3), speed = below ? 1 : 7.2 * .5 * low;
+  // The body is held at the speed cap of its own facing: sideways to the hips (90 deg), whatever law gives that cap (the shuffle share under the legacy curve,
+  // the monotone DIR_CAP curve's share at 90 deg now). Re-recorded 2026-11-16: it was the literal 7.2 * .5 (the legacy shuffle share), which under DIR_CAP leaves
+  // him 1.5 yd/s under his cap and so accelerating, the opposite of the premise.
+  // The request is his top speed (7.2; it was 5, over the legacy 3.6 cap but under the monotone cap's 5.1), so the cap is what limits him under either law.
+  const low = 1 - .12 * Math.max(0, posture - .3), speed = below ? 1 : 7.2 * directionalSpeedFactor(body(0, 1, 0, posture).profile, Math.PI / 2) * low;
   const a = body(0, side, speed, posture), b = body(1, side, speed, posture); b.facing = Math.PI;
   const bs = [a, b], w = new World(bs, { substeps, handContact: mode });
   const hand: HandJoint = { kind: 'hands', a, b, extension: 1, push: 0, hold: 0, steer: loaded ? 1000 : 0 };
   w.joints.push(hand);
-  const intent: Intent = { vel: { x: 0, y: side * (below ? 1.3 : 5) }, facing: fixed ? 0 : side * Math.PI / 2,
+  const intent: Intent = { vel: { x: 0, y: side * (below ? 1.3 : 7.2) }, facing: fixed ? 0 : side * Math.PI / 2,
     push: 0, posture, free };
   const other: Intent = { ...intent, facing: Math.PI };
   const records: Array<{ initial: Body; intent: Intent; dt: number; plan: Plan }> = [];
@@ -75,9 +79,11 @@ describe('held patch gait is planned from attained tick-entry facing', () => {
     // desired-speed clip then feeds the established propulsion lag law, which
     // starts from the body's full start force (7.2) in any direction (#353):
     // the lag law lifted by 7.2 / desired.
-    const desired = 7.2 * (1 - .5 * ((Math.PI / 2 - .3) / (Math.PI / 2)) ** 2);
-    const expected = (desired - 3.6) / 1.4 * (7.2 / desired);
-    expect(expected).toBeCloseTo(1.3205817620342934, 12);
+    // Re-recorded 2026-11-16: the cap at the prospective facing, 0.3 rad short of sideways, and the held speed (the cap at 90 deg), both from the directional law
+    // in force (the old literals 7.2 * (1 - .5 * ...) and 3.6 are its legacy shape), so the contract tested is unchanged: the plan is the lag law toward that cap.
+    const profile = body(0, side, 0, .2).profile, held = 7.2 * directionalSpeedFactor(profile, Math.PI / 2);
+    const desired = 7.2 * directionalSpeedFactor(profile, Math.PI / 2 - .3);
+    const expected = (desired - held) / 1.4 * (7.2 / desired);
     expect(record.plan.ay * side).toBeCloseTo(expected, 12);
     for (const force of result.forces) expect(force.y * side).toBeCloseTo(expected, 10);
   });
@@ -114,7 +120,7 @@ describe('held patch gait is planned from attained tick-entry facing', () => {
       const patch = run('patch', side, 12, false, .2, false, true, true);
       expect(patch.a.vel).toEqual(legacy.a.vel); expect(patch.a.pos).toEqual(legacy.a.pos);
       const loose = run('patch', side, 12, false, .2, false, true, false, true);
-      expect(loose.a.vel).toEqual({ x: 0, y: side * 3.6 }); expect(loose.a.facing).toBe(0);
+      expect(loose.a.vel).toEqual({ x: 0, y: side * 7.2 * directionalSpeedFactor(body(0, 1, 0, .2).profile, Math.PI / 2) });   // a free body keeps the speed he was at (was the literal 3.6, the legacy sideways cap) expect(loose.a.facing).toBe(0);
       expect(loose.report.groundImpulse).toEqual([{ x: 0, y: 0 }, { x: 0, y: 0 }]);
     }
   });
