@@ -118,6 +118,8 @@
     "BREAK_LOOK": "off",
     "SEEN_EMPTY": "off",
     "HEAD_RIDE": "off",
+    "ACQ_SEEN": "off",
+    "TRACKED_CATCH": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "off",
     "CORNER_DROP": "off",

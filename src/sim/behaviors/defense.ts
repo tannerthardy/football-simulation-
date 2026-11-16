@@ -407,6 +407,12 @@ export class PassRusher implements Behavior {
     // Throw in the air: peel off toward the ball.
     if (playsFlight(a, sim, null)) {
       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
+      // Bit 16384: on his own estimate, the ball's line until its catch point has settled.
+      if (spot && BALL_EST_FLIGHT_SETTLE && estimatesFor(a) && !settledFlight(a, sim, path)) {
+        a.tags.add('flight-unsettled');
+        const line = ballLinePoint(a, sim, path);
+        if (line) return runThrough(a, line, { speed: 0.9 });
+      }
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
     // A called movement goes on the snap: across the blocker's face into his
