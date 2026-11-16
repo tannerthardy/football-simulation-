@@ -7,8 +7,8 @@
  */
 import type { Vec2 } from '../core/vec.js';
 
-const HISTORY = 24;
-const STRIDE = 14;
+export const HISTORY = 24;
+const STRIDE = 16;
 
 /** Coarse visible body pose, separate from pad-level technique or capability. */
 export type VisiblePose = 'up' | 'down' | 'rising';
@@ -42,6 +42,8 @@ export class PerceptionBuffer {
   private readonly data: Float64Array;
   private head = -1;
   private count = 0;
+  /** Records taken so far, uncapped: a tick's identity for anything that keeps its own history (SIGHT_PURE). */
+  stamp = 0;
 
   constructor(
     private readonly agents: number,
@@ -53,9 +55,10 @@ export class PerceptionBuffer {
 
   /** Omitted possession is unknown. Null records a known unheld ball; an
    * index records that holder and known non-possession for the other bodies. */
-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null; arm?: 'set' | 'load' | 'deliver'; head?: number | null; carryPosture?: 'up' | 'tucked' | null; contactWith?: number[]; held?: boolean }>, heldCarrierIndex?: number | null): void {
+  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null; arm?: 'set' | 'load' | 'deliver'; head?: number | null; carryPosture?: 'up' | 'tucked' | null; contactWith?: number[]; held?: boolean; body?: { support?: { state: string; posture?: number } } }>, heldCarrierIndex?: number | null): void {
     this.head = (this.head + 1) % HISTORY;
     this.count = Math.min(HISTORY, this.count + 1);
+    this.stamp++;
     const base = this.head * this.n * STRIDE;
     for (let i = 0; i < this.n; i++) {
       const s = states[i];
@@ -74,6 +77,9 @@ export class PerceptionBuffer {
       this.data[o + 11] = s.contactWith?.[0] ?? -1;
       this.data[o + 12] = s.contactWith?.[1] ?? -1;
       this.data[o + 13] = s.held ? 1 : 0;
+      const sup = s.body?.support;
+      this.data[o + 14] = sup?.posture ?? 0.2;
+      this.data[o + 15] = sup && sup.state !== 'up' ? 0 : 1;
     }
   }
 
@@ -105,10 +111,10 @@ export class PerceptionBuffer {
   /** Where agent `i` was and which way he faced `delay` seconds ago, as
    * recorded and without prediction; null beyond the kept history. For a
    * body's own recent past, such as whether his eyes were on someone. */
-  recorded(i: number, delay: number): { pos: Vec2; facing: number } | null {
+  recorded(i: number, delay: number): { pos: Vec2; facing: number; pose: { up: boolean; posture: number } } | null {
     const back = Math.max(0, Math.round(delay / this.dt));
     if (back >= this.count) return null;
     const o = ((this.head - back + HISTORY) % HISTORY) * this.n * STRIDE + i * STRIDE;
-    return { pos: { x: this.data[o], y: this.data[o + 1] }, facing: this.data[o + 5] };
+    return { pos: { x: this.data[o], y: this.data[o + 1] }, facing: this.data[o + 5], pose: { up: this.data[o + 15] > 0, posture: this.data[o + 14] } };
   }
 }

@@ -103,6 +103,7 @@
     "SIGHT_CARRIER": "0",
     "SIGHT_COVER": "0",
     "SIGHT_RECOG": "0",
+    "SIGHT_PURE": "0",
     "HEAD": "0",
     "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",

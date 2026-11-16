@@ -51,3 +51,31 @@ describe('lineOfSight: bodies are a torso up to the shoulder and a head up to fu
     expect(lineOfSight([o, t, body(4.5, 0, 76, 0.2, 'down')], o, t, 0)).toBe(false);
   });
 });
+
+describe('lineOfSight with recorded postures (SIGHT_PURE): a past sight line reads the heights of that tick', () => {
+  const standing = { up: true, posture: 0 }, crouched = { up: true, posture: 1 }, onGround = { up: false, posture: 0 };
+  it('a guard who was crouched then does not hide the rusher, whatever his posture now; and the reverse', () => {
+    const qb = body(0, 0, 77), rusher = body(6, 0, 76), guardNowStanding = body(3, 0, 76, 0), guardNowLow = body(3, 0, 76, 1);
+    const then = (p: { up: boolean; posture: number }) => (a: any) => (a === guardNowStanding || a === guardNowLow ? p : null);
+    // Now's heights give two answers; the recorded pose gives one, the same for both bodies.
+    expect(lineOfSight([qb, rusher, guardNowStanding], qb, rusher)).toBe(false);
+    expect(lineOfSight([qb, rusher, guardNowLow], qb, rusher)).toBe(true);
+    for (const g of [guardNowStanding, guardNowLow]) {
+      expect(lineOfSight([qb, rusher, g], qb, rusher, undefined, (a) => a.pos, then(crouched))).toBe(true);
+      expect(lineOfSight([qb, rusher, g], qb, rusher, undefined, (a) => a.pos, then(standing))).toBe(false);
+    }
+  });
+  it('a body recorded on the ground blocks only low lines, and a recorded posture of the observer changes his eye', () => {
+    const o = body(0, 0, 74), t = body(5, 0, 74), blocker = body(2.5, 0, 76, 0);
+    const poseOf = (p: { up: boolean; posture: number }) => (a: any) => (a === blocker ? p : null);
+    expect(lineOfSight([o, t, blocker], o, t, undefined, (a) => a.pos, poseOf(standing))).toBe(false);
+    expect(lineOfSight([o, t, blocker], o, t, undefined, (a) => a.pos, poseOf(onGround))).toBe(true);
+    expect(bodyHeight(blocker, SHOULDER, onGround)).toBeLessThanOrEqual(0.35);
+    expect(bodyHeight(blocker, SHOULDER, crouched)).toBeLessThan(bodyHeight(blocker, SHOULDER, standing));
+  });
+  it('without a recorded pose the answer is the one before (heights as they are now)', () => {
+    const qb = body(0, 0, 77), rusher = body(6, 0, 76), guard = body(3, 0, 76, 0.4);
+    expect(lineOfSight([qb, rusher, guard], qb, rusher, undefined, (a) => a.pos, undefined)).toBe(lineOfSight([qb, rusher, guard], qb, rusher));
+    expect(lineOfSight([qb, rusher, guard], qb, rusher, undefined, (a) => a.pos, () => null)).toBe(lineOfSight([qb, rusher, guard], qb, rusher));
+  });
+});

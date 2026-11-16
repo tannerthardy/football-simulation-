@@ -21,20 +21,32 @@ export const HEAD_RADIUS = 0.125;
 /** Height of a body lying on the ground (yd). */
 const DOWN_HEIGHT = 0.35;
 
-/** Height (yd) of the point `frac` of the way up his stature, as his posture holds it now. */
-export function bodyHeight(a: Agent, frac: number): number {
+/** SIGHT_PURE (experimental, off; SIGHT_PURE=1): a past tick's line of sight is a function of that tick. `lineOfSight` places the bodies
+ * where the perception record had them but took every body's height and posture as it is NOW, so the same past tick gave a
+ * different answer asked at different times, and `sighted()` keeps the first answer: what a player saw at a past tick then
+ * depended on when anyone first asked, not on what was there (an observer changed plays; docs/reviews/2026-11-16-sight-pure.md).
+ * On, the record carries each body's posture and whether he was up at every tick and a past sight line reads them. */
+export const SIGHT_PURE = process.env.SIGHT_PURE === '1';
+
+/** A body's posture as a tick recorded it (SIGHT_PURE). */
+export interface PoseAt { up: boolean; posture: number }
+
+/** Height (yd) of the point `frac` of the way up his stature, as his posture holds it now (or as `at` records it). */
+export function bodyHeight(a: Agent, frac: number, at?: PoseAt | null): number {
   const s = a.body.support;
-  if (s && s.state !== 'up') return Math.min(DOWN_HEIGHT, frac * a.profile.heightYd);
-  const sp = supportParams(a.profile), posture = s?.posture ?? 0.2;
+  if (at ? !at.up : s && s.state !== 'up') return Math.min(DOWN_HEIGHT, frac * a.profile.heightYd);
+  const sp = supportParams(a.profile), posture = at ? at.posture : s?.posture ?? 0.2;
   return frac * a.profile.heightYd * padHeightAt(sp, posture) / padHeightAt(sp, 0);
 }
 
 /** Whether `observer`'s eyes have a clear line to `target` at `height` (yd; default his eyes, the head). View direction
  * (body facing, gaze) is the caller's: this is occlusion only. `posOf` places the bodies (default: where they are now;
- * a recorded moment for a past sight line, with null for a body not recorded there). Heights and postures are now's. */
+ * a recorded moment for a past sight line, with null for a body not recorded there). Heights and postures are now's unless `poseOf` gives
+ * the recorded ones (SIGHT_PURE). */
 export function lineOfSight(bodies: readonly Agent[], observer: Agent, target: Agent, height?: number,
-  posOf: (a: Agent) => { x: number; y: number } | null = (a) => a.pos): boolean {
-  const eye = bodyHeight(observer, EYE), h = height ?? bodyHeight(target, EYE);
+  posOf: (a: Agent) => { x: number; y: number } | null = (a) => a.pos,
+  poseOf?: (a: Agent) => PoseAt | null): boolean {
+  const eye = bodyHeight(observer, EYE, poseOf?.(observer)), h = height ?? bodyHeight(target, EYE, poseOf?.(target));
   const o = posOf(observer), t = posOf(target);
   if (!o || !t) return true;
   const sx = t.x - o.x, sy = t.y - o.y, l2 = sx * sx + sy * sy;
@@ -50,8 +62,9 @@ export function lineOfSight(bodies: readonly Agent[], observer: Agent, target: A
     const along = Math.sqrt(l2) * Math.min(u, 1 - u);
     if (along < b.profile.radius) continue;
     const line = eye + (h - eye) * u;
-    if (d < b.profile.radius && line < bodyHeight(b, SHOULDER)) return false;
-    if (d < HEAD_RADIUS && line < bodyHeight(b, 1)) return false;
+    const at = poseOf?.(b);
+    if (d < b.profile.radius && line < bodyHeight(b, SHOULDER, at)) return false;
+    if (d < HEAD_RADIUS && line < bodyHeight(b, 1, at)) return false;
   }
   return true;
 }

@@ -8,7 +8,7 @@ import { shouldersOf } from '../physics/kinematics.js';
  */
 import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
-import { lineOfSight } from './sight.js';
+import { lineOfSight, SIGHT_PURE } from './sight.js';
 import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
@@ -45,7 +45,7 @@ import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext }
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
 import { resolveCatchOpportunities, secureStep } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
-import { PerceptionBuffer, type Perceived } from './perception.js';
+import { HISTORY as PERCEPTION_HISTORY, PerceptionBuffer, type Perceived } from './perception.js';
 import { ANTICIPATION_PRIOR } from './anticipation-prior.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
@@ -514,7 +514,7 @@ export class PlaySim {
       (a) => this.defAlign.spots[a.slot as DefSlot]?.role.kind === 'blitz', this.rng.fork('backer-creep')) : new Map<Agent, CreepPlan>();
     // Having timed the count to creep, he is moving at the snap: his start is the snap.
     for (const a of creeps.keys()) a.snapReadyAt = 0;
-    if (!stem && !creep && !this.motion && !early && !creeps.size) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    if (!stem && !creep && !this.motion && !early && !creeps.size) { this.recordPerception(); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -547,7 +547,7 @@ export class PlaySim {
       Math.ceil(early/this.dt - 1e-9));
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    this.recordPerception();
     for (let i=ticks;i>0;i--) {
       this.t = -i*this.dt;
       const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
@@ -564,12 +564,12 @@ export class PlaySim {
       this.world.time = this.t;
       this.world.step(intents, this.dt);
       for (const d of this.defense) if (!moving?.has(d)) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
-      this.perception.record(this.agents, this.carrier?.idx ?? null);
+      this.recordPerception();
       if (this.record && i%this.recordEvery===0) this.recordFrame(intents);
       if (early && this.snapCountActs(this.t + this.dt)) break;
     }
     this.t=0;
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    this.recordPerception();
     if (this.record) this.recordFrame();
   }
 
@@ -894,6 +894,7 @@ export class PlaySim {
    * see now ages from when he last saw him and is picked up one delay after he is back in sight. Visibility at a past
    * tick never changes, so it is kept per tick. Beyond the record (about 1.2 s): the last picture he had, ageing. */
   private sighted(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView = false): Perceived {
+    if (SIGHT_PURE) return this.sightedPure(observer, target, seen, gazeView, headView);
     const key = `${observer.idx}>${target.idx}`, now = Math.round(this.t / this.dt);
     const memo = (this.sightAt ??= new Map<string, boolean>()), kept = (this.sightKept ??= new Map());
     const visibleAt = (back: number): boolean | null => {
@@ -906,7 +907,7 @@ export class PlaySim {
       const rh = headView ? this.perception.perceive(observer.idx, back * this.dt).head : null;
       const brg = Math.atan2(rt.y - ro.pos.y, rt.x - ro.pos.x);
       const inView = rh !== null && rh !== undefined ? inHeadCone(rh, brg) : gazeView || Math.abs(angDiff(brg, ro.facing)) <= 1.8;
-      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec);
+      const v = inView && lineOfSight(this.agents, observer, target, undefined, rec, SIGHT_PURE ? (b: Agent) => this.perception.recorded(b.idx, back * this.dt)?.pose ?? null : undefined);
       memo.set(k, v);
       return v;
     };
@@ -922,6 +923,62 @@ export class PlaySim {
     const m = kept.get(key);
     if (!m) return this.perception.perceive(target.idx, 1.2);
     const dt = this.t - m.at;
+    return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
+  }
+  /** SIGHT_PURE: the sight history, kept every tick for every pair and view (not when someone asks), so what a player saw at a past tick and what he last saw
+   * are functions of the record and his own delay, not of who asked first. Per pair and view: the record ticks (stamps) at which he had the man in sight, newest
+   * last, for the ticks the perception record still holds; and the picture at the newest sighting that left the record (the one he falls back on, ageing). */
+  private recordPerception(): void {
+    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    if (SIGHT_PURE) this.recordSightHistory();
+  }
+  private sightHist = new Map<string, { target: number; ticks: number[]; older?: { pic: Perceived; stamp: number } }>();
+  private recordSightHistory(): void {
+    const stamp = this.perception.stamp - 1, dt = this.dt, agents = this.agents;
+    const rec = (a: Agent) => this.perception.recorded(a.idx, 0)?.pos ?? null;
+    const pose = (b: Agent) => this.perception.recorded(b.idx, 0)?.pose ?? null;
+    for (const o of agents) {
+      const ro = this.perception.recorded(o.idx, 0);
+      if (!ro) continue;
+      const rh = HEAD ? this.perception.perceive(o.idx, 0).head : null;
+      for (const t of agents) {
+        if (o === t) continue;
+        const rt = this.perception.recorded(t.idx, 0);
+        if (!rt || !lineOfSight(agents, o, t, undefined, rec, pose)) continue;
+        const brg = Math.atan2(rt.pos.y - ro.pos.y, rt.pos.x - ro.pos.x);
+        const views = ['o', Math.abs(angDiff(brg, ro.facing)) <= 1.8 ? 'v' : '', rh !== null && rh !== undefined ? (inHeadCone(rh, brg) ? 'h' : '') : 'h'];
+        for (const f of views) {
+          if (!f) continue;
+          const k = `${o.idx}>${t.idx}${f}`;
+          let h = this.sightHist.get(k);
+          if (!h) this.sightHist.set(k, h = { target: t.idx, ticks: [] });
+          h.ticks.push(stamp);
+        }
+      }
+    }
+    // The newest sighting that has reached the oldest tick the record holds is the picture he falls back on once it leaves (aged from there);
+    // sightings older than the record are dropped.
+    const edge = stamp - (PERCEPTION_HISTORY - 1), edgePic = new Map<number, Perceived>();
+    for (const h of this.sightHist.values()) {
+      if (h.ticks[0] === edge) {
+        let pic = edgePic.get(h.target);
+        if (!pic) edgePic.set(h.target, pic = this.perception.perceive(h.target, (PERCEPTION_HISTORY - 1) * dt));
+        h.older = { pic, stamp };
+      }
+      while (h.ticks.length && h.ticks[0]! < edge) h.ticks.shift();
+    }
+  }
+  private sightedPure(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView: boolean): Perceived {
+    const stamp = this.perception.stamp - 1, back0 = Math.round((seen.age ?? 0) / this.dt);
+    const h = this.sightHist.get(`${observer.idx}>${target.idx}${headView ? 'h' : gazeView ? 'o' : 'v'}`);
+    if (h) for (let i = h.ticks.length - 1; i >= 0; i--) {
+      const back = stamp - h.ticks[i]!;
+      if (back < back0) continue;
+      return back === back0 ? seen : this.perception.perceive(target.idx, back * this.dt);
+    }
+    const m = h?.older;
+    if (!m) return this.perception.perceive(target.idx, 1.2);
+    const dt = (stamp - m.stamp) * this.dt;
     return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
   }
   private sightAt?: Map<string, boolean>;
@@ -1480,7 +1537,7 @@ export class PlaySim {
     if (this.qb) this.qb.arm = this.windupAt < 0 ? 'set' : this.deliveryAt >= 0 && t >= this.deliveryAt ? 'deliver' : 'load';
     recordContact(this);
     stepHeads(this);
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+    this.recordPerception();
     for (const a of this.agents) {
       let nearby = 0;
       for (const other of this.opponents(a)) {
