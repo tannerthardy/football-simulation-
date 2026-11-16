@@ -607,9 +607,9 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
-## engine-71: `CRAFT_HOLD` back off (2026-11-16)
+## engine-71: `CRAFT_HOLD` and `PASS_OFF` back off (2026-11-16)
 
-One engine after it was turned on. Nothing else changes.
+One engine after they were turned on. Nothing else changes.
 
 **Why.** Coverage's paired staged throws on engine-70 (scripts/diag/catch/paired-throws.ts; the quarterback forced to the same target at the same time in every arm; oracle receiver): 216 -> 201 caught of 305 with `CRAFT_HOLD` on, and on the 289 pairs with identical throw time and target the hold loses 20 catches and wins 6. In games with everything else on, completion 72 / 71 / 72% off against 66 / 66 / 69% on (seeds 11 / 23 / 31, 8 games each). Not the defender (separation at the end 3.47 against 3.47 yd in the median) and not the quarterback's aim (identical). Two faults in the flag:
 
@@ -618,7 +618,9 @@ One engine after it was turned on. Nothing else changes.
 
 **My card on it** (16 games per arm, seeds 11 / 23 / 31, against engine-70; `out/e92-card-*.md`): `CRAFT_HOLD` off, completion +1.6 / +1.1 / -0.9 points, yards per attempt +0.70 / +0.05 / +0.02; with `RELEASE_SIDE` off as well, -0.7 / +0.4 / +1.4. Whole games do not resolve it; the paired throws do, and they show the mechanism.
 
-**What stays.** `SPACING_HOLD` and `RELEASE_SIDE` stay on. The dither budget passes on the defaults with `CRAFT_HOLD` off (see the PR). The hold is Rules' to repair as its second attempt: the held side ends when he is past the man or at his declared break, whichever comes first, and never alters the break; the gate is Coverage's paired set and the dither panel.
+**`PASS_OFF`.** Its hand-over sets the pair's control to 0 whatever the keeper's hands are doing (Flex's restated `rush-bull` / `rush-rip` log every one: values from -0.41 to +0.75 all go to 0). A new engagement takes its control from the bodies at first contact; a value assigned at the hand-over gives the keeper the grip and the punch by script. On 864 staged plays 14% of handed-over rushers reach the quarterback under the reset against 20-21% with the keeper's control from his fit, and in games on engine-70 the flag's whole effect is small (interior rushers clear of their blocker reaching the quarterback about 11.5 -> 9%, inside seed noise; the 13-14 -> 7% read on engine-69 did not repeat). It returns to a card with the honest hand-over as part of the flag.
+
+**What stays.** `SPACING_HOLD` and `RELEASE_SIDE` stay on. The dither budget passes on the defaults with both off. The hold is Rules' to repair as its second attempt: the held side ends when he is past the man or at his declared break, whichever comes first, and never alters the break; the gate is Coverage's paired set and the dither panel.
 
 **Test-only.** The `CRAFT_HOLD` pins in `acc-radius` and `man-trail-carry` are removed (the flag is off again). `read-plan`'s defender-key case is restated by the QB lane as the quarterback's own claim (the flat, never moved off it, the throw started within a hitch of his set) and no longer follows the flag. `rush-bull` and `rush-rip` are restated by Flex: a tick on which the rep's blocker changes is a hand-over, not a bull or rip resolution; the `PASS_OFF` pins are removed. Flex's finding from that work is open: `PASS_OFF`'s hand-over sets the pair's control to 0 by script (their fix is in progress behind its own flag).
 
