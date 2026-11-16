@@ -1,0 +1,83 @@
+From fde7f482a3d9a1fae343e5b9b22264d88fa60b93 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 15:51:42 +0000
+Subject: [PATCH] SET_SPOT repair: a back in protection references the QB as he
+ sees him, not the linemen's launch point (the QB stalled behind a back set
+ beside the final launch point on under-centre PA); pa-drop's SET_SPOT pin
+ removed
+
+---
+ docs/FLAGS.md                               |  2 +-
+ scripts/diag/pass-operators/uc-pa-depth.mts | 14 ++++++++++++++
+ src/sim/behaviors/blocking.ts               |  8 +++++++-
+ test/pa-drop.test.ts                        |  1 -
+ 4 files changed, 22 insertions(+), 3 deletions(-)
+ create mode 100644 scripts/diag/pass-operators/uc-pa-depth.mts
+
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index c6a1eaee..b05fcb4c 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -342,7 +342,7 @@ There are 434 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `BALL_CUE_OWN` | on | landed on 2026-11-15 (engine-69; `=0` restores the cue timed on his sighting of the passer) | defense (throw recognition) | `src/sim/release-evidence.ts`; `src/sim/behaviors/defense.ts` (`playObservedFlight`) | #766: the ball in flight is the defender's own percept at his own perception delay, through his recorded view, not timed by when he last saw the passer; with no catchable sample left he rallies to where he believes the ball came down instead of standing. The switch was added at integration so the card can attribute it. | The cue no longer carries the ball's true velocity. |
+ | `PLAY_ONCE` | on | defect fix (a defender's play on a ball he sees, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `playTried`) | one interception / breakup try per defender per pass, the first tick the ball is within his reach and he sees it, not a roll each tick it stays there. `PLAY_ONCE=0` restores. The same defect as BAT_ONCE's, downfield. The contested catch will be too easy until Coverage's in-phase work lands. |
+ | `PASS_OFF` | on | promoted 2026-11-16 (engine-72; `=0` restores); was turned back off 2026-11-16 (engine-71) after one engine on: the hand-over sets the pair's control to 0 by script, which hands the keeper a grip and a punch by assignment (Flex: 14% of handed-over rushers reach the quarterback under the reset, 20-21% with an honest fit); returns with the honest hand-over; was experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. Revised 2026-11-16 (Flex; docs/reviews/2026-11-15-pass-off.md): the hand-over gives the keeper his own control by the first-contact law (his punch against the rusher's current move; a keeper whose hands are not loaded must land them before the man clears his reach, else a miss; off his feet no fit), not a scripted 0 (every hand-over had gone to exactly 0 from -0.41..+0.75). |
+-| `SET_SPOT` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (the pass set's reference, 2026-11-15; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`, `protectPoint`, `setSpotTarget`, stepPassRep's lateral request), `src/sim/behaviors/blocking.ts` (the pass set) | the interior set no longer reads the QB's live position (removed, not replaced: information the blocker does not have); the point he protects comes from the called drop or the QB's alignment at the snap. He takes the two-step short set straight back off his snap spot (no deeper than the pocket's front; further ground is what the rusher wins) and aims inside-out on his man, where the rusher's line to the launch point crosses his depth, unbounded, fed forward by that point's own motion. The tackles keep the live-QB read unless `SET_SPOT_TACKLE` (KNOWN_PROBLEMS PRO-INFO #12). |
++| `SET_SPOT` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (the pass set's reference, 2026-11-15; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`, `protectPoint`, `setSpotTarget`, stepPassRep's lateral request), `src/sim/behaviors/blocking.ts` (the pass set) | the interior set no longer reads the QB's live position (removed, not replaced: information the blocker does not have); the point he protects comes from the called drop or the QB's alignment at the snap. He takes the two-step short set straight back off his snap spot (no deeper than the pocket's front; further ground is what the rusher wins) and aims inside-out on his man, where the rusher's line to the launch point crosses his depth, unbounded, fed forward by that point's own motion. The tackles keep the live-QB read unless `SET_SPOT_TACKLE` (KNOWN_PROBLEMS PRO-INFO #12). **Repair (2026-11-16, Flex; QB lane's trace):** the call's launch point is a lineman's reference (the QB is behind him, unseen); a back in protection now references the QB as he sees him. With the launch point, a back released from an under-centre play-action fake set beside the final launch point while the QB was still dropping, and the QB stopped behind him: staged under-centre PA (pa_post_dig / pa_shot / pa_flood x ace_11 / ace_12 / i_pro_21 / ace_trips_11 x cover 1-4 x rosters 1-6 x seeds 1-2, 576 plays), QB short of 6 yd at 2.0 s 21 -> 0, deeper by more than 0.5 yd on 126, shallower on none (p50 7.55 -> 7.65 yd); pa-drop's SET_SPOT pin removed. Default seed-999 hash 070dde7bbeb224de -> eae520a95142c574. |
+ | `SET_SPOT_TACKLE` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (SET_SPOT's tackle half, 2026-11-15; needs `SET_SPOT`; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`), `src/sim/behaviors/blocking.ts` (the vertical set, `racePace`) | the tackles' live-QB reads are removed. He takes the three-step vertical set off his snap spot, then beats the rusher to the pocket's front (the tackle clearance in front of the call's launch point) at the pace the race against the rusher's seen upfield speed needs; the call is only his floor. Tackle depth matches the old live-QB law; edge pressure is near the NFL's, but fast rushers win the corner far less (7% against 43%). |
+ | `POCKET_LEVEL` | on | promoted 2026-11-16 (engine-72; `=0` restores); was experimental (SET_SPOT's interior second phase, 2026-11-15; needs `SET_SPOT`; `=1` turns on) | protection | `src/sim/engagement.ts` (`passSetDepth`, `pocketLevelDepth`) | after the short set an interior lineman keeps level with the pocket, the cup around the launch point he knows from the call. His distance from it is the median of his two neighbors' (seen) and the tackles' mean, so one beaten neighbor doesn't drag him. Bounded by the short set and the pocket's front; never the QB. Evidence: the NFL's uncovered interior OL retreat as far as the engaged (ol-set-depth.py --uncovered). |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+diff --git a/scripts/diag/pass-operators/uc-pa-depth.mts b/scripts/diag/pass-operators/uc-pa-depth.mts
+new file mode 100644
+index 00000000..7d468fe8
+--- /dev/null
++++ b/scripts/diag/pass-operators/uc-pa-depth.mts
+@@ -0,0 +1,14 @@
++// usage: PA_DROP=1 node --import tsx scripts/diag/pass-operators/uc-pa-depth.mts (one JSON row per staged under-centre PA play)
++// Under-centre play action: the QB's depth at 2.0 s and the blocking back's distance to him, per staged play.
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++for (const concept of ['pa_post_dig', 'pa_shot', 'pa_flood']) for (const formation of ['ace_11', 'ace_12', 'i_pro_21', 'ace_trips_11'])
++  for (const coverage of ['cover1', 'cover3', 'cover4', 'cover2']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
++    if (sim.offCall.formation.qb !== 'under') continue;
++    const dir = sim.attackDir(sim.offense[0].team);
++    while (sim.phase === 'live' && sim.t < 2.0 && sim.throwAt < 0) sim.tick();
++    if (sim.t < 1.99) continue;
++    console.log(JSON.stringify({ k: `${concept}|${formation}|${coverage}|${roster}|${seed}`, qb: +((sim.los - sim.qb.pos.x) * dir).toFixed(2) }));
++  }
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 29dd38b7..1c115f2e 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -345,7 +345,13 @@ export class PassProtector implements Behavior {
+     }
+     // SET_SPOT: the QB he protects is the launch point he knows from the call, not the live QB behind him.
+     const tackleSlot = a.slot === 'LT' || a.slot === 'RT';
+-    const qb = SET_SPOT && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb : sim.qb;
++    // SET_SPOT's information rule is a lineman's: the QB is behind him, unseen, so his reference is the call's launch point.
++    // A back in protection sees the QB (beside him after the mesh, in front of him on a set): his reference is the QB as he
++    // sees him. With the launch point, a back released from a play-action fake under center set beside the final launch
++    // point (8.1 yd) while the QB was still dropping to it, and the QB stopped behind him (5.65 yd at 2.0 s against 7.0 off;
++    // pa-drop.test.ts, ace_11 pa_post_dig roster 1 seed 1).
++    const qb = SET_SPOT && isOL(a) && (!tackleSlot || SET_SPOT_TACKLE) ? { ...sim.qb, pos: protectPoint(sim) } as typeof sim.qb
++      : SET_SPOT && !isOL(a) ? { ...sim.qb, pos: sim.see(a, sim.qb).pos } as typeof sim.qb : sim.qb;
+     if (!rA) {
+       // Set: tackles kick, interior sets short; backs hold near the QB.
+       const isT = a.slot === 'LT' || a.slot === 'RT';
+diff --git a/test/pa-drop.test.ts b/test/pa-drop.test.ts
+index 9be70340..0a642fba 100644
+--- a/test/pa-drop.test.ts
++++ b/test/pa-drop.test.ts
+@@ -15,7 +15,6 @@ async function drop(flag: string, concept: string, formation: string) {
+   vi.resetModules();
+   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
+   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+-  vi.stubEnv('SET_SPOT', '0'); // engine-72: the under-center fake depth was recorded with the old pass set; QB lane to re-record with SET_SPOT on
+   vi.stubEnv('PA_DROP', flag);
+   const { PlaySim } = await import('../src/sim/playsim.js');
+   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+-- 
+2.43.0
+
