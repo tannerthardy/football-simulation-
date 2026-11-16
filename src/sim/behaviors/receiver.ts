@@ -140,13 +140,13 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * 0.3 of his pace along it) or across to the other side of the man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** CRAFT_EXIT (experimental, off; with CRAFT_HOLD): the held side is a commitment about one man and ends with him. It ends
- * when he is past that man in his picture (level or behind; within a clearance of level and out of his lane; or stepped
- * across his line onto the held side and out of his lane), with no run-out, and at his route's declared break, which the
- * craft never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
+ * when he is past that man in his picture (level or behind, or stepped across his line onto the held side and out of his
+ * lane, unless that side is his route's declared one), with no run-out, and at his route's declared break, which the craft
+ * never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
  * seam held a 73-degree bend round a nickel already level with him and carried it into the ball's flight, and a stick ran
  * straight up its stem through its own break. */
 const CRAFT_EXIT = process.env.CRAFT_EXIT === '1';
-const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2 }>();
+const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2; declared?: boolean }>();
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
 export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null, pastBreak = false): MoveCommand {
@@ -179,13 +179,15 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   if (held && !block) {
     const seen = sim.see(a, held.d), rel = { x: seen.pos.x - a.pos.x, y: seen.pos.y - a.pos.y };
     const ahead = rel.x * u.x + rel.y * u.y, off = rel.x * n.x + rel.y * n.y;
-    // CRAFT_EXIT: past him (level or behind, in his picture, or within a clearance of level and already outside his lane), the
-    // commitment is done and his route takes back over at once: a man beside or behind him is not in his lane, and bending
-    // round him swings the route off its stem (the mesh crosser's nickel stepped across to his held side, 1.3 yd beside and
-    // 0.2 yd ahead: the held bend sent the shallow 73 degrees upfield). And a man who has stepped across his line onto the
-    // side he held, out of his lane, is passed cleanly on his line: going round him on that side means crossing his face.
+    // CRAFT_EXIT: past him (level or behind, in his picture), the commitment is done and his route takes back over at once: a
+    // man behind him is not in his lane, and bending round him swings the route off its stem. And a man who has stepped
+    // across his line onto the side he held, out of his lane, is passed cleanly on his line: going round him on that side
+    // means crossing his face (the mesh crosser's nickel, 1.3 yd onto his held side: the held bend sent the shallow 73
+    // degrees upfield). A man beside him on the far side is the commitment working, and it holds;
+    // unless the side is his route's declared one (RELEASE_SIDE: the wing's slant goes under the end he lines up behind,
+    // whichever way the end moves), which is the route's, not a choice about the man.
     const heldSide = held.across.x * n.x + held.across.y * n.y >= 0 ? 1 : -1;
-    if (CRAFT_EXIT && (ahead <= 0 || (ahead < held.clear && Math.abs(off) >= held.clear) || (off * heldSide > 0 && Math.abs(off) >= held.clear))) craftHeld.delete(a);
+    if (CRAFT_EXIT && (ahead <= 0 || (!held.declared && off * heldSide > 0 && Math.abs(off) >= held.clear))) craftHeld.delete(a);
     else if (ahead > -0.2 && Math.abs(off) < held.clear + 0.5) block = { p: seen.pos, ahead: Math.max(ahead, 0.1), off, clear: held.clear, d: held.d };
     // Just clear of him: the bend he committed to runs out its 0.2 s before his route takes back over.
     else if (sim.t - held.at <= 0.2 && held.out) return { ...cmd, vel: { x: held.out.x * speed, y: held.out.y * speed } };
@@ -201,7 +203,8 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   const declared = HOLD && sideLeg ? sideLeg.x * n.x + sideLeg.y * n.y : 0;
   const side = Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
     : breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
-  if (HOLD && block.d) craftHeld.set(a, { d: block.d, across: Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out });
+  if (HOLD && block.d) craftHeld.set(a, { d: block.d, across: Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out,
+    declared: Math.abs(declared) > 0.2 || (!!keep?.declared && keep.d === block.d) });
   const around = { x: block.p.x + n.x * side * block.clear, y: block.p.y + n.y * side * block.clear };
   const dx = around.x - a.pos.x, dy = around.y - a.pos.y, l = Math.hypot(dx, dy) || 1;
   const ease = 0.94 + 0.04 * rr;
