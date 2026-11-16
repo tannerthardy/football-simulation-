@@ -335,6 +335,7 @@
     "CRAFT_HOLD": "off",
     "CRAFT_EXIT": "off",
     "RELEASE_COMMIT": "off",
+    "CONCEPT_FIT": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
