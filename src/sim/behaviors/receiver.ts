@@ -156,13 +156,32 @@ const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
  * seam held a 73-degree bend round a nickel already level with him and carried it into the ball's flight, and a stick ran
  * straight up its stem through its own break. */
 const CRAFT_EXIT = process.env.CRAFT_EXIT === '1';
-const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2; declared?: boolean }>();
+const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2; declared?: boolean; seeded?: boolean }>();
+/** RELEASE_COMMIT (experimental, off; RELEASE_COMMIT=1; with ROUTE_CRAFT; #35): the release's side seeds the craft's held
+ * side for the same man. When he releases round a man (the press release, RELEASE_SEEN's man tight over him at the snap,
+ * or a jam he worked off), that side (a field side) is written as the craft's held side for that man, ahead of the
+ * route's declared leg, so when the release lets go and the craft finds the same man in his lane it goes round him on
+ * the side he already took. One held side, one owner (the craft's hold and its exits, CRAFT_HOLD / CRAFT_EXIT); with
+ * CRAFT_HOLD off the seeded side is held for that man alone. When his line runs mostly across the field the field side
+ * names no side of the man: he keeps the side of the man he is already on. Off (and with CRAFT_HOLD + CRAFT_EXIT alone),
+ * an attached end released round the end over him and, once that end was no longer ahead of him, the craft took him back
+ * across the same man's body: staged double_outs, his lateral request reversed within 0.6 s of contact on 58 of 96
+ * touched ends (54 with CRAFT_HOLD + CRAFT_EXIT), the craft's man the rusher who hit him on 60 of 62
+ * (scripts/diag/pass-operators/attached-release.mts, attached-craft-who.mts). */
+const RELEASE_COMMIT = process.env.RELEASE_COMMIT === '1';
+/** RELEASE_COMMIT: his release round `d` on field side `side` (+1 / -1 in y) seeds the craft's held side for that man. */
+function seedCraftSide(a: Agent, d: Agent, side: number, rr: number, t: number): void {
+  if (!RELEASE_COMMIT || side === 0 || craftHeld.get(a)?.d === d) return;
+  craftHeld.set(a, { d, across: { x: 0, y: side }, clear: a.profile.radius + d.profile.radius + 0.15 + 0.25 * rr, at: t, seeded: true });
+}
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
 export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null, pastBreak = false): MoveCommand {
   // CRAFT_EXIT: at his declared break the hold is over; the break and the leg after it are the route's, crafted per tick.
-  const HOLD = CRAFT_HOLD && !(CRAFT_EXIT && pastBreak);
-  if (CRAFT_HOLD && !HOLD) craftHeld.delete(a);
+  // RELEASE_COMMIT: a side seeded by his release is held for its man even without CRAFT_HOLD (its exits are the hold's).
+  const SEEDED = RELEASE_COMMIT && !!craftHeld.get(a)?.seeded && !(CRAFT_EXIT && pastBreak);
+  const HOLD = (CRAFT_HOLD || SEEDED) && !(CRAFT_EXIT && pastBreak);
+  if ((CRAFT_HOLD || RELEASE_COMMIT) && !HOLD) craftHeld.delete(a);
   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
   if (speed < 1) return cmd;
   const u = { x: cmd.vel.x / speed, y: cmd.vel.y / speed }, n = { x: -u.y, y: u.x };
@@ -204,17 +223,28 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
     else craftHeld.delete(a);
   }
   if (!block) return cmd;
-  const keep = HOLD ? craftHeld.get(a) : undefined;
+  const keep0 = HOLD ? craftHeld.get(a) : undefined;
+  // RELEASE_COMMIT without CRAFT_HOLD: the hold covers the seeded man alone; any other man is crafted per tick as before.
+  const H = HOLD && (CRAFT_HOLD || keep0?.d === block.d);
+  const keep = H ? keep0 : undefined;
   // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
   // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
   // CRAFT_EXIT: a leg that comes back toward the line (a stick, hook or curl settling) names no side round a man in his
   // stem: its lateral part is a few tenths of a yard, and read as a side it sent the stick inside the nickel over him.
   const sideLeg = routeDir && (!CRAFT_EXIT || routeDir.x * u.x + routeDir.y * u.y > 0) ? routeDir : null;
-  const declared = HOLD && sideLeg ? sideLeg.x * n.x + sideLeg.y * n.y : 0;
-  const side = Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
+  // RELEASE_COMMIT: the side his release seeded for this man comes first, kept as the field side it was seeded as.
+  const seed = keep?.seeded && keep.d === block.d ? keep.across.x * n.x + keep.across.y * n.y : null;
+  const seedSign = seed === null ? 0 : Math.abs(seed) >= 0.5 ? Math.sign(seed) : 0;
+  // A man who has stepped across his line fully onto the release side (out of his lane there) is passed on the side of
+  // him he is already on, as when his line runs across the field: going round him on the seeded side crosses his face
+  // (Rules' guard, CRAFT_EXIT's stepped-across case).
+  const seededSide = seed === null ? 0 : seedSign !== 0 && !(block.off * seedSign > 0 && Math.abs(block.off) >= block.clear) ? seedSign
+    : block.off >= 0 ? -1 : 1;
+  const declared = H && sideLeg && !seededSide ? sideLeg.x * n.x + sideLeg.y * n.y : 0;
+  const side = seededSide ? seededSide : Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
     : breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
-  if (HOLD && block.d) craftHeld.set(a, { d: block.d, across: Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out,
-    declared: Math.abs(declared) > 0.2 || (!!keep?.declared && keep.d === block.d) });
+  if (H && block.d) craftHeld.set(a, { d: block.d, across: seededSide ? keep!.across : Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out,
+    declared: Math.abs(declared) > 0.2 || (!!keep?.declared && keep.d === block.d), seeded: !!seededSide });
   const around = { x: block.p.x + n.x * side * block.clear, y: block.p.y + n.y * side * block.clear };
   const dx = around.x - a.pos.x, dy = around.y - a.pos.y, l = Math.hypot(dx, dy) || 1;
   const ease = 0.94 + 0.04 * rr;
@@ -222,17 +252,17 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   let ox = dx / l, oy = dy / l;
   // CRAFT_HOLD: the bend goes round the man, never back down his route: at least 0.3 of his pace along it, the rest
   // across on the chosen side (a point beside a man already level with him lies behind him).
-  if (HOLD && ox * u.x + oy * u.y < 0.3) {
+  if (H && ox * u.x + oy * u.y < 0.3) {
     const across = Math.sqrt(1 - 0.09);
     ox = 0.3 * u.x + across * n.x * side; oy = 0.3 * u.y + across * n.y * side;
   }
   // CRAFT_HOLD: and never across to the other side of the man than the one he chose: a bend the wrong way is taken back
   // to his line with a lean to his side.
-  if (HOLD && (ox * n.x + oy * n.y) * side < 0) {
+  if (H && (ox * n.x + oy * n.y) * side < 0) {
     const f = Math.max(0.3, ox * u.x + oy * u.y), lean = 0.2, m = Math.hypot(f, lean);
     ox = (f * u.x + lean * n.x * side) / m; oy = (f * u.y + lean * n.y * side) / m;
   }
-  if (HOLD) { const h = craftHeld.get(a); if (h) h.out = { x: ox * ease, y: oy * ease }; }
+  if (H) { const h = craftHeld.get(a); if (h) h.out = { x: ox * ease, y: oy * ease }; }
   return { ...cmd, vel: { x: ox * speed * ease, y: oy * speed * ease } };
 }
 
@@ -753,6 +783,7 @@ export class RouteRunner implements Behavior {
           side = Math.sign(desired - dp.y) || -Math.sign(lateral) || this.outside;
         }
         this.releaseSide = side;
+        seedCraftSide(a, d, side, a.r('routeRunning'), sim.t);
         return runThrough(a, { x: dp.x, y: dp.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }
@@ -769,6 +800,7 @@ export class RouteRunner implements Behavior {
     const clearance = a.profile.radius + d.profile.radius + 0.2;
     // The jam's side is toward his path; a release he already made keeps its own side.
     if (this.releaseSide === 0) this.releaseSide = p.side;
+    seedCraftSide(a, d, this.releaseSide, a.r('routeRunning'), sim.t);
     return runThrough(a, { x: d.pos.x + a.profile.radius, y: d.pos.y + p.side * clearance },
       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
   }

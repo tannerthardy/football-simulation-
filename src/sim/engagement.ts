@@ -3167,6 +3167,52 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
  * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
  * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
 export const PASS_OFF = process.env.PASS_OFF === '1';
+/** PASS_OFF's hand-over (folded in, 2026-11-16): the hand-over's control is the keeper's own
+ * fit, the same first-contact law as any new pass engagement, not a scripted 0 (Integration, 2026-11-16: every
+ * hand-over had gone to exactly 0 from -0.41..+0.75, giving the keeper the grip and the punch by assignment).
+ * - **The exchange** (createEngagement's pass branch): his punch (hands, arm edge) against the rusher's current move.
+ *   A finesse move meets it with his swipe (a swipe that beats the punch leaves the keeper reaching: -0.5); a power
+ *   move with his strike.
+ * - **Late** (attempt 2, corrected; only when he sees the man come free without his hands loaded on him): his hands
+ *   must land before the man clears his reach. If they land after, it is a miss (the
+ *   swiped punch's -0.5); between, the fit falls smoothly with the share of that window he used. (Attempt 1 bounded it by
+ *   firstHands, which compares both men's landing over the same distance and so never penalised a late keeper.)
+ * - **Off balance:** off his feet he does not fit (at most -0.5, the missed punch).
+ * The old pairing's rep edge is not carried. */
+function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
+  const d = e.defender, tb = traits(keeper, 'pass'), td = traits(d, 'pass'), rng = sim.dice('handover', keeper, d);
+  const armEdge = (tb.arm - td.arm) / 3, punchB = tb.hands + 0.12 * armEdge + rng.normal(0, 0.18);
+  let c: number;
+  if (e.move === 'swim' || e.move === 'club' || e.move === 'rip' || e.move === 'speed') {
+    const swipe = td.hands + 0.15 * td.bend + rng.normal(0, 0.18);
+    c = swipe - punchB > 0.18 ? -0.5 : clamp(0.35 + (punchB - swipe), -0.2, 0.9);
+  } else {
+    const strike = 0.5 * td.hands + 0.5 * d.r('passRushPower') - 0.12 * armEdge + rng.normal(0, 0.18);
+    c = clamp(punchB - strike, -0.8, 0.8);
+  }
+  // Late (attempt 2; attempt 1 bounded by firstHands, which compares both men's landing over the same distance and so
+  // never penalised a late keeper): his hands must land before the man clears his reach. Land: his distance beyond
+  // the bodies' contact over his closing speed on the man. Clear: the reach the man has left over the man's speed away
+  // from him. Landing after the man has cleared is a miss (the swiped punch's -0.5); between, the fit falls smoothly
+  // with the share of the window he used.
+  // Attempt 2 corrected: only on the `seen` path, where his hands are not loaded on the man. A keeper whose hands are
+  // already fitted (the hand-over's other precondition: force on his helper joint) has nothing left to land, so his fit
+  // is the exchange alone. (Attempt 2 charged every keeper a landing time at his closing speed: a fitted, slowly
+  // closing keeper got a near miss; staged, in reach -0.44.)
+  // Loaded is the load on his own hands joint, not the path that found him: the seen check runs first each tick, so it
+  // also finds keepers whose hands are already on (the first cut keyed on the path and changed nothing).
+  const hj = e.hands, loaded = !!hj && (Math.max(0, hj.normalForce ?? 0) > 0 || Math.abs(hj.tangentForce ?? 0) > 0);
+  if (loaded) return (keeper.body.support?.state ?? 'up') !== 'up' ? Math.min(c, -0.5) : c;
+  const dx = d.pos.x - keeper.pos.x, dy = d.pos.y - keeper.pos.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
+  const contact = keeper.profile.radius + d.profile.radius, reach = contact + tb.arm / 36 * 0.3;
+  const closing = Math.max(0.1, (keeper.vel.x - d.vel.x) * ux + (keeper.vel.y - d.vel.y) * uy);
+  const away = Math.max(0.1, (d.vel.x - keeper.vel.x) * ux + (d.vel.y - keeper.vel.y) * uy);
+  const land = Math.max(0, dist - contact) / closing, clear = Math.max(0, reach - dist) / away;
+  const used = land / Math.max(1e-3, land + clear);
+  c = c + (-0.5 - c) * clamp(used, 0, 1) ** 2;
+  if ((keeper.body.support?.state ?? 'up') !== 'up') c = Math.min(c, -0.5);
+  return c;
+}
 function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
   const d = e.defender;
@@ -3182,7 +3228,9 @@ function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
   if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
   e.blocker = keeper; e.hands = joint;
   e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
-  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
+  // The keeper's control from the first-contact law, from his own fit (not a scripted 0).
+  e.control = handoverControl(sim, e, keeper);
+  e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
   syncJoints(sim, e);
   keeper.tags.add('pass-off');
   d.tags.add('shed');
