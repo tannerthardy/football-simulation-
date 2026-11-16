@@ -35,7 +35,7 @@ import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
+import { BALL_EST, BALL_EST_DEF_PICTURE, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 import { seenEngaged } from '../seen-contact.js';
 import { BALL_CUE_OWN } from '../release-evidence.js';
@@ -2382,6 +2382,19 @@ function playBelievedBall(a: Agent, sim: PlaySim, man: Agent | null, continueCov
   // estimate is empty, and he plays as on the arm alone until it is not (not an empty path to playObservedFlight).
   const noFlight = rb.ballAt !== undefined && estimatesFor(a) && !hasObservedFlight(a) && !sim.ballEstimates?.estimate(a, sim).length;
   if (rb.ballAt === undefined || noFlight) {
+    // Bit 8192: a man defender who has not found the ball but sees his man looking back with his hands coming plays the
+    // hands: through them at the catch, as on a seen flight (DRIVE_CATCH), and the carry after it is his.
+    if (man && BALL_EST_DEF_PICTURE && estimatesFor(a) && !hasObservedFlight(a)) {
+      const hands = readsHandsAt(a, sim, man, undefined);
+      const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'))) + 0.05;
+      const seen = sim.see(a, man);
+      if (hands !== undefined && sim.t - hands >= react && Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) <= 4) {
+        const f = seen.facing ?? Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x);
+        a.tags.add('play-hands');
+        if (CATCH_CARRY && catchDrive.get(a)?.receiver !== man) catchDrive.set(a, { receiver: man, t: sim.t });
+        return runThrough(a, { x: seen.pos.x + Math.cos(f) * 0.35, y: seen.pos.y + Math.sin(f) * 0.35 }, { speed: 1 });
+      }
+    }
     // Bit 256: a man defender who has not found the ball judges his phase and, in phase (or undisciplined), looks.
     if (man && BALL_EST_MAN_LOOK && estimatesFor(a) && !hasObservedFlight(a) && manLooks(a, sim, man, rb.releasedAt)) return manLook(a, sim, fallback());
     a.tags.add('arm-bite');

@@ -118,6 +118,13 @@ export function glanceSd(range: number, skillV: number, held: number, age: numbe
 /** Bit 4096 (receivers only, 2026-11-15): the estimator for the offense alone; defenders keep today's read of the
  * flight. The mirror of bit 128, so the receiver's side can be carded without changing the defense's. */
 export const BALL_EST_RCV_ONLY = (BALL_EST_BITS & 4096) !== 0 && !BALL_EST_DEF_ONLY;
+/** Bit 8192 (DEF_PICTURE, off; docs/reviews/2026-11-15-defender-throw-picture.md, cue 3): a man defender with no flight of
+ * his own (he has not sampled the ball) who reads his man looking back with his hands coming (Defense's `readsHandsAt`,
+ * his own picture within 3 yd) plays the hands: he drives through the receiver's hands at the catch, as DRIVE_CATCH
+ * does on a seen flight, and the carry after it is his (CATCH_CARRY). Off, the hands only told him the throw was up and
+ * he kept trailing at his offset: under the defense's estimator (2049) man defenders near the catch closed at 2.9 yd/s
+ * (p25 0.7) against the oracle's 4.3 (p25 2.4), and YAC per catch was 13.7 against 7.9 (yac-ladder.ts, engine-71). */
+export const BALL_EST_DEF_PICTURE = (BALL_EST_BITS & 8192) !== 0;
 export const BALL_EST_RCV = BALL_EST && !BALL_EST_DEF_ONLY;
 /** Is the estimator on for this player (his own estimate in place of the true flight)? */
 export const estimatesFor = (a: { team: string }): boolean => BALL_EST && (BALL_EST_DEF_ONLY ? a.team === 'D' : BALL_EST_RCV_ONLY ? a.team === 'O' : true);
