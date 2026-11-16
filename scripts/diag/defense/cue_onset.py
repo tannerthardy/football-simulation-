@@ -74,7 +74,7 @@ for line in gzip.open(path, 'rt'):
             bear = math.degrees(math.atan2(ry - qy, rx - qx))
             if abs((O[k][qb] - bear + 540) % 360 - 180) > 30: break
             dd = k * p.dt
-    out.append({'layer': layer, 'onset': onset, 'throw': kt * p.dt, 'a': a, 'b': b, 'd': dd, 'id': raw.get('id'),
+    out.append({'layer': layer, 'onset': onset, 'throw': kt * p.dt, 'cl': close(kt), 'sp': p.speed(f, kt), 'cl25': close(max(0, kt - round(0.25 / p.dt))), 'a': a, 'b': b, 'd': dd, 'id': raw.get('id'),
                 'route': (p.players[r].get('route') if r < len(p.players) else None)})
 print(f'{path}: zone first arrivers, catches 0-12 yd')
 for layer in ('underneath', 'deep', 'all'):
@@ -82,6 +82,7 @@ for layer in ('underneath', 'deep', 'all'):
     if not R: continue
     print(f"{layer:10s} n {len(R)} | closing at the throw (onset found) {len(O)} ({len(O) / len(R):.2f}) | onset before the throw p25/p50/p75 "
           f"{q([o['onset'] - o['throw'] for o in O], .25)}/{q([o['onset'] - o['throw'] for o in O])}/{q([o['onset'] - o['throw'] for o in O], .75)} s")
+    print(f"    at the throw: closing p50 all {q([o['cl'] for o in R if o['cl'] is not None])}, closers {q([o['cl'] for o in O])} (at -0.25 s {q([o['cl25'] for o in O if o['cl25'] is not None])}) | speed p50 all {q([o['sp'] for o in R])}, closers {q([o['sp'] for o in O])}")
     for c, lab in (('a', 'route break'), ('b', 'QB set'), ('d', 'QB shoulders on target')):
         C = [o for o in O if o[c] is not None]
         if not C: print(f"    {lab:24s} no cue found"); continue
