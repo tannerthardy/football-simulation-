@@ -412,3 +412,23 @@ and a partial square that are not sourced. Integration to rule.
 front-foot rung. The NFL's speed at release (p50 0.9 yd/s short, 1.4 deeper; ours 0.4) is mostly not forward: set
 35-60%, forward 8-16%, sideways 15-30%, back 18-19%. It is drift and reset, so it is pocket movement thrown from the
 move: bit 4's.
+
+**The stance at the plant** (Integration's re-diagnosis, measured). BDB 2025 gun non-PA dropbacks, chest bearing minus
+the bearing to the eventual target at the plant:
+
+| Target side | Unsigned p50 | Signed p50 | Chest off downfield p50 |
+| --- | --- | --- | --- |
+| Left | 64-75 deg | -64 to -75 deg | 33-45 deg |
+| Right | 29-39 deg | -27 to -37 deg | 71-79 deg |
+
+The rows cover every depth. On throws within 0.15 s of the plant, chest against target is p50 22 deg: he squares as he
+throws.
+
+The chest is always rotated the same way, to the throwing-arm side (most NFL quarterbacks are right-handed; no
+handedness in the data), with the front shoulder toward the target. The amount depends on the target's side, so there
+is no single constant. The flat 58-61 deg off downfield is this stance averaged over sides.
+
+**Decisions:**
+- Part 3's facing is carded as built, with the 15-25 deg written down as open.
+- The stance (front shoulder to the read, chest to the arm side) is the shared fix for the plant and for bit 2's
+  shoulders-on-a-step, which are chest-on today. It needs a handedness field and the amount question; not built.
