@@ -5,7 +5,7 @@ import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
-import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
+import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, ROUTE_LANDMARK, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
@@ -93,6 +93,9 @@ const FORECAST_HOLD = process.env.FORECAST_HOLD !== '0';
  * hold it tighter later. */
 export interface HoldTolerance { stem: number; afterBreak: number; noBreak: number }
 export const HOLD_TOL: Readonly<HoldTolerance> = Object.freeze({ stem: 1.2, afterBreak: 1.6, noBreak: 1.5 });
+/** ROUTE_LANDMARK: how far off a leg a receiver running along it still reads as on his route (yd; a choice, a bend round a
+ * man: the hitch_post post was 2.5 yd off his stem). */
+const LANDMARK_TOL = 3;
 
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
@@ -253,7 +256,8 @@ export class ReceiverForecast {
       else if (done) cmd = active.end === 'continue' ? { vel: body.vel }
         : { vel: arriveVelocity(body, active.path[active.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
       else {
-        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill);
+        // ROUTE_LANDMARK: he runs the rest of a route with a declared vertex from where he is seen, as the receiver does.
+        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill, ROUTE_LANDMARK && prior.breakIdx !== undefined);
         if (!cmd) { done = true; cmd = { vel: active.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
         // LINE_START: the same get-off the receiver runs, read time from his profile (his mind is not visible).
         else if (LINE_START && inGetOff(Math.hypot(body.pos.x - prior.start.x, body.pos.y - prior.start.y),
@@ -294,7 +298,10 @@ function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: 
     // of the segment); stopped (fallen, jammed) or cutting across it, only the body radius places him.
     const speed = Math.hypot(p.vel.x, p.vel.y), len = Math.sqrt(len2);
     const runningAlong = speed >= 1 && len > 1e-6 && (p.vel.x * dx + p.vel.y * dy) / (speed * len) >= 0.6;
-    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak) : prior.profile.radius;
+    // ROUTE_LANDMARK: a receiver running along a leg of a route with a declared vertex is on it as far off as a bend takes
+    // him (LANDMARK_TOL): he runs the rest of it from where he is.
+    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, ROUTE_LANDMARK && prior.breakIdx !== undefined ? LANDMARK_TOL
+      : brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak) : prior.profile.radius;
     if (error <= tol && (speed < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
       candidates.push({ idx, error });
     }

@@ -311,6 +311,7 @@
     "DECLARED_BREAK": "on",
     "PLAN_ROLES": "on",
     "ROUTE_FINISH": "on",
+    "ROUTE_LANDMARK": "off",
     "CROSS_FLAT": "on",
     "PLAN_KEYS_3": "on",
     "ROUTE_EFFORT": "off",
