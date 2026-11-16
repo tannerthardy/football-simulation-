@@ -46,6 +46,20 @@ const SHORT = 2;
 const LANE = 1.5;
 
 const onTop = new WeakMap<Agent, boolean>();
+/** PURSUIT_HOLD bit 2 (see behaviors/common.ts): on top only for a carrier coming at him (his seen velocity within
+ * 45 deg of the line to the defender to enter, 60 deg to stay); a side or trailing pursuer takes the held intercept. */
+const HOLD_TOP = (Number(process.env.PURSUIT_HOLD ?? 0) & 2) !== 0;
+const TOP_ENTER_COS = Math.SQRT1_2, TOP_EXIT_COS = 0.5;
+/** Earliest t with |r + v t| = s t (his speed s against the carrier's seen motion), or null. */
+function meetTime(rx: number, ry: number, vx: number, vy: number, s: number): number | null {
+  const A = vx * vx + vy * vy - s * s, B = 2 * (rx * vx + ry * vy), C = rx * rx + ry * ry;
+  if (Math.abs(A) < 1e-9) return B < 0 ? -C / B : null;
+  const disc = B * B - 4 * A * C;
+  if (disc < 0) return null;
+  const r1 = (-B - Math.sqrt(disc)) / (2 * A), r2 = (-B + Math.sqrt(disc)) / (2 * A);
+  const ts = [r1, r2].filter((t) => t > 0).sort((a, b) => a - b);
+  return ts.length ? ts[0] : null;
+}
 
 /** Attempt 2: the gather's goal shift (yd along x) that keeps the arrival on top of the runner: the cushion shrinking
  * linearly to nothing at contact, while the on-top approach applies (decided by onTopPoint this tick). */
@@ -73,6 +87,11 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
   const goal = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
   const shortYardage = (sim.firstDownX - seen.pos.x) * dir <= SHORT || (goal - seen.pos.x) * dir <= SHORT;
   let ok = !shortYardage && dist <= RANGE && (was ? depth > EXIT_DEPTH : depth > ENTER_DEPTH);
+  if (ok && HOLD_TOP) {
+    const cs = Math.hypot(seen.vel.x, seen.vel.y);
+    const toward = cs > 0.5 ? -(seen.vel.x * dx + seen.vel.y * dy) / (cs * Math.max(1e-6, dist)) : 1;
+    ok = toward > (was ? TOP_EXIT_COS : TOP_ENTER_COS);
+  }
   if (ok) {
     // Nobody between them, from his own picture of the offence.
     for (const o of sim.offense) {
@@ -83,7 +102,8 @@ export function onTopPoint(sim: PlaySim, a: Agent, target: Agent, seen: Perceive
   }
   onTop.set(a, ok);
   if (!ok) return null;
-  const tau = clamp(dist / Math.max(1, a.profile.vmax), 0, LEAD_MAX);
+  const tau = clamp(HOLD_TOP ? meetTime(dx, dy, seen.vel.x, seen.vel.y, Math.max(1, a.profile.vmax * a.speedScale)) ?? dist / Math.max(1, a.profile.vmax)
+    : dist / Math.max(1, a.profile.vmax), 0, LEAD_MAX);
   const cushion = clamp(CUSHION_SHARE * dist, CUSHION_MIN, CUSHION_MAX);
   return { x: seen.pos.x + seen.vel.x * tau + dir * cushion, y: clamp(seen.pos.y + seen.vel.y * tau + offset, 0.3, FIELD_WIDTH - 0.3) };
 }

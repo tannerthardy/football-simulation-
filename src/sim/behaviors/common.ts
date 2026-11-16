@@ -132,9 +132,12 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
+  const meetT = PURSUIT_COMMIT ? (PURSUIT_SPOT ? commitSpot(sim, a, target, ip, path, seen, heading, V, mover, reach, horizon, request, bias) : commitMeeting(sim, a, target, ip, path, mover, reach, horizon, request)) : ip.t;
   const biasedTime = clamp(meetT - bias, 0, horizon);
-  const p = path(biasedTime);
+  // PURSUIT_HOLD bit 1: he runs at the spot he committed to, a fixed point on the field, not at that spot's distance
+  // re-laid along the carrier's current heading each tick.
+  const heldPoint = PURSUIT_HOLD_SPOT && PURSUIT_COMMIT && PURSUIT_SPOT ? heldSpot.get(a) : undefined;
+  const p = heldPoint && heldPoint.target === target ? heldPoint.spot : path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
   const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
@@ -176,21 +179,41 @@ const heldMeeting = new WeakMap<Agent, { target: Agent; at: number; ok: boolean 
  * the carrier's path (engine-61 candidate, pursuit-commit's 3-8 yd band: held-moment ticks turn 14.0 deg/s against the
  * uncommitted re-solved intercept's 10.6), while a held spot only moves when the forecast path stops passing it. */
 const PURSUIT_SPOT = process.env.PURSUIT_SPOT !== '0';
-const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean }>();
+const heldSpot = new WeakMap<Agent, { target: Agent; spot: Vec2; ok: boolean; heading: Vec2 }>();
+/** PURSUIT_HOLD (experimental, numeric bits, default 0; docs/reviews/2026-11-16-pursuit-hold.md). Zone YAC tail: on a
+ * carrier at speed, PURSUIT_SPOT released its spot on 41% of ticks (26% because the forecast path drifted past reach,
+ * a single cut-off) and, while holding, re-laid the spot along the carrier's current heading, so the aim followed his
+ * bearing (36 deg/s) and the pursuer's body never lined up.
+ *  bit 1: steer at the held spot itself, and re-plan only when the carrier's seen path has changed: his heading has
+ *         turned HOLD_TURN since the spot was chosen, or the spot is HOLD_MISS beyond reach off his path. Both are
+ *         stated choices (a real cut turns the carrier well past 25 deg; a yard is about a stride of drift).
+ *  bit 2: OPEN_FIELD's on-top aim only for a carrier coming at him (open-field.ts); its lead is the meeting time
+ *         solved from both speeds. */
+const PURSUIT_HOLD_BITS = Number(process.env.PURSUIT_HOLD ?? 0);
+const PURSUIT_HOLD_SPOT = (PURSUIT_HOLD_BITS & 1) !== 0;
+const HOLD_TURN = (25 * Math.PI) / 180, HOLD_MISS = 1.0;
 /** PURSUIT_SPOT: commit to the meeting spot, not its moment. The carrier's time to the held spot is read off
  * his current forecast (its along-path distance over the forecast speed); released when his forecast path no longer
  * passes the spot within reach, the pursuer can no longer reach it in time (MEET_EXIT), a fresh reachable meeting is
  * earlier by MEET_MARGIN, or it is under MEET_NEAR away. */
 function commitSpot(sim: PlaySim, a: Agent, target: Agent, ip: ReturnType<typeof interceptPoint>, path: (t: number) => Vec2,
-  seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest): number {
+  seen: { pos: Vec2 }, heading: Vec2, V: number, mover: Parameters<typeof timeToReach>[0], reach: number, horizon: number, request?: SprintRequest,
+  bias = 0): number {
   const freshOk = ip.estimate.status === 'estimated-feasible';
-  const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(t), ok }); return t; };
+  // PURSUIT_HOLD bit 1 stores the spot he actually steers at (the biased one) and the carrier's heading he chose it on.
+  const choose = (t: number, ok: boolean) => { heldSpot.set(a, { target, spot: path(PURSUIT_HOLD_SPOT ? clamp(t - bias, 0, horizon) : t), ok, heading: { ...heading } }); return t; };
   const held = heldSpot.get(a);
   if (!held || held.target !== target || V < 0.5) return choose(ip.t, freshOk);
   const dx = held.spot.x - seen.pos.x, dy = held.spot.y - seen.pos.y;
   const along = dx * heading.x + dy * heading.y, miss = Math.abs(dx * heading.y - dy * heading.x);
   const t = along / V;
-  if (t < MEET_NEAR || t > horizon || miss > reach) return choose(ip.t, freshOk);
+  // PURSUIT_HOLD bit 1: the carrier's path has changed when his seen heading has turned HOLD_TURN from the one the spot
+  // was chosen on, or the spot lies HOLD_MISS beyond his reach off that path; a path that drifts inside those margins
+  // is the same picture and the spot holds. Off: any drift past reach re-solves.
+  const changed = PURSUIT_HOLD_SPOT
+    ? miss > reach + HOLD_MISS || (held.heading.x * heading.x + held.heading.y * heading.y) < Math.cos(HOLD_TURN)
+    : miss > reach;
+  if (t < MEET_NEAR || t > horizon || changed) return choose(ip.t, freshOk);
   const slack = t - (request ? timeToReachRequested(mover, held.spot, reach, request) : timeToReach(mover, held.spot, reach));
   if (held.ok ? slack < -MEET_EXIT : slack < MEET_ENTER && freshOk && (ip.estimate.slack ?? -Infinity) >= MEET_ENTER) return choose(ip.t, freshOk);
   if (freshOk && ip.t < t - MEET_MARGIN) return choose(ip.t, true);

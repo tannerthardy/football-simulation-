@@ -70,6 +70,7 @@
     "CURL_SINK": "0",
     "SETTLE_DEPTH": "0",
     "ZONE_HOLD": "0",
+    "PURSUIT_HOLD": "0",
     "SAFETY_DEPTH": "0",
     "ARRIVE_LEAD": "0",
     "PEDAL_CAP": "0",
