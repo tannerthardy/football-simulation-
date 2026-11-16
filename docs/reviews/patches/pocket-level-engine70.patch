@@ -1,0 +1,483 @@
+From 9db6aa1ae04863c4c4579a49fe30d8fcce2ecd6c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 05:05:48 +0000
+Subject: [PATCH] POCKET_LEVEL (off; needs SET_SPOT): the interior set's second
+ phase, level with the pocket (the cup around the call's launch point), from
+ his neighbors and the tackles, never the QB
+
+Re-cut of pocket-level-engine69.patch against engine-70 (fb870814), stacked on set-spot-tackle-engine70.patch. Off
+8dec1301d88f1f1d; SET_SPOT 65f8e2c715a926d0; + SET_SPOT_TACKLE 24d029b501905208; + POCKET_LEVEL 2d210f501646fe6f.
+FLAGS 419 (310 on, 92 off, 17 numeric).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ config/baseline.json                          |  1 +
+ config/reference-stack.json                   |  1 +
+ docs/FLAGS.md                                 |  3 +-
+ docs/reviews/2026-11-15-set-spot.md           | 60 +++++++++++++++
+ scripts/diag/effective-mass/anchor-games.mts  | 65 +++++++++++++++++
+ scripts/diag/effective-mass/anchor-staged.mts | 73 +++++++++++++++++++
+ scripts/diag/pass-operators/held-walkback.py  | 72 ++++++++++++++++++
+ scripts/diag/pass-operators/ol-set-depth.py   | 24 +++++-
+ src/sim/engagement.ts                         | 36 ++++++++-
+ 9 files changed, 329 insertions(+), 6 deletions(-)
+ create mode 100644 scripts/diag/effective-mass/anchor-games.mts
+ create mode 100644 scripts/diag/effective-mass/anchor-staged.mts
+ create mode 100644 scripts/diag/pass-operators/held-walkback.py
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 8ffa276e..9e721a54 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -266,6 +266,7 @@
+     "PASS_OFF": "0",
+     "SET_SPOT": "0",
+     "SET_SPOT_TACKLE": "0",
++    "POCKET_LEVEL": "0",
+     "RUSH_ONE_HAND": "0",
+     "HAND_SITE": "0",
+     "ENGAGE_FELT": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 8566b2d2..cd202f2b 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -209,6 +209,7 @@
+     "PASS_OFF": "on",
+     "SET_SPOT": "off",
+     "SET_SPOT_TACKLE": "off",
++    "POCKET_LEVEL": "off",
+     "RUSH_ONE_HAND": "off",
+     "HAND_SITE": "off",
+     "ENGAGE_FELT": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index b59740d0..623b10a9 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 418 flags read from the environment in `src` (recounted 2026-11-16, engine-70 with the following card's candidates merged off): 310 are on unless set to `0`, 91 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 419 flags read from the environment in `src` (recounted 2026-11-16, engine-70 with the following card's candidates merged off, plus `POCKET_LEVEL`): 310 are on unless set to `0`, 92 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -337,6 +337,7 @@ There are 418 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `PASS_OFF` | on | promoted 2026-11-16 (engine-70; `=0` restores); was experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. |
+ | `SET_SPOT` | off | experimental (the pass set's reference, 2026-11-15; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`, `protectPoint`, `setSpotTarget`, stepPassRep's lateral request), `src/sim/behaviors/blocking.ts` (the pass set) | the interior set no longer reads the QB's live position (removed, not replaced: information the blocker does not have); the point he protects comes from the called drop or the QB's alignment at the snap. He takes the two-step short set straight back off his snap spot (no deeper than the pocket's front; further ground is what the rusher wins) and aims inside-out on his man, where the rusher's line to the launch point crosses his depth, unbounded, fed forward by that point's own motion. The tackles keep the live-QB read unless `SET_SPOT_TACKLE` (KNOWN_PROBLEMS PRO-INFO #12). |
+ | `SET_SPOT_TACKLE` | off | experimental (SET_SPOT's tackle half, 2026-11-15; needs `SET_SPOT`; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`), `src/sim/behaviors/blocking.ts` (the vertical set, `racePace`) | the tackles' live-QB reads are removed. He takes the three-step vertical set off his snap spot, then beats the rusher to the pocket's front (the tackle clearance in front of the call's launch point) at the pace the race against the rusher's seen upfield speed needs; the call is only his floor. Tackle depth matches the old live-QB law; edge pressure is near the NFL's, but fast rushers win the corner far less (7% against 43%). |
++| `POCKET_LEVEL` | off | experimental (SET_SPOT's interior second phase, 2026-11-15; needs `SET_SPOT`; `=1` turns on) | protection | `src/sim/engagement.ts` (`passSetDepth`, `pocketLevelDepth`) | after the short set an interior lineman keeps level with the pocket, the cup around the launch point he knows from the call. His distance from it is the median of his two neighbors' (seen) and the tackles' mean, so one beaten neighbor doesn't drag him. Bounded by the short set and the pocket's front; never the QB. Evidence: the NFL's uncovered interior OL retreat as far as the engaged (ol-set-depth.py --uncovered). |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+ | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+diff --git a/docs/reviews/2026-11-15-set-spot.md b/docs/reviews/2026-11-15-set-spot.md
+index 512715d4..6ad78630 100644
+--- a/docs/reviews/2026-11-15-set-spot.md
++++ b/docs/reviews/2026-11-15-set-spot.md
+@@ -185,3 +185,63 @@ twofold: the engaged rusher's speed rose late, and the orbit was half kept.
+ 
+ Staged gates on engine-69 reproduce the engine-68 rows exactly. Identity: off equals engine-69 (seed 999
+ `eac983e7a0b20fc9`); `SET_SPOT=1` `28add7d02b09d3cc`.
++
++## 5. POCKET_LEVEL: the interior set's second phase (off; needs SET_SPOT)
++
++**Why.** Under SET_SPOT the held interior pair stalled: the rusher's late drive toward the QB was 0.2 yd/s against the
++NFL's 0.85, and never released 61–64% against 37%. Two measurements explained it:
++- **The push contest** (`anchor-staged.mts`). In the staged pair the blocker, driven back, sits at his traction limit,
++  while the rusher, moving forward, is 10–15% short of his to force–velocity. Between men of similar mass the pair
++  settles where neither moves the other. The rusher's strength never enters: his leg drive is itself traction-capped.
++  That model-rule problem has gone to Tools through Integration.
++- **The uncovered blocker** (`ol-set-depth.py --uncovered`). The NFL's interior lineman with nobody within 1.2 yd of
++  him through 2.0 s goes back 0.2 / 0.9 / 1.9 / 2.9 yd at 0.5 / 1.0 / 1.5 / 2.0 s, as far as an engaged one
++  (0.2 / 0.8 / 1.7 / 2.7). So the NFL's walk-back is his set, keeping level with the pocket, not the push. The
++  walk-back is also nearly weight-flat in the NFL (`held-walkback.py`: 1.23–1.36 yd/s at 1.0–1.5 s across rusher-minus-
++  blocker weight bins). Off, the live-QB clearance had produced this retreat; SET_SPOT removed it, which exposed the
++  stall.
++
++**The mechanism.**
++- **The pocket** is the cup the line forms around the launch point he knows from the call. It is never the QB.
++- **The target.** After the short set he keeps level with that cup: his distance from the launch point is the median
++  of three, his two neighbors' as he sees them beside him and the tackles' mean. The honest tackles set the pocket's
++  edges from the rusher and the call. His target is the point at that distance at his own width, no shallower than his
++  short set and no deeper than the pocket's front.
++- **The pace** is the set's own track and the rep's kick toward the target. Engaged, he gives the ground under control
++  with his man in front; stepPassRep's lateral reference is unchanged.
++
++**The median of three is a stated choice.** It makes one neighbor beaten cleanly an outlier, so he doesn't drag
++anyone, while a stunt or two men driven back together move it. The alternatives considered:
++- **The mean of the two neighbors.** One beaten neighbor drags him halfway.
++- **The line between the tackles, interpolated at his width.** It ignores the interior men. It is also too deep for
++  the interior: the cup is curved, so the interior sits shallower than the tackles. It would put the interior at about
++  4 yd at 2.0 s.
++- **The call's drop schedule alone** (where the call puts the QB, less a clearance). The tackle attempts showed the
++  call's launch depth sits about a yard deeper than where quarterbacks are at 2 s, so it overshoots.
++- **The neighbors alone.** It is self-referential: nobody leads, so the line stays at the short set.
++
++**Read** (seeds 11 / 23 × 8; SET_SPOT + SET_SPOT_TACKLE, without → with POCKET_LEVEL; NFL in brackets):
++
++| | without | with | NFL |
++|---|---|---|---|
++| uncovered interior depth at 1.0 / 1.5 / 2.0 s (yd) | 0.95 / 1.35 / 1.7 | 0.9 / 1.45 / 2.15 | 0.9 / 1.9 / 2.9 |
++| engaged interior depth at 1.0 / 1.5 / 2.0 s | 0.85 / 1.4 / 1.75 | 0.85 / 1.4 / 2.0 | 0.8 / 1.7 / 2.7 |
++| held pair, rusher toward the QB at 1.5–2.5 s (yd/s) | 0.24 / 0.18 | 0.88 / 0.82 | 0.85 |
++| walk-back by weight at 1.0–1.5 s (< −30 / −30..0 / 0..+30 lb) | 0.21 / 0.59 / 0.54 | 0.86 / 1.06 / 0.98 | 1.23 / 1.34 / 1.28 |
++| never released | 61 / 64% | 53 / 58% | 37% |
++| interior pressure, % of dropbacks | 10.2 / 10.4 | 11.5 / 10.0 | 9.8 |
++| pressured | 28.7 / 28.8% | 36.5 / 26.7% | 32.9% |
++| sacked | 5 / 6% | 6 / 6% | — |
++
++- **Pressure** splits by seed: seed 11 is up 8 points, spread across classes (other +3.6, edge level +1.7, interior
++  +1.3, edge inside +0.8), and seed 23 is down 2. The mean is 28.75 → 31.6. A third seed on the card settles it.
++- **PASS_OFF still finds the uncovered man** (seed 11, PASS_OFF on, without → with POCKET_LEVEL):
++  - help came 72 / 66% → 73 / 67% (first figure with the blocker still on the rusher, second with him off);
++  - an off-blocker rusher reaching the QB 16 → 8%;
++  - interior pressure 10.0 → 8.7%.
++- **Logged, not chased: the shortfall at 1.5–2.0 s** (2.0–2.15 against 2.7–2.9 yd). The cup's radius follows the
++  tackles. If NFL interior men end up deeper relative to them than ours do, that relation (interior depth minus the
++  tackles' mean, by time, ours and theirs) is to be measured before anything changes.
++
++Identity: off equals engine-69 (seed 999 `eac983e7a0b20fc9`); `SET_SPOT=1` `28add7d02b09d3cc`; `+ SET_SPOT_TACKLE=1`
++`35c9147c8b308d48`; `+ POCKET_LEVEL=1` `4bb2d5c9749379b8`.
+diff --git a/scripts/diag/effective-mass/anchor-games.mts b/scripts/diag/effective-mass/anchor-games.mts
+new file mode 100644
+index 00000000..6f08756b
+--- /dev/null
++++ b/scripts/diag/effective-mass/anchor-games.mts
+@@ -0,0 +1,65 @@
++// The anchor in games (Integration, 2026-11-15): held interior pass pairs (held-request.mts's definition: through 2.5 s
++// after contact, never past 1.2 yd or 70 deg off the blocker's line to the QB, before the throw). For each window of
++// time since contact:
++//   - the pair's speed toward the QB along the rusher's line to him;
++//   - each body's felt contact force and committed lean along that axis (N);
++//   - the rusher's leg capacity (pushForce, traction-capped) and posture, the blocker's posture and depth behind his
++//     snap spot;
++//   - the rusher's move in the rep (e.move: none / bull / other).
++// The question: in the staged pair (anchor-staged.mts) the pair walks back about 1.1 yd/s; in games the held pair
++// stalls (0.2-0.3 late). What differs? Measurement only.
++// usage: [flags] node --import tsx scripts/diag/effective-mass/anchor-games.mts [seed] [games]
++const W = process.cwd();
++const { simulateGame } = await import(`${W}/src/game/game.ts`);
++const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
++const { Rng } = await import(`${W}/src/core/rng.ts`);
++const { supportParams } = await import(`${W}/src/physics/support.ts`);
++const first = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 2);
++const rng = new Rng(first);
++const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
++const N = 0.9144, BINS = [[0, .5], [.5, 1], [1, 1.5], [1.5, 2.5]];
++const pairsAll: any[] = [];
++for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leagueSample(away, first + g), { seed: first + g, hooks: { playResult: (sim: any, kind: string) => {
++  if (kind !== 'scrimmage' || !sim.offCall?.pass) return undefined;
++  const pairs = new Map<any, any>(); const tick = sim.tick.bind(sim);
++  sim.tick = () => { tick(); const qb = sim.qb; if (!qb) return;
++    if (sim.t >= 0.2 && sim.t <= 2.0 && sim.throwAt < 0) for (const b of sim.offense) {
++      if (!['LG', 'C', 'RG'].includes(b.slot) || pairs.has(b)) continue;
++      const dl = sim.defense.filter((d: any) => d.behavior?.kind === 'rush').map((d: any) => ({ d, r: Math.hypot(d.pos.x - b.pos.x, d.pos.y - b.pos.y) })).filter((x: any) => x.r <= 1.2).sort((x: any, y: any) => x.r - y.r)[0];
++      if (dl) pairs.set(b, { d: dl.d, t0: sim.t, rel: false, f: [] as any[] });
++    }
++    for (const [b, p] of pairs) {
++      if (p.done) continue; const d = p.d, dt = sim.t - p.t0;
++      if (sim.throwAt >= 0 || dt > 2.5) { p.done = true; continue; }
++      const ux = qb.pos.x - b.pos.x, uy = qb.pos.y - b.pos.y, L = Math.hypot(ux, uy) || 1, rx = d.pos.x - b.pos.x, ry = d.pos.y - b.pos.y, sep = Math.hypot(rx, ry);
++      const ang = Math.atan2((rx * -uy + ry * ux) / L, -(rx * ux + ry * uy) / L) * 180 / Math.PI;
++      if (sep > 1.2 || Math.abs(ang) > 70) { p.rel = true; p.done = true; continue; }
++      const qx = qb.pos.x - d.pos.x, qy = qb.pos.y - d.pos.y, ql = Math.hypot(qx, qy) || 1, toq = (v: any) => (v.x * qx + v.y * qy) / ql;
++      const sb = b.body.support, sd = d.body.support, spd = supportParams(d.profile);
++      const e = b.engagement ?? d.engagement;
++      p.f.push({ dt, pair: (toq(b.vel) + toq(d.vel)) / 2, rq: toq(sim.intents?.[d.idx]?.vel ?? { x: 0, y: 0 }),
++        dFelt: sd ? -toq(sd.felt) * N : NaN, dLean: sd ? toq(sd.lean) * N : NaN, bFelt: sb ? toq(sb.felt) * N : NaN, bLean: sb ? -toq(sb.lean) * N : NaN,
++        dCap: spd.pushForce * N, dPost: sd?.posture ?? NaN, bPost: sb?.posture ?? NaN, up: sd?.state === 'up' && sb?.state === 'up',
++        depth: (sim.snapX[b.idx] - b.pos.x) * sim.attackDir(sim.offense[0].team), move: e?.move ?? 'none', moveIn: e?.moveUntil != null && sim.t < e.moveUntil,
++        eng: !!e, dlb: (d.profile.massKg - b.profile.massKg) * 2.2046 });
++    }
++  };
++  const out = sim.run();
++  for (const p of pairs.values()) if (!p.rel) pairsAll.push(p);
++  return out;
++} } });
++const q = (v: number[]) => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? s[Math.floor(0.5 * (s.length - 1))] : NaN; };
++const F = pairsAll.flatMap((p) => p.f);
++console.log(`held interior pairs ${pairsAll.length} (p50 by time since contact; N along the rusher's line to the QB)`);
++// The NFL witness's split (held-walkback.py): the pair's speed toward the QB by the rusher's weight minus the blocker's.
++for (const [a, c] of BINS) {
++  const R = F.filter((r) => r.dt >= a && r.dt < c);
++  console.log(`  by weight, ${a.toFixed(1)}-${c.toFixed(1)} s: ` + [['< -30 lb', -1e9, -30], ['-30..0', -30, 0], ['0..+30', 0, 30], ['> +30', 30, 1e9]].map(([l, lo, hi]: any) => { const S = R.filter((r) => r.dlb >= lo && r.dlb < hi); return `rusher ${l} ${q(S.map((r) => r.pair)).toFixed(2)} (n ${S.length})`; }).join(' | '));
++}
++for (const [a, c] of BINS) {
++  const R = F.filter((r) => r.dt >= a && r.dt < c), f = (k: string, S = R) => q(S.map((r) => r[k]));
++  const eng = R.filter((r) => r.eng).length / Math.max(1, R.length), up = R.filter((r) => r.up).length / Math.max(1, R.length);
++  console.log(`  ${a.toFixed(1)}-${c.toFixed(1)} s (${R.length}): pair toward the QB ${f('pair').toFixed(2)} yd/s, rusher asks ${f('rq').toFixed(2)} | felt rusher ${f('dFelt').toFixed(0)} / blocker ${f('bFelt').toFixed(0)} | lean rusher ${f('dLean').toFixed(0)} of capacity ${f('dCap').toFixed(0)} / blocker ${f('bLean').toFixed(0)} | posture rusher ${f('dPost').toFixed(2)} / blocker ${f('bPost').toFixed(2)} | blocker depth ${f('depth').toFixed(2)} yd | engaged ${(100 * eng).toFixed(0)}%, both up ${(100 * up).toFixed(0)}%`);
++  for (const [lab, S] of [['no move', R.filter((r) => r.move === 'none' || !r.moveIn)], ['bull in flight', R.filter((r) => r.move === 'bull' && r.moveIn)], ['other move in flight', R.filter((r) => r.move !== 'bull' && r.move !== 'none' && r.moveIn)]] as [string, any[]][])
++    console.log(`      ${lab.padEnd(21)} ${(100 * S.length / Math.max(1, R.length)).toFixed(0)}%: pair ${f('pair', S).toFixed(2)} | rusher asks ${f('rq', S).toFixed(2)} | felt ${f('dFelt', S).toFixed(0)} | lean rusher ${f('dLean', S).toFixed(0)} / blocker ${f('bLean', S).toFixed(0)}`);
++}
+diff --git a/scripts/diag/effective-mass/anchor-staged.mts b/scripts/diag/effective-mass/anchor-staged.mts
+new file mode 100644
+index 00000000..a0b7e613
+--- /dev/null
++++ b/scripts/diag/effective-mass/anchor-staged.mts
+@@ -0,0 +1,73 @@
++// The anchor, staged (Integration, 2026-11-15, after SET_SPOT: "a rusher asking 4.5 yd/s into a set blocker and getting
++// 0.2 is the anchor and the drive"). contactFixture's pass pair (the C and DT_W), both on the engine's own stepPassRep,
++// with the protector's set staged (SET_SPOT's short set) and NO override of either request: the rusher asks what he
++// asks in games. For each arm (the rusher's or the blocker's mass or leg power scaled, the other fixed), over
++// 0.5-2.0 s of the rep:
++//   - the pair's velocity toward the QB (the walk-back), and each body's requested / achieved velocity along that axis;
++//   - each body's felt contact force along the axis (support.felt, N = kg yd/s^2 x 0.9144), his lean committed into it
++//     (support.lean), and his leg capacity (supportParams: pushForce = min(leg drive, traction)) and traction;
++//   - each body's posture (pad level: 0 tall .. 1 sunk) and whether he is still up.
++// Measurement only: nothing in src changes.
++// usage: [SET_SPOT=1] node --import tsx scripts/diag/effective-mass/anchor-staged.mts
++import { readFileSync } from 'node:fs';
++const stack = JSON.parse(readFileSync('config/reference-stack.json', 'utf8')).flags;
++for (const [k, v] of Object.entries(stack)) if (v === 'on' && process.env[k] === undefined) process.env[k] = '1';
++const { contactFixture } = await import('../run-contact-technique.js');
++const { passSetDepth } = await import('../../../src/sim/engagement.js');
++const { supportParams } = await import('../../../src/physics/support.js');
++const N = 0.9144; // kg yd/s^2 -> N
++const ARMS: [string, (b: any, d: any) => void][] = [
++  ['base', () => {}],
++  ['rusher mass x0.9', (_b, d) => { d.profile.massKg *= 0.9; }],
++  ['rusher mass x1.1', (_b, d) => { d.profile.massKg *= 1.1; }],
++  ['rusher power x0.85', (_b, d) => { d.profile.power *= 0.85; }],
++  ['rusher power x1.15', (_b, d) => { d.profile.power *= 1.15; }],
++  ['blocker mass x0.9', (b) => { b.profile.massKg *= 0.9; }],
++  ['blocker mass x1.1', (b) => { b.profile.massKg *= 1.1; }],
++  ['blocker power x0.85', (b) => { b.profile.power *= 0.85; }],
++  ['blocker power x1.15', (b) => { b.profile.power *= 1.15; }],
++];
++const mean = (v: number[]) => v.length ? v.reduce((s, x) => s + x, 0) / v.length : NaN;
++for (const [name, edit] of ARMS) {
++  const rows: any[] = [];
++  for (const side of [1, -1]) {
++    const { sim, blocker: b, defender: d } = contactFixture({ type: 'pass', runBlock: 60, passBlock: 60, side }) as any;
++    edit(b, d);
++    const home = b.pos.y;
++    const setPass = () => { b.passSet = { depth: passSetDepth(sim, b), laneY: home, outside: 0 }; };
++    setPass();
++    const step = sim.world.step.bind(sim.world);
++    let breq = 0, dreq = 0;
++    let rep: any = null;
++    sim.world.step = (intents: any[], dt: number) => { breq = intents[b.idx]?.vel?.x ?? 0; dreq = intents[d.idx]?.vel?.x ?? 0; setPass(); rep = step(intents, dt); return rep; };
++    const gi = (i: number) => rep?.groundImpulse?.[i] && rep.groundImpulseLimit?.[i] ? Math.hypot(rep.groundImpulse[i].x, rep.groundImpulse[i].y) / rep.groundImpulseLimit[i] : NaN;
++    const lift = (a: any) => (sim.world.liftFelt?.[a.idx] ?? NaN) / (a.profile.massKg * 9.81 / 0.9144);
++    const t0 = sim.t;
++    while (sim.t - t0 < 2.5 + 1e-9 && sim.phase !== 'dead') {
++      sim.tick();
++      const t = sim.t - t0;
++      // Axis toward the QB is -x in the fixture (QB at x 35, the pair at x 40): retreat / drive toward the QB +.
++      const spb = supportParams(b.profile), spd = supportParams(d.profile);
++      rows.push({
++        pair: -(b.vel.x + d.vel.x) / 2, breq: -breq, bgot: -b.vel.x, dreq: -dreq, dgot: -d.vel.x,
++        bFelt: -(b.body.support?.felt.x ?? 0) * N, dFelt: (d.body.support?.felt.x ?? 0) * N,
++        bLean: (b.body.support?.lean.x ?? 0) * N, dLean: -(d.body.support?.lean.x ?? 0) * N,
++        bCap: spb.pushForce * N, dCap: spd.pushForce * N, bTr: spb.traction * N, dTr: spd.traction * N,
++        bPost: b.body.support?.posture ?? NaN, dPost: d.body.support?.posture ?? NaN,
++        up: (b.body.support?.state ?? 'up') === 'up' && (d.body.support?.state ?? 'up') === 'up', eng: !!d.engagement,
++        bKg: b.profile.massKg, dKg: d.profile.massKg, t, depth: 40 - b.pos.x, bGI: gi(b.idx), dGI: gi(d.idx), bLift: lift(b), dLift: lift(d),
++      });
++    }
++  }
++  if (process.env.ANCHOR_BINS) for (const [a0, c0] of [[0, .5], [.5, 1], [1, 1.5], [1.5, 2.5]]) {
++    const B = rows.filter((r) => r.eng && r.up && r.t >= a0 && r.t < c0), g = (k: string) => mean(B.map((r) => r[k]));
++    console.log(`  ${name} ${a0.toFixed(1)}-${c0.toFixed(1)} s: pair ${g('pair').toFixed(2)} | rusher asks/gets ${g('dreq').toFixed(2)}/${g('dgot').toFixed(2)} | blocker asks/gets ${g('breq').toFixed(2)}/${g('bgot').toFixed(2)} | felt ${g('bFelt').toFixed(0)}/${g('dFelt').toFixed(0)} | lean blocker ${g('bLean').toFixed(0)} rusher ${g('dLean').toFixed(0)} | blocker depth ${g('depth').toFixed(2)} | ground impulse / limit blocker ${g('bGI').toFixed(2)} rusher ${g('dGI').toFixed(2)} | lift (share of weight) blocker ${g('bLift').toFixed(2)} rusher ${g('dLift').toFixed(2)} | posture ${g('bPost').toFixed(2)}/${g('dPost').toFixed(2)}`);
++  }
++  const E = rows.filter((r) => r.eng && r.up && r.t >= 0.5 && r.t < 2.0), f = (k: string) => mean(E.map((r) => r[k]));
++  console.log(`${name.padEnd(20)} (n ${E.length}, engaged and up ${(100 * E.length / Math.max(1, rows.length)).toFixed(0)}%): ` +
++    `pair toward the QB ${f('pair').toFixed(2)} yd/s | rusher asks / gets ${f('dreq').toFixed(2)} / ${f('dgot').toFixed(2)} | ` +
++    `blocker asks / gets ${f('breq').toFixed(2)} / ${f('bgot').toFixed(2)} || ` +
++    `felt: blocker ${f('bFelt').toFixed(0)} N, rusher ${f('dFelt').toFixed(0)} N | lean into it: blocker ${f('bLean').toFixed(0)}, rusher ${f('dLean').toFixed(0)} N | ` +
++    `leg capacity (traction): blocker ${f('bCap').toFixed(0)} (${f('bTr').toFixed(0)}), rusher ${f('dCap').toFixed(0)} (${f('dTr').toFixed(0)}) N | ` +
++    `posture blocker ${f('bPost').toFixed(2)}, rusher ${f('dPost').toFixed(2)} | kg ${f('bKg').toFixed(0)} / ${f('dKg').toFixed(0)}`);
++}
+diff --git a/scripts/diag/pass-operators/held-walkback.py b/scripts/diag/pass-operators/held-walkback.py
+new file mode 100644
+index 00000000..50503585
+--- /dev/null
++++ b/scripts/diag/pass-operators/held-walkback.py
+@@ -0,0 +1,72 @@
++"""How far a held interior pass rusher walks his blocker back, by their weight difference (Integration, 2026-11-15: the
++anchor; "against how far a 300 lb man actually gets walked back in the NFL rows"). NFL only: the common-format export
++must carry player ids (scripts/mechanics/nfl_bdb2025.py's current output), and weights come from BDB 2025 players.csv.
++
++usage: python3 -I scripts/diag/pass-operators/held-walkback.py <nfl plays with ids .jsonl.gz> <players.csv>
++
++Dropbacks; the three middle OL by y at the snap. A pair forms at the first frame (0.2-2.0 s, before the throw) a rusher
++is within 1.2 yd of the blocker. It is held while within 1.2 yd and within 70 deg of the blocker's line to the QB
++(interior-fight.py's release definition), to 2.5 s after contact. For each 0.5 s window since contact: the pair's mean
++velocity toward the QB (along the rusher's line to him; + = the blocker walked back). Split by the rusher's weight
++minus the blocker's: < -30 lb, -30..0, 0..+30, > +30. The same windows for all held pairs, and the blocker's weight.
++"""
++import sys, os, json, gzip, math, csv
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play  # noqa
++q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
++plays_path, players_path = sys.argv[1], sys.argv[2]
++weight = {}
++with open(players_path, newline='') as h:
++    for r in csv.DictReader(h):
++        try: weight[str(r['nflId'])] = float(r['weight'])
++        except ValueError: pass
++W = [(0, .5), (.5, 1.0), (1.0, 1.5), (1.5, 2.5)]
++BIN = [('< -30 lb', -1e9, -30), ('-30..0', -30, 0), ('0..+30', 0, 30), ('> +30', 30, 1e9)]
++rows = []  # (window, diff, pair velocity toward the QB, blocker weight)
++for line in gzip.open(plays_path, 'rt'):
++    raw = json.loads(line); raw = raw.get('common', raw)
++    if raw.get('kind') != 'pass' or not raw.get('xy'): continue
++    p = Play(raw); ev = raw.get('events', {}); fw = ev.get('pass_forward'); end = fw if fw is not None else p.end
++    players = raw['players']
++    OL = sorted([i for i in p.who('O', 'OL') if p.pos(i, 0)[0] is not None], key=lambda i: p.pos(i, 0)[1])
++    qbs = p.who('O', 'QB')
++    if len(OL) < 5 or not qbs: continue
++    qb = qbs[0]; D = [i for i in p.who('D') if p.pos(i, 0)[0] is not None]
++    for b in OL[1:4]:
++        wb = weight.get(str(players[b].get('id')))
++        if wb is None: continue
++        start = None; r = None
++        for k in range(p.k(0.2), min(p.k(2.0), p.k(end)) + 1):
++            bx, by = p.pos(b, k)
++            if bx is None: continue
++            near = [(math.hypot(p.pos(d, k)[0] - bx, p.pos(d, k)[1] - by), d) for d in D if p.pos(d, k)[0] is not None]
++            near = [x for x in near if x[0] <= 1.2]
++            if near: start = k; r = min(near)[1]; break
++        if start is None: continue
++        wr = weight.get(str(players[r].get('id')))
++        if wr is None: continue
++        diff = wr - wb; t0 = start * p.dt
++        prev = None
++        for k in range(start, p.k(min(end, t0 + 2.5)) + 1):
++            (bx, by), (rx, ry), (qx, qy) = p.pos(b, k), p.pos(r, k), p.pos(qb, k)
++            if None in (bx, rx, qx): break
++            ux, uy = qx - bx, qy - by; L = math.hypot(ux, uy) or 1
++            sx, sy = rx - bx, ry - by; sep = math.hypot(sx, sy)
++            ang = math.degrees(math.atan2((sx * -uy + sy * ux) / L, -(sx * ux + sy * uy) / L))
++            if sep > 1.2 or abs(ang) > 70: break
++            if prev is not None:
++                (pbx, pby), (prx, pry) = prev
++                vx = ((bx - pbx) + (rx - prx)) / 2 / p.dt; vy = ((by - pby) + (ry - pry)) / 2 / p.dt
++                lx, ly = qx - rx, qy - ry; ll = math.hypot(lx, ly) or 1
++                dt = k * p.dt - t0
++                for a, c in W:
++                    if a <= dt < c: rows.append(((a, c), diff, (vx * lx + vy * ly) / ll, wb))
++            prev = ((bx, by), (rx, ry))
++print(f"== {os.path.basename(plays_path)}: held interior pass pairs, the pair's velocity toward the QB p50 (yd/s; + = the blocker walked back), by time since contact")
++for a, c in W:
++    R = [x for x in rows if x[0] == (a, c)]
++    line = f"   {a:.1f}-{c:.1f} s: all {q([x[2] for x in R]):+.2f} (n {len(R)}, blocker {q([x[3] for x in R]):.0f} lb)"
++    for lab, lo, hi in BIN:
++        S = [x[2] for x in R if lo <= x[1] < hi]
++        line += f" | rusher {lab} {q(S):+.2f} (n {len(S)})"
++    print(line)
+diff --git a/scripts/diag/pass-operators/ol-set-depth.py b/scripts/diag/pass-operators/ol-set-depth.py
+index 517ecf98..fbac6d51 100644
+--- a/scripts/diag/pass-operators/ol-set-depth.py
++++ b/scripts/diag/pass-operators/ol-set-depth.py
+@@ -3,7 +3,10 @@ behind the line of scrimmage (his snap spot) at 0.3 / 0.5 / 0.8 / 1.0 / 1.5 / 2.
+ speed (toward his own goal) over 0-0.5 / 0.5-1.0 / 1.0-1.5 s, on dropbacks to the throw. Same code on NFL tracking and
+ sim exports. (Offense attacks +x in the common format.)
+ 
+-usage: python3 -I scripts/diag/pass-operators/ol-set-depth.py [--tackles] <plays.jsonl.gz> [...]
++usage: python3 -I scripts/diag/pass-operators/ol-set-depth.py [--tackles | --uncovered] <plays.jsonl.gz> [...]
++--uncovered (2026-11-15, Integration: is the walk-back his set or the push?): the three middle OL split into the
++uncovered (no defender within 1.2 yd of him from the snap through 2.0 s, or the throw if earlier) and the engaged (one
++was), each reported separately.
+ --tackles (2026-11-15, SET_SPOT's tackle half): the two outside OL instead, and also each one's depth relative to the
+ QB at the same times (tackle depth minus QB depth behind the line: negative = the tackle shallower than the QB).
+ """
+@@ -12,9 +15,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
+ from metrics import Play  # noqa
+ q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
+ T = [0.3, 0.5, 0.8, 1.0, 1.5, 2.0]; W = [(0, .5), (.5, 1.0), (1.0, 1.5)]
+-TK = '--tackles' in sys.argv
+-for path in [a for a in sys.argv[1:] if a != '--tackles']:
++TK = '--tackles' in sys.argv; UNC = '--uncovered' in sys.argv
++for path in [a for a in sys.argv[1:] if not a.startswith('--')]:
+     D = {t: [] for t in T}; R = {w: [] for w in W}; Q = {t: [] for t in T}
++    DU = {t: [] for t in T}; NU = [0, 0]
+     for line in gzip.open(path, 'rt'):
+         raw = json.loads(line); raw = raw.get('common', raw)
+         if raw.get('kind') != 'pass' or not raw.get('xy'): continue
+@@ -23,8 +27,19 @@ for path in [a for a in sys.argv[1:] if a != '--tackles']:
+         if len(OL) < 5: continue
+         end = fw if fw is not None else p.end
+         qb = (p.who('O', 'QB') or [None])[0]
++        Dz = [i for i in p.who('D')]
+         for b in ([OL[0], OL[4]] if TK else OL[1:4]):
+             x0 = p.pos(b, 0)[0]
++            if UNC:
++                kend = min(p.k(2.0), p.k(end))
++                covered = any(p.pos(b, k)[0] is not None and any(p.pos(d, k)[0] is not None and p.dist(b, d, k) <= 1.2 for d in Dz) for k in range(0, kend + 1))
++                NU[0 if covered else 1] += 1
++                if not covered:
++                    for t in T:
++                        if t > end: continue
++                        x = p.pos(b, p.k(t))[0]
++                        if x is not None: DU[t].append(x0 - x)
++                    continue
+             for t in T:
+                 if t > end: continue
+                 x = p.pos(b, p.k(t))[0]
+@@ -35,6 +50,7 @@ for path in [a for a in sys.argv[1:] if a != '--tackles']:
+                 if c > end: continue
+                 xa, xc = p.pos(b, p.k(a))[0], p.pos(b, p.k(c))[0]
+                 if xa is not None and xc is not None: R[(a, c)].append((xa - xc) / (c - a))
++    if UNC: print(f"   {os.path.basename(path)}: UNCOVERED interior OL (n {NU[1]} of {NU[0] + NU[1]}) depth behind his snap spot p50 (yd) " + ' | '.join(f"{t:.1f} s {q(DU[t]):.2f} (n {len(DU[t])})" for t in T))
+     if TK: print(f"   {os.path.basename(path)}: tackle depth minus QB depth p50 (yd) " + ' | '.join(f"{t:.1f} s {q(Q[t]):.2f}" for t in T))
+-    print(f"== {os.path.basename(path)}: {'tackle' if TK else 'interior OL'} depth behind his snap spot p50 (yd) " + ' | '.join(f"{t:.1f} s {q(D[t]):.2f}" for t in T)
++    print(f"== {os.path.basename(path)}: {'tackle' if TK else 'covered interior OL' if UNC else 'interior OL'} depth behind his snap spot p50 (yd) " + ' | '.join(f"{t:.1f} s {q(D[t]):.2f}" for t in T)
+           + " || retreat speed p50 (yd/s) " + ' | '.join(f"{a:.1f}-{c:.1f} s {q(R[(a, c)]):.2f}" for a, c in W))
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index c442d0c4..c9242f04 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -205,13 +205,47 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
+   const snapDepth = sim.los - (sim.snapX[b.idx] ?? b.pos.x);
+   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
+   // front. Further ground is what the rusher wins against him, not his request.
+-  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, snapDepth + SHORT_SET);
++  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) {
++    const short = Math.min(pocket, snapDepth + SHORT_SET);
++    // POCKET_LEVEL: then level with the pocket, a request with a pace (his neighbors'), bounded by the short set and
++    // the pocket's front from the call.
++    const level = POCKET_LEVEL ? pocketLevelDepth(sim, b) : null;
++    return level === null ? short : Math.min(pocket, Math.max(short, level));
++  }
+   // SET_SPOT_TACKLE: his own set is the three-step vertical set as taught, no deeper than the pocket's front from the
+   // call. Further depth is the rusher's: the kick keeps him deeper than the man up his arc (PASS_KICK), never past the
+   // launch point he knows from the call.
+   if (SET_SPOT_TACKLE && tackle) return Math.min(pocket, snapDepth + TACKLE_STEPS);
+   return pocket;
+ }
++/** POCKET_LEVEL (experimental, off; POCKET_LEVEL=1, needs SET_SPOT): the interior set's second phase. The NFL's
++ * uncovered guard or center goes back 0.2 / 0.9 / 1.9 / 2.9 yd at 0.5 / 1.0 / 1.5 / 2.0 s with nobody on him, as far as
++ * an engaged one (0.2 / 0.8 / 1.7 / 2.7; ol-set-depth.py --uncovered): the retreat is his set, keeping level with the
++ * pocket, not the push. The pocket is the cup the line forms around the launch point he knows from the call, never
++ * the QB.
++ * - **"Level with":** his distance from the launch point matches the median of three distances: his two neighbors'
++ *   (as he sees them, beside him) and the tackles' mean (the honest tackles set the pocket's edges from the rusher and
++ *   the call).
++ * - **One outlier doesn't drag him:** a neighbor beaten cleanly is outvoted. A stunt, or two men driven back together,
++ *   moves the median.
++ * - **His target** is the point at that distance from the launch point at his own width, no shallower than his short
++ *   set and no deeper than the pocket's front.
++ * - **The pace** is the set's own track and the rep's kick toward it. Engaged, he gives that ground under control with
++ *   his man in front (stepPassRep's lateral reference is unchanged).
++ * Null when it gives no depth (his neighbors still at the line). */
++export const POCKET_LEVEL = process.env.SET_SPOT === '1' && process.env.POCKET_LEVEL === '1';
++const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
++function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {
++  const L = protectPoint(sim), i = LINE_ORDER.indexOf(b.slot);
++  const at = (slot: string) => { const n = sim.slot(slot); if (!n) return null; const p = sim.see(b, n).pos; return Math.hypot(p.x - L.x, p.y - L.y); };
++  const nA = at(LINE_ORDER[i - 1]), nB = at(LINE_ORDER[i + 1]), lt = at('LT'), rt = at('RT');
++  const tk = lt !== null && rt !== null ? (lt + rt) / 2 : lt ?? rt;
++  const r = [nA, nB, tk].filter((v): v is number => v !== null).sort((u, v) => u - v);
++  if (!r.length) return null;
++  const R = r[Math.floor((r.length - 1) / 2)], dy = b.pos.y - L.y;
++  if (R <= Math.abs(dy)) return null;
++  return sim.los - (L.x + Math.sqrt(R * R - dy * dy));
++}
+ /** SET_SPOT_TACKLE: the tackle's vertical set, three set steps (yd). */
+ const TACKLE_STEPS = 3 * 0.45;
+ /** SET_SPOT: the interior short set, two set steps (yd; about 16 in each). */
+-- 
+2.43.0
+
