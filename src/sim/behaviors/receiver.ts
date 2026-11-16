@@ -18,7 +18,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST_RCV as BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST_RCV as BALL_EST, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -130,6 +130,16 @@ const ROUTE_END = process.env.ROUTE_END !== '0';
 const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
 
 
+/** BREAK_LOOK (experimental, off; BREAK_LOOK=1; with BALL_EST): a deep-family route the plan throws on its break (its
+ * declared throw family, route-breaks.ts `onBreak`: the corner, the post, the seam read) gets the break-timed pre-look as
+ * well as design 6's depth look, whichever comes first. Design 6's premise (a deep route does not expect the ball at its
+ * stem's break) is true of a go, a fade and a seam (`seenOpen`) and false of a corner or post, which are coached to get the
+ * eyes round coming out of the break. Without it a corner broken short of DEEP_LOOK_DEPTH and thrown on the break never
+ * looked: under the glance (bit 2048) he had no sample of the ball until his body-turn window, with the ball 150-175 deg
+ * behind his hips. The cue is his own route and break, which he knows. A declared clear-out is not looking for the ball,
+ * but every declared clear-out (compile.ts CLEAR_OUTS) is a go (`seenOpen`), so none is affected; a concept that declares
+ * a corner or post as a clear-out should be read from the installed plan here. */
+const BREAK_LOOK = process.env.BREAK_LOOK === '1';
 /** CRAFT_HOLD (experimental, off; with ROUTE_CRAFT): the craft commits to the side it chose round a man in his lane and
  * keeps it until he is clear. Off, the side and the block are recomputed on each tick's picture, and the side comes from
  * a break side re-derived each tick from his velocity, so a wing pressed against an end flips his request +-7 yd/s across
@@ -367,13 +377,19 @@ export class RouteRunner implements Behavior {
     // His own picture, not the true ball state: he looks for the QB until he has seen the ball in the air (his own
     // sample) or sees the QB without it.
     // A sim without the estimator's store (partial fixtures) has no picture to look for: his route as it was.
-    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || sim.see(a, sim.qb).carrying === false) return cmd;
+    // SEEN_EMPTY: the empty hand ends the look only once he has seen it in his eyes, not through the field-wide
+    // picture with his head elsewhere (the arm coming through keeps him looking: the ball is about to leave).
+    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || (SEEN_EMPTY ? sim.ballEstimates.sawEmpty(a) : sim.see(a, sim.qb).carrying === false)) return cmd;
+    const pastBreak = sim.t - this.bornAt >= this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning');
     if (this.route.family === 'deep') {
-      if (!BALL_EST_DEEP_LOOK) return cmd;
+      // BREAK_LOOK: a deep route thrown on its break (the corner, the post) also looks out of the break.
+      const onBreak = BREAK_LOOK && BREAK_DECL[this.route.id]?.throwFamily === 'onBreak' && pastBreak;
+      if (!BALL_EST_DEEP_LOOK && !onBreak) return cmd;
       // His own depth past the line is his cue; the release is not.
-      if (this.deepLookAt === undefined && (a.pos.x - sim.los) * sim.attackDir(a.team) >= DEEP_LOOK_DEPTH) this.deepLookAt = sim.t;
-      if (this.deepLookAt === undefined || sim.t - this.deepLookAt > DEEP_LOOK_HOLD) return cmd;
-    } else if (sim.t - this.bornAt < this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning')) return cmd;
+      if (BALL_EST_DEEP_LOOK && this.deepLookAt === undefined && (a.pos.x - sim.los) * sim.attackDir(a.team) >= DEEP_LOOK_DEPTH) this.deepLookAt = sim.t;
+      const deepNow = BALL_EST_DEEP_LOOK && this.deepLookAt !== undefined && sim.t - this.deepLookAt <= DEEP_LOOK_HOLD;
+      if (!deepNow && !onBreak) return cmd;
+    } else if (!pastBreak) return cmd;
     sim.ballEstimates.lookAtQB(a, sim);
     const qb = sim.see(a, sim.qb).pos, sp = Math.hypot(cmd.vel.x, cmd.vel.y);
     const heading = sp > 0.4 ? Math.atan2(cmd.vel.y, cmd.vel.x) : (cmd.facing ?? a.facing);
