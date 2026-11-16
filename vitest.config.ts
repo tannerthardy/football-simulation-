@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vitest/config';
+import { legacyEnv } from './config/legacy-env';
 
 // Keep expensive native scenarios out of the everyday loop without moving or
 // rewriting their assertions. Every entry is excluded from core and included
@@ -27,12 +28,8 @@ const workflowTests = [
 // TEST_ENGINE_DEFAULTS=1 (173 core tests then need re-recording; the list is
 // in docs/REFERENCE_STACK.md). Remove a flag from this pin when its tests are
 // re-recorded.
-const stackFlags: Record<string, string> = JSON.parse(readFileSync(new URL('./config/reference-stack.json', import.meta.url), 'utf8')).flags;
-const promoted = Object.entries(stackFlags).filter(([, v]) => v === 'on').map(([k]) => k);
-// TEST_PIN_FLAGS=A,B pins only those flags (for scripts/diag/pin-bisect.ts); empty pins none.
-const pinOnly = process.env.TEST_PIN_FLAGS;
-const legacyEngine = process.env.TEST_ENGINE_DEFAULTS === '1' ? {}
-  : Object.fromEntries((pinOnly === undefined ? promoted : pinOnly.split(',').filter(Boolean)).map(k => [k, '0']));
+// TEST_PIN_FLAGS=A,B pins only those boolean flags (for scripts/diag/pin-bisect.ts); empty pins none. Numeric flags are pinned to their `legacy` value (config/legacy-env.ts).
+const legacyEngine = legacyEnv(JSON.parse(readFileSync(new URL('./config/reference-stack.json', import.meta.url), 'utf8')), { engineDefaults: process.env.TEST_ENGINE_DEFAULTS === '1', pinOnly: process.env.TEST_PIN_FLAGS });
 
 // Core files split in two (test/engine-pin.json): `defaults` run on the real engine, `pinned` still on the
 // legacy one. A file may move from pinned to defaults when it passes there; a new file is a defaults file.
