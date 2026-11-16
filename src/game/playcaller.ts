@@ -22,12 +22,12 @@ import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/
 import { PASS_CONCEPTS, RPO_CONCEPTS, RUN_BY_ID, RUN_CONCEPTS, SCREEN_BY_ID } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
 import { FORMATION_BY_ID, FORMATIONS } from '../playbook/formations.js';
-import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
+import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, ReceiverRef, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, pickOffense, type CoverageSystem, type Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
 import { CALL_MIX, callMixWeight } from './call-mix.js';
-import { CONCEPT_FIT, conceptFits, fieldRefs } from './concept-fit.js';
+import { asBackThree, backIsThree, CONCEPT_FIT, conceptFits, fieldRefs } from './concept-fit.js';
 import { derivePhysical } from '../players/physical.js';
 
 /** FRONT_ALIGN (on; =0 turns it off): fronts are called as team installs use
@@ -458,9 +458,13 @@ export class OffensiveCoordinator {
         }
       }
       // CONCEPT_FIT: only the concepts whose read's receivers are on the field after the called motion.
-      let concept = this.choosePass(s, formation, defense, CONCEPT_FIT ? this.fittingConcepts(s, formation, flip, motion) : undefined);
+      const fields = CONCEPT_FIT ? this.conceptFields(s, formation, flip, motion) : undefined;
+      let concept = this.choosePass(s, formation, defense, fields && new Set(PASS_CONCEPTS.filter((c) => conceptFits(c, fields.get(c.id)!)).map((c) => c.id)));
       // PA_CALL: play action as a tag on the call, at the NFL's rate for this situation and alignment.
       if (PA_CALL) concept = this.playActionTag(concept, s, formation);
+      // BACK_AS_THREE: from a field with no #3, the back is #3 to the flat.
+      const field = fields?.get(concept.id.split('+')[0]);
+      if (field && backIsThree(concept, field)) concept = asBackThree(concept);
       return { formation, flip, kind: 'pass', pass: concept, motion, label: `${formation.name} — ${concept.name}${tag}` };
     }
     // SCREEN_CALL: the screen RPO, from 11 personnel, on its own stream.
@@ -561,14 +565,14 @@ export class OffensiveCoordinator {
   private paTags = 0;
   private screenCalls = 0;
 
-  /** CONCEPT_FIT: which pool concepts fit the field at the snap, after the called motion, aligned as the play aligns
-   * each one (its routes set the receivers' room), with this team's bodies. */
-  private fittingConcepts(s: Situation, f: Formation, flip: boolean, motion?: MotionCall): Set<string> {
+  /** CONCEPT_FIT: each pool concept's field at the snap, after the called motion, aligned as the play aligns it (its
+   * routes set the receivers' room), with this team's bodies. */
+  private conceptFields(s: Situation, f: Formation, flip: boolean, motion?: MotionCall): Map<string, Set<ReceiverRef>> {
     const players = pickOffense(this.team, f.personnel);
     const bodies = Object.fromEntries(Object.entries(players).map(([slot, p]) => [slot, derivePhysical(p)]));
     const style = alignStyle(this.team), los = 10 + s.yardline;
-    return new Set(PASS_CONCEPTS.filter((c) => conceptFits(c, fieldRefs(f, flip, s.ballY, motion,
-      { los, bodies, ctx: { kind: 'pass', pass: c, down: s.down, distance: s.distance, style } }))).map((c) => c.id));
+    return new Map(PASS_CONCEPTS.map((c) => [c.id, fieldRefs(f, flip, s.ballY, motion,
+      { los, bodies, ctx: { kind: 'pass', pass: c, down: s.down, distance: s.distance, style } })]));
   }
 
   private choosePass(s: Situation, f: Formation, defense: Team, fitting?: Set<string>): PassConcept {

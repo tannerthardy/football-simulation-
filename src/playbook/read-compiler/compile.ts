@@ -47,7 +47,7 @@ export function compile(concept: PassConcept, formation: string, flip: boolean, 
   }
   s.qbSetAt = +((s.qbSetAt + m.qbSetAt) / 2).toFixed(2);
   const motifs = findMotifs(s.routes);
-  if (PLAN_ROLES) for (const [clearRoute, underRoute] of CLEAR_OUTS[concept.id] ?? []) {
+  if (PLAN_ROLES) for (const [clearRoute, underRoute] of CLEAR_OUTS[concept.backIsThree ? concept.id.replace(/\+b3$/, '') : concept.id] ?? []) {
     // Same side: the clearer and the route he clears for.
     for (const c of s.routes) for (const u of s.routes) if (c.routeId === clearRoute && u.routeId === underRoute && c.side === u.side
       && !motifs.some((m) => m.kind === 'clearout' && m.refs[0] === c.ref && m.refs[1] === u.ref))
