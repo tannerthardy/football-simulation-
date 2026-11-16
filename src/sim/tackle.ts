@@ -223,8 +223,9 @@ export function tryTackles(sim: PlaySim): void {
             detail: `Observed possession ${observed.carrying === true ? 'held' : 'unconfirmed'}; wrap quality ${window.currentQuality.toFixed(2)}; best attainable decision sample ${window.futureQuality.toFixed(2)} at ${window.closestAt.toFixed(2)} s. Held movement command; future cuts and contacts are unknown.` });
         }
       }
-      if (needsLastReach && !lastReach) continue;
-      if (waitForBetter && !acquireAtReach) continue;
+      const passing = LAY_OUT && !engaged && !sim.bond && dd > arms && goingBy(rx, ry, cv.x - d.vel.x, cv.y - d.vel.y, arms);
+      if (needsLastReach && !lastReach && !passing) continue;
+      if (waitForBetter && !acquireAtReach && !passing) continue;
       attempt(sim, d, c, q, engaged, dd > arms, dd > arms ? range : arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -234,7 +235,8 @@ export function tryTackles(sim: PlaySim): void {
     const dive = range + 0.3;
     const separating = ((cv.x - d.vel.x) * rx + (cv.y - d.vel.y) * ry) / rd;
     const behind = (d.pos.x - cp.x) * cv.x + (d.pos.y - cp.y) * cv.y < 0;
-    if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
+    const layOut = LAY_OUT ? goingBy(rx, ry, cv.x - d.vel.x, cv.y - d.vel.y, arms) : separating > 1.6 && behind;
+    if (!engaged && dd <= dive && layOut && !sim.bond && !occluded(sim, d, c)) {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
@@ -299,6 +301,22 @@ const WAIT_REACHED = process.env.WAIT_REACHED !== '0';
  * closing, separating and behind reads for the last reach and the dive use the
  * carrier's seen position and velocity. Reach, grip and contact stay physical. */
 const HONEST_TACKLE = process.env.HONEST_TACKLE !== '0';
+/** LAY_OUT (experimental, off; LAY_OUT=1; docs/reviews/2026-11-16-lay-out.md): the moment the carrier goes by. On his
+ * own picture of the carrier's motion relative to him, a free tackler who will not get to arms on that motion (the
+ * closest point of the relative path is outside his arms, or already behind him: the bearing has swung past his
+ * shoulder) reaches now if the carrier is inside his lunge range, or lays out if he is inside dive range. This replaces
+ * the last-reach wait and the dive's separating-and-behind proxy for that case; a carrier still closing to inside his
+ * arms leaves the existing wait/keep-feet decision alone. The ranges are his body's (arms, lunge, dive); the outcome is
+ * the existing reach and dive path. */
+const LAY_OUT = process.env.LAY_OUT === '1';
+/** LAY_OUT's read: on the relative motion he sees, does the carrier pass outside his arms (or has he already passed)? */
+export function goingBy(rx: number, ry: number, wx: number, wy: number, arms: number): boolean {
+  const ww = wx * wx + wy * wy;
+  if (ww < 1e-6) return Math.hypot(rx, ry) > arms;
+  const tStar = -(rx * wx + ry * wy) / ww;
+  if (tStar <= 0) return true;
+  return Math.hypot(rx + wx * tStar, ry + wy * tStar) > arms;
+}
 /** Whether the forecast is worth waiting for: a better shot by a margin and, with WAIT_REACHED, one it reaches inside
  * its lookahead. A best point at the horizon's edge is a slow chase still closing (or a runner faster than his seen,
  * stale velocity): the better shot keeps receding, so he takes the reach he has. */
