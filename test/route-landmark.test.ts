@@ -2,7 +2,7 @@
  * route from where he is, and the quarterback's forecast steers the same rule from his own picture. Staged on the route
  * controller and the forecast themselves: a post (stem to 12 yd, then in toward the goalpost) with the receiver 2.5 yd
  * inside his stem at 8 yd, running upfield, as CRAFT_HOLD bent concept-menu's hitch_post #2 post round the safety; and
- * (attempt 2) a quick out pushed 5 yd inside by a press, which keeps its lateral landmark. On the
+ * (attempt 2) a quick out off his drawn line, which keeps its lateral landmark. On the
  * engine defaults (the stack's flags stubbed on: the forecast's placement is FORECAST_HOLD's, its vertex DECLARED_BREAK's). */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -68,13 +68,13 @@ describe('ROUTE_LANDMARK', () => {
     expect(err(on)).toBeLessThan(err(off));
   }, 60_000);
 
-  it("attempt 2: a quick out knocked 5 yd inside keeps its lateral landmark, the break spot toward the sideline", async () => {
-    // read-plan's press-man quick outs: the press corner put #1 5 yd inside his alignment by the throw; attempt 1 ran his
-    // quick out from there and he met the ball on the sideline. 2 yd past the line, 5 yd inside his stem, upfield at 5.
+  it("attempt 2: a quick out off his drawn line keeps its lateral landmark, the break spot toward the sideline", async () => {
+    // Attempt 1 shifted the quick out's legs by his offset (read-plan's press-man quick outs were thrown early to an out
+    // the forecast took as on his route). 2 yd past the line, 5 yd inside his stem, upfield at 5.
     const at = { x: LOS + 2, y: START.y - 5 }, v = { x: 5, y: 0 };
     const off = await staged(false, 'quick_out', at, v), on = await staged(true, 'quick_out', at, v);
     expect(on.shifts).toBe(false);
-    // On is the same as off: he works back out toward the drawn break spot, not his quick out run from 5 yd inside.
+    // On is the same as off: he works back out toward the drawn break spot, not a quick out shifted to where he is.
     expect(on.end.y).toBeCloseTo(off.end.y, 6);
     expect(on.track[9].y - on.track[0].y).toBeGreaterThan(0.3);
   }, 60_000);

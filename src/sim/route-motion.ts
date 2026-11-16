@@ -39,8 +39,10 @@ export const ROUTE_LANDMARK = process.env.ROUTE_LANDMARK === '1';
 
 /** ROUTE_LANDMARK (attempt 2): whether a route is run from where he is: only a route whose leg leaving its declared vertex
  * breaks inside (toward the ball, by more than a yard). A route breaking toward the sideline keeps its lateral landmark,
- * the break spot toward the numbers: shifted inside by a press (5 yd on read-plan's quick outs), attempt 1 ran his quick
- * out from there to the boundary and he met the ball on the sideline. A settle (hitch, stick) and a vertical keep theirs. */
+ * the break spot toward the numbers. Attempt 1 shifted every route with a declared vertex, the quick out's out-leg among
+ * them: on read-plan's press-man quick outs #1, climbing out of his cut more than 1.6 yd off the drawn leg, became
+ * 'on his route' to the forecast and was thrown 0.25-0.35 s early, running to the boundary (2 of 6 caught). A settle
+ * (hitch, stick) and a vertical keep their spots. */
 export function breaksInside(path: readonly PathPoint[], at: number | undefined, outside: number): boolean {
   if (typeof at !== 'number') return false;
   const v = path[at]?.p, w = path[at + 1]?.p;
