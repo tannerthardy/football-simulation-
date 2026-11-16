@@ -267,6 +267,8 @@
     "PLAN_CLOCK": "on",
     "QB_TICK_PICTURE": "on",
     "QB_FELT_EDGE": "off",
+    "QB_FACE_SEEN": "off",
+    "BLITZ_PATHS": "off",
     "QB_EVADE_UP": "off",
     "BLITZ_SECOND": "off",
     "QB_LOOKOFF_RHYTHM": "off",

@@ -439,6 +439,10 @@ const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
  * edge's flips are his facing swinging 0.4-0.8 rad and back within 0.3 s, a controller question this does not
  * address. */
 const QB_FELT_EDGE = process.env.QB_FELT_EDGE === '1';
+/** QB_FACE_SEEN (experimental, off; QB_FACE_SEEN=1; information rule): his pocket facing turns to his picture of the
+ * read (his forecast of the man, `has`), not the receiver's true position. Off, bodyFacing aimed at `read.pos` and the
+ * shoulder read's `.pos`: the truth, however small the difference (found measuring his facing swing, 2026-11-16). */
+const QB_FACE_SEEN = process.env.QB_FACE_SEEN === '1';
 const FELT_IN_VIEW = 1.65, FELT_BLIND = 1.8;
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
@@ -477,6 +481,18 @@ const QB_EVADE_UP = process.env.QB_EVADE_UP === '1';
  * belief's update. If the back stayed in, a man who comes is a rusher. No hot is called on a screen. The look costs
  * time by construction: the belief waits for the man's path to declare itself. */
 const BLITZ_SECOND = process.env.BLITZ_SECOND === '1';
+/** BLITZ_PATHS (experimental, off; BLITZ_PATHS=1; with BLITZ_SECOND): the second look asks whose path a man is on for
+ * every receiver he could be covering, not only the released back. Each released receiver in his picture (moving away
+ * from him faster than 1.5 yd/s) within PATH_NEAR of the man gives a forecast point half a second on (his installed
+ * route; his own knowledge of his routes); a man heading nearer one of those than at the quarterback, by PATH_MARGIN, is
+ * on that receiver's path and his step toward the line is not a rush. With no released receiver near him (his man stays
+ * in to block) he reads as a rusher: the green dog. Re-diagnosed (Integration, 2026-11-16) from the narrowed plain-play
+ * throws: on the blitz stack, engine-70, 39 of 61 believed free men were linebackers in man coverage whose first step
+ * read as a rush, 43 of 61 not closing on him at the throw, and BLITZ_SECOND's back-only test never ran on them
+ * (scripts/diag/eyes/narrow-throws.ts). */
+const BLITZ_PATHS = process.env.BLITZ_PATHS === '1';
+/** BLITZ_PATHS: how near a released receiver must be to a man for the man to be covering him (yd). Chosen. */
+const PATH_NEAR = 8;
 /** BLITZ_SECOND: how fresh his picture of a man must be to classify his path (s), and the angular margin (rad) by which
  * one bearing must beat the other to enter or leave 'following the back'. Chosen; not tuned to a rate. */
 const PATH_FRESH = 0.5, PATH_MARGIN = 0.35;
@@ -754,6 +770,15 @@ export class QBPass implements Behavior {
     const backOut = !!back && ((back.pos.x - a.pos.x) * back.vel.x + (back.pos.y - a.pos.y) * back.vel.y) > 0 && Math.hypot(back.vel.x, back.vel.y) > 1.5;
     // Where the released back is going: his forecast half a second on (his installed release), else his picture carried on.
     const backAhead = rb && backOut ? this.receiverForecasts.get(rb)?.predict(sim.t, 0.5) ?? { x: back!.pos.x + back!.vel.x * 0.5, y: back!.pos.y + back!.vel.y * 0.5 } : null;
+    // BLITZ_PATHS: every released receiver in his picture, where he is and where his route takes him half a second on.
+    const outs: { at: Vec2; ahead: Vec2 }[] = [];
+    if (BLITZ_SECOND && BLITZ_PATHS) for (const o of sim.offense) {
+      if (o === a || !o.behavior?.passOption) continue;
+      const seen = sim.see(a, o);
+      const away = ((seen.pos.x - a.pos.x) * seen.vel.x + (seen.pos.y - a.pos.y) * seen.vel.y) > 0 && Math.hypot(seen.vel.x, seen.vel.y) > 1.5;
+      if (!away) continue;
+      outs.push({ at: seen.pos, ahead: this.receiverForecasts.get(o)?.predict(sim.t, 0.5) ?? { x: seen.pos.x + seen.vel.x * 0.5, y: seen.pos.y + seen.vel.y * 0.5 } });
+    }
     for (const d of sim.defense) {
       // A man he sees on the ground is out of the count (his felt picture's pose, not the man's true state).
       const fd = this.felt(a, sim, d);
@@ -779,12 +804,14 @@ export class QBPass implements Behavior {
         const prev = this.pathOf.get(d) ?? 'rush';
         let cls = prev;
         const sp = Math.hypot(fd.vel.x, fd.vel.y);
-        if (backAhead && sp > 1 && this.mind.pictureAge(d) <= PATH_FRESH) {
+        // BLITZ_PATHS: the receivers he could be covering (released, within PATH_NEAR of him); else the released back.
+        const near = BLITZ_PATHS ? outs.filter((o) => Math.hypot(o.at.x - p.x, o.at.y - p.y) <= PATH_NEAR).map((o) => o.ahead) : backAhead ? [backAhead] : [];
+        if (near.length && sp > 1 && this.mind.pictureAge(d) <= PATH_FRESH) {
           const ang = (x: number, y: number) => Math.abs(Math.atan2(fd.vel.x * y - fd.vel.y * x, fd.vel.x * x + fd.vel.y * y));
-          const toQb = ang(a.pos.x - p.x, a.pos.y - p.y), toBack = ang(backAhead.x - p.x, backAhead.y - p.y);
+          const toQb = ang(a.pos.x - p.x, a.pos.y - p.y), toBack = Math.min(...near.map((q) => ang(q.x - p.x, q.y - p.y)));
           if (prev === 'rush' && toBack < toQb - PATH_MARGIN) cls = 'follow';
           else if (prev === 'follow' && toQb < toBack - PATH_MARGIN) cls = 'rush';
-        } else if (!backAhead) cls = 'rush'; // the back stayed in: a man on him who comes is a rusher
+        } else if (!near.length) cls = 'rush'; // nobody released near him (his man stays in): a man who comes is a rusher
         this.pathOf.set(d, cls);
         if (cls === 'follow' && toward > 0) toward = 0;
       }
@@ -2417,12 +2444,13 @@ export class QBPass implements Behavior {
    * to a read once his eyes have held it for SHOULDER_SETTLE; until then they
    * stay where they were set. Off: square to the read. */
   private bodyFacing(a: Agent, sim: PlaySim, read: Agent | null | undefined): number {
-    if (!SHOULDERS_SET) return read ? angleTo(a.pos, read.pos) : 0;
+    const at = (r: Agent) => QB_FACE_SEEN ? this.has(sim, r) : r.pos;
+    if (!SHOULDERS_SET) return read ? angleTo(a.pos, at(read)) : 0;
     const eyes = read ?? null;
     if (eyes !== this.eyesRead) { this.eyesRead = eyes; this.eyesAt = sim.t; }
     if (!this.shoulderRead) this.shoulderRead = this.reads[0] ?? eyes;
     if (eyes && eyes !== this.shoulderRead && sim.t - this.eyesAt >= SHOULDER_SETTLE) this.shoulderRead = eyes;
-    return this.shoulderRead ? angleTo(a.pos, this.shoulderRead.pos) : a.body.facing;
+    return this.shoulderRead ? angleTo(a.pos, at(this.shoulderRead)) : a.body.facing;
   }
 
   /** Whether the committed throw, re-aimed as it would now leave his hand, is
