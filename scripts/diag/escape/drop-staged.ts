@@ -7,10 +7,12 @@ import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
 const CONCEPTS = 'smash mesh flood drive sail_corner corner_flat trips_sail trips_outs double_outs comebacks dagger y_cross four_verts verts_hitch stick curl_flat'.split(' ');
 const COVS = 'cover1 cover2man cover2 tampa2 cover3 cover3_match cover4 cover6'.split(' ');
 // (STAGED_FIVE_DEEP retired 2026-11-16: develop's 'five' is the deeper set under CONCEPT_DROPS.)
-// STAGED_CONCEPTS=a,b: only these concepts (to run the set in chunks and append the rows).
+// STAGED_CONCEPTS=a,b: only these concepts, any in the playbook (to run the set in chunks, or play action).
 const ONLY = (process.env.STAGED_CONCEPTS ?? '').split(',').filter(Boolean);
-for (const concept of ONLY.length ? CONCEPTS.filter((c) => ONLY.includes(c)) : CONCEPTS) for (const coverage of COVS) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
-  for (const formation of ['gun_doubles_11', 'gun_trips_11']) {
+for (const concept of ONLY.length ? ONLY.filter((c) => PASS_BY_ID[c]) : CONCEPTS) for (const coverage of COVS) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
+  // The first of these that builds: gun doubles, else trips (each row prints its formation). STAGED_FORM=<id> runs that
+  // formation alone (Rules: verts_hitch's key needs a #3, so its trips cell is not the doubles one).
+  for (const formation of process.env.STAGED_FORM ? [process.env.STAGED_FORM] : ['gun_doubles_11', 'gun_trips_11']) {
     let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
     let thr: any = null; const tb = sim.throwBall.bind(sim), dir = sim.attackDir(sim.offense[0].team);
     // Each defender at the snap: slot, position, and how wide of the ball he lined up (who made a sack, by where he came from).
