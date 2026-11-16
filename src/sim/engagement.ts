@@ -3717,8 +3717,9 @@ export const PASS_OFF = process.env.PASS_OFF !== '0';
  * - **The exchange** (createEngagement's pass branch): his punch (hands, arm edge) against the rusher's current move.
  *   A finesse move meets it with his swipe (a swipe that beats the punch leaves the keeper reaching: -0.5); a power
  *   move with his strike.
- * - **Late:** bounded by firstHands' landing law (his reach against the distance at the closing speed). If the man's
- *   hands land first, the fit is worse.
+ * - **Late** (attempt 2): his hands must land before the man clears his reach. If they land after, it is a miss (the
+ *   swiped punch's -0.5); between, the fit falls smoothly with the share of that window he used. (Attempt 1 bounded it by
+ *   firstHands, which compares both men's landing over the same distance and so never penalised a late keeper.)
  * - **Off balance:** off his feet he does not fit (at most -0.5, the missed punch).
  * The old pairing's rep edge is not carried. */
 export const PASS_HANDOVER = PASS_OFF && process.env.PASS_HANDOVER === '1';
@@ -3733,7 +3734,18 @@ function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
     const strike = 0.5 * td.hands + 0.5 * d.r('passRushPower') - 0.12 * armEdge + rng.normal(0, 0.18);
     c = clamp(punchB - strike, -0.8, 0.8);
   }
-  c = Math.min(c, firstHands(keeper, d, tb, td, rng));
+  // Late (attempt 2; attempt 1 bounded by firstHands, which compares both men's landing over the same distance and so
+  // never penalised a late keeper): his hands must land before the man clears his reach. Land: his distance beyond
+  // the bodies' contact over his closing speed on the man. Clear: the reach the man has left over the man's speed away
+  // from him. Landing after the man has cleared is a miss (the swiped punch's -0.5); between, the fit falls smoothly
+  // with the share of the window he used.
+  const dx = d.pos.x - keeper.pos.x, dy = d.pos.y - keeper.pos.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
+  const contact = keeper.profile.radius + d.profile.radius, reach = contact + tb.arm / 36 * 0.3;
+  const closing = Math.max(0.1, (keeper.vel.x - d.vel.x) * ux + (keeper.vel.y - d.vel.y) * uy);
+  const away = Math.max(0.1, (d.vel.x - keeper.vel.x) * ux + (d.vel.y - keeper.vel.y) * uy);
+  const land = Math.max(0, dist - contact) / closing, clear = Math.max(0, reach - dist) / away;
+  const used = land / Math.max(1e-3, land + clear);
+  c = c + (-0.5 - c) * clamp(used, 0, 1) ** 2;
   if ((keeper.body.support?.state ?? 'up') !== 'up') c = Math.min(c, -0.5);
   return c;
 }
