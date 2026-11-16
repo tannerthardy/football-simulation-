@@ -150,13 +150,14 @@ const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
  * QB set (a drop seen, then stopped). Rung 2: the windup start in his picture (the release belief's loadingAt) with the
  * eyes on that receiver. Either commits him: he drives at the receiver's throwing lane, undercutting it, until his
  * picture of the eyes leaves that receiver (a look-off pulls him and he pays for it) or he sees the ball. How early he
- * reads is his playRecognition: the dwell runs 0.15 s (1.0) to 0.75 s (0.0); bit 2 halves it, bit 4 doubles it (stated
- * choices, read at three levels). Measured before building (prethrow.py, one operator): the NFL zone first arriver turns
+ * reads is his playRecognition: the dwell over his perception delay (the eyes already reach him ~0.3 s late) runs 0.05 s
+ * (1.0) to 0.35 s (0.0); bit 2 halves it, bit 4 doubles it (stated choices, read at three levels). He plants and drives
+ * with his hips to the lane and his head on the QB (watch): held square, his drive got 2.1-2.4 yd/s (attempt 1). Measured before building (prethrow.py, one operator): the NFL zone first arriver turns
  * from -0.8 to +0.9 yd/s closing and speeds 2.8 -> 3.3 yd/s over the last half second; ours -0.6 -> 0.0, 2.6 -> 2.5. */
 const QB_INTENT_BITS = Number(process.env.QB_INTENT ?? 0);
 export const QB_INTENT = (QB_INTENT_BITS & 1) !== 0;
 const QB_INTENT_SCALE = (QB_INTENT_BITS & 2) !== 0 ? 0.5 : (QB_INTENT_BITS & 4) !== 0 ? 2 : 1;
-const qbIntentDwell = (a: Agent): number => (0.15 + 0.6 * (1 - clamp(a.r('playRecognition'), 0, 1))) * QB_INTENT_SCALE;
+const qbIntentDwell = (a: Agent): number => (0.05 + 0.3 * (1 - clamp(a.r('playRecognition'), 0, 1))) * QB_INTENT_SCALE;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
@@ -2122,7 +2123,8 @@ export class ZoneCoverage implements Behavior {
     // Drive at the throwing lane just in front of the receiver (between him and the QB), eyes on the QB.
     const toQb = sub(q.pos, th.pos), l = Math.hypot(toQb.x, toQb.y) || 1;
     const aim = { x: th.pos.x + (toQb.x / l) * 1.0, y: clamp(th.pos.y + (toQb.y / l) * 1.0, 0.5, FIELD_WIDTH - 0.5) };
-    return withFacingTechnique(track(a, aim, { x: th.vel.x * 0.5, y: th.vel.y * 0.8 }, { facing: facingQB, speed: 1, gain: 1.8 }),
+    void facingQB;
+    return withFacingTechnique(track(a, aim, { x: th.vel.x * 0.5, y: th.vel.y * 0.8 }, { speed: 1, gain: 1.8 }),
       { label: 'qb-intent', key: th.vel });
   }
 
