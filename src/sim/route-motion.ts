@@ -25,7 +25,7 @@ export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; rea
  * waits there as the check-down (CoachTube, Winning Running Back Drills: the flat route; fourvertsfootball, the check
  * down). Crossers, ins and the flat family keep their extensions (their finish is a separate item, and ROUTE_END's flat
  * rule covers the flat family); what any route does when the quarterback breaks the pocket is the scramble rule's. */
-export const ROUTE_FINISH = process.env.ROUTE_FINISH === '1';
+export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
@@ -90,6 +90,8 @@ export function routeEffort(family: RouteDef['family'], rr: number): number {
  * not leave room for that radius the speed through it is sqrt(aLat * R) on the radius that does fit. Once begun, the turn
  * is carried to its exit point (a goal that persists), then the next leg is followed. Cut skill acts through aLat only. */
 export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
+/** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
+const PLANT_REACH = process.env.PLANT_REACH !== '0';
 /** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
@@ -119,7 +121,19 @@ export function steerRoute(body: Body, st: RouteCursor, path: readonly PathPoint
       return { vel: { x: (E.x - body.pos.x) / dE * st.turn.speed, y: (E.y - body.pos.y) / dE * st.turn.speed }, cutSkill };
     }
     const d = Math.hypot(tgt.p.x - body.pos.x, tgt.p.y - body.pos.y);
-    if (d < 0.6 || (next && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
+    // PLANT_REACH: a planted break (a declared cut) is passed only once he has reached it along the leg he is on.
+    // `passed` asks only that he be within 2 yd and ahead of it along the NEXT leg; an exit leg that comes back toward the
+    // line (out 10 -> 9.5 yd, deep out, comeback, curl) puts every point short of the vertex ahead of it, so the cursor left
+    // the out's plant 1.7 yd early and he asked for 8.9 yd/s into the cut (staged double_outs: arrives 4.7 yd/s, the dig 3.75).
+    // Only where the exit leg comes back (its direction against the leg in): a cut whose exit goes on (the slant) is
+    // still passed by `passed`, so a release that already carried him onto the next leg is not taken back to the plant.
+    const reached = !(PLANT_REACH && tgt.cut && next) || (() => {
+      const prev = st.idx > 0 ? path[st.idx - 1].p : st.from;
+      if (!prev) return true;
+      const returns = (next.p.x - tgt.p.x) * (tgt.p.x - prev.x) + (next.p.y - tgt.p.y) * (tgt.p.y - prev.y) < 0;
+      return !returns || (body.pos.x - tgt.p.x) * (tgt.p.x - prev.x) + (body.pos.y - tgt.p.y) * (tgt.p.y - prev.y) > 0;
+    })();
+    if (d < 0.6 || (next && reached && passed(body.pos, tgt.p, next.p))) { st.idx++; st.turn = null; continue; }
     // CRAFT_HOLD: a receiver bent off his stem round a man rejoins his route on the leg ahead. He is past a point he is
     // beyond along both its legs, however far to the side, and a point the route runs straight through (a turn too small
     // to lead) is only a marker on his stem once he is a yard off it: he runs for the next point, not flat back to the
