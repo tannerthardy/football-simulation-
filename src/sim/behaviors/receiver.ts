@@ -351,9 +351,9 @@ export class RouteRunner implements Behavior {
     // His own picture, not the true ball state: he looks for the QB until he has seen the ball in the air (his own
     // sample) or sees the QB without it.
     // A sim without the estimator's store (partial fixtures) has no picture to look for: his route as it was.
-    // SEEN_EMPTY: the empty hand ends the look only once he has seen it (or the arm) in his eyes, not through the
-    // field-wide picture with his head elsewhere.
-    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || (SEEN_EMPTY ? sim.ballEstimates.lookedAtRelease(a, sim) : sim.see(a, sim.qb).carrying === false)) return cmd;
+    // SEEN_EMPTY: the empty hand ends the look only once he has seen it in his eyes, not through the field-wide
+    // picture with his head elsewhere (the arm coming through keeps him looking: the ball is about to leave).
+    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || (SEEN_EMPTY ? sim.ballEstimates.sawEmpty(a) : sim.see(a, sim.qb).carrying === false)) return cmd;
     const pastBreak = sim.t - this.bornAt >= this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning');
     if (this.route.family === 'deep') {
       // BREAK_LOOK: a deep route thrown on its break (the corner, the post) also looks out of the break.

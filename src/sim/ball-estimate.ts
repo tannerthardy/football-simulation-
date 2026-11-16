@@ -228,7 +228,7 @@ const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 
  * and found the ball only 0.4-0.8 s before it arrived, 150-180 deg behind his hips. The pre-look's end is his own sight
  * too: off, it ended on the passer's state through the field-wide picture (`sim.see(a, qb).carrying === false`) with
  * his head 90 deg off the passer, before his eyes got there; with the flag, it ends when he has seen the arm or the
- * empty hand in his eyes (`lookedAtRelease`). */
+ * empty hand in his eyes (`sawEmpty`); seeing the arm keeps him looking, since the ball is about to leave. */
 export const SEEN_EMPTY = process.env.SEEN_EMPTY === '1';
 
 export class BallEstimates {
@@ -243,13 +243,12 @@ export class BallEstimates {
     this.lastSenseAt = sim.t;
     // His own release belief: the passer's arm coming through, as he sees it while he is looking at him.
     for (const [a, tr] of this.tracks) {
-      if (tr.armSeenAt !== undefined || a.isDown(sim.t)) continue;
+      if ((tr.armSeenAt !== undefined && (!SEEN_EMPTY || tr.emptySeenAt !== undefined)) || a.isDown(sim.t)) continue;
       const head = SHARED_HEAD ? (a.head ?? a.facing) : tr.head, q = sim.see(a, sim.qb);
       if (Math.abs(angDiff(Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), head)) > EYE) continue;
       // SEEN_EMPTY: the passer in his eyes without the ball is the throw cue too (that it is up, not where to).
-      if (SEEN_EMPTY && q.arm !== 'deliver' && q.carrying === false && tr.emptySeenAt === undefined) tr.emptySeenAt = sim.t - (q.age ?? 0);
-      if (q.arm !== 'deliver') continue;
-      tr.armSeenAt = sim.t - (q.age ?? 0);
+      if (SEEN_EMPTY && q.carrying === false && tr.emptySeenAt === undefined) tr.emptySeenAt = sim.t - (q.age ?? 0);
+      if (q.arm === 'deliver' && tr.armSeenAt === undefined) tr.armSeenAt = sim.t - (q.age ?? 0);
     }
     const ball = sim.ball;
     // Design 4: before the throw, a receiver looking for the QB turns his head to him (the head he will start the
@@ -413,6 +412,10 @@ export class BallEstimates {
     // Pre-release attention carries into the flight's first tick.
     tr.attendT = sim.t; tr.deliberate = true;
   }
+
+  /** SEEN_EMPTY: has he seen the passer without the ball in his eyes? (The arm says it is coming; the empty hand that
+   * it has gone, so the look for the passer ends here, not at the arm.) */
+  sawEmpty(a: Agent): boolean { return this.tracks.get(a)?.emptySeenAt !== undefined; }
 
   /** Design 4: did he see the passer's arm come through (his own release belief)? */
   lookedAtRelease(a: Agent, sim: PlaySim): boolean {
