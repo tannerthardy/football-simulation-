@@ -9,7 +9,7 @@ helps on #2's corner/post. Measured per corner:
   #1 vertical (still climbing over 4 yd/s at 2.0 s): his cushion over #1 (his depth minus #1's) at 2.0 and 2.5 s;
   #1 short (inside 9 yd and under 2 yd/s downfield at 2.0 s): his depth change 1.0 -> 2.0 s, his lateral move inside 1.0 -> 2.0 s, his distance
     to #2 at 2.0 s, and whether #2 is vertical (climbing over 4 yd/s at 2.0 s);
-  #1's stop (Integration's follow-up): the first time in 0-3.5 s that #1, having climbed over 3 yd/s, drops under 1 yd/s
+  #1's stop (Integration's follow-up; split before/after pass_forward, as Rules found 65% of NFL stops come after it): the first time in 0-3.5 s that #1, having climbed over 3 yd/s, drops under 1 yd/s
     downfield; its time, #1's depth then, and the corner's depth change in the 0.5 s after it (sink, + = away from the line);
   outcomes: throws to #1 / #2 on his side, completion and yards.
 usage: python3 -I quarters_cb.py FILE [FILE ...]"""
@@ -62,6 +62,7 @@ for path in sys.argv[1:]:
                 elif climbed and vx < 1: stop = f; break
             if stop is not None:
                 r['stop_t'] = stop / max(1, k(1.0)); r['stop_d'] = p.pos(one, stop)[0]
+                thr = ev.get('pass_forward'); r['stop_pre'] = thr is not None and r['stop_t'] < thr
                 if stop + k(0.5) < p.frames: r['stop_sink'] = p.pos(c, stop + k(0.5))[0] - p.pos(c, stop)[0]
             tgt = raw.get('target')
             r['thrown'] = '1' if tgt == one else '2' if tgt == two and two is not None else None
@@ -91,7 +92,10 @@ for who in ('1', '2'):
     if T: print(f"throws to #{who} on his side: n {len(T)} comp {sum(r['cmp'] for r in T) / len(T):.2f} yd/throw {sum(r['yards'] for r in T) / len(T):.1f}")
 P = [r for r in rows if 'stop_t' in r]
 print(f"#1 stops (climbed >3 then <1 yd/s within 3.5 s): {len(P)}/{len(rows)}")
-for lab, f in (('all stops', lambda r: True), ('stop inside 5 yd (no-cover zone)', lambda r: r['stop_d'] <= 5),
+for lab, f in (('all stops', lambda r: True), ('stops before the throw', lambda r: r['stop_pre']),
+               ('  before the throw, inside 5 yd', lambda r: r['stop_pre'] and r['stop_d'] <= 5),
+               ('  before the throw, 5-9 yd', lambda r: r['stop_pre'] and 5 < r['stop_d'] < 9),
+               ('  before the throw, 9+ yd', lambda r: r['stop_pre'] and r['stop_d'] >= 9), ('stop inside 5 yd (no-cover zone)', lambda r: r['stop_d'] <= 5),
                ('stop 5-9 yd', lambda r: 5 < r['stop_d'] < 9), ('stop 9+ yd', lambda r: r['stop_d'] >= 9)):
     T = [r for r in P if f(r)]
     if T: print(f"   {lab:34s} n {len(T):4d} | stop at p25/p50/p75 {q([r['stop_t'] for r in T],.25)}/{q([r['stop_t'] for r in T])}/{q([r['stop_t'] for r in T],.75)} s, "
