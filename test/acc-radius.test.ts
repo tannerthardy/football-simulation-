@@ -22,6 +22,7 @@ async function throws(flag: string) {
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   vi.stubEnv('DIR_CAP', '0'); // engine-69: fixture recorded before the monotone direction cap; re-record with DIR_CAP on
   vi.stubEnv('ROUTE_FINISH', '0'); // engine-70: the check-down count was recorded with outward routes running on; re-record with ROUTE_FINISH on
+  vi.stubEnv('CRAFT_HOLD', '0'); // engine-70: the check-down count moves with the route craft's held side; re-record with CRAFT_HOLD on
   vi.stubEnv('ACC_RADIUS', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
