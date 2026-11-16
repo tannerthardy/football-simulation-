@@ -382,6 +382,7 @@
     "CURL_FLAT_BACK": "on",
     "CURL_SINK": "on",
     "SETTLE_DEPTH": "on",
+    "TURN_SPLIT": "off",
     "SAFETY_DEPTH": "on",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",

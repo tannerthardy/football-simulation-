@@ -97,6 +97,7 @@
     "DL_GAMES": "0",
     "FLOW_RELEASE": "1",
     "GAIT_STEP": "0",
+    "TURN_SPLIT": "0",
     "HAND_FIGHT": "0",
     "HAND_MOTOR": "0",
     "RUN_HAND_MOVE": "0",

@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 455 flags read from the environment in `src` (recounted 2026-11-16, engine-73): 347 are on unless set to `0`, 84 are off unless set to `1`, and 24 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+There are 456 flags read from the environment in `src` (recounted 2026-11-16, engine-73 plus TURN_SPLIT): 347 are on unless set to `0`, 85 are off unless set to `1`, and 24 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
 
 **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
 
@@ -174,6 +174,7 @@ There are 455 flags read from the environment in `src` (recounted 2026-11-16, en
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:712` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
+| `TURN_SPLIT` | off | experimental (Tools, 2026-11-16; Integration's bounded build attempt after the open-field turn-cost table) | physics | `src/physics/kinematics.ts` (`locomotionAccel`) | set at first review. The tangential demand toward a requested velocity is split in his own frame: toward the requested speed, `(|req| - v)/dt`, blended with the vector projection by `cos(phi)` clamped to 0..1, so a request that turns him does not ask him to slow down; the normal demand, the friction ellipse and the support limits are unchanged. docs/reviews/2026-11-16-turn-split.md |
 | `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1093` | set at first review |
 | `HAND_MOTOR` | off | experimental | physics | `src/physics/world.ts:302` | set at first review |
 | `RUN_HAND_MOVE` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run shed, 2026-11-06) | trenches | `src/sim/engagement.ts:738` | set at first review. A defender who decides to work off a run block attacks the blocker's hands first; landed, the hands are off for 0.3 s and the blocker follows him by sight (docs/reviews/run-shed-release.md). |

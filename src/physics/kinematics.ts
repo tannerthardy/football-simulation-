@@ -190,6 +190,13 @@ export function enduranceFactor(body: Body): number {
  * levels off at a wanted speed below his top speed. */
 const GAIT_STEP = Number(process.env.GAIT_STEP ?? 0);
 
+/** TURN_SPLIT (experimental, off; TURN_SPLIT=1 turns it on; docs/reviews/2026-11-16-turn-split.md): a request is a target velocity, and turning toward it is not
+ * a request to slow down. Read as a vector difference, a request phi off his heading asks for a tangential change of |req| cos(phi) - v, which brakes him by v (1 - cos(phi))
+ * / dt; the friction ellipse then scales both components. With TURN_SPLIT the tangential demand is split in his own frame: toward the requested SPEED, (|req| - v) / dt,
+ * blended with the vector projection by cos(phi) (clamped to 0..1: 1 straight ahead, 0 from a right angle round to a reversal, where it is today's demand). The normal
+ * demand and the envelope (drive and brake, the lateral ellipse, support limits) are unchanged, so the ellipse's lateral limit sets what a turn costs. */
+const TURN_SPLIT = process.env.TURN_SPLIT === '1';
+
 /** The lag a controller should expect when it asks for `wanted` speed: the
  * legs start at full force whatever he wants and level off at his wanted
  * speed, so the approach time constant is tau scaled by wanted / top speed
@@ -319,6 +326,10 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
     let at = (dvx * tx + dvy * ty) / dt;
     let an = (dvx * nx + dvy * ny) / dt;
     const cap = len(desired);
+    if (TURN_SPLIT && cap > 1e-6) {
+      const align = clamp((desired.x * tx + desired.y * ty) / cap, 0, 1);
+      at = align * ((cap - speed) / dt) + (1 - align) * at;
+    }
     // The envelope is what the legs can produce at this speed: propulsion
     // on the sprint (force-velocity) curve or braking, and cutting, which
     // is harder at high speed. Head straight for the wanted velocity, as
