@@ -562,3 +562,35 @@ outside receiver's number is identical between the two arms in every shade: time
 side by route, break laterals. They also equal attempt 2's engine-68 gates. The two mechanisms do not meet on a
 pressed outside receiver: RELEASE_SIDE acts on a free man restricted by a teammate; RELEASE_READ acts on a man with a
 press corner tight over him.
+
+## RELEASE_READ attempt 2 on engine-70 (develop fb870814 merged as 4b542608; clean tree, source check passed), 2026-11-16
+
+PLANT_REACH moves where pressed hitches and outs plant. Re-read before the PR's table is final.
+
+| pressed outside receivers, p50 | off | RELEASE_READ | NFL |
+|---|---|---|---|
+| time to 5 yd | 2.00 | 1.90 | 2.00 |
+| lateral at 1 yd, head-up | +1.2 | +0.9 | +0.2 |
+| HITCH at 5 yd | +3.9 (n 180) | **+1.5** (156) | +1.2 |
+| OUT at 5 yd | +4.0 (29) | +2.2 (7) | +0.7 |
+| SLANT at 2 yd | −1.7 | −1.1 | −0.8 |
+| GO at 10 yd | +4.6 (186) | **+1.6** (178; 55 never reach 10 yd before throw + 0.6 s) | +4.7 |
+| head-up GO released outside | 165/176 | 154/182 | 75% |
+| yards per dropback (n 1,582 / 1,586) | 9.21 | **8.47** (sd 13.1 / 12.4; −0.74, about 1.6 SE) | – |
+
+Staged gates, engine-70 (hitch / out at 5 yd, p50):
+
+| shade | off | RELEASE_READ |
+|---|---|---|
+| head-up | +4.1 / +4.2 | +1.5 / +2.6 |
+| outside | −3.8 / −3.8 | +0.9 / +2.7 |
+| inside | +3.8 / +3.8 | +0.2 / +1.4 |
+
+Time to 5 yd: off 2.1 / 2.1 / 2.1, RELEASE_READ 2.0 / 2.1 / 2.0.
+
+Read:
+
+- The release half holds on engine-70: hitch +1.5 (+1.6 on engine-68), slant −1.1, time to 5 yd unchanged.
+- **Two things moved with PLANT_REACH and need a look before the PR table is final.**
+  - **Pressed gos are much narrower: +1.6 at 10 yd vs +3.0 on engine-68, NFL +4.7.** 55 of 178 never reach 10 yd before the throw, so the receiver releases and turns up his installed line earlier. That is the stem-width point already reported (route stem about 1.2 yd narrow, plus the corner's ride), now larger.
+  - **Yards per dropback −0.74 (about 1.6 SE)**, larger than engine-68's −0.06. Unpaired after divergence; not established. The 3-seed card should read it.
