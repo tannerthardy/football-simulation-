@@ -27,7 +27,18 @@ PlaySim.prototype.run = function (this: PlaySim) {
           const dx = p.pos.x - d.pos.x, dy = p.pos.y - d.pos.y, dist = Math.hypot(dx, dy) || 1;
           return { slot: d.slot, pos: d.player?.position ?? null, p: +ft.p.toFixed(2), arr: +ft.arr.toFixed(2), prior: r ? +r.prior.toFixed(2) : null,
             path: b.pathOf?.get(d) ?? null, trueKind: d.behavior?.kind ?? null, trueToward: +((d.vel.x * dx + d.vel.y * dy) / dist).toFixed(1), trueDist: +dist.toFixed(1),
-            rushersCalled: sim.defCall?.pressure?.id ?? null }; })() };
+            rushersCalled: sim.defCall?.pressure?.id ?? null,
+            // BLITZ_PATHS' own inputs for this man, recomputed from his pictures at the throw (diagnostic).
+            test: (() => { const fd = b.felt(p, sim, d), age = b.mind.pictureAge(d), sp = Math.hypot(fd.vel.x, fd.vel.y);
+              const ang = (x: number, y: number) => Math.abs(Math.atan2(fd.vel.x * y - fd.vel.y * x, fd.vel.x * x + fd.vel.y * y));
+              const near: any[] = [];
+              for (const o of sim.offense) { if (o === p || !o.behavior?.passOption) continue; const sn = sim.see(p, o);
+                const away = ((sn.pos.x - p.pos.x) * sn.vel.x + (sn.pos.y - p.pos.y) * sn.vel.y) > 0 && Math.hypot(sn.vel.x, sn.vel.y) > 1.5;
+                const dist = Math.hypot(sn.pos.x - fd.pos.x, sn.pos.y - fd.pos.y);
+                const ah = b.receiverForecasts.get(o)?.predict(sim.t, 0.5) ?? sn.pos;
+                near.push({ slot: o.slot, away, dist: +dist.toFixed(1), toRecv: +ang(ah.x - fd.pos.x, ah.y - fd.pos.y).toFixed(2) }); }
+              return { age: +age.toFixed(2), sp: +sp.toFixed(1), toQb: +ang(p.pos.x - fd.pos.x, p.pos.y - fd.pos.y).toFixed(2), near: near.filter((n) => n.dist <= 12).sort((x, y) => x.dist - y.dist).slice(0, 3),
+                trueMan: d.behavior?.target?.slot ?? null }; })() }; })() };
     }
     return tb(p, target, ...rest);
   };
