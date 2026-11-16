@@ -33,7 +33,7 @@ import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
 import { DeepCoverage } from '../coverage-leverage.js';
-import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
+import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
 import { acquireFlight, anticipatedCatcher, catchOpportunity, flightLanded, hasObservedFlight, observedHolder, QB_RELEASE, qbRunning, qbRunningAtLine, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
@@ -142,6 +142,19 @@ const ZONE_HOLD_IN = 0.5 * ZONE_HOLD_SCALE, ZONE_HOLD_OUT = 1.5 * ZONE_HOLD_SCAL
 const ZONE_HOLD_EYES_BEAT = (4 * ZONE_HOLD_SCALE * Math.PI) / 180;
 const ZONE_HOLD_EYES_OUT = (6 * ZONE_HOLD_SCALE * Math.PI) / 180;
 const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
+/** ZONE_HOLD bit 32 (lean): the settled underneath defender's lean with the QB's eyes slides along the QB's seen head
+ * line (the point on it at his landmark's distance from the QB), not toward whichever receiver the eyes are on; his held
+ * lean point follows it on a ZONE_HOLD_LEAN_ROPE leash (moves only once the line has moved past it, then continuously),
+ * and keeps its last place while the QB's head is out of his view. Taught: slide with the quarterback's eyes. */
+export const ZONE_HOLD_LEAN = (ZONE_HOLD_BITS & 32) !== 0;
+const ZONE_HOLD_LEAN_ROPE = 1.0 * ZONE_HOLD_SCALE;
+/** ZONE_HOLD bit 64 (hand-off from motion): when his technique hands off on a perceived change (a seam carry ends: the
+ * route breaks down or reaches the hand-off depth; a lane read gives way to the settle), the new technique's target may
+ * move anywhere across his motion but not back against it short of his own stopping point (pos + v^2/(2 brake) along
+ * the direction he was moving); the limit shrinks with his speed and is gone when he has stopped along it. Taught:
+ * when the seam clears, settle and find the next threat; don't sprint back to a spot. */
+export const ZONE_HOLD_HANDOFF = (ZONE_HOLD_BITS & 64) !== 0;
+const CARRY_LABEL = /^(open-carry-seam|carry-wall|carry-run-past)$/;
 const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
@@ -1545,6 +1558,41 @@ export class ZoneCoverage implements Behavior {
   /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
   private bandHeld = new Set<Agent>();
   private vertHeld = new Set<Agent>();
+  /** ZONE_HOLD bit 32: his held lean point on the QB's seen head line (null until he has seen the head). */
+  private leanAt: Vec2 | null = null;
+  /** ZONE_HOLD bit 64: the direction he was moving at the hand-off (null when none is binding), and last tick's technique. */
+  private handoffDir: Vec2 | null = null;
+  private lastLabel = '';
+  private fromMotion(a: Agent, t: Vec2, settleSite = false): Vec2 {
+    if (!ZONE_HOLD_HANDOFF) return t;
+    if (!this.handoffDir && (CARRY_LABEL.test(this.lastLabel) || (settleSite && this.lastLabel.startsWith('lane')))) {
+      const s = Math.hypot(a.vel.x, a.vel.y);
+      if (s > 0.3) this.handoffDir = { x: a.vel.x / s, y: a.vel.y / s };
+    }
+    const u = this.handoffDir;
+    if (!u) return t;
+    const along = a.vel.x * u.x + a.vel.y * u.y;
+    if (along <= 0) { this.handoffDir = null; return t; }
+    const stop = (along * along) / (2 * a.profile.brake * 0.8);
+    const ta = (t.x - a.pos.x) * u.x + (t.y - a.pos.y) * u.y;
+    return ta >= stop ? t : { x: t.x + u.x * (stop - ta), y: t.y + u.y * (stop - ta) };
+  }
+  /** ZONE_HOLD bit 32: the point on the QB's seen head line at his landmark's distance from the QB, held on a leash. */
+  private headLean(a: Agent, sim: PlaySim, lm: Vec2): Vec2 | null {
+    const q = sim.see(a, sim.qb);
+    const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x);
+    const look = q.head ?? q.facing;
+    if (look !== undefined && look !== null && Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
+      const r = Math.hypot(lm.x - q.pos.x, lm.y - q.pos.y);
+      const p = { x: q.pos.x + r * Math.cos(look), y: clamp(q.pos.y + r * Math.sin(look), 0.5, FIELD_WIDTH - 0.5) };
+      if (!this.leanAt) this.leanAt = p;
+      else {
+        const dx = p.x - this.leanAt.x, dy = p.y - this.leanAt.y, d = Math.hypot(dx, dy);
+        if (d > ZONE_HOLD_LEAN_ROPE) this.leanAt = { x: p.x - (dx / d) * ZONE_HOLD_LEAN_ROPE, y: p.y - (dy / d) * ZONE_HOLD_LEAN_ROPE };
+      }
+    }
+    return this.leanAt;
+  }
   private shortOfDepth(a: Agent): boolean {
     if (!SETTLE_DEPTH) return false;
     const short = this.landmark.x - a.pos.x;
@@ -1604,6 +1652,15 @@ export class ZoneCoverage implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = this.updateCore(a, sim);
+    if (ZONE_HOLD_HANDOFF) {
+      this.lastLabel = facingTechnique(cmd)?.label ?? '';
+      if (CARRY_LABEL.test(this.lastLabel)) this.handoffDir = null;
+    }
+    return cmd;
+  }
+
+  private updateCore(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
@@ -1972,7 +2029,7 @@ export class ZoneCoverage implements Behavior {
         // CURL_SINK: he sinks to his curl window (its landmark depth) as he widens; off, the shallower of the window and
         // where he stands, which held a curl-flat defender at his alignment depth when the back showed before he dropped.
         const tgt = { x: CURL_SINK ? lm.x : Math.max(sim.los + 2, Math.min(lm.x, a.pos.x)), y: clamp(lm.y + (flat.fut.y - lm.y) * cheat, 0.5, FIELD_WIDTH - 0.5) };
-        return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
+        return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt)), { facing: facingQB, speed: zs }), { label: 'curl-flat-widen', key: flat.vel });
       }
     }
     let best: (typeof threats)[number] | null = null;
@@ -2030,8 +2087,11 @@ export class ZoneCoverage implements Behavior {
     this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
-      if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
-      return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
+      if (ZONE_HOLD_LEAN) {
+        const lean = this.headLean(a, sim, lm);
+        if (lean) tgt = lerp(lm, lean, 0.25 * a.r('anticipation'));
+      } else if (qbEyes) tgt = lerp(lm, infoHonest(8) ? sim.see(a, qbEyes).pos : qbEyes.pos, 0.25 * a.r('anticipation'));
+      return withFacingTechnique(goTo(a, this.fromMotion(a, settle(tgt), true), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
     const lane = lerp(qbAt, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -2060,6 +2120,7 @@ export class ZoneCoverage implements Behavior {
     if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
     const settledLane = this.settledAt >= 0 && !carryingAcross;
     if (settledLane) tgt = settle(tgt);
+    tgt = this.fromMotion(a, tgt);
     const laneReq = track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
     // OPEN_CARRY: carry the crosser as square to the QB as the run allows.
