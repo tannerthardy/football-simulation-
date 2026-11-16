@@ -29,7 +29,7 @@ export const RB_STEER = process.env.RB_STEER !== '0';
  * +-0.2..+-0.8 rad changed size and side tick to tick (docs/reviews/2026-11-15-carrier-spacing-dither.md). With the flag he keeps his side and size while the
  * held request still conflicts with a peer he bent around, grows it smoothly if the conflict worsens, and returns to the held request only when it clears by
  * a body width or he has passed the peer; a new choice needs a peer or conflict he was not already bending around. */
-export const SPACING_HOLD = process.env.SPACING_HOLD === '1';
+export const SPACING_HOLD = process.env.SPACING_HOLD !== '0';
 /** The bend he is holding, by teammate key (not a remembered intention: his own committed choice). */
 export interface BendHold { readonly off: number; readonly keys: readonly number[] }
 const BEND_STEP = 0.2, BEND_MAX = 0.8;
@@ -378,7 +378,7 @@ function stepAroundTraffic(a:Agent, raw:Intent, chosen:Intent, peers:readonly Pe
  * route goes from its declared break (RouteRunner.routeSide), as taught; a teammate sitting on his route line (a wing
  * behind the end on a slant or a drag) he passes under, round the back hip, the side away from the line of scrimmage.
  * The side is held while that teammate restricts him. Off, the side is whatever the geometry of the closing cut leaves. */
-const RELEASE_SIDE = process.env.RELEASE_SIDE === '1';
+const RELEASE_SIDE = process.env.RELEASE_SIDE !== '0';
 const passSide = new WeakMap<Agent, { peer: number; sign: number }>();
 
 export function spaceTeammates(agents: readonly Agent[], intents: Intent[],

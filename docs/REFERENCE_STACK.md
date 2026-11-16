@@ -607,7 +607,7 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
-## engine-70: `PLANT_REACH`, `COMPILE_PICTURE`, `ROUTE_FINISH` and `PLAN_ROLES` on (2026-11-15)
+## engine-70: route fixes, the carrier's held spacing, honest receivers and two quarterback repairs (2026-11-16)
 
 Engine-69 plus Rules' #775 (`PLANT_REACH`) and #781 (`COMPILE_PICTURE`), with `ROUTE_FINISH` (#763) and `PLAN_ROLES` (#762), already on develop, flipped. Coverage's #760 is merged with every `BALL_EST` mode off (the default receiver and defense are unchanged).
 
@@ -628,6 +628,27 @@ Engine-69 plus Rules' #775 (`PLANT_REACH`) and #781 (`COMPILE_PICTURE`), with `R
   - `ROUTE_FINISH`: outward routes stop at the margin instead of running up the sideline at full speed. Rules' split by flag (16 games an arm) put its cost at 20+ yd completions on flats and outs that should not exist (out 19% -> 5.6% of targets, NFL 5.0%); this card shows no resolved cost at all.
   - `PLAN_ROLES`: declared read orders in six concepts' installed plans.
 - **`BALL_EST=2049` is held, and it is not the receiver.** YAC +4.5 to +8.4 yd on every seed. Coverage's split on seed 11 (yac-split.ts): receivers only 6.74 against the oracle's 7.50; defense only 14.10. Under the default every defender past throw recognition is given the true flight at once; with the estimator on, he never records a flight and never starts the post-catch path. That is information cheating on the defensive side, to be replaced by cues he can see (docs/reviews/2026-11-15-defender-throw-picture.md). The receiver's glance is carded next as receivers only (`BALL_EST=6145`).
+
+**Second card (2026-11-16).** The same four flipped, then 13 arms against that tree (`out/e87-card-*.md`; 16 games per arm, seeds 11 / 23 / 31). Change per seed.
+
+| arm | completion (pts) | yards / attempt | sack rate (pts) | INT rate (pts) | YAC / reception |
+|---|---|---|---|---|---|
+| `PLAY_ONCE` | -0.2 / -0.4 / +0.3 | +0.15 / -0.27 / +0.19 | +0.3 / -1.3 / -1.4 | -0.5 / +0.2 / -0.1 | +0.49 / -0.37 / +0.10 |
+| `PASS_OFF` | -2.1 / +1.6 / +2.1 | -0.19 / +0.23 / +0.96 | -0.3 / -1.0 / +0.2 | +0.4 / +0.6 / +0.2 | +0.27 / -0.01 / +0.90 |
+| `SPACING_HOLD` + `CRAFT_HOLD` + `RELEASE_SIDE` | -0.7 / -0.1 / +0.5 | +0.20 / -0.48 / +0.38 | +0.1 / +0.3 / -0.7 | -0.2 / +0.1 / -0.4 | +0.89 / -0.13 / +0.33 |
+| `BALL_EST=6145` (receivers only) | -1.0 / -2.9 / -2.0 | -0.40 / -0.86 / -0.82 | +1.0 / -0.3 / -1.2 | +0.1 / +1.2 / +1.2 | +0.40 / -0.50 / -0.75 |
+| `PLAN_CLOCK` + `QB_TICK_PICTURE` | +0.4 / +1.7 / +1.9 | -0.02 / +0.50 / +0.73 | -0.4 / -1.3 / +0.5 | -0.2 / +0.2 / -0.4 | +0.20 / +0.41 / +0.52 |
+
+**On at engine-70 from this card.**
+- `PLAY_ONCE` (Flex): a defender's play on a ball he sees is rolled once per pass, not each tick. Defect fix; it governs about two fifths of breakups and a quarter of interceptions.
+- `PASS_OFF` (Flex): the interior blocker with no rusher helps and passes off. Flex's read on engine-69: interior rushers clear of their blocker reach the quarterback 7% (was 13-14%; NFL 9%).
+- `SPACING_HOLD`, `CRAFT_HOLD`, `RELEASE_SIDE`: the carrier keeps the bend he chose, on the side chosen once from his own picture of the space; the route craft and the release round a teammate hold their side. With the route flips on, carrier / spacing was 0.185 reversed re-aims a second against a budget of 0.174; with the three on it is 0.103 (Tools, on this tree), and `CRAFT_HOLD` + `RELEASE_SIDE` without the hold is 0.209. On the paired run set the three cost -0.05 yd (SE 0.08) and +0.8 points of stuffs. The limit hold's exit margin stays at one body width; Tools' film shows the brake outliving the lane on most of twelve added stuffs without producing them (stuffs 14.8 / 14.7 / 14.5% at 1.0 / 0.5 / 0.25 widths). Logged; 0.5 is a later arm.
+- `BALL_EST` default 6145: the receiver plays the ball on his own sight of it (the glance estimator, with both gaze fixes). The oracle is out of the receiver. Its cost repeats on all three seeds and is the expected one: completion -1.0 to -2.9 points, yards per attempt -0.4 to -0.9, interceptions +0.1 to +1.2 points. The defender still has the true flight (see the first card's `2049` row); that asymmetry is known, and its replacement is designed (docs/reviews/2026-11-15-defender-throw-picture.md).
+- `PLAN_CLOCK`, `QB_TICK_PICTURE` (QB): the plan's break time is no longer shifted by the snap time (believed minus true break +0.49 s -> +0.10 s), and the quarterback takes his pictures at his own update so `evaluate` only reads them (an observer querying him no longer changes a play).
+
+**Carded and not flipped here.**
+- `SET_SPOT` (interior set from the call): the arm is the half-built version. Its second phase (`POCKET_LEVEL`) and the tackles' half (`SET_SPOT_TACKLE`) are carded together next.
+- `CARRY_POSTURE`, `CORNER_DROP`; the blitz stack (`BLITZ_READ`, `BLITZ_DEPTH`, `BLITZ_SKILL`, `BLITZ_SECOND`, `QB_EVADE_UP`); `QB_LOOKOFF_RHYTHM`; `CONCEPT_DROPS` with `QB_FOOTWORK`: read on this card (blitz: time to throw -0.08 / -0.07 / -0.11 s, sacks -1.0 / -0.5 / -0.2 points; footwork: yards per attempt +0.29 / +0.55 / +0.46 against engine-70, +0.45 / +0.49 / +0.37 against the drops alone), and held for the next engine so that behaviour packages land separately from defect fixes, with a combined arm.
 
 **Suite.** `npm run test:all` on the candidate with the four off: 4,604 of 4,607; the two known `continued-recovery-world` research failures and `concept-menu` timing out at 60 s under load (5 of 5 alone). After the flips: see the PR.
 

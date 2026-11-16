@@ -416,7 +416,7 @@ const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
  * snap-secured time (0.3 s, GUN_SNAP ~0.5 s) to it again. On engine-68 (scripts/diag/escape/rhythm-check.ts, 157 read
  * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s off, +0.10 s on. Where
  * his forecast cannot place the break, the plan's time is the one his readiness waits for. */
-const PLAN_CLOCK = process.env.PLAN_CLOCK === '1';
+const PLAN_CLOCK = process.env.PLAN_CLOCK !== '0';
 /** QB_TICK_PICTURE (experimental, off; QB_TICK_PICTURE=1): his pictures of the defense are taken once a tick, as time
  * passes, not when a decision asks for them. Off, `felt` and his plain picture call the perception layer on demand,
  * and that layer's state advances with the asking: under SIGHT_CARRIER the per-tick visibility memo (`sighted`'s
@@ -427,7 +427,7 @@ const PLAN_CLOCK = process.env.PLAN_CLOCK === '1';
  * the start of each of his updates he takes his plain and felt picture of every defender, and advances `outSeen`;
  * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
  * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
-const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE === '1';
+const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
 /** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
 const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
 /** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
