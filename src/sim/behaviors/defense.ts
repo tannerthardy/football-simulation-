@@ -854,14 +854,14 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * climber with no help (BDB 2025 weeks 1-2, nflcarry.py) spend the cushion 5.1 -> 1.6 yd from 1.5 to 3.0 s running
  * 3.3 -> 4.7 yd/s under a 6.0-6.5 yd/s climber, torso 33 -> 62 deg off the QB, turned at most 11%. Under HEAD the head
  * and its cone follow the look; without HEAD the trunk carries it. */
-export const CARRY_POSTURE = process.env.CARRY_POSTURE === '1';
+export const CARRY_POSTURE = process.env.CARRY_POSTURE !== '0';
 /** CARRY_TURN (experimental, off; CARRY_TURN=1 turns it on; needs CARRY_POSTURE; docs/reviews/2026-11-16-carry-posture-3c.md):
  * CUSHION_BREAK's turn opens him; it does not turn him. With the cushion broken he runs with the climber hips on his
  * line of travel and his look back on the QB within his head's reach (neck plus trunk), the posture DIR_CAP and the
  * trunk price charge for. He turns fully (look off the QB, to his receiver and the ball) on a seen event: the receiver
  * even with or past him in his own picture (signed cushion at or under 0; back above +0.5 yd to undo), or his seen
  * throw toward his receiver (playsThrow, the cue interface). The full turn holds until both have cleared. */
-export const CARRY_TURN = process.env.CARRY_TURN === '1';
+export const CARRY_TURN = process.env.CARRY_TURN !== '0';
 const CARRY_TURN_EXIT = 0.5;
 /** CARRY_TURN: the open-and-run posture on the turned command, or null when a seen event has turned him fully. */
 function carryOpenRun(a: Agent, sim: PlaySim, cmd: MoveCommand, R: Agent, seenRec: Vec2, state: { full: Agent | null }): MoveCommand | null {
@@ -924,7 +924,7 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
  * half turn to the outside (CARRY_POSTURE's 45 deg) with his head on the QB, until he sees the release; then the match
  * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
  * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
-export const CORNER_DROP = process.env.CORNER_DROP === '1';
+export const CORNER_DROP = process.env.CORNER_DROP !== '0';
 function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
   return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
 }

@@ -15,6 +15,7 @@ async function drop(flag: string, concept: string, formation: string) {
   vi.resetModules();
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('SET_SPOT', '0'); // engine-72: the under-center fake depth was recorded with the old pass set; QB lane to re-record with SET_SPOT on
   vi.stubEnv('PA_DROP', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

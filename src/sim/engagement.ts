@@ -233,7 +233,7 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
  * - **The pace** is the set's own track and the rep's kick toward it. Engaged, he gives that ground under control with
  *   his man in front (stepPassRep's lateral reference is unchanged).
  * Null when it gives no depth (his neighbors still at the line). */
-export const POCKET_LEVEL = process.env.SET_SPOT === '1' && process.env.POCKET_LEVEL === '1';
+export const POCKET_LEVEL = process.env.SET_SPOT !== '0' && process.env.POCKET_LEVEL !== '0';
 const LINE_ORDER = ['LT', 'LG', 'C', 'RG', 'RT'];
 function pocketLevelDepth(sim: PlaySim, b: Agent): number | null {
   const L = protectPoint(sim), i = LINE_ORDER.indexOf(b.slot);
@@ -268,14 +268,14 @@ const SHORT_SET = 2 * 0.45;
  *     a self-starting slide (staged: 1.28 yd/s by 1.5 s from no drift at all).
  * - **Tackles.** They keep their own kick and, unless SET_SPOT_TACKLE, the live-QB read: a known leak, owed
  *   (KNOWN_PROBLEMS PRO-INFO #12). */
-export const SET_SPOT = process.env.SET_SPOT === '1';
+export const SET_SPOT = process.env.SET_SPOT !== '0';
 /** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed (attempt 3, a different
  * mechanism; Integration, 2026-11-15). He takes the three-step vertical set off his snap spot, and further depth is
  * paced by the rusher: PASS_KICK keeps him deeper than the man up his arc. The call is the floor only: the launch
  * point he protects and the pocket's front. Two call-only spots failed before (the final launch point from the snap,
  * then the called drop's schedule): tackles set 4.6-5.0 yd deep at 2 s against the NFL's 3.7. Never from the QB's
  * measured depth (the QB lane is rebuilding the drop). */
-export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
+export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE !== '0';
 /** SET_SPOT: his lateral target and its share of the rusher's lateral motion: inside-out on the man, where the
  * rusher's line to the launch point crosses his own depth, fed forward by that point's own motion (frac of the
  * rusher's), not a step in front of the man he is carrying.
@@ -3166,7 +3166,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
  * double him or finds other work, by what he sees. Off, beating the primary ended the rep for everyone on it: a helper
  * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
  * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
-export const PASS_OFF = process.env.PASS_OFF === '1';
+export const PASS_OFF = process.env.PASS_OFF !== '0';
 /** PASS_OFF's hand-over (folded in, 2026-11-16): the hand-over's control is the keeper's own
  * fit, the same first-contact law as any new pass engagement, not a scripted 0 (Integration, 2026-11-16: every
  * hand-over had gone to exactly 0 from -0.41..+0.75, giving the keeper the grip and the punch by assignment).

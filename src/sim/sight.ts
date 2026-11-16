@@ -26,7 +26,7 @@ const DOWN_HEIGHT = 0.35;
  * different answer asked at different times, and `sighted()` keeps the first answer: what a player saw at a past tick then
  * depended on when anyone first asked, not on what was there (an observer changed plays; docs/reviews/2026-11-16-sight-pure.md).
  * On, the record carries each body's posture and whether he was up at every tick and a past sight line reads them. */
-export const SIGHT_PURE = process.env.SIGHT_PURE === '1';
+export const SIGHT_PURE = process.env.SIGHT_PURE !== '0';
 
 /** SIGHT_STALE (experimental, off; numeric bits, acts inside SIGHT_PURE's sight history): what a player believes of a man he cannot see.
  * Today the picture of a man he lost ages without bound on the velocity it showed (a carrier's read of a defender behind him ran to 16 s,
@@ -35,7 +35,7 @@ export const SIGHT_PURE = process.env.SIGHT_PURE === '1';
  * a picture older than his own delay says so (`Perceived.stale`) and carries a `spread` that grows with the age. Bit 4: a man not seen since
  * the snap is believed where he lined up (every player saw the alignment), moving as he was then for the record's length and then held,
  * in place of the record's oldest true sample. docs/reviews/2026-11-16-sight-stale.md. */
-export const SIGHT_STALE = Number(process.env.SIGHT_STALE ?? 0) | 0;
+export const SIGHT_STALE = Number(process.env.SIGHT_STALE ?? 7) | 0;
 /** SIGHT_STALE bit 2: the spread of a stale picture grows by this much per second since he was last seen (yd/s). A stated choice, not a fit:
  * about the speed change of a man who jogs or stops in a second; no consumer reads `spread` yet, so it moves nothing. */
 export const STALE_SPREAD = 2;

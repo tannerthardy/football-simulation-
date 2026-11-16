@@ -17,6 +17,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function load(exit: boolean) {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
+  vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Rules to re-record with MIRROR_SCATTER on
   vi.stubEnv('CRAFT_HOLD', '1');
   vi.stubEnv('CRAFT_EXIT', exit ? '1' : '0');
   const { Rng } = await import('../src/core/rng.js');
