@@ -590,3 +590,24 @@ one, at every depth), then his belief that a man 3+ yd off contests or undercuts
 real). Hands is mixed and small. The next measurement, before any change: the realized throw error against his
 believed sigma by distance and pressure at release (his missSigma), and the realized catch radius against ACC_RADIUS's
 (1.6 + 0.9 T yd), on the same throws; then, for the open defender term, his margin terms for a man 3+ yd off.
+
+**The accuracy split, and a correction (same day).** The table above re-evaluated each throw at its release tick, a
+probe artifact; the belief that decided the throw is his evaluation as he started it (`throwRec`). At the decision,
+open receivers are believed 0.67 and caught 0.73-0.86 (not 0.56): the gap is about 0.12, not 0.23. The accuracy pieces
+at the decision, by the distance to the aim point: his base miss (`missSigma`, no urgency) 0.60 / 0.80 / 1.01 yd
+(10-15 / 15-25 / 25+ yd), the real release error 0.53 / 0.80 / 1.34 yd; the urgency he projects to the release adds
+0.04-0.08, his platform 0, the late factor 1.0. So his belief about his own arm is right. What is wrong is the catch
+radius: ACC_RADIUS is off, so pAcc prices a fixed 1.35 yd. With ACC_RADIUS=1 (1.6 + 0.9 T yd), same panel:
+
+| nearest defender, depth | n | P at decision, off / on | caught (on) |
+|---|---|---|---|
+| open 3+ yd, 0-5 | 71 / 60 | 0.67 / 0.77 | 0.68 |
+| open 3+ yd, 5-10 | 90 / 82 | 0.67 / 0.77 | 0.85 |
+| covered < 3 yd, 5-10 | 142 / 137 | 0.66 / 0.71 | 0.53 |
+| covered < 3 yd, 10+ | 43 / 82 | 0.58 / 0.62 | 0.46 |
+
+ACC_RADIUS calibrates the open ball and overrates the covered one, and he throws covered intermediate balls twice as
+often with it. A radius measured on all our catches is right where nobody is near the ball and too generous where a
+defender is: a miss toward a man on the receiver is the man's ball, not a catch. Proposal (not built): the catchable
+radius, on his believed positions, is the open radius less the share of the miss that falls toward a defender who can
+reach it at the arrival (the window already has each defender's believed margin at the catch point).
