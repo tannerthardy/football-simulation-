@@ -3,7 +3,7 @@ usage: python3 -I scripts/diag/yac/pursuit-report.py out/diag/yac/pt*.json [--nf
 import json, math, sys, glob
 from collections import Counter
 args = sys.argv[1:]
-files = [a for a in args if a.endswith('.json') and 'pt' in a.split('/')[-1]]
+files = [a for a in args if a.endswith('.json')]
 mean = lambda v: sum(v) / len(v) if v else float('nan')
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 wrap = lambda a: (a + math.pi) % (2 * math.pi) - math.pi
@@ -19,6 +19,13 @@ for r in R:
         T.append(dict(reqRate=deg(wrap(b['fin']['h'] - a['fin']['h'])) / dt, brgRate=deg(wrap(b['bearing'] - a['bearing'])) / dt, bodyRate=deg(wrap(a['v1']['h'] - a['v0']['h'])) / dt,
                       dv=(a['v1']['s'] - a['v0']['s']) / dt, off=abs(deg(wrap(a['fin']['h'] - a['v0']['h']))), fin=a['fin']['s'], raw=a['raw']['s'], v=a['v0']['s'], stg=a['stg'], planner=a['planner'],
                       fresh=a['fresh'], csp=a['csp'], spr=abs(deg(wrap(a['stg']['intercept-sprint']['h'] - a['fin']['h']))) if 'intercept-sprint' in a['stg'] else float('nan')))
+ap = Counter(); fl = 0; n = 0
+for r in R:
+    rows = [x for x in r['rows'] if r['t0'] - 1e-6 <= x['t'] <= r['t0'] + 0.5 and 2.5 <= x['dist'] < 6 and not x['bond'] and not x['contact']]
+    for a, b in zip(rows, rows[1:]):
+        ap[a.get('approach', '?')] += 1; n += 1
+        if a.get('approach') in ('original-scored', 'arrival', 'brake') and b.get('approach') in ('original-scored', 'arrival', 'brake') and a['approach'] != b['approach']: fl += 1
+print('B. chooseApproach per tick: ' + ', '.join(f"{k} {v / max(1, n):.0%}" for k, v in ap.most_common()) + f"; choice flips between consecutive scored ticks {fl / max(1, n):.1%} of ticks")
 print(f"sim pursuers {len(R)}, ticks {len(T)} (2.5-6 yd, carrier > 6 yd/s, side/behind, t0..t0+0.5 s, no contact)")
 print(f"1. request: final {mean([t['fin'] for t in T]):.2f} yd/s (decision {mean([t['raw'] for t in T]):.2f}); |heading rate| p50 {q([abs(t['reqRate']) for t in T]):.0f} p75 {q([abs(t['reqRate']) for t in T], .75):.0f} deg/s; "
       f"carrier bearing |rate| p50 {q([abs(t['brgRate']) for t in T]):.0f} deg/s; request turns with the bearing {mean([t['reqRate'] * t['brgRate'] > 0 for t in T if abs(t['reqRate']) > 5]):.0%} of ticks it turns >5 deg/s")

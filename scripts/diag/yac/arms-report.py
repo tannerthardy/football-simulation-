@@ -17,6 +17,7 @@ print('(1) outcome')
 for n, D in data.items():
     for fm in ('man', 'zone'):
         R = [r for r in D.values() if fam(r) == fm]
+        if not R: continue
         ev = lambda t: mean([sum(e['type'] == t for e in r['ev']) for r in R])
         nr = [r for r in R if dmin(r) > 1.0]
         print(f"  {n:5s} {fm:4s} n {len(R):4d} YAC {mean([r['yac'] for r in R]):5.2f} p50 {q([r['yac'] for r in R]):4.1f} | 20+ {mean([r['yac'] >= 20 for r in R]):5.1%} | never-reached {len(nr) / len(R):4.1%} YAC {mean([r['yac'] for r in nr]):5.1f} | "
@@ -28,6 +29,20 @@ for n, D in data.items():
     R = [D[k] for k in NR if k in D]
     print(f"  {n:5s} n {len(R)} closest any defender p50 {q([dmin(r) for r in R]):.2f} | reached (<=1.0) {mean([dmin(r) <= 1.0 for r in R]):.0%} | wrap in play {mean([any(e['type'] == 'tackle_wrap' for e in r['ev']) for r in R]):.0%} | "
           f"dive/hit {mean([any(e['type'] == 'hit' for e in r['ev']) for r in R]):.0%} | YAC mean {mean([r['yac'] for r in R]):.1f} p50 {q([r['yac'] for r in R]):.1f} | 20+ {mean([r['yac'] >= 20 for r in R]):.0%}")
+print('(2b) at the closest approach on those plays: closest defender behind the carrier (>=120 deg off his run)')
+for n, D in data.items():
+    beh = []
+    for k in NR:
+        r = D.get(k)
+        if not r: continue
+        best = None
+        for f in r['tr']:
+            for d in f['d']:
+                L = math.hypot(f['c']['x'] - d['x'], f['c']['y'] - d['y'])
+                if best is None or L < best[0]: best = (L, f, d)
+        L, f, d = best; c = f['c']; cs = math.hypot(c['vx'], c['vy'])
+        if cs > 1 and L > 0: beh.append(math.degrees(math.acos(max(-1, min(1, ((d['x'] - c['x']) * c['vx'] + (d['y'] - c['y']) * c['vy']) / (L * cs))))) >= 120)
+    print(f"  {n:5s} behind {mean(beh):.0%} of {len(beh)}")
 print('(3) control: head-on two-way-go approaches (carrier running at him, > 3 yd/s) entering 2.3 yd')
 for n, D in data.items():
     eps = []
