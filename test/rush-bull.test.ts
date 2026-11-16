@@ -11,6 +11,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function bulls(flag: string) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('PASS_OFF', '0'); // engine-70: a pass-off changes the pair's control on the tick a bull resolves (1 of the counted resolutions); Flex to restate with PASS_OFF on
   vi.stubEnv('RUSH_BULL', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
