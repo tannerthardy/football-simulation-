@@ -51,13 +51,3 @@ export function calledLaunchX(sim: PlaySim): number | null {
   return dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under').x;
 }
 
-/** SET_SPOT: where the called drop puts the QB at time t after the snap, from the call alone (his snap alignment, the
- * drop's depth and its time): the pocket's schedule every lineman knows. Not the QB's live spot. Null without a pass
- * concept. Linear from the snap spot to the launch point over the drop's time, then the launch point. */
-export function calledPocketX(sim: PlaySim, t: number): number | null {
-  const concept = sim.offCall.pass;
-  if (!concept) return null;
-  const spec = dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
-  const x0 = sim.snapX[sim.qb.idx] ?? spec.x, f = Math.min(1, Math.max(0, t / Math.max(spec.time, 0.1)));
-  return x0 + (spec.x - x0) * f;
-}

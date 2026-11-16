@@ -36,7 +36,7 @@ import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, PRESS_BACKOFF, RECEIVER_DEPTH, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -396,7 +396,7 @@ export class PlaySim {
       const body: Body = { pos: { ...pos }, vel: { x: 0, y: 0 }, facing, energy: setup.energy?.get(player.id) ?? 1, profile };
       const mind = new SnapMind(player, this.rng.fork(`mind:${team}:${slot}`), body.energy);
       // Small legal defensive alignment scatter; offensive formation stays legal.
-      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError, 0.5, FIELD_WIDTH - 0.5);
+      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError * (MIRROR_SCATTER ? scatterSide(this.offAlign, body.pos.y) : 1), 0.5, FIELD_WIDTH - 0.5);
       const a = new Agent(this.agents.length, team, slot, player, profile, body, idle, mind);
       this.agents.push(a);
       (team === 'O' ? this.offense : this.defense).push(a);
@@ -525,7 +525,7 @@ export class PlaySim {
       for (const d of this.defense) {
         targets.set(d,{...d.pos});
         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};
-        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError,.5,FIELD_WIDTH-.5);
+        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError*(MIRROR_SCATTER?scatterSide(this.offAlign,d.pos.y):1),.5,FIELD_WIDTH-.5);
       }
     }
     const mug = creep ? this.slot(creep.slot) : undefined;
