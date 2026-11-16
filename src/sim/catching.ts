@@ -113,6 +113,55 @@ const CATCH_SECURE = process.env.CATCH_SECURE !== '0';
  * ground or rise past his hands), his catch waits for that approach. */
 const CATCH_POINT = process.env.CATCH_POINT !== '0';
 
+/** CATCH_CLOSE (off; stage one of the catch build, C14): the catch as hands closing on the ball. His hands go where he
+ * believes the ball will be at its arrival (his own BALL_EST estimate), corrected toward the true ball only if he is
+ * watching it in (a sample within CLOSE_WATCH) and has had the visuomotor latency to act, by his ball tracking; then a
+ * placement noise by his hands and speed. They must also get there: from his first sight of the ball, the latency plus
+ * the hands' travel from his chest at CLOSE_HAND_SPEED; time short of that leaves them short by the shortfall. The catch
+ * type, read from where his shoulders point against the ball's incoming line (front, side, over the shoulder), sets the
+ * envelope the ball must meet. One hold quantity: off-centre in the envelope at the ball's speed relative to him. Ratings
+ * act on correction gain, placement noise and grip; no rating awards the catch. Constants are stated choices. */
+const CATCH_CLOSE = process.env.CATCH_CLOSE === '1';
+const CLOSE_HAND_SPEED = Number(process.env.CLOSE_HAND_SPEED ?? 6), CLOSE_LATENCY = 0.15, CLOSE_WATCH = 0.2;
+const CLOSE_ENV = { front: 0.22, side: 0.16, over: 0.12 } as const, CLOSE_HOLD_V = 30;
+/** Diagnostic: his last closure read. */
+export const lastClosure = new WeakMap<Agent, Closure>();
+type Closure = { type: keyof typeof CLOSE_ENV; off: number; env: number; late: number; resid: number; reached: boolean; touched: boolean; hold: number };
+function closure(sim: PlaySim, R: Agent, rng: ReturnType<PlaySim['dice']>): Closure | null {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return null;
+  const E = sim.ballEstimates!, bp = ball.flight.pos, bv = ball.flight.vel, first = E.firstSeenAt(R);
+  const sh = shouldersOf(R.body), bs = Math.hypot(bv.x, bv.y) || 1;
+  // Incoming line against his chest: 0 deg the ball comes at his chest, 180 from straight behind.
+  const inc = Math.acos(clamp(-(Math.cos(sh) * bv.x + Math.sin(sh) * bv.y) / bs, -1, 1)) * 180 / Math.PI;
+  const type: Closure['type'] = inc <= 60 ? 'front' : inc <= 120 ? 'side' : 'over';
+  const env = CLOSE_ENV[type];
+  if (first === undefined) return { type, off: Infinity, env, late: Infinity, resid: Infinity, reached: false, touched: false, hold: 0 };
+  // His hands go to the ball's line as he believes it through the catch zone: the error is the true ball's distance
+  // from his estimated path near the arrival (across the line), not his timing along it (the ball flies into his hands).
+  const path = E.estimate(R, sim).filter((p) => Math.abs(p.t - sim.t) <= 0.3);
+  const last = E.lastSeen(R);
+  let est: { x: number; y: number; z: number } | null = null, err = 1;
+  for (let i = 0; i + 1 < path.length; i++) {
+    const p = path[i], q = path[i + 1], ux = q.x - p.x, uy = q.y - p.y, uz = q.z - p.z, L2 = ux * ux + uy * uy + uz * uz;
+    const k = L2 > 1e-9 ? clamp(((bp.x - p.x) * ux + (bp.y - p.y) * uy + (bp.z - p.z) * uz) / L2, 0, 1) : 0;
+    const c = { x: p.x + ux * k, y: p.y + uy * k, z: p.z + uz * k }, d = Math.hypot(c.x - bp.x, c.y - bp.y, c.z - bp.z);
+    if (!est || d < err) { est = c; err = d; }
+  }
+  if (!est && last) { est = { ...last.pos }; err = Math.hypot(est.x - bp.x, est.y - bp.y, est.z - bp.z); }
+  const watched = !!last && sim.t - last.t <= CLOSE_WATCH + 1e-9 && sim.t - first >= CLOSE_LATENCY;
+  const resid = err * (watched ? 1 - (0.5 + 0.4 * R.r('ballTracking')) : 1);
+  const rs = Math.hypot(R.vel.x, R.vel.y), sd = 0.04 * (1.3 - R.r('hands')) * (1 + rs / 8) * (type === 'over' ? 1.5 : 1);
+  const noise = Math.hypot(rng.normal(0, sd), rng.normal(0, sd));
+  const chest = { x: R.pos.x + Math.cos(sh) * 0.3, y: R.pos.y + Math.sin(sh) * 0.3, z: R.profile.heightYd * 0.7 };
+  const aim = est ?? bp, dHand = Math.hypot(aim.x - chest.x, aim.y - chest.y, aim.z - chest.z);
+  const late = Math.max(0, CLOSE_LATENCY + dHand / CLOSE_HAND_SPEED - (sim.t - first));
+  const off = Math.hypot(resid, noise) + late * CLOSE_HAND_SPEED;
+  const vRel = Math.hypot(bv.x - R.vel.x, bv.y - R.vel.y, bv.z);
+  const hold = clamp(1 - (off / env) ** 2 * vRel / (CLOSE_HOLD_V * (0.7 + 0.6 * R.r('hands'))), 0, 1);
+  return { type, off: +off.toFixed(3), env, late: +late.toFixed(3), resid: +resid.toFixed(3), reached: off <= env, touched: off <= 1.6 * env, hold: +hold.toFixed(3) };
+}
+
 interface Opp {
   a: Agent;
   s: number;
@@ -233,7 +282,11 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     : fromBehind > 0.3 && rs > 6.5 ? 0.12 + 0.12 * (1 - R.r('ballTracking')) : 0;
   const diff = 0.5 * stretch + 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) + trackPen + shoulder;
   const hands = R.r('hands');
-  let pCatch = clamp(0.985 - diff * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
+  // CATCH_CLOSE: closure timing replaces the reach, tracking and on-the-run terms (his hands to the ball, below).
+  const close = CATCH_CLOSE && estimatesFor(R) && sim.ballEstimates ? closure(sim, R, rng) : null;
+  const diffUse = close ? 0.4 * high + 0.35 * low + (ballSpeed > 24 ? 0.08 : 0) : diff;
+  let pCatch = clamp(0.985 - diffUse * (1.3 - hands) - 0.06 * (1 - hands), 0.2, 0.99);
+  if (close) { pCatch = close.reached ? pCatch * close.hold : 0; lastClosure.set(R, close); }
   if (ball.deflected) pCatch *= 0.3;
 
   // Separation at the catch point (stat).
@@ -313,8 +366,8 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     R.noCatchUntil = sim.t + 1;
     return;
   }
-  // Only catchable balls count as drops; the rest were off target.
-  if (diff < 0.35) {
+  // Only catchable balls count as drops; the rest were off target. CATCH_CLOSE: a ball his hands got to.
+  if (close ? close.touched : diff < 0.35) {
     sim.stats.dropped = true;
     sim.event('drop', R);
   } else sim.event('miss', R);

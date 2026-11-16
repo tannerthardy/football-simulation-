@@ -126,6 +126,7 @@
     "TRACKED_CATCH": "off",
     "ARM_LOOK": "off",
     "RUSH_ARM": "off",
+    "CATCH_CLOSE": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",
     "CORNER_DROP": "on",
