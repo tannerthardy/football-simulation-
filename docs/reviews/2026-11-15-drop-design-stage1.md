@@ -719,3 +719,10 @@ read), not when it must be *thrown*: the post or dig is ready on the hitch after
 is wrong and is to be replaced: decide on the plant (the key cued on the plant), throw read 1 on its ready, else the
 order as compiled. Plan data proposed to Rules: `decided: 'plant'` on read 1 of the PA concepts, the key's cueBy at the
 plant (plannedFakeEnd plus the drop). Waiting for Integration's go.
+
+**The pair, rebuilt and gated** (on Rules' rules/pa-plant 70b35e11 with the engine-72 stack, staged, 576 PA plays,
+CONCEPT_DROPS=1): a keyed play action's key is read at `plan.plantAt`; read 1 is thrown on its own ready; no look-off
+before it. Bits 1+2 against 1+2+16: sacks 9.4 -> 13.0%, completions 265 -> 308, yd 7.68 -> 8.99, read 1 thrown 103 ->
+223 (completed 56 -> 147), median throw 3.05 -> 3.20 s, set 1.64 -> 2.32 s. pa_flood yd 7.98 -> 10.69, pa_post_dig 7.26
+-> 8.37, pa_shot 7.80 -> 7.92. The sack cost is the honest fake's (the backside end on play action is with Flex and
+Rules). Test: test/qb-pa-plant.test.ts. Patch 11, on rules/pa-plant after the engine-72 stack patch.

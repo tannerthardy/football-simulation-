@@ -520,10 +520,12 @@ const EDGE_ROOM_IN = 2.0, EDGE_ROOM_OUT = 1.4; // yd ahead (chosen)
  * area are his own (installed route families; his forecast of the man at the ball's arrival: his wind-up plus its flight). Read with bits 1+2. */
 const FW_GRASS = (QB_FOOTWORK & 8) !== 0;
 /** QB_FOOTWORK bit 16 (with the fake held to the measured mesh, called-drop.ts plannedFakeEnd): the play-action read
- * decided on the plant out of the fake. Read 1 of a play-action concept is the window the fake makes: thrown on the plant
- * if it is ready and priced, else he is on to read 2 at once, no dwell, no look-off (as the grass read). A keyed
- * play-action concept is the key read's. The fake alone (a dropback's read after a 2.3 s plant) took staged PA sacks
- * 14.8 -> 27.1%; the pair is carded together. */
+ * decided on the plant out of the fake, as taught ("pull the ball out from the ball-carrier and snap his head around to
+ * identify his first read"; not there, he "operates as if it is a passing play": Bleacher Report, via Rules). Read 1 is
+ * decided on the plant: a keyed play action's key is read at the plan's plant (`plan.plantAt`, Rules #819), not the
+ * dropback's cue, and there is no look-off before read 1; read 1 is thrown on its own ready (the hitch after the plant),
+ * never skipped for being unready at the plant (the first build did, and threw read 1 on the plant 0 of 424 times). The
+ * fake alone (a dropback's read after a 2.3 s plant) took staged PA sacks 14.8 -> 27.1%; the pair is carded together. */
 const FW_PA_READ = (QB_FOOTWORK & 16) !== 0;
 /** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids). Chosen; GRASS_READ's plan
  * fields replace it. */
@@ -995,7 +997,7 @@ export class QBPass implements Behavior {
       }
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
-    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? (QB_KEY_READ ? this.keyManShell(sim, p.key.role, low, high) : this.keyMan(sim, p.key.role, low, high)) : null,
+    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: FW_PA_READ && this.concept.family === 'playaction' && typeof (p as { plantAt?: number }).plantAt === 'number' ? (p as { plantAt?: number }).plantAt! : p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? (QB_KEY_READ ? this.keyManShell(sim, p.key.role, low, high) : this.keyMan(sim, p.key.role, low, high)) : null,
       ...(QB_KEY_READ ? { sits: ag(((p.key as { sits?: ReceiverRef | null }).sits) ?? null) } : {}) } : null,
       triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
@@ -1526,8 +1528,7 @@ export class QBPass implements Behavior {
     let read = this.reads[this.readIdx];
     // QB_FOOTWORK bit 8: a grass read is decided by its step (the plant for read 1), with no dwell: not thrown by then,
     // he is on to his next read.
-    if (((FW_GRASS && this.isGrass(read) && t - this.grassDue(read) > sim.dt + 1e-9) || (this.isPaPlant(read) && t - this.setAt > sim.dt + 1e-9))
-      && this.setAt >= 0 && this.readIdx < this.reads.length - 1) {
+    if (FW_GRASS && this.isGrass(read) && t - this.grassDue(read) > sim.dt + 1e-9 && this.setAt >= 0 && this.readIdx < this.reads.length - 1) {
       this.readIdx++; this.readStart = t; read = this.reads[this.readIdx];
     }
     if (FW_STEPS) this.footwork(a, sim, read);
@@ -1928,9 +1929,9 @@ export class QBPass implements Behavior {
   private vertRead = new Set<Agent>();
   /** QB_FOOTWORK bit 8: whether a read is his grass read (read 1, a route into space) and where its landing area is. */
   private grassPlan = new Map<Agent, Vec2>();
-  /** QB_FOOTWORK bit 16: read 1 of an unkeyed play-action concept, decided on the plant out of the fake. */
+  /** QB_FOOTWORK bit 16: read 1 of a play-action concept, decided on the plant out of the fake (no look-off before it). */
   private isPaPlant(r: Agent | undefined): boolean {
-    return FW_PA_READ && !!r && this.concept.family === 'playaction' && !this.plan?.key && this.readIdx === 0 && this.reads[0] === r;
+    return FW_PA_READ && !!r && this.concept.family === 'playaction' && this.readIdx === 0 && this.reads[0] === r;
   }
   private isGrass(r: Agent | undefined): boolean {
     if (!FW_GRASS || !r) return false;
