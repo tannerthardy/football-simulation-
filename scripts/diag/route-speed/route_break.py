@@ -115,7 +115,7 @@ def report(files):
     for f in files: R += json.load(open(f))
     def row(label, rows):
         if len(rows) < 8: return
-        m = lambda key: st.median(r[key] for r in rows if r.get(key) is not None)
+        m = lambda key: st.median([r[key] for r in rows if r.get(key) is not None] or [float('nan')])
         print(f'{label:26s} n {len(rows):4d} | turn {m("turn"):4.0f} | v_in {m("vin"):4.1f} v_min {m("vmin"):4.1f} (at {m("tmin"):+.1f}s) v_out {m("vout"):4.1f} | min/in {m("vmin") / m("vin"):.2f} | cut {m("round"):.2f} yd arc {m("arc"):.1f} yd | radius {m("radius"):.1f} yd')
     for rt in sorted({r['route'] for r in R}):
         row(rt, [r for r in R if r['route'] == rt])
