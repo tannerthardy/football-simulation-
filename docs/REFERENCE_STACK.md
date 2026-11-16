@@ -650,7 +650,11 @@ Engine-69 plus Rules' #775 (`PLANT_REACH`) and #781 (`COMPILE_PICTURE`), with `R
 - `SET_SPOT` (interior set from the call): the arm is the half-built version. Its second phase (`POCKET_LEVEL`) and the tackles' half (`SET_SPOT_TACKLE`) are carded together next.
 - `CARRY_POSTURE`, `CORNER_DROP`; the blitz stack (`BLITZ_READ`, `BLITZ_DEPTH`, `BLITZ_SKILL`, `BLITZ_SECOND`, `QB_EVADE_UP`); `QB_LOOKOFF_RHYTHM`; `CONCEPT_DROPS` with `QB_FOOTWORK`: read on this card (blitz: time to throw -0.08 / -0.07 / -0.11 s, sacks -1.0 / -0.5 / -0.2 points; footwork: yards per attempt +0.29 / +0.55 / +0.46 against engine-70, +0.45 / +0.49 / +0.37 against the drops alone), and held for the next engine so that behaviour packages land separately from defect fixes, with a combined arm.
 
-**Suite.** `npm run test:all` on the candidate with the four off: 4,604 of 4,607; the two known `continued-recovery-world` research failures and `concept-menu` timing out at 60 s under load (5 of 5 alone). After the flips: see the PR.
+**Suite.** `npm run test:all` on the final flags (`out/e91-suite.log`): 4,605 of 4,612. The two known `continued-recovery-world` research failures, and five fixtures moved by the flips, each attributed by turning one flag off: `rush-bull` and `rush-rip` by `PASS_OFF` (a pass-off changes the pair's control on a tick a bull or rip resolves: 1 of the counted resolutions), and `acc-radius`, `man-trail-carry` and `read-plan`'s defender-key case by `CRAFT_HOLD` (staged aims and a strict 2.4 s edge recorded without the hold). Those five are pinned test-only with the owner named in the comment; with the pins and Tools' five `DIR_CAP` re-records (#791) the affected files pass (13 files, 70 tests), and the dither budget passes on the engine's defaults.
+
+**Run set** (`npm run ref:report`, 1,295 plays): capped mean 3.49 (engine-69: 3.59), stuffs 14.4% (13.5%), 10+ yd 7.5%, missed + broken open 0.286 a run.
+
+**Test-only.** `acc-radius` pins `ROUTE_FINISH` and `CRAFT_HOLD` '0'; `man-trail-carry` and `read-plan` pin `CRAFT_HOLD` '0'; `rush-bull` and `rush-rip` pin `PASS_OFF` '0'. Coverage's #788 guards every read of the ball-estimate store. Tools' #791 re-records `gait-facing-contract`, `movement-preview`, `pedal-cap`, `qb-gather-throw` and `trunk-twist` on the monotone cap.
 
 ## engine-69: `BAT_ONCE`, `BALL_CUE_OWN`, `LOOSE_SEEN` and `DIR_CAP` on (2026-11-15)
 
