@@ -100,6 +100,37 @@ const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
 const BACK_THREE_KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
   flood: { low: 'B', high: 'S2', role: 'playside_curl_flat', deep: false, danger: 'the corner over the out' },
 };
+/** The key's sitter default (2026-11-16, for the QB lane's key-man repair; data, read by nobody else): when the key man
+ * neither sinks nor jumps by the cue, the route he is not standing on, as the concept's read line names it. Per concept,
+ * not per role: the same role defaults low in one concept and high in another, by where that defender stands between
+ * the two. The plan carries it as `key.sits`, resolved with the key's own refs (PLAN_ROLES, the back as #3). Sources are
+ * the read lines in concepts.ts unless noted; `analogue` marks a default no source gives for the sit case. It is the
+ * default for a man between the two routes: a man who has not moved but stands on one of them has taken it, and the
+ * throw is the other (the QB lane's QB_KEY_READ; cover 2's squatting corner on smash's hitch). */
+const SITS: Record<string, { side: 'low' | 'high'; analogue?: true; why: string }> = {
+  // Hook key.
+  double_slants: { side: 'high', why: 'read: "he holds: #2 slant"' },
+  seam_slant: { side: 'high', why: 'read: "he stays inside: #2 slant"' },
+  hitch_cross: { side: 'high', why: 'read: "he sits: the cross past him"' },
+  drive: { side: 'low', why: 'the shallow is the primary (Throw Deep, Drive): a Mike who stays at his depth leaves it under him' },
+  levels: { side: 'low', analogue: true, why: 'only "drops: the in; squeezes the in: the dig" is sourced (Football Nation USA); the in, on time' },
+  // Deep key over a vertical / the free safety.
+  verts_hitch: { side: 'high', why: 'read: "he stays middle: #2 seam"' },
+  dagger: { side: 'low', analogue: true, why: 'only "confirm the deep safety has been cleared" is sourced; a safety who stays deep keeps the seam: the dig' },
+  pa_shot: { side: 'low', why: '"If the FS plays low, he can throw the post": a free safety who stays deep keeps it: the dig' },
+  pa_post_dig: { side: 'low', why: 'as pa_shot: a free safety who stays deep keeps the post: the dig' },
+  // Flat / curl-flat.
+  hitch_out: { side: 'low', why: 'read: "he sits on the hitch: #2 out"' },
+  stick: { side: 'low', why: 'the QB lane\'s flat rule, as taught: he does not widen, throw the flat (Throw Deep, Stick)' },
+  slant_flat: { side: 'low', why: 'as stick: the curl-flat defender who does not widen leaves the flat' },
+  quick_outs: { side: 'low', why: 'as stick: the flat defender who does not widen leaves the out' },
+  double_outs: { side: 'low', analogue: true, why: 'read covers drops / jumps only; the flat rule: #2\'s quick out' },
+  flood: { side: 'low', why: 'the flat rule (the back as #3\'s flat under the out)' },
+  // Corner key: by the shell (the QB lane's corner reads are sound); the hitch or flat on time.
+  smash: { side: 'low', why: '"if the cornerback sinks... throw the hitch" on time (Brown, Throw Deep): the corner needs him to come up' },
+  corner_flat: { side: 'low', analogue: true, why: 'read covers sinks / jumps only; the flat on time, as smash' },
+  fade_flat: { side: 'low', analogue: true, why: 'read covers sinks / squats only; the flat on time, as smash' },
+};
 const KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean }> = {
   // The four the compiler keyed on another defender.
   drive: { low: 'W2', high: 'S2', role: 'hook', deep: false, danger: 'the safety over the dig' },
@@ -167,7 +198,7 @@ export interface InstalledPlan {
   outlet: ReceiverRef | null;
   alert: ReceiverRef | null;
   /** Defender key: read the defender between `low` and `high` at `cueBy` s after the snap. */
-  key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number; danger?: string } | null;
+  key: { low: ReceiverRef; high: ReceiverRef; role: string; cueBy: number; danger?: string; sits?: ReceiverRef } | null;
   /** Triangle: three routes read as one picture, top-down; vertical peek: the verticals as one look, then the back. */
   triangle: ReceiverRef[] | null;
   /** The rhythm each read is installed on, for the QB lane's acceptance rule (data only; nothing reads it yet). The
@@ -282,7 +313,8 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const lo = k && routes.get(k.low), hi = k && routes.get(k.high);
       if (k && lo && hi) {
         const cueBy = +(k.onSet ? compiled.qbSetAt : k.deep ? Math.max(compiled.qbSetAt, lo.window.ready - 0.2) : Math.max(compiled.qbSetAt - 0.3, lo.window.ready - 0.2)).toFixed(2);
-        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger }, triangle: null,
+        const sit = SITS[tableId];
+        plan = { ...plan, style: 'defender_key', key: { low: k.low, high: k.high, role: k.role, cueBy, danger: k.danger, ...(sit ? { sits: sit.side === 'low' ? k.low : k.high } : {}) }, triangle: null,
           order: [k.high, k.low, ...plan.order.filter((r) => r !== k.high && r !== k.low)] };
       }
       if (PLAN_KEYS && plan.key && !plan.key.danger && DANGER[tableId]) plan = { ...plan, key: { ...plan.key, danger: DANGER[tableId] } };
