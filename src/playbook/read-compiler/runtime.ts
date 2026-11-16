@@ -104,7 +104,9 @@ const BACK_THREE_KEYS: Record<string, { low: ReceiverRef; high: ReceiverRef; rol
  * neither sinks nor jumps by the cue, the route he is not standing on, as the concept's read line names it. Per concept,
  * not per role: the same role defaults low in one concept and high in another, by where that defender stands between
  * the two. The plan carries it as `key.sits`, resolved with the key's own refs (PLAN_ROLES, the back as #3). Sources are
- * the read lines in concepts.ts unless noted; `analogue` marks a default no source gives for the sit case. */
+ * the read lines in concepts.ts unless noted; `analogue` marks a default no source gives for the sit case. It is the
+ * default for a man between the two routes: a man who has not moved but stands on one of them has taken it, and the
+ * throw is the other (the QB lane's QB_KEY_READ; cover 2's squatting corner on smash's hitch). */
 const SITS: Record<string, { side: 'low' | 'high'; analogue?: true; why: string }> = {
   // Hook key.
   double_slants: { side: 'high', why: 'read: "he holds: #2 slant"' },
