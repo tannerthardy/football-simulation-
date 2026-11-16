@@ -1,0 +1,342 @@
+From b7da21943b09cf3833b8ed9bc04303f247d0036a Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 08:14:55 +0000
+Subject: [PATCH] BOX_DEPTH (off): the protection call counts the box to 5 yd,
+ big on big; the checking back's key is the man the call left him (#35)
+
+---
+ config/baseline.json                          |  1 +
+ config/reference-stack.json                   |  1 +
+ docs/FLAGS.md                                 |  3 +-
+ scripts/diag/pass-operators/box-count.py      | 41 ++++++++++++++++
+ .../diag/pass-operators/box-depth-trace.mts   | 17 +++++++
+ scripts/diag/pass-operators/box-depth.mts     | 46 ++++++++++++++++++
+ src/sim/behaviors/blocking.ts                 | 37 ++++++++++++--
+ test/box-depth.test.ts                        | 48 +++++++++++++++++++
+ 8 files changed, 190 insertions(+), 4 deletions(-)
+ create mode 100644 scripts/diag/pass-operators/box-count.py
+ create mode 100644 scripts/diag/pass-operators/box-depth-trace.mts
+ create mode 100644 scripts/diag/pass-operators/box-depth.mts
+ create mode 100644 test/box-depth.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index d9ebefde..acb4fb5f 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -333,6 +333,7 @@
+     "BACK_PATHS": "0",
+     "BACK_SHAPE": "0",
+     "BACK_CHECK": "0",
++    "BOX_DEPTH": "0",
+     "SCREEN_CALL": "0",
+     "STALK_CLOSE": "0",
+     "CLOUD_KILL": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 2d920930..0df73e30 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -110,6 +110,7 @@
+     "BACK_PATHS": "on",
+     "BACK_SHAPE": "off",
+     "BACK_CHECK": "off",
++    "BOX_DEPTH": "off",
+     "SCREEN_CALL": "on",
+     "STALK_CLOSE": "on",
+     "CLOUD_KILL": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 5b5c8ffc..a13c3d67 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 420 flags read from the environment in `src` (recounted 2026-11-16, engine-71, plus BACK_SHAPE and BACK_CHECK): 308 are on unless set to `0`, 95 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 421 flags read from the environment in `src` (recounted 2026-11-16, engine-71, plus BACK_SHAPE, BACK_CHECK and `BOX_DEPTH`): 308 are on unless set to `0`, 96 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -220,6 +220,7 @@ There are 420 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `BACK_PATHS` | on | promoted 2026-11-13 (engine-53; `=0` restores); was experimental (behind-the-line targets, 2026-11-13) | back routes | `src/playbook/routes.ts` (`back_flat`, `angle`, `back_out`) | set at first review. The back's flat, angle and out on their tracked paths (BDB 2025 weeks 1-3, backs on non-PA drop-backs, `scripts/diag/concepts/nfl_back_path.py`). Flat: run 4.5 yd behind the line while widening, climbing late (NFL depth -4.6 / -3.7 yd at 1.5 / 2.5 s, width 5.4 / 10.3 yd; ours on: -4.5 / -3.7, 5.6 / 11.3; off: -2.9 / +0.8, 4.0 / 7.1); caught at a median -0.1 yd, 50% behind the line (NFL -1.0, 56%; off +2.3, 6%). Angle and out break at the line: caught at +2.7 / +2.4 yd (NFL +3 / +2; off +4.4 / +5.3). Yards per attempt to the back barely move (the YAC gap is elsewhere) (docs/reviews/2026-11-13-back-paths.md). The flat is run under control at the NFL's pace (`RouteDef.pace` 0.55; it widened at 6 yd/s against the NFL's 4.2): at equal time after the snap it now matches route-labelled NFL FLAT within a yard to 3.0 s (docs/reviews/2026-11-13-back-paths.md) |
+ | `BACK_SHAPE` | off | experimental (back routes, 2026-11-14; with Coverage's rows) | back routes | `src/playbook/routes.ts` (`wheel`, `back_out`) | set at first review. The back's wheel and out drawn as coached, against Coverage's BDB 2025 rows (backs on non-PA gun drop-backs, `back_flat_nfl.py`; sim twin `back-cue.ts`, seed 11 x 8). Out: holds his depth before the break, depth at 1.5 / 2.0 / 2.5 s -1.9 / +0.2 / +2.1 -> -2.8 / -1.3 / +0.9 and -2.2 / -0.1 / +1.5 on two runs (NFL -2.8 / -0.9 / +0.9; n about 40, the games diverge). Wheel: a flat that bends up the sideline, width at 1.5 / 2.0 / 2.5 s 4.2 / 5.5 / 7.5 -> 5.6 / 8.1 / 10.7 (NFL 8.0 / 10.5 / 13.1) but depth -3.1 / -1.5 / +0.2 -> -3.8 / -2.8 / -1.0 (NFL -2.7 / -0.6 / +2.1): its remaining gap is the first second (NFL wheel backs already 3.4 / 5.2 yd wide at 0.5 / 1.0 s, ours 2.6 / 3.7, at their alignment), which is alignment and release, not drawing. Angle left as drawn: its gap (still 4.4 yd behind at 1.0 s) is his check before release. Attempt 1; the execution layer (a release keyed on what he sees, reading the flat defender) is next. |
+ | `BACK_CHECK` | off | experimental (back routes, 2026-11-14; Flex reviews) | protection, back routes | `src/sim/behaviors/blocking.ts` (`PassProtector.keysClear`), `src/sim/assign.ts` (`CHECK_ROUTES`) | set at first review. A back on a check-release (the angle, out and checkdown; the flat, wheel and swing are free releases, as NFL backs run them) releases when his own read of his blitz keys says none is coming, not on the timer (CHECK_READ + reaction time + dice 0-0.15 s). Keys: up to two defenders off the line near his check gap, read in his picture. A key comes when moving at the line within 2.5 yd of it; one seen engaged with another of his blockers is someone else's. A key is clear when he is seen dropping (one decision interval) or still holding off the line once the count (0.55 s, CHECK_READ) has run, and 0.25 s of dropping once he has come. A key who comes is the coordinator's to assign him (an uncounted back is counted in then); the release also needs no assignment. An uncounted back scans from his spot facing the line; he releases from where his check took him. **Attempt 1 (2026-11-14, with BACK_SHAPE, seed 11 x 8, `back-cue.ts`):** check routes now hold and then go: angle depth at 1.0 / 1.5 / 2.0 / 2.5 s -3.9 / -2.5 / -0.9 / +1.0 -> -4.9 / -4.3 / -3.3 / -2.0 (NFL -4.4 / -3.5 / -1.8 / +0.1), width -> 2.3 / 2.4 / 2.9 / 3.8 (NFL 2.1 / 2.2 / 2.8 / 3.3); out -> -4.9 / -4.3 / -2.9 / -0.8 (NFL -4.0 / -2.8 / -0.9 / +0.9). The spread appears from how each back's keys declare: the angle's IQR at 2.5 s 0.6 -> 2.8 yd (NFL 2.9), the out's 0.4 -> 1.9 (NFL 2.9). Releases from the check p25/50/75 0.75 / 0.80 / 3.70 s. Open: after the release the check routes run about 1-2 yd behind the NFL (the route starts from a standstill). Flat and wheel unchanged. Tests (back-*, protection, release): 201 / 201 off and on. **Flex's review applied (e0915c72):** after the count anything short of `comes` clears an unread key at any depth (a creeping key was neither comes nor away and stalled the back); a key who has come keeps the far-side exit (seen dropping 0.25 s, or engaged with another blocker); `comes` on a projected arrival against his time to his gap. A late `coord.add` does not reopen the line (lineman assignment changes on the solve after a key comes 0.12 with the add, 0.12 suppressed, 0.14 elsewhere; `back-check-trace.ts`). **Controls (101 / 201 x 8, off -> BACK_SHAPE + BACK_CHECK):** sacks 13 / 44 -> 21 / 28 (pooled 57 -> 49), pressured 10.1 / 13.8 -> 11.2 / 12.2%, completion 69.0 / 64.7 -> 69.0 / 65.9%, yards a dropback 8.54 / 6.88 -> 8.47 / 7.83: within noise. Trace (11 x 4): 107 backs in pass-pro, 9% end blocking (none a key who came: no rep exercised the exit), check routes' first target p50 2.80 s. **Stalls traced (2026-11-14): none.** The 2 of 107 were the trace's misreading: after a catch RCV_SEEN's ConvoyCue wraps the protector (forwarding its kind) until the back sees the catch, and the trace read the wrapper as an uncounted back; counted on the PassProtector itself while the QB has the ball, 0 of 107. **The 1-2 yd lag after the release is both start and speed:** NFL angle backs step up about 0.4 yd during the check (-4.8 -> -4.4 by 1.0 s) where ours scan from their spot (-4.9), and after the release their upfield speed is 1.8 / 3.4 / 3.8 yd/s over 1.0-1.5 / 1.5-2.0 / 2.0-2.5 s against ours 1.2 / 2.0 / 2.6 (the route's pace: back effort 0.8 and the angle's first point at 0.45). **Coverage's witnesses on engine-62 (APEX_LEVERAGE 7; seed 11 x 8, off -> BACK_SHAPE + BACK_CHECK; small cells, the games diverge):** the quarters apex commits to a flat threat before the throw 14 -> 22 times (at 1.4 / 1.4 / 1.4 -> 1.4 / 1.6 / 1.9 s; `mike-out.ts`), flat-back sides 19 -> 27, and his label changes before the throw are unchanged (mean 3.5 -> 3.6; `apex-out.ts`); throws to the back on flat-back sides 10 -> 12, yards a target 11.4 -> 8.2, YAC 12.7 -> 7.7. The nearest defender at the back's flat catch (`flat-role.ts`) quarters 6.3 -> 4.7 yd, cover 3 5.9 -> 5.2, cover 2 4.5 -> 2.3. The Mike widens about as often (45 -> 46 of about 90); middle throws 6.5 -> 4.9 yd (n about 20). The wider wheel and the out that holds its depth show to the flat more; the apex reads it, without flicker. |
++| `BOX_DEPTH` | off | experimental (Flex, 2026-11-16; Integration #35 item 1) | protection | `src/sim/behaviors/blocking.ts` (`boxThreats`, `ProtectionCoordinator.callMan`, `PassProtector.keysClear`) | set at first review. The protection call counts the box to its taught depth, 5.0 yd, not 3.5: the box is the line's width and about 5 yd deep (fourvertsfootball, cfbtrack; viqtorysports 3-5 yd) and protection is counted from the Mike identification, who may be an off-ball backer (footballnationusa); in six-man protection the back reads the Mike and Sam. The stated depth, not fitted. Those backers are the call's threats (declared, held CALL_HOLD, a rusher on his first seen downhill step), and a back the count keeps in stays as a check-release; under BACK_CHECK his key is the man the call left him (the declaration's `callMan`), read by BACK_CHECK's rules (comes, dropping, the count), else his own keys as before. Off, on engine-70 games the box at 5.0 yd held more men than at 3.5 on 80-81% of dropbacks (NFL 60%) and the back ran a route with such a man uncounted on 62-63% of them, though those men reached the QB free only 0.3-1.1% of the time (scripts/diag/pass-operators/box-count.py). Staged read: box-depth.mts. |
+ | `SCREEN_CALL` | on | promoted 2026-11-14 (engine-66; `=0` restores); was experimental (menu sizing, 2026-11-14) | play calling | `src/game/playcaller.ts` (`SCREEN_CALL_RATE`, `quickScreensFor`) | set at first review. Pool admission only: the quick screens (bubble from trips, bunch now from bunch, now screen from 2x2, tunnel from 2x2 or trips) and the screen RPO (inside zone / now screen, gun doubles 11, its pre-snap read `QBMind.rpoRead` unchanged) become calls of their own at the NFL's rate by down and distance, each drawn on its own stream so the rest of the call is unchanged; screens are called without motion (their blocking is built from the formation as aligned). Rates (BDB 2025 weeks 1-9): the targeted, non-RPO WR-screen rate per dropback (2.6 / 1.5 / 3.0 / 3.8% on 1st, 2nd short/medium/long; 1.0 / 0.9 / 4.3% on 3rd and 4th) divided by the share of our pass calls whose formation fits (67-83%, engine-62 collect), and the RPO's share of run-or-RPO calls (21-37%), from 11 personnel only. Why: on engine-62 our caller calls no screen and no RPO (SCREEN 0 vs 4.2% of NFL routes run, 9.8% of targets); the screens were kept in the screen lab. Ours is the screen-only RPO; 65% of NFL RPO throws are not screens (flat 18%, slant 11%, out 10%). 16 games (seed 101, engine-62 default + flag), 1,629 pass plays: quick screens 3.0% of pass plays (tunnel 1.5, bunch now 0.6, bubble 0.4, now 0.4; 2 killed to slant-flat), completed 71-100%, mean yards tunnel 4.6, now 1.7, bunch now 8.0, bubble 14.7 (small n); RPO called on 12.9% of run-or-RPO calls (NFL 24%: 11 personnel only), thrown 73% (NFL 30% of all RPOs), 95% completed, 9.0 yd mean, kept as a run 3.7. Promoted when a screen in a game looks like one (its blocking, the catch and the defense's rally), not when the share matches; the defense's response by coverage on its existing rules (holdFlat, cloud corner, apex) is the next read. Test `test/screen-call.test.ts`. |
+ | `STALK_CLOSE` | on | promoted 2026-11-14 (engine-66; `=0` restores); was experimental (screens, 2026-11-14; attempt 1 of 2) | screens | `src/sim/behaviors/screen.ts` (`ScreenBlocker.update`) | set at first review. A receiver's stalk as coached: before the ball is out he closes the cushion under control to a breakdown point 1.5 yd off his man on the man's line to the catch (a coaching figure), from what he sees of the man, then mirrors and puts his hands on the man's catch-side half; off, he worked to leverage no more than 0.5 yd past his alignment at 0.45 speed and let the man come. Why: on the now screen the stalk engaged no one on 71-75% of plays (screen-defense.mts, nickel Over, seeds 1-12 x both flips, SCREEN_QB=1); he set, came within 1.1 yd and the nickel ran by. Perimeter stalk on a DB (stalk_reference.py, BDB 2025 wk 1-6 vs screen lab): gap at 0.9 / 1.2 s NFL 2.0 / 1.1 yd, off 5.1 / 4.7, on 4.4 / 3.7; first contact before the catch NFL 1.0 s, off 0.0, on 0.5; never NFL 1 of 18, off 50 of 263, on 63 of 313. The rest of the gap starts at the snap: the stalk and his man begin 5.2 yd apart (NFL 3.7; our now-screen receiver is split 15.7 yd from the ball, NFL 13.1). It is not the man holding depth: over WR screens the NFL's man over the receiver goes from 4.3 to 4.6 yd deep by the throw on the now screen and 1.8 to 1.4 on the bubble (quick_screen_reference.py), as ours does; stalk_reference.py's "man down 1.1 yd by 1.2 s" is the man the stalk ends up engaging (selected by contact), not the flat defender. A flat-defender squeeze (FLAT_SQUEEZE, tried 2026-11-14, not kept) brought ours down 0.6 yd by the throw, more than the NFL. Stalk engagements (4 quick screens x 5 coverages x 24): now 50 -> 112, tunnel 54 -> 116; from behind 0-3% both arms. Now screen, stalk engaged no one 71-75% -> 8-25%; yards p50 Cover 3 2.4 -> 3.1, Quarters 0.1 -> 8.0 (NFL 5-6), tackler spread in Quarters CB 46 / FS 29 / NB 21% (NFL CB 47, ILB 25, FS 19, SS 14); open: Cover 3's nickel still wins through 63% (the block itself), Cover 2's squat corner makes every tackle (the coached answer is the kill against cloud; our kill reads press only), Cloud's breakaways (p50 19.7: the free-runner rally, Defense's). **Attempt 2 (2026-11-14), not kept:** the engaged stalk mirroring his man instead of `stand()` changed nothing (an engaged blocker's request does not move him; the contact does). Cover 3's losses are contact physics: the stalk engages 0.65 s before the catch but the contact ends after 0.45 s by separation (14 of 15; isolated run contact, grace 0, an arm apart), the nickel arriving at 3.3 yd/s against the stalk's 1.0; NFL contact holds to the catch. For the contact owner (does a receiver's grip cost a moving DB his momentum) and Defense (a DB playing the blocker breaks down and sheds rather than running through). Test `test/stalk-close.test.ts`. |
+ | `CLOUD_KILL` | on | promoted 2026-11-14 (engine-66; `=0` restores); was experimental (screens, 2026-11-14; QB lane reviews) | QB | `src/sim/qbmind.ts` (`screenLook`, `screenKill`, `rpoRead`) | set at first review. The coached rule "never throw a now screen against press or cloud": the now screen's installed kill, and the screen RPO's read, also take a defender he sees squatting over the screen receiver, whoever he is (a corner, a safety rolled down, an apex walked out; QB lane review: the rule is geometric), 2.2-5 yd off the line, from 0.5 yd inside him to 3 yd outside, with the press look's alignment noise, at the alignment after motion; off, only press killed it. No extra dice drawn, so the off arm is identical. Why: the now screen against Cover 2 (squat corners) was caught 24 of 24 and the corner made every tackle (yards p50 -0.3; screen-defense.mts, SCREEN_QB + STALK_CLOSE). On (seeds 1-12 x both flips): now screen killed vs Cover 2 22 of 24, Cover 3 0, Cloud (its squat corner on the other side) 0, Quarters 0, Cover 1 off 3; the RPO's read vs Cover 2 hands off 22 of 24; any-defender and corner-only windows give identical rows (no over-kill). Test `test/cloud-kill.test.ts`. |
+diff --git a/scripts/diag/pass-operators/box-count.py b/scripts/diag/pass-operators/box-count.py
+new file mode 100644
+index 00000000..89cf9711
+--- /dev/null
++++ b/scripts/diag/pass-operators/box-count.py
+@@ -0,0 +1,41 @@
++# usage: python3 scripts/diag/pass-operators/box-count.py out/mechanics/nfl-plays.jsonl.gz <sim export.jsonl.gz> ... (#35, PRO_CALL's 3.5-yd count)
++# Box count at the snap: defenders inside the OL width +- 3.5 yd, by depth off the line (common format, offense +x,
++# line at x = 0). Off-ball defenders (DL excluded) depth distribution; and on dropbacks, the share where the box at
++# 5.0 / 6.0 yd holds more than at 3.5 yd, and whether the back runs a route (sim exports carry 'route').
++import sys, os, json, gzip, math
++sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
++from metrics import Play
++q = lambda v, f=.5: sorted(v)[int(f*(len(v)-1))] if v else float('nan')
++for path in sys.argv[1:]:
++    deps=[]; n=0; more5=0; more6=0; rbroute=0; rbroute_more5=0; extra_rush_free=0; extra_n=0
++    for line in gzip.open(path,'rt'):
++        r=json.loads(line); r=r.get('common',r)
++        if r.get('kind')!='pass' or not r.get('xy'): continue
++        p=Play(r); OL=[i for i in p.who('O','OL') if p.pos(i,0)[0] is not None]
++        if len(OL)<5: continue
++        ys=[p.pos(i,0)[1] for i in OL]; lo,hi=min(ys)-3.5,max(ys)+3.5
++        D=[i for i in p.who('D') if p.pos(i,0)[0] is not None and lo<=p.pos(i,0)[1]<=hi]
++        for i in D:
++            if r['players'][i].get('group')!='DL': deps.append(p.pos(i,0)[0])
++        c35=sum(1 for i in D if p.pos(i,0)[0] < 3.5); c5=sum(1 for i in D if p.pos(i,0)[0] < 5.0); c6=sum(1 for i in D if p.pos(i,0)[0] < 6.0)
++        n+=1; more5+= c5>c35; more6+= c6>c35
++        rbs=[i for i in p.who('O','RB')]
++        routed=any(r['players'][i].get('route') for i in rbs)
++        rbroute+=routed
++        if c5>c35 and routed:
++            rbroute_more5+=1
++            # did a 3.5-5 yd backer come (within 2 yd of the QB before the throw, no offensive body within 1 yd then)?
++            qb=p.who('O','QB')[0]; fw=r.get('events',{}).get('pass_forward'); end=fw if fw is not None else p.end
++            extra=[i for i in D if 3.5<=p.pos(i,0)[0]<5.0]
++            for i in extra:
++                extra_n+=1
++                for k in range(0,min(p.k(end),p.frames-1)):
++                    if p.pos(i,k)[0] is None or p.pos(qb,k)[0] is None: continue
++                    if p.dist(i,qb,k)<=2.0:
++                        O=[o for o in p.who('O') if o!=qb and p.pos(o,k)[0] is not None]
++                        if not any(p.dist(o,i,k)<=1.0 for o in O): extra_rush_free+=1
++                        break
++    print(f"== {os.path.basename(path)}: dropbacks {n} | off-ball box defenders' depth at the snap p25/50/75 {q(deps,.25):.1f}/{q(deps):.1f}/{q(deps,.75):.1f} yd"
++          f" | box at 5.0 yd holds more than at 3.5: {100*more5/max(1,n):.0f}% (at 6.0: {100*more6/max(1,n):.0f}%)"
++          f" | back on a route {100*rbroute/max(1,n):.0f}%, and with the box at 5.0 > 3.5: {100*rbroute_more5/max(1,n):.0f}% of dropbacks"
++          f" | of those 3.5-5 yd men, reaching the QB free: {extra_rush_free} of {extra_n}")
+diff --git a/scripts/diag/pass-operators/box-depth-trace.mts b/scripts/diag/pass-operators/box-depth-trace.mts
+new file mode 100644
+index 00000000..e96a0ed6
+--- /dev/null
++++ b/scripts/diag/pass-operators/box-depth-trace.mts
+@@ -0,0 +1,17 @@
++// One staged dropback's protection declaration over time (BOX_DEPTH, #35): who each protector is assigned, the call's threats.
++// usage: BACK_CHECK=1 BACK_SHAPE=1 [BOX_DEPTH=1] node --import tsx scripts/diag/pass-operators/box-depth-trace.mts
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'curl_flat', seed: 1, roster: 1, formation: 'gun_doubles_11', flip: false }));
++const dir = sim.attackDir(sim.offense[0].team);
++const name = (x: any) => x ? `${x.slot}` : '-';
++for (let i = 0; i < 40 && sim.phase === 'live'; i++) {
++  sim.tick();
++  if ([1, 5, 10, 20, 30].includes(i)) {
++    const pp = sim.offense.filter((a: any) => a.behavior?.kind === 'pass-pro');
++    const coord = pp[0]?.behavior?.coord;
++    console.log(`t ${sim.t.toFixed(2)} assigned:`, pp.map((a: any) => `${a.slot}->${name(coord?.assigned.get(a))}${a.engagement ? '(E:' + a.engagement.defender.slot + ')' : ''}`).join(' '), '| called', [...(coord?.called ?? [])].map(name).join(','), '| protectors', coord?.protectors.map(name).join(','));
++  }
++}
++console.log('def depths', sim.defense.map((d: any) => `${d.slot}:${((sim.snapX[d.idx] - sim.los) * dir).toFixed(1)}`).join(' '));
+diff --git a/scripts/diag/pass-operators/box-depth.mts b/scripts/diag/pass-operators/box-depth.mts
+new file mode 100644
+index 00000000..b0386453
+--- /dev/null
++++ b/scripts/diag/pass-operators/box-depth.mts
+@@ -0,0 +1,46 @@
++// BOX_DEPTH's staged read (#35; Integration's reads): the same staged dropbacks with BACK_CHECK on, BOX_DEPTH off / on.
++// Concepts whose back runs a route (curl_flat, hitch_out, flood, stick, smash, mesh) from gun_doubles_11 and gun_trips_11,
++// against cover1 / cover3 / cover2 / cover4 / cover0 (blitz), rosters 1-6, seeds 1-2. Per play: the box count at 3.5 / 5.0
++// yd (as the call counts it), the back's fate (released into his route and when; stayed in and blocked someone; never
++// released), the first defender within 2 yd of the QB before the ball is out and whether he was free (no blocker engaged
++// with him then) and where he came from (on the line / 3.5-5 yd backer / deeper), a target to the back, and sacks.
++// usage: BACK_CHECK=1 [BOX_DEPTH=1] node --import tsx scripts/diag/pass-operators/box-depth.mts
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const { isOL } = await import(`${W}/src/sim/behaviors/blocking.ts`);
++const rows: any[] = [];
++for (const concept of ['curl_flat', 'hitch_out', 'flood', 'stick', 'smash', 'mesh']) for (const formation of ['gun_doubles_11', 'gun_trips_11'])
++  for (const coverage of ['cover1', 'cover3', 'cover2', 'cover4', 'cover0']) for (let roster = 1; roster <= 6; roster++) for (const seed of [1, 2]) {
++    let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation, flip: false })); } catch { continue; }
++    const dir = sim.attackDir(sim.offense[0].team), los = sim.los;
++    const back = sim.offense.find((a: any) => sim.offAlign.spots[a.slot]?.backfield && a !== sim.qb);
++    const ys = sim.offense.filter(isOL).map((o: any) => o.pos.y), lo = Math.min(...ys) - 3.5, hi = Math.max(...ys) + 3.5;
++    const depth0 = new Map<any, number>(sim.defense.map((d: any) => [d, (d.pos.x - los) * dir]));
++    const inBox = (d: any, k: number) => depth0.get(d)! < k && d.pos.y >= lo && d.pos.y <= hi;
++    const box35 = sim.defense.filter((d: any) => inBox(d, 3.5)).length, box50 = sim.defense.filter((d: any) => inBox(d, 5.0)).length;
++    let released: number | null = null, blocked = false, first: any = null;
++    while (sim.phase === 'live' && sim.t < 4) {
++      sim.tick();
++      if (back && released === null && back.behavior?.kind === 'route') released = +sim.t.toFixed(2);
++      if (back?.engagement) blocked = true;
++      if (!first && sim.throwAt < 0) for (const d of sim.defense) {
++        if (Math.hypot(d.pos.x - sim.qb.pos.x, d.pos.y - sim.qb.pos.y) > 2) continue;
++        const dep = depth0.get(d)!;
++        first = { t: +sim.t.toFixed(2), free: !d.engagement, from: dep < 1.5 ? 'line' : dep < 3.5 ? 'box<3.5' : dep < 5 ? 'box3.5-5' : 'deep', inBox50: inBox(d, 5.0) };
++        break;
++      }
++    }
++    const target = sim.events.find((e: any) => e.type === 'throw');
++    rows.push({ box35, box50, released, blocked, first, sack: sim.events.some((e: any) => e.type === 'sack'), toBack: !!(target && back && target.b === back.idx),
++      thrown: !!target, extra: box50 > box35 });
++  }
++const pc = (n: number, d: number) => `${(100 * n / Math.max(1, d)).toFixed(0)}%`;
++const q = (v: number[], f = .5) => { const z = v.filter(Number.isFinite).sort((a, b) => a - b); return z.length ? z[Math.floor(f * (z.length - 1))] : NaN; };
++for (const [lab, S] of [['all', rows], ['an extra man at 3.5-5 yd', rows.filter((r) => r.extra)], ['no extra man', rows.filter((r) => !r.extra)]] as [string, any[]][]) {
++  if (!S.length) continue;
++  const rel = S.filter((r) => r.released !== null);
++  const fp = S.filter((r) => r.first), free = fp.filter((r) => r.first.free);
++  const from = free.reduce((m: any, r) => (m[r.first.from] = (m[r.first.from] ?? 0) + 1, m), {});
++  console.log(`${lab} (n ${S.length}): back released ${pc(rel.length, S.length)} at p25/50/75 ${q(rel.map((r) => r.released), .25)}/${q(rel.map((r) => r.released))}/${q(rel.map((r) => r.released), .75)} s, blocked someone ${pc(S.filter((r) => r.blocked).length, S.length)} | first pressure before the ball ${pc(fp.length, S.length)} at p50 ${q(fp.map((r) => r.first.t))} s, free ${pc(free.length, S.length)} ${JSON.stringify(from)} | targets to the back ${pc(S.filter((r) => r.toBack).length, S.filter((r) => r.thrown).length)} of throws | sacks ${S.filter((r) => r.sack).length}`);
++}
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 4f98f248..4ade7a75 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -89,7 +89,7 @@ export class ProtectionCoordinator {
+     if (PRO_CALL && this.called.has(d) && seen.vel.x > 1 && seen.pos.x > sim.los + 0.5) this.dropped.add(d);
+     if (this.dropped.has(d)) return false;
+     if (seen.pos.x < sim.los) return true;
+-    if (PRO_CALL && this.called.has(d) && seen.pos.x < sim.los + CALL_DEPTH && seen.vel.x < -0.5) return true;
++    if (PRO_CALL && this.called.has(d) && seen.pos.x < sim.los + BOX_CALL_DEPTH && seen.vel.x < -0.5) return true;
+     return seen.pos.x < sim.los + 1.5 && (seen.vel.x < -0.5 || (this.declaredOn.has(d) && seen.vel.x <= 1));
+   }
+ 
+@@ -98,6 +98,8 @@ export class ProtectionCoordinator {
+   readonly called = new Set<Agent>();
+   /** PRO_CALL: backs the call counts in the protection (decided at install). */
+   readonly backsIn = new Set<Agent>();
++  /** BOX_DEPTH: the man the call left each back (a declared threat the line can't take), from the declaration. */
++  readonly callMan = new Map<Agent, Agent>();
+ 
+   private isRusher(sim: PlaySim, d: Agent): boolean {
+     if (PRO_READ) return this.seenRusher(sim, d);
+@@ -121,7 +123,10 @@ export class ProtectionCoordinator {
+    */
+   private declare(sim: PlaySim, rushers: Agent[]): void {
+     const ol = this.protectors.filter((b) => isOL(b)).sort((p, q) => this.homeY.get(p)! - this.homeY.get(q)!);
+-    const rs = [...rushers].sort((p, q) => p.pos.y - q.pos.y);
++    // BOX_DEPTH: big on big. The line's ordered declaration is over the men on the line; the called backers go after it
++    // to a spare lineman in his zone, else to a back. Ordering an off-ball backer among the down men slid a lineman off
++    // the man in front of him onto a backer behind the line (the guard on the Mike, the centre chasing the guard's man).
++    const rs = [...rushers].filter((r) => !(BOX_DEPTH && this.called.has(r))).sort((p, q) => p.pos.y - q.pos.y);
+     const backs = this.protectors.filter((b) => !isOL(b));
+     const skipCost = (r: Agent) => {
+       const near = backs.length ? Math.min(...backs.map((b) => Math.abs(b.pos.y - r.pos.y))) : Infinity;
+@@ -174,6 +179,14 @@ export class ProtectionCoordinator {
+       } else if (h === 2) { left.push(rs[j - 1]); j--; }
+       else i--;
+     }
++    if (BOX_DEPTH) {
++      const zone = (b: Agent) => (b.slot === 'LT' || b.slot === 'RT' ? 5.5 : 2.8);
++      for (const r of rushers.filter((x) => this.called.has(x)).sort((p, q) => p.pos.y - q.pos.y)) {
++        const spare = ol.filter((b) => !this.sticky.has(b) && Math.abs(r.pos.y - this.homeY.get(b)!) <= zone(b));
++        if (!spare.length) { left.push(r); continue; }
++        this.sticky.set(spare.reduce((x, y) => (Math.abs(x.pos.y - r.pos.y) <= Math.abs(y.pos.y - r.pos.y) ? x : y)), r);
++      }
++    }
+     // PRO_CALL: a declared threat the line can't take is the back's at the
+     // snap (his man in the call), not whoever is nearest once he comes.
+     if (PRO_CALL) for (const r of left) {
+@@ -181,6 +194,7 @@ export class ProtectionCoordinator {
+       if (!free.length) break;
+       const b = free.reduce((x, y) => (Math.abs(x.pos.y - r.pos.y) <= Math.abs(y.pos.y - r.pos.y) ? x : y));
+       this.sticky.set(b, r);
++      if (BOX_DEPTH) this.callMan.set(b, r);
+     }
+   }
+ 
+@@ -327,6 +341,10 @@ export class PassProtector implements Behavior {
+   private keys: { d: Agent; state: 'unread' | 'comes' | 'clear'; awaySince: number | null }[] | null = null;
+   private keysClear(a: Agent, sim: PlaySim): boolean {
+     const off = sim.attackDir(a.team), side = Math.sign(a.pos.y - sim.ballY);
++    // BOX_DEPTH: his key is the man the call left him (the backer the line can't take), read the same way; without one,
++    // his own keys near his check gap as before.
++    const callMan = BOX_DEPTH ? this.coord.callMan.get(a) : undefined;
++    if (!this.keys && callMan) this.keys = [{ d: callMan, state: 'unread', awaySince: null }];
+     if (!this.keys) {
+       const gaps = side ? [sim.ballY + side * 2.5] : [sim.ballY - 2.5, sim.ballY + 2.5];
+       const cands = sim.opponents(a).map((d) => ({ d, p: sim.see(a, d).pos }))
+@@ -588,6 +606,19 @@ function seenPos(sim: PlaySim, b: Agent, r: Agent): Vec2 {
+ export const PRO_CALL = process.env.PRO_CALL !== '0';
+ /** How far off the ball a defender counts in the call's box (yd). */
+ const CALL_DEPTH = 3.5;
++/** BOX_DEPTH (experimental, off; BOX_DEPTH=1; with PRO_CALL, and BACK_CHECK for the back's read; #35): the call counts the
++ * box to its taught depth, not 3.5 yd. The box is the offensive line's width and about 5 yd deep (fourvertsfootball and
++ * cfbtrack glossaries; viqtorysports: 3-5 yd), and protection is counted from the Mike identification, who may be an
++ * off-ball backer (footballnationusa, why quarterbacks point at the Mike); in six-man protection the back reads the Mike
++ * and Sam. 5.0 yd is that stated depth, not fitted. Off, a four-down nickel with its backers at 4-5 yd counted four and
++ * released the back with nobody on either backer: on engine-70 games the box at 5.0 yd held more men than at 3.5 on
++ * 80-81% of dropbacks (NFL 60%), and the back ran a route with such a man uncounted on 62-63% of them
++ * (scripts/diag/pass-operators/box-count.py). With it, those backers are called threats: a back the count keeps in
++ * stays as a check-release, and under BACK_CHECK his key is the man the call left him (the coordinator's declaration),
++ * read on his own picture by BACK_CHECK's rules (comes, dropping, the count); he blocks him if he comes and releases if
++ * he doesn't. */
++export const BOX_DEPTH = process.env.BOX_DEPTH === '1';
++const BOX_CALL_DEPTH = BOX_DEPTH ? 5.0 : CALL_DEPTH;
+ /** How far outside the linemen's width the call's box reaches (yd). */
+ const CALL_WIDTH = 3.5;
+ /** How long a called threat stays his blocker's man without coming (s): a
+@@ -600,7 +631,7 @@ export function boxThreats(sim: PlaySim): Agent[] {
+   const ys = sim.offense.filter(isOL).map((o) => o.pos.y);
+   if (!ys.length) return [];
+   const lo = Math.min(...ys) - CALL_WIDTH, hi = Math.max(...ys) + CALL_WIDTH;
+-  return sim.defense.filter((d) => (sim.snapX[d.idx] ?? d.pos.x) < sim.los + CALL_DEPTH && d.pos.y >= lo && d.pos.y <= hi);
++  return sim.defense.filter((d) => (sim.snapX[d.idx] ?? d.pos.x) < sim.los + BOX_CALL_DEPTH && d.pos.y >= lo && d.pos.y <= hi);
+ }
+ /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
+ const KICK_LEAD = 0.8;
+diff --git a/test/box-depth.test.ts b/test/box-depth.test.ts
+new file mode 100644
+index 00000000..64b807b3
+--- /dev/null
++++ b/test/box-depth.test.ts
+@@ -0,0 +1,48 @@
++/** BOX_DEPTH (blocking.ts boxThreats / declare / keysClear; experimental, off; #35): the protection call counts the box to
++ * 5 yd, big on big. On the engine defaults with BACK_CHECK, staged curl_flat from gun_doubles_11 against Cover 3 (a Mike
++ * at 4.7 yd): on, the Mike is a called threat, the line keeps its men on the down linemen and a spare lineman takes the
++ * Mike (no lineman slides off a down man onto him), and the back releases no earlier; off, the Mike is not in the call.
++ * (Attempt 1 ordered the Mike among the down men: the guard took him and the centre chased the guard's man; staged free
++ * first pressure 6 -> 53%.) */
++import { readFileSync } from 'node:fs';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function scene(flag: string) {
++  vi.resetModules();
++  for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
++  vi.stubEnv('BACK_CHECK', '1'); vi.stubEnv('BACK_SHAPE', '1'); vi.stubEnv('BOX_DEPTH', flag);
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
++  const out: { called: number; downUnassigned: number; released: number[] } = { called: 0, downUnassigned: 0, released: [] };
++  for (let roster = 1; roster <= 4; roster++) {
++    const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'curl_flat', seed: 1, roster, formation: 'gun_doubles_11', flip: false }));
++    const back = sim.offense.find((a: any) => sim.offAlign.spots[a.slot]?.backfield && a !== sim.qb);
++    let rel: number | null = null;
++    while (sim.phase === 'live' && sim.t < 1.5) {
++      sim.tick();
++      if (Math.abs(sim.t - 0.1) < 1e-6) {
++        const coord = sim.offense.find((a: any) => a.behavior?.kind === 'pass-pro')?.behavior?.coord;
++        out.called += coord?.called.size ?? 0;
++        const assigned = new Set([...(coord?.assigned.values() ?? [])]);
++        out.downUnassigned += sim.defense.filter((d: any) => /^(DE|DT|NT)/.test(d.slot) && !assigned.has(d)).length;
++      }
++      if (rel === null && back?.behavior?.kind === 'route') rel = sim.t;
++    }
++    out.released.push(rel ?? 9);
++  }
++  return out;
++}
++
++describe('BOX_DEPTH', () => {
++  it('on: the Mike is called and the line stays big on big', async () => {
++    const off = await scene('0'), on = await scene('1');
++    console.log(`called off ${off.called} on ${on.called}; down linemen unassigned at 0.1 s off ${off.downUnassigned} on ${on.downUnassigned}; back released off ${off.released} on ${on.released}`);
++    expect(off.called).toBe(0);
++    expect(on.called).toBeGreaterThanOrEqual(4);
++    expect(on.downUnassigned).toBe(off.downUnassigned);
++    on.released.forEach((t, i) => expect(t).toBeGreaterThanOrEqual(off.released[i]));
++  }, 240_000);
++});
+-- 
+2.43.0
+
