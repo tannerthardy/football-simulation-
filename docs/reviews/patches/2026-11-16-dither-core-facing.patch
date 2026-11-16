@@ -1,0 +1,57 @@
+diff --git a/scripts/diag/effective-mass/dither-core.ts b/scripts/diag/effective-mass/dither-core.ts
+index 0d2768f1..4bed6f46 100644
+--- a/scripts/diag/effective-mass/dither-core.ts
++++ b/scripts/diag/effective-mass/dither-core.ts
+@@ -5,6 +5,10 @@
+  * first pipeline stage whose output turned (or crossed 1 yd/s), from a passive stub of the responsibility ledger, or
+  * to a mode switch when the behaviour's kind or pursuit stage changed. A re-aim is reversed when a later request comes
+  * back within 20 deg of the one before it, within 0.3 s.
++ * Facing (QB lane, 2026-11-16): the same definitions on each player's requested facing (intents[i].facing), counted
++ * under the group `<controller> facing` (e.g. 'QB facing'): a re-aim is a facing change > 20 deg between ticks, reversed
++ * when a later request comes back within 20 deg of the one before it within 0.3 s; its time base is the live time the
++ * player requests a facing. It reads requests only, like the velocity count.
+  *
+  * Install with `instrument(PlaySim)` once per module instance, then `watch(sim, acc)` on each play before running it. */
+ import type { PlaySim as PlaySimT } from '../../../src/sim/playsim.js';
+@@ -64,6 +68,9 @@ export function watch(sim: PlaySimT, acc: Acc): void {
+     : k === 'stageAll' ? (st: string, I: { vel?: { x: number; y: number } }[]) => I.forEach((c, i) => put(s.agents[i], st, c))
+     : () => undefined });
+   const hist = new Map<object, Row[]>();
++  // Facing: per player, the recent requested facings (t, rad) and the re-aims awaiting reversal.
++  const fh = new Map<object, { t: number; f: number }[]>(), fpend = new Map<object, { before: number; t: number; g: string; done?: boolean }[]>();
++  const fang = (a: number, b: number) => Math.abs(((b - a) * 180 / Math.PI + 540) % 360 - 180);
+   const tick = s.tick.bind(s);
+   s.tick = () => {
+     stv.clear();
+@@ -71,6 +78,22 @@ export function watch(sim: PlaySimT, acc: Acc): void {
+     if (s.phase !== 'live') return;
+     for (const a of s.agents) {
+       const it = s.intents?.[a.idx]; if (!it) continue;
++      const fq = (it as { facing?: number }).facing;
++      if (fq !== undefined && Number.isFinite(fq)) {
++        const k0 = a.behavior?.kind ?? 'none', fg = `${GROUP[k0] ?? k0} facing`, F = grp(acc, fg);
++        const H = fh.get(a) ?? []; const prev = H[H.length - 1];
++        F.moving += s.dt;
++        if (prev && fang(prev.f, fq) > 20) {
++          F.reaims++; (F.src['facing'] ??= { n: 0, reversed: 0, dv: [] }).n++;
++          const P = fpend.get(a) ?? []; P.push({ before: prev.f, t: s.t, g: fg }); fpend.set(a, P);
++        }
++        for (const q of fpend.get(a) ?? []) {
++          if (q.done || s.t - q.t > 0.3 + 1e-9 || q.t === s.t) continue;
++          if (fang(q.before, fq) <= 20) { q.done = true; const Q = grp(acc, q.g); Q.reversed++; Q.src['facing'].reversed++; }
++        }
++        fpend.set(a, (fpend.get(a) ?? []).filter((q) => !q.done && s.t - q.t <= 0.3 + 1e-9));
++        H.push({ t: s.t, f: fq }); if (H.length > 2) H.shift(); fh.set(a, H);
++      }
+       const k = a.behavior?.kind ?? 'none';
+       const r: Row = { req: { ...it.vel }, ac: sp(a.vel), mode: `${k}|${stageOf.get(a) ?? ''}`, g: GROUP[k] ?? k, st: stv.get(a) ?? {} };
+       stageOf.delete(a);
+@@ -105,7 +128,7 @@ export function rates(acc: Acc): { controller: Record<string, Rate>; stage: Reco
+   for (const [g, G] of Object.entries(acc)) {
+     if (G.moving <= 0) continue;
+     controller[g] = { rate: G.reversed / G.moving, moving: G.moving, reversed: G.reversed };
+-    for (const [src, S] of Object.entries(G.src)) if (src !== 'behaviour' && src !== 'unattributed')
++    for (const [src, S] of Object.entries(G.src)) if (src !== 'behaviour' && src !== 'unattributed' && src !== 'facing')
+       stage[`${g} / ${src}`] = { rate: S.reversed / G.moving, moving: G.moving, reversed: S.reversed };
+   }
+   return { controller, stage };
