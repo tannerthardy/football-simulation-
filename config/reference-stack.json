@@ -232,6 +232,7 @@
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
+    "LEVEL2_TRACK": "off",
     "LINE_START": "on",
     "LINE_STEP": "on",
     "MAN_PHASE": "off",

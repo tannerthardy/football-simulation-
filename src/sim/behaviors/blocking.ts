@@ -875,6 +875,14 @@ export const WING_WORK = process.env.WING_WORK !== '0';
  * the play-side backer goes unblocked 25% (ours 54%); the wing and the end
  * take him 37% (ours 21%). */
 export const LEVEL2_TIME = process.env.LEVEL2_TIME !== '0';
+/** LEVEL2_TRACK (off; LEVEL2_TRACK=1 turns it on; Run Game, docs/reviews/2026-11-16-level2-track.md): with
+ * LEVEL2_TIME, a worker's run to a backer is measured from his track (his y plus the play-side lead: 1.5 yd for a
+ * double's climber, 1 yd for a lone climber or a wing), the same point the distance cost measures from; start times
+ * and wings unchanged. Off, the time cost measured from his body and dropped the play-side lead, so with two backers
+ * about equally far a play-side double climbed to the backside backer and left the play-side one free (receiver-run
+ * eligibility G1-P018, outside zone vs zero_6: LB_M at 5.05 yd and LB_W at 5.06 from the centre; the C+RG double on
+ * DT_S took LB_W, LB_M unblocked). */
+export const LEVEL2_TRACK = process.env.LEVEL2_TRACK === '1';
 function snapHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
@@ -1046,7 +1054,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const cost = (w: (typeof workers)[number], l: Agent) => {
       const track = w.b.pos.y + ps * w.lead;
       if (LEVEL2_TIME) {
-        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - w.b.pos.y) / (.75 * w.b.profile.vmax);
+        // LEVEL2_TRACK: the run is from his track (his play-side aim), as the distance cost measures it, not his body.
+        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - (LEVEL2_TRACK ? track : w.b.pos.y)) / (.75 * w.b.profile.vmax);
         return start + run + (w.inside && (l.pos.y - track) * ps > 0 ? .3 : 0);
       }
       return Math.abs(l.pos.y - track) + (w.inside && (l.pos.y - track) * ps > 0 ? 1.5 : 0);
