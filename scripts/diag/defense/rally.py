@@ -60,7 +60,21 @@ def rows(P):
                 if f == C + kf and D > 0.01:
                     v = vel(P, f, j)
                     if v: m[k] = (v[0] * dx + v[1] * dy) / D
-        R.append(dict(distCatch=L, distThrow=math.hypot(c0[0] - dth[0], c0[1] - dth[1]), bin=bin_, faceQB=fq, arrive=arrive, m=m))
+        st = {}
+        for lab, f in (('throw', F), ('catch', C)):
+            a, b, v = at(P, f, j), at(P, f, t), vel(P, f, j)
+            if a and b and v:
+                dx, dy = b[0] - a[0], b[1] - a[1]; sp_ = math.hypot(*v)
+                st[lab] = dict(dist=math.hypot(dx, dy), sp=sp_, head=ang(math.atan2(v[1], v[0]), math.atan2(dy, dx)) if sp_ > 0.5 else None,
+                               closing=(v[0] * dx + v[1] * dy) / max(0.01, math.hypot(dx, dy)))
+        R.append(dict(distCatch=L, distThrow=math.hypot(c0[0] - dth[0], c0[1] - dth[1]), bin=bin_, faceQB=fq, arrive=arrive, m=m, st=st))
+    vt = vel(P, C, t)
+    fam = 'stopped' if vt is None or math.hypot(*vt) < 2 else ('vertical' if vt[0] > abs(vt[1]) else 'across') if True else ''
+    if fam == 'across':
+        inward = -math.copysign(1, c0[1] - P['bxy'][0][1]) if abs(c0[1] - P['bxy'][0][1]) > 0.5 else 0
+        fam = 'in / across' if vt[1] * inward > 0 else 'out / to the sideline'
+    depth = c0[0] - los
+    for r in R: r['fam'] = f"{'0-4' if depth < 4 else '4-8' if depth < 8 else '8-12'} yd, {fam}"
     return R
 def q(v, p):
     v = sorted(x for x in v if x is not None)
@@ -80,3 +94,16 @@ for spec in sys.argv[1:]:
             if len(S) < 10: continue
             lab = 'facing QB ' if fq else 'back to QB' if fq is False else 'any facing'
             print(f"    {b:5s} {lab} n {len(S):5d} | along the line got +0.25 s {q([s['m'].get(0.25) for s in S], .5):.2f} +0.5 s {q([s['m'].get(0.5) for s in S], .5):.2f} | arrives {sum(s['arrive'] is not None for s in S) / len(S):.2f}, p50 {q([s['arrive'] for s in S], .5):.2f} s | dist at catch {q([s['distCatch'] for s in S], .5):.1f}")
+
+    print("  position and motion of the first and second to arrive, and of the nearest two at the catch, at the throw and at the catch (dist / speed / heading off the line to the catcher / closing speed):")
+    fams = sorted({x['fam'] for r in per for x in r})
+    def cell(S, lab):
+        X = [s['st'].get(lab) for s in S if s['st'].get(lab)]
+        return f"{q([x['dist'] for x in X], .5):4.1f} / {q([x['sp'] for x in X], .5):3.1f} / {q([x['head'] for x in X], .5):3.0f} / {q([x['closing'] for x in X], .5):4.1f}"
+    for fam in ['all'] + fams:
+        P_ = [r for r in per if fam == 'all' or (r and r[0]['fam'] == fam)]
+        if len(P_) < 15: continue
+        arr = [sorted([x for x in r if x['arrive'] is not None], key=lambda x: x['arrive']) for r in P_]
+        near = [sorted(r, key=lambda x: x['distCatch']) for r in P_]
+        A1 = [a[0] for a in arr if a]; A2 = [a[1] for a in arr if len(a) > 1]; N1 = [r[0] for r in near if r]; N2 = [r[1] for r in near if len(r) > 1]
+        print(f"    {fam:28s} n {len(P_):4d} | 1st to arrive ({len(A1) / len(P_):.2f}) throw {cell(A1, 'throw')} catch {cell(A1, 'catch')} | 2nd ({len(A2) / len(P_):.2f}) throw {cell(A2, 'throw')} catch {cell(A2, 'catch')} | nearest at catch: 1st {cell(N1, 'catch')}, 2nd {cell(N2, 'catch')}")
