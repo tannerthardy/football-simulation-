@@ -14,6 +14,12 @@
 const W = process.cwd();
 const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
 const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
+const { dropSpec } = await import(`${W}/src/sim/called-drop.ts`);
+const CD: any = await import(`${W}/src/sim/called-drop.ts`);
+// Snap-clock windows (Integration's check): the pair, the blocker's request and achieved velocity toward the QB, split by
+// whether the planned drop is still moving (before plannedSnapAt + the drop's time) or has set.
+const SNAP = [[0.5, 1.0], [1.0, 1.5], [1.5, 2.0], [2.0, 2.5], [2.5, 3.5]];
+const snapRows: any[] = [];
 const BINS = [[0, .5], [.5, 1], [1, 1.5], [1.5, 2.5]];
 const INT = new Set(['LG', 'C', 'RG']);
 const reps: any[] = [], plays: any[] = [];
@@ -24,6 +30,8 @@ for (const concept of ['four_verts', 'smash', 'dagger', 'curl_flat', 'flood']) f
     const open = new Map<any, any>();
     const intRushers = sim.defense.filter((d: any) => d.player.position === 'DT' || /^DT|^NT/.test(d.slot) || d.player.position === 'LB');
     let pressure: any = null;
+    const gun = sim.offCall.formation.qb !== 'under', spec = dropSpec(sim.offCall.pass.drop, sim.qb.pos.x, sim.los, gun);
+    const setAt = (CD.plannedSnapAt ? CD.plannedSnapAt(gun, { x: sim.qb.pos.x, y: sim.qb.pos.y }, { x: sim.los, y: sim.ballY }) : 0.3) + spec.time;
     while (sim.phase === 'live' && sim.t < 4 && sim.throwAt < 0) {
       sim.tick();
       for (const e of sim.engagements) {
@@ -40,6 +48,11 @@ for (const concept of ['four_verts', 'smash', 'dagger', 'curl_flat', 'flood']) f
           r.bins[bi].pair.push((tq(r.b.vel) + tq(r.d.vel)) / 2); r.bins[bi].rush.push(tq(r.d.vel)); r.bins[bi].depth.push((sim.los - r.b.pos.x) * dir);
         }
         if (r.ctl === null && dt >= 0.5 && sim.engagements.includes(e)) r.ctl = e.control;
+        if (sim.engagements.includes(e)) {
+          const si = SNAP.findIndex(([a, b]) => sim.t >= a && sim.t < b);
+          const req = sim.cmds[sim.agents.indexOf(r.b)]?.vel;
+          if (si >= 0) snapRows.push({ si, moving: sim.t < setAt, pair: (tq(r.b.vel) + tq(r.d.vel)) / 2, bv: tq(r.b.vel), breq: req ? tq(req) : NaN, rush: tq(r.d.vel) });
+        }
         if (!sim.engagements.includes(e)) {
           const lat = (r.d.pos.y - r.b.pos.y) * Math.sign(sim.ballY - r.b.pos.y || 1);
           r.end = { t: dt, side: lat > 0 ? 'inside' : 'outside', reached: false };
@@ -68,3 +81,8 @@ for (const plan of ['power', 'finesse', 'speed']) {
 const P = plays.filter((p) => p.pressure);
 const by = (k: string) => P.reduce((m: any, p) => (m[p.pressure[k]] = (m[p.pressure[k]] ?? 0) + 1, m), {});
 console.log(`  interior pressure ${pc(P.length, plays.length)} of plays at p50 ${q(P.map((p) => p.pressure.t)).toFixed(2)} s | by plan ${JSON.stringify(by('plan'))} | how ${JSON.stringify(by('how'))} | sacks ${plays.filter((p) => p.sack).length}`);
+console.log('  snap clock, engaged interior pairs: pair / blocker achieved / blocker requested / rusher toward the QB p50 (yd/s), plan still moving | set:');
+for (let i = 0; i < SNAP.length; i++) {
+  const f = (m: boolean) => { const X = snapRows.filter((x) => x.si === i && x.moving === m); return X.length ? `${q(X.map((x) => x.pair)).toFixed(2)} / ${q(X.map((x) => x.bv)).toFixed(2)} / ${q(X.map((x) => x.breq)).toFixed(2)} / ${q(X.map((x) => x.rush)).toFixed(2)} (n ${X.length})` : '-'; };
+  console.log(`    ${SNAP[i][0]}-${SNAP[i][1]} s: moving ${f(true)} | set ${f(false)}`);
+}
