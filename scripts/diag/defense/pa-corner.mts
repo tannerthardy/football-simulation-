@@ -16,7 +16,7 @@ for (const concept of ['pa_post_dig', 'pa_shot', 'pa_flood'])
       for (let seed = 1; seed <= seeds; seed++) for (const flip of [false, true]) {
         const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster: seed, formation, flip }));
         plays++;
-        let cbs: any[] | null = null, catchPos: any = null, los = 40, dir = 1, ballY = 0;
+        let cbs: any = null, catchPos: any = null, los = 40, dir = 1, ballY = 0;
         const tick = sim.tick.bind(sim);
         sim.tick = () => {
           if (!cbs) {
