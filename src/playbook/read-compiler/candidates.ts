@@ -7,7 +7,7 @@ import type { ReceiverRef } from '../types.js';
 import type { Candidate, Motif, ReadStep, RouteDescriptor } from './types.js';
 import { afterBreak } from './motifs.js';
 /** PLAN_ROLES (experimental, off; compile.ts CLEAR_OUTS): declared clear-outs are not read as the high of a high-low. */
-export const PLAN_ROLES = process.env.PLAN_ROLES === '1';
+export const PLAN_ROLES = process.env.PLAN_ROLES !== '0';
 
 /** A coach's preference for each plan style, added to the shared plan-quality score (log-odds-like priors; the
  * weights are engine calibration, not NFL numbers). The default leans pure (§17): an alert, key or half-field plan

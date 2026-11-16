@@ -411,23 +411,44 @@ const KEY_MOVE_NOISE = 5;
  * man): they doubled corner throws and put the added ones where a safety was a hard run from the ball (50% of routes
  * targeted against the NFL's 8%; docs/reviews/2026-11-13-qb-pocket.md). */
 const QB_KEY_THROW = process.env.QB_KEY_THROW === '1';
-/** QB_AVOID (experimental, off; QB_AVOID=1): he moves off a free rusher he feels coming, when he feels him. Off, his
- * pocket movement does not read his pressure estimate: it holds his set point on a spring, pushed a little by bodies
- * within 3.5 yd, and the only movement that answers a rusher (evade) is reachable under the 0.45 s alarm, after the hot
- * throw has found nothing. On a free interior rusher who got to him he had the man named at a median 0.55 s out and
- * moved 1.1 yd/s, drifting back (scripts/diag/escape/stand-probe.ts); from the deeper set he did not step up inside an
- * edge that had the corner. On: when the nearest man in his pressure estimate is free in his own picture (no blocker
- * he sees between them) and will reach him inside the time his throw still needs (his motion plus a look), he makes
- * one decision and keeps it: against a man in front or inside, slide off his line, to his read's side when that is
- * away from the man; against a man from the edge at or behind his depth, step up inside the arc. The step is the room
- * the man's body and reach take (his radius, the quarterback's, his reach); the pace is the step over the time he
- * has, no more than three quarters of his own top speed (a pace he can throw from: the moving-thrower model prices
- * the throw). It ends when he has reached the spot or the man's time to him is back outside his need by a margin.
- * His read keeps running while he moves (the costs are the moving-thrower price and his pictures aging where his eyes
- * are not; a first form froze the read and that was the largest cost in the system). Against an interior man the step
- * is up and off his line, from his set point. A man he does not feel does not move him. The alarm
- * under 0.45 s stays as the trapped case. To replace QB_FEEL, QB_POCKET and POCKET_CLIMB (all off). */
-const QB_AVOID = process.env.QB_AVOID === '1';
+/** PLAN_CLOCK (experimental, off; PLAN_CLOCK=1): DECLARED_BREAK's installed break time read on the play clock. The
+ * read compiler times each break as the sampled play's sim.t (from the start of the play); planBreakAt added the
+ * snap-secured time (0.3 s, GUN_SNAP ~0.5 s) to it again. On engine-68 (scripts/diag/escape/rhythm-check.ts, 157 read
+ * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s off, +0.10 s on. Where
+ * his forecast cannot place the break, the plan's time is the one his readiness waits for. */
+const PLAN_CLOCK = process.env.PLAN_CLOCK !== '0';
+/** QB_TICK_PICTURE (experimental, off; QB_TICK_PICTURE=1): his pictures of the defense are taken once a tick, as time
+ * passes, not when a decision asks for them. Off, `felt` and his plain picture call the perception layer on demand,
+ * and that layer's state advances with the asking: under SIGHT_CARRIER the per-tick visibility memo (`sighted`'s
+ * `sightAt`) freezes a past tick's line of sight at the moment it is first asked (with the bodies' heights then), and
+ * TRACK_FEEL's loop starts over for a pair not asked about last tick. So an extra `evaluate` (an observer scoring a
+ * receiver every tick) changed the play: Rules' cov7 observer case, bisected to `sightAt` (restoring it after the
+ * observer's call makes the arms identical; restoring `believed`, `outSeen` and the forecast caches does not). On: at
+ * the start of each of his updates he takes his plain and felt picture of every defender, and advances `outSeen`;
+ * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
+ * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
+const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE !== '0';
+/** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
+const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
+/** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
+ * docs/reviews/2026-11-15-drop-design-stage1.md). Read on CONCEPT_DROPS=1, PLAN_CLOCK=1 and QB_TICK_PICTURE=1.
+ * Bit 1: reads on steps and the release on a step. The plan gives each read its step index (`plan.rhythm[].n`, Rules
+ * + Coaching's hand-over: 0 the set, 1 the first hitch, 2 the second; reads on one look share it); he lands step n n
+ * strides of his own drop after his set. His eyes go to the next read when the step that lands for it starts, not
+ * when a dwell runs out, but not before he has given the read he is on his yes/no glance (attempt one moved them at
+ * the set + 0.1 s, before a read-1 throw on the plant could start). The hitch is a base reset at depth, one stride,
+ * turned to the read. A read can be thrown once its step has landed (or with the landing inside his load). Under
+ * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps the dwell moves him on as before.
+ * Triangle, peek, key and hot reads are unchanged by this bit. Bits 2 (the open-hip drop, drop pacing) and 4 (climb /
+ * slide / reset) are not built. */
+const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
+const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
+/** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
+ * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
+ * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
+ * game's catch-and-throw, the gun three and five, the five and seven from under center; play action counts the
+ * fake's step as one more of five). Coached counts, not fitted. */
+const DROP_STEPS: Record<string, number> = { quick: 1, gun3: 3, gun5: 5, five: 5, five_deep: 5, seven: 7, pa: 5, boot: 5 };
 /** QB_EVADE_UP (experimental, off; QB_EVADE_UP=1): the trapped case (under the 0.45 s alarm with no throw) steps off a
  * man in front of him to the side and up, not straight away from him. Off, evade steps directly away from the man, so
  * against an interior rusher it is a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield
@@ -450,50 +471,10 @@ const PATH_FRESH = 0.5, PATH_MARGIN = 0.35;
 /** QB_LOOKOFF_RHYTHM (experimental, off; QB_LOOKOFF_RHYTHM=1): a look-off is taken only when his first read will
  * not be ready until after it. A look-off moves a safety with his eyes in the drop; as taught it never costs the
  * rhythm throw. Off, it was rolled once at the set (by decision-making, anticipation and experience) and held read 1
- * for 0.25-0.35 s whether or not read 1 was already open (mesh's 1.85 s look-off on the route package). */
+ * for 0.25-0.35 s whether or not read 1 was already open (mesh's 1.85 s look-off on the route package). Paired staged
+ * read (scripts/diag/escape/drop-staged.ts on the QB lane branch, 3,072 plays, engine-67): 671 plays change; 8.29 ->
+ * 8.47 yd a play, complete 67.7 -> 68.4%, sacks 198 -> 195, INT 34 -> 35, throwaways 46 -> 56. */
 const QB_LOOKOFF_RHYTHM = process.env.QB_LOOKOFF_RHYTHM === '1';
-/** PLAN_CLOCK (experimental, off; PLAN_CLOCK=1): DECLARED_BREAK's installed break time read on the play clock. The
- * read compiler times each break as the sampled play's sim.t (from the start of the play); planBreakAt added the
- * snap-secured time (0.3 s, GUN_SNAP ~0.5 s) to it again. On engine-68 (scripts/diag/escape/rhythm-check.ts, 157 read
- * routes): true break minus compiled p50 -0.05 s; his belief minus the true break p50 +0.49 s. Where his forecast
- * cannot place the break, the plan's time is the one his readiness waits for. */
-const PLAN_CLOCK = process.env.PLAN_CLOCK === '1';
-/** QB_TICK_PICTURE (experimental, off; QB_TICK_PICTURE=1): his pictures of the defense are taken once a tick, as time
- * passes, not when a decision asks for them. Off, `felt` and his plain picture call the perception layer on demand,
- * and that layer's state advances with the asking: under SIGHT_CARRIER the per-tick visibility memo (`sighted`'s
- * `sightAt`) freezes a past tick's line of sight at the moment it is first asked (with the bodies' heights then), and
- * TRACK_FEEL's loop starts over for a pair not asked about last tick. So an extra `evaluate` (an observer scoring a
- * receiver every tick) changed the play: Rules' cov7 observer case, bisected to `sightAt` (restoring it after the
- * observer's call makes the arms identical; restoring `believed`, `outSeen` and the forecast caches does not). On: at
- * the start of each of his updates he takes his plain and felt picture of every defender, and advances `outSeen`;
- * his `believed` map and the judgment draws his pricing reads are created at his first update, in a fixed order.
- * `evaluate`, `window` and pressure read those; between his updates they read the last ones. */
-const QB_TICK_PICTURE = process.env.QB_TICK_PICTURE === '1';
-/** QB_TICK_PICTURE: the judgment keys his pricing reads (created at his first update, so their order is his, not the asker's). */
-const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency', 'drop-belief'];
-/** QB_FOOTWORK (experimental, numeric bits, off): the progression carried by his feet, stage one (coupling perfect;
- * docs/reviews/2026-11-15-drop-design-stage1.md). Read on CONCEPT_DROPS=1, PLAN_CLOCK=1 and QB_TICK_PICTURE=1.
- * Bit 1: reads on steps and the release on a step. The plan gives each read its step index (`plan.rhythm[].n`, Rules
- * + Coaching's hand-over: 0 the set, 1 the first hitch, 2 the second; reads on one look share it); he lands step n n
- * strides of his own drop after his set. His eyes go to the next read when the step that lands for it starts, not
- * when a dwell runs out, but not before he has given the read he is on his yes/no glance (attempt one moved them at
- * the set + 0.1 s, before a read-1 throw on the plant could start). The hitch is a base reset at depth, one stride,
- * turned to the read. A read can be thrown once its step has landed (or with the landing inside his load). Under
- * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps the dwell moves him on as before.
- * Triangle, peek, key and hot reads are unchanged by this bit. Bits 2 (the open-hip drop, drop pacing) and 4 (climb /
- * slide / reset) are not built. */
-const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
-const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
-/** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
- * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
- * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
- * game's catch-and-throw, the gun three and five, the five and seven from under center; play action counts the
- * fake's step as one more of five). Coached counts, not fitted. */
-const DROP_STEPS: Record<string, number> = { quick: 1, gun3: 3, gun5: 5, five: 5, five_deep: 5, seven: 7, pa: 5, boot: 5 };
-/** QB_AVOID: the look he still needs beyond his motion when his dwell is not known (s; otherwise his own dwell on a
- * read), and the margin by which the man's time must clear his need
- * before he stops (s): exit on the far side of the entry. Chosen. */
-const AVOID_LOOK = 0.25, AVOID_EXIT = 0.35;
 const KEY_HOLD = 1.2;
 /** QB_BREAK: the time a spot must leave him on the nearest felt pursuer (s); the existing scramble lane margin. */
 const BREAK_MARGIN = 0.35;
@@ -624,25 +605,6 @@ const PATH_PICK = 0.2;
 const CATCH_PICK = 1.75;
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
-/** QB_PHASE (experimental, off; QB_PHASE=1; with DEF_BELIEF): the price on a receiver with a defender running with
- * him. Off, a defender with his back to the passer has to react to the ball (1.8 reaction times) and then run to it,
- * so a man on the receiver's hip is believed 0.37 s late and nearly out of the play: his price runs 0.60 to 0.68 from
- * a receiver with a man within a yard to a wide-open one, while completion runs 50 to 77% (26 to 69% on the BALL_EST
- * receiver). A man in phase does not react to the ball; he plays the receiver and arrives with him. On, from his own
- * pictures: `phase` = closeness (1 at 1 yd of separation or less, 0 at 3 yd) x velocity match (1 when the defender's
- * seen velocity is the receiver's, 0 when it differs by the larger of the receiver's speed and 3 yd/s); leverage = the
- * defender's offset along the receiver's line to the catch point (1 at 1.5 yd toward it, 0.5 level, 0 trailing). A
- * defender in phase takes  phase x (TRAIL + (LEVER - TRAIL) x leverage)  of the window, whatever the old terms say.
- * A defender he has not looked at counts where his stale picture has him: he can be wrong about it.
- * TRAIL and LEVER are his experience of his own world: fitted by scripts/diag/eyes/phase_fit.py to our own outcomes
- * on each receiver engine (engine-66, 16 games: default receiver 0.30 / 0.76 on 1,317 throws; BALL_EST receiver
- * 0.42 / 1.00 on 1,358), never to an NFL number. They go stale whenever the receiver or the coverage at the catch
- * changes (our in-phase defenders finish farther from the receiver than the NFL's; when that is repaired a man on the
- * hip will cost more): rerun the probe (deep-forced.ts, mode all) and the fit, and replace them. His decision-making
- * and experience set his error around them: the less he knows, the noisier and the more hopeful. (An earlier form of
- * this flag used a measured table of how far such a man is carried; it moved little and is gone.) */
-const QB_PHASE = process.env.QB_PHASE === '1';
-const PHASE_FIT = Number(process.env.BALL_EST ?? 0) !== 0 ? { trail: 0.42, lever: 1.0 } : { trail: 0.30, lever: 0.76 };
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
  * window, 0.12-0.45 s): his belief of that window and of how often such a defender gets it out (the receiver's hands
  * and contested-catch skill set how well he holds on; the window's grip strengthens as it goes, hence 0.65). */
@@ -938,44 +900,6 @@ export class QBPass implements Behavior {
   private pathOf = new Map<Agent, 'rush' | 'follow'>();
   /** BLITZ_READ diagnostic (no effect): the defender his hot was called on. */
   hotDef: Agent | null = null;
-  /** QB_AVOID: the decision in force: the man, the spot, the pace; and diagnostics (no effect). */
-  private avoid: { body: Agent; to: Vec2; pace: number; kind: 'slide' | 'climb' } | null = null;
-  /** His dwell on a read this tick (the look a throw still needs), for QB_AVOID. */
-  private dwellNow: number | null = null;
-  avoidCount = { slide: 0, climb: 0 };
-  /** QB_AVOID: move off a free rusher he feels, or null when there is none to answer (see the flag). */
-  private avoidMove(a: Agent, sim: PlaySim, read: Agent | undefined, facing: number): MoveCommand | null {
-    const need = this.windup(a) + (this.dwellNow ?? AVOID_LOOK), cut = 0.8 + 0.4 * a.r('elusiveness');
-    const timeOf = (d: Agent) => { const f = this.felt(a, sim, d); return timeToReach({ pos: f.pos, vel: f.vel, profile: this.bodyOf(a, d), speedScale: 1 }, a.pos, 0.8) + this.held(a, d, sim); };
-    if (this.avoid) {
-      const v = this.avoid, left = Math.hypot(v.to.x - a.pos.x, v.to.y - a.pos.y);
-      // Kept until the spot is reached or the man is back outside his need by a margin.
-      if (left > 0.3 && this.felt(a, sim, v.body).pose !== 'down' && timeOf(v.body) < need + AVOID_EXIT) {
-        return goTo(a, v.to, { speed: Math.min(1, v.pace / a.profile.vmax), facing, cutSkill: cut });
-      }
-      this.avoid = null;
-    }
-    const p = this.pressure(a, sim), d = p.agent;
-    if (!d || p.time >= need || this.held(a, d, sim) > 0) return null;
-    const f = this.felt(a, sim, d).pos, dy = f.y - a.pos.y, body = this.bodyOf(a, d);
-    const step = body.radius + a.profile.radius + body.reach;
-    const fromEdge = Math.abs(dy) > 1.5 && f.x <= a.pos.x + 1;
-    let to: Vec2;
-    if (fromEdge) to = { x: Math.min(a.pos.x + step, sim.los - 2.5), y: a.pos.y - Math.sign(dy) * 0.3 * step };
-    else {
-      // Off his line: to the read's side when that is away from the man, else away from him.
-      const awayY = -Math.sign(dy) || Math.sign(a.pos.y - sim.ballY) || 1;
-      const readY = read ? Math.sign(this.has(sim, read).y - a.pos.y) : 0;
-      const side = Math.abs(dy) < 0.5 && readY ? readY : awayY;
-      // Up and off his line: into the space in front of him, from his set point (not from where the drop's momentum
-      // has carried him), never past the pocket's front.
-      to = { x: Math.min(Math.max(a.pos.x, this.drop.x) + 0.5 * step, sim.los - 2.5), y: a.pos.y + side * step };
-    }
-    const pace = clamp(step / Math.max(p.time - 0.1, 0.2), 1.5, 0.75 * a.profile.vmax);
-    this.avoid = { body: d, to, pace, kind: fromEdge ? 'climb' : 'slide' };
-    this.avoidCount[this.avoid.kind]++;
-    return goTo(a, to, { speed: Math.min(1, pace / a.profile.vmax), facing, cutSkill: cut });
-  }
   /** QB_KEY_THROW diagnostic (no effect): throws to the answer while he was holding on it. */
   keyThrows = 0;
 
@@ -1307,7 +1231,6 @@ export class QBPass implements Behavior {
     // Quick game is rhythm: one look per read. Dropback reads take longer.
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
     const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus)) * (1 - 0.3 * this.narrow(a));
-    this.dwellNow = dwell;
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
@@ -2228,18 +2151,6 @@ export class QBPass implements Behavior {
         mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
           vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
       }
-      // QB_PHASE: is this man running with his receiver, in his own pictures, and with what leverage on the throw?
-      let inPhase = 0;
-      if (QB_PHASE && DEF_BELIEF && !tied) {
-        const sepSeen = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y);
-        const t1 = forecast?.predict(sim.t, 0.1) ?? target, rvx = (t1.x - target.x) / 0.1, rvy = (t1.y - target.y) / 0.1;
-        const close = clamp((3 - sepSeen) / 2, 0, 1), match = clamp(1 - Math.hypot(seen.vel.x - rvx, seen.vel.y - rvy) / Math.max(Math.hypot(rvx, rvy), 3), 0, 1);
-        const ux = point.x - target.x, uy = point.y - target.y, L = Math.hypot(ux, uy) || 1;
-        const lever = clamp(0.5 + ((seen.pos.x - target.x) * ux + (seen.pos.y - target.y) * uy) / L / 3, 0, 1);
-        // His sense of what such a man costs: the fit, hopeful and noisy by how little he knows.
-        const sense = clamp(1 - (1 - know) * (0.25 + 0.25 * a.mind.judgment('def-phase')), 0.3, 1.2);
-        inPhase = clamp(close * match * (PHASE_FIT.trail + (PHASE_FIT.lever - PHASE_FIT.trail) * lever) * sense, 0, 0.95);
-      }
       const react = dp.reactionTime * (facingQB ? 1 : 1.8) + (tied ? 0.5 : 0);
       const leap = dp.reactReach + 0.5 * (dp.maxCatchHeight - dp.reactReach);
       // PICTURE_AGE: how far he could be from where the QB has him, in time.
@@ -2248,7 +2159,7 @@ export class QBPass implements Behavior {
         const age = this.mind.pictureAge(d), A = dp.vmax / Math.max(dp.tau, 1e-3);
         spreadD = Math.min(0.5 * A * age * age, dp.vmax * age) / Math.max(dp.vmax, 1e-3);
       }
-      return { d, dp, dBall, blind, mover, inPhase, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      return { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
@@ -2269,7 +2180,7 @@ export class QBPass implements Behavior {
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, dp, dBall, blind, mover, inPhase, react, leap, spreadD, facingQB, estimateError } of defenders) {
+      for (const { d, dp, dBall, blind, mover, react, leap, spreadD, facingQB, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, dp.reach + 0.3) + react;
         // BLITZ_READ: a defender he believes is rushing is going elsewhere, not to this point.
         const m = tt - total + estimateError + (BLITZ_READ ? 3 * this.rushOf(d) : 0);
@@ -2278,8 +2189,7 @@ export class QBPass implements Behavior {
         const contest = 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
-        // QB_PHASE: a man running with the receiver takes his share of the window whether or not he could react to the ball.
-        pOpen *= 1 - Math.max(contest * (0.55 + 0.3 * dBall), inPhase);
+        pOpen *= 1 - contest * (0.55 + 0.3 * dBall);
         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
         if (DEF_BELIEF) {
           const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
@@ -2302,7 +2212,7 @@ export class QBPass implements Behavior {
         const iJump = first * (0.15 + 0.35 * dBall), iContest = Math.max(0, contest - first) * 0.08 * dBall;
         intRisk += iPath + iJump + iContest;
         intPath += iPath; intJump += iJump; intContest += iContest;
-        if (marginTrace && pt === point && (contest > 0.05 || inPhase > 0 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, ph: +inPhase.toFixed(3), age: +this.mind.pictureAge(d).toFixed(2), sepSeen: +Math.hypot(this.mind.estimate(d).pos.x - target.x, this.mind.estimate(d).pos.y - target.y).toFixed(1), m: +m.toFixed(3), first: +first.toFixed(3),
+        if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
           contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
           iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +dBall.toFixed(2) });
         if (INT_BELIEF) {
@@ -2829,10 +2739,6 @@ export class QBPass implements Behavior {
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
     const facing = this.bodyFacing(a, sim, (QB_EYES && this.eyesOn) || read);
-    if (QB_AVOID) {
-      const mv = this.avoidMove(a, sim, read, facing);
-      if (mv) return mv;
-    }
     if (slideMove) return goTo(a, slideMove, { speed: Math.min(1, POCKET_SLIDE_PACE / a.profile.vmax), facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') });
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a

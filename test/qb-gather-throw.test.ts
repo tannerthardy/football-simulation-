@@ -7,7 +7,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-const PLAYS: [string, string, number][] = [['dagger', 'cover3', 3], ['drive', 'cover3', 2], ['comebacks', 'cover1', 2], ['post_cross', 'cover3', 2], ['smash', 'cover1', 3], ['seam_hitch', 'cover1', 4]];
+// Re-found 2026-11-16 on the engine-69 defaults (DIR_CAP on): the same staged scene, but with the monotone cap his pocket and the coverage around it differ from
+// the legacy engine's, and of the original six plays only two now reach the gate (the tick his eyes finish on the man he has decided on) before the windup, short of
+// the three the test needs. Six plays that gate on the defaults, with the original seam_hitch (cover1) which gates without a step toward his man, kept for variety.
+// The assertions are unchanged.
+const PLAYS: [string, string, number][] = [['dagger', 'cover3', 3], ['dagger', 'cover3', 2], ['drive', 'cover3', 3], ['smash', 'cover3', 3], ['seam_hitch', 'cover3', 4], ['stick', 'cover3', 3], ['seam_hitch', 'cover1', 4]];
 
 interface Row { readCreep: number; upBeforeGate: number; step: number; toward: number | null; gated: boolean }
 

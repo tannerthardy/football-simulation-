@@ -5,16 +5,14 @@ import type { PlaySim } from './playsim.js';
 const PA_DROP = process.env.PA_DROP !== '0';
 
 /** CONCEPT_DROPS (experimental, off; CONCEPT_DROPS=1; Rules+Coaching mark the concepts in concepts.ts, the QB lane
- * owns this depth and time): the marked five-step class ('five_deep') is the NFL's deeper drop, not the same set as
- * 'gun5'. It has its own name so that 'five' (dagger, y_cross) keeps the drop it had: redefining 'five' deepened
- * those two unmarked concepts and cost them half their yards a play in the paired read
- * (scripts/diag/escape/drop-staged.ts). Measured on
+ * owns this depth and time): the five-step class is the NFL's deeper drop, not the same set as 'gun5'. Measured on
  * tracking by scripts/diag/escape/drop-time.py (BDB 2025, finished non-designed drops): from the gun 28% of drops set
  * 3.5-5 yd behind the snap spot, ending at 2.2 s (p25-75 2.0-2.4), the ball out at 3.0; under center 46% set 6.5-8.5
  * yd behind it, ending at 2.4 s (2.3-2.6), the ball out at 3.5. Ours set 3.4 yd (gun, 68% of drops in the 2-3.5 bin)
  * and 6.4 yd (under center) on every five-step call. Depths are the middle of those NFL bins from our snap spots
  * (4.6 yd behind the line in the gun, 1.6 under center); `time` is the measured end less the 0.4 s by which our
  * measured end trails the spec's time on the existing drops (1.4 -> 1.8 s gun, 1.8 -> 2.2 s under center). */
+const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
 const FIVE_GUN = (los: number) => ({ x: los - 8.8, time: 1.8 });
 const FIVE_UNDER = (los: number) => ({ x: los - 8.9, time: 2.0 });
 
@@ -29,10 +27,9 @@ export function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boo
     case 'gun5':
       return gun ? { x: los - 8.0, time: 1.4 } : { x: los - 8.0, time: 1.75 };
     case 'five':
+      // CONCEPT_DROPS: the deeper set (FIVE_GUN, FIVE_UNDER), measured.
+      if (CONCEPT_DROPS) return gun ? FIVE_GUN(los) : FIVE_UNDER(los);
       return { x: los - 8.0, time: gun ? 1.4 : 1.8 };
-    case 'five_deep':
-      // CONCEPT_DROPS's class: the deeper set (FIVE_GUN, FIVE_UNDER), measured. Only the concepts that flag marks.
-      return gun ? FIVE_GUN(los) : FIVE_UNDER(los);
     case 'seven':
       return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
     case 'pa':
@@ -52,4 +49,15 @@ export function calledLaunchX(sim: PlaySim): number | null {
   const concept = sim.offCall.pass;
   if (!concept) return null;
   return dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under').x;
+}
+
+/** SET_SPOT: where the called drop puts the QB at time t after the snap, from the call alone (his snap alignment, the
+ * drop's depth and its time): the pocket's schedule every lineman knows. Not the QB's live spot. Null without a pass
+ * concept. Linear from the snap spot to the launch point over the drop's time, then the launch point. */
+export function calledPocketX(sim: PlaySim, t: number): number | null {
+  const concept = sim.offCall.pass;
+  if (!concept) return null;
+  const spec = dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+  const x0 = sim.snapX[sim.qb.idx] ?? spec.x, f = Math.min(1, Math.max(0, t / Math.max(spec.time, 0.1)));
+  return x0 + (spec.x - x0) * f;
 }

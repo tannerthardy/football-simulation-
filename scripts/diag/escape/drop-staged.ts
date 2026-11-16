@@ -6,8 +6,7 @@ import { nativeTraceSetup } from '../command-trace.js';
 import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
 const CONCEPTS = 'smash mesh flood drive sail_corner corner_flat trips_sail trips_outs double_outs comebacks dagger y_cross four_verts verts_hitch stick curl_flat'.split(' ');
 const COVS = 'cover1 cover2man cover2 tampa2 cover3 cover3_match cover4 cover6'.split(' ');
-// STAGED_FIVE_DEEP=dagger,y_cross: put these concepts on the deeper set for this run only (the twelve-concept arm).
-for (const id of (process.env.STAGED_FIVE_DEEP ?? '').split(',').filter(Boolean)) if (PASS_BY_ID[id]) PASS_BY_ID[id].drop = 'five_deep';
+// (STAGED_FIVE_DEEP retired 2026-11-16: develop's 'five' is the deeper set under CONCEPT_DROPS.)
 // STAGED_CONCEPTS=a,b: only these concepts (to run the set in chunks and append the rows).
 const ONLY = (process.env.STAGED_CONCEPTS ?? '').split(',').filter(Boolean);
 for (const concept of ONLY.length ? CONCEPTS.filter((c) => ONLY.includes(c)) : CONCEPTS) for (const coverage of COVS) for (const roster of [3, 7, 11, 19]) for (const seed of [1, 2, 3, 4, 5, 6]) {
