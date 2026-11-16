@@ -484,7 +484,10 @@ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
 const FW_GRASS = (QB_FOOTWORK & 8) !== 0;
 /** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids). Chosen; GRASS_READ's plan
  * fields replace it. */
-const GRASS_ROUTES = new Set(['go', 'fade', 'corner', 'post', 'deep_out']); // chosen: routes into space decided by the plant; the seam is a hook/safety read off the hitch (vertReadable)
+// The set agreed with Rules from the sources (2026-11-16): go and fade (Gonzalez; Marinelli); the corner as read 1 and
+// not half of a key (Win With The Pass, mesh). Not the seam at the plant (decided "as he passes by the linebacker":
+// the plan's later step carries it); not the post or the deep out (Walsh: thrown on the break).
+const GRASS_ROUTES = new Set(['go', 'fade', 'corner']);
 /** GRASS_READ (Rules, #802): the plan marks grass reads (`rhythm[i].grass`: landing in the plan's frame, the route time
  * there, decided on the entry's step n). With it, the plan is the source of which reads are grass reads and where they
  * land; without it, the fallbacks above (read 1 only, decided on the plant). */
@@ -1780,6 +1783,8 @@ export class QBPass implements Behavior {
     if (GRASS_FIELDS) return this.grassPlan.has(r);
     if (this.reads[0] !== r) return false;
     const id = this.receiverForecasts.get(r)?.prior.routeId ?? null;
+    // A keyed corner (smash) is thrown off its defender, not the grass.
+    if (id === 'corner' && this.plan?.key && (this.plan.key.low === r || this.plan.key.high === r)) return false;
     return !!id && GRASS_ROUTES.has(id);
   }
   /** When a grass read is decided: his step n for it (n strides after his set; the plant for n = 0). */

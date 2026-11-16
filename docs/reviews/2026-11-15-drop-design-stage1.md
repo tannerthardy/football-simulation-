@@ -509,3 +509,15 @@ window does not see a crosser still inside the traffic; this is the same questio
 (the window overrating a man with a defender on him), taken up there. A few of the 25 are roll noise: the look-off's
 dice draw is skipped with bit 8, and 6 plays went the other way.
 
+### The grass set, agreed with Rules (2026-11-16)
+
+Coached source decides. Go and fade: grass (Gonzalez: "the moment his back foot hits... well before the receiver hits
+the 18-22 yard mark"; Marinelli's fade read during the drop). Seam: grass, decided "as he passes by the linebacker"
+(Gonzalez; Wilhite: whether he defeats the overhang's collision), so on a later step than the plant; the plan places
+its entry on that step. Corner: grass only as read 1 and not half of a key (Win With The Pass, mesh); a keyed corner
+(smash, corner_flat, sail_corner) is thrown off its defender. Post and deep out: not grass (Walsh: thrown on the break,
+"five big steps and a hitch", outs on "five quick steps"); an anticipation throw to the break is the on-break lead.
+The landing depth (Rules, #802 at 453f1660): verticals 20 yd, the middle of Gonzalez's taught 18-22 yd band; the
+corner's 20 yd along its path is a stated choice. The fallback set (without the plan's fields) follows: go, fade, and
+the unkeyed corner, read 1 only.
+
