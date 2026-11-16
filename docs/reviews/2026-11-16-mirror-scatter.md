@@ -70,3 +70,18 @@ sample (skill players, defence parked) is the right gate.
 
 **Changes plays on the defaults: every play** (the sign of each defender's draw flips on one orientation). The
 distribution is unchanged. So this is a promotion decision with a seed card, not a no-op.
+
+## Was a bias hidden in absolute y? (Integration's question)
+
+`scripts/diag/mirror/scatter-bias.mts`: 400 plays (four formations × flip, four coverages). Each defender's draw,
+expressed relative to his own side (+ = wide of his landmark):
+
+| | off (absolute y: draw × side) | on (draw) |
+|---|---|---|
+| alignment error, mean (SE), n 4,400 | +0.0012 (0.0020) | −0.0016 (0.0020) |
+| alignment error off, raw draw by side | +y side −0.0004 (n 2,409); −y side −0.0031 (n 1,991) | – |
+| ALIGN_HABIT lateral scatter, off-ball non-press, n 2,500 | +0.022 (0.008) | −0.002 (0.008) |
+
+No real bias was hidden. Both draws are centred within 0.02 yd either way; the scatter's +0.022 is about 3 SE in one
+of several comparisons and has no football size. The asymmetry was purely in direction under a mirror, not a
+sideline-wide shade. So the flag changes symmetry, not the mean placement.

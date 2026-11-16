@@ -1,0 +1,356 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 8ffa276e..643b892a 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -74,6 +74,7 @@
+     "OFFBALL_TIMING": "0",
+     "NICKEL_FRONTS": "0",
+     "SHORT_BASE": "0",
++    "MIRROR_SCATTER": "0",
+     "MUG_PRESSURES": "0",
+     "BACKER_TAKEON": "0",
+     "RUN_BLITZ": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 8566b2d2..6e382e2d 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -237,6 +237,7 @@
+     "MESH_GUN_SIDE": "on",
+     "MESH_TEMPO": "on",
+     "MUG_CALLS": "on",
++    "MIRROR_SCATTER": "off",
+     "MUG_PRESSURES": "on",
+     "NICKEL_FRONTS": "on",
+     "NO_CROSS": "on",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 17ebede0..e320292d 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 418 flags read from the environment in `src` (recounted 2026-11-16, engine-70 with the following card's candidates merged off): 310 are on unless set to `0`, 91 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 419 flags read from the environment in `src` (recounted 2026-11-16, engine-70 with the following card's candidates merged off): 310 are on unless set to `0`, 92 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -150,6 +150,7 @@ There are 418 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `LB_GUARD_STEP` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental | defense | `src/sim/behaviors/defense.ts` (ZoneCoverage unsure box backer), `src/sim/run-fits.ts` (guardStep) | set at first review. "Guards to backs": a box backer still unsure of run or pass whose guards both step the same way (neither setting back in a pass set) steps with them at their pace + 0.5, eyes on the QB, read at their first visible movement (KEY_STEP_SEEN) on the guard key delay. Play action's run look fools him, as it should. OZ box backers, lateral toward the play (rgops2/lbflow.py, same code NFL vs sim; with LB_LINE_FLOW, KEY_REACT, ZONE_RUN, KEY_PACE, KEY_DEPTH): backside at 0.5 / 1.0 / 1.5 s +0.15 / +1.88 / +3.18 -> +0.70 / +2.44 / +3.35 (NFL +1.14 / +2.85 / +3.70). Ours started at about 0.5 s (first run fit median 0.60 s); NFL backers move with the snap. A first try on the flow read's 0.5 yd/s held threshold moved little. Paired zone yards -0.48 (SE 0.26) |
+ | `NICKEL_FRONTS` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental | defense | `src/playbook/defense.ts` (catalog), `src/playbook/alignment.ts` (roles, Mint edge), `src/game/playcaller.ts` (calls), `src/playbook/types.ts` (3-3-5 personnel) | set at first review. Sub-package fronts, named by their coaching families: Penny (5-1: 4i-0-4i with both edges on the line, the Will walked up as the weak edge and rushing on zone calls, the Mike alone off), Penny Bear (5-1 with the 3-0-3 bear interior), Mint (4i-0-4i, one edge to the strength, two off-ball backers with the Will over the weak C-gap bubble), Okie (5-0-5 three down with a stand-up rover who drops on 3rd and 7+ and rushes otherwise), and the 3-3 Stack (new `stack335` personnel: three down, three backers stacked at 4.5 yd; 3% of nickel calls). Shares from 2022 snap frames classified by interior shape (`scripts/diag/align/nfronts.py`, same code on the sim): NFL nickel early bear 6%, tite/mint 3%, 5-1 4%; short yardage bear 12%, 5-1 6%; 3rd and long nose-only 5%; dime nose-only 11% early / 21% on 3rd and long. Called: nickel early Penny 2, Penny Bear 5, Mint 3, Okie 1%; 3rd down 1/3/1/5%; short yardage 3/10/3%; dime Okie 11 / 18 / 12%. Sim with the flag (same classifier): nickel early bear 7%, 5-1 4%, nose-only 5%; short yardage bear 10%; dime 3rd and long nose-only 16%. With the flag a side whose widest man on the line plays an inside technique keeps it (the Mint has no weak edge). The fronts exist only under the flag; their line contacts match Over/Under's. An earlier version (one five-man and one three-man front) ran on the PR-tier scorecard within noise (stuffs 13.7 -> 10.8%) |
+ | `SHORT_BASE` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental | defense | `src/game/playcaller.ts` (personnel) | set at first review. Short yardage (2 yards or less) against heavy personnel uses the heavy package (its bear) on 15% of snaps, the league's heavy share, and base personnel with its short-yardage menu otherwise; ours always went heavy. NFL base vs 3+ backs and ends at 2 yards or less (nfronts.py): over/under 33%, bear 24%, heavy 13%, tite 8%; sim bear 88% -> 44% (over/under 4 -> 37%). The remaining excess bear is the 3-4 base menu's short-yardage weight (bear34 39 of 63) |
++| `MIRROR_SCATTER` | off | experimental (run game, 2026-11-16) | defensive alignment scatter | `src/playbook/alignment.ts` (`scatterSide`, ALIGN_HABIT scatter); `src/sim/playsim.ts` (alignment error at placement and on a stem) | a defender's lateral alignment error and ALIGN_HABIT lateral scatter are a cheat wide or tight on his own side (draw × his side's sign: his spot's side of the ball, the offence's strong sign on the ball), not absolute field y; magnitudes and draws unchanged. Off, a mirrored formation met an unmirrored defence. Read: docs/reviews/2026-11-16-mirror-scatter.md |
+ | `MUG_PRESSURES` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental | defense | `src/playbook/defense.ts` (mug_one / mug_sim / mug_fire / mug_both), `src/game/playcaller.ts` (package pick), `src/playbook/call-integrity.ts` (flag) | set at first review. A call that mugs backers in the A gaps (MUG_CALLS or the passing-down mug) also picks a mug package: Mug One (Mike A, Will bails, 5 rush), Mug Sim (Mike A, weak end drops to the hook, 4 rush), Mug Fire (both A, weak end drops as seam/flat, Cover 3, 5 rush), Mug Both (double A, six rush, Cover 0); the remainder bails (both muggers drop, 4 rush). Shares from 2022 nickel dropbacks with a mug at the snap (`scripts/diag/align/mugrush.py`, `wasInitialPassRusher`): double mug (n 173) no mugger rushes 42%, one 32%, both 25%, a lineman drops 14%, rush 4/5/6+ 49/24/22%; single mug (n 341) the mugger rushes 50%. Sim, 40 games with MUG_CALLS=1 (`scripts/diag/_mugpkg.mts`): nickel double mug (n 44) no mugger rushes 34%, one 31%, both 18%, a lineman drops 4%, rush 4/5/6 54/30/16%; single mug (n 85) the mugger rushes 46%. Limit: the protection (`ProtectionCoordinator.isRusher`) reads each defender's private rush/blitz assignment, so a bail or sim cannot yet leave a free rusher or waste a blocker; the package mix is right but its effect on protection is not yet real. Tests `test/mug-pressures.test.ts`. |
+ | `BACKER_TAKEON` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental | defense | `src/sim/behaviors/defense.ts` (`takeOn`, applied to backers' run fits) | set at first review. An unblocked backer who sees a climber coming at him breaks down before contact: he brakes his speed into the blocker to 0.5 yd/s and sinks his pads to the engaged run-fit level, keeping his fit's facing. A climber, from the backer's own picture: a blocker off his block, moving at him at 1.5 yd/s or more, within 2.5 yd, closing at 2 yd/s or more, whose closest approach comes inside his arms (0.45 yd), with contact due within the time the backer's brakes need plus one beat. He doesn't break down when the carrier he sees is closer than the blocker. Why: on Coverage's 22 explosive Cover 1 / 2-Man runs (#419 `efe11322`), a climbing TE or H-back's first collision knocked a backer down before the carrier reached the line on 7 snaps (`scripts/diag/_cfit.mts`, `_tefall.mts`); Flex confirmed the collision physics is coherent and named breaking down and hands as the physical levers. Result, 400 matched random run snaps (seeds 5000-5399; `scripts/diag/_takeonpair.mts`, `_takeonep.mts`): it fires on 67% of run snaps; the 133 where it doesn't fire are identical. Backer falls in the first 3 s 114 → 56. Paired yards on fired snaps -1.07 (95% CI -2.36 to +0.12); counter -2.66, duo -0.41, outside zone -0.88, power -0.65. Brake episodes that never meet a blocker within 0.5 s: 29% (28.6 braked s across the snaps). History: the first trigger (any closing blocker) fired on 95% of snaps, and 54% of its brakes met nobody, mostly linemen locked on a DL that the backer was running toward; it cost outside zone +2.45 (Flex's check). Squaring to the climber was worse and is dropped. The quick scorecard's yd/carry 6.15 → 4.88 on the first trigger was game divergence. Seed 1909: impulse 320 → 220, he stays up, engaged (`test/backer-takeon.test.ts`). Not yet built: taking the block on with hands (a defender-started engagement via `sim.engage`; Flex). |
+ | `BACKER_CREEP` | on | promoted 2026-11-10 (run-ref-6; `=0` restores); was experimental | defense | `src/sim/backer-creep.ts`, `src/sim/playsim.ts` (stageDefense), `src/sim/behaviors/defense.ts` (unsure box backer) | set at first review. A box linebacker (2.5-7 yd off, within 6 yd of the ball, not a called blitzer) creeps into the snap with probability 0.2 + 0.4 × anticipation: from 0.3-0.6 s before the snap he walks downhill at 0.4-0.8 yd/s, and, having timed the count to do it, starts with the snap (no visual response). Still unsure after it, he keeps walking into his read at that pace (his read step is the creep continued) instead of planting, stepping back to a fixed read-step spot, or holding depth in the guard step. Not under a front stem. NFL box LBs in the last 0.1 s before the snap: 37-38% moving > 0.5 yd/s, about 60% of them downhill (median +0.4 yd/s), runs and dropbacks alike. Matched restage on `run-ref-3` @ 6c0bd5c0 (12 run-only games, 1,328 runs; `scripts/diag/_lbdepth.mts`, LBs 1.6-7 yd deep within 6 yd of the OL centre; NFL the same definition on the 2022 run-film archive), outside zone, all off / BACKER_CREEP / OFFBALL_TIMING / both / NFL: moving > 0.5 yd/s at the snap 5 / 23 / 5 / 23 / 46% (NFL about 30% downhill); speed at 0.2 s 0.00 / 0.00 / 0.34 / 0.47 / 0.81 yd/s; travel in the first second 1.31 / 1.38 / 1.36 / 1.41 / 1.94 yd; depth at 1.0 / 1.5 s 4.10/3.30, 3.93/3.08, 4.04/3.28, 3.91/3.06, NFL 3.56/2.82. Paired yards (capped at 20): BACKER_CREEP −0.02 (SE 0.07), OFFBALL_TIMING −0.03 (0.09), both −0.06 (0.10). Lateral at 1.0 s barely moves (0.95 → 0.98, NFL 1.58): the rest is acceleration from rest. Test `test/backer-start.test.ts`. |
+diff --git a/docs/reviews/2026-11-16-mirror-scatter.md b/docs/reviews/2026-11-16-mirror-scatter.md
+new file mode 100644
+index 00000000..e88db3ed
+--- /dev/null
++++ b/docs/reviews/2026-11-16-mirror-scatter.md
+@@ -0,0 +1,87 @@
++# Mirror asymmetry under LINE_START: traced to the defensive alignment scatter; MIRROR_SCATTER (off)
++
++Run Game for Integration, 2026-11-16, on engine-70 (develop fb870814 merged as 4b542608). Rules found the read
++compiler's offence-only sample is not mirror-symmetric under the defaults: pa_flood compiles `pure` one way and
++`vertical_peek` the other, and trips_sail's order changes. LINE_START=0 removed the plan difference.
++
++## The trace
++
++`scripts/diag/mirror/getoff-mirror.mts` replicates `sampleRoutes` (features.ts) flipped and not, and prints every
++skill player's position, velocity, facing and command (vel, drive) per tick in the ball-relative mirrored frame,
++with the first differing tick and term. `scripts/diag/mirror/_def.mts` dumps the defence's spots and placement.
++
++1. **The first divergence is at tick 1, before anyone moves, with LINE_START on or off.**
++   - Y's depth is −1.06 vs −0.83 (gun doubles).
++   - X/Z/H are 0.033 yd off their mirror.
++2. **Sources, each "the same seed, absolute field y":**
++   - (a) `playsim.ts` placement adds `mind.alignmentError` to every defender's y in absolute field coordinates. DE_S is
++     placed 6.08 vs 6.41 yd from the ball (spot 6.25 both). The same applies on a stem (`playsim.ts` ~528).
++   - (b) ALIGN_HABIT's lateral scatter (drawn in `playsim.ts`, applied in `alignDefense`) is absolute y. The back
++     seven's spots differ: LB_M 2.36 vs 2.90, FS +0.40 vs −0.40, SS 6.45 vs 5.79. ALIGN_HABIT=0 makes every spot
++     mirror exactly.
++   - (c) The compiler sample itself (Rules' `features.ts`): ballY 26.65 vs CENTER_Y 26.667 picks a field side (the
++     0.033 yd receiver offsets), and the parked defence sits at y = 1, one sideline.
++3. **Into the offence.** RECEIVER_DEPTH backs a line receiver off 0.23 yd when a defender is within 1.5 yd laterally
++   at press depth. DE_S is 1.46 yd from Y unflipped and 1.79 flipped, so Y is backed off on one side only.
++4. **LINE_START is symmetric; it carries the 0.23 yd.** With every body on its mirrored spot, ALIGN_HABIT off, the ball
++   centred and the park on the ball's line:
++   - smash and y_cross agree to the tick for 2.0 s in gun doubles and trips;
++   - Y's get-off terms agree tick by tick (distance from start, read time, focus, stress, drive).
++   The 0.23 yd deeper start shifts his get-off and readiness enough to tip pa_flood and trips_sail between plans.
++   With LINE_START=0 the depth difference is still there and the plan does not tip. So "LINE_START=0 restores the
++   mirror" holds for the plan, not for the sample.
++5. **For Rules: those two plans sit on a threshold.** A 0.23 yd deeper start for one receiver flips pa_flood and
++   trips_sail between installed plans.
++
++## MIRROR_SCATTER (off)
++
++A defender's lateral alignment error and his ALIGN_HABIT lateral scatter are now a cheat wide or tight of his
++landmark, on his own side: the draw is multiplied by his side's sign (`scatterSide`: his spot's side of the ball, or
++the offence's strong sign for a man aligned on the ball). Draws and magnitudes are unchanged. Touched:
++
++- `alignment.ts`: `MIRROR_SCATTER`, `scatterSide`, the ALIGN_HABIT scatter.
++- `playsim.ts`: placement and stem alignment error.
++- Flag rows: FLAGS.md, reference-stack `off`, baseline `"0"`.
++
++Field-side meaning (Integration's question): neither term has one.
++
++- The alignment error is per-player discipline noise (`mind.ts`: spread by discipline and consistency).
++- ALIGN_HABIT's personal habit is depth only; its lateral part is per-snap placement scatter.
++- Field and boundary leverage is set explicitly in `alignDefense` (strong side, field side when tied, technique
++  spots), not through either draw.
++- So nothing needs to stay absolute.
++
++## Gates
++
++| gate | off | MIRROR_SCATTER=1 |
++|---|---|---|
++| compiler sample, ball centred and park on the ball line: 6 concepts × 3 formations agreeing to the tick for 2.0 s | 11/18 (every gun-doubles pair differs at tick 1, Y depth) | 16/18 |
++| the two that still differ (pa_flood, trips_sail) | – | the RB's command, about 1%, from 0.15–0.9 s; there with LINE_START=0 too (separate, small; next) |
++| compiler sample as it stands (ballY 26.65, park y = 1) | Y depth and X/Z/H offsets | X/Z/H 0.033 yd offsets only: Rules' half (centred ball, park on the ball line) |
++| live plays, 6 calls × 4 seeds, flipped vs not, same seed, ball centred: defence and skill alignment mirror at tick 0 | 0/24 | 24/24 |
++| live plays agreeing to 3.0 s | 0/24 | 0/24 |
++| staged plays changed (Cover 1 / Cover 3 / Cover 2, 7 plays, 6 seeds × flip, 252) | – | 252/252 trajectories, 175/252 result yards |
++| defender width at the snap (mean / sd of \|y − ball\|) | 6.11 / 5.12 | 6.19 / 5.19 |
++
++The live 0/24 is not a symmetry fault. A flipped formation keeps the same LT and RT (and LG/RG) players, each with
++his own body and seeds, so the mirrored play has different people on each side. After tick 0 the first difference in
++every live pair is on the line. A full live mirror would need mirrored line personnel, and the compiler's offence-only
++sample (skill players, defence parked) is the right gate.
++
++**Changes plays on the defaults: every play** (the sign of each defender's draw flips on one orientation). The
++distribution is unchanged. So this is a promotion decision with a seed card, not a no-op.
++
++## Was a bias hidden in absolute y? (Integration's question)
++
++`scripts/diag/mirror/scatter-bias.mts`: 400 plays (four formations × flip, four coverages). Each defender's draw,
++expressed relative to his own side (+ = wide of his landmark):
++
++| | off (absolute y: draw × side) | on (draw) |
++|---|---|---|
++| alignment error, mean (SE), n 4,400 | +0.0012 (0.0020) | −0.0016 (0.0020) |
++| alignment error off, raw draw by side | +y side −0.0004 (n 2,409); −y side −0.0031 (n 1,991) | – |
++| ALIGN_HABIT lateral scatter, off-ball non-press, n 2,500 | +0.022 (0.008) | −0.002 (0.008) |
++
++No real bias was hidden. Both draws are centred within 0.02 yd either way; the scatter's +0.022 is about 3 SE in one
++of several comparisons and has no football size. The asymmetry was purely in direction under a mirror, not a
++sideline-wide shade. So the flag changes symmetry, not the mean placement.
+diff --git a/scripts/diag/mirror/getoff-mirror.mts b/scripts/diag/mirror/getoff-mirror.mts
+new file mode 100644
+index 00000000..f0d3a458
+--- /dev/null
++++ b/scripts/diag/mirror/getoff-mirror.mts
+@@ -0,0 +1,62 @@
++// LINE_START mirror asymmetry (Run Game for Integration, 2026-11-16): the read compiler's offence-only sample
++// (features.ts sampleRoutes: defence parked 60 yd downfield at y = 1), run flipped and not; every skill player's
++// position, velocity, facing and command (vel, drive) per tick in the ball-relative mirrored frame (y * strongSign),
++// and the first tick and term where a mirrored pair differs.
++//   node scripts/ref.mjs -- npx tsx scripts/diag/mirror/getoff-mirror.mts [concept=pa_flood] [formation=gun_doubles_11]
++import { Rng } from '../../../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const concept = PASS_BY_ID[process.argv[2] ?? 'pa_flood'], formation = FORMATION_BY_ID[process.argv[3] ?? 'gun_doubles_11'];
++const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
++const BALL_Y = process.env.BALL_Y !== undefined ? Number(process.env.BALL_Y) : 26.65; // compiler sample's ballY; CENTER_Y = 26.6667
++const PARK_Y = process.env.PARK_Y !== undefined ? Number(process.env.PARK_Y) : null;
++function sample(flip: boolean) {
++  const off = generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def = generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 });
++  const sim: any = new PlaySim({ offense: pickOffense(off, formation.personnel), defense: pickDefense(def, 'nickel'),
++    offCall: { formation, flip, kind: 'pass', pass: concept, label: concept.id },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'none' },
++    los: 40, ballY: BALL_Y, firstDownX: 50, seed: 1 } as any);
++  sim.throwBall = () => undefined;
++  // RESPOT=1 (probe arm): every body back on its alignment spot after construction (removes the absolute-y
++  // placement error and the press back-off it triggers), and the pre-snap picture re-recorded there.
++  if (process.env.RESPOT === '1') {
++    for (const a of sim.agents) { const sp = (a.team === 'O' ? sim.offAlign : sim.defAlign).spots[a.slot]; if (sp) { a.body.pos = { ...sp.pos }; if (a.behavior && "start" in a.behavior) (a.behavior as any).start = { ...sp.pos }; } }
++    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents, null);
++  }
++  const ss = sim.offAlign.strongSign;
++  const park = () => sim.defense.forEach((d: any, i: number) => { d.body.pos = { x: sim.los + 60 + i * 2, y: PARK_Y === null ? 1 : sim.ballY + ss * PARK_Y }; d.body.vel = { x: 0, y: 0 }; });
++  park();
++  if (process.env.COMPILE_PICTURE !== '0') for (let i = 0; i < 12; i++) sim.perception.record(sim.agents, null);
++  const skill = sim.offense.filter((a: any) => a !== sim.qb && !OL.has(a.slot));
++  const cmds = new Map<any, any>();
++  for (const a of skill) { const b = a.behavior, up = b.update.bind(b); b.update = (ag: any, s: any) => { const c = up(ag, s); cmds.set(ag, c); return c; }; }
++  const rows: any[] = [];
++  while (sim.phase === 'live' && sim.t <= 2.0 + 1e-9) {
++    sim.tick(); park();
++    rows.push(Object.fromEntries(skill.map((a: any) => { const c = cmds.get(a) ?? {}; return [a.slot, {
++      x: a.pos.x - sim.los, y: (a.pos.y - sim.ballY) * ss, vx: a.vel.x, vy: a.vel.y * ss, f: Math.atan2(Math.sin(a.facing) * ss, Math.cos(a.facing)),
++      cvx: c.vel?.x ?? 0, cvy: (c.vel?.y ?? 0) * ss, drive: c.drive ?? 1, cf: c.facing === undefined ? null : Math.atan2(Math.sin(c.facing) * ss, Math.cos(c.facing)),
++      beh: a.behavior?.kind, tags: [...a.tags].sort().join(','),
++      sd: a.behavior?.startDelay ?? null, rt: a.mind?.observationDelay?.(a.profile.reactionTime) ?? null,
++      fs: a.behavior?.start ? Math.hypot(a.pos.x - a.behavior.start.x, a.pos.y - a.behavior.start.y) : null,
++      decl: a.behavior?.stemDeclared ?? null, focus: a.mind?.focus ?? null, stress: a.mind?.stress ?? null }]; })));
++  }
++  return rows;
++}
++const A = sample(false), B = sample(true);
++const terms = ['x', 'y', 'vx', 'vy', 'f', 'cvx', 'cvy', 'drive', 'cf', 'sd', 'rt', 'fs', 'focus', 'stress'];
++let reported = 0;
++for (let k = 0; k < Math.min(A.length, B.length) && reported < 8; k++) {
++  for (const slot of Object.keys(A[k])) {
++    const a = A[k][slot], b = B[k]?.[slot]; if (!b) continue;
++    const bad = terms.filter((t) => a[t] !== null && b[t] !== null && Math.abs(a[t] - b[t]) > 1e-6);
++    if (a.beh !== b.beh || a.tags !== b.tags) bad.push(`beh/tags ${a.beh}[${a.tags}] vs ${b.beh}[${b.tags}]`);
++    if (bad.length) { console.log(`tick ${k + 1} (t ${(k + 1) * 0.05}) ${slot}: ${bad.map((t) => typeof t === 'string' && !terms.includes(t) ? t : `${t} ${a[t]?.toFixed?.(5)} vs ${b[t]?.toFixed?.(5)}`).join('; ')}`); reported++; }
++  }
++}
++if (!reported) console.log('mirror-symmetric to 2.0 s');
++if (process.env.SLOT) for (let k = 0; k < 14; k++) { const a = A[k][process.env.SLOT], b = B[k][process.env.SLOT];
++  console.log(`  t ${((k + 1) * 0.05).toFixed(2)} ${process.env.SLOT}: fromStart ${a.fs?.toFixed(3)} / ${b.fs?.toFixed(3)} readTime ${a.rt?.toFixed(3)} / ${b.rt?.toFixed(3)} focus ${a.focus?.toFixed(3)} / ${b.focus?.toFixed(3)} stress ${a.stress?.toFixed(3)} / ${b.stress?.toFixed(3)} declared ${a.decl} / ${b.decl} drive ${a.drive.toFixed(3)} / ${b.drive.toFixed(3)}`); }
+diff --git a/scripts/diag/mirror/live-mirror.mts b/scripts/diag/mirror/live-mirror.mts
+new file mode 100644
+index 00000000..6fbddf61
+--- /dev/null
++++ b/scripts/diag/mirror/live-mirror.mts
+@@ -0,0 +1,38 @@
++// Live mirrored pairs (Run Game, 2026-11-16): full plays with a real defence, flipped and not, same seed, ball centred;
++// every body in the ball-relative mirrored frame each tick; report each pair's first differing tick and body.
++//   node scripts/ref.mjs [--flag MIRROR_SCATTER=1] -- npx tsx scripts/diag/mirror/live-mirror.mts [seeds=4]
++import { CENTER_Y } from '../../../src/core/field.js';
++import { Rng } from '../../../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const seeds = Number(process.argv[2] ?? 4);
++const plays: Array<[string, string, string]> = [['gun_doubles_11', 'smash', 'cover3'], ['gun_doubles_11', 'four_verts', 'cover1'], ['gun_trips_11', 'y_cross', 'cover2'],
++  ['gun_doubles_11', 'hitches', 'cover3_mable'], ['gun_trips_11', 'flood', 'cover1'], ['gun_empty_11', 'smash', 'cover4']];
++function run(form: string, conc: string, cov: string, seed: number, flip: boolean) {
++  const off = generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def = generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 });
++  const formation = FORMATION_BY_ID[form];
++  const sim: any = new PlaySim({ offense: pickOffense(off, formation.personnel), defense: pickDefense(def, 'nickel'),
++    offCall: { formation, flip, kind: 'pass', pass: PASS_BY_ID[conc], label: conc },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[cov], pressure: null, label: cov } as any,
++    los: 40, ballY: CENTER_Y, firstDownX: 50, down: 1, seed } as any);
++  // The line keeps absolute names when the formation flips: a flipped LT's mirror is the unflipped RT.
++  const SWAP: Record<string, string> = { LT: 'RT', RT: 'LT', LG: 'RG', RG: 'LG' };
++  const ss = sim.offAlign.strongSign, rows: string[][] = [];
++  const name = (a: any) => (flip && SWAP[a.slot]) || a.slot;
++  const rec = () => rows.push(sim.agents.map((a: any) => `${name(a)}:${(a.pos.x - sim.los).toFixed(4)},${((a.pos.y - sim.ballY) * ss).toFixed(4)}`).sort());
++  rec(); const t0 = sim.tick.bind(sim); sim.tick = () => { t0(); if (sim.t <= 3.0 + 1e-9) rec(); };
++  sim.run(); return rows;
++}
++let same = 0, total = 0; const firsts: string[] = [];
++for (const [f, c, v] of plays) for (let s = 1; s <= seeds; s++) {
++  const A = run(f, c, v, 1000 * s + 7, false), B = run(f, c, v, 1000 * s + 7, true); total++;
++  const n = Math.min(A.length, B.length);
++  const k = Array.from({ length: n }, (_, i) => i).find((i) => A[i].join('|') !== B[i].join('|'));
++  if (k === undefined) { same++; continue; }
++  const who = A[k].filter((x, i) => x !== B[k][i]).map((x) => x.split(':')[0]);
++  firsts.push(`${f} ${c} ${v} s${s}: tick ${k} (t ${(k * 0.05).toFixed(2)}) ${who.slice(0, 4).join(',')}${who.length > 4 ? '…' : ''}`);
++}
++console.log(`mirrored pairs agreeing to 3.0 s: ${same}/${total}`); for (const x of firsts) console.log('  ' + x);
+diff --git a/scripts/diag/mirror/scatter-bias.mts b/scripts/diag/mirror/scatter-bias.mts
+new file mode 100644
+index 00000000..bca5c803
+--- /dev/null
++++ b/scripts/diag/mirror/scatter-bias.mts
+@@ -0,0 +1,36 @@
++// MIRROR_SCATTER: the scatter's signed mean relative to each defender's own side (+ = wide of his landmark), off vs on
++// (Run Game, 2026-11-16). Off, the applied lateral offset is the draw in absolute field y, so relative to his side it is
++// draw × side; on, it is the draw itself. Over many plays both should average about 0; a real bias (every defender
++// shading toward one sideline, which the absolute form would hide as "wide" on one side and "tight" on the other)
++// would show as a signed mean that differs by side.
++//   npx tsx scripts/diag/mirror/scatter-bias.mts [plays=400]
++import { CENTER_Y } from '../../../src/core/field.js';
++import { Rng } from '../../../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { scatterSide } from '../../../src/playbook/alignment.js';
++const N = Number(process.argv[2] ?? 400);
++const forms = ['gun_doubles_11', 'gun_trips_11', 'i_form_21', 'singleback_11'].filter((f) => FORMATION_BY_ID[f]);
++const covs = ['cover3', 'cover1', 'cover2', 'cover4'];
++const acc: Record<string, number[]> = { errOff: [], errOn: [], scOff: [], scOn: [], errOffL: [], errOffR: [] };
++const off = generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def = generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 });
++for (let i = 0; i < N; i++) {
++  const formation = FORMATION_BY_ID[forms[i % forms.length]];
++  const sim: any = new PlaySim({ offense: pickOffense(off, formation.personnel), defense: pickDefense(def, 'nickel'),
++    offCall: { formation, flip: i % 2 === 1, kind: 'pass', pass: PASS_BY_ID.smash, label: 'smash' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[covs[i % covs.length]], pressure: null, label: 'x' } as any,
++    los: 40, ballY: CENTER_Y, firstDownX: 50, down: 1, seed: 7000 + i } as any);
++  for (const d of sim.defense) {
++    const sp = sim.defAlign.spots[d.slot]; if (!sp) continue;
++    const side = scatterSide(sim.offAlign, sp.pos.y), e = d.mind.alignmentError;
++    acc.errOff.push(e * side); acc.errOn.push(e); (side > 0 ? acc.errOffR : acc.errOffL).push(e);
++    const j = sim.defStyle.scatter?.[d.slot]; if (j && !sp.press && sp.pos.x - sim.los > 2) { acc.scOff.push(j.y * side); acc.scOn.push(j.y); }
++  }
++}
++const m = (v: number[]) => v.reduce((a, b) => a + b, 0) / Math.max(1, v.length), se = (v: number[]) => Math.sqrt(m(v.map((x) => (x - m(v)) ** 2)) / Math.max(1, v.length));
++console.log(`plays ${N}; alignment error, mean relative to his side (+ wide): off ${m(acc.errOff).toFixed(4)} (SE ${se(acc.errOff).toFixed(4)}, n ${acc.errOff.length}), on ${m(acc.errOn).toFixed(4)} (SE ${se(acc.errOn).toFixed(4)})`);
++console.log(`  off, raw absolute-y draw by side: +y side ${m(acc.errOffR).toFixed(4)} (n ${acc.errOffR.length}), -y side ${m(acc.errOffL).toFixed(4)} (n ${acc.errOffL.length})`);
++console.log(`ALIGN_HABIT lateral scatter (off-ball, non-press), mean relative to his side: off ${m(acc.scOff).toFixed(4)} (SE ${se(acc.scOff).toFixed(4)}, n ${acc.scOff.length}), on ${m(acc.scOn).toFixed(4)} (SE ${se(acc.scOn).toFixed(4)})`);
+diff --git a/src/playbook/alignment.ts b/src/playbook/alignment.ts
+index e5b9e149..de2556c9 100644
+--- a/src/playbook/alignment.ts
++++ b/src/playbook/alignment.ts
+@@ -75,6 +75,19 @@ const TE_LINE_DEPTH = 0.83;
+  * n 1,224 pressed), tight ends 1.09 vs 0.83 (+0.26, n 1,469); the
+  * pressed-weighted mean is 0.23. */
+ export const PRESS_BACKOFF = 0.23;
++/** MIRROR_SCATTER (off; MIRROR_SCATTER=1 turns it on; Run Game, docs/reviews/2026-11-16-mirror-scatter.md): a defender's
++ * lateral placement error (his alignment error, PlaySim) and his ALIGN_HABIT lateral scatter are a cheat wide or tight
++ * of his landmark, on his own side: the draw is multiplied by his side's sign (his spot's side of the ball, or the
++ * offence's strong sign for a man aligned on the ball). Magnitudes and draws are unchanged; only the direction is now
++ * relative to his side. Off, both were added in absolute field y from the same seed whichever way the formation set, so
++ * a mirrored formation met an unmirrored defence (the read compiler's offence-only sample: DE_S 6.08 vs 6.41 yd from the
++ * ball, LB_M 2.36 vs 2.90, FS +0.40 vs -0.40; RECEIVER_DEPTH then backed the Y off 0.23 yd on one side only and LINE_START
++ * carried it into his readiness, tipping pa_flood and trips_sail between plans). */
++export const MIRROR_SCATTER = process.env.MIRROR_SCATTER === '1';
++/** MIRROR_SCATTER: +1 if a defender at `y` widens toward +y (his own side of the ball), -1 toward -y. */
++export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>, y: number): number {
++  return Math.abs(y - off.ballY) > 0.05 ? Math.sign(y - off.ballY) : off.strongSign;
++}
+ /** Default on (DEF_ALIGN=0 turns it off): the secondary aligns by its job, as on
+  * film (2022 tracking at the snap by PFF coverage assignment,
+  * scripts/diag/align/nfl_scheme.py). A corner's depth and shade come from his
+@@ -1441,7 +1454,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
+   if (style.scatter) for (const slot of present) {
+     const sp = spots[slot], j = style.scatter[slot];
+     if (!sp || !j || sp.press || sp.role.kind === 'blitz' || sp.pos.x - los <= 2) continue;
+-    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y, 1, FIELD_WIDTH - 1) };
++    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y * (MIRROR_SCATTER ? scatterSide(off, sp.pos.y) : 1), 1, FIELD_WIDTH - 1) };
+   }
+   return { spots, rushers, coverage: cov, boxCount: box };
+ }
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 4de17b7b..32279af5 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -36,7 +36,7 @@ import { containCoverage } from './coverage-space.js';
+ import { openToBall } from './open-to-ball.js';
+ import { derivePhysical } from '../players/physical.js';
+ import type { Player } from '../players/types.js';
+-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, PRESS_BACKOFF, RECEIVER_DEPTH, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
++import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, MIRROR_SCATTER, PRESS_BACKOFF, RECEIVER_DEPTH, scatterSide, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+ import { installCoverage } from '../playbook/coverages.js';
+ import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
+ import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
+@@ -396,7 +396,7 @@ export class PlaySim {
+       const body: Body = { pos: { ...pos }, vel: { x: 0, y: 0 }, facing, energy: setup.energy?.get(player.id) ?? 1, profile };
+       const mind = new SnapMind(player, this.rng.fork(`mind:${team}:${slot}`), body.energy);
+       // Small legal defensive alignment scatter; offensive formation stays legal.
+-      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError, 0.5, FIELD_WIDTH - 0.5);
++      if (team === 'D') body.pos.y = clamp(body.pos.y + mind.alignmentError * (MIRROR_SCATTER ? scatterSide(this.offAlign, body.pos.y) : 1), 0.5, FIELD_WIDTH - 0.5);
+       const a = new Agent(this.agents.length, team, slot, player, profile, body, idle, mind);
+       this.agents.push(a);
+       (team === 'O' ? this.offense : this.defense).push(a);
+@@ -525,7 +525,7 @@ export class PlaySim {
+       for (const d of this.defense) {
+         targets.set(d,{...d.pos});
+         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};
+-        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError,.5,FIELD_WIDTH-.5);
++        d.body.pos.y = clamp(d.pos.y+d.mind.alignmentError*(MIRROR_SCATTER?scatterSide(this.offAlign,d.pos.y):1),.5,FIELD_WIDTH-.5);
+       }
+     }
+     const mug = creep ? this.slot(creep.slot) : undefined;
