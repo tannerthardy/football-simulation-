@@ -56,6 +56,8 @@ const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
 const FIVE_STEP_BEAT = 0.8;
 const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
+/** CONCEPT_DROPS: reads taken in one look besides a key (the members share a place in the rhythm). */
+const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
 /** The coached key per concept, and the danger: the defender the coaching warns about on the answer (the window
  * check's named man; he limits where and how high the ball goes, he does not reopen the key's decision: "if the
  * cornerback sinks... throw the hitch; if he comes up... throw the corner", Brown; the corner thrown "as high as the
@@ -136,7 +138,11 @@ export interface InstalledPlan {
    * `at` is that step's time after the snap (the plan's QB set plus a beat a step); `ready` is when his route is
    * first a throw as installed (the compiler's window), and `onTime` whether it is ready by its step. A read that is
    * not on time is the concept's or the drop's question, not a wait (the table's rhythm column). */
-  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; at: number; ready: number; onTime: boolean }[];
+  /** `n` is the step's index (0 the set, 1 the first hitch, 2 the second): the plan's contract with the quarterback
+   * (QB lane, 2026-11-15), who times a step from his own drop. `at` is this compile's estimate in seconds, for
+   * diagnostics, and goes once the QB lane reads `n`. Reads on one look (a keyed high-low; mesh's two crossers) share a
+   * place and an `n`; `group` names the place's members. */
+  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; n: 0 | 1 | 2; at: number; ready: number; onTime: boolean; group?: ReceiverRef[] }[];
   /** DECLARED_BREAK: per read, the route's declared break as installed (route time from this compile's sample of the
    * installed route, never a live play), its throw family, and the plan's anchor lead. The quarterback lane's
    * `leadFor(passer, throwFamily, route)` replaces the anchor with his own lead when a read is checked; the throwing
@@ -211,12 +217,49 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
       const seq = [...plan.order, ...(plan.outlet && !plan.order.includes(plan.outlet) ? [plan.outlet] : [])];
       const stepAt = (st: typeof steps[number]) => st === 'set' ? set : st === 'hitch' ? set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT)
         : set + (fiveStep ? FIVE_STEP_BEAT : RHYTHM_BEAT) + RHYTHM_BEAT;
-      plan.rhythm = seq.map((ref, i) => {
-        const step = ref === plan!.outlet ? 'hitch2' : steps[Math.min(fiveStep ? i + 1 : i, 2)];
+      // CONCEPT_DROPS: reads on one look share one place, and the reads after them move up a place; a serial order
+      // steps a place a read. A keyed high-low is one read on one defender. Mesh's two crossers are one look too: after
+      // the corner, "he resets and looks the mesh point to see which receiver breaks open" (Win With The Pass, Mesh).
+      // A keyed place is read at the top of the drop, the low on time and the high opening by the hitch ("if the corner
+      // gains depth... throw the hitch on time", Throw Deep, Smash; Brown), so in a five-step drop a keyed first place
+      // is on the set, not the hitch.
+      const key = plan.key;
+      const groups: ReceiverRef[][] = [];
+      if (CONCEPT_DROPS_RHYTHM && key && seq.includes(key.low) && seq.includes(key.high)) groups.push([key.low, key.high]);
+      const look = CONCEPT_DROPS_RHYTHM ? ONE_LOOK[concept.id] : undefined;
+      if (look && look.every((r) => seq.includes(r))) groups.push(look);
+      const groupOf = (r: ReceiverRef) => groups.find((g) => g.includes(r));
+      let place = -1;
+      const placeOf = new Map<ReceiverRef, number>();
+      for (const ref of seq) { const g = groupOf(ref); const lead = g?.find((m) => placeOf.has(m)); placeOf.set(ref, lead !== undefined ? placeOf.get(lead)! : ++place); }
+      const shift = fiveStep ? 1 : 0;
+      // The keyed place's beat is its low's time: the first step at which the low is on time (within a beat of
+      // ready), but never ahead of the step its place in the order gives without the five-step shift.
+      const readyOf = (r: ReceiverRef) => routes.get(r)?.window.ready ?? set;
+      const keyStep = (() => {
+        if (!key || !groups.some((g) => g.includes(key.low))) return null;
+        const base = Math.min(placeOf.get(key.low)!, 2);
+        for (let n = base; n <= 2; n++) if (stepAt(steps[n]) >= readyOf(key.low) - 0.2 - 1e-6) return n;
+        return 2;
+      })();
+      // Steps never go back along the order: a read after a keyed place moved later is not installed before it.
+      let floor = 0;
+      plan.rhythm = seq.map((ref) => {
+        const keyedRef = keyStep !== null && key && (ref === key.low || ref === key.high);
+        // A keyed first place sets the clock for the places after it (the next read on the following step); a serial
+        // five-step order reads its first answer on the hitch (the shift).
+        const keyFirst = keyStep !== null && key && (seq[0] === key.low || seq[0] === key.high);
+        const offset = keyFirst ? keyStep! : shift;
+        let ni = ref === plan!.outlet ? 2 : keyedRef ? keyStep! : Math.min(placeOf.get(ref)! + offset, 2);
+        if (ref !== plan!.outlet) { ni = Math.max(ni, floor); floor = ni; }
+        const step = steps[ni];
         const at = +stepAt(step).toFixed(2);
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
-        return { ref, step, at, ready, onTime: ready <= at + 1e-9 };
+        const g = groupOf(ref);
+        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}) };
       });
+      // CONCEPT_DROPS: the key is read on its place's beat.
+      if (keyStep !== null && plan.key) plan = { ...plan, key: { ...plan.key, cueBy: +stepAt(steps[keyStep]).toFixed(2) } };
       const decl = seq.map((ref) => ({ ref, d: routes.get(ref)?.declaredBreak })).filter((x) => x.d);
       if (decl.length) plan.reads = decl.map(({ ref, d }) => ({ ref, breakAt: d!.t, throwFamily: d!.throwFamily, anchorLead: d!.anchorLead }));
     }

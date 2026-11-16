@@ -1558,7 +1558,20 @@ export class PlaySim {
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
     },{now:t,constrained,calledAhead:(a,b,h)=>a.team===b.team
-      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null});
+      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null,
+      space:(a,h)=>{
+        if(a!==this.carrier)return null;
+        // The free space ahead of the carrier in HIS picture: the nearest pictured opponent to a 4 yd ray down heading h, less what his vision misses of it (a smooth seeded error that falls as he reads space better).
+        let m=9;
+        for(const d of this.agents){
+          if(d.team===a.team)continue;
+          const p=this.see(a,d).pos;
+          for(let k=.5;k<=4.01;k+=.5)m=Math.min(m,Math.hypot(p.x-(a.pos.x+Math.cos(h)*k),p.y-(a.pos.y+Math.sin(h)*k)));
+        }
+        const sd=.6*(1-a.r('vision')),bin=Math.floor(t/.25),w=t/.25-bin;
+        const hash=(n:number)=>{let x=(Math.imul(a.idx+1,73856093)^Math.imul(n,83492791)^Math.imul(Math.round(h*8)+97,19349663))>>>0;x^=x>>>15;x=Math.imul(x,2246822519)>>>0;x^=x>>>13;return((x&0xffff)+.5)/65536-.5;};
+        return m+sd*2*((1-w)*hash(bin)+w*hash(bin+1));
+      }});
     commandTrace?.stage('spacing', this.intents);
     ledger?.stageAll('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
