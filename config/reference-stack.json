@@ -46,7 +46,9 @@
     "BALL_EST": { "default": 6145, "legacy": 0 },
     "APEX_LEVERAGE": { "default": 7, "legacy": 0 },
     "ZONE_HOLD": { "default": 0, "legacy": 0 },
-    "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 }
+    "HAND_MOMENT_CAP": { "default": 150, "legacy": 0 },
+    "OFF_PEDAL": { "default": 0, "legacy": 0 },
+    "QCORNER": { "default": 0, "legacy": 0 }
   },
   "flags": {
     "ALIGN_HABIT": "on",

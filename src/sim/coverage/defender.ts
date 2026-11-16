@@ -12,7 +12,7 @@ import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, p
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { CUT_ENTER, CUT_EXIT, CUT_WALL, runRule, zoneSide, type Directive, type RuleState } from './rules.js';
-import { CrossWall, ReadRelease, Rob, Trap, Wall } from './techniques.js';
+import { CrossWall, ReadRelease, Rob, Trap, Wall, QuarterShort } from './techniques.js';
 import { isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import { CoverageJudgment } from './judgment.js';
 
@@ -173,6 +173,7 @@ export class CoverageDefender implements Behavior {
           { ...d.opts, protectDepth: isDeepZone(this.zone) });
       case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
+      case 'qshort': return new QuarterShort(d.r, this.reader, this.gap, this.gapSign);
       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign, d.inside, d.flat);
       case 'rob': return new Rob(d.r, this.reader, this.gap, this.gapSign);
       case 'crossWall': return new CrossWall(d.r, this.reader, this.gap, this.gapSign, d.area, d.half);

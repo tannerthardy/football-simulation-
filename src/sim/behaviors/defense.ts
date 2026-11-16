@@ -32,7 +32,7 @@ import { movingCatchApproach } from '../catch-approach.js';
 import { RELEASE_BELIEF, releaseBelief } from '../release-belief.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { OPEN_FIELD, playsBall } from '../open-field.js';
-import { DeepCoverage } from '../coverage-leverage.js';
+import { DeepCoverage, StemAcceleration, stemStopped } from '../coverage-leverage.js';
 import { facingTechnique, roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { BALL_EST, BALL_EST_MAN_LOOK, estimatesFor, lookAnyway, lookJoints, neckOf, PHASE_BEHIND, PHASE_SIDE, phaseJudgeSd } from '../ball-estimate.js';
@@ -1001,6 +1001,28 @@ function carryFacing(a: Agent, r: Agent, qb: Vec2, receiver: Vec2, heading: numb
  * carry takes over as before. The quick game's flat-footed read is the existing release belief and ball cue, not a
  * timer. Quarters corners (taught differently: off #1, eyes inside, in a pedal) and man calls are out of scope. */
 export const CORNER_DROP = process.env.CORNER_DROP !== '0';
+
+/** OFF_PEDAL (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-off-pedal.md): a repair of the
+ * existing off-man pedal (ManCoverage; off-man corners in man calls, the quarters MOD corner, match carriers in zone
+ * calls). Traced (pedal-trace.mts, engine-71): the corner's sight of #1's stem lags the true stem by his perception
+ * delay (~0.3 s), honestly; but his request ran 0.32 yd/s below the seen stem and forward before it (the `a.pos.x - 0.2`
+ * floor pulled him upfield), and on his release read CUSHION_NEED's close became a forward lunge at a climbing receiver
+ * (off-man request -3.9 yd/s at 0.9 s, stem seen at 1.7 upfield). Bit 1: the pre-release floor is his own spot (he
+ * holds; his pedal matches the seen stem), and until the shared stem-stop read says his stem has stopped (coverage-
+ * leverage `stemStopped`: CARRY_READ's projection 0.5 s ahead from his own delayed samples, stop below 1, out above 3)
+ * the target is no nearer the line than he is: excess cushion is spent by pedalling slower than the stem, not
+ * by coming forward. When the stem stops he spends it as before (the break on the hitch). Press and the Cover-3 corner
+ * under CORNER_DROP are unchanged. No pace of his own: the read-step question (moving before the stem reaches his
+ * picture) is left open. */
+const OFF_PEDAL_BITS = Number(process.env.OFF_PEDAL ?? 0);
+export const OFF_PEDAL = (OFF_PEDAL_BITS & 1) !== 0;
+/** OFF_PEDAL bit 2 (settle on the stop): when the stem-stop read says his receiver has stopped, the off-man corner stops
+ * gaining depth gradually, never coming forward before he has seen the throw: his target stays no nearer the line than
+ * he is, so he decelerates out of his pedal on his own body's braking; his drive comes on the ball (playBall on his own
+ * recognition of the throw). Taught: settle on the stop, eyes to the quarterback, drive on the ball; it is what protects
+ * him from the double move. NFL (quarters_cb.py "#1 stops", stops before pass_forward): the corner gains +0.5 yd in the
+ * 0.5 s after #1 stops (+0.9 inside 5 yd); ours drove -0.6. */
+export const OFF_PEDAL_SETTLE = (OFF_PEDAL_BITS & 2) !== 0;
 function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
   return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
 }
@@ -1242,6 +1264,9 @@ export class ManCoverage implements Behavior {
   /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
   private carryTurn: { full: Agent | null } = { full: null };
   private releaseObserved = false;
+  /** OFF_PEDAL: the stem-stop read (coverage-leverage `stemStopped`) on his own delayed sight of the stem. */
+  private readonly stemAccel = new StemAcceleration();
+  private stemStop = false;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
@@ -1398,6 +1423,7 @@ export class ManCoverage implements Behavior {
     const seen = this.observation.read(acquired, sim.t, R.profile, a.profile.reactionTime,
       a.r('anticipation') * a.r('manCoverage') * a.mind.focus);
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
+    if (OFF_PEDAL) this.stemAccel.observe(acquired, R.profile, sim.t);
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
     // PRESS_MIRROR: in press, while the receiver is still releasing at the
@@ -1473,7 +1499,15 @@ export class ManCoverage implements Behavior {
       const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
       if (held < cushion) a.tags.add('cushion-need');
       tx = this.releaseObserved
-        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, OFF_PEDAL && !this.press ? a.pos.x : a.pos.x - 0.2);
+      // OFF_PEDAL: while the stem has not stopped in his picture (the shared stem-stop read) he spends
+      // excess cushion by pedalling slower than the stem, never by coming forward at a climbing receiver: the target
+      // is no nearer the line than he is. Before, CUSHION_NEED's close turned into a forward lunge on his release read
+      // (off-man request -3.9 yd/s at 0.9 s with the stem seen at 1.7 upfield; pedal-trace.mts).
+      if (OFF_PEDAL && !this.press && this.releaseObserved) {
+        this.stemStop = stemStopped(vx, this.stemAccel.value, this.stemStop);
+        if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
+      }
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
