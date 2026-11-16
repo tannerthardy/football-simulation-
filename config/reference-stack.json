@@ -330,6 +330,7 @@
     "CROSS_OVER": "off",
     "PLANT_REACH": "on",
     "COMPILE_PICTURE": "on",
+    "GRASS_READ": "off",
     "CRAFT_HOLD": "off",
     "CRAFT_EXIT": "off",
     "RELEASE_COMMIT": "off",

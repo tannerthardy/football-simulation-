@@ -366,6 +366,7 @@
     "CROSS_OVER": "0",
     "PLANT_REACH": "0",
     "COMPILE_PICTURE": "0",
+    "GRASS_READ": "0",
     "CRAFT_HOLD": "0",
     "CRAFT_EXIT": "0",
     "RELEASE_COMMIT": "0",

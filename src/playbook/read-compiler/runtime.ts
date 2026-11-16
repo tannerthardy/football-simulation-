@@ -10,6 +10,7 @@ import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
 import { compile } from './compile.js';
 import { DECLARED_BREAK } from './features.js';
+import { BREAK_DECL } from '../route-breaks.js';
 import { PLAN_ROLES } from './candidates.js';
 import type { PlanStyle } from './types.js';
 
@@ -56,6 +57,25 @@ const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
 const FIVE_STEP_BEAT = 0.8;
 const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
+/** GRASS_READ (experimental, off): the plan marks the reads thrown before their break into space, for the QB lane's grass
+ * read (QB_FOOTWORK bit 8), with the landing area as installed. Which reads, from the sources:
+ * - a declared vertical (go, seam, fade): read at the release and thrown to a spot downfield, "the moment his back foot
+ *   hits", "well before the receiver hits the 18-22 yard mark" (Gonzalez, four verticals, via Smart Football); the fade
+ *   read during the drop steps after the escape (Marinelli, Gridiron Strategies);
+ * - the corner when it is the first read and not one half of a key: "as he takes his five step drop, his eyes go to that
+ *   corner route... If that grass is open he throws the ball on his 5th" (Win With The Pass, Mesh). A keyed corner
+ *   (smash) is thrown off its defender, not the grass.
+ * The post and the deep out are not: Walsh's flanker post is "five big steps and a hitch" and the outs are timed to the
+ * break (49ers notes via Smart Football), thrown on the break, not into grass before it.
+ * The landing area is the point on his installed route at the depth the throw is taught to: for a vertical, the ball
+ * leaves "well before the receiver hits the 18-22 yard mark" (Gonzalez), so it is thrown to that band, at its middle,
+ * 20 yd. No source gives the corner a spot ("look at the area he is going", Win With The Pass): the same 20 yd along
+ * his installed path is a stated choice. `t` is the route time he reaches it in this compile's sample (extrapolated
+ * along his last half second when the sample ends first). */
+const GRASS_READ = process.env.GRASS_READ === '1';
+/** GRASS_READ: the landing depth past the line (yd): the middle of Gonzalez's 18-22 yd band for a vertical; the corner's
+ * the same, a stated choice (above). */
+const GRASS_DEPTH: Readonly<Record<string, number>> = { go: 20, seam: 20, fade: 20, corner: 20 };
 /** CONCEPT_DROPS: reads taken in one look besides a key (the members share a place in the rhythm). */
 const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
 /** The coached key per concept, and the danger: the defender the coaching warns about on the answer (the window
@@ -142,12 +162,40 @@ export interface InstalledPlan {
    * (QB lane, 2026-11-15), who times a step from his own drop. `at` is this compile's estimate in seconds, for
    * diagnostics, and goes once the QB lane reads `n`. Reads on one look (a keyed high-low; mesh's two crossers) share a
    * place and an `n`; `group` names the place's members. */
-  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; n: 0 | 1 | 2; at: number; ready: number; onTime: boolean; group?: ReceiverRef[] }[];
+  rhythm: { ref: ReceiverRef; step: 'set' | 'hitch' | 'hitch2'; n: 0 | 1 | 2; at: number; ready: number; onTime: boolean; group?: ReceiverRef[];
+    /** GRASS_READ: a read thrown before its break into space. `landing` is where the route is going, in the plan's frame
+     * (x yd past the line, y yd from the ball toward the strength, as the compiler's trajectories), and `t` the route time
+     * he reaches it. `decided` is 'step': readable or not by his step `n`, no dwell (the mesh corner's "throws the ball on
+     * his 5th" and the seam's "the moment his back foot hits" are the same rule). */
+    grass?: { landing: { x: number; y: number }; t: number; decided: 'step' } }[];
   /** DECLARED_BREAK: per read, the route's declared break as installed (route time from this compile's sample of the
    * installed route, never a live play), its throw family, and the plan's anchor lead. The quarterback lane's
    * `leadFor(passer, throwFamily, route)` replaces the anchor with his own lead when a read is checked; the throwing
    * motion is theirs. Absent with the flag off. */
   reads?: { ref: ReceiverRef; breakAt: number | null; throwFamily: 'onBreak' | 'seenOpen'; anchorLead: number }[];
+}
+
+/** GRASS_READ: the grass read for a route, or null when it is not one (see GRASS_READ). */
+function grassOf(r: { routeId: string; trajectory: Array<{ t: number; x: number; y: number }> } | undefined, first: boolean, keyed: boolean):
+  { landing: { x: number; y: number }; t: number; decided: 'step' } | null {
+  if (!r) return null;
+  const vertical = BREAK_DECL[r.routeId]?.at === 'vertical';
+  if (!vertical && !(r.routeId === 'corner' && first && !keyed)) return null;
+  const depth = GRASS_DEPTH[r.routeId] ?? 20, P = r.trajectory;
+  if (P.length < 2) return null;
+  const i = P.findIndex((p) => p.x >= depth);
+  if (i === 0) return { landing: { x: +P[0].x.toFixed(1), y: +P[0].y.toFixed(1) }, t: +P[0].t.toFixed(2), decided: 'step' };
+  if (i > 0) {
+    // Where he crosses the landing depth, between the two samples either side of it.
+    const a = P[i - 1], b = P[i], w = (depth - a.x) / (b.x - a.x);
+    return { landing: { x: depth, y: +(a.y + (b.y - a.y) * w).toFixed(1) }, t: +(a.t + (b.t - a.t) * w).toFixed(2), decided: 'step' };
+  }
+  // The sample ended short of the landing depth: carry him on along his last half second.
+  const b = P[P.length - 1], a = P.find((p) => p.t >= b.t - 0.5) ?? P[P.length - 2];
+  const dt = b.t - a.t, vx = dt > 0 ? (b.x - a.x) / dt : 0, vy = dt > 0 ? (b.y - a.y) / dt : 0;
+  if (vx <= 0.5) return null;
+  const k = (depth - b.x) / vx;
+  return { landing: { x: depth, y: +(b.y + vy * k).toFixed(1) }, t: +(b.t + k).toFixed(2), decided: 'step' };
 }
 
 const cache = new Map<string, InstalledPlan | null>();
@@ -164,7 +212,7 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
@@ -256,7 +304,8 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
         const at = +stepAt(step).toFixed(2);
         const ready = +(routes.get(ref)?.window.ready ?? set).toFixed(2);
         const g = groupOf(ref);
-        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}) };
+        const grass = GRASS_READ ? grassOf(routes.get(ref), placeOf.get(ref) === 0 && ref !== plan!.outlet, !!keyedRef || !!(key && (ref === key.low || ref === key.high))) : null;
+        return { ref, step, n: steps.indexOf(step) as 0 | 1 | 2, at, ready, onTime: ready <= at + 1e-9, ...(g ? { group: g } : {}), ...(grass ? { grass } : {}) };
       });
       // CONCEPT_DROPS: the key is read on its place's beat.
       if (keyStep !== null && plan.key) plan = { ...plan, key: { ...plan.key, cueBy: +stepAt(steps[keyStep]).toFixed(2) } };
