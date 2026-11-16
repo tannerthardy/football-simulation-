@@ -13,6 +13,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function falls(flag: string, roster: number, coverage: string, seed: number) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('SET_SPOT', '0'); // engine-72: the searched edge fall was found with the old pass set; Flex to re-record on the call's set spot
   vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
   vi.stubEnv('RUSH_LEAN_BOUND', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
@@ -63,6 +64,7 @@ describe('RUSH_LEAN_BOUND', () => {
     // while dipping, ripping or running the arc (speed) with the bound on. Requirement: at least one exists.
     vi.resetModules();
     for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+    vi.stubEnv('SET_SPOT', '0'); // engine-72: the searched edge fall was found with the old pass set; Flex to re-record on the call's set spot
     vi.stubEnv('VERTS_QUICK', '0'); // engine-67: these four_verts scenes were recorded on the five-step set; the quick drop is a different play
     vi.stubEnv('RUSH_LEAN_BOUND', '1');
     const { PlaySim } = await import('../src/sim/playsim.js');

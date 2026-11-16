@@ -121,7 +121,7 @@ function build(input: MotionContactInput, recording: boolean) {
   for (let k = 23; k >= 0; k--) {
     for (const a of sim.agents) a.body.pos = { x: initialPositions[a.idx].x - a.vel.x * k * motionContactDt,
       y: initialPositions[a.idx].y - a.vel.y * k * motionContactDt };
-    sim.perception.record(sim.agents);
+    sim.recordPerception();
   }
   sim.agents.forEach(a => { a.body.pos = initialPositions[a.idx]; });
   return { sim, te, end, plan, executionErrors, installation };
@@ -182,7 +182,7 @@ export function motionContact(input: MotionContactInput, options: { observe?: bo
   for (let k = 0; k < Math.round(motionContactDuration / motionContactDt); k++) {
     sim.t = k * motionContactDt;
     observations = [];
-    sim.perception.record(sim.agents);
+    sim.recordPerception();
     for (const a of [te, end]) a.mind.update(sim.t, motionContactDt, a.body.energy,
       a.engagement ? .65 : Math.hypot(te.pos.x - end.pos.x, te.pos.y - end.pos.y) < 3 ? .25 : 0);
     const before = observe ? { te: body(te), end: body(end) } : null;

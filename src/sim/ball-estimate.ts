@@ -34,7 +34,7 @@ import type { PlaySim } from './playsim.js';
 
 /** BALL_EST is a bitmask (0 off): 1 the estimator; 4 a committed catch point moves with his estimate; 8 looming; 2 removes catching.ts's tracking penalty (ballTracking acts through
  * the estimator; charging it again at the catch double-counts). */
-const BALL_EST_RAW = Number(process.env.BALL_EST ?? 0);
+const BALL_EST_RAW = Number(process.env.BALL_EST ?? 6145);
 /** Bit 1024 is the receiver's one meaning for a card: the receiver on his own sight of the ball. It carries the receiver
  * bits it was built on (2 no tracking penalty, 4 moving choice, 16 deep look, 64 trunk look), so 1025 = 1111; the
  * single bits stay for the parked designs' reads only. */
@@ -251,7 +251,7 @@ const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 
  * too: off, it ended on the passer's state through the field-wide picture (`sim.see(a, qb).carrying === false`) with
  * his head 90 deg off the passer, before his eyes got there; with the flag, it ends when he has seen the arm or the
  * empty hand in his eyes (`sawEmpty`); seeing the arm keeps him looking, since the ball is about to leave. */
-export const SEEN_EMPTY = process.env.SEEN_EMPTY === '1';
+export const SEEN_EMPTY = process.env.SEEN_EMPTY !== '0';
 
 /** HEAD_RIDE (experimental, off; HEAD_RIDE=1; with BALL_EST, HEAD off): every observer's estimator head that no look is
  * turning this tick (receiver, defender, anyone with a track) rides on his shoulders: it keeps its offset from them,
