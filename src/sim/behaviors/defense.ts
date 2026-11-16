@@ -878,6 +878,13 @@ export const CORNER_DROP = process.env.CORNER_DROP === '1';
  * picture) is left open. */
 const OFF_PEDAL_BITS = Number(process.env.OFF_PEDAL ?? 0);
 export const OFF_PEDAL = (OFF_PEDAL_BITS & 1) !== 0;
+/** OFF_PEDAL bit 2 (settle on the stop): when the stem-stop read says his receiver has stopped, the off-man corner stops
+ * gaining depth gradually, never coming forward before he has seen the throw: his target stays no nearer the line than
+ * he is, so he decelerates out of his pedal on his own body's braking; his drive comes on the ball (playBall on his own
+ * recognition of the throw). Taught: settle on the stop, eyes to the quarterback, drive on the ball; it is what protects
+ * him from the double move. NFL (quarters_cb.py "#1 stops", stops before pass_forward): the corner gains +0.5 yd in the
+ * 0.5 s after #1 stops (+0.9 inside 5 yd); ours drove -0.6. */
+export const OFF_PEDAL_SETTLE = (OFF_PEDAL_BITS & 2) !== 0;
 function cornerDropSeat(a: Agent, zone: string | undefined): boolean {
   return !!zone && a.slot.startsWith('CB') && zone.startsWith('deep_third_');
 }
@@ -1359,7 +1366,7 @@ export class ManCoverage implements Behavior {
       // (off-man request -3.9 yd/s at 0.9 s with the stem seen at 1.7 upfield; pedal-trace.mts).
       if (OFF_PEDAL && !this.press && this.releaseObserved) {
         this.stemStop = stemStopped(vx, this.stemAccel.value, this.stemStop);
-        if (!this.stemStop) tx = Math.max(tx, a.pos.x);
+        if (!this.stemStop || OFF_PEDAL_SETTLE) tx = Math.max(tx, a.pos.x);
       }
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
