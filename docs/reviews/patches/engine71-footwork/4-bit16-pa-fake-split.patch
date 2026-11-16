@@ -1,0 +1,67 @@
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 6ce8e9e4..053e0152 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -197,7 +197,7 @@ There are 434 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `QB_TICK_PICTURE` | on | promoted 2026-11-16 (engine-70; `=0` restores); was experimental (QB lane, 2026-11-15; Integration's ruling on Rules' cov7 observer finding: his belief advances with time, not with asking) | quarterback | `src/sim/behaviors/qb.ts` (`takePictures`, `felt`, `plainOf`, `seenOut`) | His pictures of every defender (plain and felt) are taken once at the start of each of his updates; `outSeen` advances there; his `believed` map and pricing judgments are created at his first update in a fixed order; `evaluate`, `window` and pressure only read them. Off, they are taken on demand, and the perception layer's state advances with the asking (`sighted`'s per-tick visibility memo, `sightAt`, freezes a past tick's line of sight when first asked, with the bodies' heights then; TRACK_FEEL's loop restarts for a pair not asked last tick), so an observer scoring a receiver every tick changed the play: bisected on Rules' `cov7-observer-purity.ts` to `sightAt` alone (restoring `believed`, `outSeen` or the forecast caches does not make the arms equal). Test `test/qb-tick-picture.test.ts` (off: an observer changes some play; on: none). Cost on 256 staged plays without an observer (`scripts/diag/eyes/tick-picture.ts`): his first evaluation identical on all 256, 249 identical frame for frame, no throw moved. |
+ | `QB_EVADE_UP` | off | experimental (QB lane, 2026-11-15; the backward drift, its own fix; rides with the blitz stack) | quarterback | `src/sim/behaviors/qb.ts` (`evade`) | The trapped case (under the 0.45 s alarm, no throw) steps off a man in front of him to the side and up instead of straight away from him. Off, against an interior rusher evade was a step backward at up to 0.7 of his top speed (commanded -3.7 to -4.6 yd/s upfield on `stand-probe.ts`'s events), the drift that put him deeper as the man arrived. Edge case unchanged. |
+ | `QB_LOOKOFF_RHYTHM` | off | experimental (QB lane, 2026-11-15) | quarterback | `src/sim/behaviors/qb.ts` (look-off) | A look-off is taken only when his first read will not be ready before it would end; as taught it never costs the rhythm throw. Off, it was rolled at the set and held read 1 for 0.25-0.35 s whether or not read 1 was open. Paired staged read (3,072 plays): 671 change; 8.29 -> 8.47 yd a play, complete 67.7 -> 68.4%, sacks 198 -> 195, INT 34 -> 35. (The look-off's side now reads his picture of read 1, not the receiver's true position, on both paths.) |
+-| `QB_FOOTWORK` | 0 | experimental (QB lane, 2026-11-16; stage one of the drop design, numeric bits until the game read; read on `CONCEPT_DROPS=1`) | quarterback | `src/sim/behaviors/qb.ts` (`footwork`, `stride`, `onBeats`, `beatDue`, `onStep`, `vertReadable`; the drop branch; `bodyFacing`) | Bit 1: reads on steps and the release on a step (each read's step index from the plan, `plan.rhythm[].n`; step n lands n strides of his own drop after his set; his feet keep the plan's clock; the gather is a step in time, not a command that pins him); a vertical readable when its release is decided in his pictures. Bit 2: the drop's body. (1) Crossover: his hips open side-on to travel toward read 1's side over the first third of the depth, and on the plant stride he turns to his picture of read 1 (NFL gun: chest off downfield at the plant p50 58-61 deg at every depth, the most open in the drop rising 62 -> 89 deg with depth; ours 32-46 / 79-90: the shape, not the angles, which the throwing stance would set and is open). (2) The drop paced to its measured time (plant to release on 3.5-6 yd gun drops 0.3 / 0.6 / 1.0 s, NFL 0.3 / 0.6 / 1.1). (3) Shoulders set on a step (at the plant and on a landed step) toward his picture of the read; a look moves eyes and head only (requested facing reversals 235 -> 88; by eyes 76 -> 4). (4) The play-action fake held to the measured mesh plus half its ride (gun 1.45 s, under center 1.5 s; BDB 2025 `nfl_pa_ride.py`): gun PA snap to plant 1.60 -> 2.30 s (NFL 2.20), fake facing reversals 54 -> 0. Read with bit 1 (QB_FOOTWORK=3). Staged test `test/qb-footwork-drop.test.ts`. docs/reviews/2026-11-15-drop-design-stage1.md. |
++| `QB_FOOTWORK` | 0 | experimental (QB lane, 2026-11-16; stage one of the drop design, numeric bits until the game read; read on `CONCEPT_DROPS=1`) | quarterback | `src/sim/behaviors/qb.ts` (`footwork`, `stride`, `onBeats`, `beatDue`, `onStep`, `vertReadable`; the drop branch; `bodyFacing`) | Bit 1: reads on steps and the release on a step (each read's step index from the plan, `plan.rhythm[].n`; step n lands n strides of his own drop after his set; his feet keep the plan's clock; the gather is a step in time, not a command that pins him); a vertical readable when its release is decided in his pictures. Bit 2: the drop's body. (1) Crossover: his hips open side-on to travel toward read 1's side over the first third of the depth, and on the plant stride he turns to his picture of read 1 (NFL gun: chest off downfield at the plant p50 58-61 deg at every depth, the most open in the drop rising 62 -> 89 deg with depth; ours 32-46 / 79-90: the shape, not the angles, which the throwing stance would set and is open). (2) The drop paced to its measured time (plant to release on 3.5-6 yd gun drops 0.3 / 0.6 / 1.0 s, NFL 0.3 / 0.6 / 1.1). (3) Shoulders set on a step (at the plant and on a landed step) toward his picture of the read; a look moves eyes and head only (requested facing reversals 235 -> 88; by eyes 76 -> 4). (4) The play-action fake held to the measured mesh plus half its ride (gun 1.45 s, under center 1.5 s; BDB 2025 `nfl_pa_ride.py`): gun PA snap to plant 1.60 -> 2.30 s (NFL 2.20), fake facing reversals 54 -> 0. Read with bit 1 (QB_FOOTWORK=3). Staged test `test/qb-footwork-drop.test.ts`. docs/reviews/2026-11-15-drop-design-stage1.md. Bit 16 (split from bit 2, 2026-11-16): the play-action fake held to the measured mesh moves from bit 2 to its own bit (gun 1.45 s, under center 1.5 s; off 0.7 s); it lands only with PA reads decided on the plant out of the fake (alone, staged PA sacks 14.8 -> 27.1%: he plants at 2.3 s, the NFL's 2.2, then reads like a dropback). Bit 2 is the drop's body alone. |
+ | `QB_FACE_SEEN` | off | experimental (QB lane, 2026-11-16; information rule) | quarterback | `src/sim/behaviors/qb.ts` (`bodyFacing`) | His pocket facing turns to his picture of the read (`has`: his forecast of the man), not the receiver's true position. Off, `bodyFacing` aimed at `read.pos` and the shoulder read's `.pos`: information he does not have. Found measuring his facing swing (`scripts/diag/eyes/facing-swing.ts`). |
+ | `QB_HONEST_FEEL` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; read on engine-57 and engine-59, flat; in the honesty batch) | quarterback | `src/sim/behaviors/qb.ts` (`felt`, `freeBound`, `pressure`, `evade`) | set at first review. His pressure picture reads only what he has perceived: the behind-his-shoulder test uses his plain picture of the man, pressure's distance is to the felt position, and he evades the felt position. Off, all four read the rusher's true position. Decided by its own row (alarm rate, felt against true time to contact at the alarm, sacks), expecting him to feel pressure later; a loss is repaired by perception, not by the leak |
+ | `THROW_PLATFORM` | off | experimental (QB lane, throw mechanics, 2026-11-13; first build, not yet read) | quarterback | `src/sim/behaviors/qb.ts` (`platform`, `missSigma`, `release`) | set at first review. What moving costs a throw, continuously: stepping toward the target is free up to a stride; the rest of his velocity is carried by the ball and the share he does not correct (by throw-on-run) is a miss along his motion, growing with flight time; moving across or away from the target takes his base out (an arm throw). Replaces the 1.15-1.6x step at 2.2 yd/s. Decided by ball against aim by platform (`scripts/diag/eyes/deep-split.ts`) and the ordering set < stepping in < drifting away < across the body; a set throw is unchanged. Never fitted to completions |
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 9ab20def..2e8deba0 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -457,6 +457,11 @@ const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
+  * Part 3: the crossover drop, hips side-on to travel toward read 1's side over the first third of the depth, and the
+  * drop paced to its measured time. Read with bit 1. Not built yet in bit 2: the step into the throw. */
+ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
++/** QB_FOOTWORK bit 16 (split from bit 2, Integration 2026-11-16): the play-action fake held to the measured mesh. Not
++ * to land alone: with it a gun PA plants at 2.3 s (the NFL's 2.2) but his read after the plant is a dropback's (throw
++ * 3.2 s against the NFL's 2.3), and PA sacks go 14.8 -> 27.1% staged; it lands with PA reads decided on the plant out
++ * of the fake. */
++const FW_PA_FAKE = (QB_FOOTWORK & 16) !== 0;
+ /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
+  * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
+  * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
+@@ -841,10 +846,10 @@ export class QBPass implements Behavior {
+     this.dropY = a.pos.y;
+     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
+     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
+-    // QB_FOOTWORK bit 2: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
++    // QB_FOOTWORK bit 16: the fake is held to the measured mesh plus half its ride (BDB 2025 play action,
+     // scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s, ridden
+     // 0.2 s), not an absolute 0.7 s that in the gun left a 0.2 s turn after he had the ball (nobody bites on that).
+-    if (concept.family === 'playaction') this.fakeUntil = FW_HIPS ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
++    if (concept.family === 'playaction') this.fakeUntil = FW_PA_FAKE ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
+     this.mind = sim.qbMind;
+     for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
+     this.mind.receiverAt = (r) => this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? null;
+diff --git a/test/qb-footwork-drop.test.ts b/test/qb-footwork-drop.test.ts
+index 82fb72a3..e505592a 100644
+--- a/test/qb-footwork-drop.test.ts
++++ b/test/qb-footwork-drop.test.ts
+@@ -2,7 +2,8 @@
+  * 1. The crossover: by the middle of his drop his chest is open off downfield (bit 2 off: square to it).
+  * 2. Shoulders on a step: in the pocket the facing he requests does not turn on a look alone; it turns at the plant, on a
+  *    landed step, or for the throw (bit 2 off: it turns whenever his eyes or read move).
+- * 3. The play-action fake is held to the measured mesh: from the gun he is still on the fake past 1.4 s (off: 0.7 s).
++ * 3. Bit 16 (split from bit 2): the play-action fake is held to the measured mesh: from the gun he is still on the fake
++ *    past 1.4 s (off, and with bit 2 alone: 0.7 s).
+  * docs/reviews/2026-11-15-drop-design-stage1.md. */
+ import { readFileSync } from 'node:fs';
+ import { afterEach, describe, expect, it, vi } from 'vitest';
+@@ -79,8 +80,8 @@ describe('QB_FOOTWORK bit 2: the drop body', () => {
+     expect(sum(off, 'lookTurns')).toBeGreaterThan(0);
+     expect(sum(on, 'lookTurns')).toBe(0);
+   }, 600_000);
+-  it('the play-action fake is held to the measured mesh (gun: past 1.4 s; off: 0.7 s)', async () => {
+-    const off = await fakeEnd('1'), on = await fakeEnd('3');
++  it('bit 16: the play-action fake is held to the measured mesh (gun: past 1.4 s; bits 1+2 alone: 0.7 s)', async () => {
++    const off = await fakeEnd('3'), on = await fakeEnd('19');
+     expect(off.length).toBeGreaterThanOrEqual(2); expect(on.length).toBeGreaterThanOrEqual(2);
+     for (const t of off) expect(t).toBeLessThan(0.8);
+     for (const t of on) expect(t).toBeGreaterThan(1.4);
