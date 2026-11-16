@@ -343,6 +343,23 @@ const SET_DEPTH = 0.4;
  * nearest one laterally, read as his key. An interior man keys the blocker
  * within a yard and a half; an edge keys the end of the line inside him,
  * however wide he aligns (a wide 9 still reads his tackle). */
+const OL_SLOTS_SET = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** END_KEY (experimental, numeric bitmask, default 0; docs/reviews/2026-11-16-end-key.md). Bit 2 (key through the
+ * triangle): an edge rusher whose keyed surface man releases (no blocking stance in his picture) keys on through to the
+ * tackle inside, and the existing key reads play that man's step (a hinge or zone step away: squeeze / END_CHASE with
+ * the boot check; a pass set: the rush). Sourced (Gridiron Strategies, "Defensive End Reads in a Forty Front"): "once
+ * you read release, look for the next part of triangle"; the release itself is not a pass read. Bit 1 (the key's
+ * stance as a run/pass cue) was tried and removed: on play action it made the fake-side end fit inside harder. */
+const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 0) & 2) !== 0;
+/** EDGE_SET (experimental, off; docs/reviews/2026-11-16-edge-set.md): an edge answering a reach sets the edge as taught
+ * (hands on the reach blocker's outside half, square, widen with him and no faster, squeeze the lane he is trying to
+ * open): his lateral target is the blocker's outside shoulder in his picture one beat ahead, fed forward at the
+ * blocker's lateral speed with no lead of his own; wider than that, he works back to the shoulder, and caught inside it he
+ * keeps fighting to it. The target is one continuous function of the blocker in his picture on either side of the
+ * shoulder: there is no side switch to hold, so no margin is needed (commit rule). Before it, KEY_PACE's answer (the blocker's speed plus a lead, from his own spot)
+ * kept him ahead of the blocker and gaining: 2.7 / 3.4 / 4.6 yd wide at 1.0 / 1.5 / 2.0 s against the NFL play-side
+ * end's 0.4-0.6 / 1.3-1.6 / 2.3-2.8 on real outside zone (nfl_pa_backside.py NFL_POP=oz). */
+export const EDGE_SET = process.env.EDGE_SET === '1';
 function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = null): (Perceived & { home: Vec2; agent: Agent }) | null {
   let best: Agent | null = held, bd = Infinity;
   if (!best) for (const b of linePicture(sim, a).surface) {
@@ -405,7 +422,7 @@ export class PassRusher implements Behavior {
   /** The end of the line an edge keyed: he keeps reading that man. A down
    * block steps away from him, and that step is the cue, not a reason to
    * lose his key. */
-  private keyed: Agent | null = null;
+  keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   /** DL_GAMES: a called angle/slant/pinch moved his gap; until this clock he
@@ -516,6 +533,18 @@ export class PassRusher implements Behavior {
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
     const onEdge = this.gap === 'C' || this.gap === 'D';
+    // END_KEY bit 2: the surface man he keyed released (no blocking stance in his picture): his eyes go on through the
+    // triangle to the next part of it, the tackle inside (Gridiron Strategies: "once you read release, look for the next
+    // part of triangle"; the release itself is not a pass read).
+    if (END_KEY_THROUGH && onEdge && this.keyed && !OL_SLOTS_SET.has(this.keyed.slot) && sim.see(a, this.keyed).stance == null) {
+      let best: Agent | null = null, bd = Infinity;
+      for (const o of sim.offense) {
+        if (!OL_SLOTS_SET.has(o.slot)) continue;
+        const dy = Math.abs(sim.see(a, o).pos.y - a.pos.y);
+        if (dy < bd) { bd = dy; best = o; }
+      }
+      if (best) { this.keyed = best; a.tags.add('key-through'); }
+    }
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
     watch(sim, a, man?.agent);
@@ -605,10 +634,20 @@ export class PassRusher implements Behavior {
       // An edge lines up outside his key: he steps from where he stands, never
       // onto the key's spot (that is inside him).
       const fromY = reachOut ? (side * (a.pos.y - man!.pos.y) > 0 ? a.pos.y : man!.pos.y) : man!.pos.y;
-      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
+      let at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
+      let latVel = side * step;
+      // EDGE_SET: set the edge on the blocker's outside shoulder, widening with him and no faster.
+      if (EDGE_SET && reachOut) {
+        const shoulder = man!.pos.y + side * man!.agent.profile.radius + man!.vel.y * h;
+        // Outside the shoulder he works back to it at the blocker's speed; caught inside (the reach has gained the
+        // edge) he keeps fighting to the same shoulder rather than giving up the outside.
+        at = { x: at.x, y: shoulder };
+        latVel = man!.vel.y;
+        a.tags.add(side * (a.pos.y - shoulder) < 0 ? 'edge-set-in' : 'edge-set');
+      }
       a.tags.add('key-step');
       if (KEY_REACT) a.keyStep = { from: man!.agent, side };
-      return track(a, at, { x: KEY_DEPTH ? up : 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+      return track(a, at, { x: KEY_DEPTH ? up : 0, y: latVel }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
