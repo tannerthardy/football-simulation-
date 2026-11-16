@@ -1,0 +1,206 @@
+From c3b7ec8c4874c222d803306931ced2d468b23927 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 06:27:06 +0000
+Subject: [PATCH 3/3] PASS_OFF (off): the hand-over gives the keeper his own
+ control by the first-contact law, not a scripted 0
+
+Folded in (no separate flag): his punch against the rusher's current move; a keeper whose hands are not loaded must land
+them before the man clears his reach (else a miss); off his feet no fit. Staged: fitted keepers p50 -0.23, unloaded late
+-0.50; handed-over rushers reaching the QB 14 -> 20%. Note: docs/reviews/2026-11-15-pass-off.md. Probe:
+handover-staged.mts. Off equals engine-71 (seed 999); PASS_OFF=1 02d7aa6355bd528a.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ docs/FLAGS.md                                 |  2 +-
+ docs/reviews/2026-11-15-pass-off.md           | 47 +++++++++++++++++
+ .../diag/effective-mass/handover-staged.mts   | 40 +++++++++++++++
+ src/sim/engagement.ts                         | 50 ++++++++++++++++++-
+ 4 files changed, 137 insertions(+), 2 deletions(-)
+ create mode 100644 scripts/diag/effective-mass/handover-staged.mts
+
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 8903adfd..d1d24722 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -334,7 +334,7 @@ There are 419 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `BAT_ONCE` | on | defect fix (bat at the line, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `batTried`) | a defender gets one try at batting a pass at the line per pass, the first tick its flight passes through his window, not a roll each tick it stays there (the chance per pass depended on the tick length: free defenders batted 29% of their chances against an 18% per-roll ceiling). Seed 11 x 4: batted 16 -> 7 of about 318 passes (5.0 -> 2.2%), per opportunity engaged 7.1 -> 2.1%, free 29.0 -> 19.2%. `BAT_ONCE=0` restores the per-tick roll. The roll itself goes with BAT_HANDS. Evidence: docs/reviews/2026-11-15-bat-at-the-line.md. |
+ | `BALL_CUE_OWN` | on | landed on 2026-11-15 (engine-69; `=0` restores the cue timed on his sighting of the passer) | defense (throw recognition) | `src/sim/release-evidence.ts`; `src/sim/behaviors/defense.ts` (`playObservedFlight`) | #766: the ball in flight is the defender's own percept at his own perception delay, through his recorded view, not timed by when he last saw the passer; with no catchable sample left he rallies to where he believes the ball came down instead of standing. The switch was added at integration so the card can attribute it. | The cue no longer carries the ball's true velocity. |
+ | `PLAY_ONCE` | on | defect fix (a defender's play on a ball he sees, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `playTried`) | one interception / breakup try per defender per pass, the first tick the ball is within his reach and he sees it, not a roll each tick it stays there. `PLAY_ONCE=0` restores. The same defect as BAT_ONCE's, downfield. The contested catch will be too easy until Coverage's in-phase work lands. |
+-| `PASS_OFF` | off | turned back off 2026-11-16 (engine-71) after one engine on: the hand-over sets the pair's control to 0 by script, which hands the keeper a grip and a punch by assignment (Flex: 14% of handed-over rushers reach the quarterback under the reset, 20-21% with an honest fit); returns with the honest hand-over; was experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. |
++| `PASS_OFF` | off | turned back off 2026-11-16 (engine-71) after one engine on: the hand-over sets the pair's control to 0 by script, which hands the keeper a grip and a punch by assignment (Flex: 14% of handed-over rushers reach the quarterback under the reset, 20-21% with an honest fit); returns with the honest hand-over; was experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. Revised 2026-11-16 (Flex; docs/reviews/2026-11-15-pass-off.md): the hand-over gives the keeper his own control by the first-contact law (his punch against the rusher's current move; a keeper whose hands are not loaded must land them before the man clears his reach, else a miss; off his feet no fit), not a scripted 0 (every hand-over had gone to exactly 0 from -0.41..+0.75). |
+ | `SET_SPOT` | off | experimental (the pass set's reference, 2026-11-15; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`, `protectPoint`, `setSpotTarget`, stepPassRep's lateral request), `src/sim/behaviors/blocking.ts` (the pass set) | the interior set no longer reads the QB's live position (removed, not replaced: information the blocker does not have); the point he protects comes from the called drop or the QB's alignment at the snap. He takes the two-step short set straight back off his snap spot (no deeper than the pocket's front; further ground is what the rusher wins) and aims inside-out on his man, where the rusher's line to the launch point crosses his depth, unbounded, fed forward by that point's own motion. The tackles keep the live-QB read unless `SET_SPOT_TACKLE` (KNOWN_PROBLEMS PRO-INFO #12). |
+ | `SET_SPOT_TACKLE` | off | experimental (SET_SPOT's tackle half, 2026-11-15; needs `SET_SPOT`; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`), `src/sim/behaviors/blocking.ts` (the vertical set, `racePace`) | the tackles' live-QB reads are removed. He takes the three-step vertical set off his snap spot, then beats the rusher to the pocket's front (the tackle clearance in front of the call's launch point) at the pace the race against the rusher's seen upfield speed needs; the call is only his floor. Tackle depth matches the old live-QB law; edge pressure is near the NFL's, but fast rushers win the corner far less (7% against 43%). |
+ | `POCKET_LEVEL` | off | experimental (SET_SPOT's interior second phase, 2026-11-15; needs `SET_SPOT`; `=1` turns on) | protection | `src/sim/engagement.ts` (`passSetDepth`, `pocketLevelDepth`) | after the short set an interior lineman keeps level with the pocket, the cup around the launch point he knows from the call. His distance from it is the median of his two neighbors' (seen) and the tackles' mean, so one beaten neighbor doesn't drag him. Bounded by the short set and the pocket's front; never the QB. Evidence: the NFL's uncovered interior OL retreat as far as the engaged (ol-set-depth.py --uncovered). |
+diff --git a/docs/reviews/2026-11-15-pass-off.md b/docs/reviews/2026-11-15-pass-off.md
+index 89827efc..f8d7a8ac 100644
+--- a/docs/reviews/2026-11-15-pass-off.md
++++ b/docs/reviews/2026-11-15-pass-off.md
+@@ -28,3 +28,50 @@ come-off diagnosis used, run on NFL and sim: `pressure-source.py`, `sack-room.py
+   pressure-source rows show where.
+ 
+ Identity: off equals engine-69 (seed 999 `eac983e7a0b20fc9`); on `0aa2ed0c23ff72d2`.
++
++## The honest hand-over (2026-11-16, engine-70 / engine-71)
++
++**The defect.** At the hand-over `passOff` set the rep's control to 0 whatever the keeper's hands were doing. Logged in
++rush-bull and rush-rip, every hand-over went to exactly 0 from −0.41..+0.75. A fresh engagement takes its control from
++the bodies at first contact. `control` sets:
++- the contact hands' push, hold and steer;
++- whether he punches (≥ 0);
++- who owns the grip under OPEN_HANDS;
++- the move weights and the rolls.
++So the 0 gave the keeper the grip and punch eligibility by assignment.
++
++**Now (folded into PASS_OFF):** the keeper's control is the first-contact law.
++- **The exchange:** his punch against the rusher's current move (his swipe against a finesse move, his strike against
++  power), without the old pairing's rep edge.
++- **Hands not loaded:** a keeper whose hands are not yet on the man (the `seen` hand-over) must land them before the man
++  clears his reach. Landing after is a miss (−0.5, as a swiped punch); between, the fit falls smoothly with the share of
++  that window he used.
++- **Off his feet:** no fit.
++
++Two attempts reached this:
++1. The first bounded the fit by firstHands. firstHands compares both men's landing over the same distance, so it never
++   penalised a late keeper.
++2. The second applied the landing window to every keeper, so a fitted, slowly closing keeper was a near miss.
++
++The correction keys the landing window on the load on his own hands joint, not on which check found him: the `seen`
++check runs first each tick and finds fitted keepers too.
++
++**Staged** (`handover-staged.mts`, 864 plays, mirrored; scripted → honest):
++- **Control after**, p10 / 50 / 90: 0 / 0 / 0 → −0.50 / −0.24 / +0.31.
++- **Fitted keepers:** median −0.23 (p25 −0.50). Rushers reaching the QB 13 → 20%.
++- **Unloaded, late keepers:** median −0.50. Reaching the QB 52 → 36% (n 22).
++- **All hand-overs:** rushers reaching the QB 14 → 20%.
++
++**Games** (engine-70, seeds 11 / 23 / 37; PASS_OFF=0 | scripted | honest):
++
++| | PASS_OFF=0 | scripted | honest |
++|---|---|---|---|
++| interior rushers clear of the blocker reaching the QB | 12 / 11 / 11% | 10 / 8 / 12% | 10 / 10 / 10% |
++| interior pressure | 13.1 / 13.1 / 10.1% | 11.4 / 14.0 / 10.6% | 12.0 / 13.9 / 10.3% |
++| sacked | 6 / 7 / 8% | 5 / 5 / 7% | 7 / 6 / 8% |
++
++**What PASS_OFF keeps under an honest hand-over:**
++- Off-blocker reach: about 10% against 11.3% with it off. That is about what the scripted version gave, small and within
++  seed noise.
++- The sacks the scripted reset saved are gone.
++- On engine-70 PASS_OFF's whole effect is far smaller than the 13–14 → 7% read on engine-69.
+diff --git a/scripts/diag/effective-mass/handover-staged.mts b/scripts/diag/effective-mass/handover-staged.mts
+new file mode 100644
+index 00000000..71b2ee20
+--- /dev/null
++++ b/scripts/diag/effective-mass/handover-staged.mts
+@@ -0,0 +1,40 @@
++// PASS_OFF's hand-over, staged (Integration, 2026-11-16: the keeper's control from his own fit, PASS_HANDOVER). On the
++// QB lane's staged plays (as edge-ride-staged.mts: 864, mirrored), every hand-over (the rep's blocker changes to a
++// helper): the control before and after, the keeper's lateness (his distance to the man minus his reach: bodies plus
++// 0.3 of his arm, firstHands' landing reach; + = late), whether he is on his feet, the rusher's move; then what the man
++// does next: released from the keeper within 0.5 s (past 1.2 yd), and within 2 yd of the QB before the ball is out.
++// usage: [PASS_OFF=1] node --import tsx scripts/diag/effective-mass/handover-staged.mts
++const W = process.cwd();
++const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
++const { nativeTraceSetup } = await import(`${W}/scripts/diag/command-trace.ts`);
++const { traits } = await import(`${W}/src/sim/engagement.ts`);
++const H: any[] = [];
++for (const concept of ['four_verts', 'smash', 'dagger']) for (const coverage of ['cover2', 'cover3', 'cover1']) for (let roster = 1; roster <= 12; roster++) for (const seed of [1, 2, 3, 4]) for (const flip of [false, true]) {
++  let sim: any; try { sim = new PlaySim(nativeTraceSetup({ coverage, concept, seed, roster, formation: 'gun_doubles_11', flip })); } catch { continue; }
++  const prev = new Map<any, { blocker: any; control: number }>(); const open: any[] = [];
++  while (sim.phase === 'live' && sim.t < 5) {
++    const pre = new Map([...sim.engagements].filter((e: any) => e.type === 'pass').map((e: any) => [e, { blocker: e.blocker, control: e.control }]));
++    sim.tick();
++    for (const [e, p] of pre) {
++      if (!sim.engagements.includes(e) || e.blocker === p.blocker) continue;
++      const k = e.blocker, d = e.defender, tk = traits(k, 'pass');
++      const dist = Math.hypot(d.pos.x - k.pos.x, d.pos.y - k.pos.y), reach = k.profile.radius + d.profile.radius + tk.arm / 36 * 0.3;
++      const hj = e.hands, loaded = !!hj && (Math.max(0, hj.normalForce ?? 0) > 0 || Math.abs(hj.tangentForce ?? 0) > 0);
++      open.push({ loaded, t: sim.t, k, d, before: p.control, after: e.control, late: dist - reach, up: (k.body.support?.state ?? 'up') === 'up', move: e.move, released: false, reached: false });
++    }
++    for (const h of open) {
++      if (sim.t - h.t > 0.5 || h.released) continue;
++      if (Math.hypot(h.d.pos.x - h.k.pos.x, h.d.pos.y - h.k.pos.y) > 1.2) h.released = true;
++    }
++    if (sim.throwAt < 0) for (const h of open) if (!h.reached && Math.hypot(h.d.pos.x - sim.qb.pos.x, h.d.pos.y - sim.qb.pos.y) <= 2) h.reached = true;
++  }
++  H.push(...open);
++}
++const q = (v: number[], f = .5) => { const s = v.filter(Number.isFinite).sort((a, b) => a - b); return s.length ? s[Math.floor(f * (s.length - 1))] : NaN; };
++const pc = (n: number, d: number) => `${(100 * n / Math.max(1, d)).toFixed(0)}%`;
++console.log(`hand-overs: ${H.length} | control after p10/50/90 ${q(H.map((h) => h.after), .1).toFixed(2)}/${q(H.map((h) => h.after)).toFixed(2)}/${q(H.map((h) => h.after), .9).toFixed(2)} (exactly 0: ${pc(H.filter((h) => h.after === 0).length, H.length)}) | before p50 ${q(H.map((h) => h.before)).toFixed(2)}`);
++for (const [lab, f] of [['hands loaded (fitted)', (h: any) => h.loaded && h.up], ['hands not loaded, in reach', (h: any) => !h.loaded && h.late <= 0 && h.up], ['hands not loaded, late (> 0.1 yd)', (h: any) => !h.loaded && h.late > 0.1 && h.up], ['keeper in reach (late <= 0)', (h: any) => h.late <= 0 && h.up], ['keeper late (> 0.1 yd)', (h: any) => h.late > 0.1 && h.up], ['keeper off his feet', (h: any) => !h.up]] as [string, (h: any) => boolean][]) {
++  const S = H.filter(f); if (!S.length) { console.log(`  ${lab}: none`); continue; }
++  console.log(`  ${lab} (n ${S.length}): control after p50 ${q(S.map((h) => h.after)).toFixed(2)} (p25 ${q(S.map((h) => h.after), .25).toFixed(2)}) | released within 0.5 s ${pc(S.filter((h) => h.released).length, S.length)} | reached the QB ${pc(S.filter((h) => h.reached).length, S.length)}`);
++}
++console.log(`  all: released within 0.5 s ${pc(H.filter((h) => h.released).length, H.length)} | reached the QB ${pc(H.filter((h) => h.reached).length, H.length)} | by move ${JSON.stringify(H.reduce((m: any, h) => (m[h.move] = (m[h.move] ?? 0) + 1, m), {}))}`);
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 61ffbd67..a47c4e82 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -3167,6 +3167,52 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
+  * with his hands on the man lost him (of helped rushers who still reached the QB, the helper stayed within a yard the
+  * whole 0.5 s in 36% against the NFL's 63%: hand-fight note section 8). */
+ export const PASS_OFF = process.env.PASS_OFF === '1';
++/** PASS_OFF's hand-over (folded in, 2026-11-16): the hand-over's control is the keeper's own
++ * fit, the same first-contact law as any new pass engagement, not a scripted 0 (Integration, 2026-11-16: every
++ * hand-over had gone to exactly 0 from -0.41..+0.75, giving the keeper the grip and the punch by assignment).
++ * - **The exchange** (createEngagement's pass branch): his punch (hands, arm edge) against the rusher's current move.
++ *   A finesse move meets it with his swipe (a swipe that beats the punch leaves the keeper reaching: -0.5); a power
++ *   move with his strike.
++ * - **Late** (attempt 2, corrected; only when he sees the man come free without his hands loaded on him): his hands
++ *   must land before the man clears his reach. If they land after, it is a miss (the
++ *   swiped punch's -0.5); between, the fit falls smoothly with the share of that window he used. (Attempt 1 bounded it by
++ *   firstHands, which compares both men's landing over the same distance and so never penalised a late keeper.)
++ * - **Off balance:** off his feet he does not fit (at most -0.5, the missed punch).
++ * The old pairing's rep edge is not carried. */
++function handoverControl(sim: PlaySim, e: Engagement, keeper: Agent): number {
++  const d = e.defender, tb = traits(keeper, 'pass'), td = traits(d, 'pass'), rng = sim.dice('handover', keeper, d);
++  const armEdge = (tb.arm - td.arm) / 3, punchB = tb.hands + 0.12 * armEdge + rng.normal(0, 0.18);
++  let c: number;
++  if (e.move === 'swim' || e.move === 'club' || e.move === 'rip' || e.move === 'speed') {
++    const swipe = td.hands + 0.15 * td.bend + rng.normal(0, 0.18);
++    c = swipe - punchB > 0.18 ? -0.5 : clamp(0.35 + (punchB - swipe), -0.2, 0.9);
++  } else {
++    const strike = 0.5 * td.hands + 0.5 * d.r('passRushPower') - 0.12 * armEdge + rng.normal(0, 0.18);
++    c = clamp(punchB - strike, -0.8, 0.8);
++  }
++  // Late (attempt 2; attempt 1 bounded by firstHands, which compares both men's landing over the same distance and so
++  // never penalised a late keeper): his hands must land before the man clears his reach. Land: his distance beyond
++  // the bodies' contact over his closing speed on the man. Clear: the reach the man has left over the man's speed away
++  // from him. Landing after the man has cleared is a miss (the swiped punch's -0.5); between, the fit falls smoothly
++  // with the share of the window he used.
++  // Attempt 2 corrected: only on the `seen` path, where his hands are not loaded on the man. A keeper whose hands are
++  // already fitted (the hand-over's other precondition: force on his helper joint) has nothing left to land, so his fit
++  // is the exchange alone. (Attempt 2 charged every keeper a landing time at his closing speed: a fitted, slowly
++  // closing keeper got a near miss; staged, in reach -0.44.)
++  // Loaded is the load on his own hands joint, not the path that found him: the seen check runs first each tick, so it
++  // also finds keepers whose hands are already on (the first cut keyed on the path and changed nothing).
++  const hj = e.hands, loaded = !!hj && (Math.max(0, hj.normalForce ?? 0) > 0 || Math.abs(hj.tangentForce ?? 0) > 0);
++  if (loaded) return (keeper.body.support?.state ?? 'up') !== 'up' ? Math.min(c, -0.5) : c;
++  const dx = d.pos.x - keeper.pos.x, dy = d.pos.y - keeper.pos.y, dist = Math.hypot(dx, dy) || 1, ux = dx / dist, uy = dy / dist;
++  const contact = keeper.profile.radius + d.profile.radius, reach = contact + tb.arm / 36 * 0.3;
++  const closing = Math.max(0.1, (keeper.vel.x - d.vel.x) * ux + (keeper.vel.y - d.vel.y) * uy);
++  const away = Math.max(0.1, (d.vel.x - keeper.vel.x) * ux + (d.vel.y - keeper.vel.y) * uy);
++  const land = Math.max(0, dist - contact) / closing, clear = Math.max(0, reach - dist) / away;
++  const used = land / Math.max(1e-3, land + clear);
++  c = c + (-0.5 - c) * clamp(used, 0, 1) ** 2;
++  if ((keeper.body.support?.state ?? 'up') !== 'up') c = Math.min(c, -0.5);
++  return c;
++}
+ function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
+   if (!PASS_OFF || e.type !== 'pass' || !e.helpers.length) return false;
+   const d = e.defender;
+@@ -3182,7 +3228,9 @@ function passOff(sim: PlaySim, e: Engagement, seen = false): boolean {
+   if (e.rusherHand) { sim.world.joints = sim.world.joints.filter((x) => x !== e.rusherHand); e.rusherHand = undefined; e.counterAt = undefined; e.longArmUntil = undefined; }
+   e.blocker = keeper; e.hands = joint;
+   e.helpers = e.helpers.filter((h) => h !== keeper); e.helperHands!.delete(keeper);
+-  e.control = 0; e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
++  // The keeper's control from the first-contact law, from his own fit (not a scripted 0).
++  e.control = handoverControl(sim, e, keeper);
++  e.holding = false; e.moveOk = false; e.moveUntil = sim.t; e.riding = false; e.club = undefined;
+   syncJoints(sim, e);
+   keeper.tags.add('pass-off');
+   d.tags.add('shed');
+-- 
+2.43.0
+

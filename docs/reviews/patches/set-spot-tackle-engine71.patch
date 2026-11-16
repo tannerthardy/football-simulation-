@@ -1,0 +1,257 @@
+From 80efbd799edc02033441c7dfbf2453d6affdf885 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 06:16:28 +0000
+Subject: [PATCH 1/3] SET_SPOT_TACKLE repaired (off): the coached kick-slide,
+ rusher-paced, the call as its floor; the tackles' live-QB read removed
+
+Re-cut against engine-71 (e90c204c), which carries the unrepaired called-schedule version.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QSrvCvX4CHRx28KhAUQuC1
+---
+ docs/FLAGS.md                       |  2 +-
+ docs/KNOWN_PROBLEMS.md              |  2 +-
+ docs/reviews/2026-11-15-set-spot.md | 66 ++++++++++++++---------------
+ src/sim/behaviors/blocking.ts       | 22 +++++++++-
+ src/sim/called-drop.ts              | 10 -----
+ src/sim/engagement.ts               | 29 +++++++------
+ 6 files changed, 72 insertions(+), 59 deletions(-)
+
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 8e205ade..d44c306f 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -336,7 +336,7 @@ There are 418 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `PLAY_ONCE` | on | defect fix (a defender's play on a ball he sees, 2026-11-15) | pass defense | `src/sim/catching.ts` (`defenderPlay`, `playTried`) | one interception / breakup try per defender per pass, the first tick the ball is within his reach and he sees it, not a roll each tick it stays there. `PLAY_ONCE=0` restores. The same defect as BAT_ONCE's, downfield. The contested catch will be too easy until Coverage's in-phase work lands. |
+ | `PASS_OFF` | off | turned back off 2026-11-16 (engine-71) after one engine on: the hand-over sets the pair's control to 0 by script, which hands the keeper a grip and a punch by assignment (Flex: 14% of handed-over rushers reach the quarterback under the reset, 20-21% with an honest fit); returns with the honest hand-over; was experimental (the come-off: the pass-off, 2026-11-15) | trenches | `src/sim/engagement.ts` (`passOff`, `beat`) | a pass rusher who beats his blocker while a helper's hands are on him (the helper's joint loaded last step) is the helper's block from there: the engagement goes on with the helper as blocker on his own joint, a fresh fight; the beaten blocker leaves it (0.6 s before he can grab the man again) and his blocking decides whether he recovers to double. Off, beating the primary ended the rep for its helper too. Attempt 2: also at the moment the helper sees the man come off his blocker (in his view, by his sight delay: beyond the blocker's working reach or past his shoulder). Evidence: docs/reviews/2026-11-14-hand-fight-design.md sections 8-10. |
+ | `SET_SPOT` | off | experimental (the pass set's reference, 2026-11-15; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`, `protectPoint`, `setSpotTarget`, stepPassRep's lateral request), `src/sim/behaviors/blocking.ts` (the pass set) | the interior set no longer reads the QB's live position (removed, not replaced: information the blocker does not have); the point he protects comes from the called drop or the QB's alignment at the snap. He takes the two-step short set straight back off his snap spot (no deeper than the pocket's front; further ground is what the rusher wins) and aims inside-out on his man, where the rusher's line to the launch point crosses his depth, unbounded, fed forward by that point's own motion. The tackles keep the live-QB read unless `SET_SPOT_TACKLE` (KNOWN_PROBLEMS PRO-INFO #12). |
+-| `SET_SPOT_TACKLE` | off | experimental (SET_SPOT's tackle half, 2026-11-15; needs `SET_SPOT`; two attempts, unrepaired) | protection | `src/sim/engagement.ts` (`passSetDepth`), `src/sim/called-drop.ts` (`calledPocketX`), `src/sim/behaviors/blocking.ts` (the protected point) | the tackles' live-QB reads removed too: their clearance and the point they protect follow the called drop's schedule. Tackles set 4.6 yd deep at 2 s (NFL 3.7, off 4.0) and edge level/in-front pressure rises 6.5% -> 12-17% of dropbacks: the call's launch depth is about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor (hand-fight note section 23). |
++| `SET_SPOT_TACKLE` | off | experimental (SET_SPOT's tackle half, 2026-11-15; needs `SET_SPOT`; `=1` turns on; docs/reviews/2026-11-15-set-spot.md) | protection | `src/sim/engagement.ts` (`passSetDepth`), `src/sim/behaviors/blocking.ts` (the vertical set, `racePace`) | the tackles' live-QB reads are removed. He takes the three-step vertical set off his snap spot, then beats the rusher to the pocket's front (the tackle clearance in front of the call's launch point) at the pace the race against the rusher's seen upfield speed needs; the call is only his floor. Tackle depth matches the old live-QB law; edge pressure is near the NFL's, but fast rushers win the corner far less (7% against 43%). |
+ | `TACKLE_ANCHOR` | off | experimental (with TACKLE_SET; the anchor and inside-half leverage, 2026-11-12) | protection | `src/sim/engagement.ts` (`stepPassRep`) | once engaged with an edge rusher the tackle asks for no more depth (he anchors) and plays him from inside half: his front point a third of a yard inside the man's line to the QB (across it, the ball's side; 0.6-1.0 of that by his feet), instead of working the man wide of the launch lane. Retried on top of PAST_ALONG_PATH's ride. Counterfactual evidence (uncommitted A2 + PAST): NFL engaged retreat curve, in front at pressure 12.6 -> 7.5% (NFL 3.0), but inside 18.8% free 97% (NFL 6.4%, 48%), nearly head-up at the crossing. docs/reviews/2026-11-12-tackle-set.md |
+ | `RUSH_INTENT` | off | experimental (the rusher between moves, 2026-11-12) | pass rush | `src/sim/engagement.ts` (`rushIntent`; `stepPassRep` rusher request) | between moves a pass rusher's request is an intent he chose from what he feels and sees (his leverage phi x side, his speed, the blocker giving ground): edge (with leverage: the blocker's outside hip at his bend pace, 0.6 + 0.25 bend of vmax, push 0.5), power (momentum and a blocker giving ground: at the QB through his chest, 0.55 vmax, push 1) or stall (neither: fight the hands at 1.2 yd/s, push 0.6, may lose); preference by finesse/bend vs power/mass; kept at least his reaction time and changed only on a leverage change over 0.2 or the blocker's ground flipping; 'power' no longer sticks after a bull/long-arm window. Move selection and the roll untouched. Evidence: half an edge rusher's engaged time was the default 0.9 vmax at push 0.75 toward a sideways corner; engaged edge rushers ran across 3.0 vs NFL 2.1 yd/s and at the QB 1.4 vs 2.5 (rusher-state.mts, rusher-engaged.py). docs/reviews/2026-11-12-rusher-intent.md |
+ | `SET_DECIDE` | off | experimental (sacks: escape, set-phase decision, 2026-11-11) | quarterback | `src/sim/behaviors/qb.ts` (`setDecide`, before the hot path) | one decision under pressure: when where he stands he no longer has the time he still needs (rest of the current read + a windup) before a felt rusher can reach him, he moves first to the reachable spot (climb, slide or out of the box at 2.2 yd/s) that leaves the most felt time to contact, holding the direction for one reaction time and reading as he goes; a lane from there is an escape (existing scramble check); only when no spot buys time is he trapped and the existing hot path decides. Nothing runs with nobody near. Design and gates: docs/reviews/2026-11-10-tackle-forms.md (Set-phase decision under pressure) |
+diff --git a/docs/KNOWN_PROBLEMS.md b/docs/KNOWN_PROBLEMS.md
+index 2415afac..c67abce6 100644
+--- a/docs/KNOWN_PROBLEMS.md
++++ b/docs/KNOWN_PROBLEMS.md
+@@ -1292,7 +1292,7 @@ Rules+Coaching perception census, the QB lane's audit and Flex's audit, 2026-11-
+ | 6 | Pocket-QB escape `seesIt`: the rusher's true bearing off the QB's facing | `src/sim/tackle.ts:378` |
+ | 7 | Rusher's overset read on the blocker's true velocity and leverage | `src/sim/engagement.ts:829` |
+ | 8 | PASS_FEEL's hands-off delay keyed on the rusher's move record, not the blocker's hands | `src/sim/engagement.ts:1748` |
+-| 12 | **Owed, not kept (2026-11-15).** The tackles' pass-set depth and protected point read the QB's live position (`passSetDepth`'s clearance `sim.los - sim.qb.pos.x - 2.8`, and the `qb` the tackle's set aims at), behind him and unseen. `SET_SPOT` removed this read for the interior OL only. Two attempts on the tackles from the call alone did not repair it (`SET_SPOT_TACKLE`, off): the final launch point from the snap, then the called drop's schedule. Tackles set 4.6-5.0 yd deep at 2 s (NFL 3.7, off 4.0) and edge level/in-front pressure rose 6.5% -> 12-22% of dropbacks. The call's launch depth sits about a yard deeper than where quarterbacks, ours and the NFL's, are at 2 s. Approved next design (Integration, 2026-11-15): the kick-slide as taught, paced by the rusher's depth and width (stay between him and the launch point), with the call as its floor. Never build it from today's measured QB depth; the QB lane is rebuilding the drop. Hand-fight note section 23. | `src/sim/engagement.ts` (`passSetDepth`); `src/sim/behaviors/blocking.ts` (the pass set's `qb`) |
++| 12 | **Repaired under `SET_SPOT_TACKLE` (off); owed until it is on (2026-11-15).** The tackles' pass-set depth and protected point read the QB's live position: `passSetDepth`'s clearance `sim.los - sim.qb.pos.x - 2.8`, and the `qb` the tackle's set aims at, behind him and unseen. `SET_SPOT` removes this read for the interior OL. **Failed attempts.** Two call-only spots (the final launch point from the snap, then the called drop's schedule) set tackles too deep: 4.6-5.0 yd at 2 s, against the NFL's 3.7. The first rusher-paced set followed his present depth: too shallow, 3.0 yd. **The repair** (`SET_SPOT_TACKLE`) is the coached kick-slide. He takes the three-step vertical set, then beats the rusher to the pocket's front: that is the tackle clearance in front of the launch point he knows from the call, at the pace the race against the rusher's seen upfield speed needs. The call is only his floor. **Result** (seeds 11 / 23 × 8): tackle depth 1.5 / 2.7 / 4.0-4.2 yd at 1.0 / 1.5 / 2.0 s, the same as the live-QB law (NFL 1.2 / 2.4 / 3.7); QB 2.5 yd behind the tackles at his set (NFL 2.8); edge level / inside pressure 3.9 / 6.6% and 3.5 / 5.7% of dropbacks (NFL 3.0 / 6.4); sacks 5 / 6%. **Still open:** the fastest third gets past outside 7% by 2.0 s (live-QB 15-17%, NFL 43%). This gap predates the repair; it is in the corner's physics, not the read. No QB depth, live or measured, sets the tackle. Note: docs/reviews/2026-11-15-set-spot.md. | `src/sim/engagement.ts` (`passSetDepth`); `src/sim/behaviors/blocking.ts` (the vertical set, `racePace`) |
+ 
+ Outcomes awarded by a rating roll (CLAUDE.md: ratings must not award a win):
+ 
+diff --git a/docs/reviews/2026-11-15-set-spot.md b/docs/reviews/2026-11-15-set-spot.md
+index 5915a799..512715d4 100644
+--- a/docs/reviews/2026-11-15-set-spot.md
++++ b/docs/reviews/2026-11-15-set-spot.md
+@@ -24,39 +24,39 @@ Under `SET_SPOT` an interior lineman's set no longer reads the live QB anywhere:
+ 
+ No other live read takes its place.
+ 
+-### 2. The tackles: the leak is kept, as owed
+-
+-The tackles' set is left on the live-QB read. This is information cheating that is recorded, not kept: KNOWN_PROBLEMS
+-PRO-INFO #12.
+-
+-Two attempts to set them from the call alone did not repair it (`SET_SPOT_TACKLE`):
+-1. the final launch point from the snap;
+-2. the called drop's schedule (`calledPocketX`: from the snap spot to the launch point over the drop's time).
+-
+-Results (seed 11 × 8; tackle depth behind his snap spot):
+-
+-| | NFL | off | attempt 1 | attempt 2 |
+-|---|---|---|---|---|
+-| tackle depth at 1.0 / 1.5 / 2.0 s (yd) | 1.2 / 2.4 / 3.7 | 1.5 / 2.6 / 4.0 | 1.9 / 3.4 / 5.0 | 1.8 / 3.1 / 4.6 |
+-| tackle in front of the QB at 2.0 s (yd) | 2.7 | 2.2 | 1.3 | 1.6 |
+-| edge level/in-front pressure, % of dropbacks | — | 6.5 | 22.2 | 12.3 (s23: 17.2) |
+-
+-The rise was attributed to the tackles by a scope split, a diagnostic only: the interior half leaves the tackles exactly
+-as off. The call's launch depth sits about a yard deeper than where quarterbacks, ours and the NFL's, are at 2 s. So
+-any "clearance from the call" sets tackles too deep.
+-
+-**Approved next design (Integration):** the kick-slide as taught, paced by the rusher.
+-- The tackle stays between the rusher and the launch point, matching the rusher's width and depth up his arc, with
+-  the call as its floor.
+-- It is never to be built from today's measured QB depth, because the QB lane is rebuilding the drop.
+-- Sourced, not yet built:
+-  - vertical set: kick back off the inside foot, square as long as he can, open to about 45° as the rusher widens,
+-    gain width gradually rather than sliding out to him, mirror him up the arc;
+-  - beat him to a spot at half-man, inside-out, never past his midline, punch off the kick foot;
+-  - the jump set is the flatter, aggressive change-up.
+-  - Sources: Christensen (Glazier Clinics); Coaches Insider, "The elements of pass protection"; USA Football, "How
+-    offensive tackles keep edge rushers on their toes" and "jump sets".
+-  - "Junction point" is not defined in any source found.
++### 2. The tackles: `SET_SPOT_TACKLE`, rusher-paced (repaired; off)
++
++**Built after the patch above.** Integration approved the coached kick-slide: paced by the rusher, with the call as its
++floor, never set from the quarterback's measured depth. Under `SET_SPOT_TACKLE`:
++- **His own set.** The three-step vertical set off his snap spot (3 × 0.45 yd), no deeper than the pocket's front.
++- **Beat him to the spot.** He kicks at the pace that wins the race to the pocket's front: the tackle clearance (2.8 yd)
++  in front of the launch point he knows from the call. The race uses the rusher's upfield speed as the tackle sees him:
++  his own way to that depth over the rusher's time to it. A faster rusher means more pace.
++- **Unchanged bounds.** He stays deeper than the man by `KICK_LEAD`, never takes ground back, and never goes past the
++  launch point.
++
++Attempts and results (seeds 11 / 23 × 8; operators `ol-set-depth.py --tackles`, `pressure-source.py`, `edge-rush.py`,
++`qb-pocket.py`, `sack-room.py`):
++
++| | NFL | live-QB (off) | call: launch point | call: schedule | rusher only | race to the floor | race to the pocket's front |
++|---|---|---|---|---|---|---|---|
++| tackle depth at 1.0 / 1.5 / 2.0 s (yd) | 1.2 / 2.4 / 3.7 | 1.5 / 2.6 / 4.0 | 1.9 / 3.4 / 5.0 | 1.8 / 3.1 / 4.6 | 1.1 / 1.9 / 3.0 | 1.6 / 2.9 / 4.6 | 1.5 / 2.7 / 4.0–4.2 |
++| QB behind the tackles at his set (yd) | 2.8 | 2.35 | — | — | 3.35 | 2.25 | 2.45 / 2.5 |
++| edge pressure, % of dropbacks: past outside / level or in front / inside | 3.8 / 3.0 / 6.4 | 1.1 / 5.7 / 8.0 | 1.2 / 22.2 / 9.0 (s11, tackle-only arm) | 0.7 / 12.3 / 6.3 (s11; with the interior zone version) | 1.5 / 1.5 / 21.2 | 0.4 / 7.5 / 7.8 | 0.7 / 3.9 / 6.6; 1.0 / 3.5 / 5.7 |
++| fastest third past outside at 2.0 s | 43% | 15–17% | — | — | 49–56% | 4–5% | 7% |
++| sacked | — | 6 / 6% | 6% (s11) | 8 / 6% | 9 / 10% | 6 / 4% | 5 / 6% |
++
++**What the attempts show:**
++- **Call-only spots** set him too deep. The call's launch depth is about a yard deeper than where quarterbacks are at
++  2 s.
++- **The rusher's present depth alone** is too late against speed. A rusher who wins the corner wraps under to the
++  quarterback (edge-inside pressure 21%).
++- **The race to the floor** had a bug in its target. It raced him to the launch point, not to the pocket's front.
++- **The race to the pocket's front** reproduces the live-QB law's depth without reading the quarterback. Edge level
++  and inside pressure are near the NFL's.
++
++**Still open.** The corner: fast rushers get past outside far less than the NFL's 43%. That gap predates this change
++(live-QB 15–17%) and is in the corner itself, not the read. It is recorded in KNOWN_PROBLEMS PRO-INFO #12.
+ 
+ ### 3. The interior short set: depth, as taught
+ 
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 12104494..f8c64e31 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -398,6 +398,7 @@ export class PassProtector implements Behavior {
+     // shoulder — and let the hands decide the rep.
+     let ride = false;
+     let cuttingOff = false;
++    let kickPace = 0;
+     if (edgeRusher && isOL(a) && !this.calledRelease) {
+       const meet = PASS_KICK ? null : cutOffPoint(a, r, qb.pos, contact);
+       if (meet) {
+@@ -422,7 +423,14 @@ export class PassProtector implements Behavior {
+       // rusher, retreating out of punching range all the way to the launch
+       // point (the old start law hid this by making the tackle lag his spot).
+       const floor = TACKLE_SET ? tackleFloor(sim) : null;
+-      const x = Math.max(qb.pos.x + 0.5, floor ?? -Infinity, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
++      // SET_SPOT_TACKLE: setDepth already counts from his snap spot (the three-step set).
++      const ownSet = SET_SPOT_TACKLE ? sim.los - setDepth : sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth;
++      // SET_SPOT_TACKLE: beat him to the spot. The spot is the pocket's front, the tackle's clearance in front of the
++      // launch point he knows from the call (passSetDepth's 2.8 yd), not the floor. At the rusher's upfield speed the
++      // rusher reaches that depth in T; the tackle kicks at the pace that covers his own way there in that time.
++      const lowX = Math.max(qb.pos.x + 0.5, floor ?? -Infinity);
++      kickPace = SET_SPOT_TACKLE ? racePace(a.pos.x, r.pos.x, -r.vel.x, Math.max(lowX, qb.pos.x + TACKLE_CLEARANCE)) : 0;
++      const x = Math.max(lowX, Math.min(a.pos.x, r.pos.x - KICK_LEAD, ownSet, a.pos.x - kickPace * KICK_LOOK));
+       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
+       // TACKLE_SET: the inside half of the rusher, but never outside his set line.
+       if (TACKLE_SET || VERTICAL_SET) { const line = tackleSetLine(sim, a, r); set.y = line.y - line.out * Math.max(0, (line.y - set.y) * line.out); }
+@@ -452,7 +460,8 @@ export class PassProtector implements Behavior {
+       // VERTICAL_SET: lead only the rusher's inward motion; his outward run is not chased.
+       // VERTICAL_SET: the rusher's inward motion as he sees it (his picture, delayed), whatever PASS_SET_SEEN says.
+       const leadY = VERTICAL_SET ? out * Math.min(0, sim.see(a, rA).vel.y * out) : wide ? 0 : r.vel.y;
+-      return track(a, set, { x: anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
++      const followX = anchored || a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x);
++      return track(a, set, { x: anchored ? 0 : Math.min(followX, -kickPace), y: leadY }, { facing, cutSkill: quick, gain: 2.5 });
+     }
+     // The cutoff is an interception, not a point on which to match the
+     // rusher's present velocity. Approach through it at the kick-slide speed
+@@ -542,6 +551,15 @@ export function boxThreats(sim: PlaySim): Agent[] {
+ }
+ /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
+ const KICK_LEAD = 0.8;
++/** SET_SPOT_TACKLE: the pocket's front in front of the launch point for a tackle (passSetDepth's tackle clearance). */
++const TACKLE_CLEARANCE = 2.8;
++/** SET_SPOT_TACKLE: the kick's pace to beat the rusher to the launch depth (yd/s, retreat +): the tackle's way to the
++ * floor over the rusher's time there at his upfield speed. Zero when he is already at the floor. */
++function racePace(tx: number, rx: number, rUp: number, floorX: number): number {
++  const way = tx - floorX; if (way <= 0) return 0;
++  const T = Math.max(0.2, (rx - floorX) / Math.max(0.5, rUp));
++  return way / T;
++}
+ /** How far ahead on his present velocity the kick reads the rusher's width (s). */
+ const KICK_LOOK = 0.4;
+ 
+diff --git a/src/sim/called-drop.ts b/src/sim/called-drop.ts
+index 01c48b6d..904b3b94 100644
+--- a/src/sim/called-drop.ts
++++ b/src/sim/called-drop.ts
+@@ -51,13 +51,3 @@ export function calledLaunchX(sim: PlaySim): number | null {
+   return dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under').x;
+ }
+ 
+-/** SET_SPOT: where the called drop puts the QB at time t after the snap, from the call alone (his snap alignment, the
+- * drop's depth and its time): the pocket's schedule every lineman knows. Not the QB's live spot. Null without a pass
+- * concept. Linear from the snap spot to the launch point over the drop's time, then the launch point. */
+-export function calledPocketX(sim: PlaySim, t: number): number | null {
+-  const concept = sim.offCall.pass;
+-  if (!concept) return null;
+-  const spec = dropSpec(concept.drop, sim.qb.pos.x, sim.los, sim.offCall.formation.qb !== 'under');
+-  const x0 = sim.snapX[sim.qb.idx] ?? spec.x, f = Math.min(1, Math.max(0, t / Math.max(spec.time, 0.1)));
+-  return x0 + (spec.x - x0) * f;
+-}
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 13c25804..207d7668 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -42,7 +42,7 @@ import { gapY } from '../playbook/alignment.js';
+ import { CF_FLOW } from './counterfactual.js';
+ import { connectionGap, contactMotion } from './contact-motion.js';
+ import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
+-import { calledLaunchX, calledPocketX } from './called-drop.js';
++import { calledLaunchX } from './called-drop.js';
+ import { requestToCover } from './motion-plan.js';
+ import { lineRead, pullers } from './run-fits.js';
+ import { observedHolder } from './possession-read.js';
+@@ -198,19 +198,22 @@ export function passSetDepth(sim: PlaySim, b: Agent): number {
+   const tackle = b.slot === 'LT' || b.slot === 'RT';
+   const clearance = tackle ? 2.8 : 3.8;
+   // SET_SPOT: from the call (the drop he knows is coming), or the QB's alignment at the snap; never the QB's live
+-  // position behind him.
+-  // The tackle's clearance follows the called drop's schedule (where the call puts the QB now), as the live QB did; the
+-  // final launch point from the snap sent him 5 yd deep at once (SET_SPOT's first tackle read).
+-  // SET_SPOT_TACKLE (with SET_SPOT): the tackle's clearance from the call's schedule too. Without it the tackle keeps the
+-  // live-QB read (a known leak, kept: from the call he sets about a yard deeper; hand-fight note section 23).
++  // position behind him. The tackles keep the live read unless SET_SPOT_TACKLE (KNOWN_PROBLEMS PRO-INFO #12).
+   const fromCall = SET_SPOT && (!tackle || SET_SPOT_TACKLE);
+-  const qx = fromCall ? (tackle ? calledPocketX(sim, sim.t) : calledLaunchX(sim)) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
++  const qx = fromCall ? calledLaunchX(sim) ?? sim.snapX[sim.qb.idx] ?? sim.qb.pos.x : sim.qb.pos.x;
+   const pocket = Math.max(tackle ? 1.4 : 1, sim.los - qx - clearance);
++  const snapDepth = sim.los - (sim.snapX[b.idx] ?? b.pos.x);
+   // SET_SPOT, interior: the short set as taught (two set steps back off his snap spot), no deeper than the pocket's
+   // front. Further ground is what the rusher wins against him, not his request.
+-  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, sim.los - (sim.snapX[b.idx] ?? b.pos.x) + SHORT_SET);
++  if (SET_SPOT && (b.slot === 'LG' || b.slot === 'C' || b.slot === 'RG')) return Math.min(pocket, snapDepth + SHORT_SET);
++  // SET_SPOT_TACKLE: his own set is the three-step vertical set as taught, no deeper than the pocket's front from the
++  // call. Further depth is the rusher's: the kick keeps him deeper than the man up his arc (PASS_KICK), never past the
++  // launch point he knows from the call.
++  if (SET_SPOT_TACKLE && tackle) return Math.min(pocket, snapDepth + TACKLE_STEPS);
+   return pocket;
+ }
++/** SET_SPOT_TACKLE: the tackle's vertical set, three set steps (yd). */
++const TACKLE_STEPS = 3 * 0.45;
+ /** SET_SPOT: the interior short set, two set steps (yd; about 16 in each). */
+ const SHORT_SET = 2 * 0.45;
+ 
+@@ -232,10 +235,12 @@ const SHORT_SET = 2 * 0.45;
+  * - **Tackles.** They keep their own kick and, unless SET_SPOT_TACKLE, the live-QB read: a known leak, owed
+  *   (KNOWN_PROBLEMS PRO-INFO #12). */
+ export const SET_SPOT = process.env.SET_SPOT === '1';
+-/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed too, their clearance and the
+- * point they protect from the called drop's schedule (calledPocketX). Two attempts did not repair it (tackles 4.6 yd deep
+- * at 2 s against the NFL's 3.7, edge level/in-front pressure 6.5% -> 12-17% of dropbacks): the call's launch depth sits
+- * about a yard deeper than where QBs are at 2 s. Next: the tackle's set paced by the rusher's depth, the call its floor. */
++/** SET_SPOT_TACKLE (experimental, off; needs SET_SPOT): the tackles' live-QB reads removed (attempt 3, a different
++ * mechanism; Integration, 2026-11-15). He takes the three-step vertical set off his snap spot, and further depth is
++ * paced by the rusher: PASS_KICK keeps him deeper than the man up his arc. The call is the floor only: the launch
++ * point he protects and the pocket's front. Two call-only spots failed before (the final launch point from the snap,
++ * then the called drop's schedule): tackles set 4.6-5.0 yd deep at 2 s against the NFL's 3.7. Never from the QB's
++ * measured depth (the QB lane is rebuilding the drop). */
+ export const SET_SPOT_TACKLE = SET_SPOT && process.env.SET_SPOT_TACKLE === '1';
+ /** SET_SPOT: his lateral target and its share of the rusher's lateral motion: inside-out on the man, where the
+  * rusher's line to the launch point crosses his own depth, fed forward by that point's own motion (frac of the
+-- 
+2.43.0
+
