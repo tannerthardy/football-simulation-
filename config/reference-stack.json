@@ -127,6 +127,7 @@
     "ARM_LOOK": "off",
     "RUSH_ARM": "off",
     "BALL_CALL": "off",
+    "NECK_FULL": "off",
     "CATCH_CLOSE": "off",
     "DIR_CAP": "on",
     "CARRY_POSTURE": "on",

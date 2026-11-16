@@ -20,7 +20,7 @@
  * 5-10 % (choice, from psychophysics orders of magnitude); eye range 30 deg (choice); head 6 rad/s within 90 deg
  * (GAZE). Ratings: ballTracking for offense, ballSkills for defense, between best and worst.
  */
-import { HEAD as SHARED_HEAD, neckRange, want as headWant } from './head.js';
+import { HEAD as SHARED_HEAD, NECK_FULL, neckRange, want as headWant } from './head.js';
 import { INCIDENTAL_FLIGHT_MAX_AGE } from './catch-readiness.js';
 import { G } from '../core/units.js';
 import { clamp } from '../core/vec.js';
@@ -185,7 +185,7 @@ export const LOOK_NECK = NECK;
 const NECK_SPRINT = (Number(process.env.BALL_EST_NECK_SPRINT ?? 45) * Math.PI) / 180;
 export function neckOf(a: Agent): number {
   // HEAD on: one head and one neck range per player (head.ts), whoever asks for the look.
-  if (SHARED_HEAD) return neckRange(a);
+  if (SHARED_HEAD || NECK_FULL) return neckRange(a);
   if (!BALL_EST_DEEP_LOOK) return NECK;
   const share = Math.min(1, Math.hypot(a.vel.x, a.vel.y) / Math.max(1e-6, a.profile.vmax));
   return NECK - (NECK - NECK_SPRINT) * share;

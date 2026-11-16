@@ -55,6 +55,8 @@ describe('BALL_CALL heard call', () => {
   it('a call reaches only a defender within earshot of a teammate with the ball in his own samples, after the sound and his delay', async () => {
     vi.stubEnv('BALL_EST', '26657'); vi.stubEnv('HEAD_RIDE', '1'); vi.stubEnv('ACQ_SEEN', '1'); vi.stubEnv('TRACKED_CATCH', '1');
     vi.stubEnv('ARM_LOOK', '1'); vi.stubEnv('BALL_CALL', '1');
+    // Pinned: with NECK_FULL on, these 12 plays leave no defender unsampled when a call is due (nothing to hear).
+    vi.stubEnv('NECK_FULL', '0');
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
     const { releaseBelief } = await import('../src/sim/release-belief.js');

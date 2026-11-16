@@ -8,8 +8,8 @@ import { derivePhysical } from '../../../src/players/physical.js';
 import { generatePlayer } from '../../../src/players/generator.js';
 import { stepBody, TRUNK_RANGE, type Body } from '../../../src/physics/kinematics.js';
 const deg = (r: number) => (r * 180) / Math.PI, rad = (d: number) => (d * Math.PI) / 180;
-const p = generatePlayer(new Rng(7), 'CB' as any, 0.6) as any, prof = derivePhysical(p);
-const NECK = 90, NECK_SPRINT = 45, EYE = 30;
+const p = generatePlayer(new Rng(7), 'CB' as any) as any, prof = derivePhysical(p);
+const NECK = 90, NECK_SPRINT = process.env.NECK_FULL === '1' ? 90 : 45, EYE = 30;
 console.log(`CB vmax ${prof.vmax.toFixed(2)} yd/s, backpedal ${prof.backpedal}; TRUNK_RANGE ${deg(TRUNK_RANGE).toFixed(0)} deg`);
 for (const share of [1, 0.8, 0.6]) {
   const neck = NECK - (NECK - NECK_SPRINT) * share;
