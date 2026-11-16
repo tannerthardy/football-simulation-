@@ -168,7 +168,7 @@ A "hold-only" tick is one where he is braking for a teammate only because the ho
 Twelve added stuffs (every fifth of the 60, `out/cand/film_on.txt`), 132 binding hold-only ticks:
 
 * the teammate was stalled (under 1.5 yd/s) in 37 (28%), moving in 95 (72%). Two plays are mostly stalled (s9-95, s23-34: braking behind a blocker who has stopped, which is real); seven are mostly moving peers (s7-26, s7-67, s15-28, s19-39, s25-58, s27-41, s27-102); three are mixed.
-* the swept line missed the teammate by only 0.0 to 0.3 yd beyond the touch distance (median 0.13, medians per play 0.0 to 0.32), that is, inside the hold's exit margin (one body width, 0.7 yd), and the plain rule would have dropped the limit. On the 60 added stuffs (first six ticks per play, 324 ticks), 83% are "path clears" ticks and 21% have a stalled peer.
+* the swept line missed the teammate by only 0.0 to 0.3 yd beyond the touch distance (median 0.12 over the 324 ticks; per-play medians -0.02 to 0.32), that is, inside the hold's exit margin (one body width, about 0.65 yd), and the plain rule would have dropped the limit. On the 60 added stuffs (first six ticks per play, 324 ticks), 83% are "path clears" ticks and 21% have a stalled peer.
 * s7-26 is the plain case: an outside carrier behind the line with a lead blocker 1.2 to 1.5 yd ahead moving at 4.7 to 5.0 yd/s (his own speed), swept line clear by 0.3 to 0.4 yd, the hold removes 3.5 yd/s of closing for 0.6 s and his speed falls from 5.4 to 4.5.
 
 So the film says the hold keeps a brake after the lane is open in most of the added stuffs. Does that cost the stuffs? It does not: the exit margin on the limit (`2 * radius`, the bend hold's) at 1.0, 0.5 and 0.25 of a body width, all three flags on:
