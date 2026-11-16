@@ -363,3 +363,32 @@ The fake's facing reversals go 54 -> 0.
 **Still to build:**
 - (3) drop pacing for dropbacks (ours about 40% faster back and shallower than the NFL's);
 - (4) the step into the throw, as a visible body state for Defense's QB_INTENT.
+
+## Bit 2, part 3: the crossover and the drop's pace (651e599b)
+
+Engine-71, seeds 11 / 23 x 2 games, unpaired, against parts 1+2.
+
+**The crossover.** His hips open side-on to travel toward read 1's side over the first third of the depth, and hold.
+The chest overshoots the NFL as far as part 1 undershot it:
+
+| Short gun drop (25/50/75/90% of depth) | Chest off downfield | Chest against travel |
+| --- | --- | --- |
+| Parts 1+2 | 11 / 22 / 32 / 37 deg | 169 / 158 / 148 / 146 deg |
+| Part 3 | 52 / 89 / 90 / 86 deg | 128 / 91 / 90 / 90 deg |
+| NFL | 22 / 41 / 55 / 59 deg | 160 / 139 / 123 / 112 deg |
+
+The NFL thrower sits between square and side-on. Proposed statement (for Integration): open on the crossover steps,
+part-square on the plant step.
+
+**The pace.** The drop now arrives at its measured time.
+
+| Short gun drop | Backward speed at 25/50/75/90% (yd/s) | Plant -> release p25/50/75 |
+| --- | --- | --- |
+| Parts 1+2 | 2.6 / 3.1 / 2.5 / 1.5 | 0.4 / 0.7 / 1.2 s |
+| Part 3 | 2.4 / 2.9 / 2.5 / 1.3 | 0.3 / 0.6 / 0.9 s |
+| NFL | 1.9 / 2.2 / 1.8 / 1.1 | 0.2 / 0.5 / 0.7 s |
+
+Deeper drops' plant to release is now the NFL's: 0.3 / 0.6 / 1.0 s against 0.3 / 0.6 / 1.1.
+
+About half the remaining speed excess is distance and start: the drop covers 3.4 yd (NFL 3.1) and starts 0.1 s later
+(0.7 s against 0.6).
