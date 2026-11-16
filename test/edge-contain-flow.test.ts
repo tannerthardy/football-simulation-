@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.SIGHT_PURE = '0'; }); // engine-72: fixture recorded on the query-order picture, before the per-pair sight history; the lane that owns it re-records with SIGHT_PURE on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { runContactObservers } from '../src/sim/run-contact-observer.js';

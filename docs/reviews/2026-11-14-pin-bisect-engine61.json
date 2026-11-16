@@ -1,0 +1,1201 @@
+{
+ "test/arrival.test.ts": {
+  "pinned": [
+   "QB_BODY_SEEN"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/back-release.test.ts": {
+  "pinned": [
+   "PRO_CALL"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/acquired-qb-continuation.test.ts": {
+  "pinned": [
+   "PURSUIT_FIELD",
+   "TRACK_PURSUIT",
+   "TRACK_TACKLE"
+  ],
+  "status": "ok",
+  "probes": 38
+ },
+ "test/backer-takeon.test.ts": {
+  "pinned": [
+   "CLIMB_PATH",
+   "L2_BREAKDOWN",
+   "LB_LINE_FLOW"
+  ],
+  "status": "ok",
+  "probes": 53
+ },
+ "test/back-man-run-fit.test.ts": {
+  "pinned": [
+   "CUSHION_NEED",
+   "DB_SLOTS",
+   "READ_LEAN"
+  ],
+  "status": "ok",
+  "probes": 63
+ },
+ "test/block-seen.test.ts": {
+  "pinned": [
+   "PUNCH"
+  ],
+  "status": "ok",
+  "probes": 22
+ },
+ "test/backer-read-step.test.ts": {
+  "pinned": [
+   "BACKER_CREEP",
+   "LB_READ_STEP",
+   "READ_LEAN"
+  ],
+  "status": "ok",
+  "probes": 69
+ },
+ "test/call-mix.test.ts": {
+  "pinned": [
+   "CALL_MIX"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/bounded-attachment-world.test.ts": {
+  "pinned": [
+   "GRASP_PATCH"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/blocked-reach.test.ts": {
+  "pinned": [
+   "HONEST_TACKLE"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/carrier-decision-cadence.test.ts": {
+  "pinned": [
+   "RB_TEMPO"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/catch-caller-interval.test.ts": {
+  "pinned": [
+   "CATCH_POINT",
+   "CATCH_SECURE"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/chase-arrival.test.ts": {
+  "pinned": [
+   "DB_SLOTS"
+  ],
+  "status": "ok",
+  "probes": 10
+ },
+ "test/combination-ownership.test.ts": {
+  "pinned": [
+   "RELEASE_QUICK"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/climb-reread-passed.test.ts": {
+  "pinned": [
+   "TOUCH_READ"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/climb-access.test.ts": {
+  "pinned": [
+   "STANCE_TELL",
+   "TE_OFF",
+   "ZONE_GAP"
+  ],
+  "status": "ok",
+  "probes": 43
+ },
+ "test/catch-hands.test.ts": {
+  "pinned": [
+   "CATCH_SECURE"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/combo-attention.test.ts": {
+  "pinned": [
+   "HANDS_CHEST",
+   "RELEASE_INTERCEPT",
+   "RELEASE_QUICK",
+   "WING_WORK"
+  ],
+  "status": "ok",
+  "probes": 66
+ },
+ "test/combo-strike-access.test.ts": {
+  "pinned": [
+   "LEAN_PITCH",
+   "RELEASE_QUICK",
+   "STANCE_TELL",
+   "TRACK_PURSUIT"
+  ],
+  "status": "ok",
+  "probes": 74
+ },
+ "test/combo-transfer.test.ts": {
+  "pinned": [
+   "CLIMB_SQUARE",
+   "DOUBLE_FLOW",
+   "DOUBLE_HANDOFF",
+   "RELEASE_INTERCEPT",
+   "RELEASE_QUICK"
+  ],
+  "status": "ok",
+  "probes": 73
+ },
+ "test/contact-motion.test.ts": {
+  "pinned": [
+   "ANCHOR_GRADE"
+  ],
+  "status": "ok",
+  "probes": 19
+ },
+ "test/contact-holding-rules.test.ts": {
+  "pinned": [
+   "OPEN_HANDS",
+   "PAST_ALONG_PATH",
+   "PUNCH"
+  ],
+  "status": "ok",
+  "probes": 46
+ },
+ "test/cover6-half-side.test.ts": {
+  "pinned": [
+   "ROUTE_CRAFT"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/cover3-cover2-rules.test.ts": {
+  "pinned": [
+   "READ_PLAN"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/coverage-judgment.test.ts": {
+  "pinned": [
+   "OPEN_CARRY"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/coverage-mechanics.test.ts": {
+  "pinned": [
+   "OPEN_CARRY"
+  ],
+  "status": "ok",
+  "probes": 10
+ },
+ "test/coverage-rules.test.ts": {
+  "pinned": [
+   "WR_SNAP"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/coverage-flat-responsibility.test.ts": {
+  "pinned": [
+   "CURL_FLAT_BACK",
+   "DB_SLOTS",
+   "QB_BODY_SEEN",
+   "SEEN_EYES"
+  ],
+  "status": "ok",
+  "probes": 80
+ },
+ "test/db-slots.test.ts": {
+  "pinned": [
+   "DB_SLOTS"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/deep-coverage-leverage.test.ts": {
+  "pinned": [
+   "CUSHION_BREAK"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/defensive-call-integrity.test.ts": {
+  "pinned": [
+   "MUG_PRESSURES",
+   "NICKEL_FRONTS"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/directional-brace.test.ts": {
+  "pinned": [
+   "LEAN_PITCH",
+   "LEG_ALLOMETRY"
+  ],
+  "status": "ok",
+  "probes": 45
+ },
+ "test/cushion-break.test.ts": {
+  "pinned": [
+   "BACKFIELD_DEPTH",
+   "CARRY_READ"
+  ],
+  "status": "ok",
+  "probes": 32
+ },
+ "test/dl-attack-landmark.test.ts": {
+  "pinned": [
+   "STANCE_TELL"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/dl-flatten.test.ts": {
+  "pinned": [
+   "TOUCH_READ"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/downfield-contact-rejection.test.ts": {
+  "pinned": [
+   "RCV_SEEN"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/draw-presentation.test.ts": {
+  "pinned": [
+   "RELEASE_QUICK",
+   "ZONE_WINGS"
+  ],
+  "status": "ok",
+  "probes": 40
+ },
+ "test/dl-games.test.ts": {
+  "pinned": [
+   "FIT_TE_GAP",
+   "KEY_DEPTH",
+   "STANCE_TELL"
+  ],
+  "status": "ok",
+  "probes": 54
+ },
+ "test/command-trace.test.ts": {
+  "pinned": [
+   "BACK_RELEASE",
+   "CARRY_READ",
+   "GUN_SNAP",
+   "LINE_START",
+   "READ_PLAN"
+  ],
+  "status": "ok",
+  "probes": 193
+ },
+ "test/edge-contain-flow.test.ts": {
+  "pinned": [
+   "LB_LINE_FLOW",
+   "LEAN_PITCH"
+  ],
+  "status": "ok",
+  "probes": 22
+ },
+ "test/fangio-tree.test.ts": {
+  "pinned": [
+   "WR_SNAP"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/finish-check.test.ts": {
+  "pinned": [
+   "CARRY_READ"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/fit-te-gap-slide.test.ts": {
+  "pinned": [
+   "TE_OFF"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/flat-press.test.ts": {
+  "pinned": [
+   "ZONE_RUN"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/front-menu.test.ts": {
+  "pinned": [
+   "MUG_CALLS"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/gap-match.test.ts": {
+  "pinned": [
+   "TE_OFF"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/grasp-angular-transfer.test.ts": {
+  "pinned": [
+   "GRASP_ARM_MOMENT"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/hand-angular-transfer.test.ts": {
+  "pinned": [
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/hand-comoving.test.ts": {
+  "pinned": [
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/hand-force-integration.test.ts": {
+  "pinned": [
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/hand-force-point.test.ts": {
+  "pinned": [
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/held-recovery.test.ts": {
+  "pinned": [
+   "GRASP_PATCH"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/held-stride.test.ts": {
+  "pinned": [
+   "HELD_SWING"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/helper-fit.test.ts": {
+  "pinned": [
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/hold-sink.test.ts": {
+  "pinned": [
+   "DB_SLOTS"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/gun-split-backs.test.ts": {
+  "pinned": [
+   "PRO_CALL"
+  ],
+  "status": "ok",
+  "probes": 11
+ },
+ "test/hook-stem-continuity.test.ts": {
+  "pinned": [
+   "OPEN_CARRY"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/kick-braking.test.ts": {
+  "pinned": [
+   "BACKFIELD_DEPTH"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/incidental-catch-readiness.test.ts": {
+  "pinned": [
+   "CATCH_POINT",
+   "CATCH_SECURE",
+   "CATCH_SPEED",
+   "DEFLECT_BALL"
+  ],
+  "status": "ok",
+  "probes": 54
+ },
+ "test/lb-guard-step.test.ts": {
+  "pinned": [
+   "READ_LEAN"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/cov7-abandonment.test.ts": {
+  "pinned": [
+   "CUSHION_NEED",
+   "DB_SLOWPLAY",
+   "DEF_BELIEF",
+   "KEY_DEPTH",
+   "LINE_START",
+   "PASS_SET_SEEN",
+   "PA_DROP",
+   "PUNCH",
+   "WR_SNAP"
+  ],
+  "status": "ok",
+  "probes": 399
+ },
+ "test/lb-flow-intercept.test.ts": {
+  "pinned": [
+   "ALIGN_HABIT",
+   "LB_GUARD_STEP",
+   "LB_LINE_FLOW",
+   "LINE_STEP",
+   "REACH_FLAT",
+   "ZONE_ARMS"
+  ],
+  "status": "ok",
+  "probes": 162
+ },
+ "test/draw-read.test.ts": {
+  "pinned": [
+   "GUN_SNAP"
+  ],
+  "status": "ok",
+  "probes": 29
+ },
+ "test/lineup-order.test.ts": {
+  "pinned": [
+   "DB_SLOTS"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/long-yardage-run.test.ts": {
+  "pinned": [
+   "ALIGN_HABIT",
+   "SLOT_LEV"
+  ],
+  "status": "ok",
+  "probes": 46
+ },
+ "test/man-cushion-compression.test.ts": {
+  "pinned": [
+   "CUSHION_BREAK",
+   "CUSHION_NEED"
+  ],
+  "status": "ok",
+  "probes": 22
+ },
+ "test/man-run-continuity.test.ts": {
+  "pinned": [
+   "DB_SLOWPLAY"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/motion-contact.test.ts": {
+  "pinned": [
+   "BACKER_CREEP"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/native-pass-foul-game.test.ts": {
+  "pinned": [
+   "OFFICIATE"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/ol-align.test.ts": {
+  "pinned": [
+   "RECEIVER_DEPTH"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/open-hands.test.ts": {
+  "pinned": [
+   "HANDS_CHEST"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/pad-leverage.test.ts": {
+  "pinned": [
+   "LEG_ALLOMETRY"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/pass-anchor.test.ts": {
+  "pinned": [
+   "LEAN_PITCH"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/line-read.test.ts": {
+  "pinned": [
+   "EDGE_REACH"
+  ],
+  "status": "ok",
+  "probes": 33
+ },
+ "test/pass-contact-rules.test.ts": {
+  "pinned": [
+   "BACKER_CREEP",
+   "OFFICIATE",
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 44
+ },
+ "test/pass-contact.test.ts": {
+  "pinned": [
+   "LEAN_PITCH",
+   "LEG_ALLOMETRY",
+   "PUNCH"
+  ],
+  "status": "ok",
+  "probes": 38
+ },
+ "test/pass-feel.test.ts": {
+  "pinned": [
+   "REP_SEEN"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/pass-hip-ride.test.ts": {
+  "pinned": [
+   "PAST_ALONG_PATH"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/pass-cutoff-approach.test.ts": {
+  "pinned": [
+   "BACK_RELEASE",
+   "PASS_SET_SEEN"
+  ],
+  "status": "ok",
+  "probes": 33
+ },
+ "test/pass-installation.test.ts": {
+  "pinned": [
+   "BACK_RELEASE",
+   "READ_PLAN"
+  ],
+  "status": "ok",
+  "probes": 32
+ },
+ "test/pass-rush-finish.test.ts": {
+  "pinned": [
+   "TRACK_PURSUIT"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/overtake-climb.test.ts": {
+  "pinned": [
+   "DOUBLE_FLOW",
+   "TE_OFF"
+  ],
+  "status": "ok",
+  "probes": 115
+ },
+ "test/perimeter-run-play.test.ts": {
+  "pinned": [
+   "DB_SLOWPLAY"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/presnap-alignment-contract.test.ts": {
+  "pinned": [
+   "TIGHT_OFF"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/planned-climb-fit.test.ts": {
+  "pinned": [
+   "CLIMB_PATH",
+   "CLIMB_RIP",
+   "WING_CALL",
+   "ZONE_WINGS"
+  ],
+  "status": "ok",
+  "probes": 65
+ },
+ "test/presnap-coverage-checks.test.ts": {
+  "pinned": [
+   "CUSHION_BREAK"
+  ],
+  "status": "ok",
+  "probes": 18
+ },
+ "test/press-front-stance.test.ts": {
+  "pinned": [
+   "BACKER_CREEP",
+   "TIGHT_OFF"
+  ],
+  "status": "ok",
+  "probes": 41
+ },
+ "test/press-contact.test.ts": {
+  "pinned": [
+   "LINE_START",
+   "RELEASE_SEEN",
+   "ROUTE_CRAFT"
+  ],
+  "status": "ok",
+  "probes": 50
+ },
+ "test/pro-call.test.ts": {
+  "pinned": [
+   "PRO_CALL"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/prethrow-opi.test.ts": {
+  "pinned": [
+   "LEAN_PITCH"
+  ],
+  "status": "ok",
+  "probes": 13
+ },
+ "test/projected-cap.test.ts": {
+  "pinned": [
+   "DB_SLOTS"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/protection.test.ts": {
+  "pinned": [
+   "PRO_CALL"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/pursuit-effort.test.ts": {
+  "pinned": [
+   "TRACK_PURSUIT"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/pursuit-objective.test.ts": {
+  "pinned": [
+   "TRACK_TACKLE"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/pursuit-contact.test.ts": {
+  "pinned": [
+   "HONEST_TACKLE",
+   "PASS_SET_SEEN",
+   "TRACK_PURSUIT",
+   "TRACK_TACKLE"
+  ],
+  "status": "ok",
+  "probes": 70
+ },
+ "test/pursuit-prediction.test.ts": {
+  "pinned": [
+   "TRACK_TACKLE"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/qb-interception-estimate.test.ts": {
+  "pinned": [
+   "INT_BELIEF",
+   "THROW_REACT"
+  ],
+  "status": "ok",
+  "probes": 43
+ },
+ "test/qb-feel.test.ts": {
+  "pinned": [
+   "BACKFIELD_DEPTH",
+   "BACK_RELEASE",
+   "HANDS_CHEST",
+   "PASS_SET_SEEN",
+   "TRACK_PURSUIT"
+  ],
+  "status": "ok",
+  "probes": 119
+ },
+ "test/qb-scramble-lane.test.ts": {
+  "pinned": [
+   "PUNCH"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/lb-start.test.ts": {
+  "pinned": [
+   "RCV_SEEN",
+   "READ_LEAN"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/quarters-trips-rules.test.ts": {
+  "pinned": [
+   "BACK_PATHS",
+   "HANDS_CHEST"
+  ],
+  "status": "ok",
+  "probes": 40
+ },
+ "test/qb-rusher-recording.test.ts": {
+  "pinned": [
+   "PASS_SET_SEEN",
+   "QB_BODY_SEEN",
+   "QB_RHYTHM",
+   "READ_PLAN",
+   "RECEIVER_DEPTH",
+   "REP_SEEN",
+   "SEEN_EYES"
+  ],
+  "status": "ok",
+  "probes": 185
+ },
+ "test/read-lean.test.ts": {
+  "pinned": [
+   "PUNCH"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/receiver-native-motion.test.ts": {
+  "pinned": [
+   "ALIGN_HABIT"
+  ],
+  "status": "ok",
+  "probes": 18
+ },
+ "test/receiver-option-information.test.ts": {
+  "pinned": [
+   "RELEASE_SEEN"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/possession-awareness.test.ts": {
+  "pinned": [
+   "ANCHOR_BASE",
+   "BACKFIELD_DEPTH",
+   "BACK_RELEASE",
+   "CATCH_CARRY",
+   "CATCH_POINT",
+   "CATCH_SECURE",
+   "CUSHION_BREAK",
+   "GRASP_PATCH",
+   "GUN_SNAP",
+   "HANDS_CHEST",
+   "LEAN_PITCH",
+   "LEG_ALLOMETRY",
+   "LINE_START",
+   "PASS_ANCHOR",
+   "PASS_SET_SEEN",
+   "PAST_ALONG_PATH",
+   "PEDAL_CAP",
+   "POCKET_REACH",
+   "RCV_SEEN",
+   "READ_PLAN",
+   "REP_SEEN",
+   "RUSH_LEAN_BOUND",
+   "THROW_BODY",
+   "THROW_HOLD",
+   "THROW_REACT",
+   "TRACK_TACKLE",
+   "WR_SNAP"
+  ],
+  "status": "ok",
+  "probes": 789
+ },
+ "test/receiver-run-eligibility.test.ts": {
+  "pinned": [
+   "LEVEL2_TIME",
+   "ZONE_GAP"
+  ],
+  "status": "ok",
+  "probes": 41
+ },
+ "test/read-compiler.test.ts": {
+  "pinned": [
+   "RELEASE_SEEN"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/redirect-phase-contract.test.ts": {
+  "pinned": [
+   "HANDS_CHEST",
+   "PAST_ALONG_PATH"
+  ],
+  "status": "ok",
+  "probes": 40
+ },
+ "test/redirect-protection.test.ts": {
+  "pinned": [
+   "PAST_ALONG_PATH"
+  ],
+  "status": "ok",
+  "probes": 24
+ },
+ "test/receiver-route-effort.test.ts": {
+  "pinned": [
+   "LINE_START",
+   "RCV_SEEN",
+   "ROUTE_CRAFT"
+  ],
+  "status": "ok",
+  "probes": 54
+ },
+ "test/release-seen.test.ts": {
+  "pinned": [
+   "READ_PLAN"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/run-combo-retarget.test.ts": {
+  "pinned": [
+   "RELEASE_QUICK"
+  ],
+  "status": "ok",
+  "probes": 11
+ },
+ "test/run-base.test.ts": {
+  "pinned": [
+   "BACKER_CREEP"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/route-craft.test.ts": {
+  "pinned": [
+   "ALIGN_HABIT"
+  ],
+  "status": "ok",
+  "probes": 18
+ },
+ "test/run-contact-workoff-interaction.test.ts": {
+  "pinned": [
+   "ENGAGED_DEFENDER"
+  ],
+  "status": "ok",
+  "probes": 18
+ },
+ "test/run-contact-track.test.ts": {
+  "pinned": [
+   "REACH_TECHNIQUE"
+  ],
+  "status": "ok",
+  "probes": 18
+ },
+ "test/run-contact-flow.test.ts": {
+  "pinned": [
+   "ENGAGED_DEFENDER",
+   "REP_SEEN"
+  ],
+  "status": "ok",
+  "probes": 47
+ },
+ "test/run-pace-gather.test.ts": {
+  "pinned": [
+   "RB_STEER"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/run-execution.test.ts": {
+  "pinned": [
+   "ALIGN_HABIT",
+   "BACKER_CREEP",
+   "RELEASE_QUICK"
+  ],
+  "status": "ok",
+  "probes": 51
+ },
+ "test/run-read-attention.test.ts": {
+  "pinned": [
+   "TRACK_PURSUIT"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/runner-side-recovery.test.ts": {
+  "pinned": [
+   "TE_OFF"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/schematic-stress.test.ts": {
+  "pinned": [
+   "SLOT_LEV"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/second-level-handover.test.ts": {
+  "pinned": [
+   "TRACK_PURSUIT"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/seen-eyes.test.ts": {
+  "pinned": [
+   "QB_BODY_SEEN"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/scenario-pack.test.ts": {
+  "pinned": [
+   "GRASP_PATCH",
+   "HANDS_CHEST",
+   "PAST_ALONG_PATH"
+  ],
+  "status": "ok",
+  "probes": 50
+ },
+ "test/short-package.test.ts": {
+  "pinned": [
+   "SHORT_BASE"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/shed-pursue.test.ts": {
+  "pinned": [
+   "SHED_PAST"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/shotgun-rb-alignment.test.ts": {
+  "pinned": [
+   "BACKFIELD_DEPTH"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/shotgun-exchange.test.ts": {
+  "pinned": [
+   "GUN_MESH",
+   "MESH_GUN_SIDE",
+   "MESH_TEMPO"
+  ],
+  "status": "ok",
+  "probes": 58
+ },
+ "test/situation-depth.test.ts": {
+  "pinned": [
+   "ALIGN_HABIT"
+  ],
+  "status": "ok",
+  "probes": 18
+ },
+ "test/snap-count.test.ts": {
+  "pinned": [
+   "BACKER_CREEP"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/support-contact-frame.test.ts": {
+  "pinned": [
+   "ENGAGED_DEFENDER",
+   "SHED_PAST"
+  ],
+  "status": "ok",
+  "probes": 39
+ },
+ "test/support-escape-objective.test.ts": {
+  "pinned": [
+   "ENGAGED_DEFENDER",
+   "SHED_PAST"
+  ],
+  "status": "ok",
+  "probes": 39
+ },
+ "test/support-receiver-holder.test.ts": {
+  "pinned": [
+   "SHED_PAST"
+  ],
+  "status": "ok",
+  "probes": 12
+ },
+ "test/run-hand-control.test.ts": {
+  "pinned": [
+   "ANCHOR_BASE",
+   "BACKER_CREEP",
+   "BACK_RELEASE",
+   "ENGAGED_DEFENDER",
+   "FEET_SETTLE",
+   "HANDS_CHEST",
+   "LEAN_PITCH",
+   "LEG_ALLOMETRY",
+   "PASS_ANCHOR",
+   "PEDAL_CAP",
+   "REP_SEEN",
+   "RUSH_LEAN_BOUND"
+  ],
+  "status": "ok",
+  "probes": 285
+ },
+ "test/support-work-off.test.ts": {
+  "pinned": [
+   "ENGAGED_DEFENDER",
+   "SHED_PAST"
+  ],
+  "status": "ok",
+  "probes": 39
+ },
+ "test/tackle-window.test.ts": {
+  "pinned": [
+   "HONEST_TACKLE"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/team-contact-rules.test.ts": {
+  "pinned": [
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 16
+ },
+ "test/shoulders-set.test.ts": {
+  "pinned": [
+   "BACKFIELD_DEPTH",
+   "READ_PLAN",
+   "RECEIVER_DEPTH"
+  ],
+  "status": "ok",
+  "probes": 55
+ },
+ "test/tip-away.test.ts": {
+  "pinned": [
+   "CATCH_HANDS"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/traffic-turning.test.ts": {
+  "pinned": [
+   "READ_PLAN"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/tackle-support-choice.test.ts": {
+  "pinned": [
+   "DB_SLOTS",
+   "GRASP_PATCH",
+   "HOLD_FINISH",
+   "LEAN_PITCH"
+  ],
+  "status": "ok",
+  "probes": 66
+ },
+ "test/wrap-binding.test.ts": {
+  "pinned": [
+   "HIP_BRACE"
+  ],
+  "status": "ok",
+  "probes": 17
+ },
+ "test/world-physics.test.ts": {
+  "pinned": [
+   "LEAN_PITCH",
+   "OPEN_HANDS"
+  ],
+  "status": "ok",
+  "probes": 43
+ },
+ "test/zone-backer-count.test.ts": {
+  "pinned": [
+   "TE_OFF"
+  ],
+  "status": "ok",
+  "probes": 14
+ },
+ "test/zone-runoff-work.test.ts": {
+  "pinned": [
+   "FEET_SETTLE",
+   "REACH_TECHNIQUE"
+  ],
+  "status": "ok",
+  "probes": 40
+ },
+ "test/zone-throw-key.test.ts": {
+  "pinned": [
+   "QB_BODY_SEEN"
+  ],
+  "status": "ok",
+  "probes": 15
+ },
+ "test/throw-body.test.ts": {
+  "pinned": [
+   "THROW_HOLD"
+  ],
+  "status": "ok",
+  "probes": 56
+ },
+ "test/zone-helper-check.test.ts": {
+  "pinned": [
+   "CLIMB_SQUARE",
+   "DOUBLE_HANDOFF",
+   "RECEIVER_DEPTH",
+   "RELEASE_INTERCEPT",
+   "RELEASE_QUICK",
+   "STANCE_TELL",
+   "ZONE_ARMS",
+   "ZONE_GAP"
+  ],
+  "status": "ok",
+  "probes": 122
+ }
+}

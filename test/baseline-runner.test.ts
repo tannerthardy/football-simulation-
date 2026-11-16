@@ -48,4 +48,11 @@ describe('shared baseline runs are explicit and cannot inherit experiments', () 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('missing [NEW_UNREGISTERED_FLAG]');
   });
+
+  it('lets a flag deleted from the engine stay in the historical profile', () => {
+    const code = `import { checkFlags, profile } from ${JSON.stringify(pathToFileURL(launcher).href)};
+      checkFlags(Object.keys(profile.flags).slice(1));`;
+    const result = spawnSync(process.execPath, ['--input-type=module', '--eval', code], { encoding: 'utf8' });
+    expect(result.status).toBe(0);
+  });
 });

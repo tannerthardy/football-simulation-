@@ -36,6 +36,7 @@ async function closing(flag: string, c: Case): Promise<number> {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
   vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Defense to re-record with MIRROR_SCATTER on
+  vi.stubEnv('BALL_EST', '0'); // engine-72: with the delayed ball estimate (default 6145) these scenes' trailing man no longer trails at the catch; the premise was found on the direct read. Defense to re-find the cases with BALL_EST on
   vi.stubEnv('CATCH_CARRY', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

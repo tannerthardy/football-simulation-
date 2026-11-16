@@ -1,4 +1,5 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.BALL_EST = '0'; }); // engine-72: the native pursuit case is found on the direct ball read; the delayed ball estimate (default 6145) leaves no such case in the first six completions; Defense re-finds it with BALL_EST on (docs/reviews/2026-11-16-pin-delta-engine72.md)
 import { createHash } from 'node:crypto';
 import { arrivalJson, captureNativePursuit, compareBundle, forecast, freezeNative, frozenControls, necessaryBound, objectives,
   parseArrivalJson, response, restoreBody, type ArrivalCase } from '../scripts/diag/pursuit-arrival.js';
