@@ -157,7 +157,12 @@ rule this stops here, without a PR, for re-diagnosis.
 What the gates say instead: the hole in these families is not the catch but what follows it. Yards after the catch
 are long-tailed (shallow / mesh p50 7.3, mean 13.6; in-breakers p50 4.3, mean 9.1; crossers p50 7.8, mean 12.0) with
 few missed tackles (0.11-0.21 per catch): the catcher runs away from defenders who do not arrive, not through them.
-That is the same signature as #127 (the safety level with the catch, 5-7 yd inside, never closing) and the slow
-redirect in `deep_break.py` (deep and 2-10 yd defenders alike carry their old velocity for about 0.5 s). The next
-diagnosis is the rally to a short catch on these routes, by first-defender arrival time against the NFL, with the break
-row deciding whether it is the body or the decision.
+
+**Withdrawn (2026-11-16): the body is not the common factor.** I had read the slow redirect in `deep_break.py` as the
+common cause of #127, SETTLE_DEPTH's hook and these tails. The NFL row (Tools, BDB 2025 weeks 1-9, same operator)
+shows the NFL defender bleeds his old velocity over the same 0.5 s on a break over 90 deg (1.8 → -0.1 deep, 1.6 → -0.2
+underneath, against our 1.7 → -0.2), reaches the new line at 0.5 s (ours 0.6) and runs 1.8 / 3.8 yd/s along it at +0.5 /
++1.0 s (ours 1.5 / 3.7). Ours rotates a little slow; it does not fail to plant. What is left for the tails is where the
+defenders are and how they are moving before the catch: the next diagnosis measures, at the throw and at the catch,
+the first and second defender's distance, speed and heading relative to the catcher, ours against the NFL, by route
+family.

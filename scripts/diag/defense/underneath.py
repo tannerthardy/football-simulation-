@@ -4,7 +4,8 @@
 # A. Depth under an in-breaker.  At the throw (events.pass_forward): an intermediate in-breaker is a receiver 10-15 yd
 #    past the line moving inside (toward the ball's y at the snap) faster than downfield over the last 0.3 s, at 3+ yd/s;
 #    "with a shallow under it" when another receiver is 0-6 yd past the line moving across (lateral faster than
-#    downfield, 3+ yd/s) the same way.  For each in-breaker: the nearest defender shallower than him (not a deep man):
+#    downfield, 3+ yd/s) the same way.  For each in-breaker: the nearest defender at least 2 yd shallower than him (under
+#    the route, not a man trailing it; Tools' check, 2026-11-16):
 #    his depth, the in-breaker's depth minus his, the distance between them; and, when the throw went to the in-breaker,
 #    completion.
 # B. The curl-flat's first second.  Pass plays thrown at 1.5 s or later.  On each side with two or more receivers
@@ -45,7 +46,8 @@ def part_a(P, out):
         best = None
         for d in dfn:
             a = at(P, F, d)
-            if a is None or a[0] - los >= dep: continue
+            # under the route: at least 2 yd shallower than him (a trailing man within 2 yd of his depth is not under it)
+            if a is None or a[0] - los > dep - 2 or a[0] - los < 2: continue  # and off the line (not a rusher)
             dd = math.hypot(a[0] - p[0], a[1] - p[1])
             if best is None or dd < best[0]: best = (dd, a[0] - los)
         if best is None: continue
