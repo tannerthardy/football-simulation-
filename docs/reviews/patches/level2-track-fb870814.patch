@@ -1,0 +1,293 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 8ffa276e..ae6739df 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -208,6 +208,7 @@
+     "CLIMB_SLIDE": "0",
+     "WING_WORK": "0",
+     "LEVEL2_TIME": "0",
++    "LEVEL2_TRACK": "0",
+     "REACH_RACE": "0",
+     "LINE_STEP": "0",
+     "DOUBLE_TRACK": "0",
+diff --git a/config/reference-stack.json b/config/reference-stack.json
+index 8566b2d2..c0ab54e5 100644
+--- a/config/reference-stack.json
++++ b/config/reference-stack.json
+@@ -231,6 +231,7 @@
+     "RUSH_INTENT": "off",
+     "LEG_ALLOMETRY": "on",
+     "LEVEL2_TIME": "on",
++    "LEVEL2_TRACK": "off",
+     "LINE_START": "on",
+     "LINE_STEP": "on",
+     "MAN_PHASE": "off",
+diff --git a/docs/FLAGS.md b/docs/FLAGS.md
+index 17ebede0..b36ded1f 100644
+--- a/docs/FLAGS.md
++++ b/docs/FLAGS.md
+@@ -2,7 +2,7 @@
+ 
+ Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+ 
+-There are 418 flags read from the environment in `src` (recounted 2026-11-16, engine-70 with the following card's candidates merged off): 310 are on unless set to `0`, 91 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
++There are 419 flags read from the environment in `src` (recounted 2026-11-16, engine-70 with the following card's candidates merged off): 310 are on unless set to `0`, 92 are off unless set to `1`, and 17 are numeric scales or modes (identity value unless listed in the stack's numeric section). The rows below carry each flag's history.
+ 
+ **Promotion (2026-11-09):** the reference stack `run-ref-4` is now the engine's default. The 90 flags it lists `on` are read as on unless set to `0` (rows marked "promoted" below); the rest are unchanged. Decisions and evidence for each flag are in [REFERENCE_STACK.md](REFERENCE_STACK.md); `npm run ref -- --list` is the current inventory, and `npm run ref -- --off -- <command>` runs the engine as it was before. The test suites still run on the pre-promotion engine (pinned in `vitest.config.ts`) until their recorded cases are re-recorded. The counts in the paragraph above predate all of this.
+ 
+@@ -69,6 +69,7 @@ There are 418 flags read from the environment in `src` (recounted 2026-11-16, en
+ | `WING_CALL` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run game, 2026-11-05) | trenches | `src/sim/behaviors/blocking.ts:609` | when a down man lines up over a wing beside the end of the line, the call names the wing technique in the tracked mix: end takes him and wing arcs (TE 43% / WR 54%), wing takes him and end climbs (31/28%), or both double him (26/19%); picked by a hash of players and ball spot |
+ | `WING_WORK` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run game, 2026-11-05) | trenches | `src/sim/behaviors/blocking.ts:616` | with `WING_CALL`, a play-side wing arcs only to a box/alley defender within 6 yd of the line; with none unclaimed he doubles the man with the end and one of them comes off to the nearest box backer |
+ | `LEVEL2_TIME` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run game, 2026-11-05) | trenches | `src/sim/behaviors/blocking.ts:627` | the zone second-level assignment goes by who gets there first (double climbers start ~0.9 s, lone climbers and wings at once, run at 0.75 vmax) and wings beside the line take part; the wing call plays toward the wing's backer |
++| `LEVEL2_TRACK` | off | experimental (run game, 2026-11-16) | zone second level | `src/sim/behaviors/blocking.ts` (the LEVEL2_TIME cost) | with LEVEL2_TIME, a worker's run to a backer is measured from his track (his y plus the play-side lead: 1.5 yd for a double's climber, 1 yd for a lone climber or a wing), the point the distance cost uses, not his body; start times and wings unchanged. Off, a play-side double could climb to the backside backer and leave the play-side one free when the two were about equally far (G1-P018). Read: docs/reviews/2026-11-16-level2-track.md |
+ | `REACH_RACE` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run game, 2026-11-05) | trenches | `src/sim/engaged-technique.ts:48` | with `REACH_TECHNIQUE`, an engaged reach blocker races for the man's play-side shoulder instead of mirroring him: his lateral pace is the man's speed plus what still closes the distance to the shoulder (.45 sep across) under half his own braking, capped by his open-hip running speed; behind the shoulder he opens his hips up to 45 degrees toward the play |
+ | `DOUBLE_TRACK` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run game, 2026-11-06) | trenches | `src/sim/engaged-technique.ts:55` | on a stretch call both members of an engaged double keep stepping the zone track (0.45 vmax toward the play) with hands on, instead of mirroring the man and holding a spot beside each other; the backside member works to replace the hip (feet to the man's middle) so the man can be handed over and the play-side member can climb |
+ | `RB_FLOW` | on | promoted 2026-11-09 (run-ref-4; `=0` restores); was experimental (run game, 2026-11-06) | ball carrier | `src/sim/behaviors/carrier.ts:84` | the back's run read carries each line body it sees along its seen velocity to when he would pass it (at most 1 s), so a straight lane behind blockers already stepping play side is not read as shut and he is not flattened along the line |
+diff --git a/docs/reviews/2026-11-16-level2-track.md b/docs/reviews/2026-11-16-level2-track.md
+new file mode 100644
+index 00000000..f50eae39
+--- /dev/null
++++ b/docs/reviews/2026-11-16-level2-track.md
+@@ -0,0 +1,95 @@
++# LEVEL2_TRACK (off): the zone climber's time cost measured from his track (G1-P018)
++
++Run Game for Integration, 2026-11-16, on engine-70 (develop fb870814 merged).
++
++## The defect
++
++`test/receiver-run-eligibility.test.ts`, case G1-P018: outside zone strong, gun bunch, against cover0 with zero_6
++(six rushers against five linemen). On the defaults the line leaves the play-side backer free:
++
++| | LG | C | RG | free |
++|---|---|---|---|---|
++| defaults | reach DT_W | double DT_S → **LB_W** (backside, +2.1 yd) | reach DT_S | **LB_M** (−0.7, play side of the double's track) |
++| all flags off | double DT_W → LB_M | reach DT_W | reach DT_S | LB_W |
++| LEVEL2_TIME=0 | reach DT_W | double DT_S → LB_M | reach DT_S | LB_W |
++| ZONE_GAP=0 | double DT_W → LB_W | reach DT_W | reach DT_S | LB_M |
++
++Delta-debugging the 32 promoted blocking flags (`scripts/diag/mirror/p018-ddmin.py`): the minimal set whose
++off-ness passes is {LEVEL2_TIME, ZONE_GAP}; either alone on fails. Each moves a different decision:
++
++- **ZONE_GAP picks the double.** The centre leaves the backside-shaded DT_W to LG and doubles DT_S with RG; that is
++  its NFL-backed rule and is not the fault.
++- **LEVEL2_TIME picks the double's backer, and that is the fault.**
++  - Without LEVEL2_TIME, a worker's cost to a backer is measured from his track: his y plus the play-side lead, 1.5 yd
++    for a double's climber and 1 yd for a lone climber or a wing.
++  - LEVEL2_TIME's time cost (start + run / 0.75 vmax) measured the run from his body, dropping that lead.
++  - With the two backers about equally far (LB_M 5.05 yd, LB_W 5.06 from the centre) the play-side double climbs
++    backside, with either ZONE_GAP double, and the play-side backer is the one left free.
++- **This is an inconsistency between two versions of one rule, not a design choice.**
++- **The counting case is real.** Six rushers against five linemen means one backer is free by arithmetic. The zone
++  rule leaves the backside one.
++
++## The change
++
++LEVEL2_TRACK (off; with LEVEL2_TIME): the run is measured from the worker's track point (`blocking.ts`, the
++LEVEL2_TIME cost). Start times (a double's climber 0.9 s, a lone climber or wing 0.3 s) and the wings are unchanged.
++Flag rows: FLAGS.md, reference-stack `off`, baseline `"0"`.
++
++**Bound.** Moving the reference by the lead (at most 1.5 yd) changes a worker's time cost to any backer by at most
++1.5 / (0.75 × vmax), about 0.25–0.3 s. A choice can therefore change only between backers whose costs were within
++about twice that, roughly 3 yd of run. With two backers clearly unequal in distance, nothing changes.
++
++**Pin restated (test-only, same patch).** Instead of "LG climbs to LB_M", the G1-P018 case now asserts:
++
++- LB_M is owned by someone: a target, a climb or a double's backer;
++- any of LB_M / LB_W left free is backside of the ball.
++
++With `TEST_ENGINE_DEFAULTS=1` it fails on the defaults (the defect) and passes with LEVEL2_TRACK=1 (36/36). All flags
++off: 36/36.
++
++## Gates
++
++**Staged plans** (`scripts/diag/level2-plans.mts`; the line plan at the snap). 7 zone runs × 6 formations × 8 fronts ×
++5 coverages (plus cover0 with zero_6) × flip = 1,728 cases.
++
++- **Plan changed: 186 (10.8%).**
++  - By front: stack33 67/216, mint 51/216, under34 15/216, odd 13/216, bear34 11/216, tite 11/216, penny 9/216,
++    penny_bear 9/216.
++  - By run: oz_strong / wz_strong 47/288 each, oz_weak / wz_weak 28/288 each, iz_strong / iz_weak 18/288 each.
++- **Which backer is free, over all 1,728 cases:**
++
++  | | free box defenders | play side | backside | middle | cases with a play-side backer free |
++  |---|---|---|---|---|---|
++  | off | 1,236 | 476 | 682 | 78 | 476 |
++  | on | 1,250 | 373 | 805 | 72 | 373 |
++
++  - Among the changed cases: play-side-free → backside-free 49; (backside, play side) → (backside, backside) 46;
++    play-side-free → none 16; the reverse (backside → backside + play side) 6.
++  - The total free rises by 14: some re-routed climbs take a deep defender sitting in the box, and the backer behind
++    him is now the free one, backside.
++
++**Run set.** `npm run ref:report -- --set fresh --flag LEVEL2_TRACK=1 --placebo 2`: engine-70 at f6ef1d9b, clean tree,
++1,295 plays; yards capped at 20.
++
++| family | ref mean / stuffs (≤0) | LEVEL2_TRACK mean / stuffs | paired (SE) | placebo mean / RMS |
++|---|---|---|---|---|
++| OZ (343) | 2.90 / 19.8% | 2.98 / 19.8% | +0.08 (0.09) | +0.12 / 0.13 |
++| IZ (240) | 3.10 / 14.2% | 3.15 / 14.2% | +0.04 (0.05) | +0.06 / 0.16 |
++| gap (436) | 3.98 / 6.7% | 3.98 / 6.7% | +0.00 (0.00) | −0.10 / 0.21 |
++| duo (139) | 4.15 / 7.2% | 4.15 / 7.2% | +0.00 (0.00) | −0.25 / 0.25 |
++| toss (45) | 3.18 / 31.1% | 2.96 / 31.1% | −0.22 (0.44) | −0.82 / 0.83 |
++| draw (92) | 3.52 / 33.7% | 3.49 / 33.7% | −0.03 (0.06) | +0.50 / 0.51 |
++| all (1,295) | 3.49 / 14.4% | 3.51 / 14.4% | +0.02 (0.03) | −0.01 / 0.02 |
++
++Other readings:
++
++- Missed + broken in the open: 0.286 → 0.287 a run.
++- Share of plays whose yards change: 5% (placebos 94–95%).
++
++**Read.** A defect fix with no measurable run-game effect.
++
++- Every family sits inside its placebo floor, and stuffs are unchanged in every family.
++- Gap and duo are untouched by construction (no LEVEL2_TIME zone count there).
++- The change moves which backer is free (play side 476 → 373 of 1,728 staged plans) on the roughly 10% of zone
++  snaps where two backers are near-equidistant.
++- In the fresh set those plays are few (5% change yards) and their yards net out.
+diff --git a/scripts/diag/level2-plans.mts b/scripts/diag/level2-plans.mts
+new file mode 100644
+index 00000000..1cbfc0b0
+--- /dev/null
++++ b/scripts/diag/level2-plans.mts
+@@ -0,0 +1,42 @@
++// LEVEL2_TRACK gate (Run Game, 2026-11-16): every staged zone run's line plan at the snap: who doubles, who climbs to
++// whom, and which box backers are left free (by front). One JSON line per case; run once per arm and compare.
++//   node scripts/ref.mjs [--flag LEVEL2_TRACK=1] -- npx tsx scripts/diag/level2-plans.mts out.jsonl
++import { writeFileSync } from 'node:fs';
++import { CENTER_Y } from '../../src/core/field.js';
++import { Rng } from '../../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
++import { RUN_BY_ID } from '../../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONTS, PRESSURE_BY_ID } from '../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
++import { planRunBlocking } from '../../src/sim/behaviors/blocking.js';
++import { PlaySim } from '../../src/sim/playsim.js';
++const runs = ['iz_strong', 'iz_weak', 'oz_strong', 'oz_weak', 'wz_strong', 'wz_weak', 'split_zone'];
++const forms = ['gun_doubles_11', 'gun_trips_11', 'gun_bunch_11', 'singleback_11', 'i_form_21', 'singleback_12'].filter((f) => FORMATION_BY_ID[f]);
++const covs = ['cover3', 'cover1', 'cover2', 'cover4', 'cover0'];
++const press = [null, 'zero_6'];
++const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 }), defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
++const out: string[] = [];
++for (const r of runs) for (const fId of forms) for (const front of FRONTS) for (const cov of covs) for (const pr of press) for (const flip of [false, true]) {
++  if (pr && cov !== 'cover0') continue;
++  const formation = FORMATION_BY_ID[fId];
++  let sim: any;
++  try {
++    sim = new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, front.personnel ?? 'nickel'),
++      offCall: { formation, flip, kind: 'run', run: RUN_BY_ID[r], label: r },
++      defCall: { personnel: front.personnel ?? 'nickel', front, coverage: COVERAGE_BY_ID[cov], pressure: pr ? PRESSURE_BY_ID[pr] : null, label: 'x' },
++      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 11, audibles: false } as any);
++  } catch { continue; }
++  let plans: Map<any, any>;
++  try { plans = planRunBlocking(sim, RUN_BY_ID[r]); } catch { continue; }
++  const lb = sim.defense.filter((d: any) => /^LB/.test(d.slot) || ((d.pos.x - sim.los) > 2 && (d.pos.x - sim.los) < 7 && Math.abs(d.pos.y - sim.ballY) < 6));
++  const owned = new Set<string>();
++  const line: string[] = [];
++  for (const [b, p] of plans) {
++    for (const t of [p.target, p.climbTo, p.combination?.backer]) if (t) owned.add(t.slot);
++    if (['LT', 'LG', 'C', 'RG', 'RT'].includes(b.slot) || p.kind === 'climb' || p.combination) line.push(`${b.slot}:${p.kind}>${p.target?.slot ?? '-'}^${p.climbTo?.slot ?? p.combination?.backer?.slot ?? '-'}`);
++  }
++  const free = lb.filter((d: any) => !owned.has(d.slot)).map((d: any) => d.slot).sort();
++  out.push(JSON.stringify({ key: `${r}|${fId}|${front.id}|${cov}|${pr ?? '-'}|${flip}`, front: front.id, run: r, plan: line.sort().join(' '), free,
++    lbs: Object.fromEntries(lb.map((d: any) => [d.slot, [+(d.pos.x - sim.los).toFixed(2), +((d.pos.y - sim.ballY) * sim.offAlign.strongSign).toFixed(2)]])) }));
++}
++writeFileSync(process.argv[2], out.join('\n') + '\n'); console.log(`${out.length} cases -> ${process.argv[2]}`);
+diff --git a/scripts/diag/mirror/_p018.mts b/scripts/diag/mirror/_p018.mts
+new file mode 100644
+index 00000000..d14e844f
+--- /dev/null
++++ b/scripts/diag/mirror/_p018.mts
+@@ -0,0 +1,23 @@
++import { readFileSync } from 'node:fs';
++import { Rng } from '../../../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
++import { RUN_BY_ID } from '../../../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../../../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
++import { planRunBlocking } from '../../../src/sim/behaviors/blocking.js';
++import { PlaySim } from '../../../src/sim/playsim.js';
++const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 }), defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
++const saved = JSON.parse(readFileSync('test/fixtures/receiver-run-assignment-g1-p018.json', 'utf8'));
++for (const mirror of [false, true]) {
++  const sim: any = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_bunch_11, flip: mirror ? !saved.installationFlip : saved.installationFlip, kind: 'run', run: RUN_BY_ID.oz_strong, label: 'oz' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover0, pressure: PRESSURE_BY_ID.zero_6, label: 'press' },
++    los: saved.los, ballY: saved.ballY, firstDownX: 55, seed: 3, audibles: false } as any);
++  for (const a of sim.agents) { const [x, y] = saved.positions[a.slot]; a.body.pos = { x, y: mirror ? 2 * saved.ballY - y : y }; }
++  const plans = planRunBlocking(sim, RUN_BY_ID.oz_strong);
++  if (process.env.BRIEF) { const lg: any = plans.get(sim.slot('LG')); console.log(`${mirror} ${lg?.climbTo?.slot === 'LB_M' && plans.get(sim.slot('RT'))?.target?.slot === 'DE_S' ? 'PASS' : 'FAIL'} LG ${lg?.kind}→${lg?.target?.slot}^${lg?.climbTo?.slot ?? '-'}`); continue; }
++  const s = (a: any) => a?.slot ?? '-';
++  console.log(`mirror ${mirror}: ` + ['LT', 'LG', 'C', 'RG', 'RT', 'Y'].map((sl) => { const p: any = plans.get(sim.slot(sl)); return p ? `${sl}:${p.kind}→${s(p.target)}${p.climbTo ? '^' + s(p.climbTo) : ''}${p.combination ? '[combo ' + s(p.combination.with ?? p.combination.partner) + '/' + s(p.combination.backer) + ']' : ''}` : `${sl}:-`; }).join('  '));
++  if (!mirror) console.log('  saved assignments:', JSON.stringify(saved.savedAssignments).slice(0, 400));
++  console.log('  D:', sim.defense.map((d: any) => `${d.slot}(${(d.pos.x - saved.los).toFixed(1)},${(d.pos.y - saved.ballY).toFixed(1)})`).join(' '));
++}
+diff --git a/scripts/diag/mirror/p018-ddmin.py b/scripts/diag/mirror/p018-ddmin.py
+new file mode 100644
+index 00000000..68982b0d
+--- /dev/null
++++ b/scripts/diag/mirror/p018-ddmin.py
+@@ -0,0 +1,16 @@
++import subprocess, os
++S = os.path.dirname(os.path.abspath(__file__))
++env = dict(os.environ, PATH=f"{S}/node/node-v22.23.3-linux-x64/bin:" + os.environ['PATH'], BRIEF='1')
++def passes(off):
++    args = ['node', 'scripts/ref.mjs'] + sum((['--flag', f'{f}=0'] for f in off), []) + ['--', 'npx', 'tsx', 'scripts/diag/mirror/_p018.mts']
++    out = subprocess.run(args, cwd='/home/user/fs-wr', env=env, capture_output=True, text=True).stdout
++    return out.count('PASS') == 2
++off = "BACKSIDE_COMBO BACKSIDE_SWAP BLOCKER_NEXT CLIMB_PATH CLIMB_RIP CLIMB_RUNNER_SIDE CLIMB_SLIDE CUTOFF_RACE DOUBLE_FLOW DOUBLE_HANDOFF FB_PLAYSIDE GAP_CLIMB IZ_FLAT KEEPER_HIP LEVEL2_TIME NO_CROSS OWNER_KEEPS ZONE_GAP".split()
++for order in (list(reversed(off)), list(off)):
++    for f in order:
++        if f not in off: continue
++        trial = [x for x in off if x != f]
++        if passes(trial): off = trial
++print('minimal off-set:', ' '.join(off))
++for f in off:
++    print(f'  {f} back on -> pass={passes([x for x in off if x != f])}')
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 12104494..11a77885 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -875,6 +875,14 @@ export const WING_WORK = process.env.WING_WORK !== '0';
+  * the play-side backer goes unblocked 25% (ours 54%); the wing and the end
+  * take him 37% (ours 21%). */
+ export const LEVEL2_TIME = process.env.LEVEL2_TIME !== '0';
++/** LEVEL2_TRACK (off; LEVEL2_TRACK=1 turns it on; Run Game, docs/reviews/2026-11-16-level2-track.md): with
++ * LEVEL2_TIME, a worker's run to a backer is measured from his track (his y plus the play-side lead: 1.5 yd for a
++ * double's climber, 1 yd for a lone climber or a wing), the same point the distance cost measures from; start times
++ * and wings unchanged. Off, the time cost measured from his body and dropped the play-side lead, so with two backers
++ * about equally far a play-side double climbed to the backside backer and left the play-side one free (receiver-run
++ * eligibility G1-P018, outside zone vs zero_6: LB_M at 5.05 yd and LB_W at 5.06 from the centre; the C+RG double on
++ * DT_S took LB_W, LB_M unblocked). */
++export const LEVEL2_TRACK = process.env.LEVEL2_TRACK === '1';
+ function snapHash(...parts: (string | number)[]): number {
+   let h = 2166136261;
+   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+@@ -1046,7 +1054,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+     const cost = (w: (typeof workers)[number], l: Agent) => {
+       const track = w.b.pos.y + ps * w.lead;
+       if (LEVEL2_TIME) {
+-        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - w.b.pos.y) / (.75 * w.b.profile.vmax);
++        // LEVEL2_TRACK: the run is from his track (his play-side aim), as the distance cost measures it, not his body.
++        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - (LEVEL2_TRACK ? track : w.b.pos.y)) / (.75 * w.b.profile.vmax);
+         return start + run + (w.inside && (l.pos.y - track) * ps > 0 ? .3 : 0);
+       }
+       return Math.abs(l.pos.y - track) + (w.inside && (l.pos.y - track) * ps > 0 ? 1.5 : 0);
+diff --git a/test/receiver-run-eligibility.test.ts b/test/receiver-run-eligibility.test.ts
+index 5f261541..2434c0bc 100644
+--- a/test/receiver-run-eligibility.test.ts
++++ b/test/receiver-run-eligibility.test.ts
+@@ -33,7 +33,13 @@ describe('receiver run candidates follow actual installed ownership', () => {
+     expect(new Set(stalks.map(p => p.target)).size).toBe(stalks.length);
+     // Preserve the actual end threat responsible for the saved runner contact.
+     expect(plans.get(sim.slot('RT')!)?.target).toBe(sim.slot('DE_S'));
+-    expect(plans.get(sim.slot('LG')!)?.climbTo).toBe(sim.slot('LB_M'));
++    // The play-side backer is owned by someone (a target, a climb or a double's backer), whichever lineman it is
++    // (ZONE_GAP's ownership moves the double), and any backer left free is backside of the ball.
++    const lbm = sim.slot('LB_M')!, owners = [...plans.values()].filter(p => p.target === lbm || p.climbTo === lbm || p.combination?.backer === lbm);
++    expect(owners.length).toBeGreaterThan(0);
++    const ps = Math.sign(sim.slot('DE_S')!.pos.y - sim.ballY);
++    const owned = new Set([...plans.values()].flatMap(p => [p.target, p.climbTo, p.combination?.backer]).filter(Boolean));
++    for (const l of ['LB_M', 'LB_W'].map(s => sim.slot(s)!).filter(l => !owned.has(l))) expect((l.pos.y - sim.ballY) * ps).toBeLessThan(0);
+   });
+ 
+   it.each([false, true])('does not let receivers steal a real inline down threat or an installed combo backer (mirror=%s)', mirror => {
