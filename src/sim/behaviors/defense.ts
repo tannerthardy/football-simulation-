@@ -121,6 +121,28 @@ const INFO_BITS: Record<string, number> = { 3: 1, 6: 2, 7: 4, 8: 8, 9: 16, H: 32
 export function infoHonest(item: number | string): boolean {
   return (INFO_HONEST & INFO_BITS[String(item)]) !== 0;
 }
+/** ZONE_HOLD (experimental, numeric bitmask, 0 off; docs/reviews/2026-11-16-zone-hold.md): two commit-rule holds on
+ * a zone defender's choices, each its own bit so each reads alone. Bit 1 (band): a receiver joins his threat set when
+ * his pictured future is inside the zone's lateral band by ZONE_HOLD_IN and leaves only when it is outside the band by
+ * ZONE_HOLD_OUT; the deep zones' vertical test has the same pair (enter past 7.5 yd or climbing over 1.5 yd/s, exit
+ * inside 6.5 yd and under 0.5 yd/s). Bit 2 (eyes): whom he reads the QB looking at is kept until another receiver's
+ * bearing beats it by ZONE_HOLD_EYES_BEAT or the QB's pictured head has turned clear of the current cone by
+ * ZONE_HOLD_EYES_OUT. Bit 16 (pick): the underneath lane pick (receiver nearest his landmark, eyes-weighted) keeps the
+ * receiver he is playing until another's score beats it by ZONE_HOLD_PICK_BEAT (1.5 yd). Without them both were re-picked every tick on a knife edge (exact pictures: the eyes' target
+ * changing 1.6-2.0 times a second, a tenth reversing inside 0.3 s; the flat defender reversing 27% of his target
+ * changes). Margins: band in 0.5 / out 1.5 yd, vertical in 7.5 yd or 1.5 yd/s / out 6.5 yd and 0.5 yd/s, eyes beat 4 deg /
+ * out 6 deg beyond the cone; stated choices. */
+const ZONE_HOLD_BITS = Number(process.env.ZONE_HOLD ?? 0);
+export const ZONE_HOLD_BAND = (ZONE_HOLD_BITS & 1) !== 0;
+export const ZONE_HOLD_EYES = (ZONE_HOLD_BITS & 2) !== 0;
+export const ZONE_HOLD_PICK = (ZONE_HOLD_BITS & 16) !== 0;
+/** Margin level, read at three levels: bit 4 halves the margins, bit 8 doubles them (stated choices, not fitted). */
+const ZONE_HOLD_SCALE = (ZONE_HOLD_BITS & 4) !== 0 ? 0.5 : (ZONE_HOLD_BITS & 8) !== 0 ? 2 : 1;
+const ZONE_HOLD_IN = 0.5 * ZONE_HOLD_SCALE, ZONE_HOLD_OUT = 1.5 * ZONE_HOLD_SCALE;
+const ZONE_HOLD_EYES_BEAT = (4 * ZONE_HOLD_SCALE * Math.PI) / 180;
+const ZONE_HOLD_EYES_OUT = (6 * ZONE_HOLD_SCALE * Math.PI) / 180;
+const ZONE_HOLD_PICK_BEAT = 1.5 * ZONE_HOLD_SCALE;
+const eyesHeld = new WeakMap<Agent, Agent>();
 const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
 /** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
 export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
@@ -131,15 +153,26 @@ export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
   const q = sim.see(a, sim.qb);
   const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), dist = Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y);
   if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
-    const tol = Math.cos((dist > 20 ? 12 : 20) * Math.PI / 180);
+    const cone = (dist > 20 ? 12 : 20) * Math.PI / 180, tol = Math.cos(cone);
     let best = tol;
+    const look = QB_BODY_SEEN ? q.head ?? q.facing : q.facing;
+    const off = new Map<Agent, number>();
     for (const o of sim.offense) {
       if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
       const p = sim.see(a, o).pos;
-      const cos = Math.cos((QB_BODY_SEEN ? q.head ?? q.facing : q.facing) - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      const cos = Math.cos(look - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      if (ZONE_HOLD_EYES) off.set(o, Math.acos(Math.max(-1, Math.min(1, cos))));
       if (cos > best) { best = cos; r = o; }
     }
+    if (ZONE_HOLD_EYES) {
+      const held = eyesHeld.get(a), ho = held ? off.get(held) : undefined;
+      // Keep the held receiver while the head stays inside his cone widened by the exit margin and no other receiver
+      // sits closer to the head's line by the beat margin.
+      if (held && ho !== undefined && ho < cone + ZONE_HOLD_EYES_OUT
+        && ![...off.entries()].some(([o, v]) => o !== held && v < cone && v < ho - ZONE_HOLD_EYES_BEAT)) r = held;
+    }
   }
+  if (ZONE_HOLD_EYES) { if (r) eyesHeld.set(a, r); else eyesHeld.delete(a); }
   eyesCache.set(a, { t: sim.t, r });
   return r;
 }
@@ -1538,6 +1571,9 @@ export class ZoneCoverage implements Behavior {
   private settledAt = -1;
   /** SETTLE_DEPTH: short of his landmark's depth past the enter margin, still sinking (exit inside SINK_EXIT). */
   private sinkingToDepth = false;
+  /** ZONE_HOLD bit 1: receivers held in his threat set, and those held as verticals (deep zones). */
+  private bandHeld = new Set<Agent>();
+  private vertHeld = new Set<Agent>();
   private shortOfDepth(a: Agent): boolean {
     if (!SETTLE_DEPTH) return false;
     const short = this.landmark.x - a.pos.x;
@@ -1707,7 +1743,13 @@ export class ZoneCoverage implements Behavior {
       const seen = observation.read(cue, sim.t, r.profile, a.profile.reactionTime,
         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
-      if (fut.y < ylo || fut.y > yhi) continue;
+      if (ZONE_HOLD_BAND) {
+        // Held membership: in by ZONE_HOLD_IN inside the band, out only by ZONE_HOLD_OUT outside it.
+        const held = this.bandHeld.has(r);
+        const inBand = held ? fut.y >= ylo - ZONE_HOLD_OUT && fut.y <= yhi + ZONE_HOLD_OUT : fut.y >= ylo + ZONE_HOLD_IN && fut.y <= yhi - ZONE_HOLD_IN;
+        if (inBand) this.bandHeld.add(r); else this.bandHeld.delete(r);
+        if (!inBand) continue;
+      } else if (fut.y < ylo || fut.y > yhi) continue;
       threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
     }
 
@@ -1729,7 +1771,15 @@ export class ZoneCoverage implements Behavior {
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
-      let vert = threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
+      let vert = ZONE_HOLD_BAND
+        ? threats.filter((th) => {
+          const held = this.vertHeld.has(th.r);
+          const v = held ? th.fut.x - sim.los > 6.5 || (th.vel.x > 0.5 && th.pos.x > sim.los)
+            : th.fut.x - sim.los > 7.5 || (th.vel.x > 1.5 && th.pos.x > sim.los);
+          if (v) this.vertHeld.add(th.r); else this.vertHeld.delete(th.r);
+          return v;
+        })
+        : threats.filter((th) => th.fut.x - sim.los > 7 || (th.vel.x > 1 && th.pos.x > sim.los));
       // A deep-third corner stays over verticals in the outside third; a seam
       // on the hash is the middle safety's. He only takes #2 if #2 works out to him.
       if (this.zone === 'deep_third_s' || this.zone === 'deep_third_w') {
@@ -1966,6 +2016,9 @@ export class ZoneCoverage implements Behavior {
       if (depth > 16) continue;
       let dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
       if (qbEyes === th.r) dd -= 3 * a.r('anticipation');
+      // ZONE_HOLD bit 16 (pick): the receiver he is already playing keeps him until another's lane score beats his by
+      // ZONE_HOLD_PICK_BEAT, and stays eligible that far past the radius; re-scoring the same picture is not a new read.
+      if (ZONE_HOLD_PICK && th.r === this.target) dd -= ZONE_HOLD_PICK_BEAT;
       if (dd < bd && dd < this.radius + 2) {
         bd = dd;
         best = th;
