@@ -11,6 +11,7 @@ import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { observedHolder } from '../../../src/sim/possession-read.js';
+import { releaseBelief } from '../../../src/sim/release-belief.js';
 const seed = Number(process.argv[2] ?? 11), games = Number(process.argv[3] ?? 2);
 const P: any = PlaySim.prototype, tick0 = P.tick, ev0 = P.event, b0 = P.buildResult;
 const mids: any[] = [], late: any[] = [];
@@ -33,6 +34,7 @@ P.tick = function () {
       if (n.eye === undefined && ang(brg - h) <= 30) n.eye = this.t - S.catchT;
       if (n.body === undefined && ang(brg - d.facing) <= 103) n.body = this.t - S.catchT;
       if (n.seen === undefined) { const o = observedHolder(d, this); if (o && o.target === c) { n.seen = this.t - S.catchT; n.age = o.cue.age; } }
+      if (n.seen !== undefined && n.tag === undefined && this.t - S.catchT >= n.seen + 0.2) n.tag = [...(d.tags ?? [])].filter((x: string) => x !== 'looking').sort().join(',') || '-';
       if (n.start === undefined) { const sp = Math.hypot(d.vel.x, d.vel.y), dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, l = Math.hypot(dx, dy) || 1;
         if (sp >= 3 && (d.vel.x * dx + d.vel.y * dy) / (l * sp) >= Math.cos(Math.PI / 4)) n.start = this.t - S.catchT; }
     }
@@ -45,7 +47,7 @@ P.event = function (type: string, a?: any, b?: any, note?: string) {
   if (type === 'catch' && S && S.catchT === undefined && a?.team === 'O') {
     S.catchT = this.t; S.carrier = a;
     const E = this.ballEstimates;
-    S.late = this.defense.filter((d: any) => !((E?.samplesOf?.(d) ?? 0) > 0)).map((d: any) => ({ d, role: d.behavior?.kind ?? '?' }));
+    S.late = this.defense.filter((d: any) => !((E?.samplesOf?.(d) ?? 0) > 0)).map((d: any) => { const dx = a.pos.x - d.pos.x, dy = a.pos.y - d.pos.y, l = Math.hypot(dx, dy) || 1; const rb = releaseBelief(this, d); return { d, src: rb.source ?? 'none', load: rb.loadingAt !== undefined, role: d.behavior?.kind ?? '?', c0: (d.vel.x * dx + d.vel.y * dy) / l, dist: l }; });
     S.close = new Map(this.defense.map((d: any) => { const dx = a.pos.x - d.pos.x, dy = a.pos.y - d.pos.y, l = Math.hypot(dx, dy) || 1; return [d.idx, (d.vel.x * dx + d.vel.y * dy) / l]; }));
   }
   return r;
@@ -54,7 +56,7 @@ P.buildResult = function () {
   const res = b0.call(this), S = this.__dl;
   if (S?.catchT !== undefined && this.stats?.completed) {
     for (const m of S.mid ?? []) mids.push({ role: m.role, sig: m.sig, eng: m.eng, close: S.close.get(m.d.idx) });
-    for (const n of S.late ?? []) late.push({ role: n.role, eye: n.eye, body: n.body, seen: n.seen, age: n.age, start: n.start });
+    for (const n of S.late ?? []) late.push({ src: n.src, load: n.load, tag: n.tag, c0: n.c0, dist: n.dist, role: n.role, eye: n.eye, body: n.body, seen: n.seen, age: n.age, start: n.start });
   }
   this.__dl = undefined;
   return res;
@@ -74,3 +76,12 @@ for (const role of ['zone', 'man', 'rush']) {
   const V = late.filter(n => n.role === role); if (!V.length) continue;
   console.log(`(B) ${role} never sampled n ${V.length} | catcher in his 30 deg eye ${q(V.map(n => n.eye))} s (never ${V.filter(n => n.eye === undefined).length}) | in his body view ${q(V.map(n => n.body))} | catch in his picture ${q(V.map(n => n.seen))} s (see() age then ${q(V.map(n => n.age))}) | start ${q(V.map(n => n.start))} s (never ${V.filter(n => n.start === undefined).length})`);
 }
+for (const role of ['zone', 'man', 'rush']) {
+  const V = late.filter(n => n.role === role); if (!V.length) continue;
+  console.log(`(C) ${role} never sampled: closing at the catch ${q(V.map(n => n.c0))} | dist ${q(V.map(n => n.dist), 1)} | start-seen ${q(V.map(n => n.start !== undefined && n.seen !== undefined ? n.start - n.seen : undefined))}`);
+  const by = new Map<string, any[]>(); for (const n of V) { const k = n.tag ?? '(no picture)'; if (!by.has(k)) by.set(k, []); by.get(k)!.push(n); }
+  for (const [k, W] of [...by].sort((a, b) => b[1].length - a[1].length).slice(0, 5)) console.log(`      ${String(W.length).padStart(4)}  ${k.slice(0, 60).padEnd(60)} start ${q(W.map(n => n.start))} closing@catch ${q(W.map(n => n.c0))}`);
+}
+for (const role of ['zone', 'man', 'rush']) { const V = late.filter(n => n.role === role); if (!V.length) continue;
+  const by = new Map<string, any[]>(); for (const n of V) { const k = `${n.src}${n.load ? '+motion' : ''}`; if (!by.has(k)) by.set(k, []); by.get(k)!.push(n); }
+  console.log(`(D) ${role} never sampled, release belief at the catch: ` + [...by].map(([k, W]) => `${k} ${W.length} (start ${q(W.map(n => n.start))})`).join(' ; ')); }
