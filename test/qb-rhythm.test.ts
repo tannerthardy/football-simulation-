@@ -3,6 +3,7 @@
  * look (no extra wait for a late route), under urgency his eyes go to the
  * outlet, and moving off a read he takes a released outlet that is there now. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.QB_FOOTWORK = '0'; process.env.QB_KEY_READ = '0'; process.env.QB_EDGE_THREAT = '0'; process.env.QB_HEAD = '0'; process.env.QB_CALL_ROUTES = '0'; process.env.CONCEPT_DROPS = '0'; process.env.CONCEPT_FIT = '0'; process.env.BACK_AS_THREE = '0'; process.env.PA_TABLES = '0'; }); // engine-73: fixture recorded before the QB group of the engine-73 landing; QB to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
