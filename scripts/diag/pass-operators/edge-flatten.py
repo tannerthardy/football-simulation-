@@ -56,7 +56,13 @@ for path in sys.argv[1:]:
                 v = vel(d, k)
                 if v and math.hypot(*v) > 0.5 and ang(v, nl) < 20: t20 = (k - F) * p.dt; break
             n25 = [x for x in (along(F + 2, nl), along(F + 3, nl)) if x is not None]
-            R.append(dict(turn=ang(v0, nl), s0=s0, t=F * p.dt, n25=sum(n25) / len(n25) if n25 else None, n5=along(F + 5, nl), n10=along(F + 10, nl),
+            # 2026-11-15 (the bend): his heading change over the first 0.5 s after the hip (deg/s), and whether any
+            # offensive body other than the QB is within 1.2 yd of him through it (free: the hands are not deciding).
+            v5 = vel(d, F + 5)
+            hr = ang(v0, v5) / 0.5 if v5 is not None and math.hypot(*v5) > 0.5 else None
+            O = [o for o in p.who('O') if o != qb]
+            free = all(p.pos(o, k)[0] is None or p.dist(o, d, k) > 1.2 for o in O for k in range(F, F + 6))
+            R.append(dict(hr=hr, free=free, turn=ang(v0, nl), s0=s0, t=F * p.dt, n25=sum(n25) / len(n25) if n25 else None, n5=along(F + 5, nl), n10=along(F + 10, nl),
                           old=[along(F + k, ol) for k in range(1, 6)], t20=t20, qb0=p.dist(d, qb, F), qb10=p.dist(d, qb, F + 10)))
     print(f"== {os.path.basename(path)}: edge rushers reaching the tackle's hip, {len(R)}")
     for lab, f in (('all', lambda r: True), ('turn under 45', lambda r: r['turn'] < 45), ('turn 45-90', lambda r: 45 <= r['turn'] <= 90), ('turn over 90', lambda r: r['turn'] > 90)):
@@ -67,4 +73,5 @@ for path in sys.argv[1:]:
               f" | along new line +0.25 / +0.5 / +1.0 s: {q([r['n25'] for r in S]):.1f} / {q([r['n5'] for r in S]):.1f} / {q([r['n10'] for r in S]):.1f}"
               f" | along old line +0.1..0.5 s: " + ' '.join(f"{q([r['old'][i] for r in S]):.1f}" for i in range(5))
               + f" | within 20 deg of new line by {q(t20):.1f} s ({100 * sum(1 for x in t20 if x is not None) / len(S):.0f}% within 1 s)"
-              f" | to the QB {q([r['qb0'] for r in S]):.1f} -> {q([r['qb10'] for r in S]):.1f} yd")
+              f" | to the QB {q([r['qb0'] for r in S]):.1f} -> {q([r['qb10'] for r in S]):.1f} yd"
+              f" | heading change 0-0.5 s {q([r['hr'] for r in S]):.0f} deg/s (free of bodies {100 * sum(1 for r in S if r['free']) / len(S):.0f}%: {q([r['hr'] for r in S if r['free']]):.0f} deg/s)")
