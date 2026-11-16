@@ -138,7 +138,7 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * already holds; held for the episode as a field direction, across whichever man is in the lane, until he has been clear
  * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
  * 0.3 of his pace along it) or across to the other side of the man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
+const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
 const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2 }>();
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
