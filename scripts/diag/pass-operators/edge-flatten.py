@@ -62,9 +62,13 @@ for path in sys.argv[1:]:
             hr = ang(v0, v5) / 0.5 if v5 is not None and math.hypot(*v5) > 0.5 else None
             O = [o for o in p.who('O') if o != qb]
             free = all(p.pos(o, k)[0] is None or p.dist(o, d, k) > 1.2 for o in O for k in range(F, F + 6))
-            R.append(dict(hr=hr, free=free, turn=ang(v0, nl), s0=s0, t=F * p.dt, n25=sum(n25) / len(n25) if n25 else None, n5=along(F + 5, nl), n10=along(F + 10, nl),
+            # 2026-11-16 (Integration (a)): his center distance to the tackle at the hip and after it.
+            sep = [p.dist(d, tk, F + k) if p.pos(d, F + k)[0] is not None and p.pos(tk, F + k)[0] is not None else None for k in (0, 2, 5, 10)]
+            R.append(dict(sep=sep, hr=hr, free=free, turn=ang(v0, nl), s0=s0, t=F * p.dt, n25=sum(n25) / len(n25) if n25 else None, n5=along(F + 5, nl), n10=along(F + 10, nl),
                           old=[along(F + k, ol) for k in range(1, 6)], t20=t20, qb0=p.dist(d, qb, F), qb10=p.dist(d, qb, F + 10)))
     print(f"== {os.path.basename(path)}: edge rushers reaching the tackle's hip, {len(R)}")
+    if R: print("   center distance to the tackle p25/50/75 (yd), at the hip / +0.2 / +0.5 / +1.0 s: " + ' | '.join(f"{q([r['sep'][i] for r in R], .25):.2f}/{q([r['sep'][i] for r in R]):.2f}/{q([r['sep'][i] for r in R], .75):.2f}" for i in range(4))
+              + " | within 1.2 yd at the hip " + f"{100 * sum(1 for r in R if r['sep'][0] is not None and r['sep'][0] <= 1.2) / len(R):.0f}%")
     for lab, f in (('all', lambda r: True), ('turn under 45', lambda r: r['turn'] < 45), ('turn 45-90', lambda r: 45 <= r['turn'] <= 90), ('turn over 90', lambda r: r['turn'] > 90)):
         S = [r for r in R if f(r)]
         if not S: continue

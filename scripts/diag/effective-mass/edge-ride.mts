@@ -47,7 +47,11 @@ for (let g = 0; g < games; g++) simulateGame(leagueSample(home, first + g), leag
       const j = sim.world.joints.find((j: any) => j.kind === 'hands' && ((j.a === t.body && j.b === d.body) || (j.a === d.body && j.b === t.body)));
       const toT = Math.atan2(t.pos.y - d.pos.y, t.pos.x - d.pos.x), toD = Math.atan2(d.pos.y - t.pos.y, d.pos.x - t.pos.x);
       const ux = (d.pos.x - t.pos.x), uy = (d.pos.y - t.pos.y), L = Math.hypot(ux, uy) || 1, sup = t.body.support;
-      p.ticks.push({ dt, near, joint: !!j, grip: !!j?.grip && j.a === t.body,
+      // 2026-11-16 (Integration (b)): does he ask to close on the tackle? His request's component toward the tackle and
+      // his achieved one (yd/s, + = closing), and the center distance.
+      const iv = sim.intents?.[d.idx]?.vel ?? { x: 0, y: 0 }, tx = (t.pos.x - d.pos.x) / L, ty = (t.pos.y - d.pos.y) / L;
+      const closeReq = iv.x * tx + iv.y * ty, closeGot = (d.vel.x - t.vel.x) * tx + (d.vel.y - t.vel.y) * ty;
+      p.ticks.push({ dist: L, closeReq, closeGot, dt, near, joint: !!j, grip: !!j?.grip && j.a === t.body,
         inRusher: off(d.body.facing, toT), inTackle: off(t.body.facing, toD),
         rel: Math.hypot(d.vel.x - t.vel.x, d.vel.y - t.vel.y), tSpeed: Math.hypot(t.vel.x, t.vel.y),
         tUp: (sup?.state ?? 'up') === 'up', pulled: sup ? (sup.felt.x * ux + sup.felt.y * uy) / L * N : NaN });
@@ -71,3 +75,5 @@ for (const [lab, S] of [['gripped', G], ['hands on, open', U]] as [string, any[]
 }
 const ridden = reps.filter((r) => r.ticks.some((x: any) => Math.abs(x.dt - 0.25) < 0.03 && x.grip));
 console.log(`  ridden reps (gripped at +0.25 s): ${ridden.length} of ${reps.length} | with the hands behind him (over 90 in his frame) at any tick ${pc(ridden.filter((r) => r.ticks.some((x: any) => x.grip && x.inRusher > 90)).length, ridden.length)}, outside 60 ${pc(ridden.filter((r) => r.ticks.some((x: any) => x.grip && x.inRusher > 60)).length, ridden.length)} | the tackle reaching behind himself ${pc(ridden.filter((r) => r.ticks.some((x: any) => x.grip && x.inTackle > 90)).length, ridden.length)}`);
+console.log(`  closing on the tackle (+ = toward him), all ticks: asks ${q(T.map((x) => x.closeReq)).toFixed(2)} yd/s (p75 ${q(T.map((x) => x.closeReq), .75).toFixed(2)}), achieved relative ${q(T.map((x) => x.closeGot)).toFixed(2)} | distance ${q(T.map((x) => x.dist)).toFixed(2)} yd`
+  + ` | gripped: asks ${q(G.map((x) => x.closeReq)).toFixed(2)}, achieved ${q(G.map((x) => x.closeGot)).toFixed(2)}, distance ${q(G.map((x) => x.dist)).toFixed(2)} yd | share of ticks asking to close (> 0.5 yd/s) ${pc(T.filter((x) => x.closeReq > 0.5).length, T.length)}`);
