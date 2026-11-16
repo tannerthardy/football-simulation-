@@ -611,3 +611,23 @@ often with it. A radius measured on all our catches is right where nobody is nea
 defender is: a miss toward a man on the receiver is the man's ball, not a catch. Proposal (not built): the catchable
 radius, on his believed positions, is the open radius less the share of the miss that falls toward a defender who can
 reach it at the arrival (the window already has each defender's believed margin at the catch point).
+
+### VERTS_KEYS (Rules #804) with the grass read, and the readable test's second miss (2026-11-16)
+
+Staged with `STAGED_FORM` (drop-staged.ts now takes it; before, every cell was gun doubles), CONCEPT_DROPS=1, 192 a
+cell, #802 51d9be85 and #804 06e85783 merged in a scratch tree. verts_hitch from trips: off 8 sacks, 8 ints, 108 cmp,
+6.45 yd; VERTS_KEYS 3 / 0 / 109 / 7.51 (throw 2.75 s); VERTS_KEYS with QB_FOOTWORK=11 GRASS_READ=1 2 / 0 / 124 / 8.27
+(2.68 s). From doubles VERTS_KEYS changes nothing (no #3), as Rules said; four verts is no longer in VERTS_KEYS.
+
+A fix on the way: the trips seam is both the key's high read and marked grass, and bit 8 moved him off it at the plant
+before the key could choose it (seam thrown 11 -> 0). Half of a key is thrown off the key defender, not the grass (the
+agreed set), so `isGrass` is false for the key's two reads, with the plan's fields too.
+
+**Four verts from trips, the readable test's second miss.** The plan marks all four verticals grass (S3 n0, S2 n1,
+S1 and W1 n2). With bit 8 none is readable on its step; he is to the back and then nothing: sacks 6 -> 21, completions
+97 -> 75, 19 new sacks at 3.95-4.85 s, on 12 of which the arm without it threw the seam at 2.0-2.3 s. The readable test
+vetoes on any defender in his picture within 2 yd of the man's path to the landing (20 yd), a deep safety at 12-15 yd
+included, whether or not he can get there before the ball: that is timing, which the window prices, not geometry.
+Two attempts at the readable test (the first: men under the throw do not count), so no third tweak: re-diagnose. The
+candidate is that readable is the release won (out of the collision, the vertical cue's leverage) and the window
+priced at the landing area decides the rest, with no geometric veto. For Integration and Rules.

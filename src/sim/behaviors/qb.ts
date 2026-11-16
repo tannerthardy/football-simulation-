@@ -1780,11 +1780,12 @@ export class QBPass implements Behavior {
   private grassPlan = new Map<Agent, Vec2>();
   private isGrass(r: Agent | undefined): boolean {
     if (!FW_GRASS || !r) return false;
+    // Half of a key is thrown off the key defender, not the grass (the agreed set; Rules' VERTS_KEYS keys the trips
+    // seam): the key read decides it.
+    if (this.plan?.key && (this.plan.key.low === r || this.plan.key.high === r)) return false;
     if (GRASS_FIELDS) return this.grassPlan.has(r);
     if (this.reads[0] !== r) return false;
     const id = this.receiverForecasts.get(r)?.prior.routeId ?? null;
-    // A keyed corner (smash) is thrown off its defender, not the grass.
-    if (id === 'corner' && this.plan?.key && (this.plan.key.low === r || this.plan.key.high === r)) return false;
     return !!id && GRASS_ROUTES.has(id);
   }
   /** When a grass read is decided: his step n for it (n strides after his set; the plant for n = 0). */
