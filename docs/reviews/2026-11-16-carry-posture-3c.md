@@ -62,3 +62,38 @@ no help; go-route completion, yards and catch separation; the deep man's distanc
 (speed at the catch, closest under 1 yd). Expected direction if built as taught: fewer full turns before level, a
 little less speed when carrying ahead of the receiver, the ball located later. Its cost: a receiver who wins clean on
 the stem gets a step on a man running open, which is the trade the technique accepts.
+
+## Built and measured (CARRY_POSTURE=1 on both sides; CARRY_TURN off → on)
+
+Integration's go (2026-11-16): the two cues are seen events against the cue interface (`playsThrow`, which Coverage's
+throw-picture work will feed with the passer's arm and his man's hands), the posture's speed is DIR_CAP's at that
+posture (hips on the line of travel, the trunk twist priced), and the stated cost is the deep ball over a man who
+concedes. It repairs the same mechanism before a game read and does not spend an attempt.
+
+Bins (`simcarry_bins.mts 16 101`, WR go, no help), before the throw; NFL from `nflcarry_bins.py` (BDB 2025 wk 1-9):
+
+| Cushion | Torso p50 off → on (NFL) | Over 135 deg off → on (NFL) | Speed off → on (NFL) |
+|---|---|---|---|
+| +1.0 | 150 → 129 (71) | 63% → 43% (14%) | 5.0 → 4.9 (5.2) |
+| +0.5 | 150 → 103 (69) | 74% → 16% (15%) | 5.4 → 5.3 (5.3) |
+| 0.0 | 144 → 96 (81) | 80% → 12% (25%) | 6.1 → 6.1 (5.4) |
+| -0.5 | 141 → 141 (76) | 81% → 66% (30%) | 6.8 → 6.5 (5.0) |
+
+Ball in the air: over 135 deg at 0.0 yd 80% → 11% (NFL 34%), at -0.5 yd 86% → 76% (NFL 45%). He now holds his eyes to
+level, as the NFL man does; his full turn fires on the receiver drawing even, about half a yard after the NFL's turn
+spreads, and once turned he still runs faster than the NFL man (6.5-7.0 against 4.2-5.0 at -0.5 to -1.0 yd). At +1.0 yd
+43% are still past 135 deg (NFL 14%): men turned before the cushion broke into this bin.
+
+Cost, staged (`scripts/diag/defense/deep-ball.mts 4`: four_verts, verts_hitch, pa_shot, post_cross, seam_hitch,
+dagger, pa_post_dig, hitch_post, fade_flat against cover0 / cover1 / cover2man and the cover3 family; three formations;
+seeds 1-4, both flips; throws to go / fade / seam / post):
+
+| Calls | Throws off → on | Completion | Yards per throw | Nearest defender at arrival |
+|---|---|---|---|---|
+| Man | 74 → 74 | 0.64 → 0.64 | 17.9 → 17.9 | 1.5 → 1.5 |
+| Deep thirds | 49 → 51 | 0.78 → 0.75 | 26.2 → 21.4 | 2.2 → 2.2 |
+
+The man rows are identical: in these staged concepts the man carry reaches CUSHION_BREAK's turn and the open run on
+some plays (cover2man 10 of 24, cover1 4 of 24, cover0 0) without changing a throw. In deep thirds the conceded speed
+did not show as a cost in this sample (yards per throw fell); the pace bins above 7.5 yd/s hold 4 throws each, too few
+to read.
