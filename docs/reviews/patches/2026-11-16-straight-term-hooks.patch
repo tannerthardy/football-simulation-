@@ -1,0 +1,12 @@
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 71aa3a16..5c4eee81 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -2196,6 +2196,7 @@ export class World {
+         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
+         const strength = pushForce * fv * along * a;
+         const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);
++        (globalThis as any).__fd?.(b, { demand: hypot2(lx, ly) / m, strength: strength / m, tractionA: traction * a / m, capacity: capacity / m, a, fat, fv, along, pushForce: pushForce / m, h, vx: b.vel.x, vy: b.vel.y, lx: lx / m, ly: ly / m, fac: b.facing, lean: hypot2(leanX, leanY) / m, tf: tf / m });
+         // Availability already limits gait during recovery. Reserve actual
+         // unused effort after ordinary translation and yaw, for every body.
+         const cap = capacity;
