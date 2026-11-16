@@ -4,6 +4,7 @@ import { plannedFakeEnd } from './called-drop.js';
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
 import { ownRoutes } from './ball-estimate.js';
+import { paFakeSide } from './pa-look.js';
 import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
@@ -274,6 +275,8 @@ export function assignBehaviors(sim: PlaySim): void {
       const fakeY = PA_DROP_FAKE && behind ? qb.pos.y + off.strongSign * 1.5 : (qb.pos.y + back.pos.y) / 2 + side * 0.4;
       // The fake ends when the call says (called-drop.ts plannedFakeEnd: the back, the QB and the line share it).
       back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: fakeY }, plannedFakeEnd(sim.offCall.formation.qb !== 'under'));
+      // PA_HINGE: the line knows the fake's side from the call.
+      paFakeSide.set(sim, Math.sign(fakeY - sim.ballY) || off.strongSign);
     }
     const qbb = new QBPass(qb, sim, concept, receiverPriors);
     qb.behavior = qbb;
