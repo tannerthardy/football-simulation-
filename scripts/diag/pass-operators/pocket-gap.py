@@ -1,13 +1,13 @@
 # The pocket's depth against the drop (Integration, 2026-11-16, POCKET_LEVEL's engaged bit): on dropbacks to the throw,
 # shotgun and under center separately (the QB's snap depth > 3 yd = gun), the QB's depth behind the line and the three
-# middle OL's depth behind the line (p50 of the three) at 0.5 / 0.8 / 1.0 / 1.3 / 1.5 / 2.0 / 2.5 s, and the gap between
+# middle OL's depth behind the line (p50 of the three) at 0.5 / 0.8 / 1.0 / 1.3 / 1.5 / 2.0 / 2.5 / 3.0 / 3.5 s, and the gap between
 # them (QB minus interior). Same code on NFL tracking and sim exports.
 # usage: python3 scripts/diag/pass-operators/pocket-gap.py <plays.jsonl.gz> ...
 import sys, os, json, gzip
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
 from metrics import Play
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
-T = [0.5, 0.8, 1.0, 1.3, 1.5, 2.0, 2.5]
+T = [0.5, 0.8, 1.0, 1.3, 1.5, 2.0, 2.5, 3.0, 3.5]
 for path in sys.argv[1:]:
     A = {g: {t: ([], [], []) for t in T} for g in ('gun', 'under')}
     for line in gzip.open(path, 'rt'):
