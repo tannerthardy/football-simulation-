@@ -238,6 +238,7 @@
     "MESH_GUN_SIDE": "on",
     "MESH_TEMPO": "on",
     "MUG_CALLS": "on",
+    "MIRROR_SCATTER": "off",
     "MUG_PRESSURES": "on",
     "NICKEL_FRONTS": "on",
     "NO_CROSS": "on",
