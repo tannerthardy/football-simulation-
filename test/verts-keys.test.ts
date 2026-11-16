@@ -1,6 +1,7 @@
 /** VERTS_KEYS (src/playbook/read-compiler/runtime.ts; experimental, off; with PLAN_KEYS): verts_hitch from trips reads its
  * own key (the defender over the seam: high the #2 seam, low the #3 hitch, one look on the set), then the backside
- * vertical; four_verts reads its seams before the outside gos (Gonzalez). From 2x2 verts_hitch has no #3 on the seam's
+ * vertical. FOUR_VERTS_SEAMS (off, not carded): four_verts reads its seams before the outside gos (Gonzalez). From 2x2
+ * verts_hitch has no #3 on the seam's
  * side and is left as compiled. On the engine defaults (the stack's flags stubbed on, as craft-hold.test.ts does). */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -10,10 +11,10 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function plan(on: boolean, concept: string, formation: string) {
+async function plan(on: boolean, concept: string, formation: string, flag = 'VERTS_KEYS') {
   vi.resetModules();
   for (const k of stackOn) vi.stubEnv(k, '1');
-  vi.stubEnv('VERTS_KEYS', on ? '1' : '0');
+  vi.stubEnv(flag, on ? '1' : '0');
   const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
   const { installedPlan } = await import('../src/playbook/read-compiler/runtime.js');
   return installedPlan(PASS_BY_ID[concept], formation)!;
@@ -42,8 +43,12 @@ describe('VERTS_KEYS', () => {
     expect(on).toEqual(off);
   }, 120_000);
 
-  it('four_verts from 2x2 reads both seams before the outside gos', async () => {
-    const off = await plan(false, 'four_verts', 'gun_doubles_11'), on = await plan(true, 'four_verts', 'gun_doubles_11');
+  it('VERTS_KEYS leaves four_verts as compiled', async () => {
+    expect(await plan(true, 'four_verts', 'gun_doubles_11')).toEqual(await plan(false, 'four_verts', 'gun_doubles_11'));
+  }, 120_000);
+
+  it('FOUR_VERTS_SEAMS: four_verts from 2x2 reads both seams before the outside gos', async () => {
+    const off = await plan(false, 'four_verts', 'gun_doubles_11', 'FOUR_VERTS_SEAMS'), on = await plan(true, 'four_verts', 'gun_doubles_11', 'FOUR_VERTS_SEAMS');
     expect(off.order.indexOf('W2')).toBeGreaterThan(off.order.indexOf('S1'));
     expect(on.order.slice(0, 2)).toEqual(['S2', 'W2']);
     expect(on.style).toBe(off.style);

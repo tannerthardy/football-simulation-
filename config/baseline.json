@@ -354,6 +354,7 @@
     "PLANT_REACH": "0",
     "COMPILE_PICTURE": "0",
     "VERTS_KEYS": "0",
+    "FOUR_VERTS_SEAMS": "0",
     "CRAFT_HOLD": "0",
     "RELEASE_SIDE": "0",
     "SCREEN_DECLARE": "0",
