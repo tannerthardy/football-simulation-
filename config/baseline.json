@@ -65,6 +65,7 @@
     "SHOULDER_READ": "0",
     "CURL_FLAT_BACK": "0",
     "CURL_SINK": "0",
+    "SETTLE_DEPTH": "0",
     "SAFETY_DEPTH": "0",
     "ARRIVE_LEAD": "0",
     "PEDAL_CAP": "0",

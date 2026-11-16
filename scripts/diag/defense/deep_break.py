@@ -8,7 +8,8 @@
 # For each: speed along the new line at +0.25 / +0.5 / +1.0 s; speed along the old line at +0.1 .. +0.5 s; the time for
 # his velocity to come within 20 deg of the new line.  Rows by break angle (under 45, 45-90, over 90), and by state.
 #   python3 -I deep_break.py nfl=PLAYS.jsonl.gz sim=PLAYS.jsonl.gz
-import sys, gzip, json, math
+import sys, gzip, json, math, os
+DMIN, DMAX = float(os.environ.get('DEPTH_MIN', 10)), float(os.environ.get('DEPTH_MAX', 1e9))  # depth band past the line at the throw (default: deep, 10+)
 def jl(p):
     for l in gzip.open(p, 'rt'): yield json.loads(l)
 def at(P, f, j):
@@ -30,7 +31,7 @@ def rows(P):
     for j, pl in enumerate(P['players']):
         if pl['side'] != 'D': continue
         p0, v0 = at(P, F, j), vel(P, F, j)
-        if p0 is None or v0 is None or p0[0] - los < 10 or math.hypot(*v0) < 1: continue
+        if p0 is None or v0 is None or not (DMIN <= p0[0] - los < DMAX) or math.hypot(*v0) < 1: continue
         a5, a10 = at(P, F + 5, j), at(P, F + 10, j)
         if a5 is None or a10 is None: continue
         d = (a10[0] - a5[0], a10[1] - a5[1]); L = math.hypot(*d)
@@ -62,7 +63,7 @@ def show(lab, R):
 for spec in sys.argv[1:]:
     kind, path = spec.split('=', 1)
     R = [r for P in jl(path) for r in rows(P)]
-    print(f"== {kind}: {len(R)} deep defenders (10+ yd past the line, 1+ yd/s) at a forward pass")
+    print(f"== {kind}: {len(R)} defenders {DMIN:g}-{DMAX:g} yd past the line, 1+ yd/s, at a forward pass")
     for lab, lo, hi in (('break under 45 deg', 0, 45), ('break 45-90 deg', 45, 90), ('break over 90 deg', 90, 181)):
         show(lab, [r for r in R if lo <= r['brk'] < hi])
     if any(r['state'] for r in R):
