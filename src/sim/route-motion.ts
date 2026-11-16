@@ -37,6 +37,16 @@ export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
  * CRAFT_HOLD round the safety, steered back out across to the drawn line from 2.55 s. */
 export const ROUTE_LANDMARK = process.env.ROUTE_LANDMARK === '1';
 
+/** ROUTE_LANDMARK (attempt 2): whether a route is run from where he is: only a route whose leg leaving its declared vertex
+ * breaks inside (toward the ball, by more than a yard). A route breaking toward the sideline keeps its lateral landmark,
+ * the break spot toward the numbers: shifted inside by a press (5 yd on read-plan's quick outs), attempt 1 ran his quick
+ * out from there to the boundary and he met the ball on the sideline. A settle (hitch, stick) and a vertical keep theirs. */
+export function breaksInside(path: readonly PathPoint[], at: number | undefined, outside: number): boolean {
+  if (typeof at !== 'number') return false;
+  const v = path[at]?.p, w = path[at + 1]?.p;
+  return !!v && !!w && (w.y - v.y) * outside < -1;
+}
+
 /** ROUTE_LANDMARK: the path as he runs the rest of it from where he is: every point moved by his offset across the leg he
  * is on (the drawn leg into his next point). */
 export function landmarkView(path: readonly PathPoint[], idx: number, from: Vec2 | undefined, pos: Vec2): readonly PathPoint[] {

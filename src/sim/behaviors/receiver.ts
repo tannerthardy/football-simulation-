@@ -20,7 +20,7 @@ import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
 import { BALL_EST_RCV as BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
-import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK } from '../route-motion.js';
+import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan, ROUTE_LANDMARK, breaksInside } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 import { BREAK_DECL } from '../../playbook/route-breaks.js';
 
@@ -465,8 +465,9 @@ export class RouteRunner implements Behavior {
 
   /** The same waypoint controller is used by the explicitly seeded QB forecast. */
   private steer(body: Body, st: RouteCursor, rr: number, cutSkill: number): MoveCommand | null {
-    // ROUTE_LANDMARK: a route with a declared vertex is run from where he is; a vertical keeps its drawn spot.
-    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill, ROUTE_LANDMARK && typeof BREAK_DECL[this.route.id]?.at === 'number');
+    // ROUTE_LANDMARK: an in-breaking route is run from where he is; an out-breaker, a settle and a vertical keep their drawn spot.
+    const at = BREAK_DECL[this.route.id]?.at;
+    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill, ROUTE_LANDMARK && breaksInside(this.path, typeof at === 'number' ? at : undefined, this.outside));
   }
 
   /** A route-key look down the stem and across nearby underneath leverage.

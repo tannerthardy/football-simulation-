@@ -5,7 +5,7 @@ import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
-import { firstBreakDepth, getOffDrive, inGetOff, LINE_START, ROUTE_LANDMARK, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
+import { breaksInside, firstBreakDepth, getOffDrive, inGetOff, LINE_START, ROUTE_LANDMARK, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor } from './route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
@@ -29,6 +29,8 @@ export interface InstalledReceiverRoute {
   readonly read?: RouteRead;
   readonly readContext?: { readonly los: number; readonly outside: number };
   readonly answers?: readonly InstalledAnswer[];
+  /** ROUTE_LANDMARK: the route breaks inside at its declared vertex, so he runs it from where he is. */
+  readonly breaksIn?: boolean;
 }
 
 /** Called at installation from the call and snap alignment, never RouteRunner. */
@@ -44,6 +46,7 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
     end: route.end, startDelay, profile: Object.freeze({ ...profile }), routeRunning,
     effort: routeEffort(route.family, routeRunning),
     ...(DECLARED_BREAK && typeof BREAK_DECL[route.id]?.at === 'number' ? { breakIdx: BREAK_DECL[route.id].at as number } : {}),
+    ...(ROUTE_LANDMARK && typeof BREAK_DECL[route.id]?.at === 'number' && breaksInside(path, BREAK_DECL[route.id].at as number, outside) ? { breaksIn: true } : {}),
     ...(DECLARED_BREAK && BREAK_DECL[route.id] && typeof BREAK_DECL[route.id].at !== 'number'
       ? { declRule: BREAK_DECL[route.id].at as 'moved' | 'vertical' | 'now', declLos: los } : {}),
     ...(copiedRead ? { read: copiedRead, readContext: Object.freeze({ los, outside }),
@@ -257,7 +260,7 @@ export class ReceiverForecast {
         : { vel: arriveVelocity(body, active.path[active.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
       else {
         // ROUTE_LANDMARK: he runs the rest of a route with a declared vertex from where he is seen, as the receiver does.
-        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill, ROUTE_LANDMARK && prior.breakIdx !== undefined);
+        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill, ROUTE_LANDMARK && !!prior.breaksIn);
         if (!cmd) { done = true; cmd = { vel: active.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
         // LINE_START: the same get-off the receiver runs, read time from his profile (his mind is not visible).
         else if (LINE_START && inGetOff(Math.hypot(body.pos.x - prior.start.x, body.pos.y - prior.start.y),
@@ -300,7 +303,7 @@ function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute, hold: 
     const runningAlong = speed >= 1 && len > 1e-6 && (p.vel.x * dx + p.vel.y * dy) / (speed * len) >= 0.6;
     // ROUTE_LANDMARK: a receiver running along a leg of a route with a declared vertex is on it as far off as a bend takes
     // him (LANDMARK_TOL): he runs the rest of it from where he is.
-    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, ROUTE_LANDMARK && prior.breakIdx !== undefined ? LANDMARK_TOL
+    const tol = FORECAST_HOLD && runningAlong ? Math.max(prior.profile.radius, ROUTE_LANDMARK && prior.breaksIn ? LANDMARK_TOL
       : brk === null ? hold.noBreak : idx <= brk ? hold.stem : hold.afterBreak) : prior.profile.radius;
     if (error <= tol && (speed < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
       candidates.push({ idx, error });
