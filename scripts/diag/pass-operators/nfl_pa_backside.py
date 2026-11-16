@@ -1,4 +1,4 @@
-"""Play action's backside end in the NFL (Integration, 2026-11-16; the sim side is pa-backside-trace.mts): on gun dropbacks
+"""Play action's ends in the NFL (2026-11-16: both ends, the one away from the back's first lateral move and the one on its side, the fake side; Defense noted ours DE_W is the fake-side end) (Integration, 2026-11-16; the sim side is pa-backside-trace.mts): on gun dropbacks
 (SHOTGUN / PISTOL, isDropback), play action against not, the edge defender on the side away from the back's first lateral
 move (the back's y change over 0.0-0.8 s after the snap; the "backside" of the fake, as ours fakes strong and DE_W is
 weak). The end: the defender within 2.5 yd of the line at the snap who is outermost on that side of the ball, inside 6 yd
@@ -53,26 +53,26 @@ for w in weeks:
         if len(rbt) < 5: continue
         dy = rbt.Y.iloc[-1] - rbt.Y.iloc[0]
         if abs(dy) < 0.3: continue
-        back = -np.sign(dy)  # the backside: away from the back's first lateral move
-        edge_lim = (ol.Y.max() + 4) if back > 0 else (ol.Y.min() - 4)
-        cand = Dd[(Dd.X - los).abs() <= 2.5]
-        cand = cand[(cand.Y - by) * back > 0]
-        cand = cand[(cand.Y - edge_lim) * back <= 0]
-        if not len(cand): continue
-        e = cand.loc[((cand.Y - by) * back).idxmax()]
-        eid = e.nflId
-        E = P[P.nflId == eid].set_index('t'); Q = P[P.nflId == qb.nflId.iloc[0]].set_index('t')
-        r = {'pa': bool(pa[(g, p)]), 'rusher': rusher.get((g, p, eid)), 'at': {}}
-        for k in (1.0, 1.5, 2.0):
-            if k in E.index and k in Q.index:
-                r['at'][k] = {'depth': los - E.loc[k, 'X'], 'toward': (e.Y - E.loc[k, 'Y']) * back, 'qb': los - Q.loc[k, 'X']}
-        rows.append(r)
+        for which, back in (('away', -np.sign(dy)), ('fake', np.sign(dy))):  # away from / toward the back's first lateral move
+            edge_lim = (ol.Y.max() + 4) if back > 0 else (ol.Y.min() - 4)
+            cand = Dd[(Dd.X - los).abs() <= 2.5]
+            cand = cand[(cand.Y - by) * back > 0]
+            cand = cand[(cand.Y - edge_lim) * back <= 0]
+            if not len(cand): continue
+            e = cand.loc[((cand.Y - by) * back).idxmax()]
+            eid = e.nflId
+            E = P[P.nflId == eid].set_index('t'); Q = P[P.nflId == qb.nflId.iloc[0]].set_index('t')
+            r = {'side': which, 'pa': bool(pa[(g, p)]), 'rusher': rusher.get((g, p, eid)), 'at': {}}
+            for k in (1.0, 1.5, 2.0):
+                if k in E.index and k in Q.index:
+                    r['at'][k] = {'depth': los - E.loc[k, 'X'], 'toward': (e.Y - E.loc[k, 'Y']) * back, 'qb': los - Q.loc[k, 'X']}
+            rows.append(r)
 q = lambda v: float(np.median(v)) if len(v) else float('nan')
-for pa_ in (True, False):
-    S = [r for r in rows if r['pa'] == pa_]
+for side, pa_ in (('away', True), ('away', False), ('fake', True), ('fake', False)):
+    S = [r for r in rows if r['pa'] == pa_ and r['side'] == side]
     if not S: continue
     ru = [r for r in S if r['rusher'] is not None]
-    print(f"{'play action' if pa_ else 'no play action'} (gun traditional dropbacks, n {len(S)}): initial pass rusher {100*sum(1 for r in ru if r['rusher'])/max(1,len(ru)):.0f}%")
+    print(f"{side}-side end, {'play action' if pa_ else 'no play action'} (gun traditional dropbacks, n {len(S)}): initial pass rusher {100*sum(1 for r in ru if r['rusher'])/max(1,len(ru)):.0f}%")
     for k in (1.0, 1.5, 2.0):
         R = [r['at'][k] for r in S if k in r['at']]
         line = f"  {k} s (n {len(R)}): end's depth past the line {q([x['depth'] for x in R]):.2f} | toward the ball {q([x['toward'] for x in R]):.2f} | QB depth {q([x['qb'] for x in R]):.2f}"
