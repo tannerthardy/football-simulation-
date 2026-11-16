@@ -28,24 +28,25 @@ const stackOn = Object.entries(JSON.parse(readFileSync(new URL('../config/refere
 /** Rows read from three pooled panel draws: the small ones (fewer than 150 events on one panel), recorded from the pooled mean. Their slack is two Poisson standard deviations of the
  * pooled events, times the measured overdispersion of reversed re-aims (events come in bursts inside a play): 1.4 on pursuit, about 1 elsewhere. */
 const POOLED = new Set(['controller QB', 'controller QB facing', 'controller carrier', 'controller pursuit', 'stage QB / spacing', 'stage rush / engagement', 'stage rush / tackle bond',
-  'stage coverage / mode switch', 'stage coverage / tackle bond', 'stage coverage / containment', 'stage carrier / spacing', 'stage route / spacing']);
+  'stage coverage / mode switch', 'stage coverage / tackle bond', 'stage coverage / containment', 'stage carrier / spacing', 'stage carrier / mode switch', 'stage route / spacing']);
 const POOLED_DISPERSION = 1.4;
 
 /** Measured 2026-11-12 on develop 121d458b (engine-49, PURSUIT_FIELD on). The POOLED rows (above) were re-recorded 2026-11-16 from three pooled panel draws (moving s and events are the pool's), on the engine-72
- * defaults with the engine-73 set off, in the project the test runs in now (core-defaults: BALL_EST 6145 and SIGHT_STALE 7 at their defaults). The first pooled record, on ae9f566c4, ran with every numeric
- * pinned to 0 and read too low (pursuit 0.4025, containment 0.0031, carrier / spacing 0.0847). */
+ * defaults with the engine-73 set off (its flags and numerics QB_FOOTWORK, ZONE_HOLD, END_KEY, OFF_PEDAL stubbed to 0), in the project the test runs in now (core-defaults: BALL_EST 6145 and SIGHT_STALE 7 at their
+ * defaults). The first pooled record, on ae9f566c4, ran with every numeric pinned to 0, which is not the engine the test runs on (it read pursuit 0.4025, containment 0.0031, carrier / spacing 0.0847). */
 const MEASURED: { controller: Record<string, [number, number, number]>; stage: Record<string, [number, number, number]> } = { // [reversed re-aims /s, moving s, reversed events]
   controller: { // budget = rate x 1.10 + 2 sqrt(events) / moving s
-    QB: [0.0732, 820, 60], 'QB facing': [0.1801, 877, 158], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
+    QB: [0.0782, 882, 69], 'QB facing': [0.1665, 847, 141], // facing: dither-core's facing reader (QB lane, 2026-11-16), recorded on engine-71
     block: [0.3195, 4361, 1393], rush: [0.2871, 2787, 800], coverage: [0.3825, 4149, 1587],
-    carrier: [0.3604, 838, 302], route: [0.1648, 1311, 216], pursuit: [0.5326, 434, 231],
+    carrier: [0.2963, 854, 253], route: [0.1648, 1311, 216], pursuit: [0.5950, 333, 198],
   },
   stage: {
-    'QB / spacing': [0.0293, 820, 24], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
-    'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0365, 7771, 284],
-    'rush / tackle bond': [0.0072, 7771, 56], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0327, 11596, 379],
-    'coverage / tackle bond': [0.0082, 11596, 95], 'coverage / containment': [0.0059, 11596, 68], 'carrier / spacing': [0.1205, 838, 101],
-    'route / spacing': [0.0052, 4192, 22],
+    'QB / spacing': [0.0283, 882, 25], 'block / spacing': [0.0683, 4361, 298], 'block / engagement': [0.1456, 4361, 635],
+    'rush / mode switch': [0.0589, 2787, 164], 'rush / spacing': [0.0736, 2787, 205], 'rush / engagement': [0.0415, 7756, 322],
+    'rush / tackle bond': [0.0055, 7756, 43], 'coverage / spacing': [0.1056, 4149, 438], 'coverage / mode switch': [0.0277, 11522, 319],
+    'coverage / tackle bond': [0.0080, 11522, 92], 'coverage / containment': [0.0020, 11522, 23], 'carrier / spacing': [0.0878, 854, 75],
+    'carrier / mode switch': [0.0070, 854, 6],
+    'route / spacing': [0.0090, 4011, 36],
   },
 };
 
