@@ -311,6 +311,7 @@
     "QB_CALL_ROUTES": "0",
     "QB_EDGE_THREAT": "0",
     "QB_KEY_READ": "0",
+    "QB_HEAD": "0",
     "QB_KEY_COMMIT": "1.0",
     "QB_EVADE_UP": "0",
     "BLITZ_SECOND": "0",

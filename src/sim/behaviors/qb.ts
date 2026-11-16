@@ -28,6 +28,7 @@ import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
 import { handoffReach } from '../ball-transfer.js';
+import { HEAD_RATE as SHARED_HEAD_RATE, turnHead } from '../head.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
@@ -697,6 +698,13 @@ const SECURE_T = 0.3;
 const DISLODGE = 0.5;
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
+/** QB_HEAD (experimental, off; QB_HEAD=1; Integration's go 2026-11-16, Defense's zone trace): his head turns to where
+ * he wants to look at the shared head's rate within the shared neck range (head.ts's turnHead, the one head model), and
+ * his picture is taken along where his head points, not at the point he wants. Off, his head is set to his gaze point
+ * every tick, so it jumped between reads in a tick and the zone defenders who lean on his eyes stepped with it. The
+ * hot look's timed turn (HEAD_RATE, 400 deg/s) is a double count under it and comes out: his eyes are there when his
+ * head is, then the glance. */
+const QB_HEAD = process.env.QB_HEAD === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -722,7 +730,7 @@ export class QBPass implements Behavior {
   private lastHotBest: ThrowEval | null = null;
   private noThrowSince = -1;
   private noThrowLast = -99;
-  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
+  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number; glance?: number } | null = null;
   hotPick: { t: number; slot: string; alarmAt: number | null; looked: number; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
   private readStart = -1;
   private setAt = -1;
@@ -1237,10 +1245,16 @@ export class QBPass implements Behavior {
     if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
-    const gaze = this.gazePoint(sim);
+    let gaze = this.gazePoint(sim);
+    if (QB_HEAD) {
+      // QB_HEAD: his head turns toward the gaze at its rate; what he sees is along where it points, at the gaze's range.
+      const want = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x), range = Math.hypot(gaze.x - a.pos.x, gaze.y - a.pos.y);
+      a.head = turnHead(a, a.head ?? a.body.facing, want, SHARED_HEAD_RATE * sim.dt);
+      gaze = { x: a.pos.x + range * Math.cos(a.head), y: a.pos.y + range * Math.sin(a.head) };
+    }
     this.mind.observe(gaze);
     // QB_BODY_SEEN: his head shows where he is looking.
-    a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
+    if (!QB_HEAD) a.head = Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x);
     const routeKeys = this.mind.routeKeyPictures();
     for (const [r, forecast] of this.receiverForecasts) {
       const picture = this.mind.receiverLook(r, gaze);
@@ -1733,6 +1747,11 @@ export class QBPass implements Behavior {
   private hotLook(a: Agent, sim: PlaySim): ThrowEval | 'look' | null {
     const ok = (ev: ThrowEval | null) => !!ev && ev.P > 0.3 && ev.intRisk < 0.18;
     if (this.look) {
+      // QB_HEAD: his eyes are on the man once his head points at him; then the glance.
+      if (QB_HEAD && this.look.seenAt === Infinity) {
+        const p = this.receiverForecasts.get(this.look.target)?.predict(sim.t, 0) ?? this.look.target.pos;
+        if (a.head !== null && Math.abs(wrapAngle(angleTo(a.pos, p) - a.head)) < 0.15) this.look.seenAt = sim.t + (this.look.glance ?? 0);
+      }
       if (sim.t < this.look.seenAt) return 'look';
       const r = this.look.target;
       const ev = this.evaluate(a, sim, r, 1);
@@ -1747,7 +1766,7 @@ export class QBPass implements Behavior {
     const gaze = this.gazePoint(sim), to = this.receiverForecasts.get(best.target)?.predict(sim.t, 0) ?? best.target.pos;
     const turn = Math.abs(wrapAngle(angleTo(a.pos, to) - angleTo(a.pos, gaze))) / HEAD_RATE;
     const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking')) + 0.1 * (1 - a.r('awareness'));
-    this.look = { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
+    this.look = QB_HEAD ? { target: best.target, from: gaze, eyesAt: sim.t, seenAt: Infinity, glance } : { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
     this.hotLooks++;
     return 'look';
   }
@@ -1786,7 +1805,9 @@ export class QBPass implements Behavior {
   /** Whether his picture of `r` sits inside his clear look now (qbmind's clear sector). */
   private inClearLook(a: Agent, sim: PlaySim, r: Agent): boolean {
     const gaze = this.gazePoint(sim), p = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? this.has(sim, r);
-    return Math.abs(wrapAngle(angleTo(a.pos, p) - angleTo(a.pos, gaze))) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
+    // QB_HEAD: his clear look is about where his head points.
+    const eyes = QB_HEAD && a.head !== null ? a.head : angleTo(a.pos, gaze);
+    return Math.abs(wrapAngle(angleTo(a.pos, p) - eyes)) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
   }
 
   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
