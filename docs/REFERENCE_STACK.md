@@ -608,6 +608,28 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-73: the QB's key read and drop, route rules, play-action hinge, edge set and zone holds (2026-11-16)
+
+On: `QB_KEY_READ`, `CONCEPT_FIT`, `BACK_AS_THREE`, `PA_TABLES`, `CONCEPT_DROPS`, `QB_EDGE_THREAT`, `QB_HEAD`, `QB_CALL_ROUTES` (QB and Rules: the key man is the real flat player in his picture of the shell; a call fits the formation; drops come from the concept; his head turns at a rate; he reads forecasts of the called routes), `QUICK_HITCH`, `VERTS_KEYS`, `CURL_SINK`, `SETTLE_DEPTH`, `CRAFT_HOLD`, `CRAFT_EXIT`, `ROUTE_LANDMARK`, `RELEASE_COMMIT` (Rules: route rules as taught), `PA_HINGE` (attempt 2), `EDGE_SET`, `POCKET_DROP`, `POWER_AIM` (Flex and Defense: the play-side tackle hinges on the fake; the end sets the edge at a depth; the blocker gives ground in the pocket; the power rush aims through the man setting to him), `LOOSE_OWN` (Defense). Numeric defaults: `QB_FOOTWORK` 3 (the realistic drop), `ZONE_HOLD` 114, `END_KEY` 2, `OFF_PEDAL` 3. Not flagged: a back in protection references the quarterback as he sees him, not the line's set spot (Flex; the engine-72 `pa-drop` failure was this bug, not a fixture move).
+
+Held off: `QB_FOOTWORK` bits 8 (grass read) and 16 (long play-action fake and plant read: sacks +2.5 points on all three seeds, and with the hinge the away-side end beats the hinging tackle), `GRASS_READ`, `HAND_MOMENT`, `QB_LOOKOFF_RHYTHM`, `QCORNER`, `FOUR_VERTS_SEAMS`, `DECL_CLASS`, the honest-defender flags on Coverage's branch.
+
+Card (16 games, 2 leagues, seeds 23 / 37 / 11, against engine-72; `out/e101-card-*.md`), the landing set as one arm:
+
+| | seed 23 | seed 37 | seed 11 |
+|---|---|---|---|
+| Completion % (ref → arm) | 68.7 → 69.8 | 69.0 → 69.2 | 65.0 → 69.6 |
+| Sack rate | 4.3 → 6.7 | 4.2 → 5.0 | 4.3 → 4.9 |
+| Yards per attempt | 8.35 → 8.10 | 8.83 → 8.50 | 7.93 → 8.09 |
+
+Interceptions flat. By arm: the corner's pedal raises completions (+4.4 / +1.1 / +2.8) with yards per attempt down, the corner conceding the short throw as the NFL corner does (6.87 yd off at the throw). The realistic drop adds 0.10 to 0.12 s to the time to throw, which is the sack rise; it is the drop as taught and the rise is explained by it. The other arms show no consistent signal on a whole-game card and land on their staged evidence.
+
+Run set (`npm run ref:report -- --skip-operators --set fresh`): all runs capped mean 3.71, stuffs 13.4% (engine-72: 3.50, 15.4%); outside zone 3.34 (2.72), inside zone 3.79, gap 3.75, duo 4.38. The outside-zone move is `EDGE_SET`: the end no longer over-widens.
+
+Information repairs made at the landing (the type-aware scan, `test/decision-information-scan.test.ts`, found seven new true-state reads in the merged lane work): `POWER_AIM` and the quarterback's room-ahead check skip a man on the ground from the pose seen, not his true state; the key read, the head-turn target, the hinge's end-man fallback and its contact check read positions through `sim.see`. These went in after the card; the mechanisms' own tests pass with them.
+
+Test-only: eighteen fixtures recorded before this landing are pinned in-file to the group that moved them, each with its owner (`acc-radius`, `pa-plant`, `hot-look`, `read-plan`: QB; `forecast-break`, `hold-facing`, `release-commit`, `rush-lean-bound`, `punch-strike`, `past-along-path`: Flex; `loose-own`, `loose-seen`, `curl-flat-back`, `cushion-need`, `edge-reach`: Defense; `man-trail-carry`, `release-through`, `route-end`: Rules). `release-commit`, `loose-own` and `loose-seen` are the promoted mechanisms' own scenes: they pass with the line group (`PA_HINGE`, `EDGE_SET`, `POCKET_DROP`, `POWER_AIM`, `END_KEY`) off, so the scenes moved, not the mechanisms. `test/engine-pin.json` lists eighteen new files as defaults files. `visible-help` fails on the real engine at engine-72 as well and joins the files owed to their lanes.
+
 ## engine-72: protection set, blitz reads, carry technique, receiver glance and four information repairs (2026-11-16)
 
 On: `SET_SPOT`, `SET_SPOT_TACKLE`, `POCKET_LEVEL` (Flex: the pass set's reference is the call's spot, not the live quarterback), `BLITZ_READ`, `BLITZ_DEPTH`, `BLITZ_SKILL`, `BLITZ_SECOND`, `QB_EVADE_UP` (QB), `CARRY_POSTURE`, `CORNER_DROP`, `CARRY_TURN` (Defense), `MIRROR_SCATTER`, `LEVEL2_TRACK` (Run Game), `SIGHT_PURE` (Tools), `PASS_OFF` with the honest hand-over (Flex), `QB_FACE_SEEN` (QB: his body faced the receiver's true position), `BREAK_LOOK`, `SEEN_EMPTY` (Coverage). Numeric defaults: `SIGHT_STALE` 7 (no picture of a man never sighted) and `BALL_EST` 6145 (receivers play the ball from their own looks, not the true flight). Defenders still read the true flight; the honest defender is on the Coverage branch.
