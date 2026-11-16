@@ -203,6 +203,8 @@ interface Track {
   armSeenAt?: number;
   /** SEEN_EMPTY: when (his delayed picture) he saw the passer without the ball, his own throw cue. Not a release time. */
   emptySeenAt?: number;
+  /** HEAD_RIDE: his shoulders' direction when his head was last set (field angle), so an undriven head keeps its offset. */
+  headBase?: number;
   /** Bit 2048: the current look (seen-time it began, last seen-time in his eyes, its error draw), and time held. */
   lookStart?: number; lookLast?: number; lookZ?: [number, number]; held?: number; looks?: number; gPath?: PathSample[]; gPathT?: number;
   /** His eye's place and his head over the last few ticks: a sample is what his eye took in when the ball was there. */
@@ -238,6 +240,15 @@ const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 
  * empty hand in his eyes (`sawEmpty`); seeing the arm keeps him looking, since the ball is about to leave. */
 export const SEEN_EMPTY = process.env.SEEN_EMPTY === '1';
 
+/** HEAD_RIDE (experimental, off; HEAD_RIDE=1; with BALL_EST, HEAD off): every observer's estimator head that no look is
+ * turning this tick (receiver, defender, anyone with a track) rides on his shoulders: it keeps its offset from them,
+ * within his neck, and relaxes toward them at HEAD_RATE, as a neck does. Off, it stayed where it last pointed in field
+ * coordinates while his body turned under it, and passive sight (bit 32) and the eye test read that stale head. Zone and
+ * man defenders are attended about one tick in ten in flight: those who never sampled a ball they had seen leave had it
+ * within 10 deg of their hips (median) and 63 deg off that stale head (def-nosample.ts, engine-71). HEAD on already
+ * works this way (one shared head per player). No new information: his own body. */
+export const HEAD_RIDE = process.env.HEAD_RIDE === '1';
+
 export class BallEstimates {
   private readonly tracks = new Map<Agent, Track>();
   private readonly history: { t: number; p: Vec3 }[] = [];
@@ -248,6 +259,16 @@ export class BallEstimates {
   sense(sim: PlaySim): void {
     if (!BALL_EST || sim.t <= this.lastSenseAt) return;
     this.lastSenseAt = sim.t;
+    // HEAD_RIDE: a head no look is turning this tick rides on his shoulders (its offset kept within the neck, relaxing
+    // toward them at HEAD_RATE), instead of staying where it last pointed in field coordinates while his body turns.
+    if (HEAD_RIDE && !SHARED_HEAD) for (const [a, tr] of this.tracks) {
+      const driven = sim.t - tr.attendT <= sim.dt + 1e-9 || (tr.preLookT !== undefined && sim.t - tr.preLookT <= sim.dt + 1e-9);
+      if (driven) continue;
+      const base = shouldersOf(a.body), neck = neckOf(a), dt = Math.max(0, sim.t - tr.headT);
+      const rel = clamp(angDiff(tr.head, tr.headBase ?? base), -neck, neck), relax = HEAD_RATE * dt;
+      tr.head = base + Math.sign(rel) * Math.max(0, Math.abs(rel) - relax);
+      tr.headT = sim.t; tr.headBase = base;
+    }
     // His own release belief: the passer's arm coming through, as he sees it while he is looking at him.
     for (const [a, tr] of this.tracks) {
       if ((tr.armSeenAt !== undefined && (!SEEN_EMPTY || tr.emptySeenAt !== undefined)) || a.isDown(sim.t)) continue;
@@ -270,7 +291,7 @@ export class BallEstimates {
         const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
-        tr.headT = sim.t;
+        tr.headT = sim.t; tr.headBase = base;
       }
       return;
     }
@@ -309,7 +330,7 @@ export class BallEstimates {
         const lim = base + clamp(sideOf(angDiff(toward, base), angDiff(tr.head, base)), -neckOf(a), neckOf(a));
         const step = HEAD_RATE * Math.max(0, sim.t - tr.headT);
         tr.head = base + clamp(angDiff(tr.head + clamp(angDiff(lim, tr.head), -step, step), base), -neckOf(a), neckOf(a));
-        tr.headT = sim.t;
+        tr.headT = sim.t; tr.headBase = base;
       }
       // Pursuit runs on the visuomotor loop (about 110 ms), not on a decision's reaction time; his attention scales it.
       const delay = a.mind.observationDelay(PURSUIT_DELAY);
