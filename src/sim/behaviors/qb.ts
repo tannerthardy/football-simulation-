@@ -421,7 +421,7 @@ const KEY_MOVE_NOISE = 5;
 const QB_KEY_READ = process.env.QB_KEY_READ === '1';
 /** QB_KEY_READ: the commit margin (yd of displacement along the stretch since the snap), chosen; the exit is half.
  * Numeric so the staged gate reads it a level either side. */
-const KEY_COMMIT = Number(process.env.QB_KEY_COMMIT ?? 1.0);
+const KEY_COMMIT = Number(process.env.QB_KEY_COMMIT ?? 1);
 /** QB_KEY_READ: a man within this share of the stretch of a route is standing on it (chosen). */
 const KEY_ON_ROUTE = 0.25;
 /** QB_KEY_THROW (experimental, off; QB_KEY_THROW=1; with QB_KEY_MAN): he stays on the key read's answer through its
