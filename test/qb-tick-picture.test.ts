@@ -15,6 +15,7 @@ async function arm(flag: string): Promise<number> {
   // The reference stack (the engine's default; the suite is pinned to the legacy engine), whose perception the asking advanced.
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('SIGHT_PURE', '0'); // engine-72: this test shows the order-dependence that SIGHT_PURE removes; with it on the off arm has nothing to show. QB lane/Tools to restate
   vi.stubEnv('QB_TICK_PICTURE', flag);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
