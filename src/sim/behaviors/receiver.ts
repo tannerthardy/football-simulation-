@@ -18,7 +18,7 @@ import { angleTo, goTo, runThrough, stand } from './common.js';
 import { seenDown, seenTaken } from '../seen-contact.js';
 import { HANDS_CUE, noteHands } from '../hands-cue.js';
 import { CATCH_CHOICE, chooseCatchPoint, type CatchChoice } from '../catch-choice.js';
-import { BALL_EST_RCV as BALL_EST, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
+import { BALL_EST_RCV as BALL_EST, SEEN_EMPTY, BALL_EST_DEEP_LOOK, BALL_EST_SERVO, BALL_EST_TRUNK, lookJoints, BALL_EST_MOVING_CHOICE, DEEP_LOOK_DEPTH, DEEP_LOOK_HOLD, LOOK_NECK, neckOf, PRE_LOOK_EARLY, PRE_LOOK_LATE, bodyTurnLead, sideOf } from '../ball-estimate.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint, type RouteCursor, type FilletTurn, type FilletPlan } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -351,7 +351,9 @@ export class RouteRunner implements Behavior {
     // His own picture, not the true ball state: he looks for the QB until he has seen the ball in the air (his own
     // sample) or sees the QB without it.
     // A sim without the estimator's store (partial fixtures) has no picture to look for: his route as it was.
-    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || sim.see(a, sim.qb).carrying === false) return cmd;
+    // SEEN_EMPTY: the empty hand ends the look only once he has seen it (or the arm) in his eyes, not through the
+    // field-wide picture with his head elsewhere.
+    if (!sim.ballEstimates || sim.ballEstimates.lastSeen(a) || (SEEN_EMPTY ? sim.ballEstimates.lookedAtRelease(a, sim) : sim.see(a, sim.qb).carrying === false)) return cmd;
     const pastBreak = sim.t - this.bornAt >= this.breakTime - PRE_LOOK_EARLY + PRE_LOOK_LATE * a.r('routeRunning');
     if (this.route.family === 'deep') {
       // BREAK_LOOK: a deep route thrown on its break (the corner, the post) also looks out of the break.

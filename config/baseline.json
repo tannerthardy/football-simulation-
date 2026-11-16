@@ -33,6 +33,7 @@
     "APEX_LEVERAGE": "0",
     "BALL_EST": "0",
     "BREAK_LOOK": "0",
+    "SEEN_EMPTY": "0",
     "BALL_EST_NECK_SPRINT": "45",
     "BALL_EST_TAU_SD": "7",
     "BALL_GLANCE_DEPTH": "10",

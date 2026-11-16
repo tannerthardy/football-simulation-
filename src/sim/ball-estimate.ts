@@ -194,6 +194,8 @@ interface Track {
   searchAt?: number;
   /** When he saw the passer's arm come through (sample time, his own picture): his belief of the release. */
   armSeenAt?: number;
+  /** SEEN_EMPTY: when (his delayed picture) he saw the passer without the ball, his own throw cue. Not a release time. */
+  emptySeenAt?: number;
   /** Bit 2048: the current look (seen-time it began, last seen-time in his eyes, its error draw), and time held. */
   lookStart?: number; lookLast?: number; lookZ?: [number, number]; held?: number; looks?: number; gPath?: PathSample[]; gPathT?: number;
   /** His eye's place and his head over the last few ticks: a sample is what his eye took in when the ball was there. */
@@ -218,6 +220,17 @@ interface Track {
 
 const skill = (a: Agent): number => clamp(a.r(a.team === 'O' ? 'ballTracking' : 'ballSkills'), 0, 1);
 
+/** SEEN_EMPTY (experimental, off; SEEN_EMPTY=1; with BALL_EST): a receiver who sees the passer without the ball (his own
+ * delayed picture, the passer in his eyes) has the throw cue, as if he had seen the arm come through: his look stays on
+ * the ball's search after the release instead of waiting for his body-turn window. It says the ball is up, not where it
+ * is going or whose it is, and is never used as the release time (his estimate's seed keeps the arm or his first sample).
+ * Without it, a corner whose pre-look reached the passer just after the release dropped the look on seeing the empty hand
+ * and found the ball only 0.4-0.8 s before it arrived, 150-180 deg behind his hips. The pre-look's end is his own sight
+ * too: off, it ended on the passer's state through the field-wide picture (`sim.see(a, qb).carrying === false`) with
+ * his head 90 deg off the passer, before his eyes got there; with the flag, it ends when he has seen the arm or the
+ * empty hand in his eyes (`lookedAtRelease`). */
+export const SEEN_EMPTY = process.env.SEEN_EMPTY === '1';
+
 export class BallEstimates {
   private readonly tracks = new Map<Agent, Track>();
   private readonly history: { t: number; p: Vec3 }[] = [];
@@ -232,7 +245,10 @@ export class BallEstimates {
     for (const [a, tr] of this.tracks) {
       if (tr.armSeenAt !== undefined || a.isDown(sim.t)) continue;
       const head = SHARED_HEAD ? (a.head ?? a.facing) : tr.head, q = sim.see(a, sim.qb);
-      if (q.arm !== 'deliver' || Math.abs(angDiff(Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), head)) > EYE) continue;
+      if (Math.abs(angDiff(Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), head)) > EYE) continue;
+      // SEEN_EMPTY: the passer in his eyes without the ball is the throw cue too (that it is up, not where to).
+      if (SEEN_EMPTY && q.arm !== 'deliver' && q.carrying === false && tr.emptySeenAt === undefined) tr.emptySeenAt = sim.t - (q.age ?? 0);
+      if (q.arm !== 'deliver') continue;
       tr.armSeenAt = sim.t - (q.age ?? 0);
     }
     const ball = sim.ball;
@@ -401,7 +417,7 @@ export class BallEstimates {
   /** Design 4: did he see the passer's arm come through (his own release belief)? */
   lookedAtRelease(a: Agent, sim: PlaySim): boolean {
     const tr = this.tracks.get(a);
-    return tr?.armSeenAt !== undefined;
+    return tr?.armSeenAt !== undefined || (SEEN_EMPTY && tr?.emptySeenAt !== undefined);
   }
 
   /** Read-only: his last fitted path (the `ballPath` shape) as of now, without attending, turning his head or
