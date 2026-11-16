@@ -337,6 +337,7 @@
     "RELEASE_COMMIT": "off",
     "CONCEPT_FIT": "off",
     "BACK_AS_THREE": "off",
+    "PA_TABLES": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",

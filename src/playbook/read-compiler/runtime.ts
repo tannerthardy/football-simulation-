@@ -8,7 +8,7 @@ import { Rng } from '../../core/rng.js';
 import { generateTeam, type Team } from '../../league/team.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import type { PassConcept, ReceiverRef } from '../types.js';
-import { compile } from './compile.js';
+import { compile, PA_TABLES, tableId as tableIdOf } from './compile.js';
 import { DECLARED_BREAK } from './features.js';
 import { BREAK_DECL } from '../route-breaks.js';
 import { PLAN_ROLES } from './candidates.js';
@@ -231,14 +231,14 @@ export function installedPlan(concept: PassConcept, formationId: string): Instal
   // A formation built for one play (a lab or stress scene) is not in the registry the on-air rep is run from: nothing
   // was installed for it, so he runs the play without a plan.
   if (!FORMATION_BY_ID[formationId]) return null;
-  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}${VERTS_KEYS ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}|${concept.backIsThree ? 1 : 0}`;
+  const key = `${OUTLET_LAST ? 1 : 0}${PLAN_KEYS ? 1 : 0}${PLAN_ROLES ? 1 : 0}${PLAN_KEYS_2 ? 1 : 0}${PLAN_KEYS_3 ? 1 : 0}${DECLARED_BREAK ? 1 : 0}${GRASS_READ ? 1 : 0}${VERTS_KEYS ? 1 : 0}${PA_TABLES ? 1 : 0}|${formationId}|${concept.id}|${concept.drop}|${JSON.stringify(concept.strong)}|${JSON.stringify(concept.weak)}|${concept.back}|${concept.teBlock ? 1 : 0}|${concept.backIsThree ? 1 : 0}`;
   if (cache.has(key)) return cache.get(key)!;
   teams ??= { off: generateTeam(new Rng(41), 'O', 'O', { strength: 0.6 }), def: generateTeam(new Rng(42), 'D', 'D', { strength: 0.6 }) };
   compiling++;
   let plan: InstalledPlan | null = null;
   try {
-    // BACK_AS_THREE: a call with the back as #3 is installed from its concept's tables (its key, order and looks).
-    const tableId = concept.backIsThree ? concept.id.replace(/\+b3$/, '') : concept.id;
+    // BACK_AS_THREE's and PA_TABLES' tagged calls are installed from their concept's tables (its key, order and looks).
+    const tableId = tableIdOf(concept);
     const compiled = compile(concept, formationId, false, teams.off, teams.def), c = compiled.chosen;
     if (c) {
       plan = {

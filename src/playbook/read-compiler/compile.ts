@@ -26,6 +26,16 @@ export const CLEAR_OUTS: Record<string, [string, string][]> = {
   trips_outs: [['go', 'out']],
   trips_sail: [['go', 'out']],
 };
+/** PA_TABLES (experimental, off; a repair): a play-action-tagged call (`smash+pa`, PA_CALL's tag on a dropback concept)
+ * is installed from its concept's tables: its coached key, order, looks and clear-outs. Off, the tables were looked up by
+ * the tagged id, missed, and the tagged call compiled from geometry alone (smash+pa had no corner key). */
+export const PA_TABLES = process.env.PA_TABLES === '1';
+/** The id a concept's install tables are keyed by. */
+export function tableId(concept: PassConcept): string {
+  // BACK_AS_THREE's +b3 first (a call with the back as #3 is its concept's), then PA_TABLES' +pa.
+  const id = concept.backIsThree ? concept.id.replace(/\+b3$/, '') : concept.id;
+  return PA_TABLES ? id.replace(/\+pa$/, '') : id;
+}
 export function compile(concept: PassConcept, formation: string, flip: boolean, off: Team, def: Team, profile: CoachProfile = DEFAULT_PROFILE): CompiledPlay {
   if (concept.family === 'screen' || concept.screen) {
     return { conceptId: concept.id, formation, flip, qbSetAt: 0, routes: [], excluded: [], motifs: [], candidates: [], chosen: null,
@@ -47,7 +57,7 @@ export function compile(concept: PassConcept, formation: string, flip: boolean, 
   }
   s.qbSetAt = +((s.qbSetAt + m.qbSetAt) / 2).toFixed(2);
   const motifs = findMotifs(s.routes);
-  if (PLAN_ROLES) for (const [clearRoute, underRoute] of CLEAR_OUTS[concept.backIsThree ? concept.id.replace(/\+b3$/, '') : concept.id] ?? []) {
+  if (PLAN_ROLES) for (const [clearRoute, underRoute] of CLEAR_OUTS[tableId(concept)] ?? []) {
     // Same side: the clearer and the route he clears for.
     for (const c of s.routes) for (const u of s.routes) if (c.routeId === clearRoute && u.routeId === underRoute && c.side === u.side
       && !motifs.some((m) => m.kind === 'clearout' && m.refs[0] === c.ref && m.refs[1] === u.ref))
