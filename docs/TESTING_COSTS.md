@@ -42,6 +42,14 @@ the merger's independent local verification still follows AGENTS. An additional
 scorecard or game campaign needs its own football question. Static related-test
 selection alone misses CLI children and dynamic source/fixture reads.
 
+### A single scorecard's rush row moves by about 0.4 yd per carry on its own (Tools, 2026-11-16)
+
+On develop 1538db2d, a 16-game, 2-league, seed-23 card whose off arm was run on two versions of the engine that differed only by one floating-point
+reassociation (`1 - (v . t) / (|t| * vmax)` against `1 - ((v . t) / |t|) / vmax`, flag off, same behaviour) gave the capped rush row 3.31 and 3.65 yd per
+carry (uncapped 3.72 and 4.17), 11.9% and 12.1% stuffs, yards before contact 0.74 and 0.85. The two arms diverge from the first tick, so every play after it is a
+different draw. Read a single card's rush row as +-0.4 yd per carry (capped) before it means anything, and its run stuff rate as +-2 points; the paired run set
+(`ref:report`, 1,321 to 1,438 plays) has a standard error of 0.07 to 0.08 and is the instrument for a run-game claim. (`docs/reviews/2026-11-16-contact-law.md`.)
+
 ### Noise floor of the fixed run set (`ref:report --placebo N`)
 
 A paired run-set delta is only as good as its floor. Each placebo arm replays the
