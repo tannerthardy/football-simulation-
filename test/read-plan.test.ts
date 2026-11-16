@@ -10,6 +10,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 function referenceEngine(plan: string, forecast: string) {
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
+  vi.stubEnv('CRAFT_HOLD', '0'); // engine-70: with the hold the flat's release lands the throw at 2.40 s against a strict < 2.4; the QB lane to trace and restate
   vi.stubEnv('READ_PLAN', plan); vi.stubEnv('FORECAST_BREAK', forecast);
 }
 

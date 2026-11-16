@@ -14,6 +14,7 @@
  */
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { BALL_EST_INCIDENTAL, estimatesFor } from './ball-estimate.js';
 
 /** Cosine of the widest angle off his facing that he sees the ball at. */
 export function viewCone(a: Agent): number {
@@ -42,6 +43,8 @@ export class ThrowSight {
     const { x, y } = ball.flight.pos;
     for (const a of sim.defense) {
       if (this.firstSeen.has(a.idx) || a.isDown(sim.t)) continue;
+      // BALL_EST with bit 32: his sight of the ball is his own sample (one perception per player), not the hips' cone.
+      if (estimatesFor(a) && BALL_EST_INCIDENTAL) { const at = sim.ballEstimates?.firstSeenAt(a); if (at !== undefined) this.firstSeen.set(a.idx, at); continue; }
       const dx = x - a.pos.x, dy = y - a.pos.y, d = Math.hypot(dx, dy);
       const cos = d < 1e-6 ? 1 : (Math.cos(a.facing) * dx + Math.sin(a.facing) * dy) / d;
       if (cos > viewCone(a)) this.firstSeen.set(a.idx, sim.t);
