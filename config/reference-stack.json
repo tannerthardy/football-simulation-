@@ -50,6 +50,7 @@
     "ARRIVE_LEAD": "on",
     "ATTACK_LANDMARK": "off",
     "LOOSE_SEEN": "on",
+    "LOOSE_OWN": "off",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
     "BACKFIELD_DEPTH": "on",
