@@ -19,7 +19,9 @@ async function rolled(on: boolean) {
   sim.throwBall = () => null as any;
   const rec = sim.offense.filter((o: any) => o.behavior.kind === 'route');
   // From 2.0 s he is carried out to +y at 6 yd/s (the body itself, so every picture of him sees it).
-  while (sim.t < 3.4 && sim.phase === 'live') {
+  // To 3.8 s: on engine-71 (CRAFT_HOLD off) the tight end's path keeps the QB out of his view; X, Z and H see him leave at
+  // 3.2-3.35 s, and their rules follow their reaction time.
+  while (sim.t < 3.8 && sim.phase === 'live') {
     sim.tick();
     if (sim.t >= 2.0) { const b: any = sim.qb.body; b.pos = { x: b.pos.x, y: b.pos.y + 0.3 }; b.vel = { x: 0, y: 6 }; }
   }
