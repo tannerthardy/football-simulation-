@@ -123,6 +123,12 @@ export interface PassConcept {
    * concept has one, else its coached key (read-compiler KEYS / ROLE_KEYS), else the structure its order is drawn on
    * (docs/reviews/2026-11-16-concept-fit.md). */
   needs?: ReadonlyArray<ReceiverRef | readonly ReceiverRef[]>;
+  /** BACK_AS_THREE (src/game/concept-fit.ts): the route the back runs as #3 when the field has no #3 (stick, flood and
+   * pa_flood from 2x2: the back to the flat). */
+  backThree?: string;
+  /** Set on a call whose back is #3 in the route (BACK_AS_THREE): he releases to the strong side on the snap and is
+   * not in the protection, which is the line (and a blocking inline end) alone. */
+  backIsThree?: boolean;
 }
 
 /**

@@ -16,7 +16,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   {
     id: 'stick', name: 'Stick', family: 'quick', drop: 'gun3',
     strong: { 1: 'go', 2: 'stick', 3: 'flat' }, weak: { 1: 'slant', 2: 'stick' }, back: 'check',
-    progression: ['S2', 'S3', 'W1', 'W2', 'B'], needs: ['S2', 'S3'], beats: ['cover3', 'cover4', 'zone'],
+    progression: ['S2', 'S3', 'W1', 'W2', 'B'], needs: ['S2', 'S3'], backThree: 'back_flat', beats: ['cover3', 'cover4', 'zone'],
   },
   {
     id: 'quick_outs', name: 'Speed Outs', family: 'quick', drop: 'quick',
@@ -53,7 +53,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   {
     id: 'flood', name: 'Flood', family: 'dropback', drop: 'gun5',
     strong: { 1: 'go', 2: 'out', 3: 'flat' }, weak: { 1: 'dig', 2: 'shallow' }, back: 'check',
-    progression: ['S2', 'S3', 'S1', 'W1', 'B'], needs: ['S2', 'S3'], beats: ['cover3', 'zone'],
+    progression: ['S2', 'S3', 'S1', 'W1', 'B'], needs: ['S2', 'S3'], backThree: 'back_flat', beats: ['cover3', 'zone'],
   },
   {
     id: 'dagger', name: 'Dagger', family: 'dropback', drop: 'five',
@@ -89,7 +89,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
   {
     id: 'pa_flood', name: 'PA Flood', family: 'playaction', drop: 'pa', fake: 'outsideZone',
     strong: { 1: 'go', 2: 'deep_out', 3: 'flat' }, weak: { 1: 'cross', 2: 'shallow' }, back: 'back_flat',
-    progression: ['S2', 'W1', 'S3', 'B'], needs: ['S2', 'S3'], beats: ['cover3', 'run-heavy'],
+    progression: ['S2', 'W1', 'S3', 'B'], needs: ['S2', 'S3'], backThree: 'back_flat', beats: ['cover3', 'run-heavy'],
   },
   {
     id: 'pa_shot', name: 'PA Shot', family: 'playaction', drop: 'pa', fake: 'insideZone', teBlock: true,
