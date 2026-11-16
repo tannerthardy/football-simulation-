@@ -75,6 +75,19 @@ const TE_LINE_DEPTH = 0.83;
  * n 1,224 pressed), tight ends 1.09 vs 0.83 (+0.26, n 1,469); the
  * pressed-weighted mean is 0.23. */
 export const PRESS_BACKOFF = 0.23;
+/** MIRROR_SCATTER (off; MIRROR_SCATTER=1 turns it on; Run Game, docs/reviews/2026-11-16-mirror-scatter.md): a defender's
+ * lateral placement error (his alignment error, PlaySim) and his ALIGN_HABIT lateral scatter are a cheat wide or tight
+ * of his landmark, on his own side: the draw is multiplied by his side's sign (his spot's side of the ball, or the
+ * offence's strong sign for a man aligned on the ball). Magnitudes and draws are unchanged; only the direction is now
+ * relative to his side. Off, both were added in absolute field y from the same seed whichever way the formation set, so
+ * a mirrored formation met an unmirrored defence (the read compiler's offence-only sample: DE_S 6.08 vs 6.41 yd from the
+ * ball, LB_M 2.36 vs 2.90, FS +0.40 vs -0.40; RECEIVER_DEPTH then backed the Y off 0.23 yd on one side only and LINE_START
+ * carried it into his readiness, tipping pa_flood and trips_sail between plans). */
+export const MIRROR_SCATTER = process.env.MIRROR_SCATTER !== '0';
+/** MIRROR_SCATTER: +1 if a defender at `y` widens toward +y (his own side of the ball), -1 toward -y. */
+export function scatterSide(off: Pick<OffenseAlignment, 'ballY' | 'strongSign'>, y: number): number {
+  return Math.abs(y - off.ballY) > 0.05 ? Math.sign(y - off.ballY) : off.strongSign;
+}
 /** Default on (DEF_ALIGN=0 turns it off): the secondary aligns by its job, as on
  * film (2022 tracking at the snap by PFF coverage assignment,
  * scripts/diag/align/nfl_scheme.py). A corner's depth and shade come from his
@@ -1441,7 +1454,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   if (style.scatter) for (const slot of present) {
     const sp = spots[slot], j = style.scatter[slot];
     if (!sp || !j || sp.press || sp.role.kind === 'blitz' || sp.pos.x - los <= 2) continue;
-    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y, 1, FIELD_WIDTH - 1) };
+    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y * (MIRROR_SCATTER ? scatterSide(off, sp.pos.y) : 1), 1, FIELD_WIDTH - 1) };
   }
   return { spots, rushers, coverage: cov, boxCount: box };
 }
