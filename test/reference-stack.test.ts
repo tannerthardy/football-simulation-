@@ -15,4 +15,20 @@ describe('reference stack', () => {
     expect(() => environment({}, ['WRAP_FOOT=1'])).toThrow(/retired/);
     expect(new Set(Object.values(environment({ ZONE_RUN: '1' }, [], true)))).toEqual(new Set(['0']));
   });
+  // The legacy pin in vitest.config.ts: every `on` flag at 0 and every numeric flag at its `legacy` value; TEST_ENGINE_DEFAULTS=1 leaves them all at the
+  // default (unset). A suite recorded before a numeric default was promoted must not see it. This file runs inside the pinned project, so the environment
+  // it reads is the pin.
+  it('is pinned for the legacy suites: on flags at 0, numeric flags at their legacy value, nothing set under TEST_ENGINE_DEFAULTS=1', () => {
+    const numeric = Object.entries((stack.numeric ?? {}) as Record<string, { default: number; legacy: number }>);
+    expect(numeric.length).toBeGreaterThan(0);
+    for (const [name, v] of numeric) {
+      if (process.env.TEST_ENGINE_DEFAULTS === '1') expect(process.env[name], name).toBeUndefined();
+      else expect(process.env[name], name).toBe(String(v.legacy));
+    }
+    for (const [name, v] of Object.entries(stack.flags as Record<string, string>)) {
+      if (v !== 'on') continue;
+      if (process.env.TEST_ENGINE_DEFAULTS === '1') expect(process.env[name], name).toBeUndefined();
+      else expect(process.env[name], name).toBe('0');
+    }
+  });
 });
