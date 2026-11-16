@@ -308,3 +308,25 @@ Mesh's loss is still its corner (the grass read, unbuilt). Flood's gain is the c
 
 **Patches.** The stack is in docs/reviews/patches/engine69-780-stack/: five layers on 385bb69f, plus all-five. The
 QB / blitz / hot / read-plan / concept-drops core tests pass at the top (27 files, 117 tests).
+
+## His facing, and what bit 2 now owns (2026-11-16)
+
+Measured by scripts/diag/eyes/facing-swing.ts (dither-core's definitions applied to his facing; engine-70, 392 pass
+plays).
+
+**It is the request, not the body.** Requested facing: 1,121 re-aims, 186 reversed within 0.3 s. Achieved: 652 re-aims,
+99 reversed.
+
+**Where the reversals come from:**
+- **His eyes and read changes (68).** With SHOULDERS_SET off, his pocket facing is square to his current read, re-aimed
+  whenever his eyes or read index move. It aims at the receiver's true position, a small leak.
+- **The play-action fake (61).** In the gun the fake's turn lasts about 0.2 s (fakeUntil is an absolute 0.7 s; he has
+  the ball at 0.49 s). Holding the fake's side fixed removed only 6, so it was not landed.
+
+**Bit 2 now carries:**
+1. the open-hip drop toward read 1;
+2. drop pacing from the rhythm, including the gun play-action fake and set (plant 1.6 s against the NFL's 2.2-2.7);
+3. the step into the throw;
+4. shoulders that set on a step toward a target he has decided on, not on a look (a look moves his eyes and head
+   only);
+5. his facing from his picture of the read, not its true position.
