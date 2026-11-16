@@ -67,12 +67,15 @@ const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
  *   (smash) is thrown off its defender, not the grass.
  * The post and the deep out are not: Walsh's flanker post is "five big steps and a hitch" and the outs are timed to the
  * break (49ers notes via Smart Football), thrown on the break, not into grass before it.
- * The landing area is the point on his installed route at the NFL's median air yards for the route (BDB 2025 weeks 1-2,
- * non-PA drop-backs, docs/reviews/2026-11-15-vertical-ready.md: GO 22, CORNER 19), with the route time he reaches it in
- * this compile's sample (extrapolated along his last half second when the sample ends first). */
+ * The landing area is the point on his installed route at the depth the throw is taught to: for a vertical, the ball
+ * leaves "well before the receiver hits the 18-22 yard mark" (Gonzalez), so it is thrown to that band, at its middle,
+ * 20 yd. No source gives the corner a spot ("look at the area he is going", Win With The Pass): the same 20 yd along
+ * his installed path is a stated choice. `t` is the route time he reaches it in this compile's sample (extrapolated
+ * along his last half second when the sample ends first). */
 const GRASS_READ = process.env.GRASS_READ === '1';
-/** GRASS_READ: the landing depth past the line by route (yd; NFL median air yards, above). */
-const GRASS_DEPTH: Readonly<Record<string, number>> = { go: 22, seam: 22, fade: 22, corner: 19 };
+/** GRASS_READ: the landing depth past the line (yd): the middle of Gonzalez's 18-22 yd band for a vertical; the corner's
+ * the same, a stated choice (above). */
+const GRASS_DEPTH: Readonly<Record<string, number>> = { go: 20, seam: 20, fade: 20, corner: 20 };
 /** CONCEPT_DROPS: reads taken in one look besides a key (the members share a place in the rhythm). */
 const ONE_LOOK: Record<string, ReceiverRef[]> = { mesh: ['S2', 'W2'] };
 /** The coached key per concept, and the danger: the defender the coaching warns about on the answer (the window
@@ -178,10 +181,15 @@ function grassOf(r: { routeId: string; trajectory: Array<{ t: number; x: number;
   if (!r) return null;
   const vertical = BREAK_DECL[r.routeId]?.at === 'vertical';
   if (!vertical && !(r.routeId === 'corner' && first && !keyed)) return null;
-  const depth = GRASS_DEPTH[r.routeId] ?? 22, P = r.trajectory;
+  const depth = GRASS_DEPTH[r.routeId] ?? 20, P = r.trajectory;
   if (P.length < 2) return null;
-  const hit = P.find((p) => p.x >= depth);
-  if (hit) return { landing: { x: +hit.x.toFixed(1), y: +hit.y.toFixed(1) }, t: +hit.t.toFixed(2), decided: 'step' };
+  const i = P.findIndex((p) => p.x >= depth);
+  if (i === 0) return { landing: { x: +P[0].x.toFixed(1), y: +P[0].y.toFixed(1) }, t: +P[0].t.toFixed(2), decided: 'step' };
+  if (i > 0) {
+    // Where he crosses the landing depth, between the two samples either side of it.
+    const a = P[i - 1], b = P[i], w = (depth - a.x) / (b.x - a.x);
+    return { landing: { x: depth, y: +(a.y + (b.y - a.y) * w).toFixed(1) }, t: +(a.t + (b.t - a.t) * w).toFixed(2), decided: 'step' };
+  }
   // The sample ended short of the landing depth: carry him on along his last half second.
   const b = P[P.length - 1], a = P.find((p) => p.t >= b.t - 0.5) ?? P[P.length - 2];
   const dt = b.t - a.t, vx = dt > 0 ? (b.x - a.x) / dt : 0, vy = dt > 0 ? (b.y - a.y) / dt : 0;

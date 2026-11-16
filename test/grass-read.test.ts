@@ -19,13 +19,13 @@ async function plans(on: boolean, ids: string[]) {
 }
 
 describe('GRASS_READ', () => {
-  it("mesh's corner is read 1 into grass: landing about 19 yd downfield, decided on his step", async () => {
+  it("mesh's corner is read 1 into grass: landing about 20 yd downfield, decided on his step", async () => {
     const { mesh } = await plans(true, ['mesh']);
     const corner = mesh.rhythm.find((r) => r.ref === 'S1')!;
     expect(corner.n).toBe(0);
     expect(corner.grass).toBeDefined();
     expect(corner.grass!.decided).toBe('step');
-    expect(corner.grass!.landing.x).toBeGreaterThanOrEqual(18.5);
+    expect(corner.grass!.landing.x).toBeGreaterThanOrEqual(19.5);
     expect(corner.grass!.landing.x).toBeLessThan(20.5);
     // Toward his own side, outside where he lined up: a corner breaks to the sideline.
     expect(Math.abs(corner.grass!.landing.y)).toBeGreaterThan(10);
@@ -38,7 +38,7 @@ describe('GRASS_READ', () => {
     const p = await plans(true, ['four_verts', 'smash', 'hitch_post', 'double_outs']);
     const verts = p.four_verts.rhythm.filter((r) => r.ref !== 'B');
     expect(verts.length).toBeGreaterThanOrEqual(4);
-    for (const r of verts) { expect(r.grass).toBeDefined(); expect(r.grass!.landing.x).toBeGreaterThanOrEqual(21.5); }
+    for (const r of verts) { expect(r.grass).toBeDefined(); expect(r.grass!.landing.x).toBeGreaterThanOrEqual(19.5); expect(r.grass!.landing.x).toBeLessThan(20.5); }
     // smash's corner is the high half of the key: thrown off the defender, not the grass.
     expect(p.smash.key).not.toBeNull();
     expect(p.smash.rhythm.find((r) => r.ref === p.smash.key!.high)!.grass).toBeUndefined();
