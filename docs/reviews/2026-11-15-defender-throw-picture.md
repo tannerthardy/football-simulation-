@@ -131,6 +131,21 @@ On 26657, ACQ_SEEN (with its prior-only fix) puts the catch in their picture at 
 - paired 305;
 - ball-glance's no-knowledge test.
 
+**Attempt 1 result: ARM_LOOK (flag off; engine-72 merge, seed 11, 16 games, all on 26657 + HEAD_RIDE, ACQ_SEEN, TRACKED_CATCH).**
+
+The look works. Defenders who never sampled the ball fell: zone 164 → 87, man 455 → 282, rush 715 → 248. YAC per catch fell 13.97 → 11.99; the oracle is 7.92.
+
+| arm | 0-1 | 1-2 | 2-3 | 3-5 | 5+ |
+|---|---|---|---|---|---|
+| Y4 (26657) | 3.39 | 6.53 | 9.41 | 15.08 | 22.18 |
+| Z1 (+ARM_LOOK) | 3.43 | 5.68 | 6.97 | 13.04 | 19.94 |
+
+- Paired 301: caught 208 → 203 (oracle 218).
+- ball-glance's no-knowledge test passes with ARM_LOOK=1.
+- The defenders who still never sample start no earlier: zone arm+motion p50 0.85 s, man 1.10 s, rush 1.10 s.
+
+The open bands (3–5, 5+) keep most of the gap to the oracle. The remaining late start is in bodies who never get the ball in their eyes at all.
+
 ## Witnesses
 
 - **YAC:** `yac-split.ts`'s defense arm against the oracle, YAC by separation band. Not tuned to any number; the
