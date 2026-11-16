@@ -140,9 +140,19 @@ const SETTLE_SHIELD = 1.5, SETTLE_WINDOW = 3;
  * 0.3 of his pace along it) or across to the other side of the man. */
 const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2 }>();
+/** RELEASE_COMMIT (experimental, off; RELEASE_COMMIT=1; with ROUTE_CRAFT; #35): one decision per man. When the craft's man
+ * in his lane is the man he has just released round (his press release, RELEASE_SEEN's man tight over him at the snap,
+ * or a jam he worked off), the craft goes round him on the release's side (a field side; when his line runs mostly
+ * across the field, the side of the man he is already on) instead of re-deciding it from the route's leg. A new man in
+ * his lane is a new decision, as before. Off, an attached end released round the end over him and then, once the end
+ * was no longer ahead of him, the craft took him back across that same man's body: staged double_outs, his lateral
+ * request reversed within 0.6 s of contact on 54 of 96 touched ends, 46 of them at the hand-off from release to craft,
+ * the craft's man the rusher who hit him on 60 of 62 (scripts/diag/pass-operators/attached-release.mts). */
+const RELEASE_COMMIT = process.env.RELEASE_COMMIT === '1';
 
 /** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
-export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null): MoveCommand {
+export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number, routeDir: Vec2 | null = null,
+  released: { d: Agent; side: number } | null = null): MoveCommand {
   const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
   if (speed < 1) return cmd;
   const u = { x: cmd.vel.x / speed, y: cmd.vel.y / speed }, n = { x: -u.y, y: u.x };
@@ -179,9 +189,12 @@ export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>
   // CRAFT_HOLD: the route's side from the snap (its declared break's leg) when it is clear against his line, else the
   // side he holds (a direction on the field: his route command turns under him), else the per-tick break side.
   const declared = CRAFT_HOLD && routeDir ? routeDir.x * n.x + routeDir.y * n.y : 0;
-  const side = Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
+  // RELEASE_COMMIT: round the man he released round, on the release's side.
+  const committed = RELEASE_COMMIT && released && released.side !== 0 && block.d === released.d
+    ? (Math.abs(n.y) >= 0.5 ? Math.sign(n.y * released.side) : block.off >= 0 ? -1 : 1) : 0;
+  const side = committed !== 0 ? committed : Math.abs(declared) > 0.2 ? Math.sign(declared) : keep ? (keep.across.x * n.x + keep.across.y * n.y >= 0 ? 1 : -1)
     : breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
-  if (CRAFT_HOLD && block.d) craftHeld.set(a, { d: block.d, across: Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out });
+  if (CRAFT_HOLD && block.d) craftHeld.set(a, { d: block.d, across: committed !== 0 || Math.abs(declared) > 0.2 || !keep ? { x: n.x * side, y: n.y * side } : keep.across, clear: block.clear, at: sim.t, out: keep?.out });
   const around = { x: block.p.x + n.x * side * block.clear, y: block.p.y + n.y * side * block.clear };
   const dx = around.x - a.pos.x, dy = around.y - a.pos.y, l = Math.hypot(dx, dy) || 1;
   const ease = 0.94 + 0.04 * rr;
@@ -257,6 +270,8 @@ export class RouteRunner implements Behavior {
   private readonly releasedCorners = new Set<Agent>();
   /** RELEASE_THROUGH: the side of his press release (0 if he had none); kept for the rest of the route. */
   private releaseSide = 0;
+  /** RELEASE_COMMIT: the man his release went round (null if none). */
+  private releaseMan: Agent | null = null;
   private converted = false;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
   private routeEnd: RouteEnd;
@@ -446,7 +461,8 @@ export class RouteRunner implements Behavior {
       return this.settle(a, sim);
     }
     if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
-    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null);
+    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a), CRAFT_HOLD ? this.routeSide() : null,
+      RELEASE_COMMIT && this.releaseMan ? { d: this.releaseMan, side: this.releaseSide } : null);
     return cmd;
   }
 
@@ -707,6 +723,7 @@ export class RouteRunner implements Behavior {
           side = Math.sign(desired - dp.y) || -Math.sign(lateral) || this.outside;
         }
         this.releaseSide = side;
+        if (RELEASE_COMMIT) this.releaseMan = d;
         return runThrough(a, { x: dp.x, y: dp.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }
@@ -723,6 +740,7 @@ export class RouteRunner implements Behavior {
     const clearance = a.profile.radius + d.profile.radius + 0.2;
     // The jam's side is toward his path; a release he already made keeps its own side.
     if (this.releaseSide === 0) this.releaseSide = p.side;
+    if (RELEASE_COMMIT && !this.releaseMan) this.releaseMan = d;
     return runThrough(a, { x: d.pos.x + a.profile.radius, y: d.pos.y + p.side * clearance },
       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
   }
