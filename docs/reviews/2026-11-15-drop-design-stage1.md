@@ -330,3 +330,36 @@ plays).
 4. shoulders that set on a step toward a target he has decided on, not on a look (a look moves his eyes and head
    only);
 5. his facing from his picture of the read, not its true position.
+
+## Bit 2, parts 1 and 2 (dfb82071, b6a06d85)
+
+Read with bit 1 (QB_FOOTWORK=3) on CONCEPT_DROPS=1. Engine-70, seeds 11 / 23 x 2 games, unpaired.
+
+**Part 1: open hips in the drop, shoulders on a step.** His chest opens from downfield toward his picture of read 1 in
+proportion to the depth dropped. His shoulders set at the plant and at each landed step, to his picture of the read he
+is on; a look moves only his eyes and head.
+
+| | Bit 1 alone | Bits 1+2 | NFL |
+| --- | --- | --- | --- |
+| Chest off downfield, short gun drop (25/50/75/90% of depth) | 0 / 0 / 0 / 0 deg | 11 / 22 / 31 / 37 deg | 22 / 41 / 55 / 59 deg |
+| Requested facing re-aims / reversed | 1,312 / 235 | 521 / 88 | - |
+| Reversals: eyes / read change / drop -> set | 76 / 37 / 33 | 4 / 2 / 2 | - |
+
+Backward speed is unchanged. The NFL's chest is more side-on, as in the coached crossover; that is a statement of the
+drop, not a number to fit.
+
+**Part 2: the play-action fake from the measured mesh.** BDB 2025 (scripts/diag/eyes/nfl_pa_ride.py): the gun mesh comes
+at 1.2 s, ridden 0.5 s; under center at 1.4 s, ridden 0.2 s. The fake is now held to the mesh plus half its ride (gun
+1.45 s, under center 1.5 s), in place of an absolute 0.7 s.
+
+| Gun play action | Snap -> plant | Plant -> release p50 |
+| --- | --- | --- |
+| Old 0.7 s fake | 1.60 s | 0.90 s |
+| Measured fake | 2.30 s | 0.50 s |
+| NFL | 2.20 s | 0.60 s |
+
+The fake's facing reversals go 54 -> 0.
+
+**Still to build:**
+- (3) drop pacing for dropbacks (ours about 40% faster back and shallower than the NFL's);
+- (4) the step into the throw, as a visible body state for Defense's QB_INTENT.
