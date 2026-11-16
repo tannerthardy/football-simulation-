@@ -570,3 +570,23 @@ one cell, against a zone of facing defenders, and is left as a witness, not a me
 cause is the drop class above, and it costs four verts eight sacks. The coached rule stands (the seam decided past
 the hook); the four verts sacks are for the card's read.
 
+
+### Open receivers underrated: where the believed P comes from (2026-11-16)
+
+Integration, from the table above: an open receiver (nearest defender in his picture 5+ yd) is believed 0.56 and caught
+0.79. scripts/diag/eyes/trail-margin.ts now records each factor of his P (P = pOpen x pClear x pAcc x hands) and the
+ball's fate from the play's events (caught; defended: a break-up or deflection; picked; dropped; missed: incomplete
+with none of those). Same 423 staged throws.
+
+| open (nearest 3+ yd), depth | n | P believed / caught | pOpen x pClear / not defended | pAcc / not missed | hands / not dropped (of reached) |
+|---|---|---|---|---|---|
+| 0-5 yd | 71 | 0.56 / 0.73 | 0.83 / 0.97 | 0.74 / 1.00 | 0.93 / 0.75 |
+| 5-10 yd | 90 | 0.59 / 0.86 | 0.80 / 0.91 | 0.79 / 0.94 | 0.93 / 1.00 |
+| 10-20 yd | 14 | 0.40 / 0.50 | 0.82 / 0.93 | 0.51 / 0.79 | 0.93 / 0.70 |
+
+Covered men (nearest < 3 yd) are near calibrated on every factor, except his accuracy short (0-5 yd: 0.75 believed,
+0.98 real). So the underrating is mainly his accuracy belief (pAcc: a miss he believes is two to six times the real
+one, at every depth), then his belief that a man 3+ yd off contests or undercuts the ball (0.17-0.20 believed, 0.03-0.09
+real). Hands is mixed and small. The next measurement, before any change: the realized throw error against his
+believed sigma by distance and pressure at release (his missSigma), and the realized catch radius against ACC_RADIUS's
+(1.6 + 0.9 T yd), on the same throws; then, for the open defender term, his margin terms for a man 3+ yd off.
