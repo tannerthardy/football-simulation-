@@ -357,7 +357,7 @@ function spotHash(...parts: (string | number)[]): number {
  * reduced, with others wide (crack and stalk angles). */
 const ROUTE_ROOM: Record<string, [number, number]> = {
   go: [10.9, 10], fade: [10.9, 10], comeback: [10.9, 10], slant: [10.2, 9.9],
-  hitch: [14, 10.6], curl: [14, 10.6], stick: [14, 10.6], hook: [14, 10.6],
+  hitch: [14, 10.6], quick_hitch: [14, 10.6], curl: [14, 10.6], stick: [14, 10.6], hook: [14, 10.6],
   short_in: [14.6, 10.4], dig: [14.6, 10.4], post: [14.6, 11.2], seam: [14.6, 11.2],
   quick_out: [14.7, 15.8], out: [14.7, 15.8], deep_out: [14.7, 15.8], corner: [15.4, 15.3],
   shallow: [15.8, 16.8], shallow_high: [15.8, 16.8], mesh_under: [15.8, 16.8], cross: [15.8, 16.8], flat: [15.1, 17.6], arrow: [15.1, 17.6],
