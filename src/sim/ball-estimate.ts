@@ -228,6 +228,8 @@ interface Track {
   fit: { t0: number; p: Vec3; v: Vec3 } | null;
   fitT: number;
   seeded?: boolean;
+  /** When his prior was seeded (CATCH_CLOSE reads it: the hands can start on it). */
+  seededAt?: number;
   /** Design 4: when he last looked for the QB before the throw. */
   preLookT?: number;
   priorT?: number;
@@ -468,7 +470,7 @@ export class BallEstimates {
     if (tr.flight !== this.flight && sim.ball.kind === 'air' && sim.ball.flight === this.flight) { this.reset(tr); tr.flight = this.flight; }
     tr.attendT = sim.t; tr.deliberate = true;
     if (!tr.seeded && sim.ball.kind === 'air' && sim.ball.flight === this.flight) {
-      tr.seeded = true;
+      tr.seeded = true; tr.seededAt = sim.t;
       this.seed(a, sim, tr);
       if (tr.samples.length + tr.pseudo.length >= 2) { const nf = fitFlight([...tr.pseudo, ...tr.samples], sim.ball.flight.drag); if (finiteFit(nf)) { tr.fit = nf; tr.fitT = sim.t; tr.path = null; } }
     }
@@ -530,6 +532,20 @@ export class BallEstimates {
   firstSeenAt(a: Agent): number | undefined {
     const tr = this.tracks.get(a);
     return tr && tr.flight === this.flight && tr.samples.length ? tr.samples[0].t : undefined;
+  }
+
+  /** Read-only (CATCH_CLOSE): his prior alone (the pseudo-samples: the passer and his own route, before his eyes found
+   * the ball) as a path, and when it was seeded; null without one. */
+  priorLine(a: Agent, sim: PlaySim): { since: number; path: PathSample[] } | null {
+    const tr = this.tracks.get(a);
+    if (!tr || tr.flight !== this.flight || tr.seededAt === undefined || tr.pseudo.length < 2 || sim.ball.kind !== 'air') return null;
+    const nf = fitFlight([...tr.pseudo], sim.ball.flight.drag);
+    if (!finiteFit(nf)) return null;
+    const keep = { fit: tr.fit, path: tr.path, pathT: tr.pathT };
+    tr.fit = nf; tr.path = null; tr.pathT = -1;
+    const path = this.pathOf(sim, tr);
+    tr.fit = keep.fit; tr.path = keep.path; tr.pathT = keep.pathT;
+    return { since: tr.seededAt, path };
   }
 
   /** Read-only: his newest sample of this flight, `{ t, pos }` (t the ball's time, the position as he saw it), or null. */
@@ -596,7 +612,7 @@ export class BallEstimates {
   private reset(tr: Track): void {
     tr.searchAt = undefined; // armSeenAt is his belief of this play's release: a tip is a new flight of the same throw.
     tr.lookStart = undefined; tr.lookLast = undefined; tr.lookZ = undefined; tr.held = undefined; tr.looks = undefined; tr.gPath = undefined; tr.eyeHist = undefined;
-    tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
+    tr.samples = []; tr.pseudo = []; tr.seeded = false; tr.seededAt = undefined; tr.priorT = undefined; tr.fit = null; tr.path = null; tr.lastSampleT = -Infinity; tr.err = null; tr.jumps = 0;
     tr.deliberate = false; tr.passiveAt = undefined; tr.armLook = undefined;
   }
 

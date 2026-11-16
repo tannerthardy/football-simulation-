@@ -123,7 +123,7 @@ const CATCH_POINT = process.env.CATCH_POINT !== '0';
  * act on correction gain, placement noise and grip; no rating awards the catch. Constants are stated choices. */
 const CATCH_CLOSE = process.env.CATCH_CLOSE === '1';
 const CLOSE_HAND_SPEED = Number(process.env.CLOSE_HAND_SPEED ?? 6), CLOSE_LATENCY = 0.15, CLOSE_WATCH = 0.2;
-const CLOSE_ENV = { front: 0.22, side: 0.16, over: 0.12 } as const, CLOSE_HOLD_V = 30;
+const CLOSE_ENV = { front: 0.22, side: 0.16, over: 0.12 } as const, CLOSE_HOLD_V = Number(process.env.CLOSE_HOLD_V ?? 30);
 /** Diagnostic: his last closure read. */
 export const lastClosure = new WeakMap<Agent, Closure>();
 type Closure = { type: keyof typeof CLOSE_ENV; off: number; env: number; late: number; resid: number; reached: boolean; touched: boolean; hold: number };
@@ -136,26 +136,43 @@ function closure(sim: PlaySim, R: Agent, rng: ReturnType<PlaySim['dice']>): Clos
   const inc = Math.acos(clamp(-(Math.cos(sh) * bv.x + Math.sin(sh) * bv.y) / bs, -1, 1)) * 180 / Math.PI;
   const type: Closure['type'] = inc <= 60 ? 'front' : inc <= 120 ? 'side' : 'over';
   const env = CLOSE_ENV[type];
-  if (first === undefined) return { type, off: Infinity, env, late: Infinity, resid: Infinity, reached: false, touched: false, hold: 0 };
-  // His hands go to the ball's line as he believes it through the catch zone: the error is the true ball's distance
-  // from his estimated path near the arrival (across the line), not his timing along it (the ball flies into his hands).
-  const path = E.estimate(R, sim).filter((p) => Math.abs(p.t - sim.t) <= 0.3);
+  // Attempt 2: his hands start on his prior (the passer and his own route) from when it was seeded, before his eyes
+  // find the ball; what his own samples add reaches the hands only after the visuomotor latency.
+  const prior = E.priorLine(R, sim);
+  const start = prior ? Math.min(prior.since, first ?? Infinity) : first;
+  const none: Closure = { type, off: Infinity, env, late: Infinity, resid: Infinity, reached: false, touched: false, hold: 0 };
+  if (start === undefined) return none;
+  // The true ball's distance from a believed path near the arrival (across its line, not his timing along it).
+  const across = (path: { t: number; x: number; y: number; z: number }[]) => {
+    let best: { x: number; y: number; z: number } | null = null, err = Infinity;
+    const P = path.filter((p) => Math.abs(p.t - sim.t) <= 0.3);
+    for (let i = 0; i + 1 < P.length; i++) {
+      const p = P[i], q = P[i + 1], ux = q.x - p.x, uy = q.y - p.y, uz = q.z - p.z, L2 = ux * ux + uy * uy + uz * uz;
+      const k = L2 > 1e-9 ? clamp(((bp.x - p.x) * ux + (bp.y - p.y) * uy + (bp.z - p.z) * uz) / L2, 0, 1) : 0;
+      const c = { x: p.x + ux * k, y: p.y + uy * k, z: p.z + uz * k }, d = Math.hypot(c.x - bp.x, c.y - bp.y, c.z - bp.z);
+      if (d < err) { best = c; err = d; }
+    }
+    return { at: best, err };
+  };
+  const pri = prior ? across(prior.path) : null;
+  const canSee = first !== undefined && sim.t - first >= CLOSE_LATENCY;
   const last = E.lastSeen(R);
-  let est: { x: number; y: number; z: number } | null = null, err = 1;
-  for (let i = 0; i + 1 < path.length; i++) {
-    const p = path[i], q = path[i + 1], ux = q.x - p.x, uy = q.y - p.y, uz = q.z - p.z, L2 = ux * ux + uy * uy + uz * uz;
-    const k = L2 > 1e-9 ? clamp(((bp.x - p.x) * ux + (bp.y - p.y) * uy + (bp.z - p.z) * uz) / L2, 0, 1) : 0;
-    const c = { x: p.x + ux * k, y: p.y + uy * k, z: p.z + uz * k }, d = Math.hypot(c.x - bp.x, c.y - bp.y, c.z - bp.z);
-    if (!est || d < err) { est = c; err = d; }
-  }
-  if (!est && last) { est = { ...last.pos }; err = Math.hypot(est.x - bp.x, est.y - bp.y, est.z - bp.z); }
-  const watched = !!last && sim.t - last.t <= CLOSE_WATCH + 1e-9 && sim.t - first >= CLOSE_LATENCY;
-  const resid = err * (watched ? 1 - (0.5 + 0.4 * R.r('ballTracking')) : 1);
+  let now = canSee ? across(E.estimate(R, sim)) : null;
+  if (canSee && !now!.at && last) now = { at: { ...last.pos }, err: Math.hypot(last.pos.x - bp.x, last.pos.y - bp.y, last.pos.z - bp.z) };
+  const basis = now?.at ? now : pri?.at ? pri : null;
+  if (!basis) return none;
+  const watched = canSee && !!last && sim.t - last.t <= CLOSE_WATCH + 1e-9;
+  const resid = basis.err * (watched ? 1 - (0.5 + 0.4 * R.r('ballTracking')) : 1);
   const rs = Math.hypot(R.vel.x, R.vel.y), sd = 0.04 * (1.3 - R.r('hands')) * (1 + rs / 8) * (type === 'over' ? 1.5 : 1);
   const noise = Math.hypot(rng.normal(0, sd), rng.normal(0, sd));
   const chest = { x: R.pos.x + Math.cos(sh) * 0.3, y: R.pos.y + Math.sin(sh) * 0.3, z: R.profile.heightYd * 0.7 };
-  const aim = est ?? bp, dHand = Math.hypot(aim.x - chest.x, aim.y - chest.y, aim.z - chest.z);
-  const late = Math.max(0, CLOSE_LATENCY + dHand / CLOSE_HAND_SPEED - (sim.t - first));
+  const aim = (pri?.at ?? basis.at)!, dHand = Math.hypot(aim.x - chest.x, aim.y - chest.y, aim.z - chest.z);
+  // To his first aim from the start, then the shift his sight asks for, from the latency after his first sample.
+  let late = Math.max(0, CLOSE_LATENCY + dHand / CLOSE_HAND_SPEED - (sim.t - start));
+  if (pri?.at && now?.at && first !== undefined) {
+    const shift = Math.hypot(now.at.x - pri.at.x, now.at.y - pri.at.y, now.at.z - pri.at.z);
+    late = Math.max(late, shift / CLOSE_HAND_SPEED - (sim.t - first - CLOSE_LATENCY));
+  }
   const off = Math.hypot(resid, noise) + late * CLOSE_HAND_SPEED;
   const vRel = Math.hypot(bv.x - R.vel.x, bv.y - R.vel.y, bv.z);
   const hold = clamp(1 - (off / env) ** 2 * vRel / (CLOSE_HOLD_V * (0.7 + 0.6 * R.r('hands'))), 0, 1);
