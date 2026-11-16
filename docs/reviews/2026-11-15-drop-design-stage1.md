@@ -234,7 +234,7 @@ is an EARLY marking fault, and the corner's 53 yd at 86% is a coverage fault of 
 **y_cross's late underneath** (ready 1.9-2.0 s, read 2 at the second hitch at 3.1 s) is the coached order (the
 check-down after the cross), not a step fault. Whether it is still a throw at 3.1 s is to be measured.
 
-## Design: the grass read (not built)
+## Design: the grass read (built 2026-11-16 as QB_FOOTWORK bit 8; results at the end of this section)
 
 Rules + Coaching (docs/reviews/2026-11-15-vertical-ready.md on #780; Win With The Pass on mesh; Gonzalez, Wilhite and
 Marinelli on the vertical) and Integration's rulings. A route thrown before its break, into space (a vertical, mesh's
@@ -432,3 +432,41 @@ is no single constant. The flat 58-61 deg off downfield is this stance averaged 
 - Part 3's facing is carded as built, with the 15-25 deg written down as open.
 - The stance (front shoulder to the read, chest to the arm side) is the shared fix for the plant and for bit 2's
   shoulders-on-a-step, which are chest-on today. It needs a handedness field and the amount question; not built.
+
+## The grass read, built (QB_FOOTWORK bit 8, 2026-11-16)
+
+Before the plan carries grass fields (Rules), the quarterback's side uses fallbacks: a first read whose route is a go,
+fade, corner, post or deep out is a grass read (`GRASS_ROUTES`, chosen); its landing area is his forecast of the man
+1.2 s ahead (`GRASS_AHEAD`, chosen). His eyes are on that point through the drop. On the plant it is a throw if it is
+readable (out of the collision: 2 yd deep and 4 yd/s; nobody in his picture within 2 yd of the man's path to the landing
+area, plus an awareness-scaled judgment margin; a man shallower than the receiver is under the throw and does not count)
+and priced worth it as any read. Otherwise, a tick past the plant, he is on to read 2. No dwell, and no veteran look-off
+before it (his eyes were already there).
+
+Two corrections on the way, both from staged traces:
+- The seam is not a grass read. At the plant it is 3-4 yd deep, under the hook defender's depth, so it can never be
+  decided there; it is taught as a read of the hook and safety off the hitch (`vertReadable`). With it in the set,
+  four verts and dagger lost their seam read for nothing.
+- The look-off. A veteran's look-off on the plant held his eyes on a decoy for 0.25-0.35 s before the grass read; read
+  1 then went past its moment and the wind-up to read 2 came late into the edge rush (mesh roster 7 seed 2, one play
+  shape across seven coverages: sacks 6 -> 13, arm held at the delivery). Not before a grass read.
+
+Staged, bits 1+2 (`QB_FOOTWORK=3`) against 1+2+8 (`=11`), `CONCEPT_DROPS=1`, 192 plays a concept (drop-staged.ts):
+
+| concept | sacks | ints | completions | yd/play | throw t | corners (t, depth) |
+|---|---|---|---|---|---|---|
+| mesh | 6 -> 0 | 2 -> 2 | 156 -> 136 | 9.57 -> 9.25 | 2.70 -> 2.42 | 5 (3.04 s, 12.6) -> 20 (2.42 s, 9.4) |
+| smash | 17 -> 11 | 8 -> 4 | 107 -> 112 | 6.39 -> 6.44 | 3.68 -> 3.42 | 25 (3.42 s, 13.1) -> 24 (3.16 s, 11.0) |
+| four_verts | 20 -> 18 | 4 -> 4 | 65 -> 67 | 9.98 -> 10.06 | 3.51 -> 3.47 | - |
+| verts_hitch | 14 -> 13 | 3 -> 3 | 90 -> 90 | 9.84 -> 9.66 | 3.59 -> 3.55 | - |
+| dagger | 22 -> 22 | 1 -> 1 | 97 -> 97 | identical | identical | - |
+
+Mesh's corners are thrown against cover 2 and tampa 2 (the hole between the cloud corner and the safety), as taught.
+The go witness has not moved: on four verts the outside go is read 1 only against cover 1, where it is readable on 6
+of 8 staged plants (grass-plant.ts) and his price declines it (the trailing corner within 1-2 yd). That is the price's
+call, not readiness; the accuracy-belief check above comes before touching it. Gos thrown remain seams off the hitch,
+at 12.5 yd and about 3 s.
+
+Test: test/qb-grass-read.test.ts (mesh against cover 2 and tampa 2: no dwell on the grass read after the plant; more
+corners than off, each within 0.6 s of the plant). Probes: scripts/diag/eyes/grass-trace.ts, grass-plant.ts.
+

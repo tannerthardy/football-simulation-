@@ -469,6 +469,20 @@ const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
  * Part 3: the crossover drop, hips side-on to travel toward read 1's side over the first third of the depth, and the
  * drop paced to its measured time. Read with bit 1. Not built yet in bit 2: the step into the throw. */
 const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
+/** QB_FOOTWORK bit 8: the grass read (docs/reviews/2026-11-15-drop-design-stage1.md, "Design: the grass read"; Rules +
+ * Coaching's vertical-ready note on #780). A first read thrown before its break into space (a vertical, a corner, a
+ * post, a deep out) is read on the grass it is going to, during the drop: his eyes go to the landing area from the
+ * drop's start; it is readable when, in his pictures, the receiver is out of the collision and no defender stands between
+ * him and the landing area (beaten or under him); the throw goes by his last drop step if it clears his price (the
+ * window prices the throw to the aim point: anticipation), and if it has not gone by the set he is on to his next read at
+ * once ("on his fifth step, the ball should be gone or he should be on to his mesh read", Win With The Pass). The plan's
+ * own fields (grass reads, landing areas) are taken when it hands them over; until then the grass routes and the landing
+ * area are his own (installed route families; his forecast of the man GRASS_AHEAD s on). Read with bits 1+2. */
+const FW_GRASS = (QB_FOOTWORK & 8) !== 0;
+/** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids), and how far ahead on his
+ * forecast the landing area is (s). Chosen until the plan hands them over. */
+const GRASS_ROUTES = new Set(['go', 'fade', 'corner', 'post', 'deep_out']); // chosen: routes into space decided by the plant; the seam is a hook/safety read off the hitch (vertReadable)
+const GRASS_AHEAD = 1.2;
 /** QB_FOOTWORK: the hitch is a stride of his own drop (a gather, back foot then front foot, that re-sets his base and
  * turns him to the read, at depth): its time is his drop's time over its steps, so his eyes leave for the next read
  * one stride before its beat and the ball can leave on its landing. The steps each drop is taught in (1 the quick
@@ -1296,7 +1310,8 @@ export class QBPass implements Behavior {
       const p = 0.08 + 0.45 * a.r('decisionMaking') * a.r('anticipation') * (0.5 + 0.5 * vet);
       // QB_LOOKOFF_RHYTHM: not when read 1 will be a throw before the look-off would end (judged as his readiness test does).
       const r1SoonReady = QB_LOOKOFF_RHYTHM && !!this.reads[0] && (this.ready(this.reads[0], sim) || ((this.receiverForecasts.get(this.reads[0])?.breakAt() ?? Infinity) - this.windup(a) <= t + 0.35));
-      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && sim.dice('qb', a).chance(p)) {
+      // QB_FOOTWORK bit 8: not before a grass read; his eyes were on its landing area through the drop and it is decided now.
+      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && !this.isGrass(this.reads[0]) && sim.dice('qb', a).chance(p)) {
         const side = Math.sign(this.has(sim, this.reads[0]).y - sim.ballY);
         const decoy = this.reads.find((r) => Math.sign(this.has(sim, r).y - sim.ballY) !== side);
         if (decoy) {
@@ -1350,7 +1365,11 @@ export class QBPass implements Behavior {
       const k = target ? this.reads.indexOf(target) : -1;
       if (k >= 0) { this.readIdx = k; this.readStart = t; if (HOT_LOOK) this.triDone = true; }
     }
-    const read = this.reads[this.readIdx];
+    let read = this.reads[this.readIdx];
+    // QB_FOOTWORK bit 8: a grass read is decided by the plant, with no dwell: not thrown by then, he is on to his next read.
+    if (FW_GRASS && this.readIdx === 0 && this.isGrass(read) && this.setAt >= 0 && t - this.setAt > sim.dt + 1e-9 && this.reads.length > 1) {
+      this.readIdx = 1; this.readStart = t; read = this.reads[1];
+    }
     if (FW_STEPS) this.footwork(a, sim, read);
     // QB_EYES: his eyes are on the man he is gating a throw to; otherwise on his read (from when they got there).
     if (QB_EYES) {
@@ -1662,6 +1681,8 @@ export class QBPass implements Behavior {
       const lo = heldPoint(k.low), hi = heldPoint(k.high);
       return { x: (lo.x + hi.x) / 2, y: (lo.y + hi.y) / 2 };
     }
+    // QB_FOOTWORK bit 8: in the drop, his eyes on his grass read's landing area ("look at the area he is going").
+    if (FW_GRASS && this.phase === 'drop' && this.readIdx === 0 && this.isGrass(this.reads[0])) return this.grassLanding(sim, this.reads[0]);
     const tri = this.plan?.triangle;
     if (tri && !this.triDone && this.phase === 'set') {
       const P = tri.map(heldPoint);
@@ -1729,6 +1750,33 @@ export class QBPass implements Behavior {
    * margin (a judgment draw, his own, scaled by 1 - awareness, in yards). Once read it holds: the release is decided.
    * Whether anyone over the top can reach the throw is the window's (the aim point), not this cue's. */
   private vertRead = new Set<Agent>();
+  /** QB_FOOTWORK bit 8: whether a read is his grass read (read 1, a route into space) and where its landing area is. */
+  private isGrass(r: Agent | undefined): boolean {
+    if (!FW_GRASS || !r || this.reads[0] !== r) return false;
+    const id = r.behavior instanceof RouteRunner ? r.behavior.route.id : null;
+    return !!id && GRASS_ROUTES.has(id);
+  }
+  private grassLanding(sim: PlaySim, r: Agent): Vec2 {
+    return this.receiverForecasts.get(r)?.predict(sim.t, GRASS_AHEAD) ?? this.has(sim, r);
+  }
+  /** Readable: out of the collision, and nobody he sees between the man and the landing area (beaten or under him). */
+  private grassRead = new Set<Agent>();
+  private grassReadable(sim: PlaySim, r: Agent): boolean {
+    if (this.grassRead.has(r)) return true;
+    const a = sim.qb, dir = sim.attackDir(a.team), p = sim.see(a, r), land = this.grassLanding(sim, r);
+    if ((p.pos.x - sim.los) * dir < 2 || Math.hypot(p.vel.x, p.vel.y) < 4) return false;
+    const ux = land.x - p.pos.x, uy = land.y - p.pos.y, L = Math.hypot(ux, uy) || 1;
+    const noise = a.mind.judgment(`grass:${r.slot}`) * 0.6 * (1 - a.r('awareness'));
+    for (const d of sim.defense) {
+      const e = this.mind.estimate(d).pos, along = ((e.x - p.pos.x) * ux + (e.y - p.pos.y) * uy) / L;
+      const across = Math.abs((e.x - p.pos.x) * uy - (e.y - p.pos.y) * ux) / L;
+      // A man shallower than the receiver is under the throw: the ball goes over him (the seam over the hook defender).
+      if ((e.x - p.pos.x) * dir < -0.5) continue;
+      if (along > 0.5 && along < L + 2 && across < 2 + noise) return false;
+    }
+    this.grassRead.add(r);
+    return true;
+  }
   private vertReadable(sim: PlaySim, r: Agent): boolean {
     if (this.vertRead.has(r)) return true;
     const a = sim.qb, dir = sim.attackDir(a.team), p = sim.see(a, r);
@@ -1808,6 +1856,8 @@ export class QBPass implements Behavior {
     if (!rr) return r.behavior.kind === 'route';
     // QB_FOOTWORK bit 1: a vertical is readable when its release is decided, not at 12 yd.
     if (FW_STEPS && this.receiverForecasts.get(r)?.prior.declRule === 'vertical' && this.vertReadable(sim, r)) return true;
+    // QB_FOOTWORK bit 8: a grass read is ready when it is readable, not at its break.
+    if (this.isGrass(r)) return this.grassReadable(sim, r);
     // A slow screen is thrown once the receiver has settled behind his blockers.
     if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
       // Thrown on anticipation as he turns for the ball: NFL slow screens leave
