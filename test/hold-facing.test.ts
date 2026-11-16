@@ -27,6 +27,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function turn(flag: string, openHands = '0', seed = 1957, slot = 'DT_S') {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
   vi.stubEnv('MIRROR_SCATTER', '0'); // engine-72: fixture recorded on the old alignment scatter; Flex to re-record with MIRROR_SCATTER on
   vi.stubEnv('HOLD_FACING', flag);
   // The reproducer's play: the DT makes the hold still engaged with the C, whose hands are on him. OPEN_HANDS

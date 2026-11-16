@@ -12,6 +12,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function reversals(flag: string, hold = false) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+  for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Flex to re-record with it on
   vi.stubEnv('RELEASE_COMMIT', flag);
   if (hold) { vi.stubEnv('CRAFT_HOLD', '1'); vi.stubEnv('CRAFT_EXIT', '1'); }
   const { PlaySim } = await import('../src/sim/playsim.js');

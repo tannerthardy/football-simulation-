@@ -5,6 +5,7 @@
  * men are +0.69 yd outside their snap spot at 1.0 s; ours stepped inside.
  * Native outside-zone snaps, both flips: the end on the side the play goes. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.EDGE_SET = '0'; process.env.END_KEY = '0'; }); // engine-73: fixture recorded before EDGE_SET, END_KEY; Defense to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

@@ -2,6 +2,7 @@
  * the back he sees showing to the flat on his side; with no back there, nothing changes; a vertical No. 2 is still
  * walled and carried first. Receivers are scripted; the QB holds the ball. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+vi.hoisted(() => { process.env.CURL_SINK = '0'; process.env.ZONE_HOLD = '0'; }); // engine-73: fixture recorded before CURL_SINK, ZONE_HOLD; Defense to re-record with it on
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

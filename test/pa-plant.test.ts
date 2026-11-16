@@ -13,6 +13,7 @@ describe('play action decided on the plant', () => {
   it('pa_post_dig: the FS key pair is read 1, decided on the plant; plantAt is the set out of the fake', async () => {
     vi.resetModules();
     for (const k of stackOn) vi.stubEnv(k, '1');
+    for (const k of ['QB_KEY_READ', 'QB_EDGE_THREAT', 'QB_HEAD', 'QB_CALL_ROUTES', 'QB_FOOTWORK', 'CONCEPT_DROPS', 'CONCEPT_FIT', 'BACK_AS_THREE', 'PA_TABLES']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; QB to re-record with it on
     const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
     const { installedPlan } = await import('../src/playbook/read-compiler/runtime.js');
     const pa = installedPlan(PASS_BY_ID.pa_post_dig, 'ace_12')!;

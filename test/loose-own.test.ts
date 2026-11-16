@@ -15,6 +15,7 @@ const PLAYS = [['iz_strong', 3], ['power', 7], ['oz_strong', 11], ['iz_weak', 19
 
 async function heads(on: boolean): Promise<{ toCaller: number; toFumbler: number }> {
   for (const f of stackOn) vi.stubEnv(f, '1');
+  for (const k of ['PA_HINGE', 'EDGE_SET', 'POCKET_DROP', 'POWER_AIM', 'END_KEY']) vi.stubEnv(k, '0'); // engine-73: scenes recorded before this group of the engine-73 landing; Defense to re-record with it on
   vi.stubEnv('DIR_CAP', '0'); // as loose-seen.test.ts: these scenes were found before the monotone direction cap
   vi.stubEnv('LOOSE_SEEN', '1');
   vi.stubEnv('LOOSE_OWN', on ? '1' : '0');
