@@ -54,3 +54,12 @@ What the shadow also shows, and is not mine to change here: a man hidden longer 
 ## Not touched
 
 `see()`'s own `sightSamples` and `sightMemory` (the observer's own looking history, which sets his delay and his acceleration estimate) are state written by the consumer's own act of looking; an extra `see()` call would perturb them, as an extra glance would. They are by design, not part of this finding.
+
+## On engine-70 (develop fb870814)
+
+Merged develop into the branch (one conflict: the flag count line in `docs/FLAGS.md`, now 419 flags, 92 off). engine-70 added one new perception-record site, `COMPILE_PICTURE`'s fill of the record window in `read-compiler/features.ts`. Under SIGHT_PURE a record made without the sight-history step would leave those ticks unknown, so `PlaySim.recordPerception()` is now public and `features.ts` and the two lab scenario helpers (`lab/scenarios.ts`, `lab/motion-contact.ts`) call it. With the flag off it is the same `perception.record` call as before. Other lab scripts under `scripts/` still call `perception.record` directly; they do not run SIGHT_PURE.
+
+- Flag off is byte-identical to develop fb870814: 80 of 80 plays (seed11-run and seed7, first 40 each; outcome, yards and final-position hash).
+- Flag on, extra sight questions before every tick: 0 of 80 plays move. Flag off: 76 of 80 move (the finding the flag repairs).
+- `test/sight.test.ts`, `test/sight-pure.test.ts` (on engine defaults) and `test/compile-picture.test.ts` (flag off, and SIGHT_PURE=1 with COMPILE_PICTURE=1) pass; typecheck clean. `test/baseline-runner.test.ts` fails here only on the Node 22.22.0 vs `.nvmrc` 22.23.3 check.
+- Also committed: `scripts/diag/effective-mass/stale-reads.mts` (who reads a picture older than a second; for the stale-picture report).

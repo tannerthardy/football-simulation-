@@ -928,8 +928,8 @@ export class PlaySim {
   /** SIGHT_PURE: the sight history, kept every tick for every pair and view (not when someone asks), so what a player saw at a past tick and what he last saw
    * are functions of the record and his own delay, not of who asked first. Per pair and view: the record ticks (stamps) at which he had the man in sight, newest
    * last, for the ticks the perception record still holds; and the picture at the newest sighting that left the record (the one he falls back on, ageing). */
-  private recordPerception(): void {
-    this.perception.record(this.agents, this.carrier?.idx ?? null);
+  recordPerception(carrierIdx: number | null = this.carrier?.idx ?? null): void {
+    this.perception.record(this.agents, carrierIdx);
     if (SIGHT_PURE) this.recordSightHistory();
   }
   private sightHist = new Map<number, { target: number; ticks: number[]; older?: { pic: Perceived; stamp: number } }>();
