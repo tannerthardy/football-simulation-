@@ -355,6 +355,9 @@ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
  * installed count is unchanged, and so is a screen's receiver (his release is the called count). A slow screen's "he has settled" is likewise read from where the quarterback has him,
  * not from the receiver's own flag and true position. Receivers with no installed picture are unchanged. */
 const QB_SEEN_OUT = process.env.QB_SEEN_OUT !== '0';
+/** QB_CALL_ROUTES (information rule, 2026-11-16): who is on a route and which route is his call (the play's install,
+ * known from the huddle; a check-release man once his picture has him out), never the receiver's live behavior object. */
+const QB_CALL_ROUTES = process.env.QB_CALL_ROUTES === '1';
 /** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
  * state use where he has them: his forecast of the man, else his delayed picture. That is the side a receiver is on
  * (look-off decoy, hot side), the verticals' stems for the peek, whether a man is in his clear look, the fallback
@@ -823,7 +826,8 @@ export class QBPass implements Behavior {
       believed += r.p;
     }
     const coord = sim.offense.map((o) => (o.behavior as unknown as { coord?: { protectors: Agent[]; assigned?: Map<Agent, Agent | null> } }).coord).find((c) => c?.protectors);
-    const blockers = coord ? coord.protectors.length : 5;
+    // QB_CALL_ROUTES: his protection count is the call's, taken once (the snap), not the live protector list.
+    const blockers = QB_CALL_ROUTES ? (this.callBlockers ??= coord ? coord.protectors.length : 5) : coord ? coord.protectors.length : 5;
     this.rushExcess = lineMen + believed - blockers;
     if (BLITZ_SKILL) {
       // The call he knows: who has a blocker at the snap (read once, as his protection call; not the rep's later truth).
@@ -886,7 +890,7 @@ export class QBPass implements Behavior {
     const seen = new Set<Agent>();
     for (const ref of refs) {
       const r = this.receiverFor(sim, ref);
-      if (r?.behavior.passOption && !seen.has(r)) {
+      if (r && (QB_CALL_ROUTES ? this.receiverForecasts.has(r) : r.behavior.passOption) && !seen.has(r)) {
         this.reads.push(r);
         seen.add(r);
       }
@@ -894,7 +898,7 @@ export class QBPass implements Behavior {
     // Anyone else running a route is a late option (not on a screen: the
     // other routes clear coverage).
     if (this.concept.family !== 'screen') for (const o of sim.offense) {
-      if (!seen.has(o) && o.behavior instanceof RouteRunner) {
+      if (!seen.has(o) && (QB_CALL_ROUTES ? this.receiverForecasts.has(o) : o.behavior instanceof RouteRunner)) {
         this.reads.push(o);
         seen.add(o);
       }
@@ -908,7 +912,7 @@ export class QBPass implements Behavior {
     if (!p) return false;
     const ag = (ref: ReceiverRef | null) => {
       const r = ref ? this.receiverFor(sim, ref) : null;
-      return r?.behavior.passOption ? r : null;
+      return r && (QB_CALL_ROUTES ? this.receiverForecasts.has(r) : r.behavior.passOption) ? r : null;
     };
     const seen = new Set<Agent>(), reads: Agent[] = [];
     const push = (r: Agent | null) => { if (r && !seen.has(r)) { reads.push(r); seen.add(r); } };
@@ -916,7 +920,7 @@ export class QBPass implements Behavior {
     push(alert);
     for (const ref of p.order) push(ag(ref));
     const outlet = ag(p.outlet);
-    for (const o of sim.offense) if (o !== outlet && o.behavior instanceof RouteRunner) push(o);
+    for (const o of sim.offense) if (o !== outlet && (QB_CALL_ROUTES ? this.receiverForecasts.has(o) : o.behavior instanceof RouteRunner)) push(o);
     push(outlet);
     if (!reads.length) return false;
     this.reads = reads;
@@ -1359,7 +1363,7 @@ export class QBPass implements Behavior {
       const side = top ? Math.sign(this.felt(a, sim, top).pos.y - sim.ballY) || 1 : 1;
       const bt = (r: Agent) => this.breakClock(r);
       const quick = this.reads.filter((r) => r.slot !== 'RB' && Math.sign(this.has(sim, r).y - sim.ballY) === side && bt(r) <= 1.6).sort((x, y) => bt(x) - bt(y));
-      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : r.behavior instanceof RouteRunner)) ?? null;
+      const target = quick[0] ?? this.reads.find((r) => r.slot === 'RB' && (QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : this.onRoute(r))) ?? null;
       this.hot = { target, at: t };
       this.hotDef = top; // diagnostic (no effect): the man the hot was called on
       const k = target ? this.reads.indexOf(target) : -1;
@@ -1656,7 +1660,7 @@ export class QBPass implements Behavior {
     const last = this.reads.length - 1;
     if (this.readIdx >= last - 1 || last < 1) return null;
     const outlet = this.reads[last];
-    if (!outlet || (QB_SEEN_OUT && this.checkRelease(outlet) ? !this.seenOut(outlet) : outlet.behavior.kind === 'pass-pro') || !this.ready(outlet, sim)) return null;
+    if (!outlet || (QB_SEEN_OUT && this.checkRelease(outlet) ? !this.seenOut(outlet) : QB_CALL_ROUTES ? !this.onRoute(outlet) : outlet.behavior.kind === 'pass-pro') || !this.ready(outlet, sim)) return null;
     const ev = this.evaluate(a, sim, outlet, u);
     return ev && ev.P >= need && ev.intRisk <= risk ? ev : null;
   }
@@ -1704,6 +1708,14 @@ export class QBPass implements Behavior {
     // A screen's receiver leaves his block on the called count: that is the call, which he knows, not a check.
     if (this.concept.family === 'screen' || this.concept.screen) return false;
     return this.receiverForecasts.get(r)?.prior.startDelay === null;
+  }
+  /** Whether a man is on a route, as he knows it: QB_CALL_ROUTES, his call (installed, and out in his picture if he is a
+   * check-release); off, the receiver's live behavior (a leak: it tells him who converted to a block or released). */
+  private callBlockers: number | null = null;
+  private onRoute(r: Agent): boolean {
+    if (!QB_CALL_ROUTES) return r.behavior instanceof RouteRunner;
+    if (!this.receiverForecasts.has(r)) return false;
+    return QB_SEEN_OUT && this.checkRelease(r) ? this.seenOut(r) : true;
   }
 
   /** QB_FOOTWORK bit 1: the next read in his order. */
@@ -1753,7 +1765,7 @@ export class QBPass implements Behavior {
   /** QB_FOOTWORK bit 8: whether a read is his grass read (read 1, a route into space) and where its landing area is. */
   private isGrass(r: Agent | undefined): boolean {
     if (!FW_GRASS || !r || this.reads[0] !== r) return false;
-    const id = r.behavior instanceof RouteRunner ? r.behavior.route.id : null;
+    const id = this.receiverForecasts.get(r)?.prior.routeId ?? null;
     return !!id && GRASS_ROUTES.has(id);
   }
   private grassLanding(sim: PlaySim, r: Agent): Vec2 {
@@ -1841,7 +1853,8 @@ export class QBPass implements Behavior {
   /** When a receiver's break comes, for ordering quick answers: the installed time; 9 for a man not out on a route. */
   private breakClock(r: Agent): number {
     if (QB_SEEN_OUT && this.checkRelease(r)) return this.seenOut(r) ? this.receiverForecasts.get(r)!.breakAt() ?? 0 : 9;
-    if (DECLARED_BREAK) return r.behavior instanceof RouteRunner ? (this.planBreakAt(r) ?? this.receiverForecasts.get(r)?.breakAt() ?? 9) - this.snapAt : 9;
+    if (DECLARED_BREAK) return this.onRoute(r) ? (this.planBreakAt(r) ?? this.receiverForecasts.get(r)?.breakAt() ?? 9) - this.snapAt : 9;
+    if (QB_CALL_ROUTES) return this.onRoute(r) ? (this.receiverForecasts.get(r)?.breakAt() ?? this.snapAt + 9) - this.snapAt : 9;
     return r.behavior instanceof RouteRunner ? r.behavior.breakTime : 9;
   }
 
@@ -1852,23 +1865,26 @@ export class QBPass implements Behavior {
       const brk = this.receiverForecasts.get(r)!.breakAt();
       return brk === null || sim.t + this.windup(sim.qb) >= brk - 0.3 * sim.qb.r('anticipation');
     }
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
-    if (!rr) return r.behavior.kind === 'route';
+    // QB_CALL_ROUTES: the route as called (his install), not the receiver's live behavior.
+    const rr = QB_CALL_ROUTES ? null : r.behavior instanceof RouteRunner ? r.behavior : null;
+    const called = this.receiverForecasts.get(r)?.prior;
+    if (QB_CALL_ROUTES ? !this.onRoute(r) : !rr) return QB_CALL_ROUTES ? false : r.behavior.kind === 'route';
+    const routeEnd = rr ? rr.route.end : called!.end, routePath = rr ? rr.path : called!.path;
     // QB_FOOTWORK bit 1: a vertical is readable when its release is decided, not at 12 yd.
     if (FW_STEPS && this.receiverForecasts.get(r)?.prior.declRule === 'vertical' && this.vertReadable(sim, r)) return true;
     // QB_FOOTWORK bit 8: a grass read is ready when it is readable, not at its break.
     if (this.isGrass(r)) return this.grassReadable(sim, r);
     // A slow screen is thrown once the receiver has settled behind his blockers.
-    if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
+    if (this.concept.family === 'screen' && routeEnd === 'settle' && this.concept.screen?.tempo === 'slow') {
       // Thrown on anticipation as he turns for the ball: NFL slow screens leave
       // the hand with the receiver still ~2.3-2.9 yd from where he catches it
       // (BDB 2025, screen_reference), lofted over the rush he let through.
-      const last = rr.path[rr.path.length - 1]?.p;
+      const last = routePath[routePath.length - 1]?.p;
       if (QB_SEEN_OUT) {
         const at = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? sim.see(sim.qb, r).pos;
         return !!last && Math.hypot(at.x - last.x, at.y - last.y) < 3.5;
       }
-      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
+      return !!rr?.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
     }
     // A quick screen after a sell is thrown to its spot: once the ball,
     // floated if need be, can get there with the receiver.
@@ -1891,7 +1907,7 @@ export class QBPass implements Behavior {
       const at = brk ?? this.planBreakAt(r)!;
       return sim.t + this.windup(sim.qb) >= at - (rd ? this.leadFor(sim.qb, rd.throwFamily, rd.anchorLead) : 0.3 * antic);
     }
-    return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
+    return sim.t + this.windup(sim.qb) >= (brk ?? rr?.breakTime ?? 9) - 0.3 * antic;
   }
 
   /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
