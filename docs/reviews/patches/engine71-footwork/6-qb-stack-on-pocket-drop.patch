@@ -51,10 +51,10 @@ index 4d9ce17b..790dd307 100644
  | `QB_BELIEVED_DEF` | on | promoted 2026-11-14 (engine-63; `=0` restores); was experimental (QB lane, information rule, 2026-11-13; staged test `test/qb-believed-def.test.ts`; game rows flat) | quarterback | `src/sim/behaviors/qb.ts` (`believe`, `seenTied`, in `window`, `screenDead`, `updateRush`), `src/sim/believed.ts` | set at first review. In pricing a throw he no longer reads each defender's true physical profile and exact ball-skills rating, or the sim's engagement record: body and ball skills are the position's typical values corrected toward the man's own by how well he knows the opponent (awareness and experience), fixed for the play; tied up is an offensive body within arm's length of the defender in his pictures. Decided by its own row (his priced chance against outcomes by defender quality, completion, INT); a loss is repaired by preparation as a mechanism, not by the leak |
 diff --git a/docs/reviews/2026-11-15-drop-design-stage1.md b/docs/reviews/2026-11-15-drop-design-stage1.md
 new file mode 100644
-index 00000000..75e801f1
+index 00000000..0691ac9c
 --- /dev/null
 +++ b/docs/reviews/2026-11-15-drop-design-stage1.md
-@@ -0,0 +1,690 @@
+@@ -0,0 +1,701 @@
 +# Drop design, stage 1: eyes and feet coupled perfectly (design, not built)
 +
 +The user's direction (2026-11-15): first make the coupling perfect, see what that moves, and only then add the error
@@ -745,9 +745,20 @@ index 00000000..75e801f1
 +SET_SPOT_TACKLE + POCKET_LEVEL): QB depth p50 at 2.0 / 2.5 / 3.0 / 3.5 s off 7.82 / 7.58 / 6.37 / 5.50 yd, on 7.82 /
 +7.90 / 7.90 / 7.86 (NFL 7.4 / 7.9 / 8.0 / 7.7); forward 2.0-3.5 s off +1.81 yd, on -0.23. Long holds 211 -> 194. The
 +short-hold gate (sacks by edge rushers, staged dropbacks off vs on) follows.
++
++QB_EDGE_THREAT short-hold gate (staged dropbacks, all 16 staged concepts, 3072 plays, SET_SPOT + SET_SPOT_TACKLE +
++POCKET_LEVEL, off vs on): sacks 180 -> 109 (by edge rushers 172 -> 109; 113 gone, 42 new: DE_W 32, DE_S 10, roster 19
++in 21 of them), completions 2016 / 2017, yd 7.90 / 7.88, interceptions 28 -> 43 (25 new, 10 gone: mostly checkdowns
++to the back in the flat thrown from his set depth, about 9 yd, where off he had climbed to about 5.5 yd; a few play
++shapes repeated across coverages, some identical throws whose rolls diverged). The old step-up walked into the edge
++rushers' paths more often than it escaped them; the escape from a real edge win stays, with roster 19's weak edge the
++cost.
++
++Corner grass reads: readable is the release won only (`declRule` not vertical); the deep half defender over a corner
++is the window's timing question. Mesh unchanged (20 corners at 2.42 s, 9.4 yd); smash as off (its corner is keyed).
 diff --git a/scripts/diag/escape/drop-staged.ts b/scripts/diag/escape/drop-staged.ts
 new file mode 100644
-index 00000000..cca55cf8
+index 00000000..ab41c844
 --- /dev/null
 +++ b/scripts/diag/escape/drop-staged.ts
 @@ -0,0 +1,36 @@
@@ -772,7 +783,7 @@ index 00000000..cca55cf8
 +    const snap = new Map<number, any>(sim.defense.map((d: any) => [d.idx, { slot: d.slot, pos: d.player.position, wide: +Math.abs(d.pos.y - sim.ballY).toFixed(1) }]));
 +    sim.throwBall = (p: any, target: any, v0: any, intended: any, arrivalT: number, away = false, ...rest: any[]) => {
 +      if (p === sim.qb && !thr) thr = { t: +sim.t.toFixed(2), away, route: target?.behavior?.route?.id ?? null, depth: target ? +((target.pos.x - sim.los) * dir).toFixed(1) : null, aim: intended ? +((intended.x - sim.los) * dir).toFixed(1) : null,
-+        qb: +((p.pos.x - sim.los) * dir).toFixed(1), qbY: +((p.pos.y - sim.ballY) * ss).toFixed(2), readIdx: p.behavior?.readIdx ?? null, P: p.behavior?.throwRec?.P ?? null,
++        qb: +((p.pos.x - sim.los) * dir).toFixed(1), rec: (() => { const r = p.behavior?.throwRec; return r ? { iR: +r.intRisk.toFixed(3), P: +r.P.toFixed(3), T: r.T !== undefined ? +r.T.toFixed(2) : null, decQb: r.at ? +((r.at.x - sim.los) * dir).toFixed(1) : null, aimD: r.aim ? +Math.hypot(r.aim.x - p.pos.x, r.aim.y - p.pos.y).toFixed(1) : null, decAimD: r.at && r.aim ? +Math.hypot(r.aim.x - r.at.x, r.aim.y - r.at.y).toFixed(1) : null } : null; })(), qbY: +((p.pos.y - sim.ballY) * ss).toFixed(2), readIdx: p.behavior?.readIdx ?? null, P: p.behavior?.throwRec?.P ?? null,
 +        sep: target ? +Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))).toFixed(1) : null };
 +      return tb(p, target, v0, intended, arrivalT, away, ...rest);
 +    };
@@ -882,6 +893,30 @@ index 00000000..24fdd088
 +  return rows;
 +}
 +if (process.argv[1]?.endsWith('call-routes-panel.ts')) for (const r of panelRows()) console.log(JSON.stringify(r));
+diff --git a/scripts/diag/eyes/feel-facing.ts b/scripts/diag/eyes/feel-facing.ts
+new file mode 100644
+index 00000000..272ae12b
+--- /dev/null
++++ b/scripts/diag/eyes/feel-facing.ts
+@@ -0,0 +1,18 @@
++// CONCEPT_DROPS=1 QB_FOOTWORK=1|3 node --import tsx scripts/diag/eyes/feel-facing.ts concept coverage roster seed rusherSlot
++// Integration (2026-11-16), bit 2's open check: his feel's blind side is measured off his body's facing (offFacing,
++// 1.8 rad). With bit 2 his shoulders hold on a step while his head moves. Each tick from the snap: the rusher's bearing
++// off his chest and off his head (a.head, where his eyes are), whether each puts him behind (> 1.8 rad), and the
++// rusher's distance. Passive.
++import { PlaySim } from '../../../src/sim/playsim.js';
++import { nativeTraceSetup } from '../command-trace.js';
++const [concept, coverage, roster, seed, slot] = process.argv.slice(2);
++const sim: any = new PlaySim(nativeTraceSetup({ coverage, concept, seed: +seed, roster: +roster, formation: 'gun_doubles_11', flip: false }));
++const d = sim.defense.find((x: any) => x.slot === slot), off = (ang: number) => Math.abs(Math.atan2(Math.sin(ang), Math.cos(ang)));
++let n = 0, chest = 0, head = 0, both = 0;
++for (let i = 0; i < 400 && sim.phase === 'live' && sim.carrier === sim.qb; i++) {
++  sim.tick(); const q = sim.qb; if (q.behavior?.kind !== 'qb-pass' || sim.t < 0.6) continue;
++  const bear = Math.atan2(d.pos.y - q.pos.y, d.pos.x - q.pos.x), c = off(bear - q.body.facing), h = off(bear - (q.head ?? q.body.facing));
++  n++; if (c > 1.8) chest++; if (h > 1.8) head++; if (c > 1.8 && h > 1.8) both++;
++  if (i % 4 === 0) console.log(sim.t.toFixed(2), q.behavior.phase, 'chest', (c * 57.3).toFixed(0), 'head', (h * 57.3).toFixed(0), 'dist', Math.hypot(d.pos.x - q.pos.x, d.pos.y - q.pos.y).toFixed(1));
++}
++console.log(`ticks ${n}: behind chest ${chest}, behind head ${head}, behind both ${both}; end ${sim.t.toFixed(2)} ${sim.events.some((e: any) => e.type === 'sack') ? 'sack' : ''}`);
 diff --git a/scripts/diag/eyes/grass-plant.ts b/scripts/diag/eyes/grass-plant.ts
 new file mode 100644
 index 00000000..5439de70
@@ -993,7 +1028,7 @@ index 00000000..0f3ce473
 +  if (row) console.log(JSON.stringify({ ...row, decSplit, cmp: !!res.stats?.completed, int: has('interception'), fate }));
 +}
 diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
-index 2d990db1..159c661d 100644
+index 2d990db1..eaad90cf 100644
 --- a/src/sim/behaviors/qb.ts
 +++ b/src/sim/behaviors/qb.ts
 @@ -355,6 +355,9 @@ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
@@ -1307,7 +1342,18 @@ index 2d990db1..159c661d 100644
    }
  
    /** SCREEN_QB: whether the last touch read found a rusher in his throwing lane. */
-@@ -1938,8 +2059,14 @@ export class QBPass implements Behavior {
+@@ -1933,13 +2054,24 @@ export class QBPass implements Behavior {
+   }
+   /** A point's bearing off his facing, wrapped to [0, pi]. */
+   private offFacing(a: Agent, at: Vec2): number {
+-    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - a.body.facing;
++    // QB_FOOTWORK bit 2: his blind side is behind where his eyes are (his head), not his chest: with bit 2 his shoulders
++    // hold side-on in the crossover and on a step while his head moves, and the backside rusher sat 111-125 deg off his
++    // chest, felt as behind him, while his head was 36-40 deg from him (scripts/diag/eyes/feel-facing.ts, mesh cover 2
++    // roster 11). Off, his chest (it follows his look).
++    const look = FW_HIPS && a.head !== null && Number.isFinite(a.head) ? a.head : a.body.facing;
++    const raw = Math.atan2(at.y - a.pos.y, at.x - a.pos.x) - look;
+     return Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
    }
    /** Behind his shoulder: the single 1.8 rad edge (the channel choice; the two channels agree at it). */
    private isBehind(a: Agent, _d: Agent, at: Vec2): boolean { return this.offFacing(a, at) > 1.8; }
@@ -1324,7 +1370,16 @@ index 2d990db1..159c661d 100644
    private feltLive(a: Agent, sim: PlaySim, d: Agent, plain?: Perceived): Perceived {
      // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
      // beyond 1.8 rad (about 103 deg) either side.
-@@ -2760,6 +2887,8 @@ export class QBPass implements Behavior {
+@@ -2398,7 +2530,7 @@ export class QBPass implements Behavior {
+     this.look = null;
+     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
+     const bar = this.barNow?.t === sim.t ? this.barNow : null;
+-    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null,
++    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null, at: { x: a.pos.x, y: a.pos.y }, aim: { x: ev.point.x, y: ev.point.y }, T: ev.T,
+       u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
+       clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
+     this.pending = ev;
+@@ -2760,6 +2892,8 @@ export class QBPass implements Behavior {
      return { vel: { x: dir.x * a.profile.vmax * 0.7 * elus, y: dir.y * a.profile.vmax * 0.7 * elus }, facing: 0, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
    }
  
@@ -1333,7 +1388,7 @@ index 2d990db1..159c661d 100644
    private pocketMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
      // Hold the set point, sliding away from nearby rushers. When an edge rusher
      // gets to his depth outside him — the tackle riding him past — he climbs
-@@ -2770,15 +2899,22 @@ export class QBPass implements Behavior {
+@@ -2770,15 +2904,22 @@ export class QBPass implements Behavior {
      let fx = 0;
      let fy = 0;
      let edge = false;
@@ -1358,7 +1413,7 @@ index 2d990db1..159c661d 100644
        if (dd > 3.5) continue;
        const w = (3.5 - dd) / 3.5;
        fx += (dx / dd) * w;
-@@ -2786,6 +2922,19 @@ export class QBPass implements Behavior {
+@@ -2786,6 +2927,19 @@ export class QBPass implements Behavior {
      }
      // QB_POCKET: the nearest body he feels inside POCKET_NEAR decides. At the edge: the climb below, unchanged. In
      // front or inside: a slide (returned here while it lasts).
