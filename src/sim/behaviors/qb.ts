@@ -519,6 +519,14 @@ const EDGE_ROOM_IN = 2.0, EDGE_ROOM_OUT = 1.4; // yd ahead (chosen)
  * own fields (grass reads, landing areas) are taken when it hands them over; until then the grass routes and the landing
  * area are his own (installed route families; his forecast of the man at the ball's arrival: his wind-up plus its flight). Read with bits 1+2. */
 const FW_GRASS = (QB_FOOTWORK & 8) !== 0;
+/** QB_FOOTWORK bit 16 (with the fake held to the measured mesh, called-drop.ts plannedFakeEnd): the play-action read
+ * decided on the plant out of the fake, as taught ("pull the ball out from the ball-carrier and snap his head around to
+ * identify his first read"; not there, he "operates as if it is a passing play": Bleacher Report, via Rules). Read 1 is
+ * decided on the plant: a keyed play action's key is read at the plan's plant (`plan.plantAt`, Rules #819), not the
+ * dropback's cue, and there is no look-off before read 1; read 1 is thrown on its own ready (the hitch after the plant),
+ * never skipped for being unready at the plant (the first build did, and threw read 1 on the plant 0 of 424 times). The
+ * fake alone (a dropback's read after a 2.3 s plant) took staged PA sacks 14.8 -> 27.1%; the pair is carded together. */
+const FW_PA_READ = (QB_FOOTWORK & 16) !== 0;
 /** QB_FOOTWORK bit 8: routes thrown before their break into space (installed route ids). Chosen; GRASS_READ's plan
  * fields replace it. */
 // The set agreed with Rules from the sources (2026-11-16): go and fade (Gonzalez; Marinelli); the corner as read 1 and
@@ -989,7 +997,7 @@ export class QBPass implements Behavior {
       }
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
-    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? (QB_KEY_READ ? this.keyManShell(sim, p.key.role, low, high) : this.keyMan(sim, p.key.role, low, high)) : null,
+    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: FW_PA_READ && this.concept.family === 'playaction' && typeof (p as { plantAt?: number }).plantAt === 'number' ? (p as { plantAt?: number }).plantAt! : p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? (QB_KEY_READ ? this.keyManShell(sim, p.key.role, low, high) : this.keyMan(sim, p.key.role, low, high)) : null,
       ...(QB_KEY_READ ? { sits: ag(((p.key as { sits?: ReceiverRef | null }).sits) ?? null) } : {}) } : null,
       triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
@@ -1462,7 +1470,7 @@ export class QBPass implements Behavior {
       // QB_LOOKOFF_RHYTHM: not when read 1 will be a throw before the look-off would end (judged as his readiness test does).
       const r1SoonReady = QB_LOOKOFF_RHYTHM && !!this.reads[0] && (this.ready(this.reads[0], sim) || ((this.receiverForecasts.get(this.reads[0])?.breakAt() ?? Infinity) - this.windup(a) <= t + 0.35));
       // QB_FOOTWORK bit 8: not before a grass read; his eyes were on its landing area through the drop and it is decided now.
-      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && !this.isGrass(this.reads[0]) && sim.dice('qb', a).chance(p)) {
+      if (this.concept.family !== 'quick' && this.reads.length > 1 && !r1SoonReady && !this.isGrass(this.reads[0]) && !this.isPaPlant(this.reads[0]) && sim.dice('qb', a).chance(p)) {
         const side = Math.sign(this.has(sim, this.reads[0]).y - sim.ballY);
         const decoy = this.reads.find((r) => Math.sign(this.has(sim, r).y - sim.ballY) !== side);
         if (decoy) {
@@ -1520,7 +1528,7 @@ export class QBPass implements Behavior {
     let read = this.reads[this.readIdx];
     // QB_FOOTWORK bit 8: a grass read is decided by its step (the plant for read 1), with no dwell: not thrown by then,
     // he is on to his next read.
-    if (FW_GRASS && this.isGrass(read) && this.setAt >= 0 && t - this.grassDue(read) > sim.dt + 1e-9 && this.readIdx < this.reads.length - 1) {
+    if (FW_GRASS && this.isGrass(read) && t - this.grassDue(read) > sim.dt + 1e-9 && this.setAt >= 0 && this.readIdx < this.reads.length - 1) {
       this.readIdx++; this.readStart = t; read = this.reads[this.readIdx];
     }
     if (FW_STEPS) this.footwork(a, sim, read);
@@ -1921,6 +1929,10 @@ export class QBPass implements Behavior {
   private vertRead = new Set<Agent>();
   /** QB_FOOTWORK bit 8: whether a read is his grass read (read 1, a route into space) and where its landing area is. */
   private grassPlan = new Map<Agent, Vec2>();
+  /** QB_FOOTWORK bit 16: read 1 of a play-action concept, decided on the plant out of the fake (no look-off before it). */
+  private isPaPlant(r: Agent | undefined): boolean {
+    return FW_PA_READ && !!r && this.concept.family === 'playaction' && this.readIdx === 0 && this.reads[0] === r;
+  }
   private isGrass(r: Agent | undefined): boolean {
     if (!FW_GRASS || !r) return false;
     // Half of a key is thrown off the key defender, not the grass (the agreed set; Rules' VERTS_KEYS keys the trips
