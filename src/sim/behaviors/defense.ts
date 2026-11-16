@@ -813,6 +813,26 @@ function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: numbe
  * 3.3 -> 4.7 yd/s under a 6.0-6.5 yd/s climber, torso 33 -> 62 deg off the QB, turned at most 11%. Under HEAD the head
  * and its cone follow the look; without HEAD the trunk carries it. */
 export const CARRY_POSTURE = process.env.CARRY_POSTURE === '1';
+/** CARRY_TURN (experimental, off; CARRY_TURN=1 turns it on; needs CARRY_POSTURE; docs/reviews/2026-11-16-carry-posture-3c.md):
+ * CUSHION_BREAK's turn opens him; it does not turn him. With the cushion broken he runs with the climber hips on his
+ * line of travel and his look back on the QB within his head's reach (neck plus trunk), the posture DIR_CAP and the
+ * trunk price charge for. He turns fully (look off the QB, to his receiver and the ball) on a seen event: the receiver
+ * even with or past him in his own picture (signed cushion at or under 0; back above +0.5 yd to undo), or his seen
+ * throw toward his receiver (playsThrow, the cue interface). The full turn holds until both have cleared. */
+export const CARRY_TURN = process.env.CARRY_TURN === '1';
+const CARRY_TURN_EXIT = 0.5;
+/** CARRY_TURN: the open-and-run posture on the turned command, or null when a seen event has turned him fully. */
+function carryOpenRun(a: Agent, sim: PlaySim, cmd: MoveCommand, R: Agent, seenRec: Vec2, state: { full: Agent | null }): MoveCommand | null {
+  const cushion = a.pos.x - seenRec.x, thrown = playsThrow(a, sim, R);
+  if (state.full === R ? !(cushion > CARRY_TURN_EXIT && !thrown) : cushion <= 0 || thrown) { state.full = R; return null; }
+  state.full = null;
+  if (Math.hypot(cmd.vel.x, cmd.vel.y) < 1) return null;
+  const heading = Math.atan2(cmd.vel.y, cmd.vel.x), qbSeen = sim.see(a, sim.qb).pos;
+  const d = angleDiff(heading, Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x));
+  const reach = Math.max(0, carryReach(a) - 1e-3);
+  a.tags.add('open-run');
+  return lookJoints(a, { ...cmd, facing: heading }, heading, Math.sign(d) * Math.min(Math.abs(d), reach), true);
+}
 /** CARRY_POSTURE: how far off the QB his hips may face with his look still on the QB (rad). */
 function carryReach(a: Agent): number {
   return neckOf(a) + (TRUNK_TWIST ? TRUNK_RANGE : 0);
@@ -1101,6 +1121,8 @@ export class ManCoverage implements Behavior {
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
+  /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+  private carryTurn: { full: Agent | null } = { full: null };
   private releaseObserved = false;
   private routeRead = false;
   private stemHeading: number | null = null;
@@ -1416,6 +1438,11 @@ export class ManCoverage implements Behavior {
       return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
     }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
+    if (CARRY_TURN && CARRY_POSTURE && breakOn && this.hipsOpen) {
+      const run = selected.facing === undefined ? selected : command;
+      const open = carryOpenRun(a, sim, run, R, seen.pos, this.carryTurn);
+      if (open) return withFacingTechnique(open, { label: 'man-open-run', key: seen.vel });
+    }
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
   }
@@ -1487,6 +1514,8 @@ export class ZoneCoverage implements Behavior {
   private patternHesitationUntil = -1;
   private readonly initialDepth: number;
   private turnedWith: Agent | null = null;
+  /** CARRY_TURN: the receiver he has turned fully on (a seen event), kept until both cues clear. */
+  private carryTurn: { full: Agent | null } = { full: null };
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
@@ -1804,6 +1833,11 @@ export class ZoneCoverage implements Behavior {
         return withFacingTechnique({ ...req, facing }, { label: 'deep-open-carry', key: deepest.vel });
       }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
+      if (CARRY_TURN && CARRY_POSTURE && this.turnedWith === deepest.r) {
+        const run = selected.facing === undefined ? selected : command;
+        const open = carryOpenRun(a, sim, run, deepest.r, deepest.pos, this.carryTurn);
+        if (open) return withFacingTechnique(open, { label: 'deep-open-run', key: deepest.vel });
+      }
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
     }

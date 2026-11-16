@@ -12,18 +12,17 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function rips(flag: string) {
   vi.resetModules();
   for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
-  vi.stubEnv('PASS_OFF', '0'); // engine-70: as rush-bull; Flex to restate with PASS_OFF on
   vi.stubEnv('RUSH_HANDS', '1'); vi.stubEnv('RUSH_RIP', flag);
   // RUSH_BULL removes the pass rep's rated control drift (#10), so a control change at a rip is the rip's.
   vi.stubEnv('RUSH_BULL', '1');
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-  let resolutions = 0, scripted = 0, drift = 0;
+  let resolutions = 0, scripted = 0, drift = 0; const handovers: [number, number][] = [];
   for (let roster = 1; roster <= 8; roster++) for (const seed of [1, 2, 3]) {
     const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover1', concept: 'four_verts', seed, roster, formation: 'gun_doubles_11', flip: false }));
     const struck: any[] = []; const s0 = sim.world.strike.bind(sim.world);
     sim.world.strike = (a: any, b: any, ...r: any[]) => { struck.push([a, b]); return s0(a, b, ...r); };
-    const last = new Map<any, { until: number; control: number }>();
+    const last = new Map<any, { until: number; control: number; blocker: any }>();
     while (sim.phase === 'live' && sim.t < 3 && sim.throwAt < 0) {
       struck.length = 0;
       const pre = new Map([...sim.engagements].filter((e: any) => e.type === 'pass').map((e: any) => [e, e.control]));
@@ -31,23 +30,27 @@ async function rips(flag: string) {
       for (const e of sim.engagements) {
         if (e.type !== 'pass' || !pre.has(e)) continue;
         const l = last.get(e);
-        if (l && e.moveUntil !== l.until && e.move === 'rip') {
+        // PASS_OFF (on since engine-70): a hand-over to the helper is not a resolution. It sets moveUntil to now with the
+        // move still standing, and gives the keeper his own control; counted apart, its control recorded.
+        if (l && e.blocker !== l.blocker) { handovers.push([pre.get(e), e.control]); }
+        else if (l && e.moveUntil !== l.until && e.move === 'rip') {
           resolutions++;
           const mine = struck.some(([a, b]: any[]) => [a, b].includes(e.blocker.body) && [a, b].includes(e.defender.body));
           if (mine || e.control !== pre.get(e)) { scripted++; if (process.env.RB_PRINT) console.log('RB scripted', mine, pre.get(e), e.control); }
         }
         else if (!(e.moveUntil > sim.t) && e.control !== pre.get(e)) { drift++; if (process.env.RB_PRINT) console.log('RB drift', e.move, pre.get(e), e.control); }
-        last.set(e, { until: e.moveUntil, control: e.control });
+        last.set(e, { until: e.moveUntil, control: e.control, blocker: e.blocker });
       }
     }
   }
-  return { resolutions, scripted, drift };
+  return { resolutions, scripted, drift, handovers };
 }
 
 describe('RUSH_RIP', () => {
   it('on: a rip makes no scripted strike and swings no control', async () => {
     const on = await rips('1');
     expect(on.resolutions).toBeGreaterThan(10);
+    console.log(`hand-overs (PASS_OFF): ${on.handovers.length}, control before -> after ${JSON.stringify(on.handovers.map(([a, b]) => [+a.toFixed(2), +b.toFixed(2)]))}`);
     expect(on.scripted).toBe(0);
   }, 240_000);
 

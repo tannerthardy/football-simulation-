@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-70",
+  "id": "engine-71",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -118,6 +118,7 @@
     "DIR_CAP": "on",
     "CARRY_POSTURE": "off",
     "CORNER_DROP": "off",
+    "CARRY_TURN": "off",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "on",
@@ -206,7 +207,7 @@
     "BAT_ONCE": "on",
     "BALL_CUE_OWN": "on",
     "PLAY_ONCE": "on",
-    "PASS_OFF": "on",
+    "PASS_OFF": "off",
     "SET_SPOT": "off",
     "SET_SPOT_TACKLE": "off",
     "RUSH_ONE_HAND": "off",
@@ -318,7 +319,7 @@
     "CROSS_OVER": "off",
     "PLANT_REACH": "on",
     "COMPILE_PICTURE": "on",
-    "CRAFT_HOLD": "on",
+    "CRAFT_HOLD": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
