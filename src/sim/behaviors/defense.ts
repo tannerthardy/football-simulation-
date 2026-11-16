@@ -74,7 +74,7 @@ const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
  * more than SINK_ENTER keeps gaining depth toward it while he reads the QB, until he is within SINK_EXIT; one at depth
  * settles as before. His own position against his landmark is his to know. Margins: stated choices, enter and exit on
  * opposite sides. */
-export const SETTLE_DEPTH = process.env.SETTLE_DEPTH === '1';
+export const SETTLE_DEPTH = process.env.SETTLE_DEPTH !== '0';
 const SINK_ENTER = 2, SINK_EXIT = 1;
 /** SEEN_EYES (default on; SEEN_EYES=0 restores the QB's internal read target): a zone defender
  * reads the QB's look from what he sees of him, not from the QB's internal
@@ -132,7 +132,7 @@ export function infoHonest(item: number | string): boolean {
  * changing 1.6-2.0 times a second, a tenth reversing inside 0.3 s; the flat defender reversing 27% of his target
  * changes). Margins: band in 0.5 / out 1.5 yd, vertical in 7.5 yd or 1.5 yd/s / out 6.5 yd and 0.5 yd/s, eyes beat 4 deg /
  * out 6 deg beyond the cone; stated choices. */
-const ZONE_HOLD_BITS = Number(process.env.ZONE_HOLD ?? 0);
+const ZONE_HOLD_BITS = Number(process.env.ZONE_HOLD ?? 114);
 export const ZONE_HOLD_BAND = (ZONE_HOLD_BITS & 1) !== 0;
 export const ZONE_HOLD_EYES = (ZONE_HOLD_BITS & 2) !== 0;
 export const ZONE_HOLD_PICK = (ZONE_HOLD_BITS & 16) !== 0;
@@ -350,7 +350,7 @@ const OL_SLOTS_SET = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
  * the boot check; a pass set: the rush). Sourced (Gridiron Strategies, "Defensive End Reads in a Forty Front"): "once
  * you read release, look for the next part of triangle"; the release itself is not a pass read. Bit 1 (the key's
  * stance as a run/pass cue) was tried and removed: on play action it made the fake-side end fit inside harder. */
-const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 0) & 2) !== 0;
+const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 2) & 2) !== 0;
 /** EDGE_SET (experimental, off; docs/reviews/2026-11-16-edge-set.md): an edge answering a reach sets the edge as taught
  * (hands on the reach blocker's outside half, square, widen with him and no faster, squeeze the lane he is trying to
  * open): his lateral target is the blocker's outside shoulder in his picture one beat ahead, fed forward at the
@@ -359,7 +359,7 @@ const END_KEY_THROUGH = (Number(process.env.END_KEY ?? 0) & 2) !== 0;
  * shoulder: there is no side switch to hold, so no margin is needed (commit rule). Before it, KEY_PACE's answer (the blocker's speed plus a lead, from his own spot)
  * kept him ahead of the blocker and gaining: 2.7 / 3.4 / 4.6 yd wide at 1.0 / 1.5 / 2.0 s against the NFL play-side
  * end's 0.4-0.6 / 1.3-1.6 / 2.3-2.8 on real outside zone (nfl_pa_backside.py NFL_POP=oz). */
-export const EDGE_SET = process.env.EDGE_SET === '1';
+export const EDGE_SET = process.env.EDGE_SET !== '0';
 function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = null): (Perceived & { home: Vec2; agent: Agent }) | null {
   let best: Agent | null = held, bd = Infinity;
   if (!best) for (const b of linePicture(sim, a).surface) {
@@ -404,7 +404,7 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number 
  * the way to the QB) or loses him from his way; a beaten or never-declared rush (past the line, nobody setting to him)
  * goes at the QB as before. A man who is not a lineman (a releasing end, a back) is never his mark: if one crosses his
  * line, the contact is the world's. */
-const POWER_AIM = process.env.POWER_AIM === '1';
+const POWER_AIM = process.env.POWER_AIM !== '0';
 /** POWER_AIM: how far ahead of a set lineman's seen position he aims (s of the man's seen motion), and the windows. */
 const POWER_LEAD = 0.3, POWER_REACH = 4, POWER_NEAR = 1.5, POWER_SET = 0.3;
 
@@ -1053,7 +1053,7 @@ export const CORNER_DROP = process.env.CORNER_DROP !== '0';
  * by coming forward. When the stem stops he spends it as before (the break on the hitch). Press and the Cover-3 corner
  * under CORNER_DROP are unchanged. No pace of his own: the read-step question (moving before the stem reaches his
  * picture) is left open. */
-const OFF_PEDAL_BITS = Number(process.env.OFF_PEDAL ?? 0);
+const OFF_PEDAL_BITS = Number(process.env.OFF_PEDAL ?? 3);
 export const OFF_PEDAL = (OFF_PEDAL_BITS & 1) !== 0;
 /** OFF_PEDAL bit 2 (settle on the stop): when the stem-stop read says his receiver has stopped, the off-man corner stops
  * gaining depth gradually, never coming forward before he has seen the throw: his target stays no nearer the line than
@@ -1668,7 +1668,7 @@ const CURL_FLAT_BACK = process.env.CURL_FLAT_BACK !== '0';
  * window and where he stood, so a back who showed to the flat before the curl-flat defender had dropped held him at his
  * alignment depth (4.4 yd against an 8.5 yd window on staged flood) for the rest of the play. On, he drops to the
  * window's depth while he widens, eyes on the QB, and breaks on the throw: high to low. */
-export const CURL_SINK = process.env.CURL_SINK === '1';
+export const CURL_SINK = process.env.CURL_SINK !== '0';
 /** SAFETY_DEPTH (experimental, off; SAFETY_DEPTH=1 turns it on): a deep or
  * quarter-field zone defender's landmark is never shallower than his
  * alignment. Without it a quarter of our safeties (quarters inside safeties at

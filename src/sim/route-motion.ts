@@ -35,7 +35,7 @@ export const ROUTE_FINISH = process.env.ROUTE_FINISH !== '0';
  * USA Football, checked), so a go, seam or fade is unchanged. The quarterback's forecast steers the same rule from his
  * own picture (receiver-forecast.ts). Witness: concept-menu's hitch_post #2 post, bent 2.5 yd inside his stem by
  * CRAFT_HOLD round the safety, steered back out across to the drawn line from 2.55 s. */
-export const ROUTE_LANDMARK = process.env.ROUTE_LANDMARK === '1';
+export const ROUTE_LANDMARK = process.env.ROUTE_LANDMARK !== '0';
 
 /** ROUTE_LANDMARK (attempt 2): whether a route is run from where he is: only a route whose leg leaving its declared vertex
  * breaks inside (toward the ball, by more than a yard). A route breaking toward the sideline keeps its lateral landmark,
@@ -128,7 +128,7 @@ export const ROUTE_FILLET = process.env.ROUTE_FILLET !== '0';
 /** PLANT_REACH (experimental, off): a planted break is reached before the route follower moves past it (see `steerRoute`). */
 const PLANT_REACH = process.env.PLANT_REACH !== '0';
 /** CRAFT_HOLD (off; see behaviors/receiver.ts): rejoining the route ahead after a bend round a man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
+const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 /** The share of the shorter adjacent leg a corner may use to lead its turn (two neighbouring corners then never overlap). */
 const FILLET_LEAD = 0.6;
 /** A turn this small is followed straight; there is nothing to lead. */

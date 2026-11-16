@@ -44,7 +44,7 @@ export function paRunLook(a: Agent, sim: PlaySim, man: Agent | null): boolean {
  * line at 1.0 / 1.5 / 2.0 s against about 1.15 / 3.1 / 4.8 on dropbacks; ours, DE_W the fake-side end in gun_doubles_11,
  * ran the dropback path; nfl_pa_backside.py, pa-backside-trace.mts). The boot and
  * the aggressive fire-out are not part of it (unsourced as pages / a separate design item). */
-export const PA_HINGE = process.env.PA_HINGE === '1';
+export const PA_HINGE = process.env.PA_HINGE !== '0';
 /** The zone fakes the hinge protection belongs to. */
 const ZONE_FAKES = new Set(['insideZone', 'outsideZone', 'wideZone', 'splitZone']);
 /** PA_HINGE: the call's fake side (+1 / -1 in field y) for this play, set at install. */

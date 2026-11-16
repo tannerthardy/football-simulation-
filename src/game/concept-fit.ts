@@ -15,7 +15,7 @@ import type { Formation, MotionCall, OffSlot, PassConcept, ReceiverRef } from '.
 import type { PhysicalProfile } from '../players/physical.js';
 import { planMotion, realignOffense } from '../sim/motion.js';
 
-export const CONCEPT_FIT = process.env.CONCEPT_FIT === '1';
+export const CONCEPT_FIT = process.env.CONCEPT_FIT !== '0';
 
 /**
  * BACK_AS_THREE (experimental, off; with CONCEPT_FIT; Integration's ruling 2026-11-16): stick, flood and pa_flood from a
@@ -26,7 +26,7 @@ export const CONCEPT_FIT = process.env.CONCEPT_FIT === '1';
  * flat (`back: 'back_flat'`). A back who is #3 in the route is not in the protection: the call says so (`backIsThree`),
  * and the protection is the line (and a blocking inline end) alone; one more rusher than that is the quarterback's hot.
  */
-export const BACK_AS_THREE = process.env.BACK_AS_THREE === '1';
+export const BACK_AS_THREE = process.env.BACK_AS_THREE !== '0';
 
 type Body = Pick<PhysicalProfile, 'vmax' | 'tau' | 'brake' | 'lateral' | 'radius'>;
 /** A nominal body for a slot the caller has no player for. */

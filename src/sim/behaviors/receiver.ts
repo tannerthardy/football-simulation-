@@ -148,14 +148,14 @@ const BREAK_LOOK = process.env.BREAK_LOOK !== '0';
  * already holds; held for the episode as a field direction, across whichever man is in the lane, until he has been clear
  * of them for 0.2 s (the bend he committed to runs out that 0.2 s); the bend never takes him back down his route (at least
  * 0.3 of his pace along it) or across to the other side of the man. */
-const CRAFT_HOLD = process.env.CRAFT_HOLD === '1';
+const CRAFT_HOLD = process.env.CRAFT_HOLD !== '0';
 /** CRAFT_EXIT (experimental, off; with CRAFT_HOLD): the held side is a commitment about one man and ends with him. It ends
  * when he is past that man in his picture (level or behind, or stepped across his line onto the held side and out of his
  * lane, unless that side is his route's declared one), with no run-out, and at his route's declared break, which the craft
  * never alters; and a declared leg that comes back toward the line (a settle) names no side to hold. Coverage's paired throws (scripts/diag/catch/paired-throws.ts, 289 pairs): with the hold alone a
  * seam held a 73-degree bend round a nickel already level with him and carried it into the ball's flight, and a stick ran
  * straight up its stem through its own break. */
-const CRAFT_EXIT = process.env.CRAFT_EXIT === '1';
+const CRAFT_EXIT = process.env.CRAFT_EXIT !== '0';
 const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at: number; out?: Vec2; declared?: boolean; seeded?: boolean }>();
 /** RELEASE_COMMIT (experimental, off; RELEASE_COMMIT=1; with ROUTE_CRAFT; #35): the release's side seeds the craft's held
  * side for the same man. When he releases round a man (the press release, RELEASE_SEEN's man tight over him at the snap,
@@ -168,7 +168,7 @@ const craftHeld = new WeakMap<Agent, { d: Agent; across: Vec2; clear: number; at
  * across the same man's body: staged double_outs, his lateral request reversed within 0.6 s of contact on 58 of 96
  * touched ends (54 with CRAFT_HOLD + CRAFT_EXIT), the craft's man the rusher who hit him on 60 of 62
  * (scripts/diag/pass-operators/attached-release.mts, attached-craft-who.mts). */
-const RELEASE_COMMIT = process.env.RELEASE_COMMIT === '1';
+const RELEASE_COMMIT = process.env.RELEASE_COMMIT !== '0';
 /** RELEASE_COMMIT: his release round `d` on field side `side` (+1 / -1 in y) seeds the craft's held side for that man. */
 function seedCraftSide(a: Agent, d: Agent, side: number, rr: number, t: number): void {
   if (!RELEASE_COMMIT || side === 0 || craftHeld.get(a)?.d === d) return;

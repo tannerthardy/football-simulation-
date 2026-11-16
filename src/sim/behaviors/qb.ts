@@ -358,7 +358,7 @@ const QB_BELIEVED_DEF = process.env.QB_BELIEVED_DEF !== '0';
 const QB_SEEN_OUT = process.env.QB_SEEN_OUT !== '0';
 /** QB_CALL_ROUTES (information rule, 2026-11-16): who is on a route and which route is his call (the play's install,
  * known from the huddle; a check-release man once his picture has him out), never the receiver's live behavior object. */
-const QB_CALL_ROUTES = process.env.QB_CALL_ROUTES === '1';
+const QB_CALL_ROUTES = process.env.QB_CALL_ROUTES !== '0';
 /** QB_SEEN_REC (experimental, off; QB_SEEN_REC=1; information rule): the remaining reads of his own receivers' true
  * state use where he has them: his forecast of the man, else his delayed picture. That is the side a receiver is on
  * (look-off decoy, hot side), the verticals' stems for the peek, whether a man is in his clear look, the fallback
@@ -418,7 +418,7 @@ const KEY_MOVE_NOISE = 5;
  * SITS table, #813; without it, a flat / curl-flat key's "if he doesn't widen, throw the flat", the low route). Off,
  * where he stands against the stretch's midpoint. Once made the read is committed: it changes once at most, only on a
  * perceived move past the margin the other way before the throw. */
-const QB_KEY_READ = process.env.QB_KEY_READ === '1';
+const QB_KEY_READ = process.env.QB_KEY_READ !== '0';
 /** QB_KEY_READ: the commit margin (yd of displacement along the stretch since the snap), chosen; the exit is half.
  * Numeric so the staged gate reads it a level either side. */
 const KEY_COMMIT = Number(process.env.QB_KEY_COMMIT ?? 1);
@@ -479,7 +479,7 @@ const PRICE_JUDGMENTS = ['def-phase', 'def-dislodge', 'int-belief', 'acc-urgency
  * pressure (urgency 0.8 or more) he throws from where he is. Off the plan's steps the dwell moves him on as before.
  * Triangle, peek, key and hot reads are unchanged by this bit. Bits 2 (the open-hip drop, drop pacing) and 4 (climb /
  * slide / reset) are not built. */
-const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 0) | 0;
+const QB_FOOTWORK = Number(process.env.QB_FOOTWORK ?? 3) | 0;
 const FW_STEPS = (QB_FOOTWORK & 1) !== 0;
 /** QB_FOOTWORK bit 2 (first part: his facing). The drop opens his hips: his chest turns from downfield toward his
  * picture of read 1 as he gives ground, in proportion to the depth he has dropped (the coached crossover drop, hips
@@ -506,7 +506,7 @@ const FW_HIPS = (QB_FOOTWORK & 2) !== 0;
  * him; the forward home holds only while his picture has room ahead (nearest body within 30 deg ahead: teammates seen,
  * defenders felt). Enter and exit margins on both, the exit on the far side: once he steps up it is a committed move
  * until the threat or the room clears its exit margin. Margins chosen. */
-const QB_EDGE_THREAT = process.env.QB_EDGE_THREAT === '1';
+const QB_EDGE_THREAT = process.env.QB_EDGE_THREAT !== '0';
 const EDGE_CLOSE_IN = 1.5, EDGE_CLOSE_OUT = 0.5; // yd/s toward him (chosen)
 const EDGE_ROOM_IN = 2.0, EDGE_ROOM_OUT = 1.4; // yd ahead (chosen)
 /** QB_FOOTWORK bit 8: the grass read (docs/reviews/2026-11-15-drop-design-stage1.md, "Design: the grass read"; Rules +
@@ -712,7 +712,7 @@ const HEAD_RATE = 400 * Math.PI / 180;
  * every tick, so it jumped between reads in a tick and the zone defenders who lean on his eyes stepped with it. The
  * hot look's timed turn (HEAD_RATE, 400 deg/s) is a double count under it and comes out: his eyes are there when his
  * head is, then the glance. */
-const QB_HEAD = process.env.QB_HEAD === '1';
+const QB_HEAD = process.env.QB_HEAD !== '0';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';

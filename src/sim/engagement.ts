@@ -250,7 +250,7 @@ export const POCKET_LEVEL = process.env.SET_SPOT !== '0' && process.env.POCKET_L
  * Off (POCKET_LEVEL on), ours reached its short set early (1.3 vs the NFL's 0.9 yd at 0.5 s) and then lagged the drop
  * (2.8 vs 3.5 yd at 2.0 s): retreat 0.8 / 1.0 / 1.2 yd/s over 0-0.5 / 0.5-1.0 / 1.0-1.5 s against the NFL's
  * 0.4 / 1.2 / 1.8. */
-export const POCKET_DROP = process.env.SET_SPOT !== '0' && process.env.POCKET_DROP === '1';
+export const POCKET_DROP = process.env.SET_SPOT !== '0' && process.env.POCKET_DROP !== '0';
 function pocketDropDepth(sim: PlaySim, clearance: number): number | null {
   const concept = sim.offCall.pass, gun = sim.offCall.formation.qb !== 'under';
   if (!concept || !gun) return null;

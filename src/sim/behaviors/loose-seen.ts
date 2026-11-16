@@ -38,7 +38,7 @@ export const LOOSE_SEEN = process.env.LOOSE_SEEN !== '0';
  * samples). (2) A player who heard 'ball!' but had not seen it ran to where he saw the true fumbler; a shout tells him
  * a ball is loose and where the shout came from, not who lost it, so he runs toward the teammate who called. The man
  * who lost it still knows at once (he felt it leave). */
-export const LOOSE_OWN = process.env.LOOSE_OWN === '1';
+export const LOOSE_OWN = process.env.LOOSE_OWN !== '0';
 const CALL_RANGE = 20;
 const LEAD = 0.2;
 

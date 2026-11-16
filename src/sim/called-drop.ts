@@ -13,7 +13,7 @@ const PA_DROP = process.env.PA_DROP !== '0';
  * and 6.4 yd (under center) on every five-step call. Depths are the middle of those NFL bins from our snap spots
  * (4.6 yd behind the line in the gun, 1.6 under center); `time` is the measured end less the 0.4 s by which our
  * measured end trails the spec's time on the existing drops (1.4 -> 1.8 s gun, 1.8 -> 2.2 s under center). */
-const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
+const CONCEPT_DROPS = process.env.CONCEPT_DROPS !== '0';
 const FIVE_GUN = (los: number) => ({ x: los - 8.8, time: 1.8 });
 const FIVE_UNDER = (los: number) => ({ x: los - 8.9, time: 2.0 });
 
@@ -76,7 +76,7 @@ export function plannedDropX(drop: DropType, gun: boolean, qbSnap: { x: number; 
  * share (Flex's PA_HINGE reads it). QB_FOOTWORK bit 16 holds it to the measured mesh plus half its ride (BDB 2025 play
  * action, scripts/diag/eyes/nfl_pa_ride.py: gun mesh at 1.2 s after the snap, ridden 0.5 s; under center at 1.4 s,
  * ridden 0.2 s); off, 0.7 s. */
-const FW_PA_FAKE = (Number(process.env.QB_FOOTWORK ?? 0) & 16) !== 0;
+const FW_PA_FAKE = (Number(process.env.QB_FOOTWORK ?? 3) & 16) !== 0;
 export function plannedFakeEnd(gun: boolean): number {
   return FW_PA_FAKE ? (gun ? 1.2 + 0.25 : 1.4 + 0.1) : 0.7;
 }

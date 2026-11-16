@@ -213,7 +213,7 @@ export const MENU_CONCEPTS: PassConcept[] = [
  * Football: read 1 on the last step; ours is not ready until 2.7, a route timing question noted for the QB lane);
  * the rest by the table's analogues (docs/reviews/2026-11-14-read-plan-table.md). This flag only marks the class:
  * 'five' and 'gun5' are the same drop in the gun today, until the QB lane sets 'five' to the NFL's depth and time. */
-const CONCEPT_DROPS = process.env.CONCEPT_DROPS === '1';
+const CONCEPT_DROPS = process.env.CONCEPT_DROPS !== '0';
 // Re-marked 2026-11-15 by the first read's route, as Walsh times it (49ers notes via Smart Football): the square-out on
 // "five quick steps" and the curl "five-step timed" keep the gun five-step and read 1 on the set ('gun5'); the
 // square-in and the post on "five big steps and a hitch" take 'five' (read 1 on the hitch); the deep comeback, a
@@ -234,7 +234,7 @@ if (CONCEPT_DROPS) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if
  * drop", Viqtory Sports), keeps the 6 yd hitch. NFL witness, not target: PFF's HITCH stops before the throw (#1, BDB
  * 2025 weeks 1-3) peak at 4-5 yd with a second hump at 10-13 (the curl); ours stopped at 5.5-6, between them
  * (scripts/diag/routes/nfl_one_stops.py; Defense's quarters-corner operator). */
-const QUICK_HITCH = process.env.QUICK_HITCH === '1';
+const QUICK_HITCH = process.env.QUICK_HITCH !== '0';
 if (QUICK_HITCH) for (const c of [...BASE_PASS_CONCEPTS, ...MENU_CONCEPTS]) if (c.family === 'quick') for (const side of [c.strong, c.weak])
   for (const n of [1, 2, 3, 4] as const) if (side[n] === 'hitch') side[n] = 'quick_hitch';
 /** VERTS_QUICK (on since engine-67; split from CONCEPT_DROPS 2026-11-14, one flag one meaning): four verticals is "a

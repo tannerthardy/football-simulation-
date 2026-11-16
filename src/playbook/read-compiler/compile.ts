@@ -29,7 +29,7 @@ export const CLEAR_OUTS: Record<string, [string, string][]> = {
 /** PA_TABLES (experimental, off; a repair): a play-action-tagged call (`smash+pa`, PA_CALL's tag on a dropback concept)
  * is installed from its concept's tables: its coached key, order, looks and clear-outs. Off, the tables were looked up by
  * the tagged id, missed, and the tagged call compiled from geometry alone (smash+pa had no corner key). */
-export const PA_TABLES = process.env.PA_TABLES === '1';
+export const PA_TABLES = process.env.PA_TABLES !== '0';
 /** The id a concept's install tables are keyed by. */
 export function tableId(concept: PassConcept): string {
   // BACK_AS_THREE's +b3 first (a call with the back as #3 is its concept's), then PA_TABLES' +pa.

@@ -61,7 +61,7 @@ const THIRD_KEYS = new Set(['dagger', 'levels']);
  *   Off, it compiled as a vertical peek with the hitch, ready 1.8 s, read last at 2.5 s (QB lane: through three
  *   unreadable verticals by 2.1 s, at the hitch out of rhythm, then a run).
  */
-export const VERTS_KEYS = process.env.VERTS_KEYS === '1';
+export const VERTS_KEYS = process.env.VERTS_KEYS !== '0';
 const VERTS_KEY_TABLE: Record<string, { low: ReceiverRef; high: ReceiverRef; role: string; deep: boolean; danger: string; onSet?: boolean; after: ReceiverRef[] }> = {
   verts_hitch: { low: 'S3', high: 'S2', role: 'deep_defender_over_vertical', deep: true, danger: 'the hook defender under the seam', onSet: true, after: ['W1', 'S1'] },
 };
@@ -69,7 +69,7 @@ const VERTS_KEY_TABLE: Record<string, { low: ReceiverRef; high: ReceiverRef; rol
 const RHYTHM_BEAT = 0.4;
 /** CONCEPT_DROPS: the five-step class's hitch, the NFL's set-to-release at that depth (QB lane, drop-time.py). */
 const FIVE_STEP_BEAT = 0.8;
-const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS === '1';
+const CONCEPT_DROPS_RHYTHM = process.env.CONCEPT_DROPS !== '0';
 /** GRASS_READ (experimental, off): the plan marks the reads thrown before their break into space, for the QB lane's grass
  * read (QB_FOOTWORK bit 8), with the landing area as installed. Which reads, from the sources:
  * - a declared vertical (go, seam, fade): read at the release and thrown to a spot downfield, "the moment his back foot
