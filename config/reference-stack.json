@@ -270,6 +270,7 @@
     "QB_FACE_SEEN": "off",
     "QB_CALL_ROUTES": "off",
     "QB_EDGE_THREAT": "off",
+    "QB_KEY_READ": "off",
     "QB_EVADE_UP": "off",
     "BLITZ_SECOND": "off",
     "QB_LOOKOFF_RHYTHM": "off",

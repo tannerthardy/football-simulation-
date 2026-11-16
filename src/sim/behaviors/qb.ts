@@ -405,6 +405,24 @@ const QB_KEY_MAN = process.env.QB_KEY_MAN !== '0';
  * reading noise on a place along the stretch scales to a speed. Both chosen. */
 const KEY_MOVE = 1.0;
 const KEY_MOVE_NOISE = 5;
+/** QB_KEY_READ (experimental, off; QB_KEY_READ=1; with QB_KEY_MAN; docs/reviews/2026-11-16-key-man.md, Integration's
+ * ruling): the key read as taught. (a) The key man is named pre-snap from the shell as he reads it, among coverage
+ * players in his picture (2 yd or more off the ball, or detached wide; never a man on the line in a stance): a flat /
+ * curl-flat key is the corner under a two-high read with a hard corner (6 yd or shallower), else the overhang inside
+ * him; a disguise that fools his shell read names the wrong man, and that error stays. Off, the second-widest man
+ * within 8 yd from the true alignment, the strong-side end from doubles on 42 of 48 plays. (b) The read is the man's
+ * movement after the snap in his picture: his displacement along the low-high stretch since the snap; past the commit
+ * margin toward the high route he has taken it (throw low), toward the low route he has jumped it (throw high). A man
+ * who has not committed by the cue gets the concept's coached default for a sitter (the plan's `key.sits`, Rules'
+ * SITS table, #813; without it, a flat / curl-flat key's "if he doesn't widen, throw the flat", the low route). Off,
+ * where he stands against the stretch's midpoint. Once made the read is committed: it changes once at most, only on a
+ * perceived move past the margin the other way before the throw. */
+const QB_KEY_READ = process.env.QB_KEY_READ === '1';
+/** QB_KEY_READ: the commit margin (yd of displacement along the stretch since the snap), chosen; the exit is half.
+ * Numeric so the staged gate reads it a level either side. */
+const KEY_COMMIT = Number(process.env.QB_KEY_COMMIT ?? 1.0);
+/** QB_KEY_READ: a man within this share of the stretch of a route is standing on it (chosen). */
+const KEY_ON_ROUTE = 0.25;
 /** QB_KEY_THROW (experimental, off; QB_KEY_THROW=1; with QB_KEY_MAN): he stays on the key read's answer through its
  * break. The key tells him which side of the stretch the conflict defender left; it does not tell him the top is
  * open. So the read chooses where he looks and removes the wait for a second look at the other half: he holds on the
@@ -768,7 +786,7 @@ export class QBPass implements Behavior {
   private lookOffChecked = false;
   private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
   /** READ_PLAN: the installed plan this play runs (null: the hand-written progression). */
-  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean; role: string; man: Agent | null } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
+  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean; role: string; man: Agent | null; sits?: Agent | null } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null; peek: boolean } | null = null;
   /** READ_PLAN: the key read once made (diagnostic): the defender he read (null: none in the stretch), where he
    * put him between the low (0) and high (1) routes, and the throw it gave. */
   keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
@@ -963,7 +981,8 @@ export class QBPass implements Behavior {
       }
     }
     if (DECLARED_BREAK) for (const rd of p.reads ?? []) { const r = ag(rd.ref); if (r) this.planReads.set(r, { breakAt: rd.breakAt, throwFamily: rd.throwFamily, anchorLead: rd.anchorLead }); }
-    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? this.keyMan(sim, p.key.role, low, high) : null } : null,
+    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep'), role: p.key.role, man: QB_KEY_MAN ? (QB_KEY_READ ? this.keyManShell(sim, p.key.role, low, high) : this.keyMan(sim, p.key.role, low, high)) : null,
+      ...(QB_KEY_READ ? { sits: ag(((p.key as { sits?: ReceiverRef | null }).sits) ?? null) } : {}) } : null,
       triangle: tri && (peek ? tri.length >= 2 : tri.length === 3) ? tri : null, alert, outlet, peek };
     return true;
   }
@@ -994,8 +1013,92 @@ export class QBPass implements Behavior {
     return null;
   }
 
+  /** QB_KEY_READ: the key man named pre-snap from the shell as he reads it, from his picture of the alignment. */
+  private keySnap: Vec2 | null = null;
+  private keyManShell(sim: PlaySim, role: string, low: Agent, high: Agent): Agent | null {
+    const qb = sim.qb, dir = sim.attackDir(qb.team), midY = (low.pos.y + high.pos.y) / 2, side = Math.sign(midY - sim.ballY) || 1;
+    // Coverage players in his picture: off the ball, or detached wide. A man on the line in a stance is a rusher.
+    const D = sim.defense.map((d) => { const p = sim.see(qb, d).pos; return { d, p, depth: (p.x - sim.los) * dir, out: (p.y - sim.ballY) * side, y: p.y }; })
+      .filter((x) => x.depth >= 2 || Math.abs(x.y - sim.ballY) > 9);
+    const best = (S: typeof D, cost: (x: typeof D[number]) => number) => S.reduce<typeof D[number] | null>((b, x) => (!b || cost(x) < cost(b) ? x : b), null);
+    let pick: typeof D[number] | null = null;
+    if (/corner/.test(role)) pick = best(D.filter((x) => x.depth <= 10 && x.out > 0), (x) => -x.out);
+    else if (/apex|flat/.test(role)) {
+      const side = D.filter((x) => x.depth <= 10 && x.out > 0).sort((x, y) => y.out - x.out);
+      const corner = side[0] ?? null, twoHigh = this.mind.pSingleHigh() < 0.5;
+      // Two-high with a hard corner: the corner is the flat player. Otherwise the overhang, the next man inside him.
+      pick = corner && twoHigh && corner.depth <= 6 ? corner : side[1] ?? null;
+    } else if (/hook/.test(role)) pick = best(D.filter((x) => x.depth >= 2.5 && x.depth <= 8), (x) => Math.abs(x.y - sim.ballY) + (role !== 'middle_hook' && x.out < 0 ? 2 : 0));
+    else if (/safety|deep/.test(role)) pick = best(D.filter((x) => x.depth >= 8), (x) => Math.abs(x.y - (/over_vertical/.test(role) ? high.pos.y : sim.ballY)) - 0.1 * x.depth);
+    this.keySnap = pick ? { ...pick.p } : null;
+    return pick?.d ?? null;
+  }
+  /** QB_KEY_READ: the key man's displacement along the stretch since the snap, in his picture (null with no fresh one). */
+  private keyDisp(a: Agent, sim: PlaySim): number | null {
+    const k = this.plan!.key!;
+    if (!k.man || !this.keySnap) return null;
+    const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
+    const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+    const p = this.mind.routeKeyPictures().find((x) => x.id === k.man!.player.id && x.age <= 0.8);
+    if (!p || !lo || !hi) return null;
+    const sx = hi.x - lo.x, sy = hi.y - lo.y, L = Math.max(1, Math.hypot(sx, sy));
+    return ((p.pos.x - this.keySnap.x) * sx + (p.pos.y - this.keySnap.y) * sy) / L;
+  }
+  /** QB_KEY_READ: where the key man stands along the low-high stretch now in his picture (0 low, 1 high). */
+  private keyPlace(sim: PlaySim): number | null {
+    const k = this.plan!.key!;
+    if (!k.man) return null;
+    const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
+    const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+    const p = this.mind.routeKeyPictures().find((x) => x.id === k.man!.player.id && x.age <= 0.8);
+    if (!p || !lo || !hi) return null;
+    const sx = hi.x - lo.x, sy = hi.y - lo.y, L2 = Math.max(1, sx * sx + sy * sy);
+    return ((p.pos.x - lo.x) * sx + (p.pos.y - lo.y) * sy) / L2;
+  }
+  private keyFlipped = false;
+  private readKeyShell(a: Agent, sim: PlaySim): void {
+    const k = this.plan!.key!;
+    const d = this.keyDisp(a, sim);
+    const noise = 0.15 + 0.4 * (1 - a.r('decisionMaking')) + 0.15 * (1 - a.r('awareness'));
+    const m = d === null ? null : d + sim.dice('readkey', a).normal(0, noise);
+    // Where he stands along the stretch now (0 the low route, 1 the high), for a man who has not moved: one standing on
+    // a route has taken it (Rules: "throw the route he is not standing on"; smash's squatting corner, already on the
+    // hitch, gives the corner route). Only a man between them gets the concept's sitter default. Bands chosen.
+    const sNow = this.keyPlace(sim);
+    let throwTo: 'low' | 'high', mode: string;
+    if (m !== null && Math.abs(m) >= KEY_COMMIT) { throwTo = m > 0 ? 'low' : 'high'; mode = 'move'; }
+    else if (sNow !== null && sNow <= KEY_ON_ROUTE) { throwTo = 'high'; mode = 'on-low'; }
+    else if (sNow !== null && sNow >= 1 - KEY_ON_ROUTE) { throwTo = 'low'; mode = 'on-high'; }
+    else if (k.sits === k.high) { throwTo = 'high'; mode = 'sits'; }
+    else { throwTo = 'low'; mode = k.sits === k.low ? 'sits' : 'role'; }
+    this.keyRead = { at: sim.t, defender: k.man?.player.id ?? null, s: m === null ? null : +m.toFixed(3), throwTo, mode } as typeof this.keyRead;
+    this.applyKey(sim, throwTo);
+  }
+  /** QB_KEY_READ: once made the read stands; it changes once, on a perceived move past the margin the other way. */
+  private rekey(a: Agent, sim: PlaySim): void {
+    if (this.keyFlipped || !this.keyRead || this.phase === 'windup' || !this.keyAnswer) return;
+    const d = this.keyDisp(a, sim);
+    if (d === null) return;
+    const now = this.keyRead.throwTo;
+    const flip = now === 'low' ? d <= -KEY_COMMIT : d >= KEY_COMMIT;
+    if (!flip) return;
+    this.keyFlipped = true;
+    const to = now === 'low' ? 'high' : 'low';
+    this.keyRead = { ...this.keyRead, throwTo: to, at: sim.t } as typeof this.keyRead;
+    this.applyKey(sim, to);
+  }
+  private applyKey(sim: PlaySim, throwTo: 'low' | 'high'): void {
+    const k = this.plan!.key!;
+    const first = throwTo === 'low' ? k.low : k.high, second = first === k.low ? k.high : k.low;
+    this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
+    this.readIdx = 0;
+    this.readStart = sim.t;
+    this.keyAnswer = { target: first, toHigh: throwTo === 'high', at: sim.t };
+  }
+
   private readKey(a: Agent, sim: PlaySim): void {
     const k = this.plan!.key!;
+    if (QB_KEY_READ && QB_KEY_MAN) { this.readKeyShell(a, sim); return; }
     if (QB_KEY_MAN) {
       // The named man, as his picture has him now. No fresh picture, or nobody named: no key read; the order stands.
       const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
@@ -1361,6 +1464,7 @@ export class QBPass implements Behavior {
 
     // READ_PLAN: the key, read at the plan's cue unless the rush has already taken over.
     if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy && u <= 0.5) this.readKey(a, sim);
+    else if (QB_KEY_READ && QB_KEY_MAN && READ_PLAN && this.plan?.key && this.keyRead) this.rekey(a, sim);
 
     // QB_RHYTHM: with the rush or his clock telling him time is up, his eyes go
     // to the outlet (the last read) instead of finishing the order.

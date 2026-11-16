@@ -310,6 +310,8 @@
     "QB_FACE_SEEN": "0",
     "QB_CALL_ROUTES": "0",
     "QB_EDGE_THREAT": "0",
+    "QB_KEY_READ": "0",
+    "QB_KEY_COMMIT": "1.0",
     "QB_EVADE_UP": "0",
     "BLITZ_SECOND": "0",
     "QB_LOOKOFF_RHYTHM": "0",

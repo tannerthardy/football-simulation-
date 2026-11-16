@@ -22,8 +22,17 @@ for (const concept of CONCEPTS) for (const formation of ['gun_trips_11', 'gun_do
       const lo = k.low.pos, hi = k.high.pos, sx = hi.x - lo.x, sy = hi.y - lo.y, L = Math.hypot(sx, sy) || 1;
       const moved = man && snapPos ? ((man.pos.x - snapPos.get(man).x) * sx + (man.pos.y - snapPos.get(man).y) * sy) / L : null;
       row = { concept, formation, coverage, roster, seed, role: k.role, man: man?.slot ?? null, manJob: job(man), trueFlat: flatMan?.slot ?? null, trueFlatJob: job(flatMan),
-        t: +sim.t.toFixed(2), throwTo: b.keyRead.throwTo, s: b.keyRead.s, moved: moved === null ? null : +moved.toFixed(2) };
+        t: +sim.t.toFixed(2), throwTo: b.keyRead.throwTo, s: b.keyRead.s, mode: b.keyRead.mode ?? null, moved: moved === null ? null : +moved.toFixed(2),
+        lowSlot: k.low.slot, highSlot: k.high.slot };
     }
   }
-  if (row) console.log(JSON.stringify(row));
+  if (!row) continue;
+  // The play's result: the first QB throw's target (low / high / other), completion, interception, sack, yards.
+  let target: string | null = null; const tb = sim.throwBall.bind(sim);
+  sim.throwBall = (p: any, t: any, ...rest: any[]) => { if (p === sim.qb && target === null) target = t?.slot ?? '-'; return tb(p, t, ...rest); };
+  let res: any = null; try { res = sim.run(); } catch { /* staged */ }
+  row.target = target === row.lowSlot ? 'low' : target === row.highSlot ? 'high' : target === null ? null : 'other';
+  row.flipped = !!sim.qb.behavior?.keyFlipped;
+  row.cmp = !!res?.stats?.completed; row.int = sim.events.some((e: any) => e.type === 'interception'); row.sack = sim.events.some((e: any) => e.type === 'sack'); row.yards = res?.yards ?? null;
+  console.log(JSON.stringify(row));
 }
