@@ -146,6 +146,16 @@ The look works. Defenders who never sampled the ball fell: zone 164 → 87, man 
 
 The open bands (3–5, 5+) keep most of the gap to the oracle. The remaining late start is in bodies who never get the ball in their eyes at all.
 
+**Attempt 2: RUSH_ARM (flag off; on top of ARM_LOOK; same gate). It doesn't move YAC, so stopped here.**
+
+`req-late.ts` read first. Every late defender's request turns onto the carrier on the same tick the catch enters his picture (p50 0.20–0.40 s after the catch); no branch holds him. The rest of the delay is the body: man defenders more than 8 yd away are running 7.4 yd/s away with their own men, and rushers are at 2.4 yd/s facing away. The rushers were the one controller gap, and the largest share (132 of 325). With only the arm, a rusher kept rushing the passer until the catch was in his picture. RUSH_ARM peels him on the shoulder read.
+
+- Never-sampled rushers who held an arm belief start at p50 0.80 s, against 1.10 s with ARM_LOOK alone.
+- YAC per catch stays 11.99, against 11.99. By band: 0-1 2.64, 1-2 5.50, 2-3 8.45, 3-5 13.87, 5+ 19.13.
+- Paired catches stay at 203. The no-knowledge test passes.
+
+What's left is not a controller hold. Man defenders more than 8 yd off are running with their own men, and turning costs about 1.3 s at 7 yd/s. About 160 man defenders hold no release belief at all. The oracle's lead is defenders who already have the ball's true path during the flight.
+
 ## Witnesses
 
 - **YAC:** `yac-split.ts`'s defense arm against the oracle, YAC by separation band. Not tuned to any number; the

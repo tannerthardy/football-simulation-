@@ -457,6 +457,21 @@ export class PassRusher implements Behavior {
       }
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
+    // RUSH_ARM: a free rusher who saw the arm come through (a release believed from the arm, no ball yet in his eyes)
+    // stops rushing a passer who no longer has it and peels toward the receiver the shoulders pointed at, as a zone
+    // defender's shoulder break: one read per belief, its error by anticipation, after his reaction time.
+    if (RUSH_ARM && !a.engagement) {
+      const rb = releaseBelief(sim, a);
+      if (rb.source === 'arm' && rb.releasedAt !== undefined && rb.ballAt === undefined) {
+        const pick = shoulderTarget(a, sim, rb.releasedAt);
+        if (pick.R && sim.t - pick.at >= a.profile.reactionTime * (1 - 0.4 * a.r('anticipation')) - 1e-9) {
+          a.tags.add('rush-arm');
+          const r = sim.see(a, pick.R), left = Math.max(0, Math.min(SHOULDER_FLIGHT_MAX,
+            Math.hypot(r.pos.x - pick.from.x, r.pos.y - pick.from.y) / SHOULDER_BALL_SPEED - (sim.t - rb.releasedAt)));
+          return runThrough(a, { x: r.pos.x + r.vel.x * left, y: r.pos.y + r.vel.y * left }, { speed: 0.9 });
+        }
+      }
+    }
     // A called movement goes on the snap: across the blocker's face into his
     // new gap at the line, whatever the man in front of him does.
     if (this.twist && !believesRun(sim, a)) {
@@ -2266,6 +2281,8 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
  * planted defender gives up depth to a route behind him. Replaces the earlier
  * eyes-directed lean (as often wrong as right on catches 0-10 yd). */
 const SHOULDER_READ = process.env.SHOULDER_READ !== '0';
+/** RUSH_ARM (off): a free rusher peels on the arm he saw (the shoulder read), not only on the ball in his eyes. */
+const RUSH_ARM = process.env.RUSH_ARM === '1';
 /** QB_BODY_SEEN (experimental, off; QB_BODY_SEEN=1): the passer's throwing motion and head are read from what a
  * defender sees of his body (`Agent.arm`, `Agent.head`, recorded with every perception sample), with that defender's
  * own delay and view, instead of from the published `sim.windupAt` / `sim.windupEndAt` (the time the motion started,

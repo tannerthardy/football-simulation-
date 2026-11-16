@@ -39,6 +39,7 @@
     "TRACKED_CATCH": "0",
     "TRACKED_CATCH_SPAN": "30",
     "ARM_LOOK": "0",
+    "RUSH_ARM": "0",
     "ARM_LOOK_SPEED": "17",
     "BALL_EST_NECK_SPRINT": "45",
     "BALL_EST_TAU_SD": "7",
