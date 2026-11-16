@@ -8,7 +8,7 @@ import { shouldersOf } from '../physics/kinematics.js';
  */
 import { RELEASE_BELIEF, releaseBelief } from './release-belief.js';
 import { recordContact } from './seen-contact.js';
-import { lineOfSight, SIGHT_PURE, SightFrame } from './sight.js';
+import { lineOfSight, SIGHT_PURE, SightFrame, STALE_ALIGN, STALE_HOLD, STALE_MARK, STALE_SPREAD } from './sight.js';
 import { HEAD, inHeadCone, neckRange, stepHeads } from './head.js';
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
@@ -937,6 +937,7 @@ export class PlaySim {
   private recordSightHistory(): void {
     const stamp = this.perception.stamp - 1, dt = this.dt, agents = this.agents, n = agents.length;
     const frame = (this.sightFrame ??= new SightFrame(n));
+    if (STALE_ALIGN && !this.alignPics) this.alignPics = { stamp, pics: agents.map((a) => this.perception.perceive(a.idx, 0)) };
     const recs = agents.map((a) => this.perception.recorded(a.idx, 0));
     const heads = HEAD ? agents.map((a) => this.perception.perceive(a.idx, 0).head) : null;
     for (let i = 0; i < n; i++) { const r = recs[i]; if (r) frame.set(i, agents[i]!, r.pos.x, r.pos.y, r.pose); }
@@ -971,18 +972,31 @@ export class PlaySim {
     }
   }
   private sightedPure(observer: Agent, target: Agent, seen: Perceived, gazeView: boolean, headView: boolean): Perceived {
-    const stamp = this.perception.stamp - 1, back0 = Math.round((seen.age ?? 0) / this.dt);
+    const stamp = this.perception.stamp - 1, back0 = Math.round((seen.age ?? 0) / this.dt), own = back0 * this.dt;
     const h = this.sightHist.get((observer.idx * this.agents.length + target.idx) * 3 + (headView ? 2 : gazeView ? 0 : 1));
     if (h) for (let i = h.ticks.length - 1; i >= 0; i--) {
       const back = stamp - h.ticks[i]!;
       if (back < back0) continue;
-      return back === back0 ? seen : this.perception.perceive(target.idx, back * this.dt);
+      if (back === back0) return seen;
+      const pic = this.perception.perceive(target.idx, back * this.dt);
+      return STALE_MARK ? { ...pic, stale: true, spread: STALE_SPREAD * (back * this.dt - own) } : pic;
     }
     const m = h?.older;
-    if (!m) return this.perception.perceive(target.idx, 1.2);
-    const dt = (stamp - m.stamp) * this.dt;
-    return { ...m.pic, pos: { x: m.pic.pos.x + m.pic.vel.x * dt, y: m.pic.pos.y + m.pic.vel.y * dt }, age: (m.pic.age ?? 0) + dt };
+    // SIGHT_STALE bit 4: a man not seen since the snap is believed where he lined up (the first record), on the velocity he had then.
+    if (!m) return STALE_ALIGN && this.alignPics ? this.staleOf(this.alignPics.pics[target.idx]!, (stamp - this.alignPics.stamp) * this.dt, own, true) : this.perception.perceive(target.idx, 1.2);
+    return this.staleOf(m.pic, (stamp - m.stamp) * this.dt, own);
   }
+  /** A picture carried `extra` seconds past the moment it describes. Legacy: on its velocity without bound. SIGHT_STALE bit 1: for the record's
+   * length (the longest a sighting is carried before it is lost) and then held. Bit 2: marked stale with a spread. */
+  private staleOf(pic: Perceived, extra: number, own: number, hold = STALE_HOLD): Perceived {
+    const age = (pic.age ?? 0) + extra, a0 = pic.age ?? 0;
+    // The record's length (the oldest tick it holds), not a fitted horizon: the picture was already extrapolated a0 when it was taken.
+    const carry = hold ? Math.max(0, Math.min(extra, (PERCEPTION_HISTORY - 1) * this.dt - a0)) : extra;
+    const out: Perceived = { ...pic, pos: { x: pic.pos.x + pic.vel.x * carry, y: pic.pos.y + pic.vel.y * carry }, age };
+    if (STALE_MARK) { out.stale = true; out.spread = STALE_SPREAD * Math.max(0, age - own); }
+    return out;
+  }
+  private alignPics?: { stamp: number; pics: Perceived[] };
   private sightAt?: Map<string, boolean>;
   private sightKept?: Map<string, { pic: Perceived; at: number }>;
 

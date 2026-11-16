@@ -35,6 +35,10 @@ export interface Perceived {
   contactWith?: number[];
   /** Seen contact: an opponent is holding him. */
   held?: boolean;
+  /** SIGHT_STALE: this picture is older than the observer's own delay, a belief about a man he cannot see, not a sighting. */
+  stale?: boolean;
+  /** SIGHT_STALE: how far (yd) the man may be from `pos`; grows with the time since he was last seen. */
+  spread?: number;
 }
 
 export class PerceptionBuffer {

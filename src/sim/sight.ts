@@ -28,6 +28,19 @@ const DOWN_HEIGHT = 0.35;
  * On, the record carries each body's posture and whether he was up at every tick and a past sight line reads them. */
 export const SIGHT_PURE = process.env.SIGHT_PURE === '1';
 
+/** SIGHT_STALE (experimental, off; numeric bits, acts inside SIGHT_PURE's sight history): what a player believes of a man he cannot see.
+ * Today the picture of a man he lost ages without bound on the velocity it showed (a carrier's read of a defender behind him ran to 16 s,
+ * p90 56-63 yd off the man), and a man he has never seen is located by the perception record's oldest sample, the true position through
+ * whatever hides him (an information leak). Bit 1: a lost man is carried on his last velocity for the record's length and then held. Bit 2:
+ * a picture older than his own delay says so (`Perceived.stale`) and carries a `spread` that grows with the age. Bit 4: a man not seen since
+ * the snap is believed where he lined up (every player saw the alignment), moving as he was then for the record's length and then held,
+ * in place of the record's oldest true sample. docs/reviews/2026-11-16-sight-stale.md. */
+export const SIGHT_STALE = Number(process.env.SIGHT_STALE ?? 0) | 0;
+/** SIGHT_STALE bit 2: the spread of a stale picture grows by this much per second since he was last seen (yd/s). A stated choice, not a fit:
+ * about the speed change of a man who jogs or stops in a second; no consumer reads `spread` yet, so it moves nothing. */
+export const STALE_SPREAD = 2;
+export const STALE_HOLD = (SIGHT_STALE & 1) !== 0, STALE_MARK = (SIGHT_STALE & 2) !== 0, STALE_ALIGN = (SIGHT_STALE & 4) !== 0;
+
 /** A body's posture as a tick recorded it (SIGHT_PURE). */
 export interface PoseAt { up: boolean; posture: number }
 
