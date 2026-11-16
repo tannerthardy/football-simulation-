@@ -9,6 +9,8 @@ helps on #2's corner/post. Measured per corner:
   #1 vertical (still climbing over 4 yd/s at 2.0 s): his cushion over #1 (his depth minus #1's) at 2.0 and 2.5 s;
   #1 short (inside 9 yd and under 2 yd/s downfield at 2.0 s): his depth change 1.0 -> 2.0 s, his lateral move inside 1.0 -> 2.0 s, his distance
     to #2 at 2.0 s, and whether #2 is vertical (climbing over 4 yd/s at 2.0 s);
+  for pre-throw stops also the corner's distance to #1 and his depth velocity at pass_forward, and (thrown to #1) his
+    distance at pass_arrived;
   #1's stop (Integration's follow-up; split before/after pass_forward, as Rules found 65% of NFL stops come after it): the first time in 0-3.5 s that #1, having climbed over 3 yd/s, drops under 1 yd/s
     downfield; its time, #1's depth then, and the corner's depth change in the 0.5 s after it (sink, + = away from the line);
   outcomes: throws to #1 / #2 on his side, completion and yards.
@@ -64,6 +66,10 @@ for path in sys.argv[1:]:
                 r['stop_t'] = stop / max(1, k(1.0)); r['stop_d'] = p.pos(one, stop)[0]
                 thr = ev.get('pass_forward'); r['stop_pre'] = thr is not None and r['stop_t'] < thr
                 if stop + k(0.5) < p.frames: r['stop_sink'] = p.pos(c, stop + k(0.5))[0] - p.pos(c, stop)[0]
+                if r['stop_pre'] and k(thr) < p.frames:
+                    r['thr_dist'] = p.dist(c, one, k(thr)); r['thr_vx'] = p.velocity(c, k(thr))[0]
+                    arr = ev.get('pass_arrived')
+                    if arr is not None and raw.get('target') == one and k(arr) < p.frames: r['arr_dist'] = p.dist(c, one, k(arr))
             tgt = raw.get('target')
             r['thrown'] = '1' if tgt == one else '2' if tgt == two and two is not None else None
             r['cmp'] = ev.get('catch') is not None; r['yards'] = raw.get('yards') or 0
@@ -100,3 +106,7 @@ for lab, f in (('all stops', lambda r: True), ('stops before the throw', lambda 
     T = [r for r in P if f(r)]
     if T: print(f"   {lab:34s} n {len(T):4d} | stop at p25/p50/p75 {q([r['stop_t'] for r in T],.25)}/{q([r['stop_t'] for r in T])}/{q([r['stop_t'] for r in T],.75)} s, "
                 f"depth p50 {q([r['stop_d'] for r in T])} yd | corner sink in the 0.5 s after p50 {q([r['stop_sink'] for r in T if 'stop_sink' in r])} yd")
+    if T and any('thr_dist' in r for r in T):
+        A = [r for r in T if 'arr_dist' in r]
+        print(f"   {'':34s} at the throw: corner to #1 p50 {q([r['thr_dist'] for r in T if 'thr_dist' in r])} yd, his depth velocity p50 {q([r['thr_vx'] for r in T if 'thr_vx' in r])} yd/s"
+              f" (|v|<0.5: {sum(abs(r['thr_vx']) < 0.5 for r in T if 'thr_vx' in r)}/{sum('thr_vx' in r for r in T)}) | thrown to #1, at arrival p50 {q([r['arr_dist'] for r in A])} yd (n {len(A)})")
