@@ -323,6 +323,7 @@
     "PLANT_REACH": "on",
     "COMPILE_PICTURE": "on",
     "CRAFT_HOLD": "off",
+    "CRAFT_EXIT": "off",
     "RELEASE_SIDE": "on",
     "SCREEN_DECLARE": "on",
     "ROUTE_SHAPE": "off",
